@@ -266,7 +266,7 @@ bad_location(xchar x, xchar y, xchar lx, xchar ly, xchar hx, xchar hy)
 {
     return (boolean) (occupied(x, y)
                       || within_bounded_area(x, y, lx, ly, hx, hy)
-                      || !((levl[x][y].typ == CORR && level.flags.is_maze_lev)
+                      || !((levl[x][y].typ == CORR && get_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_MAZE_LEV))
                            || levl[x][y].typ == ROOM
                            || levl[x][y].typ == GRASS
                            || levl[x][y].typ == GROUND
@@ -478,7 +478,7 @@ fixup_special(void)
         unsetup_waterlevel();
     }
     if (Is_waterlevel(&u.uz) || Is_airlevel(&u.uz)) {
-        level.flags.hero_memory = 0;
+        set_hero_memory(0);
         was_waterlevel = TRUE;
         /* water level is an odd beast - it has to be set up
            before calling place_lregions etc. */
@@ -614,9 +614,9 @@ fixup_special(void)
             }
     } else if (Role_if(PM_PRIEST) && In_quest(&u.uz)) {
         /* less chance for undead corpses (lured from lower morgues) */
-        level.flags.graveyard = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_GRAVEYARD, 1);
     } else if (Is_stronghold(&u.uz)) {
-        level.flags.graveyard = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_GRAVEYARD, 1);
     } else if (Is_sanctum(&u.uz)) {
         croom = search_special(TEMPLE);
 
@@ -919,7 +919,7 @@ create_maze(int corrwid, int wallthick)
     rdx = (x_maze_max / scale);
     rdy = (y_maze_max / scale);
 
-    if (level.flags.corrmaze)
+    if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE))
         for (x = 2; x < (rdx * 2); x++)
             for (y = 2; y < (rdy * 2); y++)
             {
@@ -953,7 +953,7 @@ create_maze(int corrwid, int wallthick)
     walkfrom((int) mm.x, (int) mm.y, 0);
 
     if (!rn2(5))
-        maze_remove_deadends((level.flags.corrmaze) ? CORR : ROOM);
+        maze_remove_deadends((get_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE)) ? CORR : ROOM);
 
     /* restore bounds */
     x_maze_max = tmp_xmax;
@@ -1103,8 +1103,8 @@ makemaz(const char *s)
         impossible("Couldn't load \"%s\" - making a maze.", protofile);
     }
 
-    level.flags.is_maze_lev = TRUE;
-    level.flags.corrmaze = !rn2(3);
+    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_MAZE_LEV, TRUE);
+    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE, !rn2(3));
 
     if (!Invocation_lev(&u.uz) && Inhell && rn2(2))
     {
@@ -1117,7 +1117,7 @@ makemaz(const char *s)
         create_maze(1,1);
     }
 
-    if (!level.flags.corrmaze)
+    if (!get_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE))
         wallification(2, 2, x_maze_max, y_maze_max);
 
     mazexy(&mm);
@@ -1230,7 +1230,7 @@ walkfrom(int x, int y, schar typ)
     int dirs[4];
 
     if (!typ) {
-        if (level.flags.corrmaze)
+        if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE))
             typ = CORR;
         else
             typ = ROOM;
@@ -1276,7 +1276,7 @@ walkfrom(int x, int y, schar typ)
     int dirs[4];
 
     if (!typ) {
-        if (level.flags.corrmaze)
+        if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE))
             typ = CORR;
         else
             typ = ROOM;
@@ -1329,7 +1329,7 @@ mazexy(coord *cc)
         cpt++;
     } while (cpt < 100
              && levl[cc->x][cc->y].typ
-                    != (level.flags.corrmaze ? CORR : ROOM));
+                    != (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE) ? CORR : ROOM));
     if (cpt >= 100) {
         int x, y;
 
@@ -1339,7 +1339,7 @@ mazexy(coord *cc)
                 cc->x = x;
                 cc->y = y;
                 if (levl[cc->x][cc->y].typ
-                    == (level.flags.corrmaze ? CORR : ROOM))
+                    == (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE) ? CORR : ROOM))
                     return;
             }
         panic("mazexy: can't find a place!");
@@ -1381,11 +1381,9 @@ bound_digging(void)
             }
         }
     }
-    xmin -= (nonwall || !level.flags.is_maze_lev) ? 2 : 1;
+    xmin -= (nonwall || !get_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_MAZE_LEV)) ? 2 : 1;
     if (xmin < 0)
-        xmin = 0;
-
-    found = nonwall = FALSE;
+        xmin = 0;found = FALSE; nonwall = FALSE;
     for (xmax = COLNO - 1; !found && xmax >= 0; xmax--) {
         lev = &levl[xmax][0];
         for (y = 0; y <= ROWNO - 1; y++, lev++) {
@@ -1397,11 +1395,9 @@ bound_digging(void)
             }
         }
     }
-    xmax += (nonwall || !level.flags.is_maze_lev) ? 2 : 1;
+    xmax += (nonwall || !get_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_MAZE_LEV)) ? 2 : 1;
     if (xmax >= COLNO)
-        xmax = COLNO - 1;
-
-    found = nonwall = FALSE;
+        xmax = COLNO - 1;found = FALSE; nonwall = FALSE;
     for (ymin = 0; !found && ymin <= ROWNO - 1; ymin++) {
         lev = &levl[xmin][ymin];
         for (x = xmin; x <= xmax; x++, lev += ROWNO) {
@@ -1413,9 +1409,7 @@ bound_digging(void)
             }
         }
     }
-    ymin -= (nonwall || !level.flags.is_maze_lev) ? 2 : 1;
-
-    found = nonwall = FALSE;
+    ymin -= (nonwall || !get_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_MAZE_LEV)) ? 2 : 1;found = FALSE; nonwall = FALSE;
     for (ymax = ROWNO - 1; !found && ymax >= 0; ymax--) {
         lev = &levl[xmin][ymax];
         for (x = xmin; x <= xmax; x++, lev += ROWNO) {
@@ -1427,7 +1421,7 @@ bound_digging(void)
             }
         }
     }
-    ymax += (nonwall || !level.flags.is_maze_lev) ? 2 : 1;
+    ymax += (nonwall || !get_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_MAZE_LEV)) ? 2 : 1;
 
     for (x = 0; x < COLNO; x++)
         for (y = 0; y < ROWNO; y++)
@@ -1983,12 +1977,12 @@ mv_bubble(struct bubble *b, int dx, int dy, boolean ini)
                 if (Is_waterlevel(&u.uz)) {
                     levl[x][y].typ = AIR;
                     levl[x][y].subtyp = 0;
-                    levl[x][y].lit = 1;
+                    set_lev_lit(x, y, 1);
                     unblock_point(x, y);
                 } else if (Is_airlevel(&u.uz)) {
                     levl[x][y].typ = CLOUD;
                     levl[x][y].subtyp = 0;
-                    levl[x][y].lit = 1;
+                    set_lev_lit(x, y, 1);
                     block_point(x, y);
                 }
             }

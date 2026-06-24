@@ -655,10 +655,10 @@ snuff_light_source(int x, int y)
         }
         else if (ls->type == LS_LOCATION && ls->x == x && ls->y == y)
         {
-            if (levl[x][y].lamplit)
+            if (is_lev_lamplit(x, y))
             {
                 debugprint("snuff_light_source2");
-                levl[x][y].lamplit = 0;
+                set_lev_lamplit(x, y, 0);
                 del_light_source(LS_LOCATION, xy_to_any(x, y));
                 newsym(x, y);
                 return;
@@ -679,7 +679,7 @@ obj_sheds_light(struct obj *obj)
 boolean
 obj_is_burning(struct obj *obj)
 {
-    return (boolean) (obj->lamplit && (is_obj_ignitable(obj)
+    return (boolean) (is_obj_lamplit(obj) && (is_obj_ignitable(obj)
                                     || artifact_light(obj)
                                     || obj_shines_magical_light(obj)
                                     || has_obj_mythic_magical_light(obj)
@@ -803,7 +803,7 @@ candle_light_range(struct obj *obj)
 int
 artifact_light_range(struct obj *obj)
 {
-    return (obj->blessed ? 3 : !obj->cursed ? 2 : 1);
+    return (is_obj_blessed(obj) ? 3 : !is_obj_cursed(obj) ? 2 : 1);
 }
 
 /* light emitting artifact's range depends upon its curse/bless state */
@@ -812,13 +812,13 @@ current_arti_light_radius(struct obj *obj)
 {
     /*
      * Used by begin_burn() when setting up a new light source
-     * (obj->lamplit will already be set by this point) and
+     * (is_obj_lamplit(obj) will already be set by this point) and
      * also by bless()/unbless()/uncurse()/curse() to decide
      * whether to call obj_adjust_light_radius().
      */
 
     /* sanity check [simplifies usage by bless()/curse()/&c] */
-    if (!obj->lamplit || !(artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)))
+    if (!is_obj_lamplit(obj) || !(artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)))
         return 0;
 
     /* cursed radius of 1 is not noticeable for an item that's
@@ -907,7 +907,7 @@ obj_light_burn_time_left(struct obj *obj)
         burntimeleft = -1;
     else if (artifact_light(obj) || (obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)))
         burntimeleft = -1;
-    else if (!obj->lamplit)
+    else if (!is_obj_lamplit(obj))
         burntimeleft = obj->age;
     else
         burntimeleft = burn_time_left_from_timer(obj);

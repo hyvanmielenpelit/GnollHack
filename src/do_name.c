@@ -1032,7 +1032,7 @@ getpos(coord *ccp, boolean force, const char *goal, enum game_cursor_types curso
                                     goto foundc;
                                 /* next, try glyph that's remembered here
                                    (might be trap or object) */
-                                if (level.flags.hero_memory
+                                if (is_hero_memory()
                                     /* !terrainmode: don't move to remembered
                                        trap or object if not currently shown */
                                     && !iflags.terrainmode) 
@@ -1395,7 +1395,7 @@ do_mname(void)
     if (!mtmp
         || (!sensemon(mtmp)
             && (!(cansee(cx, cy) || see_with_infrared(mtmp))
-                || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE
+                || is_mon_undetected(mtmp) || M_AP_TYPE(mtmp) == M_AP_FURNITURE
                 || M_AP_TYPE(mtmp) == M_AP_OBJECT
                 || (is_invisible(mtmp) && !See_invisible)))) 
     {
@@ -1418,22 +1418,22 @@ do_mname(void)
      * Don't say the name is being rejected if it happens to match
      * the existing name.
      */
-    if ((mtmp->data->geno & G_UNIQ) && !mtmp->ispriest) 
+    if ((mtmp->data->geno & G_UNIQ) && !is_mon_priest(mtmp)) 
     {
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s doesn't like being called names!", upstart(monnambuf));
     } 
-    else if (mtmp->isshk
+    else if (is_mon_shk(mtmp)
                && !(Deaf || !mon_can_move(mtmp)
                     || mtmp->data->msound <= MS_ANIMAL)) 
     {
         if (!alreadynamed(mtmp, monnambuf, buf))
         {
-            mtmp->u_know_mname = 1;
+            set_mon_u_know_mname(mtmp, 1);
             verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "I'm %s, not %s.", shkname(mtmp), buf);
         }
     } 
-    else if (mtmp->ispriest || mtmp->isminion || mtmp->isshk || mtmp->issmith || mtmp->isnpc) 
+    else if (is_mon_priest(mtmp) || is_mon_minion(mtmp) || is_mon_shk(mtmp) || is_mon_smith(mtmp) || is_mon_npc(mtmp)) 
     {
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s will not accept the name %s.", upstart(monnambuf), buf);
@@ -1442,7 +1442,7 @@ do_mname(void)
     {
         /* Peaceful animals who do not have names and tame animals can be named, others do not accept your naming */
         (void)christen_monst(mtmp, buf);
-        mtmp->u_know_mname = 1;
+        set_mon_u_know_mname(mtmp, 1);
 
         /* Clear out umname */
         if (has_umname(mtmp))
@@ -1534,7 +1534,7 @@ oname(struct obj *obj, const char *name)
     if (lth)
         artifact_exists(obj, name, TRUE);
     if (obj->oartifact) {
-        if (obj->unpaid)
+        if (is_obj_unpaid(obj))
             alter_cost(obj, 0L);
         if (via_naming) {
             /* violate illiteracy conduct since successfully wrote arti-name */
@@ -1611,7 +1611,7 @@ doname_type_of_object(void)
            while blind and the hero can now see */
         (void)xname(obj);
 
-        if (!obj->dknown) {
+        if (!is_obj_dknown(obj)) {
             You("would never recognize another one.");
         }
         else {
@@ -1699,7 +1699,7 @@ docallcmd(void)
                while blind and the hero can now see */
             (void) xname(obj);
 
-            if (!obj->dknown) {
+            if (!is_obj_dknown(obj)) {
                 You("would never recognize another one.");
 #if 0
             } else if (!objtyp_is_callable(obj->otyp)) {
@@ -1732,8 +1732,7 @@ docall_xname(struct obj *obj)
     otemp = *obj;
     otemp.oextra = (struct oextra *) 0;
     otemp.quan = 1L;
-    /* in case water is already known, convert "[un]holy water" to "water" */
-    otemp.blessed = otemp.cursed = 0;
+    /* in case water is already known, convert "[un]holy water" to "water" */otemp.blessed = 0; otemp.cursed = 0;
     /* remove attributes that are doname() caliber but get formatted
        by xname(); most of these fixups aren't really needed because the
        relevant type of object isn't callable so won't reach this far */
@@ -1755,7 +1754,7 @@ docall_xname(struct obj *obj)
         otemp.corpsenm = NON_PM; /* suppress mon type */
     else if (otemp.otyp == HEAVY_IRON_BALL)
         otemp.owt = objects[HEAVY_IRON_BALL].oc_weight; /* not "very heavy" */
-    else if (otemp.oclass == FOOD_CLASS && otemp.globby)
+    else if (otemp.oclass == FOOD_CLASS && is_obj_globby(&otemp))
         otemp.owt = 120; /* 6*20, neither a small glob nor a large one */
 
     return an(xname(&otemp));
@@ -1767,7 +1766,7 @@ docall(struct obj *obj, const char *introline)
     char buf[BUFSZ] = DUMMY, qbuf[QBUFSZ];
     char **str1;
 
-    if (!obj->dknown)
+    if (!is_obj_dknown(obj))
         return; /* probably blind */
 
     flush_screen(1); /* Make sure that the screen shows the effect, if any, before query */
@@ -1891,7 +1890,7 @@ namefloorobj(void)
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s can't be assigned a type name.",
               use_plural ? "Those" : "That", buf);
-    } else if (!obj->dknown) {
+    } else if (!is_obj_dknown(obj)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "don't know %s %s well enough to name %s.",
             use_plural ? "those" : "that", buf, use_plural ? "them" : "it");
@@ -1997,7 +1996,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
     }
 
     /* priests and minions: don't even use this function */
-    if (mtmp->ispriest || mtmp->isminion) {
+    if (is_mon_priest(mtmp) || is_mon_minion(mtmp)) {
         char priestnambuf[BUFSZ];
         char *name;
         int64_t save_prop = EHalluc_resistance;
@@ -2018,14 +2017,14 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
     /* an "aligned priest" not flagged as a priest or minion should be
        "priest" or "priestess" (normally handled by priestname()) */
     if (mdat == &mons[PM_ALIGNED_PRIEST])
-        pm_name = mtmp->female ? "priestess" : "priest";
+        pm_name = is_mon_female(mtmp) ? "priestess" : "priest";
 
     /* Shopkeepers: use shopkeeper name.  For normal shopkeepers, just
      * "Asidonhopo"; for unusual ones, "Asidonhopo the invisible
      * shopkeeper" or "Asidonhopo the blue dragon".  If hallucinating,
      * none of this applies.
      */
-    if (mtmp->isshk && !do_hallu) 
+    if (is_mon_shk(mtmp) && !do_hallu) 
     {
         if (adjective && article == ARTICLE_THE) 
         {
@@ -2075,7 +2074,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
         Strcat(buf, umname);
         name_at_start = TRUE;
     }
-    else if (do_name && has_mname(mtmp) && mtmp->u_know_mname)
+    else if (do_name && has_mname(mtmp) && is_mon_u_know_mname(mtmp))
     {
         char *name = MNAME(mtmp);
 
@@ -2102,7 +2101,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
         {
             char tmpbuf[BUFSZ * 2];
             Strcpy(tmpbuf, buf);
-            boolean npc_with_name_only = has_enpc(mtmp) && mtmp->isnpc && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_DISPLAY_NAME_ONLY) != 0;
+            boolean npc_with_name_only = has_enpc(mtmp) && is_mon_npc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_DISPLAY_NAME_ONLY) != 0;
             if (!is_tame(mtmp) && !npc_with_name_only)
             {
                 if ((bp = strstri(name, " the ")) != 0)
@@ -2124,7 +2123,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
         char pbuf[BUFSZ];
 
         Strcpy(pbuf, rank_of((int) mtmp->m_lev, mtmp->mnum,
-                             (boolean) mtmp->female != 0));
+                             (boolean) is_mon_female(mtmp) != 0));
         Strcat(buf, lcase(pbuf));
         name_at_start = FALSE;
     } 
@@ -2309,7 +2308,7 @@ distant_monnam(struct monst *mon, int article, char *outbuf)
     if (mon->data == &mons[PM_HIGH_PRIEST] && !Hallucination
         && Is_astralevel(&u.uz) && distu(mon->mx, mon->my) > 2) {
         Strcpy(outbuf, article == ARTICLE_THE ? "the " : "");
-        Strcat(outbuf, mon->female ? "high priestess" : "high priest");
+        Strcat(outbuf, is_mon_female(mon) ? "high priestess" : "high priest");
     } else {
         Strcpy(outbuf, x_monnam(mon, article, (char *) 0, 0, TRUE));
     }
@@ -4084,7 +4083,7 @@ print_catalogue(winid datawin, struct obj *obj, int objectclass, uint64_t cflags
         if ((cflags & CATALOGUE_CLERICAL) && index(magicschools, objects[i].oc_skill))
             continue;
 
-        if (obj && obj->cursed && (
+        if (obj && is_obj_cursed(obj) && (
             (i % 3) == (short)(obj->o_id % 3)
             || (((unsigned int)i + obj->o_id) % 7) == 0
             || (((unsigned int)i + obj->o_id + 1) % 11) == 0
@@ -4169,7 +4168,7 @@ print_artifact_catalogue(winid datawin, struct obj *obj)
         if (artilist[i].aflags2 & AF2_NO_CATALOGUE)
             continue;
 
-        if (obj && obj->cursed && (
+        if (obj && is_obj_cursed(obj) && (
             (i % 3) == (short)(obj->o_id % 3)
             || (((unsigned int)i + obj->o_id) % 7) == 0
             || (((unsigned int)i + obj->o_id + 1) % 11) == 0

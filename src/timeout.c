@@ -706,7 +706,7 @@ nh_timeout(void)
         baseluck -= 1;
 
     if (u.uluck != baseluck
-        && moves % ((u.uhave.amulet || u.ugangr) ? 300 : 600) == 0) {
+        && moves % ((get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_AMULET) || u.ugangr) ? 300 : 600) == 0) {
         /* Cursed luckstones stop bad luck from timing out; blessed luckstones
          * stop good luck from timing out; normal luckstones stop both;
          * neither is stopped if you don't have a luckstone.
@@ -1725,14 +1725,14 @@ hatch_egg(anything *arg, int64_t timeout)
             {
                 /* strip leading and trailing spaces; unnames monster if all spaces */
                 (void)mungspaces(buf);
-                if ((mon->data->geno & G_UNIQ) || mon->ispriest || mon->isminion || mon->isshk || mon->issmith || mon->isnpc)
+                if ((mon->data->geno & G_UNIQ) || is_mon_priest(mon) || is_mon_minion(mon) || is_mon_shk(mon) || is_mon_smith(mon) || is_mon_npc(mon))
                 {
                     pline("Unfortunately, %s will not accept the name %s.", hatchedmonnambuf, buf);
                 }
                 else
                 {
                     (void)christen_monst(mon, buf);
-                    mon->u_know_mname = 1;
+                    set_mon_u_know_mname(mon, 1);
                     /* Clear out umname */
                     if (has_umname(mon))
                         free_umname(mon);
@@ -1808,7 +1808,7 @@ slip_or_trip(void)
         what = (iflags.last_msg == PLNMSG_ONE_ITEM_HERE)
                 ? ((otmp->quan == 1L) ? "it"
                       : Hallucination ? "they" : "them")
-                : (otmp->dknown || !Blind)
+                : (is_obj_dknown(otmp) || !Blind)
                       ? doname(otmp)
                       : ((otmp2 = sobj_at(ROCK, u.ux, u.uy)) == 0
                              ? something
@@ -2541,14 +2541,14 @@ begin_burn(struct obj *obj, boolean already_lit)
             do_update_inventory = TRUE;
     }
 
-    if (do_lamplit && !already_lit && !obj->lamplit /* Insurance against doing two light sources */)
+    if (do_lamplit && !already_lit && !is_obj_lamplit(obj) /* Insurance against doing two light sources */)
     {
         xchar x, y;
 
         if (get_obj_location(obj, &x, &y, CONTAINED_TOO | BURIED_TOO))
         {
             new_light_source(x, y, radius, LS_OBJECT, obj_to_any(obj), 0);
-            obj->lamplit = 1;
+            set_obj_lamplit(obj, 1);
         }
         else
             impossible("begin_burn: can't get obj position");
@@ -2565,7 +2565,7 @@ begin_burn(struct obj *obj, boolean already_lit)
 void
 end_burn(struct obj *obj, boolean timer_attached)
 {
-    if (!obj->lamplit) 
+    if (!is_obj_lamplit(obj)) 
     {
         impossible("end_burn: obj %s not lit", xname(obj));
         return;
@@ -2580,7 +2580,7 @@ end_burn(struct obj *obj, boolean timer_attached)
         debugprint("end_burn");
         /* [DS] Cleanup explicitly, since timer cleanup won't happen */
         del_light_source(LS_OBJECT, obj_to_any(obj));
-        obj->lamplit = 0;
+        set_obj_lamplit(obj, 0);
         if (obj->where == OBJ_INVENT)
             update_inventory();
     }
@@ -2595,14 +2595,14 @@ static int
 cleanup_burn(anything *arg, int64_t expire_time)
 {
     struct obj *obj = arg->a_obj;
-    if (!obj->lamplit) {
+    if (!is_obj_lamplit(obj)) {
         impossible("cleanup_burn: obj %s not lit", xname(obj));
         return FALSE;
     }
 
     debugprint("cleanup_burn");
     del_light_source(LS_OBJECT, obj_to_any(obj));
-    obj->lamplit = 0;
+    set_obj_lamplit(obj, 0);
 
     /* restore unused time */
     obj->age += expire_time - monstermoves;
@@ -2738,9 +2738,9 @@ unsummon_item(anything *arg, int64_t timeout)
         struct monst* mtmp = m_at(x, y);
 
         /* a hiding monster may be exposed */
-        if (mtmp && !OBJ_AT(x, y) && mtmp->mundetected && hides_under(mtmp->data)) 
+        if (mtmp && !OBJ_AT(x, y) && is_mon_undetected(mtmp) && hides_under(mtmp->data)) 
         {
-            mtmp->mundetected = 0;
+            set_mon_undetected(mtmp, 0);
         }
         else if (x == u.ux && y == u.uy && u.uundetected && hides_under(youmonst.data))
             (void)hideunder(&youmonst);
@@ -3843,7 +3843,7 @@ static int
 cleanup_sound(anything *arg, int64_t expire_time)
 {
     struct obj* obj = arg->a_obj;
-    if (!obj->makingsound)
+    if (!is_obj_makingsound(obj))
     {
         impossible("cleanup_sound: obj %s not making sound", xname(obj));
         return FALSE;
@@ -3854,7 +3854,7 @@ cleanup_sound(anything *arg, int64_t expire_time)
     /* restore unused time */
     obj->age += expire_time - monstermoves;
 
-    obj->makingsound = 0;
+    set_obj_makingsound(obj, 0);
 
     if (obj->where == OBJ_INVENT)
         update_inventory();

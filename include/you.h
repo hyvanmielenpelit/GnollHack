@@ -70,47 +70,50 @@ struct RoleAdvance {
 };
 
 struct u_have {
-    Bitfield(amulet, 1);   /* carrying Amulet   */
-    Bitfield(bell, 1);     /* carrying Bell     */
-    Bitfield(book, 1);     /* carrying Book     */
-    Bitfield(menorah, 1);  /* carrying Candelabrum */
-    Bitfield(questart, 1); /* carrying the Quest Artifact */
-    Bitfield(prime_codex, 1);  /* carrying Prime Codex */
-    Bitfield(unused, 2);
+    /* Bitfield flags converted to portable explicit bitmask flags */
+    uint64_t bitflags;
+#define UHAVE_BITFLAGS_NONE         0x00000000UL
+#define UHAVE_BITFLAGS_AMULET       0x00000001UL
+#define UHAVE_BITFLAGS_BELL         0x00000002UL
+#define UHAVE_BITFLAGS_BOOK         0x00000004UL
+#define UHAVE_BITFLAGS_MENORAH      0x00000008UL
+#define UHAVE_BITFLAGS_QUESTART     0x00000010UL
+#define UHAVE_BITFLAGS_PRIME_CODEX  0x00000020UL
 
     unsigned reserved;
 };
 
 struct u_event {
-    Bitfield(minor_oracle, 1); /* received at least 1 cheap oracle */
-    Bitfield(major_oracle, 1); /*  "  expensive oracle */
-    Bitfield(read_tribute, 1); /* read a passage from a novel */
-    Bitfield(qcalled, 1);      /* called by Quest leader to do task */
-    Bitfield(qexpelled, 1);    /* expelled from the Quest dungeon */
-    Bitfield(qcompleted, 1);   /* successfully completed Quest task */
-    Bitfield(uheard_tune, 2);  /* 1=know about, 2=heard passtune */
+    /* Bitfield flags converted to portable explicit bitmask flags */
+    uint64_t bitflags;
+#define UEVENT_BITFLAGS_NONE                       0x00000000UL
+#define UEVENT_BITFLAGS_MINOR_ORACLE               0x00000001UL
+#define UEVENT_BITFLAGS_MAJOR_ORACLE               0x00000002UL
+#define UEVENT_BITFLAGS_READ_TRIBUTE               0x00000004UL
+#define UEVENT_BITFLAGS_QCALLED                    0x00000008UL
+#define UEVENT_BITFLAGS_QEXPELLED                  0x00000010UL
+#define UEVENT_BITFLAGS_QCOMPLETED                 0x00000020UL
+#define UEVENT_BITFLAGS_UOPENED_DBRIDGE            0x00000040UL
+#define UEVENT_BITFLAGS_INVOKED                    0x00000080UL
+#define UEVENT_BITFLAGS_GEHENNOM_ENTERED           0x00000100UL
+#define UEVENT_BITFLAGS_MODRON_PORTAL_HINT         0x00000200UL
+#define UEVENT_BITFLAGS_MODRON_PLANE_ENTERED       0x00000400UL
+#define UEVENT_BITFLAGS_BOVINE_PORTAL_HINT         0x00000800UL
+#define UEVENT_BITFLAGS_HELLISH_PASTURES_ENTERED   0x00001000UL
+#define UEVENT_BITFLAGS_QUANTUM_PORTAL_HINT        0x00002000UL
+#define UEVENT_BITFLAGS_LARGE_CIRCULAR_DGN_ENTERED 0x00004000UL
+#define UEVENT_BITFLAGS_POLYMORPH_TRAP_WARNING     0x00008000UL
+#define UEVENT_BITFLAGS_UKILLED_WIZARD             0x00010000UL
+#define UEVENT_BITFLAGS_UVIBRATED                  0x00020000UL
+#define UEVENT_BITFLAGS_ASCENDED                   0x00040000UL
+#define UEVENT_BITFLAGS_ROLE_ACHIEVEMENT_1         0x00080000UL
+#define UEVENT_BITFLAGS_ROLE_ACHIEVEMENT_2         0x00100000UL
+#define UEVENT_BITFLAGS_ELBERETH_KNOWN             0x00200000UL
+#define UEVENT_BITFLAGS_INVOCATION_RITUAL_KNOWN    0x00400000UL
+#define UEVENT_BITFLAGS_HEARD_OF_INVOCATION_RITUAL 0x00800000UL
 
-    Bitfield(uopened_dbridge, 1);   /* opened the drawbridge */
-    Bitfield(invoked, 1);           /* invoked Gate to the Sanctum level */
-    Bitfield(gehennom_entered, 1);  /* entered Gehennom via Valley */
-    Bitfield(modron_portal_hint, 1); /* modron portal hint given */
-    Bitfield(modron_plane_entered, 1); /* entered the modron plane */
-    Bitfield(bovine_portal_hint, 1); /* bovine portal hint given */
-    Bitfield(hellish_pastures_entered, 1); /* entered the Hellish Pastures */
-    Bitfield(quantum_portal_hint, 1); /* quantum portal hint given */
-
-    Bitfield(large_circular_dgn_entered, 1); /* entered the Large Circular Dungeon */
-    Bitfield(polymorph_trap_warning, 1); /* polymorph trap warning given */
-    Bitfield(uhand_of_elbereth, 2); /* became Hand of Elbereth */
-    Bitfield(ukilled_wizard, 1);    /* killed the wiz */
-    Bitfield(uvibrated, 1);         /* stepped on "vibrating square" */
-    Bitfield(ascended, 1);          /* has offered the Amulet */
-    Bitfield(role_achievement_1, 1);  /* passed the first requirement of the role achievement */
-
-    Bitfield(role_achievement_2, 1);  /* passed the second requirement of the role achievement */
-    Bitfield(elbereth_known, 1);      /* has learned of Elbereth */
-    Bitfield(invocation_ritual_known, 1); /* has learned how to conduct the invocation ritual from the Oracle */
-    Bitfield(heard_of_invocation_ritual, 1); /* has heard of the invocation ritual and the items necessary for it; enables the quest update */
+    uchar uheard_tune;  /* 1=know about, 2=heard passtune */
+    uchar uhand_of_elbereth; /* became Hand of Elbereth */
 
     unsigned reserved;
 
@@ -118,40 +121,37 @@ struct u_event {
 };
 
 struct u_achieve {
-    /* Major Achievements */
-    Bitfield(amulet, 1);  /* touched Amulet */
-    Bitfield(bell, 1);    /* touched Bell */
-    Bitfield(book, 1);    /* touched Book */
-    Bitfield(menorah, 1); /* touched Candelabrum */
-    Bitfield(prime_codex, 1); /* touched Prime Codex */
-    Bitfield(enter_gehennom, 1); /* entered Gehennom (or Valley) by any means */
-    Bitfield(ascended, 1); /* not quite the same as u.uevent.ascended */
-    Bitfield(mines_luckstone, 1); /* got a luckstone at end of mines */
-
-    Bitfield(finish_sokoban, 1);  /* obtained the sokoban prize */
-    Bitfield(killed_medusa, 1);
-    Bitfield(killed_yacc, 1);
-    /* Minor Achievements */
-    Bitfield(consulted_oracle, 1);
-    Bitfield(read_discworld_novel, 1);
-    Bitfield(entered_gnomish_mines, 1);
-    Bitfield(entered_mine_town, 1);
-    Bitfield(entered_shop, 1);
-
-    Bitfield(entered_temple, 1);
-    Bitfield(entered_sokoban, 1);
-    Bitfield(entered_bigroom, 1);
-    Bitfield(learned_castle_tune, 1);
-    Bitfield(entered_large_circular_dungeon, 1);
-    Bitfield(entered_plane_of_modron, 1);
-    Bitfield(entered_hellish_pastures, 1);
-    Bitfield(entered_elemental_planes, 1);
-    Bitfield(entered_astral_plane, 1);
-
-    /* Other Achievements */
-    Bitfield(role_achievement, 1); /* Special achievement for the role */
-    Bitfield(crowned, 1); /* Became Hand of Elbereth, Envoy of Balance, or Glory of Arioch */
-    Bitfield(killed_demogorgon, 1);
+    /* Bitfield flags converted to portable explicit bitmask flags */
+    uint64_t bitflags;
+#define UACHIEVE_BITFLAGS_NONE                           0x00000000UL
+#define UACHIEVE_BITFLAGS_AMULET                         0x00000001UL
+#define UACHIEVE_BITFLAGS_BELL                           0x00000002UL
+#define UACHIEVE_BITFLAGS_BOOK                           0x00000004UL
+#define UACHIEVE_BITFLAGS_MENORAH                        0x00000008UL
+#define UACHIEVE_BITFLAGS_PRIME_CODEX                    0x00000010UL
+#define UACHIEVE_BITFLAGS_ENTER_GEHENNOM                 0x00000020UL
+#define UACHIEVE_BITFLAGS_ASCENDED                       0x00000040UL
+#define UACHIEVE_BITFLAGS_MINES_LUCKSTONE                0x00000080UL
+#define UACHIEVE_BITFLAGS_FINISH_SOKOBAN                 0x00000100UL
+#define UACHIEVE_BITFLAGS_KILLED_MEDUSA                  0x00000200UL
+#define UACHIEVE_BITFLAGS_KILLED_YACC                    0x00000400UL
+#define UACHIEVE_BITFLAGS_CONSULTED_ORACLE               0x00000800UL
+#define UACHIEVE_BITFLAGS_READ_DISWORLD_NOVEL            0x00001000UL
+#define UACHIEVE_BITFLAGS_ENTERED_GNOMISH_MINES          0x00002000UL
+#define UACHIEVE_BITFLAGS_ENTERED_MINE_TOWN              0x00004000UL
+#define UACHIEVE_BITFLAGS_ENTERED_SHOP                   0x00008000UL
+#define UACHIEVE_BITFLAGS_ENTERED_TEMPLE                 0x00010000UL
+#define UACHIEVE_BITFLAGS_ENTERED_SOKOBAN                0x00020000UL
+#define UACHIEVE_BITFLAGS_ENTERED_BIGROOM                0x00040000UL
+#define UACHIEVE_BITFLAGS_LEARNED_CASTLE_TUNE            0x00080000UL
+#define UACHIEVE_BITFLAGS_ENTERED_LARGE_CIRCULAR_DUNGEON 0x00100000UL
+#define UACHIEVE_BITFLAGS_ENTERED_PLANE_OF_MODRON        0x00200000UL
+#define UACHIEVE_BITFLAGS_ENTERED_HELLISH_PASTURES       0x00400000UL
+#define UACHIEVE_BITFLAGS_ENTERED_ELEMENTAL_PLANES       0x00800000UL
+#define UACHIEVE_BITFLAGS_ENTERED_ASTRAL_PLANE           0x01000000UL
+#define UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT               0x02000000UL
+#define UACHIEVE_BITFLAGS_CROWNED                        0x04000000UL
+#define UACHIEVE_BITFLAGS_KILLED_DEMOGORGON              0x08000000UL
 
     unsigned reserved;
 };

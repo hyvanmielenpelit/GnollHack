@@ -660,9 +660,9 @@ vision_recalc(int control)
                             struct obj* obj;
                             for (obj = o_at(col, row); obj; obj = obj->nexthere)
                             {
-                                if (!obj->dknown)
+                                if (!is_obj_dknown(obj))
                                 {
-                                    obj->dknown = 1;
+                                    set_obj_dknown(obj, 1);
                                 }
                             }
                         }
@@ -781,7 +781,7 @@ vision_recalc(int control)
 
             } 
             else if ((next_row[col] & COULD_SEE)
-                     && (lev->lit || (next_row[col] & TEMP_LIT)) && !(next_row[col] & TEMP_MAGICAL_DARKNESS) ) 
+                     && (is_rm_lit(lev) || (next_row[col] & TEMP_LIT)) && !(next_row[col] & TEMP_MAGICAL_DARKNESS) ) 
             {
                 /*
                  * We see this position because it is lit.
@@ -798,7 +798,7 @@ vision_recalc(int control)
                     dx = u.ux - col;
                     dx = sign(dx);
                     flev = &(levl[col + dx][row + dy]);
-                    if ((flev->lit || (next_array[row + dy][col + dx] & TEMP_LIT)) && !(next_array[row + dy][col + dx] & TEMP_MAGICAL_DARKNESS))
+                    if ((is_rm_lit(flev) || (next_array[row + dy][col + dx] & TEMP_LIT)) && !(next_array[row + dy][col + dx] & TEMP_MAGICAL_DARKNESS))
                     {
                         next_row[col] |= IN_SIGHT; /* we see it */
 
@@ -827,7 +827,7 @@ vision_recalc(int control)
                         newsym(col, row);
                 }
             } 
-            else if ((next_row[col] & COULD_SEE) && lev->waslit)
+            else if ((next_row[col] & COULD_SEE) && is_rm_waslit(lev))
             {
                 /*
                  * If we make it here, the hero _could see_ the location,

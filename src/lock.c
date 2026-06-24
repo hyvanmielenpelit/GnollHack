@@ -323,9 +323,9 @@ breakchestlock(struct obj *box, boolean destroyit)
         box->cobj = 0;
         costly_alteration(box, COST_BRKLCK);
         box->cobj = hide_contents;
-        box->olocked = 0;
-        box->obroken = 1;
-        box->lknown = 1;
+        set_obj_locked(box, 0);
+        set_obj_broken(box, 1);
+        set_obj_lknown(box, 1);
         newsym(box->ox, box->oy);
     }
     else 
@@ -653,9 +653,9 @@ pick_lock_core(struct obj *pick, int x, int y, boolean is_auto)
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
                 it = 0;
-                if (otmp->obroken)
+                if (is_obj_broken(otmp))
                     verb = "fix";
-                else if (!otmp->olocked)
+                else if (!is_obj_locked(otmp))
                     verb = "lock", it = 1;
                 else if (picktyp != LOCK_PICK)
                     verb = "unlock", it = 1;
@@ -666,7 +666,7 @@ pick_lock_core(struct obj *pick, int x, int y, boolean is_auto)
                 Sprintf(qsfx, " here; %s %s%s?", verb, it ? "it" : "its lock", kbuf);
                 (void)safe_qbuf(qbuf, "There is ", qsfx, otmp, doname,
                     ansimpleoname, "a box");
-                otmp->lknown = 1;
+                set_obj_lknown(otmp, 1);
 
                 c = ynq(qbuf);
                 if (c == 'q')
@@ -674,12 +674,12 @@ pick_lock_core(struct obj *pick, int x, int y, boolean is_auto)
                 if (c == 'n')
                     continue;
 
-                if (otmp->obroken) 
+                if (is_obj_broken(otmp)) 
                 {
                     You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "fix its broken lock with %s.", doname(pick));
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
-                else if (picktyp == CREDIT_CARD && !otmp->olocked) 
+                else if (picktyp == CREDIT_CARD && !is_obj_locked(otmp)) 
                 {
                     /* credit cards are only good for unlocking */
                     You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that with %s.",
@@ -705,7 +705,7 @@ pick_lock_core(struct obj *pick, int x, int y, boolean is_auto)
                     else
                         ch = 0;
                 }
-                if (otmp->cursed)
+                if (is_obj_cursed(otmp))
                     ch /= 2;
 
                 xlock.box = otmp;
@@ -739,7 +739,7 @@ pick_lock_core(struct obj *pick, int x, int y, boolean is_auto)
             && M_AP_TYPE(mtmp) != M_AP_OBJECT) 
         {
             if (picktyp == CREDIT_CARD
-                && (mtmp->isshk))
+                && (is_mon_shk(mtmp)))
             {
                 play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_NO_CHECKS_NO_CREDIT_NO_PROBLEM);
                 verbalize_talk1("No checks, no credit, no problem.");
@@ -900,20 +900,20 @@ doforce(void)
     xlock.box = (struct obj *) 0;
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
         if (Is_box(otmp)) {
-            if (otmp->obroken || !otmp->olocked) {
+            if (is_obj_broken(otmp) || !is_obj_locked(otmp)) {
                 /* force doname() to omit known "broken" or "unlocked"
                    prefix so that the message isn't worded redundantly;
                    since we're about to set lknown, there's no need to
                    remember and then reset its current value */
-                otmp->lknown = 0;
+                set_obj_lknown(otmp, 0);
                 There("is %s here, but its lock is already %s.",
-                      doname(otmp), otmp->obroken ? "broken" : "unlocked");
-                otmp->lknown = 1;
+                      doname(otmp), is_obj_broken(otmp) ? "broken" : "unlocked");
+                set_obj_lknown(otmp, 1);
                 continue;
             }
             (void) safe_qbuf(qbuf, "There is ", " here; force its lock?",
                              otmp, doname, ansimpleoname, "a box");
-            otmp->lknown = 1;
+            set_obj_lknown(otmp, 1);
 
             c = ynq(qbuf);
             if (c == 'q')
@@ -1367,38 +1367,38 @@ boxlock(struct obj *obj, struct obj *otmp)
     switch (otmp->otyp) {
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
-        if (!obj->olocked && (has_box_normal_lock(obj) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0)))
+        if (!is_obj_locked(obj) && (has_box_normal_lock(obj) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0)))
         { /* lock it; fix if broken */
             play_sfx_sound_at_location(SFX_WIZARD_LOCK_KLUNK, obj->ox, obj->oy);
             pline("Klunk!");
-            obj->olocked = 1;
-            obj->obroken = 0;
+            set_obj_locked(obj, 1);
+            set_obj_broken(obj, 0);
             obj->keyotyp = MAGIC_KEY;
             obj->special_quality = 0;
             if (Role_if(PM_WIZARD))
-                obj->lknown = 1;
+                set_obj_lknown(obj, 1);
             else
-                obj->lknown = 0;
+                set_obj_lknown(obj, 0);
             res = 1;
         } /* else already closed and locked */
         newsym(obj->ox, obj->oy);
         break;
     case WAN_OPENING:
     case SPE_KNOCK:
-        if (obj->olocked) { /* unlock; couldn't be broken */
+        if (is_obj_locked(obj)) { /* unlock; couldn't be broken */
             if (has_box_normal_lock(obj) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0))
             {
                 play_sfx_sound_at_location(SFX_KNOCK_KLICK, obj->ox, obj->oy);
                 pline("Klick!");
-                obj->olocked = 0;
+                set_obj_locked(obj, 0);
                 res = 1;
                 if (Role_if(PM_WIZARD))
-                    obj->lknown = 1;
+                    set_obj_lknown(obj, 1);
                 else
-                    obj->lknown = 0;
+                    set_obj_lknown(obj, 0);
             }
         } else /* silently fix if broken */
-            obj->obroken = 0;
+            set_obj_broken(obj, 0);
         newsym(obj->ox, obj->oy);
         break;
     case WAN_POLYMORPH:
@@ -1424,7 +1424,7 @@ doorlock(struct obj *otmp, int x, int y)
     const char* doormsg = door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door_subtype_definitions[door->subtyp].description : "door";
     const char *dustcloud = "A cloud of dust";
     const char *quickly_dissipates = "quickly dissipates";
-    boolean mysterywand = (otmp->oclass == WAND_CLASS && !otmp->dknown);
+    boolean mysterywand = (otmp->oclass == WAND_CLASS && !is_obj_dknown(otmp));
 
     if (door->typ == SDOOR) {
         switch (otmp->otyp) {

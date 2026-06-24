@@ -63,12 +63,12 @@ extern char *viz_rmax;            /* max could see indices */
 
 #define m_canseeu(m)                                       \
     ((!Invis || has_see_invisible(m)) && !is_blinded(m)    \
-             && !(Underwater || u.uburied || (m)->mburied) \
+             && !(Underwater || u.uburied || is_mon_buried(m)) \
          ? couldsee((m)->mx, (m)->my)                      \
          : 0)
 
 #define m_cansee_m(magr, mdef)                                       \
-    ((!is_invisible(mdef) || has_see_invisible(magr)) && !is_blinded(magr) && !(mdef)->mundetected    \
+    ((!is_invisible(mdef) || has_see_invisible(magr)) && !is_blinded(magr) && !(is_mon_undetected(mdef))    \
          ? m_cansee(magr, (mdef)->mx, (mdef)->my)                      \
          : 0)
 

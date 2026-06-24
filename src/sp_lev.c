@@ -665,7 +665,7 @@ lvlfill_maze_grid(int x1, int y1, int x2, int y2, schar filling)
     for (x = x1; x <= x2; x++)
         for (y = y1; y <= y2; y++)
         {
-            if (level.flags.corrmaze)
+            if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE))
                 typ = STONE;
             else
                 typ = (y < 2 || ((x % 2) && (y % 2))) ? STONE : filling;
@@ -820,7 +820,7 @@ set_door_orientation(int x, int y)
         wup    = (!isok(x, y - 1) || IS_DOORJOIN(levl[x][y - 1].typ));
         wdown  = (!isok(x, y + 1) || IS_DOORJOIN(levl[x][y + 1].typ));
     }
-    levl[x][y].horizontal = ((wleft || wright) && !(wup && wdown)) ? 1 : 0;
+    set_lev_horizontal(x, y, ((wleft || wright) && !(wup && wdown)) ? 1 : 0);
 }
 
 static void
@@ -905,7 +905,7 @@ rndtrap(void)
                 break;
             case LEVEL_TELEP:
             case TELEP_TRAP:
-                if (level.flags.noteleport)
+                if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOTELEPORT))
                     rtrap = NO_TRAP;
                 break;
             case ROLLING_BOULDER_TRAP:
@@ -2040,7 +2040,7 @@ create_monster(monster *m, struct mkroom *croom)
 
         if (m->peaceful >= 0)
         {
-            mtmp->mpeaceful = m->peaceful;
+            set_mon_peaceful(mtmp, m->peaceful);
             /* changed mpeaceful again; have to reset mhostility */
             set_mhostility(mtmp);
         }
@@ -2050,22 +2050,22 @@ create_monster(monster *m, struct mkroom *croom)
 #ifdef UNIXPC
             /* optimizer bug strikes again */
             if (m->asleep)
-                mtmp->msleeping = 1;
+                set_mon_sleeping(mtmp, 1);
             else
-                mtmp->msleeping = 0;
+                set_mon_sleeping(mtmp, 0);
 #else
-            mtmp->msleeping = m->asleep;
+            set_mon_sleeping(mtmp, m->asleep);
 #endif
         }
 
         if (m->seentraps)
             mtmp->mtrapseen = m->seentraps;
-        if (m->female >= 0)
-            mtmp->female = (unsigned int)m->female;
+        if (is_mon_female(m) >= 0)
+            set_mon_female(mtmp, (unsigned int))m->female;
         if (m->waitforu)
             mtmp->mstrategy |= STRAT_WAITFORU;
         if (m->protector)
-            mtmp->isprotector = 1;
+            set_flag(mtmp->mon_bitflags, MON_BITFLAGS_ISPROTECTOR, 1);
 
         if (m->cancelled)
         {
@@ -2074,7 +2074,7 @@ create_monster(monster *m, struct mkroom *croom)
         if (m->revived)
             mtmp->mrevived = (unsigned)m->revived;
         if (m->avenge)
-            mtmp->mavenge = 1;
+            set_flag(mtmp->mon_bitflags, MON_BITFLAGS_MAVENGE, 1);
         if (m->stunned)
             mtmp->mprops[STUNNED] |= M_INTRINSIC_ACQUIRED;
         if (m->confused)
@@ -2094,7 +2094,7 @@ create_monster(monster *m, struct mkroom *croom)
         if (m->fleeing) 
         {
             /* Assume non-magical fleeing */
-            mtmp->mflee = 1;
+            set_mon_fleeing(mtmp, 1);
             mtmp->mflee_timer = m->fleeing;
         }
 
@@ -2220,7 +2220,7 @@ create_object(object *o, struct mkroom *croom)
                         else
                         {
                             otmp->mythic_prefix = MYTHIC_PREFIX_OLYMPIAN;
-                            otmp->cursed = 0;
+                            set_obj_cursed(otmp, 0);
                         }
                     }
                 }
@@ -2422,7 +2422,7 @@ create_object(object *o, struct mkroom *croom)
     {
         if (o->eroded < 0) 
         {
-            otmp->oerodeproof = 1;
+            set_obj_erodeproof(otmp, 1);
         } else {
             otmp->oeroded = (o->eroded % 4);
             otmp->oeroded2 = ((o->eroded >> 2) % 4);
@@ -2432,12 +2432,10 @@ create_object(object *o, struct mkroom *croom)
         otmp->recharged = min(RECHARGE_LIMIT, o->recharged);
     if (o->locked)
     {
-        otmp->olocked = 1;
+        set_obj_locked(otmp, 1);
     }
-    else if (o->broken) 
-    {
-        otmp->obroken = 1;
-        otmp->olocked = 0; /* obj generation may set */
+        set_obj_broken(otmp, 1);
+        set_obj_locked(otmp, 0); /* obj generation may set */
     }
     
     if (o->open) 
@@ -2448,7 +2446,7 @@ create_object(object *o, struct mkroom *croom)
     }
 
     if (o->trapped == 0 || o->trapped == 1)
-        otmp->otrapped = o->trapped;
+        set_obj_trapped(otmp, o->trapped);
     if (o->material > 0)
         otmp->material = (uchar)o->material;
     if (o->elemental_enchantment >= 0 && is_elemental_enchantable(otmp))
@@ -2476,7 +2474,7 @@ create_object(object *o, struct mkroom *croom)
         otmp->mythic_prefix = (uchar)o->mythic_prefix;
     if (o->mythic_suffix >= 0)
         otmp->mythic_suffix = (uchar)o->mythic_suffix;
-    if (is_obj_uncurseable(otmp) && otmp->cursed)
+    if (is_obj_uncurseable(otmp) && is_obj_cursed(otmp))
         uncurse(otmp);
     if (o->age >= 0)
         otmp->age = (int64_t)o->age;
@@ -2511,8 +2509,8 @@ create_object(object *o, struct mkroom *croom)
         otmp->speflags |= SPEFLAGS_USES_UP_KEY;
     if (o->no_pickup)
         otmp->speflags |= SPEFLAGS_NO_PICKUP;
-    if (o->greased)
-        otmp->greased = 1;
+    if (is_obj_greased(o))
+        set_obj_greased(otmp, 1);
 #ifdef INVISIBLE_OBJECTS
     if (o->invis)
         otmp->oinvis = 1;
@@ -2520,8 +2518,8 @@ create_object(object *o, struct mkroom *croom)
 
     if ((objects[otmp->otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
     {
-        otmp->has_special_tileset = 1;
-        otmp->special_tileset = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+        set_obj_has_special_tileset(otmp, 1);
+        otmp->special_tileset = is_lev_has_special_tileset(x, y) ? levl[x][y].special_tileset : get_current_cmap_type_index();
     }
 
     if (o->quan > 0 && objects[otmp->otyp].oc_merge) 
@@ -2880,7 +2878,7 @@ create_altar(altar *a, struct mkroom *croom)
     if (a->shrine) { /* Is it a shrine  or sanctum? */
         priestini(&u.uz, croom, x, y, (a->shrine > 1), a->mtype);
         levl[x][y].altarmask |= AM_SHRINE;
-        level.flags.has_temple = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_TEMPLE, TRUE);
     }
 }
 
@@ -2933,7 +2931,7 @@ create_anvil(anvil *a, struct mkroom *croom)
         return;
 
     smithini(&u.uz, croom, x, y, 0, a->mtype);
-    level.flags.has_smithy = TRUE;
+    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SMITHY, TRUE);
 }
 
 /*
@@ -2994,7 +2992,7 @@ create_npc(npc_create_info *a, struct mkroom *croom)
 
     uchar usedtyp = (a->typ < MAX_NPC_SUBTYPES ? a->typ : rn2(MAX_NPC_SUBTYPES));
     npcini(&u.uz, croom, x, y, usedtyp, a->mtype);
-    level.flags.has_npc_room = TRUE;
+    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_NPC_ROOM, TRUE);
 }
 
 /*
@@ -3449,7 +3447,7 @@ fill_room(struct mkroom *croom, boolean prefilled)
         /* Shop ? */
         if (croom->rtype >= SHOPBASE) {
             stock_room(croom->rtype - SHOPBASE, croom, FALSE);
-            level.flags.has_shop = TRUE;
+            set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SHOP, TRUE);
             return;
         }
 
@@ -3476,40 +3474,40 @@ fill_room(struct mkroom *croom, boolean prefilled)
     }
     switch (croom->rtype) {
     case VAULT:
-        level.flags.has_vault = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_VAULT, TRUE);
         break;
     case ZOO:
-        level.flags.has_zoo = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_ZOO, TRUE);
         break;
     case COURT:
-        level.flags.has_court = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_COURT, TRUE);
         break;
     case MORGUE:
-        level.flags.has_morgue = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_MORGUE, TRUE);
         break;
     case BEEHIVE:
-        level.flags.has_beehive = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_BEEHIVE, TRUE);
         break;
     case LIBRARY:
-        level.flags.has_library = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_LIBRARY, TRUE);
         break;
     case BARRACKS:
-        level.flags.has_barracks = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_BARRACKS, TRUE);
         break;
     case ARMORY:
-        level.flags.has_armory = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_ARMORY, TRUE);
         break;
     case TEMPLE:
-        level.flags.has_temple = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_TEMPLE, TRUE);
         break;
     case SMITHY:
-        level.flags.has_smithy = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SMITHY, TRUE);
         break;
     case NPCROOM:
-        level.flags.has_npc_room = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_NPC_ROOM, TRUE);
         break;
     case SWAMP:
-        level.flags.has_swamp = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SWAMP, TRUE);
         break;
     }
 }
@@ -3571,7 +3569,7 @@ light_region(region *tmpregion)
         for (y = lowy; y <= hiy; y++)
         {
             if (lev->typ != LAVAPOOL) /* this overrides normal lighting */
-                lev->lit = litstate;
+                set_rm_lit(lev, litstate);
 
             lev++;
         }
@@ -4617,18 +4615,18 @@ spo_level_flags(struct sp_coder *coder)
     lflags = OV_i(flagdata);
 
     if (lflags & NOTELEPORT)
-        level.flags.noteleport = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOTELEPORT, 1);
     if (lflags & HARDFLOOR)
-        level.flags.hardfloor = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HARDFLOOR, 1);
     if (lflags & NOMMAP)
-        level.flags.nommap = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOMMAP, 1);
     if (lflags & SHORTSIGHTED)
-        level.flags.shortsighted = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_SHORTSIGHTED, 1);
     if (lflags & ARBOREAL)
-        level.flags.arboreal = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_ARBOREAL, 1);
     if (lflags & DESERT)
     {
-        level.flags.desert = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_DESERT, 1);
         int i, j;
         for(i = 1; i < COLNO; i++)
             for (j = 0; j < ROWNO; j++)
@@ -4649,7 +4647,7 @@ spo_level_flags(struct sp_coder *coder)
             }
     }
     if (lflags & SWAMPY)
-        level.flags.swampy = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_SWAMPY, 1);
     if (lflags & THRONE_ON_GROUND)
         coder->throne_on_ground = 1;
     if (lflags & FOUNTAIN_ON_GRASS)
@@ -4659,21 +4657,21 @@ spo_level_flags(struct sp_coder *coder)
     if (lflags & TREE_ON_GROUND)
         coder->tree_on_ground = 1;
     if (lflags & MAPPING_DOES_NOT_REVEAL_SPECIAL)
-        level.flags.mapping_does_not_reveal_special = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_MAPPING_DOES_NOT_REVEAL_SPECIAL, 1);
     if (lflags & MAZELEVEL)
-        level.flags.is_maze_lev = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_MAZE_LEV, 1);
     if (lflags & PREMAPPED)
         coder->premapped = TRUE;
     if (lflags & SHROUD)
-        level.flags.hero_memory = 0;
+        set_hero_memory(0);
     if (lflags & GRAVEYARD)
-        level.flags.graveyard = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_GRAVEYARD, 1);
     if (lflags & ICEDPOOLS)
         icedpools = TRUE;
     if (lflags & SOLIDIFY)
         coder->solidify = TRUE;
     if (lflags & CORRMAZE)
-        level.flags.corrmaze = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE, TRUE);
     if (lflags & CHECK_INACCESSIBLES)
         coder->check_inaccessibles = TRUE;
     if (lflags & NO_MAP_PADDING)
@@ -4695,12 +4693,12 @@ spo_tileset(struct sp_coder *coder)
 
     if (tilesetid >= MAX_CMAP_TYPES)
     {
-        level.flags.has_tileset = 0;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_TILESET, 0);
         level.flags.tileset = 0;
     }
     else
     {
-        level.flags.has_tileset = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_TILESET, 1);
         level.flags.tileset = tilesetid;
     }
     opvar_free(tilesetdata);
@@ -5220,11 +5218,11 @@ spo_brazier(struct sp_coder *coder)
 
         int64_t val = OV_i(lamplit);
         if (val >= 0)
-            levl[x][y].lamplit = (unsigned int)val;
+            set_lev_lamplit(x, y, (unsigned int))val;
         else
-            levl[x][y].lamplit = rn2(2);
+            set_lev_lamplit(x, y, rn2(2));
 
-        if (!levl[x][y].lamplit)
+        if (!is_lev_lamplit(x, y))
             levl[x][y].flags |= L_INITIALLY_UNLIT;
     }
 
@@ -5494,7 +5492,7 @@ selection_filter_mapchar(struct opvar *ov, struct opvar *mc)
                     break;
                 case 0:
                 case 1:
-                    if (levl[x][y].lit == lit)
+                    if (is_lev_lit(x, y) == lit)
                         selection_setpoint(x, y, ret, 1);
                     break;
                 }
@@ -6016,8 +6014,8 @@ sel_set_ter(int x, int y, genericptr_t arg)
     if (levl[x][y].typ == SDOOR || IS_DOOR(levl[x][y].typ)) {
         if (levl[x][y].typ == SDOOR)
             levl[x][y].doormask = D_CLOSED;
-        if (x && (IS_WALL(levl[x - 1][y].typ) || levl[x - 1][y].horizontal))
-            levl[x][y].horizontal = 1;
+        if (x && (IS_WALL(levl[x - 1][y].typ) || is_lev_horizontal(x - 1, y)))
+            set_lev_horizontal(x, y, 1);
     }
 }
 
@@ -7108,7 +7106,7 @@ spo_special_tileset(struct sp_coder *coder)
 void
 sel_set_tileset(int x, int y, genericptr_t arg)
 {
-    levl[x][y].use_special_tileset = 1;
+    set_lev_has_special_tileset(x, y, 1);
     levl[x][y].special_tileset = (*(int*)arg);
 }
 
@@ -7187,7 +7185,7 @@ spo_mazewalk(struct sp_coder *coder)
         return;
 
     if (OV_i(ftyp) < 1) {
-        OV_i(ftyp) = level.flags.corrmaze ? CORR : level.flags.arboreal ? GRASS : level.flags.swampy ? GRASS : level.flags.desert ? GROUND : ROOM;
+        OV_i(ftyp) = get_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE) ? CORR : get_flag(level.flags.bitflags, LEVEL_BITFLAGS_ARBOREAL) ? GRASS : get_flag(level.flags.bitflags, LEVEL_BITFLAGS_SWAMPY) ? GRASS : get_flag(level.flags.bitflags, LEVEL_BITFLAGS_DESERT) ? GROUND : ROOM;
     }
 
     /* don't use move() - it doesn't use W_NORTH, etc. */
@@ -7516,12 +7514,12 @@ spo_map(struct sp_coder *coder)
                 set_initial_location_floortype(lev, coder->fountain_on_grass, coder->fountain_on_ground, coder->tree_on_ground, coder->throne_on_ground);
                 initialize_location(lev);
 
-                lev->lit = FALSE;
+                set_rm_lit(lev, FALSE);
                 /* clear out levl: load_common_data may set them */
                 lev->flags = 0;
-                lev->horizontal = 0;
+                set_rm_horizontal(lev, 0);
                 lev->roomno = 0;
-                lev->edge = 0;
+                set_flag(lev->rm_bitflags, RM_BITFLAGS_EDGE, 0);
                 SpLev_Map[x][y] = 1;
                 /*
                  *  Set secret doors to closed (why not trapped too?).  Set
@@ -7537,18 +7535,18 @@ spo_map(struct sp_coder *coder)
                      *  not allow (secret) doors to be corners of rooms.
                      */
                     if (x != xstart && (IS_WALL(levl[x - 1][y].typ)
-                                        || levl[x - 1][y].horizontal))
-                        levl[x][y].horizontal = 1;
+                                        || is_lev_horizontal(x - 1, y)))
+                        set_lev_horizontal(x, y, 1);
                 } 
                 else if (levl[x][y].typ == HWALL)
-                    levl[x][y].horizontal = 1;
+                    set_lev_horizontal(x, y, 1);
                 else if (levl[x][y].typ == IRONBARS)
                 {
                     if(!isok(x, y - 1) || IS_DOORJOIN(levl[x][y - 1].typ) || IS_DOOR(levl[x][y - 1].typ))
-                        levl[x][y].horizontal = 0;
+                        set_lev_horizontal(x, y, 0);
                     else
                     {
-                        levl[x][y].horizontal = 1;
+                        set_lev_horizontal(x, y, 1);
                         if (isok(x, y - 1) && IS_FLOOR(levl[x][y - 1].typ))
                         {
                             levl[x][y].floortyp = levl[x][y - 1].typ;
@@ -7559,7 +7557,7 @@ spo_map(struct sp_coder *coder)
                     }
                 }
                 else if (levl[x][y].typ == LAVAPOOL)
-                    levl[x][y].lit = 1;
+                    set_lev_lit(x, y, 1);
                 else if (splev_init_present && levl[x][y].typ == ICE)
                     levl[x][y].icedpool = icedpools ? ICED_POOL : ICED_MOAT;
             }
@@ -7890,7 +7888,7 @@ sp_level_coder(sp_lev *lvl)
 
     (void) memset((genericptr_t) &SpLev_Map[0][0], 0, sizeof SpLev_Map);
 
-    level.flags.is_maze_lev = 0;
+    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_MAZE_LEV, 0);
 
     xstart = 1;
     ystart = 0;

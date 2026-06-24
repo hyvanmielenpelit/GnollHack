@@ -1,0 +1,362 @@
+=== FILES WITH ONLY UNRELATED CHANGES (Safe to fully revert) ===
+File: src/mapglyph.c (Hunks: 2)
+  [unrelated] @@ -381,7 +381,7 @@ mapglyph(struct layer_info layers, nhsym *ochar, int *ocolor, uint64_t *ospecial
+    - -                            if (levl[x][y].lamplit)
+    + +                            if (is_lev_lamplit(x, y))
+  [unrelated] @@ -410,7 +410,7 @@ mapglyph(struct layer_info layers, nhsym *ochar, int *ocolor, uint64_t *ospecial
+    - -                        if (levl[x][y].lamplit)
+    + +                        if (is_lev_lamplit(x, y))
+
+=== MIXED FILES (Has both bitflags and unrelated changes) ===
+File: include/rm.h
+  Total hunks: 6, Unrelated hunks: 2
+    [unrelated] @@ -844,7 +844,7 @@ extern const struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SU
+      - -    ((typ) == TREE || (level.flags.arboreal && (typ) == UNDEFINED_LOCATION))
+      + +    ((typ) == TREE || (is_level_arboreal() && (typ) == UNDEFINED_LOCATION))
+    [unrelated] @@ -1563,7 +1666,7 @@ extern dlevel_t level; /* structure describing the current level */
+      - -#define Sokoban level.flags.sokoban_rules
+      + +#define Sokoban is_level_sokoban_rules()
+File: src/animation.c
+  Total hunks: 8, Unrelated hunks: 5
+    [unrelated] @@ -1502,7 +1502,7 @@ maybe_get_replaced_glyph(
+      - -                || (level.flags.hero_memory && glyph_is_specific_cmap_or_its_variation(levl[x][above_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored))
+      + +                || (is_hero_memory() && glyph_is_specific_cmap_or_its_variation(levl[x][above_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored))
+    [unrelated] @@ -1603,7 +1603,7 @@ maybe_get_replaced_glyph(
+      - -            if (isok(x, y) && get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+      + +            if (isok(x, y) && get_location_light_range(x, y) != 0 && is_lev_lamplit(x, y) == TRUE)
+    [unrelated] @@ -1612,7 +1612,7 @@ maybe_get_replaced_glyph(
+      - -            if (isok(x, y) && levl[x][y].horizontal == TRUE)
+      + +            if (isok(x, y) && is_lev_horizontal(x, y) == TRUE)
+    [unrelated] @@ -1911,7 +1911,7 @@ maybe_get_replaced_glyph(
+      - -                if (get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+      + +                if (get_location_light_range(x, y) != 0 && is_lev_lamplit(x, y) == TRUE)
+    [unrelated] @@ -1921,7 +1921,7 @@ maybe_get_replaced_glyph(
+      - -            if (isok(x, y) && levl[x][y].decoration_typ > 0 && get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+      + +            if (isok(x, y) && levl[x][y].decoration_typ > 0 && get_location_light_range(x, y) != 0 && is_lev_lamplit(x, y) == TRUE)
+File: src/apply.c
+  Total hunks: 76, Unrelated hunks: 2
+    [unrelated] @@ -2914,7 +2914,7 @@ check_jump(genericptr arg, int x, int y)
+      - -                || ((traj & jHorz) != 0) == (lev->horizontal != 0)))
+      + +                || ((traj & jHorz) != 0) == (is_rm_horizontal(lev) != 0)))
+    [unrelated] @@ -2988,7 +2988,7 @@ is_valid_jump_pos(int x, int y, int magic, boolean showmsg)
+      - -                || ((traj & jHorz) != 0) == (lev->horizontal != 0))) {
+      + +                || ((traj & jHorz) != 0) == (is_rm_horizontal(lev) != 0))) {
+File: src/cmd.c
+  Total hunks: 33, Unrelated hunks: 4
+    [unrelated] @@ -10309,7 +10309,7 @@ dolight(void)
+      - -        if (levl[u.ux][u.uy].lamplit == 0)
+      + +        if (is_lev_lamplit(u.ux, u.uy) == 0)
+    [unrelated] @@ -10339,7 +10339,7 @@ dolight(void)
+      - -                levl[u.ux][u.uy].lamplit = FALSE;
+      + +                set_lev_lamplit(u.ux, u.uy, FALSE);
+    [unrelated] @@ -10423,7 +10423,7 @@ dolight(void)
+      - -        if (levl[cc.x][cc.y].lamplit == 0)
+      + +        if (is_lev_lamplit(cc.x, cc.y) == 0)
+    [unrelated] @@ -10434,7 +10434,7 @@ dolight(void)
+      - -            levl[cc.x][cc.y].lamplit = FALSE;
+      + +            set_lev_lamplit(cc.x, cc.y, FALSE);
+File: src/detect.c
+  Total hunks: 25, Unrelated hunks: 9
+    [unrelated] @@ -1532,7 +1529,7 @@ show_map_spot(int x, int y)
+      - -    if (level.flags.hero_memory)
+      + +    if (is_hero_memory())
+    [unrelated] @@ -1555,7 +1552,7 @@ show_map_spot(int x, int y)
+      - -            if (level.flags.hero_memory)
+      + +            if (is_hero_memory())
+    [unrelated] @@ -1585,7 +1582,7 @@ do_mapping(void)
+      - -    if (!level.flags.hero_memory || unconstrained) {
+      + +    if (!is_hero_memory() || unconstrained) {
+    [unrelated] @@ -1679,7 +1676,7 @@ do_vicinity_map(struct obj *sobj)
+      - -                if ((unconstrained || !level.flags.hero_memory)
+      + +                if ((unconstrained || !is_hero_memory())
+    [unrelated] @@ -1692,7 +1689,7 @@ do_vicinity_map(struct obj *sobj)
+      - -    if (sobj && (!level.flags.hero_memory || unconstrained || mdetected || odetected))
+      + +    if (sobj && (!is_hero_memory() || unconstrained || mdetected || odetected))
+    [unrelated] @@ -1753,7 +1750,7 @@ cvt_sdoor_to_door_with_animation(int x, int y)
+      - -        play_special_effect_with_details_at(0, x, y, levl[x][y].horizontal ? cmap_to_glyph(S_hcdoor) : cmap_to_glyph(S_vcdoor), LAYER_BACKGROUND_EFFECT, -1, 20, 0, 0, FALSE);
+      + +        play_special_effect_with_details_at(0, x, y, is_lev_horizontal(x, y) ? cmap_to_glyph(S_hcdoor) : cmap_to_glyph(S_vcdoor), LAYER_BACKGROUND_EFFECT, -1, 20, 0, 0, FALSE);
+    [unrelated] @@ -2230,7 +2227,7 @@ sokoban_detect(void)
+      - -            levl[x][y].waslit = TRUE;
+      + +            set_lev_waslit(x, y, TRUE);
+    [unrelated] @@ -2260,7 +2257,7 @@ reveal_terrain_getglyph(int x, int y, int full, boolean swallowed, int default_g
+      - -    seenv = (full || level.flags.hero_memory)
+      + +    seenv = (full || is_hero_memory())
+    [unrelated] @@ -2270,7 +2267,7 @@ reveal_terrain_getglyph(int x, int y, int full, boolean swallowed, int default_g
+      - -        levl_glyph = level.flags.hero_memory
+      + +        levl_glyph = is_hero_memory()
+File: src/dig.c
+  Total hunks: 18, Unrelated hunks: 3
+    [unrelated] @@ -33,11 +33,11 @@ rm_waslit(void)
+      - -    if (IS_FLOOR(levl[u.ux][u.uy].typ) && levl[u.ux][u.uy].waslit)
+      - -            if (isok(x, y) && levl[x][y].waslit)
+      + +    if (IS_FLOOR(levl[u.ux][u.uy].typ) && is_lev_waslit(u.ux, u.uy))
+      + +            if (isok(x, y) && is_lev_waslit(x, y))
+    [unrelated] @@ -83,10 +83,10 @@ mkcavepos(xchar x, xchar y, int dist, boolean waslit, boolean rockit)
+      - -        lev->lit = (rockit ? FALSE : TRUE);
+      - -        lev->waslit = (rockit ? FALSE : TRUE);
+      - -    //lev->horizontal = FALSE;
+      + +        set_rm_lit(lev, (rockit ? FALSE : TRUE));
+      + +        set_rm_waslit(lev, (rockit ? FALSE : TRUE));
+      + +    //set_rm_horizontal(lev, FALSE);
+    [unrelated] @@ -141,7 +141,7 @@ mkcavearea(boolean rockit)
+      - -            levl[u.ux][u.uy].waslit = TRUE;
+      + +            set_lev_waslit(u.ux, u.uy, TRUE);
+File: src/display.c
+  Total hunks: 37, Unrelated hunks: 21
+    [unrelated] @@ -184,8 +184,7 @@ void
+      - -    struct rm* lev = &levl[x][y];
+      - -    lev->waslit = lev->lit;
+      + +    set_rm_waslit(lev, is_rm_lit(lev));
+    [unrelated] @@ -268,7 +267,7 @@ map_background(xchar x, xchar y, int show)
+      - -    if (level.flags.hero_memory)
+      + +    if (is_hero_memory())
+    [unrelated] @@ -450,7 +449,7 @@ map_object_core(struct obj *obj, int show, boolean chain_check, boolean add_dete
+      - -    if (level.flags.hero_memory)
+      + +    if (is_hero_memory())
+    [unrelated] @@ -537,7 +536,7 @@ void
+      - -        if (level.flags.hero_memory)
+      + +        if (is_hero_memory())
+    [unrelated] @@ -613,15 +612,15 @@ unmap_object(int x, int y)
+      - -    if (!level.flags.hero_memory)
+      - -    boolean waslit = levl[x][y].waslit;
+      - -        levl[x][y].waslit = waslit;
+      + +    if (!is_hero_memory())
+      + +    boolean waslit = is_lev_waslit(x, y);
+      + +        set_lev_waslit(x, y, waslit);
+    [unrelated] @@ -668,7 +667,7 @@ map_location(int x, int y, int show)
+      - -    else if (level.flags.hero_memory)
+      + +    else if (is_hero_memory())
+    [unrelated] @@ -774,7 +773,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
+      - -            if (level.flags.hero_memory)
+      + +            if (is_hero_memory())
+    [unrelated] @@ -813,7 +812,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
+      - -            if (level.flags.hero_memory)
+      + +            if (is_hero_memory())
+    [unrelated] @@ -1156,7 +1155,7 @@ clear_hero_memory_at(int x, int y)
+      - -    levl[x][y].waslit = 0;
+      + +    set_lev_waslit(x, y, 0);
+    [unrelated] @@ -1411,7 +1410,7 @@ newsym_with_extra_info_and_flags(int x, int y, uint64_t disp_flags, uint64_t dis
+      - -                if (level.flags.hero_memory)
+      + +                if (is_hero_memory())
+    [unrelated] @@ -3538,7 +3537,7 @@ back_to_glyph(xchar x, xchar y)
+      - -        idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKROOMSYM: */ S_room;
+      + +        idx = /*(!is_rm_waslit(ptr) || flags.dark_room) && !cansee(x, y) ? DARKROOMSYM: */ S_room;
+    [unrelated] @@ -3549,7 +3548,7 @@ back_to_glyph(xchar x, xchar y)
+      - -        idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKGRASSSYM :*/ S_grass;
+      + +        idx = /*(!is_rm_waslit(ptr) || flags.dark_room) && !cansee(x, y) ? DARKGRASSSYM :*/ S_grass;
+    [unrelated] @@ -3567,7 +3566,7 @@ back_to_glyph(xchar x, xchar y)
+      - -        idx = /* (ptr->waslit || flags.lit_corridor) ? */ S_litcorr /* : S_corr */;
+      + +        idx = /* (is_rm_waslit(ptr) || flags.lit_corridor) ? */ S_litcorr /* : S_corr */;
+    [unrelated] @@ -3646,13 +3645,13 @@ back_to_glyph(xchar x, xchar y)
+      - -                sym_idx = (ptr->horizontal) ? S_hbdoor : S_vbdoor;
+      - -                sym_idx = (ptr->horizontal) ? S_hodoor : S_vodoor;
+      - -                sym_idx = (ptr->horizontal) ? S_hoportcullis : S_voportcullis;
+      + +                sym_idx = is_rm_horizontal(ptr) ? S_hbdoor : S_vbdoor;
+      + +                sym_idx = is_rm_horizontal(ptr) ? S_hodoor : S_vodoor;
+      + +                sym_idx = is_rm_horizontal(ptr) ? S_hoportcullis : S_voportcullis;
+      ...
+    [unrelated] @@ -3796,7 +3795,7 @@ back_to_glyph(xchar x, xchar y)
+      - -        idx = (ptr->horizontal) ? S_hcdbridge : S_vcdbridge;
+      + +        idx = is_rm_horizontal(ptr) ? S_hcdbridge : S_vcdbridge;
+    [unrelated] @@ -3820,7 +3819,7 @@ back_to_glyph(xchar x, xchar y)
+      - -        idx = (ptr->horizontal) ? S_hodbridge : S_vodbridge;
+      + +        idx = is_rm_horizontal(ptr) ? S_hodbridge : S_vodbridge;
+    [unrelated] @@ -4345,10 +4344,10 @@ get_floor_layer_glyph(xchar x, xchar y)
+      - -        idx = /* ptr->waslit ? */ S_room /* : DARKROOMSYM */;
+      - -        idx = /* ptr->waslit ? */ S_grass /*: DARKGRASSSYM */;
+      + +        idx = /* is_rm_waslit(ptr) ? */ S_room /* : DARKROOMSYM */;
+      + +        idx = /* is_rm_waslit(ptr) ? */ S_grass /*: DARKGRASSSYM */;
+    [unrelated] @@ -4359,7 +4358,7 @@ get_floor_layer_glyph(xchar x, xchar y)
+      - -        idx = /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/;
+      + +        idx = /* is_rm_waslit(ptr) ? */ S_room /*: DARKROOMSYM*/;
+    [unrelated] @@ -4374,18 +4373,18 @@ get_floor_layer_glyph(xchar x, xchar y)
+      - -            idx = S_ground; // /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/;
+      - -            idx = /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/; /* something is better than nothing */
+      - -        idx =/*  ptr->waslit ? */ S_room /* : DARKROOMSYM */;
+      + +            idx = S_ground; // /* is_rm_waslit(ptr) ? */ S_room /*: DARKROOMSYM*/;
+      + +            idx = /* is_rm_waslit(ptr) ? */ S_room /*: DARKROOMSYM*/; /* something is better than nothing */
+      + +        idx =/*  is_rm_waslit(ptr) ? */ S_room /* : DARKROOMSYM */;
+    [unrelated] @@ -4662,7 +4661,7 @@ set_wall_state(void)
+      - -                wmode = set_wall(x, y, (int) lev->horizontal);
+      + +                wmode = set_wall(x, y, (int) is_rm_horizontal(lev));
+    [unrelated] @@ -4969,7 +4968,7 @@ wall_angle(struct rm *lev)
+      - -        if (lev->horizontal)
+      + +        if (is_rm_horizontal(lev))
+File: src/do_name.c
+  Total hunks: 19, Unrelated hunks: 1
+    [unrelated] @@ -1032,7 +1032,7 @@ getpos(coord *ccp, boolean force, const char *goal, enum game_cursor_types curso
+      - -                                if (level.flags.hero_memory
+      + +                                if (is_hero_memory()
+File: src/dogmove.c
+  Total hunks: 39, Unrelated hunks: 2
+    [unrelated] @@ -1495,7 +1495,7 @@ dog_goal(struct monst *mtmp, struct edog *edog, int after, int udist, int whappr
+      - -                           && (!levl[omx][omy].lit || levl[u.ux][u.uy].lit)
+      + +                           && (!is_lev_lit(omx, omy) || is_lev_lit(u.ux, u.uy))
+    [unrelated] @@ -2357,7 +2357,7 @@ newdogpos:
+      - -                struct obj *o = (!Hallucination && level.flags.hero_memory
+      + +                struct obj *o = (!Hallucination && is_hero_memory()
+File: src/invent.c
+  Total hunks: 61, Unrelated hunks: 2
+    [unrelated] @@ -6307,7 +6313,7 @@ dfeature_at(int x, int y)
+      - -        Sprintf(altbuf, "%s%s", lev->lamplit ? "lit " : "unlit ",
+      + +        Sprintf(altbuf, "%s%s", is_rm_lamplit(lev) ? "lit " : "unlit ",
+    [unrelated] @@ -6699,7 +6705,7 @@ print_things_here_to_window(void)
+      - -        if (lev->lamplit)
+      + +        if (is_rm_lamplit(lev))
+File: src/light.c
+  Total hunks: 5, Unrelated hunks: 1
+    [unrelated] @@ -655,10 +655,10 @@ snuff_light_source(int x, int y)
+      - -            if (levl[x][y].lamplit)
+      - -                levl[x][y].lamplit = 0;
+      + +            if (is_lev_lamplit(x, y))
+      + +                set_lev_lamplit(x, y, 0);
+File: src/mklev.c
+  Total hunks: 32, Unrelated hunks: 5
+    [unrelated] @@ -128,8 +128,10 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
+      - -            for (y = lowy - 1; y <= hiy + 1; y++)
+      - -                lev++->lit = 1;
+      + +             for (y = lowy - 1; y <= hiy + 1; y++) {
+      + +                 set_rm_lit(lev, 1);
+      + +                 lev++;
+      ...
+    [unrelated] @@ -1004,7 +1005,7 @@ makeniche(int trap_type)
+      - -                        if (levl[xx][yy].horizontal && isok(xx, yy - 1) && IS_FLOOR(levl[xx][yy - 1].typ))
+      + +                         if (is_lev_horizontal(xx, yy) && isok(xx, yy - 1) && IS_FLOOR(levl[xx][yy - 1].typ))
+    [unrelated] @@ -2790,9 +2790,9 @@ mkinvpos(xchar x, xchar y, int dist)
+      - -        lev->lit = TRUE;
+      - -    lev->waslit = TRUE;
+      - -    lev->horizontal = FALSE;
+      + +        set_rm_lit(lev, TRUE);
+      + +    set_rm_waslit(lev, TRUE);
+      + +    set_rm_horizontal(lev, FALSE);
+    [unrelated] @@ -2909,7 +2909,7 @@ create_level_light_sources(void)
+      - -                levl[x][y].lamplit = TRUE;
+      + +                set_lev_lamplit(x, y, TRUE);
+    [unrelated] @@ -2928,7 +2928,7 @@ maybe_create_location_light_source(xchar x, xchar y)
+      - -        levl[x][y].lamplit = TRUE;
+      + +        set_lev_lamplit(x, y, TRUE);
+File: src/mkmap.c
+  Total hunks: 5, Unrelated hunks: 3
+    [unrelated] @@ -221,7 +221,7 @@ flood_fill_rm(int sx, int sy, int rmno, boolean lit, boolean anyroom)
+      - -        levl[i][sy].lit = lit;
+      + +        set_lev_lit(i, sy, lit);
+    [unrelated] @@ -433,7 +433,7 @@ finish_map(lev_init *init_lev)
+      - -                    levl[i][j].lit = TRUE;
+      + +                    set_lev_lit(i, j, TRUE);
+    [unrelated] @@ -443,7 +443,7 @@ finish_map(lev_init *init_lev)
+      - -                levl[i][j].lit = TRUE;
+      + +                set_lev_lit(i, j, TRUE);
+File: src/mkmaze.c
+  Total hunks: 16, Unrelated hunks: 2
+    [unrelated] @@ -478,7 +478,7 @@ fixup_special(void)
+      - -        level.flags.hero_memory = 0;
+      + +        set_hero_memory(0);
+    [unrelated] @@ -1983,12 +1977,12 @@ mv_bubble(struct bubble *b, int dx, int dy, boolean ini)
+      - -                    levl[x][y].lit = 1;
+      - -                    levl[x][y].lit = 1;
+      + +                    set_lev_lit(x, y, 1);
+      + +                    set_lev_lit(x, y, 1);
+File: src/mkroom.c
+  Total hunks: 22, Unrelated hunks: 4
+    [unrelated] @@ -246,7 +246,7 @@ gottype:
+      - -                levl[x][y].lit = 1;
+      + +                set_lev_lit(x, y, 1);
+    [unrelated] @@ -354,7 +354,7 @@ mkdesertedshop(void)
+      - -                levl[x][y].lit = 0;
+      + +                set_lev_lit(x, y, 0);
+    [unrelated] @@ -2049,7 +2049,7 @@ mksmithy(void)
+      - -                levl[x][y].lit = 1;
+      + +                set_lev_lit(x, y, 1);
+    [unrelated] @@ -2191,7 +2191,7 @@ mknpcroom(int npctyp)
+      - -                    levl[x][y].lit = 1;
+      + +                    set_lev_lit(x, y, 1);
+File: src/monmove.c
+  Total hunks: 32, Unrelated hunks: 1
+    [unrelated] @@ -1522,13 +1522,13 @@ m_move(struct monst *mtmp, int after)
+      - -                              && (levl[gx][gy].lit || !levl[omx][omy].lit)
+      - -            || (is_peaceful(mtmp) && !mtmp->isshk) /* allow shks to follow */
+      + +                              && (is_lev_lit(gx, gy) || !is_lev_lit(omx, omy))
+      + +            || (is_peaceful(mtmp) && !is_mon_shk(mtmp)) /* allow shks to follow */
+File: src/pager.c
+  Total hunks: 17, Unrelated hunks: 3
+    [unrelated] @@ -106,7 +106,7 @@ mhidden_description(struct monst *mon, boolean altmon, char *outbuf)
+      - -    int glyph = !isok(x, y) ? NO_GLYPH : abs((level.flags.hero_memory && !isyou) ? levl[x][y].hero_memory_layers.glyph
+      + +    int glyph = !isok(x, y) ? NO_GLYPH : abs((is_hero_memory() && !isyou) ? levl[x][y].hero_memory_layers.glyph
+    [unrelated] @@ -782,7 +782,7 @@ lookat(int x, int y, char *buf, char *simplebuf, char *extrabuf)
+      - -                Sprintf(buf2, "%s%s", levl[x][y].lamplit ? "lit " : "unlit ", buf);
+      + +                Sprintf(buf2, "%s%s", is_lev_lamplit(x, y) ? "lit " : "unlit ", buf);
+    [unrelated] @@ -1315,7 +1315,7 @@ do_screen_description(coord cc, boolean looked, nhsym sym, char *out_str, const
+      - -                            Sprintf(buf2, "%s%s", levl[cc.x][cc.y].lamplit ? "lit " : "unlit ", decoration_buf);
+      + +                            Sprintf(buf2, "%s%s", is_lev_lamplit(cc.x, cc.y) ? "lit " : "unlit ", decoration_buf);
+File: src/read.c
+  Total hunks: 40, Unrelated hunks: 2
+    [unrelated] @@ -3687,7 +3682,7 @@ set_lit(int x, int y, genericptr_t val)
+      - -        levl[x][y].lit = 1;
+      + +        set_lev_lit(x, y, 1);
+    [unrelated] @@ -3695,7 +3690,7 @@ set_lit(int x, int y, genericptr_t val)
+      - -        levl[x][y].lit = 0;
+      + +        set_lev_lit(x, y, 0);
+File: src/sit.c
+  Total hunks: 6, Unrelated hunks: 1
+    [unrelated] @@ -190,7 +190,7 @@ dosit(void)
+      - -        if (levl[u.ux][u.uy].lamplit)
+      + +        if (is_lev_lamplit(u.ux, u.uy))
+File: src/soundset.c
+  Total hunks: 37, Unrelated hunks: 1
+    [unrelated] @@ -18638,7 +18638,7 @@ update_ambient_sounds(void)
+      - -                lit = levl[curr->id.a_coord.x][curr->id.a_coord.y].lamplit;
+      + +                lit = is_lev_lamplit(curr->id.a_coord.x, curr->id.a_coord.y);
+File: src/sp_lev.c
+  Total hunks: 33, Unrelated hunks: 7
+    [unrelated] @@ -820,7 +820,7 @@ set_door_orientation(int x, int y)
+      - -    levl[x][y].horizontal = ((wleft || wright) && !(wup && wdown)) ? 1 : 0;
+      + +    set_lev_horizontal(x, y, ((wleft || wright) && !(wup && wdown)) ? 1 : 0);
+    [unrelated] @@ -3571,7 +3569,7 @@ light_region(region *tmpregion)
+      - -                lev->lit = litstate;
+      + +                set_rm_lit(lev, litstate);
+    [unrelated] @@ -5220,11 +5218,11 @@ spo_brazier(struct sp_coder *coder)
+      - -            levl[x][y].lamplit = (unsigned int)val;
+      - -            levl[x][y].lamplit = rn2(2);
+      - -        if (!levl[x][y].lamplit)
+      + +            set_lev_lamplit(x, y, (unsigned int))val;
+      + +            set_lev_lamplit(x, y, rn2(2));
+      + +        if (!is_lev_lamplit(x, y))
+    [unrelated] @@ -5494,7 +5492,7 @@ selection_filter_mapchar(struct opvar *ov, struct opvar *mc)
+      - -                    if (levl[x][y].lit == lit)
+      + +                    if (is_lev_lit(x, y) == lit)
+    [unrelated] @@ -6016,8 +6014,8 @@ sel_set_ter(int x, int y, genericptr_t arg)
+      - -        if (x && (IS_WALL(levl[x - 1][y].typ) || levl[x - 1][y].horizontal))
+      - -            levl[x][y].horizontal = 1;
+      + +        if (x && (IS_WALL(levl[x - 1][y].typ) || is_lev_horizontal(x - 1, y)))
+      + +            set_lev_horizontal(x, y, 1);
+    [unrelated] @@ -7537,18 +7535,18 @@ spo_map(struct sp_coder *coder)
+      - -                                        || levl[x - 1][y].horizontal))
+      - -                        levl[x][y].horizontal = 1;
+      - -                    levl[x][y].horizontal = 1;
+      + +                                        || is_lev_horizontal(x - 1, y)))
+      + +                        set_lev_horizontal(x, y, 1);
+      + +                    set_lev_horizontal(x, y, 1);
+      ...
+    [unrelated] @@ -7559,7 +7557,7 @@ spo_map(struct sp_coder *coder)
+      - -                    levl[x][y].lit = 1;
+      + +                    set_lev_lit(x, y, 1);
+File: src/vault.c
+  Total hunks: 13, Unrelated hunks: 1
+    [unrelated] @@ -129,8 +129,11 @@ blackout(int x, int y)
+      - -            if (lev->typ == STONE)
+      - -                lev->lit = lev->waslit = 0;
+      + +            if (lev->typ ==STONE)
+      + +            {
+      + +                set_rm_lit(lev, 0);
+      ...
+File: src/vision.c
+  Total hunks: 4, Unrelated hunks: 3
+    [unrelated] @@ -781,7 +781,7 @@ vision_recalc(int control)
+      - -                     && (lev->lit || (next_row[col] & TEMP_LIT)) && !(next_row[col] & TEMP_MAGICAL_DARKNESS) ) 
+      + +                     && (is_rm_lit(lev) || (next_row[col] & TEMP_LIT)) && !(next_row[col] & TEMP_MAGICAL_DARKNESS) ) 
+    [unrelated] @@ -798,7 +798,7 @@ vision_recalc(int control)
+      - -                    if ((flev->lit || (next_array[row + dy][col + dx] & TEMP_LIT)) && !(next_array[row + dy][col + dx] & TEMP_MAGICAL_DARKNESS))
+      + +                    if ((is_rm_lit(flev) || (next_array[row + dy][col + dx] & TEMP_LIT)) && !(next_array[row + dy][col + dx] & TEMP_MAGICAL_DARKNESS))
+    [unrelated] @@ -827,7 +827,7 @@ vision_recalc(int control)
+      - -            else if ((next_row[col] & COULD_SEE) && lev->waslit)
+      + +            else if ((next_row[col] & COULD_SEE) && is_rm_waslit(lev))

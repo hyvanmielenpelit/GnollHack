@@ -261,31 +261,29 @@ typedef struct mapseen {
     struct mapseen_flags {
         char special_description[BUFSZ];
 
-        Bitfield(unreachable, 1); /* can't get back to this level */
-        Bitfield(forgot, 1);      /* player has forgotten about this level */
-        Bitfield(knownbones, 1);  /* player aware of bones */
-        Bitfield(oracle, 1);
-        Bitfield(sokosolved, 1);
-        Bitfield(bigroom, 1);
-        Bitfield(castle, 1);
-        Bitfield(castletune, 1); /* add tune hint to castle annotation */
-
-        Bitfield(valley, 1);
-        Bitfield(msanctum, 1);
-        Bitfield(ludios, 1);
-        Bitfield(roguelevel, 1);
-        Bitfield(special_level, 1);
-        Bitfield(special_level_true_nature_known, 1);
-        /* quest annotations: quest_summons is for main dungeon level
-           with entry portal and is reset once quest has been finished;
-           questing is for quest home (level 1) */
-        Bitfield(quest_summons, 1); /* heard summons from leader */
-        Bitfield(questing, 1); /* quest leader has unlocked quest stairs */
-        /* Hints about other special dungeons */
-        Bitfield(modron_hint_shown, 1); /* received hint for the modron level */
-        Bitfield(yacc_hint_shown, 1); /* received hint for the Hellish Pastures level */
-        Bitfield(quantum_hint_shown, 1); /* received hint for the Large Circular Dungeon level */
-        Bitfield(lost_world_hint_shown, 1); /* reserved -- received hint for the Lost World level */
+        /* Bitfield flags converted to portable explicit bitmask flags */
+        uint64_t bitflags;
+#define MAPSEEN_BITFLAGS_NONE                       0x00000000UL
+#define MAPSEEN_BITFLAGS_UNREACHABLE               0x00000001UL
+#define MAPSEEN_BITFLAGS_FORGOT                    0x00000002UL
+#define MAPSEEN_BITFLAGS_KNOWNBONES                0x00000004UL
+#define MAPSEEN_BITFLAGS_ORACLE                    0x00000008UL
+#define MAPSEEN_BITFLAGS_SOKOSOLVED                0x00000010UL
+#define MAPSEEN_BITFLAGS_BIGROOM                   0x00000020UL
+#define MAPSEEN_BITFLAGS_CASTLE                    0x00000040UL
+#define MAPSEEN_BITFLAGS_CASTLETUNE                0x00000080UL
+#define MAPSEEN_BITFLAGS_VALLEY                    0x00000100UL
+#define MAPSEEN_BITFLAGS_MSANCTUM                  0x00000200UL
+#define MAPSEEN_BITFLAGS_LUDIOS                    0x00000400UL
+#define MAPSEEN_BITFLAGS_ROGUELEVEL                0x00000800UL
+#define MAPSEEN_BITFLAGS_SPECIAL_LEVEL             0x00001000UL
+#define MAPSEEN_BITFLAGS_SPECIAL_LEVEL_TRUE_NATURE_KNOWN 0x00002000UL
+#define MAPSEEN_BITFLAGS_QUEST_SUMMONS             0x00004000UL
+#define MAPSEEN_BITFLAGS_QUESTING                  0x00008000UL
+#define MAPSEEN_BITFLAGS_MODRON_HINT_SHOWN         0x00010000UL
+#define MAPSEEN_BITFLAGS_YACC_HINT_SHOWN           0x00020000UL
+#define MAPSEEN_BITFLAGS_QUANTUM_HINT_SHOWN        0x00040000UL
+#define MAPSEEN_BITFLAGS_LOST_WORLD_HINT_SHOWN     0x00080000UL
 
         unsigned reserved;
     } flags;

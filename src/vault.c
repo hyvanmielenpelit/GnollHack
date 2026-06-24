@@ -36,7 +36,7 @@ free_egd(struct monst *mtmp)
         free((genericptr_t) EGD(mtmp));
         EGD(mtmp) = (struct egd *) 0;
     }
-    mtmp->isgd = 0;
+    set_mon_gd(mtmp, 0);
 }
 
 /* try to remove the temporary corridor (from vault to rest of map) being
@@ -72,7 +72,7 @@ clear_fcorr(struct monst *grd, boolean forceshow)
             return FALSE;
 
         if ((mtmp = m_at(fcx, fcy)) != 0) {
-            if (mtmp->isgd) {
+            if (is_mon_gd(mtmp)) {
                 return FALSE;
             } else if (!in_fcorridor(grd, u.ux, u.uy)) {
                 if (is_tame(mtmp))
@@ -129,8 +129,11 @@ blackout(int x, int y)
             /* [possible bug: when (i != x || j != y), perhaps we ought
                to check whether the spot on the far side is lit instead
                of doing a blanket blackout of adjacent locations] */
-            if (lev->typ == STONE)
-                lev->lit = lev->waslit = 0;
+            if (lev->typ ==STONE)
+            {
+                set_rm_lit(lev, 0);
+                set_rm_waslit(lev, 0);
+            }
             /* mark <i,j> as not having been seen from <x,y> */
             unset_seenv(lev, x, y, i, j);
         }
@@ -203,7 +206,7 @@ findgd(void)
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (mtmp->isgd && on_level(&(EGD(mtmp)->gdlevel), &u.uz))
+        if (is_mon_gd(mtmp) && on_level(&(EGD(mtmp)->gdlevel), &u.uz))
             return mtmp;
     }
     return (struct monst *) 0;
@@ -232,7 +235,7 @@ void
 uleftvault(struct monst *grd)
 {
     /* only called if caller has checked vault_occupied() and findgd() */
-    if (!grd || !grd->isgd || DEADMONSTER(grd)) {
+    if (!grd || !is_mon_gd(grd) || DEADMONSTER(grd)) {
         impossible("escaping vault without guard?");
         return;
     }
@@ -240,10 +243,10 @@ uleftvault(struct monst *grd)
        set the guard loose */
     if ((money_cnt(invent) || hidden_gold())
         && um_dist(grd->mx, grd->my, 1)) {
-        if (is_peaceful(grd)) {
+        if (is_mon_peaceful(grd)) {
             if (canspotmon(grd)) /* see or sense via telepathy */
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s becomes irate.", Monnam(grd));
-            grd->mpeaceful = 0; /* bypass setmangry() */
+            set_mon_peaceful(grd, 0); /* bypass setmangry() */
         }
         /* if arriving outside guard's temporary corridor, give the
            guard an extra move to deliver message(s) and to teleport
@@ -268,7 +271,7 @@ find_guard_dest(struct monst *guard, xchar *rx, xchar *ry)
                 if (x < 1 || x > COLNO - 1)
                     continue;
                 if (guard && ((x == guard->mx && y == guard->my)
-                              || (guard->isgd && in_fcorridor(guard, x, y))))
+                              || (is_mon_gd(guard) && in_fcorridor(guard, x, y))))
                     continue;
                 if (levl[x][y].typ == CORR) {
                     lx = (x < u.ux) ? x + 1 : (x > u.ux) ? x - 1 : x;
@@ -373,8 +376,8 @@ invault(void)
         /* make something interesting happen */
         if (!(guard = makemon(&mons[PM_GUARD], x, y, MM_EGD)))
             return;
-        guard->isgd = 1;
-        guard->mpeaceful = 1;
+        set_mon_gd(guard, 1);
+        set_mon_peaceful(guard, 1);
         set_mhostility(guard);
         EGD(guard)->gddone = 0;
         EGD(guard)->ogx = x;
@@ -850,7 +853,7 @@ gd_move(struct monst *grd)
                 (egrd->witness& GD_EATGOLD) ? "consume" : "destroy");
         }
         egrd->witness = 0;
-        grd->mpeaceful = 0;
+        set_mon_peaceful(grd, 0);
         return -1;
     }
 
@@ -884,7 +887,7 @@ gd_move(struct monst *grd)
                 mnexto(grd);
                 transform_location_type(m, n, egrd->fakecorr[0].ftyp, 0);
                 newsym(m, n);
-                grd->mpeaceful = 0;
+                set_mon_peaceful(grd, 0);
                 return -1;
             }
             /* not fair to get mad when (s)he's fainted or paralyzed */
@@ -902,7 +905,7 @@ gd_move(struct monst *grd)
                 (void) rloc(grd, TRUE);
                 transform_location_type(m, n, egrd->fakecorr[0].ftyp, 0);
                 newsym(m, n);
-                grd->mpeaceful = 0;
+                set_mon_peaceful(grd, 0);
  letknow:
                 if (!cansee(grd->mx, grd->my) || !mon_visible(grd))
                 {
@@ -988,7 +991,7 @@ gd_move(struct monst *grd)
                     play_monster_special_dialogue_line(grd, VAULT_GUARD_LINE_SO_BE_IT_ROGUE);
                     verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "So be it, rogue!");
                 }
-                grd->mpeaceful = 0;
+                set_mon_peaceful(grd, 0);
                 return -1;
             }
         }
@@ -1176,8 +1179,8 @@ gd_move(struct monst *grd)
         wallify_vault(grd);
         restfakecorr(grd);
         debugpline2("gd_move: %scleanup%s",
-                    grd->isgd ? "" : "final ",
-                    grd->isgd ? " attempt" : "");
+                    is_mon_gd(grd) ? "" : "final ",
+                    is_mon_gd(grd) ? " attempt" : "");
         if (!semi_dead && (in_fcorridor(grd, u.ux, u.uy) || cansee(x, y))) 
         {
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, x, y);

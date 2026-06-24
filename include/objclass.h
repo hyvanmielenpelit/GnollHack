@@ -355,26 +355,26 @@ struct material_definition {
     enum material_phase phase;
     enum hit_surface_types hit_surface_mapping;
     enum floor_surface_types floor_surface_mapping;
-    Bitfield(flammable, 1);
-    Bitfield(rustprone, 1);
-    Bitfield(corrodeable, 1);
-    Bitfield(rottable, 1);
-
-    Bitfield(melts_in_fire, 1);        /* Solids melt, liquids boil */
-    Bitfield(death_enchantable, 1);
-    Bitfield(flimsy, 1);
-    Bitfield(metallic, 1);
-    Bitfield(mineral, 1);
-
-    Bitfield(gemstone, 1);
-    Bitfield(organic, 1);
-    Bitfield(edible, 1);
-    Bitfield(slurpable, 1);
-
-    Bitfield(fragile, 1);
-    Bitfield(destroyed_in_lava, 1);
-    Bitfield(wishable, 1);
-    Bitfield(scratchable, 1);
+    /* Bitfield flags converted to portable explicit bitmask flags */
+    uint64_t material_bitflags;
+#define MATERIAL_BITFLAGS_NONE               0x00000000UL
+#define MATERIAL_BITFLAGS_FLAMMABLE          0x00000001UL
+#define MATERIAL_BITFLAGS_RUSTPRONE          0x00000002UL
+#define MATERIAL_BITFLAGS_CORRODEABLE        0x00000004UL
+#define MATERIAL_BITFLAGS_ROTTABLE           0x00000008UL
+#define MATERIAL_BITFLAGS_MELTS_IN_FIRE      0x00000010UL
+#define MATERIAL_BITFLAGS_DEATH_ENCHANTABLE  0x00000020UL
+#define MATERIAL_BITFLAGS_FLIMSY             0x00000040UL
+#define MATERIAL_BITFLAGS_METALLIC           0x00000080UL
+#define MATERIAL_BITFLAGS_MINERAL            0x00000100UL
+#define MATERIAL_BITFLAGS_GEMSTONE           0x00000200UL
+#define MATERIAL_BITFLAGS_ORGANIC            0x00000400UL
+#define MATERIAL_BITFLAGS_EDIBLE             0x00000800UL
+#define MATERIAL_BITFLAGS_SLURPABLE          0x00001000UL
+#define MATERIAL_BITFLAGS_FRAGILE            0x00002000UL
+#define MATERIAL_BITFLAGS_DESTROYED_IN_LAVA  0x00004000UL
+#define MATERIAL_BITFLAGS_WISHABLE           0x00008000UL
+#define MATERIAL_BITFLAGS_SCRATCHABLE        0x00010000UL
 
     const char* foodword;
     const char* streakword;
@@ -467,13 +467,13 @@ struct objclass {
     uchar oc_material_init_type;
     uchar oc_material; /* one of obj_material_types */
 
-#define is_organic(otmp) (material_definitions[(otmp)->material].organic != 0) //(objects[otmp->otyp].oc_material <= MAT_WOOD)
-#define is_slurpable(otmp) (material_definitions[(otmp)->material].slurpable != 0)
-#define melts_in_lava(otmp) (material_definitions[(otmp)->material].destroyed_in_lava != 0)
-#define is_metallic(otmp)  (material_definitions[(otmp)->material].metallic != 0) 
-#define is_material_flimsy(otmp)  (material_definitions[(otmp)->material].flimsy != 0) 
-#define is_fragile(otmp)  (material_definitions[(otmp)->material].fragile != 0) 
-#define is_obj_stony(otmp)  (material_definitions[(otmp)->material].mineral != 0) 
+#define is_organic(otmp) get_flag(material_definitions[(otmp)->material].material_bitflags, MATERIAL_BITFLAGS_ORGANIC)
+#define is_slurpable(otmp) get_flag(material_definitions[(otmp)->material].material_bitflags, MATERIAL_BITFLAGS_SLURPABLE)
+#define melts_in_lava(otmp) get_flag(material_definitions[(otmp)->material].material_bitflags, MATERIAL_BITFLAGS_DESTROYED_IN_LAVA)
+#define is_metallic(otmp)  get_flag(material_definitions[(otmp)->material].material_bitflags, MATERIAL_BITFLAGS_METALLIC)
+#define is_material_flimsy(otmp)  get_flag(material_definitions[(otmp)->material].material_bitflags, MATERIAL_BITFLAGS_FLIMSY)
+#define is_fragile(otmp)  get_flag(material_definitions[(otmp)->material].material_bitflags, MATERIAL_BITFLAGS_FRAGILE)
+#define is_obj_stony(otmp)  get_flag(material_definitions[(otmp)->material].material_bitflags, MATERIAL_BITFLAGS_MINERAL)
 #define is_obj_gas(otmp)  (material_definitions[(otmp)->material].phase == PHASE_GAS) 
 #define is_obj_liquid(otmp)  (material_definitions[(otmp)->material].phase == PHASE_LIQUID) 
 #define is_obj_energy(otmp)  (material_definitions[(otmp)->material].phase == PHASE_ENERGY) 
@@ -488,11 +488,11 @@ struct objclass {
 
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
-#define is_rustprone(otmp) ((material_definitions[(otmp)->material].rustprone != 0) && !(get_obj_oc_flags(otmp) & O1_RUST_RESISTANT))
+#define is_rustprone(otmp) (get_flag(material_definitions[(otmp)->material].material_bitflags, MATERIAL_BITFLAGS_RUSTPRONE) && !(get_obj_oc_flags(otmp) & O1_RUST_RESISTANT))
 
 /* secondary damage: rot/acid/acid */
 #define is_corrodeable(otmp)                   \
-    ((material_definitions[(otmp)->material].corrodeable != 0) && !(get_obj_oc_flags(otmp) & O1_CORROSION_RESISTANT))
+    (get_flag(material_definitions[(otmp)->material].material_bitflags, MATERIAL_BITFLAGS_CORRODEABLE) && !(get_obj_oc_flags(otmp) & O1_CORROSION_RESISTANT))
 
 #define is_damageable(otmp)                                        \
     (is_rustprone(otmp) || is_flammable(otmp) || is_rottable(otmp) \

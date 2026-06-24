@@ -322,7 +322,7 @@ use_camera(struct obj *obj)
     play_sfx_sound(SFX_CAMERA_CLICK);
     u_wait_until_action();
 
-    if (obj->cursed && !rn2(2)) 
+    if (is_obj_cursed(obj) && !rn2(2)) 
     {
         Your_ex(ATR_NONE, CLR_MSG_FAIL, "camera slips and you take a picture of yourself.");
         (void) zapyourself(obj, TRUE);
@@ -363,9 +363,9 @@ use_camera(struct obj *obj)
             {
                 context.role_score += TOURIST_SELFIE_PER_LEVEL_SCORE * (mons[mtmp->mnum].difficulty + 1);
                 pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, "That turned out to be extraordinarily nice.");
-                if (mtmp->mnum == PM_DEMOGORGON && !u.uachieve.role_achievement)
+                if (mtmp->mnum == PM_DEMOGORGON && !get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT))
                 {
-                    u.uachieve.role_achievement = 1;
+                    set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT, 1);
                     achievement_gained("Took a Selfie with Demogorgon");
                     livelog_printf(LL_ACHIEVE, "%s", "took a selfie with Demogorgon");
                 }
@@ -418,7 +418,7 @@ use_towel(struct obj *obj)
         You("cannot use it while you're wearing it!");
         return 0;
     } 
-    else if (obj->cursed) 
+    else if (is_obj_cursed(obj)) 
     {
         int64_t old;
 
@@ -709,7 +709,7 @@ use_stethoscope(struct obj *obj)
         else
             pline_The("%s seems healthy enough.", surface(u.ux, u.uy));
         return res;
-    } else if (obj->cursed && !rn2(2)) {
+    } else if (is_obj_cursed(obj) && !rn2(2)) {
         You_hear("your heart beat.");
         return res;
     }
@@ -732,13 +732,13 @@ use_stethoscope(struct obj *obj)
         bhitpos.x = rx, bhitpos.y = ry;
         notonhead = (mtmp->mx != rx || mtmp->my != ry);
 
-        if (mtmp->mundetected) {
+        if (is_mon_undetected(mtmp)) {
             if (!canspotmon(mtmp))
             {
                 play_sfx_sound(SFX_WAS_HIDING);
                 There("is %s hidden there.", mnm);
             }
-            mtmp->mundetected = 0;
+            set_mon_undetected(mtmp, 0);
             newsym(mtmp->mx, mtmp->my);
         } else if (mtmp->mappearance) {
             const char *what = "thing";
@@ -748,7 +748,7 @@ use_stethoscope(struct obj *obj)
                 what = simple_typename(mtmp->mappearance);
                 break;
             case M_AP_MONSTER: /* ignore Hallucination here */
-                what = pm_monster_name(&mons[mtmp->mappearance], mtmp->female);
+                what = pm_monster_name(&mons[mtmp->mappearance], is_mon_female(mtmp));
                 break;
             case M_AP_FURNITURE:
                 what = defsyms[mtmp->mappearance].explanation;
@@ -814,7 +814,7 @@ use_whistle(struct obj *obj)
             You_feel("rushing air tickle your %s.",
                         body_part(NOSE));
         else if(obj)
-            You(whistle_str, obj->cursed ? "shrill" : "high");
+            You(whistle_str, is_obj_cursed(obj) ? "shrill" : "high");
 
         play_sfx_sound(obj->cursed ? SFX_CURSED_WHISTLE : SFX_WHISTLE);
 
@@ -832,7 +832,7 @@ use_whistle(struct obj *obj)
             }
         }
 
-        if (obj->cursed)
+        if (is_obj_cursed(obj))
             vault_summon_gd();
     }
 }
@@ -847,7 +847,7 @@ use_magic_whistle(struct obj *obj)
     {
         You_ex(ATR_NONE, CLR_MSG_FAIL, "are incapable of using the whistle.");
     } 
-    else if (obj && obj->cursed && !rn2(2)) 
+    else if (obj && is_obj_cursed(obj) && !rn2(2)) 
     {
         play_sfx_sound(SFX_CURSED_MAGIC_WHISTLE);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "produce a %shigh-pitched humming noise.",
@@ -883,10 +883,10 @@ use_magic_whistle(struct obj *obj)
                 continue;
             if (is_tame(mtmp)) 
             {
-                if (mtmp->mtrapped) 
+                if (is_mon_trapped(mtmp)) 
                 {
                     /* no longer in previous trap (affects mintrap) */
-                    mtmp->mtrapped = 0;
+                    set_mon_trapped(mtmp, 0);
                     fill_pit(mtmp->mx, mtmp->my);
                 }
                 /* mimic must be revealed before we know whether it
@@ -947,7 +947,7 @@ o_unleash(struct obj *otmp)
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         if (mtmp->m_id == (unsigned) otmp->leashmon)
-            mtmp->mleashed = 0;
+            set_mon_leashed(mtmp, 0);
     otmp->leashmon = 0;
 }
 
@@ -969,7 +969,7 @@ m_unleash(struct monst *mtmp, boolean feedback)
     for (otmp = invent; otmp; otmp = otmp->nobj)
         if (otmp->otyp == LEASH && otmp->leashmon == (int) mtmp->m_id)
             otmp->leashmon = 0;
-    mtmp->mleashed = 0;
+    set_mon_leashed(mtmp, 0);
 }
 
 /* player is about to die (for bones) */
@@ -983,7 +983,7 @@ unleash_all(void)
         if (otmp->otyp == LEASH)
             otmp->leashmon = 0;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
-        mtmp->mleashed = 0;
+        set_mon_leashed(mtmp, 0);
 }
 
 /* TODO:
@@ -1077,7 +1077,7 @@ use_leash(struct obj *obj)
     else if (!obj->leashmon) 
     {
         /* applying a leash which isn't currently in use */
-        if (mtmp->mleashed)
+        if (is_mon_leashed(mtmp))
         {
             play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "This %s is already leashed.",
@@ -1094,9 +1094,9 @@ use_leash(struct obj *obj)
             play_sfx_sound(SFX_PUT_ON_LEASH);
             You("slip the leash around %s%s.", spotmon ? "your " : "",
                 l_monnam(mtmp));
-            mtmp->mleashed = 1;
+            set_mon_leashed(mtmp, 1);
             obj->leashmon = (int) mtmp->m_id;
-            mtmp->msleeping = 0;
+            set_mon_sleeping(mtmp, 0);
             refresh_m_tile_gui_info(mtmp, TRUE);
         }
     }
@@ -1108,19 +1108,19 @@ use_leash(struct obj *obj)
             play_sfx_sound(SFX_GENERAL_CANNOT);
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "This leash is not attached to that creature.");
         }
-        else if (obj->cursed) 
+        else if (is_obj_cursed(obj)) 
         {
             play_sfx_sound(SFX_GENERAL_WELDED);
             pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "leash would not come off!");
-            if (!obj->bknown)
+            if (!is_obj_bknown(obj))
             {
-                obj->bknown = TRUE;
+                set_obj_bknown(obj, TRUE);
                 update_inventory();
             }
         }
         else
         {
-            mtmp->mleashed = 0;
+            set_mon_leashed(mtmp, 0);
             obj->leashmon = 0;
             play_sfx_sound(SFX_REMOVE_LEASH);
             You("remove the leash from %s%s.",
@@ -1154,20 +1154,20 @@ next_to_u(void)
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (mtmp->mleashed) {
+        if (is_mon_leashed(mtmp)) {
             if (distu(mtmp->mx, mtmp->my) > 2)
                 mnexto(mtmp);
             if (distu(mtmp->mx, mtmp->my) > 2) {
                 for (otmp = invent; otmp; otmp = otmp->nobj)
                     if (otmp->otyp == LEASH
                         && otmp->leashmon == (int) mtmp->m_id) {
-                        if (otmp->cursed)
+                        if (is_obj_cursed(otmp))
                             return FALSE;
 
                         play_sfx_sound(SFX_LEASH_GOES_SLACK);
                         You_feel("%s leash go slack.",
                                  (number_leashed() > 1) ? "a" : "the");
-                        mtmp->mleashed = 0;
+                        set_mon_leashed(mtmp, 0);
                         otmp->leashmon = 0;
                     }
             }
@@ -1209,7 +1209,7 @@ check_leash(xchar x, xchar y)
             {
                 ; /* still close enough */
             } 
-            else if (otmp->cursed && !has_innate_breathless(mtmp->data)) 
+            else if (is_obj_cursed(otmp) && !has_innate_breathless(mtmp->data)) 
             {
                 if (um_dist(mtmp->mx, mtmp->my, 5)
                     || deduct_monster_hp(mtmp, rnd(2)) <= 0) 
@@ -1234,7 +1234,7 @@ check_leash(xchar x, xchar y)
                         mtmp->mtame--;
 
                     if (!mtmp->mtame)
-                        mtmp->ispartymember = FALSE;
+                        set_mon_partymember(mtmp, FALSE);
 
                 }
             } 
@@ -1297,7 +1297,7 @@ use_mirror(struct obj *obj)
     uvisage = beautiful();
     mirror = simpleonames(obj); /* "mirror" or "looking glass" */
 
-    if (obj->cursed && !rn2(2))
+    if (is_obj_cursed(obj) && !rn2(2))
     {
         if (!Blind)
             pline_The("%s fogs up and doesn't reflect!", mirror);
@@ -1557,7 +1557,7 @@ use_holysymbol(struct obj *obj)
     play_simple_player_sound(MONSTER_SOUND_TYPE_CAST);
     You_ex(ATR_NONE, CLR_MSG_HINT, "raise %s high.", yname(obj));
     exercise(A_WIS, TRUE);
-    (void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, 0, ZAPPED_WAND, uthitm, uthito, uthitt,
+    (void)bhit(u.dx, u.dy, is_obj_blessed(obj) ? 4 : 3, 0, ZAPPED_WAND, uthitm, uthito, uthitt,
         &obj, &youmonst, TRUE, FALSE);
 
     return 1;
@@ -1592,12 +1592,12 @@ turn_undead_success_effect(struct monst *mtmp, int chance, int dmg, int duration
             if (u.ualign.type == A_CHAOTIC)
             {
                 res = TRUE;
-                mtmp->mpeaceful = 1;
+                set_mon_peaceful(mtmp, 1);
                 set_mhostility(mtmp);
 
                 /* Maybe become controlled */
                 int save_adj = 0;
-                if (mtmp->isshk)
+                if (is_mon_shk(mtmp))
                 {
                     make_happy_shk(mtmp, FALSE);
                 }
@@ -1657,12 +1657,12 @@ uthitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst UNUSED)
         context.bypasses = TRUE; /* for make_corpse() */
 
         //Check if successful, priests have +5 levels to the use of holy symbol, Demons are 5 levels more difficult to turn
-        int percentchance = (Role_if(PM_PRIEST) ? 50: 0) + (otmp->blessed ? 20 : 0) + (u.ulevel - mtmp->m_lev - (is_demon(mtmp->data) ? 5 : 0)) * 10;
+        int percentchance = (Role_if(PM_PRIEST) ? 50: 0) + (is_obj_blessed(otmp) ? 20 : 0) + (u.ulevel - mtmp->m_lev - (is_demon(mtmp->data) ? 5 : 0)) * 10;
 
         if (is_dlord(mtmp->data) || is_dprince(mtmp->data))
             percentchance = 0;
 #endif
-        int chance = 5 * (2 + u.ulevel - mtmp->m_lev + (otmp->blessed ? 4 : 0) - (is_demon(mtmp->data) ? 5 : 0) - ((mtmp->data->geno & G_UNIQ) ? 10 : 0) + ACURR(A_WIS) / 2 + min(20, u.ualign.record) / 5 + Luck / 4);
+        int chance = 5 * (2 + u.ulevel - mtmp->m_lev + (is_obj_blessed(otmp) ? 4 : 0) - (is_demon(mtmp->data) ? 5 : 0) - ((mtmp->data->geno & G_UNIQ) ? 10 : 0) + ACURR(A_WIS) / 2 + min(20, u.ualign.record) / 5 + Luck / 4);
         int dmgdice = max(0, (chance - 100) / 15);
         boolean turn_success = rn2(100) < chance;
         if (turn_success)
@@ -1675,13 +1675,13 @@ uthitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst UNUSED)
             if (!is_peaceful(mtmp)
                 && (is_undead(mtmp->data) || is_vampshifter(mtmp)
                     || (is_demon(mtmp->data) && (u.ulevel > (MAXULEV / 2))))) {
-                mtmp->msleeping = 0;
+                set_mon_sleeping(mtmp, 0);
                 if (Confusion) {
                     if (!once++)
                         pline("Unfortunately, your voice falters.");
-                    mtmp->mflee = 0;
+                    set_mon_fleeing(mtmp, 0);
                     mtmp->mfrozen = 0;
-                    mtmp->mcanmove = 1;
+                    set_mon_canmove(mtmp, 1);
                     refresh_m_tile_gui_info(mtmp, TRUE);
                 }
                 else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, u.ulevel, 0, 0, TELL)) {
@@ -1702,7 +1702,7 @@ uthitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst UNUSED)
                     case S_LESSER_UNDEAD:
                         if (u.ulevel >= xlev && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, u.ulevel, 0, 0, NOTELL)) {
                             if (u.ualign.type == A_CHAOTIC) {
-                                mtmp->mpeaceful = 1;
+                                set_mon_peaceful(mtmp, 1);
                                 set_mhostility(mtmp);
                                 newsym(mtmp->mx, mtmp->my);
                             }
@@ -1721,7 +1721,7 @@ uthitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst UNUSED)
             }
 #endif
 #if 0
-            if (!otmp->cursed)
+            if (!is_obj_cursed(otmp))
             {
                 pline("%s shines brightly before %s!", Yname2(otmp), the(mon_nam(mtmp)));
                 if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL))
@@ -1744,7 +1744,7 @@ uthitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst UNUSED)
                         if (!is_peaceful(mtmp))
                         {
                             You("successfully pacify %s.", the(mon_nam(mtmp)));
-                            mtmp->mpeaceful = 1;
+                            set_mon_peaceful(mtmp, 1);
                         }
                     }
                 }
@@ -1791,7 +1791,7 @@ uthitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst UNUSED)
         {
             wakeup(mtmp, !pacified);
             m_respond(mtmp);
-            if (mtmp->isshk && !*u.ushops)
+            if (is_mon_shk(mtmp) && !*u.ushops)
                 hot_pursuit(mtmp);
         }
         else if (M_AP_TYPE(mtmp))
@@ -1826,7 +1826,7 @@ uthito(struct obj *obj, struct obj *otmp, struct monst *origmonst)
     if (obj == otmp)
         return 0;
 
-    if (obj->bypass) {
+    if (is_obj_bypass(obj)) {
         /* The bypass bit is currently only used as follows:
          *
          * UNDEAD_TURNING - When an undead creature gets killed via
@@ -1845,7 +1845,7 @@ uthito(struct obj *obj, struct obj *otmp, struct monst *origmonst)
         }
         else {
             debugpline1("%s for a moment.", Tobjnam(obj, "pulsate"));
-            obj->bypass = 0;
+            set_obj_bypass(obj, 0);
         }
     }
 
@@ -1909,7 +1909,7 @@ use_bell(struct obj **optr)
             play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
             delay_output_milliseconds(1000);
         }
-        if (obj->cursed && !rn2(4)
+        if (is_obj_cursed(obj) && !rn2(4)
             /* note: once any of them are gone, we stop all of them */
             && !(mvitals[PM_WOOD_NYMPH].mvflags & MV_GONE)
             && !(mvitals[PM_WATER_NYMPH].mvflags & MV_GONE)
@@ -1951,13 +1951,13 @@ use_bell(struct obj **optr)
 
         if (u.uswallow) 
         {
-            if (!obj->cursed)
+            if (!is_obj_cursed(obj))
                 (void) openit();
             else
                 pline1(nothing_happens);
 
         } 
-        else if (obj->cursed)
+        else if (is_obj_cursed(obj))
         {
             play_sfx_sound(SFX_CURSED_BELL_OF_OPENING_EFFECT);
             coord mm;
@@ -1981,7 +1981,7 @@ use_bell(struct obj **optr)
             wakem = TRUE;
 
         } 
-        else if (obj->blessed) 
+        else if (is_obj_blessed(obj)) 
         {
             int res = 0;
 
@@ -2035,7 +2035,7 @@ use_bell(struct obj **optr)
     if (learno)
     {
         makeknown(BELL_OF_OPENING);
-        obj->known = 1;
+        set_obj_known(obj, 1);
     }
     if (wakem)
         wake_nearby();
@@ -2046,7 +2046,7 @@ use_candelabrum(struct obj *obj)
 {
     const char *s = (obj->special_quality != 1) ? "candles" : "candle";
 
-    if (obj->lamplit)
+    if (is_obj_lamplit(obj))
     {
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
         You("snuff the %s.", s);
@@ -2066,7 +2066,7 @@ use_candelabrum(struct obj *obj)
         You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot make fire under water.");
         return;
     }
-    if (u.uswallow || obj->cursed) 
+    if (u.uswallow || is_obj_cursed(obj)) 
     {
         if (!Blind)
         {
@@ -2113,7 +2113,7 @@ use_candelabrum(struct obj *obj)
             else
                 pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s with a strange light!", Tobjnam(obj, "glow"));
         }
-        obj->known = 1;
+        set_obj_known(obj, 1);
     }
     begin_burn(obj, FALSE);
 }
@@ -2183,7 +2183,7 @@ use_candle(struct obj **optr)
         boolean objsplitted = FALSE;
         struct obj* lightedcandle = (struct obj*)0;
         char qbuf2[QBUFSZ];
-        Sprintf(qbuf2, "%s only one?", obj->lamplit ? "Snuff out" : "Light");
+        Sprintf(qbuf2, "%s only one?", is_obj_lamplit(obj) ? "Snuff out" : "Light");
 
         if (obj->quan > 1L && yn_query(qbuf2) == 'y') 
         {
@@ -2348,9 +2348,9 @@ use_candle(struct obj **optr)
 
     otmp->special_quality += (int) obj->quan;
 
-    if (otmp->lamplit && !obj->lamplit)
+    if (is_obj_lamplit(otmp) && !is_obj_lamplit(obj))
         pline_The("new %s magically %s!", s, vtense(s, "ignite"));
-    else if (!otmp->lamplit && obj->lamplit)
+    else if (!is_obj_lamplit(otmp) && is_obj_lamplit(obj))
         pline("%s out.", (obj->quan > 1L) ? "They go" : "It goes");
 
     if (is_unpaid_shop_item(obj, u.ux, u.uy))
@@ -2361,25 +2361,25 @@ use_candle(struct obj **optr)
         debugprint_pos();
         if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
         {
-            play_voice_shopkeeper_simple_line(shkp, otmp->lamplit ? ((obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT) :
+            play_voice_shopkeeper_simple_line(shkp, is_obj_lamplit(otmp) ? ((obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT) :
                 ((obj->quan > 1L) ? SHOPKEEPER_LINE_USE_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_USE_IT_BOUGHT_IT));
         }
         verbalize_ex(ATR_NONE, CLR_MSG_TALK_ANGRY, "You %s %s, you bought %s!",
-            otmp->lamplit ? "burn" : "use",
+            is_obj_lamplit(otmp) ? "burn" : "use",
             (obj->quan > 1L) ? "them" : "it",
             (obj->quan > 1L) ? "them" : "it");
     }
     if (obj->quan < max_candles && otmp->special_quality == max_candles)
         pline("%s now has %ld%s candles attached.", The(xname(otmp)), max_candles,
-                otmp->lamplit ? " lit" : "");
+                is_obj_lamplit(otmp) ? " lit" : "");
         
     /* candelabrum's light range might increase */
-    if (otmp->lamplit)
+    if (is_obj_lamplit(otmp))
         obj_merge_light_sources(otmp, otmp);
 
     debugprint("use_candle");
     /* candles are no longer a separate light source */
-    if (obj->lamplit)
+    if (is_obj_lamplit(obj))
         end_burn(obj, TRUE);
 
     /* candles are now gone */
@@ -2399,7 +2399,7 @@ snuff_candle(struct obj *otmp)
     boolean candle = is_candle(otmp);
 
     if ((candle || is_obj_candelabrum(otmp))
-        && otmp->lamplit) 
+        && is_obj_lamplit(otmp)) 
     {
         char buf[BUFSZ];
         xchar x, y;
@@ -2480,7 +2480,7 @@ snuff_torch(struct obj *otmp)
 {
     boolean istorch = is_torch(otmp);
 
-    if (istorch && otmp->lamplit)
+    if (istorch && is_obj_lamplit(otmp))
     {
         char buf[BUFSZ];
         xchar x, y;
@@ -2505,7 +2505,7 @@ snuff_lit(struct obj *obj)
 {
     xchar x, y;
 
-    if (obj->lamplit) 
+    if (is_obj_lamplit(obj)) 
     {
         if (is_lamp(obj) || obj->otyp == POT_OIL) 
         {
@@ -2537,7 +2537,7 @@ catch_lit(struct obj *obj)
 {
     xchar x, y;
 
-    if (!obj->lamplit && is_obj_ignitable(obj))
+    if (!is_obj_lamplit(obj) && is_obj_ignitable(obj))
     {
         if (obj->otyp == MAGIC_LAMP && obj->special_quality == 0)
             return FALSE;
@@ -2547,15 +2547,15 @@ catch_lit(struct obj *obj)
             return FALSE;
         if (!get_obj_location(obj, &x, &y, 0))
             return FALSE;
-        if (is_obj_candelabrum(obj) && obj->cursed)
+        if (is_obj_candelabrum(obj) && is_obj_cursed(obj))
             return FALSE;
-        if (is_lamp(obj) && obj->cursed && !rn2(2))
+        if (is_lamp(obj) && is_obj_cursed(obj) && !rn2(2))
             return FALSE;
         if (obj->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
             pline("%s %s light!", Yname2(obj), otense(obj, "catch"));
         if (obj->otyp == POT_OIL)
             makeknown(obj->otyp);
-        if (carried(obj) && obj->unpaid && costly_spot(u.ux, u.uy)) {
+        if (carried(obj) && is_obj_unpaid(obj) && costly_spot(u.ux, u.uy)) {
             /* if it catches while you have it, then it's your tough luck */
             check_unpaid(obj);
             if (iflags.using_gui_sounds)
@@ -2589,7 +2589,7 @@ use_lamp(struct obj *obj)
 {
     char buf[BUFSZ];
 
-    if (obj->lamplit) 
+    if (is_obj_lamplit(obj)) 
     {
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
         if (is_lamp(obj))
@@ -2624,7 +2624,7 @@ use_lamp(struct obj *obj)
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "This %s has no oil.", xname(obj));
         return;
     }
-    if ((obj->cursed && !rn2(2)) || (obj->otyp == MAGIC_CANDLE && obj->special_quality == 0))
+    if ((is_obj_cursed(obj) && !rn2(2)) || (obj->otyp == MAGIC_CANDLE && obj->special_quality == 0))
     {
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         if (!Blind)
@@ -2670,7 +2670,7 @@ use_oil(struct obj *obj)
     if (!obj || obj->otyp != POT_OIL)
         return 0;
 
-    if (obj->lamplit)
+    if (is_obj_lamplit(obj))
     {
         light_cocktail(&obj);
         return 1;
@@ -2751,7 +2751,7 @@ light_cocktail(struct obj **optr)
         return;
     }
 
-    if (obj->lamplit) 
+    if (is_obj_lamplit(obj)) 
     {        
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "snuff the lit potion.");
@@ -2805,11 +2805,11 @@ light_cocktail(struct obj **optr)
     {
         debugprint("light_cocktail2");
         obj_extract_self(obj); /* free from inv */
-        obj->nomerge = 1;
+        set_obj_nomerge(obj, 1);
         obj = hold_another_object(obj, "You drop %s!", doname(obj),
                                   (const char *) 0, TRUE);
         if (obj)
-            obj->nomerge = 0;
+            set_obj_nomerge(obj, 0);
     }
     *optr = obj;
 }
@@ -2914,7 +2914,7 @@ check_jump(genericptr arg, int x, int y)
                 /* reject horizontal jump through horizontal open door
                    and non-horizontal (ie, vertical) jump through
                    non-horizontal (vertical) open door */
-                || ((traj & jHorz) != 0) == (lev->horizontal != 0)))
+                || ((traj & jHorz) != 0) == (is_rm_horizontal(lev) != 0)))
             return FALSE;
         /* empty doorways aren't restricted */
     }
@@ -2988,7 +2988,7 @@ is_valid_jump_pos(int x, int y, int magic, boolean showmsg)
         if (diag == jDiag && IS_DOOR(lev->typ)
             && (lev->doormask & D_ISOPEN) != 0
             && (traj == jDiag
-                || ((traj & jHorz) != 0) == (lev->horizontal != 0))) {
+                || ((traj & jHorz) != 0) == (is_rm_horizontal(lev) != 0))) {
             if (showmsg)
             {
                 play_sfx_sound(SFX_SOMETHING_IN_WAY);
@@ -3356,8 +3356,8 @@ use_tinning_kit(struct obj *obj)
         static const char you_buy_it[] = "You tin it, you bought it!";
 
         can->corpsenm = corpse->corpsenm;
-        can->cursed = obj->cursed;
-        can->blessed = obj->blessed;
+        can->cursed = is_obj_cursed(obj);
+        can->blessed = is_obj_blessed(obj);
         can->owt = weight(can);
         can->known = 1;
         can->speflags |= is_female_corpse_or_statue(corpse) ? SPEFLAGS_FEMALE : 0UL;
@@ -3468,7 +3468,7 @@ use_unicorn_horn(struct obj *obj, boolean you_only)
     }
     consume_obj_charge(obj, TRUE);
 
-    if (obj->cursed)
+    if (is_obj_cursed(obj))
     {
         int64_t lcount = (int64_t) rn1(90, 10);
 
@@ -3601,7 +3601,7 @@ use_unicorn_horn(struct obj *obj, boolean you_only)
      *   blessed:  22.7%  22.7%  19.5%  15.4%  10.7%   5.7%   2.6%   0.8%
      *  uncursed:  35.4%  35.4%  22.9%   6.3%    0      0      0      0
      */
-    val_limit = (obj && obj->blessed) ? 2 : 1; // rn2(d(2, (obj&& obj->blessed) ? 4 : 2));
+    val_limit = (obj && is_obj_blessed(obj)) ? 2 : 1; // rn2(d(2, (obj&& is_obj_blessed(obj)) ? 4 : 2));
     if (val_limit > trouble_count)
         val_limit = trouble_count;
 
@@ -3736,7 +3736,7 @@ fig_transform(anything *arg, int64_t timeout)
                 && M_AP_TYPE(mtmp) != M_AP_NOTHING))
             suppress_see = TRUE;
 
-        if (mtmp->mundetected) {
+        if (is_mon_undetected(mtmp)) {
             if (hides_under(mtmp->data) && mshelter) {
                 Sprintf(and_vanish, " and %s under %s",
                         locomotion(mtmp->data, "crawl"), doname(mshelter));
@@ -3912,7 +3912,7 @@ use_grease(struct obj *obj)
 
     if (obj->charges > 0)
     {
-        if ((obj->cursed || Fumbling) && !rn2(2)) 
+        if ((is_obj_cursed(obj) || Fumbling) && !rn2(2)) 
         {
             consume_obj_charge(obj, TRUE);
 
@@ -3936,8 +3936,8 @@ use_grease(struct obj *obj)
         {
             play_sfx_sound(SFX_GREASE_COATING);
             You("cover %s with a thick layer of grease.", yname(otmp));
-            otmp->greased = 1;
-            if (obj->cursed && !nohands(youmonst.data)) 
+            set_obj_greased(otmp, 1);
+            if (is_obj_cursed(obj) && !nohands(youmonst.data)) 
             {
                 play_sfx_sound(SFX_ACQUIRE_GLIB);
                 incr_itimeout(&Glib, rnd(15));
@@ -3958,7 +3958,7 @@ use_grease(struct obj *obj)
     else 
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        if (obj->known)
+        if (is_obj_known(obj))
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s empty.", Tobjnam(obj, "are"));
         else
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s to be empty.", Tobjnam(obj, "seem"));
@@ -4007,7 +4007,7 @@ use_wand_on_object(struct obj *obj)
 
         consume_obj_charge(obj, TRUE);
 
-        if ((obj->cursed || Fumbling) && !rn2(2)) 
+        if ((is_obj_cursed(obj) || Fumbling) && !rn2(2)) 
         {
             //Shoot accidently yourself!!
 
@@ -4121,7 +4121,7 @@ use_wand_on_object(struct obj *obj)
                 else if (is_candle_or_torch(otmp))
                 {
                     wandknown = TRUE;
-                    if (!otmp->lamplit)
+                    if (!is_obj_lamplit(otmp))
                     {
                         pline_ex(ATR_NONE, CLR_MSG_SPELL, "A flame eminates from %s and lights up %s.", yname(obj), yname(otmp));
                         use_lamp(otmp);
@@ -4199,7 +4199,7 @@ use_wand_on_object(struct obj *obj)
                 break;
             case WAN_DISJUNCTION:
             case WAN_CANCELLATION:
-                if (objects[otmp->otyp].oc_magic || otmp->enchantment != 0 || otmp->charges > (otmp->oclass == WAND_CLASS ? -1 : 0) || otmp->elemental_enchantment > 0 || otmp->blessed || otmp->cursed)
+                if (objects[otmp->otyp].oc_magic || otmp->enchantment != 0 || otmp->charges > (otmp->oclass == WAND_CLASS ? -1 : 0) || otmp->elemental_enchantment > 0 || is_obj_blessed(otmp) || is_obj_cursed(otmp))
                 {
                     suggestnamingwand = TRUE;
                     pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in gray for a while.", Tobjnam(otmp, "flicker"));
@@ -4364,7 +4364,7 @@ use_wand_on_object(struct obj *obj)
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         res = 0;
-        if (obj->known)
+        if (is_obj_known(obj))
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s out of charges.", Tobjnam(obj, "are"));
         else
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s out of charges.", Tobjnam(obj, "seem"));
@@ -4531,7 +4531,7 @@ use_stone(struct obj *tstone)
                 streak_color = c_obj_colors[objects[obj->otyp].oc_color];
             else
             {
-                do_scratch = material_definitions[obj->material].scratchable;
+                do_scratch = get_flag(material_definitions[obj->material].material_bitflags, MATERIAL_BITFLAGS_SCRATCHABLE);
                 streak_color = material_definitions[obj->material].streakword;
             }
             break;
@@ -4638,7 +4638,7 @@ use_trap(struct obj *otmp)
     if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC) {
         boolean chance;
 
-        if (Fumbling || otmp->cursed)
+        if (Fumbling || is_obj_cursed(otmp))
             chance = (rnl(10) > 3);
         else
             chance = (rnl(10) > 5);
@@ -4710,7 +4710,7 @@ set_trap(void)
             You("finish arming %s.",
                 the(defsyms[trap_to_defsym(what_trap(ttyp, rn2))].explanation));
         }
-        if (((otmp->cursed || Fumbling) && (rnl(10) > 5))
+        if (((is_obj_cursed(otmp) || Fumbling) && (rnl(10) > 5))
             || trapinfo.force_bungle)
             dotrap(ttmp,
                    (unsigned short) (trapinfo.force_bungle ? FORCEBUNGLE : 0));
@@ -4913,8 +4913,8 @@ use_whip(struct obj *obj)
             if (gotit && mwelded(otmp, mtmp)) {
                 pline("%s welded to %s %s%c",
                       (otmp->quan == 1L) ? "It is" : "They are", mhis(mtmp),
-                      mon_hand, !otmp->bknown ? '!' : '.');
-                otmp->bknown = 1;
+                      mon_hand, !is_obj_bknown(otmp) ? '!' : '.');
+                set_obj_bknown(otmp, 1);
                 gotit = FALSE; /* can't pull it free */
             }
             if (gotit) {
@@ -5702,7 +5702,7 @@ use_grapple(struct obj *obj)
             flags.confirm = save_confirm;
             check_caitiff(mtmp); /* despite fact there's no damage */
             You("pull in %s!", mon_nam(mtmp));
-            mtmp->mundetected = 0;
+            set_mon_undetected(mtmp, 0);
             rloc_to(mtmp, cc.x, cc.y);
             return 1;
         } else if ((!bigmonst(mtmp->data) && !strongmonst(mtmp->data))
@@ -5781,7 +5781,7 @@ do_break_wand(struct obj *obj)
     /* [ALI] Do this first so that wand is removed from bill. Otherwise,
      * the freeinv() below also hides it from setpaid() which causes problems.
      */
-    if (obj->unpaid) {
+    if (is_obj_unpaid(obj)) {
         check_unpaid(obj); /* Extra charge for use */
         costly_alteration(obj, COST_DSTROY);
     }
@@ -5919,7 +5919,7 @@ do_break_wand(struct obj *obj)
                 else
                     digactualhole(x, y, BY_OBJECT, (rn2(used_obj->charges) < 3
                                                     || (!Can_dig_down(&u.uz)
-                                                        && !levl[x][y].candig))
+                                                        && !get_flag(levl[x][y].rm_bitflags, RM_BITFLAGS_CANDIG)))
                                                       ? PIT
                                                       : HOLE);
             }
@@ -6037,18 +6037,17 @@ setapplyclasses(char class_list[])
     boolean knowoil, knowtouchstone, addpotions, addstones, addfood, addmisc;
 
     knowoil = objects[POT_OIL].oc_name_known;
-    knowtouchstone = objects[TOUCHSTONE].oc_name_known;
-    addpotions = addstones = addfood = addmisc = FALSE;
+    knowtouchstone = objects[TOUCHSTONE].oc_name_known;addpotions = FALSE; addstones = FALSE; addfood = FALSE; addmisc = FALSE;
     for (otmp = invent; otmp; otmp = otmp->nobj) {
         otyp = otmp->otyp;
         if (otyp == POT_OIL
             || (otmp->oclass == POTION_CLASS
-                && (!otmp->dknown
+                && (!is_obj_dknown(otmp)
                     || (!knowoil && !objects[otyp].oc_name_known))))
             addpotions = TRUE;
         if (otyp == TOUCHSTONE
             || (is_graystone(otmp)
-                && (!otmp->dknown
+                && (!is_obj_dknown(otmp)
                     || (!knowtouchstone && !objects[otyp].oc_name_known))))
             addstones = TRUE;
         if (otyp == CREAM_PIE || otyp == EUCALYPTUS_LEAF)
@@ -6303,7 +6302,7 @@ doapply_core(int applymode)
             /* MRKR: Every Australian knows that a gum leaf makes an excellent
              * whistle, especially if your pet is a tame kangaroo named Skippy.
              */
-            if (obj->blessed)
+            if (is_obj_blessed(obj))
             {
                 use_magic_whistle(obj);
                 /* sometimes the blessing will be worn off */
@@ -6313,7 +6312,7 @@ doapply_core(int applymode)
                     if (!Blind)
                     {
                         pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s %s.", Yobjnam2(obj, "glow"), hcolor_multi_buf1(NH_BROWN));
-                        obj->bknown = 1;
+                        set_obj_bknown(obj, 1);
                     }
                     unbless(obj);
                     update_inventory();
@@ -6481,7 +6480,7 @@ count_other_containers(struct obj *objchain, struct obj *this_container, struct 
     int cnt = 0;
     for (struct obj* otmp = objchain; otmp; otmp = usenexthere ? otmp->nexthere : otmp->nobj)
     {
-        if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container && !otmp->olocked)
+        if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container && !is_obj_locked(otmp))
         {
             cnt++;
             *last_container_ptr = otmp;
@@ -6511,7 +6510,7 @@ select_other_container(struct obj *objchain, struct obj *this_container, boolean
         if (cnt >= 52)
             break;
 
-        if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container && !otmp->olocked)
+        if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container && !is_obj_locked(otmp))
         {
             anything any = zeroany;
             any.a_obj = otmp;
@@ -6604,12 +6603,12 @@ endlessarrows(struct obj *bag, int arrowtype, int quan)
 
         if (bag->blessed)
         {
-            otmp->blessed = TRUE;
+            set_obj_blessed(otmp, TRUE);
             otmp->enchantment = rnd(3);
         }
         if (bag->cursed)
         {
-            otmp->cursed = TRUE;
+            set_obj_cursed(otmp, TRUE);
             otmp->enchantment = -rnd(3);
         }
         if (bag->elemental_enchantment)

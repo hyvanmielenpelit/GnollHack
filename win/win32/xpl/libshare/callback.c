@@ -22,10 +22,10 @@ get_objclassdata(struct obj* otmp)
     otypdata.eroded = (uchar)otmp->oeroded;
     otypdata.eroded2 = (uchar)otmp->oeroded2;
 
-    otypdata.corrodeable = (uchar)is_corrodeable(otmp);
-    otypdata.rottable = (uchar)is_rottable(otmp);
-    otypdata.flammable = (uchar)is_flammable(otmp);
-    otypdata.rustprone = (uchar)is_rustprone(otmp);
+    set_flag(otypdata.material_bitflags, MATERIAL_BITFLAGS_CORRODEABLE, (uchar))is_corrodeable(otmp);
+    set_flag(otypdata.material_bitflags, MATERIAL_BITFLAGS_ROTTABLE, (uchar))is_rottable(otmp);
+    set_flag(otypdata.material_bitflags, MATERIAL_BITFLAGS_FLAMMABLE, (uchar))is_flammable(otmp);
+    set_flag(otypdata.material_bitflags, MATERIAL_BITFLAGS_RUSTPRONE, (uchar))is_rustprone(otmp);
     otypdata.poisonable = (uchar)is_poisonable(otmp);
 
     otypdata.oc_subtyp = objects[otmp->otyp].oc_subtyp;

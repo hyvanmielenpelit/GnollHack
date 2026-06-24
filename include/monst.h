@@ -140,59 +140,58 @@ struct monst {
     /* unsigned int to align the following bitfields reliably across platforms */
     unsigned mrevived;          /* Number of times revived */
 
-    /* Bitfield flags -- Keep all bitfields in a row */
-    Bitfield(mflee, 1);         /* fleeing */
-    Bitfield(msleeping, 1);     /* asleep until woken */
-    Bitfield(mcanmove, 1);      /* paralysis, similar to mblinded */
-    Bitfield(mwantstomove, 1);  /* mon wants to move, not staying in place */
-    Bitfield(mwantstodrop, 1);
+    /* Bitfield flags converted to portable explicit bitmask flags */
+    uint64_t mon_bitflags;
+#define MON_BITFLAGS_NONE                          0x00000000UL
+#define MON_BITFLAGS_MFLEE                         0x00000001UL
+#define MON_BITFLAGS_MSLEEPING                     0x00000002UL
+#define MON_BITFLAGS_MCANMOVE                      0x00000004UL
+#define MON_BITFLAGS_MWANTSTOMOVE                  0x00000008UL
+#define MON_BITFLAGS_MWANTSTODROP                  0x00000010UL
+#define MON_BITFLAGS_FEMALE                        0x00000020UL
+#define MON_BITFLAGS_MBURIED                       0x00000040UL
+#define MON_BITFLAGS_MUNDETECTED                   0x00000080UL
+#define MON_BITFLAGS_MCLONED                       0x00000100UL
+#define MON_BITFLAGS_MAVENGE                       0x00000200UL
+#define MON_BITFLAGS_MPEACEFUL                     0x00000400UL
+#define MON_BITFLAGS_MTRAPPED                      0x00000800UL
+#define MON_BITFLAGS_MLEASHED                      0x00001000UL
+#define MON_BITFLAGS_ISSHK                         0x00002000UL
+#define MON_BITFLAGS_ISMINION                      0x00004000UL
+#define MON_BITFLAGS_ISGD                          0x00008000UL
+#define MON_BITFLAGS_ISPRIEST                      0x00010000UL
+#define MON_BITFLAGS_ISSMITH                       0x00020000UL
+#define MON_BITFLAGS_ISNPC                         0x00040000UL
+#define MON_BITFLAGS_ISSUMMONED                    0x00080000UL
+#define MON_BITFLAGS_DISREGARDS_ENEMY_STRENGTH     0x00100000UL
+#define MON_BITFLAGS_DISREGARDS_OWN_HEALTH         0x00200000UL
+#define MON_BITFLAGS_HASBLOODLUST                  0x00400000UL
+#define MON_BITFLAGS_ISPACIFIST                    0x00800000UL
+#define MON_BITFLAGS_ISFAITHFUL                    0x01000000UL
+#define MON_BITFLAGS_ISPROTECTOR                   0x02000000UL
+#define MON_BITFLAGS_ISPARTYMEMBER                 0x04000000UL
+#define MON_BITFLAGS_LEAVES_NO_CORPSE              0x08000000UL
+#define MON_BITFLAGS_DELAYED_KILLER_BY_YOU         0x10000000UL
+#define MON_BITFLAGS_U_KNOW_MNAME                  0x20000000UL
+#define MON_BITFLAGS_TOLD_RUMOR                    0x40000000UL
+#define MON_BITFLAGS_FACING_RIGHT                  0x80000000UL
+#define MON_BITFLAGS_ISWIZ                         0x0000000100000000UL
+#define MON_BITFLAGS_BOSS_FIGHT_STARTED            0x0000000200000000UL
+#define MON_BITFLAGS_SPECIAL_TALK_FLAG1            0x0000000400000000UL
+#define MON_BITFLAGS_SPECIAL_TALK_FLAG2            0x0000000800000000UL
+#define MON_BITFLAGS_SPECIAL_TALK_FLAG3            0x0000001000000000UL
+#define MON_BITFLAGS_SPECIAL_TALK_FLAG4            0x0000002000000000UL
+#define MON_BITFLAGS_SPECIAL_TALK_FLAG5            0x0000004000000000UL
+#define MON_BITFLAGS_SPECIAL_TALK_FLAG6            0x0000008000000000UL
+#define MON_BITFLAGS_SPECIAL_TALK_FLAG7            0x0000010000000000UL
+#define MON_BITFLAGS_SPECIAL_TALK_FLAG8            0x0000020000000000UL
 
-    Bitfield(female, 1);        /* is female */
-    Bitfield(mburied, 1);       /* has been buried */
-    Bitfield(mundetected, 1);   /* not seen in present hiding place;
-                                 * implies one of M1_CONCEAL or M1_HIDE,
-                                 * but not mimic (that is, snake, spider,
-                                 * trapper, piercer, eel)
-                                 */
-    Bitfield(mcloned, 1);       /* has been cloned from another */
-    Bitfield(mavenge, 1);       /* did something to deserve retaliation */
-    Bitfield(mpeaceful, 1);     /* does not attack unprovoked */
-    Bitfield(mtrapped, 1);      /* trapped in a pit, web or bear trap */
-    Bitfield(mleashed, 1);      /* monster is on a leash */
-    Bitfield(isshk, 1);         /* is shopkeeper */
-    Bitfield(isminion, 1);      /* is a minion */
-    Bitfield(isgd, 1);          /* is guard */
-    Bitfield(ispriest, 1);      /* is an aligned priest or high priest */
-    Bitfield(issmith, 1);       /* is a smith */
-    Bitfield(isnpc, 1);         /* is a non-player character */
-    Bitfield(issummoned, 1);                    /* is a summoned monster */
-    Bitfield(disregards_enemy_strength, 1);     /* the monster attacks too strong enemies */
-    Bitfield(disregards_own_health, 1);         /* the monster attacks even when its health is low */
-    Bitfield(hasbloodlust, 1);                  /* attacks also peaceful */
-    Bitfield(ispacifist, 1);                    /* does not attack peaceful, NOW DEACTIVATED, APPLIES TO ALL */
-    Bitfield(isfaithful, 1);                    /* being separate from the owner does not reduce tameness */
-    Bitfield(isprotector, 1);                   /* attacks hostiles if itself is being peaceful */
-    Bitfield(ispartymember, 1);                 /* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
-    Bitfield(leaves_no_corpse, 1);              /* this particular monster does not leave a corpse */
-    Bitfield(delayed_killer_by_you, 1);         /* is petrification or other delayed killer initiated by you */
-    Bitfield(u_know_mname, 1);                  /* you know the monster's name */
-    Bitfield(told_rumor, 1);                    /* the monster had told the player at least one rumor */
-    Bitfield(facing_right, 1);                  /* the monster is facing right */
-    Bitfield(iswiz, 1);                         /* is the Wizard of Yendor */
-    Bitfield(wormno, 5);                        /* at most 31 worms on any level */
-#define MAX_NUM_WORMS 32                        /* should be 2^(wormno bitfield size) */
-    Bitfield(heads_tamed, 2);                   /* How many Cerberos's heads have been tamed; anything else for other monsters */
-    Bitfield(boss_fight_started, 1);            /* boss fight has already been announced */
-    Bitfield(special_talk_flag1, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag2, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag3, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag4, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag5, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag6, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag7, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag8, 1);            /* general purpose flag NPC talk */
+    uchar wormno;
+#define MAX_NUM_WORMS 32
+    uchar heads_tamed;
 
-    unsigned reserved;               /* reserved for, e.g., more bitfields */
+    unsigned reserved;
+
     int reserved_index;              /* Special general purpose index */
     int meating;                     /* monster is eating timeout */
 
@@ -256,6 +255,51 @@ struct monst {
     struct obj* mw;             /* mon's weapon */
     struct mextra *mextra;      /* point to mextra struct */
 };
+
+#define is_mon_peaceful(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_MPEACEFUL)
+#define set_mon_peaceful(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_MPEACEFUL, v)
+#define is_mon_female(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_FEMALE)
+#define set_mon_female(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_FEMALE, v)
+#define is_mon_shk(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_ISSHK)
+#define set_mon_shk(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_ISSHK, v)
+#define is_mon_priest(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_ISPRIEST)
+#define set_mon_priest(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_ISPRIEST, v)
+#define is_mon_sleeping(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_MSLEEPING)
+#define set_mon_sleeping(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_MSLEEPING, v)
+#define is_mon_undetected(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_MUNDETECTED)
+#define set_mon_undetected(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_MUNDETECTED, v)
+#define is_mon_minion(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_ISMINION)
+#define set_mon_minion(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_ISMINION, v)
+#define is_mon_smith(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_ISSMITH)
+#define set_mon_smith(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_ISSMITH, v)
+#define is_mon_gd(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_ISGD)
+#define set_mon_gd(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_ISGD, v)
+#define is_mon_trapped(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_MTRAPPED)
+#define set_mon_trapped(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_MTRAPPED, v)
+#define is_mon_npc(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_ISNPC)
+#define set_mon_npc(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_ISNPC, v)
+#define is_mon_leashed(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_MLEASHED)
+#define set_mon_leashed(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_MLEASHED, v)
+#define is_mon_u_know_mname(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_U_KNOW_MNAME)
+#define set_mon_u_know_mname(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_U_KNOW_MNAME, v)
+#define is_mon_wiz(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_ISWIZ)
+#define set_mon_wiz(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_ISWIZ, v)
+#define is_mon_canmove(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_MCANMOVE)
+#define set_mon_canmove(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_MCANMOVE, v)
+#define is_mon_partymember(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_ISPARTYMEMBER)
+#define set_mon_partymember(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_ISPARTYMEMBER, v)
+#define is_mon_facing_right(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_FACING_RIGHT)
+#define set_mon_facing_right(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_FACING_RIGHT, v)
+#define is_mon_fleeing(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_MFLEE)
+#define set_mon_fleeing(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_MFLEE, v)
+#define is_mon_buried(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_MBURIED)
+#define set_mon_buried(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_MBURIED, v)
+#define is_mon_disregards_enemy_strength(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_DISREGARDS_ENEMY_STRENGTH)
+#define set_mon_disregards_enemy_strength(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_DISREGARDS_ENEMY_STRENGTH, v)
+#define is_mon_disregards_own_health(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_DISREGARDS_OWN_HEALTH)
+#define set_mon_disregards_own_health(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_DISREGARDS_OWN_HEALTH, v)
+#define is_mon_hasbloodlust(m)     get_flag((m)->mon_bitflags, MON_BITFLAGS_HASBLOODLUST)
+#define set_mon_hasbloodlust(m, v) set_flag((m)->mon_bitflags, MON_BITFLAGS_HASBLOODLUST, v)
 
 #define newmonst() (struct monst *) alloc(sizeof (struct monst))
 

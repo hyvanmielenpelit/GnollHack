@@ -545,11 +545,11 @@ read_the_ruling_ring(struct obj *otmp)
         }
         else
         {
-            if (!otmp->nknown)
+            if (!is_obj_nknown(otmp))
             {
                 You("quite couldn't make sense of it, but it seemed like a real tongue twister.");
-                otmp->nknown = TRUE;
-                otmp->aknown = TRUE;
+                set_obj_nknown(otmp, TRUE);
+                set_obj_aknown(otmp, TRUE);
                 if (carried(otmp))
                     prinv((char*)0, otmp, 0L);
             }
@@ -567,7 +567,7 @@ read_the_ruling_ring(struct obj *otmp)
 void
 strip_charges(struct obj *obj, boolean verbose, boolean dopopup)
 {
-    if (obj->blessed || obj->charges <= 0)
+    if (is_obj_blessed(obj) || obj->charges <= 0)
     {
         if (verbose)
         {
@@ -619,8 +619,8 @@ is_chargeable(struct obj *obj)
         return TRUE;
 
     return (boolean) (objects[obj->otyp].oc_charged
-                        && (obj->known
-                            || (obj->dknown
+                        && (is_obj_known(obj)
+                            || (is_obj_dknown(obj)
                                 && objects[obj->otyp].oc_name_known)));
 
 }
@@ -765,7 +765,7 @@ recharge(struct obj *obj, int curse_bless, boolean verbose, const char *title, b
             }
 #if 0 /*[shop price doesn't vary by charge count]*/
             /* update shop bill to reflect new higher price */
-            if (obj->unpaid)
+            if (is_obj_unpaid(obj))
                 alter_cost(obj, 0L);
 #endif
         }
@@ -884,7 +884,7 @@ recharge(struct obj *obj, int curse_bless, boolean verbose, const char *title, b
         case BRASS_LANTERN:
             if (is_cursed) {
                 strip_charges(obj, verbose, dopopup);
-                if (obj->lamplit) {
+                if (is_obj_lamplit(obj)) {
                     if (!Blind)
                         pline("%s out!", Tobjnam(obj, "go"));
                     end_burn(obj, TRUE);
@@ -1267,7 +1267,7 @@ enchant_armor(struct obj *otmp, int curse_bless, int amount, boolean dopopup)
         else
         {
             play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
-            otmp->in_use = TRUE;
+            set_obj_in_use(otmp, TRUE);
             pline_multi_ex_popup(ATR_NONE, CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, "Evaporation", dopopup,
                 "%s violently %s%s%s for a while, then %s.", Yname2(otmp),
                 otense(otmp, Blind ? "vibrate" : "glow"),
@@ -1320,11 +1320,11 @@ enchant_armor(struct obj *otmp, int curse_bless, int amount, boolean dopopup)
        ever changed to care about curse/bless status of armor] */
     if (s < 0)
         costly_alteration(otmp, COST_DECHNT);
-    if (scursed && !otmp->cursed && (otmp->where != OBJ_INVENT || !Curse_resistance))
+    if (scursed && !is_obj_cursed(otmp) && (otmp->where != OBJ_INVENT || !Curse_resistance))
         curse(otmp);
-    else if (sblessed && !otmp->blessed)
+    else if (sblessed && !is_obj_blessed(otmp))
         bless(otmp);
-    else if (!scursed && otmp->cursed)
+    else if (!scursed && is_obj_cursed(otmp))
         uncurse(otmp);
 
     if (s)
@@ -1334,9 +1334,9 @@ enchant_armor(struct obj *otmp, int curse_bless, int amount, boolean dopopup)
         updateabon();
         updatemaxen();
         updatemaxhp();
-        known = otmp->known;
+        known = is_obj_known(otmp);
         /* update shop bill to reflect new higher price */
-        if (s > 0 && otmp->unpaid)
+        if (s > 0 && is_obj_unpaid(otmp))
             alter_cost(otmp, 0L);
     }
 
@@ -1411,7 +1411,7 @@ enchant_ring(struct obj *obj, int curse_bless, int amount, boolean dopopup)
             /* oartifact: if a touch-sensitive artifact ring is
                ever created the above will need to be revised  */
                /* update shop bill to reflect new higher price */
-            if (s > 0 && obj->unpaid)
+            if (s > 0 && is_obj_unpaid(obj))
                 alter_cost(obj, 0L);
 
             if (obj->enchantment > maxcharge)
@@ -1658,7 +1658,7 @@ maybe_tame(struct monst *mtmp, struct obj *sobj, struct monst *origmonst)
     }
     else 
     {
-        if (mtmp->isshk)
+        if (is_mon_shk(mtmp))
             make_happy_shk(mtmp, FALSE);
         else if (is_tame(mtmp) && !is_charmed_or_controlled(mtmp))
         {
@@ -1728,7 +1728,7 @@ maybe_controlled(struct monst *mtmp, struct obj *sobj, struct monst *origmonst)
             if (was_peaceful && !is_peaceful(mtmp))
                 return -1;
         }
-        else if (mtmp->isshk)
+        else if (is_mon_shk(mtmp))
             make_happy_shk(mtmp, FALSE);
         else if (!check_ability_resistance_success(mtmp, A_WIS, save_adj))
         {
@@ -1909,19 +1909,19 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
             break;
         }
         if ((!is_serviced_spell && confused) || otyp == SPE_PROTECT_ARMOR || otyp == SCR_PROTECT_ARMOR) {
-            old_erodeproof = (otmp->oerodeproof != 0);
+            old_erodeproof = (is_obj_erodeproof(otmp) != 0);
             new_erodeproof = !scursed;
-            otmp->oerodeproof = 0; /* for messages */
+            set_obj_erodeproof(otmp, 0); /* for messages */
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_PROTECT_ITEM_SUCCESS);
             special_effect_wait_until_action(0);
             if (Blind) {
-                otmp->rknown = FALSE;
+                set_obj_rknown(otmp, FALSE);
                 Sprintf(effbuf, "%s warm for a moment.", Yobjnam2(otmp, "feel"));
                 pline_ex1_popup(ATR_NONE, NO_COLOR, effbuf, "Warm Feeling", is_serviced_spell);
             }
             else {
-                otmp->rknown = TRUE;
+                set_obj_rknown(otmp, TRUE);
                 if (!confused && !scursed && otyp == SCR_PROTECT_ARMOR)
                     known = TRUE;
 
@@ -1932,18 +1932,17 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
                     scursed ? "glow"
                     : (is_shield(otmp) ? "layer" : "shield"));
             }
-            if (new_erodeproof && (otmp->oeroded || otmp->oeroded2)) {
-                otmp->oeroded = otmp->oeroded2 = 0;
+            if (new_erodeproof && (otmp->oeroded || otmp->oeroded2)) {otmp->oeroded = 0; otmp->oeroded2 = 0;
                 Sprintf(effbuf, "%s as good as new!",
                     Yobjnam2(otmp, Blind ? "feel" : "look"));
                 pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, known || otmp->oclass == SPBOOK_CLASS ? "Protect Armor" : "Magical Repair", is_serviced_spell);
             }
             if (old_erodeproof && !new_erodeproof) {
                 /* restore old_erodeproof before shop charges */
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 costly_alteration(otmp, COST_DEGRD);
             }
-            otmp->oerodeproof = new_erodeproof ? 1 : 0;
+            set_obj_erodeproof(otmp, new_erodeproof ? 1 : 0);
             special_effect_wait_until_end(0);
             update_inventory();
             break;
@@ -2085,16 +2084,16 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
                 exercise(A_CON, FALSE);
                 break;
             }
-            old_erodeproof = (otmp->oerodeproof != 0);
+            old_erodeproof = (is_obj_erodeproof(otmp) != 0);
             new_erodeproof = scursed;
-            otmp->oerodeproof = 0; /* for messages */
+            set_obj_erodeproof(otmp, 0); /* for messages */
             p_glow2(otmp, NH_PURPLE, ATR_NONE, CLR_MSG_POSITIVE, (const char*)0, is_serviced_spell);
             if (old_erodeproof && !new_erodeproof) {
                 /* restore old_erodeproof before shop charges */
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 costly_alteration(otmp, COST_DEGRD);
             }
-            otmp->oerodeproof = new_erodeproof ? 1 : 0;
+            set_obj_erodeproof(otmp, new_erodeproof ? 1 : 0);
             update_inventory();
             break;
         }
@@ -2124,7 +2123,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
         }
         else
         {
-            if (!scursed || !otmp || !otmp->cursed) {
+            if (!scursed || !otmp || !is_obj_cursed(otmp)) {
                 if (!destroy_arm(otmp)) {
                     strange_feeling(sobj, "Your skin itches.", is_serviced_spell);
                     sobj = 0; /* useup() in strange_feeling() */
@@ -2240,9 +2239,8 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
             if (cansee(mtmp->mx, mtmp->my)) 
             {
                 if (confused || scursed) 
-                {
-                    mtmp->mflee = mtmp->mfrozen = mtmp->msleeping = 0;
-                    mtmp->mcanmove = 1;
+                {set_mon_fleeing(mtmp, 0); mtmp->mfrozen = 0; set_mon_sleeping(mtmp, 0);
+                    set_mon_canmove(mtmp, 1);
                     mtmp->mprops[FEARFUL] = 0;
                     refresh_m_tile_gui_info(mtmp, TRUE);
                 }
@@ -2376,19 +2374,19 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
             play_sfx_sound(SFX_PROTECT_ITEM_SUCCESS);
             special_effect_wait_until_action(0);
 
-            old_erodeproof = (otmp->oerodeproof != 0);
+            old_erodeproof = (is_obj_erodeproof(otmp) != 0);
             new_erodeproof = !scursed;
-            otmp->oerodeproof = 0; /* for messages */
+            set_obj_erodeproof(otmp, 0); /* for messages */
 
             if (Blind)
             {
-                otmp->rknown = FALSE;
+                set_obj_rknown(otmp, FALSE);
                 Strcpy(effbuf, "Your weapon feels warm for a moment.");
                 pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, effbuf, "Warm Feeling", is_serviced_spell);
             }
             else 
             {
-                otmp->rknown = TRUE;
+                set_obj_rknown(otmp, TRUE);
                 if (!confused && !scursed && otyp == SCR_PROTECT_WEAPON)
                     known = TRUE;
 
@@ -2400,8 +2398,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
             }
 
             if (new_erodeproof && (otmp->oeroded || otmp->oeroded2)) 
-            {
-                otmp->oeroded = otmp->oeroded2 = 0;
+            {otmp->oeroded = 0; otmp->oeroded2 = 0;
                 Sprintf(effbuf, "%s as good as new!",
                     Yobjnam2(otmp, Blind ? "feel" : "look"));
                 pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, effbuf, known || otmp->oclass == SPBOOK_CLASS ? "Protect Weapon" : "Magical Repair", is_serviced_spell);
@@ -2410,10 +2407,10 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
             if (old_erodeproof && !new_erodeproof)
             {
                 /* restore old_erodeproof before shop charges */
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 costly_alteration(otmp, COST_DEGRD);
             }
-            otmp->oerodeproof = new_erodeproof ? 1 : 0;
+            set_obj_erodeproof(otmp, new_erodeproof ? 1 : 0);
             special_effect_wait_until_end(0);
             update_inventory();
             break;
@@ -2824,18 +2821,17 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
             {
                 if (otmp->oclass == COIN_CLASS) 
                 {
-                    /* coins */
-                    otmp->blessed = otmp->cursed = 0; /* just in case */
+                    /* coins */set_obj_blessed(otmp, 0); set_obj_cursed(otmp, 0); /* just in case */
                 }
 
-                if (otmp->blessed || otmp->cursed) 
+                if (is_obj_blessed(otmp) || is_obj_cursed(otmp)) 
                 {
                     const char* hclr = hcolor_multi_buf1(otmp->blessed ? NH_AMBER : NH_BLACK);
                     multicolor_buffer[2] = multicolor_buffer[1];
-                    There_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : otmp->blessed ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer,
+                    There_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : is_obj_blessed(otmp) ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer,
                         "is %s%s%s as you cast the spell on %s.",
                         an_prefix(hclr), hclr, " flash", the(cxname(otmp)));
-                    otmp->bknown = 1;
+                    set_obj_bknown(otmp, 1);
                     update_inventory();
                 }
                 else 
@@ -2843,7 +2839,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The spell glimmers around %s for a moment and then fades.", the(cxname(otmp)));
                     if (otmp->oclass != COIN_CLASS)
                     {
-                        otmp->bknown = 1;
+                        set_obj_bknown(otmp, 1);
                         update_inventory();
                     }
                 }
@@ -2958,8 +2954,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
                 special_effect_wait_until_action(0);
                 Strcpy(effbuf, "Your head spins.");
                 pline_ex1_popup(ATR_NONE, CLR_MSG_NEGATIVE, effbuf, "Head Spins", is_serviced_spell);
-                make_stunned((HStun& TIMEOUT) + rn1(scursed ? 90 : 40, 10), TRUE);;
-                context.botl = context.botlx = 1;
+                make_stunned((HStun& TIMEOUT) + rn1(scursed ? 90 : 40, 10), TRUE);;context.botl = 1; context.botlx = 1;
                 special_effect_wait_until_end(0);
                 break;
             }
@@ -3066,7 +3061,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
 
         break;
     case SCR_MAGIC_MAPPING:
-        if (level.flags.nommap) {
+        if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOMMAP)) {
             Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "mind is filled with crazy lines!");
             if (Hallucination)
                 pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Wow!  Modern art.");
@@ -3094,7 +3089,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
         known = TRUE;
         /*FALLTHRU*/
     case SPE_MAGIC_MAPPING:
-        if (level.flags.nommap) {
+        if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOMMAP)) {
             Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s spins as %s blocks the spell!", body_part(HEAD),
                  something);
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
@@ -3113,7 +3108,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
         }
         break;
     case SPE_DETECT_TRAPS:
-        if (level.flags.nommap) 
+        if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOMMAP)) 
         {
             Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s spins as %s blocks the spell!", body_part(HEAD),
                 something);
@@ -3687,7 +3682,7 @@ set_lit(int x, int y, genericptr_t val)
     struct litmon *gremlin;
 
     if (val) {
-        levl[x][y].lit = 1;
+        set_lev_lit(x, y, 1);
         if ((mtmp = m_at(x, y)) != 0 && mtmp->data == &mons[PM_GREMLIN]) {
             gremlin = (struct litmon *) alloc(sizeof *gremlin);
             gremlin->mon = mtmp;
@@ -3695,7 +3690,7 @@ set_lit(int x, int y, genericptr_t val)
             gremlins = gremlin;
         }
     } else {
-        levl[x][y].lit = 0;
+        set_lev_lit(x, y, 0);
         snuff_light_source(x, y);
     }
 }
@@ -3724,7 +3719,7 @@ litroom(boolean on, struct obj *obj)
 
         /* the magic douses lamps, et al, too */
         for (otmp = invent; otmp; otmp = otmp->nobj)
-            if (otmp->lamplit)
+            if (is_obj_lamplit(otmp))
                 (void) snuff_lit(otmp);
     } else { /* on */
         if (u.uswallow) {
@@ -3768,7 +3763,7 @@ litroom(boolean on, struct obj *obj)
         /* hallways remain dark on the rogue level */
     } else
         do_clear_area(u.ux, u.uy,
-                      (obj && obj->oclass == SCROLL_CLASS && obj->blessed)
+                      (obj && obj->oclass == SCROLL_CLASS && is_obj_blessed(obj))
                          ? 9 : 5,
                       set_lit, (genericptr_t) (on ? &is_lit : (char *) 0));
 
@@ -4498,7 +4493,7 @@ create_particular_creation(struct _create_particular_data *d)
         else if (d->makepeaceful || d->makehostile) 
         {
             mtmp->mtame = 0; /* sanity precaution */
-            mtmp->mpeaceful = d->makepeaceful ? 1 : 0;
+            set_mon_peaceful(mtmp, d->makepeaceful ? 1 : 0);
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
         }
@@ -4521,7 +4516,7 @@ create_particular_creation(struct _create_particular_data *d)
         }
 
         if (d->sleeping)
-            mtmp->msleeping = 1;
+            set_mon_sleeping(mtmp, 1);
 
         madeany = TRUE;
         /* in case we got a doppelganger instead of what was asked
@@ -4602,17 +4597,17 @@ dragon_scales_to_scale_mail(struct obj *otmp, boolean sblessed, boolean dopopup)
     if (sblessed)
     {
         otmp->enchantment++;
-        if (!otmp->blessed)
+        if (!is_obj_blessed(otmp))
             bless(otmp);
     }
-    else if (otmp->cursed)
+    else if (is_obj_cursed(otmp))
         uncurse(otmp);
-    otmp->known = 1;
+    set_obj_known(otmp, 1);
     
     if (worn)
         setworn(otmp, W_ARM);
     
-    if (otmp->unpaid)
+    if (is_obj_unpaid(otmp))
         alter_cost(otmp, 0L); /* shop bill */
 
     special_effect_wait_until_end(0);
@@ -4664,7 +4659,7 @@ bless_or_curse(struct obj *sobj, struct monst *mtmp, boolean confused)
             int textcolor = CLR_MSG_ATTENTION;
             if ((otyp == SPE_BLESS && (is_serviced_spell || !confused)) || (otyp == SPE_CURSE && !is_serviced_spell && confused))
             {
-                if (otmp->cursed)
+                if (is_obj_cursed(otmp))
                 {
                     func = uncurse;
                     textcolor = Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE;
@@ -4677,7 +4672,7 @@ bless_or_curse(struct obj *sobj, struct monst *mtmp, boolean confused)
                             livelog_printf(LL_CONDUCT, "rejected atheism by uncursing %s", doname(otmp));
                     }
                 }
-                else if (!otmp->blessed)
+                else if (!is_obj_blessed(otmp))
                 {
                     func = bless;
                     textcolor = Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE;
@@ -4694,7 +4689,7 @@ bless_or_curse(struct obj *sobj, struct monst *mtmp, boolean confused)
             }
             else
             { //Curse
-                if (otmp->blessed)
+                if (is_obj_blessed(otmp))
                 {
                     func = unbless;
                     textcolor = Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_WARNING;
@@ -4707,7 +4702,7 @@ bless_or_curse(struct obj *sobj, struct monst *mtmp, boolean confused)
                             livelog_printf(LL_CONDUCT, "rejected atheism by unblessing %s", doname(otmp));
                     }
                 }
-                else if (!otmp->cursed)
+                else if (!is_obj_cursed(otmp))
                 {
                     func = curse;
                     textcolor = Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_NEGATIVE;
@@ -4730,7 +4725,7 @@ bless_or_curse(struct obj *sobj, struct monst *mtmp, boolean confused)
                 special_effect_wait_until_action(0);
 
                 /* give feedback before altering the target object;
-                   this used to set obj->bknown even when not seeing
+                   this used to set is_obj_bknown(obj) even when not seeing
                    the effect; now hero has to see the glow, and bknown
                    is cleared instead of set if perception is distorted */
                 if (altfmt)
@@ -4744,10 +4739,10 @@ bless_or_curse(struct obj *sobj, struct monst *mtmp, boolean confused)
                         "%s %s.", isyou ? Yobjnam2(otmp, "glow") : Tobjnam(otmp, "glow"), hcolor_multi_buf1(glowcolor));
                 
                 iflags.last_msg = PLNMSG_OBJ_GLOWS;
-                otmp->bknown = !Hallucination;
+                set_obj_bknown(otmp, !Hallucination);
                 /* potions of water are the only shop goods whose price depends
                    on their curse/bless state */
-                if (otmp->unpaid && otmp->otyp == POT_WATER)
+                if (is_obj_unpaid(otmp) && otmp->otyp == POT_WATER)
                 {
                     if (costchange == COST_alter)
                         /* added blessing or cursing; update shop
@@ -4869,11 +4864,11 @@ remove_curse(struct obj *sobj, struct monst *mtmp, boolean confused)
                 || (obj->otyp == LEASH && obj->leashmon))
             {
                 /* water price varies by curse/bless status */
-                boolean shop_h2o = (obj->unpaid && obj->otyp == POT_WATER);
+                boolean shop_h2o = (is_obj_unpaid(obj) && obj->otyp == POT_WATER);
 
                 if (confused)
                 {
-                    if (!(obj->blessed || obj->cursed))
+                    if (!(is_obj_blessed(obj) || is_obj_cursed(obj)))
                     {
                         if (!rn2(2))
                         {
@@ -4892,14 +4887,14 @@ remove_curse(struct obj *sobj, struct monst *mtmp, boolean confused)
                     //blessorcurse(obj, 2);
                     /* lose knowledge of this object's curse/bless
                         state (even if it didn't actually change) */
-                    obj->bknown = 0;
+                    set_obj_bknown(obj, 0);
                     /* blessorcurse() only affects uncursed items
                         so no need to worry about price of water
                         going down (hence no costly_alteration) */
-                    if (shop_h2o && (obj->cursed || obj->blessed))
+                    if (shop_h2o && (is_obj_cursed(obj) || is_obj_blessed(obj)))
                         alter_cost(obj, 0L); /* price goes up */
                 }
-                else if (obj->cursed)
+                else if (is_obj_cursed(obj))
                 {
                     if (shop_h2o)
                         costly_alteration(obj, COST_UNCURS);

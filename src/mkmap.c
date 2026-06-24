@@ -221,7 +221,7 @@ flood_fill_rm(int sx, int sy, int rmno, boolean lit, boolean anyroom)
     for (i = sx; i <= WIDTH && levl[i][sy].typ == fg_typ; i++) 
     {
         levl[i][sy].roomno = rmno;
-        levl[i][sy].lit = lit;
+        set_lev_lit(i, sy, lit);
         if (anyroom)
         {
             /* add walls to room as well */
@@ -231,9 +231,9 @@ flood_fill_rm(int sx, int sy, int rmno, boolean lit, boolean anyroom)
                     if (isok(ii, jj) && (IS_WALL_OR_SDOOR(levl[ii][jj].typ)
                                          || IS_DOOR(levl[ii][jj].typ))) 
                     {
-                        levl[ii][jj].edge = 1;
+                        set_flag(levl[ii][jj].rm_bitflags, RM_BITFLAGS_EDGE, 1);
                         if (lit)
-                            levl[ii][jj].lit = lit;
+                            set_lev_lit(ii, jj, lit);
                         if ((int) levl[ii][jj].roomno != rmno)
                             levl[ii][jj].roomno = SHARED;
                     }
@@ -433,7 +433,7 @@ finish_map(lev_init *init_lev)
                     || (!IS_ROCK(bg_typ) && levl[i][j].typ == bg_typ)
                     || (IS_TREE(bg_typ) && levl[i][j].typ == bg_typ)
                     || (walled && IS_WALL(levl[i][j].typ)))
-                    levl[i][j].lit = TRUE;
+                    set_lev_lit(i, j, TRUE);
         for (i = 0; i < nroom; i++)
             rooms[i].rlit = 1;
     }
@@ -443,7 +443,7 @@ finish_map(lev_init *init_lev)
         for (j = 0; j < ROWNO; j++) 
         {
             if (levl[i][j].typ == LAVAPOOL)
-                levl[i][j].lit = TRUE;
+                set_lev_lit(i, j, TRUE);
             else if (levl[i][j].typ == ICE)
                 levl[i][j].icedpool = icedpools ? ICED_POOL : ICED_MOAT;
         }
@@ -560,8 +560,8 @@ mkmap(lev_init *init_lev)
     /* a walled, joined level is cavernous, not mazelike -dlc */
     if (walled && join)
     {
-        level.flags.is_maze_lev = FALSE;
-        level.flags.is_cavernous_lev = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_MAZE_LEV, FALSE);
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_CAVERNOUS_LEV, TRUE);
     }
     free(new_locations);
 }

@@ -653,15 +653,15 @@ get_initial_location_subtype(int ltype)
         res = get_initial_tree_subtype(level.flags.forest_type);
         break;
     case GRASS:
-        if (level.flags.swampy)
+        if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_SWAMPY))
             res = GRASS_SUBTYPE_SWAMPY;
         else
             res = GRASS_SUBTYPE_NORMAL;
         break;
     case GROUND:
-        if (level.flags.desert)
+        if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_DESERT))
             res = GROUND_SUBTYPE_DESERT_SAND;
-        else if (level.flags.swampy)
+        else if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_SWAMPY))
             res = GROUND_SUBTYPE_SWAMPY;
         else
             res = GROUND_SUBTYPE_NORMAL;

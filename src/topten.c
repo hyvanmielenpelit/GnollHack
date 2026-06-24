@@ -381,67 +381,67 @@ encodeachieve(void)
 {
     int64_t r = 0L;
 
-    if (u.uachieve.bell)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_BELL))
         r |= 1L << 0;
-    if (u.uachieve.enter_gehennom)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTER_GEHENNOM))
         r |= 1L << 1;
-    if (u.uachieve.menorah)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_MENORAH))
         r |= 1L << 2;
-    if (u.uachieve.book)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_BOOK))
         r |= 1L << 3;
-    if (u.uevent.invoked)
+    if (get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_INVOKED))
         r |= 1L << 4;
-    if (u.uachieve.amulet)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_AMULET))
         r |= 1L << 5;
     if (In_endgame(&u.uz))
         r |= 1L << 6;
     if (Is_astralevel(&u.uz))
         r |= 1L << 7;
-    if (u.uachieve.ascended)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ASCENDED))
         r |= 1L << 8;
-    if (u.uachieve.mines_luckstone)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_MINES_LUCKSTONE))
         r |= 1L << 9;
-    if (u.uachieve.finish_sokoban)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_FINISH_SOKOBAN))
         r |= 1L << 10;
-    if (u.uachieve.killed_medusa)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_KILLED_MEDUSA))
         r |= 1L << 11;
-    if (u.uachieve.killed_yacc)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_KILLED_YACC))
         r |= 1L << 12;
-    if (u.uachieve.prime_codex)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_PRIME_CODEX))
         r |= 1L << 13;
-    if (u.uachieve.consulted_oracle)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_CONSULTED_ORACLE))
         r |= 1L << 14;
-    if (u.uachieve.read_discworld_novel)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_READ_DISCWORLD_NOVEL))
         r |= 1L << 15;
-    if (u.uachieve.entered_gnomish_mines)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_GNOMISH_MINES))
         r |= 1L << 16;
-    if (u.uachieve.entered_mine_town)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_MINE_TOWN))
         r |= 1L << 17;
-    if (u.uachieve.entered_shop)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_SHOP))
         r |= 1L << 18;
-    if (u.uachieve.entered_temple)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_TEMPLE))
         r |= 1L << 19;
-    if (u.uachieve.entered_sokoban)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_SOKOBAN))
         r |= 1L << 20;
-    if (u.uachieve.entered_bigroom)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_BIGROOM))
         r |= 1L << 21;
-    if (u.uachieve.learned_castle_tune)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_LEARNED_CASTLE_TUNE))
         r |= 1L << 22;
-    if (u.uachieve.entered_large_circular_dungeon)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_LARGE_CIRCULAR_DUNGEON))
         r |= 1L << 23;
-    if (u.uachieve.entered_plane_of_modron)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_PLANE_OF_MODRON))
         r |= 1L << 24;
-    if (u.uachieve.entered_hellish_pastures)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_HELLISH_PASTURES))
         r |= 1L << 25;
-    if (u.uachieve.entered_elemental_planes)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_ELEMENTAL_PLANES))
         r |= 1L << 26;
-    if (u.uachieve.entered_astral_plane)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_ASTRAL_PLANE))
         r |= 1L << 27;
-    if (u.uachieve.role_achievement)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT))
         r |= 1L << 28;
-    if (u.uachieve.crowned)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_CROWNED))
         r |= 1L << 29;
-    if (u.uachieve.killed_demogorgon)
+    if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_KILLED_DEMOGORGON))
         r |= 1L << 30;
 
     return r;
@@ -607,35 +607,35 @@ encode_extended_achievements(void)
     static char buf[10 * BUFSZ]; /* Long enough */
 
     buf[0] = '\0';
-    add_achieveX(buf, "obtained_the_bell_of_opening", u.uachieve.bell);
-    add_achieveX(buf, "entered_gehennom", u.uachieve.enter_gehennom);
-    add_achieveX(buf, "obtained_the_candelabrum_of_invocation", u.uachieve.menorah);
-    add_achieveX(buf, "obtained_the_book_of_the_dead", u.uachieve.book);
-    add_achieveX(buf, "performed_the_invocation_ritual", u.uevent.invoked);
-    add_achieveX(buf, "obtained_the_amulet_of_yendor", u.uachieve.amulet);
-    add_achieveX(buf, "ascended", u.uachieve.ascended);
-    add_achieveX(buf, "obtained_the_luckstone_from_the_mines", u.uachieve.mines_luckstone);
-    add_achieveX(buf, "obtained_the_sokoban_prize", u.uachieve.finish_sokoban);
-    add_achieveX(buf, "defeated_medusa", u.uachieve.killed_medusa);
-    add_achieveX(buf, "defeated_yacc", u.uachieve.killed_yacc);
-    add_achieveX(buf, "defeated_demogorgon", u.uachieve.killed_demogorgon);
-    add_achieveX(buf, "obtained_the_prime_codex", u.uachieve.prime_codex);
-    add_achieveX(buf, "consulted_the_oracle", u.uachieve.consulted_oracle);
-    add_achieveX(buf, "read_a_discworld_novel", u.uachieve.read_discworld_novel);
-    add_achieveX(buf, "entered_the_gnomish_mines", u.uachieve.entered_gnomish_mines);
-    add_achieveX(buf, "entered_mine_town", u.uachieve.entered_mine_town);
-    add_achieveX(buf, "entered_a_shop", u.uachieve.entered_shop);
-    add_achieveX(buf, "entered_a_temple", u.uachieve.entered_temple);
-    add_achieveX(buf, "entered_sokoban", u.uachieve.entered_sokoban);
-    add_achieveX(buf, "entered_bigroom", u.uachieve.entered_bigroom);
-    add_achieveX(buf, "learned_castle_drawbridge_tune", u.uachieve.learned_castle_tune);
-    add_achieveX(buf, "entered_large_circular_dungeon", u.uachieve.entered_large_circular_dungeon);
-    add_achieveX(buf, "entered_plane_of_modron", u.uachieve.entered_plane_of_modron);
-    add_achieveX(buf, "entered_hellish_pastures", u.uachieve.entered_hellish_pastures);
-    add_achieveX(buf, "entered_elemental_planes", u.uachieve.entered_elemental_planes);
-    add_achieveX(buf, "entered_astral_plane", u.uachieve.entered_astral_plane);
-    add_achieveX(buf, "role_achievement", u.uachieve.role_achievement);
-    add_achieveX(buf, "crowned", u.uachieve.crowned);
+    add_achieveX(buf, "obtained_the_bell_of_opening", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_BELL));
+    add_achieveX(buf, "entered_gehennom", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTER_GEHENNOM));
+    add_achieveX(buf, "obtained_the_candelabrum_of_invocation", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_MENORAH));
+    add_achieveX(buf, "obtained_the_book_of_the_dead", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_BOOK));
+    add_achieveX(buf, "performed_the_invocation_ritual", get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_INVOKED));
+    add_achieveX(buf, "obtained_the_amulet_of_yendor", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_AMULET));
+    add_achieveX(buf, "ascended", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ASCENDED));
+    add_achieveX(buf, "obtained_the_luckstone_from_the_mines", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_MINES_LUCKSTONE));
+    add_achieveX(buf, "obtained_the_sokoban_prize", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_FINISH_SOKOBAN));
+    add_achieveX(buf, "defeated_medusa", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_KILLED_MEDUSA));
+    add_achieveX(buf, "defeated_yacc", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_KILLED_YACC));
+    add_achieveX(buf, "defeated_demogorgon", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_KILLED_DEMOGORGON));
+    add_achieveX(buf, "obtained_the_prime_codex", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_PRIME_CODEX));
+    add_achieveX(buf, "consulted_the_oracle", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_CONSULTED_ORACLE));
+    add_achieveX(buf, "read_a_discworld_novel", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_READ_DISCWORLD_NOVEL));
+    add_achieveX(buf, "entered_the_gnomish_mines", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_GNOMISH_MINES));
+    add_achieveX(buf, "entered_mine_town", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_MINE_TOWN));
+    add_achieveX(buf, "entered_a_shop", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_SHOP));
+    add_achieveX(buf, "entered_a_temple", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_TEMPLE));
+    add_achieveX(buf, "entered_sokoban", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_SOKOBAN));
+    add_achieveX(buf, "entered_bigroom", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_BIGROOM));
+    add_achieveX(buf, "learned_castle_drawbridge_tune", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_LEARNED_CASTLE_TUNE));
+    add_achieveX(buf, "entered_large_circular_dungeon", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_LARGE_CIRCULAR_DUNGEON));
+    add_achieveX(buf, "entered_plane_of_modron", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_PLANE_OF_MODRON));
+    add_achieveX(buf, "entered_hellish_pastures", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_HELLISH_PASTURES));
+    add_achieveX(buf, "entered_elemental_planes", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_ELEMENTAL_PLANES));
+    add_achieveX(buf, "entered_astral_plane", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_ASTRAL_PLANE));
+    add_achieveX(buf, "role_achievement", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT));
+    add_achieveX(buf, "crowned", get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_CROWNED));
 
     return buf;
 }

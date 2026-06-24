@@ -8,36 +8,31 @@
 #define QUEST_H
 
 struct q_score {              /* Quest "scorecard" */
-    Bitfield(first_start, 1); /* only set the first time */
-    Bitfield(met_leader, 1);  /* has met the leader */
-    Bitfield(not_ready, 3);   /* rejected due to alignment, etc. */
-    Bitfield(pissed_off, 1);  /* got the leader angry */
-    Bitfield(got_quest, 1);   /* got the quest assignment */
+    /* Bitfield flags converted to portable explicit bitmask flags */
+    uint64_t bitflags;
+#define QSCORE_BITFLAGS_NONE             0x00000000UL
+#define QSCORE_BITFLAGS_FIRST_START      0x00000001UL
+#define QSCORE_BITFLAGS_MET_LEADER       0x00000002UL
+#define QSCORE_BITFLAGS_PISSED_OFF       0x00000004UL
+#define QSCORE_BITFLAGS_GOT_QUEST        0x00000008UL
+#define QSCORE_BITFLAGS_FIRST_LOCATE     0x00000010UL
+#define QSCORE_BITFLAGS_MET_INTERMED     0x00000020UL
+#define QSCORE_BITFLAGS_GOT_FINAL        0x00000040UL
+#define QSCORE_BITFLAGS_MET_NEMESIS      0x00000080UL
+#define QSCORE_BITFLAGS_KILLED_NEMESIS   0x00000100UL
+#define QSCORE_BITFLAGS_IN_BATTLE        0x00000200UL
+#define QSCORE_BITFLAGS_CHEATER          0x00000400UL
+#define QSCORE_BITFLAGS_TOUCHED_ARTIFACT 0x00000800UL
+#define QSCORE_BITFLAGS_OFFERED_ARTIFACT 0x00001000UL
+#define QSCORE_BITFLAGS_GOT_THANKS       0x00002000UL
+#define QSCORE_BITFLAGS_LEADER_IS_DEAD   0x00004000UL
 
-    Bitfield(first_locate, 1); /* only set the first time */
-    Bitfield(met_intermed, 1); /* used if the locate is a person. */
-    Bitfield(got_final, 1);    /* got the final quest assignment */
+    uchar not_ready;
+    uchar made_goal;
+    uchar ldrgend;
+    uchar nemgend;
+    uchar godgend;
 
-    Bitfield(made_goal, 3);      /* # of times on goal level */
-    Bitfield(met_nemesis, 1);    /* has met the nemesis before */
-    Bitfield(killed_nemesis, 1); /* set when the nemesis is killed */
-    Bitfield(in_battle, 1);      /* set when nemesis fighting you */
-
-    Bitfield(cheater, 1);          /* set if cheating detected */
-    Bitfield(touched_artifact, 1); /* for a special message */
-    Bitfield(offered_artifact, 1); /* offered to leader */
-    Bitfield(got_thanks, 1);       /* final message from leader */
-
-    /* used by questpgr code when messages want to use pronouns
-       (set up at game start instead of waiting until monster creation;
-       1 bit each would suffice--nobody involved is actually neuter) */
-    Bitfield(ldrgend, 2); /* leader's gender: 0=male, 1=female, 2=neuter */
-    Bitfield(nemgend, 2); /* nemesis's gender */
-    Bitfield(godgend, 2); /* deity's gender */
-
-    /* keep track of leader presence/absence even if leader is
-       polymorphed, raised from dead, etc */
-    Bitfield(leader_is_dead, 1);
     unsigned leader_m_id;
 };
 

@@ -81,7 +81,7 @@ droppables(struct monst *mon)
 
         case UNICORN_HORN:
             /* reject cursed unicorn horns */
-            if (obj->cursed)
+            if (is_obj_cursed(obj))
                 break;
             /* keep artifact unihorn in preference to ordinary one */
             if (!unihorn || (obj->oartifact && !unihorn->oartifact)) {
@@ -201,7 +201,7 @@ cursed_object_at(int x, int y)
     struct obj *otmp;
 
     for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
-        if (otmp->cursed)
+        if (is_obj_cursed(otmp))
             return TRUE;
     return FALSE;
 }
@@ -329,7 +329,7 @@ dog_eat(struct monst *mtmp, struct obj *obj, int x, int y, boolean devour)
         edog->mhpmax_penalty = 0;
     }
 
-    if (mtmp->mflee && mtmp->mflee_timer > 1)
+    if (is_mon_fleeing(mtmp) && mtmp->mflee_timer > 1)
         mtmp->mflee_timer /= 2;
     if (mtmp->mtame > 0 && mtmp->mtame < 20)
         mtmp->mtame++;
@@ -347,7 +347,7 @@ dog_eat(struct monst *mtmp, struct obj *obj, int x, int y, boolean devour)
     if (obj->quan > 1L && obj->oclass == FOOD_CLASS)
         obj = splitobj(obj, 1L);
     
-    if (obj->unpaid)
+    if (is_obj_unpaid(obj))
         iflags.suppress_price++;
 
     if(obj)
@@ -391,7 +391,7 @@ dog_eat(struct monst *mtmp, struct obj *obj, int x, int y, boolean devour)
                   distant_name(obj, doname));
     }
 
-    if (obj->unpaid)
+    if (is_obj_unpaid(obj))
     {
         Strcpy(objnambuf, xname(obj));
         iflags.suppress_price--;
@@ -408,12 +408,12 @@ dog_eat(struct monst *mtmp, struct obj *obj, int x, int y, boolean devour)
 #endif
 
 
-    if (rust_causing_and_ironvorous(mtmp->data) && obj->oerodeproof) 
+    if (rust_causing_and_ironvorous(mtmp->data) && is_obj_erodeproof(obj)) 
     {
         /* The object's rustproofing is gone now */
-        if (obj->unpaid)
+        if (is_obj_unpaid(obj))
             costly_alteration(obj, COST_DEGRD);
-        obj->oerodeproof = 0;
+        set_obj_erodeproof(obj, 0);
         increase_mon_property(mtmp, STUNNED, 5 + rnd(10));
         if (canseemon(mtmp) && flags.verbose) 
         {
@@ -439,7 +439,7 @@ dog_eat(struct monst *mtmp, struct obj *obj, int x, int y, boolean devour)
         else
             dog_food_after_effect(mtmp, obj, canspotmon(mtmp));
 
-        if (obj->unpaid)
+        if (is_obj_unpaid(obj))
         {
             /* edible item owned by shop has been thrown or kicked
                by hero and caught by tame or food-tameable monst */
@@ -545,7 +545,7 @@ dog_food_after_effect(struct monst *mtmp, struct obj *otmp, boolean verbose)
     {
         /* This stuff seems to be VERY healthy! */
         m_gainstr(mtmp, otmp, 1, TRUE);
-        mtmp->mhp += otmp->cursed ? -rnd(20) : rnd(20);
+        mtmp->mhp += is_obj_cursed(otmp) ? -rnd(20) : rnd(20);
         if (mtmp->mhp > mtmp->mhpmax)
         {
             if (!rn2(17))
@@ -557,7 +557,7 @@ dog_food_after_effect(struct monst *mtmp, struct obj *otmp, boolean verbose)
         {
             xkilled(mtmp, XKILL_NOMSG);
         }
-        if (!otmp->cursed)
+        if (!is_obj_cursed(otmp))
             (void)set_mon_property_b(mtmp, WOUNDED_LEGS, 0, FALSE);
         if (iflags.wc2_statuslines > 3 && is_tame(mtmp))
             context.botl = 1;
@@ -568,23 +568,23 @@ dog_food_after_effect(struct monst *mtmp, struct obj *otmp, boolean verbose)
         m_gainstr(mtmp, otmp, 1, verbose);
         break;
     case EDIBLEFX_GAIN_DEXTERITY:
-        (void)m_adjattrib(mtmp, A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, verbose);
+        (void)m_adjattrib(mtmp, A_DEX, (otmp && is_obj_cursed(otmp)) ? -1 : (otmp && is_obj_blessed(otmp)) ? rnd(2) : 1, verbose);
         break;
     case EDIBLEFX_GAIN_CONSTITUTION:
-        (void)m_adjattrib(mtmp, A_CON, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, verbose);
+        (void)m_adjattrib(mtmp, A_CON, (otmp && is_obj_cursed(otmp)) ? -1 : (otmp && is_obj_blessed(otmp)) ? rnd(2) : 1, verbose);
         break;
     case EDIBLEFX_GAIN_INTELLIGENCE:
-        (void)m_adjattrib(mtmp, A_INT, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, verbose);
+        (void)m_adjattrib(mtmp, A_INT, (otmp && is_obj_cursed(otmp)) ? -1 : (otmp && is_obj_blessed(otmp)) ? rnd(2) : 1, verbose);
         break;
     case EDIBLEFX_GAIN_WISDOM:
-        (void)m_adjattrib(mtmp, A_WIS, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, verbose);
+        (void)m_adjattrib(mtmp, A_WIS, (otmp && is_obj_cursed(otmp)) ? -1 : (otmp && is_obj_blessed(otmp)) ? rnd(2) : 1, verbose);
         break;
     case EDIBLEFX_GAIN_CHARISMA:
-        (void)m_adjattrib(mtmp, A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, verbose);
+        (void)m_adjattrib(mtmp, A_CHA, (otmp && is_obj_cursed(otmp)) ? -1 : (otmp && is_obj_blessed(otmp)) ? rnd(2) : 1, verbose);
         break;
     case EDIBLEFX_RESTORE_ABILITY:
     {
-        if (otmp->cursed)
+        if (is_obj_cursed(otmp))
         {
             if(verbose)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ulch!  That made %s feel mediocre!", mon_nam(mtmp));
@@ -594,7 +594,7 @@ dog_food_after_effect(struct monst *mtmp, struct obj *otmp, boolean verbose)
         {
             int i, ii, lim;
             if (verbose)
-                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "Wow!  That made %s feel %s!", mon_nam(mtmp), otmp->blessed ? "great" : "good");
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "Wow!  That made %s feel %s!", mon_nam(mtmp), is_obj_blessed(otmp) ? "great" : "good");
             i = rn2(A_MAX); /* start at a random point */
             for (ii = 0; ii < A_MAX; ii++) 
             {
@@ -605,7 +605,7 @@ dog_food_after_effect(struct monst *mtmp, struct obj *otmp, boolean verbose)
                 {
                     M_ABASE(mtmp, i) = lim;
                     /* only first found if not blessed */
-                    if (!otmp->blessed)
+                    if (!is_obj_blessed(otmp))
                         break;
                 }
                 if (++i >= A_MAX)
@@ -635,14 +635,14 @@ dog_food_after_effect(struct monst *mtmp, struct obj *otmp, boolean verbose)
         }
         break;
     case EDIBLEFX_CURE_SICKNESS:
-        if(!otmp->cursed)
+        if(!is_obj_cursed(otmp))
             mcuresickness(mtmp, verbose);
         break;
     case EDIBLEFX_APPLE:
         /* Nothing */
         break;
     case EDIBLEFX_CURE_PETRIFICATION:
-        if (!otmp->cursed)
+        if (!is_obj_cursed(otmp))
         {
             if (has_stoned(mtmp))
             {
@@ -658,7 +658,7 @@ dog_food_after_effect(struct monst *mtmp, struct obj *otmp, boolean verbose)
         }
         break;
     case EDIBLEFX_CURE_TELEPORTITIS:
-        if (!otmp->cursed)
+        if (!is_obj_cursed(otmp))
         {
             if (has_property(mtmp, TELEPORT))
             {
@@ -672,7 +672,7 @@ dog_food_after_effect(struct monst *mtmp, struct obj *otmp, boolean verbose)
         }    
         break;
     case EDIBLEFX_CURE_HALLUCINATION:
-        if (!otmp->cursed)
+        if (!is_obj_cursed(otmp))
             mcurehallucination(mtmp, verbose);
         break;
     }
@@ -1175,7 +1175,7 @@ m_gainstr(struct monst *mtmp, struct obj *otmp, int num, boolean verbose)
         else
             num = 1;
     }
-    (void)m_adjattrib(mtmp, A_STR, (otmp && otmp->cursed) ? -num : (otmp && otmp->blessed) ? num + rn2(2) : num, verbose);
+    (void)m_adjattrib(mtmp, A_STR, (otmp && is_obj_cursed(otmp)) ? -num : (otmp && is_obj_blessed(otmp)) ? num + rn2(2) : num, verbose);
 
 }
 
@@ -1222,7 +1222,7 @@ dog_hunger(struct monst *mtmp, struct edog *edog)
                    || DEADMONSTER(mtmp)) 
         {
  dog_died:
-            if (mtmp->mleashed && mtmp != u.usteed)
+            if (is_mon_leashed(mtmp) && mtmp != u.usteed)
             {
                 play_sfx_sound(SFX_LEASH_GOES_SLACK);
                 Your("leash goes slack.");
@@ -1270,7 +1270,7 @@ dog_hunger(struct monst *mtmp, struct edog *edog)
 static int
 dog_invent(struct monst *mtmp, struct edog *edog, int udist)
 {
-    if (!mtmp || !edog || !mon_can_move(mtmp) || !mtmp->mwantstomove)
+    if (!mtmp || !edog || !mon_can_move(mtmp) || !get_flag(mtmp->mon_bitflags, MON_BITFLAGS_MWANTSTOMOVE))
         return 0;
 
     int omx, omy, carryamt = 0;
@@ -1287,7 +1287,7 @@ dog_invent(struct monst *mtmp, struct edog *edog, int udist)
     boolean has_droppables = droppables(mtmp) != 0;
     if (has_droppables)
     {
-        if ((!rn2(udist + 1) || !rn2(edog->apport)) && mtmp->mwantstodrop && !mtmp->ispartymember && !mtmp->isminion && !is_packmule(mtmp->data))
+        if ((!rn2(udist + 1) || !rn2(edog->apport)) && get_flag(mtmp->mon_bitflags, MON_BITFLAGS_MWANTSTODROP) && !is_mon_partymember(mtmp) && !is_mon_minion(mtmp) && !is_packmule(mtmp->data))
             if (rn2(10) < edog->apport) 
             {
                 mdrop_droppable_objs(mtmp);
@@ -1299,7 +1299,7 @@ dog_invent(struct monst *mtmp, struct edog *edog, int udist)
             }
     } 
 
-    if (!has_droppables || ((mtmp->ispartymember || mtmp->isminion) && !did_drop))
+    if (!has_droppables || ((is_mon_partymember(mtmp) || is_mon_minion(mtmp)) && !did_drop))
     {
         if ((obj = level.objects[omx][omy]) != 0
             && !index(nofetch, obj->oclass)
@@ -1321,12 +1321,12 @@ dog_invent(struct monst *mtmp, struct edog *edog, int udist)
             carryamt = can_carry(mtmp, obj);
             boolean fired_ammunition = (obj->item_flags & ITEM_FLAGS_FIRED_BY_MONSTER) != 0 && obj->firing_m_id == mtmp->m_id;
             if (carryamt > 0
-                && (!obj->cursed || !mon_eschews_cursed(mtmp) || cursed_items_are_positive_mon(mtmp))
-                && (!obj->blessed || !mon_eschews_blessed(mtmp)) 
+                && (!is_obj_cursed(obj) || !mon_eschews_cursed(mtmp) || cursed_items_are_positive_mon(mtmp))
+                && (!is_obj_blessed(obj) || !mon_eschews_blessed(mtmp)) 
                 && (!mon_eschews_silver(mtmp) || !obj_counts_as_silver(obj))
                 && (!mon_eschews_light(mtmp) || !obj_sheds_light(obj))
                 && !is_obj_unique(obj) && !is_quest_artifact(obj) && !m_unpaid_item_no_pickup(mtmp, obj)
-                && ((!mtmp->issummoned && !mtmp->ispartymember && !mtmp->isminion && !is_packmule(mtmp->data)) || fired_ammunition)
+                && ((!get_flag(mtmp->mon_bitflags, MON_BITFLAGS_ISSUMMONED) && !is_mon_partymember(mtmp) && !is_mon_minion(mtmp) && !is_packmule(mtmp->data)) || fired_ammunition)
                 && could_reach_item(mtmp, obj->ox, obj->oy) && !onnopickup(obj->ox, obj->oy, mtmp) && !is_obj_no_pickup(obj))
             {
                 if (rn2(20) < edog->apport + 3 || fired_ammunition)
@@ -1481,7 +1481,7 @@ dog_goal(struct monst *mtmp, struct edog *edog, int after, int udist, int whappr
                     continue;
 
                 /* skip always shop food and other items if chastised */
-                if (edog->chastised && (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(obj->ox, obj->oy))))
+                if (edog->chastised && (is_obj_unpaid(obj) || (obj->where == OBJ_FLOOR && !is_obj_no_charge(obj) && costly_spot(obj->ox, obj->oy))))
                     continue;
 
                 if (otyp < MANFOOD)
@@ -1495,7 +1495,7 @@ dog_goal(struct monst *mtmp, struct edog *edog, int after, int udist, int whappr
                 }
                 else if (gtyp == UNDEF && in_masters_sight
                            && !dog_has_minvent
-                           && (!levl[omx][omy].lit || levl[u.ux][u.uy].lit)
+                           && (!is_lev_lit(omx, omy) || is_lev_lit(u.ux, u.uy))
                            && (otyp == MANFOOD || m_cansee(mtmp, nx, ny))
                            && edog->apport > rn2(8)
                            && can_carry(mtmp, obj) > 0)
@@ -1700,9 +1700,9 @@ score_targ(struct monst *mtmp, struct monst *mtarg)
         aligntyp align1 = A_NONE, align2 = A_NONE; /* For priests, minions */
         boolean faith1 = TRUE,  faith2 = TRUE;
 
-        if (mtmp->isminion)
+        if (is_mon_minion(mtmp))
             align1 = EMIN(mtmp)->min_align;
-        else if (mtmp->ispriest)
+        else if (is_mon_priest(mtmp))
             align1 = EPRI(mtmp)->shralign;
         else
             faith1 = FALSE;
@@ -1724,7 +1724,7 @@ score_targ(struct monst *mtmp, struct monst *mtarg)
             return score;
         }
         /* Is the monster peaceful or tame? */
-        if ((is_peaceful(mtarg) && !mon_has_bloodlust(mtmp) /*mtmp->ispacifist*/) || is_tame(mtarg) || mtarg == &youmonst)
+        if ((is_peaceful(mtarg) && !mon_has_bloodlust(mtmp) /*get_flag(mtmp->mon_bitflags, MON_BITFLAGS_ISPACIFIST)*/) || is_tame(mtarg) || mtarg == &youmonst)
         {
             /* Pets will never be targeted */
             score -= 3000L;
@@ -1900,7 +1900,7 @@ dog_move(struct monst *mtmp, int after)
 
 
     /* teleport if that lies in our nature */
-    if (has_teleportation(mtmp) && has_teleport_control(mtmp) && !is_cancelled(mtmp) && !level.flags.noteleport)
+    if (has_teleportation(mtmp) && has_teleport_control(mtmp) && !is_cancelled(mtmp) && !get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOTELEPORT))
     {
         if (mtmp->mcomingtou && !m_canseeu(mtmp) && !couldsee(mtmp->mx, mtmp->my) && distu(mtmp->mx, mtmp->my) > 2)
         {
@@ -1957,7 +1957,7 @@ dog_move(struct monst *mtmp, int after)
     if (is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0)))
     {
         allowflags |= (ALLOW_U  | ALLOW_TM);
-        if (mtmp->isminion)
+        if (is_mon_minion(mtmp))
         {
             /* Guardian angel refuses to be conflicted; rather,
              * it disappears, angrily, and sends in some nasties
@@ -1994,7 +1994,7 @@ dog_move(struct monst *mtmp, int after)
     if(!mtmp->notraveltimer)
     {
         /* Find travel path if comingtou or if is a guardian angel that cannot see you */
-        if ((mtmp->mcomingtou || (mtmp->isminion && !couldsee(mtmp->mx, mtmp->my))) && !mtmp->notraveltimer)
+        if ((mtmp->mcomingtou || (is_mon_minion(mtmp) && !couldsee(mtmp->mx, mtmp->my))) && !mtmp->notraveltimer)
         {
             xchar mon_dx = 0, mon_dy = 0;
 
@@ -2045,11 +2045,11 @@ dog_move(struct monst *mtmp, int after)
         cursedobj[i] = 0;
 
         /* if leashed, we drag him along. */
-        if (mtmp->mleashed && distu(nx, ny) > 4)
+        if (is_mon_leashed(mtmp) && distu(nx, ny) > 4)
             continue;
 
         /* if a guardian, try to stay close by choice -- Now handled above by activating pathing --JG */
-//        if (mtmp->isminion && !mtmp->mcomingtou && (j = distu(nx, ny)) > 16 && j >= udist)
+//        if (is_mon_minion(mtmp) && !mtmp->mcomingtou && (j = distu(nx, ny)) > 16 && j >= udist)
 //            continue;
 
         boolean monatres = MON_AT(nx, ny);
@@ -2129,7 +2129,7 @@ dog_move(struct monst *mtmp, int after)
 
             if ((info[i] & ALLOW_TRAPS) && (trap = t_at(nx, ny))) 
             {
-                if (mtmp->mleashed) 
+                if (is_mon_leashed(mtmp)) 
                 {
                     if (!Deaf)
                         whimper(mtmp);
@@ -2147,10 +2147,10 @@ dog_move(struct monst *mtmp, int after)
 
         /* dog eschews cursed objects, but likes dog food */
         /* (minion isn't interested; `cursemsg' stays FALSE) */
-        if (!mtmp->isminion)
+        if (!is_mon_minion(mtmp))
             for (obj = level.objects[nx][ny]; obj; obj = obj->nexthere) 
             {
-                if (obj->blessed && mon_eschews_blessed(mtmp)) /* animals and angels eschew cursed objects */
+                if (is_obj_blessed(obj) && mon_eschews_blessed(mtmp)) /* animals and angels eschew cursed objects */
                 {
                     cursemsg[i] = TRUE;
                     cursedobj[i] = obj;
@@ -2160,7 +2160,7 @@ dog_move(struct monst *mtmp, int after)
                     cursemsg[i] = TRUE;
                     cursedobj[i] = obj;
                 }
-                else if (obj->cursed && mon_eschews_cursed(mtmp))
+                else if (is_obj_cursed(obj) && mon_eschews_cursed(mtmp))
                 {
                     cursemsg[i] = TRUE;
                     cursedobj[i] = obj;
@@ -2189,7 +2189,7 @@ dog_move(struct monst *mtmp, int after)
             }
         /* didn't find something to eat; if we saw a cursed item and
            aren't being forced to walk on it, usually keep looking */
-        if (cursemsg[i] && !mtmp->mleashed && !mtmp->mcomingtou && uncursedcnt > 0
+        if (cursemsg[i] && !is_mon_leashed(mtmp) && !mtmp->mcomingtou && uncursedcnt > 0
             && rn2(13 * uncursedcnt))
             continue;
 
@@ -2197,9 +2197,9 @@ dog_move(struct monst *mtmp, int after)
         /* This causes unintended issues for pets trying to follow
            the hero. Thus, only run it if not leashed and >5 tiles
            away. */
-        if (!mtmp->mleashed && !mtmp->mcomingtou && distmin(mtmp->mx, mtmp->my, u.ux, u.uy) > 5)
+        if (!is_mon_leashed(mtmp) && !mtmp->mcomingtou && distmin(mtmp->mx, mtmp->my, u.ux, u.uy) > 5)
         {
-            k = !mtmp->isminion ? uncursedcnt : cnt;
+            k = !is_mon_minion(mtmp) ? uncursedcnt : cnt;
             for (j = 0; j < MTSZ && j < k - 1; j++)
                 if (nx == mtmp->mtrack[j].x && ny == mtmp->mtrack[j].y)
                     if (rn2(MTSZ * (k - j)))
@@ -2243,7 +2243,7 @@ dog_move(struct monst *mtmp, int after)
         int hungry = 0;
 
         /* How hungry is the pet? */
-        if (!mtmp->isminion && has_edog(mtmp))
+        if (!is_mon_minion(mtmp) && has_edog(mtmp))
         {
             struct edog *dog = EDOG(mtmp);
 
@@ -2323,7 +2323,7 @@ newdogpos:
             if (info[chi] & ALLOW_U)
             {
                 set_apparxy(mtmp); /* May need to update after mattacku above */
-                if (mtmp->mleashed)
+                if (is_mon_leashed(mtmp))
                 { /* play it safe */
                     play_sfx_sound(SFX_PULLS_FREE_OF_LEASH);
                     pline("%s breaks loose of %s leash!", Monnam(mtmp), mhis(mtmp));
@@ -2357,7 +2357,7 @@ newdogpos:
                 /* describe top item of pile, not necessarily cursed item itself;
                    don't use glyph_at() here--it would return the pet but we want
                    to know whether an object is remembered at this map location */
-                struct obj *o = (!Hallucination && level.flags.hero_memory
+                struct obj *o = (!Hallucination && is_hero_memory()
                                  && glyph_is_object(levl[nix][niy].hero_memory_layers.glyph))
                                    ? vobj_at(nix, niy) : 0;
 #endif
@@ -2407,7 +2407,7 @@ newdogpos:
                 }
             }
         } 
-        else if (mtmp->mleashed && distu(omx, omy) > 4)
+        else if (is_mon_leashed(mtmp) && distu(omx, omy) > 4)
         {
             /* an incredible kludge, but the only way to keep pooch near
              * after it spends time eating or in a trap, etc.
@@ -2609,7 +2609,7 @@ quickmimic(struct monst *mtmp)
                          && OBJ_NAME(objects[mtmp->mappearance]))
                             ? an(OBJ_NAME(objects[mtmp->mappearance]))
                             : (M_AP_TYPE(mtmp) == M_AP_MONSTER)
-                                  ? an(pm_monster_name(&mons[mtmp->mappearance], mtmp->female))
+                                  ? an(pm_monster_name(&mons[mtmp->mappearance], is_mon_female(mtmp)))
                                   : something,
             cansee(mtmp->mx, mtmp->my) ? "" : "has ",
             cansee(mtmp->mx, mtmp->my) ? "" : "ed",

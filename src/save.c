@@ -1345,11 +1345,11 @@ savemonchn(int fd, struct monst *mtmp, int mode)
         mtmp2 = mtmp->nmon;
         if (perform_bwrite(mode)) {
             mtmp->mnum = monsndx(mtmp->data);
-            if (mtmp->ispriest)
+            if (is_mon_priest(mtmp))
                 forget_temple_entry(mtmp); /* EPRI() */
-            if (mtmp->issmith)
+            if (is_mon_smith(mtmp))
                 forget_smithy_entry(mtmp); /* ESMI() */
-            if (mtmp->isnpc)
+            if (is_mon_npc(mtmp))
                 forget_npc_entry(mtmp); /* ENPC() */
             savemon(fd, mtmp);
         }
@@ -1457,7 +1457,7 @@ store_save_game_stats_in_file(int fd, int64_t time_stamp)
     if (slev)
         mptr = find_mapseen(&u.uz);
 
-    if (slev && mptr && mptr->flags.special_level_true_nature_known)
+    if (slev && mptr && get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_SPECIAL_LEVEL_TRUE_NATURE_KNOWN))
     {
         Sprintf(gamestats.level_name, "%s", slev->name);
     }

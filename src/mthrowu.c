@@ -213,7 +213,7 @@ drop_throw(struct obj *obj, boolean ohit, int x, int y)
     else
         create = 1;
 
-    if (create && !((mtmp = m_at(x, y)) != 0 && mtmp->mtrapped
+    if (create && !((mtmp = m_at(x, y)) != 0 && is_mon_trapped(mtmp)
                     && (t = t_at(x, y)) != 0
                     && is_pit(t->ttyp))) {
         int objgone = 0;
@@ -438,10 +438,10 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
     {
         if (ismimic)
             seemimic(mtmp);
-        mtmp->msleeping = 0;
+        set_mon_sleeping(mtmp, 0);
         refresh_m_tile_gui_info(mtmp, TRUE);
         if (vis)
-            otmp->dknown = 1;
+            set_obj_dknown(otmp, 1);
         /* probably thrown by a monster rather than 'other', but the
            distinction only matters when hitting the hero */
         potionhit(mtmp, &otmp, POTHIT_OTHER_THROW);
@@ -491,15 +491,15 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
         if (ismimic)
             seemimic(mtmp);
 
-        if (mtmp->msleeping)
+        if (is_mon_sleeping(mtmp))
         {
-            mtmp->msleeping = 0;
+            set_mon_sleeping(mtmp, 0);
             refresh_m_tile_gui_info(mtmp, TRUE);
         }
 
         damage = adjust_damage(dmg, (struct monst*)0, mtmp, objects[otmp->otyp].oc_damagetype, ADFLAGS_NONE);
 
-        enum hit_tile_types hit_tile = (otmp->opoisoned && is_poisonable(otmp) && !resists_poison(mtmp) ? HIT_POISONED : HIT_GENERAL);
+        enum hit_tile_types hit_tile = (is_obj_trapped(otmp) && is_poisonable(otmp) && !resists_poison(mtmp) ? HIT_POISONED : HIT_GENERAL);
 
         if (vis) 
         {
@@ -507,7 +507,7 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
             {
                 display_m_being_hit(mtmp, hit_tile, 0, 0UL, FALSE);
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Splat!  %s is hit with %s egg!", Monnam(mtmp),
-                    otmp->known ? an(corpse_monster_name(otmp)) : "an");
+                    is_obj_known(otmp) ? an(corpse_monster_name(otmp)) : "an");
             }
             else
                 hit_with_hit_tile(distant_name(otmp, mshot_xname), mtmp, exclam((int)ceil(damage)), (int)ceil(damage), "", hit_tile, FALSE);
@@ -520,7 +520,7 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
                 Monnam(mtmp), exclam((int)ceil(damage)));
         }
 
-        if (otmp->opoisoned && is_poisonable(otmp)) 
+        if (is_obj_trapped(otmp) && is_poisonable(otmp)) 
         {
             if (resists_poison(mtmp)) 
             {
@@ -725,7 +725,7 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
                            || !canspotmon(mtmp)) ? "destroyed" : "killed");
                 /* don't blame hero for unknown rolling boulder trap */
                 if (!context.mon_moving && (otmp->otyp != BOULDER
-                                            || range >= 0 || otmp->otrapped))
+                                            || range >= 0 || is_obj_trapped(otmp)))
                     xkilled(mtmp, XKILL_NOMSG);
                 else
                     mondied(mtmp);
@@ -1223,7 +1223,7 @@ spitmm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 
             /* If this is a pet, it'll get hungry. Minions and
              * spell beings won't hunger */
-            if (mtmp->mtame && !mtmp->isminion && has_edog(mtmp)) 
+            if (mtmp->mtame && !is_mon_minion(mtmp) && has_edog(mtmp)) 
             {
                 struct edog *dog = EDOG(mtmp);
 
@@ -1283,7 +1283,7 @@ breamm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 
                 /* If this is a pet, it'll get hungry. Minions and
                  * spell beings won't hunger */
-                if (mtmp->mtame && !mtmp->isminion && has_edog(mtmp)) 
+                if (mtmp->mtame && !is_mon_minion(mtmp) && has_edog(mtmp)) 
                 {
                     struct edog *dog = EDOG(mtmp);
 
@@ -1401,7 +1401,7 @@ buzzmm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 
                 /* If this is a pet, it'll get hungry. Minions and
                  * spell beings won't hunger */
-                if (mtmp->mtame && !mtmp->isminion && has_edog(mtmp))
+                if (mtmp->mtame && !is_mon_minion(mtmp) && has_edog(mtmp))
                 {
                     struct edog* dog = EDOG(mtmp);
 

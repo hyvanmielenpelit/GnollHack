@@ -296,7 +296,7 @@ Boots_off(void)
     struct obj *otmp = uarmf;
     int otyp = otmp->otyp;
     int64_t oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
-    boolean on_purpose = !context.mon_moving && otmp && !otmp->in_use;
+    boolean on_purpose = !context.mon_moving && otmp && !is_obj_in_use(otmp);
     boolean had_stone_res = Stone_resistance;
 
     if (flags.verbose && otmp)
@@ -368,7 +368,7 @@ Cloak_off(void)
     struct obj *otmp = uarmc;
     int otyp = otmp->otyp;
     int64_t oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
-    boolean on_purpose = !context.mon_moving && otmp && !otmp->in_use;
+    boolean on_purpose = !context.mon_moving && otmp && !is_obj_in_use(otmp);
     boolean had_stone_res = Stone_resistance;
 
     if (flags.verbose && otmp)
@@ -899,7 +899,7 @@ item_change_sex_and_useup(struct obj *uitem)
     }
     play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrates!", The(cxname(uitem)));
-    if (orig_sex == poly_gender() && uitem->dknown
+    if (orig_sex == poly_gender() && is_obj_dknown(uitem)
         && !objects[uitem->otyp].oc_name_known
         && !objects[uitem->otyp].oc_uname)
         docall(uitem, dcbuf);
@@ -925,18 +925,18 @@ mon_item_change_sex_and_useup(struct monst *mon, struct obj *uitem, boolean crea
     if (mon->mprops[UNCHANGING])
         return;
 
-    unsigned orig_sex = mon->female;
+    unsigned orig_sex = is_mon_female(mon);
     if (!(is_male(mon->data) || is_female(mon->data) || is_neuter(mon->data)))
-        mon->female = !mon->female;
+        set_mon_female(mon, !is_mon_female(mon));
 
     if (!creation && canseemon(mon))
     {
         /* Don't use same message as polymorph */
-        if (orig_sex != mon->female) {
+        if (orig_sex != is_mon_female(mon)) {
             makeknown(uitem->otyp);
             play_sfx_sound_at_location(SFX_SEX_CHANGE, mon->mx, mon->my);
             Sprintf(dcbuf, "%s is suddenly very %s!", Monnam(mon),
-                mon->female ? "feminine" : "masculine");
+                is_mon_female(mon) ? "feminine" : "masculine");
             pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         }
         else
@@ -949,7 +949,7 @@ mon_item_change_sex_and_useup(struct monst *mon, struct obj *uitem, boolean crea
         }
         play_sfx_sound_at_location(SFX_ITEM_CRUMBLES_TO_DUST, mon->mx, mon->my);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrates!", The(cxname(uitem)));
-        if (orig_sex == mon->female && uitem->dknown
+        if (orig_sex == is_mon_female(mon) && is_obj_dknown(uitem)
             && !objects[uitem->otyp].oc_name_known
             && !objects[uitem->otyp].oc_uname)
             docall(uitem, dcbuf);
@@ -1613,7 +1613,7 @@ cursed(struct obj *otmp, boolean verbose)
         return 0;
     }
     /* Curses, like chickens, come home to roost. */
-    if ((otmp == uwep) ? welded(otmp, &youmonst) : (int) otmp->cursed && !cursed_items_are_positive(youmonst.data))
+    if ((otmp == uwep) ? welded(otmp, &youmonst) : (int) is_obj_cursed(otmp) && !cursed_items_are_positive(youmonst.data))
     {
         boolean use_plural = (is_boots(otmp) || is_gloves(otmp) || is_bracers(otmp)
                                || otmp->quan > 1L);
@@ -1623,9 +1623,9 @@ cursed(struct obj *otmp, boolean verbose)
             You_ex(ATR_NONE, CLR_MSG_WARNING, "can't remove %s.  %s cursed.", thecxname(otmp), use_plural ? "They are" : "It is");
         else
             You_ex(ATR_NONE, CLR_MSG_WARNING, "can't.  %s cursed.", use_plural ? "They are" : "It is");
-        if (!otmp->bknown)
+        if (!is_obj_bknown(otmp))
         {
-            otmp->bknown = TRUE;
+            set_obj_bknown(otmp, TRUE);
             update_inventory();
         }
         return 1;
@@ -2682,14 +2682,14 @@ accessory_or_armor_on(struct obj *obj, boolean in_takeoff_wear, int64_t set_mask
         if (!ogone)
         {
             /*
- * Setting obj->known=1 is done because setworn() causes hero's AC
+ * Setting set_obj_known(obj, 1 is done because setworn()) causes hero's AC
  * to change so armor's +/- value is evident via the status line.
  * We used to set it here because of that, but then it would stick
  * if a nymph stole the armor before it was fully worn.  Delay it
  * until the aftermv action.  The player may still know this armor's
  * +/- amount if donning gets interrupted, but the hero won't.
  *
-obj->known = 1;
+set_obj_known(obj, 1);
  */
             setworn(obj, mask);
             /* if there's no delay, we'll execute 'aftermv' immediately */
@@ -4110,7 +4110,7 @@ destroy_arm(struct obj *atmp)
 #define DESTROY_ARM(o)                            \
     ((otmp = (o)) != 0 && (!atmp || atmp == otmp) \
              && (!obj_resists(otmp, 0, 90))       \
-         ? (otmp->in_use = TRUE) != 0             \
+         ? (set_obj_in_use(otmp, TRUE)) != 0             \
          : FALSE)
 
     debugprint("destroy_arm");
@@ -4120,7 +4120,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s crumbles and turns to dust!", cloak_simple_name(uarmc));
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Cloak_off();
@@ -4135,7 +4135,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s crumbles and turns to dust!", robe_simple_name(uarmc));
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void)Robe_off();
@@ -4151,7 +4151,7 @@ destroy_arm(struct obj *atmp)
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "armor turns to dust and falls to the %s!", surface(u.ux, u.uy));
         boolean had_stone_res = Stone_resistance;
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Armor_gone();
@@ -4168,7 +4168,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "shirt crumbles into tiny threads and falls apart!");
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Shirt_off();
@@ -4183,7 +4183,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s turns to dust and is blown away!", helm_simple_name(uarmh));
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Helmet_off();
@@ -4198,7 +4198,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_VANISHES);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers vanish!");
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void)Bracers_off();
@@ -4213,7 +4213,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_VANISHES);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "gloves vanish!");
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Gloves_off();
@@ -4229,7 +4229,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots disintegrate!");
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Boots_off();
@@ -4245,7 +4245,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "shield crumbles away!");
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Shield_off();

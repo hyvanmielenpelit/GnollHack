@@ -488,4 +488,8 @@ struct savefile_info {
 #endif
 
 
+/* Generic bitflag get and set macros */
+#define get_flag(bitflags, mask)       (((bitflags) & (mask)) != 0)
+#define set_flag(bitflags, mask, val)  ((bitflags) = (val) ? ((bitflags) | (mask)) : ((bitflags) & ~(mask)))
+
 #endif /* GLOBAL_H */

@@ -246,7 +246,7 @@ gottype:
 
         for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
             for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
-                levl[x][y].lit = 1;
+                set_lev_lit(x, y, 1);
         sroom->rlit = 1;
     }
 
@@ -354,7 +354,7 @@ mkdesertedshop(void)
 
         for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
             for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
-                levl[x][y].lit = 0;
+                set_lev_lit(x, y, 0);
         sroom->rlit = 0;
     }
             
@@ -649,7 +649,7 @@ fill_zoo(struct mkroom *sroom)
                 }
         break;
     case COURT:
-        if (level.flags.is_maze_lev)
+        if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_MAZE_LEV))
         {
             for (tx = sroom->lx; tx <= sroom->hx; tx++)
                 for (ty = sroom->ly; ty <= sroom->hy; ty++)
@@ -733,7 +733,7 @@ place_main_monst_here:
         ty = sroom->ly + (sroom->hy - sroom->ly + 1) / 2;
         if (sroom->irregular) {
             /* center might not be valid, so put queen elsewhere */
-            if ((int) levl[tx][ty].roomno != rmno || levl[tx][ty].edge) {
+            if ((int) levl[tx][ty].roomno != rmno || get_flag(levl[tx][ty].rm_bitflags, RM_BITFLAGS_EDGE)) {
                 (void) somexy(sroom, &mm);
                 tx = mm.x;
                 ty = mm.y;
@@ -770,7 +770,7 @@ place_main_monst_here:
         {
             if (sroom->irregular)
             {
-                if ((int) levl[sx][sy].roomno != rmno || levl[sx][sy].edge
+                if ((int) levl[sx][sy].roomno != rmno || get_flag(levl[sx][sy].rm_bitflags, RM_BITFLAGS_EDGE)
                     || (sroom->doorct
                         && distmin(sx, sy, doors[sh].x, doors[sh].y) <= 1))
                     continue;
@@ -1022,11 +1022,11 @@ place_main_monst_here:
         add_to_container(chest, gold);
         chest->owt = weight(chest);
         chest->speflags |= SPEFLAGS_ROYAL_COFFER; /* so it can be found later */
-        level.flags.has_court = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_COURT, 1);
         break;
     }
     case BARRACKS:
-        level.flags.has_barracks = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_BARRACKS, 1);
         break;
     case ARMORY:
         if (!box_count)
@@ -1097,23 +1097,23 @@ place_main_monst_here:
                 }
             }
         }
-        level.flags.has_armory = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_ARMORY, 1);
         break;
     case ZOO:
-        level.flags.has_zoo = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_ZOO, 1);
         break;
     case MORGUE:
-        level.flags.has_morgue = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_MORGUE, 1);
         break;
     case SWAMP:
-        level.flags.has_swamp = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SWAMP, 1);
         // fillzoo is not called for swamp
         break;
     case BEEHIVE:
-        level.flags.has_beehive = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_BEEHIVE, 1);
         break;
     case LIBRARY:
-        level.flags.has_library = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_LIBRARY, 1);
         break;
     }
 
@@ -1397,7 +1397,7 @@ mkswamp(void) /* Michiel Huisjes & Fred de Wilde */
             }
 
 
-        level.flags.has_swamp = 1;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SWAMP, 1);
         swampnumber++;
     }
     return swampnumber;
@@ -1662,7 +1662,7 @@ mkgarden(void)
 
         }
     }
-    level.flags.has_garden = 1;
+    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_GARDEN, 1);
     return 1;
 }
 
@@ -1836,7 +1836,7 @@ mkdragonlair(void)
         }
     }
 
-    level.flags.has_dragonlair = 1;
+    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_DRAGONLAIR, 1);
     return 1;
 }
 
@@ -1957,7 +1957,7 @@ mktemple(void)
                     otmp->special_quality = objects[otmp->otyp].oc_special_quality;
                     otmp->age = MAX_BURN_IN_CANDELABRUM;
                     otmp->owt = weight(otmp);
-                    if (!otmp->lamplit)
+                    if (!is_obj_lamplit(otmp))
                         begin_burn(otmp, FALSE);
                 }
             }
@@ -2006,7 +2006,7 @@ mktemple(void)
     /* Priest */
     priestini(&u.uz, sroom, shrine_spot->x, shrine_spot->y, FALSE, NON_PM);
     lev->altarmask |= AM_SHRINE;
-    level.flags.has_temple = 1;
+    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_TEMPLE, 1);
     context.made_temple_count++;
     return 1;
 }
@@ -2041,7 +2041,7 @@ mksmithy(void)
     lev->vartyp = 0;
     lev->special_quality = 0;
     smithini(&u.uz, sroom, anvil_spot->x, anvil_spot->y, 0, NON_PM);
-    level.flags.has_smithy = 1;
+    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SMITHY, 1);
 
     /* The smith has lights turned on */
     int x, y;
@@ -2049,7 +2049,7 @@ mksmithy(void)
 
         for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
             for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
-                levl[x][y].lit = 1;
+                set_lev_lit(x, y, 1);
         sroom->rlit = 1;
     }
 
@@ -2180,7 +2180,7 @@ mknpcroom(int npctyp)
     }
 
     npcini(&u.uz, sroom, somex(sroom), somey(sroom), npctype, NON_PM);
-    level.flags.has_npc_room = 1;
+    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_NPC_ROOM, 1);
     context.npc_made |= ((uint64_t)1 << (uint64_t)npctype);
 
     int x, y;
@@ -2191,7 +2191,7 @@ mknpcroom(int npctyp)
 
             for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
                 for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
-                    levl[x][y].lit = 1;
+                    set_lev_lit(x, y, 1);
             sroom->rlit = 1;
         }
     }
@@ -2205,7 +2205,7 @@ mknpcroom(int npctyp)
                 delete_decoration(x, y);
                 if (room_definitions[sroom->rtype].has_special_tileset || npc_subtype_definitions[npctype].has_special_tileset)
                 {
-                    levl[x][y].use_special_tileset = 1;
+                    set_lev_has_special_tileset(x, y, 1);
                     levl[x][y].special_tileset = npc_subtype_definitions[npctype].has_special_tileset ? npc_subtype_definitions[npctype].special_tileset : room_definitions[sroom->rtype].special_tileset;
                 }
             }
@@ -2247,7 +2247,7 @@ set_room_tileset(struct mkroom *sroom)
             for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
                 if (isok(x, y))
                 {
-                    levl[x][y].use_special_tileset = 1;
+                    set_lev_has_special_tileset(x, y, 1);
                     levl[x][y].special_tileset = room_definitions[sroom->rtype].special_tileset;
                 }
 
@@ -2415,7 +2415,7 @@ somexy_within_distance(struct mkroom *croom, coord cpoint, int distance, coord *
             c->x = x_min + (x_rand > 1 ? rn2(x_rand) : 0);
             c->y = y_min + (y_rand > 1 ? rn2(y_rand) : 0);
             if (!IS_WALL(levl[c->x][c->y].typ) && !IS_ROCK(levl[c->x][c->y].typ) && (int)levl[c->x][c->y].roomno == i &&
-                ((!croom->irregular && !croom->nsubrooms) || (croom->irregular && !levl[c->x][c->y].edge))
+                ((!croom->irregular && !croom->nsubrooms) || (croom->irregular && !get_flag(levl[c->x][c->y].rm_bitflags, RM_BITFLAGS_EDGE)))
                 && dist2(cpoint.x, cpoint.y, c->x, c->y) <= distance * distance)
                 return TRUE;
         }
@@ -2428,14 +2428,14 @@ somexy_within_distance(struct mkroom *croom, coord cpoint, int distance, coord *
         {
             c->x = somex(croom);
             c->y = somey(croom);
-            if (!levl[c->x][c->y].edge && (int)levl[c->x][c->y].roomno == i
+            if (!get_flag(levl[c->x][c->y].rm_bitflags, RM_BITFLAGS_EDGE) && (int)levl[c->x][c->y].roomno == i
                 && dist2(cpoint.x, cpoint.y, c->x, c->y) <= distance * distance)
                 return TRUE;
         }
         /* try harder; exhaustively search until one is found */
         for (c->x = croom->lx; c->x <= croom->hx; c->x++)
             for (c->y = croom->ly; c->y <= croom->hy; c->y++)
-                if (!levl[c->x][c->y].edge
+                if (!get_flag(levl[c->x][c->y].rm_bitflags, RM_BITFLAGS_EDGE)
                     && (int)levl[c->x][c->y].roomno == i
                     && dist2(cpoint.x, cpoint.y, c->x, c->y) <= distance * distance)
                     return TRUE;
@@ -2489,7 +2489,7 @@ somexy(struct mkroom *croom, coord *c)
             c->x = somex(croom);
             c->y = somey(croom);
             lev = &levl[c->x][c->y];
-            if (!lev->edge && (int)lev->roomno == i)
+            if (!get_flag(lev->rm_bitflags, RM_BITFLAGS_EDGE) && (int)lev->roomno == i)
                 return TRUE;
         }
         /* try harder; exhaustively search until one is found */
@@ -2497,7 +2497,7 @@ somexy(struct mkroom *croom, coord *c)
             for (c->y = croom->ly; c->y <= croom->hy; c->y++)
             {
                 lev = &levl[c->x][c->y];
-                if (!lev->edge && (int)lev->roomno == i)
+                if (!get_flag(lev->rm_bitflags, RM_BITFLAGS_EDGE) && (int)lev->roomno == i)
                     return TRUE;
 
             }

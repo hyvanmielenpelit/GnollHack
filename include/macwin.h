@@ -60,19 +60,22 @@ typedef struct macdirs {
 } MacDirs;
 
 typedef struct macflags {
-    Bitfield(processes, 1);
-    Bitfield(color, 1);
-    Bitfield(folders, 1);
-    Bitfield(tempMem, 1);
-    Bitfield(help, 1);
-    Bitfield(fsSpec, 1);
-    Bitfield(trueType, 1);
-    Bitfield(aux, 1);
-    Bitfield(alias, 1);
-    Bitfield(standardFile, 1);
-    Bitfield(hasDebugger, 1);
-    Bitfield(hasAE, 1);
-    Bitfield(gotOpen, 1);
+    /* Bitfield flags converted to portable explicit bitmask flags */
+    uint64_t mac_bitflags;
+#define MAC_BITFLAGS_NONE         0x00000000UL
+#define MAC_BITFLAGS_PROCESSES    0x00000001UL
+#define MAC_BITFLAGS_COLOR        0x00000002UL
+#define MAC_BITFLAGS_FOLDERS      0x00000004UL
+#define MAC_BITFLAGS_TEMPMEM      0x00000008UL
+#define MAC_BITFLAGS_HELP         0x00000010UL
+#define MAC_BITFLAGS_FSSPEC       0x00000020UL
+#define MAC_BITFLAGS_TRUETYPE     0x00000040UL
+#define MAC_BITFLAGS_AUX          0x00000080UL
+#define MAC_BITFLAGS_ALIAS        0x00000100UL
+#define MAC_BITFLAGS_STANDARDFILE 0x00000200UL
+#define MAC_BITFLAGS_HASDEBUGGER  0x00000400UL
+#define MAC_BITFLAGS_HASAE        0x00000800UL
+#define MAC_BITFLAGS_GOTOPEN      0x00001000UL
 } MacFlags;
 
 extern MacDirs theDirs; /* used in macfile.c */

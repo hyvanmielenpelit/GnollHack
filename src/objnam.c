@@ -252,7 +252,7 @@ obj_is_pname(struct obj *obj)
     if (!obj->oartifact || !has_oname(obj))
         return FALSE;
     if (!program_state.gameover && !iflags.override_ID) {
-        if (!obj->nknown || !obj->aknown) //not_fully_identified(obj))
+        if (!is_obj_nknown(obj) || !is_obj_aknown(obj)) //not_fully_identified(obj))
             return FALSE;
     }
     return TRUE;
@@ -589,23 +589,22 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
      * and printing the wrong article gives away information.
      */
     if (!nn && ocl->oc_uses_known && is_otyp_unique(typ))
-        obj->known = 0;
+        set_obj_known(obj, 0);
     if (!Blind && !distantname)
-        obj->dknown = TRUE;
+        set_obj_dknown(obj, TRUE);
     if (Role_if(PM_PRIEST))
-        obj->bknown = TRUE;
+        set_obj_bknown(obj, TRUE);
 
-    if (iflags.override_ID) {
-        known = dknown = bknown = nknown = aknown = mknown = tknown = TRUE;
+    if (iflags.override_ID) {known = TRUE; dknown = TRUE; bknown = TRUE; nknown = TRUE; aknown = TRUE; mknown = TRUE; tknown = TRUE;
         nn = 1;
     } else {
-        known = obj->known;
-        dknown = obj->dknown;
-        bknown = obj->bknown;
-        nknown = obj->nknown;
-        aknown = obj->aknown;
-        mknown = obj->mknown;
-        tknown = obj->tknown;
+        known = is_obj_known(obj);
+        dknown = is_obj_dknown(obj);
+        bknown = is_obj_bknown(obj);
+        nknown = is_obj_nknown(obj);
+        aknown = is_obj_aknown(obj);
+        mknown = is_obj_mknown(obj);
+        tknown = is_obj_tknown(obj);
     }
 
     /* Artifacts get just their name */
@@ -613,7 +612,7 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
         goto nameit;
 
     /* General prefixes */
-    if (is_poisonable(obj) && obj->opoisoned && dknown)
+    if (is_poisonable(obj) && is_obj_trapped(obj) && dknown)
         Strcpy(buf, "poisoned ");
 
     if (dknown)
@@ -854,7 +853,7 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
             }
             break;
         }
-        if (obj->globby) {
+        if (is_obj_globby(obj)) {
             Sprintf(buf, "%s%s",
                     (obj->owt <= GLOB_SMALL_MAXIMUM_WEIGHT)
                        ? "small "
@@ -951,7 +950,7 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
                        ? "historic "
                        : "",
                     actualn_fullbuf,
-                    is_mname_proper_name(&mons[omndx]) || (mtmp && has_mname(mtmp) && mtmp->u_know_mname)
+                    is_mname_proper_name(&mons[omndx]) || (mtmp && has_mname(mtmp) && is_mon_u_know_mname(mtmp))
                        ? ""
                        : the_unique_pm(&mons[omndx])
                           ? "the "
@@ -974,8 +973,8 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
             if (nn) {
                 Strcat(buf, " of ");
                 if (typ == POT_WATER && bknown
-                    && (obj->blessed || obj->cursed)) {
-                    Strcat(buf, obj->blessed ? "holy " : "unholy ");
+                    && (is_obj_blessed(obj) || is_obj_cursed(obj))) {
+                    Strcat(buf, is_obj_blessed(obj) ? "holy " : "unholy ");
                 }
                 Strcat(buf, actualn_fullbuf);
             } else {
@@ -1094,12 +1093,12 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
     /* Corpse names from OMONST */
     if (obj->oextra && OMONST(obj) && !statueusesname)
     {
-        if (OMONST(obj)->isshk && has_eshk(OMONST(obj)))
+        if (is_mon_shk(OMONST(obj)) && has_eshk(OMONST(obj)))
         {
             Strcat(buf, " named ");
             Strcat(buf, shkname(OMONST(obj)));
         }
-        else if(has_mname(OMONST(obj)) && OMONST(obj)->u_know_mname)
+        else if(has_mname(OMONST(obj)) && is_mon_u_know_mname(OMONST(obj)))
         {
             Strcat(buf, " named ");
             Strcat(buf, MNAME(OMONST(obj)));
@@ -1133,7 +1132,7 @@ minimal_xname(struct obj *obj)
     objects[otyp].oc_uname = 0;
     /* suppress actual name if object's description is unknown */
     saveobcls.oc_name_known = objects[otyp].oc_name_known;
-    if (!obj->dknown)
+    if (!is_obj_dknown(obj))
         objects[otyp].oc_name_known = 0;
 
     /* caveat: this makes a lot of assumptions about which fields
@@ -1143,10 +1142,10 @@ minimal_xname(struct obj *obj)
     bareobj.material = obj->material;
     bareobj.oartifact = obj->oartifact;
     bareobj.oclass = obj->oclass;
-    bareobj.dknown = obj->dknown;
+    bareobj.dknown = is_obj_dknown(obj);
     /* suppress known except for amulets (needed for fakes and real A-of-Y) */
     bareobj.known = (obj->oclass == AMULET_CLASS)
-                        ? obj->known
+                        ? is_obj_known(obj)
                         /* default is "on" for types which don't use it */
                         : !objects[otyp].oc_uses_known;
     bareobj.quan = 1L;         /* don't want plural */
@@ -1185,9 +1184,9 @@ mshot_xname(struct obj *obj)
 boolean
 the_unique_obj(struct obj *obj)
 {
-    boolean known = (obj->known || iflags.override_ID);
+    boolean known = (is_obj_known(obj) || iflags.override_ID);
 
-    if (!obj->dknown && !iflags.override_ID)
+    if (!is_obj_dknown(obj) && !iflags.override_ID)
         return FALSE;
     else if (obj->otyp == FAKE_AMULET_OF_YENDOR && !known)
         return TRUE; /* lie */
@@ -1225,7 +1224,7 @@ add_erosion_words(struct obj *obj, char *prefix)
     boolean iscrys = (obj->otyp == CRYSKNIFE);
     boolean rknown;
 
-    rknown = (iflags.override_ID == 0) ? obj->rknown : TRUE;
+    rknown = (iflags.override_ID == 0) ? is_obj_rknown(obj) : TRUE;
         
     /* The only cases where any of these bits do double duty are for
      * rotted food and diluted potions, which are all not is_damageable().
@@ -1262,7 +1261,7 @@ add_erosion_words(struct obj *obj, char *prefix)
     }
 
     /* Erodeproof status; now shown also for nondamageable objects, if they happen to be erodeproof */
-    if (rknown && obj->oerodeproof)
+    if (rknown && is_obj_erodeproof(obj))
         Strcat(prefix, iscrys
                           ? "fixed "
                           : is_rustprone(obj)
@@ -1328,17 +1327,16 @@ doname_with_flags(struct obj *obj, unsigned doname_flags, char **attrs_ptr, char
     char *bp = xname(obj);
 
     if (iflags.override_ID)
-    {
-        known = dknown = cknown = bknown = lknown = tknown = TRUE;
+    {known = TRUE; dknown = TRUE; cknown = TRUE; bknown = TRUE; lknown = TRUE; tknown = TRUE;
     }
     else
     {
-        known = obj->known;
-        dknown = obj->dknown;
-        cknown = obj->cknown;
-        bknown = obj->bknown;
-        lknown = obj->lknown;
-        tknown = obj->tknown;
+        known = is_obj_known(obj);
+        dknown = is_obj_dknown(obj);
+        cknown = is_obj_cknown(obj);
+        bknown = is_obj_bknown(obj);
+        lknown = is_obj_lknown(obj);
+        tknown = is_obj_tknown(obj);
     }
 
     /* When using xname, we want "poisoned arrow", and when using
@@ -1347,7 +1345,7 @@ doname_with_flags(struct obj *obj, unsigned doname_flags, char **attrs_ptr, char
      * combining both into one function taking a parameter.
      */
     /* must check opoisoned--someone can have a weirdly-named fruit */
-    if (obj->opoisoned)
+    if (is_obj_trapped(obj))
     {
         if (!strncmp(bp, "poisoned ", 9))
         {
@@ -1431,14 +1429,14 @@ doname_with_flags(struct obj *obj, unsigned doname_flags, char **attrs_ptr, char
 
     if (bknown && obj->oclass != COIN_CLASS
         && (obj->otyp != POT_WATER || !objects[POT_WATER].oc_name_known
-            || (!obj->cursed && !obj->blessed))) 
+            || (!is_obj_cursed(obj) && !is_obj_blessed(obj)))) 
     {
         /* allow 'blessed clear potion' if we don't know it's holy water;
          * always allow "uncursed potion of water"
          */
-        if (obj->cursed)
+        if (is_obj_cursed(obj))
             Strcat(prefix, "cursed ");
-        else if (obj->blessed)
+        else if (is_obj_blessed(obj))
             Strcat(prefix, "blessed ");
         else if (!iflags.implicit_uncursed
             /* For most items with charges or +/-, if you know how many
@@ -1466,17 +1464,17 @@ doname_with_flags(struct obj *obj, unsigned doname_flags, char **attrs_ptr, char
             Strcat(prefix, "uncursed ");
     }
 
-    if (tknown && obj->otrapped && Is_box(obj))
+    if (tknown && is_obj_trapped(obj) && Is_box(obj))
         Strcat(prefix, "trapped ");
 
     if (lknown && Is_box(obj)) 
     {
-        if (obj->obroken)
+        if (is_obj_broken(obj))
             /* 3.6.0 used "unlockable" here but that could be misunderstood
                to mean "capable of being unlocked" rather than the intended
                "not capable of being locked" */
             Strcat(prefix, "broken ");
-        else if (obj->olocked)
+        else if (is_obj_locked(obj))
         {
             Strcat(prefix, "locked ");
         }
@@ -1494,7 +1492,7 @@ doname_with_flags(struct obj *obj, unsigned doname_flags, char **attrs_ptr, char
         print_lock_with_buf(eos(bp), obj->keyotyp, obj->special_quality, FALSE);
     }
 
-    if (obj->greased)
+    if (is_obj_greased(obj))
         Strcat(prefix, "greased ");
 
     /* contents for unknown jars and cans */
@@ -1753,7 +1751,7 @@ weapon_here:
                 if (burnleftset)
                     Sprintf(burnbuf, ", %lld turn%s left", (long long)burnleft, plur(burnleft));
                 Sprintf(eos(bp), " (%s candle%s%s%s)", tmpbuf, plur(obj->special_quality),
-                    !obj->lamplit ? " attached" : ", lit", burnbuf);
+                    !is_obj_lamplit(obj) ? " attached" : ", lit", burnbuf);
             }
             break;
         } 
@@ -1766,7 +1764,7 @@ weapon_here:
                 )
                 Strcat(prefix, "partly used ");
 
-            if (obj->lamplit)
+            if (is_obj_lamplit(obj))
             {
                 if (lit_in_front)
                 {
@@ -1799,7 +1797,7 @@ weapon_here:
     case POTION_CLASS:
         if (obj->otyp == POT_OIL)
         {
-            if (obj->lamplit)
+            if (is_obj_lamplit(obj))
             {
                 if (lit_in_front)
                 {
@@ -1845,7 +1843,7 @@ weapon_here:
         if (obj->oeaten)
             Strcat(prefix, "partly eaten ");
         
-        if (is_obj_rotting_corpse(obj) && obj->rotknown)
+        if (is_obj_rotting_corpse(obj) && is_obj_rotknown(obj))
         {
             int64_t rotted = get_rotted_status(obj);
             if (obj->orotten || rotted > 3L)
@@ -2039,7 +2037,7 @@ weapon_here:
         int64_t quotedprice = unpaid_cost(obj, TRUE);
 
         Sprintf(eos(bp), " (%s, %lld %s)",
-                obj->unpaid ? "unpaid" : "contents",
+                is_obj_unpaid(obj) ? "unpaid" : "contents",
                 (long long)quotedprice, currency(quotedprice));
     }
     else if (with_price) 
@@ -2124,7 +2122,7 @@ weapon_here:
     }
 
     /* Mark if glowing when detected something */
-    if (is_obj_special_praying_item(obj) && obj->where == OBJ_INVENT && obj->blessed && can_pray(FALSE))
+    if (is_obj_special_praying_item(obj) && obj->where == OBJ_INVENT && is_obj_blessed(obj) && can_pray(FALSE))
     {
         if (!Blind)
             Sprintf(eos(bp), " (%s)", "shimmering");
@@ -2322,30 +2320,30 @@ not_fully_identified(struct obj *otmp)
         return FALSE;
 
     /* check fundamental ID hallmarks first */
-    if (!otmp->known || !otmp->dknown
-        || (!otmp->bknown && otmp->otyp != SCR_MAIL)
+    if (!is_obj_known(otmp) || !is_obj_dknown(otmp)
+        || (!is_obj_bknown(otmp) && otmp->otyp != SCR_MAIL)
         || !objects[otmp->otyp].oc_name_known)
         return TRUE;
-    if ((!otmp->cknown && (Is_container(otmp) || otmp->otyp == STATUE))
-        || (!otmp->lknown && Is_box(otmp)) || (!otmp->tknown && Is_box(otmp)))
+    if ((!is_obj_cknown(otmp) && (Is_container(otmp) || otmp->otyp == STATUE))
+        || (!is_obj_lknown(otmp) && Is_box(otmp)) || (!is_obj_tknown(otmp) && Is_box(otmp)))
         return TRUE;
     if (otmp->oartifact && undiscovered_artifact(otmp->oartifact))
         return TRUE;
-    if (otmp->oartifact && !otmp->aknown)
+    if (otmp->oartifact && !is_obj_aknown(otmp))
         return TRUE;
-    if (!otmp->nknown && has_oname(otmp))
+    if (!is_obj_nknown(otmp) && has_oname(otmp))
         return TRUE;
-    if ((otmp->mythic_prefix || otmp->mythic_suffix) && !otmp->mknown)
+    if ((otmp->mythic_prefix || otmp->mythic_suffix) && !is_obj_mknown(otmp))
         return TRUE;
-    if (is_obj_rotting_corpse(otmp) && !otmp->rotknown)
+    if (is_obj_rotting_corpse(otmp) && !is_obj_rotknown(otmp))
         return TRUE;
-    /* otmp->rknown is the only item of interest if we reach here */
+    /* is_obj_rknown(otmp) is the only item of interest if we reach here */
     /*
      *  Note:  if a revision ever allows scrolls to become fireproof or
      *  rings to become shockproof, this checking will need to be revised.
      *  `rknown' ID only matters if xname() will provide the info about it.
      */
-    if (otmp->rknown || is_obj_identified_when_damageable(otmp))
+    if (is_obj_rknown(otmp) || is_obj_identified_when_damageable(otmp))
         return FALSE;
     else /* lack of `rknown' only matters for vulnerable objects */
         return (boolean)is_damageable(otmp); // (is_rustprone(otmp) || is_corrodeable(otmp) || is_flammable(otmp));
@@ -2356,7 +2354,7 @@ is_obj_unknown(struct obj *otmp)
 {
     if (!otmp)
         return FALSE;
-    return !objects[otmp->otyp].oc_name_known || (otmp->oartifact && otmp->nknown && !otmp->aknown);
+    return !objects[otmp->otyp].oc_name_known || (otmp->oartifact && is_obj_nknown(otmp) && !is_obj_aknown(otmp));
 }
 
 /*
@@ -2371,7 +2369,7 @@ corpse_xname(struct obj *otmp, const char *adjective, unsigned cxn_flags)
     char *nambuf = next_offset_init_obuf();
     int omndx = otmp->corpsenm;
     struct monst* mtmp = get_mtraits(otmp, FALSE);
-    boolean isfemale = (mtmp && mtmp->female) || (omndx > NON_PM && is_female(&mons[omndx]));
+    boolean isfemale = (mtmp && is_mon_female(mtmp)) || (omndx > NON_PM && is_female(&mons[omndx]));
 
     boolean ignore_quan = (cxn_flags & CXN_SINGULAR) != 0,
             /* suppress "the" from "the unique monster corpse" */
@@ -2383,7 +2381,7 @@ corpse_xname(struct obj *otmp, const char *adjective, unsigned cxn_flags)
             /* leave off suffix (do_name() appends "corpse" itself) */
         omit_corpse = (cxn_flags & CXN_NOCORPSE) != 0,
         possessive = FALSE,
-        glob = (otmp->otyp != CORPSE && otmp->globby);
+        glob = (otmp->otyp != CORPSE && is_obj_globby(otmp));
     const char *mname;
 
     if (glob)
@@ -2489,7 +2487,7 @@ acxname(struct obj *obj)
 {
     if (obj->otyp == CORPSE)
         return corpse_xname(obj, (const char*)0, CXN_ARTICLE);
-    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? xname(obj) : an(xname(obj));
+    return obj->oartifact && is_obj_aknown(obj) ? the(xname(obj)) : obj->quan != 1 ? xname(obj) : an(xname(obj));
 }
 
 /*
@@ -2512,7 +2510,7 @@ aqcxname(struct obj *obj)
 {
     if (obj->otyp == CORPSE)
         return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
-    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+    return obj->oartifact && is_obj_aknown(obj) ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
 }
 
 char*
@@ -2565,18 +2563,16 @@ killer_xname_flags(struct obj *obj, unsigned kxnflags)
         save_uoname = UONAME(obj);
 
     /* killer name should be more specific than general xname; however, exact
-       info like blessed/cursed and rustproof makes things be too verbose */
-    obj->known = obj->dknown = 1;
-    obj->bknown = obj->rknown = obj->greased = 0;
+       info like blessed/cursed and rustproof makes things be too verbose */set_obj_known(obj, 1); set_obj_dknown(obj, 1);set_obj_bknown(obj, 0); set_obj_rknown(obj, 0); set_obj_greased(obj, 0);
     /* if character is a priest[ess], bknown will get toggled back on */
-    if (obj->otyp != POT_WATER)
-        obj->blessed = obj->cursed = 0;
+    if (obj->otyp !=POT_WATER)
+        set_obj_blessed(obj, 0); set_obj_cursed(obj, 0);
     else
-        obj->bknown = 1; /* describe holy/unholy water as such */
+        set_obj_bknown(obj, 1); /* describe holy/unholy water as such */
     /* "killed by poisoned <obj>" would be misleading when poison is
        not the cause of death and "poisoned by poisoned <obj>" would
        be redundant when it is, so suppress "poisoned" prefix */
-    obj->opoisoned = 0;
+    set_obj_trapped(obj, 0);
     /* strip user-supplied name; artifacts keep theirs */
     if (save_uoname)
         UONAME(obj) = (char *) 0;
@@ -2679,9 +2675,7 @@ short_oname(struct obj *obj, char *(*func)(struct obj*), char *(*altfunc)(struct
 
     /* still long; strip several name-lengthening attributes;
        called and named strings are still in truncated form */
-    save_obj = *obj;
-    obj->bknown = obj->rknown = obj->greased = 0;
-    obj->oeroded = obj->oeroded2 = 0;
+    save_obj = *obj;set_obj_bknown(obj, 0); set_obj_rknown(obj, 0); set_obj_greased(obj, 0);obj->oeroded = 0; obj->oeroded2 = 0;
     releaseobuf(outbuf);
     outbuf = (*func)(obj);
     if (altfunc && strlen(outbuf) > lenlimit) {
@@ -4203,13 +4197,7 @@ readobjnam(char *bp, struct obj *no_wish, boolean is_wiz_wish, boolean *removed_
     char *un, *dn, *actualn, *origbp = bp;
     const char *name = 0;
     boolean isartifact = FALSE;
-    boolean wiz_wishing = (wizard && is_wiz_wish);
-
-    cnt = enchantment = charges = chargesfound = spesgn = typ = 0;
-    very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment = material = exceptionality = mythic_prefix = mythic_suffix =
-        isgreased = eroded = eroded2 = erodeproof = halfeaten =
-        islit = unlabeled = ishistoric = isdiluted = trapped =
-        locked = unlocked = open = broken = key_special_quality = key_otyp = is_switchable = 0;
+    boolean wiz_wishing = (wizard && is_wiz_wish);cnt = 0; enchantment = 0; charges = 0; chargesfound = 0; spesgn = 0; typ = 0;very = 0; rechrg = 0; blessed = 0; uncursed = 0; iscursed = 0; ispoisoned = 0; elemental_enchantment = 0; material = 0; exceptionality = 0; mythic_prefix = 0; mythic_suffix = 0; isgreased = 0; eroded = 0; eroded2 = 0; erodeproof = 0; halfeaten = 0; islit = 0; unlabeled = 0; ishistoric = 0; isdiluted = 0; trapped = 0; locked = 0; unlocked = 0; open = 0; broken = 0; key_special_quality = 0; key_otyp = 0; is_switchable = 0;
 
     if (removed_from_game_ptr)
         *removed_from_game_ptr = FALSE;
@@ -4358,13 +4346,12 @@ readobjnam(char *bp, struct obj *no_wish, boolean is_wiz_wish, boolean *removed_
             trapped = 2; /* not trapped */
         /* locked, unlocked, broken: box/chest lock states */
         } else if (!strncmpi(bp, "locked ", l = 7)) {
-            locked = 1, unlocked = broken = 0;
+            locked = 1,unlocked = 0; broken = 0;
         } else if (!strncmpi(bp, "unlocked ", l = 9)) {
-            unlocked = 1, locked = broken = 0;
-        } else if (!strncmpi(bp, "open ", l = 5)) {
-            open = unlocked = 1, locked = broken = 0;
+            unlocked = 1,locked = 0; broken = 0;
+        } else if (!strncmpi(bp, "open ", l = 5)) {open = 1; unlocked = 1,locked = 0; broken = 0;
         } else if (!strncmpi(bp, "broken ", l = 7)) {
-            broken = 1, locked = unlocked = 0;
+            broken = 1,locked = 0; unlocked = 0;
         } else if (!strncmpi(bp, "greased ", l = 8)) {
             isgreased = 1;
         } else if (!strncmpi(bp, "very ", l = 5)) {
@@ -5048,9 +5035,7 @@ retry:
     {
         char *fp;
         int l, cntf;
-        int blessedf, iscursedf, uncursedf, halfeatenf;
-
-        blessedf = iscursedf = uncursedf = halfeatenf = 0;
+        int blessedf, iscursedf, uncursedf, halfeatenf;blessedf = 0; iscursedf = 0; uncursedf = 0; halfeatenf = 0;
         cntf = 0;
 
         fp = fruitbuf;
@@ -5338,7 +5323,7 @@ retry:
         /* Check for materials */
         for (m = MAT_NONE + 1; m < MAX_MATERIAL_TYPES; m++)
         {
-            if (material_definitions[m].wishable)
+            if (get_flag(material_definitions[m].material_bitflags, MATERIAL_BITFLAGS_WISHABLE))
             {
                 size_t mlen = strlen(material_definitions[m].object_prefix);
                 size_t mlena = material_definitions[m].adjective ? strlen(material_definitions[m].adjective) : 0;
@@ -5457,7 +5442,7 @@ retry:
         otmp = oname(otmp, (const char*)0);
     }
 
-    if (islit && !otmp->lamplit && (is_lamp(otmp) || is_candle(otmp) || is_torch(otmp) || is_obj_candelabrum(otmp) || typ == POT_OIL))
+    if (islit && !is_obj_lamplit(otmp) && (is_lamp(otmp) || is_candle(otmp) || is_torch(otmp) || is_obj_candelabrum(otmp) || typ == POT_OIL))
     {
         place_object(otmp, u.ux, u.uy); /* make it viable light source */
         begin_burn(otmp, FALSE);
@@ -5666,7 +5651,7 @@ retry:
          * so don't prevent player from wishing for such a combination.
          */
         if (erodeproof && (is_damageable(otmp) || otmp->otyp == CRYSKNIFE))
-            otmp->oerodeproof = (Luck >= 0 || wiz_wishing);
+            set_obj_erodeproof(otmp, (Luck >= 0 || wiz_wishing));
     }
 
     /* set otmp->recharged */
@@ -5680,7 +5665,7 @@ retry:
     /* set poisoned */
     if (ispoisoned) {
         if (is_poisonable(otmp))
-            otmp->opoisoned = (Luck >= 0);
+            set_obj_trapped(otmp, (Luck >= 0));
         else if (oclass == FOOD_CLASS)
             /* try to taint by making it as old as possible */
             otmp->age = 1L;
@@ -5688,7 +5673,7 @@ retry:
     /* and [un]trapped */
     if (trapped) {
         if (Is_box(otmp) || typ == TIN)
-            otmp->otrapped = (trapped == 1);
+            set_obj_trapped(otmp, (trapped == 1));
     }
 
     /* Set elemental enchantment */
@@ -5796,12 +5781,12 @@ retry:
         curse(otmp);
     }
     else if (uncursed) {
-        otmp->blessed = 0;
-        otmp->cursed = (Luck < 0 && !wiz_wishing && !is_obj_uncurseable(otmp));
+        set_obj_blessed(otmp, 0);
+        set_obj_cursed(otmp, (Luck < 0 && !wiz_wishing && !is_obj_uncurseable(otmp)));
     }
     else if (blessed) {
-        otmp->blessed = (Luck >= 0 || wiz_wishing);
-        otmp->cursed = (Luck < 0 && !wiz_wishing && !is_obj_uncurseable(otmp));
+        set_obj_blessed(otmp, (Luck >= 0 || wiz_wishing));
+        set_obj_cursed(otmp, (Luck < 0 && !wiz_wishing && !is_obj_uncurseable(otmp)));
     }
     else if (spesgn < 0) {
         curse(otmp);
@@ -5822,16 +5807,16 @@ retry:
     /* set locked/unlocked/broken */
     if (Is_box(otmp)) {
         if (locked) {
-            otmp->olocked = 1, otmp->obroken = 0;
+            set_obj_locked(otmp, 1), set_obj_broken(otmp, 0);
         } else if (unlocked) {
-            otmp->olocked = 0, otmp->obroken = 0;
+            set_obj_locked(otmp, 0), set_obj_broken(otmp, 0);
         } else if (broken) {
-            otmp->olocked = 0, otmp->obroken = 1;
+            set_obj_locked(otmp, 0), set_obj_broken(otmp, 1);
         }
     }
 
     if (isgreased)
-        otmp->greased = 1;
+        set_obj_greased(otmp, 1);
 
     if (isdiluted && otmp->oclass == POTION_CLASS && otmp->otyp != POT_WATER)
         otmp->odiluted = 1;
@@ -5908,7 +5893,7 @@ retry:
     otmp->owt = weight(otmp);
     if (very && otmp->otyp == HEAVY_IRON_BALL)
         otmp->owt += IRON_BALL_W_INCR;
-    else if (gsize > 1 && otmp->globby)
+    else if (gsize > 1 && is_obj_globby(otmp))
         /* 0: unspecified => small; 1: small => keep default owt of 20;
            2: medium => 120; 3: large => 320; 4: very large => 520 */
         otmp->owt += 100 + (gsize - 2) * 200;

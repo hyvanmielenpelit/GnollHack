@@ -464,7 +464,7 @@ autoquiver(void)
     /* Scan through the inventory */
     for (otmp = invent; otmp; otmp = otmp->nobj) 
     {
-        if (otmp->owornmask || otmp->oartifact || !otmp->dknown) 
+        if (otmp->owornmask || otmp->oartifact || !is_obj_dknown(otmp)) 
         {
             ; /* Skip it */
         }
@@ -893,8 +893,8 @@ hurtle_step(genericptr_t arg, int x, int y)
          * going to end up past the current spot rather than on it;
          * for that, we need to know that the range is not exhausted
          * and also that the next spot doesn't contain an obstacle */
-        && !(mon->mundetected && hides_under(mon) && (Flying || Levitation))
-        && !(mon->mundetected && mon->data->mlet == S_EEL
+        && !(is_mon_undetected(mon) && hides_under(mon) && (Flying || Levitation))
+        && !(is_mon_undetected(mon) && mon->data->mlet == S_EEL
              && (Flying || Levitation || Walks_on_water))
 #endif
         )
@@ -1130,7 +1130,7 @@ mhurtle(struct monst *mon, int dx, int dy, int range)
     /* Is the monster stuck or too heavy to push?
      * (very large monsters have too much inertia, even floaters and flyers)
      */
-    if (mon->data->msize >= MZ_HUGE || mon == u.ustuck || mon->mtrapped)
+    if (mon->data->msize >= MZ_HUGE || mon == u.ustuck || is_mon_trapped(mon))
         return;
 
     /* Make sure dx and dy are [-1,0,1] */
@@ -1168,7 +1168,7 @@ check_shop_obj(struct obj *obj, xchar x, xchar y, boolean broken, boolean sellit
             (void) stolen_value(obj, u.ux, u.uy, is_peaceful(shkp),
                                 FALSE);
         if (broken)
-            obj->no_charge = 1;
+            set_obj_no_charge(obj, 1);
     } else if (costly_xy) {
         char *oshops = in_rooms(x, y, SHOPBASE);
 
@@ -1182,7 +1182,7 @@ check_shop_obj(struct obj *obj, xchar x, xchar y, boolean broken, boolean sellit
                 if (sellitem)
                     sellobj(obj, x, y);
                 else
-                    obj->no_charge = 1;
+                    set_obj_no_charge(obj, 1);
             }
         }
     }
@@ -1355,9 +1355,9 @@ sho_obj_return_to_u(struct obj *obj)
         tmp_at(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(u.dx, u.dy), rn2_on_display_rng));
         while (isok(x,y) && (x != u.ux || y != u.uy)) {
             tmp_at(x, y);
-            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->material != objects[obj->otyp].oc_material || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2))
+            if (obj && ((is_poisonable(obj) && is_obj_trapped(obj)) || obj->material != objects[obj->otyp].oc_material || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2))
             {
-                show_missile_info(x, y, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, FALSE), get_obj_height(obj), 0, 0);
+                show_missile_info(x, y, is_obj_trapped(obj), obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, FALSE), get_obj_height(obj), 0, 0);
                 flush_screen(1);
             }
             adjusted_delay_output();
@@ -1385,7 +1385,7 @@ throwit(struct obj *obj, int64_t wep_mask)
     boolean isinstakill = FALSE;
 
     notonhead = FALSE; /* reset potentially stale value */
-    if ((obj->cursed || obj->greased || Tottering) && (u.dx || u.dy) && (Tottering ? rn2(7) : !rn2(7)))
+    if ((is_obj_cursed(obj) || is_obj_greased(obj) || Tottering) && (u.dx || u.dy) && (Tottering ? rn2(7) : !rn2(7)))
     {
         boolean slipok = TRUE;
 
@@ -1396,7 +1396,7 @@ throwit(struct obj *obj, int64_t wep_mask)
         else 
         {
             /* only slip if it's greased or meant to be thrown */
-            if (obj->greased || throwing_weapon(obj))
+            if (is_obj_greased(obj) || throwing_weapon(obj))
                 /* BUG: this message is grammatically incorrect if obj has
                    a plural name; greased gloves or boots for instance. */
                 pline("%s as you throw it!", Tobjnam(obj, "slip"));
@@ -1554,7 +1554,7 @@ throwit(struct obj *obj, int64_t wep_mask)
     {
         boolean obj_gone;
 
-        if (mon->isshk && obj->where == OBJ_MINVENT && obj->ocarry == mon) 
+        if (is_mon_shk(mon) && obj->where == OBJ_MINVENT && obj->ocarry == mon) 
         {
             thrownobj = (struct obj *) 0;
             return; /* alert shk caught it */
@@ -1571,7 +1571,7 @@ throwit(struct obj *obj, int64_t wep_mask)
         mon = m_at(bhitpos.x, bhitpos.y);
 
         /* [perhaps this should be moved into thitmonst or hmon] */
-        if (mon && mon->isshk
+        if (mon && is_mon_shk(mon)
             && (!inside_shop(u.ux, u.uy)
                 || !index(in_rooms(mon->mx, mon->my, SHOPBASE), *u.ushops)))
             hot_pursuit(mon);
@@ -1699,7 +1699,7 @@ throwit(struct obj *obj, int64_t wep_mask)
  //               if (tethered_weapon)
  //                   tmp_at(DISP_END, 0);
                 /* when this location is stepped on, the weapon will be
-                   auto-picked up due to 'obj->was_thrown' of 1;
+                   auto-picked up due to 'get_flag(obj->obj_bitflags, OBJ_BITFLAGS_WAS_THROWN)' of 1;
                    addinv() prevents thrown Mjollnir from being placed
                    into the quiver slot, but an aklys will end up there if
                    that slot is empty at the time; since hero will need to
@@ -1733,14 +1733,14 @@ throwit(struct obj *obj, int64_t wep_mask)
 
         obj_no_longer_held(obj);
 
-        if (mon && mon->isshk && is_pick(obj))
+        if (mon && is_mon_shk(mon) && is_pick(obj))
         {
             if (cansee(bhitpos.x, bhitpos.y))
                 pline("%s snatches up %s.", Monnam(mon), the(xname(obj)));
-            if (*u.ushops || obj->unpaid)
+            if (*u.ushops || is_obj_unpaid(obj))
                 check_shop_obj(obj, bhitpos.x, bhitpos.y, FALSE, TRUE);
             else if (costly_spot(bhitpos.x, bhitpos.y))
-                obj->no_charge = 1;
+                set_obj_no_charge(obj, 1);
             (void) mpickobj(mon, obj); /* may merge and free obj */
             thrownobj = (struct obj *) 0;
             return;
@@ -1766,10 +1766,10 @@ throwit(struct obj *obj, int64_t wep_mask)
             container_impact_dmg(obj, u.ux, u.uy);
         /* charge for items thrown out of shop;
            shk takes possession for items thrown into one */
-        if ((*u.ushops || obj->unpaid) && obj != uball)
+        if ((*u.ushops || is_obj_unpaid(obj)) && obj != uball)
             check_shop_obj(obj, bhitpos.x, bhitpos.y, FALSE, FALSE);
         else if (costly_spot(bhitpos.x, bhitpos.y))
-            obj->no_charge = 1;
+            set_obj_no_charge(obj, 1);
 
         if (obj_sheds_light(obj))
             vision_full_recalc = 1;
@@ -1795,19 +1795,19 @@ omon_adj(struct monst *mon, struct obj *obj, boolean mon_notices)
         /* size of target affects the chance of hitting */
         tmp += (mon->data->msize - MZ_MEDIUM); /* -2..+5 */
         /* sleeping target is more likely to be hit */
-        if (mon->msleeping) {
+        if (is_mon_sleeping(mon)) {
             tmp += 2;
             if (mon_notices)
             {
-                mon->msleeping = 0;
+                set_mon_sleeping(mon, 0);
                 refresh_m_tile_gui_info(mon, TRUE);
             }
         }
         /* ditto for immobilized target */
-        if (!mon->mcanmove || !mon->data->mmove) {
+        if (!is_mon_canmove(mon) || !mon->data->mmove) {
             tmp += 4;
             if (mon_notices && mon->data->mmove && !rn2(10)) {
-                mon->mcanmove = 1;
+                set_mon_canmove(mon, 1);
                 mon->mfrozen = 0;
                 refresh_m_tile_gui_info(mon, TRUE);
             }
@@ -1993,7 +1993,7 @@ thitmonst(struct monst *mon, struct obj *obj, boolean is_golf, uchar *hitres_ptr
     {
         /* AIS: changes to wakeup() means that it's now less inappropriate here
            than it used to be, but the manual version works just as well */
-        mon->msleeping = 0;
+        set_mon_sleeping(mon, 0);
         mon->mstrategy &= ~STRAT_WAITMASK;
         refresh_m_tile_gui_info(mon, TRUE);
 
@@ -2141,12 +2141,12 @@ thitmonst(struct monst *mon, struct obj *obj, boolean is_golf, uchar *hitres_ptr
                 else
                     broken = !rn2(max(2, 20 - 2 * chance));
 
-                if (obj->blessed && !(pasdmg & 2) && (!(pasdmg & 1) || !rn2(2)))
+                if (is_obj_blessed(obj) && !(pasdmg & 2) && (!(pasdmg & 1) || !rn2(2)))
                     broken = 0;
 
                 if (broken) 
                 {
-                    if (*u.ushops || obj->unpaid)
+                    if (*u.ushops || is_obj_unpaid(obj))
                         check_shop_obj(obj, bhitpos.x, bhitpos.y, TRUE, FALSE);
                     debugprint("thitmonst: %d", obj->otyp);
                     obfree(obj, (struct obj *) 0);
@@ -2245,7 +2245,7 @@ thitmonst(struct monst *mon, struct obj *obj, boolean is_golf, uchar *hitres_ptr
         else 
         {
             tmiss(obj, mon, FALSE);
-            mon->msleeping = 0;
+            set_mon_sleeping(mon, 0);
             mon->mstrategy &= ~STRAT_WAITMASK;
             refresh_m_tile_gui_info(mon, TRUE);
         }
@@ -2299,11 +2299,11 @@ gem_accept(struct monst *mon, struct obj *obj)
     static NEARDATA const char addluck[] = " gratefully";
 
     Strcpy(buf, Monnam(mon));
-    mon->mpeaceful = 1;
-    mon->mavenge = 0;
+    set_mon_peaceful(mon, 1);
+    set_flag(mon->mon_bitflags, MON_BITFLAGS_MAVENGE, 0);
 
     /* object properly identified */
-    if (obj->dknown && objects[obj->otyp].oc_name_known) {
+    if (is_obj_dknown(obj) && objects[obj->otyp].oc_name_known) {
         if (is_gem) {
             if (is_buddy) {
                 Strcat(buf, addluck);
@@ -2345,7 +2345,7 @@ gem_accept(struct monst *mon, struct obj *obj)
         }
     }
     Strcat(buf, acceptgift);
-    if (*u.ushops || obj->unpaid)
+    if (*u.ushops || is_obj_unpaid(obj))
         check_shop_obj(obj, mon->mx, mon->my, TRUE, FALSE);
     (void) mpickobj(mon, obj); /* may merge and free obj */
     ret = 1;
@@ -2407,7 +2407,7 @@ hero_breaks(struct obj *obj, xchar x, xchar y, boolean from_invent)
 
     if (!breaktest(obj))
         return FALSE;
-    if (obj->owornmask && obj->where == OBJ_INVENT && obj->cursed && is_obj_worn(obj) && !cursed_items_are_positive_mon(&youmonst) && !Curse_resistance)
+    if (obj->owornmask && obj->where == OBJ_INVENT && is_obj_cursed(obj) && is_obj_worn(obj) && !cursed_items_are_positive_mon(&youmonst) && !Curse_resistance)
     {
         play_sfx_sound(SFX_MALIGNANT_AURA_SURROUNDS);
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "A malignant force momentarily surrounds %s, preventing you from breaking %s.", yname(obj), is_plural(obj) ? "them" : "it");
@@ -2450,7 +2450,7 @@ release_camera_demon(struct obj *obj, xchar x, xchar y)
             pline("%s is released!", Hallucination
                                          ? An(rndmonnam(NULL))
                                          : "The picture-painting demon");
-        mtmp->mpeaceful = !obj->cursed;
+        set_mon_peaceful(mtmp, !is_obj_cursed(obj));
         set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
     }
@@ -2481,8 +2481,8 @@ breakobj(struct obj *obj, xchar x, xchar y, boolean hero_caused, boolean from_in
             change_luck(-2, TRUE);
         break;
     case POT_WATER:      /* really, all potions */
-        obj->in_use = 1; /* in case it's fatal */
-        if (obj->otyp == POT_OIL && obj->lamplit) {
+        set_obj_in_use(obj, 1); /* in case it's fatal */
+        if (obj->otyp == POT_OIL && is_obj_lamplit(obj)) {
             explode_oil(obj, x, y);
         } else if (distu(x, y) <= 2) {
             if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data)) {
@@ -2526,10 +2526,10 @@ breakobj(struct obj *obj, xchar x, xchar y, boolean hero_caused, boolean from_in
     }
 
     if (hero_caused) {
-        if (from_invent || obj->unpaid) {
-            if (*u.ushops || obj->unpaid)
+        if (from_invent || is_obj_unpaid(obj)) {
+            if (*u.ushops || is_obj_unpaid(obj))
                 check_shop_obj(obj, x, y, TRUE, FALSE);
-        } else if (!obj->no_charge && costly_spot(x, y)) {
+        } else if (!is_obj_no_charge(obj) && costly_spot(x, y)) {
             /* it is assumed that the obj is a floor-object */
             debugprint_pos();
             char *o_shop = in_rooms(x, y, SHOPBASE);

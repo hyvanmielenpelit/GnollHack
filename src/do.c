@@ -930,7 +930,7 @@ corpsedescription(struct obj *obj)
     if(obj->corpsenm > NON_PM)
         learn_corpse_type(obj->corpsenm);
 
-    obj->rotknown = 1;
+    set_obj_rotknown(obj, 1);
     return itemdescription(obj);
 }
 
@@ -972,7 +972,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
     
     boolean uses_spell_flags = otyp_uses_spellbook_wand_flags(otyp); // object_uses_spellbook_wand_flags_and_properties(obj);
     boolean name_known = (!obj || objects[otyp].oc_name_known);
-    boolean desc_known = (!obj || obj->dknown);
+    boolean desc_known = (!obj || is_obj_dknown(obj));
     boolean has_conferred_powers = FALSE;
     boolean has_extra_damage = FALSE;
     double wep_avg_dmg = 0;
@@ -1137,7 +1137,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
     {
         Sprintf(eos(buf), ": %s", buf3);
     }
-    if (obj && obj->aknown && obj->oartifact)
+    if (obj && is_obj_aknown(obj) && obj->oartifact)
     {
         Sprintf(eos(buf), " - Artifact");
         if ((obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS) && artilist[obj->oartifact].maskotyp > STRANGE_OBJECT)
@@ -1198,7 +1198,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
         }
-        if (obj && otyp == EGG && obj->corpsenm >= LOW_PM && obj->known && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG))
+        if (obj && otyp == EGG && obj->corpsenm >= LOW_PM && is_obj_known(obj) && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG))
         {
             Strcpy(buf2, mons[obj->corpsenm].mname);
             *buf2 = highc(*buf2);
@@ -1314,7 +1314,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
             if (obj)
             {
                 int mnum = obj->corpsenm;
-                if (is_obj_rotting_corpse(obj) && mnum > NON_PM && obj->rotknown)
+                if (is_obj_rotting_corpse(obj) && mnum > NON_PM && is_obj_rotknown(obj))
                 {
                     int64_t rotted = get_rotted_status(obj);
                     if (rotted > 5L)
@@ -1340,7 +1340,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
     /* Material */
     if (obj)
     {
-        if (obj->dknown)
+        if (is_obj_dknown(obj))
         {
             Strcpy(buf2, material_definitions[obj->material].name);
             *buf2 = highc(*buf2);
@@ -1613,7 +1613,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
         }
 
         /* Add mythic base damage now here if mknown */
-        if (obj && obj->mknown)
+        if (obj && is_obj_mknown(obj))
         {
             if (has_obj_mythic_triple_base_damage(obj))
                 exceptionality_multiplier += 2;
@@ -1770,13 +1770,13 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
         formula_dmg_plus_big = wldmgplus * exceptionality_multiplier;
 
         /* Add mythic great damage if mknown */
-        if (obj && obj->mknown)
+        if (obj && is_obj_mknown(obj))
         {
             if (has_obj_mythic_great_damage(obj))
             {
                 base_avg_dmg += MYTHIC_GREAT_DAMAGE_DICE * (double)(1 + MYTHIC_GREAT_DAMAGE_DIESIZE) / 2;
                 formula_has_great_damage= TRUE;
-                if (obj->known && objects[otyp].oc_enchantable)
+                if (is_obj_known(obj) && objects[otyp].oc_enchantable)
                 {
                     base_avg_dmg += obj->enchantment;
                     formula_enchantment_dmg_bonus += obj->enchantment;
@@ -2060,13 +2060,13 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
     boolean affectsac = ((objects[otyp].oc_class == ARMOR_CLASS && desc_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
-            || (obj && has_obj_mythic_defense(obj) && obj->mknown)
+            || (obj && has_obj_mythic_defense(obj) && is_obj_mknown(obj))
             || (stats_known && objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_armor_class != 0)
             );
 
     boolean affectsmc = ((objects[otyp].oc_class == ARMOR_CLASS && desc_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
-            || (obj && has_obj_mythic_defense(obj) && obj->mknown)
+            || (obj && has_obj_mythic_defense(obj) && is_obj_mknown(obj))
             || (stats_known && objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_magic_cancellation != 0)
             );
 
@@ -2076,7 +2076,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
         boolean nonexpeptionalarmor = nonexceptionality_armor(obj);
         if ((((objects[otyp].oc_class == ARMOR_CLASS && desc_known)
             || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
-            || (obj && has_obj_mythic_defense(obj) && obj->mknown))
+            || (obj && has_obj_mythic_defense(obj) && is_obj_mknown(obj)))
             && obj->exceptionality) || (nonexpeptionalarmor && name_known))
         {
             const char* excep = nonexpeptionalarmor ? "Cannot have quality" :
@@ -2232,7 +2232,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 //boolean maindiceprinted = FALSE;
                 Sprintf(buf, "%s effect duration: %s", itemname_hc, itempadding);
 
-                int applied_plus = objects[otyp].oc_spell_dur_plus + (obj && obj->bknown ? bcsign(obj) * objects[otyp].oc_spell_dur_buc_plus : 0);
+                int applied_plus = objects[otyp].oc_spell_dur_plus + (obj && is_obj_bknown(obj) ? bcsign(obj) * objects[otyp].oc_spell_dur_buc_plus : 0);
                 printdice(eos(buf), objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize, applied_plus);
 
                 //if (objects[otyp].oc_spell_dur_dice > 0 && objects[otyp].oc_spell_dur_diesize > 0)
@@ -2256,7 +2256,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 Sprintf(plusbuf, " turn%s", (objects[otyp].oc_spell_dur_dice == 0 && objects[otyp].oc_spell_dur_diesize == 0 && applied_plus == 1) ? "" : "s");
                 Strcat(buf, plusbuf);
 
-                if (objects[otyp].oc_spell_dur_buc_plus != 0 && obj && !obj->bknown)
+                if (objects[otyp].oc_spell_dur_buc_plus != 0 && obj && !is_obj_bknown(obj))
                 {
                     char bucplusbuf[BUFSZ] = "";
                     int bucplus = objects[otyp].oc_spell_dur_buc_plus;
@@ -2339,8 +2339,8 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 else
                     Sprintf(buf, "Effect duration:        ");
 
-                int dice = objects[otyp].oc_potion_normal_dice + (obj && obj->bknown ? (int)objects[otyp].oc_potion_normal_dice_buc_multiplier * bcsign(obj) : 0);
-                int plus = objects[otyp].oc_potion_normal_plus + (obj && obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_normal_buc_multiplier : 0);
+                int dice = objects[otyp].oc_potion_normal_dice + (obj && is_obj_bknown(obj) ? (int)objects[otyp].oc_potion_normal_dice_buc_multiplier * bcsign(obj) : 0);
+                int plus = objects[otyp].oc_potion_normal_plus + (obj && is_obj_bknown(obj) ? bcsign(obj) * (int)objects[otyp].oc_potion_normal_buc_multiplier : 0);
                 printdice(eos(buf), dice, objects[otyp].oc_potion_normal_diesize, plus);
 
                 //if (dice > 0 && objects[otyp].oc_potion_normal_diesize > 0)
@@ -2399,8 +2399,8 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
                 Sprintf(buf, "Breathe %s:       %s", brtype, brtypepadding);
 
-                int dice = objects[otyp].oc_potion_breathe_dice + (obj && obj->bknown ? (int)objects[otyp].oc_potion_breathe_dice_buc_multiplier * bcsign(obj) : 0);
-                int plus = objects[otyp].oc_potion_breathe_plus + (obj && obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_breathe_buc_multiplier : 0);
+                int dice = objects[otyp].oc_potion_breathe_dice + (obj && is_obj_bknown(obj) ? (int)objects[otyp].oc_potion_breathe_dice_buc_multiplier * bcsign(obj) : 0);
+                int plus = objects[otyp].oc_potion_breathe_plus + (obj && is_obj_bknown(obj) ? bcsign(obj) * (int)objects[otyp].oc_potion_breathe_buc_multiplier : 0);
                 printdice(eos(buf), dice, objects[otyp].oc_potion_breathe_diesize, plus);
 
                 //if (dice > 0 && objects[otyp].oc_potion_breathe_diesize > 0)
@@ -2444,9 +2444,9 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 if (extra_data1 > 0)
                 {
                     char maxhpbuf[BUFSZ] = "";
-                    if (obj && obj->bknown)
+                    if (obj && is_obj_bknown(obj))
                     {
-                        if (obj->blessed)
+                        if (is_obj_blessed(obj))
                             Sprintf(maxhpbuf, "+%d (if at max health)", extra_data1);
                         else
                             Sprintf(maxhpbuf, "0 (+%d if blessed at max)", extra_data1);
@@ -2463,11 +2463,11 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 if (extra_data1 > 0)
                 {
                     char maxmanabuf[BUFSZ] = "";
-                    if (obj && obj->bknown)
+                    if (obj && is_obj_bknown(obj))
                     {
                         if(obj->blessed)
                             Sprintf(maxmanabuf, "+%d (if at max mana)", extra_data1);
-                        else if (obj->cursed)
+                        else if (is_obj_cursed(obj))
                             Sprintf(maxmanabuf, "-%d (+%d if blessed at max mana)", extra_data1, extra_data1);
                         else
                             Sprintf(maxmanabuf, "0 (+/-%d if blessed at max or cursed)", extra_data1);
@@ -2513,27 +2513,27 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 boolean cures_confusion_noncursed = (objects[otyp].oc_potion_effect_flags & POTFLAGS_NONCURSED_CURE_CONFUSION) == POTFLAGS_NONCURSED_CURE_CONFUSION;
                 boolean cures_confusion_all = (objects[otyp].oc_potion_effect_flags & POTFLAGS_ALL_CURE_CONFUSION) == POTFLAGS_ALL_CURE_CONFUSION;
 
-                if (obj && obj->bknown)
+                if (obj && is_obj_bknown(obj))
                 {
                     boolean cures_sick = FALSE;
                     boolean cures_blind = FALSE;
                     boolean cures_hallucination = FALSE;
                     boolean cures_stun = FALSE;
                     boolean cures_confusion = FALSE;
-                    cures_sick = obj->blessed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_SICKNESS) :
-                        obj->cursed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_SICKNESS) :
+                    cures_sick = is_obj_blessed(obj) ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_SICKNESS) :
+                        is_obj_cursed(obj) ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_SICKNESS) :
                         !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_SICKNESS);
-                    cures_blind = obj->blessed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_BLINDNESS) :
-                        obj->cursed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_BLINDNESS) :
+                    cures_blind = is_obj_blessed(obj) ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_BLINDNESS) :
+                        is_obj_cursed(obj) ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_BLINDNESS) :
                         !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_BLINDNESS);
-                    cures_hallucination = obj->blessed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_HALLUCINATION) :
-                        obj->cursed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_HALLUCINATION) :
+                    cures_hallucination = is_obj_blessed(obj) ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_HALLUCINATION) :
+                        is_obj_cursed(obj) ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_HALLUCINATION) :
                         !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_HALLUCINATION);
-                    cures_stun = obj->blessed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_STUN) :
-                        obj->cursed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_STUN) :
+                    cures_stun = is_obj_blessed(obj) ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_STUN) :
+                        is_obj_cursed(obj) ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_STUN) :
                         !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_STUN);
-                    cures_confusion = obj->blessed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_CONFUSION) :
-                        obj->cursed ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_CONFUSION) :
+                    cures_confusion = is_obj_blessed(obj) ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_CONFUSION) :
+                        is_obj_cursed(obj) ? !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_CONFUSION) :
                         !!(objects[otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_CONFUSION);
 
                     Sprintf(buf, "Cures sickness:         %s (%s)", cures_sick ? "Yes" : "No",
@@ -2583,8 +2583,8 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 //boolean maindiceprinted = FALSE;
                 Sprintf(buf, "Nutrition:              ");
 
-                int dice = objects[otyp].oc_potion_nutrition_dice + (obj && obj->bknown ? (int)objects[otyp].oc_potion_nutrition_dice_buc_multiplier * bcsign(obj) : 0);
-                int plus = objects[otyp].oc_potion_nutrition_plus + (obj && obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_nutrition_buc_multiplier : 0);
+                int dice = objects[otyp].oc_potion_nutrition_dice + (obj && is_obj_bknown(obj) ? (int)objects[otyp].oc_potion_nutrition_dice_buc_multiplier * bcsign(obj) : 0);
+                int plus = objects[otyp].oc_potion_nutrition_plus + (obj && is_obj_bknown(obj) ? bcsign(obj) * (int)objects[otyp].oc_potion_nutrition_buc_multiplier : 0);
                 printdice(eos(buf), dice, objects[otyp].oc_potion_nutrition_diesize, plus);
 
                 //if (dice > 0 && objects[otyp].oc_potion_nutrition_diesize > 0)
@@ -2647,7 +2647,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
     /* CHARGES */
     if (objects[otyp].oc_charged)
     {
-        if (obj && obj->known)
+        if (obj && is_obj_known(obj))
         {
             Sprintf(buf, "Charges left:           %d", obj->charges);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -2664,7 +2664,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 
-        if (obj && obj->known)
+        if (obj && is_obj_known(obj))
         {
             Sprintf(buf, "Rechargings before:     %d", (int)obj->recharged);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -2684,7 +2684,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
     /* ENCHANTMENT */
     if (objects[otyp].oc_enchantable)
     {
-        if (obj && obj->known)
+        if (obj && is_obj_known(obj))
         {
             Strcpy(buf, "");
 
@@ -2814,12 +2814,12 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
             }
         }
 
-        if (is_damageable(obj) && (!is_obj_identified_when_damageable(obj) || (obj->rknown && obj->oerodeproof) || obj->oeroded || obj->oeroded2))
+        if (is_damageable(obj) && (!is_obj_identified_when_damageable(obj) || (is_obj_rknown(obj) && is_obj_erodeproof(obj)) || obj->oeroded || obj->oeroded2))
         {
             char erodebuf[BUFSZ] = "";
-            if (obj->rknown)
+            if (is_obj_rknown(obj))
             {
-                if (obj->oerodeproof)
+                if (is_obj_erodeproof(obj))
                 {
                     char proofbuf[BUFSZ] = "";
                     add_erosion_words(obj, proofbuf);
@@ -2842,7 +2842,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 
-        if (obj->oeroded || obj->oeroded2 || (obj->rknown && obj->oerodeproof && !is_damageable(obj)))
+        if (obj->oeroded || obj->oeroded2 || (is_obj_rknown(obj) && is_obj_erodeproof(obj) && !is_damageable(obj)))
         {
             char erodebuf[BUFSZ] = "";
             char penaltybuf[BUFSZ] = "";
@@ -2878,20 +2878,20 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
         if (obj->oclass != COIN_CLASS && obj->otyp != SCR_MAIL)
         {
-            Sprintf(buf, "Blessing status:        %s", !obj->bknown ? "Undetermined" : obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
+            Sprintf(buf, "Blessing status:        %s", !is_obj_bknown(obj) ? "Undetermined" : is_obj_blessed(obj) ? "Blessed" : is_obj_cursed(obj) ? "Cursed" : "Uncursed");
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 
         /* Mythic status */
         boolean nonmythic = (is_weapon(obj) || is_armor(obj)) && otyp_non_mythic(otyp)
             && !obj->oartifact && !objects[otyp].oc_unique && !(objects[otyp].oc_flags3 & O3_UNIQUE);
-        if (obj->dknown && name_known && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
+        if (is_obj_dknown(obj) && name_known && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
         {
             Sprintf(buf, "Mythic status:          %s", nonmythic ? "Cannot be mythic" : (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 
-        if (obj->opoisoned)
+        if (is_obj_trapped(obj))
         {
             Sprintf(buf, "Poisoned status:        Poisoned (+2d6 poison damage)");
             convert_dice_to_ranges(buf);
@@ -2930,7 +2930,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
     }
 
     /* Historic status for statues */
-    if (obj && otyp == STATUE && obj->dknown)
+    if (obj && otyp == STATUE && is_obj_dknown(obj))
     {
         if (obj->special_quality == SPEQUAL_STATUE_HISTORIC)
         {
@@ -2946,7 +2946,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
     /* Identification status */
     boolean notfullyidentified = FALSE;
-    if (obj && obj->dknown)
+    if (obj && is_obj_dknown(obj))
     {
         notfullyidentified = not_fully_identified(obj);
         Sprintf(buf, "Identification status:  %s", stats_known ? (notfullyidentified ? "Known" : "Fully known") : "Unidentified");
@@ -3162,7 +3162,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                             Strcpy(buf2, "");
                             int stat = (int)(k == 9 && !(prop & FULL_MC_BONUS) ? /* MC */ objects[otyp].oc_attribute_bonus / 3 : objects[otyp].oc_attribute_bonus);
 
-                            if (obj && obj->cursed && (objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE))
+                            if (obj && is_obj_cursed(obj) && (objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE))
                                 stat = -stat;
 
                             if (obj && objects[otyp].oc_enchantable && !(prop & IGNORE_ENCHANTMENT))
@@ -3738,7 +3738,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
         }
 
         /* Mythic power descriptions for the item. */
-        if (obj && stats_known && obj->mknown && (obj->mythic_prefix || obj->mythic_suffix))
+        if (obj && stats_known && is_obj_mknown(obj) && (obj->mythic_prefix || obj->mythic_suffix))
         {
             char mythicbuf[BUFSZ] = "";
 
@@ -4712,7 +4712,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
     }
 
     /* Notable */
-    boolean note_your_egg = obj && otyp == EGG && obj->corpsenm >= LOW_PM && obj->known && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG) != 0 && (obj->speflags & SPEFLAGS_YOURS) != 0;
+    boolean note_your_egg = obj && otyp == EGG && obj->corpsenm >= LOW_PM && is_obj_known(obj) && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG) != 0 && (obj->speflags & SPEFLAGS_YOURS) != 0;
     boolean note_launcher_str_bonus = is_otyp_launcher(otyp) && !(objects[otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH);
     if (note_your_egg || note_launcher_str_bonus)
     {
@@ -4736,7 +4736,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
     }
 
     /* Description */
-    if (stats_known && OBJ_ITEM_DESC(otyp) /* && !(obj->oartifact && obj->nknown) */)
+    if (stats_known && OBJ_ITEM_DESC(otyp) /* && !(obj->oartifact && is_obj_nknown(obj)) */)
     {
         Strcpy(buf, "Description:");
         putstr(datawin, ATR_HEADING, buf);
@@ -4811,7 +4811,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
             else
             {
                 weapon_stats_printed = TRUE;
-                if (!is_launcher(obj) && stats_known && obj->known
+                if (!is_launcher(obj) && stats_known && is_obj_known(obj)
                     && (obj == applicable_launcher || !ammo_and_launcher(obj, applicable_launcher)
                         || (ammo_and_launcher(obj, applicable_launcher) && object_stats_known(applicable_launcher) && applicable_launcher->known))
                     )
@@ -5166,7 +5166,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
             stats_ptr->mc_bonus = totalmcbonus;
         }
 
-        if (is_armor(obj) || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || (has_obj_mythic_defense(obj) && obj->mknown))
+        if (is_armor(obj) || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || (has_obj_mythic_defense(obj) && is_obj_mknown(obj)))
         {
             armor_stats_printed = TRUE;
             int powercnt = 0;
@@ -5299,7 +5299,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
         }
 
         /* Hints */
-        boolean show_identify_hint = (flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && obj->dknown && (!stats_known || notfullyidentified);
+        boolean show_identify_hint = (flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && is_obj_dknown(obj) && (!stats_known || notfullyidentified);
         if (show_identify_hint || show_corpse_hint)
         {
             int powercnt = 0;
@@ -5440,7 +5440,7 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr)
     }
 
     Strcpy(buf4, "");
-    if (mon && has_umname(mon) && has_mname(mon) && mon->u_know_mname && !strcmp(monster_name, UMNAME(mon)) && strcmp(UMNAME(mon), MNAME(mon)))
+    if (mon && has_umname(mon) && has_mname(mon) && is_mon_u_know_mname(mon) && !strcmp(monster_name, UMNAME(mon)) && strcmp(UMNAME(mon), MNAME(mon)))
     {
         Sprintf(buf4, " a.k.a. %s", MNAME(mon));
     }
@@ -5481,7 +5481,7 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr)
 
     if (cham >= LOW_PM)
     {
-        Strcpy(buf2, mon && mon->female && mons[cham].mfemalename ? mons[cham].mfemalename : mons[cham].mname);
+        Strcpy(buf2, mon && is_mon_female(mon) && mons[cham].mfemalename ? mons[cham].mfemalename : mons[cham].mname);
         *buf2 = highc(*buf2);
         Sprintf(buf, "True form:              %s", buf2);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -5566,7 +5566,7 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr)
 
     if (mon && !is_neuter(ptr))
     {
-        Sprintf(buf, "Gender:                 %s", (is_you ? flags.female : mon->female) ? "Female" : "Male");
+        Sprintf(buf, "Gender:                 %s", (is_you ? flags.female : is_mon_female(mon)) ? "Female" : "Male");
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
@@ -5846,7 +5846,7 @@ flooreffects(struct obj *obj, int x, int y, const char *verb)
     {
         ttyp = t->ttyp;
         tseen = t->tseen ? TRUE : FALSE;
-        if (((mtmp = m_at(x, y)) && mtmp->mtrapped)
+        if (((mtmp = m_at(x, y)) && is_mon_trapped(mtmp))
             || (u.utrap && u.ux == x && u.uy == y)) 
         {
             if (*verb && (cansee(x, y) || distu(x, y) == 0))
@@ -5901,7 +5901,7 @@ flooreffects(struct obj *obj, int x, int y, const char *verb)
                     if (!DEADMONSTER(mtmp) && !is_whirly(mtmp->data))
                         return FALSE; /* still alive */
                 }
-                mtmp->mtrapped = 0;
+                set_mon_trapped(mtmp, 0);
             } 
             else 
             {
@@ -6001,7 +6001,7 @@ flooreffects(struct obj *obj, int x, int y, const char *verb)
             pline("%s %s into %s pit.", The(xname(obj)),
                   otense(obj, "tumble"), the_your[t->madeby_u]);
     } 
-    else if (obj->globby) 
+    else if (is_obj_globby(obj)) 
     {
         /* Globby things like puddings might stick together */
         while (obj && (otmp = obj_nexto_xy(obj, x, y, TRUE)) != 0) 
@@ -6033,21 +6033,20 @@ doaltarobj(struct obj *obj)
     } 
     else 
     {
-        /* coins don't have bless/curse status */
-        obj->blessed = obj->cursed = 0;
+        /* coins don't have bless/curse status */set_obj_blessed(obj, 0); set_obj_cursed(obj, 0);
     }
 
-    if (obj->blessed || obj->cursed) 
+    if (is_obj_blessed(obj) || is_obj_cursed(obj)) 
     {
         const char* hclr = hcolor_multi_buf1(obj->blessed ? NH_AMBER : NH_BLACK);
         //multicolor_buffer[2] = multicolor_buffer[1];
-        There_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : obj->blessed ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, // no_multiattrs, multicolor_buffer, 
+        There_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : is_obj_blessed(obj) ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, // no_multiattrs, multicolor_buffer, 
             "is %s%s%s as %s %s the altar.",
             an_prefix(hclr), hclr, " flash", doname(obj),
               otense(obj, "hit"));
         if (!Hallucination)
         {
-            obj->bknown = 1;
+            set_obj_bknown(obj, 1);
             issue_achievement(GUI_ACHIEVEMENT_IDENTIFIED_BLESSEDNESS_ON_ALTAR);
         }
     } 
@@ -6056,7 +6055,7 @@ doaltarobj(struct obj *obj)
         pline("%s %s on the altar.", Doname2(obj), otense(obj, "land"));
         if (obj->oclass != COIN_CLASS)
         {
-            obj->bknown = 1;
+            set_obj_bknown(obj, 1);
             issue_achievement(GUI_ACHIEVEMENT_IDENTIFIED_BLESSEDNESS_ON_ALTAR);
         }
     }
@@ -6173,7 +6172,7 @@ dosinkring(struct obj *obj)
     case RIN_SLOW_DIGESTION:
         pline_The_ex1(ATR_NONE, CLR_MSG_ATTENTION, "ring is regurgitated!");
  giveback:
-        obj->in_use = FALSE;
+        set_obj_in_use(obj, FALSE);
         if (!dropxf(obj))
             trycall(obj);
         return;
@@ -6340,11 +6339,11 @@ dosinkring(struct obj *obj)
 
     if (!rn2(20) && !nosink) {
         pline_The("sink backs up, leaving %s.", doname(obj));
-        obj->in_use = FALSE;
+        set_obj_in_use(obj, FALSE);
         (void)dropxf(obj);
     } else if (!rn2(5)) {
         freeinv(obj);
-        obj->in_use = FALSE;
+        set_obj_in_use(obj, FALSE);
         obj->ox = u.ux;
         obj->oy = u.uy;
         add_to_buried(obj);
@@ -6368,7 +6367,7 @@ canletgo(struct obj *obj, const char *word)
         }
         return FALSE;
     }
-    if (objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED && obj->cursed) {
+    if (objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED && is_obj_cursed(obj)) {
         /* getobj() kludge sets corpsenm to user's specified count
            when refusing to split a stack of cursed loadstones */
         if (*word) {
@@ -6381,9 +6380,9 @@ canletgo(struct obj *obj, const char *word)
                   obj->corpsenm ? " any of" : "", is_graystone(obj) ? "the stone" : "the item", plur(obj->quan));
         }
         obj->corpsenm = 0; /* reset */
-        if (!obj->bknown)
+        if (!is_obj_bknown(obj))
         {
-            obj->bknown = TRUE;
+            set_obj_bknown(obj, TRUE);
             update_inventory();
         }
         return FALSE;
@@ -6653,7 +6652,7 @@ dropz(struct obj *obj, boolean with_impact)
             container_impact_dmg(obj, u.ux, u.uy);
         if (obj == uball)
             drop_ball(u.ux, u.uy);
-        else if (level.flags.has_shop)
+        else if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SHOP))
             sellobj(obj, u.ux, u.uy);
         stackobj(obj);
         if (Blind && Levitation)
@@ -6687,13 +6686,13 @@ obj_no_longer_held(struct obj *obj)
          * to give each individual crysknife its own separate 10% chance,
          * but we aren't in any position to handle stack splitting here.
          */
-        if (!obj->oerodeproof || !rn2(10)) {
+        if (!is_obj_erodeproof(obj) || !rn2(10)) {
             /* if monsters aren't moving, assume player is responsible */
             if (!context.mon_moving && !program_state.gameover)
                 costly_alteration(obj, COST_DEGRD);
             obj->otyp = WORM_TOOTH;
             obj->material = objects[obj->otyp].oc_material;
-            obj->oerodeproof = 0;
+            set_obj_erodeproof(obj, 0);
         }
         break;
     }
@@ -6744,7 +6743,7 @@ dodropmany(void)
             for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
                 if (otmp2 == otmp)
                     break;
-            if (!otmp2 || !otmp2->bypass)
+            if (!otmp2 || !is_obj_bypass(otmp2))
                 continue;
             /* found next selected invent item */
             cnt = pick_list[i].count;
@@ -6754,7 +6753,7 @@ dodropmany(void)
                 {
                     ; /* don't split */
                 }
-                else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed)
+                else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && is_obj_cursed(otmp))
                 {
                     /* same kludge as getobj(), for canletgo()'s use */
                     otmp->corpsenm = (int)cnt; /* don't split */
@@ -6915,7 +6914,7 @@ menu_drop(int retry)
                 for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
                     if (otmp2 == otmp)
                         break;
-                if (!otmp2 || !otmp2->bypass)
+                if (!otmp2 || !is_obj_bypass(otmp2))
                     continue;
                 /* found next selected invent item */
                 cnt = pick_list[i].count;
@@ -6925,7 +6924,7 @@ menu_drop(int retry)
                     {
                         ; /* don't split */
                     } 
-                    else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed) 
+                    else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && is_obj_cursed(otmp)) 
                     {
                         /* same kludge as getobj(), for canletgo()'s use */
                         otmp->corpsenm = (int) cnt; /* don't split */
@@ -7090,7 +7089,7 @@ menu_autostash(int retry)
                 for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
                     if (otmp2 == otmp)
                         break;
-                if (!otmp2 || !otmp2->bypass)
+                if (!otmp2 || !is_obj_bypass(otmp2))
                     continue;
                 /* found next selected invent item */
                 cnt = pick_list[i].count;
@@ -7100,7 +7099,7 @@ menu_autostash(int retry)
                     {
                         ; /* don't split */
                     }
-                    else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed)
+                    else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && is_obj_cursed(otmp))
                     {
                         /* same kludge as getobj(), for canletgo()'s use */
                         otmp->corpsenm = (int)cnt; /* don't split */
@@ -7235,7 +7234,7 @@ dodown(void)
         return 1;
     }
 
-    if (/*on_level(&valley_level, &u.uz)*/ Is_stronghold(&u.uz) && !u.uevent.gehennom_entered)
+    if (/*on_level(&valley_level, &u.uz)*/ Is_stronghold(&u.uz) && !get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_GEHENNOM_ENTERED))
     {
         You_ex(ATR_NONE, CLR_MSG_GOD, "are standing at the gate to Gehennom.");
         pline_ex(ATR_NONE, CLR_MSG_GOD, "Unspeakable cruelty and harm lurk down there.");
@@ -7505,7 +7504,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
         newlevel->dlevel = dunlevs_in_dungeon(newlevel);
     if (newdungeon && In_endgame(newlevel)) 
     { /* 1st Endgame Level !!! */
-        if (!u.uhave.amulet)
+        if (!get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_AMULET))
             return;  /* must have the Amulet */
         if (!wizard) /* wizard ^V can bypass Earth level */
             assign_level(newlevel, &earth_level); /* (redundant) */
@@ -7531,7 +7530,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
      *   -2    5.21   4.17   0.0
      *   -3    2.08   0.0    0.0
      */
-    if (Inhell && up && u.uhave.amulet && !newdungeon && !portal
+    if (Inhell && up && get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_AMULET) && !newdungeon && !portal
         && (dunlev(&u.uz) < dunlevs_in_dungeon(&u.uz) - 3)) {
         if (!rn2(4)) {
             int odds = 3 + (int) u.ualign.type,   /* 2..4 */
@@ -7992,35 +7991,35 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
             else
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "It is hot here.  You smell smoke...");
 
-            if (flags.showscore && !u.uachieve.enter_gehennom)
+            if (flags.showscore && !get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTER_GEHENNOM))
                 context.botl = 1;
 
-            if (!u.uachieve.enter_gehennom)
+            if (!get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTER_GEHENNOM))
             {
                 achievement_gained("Entered Gehennom");
                 livelog_printf(LL_ACHIEVE, "%s", "entered Gehennom");
             }
-            u.uachieve.enter_gehennom = 1;
+            set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTER_GEHENNOM, 1);
         }
     }
 
     if (In_mines(&u.uz))
     {
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES);
-        if (!u.uachieve.entered_gnomish_mines)
+        if (!get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_GNOMISH_MINES))
         {
-            //if (!u.uachieve.entered_gnomish_mines)
+            //if (!get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_GNOMISH_MINES))
             //    achievement_gained("Entered Gnomish Mines");
             livelog_printf(LL_ACHIEVE, "%s", "entered the Gnomish Mines");
-            u.uachieve.entered_gnomish_mines = 1;
+            set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_GNOMISH_MINES, 1);
         }
         if (Is_minetown_level(&u.uz))
         {
-            if (!u.uachieve.entered_mine_town)
+            if (!get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_MINE_TOWN))
             {
                 //    achievement_gained("Entered Mine Town");
                 livelog_printf(LL_MINORAC, "%s", "reached Mine Town");
-                u.uachieve.entered_mine_town = 1;
+                set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_MINE_TOWN, 1);
             }
             issue_achievement(GUI_ACHIEVEMENT_REACHED_MINE_TOWN);
         }
@@ -8033,68 +8032,68 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_ELEMENTAL_PLANES);
         if (Is_astralevel(&u.uz))
         {
-            if (!u.uachieve.entered_astral_plane)
+            if (!get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_ASTRAL_PLANE))
                 livelog_printf(LL_ACHIEVE, "%s", "entered the Astral Plane");
 
-            u.uachieve.entered_astral_plane = 1;
+            set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_ASTRAL_PLANE, 1);
             issue_achievement(GUI_ACHIEVEMENT_ENTERED_ASTRAL_PLANE);
         }
         else
         {
-            if(!u.uachieve.entered_elemental_planes)
+            if(!get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_ELEMENTAL_PLANES))
                 livelog_printf(LL_ACHIEVE, "%s", "entered the Elemental Planes");
-            u.uachieve.entered_elemental_planes = 1;
+            set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_ELEMENTAL_PLANES, 1);
         }
     }
 
     if (In_sokoban(&u.uz))
     {
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
-        if (!u.uachieve.entered_sokoban)
+        if (!get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_SOKOBAN))
         {
             //    achievement_gained("Entered Sokoban");
             livelog_printf(LL_ACHIEVE, "%s", "entered Sokoban");
-            u.uachieve.entered_sokoban = 1;
+            set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_SOKOBAN, 1);
         }
         if (Is_sokoend_level(&u.uz))
             issue_achievement(GUI_ACHIEVEMENT_REACHED_TOP_OF_SOKOBAN);
     }
 
-    if (Is_bigroom(&u.uz) && !u.uachieve.entered_bigroom)
+    if (Is_bigroom(&u.uz) && !get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_BIGROOM))
     {
         //    achievement_gained("Entered the Big Room");
         livelog_printf(LL_ACHIEVE, "%s", "entered the Big Room");
-        u.uachieve.entered_bigroom = 1;
+        set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_BIGROOM, 1);
     }
 
     /* in case we've managed to bypass the Valley's stairway down */
     if (Inhell && !Is_valley(&u.uz))
-        u.uevent.gehennom_entered = 1;
+        set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_GEHENNOM_ENTERED, 1);
     
     if (In_modron_level(&u.uz))
     {
-        if(!u.uachieve.entered_plane_of_modron)
+        if(!get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_PLANE_OF_MODRON))
             livelog_printf(LL_ACHIEVE, "%s", "entered the Plane of the Modron");
-        u.uevent.modron_plane_entered = 1;
-        u.uachieve.entered_plane_of_modron = 1;
+        set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_MODRON_PLANE_ENTERED, 1);
+        set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_PLANE_OF_MODRON, 1);
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_PLANE_OF_THE_MODRON);
         if (Is_primus_modron_level(&u.uz))
             issue_achievement(GUI_ACHIEVEMENT_REACHED_PROTONUS);
     }
     else if (In_bovine_level(&u.uz))
     {
-        if (!u.uachieve.entered_hellish_pastures)
+        if (!get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_HELLISH_PASTURES))
             livelog_printf(LL_ACHIEVE, "%s", "entered the Hellish Pastures");
-        u.uevent.hellish_pastures_entered = 1;
-        u.uachieve.entered_hellish_pastures = 1;
+        set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_HELLISH_PASTURES_ENTERED, 1);
+        set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_HELLISH_PASTURES, 1);
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_HELLISH_PASTURES);
     }
     else if (In_large_circular_dgn_level(&u.uz))
     {
-        if (!u.uachieve.entered_large_circular_dungeon)
+        if (!get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_LARGE_CIRCULAR_DUNGEON))
             livelog_printf(LL_ACHIEVE, "%s", "entered the Large Circular Dungeon");
-        u.uevent.large_circular_dgn_entered = 1;
-        u.uachieve.entered_large_circular_dungeon = 1;
+        set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_LARGE_CIRCULAR_DGN_ENTERED, 1);
+        set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_LARGE_CIRCULAR_DUNGEON, 1);
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_LARGE_CIRCULAR_DUNGEON);
         if (Is_quantum_core_level(&u.uz))
             issue_achievement(GUI_ACHIEVEMENT_REACHED_QUANTUM_CORE);
@@ -8204,7 +8203,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
     {
         if (isnew && on_level(&u.uz, &astral_level))
             final_level(); /* guardian angel,&c */
-        else if (newdungeon && u.uhave.amulet)
+        else if (newdungeon && get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_AMULET))
             resurrect(); /* force confrontation with Wizard */
 
 #if FALSE
@@ -8244,7 +8243,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
             {
                 if (DEADMONSTER(mtmp))
                     continue;
-                mtmp->msleeping = 0;
+                set_mon_sleeping(mtmp, 0);
                 refresh_m_tile_gui_info(mtmp, TRUE);
             }
         }
@@ -8256,12 +8255,12 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
 
         /* main dungeon message from your quest leader */
         if (!In_quest(&u.uz0) && at_dgn_entrance("The Quest")
-            && !(u.uevent.qcompleted || u.uevent.qexpelled
-                 || quest_status.leader_is_dead)) 
+            && !(get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QCOMPLETED) || get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QEXPELLED)
+                 || get_flag(quest_status.bitflags, QSCORE_BITFLAGS_LEADER_IS_DEAD))) 
         {
-            if (!u.uevent.qcalled) 
+            if (!get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QCALLED)) 
             {
-                u.uevent.qcalled = 1;
+                set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QCALLED, 1);
                 com_pager_ex((struct monst*)0, 2, ATR_NONE, CLR_MSG_ATTENTION, FALSE); /* main "leader needs help" message */
             }
             else 
@@ -8270,27 +8269,27 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
             }
         }
 
-        if (!In_modron_level(&u.uz0) && !u.uevent.modron_portal_hint && at_dgn_entrance("Plane of the Modron"))
+        if (!In_modron_level(&u.uz0) && !get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_MODRON_PORTAL_HINT) && at_dgn_entrance("Plane of the Modron"))
         {
-            u.uevent.modron_portal_hint = 1;
+            set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_MODRON_PORTAL_HINT, 1);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "suddenly feel that angles are here straighter than normal, but then the feeling subsides.");
         }
 
-        if (!Is_bovine_level(&u.uz0) && !u.uevent.bovine_portal_hint && at_dgn_entrance("Hellish Pastures"))
+        if (!Is_bovine_level(&u.uz0) && !get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_BOVINE_PORTAL_HINT) && at_dgn_entrance("Hellish Pastures"))
         {
-            u.uevent.bovine_portal_hint = 1;
+            set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_BOVINE_PORTAL_HINT, 1);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you think you hear distant grunting and bellowing, but then the noises are gone.");
         }
 
-        if (!Is_quantum_tunnel_level(&u.uz0) && !u.uevent.quantum_portal_hint && at_dgn_entrance("The Large Circular Dungeon"))
+        if (!Is_quantum_tunnel_level(&u.uz0) && !get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QUANTUM_PORTAL_HINT) && at_dgn_entrance("The Large Circular Dungeon"))
         {
-            u.uevent.quantum_portal_hint = 1;
+            set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QUANTUM_PORTAL_HINT, 1);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you feel as if the fabric of reality stretches back and forth a bit, but then the sensation passes.");
         }
 
-        if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && level_difficulty() >= MINIMUM_DGN_LEVEL_POLY_TRAP && !u.uevent.polymorph_trap_warning)
+        if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && level_difficulty() >= MINIMUM_DGN_LEVEL_POLY_TRAP && !get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_POLYMORPH_TRAP_WARNING))
         {
-            u.uevent.polymorph_trap_warning = 1;
+            set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_POLYMORPH_TRAP_WARNING, 1);
             play_sfx_sound(SFX_WARNING);
             custompline_ex_prefix(ATR_NONE, CLR_MSG_WARNING, "WARNING", ATR_NONE, NO_COLOR, " - ", ATR_NONE, CLR_MSG_HIGHLIGHT, 0U, "Polymorph traps can be present on dungeon level %d and below.", MINIMUM_DGN_LEVEL_POLY_TRAP);
         }
@@ -8320,7 +8319,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
             mptr = find_mapseen(&u.uz);
 
         boolean special_lvl = FALSE;
-        if (slev && mptr && mptr->flags.special_level_true_nature_known)
+        if (slev && mptr && get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_SPECIAL_LEVEL_TRUE_NATURE_KNOWN))
         {
             Sprintf(lvlbuf, "%s", slev->name);
             special_lvl = TRUE;
@@ -8770,7 +8769,7 @@ animate_corpse(struct obj *corpse, int animateintomon)
         case OBJ_FLOOR:
             if (cansee(mtmp->mx, mtmp->my))
                 pline_ex(ATR_NONE, clr, "%s rises from the dead as %s!",
-                    The(pm_monster_name(&mons[oldcorpsenum], mtmp->female)), an(pm_monster_name(&mons[animateintomon], mtmp->female)));
+                    The(pm_monster_name(&mons[oldcorpsenum], is_mon_female(mtmp))), an(pm_monster_name(&mons[animateintomon], is_mon_female(mtmp))));
             break;
 
         case OBJ_MINVENT: /* probably a nymph's */
@@ -8781,7 +8780,7 @@ animate_corpse(struct obj *corpse, int animateintomon)
                         mon_nam(mcarry), an(cname));
                 else
                     pline_ex(ATR_NONE, clr, "%s rises from the dead as %s!",
-                        The(pm_monster_name(&mons[oldcorpsenum], mtmp->female)), an(pm_monster_name(&mons[animateintomon], mtmp->female)));
+                        The(pm_monster_name(&mons[oldcorpsenum], is_mon_female(mtmp))), an(pm_monster_name(&mons[animateintomon], is_mon_female(mtmp))));
             }
             break;
         case OBJ_CONTAINED: 
@@ -8927,7 +8926,7 @@ dowipe(void)
 {
     if (u.ucreamed)
     {
-        boolean isfemale = Upolyd ? youmonst.female : flags.female;
+        boolean isfemale = Upolyd ? is_mon_female(&(youmonst)) : flags.female;
         enum monster_soundset_types mss = isfemale ? youmonst.data->female_soundset : youmonst.data->soundset;
         enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[BAREHANDED_ATTACK_NUMBER];
         enum object_soundset_types used_oss = uarmg ? objects[uarmg->otyp].oc_soundset : oss;
@@ -9105,17 +9104,17 @@ delete_location(xchar x, xchar y)
     else if (levl[x][y].typ == SINK)
         level.flags.nsinks--;
 
-    if (levl[x][y].lamplit)
+    if (is_lev_lamplit(x, y))
     {
         if(!in_mklev)
             del_light_source(LS_LOCATION, xy_to_any(x, y));
-        levl[x][y].lamplit = 0;
+        set_lev_lamplit(x, y, 0);
     }
-    if (levl[x][y].makingsound)
+    if (get_flag(levl[x][y].rm_bitflags, RM_BITFLAGS_MAKINGSOUND))
     {
         if (!in_mklev)
             del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
-        levl[x][y].makingsound = 0;
+        set_flag(levl[x][y].rm_bitflags, RM_BITFLAGS_MAKINGSOUND, 0);
     }
     levl[x][y].typ = UNDEFINED_LOCATION;
     levl[x][y].flags = 0;
@@ -9134,8 +9133,8 @@ delete_location(xchar x, xchar y)
     levl[x][y].floortyp = 0;
     levl[x][y].floorsubtyp = 0;
     levl[x][y].floorvartyp = 0;
-    levl[x][y].facing_right = 0;
-    levl[x][y].horizontal = 0;
+    set_lev_facing_right(x, y, 0);
+    set_lev_horizontal(x, y, 0);
 }
 
 void
@@ -9144,17 +9143,17 @@ delete_decoration(xchar x, xchar y)
     if (levl[x][y].decoration_typ)
     {
         debugprint("delete_decoration");
-        if (levl[x][y].lamplit)
+        if (is_lev_lamplit(x, y))
         {
             if (!in_mklev)
                 del_light_source(LS_LOCATION, xy_to_any(x, y));
-            levl[x][y].lamplit = 0;
+            set_lev_lamplit(x, y, 0);
         }
-        if (levl[x][y].makingsound)
+        if (get_flag(levl[x][y].rm_bitflags, RM_BITFLAGS_MAKINGSOUND))
         {
             if (!in_mklev)
                 del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
-            levl[x][y].makingsound = 0;
+            set_flag(levl[x][y].rm_bitflags, RM_BITFLAGS_MAKINGSOUND, 0);
         }
         levl[x][y].decoration_typ = 0;
         levl[x][y].decoration_subtyp = 0;
@@ -9182,8 +9181,8 @@ full_location_transform(xchar x, xchar y, int type, int subtype, int vartype, un
     levl[x][y].floortyp = floortype;
     levl[x][y].floorsubtyp = floorsubtype;
     levl[x][y].floorvartyp = floorvartype;
-    levl[x][y].facing_right = facing_right;
-    levl[x][y].horizontal = horizontal;
+    set_lev_facing_right(x, y, facing_right);
+    set_lev_horizontal(x, y, horizontal);
     levl[x][y].key_otyp = key_otyp;
     levl[x][y].special_quality = special_quality;
 
@@ -9301,15 +9300,15 @@ transform_location_type(xchar x, xchar y, int type, int subtype)
     else if (levl[x][y].typ == SINK)
         level.flags.nsinks--;
 
-    if (levl[x][y].lamplit)
+    if (is_lev_lamplit(x, y))
     {
         del_light_source(LS_LOCATION, xy_to_any(x, y));
-        levl[x][y].lamplit = 0;
+        set_lev_lamplit(x, y, 0);
     }
-    if (levl[x][y].makingsound)
+    if (get_flag(levl[x][y].rm_bitflags, RM_BITFLAGS_MAKINGSOUND))
     {
         del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
-        levl[x][y].makingsound = 0;
+        set_flag(levl[x][y].rm_bitflags, RM_BITFLAGS_MAKINGSOUND, 0);
     }
 
     /* Then, change type */
@@ -9592,7 +9591,7 @@ grab_hint(struct monst *mtmp)
 
         char buf[BUFSZ];
         char sbuf[BUFSZ] = "";
-        if (u.uevent.elbereth_known)
+        if (get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_ELBERETH_KNOWN))
             Strcat(sbuf, "writing Elbereth");
         if(*sbuf)
             Strcat(sbuf, ", ");
@@ -9642,7 +9641,7 @@ check_mobbed_hint(void)
         u.uhint.got_mobbed = TRUE;
         char buf[BUFSZ * 2] = "";
         Sprintf(buf, "If you are mobbed by monsters, try to use a wand or scroll of teleportation%s, drop a scroll of scare monster, use an item causing conflict, or read a scroll of taming.",
-            u.uevent.elbereth_known ? ", write Elbereth" : "");
+            get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_ELBERETH_KNOWN) ? ", write Elbereth" : "");
         hint_via_pline(buf);
     }
 }
@@ -9713,7 +9712,7 @@ death_hint(void)
                 Strcpy(buf, "You can remove a cursed strangulation item by uncursing it first, for example, by praying.");
                 break;
             case HINT_KILLED_MONSTER_STRANGULATION:
-                Sprintf(buf, "You can stop a monster from strangling you by praying%s or teleporting it or yourself away.", u.uevent.elbereth_known ? ", writing Elbereth," : "");
+                Sprintf(buf, "You can stop a monster from strangling you by praying%s or teleporting it or yourself away.", get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_ELBERETH_KNOWN) ? ", writing Elbereth," : "");
                 break;
             case HINT_KILLED_DISINTEGRATION_RAY:
                 Strcpy(buf, "Acquire disintegration resistance or reflection as early on as possible to avoid being killed by disintegration rays.");

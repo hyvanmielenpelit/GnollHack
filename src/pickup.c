@@ -241,7 +241,7 @@ query_classes(char oclasses[], boolean *one_at_a_time, boolean *everything, cons
                 /* if we just scanned the contents of a container
                    then mark it as having known contents */
                 if (objs->where == OBJ_CONTAINED)
-                    objs->ocontainer->cknown = 1;
+                    set_obj_cknown(objs->ocontainer, 1);
                 goto ask_again;
             }
             else if (sym == 'i') 
@@ -391,8 +391,7 @@ add_valid_menu_class(int c)
     static int vmc_count = 0;
 
     if (c == 0) { /* reset */
-        vmc_count = 0;
-        class_filter = bucx_filter = shop_filter = unidentified_filter = unknown_filter = FALSE;
+        vmc_count = 0;class_filter = FALSE; bucx_filter = FALSE; shop_filter = FALSE; unidentified_filter = FALSE; unknown_filter = FALSE;
     } else if (!menu_class_present(c)) {
         valid_menu_classes[vmc_count++] = (char) c;
         /* categorize the new class */
@@ -461,7 +460,7 @@ allow_category(struct obj *obj)
         return class_filter
                  ? (index(valid_menu_classes, COIN_CLASS) ? TRUE : FALSE)
                  : shop_filter /* coins are never unpaid, but check anyway */
-                    ? (obj->unpaid ? TRUE : FALSE)
+                    ? (is_obj_unpaid(obj) ? TRUE : FALSE)
                     : bucx_filter
                        ? (index(valid_menu_classes, iflags.goldX ? 'X' : 'U')
                           ? TRUE : FALSE)
@@ -470,7 +469,7 @@ allow_category(struct obj *obj)
                           TRUE; /* catchall: no filters specified, so accept */
 
     if (Role_if(PM_PRIEST))
-        obj->bknown = TRUE;
+        set_obj_bknown(obj, TRUE);
 
     /*
      * There are three types of filters possible and the first and
@@ -494,7 +493,7 @@ allow_category(struct obj *obj)
         return FALSE;
     /* if unpaid is expected and obj isn't unpaid, reject (treat a container
        holding any unpaid object as unpaid even if isn't unpaid itself) */
-    if (shop_filter && !obj->unpaid
+    if (shop_filter && !is_obj_unpaid(obj)
         && !(Has_contents(obj) && count_unpaid(obj->cobj, 0, FALSE) > 0))
         return FALSE;
     /* reject fully identified objects */
@@ -505,8 +504,8 @@ allow_category(struct obj *obj)
     /* check for particular bless/curse state */
     if (bucx_filter) {
         /* first categorize this object's bless/curse state */
-        char bucx = !obj->bknown ? 'X'
-                      : obj->blessed ? 'B' : obj->cursed ? 'C' : 'U';
+        char bucx = !is_obj_bknown(obj) ? 'X'
+                      : is_obj_blessed(obj) ? 'B' : is_obj_cursed(obj) ? 'C' : 'U';
 
         /* if its category is not in the list, reject */
         if (!index(valid_menu_classes, bucx))
@@ -522,7 +521,7 @@ static boolean
 allow_cat_no_uchain(struct obj *obj)
 {
     if (obj != uchain
-        && ((index(valid_menu_classes, 'u') && obj->unpaid)
+        && ((index(valid_menu_classes, 'u') && is_obj_unpaid(obj))
             || index(valid_menu_classes, obj->oclass)))
         return TRUE;
     return FALSE;
@@ -726,7 +725,7 @@ pickup(int what, boolean do_auto_in_bag)
             obj = *objchain_p;
             lcount = min(obj->quan, (int64_t) count);
             n_tried++;
-            if (pickup_object(obj, lcount, FALSE, do_auto_in_bag || (autopickup && flags.stash_on_autopickup && (!flags.pickup_thrown || !obj->was_thrown)), (uchar*)0) > 0)
+            if (pickup_object(obj, lcount, FALSE, do_auto_in_bag || (autopickup && flags.stash_on_autopickup && (!flags.pickup_thrown || !get_flag(obj->obj_bitflags, OBJ_BITFLAGS_WAS_THROWN))), (uchar*)0) > 0)
                 n_picked++; /* picked something */
             goto end_query;
         } 
@@ -799,7 +798,7 @@ pickup(int what, boolean do_auto_in_bag)
                 lcount = obj->quan;
 
             n_tried++;
-            if ((res = pickup_object(obj, lcount, FALSE, do_auto_in_bag || (autopickup && flags.stash_on_autopickup && (!flags.pickup_thrown || !obj->was_thrown)), (uchar*)0)) < 0)
+            if ((res = pickup_object(obj, lcount, FALSE, do_auto_in_bag || (autopickup && flags.stash_on_autopickup && (!flags.pickup_thrown || !get_flag(obj->obj_bitflags, OBJ_BITFLAGS_WAS_THROWN))), (uchar*)0)) < 0)
                 break;
             n_picked += res;
         }
@@ -979,7 +978,7 @@ autopick_testobj(struct obj *otmp, boolean calc_costly)
                   && costly_spot(otmp->ox, otmp->oy));
 
     /* first check: reject if an unpaid item in a shop */
-    if (costly && !otmp->no_charge)
+    if (costly && !is_obj_no_charge(otmp))
         return FALSE;
 
     /* check for pickup_types */
@@ -995,7 +994,7 @@ autopick_testobj(struct obj *otmp, boolean calc_costly)
         /* pickup_thrown overrides pickup_types and exceptions */
     }
     if (!pickit)
-        pickit = (flags.pickup_thrown && otmp->was_thrown);
+        pickit = (flags.pickup_thrown && get_flag(otmp->obj_bitflags, OBJ_BITFLAGS_WAS_THROWN));
     return pickit;
 }
 
@@ -1868,7 +1867,7 @@ pickup_object(struct obj *obj, int64_t count, boolean telekinesis, boolean do_au
     /* In case of auto-pickup, where we haven't had a chance
        to look at it yet; affects docall(SCR_SCARE_MONSTER). */
     if (!Blind)
-        obj->dknown = 1;
+        set_obj_dknown(obj, 1);
 
     if (obj == uchain)
     { /* do not pick up attached chain */
@@ -1890,9 +1889,9 @@ pickup_object(struct obj *obj, int64_t count, boolean telekinesis, boolean do_au
     } 
     else if (obj->otyp == SCR_SCARE_MONSTER) 
     {
-        if (obj->blessed)
-            obj->blessed = 0;
-        else if (obj->special_quality == 0 && !obj->cursed)
+        if (is_obj_blessed(obj))
+            set_obj_blessed(obj, 0);
+        else if (obj->special_quality == 0 && !is_obj_cursed(obj))
             obj->special_quality = SPEQUAL_WILL_TURN_TO_DUST_ON_PICKUP;
         else 
         {
@@ -2180,7 +2179,7 @@ pick_obj(struct obj *otmp)
     newsym(ox, oy);
 
     /* for shop items, addinv() needs to be after addtobill() (so that
-       object merger can take otmp->unpaid into account) but before
+       object merger can take is_obj_unpaid(otmp) into account) but before
        remote_robbery() (which calls rob_shop() which calls setpaid()
        after moving costs of unpaid items to shop debt; setpaid()
        calls clear_unpaid() for lots of object chains, but 'otmp' isn't
@@ -2197,10 +2196,10 @@ pick_obj(struct obj *otmp)
         fakeshop[0] = *in_rooms(ox, oy, SHOPBASE);
         fakeshop[1] = '\0';
         Strcpy(u.ushops, fakeshop);
-        /* sets obj->unpaid if necessary */
+        /* sets is_obj_unpaid(obj) if necessary */
         addtobill(otmp, TRUE, FALSE, FALSE);
         Strcpy(u.ushops, saveushops);
-        robshop = otmp->unpaid && !index(u.ushops, *fakeshop);
+        robshop = is_obj_unpaid(otmp) && !index(u.ushops, *fakeshop);
     }
 
     result = addinv(otmp);
@@ -2519,17 +2518,17 @@ loot_decoration(int x, int y, int itemnumber, boolean *got_something_ptr)
         boolean itemlit = FALSE;
         if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
         {
-            if (levl[x][y].lamplit)
+            if (is_lev_lamplit(x, y))
             {
                 debugprint("loot_decoration1");
                 itemlit = TRUE;
                 del_light_source(LS_LOCATION, xy_to_any(x, y));
-                levl[x][y].lamplit = 0;
+                set_lev_lamplit(x, y, 0);
             }
-            if (levl[x][y].makingsound)
+            if (get_flag(levl[x][y].rm_bitflags, RM_BITFLAGS_MAKINGSOUND))
             {
                 del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
-                levl[x][y].makingsound = 0;
+                set_flag(levl[x][y].rm_bitflags, RM_BITFLAGS_MAKINGSOUND, 0);
             }
         }
         if (decoration_type_definitions[levl[x][y].decoration_typ].lootable_item != STRANGE_OBJECT)
@@ -3122,7 +3121,7 @@ loot_mon(struct monst *mtmp, int *passed_info, boolean *prev_loot, boolean do_au
                 You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that without limbs."); /* not body_part(HAND) */
                 return 0;
             }
-            if (otmp->cursed)
+            if (is_obj_cursed(otmp))
             {
                 You_ex(ATR_NONE, CLR_MSG_FAIL, "can't.  The saddle seems to be stuck to %s.",
                     x_monnam(mtmp, ARTICLE_THE, (char *) 0,
@@ -3307,12 +3306,12 @@ in_container_core(struct obj *obj, boolean dobot)
         }
         goto default_incontainer_end_here;
     }
-    else if ((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed) 
+    else if ((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && is_obj_cursed(obj)) 
     {
         play_sfx_sound(SFX_GENERAL_WELDED);
-        if (!obj->bknown)
+        if (!is_obj_bknown(obj))
         {
-            obj->bknown = TRUE;
+            set_obj_bknown(obj, TRUE);
             update_inventory();
         }
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "The %s won't leave your person.", dobot && is_graystone(obj) ? (obj->quan == 1 ? "stone" : "stones") : cxname(obj));
@@ -3436,7 +3435,7 @@ in_container_core(struct obj *obj, boolean dobot)
         if (obj->oclass != COIN_CLASS) 
         {
             /* sellobj() will take an unpaid item off the shop bill */
-            was_unpaid = obj->unpaid ? TRUE : FALSE;
+            was_unpaid = is_obj_unpaid(obj) ? TRUE : FALSE;
             /* don't sell when putting the item into your own container,
              * but handle billing correctly */
             sellobj_state(current_container->no_charge
@@ -3615,20 +3614,20 @@ move_container_core(struct obj *obj, boolean dobot)
     if (!obj || !move_target_container)
         return -1;
 
-    obj->nomerge = 1;
+    set_obj_nomerge(obj, 1);
     int res = 0;
     uchar obj_gone = FALSE;
     if ((res = out_container_core(obj, dobot, FALSE, &obj_gone)) <= 0)
     {
         if (!obj_gone)
-            obj->nomerge = 0;
+            set_obj_nomerge(obj, 0);
         return res;
     }
 
     if (obj_gone)
         return res;
 
-    obj->nomerge = 0;
+    set_obj_nomerge(obj, 0);
 
     if (obj->where != OBJ_INVENT)
         return 0;
@@ -3666,20 +3665,20 @@ out_container_and_drop_core(struct obj *obj, boolean dobot)
     if (!obj)
         return -1;
 
-    obj->nomerge = 1;
+    set_obj_nomerge(obj, 1);
     int res = 0;
     uchar obj_gone = FALSE;
     if ((res = out_container_core(obj, dobot, FALSE, &obj_gone)) <= 0)
     {
         if (!obj_gone)
-            obj->nomerge = 0;
+            set_obj_nomerge(obj, 0);
         return res;
     }
 
     if (obj_gone)
         return res;
 
-    obj->nomerge = 0;
+    set_obj_nomerge(obj, 0);
 
     if (obj->where != OBJ_INVENT)
         return 0;
@@ -3712,7 +3711,7 @@ pickup_and_in_container_core(struct obj *obj, boolean dobot)
     if (!obj)
         return -1;
 
-    obj->nomerge = 1;
+    set_obj_nomerge(obj, 1);
     int res = 0;
     if (!dobot)
         context.skip_botl = TRUE;
@@ -3723,11 +3722,11 @@ pickup_and_in_container_core(struct obj *obj, boolean dobot)
         return res;
     if (res <= 0)
     {
-        obj->nomerge = 0;
+        set_obj_nomerge(obj, 0);
         return res;
     }
 
-    obj->nomerge = 0;
+    set_obj_nomerge(obj, 0);
 
     if (obj->where != OBJ_INVENT)
         return 0;
@@ -3808,7 +3807,7 @@ out_container_core(struct obj *obj, boolean dobot, boolean do_auto_in_bag, uchar
     if (Icebox)
         removed_from_icebox(obj);
 
-    if (!obj->unpaid && !carried(current_container)
+    if (!is_obj_unpaid(obj) && !carried(current_container)
         && costly_spot(current_container->ox, current_container->oy)) 
     {
         obj->ox = current_container->ox;
@@ -3917,7 +3916,7 @@ observe_quantum_cat(struct obj *box, boolean makecat, boolean givemsg)
                               MM_NO_MONSTER_INVENTORY | MM_ADJACENTOK);
         if (livecat) 
         {
-            livecat->mpeaceful = 1;
+            set_mon_peaceful(livecat, 1);
             livecat->mon_flags |= MON_FLAGS_SCHROEDINGERS_CAT;
             set_mhostility(livecat);
             if (givemsg) 
@@ -4056,21 +4055,21 @@ use_container(struct obj **objp, int held, boolean more_containers, int applymod
         pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A mysterious force prevents you from opening %s.", thecxname(obj));
         return 0;
     }
-    else if (obj->olocked)
+    else if (is_obj_locked(obj))
     {
         play_simple_container_sound(obj, CONTAINER_SOUND_TYPE_TRY_LOCKED);
         pline("%s locked.", Tobjnam(obj, "are"));
         if (held)
             You("must put it down to unlock.");
-        obj->lknown = 1;
+        set_obj_lknown(obj, 1);
         return 0;
     } 
-    else if (obj->otrapped) 
+    else if (is_obj_trapped(obj)) 
     {
         if (held)
             You("open %s...", the(xname(obj)));
 
-        obj->lknown = 1;
+        set_obj_lknown(obj, 1);
         (void) chest_trap(obj, HAND, FALSE);
 
         /* even if the trap fails, you've used up this turn */
@@ -4085,8 +4084,8 @@ use_container(struct obj **objp, int held, boolean more_containers, int applymod
         abort_looting = TRUE;
         return 1;
     }
-    obj->lknown = 1;
-    obj->tknown = 1;
+    set_obj_lknown(obj, 1);
+    set_obj_tknown(obj, 1);
 
     current_container = obj; /* for use by in/out_container */
     /*
@@ -5319,7 +5318,7 @@ can_stash_objs(void)
     struct obj* otmp;
     for (otmp = invent; otmp; otmp = otmp->nobj)
     {
-        if (Is_container(otmp) && !(otmp->dknown && ((objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || (Is_box(otmp) && otmp->lknown && otmp->olocked) || Is_container_with_closed_lid(otmp))))
+        if (Is_container(otmp) && !(is_obj_dknown(otmp) && ((objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || (Is_box(otmp) && is_obj_lknown(otmp) && is_obj_locked(otmp)) || Is_container_with_closed_lid(otmp))))
             return TRUE;
     }
     return FALSE;
@@ -5334,7 +5333,7 @@ can_floor_stash_objs(void)
     struct obj* otmp;
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
     {
-        if (Is_container(otmp) && !(otmp->dknown && ((objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || (Is_box(otmp) && otmp->lknown && otmp->olocked) || Is_container_with_closed_lid(otmp))))
+        if (Is_container(otmp) && !(is_obj_dknown(otmp) && ((objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || (Is_box(otmp) && is_obj_lknown(otmp) && is_obj_locked(otmp)) || Is_container_with_closed_lid(otmp))))
             return TRUE;
     }
     return FALSE;
@@ -5451,7 +5450,6 @@ reset_pickup(void)
 {
     current_container = 0;
     move_target_container = 0;
-    abort_looting = FALSE;
-    class_filter = bucx_filter = shop_filter = unidentified_filter = unknown_filter = FALSE;
+    abort_looting = FALSE;class_filter = FALSE; bucx_filter = FALSE; shop_filter = FALSE; unidentified_filter = FALSE; unknown_filter = FALSE;
 }
 /*pickup.c*/

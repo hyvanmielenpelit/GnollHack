@@ -26,10 +26,10 @@ static boolean prisoner_speaks(struct monst *);
 static void
 on_start(void)
 {
-    if (!Qstat(first_start)) {
+    if (!get_flag(quest_status.bitflags, QSCORE_BITFLAGS_FIRST_START)) {
         qt_pager_ex((struct monst*)0, QT_FIRSTTIME, ATR_NONE, CLR_MSG_HINT, FALSE);
         stop_all_immediate_sounds();
-        Qstat(first_start) = TRUE;
+        set_flag(quest_status.bitflags, QSCORE_BITFLAGS_FIRST_START, TRUE);
     } else if ((u.uz0.dnum != u.uz.dnum) || (u.uz0.dlevel < u.uz.dlevel)) {
         if (Qstat(not_ready) <= 2)
         {
@@ -49,9 +49,9 @@ on_locate(void)
        make sense when arriving on the level from above */
     boolean from_above = (u.uz0.dlevel < u.uz.dlevel);
 
-    if (Qstat(killed_nemesis)) {
+    if (get_flag(quest_status.bitflags, QSCORE_BITFLAGS_KILLED_NEMESIS)) {
         return;
-    } else if (!Qstat(first_locate)) {
+    } else if (!get_flag(quest_status.bitflags, QSCORE_BITFLAGS_FIRST_LOCATE)) {
         if (from_above)
         {
             qt_pager_ex((struct monst*)0, QT_FIRSTLOCATE, ATR_NONE, CLR_MSG_HINT, FALSE);
@@ -59,7 +59,7 @@ on_locate(void)
         /* if we've arrived from below this will be a lie, but there won't
            be any point in delivering the message upon a return visit from
            above later since the level has now been seen */
-        Qstat(first_locate) = TRUE;
+        set_flag(quest_status.bitflags, QSCORE_BITFLAGS_FIRST_LOCATE, TRUE);
     } else {
         if (from_above)
         {
@@ -71,7 +71,7 @@ on_locate(void)
 static void
 on_goal(void)
 {
-    if (Qstat(killed_nemesis)) {
+    if (get_flag(quest_status.bitflags, QSCORE_BITFLAGS_KILLED_NEMESIS)) {
         return;
     } else if (!Qstat(made_goal)) {
         qt_pager_ex((struct monst*)0, QT_FIRSTGOAL, ATR_NONE, CLR_MSG_HINT, FALSE);
@@ -99,7 +99,7 @@ on_goal(void)
 void
 onquest(void)
 {
-    if (u.uevent.qcompleted || Not_firsttime)
+    if (get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QCOMPLETED) || Not_firsttime)
         return;
     if (!Is_special(&u.uz))
         return;
@@ -116,8 +116,8 @@ onquest(void)
 void
 nemdead(void)
 {
-    if (!Qstat(killed_nemesis)) {
-        Qstat(killed_nemesis) = TRUE;
+    if (!get_flag(quest_status.bitflags, QSCORE_BITFLAGS_KILLED_NEMESIS)) {
+        set_flag(quest_status.bitflags, QSCORE_BITFLAGS_KILLED_NEMESIS, TRUE);
         issue_achievement(GUI_ACHIEVEMENT_DEFEATED_QUEST_NEMESIS);
         qt_pager_ex((struct monst*)0, QT_KILLEDNEM, ATR_NONE, CLR_MSG_HINT, FALSE);
     }
@@ -126,15 +126,15 @@ nemdead(void)
 void
 artitouch(struct obj *obj)
 {
-    if (!Qstat(touched_artifact)) {
+    if (!get_flag(quest_status.bitflags, QSCORE_BITFLAGS_TOUCHED_ARTIFACT)) {
         /* in case we haven't seen the item yet (ie, currently blinded),
            this quest message describes it by name so mark it as seen */
-        obj->dknown = 1;
+        set_obj_dknown(obj, 1);
         /* Quest artifacts become identified by the artifact message */
-        obj->aknown = 1;
-        obj->nknown = 1;
+        set_obj_aknown(obj, 1);
+        set_obj_nknown(obj, 1);
         /* only give this message once */
-        Qstat(touched_artifact) = TRUE;
+        set_flag(quest_status.bitflags, QSCORE_BITFLAGS_TOUCHED_ARTIFACT, TRUE);
         qt_pager_ex((struct monst*)0, QT_GOTIT, ATR_NONE, CLR_MSG_HINT, FALSE);
         exercise(A_WIS, TRUE);
     }
@@ -144,7 +144,7 @@ artitouch(struct obj *obj)
 boolean
 ok_to_quest(void)
 {
-    return (boolean) ((Qstat(got_quest) || Qstat(got_thanks) || Qstat(leader_is_dead))
+    return (boolean) ((get_flag(quest_status.bitflags, QSCORE_BITFLAGS_GOT_QUEST) || get_flag(quest_status.bitflags, QSCORE_BITFLAGS_GOT_THANKS) || get_flag(quest_status.bitflags, QSCORE_BITFLAGS_LEADER_IS_DEAD))
                       && is_pure(FALSE) > 0);
 }
 
@@ -194,18 +194,18 @@ expulsion(boolean seal)
     d_level *dest;
     struct trap *t;
     int64_t portal_flag;
-    debugprint("expulsion: seal=%d, qexpelled=%d", (int)seal, (int)u.uevent.qexpelled);
-    issue_breadcrumb3("Expulsion.", (int)seal, (int)u.uevent.qexpelled);
+    debugprint("expulsion: seal=%d, qexpelled=%d", (int)seal, (int)get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QEXPELLED));
+    issue_breadcrumb3("Expulsion.", (int)seal, (int)get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QEXPELLED));
 
     br = dungeon_branch("The Quest");
     dest = (br->end1.dnum == u.uz.dnum) ? &br->end2 : &br->end1;
-    portal_flag = u.uevent.qexpelled ? 0 /* returned via artifact? */
+    portal_flag = get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QEXPELLED) ? 0 /* returned via artifact? */
                                      : !seal ? 1 : -1;
     schedule_goto(dest, FALSE, FALSE, TRUE, FALSE, portal_flag, (char *) 0, (char *) 0);
     if (seal) { /* remove the portal to the quest - sealing it off */
-        int reexpelled = u.uevent.qexpelled;
+        int reexpelled = get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QEXPELLED);
 
-        u.uevent.qexpelled = 1;
+        set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QEXPELLED, 1);
         remdun_mapseen(quest_dnum);
         /* Delete the near portal now; the far (main dungeon side)
            portal will be deleted as part of arrival on that level.
@@ -234,13 +234,13 @@ finish_quest(struct obj *obj)
 {
     struct obj *otmp;
 
-    if (u.uhave.amulet) { /* unlikely but not impossible */
+    if (get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_AMULET)) { /* unlikely but not impossible */
         qt_pager_ex((struct monst*)0, QT_HASAMULET, ATR_NONE, CLR_MSG_HINT, FALSE);
         /* leader IDs the real amulet but ignores any fakes */
         if ((otmp = carrying(AMULET_OF_YENDOR)) != 0)
             fully_identify_obj(otmp);
     } else {
-        qt_pager_ex((struct monst*)0, !Qstat(got_thanks) ? QT_OFFEREDIT : QT_OFFEREDIT2, ATR_NONE, CLR_MSG_HINT, FALSE);
+        qt_pager_ex((struct monst*)0, !get_flag(quest_status.bitflags, QSCORE_BITFLAGS_GOT_THANKS) ? QT_OFFEREDIT : QT_OFFEREDIT2, ATR_NONE, CLR_MSG_HINT, FALSE);
         /* should have obtained bell during quest;
            if not, suggest returning for it now */
         if ((otmp = carrying(BELL_OF_OPENING)) == 0)
@@ -249,10 +249,10 @@ finish_quest(struct obj *obj)
             context.quest_flags |= QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_BELL_OWNER | QUEST_FLAGS_HEARD_OF_BELL_OWNER_IS_NEMESIS;
         }
     }
-    Qstat(got_thanks) = TRUE;
+    set_flag(quest_status.bitflags, QSCORE_BITFLAGS_GOT_THANKS, TRUE);
 
     if (obj) {
-        u.uevent.qcompleted = 1; /* you did it! */
+        set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QCOMPLETED, 1); /* you did it! */
         /* behave as if leader imparts sufficient info about the
            quest artifact */
         fully_identify_obj(obj);
@@ -268,17 +268,17 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
 {
     boolean res = FALSE;
     /*  Rule 0: Cheater checks. */
-    if (u.uhave.questart && !Qstat(met_nemesis))
-        Qstat(cheater) = TRUE;
+    if (get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_QUESTART) && !get_flag(quest_status.bitflags, QSCORE_BITFLAGS_MET_NEMESIS))
+        set_flag(quest_status.bitflags, QSCORE_BITFLAGS_CHEATER, TRUE);
 
     /*  It is possible for you to get the amulet without completing
      *  the quest.  If so, try to induce the player to quest.
      */
-    if (Qstat(got_thanks)) 
+    if (get_flag(quest_status.bitflags, QSCORE_BITFLAGS_GOT_THANKS)) 
     {
         res = TRUE;
         /* Rule 1: You've gone back with/without the amulet. */
-        if (u.uhave.amulet)
+        if (get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_AMULET))
             finish_quest((struct obj *) 0);
 
         /* Rule 2: You've gone back before going for the amulet. */
@@ -289,7 +289,7 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
 
     /* Rule 3: You've got the artifact and are back to return it. */
     }
-    else if (u.uhave.questart)
+    else if (get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_QUESTART))
     {
         res = TRUE;
         struct obj *otmp;
@@ -302,7 +302,7 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
 
     /* Rule 4: You haven't got the artifact yet. */
     } 
-    else if (Qstat(got_quest))
+    else if (get_flag(quest_status.bitflags, QSCORE_BITFLAGS_GOT_QUEST))
     {
         res = TRUE;
         qt_pager_ex(mtmp, rn1(10, QT_ENCOURAGE), ATR_NONE, NO_COLOR, dopopup);
@@ -312,10 +312,10 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
     else
     {
         res = TRUE;
-        if (!Qstat(met_leader)) 
+        if (!get_flag(quest_status.bitflags, QSCORE_BITFLAGS_MET_LEADER)) 
         {
             qt_pager_ex(mtmp, QT_FIRSTLEADER, ATR_NONE, CLR_MSG_HINT, dopopup);
-            Qstat(met_leader) = TRUE;
+            set_flag(quest_status.bitflags, QSCORE_BITFLAGS_MET_LEADER, TRUE);
             Qstat(not_ready) = 0;
         } 
         else
@@ -365,7 +365,7 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
         { /* You are worthy! */
             qt_pager_ex(mtmp, QT_ASSIGNQUEST, ATR_NONE, CLR_MSG_HINT, dopopup);
             exercise(A_WIS, TRUE);
-            Qstat(got_quest) = TRUE;
+            set_flag(quest_status.bitflags, QSCORE_BITFLAGS_GOT_QUEST, TRUE);
         }
     }
     return res;
@@ -377,7 +377,7 @@ leader_speaks(struct monst *mtmp)
     /* maybe you attacked leader? */
     if (!is_peaceful(mtmp)) 
     {
-        Qstat(pissed_off) = TRUE;
+        set_flag(quest_status.bitflags, QSCORE_BITFLAGS_PISSED_OFF, TRUE);
         mtmp->mstrategy &= ~STRAT_WAITMASK; /* end the inaction */
     }
     /* the quest leader might have passed through the portal into the
@@ -385,13 +385,13 @@ leader_speaks(struct monst *mtmp)
     if (!on_level(&u.uz, &qstart_level))
         return FALSE;
 
-    if (Qstat(pissed_off)) 
+    if (get_flag(quest_status.bitflags, QSCORE_BITFLAGS_PISSED_OFF)) 
     {
         qt_pager_ex(mtmp, QT_LASTLEADER, ATR_NONE, CLR_MSG_NEGATIVE, FALSE);
         debugprint_pos();
         expulsion(TRUE); // Return FALSE for safety
     }
-    else if(!u.uevent.qcompleted)
+    else if(!get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QCOMPLETED))
         return chat_with_leader(mtmp, FALSE);
 
     return FALSE;
@@ -401,15 +401,15 @@ static boolean
 chat_with_nemesis(struct monst *mtmp, boolean dopopup)
 {
     /*  The nemesis will do most of the talking, but... */
-    if (!Qstat(met_nemesis))
+    if (!get_flag(quest_status.bitflags, QSCORE_BITFLAGS_MET_NEMESIS))
         qt_pager_ex(mtmp, QT_FIRSTNEMESIS, ATR_NONE, NO_COLOR, dopopup);
-    else if (u.uhave.questart && !rn2(2))
+    else if (get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_QUESTART) && !rn2(2))
         qt_pager_ex(mtmp, QT_NEMWANTSIT, ATR_NONE, NO_COLOR, dopopup);
     else
         qt_pager_ex(mtmp, rn1(10, QT_DISCOURAGE), ATR_NONE, NO_COLOR, dopopup);
 
-    if (!Qstat(met_nemesis))
-        Qstat(met_nemesis) = TRUE;
+    if (!get_flag(quest_status.bitflags, QSCORE_BITFLAGS_MET_NEMESIS))
+        set_flag(quest_status.bitflags, QSCORE_BITFLAGS_MET_NEMESIS, TRUE);
 
     return TRUE;
 }
@@ -418,11 +418,11 @@ boolean
 nemesis_speaks(struct monst *mtmp)
 {
     boolean res = TRUE;
-    if (!Qstat(in_battle) || !Qstat(met_nemesis))
+    if (!get_flag(quest_status.bitflags, QSCORE_BITFLAGS_IN_BATTLE) || !get_flag(quest_status.bitflags, QSCORE_BITFLAGS_MET_NEMESIS))
     {
-        if (u.uhave.questart)
+        if (get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_QUESTART))
             qt_pager(mtmp, QT_NEMWANTSIT);
-        else if (Qstat(made_goal) == 1 || !Qstat(met_nemesis))
+        else if (Qstat(made_goal) == 1 || !get_flag(quest_status.bitflags, QSCORE_BITFLAGS_MET_NEMESIS))
             qt_pager(mtmp, QT_FIRSTNEMESIS);
         else if (Qstat(made_goal) < 4)
             qt_pager(mtmp, QT_NEXTNEMESIS);
@@ -435,7 +435,7 @@ nemesis_speaks(struct monst *mtmp)
 
         if (Qstat(made_goal) < 7)
             Qstat(made_goal)++;
-        Qstat(met_nemesis) = TRUE;
+        set_flag(quest_status.bitflags, QSCORE_BITFLAGS_MET_NEMESIS, TRUE);
     } 
     else
     {/* he will spit out random maledictions */
@@ -453,7 +453,7 @@ static boolean
 chat_with_guardian(struct monst *mtmp, boolean dopopup)
 {
     /*  These guys/gals really don't have much to say... */
-    if (u.uhave.questart && Qstat(killed_nemesis))
+    if (get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_QUESTART) && get_flag(quest_status.bitflags, QSCORE_BITFLAGS_KILLED_NEMESIS))
     {
         qt_pager_ex(mtmp, rn1(5, QT_GUARDTALK2), ATR_NONE, NO_COLOR, dopopup);
     }
@@ -479,7 +479,7 @@ prisoner_speaks(struct monst *mtmp)
             pline("%s speaks:", Monnam(mtmp));
         verbalize_happy1("I'm finally free!");
         mtmp->mstrategy &= ~STRAT_WAITMASK;
-        mtmp->mpeaceful = 1;
+        set_mon_peaceful(mtmp, 1);
         newsym(mtmp->mx, mtmp->my);
 
         /* Your god is happy... */
@@ -528,7 +528,7 @@ quest_talk(struct monst *mtmp, boolean nearby)
     switch (mtmp->data->msound)
     {
     case MS_NEMESIS:
-        if(nearby || (!Qstat(met_nemesis) && cansee(mtmp->mx, mtmp->my) && distu(mtmp->mx, mtmp->my) <= 64))
+        if(nearby || (!get_flag(quest_status.bitflags, QSCORE_BITFLAGS_MET_NEMESIS) && cansee(mtmp->mx, mtmp->my) && distu(mtmp->mx, mtmp->my) <= 64))
             return nemesis_speaks(mtmp);
         break;
     case MS_PRISONER:
@@ -546,7 +546,7 @@ void
 quest_stat_check(struct monst *mtmp)
 {
     if (mtmp->data->msound == MS_NEMESIS)
-        Qstat(in_battle) = (mon_can_move(mtmp)
+        set_flag(quest_status.bitflags, QSCORE_BITFLAGS_IN_BATTLE, (mon_can_move(mtmp))
                             && monnear(mtmp, u.ux, u.uy));
 }
 

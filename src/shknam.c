@@ -738,7 +738,7 @@ nameshk(struct monst *shk, const char *const *nlp)
 
             /* is name already in use on this level? */
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-                if (DEADMONSTER(mtmp) || (mtmp == shk) || !mtmp->isshk)
+                if (DEADMONSTER(mtmp) || (mtmp == shk) || !is_mon_shk(mtmp))
                     continue;
                 if (strcmp(ESHK(mtmp)->shknam, shname))
                     continue;
@@ -770,7 +770,7 @@ free_eshk(struct monst *mtmp)
         free((genericptr_t) ESHK(mtmp));
         ESHK(mtmp) = (struct eshk *) 0;
     }
-    mtmp->isshk = 0;
+    set_mon_shk(mtmp, 0);
 }
 
 /* create a new shopkeeper in the given room */
@@ -859,10 +859,9 @@ shkinit(const struct shclass *shp, struct mkroom *sroom)
             return -1;
     }
 
-    eshkp = ESHK(shk); /* makemon(...,MM_ESHK) allocates this */
-    shk->isshk = shk->mpeaceful = 1;
+    eshkp = ESHK(shk); /* makemon(...,MM_ESHK) allocates this */set_mon_shk(shk, 1); set_mon_peaceful(shk, 1);
     set_mhostility(shk);
-    shk->msleeping = 0;
+    set_mon_sleeping(shk, 0);
     shk->mtrapseen = ~0; /* we know all the traps already */
     eshkp->shoproom = (schar) ((sroom - rooms) + ROOMOFFSET);
     sroom->resident = shk;
@@ -891,7 +890,7 @@ static boolean
 stock_room_goodpos(struct mkroom *sroom, int rmno, int sh, int sx, int sy)
 {
     if (sroom->irregular) {
-        if (levl[sx][sy].edge
+        if (get_flag(levl[sx][sy].rm_bitflags, RM_BITFLAGS_EDGE)
             || (int) levl[sx][sy].roomno != rmno
             || distmin(sx, sy, doors[sh].x, doors[sh].y) <= 1)
             return FALSE;
@@ -1055,9 +1054,9 @@ stock_room(int shp_indx, struct mkroom *sroom, boolean deserted)
      */
 
     if(deserted)
-        level.flags.has_desertedshop = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_DESERTEDSHOP, TRUE);
     else
-        level.flags.has_shop = TRUE;
+        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SHOP, TRUE);
 }
 
 /* does shkp's shop stock this item type? */
@@ -1131,15 +1130,15 @@ shkname_core(struct monst *mtmp, boolean istrue)
 {
     static char nam[BUFSZ] = "shopkeeper";
 
-    unsigned save_isshk = mtmp->isshk;
+    unsigned save_isshk = is_mon_shk(mtmp);
 
-    mtmp->isshk = 0; /* don't want mon_nam() calling shkname() */
+    set_mon_shk(mtmp, 0); /* don't want mon_nam() calling shkname() */
     if (mtmp->data)
         Strcpy(nam, noit_mon_nam(mtmp));
     /* get a modifiable name buffer along with fallback result */
-    mtmp->isshk = save_isshk;
+    set_mon_shk(mtmp, save_isshk);
 
-    if (!mtmp->isshk) {
+    if (!is_mon_shk(mtmp)) {
         impossible("shkname: \"%s\" is not a shopkeeper.", nam);
     } else if (!has_eshk(mtmp)) {
         panic("shkname: shopkeeper \"%s\" lacks 'eshk' data.", nam);
@@ -1200,7 +1199,7 @@ is_izchak(struct monst *shkp, boolean override_hallucination)
 
     if (Hallucination && !override_hallucination)
         return FALSE;
-    if (!shkp->isshk)
+    if (!is_mon_shk(shkp))
         return FALSE;
     /* outside of town, Izchak becomes just an ordinary shopkeeper */
     if (!in_town(shkp->mx, shkp->my))

@@ -992,7 +992,7 @@ get_wseg_dir_at(struct monst *mtmp, int x, int y)
                     }
                     else
                     {
-                        if (mtmp->facing_right)
+                        if (is_mon_facing_right(mtmp))
                         {
                             i = 4;
                         }
@@ -1092,7 +1092,7 @@ get_reverse_prev_wseg_dir_at(struct monst *mtmp, int x, int y)
                 }
                 else
                 {
-                    if (mtmp->facing_right)
+                    if (is_mon_facing_right(mtmp))
                     {
                         i = 4;
                     }

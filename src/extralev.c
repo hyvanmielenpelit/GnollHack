@@ -317,9 +317,9 @@ makerogueghost(void)
     y = somey(croom);
     if (!(ghost = makemon(&mons[PM_GHOST], x, y, NO_MM_FLAGS)))
         return;
-    ghost->msleeping = 1;
+    set_mon_sleeping(ghost, 1);
     ghost = christen_monst(ghost, roguename());
-    ghost->u_know_mname = TRUE;
+    set_mon_u_know_mname(ghost, TRUE);
 
     if (rn2(4)) {
         ghostobj = mksobj_at(FOOD_RATION, x, y, FALSE, FALSE);

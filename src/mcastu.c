@@ -534,7 +534,7 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
         damage = 0;
         break;
     case MGC_CLONE_WIZ:
-        if (mtmp->iswiz && context.no_of_wizards == 1)
+        if (is_mon_wiz(mtmp) && context.no_of_wizards == 1)
         {
             play_voice_wizard_of_yendor_simple_line(mtmp, WIZARD_OF_YENDOR_LINE_DOUBLE_TROUBLE);
             pline_ex(ATR_NONE, CLR_MSG_SPELL, "Double Trouble...");
@@ -547,14 +547,14 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
     {
         int count;
 
-        if (mtmp->iswiz)
+        if (is_mon_wiz(mtmp))
             count = summon_nasties(mtmp); /* summon something nasty */
         else
             count = summon_level_appropriate_monsters(mtmp); /* summon something appropriate */
 
         if (count == 0)
             cursetxt(mtmp, TRUE);
-        else if (mtmp->iswiz)
+        else if (is_mon_wiz(mtmp))
         {
             play_voice_wizard_of_yendor_simple_line(mtmp,
                 count > 1 ? WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PETS :
@@ -589,7 +589,7 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
 
         if (count == 0)
             cursetxt(mtmp, TRUE);
-        else if (mtmp->iswiz)
+        else if (is_mon_wiz(mtmp))
         {
             play_voice_wizard_of_yendor_simple_line(mtmp,
                 count > 1 ? WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PETS :
@@ -891,10 +891,9 @@ cast_cleric_spell(struct monst *mtmp, double damage, int spellnum)
                 && (mtmp2 = makemon(pm, bypos.x, bypos.y, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL))) != 0)
             {
                 context.makemon_spef_idx++;
-                success = TRUE;
-                mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
+                success = TRUE;set_mon_sleeping(mtmp2, 0); set_mon_peaceful(mtmp2, 0); mtmp2->mtame = 0;
                 if (!mtmp2->mtame)
-                    mtmp2->ispartymember = FALSE;
+                    set_mon_partymember(mtmp2, FALSE);
                 set_mhostility(mtmp2);
                 difficulty += mtmp2->data->difficulty;
                 summon_quan++;
@@ -1192,14 +1191,14 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
 
         /* don't summon monsters if it doesn't think you're around */
         if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS || spellnum == MGC_SUMMON_NASTY
-                            || (!mtmp->iswiz && spellnum == MGC_CLONE_WIZ)))
+                            || (!is_mon_wiz(mtmp) && spellnum == MGC_CLONE_WIZ)))
             return TRUE;
 
-        if ((!mtmp->iswiz || context.no_of_wizards > 1)
+        if ((!is_mon_wiz(mtmp) || context.no_of_wizards > 1)
             && spellnum == MGC_CLONE_WIZ)
             return TRUE;
 
-        if ((!mtmp->iswiz || context.no_of_wizards > 1)
+        if ((!is_mon_wiz(mtmp) || context.no_of_wizards > 1)
             && spellnum == MGC_CLONE_WIZ)
             return TRUE;
 

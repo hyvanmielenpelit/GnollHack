@@ -3037,7 +3037,7 @@ write_snapshot_json(time_t now, const char *dumplog_filepath, const char *dumpht
         if (slev)
             mptr = find_mapseen(&u.uz);
 
-        if (slev && mptr && mptr->flags.special_level_true_nature_known)
+        if (slev && mptr && get_flag(mptr->flags.bitflags, MAPSEEN_BITFLAGS_SPECIAL_LEVEL_TRUE_NATURE_KNOWN))
         {
             Sprintf(level_name_buf, "%s", slev->name);
         }

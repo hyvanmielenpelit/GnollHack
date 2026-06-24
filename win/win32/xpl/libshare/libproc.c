@@ -1095,7 +1095,7 @@ void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
         umnbuf[16] = '\0'; /* Limit the length of the name */
         Strcat(tempbuf, umnbuf);
     }
-    else if (has_mname(mtmp) && mtmp->u_know_mname)
+    else if (has_mname(mtmp) && is_mon_u_know_mname(mtmp))
     {
         char mnbuf[BUFSZ * 2];
         Strcpy(mnbuf, MNAME(mtmp));

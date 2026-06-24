@@ -1463,7 +1463,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     {
                         int src_x = 0, src_y = 0;
                         int dest_x = 0, dest_y = 0;
-                        if (item->object_data.lamplit)
+                        if (is_obj_lamplit(&(item->object_data)))
                         {
                             src_x = src_lit_x;
                             src_y = src_lit_y;
@@ -1524,7 +1524,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     {
                         int src_x = 0, src_y = 0;
                         int dest_x = 0, dest_y = 0;
-                        if (item->object_data.lamplit)
+                        if (is_obj_lamplit(&(item->object_data)))
                         {
                             src_x = src_lit_x;
                             src_y = src_lit_y;
@@ -1947,7 +1947,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 }
 
                 /* Item property marks */
-                if (item->object_data.opoisoned || item->object_data.elemental_enchantment > 0 || item->object_data.oeroded || item->object_data.oeroded2 
+                if (is_obj_poisoned(&(item->object_data)) || item->object_data.elemental_enchantment > 0 || item->object_data.oeroded || item->object_data.oeroded2 
                     || item->object_data.exceptionality > 0 || item->object_data.mythic_prefix > 0 || item->object_data.mythic_suffix > 0)
                 {
                     int y_start = 0;
@@ -1963,7 +1963,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     int src_x = 0;
                     int src_y = 0;
                     int cnt = 0;
-                    int poisoned = (item->object_data.opoisoned);
+                    int poisoned = (is_obj_poisoned(&(item->object_data)));
                     int elemental_enchantment = (item->object_data.elemental_enchantment);
                     int exceptionality = (item->object_data.exceptionality);
                     int mythic_prefix = (item->object_data.mythic_prefix);

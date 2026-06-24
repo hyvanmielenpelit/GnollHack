@@ -844,7 +844,7 @@ extern const struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SU
 #define IS_DOOR_OR_SDOOR(typ) ((typ) == DOOR || (typ) == SDOOR)
 #define IS_DOORJOIN(typ) (IS_ROCK(typ) || (typ) == IRONBARS)
 #define IS_TREE(typ)                                            \
-    ((typ) == TREE || (level.flags.arboreal && (typ) == UNDEFINED_LOCATION))
+    ((typ) == TREE || (is_level_arboreal() && (typ) == UNDEFINED_LOCATION))
 #define ACCESSIBLE(typ) ((typ) >= DOOR) /* good position */
 #define IS_ROOM(typ) ((typ) >= ROOM)    /* ROOM, STAIRS, furniture.. */
 #define ZAP_POS(typ) ((typ) >= POOL)
@@ -1228,22 +1228,60 @@ struct rm {
     uchar seenv;             /* seen vector */
     /* unsigned int to make sure bitfields are aligned properly across platforms */
     unsigned flags;          /* extra information for typ */
-    Bitfield(horizontal, 1); /* wall/door/etc is horiz. (more typ info) */
-    Bitfield(lit, 1);        /* speed hack for lit rooms */
-    Bitfield(waslit, 1);     /* remember if a location was lit */
+    /* Bitfield flags converted to portable explicit bitmask flags */
+    uint64_t rm_bitflags;
+#define RM_BITFLAGS_NONE                0x00000000UL
+#define RM_BITFLAGS_HORIZONTAL          0x00000001UL
+#define RM_BITFLAGS_LIT                 0x00000002UL
+#define RM_BITFLAGS_WASLIT              0x00000004UL
+#define RM_BITFLAGS_FACING_RIGHT        0x00000008UL
+#define RM_BITFLAGS_LAMPLIT             0x00000010UL
+#define RM_BITFLAGS_MAKINGSOUND         0x00000020UL
+#define RM_BITFLAGS_EDGE                0x00000040UL
+#define RM_BITFLAGS_CANDIG              0x00000080UL
+#define RM_BITFLAGS_USE_SPECIAL_TILESET 0x00000100UL
+#define RM_BITFLAGS_CLICK_KICK_OK       0x00000200UL
 
-    Bitfield(facing_right, 1);      /* flip picture horizontally to "face right" */
-    Bitfield(lamplit, 1);           /* if the location is a light source, is it on? */
-    Bitfield(makingsound, 1);       /* if the location is a sound source, is it on? */
-
-    Bitfield(roomno, 6); /* room # for special rooms */
-    Bitfield(edge, 1);   /* marks boundaries for special rooms*/
-    Bitfield(candig, 1); /* Exception to Can_dig_down; was a trapdoor */
-    Bitfield(use_special_tileset, 1); /* Use tileset specified below instead standard one */
-    Bitfield(special_tileset, 5); /* Specific tileset applicable to this location */
-
-    Bitfield(click_kick_ok, 1); /* No query when clicking to kick  */
+    uchar roomno;
+    uchar special_tileset;
 };
+
+#define is_rm_lamplit(ptr)         get_flag((ptr)->rm_bitflags, RM_BITFLAGS_LAMPLIT)
+#define set_rm_lamplit(ptr, val)   set_flag((ptr)->rm_bitflags, RM_BITFLAGS_LAMPLIT, val)
+#define is_lev_lamplit(x, y)       is_rm_lamplit(&levl[x][y])
+#define set_lev_lamplit(x, y, val) set_rm_lamplit(&levl[x][y], val)
+
+#define is_rm_lit(ptr)             get_flag((ptr)->rm_bitflags, RM_BITFLAGS_LIT)
+#define set_rm_lit(ptr, val)       set_flag((ptr)->rm_bitflags, RM_BITFLAGS_LIT, val)
+#define is_lev_lit(x, y)           is_rm_lit(&levl[x][y])
+#define set_lev_lit(x, y, val)     set_rm_lit(&levl[x][y], val)
+
+#define is_rm_waslit(ptr)          get_flag((ptr)->rm_bitflags, RM_BITFLAGS_WASLIT)
+#define set_rm_waslit(ptr, val)    set_flag((ptr)->rm_bitflags, RM_BITFLAGS_WASLIT, val)
+#define is_lev_waslit(x, y)        is_rm_waslit(&levl[x][y])
+#define set_lev_waslit(x, y, val)  set_rm_waslit(&levl[x][y], val)
+
+#define is_rm_facing_right(ptr)    get_flag((ptr)->rm_bitflags, RM_BITFLAGS_FACING_RIGHT)
+#define set_rm_facing_right(ptr, val) set_flag((ptr)->rm_bitflags, RM_BITFLAGS_FACING_RIGHT, val)
+#define is_lev_facing_right(x, y)  is_rm_facing_right(&levl[x][y])
+#define set_lev_facing_right(x, y, val) set_rm_facing_right(&levl[x][y], val)
+
+#define is_rm_horizontal(ptr)      get_flag((ptr)->rm_bitflags, RM_BITFLAGS_HORIZONTAL)
+#define set_rm_horizontal(ptr, val) set_flag((ptr)->rm_bitflags, RM_BITFLAGS_HORIZONTAL, val)
+#define is_lev_horizontal(x, y)    is_rm_horizontal(&levl[x][y])
+#define set_lev_horizontal(x, y, val) set_rm_horizontal(&levl[x][y], val)
+
+#define is_rm_has_special_tileset(ptr) get_flag((ptr)->rm_bitflags, RM_BITFLAGS_USE_SPECIAL_TILESET)
+#define set_rm_has_special_tileset(ptr, val) set_flag((ptr)->rm_bitflags, RM_BITFLAGS_USE_SPECIAL_TILESET, val)
+#define is_lev_has_special_tileset(x, y) is_rm_has_special_tileset(&levl[x][y])
+#define set_lev_has_special_tileset(x, y, val) set_rm_has_special_tileset(&levl[x][y], val)
+
+#define is_rm_use_special_tileset(ptr) is_rm_has_special_tileset(ptr)
+#define set_rm_use_special_tileset(ptr, val) set_rm_has_special_tileset(ptr, val)
+#define is_lev_use_special_tileset(x, y) is_lev_has_special_tileset(x, y)
+#define set_lev_use_special_tileset(x, y, val) set_lev_has_special_tileset(x, y, val)
+
+
 
 #define DECORATION_FLAGS_NONE                   ((uchar)0x00)
 #define DECORATION_FLAGS_ITEM_IN_HOLDER         ((uchar)0x01)
@@ -1427,52 +1465,117 @@ struct levelflags {
     uchar tileset;
     unsigned nfountains; /* number of fountains on level */
     unsigned nsinks;     /* number of sinks on the level */
-    /* Several flags that give hints about what's on the level */
-    Bitfield(has_tileset, 1);
-
-    Bitfield(has_shop, 1);
-    Bitfield(has_vault, 1);
-    Bitfield(has_zoo, 1);
-    Bitfield(has_court, 1);
-    Bitfield(has_morgue, 1);
-    Bitfield(has_beehive, 1);
-    Bitfield(has_barracks, 1);
-    Bitfield(has_armory, 1);
-    Bitfield(has_temple, 1);
-    Bitfield(has_smithy, 1);
-    Bitfield(has_npc_room, 1);
-    Bitfield(has_library, 1);
-    Bitfield(has_dragonlair, 1);
-    Bitfield(has_garden, 1);
-    Bitfield(has_desertedshop, 1);
-
-    Bitfield(has_swamp, 1);
-    Bitfield(noteleport, 1);
-    Bitfield(hardfloor, 1);
-    Bitfield(nommap, 1);
-    Bitfield(hero_memory, 1);   /* hero has memory */
-    Bitfield(shortsighted, 1);  /* monsters are shortsighted */
-    Bitfield(graveyard, 1);     /* has_morgue, but remains set */
-    Bitfield(sokoban_rules, 1); /* fill pits and holes w/ boulders */
-
-    Bitfield(is_maze_lev, 1);
-    Bitfield(is_cavernous_lev, 1);
-    Bitfield(arboreal, 1);     /* Trees replace rock */
-    Bitfield(swampy, 1);       /* Swampy outdoor level with swampy grass */
-    Bitfield(desert, 1);       /* Desert map, furniture may have desert ground as floor */
-    Bitfield(wizard_bones, 1); /* set if level came from a bones file
-                                  which was created in wizard mode (or
-                                  normal mode descendant of such) */
-    Bitfield(corrmaze, 1);     /* Whether corridors are used for the maze
-                                  rather than ROOM */
-    Bitfield(mapping_does_not_reveal_special, 1); /* Magic mapping does not reveal the special nature of the level */
-    Bitfield(no_special_level_naming_checks, 1);
+    /* Bitfield flags converted to portable explicit bitmask flags */
+    uint64_t bitflags;
+#define LEVEL_BITFLAGS_NONE                            0x00000000UL
+#define LEVEL_BITFLAGS_HAS_TILESET                     0x00000001UL
+#define LEVEL_BITFLAGS_HAS_SHOP                        0x00000002UL
+#define LEVEL_BITFLAGS_HAS_VAULT                       0x00000004UL
+#define LEVEL_BITFLAGS_HAS_ZOO                         0x00000008UL
+#define LEVEL_BITFLAGS_HAS_COURT                       0x00000010UL
+#define LEVEL_BITFLAGS_HAS_MORGUE                      0x00000020UL
+#define LEVEL_BITFLAGS_HAS_BEEHIVE                     0x00000040UL
+#define LEVEL_BITFLAGS_HAS_BARRACKS                    0x00000080UL
+#define LEVEL_BITFLAGS_HAS_ARMORY                      0x00000100UL
+#define LEVEL_BITFLAGS_HAS_TEMPLE                      0x00000200UL
+#define LEVEL_BITFLAGS_HAS_SMITH                       0x00000400UL
+#define LEVEL_BITFLAGS_HAS_NPC_ROOM                    0x00000800UL
+#define LEVEL_BITFLAGS_HAS_LIBRARY                     0x00001000UL
+#define LEVEL_BITFLAGS_HAS_DRAGONLAIR                  0x00002000UL
+#define LEVEL_BITFLAGS_HAS_GARDEN                      0x00004000UL
+#define LEVEL_BITFLAGS_HAS_DESERTEDSHOP                0x00008000UL
+#define LEVEL_BITFLAGS_HAS_SWAMP                       0x00010000UL
+#define LEVEL_BITFLAGS_NOTELEPORT                      0x00020000UL
+#define LEVEL_BITFLAGS_HARDFLOOR                       0x00040000UL
+#define LEVEL_BITFLAGS_NOMMAP                          0x00080000UL
+#define LEVEL_BITFLAGS_HERO_MEMORY                     0x00100000UL
+#define LEVEL_BITFLAGS_SHORTSIGHTED                    0x00200000UL
+#define LEVEL_BITFLAGS_GRAVEYARD                       0x00400000UL
+#define LEVEL_BITFLAGS_SOKOBAN_RULES                   0x00800000UL
+#define LEVEL_BITFLAGS_IS_MAZE_LEV                     0x01000000UL
+#define LEVEL_BITFLAGS_IS_CAVERNOUS_LEV                0x02000000UL
+#define LEVEL_BITFLAGS_ARBOREAL                        0x04000000UL
+#define LEVEL_BITFLAGS_SWAMPY                          0x08000000UL
+#define LEVEL_BITFLAGS_DESERT                          0x10000000UL
+#define LEVEL_BITFLAGS_WIZARD_BONES                    0x20000000UL
+#define LEVEL_BITFLAGS_CORRMAZE                        0x40000000UL
+#define LEVEL_BITFLAGS_MAPPING_DOES_NOT_REVEAL_SPECIAL 0x80000000UL
+#define LEVEL_BITFLAGS_NO_SPECIAL_LEVEL_NAMING_CHECKS  0x0000000100000000UL
 
     unsigned reserved;
     unsigned reserved2;
     unsigned reserved3;
     unsigned reserved4;
 };
+
+#define is_hero_memory()       get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HERO_MEMORY)
+#define set_hero_memory(v)     set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HERO_MEMORY, v)
+
+#define is_level_has_tileset()                     get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_TILESET)
+#define set_level_has_tileset(v)                   set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_TILESET, v)
+#define is_level_has_shop()                        get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SHOP)
+#define set_level_has_shop(v)                      set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SHOP, v)
+#define is_level_has_vault()                       get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_VAULT)
+#define set_level_has_vault(v)                     set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_VAULT, v)
+#define is_level_has_zoo()                         get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_ZOO)
+#define set_level_has_zoo(v)                       set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_ZOO, v)
+#define is_level_has_court()                       get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_COURT)
+#define set_level_has_court(v)                     set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_COURT, v)
+#define is_level_has_morgue()                      get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_MORGUE)
+#define set_level_has_morgue(v)                    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_MORGUE, v)
+#define is_level_has_beehive()                     get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_BEEHIVE)
+#define set_level_has_beehive(v)                   set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_BEEHIVE, v)
+#define is_level_has_barracks()                    get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_BARRACKS)
+#define set_level_has_barracks(v)                  set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_BARRACKS, v)
+#define is_level_has_armory()                      get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_ARMORY)
+#define set_level_has_armory(v)                    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_ARMORY, v)
+#define is_level_has_temple()                      get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_TEMPLE)
+#define set_level_has_temple(v)                    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_TEMPLE, v)
+#define is_level_has_smith()                       get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SMITH)
+#define set_level_has_smith(v)                     set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SMITH, v)
+#define is_level_has_npc_room()                    get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_NPC_ROOM)
+#define set_level_has_npc_room(v)                  set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_NPC_ROOM, v)
+#define is_level_has_library()                     get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_LIBRARY)
+#define set_level_has_library(v)                   set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_LIBRARY, v)
+#define is_level_has_dragonlair()                  get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_DRAGONLAIR)
+#define set_level_has_dragonlair(v)                set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_DRAGONLAIR, v)
+#define is_level_has_garden()                      get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_GARDEN)
+#define set_level_has_garden(v)                    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_GARDEN, v)
+#define is_level_has_desertedshop()                get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_DESERTEDSHOP)
+#define set_level_has_desertedshop(v)              set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_DESERTEDSHOP, v)
+#define is_level_has_swamp()                       get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SWAMP)
+#define set_level_has_swamp(v)                     set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HAS_SWAMP, v)
+
+#define is_level_noteleport()                      get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOTELEPORT)
+#define set_level_noteleport(v)                    set_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOTELEPORT, v)
+#define is_level_hardfloor()                       get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HARDFLOOR)
+#define set_level_hardfloor(v)                     set_flag(level.flags.bitflags, LEVEL_BITFLAGS_HARDFLOOR, v)
+#define is_level_nommap()                          get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOMMAP)
+#define set_level_nommap(v)                        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOMMAP, v)
+#define is_level_shortsighted()                    get_flag(level.flags.bitflags, LEVEL_BITFLAGS_SHORTSIGHTED)
+#define set_level_shortsighted(v)                  set_flag(level.flags.bitflags, LEVEL_BITFLAGS_SHORTSIGHTED, v)
+#define is_level_graveyard()                       get_flag(level.flags.bitflags, LEVEL_BITFLAGS_GRAVEYARD)
+#define set_level_graveyard(v)                     set_flag(level.flags.bitflags, LEVEL_BITFLAGS_GRAVEYARD, v)
+#define is_level_sokoban_rules()                   get_flag(level.flags.bitflags, LEVEL_BITFLAGS_SOKOBAN_RULES)
+#define set_level_sokoban_rules(v)                 set_flag(level.flags.bitflags, LEVEL_BITFLAGS_SOKOBAN_RULES, v)
+#define is_level_maze_lev()                        get_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_MAZE_LEV)
+#define set_level_maze_lev(v)                      set_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_MAZE_LEV, v)
+#define is_level_cavernous_lev()                   get_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_CAVERNOUS_LEV)
+#define set_level_cavernous_lev(v)                 set_flag(level.flags.bitflags, LEVEL_BITFLAGS_IS_CAVERNOUS_LEV, v)
+#define is_level_arboreal()                        get_flag(level.flags.bitflags, LEVEL_BITFLAGS_ARBOREAL)
+#define set_level_arboreal(v)                      set_flag(level.flags.bitflags, LEVEL_BITFLAGS_ARBOREAL, v)
+#define is_level_swampy()                          get_flag(level.flags.bitflags, LEVEL_BITFLAGS_SWAMPY)
+#define set_level_swampy(v)                        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_SWAMPY, v)
+#define is_level_desert()                          get_flag(level.flags.bitflags, LEVEL_BITFLAGS_DESERT)
+#define set_level_desert(v)                        set_flag(level.flags.bitflags, LEVEL_BITFLAGS_DESERT, v)
+#define is_level_wizard_bones()                    get_flag(level.flags.bitflags, LEVEL_BITFLAGS_WIZARD_BONES)
+#define set_level_wizard_bones(v)                  set_flag(level.flags.bitflags, LEVEL_BITFLAGS_WIZARD_BONES, v)
+#define is_level_corrmaze()                        get_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE)
+#define set_level_corrmaze(v)                      set_flag(level.flags.bitflags, LEVEL_BITFLAGS_CORRMAZE, v)
+#define is_level_mapping_does_not_reveal_special() get_flag(level.flags.bitflags, LEVEL_BITFLAGS_MAPPING_DOES_NOT_REVEAL_SPECIAL)
+#define set_level_mapping_does_not_reveal_special(v) set_flag(level.flags.bitflags, LEVEL_BITFLAGS_MAPPING_DOES_NOT_REVEAL_SPECIAL, v)
+#define is_level_no_special_level_naming_checks()  get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NO_SPECIAL_LEVEL_NAMING_CHECKS)
+#define set_level_no_special_level_naming_checks(v) set_flag(level.flags.bitflags, LEVEL_BITFLAGS_NO_SPECIAL_LEVEL_NAMING_CHECKS, v)
 
 typedef struct {
     struct rm locations[COLNO][ROWNO];
@@ -1520,10 +1623,10 @@ extern dlevel_t level; /* structure describing the current level */
  */
 #define MON_AT(x, y)                            \
     (level.monsters[x][y] != (struct monst *) 0 \
-     && !(level.monsters[x][y])->mburied)
+     && !is_mon_buried(level.monsters[x][y]))
 #define MON_BURIED_AT(x, y)                     \
     (level.monsters[x][y] != (struct monst *) 0 \
-     && (level.monsters[x][y])->mburied)
+     && is_mon_buried(level.monsters[x][y]))
 #ifdef EXTRA_SANITY_CHECKS
 #define place_worm_seg(m, x, y) \
     do {                                                        \
@@ -1563,7 +1666,7 @@ extern dlevel_t level; /* structure describing the current level */
 #define has_loc_fireplace(x, y) (levl[x][y].decoration_typ == DECORATION_FIREPLACE || levl[x][y].decoration_typ == DECORATION_ANOTHER_FIREPLACE)
 
 /* restricted movement, potential luck penalties */
-#define Sokoban level.flags.sokoban_rules
+#define Sokoban is_level_sokoban_rules()
 
  /* From pray.c */
 #include "align.h"

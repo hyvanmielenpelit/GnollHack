@@ -901,23 +901,17 @@ u_init(void)
     u.uroleplay = tmpuroleplay; /* restore options set via rcfile */
 
 #if 0  /* documentation of more zero values as desirable */
-    u.usick_cause[0] = 0;
-    u.uluck  = u.moreluck = 0;
-    uarmu = 0;
-    uarm = uarmc = uarmh = uarms = uarmg = uarmf = 0;
-    uwep = uball = uchain = uleft = uright = 0;
-    uswapwep = uquiver = 0;
+    u.usick_cause[0] = 0;u.uluck = 0; u.moreluck = 0;
+    uarmu = 0;uarm = 0; uarmc = 0; uarmh = 0; uarms = 0; uarmg = 0; uarmf = 0;uwep = 0; uball = 0; uchain = 0; uleft = 0; uright = 0;uswapwep = 0; uquiver = 0;
     u.twoweap = 0;
     u.ublessed = 0;                     /* not worthy yet */
     u.ugangr   = 0;                     /* gods not angry */
     u.ugifts   = 0;                     /* no divine gifts bestowed */
     u.uevent.uhand_of_elbereth = 0;
     u.uevent.uheard_tune = 0;
-    u.uevent.uopened_dbridge = 0;
-    u.uevent.ukilled_wizard = 0;              /* not a demi-god yet... */
-    u.uintervene_timer = 0;
-    u.mh = u.mhmax = u.basehpmax = u.mtimedone = 0;
-    u.uz.dnum = u.uz0.dnum = 0;
+    set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_UOPENED_DBRIDGE, 0);
+    set_flag(u.uevent.bitflags, UEVENT_BITFLAGS_UKILLED_WIZARD, 0);              /* not a demi-god yet... */
+    u.uintervene_timer = 0;u.mh = 0; u.mhmax = 0; u.basehpmax = 0; u.mtimedone = 0;u.uz.dnum = 0; u.uz0.dnum = 0;
     u.utotype = 0;
 #endif /* 0 */
     props_init();
@@ -1747,7 +1741,7 @@ ini_inv(const struct trobj *trop)
             if (Role_if(PM_ROGUE))
             {
                 if (obj->otyp == CROSSBOW_BOLT)
-                    obj->opoisoned = 1;
+                    set_obj_trapped(obj, 1);
             }
 
             /* Set sack contents*/
@@ -1867,8 +1861,7 @@ ini_inv(const struct trobj *trop)
                     int i;
 
                     otmp = mksobj(PINCH_OF_SULFUROUS_ASH, FALSE, FALSE, TRUE);
-                    otmp->known = 1;
-                    otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+                    set_obj_known(otmp, 1);set_obj_dknown(otmp, 1); set_obj_bknown(otmp, 1); set_obj_rknown(otmp, 1); set_obj_nknown(otmp, 1);
                     otmp = add_to_container(obj, otmp);
 
 
@@ -1879,16 +1872,14 @@ ini_inv(const struct trobj *trop)
                         if (otmp)
                         {
                             knows_object(otmp->otyp);
-                            otmp->known = 1;
-                            otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+                            set_obj_known(otmp, 1);set_obj_dknown(otmp, 1); set_obj_bknown(otmp, 1); set_obj_rknown(otmp, 1); set_obj_nknown(otmp, 1);
                             otmp = add_to_container(obj, otmp);
                         }
                     }
 
                     otmp = mksobj(SLIME_MOLD, TRUE, FALSE, TRUE);
                     knows_object(otmp->otyp);
-                    otmp->known = 1;
-                    otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+                    set_obj_known(otmp, 1);set_obj_dknown(otmp, 1); set_obj_bknown(otmp, 1); set_obj_rknown(otmp, 1); set_obj_nknown(otmp, 1);
                     otmp = add_to_container(obj, otmp);
 
 
@@ -1896,8 +1887,7 @@ ini_inv(const struct trobj *trop)
                     otmp = mksobj(ARROW, FALSE, FALSE, TRUE);
                     otmp->quan = 10;
                     otmp->owt = weight(otmp);
-                    otmp->known = 1;
-                    otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+                    set_obj_known(otmp, 1);set_obj_dknown(otmp, 1); set_obj_bknown(otmp, 1); set_obj_rknown(otmp, 1); set_obj_nknown(otmp, 1);
                     otmp = add_to_container(obj, otmp);
 
                     int n = 2 + rn2(4); //2...5
@@ -1907,8 +1897,7 @@ ini_inv(const struct trobj *trop)
                         if (otmp)
                         {
                             knows_object(otmp2->otyp);
-                            otmp2->known = 1;
-                            otmp2->dknown = otmp2->bknown = otmp2->rknown = otmp2->nknown = 1;
+                            set_obj_known(otmp2, 1);set_obj_dknown(otmp2, 1); set_obj_bknown(otmp2, 1); set_obj_rknown(otmp2, 1); set_obj_nknown(otmp2, 1);
                             (void)add_to_container(obj, otmp2);
                         }
                     }
@@ -1932,7 +1921,7 @@ ini_inv(const struct trobj *trop)
                     for (i = 0; i < n; i++)
                     {
                         struct obj* otmp = mkobj(REAGENT_CLASS, FALSE, TRUE);
-                        otmp->bknown = 1;
+                        set_obj_bknown(otmp, 1);
                         if (otmp)
                         {
                             knows_object(otmp->otyp);
@@ -1954,19 +1943,20 @@ ini_inv(const struct trobj *trop)
             else
             {
                 if (objects[otyp].oc_uses_known)
-                    obj->known = 1;
-                obj->dknown = obj->bknown = obj->rknown = obj->nknown = 1;
+                    set_obj_known(obj, 1);set_obj_dknown(obj, 1); set_obj_bknown(obj, 1); set_obj_rknown(obj, 1); set_obj_nknown(obj, 1);
 
                 if (Is_container(obj) || obj->otyp == STATUE)
                 {
-                    obj->cknown = obj->lknown = obj->tknown = 1;
-                    obj->otrapped = 0;
+                    set_obj_cknown(obj, 1);
+                    set_obj_lknown(obj, 1);
+                    set_obj_tknown(obj, 1);
+                    set_obj_trapped(obj, 0);
                 }
 
-                obj->cursed = 0;
+                set_obj_cursed(obj, 0);
 
-                if (obj->opoisoned && u.ualign.type != A_CHAOTIC)
-                    obj->opoisoned = 0;
+                if (is_obj_trapped(obj) && u.ualign.type != A_CHAOTIC)
+                    set_obj_trapped(obj, 0);
 
                 if (obj->oclass == WEAPON_CLASS || obj->oclass == TOOL_CLASS)
                 {
@@ -1981,7 +1971,7 @@ ini_inv(const struct trobj *trop)
                 if (trop->trspe != UNDEF_SPE)
                     obj->enchantment = trop->trspe;
                 if (trop->trbless != UNDEF_BLESS)
-                    obj->blessed = trop->trbless;
+                    set_obj_blessed(obj, trop->trbless);
                 if (trop->elemental_enchantment > 0)
                     obj->elemental_enchantment = trop->elemental_enchantment;
                 if (obj->elemental_enchantment == DEATH_ENCHANTMENT && u.ualign.type != A_CHAOTIC)
@@ -2108,7 +2098,7 @@ mk_obj_with_material_in_container_known(struct obj *container, int itemtype, int
     struct obj* otmp = mksobj_with_flags(itemtype, FALSE, FALSE, MKOBJ_TYPE_CONTAINER, (struct monst*)0, material, 0L, 0L, 0UL);
     if (otmp)
     {
-        otmp->bknown = 1;
+        set_obj_bknown(otmp, 1);
         /* Small kludge here to make sure that tourist starts with the right kind of slippers */
         if (otmp->otyp == COTTON_SLIPPERS)
         {

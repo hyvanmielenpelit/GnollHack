@@ -1235,7 +1235,7 @@ prev_level(boolean at_stairs)
         /* Taking an up dungeon branch. */
         /* KMH -- Upwards branches are okay if not level 1 */
         /* (Just make sure it doesn't go above depth 1) */
-        if (!u.uz.dnum && u.uz.dlevel == 1 && !u.uhave.amulet)
+        if (!u.uz.dnum && u.uz.dlevel == 1 && !get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_AMULET))
             done(ESCAPED);
         else
             goto_level(&sstairs.tolev, at_stairs, FALSE, FALSE, FALSE);
@@ -1346,7 +1346,7 @@ Is_botlevel(d_level *lev)
 boolean
 Can_dig_down(d_level *lev)
 {
-    return (boolean) (!level.flags.hardfloor
+    return (boolean) (!get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HARDFLOOR)
                       && !Is_botlevel(lev)
                       && !Invocation_lev(lev));
 }
@@ -1653,7 +1653,7 @@ level_difficulty(void)
     {
         res = deepest_lev_reached(FALSE);  //2 * depth(&sanctum_level); //ulevel removed, depth doubled from before
     } 
-    else if (u.uhave.amulet) 
+    else if (get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_AMULET)) 
     {
         res = deepest_lev_reached(FALSE); // 2 * deepest_lev_reached(FALSE) - depth(&u.uz);
     } 
@@ -2032,7 +2032,7 @@ print_dungeon(boolean bymenu, schar *rlev, xchar *rdgn)
 
         /* if current level has a magic portal, report its location;
            this assumes that there is at most one magic portal on any
-           given level; quest and ft.ludios have pairs (one in main
+           given level; quest and get_flag(ft.flags.bitflags, MAPSEEN_BITFLAGS_LUDIOS) have pairs (one in main
            dungeon matched with one in the corresponding branch), the
            elemental planes have singletons (connection to next plane) */
         *buf = '\0';
@@ -2199,7 +2199,7 @@ forget_mapseen(int ledger_num)
 
     /* if not found, then nothing to forget */
     if (mptr) {
-        mptr->flags.forgot = 1;
+        set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_FORGOT, 1);
         mptr->br = (branch *) 0;
 
         /* custom names are erased, not just forgotten until revisited */
@@ -2357,7 +2357,7 @@ remdun_mapseen(int dnum)
     while ((mptr = *mptraddr) != 0) {
         if (mptr->lev.dnum == dnum) {
 #if 1 /* use this... */
-            mptr->flags.unreachable = 1;
+            set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_UNREACHABLE, 1);
         }
 #else /* old deletion code */
             *mptraddr = mptr->next;
@@ -2420,14 +2420,14 @@ interest_mapseen(mapseen *mptr)
 {
     if (on_level(&u.uz, &mptr->lev))
         return TRUE;
-    if (mptr->flags.unreachable || mptr->flags.forgot)
+    if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_UNREACHABLE) || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_FORGOT))
         return FALSE;
     /* level is of interest if it has an auto-generated annotation */
-    if (mptr->flags.oracle || mptr->flags.bigroom || mptr->flags.roguelevel
-        || mptr->flags.castle || mptr->flags.valley || mptr->flags.msanctum || mptr->flags.special_level
-        || mptr->flags.quest_summons || mptr->flags.questing
-        || mptr->flags.modron_hint_shown || mptr->flags.yacc_hint_shown || mptr->flags.quantum_hint_shown 
-        || mptr->flags.lost_world_hint_shown)
+    if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_ORACLE) || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_BIGROOM) || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_ROGUELEVEL)
+        || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_CASTLE) || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_VALLEY) || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_MSANCTUM) || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_SPECIAL_LEVEL)
+        || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_QUEST_SUMMONS) || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_QUESTING)
+        || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_MODRON_HINT_SHOWN) || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_YACC_HINT_SHOWN) || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_QUANTUM_HINT_SHOWN) 
+        || get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_LOST_WORLD_HINT_SHOWN))
         return TRUE;
     /* when in Sokoban, list all sokoban levels visited; when not in it,
        list any visited Sokoban level which remains unsolved (will usually
@@ -2435,7 +2435,7 @@ interest_mapseen(mapseen *mptr)
        climb out on the far side on the first Sokoban level; also, wizard
        mode overrides teleport restrictions) */
     if (In_sokoban(&mptr->lev)
-        && (In_sokoban(&u.uz) || !mptr->flags.sokosolved))
+        && (In_sokoban(&u.uz) || !get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_SOKOSOLVED)))
         return TRUE;
     /* when in the endgame, list all endgame levels visited, whether they
        have annotations or not, so that #overview doesn't become extremely
@@ -2448,7 +2448,7 @@ interest_mapseen(mapseen *mptr)
        or is the furthest level reached in its branch */
     return (boolean) (INTEREST(mptr->feat)
                       || (mptr->final_resting_place
-                          && (mptr->flags.knownbones || wizard))
+                          && (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_KNOWNBONES) || wizard))
                       || mptr->custom || mptr->br
                       || (mptr->lev.dlevel
                           == dungeons[mptr->lev.dnum].dunlev_ureached));
@@ -2476,8 +2476,8 @@ recalc_mapseen(void)
     /* reset all features; mptr->feat.* = 0; */
     (void) memset((genericptr_t) &mptr->feat, 0, sizeof mptr->feat);
     /* reset most flags; some level-specific ones are left as-is */
-    if (mptr->flags.unreachable) {
-        mptr->flags.unreachable = 0; /* reached it; Eye of the Aethiopica? */
+    if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_UNREACHABLE)) {
+        set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_UNREACHABLE, 0); /* reached it; Eye of the Aethiopica? */
         if (In_quest(&u.uz)) {
             mapseen *mptrtmp = mapseenchn;
 
@@ -2486,34 +2486,34 @@ recalc_mapseen(void)
                data for all quest levels, not just the one we're on now */
             do {
                 if (mptrtmp->lev.dnum == mptr->lev.dnum)
-                    mptrtmp->flags.unreachable = 0;
+                    set_flag(mptrtmp->flags.flags.bitflags, MAPSEEN_BITFLAGS_UNREACHABLE, 0);
                 mptrtmp = mptrtmp->next;
             } while (mptrtmp);
         }
     }
-    mptr->flags.knownbones = 0;
-    mptr->flags.sokosolved = In_sokoban(&u.uz) && !Sokoban;
-    /* mptr->flags.bigroom retains previous value when hero can't see */
+    set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_KNOWNBONES, 0);
+    set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_SOKOSOLVED, In_sokoban(&u.uz)) && !Sokoban;
+    /* get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_BIGROOM) retains previous value when hero can't see */
     if (!Blind)
-        mptr->flags.bigroom = Is_bigroom(&u.uz);
-    else if (mptr->flags.forgot)
-        mptr->flags.bigroom = 0;
-    mptr->flags.roguelevel = Is_really_rogue_level(&u.uz);
-    mptr->flags.oracle = 0; /* recalculated during room traversal below */
-    mptr->flags.castletune = 0;
-    /* flags.castle, flags.valley, flags.msanctum, mptr->flags.special_level retain previous value */
-    mptr->flags.forgot = 0;
+        set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_BIGROOM, Is_bigroom(&u.uz));
+    else if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_FORGOT))
+        set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_BIGROOM, 0);
+    set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_ROGUELEVEL, Is_really_rogue_level(&u.uz));
+    set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_ORACLE, 0); /* recalculated during room traversal below */
+    set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_CASTLETUNE, 0);
+    /* flags.castle, flags.valley, flags.msanctum, get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_SPECIAL_LEVEL) retain previous value */
+    set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_FORGOT, 0);
     /* flags.quest_summons disabled once quest finished */
-    mptr->flags.quest_summons = (at_dgn_entrance("The Quest")
-                                 && u.uevent.qcalled
-                                 && !(u.uevent.qcompleted
-                                      || u.uevent.qexpelled
-                                      || quest_status.leader_is_dead));
-    mptr->flags.questing = (on_level(&u.uz, &qstart_level)
-                            && quest_status.got_quest);
-    mptr->flags.modron_hint_shown = (at_dgn_entrance("Plane of the Modron") && u.uevent.modron_portal_hint && !u.uevent.modron_plane_entered);
-    mptr->flags.yacc_hint_shown = (at_dgn_entrance("Hellish Pastures") && u.uevent.bovine_portal_hint && !u.uevent.hellish_pastures_entered);
-    mptr->flags.quantum_hint_shown = (at_dgn_entrance("The Large Circular Dungeon") && u.uevent.quantum_portal_hint && !u.uevent.large_circular_dgn_entered);
+    set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_QUEST_SUMMONS, (at_dgn_entrance("The Quest"))
+                                 && get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QCALLED)
+                                 && !(get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QCOMPLETED)
+                                      || get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QEXPELLED)
+                                      || get_flag(quest_status.bitflags, QSCORE_BITFLAGS_LEADER_IS_DEAD)));
+    set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_QUESTING, (on_level(&u.uz), &qstart_level)
+                            && get_flag(quest_status.bitflags, QSCORE_BITFLAGS_GOT_QUEST));
+    set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_MODRON_HINT_SHOWN, (at_dgn_entrance("Plane of the Modron")) && get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_MODRON_PORTAL_HINT) && !get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_MODRON_PLANE_ENTERED));
+    set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_YACC_HINT_SHOWN, (at_dgn_entrance("Hellish Pastures")) && get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_BOVINE_PORTAL_HINT) && !get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_HELLISH_PASTURES_ENTERED));
+    set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_QUANTUM_HINT_SHOWN, (at_dgn_entrance("The Large Circular Dungeon")) && get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QUANTUM_PORTAL_HINT) && !get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_LARGE_CIRCULAR_DGN_ENTERED));
 
     debugprint_pos();
     /* track rooms the hero is in */
@@ -2587,7 +2587,7 @@ recalc_mapseen(void)
             }
             else if (rooms[i].orig_rtype == DELPHI)
             {
-                mptr->flags.oracle = 1;
+                set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_ORACLE, 1);
             }
         }
     }
@@ -2725,7 +2725,7 @@ recalc_mapseen(void)
                      */
                     for (ty = max(0, y - 1); ty <= min(ROWNO, y + 1); ++ty)
                         if (isok(tx, ty) && IS_THRONE(levl[tx][ty].typ)) {
-                            mptr->flags.ludios = 1;
+                            set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_LUDIOS, 1);
                             break;
                         }
                     break;
@@ -2736,7 +2736,7 @@ recalc_mapseen(void)
             case DBWALL:
             case DRAWBRIDGE_DOWN:
                 if (Is_stronghold(&u.uz))
-                    mptr->flags.castle = 1, mptr->flags.castletune = 1;
+                    set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_CASTLE, 1), set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_CASTLETUNE, 1);
                 break;
             default:
                 break;
@@ -2782,7 +2782,7 @@ recalc_mapseen(void)
     for (bp = mptr->final_resting_place; bp; bp = bp->next)
         if (lastseentyp[bp->frpx][bp->frpy]) {
             bp->bonesknown = TRUE;
-            mptr->flags.knownbones = 1;
+            set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_KNOWNBONES, 1);
         }
 
 }
@@ -2796,9 +2796,9 @@ mapseen_temple(struct monst *priest UNUSED)
     mapseen *mptr = find_mapseen(&u.uz);
 
     if (Is_valley(&u.uz))
-        mptr->flags.valley = 1;
+        set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_VALLEY, 1);
     else if (Is_sanctum(&u.uz))
-        mptr->flags.msanctum = 1;
+        set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_MSANCTUM, 1);
 }
 
 /* room entry message has just been delivered so learn room even if blind */
@@ -2891,7 +2891,7 @@ br_string2(branch *br)
 {
     /* Special case: quest portal says closed if kicked from quest */
     boolean closed_portal = (br->end2.dnum == quest_dnum
-                             && u.uevent.qexpelled);
+                             && get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QEXPELLED));
 
     switch (br->type) {
     case BR_PORTAL:
@@ -2999,7 +2999,7 @@ static char *
 tunesuffix(mapseen *mptr, char *outbuf)
 {
     *outbuf = '\0';
-    if (mptr->flags.castletune && u.uevent.uheard_tune) {
+    if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_CASTLETUNE) && u.uevent.uheard_tune) {
         char tmp[BUFSZ];
 
         if (u.uevent.uheard_tune == 2)
@@ -3089,7 +3089,7 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
     if (wizard) {
         s_level *slev;
 
-        if ((slev = Is_special(&mptr->lev)) != 0 && !mptr->flags.special_level_true_nature_known)
+        if ((slev = Is_special(&mptr->lev)) != 0 && !get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_SPECIAL_LEVEL_TRUE_NATURE_KNOWN))
         {
             Sprintf(buf, " [%s]", slev->name);
             putstr_ex(win, buf, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_MSG_GOD, 1);
@@ -3114,7 +3114,7 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
     putstr(win, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, "");
     //putstr(win, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, buf);
 
-    if (mptr->flags.forgot)
+    if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_FORGOT))
         return;
 
     if (INTEREST(mptr->feat)) 
@@ -3194,40 +3194,40 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
 
     /* we assume that these are mutually exclusive */
     *buf = '\0';
-    if (mptr->flags.oracle) {
+    if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_ORACLE)) {
         Sprintf(buf, "%sOracle of Delphi.", PREFIX);
     } else if (In_sokoban(&mptr->lev)) {
         Sprintf(buf, "%s%s.", PREFIX,
-                mptr->flags.sokosolved ? "Solved" : "Unsolved");
-    } else if (mptr->flags.bigroom) {
+                get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_SOKOSOLVED) ? "Solved" : "Unsolved");
+    } else if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_BIGROOM)) {
         Sprintf(buf, "%sA very big room.", PREFIX);
-    } else if (mptr->flags.roguelevel) {
+    } else if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_ROGUELEVEL)) {
         Sprintf(buf, "%sA primitive area.", PREFIX);
     } else if (on_level(&mptr->lev, &qstart_level)) {
         Sprintf(buf, "%sHome%s.", PREFIX,
-                mptr->flags.unreachable ? " (no way back...)" : "");
-        if (u.uevent.qcompleted)
+                get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_UNREACHABLE) ? " (no way back...)" : "");
+        if (get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_QCOMPLETED))
             Sprintf(buf, "%sCompleted quest for %s.", PREFIX, ldrname());
-        else if (mptr->flags.questing)
+        else if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_QUESTING))
             Sprintf(buf, "%sGiven quest by %s.", PREFIX, ldrname());
-    } else if (mptr->flags.ludios) {
+    } else if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_LUDIOS)) {
         /* presence of the ludios branch in #overview output indicates that
            the player has made it onto the level; presence of this annotation
            indicates that the fort's entrance has been seen (or mapped) */
         Sprintf(buf, "%sFort Ludios.", PREFIX);
-    } else if (mptr->flags.castle) {
+    } else if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_CASTLE)) {
         Sprintf(buf, "%sThe castle%s.", PREFIX, tunesuffix(mptr, tmpbuf));
-    } else if (mptr->flags.valley) {
+    } else if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_VALLEY)) {
         Sprintf(buf, "%sValley of the Dead.", PREFIX);
-    } else if (mptr->flags.msanctum) {
+    } else if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_MSANCTUM)) {
         Sprintf(buf, "%sMoloch's Sanctum.", PREFIX);
     }
-    else if (mptr->flags.special_level) //(Inhell || Is_medusa_level(&mptr->lev))
+    else if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_SPECIAL_LEVEL)) //(Inhell || Is_medusa_level(&mptr->lev))
     {
         s_level* slev;
         if ((slev = Is_special(&mptr->lev)) != 0)
         {
-            if(mptr->flags.special_level_true_nature_known)
+            get_flag(if(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_SPECIAL_LEVEL_TRUE_NATURE_KNOWN))
                 Sprintf(buf, "%s%s.", PREFIX, slev->name);
             else if(strcmp(mptr->flags.special_description, ""))
                 Sprintf(buf, "%s%s.", PREFIX, mptr->flags.special_description);
@@ -3237,19 +3237,19 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
     if (*buf)
         putstr(win, ATR_INDENT_AT_SPACE, buf);
     /* quest entrance is not mutually-exclusive with bigroom or rogue level */
-    if (mptr->flags.quest_summons) {
+    if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_QUEST_SUMMONS)) {
         Sprintf(buf, "%sSummoned by %s.", PREFIX, ldrname());
         putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
-    if(mptr->flags.modron_hint_shown) {
+    get_flag(if(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_MODRON_HINT_SHOWN)) {
         Sprintf(buf, "%sHad a sensation of unusually straight angles.", PREFIX);
         putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
-    if (mptr->flags.yacc_hint_shown) {
+    if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_YACC_HINT_SHOWN)) {
         Sprintf(buf, "%sHeard distant grunting and bellowing.", PREFIX);
         putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
-    if (mptr->flags.quantum_hint_shown) {
+    if (get_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_QUANTUM_HINT_SHOWN)) {
         Sprintf(buf, "%sHad a sensation of the fabric of reality stretching back and forth.", PREFIX);
         putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
@@ -3312,7 +3312,7 @@ check_special_level_naming_by_mon(struct monst *mon)
     if (!mon)
         return;
 
-    if (!level.flags.no_special_level_naming_checks && Is_special(&u.uz) && level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_SEEING_MONSTER &&
+    if (!get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NO_SPECIAL_LEVEL_NAMING_CHECKS) && Is_special(&u.uz) && level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_SEEING_MONSTER &&
         ((level.flags.special_naming_seen_monster_type >= LOW_PM && level.flags.special_naming_seen_monster_type == mon->mnum)
           || (level.flags.special_naming_seen_monster_type == NON_PM && level.flags.special_naming_seen_monster_class > 0 && level.flags.special_naming_seen_monster_class == mon->data->mlet)
         )
@@ -3332,12 +3332,12 @@ set_special_level_seen(d_level *lvl, boolean set_also_true_nature_known)
 
     if (Is_special(lvl))
     {
-        mptr->flags.special_level = 1;
+        set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_SPECIAL_LEVEL, 1);
         Strcpy(mptr->flags.special_description, level.flags.special_description);
         if (set_also_true_nature_known)
         {
-            mptr->flags.special_level_true_nature_known = 1;
-            level.flags.no_special_level_naming_checks = 1;
+            set_flag(mptr->flags.flags.bitflags, MAPSEEN_BITFLAGS_SPECIAL_LEVEL_TRUE_NATURE_KNOWN, 1);
+            set_flag(level.flags.bitflags, LEVEL_BITFLAGS_NO_SPECIAL_LEVEL_NAMING_CHECKS, 1);
         }
     }
 

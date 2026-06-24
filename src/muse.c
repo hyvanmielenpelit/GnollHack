@@ -134,7 +134,7 @@ precheck(struct monst *mon, struct obj *obj)
                 } else if (rn2(2)) {
                     play_monster_special_dialogue_line(mtmp, DJINN_LINE_YOU_FREED_ME);
                     verbalize_talk1("You freed me!");
-                    mtmp->mpeaceful = 1;
+                    set_mon_peaceful(mtmp, 1);
                     set_mhostility(mtmp);
                     newsym(mtmp->mx, mtmp->my);
                 } else {
@@ -149,7 +149,7 @@ precheck(struct monst *mon, struct obj *obj)
             return 2;
         }
     }
-    if (obj->oclass == WAND_CLASS && obj->cursed && !is_cancelled(mon)
+    if (obj->oclass == WAND_CLASS && is_obj_cursed(obj) && !is_cancelled(mon)
         && !rn2(WAND_BACKFIRE_CHANCE))
     {
         int dam = d(obj->charges + 2, 6);
@@ -280,19 +280,19 @@ mreadmsg(struct monst *mtmp, struct obj *otmp)
     if (!vismon && Deaf)
         return; /* no feedback */
 
-    otmp->dknown = 1; /* seeing or hearing it read reveals its label */
+    set_obj_dknown(otmp, 1); /* seeing or hearing it read reveals its label */
     /* shouldn't be able to hear curse/bless status of unseen scrolls;
        for priest characters, bknown will always be set during naming */
-    savebknown = otmp->bknown;
+    savebknown = is_obj_bknown(otmp);
     saverole = Role_switch;
     if (!vismon) {
-        otmp->bknown = 0;
+        set_obj_bknown(otmp, 0);
         if (Role_if(PM_PRIEST))
             Role_switch = 0;
     }
     Strcpy(onambuf, singular(otmp, doname));
     Role_switch = saverole;
-    otmp->bknown = savebknown;
+    set_obj_bknown(otmp, savebknown);
     play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_READ);
     if (vismon)
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s reads %s!", Monnam(mtmp), onambuf);
@@ -314,7 +314,7 @@ mquaffmsg(struct monst *mtmp, struct obj *otmp)
     play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_QUAFF);
 
     if (canseemon(mtmp)) {
-        otmp->dknown = 1;
+        set_obj_dknown(otmp, 1);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s drinks %s!", Monnam(mtmp), singular(otmp, doname));
     } else if (!Deaf)
         You_hear("a chugging sound.");
@@ -467,7 +467,7 @@ find_defensive(struct monst *mtmp)
         if (!is_unicorn(mtmp->data) && can_operate_objects(mtmp->data)) 
         {
             for (obj = mtmp->minvent; obj; obj = obj->nobj)
-                if (obj->otyp == UNICORN_HORN && !obj->cursed && obj->charges > 0)
+                if (obj->otyp == UNICORN_HORN && !is_obj_cursed(obj) && obj->charges > 0)
                     break;
         }
         if (obj || is_unicorn(mtmp->data)) 
@@ -624,7 +624,7 @@ find_defensive(struct monst *mtmp)
             /* use trap if it's the correct type */
             if (is_hole(t->ttyp)
                 && !is_floater(mtmp->data)
-                && !mtmp->isshk && !mtmp->isgd && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc
+                && !is_mon_shk(mtmp) && !is_mon_gd(mtmp) && !is_mon_priest(mtmp) && !is_mon_smith(mtmp) && !is_mon_npc(mtmp)
                 && Can_fall_thru(&u.uz)) {
                 trapx = xx;
                 trapy = yy;
@@ -695,7 +695,7 @@ find_defensive(struct monst *mtmp)
         if (m.has_defense == MUSE_WAN_DIGGING)
             break;
         if (obj->otyp == WAN_DIGGING && obj->charges > 0 && !is_cancelled(mtmp) && !stuck && !t
-            && !mtmp->isshk && !mtmp->isgd && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc
+            && !is_mon_shk(mtmp) && !is_mon_gd(mtmp) && !is_mon_priest(mtmp) && !is_mon_smith(mtmp) && !is_mon_npc(mtmp)
             && !is_floater(mtmp->data)
             /* monsters digging in Sokoban can ruin things */
             && !Sokoban
@@ -711,7 +711,7 @@ find_defensive(struct monst *mtmp)
         }
         nomore(MUSE_WAN_TELEPORTATION_SELF);
         nomore(MUSE_WAN_TELEPORTATION);
-        if (obj->otyp == WAN_TELEPORTATION && obj->charges > 0 && !is_cancelled(mtmp) && !level.flags.noteleport)
+        if (obj->otyp == WAN_TELEPORTATION && obj->charges > 0 && !is_cancelled(mtmp) && !get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOTELEPORT))
         {
             /* use the TELEP_TRAP bit to determine if they know
              * about noteleport on this level or not.  Avoids
@@ -719,7 +719,7 @@ find_defensive(struct monst *mtmp)
              * mean if the monster leaves the level, they'll know
              * about teleport traps.
              */
-            if (!level.flags.noteleport
+            if (!get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOTELEPORT)
                 || !(mtmp->mtrapseen & (1 << (TELEP_TRAP - 1)))) 
             {
                 m.defensive = obj;
@@ -730,12 +730,12 @@ find_defensive(struct monst *mtmp)
         }
         nomore(MUSE_SCR_TELEPORTATION);
         if (obj->otyp == SCR_TELEPORTATION && !is_blinded(mtmp)
-            && haseyes(mtmp->data) && !level.flags.noteleport
-            && (!obj->cursed || (!(mtmp->isshk && inhishop(mtmp))
-                                 && !mtmp->isgd && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc)))
+            && haseyes(mtmp->data) && !get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOTELEPORT)
+            && (!is_obj_cursed(obj) || (!(is_mon_shk(mtmp) && inhishop(mtmp))
+                                 && !is_mon_gd(mtmp) && !is_mon_priest(mtmp) && !is_mon_smith(mtmp) && !is_mon_npc(mtmp))))
         {
             /* see WAN_TELEPORTATION case above */
-            if (!level.flags.noteleport
+            if (!get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOTELEPORT)
                 || !(mtmp->mtrapseen & (1 << (TELEP_TRAP - 1)))) 
             {
                 m.defensive = obj;
@@ -848,20 +848,20 @@ use_defensive(struct monst *mtmp)
         }
         if (objects[otmp->otyp].oc_flags5 & O5_EFFECT_FLAGS_ARE_HEALING)
         {
-            cures_sick = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_SICKNESS) :
-                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_SICKNESS) :
+            cures_sick = is_obj_blessed(otmp) ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_SICKNESS) :
+                is_obj_cursed(otmp) ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_SICKNESS) :
                 !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_SICKNESS);
-            cures_blind = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_BLINDNESS) :
-                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_BLINDNESS) :
+            cures_blind = is_obj_blessed(otmp) ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_BLINDNESS) :
+                is_obj_cursed(otmp) ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_BLINDNESS) :
                 !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_BLINDNESS);
-            cures_hallucination = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_HALLUCINATION) :
-                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_HALLUCINATION) :
+            cures_hallucination = is_obj_blessed(otmp) ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_HALLUCINATION) :
+                is_obj_cursed(otmp) ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_HALLUCINATION) :
                 !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_HALLUCINATION);
-            cures_stun = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_STUN) :
-                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_STUN) :
+            cures_stun = is_obj_blessed(otmp) ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_STUN) :
+                is_obj_cursed(otmp) ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_STUN) :
                 !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_STUN);
-            cures_confusion = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_CONFUSION) :
-                otmp->cursed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_CONFUSION) :
+            cures_confusion = is_obj_blessed(otmp) ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_CONFUSION) :
+                is_obj_cursed(otmp) ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_CURSED_CURE_CONFUSION) :
                 !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_UNCURSED_CURE_CONFUSION);
         }
     }
@@ -873,7 +873,7 @@ use_defensive(struct monst *mtmp)
        rushing right straight back; don't override if already scared */
     fleetim = !is_fleeing(mtmp) ? (33 - (30 * mtmp->mhp / mtmp->mhpmax)) : 0;
 #define m_flee(m)                          \
-    if (fleetim && !m->iswiz) {            \
+    if (fleetim && !is_mon_wiz(m)) {            \
         monflee(m, fleetim, FALSE, FALSE); \
     }
 
@@ -887,7 +887,7 @@ use_defensive(struct monst *mtmp)
         {
             is_yours = otmp->where == OBJ_INVENT;
             play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
-            if (otmp->blessed)
+            if (is_obj_blessed(otmp))
                 maxcures++;
             if (otmp->charges > 0)
                 otmp->charges--;
@@ -916,7 +916,7 @@ use_defensive(struct monst *mtmp)
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "tip of %s's horn glows!", mon_nam(mtmp));
         }
 
-        if (otmp && otmp->cursed)
+        if (otmp && is_obj_cursed(otmp))
         {
             int lcount = rn1(90, 10);
 
@@ -1051,7 +1051,7 @@ use_defensive(struct monst *mtmp)
         awaken_soldiers(mtmp, is_scary);
         return 2;
     case MUSE_WAN_TELEPORTATION_SELF:
-        if ((mtmp->isshk && inhishop(mtmp)) || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc)
+        if ((is_mon_shk(mtmp) && inhishop(mtmp)) || is_mon_gd(mtmp) || is_mon_priest(mtmp) || is_mon_smith(mtmp) || is_mon_npc(mtmp))
             return 2;
         m_flee(mtmp);
         if (!otmp)
@@ -1064,7 +1064,7 @@ use_defensive(struct monst *mtmp)
             if (vismon && how)     /* mentions 'teleport' */
                 makeknown(how);
             /* monster learns that teleportation isn't useful here */
-            if (level.flags.noteleport)
+            if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOTELEPORT))
                 mtmp->mtrapseen |= (1 << (TELEP_TRAP - 1));
             return 2;
         }
@@ -1087,7 +1087,7 @@ use_defensive(struct monst *mtmp)
         m_using = TRUE;
         mbhit(mtmp, rn1(8, 6), mbhitm, bhito, otmp);
         /* monster learns that teleportation isn't useful here */
-        if (level.flags.noteleport)
+        if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOTELEPORT))
             mtmp->mtrapseen |= (1 << (TELEP_TRAP - 1));
         m_using = FALSE;
         return 2;
@@ -1095,9 +1095,9 @@ use_defensive(struct monst *mtmp)
         if (!otmp)
             return 2;
 
-        int obj_is_cursed = otmp->cursed;
+        int obj_is_cursed = is_obj_cursed(otmp);
 
-        if (mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc)
+        if (is_mon_shk(mtmp) || is_mon_gd(mtmp) || is_mon_priest(mtmp) || is_mon_smith(mtmp) || is_mon_npc(mtmp))
             return 2;
         m_flee(mtmp);
         mreadmsg(mtmp, otmp);
@@ -1146,7 +1146,7 @@ use_defensive(struct monst *mtmp)
             pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "digging ray is ineffective.");
             return 2;
         }
-        if (!Can_dig_down(&u.uz) && !levl[mtmp->mx][mtmp->my].candig) {
+        if (!Can_dig_down(&u.uz) && !get_flag(levl[mtmp->mx][mtmp->my].rm_bitflags, RM_BITFLAGS_CANDIG)) {
             if (canseemon(mtmp))
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s here is too hard to dig in.",
                           surface(mtmp->mx, mtmp->my));
@@ -1201,10 +1201,9 @@ use_defensive(struct monst *mtmp)
 
         if (!rn2(73))
             cnt += rnd(4);
-        if (is_confused(mtmp) || otmp->cursed)
-            cnt += 12;
-        if (is_confused(mtmp))
-            pm = fish = &mons[PM_ACID_BLOB];
+        if (is_confused(mtmp) || is_obj_cursed(otmp))
+            cnt += 12;if (is_confused(mtmp))
+            pm = &mons[PM_ACID_BLOB]; fish = &mons[PM_ACID_BLOB];
         else if (is_pool(mtmp->mx, mtmp->my))
             fish = &mons[u.uinwater ? PM_GIANT_EEL : PM_CROCODILE];
         mreadmsg(mtmp, otmp);
@@ -1399,7 +1398,7 @@ use_defensive(struct monst *mtmp)
         special_effect_wait_until_action(0);
         deduct_monster_hp(mtmp, (double)(-duration));
         if (mtmp->mhp > mtmp->mhpmax)
-            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? extra_data1 : 0));
+            mtmp->mhp = (mtmp->mhpmax += (is_obj_blessed(otmp) ? extra_data1 : 0));
         if (cures_blind && is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
         if (cures_sick)
@@ -1470,7 +1469,7 @@ try_again:
     switch (roll) {
     case 6:
     case 9:
-        if (level.flags.noteleport && ++trycnt < 2)
+        if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_NOTELEPORT) && ++trycnt < 2)
             goto try_again;
         if (roll >= 9 ? 1 : !rn2(3))
             return WAN_TELEPORTATION;
@@ -1493,9 +1492,9 @@ try_again:
     case 5:
         return (mtmp->data != &mons[PM_PESTILENCE]) ? (rn2(3) ? POT_GREATER_HEALING : POT_FULL_HEALING) : POT_SICKNESS;
     case 7:
-        if (level.flags.hardfloor && ++trycnt < 4)
+        if (get_flag(level.flags.bitflags, LEVEL_BITFLAGS_HARDFLOOR) && ++trycnt < 4)
             goto try_again;
-        if (is_floater(pm) || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc)
+        if (is_floater(pm) || is_mon_shk(mtmp) || is_mon_gd(mtmp) || is_mon_priest(mtmp) || is_mon_smith(mtmp) || is_mon_npc(mtmp))
             return 0;
         else
             return WAN_DIGGING;
@@ -1772,9 +1771,9 @@ mbhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
 
     if (mtmp != &youmonst)
     {
-        if (mtmp->msleeping)
+        if (is_mon_sleeping(mtmp))
         {
-            mtmp->msleeping = 0;
+            set_mon_sleeping(mtmp, 0);
             refresh_m_tile_gui_info(mtmp, TRUE);
         }
         if (mtmp->m_ap_type)
@@ -1852,7 +1851,7 @@ mbhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
             tele();
         } else {
             /* for consistency with zap.c, don't identify */
-            if (mtmp->ispriest && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) {
+            if (is_mon_priest(mtmp) && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) {
                 play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
                 if (cansee(mtmp->mx, mtmp->my))
                     pline("%s resists the magic!", Monnam(mtmp));
@@ -2036,8 +2035,7 @@ use_offensive(struct monst *mtmp)
 
         if (oseen && otmp->oartifact)
         {
-            makeknown(otmp->otyp);
-            otmp->aknown = otmp->nknown = 1;
+            makeknown(otmp->otyp);set_obj_aknown(otmp, 1); set_obj_nknown(otmp, 1);
         }
         m_using = TRUE;
 
@@ -2086,13 +2084,13 @@ use_offensive(struct monst *mtmp)
         /* don't use monster fields after killing it */
         boolean confused = (is_confused(mtmp) ? TRUE : FALSE);
         int mmx = mtmp->mx, mmy = mtmp->my;
-        boolean is_cursed = otmp->cursed;
+        boolean is_cursed = is_obj_cursed(otmp);
 
         mreadmsg(mtmp, otmp);
         /* Identify the scroll */
         if (canspotmon(mtmp)) {
             pline_The("%s rumbles %s %s!", ceiling(mtmp->mx, mtmp->my),
-                      otmp->blessed ? "around" : "above", mon_nam(mtmp));
+                      is_obj_blessed(otmp) ? "around" : "above", mon_nam(mtmp));
             if (oseen)
                 makeknown(otmp->otyp);
         } else if (cansee(mtmp->mx, mtmp->my)) {
@@ -2110,8 +2108,8 @@ use_offensive(struct monst *mtmp)
                 /* Is this a suitable spot? */
                 if (isok(x, y) && !closed_door(x, y)
                     && !IS_ROCK(levl[x][y].typ) && !IS_AIR(levl[x][y].typ)
-                    && (((x == mmx) && (y == mmy)) ? !otmp->blessed
-                                                   : !otmp->cursed)
+                    && (((x == mmx) && (y == mmy)) ? !is_obj_blessed(otmp)
+                                                   : !is_obj_cursed(otmp))
                     && (x != u.ux || y != u.uy)) {
                     (void) drop_boulder_on_monster(x, y, confused, FALSE);
                 }
@@ -2187,7 +2185,7 @@ use_offensive(struct monst *mtmp)
          */
         if (cansee(mtmp->mx, mtmp->my)) 
         {
-            otmp->dknown = 1;
+            set_obj_dknown(otmp, 1);
             int multicolors[2] = { NO_COLOR, CLR_MSG_HINT };
             pline_multi_ex(ATR_NONE, CLR_MSG_WARNING, no_multiattrs, multicolors, "%s hurls %s!", Monnam(mtmp), singular(otmp, doname));
         }
@@ -2467,8 +2465,8 @@ find_misc(struct monst *mtmp)
         /* Monsters shouldn't recognize cursed items; this kludge is
            necessary to prevent serious problems though... */
         if (obj->otyp == POT_GAIN_LEVEL
-            && (!obj->cursed
-                || (!mtmp->isgd && !mtmp->isshk && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc))) {
+            && (!is_obj_cursed(obj)
+                || (!is_mon_gd(mtmp) && !is_mon_shk(mtmp) && !is_mon_priest(mtmp) && !is_mon_smith(mtmp) && !is_mon_npc(mtmp)))) {
             m.misc = obj;
             m.has_misc = MUSE_POT_GAIN_LEVEL;
         }
@@ -2511,22 +2509,22 @@ find_misc(struct monst *mtmp)
         }
         nomore(MUSE_WAN_SPEED_MONSTER);
         if (obj->otyp == WAN_SPEED_MONSTER && obj->charges > 0 && !is_cancelled(mtmp)
-            && !has_very_fast(mtmp) && !has_ultra_fast(mtmp) && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !mtmp->isgd) {
+            && !has_very_fast(mtmp) && !has_ultra_fast(mtmp) && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !is_mon_gd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_WAN_SPEED_MONSTER;
         }
         nomore(MUSE_POT_SPEED);
-        if (obj->otyp == POT_SPEED && !has_ultra_fast(mtmp) && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !mtmp->isgd) {
+        if (obj->otyp == POT_SPEED && !has_ultra_fast(mtmp) && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !is_mon_gd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_SPEED;
         }
         nomore(MUSE_POT_GREATER_SPEED);
-        if (obj->otyp == POT_GREATER_SPEED && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !mtmp->isgd) {
+        if (obj->otyp == POT_GREATER_SPEED && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !is_mon_gd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_GREATER_SPEED;
         }
         nomore(MUSE_POT_LIGHTNING_SPEED);
-        if (obj->otyp == POT_LIGHTNING_SPEED && !has_lightning_fast(mtmp) && !mtmp->isgd) {
+        if (obj->otyp == POT_LIGHTNING_SPEED && !has_lightning_fast(mtmp) && !is_mon_gd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_LIGHTNING_SPEED;
         }
@@ -2632,17 +2630,17 @@ find_misc(struct monst *mtmp)
             m.has_misc = MUSE_POT_LESSER_REGENERATION;
         }
         nomore(MUSE_POT_TITAN_STRENGTH);
-        if (obj->otyp == POT_TITAN_STRENGTH && !has_titan_strength(mtmp) && M_ACURRSTR(mtmp) < 25 && !mtmp->isgd) {
+        if (obj->otyp == POT_TITAN_STRENGTH && !has_titan_strength(mtmp) && M_ACURRSTR(mtmp) < 25 && !is_mon_gd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_TITAN_STRENGTH;
         }
         nomore(MUSE_POT_SUPER_HEROISM);
-        if (obj->otyp == POT_SUPER_HEROISM && !has_super_heroism(mtmp) && !mtmp->isgd) {
+        if (obj->otyp == POT_SUPER_HEROISM && !has_super_heroism(mtmp) && !is_mon_gd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_SUPER_HEROISM;
         }
         nomore(MUSE_POT_HEROISM);
-        if (obj->otyp == POT_HEROISM && !has_super_heroism(mtmp) && !has_heroism(mtmp) && !mtmp->isgd) {
+        if (obj->otyp == POT_HEROISM && !has_super_heroism(mtmp) && !has_heroism(mtmp) && !is_mon_gd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_HEROISM;
         }
@@ -2777,7 +2775,7 @@ use_misc(struct monst *mtmp)
         if (!otmp)
             return 2;
         mquaffmsg(mtmp, otmp);
-        if (otmp->cursed) {
+        if (is_obj_cursed(otmp)) {
             if (Can_rise_up(mtmp->mx, mtmp->my, &u.uz) && (!isdiluted || !rn2(2))) {
                 int tolev = depth(&u.uz) - 1;
                 d_level tolevel;
@@ -2865,7 +2863,7 @@ use_misc(struct monst *mtmp)
                 makeknown(otmp->otyp);
         }
         if (otmp->otyp == POT_INVISIBILITY) {
-            if (otmp->cursed)
+            if (is_obj_cursed(otmp))
                 you_aggravate(mtmp);
             m_useup(mtmp, otmp);
         }
@@ -2991,7 +2989,7 @@ use_misc(struct monst *mtmp)
             return 2;
         mquaffmsg(mtmp, otmp);
 
-        if (otmp->cursed)
+        if (is_obj_cursed(otmp))
         {
             if (oseen)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That seemed to make %s feel mediocre!", mon_nam(mtmp));
@@ -3005,7 +3003,7 @@ use_misc(struct monst *mtmp)
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
                 play_sfx_sound(SFX_RESTORE_ABILITY);
                 special_effect_wait_until_action(0);
-                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "That seemed to make %s feel %s!", mon_nam(mtmp), otmp->blessed ? "great" : "good");
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "That seemed to make %s feel %s!", mon_nam(mtmp), is_obj_blessed(otmp) ? "great" : "good");
             }
             i = rn2(A_MAX); /* start at a random point */
             for (ii = 0; ii < A_MAX; ii++) 
@@ -3017,7 +3015,7 @@ use_misc(struct monst *mtmp)
                 {
                     M_ABASE(mtmp, i) = lim;
                     /* only first found if not blessed */
-                    if (!otmp->blessed || isdiluted)
+                    if (!is_obj_blessed(otmp) || isdiluted)
                         break;
                 }
                 if (++i >= A_MAX)
@@ -3029,18 +3027,18 @@ use_misc(struct monst *mtmp)
                 do
                 {
                     mtmp->m_lev++;
-                } while (mtmp->m_lev < mtmp->data->mlevel && otmp->blessed);
+                } while (mtmp->m_lev < mtmp->data->mlevel && is_obj_blessed(otmp));
             }
             if (mtmp->mbasehpdrain < 0) 
             {
-                if (otmp->blessed)
+                if (is_obj_blessed(otmp))
                     mtmp->mbasehpdrain = 0;
                 else
                     mtmp->mbasehpdrain += min(4, -mtmp->mbasehpdrain);
             }
             if (mtmp->mbaseendrain < 0) 
             {
-                if (otmp->blessed)
+                if (is_obj_blessed(otmp))
                     mtmp->mbaseendrain = 0;
                 else
                     mtmp->mbaseendrain += min(4, -mtmp->mbaseendrain);
@@ -3149,8 +3147,8 @@ use_misc(struct monst *mtmp)
             if (welded(obj, &youmonst)) {
                 pline("%s welded to your %s%c",
                       !is_plural(obj) ? "It is" : "They are", hand,
-                      !obj->bknown ? '!' : '.');
-                /* obj->bknown = 1; */ /* welded() takes care of this */
+                      !is_obj_bknown(obj) ? '!' : '.');
+                /* set_obj_bknown(obj, 1); */ /* welded() takes care of this */
                 where_to = 0;
             }
             if (!where_to) {
@@ -3245,7 +3243,7 @@ rnd_misc_item(struct monst *mtmp)
 
     switch (rn2(3)) {
     case 0:
-        if (mtmp->isgd)
+        if (is_mon_gd(mtmp))
             return 0;
         return rn2(6) ? POT_SPEED : WAN_SPEED_MONSTER;
     case 1:
@@ -3332,7 +3330,7 @@ searches_for_item(struct monst *mon, struct obj *obj)
         if (typ == PICK_AXE)
             return (boolean) needspick(mon->data);
         if (typ == UNICORN_HORN)
-            return (boolean) (!obj->cursed && !is_unicorn(mon->data));
+            return (boolean) (!is_obj_cursed(obj) && !is_unicorn(mon->data));
         if (typ == FROST_HORN || typ == FIRE_HORN)
             return (obj->charges > 0 && can_blow(mon));
         break;
@@ -3794,7 +3792,7 @@ mon_consume_unstone(struct monst *mon, struct obj *obj, boolean by_you, boolean 
         if (vis && !is_bat(mon->data) && mon->data != &mons[PM_STALKER])
             pline("%s seems steadier now.", Monnam(mon));
     }
-    if (mon->mtame && !mon->isminion && nutrit > 0 && has_edog(mon))
+    if (mon->mtame && !is_mon_minion(mon) && nutrit > 0 && has_edog(mon))
     {
         struct edog *edog = EDOG(mon);
 
@@ -3895,7 +3893,7 @@ munslime(struct monst *mon, boolean by_you)
                 return muse_unslime(mon, obj, (struct trap *) 0, by_you);
 
         if (((t = t_at(mon->mx, mon->my)) == 0 || t->ttyp != FIRE_TRAP)
-            && mptr->mmove && !mon->mtrapped) {
+            && mptr->mmove && !is_mon_trapped(mon)) {
             int xy[2][8], x, y, idx, ridx, nxy = 0;
 
             for (x = mon->mx - 1; x <= mon->mx + 1; ++x)
@@ -4145,7 +4143,7 @@ mmake_wish(struct monst *mon)
         if (otmp)
         {
             bless(otmp);
-            otmp->oerodeproof = 1;
+            set_obj_erodeproof(otmp, 1);
             wearable = TRUE;
         }
         break;
@@ -4155,7 +4153,7 @@ mmake_wish(struct monst *mon)
             if (otmp)
             {
                 bless(otmp);
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 otmp->enchantment = rn2(3) + 1;
                 wearable = TRUE;
             }
@@ -4170,7 +4168,7 @@ mmake_wish(struct monst *mon)
             if (otmp)
             {
                 bless(otmp);
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 otmp->enchantment = rn2(3) + 1;
                 wearable = TRUE;
             }
@@ -4188,7 +4186,7 @@ mmake_wish(struct monst *mon)
                 otmp = mksobj(CLOAK_OF_MAGIC_RESISTANCE, FALSE, FALSE, MKOBJ_TYPE_WISHING);
                 if (otmp)
                 {
-                    otmp->oerodeproof = 1;
+                    set_obj_erodeproof(otmp, 1);
                     otmp->enchantment = rn2(3) + 1;
                 }
             }
@@ -4211,7 +4209,7 @@ mmake_wish(struct monst *mon)
             {
                 bless(otmp);
                 otmp->material = MAT_CRYSTAL;
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 otmp->enchantment = rn2(3) + 1;
                 otmp->owt = weight(otmp);
                 wearable = TRUE;
@@ -4222,7 +4220,7 @@ mmake_wish(struct monst *mon)
             if (otmp)
             {
                 bless(otmp);
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
             }
         }
         break;
@@ -4241,7 +4239,7 @@ mmake_wish(struct monst *mon)
             if (otmp)
             {
                 bless(otmp);
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 otmp->enchantment = rn2(3) + 1;
                 wearable = TRUE;
             }
@@ -4259,7 +4257,7 @@ mmake_wish(struct monst *mon)
                 otmp = mksobj(SHIELD_OF_REFLECTION, FALSE, FALSE, MKOBJ_TYPE_WISHING);
                 if (otmp)
                 {
-                    otmp->oerodeproof = 1;
+                    set_obj_erodeproof(otmp, 1);
                     otmp->enchantment = rn2(3) + 1;
                 }
             }
@@ -4283,7 +4281,7 @@ mmake_wish(struct monst *mon)
             if (otmp)
             {
                 bless(otmp);
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 otmp->enchantment = rn2(3) + 1;
                 wearable = TRUE;
             }
@@ -4300,7 +4298,7 @@ mmake_wish(struct monst *mon)
             if (otmp)
             {
                 bless(otmp);
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 otmp->enchantment = rn2(3) + 1;
                 wearable = TRUE;
             }
@@ -4318,7 +4316,7 @@ mmake_wish(struct monst *mon)
             if (otmp)
             {
                 bless(otmp);
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 otmp->enchantment = rn2(3) + 1;
                 wearable = TRUE;
             }
@@ -4335,7 +4333,7 @@ mmake_wish(struct monst *mon)
             if (otmp)
             {
                 bless(otmp);
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 otmp->enchantment = rn2(3) + 1;
                 wearable = TRUE;
             }
@@ -4345,7 +4343,7 @@ mmake_wish(struct monst *mon)
             if (otmp)
             {
                 bless(otmp);
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 otmp->enchantment = rn2(3) + 1;
             }
         }
@@ -4356,7 +4354,7 @@ mmake_wish(struct monst *mon)
             if (otmp)
             {
                 bless(otmp);
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 otmp->enchantment = rn2(3) + 1;
                 wearable = TRUE;
             }
@@ -4376,7 +4374,7 @@ mmake_wish(struct monst *mon)
             bless(otmp);
             if (is_weapon(otmp) || is_armor(otmp))
             {
-                otmp->oerodeproof = 1;
+                set_obj_erodeproof(otmp, 1);
                 otmp->enchantment = rn2(3) + 1;
                 wearable = TRUE;
             }

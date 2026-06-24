@@ -27,7 +27,7 @@ free_emin(struct monst *mtmp)
         free((genericptr_t) EMIN(mtmp));
         EMIN(mtmp) = (struct emin *) 0;
     }
-    mtmp->isminion = 0;
+    set_mon_minion(mtmp, 0);
 }
 
 /*
@@ -72,8 +72,8 @@ msummon(struct monst *mon)
             return 0;
         }
 
-        atyp = mon->ispriest ? EPRI(mon)->shralign
-                             : mon->isminion ? EMIN(mon)->min_align
+        atyp = is_mon_priest(mon) ? EPRI(mon)->shralign
+                             : is_mon_minion(mon) ? EMIN(mon)->min_align
                                              : (ptr->maligntyp == A_NONE)
                                                    ? A_NONE
                                                    : sgn(ptr->maligntyp);
@@ -728,7 +728,7 @@ summon_minion(aligntyp alignment, boolean talk)
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s appears before you.", Amonnam(mon));
             mon->mstrategy &= ~STRAT_APPEARMSG;
         }
-        mon->mpeaceful = FALSE;
+        set_mon_peaceful(mon, FALSE);
         /* don't call set_mhostility(); player was naughty */
     }
 }
@@ -748,10 +748,9 @@ demon_talk(struct monst *mtmp, boolean *stop_chat_ptr)
         || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_ANGERS_DEMONS))
         ) 
     {
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s looks very angry.", Amonnam(mtmp));
-        mtmp->mpeaceful = mtmp->mtame = 0;
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s looks very angry.", Amonnam(mtmp));set_mon_peaceful(mtmp, 0); mtmp->mtame = 0;
         if (!mtmp->mtame)
-            mtmp->ispartymember = FALSE;
+            set_mon_partymember(mtmp, FALSE);
 
         set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
@@ -859,7 +858,7 @@ demon_talk(struct monst *mtmp, boolean *stop_chat_ptr)
         {
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "Seeing you, %s gets angry...", Amonnam(mtmp));
-            mtmp->mpeaceful = 0;
+            set_mon_peaceful(mtmp, 0);
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
             update_game_music();
@@ -876,7 +875,7 @@ demon_talk(struct monst *mtmp, boolean *stop_chat_ptr)
             / (100 * (1 + (sgn(u.ualign.type) == sgn(mtmp->data->maligntyp))));
 
         if (!demand || multi < 0 || Sleeping || Paralyzed_or_immobile) { /* you have no gold or can't move */
-            mtmp->mpeaceful = 0;
+            set_mon_peaceful(mtmp, 0);
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
             if (stop_chat_ptr)
@@ -915,7 +914,7 @@ demon_talk(struct monst *mtmp, boolean *stop_chat_ptr)
             {
                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gets angry...", Amonnam(mtmp));
-                mtmp->mpeaceful = 0;
+                set_mon_peaceful(mtmp, 0);
                 set_mhostility(mtmp);
                 newsym(mtmp->mx, mtmp->my);
                 update_game_music();
@@ -1122,7 +1121,7 @@ gain_guardian_angel(boolean fromspell)
              * call tamedog().
              */
             mtmp->mtame = 10;
-            mtmp->isprotector = TRUE;
+            set_flag(mtmp->mon_bitflags, MON_BITFLAGS_ISPROTECTOR, TRUE);
             u.uconduct.pets++;
             newsym(mtmp->mx, mtmp->my);
             /* make him strong enough vs. endgame foes */

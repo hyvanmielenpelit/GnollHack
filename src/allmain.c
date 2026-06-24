@@ -345,11 +345,11 @@ moveloop(uchar resuming)
                     }
                     //age_spells();
                     //exerchk();  /* exercise system has been deactivated -- JG */
-                    if (u.uhave.amulet)
+                    if (get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_AMULET))
                         amulet();
                     if (!rn2(40 + (int) (ACURR(A_DEX) * 3)))
                         u_wipe_engr(rnd(3));
-                    if (u.uevent.ukilled_wizard && !u.uinvulnerable && !context.time_stopped)
+                    if (get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_UKILLED_WIZARD) && !u.uinvulnerable && !context.time_stopped)
                     {
                         if (u.uintervene_timer)
                             u.uintervene_timer--;
@@ -399,7 +399,7 @@ moveloop(uchar resuming)
 #endif
             if (context.bypasses)
                 clear_bypasses();
-            if ((u.uhave.amulet || Clairvoyant) && !In_endgame(&u.uz)
+            if ((get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_AMULET) || Clairvoyant) && !In_endgame(&u.uz)
                 && !Blocks_Clairvoyance && !(moves % 15) && !rn2(2))
                 do_vicinity_map((struct obj *) 0);
             if (u.utrap && u.utraptype == TT_LAVA)

@@ -445,7 +445,7 @@ get_killer_name_and_format(struct monst *mtmp, char *buf, int *fmt_ptr)
     /* "killed by the high priest of Crom" is okay,
        "killed by the high priest" alone isn't */
     if ((mptr->geno & G_UNIQ) != 0 && !(imitator && !mimicker)
-        && !(mptr == &mons[PM_HIGH_PRIEST] && !mtmp->ispriest)) {
+        && !(mptr == &mons[PM_HIGH_PRIEST] && !is_mon_priest(mtmp))) {
         if (!is_mname_proper_name(mptr))
             Strcat(buf, "the ");
         *fmt_ptr = KILLED_BY;
@@ -462,14 +462,14 @@ get_killer_name_and_format(struct monst *mtmp, char *buf, int *fmt_ptr)
 
     if (imitator) {
         char shape[BUFSZ];
-        const char* realnm = pm_monster_name(champtr, mtmp->female), * fakenm = pm_monster_name(mptr, mtmp->female);
+        const char* realnm = pm_monster_name(champtr, is_mon_female(mtmp)), * fakenm = pm_monster_name(mptr, is_mon_female(mtmp));
         boolean alt = is_vampshifter(mtmp);
 
         if (mimicker) {
             /* realnm is already correct because champtr==mptr;
                set up fake mptr for is_mname_proper_name/the_unique_pm */
             mptr = &mons[mtmp->mappearance];
-            fakenm = pm_monster_name(mptr, mtmp->female);
+            fakenm = pm_monster_name(mptr, is_mon_female(mtmp));
         }
         else if (alt && strstri(realnm, "vampire")
             && !strcmp(fakenm, "vampire bat")) {
@@ -499,26 +499,26 @@ get_killer_name_and_format(struct monst *mtmp, char *buf, int *fmt_ptr)
         if (has_mname(mtmp))
             Sprintf(eos(buf), " of %s", MNAME(mtmp));
     }
-    else if (mtmp->isshk) {
+    else if (is_mon_shk(mtmp)) {
         const char* shknm = true_shkname(mtmp), //True shopkeeper name, not hallucinated
             * honorific = shkname_is_pname(mtmp) ? ""
-            : mtmp->female ? "Ms. " : "Mr. ";
+            : is_mon_female(mtmp) ? "Ms. " : "Mr. ";
 
         Sprintf(eos(buf), "%s%s, the shopkeeper", honorific, shknm);
         *fmt_ptr = KILLED_BY;
     }
-    else if (mtmp->ispriest || mtmp->isminion) {
+    else if (is_mon_priest(mtmp) || is_mon_minion(mtmp)) {
         /* m_monnam() suppresses "the" prefix plus "invisible", and
            it overrides the effect of Hallucination on priestname() */
         Strcat(buf, m_monnam(mtmp));
     }
     else {
-        if (has_mname(mtmp) && mtmp->u_know_mname)
+        if (has_mname(mtmp) && is_mon_u_know_mname(mtmp))
         {
             *fmt_ptr = KILLED_BY;
             Sprintf(eos(buf), "%s, the ", MNAME(mtmp));
         }
-        Strcat(buf, pm_monster_name(mptr, mtmp->female));
+        Strcat(buf, pm_monster_name(mptr, is_mon_female(mtmp)));
         if (has_umname(mtmp))
             Sprintf(eos(buf), " called %s", UMNAME(mtmp));
     }
@@ -1393,8 +1393,7 @@ artifact_score(struct obj *list, boolean counting, winid endwin)
             if (counting) {
                 nowrap_add(u.u_gamescore, points);
             } else {
-                discover_object(otmp->otyp, TRUE, FALSE);
-                otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+                discover_object(otmp->otyp, TRUE, FALSE);set_obj_known(otmp, 1); set_obj_dknown(otmp, 1); set_obj_bknown(otmp, 1); set_obj_rknown(otmp, 1); set_obj_nknown(otmp, 1);
                 /* assumes artifacts don't have quan > 1 */
                 Sprintf(pbuf, "%s%s (worth %ld %s and %ld points)",
                         the_unique_obj(otmp) ? "The " : "",
@@ -1417,7 +1416,7 @@ count_archaeologist_item_score(struct obj *list)
     int64_t score = 0;
     for (otmp = list; otmp; otmp = otmp->nobj)
     {
-        if (otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown))
+        if (otmp->oartifact && (program_state.gameover || is_obj_nknown(otmp) || is_obj_aknown(otmp)))
         {
             score += ARCHAEOLOGIST_PER_ARTIFACT_SCORE * otmp->quan;
         }
@@ -1454,7 +1453,7 @@ count_artifacts(struct obj *list)
     struct item_score_count_result cnt = { 0 };
     for (otmp = list; otmp; otmp = otmp->nobj) 
     {
-        if (otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown))
+        if (otmp->oartifact && (program_state.gameover || is_obj_nknown(otmp) || is_obj_aknown(otmp)))
         {
             cnt.quantity += otmp->quan;
             cnt.score += ARCHAEOLOGIST_PER_ARTIFACT_SCORE * otmp->quan;
@@ -1566,7 +1565,7 @@ count_powerful_melee_weapon_score(struct obj *list)
     {
         if (is_wieldable_weapon(otmp) && !is_appliable_pole_type_weapon(otmp)
             && !(is_launcher(otmp) || is_ammo(otmp) || is_missile(otmp))
-            && ((otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown)) || (otmp->mythic_prefix && otmp->mythic_suffix)))
+            && ((otmp->oartifact && (program_state.gameover || is_obj_nknown(otmp) || is_obj_aknown(otmp))) || (otmp->mythic_prefix && otmp->mythic_suffix)))
         {
             cnt.quantity += otmp->quan;
             cnt.score += BARBARIAN_PER_WEAPON_SCORE * otmp->quan;
@@ -1590,7 +1589,7 @@ count_powerful_ranged_weapon_score(struct obj *list)
     {
         if (is_wieldable_weapon(otmp)
             && (is_launcher(otmp) || is_ammo(otmp) || is_missile(otmp))
-            && ((otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown)) || (otmp->mythic_prefix || otmp->mythic_suffix || otmp->exceptionality >= EXCEPTIONALITY_ELITE)))
+            && ((otmp->oartifact && (program_state.gameover || is_obj_nknown(otmp) || is_obj_aknown(otmp))) || (otmp->mythic_prefix || otmp->mythic_suffix || otmp->exceptionality >= EXCEPTIONALITY_ELITE)))
         {
             cnt.quantity += otmp->quan;
             if (is_launcher(otmp))
@@ -1623,7 +1622,7 @@ count_powerful_Japanese_item_score(struct obj *list)
     struct item_score_count_result cnt = { 0 };
     for (otmp = list; otmp; otmp = otmp->nobj)
     {
-        if (((otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown)) && (artilist[otmp->oartifact].aflags2 & AF2_JAPANESE) != 0)
+        if (((otmp->oartifact && (program_state.gameover || is_obj_nknown(otmp) || is_obj_aknown(otmp))) && (artilist[otmp->oartifact].aflags2 & AF2_JAPANESE) != 0)
             || ((otmp->mythic_prefix || otmp->mythic_suffix || otmp->exceptionality >= EXCEPTIONALITY_EXCEPTIONAL) && ((objects[otmp->otyp].oc_flags6 & O6_JAPANESE_ITEM) != 0 || Japanese_item_name(otmp->otyp) != 0))
            )
         {
@@ -1892,7 +1891,7 @@ done(int how)
             if (!In_endgame(&u.uz))
             {
                 d_level dl = { 0 };
-                if (u.uachieve.amulet)
+                if (get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_AMULET))
                 {
                     dl = sanctum_level;
                 }
@@ -2220,10 +2219,9 @@ really_done(int how)
          */
         for (obj = invent; obj; obj = obj->nobj) 
         {
-            discover_object(obj->otyp, TRUE, FALSE);
-            obj->known = obj->bknown = obj->dknown = obj->rknown = obj->nknown = obj->aknown = obj->mknown = 1;
-            if (Is_container(obj) || obj->otyp == STATUE)
-                obj->cknown = obj->lknown = obj->tknown = 1;
+            discover_object(obj->otyp, TRUE, FALSE);set_obj_known(obj, 1); set_obj_bknown(obj, 1); set_obj_dknown(obj, 1); set_obj_rknown(obj, 1); set_obj_nknown(obj, 1); set_obj_aknown(obj, 1); set_obj_mknown(obj, 1);
+            if (Is_container(obj) || obj->otyp ==STATUE)
+                set_obj_cknown(obj, 1); set_obj_lknown(obj, 1); set_obj_tknown(obj, 1);
             /* we resolve Schroedinger's cat now in case of both
                disclosure and dumplog, where the 50:50 chance for
                live cat has to be the same both times */
@@ -2440,7 +2438,7 @@ really_done(int how)
             dump_redirect(FALSE);
         }
 #endif
-        if (u.uhave.amulet)
+        if (get_flag(u.uhave.bitflags, UHAVE_BITFLAGS_AMULET))
         {
             Strcat(killer.name, " (with the Amulet)");
         }
@@ -2808,11 +2806,9 @@ container_contents(struct obj *list, boolean identified, boolean all_containers,
                     {
                         if (identified) 
                         {
-                            discover_object(obj->otyp, TRUE, FALSE);
-                            obj->known = obj->bknown = obj->dknown
-                                = obj->rknown = obj->nknown = obj->aknown = obj->mknown = 1;
-                            if (Is_container(obj) || obj->otyp == STATUE)
-                                obj->cknown = obj->lknown = obj->tknown = 1;
+                            discover_object(obj->otyp, TRUE, FALSE);set_obj_known(obj, 1); set_obj_bknown(obj, 1); set_obj_dknown(obj, 1); set_obj_rknown(obj, 1); set_obj_nknown(obj, 1); set_obj_aknown(obj, 1); set_obj_mknown(obj, 1);
+                            if (Is_container(obj) || obj->otyp ==STATUE)
+                                set_obj_cknown(obj, 1); set_obj_lknown(obj, 1); set_obj_tknown(obj, 1);
                         }
                         count++;
 
@@ -2896,11 +2892,9 @@ magic_chest_contents(boolean identified, boolean all_containers, boolean reporte
             {
                 if (identified)
                 {
-                    discover_object(obj->otyp, TRUE, FALSE);
-                    obj->known = obj->bknown = obj->dknown
-                        = obj->rknown = obj->nknown = obj->aknown = obj->mknown = 1;
-                    if (Is_container(obj) || obj->otyp == STATUE)
-                        obj->cknown = obj->lknown = obj->tknown = 1;
+                    discover_object(obj->otyp, TRUE, FALSE);set_obj_known(obj, 1); set_obj_bknown(obj, 1); set_obj_dknown(obj, 1); set_obj_rknown(obj, 1); set_obj_nknown(obj, 1); set_obj_aknown(obj, 1); set_obj_mknown(obj, 1);
+                    if (Is_container(obj) || obj->otyp ==STATUE)
+                        set_obj_cknown(obj, 1); set_obj_lknown(obj, 1); set_obj_tknown(obj, 1);
                 }
                 count++;
 
@@ -3394,7 +3388,7 @@ print_selfies(winid enwin, int final)
             issue_debuglog(0, dbuf);
             context.role_score = selfiescore;
         }
-        int64_t score_percentage = ((selfiescore + (int64_t)u.uachieve.role_achievement * TOURIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((selfiescore + (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT) * TOURIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(buf, " You %s gained %lld%% of your maximum role score.", final ? "had" : "have", (long long)score_percentage);
         putstr(enwin, ATR_PARAGRAPH_LINE, buf);
@@ -3492,7 +3486,7 @@ print_knight_slayings(winid enwin, int final)
             issue_debuglog(0, dbuf);
             context.role_score = killscore;
         }
-        int64_t score_percentage = ((killscore + (int64_t)u.uachieve.role_achievement * KNIGHT_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((killscore + (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT) * KNIGHT_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(buf, " You %s gained %lld%% of your maximum role score.", final ? "had" : "have", (long long)score_percentage);
         putstr(enwin, ATR_PARAGRAPH_LINE, buf);
@@ -3879,20 +3873,20 @@ get_current_game_score(void)
 
     int64_t utotal = 0;
     int64_t Deepest_Dungeon_Level = deepest_lev_reached(FALSE);
-    int64_t Achievements_Score = (int64_t)(u.uachieve.amulet + u.uachieve.ascended + u.uachieve.bell + u.uachieve.book + u.uachieve.enter_gehennom + u.uachieve.finish_sokoban +
-        u.uachieve.killed_medusa + u.uachieve.killed_yacc + u.uachieve.killed_demogorgon + u.uachieve.menorah + u.uachieve.prime_codex + u.uachieve.mines_luckstone +
-        + u.uachieve.entered_astral_plane + u.uachieve.entered_elemental_planes + u.uevent.invoked + u.uachieve.crowned + u.uachieve.learned_castle_tune
+    int64_t Achievements_Score = (int64_t)(get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_AMULET) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ASCENDED) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_BELL) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_BOOK) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTER_GEHENNOM) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_FINISH_SOKOBAN) +
+        get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_KILLED_MEDUSA) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_KILLED_YACC) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_KILLED_DEMOGORGON) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_MENORAH) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_PRIME_CODEX) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_MINES_LUCKSTONE) +
+        + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_ASTRAL_PLANE) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_ELEMENTAL_PLANES) + get_flag(u.uevent.bitflags, UEVENT_BITFLAGS_INVOKED) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_CROWNED) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_LEARNED_CASTLE_TUNE)
         );
 
-    int64_t Small_Achievements_Score = (int64_t)(u.uachieve.consulted_oracle + u.uachieve.read_discworld_novel
-        + u.uachieve.entered_gnomish_mines + u.uachieve.entered_mine_town 
-        + u.uachieve.entered_shop + u.uachieve.entered_temple
-        + u.uachieve.entered_sokoban + u.uachieve.entered_bigroom
-        + u.uachieve.entered_large_circular_dungeon + u.uachieve.entered_plane_of_modron 
-        + u.uachieve.entered_hellish_pastures
+    int64_t Small_Achievements_Score = (int64_t)(get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_CONSULTED_ORACLE) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_READ_DISCWORLD_NOVEL)
+        + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_GNOMISH_MINES) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_MINE_TOWN) 
+        + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_SHOP) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_TEMPLE)
+        + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_SOKOBAN) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_BIGROOM)
+        + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_LARGE_CIRCULAR_DUNGEON) + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_PLANE_OF_MODRON) 
+        + get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ENTERED_HELLISH_PASTURES)
         );
 
-    int64_t Conduct_Score = (int64_t)(u.uachieve.ascended) * get_conduct_score_upon_ascension();
+    int64_t Conduct_Score = (int64_t)(get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ASCENDED)) * get_conduct_score_upon_ascension();
 
     int64_t Role_Specific_Score = 0L;
     int64_t Role_Achievement_Score = 0L;  /* Special role-specific achievement */
@@ -3916,7 +3910,7 @@ get_current_game_score(void)
         int64_t score1 = count_archaeologist_item_score(invent);
         int64_t score2 = count_archaeologist_item_score(magic_objs);
         Role_Specific_Score = score1 + score2;
-        Role_Achievement_Score = ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     case PM_BARBARIAN:
@@ -3924,7 +3918,7 @@ get_current_game_score(void)
         struct item_score_count_result cnt = count_powerful_melee_weapon_score(invent);
         struct item_score_count_result cnt2 = count_powerful_melee_weapon_score(magic_objs);
         Role_Specific_Score = cnt.score + cnt2.score;
-        Role_Achievement_Score = BARBARIAN_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = BARBARIAN_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     case PM_CAVEMAN:
@@ -3933,7 +3927,7 @@ get_current_game_score(void)
         struct amulet_count_result cnt2 = count_amulets(magic_objs);
         Role_Specific_Score = CAVEMAN_PER_AMULET_OF_LIFE_SAVING_SCORE * cnt.amulets_of_life_saving + CAVEMAN_PER_OTHER_AMULET_SCORE * cnt.other_amulets;
         Role_Specific_Score += CAVEMAN_PER_AMULET_OF_LIFE_SAVING_SCORE * cnt2.amulets_of_life_saving + CAVEMAN_PER_OTHER_AMULET_SCORE * cnt2.other_amulets;
-        Role_Achievement_Score = CAVEMAN_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = CAVEMAN_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     case PM_HEALER:
@@ -3946,7 +3940,7 @@ get_current_game_score(void)
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
                 Role_Specific_Score += HEALER_PER_SPELL_LEVEL_SCORE * (int64_t)(spl_book[i].sp_lev + 2); /* Healer has the fewest spells */
         }
-        Role_Achievement_Score = HEALER_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = HEALER_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     case PM_KNIGHT:
@@ -3967,13 +3961,13 @@ get_current_game_score(void)
         //    }
         //}
         Role_Specific_Score = context.role_score;
-        Role_Achievement_Score = KNIGHT_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = KNIGHT_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     case PM_MONK:
     {
         Role_Specific_Score = Conduct_Score * MONK_EXTRA_CONDUCT_SCORE_MULTIPLIER;
-        Role_Achievement_Score = MONK_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = MONK_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     case PM_PRIEST:
@@ -3986,7 +3980,7 @@ get_current_game_score(void)
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
                 Role_Specific_Score += PRIEST_PER_SPELL_LEVEL_SCORE * (int64_t)(spl_book[i].sp_lev + 2); /* Priest has the fewer spell than wizard */
         }
-        Role_Achievement_Score = PRIEST_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = PRIEST_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     case PM_RANGER:
@@ -3994,7 +3988,7 @@ get_current_game_score(void)
         struct item_score_count_result cnt = count_powerful_ranged_weapon_score(invent);
         struct item_score_count_result cnt2 = count_powerful_ranged_weapon_score(magic_objs);
         Role_Specific_Score = cnt.score + cnt2.score;
-        Role_Achievement_Score = RANGER_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = RANGER_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     case PM_ROGUE:
@@ -4007,7 +4001,7 @@ get_current_game_score(void)
         struct item_score_count_result cnt2 = count_valuable_art_objects(magic_objs);
         lootvalue += cnt.score + cnt2.score;
         Role_Specific_Score = ROGUE_PER_GOLD_SCORE * lootvalue;
-        Role_Achievement_Score = ROGUE_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = ROGUE_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     case PM_SAMURAI:
@@ -4015,7 +4009,7 @@ get_current_game_score(void)
         struct item_score_count_result cnt = count_powerful_Japanese_item_score(invent);
         struct item_score_count_result cnt2 = count_powerful_Japanese_item_score(magic_objs);
         Role_Specific_Score = cnt.score + cnt2.score;
-        Role_Achievement_Score = SAMURAI_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = SAMURAI_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     case PM_TOURIST:
@@ -4029,7 +4023,7 @@ get_current_game_score(void)
         //    }
         //}
         Role_Specific_Score = context.role_score;
-        Role_Achievement_Score = TOURIST_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = TOURIST_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     case PM_VALKYRIE:
@@ -4037,7 +4031,7 @@ get_current_game_score(void)
         struct item_score_count_result cnt = count_powerful_valkyrie_item_score(invent);
         struct item_score_count_result cnt2 = count_powerful_valkyrie_item_score(magic_objs);
         Role_Specific_Score = cnt.score + cnt2.score;
-        Role_Achievement_Score = VALKYRIE_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = VALKYRIE_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     case PM_WIZARD:
@@ -4050,7 +4044,7 @@ get_current_game_score(void)
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
                 Role_Specific_Score += WIZARD_PER_SPELL_LEVEL_SCORE * (int64_t)(spl_book[i].sp_lev + 2);
         }
-        Role_Achievement_Score = WIZARD_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = WIZARD_ROLE_ACHIEVEMENT_SCORE * (int64_t)get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ROLE_ACHIEVEMENT);
         break;
     }
     default:
@@ -4064,7 +4058,7 @@ get_current_game_score(void)
     Base_Score = max(0L, Base_Score);
 
     double Turn_Count_Multiplier = sqrt(50000.0) / sqrt((double)max(1L, moves));
-    double Ascension_Multiplier = u.uachieve.ascended ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;
+    double Ascension_Multiplier = get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAGS_ASCENDED) ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;
     double Difficulty_Multiplier = pow(10.0, 0.5 * (double)context.game_difficulty);
     double mortexp = (double)(u.utruemortality > 2 ? 3 : u.utruemortality + 1);
     double mortmult = (double)(u.utruemortality > 2 ? u.utruemortality - 1 : 1);
