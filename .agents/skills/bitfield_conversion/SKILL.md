@@ -14,7 +14,7 @@ GnollHack's legacy C code uses a `Bitfield(x, n)` macro (expanding to `unsigned 
 Convert bitfields into `uint64_t` variables and use explicit bitwise operations (`|`, `&`, `~`) with defined masks.
 
 ### Example: `mon_bitflags`
-An excellent pattern is to use a variable named like `mon_bitflags` (or `bitfields` if the context is clear). Use `uint64_t` to allow for up to 64 flags in a single variable.
+An excellent pattern is to use a variable named like `mon_bitflags` (or `bitflags` if the context is clear). Use `uint64_t` to allow for up to 64 flags in a single variable.
 
 ```c
 // include/monst.h
@@ -48,7 +48,7 @@ Find the struct containing the `Bitfield` declarations. Count the total number o
 - If replacing multi-bit bitfields (e.g., `Bitfield(wormno, 5)`): Promote these directly to a standalone `uchar` (which is `unsigned char`) field. There are no bitfields with a length more than 8 bits in the game, so a `uchar` is always sufficient. Place these `uchar` variables *after* the `uint64_t` flag variable and its associated `#define`s.
 
 ### 2. Define the Flags Field and Constants
-Add the new field to the struct. The variable should be named clearly, such as `mon_bitflags`, `obj_bitflags` or simply `bitfields` if the struct's context is clear. The `#define` constants typically follow immediately after the field definition inside the struct, and any multi-bit `uchar` fields should follow after an empty line:
+Add the new field to the struct. The variable should be named clearly, such as `mon_bitflags`, `obj_bitflags` or simply `bitflags` if the struct's context is clear. The `#define` constants typically follow immediately after the field definition inside the struct, and any multi-bit `uchar` fields should follow after an empty line:
 ```c
     uint64_t my_bitflags;
 #define MY_BITFLAG_NONE      0x00000000UL
