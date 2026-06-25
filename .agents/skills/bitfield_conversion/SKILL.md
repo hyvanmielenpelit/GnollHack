@@ -111,6 +111,17 @@ You must replace every read and write of the old bitfield. Search the codebase f
 *   **Sets/Clears**: `mon->mflee = value;` becomes `set_mon_fleeing(mon, value);` or `set_flag(mon->bitflags, MON_BITFLAG_FLEEING, value);`
 *   **Toggles**: `mon->mflee = !mon->mflee;` becomes `toggle_mon_fleeing(mon);` or `toggle_flag(mon->bitflags, MON_BITFLAG_FLEEING);`
 
+**Handling Equality/Inequality Comparisons:**
+When a legacy bitfield is used in an equality or inequality comparison with boolean values (`TRUE`, `FALSE`) or binary integers (`1`, `0`), the conversion must completely absorb the comparison into the shortcut macro call. Do not leave the `==` or `!=` operators in the code.
+
+For example, if you have a shortcut macro `is_mon_fleeing(mon)` for the legacy bitfield `mflee`:
+- `mon->mflee == 1` or `mon->mflee == TRUE` becomes `is_mon_fleeing(mon)`
+- `mon->mflee == 0` or `mon->mflee == FALSE` becomes `!is_mon_fleeing(mon)`
+- `mon->mflee != 1` or `mon->mflee != TRUE` becomes `!is_mon_fleeing(mon)`
+- `mon->mflee != 0` or `mon->mflee != FALSE` becomes `is_mon_fleeing(mon)`
+
+**CRITICAL:** Never generate code like `is_mon_fleeing(mon) == TRUE`, `is_mon_fleeing(mon) == 1`, `is_mon_fleeing(mon) == FALSE`, or `is_mon_fleeing(mon) == 0`. The shortcut macro already returns a boolean-like result suitable for `if` statements and logical operations.
+
 ### 4. Handle Aliases
 The codebase sometimes contains `#define` aliases pointing to a bitfield. When converting these:
 - **1-bit bitfields:** If the bitfield is one bit, then a new literal value with the same value as the pointed bitfield should be created.
