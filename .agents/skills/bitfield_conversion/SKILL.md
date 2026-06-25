@@ -52,11 +52,13 @@ For sets and toggles, use prefixes like `set_mon_`, `toggle_mon_`, etc.:
 
 ### 1. Identify and Group Bitfields
 Find the struct containing the `Bitfield` declarations. Count the total number of bits required for 1-bit flags. 
-- If replacing 1-bit flags: Group them into a `uint64_t`. Using `uint64_t` allows for up to 64 flags and is consistent with existing code like `mon_flags`. Do not use smaller fixed-length types like `uint32_t`.
+- If replacing 1-bit flags: Group them into a `uint64_t`. While `uint64_t` can technically hold up to 64 flags, a maximum of 32 bits will be added per one `bitflags` variable. Do not use smaller fixed-length types like `uint32_t`.
 - If replacing multi-bit bitfields (e.g., `Bitfield(wormno, 5)`): Promote these directly to a standalone `uchar` (which is `unsigned char`) field. There are no bitfields with a length more than 8 bits in the game, so a `uchar` is always sufficient. Place these `uchar` variables *after* the `uint64_t` flag variable and its associated `#define`s.
 
 ### 2. Define the Flags Field and Constants
-Add the new field to the struct. All bitfields should be converted to a `uint64_t` explicitly named `bitflags`. The `#define` constants typically follow immediately after the field definition inside the struct, and any multi-bit `uchar` fields should follow after an empty line:
+Add the new field to the struct. All bitfields should be converted to a `uint64_t` explicitly named `bitflags`. A maximum of 32 bits will be added per one `bitflags` variable even though it is `uint64_t`. If the bitfield conversion requires more than one bitflags variable in a struct (e.g., more than 32 bits), then the next bitflags variable will be created and called `bitflags2` (or `bitflags3` for a third, and so on). For these subsequent variables, the value literals should be named accordingly, such as `_BITFLAG2_` (or `_BITFLAG3_`). 
+
+The `#define` constants typically follow immediately after the field definition inside the struct, and any multi-bit `uchar` fields should follow after an empty line:
 ```c
     uint64_t bitflags;
 #define MY_BITFLAG_NONE      0x00000000UL
@@ -122,7 +124,7 @@ Once all structs have been successfully converted away from the legacy bitfield 
 *   **C# Frontend:** Remove the `BITFIELDS` compilation constant from `.csproj` files (e.g., `GnollHackX.csproj`) and any `#if BITFIELDS` conditionals in `GHConstants.cs`.
 
 ## Best Practices & Pitfalls
-- **Struct Padding:** When adding `uint64_t` variables, their location should be as close to the original bitfield positions as possible, while still considering struct alignment. To minimize implicit padding, they should ideally be placed after other 64-bit variables towards the top of the struct.
+- **Struct Padding:** When adding `uint64_t` bitflags variables, their location should consider struct padding and alignment by placing them early in the struct. However, while considering this, the location should also be as close to the original location as possible. This typically implies that the bitflags variables are placed after the last 64-bit variable near the beginning of the struct to minimize implicit padding.
 - **Initialization:** Structures in GnollHack are often zero-initialized via `memset(&struct, 0, sizeof(struct))`. This correctly zeros out your new integer flag field, meaning you usually do not need to add explicit `obj->bitflags = 0;` initialization code.
 - **Boolean Assignments:** With bitfields, code like `mon->mflee = (condition);` implicitly truncated the result to 1 or 0. With the new bitmask `set_flag` macro, you can just do: 
   `set_mon_fleeing(mon, (condition));`
