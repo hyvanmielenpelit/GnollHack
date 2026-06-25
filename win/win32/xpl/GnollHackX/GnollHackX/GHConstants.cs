@@ -945,145 +945,145 @@ namespace GnollHackX
         public byte oeroded;
         public byte oeroded2;
         
-        public uint cursed 
+        public bool cursed 
         {
-            get { return (uint)(bitflags & 0x00000001UL); } 
-            set { bitflags = (bitflags & ~0x00000001UL) | ((ulong)value & 0x00000001UL); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_CURSED) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_CURSED) | (value ? (ulong)obj_bitfield_types.OBJFLAG_CURSED : 0UL); }
         }
-        public uint blessed
+        public bool blessed 
         {
-            get { return (uint)((bitflags >> 1) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 1)) | (((ulong)value & 0x00000001UL) << 1); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_BLESSED) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_BLESSED) | (value ? (ulong)obj_bitfield_types.OBJFLAG_BLESSED : 0UL); }
         }
-        public uint unpaid
+        public bool unpaid 
         {
-            get { return (uint)((bitflags >> 2) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 2)) | (((ulong)value & 0x00000001UL) << 2); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_UNPAID) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_UNPAID) | (value ? (ulong)obj_bitfield_types.OBJFLAG_UNPAID : 0UL); }
         }
-        public uint no_charge
+        public bool no_charge 
         {
-            get { return (uint)((bitflags >> 3) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 3)) | (((ulong)value & 0x00000001UL) << 3); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_NO_CHARGE) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_NO_CHARGE) | (value ? (ulong)obj_bitfield_types.OBJFLAG_NO_CHARGE : 0UL); }
         }
-        public uint known
+        public bool known 
         {
-            get { return (uint)((bitflags >> 4) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 4)) | (((ulong)value & 0x00000001UL) << 4); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_KNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_KNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_KNOWN : 0UL); }
         }
-        public uint dknown
+        public bool dknown 
         {
-            get { return (uint)((bitflags >> 5) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 5)) | (((ulong)value & 0x00000001UL) << 5); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_DKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_DKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_DKNOWN : 0UL); }
         }
-        public uint bknown
+        public bool bknown 
         {
-            get { return (uint)((bitflags >> 6) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 6)) | (((ulong)value & 0x00000001UL) << 6); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_BKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_BKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_BKNOWN : 0UL); }
         }
-        public uint rknown
+        public bool rknown 
         {
-            get { return (uint)((bitflags >> 7) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 7)) | (((ulong)value & 0x00000001UL) << 7); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_RKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_RKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_RKNOWN : 0UL); }
         }
-        public uint oerodeproof
+        public bool oerodeproof 
         {
-            get { return (uint)((bitflags >> 8) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 8)) | (((ulong)value & 0x00000001UL) << 8); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_OERODEPROOF) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_OERODEPROOF) | (value ? (ulong)obj_bitfield_types.OBJFLAG_OERODEPROOF : 0UL); }
         }
-        public uint olocked
+        public bool olocked 
         {
-            get { return (uint)((bitflags >> 9) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 9)) | (((ulong)value & 0x00000001UL) << 9); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_OLOCKED) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_OLOCKED) | (value ? (ulong)obj_bitfield_types.OBJFLAG_OLOCKED : 0UL); }
         }
-        public uint obroken
+        public bool obroken 
         {
-            get { return (uint)((bitflags >> 10) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 10)) | (((ulong)value & 0x00000001UL) << 10); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_OBROKEN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_OBROKEN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_OBROKEN : 0UL); }
         }
-        public uint otrapped
+        public bool otrapped 
         {
-            get { return (uint)((bitflags >> 11) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 11)) | (((ulong)value & 0x00000001UL) << 11); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_OTRAPPED) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_OTRAPPED) | (value ? (ulong)obj_bitfield_types.OBJFLAG_OTRAPPED : 0UL); }
         }
-        public uint lamplit
+        public bool lamplit 
         {
-            get { return (uint)((bitflags >> 12) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 12)) | (((ulong)value & 0x00000001UL) << 12); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_LAMPLIT) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_LAMPLIT) | (value ? (ulong)obj_bitfield_types.OBJFLAG_LAMPLIT : 0UL); }
         }
-        public uint makingsound
+        public bool makingsound 
         {
-            get { return (uint)((bitflags >> 13) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 13)) | (((ulong)value & 0x00000001UL) << 13); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_MAKINGSOUND) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_MAKINGSOUND) | (value ? (ulong)obj_bitfield_types.OBJFLAG_MAKINGSOUND : 0UL); }
         }
-        public uint globby
+        public bool globby 
         {
-            get { return (uint)((bitflags >> 14) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 14)) | (((ulong)value & 0x00000001UL) << 14); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_GLOBBY) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_GLOBBY) | (value ? (ulong)obj_bitfield_types.OBJFLAG_GLOBBY : 0UL); }
         }
-        public uint greased
+        public bool greased 
         {
-            get { return (uint)((bitflags >> 15) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 15)) | (((ulong)value & 0x00000001UL) << 15); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_GREASED) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_GREASED) | (value ? (ulong)obj_bitfield_types.OBJFLAG_GREASED : 0UL); }
         }
-        public uint nomerge
+        public bool nomerge 
         {
-            get { return (uint)((bitflags >> 16) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 16)) | (((ulong)value & 0x00000001UL) << 16); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_NOMERGE) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_NOMERGE) | (value ? (ulong)obj_bitfield_types.OBJFLAG_NOMERGE : 0UL); }
         }
-        public uint was_thrown
+        public bool was_thrown 
         {
-            get { return (uint)((bitflags >> 17) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 17)) | (((ulong)value & 0x00000001UL) << 17); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_WAS_THROWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_WAS_THROWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_WAS_THROWN : 0UL); }
         }
-        public uint has_special_tileset
+        public bool has_special_tileset 
         {
-            get { return (uint)((bitflags >> 18) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 18)) | (((ulong)value & 0x00000001UL) << 18); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_HAS_SPECIAL_TILESET) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_HAS_SPECIAL_TILESET) | (value ? (ulong)obj_bitfield_types.OBJFLAG_HAS_SPECIAL_TILESET : 0UL); }
         }
-        public uint in_use
+        public bool in_use 
         {
-            get { return (uint)((bitflags >> 19) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 19)) | (((ulong)value & 0x00000001UL) << 19); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_IN_USE) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_IN_USE) | (value ? (ulong)obj_bitfield_types.OBJFLAG_IN_USE : 0UL); }
         }
-        public uint bypass
+        public bool bypass 
         {
-            get { return (uint)((bitflags >> 20) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 20)) | (((ulong)value & 0x00000001UL) << 20); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_BYPASS) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_BYPASS) | (value ? (ulong)obj_bitfield_types.OBJFLAG_BYPASS : 0UL); }
         }
-        public uint cknown
+        public bool cknown 
         {
-            get { return (uint)((bitflags >> 21) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 21)) | (((ulong)value & 0x00000001UL) << 21); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_CKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_CKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_CKNOWN : 0UL); }
         }
-        public uint lknown
+        public bool lknown 
         {
-            get { return (uint)((bitflags >> 22) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 22)) | (((ulong)value & 0x00000001UL) << 22); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_LKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_LKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_LKNOWN : 0UL); }
         }
-        public uint tknown
+        public bool tknown 
         {
-            get { return (uint)((bitflags >> 23) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 23)) | (((ulong)value & 0x00000001UL) << 23); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_TKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_TKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_TKNOWN : 0UL); }
         }
-        public uint nknown
+        public bool nknown 
         {
-            get { return (uint)((bitflags >> 24) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 24)) | (((ulong)value & 0x00000001UL) << 24); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_NKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_NKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_NKNOWN : 0UL); }
         }
-        public uint aknown
+        public bool aknown 
         {
-            get { return (uint)((bitflags >> 25) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 25)) | (((ulong)value & 0x00000001UL) << 25); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_AKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_AKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_AKNOWN : 0UL); }
         }
-        public uint mknown
+        public bool mknown 
         {
-            get { return (uint)((bitflags >> 26) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 26)) | (((ulong)value & 0x00000001UL) << 26); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_MKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_MKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_MKNOWN : 0UL); }
         }
-        public uint rotknown
+        public bool rotknown 
         {
-            get { return (uint)((bitflags >> 27) & 0x00000001UL); }
-            set { bitflags = (bitflags & ~(0x00000001UL << 27)) | (((ulong)value & 0x00000001UL) << 27); }
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_ROTKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_ROTKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_ROTKNOWN : 0UL); }
         }
 
         public uint firing_m_id;  /* m_id for monster that fired this object (for picking up back) */
@@ -1367,36 +1367,34 @@ namespace GnollHackX
     [Flags]
     public enum obj_bitfield_types : ulong
     {
-        cursed =        0x00000001U,
-        blessed =       0x00000002U,
-        unpaid =        0x00000004U,
-        no_charge =     0x00000008U,
-        known =         0x00000010U,
-        dknown =        0x00000020U,
-        bknown =        0x00000040U,
-        rknown =        0x00000080U,
-        oeroded =       0x00000100U | 0x00000200U,
-        oeroded2 =      0x00000400U | 0x00000800U,
-        oerodeproof =   0x00001000U,
-        olocked =       0x00002000U,
-        degraded_horn = 0x00004000U,
-        otrapped =      0x00008000U,  /* Monsters will not pick up this item */
-        lamplit =       0x00010000U,
-        makingsound =   0x00020000U,
-        globby =        0x00040000U,
-        greased =       0x00080000U,
-        nomerge =       0x00100000U,
-        was_thrown =    0x00200000U,
-        has_special_tileset = 0x00400000U,
-        in_use =        0x00800000U,
-        bypass =        0x01000000U,
-        cknown =        0x02000000U,
-        lknown =        0x04000000U,
-        tknown =        0x08000000U,
-        nknown =        0x10000000U,
-        aknown =        0x20000000U,
-        mknown =        0x40000000U,
-        rotknown =      0x80000000U
+        OBJFLAG_CURSED                   = 0x00000001UL,
+        OBJFLAG_BLESSED                  = 0x00000002UL,
+        OBJFLAG_UNPAID                   = 0x00000004UL,
+        OBJFLAG_NO_CHARGE                = 0x00000008UL,
+        OBJFLAG_KNOWN                    = 0x00000010UL,
+        OBJFLAG_DKNOWN                   = 0x00000020UL,
+        OBJFLAG_BKNOWN                   = 0x00000040UL,
+        OBJFLAG_RKNOWN                   = 0x00000080UL,
+        OBJFLAG_OERODEPROOF              = 0x00000100UL,
+        OBJFLAG_OLOCKED                  = 0x00000200UL,
+        OBJFLAG_OBROKEN                  = 0x00000400UL,
+        OBJFLAG_OTRAPPED                 = 0x00000800UL,
+        OBJFLAG_LAMPLIT                  = 0x00001000UL,
+        OBJFLAG_MAKINGSOUND              = 0x00002000UL,
+        OBJFLAG_GLOBBY                   = 0x00004000UL,
+        OBJFLAG_GREASED                  = 0x00008000UL,
+        OBJFLAG_NOMERGE                  = 0x00010000UL,
+        OBJFLAG_WAS_THROWN               = 0x00020000UL,
+        OBJFLAG_HAS_SPECIAL_TILESET      = 0x00040000UL,
+        OBJFLAG_IN_USE                   = 0x00080000UL,
+        OBJFLAG_BYPASS                   = 0x00100000UL,
+        OBJFLAG_CKNOWN                   = 0x00200000UL,
+        OBJFLAG_LKNOWN                   = 0x00400000UL,
+        OBJFLAG_TKNOWN                   = 0x00800000UL,
+        OBJFLAG_NKNOWN                   = 0x01000000UL,
+        OBJFLAG_AKNOWN                   = 0x02000000UL,
+        OBJFLAG_MKNOWN                   = 0x04000000UL,
+        OBJFLAG_ROTKNOWN                 = 0x08000000UL
     }
 
     [Flags]
