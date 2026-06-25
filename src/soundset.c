@@ -19477,7 +19477,7 @@ get_dungeon_music(int dnum)
     else if (dnum == sokoban_dnum)
         res = GHSOUND_SOKOBAN_MUSIC_NORMAL;
     else if (dnum == quest_dnum)
-        res = u.uevent.qcompleted ? GHSOUND_QUEST_MUSIC_COMPLETED : GHSOUND_QUEST_MUSIC_NORMAL;
+        res = is_uevent_qcompleted() ? GHSOUND_QUEST_MUSIC_COMPLETED : GHSOUND_QUEST_MUSIC_NORMAL;
     else if (dnum == gehennom_dnum)
         res = GHSOUND_GEHENNOM_MUSIC_NORMAL;
     else if (dnum == tower_dnum)

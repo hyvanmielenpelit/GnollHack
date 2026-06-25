@@ -363,9 +363,9 @@ use_camera(struct obj *obj)
             {
                 context.role_score += TOURIST_SELFIE_PER_LEVEL_SCORE * (mons[mtmp->mnum].difficulty + 1);
                 pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, "That turned out to be extraordinarily nice.");
-                if (mtmp->mnum == PM_DEMOGORGON && !u.uachieve.role_achievement)
+                if (mtmp->mnum == PM_DEMOGORGON && !is_uachieve_role_achievement())
                 {
-                    u.uachieve.role_achievement = 1;
+                    set_uachieve_role_achievement(1);
                     achievement_gained("Took a Selfie with Demogorgon");
                     livelog_printf(LL_ACHIEVE, "%s", "took a selfie with Demogorgon");
                 }

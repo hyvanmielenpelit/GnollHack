@@ -536,10 +536,10 @@ u_entered_shop(char *enterstring)
     if (!*enterstring)
         return;
 
-    if (!u.uachieve.entered_shop)
+    if (!is_uachieve_entered_shop())
     {
         //achievement_gained("Entered a Shop");
-        u.uachieve.entered_shop = 1;
+        set_uachieve_entered_shop(1);
     }
 
     debugprint_pos();
@@ -2468,7 +2468,7 @@ special_stock(struct obj *obj, struct monst *shkp, boolean quietly)
     {
         if (!quietly)
         {
-            if (is_izchak(shkp, TRUE) && !u.uevent.invoked) 
+            if (is_izchak(shkp, TRUE) && !is_uevent_invoked()) 
             {
                 if (Deaf || muteshk(shkp))
                 {
@@ -3008,7 +3008,7 @@ append_honorific(char *buf)
                                            "esteemed",
                                            "most renowned and sacred" };
 
-    int honidx = rn2(SIZE(honored) - 1) + u.uevent.ukilled_wizard;
+    int honidx = rn2(SIZE(honored) - 1) + is_uevent_ukilled_wizard();
 
     Strcat(buf, honored[honidx]);
     if (!iflags.using_gui_sounds && is_vampire(youmonst.data))

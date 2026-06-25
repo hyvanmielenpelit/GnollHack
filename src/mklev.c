@@ -1399,7 +1399,7 @@ makelevel(void)
            while a monster was on the stairs. Conclusion:
            we have to check for monsters on the stairs anyway. */
 
-        if (u.uhave.amulet || !rn2(3)) 
+        if (is_uhave_amulet() || !rn2(3)) 
         {
             x = somex(croom);
             y = somey(croom);

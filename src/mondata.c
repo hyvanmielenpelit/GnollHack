@@ -1400,7 +1400,7 @@ levl_follower(struct monst *mtmp)
     /* stalking types follow, but won't when fleeing unless you hold
        the Amulet */
     return (boolean) ((mtmp->data->mflags2 & M2_STALK)
-                      && (!is_fleeing(mtmp) || u.uhave.amulet));
+                      && (!is_fleeing(mtmp) || is_uhave_amulet()));
 }
 
 static const short grownups[][2] = {

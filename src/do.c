@@ -7235,7 +7235,7 @@ dodown(void)
         return 1;
     }
 
-    if (/*on_level(&valley_level, &u.uz)*/ Is_stronghold(&u.uz) && !u.uevent.gehennom_entered)
+    if (/*on_level(&valley_level, &u.uz)*/ Is_stronghold(&u.uz) && !is_uevent_gehennom_entered())
     {
         You_ex(ATR_NONE, CLR_MSG_GOD, "are standing at the gate to Gehennom.");
         pline_ex(ATR_NONE, CLR_MSG_GOD, "Unspeakable cruelty and harm lurk down there.");
@@ -7243,7 +7243,7 @@ dodown(void)
             return 0;
         else
             pline_ex(ATR_NONE, CLR_MSG_GOD, "So be it.");
-        u.uevent.gehennom_entered = 1; /* don't ask again */
+        set_uevent_gehennom_entered(1); /* don't ask again */
     }
 
     if (!next_to_u())
@@ -7505,7 +7505,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
         newlevel->dlevel = dunlevs_in_dungeon(newlevel);
     if (newdungeon && In_endgame(newlevel)) 
     { /* 1st Endgame Level !!! */
-        if (!u.uhave.amulet)
+        if (!is_uhave_amulet())
             return;  /* must have the Amulet */
         if (!wizard) /* wizard ^V can bypass Earth level */
             assign_level(newlevel, &earth_level); /* (redundant) */
@@ -7531,7 +7531,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
      *   -2    5.21   4.17   0.0
      *   -3    2.08   0.0    0.0
      */
-    if (Inhell && up && u.uhave.amulet && !newdungeon && !portal
+    if (Inhell && up && is_uhave_amulet() && !newdungeon && !portal
         && (dunlev(&u.uz) < dunlevs_in_dungeon(&u.uz) - 3)) {
         if (!rn2(4)) {
             int odds = 3 + (int) u.ualign.type,   /* 2..4 */
@@ -7992,35 +7992,35 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
             else
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "It is hot here.  You smell smoke...");
 
-            if (flags.showscore && !u.uachieve.enter_gehennom)
+            if (flags.showscore && !is_uachieve_enter_gehennom())
                 context.botl = 1;
 
-            if (!u.uachieve.enter_gehennom)
+            if (!is_uachieve_enter_gehennom())
             {
                 achievement_gained("Entered Gehennom");
                 livelog_printf(LL_ACHIEVE, "%s", "entered Gehennom");
             }
-            u.uachieve.enter_gehennom = 1;
+            set_uachieve_enter_gehennom(1);
         }
     }
 
     if (In_mines(&u.uz))
     {
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_GNOMISH_MINES);
-        if (!u.uachieve.entered_gnomish_mines)
+        if (!is_uachieve_entered_gnomish_mines())
         {
-            //if (!u.uachieve.entered_gnomish_mines)
+            //if (!is_uachieve_entered_gnomish_mines())
             //    achievement_gained("Entered Gnomish Mines");
             livelog_printf(LL_ACHIEVE, "%s", "entered the Gnomish Mines");
-            u.uachieve.entered_gnomish_mines = 1;
+            set_uachieve_entered_gnomish_mines(1);
         }
         if (Is_minetown_level(&u.uz))
         {
-            if (!u.uachieve.entered_mine_town)
+            if (!is_uachieve_entered_mine_town())
             {
                 //    achievement_gained("Entered Mine Town");
                 livelog_printf(LL_MINORAC, "%s", "reached Mine Town");
-                u.uachieve.entered_mine_town = 1;
+                set_uachieve_entered_mine_town(1);
             }
             issue_achievement(GUI_ACHIEVEMENT_REACHED_MINE_TOWN);
         }
@@ -8033,68 +8033,68 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_ELEMENTAL_PLANES);
         if (Is_astralevel(&u.uz))
         {
-            if (!u.uachieve.entered_astral_plane)
+            if (!is_uachieve_entered_astral_plane())
                 livelog_printf(LL_ACHIEVE, "%s", "entered the Astral Plane");
 
-            u.uachieve.entered_astral_plane = 1;
+            set_uachieve_entered_astral_plane(1);
             issue_achievement(GUI_ACHIEVEMENT_ENTERED_ASTRAL_PLANE);
         }
         else
         {
-            if(!u.uachieve.entered_elemental_planes)
+            if(!is_uachieve_entered_elemental_planes())
                 livelog_printf(LL_ACHIEVE, "%s", "entered the Elemental Planes");
-            u.uachieve.entered_elemental_planes = 1;
+            set_uachieve_entered_elemental_planes(1);
         }
     }
 
     if (In_sokoban(&u.uz))
     {
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_SOKOBAN);
-        if (!u.uachieve.entered_sokoban)
+        if (!is_uachieve_entered_sokoban())
         {
             //    achievement_gained("Entered Sokoban");
             livelog_printf(LL_ACHIEVE, "%s", "entered Sokoban");
-            u.uachieve.entered_sokoban = 1;
+            set_uachieve_entered_sokoban(1);
         }
         if (Is_sokoend_level(&u.uz))
             issue_achievement(GUI_ACHIEVEMENT_REACHED_TOP_OF_SOKOBAN);
     }
 
-    if (Is_bigroom(&u.uz) && !u.uachieve.entered_bigroom)
+    if (Is_bigroom(&u.uz) && !is_uachieve_entered_bigroom())
     {
         //    achievement_gained("Entered the Big Room");
         livelog_printf(LL_ACHIEVE, "%s", "entered the Big Room");
-        u.uachieve.entered_bigroom = 1;
+        set_uachieve_entered_bigroom(1);
     }
 
     /* in case we've managed to bypass the Valley's stairway down */
     if (Inhell && !Is_valley(&u.uz))
-        u.uevent.gehennom_entered = 1;
+        set_uevent_gehennom_entered(1);
     
     if (In_modron_level(&u.uz))
     {
-        if(!u.uachieve.entered_plane_of_modron)
+        if(!is_uachieve_entered_plane_of_modron())
             livelog_printf(LL_ACHIEVE, "%s", "entered the Plane of the Modron");
-        u.uevent.modron_plane_entered = 1;
-        u.uachieve.entered_plane_of_modron = 1;
+        set_uevent_modron_plane_entered(1);
+        set_uachieve_entered_plane_of_modron(1);
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_PLANE_OF_THE_MODRON);
         if (Is_primus_modron_level(&u.uz))
             issue_achievement(GUI_ACHIEVEMENT_REACHED_PROTONUS);
     }
     else if (In_bovine_level(&u.uz))
     {
-        if (!u.uachieve.entered_hellish_pastures)
+        if (!is_uachieve_entered_hellish_pastures())
             livelog_printf(LL_ACHIEVE, "%s", "entered the Hellish Pastures");
-        u.uevent.hellish_pastures_entered = 1;
-        u.uachieve.entered_hellish_pastures = 1;
+        set_uevent_hellish_pastures_entered(1);
+        set_uachieve_entered_hellish_pastures(1);
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_HELLISH_PASTURES);
     }
     else if (In_large_circular_dgn_level(&u.uz))
     {
-        if (!u.uachieve.entered_large_circular_dungeon)
+        if (!is_uachieve_entered_large_circular_dungeon())
             livelog_printf(LL_ACHIEVE, "%s", "entered the Large Circular Dungeon");
-        u.uevent.large_circular_dgn_entered = 1;
-        u.uachieve.entered_large_circular_dungeon = 1;
+        set_uevent_large_circular_dgn_entered(1);
+        set_uachieve_entered_large_circular_dungeon(1);
         issue_achievement(GUI_ACHIEVEMENT_ENTERED_LARGE_CIRCULAR_DUNGEON);
         if (Is_quantum_core_level(&u.uz))
             issue_achievement(GUI_ACHIEVEMENT_REACHED_QUANTUM_CORE);
@@ -8204,7 +8204,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
     {
         if (isnew && on_level(&u.uz, &astral_level))
             final_level(); /* guardian angel,&c */
-        else if (newdungeon && u.uhave.amulet)
+        else if (newdungeon && is_uhave_amulet())
             resurrect(); /* force confrontation with Wizard */
 
 #if FALSE
@@ -8256,12 +8256,12 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
 
         /* main dungeon message from your quest leader */
         if (!In_quest(&u.uz0) && at_dgn_entrance("The Quest")
-            && !(u.uevent.qcompleted || u.uevent.qexpelled
+            && !(is_uevent_qcompleted() || is_uevent_qexpelled()
                  || quest_status.leader_is_dead)) 
         {
-            if (!u.uevent.qcalled) 
+            if (!is_uevent_qcalled()) 
             {
-                u.uevent.qcalled = 1;
+                set_uevent_qcalled(1);
                 com_pager_ex((struct monst*)0, 2, ATR_NONE, CLR_MSG_ATTENTION, FALSE); /* main "leader needs help" message */
             }
             else 
@@ -8270,27 +8270,27 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
             }
         }
 
-        if (!In_modron_level(&u.uz0) && !u.uevent.modron_portal_hint && at_dgn_entrance("Plane of the Modron"))
+        if (!In_modron_level(&u.uz0) && !is_uevent_modron_portal_hint() && at_dgn_entrance("Plane of the Modron"))
         {
-            u.uevent.modron_portal_hint = 1;
+            set_uevent_modron_portal_hint(1);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "suddenly feel that angles are here straighter than normal, but then the feeling subsides.");
         }
 
-        if (!Is_bovine_level(&u.uz0) && !u.uevent.bovine_portal_hint && at_dgn_entrance("Hellish Pastures"))
+        if (!Is_bovine_level(&u.uz0) && !is_uevent_bovine_portal_hint() && at_dgn_entrance("Hellish Pastures"))
         {
-            u.uevent.bovine_portal_hint = 1;
+            set_uevent_bovine_portal_hint(1);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you think you hear distant grunting and bellowing, but then the noises are gone.");
         }
 
-        if (!Is_quantum_tunnel_level(&u.uz0) && !u.uevent.quantum_portal_hint && at_dgn_entrance("The Large Circular Dungeon"))
+        if (!Is_quantum_tunnel_level(&u.uz0) && !is_uevent_quantum_portal_hint() && at_dgn_entrance("The Large Circular Dungeon"))
         {
-            u.uevent.quantum_portal_hint = 1;
+            set_uevent_quantum_portal_hint(1);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you feel as if the fabric of reality stretches back and forth a bit, but then the sensation passes.");
         }
 
-        if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && level_difficulty() >= MINIMUM_DGN_LEVEL_POLY_TRAP && !u.uevent.polymorph_trap_warning)
+        if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && level_difficulty() >= MINIMUM_DGN_LEVEL_POLY_TRAP && !is_uevent_polymorph_trap_warning())
         {
-            u.uevent.polymorph_trap_warning = 1;
+            set_uevent_polymorph_trap_warning(1);
             play_sfx_sound(SFX_WARNING);
             custompline_ex_prefix(ATR_NONE, CLR_MSG_WARNING, "WARNING", ATR_NONE, NO_COLOR, " - ", ATR_NONE, CLR_MSG_HIGHLIGHT, 0U, "Polymorph traps can be present on dungeon level %d and below.", MINIMUM_DGN_LEVEL_POLY_TRAP);
         }
@@ -9592,7 +9592,7 @@ grab_hint(struct monst *mtmp)
 
         char buf[BUFSZ];
         char sbuf[BUFSZ] = "";
-        if (u.uevent.elbereth_known)
+        if (is_uevent_elbereth_known())
             Strcat(sbuf, "writing Elbereth");
         if(*sbuf)
             Strcat(sbuf, ", ");
@@ -9642,7 +9642,7 @@ check_mobbed_hint(void)
         u.uhint.got_mobbed = TRUE;
         char buf[BUFSZ * 2] = "";
         Sprintf(buf, "If you are mobbed by monsters, try to use a wand or scroll of teleportation%s, drop a scroll of scare monster, use an item causing conflict, or read a scroll of taming.",
-            u.uevent.elbereth_known ? ", write Elbereth" : "");
+            is_uevent_elbereth_known() ? ", write Elbereth" : "");
         hint_via_pline(buf);
     }
 }
@@ -9713,7 +9713,7 @@ death_hint(void)
                 Strcpy(buf, "You can remove a cursed strangulation item by uncursing it first, for example, by praying.");
                 break;
             case HINT_KILLED_MONSTER_STRANGULATION:
-                Sprintf(buf, "You can stop a monster from strangling you by praying%s or teleporting it or yourself away.", u.uevent.elbereth_known ? ", writing Elbereth," : "");
+                Sprintf(buf, "You can stop a monster from strangling you by praying%s or teleporting it or yourself away.", is_uevent_elbereth_known() ? ", writing Elbereth," : "");
                 break;
             case HINT_KILLED_DISINTEGRATION_RAY:
                 Strcpy(buf, "Acquire disintegration resistance or reflection as early on as possible to avoid being killed by disintegration rays.");

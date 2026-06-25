@@ -2340,9 +2340,9 @@ dochatmon(struct monst *mtmp)
         return 0;
     }
 
-    unsigned was_ritual_known = u.uevent.invocation_ritual_known;
-    unsigned had_heard_of_ritual = u.uevent.heard_of_invocation_ritual;
-    unsigned was_elbereth_known = u.uevent.elbereth_known;
+    unsigned was_ritual_known = is_uevent_invocation_ritual_known();
+    unsigned had_heard_of_ritual = is_uevent_heard_of_invocation_ritual();
+    unsigned was_elbereth_known = is_uevent_elbereth_known();
     boolean hint_shown_already = FALSE;
 
     if (!canspotmon(mtmp) && is_tame(mtmp))
@@ -4560,15 +4560,15 @@ dochatmon(struct monst *mtmp)
     } while (i > 0 && !stopsdialogue && !stop_chat);
     
 end_of_chat_here:
-    if (!was_elbereth_known && u.uevent.elbereth_known)
+    if (!was_elbereth_known && is_uevent_elbereth_known())
     {
         standard_hint("You can engrave \'Elbereth\' on the ground to protect yourself against attacking monsters.", &u.uhint.elbereth);
         hint_shown_already = TRUE;
     }
     
-    if (!u.uevent.invoked && !(u.uachieve.bell && u.uachieve.book && u.uachieve.menorah))
+    if (!is_uevent_invoked() && !(is_uachieve_bell() && is_uachieve_book() && is_uachieve_menorah()))
     {
-        if (!was_ritual_known && !had_heard_of_ritual && (u.uevent.invocation_ritual_known || u.uevent.heard_of_invocation_ritual))
+        if (!was_ritual_known && !had_heard_of_ritual && (is_uevent_invocation_ritual_known() || is_uevent_heard_of_invocation_ritual()))
         {
             invocation_ritual_quest_update(hint_shown_already);
         }
@@ -8975,7 +8975,7 @@ do_chat_npc_special_hints(struct monst *mtmp)
             0 };
         
         hermit_talk(mtmp, linearray, GHSOUND_ELVEN_BARD_ELBERETH);
-        u.uevent.elbereth_known = 1;
+        set_uevent_elbereth_known(1);
         break;
     }
     }
@@ -10422,7 +10422,7 @@ do_chat_hermit2_silver_bell(struct monst *mtmp)
         "Your friends have called for your assistance. Heed their call.",
         0 };
 
-    if (u.uachieve.bell)
+    if (is_uachieve_bell())
     {
         linearray[1] = 0;
     }
@@ -10482,7 +10482,7 @@ do_chat_hermit2_ritual(struct monst *mtmp)
     hermit_talk(mtmp, linearray, GHSOUND_HERMIT2_RITUAL);
 
     mtmp->hermit2_told_ritual = 1;
-    u.uevent.heard_of_invocation_ritual = 1;
+    set_uevent_heard_of_invocation_ritual(1);
     context.quest_flags |= QUEST_FLAGS_HEARD_OF_BOOK | QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_MENORAH | QUEST_FLAGS_HEARD_OF_RITUAL | QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM | QUEST_FLAGS_HEARD_ORACLE_KNOWS_MORE_DETAILS;
 
     return 1;

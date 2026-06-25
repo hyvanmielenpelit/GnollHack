@@ -3577,38 +3577,38 @@ mondead_with_flags(struct monst *mtmp, uint64_t mondeadflags)
     if (is_medusa(mtmp->data))
     {
         issue_achievement(GUI_ACHIEVEMENT_DEFEATED_MEDUSA);
-        if (flags.showscore && !u.uachieve.killed_medusa)
+        if (flags.showscore && !is_uachieve_killed_medusa())
             context.botl = 1;
-        if (!u.uachieve.killed_medusa)
+        if (!is_uachieve_killed_medusa())
         {
             achievement_gained("Defeated Medusa");
             livelog_printf(LL_ACHIEVE | LL_UMONST, "%s", "killed Medusa");
         }
-        u.uachieve.killed_medusa = 1;
+        set_uachieve_killed_medusa(1);
     }
     else if (mtmp->data == &mons[PM_YACC])
     {
         issue_achievement(GUI_ACHIEVEMENT_DEFEATED_YACC);
-        if (flags.showscore && !u.uachieve.killed_yacc)
+        if (flags.showscore && !is_uachieve_killed_yacc())
             context.botl = 1;
-        if (!u.uachieve.killed_yacc)
+        if (!is_uachieve_killed_yacc())
         {
             achievement_gained("Defeated Yacc");
             livelog_printf(LL_ACHIEVE | LL_UMONST, "%s", "killed Yacc");
         }
-        u.uachieve.killed_yacc = 1;
+        set_uachieve_killed_yacc(1);
     }
     else if (mtmp->data == &mons[PM_DEMOGORGON])
     {
         issue_achievement(GUI_ACHIEVEMENT_DEFEATED_DEMOGORGON);
-        if (flags.showscore && !u.uachieve.killed_demogorgon)
+        if (flags.showscore && !is_uachieve_killed_demogorgon())
             context.botl = 1;
-        if (!u.uachieve.killed_demogorgon)
+        if (!is_uachieve_killed_demogorgon())
         {
             achievement_gained("Defeated Demogorgon");
             livelog_printf(LL_ACHIEVE | LL_UMONST, "%s", "killed Demogorgon");
         }
-        u.uachieve.killed_demogorgon = 1;
+        set_uachieve_killed_demogorgon(1);
     }
     else if (mtmp->data == &mons[PM_DEATH])
     {
@@ -3751,14 +3751,14 @@ mondead_with_flags(struct monst *mtmp, uint64_t mondeadflags)
         break;
     }
 
-    if (!u.uachieve.role_achievement &&
+    if (!is_uachieve_role_achievement() &&
         (      (Role_if(PM_ARCHAEOLOGIST) && mtmp->mnum == PM_AMONKET)
             || (Role_if(PM_ROGUE) && mtmp->mnum == PM_CROESUS)
             || (Role_if(PM_KNIGHT) && mtmp->mnum == PM_ASMODEUS)
             )
        )
     {
-        u.uachieve.role_achievement = 1;
+        set_uachieve_role_achievement(1);
         char abuf[BUFSZ];
         char* ra_desc = get_role_achievement_description(1);
         strcpy_capitalized_for_title(abuf, ra_desc);
@@ -4388,8 +4388,8 @@ cleanup:
     { /* REAL BAD! */
         play_sfx_sound(SFX_GUILTY);
         adjalign(-(u.ualign.record + ALIGNLIM / 2));
-        pline_ex(ATR_NONE, u.uevent.qcompleted ? CLR_MSG_WARNING : CLR_MSG_NEGATIVE, "That was %sa bad idea...",
-              u.uevent.qcompleted ? "probably " : "");
+        pline_ex(ATR_NONE, is_uevent_qcompleted() ? CLR_MSG_WARNING : CLR_MSG_NEGATIVE, "That was %sa bad idea...",
+              is_uevent_qcompleted() ? "probably " : "");
     } 
     else if (mdat->msound == MS_NEMESIS)
     { /* Real good! */

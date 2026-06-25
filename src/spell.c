@@ -232,11 +232,11 @@ deadbook(struct obj *book2)
             return;
         }
 
-        if (!u.uhave.bell || !u.uhave.menorah) {
+        if (!is_uhave_bell() || !is_uhave_menorah()) {
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "A chill runs down your %s.", body_part(SPINE));
-            if (!u.uhave.bell)
+            if (!is_uhave_bell())
                 You_hear("a faint chime...");
-            if (!u.uhave.menorah)
+            if (!is_uhave_menorah())
                 pline("Vlad's doppelganger is amused.");
             return;
         }
@@ -268,16 +268,16 @@ deadbook(struct obj *book2)
             
             /* successful invocation */
             mkinvokearea();
-            if (!u.uevent.invoked)
+            if (!is_uevent_invoked())
             {
                 achievement_gained("Performed the Invocation Ritual");
                 livelog_printf(LL_ACHIEVE, "%s", "performed the invocation");
                 issue_achievement(GUI_ACHIEVEMENT_PERFORMED_THE_RITUAL);
-                u.uevent.invoked = 1;
+                set_uevent_invoked(1);
             }
             /* in case you haven't killed the Wizard yet, behave as if
                you just did */
-            u.uevent.ukilled_wizard = 1; /* wizdead() */
+            set_uevent_ukilled_wizard(1); /* wizdead() */
             if (!u.uintervene_timer || u.uintervene_timer > soon)
                 u.uintervene_timer = soon;
         } else { /* at least one artifact not prepared properly */
@@ -846,17 +846,17 @@ study_book(struct obj *spellbook)
                         "became literate by reading %s", tribtitle);
                 check_unpaid(spellbook);
                 makeknown(booktype);
-                if (!u.uevent.read_tribute) 
+                if (!is_uevent_read_tribute()) 
                 {
                     /* give bonus of 20 xp and 4*20+0 pts */
                     more_experienced(20, 0);
                     newexplevel();
-                    u.uevent.read_tribute = 1; /* only once */
+                    set_uevent_read_tribute(1); /* only once */
                 }
-                if (!u.uachieve.read_discworld_novel)
+                if (!is_uachieve_read_discworld_novel())
                 {
                     achievement_gained("Read a Discworld Novel");
-                    u.uachieve.read_discworld_novel = 1;
+                    set_uachieve_read_discworld_novel(1);
                 }
             }
             return 1;
@@ -2620,7 +2620,7 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
        the attempt may fail due to lack of energy after the draining, in
        which case a turn will be used up in addition to the energy loss */
 
-    if (u.uhave.amulet && u.uen >= energy) {
+    if (is_uhave_amulet() && u.uen >= energy) {
         You_feel("the amulet draining your energy away.");
         /* this used to be 'energy += rnd(2 * energy)' (without 'res'),
            so if amulet-induced cost was more than u.uen, nothing
@@ -3369,12 +3369,12 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
     u_wait_until_end();
     update_u_action_revert(ACTION_TILE_NO_ACTION);
 
-    if (!u.uachieve.role_achievement && spell_successful && effect_happened && (
+    if (!is_uachieve_role_achievement() && spell_successful && effect_happened && (
         (Role_if(PM_WIZARD) && spellev(spell) >= 10)
         || (Role_if(PM_PRIEST) && spellev(spell) >= 10)
         || (Role_if(PM_HEALER) && (skill == P_HEALING_SPELL || skill == P_ABJURATION_SPELL) && spellev(spell) >= 9)))
     {
-        u.uachieve.role_achievement = 1;
+        set_uachieve_role_achievement(1);
         char abuf[BUFSZ];
         char* ra_desc = get_role_achievement_description(1);
         strcpy_capitalized_for_title(abuf, ra_desc);

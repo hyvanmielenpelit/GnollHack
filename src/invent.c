@@ -858,12 +858,12 @@ addinv_core1(struct obj *obj)
     } 
     else if (obj->otyp == AMULET_OF_YENDOR) 
     {
-        if (u.uhave.amulet && no_wizard_or_debug)
+        if (is_uhave_amulet() && no_wizard_or_debug)
             impossible("already have amulet?");
-        u.uhave.amulet = 1;
-        if (flags.showscore && !u.uachieve.amulet)
+        set_uhave_amulet(1);
+        if (flags.showscore && !is_uachieve_amulet())
             context.botl = 1;
-        if (!u.uachieve.amulet)
+        if (!is_uachieve_amulet())
         {
             achievement_gained("Amulet of Yendor");
             livelog_printf(LL_ACHIEVE, "%s", "acquired the Amulet of Yendor");
@@ -881,53 +881,53 @@ addinv_core1(struct obj *obj)
             }
             custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "HINT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "%s", "Exit the dungeon on level 1 to enter the Elemental Planes");
         }
-        u.uachieve.amulet = 1;
+        set_uachieve_amulet(1);
     }
     else if (obj->otyp == CANDELABRUM_OF_INVOCATION) 
     {
-        if (u.uhave.menorah && no_wizard_or_debug)
+        if (is_uhave_menorah() && no_wizard_or_debug)
             impossible("already have candelabrum?");
-        u.uhave.menorah = 1;
-        if (flags.showscore && !u.uachieve.menorah)
+        set_uhave_menorah(1);
+        if (flags.showscore && !is_uachieve_menorah())
             context.botl = 1;
-        if (!u.uachieve.menorah)
+        if (!is_uachieve_menorah())
         {
             achievement_gained("Candelabrum of Invocation");
             livelog_printf(LL_ACHIEVE, "%s", "acquired the Candelabrum of Invocation");
             issue_achievement(GUI_ACHIEVEMENT_FOUND_CANDELABRUM_OF_INVOCATION);
-            u.uachieve.menorah = 1;
+            set_uachieve_menorah(1);
             invocation_ritual_quest_update(TRUE);
         }
     }
     else if (obj->otyp == BELL_OF_OPENING)
     {
-        if (u.uhave.bell && no_wizard_or_debug)
+        if (is_uhave_bell() && no_wizard_or_debug)
             impossible("already have silver bell?");
-        u.uhave.bell = 1;
-        if (flags.showscore && !u.uachieve.bell)
+        set_uhave_bell(1);
+        if (flags.showscore && !is_uachieve_bell())
             context.botl = 1;
-        if (!u.uachieve.bell)
+        if (!is_uachieve_bell())
         {
             achievement_gained("Bell of Opening");
             livelog_printf(LL_ACHIEVE, "%s", "acquired the Bell of Opening");
             issue_achievement(GUI_ACHIEVEMENT_FOUND_BELL_OF_OPENING);
-            u.uachieve.bell = 1;
+            set_uachieve_bell(1);
             invocation_ritual_quest_update(TRUE);
         }
     }
     else if (obj->otyp == SPE_BOOK_OF_THE_DEAD)
     {
-        if (u.uhave.book && no_wizard_or_debug)
+        if (is_uhave_book() && no_wizard_or_debug)
             impossible("already have the book?");
-        u.uhave.book = 1;
-        if (flags.showscore && !u.uachieve.book)
+        set_uhave_book(1);
+        if (flags.showscore && !is_uachieve_book())
             context.botl = 1;
-        if (!u.uachieve.book)
+        if (!is_uachieve_book())
         {
             achievement_gained("Book of the Dead");
             livelog_printf(LL_ACHIEVE, "%s", "acquired the Book of the Dead");
             issue_achievement(GUI_ACHIEVEMENT_FOUND_BOOK_OF_THE_DEAD);
-            u.uachieve.book = 1;
+            set_uachieve_book(1);
             invocation_ritual_quest_update(TRUE);
         }
     } 
@@ -935,25 +935,25 @@ addinv_core1(struct obj *obj)
     {
         if (is_quest_artifact(obj)) 
         {
-            if (u.uhave.questart && no_wizard_or_debug)
+            if (is_uhave_questart() && no_wizard_or_debug)
                 impossible("already have quest artifact?");
-            u.uhave.questart = 1;
+            set_uhave_questart(1);
             artitouch(obj);
         }
         else if (obj->otyp == SPE_BOOK_OF_MODRON)
         {
-            if (u.uhave.prime_codex && no_wizard_or_debug)
+            if (is_uhave_prime_codex() && no_wizard_or_debug)
                 impossible("already have Prime Codex?");
-            u.uhave.prime_codex = 1;
-            if (flags.showscore && !u.uachieve.prime_codex)
+            set_uhave_prime_codex(1);
+            if (flags.showscore && !is_uachieve_prime_codex())
                 context.botl = 1;
-            if (!u.uachieve.prime_codex)
+            if (!is_uachieve_prime_codex())
             {
                 achievement_gained("Prime Codex");
                 livelog_printf(LL_ACHIEVE, "%s", "acquired the Prime Codex");
                 issue_achievement(GUI_ACHIEVEMENT_FOUND_PRIME_CODEX);
             }
-            u.uachieve.prime_codex = 1;
+            set_uachieve_prime_codex(1);
         }
 
         boolean check_achievement = FALSE;
@@ -963,30 +963,30 @@ addinv_core1(struct obj *obj)
             if (u.ualignbase[A_ORIGINAL] == A_CHAOTIC)
             {
                 if (obj->oartifact == ART_STORMBRINGER)
-                    u.uevent.role_achievement_1 = 1;
+                    set_uevent_role_achievement_1(1);
                 if (obj->oartifact == ART_MOURNBLADE)
-                    u.uevent.role_achievement_2 = 1;
+                    set_uevent_role_achievement_2(1);
             }
             else
             {
                 if (obj->oartifact == ART_VORPAL_BLADE)
-                    u.uevent.role_achievement_1 = 1;
+                    set_uevent_role_achievement_1(1);
                 if (obj->oartifact == ART_CLEAVER)
-                    u.uevent.role_achievement_2 = 1;
+                    set_uevent_role_achievement_2(1);
             }
         }
         else if (Role_if(PM_SAMURAI))
         {
             check_achievement = TRUE;
             if (obj->oartifact == ART_KUSANAGI)
-                u.uevent.role_achievement_1 = 1;
+                set_uevent_role_achievement_1(1);
             if (obj->oartifact == ART_KATANA_OF_MASAMUNE)
-                u.uevent.role_achievement_2 = 1;
+                set_uevent_role_achievement_2(1);
         }
 
-        if (check_achievement && u.uevent.role_achievement_1 && u.uevent.role_achievement_2 && !u.uachieve.role_achievement)
+        if (check_achievement && is_uevent_role_achievement_1() && is_uevent_role_achievement_2() && !is_uachieve_role_achievement())
         {
-            u.uachieve.role_achievement = 1;
+            set_uachieve_role_achievement(1);
             char* ra_desc = get_role_achievement_description(1);
             char abuf[BUFSZ];
             strcpy_capitalized_for_title(abuf, ra_desc);
@@ -1003,39 +1003,39 @@ addinv_core1(struct obj *obj)
 
     if (is_mines_prize(obj))
     {
-        if (flags.showscore && !u.uachieve.mines_luckstone)
+        if (flags.showscore && !is_uachieve_mines_luckstone())
             context.botl = 1;
-        if (!u.uachieve.mines_luckstone)
+        if (!is_uachieve_mines_luckstone())
         {
             achievement_gained("Gladstone");
             livelog_printf(LL_ACHIEVE, "%s", "acquired the Gladstone from Mines' End");
             issue_achievement(GUI_ACHIEVEMENT_FOUND_GLADSTONE);
         }
-        u.uachieve.mines_luckstone = 1;
+        set_uachieve_mines_luckstone(1);
         obj->speflags &= ~(SPEFLAGS_MINES_PRIZE);
         //obj->nomerge = 0;
     }
     else if (is_soko_prize(obj)) 
     {
-        if (flags.showscore && !u.uachieve.finish_sokoban)
+        if (flags.showscore && !is_uachieve_finish_sokoban())
             context.botl = 1;
-        if (!u.uachieve.finish_sokoban)
+        if (!is_uachieve_finish_sokoban())
         {
             achievement_gained("Sokoban Solved");
             livelog_printf(LL_ACHIEVE, "completed Sokoban, acquiring %s", an(xname(obj)));
             issue_achievement(GUI_ACHIEVEMENT_SOLVED_SOKOBAN);
         }
-        u.uachieve.finish_sokoban = 1;
+        set_uachieve_finish_sokoban(1);
         obj->speflags &= ~(SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2);
         //obj->nomerge = 0;
     }
     else if (obj->otyp == GRAIL_OF_HEALING && Role_if(PM_KNIGHT)) // Holy Grail
     {
-        if (!u.uachieve.role_achievement)
+        if (!is_uachieve_role_achievement())
         {
             if (flags.showscore)
                 context.botl = 1;
-            u.uachieve.role_achievement = 1;
+            set_uachieve_role_achievement(1);
             achievement_gained("Found the Holy Grail");
             livelog_printf(LL_ACHIEVE, "%s", "found the Holy Grail");
         }
@@ -1056,47 +1056,47 @@ play_hint_sound_with_delay(boolean dodelay)
 void
 invocation_ritual_quest_update(boolean dodelay)
 {
-    if ((u.uevent.invocation_ritual_known || u.uevent.heard_of_invocation_ritual) && !u.uevent.invoked)
+    if ((is_uevent_invocation_ritual_known() || is_uevent_heard_of_invocation_ritual()) && !is_uevent_invoked())
     {
-        if (!u.uachieve.bell && !u.uachieve.book && !u.uachieve.menorah)
+        if (!is_uachieve_bell() && !is_uachieve_book() && !is_uachieve_menorah())
         {
             play_hint_sound_with_delay(dodelay);
             custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Candelabrum of Invocation, Silver Bell, and the Book of the Dead");
         }
-        else if (!u.uachieve.bell && !u.uachieve.book)
+        else if (!is_uachieve_bell() && !is_uachieve_book())
         {
             play_hint_sound_with_delay(dodelay);
             custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Silver Bell and the Book of the Dead");
         }
-        else if (!u.uachieve.bell && !u.uachieve.menorah)
+        else if (!is_uachieve_bell() && !is_uachieve_menorah())
         {
             play_hint_sound_with_delay(dodelay);
             custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Candelabrum of Invocation and the Silver Bell");
         }
-        else if (!u.uachieve.book && !u.uachieve.menorah)
+        else if (!is_uachieve_book() && !is_uachieve_menorah())
         {
             play_hint_sound_with_delay(dodelay);
             custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Candelabrum of Invocation and the Book of the Dead");
         }
-        else if (!u.uachieve.menorah)
+        else if (!is_uachieve_menorah())
         {
             play_hint_sound_with_delay(dodelay);
             custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Candelabrum of Invocation");
         }
-        else if (!u.uachieve.book)
+        else if (!is_uachieve_book())
         {
             play_hint_sound_with_delay(dodelay);
             custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Book of the Dead");
         }
-        else if (!u.uachieve.bell)
+        else if (!is_uachieve_bell())
         {
             play_hint_sound_with_delay(dodelay);
             custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Silver Bell");
         }
-        else if (u.uevent.invocation_ritual_known)
+        else if (is_uevent_invocation_ritual_known())
         {
             play_hint_sound_with_delay(dodelay);
-            if (!u.uevent.uvibrated)
+            if (!is_uevent_uvibrated())
                 custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Locate the Vibrating Square at the bottom of Gehennom");
             else
                 custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Perform the Invocation Ritual at the Vibrating Square");
@@ -2038,41 +2038,41 @@ freeinv_core(struct obj *obj)
     } 
     else if (obj->otyp == AMULET_OF_YENDOR) 
     {
-        if (!u.uhave.amulet && no_wizard_or_debug)
+        if (!is_uhave_amulet() && no_wizard_or_debug)
             impossible("don't have amulet?");
-        u.uhave.amulet = 0;
+        set_uhave_amulet(0);
     }
     else if (obj->otyp == CANDELABRUM_OF_INVOCATION) 
     {
-        if (!u.uhave.menorah && no_wizard_or_debug)
+        if (!is_uhave_menorah() && no_wizard_or_debug)
             impossible("don't have candelabrum?");
-        u.uhave.menorah = 0;
+        set_uhave_menorah(0);
     }
     else if (obj->otyp == BELL_OF_OPENING)
     {
-        if (!u.uhave.bell && no_wizard_or_debug)
+        if (!is_uhave_bell() && no_wizard_or_debug)
             impossible("don't have silver bell?");
-        u.uhave.bell = 0;
+        set_uhave_bell(0);
     } 
     else if (obj->otyp == SPE_BOOK_OF_THE_DEAD)
     {
-        if (!u.uhave.book && no_wizard_or_debug)
+        if (!is_uhave_book() && no_wizard_or_debug)
             impossible("don't have the book?");
-        u.uhave.book = 0;
+        set_uhave_book(0);
     } 
     else if (obj->oartifact) 
     {
         if (is_quest_artifact(obj)) 
         {
-            if (!u.uhave.questart && no_wizard_or_debug)
+            if (!is_uhave_questart() && no_wizard_or_debug)
                 impossible("don't have quest artifact?");
-            u.uhave.questart = 0;
+            set_uhave_questart(0);
         }
         else if (obj->otyp == SPE_BOOK_OF_MODRON)
         {
-            if (!u.uhave.prime_codex && no_wizard_or_debug)
+            if (!is_uhave_prime_codex() && no_wizard_or_debug)
                 impossible("don't have Prime Codex?");
-            u.uhave.prime_codex = 0;
+            set_uhave_prime_codex(0);
         }
     }
 

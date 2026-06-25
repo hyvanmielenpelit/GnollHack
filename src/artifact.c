@@ -3319,7 +3319,7 @@ create_portal(void)
     else
         newlev.dlevel = dungeons[i].dunlev_ureached;
 
-    if (u.uhave.amulet || In_endgame(&u.uz) || In_endgame(&newlev)
+    if (is_uhave_amulet() || In_endgame(&u.uz) || In_endgame(&newlev)
         || newlev.dnum == u.uz.dnum || !next_to_u())
     {
         play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);

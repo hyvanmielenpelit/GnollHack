@@ -1704,7 +1704,7 @@ peffects(struct obj *otmp)
         if (otmp->cursed) {
             unkn++;
             /* they went up a level */
-            if (((ledger_no(&u.uz) == 1 && u.uhave.amulet) || Can_rise_up(u.ux, u.uy, &u.uz)) 
+            if (((ledger_no(&u.uz) == 1 && is_uhave_amulet()) || Can_rise_up(u.ux, u.uy, &u.uz)) 
                 && (!isdiluted || !rn2(2)))
             {
                 const char *riseup = "rise up, through the %s!";

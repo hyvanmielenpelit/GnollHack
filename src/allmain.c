@@ -173,8 +173,8 @@ moveloop(uchar resuming)
                         /* occasionally add another monster; since this takes
                            place after movement has been allotted, the new
                            monster effectively loses its first turn */
-                        if (!rn2(u.uevent.invoked && !In_endgame(&u.uz) ? 15 /* More monsters after invocation, since there is no mysterious force */
-                            : u.uevent.ukilled_wizard ? 25 /* If killed the wizard */
+                        if (!rn2(is_uevent_invoked() && !In_endgame(&u.uz) ? 15 /* More monsters after invocation, since there is no mysterious force */
+                            : is_uevent_ukilled_wizard() ? 25 /* If killed the wizard */
                             : Inhell ? 50
                             : 70))
                         {
@@ -345,11 +345,11 @@ moveloop(uchar resuming)
                     }
                     //age_spells();
                     //exerchk();  /* exercise system has been deactivated -- JG */
-                    if (u.uhave.amulet)
+                    if (is_uhave_amulet())
                         amulet();
                     if (!rn2(40 + (int) (ACURR(A_DEX) * 3)))
                         u_wipe_engr(rnd(3));
-                    if (u.uevent.ukilled_wizard && !u.uinvulnerable && !context.time_stopped)
+                    if (is_uevent_ukilled_wizard() && !u.uinvulnerable && !context.time_stopped)
                     {
                         if (u.uintervene_timer)
                             u.uintervene_timer--;
@@ -399,7 +399,7 @@ moveloop(uchar resuming)
 #endif
             if (context.bypasses)
                 clear_bypasses();
-            if ((u.uhave.amulet || Clairvoyant) && !In_endgame(&u.uz)
+            if ((is_uhave_amulet() || Clairvoyant) && !In_endgame(&u.uz)
                 && !Blocks_Clairvoyance && !(moves % 15) && !rn2(2))
                 do_vicinity_map((struct obj *) 0);
             if (u.utrap && u.utraptype == TT_LAVA)

@@ -1310,7 +1310,7 @@ newsym_with_extra_info_and_flags(int x, int y, uint64_t disp_flags, uint64_t dis
         /* Note: clears layer flags */
         map_location(x, y, 1);
 
-        if (u.uachieve.ascended)
+        if (is_uachieve_ascended())
             add_glyph_buffer_layer_flags(x, y, LFLAGS_ASCENSION_RADIANCE, 0UL);
 
         /* Monster layer */

@@ -5958,7 +5958,7 @@ zapnodir(struct obj *obj)
             break;
         }
 
-        if (u.uhave.amulet)
+        if (is_uhave_amulet())
         {
             /* Amulet of Yendor prevents any town portal */
             play_sfx_sound(SFX_MYSTERIOUS_FORCE_PREVENTS);

@@ -915,10 +915,10 @@ do_play_instrument(struct obj *instr)
                                 else
                                     open_drawbridge(x, y, TRUE);
 
-                                if (!u.uachieve.learned_castle_tune)
+                                if (!is_uachieve_learned_castle_tune())
                                 {
                                     achievement_gained("Solved Castle Drawbridge Tune");
-                                    u.uachieve.learned_castle_tune = 1;
+                                    set_uachieve_learned_castle_tune(1);
                                     issue_achievement(GUI_ACHIEVEMENT_SOLVED_CASTLE_TUNE);
                                 }
 

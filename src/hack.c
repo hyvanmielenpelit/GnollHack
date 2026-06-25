@@ -2578,7 +2578,7 @@ invocation_message(void)
             Sprintf(buf, "under your %s", makeplural(body_part(FOOT)));
 
         You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a strange vibration %s.", buf);
-        u.uevent.uvibrated = 1;
+        set_uevent_uvibrated(1);
         issue_achievement(GUI_ACHIEVEMENT_FOUND_VIBRATING_SQUARE);
         if (otmp && otmp->special_quality == 7 && otmp->lamplit)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s!", The(xname(otmp)),

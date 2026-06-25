@@ -593,7 +593,7 @@ fall_through(boolean td)
     else if (Levitation || u.ustuck
              || (!Can_fall_thru(&u.uz) && !levl[u.ux][u.uy].candig) || Flying
              || is_clinger(youmonst.data)
-             || (Inhell && !u.uevent.invoked && newlevel == bottom)) {
+             || (Inhell && !is_uevent_invoked() && newlevel == bottom)) {
         dont_fall = "don't fall in.";
     } else if (youmonst.data->msize >= MZ_HUGE) {
         dont_fall = "don't fit through.";
@@ -5086,7 +5086,7 @@ succeed_untrap(int ttyp, boolean helping_another)
 
     //boolean res = FALSE;
     //int probability = 0;
-    int usedskilllevel = max(P_UNSKILLED, min(P_GRAND_MASTER, P_SKILL_LEVEL(P_DISARM_TRAP) + (Enhanced_untrap ? 1 : 0))); /* (Role_if(PM_ROGUE) && u.uhave.questart) */
+    int usedskilllevel = max(P_UNSKILLED, min(P_GRAND_MASTER, P_SKILL_LEVEL(P_DISARM_TRAP) + (Enhanced_untrap ? 1 : 0))); /* (Role_if(PM_ROGUE) && is_uhave_questart()) */
 
     //probability = untrap_probability(ttmp->ttyp, usedskilllevel, &youmonst);
     if (Fumbling & !rn2(2))

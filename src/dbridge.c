@@ -992,7 +992,7 @@ open_drawbridge(int x, int y, boolean by_u_intentionally)
     play_sfx_sound_at_location(SFX_OPEN_DRAWBRIDGE, x, y);
 
     if (Is_stronghold(&u.uz))
-        u.uevent.uopened_dbridge = TRUE;
+        set_uevent_uopened_dbridge(TRUE);
     nokiller();
 }
 
@@ -1095,7 +1095,7 @@ destroy_drawbridge(int x, int y, boolean is_disintegrated)
     if (!does_block(x2, y2, lev2))
         unblock_vision_and_hearing_at_point(x2, y2); /* vision */
     if (Is_stronghold(&u.uz))
-        u.uevent.uopened_dbridge = TRUE;
+        set_uevent_uopened_dbridge(TRUE);
 
     set_entity(x2, y2, etmp2); /* currently only automissers can be here */
     if (etmp2->edata)

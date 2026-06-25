@@ -99,7 +99,7 @@ on_goal(void)
 void
 onquest(void)
 {
-    if (u.uevent.qcompleted || Not_firsttime)
+    if (is_uevent_qcompleted() || Not_firsttime)
         return;
     if (!Is_special(&u.uz))
         return;
@@ -194,18 +194,18 @@ expulsion(boolean seal)
     d_level *dest;
     struct trap *t;
     int64_t portal_flag;
-    debugprint("expulsion: seal=%d, qexpelled=%d", (int)seal, (int)u.uevent.qexpelled);
-    issue_breadcrumb3("Expulsion.", (int)seal, (int)u.uevent.qexpelled);
+    debugprint("expulsion: seal=%d, qexpelled=%d", (int)seal, (int)is_uevent_qexpelled());
+    issue_breadcrumb3("Expulsion.", (int)seal, (int)is_uevent_qexpelled());
 
     br = dungeon_branch("The Quest");
     dest = (br->end1.dnum == u.uz.dnum) ? &br->end2 : &br->end1;
-    portal_flag = u.uevent.qexpelled ? 0 /* returned via artifact? */
+    portal_flag = is_uevent_qexpelled() ? 0 /* returned via artifact? */
                                      : !seal ? 1 : -1;
     schedule_goto(dest, FALSE, FALSE, TRUE, FALSE, portal_flag, (char *) 0, (char *) 0);
     if (seal) { /* remove the portal to the quest - sealing it off */
-        int reexpelled = u.uevent.qexpelled;
+        int reexpelled = is_uevent_qexpelled();
 
-        u.uevent.qexpelled = 1;
+        set_uevent_qexpelled(1);
         remdun_mapseen(quest_dnum);
         /* Delete the near portal now; the far (main dungeon side)
            portal will be deleted as part of arrival on that level.
@@ -234,7 +234,7 @@ finish_quest(struct obj *obj)
 {
     struct obj *otmp;
 
-    if (u.uhave.amulet) { /* unlikely but not impossible */
+    if (is_uhave_amulet()) { /* unlikely but not impossible */
         qt_pager_ex((struct monst*)0, QT_HASAMULET, ATR_NONE, CLR_MSG_HINT, FALSE);
         /* leader IDs the real amulet but ignores any fakes */
         if ((otmp = carrying(AMULET_OF_YENDOR)) != 0)
@@ -252,7 +252,7 @@ finish_quest(struct obj *obj)
     Qstat(got_thanks) = TRUE;
 
     if (obj) {
-        u.uevent.qcompleted = 1; /* you did it! */
+        set_uevent_qcompleted(1); /* you did it! */
         /* behave as if leader imparts sufficient info about the
            quest artifact */
         fully_identify_obj(obj);
@@ -268,7 +268,7 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
 {
     boolean res = FALSE;
     /*  Rule 0: Cheater checks. */
-    if (u.uhave.questart && !Qstat(met_nemesis))
+    if (is_uhave_questart() && !Qstat(met_nemesis))
         Qstat(cheater) = TRUE;
 
     /*  It is possible for you to get the amulet without completing
@@ -278,7 +278,7 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
     {
         res = TRUE;
         /* Rule 1: You've gone back with/without the amulet. */
-        if (u.uhave.amulet)
+        if (is_uhave_amulet())
             finish_quest((struct obj *) 0);
 
         /* Rule 2: You've gone back before going for the amulet. */
@@ -289,7 +289,7 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
 
     /* Rule 3: You've got the artifact and are back to return it. */
     }
-    else if (u.uhave.questart)
+    else if (is_uhave_questart())
     {
         res = TRUE;
         struct obj *otmp;
@@ -391,7 +391,7 @@ leader_speaks(struct monst *mtmp)
         debugprint_pos();
         expulsion(TRUE); // Return FALSE for safety
     }
-    else if(!u.uevent.qcompleted)
+    else if(!is_uevent_qcompleted())
         return chat_with_leader(mtmp, FALSE);
 
     return FALSE;
@@ -403,7 +403,7 @@ chat_with_nemesis(struct monst *mtmp, boolean dopopup)
     /*  The nemesis will do most of the talking, but... */
     if (!Qstat(met_nemesis))
         qt_pager_ex(mtmp, QT_FIRSTNEMESIS, ATR_NONE, NO_COLOR, dopopup);
-    else if (u.uhave.questart && !rn2(2))
+    else if (is_uhave_questart() && !rn2(2))
         qt_pager_ex(mtmp, QT_NEMWANTSIT, ATR_NONE, NO_COLOR, dopopup);
     else
         qt_pager_ex(mtmp, rn1(10, QT_DISCOURAGE), ATR_NONE, NO_COLOR, dopopup);
@@ -420,7 +420,7 @@ nemesis_speaks(struct monst *mtmp)
     boolean res = TRUE;
     if (!Qstat(in_battle) || !Qstat(met_nemesis))
     {
-        if (u.uhave.questart)
+        if (is_uhave_questart())
             qt_pager(mtmp, QT_NEMWANTSIT);
         else if (Qstat(made_goal) == 1 || !Qstat(met_nemesis))
             qt_pager(mtmp, QT_FIRSTNEMESIS);
@@ -453,7 +453,7 @@ static boolean
 chat_with_guardian(struct monst *mtmp, boolean dopopup)
 {
     /*  These guys/gals really don't have much to say... */
-    if (u.uhave.questart && Qstat(killed_nemesis))
+    if (is_uhave_questart() && Qstat(killed_nemesis))
     {
         qt_pager_ex(mtmp, rn1(5, QT_GUARDTALK2), ATR_NONE, NO_COLOR, dopopup);
     }

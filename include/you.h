@@ -70,91 +70,204 @@ struct RoleAdvance {
 };
 
 struct u_have {
-    Bitfield(amulet, 1);   /* carrying Amulet   */
-    Bitfield(bell, 1);     /* carrying Bell     */
-    Bitfield(book, 1);     /* carrying Book     */
-    Bitfield(menorah, 1);  /* carrying Candelabrum */
-    Bitfield(questart, 1); /* carrying the Quest Artifact */
-    Bitfield(prime_codex, 1);  /* carrying Prime Codex */
-    Bitfield(unused, 2);
-
-    unsigned reserved;
+    uint64_t bitflags;
+#define UHAVE_BITFLAG_NONE          0x00000000UL
+#define UHAVE_BITFLAG_AMULET        0x00000001UL
+#define UHAVE_BITFLAG_BELL          0x00000002UL
+#define UHAVE_BITFLAG_BOOK          0x00000004UL
+#define UHAVE_BITFLAG_MENORAH       0x00000008UL
+#define UHAVE_BITFLAG_QUESTART      0x00000010UL
+#define UHAVE_BITFLAG_PRIME_CODEX   0x00000020UL
 };
 
+#define get_flag(flags, bit) (((flags) & (bit)) != 0UL)
+#define set_flag(flags, bit, value) ((value) ? ((flags) |= (bit)) : ((flags) &= ~(bit)))
+#define toggle_flag(flags, bit) ((flags) ^= (bit))
+
+#define is_uhave_amulet()                       get_flag(u.uhave.bitflags, UHAVE_BITFLAG_AMULET)
+#define set_uhave_amulet(v)                     set_flag(u.uhave.bitflags, UHAVE_BITFLAG_AMULET, (v))
+#define is_uhave_bell()                         get_flag(u.uhave.bitflags, UHAVE_BITFLAG_BELL)
+#define set_uhave_bell(v)                       set_flag(u.uhave.bitflags, UHAVE_BITFLAG_BELL, (v))
+#define is_uhave_book()                         get_flag(u.uhave.bitflags, UHAVE_BITFLAG_BOOK)
+#define set_uhave_book(v)                       set_flag(u.uhave.bitflags, UHAVE_BITFLAG_BOOK, (v))
+#define is_uhave_menorah()                      get_flag(u.uhave.bitflags, UHAVE_BITFLAG_MENORAH)
+#define set_uhave_menorah(v)                    set_flag(u.uhave.bitflags, UHAVE_BITFLAG_MENORAH, (v))
+#define is_uhave_questart()                     get_flag(u.uhave.bitflags, UHAVE_BITFLAG_QUESTART)
+#define set_uhave_questart(v)                   set_flag(u.uhave.bitflags, UHAVE_BITFLAG_QUESTART, (v))
+#define is_uhave_prime_codex()                  get_flag(u.uhave.bitflags, UHAVE_BITFLAG_PRIME_CODEX)
+#define set_uhave_prime_codex(v)                set_flag(u.uhave.bitflags, UHAVE_BITFLAG_PRIME_CODEX, (v))
+
 struct u_event {
-    Bitfield(minor_oracle, 1); /* received at least 1 cheap oracle */
-    Bitfield(major_oracle, 1); /*  "  expensive oracle */
-    Bitfield(read_tribute, 1); /* read a passage from a novel */
-    Bitfield(qcalled, 1);      /* called by Quest leader to do task */
-    Bitfield(qexpelled, 1);    /* expelled from the Quest dungeon */
-    Bitfield(qcompleted, 1);   /* successfully completed Quest task */
-    Bitfield(uheard_tune, 2);  /* 1=know about, 2=heard passtune */
+    uint64_t bitflags;
+#define UEVENT_BITFLAG_NONE                      0x00000000UL
+#define UEVENT_BITFLAG_MINOR_ORACLE              0x00000001UL
+#define UEVENT_BITFLAG_MAJOR_ORACLE              0x00000002UL
+#define UEVENT_BITFLAG_READ_TRIBUTE              0x00000004UL
+#define UEVENT_BITFLAG_QCALLED                   0x00000008UL
+#define UEVENT_BITFLAG_QEXPELLED                 0x00000010UL
+#define UEVENT_BITFLAG_QCOMPLETED                0x00000020UL
+#define UEVENT_BITFLAG_UOPENED_DBRIDGE           0x00000040UL
+#define UEVENT_BITFLAG_INVOKED                   0x00000080UL
+#define UEVENT_BITFLAG_GEHENNOM_ENTERED          0x00000100UL
+#define UEVENT_BITFLAG_MODRON_PORTAL_HINT        0x00000200UL
+#define UEVENT_BITFLAG_MODRON_PLANE_ENTERED      0x00000400UL
+#define UEVENT_BITFLAG_BOVINE_PORTAL_HINT        0x00000800UL
+#define UEVENT_BITFLAG_HELLISH_PASTURES_ENTERED  0x00001000UL
+#define UEVENT_BITFLAG_QUANTUM_PORTAL_HINT       0x00002000UL
+#define UEVENT_BITFLAG_LARGE_CIRCULAR_DGN_ENT    0x00004000UL
+#define UEVENT_BITFLAG_POLYMORPH_TRAP_WARNING    0x00008000UL
+#define UEVENT_BITFLAG_UKILLED_WIZARD            0x00010000UL
+#define UEVENT_BITFLAG_UVIBRATED                 0x00020000UL
+#define UEVENT_BITFLAG_ASCENDED                  0x00040000UL
+#define UEVENT_BITFLAG_ROLE_ACHIEVEMENT_1        0x00080000UL
+#define UEVENT_BITFLAG_ROLE_ACHIEVEMENT_2        0x00100000UL
+#define UEVENT_BITFLAG_ELBERETH_KNOWN            0x00200000UL
+#define UEVENT_BITFLAG_INVOCATION_RITUAL_KNOWN   0x00400000UL
+#define UEVENT_BITFLAG_HEARD_OF_INVOCATION       0x00800000UL
 
-    Bitfield(uopened_dbridge, 1);   /* opened the drawbridge */
-    Bitfield(invoked, 1);           /* invoked Gate to the Sanctum level */
-    Bitfield(gehennom_entered, 1);  /* entered Gehennom via Valley */
-    Bitfield(modron_portal_hint, 1); /* modron portal hint given */
-    Bitfield(modron_plane_entered, 1); /* entered the modron plane */
-    Bitfield(bovine_portal_hint, 1); /* bovine portal hint given */
-    Bitfield(hellish_pastures_entered, 1); /* entered the Hellish Pastures */
-    Bitfield(quantum_portal_hint, 1); /* quantum portal hint given */
-
-    Bitfield(large_circular_dgn_entered, 1); /* entered the Large Circular Dungeon */
-    Bitfield(polymorph_trap_warning, 1); /* polymorph trap warning given */
-    Bitfield(uhand_of_elbereth, 2); /* became Hand of Elbereth */
-    Bitfield(ukilled_wizard, 1);    /* killed the wiz */
-    Bitfield(uvibrated, 1);         /* stepped on "vibrating square" */
-    Bitfield(ascended, 1);          /* has offered the Amulet */
-    Bitfield(role_achievement_1, 1);  /* passed the first requirement of the role achievement */
-
-    Bitfield(role_achievement_2, 1);  /* passed the second requirement of the role achievement */
-    Bitfield(elbereth_known, 1);      /* has learned of Elbereth */
-    Bitfield(invocation_ritual_known, 1); /* has learned how to conduct the invocation ritual from the Oracle */
-    Bitfield(heard_of_invocation_ritual, 1); /* has heard of the invocation ritual and the items necessary for it; enables the quest update */
-
-    unsigned reserved;
-
+    uchar uheard_tune;
+    uchar uhand_of_elbereth;
     unsigned ranks_attained;
 };
 
+#define is_uevent_minor_oracle()                get_flag(u.uevent.bitflags, UEVENT_BITFLAG_MINOR_ORACLE)
+#define set_uevent_minor_oracle(v)              set_flag(u.uevent.bitflags, UEVENT_BITFLAG_MINOR_ORACLE, (v))
+#define is_uevent_major_oracle()                get_flag(u.uevent.bitflags, UEVENT_BITFLAG_MAJOR_ORACLE)
+#define set_uevent_major_oracle(v)              set_flag(u.uevent.bitflags, UEVENT_BITFLAG_MAJOR_ORACLE, (v))
+#define is_uevent_read_tribute()                get_flag(u.uevent.bitflags, UEVENT_BITFLAG_READ_TRIBUTE)
+#define set_uevent_read_tribute(v)              set_flag(u.uevent.bitflags, UEVENT_BITFLAG_READ_TRIBUTE, (v))
+#define is_uevent_qcalled()                     get_flag(u.uevent.bitflags, UEVENT_BITFLAG_QCALLED)
+#define set_uevent_qcalled(v)                   set_flag(u.uevent.bitflags, UEVENT_BITFLAG_QCALLED, (v))
+#define is_uevent_qexpelled()                   get_flag(u.uevent.bitflags, UEVENT_BITFLAG_QEXPELLED)
+#define set_uevent_qexpelled(v)                 set_flag(u.uevent.bitflags, UEVENT_BITFLAG_QEXPELLED, (v))
+#define is_uevent_qcompleted()                  get_flag(u.uevent.bitflags, UEVENT_BITFLAG_QCOMPLETED)
+#define set_uevent_qcompleted(v)                set_flag(u.uevent.bitflags, UEVENT_BITFLAG_QCOMPLETED, (v))
+#define is_uevent_uopened_dbridge()             get_flag(u.uevent.bitflags, UEVENT_BITFLAG_UOPENED_DBRIDGE)
+#define set_uevent_uopened_dbridge(v)           set_flag(u.uevent.bitflags, UEVENT_BITFLAG_UOPENED_DBRIDGE, (v))
+#define is_uevent_invoked()                     get_flag(u.uevent.bitflags, UEVENT_BITFLAG_INVOKED)
+#define set_uevent_invoked(v)                   set_flag(u.uevent.bitflags, UEVENT_BITFLAG_INVOKED, (v))
+#define is_uevent_gehennom_entered()            get_flag(u.uevent.bitflags, UEVENT_BITFLAG_GEHENNOM_ENTERED)
+#define set_uevent_gehennom_entered(v)          set_flag(u.uevent.bitflags, UEVENT_BITFLAG_GEHENNOM_ENTERED, (v))
+#define is_uevent_modron_portal_hint()          get_flag(u.uevent.bitflags, UEVENT_BITFLAG_MODRON_PORTAL_HINT)
+#define set_uevent_modron_portal_hint(v)        set_flag(u.uevent.bitflags, UEVENT_BITFLAG_MODRON_PORTAL_HINT, (v))
+#define is_uevent_modron_plane_entered()        get_flag(u.uevent.bitflags, UEVENT_BITFLAG_MODRON_PLANE_ENTERED)
+#define set_uevent_modron_plane_entered(v)      set_flag(u.uevent.bitflags, UEVENT_BITFLAG_MODRON_PLANE_ENTERED, (v))
+#define is_uevent_bovine_portal_hint()          get_flag(u.uevent.bitflags, UEVENT_BITFLAG_BOVINE_PORTAL_HINT)
+#define set_uevent_bovine_portal_hint(v)        set_flag(u.uevent.bitflags, UEVENT_BITFLAG_BOVINE_PORTAL_HINT, (v))
+#define is_uevent_hellish_pastures_entered()    get_flag(u.uevent.bitflags, UEVENT_BITFLAG_HELLISH_PASTURES_ENTERED)
+#define set_uevent_hellish_pastures_entered(v)  set_flag(u.uevent.bitflags, UEVENT_BITFLAG_HELLISH_PASTURES_ENTERED, (v))
+#define is_uevent_quantum_portal_hint()         get_flag(u.uevent.bitflags, UEVENT_BITFLAG_QUANTUM_PORTAL_HINT)
+#define set_uevent_quantum_portal_hint(v)       set_flag(u.uevent.bitflags, UEVENT_BITFLAG_QUANTUM_PORTAL_HINT, (v))
+#define is_uevent_large_circular_dgn_entered()  get_flag(u.uevent.bitflags, UEVENT_BITFLAG_LARGE_CIRCULAR_DGN_ENT)
+#define set_uevent_large_circular_dgn_entered(v) set_flag(u.uevent.bitflags, UEVENT_BITFLAG_LARGE_CIRCULAR_DGN_ENT, (v))
+#define is_uevent_polymorph_trap_warning()      get_flag(u.uevent.bitflags, UEVENT_BITFLAG_POLYMORPH_TRAP_WARNING)
+#define set_uevent_polymorph_trap_warning(v)    set_flag(u.uevent.bitflags, UEVENT_BITFLAG_POLYMORPH_TRAP_WARNING, (v))
+#define is_uevent_ukilled_wizard()              get_flag(u.uevent.bitflags, UEVENT_BITFLAG_UKILLED_WIZARD)
+#define set_uevent_ukilled_wizard(v)            set_flag(u.uevent.bitflags, UEVENT_BITFLAG_UKILLED_WIZARD, (v))
+#define is_uevent_uvibrated()                   get_flag(u.uevent.bitflags, UEVENT_BITFLAG_UVIBRATED)
+#define set_uevent_uvibrated(v)                 set_flag(u.uevent.bitflags, UEVENT_BITFLAG_UVIBRATED, (v))
+#define is_uevent_ascended()                    get_flag(u.uevent.bitflags, UEVENT_BITFLAG_ASCENDED)
+#define set_uevent_ascended(v)                  set_flag(u.uevent.bitflags, UEVENT_BITFLAG_ASCENDED, (v))
+#define is_uevent_role_achievement_1()          get_flag(u.uevent.bitflags, UEVENT_BITFLAG_ROLE_ACHIEVEMENT_1)
+#define set_uevent_role_achievement_1(v)        set_flag(u.uevent.bitflags, UEVENT_BITFLAG_ROLE_ACHIEVEMENT_1, (v))
+#define is_uevent_role_achievement_2()          get_flag(u.uevent.bitflags, UEVENT_BITFLAG_ROLE_ACHIEVEMENT_2)
+#define set_uevent_role_achievement_2(v)        set_flag(u.uevent.bitflags, UEVENT_BITFLAG_ROLE_ACHIEVEMENT_2, (v))
+#define is_uevent_elbereth_known()              get_flag(u.uevent.bitflags, UEVENT_BITFLAG_ELBERETH_KNOWN)
+#define set_uevent_elbereth_known(v)            set_flag(u.uevent.bitflags, UEVENT_BITFLAG_ELBERETH_KNOWN, (v))
+#define is_uevent_invocation_ritual_known()     get_flag(u.uevent.bitflags, UEVENT_BITFLAG_INVOCATION_RITUAL_KNOWN)
+#define set_uevent_invocation_ritual_known(v)   set_flag(u.uevent.bitflags, UEVENT_BITFLAG_INVOCATION_RITUAL_KNOWN, (v))
+#define is_uevent_heard_of_invocation_ritual()  get_flag(u.uevent.bitflags, UEVENT_BITFLAG_HEARD_OF_INVOCATION)
+#define set_uevent_heard_of_invocation_ritual(v) set_flag(u.uevent.bitflags, UEVENT_BITFLAG_HEARD_OF_INVOCATION, (v))
+
 struct u_achieve {
-    /* Major Achievements */
-    Bitfield(amulet, 1);  /* touched Amulet */
-    Bitfield(bell, 1);    /* touched Bell */
-    Bitfield(book, 1);    /* touched Book */
-    Bitfield(menorah, 1); /* touched Candelabrum */
-    Bitfield(prime_codex, 1); /* touched Prime Codex */
-    Bitfield(enter_gehennom, 1); /* entered Gehennom (or Valley) by any means */
-    Bitfield(ascended, 1); /* not quite the same as u.uevent.ascended */
-    Bitfield(mines_luckstone, 1); /* got a luckstone at end of mines */
-
-    Bitfield(finish_sokoban, 1);  /* obtained the sokoban prize */
-    Bitfield(killed_medusa, 1);
-    Bitfield(killed_yacc, 1);
-    /* Minor Achievements */
-    Bitfield(consulted_oracle, 1);
-    Bitfield(read_discworld_novel, 1);
-    Bitfield(entered_gnomish_mines, 1);
-    Bitfield(entered_mine_town, 1);
-    Bitfield(entered_shop, 1);
-
-    Bitfield(entered_temple, 1);
-    Bitfield(entered_sokoban, 1);
-    Bitfield(entered_bigroom, 1);
-    Bitfield(learned_castle_tune, 1);
-    Bitfield(entered_large_circular_dungeon, 1);
-    Bitfield(entered_plane_of_modron, 1);
-    Bitfield(entered_hellish_pastures, 1);
-    Bitfield(entered_elemental_planes, 1);
-    Bitfield(entered_astral_plane, 1);
-
-    /* Other Achievements */
-    Bitfield(role_achievement, 1); /* Special achievement for the role */
-    Bitfield(crowned, 1); /* Became Hand of Elbereth, Envoy of Balance, or Glory of Arioch */
-    Bitfield(killed_demogorgon, 1);
-
-    unsigned reserved;
+    uint64_t bitflags;
+#define UACHIEVE_BITFLAG_NONE                        0x00000000UL
+#define UACHIEVE_BITFLAG_AMULET                      0x00000001UL
+#define UACHIEVE_BITFLAG_BELL                        0x00000002UL
+#define UACHIEVE_BITFLAG_BOOK                        0x00000004UL
+#define UACHIEVE_BITFLAG_MENORAH                     0x00000008UL
+#define UACHIEVE_BITFLAG_PRIME_CODEX                 0x00000010UL
+#define UACHIEVE_BITFLAG_ENTER_GEHENNOM              0x00000020UL
+#define UACHIEVE_BITFLAG_ASCENDED                    0x00000040UL
+#define UACHIEVE_BITFLAG_MINES_LUCKSTONE             0x00000080UL
+#define UACHIEVE_BITFLAG_FINISH_SOKOBAN              0x00000100UL
+#define UACHIEVE_BITFLAG_KILLED_MEDUSA               0x00000200UL
+#define UACHIEVE_BITFLAG_KILLED_YACC                 0x00000400UL
+#define UACHIEVE_BITFLAG_CONSULTED_ORACLE            0x00000800UL
+#define UACHIEVE_BITFLAG_READ_DISCWORLD_NOVEL        0x00001000UL
+#define UACHIEVE_BITFLAG_ENTERED_GNOMISH_MINES       0x00002000UL
+#define UACHIEVE_BITFLAG_ENTERED_MINE_TOWN           0x00004000UL
+#define UACHIEVE_BITFLAG_ENTERED_SHOP                0x00008000UL
+#define UACHIEVE_BITFLAG_ENTERED_TEMPLE              0x00010000UL
+#define UACHIEVE_BITFLAG_ENTERED_SOKOBAN             0x00020000UL
+#define UACHIEVE_BITFLAG_ENTERED_BIGROOM             0x00040000UL
+#define UACHIEVE_BITFLAG_LEARNED_CASTLE_TUNE         0x00080000UL
+#define UACHIEVE_BITFLAG_ENTERED_CIRCULAR_DGN        0x00100000UL
+#define UACHIEVE_BITFLAG_ENTERED_PLANE_OF_MODRON     0x00200000UL
+#define UACHIEVE_BITFLAG_ENTERED_HELLISH_PASTURES    0x00400000UL
+#define UACHIEVE_BITFLAG_ENTERED_PLANES              0x00800000UL
+#define UACHIEVE_BITFLAG_ENTERED_ASTRAL              0x01000000UL
+#define UACHIEVE_BITFLAG_ROLE_ACHIEVEMENT            0x02000000UL
+#define UACHIEVE_BITFLAG_CROWNED                     0x04000000UL
+#define UACHIEVE_BITFLAG_KILLED_DEMOGORGON           0x08000000UL
 };
+
+#define is_uachieve_amulet()                    get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_AMULET)
+#define set_uachieve_amulet(v)                  set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_AMULET, (v))
+#define is_uachieve_bell()                      get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_BELL)
+#define set_uachieve_bell(v)                    set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_BELL, (v))
+#define is_uachieve_book()                      get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_BOOK)
+#define set_uachieve_book(v)                    set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_BOOK, (v))
+#define is_uachieve_menorah()                   get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_MENORAH)
+#define set_uachieve_menorah(v)                 set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_MENORAH, (v))
+#define is_uachieve_prime_codex()               get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_PRIME_CODEX)
+#define set_uachieve_prime_codex(v)             set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_PRIME_CODEX, (v))
+#define is_uachieve_enter_gehennom()            get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTER_GEHENNOM)
+#define set_uachieve_enter_gehennom(v)          set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTER_GEHENNOM, (v))
+#define is_uachieve_ascended()                  get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ASCENDED)
+#define set_uachieve_ascended(v)                set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ASCENDED, (v))
+#define is_uachieve_mines_luckstone()           get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_MINES_LUCKSTONE)
+#define set_uachieve_mines_luckstone(v)         set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_MINES_LUCKSTONE, (v))
+#define is_uachieve_finish_sokoban()            get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_FINISH_SOKOBAN)
+#define set_uachieve_finish_sokoban(v)          set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_FINISH_SOKOBAN, (v))
+#define is_uachieve_killed_medusa()             get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_KILLED_MEDUSA)
+#define set_uachieve_killed_medusa(v)           set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_KILLED_MEDUSA, (v))
+#define is_uachieve_killed_yacc()               get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_KILLED_YACC)
+#define set_uachieve_killed_yacc(v)             set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_KILLED_YACC, (v))
+#define is_uachieve_consulted_oracle()          get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_CONSULTED_ORACLE)
+#define set_uachieve_consulted_oracle(v)        set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_CONSULTED_ORACLE, (v))
+#define is_uachieve_read_discworld_novel()      get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_READ_DISCWORLD_NOVEL)
+#define set_uachieve_read_discworld_novel(v)    set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_READ_DISCWORLD_NOVEL, (v))
+#define is_uachieve_entered_gnomish_mines()     get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_GNOMISH_MINES)
+#define set_uachieve_entered_gnomish_mines(v)   set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_GNOMISH_MINES, (v))
+#define is_uachieve_entered_mine_town()         get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_MINE_TOWN)
+#define set_uachieve_entered_mine_town(v)       set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_MINE_TOWN, (v))
+#define is_uachieve_entered_shop()              get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_SHOP)
+#define set_uachieve_entered_shop(v)            set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_SHOP, (v))
+#define is_uachieve_entered_temple()            get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_TEMPLE)
+#define set_uachieve_entered_temple(v)          set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_TEMPLE, (v))
+#define is_uachieve_entered_sokoban()           get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_SOKOBAN)
+#define set_uachieve_entered_sokoban(v)         set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_SOKOBAN, (v))
+#define is_uachieve_entered_bigroom()           get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_BIGROOM)
+#define set_uachieve_entered_bigroom(v)         set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_BIGROOM, (v))
+#define is_uachieve_learned_castle_tune()       get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_LEARNED_CASTLE_TUNE)
+#define set_uachieve_learned_castle_tune(v)     set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_LEARNED_CASTLE_TUNE, (v))
+#define is_uachieve_entered_large_circular_dungeon() get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_CIRCULAR_DGN)
+#define set_uachieve_entered_large_circular_dungeon(v) set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_CIRCULAR_DGN, (v))
+#define is_uachieve_entered_plane_of_modron()   get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_PLANE_OF_MODRON)
+#define set_uachieve_entered_plane_of_modron(v) set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_PLANE_OF_MODRON, (v))
+#define is_uachieve_entered_hellish_pastures()  get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_HELLISH_PASTURES)
+#define set_uachieve_entered_hellish_pastures(v) set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_HELLISH_PASTURES, (v))
+#define is_uachieve_entered_elemental_planes()  get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_PLANES)
+#define set_uachieve_entered_elemental_planes(v) set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_PLANES, (v))
+#define is_uachieve_entered_astral_plane()      get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_ASTRAL)
+#define set_uachieve_entered_astral_plane(v)    set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ENTERED_ASTRAL, (v))
+#define is_uachieve_role_achievement()          get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ROLE_ACHIEVEMENT)
+#define set_uachieve_role_achievement(v)        set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_ROLE_ACHIEVEMENT, (v))
+#define is_uachieve_crowned()                   get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_CROWNED)
+#define set_uachieve_crowned(v)                 set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_CROWNED, (v))
+#define is_uachieve_killed_demogorgon()         get_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_KILLED_DEMOGORGON)
+#define set_uachieve_killed_demogorgon(v)       set_flag(u.uachieve.bitflags, UACHIEVE_BITFLAG_KILLED_DEMOGORGON, (v))
 
 enum kill_hints
 {

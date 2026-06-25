@@ -1424,7 +1424,7 @@ move_monsters_to_mydogs(boolean pets_only, boolean nearby_only)
              /* the wiz will level t-port from anywhere to chase
                 the amulet; if you don't have it, will chase you
                 only if in range. -3. */
-             || (u.uhave.amulet && mtmp->iswiz))
+             || (is_uhave_amulet() && mtmp->iswiz))
             && ((mon_can_move(mtmp))
                 /* eg if level teleport or new trap, steed has no control
                    to avoid following */

@@ -4366,7 +4366,7 @@ calchungry(boolean *known_props)
         res += 0.05;
     if (umisc4 && objects[umisc4->otyp].oc_name_known && obj_consumes_nutrition_every_20_turns(umisc4))
         res += 0.05;
-    if (objects[AMULET_OF_YENDOR].oc_name_known && u.uhave.amulet)
+    if (objects[AMULET_OF_YENDOR].oc_name_known && is_uhave_amulet())
         res += 0.05;
     if (umisc5 && objects[umisc5->otyp].oc_name_known && obj_consumes_nutrition_every_20_turns(umisc5))
         res += 0.05;
@@ -4454,7 +4454,7 @@ gethungry(void)
                 u.uhunger--;
             break;
         case 16:
-            if (u.uhave.amulet)
+            if (is_uhave_amulet())
                 u.uhunger--;
             break;
         case 18:

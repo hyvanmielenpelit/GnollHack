@@ -1402,7 +1402,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
 
     if (!strcmp(buf, Elbereth_word))
     {
-        u.uevent.elbereth_known = 1;
+        set_uevent_elbereth_known(1);
         if (!u.uconduct.elbereths++)
         {
             livelog_printf(LL_CONDUCT, "engraved Elbereth for the first time");

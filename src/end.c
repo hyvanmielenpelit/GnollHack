@@ -1892,7 +1892,7 @@ done(int how)
             if (!In_endgame(&u.uz))
             {
                 d_level dl = { 0 };
-                if (u.uachieve.amulet)
+                if (is_uachieve_amulet())
                 {
                     dl = sanctum_level;
                 }
@@ -2440,7 +2440,7 @@ really_done(int how)
             dump_redirect(FALSE);
         }
 #endif
-        if (u.uhave.amulet)
+        if (is_uhave_amulet())
         {
             Strcat(killer.name, " (with the Amulet)");
         }
@@ -3394,7 +3394,7 @@ print_selfies(winid enwin, int final)
             issue_debuglog(0, dbuf);
             context.role_score = selfiescore;
         }
-        int64_t score_percentage = ((selfiescore + (int64_t)u.uachieve.role_achievement * TOURIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((selfiescore + (int64_t)is_uachieve_role_achievement() * TOURIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(buf, " You %s gained %lld%% of your maximum role score.", final ? "had" : "have", (long long)score_percentage);
         putstr(enwin, ATR_PARAGRAPH_LINE, buf);
@@ -3492,7 +3492,7 @@ print_knight_slayings(winid enwin, int final)
             issue_debuglog(0, dbuf);
             context.role_score = killscore;
         }
-        int64_t score_percentage = ((killscore + (int64_t)u.uachieve.role_achievement * KNIGHT_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((killscore + (int64_t)is_uachieve_role_achievement() * KNIGHT_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(buf, " You %s gained %lld%% of your maximum role score.", final ? "had" : "have", (long long)score_percentage);
         putstr(enwin, ATR_PARAGRAPH_LINE, buf);
@@ -3879,20 +3879,20 @@ get_current_game_score(void)
 
     int64_t utotal = 0;
     int64_t Deepest_Dungeon_Level = deepest_lev_reached(FALSE);
-    int64_t Achievements_Score = (int64_t)(u.uachieve.amulet + u.uachieve.ascended + u.uachieve.bell + u.uachieve.book + u.uachieve.enter_gehennom + u.uachieve.finish_sokoban +
-        u.uachieve.killed_medusa + u.uachieve.killed_yacc + u.uachieve.killed_demogorgon + u.uachieve.menorah + u.uachieve.prime_codex + u.uachieve.mines_luckstone +
-        + u.uachieve.entered_astral_plane + u.uachieve.entered_elemental_planes + u.uevent.invoked + u.uachieve.crowned + u.uachieve.learned_castle_tune
+    int64_t Achievements_Score = (int64_t)(is_uachieve_amulet() + is_uachieve_ascended() + is_uachieve_bell() + is_uachieve_book() + is_uachieve_enter_gehennom() + is_uachieve_finish_sokoban() +
+        is_uachieve_killed_medusa() + is_uachieve_killed_yacc() + is_uachieve_killed_demogorgon() + is_uachieve_menorah() + is_uachieve_prime_codex() + is_uachieve_mines_luckstone() +
+        + is_uachieve_entered_astral_plane() + is_uachieve_entered_elemental_planes() + is_uevent_invoked() + is_uachieve_crowned() + is_uachieve_learned_castle_tune()
         );
 
-    int64_t Small_Achievements_Score = (int64_t)(u.uachieve.consulted_oracle + u.uachieve.read_discworld_novel
-        + u.uachieve.entered_gnomish_mines + u.uachieve.entered_mine_town 
-        + u.uachieve.entered_shop + u.uachieve.entered_temple
-        + u.uachieve.entered_sokoban + u.uachieve.entered_bigroom
-        + u.uachieve.entered_large_circular_dungeon + u.uachieve.entered_plane_of_modron 
-        + u.uachieve.entered_hellish_pastures
+    int64_t Small_Achievements_Score = (int64_t)(is_uachieve_consulted_oracle() + is_uachieve_read_discworld_novel()
+        + is_uachieve_entered_gnomish_mines() + is_uachieve_entered_mine_town() 
+        + is_uachieve_entered_shop() + is_uachieve_entered_temple()
+        + is_uachieve_entered_sokoban() + is_uachieve_entered_bigroom()
+        + is_uachieve_entered_large_circular_dungeon() + is_uachieve_entered_plane_of_modron() 
+        + is_uachieve_entered_hellish_pastures()
         );
 
-    int64_t Conduct_Score = (int64_t)(u.uachieve.ascended) * get_conduct_score_upon_ascension();
+    int64_t Conduct_Score = (int64_t)(is_uachieve_ascended()) * get_conduct_score_upon_ascension();
 
     int64_t Role_Specific_Score = 0L;
     int64_t Role_Achievement_Score = 0L;  /* Special role-specific achievement */
@@ -3916,7 +3916,7 @@ get_current_game_score(void)
         int64_t score1 = count_archaeologist_item_score(invent);
         int64_t score2 = count_archaeologist_item_score(magic_objs);
         Role_Specific_Score = score1 + score2;
-        Role_Achievement_Score = ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     case PM_BARBARIAN:
@@ -3924,7 +3924,7 @@ get_current_game_score(void)
         struct item_score_count_result cnt = count_powerful_melee_weapon_score(invent);
         struct item_score_count_result cnt2 = count_powerful_melee_weapon_score(magic_objs);
         Role_Specific_Score = cnt.score + cnt2.score;
-        Role_Achievement_Score = BARBARIAN_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = BARBARIAN_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     case PM_CAVEMAN:
@@ -3933,7 +3933,7 @@ get_current_game_score(void)
         struct amulet_count_result cnt2 = count_amulets(magic_objs);
         Role_Specific_Score = CAVEMAN_PER_AMULET_OF_LIFE_SAVING_SCORE * cnt.amulets_of_life_saving + CAVEMAN_PER_OTHER_AMULET_SCORE * cnt.other_amulets;
         Role_Specific_Score += CAVEMAN_PER_AMULET_OF_LIFE_SAVING_SCORE * cnt2.amulets_of_life_saving + CAVEMAN_PER_OTHER_AMULET_SCORE * cnt2.other_amulets;
-        Role_Achievement_Score = CAVEMAN_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = CAVEMAN_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     case PM_HEALER:
@@ -3946,7 +3946,7 @@ get_current_game_score(void)
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
                 Role_Specific_Score += HEALER_PER_SPELL_LEVEL_SCORE * (int64_t)(spl_book[i].sp_lev + 2); /* Healer has the fewest spells */
         }
-        Role_Achievement_Score = HEALER_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = HEALER_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     case PM_KNIGHT:
@@ -3967,13 +3967,13 @@ get_current_game_score(void)
         //    }
         //}
         Role_Specific_Score = context.role_score;
-        Role_Achievement_Score = KNIGHT_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = KNIGHT_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     case PM_MONK:
     {
         Role_Specific_Score = Conduct_Score * MONK_EXTRA_CONDUCT_SCORE_MULTIPLIER;
-        Role_Achievement_Score = MONK_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = MONK_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     case PM_PRIEST:
@@ -3986,7 +3986,7 @@ get_current_game_score(void)
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
                 Role_Specific_Score += PRIEST_PER_SPELL_LEVEL_SCORE * (int64_t)(spl_book[i].sp_lev + 2); /* Priest has the fewer spell than wizard */
         }
-        Role_Achievement_Score = PRIEST_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = PRIEST_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     case PM_RANGER:
@@ -3994,7 +3994,7 @@ get_current_game_score(void)
         struct item_score_count_result cnt = count_powerful_ranged_weapon_score(invent);
         struct item_score_count_result cnt2 = count_powerful_ranged_weapon_score(magic_objs);
         Role_Specific_Score = cnt.score + cnt2.score;
-        Role_Achievement_Score = RANGER_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = RANGER_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     case PM_ROGUE:
@@ -4007,7 +4007,7 @@ get_current_game_score(void)
         struct item_score_count_result cnt2 = count_valuable_art_objects(magic_objs);
         lootvalue += cnt.score + cnt2.score;
         Role_Specific_Score = ROGUE_PER_GOLD_SCORE * lootvalue;
-        Role_Achievement_Score = ROGUE_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = ROGUE_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     case PM_SAMURAI:
@@ -4015,7 +4015,7 @@ get_current_game_score(void)
         struct item_score_count_result cnt = count_powerful_Japanese_item_score(invent);
         struct item_score_count_result cnt2 = count_powerful_Japanese_item_score(magic_objs);
         Role_Specific_Score = cnt.score + cnt2.score;
-        Role_Achievement_Score = SAMURAI_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = SAMURAI_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     case PM_TOURIST:
@@ -4029,7 +4029,7 @@ get_current_game_score(void)
         //    }
         //}
         Role_Specific_Score = context.role_score;
-        Role_Achievement_Score = TOURIST_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = TOURIST_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     case PM_VALKYRIE:
@@ -4037,7 +4037,7 @@ get_current_game_score(void)
         struct item_score_count_result cnt = count_powerful_valkyrie_item_score(invent);
         struct item_score_count_result cnt2 = count_powerful_valkyrie_item_score(magic_objs);
         Role_Specific_Score = cnt.score + cnt2.score;
-        Role_Achievement_Score = VALKYRIE_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = VALKYRIE_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     case PM_WIZARD:
@@ -4050,7 +4050,7 @@ get_current_game_score(void)
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
                 Role_Specific_Score += WIZARD_PER_SPELL_LEVEL_SCORE * (int64_t)(spl_book[i].sp_lev + 2);
         }
-        Role_Achievement_Score = WIZARD_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
+        Role_Achievement_Score = WIZARD_ROLE_ACHIEVEMENT_SCORE * (int64_t)is_uachieve_role_achievement();
         break;
     }
     default:
@@ -4064,7 +4064,7 @@ get_current_game_score(void)
     Base_Score = max(0L, Base_Score);
 
     double Turn_Count_Multiplier = sqrt(50000.0) / sqrt((double)max(1L, moves));
-    double Ascension_Multiplier = u.uachieve.ascended ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;
+    double Ascension_Multiplier = is_uachieve_ascended() ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;
     double Difficulty_Multiplier = pow(10.0, 0.5 * (double)context.game_difficulty);
     double mortexp = (double)(u.utruemortality > 2 ? 3 : u.utruemortality + 1);
     double mortmult = (double)(u.utruemortality > 2 ? u.utruemortality - 1 : 1);

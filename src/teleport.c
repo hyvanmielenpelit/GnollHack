@@ -542,7 +542,7 @@ scrolltele(struct obj *scroll, boolean iswizcmd, boolean iscontrolled)
     if (!Blinded)
         make_blinded(0L, FALSE);
 
-    if ((u.uhave.amulet || On_W_tower_level(&u.uz)) && !rn2(3)) 
+    if ((is_uhave_amulet() || On_W_tower_level(&u.uz)) && !rn2(3)) 
     {
         play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
         You_feel("disoriented for a moment.");
@@ -1076,7 +1076,7 @@ level_tele(int teletype, int controltype, d_level target_level, uchar tele_flags
     if (iflags.debug_fuzzer)
         goto random_levtport;
 
-    if ((u.uhave.amulet || In_endgame(&u.uz) || (In_sokoban(&u.uz) && controltype != 2)) && !wizard)
+    if ((is_uhave_amulet() || In_endgame(&u.uz) || (In_sokoban(&u.uz) && controltype != 2)) && !wizard)
     {
         play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
         You_feel("very disoriented for a moment.");
@@ -1141,7 +1141,7 @@ level_tele(int teletype, int controltype, d_level target_level, uchar tele_flags
                 if (In_endgame(&newlevel) && !In_endgame(&u.uz)) {
                     struct obj *amu;
 
-                    if (!u.uhave.amulet
+                    if (!is_uhave_amulet()
                         && (amu = mksobj(AMULET_OF_YENDOR, TRUE, FALSE, FALSE))
                                != 0) {
                         /* ordinarily we'd use hold_another_object()
@@ -1351,7 +1351,7 @@ random_levtport:
             /* if invocation did not yet occur, teleporting into
              * the last level of Gehennom is forbidden.
              */
-            if (!wizard && Inhell && !u.uevent.invoked
+            if (!wizard && Inhell && !is_uevent_invoked()
                 && newlev >= (dungeons[u.uz.dnum].depth_start
                     + dunlevs_in_dungeon(&u.uz) - 1))
             {
@@ -1407,7 +1407,7 @@ domagicportal(struct trap *ttmp)
      * the endgame, from accidently triggering the portal to the
      * next level, and thus losing the game
      */
-    if (In_endgame(&u.uz) && !u.uhave.amulet) {
+    if (In_endgame(&u.uz) && !is_uhave_amulet()) {
         You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "dizzy for a moment, but nothing happens...");
         return;
     }
@@ -2106,7 +2106,7 @@ random_teleport_level(void)
         max_depth =
             dunlevs_in_dungeon(&u.uz) + (dungeons[u.uz.dnum].depth_start - 1);
         /* can't reach Sanctum if the invocation hasn't been performed */
-        if (Inhell && !u.uevent.invoked)
+        if (Inhell && !is_uevent_invoked())
             max_depth -= 1;
     }
 

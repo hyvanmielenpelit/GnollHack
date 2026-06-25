@@ -2213,7 +2213,7 @@ skill_advance(int skill)
         bot();
     }
 
-    if (!u.uachieve.role_achievement &&
+    if (!is_uachieve_role_achievement() &&
         (
             (Role_if(PM_CAVEMAN) && skill == P_BLUDGEONING_WEAPON && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
             || (Role_if(PM_MONK) && skill == P_MARTIAL_ARTS && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
@@ -2222,7 +2222,7 @@ skill_advance(int skill)
             )
        )
     {
-        u.uachieve.role_achievement = 1;
+        set_uachieve_role_achievement(1);
         char abuf[BUFSZ];
         char* ra_desc = get_role_achievement_description(1);
         strcpy_capitalized_for_title(abuf, ra_desc);

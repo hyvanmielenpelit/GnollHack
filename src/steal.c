@@ -682,21 +682,21 @@ stealamulet(struct monst *mtmp)
     if (!otmp) 
     {
         /* if we didn't find any quest arifact, find another valuable item */
-        if (u.uhave.amulet && (mtmp->data->mflags3 & M3_WANTSAMUL))
+        if (is_uhave_amulet() && (mtmp->data->mflags3 & M3_WANTSAMUL))
         {
             real = AMULET_OF_YENDOR;
             fake = FAKE_AMULET_OF_YENDOR;
         } 
-        else if (u.uhave.bell && (mtmp->data->mflags3 & M3_WANTSBELL))
+        else if (is_uhave_bell() && (mtmp->data->mflags3 & M3_WANTSBELL))
         {
             real = BELL_OF_OPENING;
             fake = BELL;
         }
-        else if (u.uhave.book && (mtmp->data->mflags3 & M3_WANTSBOOK))
+        else if (is_uhave_book() && (mtmp->data->mflags3 & M3_WANTSBOOK))
         {
             real = SPE_BOOK_OF_THE_DEAD;
         }
-        else if (u.uhave.menorah && (mtmp->data->mflags3 & M3_WANTSCAND))
+        else if (is_uhave_menorah() && (mtmp->data->mflags3 & M3_WANTSCAND))
         {
             real = CANDELABRUM_OF_INVOCATION;
         }

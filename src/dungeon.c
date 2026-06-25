@@ -1235,7 +1235,7 @@ prev_level(boolean at_stairs)
         /* Taking an up dungeon branch. */
         /* KMH -- Upwards branches are okay if not level 1 */
         /* (Just make sure it doesn't go above depth 1) */
-        if (!u.uz.dnum && u.uz.dlevel == 1 && !u.uhave.amulet)
+        if (!u.uz.dnum && u.uz.dlevel == 1 && !is_uhave_amulet())
             done(ESCAPED);
         else
             goto_level(&sstairs.tolev, at_stairs, FALSE, FALSE, FALSE);
@@ -1653,7 +1653,7 @@ level_difficulty(void)
     {
         res = deepest_lev_reached(FALSE);  //2 * depth(&sanctum_level); //ulevel removed, depth doubled from before
     } 
-    else if (u.uhave.amulet) 
+    else if (is_uhave_amulet()) 
     {
         res = deepest_lev_reached(FALSE); // 2 * deepest_lev_reached(FALSE) - depth(&u.uz);
     } 
@@ -2505,15 +2505,15 @@ recalc_mapseen(void)
     mptr->flags.forgot = 0;
     /* flags.quest_summons disabled once quest finished */
     mptr->flags.quest_summons = (at_dgn_entrance("The Quest")
-                                 && u.uevent.qcalled
-                                 && !(u.uevent.qcompleted
-                                      || u.uevent.qexpelled
+                                 && is_uevent_qcalled()
+                                 && !(is_uevent_qcompleted()
+                                      || is_uevent_qexpelled()
                                       || quest_status.leader_is_dead));
     mptr->flags.questing = (on_level(&u.uz, &qstart_level)
                             && quest_status.got_quest);
-    mptr->flags.modron_hint_shown = (at_dgn_entrance("Plane of the Modron") && u.uevent.modron_portal_hint && !u.uevent.modron_plane_entered);
-    mptr->flags.yacc_hint_shown = (at_dgn_entrance("Hellish Pastures") && u.uevent.bovine_portal_hint && !u.uevent.hellish_pastures_entered);
-    mptr->flags.quantum_hint_shown = (at_dgn_entrance("The Large Circular Dungeon") && u.uevent.quantum_portal_hint && !u.uevent.large_circular_dgn_entered);
+    mptr->flags.modron_hint_shown = (at_dgn_entrance("Plane of the Modron") && is_uevent_modron_portal_hint() && !is_uevent_modron_plane_entered());
+    mptr->flags.yacc_hint_shown = (at_dgn_entrance("Hellish Pastures") && is_uevent_bovine_portal_hint() && !is_uevent_hellish_pastures_entered());
+    mptr->flags.quantum_hint_shown = (at_dgn_entrance("The Large Circular Dungeon") && is_uevent_quantum_portal_hint() && !is_uevent_large_circular_dgn_entered());
 
     debugprint_pos();
     /* track rooms the hero is in */
@@ -2891,7 +2891,7 @@ br_string2(branch *br)
 {
     /* Special case: quest portal says closed if kicked from quest */
     boolean closed_portal = (br->end2.dnum == quest_dnum
-                             && u.uevent.qexpelled);
+                             && is_uevent_qexpelled());
 
     switch (br->type) {
     case BR_PORTAL:
@@ -3206,7 +3206,7 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
     } else if (on_level(&mptr->lev, &qstart_level)) {
         Sprintf(buf, "%sHome%s.", PREFIX,
                 mptr->flags.unreachable ? " (no way back...)" : "");
-        if (u.uevent.qcompleted)
+        if (is_uevent_qcompleted())
             Sprintf(buf, "%sCompleted quest for %s.", PREFIX, ldrname());
         else if (mptr->flags.questing)
             Sprintf(buf, "%sGiven quest by %s.", PREFIX, ldrname());

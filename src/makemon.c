@@ -3105,7 +3105,7 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
     {
         if ((/* is_ndemon(ptr) ||mndx == PM_WUMPUS ||  */ 
              is_tailed_long_worm(&mons[mndx]) || mndx == PM_GIANT_EEL)
-            && !u.uhave.amulet && rn2(5))
+            && !is_uhave_amulet() && rn2(5))
             mtmp->msleeping = TRUE;
     } 
     else 
@@ -4370,7 +4370,7 @@ peace_minded(struct permonst *ptr)
         return FALSE;
 
     /* Negative monster hostile to player with Amulet. */
-    if (mal < A_NEUTRAL && u.uhave.amulet)
+    if (mal < A_NEUTRAL && is_uhave_amulet())
         return FALSE;
 
     /* minions are hostile to players that have strayed at all */

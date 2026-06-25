@@ -1939,7 +1939,7 @@ gcrownu(void)
         if (!strncmpi(hofe, "the ", 4))
             hofe += 4;
 
-        u.uachieve.crowned = 1;
+        set_uachieve_crowned(1);
         achievement_gained(hofe);
         issue_achievement(GUI_ACHIEVEMENT_WAS_CROWNED);
     }
@@ -2139,7 +2139,7 @@ pleased(aligntyp g_align)
                skip if you've solved it via mastermind or destroyed the
                drawbridge (both set uopened_dbridge) or if you've already
                travelled past the Valley of the Dead (gehennom_entered) */
-            if (!u.uevent.uopened_dbridge && !u.uevent.gehennom_entered) 
+            if (!is_uevent_uopened_dbridge() && !is_uevent_gehennom_entered()) 
             {
                 if (u.uevent.uheard_tune < 1) 
                 {
@@ -2340,7 +2340,7 @@ crown_here:
 
     u.uprayer_timeout = Role_if(PM_PRIEST) ? rnz(175) : rnz(350);
 
-    kick_on_butt = u.uevent.ukilled_wizard ? 1 : 0;
+    kick_on_butt = is_uevent_ukilled_wizard() ? 1 : 0;
     if (u.uevent.uhand_of_elbereth)
         kick_on_butt++;
     if (kick_on_butt)
@@ -2833,7 +2833,7 @@ dosacrifice(void)
             /* The final Test.  Did you win? */
             if (uamul == otmp)
                 Amulet_off();
-            u.uevent.ascended = 1;
+            set_uevent_ascended(1);
             debugprint("dosacrifice2: %d", otmp->otyp);
             if (carried(otmp))
                 useup(otmp); /* well, it's gone now */
@@ -2875,10 +2875,10 @@ dosacrifice(void)
             else
             { /* super big win */
                 adjalign(10);
-                if (flags.showscore && !u.uachieve.ascended)
+                if (flags.showscore && !is_uachieve_ascended())
                     context.botl = 1;
 
-                u.uachieve.ascended = 1;
+                set_uachieve_ascended(1);
 
                 play_sfx_sound(SFX_INVISIBLE_CHOIR_SINGS);
                 pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "An invisible choir sings, and you are bathed in radiance...");

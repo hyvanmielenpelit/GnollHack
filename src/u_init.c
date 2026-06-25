@@ -913,8 +913,8 @@ u_init(void)
     u.ugifts   = 0;                     /* no divine gifts bestowed */
     u.uevent.uhand_of_elbereth = 0;
     u.uevent.uheard_tune = 0;
-    u.uevent.uopened_dbridge = 0;
-    u.uevent.ukilled_wizard = 0;              /* not a demi-god yet... */
+    set_uevent_uopened_dbridge(0);
+    set_uevent_ukilled_wizard(0);              /* not a demi-god yet... */
     u.uintervene_timer = 0;
     u.mh = u.mhmax = u.basehpmax = u.mtimedone = 0;
     u.uz.dnum = u.uz0.dnum = 0;

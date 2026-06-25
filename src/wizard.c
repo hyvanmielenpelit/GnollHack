@@ -66,7 +66,7 @@ amulet(void)
     struct obj *amu;
 
 #if 0 /* caller takes care of this check */
-    if (!u.uhave.amulet)
+    if (!is_uhave_amulet())
         return;
 #endif
     if ((((amu = uamul) != 0 && amu->otyp == AMULET_OF_YENDOR)
@@ -217,15 +217,15 @@ you_have_item(uint64_t mask)
 {
     switch (mask) {
     case M3_WANTSAMUL:
-        return (boolean) u.uhave.amulet;
+        return (boolean) is_uhave_amulet();
     case M3_WANTSBELL:
-        return (boolean) u.uhave.bell;
+        return (boolean) is_uhave_bell();
     case M3_WANTSCAND:
-        return (boolean) u.uhave.menorah;
+        return (boolean) is_uhave_menorah();
     case M3_WANTSBOOK:
-        return (boolean) u.uhave.book;
+        return (boolean) is_uhave_book();
     case M3_WANTSARTI:
-        return (boolean) u.uhave.questart;
+        return (boolean) is_uhave_questart();
     default:
         break;
     }
@@ -297,7 +297,7 @@ strategy(struct monst *mtmp)
         if ((strat = target_on(M3_WANTSAMUL, mtmp)) != STRAT_NONE)
             return strat;
 
-    if (u.uevent.invoked) { /* priorities change once gate opened */
+    if (is_uevent_invoked()) { /* priorities change once gate opened */
         if ((strat = target_on(M3_WANTSARTI, mtmp)) != STRAT_NONE)
             return strat;
         if ((strat = target_on(M3_WANTSBOOK, mtmp)) != STRAT_NONE)
@@ -524,7 +524,7 @@ clonewiz(void)
         != 0) {
         mtmp2->msleeping = mtmp2->mtame = mtmp2->mpeaceful = 0;
         mtmp2->mon_flags |= MON_FLAGS_CLONED_WIZ;
-        if (!u.uhave.amulet && rn2(2)) { /* give clone a fake */
+        if (!is_uhave_amulet() && rn2(2)) { /* give clone a fake */
             (void) add_to_minv(mtmp2,
                                mksobj(FAKE_AMULET_OF_YENDOR, TRUE, FALSE, FALSE));
         }
@@ -865,8 +865,8 @@ void
 wizdead(void)
 {
     context.no_of_wizards--;
-    if (!u.uevent.ukilled_wizard) {
-        u.uevent.ukilled_wizard = TRUE;
+    if (!is_uevent_ukilled_wizard()) {
+        set_uevent_ukilled_wizard(TRUE);
         u.uintervene_timer = rn1(250, 50);
         issue_achievement(GUI_ACHIEVEMENT_DEFEATED_WIZARD_OF_YENDOR);
     }
@@ -908,7 +908,7 @@ cuss(struct monst *mtmp)
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
             pline_ex(ATR_NONE, CLR_MSG_TALK_CUSS, "%s laughs fiendishly.", Monnam(mtmp));
         }
-        else if (u.uhave.amulet && !rn2(SIZE(random_insult)))
+        else if (is_uhave_amulet() && !rn2(SIZE(random_insult)))
         {
             int iroll = rn2(SIZE(random_insult));
             play_voice_wizard_of_yendor_cuss(mtmp, 11, iroll);

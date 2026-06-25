@@ -6310,7 +6310,7 @@ mk_dgl_extrainfo(void)
     else {
         int sortval = 0;
         char tmpdng[16];
-        sortval += (u.uhave.amulet ? 1024 : 0);
+        sortval += (is_uhave_amulet() ? 1024 : 0);
         if (Is_knox(&u.uz)) {
             Sprintf(tmpdng, "%s", "Knx");
             sortval += 245;
@@ -6342,7 +6342,7 @@ mk_dgl_extrainfo(void)
 #ifdef UNIX
         chmod(new_fn, eimode);
 #endif
-        fprintf(extrai, "%i|%c %s", sortval, (u.uhave.amulet ? 'A' : ' '), tmpdng);
+        fprintf(extrai, "%i|%c %s", sortval, (is_uhave_amulet() ? 'A' : ' '), tmpdng);
         fclose(extrai);
     }
 }
@@ -6454,8 +6454,8 @@ write_whereis(boolean playing)
         genders[Ufemale].filecode,
         aligns[u.ualign.type == A_NONE ? 3 : 1 - u.ualign.type].filecode,
         encodeconduct(),
-        u.uhave.amulet ? 1 : 0,
-        u.uevent.ascended ? 2 : *killer.name ? 1 : 0,
+        is_uhave_amulet() ? 1 : 0,
+        is_uevent_ascended() ? 2 : *killer.name ? 1 : 0,
         playing);
 
     fp = fopen_datafile(whereis_file, "w", LEVELPREFIX);
