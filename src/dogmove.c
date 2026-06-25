@@ -21,7 +21,7 @@ static int64_t score_targ(struct monst *, struct monst *);
 static boolean can_reach_location(struct monst *, xchar,
                                               xchar, xchar, xchar);
 static void quickmimic(struct monst *);
-static void dog_corpse_after_effect(struct monst*, struct obj*, uchar);
+static void dog_corpse_after_effect(struct monst*, struct obj*, uchar UNUSED);
 static void m_givit(struct monst*, int, struct permonst*);
 
 
@@ -1760,7 +1760,7 @@ score_targ(struct monst *mtmp, struct monst *mtarg)
            damage (from counterattacks) to switch back to vampire form;
            make it be more aggressive by behaving as if stronger */
         mtmp_lev = mtmp->m_lev;
-        if (mtmp->cham >= LOW_PM && is_vampshifter(mtmp) && mtmp->data->mlet != S_VAMPIRE) 
+        if (is_vampshifter(mtmp) && mtmp->data->mlet != S_VAMPIRE) 
         {
             /* is_vampshifter() implies (mtmp->cham >= LOW_PM) */
             mtmp_lev = mons[mtmp->cham].mlevel;
