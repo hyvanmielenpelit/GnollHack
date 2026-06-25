@@ -83,7 +83,7 @@ To avoid name collisions and maintain clarity, use the following standard prefix
 *   `struct macflags`: `MAC_BITFLAG_`
 *   `struct wd_stack_frame`: `WD_STACK_FRAME_BITFLAG_`
 
-**Best Practice:** Always use the `UL` (or `ULL` for 64-bit) suffix to prevent integer overflow issues when doing bitwise operations or left-shifting, matching existing patterns like `mon_flags`.
+**Best Practice:** Even though the `bitflags` variable is a `uint64_t`, always use the `UL` (unsigned long) suffix for literal values rather than `ULL` (unsigned long long). `UL`s are better portable and still can be 64 bits long, preventing integer overflow issues during bitwise operations or left-shifting.
 
 **Important:** Do **not** use the bit shift operator (`<<`) to define flags unless there is a very strong case to use it (e.g., for the sake of specific visual clarity in certain contexts). Stick to explicit hex values as the primary standard.
 ```c
@@ -102,16 +102,21 @@ You must replace every read and write of the old bitfield. Search the codebase f
 *   **Sets/Clears**: `mon->mflee = value;` becomes `set_mon_fleeing(mon, value);` or `set_flag(mon->bitflags, MON_BITFLAG_FLEEING, value);`
 *   **Toggles**: `mon->mflee = !mon->mflee;` becomes `toggle_mon_fleeing(mon);` or `toggle_flag(mon->bitflags, MON_BITFLAG_FLEEING);`
 
-### 4. Update the Save File Version
+### 4. Handle Aliases
+The codebase sometimes contains `#define` aliases pointing to a bitfield. When converting these:
+- **1-bit bitfields:** If the bitfield is one bit, then a new literal value with the same value as the pointed bitfield should be created.
+- **Multi-bit bitfields:** If it is a multibit bitfield, which is converted to `uchar`, then the aliases can be retained as is.
+
+### 5. Update the Save File Version
 Since you are changing the size, layout, and alignment of a core game struct, **you MUST increment the save file version**. 
 Find `patchlevel.h` and update the version constants so the game correctly rejects old, incompatible save files instead of crashing or corrupting memory when trying to load them.
 
-### 5. Update C# Mirror Structs and Enums
+### 6. Update C# Mirror Structs and Enums
 The C# side of GnollHack defines identical structs in `win/win32/xpl/GnollHackX/GnollHackX/GHConstants.cs` for P/Invoke interop. **You must modify these C# structs to perfectly mirror your new C struct layout.** Any padding, type size (`ulong` for `uint64_t`), or order changes must be exactly replicated in the C# definitions, or memory corruption will occur at the native bridge. 
 
 Additionally, you must define corresponding C# `[Flags]` enums (based on `ulong`) in `GHConstants.cs` to map to the new C bitmask `#define`s.
 
-### 6. Final Cleanup
+### 7. Final Cleanup
 Once all structs have been successfully converted away from the legacy bitfield architecture, the final step is to completely remove the `BITFIELDS` `#define` flag and the `Bitfield(x, n)` macro definitions from the codebase.
 *   **C Core:** Remove `#define BITFIELDS` from `include/config.h` and the `Bitfield` macro definitions from `include/global.h`.
 *   **C# Frontend:** Remove the `BITFIELDS` compilation constant from `.csproj` files (e.g., `GnollHackX.csproj`) and any `#if BITFIELDS` conditionals in `GHConstants.cs`.
