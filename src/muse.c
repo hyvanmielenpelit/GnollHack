@@ -1146,7 +1146,7 @@ use_defensive(struct monst *mtmp)
             pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "digging ray is ineffective.");
             return 2;
         }
-        if (!Can_dig_down(&u.uz) && !levl[mtmp->mx][mtmp->my].candig) {
+        if (!Can_dig_down(&u.uz) && !is_levl_candig(&levl[mtmp->mx][mtmp->my])) {
             if (canseemon(mtmp))
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s here is too hard to dig in.",
                           surface(mtmp->mx, mtmp->my));

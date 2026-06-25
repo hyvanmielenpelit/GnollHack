@@ -1522,7 +1522,7 @@ m_move(struct monst *mtmp, int after)
     {
         struct obj *lepgold, *ygold;
         boolean should_see = (couldsee(omx, omy)
-                              && (levl[gx][gy].lit || !levl[omx][omy].lit)
+                              && (is_levl_lit(&levl[gx][gy]) || !is_levl_lit(&levl[omx][omy]))
                               && (dist2(omx, omy, gx, gy) <= 36));
 
         if ((should_see && m_cannotsenseu(mtmp) && rn2(11))

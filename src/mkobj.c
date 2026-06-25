@@ -220,7 +220,7 @@ mkobj_at_with_flags(char let, int x, int y, boolean init, boolean artif, uchar m
         if ((objects[otmp->otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
         {
             otmp->has_special_tileset = 1;
-            otmp->special_tileset = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+            otmp->special_tileset = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
         }
     }
     return otmp;
@@ -259,7 +259,7 @@ mksobj_at_with_flags(int otyp, int x, int y, boolean init, boolean artif, int mk
         if ((objects[otmp->otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
         {
             otmp->has_special_tileset = 1;
-            otmp->special_tileset = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+            otmp->special_tileset = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
         }
     }
     return otmp;

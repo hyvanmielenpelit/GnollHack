@@ -5686,7 +5686,7 @@ show_conduct(int final)
     boolean looking_for_book = !is_uachieve_book() && (context.quest_flags & QUEST_FLAGS_HEARD_OF_BOOK);
     boolean seeking_to_enter_sanctum = !is_uevent_invoked() && ((context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM) || is_uevent_heard_of_invocation_ritual() || is_uevent_invocation_ritual_known());
     boolean seeking_to_enter_gehennom = !is_uevent_invoked() && !is_uevent_gehennom_entered() && (context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM);
-    boolean on_nh_quest = ((quest_status.got_quest || quest_status.met_leader || is_uevent_qcalled()) && !(is_uevent_qcompleted() || is_uevent_qexpelled() || quest_status.leader_is_dead));
+    boolean on_nh_quest = ((is_qstatus_got_quest() || is_qstatus_met_leader() || is_uevent_qcalled()) && !(is_uevent_qcompleted() || is_uevent_qexpelled() || is_qstatus_leader_is_dead()));
     boolean added_quests = FALSE;
 
     if (!final /* Do not print intermediate quests / related game hints / spoilers in dumplog */
@@ -5699,21 +5699,21 @@ show_conduct(int final)
         if (!final && !iflags.in_dumplog)
             putstr(en_win, ATR_HALF_SIZE, " ");
 
-        if (!(is_uevent_qcompleted() || is_uevent_qexpelled() || quest_status.leader_is_dead))
+        if (!(is_uevent_qcompleted() || is_uevent_qexpelled() || is_qstatus_leader_is_dead()))
         {
-            if (quest_status.got_quest)
+            if (is_qstatus_got_quest())
             {
-                if (quest_status.killed_nemesis && quest_status.touched_artifact)
+                if (is_qstatus_killed_nemesis() && is_qstatus_touched_artifact())
                 {
                     Sprintf(goalbuf, "defeated %s and %s to return %s to %s", neminame(), final ? "needed" : "need", the(artiname(urole.questarti)), ldrname());
                     you_have(goalbuf, "");
                 }
-                else if (quest_status.killed_nemesis)
+                else if (is_qstatus_killed_nemesis())
                 {
                     Sprintf(goalbuf, "defeated %s and %s to recover %s", neminame(), final ? "needed" : "need", the(artiname(urole.questarti)));
                     you_have(goalbuf, "");
                 }
-                else if (quest_status.touched_artifact)
+                else if (is_qstatus_touched_artifact())
                 {
                     Sprintf(goalbuf, "on a quest to defeat %s but already %s recovered %s", neminame(), final ? "had" : "have", the(artiname(urole.questarti)));
                     you_are(goalbuf, "");
@@ -5724,7 +5724,7 @@ show_conduct(int final)
                     you_are(goalbuf, "");
                 }
             }
-            else if (quest_status.met_leader)
+            else if (is_qstatus_met_leader())
             {
                 if (is_pure(FALSE) <= 0)
                 {
@@ -9642,9 +9642,9 @@ click_to_cmd(int x, int y, int mod)
                 }
                 if (door->doormask & D_LOCKED)
                 {
-                    if (has_fitting_key || !door->click_kick_ok || u.usteed)
+                    if (has_fitting_key || !is_levl_click_kick_ok(door) || u.usteed)
                     {
-                        if (!door->click_kick_ok && !u.usteed)
+                        if (!is_levl_click_kick_ok(door) && !u.usteed)
                             context.click_kick_query = 1;
 
                         cmd[0] = cmd_from_func(doopen);
@@ -10309,7 +10309,7 @@ dolight(void)
 {
     if (get_location_light_range(u.ux, u.uy) != 0)
     {
-        if (levl[u.ux][u.uy].lamplit == 0)
+        if (!is_levl_lamplit(&levl[u.ux][u.uy]))
         {
             char qbuf[BUFSZ];
             if (levl[u.ux][u.uy].typ == ALTAR)
@@ -10339,7 +10339,7 @@ dolight(void)
             if (ans == 'y')
             {
                 debugprint("dolight1");
-                levl[u.ux][u.uy].lamplit = FALSE;
+                set_levl_lamplit(&levl[u.ux][u.uy], FALSE);
                 del_light_source(LS_LOCATION, xy_to_any(u.ux, u.uy));
                 newsym(u.ux, u.uy);
                 play_simple_location_sound(u.ux, u.uy, LOCATION_SOUND_TYPE_APPLY2);
@@ -10423,7 +10423,7 @@ dolight(void)
         if(levl[cc.x][cc.y].typ == ALTAR)
             Strcpy(ebuf, "fires on the ");
 
-        if (levl[cc.x][cc.y].lamplit == 0)
+        if (!is_levl_lamplit(&levl[cc.x][cc.y]))
         {
             maybe_create_location_light_source(cc.x, cc.y);
             newsym(cc.x, cc.y);
@@ -10434,7 +10434,7 @@ dolight(void)
         else
         {
             debugprint("dolight2");
-            levl[cc.x][cc.y].lamplit = FALSE;
+            set_levl_lamplit(&levl[cc.x][cc.y], FALSE);
             del_light_source(LS_LOCATION, xy_to_any(cc.x, cc.y));
             newsym(cc.x, cc.y);
             play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_APPLY2);

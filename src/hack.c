@@ -311,7 +311,7 @@ moverock(void)
                     delobj(otmp);
                     bury_objs(rx, ry);
                     levl[rx][ry].wall_info &= ~W_NONDIGGABLE;
-                    levl[rx][ry].candig = 1;
+                    set_levl_candig(&levl[rx][ry], 1);
                     if (cansee(rx, ry))
                         newsym(rx, ry);
                     return sobj_at(BOULDER, sx, sy) ? -1 : 0;
@@ -1047,7 +1047,7 @@ test_move(int ux, int uy, int dx, int dy, int mode)
                     if (amorphous(youmonst.data))
                         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "try to ooze under the door, but can't squeeze your possessions through.");
 
-                    if (flags.autoopen && !context.run && ((tmpr->doormask & D_LOCKED) == 0 || (flags.autounlock && carrying_fitting_unlocking_tool_for_door(tmpr)) || !tmpr->click_kick_ok) && !Confusion && !Stunned && !Fumbling)
+                    if (flags.autoopen && !context.run && ((tmpr->doormask & D_LOCKED) == 0 || (flags.autounlock && carrying_fitting_unlocking_tool_for_door(tmpr)) || !is_levl_click_kick_ok(tmpr)) && !Confusion && !Stunned && !Fumbling)
                     {
                         int open_res = doopen_indir(x, y);
                         if (open_res <= 0)
@@ -1066,7 +1066,7 @@ test_move(int ux, int uy, int dx, int dy, int mode)
                         //    (void)dokick_indir(TRUE);
                         //}
                     }
-                    else if ((tmpr->doormask & D_LOCKED) != 0 && tmpr->click_kick_ok && !context.run && !u.usteed && !Confusion && !Stunned && !Fumbling)
+                    else if ((tmpr->doormask & D_LOCKED) != 0 && is_levl_click_kick_ok(tmpr) && !context.run && !u.usteed && !Confusion && !Stunned && !Fumbling)
                     {
                         u.dx = dx, u.dy = dy, u.dz = 0;
                         (void)dokick_indir(TRUE);

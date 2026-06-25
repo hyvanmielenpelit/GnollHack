@@ -190,7 +190,7 @@ dosit(void)
         play_sfx_sound(SFX_SIT);
         /* must be WWalking */
         You("sit in the %s.", defsyms[S_brazier].explanation);
-        if (levl[u.ux][u.uy].lamplit)
+        if (is_levl_lamplit(&levl[u.ux][u.uy]))
         {
             burn_away_slime();
             if (likes_fire(youmonst.data) || Fire_immunity)

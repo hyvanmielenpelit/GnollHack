@@ -3543,7 +3543,7 @@ mondead_with_flags(struct monst *mtmp, uint64_t mondeadflags)
     }
     /* if it's a (possibly polymorphed) quest leader, mark him as dead */
     if (mtmp->m_id == quest_status.leader_m_id)
-        quest_status.leader_is_dead = TRUE;
+        set_qstatus_leader_is_dead(TRUE);
     /* if the mail daemon dies, no more mail delivery.  -3. */
     if (tmp == PM_MAIL_DAEMON)
     {

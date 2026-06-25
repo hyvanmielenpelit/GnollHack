@@ -6307,7 +6307,7 @@ dfeature_at(int x, int y)
     {
         cmap = S_brazier; /* "brazier" */
         /*
-        Sprintf(altbuf, "%s%s", lev->lamplit ? "lit " : "unlit ",
+        Sprintf(altbuf, "%s%s", is_levl_lamplit(lev) ? "lit " : "unlit ",
             defsyms[S_brazier].explanation);
 
         dfeature = altbuf;
@@ -6464,7 +6464,7 @@ look_here(int obj_cnt, boolean picked_some, boolean explicit_cmd)
     char dfbuf[BUFSZ] = "";
     if (IS_BRAZIER(lev->typ))
     {
-        if(lev->lamplit)
+        if(is_levl_lamplit(lev))
             Strcpy(dfbuf, "lit ");
         else
             Strcpy(dfbuf, "unlit ");
@@ -6699,7 +6699,7 @@ print_things_here_to_window(void)
 
     if (IS_BRAZIER(lev->typ))
     {
-        if (lev->lamplit)
+        if (is_levl_lamplit(lev))
             Strcpy(dfbuf, "lit ");
         else
             Strcpy(dfbuf, "unlit ");

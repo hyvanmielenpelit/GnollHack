@@ -761,11 +761,11 @@ savelevl(int fd, boolean rlecomp)
                 prm = &levl[x][y];
                 if (prm->glyph == rgrm->glyph && prm->typ == rgrm->typ
                     && prm->seenv == rgrm->seenv
-                    && prm->horizontal == rgrm->horizontal
-                    && prm->flags == rgrm->flags && prm->lit == rgrm->lit
-                    && prm->waslit == rgrm->waslit
-                    && prm->roomno == rgrm->roomno && prm->edge == rgrm->edge
-                    && prm->candig == rgrm->candig) {
+                    && is_levl_horizontal(prm) == is_levl_horizontal(rgrm)
+                    && prm->flags == rgrm->flags && is_levl_lit(prm) == is_levl_lit(rgrm)
+                    && is_levl_waslit(prm) == is_levl_waslit(rgrm)
+                    && prm->roomno == rgrm->roomno && is_levl_edge(prm) == is_levl_edge(rgrm)
+                    && is_levl_candig(prm) == is_levl_candig(rgrm)) {
                     match++;
                     if (match > 254) {
                         match = 254; /* undo this match */

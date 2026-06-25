@@ -1753,7 +1753,7 @@ cvt_sdoor_to_door_with_animation(int x, int y)
 
     if (windowprocs.wincap2 & WC2_FADING_ANIMATIONS)
     {
-        play_special_effect_with_details_at(0, x, y, levl[x][y].horizontal ? cmap_to_glyph(S_hcdoor) : cmap_to_glyph(S_vcdoor), LAYER_BACKGROUND_EFFECT, -1, 20, 0, 0, FALSE);
+        play_special_effect_with_details_at(0, x, y, is_levl_horizontal(&levl[x][y]) ? cmap_to_glyph(S_hcdoor) : cmap_to_glyph(S_vcdoor), LAYER_BACKGROUND_EFFECT, -1, 20, 0, 0, FALSE);
         special_effect_wait_until_action(0);
         special_effect_wait_until_end(0);
     }
@@ -2230,7 +2230,7 @@ sokoban_detect(void)
     for (x = 1; x < COLNO; x++)
         for (y = 0; y < ROWNO; y++) {
             levl[x][y].seenv = SVALL;
-            levl[x][y].waslit = TRUE;
+            set_levl_waslit(&levl[x][y], TRUE);
             map_background(x, y, 1);
             if ((obj = sobj_at(BOULDER, x, y)) != 0)
                 map_object(obj, 1);

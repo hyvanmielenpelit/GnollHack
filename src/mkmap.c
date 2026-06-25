@@ -221,7 +221,7 @@ flood_fill_rm(int sx, int sy, int rmno, boolean lit, boolean anyroom)
     for (i = sx; i <= WIDTH && levl[i][sy].typ == fg_typ; i++) 
     {
         levl[i][sy].roomno = rmno;
-        levl[i][sy].lit = lit;
+        set_levl_lit(&levl[i][sy], lit);
         if (anyroom)
         {
             /* add walls to room as well */
@@ -231,9 +231,9 @@ flood_fill_rm(int sx, int sy, int rmno, boolean lit, boolean anyroom)
                     if (isok(ii, jj) && (IS_WALL_OR_SDOOR(levl[ii][jj].typ)
                                          || IS_DOOR(levl[ii][jj].typ))) 
                     {
-                        levl[ii][jj].edge = 1;
+                        set_levl_edge(&levl[ii][jj], 1);
                         if (lit)
-                            levl[ii][jj].lit = lit;
+                            set_levl_lit(&levl[ii][jj], lit);
                         if ((int) levl[ii][jj].roomno != rmno)
                             levl[ii][jj].roomno = SHARED;
                     }
@@ -433,7 +433,7 @@ finish_map(lev_init *init_lev)
                     || (!IS_ROCK(bg_typ) && levl[i][j].typ == bg_typ)
                     || (IS_TREE(bg_typ) && levl[i][j].typ == bg_typ)
                     || (walled && IS_WALL(levl[i][j].typ)))
-                    levl[i][j].lit = TRUE;
+                    set_levl_lit(&levl[i][j], TRUE);
         for (i = 0; i < nroom; i++)
             rooms[i].rlit = 1;
     }
@@ -443,7 +443,7 @@ finish_map(lev_init *init_lev)
         for (j = 0; j < ROWNO; j++) 
         {
             if (levl[i][j].typ == LAVAPOOL)
-                levl[i][j].lit = TRUE;
+                set_levl_lit(&levl[i][j], TRUE);
             else if (levl[i][j].typ == ICE)
                 levl[i][j].icedpool = icedpools ? ICED_POOL : ICED_MOAT;
         }

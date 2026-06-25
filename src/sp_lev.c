@@ -820,7 +820,7 @@ set_door_orientation(int x, int y)
         wup    = (!isok(x, y - 1) || IS_DOORJOIN(levl[x][y - 1].typ));
         wdown  = (!isok(x, y + 1) || IS_DOORJOIN(levl[x][y + 1].typ));
     }
-    levl[x][y].horizontal = ((wleft || wright) && !(wup && wdown)) ? 1 : 0;
+    set_levl_horizontal(&levl[x][y], ((wleft || wright) && !(wup && wdown)) ? 1 : 0);
 }
 
 static void
@@ -2521,7 +2521,7 @@ create_object(object *o, struct mkroom *croom)
     if ((objects[otmp->otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
     {
         otmp->has_special_tileset = 1;
-        otmp->special_tileset = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+        otmp->special_tileset = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
     }
 
     if (o->quan > 0 && objects[otmp->otyp].oc_merge) 
@@ -3571,7 +3571,7 @@ light_region(region *tmpregion)
         for (y = lowy; y <= hiy; y++)
         {
             if (lev->typ != LAVAPOOL) /* this overrides normal lighting */
-                lev->lit = litstate;
+                set_levl_lit(lev, litstate);
 
             lev++;
         }
@@ -5220,11 +5220,11 @@ spo_brazier(struct sp_coder *coder)
 
         int64_t val = OV_i(lamplit);
         if (val >= 0)
-            levl[x][y].lamplit = (unsigned int)val;
+            set_levl_lamplit(&levl[x][y], (unsigned int)val);
         else
-            levl[x][y].lamplit = rn2(2);
+            set_levl_lamplit(&levl[x][y], rn2(2));
 
-        if (!levl[x][y].lamplit)
+        if (!is_levl_lamplit(&levl[x][y]))
             levl[x][y].flags |= L_INITIALLY_UNLIT;
     }
 
@@ -5494,7 +5494,7 @@ selection_filter_mapchar(struct opvar *ov, struct opvar *mc)
                     break;
                 case 0:
                 case 1:
-                    if (levl[x][y].lit == lit)
+                    if (is_levl_lit(&levl[x][y]) == lit)
                         selection_setpoint(x, y, ret, 1);
                     break;
                 }
@@ -6016,8 +6016,8 @@ sel_set_ter(int x, int y, genericptr_t arg)
     if (levl[x][y].typ == SDOOR || IS_DOOR(levl[x][y].typ)) {
         if (levl[x][y].typ == SDOOR)
             levl[x][y].doormask = D_CLOSED;
-        if (x && (IS_WALL(levl[x - 1][y].typ) || levl[x - 1][y].horizontal))
-            levl[x][y].horizontal = 1;
+        if (x && (IS_WALL(levl[x - 1][y].typ) || is_levl_horizontal(&levl[x - 1][y])))
+            set_levl_horizontal(&levl[x][y], 1);
     }
 }
 
@@ -6181,7 +6181,7 @@ sel_set_door(int dx, int dy, genericptr_t arg, genericptr_t arg2, genericptr_t a
 
     dmask |= dflags;
 
-    set_door_orientation(x, y); /* set/clear levl[x][y].horizontal */
+    set_door_orientation(x, y); /* set/clear is_levl_horizontal(&levl[x][y]) */
     levl[x][y].subtyp = subtyp;
     levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
     levl[x][y].doormask = dmask;
@@ -7108,7 +7108,7 @@ spo_special_tileset(struct sp_coder *coder)
 void
 sel_set_tileset(int x, int y, genericptr_t arg)
 {
-    levl[x][y].use_special_tileset = 1;
+    set_levl_use_special_tileset(&levl[x][y], 1);
     levl[x][y].special_tileset = (*(int*)arg);
 }
 
@@ -7516,12 +7516,12 @@ spo_map(struct sp_coder *coder)
                 set_initial_location_floortype(lev, coder->fountain_on_grass, coder->fountain_on_ground, coder->tree_on_ground, coder->throne_on_ground);
                 initialize_location(lev);
 
-                lev->lit = FALSE;
+                set_levl_lit(lev, FALSE);
                 /* clear out levl: load_common_data may set them */
                 lev->flags = 0;
-                lev->horizontal = 0;
+                set_levl_horizontal(lev, 0);
                 lev->roomno = 0;
-                lev->edge = 0;
+                set_levl_edge(lev, 0);
                 SpLev_Map[x][y] = 1;
                 /*
                  *  Set secret doors to closed (why not trapped too?).  Set
@@ -7537,18 +7537,18 @@ spo_map(struct sp_coder *coder)
                      *  not allow (secret) doors to be corners of rooms.
                      */
                     if (x != xstart && (IS_WALL(levl[x - 1][y].typ)
-                                        || levl[x - 1][y].horizontal))
-                        levl[x][y].horizontal = 1;
+                                        || is_levl_horizontal(&levl[x - 1][y])))
+                        set_levl_horizontal(&levl[x][y], 1);
                 } 
                 else if (levl[x][y].typ == HWALL)
-                    levl[x][y].horizontal = 1;
+                    set_levl_horizontal(&levl[x][y], 1);
                 else if (levl[x][y].typ == IRONBARS)
                 {
                     if(!isok(x, y - 1) || IS_DOORJOIN(levl[x][y - 1].typ) || IS_DOOR(levl[x][y - 1].typ))
-                        levl[x][y].horizontal = 0;
+                        set_levl_horizontal(&levl[x][y], 0);
                     else
                     {
-                        levl[x][y].horizontal = 1;
+                        set_levl_horizontal(&levl[x][y], 1);
                         if (isok(x, y - 1) && IS_FLOOR(levl[x][y - 1].typ))
                         {
                             levl[x][y].floortyp = levl[x][y - 1].typ;
@@ -7559,7 +7559,7 @@ spo_map(struct sp_coder *coder)
                     }
                 }
                 else if (levl[x][y].typ == LAVAPOOL)
-                    levl[x][y].lit = 1;
+                    set_levl_lit(&levl[x][y], 1);
                 else if (splev_init_present && levl[x][y].typ == ICE)
                     levl[x][y].icedpool = icedpools ? ICED_POOL : ICED_MOAT;
             }

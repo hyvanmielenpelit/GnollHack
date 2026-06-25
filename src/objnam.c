@@ -5193,7 +5193,7 @@ retry:
             full_location_transform(x, y, FOUNTAIN, lsubtype, lvartype, lflags, lev->carpet_typ, lev->carpet_piece, lev->carpet_flags, 0, 0, 0, 0, 0, floortype, floorsubtype, floorvartype, FALSE, lhorizontal, 0, 0, FALSE);
 
             int ftyp = lev->subtyp; // (lev->fountainmask & FOUNTAIN_TYPE_MASK);
-            pline("A %s.", ftyp == FOUNTAIN_MAGIC && lev->blessedftn ? "enchanted fountain" : fountain_type_text(ftyp));
+            pline("A %s.", ftyp == FOUNTAIN_MAGIC && is_levl_blessedftn(lev) ? "enchanted fountain" : fountain_type_text(ftyp));
             newsym(x, y);
             return (struct obj *) &zeroobj;
         }

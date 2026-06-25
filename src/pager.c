@@ -782,7 +782,7 @@ lookat(int x, int y, char *buf, char *simplebuf, char *extrabuf)
                 ) && cansee(x, y))
             {
                 char buf2[BUFSZ * 2];
-                Sprintf(buf2, "%s%s", levl[x][y].lamplit ? "lit " : "unlit ", buf);
+                Sprintf(buf2, "%s%s", is_levl_lamplit(&levl[x][y]) ? "lit " : "unlit ", buf);
                 Strcpy(buf, buf2);
             }
             break;
@@ -1315,7 +1315,7 @@ do_screen_description(coord cc, boolean looked, nhsym sym, char *out_str, const 
                             ) && cansee(cc.x, cc.y))
                         {
                             char buf2[BUFSZ * 2];
-                            Sprintf(buf2, "%s%s", levl[cc.x][cc.y].lamplit ? "lit " : "unlit ", decoration_buf);
+                            Sprintf(buf2, "%s%s", is_levl_lamplit(&levl[cc.x][cc.y]) ? "lit " : "unlit ", decoration_buf);
                             Strcpy(decoration_buf, buf2);
                         }
                         x_str = decoration_buf;

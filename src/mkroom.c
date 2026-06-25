@@ -246,7 +246,7 @@ gottype:
 
         for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
             for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
-                levl[x][y].lit = 1;
+                set_levl_lit(&levl[x][y], 1);
         sroom->rlit = 1;
     }
 
@@ -354,7 +354,7 @@ mkdesertedshop(void)
 
         for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
             for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
-                levl[x][y].lit = 0;
+                set_levl_lit(&levl[x][y], 0);
         sroom->rlit = 0;
     }
             
@@ -733,7 +733,7 @@ place_main_monst_here:
         ty = sroom->ly + (sroom->hy - sroom->ly + 1) / 2;
         if (sroom->irregular) {
             /* center might not be valid, so put queen elsewhere */
-            if ((int) levl[tx][ty].roomno != rmno || levl[tx][ty].edge) {
+            if ((int) levl[tx][ty].roomno != rmno || is_levl_edge(&levl[tx][ty])) {
                 (void) somexy(sroom, &mm);
                 tx = mm.x;
                 ty = mm.y;
@@ -770,7 +770,7 @@ place_main_monst_here:
         {
             if (sroom->irregular)
             {
-                if ((int) levl[sx][sy].roomno != rmno || levl[sx][sy].edge
+                if ((int) levl[sx][sy].roomno != rmno || is_levl_edge(&levl[sx][sy])
                     || (sroom->doorct
                         && distmin(sx, sy, doors[sh].x, doors[sh].y) <= 1))
                     continue;
@@ -2049,7 +2049,7 @@ mksmithy(void)
 
         for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
             for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
-                levl[x][y].lit = 1;
+                set_levl_lit(&levl[x][y], 1);
         sroom->rlit = 1;
     }
 
@@ -2191,7 +2191,7 @@ mknpcroom(int npctyp)
 
             for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
                 for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
-                    levl[x][y].lit = 1;
+                    set_levl_lit(&levl[x][y], 1);
             sroom->rlit = 1;
         }
     }
@@ -2205,7 +2205,7 @@ mknpcroom(int npctyp)
                 delete_decoration(x, y);
                 if (room_definitions[sroom->rtype].has_special_tileset || npc_subtype_definitions[npctype].has_special_tileset)
                 {
-                    levl[x][y].use_special_tileset = 1;
+                    set_levl_use_special_tileset(&levl[x][y], 1);
                     levl[x][y].special_tileset = npc_subtype_definitions[npctype].has_special_tileset ? npc_subtype_definitions[npctype].special_tileset : room_definitions[sroom->rtype].special_tileset;
                 }
             }
@@ -2247,7 +2247,7 @@ set_room_tileset(struct mkroom *sroom)
             for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
                 if (isok(x, y))
                 {
-                    levl[x][y].use_special_tileset = 1;
+                    set_levl_use_special_tileset(&levl[x][y], 1);
                     levl[x][y].special_tileset = room_definitions[sroom->rtype].special_tileset;
                 }
 
@@ -2415,7 +2415,7 @@ somexy_within_distance(struct mkroom *croom, coord cpoint, int distance, coord *
             c->x = x_min + (x_rand > 1 ? rn2(x_rand) : 0);
             c->y = y_min + (y_rand > 1 ? rn2(y_rand) : 0);
             if (!IS_WALL(levl[c->x][c->y].typ) && !IS_ROCK(levl[c->x][c->y].typ) && (int)levl[c->x][c->y].roomno == i &&
-                ((!croom->irregular && !croom->nsubrooms) || (croom->irregular && !levl[c->x][c->y].edge))
+                ((!croom->irregular && !croom->nsubrooms) || (croom->irregular && !is_levl_edge(&levl[c->x][c->y])))
                 && dist2(cpoint.x, cpoint.y, c->x, c->y) <= distance * distance)
                 return TRUE;
         }
@@ -2428,14 +2428,14 @@ somexy_within_distance(struct mkroom *croom, coord cpoint, int distance, coord *
         {
             c->x = somex(croom);
             c->y = somey(croom);
-            if (!levl[c->x][c->y].edge && (int)levl[c->x][c->y].roomno == i
+            if (!is_levl_edge(&levl[c->x][c->y]) && (int)levl[c->x][c->y].roomno == i
                 && dist2(cpoint.x, cpoint.y, c->x, c->y) <= distance * distance)
                 return TRUE;
         }
         /* try harder; exhaustively search until one is found */
         for (c->x = croom->lx; c->x <= croom->hx; c->x++)
             for (c->y = croom->ly; c->y <= croom->hy; c->y++)
-                if (!levl[c->x][c->y].edge
+                if (!is_levl_edge(&levl[c->x][c->y])
                     && (int)levl[c->x][c->y].roomno == i
                     && dist2(cpoint.x, cpoint.y, c->x, c->y) <= distance * distance)
                     return TRUE;
@@ -2489,7 +2489,7 @@ somexy(struct mkroom *croom, coord *c)
             c->x = somex(croom);
             c->y = somey(croom);
             lev = &levl[c->x][c->y];
-            if (!lev->edge && (int)lev->roomno == i)
+            if (!is_levl_edge(lev) && (int)lev->roomno == i)
                 return TRUE;
         }
         /* try harder; exhaustively search until one is found */
@@ -2497,7 +2497,7 @@ somexy(struct mkroom *croom, coord *c)
             for (c->y = croom->ly; c->y <= croom->hy; c->y++)
             {
                 lev = &levl[c->x][c->y];
-                if (!lev->edge && (int)lev->roomno == i)
+                if (!is_levl_edge(lev) && (int)lev->roomno == i)
                     return TRUE;
 
             }

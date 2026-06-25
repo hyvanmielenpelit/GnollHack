@@ -129,7 +129,7 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
         {
             lev = &levl[x][max(lowy - 1, 0)];
             for (y = lowy - 1; y <= hiy + 1; y++)
-                lev++->lit = 1;
+                set_levl_lit(lev++, 1);
         }
         croom->rlit = 1;
     }
@@ -165,10 +165,10 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
                 levl[x][y].vartyp = levl[x][y].vartyp; /* Retain the vartyp setting from stone */
                 levl[x][y].special_quality = 0;
                 /* Retain floortype from stone */
-                levl[x][y].horizontal = 1; /* For open/secret doors. */
+                set_levl_horizontal(&levl[x][y], 1); /* For open/secret doors. */
                 if (tileset >= 0)
                 {
-                    levl[x][y].use_special_tileset = 1;
+                    set_levl_use_special_tileset(&levl[x][y], 1);
                     levl[x][y].special_tileset = (uchar)tileset;
                 }
             }
@@ -181,10 +181,10 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
                 levl[x][y].vartyp = levl[x][y].vartyp; /* Retain the vartyp setting from stone */
                 levl[x][y].special_quality = 0;
                 /* Retain floortype from stone */
-                levl[x][y].horizontal = 0; /* For open/secret doors. */
+                set_levl_horizontal(&levl[x][y], 0); /* For open/secret doors. */
                 if (tileset >= 0)
                 {
-                    levl[x][y].use_special_tileset = 1;
+                    set_levl_use_special_tileset(&levl[x][y], 1);
                     levl[x][y].special_tileset = (uchar)tileset;
                 }
             }
@@ -203,7 +203,7 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
                     lev->floortyp = lev->floorsubtyp = lev->floorvartyp = 0;
                     if (tileset >= 0)
                     {
-                        lev->use_special_tileset = 1;
+                        set_levl_use_special_tileset(lev, 1);
                         lev->special_tileset = (uchar)tileset;
                     }
                     lev++;
@@ -230,10 +230,10 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
 
             if (tileset >= 0)
             {
-                levl[lowx - 1][lowy - 1].use_special_tileset = 1;
-                levl[hix + 1][lowy - 1].use_special_tileset = 1;
-                levl[lowx - 1][hiy + 1].use_special_tileset = 1;
-                levl[hix + 1][hiy + 1].use_special_tileset = 1;
+                set_levl_use_special_tileset(&levl[lowx - 1][lowy - 1], 1);
+                set_levl_use_special_tileset(&levl[hix + 1][lowy - 1], 1);
+                set_levl_use_special_tileset(&levl[lowx - 1][hiy + 1], 1);
+                set_levl_use_special_tileset(&levl[hix + 1][hiy + 1], 1);
                 levl[lowx - 1][lowy - 1].special_tileset = (uchar)tileset;
                 levl[hix + 1][lowy - 1].special_tileset = (uchar)tileset;
                 levl[lowx - 1][hiy + 1].special_tileset = (uchar)tileset;
@@ -567,7 +567,7 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
                     }
                     if (tileset >= 0)
                     {
-                        lev->use_special_tileset = 1;
+                        set_levl_use_special_tileset(lev, 1);
                         lev->special_tileset = (uchar)tileset;
                     }
                     lev++;
@@ -1004,7 +1004,7 @@ makeniche(int trap_type)
                         levl[xx][yy].decoration_dir = 0;
                         levl[xx][yy].decoration_flags = 0;
                         /* HWALL .horizontal value retained */
-                        if (levl[xx][yy].horizontal && isok(xx, yy - 1) && IS_FLOOR(levl[xx][yy - 1].typ))
+                        if (is_levl_horizontal(&levl[xx][yy]) && isok(xx, yy - 1) && IS_FLOOR(levl[xx][yy - 1].typ))
                         {
                             levl[xx][yy].floortyp = levl[xx][yy - 1].typ;
                             levl[xx][yy].floorsubtyp = get_initial_location_subtype(levl[xx][yy].floortyp);
@@ -1062,7 +1062,7 @@ static void
 clear_level_structures(void)
 {
     static struct rm zerorm = { nul_layerinfo,
-                                0, 0, 0, 0, 0,  0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0 };
+                                0, 0, 0, 0, 0,  0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0 };
     int x, y;
     struct rm *lev;
 
@@ -1883,7 +1883,7 @@ struct mkroom *croom;
         /* top and bottom edges */
         for (x = lowx - 1; x <= hix + 1; x++)
             for (y = lowy - 1; y <= hiy + 1; y += (hiy - lowy + 2)) {
-                levl[x][y].edge = 1;
+                set_levl_edge(&levl[x][y], 1);
                 if (levl[x][y].roomno)
                     levl[x][y].roomno = SHARED;
                 else
@@ -1892,7 +1892,7 @@ struct mkroom *croom;
         /* sides */
         for (x = lowx - 1; x <= hix + 1; x += (hix - lowx + 2))
             for (y = lowy; y <= hiy; y++) {
-                levl[x][y].edge = 1;
+                set_levl_edge(&levl[x][y], 1);
                 if (levl[x][y].roomno)
                     levl[x][y].roomno = SHARED;
                 else
@@ -2032,14 +2032,14 @@ place_branch(branch *br, xchar x, xchar y)
         if (sstairs.up)
         {
             if (!isok(x + 1, y) || levl[x + 1][y].typ < DOOR)
-                levl[x][y].facing_right = TRUE;
+                set_levl_facing_right(&levl[x][y], TRUE);
             if (isok(x - 1, y) && (IS_DOOR(levl[x - 1][y].typ) || levl[x - 1][y].typ == CORR))
-                levl[x][y].facing_right = TRUE;
+                set_levl_facing_right(&levl[x][y], TRUE);
         }
         else
         {
             if (!isok(x - 1, y) || levl[x - 1][y].typ < DOOR)
-                levl[x][y].facing_right = TRUE;
+                set_levl_facing_right(&levl[x][y], TRUE);
         }
         clear_nearby_fireplaces(x, y);
     }
@@ -2466,14 +2466,14 @@ mkstairs(xchar x, xchar y, char up, struct mkroom *croom, int subtyp)
     if (up)
     {
         if (!isok(x + 1, y) || levl[x + 1][y].typ < DOOR)
-            levl[x][y].facing_right = TRUE;
+            set_levl_facing_right(&levl[x][y], TRUE);
         if (isok(x - 1, y) && (IS_DOOR(levl[x - 1][y].typ) || levl[x - 1][y].typ == CORR))
-            levl[x][y].facing_right = TRUE;
+            set_levl_facing_right(&levl[x][y], TRUE);
     }
     else
     {
         if (!isok(x - 1, y) || levl[x - 1][y].typ < DOOR)
-            levl[x][y].facing_right = TRUE;
+            set_levl_facing_right(&levl[x][y], TRUE);
     }
     clear_nearby_fireplaces(x, y);
 }
@@ -2550,7 +2550,7 @@ mkfount(int mazeflag, struct mkroom *croom)
 
     /* Is it a "blessed" fountain? (affects drinking from fountain) */
     if (!rn2(7))
-        levl[m.x][m.y].blessedftn = 1;
+        set_levl_blessedftn(&levl[m.x][m.y], 1);
 
     level.flags.nfountains++;
 }
@@ -2790,9 +2790,9 @@ mkinvpos(xchar x, xchar y, int dist)
     lev->seenv = 0;
     lev->doormask = 0;
     if (dist < 6)
-        lev->lit = TRUE;
-    lev->waslit = TRUE;
-    lev->horizontal = FALSE;
+        set_levl_lit(lev, TRUE);
+    set_levl_waslit(lev, TRUE);
+    set_levl_horizontal(lev, FALSE);
     /* short-circuit vision recalc */
     viz_array[y][x] = (dist < 6) ? (IN_SIGHT | COULD_SEE) : COULD_SEE;
 
@@ -2909,7 +2909,7 @@ create_level_light_sources(void)
                 c.y = y;
                 id.a_coord = c;
                 new_light_source(x, y, lr, LS_LOCATION, &id, ls);
-                levl[x][y].lamplit = TRUE;
+                set_levl_lamplit(&levl[x][y], TRUE);
             }
         }
     }
@@ -2928,7 +2928,7 @@ maybe_create_location_light_source(xchar x, xchar y)
         c.y = y;
         id.a_coord = c;
         new_light_source(x, y, lr, LS_LOCATION, &id, ls);
-        levl[x][y].lamplit = TRUE;
+        set_levl_lamplit(&levl[x][y], TRUE);
     }
 }
 
@@ -2950,7 +2950,7 @@ create_level_sound_sources(void)
                 c.y = y;
                 id.a_coord = c;
                 new_sound_source(x, y, sound_type, volume, SOUNDSOURCE_LOCATION, subtype, &id);
-                levl[x][y].makingsound = TRUE;
+                set_levl_makingsound(&levl[x][y], TRUE);
             }
         }
     }
@@ -2970,7 +2970,7 @@ maybe_create_location_sound_source(xchar x, xchar y)
         c.y = y;
         id.a_coord = c;
         new_sound_source(x, y, sound_type, volume, SOUNDSOURCE_LOCATION, subtype, &id);
-        levl[x][y].makingsound = TRUE;
+        set_levl_makingsound(&levl[x][y], TRUE);
     }
 }
 

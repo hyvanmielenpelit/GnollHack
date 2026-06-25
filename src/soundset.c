@@ -18638,7 +18638,7 @@ update_ambient_sounds(void)
             curr->y = curr->id.a_coord.y;
 
             if (isok(curr->id.a_coord.x, curr->id.a_coord.y))
-                lit = levl[curr->id.a_coord.x][curr->id.a_coord.y].lamplit;
+                lit = is_levl_lamplit(&levl[curr->id.a_coord.x][curr->id.a_coord.y]);
         }
         else if (curr->type == SOUNDSOURCE_REGION)
         {
@@ -19255,9 +19255,9 @@ snuff_sound_source(int x, int y)
         }
         else if (ss->type == SOUNDSOURCE_LOCATION && ss->x == x && ss->y == y)
         {
-            if (levl[x][y].makingsound)
+            if (is_levl_makingsound(&levl[x][y]))
             {
-                levl[x][y].makingsound = 0;
+                set_levl_makingsound(&levl[x][y], 0);
                 del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
                 newsym(x, y);
                 return;

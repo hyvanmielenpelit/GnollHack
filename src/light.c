@@ -655,10 +655,10 @@ snuff_light_source(int x, int y)
         }
         else if (ls->type == LS_LOCATION && ls->x == x && ls->y == y)
         {
-            if (levl[x][y].lamplit)
+            if (is_levl_lamplit(&levl[x][y]))
             {
                 debugprint("snuff_light_source2");
-                levl[x][y].lamplit = 0;
+                set_levl_lamplit(&levl[x][y], 0);
                 del_light_source(LS_LOCATION, xy_to_any(x, y));
                 newsym(x, y);
                 return;

@@ -1983,12 +1983,12 @@ mv_bubble(struct bubble *b, int dx, int dy, boolean ini)
                 if (Is_waterlevel(&u.uz)) {
                     levl[x][y].typ = AIR;
                     levl[x][y].subtyp = 0;
-                    levl[x][y].lit = 1;
+                    set_levl_lit(&levl[x][y], 1);
                     unblock_point(x, y);
                 } else if (Is_airlevel(&u.uz)) {
                     levl[x][y].typ = CLOUD;
                     levl[x][y].subtyp = 0;
-                    levl[x][y].lit = 1;
+                    set_levl_lit(&levl[x][y], 1);
                     block_point(x, y);
                 }
             }

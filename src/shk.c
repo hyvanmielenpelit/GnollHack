@@ -380,7 +380,7 @@ inside_shop(xchar x, xchar y)
     char rno;
 
     rno = levl[x][y].roomno;
-    if ((rno < ROOMOFFSET) || levl[x][y].edge || !IS_SHOP(rno - ROOMOFFSET))
+    if ((rno < ROOMOFFSET) || is_levl_edge(&levl[x][y]) || !IS_SHOP(rno - ROOMOFFSET))
         rno = NO_ROOM;
     return rno;
 }
@@ -398,7 +398,7 @@ u_left_shop(char *leavestring, boolean newlev)
      *   (he wasn't strictly-inside last turn anyway)))
      * THEN (there's nothing to do, so just return)
      */
-    if (!*leavestring && (!levl[u.ux][u.uy].edge || levl[u.ux0][u.uy0].edge))
+    if (!*leavestring && (!is_levl_edge(&levl[u.ux][u.uy]) || is_levl_edge(&levl[u.ux0][u.uy0])))
         return;
 
     debugprint_pos();
@@ -431,7 +431,7 @@ u_left_shop(char *leavestring, boolean newlev)
     }
 
     if (rob_shop(shkp)) {
-        call_kops(shkp, (!newlev && levl[u.ux0][u.uy0].edge));
+        call_kops(shkp, (!newlev && is_levl_edge(&levl[u.ux0][u.uy0])));
     }
 }
 

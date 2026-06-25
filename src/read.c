@@ -3687,7 +3687,7 @@ set_lit(int x, int y, genericptr_t val)
     struct litmon *gremlin;
 
     if (val) {
-        levl[x][y].lit = 1;
+        set_levl_lit(&levl[x][y], 1);
         if ((mtmp = m_at(x, y)) != 0 && mtmp->data == &mons[PM_GREMLIN]) {
             gremlin = (struct litmon *) alloc(sizeof *gremlin);
             gremlin->mon = mtmp;
@@ -3695,7 +3695,7 @@ set_lit(int x, int y, genericptr_t val)
             gremlins = gremlin;
         }
     } else {
-        levl[x][y].lit = 0;
+        set_levl_lit(&levl[x][y], 0);
         snuff_light_source(x, y);
     }
 }

@@ -2508,9 +2508,9 @@ recalc_mapseen(void)
                                  && is_uevent_qcalled()
                                  && !(is_uevent_qcompleted()
                                       || is_uevent_qexpelled()
-                                      || quest_status.leader_is_dead));
+                                      || is_qstatus_leader_is_dead()));
     mptr->flags.questing = (on_level(&u.uz, &qstart_level)
-                            && quest_status.got_quest);
+                            && is_qstatus_got_quest());
     mptr->flags.modron_hint_shown = (at_dgn_entrance("Plane of the Modron") && is_uevent_modron_portal_hint() && !is_uevent_modron_plane_entered());
     mptr->flags.yacc_hint_shown = (at_dgn_entrance("Hellish Pastures") && is_uevent_bovine_portal_hint() && !is_uevent_hellish_pastures_entered());
     mptr->flags.quantum_hint_shown = (at_dgn_entrance("The Large Circular Dungeon") && is_uevent_quantum_portal_hint() && !is_uevent_large_circular_dgn_entered());

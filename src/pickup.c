@@ -2519,17 +2519,17 @@ loot_decoration(int x, int y, int itemnumber, boolean *got_something_ptr)
         boolean itemlit = FALSE;
         if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
         {
-            if (levl[x][y].lamplit)
+            if (is_levl_lamplit(&levl[x][y]))
             {
                 debugprint("loot_decoration1");
                 itemlit = TRUE;
                 del_light_source(LS_LOCATION, xy_to_any(x, y));
-                levl[x][y].lamplit = 0;
+                set_levl_lamplit(&levl[x][y], 0);
             }
-            if (levl[x][y].makingsound)
+            if (is_levl_makingsound(&levl[x][y]))
             {
                 del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
-                levl[x][y].makingsound = 0;
+                set_levl_makingsound(&levl[x][y], 0);
             }
         }
         if (decoration_type_definitions[levl[x][y].decoration_typ].lootable_item != STRANGE_OBJECT)

@@ -715,9 +715,9 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
             You("would only make a small smudge on the %s.",
                 surface(u.ux, u.uy));
             return 0;
-        } else if (!levl[u.ux][u.uy].disturbed) {
+        } else if (!is_levl_disturbed(&levl[u.ux][u.uy])) {
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "disturb the undead!");
-            levl[u.ux][u.uy].disturbed = 1;
+            set_levl_disturbed(&levl[u.ux][u.uy], 1);
             (void) makemon(&mons[PM_GHOUL], u.ux, u.uy, NO_MM_FLAGS);
             exercise(A_WIS, FALSE);
             return 1;

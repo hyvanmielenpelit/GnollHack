@@ -790,16 +790,16 @@ shkinit(const struct shclass *shp, struct mkroom *sroom)
     if (sroom->irregular) {
         int rmno = (int) ((sroom - rooms) + ROOMOFFSET);
 
-        if (isok(sx - 1, sy) && !levl[sx - 1][sy].edge
+        if (isok(sx - 1, sy) && !is_levl_edge(&levl[sx - 1][sy])
             && (int) levl[sx - 1][sy].roomno == rmno)
             sx--;
-        else if (isok(sx + 1, sy) && !levl[sx + 1][sy].edge
+        else if (isok(sx + 1, sy) && !is_levl_edge(&levl[sx + 1][sy])
                  && (int) levl[sx + 1][sy].roomno == rmno)
             sx++;
-        else if (isok(sx, sy - 1) && !levl[sx][sy - 1].edge
+        else if (isok(sx, sy - 1) && !is_levl_edge(&levl[sx][sy - 1])
                  && (int) levl[sx][sy - 1].roomno == rmno)
             sy--;
-        else if (isok(sx, sy + 1) && !levl[sx][sy + 1].edge
+        else if (isok(sx, sy + 1) && !is_levl_edge(&levl[sx][sy + 1])
                  && (int) levl[sx][sy + 1].roomno == rmno)
             sy++;
         else
@@ -891,7 +891,7 @@ static boolean
 stock_room_goodpos(struct mkroom *sroom, int rmno, int sh, int sx, int sy)
 {
     if (sroom->irregular) {
-        if (levl[sx][sy].edge
+        if (is_levl_edge(&levl[sx][sy])
             || (int) levl[sx][sy].roomno != rmno
             || distmin(sx, sy, doors[sh].x, doors[sh].y) <= 1)
             return FALSE;

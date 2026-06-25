@@ -130,7 +130,7 @@ blackout(int x, int y)
                to check whether the spot on the far side is lit instead
                of doing a blanket blackout of adjacent locations] */
             if (lev->typ == STONE)
-                lev->lit = lev->waslit = 0;
+                set_levl_lit(lev, set_levl_waslit(lev, 0));
             /* mark <i,j> as not having been seen from <x,y> */
             unset_seenv(lev, x, y, i, j);
         }

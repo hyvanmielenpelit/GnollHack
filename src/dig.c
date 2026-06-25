@@ -33,11 +33,11 @@ rm_waslit(void)
 {
     xchar x, y;
 
-    if (IS_FLOOR(levl[u.ux][u.uy].typ) && levl[u.ux][u.uy].waslit)
+    if (IS_FLOOR(levl[u.ux][u.uy].typ) && is_levl_waslit(&levl[u.ux][u.uy]))
         return TRUE;
     for (x = u.ux - 2; x < u.ux + 3; x++)
         for (y = u.uy - 1; y < u.uy + 2; y++)
-            if (isok(x, y) && levl[x][y].waslit)
+            if (isok(x, y) && is_levl_waslit(&levl[x][y]))
                 return TRUE;
     return FALSE;
 }
@@ -83,10 +83,10 @@ mkcavepos(xchar x, xchar y, int dist, boolean waslit, boolean rockit)
     lev->seenv = 0;
     //lev->doormask = 0;
     if (dist < 3)
-        lev->lit = (rockit ? FALSE : TRUE);
+        set_levl_lit(lev, (rockit ? FALSE : TRUE));
     if (waslit)
-        lev->waslit = (rockit ? FALSE : TRUE);
-    //lev->horizontal = FALSE;
+        set_levl_waslit(lev, (rockit ? FALSE : TRUE));
+    //set_levl_horizontal(lev, FALSE);
     /* short-circuit vision recalc */
     viz_array[y][x] = (dist < 3) ? (IN_SIGHT | COULD_SEE) : COULD_SEE;
     //lev->typ = (rockit ? STONE : ROOM); /* flags set via doormask above */
@@ -141,7 +141,7 @@ mkcavearea(boolean rockit)
         levl[u.ux][u.uy].subtyp = get_initial_location_subtype(levl[u.ux][u.uy].typ);
         levl[u.ux][u.uy].vartyp = get_initial_location_vartype(levl[u.ux][u.uy].typ, levl[u.ux][u.uy].subtyp);
         if (waslit)
-            levl[u.ux][u.uy].waslit = TRUE;
+            set_levl_waslit(&levl[u.ux][u.uy], TRUE);
         newsym(u.ux, u.uy); /* in case player is invisible */
     }
 
@@ -245,7 +245,7 @@ dig_check(struct monst *madeby, boolean verbose, int x, int y)
     } 
     else if ((IS_ROCK(levl[x][y].typ) && levl[x][y].typ != SDOOR
                 && (levl[x][y].wall_info & W_NONDIGGABLE) != 0)
-               || (ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDDEN) || (!Can_dig_down(&u.uz) && !levl[x][y].candig)))
+               || (ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDDEN) || (!Can_dig_down(&u.uz) && !is_levl_candig(&levl[x][y]))))
                || (IS_DOOR_OR_SDOOR(levl[x][y].typ) && !is_door_diggable_at(x, y))
               ) 
     {
@@ -737,7 +737,7 @@ digactualhole(int x, int y, struct monst *madeby, int ttyp)
         return;
     }
 
-    if (ttyp != PIT && (!Can_dig_down(&u.uz) && !lev->candig)) {
+    if (ttyp != PIT && (!Can_dig_down(&u.uz) && !is_levl_candig(lev))) {
         impossible("digactualhole: can't dig %s on this level.",
                    defsyms[trap_to_defsym(ttyp)].explanation);
         ttyp = PIT;
@@ -946,7 +946,7 @@ dighole(boolean pit_only, boolean by_magic, coord *cc)
 
     ttmp = t_at(dig_x, dig_y);
     lev = &levl[dig_x][dig_y];
-    nohole = (!Can_dig_down(&u.uz) && !lev->candig);
+    nohole = (!Can_dig_down(&u.uz) && !is_levl_candig(lev));
 
     if ((ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDDEN) != 0 || nohole))
         || (IS_ROCK(lev->typ) && lev->typ != SDOOR

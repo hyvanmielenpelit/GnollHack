@@ -2914,7 +2914,7 @@ check_jump(genericptr arg, int x, int y)
                 /* reject horizontal jump through horizontal open door
                    and non-horizontal (ie, vertical) jump through
                    non-horizontal (vertical) open door */
-                || ((traj & jHorz) != 0) == (lev->horizontal != 0)))
+                || ((traj & jHorz) != 0) == (is_levl_horizontal(lev))))
             return FALSE;
         /* empty doorways aren't restricted */
     }
@@ -2988,7 +2988,7 @@ is_valid_jump_pos(int x, int y, int magic, boolean showmsg)
         if (diag == jDiag && IS_DOOR(lev->typ)
             && (lev->doormask & D_ISOPEN) != 0
             && (traj == jDiag
-                || ((traj & jHorz) != 0) == (lev->horizontal != 0))) {
+                || ((traj & jHorz) != 0) == (is_levl_horizontal(lev)))) {
             if (showmsg)
             {
                 play_sfx_sound(SFX_SOMETHING_IN_WAY);
@@ -5919,7 +5919,7 @@ do_break_wand(struct obj *obj)
                 else
                     digactualhole(x, y, BY_OBJECT, (rn2(used_obj->charges) < 3
                                                     || (!Can_dig_down(&u.uz)
-                                                        && !levl[x][y].candig))
+                                                        && !is_levl_candig(&levl[x][y])))
                                                       ? PIT
                                                       : HOLE);
             }

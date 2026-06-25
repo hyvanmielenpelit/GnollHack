@@ -185,7 +185,7 @@ magic_map_background(xchar x, xchar y, int show)
 {
     /* Hero gains knowledge of the lit status of the location */
     struct rm* lev = &levl[x][y];
-    lev->waslit = lev->lit;
+    set_levl_waslit(lev, is_levl_lit(lev));
 
     map_background(x, y, show);
 
@@ -616,12 +616,12 @@ unmap_object(int x, int y)
     if (!level.flags.hero_memory)
         return;
 
-    boolean waslit = levl[x][y].waslit;
+    boolean waslit = is_levl_waslit(&levl[x][y]);
     clear_hero_memory_at(x, y);
 
     if (levl[x][y].seenv)
     {
-        levl[x][y].waslit = waslit;
+        set_levl_waslit(&levl[x][y], waslit);
         map_background(x, y, 0);
 
         if ((trap = t_at(x, y)) != 0 && trap->tseen && !covers_traps(x, y))
@@ -766,7 +766,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
              * mappearance is currently set to an S_ index value in
              * makemon.c.
              */
-            int cmap_type = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+            int cmap_type = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
             int sym = mon->mappearance, glyph = cmap_with_type_to_glyph(sym, cmap_type);
 
             /* Replace */
@@ -1156,7 +1156,7 @@ clear_hero_memory_at(int x, int y)
     struct layer_info* layer_ptr = &levl[x][y].hero_memory_layers;
     clear_hero_object_memory_at(x, y);
     clear_layer_info(layer_ptr);
-    levl[x][y].waslit = 0;
+    set_levl_waslit(&levl[x][y], 0);
 }
 
 void
@@ -1295,7 +1295,7 @@ newsym_with_extra_info_and_flags(int x, int y, uint64_t disp_flags, uint64_t dis
         /*
          * Don't use templit here:  E.g.
          *
-         *      lev->waslit = !!(lev->lit || templit(x,y));
+         *      set_levl_waslit(lev, !!(is_levl_lit(lev) || templit(x,y)));
          *
          * Otherwise we have the "light pool" problem, where non-permanently
          * lit areas just out of sight stay remembered as lit.  They should
@@ -1304,7 +1304,7 @@ newsym_with_extra_info_and_flags(int x, int y, uint64_t disp_flags, uint64_t dis
          * Perhaps ALL areas should revert to their "unlit" look when
          * out of sight.
          */
-        lev->waslit = (lev->lit != 0); /* remember lit condition */
+        set_levl_waslit(lev, (is_levl_lit(lev))); /* remember lit condition */
 
         /* THEN, SHOW THE LOCATION IS AND PUT IT TO MEMORY */
         /* Note: clears layer flags */
@@ -3403,8 +3403,8 @@ flush_screen(int cursor_on_u)
                 add_glyph_buffer_layer_flags(x, y, LFLAGS_CAN_SEE, 0UL);
             }
 
-            boolean is_lit_unknown_wall = (levl[x][y].waslit && IS_NON_STONE_WALL(levl[x][y].typ) && wall_angle(&levl[x][y]) == S_stone);
-            if (!levl[x][y].waslit || is_lit_unknown_wall)
+            boolean is_lit_unknown_wall = (is_levl_waslit(&levl[x][y]) && IS_NON_STONE_WALL(levl[x][y].typ) && wall_angle(&levl[x][y]) == S_stone);
+            if (!is_levl_waslit(&levl[x][y]) || is_lit_unknown_wall)
             {
                 add_glyph_buffer_layer_flags(x, y, LFLAGS_APPEARS_UNLIT, 0UL);
             }
@@ -3513,9 +3513,9 @@ back_to_glyph(xchar x, xchar y)
     int idx;
     struct rm *ptr = &(levl[x][y]);
     boolean is_variation = FALSE;
-    boolean facing_right = (ptr->facing_right != 0);
+    boolean facing_right = (is_levl_facing_right(ptr));
     int multiplier = facing_right ? -1 : 1;
-    int cmap_type = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+    int cmap_type = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
 
     switch (ptr->typ) {
     case UNDEFINED_LOCATION:
@@ -3538,7 +3538,7 @@ back_to_glyph(xchar x, xchar y)
     }
     break;
     case ROOM:
-        idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKROOMSYM: */ S_room;
+        idx = /*(!is_levl_waslit(ptr) || flags.dark_room) && !cansee(x, y) ? DARKROOMSYM: */ S_room;
 
         if (ptr->subtyp > 0 || ptr->vartyp > 0)
         {
@@ -3549,7 +3549,7 @@ back_to_glyph(xchar x, xchar y)
 
         break;
     case GRASS:
-        idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKGRASSSYM :*/ S_grass;
+        idx = /*(!is_levl_waslit(ptr) || flags.dark_room) && !cansee(x, y) ? DARKGRASSSYM :*/ S_grass;
         if (ptr->subtyp > 0 || ptr->vartyp > 0)
         {
             is_variation = TRUE;
@@ -3567,7 +3567,7 @@ back_to_glyph(xchar x, xchar y)
         }
         break;
     case CORR:
-        idx = /* (ptr->waslit || flags.lit_corridor) ? */ S_litcorr /* : S_corr */;
+        idx = /* (is_levl_waslit(ptr) || flags.lit_corridor) ? */ S_litcorr /* : S_corr */;
         if (ptr->subtyp > 0 || ptr->vartyp > 0)
         {
             is_variation = TRUE;
@@ -3646,13 +3646,13 @@ back_to_glyph(xchar x, xchar y)
 
         if ((ptr->doormask & D_MASK)) {
             if (ptr->doormask & D_BROKEN)
-                sym_idx = (ptr->horizontal) ? S_hbdoor : S_vbdoor;
+                sym_idx = (is_levl_horizontal(ptr)) ? S_hbdoor : S_vbdoor;
             else if (ptr->doormask & D_ISOPEN)
-                sym_idx = (ptr->horizontal) ? S_hodoor : S_vodoor;
+                sym_idx = (is_levl_horizontal(ptr)) ? S_hodoor : S_vodoor;
             else if (ptr->doormask & D_PORTCULLIS)
-                sym_idx = (ptr->horizontal) ? S_hoportcullis : S_voportcullis;
+                sym_idx = (is_levl_horizontal(ptr)) ? S_hoportcullis : S_voportcullis;
             else /* else is closed */
-                sym_idx = (ptr->horizontal) ? S_hcdoor : S_vcdoor;
+                sym_idx = (is_levl_horizontal(ptr)) ? S_hcdoor : S_vcdoor;
         }
         else
             sym_idx = S_ndoor;
@@ -3796,7 +3796,7 @@ back_to_glyph(xchar x, xchar y)
         idx = S_water;
         break;
     case DBWALL:
-        idx = (ptr->horizontal) ? S_hcdbridge : S_vcdbridge;
+        idx = (is_levl_horizontal(ptr)) ? S_hcdbridge : S_vcdbridge;
         break;
     case DRAWBRIDGE_UP:
         switch (ptr->drawbridgemask & DB_UNDER) {
@@ -3820,7 +3820,7 @@ back_to_glyph(xchar x, xchar y)
         }
         break;
     case DRAWBRIDGE_DOWN:
-        idx = (ptr->horizontal) ? S_hodbridge : S_vodbridge;
+        idx = (is_levl_horizontal(ptr)) ? S_hodbridge : S_vodbridge;
         break;
     default:
         impossible("back_to_glyph:  unknown level type [ = %d ]", ptr->typ);
@@ -4288,7 +4288,7 @@ get_floor_layer_glyph(xchar x, xchar y)
 {
     int idx;
     struct rm* ptr = &(levl[x][y]);
-    int cmap_type = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+    int cmap_type = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
 
     if (ptr->floortyp && IS_FLOOR(ptr->floortyp))
     {
@@ -4345,10 +4345,10 @@ get_floor_layer_glyph(xchar x, xchar y)
         return NO_GLYPH;
     case DOOR:
     case IRONBARS:
-        idx = /* ptr->waslit ? */ S_room /* : DARKROOMSYM */;
+        idx = /* is_levl_waslit(ptr) ? */ S_room /* : DARKROOMSYM */;
         break;
     case TREE:
-        idx = /* ptr->waslit ? */ S_grass /*: DARKGRASSSYM */;
+        idx = /* is_levl_waslit(ptr) ? */ S_grass /*: DARKGRASSSYM */;
         break;
     case LADDER:
     case STAIRS:
@@ -4359,7 +4359,7 @@ get_floor_layer_glyph(xchar x, xchar y)
     case BRAZIER:
     case SIGNPOST:
     case THRONE:
-        idx = /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/;
+        idx = /* is_levl_waslit(ptr) ? */ S_room /*: DARKROOMSYM*/;
         break;
     case DRAWBRIDGE_DOWN:
         switch (ptr->drawbridgemask & DB_UNDER) 
@@ -4374,18 +4374,18 @@ get_floor_layer_glyph(xchar x, xchar y)
             idx = S_ice;
             break;
         case DB_GROUND:
-            idx = S_ground; // /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/;
+            idx = S_ground; // /* is_levl_waslit(ptr) ? */ S_room /*: DARKROOMSYM*/;
             break;
         default:
             impossible("Strange db-under: %d",
                 ptr->drawbridgemask & DB_UNDER);
-            idx = /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/; /* something is better than nothing */
+            idx = /* is_levl_waslit(ptr) ? */ S_room /*: DARKROOMSYM*/; /* something is better than nothing */
             break;
         }
         break;
     default:
         impossible("get_floor_layer_glyph:  unknown level type [ = %d ]", ptr->typ);
-        idx =/*  ptr->waslit ? */ S_room /* : DARKROOMSYM */;
+        idx =/*  is_levl_waslit(ptr) ? */ S_room /* : DARKROOMSYM */;
         break;
     }
 
@@ -4662,7 +4662,7 @@ set_wall_state(void)
         for (lev = &levl[x][0], y = 0; y < ROWNO; y++, lev++) {
             switch (lev->typ) {
             case SDOOR:
-                wmode = set_wall(x, y, (int) lev->horizontal);
+                wmode = set_wall(x, y, (int) is_levl_horizontal(lev));
                 break;
             case VWALL:
                 wmode = set_wall(x, y, 0);
@@ -4969,7 +4969,7 @@ wall_angle(struct rm *lev)
         break;
 
     case SDOOR:
-        if (lev->horizontal)
+        if (is_levl_horizontal(lev))
             goto horiz;
         /*FALLTHRU*/
     case VWALL:
@@ -5204,7 +5204,7 @@ void
 display_self_with_extra_info_choose_ascii(uint64_t displayed_flags, uint64_t displayed_mflags, int hit_tile_id, int dmg_received, boolean exclude_ascii)
 {
 
-    int cmap_type = levl[u.ux][u.uy].use_special_tileset ? levl[u.ux][u.uy].special_tileset : get_current_cmap_type_index();
+    int cmap_type = is_levl_use_special_tileset(&levl[u.ux][u.uy]) ? levl[u.ux][u.uy].special_tileset : get_current_cmap_type_index();
     show_monster_glyph_with_extra_info_choose_ascii(u.ux, u.uy,
         maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)
             ? u_to_glyph() /*hero_glyph*/

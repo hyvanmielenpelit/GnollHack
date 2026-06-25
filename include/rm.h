@@ -1228,22 +1228,71 @@ struct rm {
     uchar seenv;             /* seen vector */
     /* unsigned int to make sure bitfields are aligned properly across platforms */
     unsigned flags;          /* extra information for typ */
-    Bitfield(horizontal, 1); /* wall/door/etc is horiz. (more typ info) */
-    Bitfield(lit, 1);        /* speed hack for lit rooms */
-    Bitfield(waslit, 1);     /* remember if a location was lit */
 
-    Bitfield(facing_right, 1);      /* flip picture horizontally to "face right" */
-    Bitfield(lamplit, 1);           /* if the location is a light source, is it on? */
-    Bitfield(makingsound, 1);       /* if the location is a sound source, is it on? */
+    uint64_t bitflags;
+#define RM_BITFLAG_NONE                0x00000000UL
+#define RM_BITFLAG_HORIZONTAL          0x00000001UL
+#define RM_BITFLAG_LIT                 0x00000002UL
+#define RM_BITFLAG_WASLIT              0x00000004UL
+#define RM_BITFLAG_FACING_RIGHT        0x00000008UL
+#define RM_BITFLAG_LAMPLIT             0x00000010UL
+#define RM_BITFLAG_MAKINGSOUND         0x00000020UL
+#define RM_BITFLAG_EDGE                0x00000040UL
+#define RM_BITFLAG_CANDIG              0x00000080UL
+#define RM_BITFLAG_USE_SPECIAL_TILESET 0x00000100UL
+#define RM_BITFLAG_CLICK_KICK_OK       0x00000200UL
 
-    Bitfield(roomno, 6); /* room # for special rooms */
-    Bitfield(edge, 1);   /* marks boundaries for special rooms*/
-    Bitfield(candig, 1); /* Exception to Can_dig_down; was a trapdoor */
-    Bitfield(use_special_tileset, 1); /* Use tileset specified below instead standard one */
-    Bitfield(special_tileset, 5); /* Specific tileset applicable to this location */
-
-    Bitfield(click_kick_ok, 1); /* No query when clicking to kick  */
+    uchar roomno; /* room # for special rooms */
+    uchar special_tileset; /* Specific tileset applicable to this location */
 };
+
+#define is_levl_horizontal(l)          get_flag((l)->bitflags, RM_BITFLAG_HORIZONTAL)
+#define set_levl_horizontal(l, v)      set_flag((l)->bitflags, RM_BITFLAG_HORIZONTAL, (v))
+#define toggle_levl_horizontal(l)      toggle_flag((l)->bitflags, RM_BITFLAG_HORIZONTAL)
+
+#define is_levl_lit(l)                 get_flag((l)->bitflags, RM_BITFLAG_LIT)
+#define set_levl_lit(l, v)             set_flag((l)->bitflags, RM_BITFLAG_LIT, (v))
+#define toggle_levl_lit(l)             toggle_flag((l)->bitflags, RM_BITFLAG_LIT)
+
+#define is_levl_waslit(l)              get_flag((l)->bitflags, RM_BITFLAG_WASLIT)
+#define set_levl_waslit(l, v)          set_flag((l)->bitflags, RM_BITFLAG_WASLIT, (v))
+#define toggle_levl_waslit(l)          toggle_flag((l)->bitflags, RM_BITFLAG_WASLIT)
+
+#define is_levl_facing_right(l)        get_flag((l)->bitflags, RM_BITFLAG_FACING_RIGHT)
+#define set_levl_facing_right(l, v)    set_flag((l)->bitflags, RM_BITFLAG_FACING_RIGHT, (v))
+#define toggle_levl_facing_right(l)    toggle_flag((l)->bitflags, RM_BITFLAG_FACING_RIGHT)
+
+#define is_levl_lamplit(l)             get_flag((l)->bitflags, RM_BITFLAG_LAMPLIT)
+#define set_levl_lamplit(l, v)         set_flag((l)->bitflags, RM_BITFLAG_LAMPLIT, (v))
+#define toggle_levl_lamplit(l)         toggle_flag((l)->bitflags, RM_BITFLAG_LAMPLIT)
+
+#define is_levl_makingsound(l)         get_flag((l)->bitflags, RM_BITFLAG_MAKINGSOUND)
+#define set_levl_makingsound(l, v)     set_flag((l)->bitflags, RM_BITFLAG_MAKINGSOUND, (v))
+#define toggle_levl_makingsound(l)     toggle_flag((l)->bitflags, RM_BITFLAG_MAKINGSOUND)
+
+#define is_levl_edge(l)                get_flag((l)->bitflags, RM_BITFLAG_EDGE)
+#define set_levl_edge(l, v)            set_flag((l)->bitflags, RM_BITFLAG_EDGE, (v))
+#define toggle_levl_edge(l)            toggle_flag((l)->bitflags, RM_BITFLAG_EDGE)
+
+#define is_levl_candig(l)              get_flag((l)->bitflags, RM_BITFLAG_CANDIG)
+#define set_levl_candig(l, v)          set_flag((l)->bitflags, RM_BITFLAG_CANDIG, (v))
+#define toggle_levl_candig(l)          toggle_flag((l)->bitflags, RM_BITFLAG_CANDIG)
+
+#define is_levl_use_special_tileset(l) get_flag((l)->bitflags, RM_BITFLAG_USE_SPECIAL_TILESET)
+#define set_levl_use_special_tileset(l, v) set_flag((l)->bitflags, RM_BITFLAG_USE_SPECIAL_TILESET, (v))
+#define toggle_levl_use_special_tileset(l) toggle_flag((l)->bitflags, RM_BITFLAG_USE_SPECIAL_TILESET)
+
+#define is_levl_click_kick_ok(l)       get_flag((l)->bitflags, RM_BITFLAG_CLICK_KICK_OK)
+#define set_levl_click_kick_ok(l, v)   set_flag((l)->bitflags, RM_BITFLAG_CLICK_KICK_OK, (v))
+#define toggle_levl_click_kick_ok(l)   toggle_flag((l)->bitflags, RM_BITFLAG_CLICK_KICK_OK)
+
+#define is_levl_blessedftn(l)          is_levl_horizontal(l)
+#define set_levl_blessedftn(l, v)      set_levl_horizontal(l, v)
+#define toggle_levl_blessedftn(l)      toggle_levl_horizontal(l)
+
+#define is_levl_disturbed(l)           is_levl_horizontal(l)
+#define set_levl_disturbed(l, v)       set_levl_horizontal(l, v)
+#define toggle_levl_disturbed(l)       toggle_levl_horizontal(l)
 
 #define DECORATION_FLAGS_NONE                   ((uchar)0x00)
 #define DECORATION_FLAGS_ITEM_IN_HOLDER         ((uchar)0x01)
@@ -1280,12 +1329,12 @@ struct rm {
                 initialize_location(&levl[(x)][(y)]);             \
             }                                                     \
             if ((ttyp) == LAVAPOOL)                               \
-                levl[(x)][(y)].lit = 1;                           \
+                set_levl_lit(&levl[(x)][(y)], 1);                 \
             else if ((schar)(llit) != -2) {                       \
                 if ((schar)(llit) == -1)                          \
-                    levl[(x)][(y)].lit = rn2(2);                  \
+                    set_levl_lit(&levl[(x)][(y)], rn2(2));        \
                 else                                              \
-                    levl[(x)][(y)].lit = (llit);                  \
+                    set_levl_lit(&levl[(x)][(y)], (llit));        \
             }                                                     \
         }                                                         \
     }
@@ -1379,8 +1428,7 @@ struct rm {
 #define looted flags
 #define icedpool flags
 
-#define blessedftn horizontal /* a fountain that grants attribs */
-#define disturbed horizontal  /* a grave that has been disturbed */
+
 
 struct damage {
     struct damage *next;

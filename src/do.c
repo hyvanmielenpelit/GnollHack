@@ -8257,7 +8257,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
         /* main dungeon message from your quest leader */
         if (!In_quest(&u.uz0) && at_dgn_entrance("The Quest")
             && !(is_uevent_qcompleted() || is_uevent_qexpelled()
-                 || quest_status.leader_is_dead)) 
+                 || is_qstatus_leader_is_dead())) 
         {
             if (!is_uevent_qcalled()) 
             {
@@ -9105,17 +9105,17 @@ delete_location(xchar x, xchar y)
     else if (levl[x][y].typ == SINK)
         level.flags.nsinks--;
 
-    if (levl[x][y].lamplit)
+    if (is_levl_lamplit(&levl[x][y]))
     {
         if(!in_mklev)
             del_light_source(LS_LOCATION, xy_to_any(x, y));
-        levl[x][y].lamplit = 0;
+        set_levl_lamplit(&levl[x][y], 0);
     }
-    if (levl[x][y].makingsound)
+    if (is_levl_makingsound(&levl[x][y]))
     {
         if (!in_mklev)
             del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
-        levl[x][y].makingsound = 0;
+        set_levl_makingsound(&levl[x][y], 0);
     }
     levl[x][y].typ = UNDEFINED_LOCATION;
     levl[x][y].flags = 0;
@@ -9134,8 +9134,8 @@ delete_location(xchar x, xchar y)
     levl[x][y].floortyp = 0;
     levl[x][y].floorsubtyp = 0;
     levl[x][y].floorvartyp = 0;
-    levl[x][y].facing_right = 0;
-    levl[x][y].horizontal = 0;
+    set_levl_facing_right(&levl[x][y], 0);
+    set_levl_horizontal(&levl[x][y], 0);
 }
 
 void
@@ -9144,17 +9144,17 @@ delete_decoration(xchar x, xchar y)
     if (levl[x][y].decoration_typ)
     {
         debugprint("delete_decoration");
-        if (levl[x][y].lamplit)
+        if (is_levl_lamplit(&levl[x][y]))
         {
             if (!in_mklev)
                 del_light_source(LS_LOCATION, xy_to_any(x, y));
-            levl[x][y].lamplit = 0;
+            set_levl_lamplit(&levl[x][y], 0);
         }
-        if (levl[x][y].makingsound)
+        if (is_levl_makingsound(&levl[x][y]))
         {
             if (!in_mklev)
                 del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
-            levl[x][y].makingsound = 0;
+            set_levl_makingsound(&levl[x][y], 0);
         }
         levl[x][y].decoration_typ = 0;
         levl[x][y].decoration_subtyp = 0;
@@ -9182,8 +9182,8 @@ full_location_transform(xchar x, xchar y, int type, int subtype, int vartype, un
     levl[x][y].floortyp = floortype;
     levl[x][y].floorsubtyp = floorsubtype;
     levl[x][y].floorvartyp = floorvartype;
-    levl[x][y].facing_right = facing_right;
-    levl[x][y].horizontal = horizontal;
+    set_levl_facing_right(&levl[x][y], facing_right);
+    set_levl_horizontal(&levl[x][y], horizontal);
     levl[x][y].key_otyp = key_otyp;
     levl[x][y].special_quality = special_quality;
 
@@ -9301,15 +9301,15 @@ transform_location_type(xchar x, xchar y, int type, int subtype)
     else if (levl[x][y].typ == SINK)
         level.flags.nsinks--;
 
-    if (levl[x][y].lamplit)
+    if (is_levl_lamplit(&levl[x][y]))
     {
         del_light_source(LS_LOCATION, xy_to_any(x, y));
-        levl[x][y].lamplit = 0;
+        set_levl_lamplit(&levl[x][y], 0);
     }
-    if (levl[x][y].makingsound)
+    if (is_levl_makingsound(&levl[x][y]))
     {
         del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
-        levl[x][y].makingsound = 0;
+        set_levl_makingsound(&levl[x][y], 0);
     }
 
     /* Then, change type */

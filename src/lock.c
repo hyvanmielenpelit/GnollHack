@@ -1107,7 +1107,7 @@ doopen_indir(int x, int y)
 
             if(!unlocked && !u.usteed && (!(x == 0 && y == 0) || context.click_kick_query)) /* Either click or indirect via movement */
             {
-                if (!door->click_kick_ok)
+                if (!is_levl_click_kick_ok(door))
                 {
                     char ans = 'n';
                     char qbuf[BUFSZ * 2];
@@ -1117,7 +1117,7 @@ doopen_indir(int x, int y)
 
                     if (ans == 'y')
                     {
-                        door->click_kick_ok = 1;
+                        set_levl_click_kick_ok(door, 1);
                     }
                 }
                 else

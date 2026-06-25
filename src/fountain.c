@@ -229,12 +229,12 @@ void
 drinkfountain(void)
 {
     /* What happens when you drink from a fountain? */
-    boolean mgkftn = (levl[u.ux][u.uy].blessedftn == 1);
+    boolean mgkftn = (is_levl_blessedftn(&levl[u.ux][u.uy]));
     int fate = rnd(30);
 
     int zlevel;
     zlevel = level_difficulty();
-    boolean fountain_blessed = levl[u.ux][u.uy].blessedftn;
+    boolean fountain_blessed = is_levl_blessedftn(&levl[u.ux][u.uy]);
     int ftyp = levl[u.ux][u.uy].subtyp; // (levl[u.ux][u.uy].fountainmask & FOUNTAIN_TYPE_MASK);
 
     if (Levitation && !Levitation_control) 
@@ -428,7 +428,7 @@ drinkfountain(void)
         display_nhwindow(WIN_MESSAGE, FALSE);
         pline("A wisp of vapor escapes the fountain...");
         exercise(A_WIS, TRUE);
-        levl[u.ux][u.uy].blessedftn = 0;
+        set_levl_blessedftn(&levl[u.ux][u.uy], 0);
         if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
         {
             pline_ex(ATR_NONE, CLR_MSG_HINT, "That was an enchanted magic fountain.");
@@ -1230,7 +1230,7 @@ const char* get_fountain_name(int x, int y)
 
     int ftyp = levl[x][y].subtyp; //  (levl[x][y].fountainmask& FOUNTAIN_TYPE_MASK);
 
-    return FOUNTAIN_IS_KNOWN(x, y) ? (ftyp > FOUNTAIN_MAGIC ? fountain_type_text(ftyp) : levl[x][y].blessedftn ? "enchanted magic fountain" : "magic fountain") : defsyms[S_fountain].explanation;
+    return FOUNTAIN_IS_KNOWN(x, y) ? (ftyp > FOUNTAIN_MAGIC ? fountain_type_text(ftyp) : is_levl_blessedftn(&levl[x][y]) ? "enchanted magic fountain" : "magic fountain") : defsyms[S_fountain].explanation;
 }
 
 

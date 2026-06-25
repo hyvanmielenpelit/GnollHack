@@ -1827,7 +1827,7 @@ m_initinv(struct monst *mtmp)
             {
                 otmp->quan = 1;
                 otmp->owt = weight(otmp);
-                if (!mpickobj(mtmp, otmp) && !otmp->lamplit && !levl[mtmp->mx][mtmp->my].lit)
+                if (!mpickobj(mtmp, otmp) && !otmp->lamplit && !is_levl_lit(&levl[mtmp->mx][mtmp->my]))
                     begin_burn(otmp, FALSE);
             }
         }
@@ -2180,7 +2180,7 @@ m_initinv(struct monst *mtmp)
             {
                 otmp->quan = 1;
                 otmp->owt = weight(otmp);
-                if (!mpickobj(mtmp, otmp) && !otmp->lamplit && !levl[mtmp->mx][mtmp->my].lit)
+                if (!mpickobj(mtmp, otmp) && !otmp->lamplit && !is_levl_lit(&levl[mtmp->mx][mtmp->my]))
                     begin_burn(otmp, FALSE);
             }
         }
@@ -4251,7 +4251,7 @@ mongets_with_material(struct monst *mtmp, int otyp, uchar material)
         if (isok(mtmp->mx, mtmp->my) && (objects[otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT))
         {
             otmp->has_special_tileset = 1;
-            otmp->special_tileset = levl[mtmp->mx][mtmp->my].use_special_tileset ? levl[mtmp->mx][mtmp->my].special_tileset : get_current_cmap_type_index();
+            otmp->special_tileset = is_levl_use_special_tileset(&levl[mtmp->mx][mtmp->my]) ? levl[mtmp->mx][mtmp->my].special_tileset : get_current_cmap_type_index();
         }
 
         if (mpickobj(mtmp, otmp))

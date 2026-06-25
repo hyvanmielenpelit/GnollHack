@@ -591,7 +591,7 @@ fall_through(boolean td)
     if (Sokoban && Can_fall_thru(&u.uz))
         ; /* KMH -- You can't escape the Sokoban level traps */
     else if (Levitation || u.ustuck
-             || (!Can_fall_thru(&u.uz) && !levl[u.ux][u.uy].candig) || Flying
+             || (!Can_fall_thru(&u.uz) && !is_levl_candig(&levl[u.ux][u.uy])) || Flying
              || is_clinger(youmonst.data)
              || (Inhell && !is_uevent_invoked() && newlevel == bottom)) {
         dont_fall = "don't fall in.";
@@ -2592,7 +2592,7 @@ mkroll_launch(struct trap *ttmp, xchar x, xchar y, short otyp, int64_t ocount)
         if ((objects[otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
         {
             otmp->has_special_tileset = 1;
-            otmp->special_tileset = levl[cc.x][cc.y].use_special_tileset ? levl[cc.x][cc.y].special_tileset : get_current_cmap_type_index();
+            otmp->special_tileset = is_levl_use_special_tileset(&levl[cc.x][cc.y]) ? levl[cc.x][cc.y].special_tileset : get_current_cmap_type_index();
         }
         stackobj(otmp);
     }

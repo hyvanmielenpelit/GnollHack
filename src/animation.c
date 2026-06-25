@@ -1603,7 +1603,7 @@ maybe_get_replaced_glyph(
         }
         case REPLACEMENT_ACTION_LOCATION_LIT:
         {
-            if (isok(x, y) && get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+            if (isok(x, y) && get_location_light_range(x, y) != 0 && is_levl_lamplit(&levl[x][y]))
             {
                 /* Return the first tile with index 0 */
                 return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
@@ -1612,7 +1612,7 @@ maybe_get_replaced_glyph(
         }
         case REPLACEMENT_ACTION_LOCATION_HORIZONTAL:
         {
-            if (isok(x, y) && levl[x][y].horizontal == TRUE)
+            if (isok(x, y) && is_levl_horizontal(&levl[x][y]))
             {
                 return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             }
@@ -1911,7 +1911,7 @@ maybe_get_replaced_glyph(
             if (isok(x, y) && levl[x][y].decoration_typ > 0 && (levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0)
             {
                 int glyph_idx = 0;
-                if (get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+                if (get_location_light_range(x, y) != 0 && is_levl_lamplit(&levl[x][y]))
                     glyph_idx = 1;
 
                 /* Return the first tile with index 0 */
@@ -1921,7 +1921,7 @@ maybe_get_replaced_glyph(
         }
         case REPLACEMENT_ACTION_FIREPLACE:
         {
-            if (isok(x, y) && levl[x][y].decoration_typ > 0 && get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+            if (isok(x, y) && levl[x][y].decoration_typ > 0 && get_location_light_range(x, y) != 0 && is_levl_lamplit(&levl[x][y]))
             {
                 int glyph_idx = 0;
 
