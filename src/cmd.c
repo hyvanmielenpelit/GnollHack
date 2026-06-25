@@ -1041,7 +1041,7 @@ doability(void)
                         umnbuf[min(MAXNAMELENGTH, PL_PSIZ) - 1] = '\0'; /* Limit the length of the name */
                         Strcpy(namebuf, umnbuf);
                     }
-                    else if (MNAME(mtmp) && mtmp->u_know_mname)
+                    else if (MNAME(mtmp) && is_mon_u_know_mname(mtmp))
                     {
                         char mnbuf[BUFSZ * 2];
                         Strcpy(mnbuf, MNAME(mtmp));
@@ -1680,13 +1680,13 @@ wiz_makemap(void)
 
         rm_mapseen(ledger_no(&u.uz));
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-            if (mtmp->isgd) { /* vault is going away; get rid of guard */
-                mtmp->isgd = 0;
+            if (is_mon_isgd(mtmp)) { /* vault is going away; get rid of guard */
+                set_mon_isgd(mtmp, 0);
                 mongone(mtmp);
             }
             if (DEADMONSTER(mtmp))
                 continue;
-            if (mtmp->isshk)
+            if (is_mon_isshk(mtmp))
                 setpaid(mtmp);
             /* TODO?
              *  Reduce 'born' tally for each monster about to be discarded

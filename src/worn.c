@@ -1531,7 +1531,7 @@ m_dowear(struct monst *mon, boolean creation, boolean commanded)
         mon->mfrozen = totaldelay;
         if (mon->mfrozen)
         {
-            mon->mcanmove = 0;
+            set_mon_mcanmove(mon, 0);
             refresh_m_tile_gui_info(mon, TRUE);
         }
     }
@@ -1636,7 +1636,7 @@ m_dowear_type(struct monst *mon, int64_t flag, boolean creation, boolean raciale
                priests and minions could change alignment but wouldn't
                want to, so they reject helms of opposite alignment */
             if (obj->otyp == HELM_OF_OPPOSITE_ALIGNMENT
-                && (mon->ispriest || mon->isminion))
+                && (is_mon_ispriest(mon) || is_mon_isminion(mon)))
                 continue;
             /* (flimsy exception matches polyself handling) */
             if (has_horns(mon->data) && !is_flimsy(obj))

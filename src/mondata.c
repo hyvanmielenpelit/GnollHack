@@ -479,7 +479,7 @@ can_blnd(struct monst *magr, struct monst *mdef, uchar aatyp, struct obj *obj)
     case AT_ENGL:
         if (is_you && (Blindfolded || Unaware || u.ucreamed))
             return FALSE;
-        if (!is_you && mdef->msleeping)
+        if (!is_you && is_mon_msleeping(mdef))
             return FALSE;
         break;
 
@@ -1358,7 +1358,7 @@ gender(struct monst *mtmp)
 {
     if (is_neuter(mtmp->data))
         return 2;
-    return mtmp->female;
+    return is_mon_female(mtmp);
 }
 
 /*
@@ -1375,7 +1375,7 @@ pronoun_gender(struct monst *mtmp, boolean override_vis)
     if (is_neuter(mtmp->data))
         return 2;
     return (humanoid(mtmp->data) || (mtmp->data->geno & G_UNIQ)
-            || is_mname_proper_name(mtmp->data)) ? (int) mtmp->female : 2;
+            || is_mname_proper_name(mtmp->data)) ? (int) is_mon_female(mtmp) : 2;
 }
 
 /* used for nearby monsters when you go to another level */
@@ -1386,15 +1386,15 @@ levl_follower(struct monst *mtmp)
         return TRUE;
 
     /* Wizard with Amulet won't bother trying to follow across levels */
-    if (mtmp->iswiz && mon_has_amulet(mtmp))
+    if (is_mon_iswiz(mtmp) && mon_has_amulet(mtmp))
         return FALSE;
 
     /* Special NPCs do not follow you */
-    if (mtmp->isshk || mtmp->ispriest || mtmp->isnpc || mtmp->issmith)
+    if (is_mon_isshk(mtmp) || is_mon_ispriest(mtmp) || is_mon_isnpc(mtmp) || is_mon_issmith(mtmp))
         return FALSE;
     
     /* some monsters will follow even while intending to flee from you */
-    if (is_tame(mtmp) || mtmp->iswiz || is_fshk(mtmp))
+    if (is_tame(mtmp) || is_mon_iswiz(mtmp) || is_fshk(mtmp))
         return TRUE;
 
     /* stalking types follow, but won't when fleeing unless you hold

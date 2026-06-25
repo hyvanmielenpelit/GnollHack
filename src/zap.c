@@ -1154,7 +1154,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
     case WAN_TELEPORTATION:
     case SPE_TELEPORT_MONSTER:
         res = 1;
-        debugprint("bhitm teleport: mnum=%d, isshk=%d", mtmp->mnum, (int)mtmp->isshk);
+        debugprint("bhitm teleport: mnum=%d, isshk=%d", mtmp->mnum, (int)is_mon_isshk(mtmp));
         if (disguised_mimic)
             seemimic(mtmp);
         reveal_invis = !u_teleport_mon(mtmp, TRUE);
@@ -1578,7 +1578,7 @@ cure_petrification_here:
             if(!is_peaceful(mtmp))
             {
                m_respond(mtmp);
-                if (mtmp->isshk && !*u.ushops)
+                if (is_mon_isshk(mtmp) && !*u.ushops)
                     hot_pursuit(mtmp);
             }
         }
@@ -2513,7 +2513,7 @@ get_mon_location(struct monst *mon, xchar *xp, xchar *yp, int locflags)
         *xp = u.ux;
         *yp = u.uy;
         return TRUE;
-    } else if (mon->mx > 0 && (!mon->mburied || locflags)) {
+    } else if (mon->mx > 0 && (!is_mon_mburied(mon) || locflags)) {
         *xp = mon->mx;
         *yp = mon->my;
         return TRUE;
@@ -2641,23 +2641,23 @@ montraits(struct obj *obj, coord *cc, boolean adjacentok, int mnum_override, int
         mtmp2->worn_item_flags = mtmp->worn_item_flags;
         mtmp2->weapon_strategy = mtmp->weapon_strategy;
         mtmp2->mtrapseen = mtmp->mtrapseen;
-        mtmp2->mflee = mtmp->mflee;
-        mtmp2->mburied = mtmp->mburied;
-        mtmp2->mundetected = mtmp->mundetected;
+        set_mon_mflee(mtmp2, is_mon_mflee(mtmp));
+        set_mon_mburied(mtmp2, is_mon_mburied(mtmp));
+        set_mon_mundetected(mtmp2, is_mon_mundetected(mtmp));
         mtmp2->mflee_timer = mtmp->mflee_timer;
         mtmp2->mlstmv = mtmp->mlstmv;
         mtmp2->m_ap_type = mtmp->m_ap_type;
-        mtmp2->leaves_no_corpse = mtmp->leaves_no_corpse;
-        mtmp2->delayed_killer_by_you = mtmp->delayed_killer_by_you;
+        set_mon_leaves_no_corpse(mtmp2, is_mon_leaves_no_corpse(mtmp));
+        set_mon_delayed_killer_by_you(mtmp2, is_mon_delayed_killer_by_you(mtmp));
         /* set these ones explicitly */
         mtmp2->mrevived = mtmp2->mrevived + (mtmp->mrevived < MAX_MONST_REVIVALS ? 1 : 0);
-        mtmp2->mavenge = 0;
+        set_mon_mavenge(mtmp2, 0);
         mtmp2->meating = 0;
-        mtmp2->mleashed = 0;
-        mtmp2->mtrapped = 0;
-        mtmp2->msleeping = 0;
+        set_mon_mleashed(mtmp2, 0);
+        set_mon_mtrapped(mtmp2, 0);
+        set_mon_msleeping(mtmp2, 0);
         mtmp2->mfrozen = 0;
-        mtmp2->mcanmove = 1;
+        set_mon_mcanmove(mtmp2, 1);
         /* most cancelled monsters return to normal,
            but some need to stay cancelled */
         if (!dmgtype(mtmp2->data, AD_SEDU)
@@ -2687,14 +2687,14 @@ montraits(struct obj *obj, coord *cc, boolean adjacentok, int mnum_override, int
         mtmp2->mprops[CRAZED] = 0;
         mtmp2->mprops[SLOWED] = 0;
 
-        if (mtmp2->isshk)
+        if (is_mon_isshk(mtmp2))
         {
             neweshk(mtmp);
             *ESHK(mtmp) = *ESHK(mtmp2);
             if (ESHK(mtmp2)->bill_p != 0
                 && ESHK(mtmp2)->bill_p != (struct bill_x *) -1000)
                 ESHK(mtmp)->bill_p = &(ESHK(mtmp)->bill[0]);
-            mtmp->isshk = 1;
+            set_mon_isshk(mtmp, 1);
         }
 
         /* grow the heads back */
@@ -2912,7 +2912,7 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
         mtmp = montraits(corpse, &xy, FALSE, animateintomon >= 0 ? montype : NON_PM, animateintomon < 0 && replaceundead ? montype : NON_PM, MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND);
         if (mtmp && has_edog(mtmp))
             EDOG(mtmp)->hungrytime = monstermoves + 500L;
-        if (mtmp && mtmp->mtame && !mtmp->isminion && !mtmp->isfaithful)
+        if (mtmp && mtmp->mtame && !is_mon_isminion(mtmp) && !is_mon_isfaithful(mtmp))
             wary_dog(mtmp, TRUE);
     }
     else 
@@ -2927,7 +2927,7 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
             {
                 (void) christen_monst(mtmp, ONAME(corpse));
                 if (corpse->nknown) /* If you know corpse name, then you will know revived monster's name */
-                    mtmp->u_know_mname = 1;
+                    set_mon_u_know_mname(mtmp, 1);
             }
         }
     }
@@ -2936,9 +2936,9 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
         return (struct monst *) 0;
 
     /* hiders shouldn't already be re-hidden when they revive */
-    if (mtmp->mundetected) 
+    if (is_mon_mundetected(mtmp)) 
     {
-        mtmp->mundetected = 0;
+        set_mon_mundetected(mtmp, 0);
         newsym(mtmp->mx, mtmp->my);
     }
 
@@ -3039,7 +3039,7 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
     {
         mtmp = christen_monst(mtmp, ONAME(corpse));
         if(corpse->nknown)
-            mtmp->u_know_mname = 1;
+            set_mon_u_know_mname(mtmp, 1);
     }
     if (has_uoname(corpse) && !unique_corpstat(mtmp->data))
     {
@@ -3056,8 +3056,8 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
     {
         //Animated are tamed
         tamedog(mtmp, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
-        mtmp->disregards_enemy_strength = TRUE;
-        mtmp->disregards_own_health = TRUE;
+        set_mon_disregards_enemy_strength(mtmp, TRUE);
+        set_mon_disregards_own_health(mtmp, TRUE);
     }
 
     /* finally, get rid of the corpse--it's gone now */
@@ -10964,9 +10964,9 @@ zap_over_floor(xchar x, xchar y, int type, boolean *shopdamage, short exploding_
                     /* probably ought to do some hefty damage to any
                        non-ice creature caught in freezing water;
                        at a minimum, eels are forced out of hiding */
-                    if (is_swimmer(mon->data) && mon->mundetected) 
+                    if (is_swimmer(mon->data) && is_mon_mundetected(mon)) 
                     {
-                        mon->mundetected = 0;
+                        set_mon_mundetected(mon, 0);
                         newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
                     }
                 }
@@ -11289,9 +11289,9 @@ zap_over_floor(xchar x, xchar y, int type, boolean *shopdamage, short exploding_
         if (type >= 0) 
         {
             setmangry(mon, TRUE);
-            if (mon->ispriest && *in_rooms(mon->mx, mon->my, TEMPLE))
+            if (is_mon_ispriest(mon) && *in_rooms(mon->mx, mon->my, TEMPLE))
                 ghod_hitsu(mon);
-            if (mon->isshk && !*u.ushops)
+            if (is_mon_isshk(mon) && !*u.ushops)
                 hot_pursuit(mon);
         }
     }
@@ -12378,15 +12378,15 @@ uint64_t scflags;
     mon = makemon(&mons[monst_id], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END | mmflags);
     if (mon)
     {
-        mon->issummoned = markassummoned;
-        mon->disregards_enemy_strength = disregardstrength;
-        mon->disregards_own_health = disregardhealth;
-        mon->hasbloodlust = bloodlust;
-        mon->ispacifist = pacifist;
-        mon->isprotector = protector;
+        set_mon_issummoned(mon, markassummoned);
+        set_mon_disregards_enemy_strength(mon, disregardstrength);
+        set_mon_disregards_own_health(mon, disregardhealth);
+        set_mon_hasbloodlust(mon, bloodlust);
+        set_mon_ispacifist(mon, pacifist);
+        set_mon_isprotector(mon, protector);
 
-        if(!mon->isfaithful)
-            mon->isfaithful = faithful;
+        if(!is_mon_isfaithful(mon))
+            set_mon_isfaithful(mon, faithful);
 
         (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
 
@@ -12417,10 +12417,10 @@ summondemon(int spl_otyp)
 
     if (mon)
     {
-        mon->issummoned = TRUE;
-        mon->disregards_enemy_strength = TRUE;
-        mon->disregards_own_health = FALSE;
-        mon->hasbloodlust = TRUE;
+        set_mon_issummoned(mon, TRUE);
+        set_mon_disregards_enemy_strength(mon, TRUE);
+        set_mon_disregards_own_health(mon, FALSE);
+        set_mon_hasbloodlust(mon, TRUE);
         (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
         if ((objects[spl_otyp].oc_spell_dur_dice > 0 && objects[spl_otyp].oc_spell_dur_diesize > 0) || objects[spl_otyp].oc_spell_dur_plus > 0)
         {
@@ -12457,15 +12457,15 @@ summondemogorgon(int spl_otyp)
     if (mon)
     {
         //Demogorgon gets bored and goes back to the abyss
-        mon->issummoned = TRUE;
-        mon->disregards_enemy_strength = TRUE;
-        mon->disregards_own_health = FALSE;
-        mon->hasbloodlust = TRUE;
+        set_mon_issummoned(mon, TRUE);
+        set_mon_disregards_enemy_strength(mon, TRUE);
+        set_mon_disregards_own_health(mon, FALSE);
+        set_mon_hasbloodlust(mon, TRUE);
         if (u.ualign.type == A_CHAOTIC)
         {
             (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
-            //mon->mpeaceful = TRUE;
-            //mon->isprotector = TRUE;
+            //set_mon_mpeaceful(mon, TRUE);
+            //set_mon_isprotector(mon, TRUE);
         }
         mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
         begin_summontimer(mon);
@@ -12510,10 +12510,10 @@ summonbahamut(int spl_otyp UNUSED)
     {
         (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
 
-        //mon->issummoned = TRUE;
-        mon->disregards_enemy_strength = TRUE;
-        mon->disregards_own_health = FALSE;
-        mon->hasbloodlust = FALSE;
+        //set_mon_issummoned(mon, TRUE);
+        set_mon_disregards_enemy_strength(mon, TRUE);
+        set_mon_disregards_own_health(mon, FALSE);
+        set_mon_hasbloodlust(mon, FALSE);
         if (!Blind)
             pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s descends from the heavens!", Monnam(mon));
         else

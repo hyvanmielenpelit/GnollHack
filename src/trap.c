@@ -700,7 +700,7 @@ animate_statue(struct obj *statue, xchar x, xchar y, int cause, int *fail_reason
         mon = montraits(statue, &cc, (cause == ANIMATE_SPELL), NON_PM, NON_PM, 0UL);
         if (mon && has_edog(mon))
             EDOG(mon)->hungrytime = monstermoves + 500L;
-        if (mon && mon->mtame && !mon->isminion)
+        if (mon && mon->mtame && !is_mon_isminion(mon))
             wary_dog(mon, TRUE);
     }
     else 
@@ -749,9 +749,9 @@ animate_statue(struct obj *statue, xchar x, xchar y, int cause, int *fail_reason
 
     /* a non-montraits() statue might specify gender */
     if (statue->speflags & SPEFLAGS_FEMALE)
-        mon->female = TRUE;
+        set_mon_female(mon, TRUE);
     else if (statue->speflags & SPEFLAGS_MALE)
-        mon->female = FALSE;
+        set_mon_female(mon, FALSE);
 
     /* if statue has been named, give same name to the monster */
     /* //Applies only to nicknames, other stats are recovered from OMONST -- JG
@@ -759,7 +759,7 @@ animate_statue(struct obj *statue, xchar x, xchar y, int cause, int *fail_reason
     {
         mon = christen_monst(mon, ONAME(statue));
         if(statue->nknown)
-            mon->u_know_mname = 1;
+            set_mon_u_know_mname(mon, 1);
     }
     */
     if (has_uoname(statue) && !unique_corpstat(mon->data))
@@ -770,14 +770,14 @@ animate_statue(struct obj *statue, xchar x, xchar y, int cause, int *fail_reason
     if (M_AP_TYPE(mon))
         seemimic(mon);
     else
-        mon->mundetected = FALSE;
-    mon->msleeping = 0;
+        set_mon_mundetected(mon, FALSE);
+    set_mon_msleeping(mon, 0);
     if (cause == ANIMATE_NORMAL || cause == ANIMATE_SHATTER)
     {
         /* trap always releases hostile monster */
         mon->mtame = 0; /* (might be petrified pet tossed onto trap) */
-        mon->mpeaceful = 0;
-        mon->ispartymember = FALSE;
+        set_mon_mpeaceful(mon, 0);
+        set_mon_ispartymember(mon, FALSE);
         set_mhostility(mon);
     }
 
@@ -1708,7 +1708,7 @@ dotrap(struct trap *trap, unsigned short trflags)
                 /* mintrap currently does not return 2(died) for webs */
                 if (mintrap(u.usteed)) 
                 {
-                    u.usteed->mtrapped = 0;
+                    set_mon_mtrapped(u.usteed, 0);
                     if (strongmonst(u.usteed->data))
                         str = 17;
                 } 
@@ -2640,9 +2640,9 @@ mintrap(struct monst *mtmp)
 
     if (!trap)
     {
-        mtmp->mtrapped = 0;      /* perhaps teleported? */
+        set_mon_mtrapped(mtmp, 0);      /* perhaps teleported? */
     } 
-    else if (mtmp->mtrapped)
+    else if (is_mon_mtrapped(mtmp))
     { /* is currently in the trap */
         if (!trap->tseen && cansee(mtmp->mx, mtmp->my) && canseemon(mtmp)
             && (is_pit(trap->ttyp) || trap->ttyp == BEAR_TRAP
@@ -2661,7 +2661,7 @@ mintrap(struct monst *mtmp)
             {
                 if (!rn2(2) || has_pitwalk(mtmp->data))
                 {
-                    mtmp->mtrapped = 0;
+                    set_mon_mtrapped(mtmp, 0);
                     if (canseemon(mtmp))
                         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s rises from the pit...", Monnam(mtmp));
                     fill_pit(mtmp->mx, mtmp->my);
@@ -2669,7 +2669,7 @@ mintrap(struct monst *mtmp)
             } 
             else 
             {
-                mtmp->mtrapped = 0;
+                set_mon_mtrapped(mtmp, 0);
             }
         } 
         else if (metallivorous(mptr)) 
@@ -2680,7 +2680,7 @@ mintrap(struct monst *mtmp)
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s eats a bear trap!", Monnam(mtmp));
                 deltrap(trap);
                 mtmp->meating = 5;
-                mtmp->mtrapped = 0;
+                set_mon_mtrapped(mtmp, 0);
                 refresh_m_tile_gui_info(mtmp, FALSE);
             }
             else if (trap->ttyp == SPIKED_PIT)
@@ -2866,7 +2866,7 @@ mintrap(struct monst *mtmp)
             if (mptr->msize > MZ_SMALL && !amorphous(mptr) && !(is_flying(mtmp) || is_levitating(mtmp))
                 && !is_whirly(mptr) && !unsolid(mptr))
             {
-                mtmp->mtrapped = 1;
+                set_mon_mtrapped(mtmp, 1);
                 if (in_sight && can_see_trap)
                 {
                     newsym(trap->tx, trap->ty);
@@ -2909,7 +2909,7 @@ mintrap(struct monst *mtmp)
                     seetrap(trap);
                 }
             }
-            if (mtmp->mtrapped)
+            if (is_mon_mtrapped(mtmp))
             {
                 trapkilled = thitm(0, mtmp, (struct obj*)0, d(2, 4), FALSE);
                 if (in_sight && trapkilled)
@@ -3172,7 +3172,7 @@ mintrap(struct monst *mtmp)
             }
 
             if (!passes_walls(mptr) && !has_pitwalk(mptr))
-                mtmp->mtrapped = 1;
+                set_mon_mtrapped(mtmp, 1);
 
             if (in_sight) 
             {
@@ -3271,7 +3271,7 @@ mintrap(struct monst *mtmp)
                 {
                     play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_HOWL_IN_ANGER);
                     You_hear("the roaring of a confused bear!");
-                    mtmp->mtrapped = 1;
+                    set_mon_mtrapped(mtmp, 1);
                     break;
                 }
                 else if (mptr->mlet == S_GIANT
@@ -3288,7 +3288,7 @@ mintrap(struct monst *mtmp)
                           a_your[trap->madeby_u]);
                     seetrap(trap);
                 }
-                mtmp->mtrapped = tear_web ? 0 : 1;
+                set_mon_mtrapped(mtmp, tear_web ? 0 : 1);
                 break;
             /* this list is fairly arbitrary; it deliberately
                excludes wumpus & giant/ettin zombies/mummies */
@@ -3316,7 +3316,7 @@ mintrap(struct monst *mtmp)
                 deltrap(trap);
                 newsym(mtmp->mx, mtmp->my);
             }
-            else if (force_mintrap && !mtmp->mtrapped) 
+            else if (force_mintrap && !is_mon_mtrapped(mtmp)) 
             {
                 if (in_sight) 
                 {
@@ -3575,7 +3575,7 @@ mintrap(struct monst *mtmp)
     }
     if (trapkilled)
         return 2;
-    return mtmp->mtrapped;
+    return is_mon_mtrapped(mtmp);
 }
 
 /* Combine cockatrice checks into single functions to avoid repeating code. */
@@ -3621,7 +3621,7 @@ minstapetrify(struct monst *mon, boolean byplayer)
 
 void start_delayed_petrification(struct monst *mtmp, boolean by_you)
 {
-    mtmp->delayed_killer_by_you = by_you;
+    set_mon_delayed_killer_by_you(mtmp, by_you);
 
     int existing_stoning = get_mon_property(mtmp, STONED);
     (void)set_mon_property_verbosely(mtmp, STONED, existing_stoning == 0 ? 5 : max(1, existing_stoning - 1));
@@ -3631,7 +3631,7 @@ void start_delayed_petrification(struct monst *mtmp, boolean by_you)
 
 void start_delayed_sliming(struct monst *mtmp, boolean by_you)
 {
-    mtmp->delayed_killer_by_you = by_you;
+    set_mon_delayed_killer_by_you(mtmp, by_you);
 
     int existing_sliming = get_mon_property(mtmp, SLIMED);
     (void)set_mon_property_verbosely(mtmp, SLIMED, existing_sliming == 0 ? 10 : max(1, existing_sliming - 1));
@@ -5445,7 +5445,7 @@ try_disarm(struct trap *ttmp, boolean force_failure)
     boolean holdingtrap = (ttype == BEAR_TRAP || ttype == WEB);
 
     /* Test for monster first, monsters are displayed instead of trap. */
-    if (mtmp && (!mtmp->mtrapped || !holdingtrap)) 
+    if (mtmp && (!is_mon_mtrapped(mtmp) || !holdingtrap)) 
     {
         play_sfx_sound(SFX_SOMETHING_IN_WAY);
         pline("%s is in the way.", Monnam(mtmp));
@@ -5561,7 +5561,7 @@ reward_untrap(struct trap *ttmp, struct monst *mtmp)
         if (rnl(10) < 8 && !is_peaceful(mtmp) && mon_can_move(mtmp) && !mindless(mtmp->data)
             && mtmp->data->mlet != S_HUMAN)
         {
-            mtmp->mpeaceful = 1;
+            set_mon_mpeaceful(mtmp, 1);
             set_mhostility(mtmp); /* reset alignment */
             newsym(mtmp->mx, mtmp->my);
             pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s is grateful.", Monnam(mtmp));
@@ -5598,7 +5598,7 @@ disarm_holdingtrap(struct trap* ttmp)
        There's no need for a cockatrice test, only the trap is touched */
     if ((mtmp = m_at(ttmp->tx, ttmp->ty)) != 0) 
     {
-        mtmp->mtrapped = 0;
+        set_mon_mtrapped(mtmp, 0);
         You_ex(ATR_NONE, CLR_MSG_SUCCESS, "remove %s %s from %s.", the_your[ttmp->madeby_u ? 1 : 0],
             (ttmp->ttyp == BEAR_TRAP) ? "bear trap" : "webbing",
             mon_nam(mtmp));
@@ -5898,7 +5898,7 @@ try_lift(struct monst *mtmp, struct trap *ttmp, int wt, boolean stuff)
             && !mindless(mtmp->data) && mtmp->data->mlet != S_HUMAN
             && rnl(10) < 3) 
         {
-            mtmp->mpeaceful = 1;
+            set_mon_mpeaceful(mtmp, 1);
             set_mhostility(mtmp); /* reset alignment */
             newsym(mtmp->mx, mtmp->my);
             pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s thinks it was nice of you to try.", Monnam(mtmp));
@@ -5925,7 +5925,7 @@ help_monster_out(struct monst *mtmp, struct trap *ttmp)
      *
      * Test the monster first - monsters are displayed before traps.
      */
-    if (!mtmp->mtrapped)
+    if (!is_mon_mtrapped(mtmp))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s isn't trapped.", Monnam(mtmp));
@@ -5972,9 +5972,9 @@ help_monster_out(struct monst *mtmp, struct trap *ttmp)
     {
         play_sfx_sound(SFX_DISARM_TRAP_FAIL);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "try to grab %s, but cannot get a firm grasp.", mon_nam(mtmp));
-        if (mtmp->msleeping)
+        if (is_mon_msleeping(mtmp))
         {
-            mtmp->msleeping = 0;
+            set_mon_msleeping(mtmp, 0);
             refresh_m_tile_gui_info(mtmp, TRUE);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s awakens.", Monnam(mtmp));
         }
@@ -5984,16 +5984,16 @@ help_monster_out(struct monst *mtmp, struct trap *ttmp)
     You("reach out your %s and grab %s.", makeplural(body_part(ARM)),
         mon_nam(mtmp));
 
-    if (mtmp->msleeping) 
+    if (is_mon_msleeping(mtmp)) 
     {
-        mtmp->msleeping = 0;
+        set_mon_msleeping(mtmp, 0);
         refresh_m_tile_gui_info(mtmp, TRUE);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s awakens.", Monnam(mtmp));
     }
     else if (mtmp->mfrozen && !rn2(mtmp->mfrozen))
     {
         /* After such manhandling, perhaps the effect wears off */
-        mtmp->mcanmove = 1;
+        set_mon_mcanmove(mtmp, 1);
         mtmp->mfrozen = 0;
         refresh_m_tile_gui_info(mtmp, TRUE);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stirs.", Monnam(mtmp));
@@ -6012,7 +6012,7 @@ help_monster_out(struct monst *mtmp, struct trap *ttmp)
 
     play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
     You_ex(ATR_NONE, CLR_MSG_SUCCESS, "pull %s out of the pit.", mon_nam(mtmp));
-    mtmp->mtrapped = 0;
+    set_mon_mtrapped(mtmp, 0);
     fill_pit(mtmp->mx, mtmp->my);
     reward_untrap(ttmp, mtmp);
     return 1;
@@ -6580,10 +6580,10 @@ openholdingtrap(struct monst *mon, boolean *noticed)
     } 
     else 
     {
-        if (!mon->mtrapped)
+        if (!is_mon_mtrapped(mon))
             return FALSE;
 
-        mon->mtrapped = 0;
+        set_mon_mtrapped(mon, 0);
         if (canspotmon(mon)) 
         {
             *noticed = TRUE;
@@ -6687,7 +6687,7 @@ closeholdingtrap(struct monst *mon, boolean *noticed)
     }
     else 
     {
-        if (mon->mtrapped)
+        if (is_mon_mtrapped(mon))
             return FALSE; /* already trapped */
         /* you notice it if you see the trap close/tremble/whatever
            or if you sense the monster who becomes trapped */
@@ -6732,7 +6732,7 @@ openfallingtrap(struct monst *mon, boolean trapdoor_only, boolean *noticed)
     }
     else
     {
-        if (mon->mtrapped)
+        if (is_mon_mtrapped(mon))
             return FALSE; /* already trapped */
         /* you notice it if you see the trap close/tremble/whatever
            or if you sense the monster who becomes trapped */
@@ -7227,7 +7227,7 @@ delfloortrap(struct trap *ttmp)
         } 
         else if ((mtmp = m_at(ttmp->tx, ttmp->ty)) != 0)
         {
-            mtmp->mtrapped = 0;
+            set_mon_mtrapped(mtmp, 0);
         }
         deltrap(ttmp);
         return TRUE;

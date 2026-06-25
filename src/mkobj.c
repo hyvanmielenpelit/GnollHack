@@ -1440,7 +1440,7 @@ uint64_t mkobj_ownerflags(struct monst *mtmp)
 
     aligntyp alignment = mon_aligntyp(mtmp);
     uint64_t mkflags = 0UL;
-    if (alignment == A_NONE || is_mercenary(mtmp->data) || mtmp->isgd)
+    if (alignment == A_NONE || is_mercenary(mtmp->data) || is_mon_isgd(mtmp))
         mkflags |= MKOBJ_FLAGS_OWNER_IS_NONALIGNED;
     else if (alignment == A_LAWFUL)
         mkflags |= MKOBJ_FLAGS_OWNER_IS_LAWFUL;
@@ -3591,11 +3591,11 @@ obj_attach_mid(struct obj *obj, unsigned mid)
 static void
 save_mtraits(struct obj *obj, struct monst *mtmp)
 {
-    if (mtmp->ispriest)
+    if (is_mon_ispriest(mtmp))
         forget_temple_entry(mtmp); /* EPRI() */
-    if (mtmp->issmith)
+    if (is_mon_issmith(mtmp))
         forget_smithy_entry(mtmp); /* ESMI() */
-    if (mtmp->isnpc)
+    if (is_mon_isnpc(mtmp))
         forget_npc_entry(mtmp); /* ENPC() */
     if (!has_omonst(obj))
         newomonst(obj);

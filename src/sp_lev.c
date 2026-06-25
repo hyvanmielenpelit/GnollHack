@@ -1836,7 +1836,7 @@ create_monster(monster *m, struct mkroom *croom)
         if (m->name.str)
         {
             mtmp = christen_monst(mtmp, m->name.str);
-            mtmp->u_know_mname = 1; /* On special levels you know all generated monsters -- maybe should be specified later */
+            set_mon_u_know_mname(mtmp, 1); /* On special levels you know all generated monsters -- maybe should be specified later */
         }
 
         mtmp->mon_flags |= MON_FLAGS_SPLEVEL_RESIDENT; /* Created specifically for the special level; don't remove in bones if staying on the level */
@@ -2040,7 +2040,7 @@ create_monster(monster *m, struct mkroom *croom)
 
         if (m->peaceful >= 0)
         {
-            mtmp->mpeaceful = m->peaceful;
+            set_mon_mpeaceful(mtmp, m->peaceful);
             /* changed mpeaceful again; have to reset mhostility */
             set_mhostility(mtmp);
         }
@@ -2050,22 +2050,22 @@ create_monster(monster *m, struct mkroom *croom)
 #ifdef UNIXPC
             /* optimizer bug strikes again */
             if (m->asleep)
-                mtmp->msleeping = 1;
+                set_mon_msleeping(mtmp, 1);
             else
-                mtmp->msleeping = 0;
+                set_mon_msleeping(mtmp, 0);
 #else
-            mtmp->msleeping = m->asleep;
+            set_mon_msleeping(mtmp, m->asleep);
 #endif
         }
 
         if (m->seentraps)
             mtmp->mtrapseen = m->seentraps;
         if (m->female >= 0)
-            mtmp->female = (unsigned int)m->female;
+            set_mon_female(mtmp, (unsigned int)m->female);
         if (m->waitforu)
             mtmp->mstrategy |= STRAT_WAITFORU;
         if (m->protector)
-            mtmp->isprotector = 1;
+            set_mon_isprotector(mtmp, 1);
 
         if (m->cancelled)
         {
@@ -2074,7 +2074,7 @@ create_monster(monster *m, struct mkroom *croom)
         if (m->revived)
             mtmp->mrevived = (unsigned)m->revived;
         if (m->avenge)
-            mtmp->mavenge = 1;
+            set_mon_mavenge(mtmp, 1);
         if (m->stunned)
             mtmp->mprops[STUNNED] |= M_INTRINSIC_ACQUIRED;
         if (m->confused)
@@ -2094,7 +2094,7 @@ create_monster(monster *m, struct mkroom *croom)
         if (m->fleeing) 
         {
             /* Assume non-magical fleeing */
-            mtmp->mflee = 1;
+            set_mon_mflee(mtmp, 1);
             mtmp->mflee_timer = m->fleeing;
         }
 

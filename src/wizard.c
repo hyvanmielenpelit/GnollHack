@@ -93,10 +93,10 @@ amulet(void)
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (mtmp->iswiz && mtmp->msleeping && !rn2(40)) {
-            if (mtmp->msleeping)
+        if (is_mon_iswiz(mtmp) && is_mon_msleeping(mtmp) && !rn2(40)) {
+            if (is_mon_msleeping(mtmp))
             {
-                mtmp->msleeping = 0;
+                set_mon_msleeping(mtmp, 0);
                 refresh_m_tile_gui_info(mtmp, TRUE);
             }
             if (distu(mtmp->mx, mtmp->my) > 2)
@@ -252,7 +252,7 @@ target_on(uint64_t mask, struct monst *mtmp)
                  /* when seeking the Amulet, avoid targetting the Wizard
                     or temple priests (to protect Moloch's high priest) */
                  && (otyp != AMULET_OF_YENDOR
-                     || (!mtmp2->iswiz && !inhistemple(mtmp2))))
+                     || (!is_mon_iswiz(mtmp2) && !inhistemple(mtmp2))))
             return STRAT(STRAT_MONSTR, mtmp2->mx, mtmp2->my, mask);
     }
     return (uint64_t) STRAT_NONE;
@@ -268,9 +268,9 @@ strategy(struct monst *mtmp)
         /* perhaps a shopkeeper has been polymorphed into a master
            lich; we don't want it teleporting to the stairs to heal
            because that will leave its shop untended */
-        || (mtmp->isshk && inhishop(mtmp))
+        || (is_mon_isshk(mtmp) && inhishop(mtmp))
         /* likewise for temple priests */
-        || (mtmp->ispriest && inhistemple(mtmp)))
+        || (is_mon_ispriest(mtmp) && inhistemple(mtmp)))
         return (uint64_t) STRAT_NONE;
 
     switch ((mtmp->mhp * 3) / mtmp->mhpmax) { /* 0-3 */
@@ -368,9 +368,9 @@ tactics(struct monst *mtmp)
     case STRAT_HEAL: /* hide and recover */
         /* if wounded, hole up on or near the stairs (to block them) */
         choose_stairs(&sx, &sy);
-        mtmp->mavenge = 1; /* covetous monsters attack while fleeing */
+        set_mon_mavenge(mtmp, 1); /* covetous monsters attack while fleeing */
         if (In_W_tower(mtmp->mx, mtmp->my, &u.uz)
-            || (mtmp->iswiz && !sx && !mon_has_amulet(mtmp)))
+            || (is_mon_iswiz(mtmp) && !sx && !mon_has_amulet(mtmp)))
         {
             if (!rn2(3 + mtmp->mhp / 10))
             {
@@ -491,18 +491,18 @@ aggravate(void)
             continue;
         if (in_w_tower != In_W_tower(mtmp->mx, mtmp->my, &u.uz))
             continue;
-        if (mtmp->iswiz) /* Exclude Wizard of Yendor from aggravation */
+        if (is_mon_iswiz(mtmp)) /* Exclude Wizard of Yendor from aggravation */
             continue;
         mtmp->mstrategy &= ~(STRAT_WAITFORU | STRAT_APPEARMSG);
         boolean refresh = FALSE;
-        if (mtmp->msleeping)
+        if (is_mon_msleeping(mtmp))
         {
-            mtmp->msleeping = 0;
+            set_mon_msleeping(mtmp, 0);
             refresh = TRUE;
         }
-        if (!mtmp->mcanmove && !rn2(5)) {
+        if (!is_mon_mcanmove(mtmp) && !rn2(5)) {
             mtmp->mfrozen = 0;
-            mtmp->mcanmove = 1;
+            set_mon_mcanmove(mtmp, 1);
             refresh = TRUE;
         }
         if (refresh)
@@ -522,7 +522,9 @@ clonewiz(void)
 
     if ((mtmp2 = makemon(&mons[PM_WIZARD_OF_YENDOR], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END))
         != 0) {
-        mtmp2->msleeping = mtmp2->mtame = mtmp2->mpeaceful = 0;
+        set_mon_mpeaceful(mtmp2, 0);
+        mtmp2->mtame = 0;
+        set_mon_msleeping(mtmp2, 0);
         mtmp2->mon_flags |= MON_FLAGS_CLONED_WIZ;
         if (!is_uhave_amulet() && rn2(2)) { /* give clone a fake */
             (void) add_to_minv(mtmp2,
@@ -613,7 +615,7 @@ summon_nasties(struct monst *summoner)
         s_cls = summoner ? summoner->data->mlet : 0;
         if (summoner)
         {
-            if (summoner != &youmonst && (summoner->iswiz || summoner->m_lev >= 50))
+            if (summoner != &youmonst && (is_mon_iswiz(summoner) || summoner->m_lev >= 50))
                 summon_num = rnd(3) + 1;
             else if (summoner != &youmonst && summoner->m_lev >= 30)
                 summon_num = 1 + rnd(2);
@@ -648,7 +650,7 @@ summon_nasties(struct monst *summoner)
                 inside-hell-only (G_HELL) & outside-hell-only (G_NOHELL) */
             if ((mtmp = makemon(&mons[makeindex], bypos.x, bypos.y, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL))) != 0)
             {
-                mtmp->msleeping = 0;
+                set_mon_msleeping(mtmp, 0);
                 newsym(mtmp->mx, mtmp->my);
             }
             else /* random monster to substitute for geno'd selection */
@@ -691,7 +693,7 @@ summon_level_appropriate_monsters(struct monst *summoner)
 
     count = 0;
     int ml = 0;
-    if (summoner && !summoner->iswiz)
+    if (summoner && !is_mon_iswiz(summoner))
     {
         ml = summoner->m_lev;
         if (summoner == &youmonst)
@@ -781,7 +783,7 @@ resurrect(void)
         verb = "elude";
         mmtmp = &migrating_mons;
         while ((mtmp = *mmtmp) != 0) {
-            if (mtmp->iswiz
+            if (is_mon_iswiz(mtmp)
                 /* if he has the Amulet, he won't bring it to you */
                 && !mon_has_amulet(mtmp)
                 && (elapsed = monstermoves - mtmp->mlstmv) > 0L) {
@@ -789,10 +791,10 @@ resurrect(void)
                 if (elapsed >= LARGEST_INT)
                     elapsed = LARGEST_INT - 1;
                 elapsed /= 50L;
-                if (mtmp->msleeping && rn2((int) elapsed + 1))
-                    mtmp->msleeping = 0;
+                if (is_mon_msleeping(mtmp) && rn2((int) elapsed + 1))
+                    set_mon_msleeping(mtmp, 0);
                 if (mtmp->mfrozen == 1) /* would unfreeze on next move */
-                    mtmp->mfrozen = 0, mtmp->mcanmove = 1;
+                    mtmp->mfrozen = 0, set_mon_mcanmove(mtmp, 1);
 
                 for(int i = 1; i <= LAST_PROP; i++)
                     mtmp->mprops[i] = 0;
@@ -813,7 +815,8 @@ resurrect(void)
     }
 
     if (mtmp) {
-        mtmp->mtame = mtmp->mpeaceful = 0; /* paranoia */
+        set_mon_mpeaceful(mtmp, 0);
+        mtmp->mtame = 0; /* paranoia */
         set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
         check_boss_fight(mtmp);
@@ -901,7 +904,7 @@ cuss(struct monst *mtmp)
 
     boolean res = TRUE;
 
-    if (mtmp->iswiz)
+    if (is_mon_iswiz(mtmp))
     {
         if (!rn2(5)) /* typical bad guy action */
         {
@@ -941,7 +944,7 @@ cuss(struct monst *mtmp)
         }
     } 
     else if (is_lminion(mtmp)
-               && !(mtmp->isminion && EMIN(mtmp)->renegade)) 
+               && !(is_mon_isminion(mtmp) && EMIN(mtmp)->renegade)) 
     {
         int cuss_rnd = 1;
         do

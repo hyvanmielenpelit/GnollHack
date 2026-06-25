@@ -893,8 +893,8 @@ hurtle_step(genericptr_t arg, int x, int y)
          * going to end up past the current spot rather than on it;
          * for that, we need to know that the range is not exhausted
          * and also that the next spot doesn't contain an obstacle */
-        && !(mon->mundetected && hides_under(mon) && (Flying || Levitation))
-        && !(mon->mundetected && mon->data->mlet == S_EEL
+        && !(is_mon_mundetected(mon) && hides_under(mon) && (Flying || Levitation))
+        && !(is_mon_mundetected(mon) && mon->data->mlet == S_EEL
              && (Flying || Levitation || Walks_on_water))
 #endif
         )
@@ -902,7 +902,7 @@ hurtle_step(genericptr_t arg, int x, int y)
         const char *mnam, *pronoun;
         int glyph = glyph_at(x, y);
 
-        mon->mundetected = 0; /* wakeup() will handle mimic */
+        set_mon_mundetected(mon, 0); /* wakeup() will handle mimic */
         mnam = a_monnam(mon); /* after unhiding */
         pronoun = noit_mhim(mon);
 
@@ -1130,7 +1130,7 @@ mhurtle(struct monst *mon, int dx, int dy, int range)
     /* Is the monster stuck or too heavy to push?
      * (very large monsters have too much inertia, even floaters and flyers)
      */
-    if (mon->data->msize >= MZ_HUGE || mon == u.ustuck || mon->mtrapped)
+    if (mon->data->msize >= MZ_HUGE || mon == u.ustuck || is_mon_mtrapped(mon))
         return;
 
     /* Make sure dx and dy are [-1,0,1] */
@@ -1554,7 +1554,7 @@ throwit(struct obj *obj, int64_t wep_mask)
     {
         boolean obj_gone;
 
-        if (mon->isshk && obj->where == OBJ_MINVENT && obj->ocarry == mon) 
+        if (is_mon_isshk(mon) && obj->where == OBJ_MINVENT && obj->ocarry == mon) 
         {
             thrownobj = (struct obj *) 0;
             return; /* alert shk caught it */
@@ -1571,7 +1571,7 @@ throwit(struct obj *obj, int64_t wep_mask)
         mon = m_at(bhitpos.x, bhitpos.y);
 
         /* [perhaps this should be moved into thitmonst or hmon] */
-        if (mon && mon->isshk
+        if (mon && is_mon_isshk(mon)
             && (!inside_shop(u.ux, u.uy)
                 || !index(in_rooms(mon->mx, mon->my, SHOPBASE), *u.ushops)))
             hot_pursuit(mon);
@@ -1733,7 +1733,7 @@ throwit(struct obj *obj, int64_t wep_mask)
 
         obj_no_longer_held(obj);
 
-        if (mon && mon->isshk && is_pick(obj))
+        if (mon && is_mon_isshk(mon) && is_pick(obj))
         {
             if (cansee(bhitpos.x, bhitpos.y))
                 pline("%s snatches up %s.", Monnam(mon), the(xname(obj)));
@@ -1795,19 +1795,19 @@ omon_adj(struct monst *mon, struct obj *obj, boolean mon_notices)
         /* size of target affects the chance of hitting */
         tmp += (mon->data->msize - MZ_MEDIUM); /* -2..+5 */
         /* sleeping target is more likely to be hit */
-        if (mon->msleeping) {
+        if (is_mon_msleeping(mon)) {
             tmp += 2;
             if (mon_notices)
             {
-                mon->msleeping = 0;
+                set_mon_msleeping(mon, 0);
                 refresh_m_tile_gui_info(mon, TRUE);
             }
         }
         /* ditto for immobilized target */
-        if (!mon->mcanmove || !mon->data->mmove) {
+        if (!is_mon_mcanmove(mon) || !mon->data->mmove) {
             tmp += 4;
             if (mon_notices && mon->data->mmove && !rn2(10)) {
-                mon->mcanmove = 1;
+                set_mon_mcanmove(mon, 1);
                 mon->mfrozen = 0;
                 refresh_m_tile_gui_info(mon, TRUE);
             }
@@ -1993,7 +1993,7 @@ thitmonst(struct monst *mon, struct obj *obj, boolean is_golf, uchar *hitres_ptr
     {
         /* AIS: changes to wakeup() means that it's now less inappropriate here
            than it used to be, but the manual version works just as well */
-        mon->msleeping = 0;
+        set_mon_msleeping(mon, 0);
         mon->mstrategy &= ~STRAT_WAITMASK;
         refresh_m_tile_gui_info(mon, TRUE);
 
@@ -2245,7 +2245,7 @@ thitmonst(struct monst *mon, struct obj *obj, boolean is_golf, uchar *hitres_ptr
         else 
         {
             tmiss(obj, mon, FALSE);
-            mon->msleeping = 0;
+            set_mon_msleeping(mon, 0);
             mon->mstrategy &= ~STRAT_WAITMASK;
             refresh_m_tile_gui_info(mon, TRUE);
         }
@@ -2299,8 +2299,8 @@ gem_accept(struct monst *mon, struct obj *obj)
     static NEARDATA const char addluck[] = " gratefully";
 
     Strcpy(buf, Monnam(mon));
-    mon->mpeaceful = 1;
-    mon->mavenge = 0;
+    set_mon_mpeaceful(mon, 1);
+    set_mon_mavenge(mon, 0);
 
     /* object properly identified */
     if (obj->dknown && objects[obj->otyp].oc_name_known) {
@@ -2450,7 +2450,7 @@ release_camera_demon(struct obj *obj, xchar x, xchar y)
             pline("%s is released!", Hallucination
                                          ? An(rndmonnam(NULL))
                                          : "The picture-painting demon");
-        mtmp->mpeaceful = !obj->cursed;
+        set_mon_mpeaceful(mtmp, !obj->cursed);
         set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
     }

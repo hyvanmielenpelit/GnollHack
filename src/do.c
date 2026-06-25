@@ -5440,7 +5440,7 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr)
     }
 
     Strcpy(buf4, "");
-    if (mon && has_umname(mon) && has_mname(mon) && mon->u_know_mname && !strcmp(monster_name, UMNAME(mon)) && strcmp(UMNAME(mon), MNAME(mon)))
+    if (mon && has_umname(mon) && has_mname(mon) && is_mon_u_know_mname(mon) && !strcmp(monster_name, UMNAME(mon)) && strcmp(UMNAME(mon), MNAME(mon)))
     {
         Sprintf(buf4, " a.k.a. %s", MNAME(mon));
     }
@@ -5481,7 +5481,7 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr)
 
     if (cham >= LOW_PM)
     {
-        Strcpy(buf2, mon && mon->female && mons[cham].mfemalename ? mons[cham].mfemalename : mons[cham].mname);
+        Strcpy(buf2, mon && is_mon_female(mon) && mons[cham].mfemalename ? mons[cham].mfemalename : mons[cham].mname);
         *buf2 = highc(*buf2);
         Sprintf(buf, "True form:              %s", buf2);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -5566,7 +5566,7 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr)
 
     if (mon && !is_neuter(ptr))
     {
-        Sprintf(buf, "Gender:                 %s", (is_you ? flags.female : mon->female) ? "Female" : "Male");
+        Sprintf(buf, "Gender:                 %s", (is_you ? flags.female : is_mon_female(mon)) ? "Female" : "Male");
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
@@ -5846,7 +5846,7 @@ flooreffects(struct obj *obj, int x, int y, const char *verb)
     {
         ttyp = t->ttyp;
         tseen = t->tseen ? TRUE : FALSE;
-        if (((mtmp = m_at(x, y)) && mtmp->mtrapped)
+        if (((mtmp = m_at(x, y)) && is_mon_mtrapped(mtmp))
             || (u.utrap && u.ux == x && u.uy == y)) 
         {
             if (*verb && (cansee(x, y) || distu(x, y) == 0))
@@ -5901,7 +5901,7 @@ flooreffects(struct obj *obj, int x, int y, const char *verb)
                     if (!DEADMONSTER(mtmp) && !is_whirly(mtmp->data))
                         return FALSE; /* still alive */
                 }
-                mtmp->mtrapped = 0;
+                set_mon_mtrapped(mtmp, 0);
             } 
             else 
             {
@@ -8244,7 +8244,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
             {
                 if (DEADMONSTER(mtmp))
                     continue;
-                mtmp->msleeping = 0;
+                set_mon_msleeping(mtmp, 0);
                 refresh_m_tile_gui_info(mtmp, TRUE);
             }
         }
@@ -8770,7 +8770,7 @@ animate_corpse(struct obj *corpse, int animateintomon)
         case OBJ_FLOOR:
             if (cansee(mtmp->mx, mtmp->my))
                 pline_ex(ATR_NONE, clr, "%s rises from the dead as %s!",
-                    The(pm_monster_name(&mons[oldcorpsenum], mtmp->female)), an(pm_monster_name(&mons[animateintomon], mtmp->female)));
+                    The(pm_monster_name(&mons[oldcorpsenum], is_mon_female(mtmp))), an(pm_monster_name(&mons[animateintomon], is_mon_female(mtmp))));
             break;
 
         case OBJ_MINVENT: /* probably a nymph's */
@@ -8781,7 +8781,7 @@ animate_corpse(struct obj *corpse, int animateintomon)
                         mon_nam(mcarry), an(cname));
                 else
                     pline_ex(ATR_NONE, clr, "%s rises from the dead as %s!",
-                        The(pm_monster_name(&mons[oldcorpsenum], mtmp->female)), an(pm_monster_name(&mons[animateintomon], mtmp->female)));
+                        The(pm_monster_name(&mons[oldcorpsenum], is_mon_female(mtmp))), an(pm_monster_name(&mons[animateintomon], is_mon_female(mtmp))));
             }
             break;
         case OBJ_CONTAINED: 
@@ -8927,7 +8927,7 @@ dowipe(void)
 {
     if (u.ucreamed)
     {
-        boolean isfemale = Upolyd ? youmonst.female : flags.female;
+        boolean isfemale = Upolyd ? is_mon_female(&(youmonst)) : flags.female;
         enum monster_soundset_types mss = isfemale ? youmonst.data->female_soundset : youmonst.data->soundset;
         enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[BAREHANDED_ATTACK_NUMBER];
         enum object_soundset_types used_oss = uarmg ? objects[uarmg->otyp].oc_soundset : oss;

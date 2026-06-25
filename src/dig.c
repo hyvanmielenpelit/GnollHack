@@ -888,7 +888,7 @@ digactualhole(int x, int y, struct monst *madeby, int ttyp)
                     } else {
                         get_level(&tolevel, depth(&u.uz) + 1);
                     }
-                    if (mtmp->isshk)
+                    if (is_mon_isshk(mtmp))
                         make_angry_shk(mtmp, 0, 0);
                     play_sfx_sound_at_location(SFX_TRAP_DOOR_OPENS, mtmp->mx, mtmp->my);
                     migrate_to_level(mtmp, ledger_no(&tolevel),
@@ -3214,9 +3214,9 @@ rot_corpse(anything *arg, int64_t timeout)
         struct monst *mtmp = m_at(x, y);
 
         /* a hiding monster may be exposed */
-        if (mtmp && !OBJ_AT(x, y) && mtmp->mundetected
+        if (mtmp && !OBJ_AT(x, y) && is_mon_mundetected(mtmp)
             && hides_under(mtmp->data)) {
-            mtmp->mundetected = 0;
+            set_mon_mundetected(mtmp, 0);
         } else if (x == u.ux && y == u.uy && u.uundetected && hides_under(youmonst.data))
             (void) hideunder(&youmonst);
         newsym(x, y);
@@ -3240,7 +3240,7 @@ bury_monst(struct monst *mtmp)
                       surface(mtmp->mx, mtmp->my), mon_nam(mtmp));
     }
 
-    mtmp->mburied = TRUE;
+    set_mon_mburied(mtmp, TRUE);
     wakeup(mtmp, FALSE);       /* at least give it a chance :-) */
     newsym(mtmp->mx, mtmp->my);
 }

@@ -569,13 +569,13 @@ restmonchn(int fd, boolean ghostly)
             }
         }
 
-        if (mtmp->isshk)
+        if (is_mon_isshk(mtmp))
             restshk(mtmp, ghostly);
-        if (mtmp->ispriest)
+        if (is_mon_ispriest(mtmp))
             restpriest(mtmp, ghostly);
-        if (mtmp->issmith)
+        if (is_mon_issmith(mtmp))
             restsmith(mtmp, ghostly);
-        if (mtmp->isnpc)
+        if (is_mon_isnpc(mtmp))
             restnpc(mtmp, ghostly);
 
         if (!ghostly) {
@@ -1438,7 +1438,7 @@ getlev(int fd, int pid, xchar lev, boolean ghostly)
         for (y = 0; y < ROWNO; y++)
             level.monsters[x][y] = (struct monst *) 0;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-        if (mtmp->isshk)
+        if (is_mon_isshk(mtmp))
             set_residency(mtmp, FALSE);
         place_monster(mtmp, mtmp->mx, mtmp->my);
         if (mtmp->wormno)
@@ -1450,12 +1450,12 @@ getlev(int fd, int pid, xchar lev, boolean ghostly)
         if (ghostly) {
             /* reset peaceful/mhostility relative to new character;
                shopkeepers will reset based on name */
-            if (!mtmp->isshk)
-                mtmp->mpeaceful =
+            if (!is_mon_isshk(mtmp))
+                set_mon_mpeaceful(mtmp, 
                     (is_unicorn(mtmp->data)
                      && sgn(u.ualign.type) == sgn(mtmp->data->maligntyp))
                         ? TRUE
-                        : peace_minded(mtmp->data);
+                        : peace_minded(mtmp->data));
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
         } else if (elapsed > 0L) {
@@ -1701,8 +1701,8 @@ reset_oattached_mids(boolean ghostly)
             struct monst *mtmp = OMONST(otmp);
 
             mtmp->m_id = 0;
-            mtmp->mpeaceful = mtmp->mtame = 0; /* pet's owner died! */
-            mtmp->ispartymember = FALSE;
+            set_mon_mpeaceful(mtmp, mtmp->mtame = 0); /* pet's owner died! */
+            set_mon_ispartymember(mtmp, FALSE);
         }
         if (ghostly && has_omid(otmp)) {
             (void) memcpy((genericptr_t) &oldid, (genericptr_t) OMID(otmp),

@@ -98,7 +98,7 @@ dowaternymph(void)
             You("attract %s!", a_monnam(mtmp));
         else
             You_hear("a seductive voice.");
-        mtmp->msleeping = 0;
+        set_mon_msleeping(mtmp, 0);
         if (t_at(mtmp->mx, mtmp->my))
             (void) mintrap(mtmp);
     } else if (!Blind)

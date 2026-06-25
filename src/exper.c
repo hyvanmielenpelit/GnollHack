@@ -182,7 +182,7 @@ experience(struct monst *mtmp, int nk)
         tmp = 1;
 #endif
 
-    if (mtmp->mrevived || mtmp->mcloned) {
+    if (mtmp->mrevived || is_mon_mcloned(mtmp)) {
         /*
          *      Reduce experience awarded for repeated killings of
          *      "the same monster".  Kill count includes all of this

@@ -1769,7 +1769,7 @@ maybe_get_replaced_glyph(
             if (!mtmp && !(monster_flags & LMFLAGS_DROPPING_PIERCER))
                 return glyph;
 
-            if ((monster_flags & LMFLAGS_DROPPING_PIERCER) || (mtmp && mtmp->mundetected))
+            if ((monster_flags & LMFLAGS_DROPPING_PIERCER) || (mtmp && is_mon_mundetected(mtmp)))
             {
                 int glyph_idx = (monster_flags & LMFLAGS_DROPPING_PIERCER) ? 1 : 0;
                 return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);

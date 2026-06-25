@@ -479,7 +479,7 @@ prisoner_speaks(struct monst *mtmp)
             pline("%s speaks:", Monnam(mtmp));
         verbalize_happy1("I'm finally free!");
         mtmp->mstrategy &= ~STRAT_WAITMASK;
-        mtmp->mpeaceful = 1;
+        set_mon_mpeaceful(mtmp, 1);
         newsym(mtmp->mx, mtmp->my);
 
         /* Your god is happy... */

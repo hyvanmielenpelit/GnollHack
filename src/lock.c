@@ -739,7 +739,7 @@ pick_lock_core(struct obj *pick, int x, int y, boolean is_auto)
             && M_AP_TYPE(mtmp) != M_AP_OBJECT) 
         {
             if (picktyp == CREDIT_CARD
-                && (mtmp->isshk))
+                && (is_mon_isshk(mtmp)))
             {
                 play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_NO_CHECKS_NO_CREDIT_NO_PROBLEM);
                 verbalize_talk1("No checks, no credit, no problem.");

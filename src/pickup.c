@@ -3917,7 +3917,7 @@ observe_quantum_cat(struct obj *box, boolean makecat, boolean givemsg)
                               MM_NO_MONSTER_INVENTORY | MM_ADJACENTOK);
         if (livecat) 
         {
-            livecat->mpeaceful = 1;
+            set_mon_mpeaceful(livecat, 1);
             livecat->mon_flags |= MON_FLAGS_SCHROEDINGERS_CAT;
             set_mhostility(livecat);
             if (givemsg) 
@@ -3930,7 +3930,7 @@ observe_quantum_cat(struct obj *box, boolean makecat, boolean givemsg)
                           Monnam(livecat));
             }
             (void) christen_monst(livecat, sc);
-            livecat->u_know_mname = TRUE; /* It is famous! */
+            set_mon_u_know_mname(livecat, TRUE); /* It is famous! */
             if (deadcat)
             {
                 debugprint("observe_quantum_cat: %d", deadcat->otyp);

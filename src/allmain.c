@@ -736,7 +736,7 @@ maybe_create_rwraith(void)
                 if (rwraith)
                 {
                     rwraith = christen_monst(rwraith, "Witch-King of Yendor");
-                    rwraith->u_know_mname = TRUE; /* He's famous -- JG */
+                    set_mon_u_know_mname(rwraith, TRUE); /* He's famous -- JG */
                     struct obj* crown = mongets(rwraith, ROYAL_CROWN);
                     if (crown)
                     {
@@ -759,7 +759,7 @@ maybe_create_rwraith(void)
     if (rwraith)
     {
         rwraith->mon_flags |= MON_FLAGS_RWRAITH;
-        rwraith->leaves_no_corpse = TRUE;
+        set_mon_leaves_no_corpse(rwraith, TRUE);
         rwraith_appeared = TRUE;
     }
 

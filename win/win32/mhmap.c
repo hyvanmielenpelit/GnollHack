@@ -1231,7 +1231,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         || data->map[relevant_i][relevant_j].glyph == S_unexplored
                         || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
   //                      || (base_layer == LAYER_MONSTER && ((is_enl_you && u.utrap && u.utraptype == TT_PIT)
-  //                      || (!is_enl_you && mtmp && mtmp->mtrapped && (trap_here = t_at(enl_i, enl_j)) != 0 && (trap_here->ttyp == PIT || trap_here->ttyp == SPIKED_PIT))))
+  //                      || (!is_enl_you && mtmp && is_mon_mtrapped(mtmp) && (trap_here = t_at(enl_i, enl_j)) != 0 && (trap_here->ttyp == PIT || trap_here->ttyp == SPIKED_PIT))))
                         )
                         side_not_ok = TRUE;
 
@@ -1535,7 +1535,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     {
                         for (struct monst* leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon)
                         {
-                            if (leashed_mon->mleashed)
+                            if (is_mon_mleashed(leashed_mon))
                             {
                                 int mx = leashed_mon->mx, my = leashed_mon->my;
                                 int dx = mx - ux, dy = my - uy;
@@ -1620,14 +1620,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         /* Kludge to include also thrown aklys in the same drawing routine */
                         struct monst tether_mon = zeromonst;
                         tether_mon.nmon = fmon;
-                        tether_mon.mleashed = TRUE;
+                        set_mon_mleashed(&(tether_mon), TRUE);
                         tether_mon.mx = context.tether_x;
                         tether_mon.my = context.tether_y;
 
                         for (struct monst* leashed_mon = &tether_mon; leashed_mon; leashed_mon = leashed_mon->nmon)
                         {
                             boolean is_tethered_weapon = (leashed_mon == &tether_mon);
-                            if (leashed_mon->mleashed)
+                            if (is_mon_mleashed(leashed_mon))
                             {
                                 int mx = leashed_mon->mx, my = leashed_mon->my;
                                 int dx = mx - ux, dy = my - uy;
@@ -4685,7 +4685,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_TRAPPED:
-                                    if ((loc_is_you && u.utrap) || (!loc_is_you && mtmp->mtrapped))
+                                    if ((loc_is_you && u.utrap) || (!loc_is_you && is_mon_mtrapped(mtmp)))
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_USTUCK:
@@ -4693,7 +4693,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_INVENTORY:
-                                    if (!loc_is_you && ispet && !mtmp->ispartymember && count_unworn_items(mtmp->minvent) > 0)
+                                    if (!loc_is_you && ispet && !is_mon_ispartymember(mtmp) && count_unworn_items(mtmp->minvent) > 0)
                                         display_this_status_mark = TRUE;
                                     break;
                                 default:
@@ -5702,7 +5702,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
 #if 0
         for (struct monst* leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon)
         {
-            if (leashed_mon->mleashed)
+            if (is_mon_mleashed(leashed_mon))
             {
                 int mx = leashed_mon->mx, my = leashed_mon->my;
                 if (isok(mx, my))

@@ -2736,7 +2736,10 @@ recalc_mapseen(void)
             case DBWALL:
             case DRAWBRIDGE_DOWN:
                 if (Is_stronghold(&u.uz))
-                    set_msflag_castle(&mptr->flags, 1, set_msflag_castletune(&mptr->flags, 1));
+                {
+                    set_msflag_castle(&mptr->flags, 1);
+                    set_msflag_castletune(&mptr->flags, 1);
+                }
                 break;
             default:
                 break;

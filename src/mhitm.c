@@ -241,12 +241,12 @@ mdisplacem(struct monst *magr, struct monst *mdef, boolean quietly)
     update_m_facing(magr, mdef->mx - magr->mx, FALSE);
 
     /* undetected monster becomes un-hidden if it is displaced */
-    if (mdef->mundetected)
-        mdef->mundetected = 0;
+    if (is_mon_mundetected(mdef))
+        set_mon_mundetected(mdef, 0);
     if (M_AP_TYPE(mdef) && M_AP_TYPE(mdef) != M_AP_MONSTER)
         seemimic(mdef);
     /* wake up the displaced defender */
-    mdef->msleeping = 0;
+    set_mon_msleeping(mdef, 0);
     mdef->mstrategy &= ~STRAT_WAITMASK;
     finish_meating(mdef);
 
@@ -347,14 +347,14 @@ mattackm(struct monst *magr, struct monst *mdef)
     if (is_confused(mdef) || !mon_can_move(mdef))
     {
         tmp += 4;
-        mdef->msleeping = 0;
+        set_mon_msleeping(mdef, 0);
         refresh_m_tile_gui_info(mdef, FALSE);
     }
 
     /* undetect monsters become un-hidden if they are attacked */
-    if (mdef->mundetected) 
+    if (is_mon_mundetected(mdef)) 
     {
-        mdef->mundetected = 0;
+        set_mon_mundetected(mdef, 0);
         newsym(mdef->mx, mdef->my);
         if (canseemon(mdef) && !sensemon(mdef))
         {
@@ -1202,7 +1202,7 @@ explmm(struct monst *magr, struct monst *mdef, struct attack *mattk)
     /* Kill off aggressor if it didn't die. */
     if (!(result & MM_AGR_DIED))
     {
-        boolean was_leashed = (magr->mleashed != 0);
+        boolean was_leashed = (is_mon_mleashed(magr));
 
         mondead_with_flags(magr, MONDEAD_FLAGS_NO_DEATH_ACTION);
         if (!DEADMONSTER(magr))
@@ -2239,7 +2239,7 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
              * DGST monsters don't die from undead corpses
              */
             num = mdef->mnum;
-            if (is_tame(magr) && !magr->isminion
+            if (is_tame(magr) && !is_mon_isminion(magr)
                 && !(mvitals[num].mvflags & MV_NOCORPSE)) 
             {
                 struct obj* virtualcorpse = mksobj(CORPSE, FALSE, FALSE, FALSE);

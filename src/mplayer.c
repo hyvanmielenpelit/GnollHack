@@ -84,12 +84,12 @@ get_mplname(struct monst *mtmp, char *nam)
         Strcpy(nam, devnam);
 
     if (fmlkind || !strcmp(nam, "Janet"))
-        mtmp->female = 1;
+        set_mon_female(mtmp, 1);
     else
-        mtmp->female = 0;
+        set_mon_female(mtmp, 0);
     Strcat(nam, " the ");
     Strcat(nam, rank_of((int) mtmp->m_lev, mtmp->mnum,
-                        (boolean) mtmp->female));
+                        (boolean) is_mon_female(mtmp)));
 }
 
 static void
@@ -144,11 +144,11 @@ mk_mplayer(struct permonst *ptr, xchar x, xchar y, boolean special)
         if (special) {
             get_mplname(mtmp, nam);
             mtmp = christen_monst(mtmp, nam);
-            mtmp->u_know_mname = TRUE; /* They are pretty famous, too */
+            set_mon_u_know_mname(mtmp, TRUE); /* They are pretty famous, too */
             /* that's why they are "stuck" in the endgame :-) */
             (void) mongets(mtmp, FAKE_AMULET_OF_YENDOR);
         }
-        mtmp->mpeaceful = 0;
+        set_mon_mpeaceful(mtmp, 0);
         set_mhostility(mtmp); /* peaceful may have changed again */
 
         /* default equipment; much of it will be overridden below */

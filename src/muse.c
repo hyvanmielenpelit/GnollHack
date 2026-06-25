@@ -134,7 +134,7 @@ precheck(struct monst *mon, struct obj *obj)
                 } else if (rn2(2)) {
                     play_monster_special_dialogue_line(mtmp, DJINN_LINE_YOU_FREED_ME);
                     verbalize_talk1("You freed me!");
-                    mtmp->mpeaceful = 1;
+                    set_mon_mpeaceful(mtmp, 1);
                     set_mhostility(mtmp);
                     newsym(mtmp->mx, mtmp->my);
                 } else {
@@ -624,7 +624,7 @@ find_defensive(struct monst *mtmp)
             /* use trap if it's the correct type */
             if (is_hole(t->ttyp)
                 && !is_floater(mtmp->data)
-                && !mtmp->isshk && !mtmp->isgd && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc
+                && !is_mon_isshk(mtmp) && !is_mon_isgd(mtmp) && !is_mon_ispriest(mtmp) && !is_mon_issmith(mtmp) && !is_mon_isnpc(mtmp)
                 && Can_fall_thru(&u.uz)) {
                 trapx = xx;
                 trapy = yy;
@@ -695,7 +695,7 @@ find_defensive(struct monst *mtmp)
         if (m.has_defense == MUSE_WAN_DIGGING)
             break;
         if (obj->otyp == WAN_DIGGING && obj->charges > 0 && !is_cancelled(mtmp) && !stuck && !t
-            && !mtmp->isshk && !mtmp->isgd && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc
+            && !is_mon_isshk(mtmp) && !is_mon_isgd(mtmp) && !is_mon_ispriest(mtmp) && !is_mon_issmith(mtmp) && !is_mon_isnpc(mtmp)
             && !is_floater(mtmp->data)
             /* monsters digging in Sokoban can ruin things */
             && !Sokoban
@@ -731,8 +731,8 @@ find_defensive(struct monst *mtmp)
         nomore(MUSE_SCR_TELEPORTATION);
         if (obj->otyp == SCR_TELEPORTATION && !is_blinded(mtmp)
             && haseyes(mtmp->data) && !level.flags.noteleport
-            && (!obj->cursed || (!(mtmp->isshk && inhishop(mtmp))
-                                 && !mtmp->isgd && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc)))
+            && (!obj->cursed || (!(is_mon_isshk(mtmp) && inhishop(mtmp))
+                                 && !is_mon_isgd(mtmp) && !is_mon_ispriest(mtmp) && !is_mon_issmith(mtmp) && !is_mon_isnpc(mtmp))))
         {
             /* see WAN_TELEPORTATION case above */
             if (!level.flags.noteleport
@@ -873,7 +873,7 @@ use_defensive(struct monst *mtmp)
        rushing right straight back; don't override if already scared */
     fleetim = !is_fleeing(mtmp) ? (33 - (30 * mtmp->mhp / mtmp->mhpmax)) : 0;
 #define m_flee(m)                          \
-    if (fleetim && !m->iswiz) {            \
+    if (fleetim && !is_mon_iswiz(m)) {            \
         monflee(m, fleetim, FALSE, FALSE); \
     }
 
@@ -1051,7 +1051,7 @@ use_defensive(struct monst *mtmp)
         awaken_soldiers(mtmp, is_scary);
         return 2;
     case MUSE_WAN_TELEPORTATION_SELF:
-        if ((mtmp->isshk && inhishop(mtmp)) || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc)
+        if ((is_mon_isshk(mtmp) && inhishop(mtmp)) || is_mon_isgd(mtmp) || is_mon_ispriest(mtmp) || is_mon_issmith(mtmp) || is_mon_isnpc(mtmp))
             return 2;
         m_flee(mtmp);
         if (!otmp)
@@ -1097,7 +1097,7 @@ use_defensive(struct monst *mtmp)
 
         int obj_is_cursed = otmp->cursed;
 
-        if (mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc)
+        if (is_mon_isshk(mtmp) || is_mon_isgd(mtmp) || is_mon_ispriest(mtmp) || is_mon_issmith(mtmp) || is_mon_isnpc(mtmp))
             return 2;
         m_flee(mtmp);
         mreadmsg(mtmp, otmp);
@@ -1495,7 +1495,7 @@ try_again:
     case 7:
         if (level.flags.hardfloor && ++trycnt < 4)
             goto try_again;
-        if (is_floater(pm) || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc)
+        if (is_floater(pm) || is_mon_isshk(mtmp) || is_mon_isgd(mtmp) || is_mon_ispriest(mtmp) || is_mon_issmith(mtmp) || is_mon_isnpc(mtmp))
             return 0;
         else
             return WAN_DIGGING;
@@ -1772,9 +1772,9 @@ mbhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
 
     if (mtmp != &youmonst)
     {
-        if (mtmp->msleeping)
+        if (is_mon_msleeping(mtmp))
         {
-            mtmp->msleeping = 0;
+            set_mon_msleeping(mtmp, 0);
             refresh_m_tile_gui_info(mtmp, TRUE);
         }
         if (mtmp->m_ap_type)
@@ -1852,7 +1852,7 @@ mbhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
             tele();
         } else {
             /* for consistency with zap.c, don't identify */
-            if (mtmp->ispriest && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) {
+            if (is_mon_ispriest(mtmp) && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) {
                 play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
                 if (cansee(mtmp->mx, mtmp->my))
                     pline("%s resists the magic!", Monnam(mtmp));
@@ -2468,7 +2468,7 @@ find_misc(struct monst *mtmp)
            necessary to prevent serious problems though... */
         if (obj->otyp == POT_GAIN_LEVEL
             && (!obj->cursed
-                || (!mtmp->isgd && !mtmp->isshk && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc))) {
+                || (!is_mon_isgd(mtmp) && !is_mon_isshk(mtmp) && !is_mon_ispriest(mtmp) && !is_mon_issmith(mtmp) && !is_mon_isnpc(mtmp)))) {
             m.misc = obj;
             m.has_misc = MUSE_POT_GAIN_LEVEL;
         }
@@ -2511,22 +2511,22 @@ find_misc(struct monst *mtmp)
         }
         nomore(MUSE_WAN_SPEED_MONSTER);
         if (obj->otyp == WAN_SPEED_MONSTER && obj->charges > 0 && !is_cancelled(mtmp)
-            && !has_very_fast(mtmp) && !has_ultra_fast(mtmp) && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !mtmp->isgd) {
+            && !has_very_fast(mtmp) && !has_ultra_fast(mtmp) && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !is_mon_isgd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_WAN_SPEED_MONSTER;
         }
         nomore(MUSE_POT_SPEED);
-        if (obj->otyp == POT_SPEED && !has_ultra_fast(mtmp) && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !mtmp->isgd) {
+        if (obj->otyp == POT_SPEED && !has_ultra_fast(mtmp) && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !is_mon_isgd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_SPEED;
         }
         nomore(MUSE_POT_GREATER_SPEED);
-        if (obj->otyp == POT_GREATER_SPEED && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !mtmp->isgd) {
+        if (obj->otyp == POT_GREATER_SPEED && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !is_mon_isgd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_GREATER_SPEED;
         }
         nomore(MUSE_POT_LIGHTNING_SPEED);
-        if (obj->otyp == POT_LIGHTNING_SPEED && !has_lightning_fast(mtmp) && !mtmp->isgd) {
+        if (obj->otyp == POT_LIGHTNING_SPEED && !has_lightning_fast(mtmp) && !is_mon_isgd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_LIGHTNING_SPEED;
         }
@@ -2632,17 +2632,17 @@ find_misc(struct monst *mtmp)
             m.has_misc = MUSE_POT_LESSER_REGENERATION;
         }
         nomore(MUSE_POT_TITAN_STRENGTH);
-        if (obj->otyp == POT_TITAN_STRENGTH && !has_titan_strength(mtmp) && M_ACURRSTR(mtmp) < 25 && !mtmp->isgd) {
+        if (obj->otyp == POT_TITAN_STRENGTH && !has_titan_strength(mtmp) && M_ACURRSTR(mtmp) < 25 && !is_mon_isgd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_TITAN_STRENGTH;
         }
         nomore(MUSE_POT_SUPER_HEROISM);
-        if (obj->otyp == POT_SUPER_HEROISM && !has_super_heroism(mtmp) && !mtmp->isgd) {
+        if (obj->otyp == POT_SUPER_HEROISM && !has_super_heroism(mtmp) && !is_mon_isgd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_SUPER_HEROISM;
         }
         nomore(MUSE_POT_HEROISM);
-        if (obj->otyp == POT_HEROISM && !has_super_heroism(mtmp) && !has_heroism(mtmp) && !mtmp->isgd) {
+        if (obj->otyp == POT_HEROISM && !has_super_heroism(mtmp) && !has_heroism(mtmp) && !is_mon_isgd(mtmp)) {
             m.misc = obj;
             m.has_misc = MUSE_POT_HEROISM;
         }
@@ -3245,7 +3245,7 @@ rnd_misc_item(struct monst *mtmp)
 
     switch (rn2(3)) {
     case 0:
-        if (mtmp->isgd)
+        if (is_mon_isgd(mtmp))
             return 0;
         return rn2(6) ? POT_SPEED : WAN_SPEED_MONSTER;
     case 1:
@@ -3794,7 +3794,7 @@ mon_consume_unstone(struct monst *mon, struct obj *obj, boolean by_you, boolean 
         if (vis && !is_bat(mon->data) && mon->data != &mons[PM_STALKER])
             pline("%s seems steadier now.", Monnam(mon));
     }
-    if (mon->mtame && !mon->isminion && nutrit > 0 && has_edog(mon))
+    if (mon->mtame && !is_mon_isminion(mon) && nutrit > 0 && has_edog(mon))
     {
         struct edog *edog = EDOG(mon);
 
@@ -3895,7 +3895,7 @@ munslime(struct monst *mon, boolean by_you)
                 return muse_unslime(mon, obj, (struct trap *) 0, by_you);
 
         if (((t = t_at(mon->mx, mon->my)) == 0 || t->ttyp != FIRE_TRAP)
-            && mptr->mmove && !mon->mtrapped) {
+            && mptr->mmove && !is_mon_mtrapped(mon)) {
             int xy[2][8], x, y, idx, ridx, nxy = 0;
 
             for (x = mon->mx - 1; x <= mon->mx + 1; ++x)

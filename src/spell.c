@@ -297,7 +297,7 @@ deadbook(struct obj *book2)
                                         MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0
                         || (mtmp = makemon(&mons[PM_NALFESHNEE], u.ux, u.uy,
                                            MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0)) {
-            mtmp->mpeaceful = 0;
+            set_mon_mpeaceful(mtmp, 0);
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
         }
@@ -320,7 +320,7 @@ deadbook(struct obj *book2)
             if ((is_undead(mtmp->data) || is_vampshifter(mtmp))
                 && cansee(mtmp->mx, mtmp->my))
             {
-                mtmp->mpeaceful = TRUE;
+                set_mon_mpeaceful(mtmp, TRUE);
 
                 if (sgn(mtmp->data->maligntyp) == sgn(u.ualign.type)
                     && distu(mtmp->mx, mtmp->my) < 4)

@@ -732,13 +732,13 @@ use_stethoscope(struct obj *obj)
         bhitpos.x = rx, bhitpos.y = ry;
         notonhead = (mtmp->mx != rx || mtmp->my != ry);
 
-        if (mtmp->mundetected) {
+        if (is_mon_mundetected(mtmp)) {
             if (!canspotmon(mtmp))
             {
                 play_sfx_sound(SFX_WAS_HIDING);
                 There("is %s hidden there.", mnm);
             }
-            mtmp->mundetected = 0;
+            set_mon_mundetected(mtmp, 0);
             newsym(mtmp->mx, mtmp->my);
         } else if (mtmp->mappearance) {
             const char *what = "thing";
@@ -748,7 +748,7 @@ use_stethoscope(struct obj *obj)
                 what = simple_typename(mtmp->mappearance);
                 break;
             case M_AP_MONSTER: /* ignore Hallucination here */
-                what = pm_monster_name(&mons[mtmp->mappearance], mtmp->female);
+                what = pm_monster_name(&mons[mtmp->mappearance], is_mon_female(mtmp));
                 break;
             case M_AP_FURNITURE:
                 what = defsyms[mtmp->mappearance].explanation;
@@ -883,10 +883,10 @@ use_magic_whistle(struct obj *obj)
                 continue;
             if (is_tame(mtmp)) 
             {
-                if (mtmp->mtrapped) 
+                if (is_mon_mtrapped(mtmp)) 
                 {
                     /* no longer in previous trap (affects mintrap) */
-                    mtmp->mtrapped = 0;
+                    set_mon_mtrapped(mtmp, 0);
                     fill_pit(mtmp->mx, mtmp->my);
                 }
                 /* mimic must be revealed before we know whether it
@@ -897,7 +897,7 @@ use_magic_whistle(struct obj *obj)
                 mnexto2(mtmp, TRUE);
                 if (mtmp->mx != omx || mtmp->my != omy) 
                 {
-                    mtmp->mundetected = 0; /* reveal non-mimic hider */
+                    set_mon_mundetected(mtmp, 0); /* reveal non-mimic hider */
                     selmon = mtmp;
                     if (canspotmon(mtmp))
                         ++pet_cnt;
@@ -947,7 +947,7 @@ o_unleash(struct obj *otmp)
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         if (mtmp->m_id == (unsigned) otmp->leashmon)
-            mtmp->mleashed = 0;
+            set_mon_mleashed(mtmp, 0);
     otmp->leashmon = 0;
 }
 
@@ -969,7 +969,7 @@ m_unleash(struct monst *mtmp, boolean feedback)
     for (otmp = invent; otmp; otmp = otmp->nobj)
         if (otmp->otyp == LEASH && otmp->leashmon == (int) mtmp->m_id)
             otmp->leashmon = 0;
-    mtmp->mleashed = 0;
+    set_mon_mleashed(mtmp, 0);
 }
 
 /* player is about to die (for bones) */
@@ -983,7 +983,7 @@ unleash_all(void)
         if (otmp->otyp == LEASH)
             otmp->leashmon = 0;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
-        mtmp->mleashed = 0;
+        set_mon_mleashed(mtmp, 0);
 }
 
 /* TODO:
@@ -1077,7 +1077,7 @@ use_leash(struct obj *obj)
     else if (!obj->leashmon) 
     {
         /* applying a leash which isn't currently in use */
-        if (mtmp->mleashed)
+        if (is_mon_mleashed(mtmp))
         {
             play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "This %s is already leashed.",
@@ -1094,9 +1094,9 @@ use_leash(struct obj *obj)
             play_sfx_sound(SFX_PUT_ON_LEASH);
             You("slip the leash around %s%s.", spotmon ? "your " : "",
                 l_monnam(mtmp));
-            mtmp->mleashed = 1;
+            set_mon_mleashed(mtmp, 1);
             obj->leashmon = (int) mtmp->m_id;
-            mtmp->msleeping = 0;
+            set_mon_msleeping(mtmp, 0);
             refresh_m_tile_gui_info(mtmp, TRUE);
         }
     }
@@ -1120,7 +1120,7 @@ use_leash(struct obj *obj)
         }
         else
         {
-            mtmp->mleashed = 0;
+            set_mon_mleashed(mtmp, 0);
             obj->leashmon = 0;
             play_sfx_sound(SFX_REMOVE_LEASH);
             You("remove the leash from %s%s.",
@@ -1130,7 +1130,7 @@ use_leash(struct obj *obj)
     return 1;
 }
 
-/* assuming mtmp->mleashed has been checked */
+/* assuming is_mon_mleashed(mtmp) has been checked */
 struct obj *
 get_mleash(struct monst *mtmp)
 {
@@ -1154,7 +1154,7 @@ next_to_u(void)
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (mtmp->mleashed) {
+        if (is_mon_mleashed(mtmp)) {
             if (distu(mtmp->mx, mtmp->my) > 2)
                 mnexto(mtmp);
             if (distu(mtmp->mx, mtmp->my) > 2) {
@@ -1167,7 +1167,7 @@ next_to_u(void)
                         play_sfx_sound(SFX_LEASH_GOES_SLACK);
                         You_feel("%s leash go slack.",
                                  (number_leashed() > 1) ? "a" : "the");
-                        mtmp->mleashed = 0;
+                        set_mon_mleashed(mtmp, 0);
                         otmp->leashmon = 0;
                     }
             }
@@ -1234,7 +1234,7 @@ check_leash(xchar x, xchar y)
                         mtmp->mtame--;
 
                     if (!mtmp->mtame)
-                        mtmp->ispartymember = FALSE;
+                        set_mon_ispartymember(mtmp, FALSE);
 
                 }
             } 
@@ -1592,12 +1592,12 @@ turn_undead_success_effect(struct monst *mtmp, int chance, int dmg, int duration
             if (u.ualign.type == A_CHAOTIC)
             {
                 res = TRUE;
-                mtmp->mpeaceful = 1;
+                set_mon_mpeaceful(mtmp, 1);
                 set_mhostility(mtmp);
 
                 /* Maybe become controlled */
                 int save_adj = 0;
-                if (mtmp->isshk)
+                if (is_mon_isshk(mtmp))
                 {
                     make_happy_shk(mtmp, FALSE);
                 }
@@ -1675,13 +1675,13 @@ uthitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst UNUSED)
             if (!is_peaceful(mtmp)
                 && (is_undead(mtmp->data) || is_vampshifter(mtmp)
                     || (is_demon(mtmp->data) && (u.ulevel > (MAXULEV / 2))))) {
-                mtmp->msleeping = 0;
+                set_mon_msleeping(mtmp, 0);
                 if (Confusion) {
                     if (!once++)
                         pline("Unfortunately, your voice falters.");
-                    mtmp->mflee = 0;
+                    set_mon_mflee(mtmp, 0);
                     mtmp->mfrozen = 0;
-                    mtmp->mcanmove = 1;
+                    set_mon_mcanmove(mtmp, 1);
                     refresh_m_tile_gui_info(mtmp, TRUE);
                 }
                 else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, u.ulevel, 0, 0, TELL)) {
@@ -1702,7 +1702,7 @@ uthitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst UNUSED)
                     case S_LESSER_UNDEAD:
                         if (u.ulevel >= xlev && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, u.ulevel, 0, 0, NOTELL)) {
                             if (u.ualign.type == A_CHAOTIC) {
-                                mtmp->mpeaceful = 1;
+                                set_mon_mpeaceful(mtmp, 1);
                                 set_mhostility(mtmp);
                                 newsym(mtmp->mx, mtmp->my);
                             }
@@ -1744,7 +1744,7 @@ uthitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst UNUSED)
                         if (!is_peaceful(mtmp))
                         {
                             You("successfully pacify %s.", the(mon_nam(mtmp)));
-                            mtmp->mpeaceful = 1;
+                            set_mon_mpeaceful(mtmp, 1);
                         }
                     }
                 }
@@ -1791,7 +1791,7 @@ uthitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst UNUSED)
         {
             wakeup(mtmp, !pacified);
             m_respond(mtmp);
-            if (mtmp->isshk && !*u.ushops)
+            if (is_mon_isshk(mtmp) && !*u.ushops)
                 hot_pursuit(mtmp);
         }
         else if (M_AP_TYPE(mtmp))
@@ -3736,7 +3736,7 @@ fig_transform(anything *arg, int64_t timeout)
                 && M_AP_TYPE(mtmp) != M_AP_NOTHING))
             suppress_see = TRUE;
 
-        if (mtmp->mundetected) {
+        if (is_mon_mundetected(mtmp)) {
             if (hides_under(mtmp->data) && mshelter) {
                 Sprintf(and_vanish, " and %s under %s",
                         locomotion(mtmp->data, "crawl"), doname(mshelter));
@@ -5702,7 +5702,7 @@ use_grapple(struct obj *obj)
             flags.confirm = save_confirm;
             check_caitiff(mtmp); /* despite fact there's no damage */
             You("pull in %s!", mon_nam(mtmp));
-            mtmp->mundetected = 0;
+            set_mon_mundetected(mtmp, 0);
             rloc_to(mtmp, cc.x, cc.y);
             return 1;
         } else if ((!bigmonst(mtmp->data) && !strongmonst(mtmp->data))

@@ -699,7 +699,7 @@ nameshk(struct monst *shk, const char *const *nlp)
         && sptr->flags.town) {
         /* special-case minetown lighting shk */
         shname = "+Izchak";
-        shk->female = FALSE;
+        set_mon_female(shk, FALSE);
     } else {
         /* We want variation from game to game, without needing the save
            and restore support which would be necessary for randomization;
@@ -710,7 +710,7 @@ nameshk(struct monst *shk, const char *const *nlp)
         name_wanted = ledger_no(&u.uz) + (nseed % 13) - (nseed % 5);
         if (name_wanted < 0)
             name_wanted += (13 + 5);
-        shk->female = name_wanted & 1;
+        set_mon_female(shk, name_wanted & 1);
 
         for (names_avail = 0; nlp[names_avail]; names_avail++)
             continue;
@@ -718,7 +718,7 @@ nameshk(struct monst *shk, const char *const *nlp)
         for (trycnt = 0; trycnt < 50; trycnt++) {
             if (nlp == shktools) {
                 shname = shktools[rn2(names_avail)];
-                shk->female = 0; /* reversed below for '_' prefix */
+                set_mon_female(shk, 0); /* reversed below for '_' prefix */
             } else if (name_wanted < names_avail) {
                 shname = nlp[name_wanted];
             } else if ((i = rn2(names_avail)) != 0) {
@@ -729,16 +729,16 @@ nameshk(struct monst *shk, const char *const *nlp)
                     continue;
                 continue; /* next `trycnt' iteration */
             } else {
-                shname = shk->female ? "-Lucrezia" : "+Dirk";
+                shname = is_mon_female(shk) ? "-Lucrezia" : "+Dirk";
             }
             if (*shname == '_' || *shname == '-')
-                shk->female = 1;
+                set_mon_female(shk, 1);
             else if (*shname == '|' || *shname == '+')
-                shk->female = 0;
+                set_mon_female(shk, 0);
 
             /* is name already in use on this level? */
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-                if (DEADMONSTER(mtmp) || (mtmp == shk) || !mtmp->isshk)
+                if (DEADMONSTER(mtmp) || (mtmp == shk) || !is_mon_isshk(mtmp))
                     continue;
                 if (strcmp(ESHK(mtmp)->shknam, shname))
                     continue;
@@ -770,7 +770,7 @@ free_eshk(struct monst *mtmp)
         free((genericptr_t) ESHK(mtmp));
         ESHK(mtmp) = (struct eshk *) 0;
     }
-    mtmp->isshk = 0;
+    set_mon_isshk(mtmp, 0);
 }
 
 /* create a new shopkeeper in the given room */
@@ -860,9 +860,10 @@ shkinit(const struct shclass *shp, struct mkroom *sroom)
     }
 
     eshkp = ESHK(shk); /* makemon(...,MM_ESHK) allocates this */
-    shk->isshk = shk->mpeaceful = 1;
+    set_mon_mpeaceful(shk, 1);
+    set_mon_isshk(shk, 1);
     set_mhostility(shk);
-    shk->msleeping = 0;
+    set_mon_msleeping(shk, 0);
     shk->mtrapseen = ~0; /* we know all the traps already */
     eshkp->shoproom = (schar) ((sroom - rooms) + ROOMOFFSET);
     sroom->resident = shk;
@@ -1131,15 +1132,15 @@ shkname_core(struct monst *mtmp, boolean istrue)
 {
     static char nam[BUFSZ] = "shopkeeper";
 
-    unsigned save_isshk = mtmp->isshk;
+    unsigned save_isshk = is_mon_isshk(mtmp);
 
-    mtmp->isshk = 0; /* don't want mon_nam() calling shkname() */
+    set_mon_isshk(mtmp, 0); /* don't want mon_nam() calling shkname() */
     if (mtmp->data)
         Strcpy(nam, noit_mon_nam(mtmp));
     /* get a modifiable name buffer along with fallback result */
-    mtmp->isshk = save_isshk;
+    set_mon_isshk(mtmp, save_isshk);
 
-    if (!mtmp->isshk) {
+    if (!is_mon_isshk(mtmp)) {
         impossible("shkname: \"%s\" is not a shopkeeper.", nam);
     } else if (!has_eshk(mtmp)) {
         panic("shkname: shopkeeper \"%s\" lacks 'eshk' data.", nam);
@@ -1200,7 +1201,7 @@ is_izchak(struct monst *shkp, boolean override_hallucination)
 
     if (Hallucination && !override_hallucination)
         return FALSE;
-    if (!shkp->isshk)
+    if (!is_mon_isshk(shkp))
         return FALSE;
     /* outside of town, Izchak becomes just an ordinary shopkeeper */
     if (!in_town(shkp->mx, shkp->my))

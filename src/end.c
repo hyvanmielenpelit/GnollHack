@@ -445,7 +445,7 @@ get_killer_name_and_format(struct monst *mtmp, char *buf, int *fmt_ptr)
     /* "killed by the high priest of Crom" is okay,
        "killed by the high priest" alone isn't */
     if ((mptr->geno & G_UNIQ) != 0 && !(imitator && !mimicker)
-        && !(mptr == &mons[PM_HIGH_PRIEST] && !mtmp->ispriest)) {
+        && !(mptr == &mons[PM_HIGH_PRIEST] && !is_mon_ispriest(mtmp))) {
         if (!is_mname_proper_name(mptr))
             Strcat(buf, "the ");
         *fmt_ptr = KILLED_BY;
@@ -462,14 +462,14 @@ get_killer_name_and_format(struct monst *mtmp, char *buf, int *fmt_ptr)
 
     if (imitator) {
         char shape[BUFSZ];
-        const char* realnm = pm_monster_name(champtr, mtmp->female), * fakenm = pm_monster_name(mptr, mtmp->female);
+        const char* realnm = pm_monster_name(champtr, is_mon_female(mtmp)), * fakenm = pm_monster_name(mptr, is_mon_female(mtmp));
         boolean alt = is_vampshifter(mtmp);
 
         if (mimicker) {
             /* realnm is already correct because champtr==mptr;
                set up fake mptr for is_mname_proper_name/the_unique_pm */
             mptr = &mons[mtmp->mappearance];
-            fakenm = pm_monster_name(mptr, mtmp->female);
+            fakenm = pm_monster_name(mptr, is_mon_female(mtmp));
         }
         else if (alt && strstri(realnm, "vampire")
             && !strcmp(fakenm, "vampire bat")) {
@@ -499,26 +499,26 @@ get_killer_name_and_format(struct monst *mtmp, char *buf, int *fmt_ptr)
         if (has_mname(mtmp))
             Sprintf(eos(buf), " of %s", MNAME(mtmp));
     }
-    else if (mtmp->isshk) {
+    else if (is_mon_isshk(mtmp)) {
         const char* shknm = true_shkname(mtmp), //True shopkeeper name, not hallucinated
             * honorific = shkname_is_pname(mtmp) ? ""
-            : mtmp->female ? "Ms. " : "Mr. ";
+            : is_mon_female(mtmp) ? "Ms. " : "Mr. ";
 
         Sprintf(eos(buf), "%s%s, the shopkeeper", honorific, shknm);
         *fmt_ptr = KILLED_BY;
     }
-    else if (mtmp->ispriest || mtmp->isminion) {
+    else if (is_mon_ispriest(mtmp) || is_mon_isminion(mtmp)) {
         /* m_monnam() suppresses "the" prefix plus "invisible", and
            it overrides the effect of Hallucination on priestname() */
         Strcat(buf, m_monnam(mtmp));
     }
     else {
-        if (has_mname(mtmp) && mtmp->u_know_mname)
+        if (has_mname(mtmp) && is_mon_u_know_mname(mtmp))
         {
             *fmt_ptr = KILLED_BY;
             Sprintf(eos(buf), "%s, the ", MNAME(mtmp));
         }
-        Strcat(buf, pm_monster_name(mptr, mtmp->female));
+        Strcat(buf, pm_monster_name(mptr, is_mon_female(mtmp)));
         if (has_umname(mtmp))
             Sprintf(eos(buf), " called %s", UMNAME(mtmp));
     }
@@ -551,7 +551,7 @@ done_in_by(struct monst *mtmp, int how)
     ///* "killed by the high priest of Crom" is okay,
     //   "killed by the high priest" alone isn't */
     //if ((mptr->geno & G_UNIQ) != 0 && !(imitator && !mimicker)
-    //    && !(mptr == &mons[PM_HIGH_PRIEST] && !mtmp->ispriest)) {
+    //    && !(mptr == &mons[PM_HIGH_PRIEST] && !is_mon_ispriest(mtmp))) {
     //    if (!is_mname_proper_name(mptr))
     //        Strcat(buf, "the ");
     //    killer.format = KILLED_BY;
@@ -568,14 +568,14 @@ done_in_by(struct monst *mtmp, int how)
 
     //if (imitator) {
     //    char shape[BUFSZ];
-    //    const char *realnm = pm_monster_name(champtr, mtmp->female), *fakenm = pm_monster_name(mptr, mtmp->female);
+    //    const char *realnm = pm_monster_name(champtr, is_mon_female(mtmp)), *fakenm = pm_monster_name(mptr, is_mon_female(mtmp));
     //    boolean alt = is_vampshifter(mtmp);
 
     //    if (mimicker) {
     //        /* realnm is already correct because champtr==mptr;
     //           set up fake mptr for is_mname_proper_name/the_unique_pm */
     //        mptr = &mons[mtmp->mappearance];
-    //        fakenm = pm_monster_name(mptr, mtmp->female);
+    //        fakenm = pm_monster_name(mptr, is_mon_female(mtmp));
     //    } else if (alt && strstri(realnm, "vampire")
     //               && !strcmp(fakenm, "vampire bat")) {
     //        /* special case: use "vampire in bat form" in preference
@@ -602,24 +602,24 @@ done_in_by(struct monst *mtmp, int how)
     //    Strcat(buf, "ghost");
     //    if (has_mname(mtmp))
     //        Sprintf(eos(buf), " of %s", MNAME(mtmp));
-    //} else if (mtmp->isshk) {
+    //} else if (is_mon_isshk(mtmp)) {
     //    const char *shknm = true_shkname(mtmp), //True shopkeeper name, not hallucinated
     //               *honorific = shkname_is_pname(mtmp) ? ""
-    //                               : mtmp->female ? "Ms. " : "Mr. ";
+    //                               : is_mon_female(mtmp) ? "Ms. " : "Mr. ";
 
     //    Sprintf(eos(buf), "%s%s, the shopkeeper", honorific, shknm);
     //    killer.format = KILLED_BY;
-    //} else if (mtmp->ispriest || mtmp->isminion) {
+    //} else if (is_mon_ispriest(mtmp) || is_mon_isminion(mtmp)) {
     //    /* m_monnam() suppresses "the" prefix plus "invisible", and
     //       it overrides the effect of Hallucination on priestname() */
     //    Strcat(buf, m_monnam(mtmp));
     //} else {
-    //    if (has_mname(mtmp) && mtmp->u_know_mname)
+    //    if (has_mname(mtmp) && is_mon_u_know_mname(mtmp))
     //    {
     //        killer.format = KILLED_BY;
     //        Sprintf(eos(buf), "%s, the ", MNAME(mtmp));
     //    }
-    //    Strcat(buf, pm_monster_name(mptr, mtmp->female));
+    //    Strcat(buf, pm_monster_name(mptr, is_mon_female(mtmp)));
     //    if (has_umname(mtmp))
     //        Sprintf(eos(buf), " called %s", UMNAME(mtmp));
     //}

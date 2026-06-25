@@ -776,7 +776,7 @@ stolen_booty(void)
     mtmp = makemon(&mons[PM_ORC_CAPTAIN], 0, 0, MM_NONAME | MM_ANGRY);
     if (mtmp) {
         mtmp = christen_monst(mtmp, gang);
-        mtmp->u_know_mname = TRUE; /* Not realistic, but let's do it */
+        set_mon_u_know_mname(mtmp, TRUE); /* Not realistic, but let's do it */
         shiny_orc_stuff(mtmp);
         migrate_orc(mtmp, ORC_LEADER);
     }
@@ -798,7 +798,7 @@ stolen_booty(void)
             if (mtmp->data != &mons[PM_ORC_CAPTAIN] && !(has_enpc(mtmp) && has_mname(mtmp)))
             {
                 mtmp = christen_orc(mtmp, gang, "");
-                mtmp->u_know_mname = TRUE; /* Not realistic, but let's do it */
+                set_mon_u_know_mname(mtmp, TRUE); /* Not realistic, but let's do it */
             }
         }
     }

@@ -83,8 +83,8 @@ use_saddle(struct obj *otmp)
         exercise(A_WIS, FALSE);
         return 1;
     }
-    if (mtmp->isminion || mtmp->isshk || mtmp->ispriest || mtmp->isgd
-        || mtmp->iswiz) {
+    if (is_mon_isminion(mtmp) || is_mon_isshk(mtmp) || is_mon_ispriest(mtmp) || is_mon_isgd(mtmp)
+        || is_mon_iswiz(mtmp)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "I think %s would mind.", mon_nam(mtmp));
         return 1;
@@ -253,7 +253,7 @@ mount_steed(struct monst *mtmp)
     /* Can the player reach and see the monster? */
     boolean force = FALSE;      /* Quietly force this animal */
     boolean forceasked = FALSE;      /* Quietly force this animal */
-    boolean steedunseen = mtmp && ((Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters)) || mtmp->mundetected
+    boolean steedunseen = mtmp && ((Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters)) || is_mon_mundetected(mtmp)
         || M_AP_TYPE(mtmp) == M_AP_FURNITURE
         || M_AP_TYPE(mtmp) == M_AP_OBJECT);
 
@@ -369,13 +369,13 @@ mount_steed(struct monst *mtmp)
         killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE;
         instapetrify(kbuf);
     }
-    if (!is_tame(mtmp) || mtmp->isminion)
+    if (!is_tame(mtmp) || is_mon_isminion(mtmp))
     {
         play_sfx_sound(SFX_MONSTER_DOES_NOT_ALLOW);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "I think %s would mind.", mon_nam(mtmp));
         return (FALSE);
     }
-    if (mtmp->mtrapped)
+    if (is_mon_mtrapped(mtmp))
     {
         struct trap *t = t_at(mtmp->mx, mtmp->my);
 
@@ -390,7 +390,7 @@ mount_steed(struct monst *mtmp)
     }
 
     /* Reduce tameness */
-    if (!force && mtmp->mtame > 0 && !mindless(mtmp->data) && !mtmp->isfaithful &&
+    if (!force && mtmp->mtame > 0 && !mindless(mtmp->data) && !is_mon_isfaithful(mtmp) &&
         P_SKILL_LEVEL(P_RIDING) < P_EXPERT &&
         !rn2(
             P_SKILL_LEVEL(P_RIDING) < P_BASIC ? 10 : 
@@ -404,8 +404,8 @@ mount_steed(struct monst *mtmp)
         newsym(mtmp->mx, mtmp->my);
         play_sfx_sound_at_location(SFX_STEED_REFUSES, mtmp->mx, mtmp->my);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s resists%s!", Monnam(mtmp),
-              mtmp->mleashed ? " and its leash comes off" : "");
-        if (mtmp->mleashed)
+              is_mon_mleashed(mtmp) ? " and its leash comes off" : "");
+        if (is_mon_mleashed(mtmp))
             m_unleash(mtmp, FALSE);
         return (FALSE);
     }
@@ -564,14 +564,14 @@ kick_steed(void)
          */
         Strcpy(He, mhe(u.usteed));
         *He = highc(*He);
-        if ((u.usteed->mcanmove || u.usteed->mfrozen) && !rn2(2)) {
-            if (u.usteed->mcanmove)
-                u.usteed->msleeping = 0;
+        if ((is_mon_mcanmove(u.usteed) || u.usteed->mfrozen) && !rn2(2)) {
+            if (is_mon_mcanmove(u.usteed))
+                set_mon_msleeping(u.usteed, 0);
             else if (u.usteed->mfrozen > 2)
                 u.usteed->mfrozen -= 2;
             else {
                 u.usteed->mfrozen = 0;
-                u.usteed->mcanmove = 1;
+                set_mon_mcanmove(u.usteed, 1);
             }
             if (!mon_can_move(u.usteed))
                 pline("%s stirs.", He);
@@ -587,7 +587,7 @@ kick_steed(void)
     /* Make the steed less tame and check if it resists */
     if (u.usteed->mtame && !mindless(u.usteed->data))
         u.usteed->mtame--;
-    if (!u.usteed->mtame && u.usteed->mleashed)
+    if (!u.usteed->mtame && is_mon_mleashed(u.usteed))
         m_unleash(u.usteed, TRUE);
     if (!u.usteed->mtame
         || (u.ulevel + u.usteed->mtame < rnd(MAXULEV / 2 + 5))) {
@@ -884,13 +884,13 @@ maybewakesteed(struct monst *steed)
     int frozen = (int) steed->mfrozen;
     boolean wasimmobile = !mon_can_move(steed);
 
-    steed->msleeping = 0;
+    set_mon_msleeping(steed, 0);
     if (frozen) {
         frozen = (frozen + 1) / 2; /* half */
         /* might break out of timed sleep or paralysis */
         if (!rn2(frozen)) {
             steed->mfrozen = 0;
-            steed->mcanmove = 1;
+            set_mon_mcanmove(steed, 1);
             refresh_m_tile_gui_info(steed, TRUE);
         } else {
             /* didn't awake, but remaining duration is halved */
@@ -938,13 +938,13 @@ place_monster(struct monst *mon, int x, int y)
     
     /* normal map bounds are <1..COLNO-1,0..ROWNO-1> but sometimes
        vault guards (either living or dead) are parked at <0,0> */
-    if (!isok(x, y) && (x != 0 || y != 0 || !mon->isgd)) {
+    if (!isok(x, y) && (x != 0 || y != 0 || !is_mon_isgd(mon))) {
         impossible("trying to place monster (mnum=%d) at <%d,%d>", mon->mnum, x, y);
         x = y = 0;
     }
     if (mon == u.usteed
         /* special case is for convoluted vault guard handling */
-        || (DEADMONSTER(mon) && !(mon->isgd && x == 0 && y == 0))) {
+        || (DEADMONSTER(mon) && !(is_mon_isgd(mon) && x == 0 && y == 0))) {
         impossible("placing %s onto map (mnum=%d)?",
                    (mon == u.usteed) ? "steed" : "defunct monster", mon->mnum);
         return;
@@ -953,7 +953,7 @@ place_monster(struct monst *mon, int x, int y)
     {
         s_level* slev = Is_special(&u.uz);
         impossible("placing monster (mnum=%d%s%s) over another (mnum=%d%s%s) at <%d,%d> on level (%d,%d,%s) [mklev=%d,mx=%d,my=%d,ux=%d,uy=%d,moves=%lld]?", 
-            mon->mnum, mon->isshk ? ", shopkeeper" : mon->isnpc ? ", npc" : mon->ispriest ? ", priest" : mon->issmith ? ", smith" : mon->isgd ? ", guard" : mon->isminion ? ", minion" : mon->wormno ? ", worm" : "",
+            mon->mnum, is_mon_isshk(mon) ? ", shopkeeper" : is_mon_isnpc(mon) ? ", npc" : is_mon_ispriest(mon) ? ", priest" : is_mon_issmith(mon) ? ", smith" : is_mon_isgd(mon) ? ", guard" : is_mon_isminion(mon) ? ", minion" : mon->wormno ? ", worm" : "",
             is_tame(mon) ? ", tame" : ", nontame",
             level.monsters[x][y]->mnum, level.monsters[x][y] == mon ? ", same" : mon->mnum == level.monsters[x][y]->mnum ? ", not same" : "",
             is_tame(level.monsters[x][y]) ? ", tame" : ", nontame",

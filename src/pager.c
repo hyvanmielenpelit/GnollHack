@@ -135,8 +135,8 @@ mhidden_description(struct monst *mon, boolean altmon, char *outbuf)
     } else if (M_AP_TYPE(mon) == M_AP_MONSTER) {
         if (altmon)
             Sprintf(outbuf, ", masquerading as %s",
-                    an(pm_monster_name(&mons[mon->mappearance], mon->female)));
-    } else if (isyou ? u.uundetected : mon->mundetected) {
+                    an(pm_monster_name(&mons[mon->mappearance], is_mon_female(mon))));
+    } else if (isyou ? u.uundetected : is_mon_mundetected(mon)) {
         Strcpy(outbuf, ", hiding");
         if (hides_under(mon->data)) {
             Strcat(outbuf, " under ");
@@ -345,7 +345,7 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
 {
     char *name, monnambuf[BUFSZ], headbuf[BUFSZ], tmpbuf[BUFSZ];
     boolean accurate = !Hallucination;
-    boolean show_monster_type = accurate && (mtmp->isshk || has_umname(mtmp) || (has_mname(mtmp) && mtmp->u_know_mname)) && !is_mname_proper_name(mtmp->data);
+    boolean show_monster_type = accurate && (is_mon_isshk(mtmp) || has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp))) && !is_mname_proper_name(mtmp->data);
 
     name = (mtmp->data == &mons[PM_COYOTE] && accurate)
               ? coyotename(mtmp, monnambuf)
@@ -354,7 +354,7 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
     if (simplebuf)
     {
         if (show_monster_type)
-            Strcpy(simplebuf, pm_monster_name(mtmp->data, mtmp->female));
+            Strcpy(simplebuf, pm_monster_name(mtmp->data, is_mon_female(mtmp)));
         else
             Strcpy(simplebuf, name);
     }
@@ -378,10 +378,10 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
             (mtmp->mx != x || mtmp->my != y)
                 ? "tail of "
                 : "",
-        (mtmp->mx != x || mtmp->my != y) && !((mtmp->isshk || has_umname(mtmp) || (has_mname(mtmp) && mtmp->u_know_mname) || (is_mplayer(mtmp->data) && strstri(name, " the ") != 0) || is_mname_proper_name(mtmp->data)) && accurate) ? an(tmpbuf) : tmpbuf);
+        (mtmp->mx != x || mtmp->my != y) && !((is_mon_isshk(mtmp) || has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp)) || (is_mplayer(mtmp->data) && strstri(name, " the ") != 0) || is_mname_proper_name(mtmp->data)) && accurate) ? an(tmpbuf) : tmpbuf);
 
     if (show_monster_type)
-        Sprintf(eos(buf), ", %s", an(pm_monster_name(mtmp->data, mtmp->female)));
+        Sprintf(eos(buf), ", %s", an(pm_monster_name(mtmp->data, is_mon_female(mtmp))));
 
     if (u.ustuck == mtmp) {
         if (u.uswallow || iflags.save_uswallow) /* monster detection */
@@ -391,10 +391,10 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
             Strcat(buf, (Upolyd && sticks(youmonst.data))
                           ? ", being held" : ", holding you");
     }
-    if (mtmp->mleashed)
+    if (is_mon_mleashed(mtmp))
         Strcat(buf, ", leashed to you");
 
-    if (mtmp->mtrapped && cansee(mtmp->mx, mtmp->my)) {
+    if (is_mon_mtrapped(mtmp) && cansee(mtmp->mx, mtmp->my)) {
         struct trap *t = t_at(mtmp->mx, mtmp->my);
         int tt = t ? t->ttyp : NO_TRAP;
 
@@ -406,7 +406,7 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
 
     /* we know the hero sees a monster at this location, but if it's shown
        due to persistant monster detection he might remember something else */
-    if (mtmp->mundetected || M_AP_TYPE(mtmp))
+    if (is_mon_mundetected(mtmp) || M_AP_TYPE(mtmp))
         mhidden_description(mtmp, FALSE, eos(buf));
 
     if (is_tame(mtmp))
@@ -607,14 +607,14 @@ lookat(int x, int y, char *buf, char *simplebuf, char *extrabuf)
             if (is_tame(mtmp))
             {
                 print_mstatusline(buf, mtmp, ARTICLE_NONE, TRUE);
-                Strcpy(simplebuf, pm_monster_name(mtmp->data, mtmp->female));
+                Strcpy(simplebuf, pm_monster_name(mtmp->data, is_mon_female(mtmp)));
             }
             else
             {
                 look_at_monster(buf, simplebuf, extrabuf, mtmp, x, y);
             }
             pm = mtmp->data;
-            if(has_umname(mtmp) || (has_mname(mtmp) && mtmp->u_know_mname))
+            if(has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp)))
                 noarticle = TRUE;
         }
         else if (Hallucination)

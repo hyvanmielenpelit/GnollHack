@@ -925,18 +925,18 @@ mon_item_change_sex_and_useup(struct monst *mon, struct obj *uitem, boolean crea
     if (mon->mprops[UNCHANGING])
         return;
 
-    unsigned orig_sex = mon->female;
+    unsigned orig_sex = is_mon_female(mon);
     if (!(is_male(mon->data) || is_female(mon->data) || is_neuter(mon->data)))
-        mon->female = !mon->female;
+        set_mon_female(mon, !is_mon_female(mon));
 
     if (!creation && canseemon(mon))
     {
         /* Don't use same message as polymorph */
-        if (orig_sex != mon->female) {
+        if (orig_sex != is_mon_female(mon)) {
             makeknown(uitem->otyp);
             play_sfx_sound_at_location(SFX_SEX_CHANGE, mon->mx, mon->my);
             Sprintf(dcbuf, "%s is suddenly very %s!", Monnam(mon),
-                mon->female ? "feminine" : "masculine");
+                is_mon_female(mon) ? "feminine" : "masculine");
             pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         }
         else
@@ -949,7 +949,7 @@ mon_item_change_sex_and_useup(struct monst *mon, struct obj *uitem, boolean crea
         }
         play_sfx_sound_at_location(SFX_ITEM_CRUMBLES_TO_DUST, mon->mx, mon->my);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrates!", The(cxname(uitem)));
-        if (orig_sex == mon->female && uitem->dknown
+        if (orig_sex == is_mon_female(mon) && uitem->dknown
             && !objects[uitem->otyp].oc_name_known
             && !objects[uitem->otyp].oc_uname)
             docall(uitem, dcbuf);

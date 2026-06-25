@@ -125,7 +125,7 @@ kickdmg(struct monst *mon, boolean clumsy)
 
     boolean kicksuccessful = FALSE;
 
-    if (!hugemonst(mon->data) && mon != u.ustuck && !mon->mtrapped)
+    if (!hugemonst(mon->data) && mon != u.ustuck && !is_mon_mtrapped(mon))
     {
         if (Magical_kicking)
         {
@@ -222,7 +222,7 @@ kickdmg(struct monst *mon, boolean clumsy)
             if (is_tame(mon))
                 monflee(mon, (dmg ? rnd(dmg) : 1), FALSE, FALSE);
             else
-                mon->mflee = 0;
+                set_mon_mflee(mon, 0);
         }
 
         boolean hurtles = FALSE;
@@ -325,12 +325,12 @@ kick_monster(struct monst *mon, xchar x, xchar y)
 
     /* reveal hidden target even if kick ends up missing (note: being
        hidden doesn't affect chance to hit so neither does this reveal) */
-    if (mon->mundetected
+    if (is_mon_mundetected(mon)
         || (M_AP_TYPE(mon) && M_AP_TYPE(mon) != M_AP_MONSTER)) 
     {
         if (M_AP_TYPE(mon))
             seemimic(mon);
-        mon->mundetected = 0;
+        set_mon_mundetected(mon, 0);
         if (!canspotmon(mon))
             map_invisible(x, y);
         else
@@ -435,7 +435,7 @@ kick_monster(struct monst *mon, xchar x, xchar y)
         {
             /* check if mon catches your kick */
             if (!rn2(clumsy ? 3 : 4) && (clumsy || !bigmonst(mon->data))
-                && !is_blinded(mon) && !mon->mtrapped && !thick_skinned(mon->data)
+                && !is_blinded(mon) && !is_mon_mtrapped(mon) && !thick_skinned(mon->data)
                 && mon->data->mlet != S_EEL && haseyes(mon->data)
                 && !is_stunned(mon) && !is_confused(mon) && mon_can_move(mon)
                 && mon->data->mmove >= 12)
@@ -498,8 +498,8 @@ ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
 {
     boolean msg_given = FALSE;
 
-    if (!likes_gold(mtmp->data) && !mtmp->isshk && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc
-        && !mtmp->isgd && !is_mercenary(mtmp->data)) 
+    if (!likes_gold(mtmp->data) && !is_mon_isshk(mtmp) && !is_mon_ispriest(mtmp) && !is_mon_issmith(mtmp) && !is_mon_isnpc(mtmp)
+        && !is_mon_isgd(mtmp) && !is_mercenary(mtmp->data)) 
     {
         wakeup(mtmp, TRUE);
     }
@@ -520,17 +520,17 @@ ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
 
         int64_t umoney, value = gold->quan * objects[gold->otyp].oc_cost;
 
-        mtmp->msleeping = 0;
+        set_mon_msleeping(mtmp, 0);
         finish_meating(mtmp);
         refresh_m_tile_gui_info(mtmp, TRUE);
-        if (!mtmp->isgd && !rn2(4)) /* not always pleasing */
+        if (!is_mon_isgd(mtmp) && !rn2(4)) /* not always pleasing */
             setmangry(mtmp, TRUE);
         /* greedy monsters catch gold */
         if (cansee(mtmp->mx, mtmp->my))
             pline("%s catches the gold.", Monnam(mtmp));
         (void) mpickobj(mtmp, gold);
         gold = (struct obj *) 0; /* obj has been freed */
-        if (mtmp->isshk)
+        if (is_mon_isshk(mtmp))
         {
             int64_t robbed = ESHK(mtmp)->robbed;
 
@@ -560,7 +560,7 @@ ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
                 }
             }
         } 
-        else if (mtmp->ispriest) 
+        else if (is_mon_ispriest(mtmp)) 
         {
             if (is_peaceful(mtmp))
             {
@@ -573,11 +573,11 @@ ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
                 verbalize_angry1("Thanks, scum!");
             }
         }
-        else if (mtmp->issmith || mtmp->isnpc) 
+        else if (is_mon_issmith(mtmp) || is_mon_isnpc(mtmp)) 
         {
             if (is_peaceful(mtmp))
             {
-                if (mtmp->issmith)
+                if (is_mon_issmith(mtmp))
                     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_YOUR_ASSISTANCE);
                 else
                     play_monster_special_dialogue_line(mtmp, NPC_LINE_THANK_YOU_FOR_YOUR_ASSISTANCE);
@@ -586,14 +586,14 @@ ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
             }
             else
             {
-                if(mtmp->issmith)
+                if(is_mon_issmith(mtmp))
                     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANKS_SCUM);
                 else
                     play_monster_special_dialogue_line(mtmp, NPC_LINE_THANKS_SCUM);
                 verbalize_angry1("Thanks, scum!");
             }
         } 
-        else if (mtmp->isgd) 
+        else if (is_mon_isgd(mtmp)) 
         {
             umoney = money_cnt(invent);
             /* Some of these are iffy, because a hostile guard
@@ -636,7 +636,7 @@ ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
                     umoney = money_cnt(invent);
                     if (value > goldreqd + (umoney + u.ulevel * rn2(5)) / ACURR(A_CHA))
                     {
-                        mtmp->mpeaceful = TRUE;
+                        set_mon_mpeaceful(mtmp, TRUE);
                         newsym(mtmp->mx, mtmp->my);
                     }
                 }
@@ -1047,7 +1047,7 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
 
     uchar hitres = 0;
     if (mon) {
-        if (mon->isshk && kickedobj->where == OBJ_MINVENT
+        if (is_mon_isshk(mon) && kickedobj->where == OBJ_MINVENT
             && kickedobj->ocarry == mon)
             return 1; /* alert shk caught it */
         notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);

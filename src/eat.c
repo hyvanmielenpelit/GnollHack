@@ -1034,7 +1034,7 @@ eat_brains(struct monst *magr, struct monst *mdef, boolean visflag, double *dmg_
         }
     }
 
-    if (give_nutrit && magr->mtame && !magr->isminion)
+    if (give_nutrit && magr->mtame && !is_mon_isminion(magr))
     {
         EDOG(magr)->hungrytime += rnd(60);
         magr->mprops[CONFUSION] &= ~M_INTRINSIC_ACQUIRED;

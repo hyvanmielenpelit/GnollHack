@@ -918,10 +918,10 @@ monster_detect(struct obj *otmp, int mclass)
             if (otmp && otmp->cursed
                 && !mon_can_move(mtmp))
             {
-                mtmp->msleeping = 0;
+                set_mon_msleeping(mtmp, 0);
                 mtmp->mfrozen = mtmp->mstaying = 0;
-                mtmp->mcanmove = 1;
-                mtmp->mwantstomove = 1;
+                set_mon_mcanmove(mtmp, 1);
+                set_mon_mwantstomove(mtmp, 1);
                 mtmp->mprops[SLEEPING] = 0;
                 mtmp->mprops[PARALYZED] = 0;
                 woken = TRUE;
@@ -1825,10 +1825,10 @@ findone(int zx, int zy, genericptr_t num)
             (*(int *) num)++;
         }
 
-        if (mtmp->mundetected
+        if (is_mon_mundetected(mtmp)
             && (is_hider(mtmp->data) || mtmp->data->mlet == S_EEL))
         {
-            mtmp->mundetected = 0;
+            set_mon_mundetected(mtmp, 0);
             newsym(zx, zy);
             (*(int *) num)++;
         }
@@ -2021,7 +2021,7 @@ mfind0(struct monst *mtmp, boolean via_warning)
     } 
     else if (!canspotmon(mtmp))
     {
-        if (mtmp->mundetected
+        if (is_mon_mundetected(mtmp)
             && (is_hider(mtmp->data) || mtmp->data->mlet == S_EEL))
         {
             if (via_warning)
@@ -2030,7 +2030,7 @@ mfind0(struct monst *mtmp, boolean via_warning)
                      Blind ? "to check nearby" : "look close by");
                 display_nhwindow(WIN_MESSAGE, FALSE); /* flush messages */
             }
-            mtmp->mundetected = 0;
+            set_mon_mundetected(mtmp, 0);
         }
         newsym(x, y);
         found_something = TRUE;
@@ -2213,7 +2213,7 @@ warnreveal(void)
             if (!isok(x, y) || (x == u.ux && y == u.uy))
                 continue;
             if ((mtmp = m_at(x, y)) != 0
-                && warning_of(mtmp) && mtmp->mundetected)
+                && warning_of(mtmp) && is_mon_mundetected(mtmp))
                 (void) mfind0(mtmp, 1); /* via_warning */
         }
 }

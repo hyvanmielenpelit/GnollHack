@@ -588,7 +588,7 @@ gotobj:
     /* set mavenge bit so knights won't suffer an
      * alignment penalty during retaliation;
      */
-    mtmp->mavenge = 1;
+    set_mon_mavenge(mtmp, 1);
 
     debugprint_pos();
     if (otmp->unpaid)
@@ -705,7 +705,7 @@ stealamulet(struct monst *mtmp)
 
         /* If we get here, real and fake have been set up. */
         for (n = 0, obj = invent; obj; obj = obj->nobj)
-            if (obj->otyp == real || (obj->otyp == fake && !mtmp->iswiz))
+            if (obj->otyp == real || (obj->otyp == fake && !is_mon_iswiz(mtmp)))
                 ++n, otmp = obj;
         
         if (n > 1) 
@@ -713,7 +713,7 @@ stealamulet(struct monst *mtmp)
             n = rnd(n);
             for (otmp = invent; otmp; otmp = otmp->nobj)
                 if ((otmp->otyp == real
-                     || (otmp->otyp == fake && !mtmp->iswiz)) && !--n)
+                     || (otmp->otyp == fake && !is_mon_iswiz(mtmp))) && !--n)
                     break;
         }
     }
@@ -927,7 +927,7 @@ release_monster_objects(struct monst *mtmp, int show, boolean is_pet, boolean is
     int omx = mtmp->mx, omy = mtmp->my;
 
     /* vault guard's and Gehennom special monster gold goes away rather than be dropped... */
-    if ((mtmp->isgd || ((mtmp->issmith || mtmp->ispriest || mtmp->isshk || mtmp->isnpc) /*&& Inhell*/)) && (otmp = findgold(mtmp->minvent)) != 0)
+    if ((is_mon_isgd(mtmp) || ((is_mon_issmith(mtmp) || is_mon_ispriest(mtmp) || is_mon_isshk(mtmp) || is_mon_isnpc(mtmp)) /*&& Inhell*/)) && (otmp = findgold(mtmp->minvent)) != 0)
     {
         play_sfx_sound_at_location(SFX_ITEM_VANISHES, mtmp->mx, mtmp->my);
         if (canspotmon(mtmp))
@@ -942,7 +942,7 @@ release_monster_objects(struct monst *mtmp, int show, boolean is_pet, boolean is
     {
         debugprint("release_monster_objects2: %d", otmp->otyp);
         obj_extract_self(otmp);
-        if (((otmp->speflags & SPEFLAGS_CLONED_ITEM) || ((mtmp->issummoned || mtmp->ispartymember) && (!is_mon_dead || otmp->oclass == COIN_CLASS)))
+        if (((otmp->speflags & SPEFLAGS_CLONED_ITEM) || ((is_mon_issummoned(mtmp) || is_mon_ispartymember(mtmp)) && (!is_mon_dead || otmp->oclass == COIN_CLASS)))
             /* When leaving without dying, summoned and joined monsters take their possessions with them, except central artifacts 
              * Just their money mysteriously disappears when they die normally, to prevent hiring monsters always with the same money
              * Also cloned items (Aleax) will disappear when Aleax is gone / dies, unless you somehow managed to steal them from Aleax before that

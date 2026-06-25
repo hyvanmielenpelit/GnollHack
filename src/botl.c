@@ -1484,7 +1484,7 @@ get_m_status_bits(struct monst *mtmp, boolean loc_is_you, boolean ispeaceful, bo
                 display_this_status_mark = TRUE;
             break;
         case STATUS_MARK_TRAPPED:
-            if ((loc_is_you && u.utrap) || (!loc_is_you && mtmp->mtrapped))
+            if ((loc_is_you && u.utrap) || (!loc_is_you && is_mon_mtrapped(mtmp)))
                 display_this_status_mark = TRUE;
             break;
         case STATUS_MARK_USTUCK:
@@ -1492,7 +1492,7 @@ get_m_status_bits(struct monst *mtmp, boolean loc_is_you, boolean ispeaceful, bo
                 display_this_status_mark = TRUE;
             break;
         case STATUS_MARK_INVENTORY:
-            if (!loc_is_you && ispet && !mtmp->ispartymember && count_unworn_items(mtmp->minvent) > 0)
+            if (!loc_is_you && ispet && !is_mon_ispartymember(mtmp) && count_unworn_items(mtmp->minvent) > 0)
                 display_this_status_mark = TRUE;
             break;
         default:
@@ -1597,7 +1597,7 @@ compose_partystatline(char *outbuf, char *outbuf2, char *outbuf3, char *outbuf4,
                 umnbuf[16] = '\0'; /* Limit the length of the name */
                 Strcat(tempbuf, umnbuf);
             }
-            else if (has_mname(mtmp) && mtmp->u_know_mname)
+            else if (has_mname(mtmp) && is_mon_u_know_mname(mtmp))
             {
                 char mnbuf[PL_PSIZ + BUFSZ];
                 Strcpy(mnbuf, MNAME(mtmp));

@@ -1658,7 +1658,7 @@ maybe_tame(struct monst *mtmp, struct obj *sobj, struct monst *origmonst)
     }
     else 
     {
-        if (mtmp->isshk)
+        if (is_mon_isshk(mtmp))
             make_happy_shk(mtmp, FALSE);
         else if (is_tame(mtmp) && !is_charmed_or_controlled(mtmp))
         {
@@ -1728,7 +1728,7 @@ maybe_controlled(struct monst *mtmp, struct obj *sobj, struct monst *origmonst)
             if (was_peaceful && !is_peaceful(mtmp))
                 return -1;
         }
-        else if (mtmp->isshk)
+        else if (is_mon_isshk(mtmp))
             make_happy_shk(mtmp, FALSE);
         else if (!check_ability_resistance_success(mtmp, A_WIS, save_adj))
         {
@@ -2241,8 +2241,10 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
             {
                 if (confused || scursed) 
                 {
-                    mtmp->mflee = mtmp->mfrozen = mtmp->msleeping = 0;
-                    mtmp->mcanmove = 1;
+                    set_mon_msleeping(mtmp, 0);
+                    mtmp->mfrozen = 0;
+                    set_mon_mflee(mtmp, 0);
+                    set_mon_mcanmove(mtmp, 1);
                     mtmp->mprops[FEARFUL] = 0;
                     refresh_m_tile_gui_info(mtmp, TRUE);
                 }
@@ -4498,7 +4500,7 @@ create_particular_creation(struct _create_particular_data *d)
         else if (d->makepeaceful || d->makehostile) 
         {
             mtmp->mtame = 0; /* sanity precaution */
-            mtmp->mpeaceful = d->makepeaceful ? 1 : 0;
+            set_mon_mpeaceful(mtmp, d->makepeaceful ? 1 : 0);
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
         }
@@ -4521,7 +4523,7 @@ create_particular_creation(struct _create_particular_data *d)
         }
 
         if (d->sleeping)
-            mtmp->msleeping = 1;
+            set_mon_msleeping(mtmp, 1);
 
         madeany = TRUE;
         /* in case we got a doppelganger instead of what was asked

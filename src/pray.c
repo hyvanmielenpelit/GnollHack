@@ -2702,7 +2702,7 @@ dosacrifice(void)
                         int rndval = (u.ualign.record >= PIOUS ? 5 : u.ualign.record >= DEVOUT ? 4 : u.ualign.record >= FERVENT ? 3 : u.ualign.record >= STRIDENT ? 2 : u.ualign.record >= 0 ? 1 : 0) + 2 - (int)context.dlords_summoned_via_altar;
                         if (context.dlords_summoned_via_altar <= 1 || (rndval > 1 && rn2(rndval)) || !rn2(1 + context.dlords_summoned_via_altar * (u.ualign.record < 0 ? 2 : 1)))
                         {
-                            dmon->mpeaceful = TRUE;
+                            set_mon_mpeaceful(dmon, TRUE);
                             dmon->mon_flags |= MON_FLAGS_SUMMONED_AT_ALTAR;
                             pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Luckily for you, %s appears to be pleased with your sacrifice.", itdreadful ? "that something" : dbuf);
                         }
@@ -3814,13 +3814,13 @@ doturn(void)
         if (!is_peaceful(mtmp)
             && (is_undead(mtmp->data) || is_vampshifter(mtmp)
                 || (is_demon(mtmp->data) && (u.ulevel > (MAXULEV / 2))))) {
-            mtmp->msleeping = 0;
+            set_mon_msleeping(mtmp, 0);
             if (Confusion) {
                 if (!once++)
                     pline("Unfortunately, your voice falters.");
-                mtmp->mflee = 0;
+                set_mon_mflee(mtmp, 0);
                 mtmp->mfrozen = 0;
-                mtmp->mcanmove = 1;
+                set_mon_mcanmove(mtmp, 1);
                 refresh_m_tile_gui_info(mtmp, TRUE);
             } else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, u.ulevel, 0, 0, TELL)) {
                 xlev = 6;
@@ -3840,7 +3840,7 @@ doturn(void)
                 case S_LESSER_UNDEAD:
                     if (u.ulevel >= xlev && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, u.ulevel, 0, 0, NOTELL)) {
                         if (u.ualign.type == A_CHAOTIC) {
-                            mtmp->mpeaceful = 1;
+                            set_mon_mpeaceful(mtmp, 1);
                             set_mhostility(mtmp);
                             newsym(mtmp->mx, mtmp->my);
                         } else { /* damn them */

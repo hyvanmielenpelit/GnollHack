@@ -1395,7 +1395,7 @@ do_mname(void)
     if (!mtmp
         || (!sensemon(mtmp)
             && (!(cansee(cx, cy) || see_with_infrared(mtmp))
-                || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE
+                || is_mon_mundetected(mtmp) || M_AP_TYPE(mtmp) == M_AP_FURNITURE
                 || M_AP_TYPE(mtmp) == M_AP_OBJECT
                 || (is_invisible(mtmp) && !See_invisible)))) 
     {
@@ -1418,22 +1418,22 @@ do_mname(void)
      * Don't say the name is being rejected if it happens to match
      * the existing name.
      */
-    if ((mtmp->data->geno & G_UNIQ) && !mtmp->ispriest) 
+    if ((mtmp->data->geno & G_UNIQ) && !is_mon_ispriest(mtmp)) 
     {
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s doesn't like being called names!", upstart(monnambuf));
     } 
-    else if (mtmp->isshk
+    else if (is_mon_isshk(mtmp)
                && !(Deaf || !mon_can_move(mtmp)
                     || mtmp->data->msound <= MS_ANIMAL)) 
     {
         if (!alreadynamed(mtmp, monnambuf, buf))
         {
-            mtmp->u_know_mname = 1;
+            set_mon_u_know_mname(mtmp, 1);
             verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "I'm %s, not %s.", shkname(mtmp), buf);
         }
     } 
-    else if (mtmp->ispriest || mtmp->isminion || mtmp->isshk || mtmp->issmith || mtmp->isnpc) 
+    else if (is_mon_ispriest(mtmp) || is_mon_isminion(mtmp) || is_mon_isshk(mtmp) || is_mon_issmith(mtmp) || is_mon_isnpc(mtmp)) 
     {
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s will not accept the name %s.", upstart(monnambuf), buf);
@@ -1442,7 +1442,7 @@ do_mname(void)
     {
         /* Peaceful animals who do not have names and tame animals can be named, others do not accept your naming */
         (void)christen_monst(mtmp, buf);
-        mtmp->u_know_mname = 1;
+        set_mon_u_know_mname(mtmp, 1);
 
         /* Clear out umname */
         if (has_umname(mtmp))
@@ -1450,7 +1450,7 @@ do_mname(void)
     }
     //else if (has_mname(mtmp))
     //{
-    //    if(!mtmp->u_know_mname || !*buf)
+    //    if(!is_mon_u_know_mname(mtmp) || !*buf)
     //        (void)u_name_monst(mtmp, buf);
     //    else
     //        pline("%s will not accept the name %s.", upstart(monnambuf), buf);
@@ -1997,7 +1997,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
     }
 
     /* priests and minions: don't even use this function */
-    if (mtmp->ispriest || mtmp->isminion) {
+    if (is_mon_ispriest(mtmp) || is_mon_isminion(mtmp)) {
         char priestnambuf[BUFSZ];
         char *name;
         int64_t save_prop = EHalluc_resistance;
@@ -2018,14 +2018,14 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
     /* an "aligned priest" not flagged as a priest or minion should be
        "priest" or "priestess" (normally handled by priestname()) */
     if (mdat == &mons[PM_ALIGNED_PRIEST])
-        pm_name = mtmp->female ? "priestess" : "priest";
+        pm_name = is_mon_female(mtmp) ? "priestess" : "priest";
 
     /* Shopkeepers: use shopkeeper name.  For normal shopkeepers, just
      * "Asidonhopo"; for unusual ones, "Asidonhopo the invisible
      * shopkeeper" or "Asidonhopo the blue dragon".  If hallucinating,
      * none of this applies.
      */
-    if (mtmp->isshk && !do_hallu) 
+    if (is_mon_isshk(mtmp) && !do_hallu) 
     {
         if (adjective && article == ARTICLE_THE) 
         {
@@ -2075,7 +2075,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
         Strcat(buf, umname);
         name_at_start = TRUE;
     }
-    else if (do_name && has_mname(mtmp) && mtmp->u_know_mname)
+    else if (do_name && has_mname(mtmp) && is_mon_u_know_mname(mtmp))
     {
         char *name = MNAME(mtmp);
 
@@ -2102,7 +2102,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
         {
             char tmpbuf[BUFSZ * 2];
             Strcpy(tmpbuf, buf);
-            boolean npc_with_name_only = has_enpc(mtmp) && mtmp->isnpc && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_DISPLAY_NAME_ONLY) != 0;
+            boolean npc_with_name_only = has_enpc(mtmp) && is_mon_isnpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_DISPLAY_NAME_ONLY) != 0;
             if (!is_tame(mtmp) && !npc_with_name_only)
             {
                 if ((bp = strstri(name, " the ")) != 0)
@@ -2124,7 +2124,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
         char pbuf[BUFSZ];
 
         Strcpy(pbuf, rank_of((int) mtmp->m_lev, mtmp->mnum,
-                             (boolean) mtmp->female != 0));
+                             (boolean) is_mon_female(mtmp)));
         Strcat(buf, lcase(pbuf));
         name_at_start = FALSE;
     } 
@@ -2309,7 +2309,7 @@ distant_monnam(struct monst *mon, int article, char *outbuf)
     if (mon->data == &mons[PM_HIGH_PRIEST] && !Hallucination
         && Is_astralevel(&u.uz) && distu(mon->mx, mon->my) > 2) {
         Strcpy(outbuf, article == ARTICLE_THE ? "the " : "");
-        Strcat(outbuf, mon->female ? "high priestess" : "high priest");
+        Strcat(outbuf, is_mon_female(mon) ? "high priestess" : "high priest");
     } else {
         Strcpy(outbuf, x_monnam(mon, article, (char *) 0, 0, TRUE));
     }

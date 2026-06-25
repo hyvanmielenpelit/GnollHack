@@ -951,7 +951,7 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
                        ? "historic "
                        : "",
                     actualn_fullbuf,
-                    is_mname_proper_name(&mons[omndx]) || (mtmp && has_mname(mtmp) && mtmp->u_know_mname)
+                    is_mname_proper_name(&mons[omndx]) || (mtmp && has_mname(mtmp) && is_mon_u_know_mname(mtmp))
                        ? ""
                        : the_unique_pm(&mons[omndx])
                           ? "the "
@@ -1094,12 +1094,12 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
     /* Corpse names from OMONST */
     if (obj->oextra && OMONST(obj) && !statueusesname)
     {
-        if (OMONST(obj)->isshk && has_eshk(OMONST(obj)))
+        if (is_mon_isshk(OMONST(obj)) && has_eshk(OMONST(obj)))
         {
             Strcat(buf, " named ");
             Strcat(buf, shkname(OMONST(obj)));
         }
-        else if(has_mname(OMONST(obj)) && OMONST(obj)->u_know_mname)
+        else if(has_mname(OMONST(obj)) && is_mon_u_know_mname(OMONST(obj)))
         {
             Strcat(buf, " named ");
             Strcat(buf, MNAME(OMONST(obj)));
@@ -2371,7 +2371,7 @@ corpse_xname(struct obj *otmp, const char *adjective, unsigned cxn_flags)
     char *nambuf = next_offset_init_obuf();
     int omndx = otmp->corpsenm;
     struct monst* mtmp = get_mtraits(otmp, FALSE);
-    boolean isfemale = (mtmp && mtmp->female) || (omndx > NON_PM && is_female(&mons[omndx]));
+    boolean isfemale = (mtmp && is_mon_female(mtmp)) || (omndx > NON_PM && is_female(&mons[omndx]));
 
     boolean ignore_quan = (cxn_flags & CXN_SINGULAR) != 0,
             /* suppress "the" from "the unique monster corpse" */

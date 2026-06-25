@@ -160,7 +160,7 @@ next_shkp(struct monst *shkp, boolean withbill)
     for (; shkp; shkp = shkp->nmon) {
         if (DEADMONSTER(shkp))
             continue;
-        if (shkp->isshk && (ESHK(shkp)->billct || !withbill))
+        if (is_mon_isshk(shkp) && (ESHK(shkp)->billct || !withbill))
             break;
     }
 
@@ -632,7 +632,7 @@ u_entered_shop(char *enterstring)
             }
             else
             {
-                shkp->u_know_mname = 1;
+                set_mon_u_know_mname(shkp, 1);
                 verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s, %s!  Welcome%s to %s %s!", Hello(shkp), plname,
                     eshkp->visitct ? " again" : "",
                     s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
@@ -641,7 +641,7 @@ u_entered_shop(char *enterstring)
         }
         else
             You("enter %s %s%s!",
-                shkp->u_know_mname ? s_suffix(shkname(shkp)) : "the",
+                is_mon_u_know_mname(shkp) ? s_suffix(shkname(shkp)) : "the",
                 shtypes[rt - SHOPBASE].name,
                 eshkp->visitct++ ? " again" : "");
     }
@@ -894,7 +894,7 @@ shop_keeper(char rmno)
             /* would have segfaulted on ESHK dereference previously */
             s_level* slev = Is_special(&u.uz);
             impossible("%s? (rmno=%d, rtype=%d, mnum=%d, m_id=%u, mx=%d, my=%d, dnum=%d, dlevel=%d, slev=%s, \"%s\", dead=%d, hp=%d, repl=%d, dealloc=%d, revived=%d, mextra=%d, edog=%d, mtame=%d, e?=%d, other=%d)",
-                       shkp->isshk ? "shopkeeper career change"
+                       is_mon_isshk(shkp) ? "shopkeeper career change"
                                    : "shop resident not shopkeeper",
                        (int) rmno,
                        (int) rooms[rmno - ROOMOFFSET].rtype,
@@ -903,7 +903,7 @@ shop_keeper(char rmno)
                        has_mname(shkp) ? MNAME(shkp) : "anonymous",
                        DEADMONSTER(shkp), shkp->mhp, (shkp->mon_flags & MON_FLAGS_DEBUG_REPLMON) != 0, (shkp->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED) != 0,
                        shkp->mrevived, shkp->mextra != 0, has_edog(shkp), shkp->mtame, 
-                       shkp->isgd | shkp->isnpc | shkp->issmith | shkp->ispriest | shkp->isminion, shkp->issummoned | shkp->ispartymember
+                       is_mon_isgd(shkp) | is_mon_isnpc(shkp) | is_mon_issmith(shkp) | is_mon_ispriest(shkp) | is_mon_isminion(shkp), is_mon_issummoned(shkp) | is_mon_ispartymember(shkp)
                        );
             /* not sure if this is appropriate, because it does nothing to
                correct the underlying rooms[].resident issue but... */
@@ -1124,7 +1124,7 @@ angry_shk_exists(void)
 static void
 pacify_shk(struct monst *shkp)
 {
-    NOTANGRY(shkp) = TRUE; /* make peaceful */
+    set_mon_mpeaceful(shkp, TRUE); /* make peaceful */
     if (ESHK(shkp)->surcharge) {
         struct bill_x *bp = ESHK(shkp)->bill_p;
         int ct = ESHK(shkp)->billct;
@@ -1144,7 +1144,7 @@ pacify_shk(struct monst *shkp)
 static void
 rile_shk(struct monst *shkp)
 {
-    NOTANGRY(shkp) = FALSE; /* make angry */
+    set_mon_mpeaceful(shkp, FALSE); /* make angry */
     if (!ESHK(shkp)->surcharge) {
         struct bill_x *bp = ESHK(shkp)->bill_p;
         int ct = ESHK(shkp)->billct;
@@ -1167,10 +1167,10 @@ rouse_shk(struct monst *shkp, boolean verbosely)
         /* greed induced recovery... */
         if (verbosely && canspotmon(shkp))
             pline("%s %s.", Shknam(shkp),
-                  shkp->msleeping ? "wakes up" : "can move again");
-        shkp->msleeping = 0;
+                  is_mon_msleeping(shkp) ? "wakes up" : "can move again");
+        set_mon_msleeping(shkp, 0);
         shkp->mfrozen = 0;
-        shkp->mcanmove = 1;
+        set_mon_mcanmove(shkp, 1);
         shkp->mprops[SLEEPING] = 0;
         shkp->mprops[PARALYZED] = 0;
         refresh_m_tile_gui_info(shkp, TRUE);
@@ -1245,7 +1245,7 @@ make_happy_shoppers(boolean silentkops)
 void
 hot_pursuit(struct monst *shkp)
 {
-    if (!shkp->isshk)
+    if (!is_mon_isshk(shkp))
         return;
 
     rile_shk(shkp);
@@ -1414,7 +1414,7 @@ dopay(void)
             There_ex(ATR_NONE, CLR_MSG_FAIL, "is no one there to receive your payment.");
             return 0;
         }
-        if (!mtmp->isshk) {
+        if (!is_mon_isshk(mtmp)) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is not interested in your payment.", Monnam(mtmp));
             return 0;
@@ -2179,10 +2179,10 @@ get_cost(struct obj *obj, struct monst *shkp)
             adjustments (unID'd, dunce/tourist, charisma) are made */
         multiplier = 1L, divisor = 1L;
 
-    boolean shkp_is_shopkeeper = (shkp && shkp->isshk && has_eshk(shkp));
-    boolean shkp_is_priest = (shkp && shkp->ispriest && has_epri(shkp));
-    boolean shkp_is_smith = (shkp && shkp->issmith && has_esmi(shkp));
-    boolean shkp_is_npc = (shkp && shkp->isnpc && has_enpc(shkp));
+    boolean shkp_is_shopkeeper = (shkp && is_mon_isshk(shkp) && has_eshk(shkp));
+    boolean shkp_is_priest = (shkp && is_mon_ispriest(shkp) && has_epri(shkp));
+    boolean shkp_is_smith = (shkp && is_mon_issmith(shkp) && has_esmi(shkp));
+    boolean shkp_is_npc = (shkp && is_mon_isnpc(shkp) && has_enpc(shkp));
 
     if (!tmp)
         tmp = 5L;
@@ -4447,7 +4447,7 @@ after_shk_move(struct monst *shkp)
 boolean
 is_fshk(struct monst *mtmp)
 {
-    return (boolean) (mtmp->isshk && ESHK(mtmp)->following);
+    return (boolean) (is_mon_isshk(mtmp) && ESHK(mtmp)->following);
 }
 
 /* You are digging in the shop. */
@@ -5014,7 +5014,7 @@ shk_chat(struct monst *shkp)
     int64_t shkmoney;
     char ansbuf[BUFSZ] = "";
 
-    if (!shkp->isshk) 
+    if (!is_mon_isshk(shkp)) 
     {
         /* The monster type is shopkeeper, but this monster is
            not actually a shk, which could happen if someone

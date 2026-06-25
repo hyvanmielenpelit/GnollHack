@@ -144,8 +144,8 @@ m_initgrp(struct monst *mtmp, int x, int y, int n, int mmflags)
             mon = makemon(mtmp->data, mm.x, mm.y, (mmflags | MM_NOGRP));
             if (mon)
             {
-                mon->mpeaceful = FALSE;
-                mon->mavenge = 0;
+                set_mon_mpeaceful(mon, FALSE);
+                set_mon_mavenge(mon, 0);
                 set_mhostility(mon);
                 /* Undo the second peace_minded() check in makemon(); if the
                  * monster turned out to be peaceful the first time we
@@ -231,7 +231,7 @@ m_init_background(struct monst *mtmp)
         christen_monst(mtmp, upstart(randomize_demon_name(mnamebuf)));
     else if ((is_human(mtmp->data) || is_quantum_mechanic(mtmp->data)) && !has_mname(mtmp))
     {
-        if (mtmp->female)
+        if (is_mon_female(mtmp))
             christen_monst(mtmp, upstart(randomize_female_human_name(mnamebuf)));
         else
             christen_monst(mtmp, upstart(randomize_male_human_name(mnamebuf)));
@@ -2293,11 +2293,11 @@ clone_mon(struct monst *mon, xchar x, xchar y, boolean origin_at_mon)
         m2->my0 = mon->my;
     }
 
-    m2->mundetected = 0;
-    m2->mtrapped = 0;
-    m2->mcloned = 1;
+    set_mon_mundetected(m2, 0);
+    set_mon_mtrapped(m2, 0);
+    set_mon_mcloned(m2, 1);
     m2->minvent = (struct obj *) 0; /* objects don't clone */
-    m2->mleashed = FALSE;
+    set_mon_mleashed(m2, FALSE);
     /* Max HP the same, but current HP halved for both.  The caller
      * might want to override this by halving the max HP also.
      * When current HP is odd, the original keeps the extra point.
@@ -2330,16 +2330,16 @@ clone_mon(struct monst *mon, xchar x, xchar y, boolean origin_at_mon)
      * room for the extra information.  we also don't want two shopkeepers
      * around for the same shop.
      */
-    if (mon->isshk)
-        m2->isshk = FALSE;
-    if (mon->isgd)
-        m2->isgd = FALSE;
-    if (mon->ispriest)
-        m2->ispriest = FALSE;
-    if (mon->issmith)
-        m2->issmith = FALSE;
-    if (mon->isnpc)
-        m2->isnpc = FALSE;
+    if (is_mon_isshk(mon))
+        set_mon_isshk(m2, FALSE);
+    if (is_mon_isgd(mon))
+        set_mon_isgd(m2, FALSE);
+    if (is_mon_ispriest(mon))
+        set_mon_ispriest(m2, FALSE);
+    if (is_mon_issmith(mon))
+        set_mon_issmith(m2, FALSE);
+    if (is_mon_isnpc(mon))
+        set_mon_isnpc(m2, FALSE);
     debugprint_pos();
     place_monster(m2, m2->mx, m2->my);
 
@@ -2354,7 +2354,7 @@ clone_mon(struct monst *mon, xchar x, xchar y, boolean origin_at_mon)
     {
         m2 = christen_monst(m2, MNAME(mon));
     }
-    else if (mon->isshk)
+    else if (is_mon_isshk(mon))
     {
         m2 = christen_monst(m2, shkname(mon));
     }
@@ -2362,16 +2362,17 @@ clone_mon(struct monst *mon, xchar x, xchar y, boolean origin_at_mon)
     /* not all clones caused by player are tame or peaceful */
     if (!context.mon_moving) 
     {
+        int rndroll = rn2(max(2 + u.uluck, 2));
         if (mon->mtame)
-            m2->mtame = rn2(max(2 + u.uluck, 2)) ? mon->mtame : 0;
-        else if (mon->mpeaceful)
-            m2->mpeaceful = rn2(max(2 + u.uluck, 2)) ? 1 : 0;
+            m2->mtame = rndroll ? mon->mtame : 0;
+        else if (is_mon_mpeaceful(mon))
+            set_mon_mpeaceful(m2, rndroll ? 1 : 0);
     }
 
     newsym(m2->mx, m2->my); /* display the new monster */
     if (m2->mtame)
     {
-        if (mon->isminion)
+        if (is_mon_isminion(mon))
         {
             newemin(m2);
             if (has_emin(mon))
@@ -2392,14 +2393,14 @@ clone_mon(struct monst *mon, xchar x, xchar y, boolean origin_at_mon)
         }
     }
     else
-        m2->isminion = FALSE;
+        set_mon_isminion(m2, FALSE);
 
     set_mhostility(m2);
 
     if (!m2->mtame)
-        m2->ispartymember = FALSE;
+        set_mon_ispartymember(m2, FALSE);
     else
-        m2->ispartymember = mon->ispartymember;
+        set_mon_ispartymember(m2, is_mon_ispartymember(mon));
 
 
     return m2;
@@ -2874,7 +2875,7 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
     if (mmflags & MM_EDOG)
         newedog(mtmp);
     if (mmflags & MM_ASLEEP)
-        mtmp->msleeping = 1;
+        set_mon_msleeping(mtmp, 1);
     mtmp->nmon = fmon;
     fmon = mtmp;
     mtmp->m_id = context.ident++;
@@ -2931,7 +2932,7 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
     mtmp->heads_left = ptr->heads;
 
     /* set up known rumors */
-    mtmp->told_rumor = 0;
+    set_mon_told_rumor(mtmp, 0);
     mtmp->rumorsleft = 0;
     if (is_speaking(mtmp->data) && !(mmflags & MM_EGD))
     {
@@ -2940,30 +2941,30 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
 
     /* set if faithful */
     if (is_always_faithful(ptr))
-        mtmp->isfaithful = TRUE;
+        set_mon_isfaithful(mtmp, TRUE);
 
     /* set gender */
     if (is_female(ptr))
-        mtmp->female = TRUE;
+        set_mon_female(mtmp, TRUE);
     else if (is_male(ptr))
-        mtmp->female = FALSE;
+        set_mon_female(mtmp, FALSE);
     /* leader and nemesis gender is usually hardcoded in mons[],
        but for ones which can be random, it has already been chosen
        (in role_init(), for possible use by the quest pager code) */
     else if (ptr->msound == MS_LEADER && quest_info(MS_LEADER) == mndx)
-        mtmp->female = quest_status.ldrgend;
+        set_mon_female(mtmp, quest_status.ldrgend);
     else if (ptr->msound == MS_NEMESIS && quest_info(MS_NEMESIS) == mndx)
-        mtmp->female = quest_status.nemgend;
+        set_mon_female(mtmp, quest_status.nemgend);
     else if (mmflags & MM_MALE)
-        mtmp->female = FALSE;
+        set_mon_female(mtmp, FALSE);
     else if (mmflags & MM_FEMALE)
-        mtmp->female = TRUE;
+        set_mon_female(mtmp, TRUE);
     else
     {
-        mtmp->female = randomize_monster_gender(ptr);
+        set_mon_female(mtmp, randomize_monster_gender(ptr));
     }
 
-    mtmp->subtype = mtmp->female ? subtype_female : subtype;
+    mtmp->subtype = is_mon_female(mtmp) ? subtype_female : subtype;
     if (!mtmp->subtype && randomize_subtype)
     {
         if (mons[mndx].mflags6 & M6_USES_CAT_SUBTYPES)
@@ -2990,7 +2991,7 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
     if (ptr->mflags3 & M3_KNOWS_TRAPS)
         mtmp->mtrapseen = ~0;
 
-    mtmp->facing_right = (mmflags2 & MM2_FACING_LEFT) ? 0 : (mmflags2 & MM2_FACING_RIGHT) ? 1 : rn2(2);
+    set_mon_facing_right(mtmp, (mmflags2 & MM2_FACING_LEFT) ? 0 : (mmflags2 & MM2_FACING_RIGHT) ? 1 : rn2(2));
 
     debugprint_pos();
     place_monster(mtmp, x, y);
@@ -3000,8 +3001,10 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
         mtmp->my0 = origin_y;
     }
 
-    mtmp->mcanmove = mtmp->mwantstomove = mtmp->mwantstodrop = TRUE;
-    mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : (mmflags & MM_PEACEFUL) ? TRUE : peace_minded(ptr);
+    set_mon_mwantstodrop(mtmp, TRUE);
+    set_mon_mwantstomove(mtmp, TRUE);
+    set_mon_mcanmove(mtmp, TRUE);
+    set_mon_mpeaceful(mtmp, (mmflags & MM_ANGRY) ? FALSE : (mmflags & MM_PEACEFUL) ? TRUE : peace_minded(ptr));
 
     switch (ptr->mlet) 
     {
@@ -3023,20 +3026,20 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
         (void) hideunder(mtmp);
         break;
     case S_LEPRECHAUN:
-        //mtmp->msleeping = 1;
+        //set_mon_msleeping(mtmp, 1);
         break;
     case S_JABBERWOCK:
     case S_NYMPH:
         //if (rn2(5) && !u.uhave.amulet)
-        //    mtmp->msleeping = 1;
+        //    set_mon_msleeping(mtmp, 1);
         break;
     case S_ORC:
         if (Race_if(PM_ELF))
-            mtmp->mpeaceful = FALSE;
+            set_mon_mpeaceful(mtmp, FALSE);
         break;
     case S_UNICORN:
         if (is_unicorn(ptr) && sgn(u.ualign.type) == sgn(ptr->maligntyp))
-            mtmp->mpeaceful = TRUE;
+            set_mon_mpeaceful(mtmp, TRUE);
         break;
     case S_BAT:
         if (Inhell && is_bat(ptr))
@@ -3075,7 +3078,7 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
     }
     else if (mndx == PM_WIZARD_OF_YENDOR) 
     {
-        mtmp->iswiz = TRUE;
+        set_mon_iswiz(mtmp, TRUE);
         context.no_of_wizards++;
         if (context.no_of_wizards == 1 && Is_earthlevel(&u.uz))
             mitem = SPE_DIG;
@@ -3083,7 +3086,7 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
     else if (mndx == PM_GHOST && !(mmflags & MM_NONAME)) 
     {
         mtmp = christen_monst(mtmp, rndghostname());
-        mtmp->u_know_mname = TRUE;
+        set_mon_u_know_mname(mtmp, TRUE);
     } 
     else if (mndx == PM_CROESUS) 
     {
@@ -3106,7 +3109,7 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
         if ((/* is_ndemon(ptr) ||mndx == PM_WUMPUS ||  */ 
              is_tailed_long_worm(&mons[mndx]) || mndx == PM_GIANT_EEL)
             && !is_uhave_amulet() && rn2(5))
-            mtmp->msleeping = TRUE;
+            set_mon_msleeping(mtmp, TRUE);
     } 
     else 
     {
@@ -3122,13 +3125,13 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
 #if 0
     if (is_dprince(ptr) && ptr->msound == MS_BRIBE) 
     {
-        mtmp->mpeaceful = 1;
+        set_mon_mpeaceful(mtmp, 1);
         increase_mon_property(mtmp, INVISIBILITY, 500);
-        mtmp->mavenge = 0;
+        set_mon_mavenge(mtmp, 0);
         if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_ANGERS_DEMONS))
             || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_ANGERS_DEMONS))
             )
-            mtmp->mpeaceful = mtmp->mtame = FALSE;
+            set_mon_mpeaceful(mtmp, mtmp->mtame = FALSE);
     }
 #endif
 
@@ -3152,11 +3155,11 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
     {
         boolean coaligned = (u.ualign.type == alignment);
         EMIN(mtmp)->min_align = alignment;
-        EMIN(mtmp)->renegade = (mmflags2 & MM2_FORCE_RENEGADE) ? TRUE : (mmflags2 & MM2_FORCE_NONRENEGADE) ? FALSE : (coaligned && !mtmp->mpeaceful);
-        mtmp->ispriest = 0;
-        mtmp->isminion = 1;
+        EMIN(mtmp)->renegade = (mmflags2 & MM2_FORCE_RENEGADE) ? TRUE : (mmflags2 & MM2_FORCE_NONRENEGADE) ? FALSE : (coaligned && !is_mon_mpeaceful(mtmp));
+        set_mon_ispriest(mtmp, 0);
+        set_mon_isminion(mtmp, 1);
         mtmp->mtrapseen = ~0; /* traps are known */
-        mtmp->msleeping = 0;
+        set_mon_msleeping(mtmp, 0);
     }
     /* it's possible to create an ordinary monster of some special
        types; make sure their extended data is initialized to
@@ -3170,10 +3173,10 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
         newemin(mtmp);
         eminp = EMIN(mtmp);
 
-        mtmp->isminion = 1;            /* make priest be a roamer */
+        set_mon_isminion(mtmp, 1);            /* make priest be a roamer */
         eminp->min_align = (mmflags & MM_EMIN_COALIGNED) ? u.ualign.type : rn2(3) - 1; /* no A_NONE */
         eminp->renegade = (boolean) ((mmflags & MM_ANGRY) ? 1 : !rn2(3));
-        mtmp->mpeaceful = (eminp->min_align == u.ualign.type)
+        set_mon_mpeaceful(mtmp, (eminp->min_align == u.ualign.type))
                               ? !eminp->renegade
                               : eminp->renegade;
     }
@@ -3200,7 +3203,7 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
 
     m_init_background(mtmp);
     if (mon_name_known && has_mname(mtmp))
-        mtmp->u_know_mname = TRUE;
+        set_mon_u_know_mname(mtmp, TRUE);
 
     if (allow_minvent)
     {
@@ -3929,7 +3932,7 @@ is_mon_high_level(struct monst *mtmp)
         return FALSE;
     if (mtmp->m_lev < (int)mtmp->data->mlevel + 4)
         return FALSE;
-    if (mtmp->iswiz || mtmp->isnpc || mtmp->isshk || mtmp->ispriest || mtmp->issmith)
+    if (is_mon_iswiz(mtmp) || is_mon_isnpc(mtmp) || is_mon_isshk(mtmp) || is_mon_ispriest(mtmp) || is_mon_issmith(mtmp))
         return FALSE;
     if (mtmp->m_lev >= (3 * ((int)mtmp->data->mlevel)) / 2 + 5)
         return TRUE;
@@ -4025,7 +4028,7 @@ grow_up(struct monst *mtmp, struct monst *victim)
     {
         ptr = &mons[newtype];
         /* new form might force gender change */
-        fem = is_male(ptr) ? 0 : is_female(ptr) ? 1 : mtmp->female;
+        fem = is_male(ptr) ? 0 : is_female(ptr) ? 1 : is_mon_female(mtmp);
 
         if (mvitals[newtype].mvflags & MV_GENOCIDED)
         { /* allow MV_EXTINCT */
@@ -4033,7 +4036,7 @@ grow_up(struct monst *mtmp, struct monst *victim)
             {
                 int multi_colors[4] = { NO_COLOR, CLR_MSG_HINT, NO_COLOR, NO_COLOR };
                 pline_multi_ex(ATR_NONE, CLR_MSG_WARNING, no_multiattrs, multi_colors, "As %s grows up into %s, %s %s!", mon_nam(mtmp),
-                    an(pm_monster_name(ptr, mtmp->female)), mhe(mtmp),
+                    an(pm_monster_name(ptr, is_mon_female(mtmp))), mhe(mtmp),
                     is_not_living(ptr) ? "expires" : "dies");
             }
             set_mon_data(mtmp, ptr, mtmp->subtype); /* keep mvitals[] accurate */
@@ -4051,15 +4054,15 @@ grow_up(struct monst *mtmp, struct monst *victim)
             play_sfx_sound_at_location(SFX_GAIN_LEVEL, mtmp->mx, mtmp->my);
             Sprintf(buf, "%s%s",
                     /* deal with female gnome becoming a gnome lord */
-                    (mtmp->female && !fem) ? "male "
+                    (is_mon_female(mtmp) && !fem) ? "male "
                         /* or a male gnome becoming a gnome lady
                            (can't happen with 3.6.0 mons[], but perhaps
                            slightly less sexist if prepared for it...) */
-                      : (fem && !mtmp->female) ? "female " : "",
+                      : (fem && !is_mon_female(mtmp)) ? "female " : "",
                     pm_monster_name(ptr, !!fem));
             int multi_colors[3] = { NO_COLOR, NO_COLOR, CLR_MSG_HINT };
             pline_multi_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_SUCCESS : CLR_MSG_ATTENTION, no_multiattrs, multi_colors, "%s %s %s.", upstart(y_monnam(mtmp)),
-                  (fem != mtmp->female) ? "changes into"
+                  (fem != is_mon_female(mtmp)) ? "changes into"
                                         : humanoid(ptr) ? "becomes"
                                                         : "grows up into",
                   an(buf));
@@ -4069,7 +4072,7 @@ grow_up(struct monst *mtmp, struct monst *victim)
         newsym(mtmp->mx, mtmp->my);    /* color may change */
         lev_limit = (int) mtmp->m_lev; /* never undo increment */
 
-        mtmp->female = fem; /* gender might be changing */
+        set_mon_female(mtmp, fem); /* gender might be changing */
     }
 
     /* sanity checks */
@@ -4400,12 +4403,12 @@ set_mhostility(struct monst *mtmp)
 {
     aligntyp mal = mtmp->data->maligntyp;
 
-    if (mtmp->ispriest || mtmp->isminion) 
+    if (is_mon_ispriest(mtmp) || is_mon_isminion(mtmp)) 
     {
         /* some monsters have individual alignments; check them */
-        if (mtmp->ispriest && has_epri(mtmp))
+        if (is_mon_ispriest(mtmp) && has_epri(mtmp))
             mal = EPRI(mtmp)->shralign;
-        else if (mtmp->isminion && has_emin(mtmp))
+        else if (is_mon_isminion(mtmp) && has_emin(mtmp))
             mal = EMIN(mtmp)->min_align;
         /* unless alignment is none, set mal to -5,0,5 */
         /* (see align.h for valid aligntyp values)     */
@@ -4952,11 +4955,11 @@ free_mobj(struct monst *mtmp)
 void
 save_mmonst(struct monst *mon, struct monst *mon_mmonst)
 {
-    if (mon_mmonst->ispriest)
+    if (is_mon_ispriest(mon_mmonst))
         forget_temple_entry(mon_mmonst); /* EPRI() */
-    if (mon_mmonst->issmith)
+    if (is_mon_issmith(mon_mmonst))
         forget_smithy_entry(mon_mmonst); /* ESMI() */
-    if (mon_mmonst->isnpc)
+    if (is_mon_isnpc(mon_mmonst))
         forget_npc_entry(mon_mmonst); /* ENPC() */
     if (!has_mmonst(mon))
         newmmonst(mon);

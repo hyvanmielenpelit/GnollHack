@@ -400,7 +400,7 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, char a
         (uint64_t)(info.monster ? info.monster->m_id : 0),
         (cschar)info.heading_for_group_accelerator, (cschar)info.special_mark,
         (uint64_t)info.menu_flags,
-        (uchar)((info.object ? MENU_DATAFLAGS_HAS_OBJECT_DATA : 0) | (info.monster ? MENU_DATAFLAGS_HAS_MONSTER_DATA : 0) | (Hallucination ? MENU_DATAFLAGS_HALLUCINATED : 0) | (info.monster && info.monster->female ? MENU_DATAFLAGS_FEMALE : 0)),
+        (uchar)((info.object ? MENU_DATAFLAGS_HAS_OBJECT_DATA : 0) | (info.monster ? MENU_DATAFLAGS_HAS_MONSTER_DATA : 0) | (Hallucination ? MENU_DATAFLAGS_HALLUCINATED : 0) | (info.monster && is_mon_female(info.monster) ? MENU_DATAFLAGS_FEMALE : 0)),
         info.style, info.object, &ocdata, info.attrs, info.colors);
 }
 
@@ -1095,7 +1095,7 @@ void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
         umnbuf[16] = '\0'; /* Limit the length of the name */
         Strcat(tempbuf, umnbuf);
     }
-    else if (has_mname(mtmp) && mtmp->u_know_mname)
+    else if (has_mname(mtmp) && is_mon_u_know_mname(mtmp))
     {
         char mnbuf[BUFSZ * 2];
         Strcpy(mnbuf, MNAME(mtmp));

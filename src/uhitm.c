@@ -142,7 +142,7 @@ attack_checks(struct monst *mtmp, struct obj *wep)
      */
     if (!canspotmon(mtmp)
         && !glyph_is_warning(glyph) && !glyph_is_invisible(glyph)
-        && !(!Blind && mtmp->mundetected && hides_under(mtmp->data))) {
+        && !(!Blind && is_mon_mundetected(mtmp) && hides_under(mtmp->data))) {
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "Wait!  There's %s there you can't see!", something);
         map_invisible(bhitpos.x, bhitpos.y);
         /* if it was an invisible mimic, treat it as if we stumbled
@@ -182,10 +182,11 @@ attack_checks(struct monst *mtmp, struct obj *wep)
         return TRUE;
     }
 
-    if (mtmp->mundetected && !canseemon(mtmp)
+    if (is_mon_mundetected(mtmp) && !canseemon(mtmp)
         && !glyph_is_warning(glyph)
         && (hides_under(mtmp->data) || mtmp->data->mlet == S_EEL)) {
-        mtmp->mundetected = mtmp->msleeping = 0;
+        set_mon_msleeping(mtmp, 0);
+                set_mon_mundetected(mtmp, 0);
         newsym(mtmp->mx, mtmp->my);
         if (glyph_is_invisible(glyph)) {
             seemimic(mtmp);
@@ -211,8 +212,8 @@ attack_checks(struct monst *mtmp, struct obj *wep)
      * make sure to wake up a monster from the above cases if the
      * hero can sense that the monster is there.
      */
-    if ((mtmp->mundetected || M_AP_TYPE(mtmp)) && sensemon(mtmp)) {
-        mtmp->mundetected = 0;
+    if ((is_mon_mundetected(mtmp) || M_AP_TYPE(mtmp)) && sensemon(mtmp)) {
+        set_mon_mundetected(mtmp, 0);
         wakeup(mtmp, TRUE);
     }
 
@@ -249,7 +250,7 @@ check_caitiff(struct monst *mtmp)
 
     if (Role_if(PM_KNIGHT) && u.ualign.type == A_LAWFUL
         && (!mon_can_move(mtmp)
-            || (is_fleeing(mtmp) && !mtmp->mavenge && mtmp != u.ustuck))) 
+            || (is_fleeing(mtmp) && !is_mon_mavenge(mtmp) && mtmp != u.ustuck))) 
     {
         play_sfx_sound(SFX_CAITIFF);
         You_ex(ATR_NONE, CLR_MSG_WARNING, "caitiff!");
@@ -320,19 +321,19 @@ find_roll_to_hit(struct monst *mtmp, uchar aatyp, struct obj *weapon, int *attk_
             tmp += 2;
 
         boolean refresh = FALSE;
-        if (mtmp->msleeping)
+        if (is_mon_msleeping(mtmp))
         {
-            mtmp->msleeping = 0;
+            set_mon_msleeping(mtmp, 0);
             refresh = TRUE;
             tmp += 2;
         }
 
-        if (!mtmp->mcanmove)
+        if (!is_mon_mcanmove(mtmp))
         {
             tmp += 4;
             if (!rn2(10))
             {
-                mtmp->mcanmove = 1;
+                set_mon_mcanmove(mtmp, 1);
                 mtmp->mfrozen = 0;
                 refresh = TRUE;
             }
@@ -970,9 +971,9 @@ hmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean *obj_d
     boolean result, anger_guards;
 
     anger_guards = (is_peaceful(mon)
-                    && (mon->ispriest || mon->isshk || mon->issmith || mon->isnpc || is_watch(mon->data)));
+                    && (is_mon_ispriest(mon) || is_mon_isshk(mon) || is_mon_issmith(mon) || is_mon_isnpc(mon) || is_watch(mon->data)));
     result = hmon_hitmon(mon, obj, thrown, dieroll, obj_destroyed);
-    if (mon->ispriest && !rn2(2))
+    if (is_mon_ispriest(mon) && !rn2(2))
         ghod_hitsu(mon);
     if (anger_guards)
         (void) angry_guards(!!Deaf);
@@ -1600,7 +1601,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                     break;
                 case CREAM_PIE:
                 case BLINDING_VENOM:
-                    mon->msleeping = 0;
+                    set_mon_msleeping(mon, 0);
                     if (can_blnd(&youmonst, mon,
                         (uchar)((obj->otyp == BLINDING_VENOM)
                             ? AT_SPIT
@@ -2706,10 +2707,10 @@ demonpet(void)
     {
         (void)tamedog(dtmp, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
 
-        dtmp->issummoned = TRUE;
-        dtmp->disregards_enemy_strength = TRUE;
-        dtmp->disregards_own_health = FALSE;
-        dtmp->hasbloodlust = TRUE;
+        set_mon_issummoned(dtmp, TRUE);
+        set_mon_disregards_enemy_strength(dtmp, TRUE);
+        set_mon_disregards_own_health(dtmp, FALSE);
+        set_mon_hasbloodlust(dtmp, TRUE);
         if ((objects[SPE_SUMMON_DEMON].oc_spell_dur_dice > 0 && objects[SPE_SUMMON_DEMON].oc_spell_dur_diesize > 0) || objects[SPE_SUMMON_DEMON].oc_spell_dur_plus > 0)
         {
             dtmp->summonduration = d(objects[SPE_SUMMON_DEMON].oc_spell_dur_dice, objects[SPE_SUMMON_DEMON].oc_spell_dur_diesize) + objects[SPE_SUMMON_DEMON].oc_spell_dur_plus;
@@ -3287,7 +3288,7 @@ damageum(struct monst *mdef, struct attack *mattk, struct obj *omonwep, int spec
         }
         break;
     case AD_SLEE:
-        if (!negated && !mdef->msleeping && sleep_monst(mdef, (struct obj*)0, &youmonst, rn1(3,8), mattk->mcadj, FALSE)) 
+        if (!negated && !is_mon_msleeping(mdef) && sleep_monst(mdef, (struct obj*)0, &youmonst, rn1(3,8), mattk->mcadj, FALSE)) 
         {
             hit_tile = HIT_SLEEP;
             if (!Blind)
@@ -3434,7 +3435,7 @@ remove_monster_and_nearby_waitforu(struct monst *mdef)
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
-        if ((mtmp->mstrategy & STRAT_WAITFORU) != 0 && !mtmp->iswiz && m_cansee(mtmp, mdef->mx, mdef->my))
+        if ((mtmp->mstrategy & STRAT_WAITFORU) != 0 && !is_mon_iswiz(mtmp) && m_cansee(mtmp, mdef->mx, mdef->my))
         {
             mtmp->mstrategy &= ~STRAT_WAITFORU;
         }
@@ -4787,8 +4788,8 @@ flash_hits_mon(struct monst *mtmp, struct obj *otmp)
 
     int tmp, amt, res = 0, useeit = canseemon(mtmp);
 
-    if (mtmp->msleeping) {
-        mtmp->msleeping = 0;
+    if (is_mon_msleeping(mtmp)) {
+        set_mon_msleeping(mtmp, 0);
         if (useeit) {
             refresh_m_tile_gui_info(mtmp, TRUE);
             pline_The("flash awakens %s.", mon_nam(mtmp));
@@ -4813,7 +4814,7 @@ flash_hits_mon(struct monst *mtmp, struct obj *otmp)
             if (!DEADMONSTER(mtmp)) {
                 if (!context.mon_moving)
                     setmangry(mtmp, TRUE);
-                if (tmp < 9 && !mtmp->isshk && rn2(4))
+                if (tmp < 9 && !is_mon_isshk(mtmp) && rn2(4))
                 {
                     play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
                     monflee(mtmp, rn2(4) ? rnd(100) : 0, FALSE, TRUE);
@@ -5273,13 +5274,13 @@ update_u_facing(uchar update_symbol)
         boolean steed_facing_different = FALSE;
         if (u.usteed)
         {
-            boolean steed_facing_before = u.usteed->facing_right;
+            boolean steed_facing_before = is_mon_facing_right(u.usteed);
             if (u.dx < 0)
-                u.usteed->facing_right = FALSE;
+                set_mon_facing_right(u.usteed, FALSE);
             else if (u.dx > 0)
-                u.usteed->facing_right = TRUE;
+                set_mon_facing_right(u.usteed, TRUE);
 
-            steed_facing_different = u.usteed->facing_right != steed_facing_before;
+            steed_facing_different = is_mon_facing_right(u.usteed) != steed_facing_before;
         }
 
         if (update_symbol && (u.facing_right != facing_before || steed_facing_different))

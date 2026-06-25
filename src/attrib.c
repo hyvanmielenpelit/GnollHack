@@ -1062,8 +1062,8 @@ inappropriate_monster_character_type(struct monst *monster, struct obj *uitem)
         if (objects[otyp].oc_power_permissions & PERMITTED_GENDER_MASK)
         {
             if (
-                ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_FEMALE) && monster->female)
-                || ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_MALE) && !monster->female)
+                ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_FEMALE) && is_mon_female(monster))
+                || ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_MALE) && !is_mon_female(monster))
                 )
             {
                 // Ok
@@ -1100,7 +1100,7 @@ inappropriate_monster_character_type(struct monst *monster, struct obj *uitem)
                 || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_HEALER) && (monster->mnum == PM_HEALER || is_healer(monster->data)))
                 || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_KNIGHT) && (monster->mnum == PM_KNIGHT || is_knight(monster->data)))
                 || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_MONK) && (monster->mnum == PM_MONK || is_monk(monster->data)))
-                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST) && (monster->mnum == PM_PRIEST || monster->ispriest || is_priest(monster->data)))
+                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST) && (monster->mnum == PM_PRIEST || is_mon_ispriest(monster) || is_priest(monster->data)))
                 || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_TOURIST) && (monster->mnum == PM_TOURIST || is_tourist(monster->data)))
                 || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_VALKYRIE) && (monster->mnum == PM_VALKYRIE || is_valkyrie(monster->data)))
                 || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_WIZARD) && (monster->mnum == PM_WIZARD || is_wizard(monster->data)))

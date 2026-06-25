@@ -3027,7 +3027,7 @@ arti_invoke(struct obj *obj)
             mon = makemon(&mons[PM_NALFESHNEE], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
             if (mon)
             {
-                mon->issummoned = TRUE;
+                set_mon_issummoned(mon, TRUE);
                 (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
 
                 if (temporary_effect)
@@ -3055,7 +3055,7 @@ arti_invoke(struct obj *obj)
 
             if (mon)
             {
-                mon->issummoned = TRUE;
+                set_mon_issummoned(mon, TRUE);
                 (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
 
                 if (temporary_effect)

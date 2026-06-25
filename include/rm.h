@@ -1568,10 +1568,10 @@ extern dlevel_t level; /* structure describing the current level */
  */
 #define MON_AT(x, y)                            \
     (level.monsters[x][y] != (struct monst *) 0 \
-     && !(level.monsters[x][y])->mburied)
+     && !is_mon_mburied(level.monsters[x][y]))
 #define MON_BURIED_AT(x, y)                     \
     (level.monsters[x][y] != (struct monst *) 0 \
-     && (level.monsters[x][y])->mburied)
+     && is_mon_mburied(level.monsters[x][y]))
 #ifdef EXTRA_SANITY_CHECKS
 #define place_worm_seg(m, x, y) \
     do {                                                        \

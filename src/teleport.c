@@ -475,7 +475,7 @@ teleport_pet(struct monst *mtmp, boolean force_it)
     if (mtmp == u.usteed)
         return FALSE;
 
-    if (mtmp->mleashed) {
+    if (is_mon_mleashed(mtmp)) {
         otmp = get_mleash(mtmp);
         if (!otmp) {
             impossible("%s is leashed, without a leash.", Monnam(mtmp));
@@ -1561,16 +1561,16 @@ rloc_pos_ok(int x, int y, struct monst *mtmp)
         /* [try to] prevent a shopkeeper or temple priest from being
            sent out of his room (caller might resort to goodpos() if
            we report failure here, so this isn't full prevention) */
-        if (mtmp->isshk && inhishop(mtmp)) {
+        if (is_mon_isshk(mtmp) && inhishop(mtmp)) {
             if (levl[x][y].roomno != ESHK(mtmp)->shoproom)
                 return FALSE;
-        } else if (mtmp->ispriest && inhistemple(mtmp)) {
+        } else if (is_mon_ispriest(mtmp) && inhistemple(mtmp)) {
             if (levl[x][y].roomno != EPRI(mtmp)->shroom)
                 return FALSE;
-        } else if (mtmp->issmith && inhissmithy(mtmp)) {
+        } else if (is_mon_issmith(mtmp) && inhissmithy(mtmp)) {
             if (levl[x][y].roomno != ESMI(mtmp)->smithy_room)
                 return FALSE;
-        } else if (mtmp->isnpc && in_his_npc_room(mtmp)) {
+        } else if (is_mon_isnpc(mtmp) && in_his_npc_room(mtmp)) {
             if (levl[x][y].roomno != ENPC(mtmp)->npc_room)
                 return FALSE;
         }
@@ -1595,7 +1595,7 @@ void
 rloc_to(struct monst *mtmp, int x, int y)
 {
     int oldx = mtmp->mx, oldy = mtmp->my;
-    boolean resident_shk = mtmp->isshk && inhishop(mtmp);
+    boolean resident_shk = is_mon_isshk(mtmp) && inhishop(mtmp);
 
     if (x == mtmp->mx && y == mtmp->my && m_at(x, y) == mtmp)
         return; /* that was easy */
@@ -1661,7 +1661,7 @@ rloc(struct monst *mtmp, boolean suppress_impossible)
         return TRUE;
     }
 
-    if (mtmp->iswiz && mtmp->mx) { /* Wizard, not just arriving */
+    if (is_mon_iswiz(mtmp) && mtmp->mx) { /* Wizard, not just arriving */
         if (!In_W_tower(u.ux, u.uy, &u.uz))
             x = xupstair, y = yupstair;
         else if (!xdnladder) /* bottom level of tower */
@@ -2146,7 +2146,7 @@ u_teleport_mon(struct monst *mtmp, boolean give_feedback)
     if((mtmp->data->geno & G_UNIQ) && tele_restrict(mtmp))
         return FALSE;
 
-    if (mtmp->ispriest && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) 
+    if (is_mon_ispriest(mtmp) && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) 
     {
         if (give_feedback)
         {

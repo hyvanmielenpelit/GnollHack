@@ -1430,12 +1430,12 @@ create_encounter(int selected_encounter, int x, int y, int max_attk_monsters)
 
             /* Force peaceful if need be */
             if (encounter_list[selected_encounter].encounter_monsters[i].mflags & EM_FORCE_PEACEFUL)
-                mon->mpeaceful = 1;
+                set_mon_mpeaceful(mon, 1);
 
             /* Name monster */
             if (encounter_list[selected_encounter].encounter_monsters[i].namelistid > 0 &&
                 !(mon->data->geno & G_UNIQ 
-                    || mon->isshk
+                    || is_mon_isshk(mon)
                 ))
             {
                 int nlid = encounter_list[selected_encounter].encounter_monsters[i].namelistid;
@@ -1489,7 +1489,7 @@ create_encounter(int selected_encounter, int x, int y, int max_attk_monsters)
                         {
                             (void)christen_monst(mon, buf);
                             if(encounter_list[selected_encounter].encounter_monsters[i].mflags & EM_NAME_KNOWN)
-                                mon->u_know_mname = 1; /* They are famous enough! */
+                                set_mon_u_know_mname(mon, 1); /* They are famous enough! */
                             Sprintf(eos(context.used_names), "%s|", buf);
                         }
                     }

@@ -2663,9 +2663,9 @@ do_illness: /* Pestilence's potion of healing effect */
                 wakeup(mon, TRUE);
             else
             {
-                if (mon->msleeping)
+                if (is_mon_msleeping(mon))
                 {
-                    mon->msleeping = 0;
+                    set_mon_msleeping(mon, 0);
                     refresh_m_tile_gui_info(mon, TRUE);
                 }
             }
@@ -4417,7 +4417,7 @@ djinni_from_bottle(struct obj *obj)
         convert_magic_lamp_to_oil_lamp(obj);
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_YOU_FREED_ME);
         verbalize_talk1("You freed me!");
-        mtmp->mpeaceful = TRUE;
+        set_mon_mpeaceful(mtmp, TRUE);
         set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
         break;
@@ -4437,7 +4437,7 @@ djinni_from_bottle(struct obj *obj)
         convert_magic_lamp_to_oil_lamp(obj);
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_YOU_DISTURBED);
         verbalize_angry1("You disturbed me, fool!");
-        mtmp->mpeaceful = FALSE;
+        set_mon_mpeaceful(mtmp, FALSE);
         set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
         break;

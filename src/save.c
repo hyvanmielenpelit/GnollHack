@@ -1345,11 +1345,11 @@ savemonchn(int fd, struct monst *mtmp, int mode)
         mtmp2 = mtmp->nmon;
         if (perform_bwrite(mode)) {
             mtmp->mnum = monsndx(mtmp->data);
-            if (mtmp->ispriest)
+            if (is_mon_ispriest(mtmp))
                 forget_temple_entry(mtmp); /* EPRI() */
-            if (mtmp->issmith)
+            if (is_mon_issmith(mtmp))
                 forget_smithy_entry(mtmp); /* ESMI() */
-            if (mtmp->isnpc)
+            if (is_mon_isnpc(mtmp))
                 forget_npc_entry(mtmp); /* ENPC() */
             savemon(fd, mtmp);
         }

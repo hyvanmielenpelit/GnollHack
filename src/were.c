@@ -130,16 +130,16 @@ new_were(struct monst *mon)
     {
         play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mon->mx, mon->my);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s changes into a %s.", Monnam(mon),
-            is_human(&mons[pm]) ? "human" : pm_monster_name(&mons[pm], mon->female) + 4);
+            is_human(&mons[pm]) ? "human" : pm_monster_name(&mons[pm], is_mon_female(mon)) + 4);
     }
 
     set_mon_data(mon, &mons[pm], mon->subtype);
     if (!mon_can_move(mon)) 
     {
         /* transformation wakens and/or revitalizes */
-        mon->msleeping = 0;
+        set_mon_msleeping(mon, 0);
         mon->mfrozen = 0; /* not asleep or paralyzed */
-        mon->mcanmove = 1;
+        set_mon_mcanmove(mon, 1);
         mon->mprops[SLEEPING] = 0;
         mon->mprops[PARALYZED] = 0;
     }

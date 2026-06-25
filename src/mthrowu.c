@@ -213,7 +213,7 @@ drop_throw(struct obj *obj, boolean ohit, int x, int y)
     else
         create = 1;
 
-    if (create && !((mtmp = m_at(x, y)) != 0 && mtmp->mtrapped
+    if (create && !((mtmp = m_at(x, y)) != 0 && is_mon_mtrapped(mtmp)
                     && (t = t_at(x, y)) != 0
                     && is_pit(t->ttyp))) {
         int objgone = 0;
@@ -438,7 +438,7 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
     {
         if (ismimic)
             seemimic(mtmp);
-        mtmp->msleeping = 0;
+        set_mon_msleeping(mtmp, 0);
         refresh_m_tile_gui_info(mtmp, TRUE);
         if (vis)
             otmp->dknown = 1;
@@ -491,9 +491,9 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
         if (ismimic)
             seemimic(mtmp);
 
-        if (mtmp->msleeping)
+        if (is_mon_msleeping(mtmp))
         {
-            mtmp->msleeping = 0;
+            set_mon_msleeping(mtmp, 0);
             refresh_m_tile_gui_info(mtmp, TRUE);
         }
 
@@ -1223,7 +1223,7 @@ spitmm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 
             /* If this is a pet, it'll get hungry. Minions and
              * spell beings won't hunger */
-            if (mtmp->mtame && !mtmp->isminion && has_edog(mtmp)) 
+            if (mtmp->mtame && !is_mon_isminion(mtmp) && has_edog(mtmp)) 
             {
                 struct edog *dog = EDOG(mtmp);
 
@@ -1283,7 +1283,7 @@ breamm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 
                 /* If this is a pet, it'll get hungry. Minions and
                  * spell beings won't hunger */
-                if (mtmp->mtame && !mtmp->isminion && has_edog(mtmp)) 
+                if (mtmp->mtame && !is_mon_isminion(mtmp) && has_edog(mtmp)) 
                 {
                     struct edog *dog = EDOG(mtmp);
 
@@ -1401,7 +1401,7 @@ buzzmm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 
                 /* If this is a pet, it'll get hungry. Minions and
                  * spell beings won't hunger */
-                if (mtmp->mtame && !mtmp->isminion && has_edog(mtmp))
+                if (mtmp->mtame && !is_mon_isminion(mtmp) && has_edog(mtmp))
                 {
                     struct edog* dog = EDOG(mtmp);
 

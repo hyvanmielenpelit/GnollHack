@@ -357,7 +357,7 @@ map_trap(struct trap *trap, int show)
     int glyph = trap_to_glyph(trap, newsym_rn2);
     struct monst* mtmp = m_at(x, y);
     boolean utrapped = (x == u.ux && y == u.uy && u.utrap > 0);
-    boolean mtrapped = (mtmp && mtmp->mtrapped);
+    boolean mtrapped = (mtmp && is_mon_mtrapped(mtmp));
     boolean trapped_draw_in_front = (trap->ttyp == STATUE_TRAP || ((utrapped || mtrapped) && (trap->ttyp == WEB || trap->ttyp == BEAR_TRAP)));
     /* Replace */
     int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_TRAP, (struct obj*)0, (struct monst*)0, (utrapped || mtrapped) ? LFLAGS_T_TRAPPED : 0UL, 0UL, 0UL, MAT_NONE, 0));
@@ -843,7 +843,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
         }
 
         case M_AP_MONSTER:
-            show_monster_glyph_with_extra_info(x, y, any_monnum_to_glyph(mon->female, what_mon((int)mon->mappearance, rn2_on_display_rng)), mon, 0UL, 0UL, 0, 0 );
+            show_monster_glyph_with_extra_info(x, y, any_monnum_to_glyph(is_mon_female(mon), what_mon((int)mon->mappearance, rn2_on_display_rng)), mon, 0UL, 0UL, 0, 0 );
             clear_monster_layer_memory_at(x, y);
             break;
         }
@@ -864,7 +864,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
          */
         uint64_t extra_flags = 0UL;
         uint64_t extra_mflags = 0UL;
-        if (mon->mleashed)
+        if (is_mon_mleashed(mon))
         {
             extra_mflags |= LMFLAGS_TETHERED;
             show_leash_info(x, y, mon->mx, mon->my, u.ux, u.uy);
@@ -1333,7 +1333,7 @@ newsym_with_extra_info_and_flags(int x, int y, uint64_t disp_flags, uint64_t dis
                 struct monst* leashed_mon;
                 for (leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon)
                 {
-                    if (leashed_mon->mleashed)
+                    if (is_mon_mleashed(leashed_mon))
                     {
                         int mx = leashed_mon->mx, my = leashed_mon->my;
                         if (isok(mx, my))
@@ -1378,7 +1378,7 @@ newsym_with_extra_info_and_flags(int x, int y, uint64_t disp_flags, uint64_t dis
 
             if (mon && (see_it || (!worm_tail && Detect_monsters)))
             {
-                if (mon->mtrapped)
+                if (is_mon_mtrapped(mon))
                 {
                     struct trap* trap = t_at(x, y);
                     int tt = trap ? trap->ttyp : NO_TRAP;
@@ -2805,7 +2805,7 @@ show_monster_glyph_with_extra_info_choose_ascii(int x, int y, int glyph, struct 
         else if (mtmp && mtmp != &youmonst)
         {
             struct trap* t = 0;
-            if (mtmp->mtrapped && (t = t_at(mtmp->mx, mtmp->my)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
+            if (is_mon_mtrapped(mtmp) && (t = t_at(mtmp->mx, mtmp->my)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_IN_PIT;
             else if ((mtmp->mprops[LEVITATION] & (M_TIMEOUT | M_EXTRINSIC)) != 0 && mtmp->mprops[BLOCKS_LEVITATION] == 0)
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;

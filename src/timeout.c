@@ -1725,14 +1725,14 @@ hatch_egg(anything *arg, int64_t timeout)
             {
                 /* strip leading and trailing spaces; unnames monster if all spaces */
                 (void)mungspaces(buf);
-                if ((mon->data->geno & G_UNIQ) || mon->ispriest || mon->isminion || mon->isshk || mon->issmith || mon->isnpc)
+                if ((mon->data->geno & G_UNIQ) || is_mon_ispriest(mon) || is_mon_isminion(mon) || is_mon_isshk(mon) || is_mon_issmith(mon) || is_mon_isnpc(mon))
                 {
                     pline("Unfortunately, %s will not accept the name %s.", hatchedmonnambuf, buf);
                 }
                 else
                 {
                     (void)christen_monst(mon, buf);
-                    mon->u_know_mname = 1;
+                    set_mon_u_know_mname(mon, 1);
                     /* Clear out umname */
                     if (has_umname(mon))
                         free_umname(mon);
@@ -2738,9 +2738,9 @@ unsummon_item(anything *arg, int64_t timeout)
         struct monst* mtmp = m_at(x, y);
 
         /* a hiding monster may be exposed */
-        if (mtmp && !OBJ_AT(x, y) && mtmp->mundetected && hides_under(mtmp->data)) 
+        if (mtmp && !OBJ_AT(x, y) && is_mon_mundetected(mtmp) && hides_under(mtmp->data)) 
         {
-            mtmp->mundetected = 0;
+            set_mon_mundetected(mtmp, 0);
         }
         else if (x == u.ux && y == u.uy && u.uundetected && hides_under(youmonst.data))
             (void)hideunder(&youmonst);
