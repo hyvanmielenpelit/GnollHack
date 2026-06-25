@@ -1487,7 +1487,7 @@ do_uoname(struct obj *obj)
     //    return;
     //}
 
-    //if (has_oname(obj) && obj->nknown) 
+    //if (has_oname(obj) && is_obj_nknown(obj)) 
     //{
     //    play_sfx_sound(SFX_GENERAL_CANNOT);
     //    pline_ex(AT_NONE, CLR_MSG_FAIL, "%s already has a true name.", Yname2(obj));
@@ -1534,7 +1534,7 @@ oname(struct obj *obj, const char *name)
     if (lth)
         artifact_exists(obj, name, TRUE);
     if (obj->oartifact) {
-        if (obj->unpaid)
+        if (is_obj_unpaid(obj))
             alter_cost(obj, 0L);
         if (via_naming) {
             /* violate illiteracy conduct since successfully wrote arti-name */
@@ -1611,7 +1611,7 @@ doname_type_of_object(void)
            while blind and the hero can now see */
         (void)xname(obj);
 
-        if (!obj->dknown) {
+        if (!is_obj_dknown(obj)) {
             You("would never recognize another one.");
         }
         else {
@@ -1699,7 +1699,7 @@ docallcmd(void)
                while blind and the hero can now see */
             (void) xname(obj);
 
-            if (!obj->dknown) {
+            if (!is_obj_dknown(obj)) {
                 You("would never recognize another one.");
 #if 0
             } else if (!objtyp_is_callable(obj->otyp)) {
@@ -1733,13 +1733,13 @@ docall_xname(struct obj *obj)
     otemp.oextra = (struct oextra *) 0;
     otemp.quan = 1L;
     /* in case water is already known, convert "[un]holy water" to "water" */
-    otemp.blessed = otemp.cursed = 0;
+    set_obj_blessed(&(otemp), 0), set_obj_cursed(&(otemp), 0);
     /* remove attributes that are doname() caliber but get formatted
        by xname(); most of these fixups aren't really needed because the
        relevant type of object isn't callable so won't reach this far */
     if (otemp.oclass == WEAPON_CLASS)
     {
-        otemp.opoisoned = 0; /* not poisoned */
+        set_obj_opoisoned(&(otemp), 0); /* not poisoned */
         otemp.elemental_enchantment = 0; /* not specially enchanted */
         otemp.exceptionality = 0; /* not specially crafted */
         otemp.mythic_prefix = 0; /* not mythic */
@@ -1750,12 +1750,12 @@ docall_xname(struct obj *obj)
     else if (otemp.otyp == TOWEL || otemp.otyp == STATUE)
         otemp.special_quality = 0; /* not wet or historic */
     else if (otemp.otyp == TIN)
-        otemp.known = 0; /* suppress tin type (homemade, &c) and mon type */
+        set_obj_known(&(otemp), 0); /* suppress tin type (homemade, &c) and mon type */
     else if (otemp.otyp == FIGURINE)
         otemp.corpsenm = NON_PM; /* suppress mon type */
     else if (otemp.otyp == HEAVY_IRON_BALL)
         otemp.owt = objects[HEAVY_IRON_BALL].oc_weight; /* not "very heavy" */
-    else if (otemp.oclass == FOOD_CLASS && otemp.globby)
+    else if (otemp.oclass == FOOD_CLASS && is_obj_globby(&(otemp)))
         otemp.owt = 120; /* 6*20, neither a small glob nor a large one */
 
     return an(xname(&otemp));
@@ -1767,7 +1767,7 @@ docall(struct obj *obj, const char *introline)
     char buf[BUFSZ] = DUMMY, qbuf[QBUFSZ];
     char **str1;
 
-    if (!obj->dknown)
+    if (!is_obj_dknown(obj))
         return; /* probably blind */
 
     flush_screen(1); /* Make sure that the screen shows the effect, if any, before query */
@@ -1891,7 +1891,7 @@ namefloorobj(void)
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s can't be assigned a type name.",
               use_plural ? "Those" : "That", buf);
-    } else if (!obj->dknown) {
+    } else if (!is_obj_dknown(obj)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "don't know %s %s well enough to name %s.",
             use_plural ? "those" : "that", buf, use_plural ? "them" : "it");
@@ -4084,7 +4084,7 @@ print_catalogue(winid datawin, struct obj *obj, int objectclass, uint64_t cflags
         if ((cflags & CATALOGUE_CLERICAL) && index(magicschools, objects[i].oc_skill))
             continue;
 
-        if (obj && obj->cursed && (
+        if (obj && is_obj_cursed(obj) && (
             (i % 3) == (short)(obj->o_id % 3)
             || (((unsigned int)i + obj->o_id) % 7) == 0
             || (((unsigned int)i + obj->o_id + 1) % 11) == 0
@@ -4169,7 +4169,7 @@ print_artifact_catalogue(winid datawin, struct obj *obj)
         if (artilist[i].aflags2 & AF2_NO_CATALOGUE)
             continue;
 
-        if (obj && obj->cursed && (
+        if (obj && is_obj_cursed(obj) && (
             (i % 3) == (short)(obj->o_id % 3)
             || (((unsigned int)i + obj->o_id) % 7) == 0
             || (((unsigned int)i + obj->o_id + 1) % 11) == 0

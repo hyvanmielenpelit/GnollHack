@@ -676,7 +676,7 @@ npcini(d_level *lvl, struct mkroom *sroom, int sx, int sy, uchar npctype, int mt
             {
                 if (otmp->enchantment < 5)
                     otmp->enchantment = 5 + rn2(3);
-                if (otmp->cursed)
+                if (is_obj_cursed(otmp))
                     uncurse(otmp);
                 otmp = uoname(otmp, "Xanbane");
                 if (otmp)
@@ -717,7 +717,7 @@ npcini(d_level *lvl, struct mkroom *sroom, int sx, int sy, uchar npctype, int mt
             {
                 if (otmp->enchantment < 5)
                     otmp->enchantment = 5 + rn2(3);
-                if (otmp->cursed)
+                if (is_obj_cursed(otmp))
                     uncurse(otmp);
                 otmp = uoname(otmp, "Xanbane");
                 if (otmp)

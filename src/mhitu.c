@@ -197,7 +197,7 @@ mpoisons_subj(struct monst *mtmp, struct attack *mattk)
         struct obj *mwep = (mtmp == &youmonst) ? uwep : MON_WEP(mtmp);
         /* "Foo's attack was poisoned." is pretty lame, but at least
            it's better than "sting" when not a stinging attack... */
-        return (!mwep || !mwep->opoisoned) ? "attack" : "weapon";
+        return (!mwep || !is_obj_opoisoned(mwep)) ? "attack" : "weapon";
     } else {
         return (mattk->aatyp == AT_TUCH) ? "contact"
                   : (mattk->aatyp == AT_GAZE) ? "gaze"
@@ -1405,21 +1405,21 @@ u_slip_free_core(struct monst *mtmp, struct attack *mattk, boolean stuck)
 
     /* if your cloak/armor is greased, monster slips off; this
        protection might fail (33% chance) when the armor is cursed */
-    if (obj && (obj->greased || (objects[obj->otyp].oc_flags5 & O5_PERMANENTLY_GREASED) != 0 || obj->otyp == OILSKIN_CLOAK)
-        && (!obj->cursed || rn2(3))) {
+    if (obj && (is_obj_greased(obj) || (objects[obj->otyp].oc_flags5 & O5_PERMANENTLY_GREASED) != 0 || obj->otyp == OILSKIN_CLOAK)
+        && (!is_obj_cursed(obj) || rn2(3))) {
         pline("%s %s your %s %s!", Monnam(mtmp),
               (mattk->adtyp == AD_WRAP) ? "slips off of"
                                         : (stuck ? "tries to stick to you, but fails to attach onto" : "grabs you, but cannot hold onto"),
-              obj->greased ? "greased" : "slippery",
+              is_obj_greased(obj) ? "greased" : "slippery",
               /* avoid "slippery slippery cloak"
                  for undiscovered oilskin cloak */
-              (obj->greased || objects[obj->otyp].oc_name_known)
+              (is_obj_greased(obj) || objects[obj->otyp].oc_name_known)
                   ? xname(obj)
                   : cloak_simple_name(obj));
 
-        if (obj->greased && !rn2(2)) {
+        if (is_obj_greased(obj) && !rn2(2)) {
             pline_The("grease wears off.");
-            obj->greased = 0;
+            set_obj_greased(obj, 0);
             update_inventory();
         }
         return TRUE;
@@ -1756,7 +1756,7 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
             const char *what;
 
             if ((obj = level.objects[mtmp->mx][mtmp->my]) != 0) {
-                if (Blind && !obj->dknown)
+                if (Blind && !is_obj_dknown(obj))
                     what = something;
                 else if (is_pool(mtmp->mx, mtmp->my) && !Underwater)
                     what = "the water";

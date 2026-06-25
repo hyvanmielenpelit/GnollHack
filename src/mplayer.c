@@ -101,7 +101,7 @@ mk_mplayer_armor(struct monst *mon, short typ)
         return;
     obj = mksobj(typ, FALSE, FALSE, FALSE);
     if (!rn2(3))
-        obj->oerodeproof = 1;
+        set_obj_oerodeproof(obj, 1);
     if (!rn2(3))
         curse(obj);
     if (!rn2(3))
@@ -267,9 +267,9 @@ mk_mplayer(struct permonst *ptr, xchar x, xchar y, boolean special)
             otmp = mksobj(weapon, TRUE, FALSE, FALSE);
             otmp->enchantment = (special ? rn1(5, 4) : rn2(4));
             if (!rn2(3))
-                otmp->oerodeproof = 1;
+                set_obj_oerodeproof(otmp, 1);
             else if (!rn2(2))
-                otmp->greased = 1;
+                set_obj_greased(otmp, 1);
             if (special && rn2(2))
                 otmp = mk_artifact(otmp, A_NONE, MKARTIFACT_FLAGS_NO_VORPAL_WEAPONS);
             /* usually increase stack size if stackable weapon */

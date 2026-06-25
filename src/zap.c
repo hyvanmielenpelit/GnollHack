@@ -243,16 +243,16 @@ learnwand(struct obj *obj)
         /* if type already discovered, treat this item has having been seen
            even if hero is currently blinded (skips redundant makeknown) */
         if (objects[obj->otyp].oc_name_known) {
-            obj->dknown = 1; /* will usually be set already */
+            set_obj_dknown(obj, 1); /* will usually be set already */
 
         /* otherwise discover it if item itself has been or can be seen */
         } else {
             /* in case it was picked up while blind and then zapped without
                examining inventory after regaining sight (bypassing xname) */
             if (!Blind)
-                obj->dknown = 1;
+                set_obj_dknown(obj, 1);
             /* make the discovery iff we know what we're manipulating */
-            if (obj->dknown)
+            if (is_obj_dknown(obj))
                 makeknown(obj->otyp);
         }
     }
@@ -270,9 +270,9 @@ get_saving_throw_adjustment(struct obj *otmp, struct monst *targetmonst, struct 
     res += objects[otyp].oc_spell_saving_throw_adjustment;
 
     /* Adjustment for blessed and cursed objects */
-    if (otmp->blessed)
+    if (is_obj_blessed(otmp))
         res -= 5;
-    else if (otmp->cursed)
+    else if (is_obj_cursed(otmp))
         res += 5;
 
     /* Extra penalties from negate/etc. magic resistance */
@@ -902,7 +902,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
             context.bypasses = TRUE; /* for make_corpse() */
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(0);
-            int chance = 5 * (15 + (otyp == WAN_UNDEAD_TURNING ? 12 : u.ulevel) - mtmp->m_lev + (!otmp ? 0 : otmp->blessed ? 4 : 0) - (is_demon(mtmp->data) ? 5 : 0) - ((mtmp->data->geno & G_UNIQ) ? 10 : 0));
+            int chance = 5 * (15 + (otyp == WAN_UNDEAD_TURNING ? 12 : u.ulevel) - mtmp->m_lev + (!otmp ? 0 : is_obj_blessed(otmp) ? 4 : 0) - (is_demon(mtmp->data) ? 5 : 0) - ((mtmp->data->geno & G_UNIQ) ? 10 : 0));
             int dmgdice = max(0, (chance - 100) / 15);
             dmg = dmgdice > 0 ? d(dmgdice, 6) : 0;
             (void)turn_undead_success_effect(mtmp, chance, dmg, duration);
@@ -1627,12 +1627,12 @@ probe_monster(struct monst *mtmp)
 
 int probe_object(struct obj *obj)
 {
-    int res = !obj->dknown;
+    int res = !is_obj_dknown(obj);
     /* target object has now been "seen (up close)" */
-    obj->dknown = 1;
+    set_obj_dknown(obj, 1);
     if (Is_container(obj) || obj->otyp == STATUE)
     {
-        obj->cknown = obj->lknown = obj->tknown = 1;
+        set_obj_cknown(obj, 1), set_obj_lknown(obj, 1), set_obj_tknown(obj, 1);
         if (!obj->cobj)
         {
             pline("%s empty.", Tobjnam(obj, "are"));
@@ -1647,14 +1647,14 @@ int probe_object(struct obj *obj)
                 /* unfortunately, we can't tell whether rndmonnam()
                    picks a form which can't leave a corpse */
                 an(Hallucination ? rndmonnam((char*)0) : "cat"));
-            obj->cknown = 0;
+            set_obj_cknown(obj, 0);
         }
         else
         {
             struct obj* o;
             /* view contents (not recursively) */
             for (o = obj->cobj; o; o = o->nobj)
-                o->dknown = 1; /* "seen", even if blind */
+                set_obj_dknown(o, 1); /* "seen", even if blind */
             (void)display_cinventory(obj);
         }
         res = 1;
@@ -2406,12 +2406,12 @@ display_monster_inventory(struct monst *mtmp, boolean probing)
     {
         for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) 
         {
-            otmp->dknown = 1; /* treat as "seen" */
+            set_obj_dknown(otmp, 1); /* treat as "seen" */
             if (probing && (Is_container(otmp) || otmp->otyp == STATUE)) 
             {
-                otmp->lknown = otmp->tknown = 1;
+                set_obj_lknown(otmp, 1), set_obj_tknown(otmp, 1);
                 if (!SchroedingersBox(otmp))
-                    otmp->cknown = 1;
+                    set_obj_cknown(otmp, 1);
             }
         }
         (void)display_minventory(mtmp, MINV_ALL | MINV_NOLET | PICK_NONE,
@@ -2818,7 +2818,7 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
          *  - the container cannot be a statue or bag of holding
          *    (except in very rare cases for the latter)
          */
-        || (container && (container->olocked || container_nesting > 2
+        || (container && (is_obj_olocked(container) || container_nesting > 2
                           || container->otyp == STATUE
                           || (container->otyp == BAG_OF_HOLDING && rn2(40))
                           || (container->otyp == BAG_OF_WIZARDRY && rn2(2))
@@ -2926,7 +2926,7 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
             if (has_oname(corpse))
             {
                 (void) christen_monst(mtmp, ONAME(corpse));
-                if (corpse->nknown) /* If you know corpse name, then you will know revived monster's name */
+                if (is_obj_nknown(corpse)) /* If you know corpse name, then you will know revived monster's name */
                     set_mon_u_know_mname(mtmp, 1);
             }
         }
@@ -2957,7 +2957,7 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
         debugprint_pos();
         x = corpse->ox, y = corpse->oy;
         if (costly_spot(x, y)
-            && (carried(corpse) ? corpse->unpaid : !corpse->no_charge))
+            && (carried(corpse) ? is_obj_unpaid(corpse) : !is_obj_no_charge(corpse)))
             shkp = shop_keeper(*in_rooms(x, y, SHOPBASE));
 
         if (cansee(x, y))
@@ -3038,7 +3038,7 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
     if (has_oname(corpse) && !unique_corpstat(mtmp->data))
     {
         mtmp = christen_monst(mtmp, ONAME(corpse));
-        if(corpse->nknown)
+        if(is_obj_nknown(corpse))
             set_mon_u_know_mname(mtmp, 1);
     }
     if (has_uoname(corpse) && !unique_corpstat(mtmp->data))
@@ -3391,7 +3391,7 @@ cancel_item(struct obj *obj, boolean update_inv)
         || otyp == POT_ACID
         || otyp == POT_SICKNESS
         || otyp == POT_POISON
-        || (otyp == POT_WATER && (obj->blessed || obj->cursed))))
+        || (otyp == POT_WATER && (is_obj_blessed(obj) || is_obj_cursed(obj)))))
     {
         
 //        if (otyp != WAN_CANCELLATION && otyp != WAN_DISJUNCTION /* can't cancel cancellation */)
@@ -3422,7 +3422,7 @@ cancel_item(struct obj *obj, boolean update_inv)
             costly_alteration(obj,
                               (otyp != POT_WATER)
                                   ? COST_CANCEL
-                                  : obj->cursed ? COST_UNCURS : COST_UNBLSS);
+                                  : is_obj_cursed(obj) ? COST_UNCURS : COST_UNBLSS);
             
             if (otyp == POT_SICKNESS || otyp == POT_SEE_INVISIBLE) 
             {
@@ -3518,14 +3518,14 @@ obj_shudders(struct obj *obj)
 {
     int zap_odds;
 
-    if (context.bypasses && obj->bypass)
+    if (context.bypasses && is_obj_bypass(obj))
         return FALSE;
 
     if (obj->oclass == WAND_CLASS)
         zap_odds = 3; /* half-life = 2 zaps */
-    else if (obj->cursed)
+    else if (is_obj_cursed(obj))
         zap_odds = 3; /* half-life = 2 zaps */
-    else if (obj->blessed)
+    else if (is_obj_blessed(obj))
         zap_odds = 12; /* half-life = 8 zaps */
     else
         zap_odds = 8; /* half-life = 6 zaps */
@@ -3549,7 +3549,7 @@ polyuse(struct obj *objhdr, int mat, int minwt)
 
     for (otmp = objhdr; minwt > 0 && otmp; otmp = otmp2) {
         otmp2 = otmp->nexthere;
-        if (context.bypasses && otmp->bypass)
+        if (context.bypasses && is_obj_bypass(otmp))
             continue;
         if (otmp == uball || otmp == uchain)
             continue;
@@ -3595,7 +3595,7 @@ create_polymon(struct obj *obj, int okind)
            check below doesn't understand bypassed objects; but it
            should suffice since bypassed objects always end up as a
            consecutive group at the top of their pile */
-        while (obj && obj->bypass)
+        while (obj && is_obj_bypass(obj))
             obj = obj->nexthere;
     }
 
@@ -3769,7 +3769,7 @@ poly_obj(struct obj *obj, int id)
         int try_limit = 3;
         unsigned magic_obj = objects[obj->otyp].oc_magic;
 
-        if (obj->otyp == UNICORN_HORN && obj->degraded_horn)
+        if (obj->otyp == UNICORN_HORN && is_obj_degraded_horn(obj))
             magic_obj = 0;
 
         /* Try up to 3 times to make the magic-or-not status of
@@ -3803,7 +3803,7 @@ poly_obj(struct obj *obj, int id)
     /* preserve quantity */
     otmp->quan = obj->quan;
     /* preserve the shopkeepers (lack of) interest */
-    otmp->no_charge = obj->no_charge;
+    set_obj_no_charge(otmp, is_obj_no_charge(obj));
     /* preserve inventory letter if in inventory */
     if (obj_location == OBJ_INVENT)
         otmp->invlet = obj->invlet;
@@ -3865,8 +3865,8 @@ poly_obj(struct obj *obj, int id)
     }
     otmp->recharged = obj->recharged;
 
-    otmp->cursed = obj->cursed;
-    otmp->blessed = obj->blessed;
+    set_obj_cursed(otmp, is_obj_cursed(obj));
+    set_obj_blessed(otmp, is_obj_blessed(obj));
 
     if (erosion_matters(otmp)) 
     {
@@ -3877,15 +3877,15 @@ poly_obj(struct obj *obj, int id)
             otmp->oeroded2 = obj->oeroded2;
 
         if (is_damageable(otmp))
-            otmp->oerodeproof = obj->oerodeproof;
+            set_obj_oerodeproof(otmp, is_obj_oerodeproof(obj));
     }
 
     /* Keep chest/box traps and poisoned ammo if we may */
-    if (obj->otrapped && Is_box(otmp))
-        otmp->otrapped = TRUE;
+    if (is_obj_otrapped(obj) && Is_box(otmp))
+        set_obj_otrapped(otmp, TRUE);
 
-    if (obj->opoisoned && is_poisonable(otmp))
-        otmp->opoisoned = TRUE;
+    if (is_obj_opoisoned(obj) && is_poisonable(otmp))
+        set_obj_opoisoned(otmp, TRUE);
 
     boolean multigendif = objects[obj->otyp].oc_multigen_type > MULTIGEN_SINGLE && objects[otmp->otyp].oc_multigen_type == MULTIGEN_SINGLE;
     if (obj->elemental_enchantment > 0 && is_elemental_enchantable(otmp))
@@ -3923,9 +3923,9 @@ poly_obj(struct obj *obj, int id)
             otmp->enchantment = 0;
             otmp->charges = 0;
             otmp->oeroded = 0;
-            otmp->oerodeproof = TRUE;
+            set_obj_oerodeproof(otmp, TRUE);
             otmp->quan = 1L;
-            otmp->cursed = FALSE;
+            set_obj_cursed(otmp, FALSE);
         }
     }
 
@@ -4094,12 +4094,12 @@ poly_obj(struct obj *obj, int id)
     }
 
     /* note: if otmp is gone, billing for it was handled by useup() */
-    if (((otmp && !carried(otmp)) || obj->unpaid) && costly_spot(ox, oy)) 
+    if (((otmp && !carried(otmp)) || is_obj_unpaid(obj)) && costly_spot(ox, oy)) 
     {
         debugprint_pos();
         struct monst *shkp = shop_keeper(*in_rooms(ox, oy, SHOPBASE));
 
-        if ((!obj->no_charge
+        if ((!is_obj_no_charge(obj)
              || (Has_contents(obj)
                  && (contained_cost(obj, shkp, 0L, FALSE, FALSE) != 0L)))
             && inhishop(shkp))
@@ -4199,7 +4199,7 @@ stone_to_flesh_obj(struct obj *obj)
                 if (mon) 
                 {
                     if (costly_spot(oox, ooy)
-                        && (carried(obj) ? obj->unpaid : !obj->no_charge)) {
+                        && (carried(obj) ? is_obj_unpaid(obj) : !is_obj_no_charge(obj))) {
                         debugprint_pos();
                         shkp = shop_keeper(*in_rooms(oox, ooy, SHOPBASE));
                         stolen_value(obj, oox, ooy,
@@ -4310,7 +4310,7 @@ bhito(struct obj *obj, struct obj *otmp, struct monst *origmonst)
     if (obj == otmp)
         return 0;
 
-    if (obj->bypass)
+    if (is_obj_bypass(obj))
     {
         /* The bypass bit is currently only used as follows:
          *
@@ -4340,7 +4340,7 @@ bhito(struct obj *obj, struct obj *otmp, struct monst *origmonst)
          * The bypass bit on all objects is reset each turn, whenever
          * context.bypasses is set.
          *
-         * We check the obj->bypass bit above AND context.bypasses
+         * We check the is_obj_bypass(obj) bit above AND context.bypasses
          * as a safeguard against any stray occurrence left in an obj
          * struct someplace, although that should never happen.
          */
@@ -4351,7 +4351,7 @@ bhito(struct obj *obj, struct obj *otmp, struct monst *origmonst)
         else 
         {
             debugpline1("%s for a moment.", Tobjnam(obj, "pulsate"));
-            obj->bypass = 0;
+            set_obj_bypass(obj, 0);
         }
     }
 
@@ -4781,7 +4781,7 @@ bhitpile(struct obj *obj, struct monst *origmonst, int (*fhito)(struct obj*, str
 {
     int hitanything = 0;
     struct obj *otmp, *next_obj;
-    int bucstatus = !obj || obj->cursed ? -1 : obj->blessed ? 1 : 0;
+    int bucstatus = !obj || is_obj_cursed(obj) ? -1 : is_obj_blessed(obj) ? 1 : 0;
     int bhitlimit = hit_only_one == 1 ? 1 : 
         hit_only_one == 2 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 2 : 3) : 
         hit_only_one == 3 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 4 : 7) :
@@ -5327,7 +5327,7 @@ zapnodir(struct obj *obj)
             otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
             if (otmp)
             {
-                otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+                set_obj_dknown(otmp, 1), set_obj_bknown(otmp, 1), set_obj_rknown(otmp, 1), set_obj_nknown(otmp, 1);
                 put_saddle_on_mon(otmp, mtmp);
             }
         }
@@ -5939,7 +5939,7 @@ zapnodir(struct obj *obj)
         break;
     case WAN_TOWN_PORTAL:
     {
-        int number = obj->cursed ? 4 : obj->blessed ? 2 : 3;
+        int number = is_obj_cursed(obj) ? 4 : is_obj_blessed(obj) ? 2 : 3;
         boolean hostilemonfound = FALSE;
         struct monst* hostilemon;
         for (hostilemon = fmon; hostilemon; hostilemon = hostilemon->nmon)
@@ -5952,7 +5952,7 @@ zapnodir(struct obj *obj)
         }
         if (hostilemonfound 
             || (context.last_turn_when_took_damage > 0 && moves >= context.last_turn_when_took_damage && moves <= context.last_turn_when_took_damage + number)
-            || (obj->cursed && !rn2(3)))
+            || (is_obj_cursed(obj) && !rn2(3)))
         {
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "The wand sparkles for a while, but nothing else happens.");
             break;
@@ -5999,7 +5999,7 @@ zapnodir(struct obj *obj)
 
             if (wpcnt_others == 0)
             {
-                if (context.town_portal_return_level_set && !(obj->cursed && !rn2(3)))
+                if (context.town_portal_return_level_set && !(is_obj_cursed(obj) && !rn2(3)))
                 {
                     level_tele(0, 2, context.town_portal_return_level, context.town_portal_return_flags);
                 }
@@ -6055,7 +6055,7 @@ zapnodir(struct obj *obj)
                         level_tele(0, 2, *waypointlist[selidx - 1], 0);
                     else if (selidx > NUM_WAYPOINTS)
                     {
-                        if (context.town_portal_return_level_set && !(obj->cursed && !rn2(3)))
+                        if (context.town_portal_return_level_set && !(is_obj_cursed(obj) && !rn2(3)))
                         {
                             level_tele(0, 2, context.town_portal_return_level, context.town_portal_return_flags);
                         }
@@ -6076,7 +6076,7 @@ zapnodir(struct obj *obj)
         }
         else
         {
-            if(obj->cursed && !rn2(3))
+            if(is_obj_cursed(obj) && !rn2(3))
             {
                 level_tele(0, 0, zerodlevel, 0);
             }
@@ -6370,7 +6370,7 @@ backfire(struct obj *otmp)
 {
     int dmg;
 
-    otmp->in_use = TRUE; /* in case losehp() is fatal */
+    set_obj_in_use(otmp, TRUE); /* in case losehp() is fatal */
     play_sfx_sound(SFX_EXPLOSION_MAGICAL);
     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s suddenly explodes!", The(xname(otmp)));
     play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, u.ux, u.uy, FALSE);
@@ -6500,7 +6500,7 @@ dozapcore(struct obj *obj, boolean *stop_readchar_ptr)
             boolean markempty = TRUE;
             char markbuf[BUFSZ];
             char querybuf[BUFSZ];
-            if (obj->dknown && obj->known)
+            if (is_obj_dknown(obj) && is_obj_known(obj))
             {
                 Sprintf(markbuf, "%s empty. ", Tobjnam(obj, "are"));
                 markempty = FALSE;
@@ -6560,7 +6560,7 @@ dozapcore(struct obj *obj, boolean *stop_readchar_ptr)
             return taketurn; /* obj may be gone in dostash etc. */
         }
     }
-    else if (obj->cursed && !rn2(WAND_BACKFIRE_CHANCE))
+    else if (is_obj_cursed(obj) && !rn2(WAND_BACKFIRE_CHANCE))
     {
         backfire(obj); /* the wand blows up in your face! */
         exercise(A_STR, FALSE);
@@ -7293,8 +7293,8 @@ zapyourself(struct obj *obj, boolean ordinary)
             special_effect_wait_until_action(0);
             healup(basedmg, 0,
                 obj->otyp == GRAIL_OF_HEALING, 
-                (obj->blessed || (obj->otyp != SPE_EXTRA_HEALING && obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)),
-                (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)), 
+                (is_obj_blessed(obj) || (obj->otyp != SPE_EXTRA_HEALING && obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)),
+                (is_obj_blessed(obj) || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)), 
                 obj->otyp == GRAIL_OF_HEALING, 
                 obj->otyp == GRAIL_OF_HEALING);
             
@@ -7416,7 +7416,7 @@ zapyourself(struct obj *obj, boolean ordinary)
             play_sfx_sound(SFX_HEALING);
             special_effect_wait_until_action(0);
             learn_it = TRUE; /* (no effect for spells...) */
-            healup(basedmg, 0, FALSE, (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), FALSE, FALSE);
+            healup(basedmg, 0, FALSE, (is_obj_blessed(obj) || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), (is_obj_blessed(obj) || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), FALSE, FALSE);
             You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "%sbetter.", obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT ? "much " : "");
             special_effect_wait_until_end(0);
         }
@@ -7519,12 +7519,12 @@ zapyourself(struct obj *obj, boolean ordinary)
 
         for (otmp = invent; otmp; otmp = otmp->nobj) 
         {
-            otmp->dknown = 1;
+            set_obj_dknown(otmp, 1);
             if (Is_container(otmp) || otmp->otyp == STATUE) 
             {
-                otmp->lknown = otmp->tknown = 1;
+                set_obj_lknown(otmp, 1), set_obj_tknown(otmp, 1);
                 if (!SchroedingersBox(otmp))
-                    otmp->cknown = 1;
+                    set_obj_cknown(otmp, 1);
             }
         }
         ustatusline();
@@ -8592,7 +8592,7 @@ bhit(int ddx, int ddy, int range, int radius, enum bhit_call_types weapon, int (
     boolean tethered_weapon = FALSE;
     int skiprange_start = 0, skiprange_end = 0, skipcount = 0;
     context.bhitcount = 0;
-    int bucstatus = !obj || obj->cursed ? -1 : obj->blessed ? 1 : 0;
+    int bucstatus = !obj || is_obj_cursed(obj) ? -1 : is_obj_blessed(obj) ? 1 : 0;
     int bhitlimit = hit_only_one == 1 ? 1 : 
         hit_only_one == 2 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 2 : 3) :
         hit_only_one == 3 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 4 : 7) :
@@ -9070,9 +9070,9 @@ bhit(int ddx, int ddy, int range, int radius, enum bhit_call_types weapon, int (
                 newsym(x, y);
             }
             tmp_at(bhitpos.x, bhitpos.y);
-            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->material != objects[obj->otyp].oc_material || obj->special_quality != 0 || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2 || tethered_weapon || get_obj_height(obj) > 0 || obj->lamplit))
+            if (obj && ((is_poisonable(obj) && is_obj_opoisoned(obj)) || obj->material != objects[obj->otyp].oc_material || obj->special_quality != 0 || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2 || tethered_weapon || get_obj_height(obj) > 0 || is_obj_lamplit(obj)))
             {                
-                show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, tethered_weapon), get_obj_height(obj), 0, 0);
+                show_missile_info(bhitpos.x, bhitpos.y, is_obj_opoisoned(obj), obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, tethered_weapon), get_obj_height(obj), 0, 0);
                 if (tethered_weapon)
                     show_leash_info(bhitpos.x, bhitpos.y, 0, 0, u.ux, u.uy);
                 flush_screen(1);
@@ -11343,8 +11343,8 @@ fracture_rock(struct obj *obj, boolean verbose)
     obj->oclass = GEM_CLASS;
     obj->quan = (int64_t) rn1(60, 7);
     obj->owt = weight(obj);
-    obj->dknown = obj->bknown = obj->rknown = obj->nknown = 0;
-    obj->known = objects[obj->otyp].oc_uses_known ? 0 : 1;
+    set_obj_dknown(obj, 0), set_obj_bknown(obj, 0), set_obj_rknown(obj, 0), set_obj_nknown(obj, 0);
+    set_obj_known(obj, objects[obj->otyp].oc_uses_known ? 0 : 1);
     dealloc_oextra(obj);
 
     if (obj->where == OBJ_FLOOR) 
@@ -11544,7 +11544,7 @@ destroy_one_item(struct obj *obj, int osym, int dmgtyp, boolean forcedestroy)
 
     if (!skip) 
     {
-        if (obj->in_use)
+        if (is_obj_in_use(obj))
             --quan; /* one will be used up elsewhere */
         for (i = cnt = 0L; i < quan; i++)
             if (forcedestroy || !rn2(3))
@@ -11663,7 +11663,7 @@ destroy_item(int osym, int dmgtyp)
             continue; /* test only objs of type osym */
         if (obj->oartifact)
             continue; /* don't destroy artifacts */
-        if (obj->in_use && obj->quan == 1L)
+        if (is_obj_in_use(obj) && obj->quan == 1L)
             continue; /* not available */
 
         /* if loss of this item might dump us onto a trap, hold off
@@ -11677,7 +11677,7 @@ destroy_item(int osym, int dmgtyp)
                 /* destroyed wands and potions of polymorph don't trigger
                    polymorph so don't need to be deferred */
                 || (obj->otyp == POT_WATER && u.ulycn >= LOW_PM
-                    && (Upolyd ? obj->blessed : obj->cursed)))) 
+                    && (Upolyd ? is_obj_blessed(obj) : is_obj_cursed(obj))))) 
         {
             deferrals[deferral_indx++] = obj->o_id;
             continue;
@@ -12317,7 +12317,7 @@ summonitem(struct obj *spell_otmp, int otyp)
     if (otmp) 
     {
         otmp->age = d(objects[spell_otmp->otyp].oc_spell_dur_dice, objects[spell_otmp->otyp].oc_spell_dur_diesize) + objects[spell_otmp->otyp].oc_spell_dur_plus;
-        otmp->nomerge = 1;
+        set_obj_nomerge(otmp, 1);
         switch (spell_otmp->otyp)
         {
         case SPE_MAGE_ARMOR:
@@ -12345,7 +12345,7 @@ summonitem(struct obj *spell_otmp, int otyp)
         otmp = hold_another_object(otmp, oops_msg, The(aobjnam(otmp, verb)), (const char*)0, TRUE);
 
         if (otmp)
-            otmp->nomerge = 0;
+            set_obj_nomerge(otmp, 0);
     }
 }
 

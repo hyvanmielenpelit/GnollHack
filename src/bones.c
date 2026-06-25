@@ -67,7 +67,7 @@ resetobjs(struct obj *ochain, boolean restore)
             resetobjs(otmp->cobj, restore);
         
         otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
-        if (otmp->in_use) 
+        if (is_obj_in_use(otmp)) 
         {
             obj_extract_self(otmp);
             dealloc_obj(otmp);
@@ -165,19 +165,20 @@ resetobjs(struct obj *ochain, boolean restore)
             /* do not zero out o_ids for ghost levels anymore */
 
             if (objects[otmp->otyp].oc_uses_known)
-                otmp->known = 0;
-            otmp->dknown = otmp->bknown = 0;
-            otmp->rknown = 0;
-            otmp->lknown = 0;
-            otmp->tknown = 0;
-            otmp->cknown = 0;
-            otmp->aknown = 0;
-            otmp->nknown = 0;
-            otmp->mknown = 0;
-            otmp->rotknown = 0;
+                set_obj_known(otmp, 0);
+            set_obj_dknown(otmp, 0);
+            set_obj_bknown(otmp, 0);
+            set_obj_rknown(otmp, 0);
+            set_obj_lknown(otmp, 0);
+            set_obj_tknown(otmp, 0);
+            set_obj_cknown(otmp, 0);
+            set_obj_aknown(otmp, 0);
+            set_obj_nknown(otmp, 0);
+            set_obj_mknown(otmp, 0);
+            set_obj_rotknown(otmp, 0);
             otmp->invlet = 0;
-            otmp->no_charge = 0;
-            otmp->was_thrown = 0;
+            set_obj_no_charge(otmp, 0);
+            set_obj_was_thrown(otmp, 0);
 
             /* strip user-supplied names */
             /* Statue and some corpse names are left intact,
@@ -262,7 +263,7 @@ resetobjs(struct obj *ochain, boolean restore)
             }
             else if (otmp->otyp == CANDELABRUM_OF_INVOCATION) 
             {
-                if (otmp->lamplit)
+                if (is_obj_lamplit(otmp))
                     end_burn(otmp, TRUE);
                 otmp->otyp = WAX_CANDLE;
                 otmp->age = 50L; /* assume used */
@@ -554,7 +555,7 @@ make_bones:
 
         /* embed your possessions in your statue */
         otmp = mk_named_object(STATUE, &mons[u.umonnum], u.ux, u.uy, plname);
-        otmp->nknown = 1;
+        set_obj_nknown(otmp, 1);
 
         drop_upon_death((struct monst *) 0, otmp, u.ux, u.uy);
         if (!otmp)

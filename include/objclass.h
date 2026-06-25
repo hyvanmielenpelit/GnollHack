@@ -422,9 +422,9 @@ struct objclass {
     char *oc_uname;                 /* called by user */
     uchar oc_name_known;     /* discovered */
     uchar oc_merge;          /* merge otherwise equal objects */
-    uchar oc_uses_known;     /* obj->known affects full description;
-                                       otherwise, obj->dknown and obj->bknown
-                                       tell all, and obj->known should always
+    uchar oc_uses_known;     /* is_obj_known(obj) affects full description;
+                                       otherwise, is_obj_dknown(obj) and is_obj_bknown(obj)
+                                       tell all, and is_obj_known(obj) should always
                                        be set for proper merging behavior. */
     uchar oc_pre_discovered; /* Already known at start of game;
                                        won't be listed as a discovery. */

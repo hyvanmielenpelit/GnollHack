@@ -1535,10 +1535,10 @@ create_encounter(int selected_encounter, int x, int y, int max_attk_monsters)
                             else if (itemflags & MI_CURSED)
                                 curse(otmp);
                             else if (itemflags & MI_UNCURSED)
-                                otmp->blessed = otmp->cursed = 0;
+                                set_obj_blessed(otmp, 0), set_obj_cursed(otmp, 0);
 
                             if (itemflags & MI_ERODEPROOF)
-                                otmp->oerodeproof = TRUE;
+                                set_obj_oerodeproof(otmp, TRUE);
 
                             if (!(itemflags & MI_IGNORE_SPE))
                             {

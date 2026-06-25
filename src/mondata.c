@@ -1707,7 +1707,7 @@ befriend_with_obj(struct permonst *ptr, struct obj *obj)
     if ((ptr->mflags4 & M4_LOVES_BANANAS) && (obj)->otyp == BANANA)
         return TRUE;
 
-    if (is_hell_hound(ptr) && (obj)->oclass == FOOD_CLASS && (obj)->cursed)
+    if (is_hell_hound(ptr) && (obj)->oclass == FOOD_CLASS && is_obj_cursed((obj)))
     {
         if (!(obj->material == MAT_VEGGY
             || ((obj)->otyp == CORPSE && (obj)->corpsenm >= LOW_PM && vegetarian(&mons[(obj)->corpsenm]))))

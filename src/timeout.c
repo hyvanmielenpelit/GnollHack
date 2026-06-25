@@ -1808,7 +1808,7 @@ slip_or_trip(void)
         what = (iflags.last_msg == PLNMSG_ONE_ITEM_HERE)
                 ? ((otmp->quan == 1L) ? "it"
                       : Hallucination ? "they" : "them")
-                : (otmp->dknown || !Blind)
+                : (is_obj_dknown(otmp) || !Blind)
                       ? doname(otmp)
                       : ((otmp2 = sobj_at(ROCK, u.ux, u.uy)) == 0
                              ? something
@@ -2442,7 +2442,7 @@ begin_burn(struct obj *obj, boolean already_lit)
         /* Infinite burn */
         do_timer = FALSE;
         do_lamplit = TRUE;
-        //obj->lamplit = 1;
+        //set_obj_lamplit(obj, 1);
 
         if (obj->otyp == MAGIC_CANDLE)
         {
@@ -2455,12 +2455,12 @@ begin_burn(struct obj *obj, boolean already_lit)
         switch (obj->otyp) 
         {
         case MAGIC_LAMP:
-            //obj->lamplit = 1;
+            //set_obj_lamplit(obj, 1);
             do_timer = FALSE;
             do_lamplit = TRUE;
             break;
         case MAGIC_CANDLE:
-            //obj->lamplit = 1;
+            //set_obj_lamplit(obj, 1);
             do_lamplit = TRUE;
             if (obj->special_quality == SPEQUAL_MAGIC_CANDLE_UNUSED)
                 obj->special_quality = SPEQUAL_MAGIC_CANDLE_PARTLY_USED;
@@ -2523,7 +2523,7 @@ begin_burn(struct obj *obj, boolean already_lit)
     if (do_timer) 
     {
         if (start_timer(turns, TIMER_OBJECT, BURN_OBJECT, obj_to_any(obj))) {
-            //obj->lamplit = 1;
+            //set_obj_lamplit(obj, 1);
             do_lamplit = TRUE;
             obj->age -= turns;
             if (carried(obj) && !already_lit)
@@ -2531,7 +2531,7 @@ begin_burn(struct obj *obj, boolean already_lit)
         }
         else 
         {
-            //obj->lamplit = 0;
+            //set_obj_lamplit(obj, 0);
             do_lamplit = FALSE;
         }
     } 
@@ -2541,14 +2541,14 @@ begin_burn(struct obj *obj, boolean already_lit)
             do_update_inventory = TRUE;
     }
 
-    if (do_lamplit && !already_lit && !obj->lamplit /* Insurance against doing two light sources */)
+    if (do_lamplit && !already_lit && !is_obj_lamplit(obj) /* Insurance against doing two light sources */)
     {
         xchar x, y;
 
         if (get_obj_location(obj, &x, &y, CONTAINED_TOO | BURIED_TOO))
         {
             new_light_source(x, y, radius, LS_OBJECT, obj_to_any(obj), 0);
-            obj->lamplit = 1;
+            set_obj_lamplit(obj, 1);
         }
         else
             impossible("begin_burn: can't get obj position");
@@ -2565,7 +2565,7 @@ begin_burn(struct obj *obj, boolean already_lit)
 void
 end_burn(struct obj *obj, boolean timer_attached)
 {
-    if (!obj->lamplit) 
+    if (!is_obj_lamplit(obj)) 
     {
         impossible("end_burn: obj %s not lit", xname(obj));
         return;
@@ -2580,7 +2580,7 @@ end_burn(struct obj *obj, boolean timer_attached)
         debugprint("end_burn");
         /* [DS] Cleanup explicitly, since timer cleanup won't happen */
         del_light_source(LS_OBJECT, obj_to_any(obj));
-        obj->lamplit = 0;
+        set_obj_lamplit(obj, 0);
         if (obj->where == OBJ_INVENT)
             update_inventory();
     }
@@ -2595,14 +2595,14 @@ static int
 cleanup_burn(anything *arg, int64_t expire_time)
 {
     struct obj *obj = arg->a_obj;
-    if (!obj->lamplit) {
+    if (!is_obj_lamplit(obj)) {
         impossible("cleanup_burn: obj %s not lit", xname(obj));
         return FALSE;
     }
 
     debugprint("cleanup_burn");
     del_light_source(LS_OBJECT, obj_to_any(obj));
-    obj->lamplit = 0;
+    set_obj_lamplit(obj, 0);
 
     /* restore unused time */
     obj->age += expire_time - monstermoves;
@@ -3843,7 +3843,7 @@ static int
 cleanup_sound(anything *arg, int64_t expire_time)
 {
     struct obj* obj = arg->a_obj;
-    if (!obj->makingsound)
+    if (!is_obj_makingsound(obj))
     {
         impossible("cleanup_sound: obj %s not making sound", xname(obj));
         return FALSE;
@@ -3854,7 +3854,7 @@ cleanup_sound(anything *arg, int64_t expire_time)
     /* restore unused time */
     obj->age += expire_time - monstermoves;
 
-    obj->makingsound = 0;
+    set_obj_makingsound(obj, 0);
 
     if (obj->where == OBJ_INVENT)
         update_inventory();

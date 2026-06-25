@@ -1718,7 +1718,7 @@ tmp_at_with_obj(int x, int y, struct obj *obj, uint64_t missile_flags, uchar mis
                     show_gui_glyph_on_layer_and_ascii(tglyph->saved[i - 1].x,
                                tglyph->saved[i - 1].y, tglyph->glyph, tglyph->gui_glyph, LAYER_MISSILE);
                     if(obj)
-                        show_missile_info(tglyph->saved[i - 1].x, tglyph->saved[i - 1].y, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
+                        show_missile_info(tglyph->saved[i - 1].x, tglyph->saved[i - 1].y, is_obj_opoisoned(obj), obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
 
                     flush_screen(1);   /* make sure it shows up */
                     adjusted_delay_output();
@@ -1765,7 +1765,7 @@ tmp_at_with_obj(int x, int y, struct obj *obj, uint64_t missile_flags, uchar mis
                 py = tglyph->saved[tglyph->sidx-1].y;
                 show_glyph_on_layer_and_ascii(px, py, tether_glyph(px, py), LAYER_MISSILE);
                 if (obj)
-                    show_missile_info(px, py, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
+                    show_missile_info(px, py, is_obj_opoisoned(obj), obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
                 clear_found_this_turn_at(px, py);
             }
             /* save pos for later use or erasure */
@@ -1795,7 +1795,7 @@ tmp_at_with_obj(int x, int y, struct obj *obj, uint64_t missile_flags, uchar mis
             tglyph->style == DISP_BEAM || tglyph->style == DISP_BEAM_DIG || tglyph->style == DISP_ALL ? LAYER_ZAP : LAYER_MISSILE); /* show it */
 
         if (obj)
-            show_missile_info(x, y, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
+            show_missile_info(x, y, is_obj_opoisoned(obj), obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
 
         clear_found_this_turn_at(x, y);
         flush_screen(1);                 /* make sure it shows up */
@@ -1812,7 +1812,7 @@ get_obj_height(struct obj *obj)
     int baseheight = obj->oartifact ? artilist[obj->oartifact].tile_floor_height : OBJ_TILE_HEIGHT(obj->otyp);
     int height = baseheight;
     /* Special variable height for globs */
-    if (obj->globby)
+    if (is_obj_globby(obj))
     {
         if (obj->owt <= GLOB_SMALL_MAXIMUM_WEIGHT)
             height = baseheight / 2;
@@ -2599,7 +2599,7 @@ get_missile_flags(struct obj *obj, boolean tethered_weapon)
         res |= MISSILE_FLAGS_RUSTPRONE;
     if (is_poisonable(obj))
         res |= MISSILE_FLAGS_POISONABLE;
-    if (obj->oerodeproof)
+    if (is_obj_oerodeproof(obj))
         res |= MISSILE_FLAGS_ERODEPROOF;
     if (tethered_weapon)
         res |= MISSILE_FLAGS_TETHERED;

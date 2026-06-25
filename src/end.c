@@ -1394,7 +1394,7 @@ artifact_score(struct obj *list, boolean counting, winid endwin)
                 nowrap_add(u.u_gamescore, points);
             } else {
                 discover_object(otmp->otyp, TRUE, FALSE);
-                otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+                set_obj_known(otmp, 1), set_obj_dknown(otmp, 1), set_obj_bknown(otmp, 1), set_obj_rknown(otmp, 1), set_obj_nknown(otmp, 1);
                 /* assumes artifacts don't have quan > 1 */
                 Sprintf(pbuf, "%s%s (worth %ld %s and %ld points)",
                         the_unique_obj(otmp) ? "The " : "",
@@ -1417,7 +1417,7 @@ count_archaeologist_item_score(struct obj *list)
     int64_t score = 0;
     for (otmp = list; otmp; otmp = otmp->nobj)
     {
-        if (otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown))
+        if (otmp->oartifact && (program_state.gameover || is_obj_nknown(otmp) || is_obj_aknown(otmp)))
         {
             score += ARCHAEOLOGIST_PER_ARTIFACT_SCORE * otmp->quan;
         }
@@ -1454,7 +1454,7 @@ count_artifacts(struct obj *list)
     struct item_score_count_result cnt = { 0 };
     for (otmp = list; otmp; otmp = otmp->nobj) 
     {
-        if (otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown))
+        if (otmp->oartifact && (program_state.gameover || is_obj_nknown(otmp) || is_obj_aknown(otmp)))
         {
             cnt.quantity += otmp->quan;
             cnt.score += ARCHAEOLOGIST_PER_ARTIFACT_SCORE * otmp->quan;
@@ -1566,7 +1566,7 @@ count_powerful_melee_weapon_score(struct obj *list)
     {
         if (is_wieldable_weapon(otmp) && !is_appliable_pole_type_weapon(otmp)
             && !(is_launcher(otmp) || is_ammo(otmp) || is_missile(otmp))
-            && ((otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown)) || (otmp->mythic_prefix && otmp->mythic_suffix)))
+            && ((otmp->oartifact && (program_state.gameover || is_obj_nknown(otmp) || is_obj_aknown(otmp))) || (otmp->mythic_prefix && otmp->mythic_suffix)))
         {
             cnt.quantity += otmp->quan;
             cnt.score += BARBARIAN_PER_WEAPON_SCORE * otmp->quan;
@@ -1590,7 +1590,7 @@ count_powerful_ranged_weapon_score(struct obj *list)
     {
         if (is_wieldable_weapon(otmp)
             && (is_launcher(otmp) || is_ammo(otmp) || is_missile(otmp))
-            && ((otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown)) || (otmp->mythic_prefix || otmp->mythic_suffix || otmp->exceptionality >= EXCEPTIONALITY_ELITE)))
+            && ((otmp->oartifact && (program_state.gameover || is_obj_nknown(otmp) || is_obj_aknown(otmp))) || (otmp->mythic_prefix || otmp->mythic_suffix || otmp->exceptionality >= EXCEPTIONALITY_ELITE)))
         {
             cnt.quantity += otmp->quan;
             if (is_launcher(otmp))
@@ -1623,7 +1623,7 @@ count_powerful_Japanese_item_score(struct obj *list)
     struct item_score_count_result cnt = { 0 };
     for (otmp = list; otmp; otmp = otmp->nobj)
     {
-        if (((otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown)) && (artilist[otmp->oartifact].aflags2 & AF2_JAPANESE) != 0)
+        if (((otmp->oartifact && (program_state.gameover || is_obj_nknown(otmp) || is_obj_aknown(otmp))) && (artilist[otmp->oartifact].aflags2 & AF2_JAPANESE) != 0)
             || ((otmp->mythic_prefix || otmp->mythic_suffix || otmp->exceptionality >= EXCEPTIONALITY_EXCEPTIONAL) && ((objects[otmp->otyp].oc_flags6 & O6_JAPANESE_ITEM) != 0 || Japanese_item_name(otmp->otyp) != 0))
            )
         {
@@ -2221,9 +2221,9 @@ really_done(int how)
         for (obj = invent; obj; obj = obj->nobj) 
         {
             discover_object(obj->otyp, TRUE, FALSE);
-            obj->known = obj->bknown = obj->dknown = obj->rknown = obj->nknown = obj->aknown = obj->mknown = 1;
+            set_obj_known(obj, 1), set_obj_bknown(obj, 1), set_obj_dknown(obj, 1), set_obj_rknown(obj, 1), set_obj_nknown(obj, 1), set_obj_aknown(obj, 1), set_obj_mknown(obj, 1);
             if (Is_container(obj) || obj->otyp == STATUE)
-                obj->cknown = obj->lknown = obj->tknown = 1;
+                set_obj_cknown(obj, 1), set_obj_lknown(obj, 1), set_obj_tknown(obj, 1);
             /* we resolve Schroedinger's cat now in case of both
                disclosure and dumplog, where the 50:50 chance for
                live cat has to be the same both times */
@@ -2567,8 +2567,8 @@ really_done(int how)
                     {
                         otmp = mksobj(typ, FALSE, FALSE, FALSE);
                         discover_object(otmp->otyp, TRUE, FALSE);
-                        otmp->known = 1;  /* for fake amulets */
-                        otmp->dknown = 1; /* seen it (blindness fix) */
+                        set_obj_known(otmp, 1);  /* for fake amulets */
+                        set_obj_dknown(otmp, 1); /* seen it (blindness fix) */
                         if (has_oname(otmp))
                             free_oname(otmp);
                         otmp->quan = count;
@@ -2701,7 +2701,7 @@ really_done(int how)
             mnum = urace.monsternum;
         }
         corpse = mk_named_object(CORPSE, &mons[mnum], u.ux, u.uy, plname);
-        corpse->nknown = 1;
+        set_obj_nknown(corpse, 1);
         Sprintf(pbuf, "%s, ", plname);
         formatkiller(eos(pbuf), sizeof pbuf - strlen(pbuf), how, TRUE);
         make_grave(u.ux, u.uy, pbuf, TRUE);
@@ -2763,14 +2763,14 @@ container_contents(struct obj *list, boolean identified, boolean all_containers,
             if (dumping)
             {
                 if (identified)
-                    box->cknown = 1; /* we're looking at the contents now */
-                else if (!box->cknown) /* Do not list containers whose contents we do not know */
+                    set_obj_cknown(box, 1); /* we're looking at the contents now */
+                else if (!is_obj_cknown(box)) /* Do not list containers whose contents we do not know */
                     continue;
             }
             else
-                box->cknown = 1; /* we're looking at the contents now */
+                set_obj_cknown(box, 1); /* we're looking at the contents now */
             if (identified)
-                box->lknown = 1;
+                set_obj_lknown(box, 1);
             if (Is_noncontainer(box) /*->otyp == BAG_OF_TRICKS*/) 
             {
                 continue; /* wrong type of container */
@@ -2809,10 +2809,9 @@ container_contents(struct obj *list, boolean identified, boolean all_containers,
                         if (identified) 
                         {
                             discover_object(obj->otyp, TRUE, FALSE);
-                            obj->known = obj->bknown = obj->dknown
-                                = obj->rknown = obj->nknown = obj->aknown = obj->mknown = 1;
+                            set_obj_known(obj, 1), set_obj_bknown(obj, 1), set_obj_dknown(obj, 1), set_obj_rknown(obj, 1), set_obj_nknown(obj, 1), set_obj_aknown(obj, 1), set_obj_mknown(obj, 1);
                             if (Is_container(obj) || obj->otyp == STATUE)
-                                obj->cknown = obj->lknown = obj->tknown = 1;
+                                set_obj_cknown(obj, 1), set_obj_lknown(obj, 1), set_obj_tknown(obj, 1);
                         }
                         count++;
 
@@ -2897,10 +2896,9 @@ magic_chest_contents(boolean identified, boolean all_containers, boolean reporte
                 if (identified)
                 {
                     discover_object(obj->otyp, TRUE, FALSE);
-                    obj->known = obj->bknown = obj->dknown
-                        = obj->rknown = obj->nknown = obj->aknown = obj->mknown = 1;
+                    set_obj_known(obj, 1), set_obj_bknown(obj, 1), set_obj_dknown(obj, 1), set_obj_rknown(obj, 1), set_obj_nknown(obj, 1), set_obj_aknown(obj, 1), set_obj_mknown(obj, 1);
                     if (Is_container(obj) || obj->otyp == STATUE)
-                        obj->cknown = obj->lknown = obj->tknown = 1;
+                        set_obj_cknown(obj, 1), set_obj_lknown(obj, 1), set_obj_tknown(obj, 1);
                 }
                 count++;
 
@@ -4088,8 +4086,8 @@ reset_objchn(struct obj *otmp)
         otmp->nobj = NULL;      /* nobj saved into otmp2 */
         otmp->cobj = NULL;      /* contents handled above */
         otmp->timed = 0;        /* not timed any more */
-        otmp->lamplit = 0;      /* caller handled lights */
-        otmp->makingsound = 0;  /* caller handled sounds */
+        set_obj_lamplit(otmp, 0);      /* caller handled lights */
+        set_obj_makingsound(otmp, 0);  /* caller handled sounds */
         dealloc_obj(otmp);
         otmp = otmp2;
     }

@@ -66,7 +66,7 @@ static boolean special_stock(struct obj *, struct monst *,
 static const char *cad(boolean);
 
 /*
-        invariants: obj->unpaid iff onbill(obj) [unless bp->useup]
+        invariants: is_obj_unpaid(obj) iff onbill(obj) [unless bp->useup]
                     obj->quan <= bp->bquan
  */
 
@@ -199,7 +199,7 @@ shkgone(struct monst *mtmp)
             for (sy = sroom->ly; sy <= sroom->hy; sy++)
                 for (otmp = level.objects[sx][sy]; otmp;
                      otmp = otmp->nexthere)
-                    otmp->no_charge = 0;
+                    set_obj_no_charge(otmp, 0);
 
         /* Make sure bill is set only when the
            dead shk is the resident shk. */
@@ -260,7 +260,7 @@ clear_unpaid_obj(struct monst *shkp, struct obj *otmp)
         clear_unpaid(shkp, otmp->cobj);
     debugprint_pos();
     if (onbill(otmp, shkp, TRUE))
-        otmp->unpaid = 0;
+        set_obj_unpaid(otmp, 0);
 }
 
 /* Clear the unpaid bit on all of the objects in the list. */
@@ -746,7 +746,7 @@ pick_pick(struct obj *obj)
 {
     struct monst *shkp;
 
-    if (obj->unpaid || !is_pick(obj))
+    if (is_obj_unpaid(obj) || !is_pick(obj))
         return;
     debugprint_pos();
     shkp = shop_keeper(*u.ushops);
@@ -930,13 +930,13 @@ onbill(struct obj *obj, struct monst *shkp, boolean silent)
 
         while (--ct >= 0)
             if (bp->bo_id == obj->o_id) {
-                if (!obj->unpaid)
+                if (!is_obj_unpaid(obj))
                     impossible("onbill: paid obj on bill?");
                 return bp;
             } else
                 bp++;
     }
-    if (obj->unpaid && !silent)
+    if (is_obj_unpaid(obj) && !silent)
         impossible("onbill: unpaid obj not on bill?");
     return (struct bill_x *) 0;
 }
@@ -945,7 +945,7 @@ onbill(struct obj *obj, struct monst *shkp, boolean silent)
 boolean
 is_unpaid(struct obj *obj)
 {
-    return (boolean) (obj->unpaid || (Has_contents(obj) && count_unpaid(obj->cobj, 0, FALSE)));
+    return (boolean) (is_obj_unpaid(obj) || (Has_contents(obj) && count_unpaid(obj->cobj, 0, FALSE)));
 }
 
 /* Delete the contents of the given object. */
@@ -982,7 +982,7 @@ obfree(struct obj *obj, struct obj *merge)
         maybe_reset_pick(obj);
     
     shkp = 0;
-    if (obj->unpaid) 
+    if (is_obj_unpaid(obj)) 
     {
         /* look for a shopkeeper who owns this object */
         debugprint_pos();
@@ -1006,7 +1006,7 @@ obfree(struct obj *obj, struct obj *merge)
     if ((bp = onbill(obj, shkp, FALSE)) != 0) {
         if (!merge) {
             bp->useup = 1;
-            obj->unpaid = 0; /* only for doinvbill */
+            set_obj_unpaid(obj, 0); /* only for doinvbill */
             add_to_billobjs(obj);
             return;
         }
@@ -1702,7 +1702,7 @@ dopayobj(struct monst *shkp, struct bill_x *bp, struct obj **obj_p, int which, b
     int buy;
     boolean stashed_gold = (hidden_gold() > 0L), consumed = (which == 0);
 
-    if (!obj->unpaid && !bp->useup) {
+    if (!is_obj_unpaid(obj) && !bp->useup) {
         impossible("Paid object on bill??");
         return PAY_BUY;
     }
@@ -1725,7 +1725,7 @@ dopayobj(struct monst *shkp, struct bill_x *bp, struct obj **obj_p, int which, b
         quan = obj->quan;
     }
     //obj->quan = quan;        /* to be used by doname() */
-    //obj->unpaid = 0;         /* ditto */
+    //set_obj_unpaid(obj, 0);         /* ditto */
     iflags.payobj_special_quan = quan;
     iflags.suppress_price++; /* affects containers */
     ltmp = bp->price * quan;
@@ -1776,7 +1776,7 @@ dopayobj(struct monst *shkp, struct bill_x *bp, struct obj **obj_p, int which, b
     if (buy != PAY_BUY) {
         /* restore unpaid object to original state */
         //obj->quan = save_quan;
-        //obj->unpaid = 1;
+        //set_obj_unpaid(obj, 1);
         iflags.payobj_special_quan = 0;
         iflags.suppress_price--;
         return buy;
@@ -1788,7 +1788,7 @@ dopayobj(struct monst *shkp, struct bill_x *bp, struct obj **obj_p, int which, b
                   consumed ? "paid for %s at a cost of %ld gold piece%s.%s"
                            : "bought %s for %ld gold piece%s.%s",
                   ltmp, "");
-    obj->unpaid = 0; /* It is now finally unpaid in reality! */
+    set_obj_unpaid(obj, 0); /* It is now finally unpaid in reality! */
     iflags.payobj_special_quan = 0;
     //obj->quan = save_quan; /* restore original count */
     /* quan => amount just bought, save_quan => remaining unpaid count */
@@ -1796,7 +1796,7 @@ dopayobj(struct monst *shkp, struct bill_x *bp, struct obj **obj_p, int which, b
         if (quan != bp->bquan) {
             /* eliminate used-up portion; remainder is still unpaid */
             bp->bquan = obj->quan;
-            obj->unpaid = 1;
+            set_obj_unpaid(obj, 1);
             bp->useup = 0;
             buy = PAY_SOME;
         } else { /* completely used-up, so get rid of it */
@@ -2142,9 +2142,9 @@ get_cost_of_shop_item(struct obj *obj, int *nochrg)
                     && x == ESHK(shkp)->shk.x && y == ESHK(shkp)->shk.y);
         /* no_charge is only set for floor items inside shop proper;
            items on freespot are implicitly 'no charge' */
-        *nochrg = (top->where == OBJ_FLOOR && (obj->no_charge || freespot));
+        *nochrg = (top->where == OBJ_FLOOR && (is_obj_no_charge(obj) || freespot));
 
-        if (carried(top) ? (int) obj->unpaid : !*nochrg)
+        if (carried(top) ? (int) is_obj_unpaid(obj) : !*nochrg)
             cost = obj->quan * get_cost(obj, shkp);
         if (Has_contents(obj) && !freespot)
             cost += contained_cost(obj, shkp, 0L, FALSE, TRUE);
@@ -2159,7 +2159,7 @@ oid_price_adjustment(struct obj *obj, unsigned oid)
 {
     int res = 0, otyp = obj->otyp;
 
-    if (!(obj->dknown && objects[otyp].oc_name_known)
+    if (!(is_obj_dknown(obj) && objects[otyp].oc_name_known)
         && (obj->oclass != GEM_CLASS || (obj->material != MAT_GLASS && obj->material != MAT_CRYSTAL))) {
         res = ((oid % 4) == 0); /* id%4 ==0 -> +1, ==1..3 -> 0 */
     }
@@ -2188,8 +2188,8 @@ get_cost(struct obj *obj, struct monst *shkp)
         tmp = 5L;
     /* shopkeeper may notice if the player isn't very knowledgeable -
        especially when gem prices are concerned */
-    if (!obj->dknown 
-        || (!obj->oartifact && !objects[obj->otyp].oc_name_known) || (obj->oartifact && !obj->nknown))
+    if (!is_obj_dknown(obj) 
+        || (!obj->oartifact && !objects[obj->otyp].oc_name_known) || (obj->oartifact && !is_obj_nknown(obj)))
     {
         if (obj->oclass == GEM_CLASS
             && obj->material == MAT_GLASS)
@@ -2327,7 +2327,7 @@ contained_cost(struct obj *obj, struct monst *shkp, int64_t price, boolean usell
             continue;
 
         if (usell) {
-            if (saleable(shkp, otmp) && !otmp->unpaid
+            if (saleable(shkp, otmp) && !is_obj_unpaid(otmp)
                 && otmp->oclass != BALL_CLASS
                 && !(otmp->oclass == FOOD_CLASS && otmp->oeaten)
                 && !(is_candle(otmp) && otmp->age < candle_starting_burn_time(otmp))
@@ -2338,8 +2338,8 @@ contained_cost(struct obj *obj, struct monst *shkp, int64_t price, boolean usell
             /* no_charge is only set for floor items (including
                contents of floor containers) inside shop proper;
                items on freespot are implicitly 'no charge' */
-            if (on_floor ? (!otmp->no_charge && !freespot)
-                         : (otmp->unpaid || !unpaid_only))
+            if (on_floor ? (!is_obj_no_charge(otmp) && !freespot)
+                         : (is_obj_unpaid(otmp) || !unpaid_only))
                 price += get_cost(otmp, shkp) * otmp->quan;
         }
 
@@ -2377,8 +2377,8 @@ dropped_container(struct obj *obj, struct monst *shkp, boolean sale)
         if (otmp->oclass == COIN_CLASS)
             continue;
 
-        if (!otmp->unpaid && !(sale && saleable(shkp, otmp)))
-            otmp->no_charge = 1;
+        if (!is_obj_unpaid(otmp) && !(sale && saleable(shkp, otmp)))
+            set_obj_no_charge(otmp, 1);
 
         if (Has_contents(otmp))
             dropped_container(otmp, shkp, sale);
@@ -2397,7 +2397,7 @@ adjust_dropped_container_on_sale(struct obj *obj, struct monst *shkp)
 
         /* Cannot use unpaid, since it has been cleared out earlier */
         if ((otmp->item_flags & ITEM_FLAGS_SAVED_UNPAID) == 0 && saleable(shkp, otmp))
-            otmp->no_charge = 0;
+            set_obj_no_charge(otmp, 0);
 
         otmp->item_flags &= ~ITEM_FLAGS_SAVED_UNPAID; // No longer needed, so clear out just in case
 
@@ -2416,7 +2416,7 @@ mark_unpaid_container_contents(struct obj *obj)
         if (otmp->oclass == COIN_CLASS)
             continue;
 
-        if (otmp->unpaid)
+        if (is_obj_unpaid(otmp))
             otmp->item_flags |= ITEM_FLAGS_SAVED_UNPAID;
 
         if (Has_contents(otmp))
@@ -2451,8 +2451,8 @@ picked_container(struct obj *obj)
         if (otmp->oclass == COIN_CLASS)
             continue;
 
-        if (otmp->no_charge)
-            otmp->no_charge = 0;
+        if (is_obj_no_charge(otmp))
+            set_obj_no_charge(otmp, 0);
 
         if (Has_contents(otmp))
             picked_container(otmp);
@@ -2528,7 +2528,7 @@ set_cost(struct obj *obj, struct monst *mtmp)
 
     /* shopkeeper may notice if the player isn't very knowledgeable -
        especially when gem prices are concerned */
-    if (!obj->dknown || !objects[obj->otyp].oc_name_known) {
+    if (!is_obj_dknown(obj) || !objects[obj->otyp].oc_name_known) {
         if (obj->oclass == GEM_CLASS) {
             /* different shop keepers give different prices */
             if (obj->material == MAT_GEMSTONE
@@ -2656,7 +2656,7 @@ unpaid_cost(struct obj *unp_obj, boolean include_contents)
     }
 
     /* onbill() gave no message if unexpected problem occurred */
-    if (!shkp || (unp_obj->unpaid && !bp)) {
+    if (!shkp || (is_obj_unpaid(unp_obj) && !bp)) {
         impossible("unpaid_cost: object wasn't on any bill.");
     } else {
         if (bp)
@@ -2703,7 +2703,7 @@ add_one_tobill(struct obj *obj, boolean dummy, struct monst *shkp)
         bp->useup = 0;
     bp->price = get_cost(obj, shkp);
     eshkp->billct++;
-    obj->unpaid = 1;
+    set_obj_unpaid(obj, 1);
 }
 
 static void
@@ -2735,7 +2735,7 @@ bill_box_content(struct obj *obj, boolean ininv, boolean dummy, struct monst *sh
             continue;
 
         /* the "top" box is added in addtobill() */
-        if (!otmp->no_charge)
+        if (!is_obj_no_charge(otmp))
             add_one_tobill(otmp, dummy, shkp);
         if (Has_contents(otmp))
             bill_box_content(otmp, ininv, dummy, shkp);
@@ -2751,9 +2751,9 @@ static void
 shk_names_obj(struct monst *shkp UNUSED, struct obj *obj, const char *fmt, int64_t amt, const char *arg)
 {
     char *obj_name, fmtbuf[BUFSZ];
-    boolean was_unknown = !obj->dknown;
+    boolean was_unknown = !is_obj_dknown(obj);
 
-    obj->dknown = TRUE;
+    set_obj_dknown(obj, TRUE);
     /* Use real name for ordinary weapons/armor, and spell-less
      * scrolls/books (that is, blank and mail), but only if the
      * object is within the shk's area of interest/expertise.
@@ -2807,7 +2807,7 @@ billable(struct monst **shkpp, struct obj *obj, char roomno, boolean reset_nocha
         return FALSE;
     /* outer container might be marked no_charge but still have contents
        which should be charged for; clear no_charge when picking things up */
-    if (obj->no_charge) 
+    if (is_obj_no_charge(obj)) 
     {
         if (!Has_contents(obj) || (contained_gold(obj) == 0L
                                    && contained_cost(obj, shkp, 0L, FALSE,
@@ -2815,7 +2815,7 @@ billable(struct monst **shkpp, struct obj *obj, char roomno, boolean reset_nocha
             shkp = 0; /* not billable */
         if (reset_nocharge && !shkp && obj->oclass != COIN_CLASS) 
         {
-            obj->no_charge = 0;
+            set_obj_no_charge(obj, 0);
             if (Has_contents(obj))
                 picked_container(obj); /* clear no_charge */
         }
@@ -2849,12 +2849,12 @@ addtobill(struct obj *obj, boolean ininv, boolean dummy, boolean silent)
     ltmp = cltmp = gltmp = 0L;
     container = Has_contents(obj);
 
-    if (!obj->no_charge)
+    if (!is_obj_no_charge(obj))
         ltmp = get_cost(obj, shkp);
 
-    if (obj->no_charge && !container) 
+    if (is_obj_no_charge(obj) && !container) 
     {
-        obj->no_charge = 0;
+        set_obj_no_charge(obj, 0);
         return;
     }
 
@@ -2867,7 +2867,7 @@ addtobill(struct obj *obj, boolean ininv, boolean dummy, boolean silent)
             add_one_tobill(obj, dummy, shkp);
         if (cltmp)
             bill_box_content(obj, ininv, dummy, shkp);
-        picked_container(obj); /* reset contained obj->no_charge */
+        picked_container(obj); /* reset contained is_obj_no_charge(obj) */
 
         ltmp += cltmp;
 
@@ -2878,8 +2878,8 @@ addtobill(struct obj *obj, boolean ininv, boolean dummy, boolean silent)
                 return;
         }
 
-        if (obj->no_charge)
-            obj->no_charge = 0;
+        if (is_obj_no_charge(obj))
+            set_obj_no_charge(obj, 0);
         contentscount = count_unpaid(obj->cobj, 0, FALSE);
     }
     else
@@ -2930,11 +2930,11 @@ addtobill(struct obj *obj, boolean ininv, boolean dummy, boolean silent)
                     pline("%s I will charge the full price for %s.\"", buf, save_quan > 1 ? "these items" : "this item");
                         /* " (%ld %s %s %s%s.)" -- , ltmp, currency(ltmp),
                         (save_quan > 1L) ? "per"
-                        : (contentscount && !obj->unpaid)
+                        : (contentscount && !is_obj_unpaid(obj))
                         ? "for the contents of this"
                         : "for this",
                         xname(obj),
-                        (contentscount && obj->unpaid) ? and_its_contents : "");*/
+                        (contentscount && is_obj_unpaid(obj)) ? and_its_contents : "");*/
                     //obj->quan = save_quan;
 
                 }
@@ -2951,7 +2951,7 @@ addtobill(struct obj *obj, boolean ininv, boolean dummy, boolean silent)
                         "only a modest sum for the contents of %s %s.%s",
                         "only a modest sum for %s %s and its contents.%s",
                     };
-                    int bidx = (contentscount && !obj->unpaid) ? 6 : (contentscount && obj->unpaid) ? 7 : rn2(6);
+                    int bidx = (contentscount && !is_obj_unpaid(obj)) ? 6 : (contentscount && is_obj_unpaid(obj)) ? 7 : rn2(6);
                     char fmtbuf[BUFSZ];
                     Sprintf(fmtbuf, "%s %s%s", "%s", base_line_fmt[bidx], "\""); // (%ld %s %s %s%s.)
 
@@ -2962,11 +2962,11 @@ addtobill(struct obj *obj, boolean ininv, boolean dummy, boolean silent)
                     /* ,
                         ltmp, currency(ltmp),
                         (save_quan > 1L) ? "per"
-                        : (contentscount && !obj->unpaid)
+                        : (contentscount && !is_obj_unpaid(obj))
                         ? "for the contents of this"
                         : "for this",
                         xname(obj),
-                        (contentscount && obj->unpaid) ? and_its_contents : ""); */
+                        (contentscount && is_obj_unpaid(obj)) ? and_its_contents : ""); */
                     //obj->quan = save_quan;
                 }
             }
@@ -2975,11 +2975,11 @@ addtobill(struct obj *obj, boolean ininv, boolean dummy, boolean silent)
                 obj->quan = 1L; /* fool xname() into giving singular */
                 pline("%s %ld %s %s %s%s.\"", buf, ltmp, currency(ltmp),
                     (save_quan > 1L) ? "per"
-                    : (contentscount && !obj->unpaid)
+                    : (contentscount && !is_obj_unpaid(obj))
                     ? "for the contents of this"
                     : "for this",
                     xname(obj),
-                    (contentscount && obj->unpaid) ? and_its_contents : "");
+                    (contentscount && is_obj_unpaid(obj)) ? and_its_contents : "");
                 obj->quan = save_quan;
 
             }
@@ -2990,9 +2990,9 @@ addtobill(struct obj *obj, boolean ininv, boolean dummy, boolean silent)
     {
         if (ltmp)
             pline_The("list price of %s%s%s is %ld %s%s.",
-                      (contentscount && !obj->unpaid) ? the_contents_of : "",
+                      (contentscount && !is_obj_unpaid(obj)) ? the_contents_of : "",
                       the(xname(obj)),
-                      (contentscount && obj->unpaid) ? and_its_contents : "",
+                      (contentscount && is_obj_unpaid(obj)) ? and_its_contents : "",
                       ltmp, currency(ltmp), (obj->quan > 1L) ? " each" : "");
         else
             pline("%s does not notice.", Shknam(shkp));
@@ -3050,7 +3050,7 @@ splitbill(struct obj *obj, struct obj *otmp)
     bp->bquan -= otmp->quan;
 
     if (ESHK(shkp)->billct == BILLSZ)
-        otmp->unpaid = 0;
+        set_obj_unpaid(otmp, 0);
     else {
         tmp = bp->price;
         bp = &(ESHK(shkp)->bill_p[ESHK(shkp)->billct]);
@@ -3071,7 +3071,7 @@ sub_one_frombill(struct obj *obj, struct monst *shkp)
     if ((bp = onbill(obj, shkp, FALSE)) != 0) {
         struct obj *otmp;
 
-        obj->unpaid = 0;
+        set_obj_unpaid(obj, 0);
         if (bp->bquan > obj->quan) {
             otmp = newobj();
             *otmp = *obj;
@@ -3096,9 +3096,9 @@ sub_one_frombill(struct obj *obj, struct monst *shkp)
         *bp = ESHK(shkp)->bill_p[ESHK(shkp)->billct];
 #endif
         return;
-    } else if (obj->unpaid) {
+    } else if (is_obj_unpaid(obj)) {
         impossible("sub_one_frombill: unpaid object not on bill");
-        obj->unpaid = 0;
+        set_obj_unpaid(obj, 0);
     }
 }
 
@@ -3149,7 +3149,7 @@ stolen_container(struct obj *obj, struct monst *shkp, int64_t price, boolean ini
 
         if (billamt)
             price += billamt;
-        else if (ininv ? otmp->unpaid : !otmp->no_charge)
+        else if (ininv ? is_obj_unpaid(otmp) : !is_obj_no_charge(otmp))
             price += otmp->quan * get_cost(otmp, shkp);
 
         if (Has_contents(otmp))
@@ -3170,7 +3170,7 @@ stolen_value(struct obj *obj, xchar x, xchar y, boolean peaceful, boolean silent
     int64_t c_count = 0L, u_count = 0L;
 
     /* gather information for message(s) prior to manipulating bill */
-    was_unpaid = obj->unpaid ? TRUE : FALSE;
+    was_unpaid = is_obj_unpaid(obj) ? TRUE : FALSE;
     if (Has_contents(obj)) {
         c_count = count_contents(obj, TRUE, FALSE, TRUE);
         u_count = count_contents(obj, TRUE, FALSE, FALSE);
@@ -3194,7 +3194,7 @@ stolen_value(struct obj *obj, xchar x, xchar y, boolean peaceful, boolean silent
     } else {
         if (billamt)
             value += billamt;
-        else if (!obj->no_charge)
+        else if (!is_obj_no_charge(obj))
             value += obj->quan * get_cost(obj, shkp);
 
         if (Has_contents(obj)) {
@@ -3320,7 +3320,7 @@ sellobj(struct obj *obj, xchar x, xchar y)
     if (!costly_spot(x, y))
         return;
 
-    if (obj->unpaid && !container && !isgold) 
+    if (is_obj_unpaid(obj) && !container && !isgold) 
     {
         sub_one_frombill(obj, shkp);
         return;
@@ -3335,7 +3335,7 @@ sellobj(struct obj *obj, xchar x, xchar y)
     }
 
     saleitem = saleable(shkp, obj);
-    if (!isgold && !obj->unpaid && saleitem)
+    if (!isgold && !is_obj_unpaid(obj) && saleitem)
         ltmp = set_cost(obj, shkp);
 
     offer = ltmp + cltmp;
@@ -3348,13 +3348,13 @@ sellobj(struct obj *obj, xchar x, xchar y)
 
         if (container) {
             dropped_container(obj, shkp, FALSE);
-            if (!obj->unpaid)
-                obj->no_charge = 1;
+            if (!is_obj_unpaid(obj))
+                set_obj_no_charge(obj, 1);
             if (unpaid)
                 subfrombill(obj, shkp);
         }
         else
-            obj->no_charge = 1;
+            set_obj_no_charge(obj, 1);
 
         if (!unpaid && (sell_how != SELL_DONTSELL)
             && !special_stock(obj, shkp, FALSE))
@@ -3442,8 +3442,8 @@ sellobj(struct obj *obj, xchar x, xchar y)
             {
                 if (container)
                     dropped_container(obj, shkp, FALSE);
-                if (!obj->unpaid)
-                    obj->no_charge = 1;
+                if (!is_obj_unpaid(obj))
+                    set_obj_no_charge(obj, 1);
                 subfrombill(obj, shkp);
             }
             return;
@@ -3463,7 +3463,7 @@ sellobj(struct obj *obj, xchar x, xchar y)
               cgold ? " in the rest" : "");
         if (container)
             dropped_container(obj, shkp, FALSE);
-        obj->no_charge = 1;
+        set_obj_no_charge(obj, 1);
         return;
     }
 
@@ -3474,14 +3474,14 @@ sellobj(struct obj *obj, xchar x, xchar y)
         int64_t tmpcr = ((offer * 9L) / 10L) + (offer <= 1L);
 
         /* Assume no sale first, and adjust upon sale (this is for saving during the question) */
-        boolean was_unpaid = obj->unpaid;
+        boolean was_unpaid = is_obj_unpaid(obj);
         if (container)
         {
             mark_unpaid_container_contents(obj);
             dropped_container(obj, shkp, FALSE);
         }
         if (!was_unpaid)
-            obj->no_charge = 1;
+            set_obj_no_charge(obj, 1);
         subfrombill(obj, shkp);
 
         if (sell_how == SELL_NORMAL || auto_credit) 
@@ -3518,7 +3518,7 @@ sellobj(struct obj *obj, xchar x, xchar y)
             if (container)
                 adjust_dropped_container_on_sale(obj, shkp);
             if (saleitem)
-                obj->no_charge = 0;
+                set_obj_no_charge(obj, 0);
         }
         else 
         {
@@ -3579,8 +3579,8 @@ sellobj(struct obj *obj, xchar x, xchar y)
                     (cltmp && !ltmp)
                         ? ((yourc == 1L) ? "your item in " : "your items in ")
                         : "",
-                    obj->unpaid ? "the" : "your");
-            one = obj->unpaid ? (yourc == 1L) : (obj->quan == 1L && !cltmp);
+                    is_obj_unpaid(obj) ? "the" : "your");
+            one = is_obj_unpaid(obj) ? (yourc == 1L) : (obj->quan == 1L && !cltmp);
             Sprintf(qsfx, "%s.  Sell %s?",
                     (cltmp && ltmp)
                         ? (only_partially_your_contents
@@ -3595,14 +3595,14 @@ sellobj(struct obj *obj, xchar x, xchar y)
             qbuf[0] = '\0'; /* just to pacify lint */
 
         /* Assume no sale first, and then make adjustments below if it in fact a sale; this way the game can be saved in the middle of the question */
-        boolean was_unpaid = obj->unpaid;
+        boolean was_unpaid = is_obj_unpaid(obj);
         if (container)
         {
             mark_unpaid_container_contents(obj);
             dropped_container(obj, shkp, FALSE); /* This marks all items non-unpaid items as no charge */
         }
         if (!was_unpaid)
-            obj->no_charge = 1;
+            set_obj_no_charge(obj, 1);
         subfrombill(obj, shkp); /* Note that this clears out unpaid */
 
         switch (sell_response ? sell_response : ynaq(qbuf))
@@ -3615,8 +3615,8 @@ sellobj(struct obj *obj, xchar x, xchar y)
             /* Moved to above to allow saving during question */
             //if (container)
             //    dropped_container(obj, shkp, FALSE);
-            //if (!obj->unpaid)
-            //    obj->no_charge = 1;
+            //if (!is_obj_unpaid(obj))
+            //    set_obj_no_charge(obj, 1);
             //subfrombill(obj, shkp);
             break;
         case 'a':
@@ -3627,7 +3627,7 @@ sellobj(struct obj *obj, xchar x, xchar y)
             if (container) /* Unmark saleable items from being nocharge; you need here knowledge of what has been unpaid before */
                 adjust_dropped_container_on_sale(obj, shkp); // dropped_container(obj, shkp, TRUE);
             if (saleitem) /* Adjust the item itself */
-                obj->no_charge = 0;
+                set_obj_no_charge(obj, 0);
             //subfrombill(obj, shkp);
             pay(-offer, shkp);
             play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
@@ -3887,7 +3887,7 @@ getprice(struct obj *obj, boolean shk_buying)
             tmp = 0L;
         break;
     case POTION_CLASS:
-        if (obj->otyp == POT_WATER && !obj->blessed && !obj->cursed)
+        if (obj->otyp == POT_WATER && !is_obj_blessed(obj) && !is_obj_cursed(obj))
             tmp = 0L;
         break;
     case ARMOR_CLASS:
@@ -4883,7 +4883,7 @@ shop_object(xchar x, xchar y)
     for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
         if (otmp->oclass != COIN_CLASS)
             break;
-    /* note: otmp might have ->no_charge set, but that's ok */
+    /* note: otmp might is_obj_no_charge(have) set, but that's ok */
     return (otmp && costly_spot(x, y)
             && NOTANGRY(shkp) && mon_can_move(shkp))
                ? otmp
@@ -4909,7 +4909,7 @@ price_quote(struct obj *first_obj)
     for (otmp = first_obj; otmp; otmp = otmp->nexthere) {
         if (otmp->oclass == COIN_CLASS)
             continue;
-        cost = (otmp->no_charge || otmp == uball || otmp == uchain) ? 0L
+        cost = (is_obj_no_charge(otmp) || otmp == uball || otmp == uchain) ? 0L
                  : get_cost(otmp, shkp);
         contentsonly = !cost;
         if (Has_contents(otmp))
@@ -5309,7 +5309,7 @@ check_unpaid_usage(struct obj *otmp, boolean altusage)
     char buf[BUFSZ];
     int64_t tmp;
 
-    if (!otmp->unpaid || !*u.ushops
+    if (!is_obj_unpaid(otmp) || !*u.ushops
         || (otmp->charges <= 0 && objects[otmp->otyp].oc_charged))
         return;
     debugprint_pos();
@@ -5553,7 +5553,7 @@ shk_owns(char *buf, struct obj *obj)
     xchar x, y;
 
     if (get_obj_location(obj, &x, &y, 0)
-        && (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge
+        && (is_obj_unpaid(obj) || (obj->where == OBJ_FLOOR && !is_obj_no_charge(obj)
                             && costly_spot(x, y)))) {
         debugprint_pos();
         shkp = shop_keeper(inside_shop(x, y));
@@ -5711,7 +5711,7 @@ reset_shk(void)
 void
 sasc_bug(struct obj *op, unsigned x)
 {
-    op->unpaid = x;
+    set_obj_unpaid(op, x);
 }
 #endif
 

@@ -1169,7 +1169,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
     }
     else 
     {
-        if (!((artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)) && obj->lamplit))
+        if (!((artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)) && is_obj_lamplit(obj)))
             Strcpy(saved_oname, cxname(obj));
         else
             Strcpy(saved_oname, bare_artifactname(obj));
@@ -1357,7 +1357,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                     reallysilverobj = obj->material == MAT_SILVER;
                 }
 
-                if ((artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)) && obj->lamplit
+                if ((artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)) && is_obj_lamplit(obj)
                     && mon_hates_light(mon))
                     lightobj = TRUE;
 
@@ -1370,7 +1370,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                         valid_weapon_attack = TRUE;
                 }
 
-                if (obj->opoisoned && is_poisonable(obj))
+                if (is_obj_opoisoned(obj) && is_poisonable(obj))
                     ispoisoned = TRUE;
             }
         }
@@ -1464,9 +1464,9 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
 
                         You("hit %s with %s.", mon_nam(mon),
                             corpse_xname(obj, (const char*)0,
-                                obj->dknown ? CXN_PFX_THE
+                                is_obj_dknown(obj) ? CXN_PFX_THE
                                 : CXN_ARTICLE));
-                        obj->dknown = 1;
+                        set_obj_dknown(obj, 1);
                         if (check_magic_cancellation_success(mon, 0) || resists_ston(mon))
                         {
                             play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mon->mx, mon->my);
@@ -1533,11 +1533,11 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                         pline1("Splat!");
                         You("hit %s with %s %s egg%s!",
                             mon_nam(mon),
-                            obj->known ? "the" : cnt > 1L ? "some" : "a",
-                            obj->known ? mons[obj->corpsenm].mname
+                            is_obj_known(obj) ? "the" : cnt > 1L ? "some" : "a",
+                            is_obj_known(obj) ? mons[obj->corpsenm].mname
                             : "petrifying",
                             plur(cnt));
-                        obj->known = 1; /* (not much point...) */
+                        set_obj_known(obj, 1); /* (not much point...) */
                         useup_eggs(obj);
 
                         change_luck(luck_change, TRUE);
@@ -1557,7 +1557,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                     else 
                     { /* ordinary egg(s) */
                         const char* eggp = (obj->corpsenm != NON_PM
-                            && obj->known)
+                            && is_obj_known(obj))
                             ? the(mons[obj->corpsenm].mname)
                             : (cnt > 1L) ? "some" : "an";
 
@@ -1575,7 +1575,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                             obj->oclass = GEM_CLASS;
                             obj->oartifact = 0;
                             obj->speflags = 0;
-                            obj->known = obj->dknown = obj->bknown = 0;
+                            set_obj_known(obj, 0), set_obj_dknown(obj, 0), set_obj_bknown(obj, 0);
                             obj->owt = weight(obj);
                             if (thrown)
                                 place_object(obj, mon->mx, mon->my);
@@ -1839,7 +1839,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
         if (obj && !rn2(nopoison)) 
         {
             /* remove poison now in case obj ends up in a bones file */
-            obj->opoisoned = FALSE;
+            set_obj_opoisoned(obj, FALSE);
             /* defer "obj is no longer poisoned" until after hit message */
             unpoisonmsg = TRUE;
         }
@@ -1978,7 +1978,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
         You("joust %s%s", mon_nam(mon), canseemon(mon) ? exclam((int)ceil(damage)) : ".");
         if (jousting < 0) 
         {
-            short break_threshold = min(obj->oerodeproof ? -2 : -1, -4 + greatest_erosion(obj) + (obj->cursed || obj->blessed ? -3 : 0));
+            short break_threshold = min(is_obj_oerodeproof(obj) ? -2 : -1, -4 + greatest_erosion(obj) + (is_obj_cursed(obj) || is_obj_blessed(obj) ? -3 : 0));
             if (objects[obj->otyp].oc_enchantable && obj->enchantment > break_threshold)
             {
                 play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_NEGATIVE);
@@ -2381,7 +2381,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
         pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf);
         if (obj->oclass == GEM_CLASS)
         {
-            if (obj->dknown && !objects[obj->otyp].oc_name_known
+            if (is_obj_dknown(obj) && !objects[obj->otyp].oc_name_known
                 && !objects[obj->otyp].oc_uname)
                 docall(obj, dcbuf);
         }
@@ -2390,7 +2390,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
 
 
     /* if a "no longer poisoned" message is coming, it will be last;
-       obj->opoisoned was cleared above and any message referring to
+       is_obj_opoisoned(obj) was cleared above and any message referring to
        "poisoned <obj>" has now been given; we want just "<obj>" for
        last message, so reformat while obj is still accessible */
     if (unpoisonmsg || unenchantmsg)
@@ -2520,7 +2520,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
      ))
     {
         *obj_destroyed = TRUE;
-        if (*u.ushops || obj->unpaid)
+        if (*u.ushops || is_obj_unpaid(obj))
             check_shop_obj(obj, mx, my, TRUE, FALSE);
 
         if (obj->where == OBJ_INVENT)
@@ -2632,21 +2632,21 @@ m_slips_free(struct monst *mdef, struct attack *mattk)
 
     /* if monster's cloak/armor is greased, your grab slips off; this
        protection might fail (33% chance) when the armor is cursed */
-    if (obj && (obj->greased || (objects[obj->otyp].oc_flags5 & O5_PERMANENTLY_GREASED) != 0 || obj->otyp == OILSKIN_CLOAK)
-        && (!obj->cursed || rn2(3))) {
+    if (obj && (is_obj_greased(obj) || (objects[obj->otyp].oc_flags5 & O5_PERMANENTLY_GREASED) != 0 || obj->otyp == OILSKIN_CLOAK)
+        && (!is_obj_cursed(obj) || rn2(3))) {
         You("%s %s %s %s!",
             mattk->adtyp == AD_WRAP ? "slip off of"
                                     : "grab, but cannot hold onto",
-            s_suffix(mon_nam(mdef)), obj->greased ? "greased" : "slippery",
+            s_suffix(mon_nam(mdef)), is_obj_greased(obj) ? "greased" : "slippery",
             /* avoid "slippery slippery cloak"
                for undiscovered oilskin cloak */
-            (obj->greased || objects[obj->otyp].oc_name_known)
+            (is_obj_greased(obj) || objects[obj->otyp].oc_name_known)
                 ? xname(obj)
                 : cloak_simple_name(obj));
 
-        if (obj->greased && !rn2(2)) {
+        if (is_obj_greased(obj) && !rn2(2)) {
             pline_The("grease wears off.");
-            obj->greased = 0;
+            set_obj_greased(obj, 0);
         }
         return TRUE;
     }
@@ -3976,7 +3976,7 @@ hmonas(struct monst *mon)
                     /* might be a worm that gets cut in half; if so, early return */
                     if (m_at(u.ux + u.dx, u.uy + u.dy) != mon) {
                         i = NATTK; /* skip additional attacks */
-                        /* proceed with uswapwep->cursed check, then exit loop */
+                        /* proceed with is_obj_cursed(uswapwep) check, then exit loop */
                         goto passivedone;
                     }
                     /* Do not print "You hit" message; known_hitum already did it. */
@@ -4322,7 +4322,7 @@ hmonas(struct monst *mon)
            'i' will be out of bounds if we get here via 'goto' */
  passivedone:
         /* stop attacking if defender has died;
-           needed to defer this until after uswapwep->cursed check */
+           needed to defer this until after is_obj_cursed(uswapwep) check */
 
         if (DEADMONSTER(mon))
             break;
@@ -4686,7 +4686,7 @@ passive_obj(struct monst *mon, struct obj *obj, struct attack *mattk)
     case AD_ENCH:
         if (!is_cancelled(mon)) {
             if (drain_item(obj, TRUE) && carried(obj)
-                && (obj->known || obj->oclass == ARMOR_CLASS)) {
+                && (is_obj_known(obj) || obj->oclass == ARMOR_CLASS)) {
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s less effective.", Yobjnam2(obj, "seem"));
             }
             break;

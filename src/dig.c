@@ -462,14 +462,14 @@ dig(void)
         {
             if (Is_earthlevel(&u.uz))
             {
-                if (wep->blessed && !rn2(3)) 
+                if (is_obj_blessed(wep) && !rn2(3)) 
                 {
                     play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                     mkcavearea(FALSE);
                     goto cleanup;
                 } 
-                else if ((wep->cursed && !rn2(4))
-                           || (!wep->blessed && !rn2(6))) 
+                else if ((is_obj_cursed(wep) && !rn2(4))
+                           || (!is_obj_blessed(wep) && !rn2(6))) 
                 {
                     play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                     mkcavearea(TRUE);
@@ -2980,7 +2980,7 @@ bury_an_obj(struct obj *otmp, boolean *dealloced)
         o_unleash(otmp);
 
     debugprint("bury_an_obj1: %d", otmp->otyp);
-    if (otmp->lamplit && otmp->otyp != POT_OIL)
+    if (is_obj_lamplit(otmp) && otmp->otyp != POT_OIL)
         end_burn(otmp, TRUE);
 
     obj_extract_self(otmp);
@@ -3055,7 +3055,7 @@ bury_objs(int x, int y)
         if (costly) {
             loss += stolen_value(otmp, x, y, is_peaceful(shkp), TRUE);
             if (otmp->oclass != COIN_CLASS)
-                otmp->no_charge = 1;
+                set_obj_no_charge(otmp, 1);
         }
         otmp2 = bury_an_obj(otmp, (boolean *) 0);
     }

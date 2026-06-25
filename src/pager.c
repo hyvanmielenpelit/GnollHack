@@ -257,7 +257,7 @@ object_from_map(int glyph, int x, int y, struct obj **obj_p)
         /* extra fields needed for shop price with doname() formatting */
         otmp->where = OBJ_FLOOR;
         otmp->ox = x, otmp->oy = y;
-        otmp->no_charge = (otmp->otyp == STRANGE_OBJECT && costly_spot(x, y));
+        set_obj_no_charge(otmp, (otmp->otyp == STRANGE_OBJECT && costly_spot(x, y)));
     }
 
     if (otmp && (otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == FIGURINE) && (otmp->corpsenm <= NON_PM || otmp->corpsenm >= NUM_MONSTERS)) /* Insurance */
@@ -274,13 +274,13 @@ object_from_map(int glyph, int x, int y, struct obj **obj_p)
         && (fakeobj || otmp->where == OBJ_FLOOR) /* not buried */
         /* terrain mode views what's already known, doesn't learn new stuff */
         && !iflags.terrainmode) /* so don't set dknown when in terrain mode */
-        otmp->dknown = 1; /* if a pile, clearly see the top item only */
+        set_obj_dknown(otmp, 1); /* if a pile, clearly see the top item only */
 
     if (fakeobj && mtmp && mimic_obj &&
-        (otmp->dknown || (M_AP_FLAG(mtmp) & M_AP_F_DKNOWN))) 
+        (is_obj_dknown(otmp) || (M_AP_FLAG(mtmp) & M_AP_F_DKNOWN))) 
     {
             mtmp->m_ap_type |= M_AP_F_DKNOWN;
-            otmp->dknown = 1;
+            set_obj_dknown(otmp, 1);
     }
     *obj_p = otmp;
     return fakeobj; /* when True, caller needs to dealloc *obj_p */
@@ -305,9 +305,9 @@ look_at_object(char *buf, int x, int y, int glyph)
             otmp->otyp, Hallucination, (int)fakeobj, 
             otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS ? OBJ_NAME(objects[otmp->otyp]) != 0 : -1, 
             otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS ? OBJ_DESCR(objects[otmp->otyp]) != 0 : -1,
-            (int)iflags.in_dumplog, (int)otmp->dknown);
+            (int)iflags.in_dumplog, (int)is_obj_dknown(otmp));
         const char* used_obj_name = (otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS && OBJ_NAME(objects[otmp->otyp]))
-            ? (iflags.in_dumplog ? aqcxname(otmp) : distant_name(otmp, otmp->dknown ? doname_with_price : doname_vague_quan))
+            ? (iflags.in_dumplog ? aqcxname(otmp) : distant_name(otmp, is_obj_dknown(otmp) ? doname_with_price : doname_vague_quan))
             : obj_descr[STRANGE_OBJECT].oc_name;
 
         Strcpy(buf, used_obj_name ? used_obj_name : "indescribable object");

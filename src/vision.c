@@ -660,9 +660,9 @@ vision_recalc(int control)
                             struct obj* obj;
                             for (obj = o_at(col, row); obj; obj = obj->nexthere)
                             {
-                                if (!obj->dknown)
+                                if (!is_obj_dknown(obj))
                                 {
-                                    obj->dknown = 1;
+                                    set_obj_dknown(obj, 1);
                                 }
                             }
                         }

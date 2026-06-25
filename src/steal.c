@@ -182,7 +182,7 @@ stealarm(void)
                     if (!dmgtype(mtmp->data, AD_SITM)) /* polymorphed */
                         goto botm;
                     debugprint_pos();
-                    if (otmp->unpaid)
+                    if (is_obj_unpaid(otmp))
                         subfrombill(otmp, shop_keeper(*u.ushops));
                     freeinv(otmp);
                     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s steals %s!", Monnam(mtmp), doname(otmp));
@@ -464,7 +464,7 @@ gotobj:
         else if (otmp == uquiver || otmp == uswapwep || otmp == uswapwep2)
             ostuck = FALSE; /* not really worn; curse doesn't matter */
         else
-            ostuck = ((otmp->cursed && otmp->owornmask)
+            ostuck = ((is_obj_cursed(otmp) && otmp->owornmask)
                       /* nymphs can steal rings from under
                          cursed weapon but animals can't */
                       || (otmp == uright && welded(uwep, &youmonst))
@@ -487,7 +487,7 @@ gotobj:
     }
 
     if (otmp->otyp == LEASH && otmp->leashmon) {
-        if (monkey_business && otmp->cursed)
+        if (monkey_business && is_obj_cursed(otmp))
             goto cant_take;
         o_unleash(otmp);
     }
@@ -525,11 +525,11 @@ gotobj:
                 ogone = remove_worn_item(otmp, TRUE);
                 break;
             } else {
-                int curssv = otmp->cursed;
+                int curssv = is_obj_cursed(otmp);
                 int slowly;
                 boolean seen = canspotmon(mtmp);
 
-                otmp->cursed = 0;
+                set_obj_cursed(otmp, 0);
                 /* can't charm you without first waking you */
                 if (Unaware)
                     unmul((char *) 0);
@@ -561,7 +561,7 @@ gotobj:
                 ogone = remove_worn_item_ex(otmp, TRUE, TRUE);
                 if (!ogone)
                 {
-                    otmp->cursed = curssv;
+                    set_obj_cursed(otmp, curssv);
                     if (multi < 0) {
                         /*
                         multi = 0;
@@ -591,7 +591,7 @@ gotobj:
     set_mon_mavenge(mtmp, 1);
 
     debugprint_pos();
-    if (otmp->unpaid)
+    if (is_obj_unpaid(otmp))
         subfrombill(otmp, shop_keeper(*u.ushops));
     freeinv(otmp);
     play_sfx_sound(SFX_STEAL_ITEM);
@@ -641,7 +641,7 @@ mpickobj(struct monst *mtmp, struct obj *otmp)
     /* for hero owned object on shop floor, mtmp is taking possession
        and if it's eventually dropped in a shop, shk will claim it */
     if (!is_tame(mtmp))
-        otmp->no_charge = 0;
+        set_obj_no_charge(otmp, 0);
     /* Must do carrying effects on object prior to add_to_minv() */
     carry_obj_effects(otmp);
     /* add_to_minv() might free otmp [if merged with something else],
@@ -752,7 +752,7 @@ stealamulet(struct monst *mtmp)
             if (!ogone)
             {
                 debugprint_pos();
-                if (otmp->unpaid)
+                if (is_obj_unpaid(otmp))
                     subfrombill(otmp, shop_keeper(*u.ushops));
                 freeinv(otmp);
                 Strcpy(buf, doname(otmp));
@@ -789,7 +789,7 @@ maybe_absorb_item(struct monst *mon, struct obj *obj, int ochance, int achance)
         if (!ogone)
         {
             debugprint_pos();
-            if (obj->unpaid)
+            if (is_obj_unpaid(obj))
                 subfrombill(obj, shop_keeper(*u.ushops));
             if (cansee(mon->mx, mon->my)) {
                 const char* MonName = Monnam(mon);
@@ -838,12 +838,12 @@ mdrop_obj(struct monst *mon, struct obj *obj, boolean verbosely, boolean set_fou
         /* don't charge for an owned saddle on dead steed (provided
            that the hero is within the same shop at the time) */
         } else if (is_tame(mon) && (obj->owornmask & W_SADDLE) != 0L
-                   && !obj->unpaid && costly_spot(omx, omy)
+                   && !is_obj_unpaid(obj) && costly_spot(omx, omy)
                    /* being at costly_spot guarantees lev->roomno is not 0 */
                    && index(in_rooms(u.ux, u.uy, SHOPBASE),
                             levl[omx][omy].roomno)) 
         {
-            obj->no_charge = 1;
+            set_obj_no_charge(obj, 1);
         }
         /* this should be done even if the monster has died */
         if (obj->owornmask & W_WEP)
@@ -967,12 +967,12 @@ release_monster_objects(struct monst *mtmp, int show, boolean is_pet, boolean is
                        that the hero is within the same shop at the time) */
                 }
                 else if (is_tame(mtmp) && (otmp->owornmask & W_SADDLE) != 0L
-                    && !otmp->unpaid && costly_spot(omx, omy)
+                    && !is_obj_unpaid(otmp) && costly_spot(omx, omy)
                     /* being at costly_spot guarantees lev->roomno is not 0 */
                     && index(in_rooms(u.ux, u.uy, SHOPBASE),
                         levl[omx][omy].roomno))
                 {
-                    otmp->no_charge = 1;
+                    set_obj_no_charge(otmp, 1);
                 }
                 /* this should be done even if the monster has died */
                 if (otmp->owornmask & W_WEP)

@@ -1054,7 +1054,7 @@ explode_oil(struct obj *obj, int x, int y)
 {
     boolean diluted_oil = obj->odiluted;
 
-    if (!obj->lamplit)
+    if (!is_obj_lamplit(obj))
         impossible("exploding unlit oil");
     debugprint("explode_oil");
     end_burn(obj, TRUE);

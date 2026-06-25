@@ -4624,9 +4624,9 @@ wizkit_addinv(struct obj *obj)
         return;
 
     /* subset of starting inventory pre-ID */
-    obj->dknown = 1;
+    set_obj_dknown(obj, 1);
     if (Role_if(PM_PRIEST))
-        obj->bknown = 1;
+        set_obj_bknown(obj, 1);
     debugprint_pos();
     /* same criteria as lift_object()'s check for available inventory slot */
     if (obj->oclass != COIN_CLASS && inv_cnt(FALSE) >= 52

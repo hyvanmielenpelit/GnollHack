@@ -167,7 +167,7 @@ m_initthrow(struct monst *mtmp, int otyp, int oquan_const, int oquan_rnd, boolea
         otmp->quan = (int64_t) rn1(oquan_rnd, oquan_const);
     otmp->owt = weight(otmp);
     if (is_poisonable(otmp) && poisoned)
-        otmp->opoisoned = TRUE;
+        set_obj_opoisoned(otmp, TRUE);
     if(is_elemental_enchantable(otmp) && elemental_enchantment >= 0)
         otmp->elemental_enchantment = elemental_enchantment;
     if (can_have_exceptionality(otmp) && exceptionality >= 0)
@@ -278,19 +278,19 @@ m_inityour(struct monst *mtmp, struct obj *obj)
     otmp = mksobj(otyp, FALSE, FALSE, 0);
     if (otmp)
     {
-        if (obj->blessed)
+        if (is_obj_blessed(obj))
             bless(otmp);
-        else if (obj->cursed)
+        else if (is_obj_cursed(obj))
             curse(otmp);
 
         otmp->quan = obj->quan;
         if (!generate_random_item)
         {
-            otmp->opoisoned = obj->opoisoned;
+            set_obj_opoisoned(otmp, is_obj_opoisoned(obj));
             otmp->mythic_prefix = obj->mythic_prefix;
             otmp->mythic_suffix = obj->mythic_suffix;
             otmp->elemental_enchantment = obj->elemental_enchantment;
-            otmp->oerodeproof = TRUE;
+            set_obj_oerodeproof(otmp, TRUE);
             otmp->enchantment = obj->enchantment;
             otmp->charges = obj->charges;
             otmp->speflags |= SPEFLAGS_CLONED_ITEM; /* This item will disappear when Aleax dies / is gone */
@@ -445,8 +445,8 @@ m_initweap(struct monst *mtmp)
                 otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
                 otmp->enchantment = rn2(4);
                 otmp->quan = rnd(6);
-                otmp->blessed = 0;
-                otmp->cursed = 0;
+                set_obj_blessed(otmp, 0);
+                set_obj_cursed(otmp, 0);
                 otmp->owt = weight(otmp);
                 (void)mpickobj(mtmp, otmp);
             }
@@ -641,7 +641,7 @@ m_initweap(struct monst *mtmp)
                     if (otmp)
                     {
                         bless(otmp);
-                        otmp->oerodeproof = TRUE;
+                        set_obj_oerodeproof(otmp, TRUE);
                         otmp->elemental_enchantment = FIRE_ENCHANTMENT; /* Make it a bit more street-credible */
                     }
                 }
@@ -728,7 +728,7 @@ m_initweap(struct monst *mtmp)
                             otmp->elemental_enchantment = FIRE_ENCHANTMENT;
                     }
                     bless(otmp);
-                    otmp->oerodeproof = TRUE;
+                    set_obj_oerodeproof(otmp, TRUE);
                     spe2 = rnd(4);
                     otmp->enchantment = max(otmp->enchantment, spe2);
                     (void)mpickobj(mtmp, otmp);
@@ -739,8 +739,8 @@ m_initweap(struct monst *mtmp)
                 
                 if (otmp)
                 {
-                    otmp->cursed = FALSE;
-                    otmp->oerodeproof = TRUE;
+                    set_obj_cursed(otmp, FALSE);
+                    set_obj_oerodeproof(otmp, TRUE);
                     otmp->enchantment = 0;
                     (void)mpickobj(mtmp, otmp);
                 }
@@ -775,7 +775,7 @@ m_initweap(struct monst *mtmp)
                     otmp = oname(otmp, artiname(artifacttype));
                     if(otmp->oartifact)
                     {
-                        otmp->oerodeproof = TRUE;
+                        set_obj_oerodeproof(otmp, TRUE);
                         spe2 = rnd(4);
                         otmp->enchantment = max(otmp->enchantment, spe2);
                     }
@@ -1140,7 +1140,7 @@ m_initweap(struct monst *mtmp)
             if (otmp)
             {
                 curse(otmp);
-                otmp->oerodeproof = TRUE;
+                set_obj_oerodeproof(otmp, TRUE);
                 spe2 = 3 + rnd(7);
                 otmp->enchantment = max(otmp->enchantment, spe2);
                 otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
@@ -1158,7 +1158,7 @@ m_initweap(struct monst *mtmp)
 
             if (otmp)
             {
-                otmp->oerodeproof = TRUE;
+                set_obj_oerodeproof(otmp, TRUE);
                 spe2 = 2 + rnd(3);
                 otmp->enchantment = max(otmp->enchantment, spe2);
                 curse(otmp);
@@ -1177,7 +1177,7 @@ m_initweap(struct monst *mtmp)
 
             if (otmp)
             {
-                otmp->oerodeproof = TRUE;
+                set_obj_oerodeproof(otmp, TRUE);
                 spe2 = 2 + rnd(4);
                 otmp->enchantment = max(otmp->enchantment, spe2);
                 curse(otmp);
@@ -1191,7 +1191,7 @@ m_initweap(struct monst *mtmp)
 
             if (otmp)
             {
-                otmp->oerodeproof = TRUE;
+                set_obj_oerodeproof(otmp, TRUE);
                 spe2 = 2 + rnd(4);
                 otmp->enchantment = max(otmp->enchantment, spe2);
                 curse(otmp);
@@ -1669,7 +1669,7 @@ m_initinv(struct monst *mtmp)
             if (otmp->enchantment < 2)
                 otmp->enchantment = rnd(3);
             if (!rn2(4))
-                otmp->oerodeproof = 1;
+                set_obj_oerodeproof(otmp, 1);
             (void)mpickobj(mtmp, otmp);
         }
 
@@ -1827,7 +1827,7 @@ m_initinv(struct monst *mtmp)
             {
                 otmp->quan = 1;
                 otmp->owt = weight(otmp);
-                if (!mpickobj(mtmp, otmp) && !otmp->lamplit && !is_levl_lit(&levl[mtmp->mx][mtmp->my]))
+                if (!mpickobj(mtmp, otmp) && !is_obj_lamplit(otmp) && !is_levl_lit(&levl[mtmp->mx][mtmp->my]))
                     begin_burn(otmp, FALSE);
             }
         }
@@ -2180,7 +2180,7 @@ m_initinv(struct monst *mtmp)
             {
                 otmp->quan = 1;
                 otmp->owt = weight(otmp);
-                if (!mpickobj(mtmp, otmp) && !otmp->lamplit && !is_levl_lit(&levl[mtmp->mx][mtmp->my]))
+                if (!mpickobj(mtmp, otmp) && !is_obj_lamplit(otmp) && !is_levl_lit(&levl[mtmp->mx][mtmp->my]))
                     begin_burn(otmp, FALSE);
             }
         }
@@ -4153,16 +4153,16 @@ mongets_with_material(struct monst *mtmp, int otyp, uchar material)
         if (mtmp->data->mlet == S_DEMON) 
         {
             /* demons never get blessed objects */
-            if (otmp->blessed)
+            if (is_obj_blessed(otmp))
                 curse(otmp);
         } 
         else if (is_lminion(mtmp)) 
         {
             /* lawful minions don't get cursed, bad, or rusting objects */
-            otmp->cursed = FALSE;
+            set_obj_cursed(otmp, FALSE);
             if (otmp->enchantment < 0)
                 otmp->enchantment = 0;
-            otmp->oerodeproof = TRUE;
+            set_obj_oerodeproof(otmp, TRUE);
         } 
         else if (is_mplayer(mtmp->data) && is_sword(otmp)) 
         {
@@ -4174,16 +4174,16 @@ mongets_with_material(struct monst *mtmp, int otyp, uchar material)
             otmp->enchantment = 0;
             otmp->special_quality = 0;
             otmp->age = 0L;
-            otmp->blessed = otmp->cursed = FALSE;
+            set_obj_blessed(otmp, FALSE), set_obj_cursed(otmp, FALSE);
         }
         else if (otmp->otyp == BELL_OF_OPENING)
         {
-            otmp->blessed = otmp->cursed = FALSE;
+            set_obj_blessed(otmp, FALSE), set_obj_cursed(otmp, FALSE);
         } 
         else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD)
         {
-            otmp->blessed = FALSE;
-            otmp->cursed = TRUE;
+            set_obj_blessed(otmp, FALSE);
+            set_obj_cursed(otmp, TRUE);
         }
 
         /* leaders and boss monsters don't tolerate inferior quality battle gear */
@@ -4253,7 +4253,7 @@ mongets_with_material(struct monst *mtmp, int otyp, uchar material)
 
         if (isok(mtmp->mx, mtmp->my) && (objects[otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT))
         {
-            otmp->has_special_tileset = 1;
+            set_obj_has_special_tileset(otmp, 1);
             otmp->special_tileset = is_levl_use_special_tileset(&levl[mtmp->mx][mtmp->my]) ? levl[mtmp->mx][mtmp->my].special_tileset : get_current_cmap_type_index();
         }
 
@@ -4514,8 +4514,8 @@ set_mimic_new_mobj(struct monst *mtmp, int otyp)
             if (otmp->oextra)
                 copy_oextra(MOBJ(mtmp), otmp);
             MOBJ(mtmp)->timed = 0;
-            MOBJ(mtmp)->lamplit = 0;
-            MOBJ(mtmp)->makingsound = 0;
+            set_obj_lamplit(MOBJ(mtmp), 0);
+            set_obj_makingsound(MOBJ(mtmp), 0);
             MOBJ(mtmp)->ox = mtmp->mx;
             MOBJ(mtmp)->oy = mtmp->my;
             //MOBJ(mtmp)->where = OBJ_FLOOR;
@@ -4555,8 +4555,8 @@ set_mimic_existing_mobj(struct monst *mtmp, struct obj *otmp)
         if (otmp->oextra)
             copy_oextra(MOBJ(mtmp), otmp);
         MOBJ(mtmp)->timed = 0;
-        MOBJ(mtmp)->lamplit = 0;
-        MOBJ(mtmp)->makingsound = 0;
+        set_obj_lamplit(MOBJ(mtmp), 0);
+        set_obj_makingsound(MOBJ(mtmp), 0);
         MOBJ(mtmp)->ox = mtmp->mx;
         MOBJ(mtmp)->oy = mtmp->my;
         //MOBJ(mtmp)->where = OBJ_FLOOR;
@@ -4787,10 +4787,10 @@ bagotricks(struct obj *bag, boolean tipping, int *seencount)
     } else if (bag->charges < 1) {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         /* if tipping known empty bag, give normal empty container message */
-        pline1((tipping && bag->cknown) ? "It's empty." : nothing_happens);
+        pline1((tipping && is_obj_cknown(bag)) ? "It's empty." : nothing_happens);
         /* now known to be empty if sufficiently discovered */
-        if (bag->dknown && objects[bag->otyp].oc_name_known)
-            bag->cknown = 1;
+        if (is_obj_dknown(bag) && objects[bag->otyp].oc_name_known)
+            set_obj_cknown(bag, 1);
     } else {
         struct monst *mtmp;
         int creatcnt = 1, seecount = 0;
@@ -4810,7 +4810,7 @@ bagotricks(struct obj *bag, boolean tipping, int *seencount)
         if (seecount) {
             if (seencount)
                 *seencount += seecount;
-            if (bag->dknown)
+            if (is_obj_dknown(bag))
                 makeknown(BAG_OF_TRICKS);
         } else if (!tipping) {
             pline1(!moncount ? nothing_happens : "Nothing seems to happen.");

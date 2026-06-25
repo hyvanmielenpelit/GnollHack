@@ -1499,9 +1499,9 @@ makelevel(void)
             struct obj* stash = mksobj_at(MAGIC_CHEST, x, y, FALSE, FALSE);
             if (stash)
             {
-                stash->olocked = FALSE;
-                stash->otrapped = FALSE;
-                stash->tknown = 1;
+                set_obj_olocked(stash, FALSE);
+                set_obj_otrapped(stash, FALSE);
+                set_obj_tknown(stash, 1);
                 stash->speflags |= SPEFLAGS_NO_PICKUP;
                 char namebuf[BUFSZ];
                 Sprintf(namebuf, "%s stash", s_suffix(plname));
@@ -1517,7 +1517,7 @@ makelevel(void)
                     otmp = mkobj(RANDOM_CLASS, FALSE, TRUE);
                     if (otmp)
                     {
-                        otmp->bknown = 1;
+                        set_obj_bknown(otmp, 1);
                         (void)add_to_magic_chest(otmp);
                     }
                 }
@@ -1528,7 +1528,7 @@ makelevel(void)
                     otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NORMAL, (struct monst*)0, MAT_NONE, !rn2(4) ? MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_II : MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_I, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                     if (otmp)
                     {
-                        otmp->bknown = 1;
+                        set_obj_bknown(otmp, 1);
                         (void)add_to_magic_chest(otmp);
                         if (otmp->manualidx >= 0)
                         {
@@ -1542,7 +1542,7 @@ makelevel(void)
                     otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NORMAL, (struct monst*)0, MAT_NONE, bits, bits2, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
                     if (otmp)
                     {
-                        otmp->bknown = 1;
+                        set_obj_bknown(otmp, 1);
                         (void)add_to_magic_chest(otmp);
                     }
                 }
@@ -2277,7 +2277,7 @@ mktrap(int num, int mazeflag, struct mkroom *croom, coord *tm)
         switch (kind) {
         case ARROW_TRAP:
             otmp = mksobj(t ? get_shooting_trap_object(t) : ARROW, TRUE, FALSE, FALSE);
-            otmp->opoisoned = 0;
+            set_obj_opoisoned(otmp, 0);
             /* don't adjust the quantity; maybe the trap shot multiple
                times, there was an untrapping attempt, etc... */
             break;
@@ -2323,11 +2323,11 @@ mktrap(int num, int mazeflag, struct mkroom *croom, coord *tm)
                by a dead adventurer, bones-pile-style) and for balance
                (less useful to use, and encourage pets to avoid the trap) */
             if (otmp) {
-                otmp->blessed = 0;
+                set_obj_blessed(otmp, 0);
                 if(is_obj_uncurseable(otmp))
-                    otmp->cursed = 0;
+                    set_obj_cursed(otmp, 0);
                 else
-                    otmp->cursed = 1;
+                    set_obj_cursed(otmp, 1);
                 otmp->owt = weight(otmp);
                 place_object(otmp, m.x, m.y);
             }

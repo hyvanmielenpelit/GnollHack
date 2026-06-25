@@ -353,20 +353,20 @@ makerogueghost(void)
         ghostobj = mksobj_at(RING_MAIL, x, y, FALSE, FALSE);
         ghostobj->enchantment = rn2(3);
         if (!rn2(3))
-            ghostobj->oerodeproof = TRUE;
+            set_obj_oerodeproof(ghostobj, TRUE);
         if (rn2(4))
             curse(ghostobj);
     } else {
         ghostobj = mksobj_at(PLATE_MAIL, x, y, FALSE, FALSE);
         ghostobj->enchantment = rnd(5) - 2;
         if (!rn2(3))
-            ghostobj->oerodeproof = TRUE;
+            set_obj_oerodeproof(ghostobj, TRUE);
         if (rn2(4))
             curse(ghostobj);
     }
     if (rn2(2)) {
         ghostobj = mksobj_at(FAKE_AMULET_OF_YENDOR, x, y, TRUE, FALSE);
-        ghostobj->known = TRUE;
+        set_obj_known(ghostobj, TRUE);
     }
 }
 

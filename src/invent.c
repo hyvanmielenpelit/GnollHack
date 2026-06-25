@@ -86,8 +86,8 @@ loot_classify(Loot *sort_item, struct obj *obj)
      * will put lower valued ones before higher valued ones.
      */
     if (!Blind)
-        obj->dknown = 1; /* xname(obj) does this; we want it sooner */
-    seen = obj->dknown ? TRUE : FALSE,
+        set_obj_dknown(obj, 1); /* xname(obj) does this; we want it sooner */
+    seen = is_obj_dknown(obj) ? TRUE : FALSE,
     /* class order */
     classorder = flags.sortpack ? flags.inv_order : def_srt_order;
     p = index(classorder, oclass);
@@ -169,7 +169,7 @@ loot_classify(Loot *sort_item, struct obj *obj)
             break;
         default:
             /* [maybe separate one-bite foods from rations and such?] */
-            k = obj->globby ? 6 : 2;
+            k = is_obj_globby(obj) ? 6 : 2;
             break;
         case TIN:
             k = 3;
@@ -243,7 +243,7 @@ loot_xname(struct obj *obj)
      * remember 'obj's current settings.
      */
     saveo.odiluted = obj->odiluted;
-    saveo.blessed = obj->blessed, saveo.cursed = obj->cursed;
+    set_obj_blessed(&(saveo), is_obj_blessed(obj)), set_obj_cursed(&(saveo), is_obj_cursed(obj));
     saveo.enchantment = obj->enchantment;
     saveo.special_quality = obj->special_quality;
     saveo.charges = obj->charges;
@@ -257,14 +257,14 @@ loot_xname(struct obj *obj)
     if (obj->oclass == POTION_CLASS) {
         obj->odiluted = 0;
         if (obj->otyp == POT_WATER)
-            obj->blessed = 0, obj->cursed = 0;
+            set_obj_blessed(obj, 0), set_obj_cursed(obj, 0);
     }
     /* make "wet towel" and "moist towel" format as "towel" so that all
        three group together */
     if (obj->otyp == TOWEL)
         obj->special_quality = 0;
     /* group "<size> glob of <foo>" by <foo> rather than by <size> */
-    if (obj->globby)
+    if (is_obj_globby(obj))
         obj->owt = 200; /* 200: weight of combined glob from ten creatures
                            (five or fewer is "small", more than fifteen is
                            "large", in between has no prefix) */
@@ -292,7 +292,7 @@ loot_xname(struct obj *obj)
     if (obj->oclass == POTION_CLASS) {
         obj->odiluted = saveo.odiluted;
         if (obj->otyp == POT_WATER)
-            obj->blessed = saveo.blessed, obj->cursed = saveo.cursed;
+            set_obj_blessed(obj, is_obj_blessed(&(saveo))), set_obj_cursed(obj, is_obj_cursed(&(saveo)));
     }
     if (obj->otyp == TOWEL) {
         obj->special_quality = saveo.special_quality;
@@ -301,7 +301,7 @@ loot_xname(struct obj *obj)
            they've been flagged as having enchantment known */
         Strcat(res, is_wet_towel(obj) ? ((obj->special_quality >= 3) ? "x" : "y") : "z");
     }
-    if (obj->globby) {
+    if (is_obj_globby(obj)) {
         obj->owt = saveo.owt;
         /* we've suppressed the size prefix (above); there normally won't
            be more than one of a given creature type because they coalesce,
@@ -419,14 +419,14 @@ sortloot_cmp(const genericptr vptr1, const genericptr vptr2)
         return namcmp;
 
     /* Sort by BUCX. */
-    val1 = obj1->bknown ? (obj1->blessed ? 3 : !obj1->cursed ? 2 : 1) : 0;
-    val2 = obj2->bknown ? (obj2->blessed ? 3 : !obj2->cursed ? 2 : 1) : 0;
+    val1 = is_obj_bknown(obj1) ? (is_obj_blessed(obj1) ? 3 : !is_obj_cursed(obj1) ? 2 : 1) : 0;
+    val2 = is_obj_bknown(obj2) ? (is_obj_blessed(obj2) ? 3 : !is_obj_cursed(obj2) ? 2 : 1) : 0;
     if (val1 != val2)
         return val2 - val1; /* bigger is better */
 
     /* Sort by greasing.  This will put the objects in degreasing order. */
-    val1 = obj1->greased;
-    val2 = obj2->greased;
+    val1 = is_obj_greased(obj1);
+    val2 = is_obj_greased(obj2);
     if (val1 != val2)
         return val2 - val1; /* bigger is better */
 
@@ -439,20 +439,20 @@ sortloot_cmp(const genericptr vptr1, const genericptr vptr2)
     /* Sort by erodeproofing.  Map known-invulnerable to 1, and both
        known-vulnerable and unknown-vulnerability to 0, because that's
        how they're displayed. */
-    val1 = obj1->rknown && obj1->oerodeproof;
-    val2 = obj2->rknown && obj2->oerodeproof;
+    val1 = is_obj_rknown(obj1) && is_obj_oerodeproof(obj1);
+    val2 = is_obj_rknown(obj2) && is_obj_oerodeproof(obj2);
     if (val1 != val2)
         return val2 - val1; /* bigger is better */
 
     /* Sort by enchantment.  Map unknown to -1000, which is comfortably
-       below the range of obj->enchantment.  oc_uses_known means that obj->known
+       below the range of obj->enchantment.  oc_uses_known means that is_obj_known(obj)
        matters, which usually indirectly means that obj->enchantment is relevant.
        Lots of objects use obj->enchantment for some other purpose (see obj.h). */
     if (objects[obj1->otyp].oc_uses_known
         /* exclude eggs (laid by you) and tins (homemade, pureed, &c) */
         && obj1->oclass != FOOD_CLASS) {
-        val1 = obj1->known ? obj1->enchantment : -1000;
-        val2 = obj2->known ? obj2->enchantment : -1000;
+        val1 = is_obj_known(obj1) ? obj1->enchantment : -1000;
+        val2 = is_obj_known(obj2) ? obj2->enchantment : -1000;
         if (val1 != val2)
             return val2 - val1; /* bigger is better */
     }
@@ -705,12 +705,12 @@ merge_choice(struct obj *objlist, struct obj *obj)
     /* if this is an item on the shop floor, the attributes it will
        have when carried are different from what they are now; prevent
        that from eliciting an incorrect result from mergable() */
-    save_nocharge = obj->no_charge;
+    save_nocharge = is_obj_no_charge(obj);
     debugprint_pos();
     if (objlist == invent && obj->where == OBJ_FLOOR
         && (shkp = shop_keeper(inside_shop(obj->ox, obj->oy))) != 0) {
-        if (obj->no_charge)
-            obj->no_charge = 0;
+        if (is_obj_no_charge(obj))
+            set_obj_no_charge(obj, 0);
         /* A billable object won't have its `unpaid' bit set, so would
            erroneously seem to be a candidate to merge with a similar
            ordinary object.  That's no good, because once it's really
@@ -726,7 +726,7 @@ merge_choice(struct obj *objlist, struct obj *obj)
             break;
         objlist = objlist->nobj;
     }
-    obj->no_charge = save_nocharge;
+    set_obj_no_charge(obj, save_nocharge);
     return objlist;
 }
 
@@ -748,14 +748,14 @@ merged(struct obj **potmp, struct obj **pobj)
          * absorb routine, which uses weight rather than quantity
          * to adjust for proportion (glob quantity is always 1).
          */
-        if (!obj->lamplit && !obj->globby)
+        if (!is_obj_lamplit(obj) && !is_obj_globby(obj))
             otmp->age = ((otmp->age * otmp->quan) + (obj->age * obj->quan))
                         / (otmp->quan + obj->quan);
 
         otmp->quan += obj->quan;
         /* temporary special case for gold objects!!!! */
         if (otmp->oclass == COIN_CLASS)
-            otmp->owt = weight(otmp), otmp->bknown = 0;
+            otmp->owt = weight(otmp), set_obj_bknown(otmp, 0);
         /* and puddings!!!1!!one! */
         else if (!Is_pudding(otmp))
             otmp->owt += obj->owt;
@@ -767,9 +767,9 @@ merged(struct obj **potmp, struct obj **pobj)
         obj_extract_self(obj);
 
         /* really should merge the timeouts */
-        if (obj->lamplit)
+        if (is_obj_lamplit(obj))
             obj_merge_light_sources(obj, otmp);
-        if (obj->makingsound)
+        if (is_obj_makingsound(obj))
             obj_merge_sound_sources(obj, otmp);
         if (obj->timed)
             obj_stop_timers(obj); /* follows lights */
@@ -824,7 +824,7 @@ merged(struct obj **potmp, struct obj **pobj)
         {
             /* handle puddings a bit differently; absorption will free the
                other object automatically so we can just return out from here */
-            if (obj->globby) {
+            if (is_obj_globby(obj)) {
                 pudding_merge_message(otmp, obj);
                 obj_absorb(potmp, pobj);
                 return TRUE;
@@ -1013,7 +1013,7 @@ addinv_core1(struct obj *obj)
         }
         set_uachieve_mines_luckstone(1);
         obj->speflags &= ~(SPEFLAGS_MINES_PRIZE);
-        //obj->nomerge = 0;
+        //set_obj_nomerge(obj, 0);
     }
     else if (is_soko_prize(obj)) 
     {
@@ -1027,7 +1027,7 @@ addinv_core1(struct obj *obj)
         }
         set_uachieve_finish_sokoban(1);
         obj->speflags &= ~(SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2);
-        //obj->nomerge = 0;
+        //set_obj_nomerge(obj, 0);
     }
     else if (obj->otyp == GRAIL_OF_HEALING && Role_if(PM_KNIGHT)) // Holy Grail
     {
@@ -1740,11 +1740,11 @@ addinv(struct obj *obj)
     }
     /* normally addtobill() clears no_charge when items in a shop are
        picked up, but won't do so if the shop has become untended */
-    obj->no_charge = 0; /* should not be set in hero's invent */
+    set_obj_no_charge(obj, 0); /* should not be set in hero's invent */
     if (Has_contents(obj))
         picked_container(obj); /* clear no_charge */
-    obj_was_thrown = obj->was_thrown;
-    obj->was_thrown = 0;       /* not meaningful for invent */
+    obj_was_thrown = is_obj_was_thrown(obj);
+    set_obj_was_thrown(obj, 0);       /* not meaningful for invent */
     obj->speflags &= ~(SPEFLAGS_GRABBED_FROM_YOU | SPEFLAGS_CAUGHT_IN_LEAVES | SPEFLAGS_PREVIOUSLY_WIELDED | SPEFLAGS_NO_PREVIOUS_WEAPON); /* You got it back / Not in leaves / Not previously held if was not in inventory */
     obj_clear_found(obj); /* Not relevant in inventory */
     obj->speflags |= SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO; /* Has been owned by the hero */
@@ -1869,7 +1869,7 @@ carry_obj_effects(struct obj *obj)
 {
     /* Cursed figurines can spontaneously transform when carried. */
     if (obj->otyp == FIGURINE) {
-        if (obj->cursed && obj->corpsenm != NON_PM
+        if (is_obj_cursed(obj) && obj->corpsenm != NON_PM
             && !dead_species(obj->corpsenm, TRUE)) {
             attach_fig_transform_timeout(obj);
         }
@@ -1889,11 +1889,11 @@ hold_another_object(struct obj *obj, const char *drop_fmt, const char *drop_arg,
     char buf[BUFSZ];
 
     if (!Blind)
-        obj->dknown = 1; /* maximize mergibility */
+        set_obj_dknown(obj, 1); /* maximize mergibility */
     if (obj->oartifact) {
         /* place_object may change these */
         //boolean crysknife = (obj->otyp == CRYSKNIFE);
-        //int oerode = obj->oerodeproof;
+        //int oerode = is_obj_oerodeproof(obj);
         boolean wasUpolyd = Upolyd;
 
         /* in case touching this object turns out to be fatal */
@@ -1924,12 +1924,12 @@ hold_another_object(struct obj *obj, const char *drop_fmt, const char *drop_arg,
         if (crysknife) {
             obj->otyp = CRYSKNIFE;
             obj->material = objects[obj->otyp].oc_material;
-            obj->oerodeproof = oerode;
+            set_obj_oerodeproof(obj, oerode);
         }
 #endif
     }
     if (Fumbling) {
-        obj->nomerge = 1;
+        set_obj_nomerge(obj, 1);
         obj = addinv(obj); /* dropping expects obj to be in invent */
         goto drop_it;
     } else {
@@ -1946,7 +1946,7 @@ hold_another_object(struct obj *obj, const char *drop_fmt, const char *drop_arg,
             drop_arg = strcpy(buf, drop_arg);
 
         obj = addinv(obj);
-        if (inv_cnt(FALSE) > 52 || ((obj->otyp != LOADSTONE || !obj->cursed)
+        if (inv_cnt(FALSE) > 52 || ((obj->otyp != LOADSTONE || !is_obj_cursed(obj))
                                     && near_capacity() > prev_encumbr)) {
             /* undo any merge which took place */
             if (obj->quan > oquan)
@@ -1967,7 +1967,7 @@ hold_another_object(struct obj *obj, const char *drop_fmt, const char *drop_arg,
  drop_it:
     if (drop_fmt)
         pline(drop_fmt, drop_arg);
-    obj->nomerge = 0;
+    set_obj_nomerge(obj, 0);
     if (can_reach_floor(TRUE)) {
         (void)dropxf(obj);
     } else {
@@ -1996,7 +1996,7 @@ useup(struct obj *obj)
     /* Note:  This works correctly for containers because they (containers)
        don't merge. */
     if (obj->quan > 1L) {
-        obj->in_use = FALSE; /* no longer in use */
+        set_obj_in_use(obj, FALSE); /* no longer in use */
         obj->quan--;
         obj->owt = weight(obj);
         update_inventory();
@@ -2017,7 +2017,7 @@ consume_obj_charge(struct obj *obj, boolean maybe_unpaid)
     if (maybe_unpaid)
         check_unpaid(obj);
     obj->charges -= 1;
-    if (obj->known)
+    if (is_obj_known(obj))
         update_inventory();
 }
 
@@ -2177,7 +2177,7 @@ noncursed_sobj_at(int otyp, int x, int y)
     struct obj* otmp;
 
     for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
-        if (otmp->otyp == otyp && !otmp->cursed)
+        if (otmp->otyp == otyp && !is_obj_cursed(otmp))
             return otmp;
 
     return otmp;
@@ -2585,7 +2585,7 @@ compactify(char *buf)
 boolean
 splittable(struct obj *obj)
 {
-    return !(((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed)
+    return !(((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && is_obj_cursed(obj))
              || (obj == uwep && welded(uwep, &youmonst)));
 }
 
@@ -2770,7 +2770,7 @@ getobj_ex(const char *let, const char *word, int show_weights, boolean show_quic
              || (putting_on(word) /* exclude if already worn */
                  && (otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
              || (trading_items(word) /* exclude if already worn and unpaid items */
-                 && ((otmp->owornmask & (W_ARMOR | W_ACCESSORY)) || otmp->unpaid))
+                 && ((otmp->owornmask & (W_ARMOR | W_ACCESSORY)) || is_obj_unpaid(otmp)))
 #if 0 /* 3.4.1 -- include currently wielded weapon among 'wield' choices */
              || (!strcmp(word, "wield")
                  && (otmp->owornmask & W_WEP))
@@ -2814,7 +2814,7 @@ getobj_ex(const char *let, const char *word, int show_weights, boolean show_quic
                      || (otmp->oclass == POTION_CLASS
                          /* only applicable potion is oil, and it will only
                             be offered as a choice when already discovered */
-                         && (otyp != POT_OIL || !otmp->dknown
+                         && (otyp != POT_OIL || !is_obj_dknown(otmp)
                              || !objects[POT_OIL].oc_name_known))
                      || (otmp->oclass == FOOD_CLASS
                          && otyp != CREAM_PIE && otyp != EUCALYPTUS_LEAF)
@@ -2825,23 +2825,23 @@ getobj_ex(const char *let, const char *word, int show_weights, boolean show_quic
                  && !otmp->oartifact
                  && !is_otyp_unique(otyp)
                  && !is_otyp_invokable(otyp)
-                 && (otyp != FAKE_AMULET_OF_YENDOR || otmp->known)
+                 && (otyp != FAKE_AMULET_OF_YENDOR || is_obj_known(otmp))
                  /* note: presenting the possibility of invoking non-artifact
                     mirrors and/or lamps is simply a cruel deception... */
                  && (otyp != OIL_LAMP /* don't list known oil lamp */
-                     || (otmp->dknown && objects[OIL_LAMP].oc_name_known)))
+                     || (is_obj_dknown(otmp) && objects[OIL_LAMP].oc_name_known)))
                 || (!strcmp(word, "untrap with")
                  && ((otmp->oclass == TOOL_CLASS && otyp != CAN_OF_GREASE)
                      || (otmp->oclass == POTION_CLASS
                          /* only applicable potion is oil, and it will only
                             be offered as a choice when already discovered */
-                         && (otyp != POT_OIL || !otmp->dknown
+                         && (otyp != POT_OIL || !is_obj_dknown(otmp)
                              || !objects[POT_OIL].oc_name_known))))
              || (!strcmp(word, "tip") && !Is_container(otmp)
                  /* include horn of plenty if sufficiently discovered */
-                 && (otmp->otyp != HORN_OF_PLENTY || !otmp->dknown
+                 && (otmp->otyp != HORN_OF_PLENTY || !is_obj_dknown(otmp)
                      || !objects[HORN_OF_PLENTY].oc_name_known))
-              || (!strcmp(word, "detect blessedness for") && otmp->bknown)
+              || (!strcmp(word, "detect blessedness for") && is_obj_bknown(otmp))
               || (!strcmp(word, "refill") && !is_refillable_with_oil(otmp))
               || (!strcmp(word, "enchant") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
               || (!strcmp(word, "protect") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
@@ -2867,7 +2867,7 @@ getobj_ex(const char *let, const char *word, int show_weights, boolean show_quic
                  && ((*let == ARMOR_CLASS) ^ (otmp->oclass == ARMOR_CLASS)))
              /* or unsuitable items rubbed on known touchstone */
              || (!strncmp(word, "rub on the stone", 16)
-                 && *let == GEM_CLASS && otmp->dknown
+                 && *let == GEM_CLASS && is_obj_dknown(otmp)
                  && objects[otyp].oc_name_known)
              /* suppress corpses on astral, amulets elsewhere */
              || (!strcmp(word, "sacrifice")
@@ -2882,7 +2882,7 @@ getobj_ex(const char *let, const char *word, int show_weights, boolean show_quic
                                       (boolean) (otmp->oclass == RING_CLASS), TRUE))
              || (!strcmp(word, "write on")
                  && (!(otyp == SCR_BLANK_PAPER || otyp == SPE_BLANK_PAPER)
-                     || !otmp->dknown || !objects[otyp].oc_name_known))
+                     || !is_obj_dknown(otmp) || !objects[otyp].oc_name_known))
              ) {
                 /* acceptable but not listed as likely candidate */
                 foo--;
@@ -3147,7 +3147,7 @@ getobj_ex(const char *let, const char *word, int show_weights, boolean show_quic
             /* don't split a stack of cursed loadstones */
             if (splittable(otmp))
                 otmp = splitobj(otmp, cnt);
-            else if (otmp->otyp == LOADSTONE && otmp->cursed)
+            else if (otmp->otyp == LOADSTONE && is_obj_cursed(otmp))
                 /* kludge for canletgo()'s can't-drop-this message */
                 otmp->corpsenm = (int) cnt;
         }
@@ -3292,7 +3292,7 @@ construct_getobj_letters(const char *let, const char *word, boolean (*validitemf
                 || (!strcmp(word, "unset as quick pick-axe") /* exclude if not a quick pick-axe */
                     && otmp->o_id != context.quick_pickaxe_obj_oid)
                 || (!strcmp(word, "set as quick bag") /* exclude if already a quick bag */
-                    && (otmp->o_id == context.quick_bag_obj_oid || !Is_container(otmp) || (Is_box(otmp) && (!otmp->lknown || otmp->olocked)) || (!objects[otmp->otyp].oc_name_known && !otmp->cknown) || (objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || Is_specialized_container(otmp) || Is_container_with_closed_lid(otmp)))
+                    && (otmp->o_id == context.quick_bag_obj_oid || !Is_container(otmp) || (Is_box(otmp) && (!is_obj_lknown(otmp) || is_obj_olocked(otmp))) || (!objects[otmp->otyp].oc_name_known && !is_obj_cknown(otmp)) || (objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || Is_specialized_container(otmp) || Is_container_with_closed_lid(otmp)))
                 || (!strcmp(word, "unset as quick bag") /* exclude if not a quick bag */
                     && otmp->o_id != context.quick_bag_obj_oid)
                 || (!strcmp(word, "set as quick wand") /* exclude if already a quick wand */
@@ -3302,7 +3302,7 @@ construct_getobj_letters(const char *let, const char *word, boolean (*validitemf
                 || (putting_on(word) /* exclude if already worn */
                     && (otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS)))
                 || (trading_items(word) /* exclude if already worn and unpaid items */
-                    && ((otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS)) || otmp->unpaid))
+                    && ((otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS)) || is_obj_unpaid(otmp)))
 #if 0 /* 3.4.1 -- include currently wielded weapon among 'wield' choices */
                 || (!strcmp(word, "wield")
                     && (otmp->owornmask & W_WEP))
@@ -3348,36 +3348,36 @@ construct_getobj_letters(const char *let, const char *word, boolean (*validitemf
                         || (otmp->oclass == POTION_CLASS
                             /* only applicable potion is oil, and it will only
                                be offered as a choice when already discovered */
-                            && (otyp != POT_OIL || !otmp->dknown
+                            && (otyp != POT_OIL || !is_obj_dknown(otmp)
                                 || !objects[POT_OIL].oc_name_known))
                         || (otmp->oclass == FOOD_CLASS
                             && otyp != CREAM_PIE && otyp != EUCALYPTUS_LEAF)
                         || (otmp->oclass == MISCELLANEOUS_CLASS
                             && !is_obj_appliable(otmp))
                         || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
-                || (!strcmp(word, "take items out of") && (!Is_container(otmp) || (objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || (otmp->otyp == BAG_OF_TRICKS && otmp->cknown && otmp->charges == 0) || (Is_proper_container(otmp) && otmp->cknown && !Has_contained_contents(otmp))))
+                || (!strcmp(word, "take items out of") && (!Is_container(otmp) || (objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || (otmp->otyp == BAG_OF_TRICKS && is_obj_cknown(otmp) && otmp->charges == 0) || (Is_proper_container(otmp) && is_obj_cknown(otmp) && !Has_contained_contents(otmp))))
                 || (!strcmp(word, "put items in") && (!Is_container(otmp) || (objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp))))
                 || (!strcmp(word, "invoke")
                     && !otmp->oartifact
                     && !is_otyp_unique(otyp)
                     && !is_otyp_invokable(otyp)
-                    && (otyp != FAKE_AMULET_OF_YENDOR || otmp->known)
+                    && (otyp != FAKE_AMULET_OF_YENDOR || is_obj_known(otmp))
                     /* note: presenting the possibility of invoking non-artifact
                        mirrors and/or lamps is simply a cruel deception... */
                     && (otyp != OIL_LAMP /* don't list known oil lamp */
-                        || (otmp->dknown && objects[OIL_LAMP].oc_name_known)))
+                        || (is_obj_dknown(otmp) && objects[OIL_LAMP].oc_name_known)))
                 || (!strcmp(word, "untrap with")
                     && ((otmp->oclass == TOOL_CLASS && otyp != CAN_OF_GREASE)
                         || (otmp->oclass == POTION_CLASS
                             /* only applicable potion is oil, and it will only
                                be offered as a choice when already discovered */
-                            && (otyp != POT_OIL || !otmp->dknown
+                            && (otyp != POT_OIL || !is_obj_dknown(otmp)
                                 || !objects[POT_OIL].oc_name_known))))
                 || (!strcmp(word, "tip") && !Is_container(otmp)
                     /* include horn of plenty if sufficiently discovered */
-                    && (otmp->otyp != HORN_OF_PLENTY || !otmp->dknown
+                    && (otmp->otyp != HORN_OF_PLENTY || !is_obj_dknown(otmp)
                         || !objects[HORN_OF_PLENTY].oc_name_known))
-                || (!strcmp(word, "detect blessedness for") && otmp->bknown)
+                || (!strcmp(word, "detect blessedness for") && is_obj_bknown(otmp))
                 || (!strcmp(word, "refill") && !is_refillable_with_oil(otmp))
                 || (!strcmp(word, "enchant") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
                 || (!strcmp(word, "protect") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
@@ -3406,7 +3406,7 @@ construct_getobj_letters(const char *let, const char *word, boolean (*validitemf
                     && ((*let == ARMOR_CLASS) ^ (otmp->oclass == ARMOR_CLASS)))
                 /* or unsuitable items rubbed on known touchstone */
                 || (!strncmp(word, "rub on the stone", 16)
-                    && *let == GEM_CLASS && otmp->dknown
+                    && *let == GEM_CLASS && is_obj_dknown(otmp)
                     && objects[otyp].oc_name_known)
                 /* suppress corpses on astral, amulets elsewhere */
                 || (!strcmp(word, "sacrifice")
@@ -3423,7 +3423,7 @@ construct_getobj_letters(const char *let, const char *word, boolean (*validitemf
                 || (!strcmp(word, "write on")
                     && (((!(otyp == SCR_BLANK_PAPER || otyp == SPE_BLANK_PAPER) || !objects[otyp].oc_name_known)
                           && !((otyp == SPE_NOVEL || otyp == SPE_MANUAL) && otmp->special_quality == -1)
-                        ) || !otmp->dknown
+                        ) || !is_obj_dknown(otmp)
                        )
                    )
                 ) {
@@ -3541,7 +3541,7 @@ ckvalidcat(struct obj *otmp)
 static int
 ckunpaid(struct obj *otmp)
 {
-    return (otmp->unpaid || (Has_contents(otmp) && count_unpaid(otmp->cobj, 0, FALSE)));
+    return (is_obj_unpaid(otmp) || (Has_contents(otmp) && count_unpaid(otmp->cobj, 0, FALSE)));
 }
 
 boolean
@@ -3992,21 +3992,21 @@ fully_identify_obj(struct obj *otmp)
     if (otmp->oartifact)
     {
         discover_artifact(otmp->oartifact);
-        otmp->aknown = 1;
+        set_obj_aknown(otmp, 1);
     }
-    otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = otmp->mknown = 1;
+    set_obj_known(otmp, 1), set_obj_dknown(otmp, 1), set_obj_bknown(otmp, 1), set_obj_rknown(otmp, 1), set_obj_mknown(otmp, 1);
     
     if (has_oname(otmp))
-        otmp->nknown = 1;
+        set_obj_nknown(otmp, 1);
 
     if (Is_container(otmp) || otmp->otyp == STATUE)
-        otmp->cknown = otmp->lknown = otmp->tknown = 1;
+        set_obj_cknown(otmp, 1), set_obj_lknown(otmp, 1), set_obj_tknown(otmp, 1);
     if (otmp->otyp == EGG && otmp->corpsenm > NON_PM)
         learn_egg_type(otmp->corpsenm);
     if (is_obj_rotting_corpse(otmp) && otmp->corpsenm > NON_PM)
         learn_corpse_type(otmp->corpsenm);
     if (is_obj_rotting_corpse(otmp))
-        otmp->rotknown = 1;
+        set_obj_rotknown(otmp, 1);
 }
 
 /* ggetobj callback routine; identify an object and give immediate feedback */
@@ -4213,7 +4213,7 @@ learn_unseen_invent(void)
         return; /* sanity check */
 
     for (otmp = invent; otmp; otmp = otmp->nobj) {
-        if (otmp->dknown)
+        if (is_obj_dknown(otmp))
             continue; /* already seen */
         /* set dknown, perhaps bknown (for priest[ess]) */
         (void) xname(otmp);
@@ -4760,10 +4760,10 @@ display_item_command_menu(struct obj *otmp, int64_t pickcnt, boolean *return_to_
                 {
                     debugprint("display_item_command_menu");
                     obj_extract_self(otmpsplit); /* free from inv */
-                    otmpsplit->nomerge = 1;
+                    set_obj_nomerge(otmpsplit, 1);
                     otmpsplit = hold_another_object(otmpsplit, "Oops!  %s out of your grasp!", The(aobjnam(otmpsplit, "slip")), (const char*)0, FALSE);
                     if (otmpsplit)
-                        otmpsplit->nomerge = 0;
+                        set_obj_nomerge(otmpsplit, 0);
                     else
                         return 1;
                 }
@@ -4853,7 +4853,7 @@ find_unpaid(struct obj *list, struct obj **last_found)
     struct obj *obj;
 
     while (list) {
-        if (list->unpaid) {
+        if (is_obj_unpaid(list)) {
             if (*last_found) {
                 /* still looking for previous unpaid object */
                 if (list == *last_found)
@@ -5594,7 +5594,7 @@ count_unpaid(struct obj *list, boolean (*filterfunc)(struct obj*), boolean bynex
         if (filterfunc && !(*filterfunc)(otmp))
             continue;
 
-        if (otmp->unpaid)
+        if (is_obj_unpaid(otmp))
             count++;
 
         if (Has_contents(otmp))
@@ -5630,7 +5630,7 @@ count_buc(struct obj *list, int type, boolean (*filterfunc)(struct obj*), boolea
     for (; list; list = (bynexthere ? list->nexthere : list->nobj)) {
         /* priests always know bless/curse state */
         if (Role_if(PM_PRIEST))
-            list->bknown = (list->oclass != COIN_CLASS);
+            set_obj_bknown(list, COIN_CLASS);
         /* some actions exclude some or most items */
         if (filterfunc && !(*filterfunc)(list))
             continue;
@@ -5642,10 +5642,10 @@ count_buc(struct obj *list, int type, boolean (*filterfunc)(struct obj*), boolea
             continue;
         }
         /* check whether this object matches the requested type */
-        if (!list->bknown
+        if (!is_obj_bknown(list)
                 ? (type == BUC_UNKNOWN)
-                : list->blessed ? (type == BUC_BLESSED)
-                                : list->cursed ? (type == BUC_CURSED)
+                : is_obj_blessed(list) ? (type == BUC_BLESSED)
+                                : is_obj_cursed(list) ? (type == BUC_CURSED)
                                                : (type == BUC_UNCURSED))
             ++count;
     }
@@ -5669,7 +5669,7 @@ tally_BUCX(struct obj *list, boolean by_nexthere, int *bcp, int *ucp, int *ccp, 
 
         /* priests always know bless/curse state */
         if (Role_if(PM_PRIEST))
-            list->bknown = (list->oclass != COIN_CLASS);
+            set_obj_bknown(list, COIN_CLASS);
         /* coins are either uncursed or unknown based upon option setting */
         if (list->oclass == COIN_CLASS) {
             if (iflags.goldX)
@@ -5680,11 +5680,11 @@ tally_BUCX(struct obj *list, boolean by_nexthere, int *bcp, int *ucp, int *ccp, 
         }
 
         /* ordinary items */
-        if (!list->bknown)
+        if (!is_obj_bknown(list))
             ++(*xcp);
-        else if (list->blessed)
+        else if (is_obj_blessed(list))
             ++(*bcp);
-        else if (list->cursed)
+        else if (is_obj_cursed(list))
             ++(*ccp);
         else /* neither blessed nor cursed => uncursed */
             ++(*ucp);
@@ -5719,7 +5719,7 @@ count_contents(struct obj *container, boolean nested, boolean quantity, boolean 
     for (otmp = container->cobj; otmp; otmp = otmp->nobj) {
         if (nested && Has_contents(otmp))
             count += count_contents(otmp, nested, quantity, everything);
-        if (everything || otmp->unpaid || (shoppy && !otmp->no_charge))
+        if (everything || is_obj_unpaid(otmp) || (shoppy && !is_obj_no_charge(otmp)))
             count += quantity ? otmp->quan : 1L;
     }
     return count;
@@ -5753,7 +5753,7 @@ count_contained_contents(struct obj *container, boolean nested, boolean quantity
     for (otmp = contained_object_chain(container); otmp; otmp = otmp->nobj) {
         if (nested && Has_contained_contents(otmp))
             count += count_contained_contents(otmp, nested, quantity, everything);
-        if (everything || otmp->unpaid || (shoppy && !otmp->no_charge))
+        if (everything || is_obj_unpaid(otmp) || (shoppy && !is_obj_no_charge(otmp)))
             count += quantity ? otmp->quan : 1L;
     }
     return count;
@@ -5797,7 +5797,7 @@ dounpaid(void)
         classcount = 0;
         for (otmp = invent; otmp; otmp = otmp->nobj) {
             ilet = otmp->invlet;
-            if (otmp->unpaid) {
+            if (is_obj_unpaid(otmp)) {
                 if (!flags.sortpack || otmp->oclass == *classlet) {
                     if (flags.sortpack && !classcount) {
                         putstr(win, 0, let_to_name(*classlet, TRUE, FALSE));
@@ -5832,7 +5832,7 @@ dounpaid(void)
                 while (find_unpaid(otmp->cobj, &marker)) {
                     totcost += cost = unpaid_cost(marker, FALSE);
                     contcost += cost;
-                    if (otmp->cknown) {
+                    if (is_obj_cknown(otmp)) {
                         iflags.suppress_price++; /* suppress "(unpaid)" sfx */
                         putstr(win, 0,
                                xprname(marker, distant_name(marker, doname),
@@ -5840,7 +5840,7 @@ dounpaid(void)
                         iflags.suppress_price--;
                     }
                 }
-                if (!otmp->cknown) {
+                if (!is_obj_cknown(otmp)) {
                     char contbuf[BUFSZ];
 
                     /* Shopkeeper knows what to charge for contents */
@@ -5966,16 +5966,16 @@ this_type_only(struct obj *obj)
     } else {
         switch (this_type) {
         case 'B':
-            res = (obj->bknown && obj->blessed);
+            res = (is_obj_bknown(obj) && is_obj_blessed(obj));
             break;
         case 'U':
-            res = (obj->bknown && !(obj->blessed || obj->cursed));
+            res = (is_obj_bknown(obj) && !(is_obj_blessed(obj) || is_obj_cursed(obj)));
             break;
         case 'C':
-            res = (obj->bknown && obj->cursed);
+            res = (is_obj_bknown(obj) && is_obj_cursed(obj));
             break;
         case 'X':
-            res = !obj->bknown;
+            res = !is_obj_bknown(obj);
             break;
         default:
             break; /* use 'res' as-is */
@@ -6934,7 +6934,7 @@ mergable(struct obj *otmp, struct obj *obj)
        explicitly marked to prevent merge, or if not mergable in general */
     if (obj == otmp || obj->otyp != otmp->otyp || !objects[obj->otyp].oc_merge
         || obj->item_flags != otmp->item_flags
-        || obj->nomerge || otmp->nomerge
+        || is_obj_nomerge(obj) || is_obj_nomerge(otmp)
         || (obj->speflags & (SPEFLAGS_MINES_PRIZE | SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2)) != 0
         || (otmp->speflags & (SPEFLAGS_MINES_PRIZE | SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2)) != 0)
         return FALSE;
@@ -6943,16 +6943,16 @@ mergable(struct obj *otmp, struct obj *obj)
     if (obj->oclass == COIN_CLASS)
         return TRUE;
 
-    if (obj->unpaid != otmp->unpaid || obj->enchantment != otmp->enchantment || obj->elemental_enchantment != otmp->elemental_enchantment
+    if (is_obj_unpaid(obj) != is_obj_unpaid(otmp) || obj->enchantment != otmp->enchantment || obj->elemental_enchantment != otmp->elemental_enchantment
         || obj->material != otmp->material || obj->exceptionality != otmp->exceptionality || obj->mythic_prefix != otmp->mythic_prefix || obj->mythic_suffix != otmp->mythic_suffix
         || obj->charges != otmp->charges || obj->special_quality != otmp->special_quality || obj->speflags != otmp->speflags
-        || obj->cursed != otmp->cursed || obj->blessed != otmp->blessed
-        || obj->no_charge != otmp->no_charge || obj->obroken != otmp->obroken
-        || obj->otrapped != otmp->otrapped || obj->lamplit != otmp->lamplit
-        || obj->bypass != otmp->bypass)
+        || is_obj_cursed(obj) != is_obj_cursed(otmp) || is_obj_blessed(obj) != is_obj_blessed(otmp)
+        || is_obj_no_charge(obj) != is_obj_no_charge(otmp) || is_obj_obroken(obj) != is_obj_obroken(otmp)
+        || is_obj_otrapped(obj) != is_obj_otrapped(otmp) || is_obj_lamplit(obj) != is_obj_lamplit(otmp)
+        || is_obj_bypass(obj) != is_obj_bypass(otmp))
         return FALSE;
 
-    if (obj->globby)
+    if (is_obj_globby(obj))
         return TRUE;
     /* Checks beyond this point either aren't applicable to globs
      * or don't inhibit their merger.
@@ -6962,15 +6962,15 @@ mergable(struct obj *otmp, struct obj *obj)
         && (obj->oeaten != otmp->oeaten || obj->orotten != otmp->orotten))
         return FALSE;
 
-    if (obj->dknown != otmp->dknown
-        || (obj->bknown != otmp->bknown && !Role_if(PM_PRIEST))
+    if (is_obj_dknown(obj) != is_obj_dknown(otmp)
+        || (is_obj_bknown(obj) != is_obj_bknown(otmp) && !Role_if(PM_PRIEST))
         || obj->oeroded != otmp->oeroded || obj->oeroded2 != otmp->oeroded2
-        || obj->greased != otmp->greased)
+        || is_obj_greased(obj) != is_obj_greased(otmp))
         return FALSE;
 
     if ((obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS)
-        && (obj->oerodeproof != otmp->oerodeproof
-            || obj->rknown != otmp->rknown))
+        && (is_obj_oerodeproof(obj) != is_obj_oerodeproof(otmp)
+            || is_obj_rknown(obj) != is_obj_rknown(otmp)))
         return FALSE;
 
     if (obj->otyp == CORPSE || obj->otyp == EGG || obj->otyp == TIN) {
@@ -6978,7 +6978,7 @@ mergable(struct obj *otmp, struct obj *obj)
             return FALSE;
     }
 
-    if (is_obj_rotting_corpse(obj) && obj->rotknown != otmp->rotknown) {
+    if (is_obj_rotting_corpse(obj) && is_obj_rotknown(obj) != is_obj_rotknown(otmp)) {
         return FALSE;
     }
 
@@ -6993,15 +6993,15 @@ mergable(struct obj *otmp, struct obj *obj)
     if (is_candle(obj) && obj->age / 25 != otmp->age / 25)
         return FALSE;
 
-    if (is_torch(obj) && (obj->age / 25 != otmp->age / 25 || obj->lamplit)) /* Only unlit torches are mergeable */
+    if (is_torch(obj) && (obj->age / 25 != otmp->age / 25 || is_obj_lamplit(obj))) /* Only unlit torches are mergeable */
         return FALSE;
 
     /* burning potions of oil never merge */
-    if (obj->otyp == POT_OIL && obj->lamplit)
+    if (obj->otyp == POT_OIL && is_obj_lamplit(obj))
         return FALSE;
 
     /* don't merge surcharged item with base-cost item */
-    if (obj->unpaid && !same_price(obj, otmp))
+    if (is_obj_unpaid(obj) && !same_price(obj, otmp))
         return FALSE;
 
     /* if they have true names, make sure they're the same */
@@ -7026,7 +7026,7 @@ mergable(struct obj *otmp, struct obj *obj)
     if (obj->oartifact != otmp->oartifact)
         return FALSE;
 
-    if (obj->known == otmp->known || !objects[otmp->otyp].oc_uses_known) {
+    if (is_obj_known(obj) == is_obj_known(otmp) || !objects[otmp->otyp].oc_uses_known) {
         return (boolean) objects[obj->otyp].oc_merge;
     } else
         return FALSE;
@@ -7166,7 +7166,7 @@ tool_in_use(struct obj *obj)
         return TRUE;
     if (obj->oclass != TOOL_CLASS)
         return FALSE;
-    return (boolean) (obj == uwep || obj->lamplit
+    return (boolean) (obj == uwep || is_obj_lamplit(obj)
                       || (obj->otyp == LEASH && obj->leashmon));
 }
 
@@ -7814,7 +7814,7 @@ display_cinventory(struct obj *obj)
         free((genericptr_t) selected);
     } else
         ret = (struct obj *) 0;
-    obj->cknown = 1;
+    set_obj_cknown(obj, 1);
     return ret;
 }
 
@@ -7844,7 +7844,7 @@ display_binventory(int x, int y, boolean as_if_seen)
     for (n = 0, obj = level.buriedobjlist; obj; obj = obj->nobj)
         if (obj->ox == x && obj->oy == y) {
             if (as_if_seen)
-                obj->dknown = 1;
+                set_obj_dknown(obj, 1);
             n++;
         }
 

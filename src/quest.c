@@ -129,10 +129,10 @@ artitouch(struct obj *obj)
     if (!is_qstatus_touched_artifact()) {
         /* in case we haven't seen the item yet (ie, currently blinded),
            this quest message describes it by name so mark it as seen */
-        obj->dknown = 1;
+        set_obj_dknown(obj, 1);
         /* Quest artifacts become identified by the artifact message */
-        obj->aknown = 1;
-        obj->nknown = 1;
+        set_obj_aknown(obj, 1);
+        set_obj_nknown(obj, 1);
         /* only give this message once */
         set_qstatus_touched_artifact(TRUE);
         qt_pager_ex((struct monst*)0, QT_GOTIT, ATR_NONE, CLR_MSG_HINT, FALSE);

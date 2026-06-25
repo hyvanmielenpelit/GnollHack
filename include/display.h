@@ -471,7 +471,7 @@
 #define any_seen_mon_to_glyph(mon, rng) (canseemon(mon) || is_tame(mon) ? any_mon_to_glyph(mon, rng) : GLYPH_INVISIBLE)
 
 #define is_obj_activated(obj) \
-  ((obj)->lamplit || ((obj)->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0 || (obj)->invokeon || (obj)->detectioncount > 0)
+  (is_obj_lamplit((obj)) || ((obj)->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0 || (obj)->invokeon || (obj)->detectioncount > 0)
 
 /* This has the unfortunate side effect of needing a global variable    */
 /* to store a result. 'otg_temp' is defined and declared in decl.{ch}.  */
@@ -519,7 +519,7 @@
                : ((obj)->otyp == CORPSE)                                \
                      ?  (is_female_corpse_or_statue(obj) ? ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_FEMALE_BODY_OFF))  : ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_BODY_OFF)) )         \
                      : ((obj)->otyp == BOULDER) \
-                        ? cmap_with_type_to_glyph(S_extra_boulder, (obj)->has_special_tileset ? (obj)->special_tileset : get_current_cmap_type_index()) \
+                        ? cmap_with_type_to_glyph(S_extra_boulder, is_obj_has_special_tileset((obj)) ? (obj)->special_tileset : get_current_cmap_type_index()) \
                             : ((obj)->oartifact > 0) \
                                 ? ((int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_OFF) \
                                     :  ((int)(obj)->otyp + GLYPH_OBJ_OFF))
@@ -533,7 +533,7 @@
                : ((obj)->otyp == CORPSE)                                \
                      ?  (is_female_corpse_or_statue(obj) ? ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_FEMALE_BODY_OFF))  : ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_BODY_OFF)) )         \
                      : ((obj)->otyp == BOULDER) \
-                        ? cmap_with_type_to_glyph(S_extra_boulder, (obj)->has_special_tileset ? (obj)->special_tileset : get_current_cmap_type_index()) \
+                        ? cmap_with_type_to_glyph(S_extra_boulder, is_obj_has_special_tileset((obj)) ? (obj)->special_tileset : get_current_cmap_type_index()) \
                             : ((obj)->oartifact > 0) \
                                 ? ((int)((obj)->oartifact - 1) * NUM_MISSILE_DIRS + (dir_index) + GLYPH_ARTIFACT_MISSILE_OFF) \
                                     :  ((int)(obj)->otyp * NUM_MISSILE_DIRS + (dir_index) + GLYPH_OBJ_MISSILE_OFF)) )

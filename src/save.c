@@ -1226,8 +1226,8 @@ saveobjchn(int fd, struct obj *otmp, int mode)
             otmp->nobj = NULL;      /* nobj saved into otmp2 */
             otmp->cobj = NULL;      /* contents handled above */
             otmp->timed = 0;        /* not timed any more */
-            otmp->lamplit = 0;      /* caller handled lights */
-            otmp->makingsound = 0;  /* caller handled sounds */
+            set_obj_lamplit(otmp, 0);      /* caller handled lights */
+            set_obj_makingsound(otmp, 0);  /* caller handled sounds */
             dealloc_obj(otmp);
         }
         otmp = otmp2;

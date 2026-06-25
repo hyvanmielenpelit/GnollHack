@@ -120,7 +120,7 @@ enmaxadjustment(void)
                     )
                 )
             {
-                int multiplier = (((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
+                int multiplier = (((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && is_obj_cursed(uitem)) || 
                     ((objects[otyp].oc_pflags & P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1 : 1);
 
                 if (objects[otyp].oc_pflags & P1_MANA_PERCENTAGE_BONUS)

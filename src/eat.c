@@ -142,8 +142,8 @@ is_nonedible_corpse_material(struct permonst *ptr, struct obj *obj)
             return (const char*)0;
         else if (rust_causing_and_ironvorous(ptr) && is_rustprone(obj))
         {
-            //if (obj->oerodeproof)
-            //    return obj->rknown ? "rustproof" : "not tasty metal";
+            //if (is_obj_oerodeproof(obj))
+            //    return is_obj_rknown(obj) ? "rustproof" : "not tasty metal";
             //else
             return (const char*)0;
         }
@@ -540,7 +540,7 @@ obj_nutrition(struct obj *otmp)
     //boolean isyou = mtmp == &youmonst;
     unsigned nut = (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM) ? mons[otmp->corpsenm].cnutrit
         : (otmp->otyp == STATUE) ? (unsigned)((otmp->owt * objects[ROCK].oc_nutrition) / (max(1, otmp->quan * objects[ROCK].oc_weight)))
-                      : otmp->globby ? otmp->owt
+                      : is_obj_globby(otmp) ? otmp->owt
                          : objects[otmp->otyp].oc_nutrition;
 
     /* Moved elsewhere to be just a multiplier on gained nutrition; oeaten now always corresponds to the original */
@@ -643,9 +643,9 @@ touchfood(struct obj *otmp)
             (void)dropyf(otmp);
             sellobj_state(SELL_NORMAL);
         } else {
-            otmp->nomerge = 1; /* used to prevent merge */
+            set_obj_nomerge(otmp, 1); /* used to prevent merge */
             otmp = addinv(otmp);
-            otmp->nomerge = 0;
+            set_obj_nomerge(otmp, 0);
         }
     }
     return otmp;
@@ -734,7 +734,7 @@ done_eating(boolean message)
 {
     struct obj *piece = context.victual.piece;
 
-    piece->in_use = TRUE;
+    set_obj_in_use(piece, TRUE);
     occupation = 0; /* do this early, so update_hunger_status() knows we're done */
     update_hunger_status(FALSE);
     if (nomovemsg) {
@@ -764,7 +764,7 @@ done_eating(boolean message)
 
     if (carried(piece))
     {
-        if (!(piece->speflags & SPEFLAGS_ADDED_TO_YOUR_BILL) && piece->unpaid && costly_spot(u.ux, u.uy))
+        if (!(piece->speflags & SPEFLAGS_ADDED_TO_YOUR_BILL) && is_obj_unpaid(piece) && costly_spot(u.ux, u.uy))
         {
             struct monst* shkp = 0;
             boolean billable_food = FALSE;
@@ -1886,8 +1886,8 @@ costly_tin(int alter_type)
 {
     struct obj *tin = context.tin.tin;
 
-    if (carried(tin) ? tin->unpaid
-                     : (costly_spot(tin->ox, tin->oy) && !tin->no_charge)) {
+    if (carried(tin) ? is_obj_unpaid(tin)
+                     : (costly_spot(tin->ox, tin->oy) && !is_obj_no_charge(tin))) {
         if (tin->quan > 1L) {
             tin = context.tin.tin = splitobj(tin, 1L);
             context.tin.o_id = tin->o_id;
@@ -1932,7 +1932,7 @@ tin_details(struct obj *obj, int mnum, char *buf)
         else if (mnum == NON_PM)
             Strcpy(buf, "empty tin");
         else {
-            if ((obj->cknown || iflags.override_ID) && obj->special_quality < 0) {
+            if ((is_obj_cknown(obj) || iflags.override_ID) && obj->special_quality < 0) {
                 if (r == ROTTEN_TIN || r == HOMEMADE_TIN) {
                     /* put these before the word tin */
                     Sprintf(buf2, "%s %s of ", tintxts[r].txt, buf);
@@ -1967,7 +1967,7 @@ set_tin_variety(struct obj *obj, int forcetype)
         r = tin_variety(obj, FALSE);
         if (r < 0 || r >= TTSZ)
             r = ROTTEN_TIN; /* shouldn't happen */
-        while ((r == ROTTEN_TIN && !obj->cursed) || !tintxts[r].fodder)
+        while ((r == ROTTEN_TIN && !is_obj_cursed(obj)) || !tintxts[r].fodder)
             r = rn2(TTSZ - 1);
     } else if (forcetype >= 0 && forcetype < TTSZ - 1) {
         r = forcetype;
@@ -1990,7 +1990,7 @@ tin_variety(struct obj *obj, boolean disp)
 
     if (obj->special_quality == 1) {
         r = SPINACH_TIN;
-    } else if (obj->cursed || obj->orotten) {
+    } else if (is_obj_cursed(obj) || obj->orotten) {
         r = ROTTEN_TIN; /* always rotten if cursed */
     } else if (obj->special_quality < 0) {
         r = -(obj->special_quality);
@@ -1998,7 +1998,7 @@ tin_variety(struct obj *obj, boolean disp)
     } else
         r = rn2(TTSZ - 1);
 
-    if (!disp && r == HOMEMADE_TIN && !obj->blessed && !rn2(7))
+    if (!disp && r == HOMEMADE_TIN && !is_obj_blessed(obj) && !rn2(7))
         r = ROTTEN_TIN; /* some homemade tins go bad */
 
     if (r == ROTTEN_TIN && obj->corpsenm != NON_PM && nonrotting_corpse(obj->corpsenm))
@@ -2014,7 +2014,7 @@ consume_tin(const char *mesg)
     struct obj *tin = context.tin.tin;
 
     r = tin_variety(tin, FALSE);
-    if (tin->otrapped || (tin->cursed && r != HOMEMADE_TIN && !rn2(8))) 
+    if (is_obj_otrapped(tin) || (is_obj_cursed(tin) && r != HOMEMADE_TIN && !rn2(8))) 
     {
         b_trapped("tin", 0, u.ux, u.uy);
         tin = costly_tin(COST_DSTROY);
@@ -2029,7 +2029,7 @@ consume_tin(const char *mesg)
         if (mnum == NON_PM) 
         {
             pline("It turns out to be empty.");
-            tin->dknown = tin->known = 1;
+            set_obj_dknown(tin, 1), set_obj_known(tin, 1);
             tin = costly_tin(COST_OPEN);
             goto use_up_tin;
         }
@@ -2071,7 +2071,7 @@ consume_tin(const char *mesg)
             if (flags.verbose)
                 You("discard the open tin.");
             if (!Hallucination)
-                tin->dknown = tin->known = 1;
+                set_obj_dknown(tin, 1), set_obj_known(tin, 1);
             tin = costly_tin(COST_OPEN);
             play_simple_object_sound(tin, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
             goto use_up_tin;
@@ -2088,7 +2088,7 @@ consume_tin(const char *mesg)
 
         eating_conducts(&mons[mnum]);
 
-        tin->dknown = tin->known = 1;
+        set_obj_dknown(tin, 1), set_obj_known(tin, 1);
         corpse_pre_effect(mnum, 2);
         corpse_after_effect(mnum, 2);
 
@@ -2118,15 +2118,15 @@ consume_tin(const char *mesg)
     else
     { /* spinach... */
         char containsbuf[BUFSZ];
-        int nutr = tin->blessed
+        int nutr = is_obj_blessed(tin)
             ? 600                   /* blessed */
-            : !tin->cursed
+            : !is_obj_cursed(tin)
             ? (400 + rnd(200))   /* uncursed */
             : (200 + rnd(400)); /* cursed */
         nutr = adjust_nutrition_base_value(nutr, tin, &youmonst);
         boolean chokewarn = u.uhs == SATIATED && u.uhunger >= NUTRITION_CHOKE_AMOUNT - nutr;
         const char* eatit = chokewarn ? "However, you are feeling very full; eat it nevertheless?" : "Eat it?";
-        if (tin->cursed)
+        if (is_obj_cursed(tin))
         {
             Sprintf(containsbuf, "It contains some decaying%s%s substance.",
                   Blind ? "" : " ", Blind ? "" : hcolor(NH_GREEN));
@@ -2134,7 +2134,7 @@ consume_tin(const char *mesg)
         else 
         {
             Strcpy(containsbuf, "It contains spinach.");
-            tin->dknown = tin->known = 1;
+            set_obj_dknown(tin, 1), set_obj_known(tin, 1);
         }
 
         pline1(containsbuf);
@@ -2156,7 +2156,7 @@ consume_tin(const char *mesg)
         play_occupation_immediate_sound(objects[tin->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
         if (!u.uconduct.food++)
             livelog_printf(LL_CONDUCT, "%s", "ate for the first time (spinach)");
-        if (!tin->cursed)
+        if (!is_obj_cursed(tin))
             pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "This makes you feel like %s!",
                   /* "Swee'pea" is a character from the Popeye cartoons */
                   Hallucination ? "Swee'pea"
@@ -2226,14 +2226,14 @@ start_tin(struct obj *otmp)
         You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot handle the tin properly to open it.");
         return;
     } 
-    else if (otmp->blessed) 
+    else if (is_obj_blessed(otmp)) 
     {
         /* 50/50 chance for immediate access vs 1 turn delay (unless
            wielding blessed tin opener which always yields immediate
            access); 1 turn delay case is non-deterministic:  getting
            interrupted and retrying might yield another 1 turn delay
            or might open immediately on 2nd (or 3rd, 4th, ...) try */
-        tmp = (uwep && uwep->blessed && uwep->otyp == TIN_OPENER) ? 0 : rn2(2);
+        tmp = (uwep && is_obj_blessed(uwep) && uwep->otyp == TIN_OPENER) ? 0 : rn2(2);
         if (!tmp)
             mesg = "The tin opens like magic!";
         else
@@ -2245,7 +2245,7 @@ start_tin(struct obj *otmp)
         {
         case TIN_OPENER:
             mesg = "You easily open the tin."; /* iff tmp==0 */
-            tmp = rn2(uwep->cursed ? 3 : !uwep->blessed ? 2 : 1);
+            tmp = rn2(is_obj_cursed(uwep) ? 3 : !is_obj_blessed(uwep) ? 2 : 1);
             break;
         case DAGGER:
         case ELVEN_DAGGER:
@@ -2378,7 +2378,7 @@ eatcorpse(struct obj *otmp)
                          && !poly_when_stoned(youmonst.data)),
             slimeable = (mnum == PM_GREEN_SLIME && !Slimed && !Unchanging && !Slime_resistance
                          && !slimeproof(youmonst.data)),
-            glob = otmp->globby ? TRUE : FALSE;
+            glob = is_obj_globby(otmp) ? TRUE : FALSE;
 
     int64_t rotted = get_rotted_status(otmp);
 
@@ -2402,9 +2402,9 @@ eatcorpse(struct obj *otmp)
     //    int64_t age = peek_at_iced_corpse_age(otmp);
 
     //    rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + 0 /*rn2(CORPSE_ROTTING_SPEED_VARIATION)*/);
-    //    if (otmp->cursed)
+    //    if (is_obj_cursed(otmp))
     //        rotted += 2L;
-    //    else if (otmp->blessed)
+    //    else if (is_obj_blessed(otmp))
     //        rotted -= 2L;
     //}
 
@@ -2712,12 +2712,12 @@ food_pre_effect(struct obj *otmp)
         }
         /*FALLTHRU*/
     default:
-        if (otmp->otyp == SLIME_MOLD && !otmp->cursed
+        if (otmp->otyp == SLIME_MOLD && !is_obj_cursed(otmp)
             && otmp->special_quality == context.current_fruit) {
             pline("My, that was a %s %s!",
                   Hallucination ? "primo" : "yummy",
                   singular(otmp, xname));
-        } else if (otmp->otyp == APPLE && otmp->cursed && !Sleep_resistance) {
+        } else if (otmp->otyp == APPLE && is_obj_cursed(otmp) && !Sleep_resistance) {
             ; /* skip core joke; feedback deferred til food_after_effect() */
 
 #if defined(MAC) || defined(MACOSX)
@@ -2755,7 +2755,7 @@ food_pre_effect(struct obj *otmp)
         } else {
         give_feedback:
             pline("This %s is %s", singular(otmp, xname),
-                  otmp->cursed
+                  is_obj_cursed(otmp)
                      ? (Hallucination ? "grody!" : "terrible!")
                      : (otmp->otyp == CRAM_RATION
                         || otmp->otyp == K_RATION
@@ -2834,7 +2834,7 @@ eataccessory(struct obj *otmp)
         if (u.uhp <= 0)
             return; /* died from sink fall */
     }
-    otmp->known = otmp->dknown = 1; /* by taste */
+    set_obj_known(otmp, 1), set_obj_dknown(otmp, 1); /* by taste */
     if (!rn2(otmp->oclass == RING_CLASS ? 3 : 5)) 
     {
         switch (otmp->otyp) 
@@ -3087,11 +3087,11 @@ eatspecial(void)
 #endif
         if (otmp->otyp == SCR_SCARE_MONSTER)
             /* to eat scroll, hero is currently polymorphed into a monster */
-            pline("Yuck%c", otmp->blessed ? '!' : '.');
+            pline("Yuck%c", is_obj_blessed(otmp) ? '!' : '.');
         else if (otmp->oclass == SCROLL_CLASS
                  /* check description after checking for specific scrolls */
                  && !strcmpi(OBJ_DESCR(objects[otmp->otyp]), "YUM YUM"))
-            pline("Yum%c", otmp->blessed ? '!' : '.');
+            pline("Yum%c", is_obj_blessed(otmp) ? '!' : '.');
         else
             pline("Needs salt...");
     }
@@ -3105,13 +3105,13 @@ eatspecial(void)
     }
 
     /* KMH -- idea by "Tommy the Terrorist" */
-    if (is_trident(otmp) && !otmp->cursed) {
+    if (is_trident(otmp) && !is_obj_cursed(otmp)) {
         /* sugarless chewing gum which used to be heavily advertised on TV */
         pline(Hallucination ? "Four out of five dentists agree."
                             : "That was pure chewing satisfaction!");
         exercise(A_WIS, TRUE);
     }
-    if (otmp->otyp == FLINT && !otmp->cursed) {
+    if (otmp->otyp == FLINT && !is_obj_cursed(otmp)) {
         /* chewable vitamin for kids based on "The Flintstones" TV cartoon */
         pline("Yabba-dabba delicious!");
         exercise(A_CON, TRUE);
@@ -3152,7 +3152,7 @@ foodword(struct obj *otmp)
         return food;
 
     if (otmp->oclass == GEM_CLASS && (otmp->material == MAT_GLASS || otmp->material == MAT_CRYSTAL)
-        && otmp->dknown)
+        && is_obj_dknown(otmp))
         makeknown(otmp->otyp);
     return material_definitions[otmp->material].foodword;
 }
@@ -3205,7 +3205,7 @@ food_after_effect(struct obj *otmp)
         /* This stuff seems to be VERY healthy! */
         gainstr(otmp, 1, TRUE);
         if (Upolyd) {
-            u.mh += otmp->cursed ? -rnd(20) : rnd(20);
+            u.mh += is_obj_cursed(otmp) ? -rnd(20) : rnd(20);
             if (u.mh > u.mhmax) {
                 if (!rn2(17))
                     u.basemhmax++;
@@ -3215,7 +3215,7 @@ food_after_effect(struct obj *otmp)
                 rehumanize();
             }
         } else {
-            u.uhp += otmp->cursed ? -rnd(20) : rnd(20);
+            u.uhp += is_obj_cursed(otmp) ? -rnd(20) : rnd(20);
             if (u.uhp > u.uhpmax) {
                 if (!rn2(17))
                     u.ubasehpmax++;
@@ -3227,7 +3227,7 @@ food_after_effect(struct obj *otmp)
                 done(POISONING);
             }
         }
-        if (!otmp->cursed)
+        if (!is_obj_cursed(otmp))
             heal_legs(0);
         break;
     case EDIBLEFX_GAIN_STRENGTH:
@@ -3240,27 +3240,27 @@ food_after_effect(struct obj *otmp)
         gainstr(otmp, 1, TRUE);
         break;
     case EDIBLEFX_GAIN_DEXTERITY:
-        if(adjattrib(A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+        if(adjattrib(A_DEX, (otmp && is_obj_cursed(otmp)) ? -1 : (otmp && is_obj_blessed(otmp)) ? rnd(2) : 1,
             TRUE ? -1 : 1))
             play_sfx_sound(SFX_GAIN_ABILITY);
         break;
     case EDIBLEFX_GAIN_CONSTITUTION:
-        if(adjattrib(A_CON, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+        if(adjattrib(A_CON, (otmp && is_obj_cursed(otmp)) ? -1 : (otmp && is_obj_blessed(otmp)) ? rnd(2) : 1,
             TRUE ? -1 : 1))
             play_sfx_sound(SFX_GAIN_ABILITY);
         break;
     case EDIBLEFX_GAIN_INTELLIGENCE:
-        if(adjattrib(A_INT, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+        if(adjattrib(A_INT, (otmp && is_obj_cursed(otmp)) ? -1 : (otmp && is_obj_blessed(otmp)) ? rnd(2) : 1,
             TRUE ? -1 : 1))
             play_sfx_sound(SFX_GAIN_ABILITY);
         break;
     case EDIBLEFX_GAIN_WISDOM:
-        if(adjattrib(A_WIS, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+        if(adjattrib(A_WIS, (otmp && is_obj_cursed(otmp)) ? -1 : (otmp && is_obj_blessed(otmp)) ? rnd(2) : 1,
             TRUE ? -1 : 1))
             play_sfx_sound(SFX_GAIN_ABILITY);
         break;
     case EDIBLEFX_GAIN_CHARISMA:
-        if(adjattrib(A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+        if(adjattrib(A_CHA, (otmp && is_obj_cursed(otmp)) ? -1 : (otmp && is_obj_blessed(otmp)) ? rnd(2) : 1,
             TRUE ? -1 : 1))
             play_sfx_sound(SFX_GAIN_ABILITY);
         break;
@@ -3268,8 +3268,8 @@ food_after_effect(struct obj *otmp)
     {
         int otyp = POT_RESTORE_ABILITY;
         struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
-        pseudo->blessed = otmp->blessed;
-        pseudo->cursed = otmp->cursed;
+        set_obj_blessed(pseudo, is_obj_blessed(otmp));
+        set_obj_cursed(pseudo, is_obj_cursed(otmp));
         pseudo->quan = 20L; /* do not let useup get it */
         (void)peffects(pseudo);
         debugprint("food_after_effect: %d", pseudo->otyp);
@@ -3278,10 +3278,10 @@ food_after_effect(struct obj *otmp)
     }
     case EDIBLEFX_GAIN_LEVEL:
     {
-        int otyp = otmp->cursed ? POT_POISON : POT_GAIN_LEVEL;
+        int otyp = is_obj_cursed(otmp) ? POT_POISON : POT_GAIN_LEVEL;
         struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
-        pseudo->blessed = otmp->blessed;
-        pseudo->cursed = FALSE;
+        set_obj_blessed(pseudo, is_obj_blessed(otmp));
+        set_obj_cursed(pseudo, FALSE);
         pseudo->quan = 20L; /* do not let useup get it */
         (void)peffects(pseudo);
         debugprint("food_after_effect2: %d", pseudo->otyp);
@@ -3305,27 +3305,27 @@ food_after_effect(struct obj *otmp)
     case EDIBLEFX_CURE_SICKNESS:
     {
         boolean cured = FALSE;
-        if (Sick && !otmp->cursed)
+        if (Sick && !is_obj_cursed(otmp))
         {
             cured = TRUE;
             make_sick(0L, (char*)0, TRUE, 0);
         }
-        if (FoodPoisoned && !otmp->cursed)
+        if (FoodPoisoned && !is_obj_cursed(otmp))
         {
             cured = TRUE;
             make_food_poisoned(0L, (char*)0, TRUE, 0);
         }
-        if (MummyRot && !otmp->cursed)
+        if (MummyRot && !is_obj_cursed(otmp))
         {
             cured = TRUE;
             make_mummy_rotted(0L, (char*)0, TRUE, 0);
         }
-        if (Vomiting && !otmp->cursed)
+        if (Vomiting && !is_obj_cursed(otmp))
         {
             cured = TRUE;
             make_vomiting(0L, TRUE);
         }
-        if (Slimed && !otmp->cursed)
+        if (Slimed && !is_obj_cursed(otmp))
         {
             cured = TRUE;
             make_slimed(0L, "The slime disappears!", 0, (char*)0, 0);
@@ -3335,7 +3335,7 @@ food_after_effect(struct obj *otmp)
         break;
     }
     case EDIBLEFX_APPLE:
-        if (otmp->cursed && !Sleep_resistance) {
+        if (is_obj_cursed(otmp) && !Sleep_resistance) {
             /* Snow White; 'poisoned' applies to [a subset of] weapons,
                not food, so we substitute cursed; fortunately our hero
                won't have to wait for a prince to be rescued/revived */
@@ -3355,7 +3355,7 @@ food_after_effect(struct obj *otmp)
         }
         break;
     case EDIBLEFX_CURE_PETRIFICATION:
-        if (!otmp->cursed)
+        if (!is_obj_cursed(otmp))
         {
             if (Stoned)
                 fix_petrification();
@@ -3370,7 +3370,7 @@ food_after_effect(struct obj *otmp)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ulch! That %s had a nasty slimy texture.", cxname(otmp));
         break;
     case EDIBLEFX_CURE_TELEPORTITIS:
-        if (!otmp->cursed)
+        if (!is_obj_cursed(otmp))
         {
             if (HTeleportation)
             {
@@ -3389,7 +3389,7 @@ food_after_effect(struct obj *otmp)
     case EDIBLEFX_CURE_HALLUCINATION:
     {
         boolean cured = FALSE;
-        if (Hallucination && !otmp->cursed)
+        if (Hallucination && !is_obj_cursed(otmp))
         {
             cured = TRUE;
             make_hallucinated(0L, TRUE, 0);
@@ -3436,9 +3436,9 @@ get_rotted_status(struct obj *obj)
         /* worst case rather than random
             in this calculation to force prompt */
         rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + 0 /* was rn2(CORPSE_ROTTING_SPEED_VARIATION) */);
-        if (obj->cursed)
+        if (is_obj_cursed(obj))
             rotted += 2L;
-        else if (obj->blessed)
+        else if (is_obj_blessed(obj))
             rotted -= 2L;
     }
 
@@ -3458,7 +3458,7 @@ edibility_prompts(struct obj *otmp)
      */
     char buf[BUFSZ], foodsmell[BUFSZ],
          it_or_they[QBUFSZ], eat_it_anyway[QBUFSZ];
-    boolean cadaver = is_obj_rotting_corpse(otmp), // (otmp->otyp == CORPSE || otmp->globby),
+    boolean cadaver = is_obj_rotting_corpse(otmp), // (otmp->otyp == CORPSE || is_obj_globby(otmp)),
             stoneorslime = FALSE;
     int material = otmp->material, mnum = otmp->corpsenm;
     int64_t rotted = 0L;
@@ -3480,15 +3480,15 @@ edibility_prompts(struct obj *otmp)
         if (cadaver && mnum >= LOW_PM && !nonrotting_corpse(mnum))
         {
             rotted = get_rotted_status(otmp);
-            otmp->rotknown = 1;
+            set_obj_rotknown(otmp, 1);
             //int64_t age = peek_at_iced_corpse_age(otmp);
 
             ///* worst case rather than random
             //   in this calculation to force prompt */
             //rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + 0 /* was rn2(CORPSE_ROTTING_SPEED_VARIATION) */);
-            //if (otmp->cursed)
+            //if (is_obj_cursed(otmp))
             //    rotted += 2L;
-            //else if (otmp->blessed)
+            //else if (is_obj_blessed(otmp))
             //    rotted -= 2L;
         }
     }
@@ -3554,7 +3554,7 @@ edibility_prompts(struct obj *otmp)
                 return 2;
         }
 
-        if (otmp->otyp == APPLE && otmp->cursed && !Sleep_resistance)
+        if (otmp->otyp == APPLE && is_obj_cursed(otmp) && !Sleep_resistance)
         {
             /* causes sleep, for long enough to be dangerous */
             Sprintf(buf, "%s like %s might have been poisoned.  %s", foodsmell,
@@ -3584,7 +3584,7 @@ edibility_prompts(struct obj *otmp)
     }
 
     if (Upolyd && rust_causing_and_ironvorous(youmonst.data) && is_metallic(otmp)
-        && otmp->oerodeproof) 
+        && is_obj_oerodeproof(otmp)) 
     {
         Sprintf(buf, "%s disgusting to you right now.  %s", foodsmell,
                 eat_it_anyway);
@@ -3817,9 +3817,9 @@ doeat(void)
     }
 
     if (is_metallic(otmp) && rust_causing_and_ironvorous(youmonst.data)
-        && otmp->oerodeproof)
+        && is_obj_oerodeproof(otmp))
     {
-        otmp->rknown = TRUE;
+        set_obj_rknown(otmp, TRUE);
         if (otmp->quan > 1L)
         {
             if (!carried(otmp))
@@ -3832,7 +3832,7 @@ doeat(void)
 
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "Ulch - that %s was rustproofed!", xname(otmp));
         /* The regurgitated object's rustproofing is gone now */
-        otmp->oerodeproof = 0;
+        set_obj_oerodeproof(otmp, 0);
         if (!Stunned)
             play_sfx_sound(SFX_ACQUIRE_STUN);
         make_stunned((HStun & TIMEOUT) + (int64_t) rn2(10), TRUE);
@@ -3841,9 +3841,9 @@ doeat(void)
          * or wearing cursed rings which were rustproofed, but guard
          * against the possibility just in case.
          */
-        if (welded(otmp, &youmonst) || (otmp->cursed && (otmp->owornmask & W_RING)))
+        if (welded(otmp, &youmonst) || (is_obj_cursed(otmp) && (otmp->owornmask & W_RING)))
         {
-            otmp->bknown = 1; /* for ring; welded() does this for weapon */
+            set_obj_bknown(otmp, 1); /* for ring; welded() does this for weapon */
             You("spit out %s.", the(xname(otmp)));
         }
         else 
@@ -3877,7 +3877,7 @@ doeat(void)
         Strcpy(dcbuf, "This ring is indigestible!");
         pline1(dcbuf);
         (void) rottenfood(otmp);
-        if (otmp->dknown && !objects[otmp->otyp].oc_name_known
+        if (is_obj_dknown(otmp) && !objects[otmp->otyp].oc_name_known
             && !objects[otmp->otyp].oc_uname)
             docall(otmp, dcbuf);
         return 1;
@@ -3945,7 +3945,7 @@ doeat(void)
             }
         }
 
-        if (!magiceaten && otmp->cursed)
+        if (!magiceaten && is_obj_cursed(otmp))
         {
             play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             (void) rottenfood(otmp);
@@ -3964,7 +3964,7 @@ doeat(void)
             exercise(A_WIS, FALSE);
         }
 
-        if (otmp->oclass == WEAPON_CLASS && otmp->opoisoned) 
+        if (otmp->oclass == WEAPON_CLASS && is_obj_opoisoned(otmp)) 
         {
             play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ecch - that must have been poisonous!");
@@ -4203,8 +4203,8 @@ doeat(void)
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
         }
         else if (otmp->otyp != FORTUNE_COOKIE
-            && (otmp->cursed || otmp->orotten || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ROTTEN 
-                || (!nonrotting_food(otmp->otyp) && (monstermoves - otmp->age) > (otmp->blessed ? BLESSED_ROTTING_THRESHOLD : ROTTING_THRESHOLD)
+            && (is_obj_cursed(otmp) || otmp->orotten || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ROTTEN 
+                || (!nonrotting_food(otmp->otyp) && (monstermoves - otmp->age) > (is_obj_blessed(otmp) ? BLESSED_ROTTING_THRESHOLD : ROTTING_THRESHOLD)
                                  && (otmp->orotten || !rn2(7))
                    )
                )) 
@@ -4262,7 +4262,7 @@ use_tin_opener(struct obj *obj)
     }
 
     if (obj != uwep) {
-        if (obj->cursed && obj->bknown) {
+        if (is_obj_cursed(obj) && is_obj_bknown(obj)) {
             char qbuf[QBUFSZ];
 
             if (yn_query(safe_qbuf(qbuf, "Really wield ", "?",
@@ -5036,7 +5036,7 @@ Popeye(int threat)
         && (!obj_here(otin, u.ux, u.uy) || !can_reach_floor(TRUE)))
         return FALSE;
     /* unknown tin is assumed to be helpful */
-    if (!otin->known)
+    if (!is_obj_known(otin))
         return TRUE;
     /* known tin is helpful if it will stop life-threatening problem */
     mndx = otin->corpsenm;
@@ -5067,7 +5067,7 @@ int get_corpse_reqtime(struct obj *otmp)
     if (!otmp || otmp->corpsenm < LOW_PM || otmp->corpsenm >= NUM_MONSTERS)
         return 0;
 
-    return 3 + ((!otmp->globby ? mons[otmp->corpsenm].cwt : otmp->owt) >> 6);
+    return 3 + ((!is_obj_globby(otmp) ? mons[otmp->corpsenm].cwt : otmp->owt) >> 6);
 }
 
 static

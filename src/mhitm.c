@@ -1880,7 +1880,7 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
             break;
         /* find an object to steal, non-cursed if magr is tame */
         for (obj = mdef->minvent; obj; obj = obj->nobj)
-            if (!is_tame(magr) || !obj->cursed)
+            if (!is_tame(magr) || !is_obj_cursed(obj))
                 break;
 
         if (obj)

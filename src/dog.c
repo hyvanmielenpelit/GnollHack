@@ -161,7 +161,7 @@ make_familiar(struct obj *otmp, xchar x, xchar y, boolean quietly)
     { /* figurine; resulting monster might not become a pet */
         chance = rn2(10); /* 0==tame, 1==peaceful, 2==hostile */
         if (chance > 2)
-            chance = otmp->blessed ? 0 : !otmp->cursed ? 1 : 2;
+            chance = is_obj_blessed(otmp) ? 0 : !is_obj_cursed(otmp) ? 1 : 2;
         /* 0,1,2:  b=80%,10,10; nc=10%,80,10; c=10%,10,80 */
         if (chance > 0)
         {
@@ -179,7 +179,7 @@ make_familiar(struct obj *otmp, xchar x, xchar y, boolean quietly)
         if (has_oname(otmp))
         {
             mtmp = christen_monst(mtmp, ONAME(otmp));
-            if(otmp->nknown)
+            if(is_obj_nknown(otmp))
                 set_mon_u_know_mname(mtmp, 1);
         }
         if (has_uoname(otmp))
@@ -792,7 +792,10 @@ makedog(void)
     /* Horses and rams already wear a saddle */
     if ((pettype == PM_PONY || pettype == PM_RAM) && !!(otmp = mksobj(SADDLE, TRUE, FALSE, FALSE)))
     {
-        otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+        set_obj_dknown(otmp, 1);
+        set_obj_bknown(otmp, 1);
+        set_obj_rknown(otmp, 1);
+        set_obj_nknown(otmp, 1);
         put_saddle_on_mon(otmp, mtmp);
     }
 
@@ -1485,11 +1488,11 @@ move_monsters_to_mydogs(boolean pets_only, boolean nearby_only)
             } else
                 num_segs = 0;
 
-            /* set minvent's obj->no_charge to 0 */
+            /* set minvent's is_obj_no_charge(obj) to 0 */
             for (obj = mtmp->minvent; obj; obj = obj->nobj) {
                 if (Has_contents(obj))
                     picked_container(obj); /* does the right thing */
-                obj->no_charge = 0;
+                set_obj_no_charge(obj, 0);
             }
 
             relmon(mtmp, &mydogs);   /* move it from map to mydogs */
@@ -1541,11 +1544,11 @@ migrate_to_level(struct monst *mtmp, xchar tolev, xchar xyloc, coord *cc)
            but it doesn't require the monster to be on the map anymore */
     }
 
-    /* set minvent's obj->no_charge to 0 */
+    /* set minvent's is_obj_no_charge(obj) to 0 */
     for (obj = mtmp->minvent; obj; obj = obj->nobj) {
         if (Has_contents(obj))
             picked_container(obj); /* does the right thing */
-        obj->no_charge = 0;
+        set_obj_no_charge(obj, 0);
     }
 
     if (is_mon_mleashed(mtmp)) {
@@ -1589,7 +1592,7 @@ dogfood(struct monst *mon, struct obj *obj)
     struct permonst *mptr = mon->data, *fptr = 0;
     boolean carni = carnivorous(mptr), herbi = herbivorous(mptr),
             mblind;
-    boolean eschewed = (obj->cursed && mon_eschews_cursed(mon)) || (obj->blessed && mon_eschews_blessed(mon));
+    boolean eschewed = (is_obj_cursed(obj) && mon_eschews_cursed(mon)) || (is_obj_blessed(obj) && mon_eschews_blessed(mon));
     /* a starving pet will eat almost anything */
     boolean starving = (mon->mtame && has_edog(mon) && !is_mon_isminion(mon) && EDOG(mon)->mhpmax_penalty);
 
@@ -1649,7 +1652,7 @@ dogfood(struct monst *mon, struct obj *obj)
             return POISON;
 
         if (!carni && !herbi)
-            return obj->cursed ? UNDEF : APPORT;
+            return is_obj_cursed(obj) ? UNDEF : APPORT;
 
         /* even carnivores will eat carrots if they're temporarily blind */
         mblind = (is_blinded(mon) && haseyes(mon->data));
@@ -1755,10 +1758,10 @@ dogfood(struct monst *mon, struct obj *obj)
         }
         /* Non-rustproofed ferrous based metals are preferred. */
         if (metallivorous(mptr) && is_metallic(obj)  && (is_rustprone(obj) || !rust_causing_and_ironvorous(mptr)))
-            return (is_rustprone(obj) && !obj->oerodeproof) ? DOGFOOD : ACCFOOD;
+            return (is_rustprone(obj) && !is_obj_oerodeproof(obj)) ? DOGFOOD : ACCFOOD;
         if (magicvorous(mptr) && is_obj_edible_by_magicvore(obj))
             return eschewed ? APPORT : starving ? DOGFOOD : ACCFOOD;
-        if (!obj->cursed && obj->oclass != BALL_CLASS && obj->oclass != CHAIN_CLASS)
+        if (!is_obj_cursed(obj) && obj->oclass != BALL_CLASS && obj->oclass != CHAIN_CLASS)
             return APPORT;
         return UNDEF;
     }

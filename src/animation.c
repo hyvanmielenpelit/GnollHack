@@ -1664,12 +1664,12 @@ maybe_get_replaced_glyph(
             if (replacements[replacement_idx].number_of_tiles < 1)
                 return glyph;
 
-            if (otmp->olocked)
+            if (is_obj_olocked(otmp))
             {
                 int glyph_idx = 0;
                 return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             }
-            else if (otmp->obroken)
+            else if (is_obj_obroken(otmp))
             {
                 int glyph_idx = 1;
                 return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
@@ -1700,7 +1700,7 @@ maybe_get_replaced_glyph(
             if (replacements[replacement_idx].number_of_tiles < 1 || otmp->owt <= GLOB_SMALL_MAXIMUM_WEIGHT) /* Small */
                 return glyph;
 
-            if (otmp->globby)
+            if (is_obj_globby(otmp))
             {
                 /* note: appearanceidx is -1 if not set separately */
                 int glyph_idx = (otmp->owt > GLOB_LARGE_MAXIMUM_WEIGHT)

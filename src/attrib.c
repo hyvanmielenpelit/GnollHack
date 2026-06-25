@@ -345,7 +345,7 @@ gainstr(struct obj *otmp, int incr, boolean givemsg)
             num = 1;
     }
 
-    if (adjattrib(A_STR, (otmp && otmp->cursed) ? -num : (otmp && otmp->blessed) ? num + rn2(2) : num,
+    if (adjattrib(A_STR, (otmp && is_obj_cursed(otmp)) ? -num : (otmp && is_obj_blessed(otmp)) ? num + rn2(2) : num,
         givemsg ? -1 : 1) == 1 && givemsg)
     {
         play_sfx_sound(SFX_GAIN_ABILITY);
@@ -724,7 +724,7 @@ stone_luck(boolean uncursed_confers_extra_luck)
         if (artifact_confers_luck(otmp) || confers_luck(otmp))
         {
            /* Note cursed luckstone is now handled in confers_unluck */
-            if (otmp->blessed)
+            if (is_obj_blessed(otmp))
                 bonchance += otmp->quan;
             else if (uncursed_confers_extra_luck)
                 bonchance += otmp->quan;
@@ -2027,7 +2027,7 @@ m_hpmaxadjustment(struct monst *mon, boolean usemh)
                     )
                 )
             {
-                int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) ||
+                int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && is_obj_cursed(uitem)) ||
                     ((objects[otyp].oc_pflags & P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1 : 1;
 
                 if (objects[otyp].oc_pflags & P1_HP_PERCENTAGE_BONUS)
@@ -2233,7 +2233,7 @@ update_mon_abon(struct monst *mon)
     for (uitem = is_you ? invent : mon->minvent; uitem; uitem = uitem->nobj)
     {
         otyp = uitem->otyp;
-        boolean cursed_plus_cursed_good = uitem->cursed && cursed_are_good;
+        boolean cursed_plus_cursed_good = is_obj_cursed(uitem) && cursed_are_good;
         int64_t applicable_enchantment = (int64_t)(cursed_plus_cursed_good ? abs(uitem->enchantment) : uitem->enchantment);
         boolean worn = is_you ? is_obj_worn(uitem) :
             ((!is_wielded_item(uitem) && (uitem->owornmask & W_WORN_NOT_WIELDED) != 0)
@@ -2251,7 +2251,7 @@ update_mon_abon(struct monst *mon)
                     )
                 )
             {
-                int64_t multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
+                int64_t multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && is_obj_cursed(uitem)) || 
                     ((objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1L : 1L;
 
                 for (int i = 0; i <= A_MAX + 7; i++)
@@ -2425,7 +2425,7 @@ update_mon_abon(struct monst *mon)
             {
                 /* Note cursed luckstone is now handled in confers_unluck */
                 u.moreluck += uitem->quan;
-                if (uitem->blessed)
+                if (is_obj_blessed(uitem))
                     blessed_luck_count += uitem->quan;
                 //else
                 //    uncursed_luck_count += uitem->quan;
@@ -2434,7 +2434,7 @@ update_mon_abon(struct monst *mon)
             if ((artifact_confers_unluck(uitem) || confers_unluck(uitem)))
             {
                 u.moreluck -= uitem->quan;
-                if (uitem->cursed)
+                if (is_obj_cursed(uitem))
                     cursed_luck_count += uitem->quan;
                 //else
                 //    uncursed_luck_count -= uitem->quan;

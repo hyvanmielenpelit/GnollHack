@@ -112,7 +112,7 @@ use_saddle(struct obj *otmp)
              && !strncmp(s, "riding ", 7))
         /* ... or for "riding boots" */
         chance += 10;
-    if (otmp->cursed)
+    if (is_obj_cursed(otmp))
         chance -= 50;
 
     /* [intended] steed becomes alert if possible */
@@ -440,7 +440,7 @@ mount_steed(struct monst *mtmp)
     }
 
     int chance = riding_skill_mount_bonus(P_SKILL_LEVEL(P_RIDING)) + mtmp->mtame * 5;
-    if (otmp->cursed)
+    if (is_obj_cursed(otmp))
         chance -= 25;
     if(Wounded_legs)
         chance -= 50;
@@ -706,11 +706,11 @@ dismount_steed(int reason)
         break;
     case DISMOUNT_BYCHOICE:
     default:
-        if (otmp && otmp->cursed) {
+        if (otmp && is_obj_cursed(otmp)) {
             play_sfx_sound(SFX_GENERAL_WELDED);
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "can't.  The saddle %s cursed.",
-                otmp->bknown ? "is" : "seems to be");
-            otmp->bknown = TRUE;
+                is_obj_bknown(otmp) ? "is" : "seems to be");
+            set_obj_bknown(otmp, TRUE);
             return;
         }
         if (!have_spot) {

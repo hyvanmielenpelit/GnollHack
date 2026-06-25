@@ -89,7 +89,7 @@ on_msg(struct obj *otmp)
     if (flags.verbose && otmp) {
         char how[BUFSZ];
         /* call xname() before obj_is_pname(); formatting obj's name
-           might set obj->dknown and that affects the pname test */
+           might set is_obj_dknown(obj) and that affects the pname test */
         const char *otmp_name = xname(otmp);
 
         how[0] = '\0';
@@ -283,7 +283,7 @@ Boots_on(void)
         toggle_stealth(uarmf, uarmf->otyp, oldprop, TRUE);
         break;
     }
-    uarmf->known = 1; /* boots' +/- evident because of status line AC */
+    set_obj_known(uarmf, 1); /* boots' +/- evident because of status line AC */
     return 0;
 }
 
@@ -296,7 +296,7 @@ Boots_off(void)
     struct obj *otmp = uarmf;
     int otyp = otmp->otyp;
     int64_t oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
-    boolean on_purpose = !context.mon_moving && otmp && !otmp->in_use;
+    boolean on_purpose = !context.mon_moving && otmp && !is_obj_in_use(otmp);
     boolean had_stone_res = Stone_resistance;
 
     if (flags.verbose && otmp)
@@ -358,7 +358,7 @@ Cloak_on(void)
         pline("%s very tightly.", Tobjnam(uarmc, "fit"));
         break;
     }
-    uarmc->known = 1; /* cloak's +/- evident because of status line AC */
+    set_obj_known(uarmc, 1); /* cloak's +/- evident because of status line AC */
     return 0;
 }
 
@@ -368,7 +368,7 @@ Cloak_off(void)
     struct obj *otmp = uarmc;
     int otyp = otmp->otyp;
     int64_t oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
-    boolean on_purpose = !context.mon_moving && otmp && !otmp->in_use;
+    boolean on_purpose = !context.mon_moving && otmp && !is_obj_in_use(otmp);
     boolean had_stone_res = Stone_resistance;
 
     if (flags.verbose && otmp)
@@ -421,7 +421,7 @@ Helmet_on(void)
         for (int i = 0; i <= 1; i++)
         {
             struct obj* wep = (i == 0 ? uwep : uarms);
-            if (wep && (artifact_light(wep) || has_obj_mythic_magical_light(wep) || (obj_shines_magical_light(wep) && !inappropriate_monster_character_type(&youmonst, wep))) && !wep->lamplit)
+            if (wep && (artifact_light(wep) || has_obj_mythic_magical_light(wep) || (obj_shines_magical_light(wep) && !inappropriate_monster_character_type(&youmonst, wep))) && !is_obj_lamplit(wep))
             {
                 begin_burn(wep, FALSE);
                 if (!Blind)
@@ -432,7 +432,7 @@ Helmet_on(void)
         break;
     case DUNCE_CAP:
         /*
-        if (uarmh && !uarmh->cursed) {
+        if (uarmh && !is_obj_cursed(uarmh)) {
             if (Blind)
                 pline("%s for a moment.", Tobjnam(uarmh, "vibrate"));
             else
@@ -453,7 +453,7 @@ Helmet_on(void)
         }
         break;
     }
-    uarmh->known = 1; /* helmet's +/- evident because of status line AC */
+    set_obj_known(uarmh, 1); /* helmet's +/- evident because of status line AC */
     return 0;
 }
 
@@ -463,7 +463,7 @@ Helmet_off(void)
     if (!uarmh)
         return 0;
 
-    boolean on_purpose = !context.mon_moving && uarmh && !uarmh->in_use;
+    boolean on_purpose = !context.mon_moving && uarmh && !is_obj_in_use(uarmh);
     boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uarmh)
         play_simple_object_sound(uarmh, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -496,7 +496,7 @@ Gloves_on(void)
     if (flags.verbose && uarmg)
         play_simple_object_sound(uarmg, OBJECT_SOUND_TYPE_WEAR);
 
-    uarmg->known = 1; /* gloves' +/- evident because of status line AC */
+    set_obj_known(uarmg, 1); /* gloves' +/- evident because of status line AC */
     return 0;
 }
 
@@ -543,7 +543,7 @@ wielding_corpse(struct obj *obj, boolean voluntary, boolean lostgloves, boolean 
 int
 Gloves_off(void)
 {
-    boolean on_purpose = !context.mon_moving && uarmg && !uarmg->in_use;
+    boolean on_purpose = !context.mon_moving && uarmg && !is_obj_in_use(uarmg);
     boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uarmg)
         play_simple_object_sound(uarmg, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -568,7 +568,7 @@ Shield_on(void)
     if (flags.verbose && uarms)
         play_simple_object_sound(uarms, OBJECT_SOUND_TYPE_WEAR);
 
-    uarms->known = 1; /* shield's +/- evident because of status line AC */
+    set_obj_known(uarms, 1); /* shield's +/- evident because of status line AC */
 
     status_reassess();
 
@@ -599,14 +599,14 @@ Shirt_on(void)
     if (flags.verbose && uarmu)
         play_simple_object_sound(uarmu, OBJECT_SOUND_TYPE_WEAR);
 
-    uarmu->known = 1; /* shirt's +/- evident because of status line AC */
+    set_obj_known(uarmu, 1); /* shirt's +/- evident because of status line AC */
     return 0;
 }
 
 int
 Shirt_off(void)
 {
-    boolean on_purpose = !context.mon_moving && uarmu && !uarmu->in_use;
+    boolean on_purpose = !context.mon_moving && uarmu && !is_obj_in_use(uarmu);
     boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uarmu)
         play_simple_object_sound(uarmu, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -630,14 +630,14 @@ Robe_on(void)
     if (flags.verbose && uarmo)
         play_simple_object_sound(uarmo, OBJECT_SOUND_TYPE_WEAR);
 
-    uarmo->known = 1; /* shirt's +/- evident because of status line AC */
+    set_obj_known(uarmo, 1); /* shirt's +/- evident because of status line AC */
     return 0;
 }
 
 int
 Robe_off(void)
 {
-    boolean on_purpose = !context.mon_moving && uarmo && !uarmo->in_use;
+    boolean on_purpose = !context.mon_moving && uarmo && !is_obj_in_use(uarmo);
     boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uarmo)
         play_simple_object_sound(uarmo, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -660,14 +660,14 @@ Bracers_on(void)
     if (flags.verbose && uarmb)
         play_simple_object_sound(uarmb, OBJECT_SOUND_TYPE_WEAR);
 
-    uarmb->known = 1;
+    set_obj_known(uarmb, 1);
     return 0;
 }
 
 int
 Bracers_off(void)
 {
-    boolean on_purpose = !context.mon_moving && uarmb && !uarmb->in_use;
+    boolean on_purpose = !context.mon_moving && uarmb && !is_obj_in_use(uarmb);
     boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uarmb)
         play_simple_object_sound(uarmb, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -722,7 +722,7 @@ MiscellaneousItem_off(struct obj *ud)
     if (!ud)
         return 0;
 
-    boolean on_purpose = !context.mon_moving && ud && !ud->in_use;
+    boolean on_purpose = !context.mon_moving && ud && !is_obj_in_use(ud);
     boolean had_stone_res = Stone_resistance;
     if (flags.verbose && ud)
         play_simple_object_sound(ud, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -758,14 +758,14 @@ Armor_on(void)
      * suits are set up as intrinsics (actually 'extrinsics') by setworn()
      * which is called by armor_or_accessory_on() before Armor_on().
      */
-    uarm->known = 1; /* suit's +/- evident because of status line AC */
+    set_obj_known(uarm, 1); /* suit's +/- evident because of status line AC */
     return 0;
 }
 
 int
 Armor_off(void)
 {
-    boolean on_purpose = !context.mon_moving && uarm && !uarm->in_use;
+    boolean on_purpose = !context.mon_moving && uarm && !is_obj_in_use(uarm);
     boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uarm)
         play_simple_object_sound(uarm, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -841,7 +841,7 @@ Amulet_off(void)
     if (!uamul)
         return;
 
-    boolean on_purpose = !context.mon_moving && uamul && !uamul->in_use;
+    boolean on_purpose = !context.mon_moving && uamul && !is_obj_in_use(uamul);
     boolean had_stone_res = Stone_resistance;
     if (flags.verbose && uamul)
         play_simple_object_sound(uamul, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -899,7 +899,7 @@ item_change_sex_and_useup(struct obj *uitem)
     }
     play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrates!", The(cxname(uitem)));
-    if (orig_sex == poly_gender() && uitem->dknown
+    if (orig_sex == poly_gender() && is_obj_dknown(uitem)
         && !objects[uitem->otyp].oc_name_known
         && !objects[uitem->otyp].oc_uname)
         docall(uitem, dcbuf);
@@ -949,7 +949,7 @@ mon_item_change_sex_and_useup(struct monst *mon, struct obj *uitem, boolean crea
         }
         play_sfx_sound_at_location(SFX_ITEM_CRUMBLES_TO_DUST, mon->mx, mon->my);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrates!", The(cxname(uitem)));
-        if (orig_sex == is_mon_female(mon) && uitem->dknown
+        if (orig_sex == is_mon_female(mon) && is_obj_dknown(uitem)
             && !objects[uitem->otyp].oc_name_known
             && !objects[uitem->otyp].oc_uname)
             docall(uitem, dcbuf);
@@ -973,8 +973,8 @@ learnring(struct obj *ring, boolean observed)
            mark this ring as having been seen (no need for makeknown);
            otherwise if we have seen this ring, discover its type */
         if (objects[ringtype].oc_name_known)
-            ring->dknown = 1;
-        else if (ring->dknown)
+            set_obj_dknown(ring, 1);
+        else if (is_obj_dknown(ring))
             makeknown(ringtype);
 #if 0 /* see learnwand() */
         else
@@ -983,9 +983,9 @@ learnring(struct obj *ring, boolean observed)
 
         /* make enchantment of charged ring known (might be +0) and update
        perm invent window if we've seen this ring and know its type */
-        if (ring->dknown && objects[ringtype].oc_name_known) {
+        if (is_obj_dknown(ring) && objects[ringtype].oc_name_known) {
             if (objects[ringtype].oc_enchantable)
-                ring->known = 1;
+                set_obj_known(ring, 1);
             update_inventory();
         }
 
@@ -1613,7 +1613,7 @@ cursed(struct obj *otmp, boolean verbose)
         return 0;
     }
     /* Curses, like chickens, come home to roost. */
-    if ((otmp == uwep) ? welded(otmp, &youmonst) : (int) otmp->cursed && !cursed_items_are_positive(youmonst.data))
+    if ((otmp == uwep) ? welded(otmp, &youmonst) : (int) is_obj_cursed(otmp) && !cursed_items_are_positive(youmonst.data))
     {
         boolean use_plural = (is_boots(otmp) || is_gloves(otmp) || is_bracers(otmp)
                                || otmp->quan > 1L);
@@ -1623,9 +1623,9 @@ cursed(struct obj *otmp, boolean verbose)
             You_ex(ATR_NONE, CLR_MSG_WARNING, "can't remove %s.  %s cursed.", thecxname(otmp), use_plural ? "They are" : "It is");
         else
             You_ex(ATR_NONE, CLR_MSG_WARNING, "can't.  %s cursed.", use_plural ? "They are" : "It is");
-        if (!otmp->bknown)
+        if (!is_obj_bknown(otmp))
         {
-            otmp->bknown = TRUE;
+            set_obj_bknown(otmp, TRUE);
             update_inventory();
         }
         return 1;
@@ -2477,7 +2477,7 @@ accessory_or_armor_on(struct obj *obj, boolean in_takeoff_wear, int64_t set_mask
                       humanoid(youmonst.data) ? "ring-" : "",
                       makeplural(body_part(FINGER)));
 
-                if (flags.exchange_prompt && !(!cursed_items_are_positive_mon(&youmonst) && uleft->cursed && uleft->bknown && uright->cursed && uright->bknown))
+                if (flags.exchange_prompt && !(!cursed_items_are_positive_mon(&youmonst) && is_obj_cursed(uleft) && is_obj_bknown(uleft) && is_obj_cursed(uright) && is_obj_bknown(uright)))
                 {
                     struct obj* remove_obj = 0;
                     char tbuf[BUFSZ] = "";
@@ -2549,12 +2549,12 @@ accessory_or_armor_on(struct obj *obj, boolean in_takeoff_wear, int64_t set_mask
                     } while (!mask);
                 }
             }
-            if (uarmg && uarmg->cursed) 
+            if (uarmg && is_obj_cursed(uarmg)) 
             {
-                res = !uarmg->bknown;
-                if (!uarmg->bknown)
+                res = !is_obj_bknown(uarmg);
+                if (!is_obj_bknown(uarmg))
                 {
-                    uarmg->bknown = TRUE;
+                    set_obj_bknown(uarmg, TRUE);
                     update_inventory();
                 }
                 play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -2564,7 +2564,7 @@ accessory_or_armor_on(struct obj *obj, boolean in_takeoff_wear, int64_t set_mask
 
             if (uwep) 
             {
-                res = !uwep->bknown; /* check this before calling welded() */
+                res = !is_obj_bknown(uwep); /* check this before calling welded() */
                 if ((mask == RIGHT_RING || bimanual(uwep)) && welded(uwep, &youmonst)) 
                 {
                     const char *hand = body_part(HAND);
@@ -2682,14 +2682,14 @@ accessory_or_armor_on(struct obj *obj, boolean in_takeoff_wear, int64_t set_mask
         if (!ogone)
         {
             /*
- * Setting obj->known=1 is done because setworn() causes hero's AC
+ * Setting set_obj_known(obj, 1 is done because setworn() causes hero's AC)
  * to change so armor's +/- value is evident via the status line.
  * We used to set it here because of that, but then it would stick
  * if a nymph stole the armor before it was fully worn.  Delay it
  * until the aftermv action.  The player may still know this armor's
  * +/- amount if donning gets interrupted, but the hero won't.
  *
-obj->known = 1;
+set_obj_known(obj, 1);
  */
             setworn(obj, mask);
             /* if there's no delay, we'll execute 'aftermv' immediately */
@@ -2995,9 +2995,9 @@ glibr(void)
     boolean leftfall, rightfall, wastwoweap = FALSE;
     const char *otherwep = 0, *thiswep, *which, *hand;
 
-    leftfall = (uleft && !uleft->cursed
+    leftfall = (uleft && !is_obj_cursed(uleft)
                 && (!uwep || !welded(uwep, &youmonst) || !bimanual(uwep)));
-    rightfall = (uright && !uright->cursed && (!welded(uwep, &youmonst)));
+    rightfall = (uright && !is_obj_cursed(uright) && (!welded(uwep, &youmonst)));
     if (!uarmg && (leftfall || rightfall) && !nolimbs(youmonst.data)) {
         /* changed so cursed rings don't fall off, GAN 10/30/86 */
         Your("%s off your %s.",
@@ -3124,13 +3124,13 @@ stuck_ring(struct obj *ring, int otyp)
         /* reasons ring can't be removed match those checked by select_off();
            limbless case has extra checks because ordinarily it's temporary */
         if (nolimbs(youmonst.data) && uamul
-            && uamul->otyp == AMULET_OF_UNCHANGING && uamul->cursed)
+            && uamul->otyp == AMULET_OF_UNCHANGING && is_obj_cursed(uamul))
             return uamul;
         if (welded(uwep, &youmonst) && (ring == uright || bimanual(uwep)))
             return uwep;
-        if (uarmg && uarmg->cursed)
+        if (uarmg && is_obj_cursed(uarmg))
             return uarmg;
-        if (ring->cursed)
+        if (is_obj_cursed(ring))
             return ring;
     }
     /* either no ring or not right type or nothing prevents its removal */
@@ -3168,16 +3168,16 @@ select_off(struct obj *otmp)
         if (welded(uwep, &youmonst) && (otmp == uright || bimanual(uwep))) {
             Sprintf(buf, "free a weapon %s", body_part(HAND));
             why = uwep;
-        } else if (uarmg && uarmg->cursed) {
+        } else if (uarmg && is_obj_cursed(uarmg)) {
             Sprintf(buf, "take off your %s", c_gloves);
             why = uarmg;
         }
         if (why) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot %s to remove the ring.", buf);
-            if (!why->bknown)
+            if (!is_obj_bknown(why))
             {
-                why->bknown = TRUE;
+                set_obj_bknown(why, TRUE);
                 update_inventory();
             }
             return 0;
@@ -3189,9 +3189,9 @@ select_off(struct obj *otmp)
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "are unable to take off your %s while wielding that %s.",
                 c_gloves, is_sword(uwep) ? c_sword : c_weapon);
-            if (!uwep->bknown)
+            if (!is_obj_bknown(uwep))
             {
-                uwep->bknown = TRUE;
+                set_obj_bknown(uwep, TRUE);
                 update_inventory();
             }
             return 0;
@@ -3219,13 +3219,13 @@ select_off(struct obj *otmp)
     /* special suit and shirt checks */
     if (otmp == uarm || otmp == uarmo || otmp == uarmu) {
         why = 0; /* the item which prevents disrobing */
-        if (uarmc && uarmc->cursed) {
+        if (uarmc && is_obj_cursed(uarmc)) {
             Sprintf(buf, "remove your %s", cloak_simple_name(uarmc));
             why = uarmc;
-        } else if ((otmp == uarm || otmp == uarmu) && uarmo && uarmo->cursed) {
+        } else if ((otmp == uarm || otmp == uarmu) && uarmo && is_obj_cursed(uarmo)) {
             Sprintf(buf, "remove your %s", robe_simple_name(uarmo));
             why = uarmo;
-        } else if (otmp == uarmu && uarm && uarm->cursed) {
+        } else if (otmp == uarmu && uarm && is_obj_cursed(uarm)) {
             Sprintf(buf, "remove your %s", c_suit);
             why = uarm;
         } else if (welded(uwep, &youmonst) && bimanual(uwep)) {
@@ -3238,9 +3238,9 @@ select_off(struct obj *otmp)
         if (why) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot %s to take off %s.", buf, the(xname(otmp)));
-            if (!why->bknown)
+            if (!is_obj_bknown(why))
             {
-                why->bknown = TRUE;
+                set_obj_bknown(why, TRUE);
                 update_inventory();
             }
             return 0;
@@ -4102,16 +4102,22 @@ ddowear(void)
 }
 
 
+static boolean destroy_arm_helper(struct obj **otmp_ptr, struct obj *o, struct obj *atmp) {
+    struct obj *otmp = o;
+    *otmp_ptr = otmp;
+    if (otmp != 0 && (!atmp || atmp == otmp) && (!obj_resists(otmp, 0, 90))) {
+        set_obj_in_use(otmp, TRUE);
+        return TRUE;
+    }
+    return FALSE;
+}
+
 /* hit by destroy armor scroll/black dragon breath/monster spell */
 int
 destroy_arm(struct obj *atmp)
 {
     struct obj *otmp;
-#define DESTROY_ARM(o)                            \
-    ((otmp = (o)) != 0 && (!atmp || atmp == otmp) \
-             && (!obj_resists(otmp, 0, 90))       \
-         ? (otmp->in_use = TRUE) != 0             \
-         : FALSE)
+#define DESTROY_ARM(o) destroy_arm_helper(&otmp, (o), atmp)
 
     debugprint("destroy_arm");
 
@@ -4120,7 +4126,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s crumbles and turns to dust!", cloak_simple_name(uarmc));
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Cloak_off();
@@ -4135,7 +4141,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s crumbles and turns to dust!", robe_simple_name(uarmc));
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void)Robe_off();
@@ -4151,7 +4157,7 @@ destroy_arm(struct obj *atmp)
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "armor turns to dust and falls to the %s!", surface(u.ux, u.uy));
         boolean had_stone_res = Stone_resistance;
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Armor_gone();
@@ -4168,7 +4174,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "shirt crumbles into tiny threads and falls apart!");
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Shirt_off();
@@ -4183,7 +4189,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s turns to dust and is blown away!", helm_simple_name(uarmh));
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Helmet_off();
@@ -4198,7 +4204,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_VANISHES);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "bracers vanish!");
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void)Bracers_off();
@@ -4213,7 +4219,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_VANISHES);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "gloves vanish!");
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Gloves_off();
@@ -4229,7 +4235,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "boots disintegrate!");
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Boots_off();
@@ -4245,7 +4251,7 @@ destroy_arm(struct obj *atmp)
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "shield crumbles away!");
-        otmp->in_use = 1;
+        set_obj_in_use(otmp, 1);
         otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Prevent lava_effects etc. from destroying the item when they are taken off */
         int trackidx = add_to_obj_tracking(otmp);
         (void) Shield_off();
@@ -4310,7 +4316,7 @@ inaccessible_equipment(struct obj *obj, const char *verb, boolean only_if_known_
         "need to take off %s to %s %s.";
     char buf[BUFSZ];
     boolean anycovering = !only_if_known_cursed; /* more comprehensible... */
-#define BLOCKSACCESS(x) (anycovering || ((x)->cursed && (x)->bknown))
+#define BLOCKSACCESS(x) (anycovering || (is_obj_cursed((x)) && is_obj_bknown((x))))
 
     if (!obj || !obj->owornmask || constructing_letters_for_takeoff)
         return FALSE; /* not inaccessible */

@@ -707,8 +707,8 @@ container_impact_dmg(struct obj *obj, xchar x, xchar y)
              * but it's always exactly 1 that breaks */
 
             if (costly) {
-                if (frominv && !otmp->unpaid)
-                    otmp->no_charge = 1;
+                if (frominv && !is_obj_unpaid(otmp))
+                    set_obj_no_charge(otmp, 1);
                 loss +=
                     stolen_value(otmp, x, y, is_peaceful(shkp), TRUE);
             }
@@ -721,7 +721,7 @@ container_impact_dmg(struct obj *obj, xchar x, xchar y)
                 obfree(otmp, (struct obj *) 0);
             }
             /* contents of this container are no longer known */
-            obj->cknown = 0;
+            set_obj_cknown(obj, 0);
         }
     }
     if (costly && loss) {
@@ -864,7 +864,7 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
     {
         if (is_ice(x, y))
             range += rnd(3), slide = TRUE;
-        if (kickedobj->greased)
+        if (is_obj_greased(kickedobj))
             range += rnd(3), slide = TRUE;
     }
 
@@ -879,7 +879,7 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
         range = 1;
 
     debugprint_pos();
-    costly = (!(kickedobj->no_charge && !Has_contents(kickedobj))
+    costly = (!(is_obj_no_charge(kickedobj) && !Has_contents(kickedobj))
               && (shkp = shop_keeper(*in_rooms(x, y, SHOPBASE))) != 0
               && costly_spot(x, y));
 
@@ -926,14 +926,14 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
             return 1;
         }
 
-        boolean otrp = kickedobj->otrapped;
+        boolean otrp = is_obj_otrapped(kickedobj);
 
         if (range < 2)
         {
             pline("THUD!");
         }
         container_impact_dmg(kickedobj, x, y);
-        if (kickedobj->olocked) 
+        if (is_obj_olocked(kickedobj)) 
         {
             if (!rn2(5) || (martial() && !rn2(2))) 
             {
@@ -959,7 +959,7 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
             {
                 play_simple_container_sound(kickedobj, CONTAINER_SOUND_TYPE_LID_SLAM);
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "lid slams open, then falls shut.");
-                kickedobj->lknown = 1;
+                set_obj_lknown(kickedobj, 1);
                 if (otrp)
                     (void) chest_trap(kickedobj, LEG, FALSE);
                 return 1;
@@ -1073,7 +1073,7 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
 
     if (flooreffects(kickedobj, bhitpos.x, bhitpos.y, "fall"))
         return 1;
-    if (kickedobj->unpaid)
+    if (is_obj_unpaid(kickedobj))
         subfrombill(kickedobj, shkp);
     place_object(kickedobj, bhitpos.x, bhitpos.y);
     play_object_floor_sound(kickedobj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW, Underwater);
@@ -2084,11 +2084,11 @@ impact_drop(struct obj *missile, xchar x, xchar y, xchar dlev, boolean dropall)
                                    && index(u.urooms,
                                             *in_rooms(x, y, SHOPBASE))),
                                   TRUE);
-            /* set obj->no_charge to 0 */
+            /* set is_obj_no_charge(obj) to 0 */
             if (Has_contents(obj))
                 picked_container(obj); /* does the right thing */
             if (obj->oclass != COIN_CLASS)
-                obj->no_charge = 0;
+                set_obj_no_charge(obj, 0);
         }
 
         add_to_migration(obj);
@@ -2223,11 +2223,11 @@ ship_object(struct obj *otmp, xchar x, xchar y, boolean shop_floor_obj)
                  && index(u.urooms, *in_rooms(ox, oy, SHOPBASE))),
                 FALSE);
         }
-        /* set otmp->no_charge to 0 */
+        /* set is_obj_no_charge(otmp) to 0 */
         if (container)
             picked_container(otmp); /* happens to do the right thing */
         if (otmp->oclass != COIN_CLASS)
-            otmp->no_charge = 0;
+            set_obj_no_charge(otmp, 0);
     }
 
     boolean ogone = FALSE;
@@ -2268,7 +2268,7 @@ ship_object(struct obj *otmp, xchar x, xchar y, boolean shop_floor_obj)
     otmp->owornmask = (int64_t) toloc;
     /* boulder from rolling boulder trap, no longer part of the trap */
     if (otmp->otyp == BOULDER)
-        otmp->otrapped = 0;
+        set_obj_otrapped(otmp, 0);
 
     if (impact) {
         /* the objs impacted may be in a shop other than

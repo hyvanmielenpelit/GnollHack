@@ -21,7 +21,7 @@ static int vamp_shift(struct monst *, struct permonst *, boolean);
 
 #define mon_wants_to_pick_up_obj(m, o) \
     ((m) && mon_can_move(m) && !is_mon_issummoned((m)) && mon_can_reach_floor(m) && !onnopickup((m)->mx, (m)->my, m) \
-     && !((o) && couldsee((m)->mx, (m)->my) && (o)->was_thrown))
+     && !((o) && couldsee((m)->mx, (m)->my) && is_obj_was_thrown((o))))
 
 /* True if mtmp died */
 boolean
@@ -673,8 +673,8 @@ release_hero(struct monst *mon)
 }
 
 #define flees_light(mon) ((mon)->data == &mons[PM_GREMLIN]     \
-                          && ((uwep && (artifact_light(uwep) || obj_shines_magical_light(uwep) || has_obj_mythic_magical_light(uwep)) && uwep->lamplit) \
-                           || (uarms && (artifact_light(uarms) || obj_shines_magical_light(uarms) || has_obj_mythic_magical_light(uarms)) && uarms->lamplit)))
+                          && ((uwep && (artifact_light(uwep) || obj_shines_magical_light(uwep) || has_obj_mythic_magical_light(uwep)) && is_obj_lamplit(uwep)) \
+                           || (uarms && (artifact_light(uarms) || obj_shines_magical_light(uarms) || has_obj_mythic_magical_light(uarms)) && is_obj_lamplit(uarms))))
 
 /* we could include this in the above macro, but probably overkill/overhead */
 /*      && (!(which_armor((mon), W_ARMC) != 0                               */
@@ -1215,7 +1215,7 @@ check_boss_fight(struct monst *mtmp)
         && !DEADMONSTER(mtmp) && !is_peaceful(mtmp) && canspotmon(mtmp) && couldsee(mtmp->mx, mtmp->my))
     {
         mtmp->mon_flags |= MON_FLAGS_VORPAL_WARNING_GIVEN;
-        MON_WEP(mtmp)->dknown = 1;
+        set_obj_dknown(MON_WEP(mtmp), 1);
         play_sfx_sound(SFX_WARNING);
         int multicolors[3] = { CLR_MSG_WARNING, NO_COLOR, CLR_MSG_GOD };
         pline_multi_ex(ATR_NONE, CLR_MSG_HIGHLIGHT, no_multiattrs, multicolors, "%s - %s is wielding %s.", "WARNING", Monnam(mtmp), thecxname(MON_WEP(mtmp)));
@@ -2163,7 +2163,7 @@ m_move(struct monst *mtmp, int after)
         struct obj* objhere = o_at(mtmp->mx, mtmp->my);
         if (OBJ_AT(mtmp->mx, mtmp->my) && mon_wants_to_pick_up_obj(mtmp, objhere))
             //mon_can_move(mtmp) && !is_mon_issummoned(mtmp) && mon_can_reach_floor(mtmp) && !onnopickup(mtmp->mx, mtmp->my, mtmp)
-            //&& !(couldsee(mtmp->mx, mtmp->my) && objhere && objhere->was_thrown)) //Do not pick up ammo or other stuff that the player shoots / throws (this checks just the first item, but that's probably good enough)
+            //&& !(couldsee(mtmp->mx, mtmp->my) && objhere && is_obj_was_thrown(objhere))) //Do not pick up ammo or other stuff that the player shoots / throws (this checks just the first item, but that's probably good enough)
         {
             /* recompute the likes tests, in case we polymorphed
              * or if the "likegold" case got taken above */

@@ -60,7 +60,7 @@ lock_action(void)
     /* if the target is currently unlocked, we're trying to lock it now */
     if (xlock.door && !(xlock.door->doormask & D_LOCKED))
         return actions[0] + 2; /* "locking the door" */
-    else if (xlock.box && !xlock.box->olocked)
+    else if (xlock.box && !is_obj_olocked(xlock.box))
         return is_chest(xlock.box) ? actions[1] + 2 : actions[2] + 2;
     /* otherwise we're trying to unlock it */
     else if (xlock.picktyp == LOCK_PICK)
@@ -172,7 +172,7 @@ picklock(void)
     /* using the Master Key of Thievery finds traps if its bless/curse
        state is adequate (non-cursed for rogues, blessed for others;
        checked when setting up 'xlock') */
-    if ((!xlock.door ? (int) xlock.box->otrapped
+    if ((!xlock.door ? (int) is_obj_otrapped(xlock.box)
                      : (xlock.door->doormask & D_TRAPPED) != 0)
         && xlock.magic_key) {
         xlock.chance += 20; /* less effort needed next time */
@@ -189,9 +189,9 @@ picklock(void)
                 what = "door";
                 alreadyunlocked = !(xlock.door->doormask & D_LOCKED);
             } else {
-                xlock.box->otrapped = 0;
+                set_obj_otrapped(xlock.box, 0);
                 what = is_chest(xlock.box) ? "chest" : "box";
-                alreadyunlocked = !xlock.box->olocked;
+                alreadyunlocked = !is_obj_olocked(xlock.box);
             }
             issue_achievement(GUI_ACHIEVEMENT_DISARMED_TRAP);
             You_ex(ATR_NONE, CLR_MSG_SUCCESS, "succeed in disarming the trap.  The %s is still %slocked.",
@@ -250,9 +250,9 @@ picklock(void)
     } 
     else 
     {
-        play_simple_container_sound(xlock.box, xlock.box->olocked ? CONTAINER_SOUND_TYPE_UNLOCK : CONTAINER_SOUND_TYPE_LOCK);
+        play_simple_container_sound(xlock.box, is_obj_olocked(xlock.box) ? CONTAINER_SOUND_TYPE_UNLOCK : CONTAINER_SOUND_TYPE_LOCK);
         
-        if (xlock.box->olocked && (xlock.box->speflags & SPEFLAGS_USES_UP_KEY) && xlock.key && !is_obj_indestructible(xlock.key) && !xlock.key->oartifact)
+        if (is_obj_olocked(xlock.box) && (xlock.box->speflags & SPEFLAGS_USES_UP_KEY) && xlock.key && !is_obj_indestructible(xlock.key) && !xlock.key->oartifact)
         {
             play_sfx_sound(SFX_ITEM_VANISHES);
             if (xlock.key->quan > 1)
@@ -265,10 +265,10 @@ picklock(void)
             xlock.key = 0;
         }
 
-        xlock.box->olocked = !xlock.box->olocked;
-        xlock.box->lknown = 1;
+        set_obj_olocked(xlock.box, !is_obj_olocked(xlock.box));
+        set_obj_lknown(xlock.box, 1);
         newsym(xlock.box->ox, xlock.box->oy);
-        if (xlock.box->otrapped)
+        if (is_obj_otrapped(xlock.box))
             (void) chest_trap(xlock.box, FINGER, FALSE);
     }
     exercise(A_DEX, TRUE);
@@ -323,9 +323,9 @@ breakchestlock(struct obj *box, boolean destroyit)
         box->cobj = 0;
         costly_alteration(box, COST_BRKLCK);
         box->cobj = hide_contents;
-        box->olocked = 0;
-        box->obroken = 1;
-        box->lknown = 1;
+        set_obj_olocked(box, 0);
+        set_obj_obroken(box, 1);
+        set_obj_lknown(box, 1);
         newsym(box->ox, box->oy);
     }
     else 
@@ -412,7 +412,7 @@ forcelock(void)
     if (xlock.picktyp) 
     { /* blade */
         if (rn2(1000 - (int) uwep->enchantment) > (992 - greatest_erosion(uwep) * 10)
-            && !uwep->cursed && !obj_resists(uwep, 0, 99))
+            && !is_obj_cursed(uwep) && !obj_resists(uwep, 0, 99))
         {
             /* for a +0 weapon, probability that it survives an unsuccessful
              * attempt to force the lock is (.992)^50 = .67
@@ -653,9 +653,9 @@ pick_lock_core(struct obj *pick, int x, int y, boolean is_auto)
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
                 it = 0;
-                if (otmp->obroken)
+                if (is_obj_obroken(otmp))
                     verb = "fix";
-                else if (!otmp->olocked)
+                else if (!is_obj_olocked(otmp))
                     verb = "lock", it = 1;
                 else if (picktyp != LOCK_PICK)
                     verb = "unlock", it = 1;
@@ -666,7 +666,7 @@ pick_lock_core(struct obj *pick, int x, int y, boolean is_auto)
                 Sprintf(qsfx, " here; %s %s%s?", verb, it ? "it" : "its lock", kbuf);
                 (void)safe_qbuf(qbuf, "There is ", qsfx, otmp, doname,
                     ansimpleoname, "a box");
-                otmp->lknown = 1;
+                set_obj_lknown(otmp, 1);
 
                 c = ynq(qbuf);
                 if (c == 'q')
@@ -674,12 +674,12 @@ pick_lock_core(struct obj *pick, int x, int y, boolean is_auto)
                 if (c == 'n')
                     continue;
 
-                if (otmp->obroken) 
+                if (is_obj_obroken(otmp)) 
                 {
                     You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "fix its broken lock with %s.", doname(pick));
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
-                else if (picktyp == CREDIT_CARD && !otmp->olocked) 
+                else if (picktyp == CREDIT_CARD && !is_obj_olocked(otmp)) 
                 {
                     /* credit cards are only good for unlocking */
                     You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that with %s.",
@@ -705,7 +705,7 @@ pick_lock_core(struct obj *pick, int x, int y, boolean is_auto)
                     else
                         ch = 0;
                 }
-                if (otmp->cursed)
+                if (is_obj_cursed(otmp))
                     ch /= 2;
 
                 xlock.box = otmp;
@@ -900,20 +900,20 @@ doforce(void)
     xlock.box = (struct obj *) 0;
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
         if (Is_box(otmp)) {
-            if (otmp->obroken || !otmp->olocked) {
+            if (is_obj_obroken(otmp) || !is_obj_olocked(otmp)) {
                 /* force doname() to omit known "broken" or "unlocked"
                    prefix so that the message isn't worded redundantly;
                    since we're about to set lknown, there's no need to
                    remember and then reset its current value */
-                otmp->lknown = 0;
+                set_obj_lknown(otmp, 0);
                 There("is %s here, but its lock is already %s.",
-                      doname(otmp), otmp->obroken ? "broken" : "unlocked");
-                otmp->lknown = 1;
+                      doname(otmp), is_obj_obroken(otmp) ? "broken" : "unlocked");
+                set_obj_lknown(otmp, 1);
                 continue;
             }
             (void) safe_qbuf(qbuf, "There is ", " here; force its lock?",
                              otmp, doname, ansimpleoname, "a box");
-            otmp->lknown = 1;
+            set_obj_lknown(otmp, 1);
 
             c = ynq(qbuf);
             if (c == 'q')
@@ -1367,38 +1367,38 @@ boxlock(struct obj *obj, struct obj *otmp)
     switch (otmp->otyp) {
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
-        if (!obj->olocked && (has_box_normal_lock(obj) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0)))
+        if (!is_obj_olocked(obj) && (has_box_normal_lock(obj) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0)))
         { /* lock it; fix if broken */
             play_sfx_sound_at_location(SFX_WIZARD_LOCK_KLUNK, obj->ox, obj->oy);
             pline("Klunk!");
-            obj->olocked = 1;
-            obj->obroken = 0;
+            set_obj_olocked(obj, 1);
+            set_obj_obroken(obj, 0);
             obj->keyotyp = MAGIC_KEY;
             obj->special_quality = 0;
             if (Role_if(PM_WIZARD))
-                obj->lknown = 1;
+                set_obj_lknown(obj, 1);
             else
-                obj->lknown = 0;
+                set_obj_lknown(obj, 0);
             res = 1;
         } /* else already closed and locked */
         newsym(obj->ox, obj->oy);
         break;
     case WAN_OPENING:
     case SPE_KNOCK:
-        if (obj->olocked) { /* unlock; couldn't be broken */
+        if (is_obj_olocked(obj)) { /* unlock; couldn't be broken */
             if (has_box_normal_lock(obj) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0))
             {
                 play_sfx_sound_at_location(SFX_KNOCK_KLICK, obj->ox, obj->oy);
                 pline("Klick!");
-                obj->olocked = 0;
+                set_obj_olocked(obj, 0);
                 res = 1;
                 if (Role_if(PM_WIZARD))
-                    obj->lknown = 1;
+                    set_obj_lknown(obj, 1);
                 else
-                    obj->lknown = 0;
+                    set_obj_lknown(obj, 0);
             }
         } else /* silently fix if broken */
-            obj->obroken = 0;
+            set_obj_obroken(obj, 0);
         newsym(obj->ox, obj->oy);
         break;
     case WAN_POLYMORPH:
@@ -1424,7 +1424,7 @@ doorlock(struct obj *otmp, int x, int y)
     const char* doormsg = door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door_subtype_definitions[door->subtyp].description : "door";
     const char *dustcloud = "A cloud of dust";
     const char *quickly_dissipates = "quickly dissipates";
-    boolean mysterywand = (otmp->oclass == WAND_CLASS && !otmp->dknown);
+    boolean mysterywand = (otmp->oclass == WAND_CLASS && !is_obj_dknown(otmp));
 
     if (door->typ == SDOOR) {
         switch (otmp->otyp) {

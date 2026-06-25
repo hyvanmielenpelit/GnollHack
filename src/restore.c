@@ -171,7 +171,7 @@ inven_inuse(boolean quietly)
         otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         if (Is_proper_container(otmp))
             unmark_unpaid_container_contents(otmp);
-        if (otmp->in_use)
+        if (is_obj_in_use(otmp))
         {
             if (otmp->otyp == AMULET_OF_YENDOR
                 || otmp->otyp == CANDELABRUM_OF_INVOCATION
@@ -184,7 +184,7 @@ inven_inuse(boolean quietly)
                     ))
                 )
             {
-                otmp->in_use = 0; /* Likely memory corruption; prevent destruction of any critical items */
+                set_obj_in_use(otmp, 0); /* Likely memory corruption; prevent destruction of any critical items */
                 char dbuf[BUFSZ * 2];
                 Sprintf(dbuf, "A mysterious force prevents finishing off %s...", the(xname(otmp)));
                 if (!quietly)
@@ -402,8 +402,8 @@ restobjchn(int fd, boolean ghostly, boolean frozen)
                 otmp->owt = weight(otmp);
             }
         }
-        if (otmp->bypass)
-            otmp->bypass = 0;
+        if (is_obj_bypass(otmp))
+            set_obj_bypass(otmp, 0);
         if (!ghostly) {
             /* fix the pointers */
             if (otmp->o_id == context.victual.o_id)

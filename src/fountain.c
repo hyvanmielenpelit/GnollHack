@@ -641,7 +641,7 @@ dipfountain(struct obj *obj)
                 curse(obj);
             if (obj->enchantment > -6 && !rn2(3))
                 obj->enchantment--;
-            obj->oerodeproof = FALSE;
+            set_obj_oerodeproof(obj, FALSE);
             exercise(A_WIS, FALSE);
             livelog_printf(LL_ARTIFACT, "was denied Excalibur! The Lady of the Lake has deemed %s unworthy", uhim());
         }
@@ -659,7 +659,7 @@ dipfountain(struct obj *obj)
             discover_artifact(ART_EXCALIBUR);
             bless(obj);
             obj->oeroded = obj->oeroded2 = 0;
-            obj->oerodeproof = TRUE;
+            set_obj_oerodeproof(obj, TRUE);
             exercise(A_WIS, TRUE);
             livelog_printf(LL_ARTIFACT, "%s", Hallucination || OddIdeas ? excalmsgs[rn2(SIZE(excalmsgs))] : "was bestowed with Excalibur by the Lady of the Lake");
         }
@@ -673,10 +673,10 @@ dipfountain(struct obj *obj)
     if (ftyp == FOUNTAIN_HEALING)
     {
         boolean identified = FALSE;
-        if (obj && is_weapon(obj) && is_poisonable(obj) && obj->opoisoned)
+        if (obj && is_weapon(obj) && is_poisonable(obj) && is_obj_opoisoned(obj))
         {
             pline_ex(ATR_NONE, CLR_MSG_SPELL, "A coating wears off %s.", the(xname(obj)));
-            obj->opoisoned = 0;
+            set_obj_opoisoned(obj, 0);
             identified = TRUE;
             effecthappened = TRUE;
         }
@@ -690,8 +690,8 @@ dipfountain(struct obj *obj)
                     pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s.", Yobjnam2(obj, "clear"));
             }
             obj->otyp = POT_WATER;
-            obj->dknown = 0;
-            obj->blessed = obj->cursed = 0;
+            set_obj_dknown(obj, 0);
+            set_obj_blessed(obj, 0), set_obj_cursed(obj, 0);
             obj->odiluted = 0;
             if (carried(obj))
                 update_inventory();
@@ -738,7 +738,7 @@ dipfountain(struct obj *obj)
                 obj->otyp = POT_HEALING;
                 break;
             }
-            obj->dknown = 0;
+            set_obj_dknown(obj, 0);
             obj->odiluted = 0;
             nowaterdamage = TRUE;
 
@@ -821,7 +821,7 @@ dipfountain(struct obj *obj)
                 obj->otyp = POT_GAIN_ENERGY;
                 break;
             }
-            obj->dknown = 0;
+            set_obj_dknown(obj, 0);
             obj->odiluted = 0;
             nowaterdamage = TRUE;
 
@@ -932,7 +932,7 @@ dipfountain(struct obj *obj)
                 obj->otyp = POT_LESSER_REJUVENATION;
                 break;
             }
-            obj->dknown = 0;
+            set_obj_dknown(obj, 0);
             obj->odiluted = 0;
             nowaterdamage = TRUE;
 
@@ -991,18 +991,18 @@ dipfountain(struct obj *obj)
         nowaterdamage = TRUE;
         boolean identified = FALSE;
 
-        if (obj && is_weapon(obj) && is_poisonable(obj) && !obj->opoisoned)
+        if (obj && is_weapon(obj) && is_poisonable(obj) && !is_obj_opoisoned(obj))
         {
             play_sfx_sound(SFX_POISON_COATING);
             pline_ex(ATR_NONE, CLR_MSG_SPELL, "The fountain forms a coating on %s.", the(xname(obj)));
-            obj->opoisoned = TRUE;
+            set_obj_opoisoned(obj, TRUE);
             identified = TRUE;
             effecthappened = TRUE;
         }
         else if (obj && obj->oclass == POTION_CLASS)
         {
             obj->otyp = POT_POISON;
-            obj->dknown = 0;
+            set_obj_dknown(obj, 0);
             obj->odiluted = 0;
 
             if (obj->otyp != oldotyp)
@@ -1046,7 +1046,7 @@ dipfountain(struct obj *obj)
             effecthappened = FALSE;
             break;
         case 16: /* Curse the item */
-            if (!obj->cursed && !Curse_resistance)
+            if (!is_obj_cursed(obj) && !Curse_resistance)
             {
                 curse(obj);
                 if (!Blind)
@@ -1067,7 +1067,7 @@ dipfountain(struct obj *obj)
         case 18:
         case 19:
         case 20: /* Uncurse the item */
-            if (obj->cursed) 
+            if (is_obj_cursed(obj)) 
             {
                 if (!Blind)
                     pline_The_ex(ATR_NONE, CLR_MSG_SPELL, "%s glows for a moment.", hliquid("water"));
@@ -1348,10 +1348,10 @@ drinksink(void)
                 otmp = (struct obj *) 0;
             }
         } while (!otmp);
-        otmp->cursed = otmp->blessed = 0;
+        set_obj_cursed(otmp, 0), set_obj_blessed(otmp, 0);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Some %s liquid flows from the faucet.",
               Blind ? "odd" : hcolor(OBJ_DESCR(objects[otmp->otyp])));
-        otmp->dknown = !(Blind || Hallucination);
+        set_obj_dknown(otmp, !(Blind || Hallucination));
         otmp->quan++;       /* Avoid panic upon useup() */
         otmp->speflags |= SPEFLAGS_FROM_SINK; /* kludge for docall() */
         (void) dopotion(otmp);

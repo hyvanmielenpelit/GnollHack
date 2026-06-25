@@ -3372,8 +3372,8 @@ object_stats_known(struct obj *obj)
     if (!obj)
         return FALSE;
 
-    boolean statsknown = obj->oartifact ? obj->aknown && obj->nknown : objects[obj->otyp].oc_name_known;
-    boolean dknown = obj->dknown;
+    boolean statsknown = obj->oartifact ? is_obj_aknown(obj) && is_obj_nknown(obj) : objects[obj->otyp].oc_name_known;
+    boolean dknown = is_obj_dknown(obj);
     return (statsknown && dknown);
 }
 
@@ -4150,7 +4150,7 @@ status_enlightenment(int mode, int final)
     if (Riding) {
         struct obj *saddle = which_armor(u.usteed, W_SADDLE);
 
-        if (saddle && saddle->cursed) {
+        if (saddle && is_obj_cursed(saddle)) {
             Sprintf(buf, "stuck to %s %s", s_suffix(steedname),
                     simpleonames(saddle));
             you_are(buf, "");
@@ -10377,7 +10377,7 @@ dolight(void)
                     {
                         char qsfx[QBUFSZ];
                         boolean one = (otmp->quan == 1L);
-                        boolean snuffout = (otmp->lamplit);
+                        boolean snuffout = (is_obj_lamplit(otmp));
 
                         /* "There is <an object> here; <verb> it?" or
                             "There are <N objects> here; <verb> one?" */
@@ -10584,7 +10584,7 @@ create_context_menu(enum create_context_menu_types menu_type)
                     if (!loot_out_added && !is_known_improper)
                     {
                         boolean isknownempty = FALSE;
-                        if (otmp_here->cknown && (otmp_here->otyp == BAG_OF_TRICKS ? (otmp_here->charges == 0) : !Has_contained_contents(otmp_here)))
+                        if (is_obj_cknown(otmp_here) && (otmp_here->otyp == BAG_OF_TRICKS ? (otmp_here->charges == 0) : !Has_contained_contents(otmp_here)))
                             isknownempty = TRUE;
 
                         if (!isknownempty)
@@ -10721,7 +10721,7 @@ create_context_menu(enum create_context_menu_types menu_type)
                         //otmp = level.objects[x][y];
                         //if (otmp)
                         //{
-                        //    if (Is_proper_container(otmp) && otmp->olocked && !otmp->obroken && otmp->lknown)
+                        //    if (Is_proper_container(otmp) && is_obj_olocked(otmp) && !is_obj_obroken(otmp) && is_obj_lknown(otmp))
                         //    {
                         //        kickotmp = otmp;
                         //        addkickmenu = TRUE;
@@ -10920,12 +10920,12 @@ dosetquickbag(void)
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is not a container.", The(cxname(obj)));
     }
-    else if (Is_box(obj) && !obj->lknown)
+    else if (Is_box(obj) && !is_obj_lknown(obj))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without first knowing whether it is locked.", The(cxname(obj)));
     }
-    else if (Is_box(obj) && obj->lknown && obj->olocked)
+    else if (Is_box(obj) && is_obj_lknown(obj) && is_obj_olocked(obj))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag; it is locked!", The(cxname(obj)));
@@ -10940,7 +10940,7 @@ dosetquickbag(void)
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without opening its lid first.", The(cxname(obj)));
     }
-    else if (!objects[obj->otyp].oc_name_known && !obj->cknown) /* This should prevent checking out which are non-containers */
+    else if (!objects[obj->otyp].oc_name_known && !is_obj_cknown(obj)) /* This should prevent checking out which are non-containers */
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without investigating its contents or determining its nature first.", The(cxname(obj)));

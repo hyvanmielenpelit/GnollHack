@@ -1918,8 +1918,8 @@ create_monster(monster *m, struct mkroom *croom)
                     //        if (otmp->oextra)
                     //            copy_oextra(MOBJ(mtmp), otmp);
                     //        MOBJ(mtmp)->timed = 0;
-                    //        MOBJ(mtmp)->lamplit = 0;
-                    //        MOBJ(mtmp)->makingsound = 0;
+                    //        set_obj_lamplit(MOBJ(mtmp), 0);
+                    //        set_obj_makingsoundMOBJ((mtmp), 0);
                     //        MOBJ(mtmp)->ox = mtmp->mx;
                     //        MOBJ(mtmp)->oy = mtmp->my;
                     //        //MOBJ(mtmp)->where = OBJ_FLOOR;
@@ -2220,7 +2220,7 @@ create_object(object *o, struct mkroom *croom)
                         else
                         {
                             otmp->mythic_prefix = MYTHIC_PREFIX_OLYMPIAN;
-                            otmp->cursed = 0;
+                            set_obj_cursed(otmp, 0);
                         }
                     }
                 }
@@ -2422,7 +2422,7 @@ create_object(object *o, struct mkroom *croom)
     {
         if (o->eroded < 0) 
         {
-            otmp->oerodeproof = 1;
+            set_obj_oerodeproof(otmp, 1);
         } else {
             otmp->oeroded = (o->eroded % 4);
             otmp->oeroded2 = ((o->eroded >> 2) % 4);
@@ -2432,12 +2432,12 @@ create_object(object *o, struct mkroom *croom)
         otmp->recharged = min(RECHARGE_LIMIT, o->recharged);
     if (o->locked)
     {
-        otmp->olocked = 1;
+        set_obj_olocked(otmp, 1);
     }
     else if (o->broken) 
     {
-        otmp->obroken = 1;
-        otmp->olocked = 0; /* obj generation may set */
+        set_obj_obroken(otmp, 1);
+        set_obj_olocked(otmp, 0); /* obj generation may set */
     }
     
     if (o->open) 
@@ -2448,7 +2448,7 @@ create_object(object *o, struct mkroom *croom)
     }
 
     if (o->trapped == 0 || o->trapped == 1)
-        otmp->otrapped = o->trapped;
+        set_obj_otrapped(otmp, o->trapped);
     if (o->material > 0)
         otmp->material = (uchar)o->material;
     if (o->elemental_enchantment >= 0 && is_elemental_enchantable(otmp))
@@ -2476,7 +2476,7 @@ create_object(object *o, struct mkroom *croom)
         otmp->mythic_prefix = (uchar)o->mythic_prefix;
     if (o->mythic_suffix >= 0)
         otmp->mythic_suffix = (uchar)o->mythic_suffix;
-    if (is_obj_uncurseable(otmp) && otmp->cursed)
+    if (is_obj_uncurseable(otmp) && is_obj_cursed(otmp))
         uncurse(otmp);
     if (o->age >= 0)
         otmp->age = (int64_t)o->age;
@@ -2512,7 +2512,7 @@ create_object(object *o, struct mkroom *croom)
     if (o->no_pickup)
         otmp->speflags |= SPEFLAGS_NO_PICKUP;
     if (o->greased)
-        otmp->greased = 1;
+        set_obj_greased(otmp, 1);
 #ifdef INVISIBLE_OBJECTS
     if (o->invis)
         otmp->oinvis = 1;
@@ -2520,7 +2520,7 @@ create_object(object *o, struct mkroom *croom)
 
     if ((objects[otmp->otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
     {
-        otmp->has_special_tileset = 1;
+        set_obj_has_special_tileset(otmp, 1);
         otmp->special_tileset = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
     }
 
@@ -2669,7 +2669,7 @@ create_object(object *o, struct mkroom *croom)
             {
                 otmp->speflags |= SPEFLAGS_MINES_PRIZE;
                 /* prevent stacking; cleared when achievement is recorded */
-                //otmp->nomerge = 1;
+                //set_obj_nomerge(otmp, 1);
                 if (++mines_prize_count > 1)
                     impossible(prize_warning, "mines end");
             }
@@ -2679,14 +2679,14 @@ create_object(object *o, struct mkroom *croom)
             if (otmp->otyp == iflags.soko_prize_type1)
             {
                 otmp->speflags |= SPEFLAGS_SOKO_PRIZE1;
-                //otmp->nomerge = 1; /* redundant; Sokoban prizes don't stack */
+                //set_obj_nomerge(otmp, 1); /* redundant; Sokoban prizes don't stack */
                 if (++soko_prize_count > 1)
                     impossible(prize_warning, "sokoban end");
             } 
             else if (otmp->otyp == iflags.soko_prize_type2) 
             {
                 otmp->speflags |= SPEFLAGS_SOKO_PRIZE2;
-                //otmp->nomerge = 1; /* redundant; Sokoban prizes don't stack */
+                //set_obj_nomerge(otmp, 1); /* redundant; Sokoban prizes don't stack */
                 if (++soko_prize_count > 1)
                     impossible(prize_warning, "sokoban end");
             }

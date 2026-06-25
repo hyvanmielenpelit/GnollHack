@@ -941,193 +941,152 @@ namespace GnollHackX
         public int usecount;           /* overloaded for various things that tally */
         public uint oeaten;        /* nutrition left in food, if partly eaten */
 
-#if BITFIELDS
-        internal uint bitfields;
-
+        public ulong bitflags;
+        public byte oeroded;
+        public byte oeroded2;
+        
         public uint cursed 
         {
-            get { return bitfields & 0x00000001U; } 
-            set { bitfields = (bitfields & ~0x00000001U) | (value & 0x00000001U); }
+            get { return (uint)(bitflags & 0x00000001UL); } 
+            set { bitflags = (bitflags & ~0x00000001UL) | ((ulong)value & 0x00000001UL); }
         }
         public uint blessed
         {
-            get { return (bitfields >> 1) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 1)) | ((value & 0x00000001U) << 1); }
+            get { return (uint)((bitflags >> 1) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 1)) | (((ulong)value & 0x00000001UL) << 1); }
         }
         public uint unpaid
         {
-            get { return (bitfields >> 2) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 2)) | ((value & 0x00000001U) << 2); }
+            get { return (uint)((bitflags >> 2) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 2)) | (((ulong)value & 0x00000001UL) << 2); }
         }
         public uint no_charge
         {
-            get { return (bitfields >> 3) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 3)) | ((value & 0x00000001U) << 3); }
+            get { return (uint)((bitflags >> 3) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 3)) | (((ulong)value & 0x00000001UL) << 3); }
         }
         public uint known
         {
-            get { return (bitfields >> 4) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 4)) | ((value & 0x00000001U) << 4); }
+            get { return (uint)((bitflags >> 4) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 4)) | (((ulong)value & 0x00000001UL) << 4); }
         }
         public uint dknown
         {
-            get { return (bitfields >> 5) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 5)) | ((value & 0x00000001U) << 5); }
+            get { return (uint)((bitflags >> 5) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 5)) | (((ulong)value & 0x00000001UL) << 5); }
         }
         public uint bknown
         {
-            get { return (bitfields >> 6) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 6)) | ((value & 0x00000001U) << 6); }
+            get { return (uint)((bitflags >> 6) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 6)) | (((ulong)value & 0x00000001UL) << 6); }
         }
         public uint rknown
         {
-            get { return (bitfields >> 7) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 7)) | ((value & 0x00000001U) << 7); }
-        }
-        public uint oeroded
-        {
-            get { return (bitfields >> 8) & 0x00000003U; }
-            set { bitfields = (bitfields & ~(0x00000003U << 8)) | ((value & 0x00000003U) << 8); }
-        }
-        public uint oeroded2
-        {
-            get { return (bitfields >> 10) & 0x00000003U; }
-            set { bitfields = (bitfields & ~(0x00000003U << 10)) | ((value & 0x00000003U) << 10); }
+            get { return (uint)((bitflags >> 7) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 7)) | (((ulong)value & 0x00000001UL) << 7); }
         }
         public uint oerodeproof
         {
-            get { return (bitfields >> 12) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 12)) | ((value & 0x00000001U) << 12); }
+            get { return (uint)((bitflags >> 8) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 8)) | (((ulong)value & 0x00000001UL) << 8); }
         }
         public uint olocked
         {
-            get { return (bitfields >> 13) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 13)) | ((value & 0x00000001U) << 13); }
+            get { return (uint)((bitflags >> 9) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 9)) | (((ulong)value & 0x00000001UL) << 9); }
         }
         public uint obroken
         {
-            get { return (bitfields >> 14) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 14)) | ((value & 0x00000001U) << 14); }
+            get { return (uint)((bitflags >> 10) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 10)) | (((ulong)value & 0x00000001UL) << 10); }
         }
         public uint otrapped
         {
-            get { return (bitfields >> 15) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 15)) | ((value & 0x00000001U) << 15); }
+            get { return (uint)((bitflags >> 11) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 11)) | (((ulong)value & 0x00000001UL) << 11); }
         }
         public uint lamplit
         {
-            get { return (bitfields >> 16) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 16)) | ((value & 0x00000001U) << 16); }
+            get { return (uint)((bitflags >> 12) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 12)) | (((ulong)value & 0x00000001UL) << 12); }
         }
         public uint makingsound
         {
-            get { return (bitfields >> 17) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 17)) | ((value & 0x00000001U) << 17); }
+            get { return (uint)((bitflags >> 13) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 13)) | (((ulong)value & 0x00000001UL) << 13); }
         }
         public uint globby
         {
-            get { return (bitfields >> 18) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 18)) | ((value & 0x00000001U) << 18); }
+            get { return (uint)((bitflags >> 14) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 14)) | (((ulong)value & 0x00000001UL) << 14); }
         }
         public uint greased
         {
-            get { return (bitfields >> 19) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 19)) | ((value & 0x00000001U) << 19); }
+            get { return (uint)((bitflags >> 15) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 15)) | (((ulong)value & 0x00000001UL) << 15); }
         }
         public uint nomerge
         {
-            get { return (bitfields >> 20) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 20)) | ((value & 0x00000001U) << 20); }
+            get { return (uint)((bitflags >> 16) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 16)) | (((ulong)value & 0x00000001UL) << 16); }
         }
         public uint was_thrown
         {
-            get { return (bitfields >> 21) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 21)) | ((value & 0x00000001U) << 21); }
+            get { return (uint)((bitflags >> 17) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 17)) | (((ulong)value & 0x00000001UL) << 17); }
         }
         public uint has_special_tileset
         {
-            get { return (bitfields >> 22) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 22)) | ((value & 0x00000001U) << 22); }
+            get { return (uint)((bitflags >> 18) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 18)) | (((ulong)value & 0x00000001UL) << 18); }
         }
         public uint in_use
         {
-            get { return (bitfields >> 23) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 23)) | ((value & 0x00000001U) << 23); }
+            get { return (uint)((bitflags >> 19) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 19)) | (((ulong)value & 0x00000001UL) << 19); }
         }
         public uint bypass
         {
-            get { return (bitfields >> 24) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 24)) | ((value & 0x00000001U) << 24); }
+            get { return (uint)((bitflags >> 20) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 20)) | (((ulong)value & 0x00000001UL) << 20); }
         }
         public uint cknown
         {
-            get { return (bitfields >> 25) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 25)) | ((value & 0x00000001U) << 25); }
+            get { return (uint)((bitflags >> 21) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 21)) | (((ulong)value & 0x00000001UL) << 21); }
         }
         public uint lknown
         {
-            get { return (bitfields >> 26) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 26)) | ((value & 0x00000001U) << 26); }
+            get { return (uint)((bitflags >> 22) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 22)) | (((ulong)value & 0x00000001UL) << 22); }
         }
         public uint tknown
         {
-            get { return (bitfields >> 27) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 27)) | ((value & 0x00000001U) << 27); }
+            get { return (uint)((bitflags >> 23) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 23)) | (((ulong)value & 0x00000001UL) << 23); }
         }
         public uint nknown
         {
-            get { return (bitfields >> 28) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 28)) | ((value & 0x00000001U) << 28); }
+            get { return (uint)((bitflags >> 24) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 24)) | (((ulong)value & 0x00000001UL) << 24); }
         }
         public uint aknown
         {
-            get { return (bitfields >> 29) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 29)) | ((value & 0x00000001U) << 29); }
+            get { return (uint)((bitflags >> 25) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 25)) | (((ulong)value & 0x00000001UL) << 25); }
         }
         public uint mknown
         {
-            get { return (bitfields >> 30) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 30)) | ((value & 0x00000001U) << 30); }
+            get { return (uint)((bitflags >> 26) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 26)) | (((ulong)value & 0x00000001UL) << 26); }
         }
         public uint rotknown
         {
-            get { return (bitfields >> 31) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 31)) | ((value & 0x00000001U) << 31); }
+            get { return (uint)((bitflags >> 27) & 0x00000001UL); }
+            set { bitflags = (bitflags & ~(0x00000001UL << 27)) | (((ulong)value & 0x00000001UL) << 27); }
         }
-#else
-        public byte cursed;
-        public byte blessed;
-        public byte unpaid;    /* on some bill */
-        public byte no_charge; /* if shk shouldn't charge for this */
-        public byte known;     /* exact nature & enchantment & charges known */
-        public byte dknown;    /* description = color or text known */
-        public byte bknown;    /* blessing or curse known */
-        public byte rknown;    /* rustproof or not known */
-        public byte oeroded;  /* rusted/burnt weapon/armor */
-        public byte oeroded2; /* corroded/rotted weapon/armor */
-        public byte oerodeproof; /* erodeproof weapon/armor */
-        public byte olocked;     /* object is locked */
-        public byte obroken;     /* lock has been broken */
-        public byte otrapped;    /* container is trapped */
-        public byte lamplit;   /* a light-source -- can be lit */
-        public byte makingsound;   /* a sound-source -- can be turned on to make noise */
-        public byte globby;    /* combines with like types on adjacent squares */
-        public byte greased;    /* covered with grease */
-        public byte nomerge;    /* set temporarily to prevent merging */
-        public byte was_thrown; /* thrown by hero since last picked up */
-        public byte has_special_tileset; /* thrown by hero since last picked up */
-        public byte in_use; /* for magic items before useup items */
-        public byte bypass; /* mark this as an object to be skipped by bhito() */
-        public byte cknown; /* contents of container assumed to be known */
-        public byte lknown; /* locked/unlocked status is known */
-        public byte tknown; /* trapped status of a container is known */
-        public byte nknown; /* artifact's true name is known */
-        public byte aknown; /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
-        public byte mknown; /* mythic quality is known */
-        public byte rotknown; /* rotting status is known */
-#endif
 
-        public uint reserved;  /* reserved for, e.g., more bitfields */
+        public uint firing_m_id;  /* m_id for monster that fired this object (for picking up back) */
 
         public uint o_id_memory;  /* This is a memory object of this o_id */
         public uint m_id_memory;  /* This is a memory object of this mimic m_id */

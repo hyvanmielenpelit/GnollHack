@@ -1957,7 +1957,7 @@ mktemple(void)
                     otmp->special_quality = objects[otmp->otyp].oc_special_quality;
                     otmp->age = MAX_BURN_IN_CANDELABRUM;
                     otmp->owt = weight(otmp);
-                    if (!otmp->lamplit)
+                    if (!is_obj_lamplit(otmp))
                         begin_burn(otmp, FALSE);
                 }
             }

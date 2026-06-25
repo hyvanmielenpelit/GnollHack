@@ -18620,7 +18620,7 @@ update_ambient_sounds(void)
             }
 
             if (curr->id.a_obj)
-                lit = curr->id.a_obj->lamplit;
+                lit = is_obj_lamplit(curr->id.a_obj);
         }
         else if (curr->type == SOUNDSOURCE_MONSTER)
         {
@@ -19212,8 +19212,8 @@ obj_move_sound_source(struct obj *src, struct obj *dest)
             ss->id.a_obj = dest;
     }
 
-    src->makingsound = 0;
-    dest->makingsound = 1;
+    set_obj_makingsound(src, 0);
+    set_obj_makingsound(dest, 1);
 }
 
 /* return true if there exist any sound sources */
@@ -19286,7 +19286,7 @@ obj_split_sound_source(struct obj *src, struct obj *dest)
             new_ss->id.a_obj = dest;
             new_ss->next = sound_base;
             sound_base = new_ss;
-            dest->makingsound = 1; /* now an active sound source */
+            set_obj_makingsound(dest, 1); /* now an active sound source */
         }
 }
 
@@ -19334,7 +19334,7 @@ begin_sound(struct obj *obj, boolean already_making_noise)
     int64_t turns = 0;
     boolean do_timer = TRUE;
 
-    obj->makingsound = 1;
+    set_obj_makingsound(obj, 1);
     do_timer = FALSE;
     turns = 0;
 
@@ -19342,14 +19342,14 @@ begin_sound(struct obj *obj, boolean already_making_noise)
     {
         if (start_timer(turns, TIMER_OBJECT, MAKE_SOUND_OBJECT, obj_to_any(obj)))
         {
-            obj->makingsound = 1;
+            set_obj_makingsound(obj, 1);
             obj->age -= turns; /* Needs own timer, otherwise possible conflict with light sources */
             if (carried(obj) && !already_making_noise)
                 update_inventory();
         }
         else
         {
-            obj->makingsound = 0;
+            set_obj_makingsound(obj, 0);
         }
     }
     else
@@ -19358,7 +19358,7 @@ begin_sound(struct obj *obj, boolean already_making_noise)
             update_inventory();
     }
 
-    if (obj->makingsound && !already_making_noise)
+    if (is_obj_makingsound(obj) && !already_making_noise)
     {
         xchar x, y;
         enum object_soundset_types objsoundset = objects[obj->otyp].oc_soundset;
@@ -19381,7 +19381,7 @@ begin_sound(struct obj *obj, boolean already_making_noise)
 void
 end_sound(struct obj *obj, boolean timer_attached)
 {
-    if (!obj->makingsound)
+    if (!is_obj_makingsound(obj))
     {
         impossible("end_sound: obj %s not making sound", xname(obj));
         return;
@@ -19395,7 +19395,7 @@ end_sound(struct obj *obj, boolean timer_attached)
     {
         /* [DS] Cleanup explicitly, since timer cleanup won't happen */
         del_sound_source(SOUNDSOURCE_OBJECT, obj_to_any(obj));
-        obj->makingsound = 0;
+        set_obj_makingsound(obj, 0);
         if (obj->where == OBJ_INVENT)
             update_inventory();
     }
@@ -19406,7 +19406,7 @@ end_sound(struct obj *obj, boolean timer_attached)
 boolean
 obj_has_sound_source(struct obj *obj)
 {
-    return (obj->makingsound == TRUE);
+    return is_obj_makingsound(obj);
 }
 
 enum ghsound_types

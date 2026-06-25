@@ -1207,7 +1207,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     continue;
             }
 
-            int relevant_darkening_cmap = level.locations[darkening_i][darkening_j].use_special_tileset ? (int)level.locations[darkening_i][darkening_j].special_tileset : current_cmap;
+            int relevant_darkening_cmap = is_levl_use_special_tileset(&level.locations[darkening_i][darkening_j]) ? (int)level.locations[darkening_i][darkening_j].special_tileset : current_cmap;
             boolean is_enl_you = !!(data->map[enl_i][enl_j].monster_flags & LMFLAGS_YOU);
             unsigned m_id_stored = data->map[enl_i][enl_j].m_id;
             struct monst* m_here = m_at(enl_i, enl_j);
@@ -3049,7 +3049,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     int src_x = 0, src_y = 0;
                                     int dest_x = 0, dest_y = 0;
-                                    if (otmp_round ? (otmp_round->lamplit || (otmp_round->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0) : (data->map[i][j].missile_flags & MISSILE_FLAGS_LIT) != 0)
+                                    if (otmp_round ? (is_obj_lamplit(otmp_round) || (otmp_round->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0) : (data->map[i][j].missile_flags & MISSILE_FLAGS_LIT) != 0)
                                     {
                                         src_x = src_lit_x;
                                         src_y = src_lit_y;
@@ -3125,7 +3125,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     int src_x = 0, src_y = 0;
                                     int dest_x = 0, dest_y = 0;
-                                    if (otmp_round ? (otmp_round->lamplit || (otmp_round->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0) : (data->map[i][j].missile_flags & MISSILE_FLAGS_LIT) != 0)
+                                    if (otmp_round ? (is_obj_lamplit(otmp_round) || (otmp_round->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0) : (data->map[i][j].missile_flags & MISSILE_FLAGS_LIT) != 0)
                                     {
                                         src_x = src_lit_x;
                                         src_y = src_lit_y;
@@ -3937,7 +3937,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                         /* Item property marks */
                         if (((base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT) && otmp_round &&
-                            (otmp_round->opoisoned || otmp_round->elemental_enchantment > 0 || otmp_round->mythic_prefix > 0 || otmp_round->mythic_suffix > 0 || otmp_round->oeroded || otmp_round->oeroded2 || otmp_round->exceptionality > 0))
+                            (is_obj_opoisoned(otmp_round) || otmp_round->elemental_enchantment > 0 || otmp_round->mythic_prefix > 0 || otmp_round->mythic_suffix > 0 || otmp_round->oeroded || otmp_round->oeroded2 || otmp_round->exceptionality > 0))
                             ||
                             ((base_layer == LAYER_MISSILE) &&
                                 (data->map[enl_i][enl_j].missile_poisoned || data->map[enl_i][enl_j].missile_elemental_enchantment > 0 
@@ -3953,7 +3953,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int src_x = 0;
                             int src_y = 0;
                             int cnt = 0;
-                            int poisoned = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_poisoned : otmp_round->opoisoned);
+                            int poisoned = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_poisoned : is_obj_opoisoned(otmp_round));
                             uchar elemental_enchantment = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_elemental_enchantment : otmp_round->elemental_enchantment);
                             uchar exceptionality = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_exceptionality : otmp_round->exceptionality);
                             uchar mythic_prefix = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_mythic_prefix : otmp_round->mythic_prefix);
@@ -4154,8 +4154,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 }
                                 else
                                 {
-                                    boolean is_lit_unknown_wall = levl[darkening_i][darkening_j].waslit && IS_NON_STONE_WALL(levl[darkening_i][darkening_j].typ) && wall_angle(&levl[darkening_i][darkening_j]) == S_stone;
-                                    if (!levl[darkening_i][darkening_j].waslit || is_lit_unknown_wall)
+                                    boolean is_lit_unknown_wall = is_levl_waslit(&levl[darkening_i][darkening_j]) && IS_NON_STONE_WALL(levl[darkening_i][darkening_j].typ) && wall_angle(&levl[darkening_i][darkening_j]) == S_stone;
+                                    if (!is_levl_waslit(&levl[darkening_i][darkening_j]) || is_lit_unknown_wall)
                                     {
                                         if (default_tileset_definition.nonlit_darkening[relevant_darkening_cmap] > 0.0)
                                             multiplier *= default_tileset_definition.nonlit_darkening[relevant_darkening_cmap];

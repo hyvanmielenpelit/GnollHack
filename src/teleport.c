@@ -85,7 +85,7 @@ goodpos(int x, int y, struct monst *mtmp, uint64_t gpflags)
             if (mtmp == &youmonst)
                 return (Moves_above_ground
                         || (Fire_immunity && Walks_on_water && uarmf
-                            && uarmf->oerodeproof)
+                            && is_obj_oerodeproof(uarmf))
                         || (Upolyd && likes_lava(youmonst.data)));
             else
                 return (is_flying(mtmp) || is_levitating(mtmp)
@@ -481,7 +481,7 @@ teleport_pet(struct monst *mtmp, boolean force_it)
             impossible("%s is leashed, without a leash.", Monnam(mtmp));
             goto release_it;
         }
-        if (otmp->cursed && !force_it) {
+        if (is_obj_cursed(otmp) && !force_it) {
             yelp(mtmp);
             return FALSE;
         } else {
@@ -583,7 +583,7 @@ scrolltele(struct obj *scroll, boolean iswizcmd, boolean iscontrolled)
             result = TRUE;
         }
     } 
-    else if (scroll && scroll->blessed)
+    else if (scroll && is_obj_blessed(scroll))
     {
         /* (this used to be handled in seffects()) */
         if (yn_query("Do you wish to teleport?") == 'n')

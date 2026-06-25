@@ -449,7 +449,7 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
                 if (obj)
                 {
                     obj->enchantment = 0;
-                    obj->cursed = obj->blessed = FALSE;
+                    set_obj_cursed(obj, FALSE), set_obj_blessed(obj, FALSE);
                     if (is_exceptional)
                         obj->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
                 }
@@ -462,7 +462,7 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
         if (obj)
         {
             obj->enchantment = 0;
-            obj->cursed = obj->blessed = FALSE;
+            set_obj_cursed(obj, FALSE), set_obj_blessed(obj, FALSE);
             obj->exceptionality = EXCEPTIONALITY_ELITE;
         }
         break;
@@ -472,7 +472,7 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
         if (obj)
         {
             obj->enchantment = 0;
-            obj->cursed = obj->blessed = FALSE;
+            set_obj_cursed(obj, FALSE), set_obj_blessed(obj, FALSE);
             obj->exceptionality = EXCEPTIONALITY_ELITE;
         }
         break;
@@ -488,7 +488,7 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
         {
             obj = mksobj_found_at(UNICORN_HORN, x, y, TRUE, FALSE);
             if (obj && mtmp->mrevived)
-                obj->degraded_horn = 1;
+                set_obj_degraded_horn(obj, 1);
         }
         goto default_1;
     case PM_LONG_WORM:
@@ -947,10 +947,10 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
      *  underneath it, you could be told the corpse type of a
      *  monster that you never knew was there without this.
      *  The code in hitmu() substitutes the word "something"
-     *  if the corpse's obj->dknown is 0.
+     *  if the corpse's is_obj_dknown(obj) is 0.
      */
     if (Blind && !sensemon(mtmp))
-        obj->dknown = 0;
+        set_obj_dknown(obj, 0);
 
     stackobj(obj);
     newsym(x, y);
@@ -1820,7 +1820,7 @@ meatmetal(struct monst *mtmp)
         if (is_metallic(otmp) && !obj_resists(otmp, 5, 95)
             && touch_artifact(otmp, mtmp)) 
         {
-            if (rust_causing_and_ironvorous(mtmp->data) && otmp->oerodeproof) 
+            if (rust_causing_and_ironvorous(mtmp->data) && is_obj_oerodeproof(otmp)) 
             {
                 if (canseemon(mtmp) && flags.verbose) 
                 {
@@ -1828,7 +1828,7 @@ meatmetal(struct monst *mtmp)
                           distant_name(otmp, doname));
                 }
                 /* The object's rustproofing is gone now */
-                otmp->oerodeproof = 0;
+                set_obj_oerodeproof(otmp, 0);
                 increase_mon_property(mtmp, STUNNED, 5 + rnd(10));
                 if (canseemon(mtmp) && flags.verbose)
                 {
@@ -2102,7 +2102,7 @@ struct monst *mtmp;
                    /* cockatrice corpses handled above; this
                       touch_petrifies() check catches eggs */
                    || ((otmp->otyp == CORPSE || otmp->otyp == EGG
-                        || otmp->globby)
+                        || is_obj_globby(otmp))
                        && ((otmp->corpsenm >= LOW_PM && touch_petrifies(&mons[otmp->corpsenm])
                             && !resists_ston(mtmp))
                            || (otmp->corpsenm == PM_GREEN_SLIME
@@ -2133,7 +2133,7 @@ struct monst *mtmp;
                 /* give this one even if !verbose */
                 if (otmp->oclass == SCROLL_CLASS
                     && !strcmpi(OBJ_DESCR(objects[otmp->otyp]), "YUM YUM"))
-                    pline("Yum%c", otmp->blessed ? '!' : '.');
+                    pline("Yum%c", is_obj_blessed(otmp) ? '!' : '.');
             } 
             else 
             {
@@ -2502,7 +2502,7 @@ mfndpos_xy(struct monst *mon, xchar x, xchar y, coord *poss, int64_t *info, int6
         {
             rockok = treeok = TRUE;
         } 
-        else if ((mw_tmp = MON_WEP(mon)) && mw_tmp->cursed
+        else if ((mw_tmp = MON_WEP(mon)) && is_obj_cursed(mw_tmp)
                    && mon->weapon_strategy == NO_WEAPON_WANTED) 
         {
             rockok = is_pick(mw_tmp);
@@ -3151,8 +3151,8 @@ copy_mextra(struct monst *mtmp2, struct monst *mtmp1)
             if (MOBJ(mtmp1)->oextra)
                 copy_oextra(MOBJ(mtmp2), MOBJ(mtmp1));
             MOBJ(mtmp2)->timed = 0;
-            MOBJ(mtmp2)->lamplit = 0;
-            MOBJ(mtmp2)->makingsound = 0;
+            set_obj_lamplit(MOBJ(mtmp2), 0);
+            set_obj_makingsound(MOBJ(mtmp2), 0);
             MOBJ(mtmp2)->ox = mtmp2->mx;
             MOBJ(mtmp2)->oy = mtmp2->my;
         }
@@ -4018,9 +4018,9 @@ monstone(struct monst *mdef)
                 place_object(obj, x, y);
             } else {
                 debugprint("monstone3");
-                if (obj->lamplit)
+                if (is_obj_lamplit(obj))
                     end_burn(obj, TRUE);
-                if (obj->makingsound)
+                if (is_obj_makingsound(obj))
                     end_sound(obj, TRUE);
                 obj->nobj = oldminvent;
                 oldminvent = obj;
@@ -4765,7 +4765,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
     }
 
     struct obj* scroll = noncursed_sobj_at(SCR_SCARE_MONSTER, u.ux, u.uy);
-    if (via_attack && scroll && !scroll->cursed
+    if (via_attack && scroll && !is_obj_cursed(scroll)
         /* only hypocritical if monster is vulnerable to scroll of scare monster (or
            peaceful--not vulnerable but attacking it is hypocritical) */
         && (onscary(u.ux, u.uy, mtmp) || is_peaceful(mtmp)))

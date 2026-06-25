@@ -5487,7 +5487,7 @@ do_chat_pet_pickitems(struct monst *mtmp)
         for (i = 0; obj && i < 20; i++, obj = level.objects[omx][omy])
         {
             int carryamt = can_carry(mtmp, obj);
-            if (carryamt > 0 && !obj->cursed && !is_mon_issummoned(mtmp) && !is_mon_ispartymember(mtmp) && !m_unpaid_item_no_pickup(mtmp, obj)
+            if (carryamt > 0 && !is_obj_cursed(obj) && !is_mon_issummoned(mtmp) && !is_mon_ispartymember(mtmp) && !m_unpaid_item_no_pickup(mtmp, obj)
                 && could_reach_item(mtmp, obj->ox, obj->oy))
             {
                 shkpreaction = shk_chastise_pet(mtmp, obj, FALSE, TRUE);
@@ -5557,7 +5557,7 @@ do_chat_pet_giveitems(struct monst *mtmp)
             for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
                 if (otmp2 == otmp)
                     break;
-            if (!otmp2 || !otmp2->bypass)
+            if (!otmp2 || !is_obj_bypass(otmp2))
                 continue;
             
             /* found next selected invent item */
@@ -5566,7 +5566,7 @@ do_chat_pet_giveitems(struct monst *mtmp)
                 if (welded(otmp, &youmonst)) {
                     ; /* don't split */
                 }
-                else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed) {
+                else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && is_obj_cursed(otmp)) {
                     /* same kludge as getobj(), for canletgo()'s use */
                     otmp->corpsenm = (int)cnt; /* don't split */
                 }
@@ -5602,21 +5602,21 @@ do_chat_pet_giveitems(struct monst *mtmp)
                     unsplitobj(otmp);
                 }
                 /* Removed because could enable too easy BUC identification */
-                //else if ((otmp->cursed && mon_eschews_cursed(mtmp)) || (otmp->blessed && mon_eschews_blessed(mtmp)))
+                //else if ((is_obj_cursed(otmp) && mon_eschews_cursed(mtmp)) || (is_obj_blessed(otmp) && mon_eschews_blessed(mtmp)))
                 //{
                 //    play_sfx_sound(SFX_GENERAL_CANNOT);
                 //    Sprintf(pbuf, "%s refuses to take %s, eschewing %s.", noittame_Monnam(mtmp), yname(otmp), otmp->quan != 1 ? "them" : "it");
                 //    pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Item Eschewed", TRUE);
                 //    unsplitobj(otmp);
                 //}
-                else if (otmp->unpaid && has_edog(mtmp) && EDOG(mtmp)->chastised)
+                else if (is_obj_unpaid(otmp) && has_edog(mtmp) && EDOG(mtmp)->chastised)
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);
                     Sprintf(pbuf, "%s, %s refuses to take %s.", canseemon(mtmp) ? "Visibly frightened" : "Frightened", noittame_mon_nam(mtmp), yname(otmp));
                     pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, pbuf, "Too Fearful To Take", TRUE);
                     unsplitobj(otmp);
                 }
-                else if (*u.ushops && otmp->unpaid && !costly_spot(mtmp->mx, mtmp->my) && (shkp = shop_keeper(inside_shop(u.ux, u.uy))) != 0)
+                else if (*u.ushops && is_obj_unpaid(otmp) && !costly_spot(mtmp->mx, mtmp->my) && (shkp = shop_keeper(inside_shop(u.ux, u.uy))) != 0)
                 {
                     play_voice_shopkeeper_simple_line(shkp, otmp->quan > 1 ? SHOPKEEPER_LINE_STAY_AWAY_FROM_THOSE : SHOPKEEPER_LINE_STAY_AWAY_FROM_THAT);
                     pline("%s shouts:", Monnam(shkp));
@@ -5634,7 +5634,7 @@ do_chat_pet_giveitems(struct monst *mtmp)
                     /* Item is now going to the pet if possible */
                     if (release_item_from_hero_inventory(otmp))
                     {
-                        otmp->bypass = 0;
+                        set_obj_bypass(otmp, 0);
 
                         /* Success */
                         if (flags.verbose)
@@ -5645,7 +5645,7 @@ do_chat_pet_giveitems(struct monst *mtmp)
                         }
 
                         boolean abort_pickup = FALSE;
-                        if (*u.ushops && otmp->unpaid)
+                        if (*u.ushops && is_obj_unpaid(otmp))
                         {
                             boolean costly = costly_spot(mtmp->mx, mtmp->my);
                             boolean chastise_res = costly ? shk_chastise_pet(mtmp, otmp, FALSE, TRUE) : FALSE;
@@ -5660,12 +5660,12 @@ do_chat_pet_giveitems(struct monst *mtmp)
                                 if (otmp->oclass != COIN_CLASS)
                                     otmp->item_flags |= ITEM_FLAGS_GIVEN_BY_HERO;
                                 if (chastise_res)
-                                    otmp->nomerge = 1;
+                                    set_obj_nomerge(otmp, 1);
                                 if (mpickobj(mtmp, otmp))
                                     otmp = 0;
                                 if (chastise_res && otmp)
                                 {
-                                    otmp->nomerge = 0;
+                                    set_obj_nomerge(otmp, 0);
                                     /* If so, drop the object and abort the rest of the pickup */
                                     obj_extract_self(otmp);
                                     mdrop_obj(mtmp, otmp, FALSE, TRUE);
@@ -5763,7 +5763,7 @@ do_chat_feed(struct monst *mtmp)
             for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
                 if (otmp2 == otmp)
                     break;
-            if (!otmp2 || !otmp2->bypass)
+            if (!otmp2 || !is_obj_bypass(otmp2))
                 continue;
 
             /* found next selected invent item */
@@ -5791,7 +5791,7 @@ do_chat_feed(struct monst *mtmp)
                 {
                     ; /* don't split */
                 }
-                else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed) 
+                else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && is_obj_cursed(otmp)) 
                 {
                     /* same kludge as getobj(), for canletgo()'s use */
                     otmp->corpsenm = (int)cnt; /* don't split */
@@ -5835,7 +5835,7 @@ do_chat_feed(struct monst *mtmp)
                             place_object(otmp, mtmp->mx, mtmp->my);
                             pline("%s eats %s, but does not seem to appreciate it much.", noittame_Monnam(mtmp), the(cxname(otmp)));
                             dog_food_after_effect(mtmp, otmp, canspotmon(mtmp));
-                            if (otmp->unpaid)
+                            if (is_obj_unpaid(otmp))
                             {
                                 /* edible item owned by shop has been thrown or kicked
                                    by hero and caught by tame or food-tameable monst */
@@ -6130,7 +6130,7 @@ do_chat_quaff(struct monst *mtmp)
             for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
                 if (otmp2 == otmp)
                     break;
-            if (!otmp2 || !otmp2->bypass)
+            if (!otmp2 || !is_obj_bypass(otmp2))
                 continue;
 
             /* found next selected invent item */
@@ -6160,7 +6160,7 @@ do_chat_quaff(struct monst *mtmp)
                 {
                     ; /* don't split */
                 }
-                else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed)
+                else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && is_obj_cursed(otmp))
                 {
                     /* same kludge as getobj(), for canletgo()'s use */
                     otmp->corpsenm = (int)cnt; /* don't split */
@@ -6198,7 +6198,7 @@ do_chat_quaff(struct monst *mtmp)
                         && willquaff
                         && (releasesuccess = release_item_from_hero_inventory(otmp)))
                     {
-                        if (*u.ushops || otmp->unpaid)
+                        if (*u.ushops || is_obj_unpaid(otmp))
                             check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE, FALSE);
                         (void)mpickobj(mtmp, otmp);
                         if (tasty == 1)
@@ -6285,7 +6285,7 @@ do_chat_unicorn_horn(struct monst *mtmp)
             for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
                 if (otmp2 == otmp)
                     break;
-            if (!otmp2 || !otmp2->bypass)
+            if (!otmp2 || !is_obj_bypass(otmp2))
                 continue;
 
             /* found next selected invent item */
@@ -6428,7 +6428,7 @@ do_chat_pet_dotakeoff(struct monst *mtmp)
 
     if(otmp->owornmask)
     {
-        if (otmp->cursed && !cursed_items_are_positive_mon(mtmp))
+        if (is_obj_cursed(otmp) && !cursed_items_are_positive_mon(mtmp))
         {
             play_sfx_sound(SFX_GENERAL_WELDED);
             if (otmp->owornmask & W_SADDLE)
@@ -6436,7 +6436,7 @@ do_chat_pet_dotakeoff(struct monst *mtmp)
             else
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s tries to takes off %s, but can't. It's cursed!", noittame_Monnam(mtmp), cxname(otmp));
 
-            otmp->bknown = TRUE;
+            set_obj_bknown(otmp, TRUE);
         }
         else
         {
@@ -6529,7 +6529,7 @@ do_chat_pet_dounwield(struct monst *mtmp)
         {
             play_sfx_sound(SFX_GENERAL_WELDED);
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s tries to unwield %s, but can't. It's cursed!", noittame_Monnam(mtmp), cxname(mwep));
-            mwep->bknown = TRUE;
+            set_obj_bknown(mwep, TRUE);
         }
         else
         {
@@ -7115,7 +7115,7 @@ do_chat_pet_takeitems(struct monst *mtmp)
             struct obj* item_to_take = pick_list[i].item.a_obj;
             if (item_to_take)
             {
-                if ((objects[item_to_take->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && item_to_take->cursed)
+                if ((objects[item_to_take->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && is_obj_cursed(item_to_take))
                 {
                     play_sfx_sound(SFX_GENERAL_WELDED);
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s not leave %s!", Tobjnam(item_to_take, "do"), noittame_mon_nam(mtmp));
@@ -7254,7 +7254,7 @@ m_sellable_item(struct obj *otmp, struct monst *mtmp)
                )
            )
         && !(
-            (otmp->cursed && (objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED))
+            (is_obj_cursed(otmp) && (objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED))
             || (otmp->otyp == AMULET_OF_YENDOR && (mtmp->data->mflags3 & M3_WANTSAMUL))
             || (otmp->otyp == BELL_OF_OPENING && (mtmp->data->mflags3 & M3_WANTSBELL))
             || (otmp->otyp == SPE_BOOK_OF_THE_DEAD && (mtmp->data->mflags3 & M3_WANTSBOOK))
@@ -8736,7 +8736,7 @@ sell_many_to_npc(struct monst *mtmp, boolean (*allow)(struct obj*))
             for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
                 if (otmp2 == otmp)
                     break;
-            if (!otmp2 || !otmp2->bypass)
+            if (!otmp2 || !is_obj_bypass(otmp2))
                 continue;
             /* found next selected invent item */
             cnt = pick_list[i].count;
@@ -8746,7 +8746,7 @@ sell_many_to_npc(struct monst *mtmp, boolean (*allow)(struct obj*))
                 {
                     ; /* don't split */
                 }
-                else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed)
+                else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && is_obj_cursed(otmp))
                 {
                     /* same kludge as getobj(), for canletgo()'s use */
                     otmp->corpsenm = (int)cnt; /* don't split */
@@ -9941,7 +9941,7 @@ sell_to_npc(struct obj *obj, struct monst *mtmp, int items_left_in_list UNUSED, 
                 play_sfx_sound(SFX_SELL_TO_NPC);
                 You("sold %s for %ld gold piece%s to %s.", doname(obj), offer, plur(offer), noittame_mon_nam(mtmp));
 
-                if (*u.ushops || obj->unpaid)
+                if (*u.ushops || is_obj_unpaid(obj))
                     check_shop_obj(obj, mtmp->mx, mtmp->my, FALSE, FALSE);
 
                 (void)mpickobj(mtmp, obj);
@@ -10655,11 +10655,11 @@ spell_service_query(struct monst *mtmp, int service_spell_id, int buc, const cha
 
     struct obj* pseudo = mksobj(service_spell_id, FALSE, FALSE, FALSE);
     if(buc > 0)
-        pseudo->blessed = 1, pseudo->cursed = 0;
+        set_obj_blessed(pseudo, 1), set_obj_cursed(pseudo, 0);
     else if (buc == 0)
-        pseudo->blessed = 0, pseudo->cursed = 0;
+        set_obj_blessed(pseudo, 0), set_obj_cursed(pseudo, 0);
     else if (buc < 0)
-        pseudo->blessed = 0, pseudo->cursed = 1;
+        set_obj_blessed(pseudo, 0), set_obj_cursed(pseudo, 1);
 
     pseudo->quan = 20L; /* do not let useup get it */
     pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
@@ -10881,7 +10881,7 @@ item_enchant_service_query(struct monst *mtmp, int enchant_type, int64_t service
     if (!otmp)
         return 0;
 
-    if (otmp->dknown && objects[otmp->otyp].oc_name_known && !objects[otmp->otyp].oc_enchantable)
+    if (is_obj_dknown(otmp) && objects[otmp->otyp].oc_name_known && !objects[otmp->otyp].oc_enchantable)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex1_popup("cannot enchant that.", "Unenchantable Item", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
@@ -10917,7 +10917,7 @@ item_enchant_service_query(struct monst *mtmp, int enchant_type, int64_t service
     int curench = otmp->enchantment;
     int enchbuffer = max(0, maxench - curench);
     int services_afforded = (int)max(0, service_cost > 0 ? umoney / service_cost : 9999);
-    int max_services = min(stats_known ? (otmp->known ? max(1, enchbuffer) : 1) : (otmp->known ? max(1, -curench) : 1), services_afforded);
+    int max_services = min(stats_known ? (is_obj_known(otmp) ? max(1, enchbuffer) : 1) : (is_obj_known(otmp) ? max(1, -curench) : 1), services_afforded);
 
     if (!services_afforded)
     {
@@ -10945,7 +10945,7 @@ item_enchant_service_query(struct monst *mtmp, int enchant_type, int64_t service
         const char* ifmt_notknown = "%s can be safely enchanted to %s%d, but its current enchantment is not known.";
         int multicolors_known1[7] = { NO_COLOR, CLR_MSG_HINT, CLR_MSG_HINT, CLR_MSG_HINT, CLR_MSG_HINT, CLR_MSG_HINT, NO_COLOR };
         int multicolors_notknown[3] = { NO_COLOR, CLR_MSG_HINT, CLR_MSG_HINT };
-        if (otmp->known)
+        if (is_obj_known(otmp))
         {
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_known1, ifmt_known1,
                 Yname2(otmp), curench >= 0 ? "+" : "", curench, maxench >= 0 ? "+" : "", maxench, enchbuffer, plur(enchbuffer));
@@ -10957,7 +10957,7 @@ item_enchant_service_query(struct monst *mtmp, int enchant_type, int64_t service
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolors_notknown, ifmt_notknown,
                 Yname2(otmp), maxench >= 0 ? "+" : "", maxench, services_afforded, plur(services_afforded), (long long)service_cost, currency(service_cost));
     }
-    else if (otmp->known)
+    else if (is_obj_known(otmp))
     {
         if (curench < 0)
         {
@@ -11248,7 +11248,7 @@ refill_lantern_func(struct monst *mtmp)
         return 0;
     }
 
-    if (otmp->lamplit)
+    if (is_obj_lamplit(otmp))
         snuff_lit(otmp);
 
     play_sfx_sound(SFX_FILL_OIL_UP);
@@ -11441,7 +11441,7 @@ forge_special_func(struct monst *mtmp, int forge_source_otyp, int64_t forge_sour
         {
             craftedobj->exceptionality = exceptionality;
         }
-        craftedobj->cursed = craftedobj->blessed = 0;
+        set_obj_cursed(craftedobj, 0), set_obj_blessed(craftedobj, 0);
         fully_identify_obj(craftedobj);
         Sprintf(talkbuf, "%s hands %s to you.", noittame_Monnam(mtmp), acxname(craftedobj));
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
@@ -11527,7 +11527,7 @@ spell_teaching(struct monst *mtmp, int *spell_otyps)
         struct obj pseudo = zeroobj;
         pseudo.otyp = i;
         pseudo.oclass = objects[pseudo.otyp].oc_class;
-        pseudo.blessed = 1;
+        set_obj_blessed(&(pseudo), 1);
         int64_t cost = get_cost(&pseudo, mtmp);
         Sprintf(spellbuf, "%s (%s%lld %s)", OBJ_NAME(objects[i]),
             ((windowprocs.wincap2& WC2_SPECIAL_SYMBOLS) != 0) ? " &gold; " : "",
@@ -11584,7 +11584,7 @@ spell_teaching(struct monst *mtmp, int *spell_otyps)
             struct obj pseudo = zeroobj;
             pseudo.otyp = spell_to_learn;
             pseudo.oclass = objects[pseudo.otyp].oc_class;
-            pseudo.blessed = 1;
+            set_obj_blessed(&(pseudo), 1);
             int64_t cost = get_cost(&pseudo, mtmp);
             char buf[BUFSZ * 2] = "";
             char buf2[BUFSZ * 2] = "";
