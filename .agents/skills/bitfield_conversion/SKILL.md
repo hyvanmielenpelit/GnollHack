@@ -48,6 +48,13 @@ For sets and toggles, use prefixes like `set_mon_`, `toggle_mon_`, etc.:
 #define set_mon_cloned_wizard(m, v) set_flag((m)->bitflags, MON_BITFLAG_CLONED_WIZ, (v))
 #define toggle_mon_cloned_wizard(m) toggle_flag((m)->bitflags, MON_BITFLAG_CLONED_WIZ)
 ```
+
+### Global Single-Instance Struct Macros
+If a converted struct is instantiated exactly once as a global variable (such as `u.uhave`, `u.uevent`, and `u.uachieve`), the shortcut macros should **not** take the struct instance as a parameter. Instead, they must directly reference that global instance in the macro definition:
+```c
+#define is_uevent_minor_oracle()    get_flag(u.uevent.bitflags, UEVENT_BITFLAG_MINOR_ORACLE)
+#define set_uevent_minor_oracle(v)  set_flag(u.uevent.bitflags, UEVENT_BITFLAG_MINOR_ORACLE, (v))
+```
 ## Step-by-Step Conversion Guide
 
 ### 1. Identify and Group Bitfields
