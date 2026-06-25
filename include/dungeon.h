@@ -226,68 +226,63 @@ typedef struct mapseen {
     d_level lev;          /* corresponding dungeon level */
     struct mapseen_feat {
         /* feature knowledge that must be calculated from levl array */
-        Bitfield(nfount, 2);
-        Bitfield(nsink, 2);
-        Bitfield(naltar, 2);
-        Bitfield(nthrone, 2);
+        uchar nfount;
+        uchar nsink;
+        uchar naltar;
+        uchar nthrone;
 
-        Bitfield(ngrave, 2);
-        Bitfield(nbrazier, 2);
-        Bitfield(nsignpost, 2);
-        Bitfield(ntree, 2);
+        uchar ngrave;
+        uchar nbrazier;
+        uchar nsignpost;
+        uchar ntree;
 
-        Bitfield(nmagicportal, 2);
-        Bitfield(nvibratingsquare, 2);
-        Bitfield(water, 2);
-        Bitfield(lava, 2);
+        uchar nmagicportal;
+        uchar nvibratingsquare;
+        uchar water;
+        uchar lava;
 
-        Bitfield(ice, 2);
+        uchar ice;
         /* calculated from rooms array */
-        Bitfield(nshop, 2);
-        Bitfield(ntemple, 2);
-        Bitfield(nsmithy, 2);
+        uchar nshop;
+        uchar ntemple;
+        uchar nsmithy;
 
-        Bitfield(nnpcroom, 2);
+        uchar nnpcroom;
         /* altar alignment; MSA_NONE if there is more than one and
            they aren't all the same */
-        Bitfield(msalign, 2);
-        Bitfield(shoptype, 5);
-
-        unsigned reserved;
-
-        uchar npcroomtype;
+        uchar msalign;
+        uchar shoptype;
+uchar npcroomtype;
         schar fountaintype;
     } feat;
     struct mapseen_flags {
         char special_description[BUFSZ];
 
-        Bitfield(unreachable, 1); /* can't get back to this level */
-        Bitfield(forgot, 1);      /* player has forgotten about this level */
-        Bitfield(knownbones, 1);  /* player aware of bones */
-        Bitfield(oracle, 1);
-        Bitfield(sokosolved, 1);
-        Bitfield(bigroom, 1);
-        Bitfield(castle, 1);
-        Bitfield(castletune, 1); /* add tune hint to castle annotation */
-
-        Bitfield(valley, 1);
-        Bitfield(msanctum, 1);
-        Bitfield(ludios, 1);
-        Bitfield(roguelevel, 1);
-        Bitfield(special_level, 1);
-        Bitfield(special_level_true_nature_known, 1);
+        uint64_t bitflags;
+#define MSFLAG_UNREACHABLE                       0x00000001UL /* can't get back to this level */
+#define MSFLAG_FORGOT                            0x00000002UL /* player has forgotten about this level */
+#define MSFLAG_KNOWNBONES                        0x00000004UL /* player aware of bones */
+#define MSFLAG_ORACLE                            0x00000008UL
+#define MSFLAG_SOKOSOLVED                        0x00000010UL
+#define MSFLAG_BIGROOM                           0x00000020UL
+#define MSFLAG_CASTLE                            0x00000040UL
+#define MSFLAG_CASTLETUNE                        0x00000080UL /* add tune hint to castle annotation */
+#define MSFLAG_VALLEY                            0x00000100UL
+#define MSFLAG_MSANCTUM                          0x00000200UL
+#define MSFLAG_LUDIOS                            0x00000400UL
+#define MSFLAG_ROGUELEVEL                        0x00000800UL
+#define MSFLAG_SPECIAL_LEVEL                     0x00001000UL
+#define MSFLAG_SPECIAL_LEVEL_TRUE_NATURE_KNOWN   0x00002000UL
         /* quest annotations: quest_summons is for main dungeon level
            with entry portal and is reset once quest has been finished;
            questing is for quest home (level 1) */
-        Bitfield(quest_summons, 1); /* heard summons from leader */
-        Bitfield(questing, 1); /* quest leader has unlocked quest stairs */
+#define MSFLAG_QUEST_SUMMONS                     0x00004000UL /* heard summons from leader */
+#define MSFLAG_QUESTING                          0x00008000UL /* quest leader has unlocked quest stairs */
         /* Hints about other special dungeons */
-        Bitfield(modron_hint_shown, 1); /* received hint for the modron level */
-        Bitfield(yacc_hint_shown, 1); /* received hint for the Hellish Pastures level */
-        Bitfield(quantum_hint_shown, 1); /* received hint for the Large Circular Dungeon level */
-        Bitfield(lost_world_hint_shown, 1); /* reserved -- received hint for the Lost World level */
-
-        unsigned reserved;
+#define MSFLAG_MODRON_HINT_SHOWN                 0x00010000UL /* received hint for the modron level */
+#define MSFLAG_YACC_HINT_SHOWN                   0x00020000UL /* received hint for the Hellish Pastures level */
+#define MSFLAG_QUANTUM_HINT_SHOWN                0x00040000UL /* received hint for the Large Circular Dungeon level */
+#define MSFLAG_LOST_WORLD_HINT_SHOWN             0x00080000UL /* reserved -- received hint for the Lost World level */
     } flags;
     /* custom naming */
     char *custom;
@@ -299,5 +294,48 @@ typedef struct mapseen {
     /* dead heroes; might not have graves or ghosts */
     struct cemetery *final_resting_place; /* same as level.bonesinfo */
 } mapseen;
+
+
+#define is_msflag_unreachable(ptr) (((ptr)->bitflags & MSFLAG_UNREACHABLE) != 0)
+#define set_msflag_unreachable(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_UNREACHABLE) : ((ptr)->bitflags &= ~MSFLAG_UNREACHABLE))
+#define is_msflag_forgot(ptr) (((ptr)->bitflags & MSFLAG_FORGOT) != 0)
+#define set_msflag_forgot(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_FORGOT) : ((ptr)->bitflags &= ~MSFLAG_FORGOT))
+#define is_msflag_knownbones(ptr) (((ptr)->bitflags & MSFLAG_KNOWNBONES) != 0)
+#define set_msflag_knownbones(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_KNOWNBONES) : ((ptr)->bitflags &= ~MSFLAG_KNOWNBONES))
+#define is_msflag_oracle(ptr) (((ptr)->bitflags & MSFLAG_ORACLE) != 0)
+#define set_msflag_oracle(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_ORACLE) : ((ptr)->bitflags &= ~MSFLAG_ORACLE))
+#define is_msflag_sokosolved(ptr) (((ptr)->bitflags & MSFLAG_SOKOSOLVED) != 0)
+#define set_msflag_sokosolved(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_SOKOSOLVED) : ((ptr)->bitflags &= ~MSFLAG_SOKOSOLVED))
+#define is_msflag_bigroom(ptr) (((ptr)->bitflags & MSFLAG_BIGROOM) != 0)
+#define set_msflag_bigroom(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_BIGROOM) : ((ptr)->bitflags &= ~MSFLAG_BIGROOM))
+#define is_msflag_castle(ptr) (((ptr)->bitflags & MSFLAG_CASTLE) != 0)
+#define set_msflag_castle(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_CASTLE) : ((ptr)->bitflags &= ~MSFLAG_CASTLE))
+#define is_msflag_castletune(ptr) (((ptr)->bitflags & MSFLAG_CASTLETUNE) != 0)
+#define set_msflag_castletune(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_CASTLETUNE) : ((ptr)->bitflags &= ~MSFLAG_CASTLETUNE))
+#define is_msflag_valley(ptr) (((ptr)->bitflags & MSFLAG_VALLEY) != 0)
+#define set_msflag_valley(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_VALLEY) : ((ptr)->bitflags &= ~MSFLAG_VALLEY))
+#define is_msflag_msanctum(ptr) (((ptr)->bitflags & MSFLAG_MSANCTUM) != 0)
+#define set_msflag_msanctum(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_MSANCTUM) : ((ptr)->bitflags &= ~MSFLAG_MSANCTUM))
+#define is_msflag_ludios(ptr) (((ptr)->bitflags & MSFLAG_LUDIOS) != 0)
+#define set_msflag_ludios(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_LUDIOS) : ((ptr)->bitflags &= ~MSFLAG_LUDIOS))
+#define is_msflag_roguelevel(ptr) (((ptr)->bitflags & MSFLAG_ROGUELEVEL) != 0)
+#define set_msflag_roguelevel(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_ROGUELEVEL) : ((ptr)->bitflags &= ~MSFLAG_ROGUELEVEL))
+#define is_msflag_special_level(ptr) (((ptr)->bitflags & MSFLAG_SPECIAL_LEVEL) != 0)
+#define set_msflag_special_level(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_SPECIAL_LEVEL) : ((ptr)->bitflags &= ~MSFLAG_SPECIAL_LEVEL))
+#define is_msflag_special_level_true_nature_known(ptr) (((ptr)->bitflags & MSFLAG_SPECIAL_LEVEL_TRUE_NATURE_KNOWN) != 0)
+#define set_msflag_special_level_true_nature_known(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_SPECIAL_LEVEL_TRUE_NATURE_KNOWN) : ((ptr)->bitflags &= ~MSFLAG_SPECIAL_LEVEL_TRUE_NATURE_KNOWN))
+#define is_msflag_quest_summons(ptr) (((ptr)->bitflags & MSFLAG_QUEST_SUMMONS) != 0)
+#define set_msflag_quest_summons(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_QUEST_SUMMONS) : ((ptr)->bitflags &= ~MSFLAG_QUEST_SUMMONS))
+#define is_msflag_questing(ptr) (((ptr)->bitflags & MSFLAG_QUESTING) != 0)
+#define set_msflag_questing(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_QUESTING) : ((ptr)->bitflags &= ~MSFLAG_QUESTING))
+#define is_msflag_modron_hint_shown(ptr) (((ptr)->bitflags & MSFLAG_MODRON_HINT_SHOWN) != 0)
+#define set_msflag_modron_hint_shown(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_MODRON_HINT_SHOWN) : ((ptr)->bitflags &= ~MSFLAG_MODRON_HINT_SHOWN))
+#define is_msflag_yacc_hint_shown(ptr) (((ptr)->bitflags & MSFLAG_YACC_HINT_SHOWN) != 0)
+#define set_msflag_yacc_hint_shown(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_YACC_HINT_SHOWN) : ((ptr)->bitflags &= ~MSFLAG_YACC_HINT_SHOWN))
+#define is_msflag_quantum_hint_shown(ptr) (((ptr)->bitflags & MSFLAG_QUANTUM_HINT_SHOWN) != 0)
+#define set_msflag_quantum_hint_shown(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_QUANTUM_HINT_SHOWN) : ((ptr)->bitflags &= ~MSFLAG_QUANTUM_HINT_SHOWN))
+#define is_msflag_lost_world_hint_shown(ptr) (((ptr)->bitflags & MSFLAG_LOST_WORLD_HINT_SHOWN) != 0)
+#define set_msflag_lost_world_hint_shown(ptr, val) ((val) ? ((ptr)->bitflags |= MSFLAG_LOST_WORLD_HINT_SHOWN) : ((ptr)->bitflags &= ~MSFLAG_LOST_WORLD_HINT_SHOWN))
+
 
 #endif /* DUNGEON_H */

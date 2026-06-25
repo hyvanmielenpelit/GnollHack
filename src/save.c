@@ -1457,7 +1457,7 @@ store_save_game_stats_in_file(int fd, int64_t time_stamp)
     if (slev)
         mptr = find_mapseen(&u.uz);
 
-    if (slev && mptr && mptr->flags.special_level_true_nature_known)
+    if (slev && mptr && is_msflag_special_level_true_nature_known(&mptr->flags))
     {
         Sprintf(gamestats.level_name, "%s", slev->name);
     }

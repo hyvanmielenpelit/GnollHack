@@ -9,6 +9,22 @@
 
 struct q_score {              /* Quest "scorecard" */
     uint64_t bitflags;
+
+
+    uchar not_ready;   /* rejected due to alignment, etc. */
+    uchar made_goal;      /* # of times on goal level */
+
+    /* used by questpgr code when messages want to use pronouns
+       (set up at game start instead of waiting until monster creation;
+       1 bit each would suffice--nobody involved is actually neuter) */
+    uchar ldrgend; /* leader's gender: 0=male, 1=female, 2=neuter */
+    uchar nemgend; /* nemesis's gender */
+    uchar godgend; /* deity's gender */
+
+    unsigned leader_m_id;
+};
+
+
 #define QSCORE_BITFLAG_NONE             0x00000000UL
 #define QSCORE_BITFLAG_FIRST_START      0x00000001UL
 #define QSCORE_BITFLAG_MET_LEADER       0x00000002UL
@@ -25,20 +41,6 @@ struct q_score {              /* Quest "scorecard" */
 #define QSCORE_BITFLAG_OFFERED_ARTIFACT 0x00001000UL
 #define QSCORE_BITFLAG_GOT_THANKS       0x00002000UL
 #define QSCORE_BITFLAG_LEADER_IS_DEAD   0x00004000UL
-
-    uchar not_ready;   /* rejected due to alignment, etc. */
-    uchar made_goal;      /* # of times on goal level */
-
-    /* used by questpgr code when messages want to use pronouns
-       (set up at game start instead of waiting until monster creation;
-       1 bit each would suffice--nobody involved is actually neuter) */
-    uchar ldrgend; /* leader's gender: 0=male, 1=female, 2=neuter */
-    uchar nemgend; /* nemesis's gender */
-    uchar godgend; /* deity's gender */
-
-    unsigned leader_m_id;
-};
-
 
 #define is_qstatus_first_start()      get_flag(quest_status.bitflags, QSCORE_BITFLAG_FIRST_START)
 #define set_qstatus_first_start(v)    set_flag(quest_status.bitflags, QSCORE_BITFLAG_FIRST_START, (v))

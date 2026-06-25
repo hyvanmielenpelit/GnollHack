@@ -8320,7 +8320,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
             mptr = find_mapseen(&u.uz);
 
         boolean special_lvl = FALSE;
-        if (slev && mptr && mptr->flags.special_level_true_nature_known)
+        if (slev && mptr && is_msflag_special_level_true_nature_known(&mptr->flags))
         {
             Sprintf(lvlbuf, "%s", slev->name);
             special_lvl = TRUE;

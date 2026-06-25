@@ -1728,7 +1728,7 @@ print_current_dgnlvl(char *buf)
     if (slev)
         mptr = find_mapseen(&u.uz);
 
-    if (slev && mptr && mptr->flags.special_level_true_nature_known)
+    if (slev && mptr && is_msflag_special_level_true_nature_known(&mptr->flags))
         lvl_name = slev->name;
 
     char lvlbuf[BUFSZ], dgnbuf[BUFSZ];
