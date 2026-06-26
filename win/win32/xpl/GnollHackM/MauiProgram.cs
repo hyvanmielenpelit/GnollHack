@@ -89,6 +89,30 @@ public static class MauiProgram
 
                   // Other Sentry options can be set here.
                   options.CaptureFailedRequests = false;
+#if ANDROID
+                options.SetBeforeSend(@event =>
+                {
+                    var exception = @event.Exception;
+
+                    if (exception is ObjectDisposedException ioe)
+                    {
+                        // Drop event entirely
+                        return null;
+                    }
+                    if (@event.SentryExceptions != null)
+                    {
+                        foreach (var ex in @event.SentryExceptions)
+                        {
+                            if (ex.Type == nameof(ObjectDisposedException))
+                            {
+                                return null;
+                            }
+                        }
+                    }
+
+                    return @event;
+                });
+#endif
             })
 #endif
 #if SENTRY && WINDOWS

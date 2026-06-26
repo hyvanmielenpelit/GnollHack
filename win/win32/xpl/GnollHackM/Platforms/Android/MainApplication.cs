@@ -1,4 +1,4 @@
-﻿using Android.App;
+using Android.App;
 using Android.Content.Res;
 using Android.OS;
 using Android.Runtime;
@@ -25,6 +25,14 @@ public class MainApplication : MauiApplication
         MainActivity.StaticAssets = Assets;
         StaticAssets = Assets;
         FmodService.AndroidInit(this);
+
+        AndroidEnvironment.UnhandledExceptionRaiser += (s, e) =>
+        {
+            if (e.Exception is ObjectDisposedException)
+            {
+                e.Handled = true;
+            }
+        };
     }
 
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
