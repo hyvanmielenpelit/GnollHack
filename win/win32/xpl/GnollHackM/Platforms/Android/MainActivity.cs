@@ -40,6 +40,10 @@ public class MainActivity : MauiAppCompatActivity
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine(ex.Message);
+            if (ex is ObjectDisposedException ioe)
+            {
+                SentrySdk.CaptureMessage($"Caught ObjectDisposedException in MainActivity.OnDestroy: {ioe.Message}", SentryLevel.Warning);
+            }
         }
     }
 
