@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 #if GNH_MAUI
 using GnollHackM;
 #if WINDOWS
@@ -2323,7 +2323,14 @@ namespace GnollHackX
 #if SENTRY
             if (!string.IsNullOrWhiteSpace(message))
             {
-                SentrySdk.AddBreadcrumb(message, category);
+                try
+                {
+                    SentrySdk.AddBreadcrumb(message, category);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
             }
 #endif
         }
