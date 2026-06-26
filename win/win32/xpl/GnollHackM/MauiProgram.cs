@@ -92,22 +92,23 @@ public static class MauiProgram
 #if ANDROID
                 options.SetBeforeSend(@event =>
                 {
+                    if (@event == null)
+                        return null;
+
                     var exception = @event.Exception;
 
                     if (exception is ObjectDisposedException ioe)
                     {
-                        if (!string.IsNullOrEmpty(ioe.Message))
-                            SentrySdk.CaptureMessage($"Handled ObjectDisposedException: {ioe.Message}", SentryLevel.Warning);
+                        SentrySdk.CaptureMessage($"Handled ObjectDisposedException: {ioe.Message}", SentryLevel.Warning);
                         return null;
                     }
                     if (@event.SentryExceptions != null)
                     {
                         foreach (var ex in @event.SentryExceptions)
                         {
-                            if (ex.Type == nameof(ObjectDisposedException))
+                            if (ex != null && ex.Type == nameof(ObjectDisposedException))
                             {
-                                if (!string.IsNullOrEmpty(ex.Value))
-                                    SentrySdk.CaptureMessage($"Handled ObjectDisposedException: {ex.Value}", SentryLevel.Warning);
+                                SentrySdk.CaptureMessage($"Handled ObjectDisposedException: {ex.Value}", SentryLevel.Warning);
                                 return null;
                             }
                         }
@@ -155,27 +156,28 @@ public static class MauiProgram
 
                 options.SetBeforeSend(@event =>
                 {
+                    if (@event == null)
+                        return null;
+
                     var exception = @event.Exception;
 
                     if (exception is InvalidOperationException ioe && ioe.Message != null &&
                         (ioe.Message.Contains("already deactivated") 
                         || ioe.Message.Contains("already activated")))
                     {
-                        if (!string.IsNullOrEmpty(ioe.Message))
-                            SentrySdk.CaptureMessage($"Handled InvalidOperationException: {ioe.Message}", SentryLevel.Warning);
+                        SentrySdk.CaptureMessage($"Handled InvalidOperationException: {ioe.Message}", SentryLevel.Warning);
                         return null;
                     }
                     if (@event.SentryExceptions != null)
                     {
                         foreach (var ex in @event.SentryExceptions)
                         {
-                            if (ex.Type == nameof(InvalidOperationException) &&
+                            if (ex != null && ex.Type == nameof(InvalidOperationException) &&
                                 ex.Value != null &&
                                 (ex.Value.Contains("already deactivated") ||
                                     ex.Value.Contains("already activated")))
                             {
-                                if (!string.IsNullOrEmpty(ex.Value))
-                                    SentrySdk.CaptureMessage($"Handled InvalidOperationException: {ex.Value}", SentryLevel.Warning);
+                                SentrySdk.CaptureMessage($"Handled InvalidOperationException: {ex.Value}", SentryLevel.Warning);
                                 return null;
                             }
                         }
