@@ -1900,7 +1900,7 @@ dog_move(struct monst *mtmp, int after)
 
 
     /* teleport if that lies in our nature */
-    if (has_teleportation(mtmp) && has_teleport_control(mtmp) && !is_cancelled(mtmp) && !level.flags.noteleport)
+    if (has_teleportation(mtmp) && has_teleport_control(mtmp) && !is_cancelled(mtmp) && !is_levflag_noteleport(&level.flags))
     {
         if (mtmp->mcomingtou && !m_canseeu(mtmp) && !couldsee(mtmp->mx, mtmp->my) && distu(mtmp->mx, mtmp->my) > 2)
         {
@@ -2357,7 +2357,7 @@ newdogpos:
                 /* describe top item of pile, not necessarily cursed item itself;
                    don't use glyph_at() here--it would return the pet but we want
                    to know whether an object is remembered at this map location */
-                struct obj *o = (!Hallucination && level.flags.hero_memory
+                struct obj *o = (!Hallucination && is_levflag_hero_memory(&level.flags)
                                  && glyph_is_object(levl[nix][niy].hero_memory_layers.glyph))
                                    ? vobj_at(nix, niy) : 0;
 #endif

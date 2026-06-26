@@ -665,7 +665,7 @@ lvlfill_maze_grid(int x1, int y1, int x2, int y2, schar filling)
     for (x = x1; x <= x2; x++)
         for (y = y1; y <= y2; y++)
         {
-            if (level.flags.corrmaze)
+            if (is_levflag_corrmaze(&level.flags))
                 typ = STONE;
             else
                 typ = (y < 2 || ((x % 2) && (y % 2))) ? STONE : filling;
@@ -905,7 +905,7 @@ rndtrap(void)
                 break;
             case LEVEL_TELEP:
             case TELEP_TRAP:
-                if (level.flags.noteleport)
+                if (is_levflag_noteleport(&level.flags))
                     rtrap = NO_TRAP;
                 break;
             case ROLLING_BOULDER_TRAP:
@@ -2880,7 +2880,7 @@ create_altar(altar *a, struct mkroom *croom)
     if (a->shrine) { /* Is it a shrine  or sanctum? */
         priestini(&u.uz, croom, x, y, (a->shrine > 1), a->mtype);
         levl[x][y].altarmask |= AM_SHRINE;
-        level.flags.has_temple = TRUE;
+        set_levflag_has_temple(&level.flags, TRUE);
     }
 }
 
@@ -2933,7 +2933,7 @@ create_anvil(anvil *a, struct mkroom *croom)
         return;
 
     smithini(&u.uz, croom, x, y, 0, a->mtype);
-    level.flags.has_smithy = TRUE;
+    set_levflag_has_smithy(&level.flags, TRUE);
 }
 
 /*
@@ -2994,7 +2994,7 @@ create_npc(npc_create_info *a, struct mkroom *croom)
 
     uchar usedtyp = (a->typ < MAX_NPC_SUBTYPES ? a->typ : rn2(MAX_NPC_SUBTYPES));
     npcini(&u.uz, croom, x, y, usedtyp, a->mtype);
-    level.flags.has_npc_room = TRUE;
+    set_levflag_has_npc_room(&level.flags, TRUE);
 }
 
 /*
@@ -3449,7 +3449,7 @@ fill_room(struct mkroom *croom, boolean prefilled)
         /* Shop ? */
         if (croom->rtype >= SHOPBASE) {
             stock_room(croom->rtype - SHOPBASE, croom, FALSE);
-            level.flags.has_shop = TRUE;
+            set_levflag_has_shop(&level.flags, TRUE);
             return;
         }
 
@@ -3476,40 +3476,40 @@ fill_room(struct mkroom *croom, boolean prefilled)
     }
     switch (croom->rtype) {
     case VAULT:
-        level.flags.has_vault = TRUE;
+        set_levflag_has_vault(&level.flags, TRUE);
         break;
     case ZOO:
-        level.flags.has_zoo = TRUE;
+        set_levflag_has_zoo(&level.flags, TRUE);
         break;
     case COURT:
-        level.flags.has_court = TRUE;
+        set_levflag_has_court(&level.flags, TRUE);
         break;
     case MORGUE:
-        level.flags.has_morgue = TRUE;
+        set_levflag_has_morgue(&level.flags, TRUE);
         break;
     case BEEHIVE:
-        level.flags.has_beehive = TRUE;
+        set_levflag_has_beehive(&level.flags, TRUE);
         break;
     case LIBRARY:
-        level.flags.has_library = TRUE;
+        set_levflag_has_library(&level.flags, TRUE);
         break;
     case BARRACKS:
-        level.flags.has_barracks = TRUE;
+        set_levflag_has_barracks(&level.flags, TRUE);
         break;
     case ARMORY:
-        level.flags.has_armory = TRUE;
+        set_levflag_has_armory(&level.flags, TRUE);
         break;
     case TEMPLE:
-        level.flags.has_temple = TRUE;
+        set_levflag_has_temple(&level.flags, TRUE);
         break;
     case SMITHY:
-        level.flags.has_smithy = TRUE;
+        set_levflag_has_smithy(&level.flags, TRUE);
         break;
     case NPCROOM:
-        level.flags.has_npc_room = TRUE;
+        set_levflag_has_npc_room(&level.flags, TRUE);
         break;
     case SWAMP:
-        level.flags.has_swamp = TRUE;
+        set_levflag_has_swamp(&level.flags, TRUE);
         break;
     }
 }
@@ -4617,18 +4617,18 @@ spo_level_flags(struct sp_coder *coder)
     lflags = OV_i(flagdata);
 
     if (lflags & NOTELEPORT)
-        level.flags.noteleport = 1;
+        set_levflag_noteleport(&level.flags, 1);
     if (lflags & HARDFLOOR)
-        level.flags.hardfloor = 1;
+        set_levflag_hardfloor(&level.flags, 1);
     if (lflags & NOMMAP)
-        level.flags.nommap = 1;
+        set_levflag_nommap(&level.flags, 1);
     if (lflags & SHORTSIGHTED)
-        level.flags.shortsighted = 1;
+        set_levflag_shortsighted(&level.flags, 1);
     if (lflags & ARBOREAL)
-        level.flags.arboreal = 1;
+        set_levflag_arboreal(&level.flags, 1);
     if (lflags & DESERT)
     {
-        level.flags.desert = 1;
+        set_levflag_desert(&level.flags, 1);
         int i, j;
         for(i = 1; i < COLNO; i++)
             for (j = 0; j < ROWNO; j++)
@@ -4649,7 +4649,7 @@ spo_level_flags(struct sp_coder *coder)
             }
     }
     if (lflags & SWAMPY)
-        level.flags.swampy = 1;
+        set_levflag_swampy(&level.flags, 1);
     if (lflags & THRONE_ON_GROUND)
         coder->throne_on_ground = 1;
     if (lflags & FOUNTAIN_ON_GRASS)
@@ -4659,21 +4659,21 @@ spo_level_flags(struct sp_coder *coder)
     if (lflags & TREE_ON_GROUND)
         coder->tree_on_ground = 1;
     if (lflags & MAPPING_DOES_NOT_REVEAL_SPECIAL)
-        level.flags.mapping_does_not_reveal_special = 1;
+        set_levflag_mapping_does_not_reveal_special(&level.flags, 1);
     if (lflags & MAZELEVEL)
-        level.flags.is_maze_lev = 1;
+        set_levflag_is_maze_lev(&level.flags, 1);
     if (lflags & PREMAPPED)
         coder->premapped = TRUE;
     if (lflags & SHROUD)
-        level.flags.hero_memory = 0;
+        set_levflag_hero_memory(&level.flags, 0);
     if (lflags & GRAVEYARD)
-        level.flags.graveyard = 1;
+        set_levflag_graveyard(&level.flags, 1);
     if (lflags & ICEDPOOLS)
         icedpools = TRUE;
     if (lflags & SOLIDIFY)
         coder->solidify = TRUE;
     if (lflags & CORRMAZE)
-        level.flags.corrmaze = TRUE;
+        set_levflag_corrmaze(&level.flags, TRUE);
     if (lflags & CHECK_INACCESSIBLES)
         coder->check_inaccessibles = TRUE;
     if (lflags & NO_MAP_PADDING)
@@ -4695,12 +4695,12 @@ spo_tileset(struct sp_coder *coder)
 
     if (tilesetid >= MAX_CMAP_TYPES)
     {
-        level.flags.has_tileset = 0;
+        set_levflag_has_tileset(&level.flags, 0);
         level.flags.tileset = 0;
     }
     else
     {
-        level.flags.has_tileset = 1;
+        set_levflag_has_tileset(&level.flags, 1);
         level.flags.tileset = tilesetid;
     }
     opvar_free(tilesetdata);
@@ -7187,7 +7187,7 @@ spo_mazewalk(struct sp_coder *coder)
         return;
 
     if (OV_i(ftyp) < 1) {
-        OV_i(ftyp) = level.flags.corrmaze ? CORR : level.flags.arboreal ? GRASS : level.flags.swampy ? GRASS : level.flags.desert ? GROUND : ROOM;
+        OV_i(ftyp) = is_levflag_corrmaze(&level.flags) ? CORR : is_levflag_arboreal(&level.flags) ? GRASS : is_levflag_swampy(&level.flags) ? GRASS : is_levflag_desert(&level.flags) ? GROUND : ROOM;
     }
 
     /* don't use move() - it doesn't use W_NORTH, etc. */
@@ -7890,7 +7890,7 @@ sp_level_coder(sp_lev *lvl)
 
     (void) memset((genericptr_t) &SpLev_Map[0][0], 0, sizeof SpLev_Map);
 
-    level.flags.is_maze_lev = 0;
+    set_levflag_is_maze_lev(&level.flags, 0);
 
     xstart = 1;
     ystart = 0;
@@ -8606,7 +8606,7 @@ sp_level_coder(sp_lev *lvl)
      * purpose.
      */
 
-    //if (!level.flags.corrmaze)
+    //if (!is_levflag_corrmaze(&level.flags))
     wallification(1, 0, COLNO - 1, ROWNO - 1);
 
     count_features();

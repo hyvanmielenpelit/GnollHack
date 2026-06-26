@@ -457,7 +457,7 @@ kick_monster(struct monst *mon, xchar x, xchar y)
                         You("kick %s.", mon_nam(mon));
                         (void)unmap_invisible_with_animation(x, y, 0);
                         pline("%s %s, %s evading your %skick.", Monnam(mon),
-                            (!level.flags.noteleport && has_teleportation(mon))
+                            (!is_levflag_noteleport(&level.flags) && has_teleportation(mon))
                             ? "teleports"
                             : is_levitating(mon)
                             ? "floats"

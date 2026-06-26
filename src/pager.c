@@ -106,7 +106,7 @@ mhidden_description(struct monst *mon, boolean altmon, char *outbuf)
     struct obj *otmp;
     boolean fakeobj, isyou = (mon == &youmonst);
     int x = isyou ? u.ux : mon->mx, y = isyou ? u.uy : mon->my;
-    int glyph = !isok(x, y) ? NO_GLYPH : abs((level.flags.hero_memory && !isyou) ? levl[x][y].hero_memory_layers.glyph
+    int glyph = !isok(x, y) ? NO_GLYPH : abs((is_levflag_hero_memory(&level.flags) && !isyou) ? levl[x][y].hero_memory_layers.glyph
                                                     : glyph_at(x, y));
 
     *outbuf = '\0';
@@ -2038,9 +2038,9 @@ whatdoes_help(void)
 #if 0
 #define WD_STACKLIMIT 5
 struct wd_stack_frame {
-    Bitfield(active, 1);
-    Bitfield(been_true, 1);
-    Bitfield(else_seen, 1);
+    boolean active;
+    boolean been_true;
+    boolean else_seen;
 };
 
 static boolean whatdoes_cond(char *, struct wd_stack_frame *,

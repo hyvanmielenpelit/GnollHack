@@ -36,7 +36,7 @@ static void add_knight_slaying_score(struct monst*);
 /* note: duplicated in dog.c */
 #define LEVEL_SPECIFIC_NOCORPSE(mdat) \
     (Is_really_rogue_level(&u.uz)            \
-     || ((level.flags.graveyard || In_quest(&u.uz)) && is_undead(mdat) && rn2(3)))
+     || ((is_levflag_graveyard(&level.flags) || In_quest(&u.uz)) && is_undead(mdat) && rn2(3)))
 
 #define livelog_mon_nam(mtmp) \
     x_monnam(mtmp, ARTICLE_THE, (char *) 0,                 \
@@ -2664,7 +2664,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                     }
                     /* Note: ALLOW_SANCT only prevents movement, not
                        attack, into a temple. */
-                    if (level.flags.has_temple && *in_rooms(nx, ny, TEMPLE)
+                    if (is_levflag_has_temple(&level.flags) && *in_rooms(nx, ny, TEMPLE)
                         && !*in_rooms(x, y, TEMPLE)
                         && in_your_sanctuary((struct monst *) 0, nx, ny))
                     {

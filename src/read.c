@@ -3068,7 +3068,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
 
         break;
     case SCR_MAGIC_MAPPING:
-        if (level.flags.nommap) {
+        if (is_levflag_nommap(&level.flags)) {
             Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "mind is filled with crazy lines!");
             if (Hallucination)
                 pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Wow!  Modern art.");
@@ -3096,7 +3096,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
         known = TRUE;
         /*FALLTHRU*/
     case SPE_MAGIC_MAPPING:
-        if (level.flags.nommap) {
+        if (is_levflag_nommap(&level.flags)) {
             Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s spins as %s blocks the spell!", body_part(HEAD),
                  something);
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
@@ -3115,7 +3115,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
         }
         break;
     case SPE_DETECT_TRAPS:
-        if (level.flags.nommap) 
+        if (is_levflag_nommap(&level.flags)) 
         {
             Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s spins as %s blocks the spell!", body_part(HEAD),
                 something);

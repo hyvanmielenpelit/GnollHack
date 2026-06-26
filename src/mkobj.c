@@ -5243,3 +5243,13 @@ uchar get_otyp_initial_material(int otyp)
 }
 
 /*mkobj.c*/
+
+#include <stddef.h>
+#define ASSERT_OFFSET(field, expected) typedef char _assert_##field[(offsetof(struct obj, field) == expected) ? 1 : -1];
+ASSERT_OFFSET(quan, 40)
+ASSERT_OFFSET(bitflags, 112)
+ASSERT_OFFSET(corpsenm, 100)
+ASSERT_OFFSET(firing_m_id, 124)
+ASSERT_OFFSET(glyph, 148)
+ASSERT_OFFSET(oextra, 160)
+typedef char _assert_sizeof[(sizeof(struct obj) == 168) ? 1 : -1];

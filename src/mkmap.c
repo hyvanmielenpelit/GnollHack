@@ -560,8 +560,8 @@ mkmap(lev_init *init_lev)
     /* a walled, joined level is cavernous, not mazelike -dlc */
     if (walled && join)
     {
-        level.flags.is_maze_lev = FALSE;
-        level.flags.is_cavernous_lev = TRUE;
+        set_levflag_is_maze_lev(&level.flags, FALSE);
+        set_levflag_is_cavernous_lev(&level.flags, TRUE);
     }
     free(new_locations);
 }

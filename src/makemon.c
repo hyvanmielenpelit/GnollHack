@@ -4618,7 +4618,7 @@ set_mimic_sym(struct monst *mtmp)
         else
             appear = Is_really_rogue_level(&u.uz) ? S_vwall : S_vcdoor;
     } 
-    else if (level.flags.is_maze_lev && !In_sokoban(&u.uz) && rn2(2)) 
+    else if (is_levflag_is_maze_lev(&level.flags) && !In_sokoban(&u.uz) && rn2(2)) 
     {
         ap_type = M_AP_OBJECT;
         appear = STATUE;

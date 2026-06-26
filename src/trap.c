@@ -519,9 +519,9 @@ maketrap(int x, int y, int typ, int permonstid, uint64_t mkflags)
             ltype = CORR, lsubtype = get_initial_location_subtype(CORR);
         else if (IS_WALL_OR_SDOOR(lev->typ))
         {
-            ltype = level.flags.is_maze_lev
+            ltype = is_levflag_is_maze_lev(&level.flags)
                 ? ROOM
-                : level.flags.is_cavernous_lev ? CORR : DOOR;
+                : is_levflag_is_cavernous_lev(&level.flags) ? CORR : DOOR;
 
             lsubtype = get_initial_location_subtype(ltype);
         }
@@ -4919,7 +4919,7 @@ drown(void)
     if ((Teleportation || has_innate_teleportation(youmonst.data)) && !Unaware
         && (Teleport_control || rn2(3) < Luck + 2)) {
         You_ex(ATR_NONE, CLR_MSG_SPELL, "attempt a teleport spell."); /* utcsri!carroll */
-        if (!level.flags.noteleport) {
+        if (!is_levflag_noteleport(&level.flags)) {
             (void) dotele(FALSE);
             if (!is_pool(u.ux, u.uy))
                 return TRUE;
@@ -7632,7 +7632,7 @@ maybe_finish_sokoban(void)
                clear the sokoban_rules flag so that luck penalties for
                things like breaking boulders or jumping will no longer
                be given, and restrictions on diagonal moves are lifted */
-            Sokoban = 0; /* clear gl.level.flags.sokoban_rules */
+            set_levflag_sokoban_rules(&level.flags, 0); /* clear sokoban_rules */
             /*
              * TODO: give some feedback about solving the sokoban puzzle
              * (perhaps say "congratulations" in Japanese?).

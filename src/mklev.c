@@ -684,7 +684,7 @@ join(int a, int b, boolean nxcor)
     dest.x = tx;
     dest.y = ty;
 
-    if (!dig_corridor(&org, &dest, nxcor, level.flags.arboreal || level.flags.swampy ? GRASS : CORR, STONE))
+    if (!dig_corridor(&org, &dest, nxcor, is_levflag_arboreal(&level.flags) || is_levflag_swampy(&level.flags) ? GRASS : CORR, STONE))
         return;
 
     /* we succeeded in digging the corridor */
@@ -1016,7 +1016,7 @@ makeniche(int trap_type)
                                               mkclass(S_HUMAN, 0), xx,
                                               yy + dy, TRUE);
                     }
-                    if (!level.flags.noteleport)
+                    if (!is_levflag_noteleport(&level.flags))
                         (void) mksobj_at(SCR_TELEPORTATION, xx, yy + dy, TRUE,
                                          FALSE);
                     if (!rn2(3))
@@ -1032,7 +1032,7 @@ static void
 make_niches(void)
 {
     int ct = rnd((nroom >> 1) + 1), dep = depth(&u.uz);
-    boolean ltptr = (!level.flags.noteleport && dep > 15),
+    boolean ltptr = (!is_levflag_noteleport(&level.flags) && dep > 15),
             vamp = (dep > 5 && dep < 25);
 
     while (ct--) {
@@ -1088,42 +1088,42 @@ clear_level_structures(void)
     level.damagelist = (struct damage *) 0;
     level.bonesinfo = (struct cemetery *) 0;
 
-    level.flags.has_tileset = 0;
+    set_levflag_has_tileset(&level.flags, 0);
     level.flags.tileset = 0;
     level.flags.nmgeninfos = 0;
     memset(&level.flags.mon_gen_infos, 0, sizeof level.flags.mon_gen_infos);
     level.flags.nfountains = 0;
     level.flags.nsinks = 0;
-    level.flags.has_shop = 0;
-    level.flags.has_vault = 0;
-    level.flags.has_zoo = 0;
-    level.flags.has_court = 0;
-    level.flags.has_morgue = level.flags.graveyard = 0;
-    level.flags.has_beehive = 0;
-    level.flags.has_library = 0;
-    level.flags.has_dragonlair = 0;
-    level.flags.has_garden = 0;
-    level.flags.has_barracks = 0;
-    level.flags.has_armory = 0;
-    level.flags.has_temple = 0;
-    level.flags.has_smithy = 0;
-    level.flags.has_npc_room = 0;
-    level.flags.has_swamp = 0;
-    level.flags.noteleport = 0;
-    level.flags.hardfloor = 0;
-    level.flags.nommap = 0;
-    level.flags.hero_memory = 1;
-    level.flags.shortsighted = 0;
-    level.flags.sokoban_rules = 0;
-    level.flags.is_maze_lev = 0;
-    level.flags.is_cavernous_lev = 0;
-    level.flags.arboreal = 0;
-    level.flags.swampy = 0;
-    level.flags.desert = 0;
-    level.flags.wizard_bones = 0;
-    level.flags.corrmaze = 0;
-    level.flags.mapping_does_not_reveal_special = 0;
-    level.flags.no_special_level_naming_checks = 0;
+    set_levflag_has_shop(&level.flags, 0);
+    set_levflag_has_vault(&level.flags, 0);
+    set_levflag_has_zoo(&level.flags, 0);
+    set_levflag_has_court(&level.flags, 0);
+    set_levflag_has_morgue(&level.flags, set_levflag_graveyard(&level.flags, 0));
+    set_levflag_has_beehive(&level.flags, 0);
+    set_levflag_has_library(&level.flags, 0);
+    set_levflag_has_dragonlair(&level.flags, 0);
+    set_levflag_has_garden(&level.flags, 0);
+    set_levflag_has_barracks(&level.flags, 0);
+    set_levflag_has_armory(&level.flags, 0);
+    set_levflag_has_temple(&level.flags, 0);
+    set_levflag_has_smithy(&level.flags, 0);
+    set_levflag_has_npc_room(&level.flags, 0);
+    set_levflag_has_swamp(&level.flags, 0);
+    set_levflag_noteleport(&level.flags, 0);
+    set_levflag_hardfloor(&level.flags, 0);
+    set_levflag_nommap(&level.flags, 0);
+    set_levflag_hero_memory(&level.flags, 1);
+    set_levflag_shortsighted(&level.flags, 0);
+    set_levflag_sokoban_rules(&level.flags, 0);
+    set_levflag_is_maze_lev(&level.flags, 0);
+    set_levflag_is_cavernous_lev(&level.flags, 0);
+    set_levflag_arboreal(&level.flags, 0);
+    set_levflag_swampy(&level.flags, 0);
+    set_levflag_desert(&level.flags, 0);
+    set_levflag_wizard_bones(&level.flags, 0);
+    set_levflag_corrmaze(&level.flags, 0);
+    set_levflag_mapping_does_not_reveal_special(&level.flags, 0);
+    set_levflag_no_special_level_naming_checks(&level.flags, 0);
     Strcpy(level.flags.special_description, "");
     level.flags.special_naming_reveal_type = SPECIAL_LEVEL_NAMING_REVEALED_NEVER;
     level.flags.special_naming_seen_monster_type = NON_PM;
@@ -1278,12 +1278,12 @@ makelevel(void)
  fill_vault:
             add_room(vault_x, vault_y, vault_x + w, vault_y + h, TRUE, VAULT,
                      FALSE, ROOM, 0, NON_PM, -1, FALSE);
-            level.flags.has_vault = 1;
+            set_levflag_has_vault(&level.flags, 1);
             ++room_threshold;
             fill_room(&rooms[nroom - 1], FALSE);
             set_room_tileset(&rooms[nroom - 1]);
             mk_knox_portal(vault_x + w, vault_y + h);
-            if (!level.flags.noteleport && !rn2(2))
+            if (!is_levflag_noteleport(&level.flags) && !rn2(2))
                 makevtele();
         } else if (rnd_rect() && create_vault()) {
             vault_x = rooms[nroom].lx;
@@ -1567,7 +1567,7 @@ makelevel(void)
             croom->rtype = NPCROOM;
             croom->rsubtype = NPC_HERMIT;
             npcini(&u.uz, croom, x, y, NPC_HERMIT, NON_PM);
-            level.flags.has_npc_room = 1;
+            set_levflag_has_npc_room(&level.flags, 1);
         }
 
         x = 80 - (depth(&u.uz) * 2);
@@ -1722,7 +1722,7 @@ mineralize(int kelp_pool, int kelp_moat, int goldprob, int gemprob, boolean skip
        almost all special levels are excluded */
     if (!skip_lvl_checks
         && (In_hell(&u.uz) || In_V_tower(&u.uz) || Is_really_rogue_level(&u.uz)
-            || level.flags.arboreal
+            || is_levflag_arboreal(&level.flags)
             || ((sp = Is_special(&u.uz)) != 0 && !Is_oracle_level(&u.uz)
                 && (!In_mines(&u.uz) || sp->flags.town))))
         return;
@@ -1820,9 +1820,9 @@ mklev(void)
     /* has_morgue gets cleared once morgue is entered; graveyard stays
        set (graveyard might already be set even when has_morgue is clear
        [see fixup_special()], so don't update it unconditionally) */
-    if (level.flags.has_morgue)
-        level.flags.graveyard = 1;
-    if (!level.flags.is_maze_lev) {
+    if (is_levflag_has_morgue(&level.flags))
+        set_levflag_graveyard(&level.flags, 1);
+    if (!is_levflag_is_maze_lev(&level.flags)) {
         for (croom = &rooms[0]; croom != &rooms[nroom]; croom++)
 #ifdef SPECIALIZATION
             topologize(croom, FALSE);
@@ -2170,7 +2170,7 @@ mktrap(int num, int mazeflag, struct mkroom *croom, coord *tm)
                         kind = NO_TRAP;
                     break;
                 case LEVEL_TELEP:
-                    if (lvl < MINIMUM_DGN_LEVEL_LEVELTELE || level.flags.noteleport)
+                    if (lvl < MINIMUM_DGN_LEVEL_LEVELTELE || is_levflag_noteleport(&level.flags))
                         kind = NO_TRAP;
                     break;
                 case SPIKED_PIT:
@@ -2195,7 +2195,7 @@ mktrap(int num, int mazeflag, struct mkroom *croom, coord *tm)
                         kind = NO_TRAP;
                     break;
                 case TELEP_TRAP:
-                    if (level.flags.noteleport)
+                    if (is_levflag_noteleport(&level.flags))
                         kind = NO_TRAP;
                     break;
                 case HOLE:

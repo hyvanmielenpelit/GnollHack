@@ -1032,7 +1032,7 @@ getpos(coord *ccp, boolean force, const char *goal, enum game_cursor_types curso
                                     goto foundc;
                                 /* next, try glyph that's remembered here
                                    (might be trap or object) */
-                                if (level.flags.hero_memory
+                                if (is_levflag_hero_memory(&level.flags)
                                     /* !terrainmode: don't move to remembered
                                        trap or object if not currently shown */
                                     && !iflags.terrainmode) 

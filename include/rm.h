@@ -830,45 +830,6 @@ enum tree_classes
 
 extern const struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES];
 
-/*
- * Avoid using the level types in inequalities:
- * these types are subject to change.
- * Instead, use one of the macros below.
- */
-#define IS_NON_STONE_WALL(typ) ((typ) && (((typ) < DBWALL && (typ) > (STONE)) || (typ) == SDOOR))
-#define IS_WALL(typ) ((typ) && (typ) <= DBWALL) /* && (typ) >= (STONE) */
-#define IS_WALL_OR_SDOOR(typ) ((typ) && (IS_WALL(typ) || (typ) == SDOOR))
-#define IS_STWALL(typ) ((typ) <= DBWALL) /* && (typ) >= (STONE) */ /* STONE <= (typ) <= DBWALL */
-#define IS_ROCK(typ) ((typ) < POOL)      /* absolutely nonaccessible */
-#define IS_DOOR(typ) ((typ) == DOOR)
-#define IS_DOOR_OR_SDOOR(typ) ((typ) == DOOR || (typ) == SDOOR)
-#define IS_DOORJOIN(typ) (IS_ROCK(typ) || (typ) == IRONBARS)
-#define IS_TREE(typ)                                            \
-    ((typ) == TREE || (level.flags.arboreal && (typ) == UNDEFINED_LOCATION))
-#define ACCESSIBLE(typ) ((typ) >= DOOR) /* good position */
-#define IS_ROOM(typ) ((typ) >= ROOM)    /* ROOM, STAIRS, furniture.. */
-#define ZAP_POS(typ) ((typ) >= POOL)
-#define SPACE_POS(typ) ((typ) > DOOR)
-#define IS_POOL(typ) ((typ) >= POOL && (typ) <= DRAWBRIDGE_UP)
-#define IS_THRONE(typ) ((typ) == THRONE)
-#define IS_FOUNTAIN(typ) ((typ) == FOUNTAIN)
-#define IS_SINK(typ) ((typ) == SINK)
-#define IS_GRAVE(typ) ((typ) == GRAVE)
-#define IS_BRAZIER(typ) ((typ) == BRAZIER)
-#define IS_SIGNPOST(typ) ((typ) == SIGNPOST)
-#define IS_ALTAR(typ) ((typ) == ALTAR)
-#define IS_ANVIL(typ) ((typ) == ANVIL)
-#define IS_DRAWBRIDGE(typ) \
-    ((typ) == DRAWBRIDGE_UP || (typ) == DRAWBRIDGE_DOWN)
-#define IS_FURNITURE(typ) ((typ) >= STAIRS && (typ) <= ALTAR)
-#define IS_AIR(typ) ((typ) == AIR || (typ) == CLOUD)
-#define IS_SOFT(typ) ((typ) == AIR || (typ) == CLOUD || IS_POOL(typ))
-#define POLEARM_ACCESSIBLE(typ) (ACCESSIBLE(typ) || IS_POOL(typ) || typ == LAVAPOOL) /* good position for polearm attack */
-
-#define IS_SOLID_FLOOR(typ) ((typ) == ROOM || (typ) == CORR || (typ) == GRASS || (typ) == GROUND)
- /* Location types for which floortyp is zero */
-#define IS_FLOOR(typ) (IS_SOLID_FLOOR(typ) || IS_AIR(typ) || (typ) == UNDEFINED_LOCATION)
-
 /* Character maps for various dungeons */
 enum cmap_types {
     CMAP_NORMAL = 0,
@@ -1459,6 +1420,140 @@ struct monster_generation_info {
 };
 
 #define MAX_MON_GEN_INFOS 32
+/* levelflags bitflags */
+#define LEVFLAG_HAS_TILESET                      (0x00000001UL)
+#define LEVFLAG_HAS_SHOP                         (0x00000002UL)
+#define LEVFLAG_HAS_VAULT                        (0x00000004UL)
+#define LEVFLAG_HAS_ZOO                          (0x00000008UL)
+#define LEVFLAG_HAS_COURT                        (0x00000010UL)
+#define LEVFLAG_HAS_MORGUE                       (0x00000020UL)
+#define LEVFLAG_HAS_BEEHIVE                      (0x00000040UL)
+#define LEVFLAG_HAS_BARRACKS                     (0x00000080UL)
+#define LEVFLAG_HAS_ARMORY                       (0x00000100UL)
+#define LEVFLAG_HAS_TEMPLE                       (0x00000200UL)
+#define LEVFLAG_HAS_SMITHY                       (0x00000400UL)
+#define LEVFLAG_HAS_NPC_ROOM                     (0x00000800UL)
+#define LEVFLAG_HAS_LIBRARY                      (0x00001000UL)
+#define LEVFLAG_HAS_DRAGONLAIR                   (0x00002000UL)
+#define LEVFLAG_HAS_GARDEN                       (0x00004000UL)
+#define LEVFLAG_HAS_DESERTEDSHOP                 (0x00008000UL)
+#define LEVFLAG_HAS_SWAMP                        (0x00010000UL)
+#define LEVFLAG_NOTELEPORT                       (0x00020000UL)
+#define LEVFLAG_HARDFLOOR                        (0x00040000UL)
+#define LEVFLAG_NOMMAP                           (0x00080000UL)
+#define LEVFLAG_HERO_MEMORY                      (0x00100000UL)
+#define LEVFLAG_SHORTSIGHTED                     (0x00200000UL)
+#define LEVFLAG_GRAVEYARD                        (0x00400000UL)
+#define LEVFLAG_SOKOBAN_RULES                    (0x00800000UL)
+#define LEVFLAG_IS_MAZE_LEV                      (0x01000000UL)
+#define LEVFLAG_IS_CAVERNOUS_LEV                 (0x02000000UL)
+#define LEVFLAG_ARBOREAL                         (0x04000000UL)
+#define LEVFLAG_SWAMPY                           (0x08000000UL)
+#define LEVFLAG_DESERT                           (0x10000000UL)
+#define LEVFLAG_WIZARD_BONES                     (0x20000000UL)
+#define LEVFLAG_CORRMAZE                         (0x40000000UL)
+#define LEVFLAG_MAPPING_DOES_NOT_REVEAL_SPECIAL  (0x80000000UL)
+#define LEVFLAG2_NO_SPECIAL_LEVEL_NAMING_CHECKS  (0x00000001UL)
+
+#define is_levflag_has_tileset(flags) (((flags)->bitflags & LEVFLAG_HAS_TILESET) != 0)
+#define set_levflag_has_tileset(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_TILESET) | ((v) ? LEVFLAG_HAS_TILESET : 0))
+#define toggle_levflag_has_tileset(flags) ((flags)->bitflags ^= LEVFLAG_HAS_TILESET)
+#define is_levflag_has_shop(flags) (((flags)->bitflags & LEVFLAG_HAS_SHOP) != 0)
+#define set_levflag_has_shop(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_SHOP) | ((v) ? LEVFLAG_HAS_SHOP : 0))
+#define toggle_levflag_has_shop(flags) ((flags)->bitflags ^= LEVFLAG_HAS_SHOP)
+#define is_levflag_has_vault(flags) (((flags)->bitflags & LEVFLAG_HAS_VAULT) != 0)
+#define set_levflag_has_vault(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_VAULT) | ((v) ? LEVFLAG_HAS_VAULT : 0))
+#define toggle_levflag_has_vault(flags) ((flags)->bitflags ^= LEVFLAG_HAS_VAULT)
+#define is_levflag_has_zoo(flags) (((flags)->bitflags & LEVFLAG_HAS_ZOO) != 0)
+#define set_levflag_has_zoo(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_ZOO) | ((v) ? LEVFLAG_HAS_ZOO : 0))
+#define toggle_levflag_has_zoo(flags) ((flags)->bitflags ^= LEVFLAG_HAS_ZOO)
+#define is_levflag_has_court(flags) (((flags)->bitflags & LEVFLAG_HAS_COURT) != 0)
+#define set_levflag_has_court(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_COURT) | ((v) ? LEVFLAG_HAS_COURT : 0))
+#define toggle_levflag_has_court(flags) ((flags)->bitflags ^= LEVFLAG_HAS_COURT)
+#define is_levflag_has_morgue(flags) (((flags)->bitflags & LEVFLAG_HAS_MORGUE) != 0)
+#define set_levflag_has_morgue(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_MORGUE) | ((v) ? LEVFLAG_HAS_MORGUE : 0))
+#define toggle_levflag_has_morgue(flags) ((flags)->bitflags ^= LEVFLAG_HAS_MORGUE)
+#define is_levflag_has_beehive(flags) (((flags)->bitflags & LEVFLAG_HAS_BEEHIVE) != 0)
+#define set_levflag_has_beehive(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_BEEHIVE) | ((v) ? LEVFLAG_HAS_BEEHIVE : 0))
+#define toggle_levflag_has_beehive(flags) ((flags)->bitflags ^= LEVFLAG_HAS_BEEHIVE)
+#define is_levflag_has_barracks(flags) (((flags)->bitflags & LEVFLAG_HAS_BARRACKS) != 0)
+#define set_levflag_has_barracks(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_BARRACKS) | ((v) ? LEVFLAG_HAS_BARRACKS : 0))
+#define toggle_levflag_has_barracks(flags) ((flags)->bitflags ^= LEVFLAG_HAS_BARRACKS)
+#define is_levflag_has_armory(flags) (((flags)->bitflags & LEVFLAG_HAS_ARMORY) != 0)
+#define set_levflag_has_armory(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_ARMORY) | ((v) ? LEVFLAG_HAS_ARMORY : 0))
+#define toggle_levflag_has_armory(flags) ((flags)->bitflags ^= LEVFLAG_HAS_ARMORY)
+#define is_levflag_has_temple(flags) (((flags)->bitflags & LEVFLAG_HAS_TEMPLE) != 0)
+#define set_levflag_has_temple(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_TEMPLE) | ((v) ? LEVFLAG_HAS_TEMPLE : 0))
+#define toggle_levflag_has_temple(flags) ((flags)->bitflags ^= LEVFLAG_HAS_TEMPLE)
+#define is_levflag_has_smithy(flags) (((flags)->bitflags & LEVFLAG_HAS_SMITHY) != 0)
+#define set_levflag_has_smithy(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_SMITHY) | ((v) ? LEVFLAG_HAS_SMITHY : 0))
+#define toggle_levflag_has_smithy(flags) ((flags)->bitflags ^= LEVFLAG_HAS_SMITHY)
+#define is_levflag_has_npc_room(flags) (((flags)->bitflags & LEVFLAG_HAS_NPC_ROOM) != 0)
+#define set_levflag_has_npc_room(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_NPC_ROOM) | ((v) ? LEVFLAG_HAS_NPC_ROOM : 0))
+#define toggle_levflag_has_npc_room(flags) ((flags)->bitflags ^= LEVFLAG_HAS_NPC_ROOM)
+#define is_levflag_has_library(flags) (((flags)->bitflags & LEVFLAG_HAS_LIBRARY) != 0)
+#define set_levflag_has_library(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_LIBRARY) | ((v) ? LEVFLAG_HAS_LIBRARY : 0))
+#define toggle_levflag_has_library(flags) ((flags)->bitflags ^= LEVFLAG_HAS_LIBRARY)
+#define is_levflag_has_dragonlair(flags) (((flags)->bitflags & LEVFLAG_HAS_DRAGONLAIR) != 0)
+#define set_levflag_has_dragonlair(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_DRAGONLAIR) | ((v) ? LEVFLAG_HAS_DRAGONLAIR : 0))
+#define toggle_levflag_has_dragonlair(flags) ((flags)->bitflags ^= LEVFLAG_HAS_DRAGONLAIR)
+#define is_levflag_has_garden(flags) (((flags)->bitflags & LEVFLAG_HAS_GARDEN) != 0)
+#define set_levflag_has_garden(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_GARDEN) | ((v) ? LEVFLAG_HAS_GARDEN : 0))
+#define toggle_levflag_has_garden(flags) ((flags)->bitflags ^= LEVFLAG_HAS_GARDEN)
+#define is_levflag_has_desertedshop(flags) (((flags)->bitflags & LEVFLAG_HAS_DESERTEDSHOP) != 0)
+#define set_levflag_has_desertedshop(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_DESERTEDSHOP) | ((v) ? LEVFLAG_HAS_DESERTEDSHOP : 0))
+#define toggle_levflag_has_desertedshop(flags) ((flags)->bitflags ^= LEVFLAG_HAS_DESERTEDSHOP)
+#define is_levflag_has_swamp(flags) (((flags)->bitflags & LEVFLAG_HAS_SWAMP) != 0)
+#define set_levflag_has_swamp(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HAS_SWAMP) | ((v) ? LEVFLAG_HAS_SWAMP : 0))
+#define toggle_levflag_has_swamp(flags) ((flags)->bitflags ^= LEVFLAG_HAS_SWAMP)
+#define is_levflag_noteleport(flags) (((flags)->bitflags & LEVFLAG_NOTELEPORT) != 0)
+#define set_levflag_noteleport(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_NOTELEPORT) | ((v) ? LEVFLAG_NOTELEPORT : 0))
+#define toggle_levflag_noteleport(flags) ((flags)->bitflags ^= LEVFLAG_NOTELEPORT)
+#define is_levflag_hardfloor(flags) (((flags)->bitflags & LEVFLAG_HARDFLOOR) != 0)
+#define set_levflag_hardfloor(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HARDFLOOR) | ((v) ? LEVFLAG_HARDFLOOR : 0))
+#define toggle_levflag_hardfloor(flags) ((flags)->bitflags ^= LEVFLAG_HARDFLOOR)
+#define is_levflag_nommap(flags) (((flags)->bitflags & LEVFLAG_NOMMAP) != 0)
+#define set_levflag_nommap(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_NOMMAP) | ((v) ? LEVFLAG_NOMMAP : 0))
+#define toggle_levflag_nommap(flags) ((flags)->bitflags ^= LEVFLAG_NOMMAP)
+#define is_levflag_hero_memory(flags) (((flags)->bitflags & LEVFLAG_HERO_MEMORY) != 0)
+#define set_levflag_hero_memory(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_HERO_MEMORY) | ((v) ? LEVFLAG_HERO_MEMORY : 0))
+#define toggle_levflag_hero_memory(flags) ((flags)->bitflags ^= LEVFLAG_HERO_MEMORY)
+#define is_levflag_shortsighted(flags) (((flags)->bitflags & LEVFLAG_SHORTSIGHTED) != 0)
+#define set_levflag_shortsighted(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_SHORTSIGHTED) | ((v) ? LEVFLAG_SHORTSIGHTED : 0))
+#define toggle_levflag_shortsighted(flags) ((flags)->bitflags ^= LEVFLAG_SHORTSIGHTED)
+#define is_levflag_graveyard(flags) (((flags)->bitflags & LEVFLAG_GRAVEYARD) != 0)
+#define set_levflag_graveyard(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_GRAVEYARD) | ((v) ? LEVFLAG_GRAVEYARD : 0))
+#define toggle_levflag_graveyard(flags) ((flags)->bitflags ^= LEVFLAG_GRAVEYARD)
+#define is_levflag_sokoban_rules(flags) (((flags)->bitflags & LEVFLAG_SOKOBAN_RULES) != 0)
+#define set_levflag_sokoban_rules(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_SOKOBAN_RULES) | ((v) ? LEVFLAG_SOKOBAN_RULES : 0))
+#define toggle_levflag_sokoban_rules(flags) ((flags)->bitflags ^= LEVFLAG_SOKOBAN_RULES)
+#define is_levflag_is_maze_lev(flags) (((flags)->bitflags & LEVFLAG_IS_MAZE_LEV) != 0)
+#define set_levflag_is_maze_lev(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_IS_MAZE_LEV) | ((v) ? LEVFLAG_IS_MAZE_LEV : 0))
+#define toggle_levflag_is_maze_lev(flags) ((flags)->bitflags ^= LEVFLAG_IS_MAZE_LEV)
+#define is_levflag_is_cavernous_lev(flags) (((flags)->bitflags & LEVFLAG_IS_CAVERNOUS_LEV) != 0)
+#define set_levflag_is_cavernous_lev(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_IS_CAVERNOUS_LEV) | ((v) ? LEVFLAG_IS_CAVERNOUS_LEV : 0))
+#define toggle_levflag_is_cavernous_lev(flags) ((flags)->bitflags ^= LEVFLAG_IS_CAVERNOUS_LEV)
+#define is_levflag_arboreal(flags) (((flags)->bitflags & LEVFLAG_ARBOREAL) != 0)
+#define set_levflag_arboreal(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_ARBOREAL) | ((v) ? LEVFLAG_ARBOREAL : 0))
+#define toggle_levflag_arboreal(flags) ((flags)->bitflags ^= LEVFLAG_ARBOREAL)
+#define is_levflag_swampy(flags) (((flags)->bitflags & LEVFLAG_SWAMPY) != 0)
+#define set_levflag_swampy(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_SWAMPY) | ((v) ? LEVFLAG_SWAMPY : 0))
+#define toggle_levflag_swampy(flags) ((flags)->bitflags ^= LEVFLAG_SWAMPY)
+#define is_levflag_desert(flags) (((flags)->bitflags & LEVFLAG_DESERT) != 0)
+#define set_levflag_desert(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_DESERT) | ((v) ? LEVFLAG_DESERT : 0))
+#define toggle_levflag_desert(flags) ((flags)->bitflags ^= LEVFLAG_DESERT)
+#define is_levflag_wizard_bones(flags) (((flags)->bitflags & LEVFLAG_WIZARD_BONES) != 0)
+#define set_levflag_wizard_bones(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_WIZARD_BONES) | ((v) ? LEVFLAG_WIZARD_BONES : 0))
+#define toggle_levflag_wizard_bones(flags) ((flags)->bitflags ^= LEVFLAG_WIZARD_BONES)
+#define is_levflag_corrmaze(flags) (((flags)->bitflags & LEVFLAG_CORRMAZE) != 0)
+#define set_levflag_corrmaze(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_CORRMAZE) | ((v) ? LEVFLAG_CORRMAZE : 0))
+#define toggle_levflag_corrmaze(flags) ((flags)->bitflags ^= LEVFLAG_CORRMAZE)
+#define is_levflag_mapping_does_not_reveal_special(flags) (((flags)->bitflags & LEVFLAG_MAPPING_DOES_NOT_REVEAL_SPECIAL) != 0)
+#define set_levflag_mapping_does_not_reveal_special(flags, v) ((flags)->bitflags = ((flags)->bitflags & ~LEVFLAG_MAPPING_DOES_NOT_REVEAL_SPECIAL) | ((v) ? LEVFLAG_MAPPING_DOES_NOT_REVEAL_SPECIAL : 0))
+#define toggle_levflag_mapping_does_not_reveal_special(flags) ((flags)->bitflags ^= LEVFLAG_MAPPING_DOES_NOT_REVEAL_SPECIAL)
+#define is_levflag_no_special_level_naming_checks(flags) (((flags)->bitflags2 & LEVFLAG2_NO_SPECIAL_LEVEL_NAMING_CHECKS) != 0)
+#define set_levflag_no_special_level_naming_checks(flags, v) ((flags)->bitflags2 = ((flags)->bitflags2 & ~LEVFLAG2_NO_SPECIAL_LEVEL_NAMING_CHECKS) | ((v) ? LEVFLAG2_NO_SPECIAL_LEVEL_NAMING_CHECKS : 0))
+#define toggle_levflag_no_special_level_naming_checks(flags) ((flags)->bitflags2 ^= LEVFLAG2_NO_SPECIAL_LEVEL_NAMING_CHECKS)
 
 struct levelflags {
     char special_description[BUFSZ];
@@ -1476,46 +1571,8 @@ struct levelflags {
     unsigned nfountains; /* number of fountains on level */
     unsigned nsinks;     /* number of sinks on the level */
     /* Several flags that give hints about what's on the level */
-    Bitfield(has_tileset, 1);
-
-    Bitfield(has_shop, 1);
-    Bitfield(has_vault, 1);
-    Bitfield(has_zoo, 1);
-    Bitfield(has_court, 1);
-    Bitfield(has_morgue, 1);
-    Bitfield(has_beehive, 1);
-    Bitfield(has_barracks, 1);
-    Bitfield(has_armory, 1);
-    Bitfield(has_temple, 1);
-    Bitfield(has_smithy, 1);
-    Bitfield(has_npc_room, 1);
-    Bitfield(has_library, 1);
-    Bitfield(has_dragonlair, 1);
-    Bitfield(has_garden, 1);
-    Bitfield(has_desertedshop, 1);
-
-    Bitfield(has_swamp, 1);
-    Bitfield(noteleport, 1);
-    Bitfield(hardfloor, 1);
-    Bitfield(nommap, 1);
-    Bitfield(hero_memory, 1);   /* hero has memory */
-    Bitfield(shortsighted, 1);  /* monsters are shortsighted */
-    Bitfield(graveyard, 1);     /* has_morgue, but remains set */
-    Bitfield(sokoban_rules, 1); /* fill pits and holes w/ boulders */
-
-    Bitfield(is_maze_lev, 1);
-    Bitfield(is_cavernous_lev, 1);
-    Bitfield(arboreal, 1);     /* Trees replace rock */
-    Bitfield(swampy, 1);       /* Swampy outdoor level with swampy grass */
-    Bitfield(desert, 1);       /* Desert map, furniture may have desert ground as floor */
-    Bitfield(wizard_bones, 1); /* set if level came from a bones file
-                                  which was created in wizard mode (or
-                                  normal mode descendant of such) */
-    Bitfield(corrmaze, 1);     /* Whether corridors are used for the maze
-                                  rather than ROOM */
-    Bitfield(mapping_does_not_reveal_special, 1); /* Magic mapping does not reveal the special nature of the level */
-    Bitfield(no_special_level_naming_checks, 1);
-
+    uint32_t bitflags;
+    uint32_t bitflags2;
     unsigned reserved;
     unsigned reserved2;
     unsigned reserved3;
@@ -1611,7 +1668,7 @@ extern dlevel_t level; /* structure describing the current level */
 #define has_loc_fireplace(x, y) (levl[x][y].decoration_typ == DECORATION_FIREPLACE || levl[x][y].decoration_typ == DECORATION_ANOTHER_FIREPLACE)
 
 /* restricted movement, potential luck penalties */
-#define Sokoban level.flags.sokoban_rules
+#define Sokoban is_levflag_sokoban_rules(&level.flags)
 
  /* From pray.c */
 #include "align.h"
@@ -1620,5 +1677,43 @@ extern dlevel_t level; /* structure describing the current level */
 #define on_altar() IS_ALTAR(levl[u.ux][u.uy].typ)
 #define on_shrine() ((levl[u.ux][u.uy].altarmask & AM_SHRINE) != 0)
 
+/*
+ * Avoid using the level types in inequalities:
+ * these types are subject to change.
+ * Instead, use one of the macros below.
+ */
+#define IS_NON_STONE_WALL(typ) ((typ) && (((typ) < DBWALL && (typ) > (STONE)) || (typ) == SDOOR))
+#define IS_WALL(typ) ((typ) && (typ) <= DBWALL) /* && (typ) >= (STONE) */
+#define IS_WALL_OR_SDOOR(typ) ((typ) && (IS_WALL(typ) || (typ) == SDOOR))
+#define IS_STWALL(typ) ((typ) <= DBWALL) /* && (typ) >= (STONE) */ /* STONE <= (typ) <= DBWALL */
+#define IS_ROCK(typ) ((typ) < POOL)      /* absolutely nonaccessible */
+#define IS_DOOR(typ) ((typ) == DOOR)
+#define IS_DOOR_OR_SDOOR(typ) ((typ) == DOOR || (typ) == SDOOR)
+#define IS_DOORJOIN(typ) (IS_ROCK(typ) || (typ) == IRONBARS)
+#define IS_TREE(typ)                                            \
+    ((typ) == TREE || (is_levflag_arboreal(&level.flags) && (typ) == UNDEFINED_LOCATION))
+#define ACCESSIBLE(typ) ((typ) >= DOOR) /* good position */
+#define IS_ROOM(typ) ((typ) >= ROOM)    /* ROOM, STAIRS, furniture.. */
+#define ZAP_POS(typ) ((typ) >= POOL)
+#define SPACE_POS(typ) ((typ) > DOOR)
+#define IS_POOL(typ) ((typ) >= POOL && (typ) <= DRAWBRIDGE_UP)
+#define IS_THRONE(typ) ((typ) == THRONE)
+#define IS_FOUNTAIN(typ) ((typ) == FOUNTAIN)
+#define IS_SINK(typ) ((typ) == SINK)
+#define IS_GRAVE(typ) ((typ) == GRAVE)
+#define IS_BRAZIER(typ) ((typ) == BRAZIER)
+#define IS_SIGNPOST(typ) ((typ) == SIGNPOST)
+#define IS_ALTAR(typ) ((typ) == ALTAR)
+#define IS_ANVIL(typ) ((typ) == ANVIL)
+#define IS_DRAWBRIDGE(typ) \
+    ((typ) == DRAWBRIDGE_UP || (typ) == DRAWBRIDGE_DOWN)
+#define IS_FURNITURE(typ) ((typ) >= STAIRS && (typ) <= ALTAR)
+#define IS_AIR(typ) ((typ) == AIR || (typ) == CLOUD)
+#define IS_SOFT(typ) ((typ) == AIR || (typ) == CLOUD || IS_POOL(typ))
+#define POLEARM_ACCESSIBLE(typ) (ACCESSIBLE(typ) || IS_POOL(typ) || typ == LAVAPOOL) /* good position for polearm attack */
+
+#define IS_SOLID_FLOOR(typ) ((typ) == ROOM || (typ) == CORR || (typ) == GRASS || (typ) == GROUND)
+ /* Location types for which floortyp is zero */
+#define IS_FLOOR(typ) (IS_SOLID_FLOOR(typ) || IS_AIR(typ) || (typ) == UNDEFINED_LOCATION)
 
 #endif /* RM_H */

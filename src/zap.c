@@ -4488,7 +4488,7 @@ bhito(struct obj *obj, struct obj *otmp, struct monst *origmonst)
         case SPE_TELEPORT_MONSTER:
             res = 1;
             debugprint("bhito teleport: otyp=%d, wandtyp=%d", obj->otyp, wandtyp);
-            if(!level.flags.noteleport)
+            if(!is_levflag_noteleport(&level.flags))
                 (void) rloco(obj);
             break;
         case WAN_MAKE_INVISIBLE:
@@ -5911,7 +5911,7 @@ zapnodir(struct obj *obj)
             known = TRUE;
         break;
     case WAN_TRAP_DETECTION:
-        if (level.flags.nommap)
+        if (is_levflag_nommap(&level.flags))
         {
             Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s spins as %s blocks the magic!", body_part(HEAD),
                 something);
@@ -8170,7 +8170,7 @@ zap_updown(struct obj *obj)
             case WAN_TELEPORTATION:
             case SPE_TELEPORT_MONSTER:
                 debugprint("zap_updown: otyp=%d", obj->otyp);
-                if(!level.flags.noteleport)
+                if(!is_levflag_noteleport(&level.flags))
                     rloc_engr(e);
                 break;
             case SPE_STONE_TO_FLESH:

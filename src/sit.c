@@ -362,7 +362,7 @@ dosit(void)
             case 10:
                 if (Luck < 0 || (HSee_invisible & INTRINSIC)) 
                 {
-                    if (level.flags.nommap) {
+                    if (is_levflag_nommap(&level.flags)) {
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A terrible drone fills your head!");
                         play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                         make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);

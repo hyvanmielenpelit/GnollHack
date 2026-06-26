@@ -873,7 +873,7 @@ dochug(struct monst *mtmp)
 
     /* some monsters teleport */
     if (is_fleeing(mtmp) && !rn2(40) && has_teleportation(mtmp) && !is_mon_iswiz(mtmp)
-        && !level.flags.noteleport)
+        && !is_levflag_noteleport(&level.flags))
     {
         (void) rloc2(mtmp, TRUE, TRUE);
         check_boss_fight(mtmp);
@@ -1717,7 +1717,7 @@ m_move(struct monst *mtmp, int after)
     if (is_minion(ptr) || is_rider(ptr))
         flag |= ALLOW_SANCT;
     /* unicorn may not be able to avoid hero on a noteleport level */
-    if (is_unicorn(ptr) && !level.flags.noteleport)
+    if (is_unicorn(ptr) && !is_levflag_noteleport(&level.flags))
         flag |= NOTONL;
     if (passes_walls(ptr))
         flag |= (ALLOW_WALL | ALLOW_ROCK);
@@ -1752,10 +1752,10 @@ m_move(struct monst *mtmp, int after)
         chi = -1;
         nidist = dist2(nix, niy, gx, gy);
         /* allow monsters be shortsighted on some levels for balance */
-        if (!is_peaceful(mtmp) && level.flags.shortsighted
+        if (!is_peaceful(mtmp) && is_levflag_shortsighted(&level.flags)
             && nidist > (couldsee(nix, niy) ? 144 : 36) && appr == 1)
             appr = 0;
-        if (is_unicorn(ptr) && level.flags.noteleport)
+        if (is_unicorn(ptr) && is_levflag_noteleport(&level.flags))
         {
             /* on noteleport levels, perhaps we cannot avoid hero */
             for (i = 0; i < cnt; i++)

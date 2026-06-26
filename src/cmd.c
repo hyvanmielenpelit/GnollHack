@@ -1944,7 +1944,7 @@ wiz_debug(void)
                     cc.x = mon->mx;
                     cc.y = mon->my;
                     int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
-                    int default_glyph = base_cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
+                    int default_glyph = base_cmap_to_glyph(is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored);
                     int glyph = reveal_terrain_getglyph(cc.x, cc.y, FALSE, u.uswallow,
                         default_glyph, subset);
 
@@ -1979,7 +1979,7 @@ wiz_debug(void)
                         int color = 0;
                         uint64_t special;
                         int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
-                        int default_glyph = base_cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
+                        int default_glyph = base_cmap_to_glyph(is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored);
                         int glyph = reveal_terrain_getglyph(cc.x, cc.y, FALSE, u.uswallow,
                             default_glyph, subset);
 
@@ -2255,54 +2255,54 @@ wiz_map_levltyp(void)
         if (level.flags.nsinks)
             Sprintf(eos(dsc), " %c:%d", defsyms[S_sink].sym,
                     (int) level.flags.nsinks);
-        if (level.flags.has_vault)
+        if (is_levflag_has_vault(&level.flags))
             Strcat(dsc, " vault");
-        if (level.flags.has_shop)
+        if (is_levflag_has_shop(&level.flags))
             Strcat(dsc, " shop");
-        if (level.flags.has_temple)
+        if (is_levflag_has_temple(&level.flags))
             Strcat(dsc, " temple");
-        if (level.flags.has_smithy)
+        if (is_levflag_has_smithy(&level.flags))
             Strcat(dsc, " smithy");
-        if (level.flags.has_npc_room)
+        if (is_levflag_has_npc_room(&level.flags))
             Strcat(dsc, " residence");
-        if (level.flags.has_court)
+        if (is_levflag_has_court(&level.flags))
             Strcat(dsc, " throne");
-        if (level.flags.has_zoo)
+        if (is_levflag_has_zoo(&level.flags))
             Strcat(dsc, " zoo");
-        if (level.flags.has_morgue)
+        if (is_levflag_has_morgue(&level.flags))
             Strcat(dsc, " morgue");
-        if (level.flags.has_barracks)
+        if (is_levflag_has_barracks(&level.flags))
             Strcat(dsc, " barracks");
-        if (level.flags.has_armory)
+        if (is_levflag_has_armory(&level.flags))
             Strcat(dsc, " armory");
-        if (level.flags.has_beehive)
+        if (is_levflag_has_beehive(&level.flags))
             Strcat(dsc, " hive");
-        if (level.flags.has_garden)
+        if (is_levflag_has_garden(&level.flags))
             Strcat(dsc, " garden");
-        if (level.flags.has_library)
+        if (is_levflag_has_library(&level.flags))
             Strcat(dsc, " library");
-        if (level.flags.has_dragonlair)
+        if (is_levflag_has_dragonlair(&level.flags))
             Strcat(dsc, " dragonlair");
-        if (level.flags.has_swamp)
+        if (is_levflag_has_swamp(&level.flags))
             Strcat(dsc, " swamp");
         /* level flags */
-        if (level.flags.noteleport)
+        if (is_levflag_noteleport(&level.flags))
             Strcat(dsc, " noTport");
-        if (level.flags.hardfloor)
+        if (is_levflag_hardfloor(&level.flags))
             Strcat(dsc, " noDig");
-        if (level.flags.nommap)
+        if (is_levflag_nommap(&level.flags))
             Strcat(dsc, " noMMap");
-        if (!level.flags.hero_memory)
+        if (!is_levflag_hero_memory(&level.flags))
             Strcat(dsc, " noMem");
-        if (level.flags.shortsighted)
+        if (is_levflag_shortsighted(&level.flags))
             Strcat(dsc, " shortsight");
-        if (level.flags.graveyard)
+        if (is_levflag_graveyard(&level.flags))
             Strcat(dsc, " graveyard");
-        if (level.flags.is_maze_lev)
+        if (is_levflag_is_maze_lev(&level.flags))
             Strcat(dsc, " maze");
-        if (level.flags.is_cavernous_lev)
+        if (is_levflag_is_cavernous_lev(&level.flags))
             Strcat(dsc, " cave");
-        if (level.flags.arboreal)
+        if (is_levflag_arboreal(&level.flags))
             Strcat(dsc, " tree");
         if (Sokoban)
             Strcat(dsc, " sokoban-rules");

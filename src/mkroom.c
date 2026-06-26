@@ -649,7 +649,7 @@ fill_zoo(struct mkroom *sroom)
                 }
         break;
     case COURT:
-        if (level.flags.is_maze_lev)
+        if (is_levflag_is_maze_lev(&level.flags))
         {
             for (tx = sroom->lx; tx <= sroom->hx; tx++)
                 for (ty = sroom->ly; ty <= sroom->hy; ty++)
@@ -1022,11 +1022,11 @@ place_main_monst_here:
         add_to_container(chest, gold);
         chest->owt = weight(chest);
         chest->speflags |= SPEFLAGS_ROYAL_COFFER; /* so it can be found later */
-        level.flags.has_court = 1;
+        set_levflag_has_court(&level.flags, 1);
         break;
     }
     case BARRACKS:
-        level.flags.has_barracks = 1;
+        set_levflag_has_barracks(&level.flags, 1);
         break;
     case ARMORY:
         if (!box_count)
@@ -1097,23 +1097,23 @@ place_main_monst_here:
                 }
             }
         }
-        level.flags.has_armory = 1;
+        set_levflag_has_armory(&level.flags, 1);
         break;
     case ZOO:
-        level.flags.has_zoo = 1;
+        set_levflag_has_zoo(&level.flags, 1);
         break;
     case MORGUE:
-        level.flags.has_morgue = 1;
+        set_levflag_has_morgue(&level.flags, 1);
         break;
     case SWAMP:
-        level.flags.has_swamp = 1;
+        set_levflag_has_swamp(&level.flags, 1);
         // fillzoo is not called for swamp
         break;
     case BEEHIVE:
-        level.flags.has_beehive = 1;
+        set_levflag_has_beehive(&level.flags, 1);
         break;
     case LIBRARY:
-        level.flags.has_library = 1;
+        set_levflag_has_library(&level.flags, 1);
         break;
     }
 
@@ -1200,7 +1200,7 @@ mkundead(coord *mm, boolean revive_corpses, int mm_flags)
         }
     }
     makemon_animation_wait_until_end();
-    level.flags.graveyard = TRUE; /* reduced chance for undead corpse */
+    set_levflag_graveyard(&level.flags, TRUE); /* reduced chance for undead corpse */
 }
 
 static struct permonst *
@@ -1397,7 +1397,7 @@ mkswamp(void) /* Michiel Huisjes & Fred de Wilde */
             }
 
 
-        level.flags.has_swamp = 1;
+        set_levflag_has_swamp(&level.flags, 1);
         swampnumber++;
     }
     return swampnumber;
@@ -1662,7 +1662,7 @@ mkgarden(void)
 
         }
     }
-    level.flags.has_garden = 1;
+    set_levflag_has_garden(&level.flags, 1);
     return 1;
 }
 
@@ -1836,7 +1836,7 @@ mkdragonlair(void)
         }
     }
 
-    level.flags.has_dragonlair = 1;
+    set_levflag_has_dragonlair(&level.flags, 1);
     return 1;
 }
 
@@ -2006,7 +2006,7 @@ mktemple(void)
     /* Priest */
     priestini(&u.uz, sroom, shrine_spot->x, shrine_spot->y, FALSE, NON_PM);
     lev->altarmask |= AM_SHRINE;
-    level.flags.has_temple = 1;
+    set_levflag_has_temple(&level.flags, 1);
     context.made_temple_count++;
     return 1;
 }
@@ -2041,7 +2041,7 @@ mksmithy(void)
     lev->vartyp = 0;
     lev->special_quality = 0;
     smithini(&u.uz, sroom, anvil_spot->x, anvil_spot->y, 0, NON_PM);
-    level.flags.has_smithy = 1;
+    set_levflag_has_smithy(&level.flags, 1);
 
     /* The smith has lights turned on */
     int x, y;
@@ -2180,7 +2180,7 @@ mknpcroom(int npctyp)
     }
 
     npcini(&u.uz, sroom, somex(sroom), somey(sroom), npctype, NON_PM);
-    level.flags.has_npc_room = 1;
+    set_levflag_has_npc_room(&level.flags, 1);
     context.npc_made |= ((uint64_t)1 << (uint64_t)npctype);
 
     int x, y;

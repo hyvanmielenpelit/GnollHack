@@ -711,7 +711,7 @@ find_defensive(struct monst *mtmp)
         }
         nomore(MUSE_WAN_TELEPORTATION_SELF);
         nomore(MUSE_WAN_TELEPORTATION);
-        if (obj->otyp == WAN_TELEPORTATION && obj->charges > 0 && !is_cancelled(mtmp) && !level.flags.noteleport)
+        if (obj->otyp == WAN_TELEPORTATION && obj->charges > 0 && !is_cancelled(mtmp) && !is_levflag_noteleport(&level.flags))
         {
             /* use the TELEP_TRAP bit to determine if they know
              * about noteleport on this level or not.  Avoids
@@ -719,7 +719,7 @@ find_defensive(struct monst *mtmp)
              * mean if the monster leaves the level, they'll know
              * about teleport traps.
              */
-            if (!level.flags.noteleport
+            if (!is_levflag_noteleport(&level.flags)
                 || !(mtmp->mtrapseen & (1 << (TELEP_TRAP - 1)))) 
             {
                 m.defensive = obj;
@@ -730,12 +730,12 @@ find_defensive(struct monst *mtmp)
         }
         nomore(MUSE_SCR_TELEPORTATION);
         if (obj->otyp == SCR_TELEPORTATION && !is_blinded(mtmp)
-            && haseyes(mtmp->data) && !level.flags.noteleport
+            && haseyes(mtmp->data) && !is_levflag_noteleport(&level.flags)
             && (!is_obj_cursed(obj) || (!(is_mon_isshk(mtmp) && inhishop(mtmp))
                                  && !is_mon_isgd(mtmp) && !is_mon_ispriest(mtmp) && !is_mon_issmith(mtmp) && !is_mon_isnpc(mtmp))))
         {
             /* see WAN_TELEPORTATION case above */
-            if (!level.flags.noteleport
+            if (!is_levflag_noteleport(&level.flags)
                 || !(mtmp->mtrapseen & (1 << (TELEP_TRAP - 1)))) 
             {
                 m.defensive = obj;
@@ -1064,7 +1064,7 @@ use_defensive(struct monst *mtmp)
             if (vismon && how)     /* mentions 'teleport' */
                 makeknown(how);
             /* monster learns that teleportation isn't useful here */
-            if (level.flags.noteleport)
+            if (is_levflag_noteleport(&level.flags))
                 mtmp->mtrapseen |= (1 << (TELEP_TRAP - 1));
             return 2;
         }
@@ -1087,7 +1087,7 @@ use_defensive(struct monst *mtmp)
         m_using = TRUE;
         mbhit(mtmp, rn1(8, 6), mbhitm, bhito, otmp);
         /* monster learns that teleportation isn't useful here */
-        if (level.flags.noteleport)
+        if (is_levflag_noteleport(&level.flags))
             mtmp->mtrapseen |= (1 << (TELEP_TRAP - 1));
         m_using = FALSE;
         return 2;
@@ -1470,7 +1470,7 @@ try_again:
     switch (roll) {
     case 6:
     case 9:
-        if (level.flags.noteleport && ++trycnt < 2)
+        if (is_levflag_noteleport(&level.flags) && ++trycnt < 2)
             goto try_again;
         if (roll >= 9 ? 1 : !rn2(3))
             return WAN_TELEPORTATION;
@@ -1493,7 +1493,7 @@ try_again:
     case 5:
         return (mtmp->data != &mons[PM_PESTILENCE]) ? (rn2(3) ? POT_GREATER_HEALING : POT_FULL_HEALING) : POT_SICKNESS;
     case 7:
-        if (level.flags.hardfloor && ++trycnt < 4)
+        if (is_levflag_hardfloor(&level.flags) && ++trycnt < 4)
             goto try_again;
         if (is_floater(pm) || is_mon_isshk(mtmp) || is_mon_isgd(mtmp) || is_mon_ispriest(mtmp) || is_mon_issmith(mtmp) || is_mon_isnpc(mtmp))
             return 0;

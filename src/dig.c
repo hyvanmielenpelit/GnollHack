@@ -171,7 +171,7 @@ dig_typ(struct obj *otmp, xchar x, xchar y)
                      : IS_TREE(levl[x][y].typ)
                         ? (ispick ? DIGTYP_UNDIGGABLE : DIGTYP_TREE)
                         : (ispick && IS_ROCK(levl[x][y].typ)
-                           && (!level.flags.arboreal || (IS_WALL_OR_SDOOR(levl[x][y].typ))))
+                           && (!is_levflag_arboreal(&level.flags) || (IS_WALL_OR_SDOOR(levl[x][y].typ))))
                            ? DIGTYP_ROCK
                            : DIGTYP_UNDIGGABLE);
 }
@@ -517,13 +517,13 @@ dig(void)
             int lsubtype = 0;
             int lvartype = 0;
             uchar lflags = 0;
-            if (level.flags.is_maze_lev)
+            if (is_levflag_is_maze_lev(&level.flags))
             {
                 ltype = CORR; // ROOM;
                 lsubtype = get_initial_location_subtype(ltype);
                 lvartype = get_initial_location_vartype(ltype, lsubtype);
             }
-            else if (level.flags.is_cavernous_lev && !in_town(dpx, dpy)) 
+            else if (is_levflag_is_cavernous_lev(&level.flags) && !in_town(dpx, dpy)) 
             {
                 ltype = CORR;
                 lsubtype = get_initial_location_subtype(ltype);
@@ -1817,11 +1817,11 @@ mdig_tunnel(struct monst *mtmp)
 //            ltype = here->floortyp, lsubtype = here->floorsubtyp, lvartype = here->floorvartyp;
 //        else
         {
-            if (level.flags.is_maze_lev)
+            if (is_levflag_is_maze_lev(&level.flags))
             {
                 ltype = CORR, lflags = 0; //ROOM
             }
-            else if (level.flags.is_cavernous_lev
+            else if (is_levflag_is_cavernous_lev(&level.flags)
                 && !in_town(mtmp->mx, mtmp->my))
             {
                 ltype = CORR, lflags = 0;
@@ -2114,7 +2114,7 @@ zap_dig(struct obj *origobj)
     //int prev_anim_counter_idx = -1;
 
     shopdoor = shopwall = FALSE;
-    maze_dig = level.flags.is_maze_lev && !Is_earthlevel(&u.uz);
+    maze_dig = is_levflag_is_maze_lev(&level.flags) && !Is_earthlevel(&u.uz);
     lzx = u.ux;
     lzy = u.uy;
     zx = u.ux + u.dx;
@@ -2367,7 +2367,7 @@ zap_dig(struct obj *origobj)
                     shopwall = TRUE;
                 }
                 watch_dig((struct monst *) 0, zx, zy, TRUE);
-                if (level.flags.is_cavernous_lev && !in_town(zx, zy)) 
+                if (is_levflag_is_cavernous_lev(&level.flags) && !in_town(zx, zy)) 
                 {
                     ltype = CORR;
                     lsubtype = get_initial_location_subtype(CORR);

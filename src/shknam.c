@@ -1056,9 +1056,9 @@ stock_room(int shp_indx, struct mkroom *sroom, boolean deserted)
      */
 
     if(deserted)
-        level.flags.has_desertedshop = TRUE;
+        set_levflag_has_desertedshop(&level.flags, TRUE);
     else
-        level.flags.has_shop = TRUE;
+        set_levflag_has_shop(&level.flags, TRUE);
 }
 
 /* does shkp's shop stock this item type? */

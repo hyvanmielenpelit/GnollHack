@@ -528,7 +528,7 @@ scrolltele(struct obj *scroll, boolean iswizcmd, boolean iscontrolled)
     boolean result = FALSE; /* don't learn scroll */
 
     /* Disable teleportation in stronghold && Vlad's Tower */
-    if (level.flags.noteleport) 
+    if (is_levflag_noteleport(&level.flags)) 
     {
         if (!wizard || yn_query("Teleportation is not allowed on this level. Override?") != 'y') 
         {
@@ -1801,7 +1801,7 @@ mvault_tele(struct monst *mtmp)
 boolean
 tele_restrict(struct monst *mon)
 {
-    if (level.flags.noteleport)
+    if (is_levflag_noteleport(&level.flags))
     {
         if (canseemon(mon))
         {
@@ -2160,7 +2160,7 @@ u_teleport_mon(struct monst *mtmp, boolean give_feedback)
         play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         special_effect_wait_until_action(0);
-        if (level.flags.noteleport && u.uswallow && mtmp == u.ustuck)
+        if (is_levflag_noteleport(&level.flags) && u.uswallow && mtmp == u.ustuck)
         {
             if (give_feedback)
                 You("are no longer inside %s!", mon_nam(mtmp));

@@ -630,11 +630,11 @@ still_chewing(xchar x, xchar y)
         int lsubtype = 0;
         int lvartype = 0;
         uchar lflags = 0;
-        if (level.flags.is_maze_lev) 
+        if (is_levflag_is_maze_lev(&level.flags)) 
         {
             ltype = ROOM;
         }
-        else if (level.flags.is_cavernous_lev && !in_town(x, y))
+        else if (is_levflag_is_cavernous_lev(&level.flags) && !in_town(x, y))
         {
             ltype = CORR;
         } 
@@ -3221,46 +3221,46 @@ check_special_room(boolean newlev)
                 /* No more room of that type */
                 switch (rt) {
                 case COURT:
-                    level.flags.has_court = 0;
+                    set_levflag_has_court(&level.flags, 0);
                     break;
                 case SWAMP:
-                    level.flags.has_swamp = 0;
+                    set_levflag_has_swamp(&level.flags, 0);
                     break;
                 case MORGUE:
-                    level.flags.has_morgue = 0;
+                    set_levflag_has_morgue(&level.flags, 0);
                     break;
                 case ZOO:
-                    level.flags.has_zoo = 0;
+                    set_levflag_has_zoo(&level.flags, 0);
                     break;
                 case BARRACKS:
-                    level.flags.has_barracks = 0;
+                    set_levflag_has_barracks(&level.flags, 0);
                     break;
                 case ARMORY:
-                    level.flags.has_armory = 0;
+                    set_levflag_has_armory(&level.flags, 0);
                     break;
                 case TEMPLE:
-                    level.flags.has_temple = 0;
+                    set_levflag_has_temple(&level.flags, 0);
                     break;
                 case SMITHY:
-                    level.flags.has_smithy = 0;
+                    set_levflag_has_smithy(&level.flags, 0);
                     break;
                 case NPCROOM:
-                    level.flags.has_npc_room = 0;
+                    set_levflag_has_npc_room(&level.flags, 0);
                     break;
                 case BEEHIVE:
-                    level.flags.has_beehive = 0;
+                    set_levflag_has_beehive(&level.flags, 0);
                     break;
                 case LIBRARY:
-                    level.flags.has_library = 0;
+                    set_levflag_has_library(&level.flags, 0);
                     break;
                 case DRAGONLAIR:
-                    level.flags.has_dragonlair = 0;
+                    set_levflag_has_dragonlair(&level.flags, 0);
                     break;
                 case GARDEN:
-                    level.flags.has_garden = 0;
+                    set_levflag_has_garden(&level.flags, 0);
                     break;
                 case DESERTEDSHOP:
-                    level.flags.has_desertedshop = 0;
+                    set_levflag_has_desertedshop(&level.flags, 0);
                     break;
                 }
             }

@@ -268,7 +268,7 @@ map_background(xchar x, xchar y, int show)
         new_cover_feature_gui_glyph = NO_GLYPH;
     }
 
-    if (level.flags.hero_memory)
+    if (is_levflag_hero_memory(&level.flags))
     {
         levl[x][y].hero_memory_layers.glyph = glyph; /* Ascii only */
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
@@ -362,7 +362,7 @@ map_trap(struct trap *trap, int show)
     /* Replace */
     int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_TRAP, (struct obj*)0, (struct monst*)0, (utrapped || mtrapped) ? LFLAGS_T_TRAPPED : 0UL, 0UL, 0UL, MAT_NONE, 0));
 
-    if (level.flags.hero_memory)
+    if (is_levflag_hero_memory(&level.flags))
     {
         levl[x][y].hero_memory_layers.glyph = glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_TRAP] = glyph;
@@ -450,7 +450,7 @@ map_object_core(struct obj *obj, int show, boolean chain_check, boolean add_dete
     obj->glyph = glyph;
     obj->gui_glyph = gui_glyph;
 
-    if (level.flags.hero_memory)
+    if (is_levflag_hero_memory(&level.flags))
     {
         /* MRKR: While hallucinating, statues are seen as random monsters */
         /*       but remembered as random objects.                        */
@@ -537,7 +537,7 @@ void
 map_invisible(xchar x, xchar y)
 {
     if (x != u.ux || y != u.uy) { /* don't display I at hero's location */
-        if (level.flags.hero_memory)
+        if (is_levflag_hero_memory(&level.flags))
         {
             levl[x][y].hero_memory_layers.glyph = GLYPH_INVISIBLE;
             levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = GLYPH_INVISIBLE;
@@ -613,7 +613,7 @@ unmap_object(int x, int y)
 {
     struct trap *trap;
 
-    if (!level.flags.hero_memory)
+    if (!is_levflag_hero_memory(&level.flags))
         return;
 
     boolean waslit = is_levl_waslit(&levl[x][y]);
@@ -668,7 +668,7 @@ map_location(int x, int y, int show)
     /* Trap layer */
     if ((trap = t_at(x, y)) && trap->tseen && !covers_traps(x, y))
         map_trap(trap, show);
-    else if (level.flags.hero_memory)
+    else if (is_levflag_hero_memory(&level.flags))
     {
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_TRAP] = NO_GLYPH;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_TRAP] = NO_GLYPH;
@@ -774,7 +774,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
 
 
             //levl[x][y].hero_memory_layers.glyph = glyph;
-            if (level.flags.hero_memory)
+            if (is_levflag_hero_memory(&level.flags))
             {
                 levl[x][y].hero_memory_layers.glyph = glyph;
                 levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] = glyph; /* Override, as otherwise not very credible */
@@ -813,7 +813,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
             int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, &obj, mon, 0UL, 0UL, 0UL, MAT_NONE, 0));
             obj.glyph = glyph;
             obj.gui_glyph = gui_glyph;
-            if (level.flags.hero_memory)
+            if (is_levflag_hero_memory(&level.flags))
             {
                 int new_glyph = glyph;
                 int new_gui_glyph = gui_glyph;
@@ -1411,7 +1411,7 @@ newsym_with_extra_info_and_flags(int x, int y, uint64_t disp_flags, uint64_t dis
             else
             {
                 /* Clear hero memory of any (invisible) monster from layer */
-                if (level.flags.hero_memory)
+                if (is_levflag_hero_memory(&level.flags))
                 {
                     clear_monster_layer_memory_at(x, y);
                 }
@@ -3519,7 +3519,7 @@ back_to_glyph(xchar x, xchar y)
 
     switch (ptr->typ) {
     case UNDEFINED_LOCATION:
-        idx = level.flags.arboreal ? S_tree : S_unexplored;
+        idx = is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored;
         break;
     case SCORR:
     case STONE:
@@ -5156,7 +5156,7 @@ wall_angle(struct rm *lev)
 int
 get_current_cmap_type_index(void)
 {
-    if (level.flags.has_tileset)
+    if (is_levflag_has_tileset(&level.flags))
         return level.flags.tileset;
     else if (dungeons[u.uz.dnum].flags.has_tileset)
         return dungeons[u.uz.dnum].flags.tileset;

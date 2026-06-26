@@ -285,7 +285,7 @@ dosounds(void)
         };
         You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, sink_msg[rn2(2) + hallu]);
     }
-    if (level.flags.has_court && !rn2(200)) {
+    if (is_levflag_has_court(&level.flags) && !rn2(200)) {
         static const char *const throne_msg[4] = {
             "the tones of courtly conversation.",
             "a sceptre pounded in judgment.",
@@ -308,7 +308,7 @@ dosounds(void)
             }
         }
     }
-    if (level.flags.has_swamp && !rn2(200)) {
+    if (is_levflag_has_swamp(&level.flags) && !rn2(200)) {
         static const char *const swamp_msg[3] = {
             "hear mosquitoes!", "smell marsh gas!", /* so it's a smell...*/
             "hear Donald Duck!",
@@ -316,10 +316,10 @@ dosounds(void)
         You_ex1(ATR_NONE, CLR_MSG_ATTENTION, swamp_msg[rn2(2) + hallu]);
         return;
     }
-    if (level.flags.has_vault && !rn2(200)) {
+    if (is_levflag_has_vault(&level.flags) && !rn2(200)) {
         if (!(sroom = search_special(VAULT))) {
             /* strange ... */
-            level.flags.has_vault = 0;
+            set_levflag_has_vault(&level.flags, 0);
             return;
         }
         if (gd_sound())
@@ -368,7 +368,7 @@ dosounds(void)
             }
         return;
     }
-    if (level.flags.has_beehive && !rn2(200)) 
+    if (is_levflag_has_beehive(&level.flags) && !rn2(200)) 
     {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         {
@@ -398,7 +398,7 @@ dosounds(void)
         }
     }
 
-    if (level.flags.has_library && !rn2(200)) 
+    if (is_levflag_has_library(&level.flags) && !rn2(200)) 
     {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         {
@@ -427,7 +427,7 @@ dosounds(void)
         }
     }
 
-    if (level.flags.has_dragonlair && !rn2(200))
+    if (is_levflag_has_dragonlair(&level.flags) && !rn2(200))
     {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         {
@@ -466,7 +466,7 @@ dosounds(void)
         }
     }
 
-    if (level.flags.has_morgue && !rn2(200)) {
+    if (is_levflag_has_morgue(&level.flags) && !rn2(200)) {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
             if (DEADMONSTER(mtmp))
                 continue;
@@ -492,7 +492,7 @@ dosounds(void)
         }
     }
 
-    if (level.flags.has_barracks && !rn2(200)) {
+    if (is_levflag_has_barracks(&level.flags) && !rn2(200)) {
         static const char *const barracks_msg[4] = {
             "blades being honed.", "loud snoring.", "dice being thrown.",
             "General MacArthur!",
@@ -520,7 +520,7 @@ dosounds(void)
         }
     }
 
-    if (level.flags.has_armory && !rn2(200)) {
+    if (is_levflag_has_armory(&level.flags) && !rn2(200)) {
         static const char* const armory_msg[4] = {
             "swords being unsheated.", "armors being worn.", "weapons being assembled.",
             "Master Chief!",
@@ -548,7 +548,7 @@ dosounds(void)
         }
     }   
 
-    if (level.flags.has_zoo && !rn2(200)) {
+    if (is_levflag_has_zoo(&level.flags) && !rn2(200)) {
         static const char *const zoo_msg[3] = {
             "a sound reminiscent of an elephant stepping on a peanut.",
             "a sound reminiscent of a seal barking.", "Doctor Dolittle!",
@@ -569,11 +569,11 @@ dosounds(void)
             }
         }
     }
-    if (level.flags.has_shop && !rn2(200)) 
+    if (is_levflag_has_shop(&level.flags) && !rn2(200)) 
     {
         if (!(sroom = search_special(ANY_SHOP))) {
             /* strange... */
-            level.flags.has_shop = 0;
+            set_levflag_has_shop(&level.flags, 0);
             return;
         }
 
@@ -603,7 +603,7 @@ dosounds(void)
         return;
     }
 
-    if (level.flags.has_desertedshop && !rn2(200))
+    if (is_levflag_has_desertedshop(&level.flags) && !rn2(200))
     {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
             if (DEADMONSTER(mtmp))
@@ -627,7 +627,7 @@ dosounds(void)
         }
     }
 
-    if (level.flags.has_temple && !rn2(200)
+    if (is_levflag_has_temple(&level.flags) && !rn2(200)
         && !(Is_astralevel(&u.uz) || Is_sanctum(&u.uz))) 
     {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
@@ -696,7 +696,7 @@ dosounds(void)
         }
     }
 
-    if (level.flags.has_smithy && !rn2(200) && !Deaf)
+    if (is_levflag_has_smithy(&level.flags) && !rn2(200) && !Deaf)
     {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         {
@@ -726,7 +726,7 @@ dosounds(void)
         }
     }
 
-    if (level.flags.has_npc_room && !rn2(200) && !Deaf)
+    if (is_levflag_has_npc_room(&level.flags) && !rn2(200) && !Deaf)
     {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         {

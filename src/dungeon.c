@@ -1346,7 +1346,7 @@ Is_botlevel(d_level *lev)
 boolean
 Can_dig_down(d_level *lev)
 {
-    return (boolean) (!level.flags.hardfloor
+    return (boolean) (!is_levflag_hardfloor(&level.flags)
                       && !Is_botlevel(lev)
                       && !Invocation_lev(lev));
 }
@@ -3315,7 +3315,7 @@ check_special_level_naming_by_mon(struct monst *mon)
     if (!mon)
         return;
 
-    if (!level.flags.no_special_level_naming_checks && Is_special(&u.uz) && level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_SEEING_MONSTER &&
+    if (!is_levflag_no_special_level_naming_checks(&level.flags) && Is_special(&u.uz) && level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_SEEING_MONSTER &&
         ((level.flags.special_naming_seen_monster_type >= LOW_PM && level.flags.special_naming_seen_monster_type == mon->mnum)
           || (level.flags.special_naming_seen_monster_type == NON_PM && level.flags.special_naming_seen_monster_class > 0 && level.flags.special_naming_seen_monster_class == mon->data->mlet)
         )
@@ -3340,7 +3340,7 @@ set_special_level_seen(d_level *lvl, boolean set_also_true_nature_known)
         if (set_also_true_nature_known)
         {
             set_msflag_special_level_true_nature_known(&mptr->flags, 1);
-            level.flags.no_special_level_naming_checks = 1;
+            set_levflag_no_special_level_naming_checks(&level.flags, 1);
         }
     }
 

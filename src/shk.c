@@ -192,7 +192,7 @@ shkgone(struct monst *mtmp)
         remove_damage(mtmp, TRUE);
         sroom->resident = (struct monst *) 0;
         if (!search_special(ANY_SHOP))
-            level.flags.has_shop = 0;
+            set_levflag_has_shop(&level.flags, 0);
 
         /* items on shop floor revert to ordinary objects */
         for (sx = sroom->lx; sx <= sroom->hx; sx++)
@@ -1100,7 +1100,7 @@ home_shk(struct monst *shkp, boolean killkops)
     xchar x = ESHK(shkp)->shk.x, y = ESHK(shkp)->shk.y;
 
     (void) mnearto(shkp, x, y, TRUE, FALSE);
-    level.flags.has_shop = 1;
+    set_levflag_has_shop(&level.flags, 1);
     if (killkops) {
         kops_gone(TRUE);
         pacify_guards();
@@ -4857,7 +4857,7 @@ costly_spot(xchar x, xchar y)
     struct monst *shkp;
     struct eshk *eshkp;
 
-    if (!level.flags.has_shop)
+    if (!is_levflag_has_shop(&level.flags))
         return FALSE;
     debugprint_pos();
     shkp = shop_keeper(*in_rooms(x, y, SHOPBASE));

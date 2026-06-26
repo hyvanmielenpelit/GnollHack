@@ -1532,7 +1532,7 @@ show_map_spot(int x, int y)
     oldglyph = glyph_at(x, y);
     //uint64_t oldlayerflags = lev->hero_memory_layers.layer_flags;
 
-    if (level.flags.hero_memory)
+    if (is_levflag_hero_memory(&level.flags))
     {
         magic_map_background(x, y, 0);
         newsym(x, y); /* show it, if not blocked */
@@ -1555,7 +1555,7 @@ show_map_spot(int x, int y)
                 show_glyph_on_layer(x, y, oldglyph, LAYER_TRAP);
             /* Objects are not drawn on layers; they are in memory_objchn */
 
-            if (level.flags.hero_memory)
+            if (is_levflag_hero_memory(&level.flags))
             {
                 lev->hero_memory_layers.glyph = oldglyph;
                 if (glyph_is_trap(oldglyph))
@@ -1574,7 +1574,7 @@ do_mapping(void)
     int zx, zy;
     boolean unconstrained;
 
-    if(!level.flags.mapping_does_not_reveal_special)
+    if(!is_levflag_mapping_does_not_reveal_special(&level.flags))
         set_special_level_seen(&u.uz, FALSE);
 
     unconstrained = unconstrain_map();
@@ -1585,7 +1585,7 @@ do_mapping(void)
         for (zy = ROWNO - 1; zy >= 0; zy--)
             show_map_spot(zx, zy);
     }
-    if (!level.flags.hero_memory || unconstrained) {
+    if (!is_levflag_hero_memory(&level.flags) || unconstrained) {
         flush_screen(1);                 /* flush temp screen */
         /* browse_map() instead of display_nhwindow(WIN_MAP, TRUE) */
         browse_map(TER_DETECT | TER_MAP | TER_TRP | TER_OBJ,
@@ -1679,7 +1679,7 @@ do_vicinity_map(struct obj *sobj)
                    the map and we're not doing extended/blessed clairvoyance
                    (hence must be swallowed or underwater), show "unseen
                    creature" unless map already displayed a monster here */
-                if ((unconstrained || !level.flags.hero_memory)
+                if ((unconstrained || !is_levflag_hero_memory(&level.flags))
                     && !extended && (zx != u.ux || zy != u.uy)
                     && !glyph_is_monster(oldglyph))
                     map_invisible(zx, zy);
@@ -1692,7 +1692,7 @@ do_vicinity_map(struct obj *sobj)
             }
         }
 
-    if (sobj && (!level.flags.hero_memory || unconstrained || mdetected || odetected))
+    if (sobj && (!is_levflag_hero_memory(&level.flags) || unconstrained || mdetected || odetected))
     {
         flush_screen(1);                 /* flush temp screen */
         /* the getpos() prompt from browse_map() is only shown when
@@ -2242,7 +2242,7 @@ sokoban_detect(void)
         map_trap(ttmp, 1);
         /* set sokoban_rules when there is at least one pit or hole */
         if (ttmp->ttyp == PIT || ttmp->ttyp == HOLE)
-            Sokoban = 1;
+            set_levflag_sokoban_rules(&level.flags, 1);
     }
 }
 
@@ -2260,7 +2260,7 @@ reveal_terrain_getglyph(int x, int y, int full, boolean swallowed, int default_g
     /* for 'full', show the actual terrain for the entire level,
        otherwise what the hero remembers for seen locations with
        monsters, objects, and/or traps removed as caller dictates */
-    seenv = (full || level.flags.hero_memory)
+    seenv = (full || is_levflag_hero_memory(&level.flags))
               ? levl[x][y].seenv : cansee(x, y) ? SVALL : 0;
     if (full)
     {
@@ -2270,7 +2270,7 @@ reveal_terrain_getglyph(int x, int y, int full, boolean swallowed, int default_g
     }
     else
     {
-        levl_glyph = level.flags.hero_memory
+        levl_glyph = is_levflag_hero_memory(&level.flags)
               ? levl[x][y].hero_memory_layers.glyph
               : seenv ? back_to_glyph(x, y): default_glyph;
 
@@ -2344,7 +2344,7 @@ dump_map(void)
 {
     int x, y, glyph, skippedrows, lastnonblank;
     int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
-    int default_glyph = base_cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
+    int default_glyph = base_cmap_to_glyph(is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored);
     char buf[BUFSZ * 2] = "";
     char* bp;
     boolean blankrow, toprow;
@@ -2457,7 +2457,7 @@ reveal_terrain(int full, int which_subset)
         debugprint_pos();
         if (unconstrain_map())
             docrt();
-        default_glyph = cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
+        default_glyph = cmap_to_glyph(is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored);
 
         for (x = 1; x < COLNO; x++)
             for (y = 0; y < ROWNO; y++) {

@@ -6653,7 +6653,7 @@ dropz(struct obj *obj, boolean with_impact)
             container_impact_dmg(obj, u.ux, u.uy);
         if (obj == uball)
             drop_ball(u.ux, u.uy);
-        else if (level.flags.has_shop)
+        else if (is_levflag_has_shop(&level.flags))
             sellobj(obj, u.ux, u.uy);
         stackobj(obj);
         if (Blind && Levitation)
