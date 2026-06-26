@@ -96,7 +96,8 @@ public static class MauiProgram
 
                     if (exception is ObjectDisposedException ioe)
                     {
-                        // Drop event entirely
+                        if (!string.IsNullOrEmpty(ioe.Message))
+                            SentrySdk.CaptureMessage($"Handled ObjectDisposedException: {ioe.Message}", SentryLevel.Warning);
                         return null;
                     }
                     if (@event.SentryExceptions != null)
@@ -105,6 +106,8 @@ public static class MauiProgram
                         {
                             if (ex.Type == nameof(ObjectDisposedException))
                             {
+                                if (!string.IsNullOrEmpty(ex.Value))
+                                    SentrySdk.CaptureMessage($"Handled ObjectDisposedException: {ex.Value}", SentryLevel.Warning);
                                 return null;
                             }
                         }
@@ -158,7 +161,8 @@ public static class MauiProgram
                         (ioe.Message.Contains("already deactivated") 
                         || ioe.Message.Contains("already activated")))
                     {
-                        // Drop event entirely
+                        if (!string.IsNullOrEmpty(ioe.Message))
+                            SentrySdk.CaptureMessage($"Handled InvalidOperationException: {ioe.Message}", SentryLevel.Warning);
                         return null;
                     }
                     if (@event.SentryExceptions != null)
@@ -170,6 +174,8 @@ public static class MauiProgram
                                 (ex.Value.Contains("already deactivated") ||
                                     ex.Value.Contains("already activated")))
                             {
+                                if (!string.IsNullOrEmpty(ex.Value))
+                                    SentrySdk.CaptureMessage($"Handled InvalidOperationException: {ex.Value}", SentryLevel.Warning);
                                 return null;
                             }
                         }
