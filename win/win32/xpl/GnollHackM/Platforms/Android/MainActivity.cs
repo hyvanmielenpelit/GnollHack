@@ -31,6 +31,18 @@ public class MainActivity : MauiAppCompatActivity
         CreateSaveGameNotificationChannel();
     }
 
+    protected override void OnDestroy()
+    {
+        try
+        {
+            base.OnDestroy();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+        }
+    }
+
     private void CreateSaveGameNotificationChannel()
     {
         if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
