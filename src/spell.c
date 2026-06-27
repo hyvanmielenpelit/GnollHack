@@ -363,7 +363,9 @@ static void
 modronbook(struct obj *book2)
 {
     You("finish reading one paragraph of the Prime Codex...");
-    set_obj_aknown(book2, 1), set_obj_nknown(book2, 1), set_obj_dknown(book2, 1);
+    set_obj_aknown(book2, 1);
+    set_obj_nknown(book2, 1);
+    set_obj_dknown(book2, 1);
     makeknown(SPE_BOOK_OF_MODRON);
 
     if (Hallucination || Stunned || Confusion)

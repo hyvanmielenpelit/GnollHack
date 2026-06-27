@@ -1394,7 +1394,11 @@ artifact_score(struct obj *list, boolean counting, winid endwin)
                 nowrap_add(u.u_gamescore, points);
             } else {
                 discover_object(otmp->otyp, TRUE, FALSE);
-                set_obj_known(otmp, 1), set_obj_dknown(otmp, 1), set_obj_bknown(otmp, 1), set_obj_rknown(otmp, 1), set_obj_nknown(otmp, 1);
+                set_obj_known(otmp, 1);
+                set_obj_dknown(otmp, 1);
+                set_obj_bknown(otmp, 1);
+                set_obj_rknown(otmp, 1);
+                set_obj_nknown(otmp, 1);
                 /* assumes artifacts don't have quan > 1 */
                 Sprintf(pbuf, "%s%s (worth %ld %s and %ld points)",
                         the_unique_obj(otmp) ? "The " : "",
@@ -2221,9 +2225,18 @@ really_done(int how)
         for (obj = invent; obj; obj = obj->nobj) 
         {
             discover_object(obj->otyp, TRUE, FALSE);
-            set_obj_known(obj, 1), set_obj_bknown(obj, 1), set_obj_dknown(obj, 1), set_obj_rknown(obj, 1), set_obj_nknown(obj, 1), set_obj_aknown(obj, 1), set_obj_mknown(obj, 1);
-            if (Is_container(obj) || obj->otyp == STATUE)
-                set_obj_cknown(obj, 1), set_obj_lknown(obj, 1), set_obj_tknown(obj, 1);
+            set_obj_known(obj, 1);
+            set_obj_bknown(obj, 1);
+            set_obj_dknown(obj, 1);
+            set_obj_rknown(obj, 1);
+            set_obj_nknown(obj, 1);
+            set_obj_aknown(obj, 1);
+            set_obj_mknown(obj, 1);
+            if (Is_container(obj) || obj->otyp == STATUE) {
+                set_obj_cknown(obj, 1);
+                set_obj_lknown(obj, 1);
+                set_obj_tknown(obj, 1);
+            }
             /* we resolve Schroedinger's cat now in case of both
                disclosure and dumplog, where the 50:50 chance for
                live cat has to be the same both times */
@@ -2809,9 +2822,18 @@ container_contents(struct obj *list, boolean identified, boolean all_containers,
                         if (identified) 
                         {
                             discover_object(obj->otyp, TRUE, FALSE);
-                            set_obj_known(obj, 1), set_obj_bknown(obj, 1), set_obj_dknown(obj, 1), set_obj_rknown(obj, 1), set_obj_nknown(obj, 1), set_obj_aknown(obj, 1), set_obj_mknown(obj, 1);
-                            if (Is_container(obj) || obj->otyp == STATUE)
-                                set_obj_cknown(obj, 1), set_obj_lknown(obj, 1), set_obj_tknown(obj, 1);
+                            set_obj_known(obj, 1);
+                            set_obj_bknown(obj, 1);
+                            set_obj_dknown(obj, 1);
+                            set_obj_rknown(obj, 1);
+                            set_obj_nknown(obj, 1);
+                            set_obj_aknown(obj, 1);
+                            set_obj_mknown(obj, 1);
+                            if (Is_container(obj) || obj->otyp == STATUE) {
+                                set_obj_cknown(obj, 1);
+                                set_obj_lknown(obj, 1);
+                                set_obj_tknown(obj, 1);
+                            }
                         }
                         count++;
 
@@ -2896,9 +2918,18 @@ magic_chest_contents(boolean identified, boolean all_containers, boolean reporte
                 if (identified)
                 {
                     discover_object(obj->otyp, TRUE, FALSE);
-                    set_obj_known(obj, 1), set_obj_bknown(obj, 1), set_obj_dknown(obj, 1), set_obj_rknown(obj, 1), set_obj_nknown(obj, 1), set_obj_aknown(obj, 1), set_obj_mknown(obj, 1);
-                    if (Is_container(obj) || obj->otyp == STATUE)
-                        set_obj_cknown(obj, 1), set_obj_lknown(obj, 1), set_obj_tknown(obj, 1);
+                    set_obj_known(obj, 1);
+                    set_obj_bknown(obj, 1);
+                    set_obj_dknown(obj, 1);
+                    set_obj_rknown(obj, 1);
+                    set_obj_nknown(obj, 1);
+                    set_obj_aknown(obj, 1);
+                    set_obj_mknown(obj, 1);
+                    if (Is_container(obj) || obj->otyp == STATUE) {
+                        set_obj_cknown(obj, 1);
+                        set_obj_lknown(obj, 1);
+                        set_obj_tknown(obj, 1);
+                    }
                 }
                 count++;
 

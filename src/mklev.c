@@ -1098,7 +1098,8 @@ clear_level_structures(void)
     set_levflag_has_vault(&level.flags, 0);
     set_levflag_has_zoo(&level.flags, 0);
     set_levflag_has_court(&level.flags, 0);
-    set_levflag_has_morgue(&level.flags, set_levflag_graveyard(&level.flags, 0));
+    set_levflag_graveyard(&level.flags, 0);
+    set_levflag_has_morgue(&level.flags, 0);
     set_levflag_has_beehive(&level.flags, 0);
     set_levflag_has_library(&level.flags, 0);
     set_levflag_has_dragonlair(&level.flags, 0);

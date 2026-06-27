@@ -793,8 +793,10 @@ resurrect(void)
                 elapsed /= 50L;
                 if (is_mon_msleeping(mtmp) && rn2((int) elapsed + 1))
                     set_mon_msleeping(mtmp, 0);
-                if (mtmp->mfrozen == 1) /* would unfreeze on next move */
-                    mtmp->mfrozen = 0, set_mon_mcanmove(mtmp, 1);
+                if (mtmp->mfrozen == 1) { /* would unfreeze on next move */
+                    mtmp->mfrozen = 0;
+                    set_mon_mcanmove(mtmp, 1);
+                }
 
                 for(int i = 1; i <= LAST_PROP; i++)
                     mtmp->mprops[i] = 0;

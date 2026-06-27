@@ -4716,7 +4716,8 @@ water_damage(struct obj *obj, const char *ostr, boolean force)
             }
             obj->otyp = POT_WATER;
             set_obj_dknown(obj, 0);
-            set_obj_blessed(obj, 0), set_obj_cursed(obj, 0);
+            set_obj_blessed(obj, 0);
+            set_obj_cursed(obj, 0);
             obj->odiluted = 0;
             if (carried(obj))
                 update_inventory();

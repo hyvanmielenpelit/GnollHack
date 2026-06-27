@@ -2029,7 +2029,8 @@ consume_tin(const char *mesg)
         if (mnum == NON_PM) 
         {
             pline("It turns out to be empty.");
-            set_obj_dknown(tin, 1), set_obj_known(tin, 1);
+            set_obj_dknown(tin, 1);
+            set_obj_known(tin, 1);
             tin = costly_tin(COST_OPEN);
             goto use_up_tin;
         }
@@ -2070,8 +2071,10 @@ consume_tin(const char *mesg)
         {
             if (flags.verbose)
                 You("discard the open tin.");
-            if (!Hallucination)
-                set_obj_dknown(tin, 1), set_obj_known(tin, 1);
+            if (!Hallucination) {
+                set_obj_dknown(tin, 1);
+                set_obj_known(tin, 1);
+            }
             tin = costly_tin(COST_OPEN);
             play_simple_object_sound(tin, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
             goto use_up_tin;
@@ -2088,7 +2091,8 @@ consume_tin(const char *mesg)
 
         eating_conducts(&mons[mnum]);
 
-        set_obj_dknown(tin, 1), set_obj_known(tin, 1);
+        set_obj_dknown(tin, 1);
+        set_obj_known(tin, 1);
         corpse_pre_effect(mnum, 2);
         corpse_after_effect(mnum, 2);
 
@@ -2134,7 +2138,8 @@ consume_tin(const char *mesg)
         else 
         {
             Strcpy(containsbuf, "It contains spinach.");
-            set_obj_dknown(tin, 1), set_obj_known(tin, 1);
+            set_obj_dknown(tin, 1);
+            set_obj_known(tin, 1);
         }
 
         pline1(containsbuf);
@@ -2834,7 +2839,8 @@ eataccessory(struct obj *otmp)
         if (u.uhp <= 0)
             return; /* died from sink fall */
     }
-    set_obj_known(otmp, 1), set_obj_dknown(otmp, 1); /* by taste */
+    set_obj_known(otmp, 1);
+    set_obj_dknown(otmp, 1); /* by taste */
     if (!rn2(otmp->oclass == RING_CLASS ? 3 : 5)) 
     {
         switch (otmp->otyp) 

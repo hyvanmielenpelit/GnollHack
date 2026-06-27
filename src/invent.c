@@ -243,7 +243,8 @@ loot_xname(struct obj *obj)
      * remember 'obj's current settings.
      */
     saveo.odiluted = obj->odiluted;
-    set_obj_blessed(&(saveo), is_obj_blessed(obj)), set_obj_cursed(&(saveo), is_obj_cursed(obj));
+    set_obj_blessed(&(saveo), is_obj_blessed(obj));
+    set_obj_cursed(&(saveo), is_obj_cursed(obj));
     saveo.enchantment = obj->enchantment;
     saveo.special_quality = obj->special_quality;
     saveo.charges = obj->charges;
@@ -256,8 +257,10 @@ loot_xname(struct obj *obj)
        sortloot() will deal with them using other criteria than name */
     if (obj->oclass == POTION_CLASS) {
         obj->odiluted = 0;
-        if (obj->otyp == POT_WATER)
-            set_obj_blessed(obj, 0), set_obj_cursed(obj, 0);
+        if (obj->otyp == POT_WATER) {
+            set_obj_blessed(obj, 0);
+            set_obj_cursed(obj, 0);
+        }
     }
     /* make "wet towel" and "moist towel" format as "towel" so that all
        three group together */
@@ -291,8 +294,10 @@ loot_xname(struct obj *obj)
     /* restore the object */
     if (obj->oclass == POTION_CLASS) {
         obj->odiluted = saveo.odiluted;
-        if (obj->otyp == POT_WATER)
-            set_obj_blessed(obj, is_obj_blessed(&(saveo))), set_obj_cursed(obj, is_obj_cursed(&(saveo)));
+        if (obj->otyp == POT_WATER) {
+            set_obj_blessed(obj, is_obj_blessed(&(saveo)));
+            set_obj_cursed(obj, is_obj_cursed(&(saveo)));
+        }
     }
     if (obj->otyp == TOWEL) {
         obj->special_quality = saveo.special_quality;
@@ -754,8 +759,10 @@ merged(struct obj **potmp, struct obj **pobj)
 
         otmp->quan += obj->quan;
         /* temporary special case for gold objects!!!! */
-        if (otmp->oclass == COIN_CLASS)
-            otmp->owt = weight(otmp), set_obj_bknown(otmp, 0);
+        if (otmp->oclass == COIN_CLASS) {
+            otmp->owt = weight(otmp);
+            set_obj_bknown(otmp, 0);
+        }
         /* and puddings!!!1!!one! */
         else if (!Is_pudding(otmp))
             otmp->owt += obj->owt;
@@ -3994,13 +4001,20 @@ fully_identify_obj(struct obj *otmp)
         discover_artifact(otmp->oartifact);
         set_obj_aknown(otmp, 1);
     }
-    set_obj_known(otmp, 1), set_obj_dknown(otmp, 1), set_obj_bknown(otmp, 1), set_obj_rknown(otmp, 1), set_obj_mknown(otmp, 1);
+    set_obj_known(otmp, 1);
+    set_obj_dknown(otmp, 1);
+    set_obj_bknown(otmp, 1);
+    set_obj_rknown(otmp, 1);
+    set_obj_mknown(otmp, 1);
     
     if (has_oname(otmp))
         set_obj_nknown(otmp, 1);
 
-    if (Is_container(otmp) || otmp->otyp == STATUE)
-        set_obj_cknown(otmp, 1), set_obj_lknown(otmp, 1), set_obj_tknown(otmp, 1);
+    if (Is_container(otmp) || otmp->otyp == STATUE) {
+        set_obj_cknown(otmp, 1);
+        set_obj_lknown(otmp, 1);
+        set_obj_tknown(otmp, 1);
+    }
     if (otmp->otyp == EGG && otmp->corpsenm > NON_PM)
         learn_egg_type(otmp->corpsenm);
     if (is_obj_rotting_corpse(otmp) && otmp->corpsenm > NON_PM)

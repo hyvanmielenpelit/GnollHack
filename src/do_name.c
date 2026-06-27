@@ -1733,7 +1733,8 @@ docall_xname(struct obj *obj)
     otemp.oextra = (struct oextra *) 0;
     otemp.quan = 1L;
     /* in case water is already known, convert "[un]holy water" to "water" */
-    set_obj_blessed(&(otemp), 0), set_obj_cursed(&(otemp), 0);
+    set_obj_blessed(&(otemp), 0);
+    set_obj_cursed(&(otemp), 0);
     /* remove attributes that are doname() caliber but get formatted
        by xname(); most of these fixups aren't really needed because the
        relevant type of object isn't callable so won't reach this far */

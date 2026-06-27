@@ -129,8 +129,10 @@ blackout(int x, int y)
             /* [possible bug: when (i != x || j != y), perhaps we ought
                to check whether the spot on the far side is lit instead
                of doing a blanket blackout of adjacent locations] */
-            if (lev->typ == STONE)
-                set_levl_lit(lev, set_levl_waslit(lev, 0));
+            if (lev->typ == STONE) {
+                set_levl_waslit(lev, 0);
+                set_levl_lit(lev, 0);
+            }
             /* mark <i,j> as not having been seen from <x,y> */
             unset_seenv(lev, x, y, i, j);
         }

@@ -2037,7 +2037,8 @@ use_offensive(struct monst *mtmp)
         if (oseen && otmp->oartifact)
         {
             makeknown(otmp->otyp);
-            set_obj_aknown(otmp, 1), set_obj_nknown(otmp, 1);
+            set_obj_aknown(otmp, 1);
+            set_obj_nknown(otmp, 1);
         }
         m_using = TRUE;
 

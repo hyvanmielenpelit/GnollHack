@@ -1868,7 +1868,10 @@ ini_inv(const struct trobj *trop)
 
                     otmp = mksobj(PINCH_OF_SULFUROUS_ASH, FALSE, FALSE, TRUE);
                     set_obj_known(otmp, 1);
-                    set_obj_dknown(otmp, 1), set_obj_bknown(otmp, 1), set_obj_rknown(otmp, 1), set_obj_nknown(otmp, 1);
+                    set_obj_dknown(otmp, 1);
+                    set_obj_bknown(otmp, 1);
+                    set_obj_rknown(otmp, 1);
+                    set_obj_nknown(otmp, 1);
                     otmp = add_to_container(obj, otmp);
 
 
@@ -1880,7 +1883,10 @@ ini_inv(const struct trobj *trop)
                         {
                             knows_object(otmp->otyp);
                             set_obj_known(otmp, 1);
-                            set_obj_dknown(otmp, 1), set_obj_bknown(otmp, 1), set_obj_rknown(otmp, 1), set_obj_nknown(otmp, 1);
+                            set_obj_dknown(otmp, 1);
+                            set_obj_bknown(otmp, 1);
+                            set_obj_rknown(otmp, 1);
+                            set_obj_nknown(otmp, 1);
                             otmp = add_to_container(obj, otmp);
                         }
                     }
@@ -1888,7 +1894,10 @@ ini_inv(const struct trobj *trop)
                     otmp = mksobj(SLIME_MOLD, TRUE, FALSE, TRUE);
                     knows_object(otmp->otyp);
                     set_obj_known(otmp, 1);
-                    set_obj_dknown(otmp, 1), set_obj_bknown(otmp, 1), set_obj_rknown(otmp, 1), set_obj_nknown(otmp, 1);
+                    set_obj_dknown(otmp, 1);
+                    set_obj_bknown(otmp, 1);
+                    set_obj_rknown(otmp, 1);
+                    set_obj_nknown(otmp, 1);
                     otmp = add_to_container(obj, otmp);
 
 
@@ -1897,7 +1906,10 @@ ini_inv(const struct trobj *trop)
                     otmp->quan = 10;
                     otmp->owt = weight(otmp);
                     set_obj_known(otmp, 1);
-                    set_obj_dknown(otmp, 1), set_obj_bknown(otmp, 1), set_obj_rknown(otmp, 1), set_obj_nknown(otmp, 1);
+                    set_obj_dknown(otmp, 1);
+                    set_obj_bknown(otmp, 1);
+                    set_obj_rknown(otmp, 1);
+                    set_obj_nknown(otmp, 1);
                     otmp = add_to_container(obj, otmp);
 
                     int n = 2 + rn2(4); //2...5
@@ -1908,7 +1920,10 @@ ini_inv(const struct trobj *trop)
                         {
                             knows_object(otmp2->otyp);
                             set_obj_known(otmp2, 1);
-                            set_obj_dknown(otmp2, 1), set_obj_bknown(otmp2, 1), set_obj_rknown(otmp2, 1), set_obj_nknown(otmp2, 1);
+                            set_obj_dknown(otmp2, 1);
+                            set_obj_bknown(otmp2, 1);
+                            set_obj_rknown(otmp2, 1);
+                            set_obj_nknown(otmp2, 1);
                             (void)add_to_container(obj, otmp2);
                         }
                     }
@@ -1955,11 +1970,16 @@ ini_inv(const struct trobj *trop)
             {
                 if (objects[otyp].oc_uses_known)
                     set_obj_known(obj, 1);
-                set_obj_dknown(obj, 1), set_obj_bknown(obj, 1), set_obj_rknown(obj, 1), set_obj_nknown(obj, 1);
+                set_obj_dknown(obj, 1);
+                set_obj_bknown(obj, 1);
+                set_obj_rknown(obj, 1);
+                set_obj_nknown(obj, 1);
 
                 if (Is_container(obj) || obj->otyp == STATUE)
                 {
-                    set_obj_cknown(obj, 1), set_obj_lknown(obj, 1), set_obj_tknown(obj, 1);
+                    set_obj_cknown(obj, 1);
+                    set_obj_lknown(obj, 1);
+                    set_obj_tknown(obj, 1);
                     set_obj_otrapped(obj, 0);
                 }
 

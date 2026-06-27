@@ -691,7 +691,8 @@ dipfountain(struct obj *obj)
             }
             obj->otyp = POT_WATER;
             set_obj_dknown(obj, 0);
-            set_obj_blessed(obj, 0), set_obj_cursed(obj, 0);
+            set_obj_blessed(obj, 0);
+            set_obj_cursed(obj, 0);
             obj->odiluted = 0;
             if (carried(obj))
                 update_inventory();
@@ -1348,7 +1349,8 @@ drinksink(void)
                 otmp = (struct obj *) 0;
             }
         } while (!otmp);
-        set_obj_cursed(otmp, 0), set_obj_blessed(otmp, 0);
+        set_obj_cursed(otmp, 0);
+        set_obj_blessed(otmp, 0);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Some %s liquid flows from the faucet.",
               Blind ? "odd" : hcolor(OBJ_DESCR(objects[otmp->otyp])));
         set_obj_dknown(otmp, !(Blind || Hallucination));

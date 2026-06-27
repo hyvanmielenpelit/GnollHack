@@ -4018,7 +4018,9 @@ dodip(void)
             else
                 set_obj_in_use(potion, FALSE);
 
-            set_obj_blessed(obj, 0), set_obj_cursed(obj, 0), set_obj_bknown(obj, 0);
+            set_obj_blessed(obj, 0);
+            set_obj_cursed(obj, 0);
+            set_obj_bknown(obj, 0);
             if (Blind || Hallucination)
                 set_obj_dknown(obj, 0);
 

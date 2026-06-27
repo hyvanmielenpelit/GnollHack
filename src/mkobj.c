@@ -1709,7 +1709,8 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
             if (Is_pudding(otmp)) 
             {
                 set_obj_globby(otmp, 1);
-                set_obj_known(otmp, 1), set_obj_dknown(otmp, 1);
+                set_obj_known(otmp, 1);
+                set_obj_dknown(otmp, 1);
                 otmp->corpsenm = PM_GRAY_OOZE
                                  + (otmp->otyp - GLOB_OF_GRAY_OOZE);
             } 
@@ -1990,7 +1991,8 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
                 set_obj_oerodeproof(otmp, 1);
                 set_obj_rknown(otmp, 1);
 #else
-                set_obj_oerodeproof(otmp, 1), set_obj_rknown(otmp, 1);
+                set_obj_oerodeproof(otmp, 1);
+                set_obj_rknown(otmp, 1);
 #endif
             }
             break;
@@ -2278,7 +2280,8 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
             otmp = oname(otmp, manualtitle(&otmp->manualidx, excludedtitles, excludedtitles2));
             set_obj_nknown(otmp, TRUE);
         }
-        set_obj_cursed(otmp, 0), set_obj_blessed(otmp, 0); /* Never blessed or cursed */
+        set_obj_cursed(otmp, 0);
+        set_obj_blessed(otmp, 0); /* Never blessed or cursed */
         break;
     }
 
@@ -5014,12 +5017,18 @@ obj_absorb(struct obj **obj1, struct obj **obj2)
         otmp1 = *obj1;
         otmp2 = *obj2;
         if (otmp1 && otmp2 && otmp1 != otmp2) {
-            if (is_obj_bknown(otmp1) != is_obj_bknown(otmp2))
-                set_obj_bknown(otmp1, 0), set_obj_bknown(otmp2, 0);
-            if (is_obj_rknown(otmp1) != is_obj_rknown(otmp2))
-                set_obj_rknown(otmp1, 0), set_obj_rknown(otmp2, 0);
-            if (is_obj_greased(otmp1) != is_obj_greased(otmp2))
-                set_obj_greased(otmp1, 0), set_obj_greased(otmp2, 0);
+            if (is_obj_bknown(otmp1) != is_obj_bknown(otmp2)) {
+                set_obj_bknown(otmp1, 0);
+                set_obj_bknown(otmp2, 0);
+            }
+            if (is_obj_rknown(otmp1) != is_obj_rknown(otmp2)) {
+                set_obj_rknown(otmp1, 0);
+                set_obj_rknown(otmp2, 0);
+            }
+            if (is_obj_greased(otmp1) != is_obj_greased(otmp2)) {
+                set_obj_greased(otmp1, 0);
+                set_obj_greased(otmp2, 0);
+            }
             if (otmp1->orotten || otmp2->orotten)
                 otmp1->orotten = otmp2->orotten = 1;
             o1wt = otmp1->oeaten ? otmp1->oeaten : otmp1->owt;

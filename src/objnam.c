@@ -2566,11 +2566,16 @@ killer_xname_flags(struct obj *obj, unsigned kxnflags)
 
     /* killer name should be more specific than general xname; however, exact
        info like blessed/cursed and rustproof makes things be too verbose */
-    set_obj_known(obj, 1), set_obj_dknown(obj, 1);
-    set_obj_bknown(obj, 0), set_obj_rknown(obj, 0), set_obj_greased(obj, 0);
+    set_obj_known(obj, 1);
+    set_obj_dknown(obj, 1);
+    set_obj_bknown(obj, 0);
+    set_obj_rknown(obj, 0);
+    set_obj_greased(obj, 0);
     /* if character is a priest[ess], bknown will get toggled back on */
-    if (obj->otyp != POT_WATER)
-        set_obj_blessed(obj, 0), set_obj_cursed(obj, 0);
+    if (obj->otyp != POT_WATER) {
+        set_obj_blessed(obj, 0);
+        set_obj_cursed(obj, 0);
+    }
     else
         set_obj_bknown(obj, 1); /* describe holy/unholy water as such */
     /* "killed by poisoned <obj>" would be misleading when poison is
@@ -2680,7 +2685,9 @@ short_oname(struct obj *obj, char *(*func)(struct obj*), char *(*altfunc)(struct
     /* still long; strip several name-lengthening attributes;
        called and named strings are still in truncated form */
     save_obj = *obj;
-    set_obj_bknown(obj, 0), set_obj_rknown(obj, 0), set_obj_greased(obj, 0);
+    set_obj_bknown(obj, 0);
+    set_obj_rknown(obj, 0);
+    set_obj_greased(obj, 0);
     obj->oeroded = obj->oeroded2 = 0;
     releaseobuf(outbuf);
     outbuf = (*func)(obj);
@@ -5822,11 +5829,14 @@ retry:
     /* set locked/unlocked/broken */
     if (Is_box(otmp)) {
         if (locked) {
-            set_obj_olocked(otmp, 1), set_obj_obroken(otmp, 0);
+            set_obj_olocked(otmp, 1);
+            set_obj_obroken(otmp, 0);
         } else if (unlocked) {
-            set_obj_olocked(otmp, 0), set_obj_obroken(otmp, 0);
+            set_obj_olocked(otmp, 0);
+            set_obj_obroken(otmp, 0);
         } else if (broken) {
-            set_obj_olocked(otmp, 0), set_obj_obroken(otmp, 1);
+            set_obj_olocked(otmp, 0);
+            set_obj_obroken(otmp, 1);
         }
     }
 

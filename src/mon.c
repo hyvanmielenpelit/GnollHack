@@ -449,7 +449,8 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
                 if (obj)
                 {
                     obj->enchantment = 0;
-                    set_obj_cursed(obj, FALSE), set_obj_blessed(obj, FALSE);
+                    set_obj_cursed(obj, FALSE);
+                    set_obj_blessed(obj, FALSE);
                     if (is_exceptional)
                         obj->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
                 }
@@ -462,7 +463,8 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
         if (obj)
         {
             obj->enchantment = 0;
-            set_obj_cursed(obj, FALSE), set_obj_blessed(obj, FALSE);
+            set_obj_cursed(obj, FALSE);
+            set_obj_blessed(obj, FALSE);
             obj->exceptionality = EXCEPTIONALITY_ELITE;
         }
         break;
@@ -472,7 +474,8 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
         if (obj)
         {
             obj->enchantment = 0;
-            set_obj_cursed(obj, FALSE), set_obj_blessed(obj, FALSE);
+            set_obj_cursed(obj, FALSE);
+            set_obj_blessed(obj, FALSE);
             obj->exceptionality = EXCEPTIONALITY_ELITE;
         }
         break;
@@ -1568,8 +1571,10 @@ update_monster_timeouts(void)
 
         /* reduce basic stat timers */
         boolean need_update = FALSE;
-        if (mtmp->mfrozen && !--mtmp->mfrozen)
-            set_mon_mcanmove(mtmp, 1), need_update = TRUE;
+        if (mtmp->mfrozen && !--mtmp->mfrozen) {
+            set_mon_mcanmove(mtmp, 1);
+            need_update = TRUE;
+        }
         if (mtmp->mstaying && !--mtmp->mstaying)
             set_mon_mwantstomove(mtmp, 1);
         if (mtmp->mcarrying && !--mtmp->mcarrying)

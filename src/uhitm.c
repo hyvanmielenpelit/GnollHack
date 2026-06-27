@@ -1575,7 +1575,9 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                             obj->oclass = GEM_CLASS;
                             obj->oartifact = 0;
                             obj->speflags = 0;
-                            set_obj_known(obj, 0), set_obj_dknown(obj, 0), set_obj_bknown(obj, 0);
+                            set_obj_known(obj, 0);
+                            set_obj_dknown(obj, 0);
+                            set_obj_bknown(obj, 0);
                             obj->owt = weight(obj);
                             if (thrown)
                                 place_object(obj, mon->mx, mon->my);

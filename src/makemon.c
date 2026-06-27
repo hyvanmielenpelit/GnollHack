@@ -4174,11 +4174,13 @@ mongets_with_material(struct monst *mtmp, int otyp, uchar material)
             otmp->enchantment = 0;
             otmp->special_quality = 0;
             otmp->age = 0L;
-            set_obj_blessed(otmp, FALSE), set_obj_cursed(otmp, FALSE);
+            set_obj_blessed(otmp, FALSE);
+            set_obj_cursed(otmp, FALSE);
         }
         else if (otmp->otyp == BELL_OF_OPENING)
         {
-            set_obj_blessed(otmp, FALSE), set_obj_cursed(otmp, FALSE);
+            set_obj_blessed(otmp, FALSE);
+            set_obj_cursed(otmp, FALSE);
         } 
         else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD)
         {

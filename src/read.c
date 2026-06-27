@@ -2827,7 +2827,8 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
                 if (otmp->oclass == COIN_CLASS) 
                 {
                     /* coins */
-                    set_obj_blessed(otmp, 0), set_obj_cursed(otmp, 0); /* just in case */
+                    set_obj_blessed(otmp, 0);
+                    set_obj_cursed(otmp, 0); /* just in case */
                 }
 
                 if (is_obj_blessed(otmp) || is_obj_cursed(otmp)) 

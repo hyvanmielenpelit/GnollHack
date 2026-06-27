@@ -6034,7 +6034,8 @@ doaltarobj(struct obj *obj)
     else 
     {
         /* coins don't have bless/curse status */
-        set_obj_blessed(obj, 0), set_obj_cursed(obj, 0);
+        set_obj_blessed(obj, 0);
+        set_obj_cursed(obj, 0);
     }
 
     if (is_obj_blessed(obj) || is_obj_cursed(obj)) 

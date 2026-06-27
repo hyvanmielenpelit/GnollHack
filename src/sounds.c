@@ -10654,12 +10654,18 @@ spell_service_query(struct monst *mtmp, int service_spell_id, int buc, const cha
 
 
     struct obj* pseudo = mksobj(service_spell_id, FALSE, FALSE, FALSE);
-    if(buc > 0)
-        set_obj_blessed(pseudo, 1), set_obj_cursed(pseudo, 0);
-    else if (buc == 0)
-        set_obj_blessed(pseudo, 0), set_obj_cursed(pseudo, 0);
-    else if (buc < 0)
-        set_obj_blessed(pseudo, 0), set_obj_cursed(pseudo, 1);
+    if(buc > 0) {
+        set_obj_blessed(pseudo, 1);
+        set_obj_cursed(pseudo, 0);
+    }
+    else if (buc == 0) {
+        set_obj_blessed(pseudo, 0);
+        set_obj_cursed(pseudo, 0);
+    }
+    else if (buc < 0) {
+        set_obj_blessed(pseudo, 0);
+        set_obj_cursed(pseudo, 1);
+    }
 
     pseudo->quan = 20L; /* do not let useup get it */
     pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
@@ -11441,7 +11447,8 @@ forge_special_func(struct monst *mtmp, int forge_source_otyp, int64_t forge_sour
         {
             craftedobj->exceptionality = exceptionality;
         }
-        set_obj_cursed(craftedobj, 0), set_obj_blessed(craftedobj, 0);
+        set_obj_cursed(craftedobj, 0);
+        set_obj_blessed(craftedobj, 0);
         fully_identify_obj(craftedobj);
         Sprintf(talkbuf, "%s hands %s to you.", noittame_Monnam(mtmp), acxname(craftedobj));
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);

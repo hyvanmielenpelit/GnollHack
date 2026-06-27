@@ -603,7 +603,8 @@ fixup_special(void)
         /* using an unfilled morgue for rm id */
         croom = search_special(MORGUE);
         /* avoid inappropriate morgue-related messages */
-        set_levflag_graveyard(&level.flags, set_levflag_has_morgue(&level.flags, 0));
+        set_levflag_graveyard(&level.flags, 0);
+        set_levflag_has_morgue(&level.flags, 0);
         croom->rtype = OROOM; /* perhaps it should be set to VAULT? */
         /* stock the main vault */
         for (x = croom->lx; x <= croom->hx; x++)

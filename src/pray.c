@@ -997,7 +997,8 @@ gcrownu(void)
                 if (obj && obj->oartifact == ART_GAUNTLETS_OF_YIN_AND_YANG)
                 {
                     obj->enchantment = 1;
-                    set_obj_aknown(obj, 1), set_obj_nknown(obj, 1);
+                    set_obj_aknown(obj, 1);
+                    set_obj_nknown(obj, 1);
                     discover_artifact(ART_GAUNTLETS_OF_YIN_AND_YANG);
                     livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
                         "was bestowed with %s",
@@ -1403,7 +1404,8 @@ gcrownu(void)
                     obj->enchantment = 1;
                     if (obj->oartifact == ART_RHONGOMYNIAD)
                     {
-                        set_obj_aknown(obj, TRUE), set_obj_nknown(obj, TRUE);
+                        set_obj_aknown(obj, TRUE);
+                        set_obj_nknown(obj, TRUE);
                         discover_artifact(ART_RHONGOMYNIAD);
                         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                             "was bestowed with %s",
@@ -1424,7 +1426,8 @@ gcrownu(void)
                     obj = oname(obj, artiname(ART_HOLY_GRAIL));
                     if (obj->oartifact == ART_HOLY_GRAIL)
                     {
-                        set_obj_aknown(obj, TRUE), set_obj_nknown(obj, TRUE);
+                        set_obj_aknown(obj, TRUE);
+                        set_obj_nknown(obj, TRUE);
                         discover_artifact(ART_HOLY_GRAIL);
                         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
                             "was bestowed with %s",
@@ -1472,7 +1475,8 @@ gcrownu(void)
                     obj = oname(obj, artiname(ART_HOLY_GRAIL));
                     if (obj->oartifact == ART_HOLY_GRAIL)
                     {
-                        set_obj_aknown(obj, TRUE), set_obj_nknown(obj, TRUE);
+                        set_obj_aknown(obj, TRUE);
+                        set_obj_nknown(obj, TRUE);
                         discover_artifact(ART_HOLY_GRAIL);
                         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
                             "was bestowed with %s",
@@ -1656,14 +1660,18 @@ gcrownu(void)
                 class_gift = KATANA;
                 Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines white for a while!", xname(obj));
                 obj->enchantment = max(1, obj->enchantment + rnd(3) + 1);
-                set_obj_dknown(obj, TRUE), set_obj_aknown(obj, TRUE), set_obj_nknown(obj, TRUE);
+                set_obj_dknown(obj, TRUE);
+                set_obj_aknown(obj, TRUE);
+                set_obj_nknown(obj, TRUE);
             }
             else if (obj2 && in_hand2)
             {
                 class_gift = KATANA;
                 Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines white for a while!", xname(obj2));
                 obj2->enchantment = max(1, obj2->enchantment + rnd(3) + 1);
-                set_obj_dknown(obj2, TRUE), set_obj_aknown(obj2, TRUE), set_obj_nknown(obj2, TRUE);
+                set_obj_dknown(obj2, TRUE);
+                set_obj_aknown(obj2, TRUE);
+                set_obj_nknown(obj2, TRUE);
             }
             else if (!katana_already_exists)
             {
@@ -1675,7 +1683,8 @@ gcrownu(void)
                     obj->enchantment = 1;
                     if (obj->oartifact == ART_KATANA_OF_MASAMUNE)
                     {
-                        set_obj_aknown(obj, TRUE), set_obj_nknown(obj, TRUE);
+                        set_obj_aknown(obj, TRUE);
+                        set_obj_nknown(obj, TRUE);
                         discover_artifact(ART_KATANA_OF_MASAMUNE);
                         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                             "was bestowed with %s",
@@ -1698,7 +1707,8 @@ gcrownu(void)
                 {
                     class_gift = LONG_SWORD;
                     u.ugifts++;
-                    set_obj_aknown(obj, TRUE), set_obj_nknown(obj, TRUE);
+                    set_obj_aknown(obj, TRUE);
+                    set_obj_nknown(obj, TRUE);
                     livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
                         "was bestowed with %s",
                         artiname(ART_EXCALIBUR));
@@ -1716,7 +1726,8 @@ gcrownu(void)
                 {
                     class_gift = LONG_SWORD;
                     u.ugifts++;
-                    set_obj_aknown(obj2, TRUE), set_obj_nknown(obj2, TRUE);
+                    set_obj_aknown(obj2, TRUE);
+                    set_obj_nknown(obj2, TRUE);
                     livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                         "was bestowed with %s",
                         artiname(ART_EXCALIBUR));
@@ -1757,14 +1768,18 @@ gcrownu(void)
                 class_gift = LONG_SWORD;
                 Your("%s goes snicker-snack!", xname(obj));
                 obj->enchantment = max(1, obj->enchantment + rnd(3) + 1);
-                set_obj_dknown(obj, TRUE), set_obj_aknown(obj, TRUE), set_obj_nknown(obj, TRUE);
+                set_obj_dknown(obj, TRUE);
+                set_obj_aknown(obj, TRUE);
+                set_obj_nknown(obj, TRUE);
             }
             else if (obj2 && in_hand2)
             {
                 class_gift = LONG_SWORD;
                 Your("%s goes snicker-snack!", xname(obj2));
                 obj2->enchantment = max(1, obj2->enchantment + rnd(3) + 1);
-                set_obj_dknown(obj2, TRUE), set_obj_aknown(obj2, TRUE), set_obj_nknown(obj2, TRUE);
+                set_obj_dknown(obj2, TRUE);
+                set_obj_aknown(obj2, TRUE);
+                set_obj_nknown(obj2, TRUE);
             }
             else if (!vorpal_blade_already_exists)
             {
@@ -1774,7 +1789,8 @@ gcrownu(void)
                     class_gift = LONG_SWORD;
                     obj = oname(obj, artiname(ART_VORPAL_BLADE));
                     obj->enchantment = 1;
-                    set_obj_aknown(obj, TRUE), set_obj_nknown(obj, TRUE);
+                    set_obj_aknown(obj, TRUE);
+                    set_obj_nknown(obj, TRUE);
                     if (obj->oartifact == ART_VORPAL_BLADE)
                     {
                         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
@@ -1827,14 +1843,18 @@ gcrownu(void)
                 class_gift = chaotic_crowning_gift_baseitem;
                 Your("%s hums ominously!", swordbuf);
                 obj->enchantment = max(1, obj->enchantment + rnd(3) + 1);
-                set_obj_dknown(obj, TRUE), set_obj_aknown(obj, TRUE), set_obj_nknown(obj, TRUE);
+                set_obj_dknown(obj, TRUE);
+                set_obj_aknown(obj, TRUE);
+                set_obj_nknown(obj, TRUE);
             }
             else if (obj2 && in_hand2)
             {
                 class_gift = chaotic_crowning_gift_baseitem;
                 Your("%s hums ominously!", swordbuf);
                 obj2->enchantment = max(1, obj2->enchantment + rnd(3) + 1);
-                set_obj_dknown(obj2, TRUE), set_obj_aknown(obj2, TRUE), set_obj_nknown(obj2, TRUE);
+                set_obj_dknown(obj2, TRUE);
+                set_obj_aknown(obj2, TRUE);
+                set_obj_nknown(obj2, TRUE);
             }
             else if (!chaotic_crowning_gift_already_exists)
             {
@@ -1844,7 +1864,8 @@ gcrownu(void)
                     class_gift = chaotic_crowning_gift_baseitem;
                     obj = oname(obj, artiname(chaotic_crowning_gift_oartifact));
                     obj->enchantment = 1;
-                    set_obj_aknown(obj, TRUE), set_obj_nknown(obj, TRUE);
+                    set_obj_aknown(obj, TRUE);
+                    set_obj_nknown(obj, TRUE);
                     if (obj->oartifact == chaotic_crowning_gift_oartifact)
                     {
                         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
@@ -1905,7 +1926,10 @@ gcrownu(void)
         bless(obj);
         obj->oeroded = obj->oeroded2 = 0;
         set_obj_oerodeproof(obj, TRUE);
-        set_obj_bknown(obj, TRUE), set_obj_rknown(obj, TRUE), set_obj_nknown(obj, TRUE), set_obj_aknown(obj, TRUE);
+        set_obj_bknown(obj, TRUE);
+        set_obj_rknown(obj, TRUE);
+        set_obj_nknown(obj, TRUE);
+        set_obj_aknown(obj, TRUE);
         if (obj->enchantment < 1)
             obj->enchantment = 1;
         /* acquire skill in this weapon */
@@ -1916,7 +1940,8 @@ gcrownu(void)
         bless(obj2);
         obj2->oeroded = obj2->oeroded2 = 0;
         set_obj_oerodeproof(obj2, TRUE);
-        set_obj_bknown(obj2, TRUE), set_obj_rknown(obj2, TRUE);
+        set_obj_bknown(obj2, TRUE);
+        set_obj_rknown(obj2, TRUE);
         if (obj2->enchantment < 1)
             obj2->enchantment = 1;
         /* acquire skill in this weapon */

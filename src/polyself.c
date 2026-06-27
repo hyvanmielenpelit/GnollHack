@@ -2583,7 +2583,8 @@ dolayegg(void)
     uegg->owt = weight(uegg);
     /* this sets hatch timers if appropriate */
     set_corpsenm(uegg, egg_type_from_parent(u.umonnum, FALSE));
-    set_obj_known(uegg, 1), set_obj_dknown(uegg, 1);
+    set_obj_known(uegg, 1);
+    set_obj_dknown(uegg, 1);
     You("%s an egg.", eggs_in_water(youmonst.data) ? "spawn" : "lay");
     if (!dropy(uegg))
         stackobj(uegg);

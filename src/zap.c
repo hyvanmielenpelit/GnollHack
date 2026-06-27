@@ -1632,7 +1632,9 @@ int probe_object(struct obj *obj)
     set_obj_dknown(obj, 1);
     if (Is_container(obj) || obj->otyp == STATUE)
     {
-        set_obj_cknown(obj, 1), set_obj_lknown(obj, 1), set_obj_tknown(obj, 1);
+        set_obj_cknown(obj, 1);
+        set_obj_lknown(obj, 1);
+        set_obj_tknown(obj, 1);
         if (!obj->cobj)
         {
             pline("%s empty.", Tobjnam(obj, "are"));
@@ -2409,7 +2411,8 @@ display_monster_inventory(struct monst *mtmp, boolean probing)
             set_obj_dknown(otmp, 1); /* treat as "seen" */
             if (probing && (Is_container(otmp) || otmp->otyp == STATUE)) 
             {
-                set_obj_lknown(otmp, 1), set_obj_tknown(otmp, 1);
+                set_obj_lknown(otmp, 1);
+                set_obj_tknown(otmp, 1);
                 if (!SchroedingersBox(otmp))
                     set_obj_cknown(otmp, 1);
             }
@@ -5327,7 +5330,10 @@ zapnodir(struct obj *obj)
             otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
             if (otmp)
             {
-                set_obj_dknown(otmp, 1), set_obj_bknown(otmp, 1), set_obj_rknown(otmp, 1), set_obj_nknown(otmp, 1);
+                set_obj_dknown(otmp, 1);
+                set_obj_bknown(otmp, 1);
+                set_obj_rknown(otmp, 1);
+                set_obj_nknown(otmp, 1);
                 put_saddle_on_mon(otmp, mtmp);
             }
         }
@@ -7522,7 +7528,8 @@ zapyourself(struct obj *obj, boolean ordinary)
             set_obj_dknown(otmp, 1);
             if (Is_container(otmp) || otmp->otyp == STATUE) 
             {
-                set_obj_lknown(otmp, 1), set_obj_tknown(otmp, 1);
+                set_obj_lknown(otmp, 1);
+                set_obj_tknown(otmp, 1);
                 if (!SchroedingersBox(otmp))
                     set_obj_cknown(otmp, 1);
             }
@@ -11343,7 +11350,10 @@ fracture_rock(struct obj *obj, boolean verbose)
     obj->oclass = GEM_CLASS;
     obj->quan = (int64_t) rn1(60, 7);
     obj->owt = weight(obj);
-    set_obj_dknown(obj, 0), set_obj_bknown(obj, 0), set_obj_rknown(obj, 0), set_obj_nknown(obj, 0);
+    set_obj_dknown(obj, 0);
+    set_obj_bknown(obj, 0);
+    set_obj_rknown(obj, 0);
+    set_obj_nknown(obj, 0);
     set_obj_known(obj, objects[obj->otyp].oc_uses_known ? 0 : 1);
     dealloc_oextra(obj);
 
