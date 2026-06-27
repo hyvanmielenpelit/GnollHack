@@ -1390,7 +1390,7 @@ enum cat_breeds {
 #define INVENTORY_SWAP_RESULT   -2
 
 #define XRAY_VISION_RANGE 3
-#define ASTRAL_VISION_RANGE 4
+#define ASTRAL_VISION_RANGE 5
 
 #endif /* GENERAL_H */
 
