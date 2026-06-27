@@ -255,18 +255,34 @@ struct flag {
     uchar save_file_tracking_value; /* this is the track value when tracking is supported and needed (desktop) */
     boolean ignore_stopping;
     boolean multishot_always_fire; /* Do not stop multishot firing if the target dies */
+    uchar reserved_ucharH;
+
+    uchar reserved_uchar1;
+    uchar reserved_uchar2;
+    uchar reserved_uchar3;
+    uchar reserved_uchar4;
+    uchar reserved_uchar5;
     uchar reserved_uchar6;
+    uchar reserved_uchar7;
+    uchar reserved_uchar8;
 
     uint64_t version_number_at_start;
 
     /* Emergency reserved variables to make non-save-game-breaking changes */
+    uint64_t reserved_ulong1;
     uint64_t reserved_ulong2;
     int reserved_int1;
     int reserved_int2;
+    int reserved_int3;
+    int reserved_int4;
     short reserved_short1;
     short reserved_short2;
+    short reserved_short3;
+    short reserved_short4;
     char reserved_char1;
     char reserved_char2;
+    char reserved_char3;
+    char reserved_char4;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
     boolean reserved_bool1;
