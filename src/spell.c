@@ -152,14 +152,14 @@ cursed_book(struct obj *bp)
             break;
         }
         /* temp disable in_use; death should not destroy the book */
-        was_in_use = bp->in_use;
-        bp->in_use = FALSE;
+        was_in_use = is_obj_in_use(bp);
+        set_obj_in_use(bp, FALSE);
         losestr(Poison_resistance ? rn1(2, 1) : rn1(4, 3));
         losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "contact-poisoned spellbook",
                KILLED_BY_AN);
         losehp(rnd(Poison_resistance ? 6 : 10), "contact-poisoned spellbook",
             KILLED_BY_AN);
-        bp->in_use = was_in_use;
+        set_obj_in_use(bp, was_in_use);
         break;
     case 6:
         if (Magic_missile_immunity) {
@@ -190,7 +190,7 @@ confused_book(struct obj *spellbook)
         char dcbuf[BUFSZ] = "";
         char dcbuf2[BUFSZ] = "";
         char dcbuf3[BUFSZ] = "";
-        spellbook->in_use = TRUE; /* in case called from learn */
+        set_obj_in_use(spellbook, TRUE); /* in case called from learn */
         Strcpy(dcbuf2, "Being confused you have difficulties in controlling your actions.");
         pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf2);
         display_nhwindow(WIN_MESSAGE, FALSE);
@@ -219,39 +219,39 @@ deadbook(struct obj *book2)
 
     You("turn the pages of the Book of the Dead...");
     makeknown(SPE_BOOK_OF_THE_DEAD);
-    /* KMH -- Need ->known to avoid "_a_ Book of the Dead" */
-    book2->known = 1;
+    /* KMH -- is_obj_known(Need) to avoid "_a_ Book of the Dead" */
+    set_obj_known(book2, 1);
     if (invocation_pos(u.ux, u.uy) && !On_stairs(u.ux, u.uy)) {
         struct obj *otmp;
         boolean arti1_primed = FALSE, arti2_primed = FALSE,
                          arti_cursed = FALSE;
 
-        if (book2->cursed) {
+        if (is_obj_cursed(book2)) {
             play_sfx_sound(SFX_GENERAL_NOT_IN_THE_RIGHT_CONDITION);
             pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "runes appear scrambled.  You can't read them!");
             return;
         }
 
-        if (!u.uhave.bell || !u.uhave.menorah) {
+        if (!is_uhave_bell() || !is_uhave_menorah()) {
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "A chill runs down your %s.", body_part(SPINE));
-            if (!u.uhave.bell)
+            if (!is_uhave_bell())
                 You_hear("a faint chime...");
-            if (!u.uhave.menorah)
+            if (!is_uhave_menorah())
                 pline("Vlad's doppelganger is amused.");
             return;
         }
 
         for (otmp = invent; otmp; otmp = otmp->nobj) {
             if (otmp->otyp == CANDELABRUM_OF_INVOCATION && otmp->special_quality >= objects[otmp->otyp].oc_special_quality
-                && otmp->lamplit) {
-                if (!otmp->cursed)
+                && is_obj_lamplit(otmp)) {
+                if (!is_obj_cursed(otmp))
                     arti1_primed = TRUE;
                 else
                     arti_cursed = TRUE;
             }
             if (otmp->otyp == BELL_OF_OPENING
                 && (moves - otmp->age) < 5L) { /* you rang it recently */
-                if (!otmp->cursed)
+                if (!is_obj_cursed(otmp))
                     arti2_primed = TRUE;
                 else
                     arti_cursed = TRUE;
@@ -268,16 +268,16 @@ deadbook(struct obj *book2)
             
             /* successful invocation */
             mkinvokearea();
-            if (!u.uevent.invoked)
+            if (!is_uevent_invoked())
             {
                 achievement_gained("Performed the Invocation Ritual");
                 livelog_printf(LL_ACHIEVE, "%s", "performed the invocation");
                 issue_achievement(GUI_ACHIEVEMENT_PERFORMED_THE_RITUAL);
-                u.uevent.invoked = 1;
+                set_uevent_invoked(1);
             }
             /* in case you haven't killed the Wizard yet, behave as if
                you just did */
-            u.uevent.ukilled_wizard = 1; /* wizdead() */
+            set_uevent_ukilled_wizard(1); /* wizdead() */
             if (!u.uintervene_timer || u.uintervene_timer > soon)
                 u.uintervene_timer = soon;
         } else { /* at least one artifact not prepared properly */
@@ -288,7 +288,7 @@ deadbook(struct obj *book2)
     }
 
     /* when not an invocation situation */
-    if (book2->cursed)
+    if (is_obj_cursed(book2))
     {
     raise_dead:
         You_ex(ATR_NONE, CLR_MSG_WARNING, "raised the dead!");
@@ -297,7 +297,7 @@ deadbook(struct obj *book2)
                                         MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0
                         || (mtmp = makemon(&mons[PM_NALFESHNEE], u.ux, u.uy,
                                            MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0)) {
-            mtmp->mpeaceful = 0;
+            set_mon_mpeaceful(mtmp, 0);
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
         }
@@ -309,7 +309,7 @@ deadbook(struct obj *book2)
         mkundead(&mm, TRUE, MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION);
 
     } 
-    else if (book2->blessed)
+    else if (is_obj_blessed(book2))
     {
         for (mtmp = fmon; mtmp; mtmp = mtmp2) 
         {
@@ -320,7 +320,7 @@ deadbook(struct obj *book2)
             if ((is_undead(mtmp->data) || is_vampshifter(mtmp))
                 && cansee(mtmp->mx, mtmp->my))
             {
-                mtmp->mpeaceful = TRUE;
+                set_mon_mpeaceful(mtmp, TRUE);
 
                 if (sgn(mtmp->data->maligntyp) == sgn(u.ualign.type)
                     && distu(mtmp->mx, mtmp->my) < 4)
@@ -363,7 +363,7 @@ static void
 modronbook(struct obj *book2)
 {
     You("finish reading one paragraph of the Prime Codex...");
-    book2->aknown = book2->nknown = book2->dknown = 1;
+    set_obj_aknown(book2, 1), set_obj_nknown(book2, 1), set_obj_dknown(book2, 1);
     makeknown(SPE_BOOK_OF_MODRON);
 
     if (Hallucination || Stunned || Confusion)
@@ -386,7 +386,7 @@ void
 book_cursed(struct obj *book)
 {
     if (occupation == learn && context.spbook.book == book
-        && book->cursed && book->bknown && multi >= 0)
+        && is_obj_cursed(book) && is_obj_bknown(book) && multi >= 0)
         stop_occupation();
 }
 
@@ -405,7 +405,7 @@ learn(void)
     if (!book || !carried(book))
         return 0;
 
-    if (book->unpaid && costly_spot(u.ux, u.uy))
+    if (is_obj_unpaid(book) && costly_spot(u.ux, u.uy))
     {
         debugprint_pos();
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
@@ -462,9 +462,9 @@ learn(void)
     if (reading_result == READING_RESULT_FAIL)
     {
 
-        if (book->cursed)
+        if (is_obj_cursed(book))
             gone = cursed_book(book);
-        else if (!book->blessed && !rn2(2))
+        else if (!is_obj_blessed(book) && !rn2(2))
         {
             play_sfx_sound(SFX_SPELL_LEARN_FAIL);
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "These runes were just too much to comprehend.");
@@ -493,7 +493,7 @@ learn(void)
             useup(book);
         }
         else
-            book->in_use = FALSE;
+            set_obj_in_use(book, FALSE);
 
         goto check_added_to_your_bill_here;
     }
@@ -502,7 +502,7 @@ learn(void)
         gone = confused_book(book);
         if (!gone)
         {
-            book->in_use = FALSE;
+            set_obj_in_use(book, FALSE);
         }
         goto check_added_to_your_bill_here;
     }
@@ -618,7 +618,7 @@ learn(void)
             You_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, "now have %d %scastings of \'%s\' prepared.", addedamount, !initialamount ? "" : "more ", splname);
     }
 
-    if (book->cursed) 
+    if (is_obj_cursed(book)) 
     { /* maybe a demon cursed it */
         if (cursed_book(book)) 
         {
@@ -846,17 +846,17 @@ study_book(struct obj *spellbook)
                         "became literate by reading %s", tribtitle);
                 check_unpaid(spellbook);
                 makeknown(booktype);
-                if (!u.uevent.read_tribute) 
+                if (!is_uevent_read_tribute()) 
                 {
                     /* give bonus of 20 xp and 4*20+0 pts */
                     more_experienced(20, 0);
                     newexplevel();
-                    u.uevent.read_tribute = 1; /* only once */
+                    set_uevent_read_tribute(1); /* only once */
                 }
-                if (!u.uachieve.read_discworld_novel)
+                if (!is_uachieve_read_discworld_novel())
                 {
                     achievement_gained("Read a Discworld Novel");
-                    u.uachieve.read_discworld_novel = 1;
+                    set_uachieve_read_discworld_novel(1);
                 }
             }
             return 1;
@@ -871,9 +871,9 @@ study_book(struct obj *spellbook)
             * objects[booktype].oc_delay;
 
         /* Books are often wiser than their readers (Rus.) */
-        spellbook->in_use = TRUE;
-        if (!spellbook->blessed && spellbook->otyp != SPE_BOOK_OF_THE_DEAD && spellbook->otyp != SPE_BOOK_OF_MODRON) {
-            if (spellbook->cursed)
+        set_obj_in_use(spellbook, TRUE);
+        if (!is_obj_blessed(spellbook) && spellbook->otyp != SPE_BOOK_OF_THE_DEAD && spellbook->otyp != SPE_BOOK_OF_MODRON) {
+            if (is_obj_cursed(spellbook))
             {
                 too_hard = TRUE;
             }
@@ -910,7 +910,7 @@ study_book(struct obj *spellbook)
 
                     if (yn_query(qbuf) != 'y') 
                     {
-                        spellbook->in_use = FALSE;
+                        set_obj_in_use(spellbook, FALSE);
                         return 1;
                     }
                 }
@@ -929,9 +929,9 @@ study_book(struct obj *spellbook)
 #if 0
             boolean gone = FALSE;
             
-            if(spellbook->cursed)
+            if(is_obj_cursed(spellbook))
                 gone = cursed_book(spellbook);
-            else if (!spellbook->blessed && !rn2(2))
+            else if (!is_obj_blessed(spellbook) && !rn2(2))
             {
                 pline("These runes were just too much to comprehend.");
                 make_confused(itimeout_incr(HConfusion, rnd(4) + 5), FALSE);
@@ -951,7 +951,7 @@ study_book(struct obj *spellbook)
                     docall(spellbook, (char*)0);
                 useup(spellbook);
             } else
-                spellbook->in_use = FALSE;
+                set_obj_in_use(spellbook, FALSE);
             return 1;
 #endif
         } 
@@ -961,7 +961,7 @@ study_book(struct obj *spellbook)
 #if 0
             if (!confused_book(spellbook))
             {
-                spellbook->in_use = FALSE;
+                set_obj_in_use(spellbook, FALSE);
             }
             nomul(context.spbook.delay);
             multi_reason = "reading a book";
@@ -972,7 +972,7 @@ study_book(struct obj *spellbook)
             return 1;
 #endif
         }
-        spellbook->in_use = FALSE;
+        set_obj_in_use(spellbook, FALSE);
 
 //        if (perusetext)
 //            pline("The spellbook seems comprehensible enough.");
@@ -2620,7 +2620,7 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
        the attempt may fail due to lack of energy after the draining, in
        which case a turn will be used up in addition to the energy loss */
 
-    if (u.uhave.amulet && u.uen >= energy) {
+    if (is_uhave_amulet() && u.uen >= energy) {
         You_feel("the amulet draining your energy away.");
         /* this used to be 'energy += rnd(2 * energy)' (without 'res'),
            so if amulet-induced cost was more than u.uen, nothing
@@ -2744,7 +2744,7 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
     pseudo.otyp = spellid(spell);
     pseudo.oclass = SPBOOK_CLASS;
     pseudo.quan = 20L; /* do not let useup get it */
-    //pseudo->blessed = pseudo->cursed = 0;
+    //set_obj_blessed(pseudo, 0), set_obj_cursed(pseudo, 0);
     /*
      * Find the skill the hero has in a spell type category.
      * See spell_skilltype for categories.
@@ -3132,7 +3132,7 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
         special_effect_wait_until_action(0);
         if (!Blocks_Clairvoyance) {
             if (role_skill >= P_SKILLED)
-                pseudo.blessed = 1; /* detect monsters as well as map */
+                set_obj_blessed(&(pseudo), 1); /* detect monsters as well as map */
             do_vicinity_map(&pseudo);
         /* at present, only one thing blocks clairvoyance */
         } else if (uarmh && uarmh->otyp == CORNUTHAUM)
@@ -3369,12 +3369,12 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
     u_wait_until_end();
     update_u_action_revert(ACTION_TILE_NO_ACTION);
 
-    if (!u.uachieve.role_achievement && spell_successful && effect_happened && (
+    if (!is_uachieve_role_achievement() && spell_successful && effect_happened && (
         (Role_if(PM_WIZARD) && spellev(spell) >= 10)
         || (Role_if(PM_PRIEST) && spellev(spell) >= 10)
         || (Role_if(PM_HEALER) && (skill == P_HEALING_SPELL || skill == P_ABJURATION_SPELL) && spellev(spell) >= 9)))
     {
-        u.uachieve.role_achievement = 1;
+        set_uachieve_role_achievement(1);
         char abuf[BUFSZ];
         char* ra_desc = get_role_achievement_description(1);
         strcpy_capitalized_for_title(abuf, ra_desc);
@@ -5785,14 +5785,14 @@ is_obj_acceptable_component(const struct materialcomponent *mc, struct obj *otmp
 
     if (acceptable)
     {
-        if (buc_acceptable && (mc->flags & MATCOMP_BLESSED_REQUIRED) != 0 && !otmp->blessed)
-            buc_acceptable = otmp->bknown || !also_possible ? FALSE : 2;
+        if (buc_acceptable && (mc->flags & MATCOMP_BLESSED_REQUIRED) != 0 && !is_obj_blessed(otmp))
+            buc_acceptable = is_obj_bknown(otmp) || !also_possible ? FALSE : 2;
 
-        if (buc_acceptable && (mc->flags & MATCOMP_CURSED_REQUIRED) != 0 && !otmp->cursed)
-            buc_acceptable = otmp->bknown || !also_possible ? FALSE : 2;
+        if (buc_acceptable && (mc->flags & MATCOMP_CURSED_REQUIRED) != 0 && !is_obj_cursed(otmp))
+            buc_acceptable = is_obj_bknown(otmp) || !also_possible ? FALSE : 2;
 
-        if (buc_acceptable && (mc->flags & MATCOMP_NOT_CURSED) != 0 && otmp->cursed)
-            buc_acceptable = otmp->bknown || !also_possible ? FALSE : 2;
+        if (buc_acceptable && (mc->flags & MATCOMP_NOT_CURSED) != 0 && is_obj_cursed(otmp))
+            buc_acceptable = is_obj_bknown(otmp) || !also_possible ? FALSE : 2;
     }
 
     return acceptable ? buc_acceptable : 0;

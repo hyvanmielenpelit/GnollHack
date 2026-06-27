@@ -381,67 +381,67 @@ encodeachieve(void)
 {
     int64_t r = 0L;
 
-    if (u.uachieve.bell)
+    if (is_uachieve_bell())
         r |= 1L << 0;
-    if (u.uachieve.enter_gehennom)
+    if (is_uachieve_enter_gehennom())
         r |= 1L << 1;
-    if (u.uachieve.menorah)
+    if (is_uachieve_menorah())
         r |= 1L << 2;
-    if (u.uachieve.book)
+    if (is_uachieve_book())
         r |= 1L << 3;
-    if (u.uevent.invoked)
+    if (is_uevent_invoked())
         r |= 1L << 4;
-    if (u.uachieve.amulet)
+    if (is_uachieve_amulet())
         r |= 1L << 5;
     if (In_endgame(&u.uz))
         r |= 1L << 6;
     if (Is_astralevel(&u.uz))
         r |= 1L << 7;
-    if (u.uachieve.ascended)
+    if (is_uachieve_ascended())
         r |= 1L << 8;
-    if (u.uachieve.mines_luckstone)
+    if (is_uachieve_mines_luckstone())
         r |= 1L << 9;
-    if (u.uachieve.finish_sokoban)
+    if (is_uachieve_finish_sokoban())
         r |= 1L << 10;
-    if (u.uachieve.killed_medusa)
+    if (is_uachieve_killed_medusa())
         r |= 1L << 11;
-    if (u.uachieve.killed_yacc)
+    if (is_uachieve_killed_yacc())
         r |= 1L << 12;
-    if (u.uachieve.prime_codex)
+    if (is_uachieve_prime_codex())
         r |= 1L << 13;
-    if (u.uachieve.consulted_oracle)
+    if (is_uachieve_consulted_oracle())
         r |= 1L << 14;
-    if (u.uachieve.read_discworld_novel)
+    if (is_uachieve_read_discworld_novel())
         r |= 1L << 15;
-    if (u.uachieve.entered_gnomish_mines)
+    if (is_uachieve_entered_gnomish_mines())
         r |= 1L << 16;
-    if (u.uachieve.entered_mine_town)
+    if (is_uachieve_entered_mine_town())
         r |= 1L << 17;
-    if (u.uachieve.entered_shop)
+    if (is_uachieve_entered_shop())
         r |= 1L << 18;
-    if (u.uachieve.entered_temple)
+    if (is_uachieve_entered_temple())
         r |= 1L << 19;
-    if (u.uachieve.entered_sokoban)
+    if (is_uachieve_entered_sokoban())
         r |= 1L << 20;
-    if (u.uachieve.entered_bigroom)
+    if (is_uachieve_entered_bigroom())
         r |= 1L << 21;
-    if (u.uachieve.learned_castle_tune)
+    if (is_uachieve_learned_castle_tune())
         r |= 1L << 22;
-    if (u.uachieve.entered_large_circular_dungeon)
+    if (is_uachieve_entered_large_circular_dungeon())
         r |= 1L << 23;
-    if (u.uachieve.entered_plane_of_modron)
+    if (is_uachieve_entered_plane_of_modron())
         r |= 1L << 24;
-    if (u.uachieve.entered_hellish_pastures)
+    if (is_uachieve_entered_hellish_pastures())
         r |= 1L << 25;
-    if (u.uachieve.entered_elemental_planes)
+    if (is_uachieve_entered_elemental_planes())
         r |= 1L << 26;
-    if (u.uachieve.entered_astral_plane)
+    if (is_uachieve_entered_astral_plane())
         r |= 1L << 27;
-    if (u.uachieve.role_achievement)
+    if (is_uachieve_role_achievement())
         r |= 1L << 28;
-    if (u.uachieve.crowned)
+    if (is_uachieve_crowned())
         r |= 1L << 29;
-    if (u.uachieve.killed_demogorgon)
+    if (is_uachieve_killed_demogorgon())
         r |= 1L << 30;
 
     return r;
@@ -607,35 +607,35 @@ encode_extended_achievements(void)
     static char buf[10 * BUFSZ]; /* Long enough */
 
     buf[0] = '\0';
-    add_achieveX(buf, "obtained_the_bell_of_opening", u.uachieve.bell);
-    add_achieveX(buf, "entered_gehennom", u.uachieve.enter_gehennom);
-    add_achieveX(buf, "obtained_the_candelabrum_of_invocation", u.uachieve.menorah);
-    add_achieveX(buf, "obtained_the_book_of_the_dead", u.uachieve.book);
-    add_achieveX(buf, "performed_the_invocation_ritual", u.uevent.invoked);
-    add_achieveX(buf, "obtained_the_amulet_of_yendor", u.uachieve.amulet);
-    add_achieveX(buf, "ascended", u.uachieve.ascended);
-    add_achieveX(buf, "obtained_the_luckstone_from_the_mines", u.uachieve.mines_luckstone);
-    add_achieveX(buf, "obtained_the_sokoban_prize", u.uachieve.finish_sokoban);
-    add_achieveX(buf, "defeated_medusa", u.uachieve.killed_medusa);
-    add_achieveX(buf, "defeated_yacc", u.uachieve.killed_yacc);
-    add_achieveX(buf, "defeated_demogorgon", u.uachieve.killed_demogorgon);
-    add_achieveX(buf, "obtained_the_prime_codex", u.uachieve.prime_codex);
-    add_achieveX(buf, "consulted_the_oracle", u.uachieve.consulted_oracle);
-    add_achieveX(buf, "read_a_discworld_novel", u.uachieve.read_discworld_novel);
-    add_achieveX(buf, "entered_the_gnomish_mines", u.uachieve.entered_gnomish_mines);
-    add_achieveX(buf, "entered_mine_town", u.uachieve.entered_mine_town);
-    add_achieveX(buf, "entered_a_shop", u.uachieve.entered_shop);
-    add_achieveX(buf, "entered_a_temple", u.uachieve.entered_temple);
-    add_achieveX(buf, "entered_sokoban", u.uachieve.entered_sokoban);
-    add_achieveX(buf, "entered_bigroom", u.uachieve.entered_bigroom);
-    add_achieveX(buf, "learned_castle_drawbridge_tune", u.uachieve.learned_castle_tune);
-    add_achieveX(buf, "entered_large_circular_dungeon", u.uachieve.entered_large_circular_dungeon);
-    add_achieveX(buf, "entered_plane_of_modron", u.uachieve.entered_plane_of_modron);
-    add_achieveX(buf, "entered_hellish_pastures", u.uachieve.entered_hellish_pastures);
-    add_achieveX(buf, "entered_elemental_planes", u.uachieve.entered_elemental_planes);
-    add_achieveX(buf, "entered_astral_plane", u.uachieve.entered_astral_plane);
-    add_achieveX(buf, "role_achievement", u.uachieve.role_achievement);
-    add_achieveX(buf, "crowned", u.uachieve.crowned);
+    add_achieveX(buf, "obtained_the_bell_of_opening", is_uachieve_bell());
+    add_achieveX(buf, "entered_gehennom", is_uachieve_enter_gehennom());
+    add_achieveX(buf, "obtained_the_candelabrum_of_invocation", is_uachieve_menorah());
+    add_achieveX(buf, "obtained_the_book_of_the_dead", is_uachieve_book());
+    add_achieveX(buf, "performed_the_invocation_ritual", is_uevent_invoked());
+    add_achieveX(buf, "obtained_the_amulet_of_yendor", is_uachieve_amulet());
+    add_achieveX(buf, "ascended", is_uachieve_ascended());
+    add_achieveX(buf, "obtained_the_luckstone_from_the_mines", is_uachieve_mines_luckstone());
+    add_achieveX(buf, "obtained_the_sokoban_prize", is_uachieve_finish_sokoban());
+    add_achieveX(buf, "defeated_medusa", is_uachieve_killed_medusa());
+    add_achieveX(buf, "defeated_yacc", is_uachieve_killed_yacc());
+    add_achieveX(buf, "defeated_demogorgon", is_uachieve_killed_demogorgon());
+    add_achieveX(buf, "obtained_the_prime_codex", is_uachieve_prime_codex());
+    add_achieveX(buf, "consulted_the_oracle", is_uachieve_consulted_oracle());
+    add_achieveX(buf, "read_a_discworld_novel", is_uachieve_read_discworld_novel());
+    add_achieveX(buf, "entered_the_gnomish_mines", is_uachieve_entered_gnomish_mines());
+    add_achieveX(buf, "entered_mine_town", is_uachieve_entered_mine_town());
+    add_achieveX(buf, "entered_a_shop", is_uachieve_entered_shop());
+    add_achieveX(buf, "entered_a_temple", is_uachieve_entered_temple());
+    add_achieveX(buf, "entered_sokoban", is_uachieve_entered_sokoban());
+    add_achieveX(buf, "entered_bigroom", is_uachieve_entered_bigroom());
+    add_achieveX(buf, "learned_castle_drawbridge_tune", is_uachieve_learned_castle_tune());
+    add_achieveX(buf, "entered_large_circular_dungeon", is_uachieve_entered_large_circular_dungeon());
+    add_achieveX(buf, "entered_plane_of_modron", is_uachieve_entered_plane_of_modron());
+    add_achieveX(buf, "entered_hellish_pastures", is_uachieve_entered_hellish_pastures());
+    add_achieveX(buf, "entered_elemental_planes", is_uachieve_entered_elemental_planes());
+    add_achieveX(buf, "entered_astral_plane", is_uachieve_entered_astral_plane());
+    add_achieveX(buf, "role_achievement", is_uachieve_role_achievement());
+    add_achieveX(buf, "crowned", is_uachieve_crowned());
 
     return buf;
 }

@@ -355,26 +355,26 @@ struct material_definition {
     enum material_phase phase;
     enum hit_surface_types hit_surface_mapping;
     enum floor_surface_types floor_surface_mapping;
-    Bitfield(flammable, 1);
-    Bitfield(rustprone, 1);
-    Bitfield(corrodeable, 1);
-    Bitfield(rottable, 1);
+    uchar flammable;
+    uchar rustprone;
+    uchar corrodeable;
+    uchar rottable;
 
-    Bitfield(melts_in_fire, 1);        /* Solids melt, liquids boil */
-    Bitfield(death_enchantable, 1);
-    Bitfield(flimsy, 1);
-    Bitfield(metallic, 1);
-    Bitfield(mineral, 1);
+    uchar melts_in_fire;        /* Solids melt, liquids boil */
+    uchar death_enchantable;
+    uchar flimsy;
+    uchar metallic;
+    uchar mineral;
 
-    Bitfield(gemstone, 1);
-    Bitfield(organic, 1);
-    Bitfield(edible, 1);
-    Bitfield(slurpable, 1);
+    uchar gemstone;
+    uchar organic;
+    uchar edible;
+    uchar slurpable;
 
-    Bitfield(fragile, 1);
-    Bitfield(destroyed_in_lava, 1);
-    Bitfield(wishable, 1);
-    Bitfield(scratchable, 1);
+    uchar fragile;
+    uchar destroyed_in_lava;
+    uchar wishable;
+    uchar scratchable;
 
     const char* foodword;
     const char* streakword;
@@ -422,9 +422,9 @@ struct objclass {
     char *oc_uname;                 /* called by user */
     uchar oc_name_known;     /* discovered */
     uchar oc_merge;          /* merge otherwise equal objects */
-    uchar oc_uses_known;     /* obj->known affects full description;
-                                       otherwise, obj->dknown and obj->bknown
-                                       tell all, and obj->known should always
+    uchar oc_uses_known;     /* is_obj_known(obj) affects full description;
+                                       otherwise, is_obj_dknown(obj) and is_obj_bknown(obj)
+                                       tell all, and is_obj_known(obj) should always
                                        be set for proper merging behavior. */
     uchar oc_pre_discovered; /* Already known at start of game;
                                        won't be listed as a discovery. */

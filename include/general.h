@@ -633,7 +633,7 @@ enum context_menu_styles {
 #define DONAME_SHOW_QUICK_ITEMS             0x1000
 
 /* Moved from shk.c */
-#define NOTANGRY(mon) ((mon)->mpeaceful)
+#define NOTANGRY(mon) (is_mon_mpeaceful((mon)))
 #define ANGRY(mon) (!NOTANGRY(mon))
 #define IS_SHOP(x) (rooms[x].rtype >= SHOPBASE)
 

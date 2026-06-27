@@ -171,7 +171,7 @@ inven_inuse(boolean quietly)
         otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
         if (Is_proper_container(otmp))
             unmark_unpaid_container_contents(otmp);
-        if (otmp->in_use)
+        if (is_obj_in_use(otmp))
         {
             if (otmp->otyp == AMULET_OF_YENDOR
                 || otmp->otyp == CANDELABRUM_OF_INVOCATION
@@ -184,7 +184,7 @@ inven_inuse(boolean quietly)
                     ))
                 )
             {
-                otmp->in_use = 0; /* Likely memory corruption; prevent destruction of any critical items */
+                set_obj_in_use(otmp, 0); /* Likely memory corruption; prevent destruction of any critical items */
                 char dbuf[BUFSZ * 2];
                 Sprintf(dbuf, "A mysterious force prevents finishing off %s...", the(xname(otmp)));
                 if (!quietly)
@@ -402,8 +402,8 @@ restobjchn(int fd, boolean ghostly, boolean frozen)
                 otmp->owt = weight(otmp);
             }
         }
-        if (otmp->bypass)
-            otmp->bypass = 0;
+        if (is_obj_bypass(otmp))
+            set_obj_bypass(otmp, 0);
         if (!ghostly) {
             /* fix the pointers */
             if (otmp->o_id == context.victual.o_id)
@@ -569,13 +569,13 @@ restmonchn(int fd, boolean ghostly)
             }
         }
 
-        if (mtmp->isshk)
+        if (is_mon_isshk(mtmp))
             restshk(mtmp, ghostly);
-        if (mtmp->ispriest)
+        if (is_mon_ispriest(mtmp))
             restpriest(mtmp, ghostly);
-        if (mtmp->issmith)
+        if (is_mon_issmith(mtmp))
             restsmith(mtmp, ghostly);
-        if (mtmp->isnpc)
+        if (is_mon_isnpc(mtmp))
             restnpc(mtmp, ghostly);
 
         if (!ghostly) {
@@ -1438,7 +1438,7 @@ getlev(int fd, int pid, xchar lev, boolean ghostly)
         for (y = 0; y < ROWNO; y++)
             level.monsters[x][y] = (struct monst *) 0;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-        if (mtmp->isshk)
+        if (is_mon_isshk(mtmp))
             set_residency(mtmp, FALSE);
         place_monster(mtmp, mtmp->mx, mtmp->my);
         if (mtmp->wormno)
@@ -1450,12 +1450,12 @@ getlev(int fd, int pid, xchar lev, boolean ghostly)
         if (ghostly) {
             /* reset peaceful/mhostility relative to new character;
                shopkeepers will reset based on name */
-            if (!mtmp->isshk)
-                mtmp->mpeaceful =
+            if (!is_mon_isshk(mtmp))
+                set_mon_mpeaceful(mtmp, 
                     (is_unicorn(mtmp->data)
                      && sgn(u.ualign.type) == sgn(mtmp->data->maligntyp))
                         ? TRUE
-                        : peace_minded(mtmp->data);
+                        : peace_minded(mtmp->data));
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
         } else if (elapsed > 0L) {
@@ -1701,8 +1701,8 @@ reset_oattached_mids(boolean ghostly)
             struct monst *mtmp = OMONST(otmp);
 
             mtmp->m_id = 0;
-            mtmp->mpeaceful = mtmp->mtame = 0; /* pet's owner died! */
-            mtmp->ispartymember = FALSE;
+            set_mon_mpeaceful(mtmp, mtmp->mtame = 0); /* pet's owner died! */
+            set_mon_ispartymember(mtmp, FALSE);
         }
         if (ghostly && has_omid(otmp)) {
             (void) memcpy((genericptr_t) &oldid, (genericptr_t) OMID(otmp),
@@ -1728,7 +1728,7 @@ print_current_dgnlvl(char *buf)
     if (slev)
         mptr = find_mapseen(&u.uz);
 
-    if (slev && mptr && mptr->flags.special_level_true_nature_known)
+    if (slev && mptr && is_msflag_special_level_true_nature_known(&mptr->flags))
         lvl_name = slev->name;
 
     char lvlbuf[BUFSZ], dgnbuf[BUFSZ];

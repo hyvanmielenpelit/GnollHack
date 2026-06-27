@@ -616,7 +616,7 @@ polyself(int psflags)
                        re-converting scales to mail poses risk
                        of evaporation due to over enchanting */
                     uarm->otyp += GRAY_DRAGON_SCALES - GRAY_DRAGON_SCALE_MAIL;
-                    uarm->dknown = 1;
+                    set_obj_dknown(uarm, 1);
                     context.botl = 1; /* AC is changing */
                 }
                 uskin = uarm;
@@ -1163,7 +1163,7 @@ break_armor(void)
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "break out of %s!", yname(otmp));
                 exercise(A_STR, FALSE);
                 boolean had_stone_res = Stone_resistance;
-                otmp->in_use = 1;
+                set_obj_in_use(otmp, 1);
                 otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Do not burn it in lava; it is already broken */
                 (void)Armor_gone();
                 boolean ogone = finish_obj_tracking(trackidx);
@@ -1194,7 +1194,7 @@ break_armor(void)
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s tears apart!", cloak_simple_name(otmp));
-                otmp->in_use = 1;
+                set_obj_in_use(otmp, 1);
                 otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Do not burn it in lava; it is already broken */
                 (void) Cloak_off();
                 boolean ogone = finish_obj_tracking(trackidx);
@@ -1224,7 +1224,7 @@ break_armor(void)
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is torn to pieces!", robe_simple_name(otmp));
-                otmp->in_use = 1;
+                set_obj_in_use(otmp, 1);
                 otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Do not burn it in lava; it is already broken */
                 (void)Robe_off();
                 boolean ogone = finish_obj_tracking(trackidx);
@@ -1254,7 +1254,7 @@ break_armor(void)
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "shirt rips to shreds!");
-                otmp->in_use = 1;
+                set_obj_in_use(otmp, 1);
                 otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Do not burn it in lava; it is already broken */
                 (void)Shirt_off();
                 boolean ogone = finish_obj_tracking(trackidx);
@@ -1623,14 +1623,14 @@ drop_weapon(int alone)
             if (u.twoweap) {
                 otmp = uarms;
                 uwep2gone();
-                if (otmp && otmp->in_use)
+                if (otmp && is_obj_in_use(otmp))
                     updateinv = FALSE;
                 else if (candropwep2)
                     (void)dropxf(otmp);
             }
             otmp = uwep;
             uwepgone();
-            if (otmp->in_use)
+            if (is_obj_in_use(otmp))
                 updateinv = FALSE;
             else if (candropwep)
                 (void)dropxf(otmp);
@@ -1656,7 +1656,7 @@ rehumanize(void)
             done(DIED);
         } else if (uamul && uamul->otyp == AMULET_OF_UNCHANGING) {
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s!", simpleonames(uamul), otense(uamul, "fail"));
-            uamul->dknown = 1;
+            set_obj_dknown(uamul, 1);
             makeknown(AMULET_OF_UNCHANGING);
         }
     }
@@ -2583,7 +2583,7 @@ dolayegg(void)
     uegg->owt = weight(uegg);
     /* this sets hatch timers if appropriate */
     set_corpsenm(uegg, egg_type_from_parent(u.umonnum, FALSE));
-    uegg->known = uegg->dknown = 1;
+    set_obj_known(uegg, 1), set_obj_dknown(uegg, 1);
     You("%s an egg.", eggs_in_water(youmonst.data) ? "spawn" : "lay");
     if (!dropy(uegg))
         stackobj(uegg);

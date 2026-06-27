@@ -761,11 +761,11 @@ savelevl(int fd, boolean rlecomp)
                 prm = &levl[x][y];
                 if (prm->glyph == rgrm->glyph && prm->typ == rgrm->typ
                     && prm->seenv == rgrm->seenv
-                    && prm->horizontal == rgrm->horizontal
-                    && prm->flags == rgrm->flags && prm->lit == rgrm->lit
-                    && prm->waslit == rgrm->waslit
-                    && prm->roomno == rgrm->roomno && prm->edge == rgrm->edge
-                    && prm->candig == rgrm->candig) {
+                    && is_levl_horizontal(prm) == is_levl_horizontal(rgrm)
+                    && prm->flags == rgrm->flags && is_levl_lit(prm) == is_levl_lit(rgrm)
+                    && is_levl_waslit(prm) == is_levl_waslit(rgrm)
+                    && prm->roomno == rgrm->roomno && is_levl_edge(prm) == is_levl_edge(rgrm)
+                    && is_levl_candig(prm) == is_levl_candig(rgrm)) {
                     match++;
                     if (match > 254) {
                         match = 254; /* undo this match */
@@ -1226,8 +1226,8 @@ saveobjchn(int fd, struct obj *otmp, int mode)
             otmp->nobj = NULL;      /* nobj saved into otmp2 */
             otmp->cobj = NULL;      /* contents handled above */
             otmp->timed = 0;        /* not timed any more */
-            otmp->lamplit = 0;      /* caller handled lights */
-            otmp->makingsound = 0;  /* caller handled sounds */
+            set_obj_lamplit(otmp, 0);      /* caller handled lights */
+            set_obj_makingsound(otmp, 0);  /* caller handled sounds */
             dealloc_obj(otmp);
         }
         otmp = otmp2;
@@ -1345,11 +1345,11 @@ savemonchn(int fd, struct monst *mtmp, int mode)
         mtmp2 = mtmp->nmon;
         if (perform_bwrite(mode)) {
             mtmp->mnum = monsndx(mtmp->data);
-            if (mtmp->ispriest)
+            if (is_mon_ispriest(mtmp))
                 forget_temple_entry(mtmp); /* EPRI() */
-            if (mtmp->issmith)
+            if (is_mon_issmith(mtmp))
                 forget_smithy_entry(mtmp); /* ESMI() */
-            if (mtmp->isnpc)
+            if (is_mon_isnpc(mtmp))
                 forget_npc_entry(mtmp); /* ENPC() */
             savemon(fd, mtmp);
         }
@@ -1457,7 +1457,7 @@ store_save_game_stats_in_file(int fd, int64_t time_stamp)
     if (slev)
         mptr = find_mapseen(&u.uz);
 
-    if (slev && mptr && mptr->flags.special_level_true_nature_known)
+    if (slev && mptr && is_msflag_special_level_true_nature_known(&mptr->flags))
     {
         Sprintf(gamestats.level_name, "%s", slev->name);
     }

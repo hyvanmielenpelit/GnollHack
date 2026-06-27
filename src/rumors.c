@@ -595,12 +595,12 @@ outoracle(struct monst *mtmp, struct obj *otmp UNUSED, boolean special, int orac
             if (!*titlebuf)
                 Strcpy(titlebuf, xcryptbuf);
             putstr(tmpwin, 0, xcryptbuf);
-            if(!u.uevent.elbereth_known && strstri(xcryptbuf, "Elbereth"))
-                u.uevent.elbereth_known = 1;
-            if (!u.uevent.invocation_ritual_known && strstri(xcryptbuf, "sanctuary"))
+            if(!is_uevent_elbereth_known() && strstri(xcryptbuf, "Elbereth"))
+                set_uevent_elbereth_known(1);
+            if (!is_uevent_invocation_ritual_known() && strstri(xcryptbuf, "sanctuary"))
             {
-                u.uevent.invocation_ritual_known = 1;
-                u.uevent.heard_of_invocation_ritual = 1;
+                set_uevent_invocation_ritual_known(1);
+                set_uevent_heard_of_invocation_ritual(1);
                 context.quest_flags |= QUEST_FLAGS_HEARD_OF_BOOK | QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_MENORAH | QUEST_FLAGS_HEARD_OF_VIBRATING_SQUARE | QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM | QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM;
             }
         }
@@ -701,20 +701,20 @@ doconsult(struct monst *oracl)
     {
     case 1:
         outrumor(oracl, (struct obj*)0, 1, BY_ORACLE);
-        if (!u.uevent.minor_oracle)
-            add_xpts = (int)u_pay / (u.uevent.major_oracle ? 25 : 10);
+        if (!is_uevent_minor_oracle())
+            add_xpts = (int)u_pay / (is_uevent_major_oracle() ? 25 : 10);
         /* 5 pts if very 1st, or 2 pts if major already done */
-        u.uevent.minor_oracle = TRUE;
+        set_uevent_minor_oracle(TRUE);
         break;
     case 2:
         cheapskate = u_pay < major_cost;
 
         outoracle(oracl, (struct obj*)0, cheapskate, 1);
-        if (!cheapskate && !u.uevent.major_oracle)
-            add_xpts = (int)u_pay / (u.uevent.minor_oracle ? 25 : 10);
+        if (!cheapskate && !is_uevent_major_oracle())
+            add_xpts = (int)u_pay / (is_uevent_minor_oracle() ? 25 : 10);
 
         /* ~100 pts if very 1st, ~40 pts if minor already done */
-        u.uevent.major_oracle = TRUE;
+        set_uevent_major_oracle(TRUE);
         exercise(A_WIS, !cheapskate);
         break;
     default:
@@ -727,10 +727,10 @@ doconsult(struct monst *oracl)
         newexplevel();
     }
 
-    if (!u.uachieve.consulted_oracle)
+    if (!is_uachieve_consulted_oracle())
     {
         //achievement_gained("Consulted the Oracle");
-        u.uachieve.consulted_oracle = 1;
+        set_uachieve_consulted_oracle(1);
         issue_achievement(GUI_ACHIEVEMENT_CONSULTED_ORACLE);
     }
 

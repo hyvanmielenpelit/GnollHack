@@ -190,7 +190,7 @@ dosit(void)
         play_sfx_sound(SFX_SIT);
         /* must be WWalking */
         You("sit in the %s.", defsyms[S_brazier].explanation);
-        if (levl[u.ux][u.uy].lamplit)
+        if (is_levl_lamplit(&levl[u.ux][u.uy]))
         {
             burn_away_slime();
             if (likes_fire(youmonst.data) || Fire_immunity)
@@ -362,7 +362,7 @@ dosit(void)
             case 10:
                 if (Luck < 0 || (HSee_invisible & INTRINSIC)) 
                 {
-                    if (level.flags.nommap) {
+                    if (is_levflag_nommap(&level.flags)) {
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A terrible drone fills your head!");
                         play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                         make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
@@ -489,7 +489,7 @@ rndcurse(void)
             }
             /* the !otmp case should never happen; picking an already
                cursed item happens--avoid "resists" message in that case */
-            if (!otmp || otmp->cursed)
+            if (!otmp || is_obj_cursed(otmp))
                 continue; /* next target */
 
             if (otmp->oartifact && artifact_has_flag(otmp, AF_INTEL)
@@ -499,7 +499,7 @@ rndcurse(void)
                 continue;
             }
 
-            if (otmp->blessed)
+            if (is_obj_blessed(otmp))
             {
                 play_sfx_sound(SFX_UNBLESS_ITEM_SUCCESS);
                 unbless(otmp);
@@ -515,8 +515,8 @@ rndcurse(void)
 
     /* treat steed's saddle as extended part of hero's inventory */
     if (u.usteed && !rn2(4) && (otmp = which_armor(u.usteed, W_SADDLE)) != 0
-        && !otmp->cursed) { /* skip if already cursed */
-        if (otmp->blessed)
+        && !is_obj_cursed(otmp)) { /* skip if already cursed */
+        if (is_obj_blessed(otmp))
         {
             play_sfx_sound(SFX_UNBLESS_ITEM_SUCCESS);
             unbless(otmp);
@@ -527,9 +527,9 @@ rndcurse(void)
             curse(otmp);
         }
         if (!Blind) {
-            pline_multi_ex(ATR_NONE, otmp->cursed ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s %s.", Yobjnam2(otmp, "glow"),
-                  hcolor_multi_buf1(otmp->cursed ? NH_BLACK : NH_BROWN));
-            otmp->bknown = TRUE;
+            pline_multi_ex(ATR_NONE, is_obj_cursed(otmp) ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s %s.", Yobjnam2(otmp, "glow"),
+                  hcolor_multi_buf1(is_obj_cursed(otmp) ? NH_BLACK : NH_BROWN));
+            set_obj_bknown(otmp, TRUE);
         }
     }
 }

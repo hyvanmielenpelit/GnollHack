@@ -65,7 +65,7 @@ static int ready_weapon(struct obj *, int64_t);
 
 /* used by welded(), and also while wielding */
 #define will_weld(otmp, mtmp) \
-    ((otmp)->cursed && (erodeable_wep(otmp) || (otmp)->otyp == TIN_OPENER) && !cursed_items_are_positive_mon(mtmp))
+    (is_obj_cursed((otmp)) && (erodeable_wep(otmp) || (otmp)->otyp == TIN_OPENER) && !cursed_items_are_positive_mon(mtmp))
 
 /*** Functions that place a given item in a slot ***/
 /* Proper usage includes:
@@ -118,11 +118,11 @@ setuwepcore(struct obj *obj, int64_t mask, boolean verbose)
     boolean invneedsupdate = FALSE;
     if (obj && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
     {
-        invneedsupdate = verbose && obj->known != 1;
-        obj->known = 1;
+        invneedsupdate = verbose && !is_obj_known(obj);
+        set_obj_known(obj, 1);
     }
 
-    if (uwep == obj && olduwep && (artifact_light(olduwep) || has_obj_mythic_magical_light(olduwep) || obj_shines_magical_light(olduwep)) && olduwep->lamplit) {
+    if (uwep == obj && olduwep && (artifact_light(olduwep) || has_obj_mythic_magical_light(olduwep) || obj_shines_magical_light(olduwep)) && is_obj_lamplit(olduwep)) {
         debugprint("setuwepcore");
         end_burn(olduwep, FALSE);
         if (!Blind && verbose)
@@ -261,7 +261,7 @@ ready_weapon(struct obj *wep, int64_t mask)
                   (wep->quan == 1L) ? "itself" : "themselves", /* a3 */
                   bimanual(wep) ? (const char *) makeplural(body_part(HAND))
                                 : body_part(HAND));
-            wep->bknown = TRUE;
+            set_obj_bknown(wep, TRUE);
         } 
         else 
         {
@@ -292,7 +292,7 @@ ready_weapon(struct obj *wep, int64_t mask)
         /* KMH -- Talking artifacts are finally implemented */
         arti_speak(wep);
 
-        if (wep && (artifact_light(wep) || has_obj_mythic_magical_light(wep) || (obj_shines_magical_light(wep) && !inappropriate_monster_character_type(&youmonst, wep))) && !wep->lamplit)
+        if (wep && (artifact_light(wep) || has_obj_mythic_magical_light(wep) || (obj_shines_magical_light(wep) && !inappropriate_monster_character_type(&youmonst, wep))) && !is_obj_lamplit(wep))
         {
             begin_burn(wep, FALSE);
             if (!Blind)
@@ -300,7 +300,7 @@ ready_weapon(struct obj *wep, int64_t mask)
                       arti_light_description(wep));
         }
 
-        if (wep && wep->unpaid)
+        if (wep && is_obj_unpaid(wep))
         {
             struct monst *this_shkp;
 
@@ -799,7 +799,7 @@ dosingleswapweapon(int64_t swap_wep_mask, int64_t swap_target_mask)
         return 0;
     }
 
-    if (wep && wep->cursed && swapwep)
+    if (wep && is_obj_cursed(wep) && swapwep)
     {
         weldmsg(wep);
         return 0;
@@ -1024,7 +1024,7 @@ doswapweapon(void)
             weldmsg(uwep);
             return 0;
         }
-        if (uarms && uarms->cursed && !cursed_items_are_positive(youmonst.data) /*&& (uswapwep2 || (uswapwep && bimanual(uswapwep))) */ )
+        if (uarms && is_obj_cursed(uarms) && !cursed_items_are_positive(youmonst.data) /*&& (uswapwep2 || (uswapwep && bimanual(uswapwep))) */ )
         {
             weldmsg(uarms);
             if (!flags.swap_rhand_only && yn_query("Do you want to swap weapons only in your right hand?") == 'y')
@@ -1242,7 +1242,7 @@ dowieldquiver(void)
     }
     else if (newquiver == uwep && uwep) 
     {
-        int weld_res = !uwep->bknown;
+        int weld_res = !is_obj_bknown(uwep);
 
         if (welded(uwep, &youmonst))
         {
@@ -1294,7 +1294,7 @@ dowieldquiver(void)
     }
     else if (newquiver == uarms && uarms) 
     {
-        int weld_res = !uarms->bknown;
+        int weld_res = !is_obj_bknown(uarms);
 
         if (welded(uarms, &youmonst)) 
         {
@@ -1441,9 +1441,9 @@ dowieldquiver(void)
     if (finish_splitting) 
     {
         freeinv(newquiver);
-        newquiver->nomerge = 1;
+        set_obj_nomerge(newquiver, 1);
         addinv(newquiver);
-        newquiver->nomerge = 0;
+        set_obj_nomerge(newquiver, 0);
     }
     /* place item in quiver before printing so that inventory feedback
        includes "(at the ready)" */
@@ -1723,7 +1723,7 @@ void
 uwepgone(void)
 {
     if (uwep) {
-        if ((artifact_light(uwep) || has_obj_mythic_magical_light(uwep) || obj_shines_magical_light(uwep)) && uwep->lamplit) {
+        if ((artifact_light(uwep) || has_obj_mythic_magical_light(uwep) || obj_shines_magical_light(uwep)) && is_obj_lamplit(uwep)) {
             debugprint("uwepgone");
             end_burn(uwep, FALSE);
             if (!Blind)
@@ -1740,7 +1740,7 @@ void
 uwep2gone(void)
 {
     if (uarms) {
-        if ((artifact_light(uarms) || has_obj_mythic_magical_light(uarms) || obj_shines_magical_light(uarms)) && uarms->lamplit) {
+        if ((artifact_light(uarms) || has_obj_mythic_magical_light(uarms) || obj_shines_magical_light(uarms)) && is_obj_lamplit(uarms)) {
             debugprint("uwep2gone");
             end_burn(uarms, FALSE);
             if (!Blind)
@@ -1818,7 +1818,7 @@ enchant_weapon(struct obj *otmp, struct obj *weapon, int amount, boolean dopopup
                 pline_multi_ex_popup(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, "Strange Feeling", dopopup,
                     "%s with %s%s aura.",
                         Yobjnam2(weapon, "glow"), an_prefix(hclr), hclr);
-                weapon->bknown = !Hallucination;
+                set_obj_bknown(weapon, !Hallucination);
             }
             else
             {
@@ -1860,7 +1860,7 @@ enchant_weapon(struct obj *otmp, struct obj *weapon, int amount, boolean dopopup
         pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, buf, enchwepknown ? "Enchant Weapon" : "Sharpening Magic", dopopup);
         weapon->otyp = CRYSKNIFE;
         weapon->material = objects[weapon->otyp].oc_material;
-        weapon->oerodeproof = 0;
+        set_obj_oerodeproof(weapon, 0);
 
         if (multiple)
         {
@@ -1868,11 +1868,11 @@ enchant_weapon(struct obj *otmp, struct obj *weapon, int amount, boolean dopopup
             weapon->owt = weight(weapon);
         }
 
-        if (weapon->cursed)
+        if (is_obj_cursed(weapon))
             uncurse(weapon);
 
         /* update shop bill to reflect new higher value */
-        if (weapon->unpaid)
+        if (is_obj_unpaid(weapon))
             alter_cost(weapon, 0L);
 
         if (multiple)
@@ -1884,7 +1884,7 @@ enchant_weapon(struct obj *otmp, struct obj *weapon, int amount, boolean dopopup
     } 
     else if (weapon->otyp == CRYSKNIFE && amount < 0) 
     {
-        if (otyp != STRANGE_OBJECT && otmp && otmp->bknown)
+        if (otyp != STRANGE_OBJECT && otmp && is_obj_bknown(otmp))
         {
             makeknown(otyp);
             enchwepknown = TRUE;
@@ -1899,7 +1899,7 @@ enchant_weapon(struct obj *otmp, struct obj *weapon, int amount, boolean dopopup
         costly_alteration(weapon, COST_DEGRD); /* DECHNT? other? */
         weapon->otyp = WORM_TOOTH;
         weapon->material = objects[weapon->otyp].oc_material;
-        weapon->oerodeproof = 0;
+        set_obj_oerodeproof(weapon, 0);
 
         if (multiple) 
         {
@@ -1982,7 +1982,7 @@ enchant_weapon(struct obj *otmp, struct obj *weapon, int amount, boolean dopopup
 
     if (!Blind)
     {
-        if (otyp != STRANGE_OBJECT && weapon->known && (amount > 0 || (amount < 0 && otmp && otmp->bknown)))
+        if (otyp != STRANGE_OBJECT && is_obj_known(weapon) && (amount > 0 || (amount < 0 && otmp && is_obj_bknown(otmp))))
         {
             makeknown(otyp);
             enchwepknown = TRUE;
@@ -2001,10 +2001,10 @@ enchant_weapon(struct obj *otmp, struct obj *weapon, int amount, boolean dopopup
 
     if (amount > 0) 
     {
-        if (weapon->cursed)
+        if (is_obj_cursed(weapon))
             uncurse(weapon);
         /* update shop bill to reflect new higher price */
-        if (weapon->unpaid)
+        if (is_obj_unpaid(weapon))
             alter_cost(weapon, 0L);
     }
 
@@ -2041,9 +2041,9 @@ welded(struct obj *obj, struct monst *mon)
 {
     if (obj && mon && (obj == uwep || obj == uarms) && will_weld(obj, mon)) 
     {
-        if (!obj->bknown)
+        if (!is_obj_bknown(obj))
         {
-            obj->bknown = TRUE;
+            set_obj_bknown(obj, TRUE);
             if (obj->where == OBJ_INVENT)
                 update_inventory();
         }

@@ -2664,7 +2664,7 @@ Hello(struct monst *mtmp)
     case PM_KNIGHT:
         return "Salutations"; /* Olde English */
     case PM_SAMURAI:
-        return (mtmp && mtmp->isshk)
+        return (mtmp && is_mon_isshk(mtmp))
                     ? "Irasshaimase"
                     : "Konnichi wa"; /* Japanese */
     case PM_TOURIST:

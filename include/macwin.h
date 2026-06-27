@@ -60,19 +60,19 @@ typedef struct macdirs {
 } MacDirs;
 
 typedef struct macflags {
-    Bitfield(processes, 1);
-    Bitfield(color, 1);
-    Bitfield(folders, 1);
-    Bitfield(tempMem, 1);
-    Bitfield(help, 1);
-    Bitfield(fsSpec, 1);
-    Bitfield(trueType, 1);
-    Bitfield(aux, 1);
-    Bitfield(alias, 1);
-    Bitfield(standardFile, 1);
-    Bitfield(hasDebugger, 1);
-    Bitfield(hasAE, 1);
-    Bitfield(gotOpen, 1);
+    boolean processes;
+    boolean color;
+    boolean folders;
+    boolean tempMem;
+    boolean help;
+    boolean fsSpec;
+    boolean trueType;
+    boolean aux;
+    boolean alias;
+    boolean standardFile;
+    boolean hasDebugger;
+    boolean hasAE;
+    boolean gotOpen;
 } MacFlags;
 
 extern MacDirs theDirs; /* used in macfile.c */

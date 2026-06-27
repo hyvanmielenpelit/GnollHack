@@ -174,14 +174,14 @@ setworncore(struct obj *obj, int64_t mask, boolean verbose_and_update_stats)
 
     boolean needbecomecursedmsg = FALSE;
     /* curse first */
-    if (obj && (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN) && !obj->cursed && (mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)))
+    if (obj && (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN) && !is_obj_cursed(obj) && (mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)))
     {
         needbecomecursedmsg = TRUE;
         curse(obj);
     }
 
     /* Readying a weapon to quiver or swap weapon slot does not trigger artifact name discovery -- JG */
-    if ((mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)) && obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED)))
+    if ((mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)) && obj && obj->oartifact && !is_obj_nknown(obj) && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED)))
     {
         if (verbose_and_update_stats)
         {
@@ -191,7 +191,7 @@ setworncore(struct obj *obj, int64_t mask, boolean verbose_and_update_stats)
                 (pair_of(obj) || obj->quan > 1) ? "they are" : "it is",
                 bare_artifactname(obj));
         }
-        obj->nknown = TRUE;
+        set_obj_nknown(obj, TRUE);
     }
 
     int trackidx = add_to_obj_tracking(obj);
@@ -1401,17 +1401,17 @@ m_dowear(struct monst *mon, boolean creation, boolean commanded)
     int old_misc5_delay = old_misc5 ? objects[old_misc5->otyp].oc_delay : 0;
 
     /* Main armor */
-    if (can_wear_shirt(mon->data) && (cursed_items_are_positive_mon(mon) || !((old_cloak && old_cloak->cursed) || (old_robe && old_robe->cursed) || (old_suit && old_suit->cursed))) )
+    if (can_wear_shirt(mon->data) && (cursed_items_are_positive_mon(mon) || !((old_cloak && is_obj_cursed(old_cloak)) || (old_robe && is_obj_cursed(old_robe)) || (old_suit && is_obj_cursed(old_suit)))) )
     {
         wears_shirt = m_dowear_type(mon, W_ARMU, creation, FALSE);
     }
 
-    if (can_wear_suit(mon->data) && (cursed_items_are_positive_mon(mon) || !((old_cloak && old_cloak->cursed) || (old_robe && old_robe->cursed))) )
+    if (can_wear_suit(mon->data) && (cursed_items_are_positive_mon(mon) || !((old_cloak && is_obj_cursed(old_cloak)) || (old_robe && is_obj_cursed(old_robe)))) )
         wears_suit = m_dowear_type(mon, W_ARM, creation, FALSE);
     else
         wears_suit = m_dowear_type(mon, W_ARM, creation, RACE_EXCEPTION);
 
-    if (can_wear_robe(mon->data) && (cursed_items_are_positive_mon(mon) || !(old_cloak && old_cloak->cursed)))
+    if (can_wear_robe(mon->data) && (cursed_items_are_positive_mon(mon) || !(old_cloak && is_obj_cursed(old_cloak))))
     {
         wears_robe = m_dowear_type(mon, W_ARMO, creation, FALSE);
     }
@@ -1436,7 +1436,7 @@ m_dowear(struct monst *mon, boolean creation, boolean commanded)
     /* Accessories */
     if (can_wear_amulet(mon->data))
         wears_amulet = m_dowear_type(mon, W_AMUL, creation, FALSE);
-    if (can_wear_rings(mon->data) && (cursed_items_are_positive_mon(mon) || (!(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed))))
+    if (can_wear_rings(mon->data) && (cursed_items_are_positive_mon(mon) || (!(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && is_obj_cursed(old_gloves)))))
     {
         wears_ringr = m_dowear_type(mon, W_RINGR, creation, FALSE);
         wears_ringl = m_dowear_type(mon, W_RINGL, creation, FALSE);
@@ -1531,7 +1531,7 @@ m_dowear(struct monst *mon, boolean creation, boolean commanded)
         mon->mfrozen = totaldelay;
         if (mon->mfrozen)
         {
-            mon->mcanmove = 0;
+            set_mon_mcanmove(mon, 0);
             refresh_m_tile_gui_info(mon, TRUE);
         }
     }
@@ -1573,7 +1573,7 @@ m_dowear_type(struct monst *mon, int64_t flag, boolean creation, boolean raciale
     Strcpy(nambuf, See_invisible ? Monnam(mon) : mon_nam(mon));
 
     old = which_armor(mon, flag);
-    if (old && old->cursed && !cursed_items_are_positive_mon(mon))
+    if (old && is_obj_cursed(old) && !cursed_items_are_positive_mon(mon))
         return 0;
     if (old && flag == W_AMUL)
         return 0; /* no such thing as better amulets */
@@ -1602,7 +1602,7 @@ m_dowear_type(struct monst *mon, int64_t flag, boolean creation, boolean raciale
             goto outer_break; /* no such thing as better amulets */
         case W_RINGR:
         case W_RINGL:
-            if (obj->oclass != RING_CLASS || (is_priest(mon->data) && obj->cursed) || is_cursed_magic_item(obj) || (obj->owornmask && obj->owornmask != flag))
+            if (obj->oclass != RING_CLASS || (is_priest(mon->data) && is_obj_cursed(obj)) || is_cursed_magic_item(obj) || (obj->owornmask && obj->owornmask != flag))
                 continue;
             best = obj;
             goto outer_break; /* no such thing as better rings */
@@ -1613,7 +1613,7 @@ m_dowear_type(struct monst *mon, int64_t flag, boolean creation, boolean raciale
         case W_MISC5:
             if (obj->oclass != MISCELLANEOUS_CLASS || !can_wear_miscellaneous(mon->data, obj->otyp))
                 continue;
-            if (((is_priest(mon->data) || obj->bknown) && obj->cursed && !cursed_items_are_positive_mon(mon))
+            if (((is_priest(mon->data) || is_obj_bknown(obj)) && is_obj_cursed(obj) && !cursed_items_are_positive_mon(mon))
                 || ((objects[obj->otyp].oc_name_known || !is_peaceful(mon)) && is_cursed_magic_item(obj) && !is_sex_changing_item(obj))
                 || (obj->owornmask && obj->owornmask != flag))
                 continue;
@@ -1636,7 +1636,7 @@ m_dowear_type(struct monst *mon, int64_t flag, boolean creation, boolean raciale
                priests and minions could change alignment but wouldn't
                want to, so they reject helms of opposite alignment */
             if (obj->otyp == HELM_OF_OPPOSITE_ALIGNMENT
-                && (mon->ispriest || mon->isminion))
+                && (is_mon_ispriest(mon) || is_mon_isminion(mon)))
                 continue;
             /* (flimsy exception matches polyself handling) */
             if (has_horns(mon->data) && !is_flimsy(obj))
@@ -1679,7 +1679,7 @@ m_dowear_type(struct monst *mon, int64_t flag, boolean creation, boolean raciale
                 continue;
 
             /* Prefer non-cursed items */
-            if ((!best->cursed || !best->bknown) && obj->cursed && obj->bknown && !cursed_items_are_positive_mon(mon))
+            if ((!is_obj_cursed(best) || !is_obj_bknown(best)) && is_obj_cursed(obj) && is_obj_bknown(obj) && !cursed_items_are_positive_mon(mon))
                 continue;
 
             /* Prefer artifacts */
@@ -1716,7 +1716,7 @@ outer_break:
         return 0;
 
     /* same auto-cursing behavior as for hero */
-    autocurse = ((objects[best->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN)  && !best->cursed);
+    autocurse = ((objects[best->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN)  && !is_obj_cursed(best));
 
     /* Take old off */
     if (old)
@@ -1862,8 +1862,8 @@ clear_bypasses(void)
 
     for (otmp = fobj; otmp; otmp = nobj) {
         nobj = otmp->nobj;
-        if (otmp->bypass) {
-            otmp->bypass = 0;
+        if (is_obj_bypass(otmp)) {
+            set_obj_bypass(otmp, 0);
 
             /* bypass will have inhibited any stacking, but since it's
              * used for polymorph handling, the objects here probably
@@ -1883,16 +1883,16 @@ clear_bypasses(void)
         }
     }
     for (otmp = invent; otmp; otmp = otmp->nobj)
-        otmp->bypass = 0;
+        set_obj_bypass(otmp, 0);
     for (otmp = migrating_objs; otmp; otmp = otmp->nobj)
-        otmp->bypass = 0;
+        set_obj_bypass(otmp, 0);
     for (otmp = magic_objs; otmp; otmp = otmp->nobj)
-        otmp->bypass = 0;
+        set_obj_bypass(otmp, 0);
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
         for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
-            otmp->bypass = 0;
+            set_obj_bypass(otmp, 0);
         /* long worm created by polymorph has mon->mextra->mcorpsenm set
            to PM_LONG_WORM to flag it as not being subject to further
            polymorph (so polymorph zap won't hit monster to transform it
@@ -1903,7 +1903,7 @@ clear_bypasses(void)
     }
     for (mtmp = migrating_mons; mtmp; mtmp = mtmp->nmon) {
         for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
-            otmp->bypass = 0;
+            set_obj_bypass(otmp, 0);
         /* no MCORPSENM(mtmp)==PM_LONG_WORM check here; long worms can't
            be just created by polymorph and migrating at the same time */
     }
@@ -1915,7 +1915,7 @@ clear_bypasses(void)
 void
 bypass_obj(struct obj *obj)
 {
-    obj->bypass = 1;
+    set_obj_bypass(obj, 1);
     context.bypasses = TRUE;
 }
 
@@ -1931,7 +1931,7 @@ bypass_objlist(struct obj *objchain, boolean on)
     if (on && objchain)
         context.bypasses = TRUE;
     while (objchain) {
-        objchain->bypass = on ? 1 : 0;
+        set_obj_bypass(objchain, on ? 1 : 0);
         objchain = objchain->nobj;
     }
 }
@@ -1943,7 +1943,7 @@ struct obj *
 nxt_unbypassed_obj(struct obj *objchain)
 {
     while (objchain) {
-        if (!objchain->bypass) {
+        if (!is_obj_bypass(objchain)) {
             bypass_obj(objchain);
             break;
         }
@@ -1966,7 +1966,7 @@ nxt_unbypassed_loot(Loot *lootarray, struct obj *listhead)
         for (o = listhead; o; o = o->nobj)
             if (o == obj)
                 break;
-        if (o && !obj->bypass) {
+        if (o && !is_obj_bypass(obj)) {
             bypass_obj(obj);
             break;
         }

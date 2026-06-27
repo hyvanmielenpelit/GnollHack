@@ -185,7 +185,7 @@ magic_map_background(xchar x, xchar y, int show)
 {
     /* Hero gains knowledge of the lit status of the location */
     struct rm* lev = &levl[x][y];
-    lev->waslit = lev->lit;
+    set_levl_waslit(lev, is_levl_lit(lev));
 
     map_background(x, y, show);
 
@@ -268,7 +268,7 @@ map_background(xchar x, xchar y, int show)
         new_cover_feature_gui_glyph = NO_GLYPH;
     }
 
-    if (level.flags.hero_memory)
+    if (is_levflag_hero_memory(&level.flags))
     {
         levl[x][y].hero_memory_layers.glyph = glyph; /* Ascii only */
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
@@ -357,12 +357,12 @@ map_trap(struct trap *trap, int show)
     int glyph = trap_to_glyph(trap, newsym_rn2);
     struct monst* mtmp = m_at(x, y);
     boolean utrapped = (x == u.ux && y == u.uy && u.utrap > 0);
-    boolean mtrapped = (mtmp && mtmp->mtrapped);
+    boolean mtrapped = (mtmp && is_mon_mtrapped(mtmp));
     boolean trapped_draw_in_front = (trap->ttyp == STATUE_TRAP || ((utrapped || mtrapped) && (trap->ttyp == WEB || trap->ttyp == BEAR_TRAP)));
     /* Replace */
     int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_TRAP, (struct obj*)0, (struct monst*)0, (utrapped || mtrapped) ? LFLAGS_T_TRAPPED : 0UL, 0UL, 0UL, MAT_NONE, 0));
 
-    if (level.flags.hero_memory)
+    if (is_levflag_hero_memory(&level.flags))
     {
         levl[x][y].hero_memory_layers.glyph = glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_TRAP] = glyph;
@@ -450,7 +450,7 @@ map_object_core(struct obj *obj, int show, boolean chain_check, boolean add_dete
     obj->glyph = glyph;
     obj->gui_glyph = gui_glyph;
 
-    if (level.flags.hero_memory)
+    if (is_levflag_hero_memory(&level.flags))
     {
         /* MRKR: While hallucinating, statues are seen as random monsters */
         /*       but remembered as random objects.                        */
@@ -537,7 +537,7 @@ void
 map_invisible(xchar x, xchar y)
 {
     if (x != u.ux || y != u.uy) { /* don't display I at hero's location */
-        if (level.flags.hero_memory)
+        if (is_levflag_hero_memory(&level.flags))
         {
             levl[x][y].hero_memory_layers.glyph = GLYPH_INVISIBLE;
             levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = GLYPH_INVISIBLE;
@@ -613,15 +613,15 @@ unmap_object(int x, int y)
 {
     struct trap *trap;
 
-    if (!level.flags.hero_memory)
+    if (!is_levflag_hero_memory(&level.flags))
         return;
 
-    boolean waslit = levl[x][y].waslit;
+    boolean waslit = is_levl_waslit(&levl[x][y]);
     clear_hero_memory_at(x, y);
 
     if (levl[x][y].seenv)
     {
-        levl[x][y].waslit = waslit;
+        set_levl_waslit(&levl[x][y], waslit);
         map_background(x, y, 0);
 
         if ((trap = t_at(x, y)) != 0 && trap->tseen && !covers_traps(x, y))
@@ -668,7 +668,7 @@ map_location(int x, int y, int show)
     /* Trap layer */
     if ((trap = t_at(x, y)) && trap->tseen && !covers_traps(x, y))
         map_trap(trap, show);
-    else if (level.flags.hero_memory)
+    else if (is_levflag_hero_memory(&level.flags))
     {
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_TRAP] = NO_GLYPH;
         levl[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_TRAP] = NO_GLYPH;
@@ -766,7 +766,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
              * mappearance is currently set to an S_ index value in
              * makemon.c.
              */
-            int cmap_type = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+            int cmap_type = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
             int sym = mon->mappearance, glyph = cmap_with_type_to_glyph(sym, cmap_type);
 
             /* Replace */
@@ -774,7 +774,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
 
 
             //levl[x][y].hero_memory_layers.glyph = glyph;
-            if (level.flags.hero_memory)
+            if (is_levflag_hero_memory(&level.flags))
             {
                 levl[x][y].hero_memory_layers.glyph = glyph;
                 levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] = glyph; /* Override, as otherwise not very credible */
@@ -813,7 +813,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
             int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, &obj, mon, 0UL, 0UL, 0UL, MAT_NONE, 0));
             obj.glyph = glyph;
             obj.gui_glyph = gui_glyph;
-            if (level.flags.hero_memory)
+            if (is_levflag_hero_memory(&level.flags))
             {
                 int new_glyph = glyph;
                 int new_gui_glyph = gui_glyph;
@@ -843,7 +843,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
         }
 
         case M_AP_MONSTER:
-            show_monster_glyph_with_extra_info(x, y, any_monnum_to_glyph(mon->female, what_mon((int)mon->mappearance, rn2_on_display_rng)), mon, 0UL, 0UL, 0, 0 );
+            show_monster_glyph_with_extra_info(x, y, any_monnum_to_glyph(is_mon_female(mon), what_mon((int)mon->mappearance, rn2_on_display_rng)), mon, 0UL, 0UL, 0, 0 );
             clear_monster_layer_memory_at(x, y);
             break;
         }
@@ -864,7 +864,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
          */
         uint64_t extra_flags = 0UL;
         uint64_t extra_mflags = 0UL;
-        if (mon->mleashed)
+        if (is_mon_mleashed(mon))
         {
             extra_mflags |= LMFLAGS_TETHERED;
             show_leash_info(x, y, mon->mx, mon->my, u.ux, u.uy);
@@ -1156,7 +1156,7 @@ clear_hero_memory_at(int x, int y)
     struct layer_info* layer_ptr = &levl[x][y].hero_memory_layers;
     clear_hero_object_memory_at(x, y);
     clear_layer_info(layer_ptr);
-    levl[x][y].waslit = 0;
+    set_levl_waslit(&levl[x][y], 0);
 }
 
 void
@@ -1295,7 +1295,7 @@ newsym_with_extra_info_and_flags(int x, int y, uint64_t disp_flags, uint64_t dis
         /*
          * Don't use templit here:  E.g.
          *
-         *      lev->waslit = !!(lev->lit || templit(x,y));
+         *      set_levl_waslit(lev, !!(is_levl_lit(lev) || templit(x,y)));
          *
          * Otherwise we have the "light pool" problem, where non-permanently
          * lit areas just out of sight stay remembered as lit.  They should
@@ -1304,13 +1304,13 @@ newsym_with_extra_info_and_flags(int x, int y, uint64_t disp_flags, uint64_t dis
          * Perhaps ALL areas should revert to their "unlit" look when
          * out of sight.
          */
-        lev->waslit = (lev->lit != 0); /* remember lit condition */
+        set_levl_waslit(lev, (is_levl_lit(lev))); /* remember lit condition */
 
         /* THEN, SHOW THE LOCATION IS AND PUT IT TO MEMORY */
         /* Note: clears layer flags */
         map_location(x, y, 1);
 
-        if (u.uachieve.ascended)
+        if (is_uachieve_ascended())
             add_glyph_buffer_layer_flags(x, y, LFLAGS_ASCENSION_RADIANCE, 0UL);
 
         /* Monster layer */
@@ -1333,7 +1333,7 @@ newsym_with_extra_info_and_flags(int x, int y, uint64_t disp_flags, uint64_t dis
                 struct monst* leashed_mon;
                 for (leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon)
                 {
-                    if (leashed_mon->mleashed)
+                    if (is_mon_mleashed(leashed_mon))
                     {
                         int mx = leashed_mon->mx, my = leashed_mon->my;
                         if (isok(mx, my))
@@ -1378,7 +1378,7 @@ newsym_with_extra_info_and_flags(int x, int y, uint64_t disp_flags, uint64_t dis
 
             if (mon && (see_it || (!worm_tail && Detect_monsters)))
             {
-                if (mon->mtrapped)
+                if (is_mon_mtrapped(mon))
                 {
                     struct trap* trap = t_at(x, y);
                     int tt = trap ? trap->ttyp : NO_TRAP;
@@ -1411,7 +1411,7 @@ newsym_with_extra_info_and_flags(int x, int y, uint64_t disp_flags, uint64_t dis
             else
             {
                 /* Clear hero memory of any (invisible) monster from layer */
-                if (level.flags.hero_memory)
+                if (is_levflag_hero_memory(&level.flags))
                 {
                     clear_monster_layer_memory_at(x, y);
                 }
@@ -1718,7 +1718,7 @@ tmp_at_with_obj(int x, int y, struct obj *obj, uint64_t missile_flags, uchar mis
                     show_gui_glyph_on_layer_and_ascii(tglyph->saved[i - 1].x,
                                tglyph->saved[i - 1].y, tglyph->glyph, tglyph->gui_glyph, LAYER_MISSILE);
                     if(obj)
-                        show_missile_info(tglyph->saved[i - 1].x, tglyph->saved[i - 1].y, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
+                        show_missile_info(tglyph->saved[i - 1].x, tglyph->saved[i - 1].y, is_obj_opoisoned(obj), obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
 
                     flush_screen(1);   /* make sure it shows up */
                     adjusted_delay_output();
@@ -1765,7 +1765,7 @@ tmp_at_with_obj(int x, int y, struct obj *obj, uint64_t missile_flags, uchar mis
                 py = tglyph->saved[tglyph->sidx-1].y;
                 show_glyph_on_layer_and_ascii(px, py, tether_glyph(px, py), LAYER_MISSILE);
                 if (obj)
-                    show_missile_info(px, py, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
+                    show_missile_info(px, py, is_obj_opoisoned(obj), obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
                 clear_found_this_turn_at(px, py);
             }
             /* save pos for later use or erasure */
@@ -1795,7 +1795,7 @@ tmp_at_with_obj(int x, int y, struct obj *obj, uint64_t missile_flags, uchar mis
             tglyph->style == DISP_BEAM || tglyph->style == DISP_BEAM_DIG || tglyph->style == DISP_ALL ? LAYER_ZAP : LAYER_MISSILE); /* show it */
 
         if (obj)
-            show_missile_info(x, y, obj->opoisoned, obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
+            show_missile_info(x, y, is_obj_opoisoned(obj), obj->material, obj->special_quality, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
 
         clear_found_this_turn_at(x, y);
         flush_screen(1);                 /* make sure it shows up */
@@ -1812,7 +1812,7 @@ get_obj_height(struct obj *obj)
     int baseheight = obj->oartifact ? artilist[obj->oartifact].tile_floor_height : OBJ_TILE_HEIGHT(obj->otyp);
     int height = baseheight;
     /* Special variable height for globs */
-    if (obj->globby)
+    if (is_obj_globby(obj))
     {
         if (obj->owt <= GLOB_SMALL_MAXIMUM_WEIGHT)
             height = baseheight / 2;
@@ -2599,7 +2599,7 @@ get_missile_flags(struct obj *obj, boolean tethered_weapon)
         res |= MISSILE_FLAGS_RUSTPRONE;
     if (is_poisonable(obj))
         res |= MISSILE_FLAGS_POISONABLE;
-    if (obj->oerodeproof)
+    if (is_obj_oerodeproof(obj))
         res |= MISSILE_FLAGS_ERODEPROOF;
     if (tethered_weapon)
         res |= MISSILE_FLAGS_TETHERED;
@@ -2805,7 +2805,7 @@ show_monster_glyph_with_extra_info_choose_ascii(int x, int y, int glyph, struct 
         else if (mtmp && mtmp != &youmonst)
         {
             struct trap* t = 0;
-            if (mtmp->mtrapped && (t = t_at(mtmp->mx, mtmp->my)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
+            if (is_mon_mtrapped(mtmp) && (t = t_at(mtmp->mx, mtmp->my)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_IN_PIT;
             else if ((mtmp->mprops[LEVITATION] & (M_TIMEOUT | M_EXTRINSIC)) != 0 && mtmp->mprops[BLOCKS_LEVITATION] == 0)
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;
@@ -3403,8 +3403,8 @@ flush_screen(int cursor_on_u)
                 add_glyph_buffer_layer_flags(x, y, LFLAGS_CAN_SEE, 0UL);
             }
 
-            boolean is_lit_unknown_wall = (levl[x][y].waslit && IS_NON_STONE_WALL(levl[x][y].typ) && wall_angle(&levl[x][y]) == S_stone);
-            if (!levl[x][y].waslit || is_lit_unknown_wall)
+            boolean is_lit_unknown_wall = (is_levl_waslit(&levl[x][y]) && IS_NON_STONE_WALL(levl[x][y].typ) && wall_angle(&levl[x][y]) == S_stone);
+            if (!is_levl_waslit(&levl[x][y]) || is_lit_unknown_wall)
             {
                 add_glyph_buffer_layer_flags(x, y, LFLAGS_APPEARS_UNLIT, 0UL);
             }
@@ -3513,13 +3513,13 @@ back_to_glyph(xchar x, xchar y)
     int idx;
     struct rm *ptr = &(levl[x][y]);
     boolean is_variation = FALSE;
-    boolean facing_right = (ptr->facing_right != 0);
+    boolean facing_right = (is_levl_facing_right(ptr));
     int multiplier = facing_right ? -1 : 1;
-    int cmap_type = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+    int cmap_type = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
 
     switch (ptr->typ) {
     case UNDEFINED_LOCATION:
-        idx = level.flags.arboreal ? S_tree : S_unexplored;
+        idx = is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored;
         break;
     case SCORR:
     case STONE:
@@ -3538,7 +3538,7 @@ back_to_glyph(xchar x, xchar y)
     }
     break;
     case ROOM:
-        idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKROOMSYM: */ S_room;
+        idx = /*(!is_levl_waslit(ptr) || flags.dark_room) && !cansee(x, y) ? DARKROOMSYM: */ S_room;
 
         if (ptr->subtyp > 0 || ptr->vartyp > 0)
         {
@@ -3549,7 +3549,7 @@ back_to_glyph(xchar x, xchar y)
 
         break;
     case GRASS:
-        idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKGRASSSYM :*/ S_grass;
+        idx = /*(!is_levl_waslit(ptr) || flags.dark_room) && !cansee(x, y) ? DARKGRASSSYM :*/ S_grass;
         if (ptr->subtyp > 0 || ptr->vartyp > 0)
         {
             is_variation = TRUE;
@@ -3567,7 +3567,7 @@ back_to_glyph(xchar x, xchar y)
         }
         break;
     case CORR:
-        idx = /* (ptr->waslit || flags.lit_corridor) ? */ S_litcorr /* : S_corr */;
+        idx = /* (is_levl_waslit(ptr) || flags.lit_corridor) ? */ S_litcorr /* : S_corr */;
         if (ptr->subtyp > 0 || ptr->vartyp > 0)
         {
             is_variation = TRUE;
@@ -3646,13 +3646,13 @@ back_to_glyph(xchar x, xchar y)
 
         if ((ptr->doormask & D_MASK)) {
             if (ptr->doormask & D_BROKEN)
-                sym_idx = (ptr->horizontal) ? S_hbdoor : S_vbdoor;
+                sym_idx = (is_levl_horizontal(ptr)) ? S_hbdoor : S_vbdoor;
             else if (ptr->doormask & D_ISOPEN)
-                sym_idx = (ptr->horizontal) ? S_hodoor : S_vodoor;
+                sym_idx = (is_levl_horizontal(ptr)) ? S_hodoor : S_vodoor;
             else if (ptr->doormask & D_PORTCULLIS)
-                sym_idx = (ptr->horizontal) ? S_hoportcullis : S_voportcullis;
+                sym_idx = (is_levl_horizontal(ptr)) ? S_hoportcullis : S_voportcullis;
             else /* else is closed */
-                sym_idx = (ptr->horizontal) ? S_hcdoor : S_vcdoor;
+                sym_idx = (is_levl_horizontal(ptr)) ? S_hcdoor : S_vcdoor;
         }
         else
             sym_idx = S_ndoor;
@@ -3796,7 +3796,7 @@ back_to_glyph(xchar x, xchar y)
         idx = S_water;
         break;
     case DBWALL:
-        idx = (ptr->horizontal) ? S_hcdbridge : S_vcdbridge;
+        idx = (is_levl_horizontal(ptr)) ? S_hcdbridge : S_vcdbridge;
         break;
     case DRAWBRIDGE_UP:
         switch (ptr->drawbridgemask & DB_UNDER) {
@@ -3820,7 +3820,7 @@ back_to_glyph(xchar x, xchar y)
         }
         break;
     case DRAWBRIDGE_DOWN:
-        idx = (ptr->horizontal) ? S_hodbridge : S_vodbridge;
+        idx = (is_levl_horizontal(ptr)) ? S_hodbridge : S_vodbridge;
         break;
     default:
         impossible("back_to_glyph:  unknown level type [ = %d ]", ptr->typ);
@@ -4288,7 +4288,7 @@ get_floor_layer_glyph(xchar x, xchar y)
 {
     int idx;
     struct rm* ptr = &(levl[x][y]);
-    int cmap_type = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+    int cmap_type = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
 
     if (ptr->floortyp && IS_FLOOR(ptr->floortyp))
     {
@@ -4345,10 +4345,10 @@ get_floor_layer_glyph(xchar x, xchar y)
         return NO_GLYPH;
     case DOOR:
     case IRONBARS:
-        idx = /* ptr->waslit ? */ S_room /* : DARKROOMSYM */;
+        idx = /* is_levl_waslit(ptr) ? */ S_room /* : DARKROOMSYM */;
         break;
     case TREE:
-        idx = /* ptr->waslit ? */ S_grass /*: DARKGRASSSYM */;
+        idx = /* is_levl_waslit(ptr) ? */ S_grass /*: DARKGRASSSYM */;
         break;
     case LADDER:
     case STAIRS:
@@ -4359,7 +4359,7 @@ get_floor_layer_glyph(xchar x, xchar y)
     case BRAZIER:
     case SIGNPOST:
     case THRONE:
-        idx = /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/;
+        idx = /* is_levl_waslit(ptr) ? */ S_room /*: DARKROOMSYM*/;
         break;
     case DRAWBRIDGE_DOWN:
         switch (ptr->drawbridgemask & DB_UNDER) 
@@ -4374,18 +4374,18 @@ get_floor_layer_glyph(xchar x, xchar y)
             idx = S_ice;
             break;
         case DB_GROUND:
-            idx = S_ground; // /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/;
+            idx = S_ground; // /* is_levl_waslit(ptr) ? */ S_room /*: DARKROOMSYM*/;
             break;
         default:
             impossible("Strange db-under: %d",
                 ptr->drawbridgemask & DB_UNDER);
-            idx = /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/; /* something is better than nothing */
+            idx = /* is_levl_waslit(ptr) ? */ S_room /*: DARKROOMSYM*/; /* something is better than nothing */
             break;
         }
         break;
     default:
         impossible("get_floor_layer_glyph:  unknown level type [ = %d ]", ptr->typ);
-        idx =/*  ptr->waslit ? */ S_room /* : DARKROOMSYM */;
+        idx =/*  is_levl_waslit(ptr) ? */ S_room /* : DARKROOMSYM */;
         break;
     }
 
@@ -4662,7 +4662,7 @@ set_wall_state(void)
         for (lev = &levl[x][0], y = 0; y < ROWNO; y++, lev++) {
             switch (lev->typ) {
             case SDOOR:
-                wmode = set_wall(x, y, (int) lev->horizontal);
+                wmode = set_wall(x, y, (int) is_levl_horizontal(lev));
                 break;
             case VWALL:
                 wmode = set_wall(x, y, 0);
@@ -4969,7 +4969,7 @@ wall_angle(struct rm *lev)
         break;
 
     case SDOOR:
-        if (lev->horizontal)
+        if (is_levl_horizontal(lev))
             goto horiz;
         /*FALLTHRU*/
     case VWALL:
@@ -5156,7 +5156,7 @@ wall_angle(struct rm *lev)
 int
 get_current_cmap_type_index(void)
 {
-    if (level.flags.has_tileset)
+    if (is_levflag_has_tileset(&level.flags))
         return level.flags.tileset;
     else if (dungeons[u.uz.dnum].flags.has_tileset)
         return dungeons[u.uz.dnum].flags.tileset;
@@ -5204,7 +5204,7 @@ void
 display_self_with_extra_info_choose_ascii(uint64_t displayed_flags, uint64_t displayed_mflags, int hit_tile_id, int dmg_received, boolean exclude_ascii)
 {
 
-    int cmap_type = levl[u.ux][u.uy].use_special_tileset ? levl[u.ux][u.uy].special_tileset : get_current_cmap_type_index();
+    int cmap_type = is_levl_use_special_tileset(&levl[u.ux][u.uy]) ? levl[u.ux][u.uy].special_tileset : get_current_cmap_type_index();
     show_monster_glyph_with_extra_info_choose_ascii(u.ux, u.uy,
         maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)
             ? u_to_glyph() /*hero_glyph*/

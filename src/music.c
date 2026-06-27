@@ -70,8 +70,8 @@ awaken_monsters(int distance, boolean isscary)
             continue;
         if ((distm = distu(mtmp->mx, mtmp->my)) < distance) 
         {
-            mtmp->msleeping = 0;
-            mtmp->mcanmove = 1;
+            set_mon_msleeping(mtmp, 0);
+            set_mon_mcanmove(mtmp, 1);
             mtmp->mfrozen = 0;
             /* may scare some monsters -- waiting monsters excluded */
             if (!unique_corpstat(mtmp->data)
@@ -108,7 +108,7 @@ put_monsters_to_sleep(int otyp, int distance)
             continue;
         if (distu(mtmp->mx, mtmp->my) < distance
             && sleep_monst(mtmp, (struct obj*)0, (struct monst*)0, duration, 0, FALSE)) {
-            //mtmp->msleeping = 1; /* 10d10 turns + wake_nearby to rouse */
+            //set_mon_msleeping(mtmp, 1); /* 10d10 turns + wake_nearby to rouse */
             slept_monst(mtmp);
         }
     }
@@ -129,14 +129,14 @@ charm_snakes(int distance)
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (mtmp->data->mlet == S_SNAKE && mtmp->mcanmove
+        if (mtmp->data->mlet == S_SNAKE && is_mon_mcanmove(mtmp)
             && distu(mtmp->mx, mtmp->my) < distance) {
-            was_peaceful = mtmp->mpeaceful;
-            mtmp->mpeaceful = 1;
-            mtmp->mavenge = 0;
+            was_peaceful = is_mon_mpeaceful(mtmp);
+            set_mon_mpeaceful(mtmp, 1);
+            set_mon_mavenge(mtmp, 0);
             mtmp->mstrategy &= ~STRAT_WAITMASK;
             could_see_mon = canseemon(mtmp);
-            mtmp->mundetected = 0;
+            set_mon_mundetected(mtmp, 0);
             newsym(mtmp->mx, mtmp->my);
             if (canseemon(mtmp)) {
                 if (!could_see_mon)
@@ -162,11 +162,11 @@ calm_nymphs(int distance)
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (mtmp->data->mlet == S_NYMPH && mtmp->mcanmove
+        if (mtmp->data->mlet == S_NYMPH && is_mon_mcanmove(mtmp)
             && distu(mtmp->mx, mtmp->my) < distance) {
-            mtmp->msleeping = 0;
-            mtmp->mpeaceful = 1;
-            mtmp->mavenge = 0;
+            set_mon_msleeping(mtmp, 0);
+            set_mon_mpeaceful(mtmp, 1);
+            set_mon_mavenge(mtmp, 0);
             mtmp->mstrategy &= ~STRAT_WAITMASK;
             newsym(mtmp->mx, mtmp->my);
             if (canseemon(mtmp))
@@ -195,9 +195,9 @@ awaken_soldiers(struct monst *bugler, boolean isscary)
         if (DEADMONSTER(mtmp))
             continue;
         if (is_mercenary(mtmp->data) && mtmp->data != &mons[PM_GUARD]) {
-            mtmp->mpeaceful = mtmp->mfrozen = 0;
-            mtmp->msleeping = 0;
-            mtmp->mcanmove = 1;
+            set_mon_mpeaceful(mtmp, mtmp->mfrozen = 0);
+            set_mon_msleeping(mtmp, 0);
+            set_mon_mcanmove(mtmp, 1);
             mtmp->mstrategy &= ~STRAT_WAITMASK;
             newsym(mtmp->mx, mtmp->my);
             if (canseemon(mtmp))
@@ -208,8 +208,8 @@ awaken_soldiers(struct monst *bugler, boolean isscary)
                                  ? distu(mtmp->mx, mtmp->my)
                                  : dist2(bugler->mx, bugler->my, mtmp->mx,
                                          mtmp->my))) < distance) {
-            mtmp->msleeping = 0;
-            mtmp->mcanmove = 1;
+            set_mon_msleeping(mtmp, 0);
+            set_mon_mcanmove(mtmp, 1);
             mtmp->mfrozen = 0;
             refresh_m_tile_gui_info(mtmp, FALSE);
             cnt++;
@@ -283,8 +283,8 @@ do_earthquake(int force)
         for (y = start_y; y <= end_y; y++) {
             if ((mtmp = m_at(x, y)) != 0) {
                 wakeup(mtmp, TRUE); /* peaceful monster will become hostile */
-                if (mtmp->mundetected && is_hider(mtmp->data)) {
-                    mtmp->mundetected = 0;
+                if (is_mon_mundetected(mtmp) && is_hider(mtmp->data)) {
+                    set_mon_mundetected(mtmp, 0);
                     if (cansee(x, y))
                         pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s is shaken loose from the ceiling!",
                               Amonnam(mtmp));
@@ -363,7 +363,7 @@ do_earthquake(int force)
                                   (x == u.ux && y == u.uy) ? " below you"
                                                            : "");
                         if (mtmp)
-                            mtmp->mtrapped = 0;
+                            set_mon_mtrapped(mtmp, 0);
                         debugprint("do_earthquake");
                         obj_extract_self(otmp);
                         (void) flooreffects(otmp, x, y, "");
@@ -376,9 +376,9 @@ do_earthquake(int force)
                     {
                         if (!has_flying(mtmp) && !has_levitation(mtmp) && !is_clinger(mtmp->data)) 
                         {
-                            boolean m_already_trapped = mtmp->mtrapped;
+                            boolean m_already_trapped = is_mon_mtrapped(mtmp);
 
-                            mtmp->mtrapped = 1;
+                            set_mon_mtrapped(mtmp, 1);
                             if (!m_already_trapped) { /* suppress messages */
                                 if (cansee(x, y))
                                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s falls into a chasm!",
@@ -915,10 +915,10 @@ do_play_instrument(struct obj *instr)
                                 else
                                     open_drawbridge(x, y, TRUE);
 
-                                if (!u.uachieve.learned_castle_tune)
+                                if (!is_uachieve_learned_castle_tune())
                                 {
                                     achievement_gained("Solved Castle Drawbridge Tune");
-                                    u.uachieve.learned_castle_tune = 1;
+                                    set_uachieve_learned_castle_tune(1);
                                     issue_achievement(GUI_ACHIEVEMENT_SOLVED_CASTLE_TUNE);
                                 }
 

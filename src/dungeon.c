@@ -1235,7 +1235,7 @@ prev_level(boolean at_stairs)
         /* Taking an up dungeon branch. */
         /* KMH -- Upwards branches are okay if not level 1 */
         /* (Just make sure it doesn't go above depth 1) */
-        if (!u.uz.dnum && u.uz.dlevel == 1 && !u.uhave.amulet)
+        if (!u.uz.dnum && u.uz.dlevel == 1 && !is_uhave_amulet())
             done(ESCAPED);
         else
             goto_level(&sstairs.tolev, at_stairs, FALSE, FALSE, FALSE);
@@ -1346,7 +1346,7 @@ Is_botlevel(d_level *lev)
 boolean
 Can_dig_down(d_level *lev)
 {
-    return (boolean) (!level.flags.hardfloor
+    return (boolean) (!is_levflag_hardfloor(&level.flags)
                       && !Is_botlevel(lev)
                       && !Invocation_lev(lev));
 }
@@ -1653,7 +1653,7 @@ level_difficulty(void)
     {
         res = deepest_lev_reached(FALSE);  //2 * depth(&sanctum_level); //ulevel removed, depth doubled from before
     } 
-    else if (u.uhave.amulet) 
+    else if (is_uhave_amulet()) 
     {
         res = deepest_lev_reached(FALSE); // 2 * deepest_lev_reached(FALSE) - depth(&u.uz);
     } 
@@ -2199,7 +2199,7 @@ forget_mapseen(int ledger_num)
 
     /* if not found, then nothing to forget */
     if (mptr) {
-        mptr->flags.forgot = 1;
+        set_msflag_forgot(&mptr->flags, 1);
         mptr->br = (branch *) 0;
 
         /* custom names are erased, not just forgotten until revisited */
@@ -2357,7 +2357,7 @@ remdun_mapseen(int dnum)
     while ((mptr = *mptraddr) != 0) {
         if (mptr->lev.dnum == dnum) {
 #if 1 /* use this... */
-            mptr->flags.unreachable = 1;
+            set_msflag_unreachable(&mptr->flags, 1);
         }
 #else /* old deletion code */
             *mptraddr = mptr->next;
@@ -2420,14 +2420,14 @@ interest_mapseen(mapseen *mptr)
 {
     if (on_level(&u.uz, &mptr->lev))
         return TRUE;
-    if (mptr->flags.unreachable || mptr->flags.forgot)
+    if (is_msflag_unreachable(&mptr->flags) || is_msflag_forgot(&mptr->flags))
         return FALSE;
     /* level is of interest if it has an auto-generated annotation */
-    if (mptr->flags.oracle || mptr->flags.bigroom || mptr->flags.roguelevel
-        || mptr->flags.castle || mptr->flags.valley || mptr->flags.msanctum || mptr->flags.special_level
-        || mptr->flags.quest_summons || mptr->flags.questing
-        || mptr->flags.modron_hint_shown || mptr->flags.yacc_hint_shown || mptr->flags.quantum_hint_shown 
-        || mptr->flags.lost_world_hint_shown)
+    if (is_msflag_oracle(&mptr->flags) || is_msflag_bigroom(&mptr->flags) || is_msflag_roguelevel(&mptr->flags)
+        || is_msflag_castle(&mptr->flags) || is_msflag_valley(&mptr->flags) || is_msflag_msanctum(&mptr->flags) || is_msflag_special_level(&mptr->flags)
+        || is_msflag_quest_summons(&mptr->flags) || is_msflag_questing(&mptr->flags)
+        || is_msflag_modron_hint_shown(&mptr->flags) || is_msflag_yacc_hint_shown(&mptr->flags) || is_msflag_quantum_hint_shown(&mptr->flags) 
+        || is_msflag_lost_world_hint_shown(&mptr->flags))
         return TRUE;
     /* when in Sokoban, list all sokoban levels visited; when not in it,
        list any visited Sokoban level which remains unsolved (will usually
@@ -2435,7 +2435,7 @@ interest_mapseen(mapseen *mptr)
        climb out on the far side on the first Sokoban level; also, wizard
        mode overrides teleport restrictions) */
     if (In_sokoban(&mptr->lev)
-        && (In_sokoban(&u.uz) || !mptr->flags.sokosolved))
+        && (In_sokoban(&u.uz) || !is_msflag_sokosolved(&mptr->flags)))
         return TRUE;
     /* when in the endgame, list all endgame levels visited, whether they
        have annotations or not, so that #overview doesn't become extremely
@@ -2448,7 +2448,7 @@ interest_mapseen(mapseen *mptr)
        or is the furthest level reached in its branch */
     return (boolean) (INTEREST(mptr->feat)
                       || (mptr->final_resting_place
-                          && (mptr->flags.knownbones || wizard))
+                          && (is_msflag_knownbones(&mptr->flags) || wizard))
                       || mptr->custom || mptr->br
                       || (mptr->lev.dlevel
                           == dungeons[mptr->lev.dnum].dunlev_ureached));
@@ -2476,8 +2476,8 @@ recalc_mapseen(void)
     /* reset all features; mptr->feat.* = 0; */
     (void) memset((genericptr_t) &mptr->feat, 0, sizeof mptr->feat);
     /* reset most flags; some level-specific ones are left as-is */
-    if (mptr->flags.unreachable) {
-        mptr->flags.unreachable = 0; /* reached it; Eye of the Aethiopica? */
+    if is_msflag_unreachable(&(mptr->flags)) {
+        set_msflag_unreachable(&mptr->flags, 0); /* reached it; Eye of the Aethiopica? */
         if (In_quest(&u.uz)) {
             mapseen *mptrtmp = mapseenchn;
 
@@ -2486,34 +2486,34 @@ recalc_mapseen(void)
                data for all quest levels, not just the one we're on now */
             do {
                 if (mptrtmp->lev.dnum == mptr->lev.dnum)
-                    mptrtmp->flags.unreachable = 0;
+                    set_msflag_unreachable(&mptrtmp->flags, 0);
                 mptrtmp = mptrtmp->next;
             } while (mptrtmp);
         }
     }
-    mptr->flags.knownbones = 0;
-    mptr->flags.sokosolved = In_sokoban(&u.uz) && !Sokoban;
-    /* mptr->flags.bigroom retains previous value when hero can't see */
+    set_msflag_knownbones(&mptr->flags, 0);
+    set_msflag_sokosolved(&mptr->flags, In_sokoban(&u.uz) && !Sokoban);
+    /* is_msflag_bigroom(&mptr->flags) retains previous value when hero can't see */
     if (!Blind)
-        mptr->flags.bigroom = Is_bigroom(&u.uz);
-    else if (mptr->flags.forgot)
-        mptr->flags.bigroom = 0;
-    mptr->flags.roguelevel = Is_really_rogue_level(&u.uz);
-    mptr->flags.oracle = 0; /* recalculated during room traversal below */
-    mptr->flags.castletune = 0;
-    /* flags.castle, flags.valley, flags.msanctum, mptr->flags.special_level retain previous value */
-    mptr->flags.forgot = 0;
+        set_msflag_bigroom(&mptr->flags, Is_bigroom(&u.uz));
+    else if is_msflag_forgot(&(mptr->flags))
+        set_msflag_bigroom(&mptr->flags, 0);
+    set_msflag_roguelevel(&mptr->flags, Is_really_rogue_level(&u.uz));
+    set_msflag_oracle(&mptr->flags, 0); /* recalculated during room traversal below */
+    set_msflag_castletune(&mptr->flags, 0);
+    /* flags.castle, flags.valley, flags.msanctum, is_msflag_special_level(&mptr->flags) retain previous value */
+    set_msflag_forgot(&mptr->flags, 0);
     /* flags.quest_summons disabled once quest finished */
-    mptr->flags.quest_summons = (at_dgn_entrance("The Quest")
-                                 && u.uevent.qcalled
-                                 && !(u.uevent.qcompleted
-                                      || u.uevent.qexpelled
-                                      || quest_status.leader_is_dead));
-    mptr->flags.questing = (on_level(&u.uz, &qstart_level)
-                            && quest_status.got_quest);
-    mptr->flags.modron_hint_shown = (at_dgn_entrance("Plane of the Modron") && u.uevent.modron_portal_hint && !u.uevent.modron_plane_entered);
-    mptr->flags.yacc_hint_shown = (at_dgn_entrance("Hellish Pastures") && u.uevent.bovine_portal_hint && !u.uevent.hellish_pastures_entered);
-    mptr->flags.quantum_hint_shown = (at_dgn_entrance("The Large Circular Dungeon") && u.uevent.quantum_portal_hint && !u.uevent.large_circular_dgn_entered);
+    set_msflag_quest_summons(&mptr->flags, (at_dgn_entrance("The Quest")
+                                 && is_uevent_qcalled()
+                                 && !(is_uevent_qcompleted()
+                                      || is_uevent_qexpelled()
+                                      || is_qstatus_leader_is_dead())));
+    set_msflag_questing(&mptr->flags, (on_level(&u.uz, &qstart_level)
+                            && is_qstatus_got_quest()));
+    set_msflag_modron_hint_shown(&mptr->flags, (at_dgn_entrance("Plane of the Modron") && is_uevent_modron_portal_hint() && !is_uevent_modron_plane_entered()));
+    set_msflag_yacc_hint_shown(&mptr->flags, (at_dgn_entrance("Hellish Pastures") && is_uevent_bovine_portal_hint() && !is_uevent_hellish_pastures_entered()));
+    set_msflag_quantum_hint_shown(&mptr->flags, (at_dgn_entrance("The Large Circular Dungeon") && is_uevent_quantum_portal_hint() && !is_uevent_large_circular_dgn_entered()));
 
     debugprint_pos();
     /* track rooms the hero is in */
@@ -2587,7 +2587,7 @@ recalc_mapseen(void)
             }
             else if (rooms[i].orig_rtype == DELPHI)
             {
-                mptr->flags.oracle = 1;
+                set_msflag_oracle(&mptr->flags, 1);
             }
         }
     }
@@ -2725,7 +2725,7 @@ recalc_mapseen(void)
                      */
                     for (ty = max(0, y - 1); ty <= min(ROWNO, y + 1); ++ty)
                         if (isok(tx, ty) && IS_THRONE(levl[tx][ty].typ)) {
-                            mptr->flags.ludios = 1;
+                            set_msflag_ludios(&mptr->flags, 1);
                             break;
                         }
                     break;
@@ -2736,7 +2736,10 @@ recalc_mapseen(void)
             case DBWALL:
             case DRAWBRIDGE_DOWN:
                 if (Is_stronghold(&u.uz))
-                    mptr->flags.castle = 1, mptr->flags.castletune = 1;
+                {
+                    set_msflag_castle(&mptr->flags, 1);
+                    set_msflag_castletune(&mptr->flags, 1);
+                }
                 break;
             default:
                 break;
@@ -2782,7 +2785,7 @@ recalc_mapseen(void)
     for (bp = mptr->final_resting_place; bp; bp = bp->next)
         if (lastseentyp[bp->frpx][bp->frpy]) {
             bp->bonesknown = TRUE;
-            mptr->flags.knownbones = 1;
+            set_msflag_knownbones(&mptr->flags, 1);
         }
 
 }
@@ -2796,9 +2799,9 @@ mapseen_temple(struct monst *priest UNUSED)
     mapseen *mptr = find_mapseen(&u.uz);
 
     if (Is_valley(&u.uz))
-        mptr->flags.valley = 1;
+        set_msflag_valley(&mptr->flags, 1);
     else if (Is_sanctum(&u.uz))
-        mptr->flags.msanctum = 1;
+        set_msflag_msanctum(&mptr->flags, 1);
 }
 
 /* room entry message has just been delivered so learn room even if blind */
@@ -2891,7 +2894,7 @@ br_string2(branch *br)
 {
     /* Special case: quest portal says closed if kicked from quest */
     boolean closed_portal = (br->end2.dnum == quest_dnum
-                             && u.uevent.qexpelled);
+                             && is_uevent_qexpelled());
 
     switch (br->type) {
     case BR_PORTAL:
@@ -2999,7 +3002,7 @@ static char *
 tunesuffix(mapseen *mptr, char *outbuf)
 {
     *outbuf = '\0';
-    if (mptr->flags.castletune && u.uevent.uheard_tune) {
+    if (is_msflag_castletune(&mptr->flags) && u.uevent.uheard_tune) {
         char tmp[BUFSZ];
 
         if (u.uevent.uheard_tune == 2)
@@ -3089,7 +3092,7 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
     if (wizard) {
         s_level *slev;
 
-        if ((slev = Is_special(&mptr->lev)) != 0 && !mptr->flags.special_level_true_nature_known)
+        if ((slev = Is_special(&mptr->lev)) != 0 && !is_msflag_special_level_true_nature_known(&mptr->flags))
         {
             Sprintf(buf, " [%s]", slev->name);
             putstr_ex(win, buf, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_MSG_GOD, 1);
@@ -3114,7 +3117,7 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
     putstr(win, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, "");
     //putstr(win, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, buf);
 
-    if (mptr->flags.forgot)
+    if is_msflag_forgot(&(mptr->flags))
         return;
 
     if (INTEREST(mptr->feat)) 
@@ -3194,40 +3197,40 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
 
     /* we assume that these are mutually exclusive */
     *buf = '\0';
-    if (mptr->flags.oracle) {
+    if is_msflag_oracle(&(mptr->flags)) {
         Sprintf(buf, "%sOracle of Delphi.", PREFIX);
     } else if (In_sokoban(&mptr->lev)) {
         Sprintf(buf, "%s%s.", PREFIX,
-                mptr->flags.sokosolved ? "Solved" : "Unsolved");
-    } else if (mptr->flags.bigroom) {
+                is_msflag_sokosolved(&mptr->flags) ? "Solved" : "Unsolved");
+    } else if is_msflag_bigroom(&(mptr->flags)) {
         Sprintf(buf, "%sA very big room.", PREFIX);
-    } else if (mptr->flags.roguelevel) {
+    } else if is_msflag_roguelevel(&(mptr->flags)) {
         Sprintf(buf, "%sA primitive area.", PREFIX);
     } else if (on_level(&mptr->lev, &qstart_level)) {
         Sprintf(buf, "%sHome%s.", PREFIX,
-                mptr->flags.unreachable ? " (no way back...)" : "");
-        if (u.uevent.qcompleted)
+                is_msflag_unreachable(&mptr->flags) ? " (no way back...)" : "");
+        if (is_uevent_qcompleted())
             Sprintf(buf, "%sCompleted quest for %s.", PREFIX, ldrname());
-        else if (mptr->flags.questing)
+        else if is_msflag_questing(&(mptr->flags))
             Sprintf(buf, "%sGiven quest by %s.", PREFIX, ldrname());
-    } else if (mptr->flags.ludios) {
+    } else if is_msflag_ludios(&(mptr->flags)) {
         /* presence of the ludios branch in #overview output indicates that
            the player has made it onto the level; presence of this annotation
            indicates that the fort's entrance has been seen (or mapped) */
         Sprintf(buf, "%sFort Ludios.", PREFIX);
-    } else if (mptr->flags.castle) {
+    } else if is_msflag_castle(&(mptr->flags)) {
         Sprintf(buf, "%sThe castle%s.", PREFIX, tunesuffix(mptr, tmpbuf));
-    } else if (mptr->flags.valley) {
+    } else if is_msflag_valley(&(mptr->flags)) {
         Sprintf(buf, "%sValley of the Dead.", PREFIX);
-    } else if (mptr->flags.msanctum) {
+    } else if is_msflag_msanctum(&(mptr->flags)) {
         Sprintf(buf, "%sMoloch's Sanctum.", PREFIX);
     }
-    else if (mptr->flags.special_level) //(Inhell || Is_medusa_level(&mptr->lev))
+    else if is_msflag_special_level(&(mptr->flags)) //(Inhell || Is_medusa_level(&mptr->lev))
     {
         s_level* slev;
         if ((slev = Is_special(&mptr->lev)) != 0)
         {
-            if(mptr->flags.special_level_true_nature_known)
+            if (is_msflag_special_level_true_nature_known(&mptr->flags))
                 Sprintf(buf, "%s%s.", PREFIX, slev->name);
             else if(strcmp(mptr->flags.special_description, ""))
                 Sprintf(buf, "%s%s.", PREFIX, mptr->flags.special_description);
@@ -3237,19 +3240,19 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
     if (*buf)
         putstr(win, ATR_INDENT_AT_SPACE, buf);
     /* quest entrance is not mutually-exclusive with bigroom or rogue level */
-    if (mptr->flags.quest_summons) {
+    if is_msflag_quest_summons(&(mptr->flags)) {
         Sprintf(buf, "%sSummoned by %s.", PREFIX, ldrname());
         putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
-    if(mptr->flags.modron_hint_shown) {
+    if (is_msflag_modron_hint_shown(&mptr->flags)) {
         Sprintf(buf, "%sHad a sensation of unusually straight angles.", PREFIX);
         putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
-    if (mptr->flags.yacc_hint_shown) {
+    if is_msflag_yacc_hint_shown(&(mptr->flags)) {
         Sprintf(buf, "%sHeard distant grunting and bellowing.", PREFIX);
         putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
-    if (mptr->flags.quantum_hint_shown) {
+    if is_msflag_quantum_hint_shown(&(mptr->flags)) {
         Sprintf(buf, "%sHad a sensation of the fabric of reality stretching back and forth.", PREFIX);
         putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
@@ -3312,7 +3315,7 @@ check_special_level_naming_by_mon(struct monst *mon)
     if (!mon)
         return;
 
-    if (!level.flags.no_special_level_naming_checks && Is_special(&u.uz) && level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_SEEING_MONSTER &&
+    if (!is_levflag_no_special_level_naming_checks(&level.flags) && Is_special(&u.uz) && level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_SEEING_MONSTER &&
         ((level.flags.special_naming_seen_monster_type >= LOW_PM && level.flags.special_naming_seen_monster_type == mon->mnum)
           || (level.flags.special_naming_seen_monster_type == NON_PM && level.flags.special_naming_seen_monster_class > 0 && level.flags.special_naming_seen_monster_class == mon->data->mlet)
         )
@@ -3332,12 +3335,12 @@ set_special_level_seen(d_level *lvl, boolean set_also_true_nature_known)
 
     if (Is_special(lvl))
     {
-        mptr->flags.special_level = 1;
+        set_msflag_special_level(&mptr->flags, 1);
         Strcpy(mptr->flags.special_description, level.flags.special_description);
         if (set_also_true_nature_known)
         {
-            mptr->flags.special_level_true_nature_known = 1;
-            level.flags.no_special_level_naming_checks = 1;
+            set_msflag_special_level_true_nature_known(&mptr->flags, 1);
+            set_levflag_no_special_level_naming_checks(&level.flags, 1);
         }
     }
 

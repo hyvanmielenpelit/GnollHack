@@ -381,7 +381,7 @@ mapglyph(struct layer_info layers, nhsym *ochar, int *ocolor, uint64_t *ospecial
                             color = decoration_lit_colors[color].color_woody;
                         else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
                         {
-                            if (levl[x][y].lamplit)
+                            if (is_levl_lamplit(&levl[x][y]))
                                 color = decoration_lit_colors[color].color_lit;
                             else
                                 color = decoration_lit_colors[color].color_unlit;
@@ -410,7 +410,7 @@ mapglyph(struct layer_info layers, nhsym *ochar, int *ocolor, uint64_t *ospecial
                         color = decoration_lit_colors[color].color_lit;
                     else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
                     {
-                        if (levl[x][y].lamplit)
+                        if (is_levl_lamplit(&levl[x][y]))
                             color = decoration_lit_colors[color].color_lit;
                         else
                             color = decoration_lit_colors[color].color_unlit;

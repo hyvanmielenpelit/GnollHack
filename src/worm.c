@@ -406,7 +406,7 @@ cutworm(struct monst *worm, xchar x, xchar y, boolean cuttier)
     }
 
     new_worm->wormno = new_wnum; /* affix new worm number */
-    new_worm->mcloned = 0;       /* treat second worm as a normal monster */
+    set_mon_mcloned(new_worm, 0);       /* treat second worm as a normal monster */
 
     /* Devalue the monster level of both halves of the worm.
        Note: m_lev is always at least 3 in order to get this far. */
@@ -992,7 +992,7 @@ get_wseg_dir_at(struct monst *mtmp, int x, int y)
                     }
                     else
                     {
-                        if (mtmp->facing_right)
+                        if (is_mon_facing_right(mtmp))
                         {
                             i = 4;
                         }
@@ -1092,7 +1092,7 @@ get_reverse_prev_wseg_dir_at(struct monst *mtmp, int x, int y)
                 }
                 else
                 {
-                    if (mtmp->facing_right)
+                    if (is_mon_facing_right(mtmp))
                     {
                         i = 4;
                     }

@@ -507,7 +507,7 @@ int
 freehand(void)
 {
     return (!uwep || !welded(uwep, &youmonst)
-            || (!bimanual(uwep) && (!uarms || !uarms->cursed)));
+            || (!bimanual(uwep) && (!uarms || !is_obj_cursed(uarms))));
 }
 
 static NEARDATA const char styluses[] = { ALL_CLASSES, ALLOW_NONE,
@@ -715,9 +715,9 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
             You("would only make a small smudge on the %s.",
                 surface(u.ux, u.uy));
             return 0;
-        } else if (!levl[u.ux][u.uy].disturbed) {
+        } else if (!is_levl_disturbed(&levl[u.ux][u.uy])) {
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "disturb the undead!");
-            levl[u.ux][u.uy].disturbed = 1;
+            set_levl_disturbed(&levl[u.ux][u.uy], 1);
             (void) makemon(&mons[PM_GHOUL], u.ux, u.uy, NO_MM_FLAGS);
             exercise(A_WIS, FALSE);
             return 1;
@@ -782,7 +782,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
         if (zappable(otmp)) 
         {
             check_unpaid(otmp);
-            if (otmp->cursed && !rn2(WAND_BACKFIRE_CHANCE))
+            if (is_obj_cursed(otmp) && !rn2(WAND_BACKFIRE_CHANCE))
             {
                 wand_explode(otmp, 0);
                 (void)finish_obj_tracking(trackid);
@@ -1306,7 +1306,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
     case ENGRAVE:
         multi = -(len / 10);
         if (otmp->oclass == WEAPON_CLASS
-            && (otmp->otyp != ATHAME || otmp->cursed)) {
+            && (otmp->otyp != ATHAME || is_obj_cursed(otmp))) {
             multi = -len;
             maxelen = ((otmp->enchantment + 3) * 2) + 1;
             /* -2 => 3, -1 => 5, 0 => 7, +1 => 9, +2 => 11
@@ -1402,7 +1402,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
 
     if (!strcmp(buf, Elbereth_word))
     {
-        u.uevent.elbereth_known = 1;
+        set_uevent_elbereth_known(1);
         if (!u.uconduct.elbereths++)
         {
             livelog_printf(LL_CONDUCT, "engraved Elbereth for the first time");

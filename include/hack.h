@@ -829,8 +829,8 @@ extern struct objclass saved_objects[NUM_OBJECTS];
 /* high priests aren't unique but are flagged as such to simplify something */
 #define UniqCritterIndx(mndx) ((mons[mndx].geno & G_UNIQ) != 0 && (mndx) != PM_HIGH_PRIEST)
 
-#define is_unpaid_shop_item(o, x, y) ((o) && ((o)->unpaid || ((o)->where == OBJ_FLOOR && !(o)->no_charge && costly_spot(x, y))))
-#define mon_does_not_pick_up_shop_items(m) ((m) && ((m)->ispartymember || (m)->issummoned || (m)->isminion))
+#define is_unpaid_shop_item(o, x, y) ((o) && (is_obj_unpaid((o)) || ((o)->where == OBJ_FLOOR && !is_obj_no_charge((o)) && costly_spot(x, y))))
+#define mon_does_not_pick_up_shop_items(m) ((m) && (is_mon_ispartymember((m)) || is_mon_issummoned((m)) || is_mon_isminion((m))))
 #define m_unpaid_item_no_pickup_at_location(m, o, x, y) (is_unpaid_shop_item(o, x, y) && mon_does_not_pick_up_shop_items(m))
 #define m_unpaid_item_no_pickup(m, o) m_unpaid_item_no_pickup_at_location(m, o, (o)->ox, (o)->oy)
 

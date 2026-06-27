@@ -8,6 +8,120 @@
 #ifndef OBJ_H
 #define OBJ_H
 
+#define OBJFLAG_CURSED                   0x00000001UL
+#define OBJFLAG_BLESSED                  0x00000002UL
+#define OBJFLAG_UNPAID                   0x00000004UL
+#define OBJFLAG_NO_CHARGE                0x00000008UL
+#define OBJFLAG_KNOWN                    0x00000010UL
+#define OBJFLAG_DKNOWN                   0x00000020UL
+#define OBJFLAG_BKNOWN                   0x00000040UL
+#define OBJFLAG_RKNOWN                   0x00000080UL
+#define OBJFLAG_OERODEPROOF              0x00000100UL
+#define OBJFLAG_OLOCKED                  0x00000200UL
+#define OBJFLAG_OBROKEN                  0x00000400UL
+#define OBJFLAG_OTRAPPED                 0x00000800UL
+#define OBJFLAG_LAMPLIT                  0x00001000UL
+#define OBJFLAG_MAKINGSOUND              0x00002000UL
+#define OBJFLAG_GLOBBY                   0x00004000UL
+#define OBJFLAG_GREASED                  0x00008000UL
+#define OBJFLAG_NOMERGE                  0x00010000UL
+#define OBJFLAG_WAS_THROWN               0x00020000UL
+#define OBJFLAG_HAS_SPECIAL_TILESET      0x00040000UL
+#define OBJFLAG_IN_USE                   0x00080000UL
+#define OBJFLAG_BYPASS                   0x00100000UL
+#define OBJFLAG_CKNOWN                   0x00200000UL
+#define OBJFLAG_LKNOWN                   0x00400000UL
+#define OBJFLAG_TKNOWN                   0x00800000UL
+#define OBJFLAG_NKNOWN                   0x01000000UL
+#define OBJFLAG_AKNOWN                   0x02000000UL
+#define OBJFLAG_MKNOWN                   0x04000000UL
+#define OBJFLAG_ROTKNOWN                 0x08000000UL
+
+#define is_obj_cursed(obj) (((obj)->bitflags & OBJFLAG_CURSED) != 0)
+#define set_obj_cursed(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_CURSED) : ((obj)->bitflags &= ~OBJFLAG_CURSED))
+#define toggle_obj_cursed(obj) ((obj)->bitflags ^= OBJFLAG_CURSED)
+#define is_obj_blessed(obj) (((obj)->bitflags & OBJFLAG_BLESSED) != 0)
+#define set_obj_blessed(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_BLESSED) : ((obj)->bitflags &= ~OBJFLAG_BLESSED))
+#define toggle_obj_blessed(obj) ((obj)->bitflags ^= OBJFLAG_BLESSED)
+#define is_obj_unpaid(obj) (((obj)->bitflags & OBJFLAG_UNPAID) != 0)
+#define set_obj_unpaid(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_UNPAID) : ((obj)->bitflags &= ~OBJFLAG_UNPAID))
+#define toggle_obj_unpaid(obj) ((obj)->bitflags ^= OBJFLAG_UNPAID)
+#define is_obj_no_charge(obj) (((obj)->bitflags & OBJFLAG_NO_CHARGE) != 0)
+#define set_obj_no_charge(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_NO_CHARGE) : ((obj)->bitflags &= ~OBJFLAG_NO_CHARGE))
+#define toggle_obj_no_charge(obj) ((obj)->bitflags ^= OBJFLAG_NO_CHARGE)
+#define is_obj_known(obj) (((obj)->bitflags & OBJFLAG_KNOWN) != 0)
+#define set_obj_known(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_KNOWN) : ((obj)->bitflags &= ~OBJFLAG_KNOWN))
+#define toggle_obj_known(obj) ((obj)->bitflags ^= OBJFLAG_KNOWN)
+#define is_obj_dknown(obj) (((obj)->bitflags & OBJFLAG_DKNOWN) != 0)
+#define set_obj_dknown(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_DKNOWN) : ((obj)->bitflags &= ~OBJFLAG_DKNOWN))
+#define toggle_obj_dknown(obj) ((obj)->bitflags ^= OBJFLAG_DKNOWN)
+#define is_obj_bknown(obj) (((obj)->bitflags & OBJFLAG_BKNOWN) != 0)
+#define set_obj_bknown(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_BKNOWN) : ((obj)->bitflags &= ~OBJFLAG_BKNOWN))
+#define toggle_obj_bknown(obj) ((obj)->bitflags ^= OBJFLAG_BKNOWN)
+#define is_obj_rknown(obj) (((obj)->bitflags & OBJFLAG_RKNOWN) != 0)
+#define set_obj_rknown(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_RKNOWN) : ((obj)->bitflags &= ~OBJFLAG_RKNOWN))
+#define toggle_obj_rknown(obj) ((obj)->bitflags ^= OBJFLAG_RKNOWN)
+#define is_obj_oerodeproof(obj) (((obj)->bitflags & OBJFLAG_OERODEPROOF) != 0)
+#define set_obj_oerodeproof(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_OERODEPROOF) : ((obj)->bitflags &= ~OBJFLAG_OERODEPROOF))
+#define toggle_obj_oerodeproof(obj) ((obj)->bitflags ^= OBJFLAG_OERODEPROOF)
+#define is_obj_olocked(obj) (((obj)->bitflags & OBJFLAG_OLOCKED) != 0)
+#define set_obj_olocked(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_OLOCKED) : ((obj)->bitflags &= ~OBJFLAG_OLOCKED))
+#define toggle_obj_olocked(obj) ((obj)->bitflags ^= OBJFLAG_OLOCKED)
+#define is_obj_obroken(obj) (((obj)->bitflags & OBJFLAG_OBROKEN) != 0)
+#define set_obj_obroken(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_OBROKEN) : ((obj)->bitflags &= ~OBJFLAG_OBROKEN))
+#define toggle_obj_obroken(obj) ((obj)->bitflags ^= OBJFLAG_OBROKEN)
+#define is_obj_otrapped(obj) (((obj)->bitflags & OBJFLAG_OTRAPPED) != 0)
+#define set_obj_otrapped(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_OTRAPPED) : ((obj)->bitflags &= ~OBJFLAG_OTRAPPED))
+#define toggle_obj_otrapped(obj) ((obj)->bitflags ^= OBJFLAG_OTRAPPED)
+#define is_obj_lamplit(obj) (((obj)->bitflags & OBJFLAG_LAMPLIT) != 0)
+#define set_obj_lamplit(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_LAMPLIT) : ((obj)->bitflags &= ~OBJFLAG_LAMPLIT))
+#define toggle_obj_lamplit(obj) ((obj)->bitflags ^= OBJFLAG_LAMPLIT)
+#define is_obj_makingsound(obj) (((obj)->bitflags & OBJFLAG_MAKINGSOUND) != 0)
+#define set_obj_makingsound(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_MAKINGSOUND) : ((obj)->bitflags &= ~OBJFLAG_MAKINGSOUND))
+#define toggle_obj_makingsound(obj) ((obj)->bitflags ^= OBJFLAG_MAKINGSOUND)
+#define is_obj_globby(obj) (((obj)->bitflags & OBJFLAG_GLOBBY) != 0)
+#define set_obj_globby(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_GLOBBY) : ((obj)->bitflags &= ~OBJFLAG_GLOBBY))
+#define toggle_obj_globby(obj) ((obj)->bitflags ^= OBJFLAG_GLOBBY)
+#define is_obj_greased(obj) (((obj)->bitflags & OBJFLAG_GREASED) != 0)
+#define set_obj_greased(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_GREASED) : ((obj)->bitflags &= ~OBJFLAG_GREASED))
+#define toggle_obj_greased(obj) ((obj)->bitflags ^= OBJFLAG_GREASED)
+#define is_obj_nomerge(obj) (((obj)->bitflags & OBJFLAG_NOMERGE) != 0)
+#define set_obj_nomerge(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_NOMERGE) : ((obj)->bitflags &= ~OBJFLAG_NOMERGE))
+#define toggle_obj_nomerge(obj) ((obj)->bitflags ^= OBJFLAG_NOMERGE)
+#define is_obj_was_thrown(obj) (((obj)->bitflags & OBJFLAG_WAS_THROWN) != 0)
+#define set_obj_was_thrown(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_WAS_THROWN) : ((obj)->bitflags &= ~OBJFLAG_WAS_THROWN))
+#define toggle_obj_was_thrown(obj) ((obj)->bitflags ^= OBJFLAG_WAS_THROWN)
+#define is_obj_has_special_tileset(obj) (((obj)->bitflags & OBJFLAG_HAS_SPECIAL_TILESET) != 0)
+#define set_obj_has_special_tileset(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_HAS_SPECIAL_TILESET) : ((obj)->bitflags &= ~OBJFLAG_HAS_SPECIAL_TILESET))
+#define toggle_obj_has_special_tileset(obj) ((obj)->bitflags ^= OBJFLAG_HAS_SPECIAL_TILESET)
+#define is_obj_in_use(obj) (((obj)->bitflags & OBJFLAG_IN_USE) != 0)
+#define set_obj_in_use(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_IN_USE) : ((obj)->bitflags &= ~OBJFLAG_IN_USE))
+#define toggle_obj_in_use(obj) ((obj)->bitflags ^= OBJFLAG_IN_USE)
+#define is_obj_bypass(obj) (((obj)->bitflags & OBJFLAG_BYPASS) != 0)
+#define set_obj_bypass(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_BYPASS) : ((obj)->bitflags &= ~OBJFLAG_BYPASS))
+#define toggle_obj_bypass(obj) ((obj)->bitflags ^= OBJFLAG_BYPASS)
+#define is_obj_cknown(obj) (((obj)->bitflags & OBJFLAG_CKNOWN) != 0)
+#define set_obj_cknown(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_CKNOWN) : ((obj)->bitflags &= ~OBJFLAG_CKNOWN))
+#define toggle_obj_cknown(obj) ((obj)->bitflags ^= OBJFLAG_CKNOWN)
+#define is_obj_lknown(obj) (((obj)->bitflags & OBJFLAG_LKNOWN) != 0)
+#define set_obj_lknown(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_LKNOWN) : ((obj)->bitflags &= ~OBJFLAG_LKNOWN))
+#define toggle_obj_lknown(obj) ((obj)->bitflags ^= OBJFLAG_LKNOWN)
+#define is_obj_tknown(obj) (((obj)->bitflags & OBJFLAG_TKNOWN) != 0)
+#define set_obj_tknown(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_TKNOWN) : ((obj)->bitflags &= ~OBJFLAG_TKNOWN))
+#define toggle_obj_tknown(obj) ((obj)->bitflags ^= OBJFLAG_TKNOWN)
+#define is_obj_nknown(obj) (((obj)->bitflags & OBJFLAG_NKNOWN) != 0)
+#define set_obj_nknown(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_NKNOWN) : ((obj)->bitflags &= ~OBJFLAG_NKNOWN))
+#define toggle_obj_nknown(obj) ((obj)->bitflags ^= OBJFLAG_NKNOWN)
+#define is_obj_aknown(obj) (((obj)->bitflags & OBJFLAG_AKNOWN) != 0)
+#define set_obj_aknown(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_AKNOWN) : ((obj)->bitflags &= ~OBJFLAG_AKNOWN))
+#define toggle_obj_aknown(obj) ((obj)->bitflags ^= OBJFLAG_AKNOWN)
+#define is_obj_mknown(obj) (((obj)->bitflags & OBJFLAG_MKNOWN) != 0)
+#define set_obj_mknown(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_MKNOWN) : ((obj)->bitflags &= ~OBJFLAG_MKNOWN))
+#define toggle_obj_mknown(obj) ((obj)->bitflags ^= OBJFLAG_MKNOWN)
+#define is_obj_rotknown(obj) (((obj)->bitflags & OBJFLAG_ROTKNOWN) != 0)
+#define set_obj_rotknown(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_ROTKNOWN) : ((obj)->bitflags &= ~OBJFLAG_ROTKNOWN))
+#define toggle_obj_rotknown(obj) ((obj)->bitflags ^= OBJFLAG_ROTKNOWN)
+
 #include "general.h"
 #include "mondata.h"
 #include "objclass.h"
@@ -155,49 +269,22 @@ struct obj {
 #define spestudied usecount         /* # of times a spellbook has been studied */
 #define ring_text_appeared usecount /* the round the text of Ruling Ring of Yendor appeared */
     unsigned oeaten;                /* nutrition left in food, if partly eaten */
+    uint64_t bitflags;
+    uchar oeroded;            /* rusted/burnt weapon/armor */
+    uchar oeroded2;           /* corroded/rotted weapon/armor */
 
-    Bitfield(cursed, 1);
-    Bitfield(blessed, 1);
-    Bitfield(unpaid, 1);      /* on some bill */
-    Bitfield(no_charge, 1);   /* if shk shouldn't charge for this */
-    Bitfield(known, 1);       /* exact nature & enchantment & charges known */
-    Bitfield(dknown, 1);      /* description = color or text known */
-    Bitfield(bknown, 1);      /* blessing or curse known */
-    Bitfield(rknown, 1);      /* rustproof or not known */
-    Bitfield(oeroded, 2);     /* rusted/burnt weapon/armor */
-
-    Bitfield(oeroded2, 2);    /* corroded/rotted weapon/armor */
-#define greatest_erosion(otmp)                                 \
+#define greatest_erosion(otmp) \
     (int)((otmp)->oeroded > (otmp)->oeroded2 ? (otmp)->oeroded \
                                              : (otmp)->oeroded2)
 #define MAX_ERODE 3
 #define orotten oeroded       /* rotten food */
 #define odiluted oeroded      /* diluted potions */
 #define norevive oeroded2
-    Bitfield(oerodeproof, 1); /* erodeproof weapon/armor */
-    Bitfield(olocked, 1);     /* object is locked */
-    Bitfield(obroken, 1);     /* lock has been broken */
-#define degraded_horn obroken /* unicorn horn will poly to non-magic */
-    Bitfield(otrapped, 1);    /* container is trapped */
-/* or accidental tripped rolling boulder trap */
-#define opoisoned otrapped    /* object (weapon) is coated with poison */
-    Bitfield(lamplit, 1);     /* a light-source -- can be lit */
-    Bitfield(makingsound, 1); /* a sound-source -- can be turned on to make noise */
-    Bitfield(globby, 1);      /* combines with like types on adjacent squares */
-    Bitfield(greased, 1);     /* covered with grease */
-
-    Bitfield(nomerge, 1);     /* set temporarily to prevent merging */
-    Bitfield(was_thrown, 1);  /* thrown by hero since last picked up */
-    Bitfield(has_special_tileset, 1); /* the object uses a dungeon-specific tileset defined in special_tileset; in particular, applies to boulders */
-    Bitfield(in_use, 1);      /* item is going to be deallocated (used, broken, destroyed, etc.), but the hero may die before deallocation; ensure that the item does not appear in bones or in error save files or the like. For magic items before useup items */
-    Bitfield(bypass, 1);      /* mark this as an object to be skipped by bhito() */
-    Bitfield(cknown, 1);      /* contents of container assumed to be known */
-    Bitfield(lknown, 1);      /* locked/unlocked status is known */
-    Bitfield(tknown, 1);      /* trapped status of a container is known */
-    Bitfield(nknown, 1);      /* artifact's true name is known */
-    Bitfield(aknown, 1);      /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
-    Bitfield(mknown, 1);      /* mythic quality is known */
-    Bitfield(rotknown, 1);    /* rotting status is known */
+#define is_obj_degraded_horn(obj) is_obj_obroken(obj)
+#define set_obj_degraded_horn(obj, val) set_obj_obroken(obj, val) /* unicorn horn will poly to non-magic */
+#define is_obj_opoisoned(obj) is_obj_otrapped(obj)
+#define set_obj_opoisoned(obj, val) set_obj_otrapped(obj, val)    /* object (weapon) is coated with poison */
+/* rotting status is known */
 
     unsigned firing_m_id;     /* m_id for monster that fired this object (for picking up back) */
 
@@ -701,7 +788,7 @@ enum elemental_enchantments {
     ((o)->quan != 1L                                                    \
      /* "the Eyes of the Overworld" are plural, but                     \
         "a pair of lenses named the Eyes of the Overworld" is not */    \
-     || ((o)->oartifact == ART_EYES_OF_THE_OVERWORLD && (o)->nknown && (o)->known))
+     || ((o)->oartifact == ART_EYES_OF_THE_OVERWORLD && is_obj_nknown((o)) && is_obj_known((o))))
 
 #define pair_of(o) ((o->oclass == MISCELLANEOUS_CLASS && \
     (objects[(o)->otyp].oc_subtyp == MISC_EYEGLASSES || objects[(o)->otyp].oc_subtyp == MISC_EARRINGS || objects[(o)->otyp].oc_subtyp == MISC_PANTS || objects[(o)->otyp].oc_subtyp == MISC_WINGS || objects[(o)->otyp].oc_subtyp == MISC_EXTRA_ARMS)) \
@@ -723,7 +810,7 @@ enum elemental_enchantments {
 #define nonrotting_food(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_NONROTTING_FOOD) != 0)
 
-#define is_obj_rotting_corpse(o) ((o)->otyp == CORPSE || (o)->globby)
+#define is_obj_rotting_corpse(o) ((o)->otyp == CORPSE || is_obj_globby((o)))
 
 #define has_otyp_double_digging_effort(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_DOUBLE_DIGGING_EFFORT) != 0)
@@ -1202,7 +1289,7 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
 #define obj_burns_infinitely(o) \
    ((objects[(o)->otyp].oc_flags5 & O5_BURNS_INFINITELY) != 0 || artifact_light(o) || obj_shines_magical_light(o) || has_obj_mythic_magical_light(o))
 #define is_light_source_empty(o) \
-        (((o)->oclass == TOOL_CLASS && (objects[(o)->otyp].oc_subtyp == TOOLTYPE_LANTERN || objects[(o)->otyp].oc_subtyp == TOOLTYPE_LAMP) && (o)->otyp != MAGIC_LAMP && (o)->age == 0L && !((o)->lamplit) && ((o)->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0) \
+        (((o)->oclass == TOOL_CLASS && (objects[(o)->otyp].oc_subtyp == TOOLTYPE_LANTERN || objects[(o)->otyp].oc_subtyp == TOOLTYPE_LAMP) && (o)->otyp != MAGIC_LAMP && (o)->age == 0L && !(is_obj_lamplit((o))) && ((o)->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0) \
         || ((o)->otyp == MAGIC_LAMP && (o)->special_quality == 0 && ((o)->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0))
 
 #define oresist_disintegration(o)                                       \
@@ -1234,7 +1321,7 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
 
 #define obj_destroyed_in_lava_effects(o) \
     ((melts_in_lava(o) || o->oclass == POTION_CLASS) \
-        && !o->oerodeproof \
+        && !is_obj_oerodeproof(o) \
         && !((o)->item_flags & ITEM_FLAGS_LAVA_EFFECTS_SKIP) \
         && !oresist_fire(o))
 

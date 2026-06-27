@@ -219,8 +219,8 @@ mkobj_at_with_flags(char let, int x, int y, boolean init, boolean artif, uchar m
         place_object(otmp, x, y);
         if ((objects[otmp->otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
         {
-            otmp->has_special_tileset = 1;
-            otmp->special_tileset = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+            set_obj_has_special_tileset(otmp, 1);
+            otmp->special_tileset = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
         }
     }
     return otmp;
@@ -258,8 +258,8 @@ mksobj_at_with_flags(int otyp, int x, int y, boolean init, boolean artif, int mk
         place_object(otmp, x, y);
         if ((objects[otmp->otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
         {
-            otmp->has_special_tileset = 1;
-            otmp->special_tileset = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+            set_obj_has_special_tileset(otmp, 1);
+            otmp->special_tileset = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
         }
     }
     return otmp;
@@ -598,10 +598,10 @@ mkbox_cnts(struct obj *box)
             break;
         case GOLDEN_CHEST:
         case CHEST:
-            n = box->olocked ? 7 : 5;
+            n = is_obj_olocked(box) ? 7 : 5;
             break;
         case LARGE_BOX:
-            n = box->olocked ? 5 : 3;
+            n = is_obj_olocked(box) ? 5 : 3;
             break;
         case COFFIN:
             n = 3;
@@ -859,8 +859,8 @@ splitobj(struct obj *obj, int64_t num)
     otmp->oextra = (struct oextra *) 0;
     otmp->o_id = nextoid(obj, otmp);
     otmp->timed = 0;                  /* not timed, yet */
-    otmp->lamplit = 0;                /* ditto */
-    otmp->makingsound = 0;            /* ditto */
+    set_obj_lamplit(otmp, 0);                /* ditto */
+    set_obj_makingsound(otmp, 0);            /* ditto */
     otmp->owornmask = 0L;             /* new object isn't worn */
     obj->quan -= num;
     obj->owt = weight(obj);
@@ -877,7 +877,7 @@ splitobj(struct obj *obj, int64_t num)
     copy_oextra(otmp, obj);
     if (has_omid(otmp))
         free_omid(otmp); /* only one association with m_id*/
-    if (obj->unpaid)
+    if (is_obj_unpaid(obj))
         splitbill(obj, otmp);
     if (obj->timed)
         obj_split_timers(obj, otmp);
@@ -1067,7 +1067,7 @@ unknwn_contnr_contents(struct obj *obj)
 
     while (obj->where == OBJ_CONTAINED) {
         parent = obj->ocontainer;
-        if (!parent->cknown)
+        if (!is_obj_cknown(parent))
             result = parent;
         obj = parent;
     }
@@ -1082,7 +1082,7 @@ unknwn_contnr_contents(struct obj *obj)
  * an object which is different from what it started out as; the "I x"
  * command needs to display the original object.
  *
- * The caller is responsible for checking otmp->unpaid and
+ * The caller is responsible for checking is_obj_unpaid(otmp) and
  * costly_spot(u.ux, u.uy).  This function will make otmp no charge.
  *
  * Note that check_unpaid_usage() should be used instead for partial
@@ -1094,7 +1094,7 @@ bill_dummy_object(struct obj *otmp)
     struct obj *dummy;
     int64_t cost = 0L;
 
-    if (otmp->unpaid) {
+    if (is_obj_unpaid(otmp)) {
         cost = unpaid_cost(otmp, FALSE);
         debugprint_pos();
         subfrombill(otmp, shop_keeper(*u.ushops));
@@ -1110,16 +1110,16 @@ bill_dummy_object(struct obj *otmp)
     copy_oextra(dummy, otmp);
     if (has_omid(dummy))
         free_omid(dummy); /* only one association with m_id*/
-    dummy->lamplit = 0;
-    dummy->makingsound = 0;
+    set_obj_lamplit(dummy, 0);
+    set_obj_makingsound(dummy, 0);
     dummy->owornmask = 0L; /* dummy object is not worn */
     addtobill(dummy, FALSE, TRUE, TRUE);
     if (cost)
         alter_cost(dummy, -cost);
     /* no_charge is only valid for some locations */
-    otmp->no_charge =
-        (otmp->where == OBJ_FLOOR || otmp->where == OBJ_CONTAINED || otmp->where == OBJ_MAGIC) ? 1 : 0;
-    otmp->unpaid = 0;
+    set_obj_no_charge(otmp,
+        (otmp->where == OBJ_FLOOR || otmp->where == OBJ_CONTAINED || otmp->where == OBJ_MAGIC) ? 1 : 0);
+    set_obj_unpaid(otmp, 0);
     return;
 }
 
@@ -1148,14 +1148,14 @@ memory_dummy_object(struct obj *otmp)
     if (!dummy->o_id)
         dummy->o_id = context.ident++; /* ident overflowed */
     dummy->timed = 0;
-    dummy->lamplit = 0;
-    dummy->makingsound = 0;
-    if (otmp->lamplit)
+    set_obj_lamplit(dummy, 0);
+    set_obj_makingsound(dummy, 0);
+    if (is_obj_lamplit(otmp))
         dummy->item_flags |= ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT;
     /* Insurance not to copy insane bits */
-    dummy->in_use = 0;
-    dummy->bypass = 0;
-    dummy->nomerge = 0;
+    set_obj_in_use(dummy, 0);
+    set_obj_bypass(dummy, 0);
+    set_obj_nomerge(dummy, 0);
     copy_oextra(dummy, otmp);
     if (has_omid(dummy))
         free_omid(dummy); /* only one association with m_id*/
@@ -1212,9 +1212,9 @@ add_memory_object_contents(struct obj *memory_obj, struct obj *orig_obj)
         if (!dummy->o_id)
             dummy->o_id = context.ident++; /* ident overflowed */
         dummy->timed = 0;
-        dummy->lamplit = 0;
-        dummy->makingsound = 0;
-        if (otmp->lamplit)
+        set_obj_lamplit(dummy, 0);
+        set_obj_makingsound(dummy, 0);
+        if (is_obj_lamplit(otmp))
             dummy->item_flags |= ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT;
         copy_oextra(dummy, otmp);
         if (has_omid(dummy))
@@ -1351,7 +1351,7 @@ costly_alteration(struct obj *obj, int alter_type)
            removed from inventory but not necessarily placed at
            its new location yet--the unpaid flag will still be set
            if this item is owned by a shop */
-        if (!obj->unpaid)
+        if (!is_obj_unpaid(obj))
             return;
     }
     else 
@@ -1383,7 +1383,7 @@ costly_alteration(struct obj *obj, int alter_type)
     case OBJ_FREE: /* obj_no_longer_held() */
     case OBJ_INVENT:
         if (set_bknown)
-            obj->bknown = 1;
+            set_obj_bknown(obj, 1);
         boolean didtalk = FALSE;
         if (iflags.using_gui_sounds)
         {
@@ -1391,7 +1391,7 @@ costly_alteration(struct obj *obj, int alter_type)
             char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
             shkp = shop_keeper(*o_shop);
             debugprint_pos();
-            if (obj->unpaid && shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp) && costly_spot(u.ux, u.uy))
+            if (is_obj_unpaid(obj) && shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp) && costly_spot(u.ux, u.uy))
             {
                 //play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_YOU_ALTER_THAT_YOU_PAY_FOR_IT : SHOPKEEPER_LINE_YOU_ALTER_THOSE_YOU_PAY_FOR_THEM);
                 play_voice_shopkeeper_costly_alteration(shkp, obj, alter_type);
@@ -1410,7 +1410,7 @@ costly_alteration(struct obj *obj, int alter_type)
         break;
     case OBJ_FLOOR:
         if (set_bknown)
-            obj->bknown = 1;
+            set_obj_bknown(obj, 1);
         if (costly_spot(u.ux, u.uy) && objroom == *u.ushops) 
         {
             objroom = *in_rooms(ox, oy, SHOPBASE);
@@ -1440,7 +1440,7 @@ uint64_t mkobj_ownerflags(struct monst *mtmp)
 
     aligntyp alignment = mon_aligntyp(mtmp);
     uint64_t mkflags = 0UL;
-    if (alignment == A_NONE || is_mercenary(mtmp->data) || mtmp->isgd)
+    if (alignment == A_NONE || is_mercenary(mtmp->data) || is_mon_isgd(mtmp))
         mkflags |= MKOBJ_FLAGS_OWNER_IS_NONALIGNED;
     else if (alignment == A_LAWFUL)
         mkflags |= MKOBJ_FLAGS_OWNER_IS_LAWFUL;
@@ -1513,16 +1513,16 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
     otmp->where = OBJ_FREE;
     otmp->glyph = NO_GLYPH;
     otmp->gui_glyph = NO_GLYPH;
-    otmp->dknown = index(dknowns, let) ? 0 : 1;
+    set_obj_dknown(otmp, index(dknowns, let) ? 0 : 1);
     if ((otmp->otyp >= ELVEN_SHIELD && otmp->otyp <= ORCISH_SHIELD)
         || otmp->otyp == SHIELD_OF_REFLECTION
         || objects[otmp->otyp].oc_merge)
-        otmp->dknown = 0;
+        set_obj_dknown(otmp, 0);
     if (!objects[otmp->otyp].oc_uses_known)
-        otmp->known = 1;
-    otmp->lknown = 0;
-    otmp->tknown = 0;
-    otmp->cknown = (objects[otmp->otyp].oc_flags4 & O4_CONTAINER_CONTENTS_VISIBLE) ? 1 : 0;
+        set_obj_known(otmp, 1);
+    set_obj_lknown(otmp, 0);
+    set_obj_tknown(otmp, 0);
+    set_obj_cknown(otmp, (objects[otmp->otyp].oc_flags4 & O4_CONTAINER_CONTENTS_VISIBLE) ? 1 : 0);
     otmp->corpsenm = NON_PM;
     otmp->material = material > 0 ? material : forcebasematerial ? objects[otyp].oc_material : get_otyp_initial_material(otyp);
     otmp->elemental_enchantment = 0;
@@ -1532,11 +1532,11 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
     otmp->cooldownleft = 0;
     otmp->repowerleft = 0;
     otmp->invokeleft = 0;
-    otmp->blessed = 0;
-    otmp->lamplit = 0;
-    otmp->makingsound = 0;
+    set_obj_blessed(otmp, 0);
+    set_obj_lamplit(otmp, 0);
+    set_obj_makingsound(otmp, 0);
     otmp->special_quality = 0;
-    otmp->has_special_tileset = 0;
+    set_obj_has_special_tileset(otmp, 0);
     otmp->special_tileset = 0;
     otmp->cobj = (struct obj*)0;
 
@@ -1607,7 +1607,7 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
             if (!rn2(11) && !is_cursed_magic_item(otmp))
             {
                 otmp->enchantment = rne(3);
-                otmp->blessed = rn2(2);
+                set_obj_blessed(otmp, rn2(2));
             } 
             else if (!rn2(10) || is_cursed_magic_item(otmp)) 
             {
@@ -1618,7 +1618,7 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
                 blessorcurse(otmp, 10);
 
             if (mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE && is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED))
-                otmp->opoisoned = 1;
+                set_obj_opoisoned(otmp, 1);
             else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE && leveldiff > 4 && (is_multigen(otmp) ? !rn2(40) : !rn2(160)))))
             {
                 if (is_death_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE && leveldiff > 16 && !rn2(10))))
@@ -1708,8 +1708,8 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
             }
             if (Is_pudding(otmp)) 
             {
-                otmp->globby = 1;
-                otmp->known = otmp->dknown = 1;
+                set_obj_globby(otmp, 1);
+                set_obj_known(otmp, 1), set_obj_dknown(otmp, 1);
                 otmp->corpsenm = PM_GRAY_OOZE
                                  + (otmp->otyp - GLOB_OF_GRAY_OOZE);
             } 
@@ -1784,8 +1784,8 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
                 break;
             case CHEST:
             case LARGE_BOX:
-                otmp->olocked = !!(rn2(5));
-                otmp->otrapped = !(rn2(10));
+                set_obj_olocked(otmp, !!(rn2(5)));
+                set_obj_otrapped(otmp, !(rn2(10)));
                 break;
             case SARCOPHAGUS:
             case COFFIN:
@@ -1973,7 +1973,7 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
             } 
             else if (!rn2(10)) 
             {
-                otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : rn2(2);
+                set_obj_blessed(otmp, (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : rn2(2));
                 otmp->enchantment = rne(3);
             } 
             else
@@ -1987,10 +1987,10 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
                 && (moves <= 1 || In_quest(&u.uz))) {
 #ifdef UNIXPC
                 /* optimizer bitfield bug */
-                otmp->oerodeproof = 1;
-                otmp->rknown = 1;
+                set_obj_oerodeproof(otmp, 1);
+                set_obj_rknown(otmp, 1);
 #else
-                otmp->oerodeproof = otmp->rknown = 1;
+                set_obj_oerodeproof(otmp, 1), set_obj_rknown(otmp, 1);
 #endif
             }
             break;
@@ -2100,16 +2100,16 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
     /* Default to current tile set, and override later, if necessary */
     if ((objects[otmp->otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
     {
-        otmp->has_special_tileset = 1;
+        set_obj_has_special_tileset(otmp, 1);
         otmp->special_tileset = get_current_cmap_type_index();
     }
 
     /* Blessed or cursed */
     if (is_obj_generated_blessed(otmp))
     {
-        otmp->cursed = 0;
+        set_obj_cursed(otmp, 0);
         otmp->enchantment = abs(otmp->enchantment);
-        otmp->blessed = 1;
+        set_obj_blessed(otmp, 1);
     }
     else if (is_obj_generated_cursed(otmp))
         curse(otmp);
@@ -2224,7 +2224,7 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
     }
 
     if (has_obj_mythic_uncurseable(otmp))
-        otmp->cursed = 0;
+        set_obj_cursed(otmp, 0);
 
     /* some things must get done (corpsenm, timers) even if init = 0 */
     switch ((otmp->oclass == POTION_CLASS && otmp->otyp != POT_OIL)
@@ -2264,7 +2264,7 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
         if (otmp->novelidx != -1) /* Not blank */
         {
             otmp = oname(otmp, noveltitle(&otmp->novelidx, excludedtitles, excludedtitles2));
-            otmp->nknown = TRUE;
+            set_obj_nknown(otmp, TRUE);
         }
         break;
     case SPE_MANUAL:
@@ -2276,9 +2276,9 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
         if (otmp->manualidx != -1) /* Not blank */
         {
             otmp = oname(otmp, manualtitle(&otmp->manualidx, excludedtitles, excludedtitles2));
-            otmp->nknown = TRUE;
+            set_obj_nknown(otmp, TRUE);
         }
-        otmp->cursed = otmp->blessed = 0; /* Never blessed or cursed */
+        set_obj_cursed(otmp, 0), set_obj_blessed(otmp, 0); /* Never blessed or cursed */
         break;
     }
 
@@ -3169,21 +3169,21 @@ bless(struct obj *otmp)
 
     if (otmp->oclass == COIN_CLASS)
         return;
-    if (otmp->lamplit)
+    if (is_obj_lamplit(otmp))
         old_light = current_arti_light_radius(otmp);
-    if (otmp->makingsound)
+    if (is_obj_makingsound(otmp))
         old_volume = obj_ambient_sound_volume(otmp);
-    otmp->cursed = 0;
-    otmp->blessed = 1;
+    set_obj_cursed(otmp, 0);
+    set_obj_blessed(otmp, 1);
     if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp)))
         updateabon();
     else if (Is_weight_changing_bag(otmp))
         otmp->owt = weight(otmp);
     else if (otmp->otyp == FIGURINE && otmp->timed)
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(otmp));
-    if (otmp->lamplit)
+    if (is_obj_lamplit(otmp))
         maybe_adjust_light(otmp, old_light);
-    if (otmp->makingsound)
+    if (is_obj_makingsound(otmp))
         maybe_adjust_sound_volume(otmp, old_volume);
     return;
 }
@@ -3197,18 +3197,18 @@ unbless(struct obj *otmp)
     int old_light = 0;
     double old_volume = 0;
 
-    if (otmp->lamplit)
+    if (is_obj_lamplit(otmp))
         old_light = current_arti_light_radius(otmp);
-    if (otmp->makingsound)
+    if (is_obj_makingsound(otmp))
         old_volume = obj_ambient_sound_volume(otmp);
-    otmp->blessed = 0;
+    set_obj_blessed(otmp, 0);
     if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp)))
         updateabon();
     else if (Is_weight_changing_bag(otmp))
         otmp->owt = weight(otmp);
-    if (otmp->lamplit)
+    if (is_obj_lamplit(otmp))
         maybe_adjust_light(otmp, old_light);
-    if (otmp->makingsound)
+    if (is_obj_makingsound(otmp))
         maybe_adjust_sound_volume(otmp, old_volume);
 }
 
@@ -3224,18 +3224,18 @@ curse(struct obj *otmp)
 
     if (otmp->oclass == COIN_CLASS)
         return;
-    if (otmp->lamplit)
+    if (is_obj_lamplit(otmp))
         old_light = current_arti_light_radius(otmp);
-    if (otmp->makingsound)
+    if (is_obj_makingsound(otmp))
         old_volume = obj_ambient_sound_volume(otmp);
-    already_cursed = otmp->cursed;
-    otmp->blessed = 0;
+    already_cursed = is_obj_cursed(otmp);
+    set_obj_blessed(otmp, 0);
     if(is_obj_uncurseable(otmp))
-        otmp->cursed = 0;
+        set_obj_cursed(otmp, 0);
     else
-        otmp->cursed = 1;
+        set_obj_cursed(otmp, 1);
     /* welded two-handed weapon interferes with some armor removal */
-    if (otmp->cursed)
+    if (is_obj_cursed(otmp))
     {
         if (otmp == uwep && bimanual(uwep))
             reset_remarm();
@@ -3256,9 +3256,9 @@ curse(struct obj *otmp)
             if (!already_cursed)
                 book_cursed(otmp);
         }
-        if (otmp->lamplit)
+        if (is_obj_lamplit(otmp))
             maybe_adjust_light(otmp, old_light);
-        if (otmp->makingsound)
+        if (is_obj_makingsound(otmp))
             maybe_adjust_sound_volume(otmp, old_volume);
     }
     return;
@@ -3273,20 +3273,20 @@ uncurse(struct obj *otmp)
     int old_light = 0;
     double old_volume = 0;
 
-    if (otmp->lamplit)
+    if (is_obj_lamplit(otmp))
         old_light = current_arti_light_radius(otmp);
-    if (otmp->makingsound)
+    if (is_obj_makingsound(otmp))
         old_volume = obj_ambient_sound_volume(otmp);
-    otmp->cursed = 0;
+    set_obj_cursed(otmp, 0);
     if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp)))
         updateabon();
     else if (Is_weight_changing_bag(otmp))
         otmp->owt = weight(otmp);
     else if (otmp->otyp == FIGURINE && otmp->timed)
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(otmp));
-    if (otmp->lamplit)
+    if (is_obj_lamplit(otmp))
         maybe_adjust_light(otmp, old_light);
-    if (otmp->makingsound)
+    if (is_obj_makingsound(otmp))
         maybe_adjust_sound_volume(otmp, old_volume);
     return;
 }
@@ -3297,7 +3297,7 @@ blessorcurse(struct obj *otmp, int chance)
     if (!otmp)
         return;
 
-    if (otmp->blessed || otmp->cursed)
+    if (is_obj_blessed(otmp) || is_obj_cursed(otmp))
         return;
 
     if (!rn2(chance)) {
@@ -3313,7 +3313,7 @@ blessorcurse(struct obj *otmp, int chance)
 int
 bcsign(struct obj *otmp)
 {
-    return (!!otmp->blessed - !!otmp->cursed);
+    return (!!is_obj_blessed(otmp) - !!is_obj_cursed(otmp));
 }
 
 /*
@@ -3353,7 +3353,7 @@ weight(struct obj *obj)
     /* glob absorpsion means that merging globs accumulates weight while
        quantity stays 1, so update 'wt' to reflect that, unless owt is 0,
        when we assume this is a brand new glob so use objects[].oc_weight */
-    if (obj->globby && obj->owt > 0)
+    if (is_obj_globby(obj) && obj->owt > 0)
         wt = obj->owt;
     if (Is_container(obj) || obj->otyp == STATUE) {
         struct obj *contents;
@@ -3381,13 +3381,13 @@ weight(struct obj *obj)
         for (contents = contained_object_chain(obj); contents; contents = contents->nobj)
         {
             if (obj->otyp == BAG_OF_WIZARDRY && is_obj_weight_reduced_by_wizardry(contents))
-                cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 15) / 16)
+                cwt += is_obj_cursed(obj) ? (weight(contents) * 2) : is_obj_blessed(obj) ? ((weight(contents) + 15) / 16)
                 : ((weight(contents) + 7) / 8);
             else if (obj->otyp == BAG_OF_TREASURE_HAULING && is_obj_weight_reduced_by_treasure_hauling(contents))
-                cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 63) / 64)
+                cwt += is_obj_cursed(obj) ? (weight(contents) * 2) : is_obj_blessed(obj) ? ((weight(contents) + 63) / 64)
                 : ((weight(contents) + 31) / 32);
             else if (obj->otyp == BAG_OF_THE_GLUTTON && is_obj_weight_reduced_by_the_glutton(contents))
-                cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 19) / 20)
+                cwt += is_obj_cursed(obj) ? (weight(contents) * 2) : is_obj_blessed(obj) ? ((weight(contents) + 19) / 20)
                 : ((weight(contents) + 9) / 10);
             else
                 cwt += weight(contents);
@@ -3407,7 +3407,7 @@ weight(struct obj *obj)
          *  weight equations.
          */
         if (obj->otyp == BAG_OF_HOLDING)
-            cwt = obj->cursed ? (cwt * 2) : obj->blessed ? ((cwt + 3) / 4)
+            cwt = is_obj_cursed(obj) ? (cwt * 2) : is_obj_blessed(obj) ? ((cwt + 3) / 4)
                                                          : ((cwt + 1) / 2);
 
         return wt + cwt;
@@ -3591,11 +3591,11 @@ obj_attach_mid(struct obj *obj, unsigned mid)
 static void
 save_mtraits(struct obj *obj, struct monst *mtmp)
 {
-    if (mtmp->ispriest)
+    if (is_mon_ispriest(mtmp))
         forget_temple_entry(mtmp); /* EPRI() */
-    if (mtmp->issmith)
+    if (is_mon_issmith(mtmp))
         forget_smithy_entry(mtmp); /* ESMI() */
-    if (mtmp->isnpc)
+    if (is_mon_isnpc(mtmp))
         forget_npc_entry(mtmp); /* ENPC() */
     if (!has_omonst(obj))
         newomonst(obj);
@@ -4386,12 +4386,12 @@ hornoplenty(struct obj *horn, boolean tipping)
         }
         ++objcount;
         pline("%s %s out.", what, vtense(what, "spill"));
-        obj->blessed = horn->blessed;
-        obj->cursed = horn->cursed;
+        set_obj_blessed(obj, is_obj_blessed(horn));
+        set_obj_cursed(obj, is_obj_cursed(horn));
         obj->owt = weight(obj);
         /* using a shop's horn of plenty entails a usage fee and also
            confers ownership of the created item to the shopkeeper */
-        if (horn->unpaid)
+        if (is_obj_unpaid(horn))
             addtobill(obj, FALSE, FALSE, tipping);
         /* if it ended up on bill, we don't want "(unpaid, N zorkids)"
            being included in its formatted name during next message */
@@ -4428,7 +4428,7 @@ hornoplenty(struct obj *horn, boolean tipping)
             }
         }
         iflags.suppress_price--;
-        if (horn->dknown)
+        if (is_obj_dknown(horn))
             makeknown(HORN_OF_PLENTY);
     }
     return objcount;
@@ -4452,7 +4452,7 @@ obj_sanity_check(void)
 
     /*
      * TODO:
-     *  Should check whether the obj->bypass and/or obj->nomerge bits
+     *  Should check whether the is_obj_bypass(obj) and/or is_obj_nomerge(obj) bits
      *  are set.  Those are both used for temporary purposes and should
      *  be clear between moves.
      */
@@ -4554,7 +4554,7 @@ objlist_sanity(struct obj *objlist, int wheretype, const char *mesg)
         }
         /* temporary flags that might have been set but which should
            be clear by the time this sanity check is taking place */
-        if (obj->in_use || obj->bypass || obj->nomerge)
+        if (is_obj_in_use(obj) || is_obj_bypass(obj) || is_obj_nomerge(obj))
             insane_obj_bits(obj, (struct monst*)0);
     }
 }
@@ -4581,7 +4581,7 @@ mon_obj_sanity(struct monst *monlist, const char *mesg)
             if (obj->ocarry != mon)
                 insane_object(obj, mfmt2, mesg, mon);
             check_contained(obj, mesg);
-            if (obj->in_use || obj->bypass || obj->nomerge)
+            if (is_obj_in_use(obj) || is_obj_bypass(obj) || is_obj_nomerge(obj))
                 insane_obj_bits(obj, mon);
         }
     }
@@ -4592,9 +4592,9 @@ insane_obj_bits(struct obj *obj, struct monst *mon)
 {
     unsigned o_in_use, o_bypass, o_nomerge;
 
-    o_in_use = obj->in_use;
-    o_bypass = obj->bypass;
-    o_nomerge = obj->nomerge;
+    o_in_use = is_obj_in_use(obj);
+    o_bypass = is_obj_bypass(obj);
+    o_nomerge = is_obj_nomerge(obj);
 
     if (o_in_use || o_bypass || o_nomerge) {
         char infobuf[QBUFSZ];
@@ -5014,12 +5014,12 @@ obj_absorb(struct obj **obj1, struct obj **obj2)
         otmp1 = *obj1;
         otmp2 = *obj2;
         if (otmp1 && otmp2 && otmp1 != otmp2) {
-            if (otmp1->bknown != otmp2->bknown)
-                otmp1->bknown = otmp2->bknown = 0;
-            if (otmp1->rknown != otmp2->rknown)
-                otmp1->rknown = otmp2->rknown = 0;
-            if (otmp1->greased != otmp2->greased)
-                otmp1->greased = otmp2->greased = 0;
+            if (is_obj_bknown(otmp1) != is_obj_bknown(otmp2))
+                set_obj_bknown(otmp1, 0), set_obj_bknown(otmp2, 0);
+            if (is_obj_rknown(otmp1) != is_obj_rknown(otmp2))
+                set_obj_rknown(otmp1, 0), set_obj_rknown(otmp2, 0);
+            if (is_obj_greased(otmp1) != is_obj_greased(otmp2))
+                set_obj_greased(otmp1, 0), set_obj_greased(otmp2, 0);
             if (otmp1->orotten || otmp2->orotten)
                 otmp1->orotten = otmp2->orotten = 1;
             o1wt = otmp1->oeaten ? otmp1->oeaten : otmp1->owt;
@@ -5243,3 +5243,13 @@ uchar get_otyp_initial_material(int otyp)
 }
 
 /*mkobj.c*/
+
+#include <stddef.h>
+#define ASSERT_OFFSET(field, expected) typedef char _assert_##field[(offsetof(struct obj, field) == expected) ? 1 : -1];
+ASSERT_OFFSET(quan, 40)
+ASSERT_OFFSET(bitflags, 112)
+ASSERT_OFFSET(corpsenm, 100)
+ASSERT_OFFSET(firing_m_id, 124)
+ASSERT_OFFSET(glyph, 148)
+ASSERT_OFFSET(oextra, 160)
+typedef char _assert_sizeof[(sizeof(struct obj) == 168) ? 1 : -1];

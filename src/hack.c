@@ -202,7 +202,7 @@ moverock(void)
                 return -1;
 
             if (mtmp && !is_incorporeal(mtmp->data)
-                && (!mtmp->mtrapped
+                && (!is_mon_mtrapped(mtmp)
                     || !(ttmp && is_pit(ttmp->ttyp)))) 
             {
                 if (Blind)
@@ -311,7 +311,7 @@ moverock(void)
                     delobj(otmp);
                     bury_objs(rx, ry);
                     levl[rx][ry].wall_info &= ~W_NONDIGGABLE;
-                    levl[rx][ry].candig = 1;
+                    set_levl_candig(&levl[rx][ry], 1);
                     if (cansee(rx, ry))
                         newsym(rx, ry);
                     return sobj_at(BOULDER, sx, sy) ? -1 : 0;
@@ -630,11 +630,11 @@ still_chewing(xchar x, xchar y)
         int lsubtype = 0;
         int lvartype = 0;
         uchar lflags = 0;
-        if (level.flags.is_maze_lev) 
+        if (is_levflag_is_maze_lev(&level.flags)) 
         {
             ltype = ROOM;
         }
-        else if (level.flags.is_cavernous_lev && !in_town(x, y))
+        else if (is_levflag_is_cavernous_lev(&level.flags) && !in_town(x, y))
         {
             ltype = CORR;
         } 
@@ -1047,7 +1047,7 @@ test_move(int ux, int uy, int dx, int dy, int mode)
                     if (amorphous(youmonst.data))
                         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "try to ooze under the door, but can't squeeze your possessions through.");
 
-                    if (flags.autoopen && !context.run && ((tmpr->doormask & D_LOCKED) == 0 || (flags.autounlock && carrying_fitting_unlocking_tool_for_door(tmpr)) || !tmpr->click_kick_ok) && !Confusion && !Stunned && !Fumbling)
+                    if (flags.autoopen && !context.run && ((tmpr->doormask & D_LOCKED) == 0 || (flags.autounlock && carrying_fitting_unlocking_tool_for_door(tmpr)) || !is_levl_click_kick_ok(tmpr)) && !Confusion && !Stunned && !Fumbling)
                     {
                         int open_res = doopen_indir(x, y);
                         if (open_res <= 0)
@@ -1066,7 +1066,7 @@ test_move(int ux, int uy, int dx, int dy, int mode)
                         //    (void)dokick_indir(TRUE);
                         //}
                     }
-                    else if ((tmpr->doormask & D_LOCKED) != 0 && tmpr->click_kick_ok && !context.run && !u.usteed && !Confusion && !Stunned && !Fumbling)
+                    else if ((tmpr->doormask & D_LOCKED) != 0 && is_levl_click_kick_ok(tmpr) && !context.run && !u.usteed && !Confusion && !Stunned && !Fumbling)
                     {
                         u.dx = dx, u.dy = dy, u.dz = 0;
                         (void)dokick_indir(TRUE);
@@ -2029,7 +2029,7 @@ domove_core(void)
                     {
                         /* it's free to move on next turn */
                         u.ustuck->mfrozen = 1;
-                        u.ustuck->msleeping = 0;
+                        set_mon_msleeping(u.ustuck, 0);
                         refresh_m_tile_gui_info(u.ustuck, TRUE);
                     }
                 /*FALLTHRU*/
@@ -2107,7 +2107,7 @@ domove_core(void)
                 You("move right into %s.", mon_nam(mtmp));
             return;
         }
-        if (context.forcefight || !mtmp->mundetected || sensemon(mtmp)
+        if (context.forcefight || !is_mon_mundetected(mtmp) || sensemon(mtmp)
             || ((hides_under(mtmp->data) || mtmp->data->mlet == S_EEL)
                 && !is_safepet(mtmp) && !is_displaceable_peaceful(mtmp)))
         {
@@ -2317,16 +2317,18 @@ domove_core(void)
      * Ceiling-hiding pets are skipped by this section of code, to
      * be caught by the normal falling-monster code.
      */
-    if (mtmp && (is_safepet(mtmp) || is_displaceable_peaceful(mtmp)) && !(is_hider(mtmp->data) && mtmp->mundetected))
+    if (mtmp && (is_safepet(mtmp) || is_displaceable_peaceful(mtmp)) && !(is_hider(mtmp->data) && is_mon_mundetected(mtmp)))
     {
         /* if trapped, there's a chance the pet goes wild */
-        if (mtmp->mtrapped && is_safepet(mtmp))
+        if (is_mon_mtrapped(mtmp) && is_safepet(mtmp))
         {
             struct trap* ttmp = t_at(x, y);
             if (ttmp && succeed_untrap(ttmp->ttyp, TRUE) <= 0 && rn2(4)) /* Extra 25% chance not to stop to make sure that pets won't block passages; can be regarded as the pet actively seeking to get out of the trap, too */ // mtmp->mtame > 0 && !rn2(mtmp->mtame))
             {
-                //mtmp->mtame = mtmp->mpeaceful = mtmp->msleeping = 0;
-                //if (mtmp->mleashed)
+                //set_mon_msleeping(mtmp, 0);
+                //set_mon_mpeaceful(mtmp, 0);
+                //mtmp->mtame = 0;
+                //if (is_mon_mleashed(mtmp))
                 //    m_unleash(mtmp, TRUE);
                 //newsym(mtmp->mx, mtmp->my);
                 //growl(mtmp);
@@ -2348,14 +2350,14 @@ domove_core(void)
            the display code will draw the hero here before we possibly
            cancel the swap below (we can ignore steed mx,my here) */
         u.ux = u.ux0, u.uy = u.uy0;
-        mtmp->mundetected = 0;
+        set_mon_mundetected(mtmp, 0);
         if (M_AP_TYPE(mtmp))
             seemimic(mtmp);
         else if (!is_tame(mtmp))
             newsym(mtmp->mx, mtmp->my);
         u.ux = mtmp->mx, u.uy = mtmp->my; /* resume swapping positions */
 
-        if (mtmp->mtrapped && (trap = t_at(mtmp->mx, mtmp->my)) != 0
+        if (is_mon_mtrapped(mtmp) && (trap = t_at(mtmp->mx, mtmp->my)) != 0
             && is_pit(trap->ttyp)
             && sobj_at(BOULDER, trap->tx, trap->ty)) 
         {
@@ -2390,7 +2392,7 @@ domove_core(void)
 
             /* save its current description in case of polymorph */
             Strcpy(pnambuf, y_monnam(mtmp));
-            mtmp->mtrapped = 0;
+            set_mon_mtrapped(mtmp, 0);
             debugprint("domove_core4: mnum=%d, mx=%d, my=%d, x=%d, y=%d, ux0=%d, uy0=%d", mtmp->mnum, mtmp->mx, mtmp->my, x, y, u.ux0, u.uy0);
             remove_monster(x, y);
             place_monster(mtmp, u.ux0, u.uy0);
@@ -2578,9 +2580,9 @@ invocation_message(void)
             Sprintf(buf, "under your %s", makeplural(body_part(FOOT)));
 
         You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a strange vibration %s.", buf);
-        u.uevent.uvibrated = 1;
+        set_uevent_uvibrated(1);
         issue_achievement(GUI_ACHIEVEMENT_FOUND_VIBRATING_SQUARE);
-        if (otmp && otmp->special_quality == 7 && otmp->lamplit)
+        if (otmp && otmp->special_quality == 7 && is_obj_lamplit(otmp))
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s!", The(xname(otmp)),
                   Blind ? "throbs palpably" : "glows with a strange light");
 
@@ -2831,7 +2833,8 @@ spoteffects(boolean pick)
     if ((mtmp = m_at(u.ux, u.uy)) && !u.uswallow) 
     {
         boolean action_taken = FALSE;
-        mtmp->mundetected = mtmp->msleeping = 0;
+        set_mon_msleeping(mtmp, 0);
+        set_mon_mundetected(mtmp, 0);
         switch (mtmp->data->mlet)
         {
         case S_PIERCER:
@@ -2884,7 +2887,7 @@ spoteffects(boolean pick)
                 play_sfx_sound(SFX_YOU_SURPRISE_MONSTER);
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "surprise %s!",
                     Blind && !sensemon(mtmp) ? something : a_monnam(mtmp));
-                mtmp->mpeaceful = 0;
+                set_mon_mpeaceful(mtmp, 0);
                 set_mhostility(mtmp);
                 newsym(mtmp->mx, mtmp->my);
             }
@@ -3218,46 +3221,46 @@ check_special_room(boolean newlev)
                 /* No more room of that type */
                 switch (rt) {
                 case COURT:
-                    level.flags.has_court = 0;
+                    set_levflag_has_court(&level.flags, 0);
                     break;
                 case SWAMP:
-                    level.flags.has_swamp = 0;
+                    set_levflag_has_swamp(&level.flags, 0);
                     break;
                 case MORGUE:
-                    level.flags.has_morgue = 0;
+                    set_levflag_has_morgue(&level.flags, 0);
                     break;
                 case ZOO:
-                    level.flags.has_zoo = 0;
+                    set_levflag_has_zoo(&level.flags, 0);
                     break;
                 case BARRACKS:
-                    level.flags.has_barracks = 0;
+                    set_levflag_has_barracks(&level.flags, 0);
                     break;
                 case ARMORY:
-                    level.flags.has_armory = 0;
+                    set_levflag_has_armory(&level.flags, 0);
                     break;
                 case TEMPLE:
-                    level.flags.has_temple = 0;
+                    set_levflag_has_temple(&level.flags, 0);
                     break;
                 case SMITHY:
-                    level.flags.has_smithy = 0;
+                    set_levflag_has_smithy(&level.flags, 0);
                     break;
                 case NPCROOM:
-                    level.flags.has_npc_room = 0;
+                    set_levflag_has_npc_room(&level.flags, 0);
                     break;
                 case BEEHIVE:
-                    level.flags.has_beehive = 0;
+                    set_levflag_has_beehive(&level.flags, 0);
                     break;
                 case LIBRARY:
-                    level.flags.has_library = 0;
+                    set_levflag_has_library(&level.flags, 0);
                     break;
                 case DRAGONLAIR:
-                    level.flags.has_dragonlair = 0;
+                    set_levflag_has_dragonlair(&level.flags, 0);
                     break;
                 case GARDEN:
-                    level.flags.has_garden = 0;
+                    set_levflag_has_garden(&level.flags, 0);
                     break;
                 case DESERTEDSHOP:
-                    level.flags.has_desertedshop = 0;
+                    set_levflag_has_desertedshop(&level.flags, 0);
                     break;
                 }
             }
@@ -3267,7 +3270,7 @@ check_special_room(boolean newlev)
                         continue;
                     if (!Stealth && !rn2(3))
                     {
-                        mtmp->msleeping = 0;
+                        set_mon_msleeping(mtmp, 0);
                         refresh_m_tile_gui_info(mtmp, TRUE);
                     }
                 }
@@ -3481,7 +3484,7 @@ lookaround(void)
             if ((mtmp = m_at(x, y)) != 0
                 && M_AP_TYPE(mtmp) != M_AP_FURNITURE
                 && M_AP_TYPE(mtmp) != M_AP_OBJECT
-                && (!is_invisible(mtmp) || See_invisible) && !mtmp->mundetected) 
+                && (!is_invisible(mtmp) || See_invisible) && !is_mon_mundetected(mtmp)) 
             {
                 if (context.travel && context.travel_mode == TRAVEL_MODE_ATTACK_AND_WALK && !is_peaceful(mtmp) && !is_tame(mtmp) && mtmp->m_id == context.tmid)
                 {
@@ -3686,7 +3689,7 @@ monster_nearby(void)
             if ((mtmp = m_at(x, y)) && M_AP_TYPE(mtmp) != M_AP_FURNITURE
                 && M_AP_TYPE(mtmp) != M_AP_OBJECT
                 && ((!is_peaceful(mtmp) && !noattacks(mtmp->data)) || Hallucination)
-                && (!is_hider(mtmp->data) || !mtmp->mundetected)
+                && (!is_hider(mtmp->data) || !is_mon_mundetected(mtmp))
                 && mon_can_move(mtmp)
                 && !onscary(u.ux, u.uy, mtmp) && canspotmon(mtmp))
             {

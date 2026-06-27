@@ -141,58 +141,14 @@ struct monst {
     unsigned mrevived;          /* Number of times revived */
 
     /* Bitfield flags -- Keep all bitfields in a row */
-    Bitfield(mflee, 1);         /* fleeing */
-    Bitfield(msleeping, 1);     /* asleep until woken */
-    Bitfield(mcanmove, 1);      /* paralysis, similar to mblinded */
-    Bitfield(mwantstomove, 1);  /* mon wants to move, not staying in place */
-    Bitfield(mwantstodrop, 1);
+    uint64_t bitflags;
+    uint64_t bitflags2;
 
-    Bitfield(female, 1);        /* is female */
-    Bitfield(mburied, 1);       /* has been buried */
-    Bitfield(mundetected, 1);   /* not seen in present hiding place;
-                                 * implies one of M1_CONCEAL or M1_HIDE,
-                                 * but not mimic (that is, snake, spider,
-                                 * trapper, piercer, eel)
-                                 */
-    Bitfield(mcloned, 1);       /* has been cloned from another */
-    Bitfield(mavenge, 1);       /* did something to deserve retaliation */
-    Bitfield(mpeaceful, 1);     /* does not attack unprovoked */
-    Bitfield(mtrapped, 1);      /* trapped in a pit, web or bear trap */
-    Bitfield(mleashed, 1);      /* monster is on a leash */
-    Bitfield(isshk, 1);         /* is shopkeeper */
-    Bitfield(isminion, 1);      /* is a minion */
-    Bitfield(isgd, 1);          /* is guard */
-    Bitfield(ispriest, 1);      /* is an aligned priest or high priest */
-    Bitfield(issmith, 1);       /* is a smith */
-    Bitfield(isnpc, 1);         /* is a non-player character */
-    Bitfield(issummoned, 1);                    /* is a summoned monster */
-    Bitfield(disregards_enemy_strength, 1);     /* the monster attacks too strong enemies */
-    Bitfield(disregards_own_health, 1);         /* the monster attacks even when its health is low */
-    Bitfield(hasbloodlust, 1);                  /* attacks also peaceful */
-    Bitfield(ispacifist, 1);                    /* does not attack peaceful, NOW DEACTIVATED, APPLIES TO ALL */
-    Bitfield(isfaithful, 1);                    /* being separate from the owner does not reduce tameness */
-    Bitfield(isprotector, 1);                   /* attacks hostiles if itself is being peaceful */
-    Bitfield(ispartymember, 1);                 /* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
-    Bitfield(leaves_no_corpse, 1);              /* this particular monster does not leave a corpse */
-    Bitfield(delayed_killer_by_you, 1);         /* is petrification or other delayed killer initiated by you */
-    Bitfield(u_know_mname, 1);                  /* you know the monster's name */
-    Bitfield(told_rumor, 1);                    /* the monster had told the player at least one rumor */
-    Bitfield(facing_right, 1);                  /* the monster is facing right */
-    Bitfield(iswiz, 1);                         /* is the Wizard of Yendor */
-    Bitfield(wormno, 5);                        /* at most 31 worms on any level */
+
+    uchar wormno;                        /* at most 31 worms on any level */
 #define MAX_NUM_WORMS 32                        /* should be 2^(wormno bitfield size) */
-    Bitfield(heads_tamed, 2);                   /* How many Cerberos's heads have been tamed; anything else for other monsters */
-    Bitfield(boss_fight_started, 1);            /* boss fight has already been announced */
-    Bitfield(special_talk_flag1, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag2, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag3, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag4, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag5, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag6, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag7, 1);            /* general purpose flag NPC talk */
-    Bitfield(special_talk_flag8, 1);            /* general purpose flag NPC talk */
+    uchar heads_tamed;                   /* How many Cerberos's heads have been tamed; anything else for other monsters */
 
-    unsigned reserved;               /* reserved for, e.g., more bitfields */
     int reserved_index;              /* Special general purpose index */
     int meating;                     /* monster is eating timeout */
 
@@ -290,5 +246,177 @@ struct monst {
                                   && (mon)->mappearance == (otyp))
 
 #define check_mon_wearable_items_next_turn(mon) (mon)->worn_item_flags |= I_SPECIAL
+
+
+/* Monster bitflags */
+#define MONFLAG_MFLEE                    0x00000001UL
+#define MONFLAG_MSLEEPING                0x00000002UL
+#define MONFLAG_MCANMOVE                 0x00000004UL
+#define MONFLAG_MWANTSTOMOVE             0x00000008UL
+#define MONFLAG_MWANTSTODROP             0x00000010UL
+#define MONFLAG_FEMALE                   0x00000020UL
+#define MONFLAG_MBURIED                  0x00000040UL
+#define MONFLAG_MUNDETECTED              0x00000080UL
+#define MONFLAG_MCLONED                  0x00000100UL
+#define MONFLAG_MAVENGE                  0x00000200UL
+#define MONFLAG_MPEACEFUL                0x00000400UL
+#define MONFLAG_MTRAPPED                 0x00000800UL
+#define MONFLAG_MLEASHED                 0x00001000UL
+#define MONFLAG_ISSHK                    0x00002000UL
+#define MONFLAG_ISMINION                 0x00004000UL
+#define MONFLAG_ISGD                     0x00008000UL
+#define MONFLAG_ISPRIEST                 0x00010000UL
+#define MONFLAG_ISSMITH                  0x00020000UL
+#define MONFLAG_ISNPC                    0x00040000UL
+#define MONFLAG_ISSUMMONED               0x00080000UL
+#define MONFLAG_DISREGARDS_ENEMY_STRENGTH 0x00100000UL
+#define MONFLAG_DISREGARDS_OWN_HEALTH    0x00200000UL
+#define MONFLAG_HASBLOODLUST             0x00400000UL
+#define MONFLAG_ISPACIFIST               0x00800000UL
+#define MONFLAG_ISFAITHFUL               0x01000000UL
+#define MONFLAG_ISPROTECTOR              0x02000000UL
+#define MONFLAG_ISPARTYMEMBER            0x04000000UL
+#define MONFLAG_LEAVES_NO_CORPSE         0x08000000UL
+#define MONFLAG_DELAYED_KILLER_BY_YOU    0x10000000UL
+#define MONFLAG_U_KNOW_MNAME             0x20000000UL
+#define MONFLAG_TOLD_RUMOR               0x40000000UL
+#define MONFLAG_FACING_RIGHT             0x80000000UL
+#define MONFLAGS2_ISWIZ                  0x00000001UL
+#define MONFLAGS2_BOSS_FIGHT_STARTED     0x00000002UL
+#define MONFLAGS2_SPECIAL_TALK_FLAG1     0x00000004UL
+#define MONFLAGS2_SPECIAL_TALK_FLAG2     0x00000008UL
+#define MONFLAGS2_SPECIAL_TALK_FLAG3     0x00000010UL
+#define MONFLAGS2_SPECIAL_TALK_FLAG4     0x00000020UL
+#define MONFLAGS2_SPECIAL_TALK_FLAG5     0x00000040UL
+#define MONFLAGS2_SPECIAL_TALK_FLAG6     0x00000080UL
+#define MONFLAGS2_SPECIAL_TALK_FLAG7     0x00000100UL
+#define MONFLAGS2_SPECIAL_TALK_FLAG8     0x00000200UL
+
+#define is_mon_mflee(ptr) (((ptr)->bitflags & MONFLAG_MFLEE) != 0)
+#define set_mon_mflee(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_MFLEE) : ((ptr)->bitflags &= ~MONFLAG_MFLEE))
+#define toggle_mon_mflee(ptr) ((ptr)->bitflags ^= MONFLAG_MFLEE)
+#define is_mon_msleeping(ptr) (((ptr)->bitflags & MONFLAG_MSLEEPING) != 0)
+#define set_mon_msleeping(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_MSLEEPING) : ((ptr)->bitflags &= ~MONFLAG_MSLEEPING))
+#define toggle_mon_msleeping(ptr) ((ptr)->bitflags ^= MONFLAG_MSLEEPING)
+#define is_mon_mcanmove(ptr) (((ptr)->bitflags & MONFLAG_MCANMOVE) != 0)
+#define set_mon_mcanmove(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_MCANMOVE) : ((ptr)->bitflags &= ~MONFLAG_MCANMOVE))
+#define toggle_mon_mcanmove(ptr) ((ptr)->bitflags ^= MONFLAG_MCANMOVE)
+#define is_mon_mwantstomove(ptr) (((ptr)->bitflags & MONFLAG_MWANTSTOMOVE) != 0)
+#define set_mon_mwantstomove(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_MWANTSTOMOVE) : ((ptr)->bitflags &= ~MONFLAG_MWANTSTOMOVE))
+#define toggle_mon_mwantstomove(ptr) ((ptr)->bitflags ^= MONFLAG_MWANTSTOMOVE)
+#define is_mon_mwantstodrop(ptr) (((ptr)->bitflags & MONFLAG_MWANTSTODROP) != 0)
+#define set_mon_mwantstodrop(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_MWANTSTODROP) : ((ptr)->bitflags &= ~MONFLAG_MWANTSTODROP))
+#define toggle_mon_mwantstodrop(ptr) ((ptr)->bitflags ^= MONFLAG_MWANTSTODROP)
+#define is_mon_female(ptr) (((ptr)->bitflags & MONFLAG_FEMALE) != 0)
+#define set_mon_female(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_FEMALE) : ((ptr)->bitflags &= ~MONFLAG_FEMALE))
+#define toggle_mon_female(ptr) ((ptr)->bitflags ^= MONFLAG_FEMALE)
+#define is_mon_mburied(ptr) (((ptr)->bitflags & MONFLAG_MBURIED) != 0)
+#define set_mon_mburied(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_MBURIED) : ((ptr)->bitflags &= ~MONFLAG_MBURIED))
+#define toggle_mon_mburied(ptr) ((ptr)->bitflags ^= MONFLAG_MBURIED)
+#define is_mon_mundetected(ptr) (((ptr)->bitflags & MONFLAG_MUNDETECTED) != 0)
+#define set_mon_mundetected(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_MUNDETECTED) : ((ptr)->bitflags &= ~MONFLAG_MUNDETECTED))
+#define toggle_mon_mundetected(ptr) ((ptr)->bitflags ^= MONFLAG_MUNDETECTED)
+#define is_mon_mcloned(ptr) (((ptr)->bitflags & MONFLAG_MCLONED) != 0)
+#define set_mon_mcloned(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_MCLONED) : ((ptr)->bitflags &= ~MONFLAG_MCLONED))
+#define toggle_mon_mcloned(ptr) ((ptr)->bitflags ^= MONFLAG_MCLONED)
+#define is_mon_mavenge(ptr) (((ptr)->bitflags & MONFLAG_MAVENGE) != 0)
+#define set_mon_mavenge(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_MAVENGE) : ((ptr)->bitflags &= ~MONFLAG_MAVENGE))
+#define toggle_mon_mavenge(ptr) ((ptr)->bitflags ^= MONFLAG_MAVENGE)
+#define is_mon_mpeaceful(ptr) (((ptr)->bitflags & MONFLAG_MPEACEFUL) != 0)
+#define set_mon_mpeaceful(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_MPEACEFUL) : ((ptr)->bitflags &= ~MONFLAG_MPEACEFUL))
+#define toggle_mon_mpeaceful(ptr) ((ptr)->bitflags ^= MONFLAG_MPEACEFUL)
+#define is_mon_mtrapped(ptr) (((ptr)->bitflags & MONFLAG_MTRAPPED) != 0)
+#define set_mon_mtrapped(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_MTRAPPED) : ((ptr)->bitflags &= ~MONFLAG_MTRAPPED))
+#define toggle_mon_mtrapped(ptr) ((ptr)->bitflags ^= MONFLAG_MTRAPPED)
+#define is_mon_mleashed(ptr) (((ptr)->bitflags & MONFLAG_MLEASHED) != 0)
+#define set_mon_mleashed(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_MLEASHED) : ((ptr)->bitflags &= ~MONFLAG_MLEASHED))
+#define toggle_mon_mleashed(ptr) ((ptr)->bitflags ^= MONFLAG_MLEASHED)
+#define is_mon_isshk(ptr) (((ptr)->bitflags & MONFLAG_ISSHK) != 0)
+#define set_mon_isshk(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_ISSHK) : ((ptr)->bitflags &= ~MONFLAG_ISSHK))
+#define toggle_mon_isshk(ptr) ((ptr)->bitflags ^= MONFLAG_ISSHK)
+#define is_mon_isminion(ptr) (((ptr)->bitflags & MONFLAG_ISMINION) != 0)
+#define set_mon_isminion(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_ISMINION) : ((ptr)->bitflags &= ~MONFLAG_ISMINION))
+#define toggle_mon_isminion(ptr) ((ptr)->bitflags ^= MONFLAG_ISMINION)
+#define is_mon_isgd(ptr) (((ptr)->bitflags & MONFLAG_ISGD) != 0)
+#define set_mon_isgd(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_ISGD) : ((ptr)->bitflags &= ~MONFLAG_ISGD))
+#define toggle_mon_isgd(ptr) ((ptr)->bitflags ^= MONFLAG_ISGD)
+#define is_mon_ispriest(ptr) (((ptr)->bitflags & MONFLAG_ISPRIEST) != 0)
+#define set_mon_ispriest(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_ISPRIEST) : ((ptr)->bitflags &= ~MONFLAG_ISPRIEST))
+#define toggle_mon_ispriest(ptr) ((ptr)->bitflags ^= MONFLAG_ISPRIEST)
+#define is_mon_issmith(ptr) (((ptr)->bitflags & MONFLAG_ISSMITH) != 0)
+#define set_mon_issmith(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_ISSMITH) : ((ptr)->bitflags &= ~MONFLAG_ISSMITH))
+#define toggle_mon_issmith(ptr) ((ptr)->bitflags ^= MONFLAG_ISSMITH)
+#define is_mon_isnpc(ptr) (((ptr)->bitflags & MONFLAG_ISNPC) != 0)
+#define set_mon_isnpc(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_ISNPC) : ((ptr)->bitflags &= ~MONFLAG_ISNPC))
+#define toggle_mon_isnpc(ptr) ((ptr)->bitflags ^= MONFLAG_ISNPC)
+#define is_mon_issummoned(ptr) (((ptr)->bitflags & MONFLAG_ISSUMMONED) != 0)
+#define set_mon_issummoned(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_ISSUMMONED) : ((ptr)->bitflags &= ~MONFLAG_ISSUMMONED))
+#define toggle_mon_issummoned(ptr) ((ptr)->bitflags ^= MONFLAG_ISSUMMONED)
+#define is_mon_disregards_enemy_strength(ptr) (((ptr)->bitflags & MONFLAG_DISREGARDS_ENEMY_STRENGTH) != 0)
+#define set_mon_disregards_enemy_strength(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_DISREGARDS_ENEMY_STRENGTH) : ((ptr)->bitflags &= ~MONFLAG_DISREGARDS_ENEMY_STRENGTH))
+#define toggle_mon_disregards_enemy_strength(ptr) ((ptr)->bitflags ^= MONFLAG_DISREGARDS_ENEMY_STRENGTH)
+#define is_mon_disregards_own_health(ptr) (((ptr)->bitflags & MONFLAG_DISREGARDS_OWN_HEALTH) != 0)
+#define set_mon_disregards_own_health(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_DISREGARDS_OWN_HEALTH) : ((ptr)->bitflags &= ~MONFLAG_DISREGARDS_OWN_HEALTH))
+#define toggle_mon_disregards_own_health(ptr) ((ptr)->bitflags ^= MONFLAG_DISREGARDS_OWN_HEALTH)
+#define is_mon_hasbloodlust(ptr) (((ptr)->bitflags & MONFLAG_HASBLOODLUST) != 0)
+#define set_mon_hasbloodlust(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_HASBLOODLUST) : ((ptr)->bitflags &= ~MONFLAG_HASBLOODLUST))
+#define toggle_mon_hasbloodlust(ptr) ((ptr)->bitflags ^= MONFLAG_HASBLOODLUST)
+#define is_mon_ispacifist(ptr) (((ptr)->bitflags & MONFLAG_ISPACIFIST) != 0)
+#define set_mon_ispacifist(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_ISPACIFIST) : ((ptr)->bitflags &= ~MONFLAG_ISPACIFIST))
+#define toggle_mon_ispacifist(ptr) ((ptr)->bitflags ^= MONFLAG_ISPACIFIST)
+#define is_mon_isfaithful(ptr) (((ptr)->bitflags & MONFLAG_ISFAITHFUL) != 0)
+#define set_mon_isfaithful(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_ISFAITHFUL) : ((ptr)->bitflags &= ~MONFLAG_ISFAITHFUL))
+#define toggle_mon_isfaithful(ptr) ((ptr)->bitflags ^= MONFLAG_ISFAITHFUL)
+#define is_mon_isprotector(ptr) (((ptr)->bitflags & MONFLAG_ISPROTECTOR) != 0)
+#define set_mon_isprotector(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_ISPROTECTOR) : ((ptr)->bitflags &= ~MONFLAG_ISPROTECTOR))
+#define toggle_mon_isprotector(ptr) ((ptr)->bitflags ^= MONFLAG_ISPROTECTOR)
+#define is_mon_ispartymember(ptr) (((ptr)->bitflags & MONFLAG_ISPARTYMEMBER) != 0)
+#define set_mon_ispartymember(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_ISPARTYMEMBER) : ((ptr)->bitflags &= ~MONFLAG_ISPARTYMEMBER))
+#define toggle_mon_ispartymember(ptr) ((ptr)->bitflags ^= MONFLAG_ISPARTYMEMBER)
+#define is_mon_leaves_no_corpse(ptr) (((ptr)->bitflags & MONFLAG_LEAVES_NO_CORPSE) != 0)
+#define set_mon_leaves_no_corpse(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_LEAVES_NO_CORPSE) : ((ptr)->bitflags &= ~MONFLAG_LEAVES_NO_CORPSE))
+#define toggle_mon_leaves_no_corpse(ptr) ((ptr)->bitflags ^= MONFLAG_LEAVES_NO_CORPSE)
+#define is_mon_delayed_killer_by_you(ptr) (((ptr)->bitflags & MONFLAG_DELAYED_KILLER_BY_YOU) != 0)
+#define set_mon_delayed_killer_by_you(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_DELAYED_KILLER_BY_YOU) : ((ptr)->bitflags &= ~MONFLAG_DELAYED_KILLER_BY_YOU))
+#define toggle_mon_delayed_killer_by_you(ptr) ((ptr)->bitflags ^= MONFLAG_DELAYED_KILLER_BY_YOU)
+#define is_mon_u_know_mname(ptr) (((ptr)->bitflags & MONFLAG_U_KNOW_MNAME) != 0)
+#define set_mon_u_know_mname(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_U_KNOW_MNAME) : ((ptr)->bitflags &= ~MONFLAG_U_KNOW_MNAME))
+#define toggle_mon_u_know_mname(ptr) ((ptr)->bitflags ^= MONFLAG_U_KNOW_MNAME)
+#define is_mon_told_rumor(ptr) (((ptr)->bitflags & MONFLAG_TOLD_RUMOR) != 0)
+#define set_mon_told_rumor(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_TOLD_RUMOR) : ((ptr)->bitflags &= ~MONFLAG_TOLD_RUMOR))
+#define toggle_mon_told_rumor(ptr) ((ptr)->bitflags ^= MONFLAG_TOLD_RUMOR)
+#define is_mon_facing_right(ptr) (((ptr)->bitflags & MONFLAG_FACING_RIGHT) != 0)
+#define set_mon_facing_right(ptr, val) ((val) ? ((ptr)->bitflags |= MONFLAG_FACING_RIGHT) : ((ptr)->bitflags &= ~MONFLAG_FACING_RIGHT))
+#define toggle_mon_facing_right(ptr) ((ptr)->bitflags ^= MONFLAG_FACING_RIGHT)
+#define is_mon_iswiz(ptr) (((ptr)->bitflags2 & MONFLAGS2_ISWIZ) != 0)
+#define set_mon_iswiz(ptr, val) ((val) ? ((ptr)->bitflags2 |= MONFLAGS2_ISWIZ) : ((ptr)->bitflags2 &= ~MONFLAGS2_ISWIZ))
+#define toggle_mon_iswiz(ptr) ((ptr)->bitflags2 ^= MONFLAGS2_ISWIZ)
+#define is_mon_boss_fight_started(ptr) (((ptr)->bitflags2 & MONFLAGS2_BOSS_FIGHT_STARTED) != 0)
+#define set_mon_boss_fight_started(ptr, val) ((val) ? ((ptr)->bitflags2 |= MONFLAGS2_BOSS_FIGHT_STARTED) : ((ptr)->bitflags2 &= ~MONFLAGS2_BOSS_FIGHT_STARTED))
+#define toggle_mon_boss_fight_started(ptr) ((ptr)->bitflags2 ^= MONFLAGS2_BOSS_FIGHT_STARTED)
+#define is_mon_special_talk_flag1(ptr) (((ptr)->bitflags2 & MONFLAGS2_SPECIAL_TALK_FLAG1) != 0)
+#define set_mon_special_talk_flag1(ptr, val) ((val) ? ((ptr)->bitflags2 |= MONFLAGS2_SPECIAL_TALK_FLAG1) : ((ptr)->bitflags2 &= ~MONFLAGS2_SPECIAL_TALK_FLAG1))
+#define toggle_mon_special_talk_flag1(ptr) ((ptr)->bitflags2 ^= MONFLAGS2_SPECIAL_TALK_FLAG1)
+#define is_mon_special_talk_flag2(ptr) (((ptr)->bitflags2 & MONFLAGS2_SPECIAL_TALK_FLAG2) != 0)
+#define set_mon_special_talk_flag2(ptr, val) ((val) ? ((ptr)->bitflags2 |= MONFLAGS2_SPECIAL_TALK_FLAG2) : ((ptr)->bitflags2 &= ~MONFLAGS2_SPECIAL_TALK_FLAG2))
+#define toggle_mon_special_talk_flag2(ptr) ((ptr)->bitflags2 ^= MONFLAGS2_SPECIAL_TALK_FLAG2)
+#define is_mon_special_talk_flag3(ptr) (((ptr)->bitflags2 & MONFLAGS2_SPECIAL_TALK_FLAG3) != 0)
+#define set_mon_special_talk_flag3(ptr, val) ((val) ? ((ptr)->bitflags2 |= MONFLAGS2_SPECIAL_TALK_FLAG3) : ((ptr)->bitflags2 &= ~MONFLAGS2_SPECIAL_TALK_FLAG3))
+#define toggle_mon_special_talk_flag3(ptr) ((ptr)->bitflags2 ^= MONFLAGS2_SPECIAL_TALK_FLAG3)
+#define is_mon_special_talk_flag4(ptr) (((ptr)->bitflags2 & MONFLAGS2_SPECIAL_TALK_FLAG4) != 0)
+#define set_mon_special_talk_flag4(ptr, val) ((val) ? ((ptr)->bitflags2 |= MONFLAGS2_SPECIAL_TALK_FLAG4) : ((ptr)->bitflags2 &= ~MONFLAGS2_SPECIAL_TALK_FLAG4))
+#define toggle_mon_special_talk_flag4(ptr) ((ptr)->bitflags2 ^= MONFLAGS2_SPECIAL_TALK_FLAG4)
+#define is_mon_special_talk_flag5(ptr) (((ptr)->bitflags2 & MONFLAGS2_SPECIAL_TALK_FLAG5) != 0)
+#define set_mon_special_talk_flag5(ptr, val) ((val) ? ((ptr)->bitflags2 |= MONFLAGS2_SPECIAL_TALK_FLAG5) : ((ptr)->bitflags2 &= ~MONFLAGS2_SPECIAL_TALK_FLAG5))
+#define toggle_mon_special_talk_flag5(ptr) ((ptr)->bitflags2 ^= MONFLAGS2_SPECIAL_TALK_FLAG5)
+#define is_mon_special_talk_flag6(ptr) (((ptr)->bitflags2 & MONFLAGS2_SPECIAL_TALK_FLAG6) != 0)
+#define set_mon_special_talk_flag6(ptr, val) ((val) ? ((ptr)->bitflags2 |= MONFLAGS2_SPECIAL_TALK_FLAG6) : ((ptr)->bitflags2 &= ~MONFLAGS2_SPECIAL_TALK_FLAG6))
+#define toggle_mon_special_talk_flag6(ptr) ((ptr)->bitflags2 ^= MONFLAGS2_SPECIAL_TALK_FLAG6)
+#define is_mon_special_talk_flag7(ptr) (((ptr)->bitflags2 & MONFLAGS2_SPECIAL_TALK_FLAG7) != 0)
+#define set_mon_special_talk_flag7(ptr, val) ((val) ? ((ptr)->bitflags2 |= MONFLAGS2_SPECIAL_TALK_FLAG7) : ((ptr)->bitflags2 &= ~MONFLAGS2_SPECIAL_TALK_FLAG7))
+#define toggle_mon_special_talk_flag7(ptr) ((ptr)->bitflags2 ^= MONFLAGS2_SPECIAL_TALK_FLAG7)
+#define is_mon_special_talk_flag8(ptr) (((ptr)->bitflags2 & MONFLAGS2_SPECIAL_TALK_FLAG8) != 0)
+#define set_mon_special_talk_flag8(ptr, val) ((val) ? ((ptr)->bitflags2 |= MONFLAGS2_SPECIAL_TALK_FLAG8) : ((ptr)->bitflags2 &= ~MONFLAGS2_SPECIAL_TALK_FLAG8))
+#define toggle_mon_special_talk_flag8(ptr) ((ptr)->bitflags2 ^= MONFLAGS2_SPECIAL_TALK_FLAG8)
 
 #endif /* MONST_H */

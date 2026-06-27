@@ -129,7 +129,7 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
         {
             lev = &levl[x][max(lowy - 1, 0)];
             for (y = lowy - 1; y <= hiy + 1; y++)
-                lev++->lit = 1;
+                set_levl_lit(lev++, 1);
         }
         croom->rlit = 1;
     }
@@ -165,10 +165,10 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
                 levl[x][y].vartyp = levl[x][y].vartyp; /* Retain the vartyp setting from stone */
                 levl[x][y].special_quality = 0;
                 /* Retain floortype from stone */
-                levl[x][y].horizontal = 1; /* For open/secret doors. */
+                set_levl_horizontal(&levl[x][y], 1); /* For open/secret doors. */
                 if (tileset >= 0)
                 {
-                    levl[x][y].use_special_tileset = 1;
+                    set_levl_use_special_tileset(&levl[x][y], 1);
                     levl[x][y].special_tileset = (uchar)tileset;
                 }
             }
@@ -181,10 +181,10 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
                 levl[x][y].vartyp = levl[x][y].vartyp; /* Retain the vartyp setting from stone */
                 levl[x][y].special_quality = 0;
                 /* Retain floortype from stone */
-                levl[x][y].horizontal = 0; /* For open/secret doors. */
+                set_levl_horizontal(&levl[x][y], 0); /* For open/secret doors. */
                 if (tileset >= 0)
                 {
-                    levl[x][y].use_special_tileset = 1;
+                    set_levl_use_special_tileset(&levl[x][y], 1);
                     levl[x][y].special_tileset = (uchar)tileset;
                 }
             }
@@ -203,7 +203,7 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
                     lev->floortyp = lev->floorsubtyp = lev->floorvartyp = 0;
                     if (tileset >= 0)
                     {
-                        lev->use_special_tileset = 1;
+                        set_levl_use_special_tileset(lev, 1);
                         lev->special_tileset = (uchar)tileset;
                     }
                     lev++;
@@ -230,10 +230,10 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
 
             if (tileset >= 0)
             {
-                levl[lowx - 1][lowy - 1].use_special_tileset = 1;
-                levl[hix + 1][lowy - 1].use_special_tileset = 1;
-                levl[lowx - 1][hiy + 1].use_special_tileset = 1;
-                levl[hix + 1][hiy + 1].use_special_tileset = 1;
+                set_levl_use_special_tileset(&levl[lowx - 1][lowy - 1], 1);
+                set_levl_use_special_tileset(&levl[hix + 1][lowy - 1], 1);
+                set_levl_use_special_tileset(&levl[lowx - 1][hiy + 1], 1);
+                set_levl_use_special_tileset(&levl[hix + 1][hiy + 1], 1);
                 levl[lowx - 1][lowy - 1].special_tileset = (uchar)tileset;
                 levl[hix + 1][lowy - 1].special_tileset = (uchar)tileset;
                 levl[lowx - 1][hiy + 1].special_tileset = (uchar)tileset;
@@ -567,7 +567,7 @@ do_room_or_subroom(struct mkroom *croom, int lowx, int lowy, int hix, int hiy, b
                     }
                     if (tileset >= 0)
                     {
-                        lev->use_special_tileset = 1;
+                        set_levl_use_special_tileset(lev, 1);
                         lev->special_tileset = (uchar)tileset;
                     }
                     lev++;
@@ -684,7 +684,7 @@ join(int a, int b, boolean nxcor)
     dest.x = tx;
     dest.y = ty;
 
-    if (!dig_corridor(&org, &dest, nxcor, level.flags.arboreal || level.flags.swampy ? GRASS : CORR, STONE))
+    if (!dig_corridor(&org, &dest, nxcor, is_levflag_arboreal(&level.flags) || is_levflag_swampy(&level.flags) ? GRASS : CORR, STONE))
         return;
 
     /* we succeeded in digging the corridor */
@@ -1004,7 +1004,7 @@ makeniche(int trap_type)
                         levl[xx][yy].decoration_dir = 0;
                         levl[xx][yy].decoration_flags = 0;
                         /* HWALL .horizontal value retained */
-                        if (levl[xx][yy].horizontal && isok(xx, yy - 1) && IS_FLOOR(levl[xx][yy - 1].typ))
+                        if (is_levl_horizontal(&levl[xx][yy]) && isok(xx, yy - 1) && IS_FLOOR(levl[xx][yy - 1].typ))
                         {
                             levl[xx][yy].floortyp = levl[xx][yy - 1].typ;
                             levl[xx][yy].floorsubtyp = get_initial_location_subtype(levl[xx][yy].floortyp);
@@ -1016,7 +1016,7 @@ makeniche(int trap_type)
                                               mkclass(S_HUMAN, 0), xx,
                                               yy + dy, TRUE);
                     }
-                    if (!level.flags.noteleport)
+                    if (!is_levflag_noteleport(&level.flags))
                         (void) mksobj_at(SCR_TELEPORTATION, xx, yy + dy, TRUE,
                                          FALSE);
                     if (!rn2(3))
@@ -1032,7 +1032,7 @@ static void
 make_niches(void)
 {
     int ct = rnd((nroom >> 1) + 1), dep = depth(&u.uz);
-    boolean ltptr = (!level.flags.noteleport && dep > 15),
+    boolean ltptr = (!is_levflag_noteleport(&level.flags) && dep > 15),
             vamp = (dep > 5 && dep < 25);
 
     while (ct--) {
@@ -1062,7 +1062,7 @@ static void
 clear_level_structures(void)
 {
     static struct rm zerorm = { nul_layerinfo,
-                                0, 0, 0, 0, 0,  0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0 };
+                                0, 0, 0, 0, 0,  0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0 };
     int x, y;
     struct rm *lev;
 
@@ -1088,42 +1088,42 @@ clear_level_structures(void)
     level.damagelist = (struct damage *) 0;
     level.bonesinfo = (struct cemetery *) 0;
 
-    level.flags.has_tileset = 0;
+    set_levflag_has_tileset(&level.flags, 0);
     level.flags.tileset = 0;
     level.flags.nmgeninfos = 0;
     memset(&level.flags.mon_gen_infos, 0, sizeof level.flags.mon_gen_infos);
     level.flags.nfountains = 0;
     level.flags.nsinks = 0;
-    level.flags.has_shop = 0;
-    level.flags.has_vault = 0;
-    level.flags.has_zoo = 0;
-    level.flags.has_court = 0;
-    level.flags.has_morgue = level.flags.graveyard = 0;
-    level.flags.has_beehive = 0;
-    level.flags.has_library = 0;
-    level.flags.has_dragonlair = 0;
-    level.flags.has_garden = 0;
-    level.flags.has_barracks = 0;
-    level.flags.has_armory = 0;
-    level.flags.has_temple = 0;
-    level.flags.has_smithy = 0;
-    level.flags.has_npc_room = 0;
-    level.flags.has_swamp = 0;
-    level.flags.noteleport = 0;
-    level.flags.hardfloor = 0;
-    level.flags.nommap = 0;
-    level.flags.hero_memory = 1;
-    level.flags.shortsighted = 0;
-    level.flags.sokoban_rules = 0;
-    level.flags.is_maze_lev = 0;
-    level.flags.is_cavernous_lev = 0;
-    level.flags.arboreal = 0;
-    level.flags.swampy = 0;
-    level.flags.desert = 0;
-    level.flags.wizard_bones = 0;
-    level.flags.corrmaze = 0;
-    level.flags.mapping_does_not_reveal_special = 0;
-    level.flags.no_special_level_naming_checks = 0;
+    set_levflag_has_shop(&level.flags, 0);
+    set_levflag_has_vault(&level.flags, 0);
+    set_levflag_has_zoo(&level.flags, 0);
+    set_levflag_has_court(&level.flags, 0);
+    set_levflag_has_morgue(&level.flags, set_levflag_graveyard(&level.flags, 0));
+    set_levflag_has_beehive(&level.flags, 0);
+    set_levflag_has_library(&level.flags, 0);
+    set_levflag_has_dragonlair(&level.flags, 0);
+    set_levflag_has_garden(&level.flags, 0);
+    set_levflag_has_barracks(&level.flags, 0);
+    set_levflag_has_armory(&level.flags, 0);
+    set_levflag_has_temple(&level.flags, 0);
+    set_levflag_has_smithy(&level.flags, 0);
+    set_levflag_has_npc_room(&level.flags, 0);
+    set_levflag_has_swamp(&level.flags, 0);
+    set_levflag_noteleport(&level.flags, 0);
+    set_levflag_hardfloor(&level.flags, 0);
+    set_levflag_nommap(&level.flags, 0);
+    set_levflag_hero_memory(&level.flags, 1);
+    set_levflag_shortsighted(&level.flags, 0);
+    set_levflag_sokoban_rules(&level.flags, 0);
+    set_levflag_is_maze_lev(&level.flags, 0);
+    set_levflag_is_cavernous_lev(&level.flags, 0);
+    set_levflag_arboreal(&level.flags, 0);
+    set_levflag_swampy(&level.flags, 0);
+    set_levflag_desert(&level.flags, 0);
+    set_levflag_wizard_bones(&level.flags, 0);
+    set_levflag_corrmaze(&level.flags, 0);
+    set_levflag_mapping_does_not_reveal_special(&level.flags, 0);
+    set_levflag_no_special_level_naming_checks(&level.flags, 0);
     Strcpy(level.flags.special_description, "");
     level.flags.special_naming_reveal_type = SPECIAL_LEVEL_NAMING_REVEALED_NEVER;
     level.flags.special_naming_seen_monster_type = NON_PM;
@@ -1278,12 +1278,12 @@ makelevel(void)
  fill_vault:
             add_room(vault_x, vault_y, vault_x + w, vault_y + h, TRUE, VAULT,
                      FALSE, ROOM, 0, NON_PM, -1, FALSE);
-            level.flags.has_vault = 1;
+            set_levflag_has_vault(&level.flags, 1);
             ++room_threshold;
             fill_room(&rooms[nroom - 1], FALSE);
             set_room_tileset(&rooms[nroom - 1]);
             mk_knox_portal(vault_x + w, vault_y + h);
-            if (!level.flags.noteleport && !rn2(2))
+            if (!is_levflag_noteleport(&level.flags) && !rn2(2))
                 makevtele();
         } else if (rnd_rect() && create_vault()) {
             vault_x = rooms[nroom].lx;
@@ -1399,7 +1399,7 @@ makelevel(void)
            while a monster was on the stairs. Conclusion:
            we have to check for monsters on the stairs anyway. */
 
-        if (u.uhave.amulet || !rn2(3)) 
+        if (is_uhave_amulet() || !rn2(3)) 
         {
             x = somex(croom);
             y = somey(croom);
@@ -1499,9 +1499,9 @@ makelevel(void)
             struct obj* stash = mksobj_at(MAGIC_CHEST, x, y, FALSE, FALSE);
             if (stash)
             {
-                stash->olocked = FALSE;
-                stash->otrapped = FALSE;
-                stash->tknown = 1;
+                set_obj_olocked(stash, FALSE);
+                set_obj_otrapped(stash, FALSE);
+                set_obj_tknown(stash, 1);
                 stash->speflags |= SPEFLAGS_NO_PICKUP;
                 char namebuf[BUFSZ];
                 Sprintf(namebuf, "%s stash", s_suffix(plname));
@@ -1517,7 +1517,7 @@ makelevel(void)
                     otmp = mkobj(RANDOM_CLASS, FALSE, TRUE);
                     if (otmp)
                     {
-                        otmp->bknown = 1;
+                        set_obj_bknown(otmp, 1);
                         (void)add_to_magic_chest(otmp);
                     }
                 }
@@ -1528,7 +1528,7 @@ makelevel(void)
                     otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NORMAL, (struct monst*)0, MAT_NONE, !rn2(4) ? MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_II : MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_I, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                     if (otmp)
                     {
-                        otmp->bknown = 1;
+                        set_obj_bknown(otmp, 1);
                         (void)add_to_magic_chest(otmp);
                         if (otmp->manualidx >= 0)
                         {
@@ -1542,7 +1542,7 @@ makelevel(void)
                     otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NORMAL, (struct monst*)0, MAT_NONE, bits, bits2, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
                     if (otmp)
                     {
-                        otmp->bknown = 1;
+                        set_obj_bknown(otmp, 1);
                         (void)add_to_magic_chest(otmp);
                     }
                 }
@@ -1567,7 +1567,7 @@ makelevel(void)
             croom->rtype = NPCROOM;
             croom->rsubtype = NPC_HERMIT;
             npcini(&u.uz, croom, x, y, NPC_HERMIT, NON_PM);
-            level.flags.has_npc_room = 1;
+            set_levflag_has_npc_room(&level.flags, 1);
         }
 
         x = 80 - (depth(&u.uz) * 2);
@@ -1722,7 +1722,7 @@ mineralize(int kelp_pool, int kelp_moat, int goldprob, int gemprob, boolean skip
        almost all special levels are excluded */
     if (!skip_lvl_checks
         && (In_hell(&u.uz) || In_V_tower(&u.uz) || Is_really_rogue_level(&u.uz)
-            || level.flags.arboreal
+            || is_levflag_arboreal(&level.flags)
             || ((sp = Is_special(&u.uz)) != 0 && !Is_oracle_level(&u.uz)
                 && (!In_mines(&u.uz) || sp->flags.town))))
         return;
@@ -1820,9 +1820,9 @@ mklev(void)
     /* has_morgue gets cleared once morgue is entered; graveyard stays
        set (graveyard might already be set even when has_morgue is clear
        [see fixup_special()], so don't update it unconditionally) */
-    if (level.flags.has_morgue)
-        level.flags.graveyard = 1;
-    if (!level.flags.is_maze_lev) {
+    if (is_levflag_has_morgue(&level.flags))
+        set_levflag_graveyard(&level.flags, 1);
+    if (!is_levflag_is_maze_lev(&level.flags)) {
         for (croom = &rooms[0]; croom != &rooms[nroom]; croom++)
 #ifdef SPECIALIZATION
             topologize(croom, FALSE);
@@ -1883,7 +1883,7 @@ struct mkroom *croom;
         /* top and bottom edges */
         for (x = lowx - 1; x <= hix + 1; x++)
             for (y = lowy - 1; y <= hiy + 1; y += (hiy - lowy + 2)) {
-                levl[x][y].edge = 1;
+                set_levl_edge(&levl[x][y], 1);
                 if (levl[x][y].roomno)
                     levl[x][y].roomno = SHARED;
                 else
@@ -1892,7 +1892,7 @@ struct mkroom *croom;
         /* sides */
         for (x = lowx - 1; x <= hix + 1; x += (hix - lowx + 2))
             for (y = lowy; y <= hiy; y++) {
-                levl[x][y].edge = 1;
+                set_levl_edge(&levl[x][y], 1);
                 if (levl[x][y].roomno)
                     levl[x][y].roomno = SHARED;
                 else
@@ -2032,14 +2032,14 @@ place_branch(branch *br, xchar x, xchar y)
         if (sstairs.up)
         {
             if (!isok(x + 1, y) || levl[x + 1][y].typ < DOOR)
-                levl[x][y].facing_right = TRUE;
+                set_levl_facing_right(&levl[x][y], TRUE);
             if (isok(x - 1, y) && (IS_DOOR(levl[x - 1][y].typ) || levl[x - 1][y].typ == CORR))
-                levl[x][y].facing_right = TRUE;
+                set_levl_facing_right(&levl[x][y], TRUE);
         }
         else
         {
             if (!isok(x - 1, y) || levl[x - 1][y].typ < DOOR)
-                levl[x][y].facing_right = TRUE;
+                set_levl_facing_right(&levl[x][y], TRUE);
         }
         clear_nearby_fireplaces(x, y);
     }
@@ -2170,7 +2170,7 @@ mktrap(int num, int mazeflag, struct mkroom *croom, coord *tm)
                         kind = NO_TRAP;
                     break;
                 case LEVEL_TELEP:
-                    if (lvl < MINIMUM_DGN_LEVEL_LEVELTELE || level.flags.noteleport)
+                    if (lvl < MINIMUM_DGN_LEVEL_LEVELTELE || is_levflag_noteleport(&level.flags))
                         kind = NO_TRAP;
                     break;
                 case SPIKED_PIT:
@@ -2195,7 +2195,7 @@ mktrap(int num, int mazeflag, struct mkroom *croom, coord *tm)
                         kind = NO_TRAP;
                     break;
                 case TELEP_TRAP:
-                    if (level.flags.noteleport)
+                    if (is_levflag_noteleport(&level.flags))
                         kind = NO_TRAP;
                     break;
                 case HOLE:
@@ -2277,7 +2277,7 @@ mktrap(int num, int mazeflag, struct mkroom *croom, coord *tm)
         switch (kind) {
         case ARROW_TRAP:
             otmp = mksobj(t ? get_shooting_trap_object(t) : ARROW, TRUE, FALSE, FALSE);
-            otmp->opoisoned = 0;
+            set_obj_opoisoned(otmp, 0);
             /* don't adjust the quantity; maybe the trap shot multiple
                times, there was an untrapping attempt, etc... */
             break;
@@ -2323,11 +2323,11 @@ mktrap(int num, int mazeflag, struct mkroom *croom, coord *tm)
                by a dead adventurer, bones-pile-style) and for balance
                (less useful to use, and encourage pets to avoid the trap) */
             if (otmp) {
-                otmp->blessed = 0;
+                set_obj_blessed(otmp, 0);
                 if(is_obj_uncurseable(otmp))
-                    otmp->cursed = 0;
+                    set_obj_cursed(otmp, 0);
                 else
-                    otmp->cursed = 1;
+                    set_obj_cursed(otmp, 1);
                 otmp->owt = weight(otmp);
                 place_object(otmp, m.x, m.y);
             }
@@ -2466,14 +2466,14 @@ mkstairs(xchar x, xchar y, char up, struct mkroom *croom, int subtyp)
     if (up)
     {
         if (!isok(x + 1, y) || levl[x + 1][y].typ < DOOR)
-            levl[x][y].facing_right = TRUE;
+            set_levl_facing_right(&levl[x][y], TRUE);
         if (isok(x - 1, y) && (IS_DOOR(levl[x - 1][y].typ) || levl[x - 1][y].typ == CORR))
-            levl[x][y].facing_right = TRUE;
+            set_levl_facing_right(&levl[x][y], TRUE);
     }
     else
     {
         if (!isok(x - 1, y) || levl[x - 1][y].typ < DOOR)
-            levl[x][y].facing_right = TRUE;
+            set_levl_facing_right(&levl[x][y], TRUE);
     }
     clear_nearby_fireplaces(x, y);
 }
@@ -2550,7 +2550,7 @@ mkfount(int mazeflag, struct mkroom *croom)
 
     /* Is it a "blessed" fountain? (affects drinking from fountain) */
     if (!rn2(7))
-        levl[m.x][m.y].blessedftn = 1;
+        set_levl_blessedftn(&levl[m.x][m.y], 1);
 
     level.flags.nfountains++;
 }
@@ -2790,9 +2790,9 @@ mkinvpos(xchar x, xchar y, int dist)
     lev->seenv = 0;
     lev->doormask = 0;
     if (dist < 6)
-        lev->lit = TRUE;
-    lev->waslit = TRUE;
-    lev->horizontal = FALSE;
+        set_levl_lit(lev, TRUE);
+    set_levl_waslit(lev, TRUE);
+    set_levl_horizontal(lev, FALSE);
     /* short-circuit vision recalc */
     viz_array[y][x] = (dist < 6) ? (IN_SIGHT | COULD_SEE) : COULD_SEE;
 
@@ -2909,7 +2909,7 @@ create_level_light_sources(void)
                 c.y = y;
                 id.a_coord = c;
                 new_light_source(x, y, lr, LS_LOCATION, &id, ls);
-                levl[x][y].lamplit = TRUE;
+                set_levl_lamplit(&levl[x][y], TRUE);
             }
         }
     }
@@ -2928,7 +2928,7 @@ maybe_create_location_light_source(xchar x, xchar y)
         c.y = y;
         id.a_coord = c;
         new_light_source(x, y, lr, LS_LOCATION, &id, ls);
-        levl[x][y].lamplit = TRUE;
+        set_levl_lamplit(&levl[x][y], TRUE);
     }
 }
 
@@ -2950,7 +2950,7 @@ create_level_sound_sources(void)
                 c.y = y;
                 id.a_coord = c;
                 new_sound_source(x, y, sound_type, volume, SOUNDSOURCE_LOCATION, subtype, &id);
-                levl[x][y].makingsound = TRUE;
+                set_levl_makingsound(&levl[x][y], TRUE);
             }
         }
     }
@@ -2970,7 +2970,7 @@ maybe_create_location_sound_source(xchar x, xchar y)
         c.y = y;
         id.a_coord = c;
         new_sound_source(x, y, sound_type, volume, SOUNDSOURCE_LOCATION, subtype, &id);
-        levl[x][y].makingsound = TRUE;
+        set_levl_makingsound(&levl[x][y], TRUE);
     }
 }
 

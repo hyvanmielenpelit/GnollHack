@@ -1041,7 +1041,7 @@ doability(void)
                         umnbuf[min(MAXNAMELENGTH, PL_PSIZ) - 1] = '\0'; /* Limit the length of the name */
                         Strcpy(namebuf, umnbuf);
                     }
-                    else if (MNAME(mtmp) && mtmp->u_know_mname)
+                    else if (MNAME(mtmp) && is_mon_u_know_mname(mtmp))
                     {
                         char mnbuf[BUFSZ * 2];
                         Strcpy(mnbuf, MNAME(mtmp));
@@ -1680,13 +1680,13 @@ wiz_makemap(void)
 
         rm_mapseen(ledger_no(&u.uz));
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-            if (mtmp->isgd) { /* vault is going away; get rid of guard */
-                mtmp->isgd = 0;
+            if (is_mon_isgd(mtmp)) { /* vault is going away; get rid of guard */
+                set_mon_isgd(mtmp, 0);
                 mongone(mtmp);
             }
             if (DEADMONSTER(mtmp))
                 continue;
-            if (mtmp->isshk)
+            if (is_mon_isshk(mtmp))
                 setpaid(mtmp);
             /* TODO?
              *  Reduce 'born' tally for each monster about to be discarded
@@ -1731,7 +1731,7 @@ wiz_makemap(void)
         cls();
         /* was using safe_teleds() but that doesn't honor arrival region
            on levels which have such; we don't force stairs, just area */
-        u_on_rndspot((u.uhave.amulet ? 1 : 0) /* 'going up' flag */
+        u_on_rndspot((is_uhave_amulet() ? 1 : 0) /* 'going up' flag */
                      | (was_in_W_tower ? 2 : 0));
         arrival_from_mydogs_and_migrating_mons();
         /* u_on_rndspot() might pick a spot that has a monster, or arrival_from_mydogs_and_migrating_mons()
@@ -1944,7 +1944,7 @@ wiz_debug(void)
                     cc.x = mon->mx;
                     cc.y = mon->my;
                     int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
-                    int default_glyph = base_cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
+                    int default_glyph = base_cmap_to_glyph(is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored);
                     int glyph = reveal_terrain_getglyph(cc.x, cc.y, FALSE, u.uswallow,
                         default_glyph, subset);
 
@@ -1979,7 +1979,7 @@ wiz_debug(void)
                         int color = 0;
                         uint64_t special;
                         int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
-                        int default_glyph = base_cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
+                        int default_glyph = base_cmap_to_glyph(is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored);
                         int glyph = reveal_terrain_getglyph(cc.x, cc.y, FALSE, u.uswallow,
                             default_glyph, subset);
 
@@ -2255,54 +2255,54 @@ wiz_map_levltyp(void)
         if (level.flags.nsinks)
             Sprintf(eos(dsc), " %c:%d", defsyms[S_sink].sym,
                     (int) level.flags.nsinks);
-        if (level.flags.has_vault)
+        if (is_levflag_has_vault(&level.flags))
             Strcat(dsc, " vault");
-        if (level.flags.has_shop)
+        if (is_levflag_has_shop(&level.flags))
             Strcat(dsc, " shop");
-        if (level.flags.has_temple)
+        if (is_levflag_has_temple(&level.flags))
             Strcat(dsc, " temple");
-        if (level.flags.has_smithy)
+        if (is_levflag_has_smithy(&level.flags))
             Strcat(dsc, " smithy");
-        if (level.flags.has_npc_room)
+        if (is_levflag_has_npc_room(&level.flags))
             Strcat(dsc, " residence");
-        if (level.flags.has_court)
+        if (is_levflag_has_court(&level.flags))
             Strcat(dsc, " throne");
-        if (level.flags.has_zoo)
+        if (is_levflag_has_zoo(&level.flags))
             Strcat(dsc, " zoo");
-        if (level.flags.has_morgue)
+        if (is_levflag_has_morgue(&level.flags))
             Strcat(dsc, " morgue");
-        if (level.flags.has_barracks)
+        if (is_levflag_has_barracks(&level.flags))
             Strcat(dsc, " barracks");
-        if (level.flags.has_armory)
+        if (is_levflag_has_armory(&level.flags))
             Strcat(dsc, " armory");
-        if (level.flags.has_beehive)
+        if (is_levflag_has_beehive(&level.flags))
             Strcat(dsc, " hive");
-        if (level.flags.has_garden)
+        if (is_levflag_has_garden(&level.flags))
             Strcat(dsc, " garden");
-        if (level.flags.has_library)
+        if (is_levflag_has_library(&level.flags))
             Strcat(dsc, " library");
-        if (level.flags.has_dragonlair)
+        if (is_levflag_has_dragonlair(&level.flags))
             Strcat(dsc, " dragonlair");
-        if (level.flags.has_swamp)
+        if (is_levflag_has_swamp(&level.flags))
             Strcat(dsc, " swamp");
         /* level flags */
-        if (level.flags.noteleport)
+        if (is_levflag_noteleport(&level.flags))
             Strcat(dsc, " noTport");
-        if (level.flags.hardfloor)
+        if (is_levflag_hardfloor(&level.flags))
             Strcat(dsc, " noDig");
-        if (level.flags.nommap)
+        if (is_levflag_nommap(&level.flags))
             Strcat(dsc, " noMMap");
-        if (!level.flags.hero_memory)
+        if (!is_levflag_hero_memory(&level.flags))
             Strcat(dsc, " noMem");
-        if (level.flags.shortsighted)
+        if (is_levflag_shortsighted(&level.flags))
             Strcat(dsc, " shortsight");
-        if (level.flags.graveyard)
+        if (is_levflag_graveyard(&level.flags))
             Strcat(dsc, " graveyard");
-        if (level.flags.is_maze_lev)
+        if (is_levflag_is_maze_lev(&level.flags))
             Strcat(dsc, " maze");
-        if (level.flags.is_cavernous_lev)
+        if (is_levflag_is_cavernous_lev(&level.flags))
             Strcat(dsc, " cave");
-        if (level.flags.arboreal)
+        if (is_levflag_arboreal(&level.flags))
             Strcat(dsc, " tree");
         if (Sokoban)
             Strcat(dsc, " sokoban-rules");
@@ -3372,8 +3372,8 @@ object_stats_known(struct obj *obj)
     if (!obj)
         return FALSE;
 
-    boolean statsknown = obj->oartifact ? obj->aknown && obj->nknown : objects[obj->otyp].oc_name_known;
-    boolean dknown = obj->dknown;
+    boolean statsknown = obj->oartifact ? is_obj_aknown(obj) && is_obj_nknown(obj) : objects[obj->otyp].oc_name_known;
+    boolean dknown = is_obj_dknown(obj);
     return (statsknown && dknown);
 }
 
@@ -4150,7 +4150,7 @@ status_enlightenment(int mode, int final)
     if (Riding) {
         struct obj *saddle = which_armor(u.usteed, W_SADDLE);
 
-        if (saddle && saddle->cursed) {
+        if (saddle && is_obj_cursed(saddle)) {
             Sprintf(buf, "stuck to %s %s", s_suffix(steedname),
                     simpleonames(saddle));
             you_are(buf, "");
@@ -5657,23 +5657,23 @@ show_conduct(int final)
     dumpwin = en_win;
 #endif
     boolean added_goals = FALSE;
-    if (!u.uachieve.ascended || !u.uachieve.amulet)
+    if (!is_uachieve_ascended() || !is_uachieve_amulet())
     {
         added_goals = TRUE;
         putstr(en_win, ATR_TITLE, "Goals:");
         if (!final && !iflags.in_dumplog)
             putstr(en_win, ATR_HALF_SIZE, " ");
 
-        if (!u.uachieve.amulet)
+        if (!is_uachieve_amulet())
         {
             Sprintf(goalbuf, "on a mission to recover the Amulet of Yendor for %s", u_gname());
             you_are(goalbuf, "");
         }
-        else if (!u.uachieve.ascended)
+        else if (!is_uachieve_ascended())
         {
             Sprintf(goalbuf, "on a mission to sacrifice the Amulet of Yendor on the high altar to %s on the Astral Plane", u_gname());
             you_are(goalbuf, "");
-            if (!u.uachieve.entered_elemental_planes && !u.uachieve.entered_astral_plane)
+            if (!is_uachieve_entered_elemental_planes() && !is_uachieve_entered_astral_plane())
             {
                 Strcpy(goalbuf, "seeking to exit the Dungeons of Doom on level 1 in order to enter the Elemental Planes");
                 you_are(goalbuf, "");
@@ -5681,16 +5681,16 @@ show_conduct(int final)
         }
     }
 
-    boolean looking_for_menorah = !u.uachieve.menorah && (context.quest_flags & QUEST_FLAGS_HEARD_OF_MENORAH);
-    boolean looking_for_bell = !u.uachieve.bell && (context.quest_flags & QUEST_FLAGS_HEARD_OF_BELL);
-    boolean looking_for_book = !u.uachieve.book && (context.quest_flags & QUEST_FLAGS_HEARD_OF_BOOK);
-    boolean seeking_to_enter_sanctum = !u.uevent.invoked && ((context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM) || u.uevent.heard_of_invocation_ritual || u.uevent.invocation_ritual_known);
-    boolean seeking_to_enter_gehennom = !u.uevent.invoked && !u.uevent.gehennom_entered && (context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM);
-    boolean on_nh_quest = ((quest_status.got_quest || quest_status.met_leader || u.uevent.qcalled) && !(u.uevent.qcompleted || u.uevent.qexpelled || quest_status.leader_is_dead));
+    boolean looking_for_menorah = !is_uachieve_menorah() && (context.quest_flags & QUEST_FLAGS_HEARD_OF_MENORAH);
+    boolean looking_for_bell = !is_uachieve_bell() && (context.quest_flags & QUEST_FLAGS_HEARD_OF_BELL);
+    boolean looking_for_book = !is_uachieve_book() && (context.quest_flags & QUEST_FLAGS_HEARD_OF_BOOK);
+    boolean seeking_to_enter_sanctum = !is_uevent_invoked() && ((context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM) || is_uevent_heard_of_invocation_ritual() || is_uevent_invocation_ritual_known());
+    boolean seeking_to_enter_gehennom = !is_uevent_invoked() && !is_uevent_gehennom_entered() && (context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM);
+    boolean on_nh_quest = ((is_qstatus_got_quest() || is_qstatus_met_leader() || is_uevent_qcalled()) && !(is_uevent_qcompleted() || is_uevent_qexpelled() || is_qstatus_leader_is_dead()));
     boolean added_quests = FALSE;
 
     if (!final /* Do not print intermediate quests / related game hints / spoilers in dumplog */
-        && (!u.uachieve.role_achievement || looking_for_menorah || looking_for_bell || looking_for_book || seeking_to_enter_sanctum || seeking_to_enter_gehennom || on_nh_quest))
+        && (!is_uachieve_role_achievement() || looking_for_menorah || looking_for_bell || looking_for_book || seeking_to_enter_sanctum || seeking_to_enter_gehennom || on_nh_quest))
     {
         added_quests = TRUE;
         if(added_goals)
@@ -5699,21 +5699,21 @@ show_conduct(int final)
         if (!final && !iflags.in_dumplog)
             putstr(en_win, ATR_HALF_SIZE, " ");
 
-        if (!(u.uevent.qcompleted || u.uevent.qexpelled || quest_status.leader_is_dead))
+        if (!(is_uevent_qcompleted() || is_uevent_qexpelled() || is_qstatus_leader_is_dead()))
         {
-            if (quest_status.got_quest)
+            if (is_qstatus_got_quest())
             {
-                if (quest_status.killed_nemesis && quest_status.touched_artifact)
+                if (is_qstatus_killed_nemesis() && is_qstatus_touched_artifact())
                 {
                     Sprintf(goalbuf, "defeated %s and %s to return %s to %s", neminame(), final ? "needed" : "need", the(artiname(urole.questarti)), ldrname());
                     you_have(goalbuf, "");
                 }
-                else if (quest_status.killed_nemesis)
+                else if (is_qstatus_killed_nemesis())
                 {
                     Sprintf(goalbuf, "defeated %s and %s to recover %s", neminame(), final ? "needed" : "need", the(artiname(urole.questarti)));
                     you_have(goalbuf, "");
                 }
-                else if (quest_status.touched_artifact)
+                else if (is_qstatus_touched_artifact())
                 {
                     Sprintf(goalbuf, "on a quest to defeat %s but already %s recovered %s", neminame(), final ? "had" : "have", the(artiname(urole.questarti)));
                     you_are(goalbuf, "");
@@ -5724,7 +5724,7 @@ show_conduct(int final)
                     you_are(goalbuf, "");
                 }
             }
-            else if (quest_status.met_leader)
+            else if (is_qstatus_met_leader())
             {
                 if (is_pure(FALSE) <= 0)
                 {
@@ -5742,7 +5742,7 @@ show_conduct(int final)
                     you_have(goalbuf, "");
                 }
             }
-            else if (u.uevent.qcalled)
+            else if (is_uevent_qcalled())
             {
                 Sprintf(goalbuf, "been summoned by %s to %s", ldrname(), urole.homebase);
                 you_have(goalbuf, "");
@@ -5780,7 +5780,7 @@ show_conduct(int final)
             you_are(goalbuf, "");
             if (context.quest_flags & QUEST_FLAGS_HEARD_OF_RITUAL)
             {
-                if (!u.uevent.invocation_ritual_known && context.quest_flags & QUEST_FLAGS_HEARD_ORACLE_KNOWS_MORE_DETAILS)
+                if (!is_uevent_invocation_ritual_known() && context.quest_flags & QUEST_FLAGS_HEARD_ORACLE_KNOWS_MORE_DETAILS)
                 {
                     putstr(en_win, ATR_INDENT_AT_DASH, "  - Consult the Oracle of Delphi for details of the Ritual.");
                 }
@@ -5789,7 +5789,7 @@ show_conduct(int final)
                 Sprintf(invocbuf, "  - Perform the Invocation Ritual%s.", (context.quest_flags & QUEST_FLAGS_HEARD_OF_VIBRATING_SQUARE) ? " at the Vibrating Square at the bottom of Gehennom" : "");
                 putstr(en_win, ATR_INDENT_AT_DASH, invocbuf);
 
-                if (u.uevent.invocation_ritual_known)
+                if (is_uevent_invocation_ritual_known())
                 {
                     putstr(en_win, ATR_INDENT_AT_DASH, "  - Use the Candelabrum of Invocation, Silver Bell, and Book of the Dead to enter the Sanctum.");
                 }
@@ -5802,7 +5802,7 @@ show_conduct(int final)
             you_are(goalbuf, "");
         }
 
-        if (!u.uachieve.role_achievement)
+        if (!is_uachieve_role_achievement())
         {
             Sprintf(goalbuf, "an optional quest to %s", get_role_achievement_description(0));
             you_have(goalbuf, "");
@@ -5818,157 +5818,157 @@ show_conduct(int final)
         putstr(en_win, ATR_HALF_SIZE, " ");
     
     /* Major achievements */
-    if (u.uachieve.ascended)
+    if (is_uachieve_ascended())
     {
         you_have("ascended to demigodhood", "");
         num_achievements++;
     }
-    if (u.uachieve.amulet)
+    if (is_uachieve_amulet())
     {
         you_have("found the Amulet of Yendor", "");
         num_achievements++;
     }
-    if (u.uachieve.crowned && u.uevent.uhand_of_elbereth > 0)
+    if (is_uachieve_crowned() && u.uevent.uhand_of_elbereth > 0)
     {
         Sprintf(goalbuf, "become %s", hofe_titles[u.uevent.uhand_of_elbereth - 1]);
         you_have(goalbuf, "");
         num_achievements++;
     }
-    if (u.uevent.qcompleted)
+    if (is_uevent_qcompleted())
     {
         Sprintf(goalbuf, "completed your quest by defeating %s and recovering %s", neminame(), the(artiname(urole.questarti)));
         you_have(goalbuf, "");
         num_achievements++;
     }
-    if (u.uachieve.role_achievement)
+    if (is_uachieve_role_achievement())
     {
         Sprintf(goalbuf, "completed your optional quest by %s", get_role_achievement_description(2));
         you_have(goalbuf, "");
         num_achievements++;
     }
-    if (u.uachieve.bell)
+    if (is_uachieve_bell())
     {
         you_have("found the Bell of Opening", "");
         num_achievements++;
     }
-    if (u.uachieve.book)
+    if (is_uachieve_book())
     {
         you_have("found the Book of the Dead", "");
         num_achievements++;
     }
-    if (u.uachieve.menorah)
+    if (is_uachieve_menorah())
     {
         you_have("found the Candelabrum of Invocation", "");
         num_achievements++;
     }
-    if (u.uevent.invoked)
+    if (is_uevent_invoked())
     {
         you_have("performed the Invocation Ritual", "");
         num_achievements++;
     }
-    if (u.uachieve.prime_codex)
+    if (is_uachieve_prime_codex())
     {
         you_have("found the Prime Codex", "");
         num_achievements++;
     }
-    if (u.uachieve.entered_astral_plane)
+    if (is_uachieve_entered_astral_plane())
     {
         you_have("entered the Astral Plane", "");
         num_achievements++;
     }
-    if (u.uachieve.entered_elemental_planes)
+    if (is_uachieve_entered_elemental_planes())
     {
         you_have("entered the Elemental Planes", "");
         num_achievements++;
     }
-    if (u.uachieve.killed_medusa)
+    if (is_uachieve_killed_medusa())
     {
         you_have("defeated Medusa", "");
         num_achievements++;
     }
-    if (u.uachieve.learned_castle_tune)
+    if (is_uachieve_learned_castle_tune())
     {
         you_have("solved the castle tune", "");
         num_achievements++;
     }
-    if (u.uachieve.killed_demogorgon)
+    if (is_uachieve_killed_demogorgon())
     {
         you_have("defeated Demogorgon, the Prince of Demons", "");
         num_achievements++;
     }
 
     /* Minor achievements + a couple of related major ones */
-    if (u.uachieve.enter_gehennom)
+    if (is_uachieve_enter_gehennom())
     {
         you_have("entered Gehennom", "");
         num_achievements++;
     }
-    if (u.uachieve.consulted_oracle)
+    if (is_uachieve_consulted_oracle())
     {
         you_have("consulted the Oracle", "");
         num_achievements++;
     }
-    if (u.uachieve.read_discworld_novel)
+    if (is_uachieve_read_discworld_novel())
     {
         you_have("read a Discworld novel", "");
         num_achievements++;
     }
-    if (u.uachieve.entered_gnomish_mines)
+    if (is_uachieve_entered_gnomish_mines())
     {
         you_have("descended to the Gnomish Mines", "");
         num_achievements++;
     }
-    if (u.uachieve.entered_mine_town)
+    if (is_uachieve_entered_mine_town())
     {
         you_have("visited Mine Town", "");
         num_achievements++;
     }
-    if (u.uachieve.mines_luckstone)
+    if (is_uachieve_mines_luckstone())
     {
         you_have("found the Gladstone", "");
         num_achievements++;
     }
-    if (u.uachieve.entered_shop)
+    if (is_uachieve_entered_shop())
     {
         you_have("visited a shop", "");
         num_achievements++;
     }
-    if (u.uachieve.entered_temple)
+    if (is_uachieve_entered_temple())
     {
         you_have("visited a temple", "");
         num_achievements++;
     }
-    if (u.uachieve.entered_sokoban)
+    if (is_uachieve_entered_sokoban())
     {
         you_have("found Sokoban", "");
         num_achievements++;
     }
-    if (u.uachieve.finish_sokoban)
+    if (is_uachieve_finish_sokoban())
     {
         you_have("solved Sokoban", "");
         num_achievements++;
     }
-    if (u.uachieve.entered_bigroom)
+    if (is_uachieve_entered_bigroom())
     {
         you_have("found the Big Room", "");
         num_achievements++;
     }
-    if (u.uachieve.entered_large_circular_dungeon)
+    if (is_uachieve_entered_large_circular_dungeon())
     {
         you_have("entered the Large Circular Dungeon", "");
         num_achievements++;
     }
-    if (u.uachieve.entered_plane_of_modron)
+    if (is_uachieve_entered_plane_of_modron())
     {
         you_have("entered the Plane of the Modron", "");
         num_achievements++;
     }
-    if (u.uachieve.entered_hellish_pastures)
+    if (is_uachieve_entered_hellish_pastures())
     {
         you_have("entered Hellish Pastures", "");
         num_achievements++;
     }
-    if (u.uachieve.killed_yacc)
+    if (is_uachieve_killed_yacc())
     {
         you_have("defeated Yacc, the Demon Lord of Bovines", "");
         num_achievements++;
@@ -6073,7 +6073,7 @@ show_conduct(int final)
                     " for any artifacts", "");
     }
 
-    if (u.uevent.elbereth_known)
+    if (is_uevent_elbereth_known())
     {
         if (!u.uconduct.elbereths) {
             you_have_never("engraved Elbereth");
@@ -6120,7 +6120,7 @@ show_conduct(int final)
     if (!final && !iflags.in_dumplog)
         putstr(en_win, ATR_HALF_SIZE, " ");
 
-    if (u.uachieve.role_achievement)
+    if (is_uachieve_role_achievement())
     {
         you_have("completed your role's optional quest", "");
         if (Role_if(PM_KNIGHT) || Role_if(PM_TOURIST))
@@ -6140,7 +6140,7 @@ show_conduct(int final)
         struct item_score_count_result wrappings2 = count_mummy_wrappings(magic_objs);
         struct item_score_count_result artobjects = count_valuable_art_objects(invent);
         struct item_score_count_result artobjects2 = count_valuable_art_objects(magic_objs);
-        int64_t score_percentage = ((artifacts.score + artifacts2.score + statues.score + statues2.score + (artobjects.score + artobjects2.score) * ARCHAEOLOGIST_ART_OBJECT_SCORE_MULTIPLIER + (int64_t)u.uachieve.role_achievement * ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((artifacts.score + artifacts2.score + statues.score + statues2.score + (artobjects.score + artobjects2.score) * ARCHAEOLOGIST_ART_OBJECT_SCORE_MULTIPLIER + (int64_t)is_uachieve_role_achievement() * ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %sartifact%s with you", (long long)artifacts.quantity, program_state.gameover ? "" : "known ", plur(artifacts.quantity));
         you_have(goalbuf, "");
@@ -6172,7 +6172,7 @@ show_conduct(int final)
     {
         struct item_score_count_result valuables = count_powerful_melee_weapon_score(invent);
         struct item_score_count_result valuables2 = count_powerful_melee_weapon_score(magic_objs);
-        int64_t score_percentage = ((valuables.score + valuables2.score + (int64_t)u.uachieve.role_achievement * BARBARIAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuables.score + valuables2.score + (int64_t)is_uachieve_role_achievement() * BARBARIAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %smelee weapon%s of artifact or legendary quality with you", (long long)valuables.quantity, program_state.gameover ? "" : "known ", plur(valuables.quantity));
         you_have(goalbuf, "");
@@ -6185,7 +6185,7 @@ show_conduct(int final)
     {
         struct amulet_count_result amulets = count_amulets(invent);
         struct amulet_count_result amulets2 = count_amulets(magic_objs);
-        int64_t score_percentage = ((amulets.score + amulets2.score + (int64_t)u.uachieve.role_achievement * CAVEMAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((amulets.score + amulets2.score + (int64_t)is_uachieve_role_achievement() * CAVEMAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld amulet%s of life saving with you", (long long)amulets.amulets_of_life_saving, plur(amulets.amulets_of_life_saving));
         you_have(goalbuf, "");
@@ -6210,7 +6210,7 @@ show_conduct(int final)
     {
         struct item_score_count_result valuables = count_powerful_ranged_weapon_score(invent);
         struct item_score_count_result valuables2 = count_powerful_ranged_weapon_score(magic_objs);
-        int64_t score_percentage = ((valuables.score + valuables2.score + (int64_t)u.uachieve.role_achievement * RANGER_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuables.score + valuables2.score + (int64_t)is_uachieve_role_achievement() * RANGER_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %sranged weapon%s of at least artifact, elite, or mythic quality with you", (long long)valuables.quantity_nonammo, program_state.gameover ? "" : "known ", plur(valuables.quantity_nonammo));
         you_have(goalbuf, "");
@@ -6229,7 +6229,7 @@ show_conduct(int final)
         struct item_score_count_result cnt2 = count_valuable_art_objects(magic_objs);
         int64_t valuableworth = money_cnt(invent) + hidden_gold() + carried_gem_value() + cnt.score;
         int64_t valuableworth2 =  magic_gold() + magic_gem_value() + cnt2.score;
-        int64_t score_percentage = ((ROGUE_PER_GOLD_SCORE * (valuableworth + valuableworth2) + (int64_t)u.uachieve.role_achievement * ROGUE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((ROGUE_PER_GOLD_SCORE * (valuableworth + valuableworth2) + (int64_t)is_uachieve_role_achievement() * ROGUE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %s worth of %svaluables with you", (long long)valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
         you_have(goalbuf, "");
@@ -6242,7 +6242,7 @@ show_conduct(int final)
     {
         struct item_score_count_result valuables = count_powerful_Japanese_item_score(invent);
         struct item_score_count_result valuables2 = count_powerful_Japanese_item_score(magic_objs);
-        int64_t score_percentage = ((valuables.score + valuables2.score + (int64_t)u.uachieve.role_achievement * SAMURAI_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuables.score + valuables2.score + (int64_t)is_uachieve_role_achievement() * SAMURAI_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld Japanese non-ammo item%s of at least artifact, exceptional, or mythic quality with you", (long long)valuables.quantity_nonammo, plur(valuables.quantity_nonammo));
         you_have(goalbuf, "");
@@ -6267,7 +6267,7 @@ show_conduct(int final)
     {
         struct item_score_count_result valuables = count_powerful_valkyrie_item_score(invent);
         struct item_score_count_result valuables2 = count_powerful_valkyrie_item_score(magic_objs);
-        int64_t score_percentage = ((valuables.score + valuables2.score + (int64_t)u.uachieve.role_achievement * VALKYRIE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuables.score + valuables2.score + (int64_t)is_uachieve_role_achievement() * VALKYRIE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld non-ammo item%s of %s quality with you", (long long)valuables.quantity_nonammo, plur(valuables.quantity_nonammo), u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial");
         you_have(goalbuf, "");
@@ -6293,7 +6293,7 @@ show_conduct(int final)
                 score_gained += (Role_if(PM_HEALER) ? HEALER_PER_SPELL_LEVEL_SCORE : Role_if(PM_PRIEST) ? PRIEST_PER_SPELL_LEVEL_SCORE : WIZARD_PER_SPELL_LEVEL_SCORE) * (int64_t)(spl_book[i].sp_lev + 2);
             }
         }
-        int64_t score_percentage = ((score_gained + (int64_t)u.uachieve.role_achievement * (Role_if(PM_HEALER) ? HEALER_ROLE_ACHIEVEMENT_SCORE : Role_if(PM_PRIEST) ? PRIEST_ROLE_ACHIEVEMENT_SCORE : WIZARD_ROLE_ACHIEVEMENT_SCORE)) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((score_gained + (int64_t)is_uachieve_role_achievement() * (Role_if(PM_HEALER) ? HEALER_ROLE_ACHIEVEMENT_SCORE : Role_if(PM_PRIEST) ? PRIEST_ROLE_ACHIEVEMENT_SCORE : WIZARD_ROLE_ACHIEVEMENT_SCORE)) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "learnt %lld new spell%s in unrestricted schools", (long long)newspells, plur(newspells));
         you_have(goalbuf, "");
@@ -6303,16 +6303,16 @@ show_conduct(int final)
     else if (Role_if(PM_MONK))
     {
         int64_t score_upon_ascension = get_conduct_score_upon_ascension() * MONK_EXTRA_CONDUCT_SCORE_MULTIPLIER;
-        int64_t score_percentage = ((0L + (int64_t)u.uachieve.role_achievement * MONK_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
-        int64_t score_percentage_upon_ascension = ((score_upon_ascension + (int64_t)u.uachieve.role_achievement * MONK_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((0L + (int64_t)is_uachieve_role_achievement() * MONK_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage_upon_ascension = ((score_upon_ascension + (int64_t)is_uachieve_role_achievement() * MONK_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = max(0, min(100, score_percentage));
         score_percentage_upon_ascension = max(0, min(100, score_percentage_upon_ascension));
-        if(u.uachieve.ascended)
+        if(is_uachieve_ascended())
             Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage_upon_ascension);
         else
             Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
-        if (!u.uachieve.ascended)
+        if (!is_uachieve_ascended())
         {
             Sprintf(goalbuf, "%lld%% of your maximum role score upon ascension with current conducts intact", (long long)score_percentage_upon_ascension);
             enl_msg(You_, "will gain ", "would have gained ", goalbuf, "");
@@ -9642,9 +9642,9 @@ click_to_cmd(int x, int y, int mod)
                 }
                 if (door->doormask & D_LOCKED)
                 {
-                    if (has_fitting_key || !door->click_kick_ok || u.usteed)
+                    if (has_fitting_key || !is_levl_click_kick_ok(door) || u.usteed)
                     {
-                        if (!door->click_kick_ok && !u.usteed)
+                        if (!is_levl_click_kick_ok(door) && !u.usteed)
                             context.click_kick_query = 1;
 
                         cmd[0] = cmd_from_func(doopen);
@@ -10309,7 +10309,7 @@ dolight(void)
 {
     if (get_location_light_range(u.ux, u.uy) != 0)
     {
-        if (levl[u.ux][u.uy].lamplit == 0)
+        if (!is_levl_lamplit(&levl[u.ux][u.uy]))
         {
             char qbuf[BUFSZ];
             if (levl[u.ux][u.uy].typ == ALTAR)
@@ -10339,7 +10339,7 @@ dolight(void)
             if (ans == 'y')
             {
                 debugprint("dolight1");
-                levl[u.ux][u.uy].lamplit = FALSE;
+                set_levl_lamplit(&levl[u.ux][u.uy], FALSE);
                 del_light_source(LS_LOCATION, xy_to_any(u.ux, u.uy));
                 newsym(u.ux, u.uy);
                 play_simple_location_sound(u.ux, u.uy, LOCATION_SOUND_TYPE_APPLY2);
@@ -10377,7 +10377,7 @@ dolight(void)
                     {
                         char qsfx[QBUFSZ];
                         boolean one = (otmp->quan == 1L);
-                        boolean snuffout = (otmp->lamplit);
+                        boolean snuffout = (is_obj_lamplit(otmp));
 
                         /* "There is <an object> here; <verb> it?" or
                             "There are <N objects> here; <verb> one?" */
@@ -10423,7 +10423,7 @@ dolight(void)
         if(levl[cc.x][cc.y].typ == ALTAR)
             Strcpy(ebuf, "fires on the ");
 
-        if (levl[cc.x][cc.y].lamplit == 0)
+        if (!is_levl_lamplit(&levl[cc.x][cc.y]))
         {
             maybe_create_location_light_source(cc.x, cc.y);
             newsym(cc.x, cc.y);
@@ -10434,7 +10434,7 @@ dolight(void)
         else
         {
             debugprint("dolight2");
-            levl[cc.x][cc.y].lamplit = FALSE;
+            set_levl_lamplit(&levl[cc.x][cc.y], FALSE);
             del_light_source(LS_LOCATION, xy_to_any(cc.x, cc.y));
             newsym(cc.x, cc.y);
             play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_APPLY2);
@@ -10584,7 +10584,7 @@ create_context_menu(enum create_context_menu_types menu_type)
                     if (!loot_out_added && !is_known_improper)
                     {
                         boolean isknownempty = FALSE;
-                        if (otmp_here->cknown && (otmp_here->otyp == BAG_OF_TRICKS ? (otmp_here->charges == 0) : !Has_contained_contents(otmp_here)))
+                        if (is_obj_cknown(otmp_here) && (otmp_here->otyp == BAG_OF_TRICKS ? (otmp_here->charges == 0) : !Has_contained_contents(otmp_here)))
                             isknownempty = TRUE;
 
                         if (!isknownempty)
@@ -10721,7 +10721,7 @@ create_context_menu(enum create_context_menu_types menu_type)
                         //otmp = level.objects[x][y];
                         //if (otmp)
                         //{
-                        //    if (Is_proper_container(otmp) && otmp->olocked && !otmp->obroken && otmp->lknown)
+                        //    if (Is_proper_container(otmp) && is_obj_olocked(otmp) && !is_obj_obroken(otmp) && is_obj_lknown(otmp))
                         //    {
                         //        kickotmp = otmp;
                         //        addkickmenu = TRUE;
@@ -10920,12 +10920,12 @@ dosetquickbag(void)
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is not a container.", The(cxname(obj)));
     }
-    else if (Is_box(obj) && !obj->lknown)
+    else if (Is_box(obj) && !is_obj_lknown(obj))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without first knowing whether it is locked.", The(cxname(obj)));
     }
-    else if (Is_box(obj) && obj->lknown && obj->olocked)
+    else if (Is_box(obj) && is_obj_lknown(obj) && is_obj_olocked(obj))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag; it is locked!", The(cxname(obj)));
@@ -10940,7 +10940,7 @@ dosetquickbag(void)
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without opening its lid first.", The(cxname(obj)));
     }
-    else if (!objects[obj->otyp].oc_name_known && !obj->cknown) /* This should prevent checking out which are non-containers */
+    else if (!objects[obj->otyp].oc_name_known && !is_obj_cknown(obj)) /* This should prevent checking out which are non-containers */
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s cannot be set as a quick bag without investigating its contents or determining its nature first.", The(cxname(obj)));
