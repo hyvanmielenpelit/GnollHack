@@ -118,7 +118,7 @@ setuwepcore(struct obj *obj, int64_t mask, boolean verbose)
     boolean invneedsupdate = FALSE;
     if (obj && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
     {
-        invneedsupdate = verbose && is_obj_known(obj) != 1;
+        invneedsupdate = verbose && !is_obj_known(obj);
         set_obj_known(obj, 1);
     }
 

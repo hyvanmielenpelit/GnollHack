@@ -5015,11 +5015,11 @@ obj_absorb(struct obj **obj1, struct obj **obj2)
         otmp2 = *obj2;
         if (otmp1 && otmp2 && otmp1 != otmp2) {
             if (is_obj_bknown(otmp1) != is_obj_bknown(otmp2))
-                set_obj_bknown(otmp1, 0), set_obj_bknown(otmp1, 0);
+                set_obj_bknown(otmp1, 0), set_obj_bknown(otmp2, 0);
             if (is_obj_rknown(otmp1) != is_obj_rknown(otmp2))
-                set_obj_rknown(otmp1, 0), set_obj_rknown(otmp1, 0);
+                set_obj_rknown(otmp1, 0), set_obj_rknown(otmp2, 0);
             if (is_obj_greased(otmp1) != is_obj_greased(otmp2))
-                set_obj_greased(otmp1, 0), set_obj_greased(otmp1, 0);
+                set_obj_greased(otmp1, 0), set_obj_greased(otmp2, 0);
             if (otmp1->orotten || otmp2->orotten)
                 otmp1->orotten = otmp2->orotten = 1;
             o1wt = otmp1->oeaten ? otmp1->oeaten : otmp1->owt;
