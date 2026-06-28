@@ -24,6 +24,10 @@ description: Guidance on modifying the GnollHack C core game logic, headers, win
 - **`rn2(n)`**: Random integer `0` to `n-1`.
 - **`d(n, x)`**: Roll `n` dice with `x` sides.
 - **`DEADMONSTER(mtmp)`**: Check if a monster has been killed but not yet removed from the list.
+- **`STR18(x)` / `STR19(x)`**: Macros used to manage strength values beyond 18 (defined in `attrib.h`).
+  - `STR18(x)` equals `18 + x`. It is used for AD&D-style 18/xx percentile strengths. For example, `STR18(100)` equals `118` and is displayed as `18/**`.
+  - `STR19(x)` equals `100 + x`. It is used for linear strength values from 19 to 25. For example, `STR19(25)` equals `125`.
+  - Display logic (in `botl.c`) handles values > 118 by subtracting 100 (`st - 100`), which is why `STR19(x)` smoothly displays exactly as `x` (e.g., `119 - 100 = 19`).
 
 ## Spelling
 - **Archaeologist**: Always prefer the spelling "Archaeologist" (with the 'a' in the middle) instead of "Archeologist" throughout the codebase, documentation, and wiki.
