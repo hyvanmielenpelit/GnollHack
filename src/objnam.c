@@ -4172,7 +4172,7 @@ shiny_obj(char oclass)
  * Return something wished for.  Specifying a null pointer for
  * the user request string results in a random object.  Otherwise,
  * if asking explicitly for "nothing" (or "nil") return no_wish;
- * if not an object return &zeroobj; if an error (no matching object),
+ * if not an object return &naughtobj; if an error (no matching object),
  * return null.
  */
 struct obj *
@@ -5161,7 +5161,7 @@ retry:
                 newsym(x, y);
             } else
                 pline("Creation of %s failed.", an(tname));
-            return (struct obj *) &zeroobj;
+            return &naughtobj;
         }
 
         /* furniture and terrain */
@@ -5202,27 +5202,27 @@ retry:
             int ftyp = lev->subtyp; // (lev->fountainmask & FOUNTAIN_TYPE_MASK);
             pline("A %s.", ftyp == FOUNTAIN_MAGIC && is_levl_blessedftn(lev) ? "enchanted fountain" : fountain_type_text(ftyp));
             newsym(x, y);
-            return (struct obj *) &zeroobj;
+            return &naughtobj;
         }
         if (!BSTRCMPI(bp, p - 6, "throne")) 
         {
             create_simple_location_with_carpet(x, y, THRONE, 0, 0, 0, levl[x][y].carpet_typ, levl[x][y].carpet_piece, levl[x][y].carpet_flags, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("A throne.");
             newsym(x, y);
-            return (struct obj *) &zeroobj;
+            return &naughtobj;
         }
         if (!BSTRCMPI(bp, p - 5, "anvil"))
         {
             create_simple_location_with_carpet(x, y, ANVIL, 0, 0, 0, levl[x][y].carpet_typ, levl[x][y].carpet_piece, levl[x][y].carpet_flags, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("An anvil.");
             newsym(x, y);
-            return (struct obj*)&zeroobj;
+            return &naughtobj;
         }
         if (!BSTRCMPI(bp, p - 4, "sink")) {
             create_simple_location_with_carpet(x, y, SINK, 0, 0, 0, levl[x][y].carpet_typ, levl[x][y].carpet_piece, levl[x][y].carpet_flags, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("A sink.");
             newsym(x, y);
-            return (struct obj *) &zeroobj;
+            return &naughtobj;
         }
         /* ("water" matches "potion of water" rather than terrain) */
         if (!BSTRCMPI(bp, p - 4, "pool") || !BSTRCMPI(bp, p - 4, "moat")) {
@@ -5232,7 +5232,7 @@ retry:
             /* Must manually make kelp! */
             water_damage_chain(level.objects[x][y], TRUE);
             newsym(x, y);
-            return (struct obj *) &zeroobj;
+            return &naughtobj;
         }
         if (!BSTRCMPI(bp, p - 4, "lava")) { /* also matches "molten lava" */
             create_simple_location(x, y, LAVAPOOL, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
@@ -5241,7 +5241,7 @@ retry:
             if (!Moves_above_ground)
                 (void) lava_effects();
             newsym(x, y);
-            return (struct obj *) &zeroobj;
+            return &naughtobj;
         }
 
         if (!BSTRCMPI(bp, p - 5, "altar")) {
@@ -5261,7 +5261,7 @@ retry:
             create_simple_location_with_carpet(x, y, ALTAR, 0, 0, Align2amask(al), levl[x][y].carpet_typ, levl[x][y].carpet_piece, levl[x][y].carpet_flags, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("%s altar.", An(align_str(al)));
             newsym(x, y);
-            return (struct obj *) &zeroobj;
+            return &naughtobj;
         }
 
         if (!BSTRCMPI(bp, p - 5, "grave")
@@ -5270,7 +5270,7 @@ retry:
             pline("%s.", IS_GRAVE(lev->typ) ? "A grave"
                                             : "Can't place a grave here");
             newsym(x, y);
-            return (struct obj *) &zeroobj;
+            return &naughtobj;
         }
 
         if (!BSTRCMPI(bp, p - 7, "brazier")) {
@@ -5278,7 +5278,7 @@ retry:
             pline("%s.", IS_BRAZIER(lev->typ) ? "A brazier"
                 : "Can't place a brazier here");
             newsym(x, y);
-            return (struct obj*)&zeroobj;
+            return &naughtobj;
         }
 
         if (!BSTRCMPI(bp, p - 8, "signpost")) {
@@ -5286,7 +5286,7 @@ retry:
             pline("%s.", IS_SIGNPOST(lev->typ) ? "A signpost"
                 : "Can't place a signpost here");
             newsym(x, y);
-            return (struct obj*)&zeroobj;
+            return &naughtobj;
         }
 
         for (i = 1; i < MAX_TREE_SUBTYPES; i++)
@@ -5306,7 +5306,7 @@ retry:
                 pline("%s.", An(tree_subtype_definitions[i].description));
                 newsym(x, y);
                 block_vision_and_hearing_at_point(x, y);
-                return (struct obj*)&zeroobj;
+                return &naughtobj;
             }
 
         }
@@ -5318,14 +5318,14 @@ retry:
             pline("A tree.");
             newsym(x, y);
             block_vision_and_hearing_at_point(x, y);
-            return (struct obj*)&zeroobj;
+            return &naughtobj;
         }
 
         if (!BSTRCMPI(bp, p - 4, "bars")) {
             create_simple_location(x, y, IRONBARS, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].vartyp : levl[x][y].floorvartyp, FALSE);
             pline("Iron bars.");
             newsym(x, y);
-            return (struct obj *) &zeroobj;
+            return &naughtobj;
         }
     }
 
@@ -5901,7 +5901,7 @@ retry:
         artifact_exists(otmp, safe_oname(otmp), FALSE);
         debugprint("readobjnam2: %d", otmp->otyp);
         obfree(otmp, (struct obj *) 0);
-        otmp = (struct obj *) &zeroobj;
+        otmp = &naughtobj;
         pline("For a moment, you feel %s in your %s, but it disappears!",
               something, makeplural(body_part(HAND)));
         return otmp;

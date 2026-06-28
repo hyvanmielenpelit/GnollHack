@@ -460,7 +460,7 @@ wield_weapon(struct obj *wep)
 
         int64_t mask = 0;
         char qbuf[BUFSZ] = "";
-        if (wep == &zeroobj)
+        if (wep == &naughtobj)
         {
             if (uwep && uarms)
             {
@@ -553,7 +553,7 @@ wield_weapon(struct obj *wep)
         }
 
         /* Handle no object, or object in other slot */
-        if (wep == &zeroobj)
+        if (wep == &naughtobj)
             wep = (struct obj*) 0;
         else if (bimanual(wep) && (wep == uswapwep || wep == uswapwep2))
             return doswapweapon();
@@ -613,7 +613,7 @@ wield_weapon(struct obj *wep)
         }
 
         /* Handle no object, or object in other slot */
-        if (wep == &zeroobj)
+        if (wep == &naughtobj)
             wep = (struct obj *) 0;
         else if (bimanual(wep) && (wep == uswapwep || wep == uswapwep2))
             return doswapweapon();
@@ -1198,7 +1198,7 @@ dowieldquiver(void)
         /* Cancelled */
         return 0;
     } 
-    else if (newquiver == &zeroobj) 
+    else if (newquiver == &naughtobj)
     { /* no object */
         /* Explicitly nothing */
         if (uquiver) 

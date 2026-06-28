@@ -435,8 +435,11 @@ E NEARDATA struct obj *current_wand, *thrownobj, *kickedobj;
 E NEARDATA struct obj* trackedobj;
 E NEARDATA boolean trackedobj_gone;
 
-E NEARDATA const struct obj zeroobj; /* for init; also, &zeroobj is used
-                                      * as special value */
+E NEARDATA struct obj naughtobj; /* special value for using hands; this is a modifiable value so nothing bad happens if you accidently write to it */
+
+E NEARDATA const struct obj zeroobj; /* for init only; further, &zeroobj is NOT used
+                                      * as special value (use &naughtobj instead),
+                                      * as it would be dangerous to cast a const value to a modifiable value */
 
 E NEARDATA const anything zeroany;   /* init'd and defined in decl.c */
 

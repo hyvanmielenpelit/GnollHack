@@ -2622,7 +2622,7 @@ trading_items(const char *action)
  * getobj returns:
  *      struct obj *xxx:        object to do something with.
  *      (struct obj *) 0        error return: no object.
- *      &zeroobj                explicitly no object (as in w-).
+ *      &naughtobj              explicitly no object (as in w-). (zeroobj is a const so you cannot return it.)
 !!!! test if gold can be used in unusual ways (eaten etc.)
 !!!! may be able to remove "usegold"
  */
@@ -3029,7 +3029,7 @@ getobj_ex(const char *let, const char *word, int show_weights, boolean show_quic
                 You("mime %s something%s%s.", ing_suffix(bp), suf ? " " : "",
                     suf ? suf : "");
             }
-            return (allownone ? (struct obj *) &zeroobj : (struct obj *) 0);
+            return (allownone ? &naughtobj : (struct obj *) 0);
         }
  redo_menu:
         /* since gold is now kept in inventory, we need to do processing for
@@ -3065,7 +3065,7 @@ getobj_ex(const char *let, const char *word, int show_weights, boolean show_quic
             if (!ilet || ilet == SWAP_LET)
                 continue;
             if (ilet == HANDS_SYM)
-                return (struct obj *) &zeroobj; /* cast away 'const' */
+                return &naughtobj; /* naughtobj instead of zeroobj, so no need to cast away 'const', which would be very dangerous, if one subsequently accidently writes to it */
             if (ilet == '\033') {
                 if (flags.verbose)
                     pline1(Never_mind);

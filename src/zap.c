@@ -6667,7 +6667,7 @@ dosetquickwand(void)
         pline1(Never_mind);
         return 0;
     }
-    if (obj == &zeroobj)
+    if (obj == &naughtobj)
     {
         context.quick_zap_wand_oid = 0;
         issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, NO_GLYPH, 0, "");
@@ -12262,7 +12262,7 @@ retry:
     }
     /*
      *  Note: if they wished for and got a non-object successfully,
-     *  otmp == &zeroobj.  That includes gold, or an artifact that
+     *  otmp == &naughtobj.  That includes gold, or an artifact that
      *  has been denied.  Wishing for "nothing" requires a separate
      *  value to remain distinct.
      */
@@ -12309,7 +12309,7 @@ retry:
 
     issue_achievement(GUI_ACHIEVEMENT_MADE_A_WISH);
 
-    if (otmp != &zeroobj)
+    if (otmp != &naughtobj)
     {
         const char
             *verb = ((Is_airlevel(&u.uz) || u.uinwater) ? "slip" : "drop"),

@@ -1053,7 +1053,7 @@ select_rwep(struct monst *mtmp)
 
     char mlet = mtmp->data->mlet;
 
-    propellor = (struct obj *) &zeroobj;
+    propellor = naughtobj;
     Oselect(EGG);      /* cockatrice egg */
     if (mlet == S_KOP) /* pies are first choice for Kops */
         Oselect(CREAM_PIE);
@@ -1124,7 +1124,7 @@ select_rwep(struct monst *mtmp)
             }
 
             /* KMH -- This belongs here so darts will work */
-            propellor = (struct obj*)&zeroobj;
+            propellor = naughtobj;
 
             prop = objects[rwep[i]].oc_skill;
             if (prop < 0) 
@@ -1198,7 +1198,7 @@ select_rwep(struct monst *mtmp)
                     propellor = 0;
             }
             /* propellor = obj, propellor to use
-             * propellor = &zeroobj, doesn't need a propellor
+             * propellor = &naughtobj, doesn't need a propellor
              * propellor = 0, needed one and didn't have one
              */
             if (propellor != 0) 
@@ -1513,7 +1513,7 @@ mon_wield_item(struct monst *mon, boolean verbose_fail, xchar tx, xchar ty)
                    mon_nam(mon));
         return 0;
     }
-    if (obj && obj != &zeroobj) 
+    if (obj && obj != &naughtobj)
     {
         struct obj *mw_tmp = MON_WEP(mon);
 

@@ -283,6 +283,9 @@ NEARDATA struct obj *billobjs = (struct obj *) 0;
 NEARDATA struct obj* memoryobjs = (struct obj*)0;
 NEARDATA struct obj* lastmemoryobj = (struct obj*)0;
 
+/* Used as a special value to indicate hands etc. */
+NEARDATA struct obj noughtobj = DUMMY;
+
 /* used to zero all elements of a struct obj and a struct monst */
 NEARDATA const struct obj zeroobj = DUMMY;
 NEARDATA const struct monst zeromonst = DUMMY;

@@ -3932,7 +3932,7 @@ use_grease(struct obj *obj)
 
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
 
-        if (otmp != &zeroobj)
+        if (otmp != &naughtobj)
         {
             play_sfx_sound(SFX_GREASE_COATING);
             You("cover %s with a thick layer of grease.", yname(otmp));
@@ -4017,7 +4017,7 @@ use_wand_on_object(struct obj *obj)
         }
 
         //Normal effect
-        if (otmp && otmp != &zeroobj) 
+        if (otmp && otmp != &naughtobj)
         {
             play_sfx_sound(SFX_ZAP);
             switch (obj->otyp)

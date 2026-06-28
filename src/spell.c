@@ -3243,7 +3243,7 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
             return 0;
         }
 
-        if (otmp && otmp != &zeroobj) 
+        if (otmp && otmp != &naughtobj)
         {
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
             update_u_action(ACTION_TILE_CAST_NODIR);

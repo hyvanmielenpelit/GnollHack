@@ -924,7 +924,7 @@ void print_corpse_properties(winid datawin, int mnum)
 int
 corpsedescription(struct obj *obj)
 {
-    if (!obj || obj == &zeroobj || !is_obj_rotting_corpse(obj))
+    if (!obj || obj == &naughtobj || !is_obj_rotting_corpse(obj))
         return 0;
 
     if(obj->corpsenm > NON_PM)
@@ -937,7 +937,7 @@ corpsedescription(struct obj *obj)
 int
 itemdescription(struct obj *obj)
 {
-    if (!obj || obj == &zeroobj)
+    if (!obj || obj == &naughtobj)
         return 0;
 
     return itemdescription_core(obj, obj->otyp, (struct item_description_stats*)0);

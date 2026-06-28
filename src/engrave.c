@@ -652,7 +652,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
     case 0:
         break;
     case 1:
-        otmp = (struct obj*) &zeroobj; /* Dropping the const qualifier here, so one needs to be careful below not to modify otmp anymore */
+        otmp = &naughtobj; /* Changed to zeroobj to naughtobj due to the following: Dropping the const qualifier here, so one needs to be careful below not to modify otmp anymore */
         context.quick_engrave_obj_oid = 0;
         prompt_for_stylus = FALSE;
         break;
@@ -669,14 +669,14 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
     if (prompt_for_stylus)
     {
         otmp = getobj(styluses, "write with", 0, "");
-        if (otmp && otmp != &zeroobj && engrave_text) /* Mark as quick only if the command was quick engrave */
+        if (otmp && otmp != &naughtobj && engrave_text) /* Mark as quick only if the command was quick engrave */
             context.quick_engrave_obj_oid = otmp->o_id;
     }
 
     if (!otmp) /* otmp == zeroobj if fingers */
         return 0;
 
-    if (otmp == &zeroobj) {
+    if (otmp == &naughtobj) {
         Strcat(strcpy(fbuf, "your "), body_part(FINGERTIP));
         writer = fbuf;
     } else
@@ -711,7 +711,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
         return 0;
     }
     if (IS_GRAVE(levl[u.ux][u.uy].typ)) {
-        if (otmp == &zeroobj) { /* using only finger */
+        if (otmp == &naughtobj) { /* using only finger */
             You("would only make a small smudge on the %s.",
                 surface(u.ux, u.uy));
             return 0;
@@ -1213,7 +1213,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
     }
 
     /* Tell adventurer what is going on */
-    if (otmp != &zeroobj)
+    if (otmp != &naughtobj)
         You("%s the %s with %s.", everb, eloc, doname(otmp));
     else
         You("%s the %s with your %s.", everb, eloc, body_part(FINGERTIP));
@@ -1255,7 +1255,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
         if (!u.uconduct.literate++)
             livelog_printf(LL_CONDUCT, "became literate by engraving \"%s\"", ebuf);
 
-    if (!otmp || otmp == &zeroobj)
+    if (!otmp || otmp == &naughtobj)
         play_monster_attack_floor_sound(&youmonst, 0, OBJECT_SOUND_TYPE_ENGRAVE);
     else
         play_object_floor_sound(otmp, OBJECT_SOUND_TYPE_ENGRAVE, Underwater);
