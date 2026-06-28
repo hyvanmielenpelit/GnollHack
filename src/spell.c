@@ -3399,13 +3399,18 @@ addspellintrinsictimeout(int otyp)
 
     boolean hadbefore = u.uprops[objects[otyp].oc_dir_subtype].intrinsic || u.uprops[objects[otyp].oc_dir_subtype].extrinsic;
     int64_t duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
-    int64_t oldtimeout = u.uprops[objects[otyp].oc_dir_subtype].intrinsic & TIMEOUT;
-    int64_t oldprop = u.uprops[objects[otyp].oc_dir_subtype].intrinsic & ~TIMEOUT;
+    int64_t max_duration = objects[otyp].oc_spell_dur_dice * objects[otyp].oc_spell_dur_diesize + objects[otyp].oc_spell_dur_plus;
+    if (max_duration > TIMEOUT)
+        max_duration = TIMEOUT;
 
-    if (oldtimeout > duration || duration <= 0)
+    if (duration <= 0 || max_duration <= 0)
         return;
 
-    u.uprops[objects[otyp].oc_dir_subtype].intrinsic = oldprop | duration;
+    int64_t oldtimeout = u.uprops[objects[otyp].oc_dir_subtype].intrinsic & TIMEOUT;
+    int64_t oldprop = u.uprops[objects[otyp].oc_dir_subtype].intrinsic & ~TIMEOUT;
+    int64_t new_duration = oldtimeout + duration > max_duration ? max_duration : oldtimeout + duration;
+    u.uprops[objects[otyp].oc_dir_subtype].intrinsic = oldprop | new_duration;
+
     if (!hadbefore)
     {
         switch(objects[otyp].oc_dir_subtype)

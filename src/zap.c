@@ -193,6 +193,18 @@ get_obj_spell_duration(struct obj *obj)
 }
 
 int
+get_obj_spell_max_duration(struct obj* obj)
+{
+    if (!obj)
+        return 0;
+
+    int otyp = obj->otyp;
+    int durdice = objects[otyp].oc_spell_dur_dice + (obj->speflags & SPEFLAGS_BEING_BROKEN ? obj->charges : 0);
+    int duration = durdice * objects[otyp].oc_spell_dur_diesize + objects[otyp].oc_spell_dur_plus + bcsign(obj) * objects[otyp].oc_spell_dur_buc_plus;
+    return max(0, duration);
+}
+
+int
 get_otyp_spell_duration(int otyp)
 {
     if (otyp < 0 || otyp >= NUM_OBJECTS)
@@ -202,6 +214,18 @@ get_otyp_spell_duration(int otyp)
     tempobj.otyp = otyp;
     tempobj.oclass = objects[tempobj.otyp].oc_class;
     return get_obj_spell_duration(&tempobj);
+}
+
+int
+get_otyp_spell_max_duration(int otyp)
+{
+    if (otyp < 0 || otyp >= NUM_OBJECTS)
+        return 0;
+
+    struct obj tempobj = { 0 };
+    tempobj.otyp = otyp;
+    tempobj.oclass = objects[tempobj.otyp].oc_class;
+    return get_obj_spell_max_duration(&tempobj);
 }
 
 /*
@@ -360,6 +384,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
     boolean disguised_mimic = (is_mimic(mtmp->data)
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
     int duration = get_obj_spell_duration(otmp);
+    int max_duration = get_obj_spell_max_duration(otmp);
     int dmg = get_spell_damage(otyp, otmp ? otmp->exceptionality : 0, origmonst, mtmp);
     int save_adj = get_saving_throw_adjustment(otmp, mtmp, origmonst);
     boolean surpress_noeffect_message = FALSE;
@@ -730,7 +755,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(0);
             play_sfx_sound_at_location(SFX_ACQUIRE_BLINDNESS, mtmp->mx, mtmp->my);
-            increase_mon_property_verbosely(mtmp, BLINDED, duration);
+            increase_mon_property_verbosely_limited(mtmp, BLINDED, duration, max_duration);
             special_effect_wait_until_end(0);
         }
         else
@@ -754,7 +779,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
                 seemimic(mtmp);
 
             play_sfx_sound_at_location(SFX_ACQUIRE_SLOW, mtmp->mx, mtmp->my);
-            increase_mon_property_verbosely(mtmp, SLOWED, duration);
+            increase_mon_property_verbosely_limited(mtmp, SLOWED, duration, max_duration);
             m_dowear(mtmp, FALSE, FALSE); /* might want speed boots */
             if (u.uswallow && (mtmp == u.ustuck) && is_whirly(mtmp->data)) {
                 You_ex(ATR_NONE, CLR_MSG_SPELL, "disrupt %s!", mon_nam(mtmp));
@@ -779,7 +804,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
         play_sfx_sound_at_location(SFX_ACQUIRE_HASTE, mtmp->mx, mtmp->my);
-        increase_mon_property_verbosely(mtmp, VERY_FAST, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
+        increase_mon_property_verbosely_limited(mtmp, VERY_FAST, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration, otmp->oclass == WAND_CLASS ? 10 * (100 + 60 * bcsign(otmp)) : max_duration);
         special_effect_wait_until_end(0);
         break;
     case SPE_HOLD_MONSTER:
@@ -797,7 +822,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
                 seemimic(mtmp);
 
             play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mtmp->mx, mtmp->my);
-            increase_mon_property_verbosely(mtmp, PARALYZED, duration);
+            increase_mon_property_verbosely_limited(mtmp, PARALYZED, duration, max_duration);
             if (u.uswallow && (mtmp == u.ustuck) && is_whirly(mtmp->data)) 
             {
                 You_ex(ATR_NONE, CLR_MSG_SPELL, "disrupt %s!", mon_nam(mtmp));
@@ -837,7 +862,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
                 seemimic(mtmp);
 
             play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mtmp->mx, mtmp->my);
-            increase_mon_property_verbosely(mtmp, UNDEAD_IMMOBILITY, duration);
+            increase_mon_property_verbosely_limited(mtmp, UNDEAD_IMMOBILITY, duration, max_duration);
             if (u.uswallow && (mtmp == u.ustuck) && (is_undead(mtmp->data) || is_vampshifter(mtmp)) && is_whirly(mtmp->data))
             {
                 You_ex(ATR_NONE, CLR_MSG_SPELL, "disrupt %s!", mon_nam(mtmp));
@@ -866,7 +891,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_ACQUIRE_HASTE, mtmp->mx, mtmp->my);
         special_effect_wait_until_action(0);
-        boolean visible_effect = increase_mon_property_verbosely(mtmp, VERY_FAST, duration);
+        boolean visible_effect = increase_mon_property_verbosely_limited(mtmp, VERY_FAST, duration, max_duration);
         if (visible_effect)
             makeknown(WAN_SPEED_MONSTER);
         m_dowear(mtmp, FALSE, FALSE); /* might want speed boots */
@@ -883,7 +908,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         {
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(0);
-            increase_mon_property_verbosely(mtmp, SILENCED, duration);
+            increase_mon_property_verbosely_limited(mtmp, SILENCED, duration, max_duration);
             special_effect_wait_until_end(0);
         }
         else
@@ -1118,7 +1143,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         {
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(0);
-            (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, duration);
+            (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, duration, max_duration);
             (void)nonadditive_increase_mon_property_verbosely(mtmp, CANCELLATION_RESISTANCE, 10);
             special_effect_wait_until_end(0);
         }
@@ -1135,7 +1160,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         /* Unaffected by cancellation resistance */
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
-        (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, duration);
+        (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, duration, max_duration);
         special_effect_wait_until_end(0);
         if (gainwandskill)
             wandskilladded = 3;
@@ -1148,7 +1173,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         res = 1;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
-        (void)add_temporary_property(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
+        (void)add_temporary_property(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus, objects[otmp->otyp].oc_spell_dur_dice * objects[otmp->otyp].oc_spell_dur_diesize + objects[otmp->otyp].oc_spell_dur_plus);
         special_effect_wait_until_end(0);
         break;
     case WAN_TELEPORTATION:
@@ -1170,7 +1195,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
-        increase_mon_property_verbosely(mtmp, INVISIBILITY, duration);
+        increase_mon_property_verbosely_limited(mtmp, INVISIBILITY, duration, max_duration);
         special_effect_wait_until_end(0);
         if (gainwandskill)
             wandskilladded = 3;
@@ -4969,6 +4994,7 @@ zapnodir(struct obj *obj)
     struct monst* mtmp = (struct monst*)0;
     struct obj* otmp = (struct obj*)0;
     int duration = get_obj_spell_duration(obj);
+    int max_duration = get_obj_spell_max_duration(obj);
     int otyp = obj->otyp;
     int trackid = add_to_obj_tracking(obj);
 
@@ -5089,7 +5115,7 @@ zapnodir(struct obj *obj)
         break;
     case SPE_TIME_STOP:
         known = TRUE;
-        timestop(duration);
+        timestop(duration, max_duration);
         break;
     case SPE_ANIMATE_AIR:
         known = TRUE;
@@ -5901,7 +5927,7 @@ zapnodir(struct obj *obj)
     case SPE_DETECT_UNSEEN:
     {
         int msg = Invisib && !Blind;
-        incr_itimeout(&HSee_invisible, duration);
+        incr_itimeout_limited(&HSee_invisible, duration, max_duration);
         set_mimic_blocking(); /* do special mimic handling */
         see_monsters();       /* see invisible monsters */
         newsym(u.ux, u.uy);   /* see yourself! */
@@ -6685,6 +6711,7 @@ zapyourself(struct obj *obj, boolean ordinary)
     int otyp = obj->otyp;
     int basedmg = get_spell_damage(obj->otyp, obj->exceptionality, &youmonst, &youmonst);
     int duration = get_obj_spell_duration(obj);
+    int max_duration = get_obj_spell_max_duration(obj);
     double damage = 0;
     //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, obj, FALSE, 0, 0, NOTELL);
     int save_adj = get_saving_throw_adjustment(obj, &youmonst, obj->oclass == SPBOOK_CLASS && !(obj->speflags & SPEFLAGS_SERVICED_SPELL) ? &youmonst : (struct monst*)0);
@@ -6961,7 +6988,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         damage = 0;
         if (Upolyd)
             rehumanize();
-        (void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE, duration);
+        (void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE, duration, max_duration);
         if (obj->otyp != SPE_DISJUNCTION && obj->otyp != WAN_DISJUNCTION)
         {
             set_itimeout(&HCancellation_resistance, max(HCancellation_resistance & TIMEOUT, 10));
@@ -6974,7 +7001,7 @@ zapyourself(struct obj *obj, boolean ordinary)
     case SPE_ABOLISH_MAGIC_RESISTANCE:
     case SPE_NEGATE_MAGIC_RESISTANCE:
     case SPE_FORBID_SUMMONING:
-        (void)add_temporary_property(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus);
+        (void)add_temporary_property(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus, objects[obj->otyp].oc_spell_dur_dice * objects[obj->otyp].oc_spell_dur_diesize + objects[obj->otyp].oc_spell_dur_plus);
         break;
     
     case SPE_DRAIN_LEVEL:
@@ -7002,7 +7029,7 @@ zapyourself(struct obj *obj, boolean ordinary)
             You_feel_ex(ATR_NONE, CLR_MSG_SPELL, "rather itchy under %s.", yname(uarmo));
         }
 
-        incr_itimeout(&HInvis, duration);
+        incr_itimeout_limited(&HInvis, duration, max_duration);
         refresh_u_tile_gui_info(TRUE);
 
 #if 0
@@ -7028,7 +7055,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         damage = 0;
         //boolean was_fast = Fast;
         boolean was_very_fast = Very_fast;
-        incr_itimeout(&HVery_fast, duration);
+        incr_itimeout_limited(&HVery_fast, duration, max_duration);
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
         if (Very_fast && !was_very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
@@ -7063,7 +7090,7 @@ zapyourself(struct obj *obj, boolean ordinary)
     case SPE_MASS_SLOW:
         damage = 0;
         boolean was_slowed = Slowed;
-        incr_itimeout(&HSlowed, duration);
+        incr_itimeout_limited(&HSlowed, duration, max_duration);
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
         if (Slowed && !was_slowed)
@@ -7077,7 +7104,7 @@ zapyourself(struct obj *obj, boolean ordinary)
     case SPE_HASTE_MONSTER:
         damage = 0;
         boolean was_very_fast = Very_fast;
-        incr_itimeout(&HVery_fast, obj->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(obj)) : duration);
+        incr_itimeout_limited(&HVery_fast, obj->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(obj)) : duration, obj->oclass == WAND_CLASS ? 10 * (100 + 60 * bcsign(obj)) : max_duration);
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
         if (Very_fast && !was_very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
@@ -7093,7 +7120,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         if (!check_ability_resistance_success(&youmonst, A_WIS, save_adj))
         {
             boolean was_paralyzed = Paralyzed_or_immobile;
-            incr_itimeout(&HParalyzed, duration);
+            incr_itimeout_limited(&HParalyzed, duration, max_duration);
             context.botl = context.botlx = TRUE;
             refresh_u_tile_gui_info(TRUE);
             if (Paralyzed_or_immobile && !was_paralyzed)
@@ -7115,7 +7142,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         if (!check_ability_resistance_success(&youmonst, A_WIS, save_adj))
         {
             boolean was_paralyzed = Paralyzed_or_immobile;
-            incr_itimeout(&HUndead_immobility, duration);
+            incr_itimeout_limited(&HUndead_immobility, duration, max_duration);
             context.botl = context.botlx = TRUE;
             refresh_u_tile_gui_info(TRUE);
             if (Paralyzed_or_immobile && !was_paralyzed)
@@ -7135,7 +7162,7 @@ zapyourself(struct obj *obj, boolean ordinary)
     case SPE_SILENCE:
         damage = 0;
         boolean was_silenced = Silenced;
-        incr_itimeout(&HSilenced, duration);
+        incr_itimeout_limited(&HSilenced, duration, max_duration);
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
         if (Silenced && !was_silenced)
@@ -7812,7 +7839,7 @@ zap_steed(struct obj *obj)
  * themselves with cancellation.
  */
 boolean
-cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack, boolean allow_cancel_kill, boolean self_cancel, int duration)
+cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack, boolean allow_cancel_kill, boolean self_cancel, int duration, int max_duration)
 {
     boolean youdefend = (mdef == &youmonst);
     static const char writing_vanishes[] =
@@ -7857,7 +7884,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack, boolean all
 
 
         /* Add cancellation debuff */
-        incr_itimeout(&HCancelled, duration);
+        incr_itimeout_limited(&HCancelled, duration, max_duration);
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
 
@@ -7882,7 +7909,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack, boolean all
     } 
     else 
     {
-        boolean viseffect = increase_mon_property_b(mdef, CANCELLED, duration, TRUE);
+        boolean viseffect = increase_mon_property_b_limited(mdef, CANCELLED, duration, max_duration, TRUE);
         break_charm(mdef, TRUE);
         for (int i = 1; i < MAX_PROPS; i++)
         {
@@ -7926,7 +7953,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack, boolean all
 }
 
 boolean
-add_temporary_property(struct monst *mdef, struct obj *obj, boolean youattack, boolean allow_cancel_kill, boolean self_cancel, int duration)
+add_temporary_property(struct monst *mdef, struct obj *obj, boolean youattack, boolean allow_cancel_kill, boolean self_cancel, int duration, int max_duration)
 {
     boolean youdefend = (mdef == &youmonst);
 
@@ -7981,7 +8008,7 @@ add_temporary_property(struct monst *mdef, struct obj *obj, boolean youattack, b
 
     if (prop > 0)
     {
-        increase_mon_property(mdef, prop, duration);
+        increase_mon_property_limited(mdef, prop, duration, max_duration);
     }
         
     return TRUE;
@@ -12583,11 +12610,18 @@ armageddon(void)
 }
 
 void
-timestop(int duration)
+timestop(int duration, int max_duration)
 {
-    pline_ex(ATR_NONE, CLR_MSG_SPELL, "The flow of time seems to slow down!");
-    context.time_stopped = TRUE;
-    begin_timestoptimer((int64_t)duration);
+    if (context.time_stopped)
+    {
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "The flow of time stays still further!");
+        restart_timestoptimer((int64_t)duration, (int64_t)max_duration);
+    }
+    else
+    {
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "The flow of time seems to slow down!");
+        begin_timestoptimer((int64_t)duration);
+    }
 }
 
 int

@@ -821,7 +821,9 @@ use_defensive(struct monst *mtmp)
     if ((i = precheck(mtmp, otmp)) != 0)
         return i;
 
-    int duration = 0, dicebuc = 0, extra_data1 = 0;
+    int duration = 0;
+    //int max_duration = 0;
+    int dicebuc = 0, extra_data1 = 0;
     boolean cures_sick = FALSE;
     boolean cures_blind = FALSE;
     boolean cures_hallucination = FALSE;
@@ -838,12 +840,18 @@ use_defensive(struct monst *mtmp)
                 otmp->oclass == POTION_CLASS ? (objects[otyp].oc_potion_normal_diesize == 0 ? 0 : d(max(0, objects[otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)), max(1, objects[otyp].oc_potion_normal_diesize))) + objects[otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otyp].oc_potion_normal_buc_multiplier :
                 d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus
             );
+        //max_duration =
+        //    (int)max(0,
+        //        otmp->oclass == POTION_CLASS ? (objects[otyp].oc_potion_normal_diesize == 0 ? 0 : max(0, objects[otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)) * max(1, objects[otyp].oc_potion_normal_diesize)) + objects[otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otyp].oc_potion_normal_buc_multiplier :
+        //        objects[otyp].oc_spell_dur_dice * objects[otyp].oc_spell_dur_diesize + objects[otyp].oc_spell_dur_plus
+        //    );
         extra_data1 = otmp->oclass == POTION_CLASS ? (int)objects[otyp].oc_potion_extra_data1 : 0;
         /* Adjustment for dilution */
         boolean isdiluted = otmp->oclass == POTION_CLASS && otmp->odiluted;
         if (isdiluted)
         {
             duration /= 2;
+            //max_duration /= 2;
             extra_data1 /= 2;
         }
         if (objects[otmp->otyp].oc_flags5 & O5_EFFECT_FLAGS_ARE_HEALING)
@@ -1782,7 +1790,8 @@ mbhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
     }
 
     int duration = get_obj_spell_duration(otmp);
-    switch (otmp->otyp) 
+    int max_duration = get_obj_spell_max_duration(otmp);
+    switch (otmp->otyp)
     {
     case WAN_STRIKING:
         reveal_invis = TRUE;
@@ -1865,14 +1874,14 @@ mbhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
     case SPE_CANCELLATION:
     case WAN_DISJUNCTION:
     case SPE_DISJUNCTION:
-        (void) cancel_monst(mtmp, otmp, FALSE, TRUE, FALSE, duration);
+        (void) cancel_monst(mtmp, otmp, FALSE, TRUE, FALSE, duration, max_duration);
         break;
     case SPE_LOWER_MAGIC_RESISTANCE:
     case SPE_DIMINISH_MAGIC_RESISTANCE:
     case SPE_ABOLISH_MAGIC_RESISTANCE:
     case SPE_NEGATE_MAGIC_RESISTANCE:
     case SPE_FORBID_SUMMONING:
-        (void)add_temporary_property(mtmp, otmp, FALSE, TRUE, FALSE, duration);
+        (void)add_temporary_property(mtmp, otmp, FALSE, TRUE, FALSE, duration, max_duration);
         break;
     }
     if (reveal_invis) {
@@ -2749,7 +2758,7 @@ use_misc(struct monst *mtmp)
     if ((i = precheck(mtmp, otmp)) != 0)
         return i;
 
-    int duration = 0, dicebuc = 0;
+    int duration = 0, max_duration = 0, dicebuc = 0;
     int sfx = 0;
     boolean isdiluted = FALSE;
 
@@ -2761,11 +2770,17 @@ use_misc(struct monst *mtmp)
                 otmp->oclass == POTION_CLASS ? (objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 : d(max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)), max(1, objects[otmp->otyp].oc_potion_normal_diesize))) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
                 d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus
             );
+        max_duration =
+            (int)max(0,
+                otmp->oclass == POTION_CLASS ? (objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 : max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)) * max(1, objects[otmp->otyp].oc_potion_normal_diesize)) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
+                objects[otmp->otyp].oc_spell_dur_dice * objects[otmp->otyp].oc_spell_dur_diesize + objects[otmp->otyp].oc_spell_dur_plus
+            );
         /* Adjustment for dilution */
         isdiluted = otmp->oclass == POTION_CLASS && otmp->odiluted;
         if (isdiluted)
         {
             duration /= 2;
+            max_duration /= 2;
         }
     }
 
@@ -2851,7 +2866,7 @@ use_misc(struct monst *mtmp)
             mquaffmsg(mtmp, otmp);
         /* format monster's name before altering its visibility */
         Strcpy(nambuf, mon_nam(mtmp));
-        increase_mon_property(mtmp, INVISIBILITY, duration);
+        increase_mon_property_limited(mtmp, INVISIBILITY, duration, max_duration);
         if (vismon && is_invisible(mtmp)) { /* was seen, now invisible */
             if (canspotmon(mtmp)) {
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s body takes on a %s transparency.",
@@ -2876,7 +2891,7 @@ use_misc(struct monst *mtmp)
             return 2;
         mzapmsg(mtmp, otmp, TRUE);
         otmp->charges--;
-        (void)increase_mon_property_verbosely(mtmp, VERY_FAST, duration);
+        (void)increase_mon_property_verbosely_limited(mtmp, VERY_FAST, duration, max_duration);
         return 2;
     case MUSE_POT_SPEED:
     case MUSE_POT_GREATER_SPEED:
@@ -2900,11 +2915,11 @@ use_misc(struct monst *mtmp)
             return 2;
         mquaffmsg(mtmp, otmp);
         if (objects[otmp->otyp].oc_oprop > 0)
-            (void)increase_mon_property_verbosely(mtmp, objects[otmp->otyp].oc_oprop, duration);
+            (void)increase_mon_property_verbosely_limited(mtmp, objects[otmp->otyp].oc_oprop, duration, max_duration);
         if (objects[otmp->otyp].oc_oprop2 > 0)
-            (void)increase_mon_property_verbosely(mtmp, objects[otmp->otyp].oc_oprop2, duration);
+            (void)increase_mon_property_verbosely_limited(mtmp, objects[otmp->otyp].oc_oprop2, duration, max_duration);
         if (objects[otmp->otyp].oc_oprop3 > 0)
-            (void)increase_mon_property_verbosely(mtmp, objects[otmp->otyp].oc_oprop3, duration);
+            (void)increase_mon_property_verbosely_limited(mtmp, objects[otmp->otyp].oc_oprop3, duration, max_duration);
 
         switch (objects[otmp->otyp].oc_oprop)
         {

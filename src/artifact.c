@@ -1329,7 +1329,7 @@ Mb_hit(struct monst *magr, struct monst *mdef, struct obj *mb, double *dmgptr, i
          * into a golem, and the "cancel" effect acts as if some magical
          * energy remains in spellcasting defenders to be absorbed later.
          */
-        if (!cancel_monst(mdef, mb, youattack, FALSE, FALSE, d(3,4)+5)) {
+        if (!cancel_monst(mdef, mb, youattack, FALSE, FALSE, d(3,4)+5, 30)) {
             resisted = TRUE;
         } else {
             do_stun = FALSE;
@@ -2763,6 +2763,7 @@ arti_invoke(struct obj *obj)
     int art_inv_dur_plus = artilist[obj->oartifact].inv_duration_plus;
     boolean temporary_effect = ((art_inv_dur_dice > 0 && art_inv_dur_diesize > 0) || art_inv_dur_plus > 0);
     int duration = (art_inv_dur_dice > 0 && art_inv_dur_diesize > 0 ? d(art_inv_dur_dice, art_inv_dur_diesize) : 0) + art_inv_dur_plus;
+    int max_duration = (art_inv_dur_dice > 0 && art_inv_dur_diesize > 0 ? art_inv_dur_dice * art_inv_dur_diesize : 0) + art_inv_dur_plus;
 
     if (oart->inv_prop > LAST_PROP)
     {
@@ -3118,7 +3119,7 @@ arti_invoke(struct obj *obj)
         case ARTINVOKE_TIME_STOP:
         {
             play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
-            timestop(duration);
+            timestop(duration, max_duration);
             break;
         }
         case ARTINVOKE_INVOKE_WITH_TIMER:

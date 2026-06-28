@@ -71,6 +71,7 @@ static const char* kind_name(short);
 static void print_queue(winid, timer_element*);
 static void insert_timer(timer_element*);
 static timer_element* remove_timer(timer_element**, short, ANY_P*);
+static timer_element* remove_timer_type(timer_element**, short);
 static void write_timer(int, timer_element*);
 static boolean mon_is_local(struct monst*);
 static boolean timer_is_local(timer_element*);
@@ -2832,10 +2833,17 @@ begin_timestoptimer(int64_t duration)
     anything any = zeroany;
     if (start_timer(duration, TIMER_GLOBAL, TIME_RESTART, &any))
     {
-        //Success
+        context.time_stopped = TRUE;
     }
 }
 
+void
+restart_timestoptimer(int64_t duration, int64_t max_duration)
+{
+    int64_t time_left = stop_timer_type(TIME_RESTART);
+    int64_t new_duration = duration + time_left;
+    begin_timestoptimer(max_duration > 0 ? min(max_duration, new_duration) : new_duration);
+}
 
 int
 restart_time(anything *arg, int64_t timeout)
@@ -2844,7 +2852,7 @@ restart_time(anything *arg, int64_t timeout)
     {
         /* Do nothing */
     }
-
+    
     context.time_stopped = FALSE;
     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The flow of time seems faster again.");
     return FALSE;
@@ -3193,6 +3201,22 @@ stop_timer(short func_index, anything *arg)
     return 0L;
 }
 
+int64_t
+stop_timer_type(short func_index)
+{
+    timer_element* timer_to_delete = remove_timer_type(&timer_base, TIME_RESTART);
+    if (timer_to_delete)
+    {
+        int64_t timeout = timer_to_delete->timeout;
+        anything dummyany = zeroany;
+        if (timeout_funcs[timer_to_delete->func_index].cleanup)
+            (void)(*timeout_funcs[timer_to_delete->func_index].cleanup)(&dummyany, timeout);
+        free((genericptr_t)timer_to_delete);
+        return (timeout - monstermoves);
+    }
+    return 0L;
+}
+
 /*
  * Find the timeout of specified timer; return 0 if none.
  */
@@ -3505,6 +3529,25 @@ remove_timer(timer_element **base, short func_index, anything *arg)
 
     for (prev = 0, curr = *base; curr; prev = curr, curr = curr->next)
         if (curr->func_index == func_index && curr->arg.a_void == arg->a_void)
+            break;
+
+    if (curr) {
+        if (prev)
+            prev->next = curr->next;
+        else
+            *base = curr->next;
+    }
+
+    return curr;
+}
+
+static timer_element*
+remove_timer_type(timer_element** base, short func_index)
+{
+    timer_element* prev, * curr;
+
+    for (prev = 0, curr = *base; curr; prev = curr, curr = curr->next)
+        if (curr->func_index == func_index)
             break;
 
     if (curr) {

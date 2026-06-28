@@ -473,38 +473,53 @@ nonadditive_increase_mon_property_b(struct monst *mtmp, int prop_index, int dura
     }
 }
 
-
 void
-increase_mon_property(struct monst *mtmp, int prop_index, int duration)
+increase_mon_property_limited(struct monst* mtmp, int prop_index, int duration, int limit)
 {
-    int maxvalue = (int)M_TIMEOUT;
+    int maxvalue = limit > 0 && limit < (int)M_TIMEOUT ? limit : (int)M_TIMEOUT;
     unsigned short value = (unsigned short)max(0, min(maxvalue, (get_mon_property(mtmp, prop_index) + duration)));
 
     set_mon_property(mtmp, prop_index, value);
 }
 
-boolean
-increase_mon_property_verbosely(struct monst *mtmp, int prop_index, int duration)
+void
+increase_mon_property(struct monst *mtmp, int prop_index, int duration)
 {
-    int maxvalue = (int)M_TIMEOUT;
+    increase_mon_property_limited(mtmp, prop_index, duration, 0);
+}
+
+boolean
+increase_mon_property_verbosely_limited(struct monst* mtmp, int prop_index, int duration, int limit)
+{
+    int maxvalue = limit > 0 && limit < (int)M_TIMEOUT ? limit : (int)M_TIMEOUT;
     unsigned short value = (unsigned short)max(0, min(maxvalue, (get_mon_property(mtmp, prop_index) + duration)));
 
     return set_mon_property_verbosely(mtmp, prop_index, value);
 }
 
 boolean
-increase_mon_property_b(struct monst *mtmp, int prop_index, int duration, boolean verbose)
+increase_mon_property_verbosely(struct monst *mtmp, int prop_index, int duration)
+{
+    return increase_mon_property_verbosely_limited(mtmp, prop_index, duration, 0);
+}
+
+boolean
+increase_mon_property_b_limited(struct monst* mtmp, int prop_index, int duration, int limit, boolean verbose)
 {
     if (verbose)
-        return increase_mon_property_verbosely(mtmp, prop_index, duration);
+        return increase_mon_property_verbosely_limited(mtmp, prop_index, duration, limit);
     else
     {
-        increase_mon_property(mtmp, prop_index, duration);
+        increase_mon_property_limited(mtmp, prop_index, duration, limit);
         return 0;
     }
 }
 
-
+boolean
+increase_mon_property_b(struct monst *mtmp, int prop_index, int duration, boolean verbose)
+{
+    return increase_mon_property_b_limited(mtmp, prop_index, duration, 0, verbose);
+}
 
 static void
 set_mon_temporary_property(struct monst *mon, int prop_index, unsigned short amount)

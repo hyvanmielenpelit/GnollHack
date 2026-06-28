@@ -36,6 +36,15 @@ itimeout_incr(int64_t old, int incr)
     return itimeout((old & TIMEOUT) + (int64_t) incr);
 }
 
+int64_t
+itimeout_incr_limited(int64_t old, int incr, int limit)
+{
+    if (limit <= 0)
+        return itimeout_incr(old, incr);
+    int64_t new_val = (old & TIMEOUT) + (int64_t)incr;
+    return itimeout(min(limit, new_val));
+}
+
 /* set the timeout field of intrinsic `which' */
 void
 set_itimeout(int64_t *which, int64_t val)
@@ -49,6 +58,12 @@ void
 incr_itimeout(int64_t *which, int incr)
 {
     set_itimeout(which, itimeout_incr(*which, incr));
+}
+
+void
+incr_itimeout_limited(int64_t* which, int incr, int limit)
+{
+    set_itimeout(which, itimeout_incr_limited(*which, incr, limit));
 }
 
 void
@@ -954,6 +969,11 @@ peffects(struct obj *otmp)
             otmp->oclass == POTION_CLASS ? (objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 : d(max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)), max(1, objects[otmp->otyp].oc_potion_normal_diesize))) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
             d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus
            );
+    int max_duration =
+        (int)max(0,
+            otmp->oclass == POTION_CLASS ? (objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 : max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)) * max(1, objects[otmp->otyp].oc_potion_normal_diesize)) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
+            objects[otmp->otyp].oc_spell_dur_dice * objects[otmp->otyp].oc_spell_dur_diesize + objects[otmp->otyp].oc_spell_dur_plus
+        );
     int nutrdicebuc = (int)(otmp->oclass == POTION_CLASS ? objects[otmp->otyp].oc_potion_nutrition_dice_buc_multiplier : 0);
     int nutrition = (int)(
         otmp->oclass == POTION_CLASS ? d(max(0, objects[otmp->otyp].oc_potion_nutrition_dice + nutrdicebuc * bcsign(otmp)), max(1, objects[otmp->otyp].oc_potion_nutrition_diesize)) + objects[otmp->otyp].oc_potion_nutrition_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_nutrition_buc_multiplier :
@@ -967,6 +987,7 @@ peffects(struct obj *otmp)
     {
         nutrition /= 2;
         duration /= 2;
+        max_duration /= 2;
         extra_data1 /= 2;
     }
 
@@ -1076,7 +1097,7 @@ peffects(struct obj *otmp)
 
         if (!Halluc_resistance)
         {
-            (void)make_hallucinated(itimeout_incr(HHallucination, duration), TRUE, 0L);
+            (void)make_hallucinated(itimeout_incr_limited(HHallucination, duration, max_duration), TRUE, 0L);
             if (aware) 
             {
                 pline_ex1_popup(ATR_NONE, NO_COLOR, "You perceive yourself...", "Enlightenment", TRUE);
@@ -1161,7 +1182,7 @@ peffects(struct obj *otmp)
         {
             if(!Confusion)
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
-            make_confused(itimeout_incr(HConfusion, duration), FALSE);
+            make_confused(itimeout_incr_limited(HConfusion, duration, max_duration), FALSE);
         }
         /* the whiskey makes us feel better */
         if (!otmp->odiluted)
@@ -1226,7 +1247,7 @@ peffects(struct obj *otmp)
 
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        incr_itimeout(&HInvis, duration);
+        incr_itimeout_limited(&HInvis, duration, max_duration);
         newsym(u.ux, u.uy); /* update position */
         refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
@@ -1268,7 +1289,7 @@ peffects(struct obj *otmp)
         if (is_obj_blessed(otmp) && !isdiluted)
             HSee_invisible |= FROM_ACQUIRED;
         else
-            incr_itimeout(&HSee_invisible, duration);
+            incr_itimeout_limited(&HSee_invisible, duration, max_duration);
         refresh_u_tile_gui_info(FALSE);
         set_mimic_blocking(); /* do special mimic handling */
         see_monsters();       /* see invisible monsters */
@@ -1306,7 +1327,7 @@ peffects(struct obj *otmp)
         {
             if(!Confusion)
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
-            make_confused(itimeout_incr(HConfusion, duration), FALSE);
+            make_confused(itimeout_incr_limited(HConfusion, duration, max_duration), FALSE);
         }
         break;
     case POT_PARALYSIS:
@@ -1320,7 +1341,7 @@ peffects(struct obj *otmp)
             else
                 Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s are frozen to the %s!", makeplural(body_part(FOOT)),
                      surface(u.ux, u.uy));
-            incr_itimeout(&HParalyzed, duration);
+            incr_itimeout_limited(&HParalyzed, duration, max_duration);
             context.botl = context.botlx = 1;
             refresh_u_tile_gui_info(TRUE);
             standard_hint("Identify potions before drinking.", &u.uhint.drank_potion_of_paralysis_or_sleep);
@@ -1349,11 +1370,11 @@ peffects(struct obj *otmp)
                 nothing++;
             unkn++;
             /* after a while, repeated uses become less effective */
-            if ((HDetect_monsters & TIMEOUT) >= 300L)
-                i = 1;
-            else
-                i = duration;
-            incr_itimeout(&HDetect_monsters, i);
+            //if ((HDetect_monsters & TIMEOUT) >= 300L)
+            //    i = 1;
+            //else
+            //    i = duration;
+            incr_itimeout_limited(&HDetect_monsters, duration, max_duration);
             refresh_u_tile_gui_info(TRUE);
             for (x = 1; x < COLNO; x++) {
                 for (y = 0; y < ROWNO; y++) 
@@ -1469,7 +1490,7 @@ peffects(struct obj *otmp)
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "Huh, What?  Where am I?");
         } else
             nothing++;
-        make_confused(itimeout_incr(HConfusion, duration), FALSE);
+        make_confused(itimeout_incr_limited(HConfusion, duration, max_duration), FALSE);
         break;
     case POT_GAIN_ABILITY:
         if (is_obj_cursed(otmp))
@@ -1553,9 +1574,9 @@ peffects(struct obj *otmp)
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_ACQUIRE_HASTE);
         special_effect_wait_until_action(0);
-        incr_itimeout(otmp->otyp == POT_LIGHTNING_SPEED && !isdiluted ? &HLightning_fast : 
+        incr_itimeout_limited(otmp->otyp == POT_LIGHTNING_SPEED && !isdiluted ? &HLightning_fast : 
             (otmp->otyp == POT_GREATER_SPEED && !isdiluted) || (otmp->otyp == POT_LIGHTNING_SPEED && isdiluted) ? &HSuper_fast : 
-            &HUltra_fast, duration);
+            &HUltra_fast, duration, max_duration);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1572,7 +1593,7 @@ peffects(struct obj *otmp)
         exercise(A_WIS, TRUE);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        incr_itimeout(&HAntimagic, duration);
+        incr_itimeout_limited(&HAntimagic, duration, max_duration);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1589,7 +1610,7 @@ peffects(struct obj *otmp)
         exercise(A_WIS, TRUE);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        incr_itimeout(&HTitan_strength, duration);
+        incr_itimeout_limited(&HTitan_strength, duration, max_duration);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1606,7 +1627,7 @@ peffects(struct obj *otmp)
         exercise(A_WIS, TRUE);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        incr_itimeout(&HFire_immunity, duration);
+        incr_itimeout_limited(&HFire_immunity, duration, max_duration);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1623,7 +1644,7 @@ peffects(struct obj *otmp)
         exercise(A_WIS, TRUE);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        incr_itimeout(&HCold_immunity, duration);
+        incr_itimeout_limited(&HCold_immunity, duration, max_duration);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1640,7 +1661,7 @@ peffects(struct obj *otmp)
         exercise(A_WIS, TRUE);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        incr_itimeout(&HShock_immunity, duration);
+        incr_itimeout_limited(&HShock_immunity, duration, max_duration);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1658,7 +1679,7 @@ peffects(struct obj *otmp)
             unkn++;
         }
         exercise(A_WIS, TRUE);
-        incr_itimeout(otmp->otyp == POT_HEROISM ? &HHeroism : &HSuper_heroism, duration);
+        incr_itimeout_limited(otmp->otyp == POT_HEROISM ? &HHeroism : &HSuper_heroism, duration, max_duration);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1677,7 +1698,7 @@ peffects(struct obj *otmp)
         exercise(A_WIS, TRUE);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        incr_itimeout(otmp->otyp == POT_GREATER_REGENERATION ? &HDivine_regeneration : otmp->otyp == POT_REGENERATION ? &HRapidest_regeneration : &HRapider_regeneration, duration);
+        incr_itimeout_limited(otmp->otyp == POT_GREATER_REGENERATION ? &HDivine_regeneration : otmp->otyp == POT_REGENERATION ? &HRapidest_regeneration : &HRapider_regeneration, duration, max_duration);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1688,8 +1709,8 @@ peffects(struct obj *otmp)
         exercise(A_WIS, TRUE);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        incr_itimeout(otmp->otyp == POT_GREATER_REJUVENATION ? &HRapidest_regeneration : otmp->otyp == POT_REJUVENATION ? &HRapider_regeneration : &HRapid_regeneration, duration);
-        incr_itimeout(otmp->otyp == POT_GREATER_REJUVENATION ? &HRapidest_energy_regeneration : otmp->otyp == POT_REJUVENATION ? &HRapider_energy_regeneration : &HRapid_energy_regeneration, duration);
+        incr_itimeout_limited(otmp->otyp == POT_GREATER_REJUVENATION ? &HRapidest_regeneration : otmp->otyp == POT_REJUVENATION ? &HRapider_regeneration : &HRapid_regeneration, duration, max_duration);
+        incr_itimeout_limited(otmp->otyp == POT_GREATER_REJUVENATION ? &HRapidest_energy_regeneration : otmp->otyp == POT_REJUVENATION ? &HRapider_energy_regeneration : &HRapid_energy_regeneration, duration, max_duration);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1698,7 +1719,7 @@ peffects(struct obj *otmp)
             nothing++;
         else
             play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
-        make_blinded(itimeout_incr(Blinded, duration), (boolean) !Blind);
+        make_blinded(itimeout_incr_limited(Blinded, duration, max_duration), (boolean) !Blind);
         break;
     case POT_GAIN_LEVEL:
         if (is_obj_cursed(otmp)) {
@@ -1860,13 +1881,13 @@ peffects(struct obj *otmp)
         } else if (is_obj_blessed(otmp)) 
         {
             /* at this point, timeout is already at least 1 */
-            incr_itimeout(&HLevitation, duration + extra_data1);
+            incr_itimeout_limited(&HLevitation, duration + extra_data1, max_duration + extra_data1);
             /* can descend at will (stop levitating via '>') provided timeout
                is the only factor (ie, not also wearing Lev ring or boots) */
             HLevitation |= I_SPECIAL;
         } 
         else /* timeout is already at least 1 */
-            incr_itimeout(&HLevitation, duration);
+            incr_itimeout_limited(&HLevitation, duration, max_duration);
 
         if (Levitation && IS_SINK(levl[u.ux][u.uy].typ))
             spoteffects(FALSE);

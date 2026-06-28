@@ -1832,6 +1832,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
             new_erodeproof;
     struct obj *otmp;
     int duration = get_obj_spell_duration(sobj);
+    int max_duration = get_obj_spell_max_duration(sobj);
     boolean is_serviced_spell = !!(sobj->speflags & SPEFLAGS_SERVICED_SPELL);
     if (objects[otyp].oc_magic)
         exercise(A_WIS, TRUE);                       /* just for trying */
@@ -2460,7 +2461,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
         play_sfx_sound(SFX_CONFLICT);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        incr_itimeout(&HConflict, duration);
+        incr_itimeout_limited(&HConflict, duration, max_duration);
         refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
         break;
@@ -2664,7 +2665,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
                             {
                                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
                                 special_effect_wait_until_action(0);
-                                increase_mon_property_verbosely(mtmp, PARALYZED, duration);
+                                increase_mon_property_verbosely_limited(mtmp, PARALYZED, duration, max_duration);
                                 special_effect_wait_until_end(0);
                                 res = 1;
                             }
@@ -2675,7 +2676,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
                             {
                                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
                                 special_effect_wait_until_action(0);
-                                increase_mon_property_verbosely(mtmp, BLINDED, duration);
+                                increase_mon_property_verbosely_limited(mtmp, BLINDED, duration, max_duration);
                                 special_effect_wait_until_end(0);
                                 res = 1;
                             }
