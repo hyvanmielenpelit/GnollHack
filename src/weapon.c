@@ -1053,7 +1053,7 @@ select_rwep(struct monst *mtmp)
 
     char mlet = mtmp->data->mlet;
 
-    propellor = naughtobj;
+    propellor = &naughtobj;
     Oselect(EGG);      /* cockatrice egg */
     if (mlet == S_KOP) /* pies are first choice for Kops */
         Oselect(CREAM_PIE);
@@ -1124,7 +1124,7 @@ select_rwep(struct monst *mtmp)
             }
 
             /* KMH -- This belongs here so darts will work */
-            propellor = naughtobj;
+            propellor = &naughtobj;
 
             prop = objects[rwep[i]].oc_skill;
             if (prop < 0) 
