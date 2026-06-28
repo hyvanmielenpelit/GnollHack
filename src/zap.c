@@ -381,8 +381,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
     int otyp = otmp ? otmp->otyp : STRANGE_OBJECT;
     const char *zap_type_text = otmp && OBJ_CONTENT_NAME(otmp->otyp) ? OBJ_CONTENT_NAME(otmp->otyp) : otmp && otmp->oclass == SPBOOK_CLASS ? OBJ_NAME(objects[otmp->otyp]) : "spell";
     struct obj *obj;
-    boolean disguised_mimic = (is_mimic(mtmp->data)
-                               && M_AP_TYPE(mtmp) != M_AP_NOTHING);
+    boolean disguised_mimic = (is_mimic(mtmp->data) && M_AP_TYPE(mtmp) != M_AP_NOTHING);
     int duration = get_obj_spell_duration(otmp);
     int max_duration = get_obj_spell_max_duration(otmp);
     int dmg = get_spell_damage(otyp, otmp ? otmp->exceptionality : 0, origmonst, mtmp);
