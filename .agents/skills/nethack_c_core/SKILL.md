@@ -24,3 +24,6 @@ description: Guidance on modifying the GnollHack C core game logic, headers, win
 - **`rn2(n)`**: Random integer `0` to `n-1`.
 - **`d(n, x)`**: Roll `n` dice with `x` sides.
 - **`DEADMONSTER(mtmp)`**: Check if a monster has been killed but not yet removed from the list.
+
+## Spelling
+- **Archaeologist**: Always prefer the spelling "Archaeologist" (with the 'a' in the middle) instead of "Archeologist" throughout the codebase, documentation, and wiki.
