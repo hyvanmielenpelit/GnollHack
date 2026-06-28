@@ -263,8 +263,8 @@ castmu(struct monst *mtmp, struct attack *mattk, boolean thinks_it_foundyou, boo
     boolean is_ultimate = FALSE;
     boolean is_intermediate = FALSE;
     enum action_tile_types action = nodirspell ? ACTION_TILE_CAST_NODIR : ACTION_TILE_CAST_DIR;
-    boolean next2u = (distmin(u.ux, u.uy, mtmp->mx, mtmp->my) <= 1);
-    boolean show_action_tile = (next2u || !nodirspell);
+    //boolean next2u = (distmin(u.ux, u.uy, mtmp->mx, mtmp->my) <= 1);
+    boolean show_action_tile = canspotmon(mtmp) && couldsee(mtmp->mx, mtmp->my); // (next2u || !nodirspell);
 
     play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CAST);
     if(show_action_tile)
