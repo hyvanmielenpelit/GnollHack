@@ -3204,7 +3204,7 @@ stop_timer(short func_index, anything *arg)
 int64_t
 stop_timer_type(short func_index)
 {
-    timer_element* timer_to_delete = remove_timer_type(&timer_base, TIME_RESTART);
+    timer_element* timer_to_delete = remove_timer_type(&timer_base, func_index);
     if (timer_to_delete)
     {
         int64_t timeout = timer_to_delete->timeout;
