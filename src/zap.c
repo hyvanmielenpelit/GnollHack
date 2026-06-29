@@ -200,8 +200,8 @@ get_obj_spell_max_duration(struct obj* obj)
 
     int otyp = obj->otyp;
     int durdice = objects[otyp].oc_spell_dur_dice + (obj->speflags & SPEFLAGS_BEING_BROKEN ? obj->charges : 0);
-    int duration = durdice * objects[otyp].oc_spell_dur_diesize + objects[otyp].oc_spell_dur_plus + bcsign(obj) * objects[otyp].oc_spell_dur_buc_plus;
-    return max(0, duration);
+    int max_duration = durdice * objects[otyp].oc_spell_dur_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, objects[otyp].oc_spell_dur_plus + bcsign(obj) * objects[otyp].oc_spell_dur_buc_plus);
+    return max(0, max_duration);
 }
 
 int

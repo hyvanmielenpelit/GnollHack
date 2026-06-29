@@ -1391,6 +1391,7 @@ enum cat_breeds {
 
 #define XRAY_VISION_RANGE 3
 #define ASTRAL_VISION_RANGE 5
+#define MAX_DURATION_CONSTANT_MULTIPLIER 2
 
 #endif /* GENERAL_H */
 

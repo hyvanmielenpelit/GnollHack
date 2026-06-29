@@ -2777,7 +2777,7 @@ arti_invoke(struct obj *obj)
     int art_inv_dur_plus = artilist[obj->oartifact].inv_duration_plus;
     boolean temporary_effect = ((art_inv_dur_dice > 0 && art_inv_dur_diesize > 0) || art_inv_dur_plus > 0);
     int duration = (art_inv_dur_dice > 0 && art_inv_dur_diesize > 0 ? d(art_inv_dur_dice, art_inv_dur_diesize) : 0) + art_inv_dur_plus;
-    int max_duration = (art_inv_dur_dice > 0 && art_inv_dur_diesize > 0 ? art_inv_dur_dice * art_inv_dur_diesize : 0) + art_inv_dur_plus;
+    int max_duration = (art_inv_dur_dice > 0 && art_inv_dur_diesize > 0 ? art_inv_dur_dice * art_inv_dur_diesize : 0) + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, art_inv_dur_plus);
 
     if (oart->inv_prop > LAST_PROP)
     {

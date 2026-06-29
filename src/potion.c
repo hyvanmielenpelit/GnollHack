@@ -971,8 +971,8 @@ peffects(struct obj *otmp)
            );
     int max_duration =
         (int)max(0,
-            otmp->oclass == POTION_CLASS ? (objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 : max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)) * max(1, objects[otmp->otyp].oc_potion_normal_diesize)) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
-            objects[otmp->otyp].oc_spell_dur_dice * objects[otmp->otyp].oc_spell_dur_diesize + objects[otmp->otyp].oc_spell_dur_plus
+            otmp->oclass == POTION_CLASS ? (objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 : max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)) * max(1, objects[otmp->otyp].oc_potion_normal_diesize)) + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier) :
+            objects[otmp->otyp].oc_spell_dur_dice * objects[otmp->otyp].oc_spell_dur_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, objects[otmp->otyp].oc_spell_dur_plus)
         );
     int nutrdicebuc = (int)(otmp->oclass == POTION_CLASS ? objects[otmp->otyp].oc_potion_nutrition_dice_buc_multiplier : 0);
     int nutrition = (int)(
