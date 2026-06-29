@@ -29,6 +29,20 @@ const char* artifact_invoke_names[NUM_ARTINVOKES] = {
     "earthquake", "", "", "", "", "", "", "", ""
 };
 
+#define ARTDESC_DESC_STR(A) #A
+#define ARTDESC_DESC_XSTR(A) ARTDESC_DESC_STR(A)
+
+const char* artifact_invoke_descriptions[NUM_ARTINVOKES] = {
+    "", 
+    "Restores half of lost hit points", 
+    "Restores half of spent mana, up to " ARTDESC_DESC_XSTR(MITRE_OF_HOLINESS_MAX_BOOST) " mana",
+    "", 
+    "",
+    "", "", "", "", "", "", "", "",
+    "Summons a nalfeshnee, a powerful type of demon", "", "Recharges the artifact to the maximum amount of charges", "", "", "",
+    "Causes chasms to open up, frequency and range based on experience level", "", "", "", "", "", "", "", ""
+};
+
 #define get_artifact(o) \
     (((o) && (o)->oartifact) ? &artilist[(int) (o)->oartifact] : 0)
 
@@ -2819,9 +2833,9 @@ arti_invoke(struct obj *obj)
         {
             int epboost = (u.uenmax + 1 - u.uen) / 2;
 
-            if (epboost > 120)
-                epboost = 120; /* arbitrary */
-            else if (epboost < 12)
+            if (epboost > MITRE_OF_HOLINESS_MAX_BOOST)
+                epboost = MITRE_OF_HOLINESS_MAX_BOOST; /* arbitrary, doubled from NetHack, since there can be more mana now with more XP levels and items */
+            else if (epboost < MITRE_OF_HOLINESS_MIN_BOOST)
                 epboost = u.uenmax - u.uen;
             if (epboost) {
                 play_sfx_sound(SFX_GAIN_ENERGY);
@@ -4151,6 +4165,15 @@ const char* get_artifact_invoke_name(int specialpropindex)
         return empty_string;
 
     return artifact_invoke_names[specialpropindex - FIRST_ARTINVOKE];
+}
+
+const char* get_artifact_invoke_description(int specialpropindex)
+{
+    if (specialpropindex < FIRST_ARTINVOKE || specialpropindex >= FIRST_ARTINVOKE + SIZE(artifact_invoke_descriptions))
+        return empty_string;
+
+    int idx = specialpropindex - FIRST_ARTINVOKE;
+    return artifact_invoke_descriptions[idx] ? artifact_invoke_descriptions[idx] : empty_string;
 }
 
 boolean

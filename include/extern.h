@@ -203,6 +203,7 @@ E struct obj* what_gives_monster(struct monst*, int);
 E boolean is_immune(struct monst*, int);
 E int create_portal(void);
 E const char* get_artifact_invoke_name(int);
+E const char* get_artifact_invoke_description(int);
 E boolean is_artifact_applicable_as_axe(struct obj*);
 E int artifact_to_otyp(int);
 E void artifact_taken_away(int);

@@ -4218,6 +4218,16 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
             Sprintf(buf, " %2d - %s when invoked%s", powercnt, invoketext, descrtext);
             putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
 
+            if (artilist[obj->oartifact].inv_prop > LAST_PROP)
+            {
+                const char* invdesc = get_artifact_invoke_description(artilist[obj->oartifact].inv_prop);
+                if (invdesc && *invdesc)
+                {
+                    Sprintf(buf, "      * %s", invdesc);
+                    putstr(datawin, ATR_INDENT_AT_ASTR, buf);
+                }
+            }
+
             if (artilist[obj->oartifact].inv_prop <= LAST_PROP /* switchable property */
                 ||
                 ((artilist[obj->oartifact].inv_duration_dice > 0 && artilist[obj->oartifact].inv_duration_diesize > 0) ||artilist[obj->oartifact].inv_duration_plus > 0)
