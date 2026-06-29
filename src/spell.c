@@ -2310,7 +2310,7 @@ spelldescription_core(int spell, int booktype)
         Strcat(buf, plusbuf);        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-        int max_duration = objects[booktype].oc_spell_dur_dice * objects[booktype].oc_spell_dur_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * objects[booktype].oc_spell_dur_plus;
+        int max_duration = objects[booktype].oc_spell_dur_dice * objects[booktype].oc_spell_dur_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, objects[booktype].oc_spell_dur_plus);
         Sprintf(buf, "Maximum duration: %d turn%s", max_duration, max_duration == 1 ? "" : "s");
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }

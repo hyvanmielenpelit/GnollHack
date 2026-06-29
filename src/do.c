@@ -2274,7 +2274,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-                int max_duration = objects[otyp].oc_spell_dur_dice * objects[otyp].oc_spell_dur_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * applied_plus;
+                int max_duration = objects[otyp].oc_spell_dur_dice * objects[otyp].oc_spell_dur_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, applied_plus);
                 Sprintf(buf, "%s max duration:    %s%d turn%s", itemname_hc, itempadding, max_duration, max_duration == 1 ? "" : "s");
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
@@ -2382,7 +2382,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
                 if (!(objects[otyp].oc_flags5 & (O5_EFFECT_IS_HEALING | O5_EFFECT_IS_DAMAGE | O5_EFFECT_IS_MANA)))
                 {
-                    int max_duration = dice * objects[otyp].oc_potion_normal_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * plus;
+                    int max_duration = dice * objects[otyp].oc_potion_normal_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, plus);
                     Sprintf(buf, "Effect max duration:    %d turn%s", max_duration, max_duration == 1 ? "" : "s");
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                 }
@@ -2449,7 +2449,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
                 if (!(objects[otyp].oc_flags5 & (O5_EFFECT_IS_HEALING | O5_EFFECT_IS_DAMAGE | O5_EFFECT_IS_MANA)))
                 {
-                    int max_duration = dice * objects[otyp].oc_potion_breathe_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * plus;
+                    int max_duration = dice * objects[otyp].oc_potion_breathe_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, plus);
                     Sprintf(buf, "Breathe max duration:   %d turn%s", max_duration, max_duration == 1 ? "" : "s");
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                 }
