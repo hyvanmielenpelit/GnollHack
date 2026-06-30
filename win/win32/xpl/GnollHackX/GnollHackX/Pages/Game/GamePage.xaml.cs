@@ -9108,7 +9108,7 @@ namespace GnollHackX.Pages.Game
                                                 length = (float)Math.Sqrt(Math.Pow(dx * width, 2) + Math.Pow(dy * height, 2));
                                             }
                                             /* Secondary drawing first */
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                             using (SKPathBuilder path = new SKPathBuilder())
 #else
                                             using (SKPath path = new SKPath())
@@ -9125,7 +9125,7 @@ namespace GnollHackX.Pages.Game
                                                         path.Close();
                                                         textPaint.Style = SKPaintStyle.Fill;
                                                         textPaint.Color = eff.GetSecondaryColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (var finalPath = path.Snapshot())
                                                             canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9134,14 +9134,14 @@ namespace GnollHackX.Pages.Game
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = width * 0.02f;
                                                         textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (var finalPath = path.Snapshot())
                                                             canvas.DrawPath(finalPath, textPaint.Paint);
 #else
                                                         canvas.DrawPath(path, textPaint.Paint);
 #endif
                                                         textPaint.Style = SKPaintStyle.Fill;
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9155,7 +9155,7 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9168,7 +9168,7 @@ namespace GnollHackX.Pages.Game
                                                 }
                                             }
                                             /* Primary drawing */
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                             using (SKPathBuilder path = new SKPathBuilder())
 #else
                                             using (SKPath path = new SKPath())
@@ -9185,7 +9185,7 @@ namespace GnollHackX.Pages.Game
                                                         path.Close();
                                                         textPaint.Color = eff.GetColor(maincountervalue);
                                                         textPaint.Style = SKPaintStyle.Fill;
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (var finalPath = path.Snapshot())
                                                             canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9194,14 +9194,14 @@ namespace GnollHackX.Pages.Game
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = width * 0.02f;
                                                         textPaint.Color = eff.GetOutlineColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (var finalPath = path.Snapshot())
                                                             canvas.DrawPath(finalPath, textPaint.Paint);
 #else
                                                         canvas.DrawPath(path, textPaint.Paint);
 #endif
                                                         textPaint.Style = SKPaintStyle.Fill;
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9215,7 +9215,7 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetInnerColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9233,7 +9233,7 @@ namespace GnollHackX.Pages.Game
                                                         path.Close();
                                                         textPaint.Color = eff.GetColor(maincountervalue);
                                                         textPaint.Style = SKPaintStyle.Fill;
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (var finalPath = path.Snapshot())
                                                             canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9242,14 +9242,14 @@ namespace GnollHackX.Pages.Game
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = width * 0.02f;
                                                         textPaint.Color = eff.GetOutlineColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (var finalPath = path.Snapshot())
                                                             canvas.DrawPath(finalPath, textPaint.Paint);
 #else
                                                         canvas.DrawPath(path, textPaint.Paint);
 #endif
                                                         textPaint.Style = SKPaintStyle.Fill;
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9264,7 +9264,7 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetInnerColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9283,7 +9283,7 @@ namespace GnollHackX.Pages.Game
                                                         path.Close();
                                                         textPaint.Color = eff.GetColor(maincountervalue);
                                                         textPaint.Style = SKPaintStyle.Fill;
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (var finalPath = path.Snapshot())
                                                             canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9292,14 +9292,14 @@ namespace GnollHackX.Pages.Game
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = width * 0.02f;
                                                         textPaint.Color = eff.GetOutlineColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (var finalPath = path.Snapshot())
                                                             canvas.DrawPath(finalPath, textPaint.Paint);
 #else
                                                         canvas.DrawPath(path, textPaint.Paint);
 #endif
                                                         textPaint.Style = SKPaintStyle.Fill;
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9313,7 +9313,7 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetInnerColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9324,7 +9324,7 @@ namespace GnollHackX.Pages.Game
                                                 }
                                             }
                                             /* Secondary drawing last */
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                             using (SKPathBuilder path = new SKPathBuilder())
 #else
                                             using (SKPath path = new SKPath())
@@ -9340,7 +9340,7 @@ namespace GnollHackX.Pages.Game
                                                         path.Close();
                                                         textPaint.Style = SKPaintStyle.Fill;
                                                         textPaint.Color = eff.GetSecondaryColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (var finalPath = path.Snapshot())
                                                             canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9349,14 +9349,14 @@ namespace GnollHackX.Pages.Game
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = width * 0.02f;
                                                         textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (var finalPath = path.Snapshot())
                                                             canvas.DrawPath(finalPath, textPaint.Paint);
 #else
                                                         canvas.DrawPath(path, textPaint.Paint);
 #endif
                                                         textPaint.Style = SKPaintStyle.Fill;
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9369,7 +9369,7 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9387,7 +9387,7 @@ namespace GnollHackX.Pages.Game
                                                         path.Close();
                                                         textPaint.Style = SKPaintStyle.Fill;
                                                         textPaint.Color = eff.GetSecondaryColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (var finalPath = path.Snapshot())
                                                             canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9396,14 +9396,14 @@ namespace GnollHackX.Pages.Game
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = width * 0.02f;
                                                         textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (var finalPath = path.Snapshot())
                                                             canvas.DrawPath(finalPath, textPaint.Paint);
 #else
                                                         canvas.DrawPath(path, textPaint.Paint);
 #endif
                                                         textPaint.Style = SKPaintStyle.Fill;
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9416,7 +9416,7 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9424,7 +9424,7 @@ namespace GnollHackX.Pages.Game
 #endif
                                                         }
                                                         /* Left side */
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9443,14 +9443,14 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInner2Color(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
                                                             canvas.DrawPath(path2, textPaint.Paint);
 #endif
                                                         }
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9469,14 +9469,14 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
                                                             canvas.DrawPath(path2, textPaint.Paint);
 #endif
                                                         }
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9495,7 +9495,7 @@ namespace GnollHackX.Pages.Game
                                                             textPaint.Style = SKPaintStyle.Stroke;
                                                             textPaint.StrokeWidth = width * 0.03f;
                                                             textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9503,7 +9503,7 @@ namespace GnollHackX.Pages.Game
 #endif
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                         }
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9517,7 +9517,7 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9546,7 +9546,7 @@ namespace GnollHackX.Pages.Game
                                                         //    canvas.DrawPath(path2, textPaint);
                                                         //    textPaint.Style = SKPaintStyle.Fill;
                                                         //}
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9565,14 +9565,14 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInner2Color(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
                                                             canvas.DrawPath(path2, textPaint.Paint);
 #endif
                                                         }
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9591,14 +9591,14 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
                                                             canvas.DrawPath(path2, textPaint.Paint);
 #endif
                                                         }
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9617,7 +9617,7 @@ namespace GnollHackX.Pages.Game
                                                             textPaint.Style = SKPaintStyle.Stroke;
                                                             textPaint.StrokeWidth = width * 0.03f;
                                                             textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -9625,7 +9625,7 @@ namespace GnollHackX.Pages.Game
 #endif
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                         }
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                         using (SKPathBuilder path2 = new SKPathBuilder())
 #else
                                                         using (SKPath path2 = new SKPath())
@@ -9639,7 +9639,7 @@ namespace GnollHackX.Pages.Game
                                                             path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                                             using (var finalPath = path2.Snapshot())
                                                                 canvas.DrawPath(finalPath, textPaint.Paint);
 #else
@@ -14314,7 +14314,7 @@ namespace GnollHackX.Pages.Game
                             {
                                 canvas.Translate(dest_x, dest_y);
                                 canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                     , SKSamplingOptions.Default
 #endif
                                     , paint);
@@ -14353,7 +14353,7 @@ namespace GnollHackX.Pages.Game
                                 {
                                     canvas.Translate(dest_x, dest_y);
                                     canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                         , SKSamplingOptions.Default
 #endif
                                         , paint);
@@ -14394,7 +14394,7 @@ namespace GnollHackX.Pages.Game
                                 {
                                     canvas.Translate(dest_x, dest_y);
                                     canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                         , SKSamplingOptions.Default
 #endif
                                         , paint);
@@ -14523,7 +14523,7 @@ namespace GnollHackX.Pages.Game
                         {
                             canvas.Translate(dest_x, dest_y);
                             canvas.DrawBitmap(usedForegroundBitmap, source_rt, target_rt
-#if GNH_MAUI
+#if GNH_MAUI && !SKIASHARP_3119
                                 , SKSamplingOptions.Default
 #endif
                                 , paint);
