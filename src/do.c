@@ -1441,7 +1441,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
     }
 
     boolean weapon_stats_shown = FALSE;
-    if (!uses_spell_flags && desc_known && (is_otyp_weapon(otyp) || is_otyp_pick(otyp) || is_otyp_saw(otyp) || ((is_otyp_gloves(otyp) || (is_otyp_boots(otyp) && is_otyp_weapon(otyp)) || objects[otyp].oc_class == GEM_CLASS))))
+    if (!uses_spell_flags && desc_known && (is_otyp_weapon(otyp) || is_otyp_pick(otyp) || is_otyp_saw(otyp) || ((is_otyp_gloves(otyp) || is_otyp_boots(otyp) || objects[otyp].oc_class == GEM_CLASS))))
     {
         weapon_stats_shown = TRUE;
         //boolean maindiceprinted = FALSE;
@@ -1595,10 +1595,21 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 
+        /* Damage - Small */
+        short wsdice = obj ? get_obj_wsdice(obj) : objects[otyp].oc_wsdice;
+        short wsdam = obj ? get_obj_wsdam(obj) : objects[otyp].oc_wsdam;
+        short wsdmgplus = obj ? get_obj_wsdmgplus(obj) : objects[otyp].oc_wldmgplus;
+        boolean has_small_dmg = (wsdice > 0 && wsdam > 0) || wsdmgplus != 0;
+
+        /* Damage - Large */
+        short wldice = obj ? get_obj_wldice(obj) : objects[otyp].oc_wldice;
+        short wldam = obj ? get_obj_wldam(obj) : objects[otyp].oc_wldam;
+        short wldmgplus = obj ? get_obj_wldmgplus(obj) : objects[otyp].oc_wldmgplus;
+        boolean has_large_dmg = (wldice > 0 && wldam > 0) || wldmgplus != 0;
 
         int exceptionality_multiplier = 1;
 
-        if (obj && obj->exceptionality)
+        if (obj && obj->exceptionality && (has_small_dmg || has_large_dmg || is_otyp_weapon(otyp)))
         {
                 Sprintf(buf, "Weapon quality:         %s", obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional (double base damage)" :
                 obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite (triple base damage)" :
@@ -1624,11 +1635,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
         boolean printmaindmgtype = FALSE;
         boolean doubledamagetopermittedtargets = FALSE;
 
-        /* Damage - Small */
-        short wsdice = obj ? get_obj_wsdice(obj) : objects[otyp].oc_wsdice;
-        short wsdam = obj ? get_obj_wsdam(obj) : objects[otyp].oc_wsdam;
-        short wsdmgplus = obj ? get_obj_wsdmgplus(obj) : objects[otyp].oc_wldmgplus;
-        if((wsdice > 0 && wsdam > 0) || wsdmgplus != 0)
+        if(has_small_dmg)
         {
             printmaindmgtype = TRUE;
             Sprintf(buf, "Base damage - Small:    ");
@@ -1690,12 +1697,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
         }
 
-
-        /* Damage - Large */
-        short wldice = obj ? get_obj_wldice(obj) : objects[otyp].oc_wldice;
-        short wldam = obj ? get_obj_wldam(obj) : objects[otyp].oc_wldam;
-        short wldmgplus = obj ? get_obj_wldmgplus(obj) : objects[otyp].oc_wldmgplus;
-        if((wldice > 0 && wldam > 0) || wldmgplus != 0)
+        if(has_large_dmg)
         {
             printmaindmgtype = TRUE;
             //maindiceprinted = FALSE;
