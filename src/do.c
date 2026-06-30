@@ -1441,7 +1441,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
     }
 
     boolean weapon_stats_shown = FALSE;
-    if (!uses_spell_flags && desc_known && (is_otyp_weapon(otyp) || is_otyp_pick(otyp) || is_otyp_saw(otyp) || ((is_otyp_gloves(otyp) || is_otyp_boots(otyp) || objects[otyp].oc_class == GEM_CLASS))))
+    if (!uses_spell_flags && desc_known && (is_otyp_weapon(otyp) || is_otyp_pick(otyp) || is_otyp_saw(otyp) || ((is_otyp_gloves(otyp) || (is_otyp_boots(otyp) && is_otyp_weapon(otyp)) || objects[otyp].oc_class == GEM_CLASS))))
     {
         weapon_stats_shown = TRUE;
         //boolean maindiceprinted = FALSE;
