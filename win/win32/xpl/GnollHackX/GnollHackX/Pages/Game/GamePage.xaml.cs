@@ -8582,9 +8582,9 @@ namespace GnollHackX.Pages.Game
                                                                                     }
                                                                                     string similarDiff = GetSimilarKeyDiff(cachekey);
                                                                                     GHApp.MaybeWriteScreenLog(screenLogging, $"Diff from similar cached key: {similarDiff}");
+                                                                                    _lastDarkenedAutodrawKey = cachekey;
+                                                                                    _lastDarkenedAutodrawKeyValid = true;
                                                                                 }
-                                                                                _lastDarkenedAutodrawKey = cachekey;
-                                                                                _lastDarkenedAutodrawKeyValid = true;
                                                                             }
                                                                         }
                                                                         catch (Exception ex)
@@ -13760,6 +13760,9 @@ namespace GnollHackX.Pages.Game
             float scale, float targetscale, float scaled_x_padding, float scaled_y_padding, float scaled_tile_height,
             bool is_inventory, bool drawwallends, bool usingGL, bool highFilterQuality, bool fixRects, bool fixFiltering)
         {
+            if (autodraw == 0)
+                return;
+
             if (delayedDraw)
             {
                 ulong contents_no = 0;
