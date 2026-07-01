@@ -6075,13 +6075,7 @@ namespace GnollHackX.Pages.Game
         private bool RetrieveCachedRadialTile(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
         {
             SavedRect sr = new SavedRect(tileSheet, sourcerect);
-            SKImage bmp = null;
-            bool getsuccessful;
-            //lock (_saveRectLock)
-            {
-                getsuccessful = _savedRects.TryGetValue(sr, out bmp);
-            }
-            if (getsuccessful && bmp != null)
+            if (_savedRects.TryGetValue(sr, out SKImage bmp) && bmp != null)
             {
                 SKRect bmpsourcerect = new SKRect(0, 0, (float)bmp.Width, (float)bmp.Height);
                 DrawSplitBitmap(canvas, delayedDraw, destSplitY, bmp, bmpsourcerect, targetrect, paint, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
