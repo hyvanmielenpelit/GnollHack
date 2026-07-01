@@ -130,6 +130,8 @@ namespace GnollHackX.Pages.Game
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
         private Dictionary<SavedDarkenedBitmap, SKImage> _darkenedBitmaps = new Dictionary<SavedDarkenedBitmap, SKImage>();
         private Dictionary<SavedDarkenedAutodrawBitmap, SKImage> _darkenedAutodrawBitmaps = new Dictionary<SavedDarkenedAutodrawBitmap, SKImage>();
+        private SavedDarkenedAutodrawBitmap _lastDarkenedAutodrawKey;
+        private bool _lastDarkenedAutodrawKeyValid = false;
 
         private readonly object _uLock = new object();
         private int _ux = 0;
@@ -8515,41 +8517,82 @@ namespace GnollHackX.Pages.Game
                                                                         paint.Color = dc.PaintColor;
                                                                         paint.ColorFilter = GetDarkeningColorFilter(darken_percentage);
                                                                         canvas.SetMatrix(dc.Matrix);
-                                                                            DrawAutoDraw(dc.AutoDrawParameters.autodraw, darkeningCanvas, false, paint, dc.AutoDrawParameters.otmp_round,
-                                                                                    dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
-                                                                                    dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, 0, 0,
-                                                                                    dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, 1, 1,
-                                                                                    0, 0, height, dc.AutoDrawParameters.is_inventory,
-                                                                                    dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
-                                                                            paint.ColorFilter = null;
+                                                                        DrawAutoDraw(dc.AutoDrawParameters.autodraw, darkeningCanvas, false, paint, dc.AutoDrawParameters.otmp_round,
+                                                                                dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
+                                                                                dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, 0, 0,
+                                                                                dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, 1, 1,
+                                                                                0, 0, height, dc.AutoDrawParameters.is_inventory,
+                                                                                dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
+                                                                        paint.ColorFilter = null;
 
-                                                                            /* Save to cache as immutable */
-                                                                            bool doDisposeImage = false;
-                                                                            try
+                                                                        /* Save to cache as immutable */
+                                                                        bool doDisposeImage = false;
+                                                                        try
+                                                                        {
+                                                                            SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                                                            _paintBitmap.CopyTo(newbmp);
+                                                                            newbmp.SetImmutable();
+                                                                            SKImage newImage = SKImage.FromBitmap(newbmp);
+                                                                            usedDarkenedBitmap = newImage;
+                                                                            //lock (_darkenedAutoDrawBitmapLock)
                                                                             {
-                                                                                SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
-                                                                                _paintBitmap.CopyTo(newbmp);
-                                                                                newbmp.SetImmutable();
-                                                                                SKImage newImage = SKImage.FromBitmap(newbmp);
-                                                                                usedDarkenedBitmap = newImage;
-                                                                                //lock (_darkenedAutoDrawBitmapLock)
+                                                                                if (_darkenedAutodrawBitmaps.Count >= GHConstants.MaxDarkenedAutodrawBitmapCacheSize)
                                                                                 {
-                                                                                    if (_darkenedAutodrawBitmaps.Count >= GHConstants.MaxDarkenedAutodrawBitmapCacheSize)
-                                                                                    {
-                                                                                        foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
-                                                                                            bmp.Dispose();
-                                                                                                _darkenedAutodrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
-                                                                                        _localDarkenedAutodrawBitmapCachePruned = true;
-                                                                                    }
-                                                                                    _darkenedAutodrawBitmaps.Add(cachekey, newImage);
+                                                                                    foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
+                                                                                        bmp.Dispose();
+                                                                                            _darkenedAutodrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
+                                                                                    _localDarkenedAutodrawBitmapCachePruned = true;
                                                                                 }
+                                                                                _darkenedAutodrawBitmaps.Add(cachekey, newImage);
+                                                                                if (screenLogging)
+                                                                                {
+                                                                                    GHApp.MaybeWriteScreenLog(screenLogging, $"Darkened autodraw bitmap added: " +
+                                                                                        $"dark%={cachekey.DarkenPercentage}, " +
+                                                                                        $"autodraw={cachekey.AutodrawParameters.autodraw}, " +
+                                                                                        $"otmpRound={(cachekey.AutodrawParameters.otmp_round == null ? "null" : $"o_id={cachekey.AutodrawParameters.otmp_round.ObjData.o_id}, otyp={cachekey.AutodrawParameters.otmp_round.ObjData.otyp}")}, " +
+                                                                                        $"layerIdx={cachekey.AutodrawParameters.layer_idx}, " +
+                                                                                        $"tfhalfsz={cachekey.AutodrawParameters.tileflag_halfsize}, " +
+                                                                                        $"tfnobjmis={cachekey.AutodrawParameters.tileflag_normalobjmissile}, " +
+                                                                                        $"tffullszi={cachekey.AutodrawParameters.tileflag_fullsizeditem}"
+                                                                                        );
+                                                                                    GHApp.MaybeWriteScreenLog(screenLogging,
+                                                                                        $"tx={cachekey.AutodrawParameters.tx}, " +
+                                                                                        $"ty={cachekey.AutodrawParameters.ty}, " +
+                                                                                        $"width={cachekey.AutodrawParameters.width}, " +
+                                                                                        $"height={cachekey.AutodrawParameters.height}, " +
+                                                                                        $"scale={cachekey.AutodrawParameters.scale}, " +
+                                                                                        $"tscale={cachekey.AutodrawParameters.targetscale}");
+                                                                                    GHApp.MaybeWriteScreenLog(screenLogging,
+                                                                                        $"scXpad={cachekey.AutodrawParameters.scaled_x_padding}, " +
+                                                                                        $"scYpad={cachekey.AutodrawParameters.scaled_y_padding}, " +
+                                                                                        $"scTileH={cachekey.AutodrawParameters.scaled_tile_height}, " +
+                                                                                        $"isInv={cachekey.AutodrawParameters.is_inventory}, " +
+                                                                                        $"drawwallends={cachekey.AutodrawParameters.drawwallends}");
+                                                                                    GHApp.MaybeWriteScreenLog(screenLogging,
+                                                                                        $"contNo={cachekey.AutodrawParameters.contents_no}, " +
+                                                                                        $"contentsIdS={cachekey.AutodrawParameters.contents_id_sum}, " +
+                                                                                        $"itemCharges={cachekey.AutodrawParameters.item_charges}, " +
+                                                                                        $"itemSQ={cachekey.AutodrawParameters.item_special_quality}, " +
+                                                                                        $"itemLit={cachekey.AutodrawParameters.item_lit}");
+
+                                                                                    if (_lastDarkenedAutodrawKeyValid)
+                                                                                    {
+                                                                                        string globalDiff = GetSavedDarkenedAutodrawBitmapDiff(_lastDarkenedAutodrawKey, cachekey);
+                                                                                        GHApp.MaybeWriteScreenLog(screenLogging, $"Diff from last cached key: {(string.IsNullOrEmpty(globalDiff) ? "none" : globalDiff)}");
+                                                                                    }
+                                                                                    string similarDiff = GetSimilarKeyDiff(cachekey);
+                                                                                    GHApp.MaybeWriteScreenLog(screenLogging, $"Diff from similar cached key: {similarDiff}");
+                                                                                }
+                                                                                _lastDarkenedAutodrawKey = cachekey;
+                                                                                _lastDarkenedAutodrawKeyValid = true;
                                                                             }
-                                                                            catch (Exception ex)
-                                                                            {
-                                                                                Debug.WriteLine(ex.Message);
-                                                                                usedDarkenedBitmap = SKImage.FromBitmap(_paintBitmap);
-                                                                                doDisposeImage = true;
-                                                                            }
+                                                                        }
+                                                                        catch (Exception ex)
+                                                                        {
+                                                                            Debug.WriteLine(ex.Message);
+                                                                            usedDarkenedBitmap = SKImage.FromBitmap(_paintBitmap);
+                                                                            doDisposeImage = true;
+                                                                        }
 
                                                                         paint.ColorFilter = dc.PaintColorFilter;
                                                                         GHApp.MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL, fixRects, fixFiltering);
@@ -13571,13 +13614,113 @@ namespace GnollHackX.Pages.Game
 
         struct SavedDarkenedAutodrawBitmap
         {
-            AutoDrawParameterDefinition AutodrawParameters;
-            float DarkenPercentage;
+            public readonly AutoDrawParameterDefinition AutodrawParameters;
+            public readonly float DarkenPercentage;
             public SavedDarkenedAutodrawBitmap(AutoDrawParameterDefinition autodrawParameters, float darkenPercentage)
             {
                 AutodrawParameters = autodrawParameters;
                 DarkenPercentage = darkenPercentage;
             }
+        }
+
+        private string GetSavedDarkenedAutodrawBitmapDiff(SavedDarkenedAutodrawBitmap oldKey, SavedDarkenedAutodrawBitmap newKey)
+        {
+            var sb = new System.Text.StringBuilder();
+            var p1 = oldKey.AutodrawParameters;
+            var p2 = newKey.AutodrawParameters;
+
+            if (p1.autodraw != p2.autodraw) sb.Append($"autodraw:{p1.autodraw}->{p2.autodraw} ");
+            if (p1.layer_idx != p2.layer_idx) sb.Append($"layer_idx:{p1.layer_idx}->{p2.layer_idx} ");
+            if (oldKey.DarkenPercentage != newKey.DarkenPercentage) sb.Append($"DarkenPercentage:{oldKey.DarkenPercentage}->{newKey.DarkenPercentage} ");
+            
+            var id1 = p1.otmp_round?.ObjData.o_id ?? 0;
+            var id2 = p2.otmp_round?.ObjData.o_id ?? 0;
+            if (id1 != id2) sb.Append($"o_id:{id1}->{id2} ");
+            
+            var otyp1 = p1.otmp_round?.ObjData.otyp ?? 0;
+            var otyp2 = p2.otmp_round?.ObjData.otyp ?? 0;
+            if (otyp1 != otyp2) sb.Append($"otyp:{otyp1}->{otyp2} ");
+
+            if (p1.tileflag_halfsize != p2.tileflag_halfsize) sb.Append($"tileflag_halfsize:{p1.tileflag_halfsize}->{p2.tileflag_halfsize} ");
+            if (p1.tileflag_normalobjmissile != p2.tileflag_normalobjmissile) sb.Append($"tileflag_normalobjmissile:{p1.tileflag_normalobjmissile}->{p2.tileflag_normalobjmissile} ");
+            if (p1.tileflag_fullsizeditem != p2.tileflag_fullsizeditem) sb.Append($"tileflag_fullsizeditem:{p1.tileflag_fullsizeditem}->{p2.tileflag_fullsizeditem} ");
+            if (p1.tx != p2.tx) sb.Append($"tx:{p1.tx}->{p2.tx} ");
+            if (p1.ty != p2.ty) sb.Append($"ty:{p1.ty}->{p2.ty} ");
+            if (p1.width != p2.width) sb.Append($"width:{p1.width}->{p2.width} ");
+            if (p1.height != p2.height) sb.Append($"height:{p1.height}->{p2.height} ");
+            if (p1.scale != p2.scale) sb.Append($"scale:{p1.scale}->{p2.scale} ");
+            if (p1.targetscale != p2.targetscale) sb.Append($"targetscale:{p1.targetscale}->{p2.targetscale} ");
+            if (p1.scaled_x_padding != p2.scaled_x_padding) sb.Append($"scaled_x_padding:{p1.scaled_x_padding}->{p2.scaled_x_padding} ");
+            if (p1.scaled_y_padding != p2.scaled_y_padding) sb.Append($"scaled_y_padding:{p1.scaled_y_padding}->{p2.scaled_y_padding} ");
+            if (p1.scaled_tile_height != p2.scaled_tile_height) sb.Append($"scaled_tile_height:{p1.scaled_tile_height}->{p2.scaled_tile_height} ");
+            if (p1.is_inventory != p2.is_inventory) sb.Append($"is_inventory:{p1.is_inventory}->{p2.is_inventory} ");
+            if (p1.drawwallends != p2.drawwallends) sb.Append($"drawwallends:{p1.drawwallends}->{p2.drawwallends} ");
+            if (p1.contents_no != p2.contents_no) sb.Append($"contents_no:{p1.contents_no}->{p2.contents_no} ");
+            if (p1.contents_id_sum != p2.contents_id_sum) sb.Append($"contents_id_sum:{p1.contents_id_sum}->{p2.contents_id_sum} ");
+            if (p1.item_charges != p2.item_charges) sb.Append($"item_charges:{p1.item_charges}->{p2.item_charges} ");
+            if (p1.item_special_quality != p2.item_special_quality) sb.Append($"item_special_quality:{p1.item_special_quality}->{p2.item_special_quality} ");
+            if (p1.item_lit != p2.item_lit) sb.Append($"item_lit:{p1.item_lit}->{p2.item_lit} ");
+
+            return sb.ToString().Trim();
+        }
+
+        private string GetSimilarKeyDiff(SavedDarkenedAutodrawBitmap cachekey)
+        {
+            SavedDarkenedAutodrawBitmap bestMatch = default;
+            bool foundMatch = false;
+            int minDiffCount = int.MaxValue;
+
+            foreach (var key in _darkenedAutodrawBitmaps.Keys)
+            {
+                if (key.AutodrawParameters.autodraw == cachekey.AutodrawParameters.autodraw)
+                {
+                    int diffCount = 0;
+                    if (key.AutodrawParameters.layer_idx != cachekey.AutodrawParameters.layer_idx) diffCount++;
+                    if (key.DarkenPercentage != cachekey.DarkenPercentage) diffCount++;
+                    
+                    var id1 = key.AutodrawParameters.otmp_round?.ObjData.o_id ?? 0;
+                    var id2 = cachekey.AutodrawParameters.otmp_round?.ObjData.o_id ?? 0;
+                    if (id1 != id2) diffCount++;
+                    
+                    var otyp1 = key.AutodrawParameters.otmp_round?.ObjData.otyp ?? 0;
+                    var otyp2 = cachekey.AutodrawParameters.otmp_round?.ObjData.otyp ?? 0;
+                    if (otyp1 != otyp2) diffCount++;
+
+                    if (key.AutodrawParameters.tileflag_halfsize != cachekey.AutodrawParameters.tileflag_halfsize) diffCount++;
+                    if (key.AutodrawParameters.tileflag_normalobjmissile != cachekey.AutodrawParameters.tileflag_normalobjmissile) diffCount++;
+                    if (key.AutodrawParameters.tileflag_fullsizeditem != cachekey.AutodrawParameters.tileflag_fullsizeditem) diffCount++;
+                    if (key.AutodrawParameters.tx != cachekey.AutodrawParameters.tx) diffCount++;
+                    if (key.AutodrawParameters.ty != cachekey.AutodrawParameters.ty) diffCount++;
+                    if (key.AutodrawParameters.width != cachekey.AutodrawParameters.width) diffCount++;
+                    if (key.AutodrawParameters.height != cachekey.AutodrawParameters.height) diffCount++;
+                    if (key.AutodrawParameters.scale != cachekey.AutodrawParameters.scale) diffCount++;
+                    if (key.AutodrawParameters.targetscale != cachekey.AutodrawParameters.targetscale) diffCount++;
+                    if (key.AutodrawParameters.scaled_x_padding != cachekey.AutodrawParameters.scaled_x_padding) diffCount++;
+                    if (key.AutodrawParameters.scaled_y_padding != cachekey.AutodrawParameters.scaled_y_padding) diffCount++;
+                    if (key.AutodrawParameters.scaled_tile_height != cachekey.AutodrawParameters.scaled_tile_height) diffCount++;
+                    if (key.AutodrawParameters.is_inventory != cachekey.AutodrawParameters.is_inventory) diffCount++;
+                    if (key.AutodrawParameters.drawwallends != cachekey.AutodrawParameters.drawwallends) diffCount++;
+                    if (key.AutodrawParameters.contents_no != cachekey.AutodrawParameters.contents_no) diffCount++;
+                    if (key.AutodrawParameters.contents_id_sum != cachekey.AutodrawParameters.contents_id_sum) diffCount++;
+                    if (key.AutodrawParameters.item_charges != cachekey.AutodrawParameters.item_charges) diffCount++;
+                    if (key.AutodrawParameters.item_special_quality != cachekey.AutodrawParameters.item_special_quality) diffCount++;
+                    if (key.AutodrawParameters.item_lit != cachekey.AutodrawParameters.item_lit) diffCount++;
+
+                    if (diffCount > 0 && diffCount < minDiffCount)
+                    {
+                        minDiffCount = diffCount;
+                        bestMatch = key;
+                        foundMatch = true;
+                    }
+                }
+            }
+
+            if (!foundMatch)
+            {
+                return "no similar key in cache";
+            }
+
+            return GetSavedDarkenedAutodrawBitmapDiff(bestMatch, cachekey);
         }
 
         struct SavedDarkenedBitmap
