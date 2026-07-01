@@ -90,16 +90,17 @@ namespace GnollHackM.Platforms.iOS
 
         public static void OnInvalidateSurface(iOSSKGLViewMetalHandler handler, ISKGLView view, object? args)
         {
-            if (handler?.PlatformView == null)
+            var platformView = handler?.PlatformView;
+            if (platformView == null)
                 return;
 
-            if (handler.PlatformView.Paused && handler.PlatformView.EnableSetNeedsDisplay)
+            if (platformView.Paused && platformView.EnableSetNeedsDisplay)
             {
-                handler.PlatformView.BeginInvokeOnMainThread(() =>
+                platformView.BeginInvokeOnMainThread(() =>
                 {
-                    if (handler.PlatformView != null && handler.PlatformView.Handle != IntPtr.Zero)
+                    if (platformView.Handle != IntPtr.Zero)
                     {
-                        handler.PlatformView.SetNeedsDisplay();
+                        platformView.SetNeedsDisplay();
                     }
                 });
             }
@@ -116,16 +117,18 @@ namespace GnollHackM.Platforms.iOS
 
         public static void MapHasRenderLoop(iOSSKGLViewMetalHandler handler, ISKGLView view)
         {
-            if (handler?.PlatformView == null)
+            var platformView = handler?.PlatformView;
+            if (platformView == null)
                 return;
 
-            handler.PlatformView.Paused = !view.HasRenderLoop;
-            handler.PlatformView.EnableSetNeedsDisplay = !view.HasRenderLoop;
+            platformView.Paused = !view.HasRenderLoop;
+            platformView.EnableSetNeedsDisplay = !view.HasRenderLoop;
         }
 
         public static void MapEnableTouchEvents(iOSSKGLViewMetalHandler handler, ISKGLView view)
         {
-            if (handler == null || handler.PlatformView == null)
+            var platformView = handler?.PlatformView;
+            if (handler == null || platformView == null)
                 return;
 
             if (view.EnableTouchEvents)
@@ -136,7 +139,7 @@ namespace GnollHackM.Platforms.iOS
                         args => handler.VirtualView?.OnTouch(args),
                         (x, y) =>
                         {
-                            var scale = handler.PlatformView.ContentScaleFactor;
+                            var scale = platformView.ContentScaleFactor;
                             bool ignore = handler.VirtualView?.IgnorePixelScaling ?? false;
                             if (!ignore)
                             {
@@ -147,11 +150,11 @@ namespace GnollHackM.Platforms.iOS
                         }
                     );
                 }
-                handler._touchHandler.SetEnabled(handler.PlatformView, true);
+                handler._touchHandler?.SetEnabled(platformView, true);
             }
             else
             {
-                handler._touchHandler?.SetEnabled(handler.PlatformView, false);
+                handler._touchHandler?.SetEnabled(platformView, false);
             }
         }
 
