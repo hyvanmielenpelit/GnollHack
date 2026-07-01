@@ -118,7 +118,10 @@ namespace GnollHackX.Pages.Game
         private readonly string _fontSizeString = "FontS";
         private int _refreshMsgHistoryRowCounts = 1;
         private bool RefreshMsgHistoryRowCounts { get { return Interlocked.CompareExchange(ref _refreshMsgHistoryRowCounts, 0, 0) != 0; } set { Interlocked.Exchange(ref _refreshMsgHistoryRowCounts, value ? 1 : 0); } }
-
+        
+        private int _printCacheStatus = 1;
+        private bool PrintCacheStatus { get { return Interlocked.CompareExchange(ref _printCacheStatus, 0, 0) != 0; } set { Interlocked.Exchange(ref _printCacheStatus, value ? 1 : 0); } }
+        
         public List<string> ExtendedCommands { get; set; }
 
         private readonly IGnollHackService _gnollHackService;
@@ -1795,6 +1798,7 @@ namespace GnollHackX.Pages.Game
                 if (incrementedValue % 10 == 0)
                 {
                     GHApp.LogMemory();
+                    PrintCacheStatus = true;
                     if (WarnLowDiskSpace)
                         GHApp.UpdateFreeDiskSpace();
                     if (ShowMemory)
@@ -8465,63 +8469,58 @@ namespace GnollHackX.Pages.Game
                                                         bool dodarkening = true;
                                                         using (SKCanvas darkeningCanvas = new SKCanvas(_paintBitmap))
                                                         {
-                                                            foreach (GHDrawCommand dc in _drawCommandList)
+                                                        foreach (GHDrawCommand dc in _drawCommandList)
+                                                        {
+                                                            if (dc.EndDarkening)
                                                             {
-                                                                if (dc.EndDarkening)
-                                                                {
-                                                                    dodarkening = false;
-                                                                    continue;
-                                                                }
-                                                                if (dodarkening && DarkenedPos(dc.MapX, dc.MapY))
-                                                                {
+                                                                dodarkening = false;
+                                                                continue;
+                                                            }
+                                                            if (dodarkening && DarkenedPos(dc.MapX, dc.MapY))
+                                                            {
                                                                     darkeningCanvas.Clear(SKColors.Transparent);
-                                                                    if (dc.IsAutoDraw)
-                                                                    {
-                                                                        SKImage usedDarkenedBitmap = null;
-                                                                        int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighterDarkening);
-                                                                        AutoDrawParameterDefinition modadparams = dc.AutoDrawParameters;
-                                                                        modadparams.tx = 0;
-                                                                        modadparams.ty = 0;
-                                                                        modadparams.scaled_x_padding = 0;
-                                                                        modadparams.scaled_y_padding = 0;
-                                                                        modadparams.scale = 1;
-                                                                        modadparams.targetscale = 1;
-                                                                        SavedDarkenedAutodrawBitmap cachekey = new SavedDarkenedAutodrawBitmap(modadparams, darken_percentage);
-                                                                        SKRect sourceRect = new SKRect(0, 0, dc.AutoDrawParameters.width, dc.AutoDrawParameters.height);
-                                                                        SKRect destRect = new SKRect(dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding,
-                                                                            dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding,
-                                                                            dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding + dc.AutoDrawParameters.width * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale,
-                                                                            dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding + dc.AutoDrawParameters.height * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale);
+                                                                if (dc.IsAutoDraw)
+                                                                {
+                                                                    SKImage usedDarkenedBitmap = null;
+                                                                    int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighterDarkening);
+                                                                    AutoDrawParameterDefinition modadparams = dc.AutoDrawParameters;
+                                                                    modadparams.tx = 0;
+                                                                    modadparams.ty = 0;
+                                                                    modadparams.scaled_x_padding = 0;
+                                                                    modadparams.scaled_y_padding = 0;
+                                                                    modadparams.scale = 1;
+                                                                    modadparams.targetscale = 1;
+                                                                    SavedDarkenedAutodrawBitmap cachekey = new SavedDarkenedAutodrawBitmap(modadparams, darken_percentage);
+                                                                    SKRect sourceRect = new SKRect(0, 0, dc.AutoDrawParameters.width, dc.AutoDrawParameters.height);
+                                                                    SKRect destRect = new SKRect(dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding,
+                                                                        dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding,
+                                                                        dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding + dc.AutoDrawParameters.width * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale,
+                                                                        dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding + dc.AutoDrawParameters.height * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale);
 
-                                                                        //bool getsuccessful;
-                                                                        //lock (_darkenedAutoDrawBitmapLock)
-                                                                        //{
-                                                                        //    getsuccessful = _darkenedAutodrawBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap); //_darkenedAutodrawBitmaps.ContainsKey(cachekey) && 
-                                                                        //}
-                                                                        if (_darkenedAutodrawBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap) && usedDarkenedBitmap != null)
-                                                                        {
-                                                                            paint.Color = dc.PaintColor;
-                                                                            paint.ColorFilter = dc.PaintColorFilter;
-                                                                            canvas.SetMatrix(dc.Matrix);
-                                                                            GHApp.MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect
+                                                                    if (_darkenedAutodrawBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap) && usedDarkenedBitmap != null)
+                                                                    {
+                                                                        paint.Color = dc.PaintColor;
+                                                                        paint.ColorFilter = dc.PaintColorFilter;
+                                                                        canvas.SetMatrix(dc.Matrix);
+                                                                        GHApp.MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL, fixRects, fixFiltering);
+                                                                        canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect
 #if GNH_MAUI
-                                                                            , SKSamplingOptions.Default
+                                                                        , SKSamplingOptions.Default
 #endif
-                                                                            , paint);
-                                                                            paint.ColorFilter = null;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            paint.Color = dc.PaintColor;
-                                                                            paint.ColorFilter = GetDarkeningColorFilter(darken_percentage);
-                                                                            canvas.SetMatrix(dc.Matrix);
+                                                                        , paint);
+                                                                        paint.ColorFilter = null;
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        paint.Color = dc.PaintColor;
+                                                                        paint.ColorFilter = GetDarkeningColorFilter(darken_percentage);
+                                                                        canvas.SetMatrix(dc.Matrix);
                                                                             DrawAutoDraw(dc.AutoDrawParameters.autodraw, darkeningCanvas, false, paint, dc.AutoDrawParameters.otmp_round,
-                                                                                dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
-                                                                                dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, 0, 0,
-                                                                                dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, 1, 1,
-                                                                                0, 0, height, dc.AutoDrawParameters.is_inventory,
-                                                                                dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
+                                                                                    dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
+                                                                                    dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, 0, 0,
+                                                                                    dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, 1, 1,
+                                                                                    0, 0, height, dc.AutoDrawParameters.is_inventory,
+                                                                                    dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
                                                                             paint.ColorFilter = null;
 
                                                                             /* Save to cache as immutable */
@@ -8539,7 +8538,7 @@ namespace GnollHackX.Pages.Game
                                                                                     {
                                                                                         foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
                                                                                             bmp.Dispose();
-                                                                                        _darkenedAutodrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
+                                                                                                _darkenedAutodrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                                                                         _localDarkenedAutodrawBitmapCachePruned = true;
                                                                                     }
                                                                                     _darkenedAutodrawBitmaps.Add(cachekey, newImage);
@@ -8552,124 +8551,119 @@ namespace GnollHackX.Pages.Game
                                                                                 doDisposeImage = true;
                                                                             }
 
-                                                                            paint.ColorFilter = dc.PaintColorFilter;
-                                                                            GHApp.MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect
-#if GNH_MAUI
-                                                                            , SKSamplingOptions.Default
-#endif
-                                                                            , paint);
-                                                                            if (doDisposeImage)
-                                                                                usedDarkenedBitmap.Dispose();
-                                                                            paint.ColorFilter = null;
-                                                                        }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        SKImage usedDarkenedBitmap = null;
-                                                                        int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighterDarkening);
-                                                                        SavedDarkenedBitmap cachekey = new SavedDarkenedBitmap(dc.SourceBitmap, dc.SourceRect, darken_percentage);
-                                                                        SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
-                                                                        //bool getsuccessful;
-                                                                        //lock (_darkenedBitmapLock)
-                                                                        //{
-                                                                        //    getsuccessful = _darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap); //_darkenedBitmaps.ContainsKey(cachekey) && 
-                                                                        //}
-                                                                        if (_darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap) && usedDarkenedBitmap != null)
-                                                                        {
-                                                                            paint.Color = dc.PaintColor;
-                                                                            paint.ColorFilter = dc.PaintColorFilter;
-                                                                            canvas.SetMatrix(dc.Matrix);
-                                                                            GHApp.MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect
-#if GNH_MAUI
-                                                                            , SKSamplingOptions.Default
-#endif
-                                                                            , paint);
-                                                                            paint.ColorFilter = null;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            /* Copy source bitmap to _paintCanvas and darken it */
-                                                                            paint.ColorFilter = GetDarkeningColorFilter(darken_percentage);
-                                                                            darkeningCanvas.DrawImage(dc.SourceBitmap, dc.SourceRect, cacheRect
-#if GNH_MAUI
-                                                                            , SKSamplingOptions.Default
-#endif
-                                                                            , paint);
-                                                                            paint.ColorFilter = null;
-
-                                                                            /* Save to cache as immutable */
-                                                                            bool doDisposeImage = false;
-                                                                            try
-                                                                            {
-                                                                                SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
-                                                                                _paintBitmap.CopyTo(newbmp);
-                                                                                newbmp.SetImmutable();
-                                                                                SKImage newImage = SKImage.FromBitmap(newbmp);
-                                                                                usedDarkenedBitmap = newImage;
-                                                                                //lock (_darkenedBitmapLock)
-                                                                                {
-                                                                                    if (_darkenedBitmaps.Count >= GHConstants.MaxDarkenedBitmapCacheSize)
-                                                                                    {
-                                                                                        foreach (SKImage bmp in _darkenedBitmaps.Values)
-                                                                                            bmp.Dispose();
-                                                                                        _darkenedBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
-                                                                                        _localDarkenedBitmapCachePruned = true;
-                                                                                    }
-                                                                                    _darkenedBitmaps.Add(cachekey, newImage);
-                                                                                }
-                                                                            }
-                                                                            catch (Exception ex)
-                                                                            {
-                                                                                Debug.WriteLine(ex.Message);
-                                                                                usedDarkenedBitmap = SKImage.FromBitmap(_paintBitmap);
-                                                                                doDisposeImage = true;
-                                                                            }
-
-                                                                            paint.Color = dc.PaintColor;
-                                                                            paint.ColorFilter = dc.PaintColorFilter;
-                                                                            canvas.SetMatrix(dc.Matrix);
-                                                                            GHApp.MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect
-#if GNH_MAUI
-                                                                            , SKSamplingOptions.Default
-#endif
-                                                                            , paint);
-                                                                            if (doDisposeImage)
-                                                                                usedDarkenedBitmap.Dispose();
-                                                                            paint.ColorFilter = null;
-                                                                        }
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    paint.Color = dc.PaintColor;
-                                                                    paint.ColorFilter = dc.PaintColorFilter;
-                                                                    canvas.SetMatrix(dc.Matrix);
-                                                                    if(dc.IsAutoDraw)
-                                                                    {
-                                                                            DrawAutoDraw(dc.AutoDrawParameters.autodraw, canvas, false, paint, dc.AutoDrawParameters.otmp_round,
-                                                                                dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
-                                                                                dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, dc.AutoDrawParameters.tx, dc.AutoDrawParameters.ty,
-                                                                                dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, dc.AutoDrawParameters.scale, dc.AutoDrawParameters.targetscale,
-                                                                                dc.AutoDrawParameters.scaled_x_padding, dc.AutoDrawParameters.scaled_y_padding, dc.AutoDrawParameters.scaled_tile_height, dc.AutoDrawParameters.is_inventory,
-                                                                                dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        GHApp.MaybeFixRects(ref dc.SourceRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                        canvas.DrawImage(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect
+                                                                        paint.ColorFilter = dc.PaintColorFilter;
+                                                                        GHApp.MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL, fixRects, fixFiltering);
+                                                                        canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect
 #if GNH_MAUI
                                                                         , SKSamplingOptions.Default
 #endif
                                                                         , paint);
+                                                                            if (doDisposeImage)
+                                                                                usedDarkenedBitmap.Dispose();
+                                                                        paint.ColorFilter = null;
                                                                     }
-                                                                    paint.ColorFilter = null;
+                                                                }
+                                                                else
+                                                                {
+                                                                    SKImage usedDarkenedBitmap = null;
+                                                                    int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighterDarkening);
+                                                                    SavedDarkenedBitmap cachekey = new SavedDarkenedBitmap(dc.SourceBitmap, dc.SourceRect, darken_percentage);
+                                                                    SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
+                                                                    if (_darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap) && usedDarkenedBitmap != null)
+                                                                    {
+                                                                        paint.Color = dc.PaintColor;
+                                                                        paint.ColorFilter = dc.PaintColorFilter;
+                                                                        canvas.SetMatrix(dc.Matrix);
+                                                                        GHApp.MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
+                                                                        canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect
+#if GNH_MAUI
+                                                                        , SKSamplingOptions.Default
+#endif
+                                                                        , paint);
+                                                                        paint.ColorFilter = null;
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        /* Copy source bitmap to _paintCanvas and darken it */
+                                                                        paint.ColorFilter = GetDarkeningColorFilter(darken_percentage);
+                                                                        darkeningCanvas.DrawImage(dc.SourceBitmap, dc.SourceRect, cacheRect
+#if GNH_MAUI
+                                                                        , SKSamplingOptions.Default
+#endif
+                                                                        , paint);
+                                                                        paint.ColorFilter = null;
+
+                                                                        /* Save to cache as immutable */
+                                                                        bool doDisposeImage = false;
+                                                                        try
+                                                                        {
+                                                                            SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                                                            _paintBitmap.CopyTo(newbmp);
+                                                                            newbmp.SetImmutable();
+                                                                            SKImage newImage = SKImage.FromBitmap(newbmp);
+                                                                            usedDarkenedBitmap = newImage;
+                                                                            //lock (_darkenedBitmapLock)
+                                                                            {
+                                                                            if (_darkenedBitmaps.Count >= GHConstants.MaxDarkenedBitmapCacheSize)
+                                                                            {
+                                                                                foreach (SKImage bmp in _darkenedBitmaps.Values)
+                                                                                    bmp.Dispose();
+                                                                                    _darkenedBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
+                                                                                    _localDarkenedBitmapCachePruned = true;
+                                                                                }
+                                                                                _darkenedBitmaps.Add(cachekey, newImage);
+                                                                            }
+                                                                        }
+                                                                        catch (Exception ex)
+                                                                        {
+                                                                            Debug.WriteLine(ex.Message);
+                                                                            usedDarkenedBitmap = SKImage.FromBitmap(_paintBitmap);
+                                                                            doDisposeImage = true;
+                                                                        }
+
+                                                                        paint.Color = dc.PaintColor;
+                                                                        paint.ColorFilter = dc.PaintColorFilter;
+                                                                        canvas.SetMatrix(dc.Matrix);
+                                                                        GHApp.MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
+                                                                        canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect
+#if GNH_MAUI
+                                                                        , SKSamplingOptions.Default
+#endif
+                                                                        , paint);
+                                                                        if (doDisposeImage)
+                                                                            usedDarkenedBitmap.Dispose();
+                                                                        paint.ColorFilter = null;
+                                                                    }
                                                                 }
                                                             }
+                                                            else
+                                                            {
+                                                                paint.Color = dc.PaintColor;
+                                                                paint.ColorFilter = dc.PaintColorFilter;
+                                                                canvas.SetMatrix(dc.Matrix);
+                                                                if (dc.IsAutoDraw)
+                                                                {
+                                                                    DrawAutoDraw(dc.AutoDrawParameters.autodraw, canvas, false, paint, dc.AutoDrawParameters.otmp_round,
+                                                                        dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
+                                                                        dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, dc.AutoDrawParameters.tx, dc.AutoDrawParameters.ty,
+                                                                        dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, dc.AutoDrawParameters.scale, dc.AutoDrawParameters.targetscale,
+                                                                        dc.AutoDrawParameters.scaled_x_padding, dc.AutoDrawParameters.scaled_y_padding, dc.AutoDrawParameters.scaled_tile_height, dc.AutoDrawParameters.is_inventory,
+                                                                        dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
+                                                                }
+                                                                else
+                                                                {
+                                                                    GHApp.MaybeFixRects(ref dc.SourceRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
+                                                                    canvas.DrawImage(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect
+#if GNH_MAUI
+                                                                    , SKSamplingOptions.Default
+#endif
+                                                                    , paint);
+                                                                }
+                                                                paint.ColorFilter = null;
+                                                            }
                                                         }
-                                                        _drawCommandList.Clear();
+                                                    }
+                                                    _drawCommandList.Clear();
 
                                                         paint.Color = SKColors.Black;
                                                         for (int mapx = startX; mapx <= endX; mapx++)
@@ -12565,9 +12559,9 @@ namespace GnollHackX.Pages.Game
                     DrawExtendedStatusBar(canvas, textPaint, canvaswidth, canvasheight, inverse_canvas_scale, statusBarSkiaHeight, canvasViewWidth, canvasViewHeight, stdButtonWidth, stdButtonHeight, usedButtonRowStackHeight, usingGL, fixRects, fixFiltering, ref youRect);
                 }
 
-                /* Cache prune diagnostics — one line per cache, at most once per draw */
                 if (screenLogging)
                 {
+                    /* First, cache prune diagnostics — one line per cache, at most once per draw */
                     if (_localDarkeningFilterCachePruned)
                         GHApp.MaybeWriteScreenLog(screenLogging, "Darkening color filter cache pruned (" + GHConstants.MaxColorFilterCacheSize + " entries)");
                     if (_localCompositeFilterCachePruned)
@@ -12576,11 +12570,21 @@ namespace GnollHackX.Pages.Game
                         GHApp.MaybeWriteScreenLog(screenLogging, "Darkened bitmap cache pruned (" + GHConstants.MaxDarkenedBitmapCacheSize + " entries)");
                     if (_localDarkenedAutodrawBitmapCachePruned)
                         GHApp.MaybeWriteScreenLog(screenLogging, "Darkened autodraw bitmap cache pruned (" + GHConstants.MaxDarkenedAutodrawBitmapCacheSize + " entries)");
-                }
 
-                /* Screen debug logging */
-                if (screenLogging)
-                {
+                    if (Interlocked.CompareExchange(ref _printCacheStatus, 0, 1) != 0)
+                    {
+                        // Print cache status here
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Saved rects cache length: " + (_savedRects?.Count ?? 0));
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Saved autodraw bitmaps cache length: " + (_savedAutoDrawBitmaps?.Count ?? 0));
+                        //GHApp.MaybeWriteScreenLog(screenLogging, "Darkening color filter cache length: " + (_localDarkeningColorFilters?.Count(x => x != null) ?? 0));
+                        //GHApp.MaybeWriteScreenLog(screenLogging, "Composite look color filter cache length: " + (_localCompositeLookColorFilters?.Count(x => x != null) ?? 0));
+                        //GHApp.MaybeWriteScreenLog(screenLogging, "Composite map color filter cache length: " + (_localCompositeMapColorFilters?.Count(x => x != null) ?? 0));
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Composite color filter fallback cache length: " + (_localCompositeColorFiltersFallback?.Count ?? 0));
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Darkened bitmap cache length: " + (_darkenedBitmaps?.Count ?? 0));
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Darkened autodraw bitmap cache length: " + (_darkenedAutodrawBitmaps?.Count ?? 0));
+                    }
+
+                    /* Then action screen debug logging */
                     textPaint.TextSize = 14 * inverse_canvas_scale * customScale;
                     textPaint.Typeface = GHApp.LatoRegular;
                     float textSpacing = textPaint.FontSpacing;
