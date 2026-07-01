@@ -6038,7 +6038,11 @@ namespace GnollHackX.Pages.Game
             if (cache)
                 CacheRadialTileAndDraw(canvas, delayedDraw, tileSheet, sourcerect, targetrect, ref layers, destSplitY, opaqueness, paint, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering, tempsourcerect);
             else
+            {
                 DrawSplitBitmap(canvas, delayedDraw, destSplitY, SKImage.FromBitmap(_tempBitmap), tempsourcerect, targetrect, paint, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+                using (var tempImage = SKImage.FromBitmap(_tempBitmap))
+                    DrawSplitBitmap(canvas, delayedDraw, destSplitY, tempImage, tempsourcerect, targetrect, paint, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+            }
         }
 
         private void SetRadialTileExtraTransparency(ref LayerInfo layers, SKPaint paint, float opaqueness)
