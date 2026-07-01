@@ -7858,7 +7858,7 @@ namespace GnollHackX.Pages.Game
             //lockTaken = false;
 
             long moveIntervals = Math.Max(2, (long)Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRate) / 10.0));
-            bool lighter_darkening = LighterDarkening;
+            bool lighterDarkening = LighterDarkening;
 #if WINDOWS
             //lock (_canvasPointerLock)
             try
@@ -8238,7 +8238,7 @@ namespace GnollHackX.Pages.Game
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                            isPointerHoveringOnTile, mapLookMode, lighter_darkening); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
+                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
                                                                     }
                                                                 }
                                                             }
@@ -8377,7 +8377,7 @@ namespace GnollHackX.Pages.Game
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                                isPointerHoveringOnTile, mapLookMode, lighter_darkening); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                                isPointerHoveringOnTile, mapLookMode, lighterDarkening); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                         }
                                                                         else
                                                                         {
@@ -8388,7 +8388,7 @@ namespace GnollHackX.Pages.Game
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                                isPointerHoveringOnTile, mapLookMode, lighter_darkening); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                                isPointerHoveringOnTile, mapLookMode, lighterDarkening); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                         }
                                                                     }
                                                                 }
@@ -8416,7 +8416,7 @@ namespace GnollHackX.Pages.Game
                                                                 //{
                                                                     // tx = (offsetX + usedOffsetX + width * (float)mapx);
                                                                     // ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
-                                                                    // DoDarkening(canvas, paint, tx, ty, width, height, GetDarkenPercentage(mapx, mapy, lighter_darkening));
+                                                                    // DoDarkening(canvas, paint, tx, ty, width, height, GetDarkenPercentage(mapx, mapy, lighterDarkening));
                                                                 //}
                                                                 if (validpos)
                                                                 {
@@ -8478,7 +8478,7 @@ namespace GnollHackX.Pages.Game
                                                                     if (dc.IsAutoDraw)
                                                                     {
                                                                         SKImage usedDarkenedBitmap = null;
-                                                                        int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighter_darkening);
+                                                                        int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighterDarkening);
                                                                         AutoDrawParameterDefinition modadparams = dc.AutoDrawParameters;
                                                                         modadparams.tx = 0;
                                                                         modadparams.ty = 0;
@@ -8493,12 +8493,12 @@ namespace GnollHackX.Pages.Game
                                                                             dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding + dc.AutoDrawParameters.width * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale,
                                                                             dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding + dc.AutoDrawParameters.height * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale);
 
-                                                                        bool getsuccessful;
+                                                                        //bool getsuccessful;
                                                                         //lock (_darkenedAutoDrawBitmapLock)
-                                                                        {
-                                                                            getsuccessful = _darkenedAutodrawBitmaps.ContainsKey(cachekey) && _darkenedAutodrawBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap);
-                                                                        }
-                                                                        if (getsuccessful && usedDarkenedBitmap != null)
+                                                                        //{
+                                                                        //    getsuccessful = _darkenedAutodrawBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap); //_darkenedAutodrawBitmaps.ContainsKey(cachekey) && 
+                                                                        //}
+                                                                        if (_darkenedAutodrawBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap) && usedDarkenedBitmap != null)
                                                                         {
                                                                             paint.Color = dc.PaintColor;
                                                                             paint.ColorFilter = dc.PaintColorFilter;
@@ -8512,17 +8512,17 @@ namespace GnollHackX.Pages.Game
                                                                             paint.ColorFilter = null;
                                                                         }
                                                                         else
-                                                                            {
-                                                                                paint.Color = dc.PaintColor;
-                                                                                paint.ColorFilter = GetDarkeningColorFilter(darken_percentage);
-                                                                                canvas.SetMatrix(dc.Matrix);
-                                                                                DrawAutoDraw(dc.AutoDrawParameters.autodraw, darkeningCanvas, false, paint, dc.AutoDrawParameters.otmp_round,
-                                                                                    dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
-                                                                                    dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, 0, 0,
-                                                                                    dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, 1, 1,
-                                                                                    0, 0, height, dc.AutoDrawParameters.is_inventory,
-                                                                                    dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
-                                                                                paint.ColorFilter = null;
+                                                                        {
+                                                                            paint.Color = dc.PaintColor;
+                                                                            paint.ColorFilter = GetDarkeningColorFilter(darken_percentage);
+                                                                            canvas.SetMatrix(dc.Matrix);
+                                                                            DrawAutoDraw(dc.AutoDrawParameters.autodraw, darkeningCanvas, false, paint, dc.AutoDrawParameters.otmp_round,
+                                                                                dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
+                                                                                dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, 0, 0,
+                                                                                dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, 1, 1,
+                                                                                0, 0, height, dc.AutoDrawParameters.is_inventory,
+                                                                                dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
+                                                                            paint.ColorFilter = null;
 
                                                                             /* Save to cache as immutable */
                                                                             bool doDisposeImage = false;
@@ -8567,15 +8567,15 @@ namespace GnollHackX.Pages.Game
                                                                     else
                                                                     {
                                                                         SKImage usedDarkenedBitmap = null;
-                                                                        int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighter_darkening);
+                                                                        int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighterDarkening);
                                                                         SavedDarkenedBitmap cachekey = new SavedDarkenedBitmap(dc.SourceBitmap, dc.SourceRect, darken_percentage);
                                                                         SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
-                                                                        bool getsuccessful;
+                                                                        //bool getsuccessful;
                                                                         //lock (_darkenedBitmapLock)
-                                                                        {
-                                                                            getsuccessful = _darkenedBitmaps.ContainsKey(cachekey) && _darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap);
-                                                                        }
-                                                                        if (getsuccessful && usedDarkenedBitmap != null)
+                                                                        //{
+                                                                        //    getsuccessful = _darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap); //_darkenedBitmaps.ContainsKey(cachekey) && 
+                                                                        //}
+                                                                        if (_darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap) && usedDarkenedBitmap != null)
                                                                         {
                                                                             paint.Color = dc.PaintColor;
                                                                             paint.ColorFilter = dc.PaintColorFilter;
@@ -12566,14 +12566,17 @@ namespace GnollHackX.Pages.Game
                 }
 
                 /* Cache prune diagnostics — one line per cache, at most once per draw */
-                if (_localDarkeningFilterCachePruned)
-                    GHApp.MaybeWriteScreenLog("Darkening color filter cache pruned (" + GHConstants.MaxColorFilterCacheSize + " entries)");
-                if (_localCompositeFilterCachePruned)
-                    GHApp.MaybeWriteScreenLog("Composite color filter cache pruned (" + GHConstants.MaxColorFilterCacheSize + " entries)");
-                if (_localDarkenedBitmapCachePruned)
-                    GHApp.MaybeWriteScreenLog("Darkened bitmap cache pruned (" + GHConstants.MaxDarkenedBitmapCacheSize + " entries)");
-                if (_localDarkenedAutodrawBitmapCachePruned)
-                    GHApp.MaybeWriteScreenLog("Darkened autodraw bitmap cache pruned (" + GHConstants.MaxDarkenedAutodrawBitmapCacheSize + " entries)");
+                if (screenLogging)
+                {
+                    if (_localDarkeningFilterCachePruned)
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Darkening color filter cache pruned (" + GHConstants.MaxColorFilterCacheSize + " entries)");
+                    if (_localCompositeFilterCachePruned)
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Composite color filter cache pruned (" + GHConstants.MaxColorFilterCacheSize + " entries)");
+                    if (_localDarkenedBitmapCachePruned)
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Darkened bitmap cache pruned (" + GHConstants.MaxDarkenedBitmapCacheSize + " entries)");
+                    if (_localDarkenedAutodrawBitmapCachePruned)
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Darkened autodraw bitmap cache pruned (" + GHConstants.MaxDarkenedAutodrawBitmapCacheSize + " entries)");
+                }
 
                 /* Screen debug logging */
                 if (screenLogging)
@@ -13410,12 +13413,12 @@ namespace GnollHackX.Pages.Game
             return darken;
         }
 
-        int GetDarkenPercentage(int mapx, int mapy, bool lighter_darkening)
+        int GetDarkenPercentage(int mapx, int mapy, bool lighterDarkening)
         {
             bool uloc = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0);
             bool unlit = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_APPEARS_UNLIT) != 0);
             // Get values from XAML controls
-            int darken_percentage = lighter_darkening ? (uloc ? 90 : unlit ? 65 : 80) : (uloc ? 85 : unlit ? 40 : 65);
+            int darken_percentage = lighterDarkening ? (uloc ? 90 : unlit ? 65 : 80) : (uloc ? 85 : unlit ? 40 : 65);
             return darken_percentage;
         }
 
