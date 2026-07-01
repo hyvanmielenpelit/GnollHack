@@ -54,6 +54,8 @@ namespace GnollHackM.Platforms.iOS
         protected override void DisconnectHandler(SKMetalView platformView)
         {
             platformView.PaintSurface -= OnPaintSurface;
+            lastGRContext = null;
+            lastCanvasSize = default;
             if (_touchHandler != null)
             {
                 _touchHandler.Detach(platformView);
@@ -94,16 +96,13 @@ namespace GnollHackM.Platforms.iOS
             if (platformView == null)
                 return;
 
-            if (platformView.Paused && platformView.EnableSetNeedsDisplay)
+            platformView.BeginInvokeOnMainThread(() =>
             {
-                platformView.BeginInvokeOnMainThread(() =>
+                if (platformView.Handle != IntPtr.Zero && platformView.Paused && platformView.EnableSetNeedsDisplay)
                 {
-                    if (platformView.Handle != IntPtr.Zero)
-                    {
-                        platformView.SetNeedsDisplay();
-                    }
-                });
-            }
+                    platformView.SetNeedsDisplay();
+                }
+            });
         }
 
         public static void MapIgnorePixelScaling(iOSSKGLViewMetalHandler handler, ISKGLView view)
@@ -169,7 +168,6 @@ namespace GnollHackM.Platforms.iOS
                     var userVisibleSize = new SKSizeI((int)Bounds.Width, (int)Bounds.Height);
                     var canvas = e.Surface.Canvas;
                     canvas.Scale((float)ContentScaleFactor);
-                    canvas.Save();
 
                     e = new SKPaintMetalSurfaceEventArgs(e.Surface, e.BackendRenderTarget, e.Origin, e.Info.WithSize(userVisibleSize), e.Info);
                 }

@@ -127,8 +127,6 @@ namespace GnollHackX.Pages.Game
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
         private Dictionary<SavedDarkenedBitmap, SKImage> _darkenedBitmaps = new Dictionary<SavedDarkenedBitmap, SKImage>();
         private Dictionary<SavedDarkenedAutodrawBitmap, SKImage> _darkenedAutodrawBitmaps = new Dictionary<SavedDarkenedAutodrawBitmap, SKImage>();
-        private Dictionary<int, SKColorFilter> _darkeningColorFilters = new Dictionary<int, SKColorFilter>();
-        private Dictionary<(SKColorFilter, int), SKColorFilter> _compositeColorFilters = new Dictionary<(SKColorFilter, int), SKColorFilter>();
 
         private readonly object _uLock = new object();
         private int _ux = 0;
@@ -1172,18 +1170,7 @@ namespace GnollHackX.Pages.Game
             foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
                 bmp.Dispose();
             _savedAutoDrawBitmaps.Clear();
-            if (_darkeningColorFilters != null)
-            {
-                foreach (var filter in _darkeningColorFilters.Values)
-                    filter?.Dispose();
-                _darkeningColorFilters.Clear();
-            }
-            if (_compositeColorFilters != null)
-            {
-                foreach (var filter in _compositeColorFilters.Values)
-                    filter?.Dispose();
-                _compositeColorFilters.Clear();
-            }
+            ClearColorFilterCaches();
         }
 
         private void UpdateAbilityButtonVisibility(bool isDesktop)
@@ -7385,6 +7372,10 @@ namespace GnollHackX.Pages.Game
         private bool _localCompositeFilterCachePruned;
         private bool _localDarkenedBitmapCachePruned;
         private bool _localDarkenedAutodrawBitmapCachePruned;
+        private SKColorFilter[] _localDarkeningColorFilters = new SKColorFilter[101];
+        private SKColorFilter[] _localCompositeLookColorFilters = new SKColorFilter[101];
+        private SKColorFilter[] _localCompositeMapColorFilters = new SKColorFilter[101];
+        private Dictionary<(SKColorFilter, int), SKColorFilter> _localCompositeColorFiltersFallback = new Dictionary<(SKColorFilter, int), SKColorFilter>();
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e, bool isCanvasOnMainThread)
         {
@@ -7521,18 +7512,7 @@ namespace GnollHackX.Pages.Game
                 foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
                     bmp.Dispose();
                 _darkenedAutodrawBitmaps.Clear();
-                if (_darkeningColorFilters != null)
-                {
-                    foreach (var filter in _darkeningColorFilters.Values)
-                        filter?.Dispose();
-                    _darkeningColorFilters.Clear();
-                }
-                if (_compositeColorFilters != null)
-                {
-                    foreach (var filter in _compositeColorFilters.Values)
-                        filter?.Dispose();
-                    _compositeColorFilters.Clear();
-                }
+                ClearColorFilterCaches();
             }
 
             if (clearCaches)
@@ -13453,60 +13433,118 @@ namespace GnollHackX.Pages.Game
 
         private SKColorFilter GetDarkeningColorFilter(int darken_percentage)
         {
-            if (_darkeningColorFilters == null)
+            if (darken_percentage < 0) darken_percentage = 0;
+            if (darken_percentage > 100) darken_percentage = 100;
+
+            if (_localDarkeningColorFilters == null)
             {
-                _darkeningColorFilters = new Dictionary<int, SKColorFilter>();
+                _localDarkeningColorFilters = new SKColorFilter[101];
             }
 
-            if (_darkeningColorFilters.TryGetValue(darken_percentage, out var filter))
+            var filter = _localDarkeningColorFilters[darken_percentage];
+            if (filter != null)
             {
                 return filter;
-            }
-
-            if (_darkeningColorFilters.Count >= GHConstants.MaxColorFilterCacheSize)
-            {
-                foreach (var oldFilter in _darkeningColorFilters.Values)
-                {
-                    oldFilter?.Dispose();
-                }
-                _darkeningColorFilters.Clear();
-                _localDarkeningFilterCachePruned = true;
             }
 
             int val = (darken_percentage * 255) / 100;
             SKColor color = new SKColor((byte)val, (byte)val, (byte)val);
             var newFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.Modulate);
-            _darkeningColorFilters[darken_percentage] = newFilter;
+            _localDarkeningColorFilters[darken_percentage] = newFilter;
             return newFilter;
         }
 
         private SKColorFilter GetCompositeColorFilter(SKColorFilter highlightFilter, int darken_percentage)
         {
-            if (_compositeColorFilters == null)
-            {
-                _compositeColorFilters = new Dictionary<(SKColorFilter, int), SKColorFilter>();
-            }
+            if (darken_percentage < 0) darken_percentage = 0;
+            if (darken_percentage > 100) darken_percentage = 100;
 
-            var key = (highlightFilter, darken_percentage);
-            if (_compositeColorFilters.TryGetValue(key, out var filter))
+            if (highlightFilter == UIUtils.LookHighlightColorFilter)
             {
-                return filter;
-            }
+                if (_localCompositeLookColorFilters == null)
+                    _localCompositeLookColorFilters = new SKColorFilter[101];
+                var filter = _localCompositeLookColorFilters[darken_percentage];
+                if (filter != null) return filter;
 
-            if (_compositeColorFilters.Count >= GHConstants.MaxColorFilterCacheSize)
+                var darkeningFilter = GetDarkeningColorFilter(darken_percentage);
+                var newFilter = SKColorFilter.CreateCompose(highlightFilter, darkeningFilter);
+                _localCompositeLookColorFilters[darken_percentage] = newFilter;
+                return newFilter;
+            }
+            else if (highlightFilter == UIUtils.MapHighlightColorFilter)
             {
-                foreach (var oldFilter in _compositeColorFilters.Values)
+                if (_localCompositeMapColorFilters == null)
+                    _localCompositeMapColorFilters = new SKColorFilter[101];
+                var filter = _localCompositeMapColorFilters[darken_percentage];
+                if (filter != null) return filter;
+
+                var darkeningFilter = GetDarkeningColorFilter(darken_percentage);
+                var newFilter = SKColorFilter.CreateCompose(highlightFilter, darkeningFilter);
+                _localCompositeMapColorFilters[darken_percentage] = newFilter;
+                return newFilter;
+            }
+            else
+            {
+                if (_localCompositeColorFiltersFallback == null)
                 {
-                    oldFilter?.Dispose();
+                    _localCompositeColorFiltersFallback = new Dictionary<(SKColorFilter, int), SKColorFilter>();
                 }
-                _compositeColorFilters.Clear();
-                _localCompositeFilterCachePruned = true;
-            }
 
-            var darkeningFilter = GetDarkeningColorFilter(darken_percentage);
-            var newFilter = SKColorFilter.CreateCompose(highlightFilter, darkeningFilter);
-            _compositeColorFilters[key] = newFilter;
-            return newFilter;
+                var key = (highlightFilter, darken_percentage);
+                if (_localCompositeColorFiltersFallback.TryGetValue(key, out var filter))
+                {
+                    return filter;
+                }
+
+                if (_localCompositeColorFiltersFallback.Count >= GHConstants.MaxColorFilterCacheSize)
+                {
+                    foreach (var oldFilter in _localCompositeColorFiltersFallback.Values)
+                    {
+                        oldFilter?.Dispose();
+                    }
+                    _localCompositeColorFiltersFallback.Clear();
+                    _localCompositeFilterCachePruned = true;
+                }
+
+                var darkeningFilter = GetDarkeningColorFilter(darken_percentage);
+                var newFilter = SKColorFilter.CreateCompose(highlightFilter, darkeningFilter);
+                _localCompositeColorFiltersFallback[key] = newFilter;
+                return newFilter;
+            }
+        }
+
+        private void ClearColorFilterCaches()
+        {
+            if (_localDarkeningColorFilters != null)
+            {
+                for (int i = 0; i < _localDarkeningColorFilters.Length; i++)
+                {
+                    _localDarkeningColorFilters[i]?.Dispose();
+                    _localDarkeningColorFilters[i] = null;
+                }
+            }
+            if (_localCompositeLookColorFilters != null)
+            {
+                for (int i = 0; i < _localCompositeLookColorFilters.Length; i++)
+                {
+                    _localCompositeLookColorFilters[i]?.Dispose();
+                    _localCompositeLookColorFilters[i] = null;
+                }
+            }
+            if (_localCompositeMapColorFilters != null)
+            {
+                for (int i = 0; i < _localCompositeMapColorFilters.Length; i++)
+                {
+                    _localCompositeMapColorFilters[i]?.Dispose();
+                    _localCompositeMapColorFilters[i] = null;
+                }
+            }
+            if (_localCompositeColorFiltersFallback != null)
+            {
+                foreach (var filter in _localCompositeColorFiltersFallback.Values)
+                    filter?.Dispose();
+                _localCompositeColorFiltersFallback.Clear();
+            }
         }
 
         private bool IsNoWallEndAutoDraw(int x, int y)
