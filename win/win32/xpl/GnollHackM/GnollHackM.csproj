@@ -69,7 +69,8 @@
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
     <MtouchInterpreter>-all</MtouchInterpreter>
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
-    <DefineConstants>$(DefineConstants);UNITY_IPHONE;SKIASHARP_3119</DefineConstants>
+    <DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
+    <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
     <ProvisioningType>manual</ProvisioningType>
   </PropertyGroup>
 
@@ -85,7 +86,7 @@
     <!--<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>-->
     <!--<WindowsAppSDKSelfContained Condition="'$(WindowsPackageType)'=='None'">true</WindowsAppSDKSelfContained>
     <SelfContained Condition="'$(WindowsPackageType)'=='None'">true</SelfContained>-->
-    <DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>
+    <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
   </PropertyGroup>
   
   <!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
