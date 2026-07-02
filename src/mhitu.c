@@ -3235,6 +3235,41 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
     //Add special enchantments
     if (mattk->aatyp == AT_WEAP && omonwep) 
     {
+        if (is_obj_opoisoned(omonwep) && is_poisonable(omonwep))
+        {
+            boolean unpoisonmsg = FALSE;
+            int nopoison = (10 - (omonwep->owt / 10));
+            if (nopoison < 2)
+                nopoison = 2;
+            if (!rn2(nopoison))
+            {
+                /* remove poison now in case obj ends up in a bones file */
+                set_obj_opoisoned(omonwep, FALSE);
+                /* defer "obj is no longer poisoned" until after hit message */
+                unpoisonmsg = mon_visible(mtmp) && cansee(mtmp->mx, mtmp->my); /* Can see the monster and the weapon */
+            }
+            char saved_oname[BUFSZ];
+            Strcpy(saved_oname, cxname(omonwep));
+
+            char onmbuf[BUFSZ], knmbuf[BUFSZ];
+            Strcpy(onmbuf, xname(omonwep));
+            Strcpy(knmbuf, killer_xname(omonwep));
+            poisoned(onmbuf, A_STR, knmbuf,
+                /* if damage triggered life-saving,
+                   poison is limited to attrib loss */
+                0, FALSE, 2, mtmp);
+
+            if (unpoisonmsg)
+            {
+                if (iflags.using_gui_sounds)
+                {
+                    play_sfx_sound_at_location(SFX_WEAPON_NO_LONGER_POISONED, mtmp->mx, mtmp->my);
+                }
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s %s no longer poisoned.", s_suffix(Monnam(mtmp)), saved_oname,
+                    vtense(saved_oname, "are"));
+            }
+        }
+
         if (omonwep->elemental_enchantment > 0)
         {
             char onmbuf[BUFSZ], knmbuf[BUFSZ];
