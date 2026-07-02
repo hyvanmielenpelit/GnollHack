@@ -70,7 +70,7 @@
     <MtouchInterpreter>-all</MtouchInterpreter>
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
-    <DefineConstants>$(DefineConstants);METAL</DefineConstants>
+    <!--<DefineConstants>$(DefineConstants);METAL</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
     <ProvisioningType>manual</ProvisioningType>
   </PropertyGroup>

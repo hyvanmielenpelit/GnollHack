@@ -2526,6 +2526,8 @@ namespace GnollHackX
         public const ulong DiskSpaceLowThresholdInBytes = 5 * 1024UL * 1024UL * 1024UL;
         public const bool EnableExperimentalFeatures = false;
         public const int NumGuiAchievementLongs = ((int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS - 1) / 64 + 1;
+        public const ulong DefaultMetalGPUCacheSize = 256UL * 1024UL * 1024UL;
+        public const ulong MaxMetalGPUCacheSize = 384UL * 1024UL * 1024UL;
     }
 
     [StructLayout(LayoutKind.Sequential)]

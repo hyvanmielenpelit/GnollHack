@@ -170,8 +170,8 @@ namespace GnollHackX
                 PlatformService?.OverrideAnimatorDuration();
 
             SetAvailableGPUCacheLimits(TotalMemory);
-            PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
-            SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
+            SetInitialGPUCacheLevels();
+
             UseMipMap = Preferences.Get("UseMainMipMap", IsUseMainMipMapDefault);
             UseGPU = Preferences.Get("UseMainGLCanvas", IsUseMainGPUDefault);
             UseAuxGPU = Preferences.Get("UseAuxiliaryGLCanvas", IsUseAuxGPUDefault);
@@ -217,6 +217,41 @@ namespace GnollHackX
             ChangeToCustomScreenResolution();
             InitializePlatformRenderLoop();
             InitializeMemoryWarnings();
+        }
+
+        private static void SetInitialGPUCacheLevels()
+        {
+            long primaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
+            /* Check if higher than maximum allowed */
+            if (primaryGPUCacheLimit > 0)
+            {
+                if (_cacheSizeList.Count > 2 && _cacheSizeList[_cacheSizeList.Count - 1].Size > 0)
+                {
+                    if (_cacheSizeList[_cacheSizeList.Count - 1].Size < primaryGPUCacheLimit)
+                        primaryGPUCacheLimit = _cacheSizeList[_cacheSizeList.Count - 1].Size;
+                }
+                else
+                {
+                    primaryGPUCacheLimit = _cacheSizeList[_cacheSizeList.Count - 1].Size;
+                }
+            }
+            PrimaryGPUCacheLimit = primaryGPUCacheLimit;
+
+            /* Check if higher than maximum allowed */
+            long secondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
+            if (secondaryGPUCacheLimit > 0)
+            {
+                if (_cacheSizeList2.Count > 2 && _cacheSizeList2[_cacheSizeList2.Count - 1].Size > 0)
+                {
+                    if (_cacheSizeList2[_cacheSizeList2.Count - 1].Size < secondaryGPUCacheLimit)
+                        secondaryGPUCacheLimit = _cacheSizeList2[_cacheSizeList2.Count - 1].Size;
+                }
+                else
+                {
+                    secondaryGPUCacheLimit = -2L;
+                }
+            }
+            SecondaryGPUCacheLimit = secondaryGPUCacheLimit;
         }
 
         private static long _usedBitmapBytes = 0L;
@@ -1238,9 +1273,13 @@ namespace GnollHackX
         private static long GetDefaultPrimaryGPUCacheSize(ulong memory)
         {
             long TotalMemInBytes = (long)memory;
+#if IOS && METAL
+            long def = 256L * 1024 * 1024;
+#else
             long max = Math.Min(1280L * 1024 * 1024, Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024)));
             long min = Math.Max(768L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 8);
             long def = Math.Min(max, min);
+#endif
             if (_cacheSizeList.Count > 2 && _cacheSizeList[_cacheSizeList.Count - 1].Size >= 256L * 1024 * 1024 && def >= _cacheSizeList[_cacheSizeList.Count - 1].Size)
                 return _cacheSizeList[_cacheSizeList.Count - 1].Size;
 
@@ -1256,7 +1295,11 @@ namespace GnollHackX
         private static long GetDefaultSecondaryGPUCacheSize(ulong memory)
         {
             long TotalMemInBytes = (long)memory;
+#if IOS && METAL
+            long def = 256L * 1024 * 1024;
+#else
             long def = Math.Min(768L * 1024 * 1024, Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 8));
+#endif
             if (_cacheSizeList2.Count > 2 && _cacheSizeList2[_cacheSizeList2.Count - 1].Size >= 256L * 1024 * 1024 && def > _cacheSizeList2[_cacheSizeList2.Count - 1].Size)
                 return _cacheSizeList2[_cacheSizeList2.Count - 1].Size;
             for (int i = 2; i < _cacheSizeList2.Count; i++)
@@ -1310,7 +1353,11 @@ namespace GnollHackX
             for (int i = _cacheSizeList.Count - 1; i >= 2; i--)
             {
                 CacheSizeItem item = _cacheSizeList[i];
-                if (item.Size >= TotalMemInBytes)
+                if (item.Size >= TotalMemInBytes
+#if IOS && METAL
+                    || item.Size > GHConstants.MaxMetalGPUCacheSize
+#endif
+                    )
                     _cacheSizeList.RemoveAt(i);
             }
             foreach (CacheSizeItem item in _cacheSizeList)
@@ -2031,7 +2078,7 @@ namespace GnollHackX
 
             SleepMuteMode = true;
 
-#if !GNH_MAUI || (!ANDROID && !IOS) 
+#if !GNH_MAUI || (!ANDROID && !IOS)
             SaveGameOnSleep();
 #else
             /* Android and iOS are handled in MauiProgram */
