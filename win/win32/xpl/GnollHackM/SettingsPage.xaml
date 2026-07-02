@@ -557,7 +557,6 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="ForceMaxMessageSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
-
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Walk Arrows"
                                             FontFamily="Underwood" TextColor="Black"
@@ -566,6 +565,24 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="WalkArrowSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Default Auto-Center"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="YesClipNormalSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Show Keyboard Shortcuts"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="ShowKeyboardShortcutsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+
+                            <Label Text="Drawing" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Lighter Unlit Areas"
                                             FontFamily="Underwood" TextColor="Black"
@@ -590,14 +607,8 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="BreatheAnimationSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Default Auto-Center"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="YesClipNormalSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
+
+                            <Label Text="Format" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Metric System"
                                     FontFamily="Underwood" TextColor="Black"
@@ -621,14 +632,6 @@
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="DamageFormulaSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Show Keyboard Shortcuts"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="ShowKeyboardShortcutsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
                             <Label Text="Menu Appearance" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
