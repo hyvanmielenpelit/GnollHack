@@ -537,6 +537,15 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
                 poisondamage = adjust_damage(d(2, 6), (struct monst*)0, mtmp, AD_DRST, ADFLAGS_NONE);
                 damage += poisondamage;
             }
+
+            /* Check for poison wearing off */
+            int nopoison = (10 - (otmp->owt / 10));
+            if (nopoison < 2)
+                nopoison = 2;
+            if (!rn2(nopoison))
+            {
+                set_obj_opoisoned(otmp, FALSE);
+            }
         }
 
         if (otmp->elemental_enchantment)
