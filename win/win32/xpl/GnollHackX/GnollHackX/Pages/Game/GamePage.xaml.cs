@@ -6171,6 +6171,7 @@ namespace GnollHackX.Pages.Game
         }
 
         private List<GHDrawCommand> _drawCommandList = new List<GHDrawCommand>();
+        private int _lastDrawCommandCount = 0;
 
         public void DrawSplitBitmap(SKCanvas canvas, bool delayedDraw, float destSplitY, SKImage bitmap, SKRect source, SKRect dest, SKPaint paint, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering) //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
         {
@@ -8694,6 +8695,7 @@ namespace GnollHackX.Pages.Game
                                                                 }
                                                             }
                                                         }
+                                                        _lastDrawCommandCount = _drawCommandList.Count;
                                                         _drawCommandList.Clear();
 
                                                         paint.Color = SKColors.Black;
@@ -12612,6 +12614,7 @@ namespace GnollHackX.Pages.Game
                         GHApp.MaybeWriteScreenLog(screenLogging, "Composite color filter fallback cache length: " + (_localCompositeColorFiltersFallback?.Count ?? 0));
                         GHApp.MaybeWriteScreenLog(screenLogging, "Darkened bitmap cache length: " + (_darkenedBitmaps?.Count ?? 0));
                         GHApp.MaybeWriteScreenLog(screenLogging, "Darkened autodraw bitmap cache length: " + (_darkenedAutodrawBitmaps?.Count ?? 0));
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Draw command list count (last frame): " + _lastDrawCommandCount);
                     }
 
                     /* Then action screen debug logging */
