@@ -78,6 +78,7 @@ namespace GnollHackX
         public static void Initialize()
         {
             _assembly = typeof(App).GetTypeInfo().Assembly;
+            _nowAtInit = DateTime.Now;
 
             VersionTracking.Track();
             GetDependencyServices();
@@ -125,6 +126,9 @@ namespace GnollHackX
             Preferences.Set("WentToSleepWithGameOn", false);
             Preferences.Set("GameSaveResult", 0);
             InformAboutCrashReport = !InformAboutGameTermination;
+
+            CheckSaveGameBreakingVersionWarning();
+
             PostingGameStatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
 #if !SENTRY
             PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
@@ -218,6 +222,39 @@ namespace GnollHackX
             InitializePlatformRenderLoop();
             InitializeMemoryWarnings();
         }
+
+        private static void CheckSaveGameBreakingVersionWarning()
+        {
+            /* Version warnings */
+            if (IsSaveGameBreakingChangeUpcoming)
+            {
+                ulong currentGnollHackVersionNumber = GnollHackService?.GetVersionNumber() ?? _saveGameBreakingChangeVersionNumber;
+                if (_saveGameBreakingChangeVersionNumber > currentGnollHackVersionNumber)
+                {
+                    InformAboutSaveGameBreakingVersion = !Preferences.Get("Version" + _saveGameBreakingChangeVersionShortText + "WarningShown", false);
+                }
+            }
+        }
+
+        private static DateTime _nowAtInit;
+
+        private static bool _saveGameBreakingChangeUpcoming = true;
+        private static DateTime _saveGameBreakingChangePublishDate = new DateTime(2026, 07, 01);
+        private static DateTime _saveGameBreakingChangeLatestImminentDate = new DateTime(2026, 09, 30);
+        private static DateTime _saveGameBreakingChangeExpiryDate = new DateTime(2027, 06, 30);
+        private static ulong _saveGameBreakingChangeVersionNumber = 0x04030000UL;
+        private static string _saveGameBreakingChangeVersionShortText = "430";
+        private static string _saveGameBreakingChangeVersionLongText = "4.3.0";
+        private static string _saveGameBreakingChangeVersionDescription = "";
+
+        public static bool IsSaveGameBreakingChangeImminent => _saveGameBreakingChangeUpcoming ? _nowAtInit >= _saveGameBreakingChangePublishDate && _nowAtInit <= _saveGameBreakingChangeLatestImminentDate : false;
+
+        public static bool IsSaveGameBreakingChangeUpcoming => _saveGameBreakingChangeUpcoming ? _nowAtInit >= _saveGameBreakingChangePublishDate && _nowAtInit <= _saveGameBreakingChangeExpiryDate : false;
+
+        public static bool IsSaveGameBreakingVersionUpcoming => _saveGameBreakingChangeUpcoming;
+        public static string UpcomingSaveGameBreakingVersionShortText => _saveGameBreakingChangeVersionShortText;
+        public static string UpcomingSaveGameBreakingVersionText => _saveGameBreakingChangeVersionLongText;
+        public static string UpcomingSaveGameBreakingDescriptionText => _saveGameBreakingChangeVersionDescription;
 
         private static void SetInitialGPUCacheLevels()
         {
@@ -1596,6 +1633,8 @@ namespace GnollHackX
         public static bool InformAboutIncompatibleSavedGames = false;
         public static bool InformAboutRecordingSetOff = false;
         public static bool InformAboutFreeDiskSpace = false;
+        public static bool InformAboutSaveGameBreakingVersion = false;
+
         public static bool SavedLongerMessageHistory { get; set; }
         public static bool SavedHideMessageHistory { get; set; }
         public static ulong FoundManuals { get; set; }
