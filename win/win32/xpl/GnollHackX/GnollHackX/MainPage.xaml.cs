@@ -995,7 +995,7 @@ namespace GnollHackX
                         endText = "We recommend that you disable automatic updates in your device settings and manually apply updates when you have no saved games.";
 
                     bool isImminent = GHApp.IsSaveGameBreakingChangeImminent;
-                    DisplayAlertGrid(isImminent ? "Upcoming Save Game Breaking Version" : "Save Game Breaking Version",
+                    DisplayAlertGrid(isImminent ? "Upcoming Save Game Break" : "Save Game Break Warning",
                         (isImminent ? "GnollHack is soon to be updated to a newer version " + GHApp.UpcomingSaveGameBreakingVersionText + ", for which your existing saved games are incompatible." 
                                     : "A new version of GnollHack, version " + GHApp.UpcomingSaveGameBreakingVersionText + " or later, may be available for update but it is incompatible with your existing saved games.") 
                         + (string.IsNullOrEmpty(endText) ? "" : " " + endText)
