@@ -3983,6 +3983,7 @@ E void u_wait_until_end(void);
 E void m_wait_until_end(struct monst*, enum action_tile_types);
 E void remove_monster_and_nearby_waitforu(struct monst*);
 E boolean m_slips_free(struct monst*, struct attack*);
+E boolean randomize_obj_unpoison(struct obj*);
 
 /* ### unixmain.c ### */
 

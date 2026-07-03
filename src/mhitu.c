@@ -3238,10 +3238,7 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
         if (is_obj_opoisoned(omonwep) && is_poisonable(omonwep))
         {
             boolean unpoisonmsg = FALSE;
-            int nopoison = (10 - (omonwep->owt / 10));
-            if (nopoison < 2)
-                nopoison = 2;
-            if (!rn2(nopoison))
+            if (randomize_obj_unpoison(omonwep))
             {
                 /* remove poison now in case obj ends up in a bones file */
                 set_obj_opoisoned(omonwep, FALSE);
@@ -3261,10 +3258,7 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
 
             if (unpoisonmsg)
             {
-                if (iflags.using_gui_sounds)
-                {
-                    play_sfx_sound_at_location(SFX_WEAPON_NO_LONGER_POISONED, mtmp->mx, mtmp->my);
-                }
+                play_sfx_sound_at_location(SFX_WEAPON_NO_LONGER_POISONED, mtmp->mx, mtmp->my);
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s %s no longer poisoned.", s_suffix(Monnam(mtmp)), saved_oname,
                     vtense(saved_oname, "are"));
             }

@@ -1822,10 +1822,6 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
 
     if (ispoisoned && !isdisintegrated) 
     {
-        int nopoison = (10 - (obj->owt / 10));
-
-        if (nopoison < 2)
-            nopoison = 2;
         if (Role_if(PM_SAMURAI))
         {
             play_sfx_sound(SFX_CAITIFF);
@@ -1838,7 +1834,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
             You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "like an evil coward for using a poisoned weapon.");
             adjalign(-1);
         }
-        if (obj && !rn2(nopoison)) 
+        if (obj && randomize_obj_unpoison(obj)) 
         {
             /* remove poison now in case obj ends up in a bones file */
             set_obj_opoisoned(obj, FALSE);
@@ -5580,6 +5576,17 @@ display_m_being_hit(struct monst *mon, enum hit_tile_types hit_symbol_shown, int
     int y = use_bhitpos ? bhitpos.y : mon->my;
     if(!(u.uswallow && mon == u.ustuck) && isok(x, y) && cansee(x, y)) // Show hit to invisible, if you can see the location
         display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_mflags);
+}
+
+boolean
+randomize_obj_unpoison(struct obj* otmp)
+{
+    if (!otmp)
+        return FALSE;
+    int nopoison = (10 - (otmp->owt / 10));
+    if (nopoison < 2)
+        nopoison = 2;
+    return !rn2(nopoison);
 }
 
 /*uhitm.c*/

@@ -374,6 +374,8 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
     int objgone = 1;
     double poisondamage = 0;
     struct obj *mon_launcher = archer ? MON_WEP(archer) : NULL;
+    boolean unpoisonmsg = FALSE;
+    char saved_oname[BUFSZ] = "";
 
     notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
     ismimic = M_AP_TYPE(mtmp) && M_AP_TYPE(mtmp) != M_AP_MONSTER;
@@ -539,12 +541,12 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
             }
 
             /* Check for poison wearing off */
-            int nopoison = (10 - (otmp->owt / 10));
-            if (nopoison < 2)
-                nopoison = 2;
-            if (!rn2(nopoison))
+            if (randomize_obj_unpoison(otmp))
             {
                 set_obj_opoisoned(otmp, FALSE);
+                unpoisonmsg = !Blind;
+                Strcpy(saved_oname, thecxname(otmp));
+                *saved_oname = highc(*saved_oname);
             }
         }
 
@@ -752,6 +754,13 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
             if (vis && !is_blinded(mtmp))
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is blinded by %s.", Monnam(mtmp), the(xname(otmp)));
             increase_mon_property(mtmp, BLINDED, rnd(25) + 20);
+        }
+
+        if (unpoisonmsg)
+        {
+            play_sfx_sound(SFX_WEAPON_NO_LONGER_POISONED);
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s no longer poisoned.", saved_oname,
+                vtense(saved_oname, "are"));
         }
 
         objgone = drop_throw(otmp, 1, bhitpos.x, bhitpos.y);
