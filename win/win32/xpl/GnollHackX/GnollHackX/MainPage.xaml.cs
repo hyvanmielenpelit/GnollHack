@@ -1619,17 +1619,17 @@ namespace GnollHackX
                 PopupTitleLabel.Text = "Auto-Update Warning";
                 bool isImminient = showautoupdatealertupcoming ? GHApp.IsSaveGameBreakingChangeImminent : false;
                 string startText = showautoupdatealertupcoming 
-                    ? (isImminient ? "Updating GnollHack to the upcoming version " + GHApp.UpcomingSaveGameBreakingVersionText 
-                                   : "Updating GnollHack to version " + GHApp.UpcomingSaveGameBreakingVersionText + " or later") 
-                    : "Updating GnollHack";
+                    ? (isImminient ? "Updating GnollHack to the upcoming version will" + GHApp.UpcomingSaveGameBreakingVersionText 
+                                   : "Updating GnollHack to version " + GHApp.UpcomingSaveGameBreakingVersionText + " or later will") 
+                    : "Updating GnollHack may";
                 if (GHApp.IsAndroid && isfromgoogleplay)
-                    PopupLabel.Text = startText + " may cause your saved games to become invalid. We recommend that you turn off Auto-Update from Google Play Store for GnollHack and manually apply updates when you have no saved games.";
+                    PopupLabel.Text = startText + " cause your saved games to become invalid. We recommend that you turn off Auto-Update from Google Play Store for GnollHack and manually apply updates when you have no saved games.";
                 else if (GHApp.IsiOS)
-                    PopupLabel.Text = startText + " may cause your saved games to become invalid. We recommend that you disable automatic updates by toggling off App Updates under App Store section in the Settings app, and manually apply updates when you have no saved games.";
+                    PopupLabel.Text = startText + " cause your saved games to become invalid. We recommend that you disable automatic updates by toggling off App Updates under App Store section in the Settings app, and manually apply updates when you have no saved games.";
                 else if (GHApp.IsWindows)
                 {
                     if (GHApp.IsPackaged)
-                        PopupLabel.Text = startText + " may cause your saved games to become invalid. We recommend that you disable automatic updates by toggling off App Updates under Profile > Settings in the Microsoft Store app, and manually apply updates when you have no saved games.";
+                        PopupLabel.Text = startText + " cause your saved games to become invalid. We recommend that you disable automatic updates by toggling off App Updates under Profile > Settings in the Microsoft Store app, and manually apply updates when you have no saved games.";
                     else
                     {
                         if (GHApp.IsSteam)
@@ -1643,12 +1643,12 @@ namespace GnollHackX
                         }
                         else
                         {
-                            PopupLabel.Text = startText + " may cause your saved games to become invalid. We recommend that you do not use an automatic update of GnollHack, and manually apply updates only when you have no saved games.";
+                            PopupLabel.Text = startText + " cause your saved games to become invalid. We recommend that you do not use an automatic update of GnollHack, and manually apply updates only when you have no saved games.";
                         }
                     }
                 }
                 else
-                    PopupLabel.Text = "Updating GnollHack may cause your saved games to become invalid. We recommend that you disable automatic updates in your device settings and manually apply updates when you have no saved games.";
+                    PopupLabel.Text = startText + " cause your saved games to become invalid. We recommend that you disable automatic updates in your device settings and manually apply updates when you have no saved games.";
                 PopupGrid.IsVisible = true;
             }
             else
