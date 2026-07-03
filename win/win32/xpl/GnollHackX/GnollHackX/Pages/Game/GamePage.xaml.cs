@@ -17747,7 +17747,7 @@ namespace GnollHackX.Pages.Game
 
         public async Task FadeToBlack(uint milliseconds)
         {
-            //MainGrid.IsEnabled = false;
+            MainGrid.IsEnabled = false;
 #if WINDOWS
             FadeFrame.Opacity = 0.0;
             FadeFrame.IsVisible = true;
@@ -17767,7 +17767,7 @@ namespace GnollHackX.Pages.Game
 
         public async Task FadeFromBlack(uint milliseconds)
         {
-            //MainGrid.IsEnabled = true;
+            MainGrid.IsEnabled = true;
 #if WINDOWS
             FadeFrame.Opacity = 1.0;
             await Task.Yield(); /* Just in case */
