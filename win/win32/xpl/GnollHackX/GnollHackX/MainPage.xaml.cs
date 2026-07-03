@@ -1619,7 +1619,7 @@ namespace GnollHackX
                 PopupTitleLabel.Text = "Auto-Update Warning";
                 bool isImminient = showautoupdatealertupcoming ? GHApp.IsSaveGameBreakingChangeImminent : false;
                 string startText = showautoupdatealertupcoming 
-                    ? (isImminient ? "Updating GnollHack to the upcoming version will" + GHApp.UpcomingSaveGameBreakingVersionText 
+                    ? (isImminient ? "Updating GnollHack to the upcoming version " + GHApp.UpcomingSaveGameBreakingVersionText + " will"
                                    : "Updating GnollHack to version " + GHApp.UpcomingSaveGameBreakingVersionText + " or later will") 
                     : "Updating GnollHack may";
                 if (GHApp.IsAndroid && isfromgoogleplay)
