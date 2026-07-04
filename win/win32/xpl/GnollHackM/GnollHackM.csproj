@@ -69,7 +69,7 @@
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
     <MtouchInterpreter>-all</MtouchInterpreter>
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
-    <DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
+    <DefineConstants>$(DefineConstants);FMOD_GNH_IOS</DefineConstants>
     <!--<DefineConstants>$(DefineConstants);METAL</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
     <ProvisioningType>manual</ProvisioningType>
@@ -801,7 +801,10 @@
 		<MauiAsset Include="Platforms\Windows\libs\libfsbvorbis64.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
+    <MauiAsset Include="Platforms\Windows\libs\opus.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </MauiAsset>
+    <MauiAsset Include="Platforms\Windows\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
 		<MauiAsset Include="Platforms\Windows\gnh\license" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
