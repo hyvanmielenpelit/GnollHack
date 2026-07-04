@@ -8,7 +8,7 @@
 
   	<Copy SourceFiles="$(LibShareDir)defaults.gnh;$(DatDir)license;$(DatDir)xcredits;$(LibShareDir)sysconf;$(DatDir)symbols;$(WinWin32Dir)record" DestinationFolder="$(MauiWindowsGnhDir)"/>
 	  <Message Text="Copied GnollHack files from $(LibShareDir) to $(MauiWindowsGnhDir)" Importance="High" />
-  	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x64\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(WinFmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(MauiWindowsLibsDir)"/>
+  	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x64\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(WinFmodDir)fsbank\lib\winnt-x64\opus.dll;$(WinFmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(MauiWindowsLibsDir)"/>
 	  <Message Text="Copied FMOD files from $(WinFmodDir) to $(MauiWindowsLibsDir)" Importance="High" />
   </Target>
   <Target Name="Clean">

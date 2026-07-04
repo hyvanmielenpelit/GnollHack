@@ -8,8 +8,8 @@
 
   	<Copy SourceFiles="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record" DestinationFolder="$(BinDir)"/>
 	<Message Text="Copied GnollHack files from $(BankDesktopDir) to $(BinDir)" Importance="High" />
-  	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x86\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x86\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x86\libfsbvorbis.dll;$(WinFmodDir)studio\lib\winnt-x86\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
-  	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x64\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(WinFmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
+  	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x86\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x86\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x86\libfsbvorbis.dll;$(WinFmodDir)fsbank\lib\winnt-x86\opus.dll;$(WinFmodDir)studio\lib\winnt-x86\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
+  	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x64\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(WinFmodDir)fsbank\lib\winnt-x64\opus.dll;$(WinFmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
 	<Message Text="Copied FMOD files from $(WinFmodDir) to $(BinDir) using platform $(Platform)" Importance="High" />
   </Target>
   <Target Name="Clean">
