@@ -226,7 +226,7 @@ namespace GnollHackX
         private static void CheckSaveGameBreakingVersionWarning()
         {
             /* Version warnings */
-            if (IsSaveGameBreakingChangeUpcoming)
+            if (IsSaveGameBreakingChangeNotificationPeriodNow)
             {
                 ulong currentGnollHackVersionNumber = GnollHackService?.GetVersionNumber() ?? _saveGameBreakingChangeVersionNumber;
                 if (_saveGameBreakingChangeVersionNumber > currentGnollHackVersionNumber)
@@ -238,7 +238,7 @@ namespace GnollHackX
 
         private static DateTime _nowAtInit;
 
-        private static bool _saveGameBreakingChangeUpcoming = true;
+        private static bool _saveGameBreakingChangeNotificationOn = true;
         private static DateTime _saveGameBreakingChangePublishDate = new DateTime(2026, 07, 01);
         private static DateTime _saveGameBreakingChangeLatestImminentDate = new DateTime(2026, 09, 30);
         private static DateTime _saveGameBreakingChangeExpiryDate = new DateTime(2027, 06, 30);
@@ -247,11 +247,11 @@ namespace GnollHackX
         private static string _saveGameBreakingChangeVersionLongText = "4.3.0";
         private static string _saveGameBreakingChangeVersionDescription = "";
 
-        public static bool IsSaveGameBreakingChangeImminent => _saveGameBreakingChangeUpcoming ? _nowAtInit >= _saveGameBreakingChangePublishDate && _nowAtInit <= _saveGameBreakingChangeLatestImminentDate : false;
+        public static bool IsSaveGameBreakingChangeUpcoming => _saveGameBreakingChangeNotificationOn ? _nowAtInit >= _saveGameBreakingChangePublishDate && _nowAtInit <= _saveGameBreakingChangeLatestImminentDate : false;
 
-        public static bool IsSaveGameBreakingChangeUpcoming => _saveGameBreakingChangeUpcoming ? _nowAtInit >= _saveGameBreakingChangePublishDate && _nowAtInit <= _saveGameBreakingChangeExpiryDate : false;
+        public static bool IsSaveGameBreakingChangeNotificationPeriodNow => _saveGameBreakingChangeNotificationOn ? _nowAtInit >= _saveGameBreakingChangePublishDate && _nowAtInit <= _saveGameBreakingChangeExpiryDate : false;
 
-        public static bool IsSaveGameBreakingVersionUpcoming => _saveGameBreakingChangeUpcoming;
+        public static bool IsSaveGameBreakingNotificationOn => _saveGameBreakingChangeNotificationOn;
         public static string UpcomingSaveGameBreakingVersionShortText => _saveGameBreakingChangeVersionShortText;
         public static string UpcomingSaveGameBreakingVersionText => _saveGameBreakingChangeVersionLongText;
         public static string UpcomingSaveGameBreakingDescriptionText => _saveGameBreakingChangeVersionDescription;

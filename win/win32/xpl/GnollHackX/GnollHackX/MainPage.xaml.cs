@@ -994,7 +994,7 @@ namespace GnollHackX
                     else
                         endText = "We recommend that you disable automatic updates in your device settings and manually apply updates when you have no saved games.";
 
-                    bool isImminent = GHApp.IsSaveGameBreakingChangeImminent;
+                    bool isImminent = GHApp.IsSaveGameBreakingChangeUpcoming;
                     DisplayAlertGrid(isImminent ? "Upcoming Save Incompatibility" : "Save Incompatibility Warning",
                         (isImminent ? "GnollHack is soon to be updated to a newer version " + GHApp.UpcomingSaveGameBreakingVersionText + ", for which your existing saved games are incompatible." 
                                     : "A new version of GnollHack, version " + GHApp.UpcomingSaveGameBreakingVersionText + " or later, may be available for update but it is incompatible with your existing saved games.") 
@@ -1609,7 +1609,7 @@ namespace GnollHackX
             GHApp.PlayButtonClickedSound();
 
             bool hideautoupdatealert = Preferences.Get("HideAutoUpdateAlert", false);
-            bool showautoupdatealertupcoming = GHApp.IsSaveGameBreakingVersionUpcoming ? Preferences.Get("ShowUpcomingVersion" + GHApp.UpcomingSaveGameBreakingVersionShortText + "AutoUpdateAlert", false) : false;
+            bool showautoupdatealertupcoming = GHApp.IsSaveGameBreakingNotificationOn ? Preferences.Get("ShowUpcomingVersion" + GHApp.UpcomingSaveGameBreakingVersionShortText + "AutoUpdateAlert", false) : false;
             bool isfromgoogleplay = true;
             if (allowAlerts && (!hideautoupdatealert || showautoupdatealertupcoming) && !GHApp.IsNoStore)
             {
@@ -1617,7 +1617,7 @@ namespace GnollHackX
                 PopupCheckBoxLayout.IsVisible = true;
                 PopupTitleLabel.TextColor = GHColors.Red;
                 PopupTitleLabel.Text = "Auto-Update Warning";
-                bool isImminient = showautoupdatealertupcoming ? GHApp.IsSaveGameBreakingChangeImminent : false;
+                bool isImminient = showautoupdatealertupcoming ? GHApp.IsSaveGameBreakingChangeUpcoming : false;
                 string startText = showautoupdatealertupcoming 
                     ? (isImminient ? "Updating GnollHack to the upcoming version " + GHApp.UpcomingSaveGameBreakingVersionText + " will"
                                    : "Updating GnollHack to version " + GHApp.UpcomingSaveGameBreakingVersionText + " or later will") 
@@ -1971,7 +1971,7 @@ namespace GnollHackX
                 if (PopupNoAgainCheckBox.IsChecked)
                 {
                     Preferences.Set("HideAutoUpdateAlert", true);
-                    if (GHApp.IsSaveGameBreakingVersionUpcoming)
+                    if (GHApp.IsSaveGameBreakingNotificationOn)
                         Preferences.Set("ShowUpcomingVersion" + GHApp.UpcomingSaveGameBreakingVersionShortText + "AutoUpdateAlert", false);
                     await Task.Delay(50);
                 }
