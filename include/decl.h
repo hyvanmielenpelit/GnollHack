@@ -325,12 +325,14 @@ E NEARDATA char horsename[];
 E NEARDATA char ramname[];
 E NEARDATA char luggagename[];
 E NEARDATA char wolfname[];
+E NEARDATA char tigername[];
 E short doggender;
 E short catgender;
 E short horsegender;
 E short ramgender;
 /* No luggagegender, because luggages are neuter */
 E short wolfgender;
+E short tigergender;
 
 E unsigned short dogbreed;
 E unsigned short catbreed;

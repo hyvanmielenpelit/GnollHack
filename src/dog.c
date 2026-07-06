@@ -508,7 +508,8 @@ makedog(void)
                 petnum == PM_PONY ? *horsename : 
                 petnum == PM_RAM ? *ramname : 
                 petnum == PM_DIREWOLF_CUB ? *wolfname : 
-                petnum == PM_SMALL_LUGGAGE ? *luggagename : 
+                petnum == PM_SABER_TOOTH_TIGER_CUB ? *tigername :
+                petnum == PM_SMALL_LUGGAGE ? *luggagename :
                 FALSE);
 
             boolean haschosengender = !!(
@@ -517,6 +518,7 @@ makedog(void)
                 petnum == PM_PONY ? horsegender :
                 petnum == PM_RAM ? ramgender :
                 petnum == PM_DIREWOLF_CUB ? wolfgender :
+                petnum == PM_SABER_TOOTH_TIGER_CUB ? tigergender :
                 FALSE);
 
             boolean haschosenbreed = !!(
@@ -639,6 +641,17 @@ makedog(void)
                 petgender = choose_pet_gender(pettype);
             else
                 petgender = wolfgender;
+        }
+    }
+    else if (pettype == PM_SABER_TOOTH_TIGER_CUB)
+    {
+        petname = tigername;
+        if (!ispresetgender)
+        {
+            if (!tigergender && petdetails_used)
+                petgender = choose_pet_gender(pettype);
+            else
+                petgender = tigergender;
         }
     }
     else

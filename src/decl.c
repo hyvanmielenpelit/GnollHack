@@ -387,8 +387,9 @@ NEARDATA char horsename[PL_PSIZ] = DUMMY;
 NEARDATA char ramname[PL_PSIZ] = DUMMY;
 NEARDATA char luggagename[PL_PSIZ] = DUMMY;
 NEARDATA char wolfname[PL_PSIZ] = DUMMY;
+NEARDATA char tigername[PL_PSIZ] = DUMMY;
 char preferred_pet; /* '\0', 'c', 'd', 'n' (none) */
-short doggender, catgender, horsegender, ramgender, wolfgender; /* 0 = random, 1 = male, 2 = female */
+short doggender, catgender, horsegender, ramgender, wolfgender, tigergender; /* 0 = random, 1 = male, 2 = female */
 unsigned short dogbreed;
 unsigned short catbreed;
 

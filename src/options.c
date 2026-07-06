@@ -551,6 +551,8 @@ static struct Comp_Opt {
     { "tile_width", "width of tiles", 20, DISP_IN_GAME },   /*WC*/
     { "tile_height", "height of tiles", 20, DISP_IN_GAME }, /*WC*/
     { "tile_file", "name of tile file", 70, DISP_IN_GAME }, /*WC*/
+    { "tigergender", "the gender of your (first) saber-tooth tiger (e.g., tigergender:female)", 20, DISP_IN_GAME },
+    { "tigername", "the name of your (first) saber-tooth tiger (e.g., tigername:Diego)", PL_PSIZ, DISP_IN_GAME },
     { "traps", "the symbols to use in drawing traps", MAX_TRAP_CHARS + 1,
       SET_IN_FILE },
     { "vary_msgcount", "show more old messages at a time", 20,
@@ -577,8 +579,7 @@ static struct Comp_Opt {
     { "windowchain", "window processor to use", WINTYPELEN, SET_IN_SYS },
 #endif
     { "wolfgender", "the gender of your (first) direwolf (e.g., wolfgender:female)", 20, DISP_IN_GAME },
-    { "wolfname", "the name of your (first) direwolf (e.g., wolfname:Shadow)",
-        PL_PSIZ, DISP_IN_GAME },
+    { "wolfname", "the name of your (first) direwolf (e.g., wolfname:Shadow)", PL_PSIZ, DISP_IN_GAME },
 #ifdef BACKWARD_COMPAT
     { "DECgraphics", "load DECGraphics display symbols", 70, SET_IN_FILE },
     { "IBMgraphics", "load IBMGraphics display symbols", 70, SET_IN_FILE },
@@ -2655,6 +2656,23 @@ parseoptions(char *opts, boolean tinitial, boolean tfrom_file)
         return retval;
     }
 
+    fullname = "tigername";
+    if (match_optname(opts, fullname, 9, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        else if ((op = string_for_env_opt(fullname, opts, FALSE)) != 0) {
+            nmcpy(tigername, op, PL_PSIZ);
+        }
+        else
+            return FALSE;
+        sanitize_name(tigername);
+        return retval;
+    }
+
     fullname = "doggender";
     if (match_optname(opts, fullname, 9, TRUE)) {
         if (duplicate)
@@ -2798,6 +2816,36 @@ parseoptions(char *opts, boolean tinitial, boolean tfrom_file)
                 break;
             default:
                 config_error_add("Unrecognized wolf gender '%s'.", op);
+                return FALSE;
+                break;
+            }
+        }
+        return retval;
+    }
+
+    fullname = "tigergender";
+    if (match_optname(opts, fullname, 11, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        if ((op = string_for_env_opt(fullname, opts, negated)) != 0) {
+            switch (lowc(*op)) {
+            case 'f': /* female */
+                tigergender = 2;
+                break;
+            case 'm': /* male */
+                tigergender = 1;
+                break;
+            case 'n': /* neuter or none */
+            case 'r': /* random */
+            case '*': /* random */
+                tigergender = 0;
+                break;
+            default:
+                config_error_add("Unrecognized tiger gender '%s'.", op);
                 return FALSE;
                 break;
             }
@@ -7412,6 +7460,8 @@ get_compopt_value(const char *optname, char *buf)
         Sprintf(buf, "%s", luggagename[0] ? luggagename : none);
     else if (!strcmp(optname, "wolfname"))
         Sprintf(buf, "%s", wolfname[0] ? wolfname : none);
+    else if (!strcmp(optname, "tigername"))
+        Sprintf(buf, "%s", tigername[0] ? tigername : none);
     else if (!strcmp(optname, "map_mode")) {
         i = iflags.wc_map_mode;
         Sprintf(buf, "%s",
@@ -7554,6 +7604,10 @@ get_compopt_value(const char *optname, char *buf)
     } else if (!strcmp(optname, "wolfgender")) {
         Sprintf(buf, "%s", (wolfgender == 1) ? "male"
                            : (wolfgender == 2) ? "female"
+                                 : "random");
+    } else if (!strcmp(optname, "tigergender")) {
+        Sprintf(buf, "%s", (tigergender == 1) ? "male"
+                           : (tigergender == 2) ? "female"
                                  : "random");
     } else if (!strcmp(optname, "dogbreed")) {
         Sprintf(buf, "%s", !dogbreed ? "generic"
