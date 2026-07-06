@@ -437,7 +437,7 @@
 #define G_STRAYED   0x00000100UL     /* generated only when the player has strayed from the his/her original alignment path */
 #define G_GENO      0x00000080UL     /* can be genocided */
 #define G_NOCORPSE  0x00000040UL     /* no corpse left ever */
-#define G_PREHISTORIC 0x00000020UL   /* generated in caveman quest */
+#define G_PREHISTORIC 0x00000020UL   /* can appear on prehistoric levels; i.e., generated in caveman quest */
 /* Reserved */
 #define G_FREQ      0x00000007UL     /* creation frequency mask */
 
