@@ -1174,7 +1174,7 @@ display_gamewindows(void)
     WIN_INVEN = create_nhwindow(NHW_MENU);
     /* in case of early quit where WIN_INVEN could be destroyed before
        ever having been used, use it here to pacify the Qt interface */
-    start_menu_ex(WIN_INVEN, GHMENU_STYLE_PERMANENT_INVENTORY);
+    start_menu_style(WIN_INVEN, GHMENU_STYLE_PERMANENT_INVENTORY);
     end_menu(WIN_INVEN, (char*)0);
 
     if (!(windowprocs.wincap2 & WC2_HEREWINDOW))
@@ -1386,7 +1386,7 @@ choose_game_difficulty(void)
     int n = 0;
 
     menuwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_DIFFICULTY);
+    start_menu_style(menuwin, GHMENU_STYLE_CHOOSE_DIFFICULTY);
     anything any = zeroany;
 
     int i;

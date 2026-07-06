@@ -3158,7 +3158,7 @@ set_vanq_order(void)
     int i, n, choice;
 
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
+    start_menu_style(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
     any = zeroany; /* zero out all bits */
     for (i = 0; i < SIZE(vanqorders); i++) {
         if (i == VANQ_ALPHA_MIX || i == VANQ_MCLS_HTOL) /* skip these */

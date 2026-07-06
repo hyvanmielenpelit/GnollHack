@@ -356,10 +356,10 @@ void lib_display_file(const char* filename, boolean must_exist)
 }
 
 static int last_menu_style = 0;
-void lib_start_menu_ex(winid wid, int style)
+void lib_start_menu_ex(winid wid, int style, int glyph, uint64_t mflags)
 {
     last_menu_style = style;
-    lib_callbacks.callback_start_menu_ex(wid, style);
+    lib_callbacks.callback_start_menu_ex(wid, style, glyph, mflags);
 }
 
 void lib_add_menu(winid wid, int glyph, const ANY_P* identifier, char accelerator, char group_accel, int attr, int color, const char* str, boolean presel)

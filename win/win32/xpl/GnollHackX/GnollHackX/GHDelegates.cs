@@ -63,7 +63,7 @@ namespace GnollHackX
     public delegate void IssueGuiCommandCallback(int cmd_id, int cmd_param, int cmd_param2, [MarshalAs(GHConstants.GHStringMarshallingType)] string cmd_str);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void StartMenuCallback(int winid, int style);
+    public delegate void StartMenuCallback(int winid, int style, int glyph, ulong mflags);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void AddMenuCallback(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, int color, [MarshalAs(GHConstants.GHStringMarshallingType)]  string text, byte presel);

@@ -451,7 +451,7 @@ doextlist(void)
     while (redisplay) {
         redisplay = FALSE;
         any = zeroany;
-        start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_COMMAND);
+        start_menu_style(menuwin, GHMENU_STYLE_CHOOSE_COMMAND);
 #ifndef GNH_MOBILE
         add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_TITLE, NO_COLOR,
                  "Extended Commands List", MENU_UNSELECTED);
@@ -793,7 +793,7 @@ doability(void)
 
         any = zeroany;
         win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_MENU_SCREEN, gui_glyph, extended_create_window_info_from_mon(&youmonst));
-        start_menu_ex(win, GHMENU_STYLE_CHARACTER);
+        start_menu_style(win, GHMENU_STYLE_CHARACTER);
 
         /* CHARACTER ABILITY INFORMATION */
         any = zeroany;
@@ -1126,7 +1126,7 @@ domonsterability(void)
 
     struct extended_create_window_info createinfo = extended_create_window_info_from_mon(&youmonst);
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_COMMAND_MENU, gui_glyph, createinfo);
-    start_menu_ex(win, GHMENU_STYLE_MONSTER_ABILITY);
+    start_menu_style(win, GHMENU_STYLE_MONSTER_ABILITY);
     int abilitynum = print_monster_abilities(win, 0);
     end_menu(win, "Monster Abilities");
 
@@ -3150,7 +3150,7 @@ doterrain(void)
      *  a legend for the levl[][].typ codes dump
      */
     men = create_nhwindow(NHW_MENU);
-    start_menu_ex(men, GHMENU_STYLE_CHOOSE_COMMAND);
+    start_menu_style(men, GHMENU_STYLE_CHOOSE_COMMAND);
     any = zeroany;
     any.a_int = 1;
     add_menu(men, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
@@ -3410,7 +3410,7 @@ enlightenment(int mode, int final)
     en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN, gui_glyph, extended_create_window_info_from_mon(&youmonst));
     en_via_menu = !final && !iflags.in_dumplog;
     if (en_via_menu)
-        start_menu_ex(en_win, GHMENU_STYLE_ATTRIBUTES);
+        start_menu_style(en_win, GHMENU_STYLE_ATTRIBUTES);
 
     Strcpy(tmpbuf, plname);
     *tmpbuf = highc(*tmpbuf); /* same adjustment as bottom line */
@@ -5406,7 +5406,7 @@ docommandmenu(void)
     int n = 0;
 
     menuwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(menuwin, GHMENU_STYLE_GENERAL_COMMAND);
+    start_menu_style(menuwin, GHMENU_STYLE_GENERAL_COMMAND);
 
     add_command_menu_items(menuwin, INCMDMENU);
 
@@ -5436,7 +5436,7 @@ dospellmainmenu(void)
     int n = 0;
 
     menuwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(menuwin, GHMENU_STYLE_GENERAL_COMMAND);
+    start_menu_style(menuwin, GHMENU_STYLE_GENERAL_COMMAND);
 
     add_command_menu_items(menuwin, INSPELLMENU);
 
@@ -8745,7 +8745,7 @@ there_cmd_menu(boolean doit, int x, int y)
     struct monst *mtmp;
 
     win = create_nhwindow(NHW_MENU);
-    start_menu_ex(win, GHMENU_STYLE_CHOOSE_COMMAND);
+    start_menu_style(win, GHMENU_STYLE_CHOOSE_COMMAND);
 
     if (IS_DOOR(typ)) {
         boolean key_or_pick, card;
@@ -8849,7 +8849,7 @@ here_cmd_menu(boolean doit)
     menu_item *picks = (menu_item *) 0;
 
     win = create_nhwindow(NHW_MENU);
-    start_menu_ex(win, GHMENU_STYLE_CHOOSE_COMMAND);
+    start_menu_style(win, GHMENU_STYLE_CHOOSE_COMMAND);
 
     if (IS_FOUNTAIN(typ) || IS_SINK(typ)) 
     {

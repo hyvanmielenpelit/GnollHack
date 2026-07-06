@@ -4538,7 +4538,7 @@ display_item_command_menu(struct obj *otmp, int64_t pickcnt, boolean *return_to_
 
         any = zeroany;
         win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_COMMAND_MENU, gui_glyph, extended_create_window_info_from_obj(otmp));
-        start_menu_ex(win, GHMENU_STYLE_ITEM_COMMAND);
+        start_menu_style(win, GHMENU_STYLE_ITEM_COMMAND);
 
         const char* headings[NUM_CMD_SECTIONS] = { "Information", "General Commands", "Item-Specific Commands" };
         uint64_t section_flags[NUM_CMD_SECTIONS] = { SINGLE_OBJ_CMD_INFO, SINGLE_OBJ_CMD_GENERAL, SINGLE_OBJ_CMD_SPECIFIC };
@@ -5055,7 +5055,7 @@ display_pickinv(const char *lets, char *xtra_choice, char *query, boolean want_r
     sortedinvent = sortloot(&invent, sortflags, FALSE,
                             (boolean FDECL((*), (struct obj *))) 0);
 
-    start_menu_ex(win, addinventoryheader == 2 ? GHMENU_STYLE_INVENTORY_EQUIPMENT : addinventoryheader ? GHMENU_STYLE_INVENTORY : GHMENU_STYLE_PICK_ITEM_LIST);
+    start_menu_style(win, addinventoryheader == 2 ? GHMENU_STYLE_INVENTORY_EQUIPMENT : addinventoryheader ? GHMENU_STYLE_INVENTORY : GHMENU_STYLE_PICK_ITEM_LIST);
     any = zeroany;
     if (wizard && iflags.override_ID) 
     {
@@ -5551,7 +5551,7 @@ display_used_invlets(char avoidlet)
 
     if (invent) {
         win = create_nhwindow(NHW_MENU);
-        start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
+        start_menu_style(win, GHMENU_STYLE_PICK_ITEM_LIST);
         while (!invdone) {
             any = zeroany; /* set all bits to zero */
             classcount = 0;
@@ -7715,7 +7715,7 @@ invdisp_nothing(const char *hdr, const char *txt)
 
     any = zeroany;
     win = create_nhwindow(NHW_MENU);
-    start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
+    start_menu_style(win, GHMENU_STYLE_PICK_ITEM_LIST);
     add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, txt, MENU_UNSELECTED);
     end_menu(win, hdr);
     if (select_menu(win, PICK_NONE, &selected) > 0)

@@ -628,7 +628,7 @@ getpos_menu(coord *ccp, int gloc)
     }
 
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
+    start_menu_style(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
     any = zeroany;
 
     /* gather_locs returns array[0] == you. skip it. */
@@ -1638,7 +1638,7 @@ docallcmd(void)
         getobj_autoselect_obj = 0;
 
     win = create_nhwindow(NHW_MENU);
-    start_menu_ex(win, GHMENU_STYLE_CHOOSE_COMMAND);
+    start_menu_style(win, GHMENU_STYLE_CHOOSE_COMMAND);
     any = zeroany;
     if (!getobj_autoselect_obj)
     {

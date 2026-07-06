@@ -6046,7 +6046,7 @@ zapnodir(struct obj *obj)
                 int n = 0;
 
                 menuwin = create_nhwindow(NHW_MENU);
-                start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_SIMPLE);
+                start_menu_style(menuwin, GHMENU_STYLE_CHOOSE_SIMPLE);
                 anything any = zeroany;
 
                 for (wpidx = 0; wpidx < NUM_WAYPOINTS; wpidx++)
@@ -6128,7 +6128,7 @@ zapnodir(struct obj *obj)
                     int n = 0;
 
                     menuwin = create_nhwindow(NHW_MENU);
-                    start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_SIMPLE);
+                    start_menu_style(menuwin, GHMENU_STYLE_CHOOSE_SIMPLE);
                     anything any = zeroany;
 
                     for (wpidx = 0; wpidx < NUM_WAYPOINTS; wpidx++)

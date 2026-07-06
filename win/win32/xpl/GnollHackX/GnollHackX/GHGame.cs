@@ -1794,10 +1794,10 @@ namespace GnollHackX
             }
         }
 
-        public void ClientCallback_StartMenu(int winid, int style)
+        public void ClientCallback_StartMenu(int winid, int style, int glyph, ulong mflags)
         {
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("StartMenu");
-            RecordFunctionCall(RecordedFunctionID.StartMenu, winid, style);
+            RecordFunctionCall(RecordedFunctionID.StartMenu, winid, style, glyph, mflags);
 
             //lock (_ghWindowsLock)
             {

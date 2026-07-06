@@ -1794,7 +1794,7 @@ query_attr(const char *prompt)
     if (prompt && strstri(prompt, "menu headings"))
         default_attr = iflags.menu_headings;
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
+    start_menu_style(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
     any = zeroany;
     for (i = 0; i < SIZE(attrnames); i++) {
         if (!attrnames[i].name)
@@ -5994,7 +5994,7 @@ doset(void) /* changing options via menu by Per Liboriussen */
     size_t longest_name_len;
 
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(tmpwin, GHMENU_STYLE_OPTIONS);
+    start_menu_style(tmpwin, GHMENU_STYLE_OPTIONS);
 
 #ifdef notyet /* SYSCF */
     /* XXX I think this is still fragile.  Fixing initial/from_file and/or

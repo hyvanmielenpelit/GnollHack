@@ -2459,7 +2459,7 @@ dochatmon(struct monst *mtmp)
 
         any = zeroany;
         win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
-        start_menu_ex(win, GHMENU_STYLE_CHAT);
+        start_menu_style(win, GHMENU_STYLE_CHAT);
 
         int chatnum = 0;
         any = zeroany;
@@ -5890,7 +5890,7 @@ do_chat_uncurse_items(struct monst *mtmp)
 
     any = zeroany;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
-    start_menu_ex(win, GHMENU_STYLE_CHAT);
+    start_menu_style(win, GHMENU_STYLE_CHAT);
 
     boolean itemfound = FALSE;
     struct obj* otmp;
@@ -6739,7 +6739,7 @@ do_chat_buy_items(struct monst *mtmp)
 
     any = zeroany;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
-    start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
+    start_menu_style(win, GHMENU_STYLE_OTHERS_INVENTORY);
 
     
     static const char def_srt_order[MAX_OBJECT_CLASSES] = {
@@ -6996,7 +6996,7 @@ do_chat_pet_takeitems(struct monst *mtmp)
 
     any = zeroany;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
-    start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
+    start_menu_style(win, GHMENU_STYLE_OTHERS_INVENTORY);
 
     static const char def_srt_order[MAX_OBJECT_CLASSES] = {
         COIN_CLASS, AMULET_CLASS, ART_CLASS, MISCELLANEOUS_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
@@ -8418,7 +8418,7 @@ do_chat_forge_menu(struct monst *mtmp, int forge_idx_start, int forge_idx_end, c
 
     any = zeroany;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
-    start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
+    start_menu_style(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
 
     int forge_idx;
     int query_style = 0, special_dialogue_sound_id = 0;
@@ -11520,7 +11520,7 @@ spell_teaching(struct monst *mtmp, int *spell_otyps)
 
     any = zeroany;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
-    start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
+    start_menu_style(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
 
     for(spell_otyp_ptr = spell_otyps; spell_otyp_ptr && *spell_otyp_ptr > STRANGE_OBJECT; spell_otyp_ptr++)
     {
@@ -11770,7 +11770,7 @@ ask_target_monster(struct monst *mtmp)
 
         any = zeroany;
         win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
-        start_menu_ex(win, GHMENU_STYLE_CHAT);
+        start_menu_style(win, GHMENU_STYLE_CHAT);
 
         int i;
         for (i = 0; i < cnt; i++)

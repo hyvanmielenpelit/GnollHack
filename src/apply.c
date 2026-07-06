@@ -2249,7 +2249,7 @@ use_candle(struct obj **optr)
 
             any.a_void = 0;
             win = create_nhwindow(NHW_MENU);
-            start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK);
+            start_menu_style(win, GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK);
 
             for (struct obj* cobj = level.objects[u.ux][u.ux]; cobj; cobj = cobj->nexthere)
                 if (is_obj_candelabrum(cobj)) 
@@ -2689,7 +2689,7 @@ use_oil(struct obj *obj)
         menu_item* selected;
 
         any = zeroany; /* set all bits to zero */
-        start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_COMMAND);
+        start_menu_style(tmpwin, GHMENU_STYLE_CHOOSE_COMMAND);
 
         any.a_int = 1; /* use index+1 (cant use 0) as identifier */
         Sprintf(buf, "light %s up", obj->quan == 1 ? "it" : "them");
@@ -5648,7 +5648,7 @@ use_grapple(struct obj *obj)
 
         any = zeroany; /* set all bits to zero */
         any.a_int = 1; /* use index+1 (cant use 0) as identifier */
-        start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_COMMAND);
+        start_menu_style(tmpwin, GHMENU_STYLE_CHOOSE_COMMAND);
         any.a_int++;
         Sprintf(buf, "an object on the %s", surface(cc.x, cc.y));
         add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf,
@@ -6503,7 +6503,7 @@ select_other_container(struct obj *objchain, struct obj *this_container, boolean
     winid win;
     
     win = create_nhwindow(NHW_MENU);
-    start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK);
+    start_menu_style(win, GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK);
     int cnt = 0;
 
     for (struct obj* otmp = objchain; otmp; otmp = usenexthere ? otmp->nexthere : otmp->nobj)

@@ -73,7 +73,7 @@ E void Gem_curs(winid, int, int);
 E void Gem_putstr_ex(winid, const char *, int, int, int);
 E void Gem_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
 E void Gem_display_file(const char *, boolean);
-E void Gem_start_menu_ex(winid, int);
+E void Gem_start_menu_ex(winid, int, int, uint64_t);
 E void Gem_add_menu(winid, int, const ANY_P *, char, char, int,
                             const char *, boolean);
 E void Gem_end_menu_ex(winid, const char *, const char*);

@@ -1209,7 +1209,7 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no)
     do
     {
         tmpwin = create_nhwindow(NHW_MENU);
-        start_menu_ex(tmpwin, splaction <= SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL_ALTERNATE :  GHMENU_STYLE_SPELLS_ALTERNATE);
+        start_menu_style(tmpwin, splaction <= SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL_ALTERNATE :  GHMENU_STYLE_SPELLS_ALTERNATE);
         any = zeroany; /* zero out all bits */
 
         if (splaction <= SPELLMENU_DETAILS || splaction == SPELLMENU_REORDER || splaction == SPELLMENU_SORT || splaction >= 0)
@@ -1411,7 +1411,7 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no)
                 Sprintf(titleprompt, "What do you want to do with \'%s\'?", spellname(splidx));
                 int glyph = spellid(splidx) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
                 winid actionwin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SPELL_COMMAND_MENU, glyph, extended_create_window_info_for_spell(TRUE));
-                start_menu_ex(actionwin, GHMENU_STYLE_SPELL_COMMAND);
+                start_menu_style(actionwin, GHMENU_STYLE_SPELL_COMMAND);
                 any = zeroany; /* zero out all bits */
                 any.a_int = 1;
                 glyph = CAST_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
@@ -4039,7 +4039,7 @@ dotradspellmenu(const char *prompt, int splaction, int *spell_no)
     //}
 
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(tmpwin, splaction <= SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL : GHMENU_STYLE_SPELLS);
+    start_menu_style(tmpwin, splaction <= SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL : GHMENU_STYLE_SPELLS);
     any = zeroany; /* zero out all bits */
 
     int hotkeys[11] = { 0 };
@@ -4873,7 +4873,7 @@ dospellmanagemenu(void)
 
     any = zeroany;
     win = create_nhwindow(NHW_MENU);
-    start_menu_ex(win, GHMENU_STYLE_CHOOSE_COMMAND);
+    start_menu_style(win, GHMENU_STYLE_CHOOSE_COMMAND);
 
 
     struct available_selection_item

@@ -335,14 +335,14 @@ trace_display_file(void *vp, const char *fname, boolean complain)
 }
 
 void
-trace_start_menu_ex(void *vp, winid window, int style)
+trace_start_menu_ex(void *vp, winid window, int style, int glyph, uint64_t mflags)
 {
     struct trace_data *tdp = vp;
 
     fprintf(wc_tracelogf, "%sstart_menu(%d)\n", INDENT, window);
 
     PRE;
-    (*tdp->nprocs->win_start_menu_ex)(tdp->ndata, window, style);
+    (*tdp->nprocs->win_start_menu_ex)(tdp->ndata, window, style, glyph, mflags);
     POST;
 }
 

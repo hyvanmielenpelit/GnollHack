@@ -2566,7 +2566,7 @@ back_from_race:
         {
             /* Prompt for a role */
             win = create_nhwindow(NHW_MENU);
-            start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
+            start_menu_style(win, GHMENU_STYLE_CHOOSE_PLAYER);
             any = zeroany; /* zero out all bits */
             boolean didUseRecommended = FALSE;
             for (i = 0; roles[i].name.m; i++)
@@ -2717,7 +2717,7 @@ back_from_gender:
             if (n > 1)
             {
                 win = create_nhwindow(NHW_MENU);
-                start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
+                start_menu_style(win, GHMENU_STYLE_CHOOSE_PLAYER);
                 any = zeroany; /* zero out all bits */
                 boolean didUseRecommended = FALSE;
                 for (i = 0; races[i].noun; i++)
@@ -2854,7 +2854,7 @@ back_from_align:
             if (n > 1)
             {
                 win = create_nhwindow(NHW_MENU);
-                start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
+                start_menu_style(win, GHMENU_STYLE_CHOOSE_PLAYER);
                 any = zeroany; /* zero out all bits */
                 for (i = 0; i < ROLE_GENDERS; i++)
                     if (ok_gend(flags.initrole, flags.initrace, i,
@@ -2979,7 +2979,7 @@ back_from_align:
             if (n > 1)
             {
                 win = create_nhwindow(NHW_MENU);
-                start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
+                start_menu_style(win, GHMENU_STYLE_CHOOSE_PLAYER);
                 any = zeroany; /* zero out all bits */
                 for (i = 0; i < ROLE_ALIGNS; i++)
                     if (ok_align(flags.initrole, flags.initrace,
@@ -3070,7 +3070,7 @@ back_from_align:
             : NO_GLYPH;
         int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
         win = create_nhwindow_ex(NHW_MENU, 0, glyph, zerocreatewindowinfo);
-        start_menu_ex(win, GHMENU_STYLE_ACCEPT_PLAYER);
+        start_menu_style(win, GHMENU_STYLE_ACCEPT_PLAYER);
         any = zeroany; /* zero out all bits */
         any.a_int = 1;
         add_menu(win, NO_GLYPH, &any, 'y', 0, ATR_NONE, NO_COLOR, "Yes; start game",

@@ -3129,7 +3129,7 @@ tty_display_file(const char *fname, boolean complain)
 }
 
 void
-tty_start_menu_ex(winid window, int style)
+tty_start_menu_ex(winid window, int style, int glyph UNUSED, uint64_t mflags UNUSED)
 {
     tty_clear_nhwindow(window);
     struct WinDesc* cw = 0;

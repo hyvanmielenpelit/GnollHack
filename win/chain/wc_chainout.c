@@ -183,11 +183,11 @@ chainout_display_file(void *vp, const char *fname, boolean complain)
 }
 
 void
-chainout_start_menu_ex(void *vp, winid window, int style)
+chainout_start_menu_ex(void *vp, winid window, int style, int glyph, uint64_t mflags)
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_start_menu_ex)(window, style);
+    (*tdp->nprocs->win_start_menu_ex)(window, style, glyph, mflags);
 }
 
 /*

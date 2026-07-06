@@ -1546,7 +1546,7 @@ do_look(int mode, coord *click_cc)
 
             any = zeroany;
             win = create_nhwindow(NHW_MENU);
-            start_menu_ex(win, GHMENU_STYLE_CHOOSE_COMMAND);
+            start_menu_style(win, GHMENU_STYLE_CHOOSE_COMMAND);
             any.a_char = '/';
             /* 'y' and 'n' to keep backwards compatibility with previous
                versions: "Specify unknown object by cursor?" */
@@ -2434,7 +2434,7 @@ dohelp(void)
     int sel;
 
     any = zeroany; /* zero all bits */
-    start_menu_ex(tmpwin, GHMENU_STYLE_HELP);
+    start_menu_style(tmpwin, GHMENU_STYLE_HELP);
 
     for (i = 0; help_menu_items[i].text; i++) {
         if (!wizard && help_menu_items[i].f == dispfile_debughelp)

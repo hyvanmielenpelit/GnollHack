@@ -1770,7 +1770,7 @@ choose_random_breath_weapon(int *intarr_ptr, int arrsize, const char *attk_name,
         maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0)) : 
         maybe_get_replaced_glyph(glyph, mon->mx, mon->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mon, 0UL, 0UL, 0UL, MAT_NONE, 0));
     menuwin = create_nhwindow_ex(NHW_MENU, 0, gui_glyph, zerocreatewindowinfo);
-    start_menu_ex(menuwin, GHMENU_STYLE_MONSTER_ABILITY);
+    start_menu_style(menuwin, GHMENU_STYLE_MONSTER_ABILITY);
 
     if (!intarr_ptr) /* Random breath weapon */
     {

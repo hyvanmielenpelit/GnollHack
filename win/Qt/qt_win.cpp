@@ -4824,7 +4824,7 @@ void NetHackQtBind::qt_display_file(const char *filename, boolean must_exist)
     }
 }
 
-void NetHackQtBind::qt_start_menu_ex(winid wid, int style)
+void NetHackQtBind::qt_start_menu_ex(winid wid, int style UNUSED, int glyph UNUSED, uint64_t mflags UNUSED)
 {
     NetHackQtWindow* window=id_to_window[wid];
     window->StartMenu();

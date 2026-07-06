@@ -1142,7 +1142,7 @@ query_objlist(const char *qstr, struct obj **olist_p, int qflags, menu_item **pi
                            (qflags & BY_NEXTHERE) ? TRUE : FALSE, allow);
 
     win = create_nhwindow(NHW_MENU);
-    start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
+    start_menu_style(win, GHMENU_STYLE_PICK_ITEM_LIST);
     any = zeroany;
     /*
      * Run through the list and add the objects to the menu.  If
@@ -1395,7 +1395,7 @@ query_category(const char *qstr, struct obj *olist, int qflags, menu_item **pick
     }
 
     win = create_nhwindow(NHW_MENU);
-    start_menu_ex(win, GHMENU_STYLE_PICK_CATEGORY_LIST);
+    start_menu_style(win, GHMENU_STYLE_PICK_CATEGORY_LIST);
     pack = flags.inv_order;
     struct extended_menu_info info = zeroextendedmenuinfo;
     info.menu_flags |= MENU_FLAGS_USE_NUM_ITEMS;
@@ -2696,7 +2696,7 @@ doloot_core(int applymode)
 
             any.a_void = 0;
             win = create_nhwindow(NHW_MENU);
-            start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
+            start_menu_style(win, GHMENU_STYLE_PICK_ITEM_LIST);
 
             for (cobj = level.objects[cc.x][cc.y]; cobj; cobj = cobj->nexthere)
                 if (Is_container(cobj)) 
@@ -2864,7 +2864,7 @@ doloot_core(int applymode)
 
                         any = zeroany;
                         win = create_nhwindow(NHW_MENU);
-                        start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
+                        start_menu_style(win, GHMENU_STYLE_OTHERS_INVENTORY);
 
                         int item_count = 0;
                         if (has_item1)
@@ -4883,7 +4883,7 @@ in_or_out_menu(const char *prompt, struct obj *obj, boolean outokay, boolean ino
 
     any = zeroany;
     win = create_nhwindow(NHW_MENU);
-    start_menu_ex(win, GHMENU_STYLE_GENERAL_COMMAND);
+    start_menu_style(win, GHMENU_STYLE_GENERAL_COMMAND);
 
     any.a_int = 1; /* ':' */
     Sprintf(buf, "Look inside %s", thesimpleoname(obj));
@@ -5031,7 +5031,7 @@ dotip(void)
 
                 any = zeroany;
                 win = create_nhwindow(NHW_MENU);
-                start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
+                start_menu_style(win, GHMENU_STYLE_PICK_ITEM_LIST);
 
                 for (cobj = level.objects[cc.x][cc.y], i = 0; cobj;
                      cobj = cobj->nexthere)

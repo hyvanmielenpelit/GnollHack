@@ -1899,7 +1899,7 @@ restore_menu(winid bannerwin)
         firsttime = FALSE;
 
         tmpwin = create_nhwindow(NHW_MENU);
-        start_menu_ex(tmpwin, GHMENU_STYLE_START_GAME_MENU);
+        start_menu_style(tmpwin, GHMENU_STYLE_START_GAME_MENU);
         any = zeroany; /* no selection */
 
         if (bannerwin != WIN_ERR)
@@ -2085,7 +2085,7 @@ select_saved_game(winid bannerwin, uchar style, struct save_game_data *saved)
         const char* titlestr = style == 0 ? "Load a Saved Game" : "Delete a Saved Game";
 
         tmpwin = create_nhwindow(NHW_MENU);
-        start_menu_ex(tmpwin, style == 0 ? GHMENU_STYLE_CHOOSE_SAVED_GAME : GHMENU_STYLE_DELETE_SAVED_GAME);
+        start_menu_style(tmpwin, style == 0 ? GHMENU_STYLE_CHOOSE_SAVED_GAME : GHMENU_STYLE_DELETE_SAVED_GAME);
         any = zeroany; /* no selection */
 
 #ifndef GNH_MOBILE

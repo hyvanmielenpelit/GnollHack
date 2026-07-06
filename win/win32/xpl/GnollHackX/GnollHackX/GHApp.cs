@@ -8282,7 +8282,9 @@ namespace GnollHackX
                                                 {
                                                     int winid = br.ReadInt32();
                                                     int style = br.ReadInt32();
-                                                    game.ClientCallback_StartMenu(winid, style);
+                                                    int glyph = br.ReadInt32();
+                                                    ulong mflags = br.ReadUInt64();
+                                                    game.ClientCallback_StartMenu(winid, style, glyph, mflags);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.AddExtendedMenu:

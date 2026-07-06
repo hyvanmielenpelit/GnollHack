@@ -228,7 +228,7 @@ E void mac_curs(winid, int, int);
 E void mac_putstr_ex(winid, const char *, int, int, int);
 E void mac_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
 #define mac_putstr(x, y, z) mac_putstr_ex(x, z, y, 0, 0)
-E void mac_start_menu_ex(winid, int);
+E void mac_start_menu_ex(winid, int, int, uint64_t);
 E void mac_add_menu(winid, int, const anything *, char, char, int, int,
                             const char *, boolean);
 E void mac_add_extended_menu(winid, int, const anything*, char, char, int, int,

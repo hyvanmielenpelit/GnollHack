@@ -212,7 +212,7 @@ choose_cat_or_dog(void)
     int n = 0;
 
     menuwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_PLAYER);
+    start_menu_style(menuwin, GHMENU_STYLE_CHOOSE_PLAYER);
     anything any = zeroany;
 
     int i;
@@ -277,7 +277,7 @@ choose_pet_gender(int mnum)
     int n = 0;
 
     menuwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_PLAYER);
+    start_menu_style(menuwin, GHMENU_STYLE_CHOOSE_PLAYER);
     anything any = zeroany;
 
     int i;
@@ -414,7 +414,7 @@ choose_pet_breed(int mnum, boolean isfemale)
     int n = 0;
 
     menuwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_PLAYER);
+    start_menu_style(menuwin, GHMENU_STYLE_CHOOSE_PLAYER);
     anything any = zeroany;
 
     char breedbuf[BUFSZ];

@@ -81,7 +81,7 @@ typedef PutStrExColorCallback PutStrExCallback;
 typedef PutStrEx2ColorCallback PutStrEx2Callback;
 typedef PutStrExColorCallback PutMixedCallback;
 typedef void(__callconv* DisplayFileCallback)(const char*, uchar);
-typedef void(__callconv* StartMenuCallback)(int, int);
+typedef void(__callconv* StartMenuCallback)(int, int, int, uint64_t);
 typedef void(__callconv* AddMenuCallback)(int, int, int64_t, cschar, cschar, int, int, const char*, uchar);
 typedef void(__callconv* AddExtendedMenuCallback)(int, int, int64_t, cschar, cschar, int, int, const char*, uchar, int,
     uint64_t, uint64_t, cschar, cschar, uint64_t, uchar, int, struct obj*, struct objclassdata*, const char*, const char*);

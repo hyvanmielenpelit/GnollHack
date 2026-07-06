@@ -3285,7 +3285,7 @@ create_portal(void)
     anything any;
 
     any = zeroany; /* set all bits to zero */
-    start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
+    start_menu_style(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
 
     /* use index+1 (cant use 0) as identifier */
     for (i = num_ok_dungeons = 0; i < n_dgns; i++) 

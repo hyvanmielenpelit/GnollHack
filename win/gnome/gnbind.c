@@ -704,7 +704,7 @@ gnome_display_file(const char *filename, boolean must_exist)
    be used for menus.
 */
 void
-gnome_start_menu_ex(winid wid, int style)
+gnome_start_menu_ex(winid wid, int style, int glyph UNUSED, uint64_t mflags UNUSED)
 {
     if (wid != -1) {
         if (gnome_windowlist[wid].win == NULL

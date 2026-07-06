@@ -3834,7 +3834,7 @@ do_class_genocide(void)
                 int n, choice;
 
                 tmpwin = create_nhwindow(NHW_MENU);
-                start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
+                start_menu_style(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
                 any = zeroany; /* zero out all bits */
 
                 char cbuf[BUFSZ];

@@ -2275,7 +2275,7 @@ doskill_core(void)
     do
     {
         win = create_nhwindow(NHW_MENU);
-        start_menu_ex(win, GHMENU_STYLE_SKILLS_ALTERNATE);
+        start_menu_style(win, GHMENU_STYLE_SKILLS_ALTERNATE);
 
         for (pass = 0; pass < SIZE(skill_ranges); pass++)
         {
@@ -2429,7 +2429,7 @@ open_skill_cmd_menu(int skill_id, boolean speedy)
 
     any = zeroany;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SKILL_COMMAND_MENU, GLYPH_SKILL_TILE_OFF + skill_id, createinfo);
-    start_menu_ex(win, GHMENU_STYLE_SKILL_COMMAND);
+    start_menu_style(win, GHMENU_STYLE_SKILL_COMMAND);
 
     /* Skill description */
     Strcpy(buf, "View skill information");
@@ -3028,7 +3028,7 @@ enhance_weapon_skill(void)
         }
 
         win = create_nhwindow(NHW_MENU);
-        start_menu_ex(win, GHMENU_STYLE_SKILLS);
+        start_menu_style(win, GHMENU_STYLE_SKILLS);
 
         /* start with a legend if any entries will be annotated
            with "*" or "#" below */

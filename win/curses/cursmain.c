@@ -320,7 +320,7 @@ curses_create_nhwindow_ex(int type, int style UNUSED, int glyph UNUSED, struct e
     winid wid = curses_get_wid(type);
 
     if (curses_is_menu(wid) || curses_is_text(wid)) {
-        curses_start_menu_ex(wid, 0);
+        curses_start_menu_ex(wid, 0, 0, 0UL);
         curses_add_wid(wid);
     }
 
@@ -495,7 +495,7 @@ curses_display_file(const char *filename, boolean must_exist)
    be used for menus.
 */
 void
-curses_start_menu_ex(winid wid, int style)
+curses_start_menu_ex(winid wid, int style, int glyph UNUSED, uint64_t mflags UNUSED)
 {
     if (inv_update)
         return;

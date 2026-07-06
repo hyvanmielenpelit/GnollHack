@@ -244,7 +244,7 @@ safe_display_file(const char *fname, boolean complain)
 }
 
 void
-safe_start_menu_ex(winid window, int style)
+safe_start_menu_ex(winid window, int style, int glyph, uint64_t mflags)
 {
     return;
 }

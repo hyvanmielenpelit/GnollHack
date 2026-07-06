@@ -1926,7 +1926,7 @@ print_dungeon(boolean bymenu, schar *rlev, xchar *rdgn)
     winid win = create_nhwindow(NHW_MENU);
 
     if (bymenu) {
-        start_menu_ex(win, GHMENU_STYLE_DUNGEON_OVERVIEW);
+        start_menu_style(win, GHMENU_STYLE_DUNGEON_OVERVIEW);
         lchoices.idx = 0;
         lchoices.menuletter = 'a';
     }
