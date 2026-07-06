@@ -2281,7 +2281,7 @@ void print_monster_status(winid datawin, struct monst *mtmp)
     //uint64_t layerflags = li.layer_flags;
     uint64_t layermflags = li.monster_flags;
     boolean loc_is_you = mtmp == &youmonst; // (layerflags & LFLAGS_UXUY) != 0; //So you can separately see your steed stats properly
-    boolean ispeaceful = is_peaceful(mtmp) && !is_tame(mtmp);
+    boolean ispeaceful = appears_peaceful(mtmp) && !is_tame(mtmp);
     boolean ispet = is_tame(mtmp);
     boolean isdetected = (layermflags & LMFLAGS_DETECTED) != 0;
     int condition_count = 0;

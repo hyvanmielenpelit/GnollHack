@@ -5152,6 +5152,12 @@ restrap(struct monst *mtmp)
         newsym(mtmp->mx, mtmp->my);
         return TRUE;
     }
+    else if (has_illusory_appearance(mtmp->data))
+    {
+        set_rakshasa_appearance(mtmp);
+        newsym(mtmp->mx, mtmp->my);
+        return TRUE;
+    }
     else if (levl[mtmp->mx][mtmp->my].typ == ROOM || levl[mtmp->mx][mtmp->my].typ == GRASS || levl[mtmp->mx][mtmp->my].typ == GROUND)
     {
         set_mon_mundetected(mtmp, 1);

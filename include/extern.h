@@ -1843,6 +1843,7 @@ E void set_mhostility(struct monst *);
 E void newmcorpsenm(struct monst *);
 E void freemcorpsenm(struct monst *);
 E void set_mimic_sym(struct monst *);
+E void set_rakshasa_appearance(struct monst *);
 E int mbirth_limit(int);
 E void mimic_hit_msg(struct monst *, short);
 E void mkmonmoney(struct monst *, int64_t);

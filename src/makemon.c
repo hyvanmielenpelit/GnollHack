@@ -3012,6 +3012,10 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
         if(is_mimic(ptr))
             set_mimic_sym(mtmp);
         break;
+    case S_RUSTMONST:
+        if (has_illusory_appearance(ptr))
+            set_rakshasa_appearance(mtmp);
+        break;
     case S_SPIDER:
     case S_SNAKE:
         if (in_mklev)
@@ -4785,6 +4789,26 @@ set_mimic_sym(struct monst *mtmp)
 
     if (does_block(mx, my, &levl[mx][my]))
         block_vision_and_hearing_at_point(mx, my);
+}
+
+/* Pool of friendly-looking monster forms for rakshasa illusory appearance */
+static NEARDATA const unsigned rakshasaapp[] = {
+    PM_HUMAN, PM_ELF, PM_DWARF, PM_GNOME,
+    PM_MONK, PM_HEALER, PM_RANGER,
+    PM_ALIGNED_PRIEST, PM_GUIDE,
+};
+
+/* Set up a rakshasa's illusory appearance as a friendly monster */
+void
+set_rakshasa_appearance(struct monst *mtmp)
+{
+    if (!mtmp || Protection_from_shape_changers)
+        return;
+
+    mtmp->m_ap_type = M_AP_MONSTER;
+    mtmp->mappearance = rakshasaapp[rn2(SIZE(rakshasaapp))];
+
+    newsym(mtmp->mx, mtmp->my);
 }
 
 /*

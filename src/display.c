@@ -2888,7 +2888,7 @@ show_monster_glyph_with_extra_info_choose_ascii(int x, int y, int glyph, struct 
             if (is_tame(mtmp) && !Hallucination)
                 extra_mflags |= LMFLAGS_PET;
 
-            if (is_peaceful(mtmp) && !is_tame(mtmp) && !Hallucination)
+            if (appears_peaceful(mtmp) && !is_tame(mtmp) && !Hallucination)
                 extra_mflags |= LMFLAGS_PEACEFUL;
 
             if (canspotmon(mtmp))

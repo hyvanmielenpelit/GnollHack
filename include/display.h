@@ -58,6 +58,14 @@
 #define sensemon(mon) \
     (tp_sensemon(mon) || Detect_monsters || MATCH_WARN_OF_MON(mon))
 
+ /* appears_peaceful: for GUI display only - true if actually peaceful,
+    or if in illusory form and player cannot sense through the disguise */
+#define appears_peaceful(mon) \
+    (is_peaceful(mon) \
+     || (has_friendly_illusory_appearance((mon)->data) \
+         && M_AP_TYPE(mon) == M_AP_MONSTER \
+         && !sensemon(mon)))
+
 /*
  * mon_warning() is used to warn of any dangerous monsters in your
  * vicinity, and a glyph representing the warning level is displayed.

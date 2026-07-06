@@ -229,6 +229,8 @@
 #define is_tourist(ptr) (((ptr)->mflags7 & M7_TOURIST) != 0L)
 #define is_valkyrie(ptr) (((ptr)->mflags7 & M7_VALKYRIE) != 0L)
 #define is_wizard(ptr) (((ptr)->mflags7 & M7_WIZARD) != 0L)
+#define has_illusory_appearance(ptr) (((ptr)->mflags7 & M7_ILLUSORY_APPEARANCE) != 0L)
+#define has_friendly_illusory_appearance(ptr) (((ptr)->mflags7 & M7_FRIENDLY_ILLUSORY_APPEARANCE) != 0L)
 
 /* combinations and others */
 #define is_not_living(ptr) \
@@ -509,6 +511,7 @@
 
 #define is_peaceful(mon) \
     (is_charmed_or_controlled(mon) || is_mon_mpeaceful((mon)))
+
 
 #define is_mon_protecting(mtmp) (is_protector(mtmp) && is_peaceful(mtmp))
 
