@@ -529,6 +529,8 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
     case PM_COUATL:
     case PM_ALEAX:
     case PM_ARCHON:
+    case PM_GRIFFON:
+    case PM_ELDER_GRIFFON:
         if (!istame && !isquestmonster)
         {
             if ((!mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
@@ -542,9 +544,11 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
                     break;
                 case PM_GIANT_COCKATRICE:
                 case PM_HARPY:
-                case PM_RAVEN:
+                case PM_ELDER_GRIFFON:
                     obj->quan = rnd(2);
                     break;
+                case PM_RAVEN:
+                case PM_GRIFFON:
                 case PM_COCKATRICE:
                     obj->quan = 1;
                     break;
