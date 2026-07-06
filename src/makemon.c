@@ -3687,6 +3687,10 @@ reset_rndmonst(int mndx)
 static boolean
 mk_gen_ok(int mndx, uchar excluded_mvflags, uint64_t genomask, boolean ispoly, boolean issummon)
 {
+    /* Some flags need to be treated separately, since they require the flag rather than checking non-existence of the flag */
+    boolean require_prehistoric = (genomask & G_PREHISTORIC) != 0;
+    genomask &= ~G_PREHISTORIC;
+
     struct permonst *ptr = &mons[mndx];
 
     if (mvitals[mndx].mvflags & excluded_mvflags)
@@ -3720,6 +3724,8 @@ mk_gen_ok(int mndx, uchar excluded_mvflags, uint64_t genomask, boolean ispoly, b
                 return FALSE;
             if (In_endgame(&u.uz) && !Is_astralevel(&u.uz) && wrong_elem_type(ptr))
                 return FALSE;
+            if ((ptr->geno & G_PREHISTORIC) == 0 && require_prehistoric)
+                return FALSE;
         }
     }
 
@@ -3741,22 +3747,22 @@ mk_gen_ok(int mndx, uchar excluded_mvflags, uint64_t genomask, boolean ispoly, b
 struct permonst *
 mkclass(char mclass, int spc)
 {
-    return mkclass_core(mclass, spc, A_NONE, 0, 0UL);
+    return mkclass_core(mclass, spc, 0, A_NONE, 0, 0UL);
 }
 
 /* mkclass() with alignment restrictions; used by ndemon() */
 struct permonst*
 mkclass_aligned(char mclass, int spc, aligntyp atyp, uint64_t mflags)
 {
-    return mkclass_core(mclass, spc, atyp, 0, mflags);
+    return mkclass_core(mclass, spc, 0, atyp, 0, mflags);
 }
 
 struct permonst *
-mkclass_core(char mclass, int spc, aligntyp atyp, int difficulty_adj, uint64_t mflags)
+mkclass_core(char mclass, int spc, int added_genoflags, aligntyp atyp, int difficulty_adj, uint64_t mflags)
 {
     int first = 0, last = 0, num = 0;
     int k, nums[SPECIAL_PM + 1]; /* +1: insurance for final return value */
-    int minmlev = 0, maxmlev = 0, mask = (G_NOGEN | G_UNIQ) & ~spc;
+    int minmlev = 0, maxmlev = 0, mask = ((G_NOGEN | G_UNIQ) & ~spc) | added_genoflags;
     boolean issummon = (mflags & MKCLASS_FLAGS_SUMMON) != 0;
     boolean ispoly = (mflags & MKCLASS_FLAGS_POLYMORPH) != 0;
 

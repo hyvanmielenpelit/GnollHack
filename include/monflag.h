@@ -394,6 +394,8 @@
 #define M7_TOURIST                  0x00000400UL   /* monster can use tourist items */
 #define M7_VALKYRIE                 0x00000800UL   /* monster can use valkyrie items */
 #define M7_WIZARD                   0x00001000UL   /* monster can use wizard items */
+/* Some free bits */
+#define M7_DINOSAUR                 0x00010000UL   /* monster is a dinosaur */
 
 #define M8_NONE                     0x00000000UL
 
@@ -435,7 +437,7 @@
 #define G_STRAYED   0x00000100UL     /* generated only when the player has strayed from the his/her original alignment path */
 #define G_GENO      0x00000080UL     /* can be genocided */
 #define G_NOCORPSE  0x00000040UL     /* no corpse left ever */
-/* Reserved */
+#define G_PREHISTORIC 0x00000020UL   /* generated in caveman quest */
 /* Reserved */
 #define G_FREQ      0x00000007UL     /* creation frequency mask */
 

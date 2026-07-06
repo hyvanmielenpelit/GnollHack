@@ -1009,7 +1009,7 @@ lminion(boolean ignore_difficulty, boolean is_summon)
     struct permonst *ptr;
 
     for (tryct = 0; tryct < 20; tryct++) {
-        ptr = mkclass_core(S_ANGEL, 0, A_NONE, 0, (ignore_difficulty ? (MKCLASS_FLAGS_IGNORE_DIFFICULTY) : 0UL) | (is_summon ? (MKCLASS_FLAGS_SUMMON) : 0UL));
+        ptr = mkclass_core(S_ANGEL, 0, A_NONE, 0, 0, (ignore_difficulty ? (MKCLASS_FLAGS_IGNORE_DIFFICULTY) : 0UL) | (is_summon ? (MKCLASS_FLAGS_SUMMON) : 0UL));
         if (ptr && !is_lord(ptr))
             return monsndx(ptr);
     }

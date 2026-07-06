@@ -1825,7 +1825,7 @@ E void reset_rndmonst(int);
 E void get_generated_monster_minmax_levels(int, int*, int*, int, int);
 E struct permonst *mkclass(char, int);
 E struct permonst *mkclass_aligned(char, int, aligntyp, uint64_t);
-E struct permonst* mkclass_core(char, int, aligntyp, int, uint64_t);
+E struct permonst* mkclass_core(char, int, int, aligntyp, int, uint64_t);
 E int mkclass_poly(int);
 E int adj_lev(struct permonst *, int);
 E boolean is_mon_high_level(struct monst*);
