@@ -396,6 +396,8 @@
 #define M7_WIZARD                   0x00001000UL   /* monster can use wizard items */
 /* Some free bits */
 #define M7_DINOSAUR                 0x00010000UL   /* monster is a dinosaur */
+#define M7_ILLUSORY_APPEARANCE      0x00020000UL   /* takes illusory appearance of a friendly monster using M_AP_MONSTER/mappearance */
+#define M7_FRIENDLY_ILLUSORY_APPEARANCE 0x00040000UL /* appears peaceful while in illusory appearance form */
 
 #define M8_NONE                     0x00000000UL
 
