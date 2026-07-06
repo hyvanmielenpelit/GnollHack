@@ -5865,9 +5865,9 @@ doset_add_menu(winid win, const char *option, int idx, int indexoffset, int notr
     Strncpy(optbuf, option ? option : "(null)", BUFSZ - 1);
     optbuf[BUFSZ - 1] = 0;
 
-    char bcbuf[BUFSZ * 2];
-    Sprintf(bcbuf, "doset_add_menu: option: %s, %s", optbuf, compopt[i].name);
-    issue_breadcrumb3(bcbuf, i, indexoffset);
+    //char bcbuf[BUFSZ * 2];
+    //Sprintf(bcbuf, "doset_add_menu: option: %s, %s", optbuf, compopt[i].name);
+    //issue_breadcrumb3(bcbuf, i, indexoffset);
     if (indexoffset == 0) {
         any.a_int = 0;
         value = get_compopt_value(option, buf2);
@@ -5932,7 +5932,7 @@ opts_add_others(winid win, const char *name, int id, char *bufx, int nset)
     if (!name)
         return;
 
-    char buf[BUFSZ] = "", buf2[BUFSZ] = "";
+    char buf[BUFSZ * 2] = "", buf2[BUFSZ * 2] = "";
     anything any = zeroany;
 
     any.a_int = id;
@@ -5981,8 +5981,6 @@ static struct other_opts {
 int
 doset(void) /* changing options via menu by Per Liboriussen */
 {
-    issue_breadcrumb("Starting doset");
-
     static boolean made_fmtstr = FALSE;
     char buf[BUFSZ] = DUMMY, buf2[BUFSZ] = DUMMY;
     const char *name;
