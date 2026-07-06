@@ -1190,6 +1190,8 @@ name_to_mon_ex(const char *in_str, int *fem_ptr)
             { "yeenoghu", PM_YEENAGHU, 0 },
             { "Juiblex", PM_JUBILEX, 0 },
             { "juiblex", PM_JUBILEX, 0 },
+
+            /* tooth ending alternatives*/
             { "sabre-tooth tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
             { "sabre-tooth tiger", PM_SABER_TOOTH_TIGER, 0 },
             { "large sabre-tooth tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
@@ -1205,7 +1207,28 @@ name_to_mon_ex(const char *in_str, int *fem_ptr)
             { "saber tooth tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
             { "saber tooth tiger", PM_SABER_TOOTH_TIGER, 0 },
             { "large saber tooth tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
-            /* end of list */
+
+            /* toothed ending alternatives*/
+            { "saber-toothed tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "saber-toothed tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large saber-toothed tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "sabre-toothed tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "sabre-toothed tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large sabre-toothed tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "sabretoothed tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "sabretoothed tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large sabretoothed tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "sabre toothed tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "sabre toothed tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large sabre toothed tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "sabertoothed tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "sabertoothed tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large sabertoothed tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "saber toothed tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "saber toothed tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large saber toothed tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+
+                /* end of list */
             { 0, NON_PM }
         };
         const struct alt_spl *namep;
