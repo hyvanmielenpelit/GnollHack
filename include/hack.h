@@ -404,9 +404,10 @@ extern short tile2enlargement[MAX_TILES];
 
 #define GOODPOS_IGNOREYOU               0x80000000UL
 
-#define MONRNDTYPE_NORMAL  0
-#define MONRNDTYPE_TAME    1
-#define MONRNDTYPE_HOSTILE 2
+#define MONRNDTYPE_NORMAL   0
+#define MONRNDTYPE_TAME     1
+#define MONRNDTYPE_HOSTILE  2
+#define MONRNDTYPE_RAKSHASA 3
 
 #define mon_rndtype(m) (!(m) ? MONRNDTYPE_NORMAL : (m) == &youmonst || is_tame(m) ? MONRNDTYPE_TAME : !is_peaceful(m) ? MONRNDTYPE_HOSTILE : MONRNDTYPE_NORMAL)
 

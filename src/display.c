@@ -843,7 +843,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
         }
 
         case M_AP_MONSTER:
-            show_monster_glyph_with_extra_info(x, y, any_monnum_to_glyph(is_mon_female(mon), what_mon((int)mon->mappearance, rn2_on_display_rng)), mon, 0UL, 0UL, 0, 0 );
+            show_monster_glyph_with_extra_info(x, y, (is_mon_facing_right(mon) ? -1 : 1) * any_monnum_to_glyph(is_mon_female(mon), what_mon((int)mon->mappearance, rn2_on_display_rng)), mon, 0UL, 0UL, 0, 0);
             clear_monster_layer_memory_at(x, y);
             break;
         }
@@ -5213,7 +5213,7 @@ display_self_with_extra_info_choose_ascii(uint64_t displayed_flags, uint64_t dis
             : (U_AP_TYPE == M_AP_OBJECT)
             ? objnum_to_glyph(youmonst.mappearance)
             /* else U_AP_TYPE == M_AP_MONSTER */
-            : any_monnum_to_glyph(flags.female, youmonst.mappearance)
+            : (u.facing_right ? -1 : 1) * any_monnum_to_glyph(flags.female, youmonst.mappearance)
         ),
         u.usteed ? u.usteed : &youmonst, u.ux0, u.uy0,
         displayed_flags, displayed_mflags | LMFLAGS_YOU | (u.usteed && mon_visible(u.usteed) ? LMFLAGS_RIDDEN : 0UL),

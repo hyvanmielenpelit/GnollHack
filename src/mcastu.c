@@ -669,7 +669,8 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
                 strloss = (strloss + 1) / 2;
             if (Invulnerable)
                 strloss = 0;
-            losestr(rnd(strloss));
+            if (strloss > 0)
+                losestr(strloss == 1 ? 1 : rnd(strloss));
             if (u.uhp < 1)
                 done_in_by(mtmp, DIED);
         }

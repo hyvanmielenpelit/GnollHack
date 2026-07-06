@@ -1719,9 +1719,9 @@ movemon(void)
                 continue;
         }
 
-        if (is_hider(mtmp->data))
+        if (is_hider(mtmp->data) || has_illusory_appearance(mtmp->data))
         {
-            /* unwatched mimics and piercers may hide again  [MRS] */
+            /* unwatched mimics, rakshasas, and piercers may hide again  [MRS] */
             if (restrap(mtmp))
                 continue;
             if (M_AP_TYPE(mtmp) == M_AP_FURNITURE
@@ -5220,7 +5220,7 @@ hide_monst(struct monst *mon)
         if (is_hider(mon->data))
             (void) restrap(mon);
         /* try again if mimic missed its 1/3 chance to hide */
-        if (is_mimic(mon->data) && !M_AP_TYPE(mon))
+        if ((is_mimic(mon->data) || has_illusory_appearance(mon->data)) && !M_AP_TYPE(mon))
             (void) restrap(mon);
         if (hider_under)
             (void) hideunder(mon);

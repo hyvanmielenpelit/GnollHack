@@ -132,7 +132,7 @@ m_initgrp(struct monst *mtmp, int x, int y, int n, int mmflags)
     mm.y = y;
     while (cnt--)
     {
-        if (peace_minded(mtmp->data))
+        if (peace_minded(mtmp->data), TRUE)
             continue;
         /* Don't create groups of peaceful monsters since they'll get
          * in our way.  If the monster has a percentage chance so some
@@ -3004,7 +3004,7 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
     set_mon_mwantstodrop(mtmp, TRUE);
     set_mon_mwantstomove(mtmp, TRUE);
     set_mon_mcanmove(mtmp, TRUE);
-    set_mon_mpeaceful(mtmp, (mmflags & MM_ANGRY) ? FALSE : (mmflags & MM_PEACEFUL) ? TRUE : peace_minded(ptr));
+    set_mon_mpeaceful(mtmp, (mmflags & MM_ANGRY) ? FALSE : (mmflags & MM_PEACEFUL) ? TRUE : peace_minded(ptr, TRUE));
 
     switch (ptr->mlet) 
     {
@@ -3452,7 +3452,7 @@ rndmonst_for_polymon(struct monst *mon)
 
 /*
  * Parameters:
- *   rnd_type: 0 = normal; 1 = pet or self polymorph (positive luck increases the chance of a higher level outcome); 2 = hostile polymorph (negative luck increases the chance of a higher level outcome)
+ *   rnd_type: 0 = normal; 1 = pet or self polymorph (positive luck increases the chance of a higher level outcome); 2 = hostile polymorph (negative luck increases the chance of a higher level outcome), 3 = raksahasa illusion
  */
 /* select a random monster type */
 struct permonst*
@@ -3462,13 +3462,13 @@ rndmonst_core(int level_limit, int rnd_type)
     int mndx, ct;
 
     /* Special dungeons; note that these influence only wand of create monster, summon monster spells, and shapeshifters; random monster generation is handled in create_monster_or_encounter */
-    if (u.uz.dnum == quest_dnum && rn2(7) && (ptr = qt_montype()) != 0)
+    if (rnd_type != MONRNDTYPE_RAKSHASA && u.uz.dnum == quest_dnum && rn2(7) && (ptr = qt_montype()) != 0)
         return ptr;
 
-    if (u.uz.dnum == modron_dnum && (ptr = mkclass(S_MODRON)) != 0)
+    if (rnd_type != MONRNDTYPE_RAKSHASA && u.uz.dnum == modron_dnum && (ptr = mkclass(S_MODRON)) != 0)
         return ptr;
 
-    if (u.uz.dnum == bovine_dnum)
+    if (rnd_type != MONRNDTYPE_RAKSHASA && u.uz.dnum == bovine_dnum)
     {
         ptr = (struct permonst*)0;
         if(!(mvitals[PM_HELL_BOVINE].mvflags & MV_GONE))
@@ -3532,6 +3532,10 @@ rndmonst_core(int level_limit, int rnd_type)
                 if (upper && !isupper((uchar) def_monsyms[(int) ptr->mlet].sym)) /* Left here, because influences the whole class; you can thus force lower case monsters with mkclass on rogue level */
                     continue;
                 if (ungeneratable_monster_type(mndx))
+                    continue;
+                if (rnd_type == MONRNDTYPE_RAKSHASA && !peace_minded(&mons[mndx], FALSE))
+                    continue;
+                if (rnd_type == MONRNDTYPE_RAKSHASA && i < 3 && !humanoid(&mons[mndx]))
                     continue;
                 ct = (int) (ptr->geno & G_FREQ) + align_shift(ptr);
                 if (ct < 0 || ct > 127)
@@ -4364,7 +4368,7 @@ golemhp(int type)
  *      (Some "animal" types are co-aligned, but also hungry.)
  */
 boolean
-peace_minded(struct permonst *ptr)
+peace_minded(struct permonst *ptr, boolean dorandomize)
 {
     aligntyp mal = ptr->maligntyp, ual = u.ualign.type;
 
@@ -4404,8 +4408,8 @@ peace_minded(struct permonst *ptr)
      * hostile.  This chance is greater if the player has strayed
      * (u.ualign.record negative) or the monster is not strongly aligned.
      */
-    return (boolean) (!!rn2(16 + (u.ualign.record < -15 ? -15 : u.ualign.record))
-                      && !!rn2(2 + abs(mal)));
+    return dorandomize ? (boolean) (!!rn2(16 + (u.ualign.record < -15 ? -15 : u.ualign.record))
+                      && !!rn2(2 + abs(mal))) : TRUE;
 }
 
 /* Set mhostility to have the proper effect on player alignment if monster is
@@ -4791,13 +4795,6 @@ set_mimic_sym(struct monst *mtmp)
         block_vision_and_hearing_at_point(mx, my);
 }
 
-/* Pool of friendly-looking monster forms for rakshasa illusory appearance */
-static NEARDATA const unsigned rakshasaapp[] = {
-    PM_HUMAN, PM_ELF, PM_DWARF, PM_GNOME,
-    PM_MONK, PM_HEALER, PM_RANGER,
-    PM_ALIGNED_PRIEST, PM_GUIDE,
-};
-
 /* Set up a rakshasa's illusory appearance as a friendly monster */
 void
 set_rakshasa_appearance(struct monst *mtmp)
@@ -4805,8 +4802,34 @@ set_rakshasa_appearance(struct monst *mtmp)
     if (!mtmp || Protection_from_shape_changers)
         return;
 
+    int mndx = NON_PM;
+    struct permonst* pm = rndmonst_core(0, MONRNDTYPE_RAKSHASA);
+    if (pm) {
+        mndx = monsndx(pm);
+    } else {
+        if (Race_if(PM_ELF)) {
+            mndx = PM_ELVENKING;
+        } else if (Race_if(PM_DWARF)) {
+            mndx = PM_DWARF_KING;
+        } else if (Race_if(PM_GNOLL)) {
+            mndx = u.ualign.type == A_CHAOTIC && level_difficulty() >= 15 ? (Inhell ? PM_FLIND_LORD : PM_FLIND) : PM_GNOLL_KING;
+        } else if (Race_if(PM_GNOME)) {
+            mndx = PM_GNOME_KING;
+        } else if (Race_if(PM_ORC)) {
+            mndx = !rn2(2) ? PM_ORC_CAPTAIN : PM_GOBLIN_KING;
+        } else {
+            if (u.ualign.type == A_LAWFUL) {
+                mndx = rn2(2) ? PM_CAPTAIN : PM_LIEUTENANT;
+            } else if (u.ualign.type == A_NEUTRAL) {
+                mndx = PM_ELVENKING; /* Elves are neutral in GnollHack*/
+            } else {
+                mndx = !rn2(2) ? PM_ORC_CAPTAIN : PM_GOBLIN_KING;
+            }
+        }
+    }
+
     mtmp->m_ap_type = M_AP_MONSTER;
-    mtmp->mappearance = rakshasaapp[rn2(SIZE(rakshasaapp))];
+    mtmp->mappearance = mndx;
 
     newsym(mtmp->mx, mtmp->my);
 }

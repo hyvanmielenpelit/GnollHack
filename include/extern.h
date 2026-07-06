@@ -1838,7 +1838,7 @@ E int mongets_return_enchantment(struct monst*, int);
 E struct obj* mongets_noinit_item(struct monst*, int,  int);
 E int64_t mongetsgold(struct monst*, int64_t);
 E int golemhp(int);
-E boolean peace_minded(struct permonst *);
+E boolean peace_minded(struct permonst *, boolean);
 E void set_mhostility(struct monst *);
 E void newmcorpsenm(struct monst *);
 E void freemcorpsenm(struct monst *);
