@@ -863,7 +863,7 @@ cast_cleric_spell(struct monst *mtmp, double damage, int spellnum)
         /* Try for insects, and if there are none
            left, go for (sticks to) snakes.  -3. */
         char let = (spellnum == CLC_INSECTS ? S_ANT : S_SNAKE);
-        struct permonst *pm = mkclass(let, 0);
+        struct permonst *pm = mkclass(let);
         struct monst *mtmp2 = (struct monst *) 0;
         if (!pm)
             break;
@@ -887,7 +887,7 @@ cast_cleric_spell(struct monst *mtmp, double damage, int spellnum)
                 break;
             
             debugprint_pos();
-            if ((pm = mkclass(let, 0)) != 0
+            if ((pm = mkclass(let)) != 0
                 && (mtmp2 = makemon(pm, bypos.x, bypos.y, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL))) != 0)
             {
                 context.makemon_spef_idx++;
@@ -1241,9 +1241,9 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
         /* don't summon insects if it doesn't think you're around */
         if (!mcouldseeu && (spellnum == CLC_INSECTS || spellnum == CLC_SNAKES))
             return TRUE;
-        if (spellnum == CLC_INSECTS && mkclass(S_ANT, 0) == (struct permonst*)0)
+        if (spellnum == CLC_INSECTS && mkclass(S_ANT) == (struct permonst*)0)
             return TRUE;
-        if (spellnum == CLC_SNAKES && mkclass(S_SNAKE, 0) == (struct permonst*)0)
+        if (spellnum == CLC_SNAKES && mkclass(S_SNAKE) == (struct permonst*)0)
             return TRUE;
         /* blindness spell on blinded player */
         if (spellnum == CLC_BLIND_YOU && Blinded)

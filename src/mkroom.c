@@ -1213,7 +1213,7 @@ morguemon(void)
     else if (hd > 10 && i < 10) 
     {
         if (Inhell || In_endgame(&u.uz)) {
-            return mkclass(S_DEMON, 0);
+            return mkclass(S_DEMON);
         } 
         else 
         {
@@ -1230,12 +1230,12 @@ morguemon(void)
     }
 
     if (hd > 8 && i > 85)
-        return mkclass_core(S_VAMPIRE, 0, 0, A_NONE, -rn2(5), 0UL);
+        return mkclass_core(S_VAMPIRE, 0, 0, 0, A_NONE, -rn2(5), 0UL);
 
     return ((i < 20) ? &mons[PM_GHOST]
                      : (i < 30) ? &mons[PM_WRAITH]
-                     : (i < 50) ? mkclass_core(S_GREATER_UNDEAD, 0, 0, A_NONE, -rn2(5), 0UL)
-                        : mkclass(S_LESSER_UNDEAD, -rn2(5)));
+                     : (i < 50) ? mkclass_core(S_GREATER_UNDEAD, 0, 0, 0, A_NONE, -rn2(5), 0UL)
+                        : mkclass_core(S_LESSER_UNDEAD, 0, 0, 0, A_NONE, -rn2(5), 0UL));
 }
 
 
@@ -1375,7 +1375,7 @@ mkswamp(void) /* Michiel Huisjes & Fred de Wilde */
                         }
                     }
                     else if (!rn2(4)) /* swamps tend to be moldy */
-                        (void)makemon(mkclass(S_FUNGUS, 0), sx, sy, NO_MM_FLAGS);
+                        (void)makemon(mkclass(S_FUNGUS), sx, sy, NO_MM_FLAGS);
                     else if (!rn2(8)) /* swamps may have dragon fruits */
                         (void)mksobj_at(DRAGON_FRUIT, sx, sy, TRUE, FALSE);
                     else if (!rn2(10)) /* swamps may have cloudberries */
@@ -1648,7 +1648,7 @@ mkgarden(void)
                 else if (!rn2(8))
                 {
                     /* Random ogre at high levels */
-                    struct permonst* pm = levdiff >= mons[PM_OGRE_OVERLORD].difficulty ? mkclass(S_OGRE, 0) : (struct permonst*)0;
+                    struct permonst* pm = levdiff >= mons[PM_OGRE_OVERLORD].difficulty ? mkclass(S_OGRE) : (struct permonst*)0;
                     
                     /* Otherwise, hobgoblins, bugbears or normal ogres + some bosses */
                     (void)makemon(!pm ? (&mons[
@@ -2560,23 +2560,23 @@ courtmon(void)
     int i = rn2(60) + rn2(3 * level_difficulty());
 
     if (i > 100)
-        return mkclass(S_DRAGON, 0);
+        return mkclass(S_DRAGON);
     else if (i > 95)
-        return mkclass(S_GIANT, 0);
+        return mkclass(S_GIANT);
     else if (i > 85)
-        return mkclass(S_TROLL, 0);
+        return mkclass(S_TROLL);
     else if (i > 75)
-        return mkclass(S_CENTAUR, 0);
+        return mkclass(S_CENTAUR);
     else if (i > 60)
-        return mkclass(S_ORC, 0);
+        return mkclass(S_ORC);
     else if (i > 45)
         return &mons[PM_BUGBEAR];
     else if (i > 30)
         return &mons[PM_HOBGOBLIN];
     else if (i > 15)
-        return mkclass(S_GNOLL, 0);
+        return mkclass(S_GNOLL);
     else
-        return mkclass(S_KOBOLD, 0);
+        return mkclass(S_KOBOLD);
 }
 
 #define NSTYPES (PM_CAPTAIN - PM_SOLDIER + 1)

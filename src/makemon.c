@@ -17,7 +17,7 @@
 
 static boolean ungeneratable_monster_type(int);
 static int align_shift(struct permonst *);
-static boolean mk_gen_ok(int, uchar, uint64_t, boolean, boolean);
+static boolean mk_gen_ok(int, uchar, uint64_t, uint64_t, boolean, boolean);
 #if 0
 static void m_initgrp(struct monst *, int, int, int, int);
 #endif
@@ -3379,7 +3379,7 @@ create_critters(int cnt, struct permonst *mptr, boolean neverask)
 static boolean
 ungeneratable_monster_type(int mndx)
 {
-    return !mk_gen_ok(mndx, MV_GONE, (G_NOGEN | G_UNIQ), FALSE, FALSE);
+    return !mk_gen_ok(mndx, MV_GONE, (G_NOGEN | G_UNIQ), 0, FALSE, FALSE);
 
     //if (mons[mndx].geno & (G_NOGEN | G_UNIQ))
     //    return TRUE;
@@ -3461,7 +3461,7 @@ rndmonst_core(int level_limit, int rnd_type)
     if (u.uz.dnum == quest_dnum && rn2(7) && (ptr = qt_montype()) != 0)
         return ptr;
 
-    if (u.uz.dnum == modron_dnum && (ptr = mkclass(S_MODRON, 0)) != 0)
+    if (u.uz.dnum == modron_dnum && (ptr = mkclass(S_MODRON)) != 0)
         return ptr;
 
     if (u.uz.dnum == bovine_dnum)
@@ -3685,12 +3685,8 @@ reset_rndmonst(int mndx)
 
 /* decide whether it's ok to generate a candidate monster by mkclass() */
 static boolean
-mk_gen_ok(int mndx, uchar excluded_mvflags, uint64_t genomask, boolean ispoly, boolean issummon)
+mk_gen_ok(int mndx, uchar excluded_mvflags, uint64_t excluded_genomask, uint64_t included_genomask, boolean ispoly, boolean issummon)
 {
-    /* Some flags need to be treated separately, since they require the flag rather than checking non-existence of the flag */
-    boolean require_prehistoric = (genomask & G_PREHISTORIC) != 0;
-    genomask &= ~G_PREHISTORIC;
-
     struct permonst *ptr = &mons[mndx];
 
     if (mvitals[mndx].mvflags & excluded_mvflags)
@@ -3724,13 +3720,23 @@ mk_gen_ok(int mndx, uchar excluded_mvflags, uint64_t genomask, boolean ispoly, b
                 return FALSE;
             if (In_endgame(&u.uz) && !Is_astralevel(&u.uz) && wrong_elem_type(ptr))
                 return FALSE;
-            if ((ptr->geno & G_PREHISTORIC) == 0 && require_prehistoric)
-                return FALSE;
         }
     }
 
+    /* All bits in included_genomask must be 1 */
+    if (included_genomask != 0)
+    {
+        if (!issummon && (ptr->geno & included_genomask) != included_genomask)
+            return FALSE;
+
+        /* Here we already know that all bits in included_genomask are zero */
+        if ((ptr->geno & G_SPECIAL_OK) != 0)
+            excluded_genomask &= ~G_NOGEN;
+    }
+
     /* Note that G_MODRON and G_YACC override G_NOGEN */
-    if (ptr->geno & genomask)
+    /* All bits in excluded_genomask must be 0 */
+    if ((ptr->geno & excluded_genomask) != 0)
         return FALSE;
 
     /* special levels might ask for random demon type; reject this one */
@@ -3745,24 +3751,26 @@ mk_gen_ok(int mndx, uchar excluded_mvflags, uint64_t genomask, boolean ispoly, b
    to allow the normal genesis masks to be deactivated.
    Returns Null if no monsters in that class can be made. */
 struct permonst *
-mkclass(char mclass, int spc)
+mkclass(char mclass)
 {
-    return mkclass_core(mclass, spc, 0, A_NONE, 0, 0UL);
+    return mkclass_core(mclass, 0, 0, 0, A_NONE, 0, 0UL);
 }
 
 /* mkclass() with alignment restrictions; used by ndemon() */
 struct permonst*
-mkclass_aligned(char mclass, int spc, aligntyp atyp, uint64_t mflags)
+mkclass_aligned(char mclass, aligntyp atyp, uint64_t mflags)
 {
-    return mkclass_core(mclass, spc, 0, atyp, 0, mflags);
+    return mkclass_core(mclass, 0, 0, 0, atyp, 0, mflags);
 }
 
 struct permonst *
-mkclass_core(char mclass, int spc, int added_genoflags, aligntyp atyp, int difficulty_adj, uint64_t mflags)
+mkclass_core(char mclass, int removed_base_exclusion_genoflags, int exclusion_genoflags, int inclusion_genoflags, aligntyp atyp, int difficulty_adj, uint64_t mflags)
 {
     int first = 0, last = 0, num = 0;
     int k, nums[SPECIAL_PM + 1]; /* +1: insurance for final return value */
-    int minmlev = 0, maxmlev = 0, mask = ((G_NOGEN | G_UNIQ) & ~spc) | added_genoflags;
+    int minmlev = 0, maxmlev = 0;
+    int exclusion_mask = ((G_NOGEN | G_UNIQ) & ~removed_base_exclusion_genoflags) | exclusion_genoflags;
+    int inclusion_mask = inclusion_genoflags;
     boolean issummon = (mflags & MKCLASS_FLAGS_SUMMON) != 0;
     boolean ispoly = (mflags & MKCLASS_FLAGS_POLYMORPH) != 0;
 
@@ -3816,7 +3824,7 @@ mkclass_core(char mclass, int spc, int added_genoflags, aligntyp atyp, int diffi
     {
         if (atyp != A_NONE && sgn(mons[last].maligntyp) != sgn(atyp))
             continue;
-        if (mk_gen_ok(last, MV_GONE, mask, ispoly, issummon))
+        if (mk_gen_ok(last, MV_GONE, exclusion_mask, inclusion_mask, ispoly, issummon))
         {
             /* consider it; don't reject a toostrong() monster if we
                don't have anything yet (num==0) or if it is the same
@@ -3881,13 +3889,13 @@ mkclass_poly(int mclass)
         return NON_PM;
 
     for (last = first; last < SPECIAL_PM && mons[last].mlet == mclass; last++)
-        if (mk_gen_ok(last, MV_GENOCIDED, (G_NOGEN | G_UNIQ), TRUE, FALSE))
+        if (mk_gen_ok(last, MV_GENOCIDED, (G_NOGEN | G_UNIQ), 0, TRUE, FALSE))
             num += (int)(mons[last].geno & G_FREQ);
     if (!num)
         return NON_PM;
 
     for (num = rnd(num); num > 0; first++)
-        if (mk_gen_ok(first, MV_GENOCIDED, (G_NOGEN | G_UNIQ), TRUE, FALSE))
+        if (mk_gen_ok(first, MV_GENOCIDED, (G_NOGEN | G_UNIQ), 0, TRUE, FALSE))
             num -= (int)(mons[first].geno & G_FREQ);
     first--; /* correct an off-by-one error */
 
@@ -4877,7 +4885,7 @@ make_level_monster(int x, int y, uint64_t mmflags, uint64_t mmflags2)
             else if (level.flags.mon_gen_infos[sel_index].mclass > 0 && level.flags.mon_gen_infos[sel_index].mclass < MAX_MONSTER_CLASSES)
             {
                 debugprint_pos();
-                struct permonst* pm = mkclass(level.flags.mon_gen_infos[sel_index].mclass, 0);
+                struct permonst* pm = mkclass(level.flags.mon_gen_infos[sel_index].mclass);
                 if(pm)
                     mtmp = makemon2(pm, x, y, mmflags, mmflags2);
             }

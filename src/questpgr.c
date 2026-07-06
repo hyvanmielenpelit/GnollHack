@@ -750,28 +750,28 @@ qt_montype(void)
         boolean is_gorilla_etc_genocided = (mvitals[PM_GORILLA].mvflags & MV_GENOCIDED) && (mvitals[PM_GIANT_GORILLA].mvflags & MV_GENOCIDED) && (mvitals[PM_GARGANTUAN_GORILLA].mvflags & MV_GENOCIDED) && (mvitals[PM_MEGATHERIUM].mvflags & MV_GENOCIDED);
         if (!is_st_tiger_genocided && !rn2(10))
         {
-            ptr = mkclass_core(S_FELINE, 0, G_PREHISTORIC, A_NONE, 0, 0UL);
+            ptr = mkclass_core(S_FELINE, 0, 0, G_PREHISTORIC, A_NONE, 0, 0UL);
             if (ptr)
                 return ptr;
         }
         if (!is_gorilla_etc_genocided && !rn2(10))
         {
-            ptr = mkclass_core(S_YETI, 0, G_PREHISTORIC, A_NONE, 0, 0UL);
+            ptr = mkclass_core(S_YETI, 0, 0, G_PREHISTORIC, A_NONE, 0, 0UL);
             if (ptr)
                 return ptr;
         }
-        ptr = mkclass_core(S_LIZARD, 0, G_PREHISTORIC, A_NONE, 0, 0UL);
+        ptr = mkclass_core(S_LIZARD, 0, 0, G_PREHISTORIC, A_NONE, 0, 0UL);
         if (ptr)
             return ptr;
         if (!is_gorilla_etc_genocided && (is_st_tiger_genocided ? TRUE : rn2(2)))
         {
-            ptr = mkclass_core(S_YETI, 0, G_PREHISTORIC, A_NONE, 0, 0UL);
+            ptr = mkclass_core(S_YETI, 0, 0, G_PREHISTORIC, A_NONE, 0, 0UL);
             if (ptr)
                 return ptr;
         }
         if (!is_st_tiger_genocided)
         {
-            ptr = mkclass_core(S_FELINE, 0, G_PREHISTORIC, A_NONE, 0, 0UL);
+            ptr = mkclass_core(S_FELINE, 0, 0, G_PREHISTORIC, A_NONE, 0, 0UL);
             if (ptr)
                 return ptr;
         }
@@ -783,13 +783,13 @@ qt_montype(void)
         if (qpm != NON_PM && rn2(5) && !(mvitals[qpm].mvflags & MV_GENOCIDED))
             return &mons[qpm];
         debugprint_pos();
-        return mkclass(urole.enemy1sym, 0);
+        return mkclass(urole.enemy1sym);
     }
     qpm = urole.enemy2num;
     if (qpm != NON_PM && rn2(5) && !(mvitals[qpm].mvflags & MV_GENOCIDED))
         return &mons[qpm];
     debugprint_pos();
-    return mkclass(urole.enemy2sym, 0);
+    return mkclass(urole.enemy2sym);
 }
 
 static void

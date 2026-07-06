@@ -1914,7 +1914,7 @@ use_bell(struct obj **optr)
             && !(mvitals[PM_WOOD_NYMPH].mvflags & MV_GONE)
             && !(mvitals[PM_WATER_NYMPH].mvflags & MV_GONE)
             && !(mvitals[PM_MOUNTAIN_NYMPH].mvflags & MV_GONE)
-            && (mtmp = makemon(mkclass(S_NYMPH, 0), u.ux, u.uy, MM_NO_MONSTER_INVENTORY))
+            && (mtmp = makemon(mkclass(S_NYMPH), u.ux, u.uy, MM_NO_MONSTER_INVENTORY))
                    != 0) {
             You_ex(ATR_NONE, CLR_MSG_WARNING, "summon %s!", a_monnam(mtmp));
             if (!obj_resists(obj, 93, 100)) {
@@ -7203,7 +7203,7 @@ int use_lever(struct trap *lever)
                 if (lever->effect_param3 == STATUE_TRAP && montyp == NON_PM && (char)lever->effect_param2 > 0)
                 {
                     debugprint_pos();
-                    struct permonst* pm = mkclass((char)lever->effect_param2, 0);
+                    struct permonst* pm = mkclass((char)lever->effect_param2);
                     if(pm)
                         montyp = monsndx(pm);
                 }
@@ -7263,7 +7263,7 @@ int use_lever(struct trap *lever)
             else if (lever->effect_param2 >= 0)
             {
                 debugprint_pos();
-                mtmp = makemon(lever->effect_param2 == 0 ? (struct permonst*)0 : mkclass((char)lever->effect_param2, 0), target_x, target_y, lever->effect_flags | MM_ADJACENTOK);
+                mtmp = makemon(lever->effect_param2 == 0 ? (struct permonst*)0 : mkclass((char)lever->effect_param2), target_x, target_y, lever->effect_flags | MM_ADJACENTOK);
             }
             if (mtmp)
             {

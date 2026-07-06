@@ -4469,7 +4469,7 @@ create_particular_creation(struct _create_particular_data *d)
     for (i = 0; i <= multi; i++)
     {
         if (d->monclass != MAX_MONSTER_CLASSES)
-            whichpm = mkclass(d->monclass, 0);
+            whichpm = mkclass(d->monclass);
         else if (d->randmonst)
             whichpm = rndmonst();
 

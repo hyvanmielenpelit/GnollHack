@@ -1811,7 +1811,7 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
                         {
                             boolean low_level = ((leveldiff + u.ulevel) / 2 < mons[PM_LICH].difficulty);
                             int classmonster = NON_PM;
-                            ptr = mkclass(rn2(3) || low_level ? S_GREATER_UNDEAD : S_LICH, 0);
+                            ptr = mkclass(rn2(3) || low_level ? S_GREATER_UNDEAD : S_LICH);
                             if (ptr)
                                 classmonster = monsndx(ptr);
 
@@ -1832,7 +1832,7 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
                         int classmonster = NON_PM;
                         if (In_V_tower(&u.uz))
                         {
-                            ptr = mkclass(S_VAMPIRE, 0);
+                            ptr = mkclass(S_VAMPIRE);
                             if(ptr)
                                 classmonster = monsndx(ptr);
                             if (classmonster >= LOW_PM)
@@ -1848,7 +1848,7 @@ mksobj_with_flags(int otyp, boolean init, boolean artif, int mkobj_type, struct 
                             {
                                 boolean low_level = ((leveldiff + u.ulevel) / 2 < mons[PM_VAMPIRE].difficulty);
                                 boolean very_low_level = ((leveldiff + u.ulevel) / 2 < mons[PM_BARROW_WIGHT].difficulty - 1);
-                                ptr = mkclass(rn2(3) && !low_level ? S_VAMPIRE : S_LESSER_UNDEAD, 0);
+                                ptr = mkclass(rn2(3) && !low_level ? S_VAMPIRE : S_LESSER_UNDEAD);
                                 if (ptr)
                                     classmonster = monsndx(ptr);
                                 int tmp = (rn2(9) && classmonster > NON_PM ? classmonster : very_low_level ? PM_HUMAN_ZOMBIE : low_level ? PM_BARROW_WIGHT : PM_SKELETON_WARRIOR);

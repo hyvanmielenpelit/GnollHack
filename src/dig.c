@@ -1144,7 +1144,7 @@ dig_up_grave(coord *cc)
                 pline_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_WARNING, Hallucination ? "Dude!  The living dead!"
                     : "The grave's owner is very upset!");
             }
-            (void)makemon(mkclass(S_LESSER_UNDEAD, 0), dig_x, dig_y, NO_MM_FLAGS);
+            (void)makemon(mkclass(S_LESSER_UNDEAD), dig_x, dig_y, NO_MM_FLAGS);
             break;
         case 3:
             if (!Blind)
@@ -1161,7 +1161,7 @@ dig_up_grave(coord *cc)
                 if (dealloc)
                     otmp = 0;
             }
-            (void)makemon(mkclass(S_GREATER_UNDEAD, 0), dig_x, dig_y, NO_MM_FLAGS);
+            (void)makemon(mkclass(S_GREATER_UNDEAD), dig_x, dig_y, NO_MM_FLAGS);
             break;
         default:
             /* No corpse */
