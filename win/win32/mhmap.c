@@ -1268,7 +1268,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         mimic_obj = *MOBJ(m_here);
                     else
                     {
-                        mimic_obj.otyp = m_here->mappearance;
+                        mimic_obj.otyp = (short)m_here->mappearance;
                         mimic_obj.corpsenm = has_mcorpsenm(m_here) ? MCORPSENM(m_here) : PM_TENGU;
                         mimic_obj.quan = 1L;
                     }

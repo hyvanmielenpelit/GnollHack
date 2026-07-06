@@ -4517,7 +4517,7 @@ set_mimic_new_mobj(struct monst *mtmp, int otyp)
         return;
 
     mtmp->m_ap_type = M_AP_OBJECT;
-    mtmp->mappearance = otyp;
+    mtmp->mappearance = (unsigned int)otyp;
     struct obj* otmp = mksobj(otyp, TRUE, FALSE, 0);
     if (otmp)
     {
@@ -4561,7 +4561,7 @@ set_mimic_existing_mobj(struct monst *mtmp, struct obj *otmp)
         return;
 
     mtmp->m_ap_type = M_AP_OBJECT;
-    mtmp->mappearance = otmp->otyp;
+    mtmp->mappearance = (unsigned int)otmp->otyp;
     if (has_mobj(mtmp))
         free_mobj(mtmp);
     if (!has_mobj(mtmp))
@@ -4829,7 +4829,7 @@ set_rakshasa_appearance(struct monst *mtmp)
     }
 
     mtmp->m_ap_type = M_AP_MONSTER;
-    mtmp->mappearance = mndx;
+    mtmp->mappearance = (unsigned int)mndx;
 
     newsym(mtmp->mx, mtmp->my);
 }

@@ -1879,7 +1879,7 @@ create_monster(monster *m, struct mkroom *croom)
                 else 
                 {
                     mtmp->m_ap_type = M_AP_FURNITURE;
-                    mtmp->mappearance = i;
+                    mtmp->mappearance = (unsigned int)i;
                 }
                 break;
 
@@ -1991,7 +1991,7 @@ create_monster(monster *m, struct mkroom *croom)
                     /* this is ordinarily only used for Wizard clones
                        and hasn't been exhaustively tested for mimics */
                     mtmp->m_ap_type = M_AP_MONSTER;
-                    mtmp->mappearance = mndx;
+                    mtmp->mappearance = (unsigned int)mndx;
                 }
                 else 
                 { /* chameleon or vampire */

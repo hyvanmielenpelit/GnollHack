@@ -1952,7 +1952,7 @@ wiz_debug(void)
                     layers.glyph = glyph;
                     (void) mapglyph(layers, &ch, &color, &special, cc.x, cc.y);
 
-                    Sprintf(descbuf, "Mimic %d, m_ap_type=%d, mappearance=%d, has_mobj=%d, otyp=%d, mobj_corpsenm=%d, MCORPSENM=%d", i, mon->m_ap_type, mon->mappearance, has_mobj(mon), has_mobj(mon) ? MOBJ(mon)->otyp : 0, has_mobj(mon) ? MOBJ(mon)->corpsenm : -2, has_mcorpsenm(mon) ? MCORPSENM(mon) : -2);
+                    Sprintf(descbuf, "Mimic %d, m_ap_type=%d, mappearance=%u, has_mobj=%d, otyp=%d, mobj_corpsenm=%d, MCORPSENM=%d", i, mon->m_ap_type, mon->mappearance, has_mobj(mon), has_mobj(mon) ? MOBJ(mon)->otyp : 0, has_mobj(mon) ? MOBJ(mon)->corpsenm : -2, has_mcorpsenm(mon) ? MCORPSENM(mon) : -2);
                     issue_debuglog(DEBUGLOG_DEBUG_ONLY, descbuf);
                     *descbuf = 0;
                     (void) do_screen_description(cc, TRUE, ch, descbuf, &firstmatch, (struct permonst**)0);

@@ -528,7 +528,7 @@ void lib_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
                         mimic_obj = *MOBJ(mtmp);
                     else
                     {
-                        mimic_obj.otyp = mtmp->mappearance;
+                        mimic_obj.otyp = (short)mtmp->mappearance;
                         mimic_obj.oclass = objects[mimic_obj.otyp].oc_class;
                         mimic_obj.corpsenm = has_mcorpsenm(mtmp) ? MCORPSENM(mtmp) : PM_TENGU;
                         mimic_obj.quan = 1L;

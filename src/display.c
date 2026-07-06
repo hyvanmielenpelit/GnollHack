@@ -767,7 +767,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
              * makemon.c.
              */
             int cmap_type = is_levl_use_special_tileset(&levl[x][y]) ? levl[x][y].special_tileset : get_current_cmap_type_index();
-            int sym = mon->mappearance, glyph = cmap_with_type_to_glyph(sym, cmap_type);
+            int sym = (int)mon->mappearance, glyph = cmap_with_type_to_glyph(sym, cmap_type);
 
             /* Replace */
             int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_FEATURE, (struct obj*)0, mon, 0UL, 0UL, 0UL, MAT_NONE, 0));
@@ -801,7 +801,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
             else
             {
                 obj = zeroobj;
-                obj.otyp = mon->mappearance;
+                obj.otyp = (short)mon->mappearance;
                 obj.oclass = objects[mon->mappearance].oc_class;
                 obj.quan = 1L;
                 /* might be mimicing a corpse or statue */

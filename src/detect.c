@@ -809,7 +809,7 @@ object_detect(struct obj *detector, int class)
             else
             {
                 temp = zeroobj;
-                temp.otyp = mtmp->mappearance; /* needed for obj_to_glyph() */
+                temp.otyp = (short)mtmp->mappearance; /* needed for obj_to_glyph() */
                 temp.oclass = objects[mtmp->mappearance].oc_class;
                 temp.corpsenm = PM_TENGU; /* if mimicing a corpse */
                 temp.quan = 1L;
