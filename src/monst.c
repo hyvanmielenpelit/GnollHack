@@ -1403,7 +1403,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_PRINCE, M5_NONE, M6_HUMAN_BREATHE_ANIMATION, M7_NONE, M8_NONE,
         11, HI_LORD, MONSTER_SOUNDSET_GOBLIN_KING_MALE, MONSTER_SOUNDSET_GOBLIN_KING_FEMALE, NO_SOUNDSET_SUBTYPE),
-    ENLARGED_MON("orc king", None, "orc in a top leadership position", "orc queen", "orc royal", S_ORC, LVL(10, 12, 10, 0, 25, -6), G_NOGEN,
+    ENLARGED_MON("orc king", None, "orc in a top leadership position", "orc queen", "orc royal", S_ORC, LVL(10, 12, 10, 0, 25, -6), (G_NOGEN | G_GENO),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1550, 400, MS_ORC, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(STR18(100), 16, 19, 12, 12, 17),
