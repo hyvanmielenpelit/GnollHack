@@ -351,6 +351,29 @@ mattackm(struct monst *magr, struct monst *mdef)
         refresh_m_tile_gui_info(mdef, FALSE);
     }
 
+    boolean played_stumble_sound = FALSE;
+    if (has_illusory_appearance(magr->data) && !is_peaceful(magr) && M_AP_TYPE(magr) != M_AP_NOTHING && canseemon(magr) && distmin(mdef->mx, mdef->my, magr->mx, magr->my) <= 1)
+    {
+        seemimic(magr);
+        if (!Protection_from_shape_changers && !sensemon(magr))
+        {
+            play_sfx_sound_at_location(SFX_STUMBLE_ON_MIMIC, magr->mx, magr->my);
+            played_stumble_sound = TRUE;
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Wait!  That's %s!", a_monnam(magr));
+        }
+    }
+
+    if (has_illusory_appearance(mdef->data) && !is_peaceful(mdef) && M_AP_TYPE(mdef) != M_AP_NOTHING && canseemon(mdef) && !Protection_from_shape_changers && !sensemon(mdef) && distmin(mdef->mx, mdef->my, magr->mx, magr->my) <= 1)
+    {
+        seemimic(mdef);
+        if (!Protection_from_shape_changers && !sensemon(magr))
+        {
+            if (!played_stumble_sound)
+                play_sfx_sound_at_location(SFX_STUMBLE_ON_MIMIC, mdef->mx, mdef->my);
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Wait!  That's %s!", a_monnam(mdef));
+        }
+    }
+
     /* undetect monsters become un-hidden if they are attacked */
     if (is_mon_mundetected(mdef)) 
     {

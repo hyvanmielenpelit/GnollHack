@@ -344,24 +344,25 @@ static void
 look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, int x, int y)
 {
     char *name, monnambuf[BUFSZ], headbuf[BUFSZ], tmpbuf[BUFSZ];
+    struct permonst *pm = (M_AP_TYPE(mtmp) == M_AP_MONSTER && mtmp->mappearance >= LOW_PM && mtmp->mappearance < NUM_MONSTERS && !Protection_from_shape_changers && !sensemon(mtmp)) ? &mons[mtmp->mappearance] : mtmp->data;
     boolean accurate = !Hallucination;
-    boolean show_monster_type = accurate && (is_mon_isshk(mtmp) || has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp))) && !is_mname_proper_name(mtmp->data);
+    boolean show_monster_type = accurate && (is_mon_isshk(mtmp) || has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp))) && !is_mname_proper_name(pm);
 
-    name = (mtmp->data == &mons[PM_COYOTE] && accurate)
+    name = (pm == &mons[PM_COYOTE] && accurate)
               ? coyotename(mtmp, monnambuf)
               : distant_monnam(mtmp, ARTICLE_NONE, monnambuf);
 
     if (simplebuf)
     {
         if (show_monster_type)
-            Strcpy(simplebuf, pm_monster_name(mtmp->data, is_mon_female(mtmp)));
+            Strcpy(simplebuf, pm_monster_name(pm, is_mon_female(mtmp)));
         else
             Strcpy(simplebuf, name);
     }
 
     Strcpy(headbuf, "");
 
-    if ((mtmp->data->heads > 3 && !(mtmp->data->geno & G_UNIQ) && !is_mname_proper_name(mtmp->data)) || (mtmp->data->heads > 1 && mtmp->heads_left != mtmp->data->heads))
+    if ((pm->heads > 3 && !(pm->geno & G_UNIQ) && !is_mname_proper_name(pm)) || (pm->heads > 1 && mtmp->heads_left != pm->heads))
         Sprintf(headbuf, "%d-headed ", mtmp->heads_left);
 
     Strcpy(tmpbuf, "");
@@ -374,18 +375,18 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
         headbuf,
         name);
 
-    Sprintf(buf, "level %d %s%s", accurate ? mtmp->data->difficulty : rn2(3) ? rnd(30) : rnd(80),
+    Sprintf(buf, "level %d %s%s", accurate ? pm->difficulty : rn2(3) ? rnd(30) : rnd(80),
             (mtmp->mx != x || mtmp->my != y)
                 ? "tail of "
                 : "",
-        (mtmp->mx != x || mtmp->my != y) && !((is_mon_isshk(mtmp) || has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp)) || (is_mplayer(mtmp->data) && strstri(name, " the ") != 0) || is_mname_proper_name(mtmp->data)) && accurate) ? an(tmpbuf) : tmpbuf);
+        (mtmp->mx != x || mtmp->my != y) && !((is_mon_isshk(mtmp) || has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp)) || (is_mplayer(pm) && strstri(name, " the ") != 0) || is_mname_proper_name(pm)) && accurate) ? an(tmpbuf) : tmpbuf);
 
     if (show_monster_type)
-        Sprintf(eos(buf), ", %s", an(pm_monster_name(mtmp->data, is_mon_female(mtmp))));
+        Sprintf(eos(buf), ", %s", an(pm_monster_name(pm, is_mon_female(mtmp))));
 
     if (u.ustuck == mtmp) {
         if (u.uswallow || iflags.save_uswallow) /* monster detection */
-            Strcat(buf, is_animal(mtmp->data)
+            Strcat(buf, is_animal(pm)
                           ? ", swallowing you" : ", engulfing you");
         else
             Strcat(buf, (Upolyd && sticks(youmonst.data))
@@ -476,7 +477,7 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
                 } else {
                     uint64_t mW = (context.warntype.obj
                                         | context.warntype.polyd),
-                                  m2 = mtmp->data->mflags2;
+                                  m2 = pm->mflags2;
                     const char *whom = ((mW & M2_HUMAN & m2) ? "humans"
                                         : (mW & M2_ELF & m2) ? "elves"
                                           : (mW & M2_ORC & m2) ? "orcs"
@@ -613,7 +614,7 @@ lookat(int x, int y, char *buf, char *simplebuf, char *extrabuf)
             {
                 look_at_monster(buf, simplebuf, extrabuf, mtmp, x, y);
             }
-            pm = mtmp->data;
+            pm = (M_AP_TYPE(mtmp) == M_AP_MONSTER && mtmp->mappearance >= LOW_PM && mtmp->mappearance < NUM_MONSTERS && !Protection_from_shape_changers && !sensemon(mtmp)) ? &mons[mtmp->mappearance] : mtmp->data;
             if(has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp)))
                 noarticle = TRUE;
         }

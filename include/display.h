@@ -64,7 +64,7 @@
     (is_peaceful(mon) \
      || (has_friendly_illusory_appearance((mon)->data) \
          && M_AP_TYPE(mon) == M_AP_MONSTER \
-         && !sensemon(mon)))
+         && !Protection_from_shape_changers && !sensemon(mon)))
 
 /*
  * mon_warning() is used to warn of any dangerous monsters in your

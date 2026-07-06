@@ -6626,6 +6626,13 @@ const char* mon_monster_name(struct monst *mon)
     if (!mon)
         return "";
 
+    /* If disguised as another monster and not telepathically sensed, return that monster's name */
+    if (mon != &youmonst && M_AP_TYPE(mon) == M_AP_MONSTER && mon->mappearance >= LOW_PM && mon->mappearance < NUM_MONSTERS && !Protection_from_shape_changers && !sensemon(mon)) 
+    {
+        boolean isfemale = is_mon_female(mon);
+        return pm_monster_name(&mons[mon->mappearance], isfemale);
+    }
+
     boolean isfemale = (mon == &youmonst ? flags.female : is_mon_female(mon));
     return pm_monster_name(mon->data, isfemale);
 

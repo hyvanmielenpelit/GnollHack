@@ -5203,7 +5203,6 @@ get_missile_index(int dx, int dy)
 void
 display_self_with_extra_info_choose_ascii(uint64_t displayed_flags, uint64_t displayed_mflags, int hit_tile_id, int dmg_received, boolean exclude_ascii)
 {
-
     int cmap_type = is_levl_use_special_tileset(&levl[u.ux][u.uy]) ? levl[u.ux][u.uy].special_tileset : get_current_cmap_type_index();
     show_monster_glyph_with_extra_info_choose_ascii(u.ux, u.uy,
         maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)

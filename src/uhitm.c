@@ -178,6 +178,8 @@ attack_checks(struct monst *mtmp, struct obj *wep)
             seemimic(mtmp);
             return FALSE;
         }
+        if (has_illusory_appearance(mtmp->data))
+            seemimic(mtmp);
         stumble_onto_mimic(mtmp);
         return TRUE;
     }

@@ -473,6 +473,16 @@ mattacku(struct monst *mtmp)
     if (DEADMONSTER(mtmp) || (Underwater && !is_swimmer(mtmp->data)))
         return 0;
 
+    if (M_AP_TYPE(mtmp) != M_AP_NOTHING && youseeit && distmin(u.ux, u.uy, mtmp->mx, mtmp->my) <= 1)
+    {
+        seemimic(mtmp);
+        if (!Protection_from_shape_changers && !sensemon(mtmp))
+        {
+            play_sfx_sound(SFX_STUMBLE_ON_MIMIC);
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Wait!  That's %s!", a_monnam(mtmp));
+        }
+    }
+
     /* If swallowed, can only be affected by u.ustuck */
     if (u.uswallow) {
         if (mtmp != u.ustuck)

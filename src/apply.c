@@ -740,7 +740,7 @@ use_stethoscope(struct obj *obj)
             }
             set_mon_mundetected(mtmp, 0);
             newsym(mtmp->mx, mtmp->my);
-        } else if (mtmp->mappearance) {
+        } else if (mtmp->mappearance && !Protection_from_shape_changers && !sensemon(mtmp)) {
             const char *what = "thing";
 
             switch (M_AP_TYPE(mtmp)) {
