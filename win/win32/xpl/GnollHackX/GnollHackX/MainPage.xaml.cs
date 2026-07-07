@@ -2677,6 +2677,7 @@ namespace GnollHackX
                             string jsonFile = Path.ChangeExtension(lockFile, ".json");
                             if (!File.Exists(jsonFile))
                             {
+                                try { File.SetAttributes(lockFile, FileAttributes.Normal); } catch { /* best effort */ }
                                 File.Delete(lockFile);
                                 Debug.WriteLine("CleanTransferDirectories: deleted orphan lock " + lockFile);
                             }

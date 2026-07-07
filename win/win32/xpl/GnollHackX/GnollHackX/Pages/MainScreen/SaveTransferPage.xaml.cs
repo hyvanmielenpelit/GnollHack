@@ -728,8 +728,23 @@ namespace GnollHackX.Pages.MainScreen
 
                 // 3a. Cleanup before start
                 PopupStatusLabel.Text = "Cleaning temp folders...";
-                if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
-                Directory.CreateDirectory(tempDir);
+                if (Directory.Exists(tempDir))
+                {
+                    try
+                    {
+                        Directory.Delete(tempDir, true);
+                    }
+                    catch
+                    {
+                        // Fallback: delete individual files if the directory could not be fully removed
+                        // (can happen on Android when a file handle is still held by the OS)
+                        foreach (string f in Directory.GetFiles(tempDir))
+                        {
+                            try { File.Delete(f); } catch { /* best effort */ }
+                        }
+                    }
+                }
+                if (!Directory.Exists(tempDir)) Directory.CreateDirectory(tempDir);
 
                 if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
                 // Move older uploads with no problems to old rotation
@@ -773,6 +788,11 @@ namespace GnollHackX.Pages.MainScreen
                     CreatedUtc = DateTime.UtcNow.ToString("o")
                 };
                 string localLockPath = Path.Combine(tempDir, playerName + ".lock");
+                if (File.Exists(localLockPath))
+                {
+                    try { File.SetAttributes(localLockPath, FileAttributes.Normal); } catch { /* best effort */ }
+                    File.Delete(localLockPath);
+                }
                 File.WriteAllText(localLockPath, JsonConvert.SerializeObject(uploadLock));
 
                 // 5. Upload lock file to Azure
@@ -1209,8 +1229,23 @@ namespace GnollHackX.Pages.MainScreen
 
                 // 4. Clean transfer_temp
                 PopupStatusLabel.Text = "Cleaning local temp folder...";
-                if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
-                Directory.CreateDirectory(tempDir);
+                if (Directory.Exists(tempDir))
+                {
+                    try
+                    {
+                        Directory.Delete(tempDir, true);
+                    }
+                    catch
+                    {
+                        // Fallback: delete individual files if the directory could not be fully removed
+                        // (can happen on Android when a file handle is still held by the OS)
+                        foreach (string f in Directory.GetFiles(tempDir))
+                        {
+                            try { File.Delete(f); } catch { /* best effort */ }
+                        }
+                    }
+                }
+                if (!Directory.Exists(tempDir)) Directory.CreateDirectory(tempDir);
 
                 if (!Directory.Exists(downloadDir)) Directory.CreateDirectory(downloadDir);
 
@@ -1223,7 +1258,11 @@ namespace GnollHackX.Pages.MainScreen
                     CreatedUtc = DateTime.UtcNow.ToString("o")
                 };
                 string localLockPath = Path.Combine(downloadDir, playerName + ".lock");
-                if (File.Exists(localLockPath)) File.Delete(localLockPath);
+                if (File.Exists(localLockPath))
+                {
+                    try { File.SetAttributes(localLockPath, FileAttributes.Normal); } catch { /* best effort */ }
+                    File.Delete(localLockPath);
+                }
                 File.WriteAllText(localLockPath, JsonConvert.SerializeObject(downloadLock));
 
                 // 6. Upload lock file to Azure
@@ -1431,7 +1470,7 @@ namespace GnollHackX.Pages.MainScreen
                 await Task.Delay(1000);
                 PopupGrid.IsVisible = false;
 
-                await ShowMessagePopupAsync("Success", "Save file downloaded and loaded successfully.", "OK");
+                await ShowMessagePopupAsync("Success", "Save file was downloaded successfully.", "OK");
             }
             catch (OperationCanceledException)
             {
