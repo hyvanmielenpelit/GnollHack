@@ -11,7 +11,7 @@
     
         <Grid x:Name="RootGrid">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
-            <Grid x:Name="MainGrid" WidthRequest="900" RowSpacing="6" HorizontalOptions="Center" VerticalOptions="Fill" >
+            <Grid x:Name="MainGrid" MaximumWidthRequest="900" RowSpacing="6" HorizontalOptions="Center" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -24,7 +24,7 @@
                 
                 <Label Grid.Row="0" x:Name="HeaderLabel" Text="Save File Transfer" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="22" TextColor="Black" FontFamily="Immortal"/>
                 <Label Grid.Row="1" x:Name="StatusLabel" Text="Loading..." HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="16" TextColor="Black" FontFamily="Immortal"/>
-                
+
                 <CollectionView Grid.Row="2" x:Name="SavesCollectionView" HorizontalOptions="Fill" VerticalOptions="Start" SelectionMode="Single" BackgroundColor="Transparent" SelectionChanged="SavesCollectionView_SelectionChanged" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="local:GHSaveTransferFile">
@@ -92,10 +92,10 @@
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
                 <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
                     <Border x:Name="PopupFrame" BackgroundColor="#99000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
-                        <StackLayout Spacing="10" Padding="10">
+                        <StackLayout Spacing="6" Padding="6">
                             <Label Text="Progress" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
                             <Label Text="Starting..." x:Name="PopupStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
-                            <ProgressBar x:Name="PopupProgressBar" Progress="0.0" WidthRequest="400" HorizontalOptions="Center" HeightRequest="15" ProgressColor="LightBlue" />
+                            <ProgressBar x:Name="PopupProgressBar" Progress="0.0" MaximumWidthRequest="400" HorizontalOptions="Center" HeightRequest="15" ProgressColor="LightBlue" />
                             <controls:CustomImageButton Text="Cancel" x:Name="PopupCancelButton" Clicked="PopupCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
                         </StackLayout>
                     </Border>
@@ -108,7 +108,7 @@
             <Grid x:Name="MessagePopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
                 <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
                     <Border x:Name="MessagePopupFrame" BackgroundColor="#99000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
-                        <StackLayout Spacing="10" Padding="15">
+                        <StackLayout Spacing="6" Padding="6">
                             <Label Text="Message" x:Name="MessagePopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" HorizontalOptions="Center" />
                             <Label Text="" x:Name="MessagePopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
                             <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
