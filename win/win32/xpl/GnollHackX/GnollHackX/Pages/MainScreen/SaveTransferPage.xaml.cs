@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -392,6 +392,10 @@ namespace GnollHackX.Pages.MainScreen
             {
                 Debug.WriteLine(ex.Message);
                 StatusLabel.Text = "Error loading list";
+                EmptyLabel.IsVisible = _saves.Count == 0;
+                SavesCollectionView.IsEnabled = true;
+                UpdateButtons();
+                return;
             }
 
             StatusLabel.Text = TransferModePicker.SelectedIndex == 0 ? "Eligible Local Saves" : "Saves Available in Cloud";
@@ -508,8 +512,9 @@ namespace GnollHackX.Pages.MainScreen
             if (_cts != null)
             {
                 _cts.Cancel();
-                _cts.Dispose();
-                _cts = null;
+                // Do not Dispose here — the upload/download task may still be
+                // referencing the CancellationToken.  Disposal happens in the
+                // finally block of RunUploadProcessAsync / RunDownloadProcessAsync.
             }
         }
 
@@ -959,6 +964,11 @@ namespace GnollHackX.Pages.MainScreen
             }
             finally
             {
+                if (_cts != null)
+                {
+                    _cts.Dispose();
+                    _cts = null;
+                }
                 _isProcessing = false;
                 UpdateButtons();
                 await RefreshListAsync();
@@ -1139,7 +1149,9 @@ namespace GnollHackX.Pages.MainScreen
 
                 // 10. Check version compatibility
                 PopupStatusLabel.Text = "Verifying version compatibility...";
-                bool compatible = GHApp.GHVersionNumber >= manifest.SaveVersionCompatibility;
+                bool compatible = manifest.SaveVersion == GHApp.GHVersionNumber ? true :
+                    (GHApp.GHVersionNumber > manifest.SaveVersion ? GHApp.GHVersionCompatibility <= manifest.SaveVersion :
+                    manifest.SaveVersionCompatibility <= GHApp.GHVersionNumber);
                 if (!compatible)
                 {
                     throw new Exception($"Save file version ({manifest.SaveVersion}) is not compatible with this build of GnollHack.");
@@ -1328,6 +1340,11 @@ namespace GnollHackX.Pages.MainScreen
             }
             finally
             {
+                if (_cts != null)
+                {
+                    _cts.Dispose();
+                    _cts = null;
+                }
                 _isProcessing = false;
                 UpdateButtons();
                 await RefreshListAsync();
@@ -1339,7 +1356,8 @@ namespace GnollHackX.Pages.MainScreen
             try
             {
                 // Delete Azure lock
-                await cloudLockClient.DeleteIfExistsAsync();
+                if (cloudLockClient != null)
+                    await cloudLockClient.DeleteIfExistsAsync();
 
                 // Clean temp directory
                 if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
