@@ -663,5 +663,34 @@ namespace GnollHackX.Pages.MainScreen
             }
             ResetGrid.IsEnabled = true;
         }
+
+        private async void btnDeleteTransferFiles_Clicked(object sender, EventArgs e)
+        {
+            ResetGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            bool answer = await GHApp.DisplayMessageBox(this, "Delete Save Transfer Logs?", "Are you sure to delete all files in transfer_temp and transfer_upload directories?", "Yes", "No");
+            if (answer)
+            {
+                try
+                {
+                    string tempDir = Path.Combine(GHApp.GHPath, GHConstants.TransferTempDirectory);
+                    if (Directory.Exists(tempDir))
+                        Directory.Delete(tempDir, true);
+
+                    string uploadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferUploadDirectory);
+                    if (Directory.Exists(uploadDir))
+                        Directory.Delete(uploadDir, true);
+
+                    btnDeleteTransferFiles.Text = "Done";
+                    btnDeleteTransferFiles.TextColor = GHColors.Red;
+                }
+                catch
+                {
+                    btnDeleteTransferFiles.Text = "Failed";
+                    btnDeleteTransferFiles.TextColor = GHColors.Red;
+                }
+            }
+            ResetGrid.IsEnabled = true;
+        }
     }
 }

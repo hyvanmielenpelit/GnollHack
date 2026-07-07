@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<gnh:CustomModalPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gnh="clr-namespace:GnollHackM" 
+             xmlns:controls="clr-namespace:GnollHackM"
+             xmlns:local="clr-namespace:GnollHackM"
+             BackgroundColor="Black"
+             x:Class="GnollHackM.SaveTransferPage"
+             Appearing="ContentPage_Appearing"
+             Disappearing="ContentPage_Disappearing">
+    
+        <Grid x:Name="RootGrid">
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <Grid x:Name="MainGrid" WidthRequest="900" RowSpacing="6" HorizontalOptions="Center" VerticalOptions="Fill" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <Label Grid.Row="0" x:Name="HeaderLabel" Text="Save File Transfer" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="22" TextColor="Black" FontFamily="Immortal"/>
+                <Label Grid.Row="1" x:Name="StatusLabel" Text="Loading..." HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="16" TextColor="Black" FontFamily="Immortal"/>
+                
+                <CollectionView Grid.Row="2" x:Name="SavesCollectionView" HorizontalOptions="Fill" VerticalOptions="Start" SelectionMode="Single" BackgroundColor="Transparent" SelectionChanged="SavesCollectionView_SelectionChanged" >
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="local:GHSaveTransferFile">
+                            <Grid ColumnSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" Margin="24,8" Padding="18,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="#88FF8800" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <StackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Fill" VerticalOptions="Center" >
+                                    <Label Text="{Binding Name}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="18" FontAttributes="Bold" />
+                                    <Label Text="{Binding CharacterDescription}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="13" />
+                                    <Label Text="{Binding LocationDescription}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="13" />
+                                    <Label Text="{Binding ModeDescription}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="13" />
+                                    <Label Text="{Binding Description}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="11" FontAttributes="Italic" />
+                                </StackLayout>
+                                <Label Grid.Column="1" Text="{Binding ExtraInfo}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="14" HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,10,0" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                
+                <Label Grid.Row="2" x:Name="EmptyLabel" IsVisible="False" Text="No save files found" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="Black" FontFamily="Immortal"/>
+                
+                <Grid x:Name="BottomLayout" Grid.Row="3" HorizontalOptions="Fill" VerticalOptions="End">
+                    <StackLayout x:Name="OuterButtonMainStack" Spacing="6" Orientation="Vertical" HorizontalOptions="Center">
+                        <StackLayout x:Name="ServerStack" Spacing="6" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Picker x:Name="TransferModePicker"
+                                    Title="Select mode"
+                                    FontFamily="Diablo" 
+                                    FontSize="16"
+                                    TextColor="Black"
+                                    TitleColor="Black"
+                                    HorizontalTextAlignment="Center"
+                                    BackgroundColor="#22000000"
+                                    WidthRequest="250"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
+                                    SelectedIndexChanged="TransferModePicker_SelectedIndexChanged">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>Upload</x:String>
+                                        <x:String>Download</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </StackLayout>
+                        <StackLayout x:Name="ButtonMainStack" Spacing="6" Orientation="Horizontal" HorizontalOptions="Center">
+                            <controls:CustomImageButton Text="Transfer" x:Name="ActionButton" Clicked="ActionButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" VerticalOptions="Center" />
+                            <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </StackLayout>
+                    </StackLayout>
+                </Grid>
+            </Grid>
+            
+            <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
+                <Grid WidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Border x:Name="PopupFrame" BackgroundColor="#99000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <StackLayout Spacing="10" Padding="10">
+                            <Label Text="Progress" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
+                            <Label Text="Starting..." x:Name="PopupStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            <ProgressBar x:Name="PopupProgressBar" Progress="0.0" WidthRequest="400" HorizontalOptions="Center" HeightRequest="15" ProgressColor="LightBlue" />
+                            <controls:CustomImageButton Text="Cancel" x:Name="PopupCancelButton" Clicked="PopupCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Border>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
+
+            <Grid x:Name="MessagePopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
+                <Grid WidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Border x:Name="MessagePopupFrame" BackgroundColor="#99000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <StackLayout Spacing="10" Padding="15">
+                            <Label Text="Message" x:Name="MessagePopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" HorizontalOptions="Center" />
+                            <Label Text="" x:Name="MessagePopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
+                                <controls:CustomImageButton Text="OK" x:Name="MessagePopupOkButton" Clicked="MessagePopupOkButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" />
+                                <controls:CustomImageButton Text="Cancel" x:Name="MessagePopupCancelButton" Clicked="MessagePopupCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" />
+                            </StackLayout>
+                        </StackLayout>
+                    </Border>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
+        </Grid>
+    
+</gnh:CustomModalPage>

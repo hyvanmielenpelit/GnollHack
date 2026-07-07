@@ -5509,9 +5509,9 @@ namespace GnollHackX
             }
         }
 
-        public static async Task TryVerifyXlogUserNameAsync()
+        public static async Task TryVerifyXlogUserNameAsync(bool force = false)
         {
-            if (!PostingXlogEntries && !PostingReplays && !PostingBonesFiles && !AutoUploadReplays)
+            if (!force && !PostingXlogEntries && !PostingReplays && !PostingBonesFiles && !AutoUploadReplays)
             {
                 SetXlogUserNameVerified(false, null, null);
                 return;
@@ -7064,6 +7064,32 @@ namespace GnollHackX
                 return GHConstants.AzureBlobStorageReplayContainerNamePrefix;
             return GHConstants.AzureBlobStorageReplayContainerNamePrefix + "-" + verCompat.ToString();
         }
+
+        public static string GetAzureBlobStorageSaveTransferContainerName()
+        {
+            ulong verCompat = GHVersionCompatibility;
+            if (verCompat == 0)
+                return GHConstants.AzureBlobStorageSaveTransferContainerNamePrefix;
+            return GHConstants.AzureBlobStorageSaveTransferContainerNamePrefix + "-" + verCompat.ToString();
+        }
+
+        public static async Task CheckCreateSaveTransferContainer(string saveTransferContainerName)
+        {
+            BlobServiceClient blobServiceClient = GetBlobServiceClient();
+            if (blobServiceClient == null || string.IsNullOrEmpty(saveTransferContainerName))
+                return;
+
+            try
+            {
+                BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(saveTransferContainerName);
+                await containerClient.CreateIfNotExistsAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
 
         public static async Task CheckCreateReplayContainer(string replayContainerName)
         {

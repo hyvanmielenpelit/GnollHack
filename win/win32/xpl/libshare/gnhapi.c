@@ -592,6 +592,130 @@ LibValidateSaveFile(const char* filename, char* output_str)
 }
 
 DLLEXPORT int
+LibGetSaveFileInfo(const char* filename, uint64_t* out_version, uint64_t* out_compat, uint32_t* out_save_flags)
+{
+    int fd;
+    int res = 0;
+    struct version_info vers_info;
+    struct savefile_info sfi;
+    int pltmpsiz = 0;
+    char plbuf[256];
+    struct save_game_stats stats;
+
+    nh_uncompress(filename);
+    if ((fd = open_savefilepath(filename)) >= 0)
+    {
+        /* 1. version_info */
+        int rlen = (int)read(fd, (genericptr_t) &vers_info, (readLenType)sizeof vers_info);
+        minit(); /* ZEROCOMP */
+        if (rlen == sizeof vers_info)
+        {
+            /* 2. savefile_info */
+            rlen = (int)read(fd, (genericptr_t) &sfi, (readLenType)sizeof sfi);
+            if (rlen == sizeof sfi)
+            {
+                /* 3. pltmpsiz and plbuf */
+                rlen = (int)read(fd, (genericptr_t) &pltmpsiz, (readLenType)sizeof(pltmpsiz));
+                if (rlen == sizeof(pltmpsiz) && pltmpsiz >= 0 && (size_t)pltmpsiz < sizeof(plbuf))
+                {
+                    rlen = (int)read(fd, (genericptr_t) plbuf, (readLenType) pltmpsiz);
+                    if (rlen == pltmpsiz)
+                    {
+                        /* 4. save_game_stats */
+                        rlen = (int)read(fd, (genericptr_t)&stats, (readLenType)sizeof(stats));
+                        if (rlen == sizeof(stats))
+                        {
+                            if (out_version) *out_version = vers_info.incarnation;
+                            if (out_compat) *out_compat = vers_info.version_compatibility;
+                            if (out_save_flags)
+                            {
+                                uint32_t flags = stats.save_flags;
+                                if (stats.debug_mode) flags |= 0x100;
+                                if (stats.explore_mode) flags |= 0x200;
+                                if (stats.casual_mode) flags |= 0x400;
+                                *out_save_flags = flags;
+                            }
+                            res = 1;
+                        }
+                    }
+                }
+            }
+        }
+        (void)nhclose(fd);
+    }
+    nh_compress(filename);
+    return res;
+}
+
+
+DLLEXPORT int
+LibGetSaveFileDescription(const char* filename, char* out_char_desc, int char_desc_len, char* out_loc_desc, int loc_desc_len, char* out_mode_desc, int mode_desc_len)
+{
+    int fd;
+    int res = 0;
+    struct version_info vers_info;
+    struct savefile_info sfi;
+    int pltmpsiz = 0;
+    char plbuf[256];
+    struct save_game_stats stats;
+
+    nh_uncompress(filename);
+    if ((fd = open_savefilepath(filename)) >= 0)
+    {
+        int rlen = (int)read(fd, (genericptr_t) &vers_info, (readLenType)sizeof vers_info);
+        minit();
+        if (rlen == sizeof vers_info)
+        {
+            rlen = (int)read(fd, (genericptr_t) &sfi, (readLenType)sizeof sfi);
+            if (rlen == sizeof sfi)
+            {
+                rlen = (int)read(fd, (genericptr_t) &pltmpsiz, (readLenType)sizeof(pltmpsiz));
+                if (rlen == sizeof(pltmpsiz) && pltmpsiz >= 0 && (size_t)pltmpsiz < sizeof(plbuf))
+                {
+                    rlen = (int)read(fd, (genericptr_t) plbuf, (readLenType) pltmpsiz);
+                    if (rlen == pltmpsiz)
+                    {
+                        rlen = (int)read(fd, (genericptr_t)&stats, (readLenType)sizeof(stats));
+                        if (rlen == sizeof(stats))
+                        {
+                            char charbuf[512] = "";
+                            char locbuf[512] = "";
+                            char modebuf[512] = "";
+
+                            print_character_description(charbuf, stats.ulevel, stats.rolenum, stats.racenum, stats.gender, stats.alignment, "");
+                            print_location_description(locbuf, stats.level_name, stats.dgn_name, (int)stats.dlevel, stats.depth, "");
+                            print_mode_duration_description(modebuf, stats.game_difficulty, stats.umoves, stats.debug_mode, stats.explore_mode, stats.modern_mode, stats.casual_mode, (stats.save_flags & SAVEFLAGS_NON_SCORING) != 0, (stats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0, "");
+
+                            if (out_char_desc && char_desc_len > 0)
+                            {
+                                strncpy(out_char_desc, charbuf, char_desc_len - 1);
+                                out_char_desc[char_desc_len - 1] = '\0';
+                            }
+                            if (out_loc_desc && loc_desc_len > 0)
+                            {
+                                strncpy(out_loc_desc, locbuf, loc_desc_len - 1);
+                                out_loc_desc[loc_desc_len - 1] = '\0';
+                            }
+                            if (out_mode_desc && mode_desc_len > 0)
+                            {
+                                strncpy(out_mode_desc, modebuf, mode_desc_len - 1);
+                                out_mode_desc[mode_desc_len - 1] = '\0';
+                            }
+
+                            res = 1;
+                        }
+                    }
+                }
+            }
+        }
+        (void)nhclose(fd);
+    }
+    nh_compress(filename);
+    return res;
+}
+
+
+DLLEXPORT int
 LibCheckCurrentFileDescriptor(const char* dir)
 {
     if (!chdir(dir))

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -651,7 +651,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.XlogCredentialsIncorrect = false;
             if (!GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
                 GHApp.SetXlogUserNameVerified(false, null, null);
-            await GHApp.TryVerifyXlogUserNameAsync();
+            await GHApp.TryVerifyXlogUserNameAsync(true);
 
             if (_gamePage != null)
                 _gamePage.MapGrid = GridSwitch.IsToggled;

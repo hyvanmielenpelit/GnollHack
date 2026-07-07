@@ -305,6 +305,10 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibValidateSaveFile(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_buffer);
         [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetSaveFileInfo(string filename, ref ulong out_version, ref ulong out_compat, ref uint out_save_flags);
+        [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetSaveFileDescription(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_char_desc, int char_desc_len, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_loc_desc, int loc_desc_len, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_mode_desc, int mode_desc_len);
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibCheckCurrentFileDescriptor(string dir);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibReportFileDescriptors();
@@ -1162,6 +1166,51 @@ namespace GnollHackX.Unknown
                     res_str = res_str.Remove(index); 
             }
             return res != 0;
+        }
+
+        public bool GetSaveFileInfo(string filename, out ulong version, out ulong compat, out uint saveFlags)
+        {
+            ulong ver = 0;
+            ulong comp = 0;
+            uint flags = 0;
+            int res = LibGetSaveFileInfo(filename, ref ver, ref comp, ref flags);
+            version = ver;
+            compat = comp;
+            saveFlags = flags;
+            return res != 0;
+        }
+
+        public bool GetSaveFileDescription(string filename, out string characterDesc, out string locationDesc, out string modeDesc)
+        {
+            characterDesc = "";
+            locationDesc = "";
+            modeDesc = "";
+
+            byte[] charBuf = new byte[512];
+            byte[] locBuf = new byte[512];
+            byte[] modeBuf = new byte[512];
+
+            int res = LibGetSaveFileDescription(filename, charBuf, charBuf.Length, locBuf, locBuf.Length, modeBuf, modeBuf.Length);
+            if (res != 0)
+            {
+                characterDesc = Encoding.UTF8.GetString(charBuf);
+                int idx = characterDesc.IndexOf('\0');
+                if (idx >= 0) characterDesc = characterDesc.Remove(idx);
+                characterDesc = characterDesc.Trim();
+
+                locationDesc = Encoding.UTF8.GetString(locBuf);
+                idx = locationDesc.IndexOf('\0');
+                if (idx >= 0) locationDesc = locationDesc.Remove(idx);
+                locationDesc = locationDesc.Trim();
+
+                modeDesc = Encoding.UTF8.GetString(modeBuf);
+                idx = modeDesc.IndexOf('\0');
+                if (idx >= 0) modeDesc = modeDesc.Remove(idx);
+                modeDesc = modeDesc.Trim();
+
+                return true;
+            }
+            return false;
         }
 
         public int CheckCurrentFileDescriptor()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -1187,6 +1187,8 @@ namespace GnollHackX
 
             TryReadSettings();
             await InitializeServices();
+
+            CleanTransferDirectories();
 
             GHApp.InitAdditionalTypefaces();
             GHApp.InitAdditionalCachedBitmaps();
@@ -2575,6 +2577,101 @@ namespace GnollHackX
         private void TierTapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             TierOkButton_Clicked(sender, e);
+        }
+
+        private class StartupSaveManifest
+        {
+            public string CreationDate { get; set; }
+        }
+
+        private void CleanTransferDirectories()
+        {
+            try
+            {
+                // 1) Clean transfer_temp folder completely
+                string tempDir = Path.Combine(GHApp.GHPath, GHConstants.TransferTempDirectory);
+                if (Directory.Exists(tempDir))
+                {
+                    Directory.Delete(tempDir, true);
+                }
+                Directory.CreateDirectory(tempDir);
+
+                // 2) Scan transfer_upload for manifests older than 1 month, and delete them
+                string uploadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferUploadDirectory);
+                if (Directory.Exists(uploadDir))
+                {
+                    string[] files = Directory.GetFiles(uploadDir);
+                    foreach (string file in files)
+                    {
+                        if (file.EndsWith(".json"))
+                        {
+                            try
+                            {
+                                string manifestText = File.ReadAllText(file);
+                                var manifest = JsonConvert.DeserializeObject<StartupSaveManifest>(manifestText);
+                                if (manifest != null && !string.IsNullOrEmpty(manifest.CreationDate))
+                                {
+                                    DateTime creationDate = DateTime.Parse(manifest.CreationDate);
+                                    if (DateTime.UtcNow - creationDate > TimeSpan.FromDays(30))
+                                    {
+                                        string baseName = Path.GetFileNameWithoutExtension(file);
+                                        File.Delete(file);
+                                        
+                                        string saveFile = Path.Combine(uploadDir, baseName);
+                                        if (File.Exists(saveFile)) File.Delete(saveFile);
+
+                                        string bupFile = saveFile + ".bup";
+                                        if (File.Exists(bupFile)) File.Delete(bupFile);
+
+                                        string tokFile = saveFile + GHConstants.SaveFileTrackingSuffix;
+                                        if (File.Exists(tokFile)) File.Delete(tokFile);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("CleanTransferDirectories upload clean exception: " + ex.Message);
+                            }
+                        }
+                    }
+                }
+
+                // 3) Scan transfer_download for manifests older than 1 year, and delete them
+                string downloadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferDownloadDirectory);
+                if (Directory.Exists(downloadDir))
+                {
+                    string[] files = Directory.GetFiles(downloadDir);
+                    foreach (string file in files)
+                    {
+                        if (file.EndsWith(".json"))
+                        {
+                            try
+                            {
+                                string manifestText = File.ReadAllText(file);
+                                var manifest = JsonConvert.DeserializeObject<StartupSaveManifest>(manifestText);
+                                if (manifest != null && !string.IsNullOrEmpty(manifest.CreationDate))
+                                {
+                                    DateTime creationDate = DateTime.Parse(manifest.CreationDate);
+                                    if (DateTime.UtcNow - creationDate > TimeSpan.FromDays(365))
+                                    {
+                                        File.Delete(file);
+                                        string lockFile = Path.Combine(downloadDir, Path.GetFileNameWithoutExtension(file) + ".lock");
+                                        if (File.Exists(lockFile)) File.Delete(lockFile);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("CleanTransferDirectories download clean exception: " + ex.Message);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("CleanTransferDirectories exception: " + ex.Message);
+            }
         }
     }
 }

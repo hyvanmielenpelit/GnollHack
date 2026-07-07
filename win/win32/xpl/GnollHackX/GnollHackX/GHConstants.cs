@@ -29,6 +29,20 @@ namespace GnollHackX
     public sealed class RenderThreadOnlyAttribute : Attribute { }
 
     [Flags]
+    public enum GHSaveFlags : uint
+    {
+        None = 0x00,
+        NonScoring = 0x01,
+        TournamentMode = 0x02,
+        FileTrackSupport = 0x04,
+        FileTrackOn = 0x08,
+        DebugMode = 0x100,
+        ExploreMode = 0x200,
+        CasualMode = 0x400,
+        NonTrackingMask = 0x700
+    }
+
+    [Flags]
     public enum ReplayVersionFlags : ulong
     {
         None = 0UL,
@@ -2403,6 +2417,10 @@ namespace GnollHackX
         public const string ReplaySharedZipFileNameSuffix = ".zip";
         public const string ReplayAllSharedZipFileNamePrefix = "shared-replays-";
         public const string AzureBlobStorageReplayContainerNamePrefix = "replays";
+        public const string TransferTempDirectory = "transfer_temp";
+        public const string TransferUploadDirectory = "transfer_upload";
+        public const string TransferDownloadDirectory = "transfer_download";
+        public const string AzureBlobStorageSaveTransferContainerNamePrefix = "savetransfers";
         public const string AzureBlobStorageDelimiter = "/";
         public const string AzureBlobStorageGeneralDirectoryName = "_Anonymous";
         public const bool GZipIsDefaultReplayCompression = true;
