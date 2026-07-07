@@ -3533,7 +3533,7 @@ rndmonst_core(int level_limit, int rnd_type)
                     continue;
                 if (ungeneratable_monster_type(mndx))
                     continue;
-                if (rnd_type == MONRNDTYPE_RAKSHASA && !peace_minded(&mons[mndx], FALSE))
+                if (rnd_type == MONRNDTYPE_RAKSHASA && i < 2 && !peace_minded(&mons[mndx], FALSE))
                     continue;
                 if (rnd_type == MONRNDTYPE_RAKSHASA && i < 3 && !humanoid(&mons[mndx]))
                     continue;
