@@ -279,7 +279,8 @@ namespace GnollHackX.Pages.MainScreen
                                 bool validated = GHApp.GnollHackService.ValidateSaveFile(file, out string resStr);
                                 ulong version = 0, compat = 0;
                                 uint saveFlags = 0;
-                                bool hasInfo = GHApp.GnollHackService.GetSaveFileInfo(file, out version, out compat, out saveFlags);
+                                long timeStamp = 0;
+                                bool hasInfo = GHApp.GnollHackService.GetSaveFileInfo(file, out version, out compat, out saveFlags, out timeStamp);
                                 bool isTracked = hasInfo && ((GHSaveFlags)saveFlags & GHSaveFlags.FileTrackOn) != 0 && ((GHSaveFlags)saveFlags & GHSaveFlags.NonTrackingMask) == 0;
 
                                 string verStr = GHApp.VersionNumberToString(version).Replace(" (", " ").Replace(")", "");
@@ -568,6 +569,7 @@ namespace GnollHackX.Pages.MainScreen
             
             bool createdToken = false;
             bool isTracked = false;
+            long saveTimeStamp = 0;
             BlobContainerClient containerClient = null;
 
             try
@@ -676,7 +678,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 ulong saveVer = 0, saveCompat = 0;
                 uint saveFlags = 0;
-                if (!GHApp.GnollHackService.GetSaveFileInfo(localSaveFile, out saveVer, out saveCompat, out saveFlags))
+                if (!GHApp.GnollHackService.GetSaveFileInfo(localSaveFile, out saveVer, out saveCompat, out saveFlags, out saveTimeStamp))
                 {
                     throw new Exception("Could not read save file header statistics.");
                 }
@@ -720,12 +722,7 @@ namespace GnollHackX.Pages.MainScreen
                     string localTokenPath = localSaveFile + GHConstants.SaveFileTrackingSuffix;
                     string uploadTokenPath = Path.Combine(uploadDir, playerName + GHConstants.SaveFileTrackingSuffix);
 
-                    #if GNH_MAUI
-                    // Windows uses tracking file if Desktop
                     bool platformUsesTracking = GHApp.IsSaveFileTrackingNeeded;
-                    #else
-                    bool platformUsesTracking = Device.RuntimePlatform == Device.UWP;
-                    #endif
 
                     if (platformUsesTracking)
                     {
@@ -741,7 +738,7 @@ namespace GnollHackX.Pages.MainScreen
                     else
                     {
                         // On Android/iOS: Register new token with server
-                        long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                        long timeStamp = saveTimeStamp;
                         long saveLength = new FileInfo(localSaveFile).Length;
                         string saveSha = "";
                         using (var sha = SHA256.Create())
@@ -953,13 +950,13 @@ namespace GnollHackX.Pages.MainScreen
             catch (OperationCanceledException)
             {
                 PopupGrid.IsVisible = false;
-                await CleanUpUploadFailAsync(playerName, uploadDir, isTracked && createdToken, containerClient, cloudFolder);
+                await CleanUpUploadFailAsync(playerName, uploadDir, isTracked && createdToken, containerClient, cloudFolder, saveTimeStamp);
                 await ShowMessagePopupAsync("Cancelled", "Save transfer was cancelled.", "OK");
             }
             catch (Exception ex)
             {
                 PopupGrid.IsVisible = false;
-                await CleanUpUploadFailAsync(playerName, uploadDir, isTracked && createdToken, containerClient, cloudFolder);
+                await CleanUpUploadFailAsync(playerName, uploadDir, isTracked && createdToken, containerClient, cloudFolder, saveTimeStamp);
                 await GHApp.DisplayMessageBox(this, "Upload Failed", "Error during save file upload: " + ex.Message, "OK");
             }
             finally
@@ -975,13 +972,12 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        private async Task CleanUpUploadFailAsync(string playerName, string uploadDir, bool consumeToken, BlobContainerClient containerClient, string cloudFolder)
+        private async Task CleanUpUploadFailAsync(string playerName, string uploadDir, bool consumeToken, BlobContainerClient containerClient, string cloudFolder, long timeStamp)
         {
             try
             {
                 if (consumeToken)
                 {
-                    long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                     string tokenPath = Path.Combine(uploadDir, playerName);
                     if (File.Exists(tokenPath + GHConstants.SaveFileTrackingSuffix))
                     {
@@ -1205,7 +1201,8 @@ namespace GnollHackX.Pages.MainScreen
 
                 ulong dlVer = 0, dlCompat = 0;
                 uint dlFlags = 0;
-                if (!GHApp.GnollHackService.GetSaveFileInfo(tempSavePath, out dlVer, out dlCompat, out dlFlags))
+                long dlTimeStamp = 0;
+                if (!GHApp.GnollHackService.GetSaveFileInfo(tempSavePath, out dlVer, out dlCompat, out dlFlags, out dlTimeStamp))
                 {
                     throw new Exception("Could not read downloaded save statistics.");
                 }
@@ -1222,11 +1219,7 @@ namespace GnollHackX.Pages.MainScreen
                     string tempTokPath = Path.Combine(tempDir, playerName + GHConstants.SaveFileTrackingSuffix);
                     if (!File.Exists(tempTokPath)) throw new Exception("Downloaded tracking token file is missing.");
 
-                    #if GNH_MAUI
                     bool platformUsesTracking = GHApp.IsSaveFileTrackingNeeded;
-                    #else
-                    bool platformUsesTracking = Device.RuntimePlatform == Device.UWP;
-                    #endif
 
                     if (platformUsesTracking)
                     {
@@ -1236,7 +1229,7 @@ namespace GnollHackX.Pages.MainScreen
                     else
                     {
                         // Consume tracking token on GnollHack Server
-                        long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                        long timeStamp = dlTimeStamp;
                         SendResult loadResult = await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, Path.Combine(tempDir, playerName), dlSaveFi.Length, dlSaveSha);
                         if (!loadResult.IsSuccess)
                         {

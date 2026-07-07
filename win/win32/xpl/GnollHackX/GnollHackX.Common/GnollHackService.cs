@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -305,7 +305,7 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibValidateSaveFile(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_buffer);
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibGetSaveFileInfo(string filename, ref ulong out_version, ref ulong out_compat, ref uint out_save_flags);
+        public static extern int LibGetSaveFileInfo(string filename, ref ulong out_version, ref ulong out_compat, ref uint out_save_flags, ref long out_time_stamp);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetSaveFileDescription(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_char_desc, int char_desc_len, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_loc_desc, int loc_desc_len, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_mode_desc, int mode_desc_len);
         [DllImport(PlatformConstants.dll)]
@@ -1168,15 +1168,17 @@ namespace GnollHackX.Unknown
             return res != 0;
         }
 
-        public bool GetSaveFileInfo(string filename, out ulong version, out ulong compat, out uint saveFlags)
+        public bool GetSaveFileInfo(string filename, out ulong version, out ulong compat, out uint saveFlags, out long timeStamp)
         {
             ulong ver = 0;
             ulong comp = 0;
             uint flags = 0;
-            int res = LibGetSaveFileInfo(filename, ref ver, ref comp, ref flags);
+            long stamp = 0;
+            int res = LibGetSaveFileInfo(filename, ref ver, ref comp, ref flags, ref stamp);
             version = ver;
             compat = comp;
             saveFlags = flags;
+            timeStamp = stamp;
             return res != 0;
         }
 

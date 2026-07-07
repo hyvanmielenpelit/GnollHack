@@ -592,7 +592,7 @@ LibValidateSaveFile(const char* filename, char* output_str)
 }
 
 DLLEXPORT int
-LibGetSaveFileInfo(const char* filename, uint64_t* out_version, uint64_t* out_compat, uint32_t* out_save_flags)
+LibGetSaveFileInfo(const char* filename, uint64_t* out_version, uint64_t* out_compat, uint32_t* out_save_flags, int64_t* out_time_stamp)
 {
     int fd;
     int res = 0;
@@ -635,6 +635,7 @@ LibGetSaveFileInfo(const char* filename, uint64_t* out_version, uint64_t* out_co
                                 if (stats.casual_mode) flags |= 0x400;
                                 *out_save_flags = flags;
                             }
+                            if (out_time_stamp) *out_time_stamp = stats.time_stamp;
                             res = 1;
                         }
                     }

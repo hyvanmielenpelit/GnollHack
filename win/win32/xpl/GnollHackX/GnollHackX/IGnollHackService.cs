@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,7 +63,7 @@ namespace GnollHackX
         void SaveAndRestoreSavedGame(int save_style);
         void TallyRealTime();
         bool ValidateSaveFile(string filename, out string out_str);
-        bool GetSaveFileInfo(string filename, out ulong version, out ulong compat, out uint saveFlags);
+        bool GetSaveFileInfo(string filename, out ulong version, out ulong compat, out uint saveFlags, out long timeStamp);
         bool GetSaveFileDescription(string filename, out string characterDesc, out string locationDesc, out string modeDesc);
         int CheckCurrentFileDescriptor();
         void ReportFileDescriptors();
