@@ -1433,7 +1433,14 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
             }
             if (u.usteed)
             {
+                int ridingtohitbonus = riding_skill_hit_bonus(P_SKILL_LEVEL(P_RIDING));
                 int ridingdmgbonus = riding_skill_dmg_bonus(P_SKILL_LEVEL(P_RIDING));
+                if (ridingtohitbonus == ridingdmgbonus)
+                    Sprintf(buf, "Riding skill bonus:     %s%d to hit and damage", ridingdmgbonus >= 0 ? "+" : "", ridingdmgbonus);
+                else
+                    Sprintf(buf, "Riding skill bonus:     %s%d to hit and %s%d to damage", ridingtohitbonus >= 0 ? "+" : "", ridingtohitbonus, ridingdmgbonus >= 0 ? "+" : "", ridingdmgbonus);
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+
                 wep_avg_dmg += ridingdmgbonus;
                 wep_multipliable_avg_dmg += ridingdmgbonus;
                 formula_riding_dmg_bonus += ridingdmgbonus;
