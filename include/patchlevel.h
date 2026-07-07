@@ -7,7 +7,7 @@
 
 /* GnollHack 4.1.x */
 #define VERSION_MAJOR 4
-#define VERSION_MINOR 2
+#define VERSION_MINOR 3
 /*
  * PATCHLEVEL is updated for each release.
  */
@@ -19,7 +19,7 @@
  * EDITLEVEL is also used to indicate the pre-alpha / alpha / beta version if PRE_RELEASE compiler preprocessor option is on.
  * Change EDITLEVEL when the changes to the game are save-file-breaking.
  */
-#define EDITLEVEL 145
+#define EDITLEVEL 1
 
 /*
  * HOTFIXLEVEL indicates the hot fix number. 
@@ -44,7 +44,7 @@
  * PP = patch level, ee = edit level, L = literal suffix "L",
  * with all four numbers specified as two hexadecimal digits.
  */
-#define VERSION_COMPATIBILITY       0x04020001UL
+#define VERSION_COMPATIBILITY       0x04030001UL
 #define NEW_VERSION_INFO_VERSION    0x04010104UL
 
 
