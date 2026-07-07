@@ -994,6 +994,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
     int formula_fixed_dmg_bonus = 0;
     int formula_skill_dmg_bonus = 0;
+    int formula_riding_dmg_bonus = 0;
     int formula_archery_dmg_bonus = 0;
     int formula_enchantment_dmg_bonus = 0;
     int formula_simple_damage = 0;
@@ -1429,6 +1430,13 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 wep_avg_dmg += skilldmgbonus;
                 wep_multipliable_avg_dmg += skilldmgbonus;
                 formula_skill_dmg_bonus += skilldmgbonus;
+            }
+            if (u.usteed)
+            {
+                int ridingdmgbonus = riding_skill_dmg_bonus(P_SKILL_LEVEL(P_RIDING));
+                wep_avg_dmg += ridingdmgbonus;
+                wep_multipliable_avg_dmg += ridingdmgbonus;
+                formula_riding_dmg_bonus += ridingdmgbonus;
             }
         }
     }
@@ -5118,6 +5126,13 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                         Sprintf(eos(buf2), " %s %d [skill]",
                             formula_skill_dmg_bonus > 0 ? "+" : "-",
                             abs(formula_skill_dmg_bonus));
+                    }
+
+                    if (formula_riding_dmg_bonus != 0)
+                    {
+                        Sprintf(eos(buf2), " %s %d [riding]",
+                            formula_riding_dmg_bonus > 0 ? "+" : "-",
+                            abs(formula_riding_dmg_bonus));
                     }
 
                     if (formula_archery_dmg_bonus != 0)
