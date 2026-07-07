@@ -192,7 +192,7 @@ namespace GnollHackX.Pages.MainScreen
             _buttons.Add(rib);
 
             rib = new LabeledImageButton();
-            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.whatis.png";
+            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.load.png";
             rib.ImgHighFilterQuality = true;
             rib.LblText = "Save Transfer";
             rib.LblFontSize = 20;
