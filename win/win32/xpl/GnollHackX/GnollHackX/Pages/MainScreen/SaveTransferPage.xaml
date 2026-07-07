@@ -90,12 +90,12 @@
             </Grid>
             
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
-                <Grid WidthRequest  ="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
-                    <Frame x:Name="PopupFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="PopupFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout Spacing="6" Padding="6">
                             <Label Text="Progress" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
                             <Label Text="Starting..." x:Name="PopupStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
-                            <ProgressBar x:Name="PopupProgressBar" Progress="0.0" WidthRequest  ="400" HorizontalOptions="Center" HeightRequest="15" ProgressColor="LightBlue" />
+                            <ProgressBar x:Name="PopupProgressBar" Progress="0.0" WidthRequest  ="400" HorizontalOptions="Fill" HeightRequest="15" ProgressColor="LightBlue" />
                             <controls:CustomImageButton Text="Cancel" x:Name="PopupCancelButton" Clicked="PopupCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
                         </StackLayout>
                     </Frame>
@@ -106,8 +106,8 @@
             </Grid>
 
             <Grid x:Name="MessagePopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
-                <Grid WidthRequest  ="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
-                    <Frame x:Name="MessagePopupFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="MessagePopupFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout Spacing="6" Padding="6">
                             <Label Text="Message" x:Name="MessagePopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" HorizontalOptions="Center" />
                             <Label Text="" x:Name="MessagePopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />

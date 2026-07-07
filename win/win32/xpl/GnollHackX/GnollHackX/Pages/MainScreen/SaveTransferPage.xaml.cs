@@ -51,6 +51,7 @@ namespace GnollHackX.Pages.MainScreen
 
     public class SaveManifest
     {
+        public int ManifestVersion { get; set; }
         public string CreationDate { get; set; }
         public string Username { get; set; }
         public ulong SaveVersion { get; set; }
@@ -61,6 +62,7 @@ namespace GnollHackX.Pages.MainScreen
         public int AppBuildNumber { get; set; }
         public bool BackupIsDifferent { get; set; }
         public bool IsTracked { get; set; }
+        public long SaveTimeStamp { get; set; }
         public string CharacterDescription { get; set; }
         public string LocationDescription { get; set; }
         public string ModeDescription { get; set; }
@@ -328,6 +330,7 @@ namespace GnollHackX.Pages.MainScreen
                             var resultSegment = containerClient.GetBlobsAsync(prefix: prefix);
                             
                             List<string> manifestNames = new List<string>();
+                            List<(string path, string folder)> unknownManifests = new List<(string, string)>();
                             var enumerator = resultSegment.GetAsyncEnumerator();
                             try
                             {
@@ -353,35 +356,85 @@ namespace GnollHackX.Pages.MainScreen
                                     await manifestClient.DownloadToAsync(ms);
                                     string manifestText = Encoding.UTF8.GetString(ms.ToArray());
                                     var manifest = JsonConvert.DeserializeObject<SaveManifest>(manifestText);
-                                    if (manifest != null)
+                                    if (manifest == null)
+                                        continue;
+
+                                    // Check manifest version; version 0 means old/unrecognized format
+                                    if (manifest.ManifestVersion == 0)
                                     {
-                                        string[] parts = manifestPath.Split('/');
-                                        string directory = parts.Length > 1 ? parts[parts.Length - 2] : "";
+                                        string[] pathParts = manifestPath.Split('/');
+                                        string folder = pathParts.Length > 1 ? pathParts[pathParts.Length - 2] : "";
+                                        unknownManifests.Add((manifestPath, folder));
+                                        continue;
+                                    }
 
-                                        string baseName = manifest.SaveFile.FileName;
-                                        string charName = baseName.StartsWith("1") ? baseName.Substring(1) : baseName;
-                                        bool cloudValid = manifest.SaveVersion == GHApp.GHVersionNumber ? true :
-                                            (GHApp.GHVersionNumber > manifest.SaveVersion ? GHApp.GHVersionCompatibility <= manifest.SaveVersion :
-                                            manifest.SaveVersionCompatibility <= GHApp.GHVersionNumber);
+                                    string[] parts = manifestPath.Split('/');
+                                    string directory = parts.Length > 1 ? parts[parts.Length - 2] : "";
 
-                                        string verStr = GHApp.VersionNumberToString(manifest.SaveVersion).Replace(" (", " ").Replace(")", "");
-                                        string compatStr = GHApp.VersionNumberToString(manifest.SaveVersionCompatibility).Replace(" (", " ").Replace(")", "");
+                                    string baseName = manifest.SaveFile.FileName;
+                                    string charName = baseName.StartsWith("1") ? baseName.Substring(1) : baseName;
+                                    bool cloudValid = manifest.SaveVersion == GHApp.GHVersionNumber ? true :
+                                        (GHApp.GHVersionNumber > manifest.SaveVersion ? GHApp.GHVersionCompatibility <= manifest.SaveVersion :
+                                        manifest.SaveVersionCompatibility <= GHApp.GHVersionNumber);
 
-                                        _saves.Add(new GHSaveTransferFile
+                                    string verStr = GHApp.VersionNumberToString(manifest.SaveVersion).Replace(" (", " ").Replace(")", "");
+                                    string compatStr = GHApp.VersionNumberToString(manifest.SaveVersionCompatibility).Replace(" (", " ").Replace(")", "");
+
+                                    _saves.Add(new GHSaveTransferFile
+                                    {
+                                        Name = charName,
+                                        SaveFileName = baseName,
+                                        Description = $"Cloud Save - Version: {verStr} (Compat: {compatStr}) - " + (cloudValid ? "Valid" : "Invalid/Incompatible"),
+                                        CharacterDescription = manifest.CharacterDescription,
+                                        LocationDescription = manifest.LocationDescription,
+                                        ModeDescription = manifest.ModeDescription,
+                                        IsCloud = true,
+                                        IsTracked = manifest.IsTracked,
+                                        IsValid = cloudValid,
+                                        FileName = manifestPath,
+                                        ExtraInfo = manifest.IsTracked ? "Tracked" : "Local Only",
+                                        CloudDirectory = directory
+                                    });
+                                }
+                            }
+
+                            // Prompt user about any unrecognized manifests
+                            foreach (var (blobPath, folder) in unknownManifests)
+                            {
+                                bool deleteIt = await GHApp.DisplayMessageBox(this,
+                                    "Unrecognized Cloud Save",
+                                    $"A cloud save file with an unrecognized format was found (path: {blobPath}). " +
+                                    "This may be from an older version of the app that is no longer compatible. " +
+                                    "Do you want to delete it from cloud storage?",
+                                    "Delete", "Keep");
+                                if (deleteIt)
+                                {
+                                    try
+                                    {
+                                        if (!string.IsNullOrEmpty(folder))
                                         {
-                                            Name = charName,
-                                            SaveFileName = baseName,
-                                            Description = $"Cloud Save - Version: {verStr} (Compat: {compatStr}) - " + (cloudValid ? "Valid" : "Invalid/Incompatible"),
-                                            CharacterDescription = manifest.CharacterDescription,
-                                            LocationDescription = manifest.LocationDescription,
-                                            ModeDescription = manifest.ModeDescription,
-                                            IsCloud = true,
-                                            IsTracked = manifest.IsTracked,
-                                            IsValid = cloudValid,
-                                            FileName = manifestPath,
-                                            ExtraInfo = manifest.IsTracked ? "Tracked" : "Local Only",
-                                            CloudDirectory = directory
-                                        });
+                                            string deletePrefix = $"{GHApp.XlogUserName}/{folder}/";
+                                            var deleteEnum = containerClient.GetBlobsAsync(prefix: deletePrefix).GetAsyncEnumerator();
+                                            try
+                                            {
+                                                while (await deleteEnum.MoveNextAsync())
+                                                    await containerClient.GetBlobClient(deleteEnum.Current.Name).DeleteIfExistsAsync();
+                                            }
+                                            finally
+                                            {
+                                                await deleteEnum.DisposeAsync();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // Fallback: delete just the manifest blob
+                                            await containerClient.GetBlobClient(blobPath).DeleteIfExistsAsync();
+                                        }
+                                    }
+                                    catch (Exception delEx)
+                                    {
+                                        await GHApp.DisplayMessageBox(this, "Deletion Failed",
+                                            "Could not delete the unrecognized cloud save: " + delEx.Message, "OK");
                                     }
                                 }
                             }
@@ -808,6 +861,7 @@ namespace GnollHackX.Pages.MainScreen
                 PopupStatusLabel.Text = "Creating JSON manifest...";
                 var manifest = new SaveManifest
                 {
+                    ManifestVersion = 1,
                     CreationDate = DateTime.UtcNow.ToString("o"),
                     Username = GHApp.XlogUserName,
                     SaveVersion = saveVer,
@@ -818,6 +872,7 @@ namespace GnollHackX.Pages.MainScreen
                     AppBuildNumber = 0, // build number is int, default 0 if not available
                     BackupIsDifferent = backupIsDifferent,
                     IsTracked = isTracked,
+                    SaveTimeStamp = saveTimeStamp,
                     CharacterDescription = charDesc,
                     LocationDescription = locDesc,
                     ModeDescription = modeDesc,
@@ -1229,7 +1284,11 @@ namespace GnollHackX.Pages.MainScreen
                     else
                     {
                         // Consume tracking token on GnollHack Server
-                        long timeStamp = dlTimeStamp;
+                        // Prefer the timestamp stored in the manifest (set by the uploader from the native C library);
+                        // fall back to what we read from the downloaded file via LibGetSaveFileInfo.
+                        long timeStamp = manifest.SaveTimeStamp != 0 ? manifest.SaveTimeStamp : dlTimeStamp;
+                        if (timeStamp == 0)
+                            throw new Exception("Cannot consume tracking token: save file timestamp is 0.");
                         SendResult loadResult = await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, Path.Combine(tempDir, playerName), dlSaveFi.Length, dlSaveSha);
                         if (!loadResult.IsSuccess)
                         {
