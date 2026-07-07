@@ -198,6 +198,7 @@ namespace GnollHackX.Pages.MainScreen
         private async Task ClosePageAsync(bool playClickedSound)
         {
             _backPressed = true;
+            ButtonMainStack.IsEnabled = false;
             if (playClickedSound)
                 GHApp.PlayButtonClickedSound();
             await GHApp.PopModalPageAsync();
@@ -474,6 +475,7 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             }
 
+            ActionButton.IsEnabled = false;
             if (selected.IsCloud)
             {
                 await RunDownloadProcessAsync(selected);
@@ -482,6 +484,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 await RunUploadProcessAsync(selected);
             }
+            ActionButton.IsEnabled = true;
         }
 
         private async Task DeleteInvalidSaveAsync(GHSaveTransferFile file)
