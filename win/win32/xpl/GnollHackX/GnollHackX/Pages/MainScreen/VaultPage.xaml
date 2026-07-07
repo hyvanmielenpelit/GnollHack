@@ -29,7 +29,7 @@
                         Clicked="Button_Clicked" />
             </Grid>
             <Grid x:Name="MessagePopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
-                <Grid WidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
+                <Grid WidthRequest  ="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
                     <Frame x:Name="MessagePopupFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout Spacing="10" Padding="15">
                             <Label Text="Message" x:Name="MessagePopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" HorizontalOptions="Center" />

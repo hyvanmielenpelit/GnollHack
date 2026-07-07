@@ -90,7 +90,7 @@
             </Grid>
             
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
-                <Grid WidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
+                <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
                     <Border x:Name="PopupFrame" BackgroundColor="#99000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout Spacing="10" Padding="10">
                             <Label Text="Progress" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
@@ -106,7 +106,7 @@
             </Grid>
 
             <Grid x:Name="MessagePopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
-                <Grid WidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
+                <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
                     <Border x:Name="MessagePopupFrame" BackgroundColor="#99000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout Spacing="10" Padding="15">
                             <Label Text="Message" x:Name="MessagePopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" HorizontalOptions="Center" />
