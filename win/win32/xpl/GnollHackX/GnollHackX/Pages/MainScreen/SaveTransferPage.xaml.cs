@@ -63,6 +63,27 @@ namespace GnollHackX.Pages.MainScreen
         public bool BackupIsDifferent { get; set; }
         public bool IsTracked { get; set; }
         public long SaveTimeStamp { get; set; }
+        /// <summary>
+        /// Reason the backup (.bup) file was omitted from this transfer.
+        /// 0x0000 = not omitted (included normally).
+        /// 0x0001 = file was not found in the save directory.
+        /// 0x0002 = backup content is identical to the save file (redundant).
+        /// Bits may be combined.
+        /// </summary>
+        public int BackupOmitReason { get; set; }
+        /// <summary>
+        /// Reason the tracking token file was omitted from this transfer.
+        /// 0x0000 = not omitted (token included normally).
+        /// 0x0001 = token file was not found in the save/staging directory.
+        /// 0x0002 = FileTrackOn flag not set (save was never enrolled in tracking).
+        /// 0x0004 = FileTrackSupport flag not set (platform does not support tracking).
+        /// 0x0008 = NonScoring game mode.
+        /// 0x0010 = DebugMode / wizard mode.
+        /// 0x0020 = ExploreMode.
+        /// 0x0040 = CasualMode.
+        /// Bits may be combined.
+        /// </summary>
+        public int TokenOmitReason { get; set; }
         public string CharacterDescription { get; set; }
         public string LocationDescription { get; set; }
         public string ModeDescription { get; set; }
@@ -828,6 +849,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 bool backupExists = File.Exists(localBackupFile);
                 bool backupIsDifferent = false;
+                int backupOmitReason = 0x0000;
                 string hashBackup = "";
                 long backupLen = 0;
                 if (backupExists)
@@ -842,10 +864,33 @@ namespace GnollHackX.Pages.MainScreen
                         }
                     }
                     backupIsDifferent = (backupLen != fiSave.Length) || (hashBackup != hashSave);
+                    if (!backupIsDifferent)
+                        backupOmitReason |= 0x0002; // same content as save file
+                }
+                else
+                {
+                    backupOmitReason |= 0x0001; // file not found in save directory
                 }
 
                 string hashToken = "";
                 long tokenLen = 0;
+                int tokenOmitReason = 0x0000;
+
+                // Record all reasons why a tracking token may be absent, using the save flags
+                var ghFlags = (GHSaveFlags)saveFlags;
+                if ((ghFlags & GHSaveFlags.FileTrackOn) == 0)
+                    tokenOmitReason |= 0x0002; // FileTrackOn not set
+                if ((ghFlags & GHSaveFlags.FileTrackSupport) == 0)
+                    tokenOmitReason |= 0x0004; // FileTrackSupport not set
+                if ((ghFlags & GHSaveFlags.NonScoring) != 0)
+                    tokenOmitReason |= 0x0008; // non-scoring game
+                if ((ghFlags & GHSaveFlags.DebugMode) != 0)
+                    tokenOmitReason |= 0x0010; // wizard / debug mode
+                if ((ghFlags & GHSaveFlags.ExploreMode) != 0)
+                    tokenOmitReason |= 0x0020; // explore mode
+                if ((ghFlags & GHSaveFlags.CasualMode) != 0)
+                    tokenOmitReason |= 0x0040; // casual mode
+
                 string uploadTokenFile = Path.Combine(uploadDir, playerName + GHConstants.SaveFileTrackingSuffix);
                 if (isTracked && File.Exists(uploadTokenFile))
                 {
@@ -858,6 +903,10 @@ namespace GnollHackX.Pages.MainScreen
                             hashToken = Convert.ToBase64String(sha.ComputeHash(fs));
                         }
                     }
+                }
+                else if (isTracked)
+                {
+                    tokenOmitReason |= 0x0001; // token file not found in staging directory
                 }
 
                 // 9. Create manifest file
@@ -876,6 +925,8 @@ namespace GnollHackX.Pages.MainScreen
                     BackupIsDifferent = backupIsDifferent,
                     IsTracked = isTracked,
                     SaveTimeStamp = saveTimeStamp,
+                    BackupOmitReason = backupOmitReason,
+                    TokenOmitReason = tokenOmitReason,
                     CharacterDescription = charDesc,
                     LocationDescription = locDesc,
                     ModeDescription = modeDesc,
@@ -1172,6 +1223,7 @@ namespace GnollHackX.Pages.MainScreen
                     CreatedUtc = DateTime.UtcNow.ToString("o")
                 };
                 string localLockPath = Path.Combine(downloadDir, playerName + ".lock");
+                if (File.Exists(localLockPath)) File.Delete(localLockPath);
                 File.WriteAllText(localLockPath, JsonConvert.SerializeObject(downloadLock));
 
                 // 6. Upload lock file to Azure

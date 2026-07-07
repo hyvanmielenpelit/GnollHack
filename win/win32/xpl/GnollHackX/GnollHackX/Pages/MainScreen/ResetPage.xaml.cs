@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -668,7 +668,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            bool answer = await GHApp.DisplayMessageBox(this, "Delete Save Transfer Logs?", "Are you sure to delete all files in transfer_temp and transfer_upload directories?", "Yes", "No");
+            bool answer = await GHApp.DisplayMessageBox(this, "Delete Save Transfer Logs?", "Are you sure to delete all files in transfer_temp, transfer_upload, and transfer_download directories?", "Yes", "No");
             if (answer)
             {
                 try
@@ -680,6 +680,10 @@ namespace GnollHackX.Pages.MainScreen
                     string uploadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferUploadDirectory);
                     if (Directory.Exists(uploadDir))
                         Directory.Delete(uploadDir, true);
+
+                    string downloadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferDownloadDirectory);
+                    if (Directory.Exists(downloadDir))
+                        Directory.Delete(downloadDir, true);
 
                     btnDeleteTransferFiles.Text = "Done";
                     btnDeleteTransferFiles.TextColor = GHColors.Red;

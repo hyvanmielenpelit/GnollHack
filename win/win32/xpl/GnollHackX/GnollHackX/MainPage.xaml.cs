@@ -2597,14 +2597,16 @@ namespace GnollHackX
                 Directory.CreateDirectory(tempDir);
 
                 // 2) Scan transfer_upload for manifests older than 1 month, and delete them
+                //    Also scan the old1/ rotation subdirectory.
                 string uploadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferUploadDirectory);
                 if (Directory.Exists(uploadDir))
                 {
-                    string[] files = Directory.GetFiles(uploadDir);
-                    foreach (string file in files)
+                    foreach (string scanDir in new[] { uploadDir, Path.Combine(uploadDir, "old1") })
                     {
-                        if (file.EndsWith(".json"))
+                        if (!Directory.Exists(scanDir)) continue;
+                        foreach (string file in Directory.GetFiles(scanDir))
                         {
+                            if (!file.EndsWith(".json")) continue;
                             try
                             {
                                 string manifestText = File.ReadAllText(file);
@@ -2616,8 +2618,8 @@ namespace GnollHackX
                                     {
                                         string baseName = Path.GetFileNameWithoutExtension(file);
                                         File.Delete(file);
-                                        
-                                        string saveFile = Path.Combine(uploadDir, baseName);
+
+                                        string saveFile = Path.Combine(scanDir, baseName);
                                         if (File.Exists(saveFile)) File.Delete(saveFile);
 
                                         string bupFile = saveFile + ".bup";
@@ -2636,34 +2638,52 @@ namespace GnollHackX
                     }
                 }
 
-                // 3) Scan transfer_download for manifests older than 1 year, and delete them
+                // 3) Scan transfer_download for manifests older than 30 days, and delete them
+                //    Also delete any orphan .lock files that have no matching .json manifest.
                 string downloadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferDownloadDirectory);
                 if (Directory.Exists(downloadDir))
                 {
-                    string[] files = Directory.GetFiles(downloadDir);
-                    foreach (string file in files)
+                    // First pass: expire old manifest+lock pairs
+                    foreach (string file in Directory.GetFiles(downloadDir))
                     {
-                        if (file.EndsWith(".json"))
+                        if (!file.EndsWith(".json")) continue;
+                        try
                         {
-                            try
+                            string manifestText = File.ReadAllText(file);
+                            var manifest = JsonConvert.DeserializeObject<StartupSaveManifest>(manifestText);
+                            if (manifest != null && !string.IsNullOrEmpty(manifest.CreationDate))
                             {
-                                string manifestText = File.ReadAllText(file);
-                                var manifest = JsonConvert.DeserializeObject<StartupSaveManifest>(manifestText);
-                                if (manifest != null && !string.IsNullOrEmpty(manifest.CreationDate))
+                                DateTime creationDate = DateTime.Parse(manifest.CreationDate);
+                                if (DateTime.UtcNow - creationDate > TimeSpan.FromDays(30))
                                 {
-                                    DateTime creationDate = DateTime.Parse(manifest.CreationDate);
-                                    if (DateTime.UtcNow - creationDate > TimeSpan.FromDays(365))
-                                    {
-                                        File.Delete(file);
-                                        string lockFile = Path.Combine(downloadDir, Path.GetFileNameWithoutExtension(file) + ".lock");
-                                        if (File.Exists(lockFile)) File.Delete(lockFile);
-                                    }
+                                    File.Delete(file);
+                                    string lockFile = Path.Combine(downloadDir,
+                                        Path.GetFileNameWithoutExtension(file) + ".lock");
+                                    if (File.Exists(lockFile)) File.Delete(lockFile);
                                 }
                             }
-                            catch (Exception ex)
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("CleanTransferDirectories download clean exception: " + ex.Message);
+                        }
+                    }
+
+                    // Second pass: delete orphan .lock files with no matching .json
+                    foreach (string lockFile in Directory.GetFiles(downloadDir, "*.lock"))
+                    {
+                        try
+                        {
+                            string jsonFile = Path.ChangeExtension(lockFile, ".json");
+                            if (!File.Exists(jsonFile))
                             {
-                                Debug.WriteLine("CleanTransferDirectories download clean exception: " + ex.Message);
+                                File.Delete(lockFile);
+                                Debug.WriteLine("CleanTransferDirectories: deleted orphan lock " + lockFile);
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("CleanTransferDirectories orphan lock clean exception: " + ex.Message);
                         }
                     }
                 }
