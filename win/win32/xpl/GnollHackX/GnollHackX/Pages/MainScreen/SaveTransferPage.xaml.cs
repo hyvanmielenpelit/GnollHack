@@ -305,7 +305,7 @@ namespace GnollHackX.Pages.MainScreen
                                 uint saveFlags = 0;
                                 long timeStamp = 0;
                                 bool hasInfo = GHApp.GnollHackService.GetSaveFileInfo(file, out version, out compat, out saveFlags, out timeStamp);
-                                bool isTracked = hasInfo && ((GHSaveFlags)saveFlags & GHSaveFlags.FileTrackOn) != 0 && ((GHSaveFlags)saveFlags & GHSaveFlags.NonTrackingMask) == 0;
+                                bool isTracked = hasInfo && ((GHSaveFlags)saveFlags & GHSaveFlags.FileTrackValid) != 0 && ((GHSaveFlags)saveFlags & GHSaveFlags.NonTrackingMask) == 0;
 
                                 string verStr = GHApp.VersionNumberToString(version).Replace(" (", " ").Replace(")", "");
                                 string compatStr = GHApp.VersionNumberToString(compat).Replace(" (", " ").Replace(")", "");
@@ -766,7 +766,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     throw new Exception("Could not read save file header statistics.");
                 }
-                isTracked = ((GHSaveFlags)saveFlags & GHSaveFlags.FileTrackOn) != 0 && ((GHSaveFlags)saveFlags & GHSaveFlags.NonTrackingMask) == 0;
+                isTracked = ((GHSaveFlags)saveFlags & GHSaveFlags.FileTrackValid) != 0 && ((GHSaveFlags)saveFlags & GHSaveFlags.NonTrackingMask) == 0;
 
                 string charDesc = "", locDesc = "", modeDesc = "";
                 GHApp.GnollHackService.GetSaveFileDescription(localSaveFile, out charDesc, out locDesc, out modeDesc);
@@ -891,20 +891,30 @@ namespace GnollHackX.Pages.MainScreen
                 long tokenLen = 0;
                 int tokenOmitReason = 0x0000;
 
-                // Record all reasons why a tracking token may be absent, using the save flags
+                // Record all reasons why a tracking token may be absent.
+                // Multiple flags can be set simultaneously (e.g. wizard + non-scoring)._value == INVALID (failed)
                 var ghFlags = (GHSaveFlags)saveFlags;
-                if ((ghFlags & GHSaveFlags.FileTrackOn) == 0)
-                    tokenOmitReason |= 0x0002; // FileTrackOn not set
-                if ((ghFlags & GHSaveFlags.FileTrackSupport) == 0)
-                    tokenOmitReason |= 0x0004; // FileTrackSupport not set
+                bool trackingSupportedOnPlatform = true; /* Yes for this app */
+                bool trackingNeededOnPlatform = GHApp.IsSaveFileTrackingNeeded;
+                bool trackingOn = GHApp.SaveFileTracking;
+
+                if (!trackingSupportedOnPlatform)
+                    tokenOmitReason |= 0x0002;
+                else if (!trackingNeededOnPlatform)
+                    tokenOmitReason |= 0x0004; // supported but not needed (Android/iOS)
+                else if (!trackingOn)
+                    tokenOmitReason |= 0x0008; // turned off by user
+                else if ((ghFlags & GHSaveFlags.FileTrackValid) == 0)
+                    tokenOmitReason |= 0x0010; // tracking failed
+
                 if ((ghFlags & GHSaveFlags.NonScoring) != 0)
-                    tokenOmitReason |= 0x0008; // non-scoring game
+                    tokenOmitReason |= 0x0020; // non-scoring game
                 if ((ghFlags & GHSaveFlags.DebugMode) != 0)
-                    tokenOmitReason |= 0x0010; // wizard / debug mode
+                    tokenOmitReason |= 0x0040; // wizard / debug mode
                 if ((ghFlags & GHSaveFlags.ExploreMode) != 0)
-                    tokenOmitReason |= 0x0020; // explore mode
+                    tokenOmitReason |= 0x0080; // explore mode
                 if ((ghFlags & GHSaveFlags.CasualMode) != 0)
-                    tokenOmitReason |= 0x0040; // casual mode
+                    tokenOmitReason |= 0x0100; // casual mode
 
                 string uploadTokenFile = Path.Combine(uploadSessionDir, playerName + GHConstants.SaveFileTrackingSuffix);
                 if (isTracked && File.Exists(uploadTokenFile))
@@ -1062,7 +1072,7 @@ namespace GnollHackX.Pages.MainScreen
                 // 15. (Old backups are now stored as files-{old-guid}/ subdirs and cleaned by date at startup)
 
                 PopupProgressBar.Progress = 1.0;
-                PopupStatusLabel.Text = "Transfer successful!";
+                PopupStatusLabel.Text = "Transfer successful.";
 
                 await Task.Delay(1000);
                 PopupGrid.IsVisible = false;
@@ -1350,7 +1360,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     throw new Exception("Could not read downloaded save statistics.");
                 }
-                bool dlTracked = ((GHSaveFlags)dlFlags & GHSaveFlags.FileTrackOn) != 0 && ((GHSaveFlags)dlFlags & GHSaveFlags.NonTrackingMask) == 0;
+                bool dlTracked = ((GHSaveFlags)dlFlags & GHSaveFlags.FileTrackValid) != 0 && ((GHSaveFlags)dlFlags & GHSaveFlags.NonTrackingMask) == 0;
                 if (dlTracked != manifest.IsTracked)
                 {
                     throw new Exception("Downloaded save tracked status mismatch.");
@@ -1456,7 +1466,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
 
                 PopupProgressBar.Progress = 1.0;
-                PopupStatusLabel.Text = "Transfer successful!";
+                PopupStatusLabel.Text = "Transfer successful.";
 
                 await Task.Delay(1000);
                 PopupGrid.IsVisible = false;

@@ -1472,7 +1472,7 @@ store_save_game_stats_in_file(int fd, int64_t time_stamp)
     gamestats.casual_mode = CasualMode;
     gamestats.save_flags = 
         (flags.non_scoring ? SAVEFLAGS_NON_SCORING : 0) | (TournamentMode ? SAVEFLAGS_TOURNAMENT_MODE : 0) |
-        SAVEFLAGS_FILETRACK_SUPPORT | (flags.save_file_tracking_value ? SAVEFLAGS_FILETRACK_ON : 0);
+        (flags.save_file_tracking_value ? SAVEFLAGS_FILETRACK_VALID : 0);
     gamestats.time_stamp = time_stamp;
     gamestats.num_recoveries = n_game_recoveries;
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
@@ -34,12 +34,11 @@ namespace GnollHackX
         None = 0x00,
         NonScoring = 0x01,
         TournamentMode = 0x02,
-        FileTrackSupport = 0x04,
-        FileTrackOn = 0x08,
+        FileTrackValid = 0x04,
         DebugMode = 0x100,
         ExploreMode = 0x200,
         CasualMode = 0x400,
-        NonTrackingMask = 0x700
+        NonTrackingMask = 0x710   /* DebugMode | ExploreMode | CasualMode | Non-Scoring */
     }
 
     [Flags]
