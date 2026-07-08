@@ -2564,11 +2564,12 @@ namespace GnollHackX
 #if GNH_MAUI
                     rib.MaximumWidthRequest = 480;
                     rib.GridMargin = new Microsoft.Maui.Thickness(rib.ImgWidth / 15, 0);
+                    rib.MaximumHeightRequest = 80;
 #else
                     rib.WidthRequest = 480;
                     rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
-#endif
                     rib.HeightRequest = 80;
+#endif
                     AchievementGainedLayout.Children.Add(rib);
                 }
                 AchievementGrid.IsVisible = true;

@@ -175,14 +175,16 @@ namespace GnollHackX.Pages.MainScreen
                     rib.IsSubLblVisible = true;
                     rib.ImgWidth = 80;
                     rib.ImgHeight = 80;
+                    rib.Padding = new Thickness(6);
                     rib.GridWidth = 480;
                     rib.GridHeight = 80;
 #if GNH_MAUI
                     rib.MaximumWidthRequest = 480;
+                    rib.MaximumHeightRequest = 80;
 #else
                     rib.WidthRequest = 480;
-#endif
                     rib.HeightRequest = 80;
+#endif
                     rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
                     rib.BtnCommand = i;
                     rib.BtnClicked += AchievementButton_Clicked;
