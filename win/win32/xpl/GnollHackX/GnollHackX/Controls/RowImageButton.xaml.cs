@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,6 +43,13 @@ namespace GnollHackX.Controls
         public static readonly BindableProperty IsSubLbl2VisibleProperty = BindableProperty.Create(nameof(IsSubLbl2Visible), typeof(bool), typeof(RowImageButton), false);
         public static readonly BindableProperty IsSubLbl3VisibleProperty = BindableProperty.Create(nameof(IsSubLbl3Visible), typeof(bool), typeof(RowImageButton), false);
         public static readonly BindableProperty IsSubLbl4VisibleProperty = BindableProperty.Create(nameof(IsSubLbl4Visible), typeof(bool), typeof(RowImageButton), false);
+
+        /* Image label (ImgLbl) — centered under the tile image, hidden by default */
+        public static readonly BindableProperty ImgLblTextProperty = BindableProperty.Create(nameof(ImgLblText), typeof(string), typeof(RowImageButton), string.Empty);
+        public static readonly BindableProperty ImgLblTextColorProperty = BindableProperty.Create(nameof(ImgLblTextColor), typeof(Color), typeof(RowImageButton), GHColors.Black, propertyChanged: OnImgLblTextColorChanged);
+        public static readonly BindableProperty ImgLblFontSizeProperty = BindableProperty.Create(nameof(ImgLblFontSize), typeof(double), typeof(RowImageButton), 13.0);
+        public static readonly BindableProperty ImgLblFontFamilyProperty = BindableProperty.Create(nameof(ImgLblFontFamily), typeof(string), typeof(RowImageButton), "Immortal");
+        public static readonly BindableProperty IsImgLblVisibleProperty = BindableProperty.Create(nameof(IsImgLblVisible), typeof(bool), typeof(RowImageButton), false);
 
         public static readonly BindableProperty ImgGlyphImageSourceProperty = BindableProperty.Create(nameof(ImgGlyphImageSource), typeof(GlyphImageSource), typeof(RowImageButton), null);
         public static readonly BindableProperty ImgSourcePathProperty = BindableProperty.Create(nameof(ImgSourcePath), typeof(string), typeof(RowImageButton), string.Empty);
@@ -208,6 +215,37 @@ namespace GnollHackX.Controls
             set => SetValue(RowImageButton.IsSubLbl4VisibleProperty, value);
         }
 
+        /* Image label properties */
+        public string ImgLblText
+        {
+            get => (string)GetValue(RowImageButton.ImgLblTextProperty);
+            set => SetValue(RowImageButton.ImgLblTextProperty, value);
+        }
+        public Color ImgLblTextColor
+        {
+            get => (Color)GetValue(RowImageButton.ImgLblTextColorProperty);
+            set
+            {
+                SetValue(ImgLblTextColorProperty, value);
+                ImgViewLabel.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, !IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(value, !IgnoreDarkMode && GHApp.DarkMode);
+            }
+        }
+        public double ImgLblFontSize
+        {
+            get => (double)GetValue(RowImageButton.ImgLblFontSizeProperty);
+            set => SetValue(RowImageButton.ImgLblFontSizeProperty, value);
+        }
+        public string ImgLblFontFamily
+        {
+            get => (string)GetValue(RowImageButton.ImgLblFontFamilyProperty);
+            set => SetValue(RowImageButton.ImgLblFontFamilyProperty, value);
+        }
+        public bool IsImgLblVisible
+        {
+            get => (bool)GetValue(RowImageButton.IsImgLblVisibleProperty);
+            set => SetValue(RowImageButton.IsImgLblVisibleProperty, value);
+        }
+
         public GlyphImageSource ImgGlyphImageSource
         {
             get => (GlyphImageSource)GetValue(RowImageButton.ImgGlyphImageSourceProperty);
@@ -322,6 +360,7 @@ namespace GnollHackX.Controls
                 SubLbl2TextColor = SubLbl2TextColor;
                 SubLbl3TextColor = SubLbl3TextColor;
                 SubLbl4TextColor = SubLbl4TextColor;
+                ImgLblTextColor = ImgLblTextColor;
             });
         }
 #else
@@ -379,6 +418,15 @@ namespace GnollHackX.Controls
             {
                 Color newColor = (Color)newValue;
                 cib.SubViewLabel4.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode);
+            }
+        }
+        private static void OnImgLblTextColorChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            RowImageButton cib = bindable as RowImageButton;
+            if (cib != null && newValue is Color)
+            {
+                Color newColor = (Color)newValue;
+                cib.ImgViewLabel.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode) : UIUtils.HoveringColorAdjustment(newColor, !cib.IgnoreDarkMode && GHApp.DarkMode);
             }
         }
     }

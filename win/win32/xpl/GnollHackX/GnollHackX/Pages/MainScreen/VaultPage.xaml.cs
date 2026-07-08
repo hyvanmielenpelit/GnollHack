@@ -47,6 +47,11 @@ namespace GnollHackX.Pages.MainScreen
             if (GHApp.DarkMode)
             {
                 lblHeader.TextColor = GHColors.White;
+#if GNH_MAUI
+                MessagePopupFrame.Stroke = GHColors.TitleGoldColor;
+#else
+                MessagePopupFrame.BorderColor = GHColors.TitleGoldColor;
+#endif
             }
             Thickness gridMargin = new Thickness(110.0 / 10, 0);
             Thickness margin = new Thickness(110.0 / 8, 0, 110.0 / 8, 110.0 / 8);

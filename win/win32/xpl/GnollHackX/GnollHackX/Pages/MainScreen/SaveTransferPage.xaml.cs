@@ -129,9 +129,20 @@ namespace GnollHackX.Pages.MainScreen
             {
                 HeaderLabel.TextColor = GHColors.White;
                 StatusLabel.TextColor = GHColors.White;
+                EmptyLabel.TextColor = GHColors.White;
+                TransferModePicker.TextColor = GHColors.White;
+                TransferModePicker.TitleColor = GHColors.White;
+#if GNH_MAUI
+                MessagePopupFrame.Stroke = GHColors.TitleGoldColor;
+                PopupFrame.Stroke = GHColors.TitleGoldColor;
+#else
+                MessagePopupFrame.BorderColor = GHColors.TitleGoldColor;
+                PopupFrame.BorderColor = GHColors.TitleGoldColor;
+#endif
             }
+
             // List is built dynamically in PopulateSavesList()
-            
+
             TransferModePicker.SelectedIndexChanged -= TransferModePicker_SelectedIndexChanged;
             TransferModePicker.SelectedIndex = 0; // Default to Upload
             TransferModePicker.SelectedIndexChanged += TransferModePicker_SelectedIndexChanged;
@@ -414,7 +425,7 @@ namespace GnollHackX.Pages.MainScreen
                                     {
                                         Name = charName,
                                         SaveFileName = baseName,
-                                        Description = $"Cloud Save - Version: {verStr} (From {compatStr}) - " + (cloudValid ? "Valid" : "Invalid/Incompatible") + " and " + (manifest.HasTrackingFile ? "Tracked" : "Untracked"),
+                                        Description = $"Version: {verStr} (From {compatStr}) - " + (cloudValid ? "Valid" : "Invalid/Incompatible") + " and " + (manifest.HasTrackingFile ? "Tracked" : "Untracked"),
                                         CharacterDescription = manifest.CharacterDescription,
                                         LocationDescription = manifest.LocationDescription,
                                         ModeDescription = manifest.ModeDescription,
@@ -486,7 +497,7 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             }
 
-            StatusLabel.Text = TransferModePicker.SelectedIndex == 0 ? "Eligible Local Saves" : "Saves Available in Cloud";
+            StatusLabel.Text = TransferModePicker.SelectedIndex == 0 ? "Saves Available Locally" : "Saves Available in Cloud";
             EmptyLabel.IsVisible = _saves.Count == 0;
             PopulateSavesList();
             SavesLayout.IsEnabled = true;
@@ -534,7 +545,7 @@ namespace GnollHackX.Pages.MainScreen
                 rib.SubLblTextColor = subLblColor;
                 rib.SubLbl2TextColor = subLblColor;
                 rib.SubLbl3TextColor = subLblColor;
-                rib.SubLbl4TextColor = save.IsValid ? subLblColor : GHColors.Red;
+                rib.SubLbl4TextColor = save.IsValid ? (GHApp.DarkMode ? GHColors.LightGreen : GHColors.DarkGreen) : GHColors.Red;
                 rib.SubLblFontSize = 13;
                 rib.SubLbl2FontSize = 13;
                 rib.SubLbl3FontSize = 13;
@@ -543,6 +554,13 @@ namespace GnollHackX.Pages.MainScreen
                 rib.IsSubLbl2Visible = !string.IsNullOrEmpty(save.LocationDescription);
                 rib.IsSubLbl3Visible = !string.IsNullOrEmpty(save.ModeDescription);
                 rib.IsSubLbl4Visible = !string.IsNullOrEmpty(save.Description);
+
+                rib.IsImgLblVisible = save.IsCloud;
+                rib.ImgLblText = save.IsCloud ? "Cloud" : "";
+                rib.ImgLblTextColor = save.IsCloud
+                    ? (GHApp.DarkMode ? GHColors.LightBlue : GHColors.DarkBlue)
+                    : subLblColor;
+                rib.ImgLblFontSize = 12;
                 rib.ImgWidth = 80;
                 rib.ImgHeight = 80;
                 rib.GridWidth = 480;
