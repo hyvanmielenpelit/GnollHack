@@ -132,13 +132,16 @@ namespace GnollHackX.Pages.MainScreen
                 EmptyLabel.TextColor = GHColors.White;
                 TransferModePicker.TextColor = GHColors.White;
                 TransferModePicker.TitleColor = GHColors.White;
-#if GNH_MAUI
-                MessagePopupFrame.Stroke = GHColors.TitleGoldColor;
-                PopupFrame.Stroke = GHColors.TitleGoldColor;
-#else
-                MessagePopupFrame.BorderColor = GHColors.TitleGoldColor;
-                PopupFrame.BorderColor = GHColors.TitleGoldColor;
-#endif
+                TransferModePicker.BackgroundColor = Color.FromRgba(1, 1, 1, 0.15);
+                MessagePopupFrame.BackgroundColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
+                PopupFrame.BackgroundColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
+//#if GNH_MAUI
+//                MessagePopupFrame.Stroke = GHColors.TitleGoldColor;
+//                PopupFrame.Stroke = GHColors.TitleGoldColor;
+//#else
+//                MessagePopupFrame.BorderColor = GHColors.TitleGoldColor;
+//                PopupFrame.BorderColor = GHColors.TitleGoldColor;
+//#endif
             }
 
             // List is built dynamically in PopulateSavesList()
@@ -497,7 +500,7 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             }
 
-            StatusLabel.Text = TransferModePicker.SelectedIndex == 0 ? "Saves Available Locally" : "Saves Available in Cloud";
+            StatusLabel.Text = TransferModePicker.SelectedIndex == 0 ? "Local Save Files" : "Cloud Save Files";
             EmptyLabel.IsVisible = _saves.Count == 0;
             PopulateSavesList();
             SavesLayout.IsEnabled = true;

@@ -41,11 +41,12 @@ namespace GnollHackX.Pages.MainScreen
                 lblSubtitle.TextColor = GHColors.White;
                 lblSubtitle2.TextColor = GHColors.White;
                 EmptyLabel.TextColor = GHColors.White;
-#if GNH_MAUI
-                TierFrame.Stroke = GHColors.TitleGoldColor;
-#else
-                TierFrame.BorderColor = GHColors.TitleGoldColor;
-#endif
+                TierFrame.BackgroundColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
+//#if GNH_MAUI
+//                TierFrame.Stroke = GHColors.TitleGoldColor;
+//#else
+//                TierFrame.BorderColor = GHColors.TitleGoldColor;
+//#endif
             }
             lblSubtitle.TextColor = GHApp.DarkMode ? GHColors.TitleGoldColor : GHColors.DarkGreen;
             lblSubtitle2.TextColor = GHApp.DarkMode ? GHColors.LightYellow : GHColors.SemiDarkGreen;
