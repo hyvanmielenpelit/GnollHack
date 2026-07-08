@@ -4599,7 +4599,7 @@ readobjnam(char *bp, struct obj *no_wish, boolean is_wiz_wish, boolean *removed_
             && strlen(p) == strlen(mythic_suffix_qualities[mythic_idx].mythic_affix))
         {
             char ringbuf[BUFSZ], robebuf[BUFSZ], bootsbuf[BUFSZ], glovesbuf[BUFSZ], gauntletsbuf[BUFSZ], bracersbuf[BUFSZ], amuletbuf[BUFSZ], cloakbuf[BUFSZ], shirtbuf[BUFSZ];
-            char potionbuf[BUFSZ], wandbuf[BUFSZ], scrollbuf[BUFSZ], spellbookbuf[BUFSZ];
+            char potionbuf[BUFSZ], wandbuf[BUFSZ], scrollbuf[BUFSZ], spellbookbuf[BUFSZ], iounstonebuf[BUFSZ];
             Sprintf(ringbuf, "ring%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(robebuf, "robe%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(bootsbuf, "boots%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
@@ -4614,6 +4614,7 @@ readobjnam(char *bp, struct obj *no_wish, boolean is_wiz_wish, boolean *removed_
             Sprintf(potionbuf, "potion%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(scrollbuf, "scroll%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(spellbookbuf, "spellbook%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(iounstonebuf, "ioun stone%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
 
             if (!(p == mythic_sng + 4 && !strcmp(p - 4, ringbuf)) /* No rings and other standard items etc. */
                 && !(p == mythic_sng + 4 && !strcmp(p - 4, robebuf))
@@ -4629,6 +4630,7 @@ readobjnam(char *bp, struct obj *no_wish, boolean is_wiz_wish, boolean *removed_
                 && !(p == mythic_sng + 6 && !strcmp(p - 6, potionbuf))
                 && !(p == mythic_sng + 6 && !strcmp(p - 6, scrollbuf))
                 && !(p == mythic_sng + 9 && !strcmp(p - 9, spellbookbuf))
+                && !(p == mythic_sng + 10 && !strcmp(p - 10, iounstonebuf))
                 )
             {
                 p = strstri(bp, mythic_suffix_qualities[mythic_idx].mythic_affix);
