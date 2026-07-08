@@ -643,6 +643,8 @@ namespace GnollHackX.Pages.MainScreen
 
             string tempDir = Path.Combine(GHApp.GHPath, GHConstants.TransferTempDirectory);
             string uploadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferUploadDirectory);
+            // Each upload session stores its files in a GUID-based subdirectory to avoid conflicts
+            string uploadSessionDir = Path.Combine(uploadDir, "files-" + guid);
             
             bool createdToken = false;
             bool isTracked = false;
@@ -726,39 +728,29 @@ namespace GnollHackX.Pages.MainScreen
                     await enumerator.DisposeAsync();
                 }
 
-                // 3a. Cleanup before start
+                // 3a. Cleanup before start — find a usable temp directory
                 PopupStatusLabel.Text = "Cleaning temp folders...";
-                if (Directory.Exists(tempDir))
+                tempDir = await FindUsableTempDirectoryAsync(tempDir);
+
+                // Create the per-session upload subdirectory (files-{guid}/)
+                // Guard: if the directory somehow already exists (extremely unlikely), try to delete it;
+                // if that fails, generate a fresh GUID so neither the local dir nor the cloud folder collide.
+                if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
+                if (Directory.Exists(uploadSessionDir))
                 {
                     try
                     {
-                        Directory.Delete(tempDir, true);
+                        Directory.Delete(uploadSessionDir, true);
                     }
                     catch
                     {
-                        // Fallback: delete individual files if the directory could not be fully removed
-                        // (can happen on Android when a file handle is still held by the OS)
-                        foreach (string f in Directory.GetFiles(tempDir))
-                        {
-                            try { File.Delete(f); } catch { /* best effort */ }
-                        }
+                        guid = Guid.NewGuid().ToString();
+                        cloudFolder = $"{playerName}-{guid}";
+                        uploadSessionDir = Path.Combine(uploadDir, "files-" + guid);
+                        Debug.WriteLine("RunUploadProcessAsync: collision on session dir, regenerated GUID: " + guid);
                     }
                 }
-                if (!Directory.Exists(tempDir)) Directory.CreateDirectory(tempDir);
-
-                if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
-                // Move older uploads with no problems to old rotation
-                string targetUploadPath = Path.Combine(uploadDir, playerName);
-                if (File.Exists(targetUploadPath))
-                {
-                    string oldDir = Path.Combine(uploadDir, "old1");
-                    if (Directory.Exists(oldDir)) Directory.Delete(oldDir, true);
-                    Directory.CreateDirectory(oldDir);
-                    File.Move(targetUploadPath, Path.Combine(oldDir, playerName));
-                    if (File.Exists(targetUploadPath + ".bup")) File.Move(targetUploadPath + ".bup", Path.Combine(oldDir, playerName + ".bup"));
-                    if (File.Exists(targetUploadPath + ".json")) File.Move(targetUploadPath + ".json", Path.Combine(oldDir, playerName + ".json"));
-                    if (File.Exists(targetUploadPath + GHConstants.SaveFileTrackingSuffix)) File.Move(targetUploadPath + GHConstants.SaveFileTrackingSuffix, Path.Combine(oldDir, playerName + GHConstants.SaveFileTrackingSuffix));
-                }
+                Directory.CreateDirectory(uploadSessionDir);
 
                 // 3b. Verify validity & Read flags
                 PopupStatusLabel.Text = "Validating local save file...";
@@ -800,11 +792,14 @@ namespace GnollHackX.Pages.MainScreen
                 BlobClient uploadLockClient = containerClient.GetBlobClient(cloudLockPath);
                 await uploadLockClient.UploadAsync(localLockPath, token);
 
-                // 6. Download and double-check GUID matches
+                // 6. Download and double-check GUID matches (in-memory — no disk write needed)
                 PopupStatusLabel.Text = "Verifying upload lock...";
-                string verifyLockPath = Path.Combine(tempDir, playerName + "_verify.lock");
-                await uploadLockClient.DownloadToAsync(verifyLockPath, token);
-                var downloadedLock = JsonConvert.DeserializeObject<SaveLock>(File.ReadAllText(verifyLockPath));
+                SaveLock downloadedLock;
+                using (var verifyMs = new MemoryStream())
+                {
+                    await uploadLockClient.DownloadToAsync(verifyMs, token);
+                    downloadedLock = JsonConvert.DeserializeObject<SaveLock>(Encoding.UTF8.GetString(verifyMs.ToArray()));
+                }
                 if (downloadedLock == null || downloadedLock.Guid != guid)
                 {
                     throw new Exception("Upload lock verify failed. A concurrent session may have overwritten the lock.");
@@ -817,7 +812,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     PopupStatusLabel.Text = "Handling tracking token...";
                     string localTokenPath = localSaveFile + GHConstants.SaveFileTrackingSuffix;
-                    string uploadTokenPath = Path.Combine(uploadDir, playerName + GHConstants.SaveFileTrackingSuffix);
+                    string uploadTokenPath = Path.Combine(uploadSessionDir, playerName + GHConstants.SaveFileTrackingSuffix);
 
                     bool platformUsesTracking = GHApp.IsSaveFileTrackingNeeded;
 
@@ -846,7 +841,7 @@ namespace GnollHackX.Pages.MainScreen
                             }
                         }
 
-                        SendResult sResult = await GHApp.SendSaveFileTrackingSaveRequest(this, timeStamp, Path.Combine(uploadDir, playerName), saveLength, saveSha);
+                        SendResult sResult = await GHApp.SendSaveFileTrackingSaveRequest(this, timeStamp, Path.Combine(uploadSessionDir, playerName), saveLength, saveSha);
                         if (!sResult.IsSuccess)
                         {
                             throw new Exception("Failed to register tracking token on server: " + sResult.Message);
@@ -911,7 +906,7 @@ namespace GnollHackX.Pages.MainScreen
                 if ((ghFlags & GHSaveFlags.CasualMode) != 0)
                     tokenOmitReason |= 0x0040; // casual mode
 
-                string uploadTokenFile = Path.Combine(uploadDir, playerName + GHConstants.SaveFileTrackingSuffix);
+                string uploadTokenFile = Path.Combine(uploadSessionDir, playerName + GHConstants.SaveFileTrackingSuffix);
                 if (isTracked && File.Exists(uploadTokenFile))
                 {
                     FileInfo fiTok = new FileInfo(uploadTokenFile);
@@ -955,15 +950,15 @@ namespace GnollHackX.Pages.MainScreen
                     TrackingToken = isTracked ? new FileDetail { FileName = playerName + GHConstants.SaveFileTrackingSuffix, FileLength = tokenLen, Sha256 = hashToken } : null
                 };
 
-                string manifestLocalPath = Path.Combine(uploadDir, playerName + ".json");
+                string manifestLocalPath = Path.Combine(uploadSessionDir, playerName + ".json");
                 File.WriteAllText(manifestLocalPath, JsonConvert.SerializeObject(manifest, Formatting.Indented));
 
-                // 10. Copy save + backup to uploadDir and upload them
+                // 10. Copy save + backup to uploadSessionDir and upload them
                 PopupStatusLabel.Text = "Uploading files to cloud...";
-                File.Copy(localSaveFile, Path.Combine(uploadDir, playerName), true);
+                File.Copy(localSaveFile, Path.Combine(uploadSessionDir, playerName), true);
                 if (backupExists)
                 {
-                    File.Copy(localBackupFile, Path.Combine(uploadDir, playerName + ".bup"), true);
+                    File.Copy(localBackupFile, Path.Combine(uploadSessionDir, playerName + ".bup"), true);
                 }
 
                 PopupProgressBar.Progress = 0.5;
@@ -974,13 +969,13 @@ namespace GnollHackX.Pages.MainScreen
 
                 // Upload save file
                 BlobClient saveBlob = containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}");
-                await saveBlob.UploadAsync(Path.Combine(uploadDir, playerName), token);
+                await saveBlob.UploadAsync(Path.Combine(uploadSessionDir, playerName), token);
 
                 // Upload backup if different
                 if (backupIsDifferent)
                 {
                     BlobClient bupBlob = containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.bup");
-                    await bupBlob.UploadAsync(Path.Combine(uploadDir, playerName + ".bup"), token);
+                    await bupBlob.UploadAsync(Path.Combine(uploadSessionDir, playerName + ".bup"), token);
                 }
 
                 // Upload tracking token if exists
@@ -1064,9 +1059,7 @@ namespace GnollHackX.Pages.MainScreen
                 if (File.Exists(localBackupFile)) File.Delete(localBackupFile);
                 if (File.Exists(localSaveFile + GHConstants.SaveFileTrackingSuffix)) File.Delete(localSaveFile + GHConstants.SaveFileTrackingSuffix);
 
-                // 15. Clean old backups
-                string old1 = Path.Combine(uploadDir, "old1");
-                if (Directory.Exists(old1)) Directory.Delete(old1, true);
+                // 15. (Old backups are now stored as files-{old-guid}/ subdirs and cleaned by date at startup)
 
                 PopupProgressBar.Progress = 1.0;
                 PopupStatusLabel.Text = "Transfer successful!";
@@ -1079,13 +1072,13 @@ namespace GnollHackX.Pages.MainScreen
             catch (OperationCanceledException)
             {
                 PopupGrid.IsVisible = false;
-                await CleanUpUploadFailAsync(playerName, uploadDir, isTracked && createdToken, containerClient, cloudFolder, saveTimeStamp);
+                await CleanUpUploadFailAsync(playerName, uploadSessionDir, isTracked && createdToken, containerClient, cloudFolder, saveTimeStamp);
                 await ShowMessagePopupAsync("Cancelled", "Save transfer was cancelled.", "OK");
             }
             catch (Exception ex)
             {
                 PopupGrid.IsVisible = false;
-                await CleanUpUploadFailAsync(playerName, uploadDir, isTracked && createdToken, containerClient, cloudFolder, saveTimeStamp);
+                await CleanUpUploadFailAsync(playerName, uploadSessionDir, isTracked && createdToken, containerClient, cloudFolder, saveTimeStamp);
                 await GHApp.DisplayMessageBox(this, "Upload Failed", "Error during save file upload: " + ex.Message, "OK");
             }
             finally
@@ -1160,6 +1153,8 @@ namespace GnollHackX.Pages.MainScreen
 
             string tempDir = Path.Combine(GHApp.GHPath, GHConstants.TransferTempDirectory);
             string downloadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferDownloadDirectory);
+            // Each download session logs its manifest in a GUID-based subdirectory to avoid conflicts
+            string downloadSessionDir = Path.Combine(downloadDir, "files-" + guid);
 
             BlobContainerClient containerClient = null;
             BlobClient cloudLockClient = null;
@@ -1227,29 +1222,31 @@ namespace GnollHackX.Pages.MainScreen
                     }
                 }
 
-                // 4. Clean transfer_temp
+                // 4. Clean transfer_temp — find a usable temp directory
                 PopupStatusLabel.Text = "Cleaning local temp folder...";
-                if (Directory.Exists(tempDir))
+                tempDir = await FindUsableTempDirectoryAsync(tempDir);
+
+                // Create the per-session download subdirectory (files-{guid}/)
+                // Guard: if the local session dir already exists, try to delete it first;
+                // if that fails, use a fresh local GUID for the directory name only
+                // (cloudFolder and guid are kept unchanged since they identify the cloud blob location).
+                if (!Directory.Exists(downloadDir)) Directory.CreateDirectory(downloadDir);
+                if (Directory.Exists(downloadSessionDir))
                 {
                     try
                     {
-                        Directory.Delete(tempDir, true);
+                        Directory.Delete(downloadSessionDir, true);
                     }
                     catch
                     {
-                        // Fallback: delete individual files if the directory could not be fully removed
-                        // (can happen on Android when a file handle is still held by the OS)
-                        foreach (string f in Directory.GetFiles(tempDir))
-                        {
-                            try { File.Delete(f); } catch { /* best effort */ }
-                        }
+                        string localFallbackGuid = Guid.NewGuid().ToString();
+                        downloadSessionDir = Path.Combine(downloadDir, "files-" + localFallbackGuid);
+                        Debug.WriteLine("RunDownloadProcessAsync: collision on session dir, using fallback dir: " + downloadSessionDir);
                     }
                 }
-                if (!Directory.Exists(tempDir)) Directory.CreateDirectory(tempDir);
+                Directory.CreateDirectory(downloadSessionDir);
 
-                if (!Directory.Exists(downloadDir)) Directory.CreateDirectory(downloadDir);
-
-                // 5. Create lock file to transfer_download
+                // 5. Create lock file in the session subdirectory
                 PopupStatusLabel.Text = "Creating download lock...";
                 var downloadLock = new SaveLock
                 {
@@ -1257,22 +1254,20 @@ namespace GnollHackX.Pages.MainScreen
                     Direction = 1,
                     CreatedUtc = DateTime.UtcNow.ToString("o")
                 };
-                string localLockPath = Path.Combine(downloadDir, playerName + ".lock");
-                if (File.Exists(localLockPath))
-                {
-                    try { File.SetAttributes(localLockPath, FileAttributes.Normal); } catch { /* best effort */ }
-                    File.Delete(localLockPath);
-                }
+                string localLockPath = Path.Combine(downloadSessionDir, playerName + ".lock");
                 File.WriteAllText(localLockPath, JsonConvert.SerializeObject(downloadLock));
 
                 // 6. Upload lock file to Azure
                 await cloudLockClient.UploadAsync(localLockPath, token);
 
-                // 7. Download lock file and check GUID
+                // 7. Download lock file and check GUID (in-memory — no disk write needed)
                 PopupStatusLabel.Text = "Verifying download lock...";
-                string verifyLockPath = Path.Combine(tempDir, playerName + "_verify.lock");
-                await cloudLockClient.DownloadToAsync(verifyLockPath, token);
-                var downloadedLock = JsonConvert.DeserializeObject<SaveLock>(File.ReadAllText(verifyLockPath));
+                SaveLock downloadedLock;
+                using (var verifyMs = new MemoryStream())
+                {
+                    await cloudLockClient.DownloadToAsync(verifyMs, token);
+                    downloadedLock = JsonConvert.DeserializeObject<SaveLock>(Encoding.UTF8.GetString(verifyMs.ToArray()));
+                }
                 if (downloadedLock == null || downloadedLock.Guid != guid)
                 {
                     throw new Exception("Download lock verification failed. Race condition detected.");
@@ -1447,18 +1442,14 @@ namespace GnollHackX.Pages.MainScreen
 
                 await cloudLockClient.DeleteIfExistsAsync(cancellationToken: token);
 
-                // 18. Move manifest to transfer_download as a log
-                string finalManifestLog = Path.Combine(downloadDir, playerName + ".json");
-                if (File.Exists(finalManifestLog)) File.Delete(finalManifestLog);
+                // 18. Move manifest to the per-session download subdirectory as a log
+                string finalManifestLog = Path.Combine(downloadSessionDir, playerName + ".json");
                 File.Move(tempManifestPath, finalManifestLog);
 
-                // 19. Delete lock file from temp
-                if (File.Exists(verifyLockPath)) File.Delete(verifyLockPath);
-
-                // 20. Final cleanup check
+                // 19. Final cleanup check
                 if (File.Exists(tempSavePath)) File.Delete(tempSavePath);
                 if (File.Exists(Path.Combine(tempDir, playerName + ".bup"))) File.Delete(Path.Combine(tempDir, playerName + ".bup"));
-                
+
                 if (Directory.GetFiles(tempDir).Length > 0)
                 {
                     Debug.WriteLine("Warning: tempDir not fully cleared.");
@@ -1475,13 +1466,13 @@ namespace GnollHackX.Pages.MainScreen
             catch (OperationCanceledException)
             {
                 PopupGrid.IsVisible = false;
-                await CleanUpDownloadFailAsync(containerClient, cloudLockClient, tempDir);
+                await CleanUpDownloadFailAsync(containerClient, cloudLockClient, tempDir, downloadSessionDir);
                 await ShowMessagePopupAsync("Cancelled", "Save download was cancelled.", "OK");
             }
             catch (Exception ex)
             {
                 PopupGrid.IsVisible = false;
-                await CleanUpDownloadFailAsync(containerClient, cloudLockClient, tempDir);
+                await CleanUpDownloadFailAsync(containerClient, cloudLockClient, tempDir, downloadSessionDir);
                 await GHApp.DisplayMessageBox(this, "Download Failed", "Error during save file download: " + ex.Message, "OK");
             }
             finally
@@ -1497,7 +1488,73 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        private async Task CleanUpDownloadFailAsync(BlobContainerClient containerClient, BlobClient cloudLockClient, string tempDir)
+        /// <summary>
+        /// Attempts to find and prepare a clean temp directory. Tries the base path first, then
+        /// transfer_temp2, transfer_temp3, … up to transfer_temp10, returning the first directory
+        /// that can be emptied successfully. The returned directory is guaranteed to exist and be empty.
+        /// </summary>
+        private async Task<string> FindUsableTempDirectoryAsync(string baseDir)
+        {
+            string baseName = baseDir; // e.g. .../transfer_temp
+            for (int suffix = 0; suffix <= 10; suffix++)
+            {
+                string candidate = suffix == 0 ? baseName : baseName + suffix.ToString();
+                try
+                {
+                    if (Directory.Exists(candidate))
+                    {
+                        // Try recursive delete first
+                        try
+                        {
+                            Directory.Delete(candidate, true);
+                        }
+                        catch
+                        {
+                            await Task.Delay(300);
+                            try
+                            {
+                                Directory.Delete(candidate, true);
+                            }
+                            catch
+                            {
+                                // Last resort: delete files one by one, clearing attributes first
+                                foreach (string f in Directory.GetFiles(candidate))
+                                {
+                                    try
+                                    {
+                                        File.SetAttributes(f, FileAttributes.Normal);
+                                        File.Delete(f);
+                                    }
+                                    catch { /* best effort */ }
+                                }
+                            }
+                        }
+                    }
+
+                    // (Re-)create the directory
+                    Directory.CreateDirectory(candidate);
+
+                    // Accept this directory only if it is now empty
+                    if (Directory.GetFiles(candidate).Length == 0)
+                    {
+                        if (suffix > 0)
+                            Debug.WriteLine($"FindUsableTempDirectory: using fallback '{candidate}' (base was locked).");
+                        return candidate;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"FindUsableTempDirectory: candidate '{candidate}' failed: {ex.Message}");
+                }
+            }
+
+            // Should never reach here, but guarantee a result
+            Debug.WriteLine("FindUsableTempDirectory: all candidates failed, falling back to base dir.");
+            Directory.CreateDirectory(baseName);
+            return baseName;
+        }
+
+        private async Task CleanUpDownloadFailAsync(BlobContainerClient containerClient, BlobClient cloudLockClient, string tempDir, string downloadSessionDir = null)
         {
             try
             {
@@ -1507,6 +1564,10 @@ namespace GnollHackX.Pages.MainScreen
 
                 // Clean temp directory
                 if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
+
+                // Clean the per-session download subdirectory if one was created
+                if (downloadSessionDir != null && Directory.Exists(downloadSessionDir))
+                    Directory.Delete(downloadSessionDir, true);
             }
             catch (Exception ex)
             {

@@ -2588,106 +2588,111 @@ namespace GnollHackX
         {
             try
             {
-                // 1) Clean transfer_temp folder completely
+                // 1) Clean transfer_temp folder completely, and also any numbered fallback dirs
+                //    (transfer_temp2..transfer_temp10) created when the primary dir was locked
                 string tempDir = Path.Combine(GHApp.GHPath, GHConstants.TransferTempDirectory);
-                if (Directory.Exists(tempDir))
+                for (int i = 0; i <= 10; i++)
                 {
-                    Directory.Delete(tempDir, true);
+                    string candidate = i == 0 ? tempDir : tempDir + i.ToString();
+                    if (Directory.Exists(candidate))
+                    {
+                        try
+                        {
+                            Directory.Delete(candidate, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("CleanTransferDirectories: could not delete " + candidate + ": " + ex.Message);
+                        }
+                    }
                 }
                 Directory.CreateDirectory(tempDir);
 
-                // 2) Scan transfer_upload for manifests older than 1 month, and delete them
-                //    Also scan the old1/ rotation subdirectory.
+                // 2) Scan transfer_upload for session subdirs (files-{guid}/) older than 30 days, and delete them
                 string uploadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferUploadDirectory);
                 if (Directory.Exists(uploadDir))
                 {
-                    foreach (string scanDir in new[] { uploadDir, Path.Combine(uploadDir, "old1") })
+                    foreach (string sessionDir in Directory.GetDirectories(uploadDir))
                     {
-                        if (!Directory.Exists(scanDir)) continue;
-                        foreach (string file in Directory.GetFiles(scanDir))
+                        string dirName = Path.GetFileName(sessionDir);
+                        if (!dirName.StartsWith("files-")) continue;
+                        try
                         {
-                            if (!file.EndsWith(".json")) continue;
-                            try
+                            // Find the manifest JSON in this session dir to read CreationDate
+                            string[] jsonFiles = Directory.GetFiles(sessionDir, "*.json");
+                            bool deleted = false;
+                            foreach (string jsonFile in jsonFiles)
                             {
-                                string manifestText = File.ReadAllText(file);
+                                string manifestText = File.ReadAllText(jsonFile);
                                 var manifest = JsonConvert.DeserializeObject<StartupSaveManifest>(manifestText);
                                 if (manifest != null && !string.IsNullOrEmpty(manifest.CreationDate))
                                 {
                                     DateTime creationDate = DateTime.Parse(manifest.CreationDate);
                                     if (DateTime.UtcNow - creationDate > TimeSpan.FromDays(30))
                                     {
-                                        string baseName = Path.GetFileNameWithoutExtension(file);
-                                        File.Delete(file);
-
-                                        string saveFile = Path.Combine(scanDir, baseName);
-                                        if (File.Exists(saveFile)) File.Delete(saveFile);
-
-                                        string bupFile = saveFile + ".bup";
-                                        if (File.Exists(bupFile)) File.Delete(bupFile);
-
-                                        string tokFile = saveFile + GHConstants.SaveFileTrackingSuffix;
-                                        if (File.Exists(tokFile)) File.Delete(tokFile);
+                                        Directory.Delete(sessionDir, true);
+                                        deleted = true;
+                                        break;
                                     }
                                 }
                             }
-                            catch (Exception ex)
+                            // If no readable manifest found, fall back to directory creation time
+                            if (!deleted && jsonFiles.Length == 0)
                             {
-                                Debug.WriteLine("CleanTransferDirectories upload clean exception: " + ex.Message);
+                                DateTime dirCreated = Directory.GetCreationTimeUtc(sessionDir);
+                                if (DateTime.UtcNow - dirCreated > TimeSpan.FromDays(30))
+                                    Directory.Delete(sessionDir, true);
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("CleanTransferDirectories upload session clean exception: " + ex.Message);
                         }
                     }
                 }
 
-                // 3) Scan transfer_download for manifests older than 30 days, and delete them
-                //    Also delete any orphan .lock files that have no matching .json manifest.
+                // 3) Scan transfer_download for session subdirs (files-{guid}/) older than 30 days, and delete them
+                //    No orphan lock scan is needed: all lock files live inside session subdirs.
                 string downloadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferDownloadDirectory);
                 if (Directory.Exists(downloadDir))
                 {
-                    // First pass: expire old manifest+lock pairs
-                    foreach (string file in Directory.GetFiles(downloadDir))
+                    foreach (string sessionDir in Directory.GetDirectories(downloadDir))
                     {
-                        if (!file.EndsWith(".json")) continue;
+                        string dirName = Path.GetFileName(sessionDir);
+                        if (!dirName.StartsWith("files-")) continue;
                         try
                         {
-                            string manifestText = File.ReadAllText(file);
-                            var manifest = JsonConvert.DeserializeObject<StartupSaveManifest>(manifestText);
-                            if (manifest != null && !string.IsNullOrEmpty(manifest.CreationDate))
+                            string[] jsonFiles = Directory.GetFiles(sessionDir, "*.json");
+                            bool deleted = false;
+                            foreach (string jsonFile in jsonFiles)
                             {
-                                DateTime creationDate = DateTime.Parse(manifest.CreationDate);
-                                if (DateTime.UtcNow - creationDate > TimeSpan.FromDays(30))
+                                string manifestText = File.ReadAllText(jsonFile);
+                                var manifest = JsonConvert.DeserializeObject<StartupSaveManifest>(manifestText);
+                                if (manifest != null && !string.IsNullOrEmpty(manifest.CreationDate))
                                 {
-                                    File.Delete(file);
-                                    string lockFile = Path.Combine(downloadDir,
-                                        Path.GetFileNameWithoutExtension(file) + ".lock");
-                                    if (File.Exists(lockFile)) File.Delete(lockFile);
+                                    DateTime creationDate = DateTime.Parse(manifest.CreationDate);
+                                    if (DateTime.UtcNow - creationDate > TimeSpan.FromDays(30))
+                                    {
+                                        Directory.Delete(sessionDir, true);
+                                        deleted = true;
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("CleanTransferDirectories download clean exception: " + ex.Message);
-                        }
-                    }
-
-                    // Second pass: delete orphan .lock files with no matching .json
-                    foreach (string lockFile in Directory.GetFiles(downloadDir, "*.lock"))
-                    {
-                        try
-                        {
-                            string jsonFile = Path.ChangeExtension(lockFile, ".json");
-                            if (!File.Exists(jsonFile))
+                            if (!deleted && jsonFiles.Length == 0)
                             {
-                                try { File.SetAttributes(lockFile, FileAttributes.Normal); } catch { /* best effort */ }
-                                File.Delete(lockFile);
-                                Debug.WriteLine("CleanTransferDirectories: deleted orphan lock " + lockFile);
+                                DateTime dirCreated = Directory.GetCreationTimeUtc(sessionDir);
+                                if (DateTime.UtcNow - dirCreated > TimeSpan.FromDays(30))
+                                    Directory.Delete(sessionDir, true);
                             }
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("CleanTransferDirectories orphan lock clean exception: " + ex.Message);
+                            Debug.WriteLine("CleanTransferDirectories download session clean exception: " + ex.Message);
                         }
                     }
                 }
+
             }
             catch (Exception ex)
             {
