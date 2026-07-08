@@ -792,7 +792,7 @@ extern "C"
         return (result == FMOD_OK);
     }
 
-    FMOD_RESULT F_CALLBACK GNHImmediateEventCallback(
+    FMOD_RESULT F_CALL GNHImmediateEventCallback(
         FMOD_STUDIO_EVENT_CALLBACK_TYPE type,
         FMOD_STUDIO_EVENTINSTANCE* event,
         void* parameters)
@@ -822,7 +822,7 @@ extern "C"
     }
 
 
-    FMOD_RESULT F_CALLBACK GNHDialogueEventCallback(
+    FMOD_RESULT F_CALL GNHDialogueEventCallback(
         FMOD_STUDIO_EVENT_CALLBACK_TYPE type,
         FMOD_STUDIO_EVENTINSTANCE* event,
         void* parameters)

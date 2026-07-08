@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using System.Runtime.Intrinsics.Arm;
@@ -64,6 +64,9 @@ public static class MauiProgram
 #if IOS
                 handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));
                 handlers.AddHandler<Border, NotAnimatedBorderHandler>();
+#if METAL
+                handlers.AddHandler<SkiaSharp.Views.Maui.Controls.SKGLView, GnollHackM.Platforms.iOS.iOSSKGLViewMetalHandler>();
+#endif
 #endif
             })
 

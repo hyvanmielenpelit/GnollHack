@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
@@ -25,8 +25,8 @@
 		<ApplicationIdGuid>77f64670-4eb4-432e-aa6a-b02d3d035d80</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2.145</ApplicationDisplayVersion>
-		<ApplicationVersion>387</ApplicationVersion>
+		<ApplicationDisplayVersion>3.0</ApplicationDisplayVersion>
+		<ApplicationVersion>393</ApplicationVersion>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
@@ -69,7 +69,9 @@
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
     <MtouchInterpreter>-all</MtouchInterpreter>
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
-    <DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
+    <DefineConstants>$(DefineConstants);FMOD_GNH_IOS</DefineConstants>
+    <!--<DefineConstants>$(DefineConstants);METAL</DefineConstants>-->
+    <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
     <ProvisioningType>manual</ProvisioningType>
   </PropertyGroup>
 
@@ -85,20 +87,21 @@
     <!--<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>-->
     <!--<WindowsAppSDKSelfContained Condition="'$(WindowsPackageType)'=='None'">true</WindowsAppSDKSelfContained>
     <SelfContained Condition="'$(WindowsPackageType)'=='None'">true</SelfContained>-->
-	</PropertyGroup>
+    <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
+  </PropertyGroup>
   
   <!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net10.0-ios'">
 		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
-		<CodesignProvision>Apple Dev GnollHack Development July 2025</CodesignProvision>
+		<CodesignProvision>Apple Dev GnollHack Development 2026</CodesignProvision>
 		<MtouchLink>None</MtouchLink>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net10.0-ios'">
     <CodesignKey Condition="'$(ArchiveOnBuild)' == 'True'">Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
-		<CodesignProvision Condition="'$(ArchiveOnBuild)' == 'True'">Apple Dev GnollHack Distribution July 2025</CodesignProvision>
+		<CodesignProvision Condition="'$(ArchiveOnBuild)' == 'True'">Apple Dev GnollHack Distribution 2026</CodesignProvision>
     <CodesignKey Condition="'$(ArchiveOnBuild)' != 'True'">Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
-    <CodesignProvision Condition="'$(ArchiveOnBuild)' != 'True'">Apple Dev GnollHack Development July 2025</CodesignProvision>
+    <CodesignProvision Condition="'$(ArchiveOnBuild)' != 'True'">Apple Dev GnollHack Development 2026</CodesignProvision>
     <!--<MtouchUseLlvm>false</MtouchUseLlvm>-->
 		<MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
@@ -800,7 +803,10 @@
 		<MauiAsset Include="Platforms\Windows\libs\libfsbvorbis64.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
+    <MauiAsset Include="Platforms\Windows\libs\opus.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </MauiAsset>
+    <MauiAsset Include="Platforms\Windows\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
 		<MauiAsset Include="Platforms\Windows\gnh\license" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
@@ -1186,10 +1192,6 @@
 		<!--<PackageReference Include="System.Text.Json" Version="10.0.9" />-->
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 
-		<PackageReference Include="SkiaSharp" Version="4.148.0" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="4.148.0" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="4.148.0" />
-
 		<PackageReference Include="Microsoft.Maui.Controls" Condition="'$(TargetFramework)'=='net10.0-ios'" Version="10.0.51" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Condition="'$(TargetFramework)'=='net10.0-ios'" Version="10.0.51" />
     <PackageReference Include="Microsoft.Maui.Controls" Condition="'$(TargetFramework)'!='net10.0-ios'" Version="10.0.71" />
@@ -1202,7 +1204,13 @@
 
 	</ItemGroup>
 
-	<ItemGroup Condition="$(DefineConstants.Contains('SENTRY'))">
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" Version="4.148.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="4.148.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="4.148.0" />
+	</ItemGroup>
+
+  <ItemGroup Condition="$(DefineConstants.Contains('SENTRY'))">
 		<PackageReference Include="Sentry.Maui" Version="6.6.0" />
 		<PackageReference Include="Sentry.Profiling" Version="6.6.0" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />
 	</ItemGroup>

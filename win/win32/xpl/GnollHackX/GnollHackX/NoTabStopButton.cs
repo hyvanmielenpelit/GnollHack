@@ -31,7 +31,30 @@ namespace GnollHackX
                 }
             };
 #endif
+            Pressed += NoTabStopButton_Pressed;
+            Released += NoTabStopButton_Released;
+        }
 
+        private bool _enableLongTap = false;
+        public bool EnableLongTap { get { return _enableLongTap; } set { _enableLongTap = value; if (!value) IsLongTap = false; } }
+        public TimeSpan LongTapDuration = new TimeSpan(0);
+
+        private DateTime _pressStart = default;
+        public DateTime PressStartTime => _pressStart;
+        public bool IsLongTap { get; private set; }
+
+        private void NoTabStopButton_Pressed(object sender, EventArgs e)
+        {
+            if (EnableLongTap)
+            {
+                IsLongTap = false;
+                _pressStart = DateTime.UtcNow;
+            }
+        }
+        private void NoTabStopButton_Released(object sender, EventArgs e)
+        {
+            if (EnableLongTap)
+                IsLongTap = (DateTime.UtcNow - _pressStart) > LongTapDuration;
         }
     }
 

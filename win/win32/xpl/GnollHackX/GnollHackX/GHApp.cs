@@ -78,6 +78,7 @@ namespace GnollHackX
         public static void Initialize()
         {
             _assembly = typeof(App).GetTypeInfo().Assembly;
+            _nowAtInit = DateTime.Now;
 
             VersionTracking.Track();
             GetDependencyServices();
@@ -125,6 +126,9 @@ namespace GnollHackX
             Preferences.Set("WentToSleepWithGameOn", false);
             Preferences.Set("GameSaveResult", 0);
             InformAboutCrashReport = !InformAboutGameTermination;
+
+            CheckSaveGameBreakingVersionWarning();
+
             PostingGameStatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
 #if !SENTRY
             PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
@@ -170,8 +174,8 @@ namespace GnollHackX
                 PlatformService?.OverrideAnimatorDuration();
 
             SetAvailableGPUCacheLimits(TotalMemory);
-            PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
-            SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
+            SetInitialGPUCacheLevels();
+
             UseMipMap = Preferences.Get("UseMainMipMap", IsUseMainMipMapDefault);
             UseGPU = Preferences.Get("UseMainGLCanvas", IsUseMainGPUDefault);
             UseAuxGPU = Preferences.Get("UseAuxiliaryGLCanvas", IsUseAuxGPUDefault);
@@ -217,6 +221,74 @@ namespace GnollHackX
             ChangeToCustomScreenResolution();
             InitializePlatformRenderLoop();
             InitializeMemoryWarnings();
+        }
+
+        private static void CheckSaveGameBreakingVersionWarning()
+        {
+            /* Version warnings */
+            if (IsSaveGameBreakingChangeNotificationPeriodNow)
+            {
+                ulong currentGnollHackVersionNumber = GnollHackService?.GetVersionNumber() ?? _saveGameBreakingChangeVersionNumber;
+                if (_saveGameBreakingChangeVersionNumber > currentGnollHackVersionNumber)
+                {
+                    InformAboutSaveGameBreakingVersion = !Preferences.Get("Version" + _saveGameBreakingChangeVersionShortText + "WarningShown", false);
+                }
+            }
+        }
+
+        private static DateTime _nowAtInit;
+
+        private static bool _saveGameBreakingChangeNotificationOn = true;
+        private static DateTime _saveGameBreakingChangePublishDate = new DateTime(2026, 07, 01);
+        private static DateTime _saveGameBreakingChangeLatestImminentDate = new DateTime(2026, 09, 30);
+        private static DateTime _saveGameBreakingChangeExpiryDate = new DateTime(2027, 06, 30);
+        private static ulong _saveGameBreakingChangeVersionNumber = 0x04030000UL;
+        private static string _saveGameBreakingChangeVersionShortText = "430";
+        private static string _saveGameBreakingChangeVersionLongText = "4.3.0";
+        private static string _saveGameBreakingChangeVersionDescription = "";
+
+        public static bool IsSaveGameBreakingChangeUpcoming => _saveGameBreakingChangeNotificationOn ? _nowAtInit >= _saveGameBreakingChangePublishDate && _nowAtInit <= _saveGameBreakingChangeLatestImminentDate : false;
+
+        public static bool IsSaveGameBreakingChangeNotificationPeriodNow => _saveGameBreakingChangeNotificationOn ? _nowAtInit >= _saveGameBreakingChangePublishDate && _nowAtInit <= _saveGameBreakingChangeExpiryDate : false;
+
+        public static bool IsSaveGameBreakingNotificationOn => _saveGameBreakingChangeNotificationOn;
+        public static string UpcomingSaveGameBreakingVersionShortText => _saveGameBreakingChangeVersionShortText;
+        public static string UpcomingSaveGameBreakingVersionText => _saveGameBreakingChangeVersionLongText;
+        public static string UpcomingSaveGameBreakingDescriptionText => _saveGameBreakingChangeVersionDescription;
+
+        private static void SetInitialGPUCacheLevels()
+        {
+            long primaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
+            /* Check if higher than maximum allowed */
+            if (primaryGPUCacheLimit > 0)
+            {
+                if (_cacheSizeList.Count > 2 && _cacheSizeList[_cacheSizeList.Count - 1].Size > 0)
+                {
+                    if (_cacheSizeList[_cacheSizeList.Count - 1].Size < primaryGPUCacheLimit)
+                        primaryGPUCacheLimit = _cacheSizeList[_cacheSizeList.Count - 1].Size;
+                }
+                else
+                {
+                    primaryGPUCacheLimit = _cacheSizeList[_cacheSizeList.Count - 1].Size;
+                }
+            }
+            PrimaryGPUCacheLimit = primaryGPUCacheLimit;
+
+            /* Check if higher than maximum allowed */
+            long secondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
+            if (secondaryGPUCacheLimit > 0)
+            {
+                if (_cacheSizeList2.Count > 2 && _cacheSizeList2[_cacheSizeList2.Count - 1].Size > 0)
+                {
+                    if (_cacheSizeList2[_cacheSizeList2.Count - 1].Size < secondaryGPUCacheLimit)
+                        secondaryGPUCacheLimit = _cacheSizeList2[_cacheSizeList2.Count - 1].Size;
+                }
+                else
+                {
+                    secondaryGPUCacheLimit = -2L;
+                }
+            }
+            SecondaryGPUCacheLimit = secondaryGPUCacheLimit;
         }
 
         private static long _usedBitmapBytes = 0L;
@@ -1238,9 +1310,13 @@ namespace GnollHackX
         private static long GetDefaultPrimaryGPUCacheSize(ulong memory)
         {
             long TotalMemInBytes = (long)memory;
+#if IOS && METAL
+            long def = 256L * 1024 * 1024;
+#else
             long max = Math.Min(1280L * 1024 * 1024, Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024)));
             long min = Math.Max(768L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 8);
             long def = Math.Min(max, min);
+#endif
             if (_cacheSizeList.Count > 2 && _cacheSizeList[_cacheSizeList.Count - 1].Size >= 256L * 1024 * 1024 && def >= _cacheSizeList[_cacheSizeList.Count - 1].Size)
                 return _cacheSizeList[_cacheSizeList.Count - 1].Size;
 
@@ -1256,7 +1332,11 @@ namespace GnollHackX
         private static long GetDefaultSecondaryGPUCacheSize(ulong memory)
         {
             long TotalMemInBytes = (long)memory;
+#if IOS && METAL
+            long def = 256L * 1024 * 1024;
+#else
             long def = Math.Min(768L * 1024 * 1024, Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 8));
+#endif
             if (_cacheSizeList2.Count > 2 && _cacheSizeList2[_cacheSizeList2.Count - 1].Size >= 256L * 1024 * 1024 && def > _cacheSizeList2[_cacheSizeList2.Count - 1].Size)
                 return _cacheSizeList2[_cacheSizeList2.Count - 1].Size;
             for (int i = 2; i < _cacheSizeList2.Count; i++)
@@ -1310,7 +1390,11 @@ namespace GnollHackX
             for (int i = _cacheSizeList.Count - 1; i >= 2; i--)
             {
                 CacheSizeItem item = _cacheSizeList[i];
-                if (item.Size >= TotalMemInBytes)
+                if (item.Size >= TotalMemInBytes
+#if IOS && METAL
+                    || item.Size > GHConstants.MaxMetalGPUCacheSize
+#endif
+                    )
                     _cacheSizeList.RemoveAt(i);
             }
             foreach (CacheSizeItem item in _cacheSizeList)
@@ -1549,6 +1633,8 @@ namespace GnollHackX
         public static bool InformAboutIncompatibleSavedGames = false;
         public static bool InformAboutRecordingSetOff = false;
         public static bool InformAboutFreeDiskSpace = false;
+        public static bool InformAboutSaveGameBreakingVersion = false;
+
         public static bool SavedLongerMessageHistory { get; set; }
         public static bool SavedHideMessageHistory { get; set; }
         public static ulong FoundManuals { get; set; }
@@ -2031,7 +2117,7 @@ namespace GnollHackX
 
             SleepMuteMode = true;
 
-#if !GNH_MAUI || (!ANDROID && !IOS) 
+#if !GNH_MAUI || (!ANDROID && !IOS)
             SaveGameOnSleep();
 #else
             /* Android and iOS are handled in MauiProgram */

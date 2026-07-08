@@ -1,5 +1,4 @@
-#ifndef _FSBANK_ERRORS_H
-#define _FSBANK_ERRORS_H
+#pragma once
 
 #include "fsbank.h"
 
@@ -34,4 +33,3 @@ static const char *FSBank_ErrorString(FSBANK_RESULT result)
     }
 }
 
-#endif // _FSBANK_ERRORS_H

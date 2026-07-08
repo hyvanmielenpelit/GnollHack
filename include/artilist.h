@@ -212,7 +212,7 @@ NEARDATA struct artifact artilist[] = {
     A("Triple-Headed Flail of Yeenaghu", "runed triple-headed flail", None, TRIPLE_HEADED_FLAIL, TRIPLE_HEADED_FLAIL,
         MAT_NONE, EXCEPTIONALITY_EXCEPTIONAL, MYTHIC_PREFIX_NONE, MYTHIC_SUFFIX_NONE,
         (AF_NOGEN | AF_RESTR | AF_NO_WISH | AF_DRLI), AF2_INDESTRUCTIBLE, SPFX_NONE, SPFX_NONE, 0,
-        0, 0, 0, DRLI(1, 3), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, NON_PM, 4000L,
+        1, 5, 0, DRLI(1, 3), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, NON_PM, 4000L,
         NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
     A("Rhongomyniad", "runed lance", None, LANCE, LANCE,

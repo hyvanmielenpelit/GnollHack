@@ -2228,7 +2228,8 @@ namespace GnollHackX
         public const int MaxChannels = 512;
         public const int MaxBitmapCacheSize = 64;
         public const int MaxDarkenedBitmapCacheSize = 256;
-        public const int MaxDarkenedAutodrawBitmapCacheSize = 64;
+        public const int MaxDarkenedAutodrawBitmapCacheSize = 128;
+        public const int MaxColorFilterCacheSize = 128;
         public const int PIT_BOTTOM_BORDER = 2;
         public const int SPECIAL_HEIGHT_IN_PIT = -32;
         public const int SPECIAL_HEIGHT_LEVITATION = 16;
@@ -2500,6 +2501,8 @@ namespace GnollHackX
         public const ulong DiskSpaceLowThresholdInBytes = 5 * 1024UL * 1024UL * 1024UL;
         public const bool EnableExperimentalFeatures = false;
         public const int NumGuiAchievementLongs = ((int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS - 1) / 64 + 1;
+        public const ulong DefaultMetalGPUCacheSize = 256UL * 1024UL * 1024UL;
+        public const ulong MaxMetalGPUCacheSize = 384UL * 1024UL * 1024UL;
     }
 
     [StructLayout(LayoutKind.Sequential)]
