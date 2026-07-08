@@ -779,10 +779,13 @@ namespace GnollHackX.Pages.MainScreen
                 containerClient = blobServiceClient.GetBlobContainerClient(containerName);
                 await GHApp.CheckCreateSaveTransferContainer(containerName);
 
-                // Look for active locks or manifests for this player
+                // Look for active locks or manifests for this player.
+                // Collect all manifest blobs first so we can prompt once for all of them
+                // rather than once per blob (FIX-U2).
                 string prefix = $"{GHApp.XlogUserName}/";
                 var blobSegment = containerClient.GetBlobsAsync(prefix: prefix, cancellationToken: token);
                 var enumerator = blobSegment.GetAsyncEnumerator();
+                int existingManifestCount = 0;
                 try
                 {
                     while (await enumerator.MoveNextAsync())
@@ -807,24 +810,33 @@ namespace GnollHackX.Pages.MainScreen
                                             throw new Exception("Transfer aborted: Another device has locked this save file.");
                                         }
                                     }
-                                    // Lock is expired, delete it
+                                    // Lock is expired (or user overrode); delete it
                                     await lockClient.DeleteIfExistsAsync(cancellationToken: token);
                                 }
                             }
                         }
                         else if (item.Name.Contains($"/{playerName}-") && item.Name.EndsWith(".json"))
                         {
-                            bool overwrite = await ShowMessagePopupAsync("Save Already in Cloud", "A save file for this character already exists in the cloud. Overwrite?", "Yes", "No", redTitle: true);
-                            if (!overwrite)
-                            {
-                                throw new Exception("Transfer aborted: Overwrite declined.");
-                            }
+                            existingManifestCount++;
                         }
                     }
                 }
                 finally
                 {
                     await enumerator.DisposeAsync();
+                }
+
+                // Single overwrite prompt for all existing manifests (FIX-U2)
+                if (existingManifestCount > 0)
+                {
+                    string manifestMsg = existingManifestCount == 1
+                        ? "A save file for this character already exists in the cloud. It will be replaced. Proceed?"
+                        : $"{existingManifestCount} existing cloud saves for this character were found. They will all be replaced. Proceed?";
+                    bool overwrite = await ShowMessagePopupAsync("Save Already in Cloud", manifestMsg, "Yes", "No", redTitle: true);
+                    if (!overwrite)
+                    {
+                        throw new Exception("Transfer aborted: Overwrite declined.");
+                    }
                 }
 
                 // 3a. Cleanup before start â€” find a usable temp directory
@@ -851,8 +863,12 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 GHApp.CheckCreateDirectory(uploadSessionDir);
 
-                // 3b. Verify validity & Read flags
+                // 3b. Verify existence and validity of local save file (FIX-U4)
                 PopupStatusLabel.Text = "Validating local save file...";
+                if (!File.Exists(localSaveFile))
+                {
+                    throw new Exception($"Local save file '{playerName}' was not found on disk.");
+                }
                 bool validated = GHApp.GnollHackService.ValidateSaveFile(localSaveFile, out string validateMsg);
                 if (!validated)
                 {
@@ -923,7 +939,16 @@ namespace GnollHackX.Pages.MainScreen
                         }
                         else
                         {
-                            throw new Exception("Tracking token is missing on a tracked platform.");
+                            // Token missing on Windows — offer to proceed untracked (FIX-U3)
+                            bool continueUntracked = await ShowMessagePopupAsync(
+                                "Tracking Token Missing",
+                                "The tracking token for this save is missing. The upload will succeed but the save will not be registered as a tracked game. Proceed without tracking?",
+                                "Yes", "No", redTitle: true);
+                            if (!continueUntracked)
+                            {
+                                throw new Exception("Upload aborted: tracking token missing.");
+                            }
+                            isTracked = false; // treat as untracked for the rest of the upload
                         }
                     }
                     else
@@ -1171,23 +1196,31 @@ namespace GnollHackX.Pages.MainScreen
 
                 PopupProgressBar.Progress = 0.8;
 
-                // 14. Backup & Cleanup
-                PopupStatusLabel.Text = "Completing transfer operations...";
-                await uploadLockClient.DeleteIfExistsAsync(cancellationToken: token);
-                if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
-
-                // Move original files from save/ to transfer_upload/
-                File.Delete(localSaveFile);
-                if (File.Exists(localBackupFile)) File.Delete(localBackupFile);
-                if (File.Exists(localSaveFile + GHConstants.SaveFileTrackingSuffix)) File.Delete(localSaveFile + GHConstants.SaveFileTrackingSuffix);
-
-                // 15. (Old backups are now stored as files-{old-guid}/ subdirs and cleaned by date at startup)
+                // 14. (Old backups now stored as files-{guid}/ subdirs cleaned by date at startup)
 
                 PopupProgressBar.Progress = 1.0;
                 PopupStatusLabel.Text = "Transfer successful.";
-
                 await Task.Delay(1000);
                 PopupGrid.IsVisible = false;
+
+                // FIX-U1: Local file cleanup is separated from the verified-upload try block.
+                // If deletion of local files fails, the cloud copy is already complete and verified —
+                // we must NOT roll it back. Warn the user instead.
+                try
+                {
+                    await uploadLockClient.DeleteIfExistsAsync(cancellationToken: CancellationToken.None);
+                    if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
+                    File.Delete(localSaveFile);
+                    if (File.Exists(localBackupFile)) File.Delete(localBackupFile);
+                    if (File.Exists(localSaveFile + GHConstants.SaveFileTrackingSuffix)) File.Delete(localSaveFile + GHConstants.SaveFileTrackingSuffix);
+                }
+                catch (Exception cleanEx)
+                {
+                    Debug.WriteLine("Post-upload cleanup warning: " + cleanEx.Message);
+                    await ShowMessagePopupAsync("Cleanup Warning",
+                        "The save file was uploaded and verified successfully, but the local copy could not be deleted automatically. Please delete it manually from the save folder to avoid confusion.",
+                        "OK");
+                }
 
                 await ShowMessagePopupAsync("Success", "Save file uploaded successfully to cloud.", "OK");
             }
@@ -1333,12 +1366,18 @@ namespace GnollHackX.Pages.MainScreen
                         {
                             if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - existingLock.CreatedUtcUnix < 3600)
                             {
-                                throw new Exception("Download locked by another process.");
+                                // FIX-D3: Offer force override, mirroring upload behaviour
+                                bool overrideLock = await ShowMessagePopupAsync(
+                                    "Download Locked",
+                                    "An active download session is currently locked on another device for this save. This may be a stale lock from a crashed session. Force override?",
+                                    "Yes", "No", redTitle: true);
+                                if (!overrideLock)
+                                {
+                                    throw new OperationCanceledException("Download aborted: active lock on another device.");
+                                }
                             }
-                            else
-                            {
-                                await cloudLockClient.DeleteIfExistsAsync(cancellationToken: token);
-                            }
+                            // Lock is expired or user overrode; delete it
+                            await cloudLockClient.DeleteIfExistsAsync(cancellationToken: token);
                         }
                     }
                 }
@@ -1415,7 +1454,12 @@ namespace GnollHackX.Pages.MainScreen
                     manifest.SaveVersionCompatibility <= GHApp.GHVersionNumber);
                 if (!compatible)
                 {
-                    throw new Exception($"Save file version ({manifest.SaveVersion}) is not compatible with this build of GnollHack.");
+                    // FIX-D5: human-readable version strings instead of raw numbers
+                    string cloudVer = string.IsNullOrEmpty(manifest.AppVersion) ? manifest.SaveVersion.ToString() : manifest.AppVersion;
+                    string localVer = GHApp.GHVersionString;
+                    throw new Exception(
+                        $"The cloud save was created with GnollHack {cloudVer}, which is not compatible with the installed version {localVer}. " +
+                        "Please update the app before downloading this save.");
                 }
 
                 PopupProgressBar.Progress = 0.4;
@@ -1444,7 +1488,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 PopupProgressBar.Progress = 0.6;
 
-                // 12. Check for non-corruption
+                // 12. Check for non-corruption — verify save, backup, and token (FIX-D4)
                 PopupStatusLabel.Text = "Checking file integrity...";
                 FileInfo dlSaveFi = new FileInfo(tempSavePath);
                 if (dlSaveFi.Length != manifest.SaveFile.FileLength) throw new Exception("Save file size mismatch.");
@@ -1457,6 +1501,38 @@ namespace GnollHackX.Pages.MainScreen
                     }
                 }
                 if (dlSaveSha != manifest.SaveFile.Sha256) throw new Exception("Save file checksum mismatch.");
+
+                if (manifest.HasBackupSaveFile && manifest.BackupFile != null)
+                {
+                    string tempBupPath2 = Path.Combine(tempDir, playerName + ".bup");
+                    FileInfo dlBupFi = new FileInfo(tempBupPath2);
+                    if (dlBupFi.Length != manifest.BackupFile.FileLength) throw new Exception("Backup save file size mismatch.");
+                    string dlBupSha = "";
+                    using (var sha = SHA256.Create())
+                    {
+                        using (var fs = File.OpenRead(tempBupPath2))
+                        {
+                            dlBupSha = Convert.ToBase64String(sha.ComputeHash(fs));
+                        }
+                    }
+                    if (dlBupSha != manifest.BackupFile.Sha256) throw new Exception("Backup save file checksum mismatch.");
+                }
+
+                if (manifest.HasTrackingFile && manifest.TrackingToken != null)
+                {
+                    string tempTokPath2 = Path.Combine(tempDir, playerName + GHConstants.SaveFileTrackingSuffix);
+                    FileInfo dlTokFi = new FileInfo(tempTokPath2);
+                    if (dlTokFi.Length != manifest.TrackingToken.FileLength) throw new Exception("Tracking token size mismatch.");
+                    string dlTokSha = "";
+                    using (var sha = SHA256.Create())
+                    {
+                        using (var fs = File.OpenRead(tempTokPath2))
+                        {
+                            dlTokSha = Convert.ToBase64String(sha.ComputeHash(fs));
+                        }
+                    }
+                    if (dlTokSha != manifest.TrackingToken.Sha256) throw new Exception("Tracking token checksum mismatch.");
+                }
 
                 bool dlValidated = GHApp.GnollHackService.ValidateSaveFile(tempSavePath, out string dlValidateMsg);
                 if (!dlValidated)
@@ -1477,7 +1553,27 @@ namespace GnollHackX.Pages.MainScreen
                     throw new Exception("Downloaded save tracked status mismatch.");
                 }
 
-                // 13 & 14. Save file tracking token handling
+                // FIX-D1: Copy files to save folder BEFORE consuming the tracking token.
+                // If the copy fails the token is still intact; if the token is consumed first
+                // and the copy then fails, the token is permanently lost.
+
+                // 15. Copy to save folder
+                PopupStatusLabel.Text = "Copying files to local save folder...";
+                if (!Directory.Exists(saveDir)) GHApp.CheckCreateDirectory(saveDir);
+                File.Copy(tempSavePath, localSaveFile, true);
+                if (manifest.HasBackupSaveFile)
+                {
+                    File.Copy(Path.Combine(tempDir, playerName + ".bup"), localBackupFile, true);
+                }
+                else
+                {
+                    // Copy save as backup .bup
+                    File.Copy(tempSavePath, localBackupFile, true);
+                }
+
+                PopupProgressBar.Progress = 0.8;
+
+                // 13 & 14. Save file tracking token handling (after local copy is safe)
                 if (manifest.HasTrackingFile)
                 {
                     PopupStatusLabel.Text = "Registering/consuming tracking token...";
@@ -1502,83 +1598,95 @@ namespace GnollHackX.Pages.MainScreen
                         SendResult loadResult = await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, Path.Combine(tempDir, playerName), dlSaveFi.Length, dlSaveSha);
                         if (!loadResult.IsSuccess)
                         {
-                            throw new Exception("Server tracking token consumption failed: " + loadResult.Message);
+                            // Token consumption failed but local save is already placed — warn and continue
+                            Debug.WriteLine("Token consumption failed: " + loadResult.Message);
+                            await ShowMessagePopupAsync("Tracking Warning",
+                                "The save was downloaded successfully, but the tracking token could not be registered with the server: " + loadResult.Message +
+                                "\nThe game is playable but may not count as a tracked session.",
+                                "OK");
                         }
-                        File.Delete(tempTokPath);
+                        else
+                        {
+                            File.Delete(tempTokPath);
+                        }
                     }
                 }
 
-                // 15. Copy to save folder
-                PopupStatusLabel.Text = "Copying files to local save folder...";
-                if (!Directory.Exists(saveDir)) GHApp.CheckCreateDirectory(saveDir);
-                File.Copy(tempSavePath, localSaveFile, true);
-                if (manifest.HasBackupSaveFile)
-                {
-                    File.Copy(Path.Combine(tempDir, playerName + ".bup"), localBackupFile, true);
-                }
-                else
-                {
-                    // Copy save as backup .bup
-                    File.Copy(tempSavePath, localBackupFile, true);
-                }
-
-                PopupProgressBar.Progress = 0.8;
-
-                // 16. Delete the files from Azure Blob Storage
-                PopupStatusLabel.Text = "Cleaning files in cloud...";
-                await manifestBlob.DeleteIfExistsAsync(cancellationToken: token);
-                await saveBlob.DeleteIfExistsAsync(cancellationToken: token);
-                if (manifest.HasBackupSaveFile)
-                {
-                    await containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.bup").DeleteIfExistsAsync(cancellationToken: token);
-                }
-                if (manifest.HasTrackingFile)
-                {
-                    await containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}{GHConstants.SaveFileTrackingSuffix}").DeleteIfExistsAsync(cancellationToken: token);
-                }
-
-                // 17. Verify deletion and delete lock
-                PopupStatusLabel.Text = "Confirming deletion and removing lock...";
-                bool clean = true;
-                string prefix = $"{GHApp.XlogUserName}/{cloudFolder}/";
-                var remBlobs = containerClient.GetBlobsAsync(prefix: prefix, cancellationToken: token);
-                var enumerator = remBlobs.GetAsyncEnumerator();
+                // FIX-D2: Azure cloud cleanup is isolated in its own try-catch.
+                // By this point the local save is safely in place; cloud cleanup failures
+                // are non-fatal — warn the user rather than reporting "Download Failed".
                 try
                 {
-                    while (await enumerator.MoveNextAsync())
+                    // 16. Delete the files from Azure Blob Storage
+                    PopupStatusLabel.Text = "Cleaning files in cloud...";
+                    await manifestBlob.DeleteIfExistsAsync(cancellationToken: token);
+                    await saveBlob.DeleteIfExistsAsync(cancellationToken: token);
+                    if (manifest.HasBackupSaveFile)
                     {
-                        var remBlob = enumerator.Current;
-                        if (!remBlob.Name.EndsWith(".lock"))
+                        await containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.bup").DeleteIfExistsAsync(cancellationToken: token);
+                    }
+                    if (manifest.HasTrackingFile)
+                    {
+                        await containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}{GHConstants.SaveFileTrackingSuffix}").DeleteIfExistsAsync(cancellationToken: token);
+                    }
+
+                    // 17. Verify deletion and delete lock
+                    PopupStatusLabel.Text = "Confirming deletion and removing lock...";
+                    bool clean = true;
+                    string prefix = $"{GHApp.XlogUserName}/{cloudFolder}/";
+                    var remBlobs = containerClient.GetBlobsAsync(prefix: prefix, cancellationToken: token);
+                    var enumerator = remBlobs.GetAsyncEnumerator();
+                    try
+                    {
+                        while (await enumerator.MoveNextAsync())
                         {
-                            clean = false;
-                            break;
+                            var remBlob = enumerator.Current;
+                            if (!remBlob.Name.EndsWith(".lock"))
+                            {
+                                clean = false;
+                                break;
+                            }
                         }
                     }
+                    finally
+                    {
+                        await enumerator.DisposeAsync();
+                    }
+
+                    if (!clean)
+                    {
+                        Debug.WriteLine("Cloud cleanup incomplete: some files remained in " + cloudFolder);
+                    }
+
+                    await cloudLockClient.DeleteIfExistsAsync(cancellationToken: CancellationToken.None);
+
+                    // 18. Move manifest to the per-session download subdirectory as a log
+                    try
+                    {
+                        string finalManifestLog = Path.Combine(downloadSessionDir, playerName + ".json");
+                        File.Move(tempManifestPath, finalManifestLog);
+                    }
+                    catch (Exception moveEx)
+                    {
+                        Debug.WriteLine("Could not move manifest to download log: " + moveEx.Message);
+                    }
+
+                    // 19. Final cleanup
+                    if (File.Exists(tempSavePath)) File.Delete(tempSavePath);
+                    if (File.Exists(Path.Combine(tempDir, playerName + ".bup"))) File.Delete(Path.Combine(tempDir, playerName + ".bup"));
+                    if (Directory.GetFiles(tempDir).Length > 0)
+                        Debug.WriteLine("Warning: tempDir not fully cleared.");
                 }
-                finally
+                catch (Exception cloudCleanEx)
                 {
-                    await enumerator.DisposeAsync();
+                    Debug.WriteLine("Post-download cloud cleanup warning: " + cloudCleanEx.Message);
+                    await ShowMessagePopupAsync("Cleanup Notice",
+                        "Your save file was downloaded successfully. However, the cloud copy could not be fully removed. " +
+                        "It will appear again in the cloud list next time you open Save Transfer, and can be deleted then.",
+                        "OK");
                 }
-                if (!clean) throw new Exception("Cloud files cleanup failed: some files remained.");
-
-                await cloudLockClient.DeleteIfExistsAsync(cancellationToken: token);
-
-                // 18. Move manifest to the per-session download subdirectory as a log
-                string finalManifestLog = Path.Combine(downloadSessionDir, playerName + ".json");
-                File.Move(tempManifestPath, finalManifestLog);
-
-                // 19. Final cleanup check
-                if (File.Exists(tempSavePath)) File.Delete(tempSavePath);
-                if (File.Exists(Path.Combine(tempDir, playerName + ".bup"))) File.Delete(Path.Combine(tempDir, playerName + ".bup"));
-
-                if (Directory.GetFiles(tempDir).Length > 0)
-                {
-                    Debug.WriteLine("Warning: tempDir not fully cleared.");
-                }
-
                 PopupProgressBar.Progress = 1.0;
                 PopupStatusLabel.Text = "Transfer successful.";
-
                 await Task.Delay(1000);
                 PopupGrid.IsVisible = false;
 
