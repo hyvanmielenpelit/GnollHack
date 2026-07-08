@@ -2422,6 +2422,16 @@ namespace GnollHackX
         public const string TransferUploadDirectory = "transfer_upload";
         public const string TransferDownloadDirectory = "transfer_download";
         public const string AzureBlobStorageSaveTransferContainerNamePrefix = "savetransfers";
+        /* Transfer log session-directory retention policy */
+        public const int TransferLogRetentionDays = 30;         /* Normal max age for kept session dirs */
+        public const int TransferLogShortRetentionDays = 7;     /* Max age under moderate disk pressure */
+        public const int TransferLogMaxKeepCount = 5;           /* Max sessions kept under disk pressure */
+        /* Disk-space thresholds that tighten the retention policy (bytes) */
+        public const long TransferDiskPressureCriticalBytes = 1L * 1024 * 1024 * 1024;   /* <= 1 GB: delete all */
+        public const long TransferDiskPressureHighBytes = 2L * 1024 * 1024 * 1024;       /* <= 2 GB: keep 1 */
+        public const long TransferDiskPressureMediumBytes = 5L * 1024 * 1024 * 1024;     /* <= 5 GB: keep 5, 7-day limit */
+        public const long TransferDiskPressureLowBytes = 10L * 1024 * 1024 * 1024;       /* <= 10 GB: keep 5, 30-day limit */
+
         public const string AzureBlobStorageDelimiter = "/";
         public const string AzureBlobStorageGeneralDirectoryName = "_Anonymous";
         public const bool GZipIsDefaultReplayCompression = true;
