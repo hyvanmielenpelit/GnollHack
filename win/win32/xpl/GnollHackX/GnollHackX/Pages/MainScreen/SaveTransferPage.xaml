@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:gnh="clr-namespace:GnollHackX" 
              xmlns:controls="clr-namespace:GnollHackX.Controls"
-             xmlns:local="clr-namespace:GnollHackX.Pages.MainScreen"
              BackgroundColor="Black"
              x:Class="GnollHackX.Pages.MainScreen.SaveTransferPage"
              Appearing="ContentPage_Appearing"
@@ -25,36 +24,9 @@
                 <Label Grid.Row="0" x:Name="HeaderLabel" Text="Save File Transfer" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="22" TextColor="Black" FontFamily="Immortal"/>
                 <Label Grid.Row="1" x:Name="StatusLabel" Text="Loading..." HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="16" TextColor="Black" FontFamily="Immortal"/>
 
-                <CollectionView Grid.Row="2" x:Name="SavesCollectionView" HorizontalOptions="Fill" VerticalOptions="Start" SelectionMode="Single" BackgroundColor="Transparent" SelectionChanged="SavesCollectionView_SelectionChanged" >
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="local:GHSaveTransferFile">
-                            <Grid ColumnSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" Margin="24,8" Padding="18,6">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup Name="CommonStates">
-                                        <VisualState Name="Normal" />
-                                        <VisualState Name="Selected">
-                                            <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="#88FF8800" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <StackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Fill" VerticalOptions="Center" >
-                                    <Label Text="{Binding Name}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="18" FontAttributes="Bold" />
-                                    <Label Text="{Binding CharacterDescription}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="13" />
-                                    <Label Text="{Binding LocationDescription}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="13" />
-                                    <Label Text="{Binding ModeDescription}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="13" />
-                                    <Label Text="{Binding Description}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="11" FontAttributes="Italic" />
-                                </StackLayout>
-                                <Label Grid.Column="1" Text="{Binding ExtraInfo}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="14" HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,10,0" />
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                <ScrollView Grid.Row="2" HorizontalOptions="Fill" VerticalOptions="Fill">
+                    <StackLayout x:Name="SavesLayout" Spacing="6" HorizontalOptions="Fill" />
+                </ScrollView>
                 
                 <Label Grid.Row="2" x:Name="EmptyLabel" IsVisible="False" Text="No save files found" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="Black" FontFamily="Immortal"/>
                 

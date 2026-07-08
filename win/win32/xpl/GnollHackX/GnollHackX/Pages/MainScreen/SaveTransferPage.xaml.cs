@@ -22,6 +22,7 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
 namespace GnollHackM
 #else
+using GnollHackX.Controls;
 using GnollHackX.Pages.Game;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -46,6 +47,8 @@ namespace GnollHackX.Pages.MainScreen
         public string FileName { get; set; }
         public string ExtraInfo { get; set; }
         public string CloudDirectory { get; set; } // e.g. playername-GUID
+        public int Glyph { get; set; } = 0;
+        public int GuiGlyph { get; set; } = 0;
         public Color TextColor => GHApp.DarkMode ? GHColors.White : GHColors.Black;
     }
 
@@ -82,6 +85,8 @@ namespace GnollHackX.Pages.MainScreen
         public string CharacterDescription { get; set; }
         public string LocationDescription { get; set; }
         public string ModeDescription { get; set; }
+        public int Glyph { get; set; }
+        public int GuiGlyph { get; set; }
         public FileDetail SaveFile { get; set; }
         public FileDetail BackupFile { get; set; }
         public FileDetail TrackingToken { get; set; }
@@ -104,7 +109,9 @@ namespace GnollHackX.Pages.MainScreen
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SaveTransferPage : CustomModalPage, ICloseablePage
     {
-        private ObservableCollection<GHSaveTransferFile> _saves = new ObservableCollection<GHSaveTransferFile>();
+        private List<GHSaveTransferFile> _saves = new List<GHSaveTransferFile>();
+        private GHSaveTransferFile _selectedSave = null;
+        private RowImageButton _selectedButton = null;
         private CancellationTokenSource _cts = null;
         private bool _isProcessing = false;
         private bool _appeared = false;
@@ -119,7 +126,7 @@ namespace GnollHackX.Pages.MainScreen
                 HeaderLabel.TextColor = GHColors.White;
                 StatusLabel.TextColor = GHColors.White;
             }
-            SavesCollectionView.ItemsSource = _saves;
+            // List is built dynamically in PopulateSavesList()
             
             TransferModePicker.SelectedIndexChanged -= TransferModePicker_SelectedIndexChanged;
             TransferModePicker.SelectedIndex = 0; // Default to Upload
@@ -149,10 +156,6 @@ namespace GnollHackX.Pages.MainScreen
             await RefreshListAsync();
         }
 
-        private void SavesCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdateButtons();
-        }
 
         private double _currentPageWidth = 0;
         private double _currentPageHeight = 0;
@@ -163,8 +166,8 @@ namespace GnollHackX.Pages.MainScreen
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
-                SavesCollectionView.Margin = UIUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
-                EmptyLabel.Margin = SavesCollectionView.Margin;
+                SavesLayout.Margin = UIUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
+                EmptyLabel.Margin = SavesLayout.Margin;
                 HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 BottomLayout.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
 
@@ -181,7 +184,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private void UpdateButtons()
         {
-            var selected = SavesCollectionView.SelectedItem as GHSaveTransferFile;
+            var selected = _selectedSave;
             if (selected == null || _isProcessing)
             {
                 ActionButton.IsEnabled = false;
@@ -270,7 +273,7 @@ namespace GnollHackX.Pages.MainScreen
             _saves.Clear();
             StatusLabel.Text = "Scanning...";
             EmptyLabel.IsVisible = false;
-            SavesCollectionView.IsEnabled = false;
+            SavesLayout.IsEnabled = false;
 
             try
             {
@@ -299,7 +302,8 @@ namespace GnollHackX.Pages.MainScreen
                                 ulong version = 0, compat = 0;
                                 uint saveFlags = 0;
                                 long timeStamp = 0;
-                                bool hasInfo = GHApp.GnollHackService.GetSaveFileInfo(file, out version, out compat, out saveFlags, out timeStamp);
+                                int glyph = 0, guiGlyph = 0;
+                                bool hasInfo = GHApp.GnollHackService.GetSaveFileInfo(file, out version, out compat, out saveFlags, out timeStamp, out glyph, out guiGlyph);
                                 bool isTracked = hasInfo && ((GHSaveFlags)saveFlags & GHSaveFlags.FileTrackValid) != 0 && ((GHSaveFlags)saveFlags & GHSaveFlags.NonTrackingMask) == 0;
 
                                 string verStr = GHApp.VersionNumberToString(version).Replace(" (", " ").Replace(")", "");
@@ -312,7 +316,7 @@ namespace GnollHackX.Pages.MainScreen
                                 {
                                     Name = charName,
                                     SaveFileName = baseName,
-                                    Description = $"Version: {verStr} (Compat: {compatStr}) - " + (validated ? "Valid" : "Invalid/Incompatible"),
+                                    Description = $"Version: {verStr} (From {compatStr}) - " + (validated ? "Valid" : "Invalid/Incompatible") + " and " + (isTracked ? "Tracked" : "Untracked"),
                                     CharacterDescription = charDesc,
                                     LocationDescription = locDesc,
                                     ModeDescription = modeDesc,
@@ -320,7 +324,9 @@ namespace GnollHackX.Pages.MainScreen
                                     IsTracked = isTracked,
                                     IsValid = validated,
                                     FileName = file,
-                                    ExtraInfo = isTracked ? "Tracked" : "Local Only"
+                                    ExtraInfo = "",
+                                    Glyph = glyph,
+                                    GuiGlyph = guiGlyph
                                 });
                             }
                         }
@@ -401,7 +407,7 @@ namespace GnollHackX.Pages.MainScreen
                                     {
                                         Name = charName,
                                         SaveFileName = baseName,
-                                        Description = $"Cloud Save - Version: {verStr} (Compat: {compatStr}) - " + (cloudValid ? "Valid" : "Invalid/Incompatible"),
+                                        Description = $"Cloud Save - Version: {verStr} (From {compatStr}) - " + (cloudValid ? "Valid" : "Invalid/Incompatible") + " and " + (manifest.HasTrackingFile ? "Tracked" : "Untracked"),
                                         CharacterDescription = manifest.CharacterDescription,
                                         LocationDescription = manifest.LocationDescription,
                                         ModeDescription = manifest.ModeDescription,
@@ -409,8 +415,10 @@ namespace GnollHackX.Pages.MainScreen
                                         IsTracked = manifest.HasTrackingFile,
                                         IsValid = cloudValid,
                                         FileName = manifestPath,
-                                        ExtraInfo = manifest.HasTrackingFile ? "Tracked" : "Local Only",
-                                        CloudDirectory = directory
+                                        ExtraInfo = "",
+                                        CloudDirectory = directory,
+                                        Glyph = manifest.Glyph,
+                                        GuiGlyph = manifest.GuiGlyph
                                     });
                                 }
                             }
@@ -464,20 +472,117 @@ namespace GnollHackX.Pages.MainScreen
                 Debug.WriteLine(ex.Message);
                 StatusLabel.Text = "Error loading list";
                 EmptyLabel.IsVisible = _saves.Count == 0;
-                SavesCollectionView.IsEnabled = true;
+                SavesLayout.IsEnabled = true;
                 UpdateButtons();
                 return;
             }
 
             StatusLabel.Text = TransferModePicker.SelectedIndex == 0 ? "Eligible Local Saves" : "Saves Available in Cloud";
             EmptyLabel.IsVisible = _saves.Count == 0;
-            SavesCollectionView.IsEnabled = true;
+            PopulateSavesList();
+            SavesLayout.IsEnabled = true;
+            UpdateButtons();
+        }
+
+        private void PopulateSavesList()
+        {
+            // Reset selection
+            _selectedSave = null;
+            _selectedButton = null;
+
+            // Rebuild list
+            SavesLayout.Children.Clear();
+
+            Color lblColor = GHApp.DarkMode ? GHColors.LightBlue : GHColors.DarkBlue;
+            Color subLblColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+
+            int i = -1;
+            foreach (var save in _saves)
+            {
+                i++;
+                var rib = new RowImageButton();
+
+                // Set tile image: use gui_glyph if tiles are loaded, else fall back to you.png
+                if (GHApp.Glyph2Tile != null && GHApp._tileMap[0] != null && save.GuiGlyph > 0)
+                {
+                    var gis = new GlyphImageSource();
+                    gis.Glyph = save.GuiGlyph;
+                    gis.AutoSize = true;
+                    rib.ImgGlyphImageSource = gis;
+                }
+                else
+                {
+                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.you.png";
+                }
+                rib.ImgHighFilterQuality = true;
+                rib.LblText = save.Name;
+                rib.LblTextColor = save.IsValid ? lblColor : GHColors.Red;
+                rib.LblFontSize = 18;
+                rib.SubLblText = save.CharacterDescription;
+                rib.SubLbl2Text = save.LocationDescription;
+                rib.SubLbl3Text = save.ModeDescription;
+                rib.SubLbl4Text = save.Description;
+                rib.SubLblTextColor = subLblColor;
+                rib.SubLbl2TextColor = subLblColor;
+                rib.SubLbl3TextColor = subLblColor;
+                rib.SubLbl4TextColor = save.IsValid ? subLblColor : GHColors.Red;
+                rib.SubLblFontSize = 13;
+                rib.SubLbl2FontSize = 13;
+                rib.SubLbl3FontSize = 13;
+                rib.SubLbl4FontSize = 11;
+                rib.IsSubLblVisible = !string.IsNullOrEmpty(save.CharacterDescription);
+                rib.IsSubLbl2Visible = !string.IsNullOrEmpty(save.LocationDescription);
+                rib.IsSubLbl3Visible = !string.IsNullOrEmpty(save.ModeDescription);
+                rib.IsSubLbl4Visible = !string.IsNullOrEmpty(save.Description);
+                rib.ImgWidth = 80;
+                rib.ImgHeight = 80;
+                rib.GridWidth = 480;
+                rib.GridHeight = 130;
+#if GNH_MAUI
+                rib.MaximumWidthRequest = 480;
+#else
+                rib.WidthRequest = 480;
+#endif
+                rib.HeightRequest = 130;
+                rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
+                rib.BtnCommand = i;
+                rib.BtnClicked += SaveRowButton_Clicked;
+
+                SavesLayout.Children.Add(rib);
+            }
+        }
+
+        private void SaveRowButton_Clicked(object sender, EventArgs e)
+        {
+            var rib = sender as RowImageButton;
+            if (rib == null || _isProcessing) return;
+
+            int idx = rib.BtnCommand;
+            if (idx < 0 || idx >= _saves.Count) return;
+
+            // Deselect previous
+            if (_selectedButton != null)
+                _selectedButton.BackgroundColor = GHColors.Transparent;
+
+            var save = _saves[idx];
+            if (_selectedSave == save)
+            {
+                // Tapping the same row deselects
+                _selectedSave = null;
+                _selectedButton = null;
+            }
+            else
+            {
+                _selectedSave = save;
+                _selectedButton = rib;
+                rib.BackgroundColor = Color.FromRgba(1, 0.5, 0, 0.5); // same orange as CollectionView selected
+            }
             UpdateButtons();
         }
 
         private async void ActionButton_Clicked(object sender, EventArgs e)
         {
-            var selected = SavesCollectionView.SelectedItem as GHSaveTransferFile;
+            var selected = _selectedSave;
             if (selected == null || _isProcessing) return;
 
             if (!selected.IsValid)
@@ -585,7 +690,7 @@ namespace GnollHackX.Pages.MainScreen
             if (_cts != null)
             {
                 _cts.Cancel();
-                // Do not Dispose here — the upload/download task may still be
+                // Do not Dispose here â€” the upload/download task may still be
                 // referencing the CancellationToken.  Disposal happens in the
                 // finally block of RunUploadProcessAsync / RunDownloadProcessAsync.
             }
@@ -722,7 +827,7 @@ namespace GnollHackX.Pages.MainScreen
                     await enumerator.DisposeAsync();
                 }
 
-                // 3a. Cleanup before start — find a usable temp directory
+                // 3a. Cleanup before start â€” find a usable temp directory
                 PopupStatusLabel.Text = "Cleaning temp folders...";
                 tempDir = await FindUsableTempDirectoryAsync(tempDir);
 
@@ -756,7 +861,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 ulong saveVer = 0, saveCompat = 0;
                 uint saveFlags = 0;
-                if (!GHApp.GnollHackService.GetSaveFileInfo(localSaveFile, out saveVer, out saveCompat, out saveFlags, out saveTimeStamp))
+                if (!GHApp.GnollHackService.GetSaveFileInfo(localSaveFile, out saveVer, out saveCompat, out saveFlags, out saveTimeStamp, out _, out _))
                 {
                     throw new Exception("Could not read save file header statistics.");
                 }
@@ -786,7 +891,7 @@ namespace GnollHackX.Pages.MainScreen
                 BlobClient uploadLockClient = containerClient.GetBlobClient(cloudLockPath);
                 await uploadLockClient.UploadAsync(localLockPath, token);
 
-                // 6. Download and double-check GUID matches (in-memory — no disk write needed)
+                // 6. Download and double-check GUID matches (in-memory â€” no disk write needed)
                 PopupStatusLabel.Text = "Verifying upload lock...";
                 SaveLock downloadedLock;
                 using (var verifyMs = new MemoryStream())
@@ -888,15 +993,15 @@ namespace GnollHackX.Pages.MainScreen
                 // Record all reasons why a tracking token may be absent.
                 // Multiple flags can be set simultaneously (e.g. wizard + non-scoring).
                 // Bit definitions:
-                //   0x0001 — token file not found in local staging directory (isTracked but file missing)
-                //   0x0002 — (case 5) tracking not supported by this platform/build
-                //   0x0004 — (case 6) tracking supported but not needed on this platform (Android/iOS)
-                //   0x0008 — (case 7) tracking supported+needed but turned off by user
-                //   0x0010 — (case 8) tracking supported+needed+on but save tracking has failed (FileTrackValid not set)
-                //   0x0020 — (case 4) non-scoring game (imported/modified save)
-                //   0x0040 — (case 1) wizard / debug mode
-                //   0x0080 — (case 2) explore mode
-                //   0x0100 — (case 3) casual mode
+                //   0x0001 â€” token file not found in local staging directory (isTracked but file missing)
+                //   0x0002 â€” (case 5) tracking not supported by this platform/build
+                //   0x0004 â€” (case 6) tracking supported but not needed on this platform (Android/iOS)
+                //   0x0008 â€” (case 7) tracking supported+needed but turned off by user
+                //   0x0010 â€” (case 8) tracking supported+needed+on but save tracking has failed (FileTrackValid not set)
+                //   0x0020 â€” (case 4) non-scoring game (imported/modified save)
+                //   0x0040 â€” (case 1) wizard / debug mode
+                //   0x0080 â€” (case 2) explore mode
+                //   0x0100 â€” (case 3) casual mode
                 var ghFlags = (GHSaveFlags)saveFlags;
                 bool trackingSupportedOnPlatform = true; /* Yes for this app */
                 bool trackingNeededOnPlatform = GHApp.IsSaveFileTrackingNeeded;
@@ -960,6 +1065,8 @@ namespace GnollHackX.Pages.MainScreen
                     CharacterDescription = charDesc,
                     LocationDescription = locDesc,
                     ModeDescription = modeDesc,
+                    Glyph = fileInfo.Glyph,
+                    GuiGlyph = fileInfo.GuiGlyph,
                     SaveFile = new FileDetail { FileName = playerName, FileLength = fiSave.Length, Sha256 = hashSave },
                     BackupFile = backupIsDifferent ? new FileDetail { FileName = playerName + ".bup", FileLength = backupLen, Sha256 = hashBackup } : null,
                     TrackingToken = isTracked ? new FileDetail { FileName = playerName + GHConstants.SaveFileTrackingSuffix, FileLength = tokenLen, Sha256 = hashToken } : null
@@ -1236,7 +1343,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                 }
 
-                // 4. Clean transfer_temp — find a usable temp directory
+                // 4. Clean transfer_temp â€” find a usable temp directory
                 PopupStatusLabel.Text = "Cleaning local temp folder...";
                 tempDir = await FindUsableTempDirectoryAsync(tempDir);
 
@@ -1274,7 +1381,7 @@ namespace GnollHackX.Pages.MainScreen
                 // 6. Upload lock file to Azure
                 await cloudLockClient.UploadAsync(localLockPath, token);
 
-                // 7. Download lock file and check GUID (in-memory — no disk write needed)
+                // 7. Download lock file and check GUID (in-memory â€” no disk write needed)
                 PopupStatusLabel.Text = "Verifying download lock...";
                 SaveLock downloadedLock;
                 using (var verifyMs = new MemoryStream())
@@ -1360,7 +1467,7 @@ namespace GnollHackX.Pages.MainScreen
                 ulong dlVer = 0, dlCompat = 0;
                 uint dlFlags = 0;
                 long dlTimeStamp = 0;
-                if (!GHApp.GnollHackService.GetSaveFileInfo(tempSavePath, out dlVer, out dlCompat, out dlFlags, out dlTimeStamp))
+                if (!GHApp.GnollHackService.GetSaveFileInfo(tempSavePath, out dlVer, out dlCompat, out dlFlags, out dlTimeStamp, out _, out _))
                 {
                     throw new Exception("Could not read downloaded save statistics.");
                 }
@@ -1504,7 +1611,7 @@ namespace GnollHackX.Pages.MainScreen
 
         /// <summary>
         /// Attempts to find and prepare a clean temp directory. Tries the base path first, then
-        /// transfer_temp2, transfer_temp3, … up to transfer_temp10, returning the first directory
+        /// transfer_temp2, transfer_temp3, â€¦ up to transfer_temp10, returning the first directory
         /// that can be emptied successfully. The returned directory is guaranteed to exist and be empty.
         /// </summary>
         private async Task<string> FindUsableTempDirectoryAsync(string baseDir)
