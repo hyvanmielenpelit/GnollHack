@@ -2581,7 +2581,7 @@ namespace GnollHackX
 
         private class StartupSaveManifest
         {
-            public string CreationDate { get; set; }
+            public long CreationDateUtc { get; set; }  // Unix timestamp (seconds since UTC epoch)
         }
 
         private void CleanTransferDirectories()
@@ -2625,10 +2625,9 @@ namespace GnollHackX
                             {
                                 string manifestText = File.ReadAllText(jsonFile);
                                 var manifest = JsonConvert.DeserializeObject<StartupSaveManifest>(manifestText);
-                                if (manifest != null && !string.IsNullOrEmpty(manifest.CreationDate))
+                                if (manifest != null && manifest.CreationDateUtc > 0)
                                 {
-                                    DateTime creationDate = DateTime.Parse(manifest.CreationDate);
-                                    if (DateTime.UtcNow - creationDate > TimeSpan.FromDays(30))
+                                    if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - manifest.CreationDateUtc > 30L * 24 * 3600)
                                     {
                                         Directory.Delete(sessionDir, true);
                                         deleted = true;
@@ -2668,10 +2667,9 @@ namespace GnollHackX
                             {
                                 string manifestText = File.ReadAllText(jsonFile);
                                 var manifest = JsonConvert.DeserializeObject<StartupSaveManifest>(manifestText);
-                                if (manifest != null && !string.IsNullOrEmpty(manifest.CreationDate))
+                                if (manifest != null && manifest.CreationDateUtc > 0)
                                 {
-                                    DateTime creationDate = DateTime.Parse(manifest.CreationDate);
-                                    if (DateTime.UtcNow - creationDate > TimeSpan.FromDays(30))
+                                    if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - manifest.CreationDateUtc > 30L * 24 * 3600)
                                     {
                                         Directory.Delete(sessionDir, true);
                                         deleted = true;

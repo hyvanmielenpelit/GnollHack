@@ -52,16 +52,17 @@ namespace GnollHackX.Pages.MainScreen
     public class SaveManifest
     {
         public int ManifestVersion { get; set; }
-        public string CreationDate { get; set; }
-        public string Username { get; set; }
+        public long CreationDateUtc { get; set; }  // Unix timestamp (seconds since UTC epoch)
+        public string UserName { get; set; }
+        public string PlayerName { get; set; }
         public ulong SaveVersion { get; set; }
         public ulong SaveVersionCompatibility { get; set; }
         public ulong LibVersion { get; set; }
         public ulong LibVersionCompatibility { get; set; }
         public string AppVersion { get; set; }
         public int AppBuildNumber { get; set; }
-        public bool BackupIsDifferent { get; set; }
-        public bool IsTracked { get; set; }
+        public bool HasBackupSaveFile { get; set; }
+        public bool HasTrackingFile { get; set; }
         public long SaveTimeStamp { get; set; }
         /// <summary>
         /// Reason the backup (.bup) file was omitted from this transfer.
@@ -97,7 +98,7 @@ namespace GnollHackX.Pages.MainScreen
     {
         public string Guid { get; set; }
         public int Direction { get; set; } // 0 = upload, 1 = download
-        public string CreatedUtc { get; set; }
+        public long CreatedUtcUnix { get; set; }  // Unix timestamp (seconds since UTC epoch)
     }
 
     [XamlCompilation(XamlCompilationOptions.Compile)]
@@ -405,10 +406,10 @@ namespace GnollHackX.Pages.MainScreen
                                         LocationDescription = manifest.LocationDescription,
                                         ModeDescription = manifest.ModeDescription,
                                         IsCloud = true,
-                                        IsTracked = manifest.IsTracked,
+                                        IsTracked = manifest.HasTrackingFile,
                                         IsValid = cloudValid,
                                         FileName = manifestPath,
-                                        ExtraInfo = manifest.IsTracked ? "Tracked" : "Local Only",
+                                        ExtraInfo = manifest.HasTrackingFile ? "Tracked" : "Local Only",
                                         CloudDirectory = directory
                                     });
                                 }
@@ -692,8 +693,7 @@ namespace GnollHackX.Pages.MainScreen
                                 var existingLock = JsonConvert.DeserializeObject<SaveLock>(lockJson);
                                 if (existingLock != null)
                                 {
-                                    DateTime created = DateTime.Parse(existingLock.CreatedUtc);
-                                    if (DateTime.UtcNow - created < TimeSpan.FromHours(1))
+                                    if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - existingLock.CreatedUtcUnix < 3600)
                                     {
                                         // Lock is active
                                         bool overrideLock = await ShowMessagePopupAsync("Active Lock Found", "An active Save Transfer session is currently locked on another device for this save name. Force override?", "Yes", "No", redTitle: true);
@@ -771,7 +771,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     Guid = guid,
                     Direction = 0,
-                    CreatedUtc = DateTime.UtcNow.ToString("o")
+                    CreatedUtcUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
                 };
                 string localLockPath = Path.Combine(tempDir, playerName + ".lock");
                 if (File.Exists(localLockPath))
@@ -943,16 +943,17 @@ namespace GnollHackX.Pages.MainScreen
                 var manifest = new SaveManifest
                 {
                     ManifestVersion = 1,
-                    CreationDate = DateTime.UtcNow.ToString("o"),
-                    Username = GHApp.XlogUserName,
+                    CreationDateUtc = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                    UserName = GHApp.XlogUserName,
+                    PlayerName = playerName,
                     SaveVersion = saveVer,
                     SaveVersionCompatibility = saveCompat,
                     LibVersion = GHApp.GHVersionNumber,
                     LibVersionCompatibility = GHApp.GHVersionCompatibility,
                     AppVersion = GHApp.GHVersionString,
                     AppBuildNumber = 0, // build number is int, default 0 if not available
-                    BackupIsDifferent = backupIsDifferent,
-                    IsTracked = isTracked,
+                    HasBackupSaveFile = backupIsDifferent,
+                    HasTrackingFile = isTracked,
                     SaveTimeStamp = saveTimeStamp,
                     BackupOmitReason = backupOmitReason,
                     TokenOmitReason = tokenOmitReason,
@@ -1223,8 +1224,7 @@ namespace GnollHackX.Pages.MainScreen
                         var existingLock = JsonConvert.DeserializeObject<SaveLock>(lockJson);
                         if (existingLock != null)
                         {
-                            DateTime created = DateTime.Parse(existingLock.CreatedUtc);
-                            if (DateTime.UtcNow - created < TimeSpan.FromHours(1))
+                            if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - existingLock.CreatedUtcUnix < 3600)
                             {
                                 throw new Exception("Download locked by another process.");
                             }
@@ -1266,7 +1266,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     Guid = guid,
                     Direction = 1,
-                    CreatedUtc = DateTime.UtcNow.ToString("o")
+                    CreatedUtcUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
                 };
                 string localLockPath = Path.Combine(downloadSessionDir, playerName + ".lock");
                 File.WriteAllText(localLockPath, JsonConvert.SerializeObject(downloadLock));
@@ -1319,7 +1319,7 @@ namespace GnollHackX.Pages.MainScreen
                 BlobClient saveBlob = containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}");
                 await saveBlob.DownloadToAsync(tempSavePath, token);
 
-                if (manifest.BackupIsDifferent)
+                if (manifest.HasBackupSaveFile)
                 {
                     PopupStatusLabel.Text = "Downloading backup save...";
                     string tempBupPath = Path.Combine(tempDir, playerName + ".bup");
@@ -1327,7 +1327,7 @@ namespace GnollHackX.Pages.MainScreen
                     await bupBlob.DownloadToAsync(tempBupPath, token);
                 }
 
-                if (manifest.IsTracked)
+                if (manifest.HasTrackingFile)
                 {
                     PopupStatusLabel.Text = "Downloading tracking token...";
                     string tempTokPath = Path.Combine(tempDir, playerName + GHConstants.SaveFileTrackingSuffix);
@@ -1365,13 +1365,13 @@ namespace GnollHackX.Pages.MainScreen
                     throw new Exception("Could not read downloaded save statistics.");
                 }
                 bool dlTracked = ((GHSaveFlags)dlFlags & GHSaveFlags.FileTrackValid) != 0 && ((GHSaveFlags)dlFlags & GHSaveFlags.NonTrackingMask) == 0;
-                if (dlTracked != manifest.IsTracked)
+                if (dlTracked != manifest.HasTrackingFile)
                 {
                     throw new Exception("Downloaded save tracked status mismatch.");
                 }
 
                 // 13 & 14. Save file tracking token handling
-                if (manifest.IsTracked)
+                if (manifest.HasTrackingFile)
                 {
                     PopupStatusLabel.Text = "Registering/consuming tracking token...";
                     string tempTokPath = Path.Combine(tempDir, playerName + GHConstants.SaveFileTrackingSuffix);
@@ -1405,7 +1405,7 @@ namespace GnollHackX.Pages.MainScreen
                 PopupStatusLabel.Text = "Copying files to local save folder...";
                 if (!Directory.Exists(saveDir)) GHApp.CheckCreateDirectory(saveDir);
                 File.Copy(tempSavePath, localSaveFile, true);
-                if (manifest.BackupIsDifferent)
+                if (manifest.HasBackupSaveFile)
                 {
                     File.Copy(Path.Combine(tempDir, playerName + ".bup"), localBackupFile, true);
                 }
@@ -1421,11 +1421,11 @@ namespace GnollHackX.Pages.MainScreen
                 PopupStatusLabel.Text = "Cleaning files in cloud...";
                 await manifestBlob.DeleteIfExistsAsync(cancellationToken: token);
                 await saveBlob.DeleteIfExistsAsync(cancellationToken: token);
-                if (manifest.BackupIsDifferent)
+                if (manifest.HasBackupSaveFile)
                 {
                     await containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.bup").DeleteIfExistsAsync(cancellationToken: token);
                 }
-                if (manifest.IsTracked)
+                if (manifest.HasTrackingFile)
                 {
                     await containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}{GHConstants.SaveFileTrackingSuffix}").DeleteIfExistsAsync(cancellationToken: token);
                 }
