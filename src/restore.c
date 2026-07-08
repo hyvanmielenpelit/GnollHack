@@ -1190,7 +1190,7 @@ dorestore0(int fd)
 static int
 check_save_file_tracking(int64_t time_stamp)
 {
-    if (wizard || discover || CasualMode || iflags.save_file_secure)
+    if (wizard || discover || CasualMode || flags.non_scoring || iflags.save_file_secure)
         return 1;
 
     if (!iflags.save_file_tracking_supported)

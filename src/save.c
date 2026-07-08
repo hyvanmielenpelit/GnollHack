@@ -374,7 +374,7 @@ dosave0(boolean quietly)
 static boolean
 precheck_save_file_tracking(const char *fq_save)
 {
-    if (wizard || discover || CasualMode || iflags.save_file_secure || !iflags.save_file_tracking_supported)
+    if (wizard || discover || CasualMode || flags.non_scoring || iflags.save_file_secure || !iflags.save_file_tracking_supported)
         return TRUE;
 
     if (!flags.save_file_tracking_migrated) /* Migrate older versions; this should already be handled in restore, but here just in case */
@@ -403,7 +403,7 @@ precheck_save_file_tracking(const char *fq_save)
 void 
 track_new_save_file(const char *filename, int64_t time_stamp)
 {
-    if (wizard || discover || CasualMode || iflags.save_file_secure || !iflags.save_file_tracking_supported)
+    if (wizard || discover || CasualMode || flags.non_scoring || iflags.save_file_secure || !iflags.save_file_tracking_supported)
         return;
 
     if (iflags.save_file_tracking_needed && iflags.save_file_tracking_on && flags.save_file_tracking_value == SAVEFILETRACK_VALID)
