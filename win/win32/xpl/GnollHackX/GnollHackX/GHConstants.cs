@@ -37,8 +37,9 @@ namespace GnollHackX
         FileTrackValid = 0x04,
         DebugMode = 0x100,
         ExploreMode = 0x200,
-        CasualMode = 0x400,
-        NonTrackingMask = 0x710   /* DebugMode | ExploreMode | CasualMode | Non-Scoring */
+        ModernMode = 0x400,
+        CasualMode = 0x800,
+        NonTrackingMask = (NonScoring | DebugMode | ExploreMode | CasualMode)
     }
 
     [Flags]

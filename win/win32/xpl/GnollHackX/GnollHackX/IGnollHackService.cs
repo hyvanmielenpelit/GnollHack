@@ -63,7 +63,7 @@ namespace GnollHackX
         void SaveAndRestoreSavedGame(int save_style);
         void TallyRealTime();
         bool ValidateSaveFile(string filename, out string out_str);
-        bool GetSaveFileInfo(string filename, out ulong version, out ulong compat, out uint saveFlags, out long timeStamp, out int glyph, out int guiGlyph);
+        bool GetSaveFileInfo(string filename, out ulong version, out ulong compat, out uint saveFlags, out long timeStamp, out int glyph, out int guiGlyph, out long turnCount);
         bool GetSaveFileDescription(string filename, out string characterDesc, out string locationDesc, out string modeDesc);
         int CheckCurrentFileDescriptor();
         void ReportFileDescriptors();

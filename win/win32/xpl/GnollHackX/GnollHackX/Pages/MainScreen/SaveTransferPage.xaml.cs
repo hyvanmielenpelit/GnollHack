@@ -49,6 +49,8 @@ namespace GnollHackX.Pages.MainScreen
         public string CloudDirectory { get; set; } // e.g. playername-GUID
         public int Glyph { get; set; } = 0;
         public int GuiGlyph { get; set; } = 0;
+        public long TurnCount { get; set; } = 0;
+        public uint SaveFlags { get; set; } = 0;
         public Color TextColor => GHApp.DarkMode ? GHColors.White : GHColors.Black;
     }
 
@@ -87,6 +89,8 @@ namespace GnollHackX.Pages.MainScreen
         public string ModeDescription { get; set; }
         public int Glyph { get; set; }
         public int GuiGlyph { get; set; }
+        public long TurnCount { get; set; }
+        public uint SaveFlags { get; set; }
         public FileDetail SaveFile { get; set; }
         public FileDetail BackupFile { get; set; }
         public FileDetail TrackingToken { get; set; }
@@ -303,7 +307,8 @@ namespace GnollHackX.Pages.MainScreen
                                 uint saveFlags = 0;
                                 long timeStamp = 0;
                                 int glyph = 0, guiGlyph = 0;
-                                bool hasInfo = GHApp.GnollHackService.GetSaveFileInfo(file, out version, out compat, out saveFlags, out timeStamp, out glyph, out guiGlyph);
+                                long turnCount = 0;
+                                bool hasInfo = GHApp.GnollHackService.GetSaveFileInfo(file, out version, out compat, out saveFlags, out timeStamp, out glyph, out guiGlyph, out turnCount);
                                 bool isTracked = hasInfo && ((GHSaveFlags)saveFlags & GHSaveFlags.FileTrackValid) != 0 && ((GHSaveFlags)saveFlags & GHSaveFlags.NonTrackingMask) == 0;
 
                                 string verStr = GHApp.VersionNumberToString(version).Replace(" (", " ").Replace(")", "");
@@ -326,7 +331,9 @@ namespace GnollHackX.Pages.MainScreen
                                     FileName = file,
                                     ExtraInfo = "",
                                     Glyph = glyph,
-                                    GuiGlyph = guiGlyph
+                                    GuiGlyph = guiGlyph,
+                                    TurnCount = turnCount,
+                                    SaveFlags = saveFlags
                                 });
                             }
                         }
@@ -418,7 +425,9 @@ namespace GnollHackX.Pages.MainScreen
                                         ExtraInfo = "",
                                         CloudDirectory = directory,
                                         Glyph = manifest.Glyph,
-                                        GuiGlyph = manifest.GuiGlyph
+                                        GuiGlyph = manifest.GuiGlyph,
+                                        TurnCount = manifest.TurnCount,
+                                        SaveFlags = manifest.SaveFlags
                                     });
                                 }
                             }
@@ -877,7 +886,8 @@ namespace GnollHackX.Pages.MainScreen
 
                 ulong saveVer = 0, saveCompat = 0;
                 uint saveFlags = 0;
-                if (!GHApp.GnollHackService.GetSaveFileInfo(localSaveFile, out saveVer, out saveCompat, out saveFlags, out saveTimeStamp, out _, out _))
+                long saveTurnCount = 0;
+                if (!GHApp.GnollHackService.GetSaveFileInfo(localSaveFile, out saveVer, out saveCompat, out saveFlags, out saveTimeStamp, out _, out _, out saveTurnCount))
                 {
                     throw new Exception("Could not read save file header statistics.");
                 }
@@ -1092,6 +1102,8 @@ namespace GnollHackX.Pages.MainScreen
                     ModeDescription = modeDesc,
                     Glyph = fileInfo.Glyph,
                     GuiGlyph = fileInfo.GuiGlyph,
+                    TurnCount = saveTurnCount,
+                    SaveFlags = saveFlags,
                     SaveFile = new FileDetail { FileName = playerName, FileLength = fiSave.Length, Sha256 = hashSave },
                     BackupFile = backupIsDifferent ? new FileDetail { FileName = playerName + ".bup", FileLength = backupLen, Sha256 = hashBackup } : null,
                     TrackingToken = isTracked ? new FileDetail { FileName = playerName + GHConstants.SaveFileTrackingSuffix, FileLength = tokenLen, Sha256 = hashToken } : null
@@ -1321,7 +1333,27 @@ namespace GnollHackX.Pages.MainScreen
                 // 2. Check local conflicts
                 if (File.Exists(localSaveFile))
                 {
-                    bool overwrite = await ShowMessagePopupAsync("Local Conflict", $"A local save file named '{playerName}' already exists. Overwrite it?", "Yes", "No", redTitle: true);
+                    // Enrich the prompt with save descriptions so the user can compare (FIX: enriched conflict prompt)
+                    string localCharDesc = "", localLocDesc = "", localModeDesc = "";
+                    long localTurnCount = 0;
+                    uint localSaveFlags = 0;
+                    try
+                    {
+                        GHApp.GnollHackService.GetSaveFileDescription(localSaveFile, out localCharDesc, out localLocDesc, out localModeDesc);
+                        GHApp.GnollHackService.GetSaveFileInfo(localSaveFile, out _, out _, out localSaveFlags, out _, out _, out _, out localTurnCount);
+                    }
+                    catch { /* best effort — fall back to plain names */ }
+
+                    string localInfo = BuildSaveInfoString(localCharDesc, localLocDesc, localModeDesc, localTurnCount, localSaveFlags);
+                    string cloudInfo = BuildSaveInfoString(
+                        cloudFile.CharacterDescription, cloudFile.LocationDescription,
+                        cloudFile.ModeDescription, cloudFile.TurnCount, cloudFile.SaveFlags);
+
+                    bool overwrite = await ShowMessagePopupAsync(
+                        "Local Conflict",
+                        $"A local save named '{playerName}' already exists {localInfo}.\n" +
+                        $"This will be overwritten with the cloud version {cloudInfo}.\nProceed?",
+                        "Yes", "No", redTitle: true);
                     if (!overwrite)
                     {
                         throw new OperationCanceledException("Download cancelled due to local file conflict.");
@@ -1543,7 +1575,7 @@ namespace GnollHackX.Pages.MainScreen
                 ulong dlVer = 0, dlCompat = 0;
                 uint dlFlags = 0;
                 long dlTimeStamp = 0;
-                if (!GHApp.GnollHackService.GetSaveFileInfo(tempSavePath, out dlVer, out dlCompat, out dlFlags, out dlTimeStamp, out _, out _))
+                if (!GHApp.GnollHackService.GetSaveFileInfo(tempSavePath, out dlVer, out dlCompat, out dlFlags, out dlTimeStamp, out _, out _, out _))
                 {
                     throw new Exception("Could not read downloaded save statistics.");
                 }
@@ -1802,6 +1834,47 @@ namespace GnollHackX.Pages.MainScreen
             {
                 Debug.WriteLine("CleanUpDownloadFailAsync error: " + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Builds a compact, human-readable description of a save file for use in prompts.
+        /// Format: (CharDesc, LocDesc, Turn:N, ModeDesc[, Wizard mode / Explore mode / Casual mode])
+        /// Any empty or zero-value fields are omitted.
+        /// </summary>
+        private static string BuildSaveInfoString(string charDesc, string locDesc, string modeDesc, long turnCount, uint saveFlags)
+        {
+            var parts = new System.Collections.Generic.List<string>();
+            if (!string.IsNullOrWhiteSpace(charDesc)) parts.Add(charDesc.Trim());
+            //if (!string.IsNullOrWhiteSpace(locDesc))  parts.Add(locDesc.Trim());
+            if (turnCount > 0)                         parts.Add("Turn:" + turnCount);
+            //if (!string.IsNullOrWhiteSpace(modeDesc))  parts.Add(modeDesc.Trim());
+            var ghFlags = (GHSaveFlags)saveFlags;
+            
+            if ((ghFlags & GHSaveFlags.FileTrackValid) != 0)
+                parts.Add("Tracked");
+            else
+                parts.Add("Untracked");
+
+            if ((ghFlags & GHSaveFlags.NonScoring) != 0) 
+                parts.Add("Non-scoring");
+            if ((ghFlags & GHSaveFlags.TournamentMode) != 0) 
+                parts.Add("Tournament");
+
+            if ((ghFlags & GHSaveFlags.DebugMode)   != 0) 
+                parts.Add("Wizard");
+            else if ((ghFlags & GHSaveFlags.ExploreMode) != 0) 
+                parts.Add("Explore");
+
+            if ((ghFlags & (GHSaveFlags.CasualMode | GHSaveFlags.ModernMode)) == (GHSaveFlags.CasualMode | GHSaveFlags.ModernMode))
+                parts.Add("Casual mode");
+            else if ((ghFlags & GHSaveFlags.CasualMode) != 0)
+                parts.Add("Reloadable mode");
+            else if ((ghFlags & GHSaveFlags.ModernMode) != 0)
+                parts.Add("Modern mode");
+            else 
+                parts.Add("Classic mode");
+
+            return parts.Count > 0 ? "(" + string.Join(", ", parts) + ")" : "";
         }
 
         private TaskCompletionSource<bool> _messagePopupTcs;

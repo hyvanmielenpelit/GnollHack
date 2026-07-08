@@ -305,7 +305,7 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibValidateSaveFile(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_buffer);
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibGetSaveFileInfo(string filename, ref ulong out_version, ref ulong out_compat, ref uint out_save_flags, ref long out_time_stamp, ref int out_glyph, ref int out_gui_glyph);
+        public static extern int LibGetSaveFileInfo(string filename, ref ulong out_version, ref ulong out_compat, ref uint out_save_flags, ref long out_time_stamp, ref int out_glyph, ref int out_gui_glyph, ref long out_umoves);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetSaveFileDescription(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_char_desc, int char_desc_len, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_loc_desc, int loc_desc_len, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_mode_desc, int mode_desc_len);
         [DllImport(PlatformConstants.dll)]
@@ -1168,7 +1168,7 @@ namespace GnollHackX.Unknown
             return res != 0;
         }
 
-        public bool GetSaveFileInfo(string filename, out ulong version, out ulong compat, out uint saveFlags, out long timeStamp, out int glyph, out int guiGlyph)
+        public bool GetSaveFileInfo(string filename, out ulong version, out ulong compat, out uint saveFlags, out long timeStamp, out int glyph, out int guiGlyph, out long turnCount)
         {
             ulong ver = 0;
             ulong comp = 0;
@@ -1176,13 +1176,15 @@ namespace GnollHackX.Unknown
             long stamp = 0;
             int gl = 0;
             int gg = 0;
-            int res = LibGetSaveFileInfo(filename, ref ver, ref comp, ref flags, ref stamp, ref gl, ref gg);
+            long tc = 0;
+            int res = LibGetSaveFileInfo(filename, ref ver, ref comp, ref flags, ref stamp, ref gl, ref gg, ref tc);
             version = ver;
             compat = comp;
             saveFlags = flags;
             timeStamp = stamp;
             glyph = gl;
             guiGlyph = gg;
+            turnCount = tc;
             return res != 0;
         }
 
