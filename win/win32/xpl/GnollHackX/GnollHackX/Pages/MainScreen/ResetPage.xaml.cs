@@ -673,9 +673,14 @@ namespace GnollHackX.Pages.MainScreen
             {
                 try
                 {
-                    string tempDir = Path.Combine(GHApp.GHPath, GHConstants.TransferTempDirectory);
-                    if (Directory.Exists(tempDir))
-                        Directory.Delete(tempDir, true);
+                    // Delete transfer_temp and any numbered fallback directories (transfer_temp2..10)
+                    string tempBase = Path.Combine(GHApp.GHPath, GHConstants.TransferTempDirectory);
+                    for (int i = 0; i <= 10; i++)
+                    {
+                        string tempDir = i == 0 ? tempBase : tempBase + i.ToString();
+                        if (Directory.Exists(tempDir))
+                            Directory.Delete(tempDir, true);
+                    }
 
                     string uploadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferUploadDirectory);
                     if (Directory.Exists(uploadDir))
