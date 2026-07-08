@@ -75,12 +75,6 @@ namespace GnollHackX.Pages.MainScreen
         /// Reason the tracking token file was omitted from this transfer.
         /// 0x0000 = not omitted (token included normally).
         /// 0x0001 = token file was not found in the save/staging directory.
-        /// 0x0002 = FileTrackOn flag not set (save was never enrolled in tracking).
-        /// 0x0004 = FileTrackSupport flag not set (platform does not support tracking).
-        /// 0x0008 = NonScoring game mode.
-        /// 0x0010 = DebugMode / wizard mode.
-        /// 0x0020 = ExploreMode.
-        /// 0x0040 = CasualMode.
         /// Bits may be combined.
         /// </summary>
         public int TokenOmitReason { get; set; }
@@ -892,7 +886,17 @@ namespace GnollHackX.Pages.MainScreen
                 int tokenOmitReason = 0x0000;
 
                 // Record all reasons why a tracking token may be absent.
-                // Multiple flags can be set simultaneously (e.g. wizard + non-scoring)._value == INVALID (failed)
+                // Multiple flags can be set simultaneously (e.g. wizard + non-scoring).
+                // Bit definitions:
+                //   0x0001 — token file not found in local staging directory (isTracked but file missing)
+                //   0x0002 — (case 5) tracking not supported by this platform/build
+                //   0x0004 — (case 6) tracking supported but not needed on this platform (Android/iOS)
+                //   0x0008 — (case 7) tracking supported+needed but turned off by user
+                //   0x0010 — (case 8) tracking supported+needed+on but save tracking has failed (FileTrackValid not set)
+                //   0x0020 — (case 4) non-scoring game (imported/modified save)
+                //   0x0040 — (case 1) wizard / debug mode
+                //   0x0080 — (case 2) explore mode
+                //   0x0100 — (case 3) casual mode
                 var ghFlags = (GHSaveFlags)saveFlags;
                 bool trackingSupportedOnPlatform = true; /* Yes for this app */
                 bool trackingNeededOnPlatform = GHApp.IsSaveFileTrackingNeeded;
