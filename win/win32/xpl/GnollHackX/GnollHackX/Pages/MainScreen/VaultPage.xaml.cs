@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -561,24 +561,37 @@ namespace GnollHackX.Pages.MainScreen
 
         private async Task OpenSaveTransferPage()
         {
+            VaultGrid.IsEnabled = false;
             if (!GHApp.HasInternetAccess)
             {
                 await ShowMessagePopupAsync("Internet Connection Required", "Internet access is required to use Save Transfer.", "OK");
+                VaultGrid.IsEnabled = true;
                 return;
             }
 
             if (!GHApp.XlogUserNameVerified && !string.IsNullOrEmpty(GHApp.XlogUserName))
             {
+                MessagePopupTitleLabel.Text = "Credentials Verification";
+                MessagePopupTitleLabel.TextColor = GHColors.TitleGoldColor;
+                MessagePopupLabel.Text = "Verifying credentials... Please wait.";
+                MessagePopupOkButton.IsVisible = false;
+                MessagePopupCancelButton.IsVisible = false;
+                Thickness oldThickness = MessagePopupFrame.Padding;
+                MessagePopupFrame.Padding = new Thickness(oldThickness.Left, 18, oldThickness.Right, 24);
+                MessagePopupGrid.IsVisible = true;
                 await GHApp.TryVerifyXlogUserNameAsync(true);
+                MessagePopupOkButton.IsVisible = true;
+                MessagePopupFrame.Padding = oldThickness;
+                MessagePopupGrid.IsVisible = false;
             }
 
             if (string.IsNullOrEmpty(GHApp.XlogUserName) || !GHApp.XlogUserNameVerified)
             {
                 await ShowMessagePopupAsync("Verification Required", "Registering or logging into a GnollHack server account is required for Save Transfer. Please go to Server Posting section in Settings to set this up.", "OK");
+                VaultGrid.IsEnabled = true;
                 return;
             }
 
-            VaultGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var transferPage = new SaveTransferPage();
             await GHApp.PushModalPageAsync(transferPage);
