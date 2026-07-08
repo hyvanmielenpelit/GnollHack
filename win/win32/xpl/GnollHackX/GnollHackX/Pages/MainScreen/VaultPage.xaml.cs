@@ -574,7 +574,7 @@ namespace GnollHackX.Pages.MainScreen
 
             if (string.IsNullOrEmpty(GHApp.XlogUserName) || !GHApp.XlogUserNameVerified)
             {
-                await ShowMessagePopupAsync("Verification Required", "Registering or logging into a GnollHack server account is required for Save Transfer. Please go to the Settings Page to set this up.", "OK");
+                await ShowMessagePopupAsync("Verification Required", "Registering or logging into a GnollHack server account is required for Save Transfer. Please go to Server Posting section in Settings to set this up.", "OK");
                 return;
             }
 

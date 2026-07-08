@@ -41,7 +41,7 @@
                                     TitleColor="Black"
                                     HorizontalTextAlignment="Center"
                                     BackgroundColor="#22000000"
-                                    WidthRequest="250"
+                                    WidthRequest="200"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Center"
                                     SelectedIndexChanged="TransferModePicker_SelectedIndexChanged">
@@ -54,8 +54,8 @@
                             </Picker>
                         </StackLayout>
                         <StackLayout x:Name="ButtonMainStack" Spacing="6" Orientation="Horizontal" HorizontalOptions="Center">
-                            <controls:CustomImageButton Text="Transfer" x:Name="ActionButton" Clicked="ActionButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" VerticalOptions="Center" />
-                            <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" VerticalOptions="Center" />
+                            <controls:CustomImageButton Text="Transfer" x:Name="ActionButton" Clicked="ActionButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" WidthRequest="200" HeightRequest="60" HorizontalOptions="Center" VerticalOptions="Center" />
+                            <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" WidthRequest="200" HeightRequest="60" HorizontalOptions="Center" VerticalOptions="Center" />
                         </StackLayout>
                     </StackLayout>
                 </Grid>
