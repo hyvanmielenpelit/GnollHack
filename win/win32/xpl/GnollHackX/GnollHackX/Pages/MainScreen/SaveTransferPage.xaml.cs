@@ -735,7 +735,7 @@ namespace GnollHackX.Pages.MainScreen
                 // Create the per-session upload subdirectory (files-{guid}/)
                 // Guard: if the directory somehow already exists (extremely unlikely), try to delete it;
                 // if that fails, generate a fresh GUID so neither the local dir nor the cloud folder collide.
-                if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
+                if (!Directory.Exists(uploadDir)) GHApp.CheckCreateDirectory(uploadDir);
                 if (Directory.Exists(uploadSessionDir))
                 {
                     try
@@ -750,7 +750,7 @@ namespace GnollHackX.Pages.MainScreen
                         Debug.WriteLine("RunUploadProcessAsync: collision on session dir, regenerated GUID: " + guid);
                     }
                 }
-                Directory.CreateDirectory(uploadSessionDir);
+                GHApp.CheckCreateDirectory(uploadSessionDir);
 
                 // 3b. Verify validity & Read flags
                 PopupStatusLabel.Text = "Validating local save file...";
@@ -1240,7 +1240,7 @@ namespace GnollHackX.Pages.MainScreen
                 // Guard: if the local session dir already exists, try to delete it first;
                 // if that fails, use a fresh local GUID for the directory name only
                 // (cloudFolder and guid are kept unchanged since they identify the cloud blob location).
-                if (!Directory.Exists(downloadDir)) Directory.CreateDirectory(downloadDir);
+                if (!Directory.Exists(downloadDir)) GHApp.CheckCreateDirectory(downloadDir);
                 if (Directory.Exists(downloadSessionDir))
                 {
                     try
@@ -1254,7 +1254,7 @@ namespace GnollHackX.Pages.MainScreen
                         Debug.WriteLine("RunDownloadProcessAsync: collision on session dir, using fallback dir: " + downloadSessionDir);
                     }
                 }
-                Directory.CreateDirectory(downloadSessionDir);
+                GHApp.CheckCreateDirectory(downloadSessionDir);
 
                 // 5. Create lock file in the session subdirectory
                 PopupStatusLabel.Text = "Creating download lock...";
@@ -1399,7 +1399,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 // 15. Copy to save folder
                 PopupStatusLabel.Text = "Copying files to local save folder...";
-                if (!Directory.Exists(saveDir)) Directory.CreateDirectory(saveDir);
+                if (!Directory.Exists(saveDir)) GHApp.CheckCreateDirectory(saveDir);
                 File.Copy(tempSavePath, localSaveFile, true);
                 if (manifest.BackupIsDifferent)
                 {
@@ -1542,7 +1542,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
 
                     // (Re-)create the directory
-                    Directory.CreateDirectory(candidate);
+                    GHApp.CheckCreateDirectory(candidate);
 
                     // Accept this directory only if it is now empty
                     if (Directory.GetFiles(candidate).Length == 0)
@@ -1560,7 +1560,7 @@ namespace GnollHackX.Pages.MainScreen
 
             // Should never reach here, but guarantee a result
             Debug.WriteLine("FindUsableTempDirectory: all candidates failed, falling back to base dir.");
-            Directory.CreateDirectory(baseName);
+            GHApp.CheckCreateDirectory(baseName);
             return baseName;
         }
 
