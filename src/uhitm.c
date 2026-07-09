@@ -168,13 +168,14 @@ attack_checks(struct monst *mtmp, struct obj *wep)
         return TRUE;
     }
 
-    if (M_AP_TYPE(mtmp) && !Protection_from_shape_changers && !sensemon(mtmp)
-        && !glyph_is_warning(glyph)) {
+    if (M_AP_TYPE(mtmp) && !Can_detect_mimic(mtmp) && !glyph_is_warning(glyph)) 
+    {
         /* If a hidden mimic was in a square where a player remembers
          * some (probably different) unseen monster, the player is in
          * luck--he attacks it even though it's hidden.
          */
-        if (glyph_is_invisible(glyph)) {
+        if (glyph_is_invisible(glyph)) 
+        {
             seemimic(mtmp);
             return FALSE;
         }
@@ -4724,7 +4725,7 @@ stumble_onto_mimic(struct monst *mtmp)
 
         /* cloned Wiz starts out mimicking some other monster and
            might make himself invisible before being revealed */
-        if (is_invisible(mtmp) && !See_invisible)
+        if (is_invisible(mtmp) && !Can_see_invisible)
             what = generic;
         else
             what = a_monnam(mtmp);

@@ -2145,11 +2145,11 @@ dogaze(void)
             if (mtmp && !DEADMONSTER(mtmp) && canseemon(mtmp))
             {
                 looked++;
-                if (Invis && !has_see_invisible(mtmp))
+                if (Invis && !can_mon_see_invisible(mtmp))
                 {
                     pline("%s seems not to notice your gaze.", Monnam(mtmp));
                 }
-                else if (is_invisible(mtmp) && !See_invisible)
+                else if (is_invisible(mtmp) && !Can_see_invisible)
                 {
                     You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "see where to gaze at %s.", Monnam(mtmp));
                 }
@@ -2239,7 +2239,7 @@ dogaze(void)
                             You("gaze at %s but without effect.", mon_nam(mtmp));
                             break;
                         }
-                        else if (Blind || (is_invisible(mtmp) && !See_invisible))
+                        else if (Blind || (is_invisible(mtmp) && !Can_see_invisible))
                         {
                             You("stare blindly at %s general direction.", s_suffix(mon_nam(mtmp)));
                             break;

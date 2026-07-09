@@ -883,6 +883,10 @@
 
 #define has_see_invisible(mon) \
     (has_innate_see_invisible((mon)->data) || has_property(mon, SEE_INVISIBLE))
+#define has_true_seeing(mon) \
+    (has_property(mon, TRUE_SEEING))
+#define can_mon_see_invisible(mon) \
+    (has_see_invisible(mon) || has_true_seeing(mon))
 #define has_regeneration(mon) \
     (has_innate_regeneration((mon)->data) || has_property(mon, REGENERATION))
 #define has_energy_regeneration(mon) \

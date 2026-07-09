@@ -2832,6 +2832,7 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
     case SPE_CHARM_MONSTER:
     case SPE_CONTROL_UNDEAD:
     case SPE_DOMINATE_MONSTER:
+    case SPE_DOMINATE_UNDEAD:
     case SPE_POWER_WORD_KILL:
     case SPE_POWER_WORD_STUN:
     case SPE_POWER_WORD_BLIND:
@@ -2911,6 +2912,7 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
     case SPE_GUARDIAN_ANGEL:
     case SPE_SUMMON_ARCHON:
     case SPE_DIVINE_MOUNT:
+    case SPE_UNHOLY_MOUNT:
     case SPE_HEAVENLY_ARMY:
     case SPE_STICK_TO_SNAKE:
     case SPE_STICK_TO_COBRA:
@@ -3187,6 +3189,8 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
     case SPE_PASSWALL:
     case SPE_WARNING:
     case SPE_X_RAY_VISION:
+    case SPE_ASTRAL_VISION:
+    case SPE_TRUE_SEEING:
     case SPE_MIRROR_IMAGE:
     case SPE_MASS_CONFLICT:
     case SPE_GLOBE_OF_INVULNERABILITY:
@@ -3500,6 +3504,12 @@ addspellintrinsictimeout(int otyp)
             break;
         case XRAY_VISION:
             You_ex(ATR_NONE, CLR_MSG_POSITIVE, "can see through walls.");
+            break;
+        case ASTRAL_VISION:
+            You_ex(ATR_NONE, CLR_MSG_POSITIVE, XRay_vision ?  "feel your ability to see through walls has improved." : "can see through walls.");
+            break;
+        case TRUE_SEEING:
+            You_ex(ATR_NONE, CLR_MSG_POSITIVE, "can see things as they truly are.");
             break;
         case WATER_WALKING:
             You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "like you could walk on water.");

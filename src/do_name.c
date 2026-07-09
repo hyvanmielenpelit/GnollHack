@@ -1397,7 +1397,7 @@ do_mname(void)
             && (!(cansee(cx, cy) || see_with_infrared(mtmp))
                 || is_mon_mundetected(mtmp) || M_AP_TYPE(mtmp) == M_AP_FURNITURE
                 || M_AP_TYPE(mtmp) == M_AP_OBJECT
-                || (is_invisible(mtmp) && !See_invisible)))) 
+                || (is_invisible(mtmp) && !Can_see_invisible)))) 
     {
         pline("I see no monster there.");
         return;
@@ -1965,7 +1965,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
     char *buf = nextmbuf();
     struct permonst *mdat = mtmp->data;
     const char* pm_name = mon_monster_name(mtmp); // mdat->mname;
-    boolean do_hallu, do_invis, do_it, do_saddle, do_name;
+    boolean do_hallu, do_invis, do_it, do_saddle, do_name, do_poly;
     boolean name_at_start = FALSE, has_adjectives = FALSE;
     /* note: uname is always at end */
     char *bp;
@@ -1982,6 +1982,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
         article = ARTICLE_THE;
 
     do_hallu = Hallucination && !(suppress & SUPPRESS_HALLUCINATION);
+    do_poly = !Hallucination && !(suppress & SUPPRESS_POLYMORPH) && (program_state.gameover || (True_seeing && canseemon(mtmp))) && mtmp->cham >= LOW_PM && mtmp->cham < NUM_MONSTERS;
     do_invis = is_invisible(mtmp) && !(suppress & SUPPRESS_INVISIBLE);
     do_it = !canspotmon(mtmp) && article != ARTICLE_YOUR
             && !program_state.gameover && mtmp != u.usteed
@@ -2059,6 +2060,11 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
 
 
     has_adjectives = (buf[0] != '\0');
+
+    if (do_poly)
+    {
+        Sprintf(eos(buf), "%s polymorphed into ", pm_monster_name(&mons[mtmp->cham], has_mmonst(mtmp) ? is_mon_female(MMONST(mtmp)) :  is_mon_female(mtmp)));
+    }
 
     /* Put the actual monster name or type into the buffer now */
     /* Be sure to remember whether the buffer starts with a name */

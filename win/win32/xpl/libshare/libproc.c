@@ -520,7 +520,7 @@ void lib_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
             struct monst* mtmp = m_at(x, y);
             if (mtmp && (M_AP_TYPE(mtmp) == M_AP_OBJECT))
             {
-                int sensed = (Protection_from_shape_changers || sensemon(mtmp));
+                int sensed = (Can_detect_mimic(mtmp));
                 if (!sensed)
                 {
                     has_obj_mimic = TRUE;

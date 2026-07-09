@@ -537,6 +537,7 @@ E struct c_common_strings {
 #define SUPPRESS_SADDLE 0x08
 #define EXACT_NAME 0x0F
 #define SUPPRESS_NAME 0x10
+#define SUPPRESS_POLYMORPH 0x20
 
 /* Vision */
 E NEARDATA boolean vision_full_recalc; /* TRUE if need vision recalc */

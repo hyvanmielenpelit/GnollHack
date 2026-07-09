@@ -476,7 +476,7 @@ mattacku(struct monst *mtmp)
     if (M_AP_TYPE(mtmp) != M_AP_NOTHING && youseeit && distmin(u.ux, u.uy, mtmp->mx, mtmp->my) <= 1)
     {
         seemimic(mtmp);
-        if (!Protection_from_shape_changers && !sensemon(mtmp))
+        if (!Can_detect_mimic(mtmp))
         {
             play_sfx_sound(SFX_STUMBLE_ON_MIMIC);
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "Wait!  That's %s!", a_monnam(mtmp));
@@ -694,7 +694,7 @@ mattacku(struct monst *mtmp)
     tmp += mtmp->mhitinc;
     if (multi < 0 || Sleeping || Paralyzed_or_immobile)
         tmp += 4;
-    if ((Invis && !has_see_invisible(mtmp)) || is_blinded(mtmp))
+    if ((Invis && !can_mon_see_invisible(mtmp)) || is_blinded(mtmp))
         tmp -= 2;
     if (is_mon_mtrapped(mtmp))
         tmp -= 2;
@@ -4213,10 +4213,10 @@ could_seduce(struct monst *magr, struct monst *mdef, struct attack *mattk)
         genagr = gender(magr);
     }
     if (mdef == &youmonst) {
-        defperc = (See_invisible != 0);
+        defperc = (Can_see_invisible != 0);
         gendef = poly_gender();
     } else {
-        defperc = has_see_invisible(mdef);
+        defperc = can_mon_see_invisible(mdef);
         gendef = gender(mdef);
     }
 
@@ -4755,7 +4755,7 @@ passiveum(struct permonst *olduasmon, struct monst *mtmp, struct attack *mattk)
                 if (!rn2(20))
                     paralyse_duration = 24;
                 if (!is_blinded(mtmp) && haseyes(mtmp->data) && rn2(3)
-                    && (has_see_invisible(mtmp) || !Invis))
+                    && (can_mon_see_invisible(mtmp) || !Invis))
                 {
                     if (Blind)
                         pline_ex(ATR_NONE, CLR_MSG_WARNING, "As a blind %s, you cannot defend yourself.",

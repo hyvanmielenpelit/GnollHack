@@ -874,7 +874,7 @@ dog_corpse_after_effect(struct monst *mon, struct obj *obj, uchar gender UNUSED)
 
     if (conveys_see_invisible(ptr))
     {
-        if (!has_see_invisible(mon))
+        if (!can_mon_see_invisible(mon))
         {
             //First temporary
             set_mon_property_b(mon, SEE_INVISIBLE, rn1(100, 50), canspotmon(mon));
@@ -1669,7 +1669,7 @@ find_friends(struct monst *mtmp, struct monst *mtarg, int maxdist)
         if (pal) {
             if (pal->mtame) {
                 /* Pet won't notice invisible pets */
-                if (!m_cannotsense_m(mtmp, pal)) //!is_invisible(pal) || has_see_invisible(mtmp)
+                if (!m_cannotsense_m(mtmp, pal))
                     return 1;
             } else {
                 /* Quest leaders and guardians are always seen */
@@ -2065,7 +2065,7 @@ dog_move(struct monst *mtmp, int after)
                     || (
                         (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
                         && !is_blinded(mtmp) && haseyes(mtmp->data) && !is_blinded(mtmp2)
-                        && (has_see_invisible(mtmp) || !is_invisible(mtmp2)))
+                        && (can_mon_see_invisible(mtmp) || !is_invisible(mtmp2)))
                     || (slurps_items(mtmp2->data) && rn2(10))
                     || (is_tame(mtmp2) && !Conflict && !is_crazed(mtmp2))
                     || !check_mon_wants_to_attack_target(mtmp, mtmp2)
@@ -2558,6 +2558,9 @@ quickmimic(struct monst *mtmp)
 {
     int idx = 0, trycnt = 5, spotted;
     char buf[BUFSZ];
+
+    if (!mtmp)
+        return;
 
     if (Protection_from_shape_changers || !mtmp->meating)
         return;

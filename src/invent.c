@@ -1124,12 +1124,13 @@ update_all_character_properties(struct obj *otmp, boolean verbose)
     boolean was_invisible = Invis;
     boolean was_wearing_blindfold = Blindfolded;
     boolean was_blocking_blindness = Blocks_Blindness;
-    boolean saw_invisible = See_invisible;
+    boolean saw_invisible = Can_see_invisible;
     boolean was_blocking_invisibility = Blocks_Invisibility;
     boolean was_telepathic = Telepat;
     boolean was_blind_telepathic = Blind_telepat;
     boolean had_xray_vision = XRay_vision;
     boolean had_astral_vision = Astral_vision;
+    boolean had_true_seeing = True_seeing;
     boolean had_magical_breathing = Magical_breathing;
     boolean had_warning = Warning;
     boolean had_warning_of_mon = Warning;
@@ -1320,7 +1321,7 @@ update_all_character_properties(struct obj *otmp, boolean verbose)
     /* Invisibility */
     if (!Blind)
     {
-        if (See_invisible && !saw_invisible)
+        if (Can_see_invisible && !saw_invisible)
         {
             /* can now see invisible monsters */
             set_mimic_blocking(); /* do special mimic handling */
@@ -1342,7 +1343,7 @@ update_all_character_properties(struct obj *otmp, boolean verbose)
             }
             check_seen_bosses();
         }
-        else if (!See_invisible && saw_invisible)
+        else if (!Can_see_invisible && saw_invisible)
         {
             set_mimic_blocking(); /* do special mimic handling */
             see_monsters();
@@ -1358,14 +1359,14 @@ update_all_character_properties(struct obj *otmp, boolean verbose)
         {
             state_change_detected = TRUE;
             newsym(u.ux, u.uy);
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can %s!", See_invisible ? "no longer see through yourself"
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can %s!", Can_see_invisible ? "no longer see through yourself"
                 : "see yourself");
         }
         else if (!Blocks_Invisibility && was_blocking_invisibility && Invis && !was_invisible)
         {
             state_change_detected = TRUE;
             newsym(u.ux, u.uy);
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can %s.", See_invisible ? "see through yourself"
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can %s.", Can_see_invisible ? "see through yourself"
                 : "no longer see yourself");
         }
         else if (Invis && !was_invisible)
@@ -1379,7 +1380,7 @@ update_all_character_properties(struct obj *otmp, boolean verbose)
             state_change_detected = TRUE;
             newsym(u.ux, u.uy);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "body seems to unfade%s.",
-                See_invisible ? " completely" : "..");
+                Can_see_invisible ? " completely" : "..");
         }
     }
 
@@ -1422,6 +1423,14 @@ update_all_character_properties(struct obj *otmp, boolean verbose)
         || (!Troll_warning && had_troll_warning)
         || (Blind && !was_blind)
         || (!Blind && was_blind)
+        )
+    {
+        see_monsters();
+    }
+
+    /* True seeing */
+    if ((True_seeing && !had_true_seeing)
+        || (!True_seeing && had_true_seeing)
         )
     {
         see_monsters();

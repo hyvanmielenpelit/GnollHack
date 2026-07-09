@@ -1349,6 +1349,15 @@ nh_timeout(void)
             case XRAY_VISION:
                 Your_ex1_nomul(ATR_NONE, CLR_MSG_ATTENTION, "vision through the walls is starting to get blurred.");
                 break;
+            case ASTRAL_VISION:
+                if (!XRay_vision)
+                    Your_ex1_nomul(ATR_NONE, CLR_MSG_ATTENTION, "vision through the walls is starting to get blurred.");
+                else
+                    Your_ex1_nomul(ATR_NONE, CLR_MSG_ATTENTION, "vision through the walls is starting to get more short sighted.");
+                break;
+            case TRUE_SEEING:
+                Your_ex1_nomul(ATR_NONE, CLR_MSG_ATTENTION, "sight is starting to get more mundane.");
+                break;
             case WATER_WALKING:
                 You_ex1_nomul(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less able to walk on water than before.");
                 break;
@@ -4228,6 +4237,14 @@ property_expiry_message(int propidx, boolean was_flying)
         }
         see_monsters();
         break;
+    case TRUE_SEEING:
+        if (!True_seeing)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "sight has become mundane.");
+        }
+        see_monsters();
+        break;
     case WATER_WALKING:
         if (!Wwalking)
         {
@@ -4477,7 +4494,7 @@ property_expiry_message(int propidx, boolean was_flying)
         newsym(u.ux, u.uy);
         if (!Invis && !Blocks_Invisibility && !Blind) {
             play_sfx_sound(SFX_PROTECTION_END_WARNING);
-            You(!See_invisible
+            You(!Can_see_invisible
                 ? "are no longer invisible."
                 : "can no longer see through yourself.");
             stop_occupation();
@@ -4488,7 +4505,7 @@ property_expiry_message(int propidx, boolean was_flying)
         see_monsters();       /* make invis mons appear */
         newsym(u.ux, u.uy);   /* make self appear */
         stop_occupation();
-        if (!See_invisible)
+        if (!Can_see_invisible)
         {
             play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are no longer able to see invisibile monsters.");

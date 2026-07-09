@@ -950,8 +950,8 @@ stumble_on_door_mimic(int x, int y)
 {
     struct monst *mtmp;
 
-    if ((mtmp = m_at(x, y)) && is_door_mappear(mtmp)
-        && !Protection_from_shape_changers) {
+    if ((mtmp = m_at(x, y)) && is_door_mappear(mtmp) && !Can_detect_mimic(mtmp)) 
+    {
         stumble_onto_mimic(mtmp);
         return TRUE;
     }

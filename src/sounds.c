@@ -9451,10 +9451,19 @@ do_chat_oracle_teach_spells(struct monst *mtmp)
 
     int spell_otyps[16 + 1] = { 0 };
     spell_otyps[0] = SPE_PROBE;
-    spell_otyps[1] = SPE_CLAIRVOYANCE;
+    spell_otyps[1] = mtmp->m_id % 5 == 0 ? SPE_TRUE_SEEING : SPE_CLAIRVOYANCE;
     spell_otyps[2] = mtmp->m_id % 3 == 0 ? SPE_TELEPATHY : SPE_WARNING;
+    int cnt = 3;
     if (mtmp->m_id % 17 == 0)
-        spell_otyps[3] = SPE_X_RAY_VISION;
+    {
+        spell_otyps[cnt] = SPE_X_RAY_VISION;
+        cnt++;
+    }
+    if (mtmp->m_id % 101 == 0)
+    {
+        spell_otyps[cnt] = SPE_ASTRAL_VISION;
+        cnt++;
+    }
 
     return spell_teaching(mtmp, spell_otyps);
 }

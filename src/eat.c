@@ -2852,17 +2852,18 @@ eataccessory(struct obj *otmp)
             if (!(u.uprops[usedprop].intrinsic & FROM_ACQUIRED))
                 accessory_has_effect(otmp);
 
-            boolean was_seeing_invisible = See_invisible;
+            boolean was_seeing_invisible = Can_see_invisible;
             boolean was_invisible = Invis;
 
             u.uprops[usedprop].intrinsic |= FROM_ACQUIRED;
 
             switch (usedprop) 
             {
+            case TRUE_SEEING:
             case SEE_INVISIBLE:
                 set_mimic_blocking();
                 see_monsters();
-                if (Invis && !was_seeing_invisible && See_invisible && !Blind) 
+                if (Invis && !was_seeing_invisible && Can_see_invisible && !Blind) 
                 {
                     newsym(u.ux, u.uy);
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly you can see yourself.");
@@ -2874,7 +2875,7 @@ eataccessory(struct obj *otmp)
 
                 /* FALLTHRU */
             case INVISIBILITY:
-                if (!was_invisible && Invis && !See_invisible && !Blind) 
+                if (!was_invisible && Invis && !Can_see_invisible && !Blind) 
                 {
                     newsym(u.ux, u.uy);
                     Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "body takes on a %s transparency...",

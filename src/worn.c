@@ -1585,7 +1585,7 @@ m_dowear_type(struct monst *mon, int64_t flag, boolean creation, boolean raciale
         return 0; /* probably putting previous item on */
 
     /* Get a copy of monster's name before altering its visibility */
-    Strcpy(nambuf, See_invisible ? Monnam(mon) : mon_nam(mon));
+    Strcpy(nambuf, Can_see_invisible ? Monnam(mon) : mon_nam(mon));
 
     old = which_armor(mon, flag);
     if (old && is_obj_cursed(old) && !cursed_items_are_positive_mon(mon))
@@ -1766,7 +1766,7 @@ outer_break:
 
     /* if couldn't see it but now can, or vice versa, */
     if (!creation && (unseen ^ !canseemon(mon))) {
-        if (is_invisible(mon) && !See_invisible) {
+        if (is_invisible(mon) && !Can_see_invisible) {
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly you cannot see %s.", nambuf);
             makeknown(best->otyp);
         } /* else if (!mon->minvis) pline("%s suddenly appears!",

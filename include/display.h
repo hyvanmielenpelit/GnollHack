@@ -58,14 +58,6 @@
 #define sensemon(mon) \
     (tp_sensemon(mon) || Detect_monsters || MATCH_WARN_OF_MON(mon))
 
- /* appears_peaceful: for GUI display only - true if actually peaceful,
-    or if in illusory form and player cannot sense through the disguise */
-#define appears_peaceful(mon) \
-    (is_peaceful(mon) \
-     || (has_friendly_illusory_appearance((mon)->data) \
-         && M_AP_TYPE(mon) == M_AP_MONSTER \
-         && !Protection_from_shape_changers && !Warning && !sensemon(mon)))
-
 /*
  * mon_warning() is used to warn of any dangerous monsters in your
  * vicinity, and a glyph representing the warning level is displayed.
@@ -101,7 +93,7 @@
  */
 #define mon_visible(mon) \
     (/* The hero can see the monster IF the monster                                    */ \
-     (!is_invisible(mon) || See_invisible)      /*     1. is not invisible             */ \
+     (!is_invisible(mon) || See_invisible || True_seeing)      /*     1. is not invisible             */ \
         && !is_mon_mundetected(mon)                    /*     2. not an undetected hider      */ \
         && !(is_mon_mburied(mon) || u.uburied))        /* AND 3. neither you nor it is buried */
 
@@ -151,7 +143,7 @@
  */
 #define knowninvisible(mon)                                               \
     (is_invisible(mon)                                                        \
-     && ((cansee((mon)->mx, (mon)->my) && (See_invisible || Detect_monsters)) \
+     && ((cansee((mon)->mx, (mon)->my) && (See_invisible || Detect_monsters || True_seeing)) \
          || (Telepat && distu((mon)->mx, (mon)->my) <= (TELEPATHY_RANGE * TELEPATHY_RANGE))))
 
 /*
@@ -177,6 +169,15 @@
 
 #define monster_invokes_context_chat(mon) \
     (!is_tame(mon) && is_mon_talkative(mon) && canspotmon(mon) && mon_can_move(mon))
+
+#define Can_detect_mimic(mon) (Protection_from_shape_changers || (True_seeing && canseemon(mon)) || sensemon(mon))
+ /* appears_peaceful: for GUI display only - true if actually peaceful,
+    or if in illusory form and player cannot sense through the disguise */
+#define appears_peaceful(mon) \
+    (is_peaceful(mon) \
+     || (has_friendly_illusory_appearance((mon)->data) \
+         && M_AP_TYPE(mon) == M_AP_MONSTER \
+         && !Can_detect_mimic(mon) && !Warning))
 
  /*
  * canseeself()

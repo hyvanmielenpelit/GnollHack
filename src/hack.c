@@ -2055,7 +2055,7 @@ domove_core(void)
             if (context.run && ((!Blind && mon_visible(mtmp)
                                  && ((M_AP_TYPE(mtmp) != M_AP_FURNITURE
                                       && M_AP_TYPE(mtmp) != M_AP_OBJECT)
-                                     || Protection_from_shape_changers))
+                                     || Protection_from_shape_changers || (True_seeing && canseemon(mtmp))))
                                 || sensemon(mtmp))) 
             {
                 nomul(0);
@@ -2097,8 +2097,7 @@ domove_core(void)
         if (context.nopick && !context.travel
             && (canspotmon(mtmp) || glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))) 
         {
-            if (M_AP_TYPE(mtmp) && !Protection_from_shape_changers
-                && !sensemon(mtmp))
+            if (M_AP_TYPE(mtmp) && !Can_detect_mimic(mtmp))
                 stumble_onto_mimic(mtmp);
             else if (is_peaceful(mtmp) && !Hallucination)
                 /* m_monnam(): "dog" or "Fido", no "invisible dog" or "it" */
@@ -3484,7 +3483,7 @@ lookaround(void)
             if ((mtmp = m_at(x, y)) != 0
                 && M_AP_TYPE(mtmp) != M_AP_FURNITURE
                 && M_AP_TYPE(mtmp) != M_AP_OBJECT
-                && (!is_invisible(mtmp) || See_invisible) && !is_mon_mundetected(mtmp)) 
+                && (!is_invisible(mtmp) || Can_see_invisible) && !is_mon_mundetected(mtmp)) 
             {
                 if (context.travel && context.travel_mode == TRAVEL_MODE_ATTACK_AND_WALK && !is_peaceful(mtmp) && !is_tame(mtmp) && mtmp->m_id == context.tmid)
                 {

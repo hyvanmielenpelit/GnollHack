@@ -357,7 +357,7 @@ mattackm(struct monst *magr, struct monst *mdef)
         char nambuf[BUFSZ];
         Strcpy(nambuf, Monnam(magr));
         seemimic(magr);
-        if (!Protection_from_shape_changers && !sensemon(magr))
+        if (!Can_detect_mimic(magr))
         {
             play_sfx_sound_at_location(SFX_STUMBLE_ON_MIMIC, magr->mx, magr->my);
             played_stumble_sound = TRUE;
@@ -365,12 +365,12 @@ mattackm(struct monst *magr, struct monst *mdef)
         }
     }
 
-    if (has_illusory_appearance(mdef->data) && !is_peaceful(mdef) && M_AP_TYPE(mdef) != M_AP_NOTHING && canseemon(mdef) && !Protection_from_shape_changers && !sensemon(mdef) && distmin(mdef->mx, mdef->my, magr->mx, magr->my) <= 1)
+    if (has_illusory_appearance(mdef->data) && !is_peaceful(mdef) && M_AP_TYPE(mdef) != M_AP_NOTHING && canseemon(mdef) && !Can_detect_mimic(mdef) && distmin(mdef->mx, mdef->my, magr->mx, magr->my) <= 1)
     {
         char nambuf[BUFSZ];
         Strcpy(nambuf, Monnam(mdef));
         seemimic(mdef);
-        if (!Protection_from_shape_changers && !sensemon(magr))
+        if (!Can_detect_mimic(magr))
         {
             if (!played_stumble_sound)
                 play_sfx_sound_at_location(SFX_STUMBLE_ON_MIMIC, mdef->mx, mdef->my);
@@ -974,7 +974,7 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
     }
 
     if (is_cancelled(magr)|| is_blinded(magr) || is_blinded(mdef)
-        || (is_invisible(magr) && !has_see_invisible(mdef)) || is_sleeping(mdef))
+        || (is_invisible(magr) && !can_mon_see_invisible(mdef)) || is_sleeping(mdef))
     {
         if (vis && canspotmon(mdef))
             pline("but nothing happens.");
@@ -1000,7 +1000,7 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
                 }
                 return MM_MISS;
             }
-            if (is_invisible(mdef) && !has_see_invisible(magr))
+            if (is_invisible(mdef) && !can_mon_see_invisible(magr))
             {
                 if (canseemon(magr)) 
                 {
@@ -1758,7 +1758,7 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
                 pline("%s gazes at %s but without effect.", Monnam(magr), mon_nam(mdef));
             break;
         }
-        else if (is_blinded(magr) || (is_invisible(mdef) && !has_see_invisible(magr)))
+        else if (is_blinded(magr) || (is_invisible(mdef) && !can_mon_see_invisible(magr)))
         {
             if (canseemon(magr))
                 pline("%s stares blindly at %s general direction.", Monnam(magr), s_suffix(mon_nam(mdef)));

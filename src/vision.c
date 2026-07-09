@@ -180,7 +180,7 @@ does_block(int x, int y, struct rm *lev)
             return 1;
 
     /* Mimics mimicing a door or boulder or ... block light. */
-    if ((mon = m_at(x, y)) && (!is_invisible(mon) || See_invisible)
+    if ((mon = m_at(x, y)) && (!is_invisible(mon) || Can_see_invisible)
         && is_lightblocker_mappear(mon))
         return 1;
 
@@ -2858,7 +2858,7 @@ howmonseen(struct monst *mon)
     if (useemon && is_invisible(mon))
         how_seen |= MONSEEN_SEEINVIS;
     /* infravision */
-    if ((!is_invisible(mon) || See_invisible) && see_with_infrared(mon))
+    if ((!is_invisible(mon) || Can_see_invisible) && see_with_infrared(mon))
         how_seen |= MONSEEN_INFRAVIS;
     /* telepathy */
     if (tp_sensemon(mon))

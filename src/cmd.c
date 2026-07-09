@@ -4654,12 +4654,26 @@ attributes_enlightenment(int unused_mode UNUSED, int final)
 
 
     /*** Vision and senses ***/
-    if (See_invisible) {
-        if (!Blind)
-            enl_msg(You_, "see", "saw", " invisible", from_what(SEE_INVISIBLE));
-        else
-            enl_msg(You_, "will see", "would have seen",
+    if (True_seeing)
+        you_have("true seeing", from_what(TRUE_SEEING));
+    if (See_invisible) 
+    {
+        if (True_seeing)
+        {
+            if (!Blind)
+                enl_msg("You latently ", "see", "saw", " invisible", from_what(SEE_INVISIBLE));
+            else
+                enl_msg("You latently ", "will see", "would have seen",
                     " invisible when not blind", from_what(SEE_INVISIBLE));
+        }
+        else
+        {
+            if (!Blind)
+                enl_msg(You_, "see", "saw", " invisible", from_what(SEE_INVISIBLE));
+            else
+                enl_msg(You_, "will see", "would have seen",
+                    " invisible when not blind", from_what(SEE_INVISIBLE));
+        }
     }
     if (Enhanced_vision)
         you_have("enhanced vision", from_what(ENHANCED_VISION));
@@ -9016,7 +9030,7 @@ click_to_cmd(int x, int y, int mod)
     if (mtmp)
     {
         mon_mimic = (M_AP_TYPE(mtmp) != M_AP_NOTHING);
-        sensed = (mon_mimic && (Protection_from_shape_changers || sensemon(mtmp)));
+        sensed = (mon_mimic && Can_detect_mimic(mtmp));
     }
     boolean is_mtmp_spotted = mtmp && canspotmon(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp) && (!mon_mimic || sensed);
 

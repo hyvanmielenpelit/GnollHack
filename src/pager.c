@@ -344,7 +344,7 @@ static void
 look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, int x, int y)
 {
     char *name, monnambuf[BUFSZ], headbuf[BUFSZ], tmpbuf[BUFSZ];
-    struct permonst *pm = (M_AP_TYPE(mtmp) == M_AP_MONSTER && mtmp->mappearance < NUM_MONSTERS && !Protection_from_shape_changers && !sensemon(mtmp)) ? &mons[mtmp->mappearance] : mtmp->data;
+    struct permonst *pm = (M_AP_TYPE(mtmp) == M_AP_MONSTER && mtmp->mappearance < NUM_MONSTERS && !Can_detect_mimic(mtmp)) ? &mons[mtmp->mappearance] : mtmp->data;
     boolean accurate = !Hallucination;
     boolean show_monster_type = accurate && (is_mon_isshk(mtmp) || has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp))) && !is_mname_proper_name(pm);
 
@@ -614,7 +614,7 @@ lookat(int x, int y, char *buf, char *simplebuf, char *extrabuf)
             {
                 look_at_monster(buf, simplebuf, extrabuf, mtmp, x, y);
             }
-            pm = (M_AP_TYPE(mtmp) == M_AP_MONSTER && mtmp->mappearance < NUM_MONSTERS && !Protection_from_shape_changers && !sensemon(mtmp)) ? &mons[mtmp->mappearance] : mtmp->data;
+            pm = (M_AP_TYPE(mtmp) == M_AP_MONSTER && mtmp->mappearance < NUM_MONSTERS && !Can_detect_mimic(mtmp)) ? &mons[mtmp->mappearance] : mtmp->data;
             if(has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp)))
                 noarticle = TRUE;
         }

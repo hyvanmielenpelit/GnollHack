@@ -191,6 +191,7 @@ const struct propname propertynames[] = {
     { PROTECTION_FROM_ARMOR_DESTRUCTION, "protected from armor destruction", "protection from armor destruction" },
     { EDIBILITY_APPRAISAL, "recognizing detrimental food", "recognition of detrimental food" },
     { CORPSE_PROPERTY_APPRAISAL, "recognizing corpse properties", "recognition of corpse properties" },
+    { TRUE_SEEING, "having true seeing", "true seeing" },
     {  0, 0, 0 },
 };
 
@@ -367,11 +368,11 @@ NEARDATA struct prop_info property_definitions[MAX_PROPS] =
     { "tottering",                    0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* TOTTERING = 168 */
     { "martial-prowess",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* MARTIAL_PROWESS = 169 */
     { "polymorph-resistance",         0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* POLYMORPH_RESISTANCE = 170 */
-    { "astral-vision",                0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* ASTRAL_VISION = 171 */
+    { "astral-vision",                1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE },  /* ASTRAL_VISION = 171 */
     { "protection-from-armor-destruction", 0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* PROTECTION_FROM_ARMOR_DESTRUCTION = 172 */
     { "edibility-appraisal",          0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* EDIBILITY_APPRAISAL */
     { "corpse-property-appraisal",    0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* CORPSE_PROPERTY_APPRAISAL */
-    { "reserved-prop-6",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "true-seeing",                  1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE },  /* TRUE_SEEING */
     { "reserved-prop-7",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
     { "reserved-prop-8",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
     { "reserved-prop-9",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */

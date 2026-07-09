@@ -1260,7 +1260,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             struct obj mimic_obj = zeroobj;
             if ((base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT) && m_here && (M_AP_TYPE(m_here) == M_AP_OBJECT))
             {
-                int sensed = (Protection_from_shape_changers || sensemon(m_here));
+                int sensed = (Can_detect_mimic(m_here));
                 if (!sensed)
                 {
                     has_obj_mimic = TRUE;

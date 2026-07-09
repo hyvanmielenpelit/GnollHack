@@ -2507,14 +2507,14 @@ find_misc(struct monst *mtmp)
          */
         nomore(MUSE_WAN_MAKE_INVISIBLE);
         if (obj->otyp == WAN_MAKE_INVISIBLE && obj->charges > 0 && !is_cancelled(mtmp) && !has_invisibility(mtmp)
-            && !has_blocks_invisibility(mtmp) && (!is_peaceful(mtmp) || See_invisible)
+            && !has_blocks_invisibility(mtmp) && (!is_peaceful(mtmp) || Can_see_invisible)
             && (!attacktype(mtmp->data, AT_GAZE) || is_cancelled(mtmp))) {
             m.misc = obj;
             m.has_misc = MUSE_WAN_MAKE_INVISIBLE;
         }
         nomore(MUSE_POT_INVISIBILITY);
         if (obj->otyp == POT_INVISIBILITY && !has_invisibility(mtmp)
-            && !has_blocks_invisibility(mtmp) && (!is_peaceful(mtmp) || See_invisible)
+            && !has_blocks_invisibility(mtmp) && (!is_peaceful(mtmp) || Can_see_invisible)
             && (!attacktype(mtmp->data, AT_GAZE) || is_cancelled(mtmp))) {
             m.misc = obj;
             m.has_misc = MUSE_POT_INVISIBILITY;
@@ -2717,7 +2717,7 @@ find_misc(struct monst *mtmp)
             //m.has_misc = MUSE_POT_RESTORE_ABILITY;
         }
         nomore(MUSE_POT_SEE_INVISIBLE);
-        if (obj->otyp == POT_SEE_INVISIBLE && !is_peaceful(mtmp) && Invis && !has_see_invisible(mtmp) 
+        if (obj->otyp == POT_SEE_INVISIBLE && !is_peaceful(mtmp) && Invis && !can_mon_see_invisible(mtmp)
             && isok(mtmp->mux, mtmp->muy) && m_cansee(mtmp, mtmp->mux, mtmp->muy)) 
         {
             m.misc = obj;
@@ -3265,7 +3265,7 @@ rnd_misc_item(struct monst *mtmp)
             return 0;
         return rn2(6) ? POT_SPEED : WAN_SPEED_MONSTER;
     case 1:
-        if (is_peaceful(mtmp) && !See_invisible)
+        if (is_peaceful(mtmp) && !Can_see_invisible)
             return 0;
         return rn2(6) ? POT_INVISIBILITY : WAN_MAKE_INVISIBLE;
     case 2:

@@ -66,7 +66,7 @@ cursetxt(struct monst *mtmp, boolean undirected)
 
         if (undirected)
             point_msg = "all around, then curses";
-        else if ((Invis && !has_see_invisible(mtmp)
+        else if ((Invis && !can_mon_see_invisible(mtmp)
                   && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                  || is_obj_mappear(&youmonst, STRANGE_OBJECT)
                  || u.uundetected)
@@ -365,7 +365,7 @@ castmu(struct monst *mtmp, struct attack *mattk, boolean thinks_it_foundyou, boo
               canspotmon(mtmp) ? Monnam(mtmp) : "Something",
               is_undirected_spell(mattk->adtyp, spellnum)
                   ? ""
-                  : (Invisib && !has_see_invisible(mtmp)
+                  : (Invisib && !can_mon_see_invisible(mtmp)
                      && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                         ? " at a spot near you"
                         : (Displaced
@@ -570,7 +570,7 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
 
             /* messages not quite right if plural monsters created but
                only a single monster is seen */
-            if (Invisib && !has_see_invisible(mtmp)
+            if (Invisib && !can_mon_see_invisible(mtmp)
                 && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s around a spot near you!", mappear);
             else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
@@ -605,7 +605,7 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
 
             /* messages not quite right if plural monsters created but
                only a single monster is seen */
-            if (Invisib && !has_see_invisible(mtmp)
+            if (Invisib && !can_mon_see_invisible(mtmp)
                 && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s around a spot near you!", mappear);
             else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
@@ -681,7 +681,7 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
         {
             if (canseemon(mtmp))
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly %s!", Monnam(mtmp),
-                      !See_invisible ? "disappears" : "becomes transparent");
+                      !Can_see_invisible ? "disappears" : "becomes transparent");
             increase_mon_property(mtmp, INVISIBILITY, d(2, 10) + 80);
             if (cansee(mtmp->mx, mtmp->my) && !canspotmon(mtmp))
                 map_invisible(mtmp->mx, mtmp->my);
@@ -944,7 +944,7 @@ cast_cleric_spell(struct monst *mtmp, double damage, int spellnum)
             fmt = "%s casts at a clump of sticks, but nothing happens.";
         else if (let == S_SNAKE)
             fmt = (summon_quan == 1 ? "%s transforms a stick of wood into a snake!" : "%s transforms a clump of sticks into snakes!");
-        else if (Invisib && !has_see_invisible(mtmp)
+        else if (Invisib && !can_mon_see_invisible(mtmp)
                  && (mtmp->mux != u.ux || mtmp->muy != u.uy))
             fmt = (summon_quan == 1 ? "%s summons an insect around a spot near you!" : "%s summons insects around a spot near you!");
         else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))

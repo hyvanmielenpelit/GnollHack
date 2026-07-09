@@ -2599,7 +2599,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
             {
                 int dispx, dispy;
                 boolean monseeu = (!is_blinded(mon)
-                                   && (!Invis || has_see_invisible(mon)));
+                                   && (!Invis || can_mon_see_invisible(mon)));
                 boolean checkobj = OBJ_AT(nx, ny);
 
                 /* Displacement also displaces the Elbereth/scare monster,
@@ -6631,7 +6631,7 @@ const char* mon_monster_name(struct monst *mon)
         return "";
 
     /* If disguised as another monster and not telepathically sensed, return that monster's name */
-    if (mon != &youmonst && M_AP_TYPE(mon) == M_AP_MONSTER && mon->mappearance < NUM_MONSTERS && !Protection_from_shape_changers && !sensemon(mon)) 
+    if (mon != &youmonst && M_AP_TYPE(mon) == M_AP_MONSTER && mon->mappearance < NUM_MONSTERS && !Can_detect_mimic(mon))
     {
         boolean isfemale = is_mon_female(mon);
         return pm_monster_name(&mons[mon->mappearance], isfemale);

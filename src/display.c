@@ -735,7 +735,7 @@ display_monster(xchar x, xchar y, struct monst *mon, int sightflags, xchar worm_
         return;
 
     boolean mon_mimic = (M_AP_TYPE(mon) != M_AP_NOTHING);
-    boolean sensed = (mon_mimic && (Protection_from_shape_changers || sensemon(mon)));
+    boolean sensed = (mon_mimic && Can_detect_mimic(mon));
     /*
      * We must do the mimic check first.  If the mimic is mimicing something,
      * and the location is in sight, we have to change the hero's memory
@@ -2198,7 +2198,7 @@ set_mimic_blocking(void)
         if (DEADMONSTER(mon))
             continue;
         if (is_invisible(mon) && is_lightblocker_mappear(mon)) {
-            if (See_invisible)
+            if (Can_see_invisible)
                 block_point(mon->mx, mon->my);
             else
                 unblock_point(mon->mx, mon->my);

@@ -685,7 +685,7 @@ self_invis_message(void)
     pline("%s %s.",
           Hallucination ? "Far out, man!  You"
                         : "Gee!  All of a sudden, you",
-          See_invisible ? "can see right through yourself"
+          Can_see_invisible ? "can see right through yourself"
                         : "can't see yourself");
 }
 
@@ -2901,7 +2901,7 @@ potionbreathe(struct obj *obj, const char *introline)
         if (!Blind && !Invis) {
             kn++;
             Sprintf(dcbuf, "For an instant you %s!",
-                See_invisible ? "could see right through yourself"
+                Can_see_invisible ? "could see right through yourself"
                 : "couldn't see yourself");
             pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         }

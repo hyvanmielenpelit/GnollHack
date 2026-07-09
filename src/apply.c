@@ -740,7 +740,7 @@ use_stethoscope(struct obj *obj)
             }
             set_mon_mundetected(mtmp, 0);
             newsym(mtmp->mx, mtmp->my);
-        } else if (mtmp->mappearance && !Protection_from_shape_changers && !sensemon(mtmp)) {
+        } else if (mtmp->mappearance && !Can_detect_mimic(mtmp)) {
             const char *what = "thing";
 
             switch (M_AP_TYPE(mtmp)) {
@@ -1293,7 +1293,7 @@ use_mirror(struct obj *obj)
         return 0;
     update_u_facing(TRUE);
     invis_mirror = Invis;
-    useeit = !Blind && (!invis_mirror || See_invisible);
+    useeit = !Blind && (!invis_mirror || Can_see_invisible);
     uvisage = beautiful();
     mirror = simpleonames(obj); /* "mirror" or "looking glass" */
 
@@ -1398,7 +1398,7 @@ use_mirror(struct obj *obj)
 #define SEENMON (MONSEEN_NORMAL | MONSEEN_SEEINVIS | MONSEEN_INFRAVIS)
     how_seen = vis ? howmonseen(mtmp) : 0;
     /* whether monster is able to use its vision-based capabilities */
-    monable = !is_cancelled(mtmp) && (!is_invisible(mtmp) || has_see_invisible(mtmp));
+    monable = !is_cancelled(mtmp) && (!is_invisible(mtmp) || can_mon_see_invisible(mtmp));
     mlet = mtmp->data->mlet;
     if (is_sleeping(mtmp)) 
     {
@@ -1411,7 +1411,7 @@ use_mirror(struct obj *obj)
         if (vis)
             pline("%s can't see anything right now.", Monnam(mtmp));
     } 
-    else if (invis_mirror && !has_see_invisible(mtmp)) 
+    else if (invis_mirror && !can_mon_see_invisible(mtmp))
     {
         if (vis)
             pline("%s fails to notice your %s.", Monnam(mtmp), mirror);
@@ -1483,7 +1483,7 @@ use_mirror(struct obj *obj)
         }
     }
     else if (!is_unicorn(mtmp->data) && !humanoid(mtmp->data)
-               && (!is_invisible(mtmp) || has_see_invisible(mtmp)) && rn2(5)) 
+               && (!is_invisible(mtmp) || can_mon_see_invisible(mtmp)) && rn2(5))
     {
         boolean do_react = TRUE;
 
@@ -1507,9 +1507,9 @@ use_mirror(struct obj *obj)
     }
     else if (!Blind)
     {
-        if (is_invisible(mtmp) && !See_invisible)
+        if (is_invisible(mtmp) && !Can_see_invisible)
             ;
-        else if ((is_invisible(mtmp) && !has_see_invisible(mtmp))
+        else if ((is_invisible(mtmp) && !can_mon_see_invisible(mtmp))
                  /* redundant: can't get here if these are true */
                  || !haseyes(mtmp->data) || notonhead || is_blinded(mtmp))
             pline("%s doesn't seem to notice %s reflection.", Monnam(mtmp),
@@ -3731,7 +3731,7 @@ fig_transform(anything *arg, int64_t timeout)
         /* [m_monnam() yields accurate mon type, overriding hallucination] */
         Sprintf(monnambuf, "%s", an(m_monnam(mtmp)));
         and_vanish[0] = '\0';
-        if ((is_invisible(mtmp) && !See_invisible)
+        if ((is_invisible(mtmp) && !Can_see_invisible)
             || (is_mimic(mtmp->data)
                 && M_AP_TYPE(mtmp) != M_AP_NOTHING))
             suppress_see = TRUE;
@@ -5027,8 +5027,7 @@ use_whip(struct obj *obj)
             wakeup(mtmp, TRUE);
             update_u_action_revert(ACTION_TILE_NO_ACTION);
         } else {
-            if (M_AP_TYPE(mtmp) && !Protection_from_shape_changers
-                && !sensemon(mtmp))
+            if (M_AP_TYPE(mtmp) && !Can_detect_mimic(mtmp))
                 stumble_onto_mimic(mtmp);
             else
                 You("flick your bullwhip towards %s.", mon_nam(mtmp));

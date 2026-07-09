@@ -1033,6 +1033,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         special_effect_wait_until_end(0);
         break;
     case SPE_CONTROL_UNDEAD:
+    case SPE_DOMINATE_UNDEAD:
         res = 1;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
@@ -5363,6 +5364,22 @@ zapnodir(struct obj *obj)
             }
         }
         break;
+    case SPE_UNHOLY_MOUNT:
+        mtmp = summoncreature(obj->otyp, PM_NIGHTMARE, "%s appears before you.", MM_EMIN_COALIGNED | MM_CHAOTIC_SUMMON_ANIMATION,
+            SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH | SUMMONCREATURE_FLAGS_FAITHFUL);
+        if (mtmp)
+        {
+            otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
+            if (otmp)
+            {
+                set_obj_dknown(otmp, 1);
+                set_obj_bknown(otmp, 1);
+                set_obj_rknown(otmp, 1);
+                set_obj_nknown(otmp, 1);
+                put_saddle_on_mon(otmp, mtmp);
+            }
+        }
+        break;
     case SPE_HEAVENLY_ARMY:
         You_ex(ATR_NONE, CLR_MSG_SPELL, "recite an old prayer to %s...", u_gname());
         for (int n = d(2, 4); n > 0; n--)
@@ -8917,7 +8934,7 @@ bhit(int ddx, int ddy, int range, int radius, enum bhit_call_types weapon, int (
                    prepared for multiple hits so just get first one
                    that's either visible or could see its invisible
                    self.  [No tmp_at() cleanup is needed here.] */
-                if (!is_invisible(mtmp) || has_see_invisible(mtmp))
+                if (!is_invisible(mtmp) || can_mon_see_invisible(mtmp))
                 {
                     if (obj)
                     {

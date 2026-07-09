@@ -57,18 +57,18 @@ extern char *viz_rmax;            /* max could see indices */
 #define m_sense_m_telepathically(m, mtarg) \
     ((((has_telepathy(m) && dist2((mtarg)->mx, (mtarg)->my, (m)->mx, (m)->my) <= (TELEPATHY_RANGE * TELEPATHY_RANGE)) || ((has_blind_telepathy(m) || has_telepathy(m)) && is_blinded(m))) && !mon_has_no_apparent_mind(m)) || has_detect_monsters(m))
 #define m_cannotsenseu(m) \
-    ((is_blinded(m) || (Invis && !has_see_invisible(m)) || u.uundetected) && !m_senseu_telepathically(m) && (m) != u.ustuck && (m) != u.usteed)
+    ((is_blinded(m) || (Invis && !can_mon_see_invisible(m)) || u.uundetected) && !m_senseu_telepathically(m) && (m) != u.ustuck && (m) != u.usteed)
 #define m_cannotsense_m(m, mtarg) \
-    ((is_blinded(m) || (is_invisible(mtarg) && !has_see_invisible(m)) || is_mon_mundetected((mtarg))) && !m_sense_m_telepathically(m,mtarg))
+    ((is_blinded(m) || (is_invisible(mtarg) && !can_mon_see_invisible(m)) || is_mon_mundetected((mtarg))) && !m_sense_m_telepathically(m,mtarg))
 
 #define m_canseeu(m)                                       \
-    ((!Invis || has_see_invisible(m)) && !is_blinded(m)    \
+    ((!Invis || can_mon_see_invisible(m)) && !is_blinded(m)    \
              && !(Underwater || u.uburied || is_mon_mburied((m))) \
          ? couldsee((m)->mx, (m)->my)                      \
          : 0)
 
 #define m_cansee_m(magr, mdef)                                       \
-    ((!is_invisible(mdef) || has_see_invisible(magr)) && !is_blinded(magr) && !is_mon_mundetected((mdef))    \
+    ((!is_invisible(mdef) || can_mon_see_invisible(magr)) && !is_blinded(magr) && !is_mon_mundetected((mdef))    \
          ? m_cansee(magr, (mdef)->mx, (mdef)->my)                      \
          : 0)
 
