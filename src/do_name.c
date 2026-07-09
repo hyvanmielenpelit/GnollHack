@@ -2072,15 +2072,17 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
     {
         char rnamecode;
         char *rname = rndmonnam(&rnamecode);
-
+        boolean is_rname_pname = bogon_is_pname(rnamecode);
+        if (do_poly && !is_rname_pname)
+            rname = an(rname);
         Strcat(buf, rname);
-        name_at_start = bogon_is_pname(rnamecode);
+        name_at_start = !do_poly && is_rname_pname;
     }
     else if (do_name && has_umname(mtmp))
     {
         char* umname = UMNAME(mtmp);
         Strcat(buf, umname);
-        name_at_start = TRUE;
+        name_at_start = !do_poly;
     }
     else if (do_name && has_mname(mtmp) && is_mon_u_know_mname(mtmp))
     {
@@ -2089,7 +2091,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
         if (mdat == &mons[PM_GHOST])
         {
             Sprintf(eos(buf), "%s ghost", s_suffix(name));
-            name_at_start = TRUE;
+            name_at_start = !do_poly;
         } 
         else if (is_mplayer(mdat) && (bp = strstri(name, " the ")) != 0) 
         {
@@ -2102,8 +2104,9 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
                 Strcat(pbuf, buf);
             Strcat(pbuf, bp + 5); /* append the rest of the name */
             Strcpy(buf, pbuf);
-            article = ARTICLE_NONE;
-            name_at_start = TRUE;
+            if (!do_poly)
+                article = ARTICLE_NONE;
+            name_at_start = !do_poly;
         } 
         else 
         {
@@ -2123,7 +2126,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
             else
                 Sprintf(buf, "%s%s", tmpbuf, name);
 
-            name_at_start = TRUE;
+            name_at_start = !do_poly;
         }
     } 
     else if (is_mplayer(mdat) && !In_endgame(&u.uz)) 
@@ -2137,8 +2140,8 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
     } 
     else 
     {
-        Strcat(buf, pm_name);
-        name_at_start = (boolean) is_mname_proper_name(mdat);
+        Strcat(buf, do_poly && !is_mname_proper_name(mdat) ? an(pm_name) : pm_name);
+        name_at_start = !do_poly && is_mname_proper_name(mdat);
     }
 
     /* Write article or your in start */
