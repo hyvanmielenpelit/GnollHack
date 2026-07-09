@@ -550,7 +550,7 @@ polyself(int psflags)
             {
                 if (forcecontrol && !forcerestrictedpoly)
                     break;
-                else if (mons[mntmp].difficulty > max(5, (3 * u.ulevel) / 2))
+                else if (mons[mntmp].difficulty > max(MIN_CONTROLLED_POLYMORPH_LEVEL, (3 * u.ulevel) / 2))
                 {
                     if(wizard && !forcecontrol && yn_query("Enforce polymorph control success?") == 'y')
                     {
@@ -574,7 +574,7 @@ polyself(int psflags)
         if (isvamp && (tryct <= 0 || mntmp == PM_WOLF || mntmp == PM_FOG_CLOUD || is_bat(&mons[mntmp])))
             goto do_vampyr;
 
-        if ((!forcecontrol || forcerestrictedpoly) && mntmp >= LOW_PM && (mons[mntmp].difficulty > max(5, u.ulevel * 2) || (!rn2(2) && mons[mntmp].difficulty > max(5, (3 * u.ulevel) / 2))))
+        if ((!forcecontrol || forcerestrictedpoly) && mntmp >= LOW_PM && (mons[mntmp].difficulty > max(MIN_CONTROLLED_POLYMORPH_LEVEL, u.ulevel * 2) || (!rn2(2) && mons[mntmp].difficulty > max(MIN_CONTROLLED_POLYMORPH_LEVEL, (3 * u.ulevel) / 2))))
         {
             /* Control fails -- Randomize instead */
             pline("Oops! That form was too difficult for your polymorph control!");
