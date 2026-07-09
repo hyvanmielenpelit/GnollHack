@@ -570,7 +570,7 @@ weapon_dmg_value(struct obj *otmp, struct monst *mon, struct monst *mattacker, i
     if (otmp->material <= MAT_LEATHER && thick_skinned(ptr))
         /* thick skinned/scaled creatures don't feel it */
         tmp = 0;
-    if (is_shade(ptr) && !shade_glare(otmp))
+    if (is_shade(ptr) && !shade_glare(otmp, mon))
         tmp = 0;
 
     /* "very heavy iron ball"; weight increase is in increments */

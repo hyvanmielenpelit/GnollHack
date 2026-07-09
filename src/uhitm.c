@@ -1047,7 +1047,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
         /* All gloves give bonuses when fighting 'bare-handed'. -- JG
            So do silver rings.  Note:  rings are worn under gloves, so you don't
            get both bonuses, and two silver rings don't give double bonus. */
-        if (is_shade(mdat) && !(obj && shade_glare(obj)))
+        if (is_shade(mdat) && !(obj && shade_glare(obj, mon)))
             damage = 0;
         else
         {
@@ -1212,7 +1212,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
 
                 /* then do only 1-2 points of damage */
                 damage_increase_adtyp = objects[obj->otyp].oc_damagetype;
-                if (is_shade(mdat) && !shade_glare(obj))
+                if (is_shade(mdat) && !shade_glare(obj, mon))
                     damage = 0;
                 else
                     damage = adjust_damage(rnd(2), &youmonst, mon, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);

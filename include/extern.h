@@ -161,7 +161,7 @@ E boolean confers_unluck(struct obj*);
 E boolean artifact_confers_luck(struct obj*);
 E boolean artifact_confers_unluck(struct obj*);
 E boolean arti_reflects(struct obj *);
-E boolean shade_glare(struct obj *);
+E boolean shade_glare(struct obj *, struct monst*);
 E boolean restrict_name(struct obj *, const char *);
 E void set_artifact_intrinsic(struct obj *, int64_t);
 E int touch_artifact(struct obj *, struct monst *);

@@ -688,12 +688,10 @@ arti_reflects(struct obj *obj)
 /* decide whether this obj is effective when attacking against shades;
    does not consider the bonus for blessed objects versus undead */
 boolean
-shade_glare(struct obj *obj)
+shade_glare(struct obj *obj, struct monst* mon)
 {
     if (!obj)
         return FALSE;
-
-    const struct artifact *arti;
 
     /* any silver object is effective */
     if (obj_counts_as_silver(obj))
@@ -703,13 +701,34 @@ shade_glare(struct obj *obj)
     if (is_obj_blessed(obj))
         return TRUE;
 
-    /* non-silver artifacts with bonus against undead also are effective */
-    arti = get_artifact(obj);
-    if (arti && (arti->aflags & AF_DFLAG2) && (arti->mtype & M2_UNDEAD))
-        return TRUE;
+    /* non-silver artifacts with bonus against undead or demon also are effective if the target is undead or demon, respectively */
+    const struct artifact *arti = get_artifact(obj);
+    if (arti)
+    {
+        if (mon && (is_undead(mon->data) || is_vampshifter(mon)) && (arti->aflags & AF_DFLAG2) && (arti->mtype & M2_UNDEAD))
+            return TRUE;
+        if (mon && is_demon(mon->data) && (arti->aflags & AF_DFLAG2) && (arti->mtype & M2_DEMON))
+            return TRUE;
+    }
 
-    if (obj->mythic_suffix && has_obj_mythic_suffix_power(obj, MYTHIC_SUFFIX_POWER_INDEX_UNDEAD_DESTRUCTION))
-        return TRUE;
+    /* non-silver special weapons with bonus against undead or demon also are effective if the target is undead or demon, respectively */
+    int otyp = obj->otyp;
+    if (objects[otyp].oc_target_permissions)
+    {
+        if (mon && (is_undead(mon->data) || is_vampshifter(mon)) && (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) != 0 && (objects[otyp].oc_target_permissions & M2_UNDEAD) != 0)
+            return TRUE;
+        if (mon && is_demon(mon->data) && (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) != 0 && (objects[otyp].oc_target_permissions & M2_DEMON) != 0)
+            return TRUE;
+    }
+
+    /* non-silver mythic weapons with bonus against undead or demon also are effective if the target is undead or demon, respectively */
+    if (obj->mythic_suffix)
+    {
+        if (mon && (is_undead(mon->data) || is_vampshifter(mon)) && has_obj_mythic_suffix_power(obj, MYTHIC_SUFFIX_POWER_INDEX_UNDEAD_DESTRUCTION))
+            return TRUE;
+        if (mon && is_demon(mon->data) && has_obj_mythic_suffix_power(obj, MYTHIC_SUFFIX_POWER_INDEX_DEMON_SLAYING))
+            return TRUE;
+    }
 
     /* [if there was anything with special bonus against noncorporeals,
        it would be effective too] */
@@ -1624,7 +1643,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
     /* reverse from AD&D. */
     if (artifact_has_flag(otmp, (AF_BEHEAD | AF_BISECT)))
     {
-        if (artifact_has_flag(otmp, AF_BISECT) && dieroll == 1 && (!is_shade(mdef->data) || shade_glare(otmp)) && !(youdefend ? (Bisection_resistance || Invulnerable || is_incorporeal(mdef->data)) : resists_bisection(mdef)))
+        if (artifact_has_flag(otmp, AF_BISECT) && dieroll == 1 && (!is_shade(mdef->data) || shade_glare(otmp, mdef)) && !(youdefend ? (Bisection_resistance || Invulnerable || is_incorporeal(mdef->data)) : resists_bisection(mdef)))
         {
             Strcpy(wepdesc, The(artifact_hit_desc));
             /* not really beheading, but close */
@@ -1713,7 +1732,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                     *dmgptr = 0;
                     return (vis) * 2;
                 }
-                if (is_incorporeal(mdef->data) || amorphous(mdef->data) || (is_shade(mdef->data) && !shade_glare(otmp)))
+                if (is_incorporeal(mdef->data) || amorphous(mdef->data) || (is_shade(mdef->data) && !shade_glare(otmp, mdef)))
                 {
                     if (vis)
                         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s slices through %s %s.", The(wepdesc),
@@ -1762,7 +1781,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                     *dmgptr = 0;
                     return 2;
                 }
-                if (is_incorporeal(youmonst.data) || amorphous(youmonst.data) || (is_shade(youmonst.data) && !shade_glare(otmp)))
+                if (is_incorporeal(youmonst.data) || amorphous(youmonst.data) || (is_shade(youmonst.data) && !shade_glare(otmp, &youmonst)))
                 {
                     pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s slices through your %s.", The(wepdesc),
                           body_part(NECK));

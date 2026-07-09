@@ -1295,7 +1295,7 @@ toss_up(struct obj *obj, boolean hitsroof)
                 damage = 1;
             else if (damage > 6)
                 damage = 6;
-            if (is_shade(youmonst.data) && !shade_glare(obj))
+            if (is_shade(youmonst.data) && !shade_glare(obj, &youmonst))
                 damage = 0;
         }
         if (damage > 1 && less_damage)
