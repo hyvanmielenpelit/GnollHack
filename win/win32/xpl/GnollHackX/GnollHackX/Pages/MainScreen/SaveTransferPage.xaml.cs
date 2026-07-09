@@ -1348,6 +1348,7 @@ namespace GnollHackX.Pages.MainScreen
 
             BlobContainerClient containerClient = null;
             BlobClient cloudLockClient = null;
+            bool validationFailed = false;
 
             try
             {
@@ -1592,7 +1593,8 @@ namespace GnollHackX.Pages.MainScreen
                 bool dlValidated = GHApp.GnollHackService.ValidateSaveFile(tempSavePath, out string dlValidateMsg);
                 if (!dlValidated)
                 {
-                    throw new Exception("Downloaded save validation failed: " + dlValidateMsg);
+                    validationFailed = true;
+                    throw new Exception(dlValidateMsg);
                 }
 
                 ulong dlVer = 0, dlCompat = 0;
@@ -1600,12 +1602,14 @@ namespace GnollHackX.Pages.MainScreen
                 long dlTimeStamp = 0;
                 if (!GHApp.GnollHackService.GetSaveFileInfo(tempSavePath, out dlVer, out dlCompat, out dlFlags, out dlTimeStamp, out _, out _, out _))
                 {
-                    throw new Exception("Could not read downloaded save statistics.");
+                    validationFailed = true;
+                    throw new Exception("Could not read save statistics.");
                 }
                 bool dlTracked = ((GHSaveFlags)dlFlags & GHSaveFlags.FileTrackValid) != 0 && ((GHSaveFlags)dlFlags & GHSaveFlags.NonTrackingMask) == 0;
                 if (dlTracked != manifest.HasTrackingFile)
                 {
-                    throw new Exception("Downloaded save tracked status mismatch.");
+                    validationFailed = true;
+                    throw new Exception("Tracked status mismatch.");
                 }
 
                 // FIX-D1: Copy files to save folder BEFORE consuming the tracking token.
@@ -1757,7 +1761,24 @@ namespace GnollHackX.Pages.MainScreen
             {
                 PopupGrid.IsVisible = false;
                 await CleanUpDownloadFailAsync(containerClient, cloudLockClient, tempDir, downloadSessionDir);
-                await GHApp.DisplayMessageBox(this, "Download Failed", "Error during save file download: " + ex.Message, "OK");
+                if (validationFailed)
+                {
+                    bool deleteCloudSave = await GHApp.DisplayMessageBox(
+                        this,
+                        "Validation Failed",
+                        "Download succeeded, but the validation of the downloaded save file failed: " + ex.Message + "\n\nDo you want to delete this invalid save game from cloud storage?",
+                        "Yes",
+                        "No"
+                    );
+                    if (deleteCloudSave)
+                    {
+                        await DeleteInvalidSaveAsync(cloudFile);
+                    }
+                }
+                else
+                {
+                    await GHApp.DisplayMessageBox(this, "Download Failed", "Error during save file download: " + ex.Message, "OK");
+                }
             }
             finally
             {
