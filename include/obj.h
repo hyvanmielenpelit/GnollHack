@@ -926,7 +926,7 @@ enum elemental_enchantments {
      || (objects[typ].oc_material == MAT_GEMSTONE                      \
          && (typ != DILITHIUM_CRYSTAL && typ != RUBY && typ != DIAMOND \
              && typ != SAPPHIRE && typ != BLACK_OPAL && typ != EMERALD \
-             && typ != OPAL && typ != PEARL && typ != BLACK_PEARL))))
+             && typ != OPAL && typ != PEARL && typ != BLACK_PEARL && typ != GEM_OF_SEEING))))
 
 /* Exceptionality */
 enum exceptionality_types {

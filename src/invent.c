@@ -2836,7 +2836,7 @@ getobj_ex(const char *let, const char *word, int show_weights, boolean show_quic
                          && otyp != CREAM_PIE && otyp != EUCALYPTUS_LEAF)
                      || (otmp->oclass == MISCELLANEOUS_CLASS
                          && !is_obj_appliable(otmp))
-                     || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
+                     || (otmp->oclass == GEM_CLASS && (!objects[otmp->otyp].oc_name_known || !is_obj_appliable(otmp)))))
              || (!strcmp(word, "invoke")
                  && !otmp->oartifact
                  && !is_otyp_unique(otyp)
@@ -3370,7 +3370,7 @@ construct_getobj_letters(const char *let, const char *word, boolean (*validitemf
                             && otyp != CREAM_PIE && otyp != EUCALYPTUS_LEAF)
                         || (otmp->oclass == MISCELLANEOUS_CLASS
                             && !is_obj_appliable(otmp))
-                        || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
+                        || (otmp->oclass == GEM_CLASS && (!objects[otmp->otyp].oc_name_known || !is_obj_appliable(otmp)))))
                 || (!strcmp(word, "take items out of") && (!Is_container(otmp) || (objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || (otmp->otyp == BAG_OF_TRICKS && is_obj_cknown(otmp) && otmp->charges == 0) || (Is_proper_container(otmp) && is_obj_cknown(otmp) && !Has_contained_contents(otmp))))
                 || (!strcmp(word, "put items in") && (!Is_container(otmp) || (objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp))))
                 || (!strcmp(word, "invoke")

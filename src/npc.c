@@ -503,16 +503,22 @@ npcini(d_level *lvl, struct mkroom *sroom, int sx, int sy, uchar npctype, int mt
             }
 
             /* Random ores */
-            for (i = 0; i < 24; i++)
+            int num_ores = rnd(6) + 18;
+            for (i = 0; i < num_ores; i++)
             {
                 mongets(npc, rnd_class(NUGGET_OF_IRON_ORE, NUGGET_OF_MITHRIL_ORE));
             }
 
             /* Random gems */
-            for (i = 0; i < 24; i++)
+            boolean has_seeing = !rn2(Inhell ? 5 : 20);
+            int num_gems = rnd(6) + 18 - (has_seeing ? 1 : 0);
+            for (i = 0; i < num_gems; i++)
             {
                 mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
             }
+
+            if (has_seeing)
+                mongets(npc, GEM_OF_SEEING);
 
             /* Manual */
             struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc,  MAT_NONE, MANUAL_CATALOGUE_OF_GEMS_AND_STONES, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);

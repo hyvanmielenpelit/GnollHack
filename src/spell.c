@@ -3226,6 +3226,9 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
             vision_recalc(0);
             see_monsters();
             break;
+        case SPE_TRUE_SEEING:
+            see_monsters();
+            break;
         default:
             break;
         }

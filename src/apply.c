@@ -26,6 +26,7 @@ static void use_grease(struct obj *);
 static int use_wand_on_object(struct obj*);
 static void use_trap(struct obj *);
 static void use_stone(struct obj *);
+static void use_gem(struct obj*);
 static int set_trap(void); /* occupation callback */
 static int use_whip(struct obj *);
 static void display_polearm_positions(int);
@@ -4560,6 +4561,62 @@ use_stone(struct obj *tstone)
     return;
 }
 
+static void
+use_gem(struct obj* otmp)
+{
+    if (!otmp || otmp->oclass != GEM_CLASS)
+        return;
+
+    if (is_graystone(otmp))
+    {
+        use_stone(otmp);
+        return;
+    }
+
+    if (Blind)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "peek into that while blind!");
+        return;
+    }
+
+    set_obj_dknown(otmp, 1);
+
+    if (otmp->otyp != GEM_OF_SEEING || (otmp->charges <= 0 && !objects[otmp->otyp].oc_name_known))
+    {
+        play_sfx_sound(SFX_NOTHING_FOUND);
+        You_ex(ATR_NONE, NO_COLOR, "peek closer into %s but find nothing interesting there.", thecxname(otmp));
+        return;
+    }
+
+    if (otmp->charges <= 0)
+    {
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
+        You_ex(ATR_NONE, NO_COLOR, "peek into %s but it remains blurred.", thecxname(otmp));
+        return;
+    }
+
+    boolean had_before = True_seeing;
+    You_ex(ATR_NONE, NO_COLOR, "peek into %s...", thecxname(otmp));
+    
+    otmp->charges--;
+
+    play_sfx_sound(SFX_GENERAL_GAIN_ABILITY_SPELL);
+    special_effect_wait_until_action(0);
+    addspellintrinsictimeout(SPE_TRUE_SEEING);
+    see_monsters();
+    if (had_before)
+        You_ex1(ATR_NONE, CLR_MSG_POSITIVE, "feel that your ability to see things as they truly are strengthens.");
+    special_effect_wait_until_end(0);
+    refresh_u_tile_gui_info(TRUE);
+    if (!objects[otmp->otyp].oc_name_known)
+    {
+        makeknown(otmp->otyp);
+        prinv((char*)0, otmp, 0UL);
+    }
+    update_inventory();
+}
+
 static struct trapinfo {
     struct obj *tobj;
     xchar tx, ty;
@@ -6045,10 +6102,14 @@ setapplyclasses(char class_list[])
                 && (!is_obj_dknown(otmp)
                     || (!knowoil && !objects[otyp].oc_name_known))))
             addpotions = TRUE;
+        /* Touchstone seems to be an item type that the player is supposed to know, so we add stones if touchstone has not been find and this might be it */
         if (otyp == TOUCHSTONE
             || (is_graystone(otmp)
                 && (!is_obj_dknown(otmp)
                     || (!knowtouchstone && !objects[otyp].oc_name_known))))
+            addstones = TRUE;
+        /* Gem of seeing is a secret, so we add gems only if it has been found */
+        if (otyp == GEM_OF_SEEING && is_obj_dknown(otmp) && objects[otyp].oc_name_known)
             addstones = TRUE;
         if (otyp == CREAM_PIE || otyp == EUCALYPTUS_LEAF)
             addfood = TRUE;
@@ -6413,6 +6474,7 @@ doapply_core(int applymode)
         case LOADSTONE:
         case JINXSTONE:
         case TOUCHSTONE:
+        case PRAYERSTONE:
             use_stone(obj);
             break;
         case CUBIC_GATE:
@@ -6453,6 +6515,11 @@ doapply_core(int applymode)
             else if (is_pick(obj) || is_axe(obj) || is_saw(obj))
             {
                 res = use_pick_axe(obj);
+                break;
+            }
+            else if (obj->oclass == GEM_CLASS)
+            {
+                use_gem(obj);
                 break;
             }
             play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);

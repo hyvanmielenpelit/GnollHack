@@ -1025,7 +1025,6 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
     case SPE_CHARM_MONSTER:
     case SPE_DOMINATE_MONSTER:
     {
-        boolean was_tame = is_tame(mtmp);
         res = 1;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
@@ -1038,7 +1037,6 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
     case SPE_CONTROL_UNDEAD:
     case SPE_DOMINATE_UNDEAD:
     {
-        boolean was_tame = is_tame(mtmp);
         res = 1;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);

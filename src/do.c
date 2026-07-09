@@ -1544,6 +1544,18 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                     }
                 }
             }
+            else if (name_known && is_otyp_appliable(otyp))
+            {
+                Strcpy(buf2, "Yes");
+                Sprintf(buf, "Appliable:              %s", buf2);
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+        }
+        else if (name_known && is_otyp_appliable(otyp))
+        {
+            Strcpy(buf2, "Yes");
+            Sprintf(buf, "Appliable:              %s", buf2);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
 
         int baserange = 0;
