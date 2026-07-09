@@ -4245,7 +4245,7 @@ domagictrap(void)
                     mtmp = m_at(u.ux + i, u.uy + j);
                     if (mtmp)
                     {
-                        if (tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE))
+                        if (tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE, ""))
                         {
                             if (canseemon(mtmp))
                             {

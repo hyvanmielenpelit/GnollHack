@@ -901,7 +901,7 @@ npcini(d_level *lvl, struct mkroom *sroom, int sx, int sy, uchar npctype, int mt
                 }
                 if (cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
-                    ENPC(npc)->special_teach_spells[cnt] = !rn2(3) ? SPE_POLYMORPH : !rn2(2) ? SPE_CREATE_STONE_GOLEM : SPE_FLESH_TO_STONE;
+                    ENPC(npc)->special_teach_spells[cnt] = !rn2(3) ? SPE_POLYMORPH_OTHER : !rn2(2) ? SPE_CREATE_STONE_GOLEM : SPE_FLESH_TO_STONE;
                     cnt++;
                 }
 

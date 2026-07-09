@@ -331,7 +331,7 @@ deadbook(struct obj *book2)
                             mtmp->mtame++;
                     }
                     else
-                        (void)tamedog(mtmp, (struct obj*) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE);
+                        (void)tamedog(mtmp, (struct obj*) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE, "");
                 }
                 else 
                 {
@@ -2806,7 +2806,7 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
     case SPE_TURN_UNDEAD:
     case SPE_NEGATE_UNDEATH:
     case SPE_BANISH_DEMON:
-    case SPE_POLYMORPH:
+    case SPE_POLYMORPH_OTHER:
     case SPE_TELEPORT_MONSTER:
     case SPE_CANCELLATION:
     case SPE_DISJUNCTION:
@@ -3106,6 +3106,8 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
     case SPE_LEVITATION:
     case SPE_RESTORE_ABILITY:
     case SPE_INVISIBILITY:
+    case SPE_POLYMORPH_SELF:
+    case SPE_SHAPE_CHANGE:
         //play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);
         play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
@@ -3217,7 +3219,18 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
         int multicolors[1] = { CLR_MSG_HINT };
         You_multi_ex(ATR_NONE, CLR_MSG_SPELL, no_multiattrs, multicolors, "successfully cast \'%s\'.", spellname(spell));
         addspellintrinsictimeout(otyp);
+        switch (otyp)
+        {
+        case SPE_ASTRAL_VISION:
+        case SPE_X_RAY_VISION:
+            vision_recalc(0);
+            see_monsters();
+            break;
+        default:
+            break;
+        }
         special_effect_wait_until_end(0);
+        refresh_u_tile_gui_info(TRUE);
         break;
     }
     case SPE_JUMPING:

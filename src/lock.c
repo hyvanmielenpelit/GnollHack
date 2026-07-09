@@ -1402,7 +1402,7 @@ boxlock(struct obj *obj, struct obj *otmp)
         newsym(obj->ox, obj->oy);
         break;
     case WAN_POLYMORPH:
-    case SPE_POLYMORPH:
+    case SPE_POLYMORPH_OTHER:
         /* maybe start unlocking chest, get interrupted, then zap it;
            we must avoid any attempt to resume unlocking it */
         if (xlock.box == obj)

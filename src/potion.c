@@ -2012,10 +2012,13 @@ peffects(struct obj *otmp)
             fix_petrification();
         unkn++; /* holy/unholy water can burn like acid too */
         break;
+    case SPE_POLYMORPH_SELF:
+    case SPE_SHAPE_CHANGE:
     case POT_POLYMORPH:
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a little %s.", Hallucination ? "normal" : "strange");
+        if (otmp->otyp == POT_POLYMORPH)
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a little %s.", Hallucination ? "normal" : "strange");
         if (!Unchanging && !Polymorph_resistance)
         {
             if (isdiluted && !rn2(2))
@@ -2024,7 +2027,7 @@ peffects(struct obj *otmp)
             }
             else
             {
-                polyself(0);
+                polyself(otmp->otyp == SPE_SHAPE_CHANGE ? 1 : otmp->otyp == SPE_POLYMORPH_SELF ? 5 : 0);
             }
         }
         special_effect_wait_until_end(0);
@@ -4437,7 +4440,7 @@ djinni_from_bottle(struct obj *obj)
         convert_magic_lamp_to_oil_lamp(obj);
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_THANK_YOU_FOR_FREEING);
         verbalize_talk1("Thank you for freeing me!");
-        (void) tamedog(mtmp, (struct obj *) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
+        (void) tamedog(mtmp, (struct obj *) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE, "");
         break;
     case 2:
         convert_magic_lamp_to_oil_lamp(obj);

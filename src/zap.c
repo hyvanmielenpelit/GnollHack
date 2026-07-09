@@ -1024,26 +1024,32 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         break;
     case SPE_CHARM_MONSTER:
     case SPE_DOMINATE_MONSTER:
+    {
+        boolean was_tame = is_tame(mtmp);
         res = 1;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
         debugprint("dominate/charm monster before: otyp=%d, mnum=%d, mx=%d, my=%d, tame=%d", otyp, mtmp->mnum, mtmp->mx, mtmp->my, is_tame(mtmp));
-        helpful_gesture = (maybe_tame(mtmp, otmp, &youmonst) == 1 || is_tame(mtmp));
+        helpful_gesture = (maybe_tame(mtmp, otmp, &youmonst, otyp == SPE_DOMINATE_MONSTER ? "permanently charmed" : "charmed") == 1 || is_tame(mtmp));
         debugprint("dominate/charm monster after: otyp=%d, mnum=%d, mx=%d, my=%d, tame=%d, res=%d", otyp, mtmp->mnum, mtmp->mx, mtmp->my, is_tame(mtmp), (int)helpful_gesture);
         special_effect_wait_until_end(0);
         break;
+    }
     case SPE_CONTROL_UNDEAD:
     case SPE_DOMINATE_UNDEAD:
+    {
+        boolean was_tame = is_tame(mtmp);
         res = 1;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
         debugprint("control undead before: otyp=%d, mnum=%d, mx=%d, my=%d, tame=%d", otyp, mtmp->mnum, mtmp->mx, mtmp->my, is_tame(mtmp));
-        helpful_gesture = (maybe_controlled(mtmp, otmp, &youmonst) == 1 || is_tame(mtmp));
+        helpful_gesture = (maybe_controlled(mtmp, otmp, &youmonst, otyp == SPE_DOMINATE_UNDEAD ? "permanently controlled" : "controlled") == 1 || is_tame(mtmp));
         debugprint("control undead after: otyp=%d, mnum=%d, mx=%d, my=%d, tame=%d, res=%d", otyp, mtmp->mnum, mtmp->mx, mtmp->my, is_tame(mtmp), (int)helpful_gesture);
         special_effect_wait_until_end(0);
         break;
+    }
     case WAN_POLYMORPH:
-    case SPE_POLYMORPH:
+    case SPE_POLYMORPH_OTHER:
     case POT_POLYMORPH:
         res = 1;
         if (is_tailed_long_worm(mtmp->data) && has_mcorpsenm(mtmp)) 
@@ -3047,7 +3053,7 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
             /* tame the revived monster if its ghost was tame */
             if (ghost->mtame && !mtmp->mtame)
             {
-                if (tamedog(mtmp, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE)) {
+                if (tamedog(mtmp, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE, "")) {
                     /* ghost's edog data is ignored */
                     mtmp->mtame = ghost->mtame;
                 }
@@ -3083,7 +3089,7 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
     if (animateintomon >= 0)
     {
         //Animated are tamed
-        tamedog(mtmp, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
+        tamedog(mtmp, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE, "");
         set_mon_disregards_enemy_strength(mtmp, TRUE);
         set_mon_disregards_own_health(mtmp, TRUE);
     }
@@ -3999,7 +4005,7 @@ poly_obj(struct obj *obj, int id)
         break;
 
     case SPBOOK_CLASS:
-        while (otmp->otyp == SPE_POLYMORPH)
+        while (otmp->otyp == SPE_POLYMORPH_OTHER)
         {
             otmp->otyp = rnd_class(SPE_DIG, SPE_BLANK_PAPER);
             otmp->material = objects[otmp->otyp].oc_material;
@@ -4409,7 +4415,7 @@ bhito(struct obj *obj, struct obj *otmp, struct monst *origmonst)
         switch (wandtyp) 
         {
         case WAN_POLYMORPH:
-        case SPE_POLYMORPH:
+        case SPE_POLYMORPH_OTHER:
             res = 1;
             if (!is_polymorphable(obj) || obj_resists(obj, 5, 95))
             {
@@ -6989,7 +6995,7 @@ zapyourself(struct obj *obj, boolean ordinary)
         break;
 
     case WAN_POLYMORPH:
-    case SPE_POLYMORPH:
+    case SPE_POLYMORPH_OTHER:
         damage = 0;
         if (!Unchanging && !Polymorph_resistance) {
             learn_it = TRUE;
@@ -7785,7 +7791,7 @@ zap_steed(struct obj *obj)
     case SPE_NEGATE_MAGIC_RESISTANCE:
     case SPE_FORBID_SUMMONING:
     case WAN_POLYMORPH:
-    case SPE_POLYMORPH:
+    case SPE_POLYMORPH_OTHER:
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
     case SPE_FORCE_STRIKE:
@@ -8206,7 +8212,7 @@ zap_updown(struct obj *obj)
         if ((e = engr_at(x, y)) != 0 && e->engr_type != ENGR_HEADSTONE && e->engr_type != ENGR_SIGNPOST) {
             switch (obj->otyp) {
             case WAN_POLYMORPH:
-            case SPE_POLYMORPH:
+            case SPE_POLYMORPH_OTHER:
                 del_engr(e);
                 make_engr_at(x, y, random_engraving(buf), moves, (xchar) 0, ENGR_FLAGS_NONE);
                 break;
@@ -12441,7 +12447,7 @@ uint64_t scflags;
         if(!is_mon_isfaithful(mon))
             set_mon_isfaithful(mon, faithful);
 
-        (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
+        (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE, "");
 
         if(spl_otyp > STRANGE_OBJECT && ((objects[spl_otyp].oc_spell_dur_dice > 1 && objects[spl_otyp].oc_spell_dur_diesize > 1) || objects[spl_otyp].oc_spell_dur_plus))
             mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
@@ -12474,7 +12480,7 @@ summondemon(int spl_otyp)
         set_mon_disregards_enemy_strength(mon, TRUE);
         set_mon_disregards_own_health(mon, FALSE);
         set_mon_hasbloodlust(mon, TRUE);
-        (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
+        (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE, "");
         if ((objects[spl_otyp].oc_spell_dur_dice > 0 && objects[spl_otyp].oc_spell_dur_diesize > 0) || objects[spl_otyp].oc_spell_dur_plus > 0)
         {
             mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
@@ -12516,7 +12522,7 @@ summondemogorgon(int spl_otyp)
         set_mon_hasbloodlust(mon, TRUE);
         if (u.ualign.type == A_CHAOTIC)
         {
-            (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
+            (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE, "");
             //set_mon_mpeaceful(mon, TRUE);
             //set_mon_isprotector(mon, TRUE);
         }
@@ -12561,7 +12567,7 @@ summonbahamut(int spl_otyp UNUSED)
 
     if (mon)
     {
-        (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
+        (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE, "");
 
         //set_mon_issummoned(mon, TRUE);
         set_mon_disregards_enemy_strength(mon, TRUE);

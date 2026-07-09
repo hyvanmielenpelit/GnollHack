@@ -1791,7 +1791,7 @@ dogfood(struct monst *mon, struct obj *obj)
  * succeeded.
  */
 boolean
-tamedog(struct monst *mtmp, struct obj *obj, uchar forcetaming, int charm_type, unsigned short duration, boolean verbose, boolean thrown)
+tamedog(struct monst *mtmp, struct obj *obj, uchar forcetaming, int charm_type, unsigned short duration, boolean verbose, boolean thrown, const char* tame_verb)
 {
     /* The Wiz, Medusa and the quest nemeses aren't even made peaceful. */
     if (!mtmp || is_mon_iswiz(mtmp) || is_medusa(mtmp->data)
@@ -1928,6 +1928,8 @@ tamedog(struct monst *mtmp, struct obj *obj, uchar forcetaming, int charm_type, 
         else if (is_tame(mtmp) && !was_tame)
         {
             newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+            if (verbose && tame_verb && *tame_verb)
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s is %s!", Monnam(mtmp), tame_verb);
         }
     }
 
@@ -1936,12 +1938,15 @@ tamedog(struct monst *mtmp, struct obj *obj, uchar forcetaming, int charm_type, 
         int headnum = (int)min(mtmp->heads_left, mtmp->heads_tamed);
         if (is_cerberus && headnum > 0 && headnum <= mtmp->heads_left)
         {
-            const char* headstr[4] = { "first", "second", "third", "ancillary" };
-            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s %s head %s %s and seems to appreciate it a lot.",
-                s_suffix(Monnam(mtmp)), headstr[min(3, headnum - 1)],
-                thrown ? "catches" : "takes", yname(obj));
-            if(headnum < mtmp->heads_left)
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "However, %d other head%s still remain %s.", mtmp->heads_left - headnum, plur(mtmp->heads_left - headnum), is_peaceful(mtmp) ? "untamed" : "hostile");
+            if (verbose)
+            {
+                const char* headstr[4] = { "first", "second", "third", "ancillary" };
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s %s head %s %s and seems to appreciate it a lot.",
+                    s_suffix(Monnam(mtmp)), headstr[min(3, headnum - 1)],
+                    thrown ? "catches" : "takes", yname(obj));
+                if (headnum < mtmp->heads_left)
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "However, %d other head%s still remain %s.", mtmp->heads_left - headnum, plur(mtmp->heads_left - headnum), is_peaceful(mtmp) ? "untamed" : "hostile");
+            }
             place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
             /* devour the food (might grow into larger, genocided monster) */
             debugprint("tamedog: %d", obj->otyp);
@@ -1949,7 +1954,8 @@ tamedog(struct monst *mtmp, struct obj *obj, uchar forcetaming, int charm_type, 
         }
         else if (!thrown)
         {
-            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s takes %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
+            if (verbose)
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s takes %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
             /* defer eating until the edog extension has been set up */
             place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
             /* devour the food (might grow into larger, genocided monster) */

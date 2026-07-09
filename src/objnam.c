@@ -5395,11 +5395,11 @@ retry:
     }
 
     if (!oclass)
-        return ((struct obj *) 0);
- any:
+        return ((struct obj*)0);
+any:
     if (!oclass)
-        oclass = wrpsym[rn2((int) sizeof wrpsym)];
- typfnd:
+        oclass = wrpsym[rn2((int)sizeof wrpsym)];
+typfnd:
     if (typ)
         oclass = objects[typ].oc_class;
 
@@ -5449,7 +5449,20 @@ retry:
             break;
         }
     }
-    
+
+    if (typ > 0 && !wiz_wishing && (objects[typ].oc_flags6 & O6_SPECIAL_WISHING_CHANCE) != 0)
+    {
+        if ((objects[typ].oc_flags6 & O6_BELT_OF_GIANT_STRENGTH) != 0)
+        {
+            int belt_diff = typ - BELT_OF_HILL_GIANT_STRENGTH;
+            if (belt_diff > 0 && belt_diff <= BELT_OF_STORM_GIANT_STRENGTH - BELT_OF_HILL_GIANT_STRENGTH)
+            {
+                if (rn2(6) >= 6 - belt_diff) /* If fails, give belt of hill giant strength instead */
+                    typ = BELT_OF_HILL_GIANT_STRENGTH;
+            }
+        }
+    }
+
     /*
      * Create the object, then fine-tune it.
      */

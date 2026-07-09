@@ -1603,7 +1603,7 @@ turn_undead_success_effect(struct monst *mtmp, int chance, int dmg, int duration
                 }
                 else if (mindless(mtmp->data) || !check_ability_resistance_success(mtmp, A_WIS, save_adj))
                 {
-                    (void)tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, 2, 0, TRUE, FALSE);
+                    (void)tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, 2, 0, TRUE, FALSE, "controlled");
                 }
                 newsym(mtmp->mx, mtmp->my);
             }
@@ -1736,8 +1736,8 @@ uthitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst UNUSED)
                 {
                     if (mtmp->m_lev <= 10 && mtmp->m_lev < u.ulevel && rn2(100) < (percentchance - 100))
                     {
-                        You("successfully take control of %s.", the(mon_nam(mtmp)));
-                        (void)tamedog(mtmp, (struct obj*) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE);
+                        //You("successfully take control of %s.", the(mon_nam(mtmp)));
+                        (void)tamedog(mtmp, (struct obj*) 0, TAMEDOG_NO_FORCED_TAMING, TRUE, 0, FALSE, "controlled");
                     }
                     else
                     {

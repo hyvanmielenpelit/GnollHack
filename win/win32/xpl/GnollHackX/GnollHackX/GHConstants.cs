@@ -2236,7 +2236,7 @@ namespace GnollHackX
         public const float OBJECT_PIT_SCALING_FACTOR = 0.75f;
         public const int NUM_BUFF_BIT_ULONGS = 8;
         public const int BUFFS_PER_TILE = 24;
-        public const int MAX_PROPS = 170;
+        public const int MAX_PROPS = 194;
         public const int LAST_PROP = (MAX_PROPS - 1);
         public const int MaxObjectsDrawn = 12;
         public const int OBJECT_PILE_START_HEIGHT = 2;

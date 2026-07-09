@@ -1644,7 +1644,7 @@ forget(int howmuch)
 
 /* monster is hit by scroll of taming's effect */
 int
-maybe_tame(struct monst *mtmp, struct obj *sobj, struct monst *origmonst)
+maybe_tame(struct monst *mtmp, struct obj *sobj, struct monst *origmonst, const char* tame_verb)
 {
     boolean was_tame = is_tame(mtmp);
     boolean was_peaceful = is_peaceful(mtmp);
@@ -1683,7 +1683,7 @@ maybe_tame(struct monst *mtmp, struct obj *sobj, struct monst *origmonst)
             }
 
             /* tame dog verbosely */
-            if (!tamedog(mtmp, (struct obj*) 0, TAMEDOG_NO_FORCED_TAMING, charmed, duration, TRUE, FALSE) || !is_tame(mtmp))
+            if (!tamedog(mtmp, (struct obj*) 0, TAMEDOG_NO_FORCED_TAMING, charmed, duration, TRUE, FALSE, tame_verb) || !is_tame(mtmp))
             {
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected!", Monnam(mtmp));
@@ -1710,7 +1710,7 @@ maybe_tame(struct monst *mtmp, struct obj *sobj, struct monst *origmonst)
 
 /* Control Undead */
 int
-maybe_controlled(struct monst *mtmp, struct obj *sobj, struct monst *origmonst)
+maybe_controlled(struct monst *mtmp, struct obj *sobj, struct monst *origmonst, const char* tame_verb)
 {
     if (!mtmp || !sobj)
         return 0;
@@ -1743,7 +1743,7 @@ maybe_controlled(struct monst *mtmp, struct obj *sobj, struct monst *origmonst)
             }
 
             /* tame dog verbosely */
-            if (!tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, controlled, duration, TRUE, FALSE) || !is_tame(mtmp))
+            if (!tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, controlled, duration, TRUE, FALSE, tame_verb) || !is_tame(mtmp))
             {
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected!", Monnam(mtmp));
@@ -2472,10 +2472,12 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
     case SPE_MASS_CHARM:
     {
         int candidates, res, results, vis_results;
+        const char* tame_verb = otyp == SCR_TAMING ? "tamed" : 
+            otyp == SPE_MASS_DOMINATION || otyp == SPE_SPHERE_OF_DOMINATION ? "dominated" : "charmed";
 
         if (u.uswallow) {
             candidates = 1;
-            results = vis_results = maybe_tame(u.ustuck, sobj, otyp != SCR_TAMING ? &youmonst : (struct monst*)0);
+            results = vis_results = maybe_tame(u.ustuck, sobj, otyp != SCR_TAMING ? &youmonst : (struct monst*)0, tame_verb);
         }
         else {
             int i, j, bd = confused ? 5 : 1;
@@ -2542,7 +2544,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
                     if ((mtmp = m_at(cc.x + i, cc.y + j)) != 0 || (!i && !j && (mtmp = u.usteed) != 0))
                     {
                         ++candidates;
-                        res = maybe_tame(mtmp, sobj, otyp != SCR_TAMING ? &youmonst : (struct monst*)0);
+                        res = maybe_tame(mtmp, sobj, otyp != SCR_TAMING ? &youmonst : (struct monst*)0, tame_verb);
                         results += res;
                         if (canspotmon(mtmp))
                             vis_results += res;
@@ -4497,7 +4499,7 @@ create_particular_creation(struct _create_particular_data *d)
 
         if (d->maketame) 
         {
-            (void) tamedog(mtmp, (struct obj *) 0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
+            (void) tamedog(mtmp, (struct obj *) 0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE, "");
         } 
         else if (d->makepeaceful || d->makehostile) 
         {

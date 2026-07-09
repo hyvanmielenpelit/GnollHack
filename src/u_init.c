@@ -37,6 +37,8 @@ static NEARDATA short nocreate = STRANGE_OBJECT;
 static NEARDATA short nocreate2 = STRANGE_OBJECT;
 static NEARDATA short nocreate3 = STRANGE_OBJECT;
 static NEARDATA short nocreate4 = STRANGE_OBJECT;
+static NEARDATA short nocreate5 = STRANGE_OBJECT;
+static NEARDATA short nocreate6 = STRANGE_OBJECT;
 
 /*
  *      Initial inventory for the various roles.
@@ -954,6 +956,8 @@ u_init(void)
     nocreate2 = STRANGE_OBJECT;
     nocreate3 = STRANGE_OBJECT;
     nocreate4 = STRANGE_OBJECT;
+    nocreate5 = STRANGE_OBJECT;
+    nocreate6 = STRANGE_OBJECT;
 
     adjabil(0, 1);
     u.ulevel = u.ulevelmax = 1;
@@ -1603,7 +1607,7 @@ ini_inv(const struct trobj *trop)
 
                 while (otyp == WAN_WISHING || otyp == nocreate
                     || otyp == nocreate2 || otyp == nocreate3
-                    || otyp == nocreate4 || otyp == RIN_LEVITATION
+                    || otyp == nocreate4 || otyp == nocreate5 || otyp == nocreate6 || otyp == RIN_LEVITATION
                     || otyp == AMULET_OF_LIFE_SAVING
                     /* 'useless' items */
                     || is_cursed_magic_item(obj)
@@ -1678,12 +1682,15 @@ ini_inv(const struct trobj *trop)
                     break;
                 case RIN_POLYMORPH_CONTROL:
                     nocreate = RIN_POLYMORPH;
-                    nocreate2 = SPE_POLYMORPH;
+                    nocreate2 = SPE_POLYMORPH_OTHER;
                     nocreate3 = POT_POLYMORPH;
+                    nocreate4 = SPE_POLYMORPH_SELF;
+                    nocreate5 = SPE_SHAPE_CHANGE;
+                    break;
                 }
                 /* Don't have 2 of the same ring or spellbook */
                 if (obj->oclass == RING_CLASS || obj->oclass == SPBOOK_CLASS)
-                    nocreate4 = otyp;
+                    nocreate6 = otyp;
             }
 
             /* Don't start with +0 or negative rings */

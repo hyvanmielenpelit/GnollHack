@@ -3043,7 +3043,7 @@ arti_invoke(struct obj *obj)
             if (mon)
             {
                 set_mon_issummoned(mon, TRUE);
-                (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
+                (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE, "");
 
                 if (temporary_effect)
                 {
@@ -3071,7 +3071,7 @@ arti_invoke(struct obj *obj)
             if (mon)
             {
                 set_mon_issummoned(mon, TRUE);
-                (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
+                (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE, "");
 
                 if (temporary_effect)
                 {

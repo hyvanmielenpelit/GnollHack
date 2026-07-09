@@ -427,7 +427,7 @@ polyself(int psflags)
 {
     char buf[BUFSZ] = DUMMY;
     int old_light, new_light, old_ambient, new_ambient, mntmp, class, tryct;
-    boolean forcecontrol = (psflags == 1), monsterpoly = (psflags == 2),
+    boolean forcecontrol = (psflags & 1) != 0, monsterpoly = (psflags & 2) != 0, forcerestrictedpoly = (psflags & 4) != 0,
             draconian = (uarm && is_dragon_scale_armor(uarm)),
             bullheaded =
                 ((umisc && umisc->otyp == NOSE_RING_OF_BULLHEADEDNESS)
@@ -548,9 +548,9 @@ polyself(int psflags)
             }
             else
             {
-                if (forcecontrol)
+                if (forcecontrol && !forcerestrictedpoly)
                     break;
-                else if (mons[mntmp].difficulty > max(5, u.ulevel * 2))
+                else if (mons[mntmp].difficulty > max(5, (3 * u.ulevel) / 2))
                 {
                     if(wizard && !forcecontrol && yn_query("Enforce polymorph control success?") == 'y')
                     {
@@ -571,11 +571,10 @@ polyself(int psflags)
             goto do_merge;
         if (bullheaded && (tryct <= 0 || mntmp == PM_MINOTAUR))
             goto do_minotaur;
-        if (isvamp && (tryct <= 0 || mntmp == PM_WOLF || mntmp == PM_FOG_CLOUD
-                       || is_bat(&mons[mntmp])))
+        if (isvamp && (tryct <= 0 || mntmp == PM_WOLF || mntmp == PM_FOG_CLOUD || is_bat(&mons[mntmp])))
             goto do_vampyr;
 
-        if (!forcecontrol && mntmp >= LOW_PM && (mons[mntmp].difficulty > max(5, u.ulevel * 3) || (!rn2(2) && mons[mntmp].difficulty > max(5, u.ulevel * 2))))
+        if ((!forcecontrol || forcerestrictedpoly) && mntmp >= LOW_PM && (mons[mntmp].difficulty > max(5, u.ulevel * 2) || (!rn2(2) && mons[mntmp].difficulty > max(5, (3 * u.ulevel) / 2))))
         {
             /* Control fails -- Randomize instead */
             pline("Oops! That form was too difficult for your polymorph control!");

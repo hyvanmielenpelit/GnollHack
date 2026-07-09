@@ -5228,7 +5228,7 @@ do_chat_pet_pet(struct monst *mtmp)
         if (!rn2(is_domestic(mtmp->data) ? 20 : 200) && !(mtmp->data->mflags2 & M2_HOSTILE) && !(mtmp->data->geno & G_UNIQ) && !is_mon_iswiz(mtmp) && mtmp->cham < LOW_PM)
         {
             set_mon_mpeaceful(mtmp, 1);
-            tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, FALSE);
+            tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, FALSE, "tamed");
             Sprintf(pbuf, "%s seems to appreciate your gesture!", noittame_Monnam(mtmp));
             popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
         }
@@ -5822,7 +5822,7 @@ do_chat_feed(struct monst *mtmp)
                         /* dog_eat expects a floor object */
                         if (foodmakesfriendly)
                         {
-                            if (tamedog(mtmp, otmp, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, FALSE))
+                            if (tamedog(mtmp, otmp, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, FALSE, "tamed"))
                                 otmp = 0; /* It is gone */
                         }
                         else if (is_tame(mtmp) && has_edog(mtmp))
@@ -6627,7 +6627,7 @@ do_chat_join_party(struct monst *mtmp)
             bot();
         }
 
-        boolean success = tamedog(mtmp, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
+        boolean success = tamedog(mtmp, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE, "");
         if (success)
         {
             set_mon_ispartymember(mtmp, TRUE);
