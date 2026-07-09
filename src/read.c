@@ -4769,6 +4769,10 @@ bless_or_curse(struct obj *sobj, struct monst *mtmp, boolean confused)
 
                 special_effect_wait_until_end(0);
             }
+            else
+            {
+                pline_ex1_popup(ATR_NONE, NO_COLOR, is_serviced_spell ? "Unfortunately, nothing happens." : nothing_happens, "No effect", is_serviced_spell);
+            }
             if(isyou)
                 update_inventory();
         }

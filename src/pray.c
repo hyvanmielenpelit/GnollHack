@@ -1169,10 +1169,22 @@ gcrownu(void)
                 bless(otmp);
                 (void)add_to_container(obj, otmp);
             }
+            else if (!already_learnt_spell_type(SPE_WRATH_OF_GOD))
+            {
+                otmp = mksobj(SPE_WRATH_OF_GOD, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
 
             if (!already_learnt_spell_type(SPE_HOLY_WORD))
             {
                 otmp = mksobj(SPE_HOLY_WORD, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+            else if (!already_learnt_spell_type(SPE_CELESTIAL_STORM))
+            {
+                otmp = mksobj(SPE_CELESTIAL_STORM, TRUE, FALSE, TRUE);
                 bless(otmp);
                 (void)add_to_container(obj, otmp);
             }
@@ -1266,6 +1278,12 @@ gcrownu(void)
                 bless(otmp);
                 (void)add_to_container(obj, otmp);
             }
+            else if (!already_learnt_spell_type(SPE_DEATHSPELL))
+            {
+                otmp = mksobj(SPE_DEATHSPELL, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
 
             if (!already_learnt_spell_type(SPE_CREATE_DRACOLICH))
             {
@@ -1280,7 +1298,13 @@ gcrownu(void)
                 (void)add_to_container(obj, otmp);
             }
 
-            if (!already_learnt_spell_type(SPE_GREATER_UNDEATH_REPLENISHMENT))
+            if (!already_learnt_spell_type(SPE_DOMINATE_UNDEAD))
+            {
+                otmp = mksobj(SPE_DOMINATE_UNDEAD, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+            else if (!already_learnt_spell_type(SPE_GREATER_UNDEATH_REPLENISHMENT))
             {
                 otmp = mksobj(SPE_GREATER_UNDEATH_REPLENISHMENT, TRUE, FALSE, TRUE);
                 bless(otmp);
@@ -1288,7 +1312,7 @@ gcrownu(void)
             }
 
         }
-        else
+        else /* Neutral */
         {
             struct obj* otmp = (struct obj*)0;
 
@@ -1316,8 +1340,20 @@ gcrownu(void)
                 bless(otmp);
                 (void)add_to_container(obj, otmp);
             }
+            else if (!already_learnt_spell_type(SPE_ARROW_OF_DIANA))
+            {
+                otmp = mksobj(SPE_ARROW_OF_DIANA, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
 
-            if (!already_learnt_spell_type(SPE_STICK_TO_BOA))
+            if (!already_learnt_spell_type(SPE_STICK_TO_GIANT_ANACONDA))
+            {
+                otmp = mksobj(SPE_STICK_TO_GIANT_ANACONDA, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+            else if (!already_learnt_spell_type(SPE_STICK_TO_BOA))
             {
                 otmp = mksobj(SPE_STICK_TO_BOA, TRUE, FALSE, TRUE);
                 bless(otmp);
@@ -1327,6 +1363,12 @@ gcrownu(void)
             if (!already_learnt_spell_type(SPE_SUMMON_ELDER_TREANT))
             {
                 otmp = mksobj(SPE_SUMMON_ELDER_TREANT, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+            else if (!already_learnt_spell_type(SPE_SUMMON_TREANT))
+            {
+                otmp = mksobj(SPE_SUMMON_TREANT, TRUE, FALSE, TRUE);
                 bless(otmp);
                 (void)add_to_container(obj, otmp);
             }
