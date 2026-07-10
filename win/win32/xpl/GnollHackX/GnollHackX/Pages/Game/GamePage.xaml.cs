@@ -1542,19 +1542,19 @@ namespace GnollHackX.Pages.Game
                 if (PlayingReplay)
                 {
                     //MainGrid.IsEnabled = false;
-                    lWornItemsButton.IsEnabled = false;
-                    lAbilitiesButton.IsEnabled = false;
-                    lRowWornItemsButton.IsEnabled = false;
-                    lRowAbilitiesButton.IsEnabled = false;
+                    //lWornItemsButton.IsEnabled = false;
+                    //lAbilitiesButton.IsEnabled = false;
+                    //lRowWornItemsButton.IsEnabled = false;
+                    //lRowAbilitiesButton.IsEnabled = false;
                     //ContextLayout.IsEnabled = false;
 
-                    GameMenuButton.IsEnabled = false;
-                    ESCButton.IsEnabled = false;
-                    LookModeButton.IsEnabled = false;
-                    ToggleTravelModeButton.IsEnabled = false;
-                    ToggleAutoDigButton.IsEnabled = false;
-                    ToggleIgnoreModeButton.IsEnabled = false;
-                    ButtonRowStack.IsEnabled = false;
+                    //GameMenuButton.IsEnabled = false;
+                    //ESCButton.IsEnabled = false;
+                    //LookModeButton.IsEnabled = false;
+                    //ToggleTravelModeButton.IsEnabled = false;
+                    //ToggleAutoDigButton.IsEnabled = false;
+                    //ToggleIgnoreModeButton.IsEnabled = false;
+                    //ButtonRowStack.IsEnabled = false;
 
                     GameMenuButton.Opacity = 0.5;
                     ESCButton.Opacity = 0.5;
@@ -1570,13 +1570,13 @@ namespace GnollHackX.Pages.Game
                     //SimpleESCButton.Opacity = 0.5;
                     //SimpleLookModeButton.Opacity = 0.5;
 
-                    MenuGrid.IsEnabled = false;
-                    TextGrid.IsEnabled = false;
-                    GetLineGrid.IsEnabled = false;
-                    YnGrid.IsEnabled = false;
-                    PopupGrid.IsEnabled = false;
-                    MoreCommandsGrid.IsEnabled = false;
-                    TipView.IsEnabled = false;
+                    //MenuGrid.IsEnabled = false;
+                    //TextGrid.IsEnabled = false;
+                    //GetLineGrid.IsEnabled = false;
+                    //YnGrid.IsEnabled = false;
+                    //PopupGrid.IsEnabled = false;
+                    //MoreCommandsGrid.IsEnabled = false;
+                    //TipView.IsEnabled = false;
                     ReplayRealTimeLabel.Text = "";
                     ReplayHeaderLabel.Text = "";
                     GHApp.ResetReplay();
@@ -1584,6 +1584,29 @@ namespace GnollHackX.Pages.Game
                     UpdateReplaySpeedButtons();
                     UpdateReplayPauseButton();
                     ReplayGrid.IsVisible = true;
+
+                    /* Move StoneButtonGrid from UIGrid to ReplayGrid so it renders
+                     * above the replay overlay. Done after ReplayGrid.IsVisible = true
+                     * so the layout engine measures the new child immediately. */
+                    UIGrid.Children.Remove(StoneButtonGrid);
+                    Grid.SetRow(StoneButtonGrid, 0);
+                    Grid.SetColumn(StoneButtonGrid, 0);
+                    StoneButtonGrid.VerticalOptions = LayoutOptions.Start;
+                    ReplayGrid.Children.Add(StoneButtonGrid);
+                    StoneButtonGrid.IsVisible = false;
+                    await Task.Yield();
+                    StoneButtonGrid.IsVisible = true;
+                    await Task.Yield();
+                    foreach (View v in StoneButtonGrid.Children)
+                    {
+                        SimpleImageButton sib = v as SimpleImageButton;
+                        if (sib != null)
+                        {
+                            sib.Redraw();
+                        }
+                    }
+                    await Task.Yield();
+
                     DeviceDisplay.KeepScreenOn = true;
                 }
 
@@ -2578,7 +2601,7 @@ namespace GnollHackX.Pages.Game
             long counter_increment = 1;
             int subCounterMax = 0;
             double framespeed = GetAnimationCounterFrameSpeed(refreshRateStyle, isMainCanvas);
-            if(PlayingReplay)
+            if (PlayingReplay)
             {
                 double rpspeed = GHApp.ReplaySpeed;
                 framespeed = framespeed * rpspeed;
@@ -3648,7 +3671,7 @@ namespace GnollHackX.Pages.Game
                 TextCanvas.PutStrItems = items;
             }
 
-            if(PlayingReplay)
+            if (PlayingReplay)
             {
                 TextStack.IsEnabled = false;
                 TextCanvas.IsEnabled = false;
@@ -3853,8 +3876,8 @@ namespace GnollHackX.Pages.Game
                         btnList[i].IsVisible = false;
                     }
                     btnList[i].ImgSourcePath = GetYnImgSourcePath(btnList[i].BtnLetter, btnList[i].LblText);
-                    if (PlayingReplay)
-                        btnList[i].IsEnabled = false;
+                    //if (PlayingReplay)
+                    //    btnList[i].IsEnabled = false;
                 }
             }
             _ynResponses = responses;
@@ -4113,14 +4136,14 @@ namespace GnollHackX.Pages.Game
                     break;
             }
 
-            if(PlayingReplay)
-            {
-                GetLineOkButton.IsEnabled = false;
-                GetLineCancelButton.IsEnabled = false;
-                GetLineQuestionMarkButton.IsEnabled = false;
-                GetLineMenuButton.IsEnabled = false;
-                //GetLineEntryText.IsEnabled = false;
-            }
+            //if(PlayingReplay)
+            //{
+            //    GetLineOkButton.IsEnabled = false;
+            //    GetLineCancelButton.IsEnabled = false;
+            //    GetLineQuestionMarkButton.IsEnabled = false;
+            //    GetLineMenuButton.IsEnabled = false;
+            //    //GetLineEntryText.IsEnabled = false;
+            //}
 
             GetLineGrid.IsVisible = true;
 
@@ -4703,15 +4726,15 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            if (PlayingReplay)
-            {
-                MenuOKButton.IsEnabled = false;
-                MenuCancelButton.IsEnabled = false;
-                MenuHeaderLabel.IsEnabled = false;
-                MenuStack.IsEnabled = false;
-                MenuCanvas.IsEnabled = false;
-                MenuCanvas.EnableTouchEvents = false;
-            }
+            //if (PlayingReplay)
+            //{
+            //    MenuOKButton.IsEnabled = false;
+            //    MenuCancelButton.IsEnabled = false;
+            //    MenuHeaderLabel.IsEnabled = false;
+            //    MenuStack.IsEnabled = false;
+            //    MenuCanvas.IsEnabled = false;
+            //    MenuCanvas.EnableTouchEvents = false;
+            //}
 
             DelayedMenuShow = DelayedFadeFromBlackAtStartOn;
             DelayedMenuShowDoTextHide = dohidetext;
