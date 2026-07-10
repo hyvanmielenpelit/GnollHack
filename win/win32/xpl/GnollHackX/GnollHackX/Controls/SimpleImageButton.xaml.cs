@@ -197,10 +197,5 @@ namespace GnollHackX.Controls
             ThreadSafeWidth = Width;
             ThreadSafeHeight = Height;
         }
-
-        public void Redraw()
-        {
-            ViewImage.InvalidateSurface();
-        }
     }
 }

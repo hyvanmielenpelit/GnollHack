@@ -1542,18 +1542,18 @@ namespace GnollHackX.Pages.Game
                 if (PlayingReplay)
                 {
                     //MainGrid.IsEnabled = false;
-                    //lWornItemsButton.IsEnabled = false;
-                    //lAbilitiesButton.IsEnabled = false;
+                    lWornItemsButton.IsEnabled = false;
+                    lAbilitiesButton.IsEnabled = false;
                     //lRowWornItemsButton.IsEnabled = false;
                     //lRowAbilitiesButton.IsEnabled = false;
                     //ContextLayout.IsEnabled = false;
 
-                    //GameMenuButton.IsEnabled = false;
-                    //ESCButton.IsEnabled = false;
-                    //LookModeButton.IsEnabled = false;
-                    //ToggleTravelModeButton.IsEnabled = false;
-                    //ToggleAutoDigButton.IsEnabled = false;
-                    //ToggleIgnoreModeButton.IsEnabled = false;
+                    GameMenuButton.IsEnabled = false;
+                    ESCButton.IsEnabled = false;
+                    LookModeButton.IsEnabled = false;
+                    ToggleTravelModeButton.IsEnabled = false;
+                    ToggleAutoDigButton.IsEnabled = false;
+                    ToggleIgnoreModeButton.IsEnabled = false;
                     //ButtonRowStack.IsEnabled = false;
 
                     GameMenuButton.Opacity = 0.5;
@@ -1577,6 +1577,11 @@ namespace GnollHackX.Pages.Game
                     //PopupGrid.IsEnabled = false;
                     //MoreCommandsGrid.IsEnabled = false;
                     //TipView.IsEnabled = false;
+                    MenuCanvas.IsEnabled = false;
+                    TextCanvas.IsEnabled = false;
+                    CommandCanvas.IsEnabled = false;
+                    TipView.IsEnabled = false;
+                    GetLineEntryText.IsReadOnly = true;
                     ReplayRealTimeLabel.Text = "";
                     ReplayHeaderLabel.Text = "";
                     GHApp.ResetReplay();
@@ -1584,29 +1589,6 @@ namespace GnollHackX.Pages.Game
                     UpdateReplaySpeedButtons();
                     UpdateReplayPauseButton();
                     ReplayGrid.IsVisible = true;
-
-                    /* Move StoneButtonGrid from UIGrid to ReplayGrid so it renders
-                     * above the replay overlay. Done after ReplayGrid.IsVisible = true
-                     * so the layout engine measures the new child immediately. */
-                    UIGrid.Children.Remove(StoneButtonGrid);
-                    Grid.SetRow(StoneButtonGrid, 0);
-                    Grid.SetColumn(StoneButtonGrid, 0);
-                    StoneButtonGrid.VerticalOptions = LayoutOptions.Start;
-                    ReplayGrid.Children.Add(StoneButtonGrid);
-                    StoneButtonGrid.IsVisible = false;
-                    await Task.Yield();
-                    StoneButtonGrid.IsVisible = true;
-                    await Task.Yield();
-                    foreach (View v in StoneButtonGrid.Children)
-                    {
-                        SimpleImageButton sib = v as SimpleImageButton;
-                        if (sib != null)
-                        {
-                            sib.Redraw();
-                        }
-                    }
-                    await Task.Yield();
-
                     DeviceDisplay.KeepScreenOn = true;
                 }
 
@@ -4190,6 +4172,8 @@ namespace GnollHackX.Pages.Game
 
         private void GetLineOkButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             GetLineOkButton.IsEnabled = false;
             GetLineCancelButton.IsEnabled = false;
             GetLineQuestionMarkButton.IsEnabled = false;
@@ -4252,6 +4236,8 @@ namespace GnollHackX.Pages.Game
 
         private void GetLineQuestionMarkButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             GetLineOkButton.IsEnabled = false;
             GetLineCancelButton.IsEnabled = false;
             GetLineQuestionMarkButton.IsEnabled = false;
@@ -4265,6 +4251,8 @@ namespace GnollHackX.Pages.Game
 
         private void GetLineCancelButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             GetLineOkButton.IsEnabled = false;
             GetLineCancelButton.IsEnabled = false;
             GetLineQuestionMarkButton.IsEnabled = false;
@@ -17883,6 +17871,9 @@ namespace GnollHackX.Pages.Game
 
         private void MoreButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
+
             //lMoreButton.IsEnabled = false;
             ShowMoreCanvas(sender, e);
         }
@@ -17903,6 +17894,8 @@ namespace GnollHackX.Pages.Game
 
         private void YnButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             LabeledImageButton ghb = sender as LabeledImageButton;
             if (ghb != null)
                 YnButton_Pressed(sender, e, ghb.GHCommand);
@@ -17921,6 +17914,8 @@ namespace GnollHackX.Pages.Game
 
         private void ESCButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             GHApp.PlayButtonClickedSound();
             TouchDictionary.Clear();
             GenericButton_Clicked(sender, e, GHConstants.CancelChar);
@@ -18057,6 +18052,8 @@ namespace GnollHackX.Pages.Game
 
         private async void GameMenuButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             await OpenGameMenuAsync();
         }
 
@@ -18124,6 +18121,8 @@ namespace GnollHackX.Pages.Game
 
         private void PopupOkButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             GenericButton_Clicked(sender, e, GHConstants.CancelChar);
         }
 
@@ -18134,6 +18133,8 @@ namespace GnollHackX.Pages.Game
 
         private void GHButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             GHApp.DebugWriteRestart("GHButton_Clicked");
             LabeledImageButton lib = sender as LabeledImageButton;
             if (lib == null)
@@ -20977,6 +20978,8 @@ namespace GnollHackX.Pages.Game
 
         private async void MenuOKButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             await MenuOKButtonPressedAsync();
         }
         private void PressMenuOKButton()
@@ -21079,6 +21082,8 @@ namespace GnollHackX.Pages.Game
 
         private async void MenuCancelButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             await MenuCancelButtonPressedAsync();
         }
         private void PressMenuCancelButton()
@@ -21455,11 +21460,15 @@ namespace GnollHackX.Pages.Game
 
         private async void MenuFlipButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             await FlipMenuCanvasAsync();
         }
 
         private void MenuCountOkButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             MenuCountOkButton.IsEnabled = false;
             MenuCountCancelButton.IsEnabled = false;
             if (_countMenuItem != null)
@@ -21507,6 +21516,8 @@ namespace GnollHackX.Pages.Game
 
         private void MenuCountCancelButton_Clicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             MenuCountOkButton.IsEnabled = false;
             MenuCountCancelButton.IsEnabled = false;
             if (MenuCountEntry.IsVisible)
@@ -21527,6 +21538,8 @@ namespace GnollHackX.Pages.Game
 
         private void MenuCountEntry_Completed(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             if (MenuCountGrid.IsVisible && MenuCountOkButton.IsEnabled && GHApp.PressOkOnEntryCompleted)
             {
                 MenuCountOkButton_Clicked(sender, e);
@@ -23511,12 +23524,16 @@ namespace GnollHackX.Pages.Game
 
         private void GetLineEntryText_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (PlayingReplay)
+                return;
             if (GetLineAutoComplete.IsVisible)
                 UpdateGetLineAutoComplete();
         }
 
         private void GetLineEntryText_Completed(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             if (GetLineGrid.IsVisible && GetLineOkButton.IsEnabled && GHApp.PressOkOnEntryCompleted)
             {
                 GetLineOkButton_Clicked(sender, e);
@@ -23530,6 +23547,8 @@ namespace GnollHackX.Pages.Game
         private void GetLineAutoCompleteTapGestureRecognizer_Tapped(object sender, EventArgs e)
 #endif
         {
+            if (PlayingReplay)
+                return;
             if(GetLineAutoComplete.Text != "")
             {
                 GetLineEntryText.Text = GetLineAutoComplete.Text;
@@ -23994,6 +24013,8 @@ namespace GnollHackX.Pages.Game
         private async void GetLineCaptionTapGestureRecognizer_Tapped(object sender, EventArgs e)
 #endif
         {
+            if (PlayingReplay)
+                return;
             switch (_getLineStyle)
             {
                 case (int)getline_types.GETLINE_WISHING:
@@ -24016,6 +24037,8 @@ namespace GnollHackX.Pages.Game
 
         private async void GetLineMenuButton_BtnClicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             GetLineMenuButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var menuPage = new GameMenuPage(this, true);
@@ -24093,6 +24116,8 @@ namespace GnollHackX.Pages.Game
 
         private void MorePreviousButton_BtnClicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             int cmdPage = MoreCmdPage;
             if (cmdPage > (EnableWizardMode ? 0 : 1))
             {
@@ -24103,6 +24128,8 @@ namespace GnollHackX.Pages.Game
 
         private void MoreNextButton_BtnClicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             int cmdPage = MoreCmdPage;
             if (cmdPage < CurrentMoreButtonPageMaxNumber - 1)
             {
@@ -24658,6 +24685,8 @@ namespace GnollHackX.Pages.Game
 
         private void ToggleAutoDigButton_BtnClicked(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
             GHApp.PlayMenuSelectSound();
             bool newMode = !MapAutoDig;
             ToggleMapAutoDigOnMainThread(newMode);

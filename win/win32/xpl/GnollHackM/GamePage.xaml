@@ -412,7 +412,7 @@
                                            PaintSurface="TipView_PaintSurface" 
                                            Touch="TipView_Touch"
                                            HorizontalOptions="Fill" VerticalOptions="Fill" />
-            <Grid x:Name="ReplayGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent" IsVisible="False">
+            <Grid x:Name="ReplayGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent" InputTransparent="True" CascadeInputTransparent="False" IsVisible="False">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -485,9 +485,6 @@
                         </StackLayout>
                     </Border>
                 </Grid>
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer />
-                </Grid.GestureRecognizers>
             </Grid>
             <Border x:Name="FadeFrameAtStart" IsVisible="False" InputTransparent="True" BackgroundColor="Black" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="Rectangle" HorizontalOptions="Fill" VerticalOptions="Fill" />
             <gnh:MeasurableGrid x:Name="LoadingGrid" HorizontalOptions="Fill" VerticalOptions="Fill" >
