@@ -5599,7 +5599,7 @@ namespace GnollHackX
         {
             if (!force && !PostingXlogEntries && !PostingReplays && !PostingBonesFiles && !AutoUploadReplays)
             {
-                SetXlogUserNameVerified(false, null, null);
+                //SetXlogUserNameVerified(false, null, null);
                 return;
             }
             if (XlogUserNameVerified)

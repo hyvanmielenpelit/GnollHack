@@ -651,7 +651,21 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.XlogCredentialsIncorrect = false;
             if (!GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
                 GHApp.SetXlogUserNameVerified(false, null, null);
-            await GHApp.TryVerifyXlogUserNameAsync(true);
+
+            if (!GHApp.XlogUserNameVerified && !string.IsNullOrEmpty(GHApp.XlogUserName))
+            {
+                PopupTitleLabel.TextColor = GHColors.TitleGoldColor;
+                PopupTitleLabel.Text = "Credentials Verification";
+                PopupLabel.Text = "Verifying credentials... Please wait.";
+                PopupOkButton.IsVisible = false;
+                Thickness oldThickness = PopupFrame.Padding;
+                PopupFrame.Padding = new Thickness(oldThickness.Left, 18, oldThickness.Right, 24);
+                PopupGrid.IsVisible = true;
+                await GHApp.TryVerifyXlogUserNameAsync(true);
+                PopupOkButton.IsVisible = true;
+                PopupFrame.Padding = oldThickness;
+                PopupGrid.IsVisible = false;
+            }
 
             if (_gamePage != null)
                 _gamePage.MapGrid = GridSwitch.IsToggled;
@@ -2088,7 +2102,7 @@ namespace GnollHackX.Pages.MainScreen
                         {
                             if (PopupGrid.IsVisible)
                             {
-                                if (PopupOkButton.IsEnabled)
+                                if (PopupOkButton.IsEnabled && PopupOkButton.IsVisible)
                                 {
                                     PopupOkButton_Clicked(PopupOkButton, EventArgs.Empty);
                                 }
