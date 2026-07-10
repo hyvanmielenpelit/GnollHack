@@ -869,7 +869,7 @@ namespace GnollHackX
             }
         }
 
-        public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special, IntPtr layers_ptr)
+        public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, Int32 symbol, int ocolor, UInt64 special, IntPtr layers_ptr)
         {
             LayerInfo layers = layers_ptr == IntPtr.Zero ? new LayerInfo() : (LayerInfo)Marshal.PtrToStructure(layers_ptr, typeof(LayerInfo));
             RecordFunctionCall(RecordedFunctionID.PrintGlyph, winHandle, x, y, glyph, bkglyph, symbol, ocolor, special, layers);
@@ -954,7 +954,7 @@ namespace GnollHackX
             }
         }
 
-        private void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special, ref LayerInfo layers)
+        private void SetMapSymbol(int x, int y, int glyph, int bkglyph, Int32 c, int color, UInt64 special, ref LayerInfo layers)
         {
             long generalCounter;
             long mainCounter;
@@ -969,7 +969,7 @@ namespace GnollHackX
             }
         }
 
-        private void SetMapSymbolOnTimerUnlocked(int x, int y, int glyph, int bkglyph, int c, int color, uint special, ref LayerInfo layers, long generalCounter, long mainCounter)
+        private void SetMapSymbolOnTimerUnlocked(int x, int y, int glyph, int bkglyph, Int32 c, int color, UInt64 special, ref LayerInfo layers, long generalCounter, long mainCounter)
         {
             if (((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0 && (_mapDataMaster[x, y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) == 0) ||
                 (layers.m_id != 0 && layers.m_id != _mapDataMaster[x, y].Layers.m_id))
@@ -4572,12 +4572,12 @@ namespace GnollHackX
         public int Y;
         public int Glyph;
         public int Bkglyph;
-        public int Symbol;
+        public Int32 Symbol;
         public int Ocolor;
-        public uint Special;
+        public UInt64 Special;
         public LayerInfo Layers;
 
-        public SavedPrintGlyphCall(GHWindow gHWindow, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special, ref LayerInfo layers)
+        public SavedPrintGlyphCall(GHWindow gHWindow, int x, int y, int glyph, int bkglyph, Int32 symbol, int ocolor, UInt64 special, ref LayerInfo layers)
         {
             ReferenceGHWindow = gHWindow;
             X = x;

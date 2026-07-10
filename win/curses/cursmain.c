@@ -724,10 +724,10 @@ print_glyph(window, x, y, glyph, bkglyph)
 void
 curses_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 {
-    nhsym ch;
+    nhsym ch = 0;
     int cch;
-    int color;
-    uint64_t special;
+    int color = NO_COLOR;
+    uint64_t special = 0;
     int attr = -1;
 
     int glyph = layers.glyph;

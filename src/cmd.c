@@ -1940,7 +1940,7 @@ wiz_debug(void)
                     *descbuf = 0;
                     nhsym ch = 0;
                     int color = 0;
-                    uint64_t special;
+                    uint64_t special = 0;
                     cc.x = mon->mx;
                     cc.y = mon->my;
                     int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
@@ -1977,7 +1977,7 @@ wiz_debug(void)
                         *descbuf = 0;
                         nhsym ch = 0;
                         int color = 0;
-                        uint64_t special;
+                        uint64_t special = 0;
                         int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
                         int default_glyph = base_cmap_to_glyph(is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored);
                         int glyph = reveal_terrain_getglyph(cc.x, cc.y, FALSE, u.uswallow,

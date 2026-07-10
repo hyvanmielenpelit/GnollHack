@@ -941,7 +941,7 @@ mar_print_gl_char(winid window, xchar x, xchar y, struct layer_info layers)
 {
     nhsym ch;
     int color;
-    unsigned special;
+    uint64_t special;
 
     /* map glyph to character and color */
     (void) mapglyph(layers, &ch, &color, &special, x, y);

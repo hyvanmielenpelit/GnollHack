@@ -1687,7 +1687,7 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
 		uchar ch;
         int color;
         nhsym och;
-		unsigned special;
+		uint64_t special;
 
 		painter.setPen( green );
 		/* map glyph to character and color */

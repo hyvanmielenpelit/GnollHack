@@ -8128,7 +8128,7 @@ namespace GnollHackX
                                                     int bkglyph = br.ReadInt32();
                                                     int symbol = br.ReadInt32();
                                                     int ocolor = br.ReadInt32();
-                                                    uint special = br.ReadUInt32();
+                                                    ulong special = br.ReadUInt64();
                                                     int layers_size = br.ReadInt32();
                                                     byte[] layers_bytes = br.ReadBytes(layers_size);
                                                     unsafe

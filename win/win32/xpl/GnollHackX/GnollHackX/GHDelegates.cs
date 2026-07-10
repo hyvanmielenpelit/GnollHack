@@ -57,7 +57,7 @@ namespace GnollHackX
     public delegate int CreateGHWindowCallback(int winid, int style, int glyph, byte dataflags, IntPtr objdata_ptr, IntPtr otypdata_ptr);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void PrintGlyphCallback(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8, IntPtr layers_ptr);
+    public delegate void PrintGlyphCallback(int value1, int value2, int value3, int value4, int value5, int value6, int value7, ulong value8, IntPtr layers_ptr);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void IssueGuiCommandCallback(int cmd_id, int cmd_param, int cmd_param2, [MarshalAs(GHConstants.GHStringMarshallingType)] string cmd_str);

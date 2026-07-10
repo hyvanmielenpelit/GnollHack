@@ -135,7 +135,7 @@ void NetHackQtMapViewport::paintEvent(QPaintEvent* event)
 		unsigned short g=Glyph(i,j);
 		int color;
 		nhsym ch;
-		unsigned special;
+		uint64_t special;
 
 		painter.setPen( Qt::green );
 		/* map glyph to character and color */
@@ -179,7 +179,7 @@ void NetHackQtMapViewport::paintEvent(QPaintEvent* event)
 		unsigned short g=Glyph(i,j);
 		int color;
 		nhsym ch;
-		unsigned special;
+		uint64_t special;
 		struct layer_info layers = { 0 };
 		layers.glyph = g;
 		mapglyph(layers, &ch, &color, &special, i, j);
@@ -866,7 +866,7 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
 		unsigned short g=Glyph(i,j);
 		int color;
 		nhsym ch;
-		unsigned special;
+		uint64_t special;
 		struct layer_info layers = { 0 };
 		layers.glyph = g;
 		mapglyph(layers, &ch, &color, &special, i, j);

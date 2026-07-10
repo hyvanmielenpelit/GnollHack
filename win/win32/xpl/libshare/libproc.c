@@ -469,13 +469,13 @@ extern const nhsym cp437toUnicode[256];
 
 void lib_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 {
-    int64_t symbol;
+    int32_t symbol;
     nhsym sym = 0;
     int ocolor = 0;
     uint64_t special = 0UL;
 
     (void)mapglyph(layers, &sym, &ocolor, &special, x, y);
-    symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (int64_t)cp437toUnicode[sym] : (int64_t)sym;
+    symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (int32_t)cp437toUnicode[sym] : (int32_t)sym;
 
     if (((special & MG_PET) && iflags.hilite_pet)
         || ((special & MG_OBJPILE) && iflags.hilite_pile)
@@ -491,7 +491,7 @@ void lib_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
         special |= MG_UNDERLINE;
     }
 
-    lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, (int32_t)symbol, ocolor, (uint32_t)special, &layers);
+    lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, &layers);
 
     if (program_state.in_bones || program_state.in_tricked)
         return;

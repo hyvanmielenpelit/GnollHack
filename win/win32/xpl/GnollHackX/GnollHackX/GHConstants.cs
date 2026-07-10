@@ -144,28 +144,28 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum MapSpecial : uint
+    public enum MapSpecial : UInt64
     {
-        None =              0x00000000,
-        Corpse =            0x00000001,
-        Invisible =         0x00000002,
-        Detected =          0x00000004,
-        Pet =               0x00000008,
-        Ridden =            0x00000010,
-        Statue =            0x00000020,
-        ObjectPile =        0x00000040,
-        BlackWhiteLava =    0x00000080,
-        Peaceful =          0x00000100,
-        Saddled =           0x00000200,
-        Female =            0x00000400,
-        HorizontalFlip =    0x00000800,
-        StoneInverse =      0x00001000,
-        AltColors =         0x00002000,
-        Decoration =        0x00004000,
-        Carpet =            0x00008000,
+        None =              0x00000000UL,
+        Corpse =            0x00000001UL,
+        Invisible =         0x00000002UL,
+        Detected =          0x00000004UL,
+        Pet =               0x00000008UL,
+        Ridden =            0x00000010UL,
+        Statue =            0x00000020UL,
+        ObjectPile =        0x00000040UL,
+        BlackWhiteLava =    0x00000080UL,
+        Peaceful =          0x00000100UL,
+        Saddled =           0x00000200UL,
+        Female =            0x00000400UL,
+        HorizontalFlip =    0x00000800UL,
+        StoneInverse =      0x00001000UL,
+        AltColors =         0x00002000UL,
+        Decoration =        0x00004000UL,
+        Carpet =            0x00008000UL,
 
-        Inverse =           0x10000000,
-        Underline =         0x20000000,
+        Inverse =           0x10000000UL,
+        Underline =         0x20000000UL,
     }
 
     [Flags]

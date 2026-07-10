@@ -59,7 +59,7 @@ mapglyph(struct layer_info layers, nhsym *ochar, int *ocolor, uint64_t *ospecial
     int offset, idx;
     int color = NO_COLOR;
     nhsym ch = 0;
-    unsigned special = 0;
+    uint64_t special = 0;
     /* condense multiple tests in macro version down to single */
     boolean has_rogue_ibm_graphics = HAS_ROGUE_IBM_GRAPHICS;
     boolean has_rogue_color = (has_rogue_ibm_graphics

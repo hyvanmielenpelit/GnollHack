@@ -6748,8 +6748,8 @@ print_things_here_to_window(void)
             struct layer_info layers = nul_layerinfo;
             char sym = 0;
             nhsym ch = 0;
-            int color;
-            uint64_t special;
+            int color = NO_COLOR;
+            uint64_t special = 0;
             int glyph = back_to_glyph(u.ux, u.uy);
             layers.glyph = glyph;
             (void)mapglyph(layers, &ch, &color, &special, u.ux, u.uy);
@@ -6824,8 +6824,8 @@ print_things_here_to_window(void)
             struct layer_info layers = nul_layerinfo;
             char sym = 0;
             nhsym ch = 0;
-            int color;
-            uint64_t special;
+            int color = NO_COLOR;
+            uint64_t special = 0;
             int glyph = otmp->glyph;
             layers.glyph = glyph;
             (void)mapglyph(layers, &ch, &color, &special, u.ux, u.uy);

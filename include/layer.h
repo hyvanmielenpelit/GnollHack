@@ -239,7 +239,7 @@ struct item_score_count_result
 /*
  * type nhsym: loadable symbols go into this type
  */
-typedef int64_t nhsym;
+typedef int32_t nhsym;
 
 
 #endif /* LAYER_H */

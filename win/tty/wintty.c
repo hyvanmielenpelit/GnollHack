@@ -3603,7 +3603,7 @@ doputchar(nhsym ch, boolean is_CP437)
 void
 g_putch(int in_ch, boolean is_CP437)
 {
-    register nhsym ch = (nhsym)in_ch;
+    nhsym ch = (nhsym)in_ch;
     if (use_utf8_encoding())
     {
         doputchar(ch, is_CP437);
@@ -3724,11 +3724,11 @@ tty_issue_gui_command(int cmd_id, int cmd_param UNUSED, int cmd_param2 UNUSED, c
 void
 tty_print_glyph(winid window, xchar x, xchar y, struct layer_info layers)
 {
-    nhsym ch;
+    nhsym ch = 0;
     boolean reverse_on = FALSE;
     boolean underline_on = FALSE;
-    int color;
-    uint64_t special;
+    int color = NO_COLOR;
+    uint64_t special = 0;
 
     int signed_glyph = layers.glyph;
     int glyph = abs(signed_glyph);

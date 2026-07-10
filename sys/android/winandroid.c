@@ -1434,7 +1434,7 @@ void and_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 		tile = glyph2tile[glyph];
 	nhsym ch;
 	int col;
-	unsigned int special;
+	int64_t special;
 	mapglyph(glyph, &ch, &col, &special, x, y); // , 0);
 
 	special &= ~(MG_CORPSE|MG_INVIS|MG_RIDDEN|MG_STATUE); // TODO support
