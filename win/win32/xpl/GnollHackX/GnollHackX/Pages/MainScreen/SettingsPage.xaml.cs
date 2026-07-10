@@ -662,6 +662,21 @@ namespace GnollHackX.Pages.MainScreen
                 PopupFrame.Padding = new Thickness(oldThickness.Left, 18, oldThickness.Right, 24);
                 PopupGrid.IsVisible = true;
                 await GHApp.TryVerifyXlogUserNameAsync(true);
+                if (!GHApp.XlogUserNameVerified)
+                {
+                    PopupTitleLabel.TextColor = GHColors.BrighterRed;
+                    PopupTitleLabel.Text = "Login Failed";
+                    PopupLabel.Text = "Logging in to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "GnollHack Server failed.";
+                    await Task.Delay(500);
+                }
+                else
+                {
+                    PopupTitleLabel.TextColor = GHColors.BrighterGreen;
+                    PopupTitleLabel.Text = "Login Success";
+                    PopupLabel.Text = "Logging in to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "GnollHack Server was successful.";
+                    await Task.Delay(350);
+                }
+                PopupTitleLabel.TextColor = GHColors.TitleGoldColor;
                 PopupOkButton.IsVisible = true;
                 PopupFrame.Padding = oldThickness;
                 PopupGrid.IsVisible = false;
