@@ -595,6 +595,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             var transferPage = new SaveTransferPage();
             await GHApp.PushModalPageAsync(transferPage);
+            await transferPage.RefreshAsync();
             VaultGrid.IsEnabled = true;
         }
 

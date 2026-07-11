@@ -151,14 +151,14 @@ namespace GnollHackX.Pages.MainScreen
             TransferModePicker.SelectedIndexChanged += TransferModePicker_SelectedIndexChanged;
         }
 
-        private async void ContentPage_Appearing(object sender, EventArgs e)
+        private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
             _appeared = true;
+        }
 
-            StatusLabel.Text = "Scanning...";
-
-            await Task.Delay(250);
+        public async Task RefreshAsync()
+        {
             await RefreshListAsync();
         }
 
