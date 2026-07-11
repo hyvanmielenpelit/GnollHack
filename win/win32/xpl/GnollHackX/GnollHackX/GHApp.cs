@@ -9264,6 +9264,9 @@ namespace GnollHackX
             await blobClient.DownloadToAsync(targetPath, cancellationToken);
         }
 
+        private static int _isSystemBrowserOpen = 0;
+        public static bool IsSystemBrowserOpen { get { return Interlocked.CompareExchange(ref _isSystemBrowserOpen, 0, 0) != 0; } set { Interlocked.Exchange(ref _isSystemBrowserOpen, value ? 1 : 0); } }
+
         public static async Task OpenBrowser(ContentPage page, string title, Uri uri, bool forceExternalBrowser = false)
         {
             try
@@ -9275,7 +9278,9 @@ namespace GnollHackX
                 }
                 else
                 {
+                    IsSystemBrowserOpen = true;
                     await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+                    IsSystemBrowserOpen = false;
                 }
             }
             catch (Exception ex)

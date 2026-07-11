@@ -2103,6 +2103,9 @@ namespace GnollHackX.Pages.MainScreen
 
         public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
         {
+            if (GHApp.PushingModalPage || GHApp.IsSystemBrowserOpen) /* Ignore key presses when opening a page or using a system browser */
+                return true;
+
             bool handled = false;
             if (WaitLayout.IsVisible)
                 return true;

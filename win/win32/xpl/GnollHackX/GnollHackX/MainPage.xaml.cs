@@ -2251,6 +2251,9 @@ namespace GnollHackX
 
         public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
         {
+            if (GHApp.PushingModalPage || GHApp.IsSystemBrowserOpen) /* Ignore key presses when opening a page or using a system browser */
+                return true;
+
             bool handled = false;
             try
             {
@@ -2317,7 +2320,7 @@ namespace GnollHackX
 
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
-            if (GHApp.PushingModalPage) /* Ignore key presses when opening a page */
+            if (GHApp.PushingModalPage || GHApp.IsSystemBrowserOpen) /* Ignore key presses when opening a page or using a browser */
                 return true;
 
             bool handled = false;
