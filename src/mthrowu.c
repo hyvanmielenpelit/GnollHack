@@ -213,7 +213,7 @@ drop_throw(struct obj *obj, boolean ohit, int x, int y)
     else
         create = 1;
 
-    if (create && !((mtmp = m_at(x, y)) != 0 && mtmp->mtrapped
+    if (create && !((mtmp = m_at(x, y)) != 0 && is_mon_mtrapped(mtmp)
                     && (t = t_at(x, y)) != 0
                     && is_pit(t->ttyp))) {
         int objgone = 0;
@@ -374,6 +374,8 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
     int objgone = 1;
     double poisondamage = 0;
     struct obj *mon_launcher = archer ? MON_WEP(archer) : NULL;
+    boolean unpoisonmsg = FALSE;
+    char saved_oname[BUFSZ] = "";
 
     notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
     ismimic = M_AP_TYPE(mtmp) && M_AP_TYPE(mtmp) != M_AP_MONSTER;
@@ -438,10 +440,10 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
     {
         if (ismimic)
             seemimic(mtmp);
-        mtmp->msleeping = 0;
+        set_mon_msleeping(mtmp, 0);
         refresh_m_tile_gui_info(mtmp, TRUE);
         if (vis)
-            otmp->dknown = 1;
+            set_obj_dknown(otmp, 1);
         /* probably thrown by a monster rather than 'other', but the
            distinction only matters when hitting the hero */
         potionhit(mtmp, &otmp, POTHIT_OTHER_THROW);
@@ -491,15 +493,15 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
         if (ismimic)
             seemimic(mtmp);
 
-        if (mtmp->msleeping)
+        if (is_mon_msleeping(mtmp))
         {
-            mtmp->msleeping = 0;
+            set_mon_msleeping(mtmp, 0);
             refresh_m_tile_gui_info(mtmp, TRUE);
         }
 
         damage = adjust_damage(dmg, (struct monst*)0, mtmp, objects[otmp->otyp].oc_damagetype, ADFLAGS_NONE);
 
-        enum hit_tile_types hit_tile = (otmp->opoisoned && is_poisonable(otmp) && !resists_poison(mtmp) ? HIT_POISONED : HIT_GENERAL);
+        enum hit_tile_types hit_tile = (is_obj_opoisoned(otmp) && is_poisonable(otmp) && !resists_poison(mtmp) ? HIT_POISONED : HIT_GENERAL);
 
         if (vis) 
         {
@@ -507,7 +509,7 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
             {
                 display_m_being_hit(mtmp, hit_tile, 0, 0UL, FALSE);
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Splat!  %s is hit with %s egg!", Monnam(mtmp),
-                    otmp->known ? an(corpse_monster_name(otmp)) : "an");
+                    is_obj_known(otmp) ? an(corpse_monster_name(otmp)) : "an");
             }
             else
                 hit_with_hit_tile(distant_name(otmp, mshot_xname), mtmp, exclam((int)ceil(damage)), (int)ceil(damage), "", hit_tile, FALSE);
@@ -520,7 +522,7 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
                 Monnam(mtmp), exclam((int)ceil(damage)));
         }
 
-        if (otmp->opoisoned && is_poisonable(otmp)) 
+        if (is_obj_opoisoned(otmp) && is_poisonable(otmp)) 
         {
             if (resists_poison(mtmp)) 
             {
@@ -536,6 +538,15 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
                 play_sfx_sound_at_location(SFX_MONSTER_IS_POISONED, mtmp->mx, mtmp->my);
                 poisondamage = adjust_damage(d(2, 6), (struct monst*)0, mtmp, AD_DRST, ADFLAGS_NONE);
                 damage += poisondamage;
+            }
+
+            /* Check for poison wearing off */
+            if (randomize_obj_unpoison(otmp))
+            {
+                set_obj_opoisoned(otmp, FALSE);
+                unpoisonmsg = !Blind;
+                Strcpy(saved_oname, thecxname(otmp));
+                *saved_oname = highc(*saved_oname);
             }
         }
 
@@ -725,7 +736,7 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
                            || !canspotmon(mtmp)) ? "destroyed" : "killed");
                 /* don't blame hero for unknown rolling boulder trap */
                 if (!context.mon_moving && (otmp->otyp != BOULDER
-                                            || range >= 0 || otmp->otrapped))
+                                            || range >= 0 || is_obj_otrapped(otmp)))
                     xkilled(mtmp, XKILL_NOMSG);
                 else
                     mondied(mtmp);
@@ -743,6 +754,13 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
             if (vis && !is_blinded(mtmp))
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is blinded by %s.", Monnam(mtmp), the(xname(otmp)));
             increase_mon_property(mtmp, BLINDED, rnd(25) + 20);
+        }
+
+        if (unpoisonmsg)
+        {
+            play_sfx_sound(SFX_WEAPON_NO_LONGER_POISONED);
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s no longer poisoned.", saved_oname,
+                vtense(saved_oname, "are"));
         }
 
         objgone = drop_throw(otmp, 1, bhitpos.x, bhitpos.y);
@@ -823,7 +841,7 @@ m_throw(struct monst *mon, int x, int y, int dx, int dy, int range, struct obj *
     singleobj->item_flags |= ITEM_FLAGS_FIRED_BY_MONSTER;
     singleobj->firing_m_id = mon->m_id;
 
-    if ((singleobj->cursed || singleobj->greased) && (dx || dy) && !rn2(7)) {
+    if ((is_obj_cursed(singleobj) || is_obj_greased(singleobj)) && (dx || dy) && !rn2(7)) {
         if (canseemon(mon) && flags.verbose) {
             if (is_ammo(singleobj))
                 pline("%s misfires!", Monnam(mon));
@@ -890,7 +908,7 @@ m_throw(struct monst *mon, int x, int y, int dx, int dy, int range, struct obj *
             }
             if (singleobj->oclass == POTION_CLASS) {
                 if (!Blind)
-                    singleobj->dknown = 1;
+                    set_obj_dknown(singleobj, 1);
                 potionhit(&youmonst, &singleobj, POTHIT_MONST_THROW);
                 break;
             }
@@ -997,7 +1015,7 @@ m_throw(struct monst *mon, int x, int y, int dx, int dy, int range, struct obj *
                 hitu = thitu(hitv, dam, &singleobj, (char *) 0, mon, is_fired ? "fired" : "thrown");
             }
 
-            if (hitu && singleobj->opoisoned && is_poisonable(singleobj))
+            if (hitu && is_obj_opoisoned(singleobj) && is_poisonable(singleobj))
             {
                 char onmbuf[BUFSZ], knmbuf[BUFSZ];
 
@@ -1099,9 +1117,9 @@ m_throw(struct monst *mon, int x, int y, int dx, int dy, int range, struct obj *
         }
 
         tmp_at(bhitpos.x, bhitpos.y);
-        if (singleobj && ((is_poisonable(singleobj) && singleobj->opoisoned) || singleobj->special_quality != 0 || singleobj->elemental_enchantment || singleobj->exceptionality || singleobj->mythic_prefix || singleobj->mythic_suffix || singleobj->oeroded || singleobj->oeroded2 || get_obj_height(singleobj) > 0))
+        if (singleobj && ((is_poisonable(singleobj) && is_obj_opoisoned(singleobj)) || singleobj->special_quality != 0 || singleobj->elemental_enchantment || singleobj->exceptionality || singleobj->mythic_prefix || singleobj->mythic_suffix || singleobj->oeroded || singleobj->oeroded2 || get_obj_height(singleobj) > 0))
         {
-            show_missile_info(bhitpos.x, bhitpos.y, singleobj->opoisoned, singleobj->material, singleobj->special_quality, singleobj->elemental_enchantment, singleobj->exceptionality, singleobj->mythic_prefix, singleobj->mythic_suffix, singleobj->oeroded, singleobj->oeroded2, get_missile_flags(singleobj, FALSE), get_obj_height(singleobj), 0, 0);
+            show_missile_info(bhitpos.x, bhitpos.y, is_obj_opoisoned(singleobj), singleobj->material, singleobj->special_quality, singleobj->elemental_enchantment, singleobj->exceptionality, singleobj->mythic_prefix, singleobj->mythic_suffix, singleobj->oeroded, singleobj->oeroded2, get_missile_flags(singleobj, FALSE), get_obj_height(singleobj), 0, 0);
             flush_screen(1);
         }
         if (isok(lastpos_x, lastpos_y))
@@ -1223,7 +1241,7 @@ spitmm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 
             /* If this is a pet, it'll get hungry. Minions and
              * spell beings won't hunger */
-            if (mtmp->mtame && !mtmp->isminion && has_edog(mtmp)) 
+            if (mtmp->mtame && !is_mon_isminion(mtmp) && has_edog(mtmp)) 
             {
                 struct edog *dog = EDOG(mtmp);
 
@@ -1283,7 +1301,7 @@ breamm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 
                 /* If this is a pet, it'll get hungry. Minions and
                  * spell beings won't hunger */
-                if (mtmp->mtame && !mtmp->isminion && has_edog(mtmp)) 
+                if (mtmp->mtame && !is_mon_isminion(mtmp) && has_edog(mtmp)) 
                 {
                     struct edog *dog = EDOG(mtmp);
 
@@ -1401,7 +1419,7 @@ buzzmm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 
                 /* If this is a pet, it'll get hungry. Minions and
                  * spell beings won't hunger */
-                if (mtmp->mtame && !mtmp->isminion && has_edog(mtmp))
+                if (mtmp->mtame && !is_mon_isminion(mtmp) && has_edog(mtmp))
                 {
                     struct edog* dog = EDOG(mtmp);
 

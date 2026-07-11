@@ -1923,7 +1923,7 @@ X11_display_file(const char *str, boolean complain)
 
     newwin = X11_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH, zerocreatewindowinfo);
     wp = &window_list[newwin];
-    X11_start_menu_ex(newwin, 0);
+    X11_start_menu_ex(newwin, 0, 0, 0);
 
     any = zeroany;
     while (dlb_fgets(line, LLEN, fp)) {

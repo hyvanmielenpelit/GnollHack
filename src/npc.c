@@ -101,7 +101,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL | NPC_FLAGS_HAS_STANDARD_DISTANT_SOUNDS | NPC_FLAGS_MAY_HAVE_PAINTINGS
     },
     {
-        PM_ORC_SHAMAN,
+        PM_ORC_HERMIT,
         NPC_GEHENNOM_STANDARD,
         "orcish hermit",
         "lounge",
@@ -163,7 +163,7 @@ min_npc_appearance_depth(void)
 void
 forget_npc_entry(struct monst *npc)
 {
-    struct enpc* enpc_p = npc->isnpc ? ENPC(npc) : 0;
+    struct enpc* enpc_p = is_mon_isnpc(npc) ? ENPC(npc) : 0;
 
     if (!enpc_p) {
         impossible("attempting to manipulate NPC data for non-NPC?");
@@ -237,7 +237,7 @@ has_npc_room(struct monst *npc)
 {
     struct enpc* enpc_p;
 
-    if (!npc || !npc->isnpc)
+    if (!npc || !is_mon_isnpc(npc))
         return FALSE;
 
     enpc_p = ENPC(npc);
@@ -253,7 +253,7 @@ has_npc_room(struct monst *npc)
 static boolean
 his_npc_room_at(struct monst *npc, xchar x, xchar y)
 {
-    return (boolean)(npc && npc->isnpc
+    return (boolean)(npc && is_mon_isnpc(npc)
         && (ENPC(npc)->npc_room == *in_rooms(x, y, NPCROOM))
         && on_level(&(ENPC(npc)->npc_room_level), &u.uz));
 }
@@ -262,7 +262,7 @@ boolean
 in_his_npc_room(struct monst *npc)
 {
     /* make sure we have an npc */
-    if (!npc || !npc->isnpc)
+    if (!npc || !is_mon_isnpc(npc))
         return FALSE;
 
     /* npc must be on right level and in right room */
@@ -281,7 +281,7 @@ findnpc(char roomno)
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (mtmp->isnpc && (ENPC(mtmp)->npc_room == roomno)
+        if (is_mon_isnpc(mtmp) && (ENPC(mtmp)->npc_room == roomno)
             && his_npc_room_at(mtmp, mtmp->mx, mtmp->my))
             return mtmp;
     }
@@ -323,10 +323,10 @@ in_npc_room(int roomno, boolean ignore_already_there)
                 enpc_p->enter_time = 0L;
             }
 
-            if (context.reviving && !npc->mpeaceful)
+            if (context.reviving && !is_mon_mpeaceful(npc))
             {
                 /* Revival pacifies nearby NPCs */
-                npc->mpeaceful = 1;
+                set_mon_mpeaceful(npc, 1);
                 newsym(npc->mx, npc->my);
             }
 
@@ -476,9 +476,9 @@ npcini(d_level *lvl, struct mkroom *sroom, int sx, int sy, uchar npctype, int mt
         ENPC(npc)->npc_typ = npctype;
         assign_level(&(ENPC(npc)->npc_room_level), lvl);
         npc->mtrapseen = ~0; /* traps are known */
-        npc->mpeaceful = 1;
-        npc->isnpc = 1;
-        npc->msleeping = 0;
+        set_mon_mpeaceful(npc, 1);
+        set_mon_isnpc(npc, 1);
+        set_mon_msleeping(npc, 0);
         set_mhostility(npc); /* mpeaceful may have changed */
 
         if ((npc_subtype_definitions[npctype].start_money_d > 0 && npc_subtype_definitions[npctype].start_money_n > 0) || npc_subtype_definitions[npctype].start_money_p > 0)
@@ -503,16 +503,22 @@ npcini(d_level *lvl, struct mkroom *sroom, int sx, int sy, uchar npctype, int mt
             }
 
             /* Random ores */
-            for (i = 0; i < 24; i++)
+            int num_ores = rnd(6) + 18;
+            for (i = 0; i < num_ores; i++)
             {
                 mongets(npc, rnd_class(NUGGET_OF_IRON_ORE, NUGGET_OF_MITHRIL_ORE));
             }
 
             /* Random gems */
-            for (i = 0; i < 24; i++)
+            boolean has_seeing = !rn2(Inhell ? 5 : 20);
+            int num_gems = rnd(6) + 18 - (has_seeing ? 1 : 0);
+            for (i = 0; i < num_gems; i++)
             {
                 mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
             }
+
+            if (has_seeing)
+                mongets(npc, GEM_OF_SEEING);
 
             /* Manual */
             struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc,  MAT_NONE, MANUAL_CATALOGUE_OF_GEMS_AND_STONES, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
@@ -676,7 +682,7 @@ npcini(d_level *lvl, struct mkroom *sroom, int sx, int sy, uchar npctype, int mt
             {
                 if (otmp->enchantment < 5)
                     otmp->enchantment = 5 + rn2(3);
-                if (otmp->cursed)
+                if (is_obj_cursed(otmp))
                     uncurse(otmp);
                 otmp = uoname(otmp, "Xanbane");
                 if (otmp)
@@ -717,7 +723,7 @@ npcini(d_level *lvl, struct mkroom *sroom, int sx, int sy, uchar npctype, int mt
             {
                 if (otmp->enchantment < 5)
                     otmp->enchantment = 5 + rn2(3);
-                if (otmp->cursed)
+                if (is_obj_cursed(otmp))
                     uncurse(otmp);
                 otmp = uoname(otmp, "Xanbane");
                 if (otmp)
@@ -901,7 +907,7 @@ npcini(d_level *lvl, struct mkroom *sroom, int sx, int sy, uchar npctype, int mt
                 }
                 if (cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
-                    ENPC(npc)->special_teach_spells[cnt] = !rn2(3) ? SPE_POLYMORPH : !rn2(2) ? SPE_CREATE_STONE_GOLEM : SPE_FLESH_TO_STONE;
+                    ENPC(npc)->special_teach_spells[cnt] = !rn2(3) ? SPE_POLYMORPH_OTHER : !rn2(2) ? SPE_CREATE_STONE_GOLEM : SPE_FLESH_TO_STONE;
                     cnt++;
                 }
 
@@ -1097,7 +1103,7 @@ free_enpc(struct monst *mtmp)
         free((genericptr_t)ENPC(mtmp));
         ENPC(mtmp) = (struct enpc*)0;
     }
-    mtmp->isnpc = 0;
+    set_mon_isnpc(mtmp, 0);
 }
 
 /* munge NPC-specific structure when restoring -dlc */
@@ -1110,7 +1116,7 @@ restnpc(struct monst *mtmp, boolean ghostly)
         {
             assign_level(&(ENPC(mtmp)->npc_room_level), &u.uz);
             if (ANGRY(mtmp))
-                NOTANGRY(mtmp) = TRUE;
+                set_mon_mpeaceful(mtmp, TRUE);
         }
     }
 }
@@ -1123,7 +1129,7 @@ clearnpcs(void)
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
-        if (mtmp->isnpc && !on_level(&(ENPC(mtmp)->npc_room_level), &u.uz))
+        if (is_mon_isnpc(mtmp) && !on_level(&(ENPC(mtmp)->npc_room_level), &u.uz))
             mongone(mtmp);
     }
 }

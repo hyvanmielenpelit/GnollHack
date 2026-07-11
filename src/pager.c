@@ -106,7 +106,7 @@ mhidden_description(struct monst *mon, boolean altmon, char *outbuf)
     struct obj *otmp;
     boolean fakeobj, isyou = (mon == &youmonst);
     int x = isyou ? u.ux : mon->mx, y = isyou ? u.uy : mon->my;
-    int glyph = !isok(x, y) ? NO_GLYPH : abs((level.flags.hero_memory && !isyou) ? levl[x][y].hero_memory_layers.glyph
+    int glyph = !isok(x, y) ? NO_GLYPH : abs((is_levflag_hero_memory(&level.flags) && !isyou) ? levl[x][y].hero_memory_layers.glyph
                                                     : glyph_at(x, y));
 
     *outbuf = '\0';
@@ -135,8 +135,8 @@ mhidden_description(struct monst *mon, boolean altmon, char *outbuf)
     } else if (M_AP_TYPE(mon) == M_AP_MONSTER) {
         if (altmon)
             Sprintf(outbuf, ", masquerading as %s",
-                    an(pm_monster_name(&mons[mon->mappearance], mon->female)));
-    } else if (isyou ? u.uundetected : mon->mundetected) {
+                    an(pm_monster_name(&mons[mon->mappearance], is_mon_female(mon))));
+    } else if (isyou ? u.uundetected : is_mon_mundetected(mon)) {
         Strcpy(outbuf, ", hiding");
         if (hides_under(mon->data)) {
             Strcat(outbuf, " under ");
@@ -257,7 +257,7 @@ object_from_map(int glyph, int x, int y, struct obj **obj_p)
         /* extra fields needed for shop price with doname() formatting */
         otmp->where = OBJ_FLOOR;
         otmp->ox = x, otmp->oy = y;
-        otmp->no_charge = (otmp->otyp == STRANGE_OBJECT && costly_spot(x, y));
+        set_obj_no_charge(otmp, (otmp->otyp == STRANGE_OBJECT && costly_spot(x, y)));
     }
 
     if (otmp && (otmp->otyp == CORPSE || otmp->otyp == STATUE || otmp->otyp == FIGURINE) && (otmp->corpsenm <= NON_PM || otmp->corpsenm >= NUM_MONSTERS)) /* Insurance */
@@ -274,13 +274,13 @@ object_from_map(int glyph, int x, int y, struct obj **obj_p)
         && (fakeobj || otmp->where == OBJ_FLOOR) /* not buried */
         /* terrain mode views what's already known, doesn't learn new stuff */
         && !iflags.terrainmode) /* so don't set dknown when in terrain mode */
-        otmp->dknown = 1; /* if a pile, clearly see the top item only */
+        set_obj_dknown(otmp, 1); /* if a pile, clearly see the top item only */
 
     if (fakeobj && mtmp && mimic_obj &&
-        (otmp->dknown || (M_AP_FLAG(mtmp) & M_AP_F_DKNOWN))) 
+        (is_obj_dknown(otmp) || (M_AP_FLAG(mtmp) & M_AP_F_DKNOWN))) 
     {
             mtmp->m_ap_type |= M_AP_F_DKNOWN;
-            otmp->dknown = 1;
+            set_obj_dknown(otmp, 1);
     }
     *obj_p = otmp;
     return fakeobj; /* when True, caller needs to dealloc *obj_p */
@@ -305,9 +305,9 @@ look_at_object(char *buf, int x, int y, int glyph)
             otmp->otyp, Hallucination, (int)fakeobj, 
             otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS ? OBJ_NAME(objects[otmp->otyp]) != 0 : -1, 
             otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS ? OBJ_DESCR(objects[otmp->otyp]) != 0 : -1,
-            (int)iflags.in_dumplog, (int)otmp->dknown);
+            (int)iflags.in_dumplog, (int)is_obj_dknown(otmp));
         const char* used_obj_name = (otmp->otyp > STRANGE_OBJECT && otmp->otyp < NUM_OBJECTS && OBJ_NAME(objects[otmp->otyp]))
-            ? (iflags.in_dumplog ? aqcxname(otmp) : distant_name(otmp, otmp->dknown ? doname_with_price : doname_vague_quan))
+            ? (iflags.in_dumplog ? aqcxname(otmp) : distant_name(otmp, is_obj_dknown(otmp) ? doname_with_price : doname_vague_quan))
             : obj_descr[STRANGE_OBJECT].oc_name;
 
         Strcpy(buf, used_obj_name ? used_obj_name : "indescribable object");
@@ -344,24 +344,25 @@ static void
 look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, int x, int y)
 {
     char *name, monnambuf[BUFSZ], headbuf[BUFSZ], tmpbuf[BUFSZ];
+    struct permonst *pm = (M_AP_TYPE(mtmp) == M_AP_MONSTER && mtmp->mappearance < NUM_MONSTERS && !Can_detect_mimic(mtmp)) ? &mons[mtmp->mappearance] : mtmp->data;
     boolean accurate = !Hallucination;
-    boolean show_monster_type = accurate && (mtmp->isshk || has_umname(mtmp) || (has_mname(mtmp) && mtmp->u_know_mname)) && !is_mname_proper_name(mtmp->data);
+    boolean show_monster_type = accurate && (is_mon_isshk(mtmp) || has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp))) && !is_mname_proper_name(pm);
 
-    name = (mtmp->data == &mons[PM_COYOTE] && accurate)
+    name = (pm == &mons[PM_COYOTE] && accurate)
               ? coyotename(mtmp, monnambuf)
               : distant_monnam(mtmp, ARTICLE_NONE, monnambuf);
 
     if (simplebuf)
     {
         if (show_monster_type)
-            Strcpy(simplebuf, pm_monster_name(mtmp->data, mtmp->female));
+            Strcpy(simplebuf, pm_monster_name(pm, is_mon_female(mtmp)));
         else
             Strcpy(simplebuf, name);
     }
 
     Strcpy(headbuf, "");
 
-    if ((mtmp->data->heads > 3 && !(mtmp->data->geno & G_UNIQ) && !is_mname_proper_name(mtmp->data)) || (mtmp->data->heads > 1 && mtmp->heads_left != mtmp->data->heads))
+    if ((pm->heads > 3 && !(pm->geno & G_UNIQ) && !is_mname_proper_name(pm)) || (pm->heads > 1 && mtmp->heads_left != pm->heads))
         Sprintf(headbuf, "%d-headed ", mtmp->heads_left);
 
     Strcpy(tmpbuf, "");
@@ -374,27 +375,27 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
         headbuf,
         name);
 
-    Sprintf(buf, "level %d %s%s", accurate ? mtmp->data->difficulty : rn2(3) ? rnd(30) : rnd(80),
+    Sprintf(buf, "level %d %s%s", accurate ? pm->difficulty : rn2(3) ? rnd(30) : rnd(80),
             (mtmp->mx != x || mtmp->my != y)
                 ? "tail of "
                 : "",
-        (mtmp->mx != x || mtmp->my != y) && !((mtmp->isshk || has_umname(mtmp) || (has_mname(mtmp) && mtmp->u_know_mname) || (is_mplayer(mtmp->data) && strstri(name, " the ") != 0) || is_mname_proper_name(mtmp->data)) && accurate) ? an(tmpbuf) : tmpbuf);
+        (mtmp->mx != x || mtmp->my != y) && !((is_mon_isshk(mtmp) || has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp)) || (is_mplayer(pm) && strstri(name, " the ") != 0) || is_mname_proper_name(pm)) && accurate) ? an(tmpbuf) : tmpbuf);
 
     if (show_monster_type)
-        Sprintf(eos(buf), ", %s", an(pm_monster_name(mtmp->data, mtmp->female)));
+        Sprintf(eos(buf), ", %s", an(pm_monster_name(pm, is_mon_female(mtmp))));
 
     if (u.ustuck == mtmp) {
         if (u.uswallow || iflags.save_uswallow) /* monster detection */
-            Strcat(buf, is_animal(mtmp->data)
+            Strcat(buf, is_animal(pm)
                           ? ", swallowing you" : ", engulfing you");
         else
             Strcat(buf, (Upolyd && sticks(youmonst.data))
                           ? ", being held" : ", holding you");
     }
-    if (mtmp->mleashed)
+    if (is_mon_mleashed(mtmp))
         Strcat(buf, ", leashed to you");
 
-    if (mtmp->mtrapped && cansee(mtmp->mx, mtmp->my)) {
+    if (is_mon_mtrapped(mtmp) && cansee(mtmp->mx, mtmp->my)) {
         struct trap *t = t_at(mtmp->mx, mtmp->my);
         int tt = t ? t->ttyp : NO_TRAP;
 
@@ -406,7 +407,7 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
 
     /* we know the hero sees a monster at this location, but if it's shown
        due to persistant monster detection he might remember something else */
-    if (mtmp->mundetected || M_AP_TYPE(mtmp))
+    if (is_mon_mundetected(mtmp) || M_AP_TYPE(mtmp))
         mhidden_description(mtmp, FALSE, eos(buf));
 
     if (is_tame(mtmp))
@@ -476,7 +477,7 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
                 } else {
                     uint64_t mW = (context.warntype.obj
                                         | context.warntype.polyd),
-                                  m2 = mtmp->data->mflags2;
+                                  m2 = pm->mflags2;
                     const char *whom = ((mW & M2_HUMAN & m2) ? "humans"
                                         : (mW & M2_ELF & m2) ? "elves"
                                           : (mW & M2_ORC & m2) ? "orcs"
@@ -607,14 +608,14 @@ lookat(int x, int y, char *buf, char *simplebuf, char *extrabuf)
             if (is_tame(mtmp))
             {
                 print_mstatusline(buf, mtmp, ARTICLE_NONE, TRUE);
-                Strcpy(simplebuf, pm_monster_name(mtmp->data, mtmp->female));
+                Strcpy(simplebuf, pm_monster_name(mtmp->data, is_mon_female(mtmp)));
             }
             else
             {
                 look_at_monster(buf, simplebuf, extrabuf, mtmp, x, y);
             }
-            pm = mtmp->data;
-            if(has_umname(mtmp) || (has_mname(mtmp) && mtmp->u_know_mname))
+            pm = (M_AP_TYPE(mtmp) == M_AP_MONSTER && mtmp->mappearance < NUM_MONSTERS && !Can_detect_mimic(mtmp)) ? &mons[mtmp->mappearance] : mtmp->data;
+            if(has_umname(mtmp) || (has_mname(mtmp) && is_mon_u_know_mname(mtmp)))
                 noarticle = TRUE;
         }
         else if (Hallucination)
@@ -782,7 +783,7 @@ lookat(int x, int y, char *buf, char *simplebuf, char *extrabuf)
                 ) && cansee(x, y))
             {
                 char buf2[BUFSZ * 2];
-                Sprintf(buf2, "%s%s", levl[x][y].lamplit ? "lit " : "unlit ", buf);
+                Sprintf(buf2, "%s%s", is_levl_lamplit(&levl[x][y]) ? "lit " : "unlit ", buf);
                 Strcpy(buf, buf2);
             }
             break;
@@ -1315,7 +1316,7 @@ do_screen_description(coord cc, boolean looked, nhsym sym, char *out_str, const 
                             ) && cansee(cc.x, cc.y))
                         {
                             char buf2[BUFSZ * 2];
-                            Sprintf(buf2, "%s%s", levl[cc.x][cc.y].lamplit ? "lit " : "unlit ", decoration_buf);
+                            Sprintf(buf2, "%s%s", is_levl_lamplit(&levl[cc.x][cc.y]) ? "lit " : "unlit ", decoration_buf);
                             Strcpy(decoration_buf, buf2);
                         }
                         x_str = decoration_buf;
@@ -1545,7 +1546,7 @@ do_look(int mode, coord *click_cc)
 
             any = zeroany;
             win = create_nhwindow(NHW_MENU);
-            start_menu_ex(win, GHMENU_STYLE_CHOOSE_COMMAND);
+            start_menu_style(win, GHMENU_STYLE_CHOOSE_COMMAND);
             any.a_char = '/';
             /* 'y' and 'n' to keep backwards compatibility with previous
                versions: "Specify unknown object by cursor?" */
@@ -2038,9 +2039,9 @@ whatdoes_help(void)
 #if 0
 #define WD_STACKLIMIT 5
 struct wd_stack_frame {
-    Bitfield(active, 1);
-    Bitfield(been_true, 1);
-    Bitfield(else_seen, 1);
+    boolean active;
+    boolean been_true;
+    boolean else_seen;
 };
 
 static boolean whatdoes_cond(char *, struct wd_stack_frame *,
@@ -2433,7 +2434,7 @@ dohelp(void)
     int sel;
 
     any = zeroany; /* zero all bits */
-    start_menu_ex(tmpwin, GHMENU_STYLE_HELP);
+    start_menu_style(tmpwin, GHMENU_STYLE_HELP);
 
     for (i = 0; help_menu_items[i].text; i++) {
         if (!wizard && help_menu_items[i].f == dispfile_debughelp)

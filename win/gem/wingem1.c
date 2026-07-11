@@ -1412,7 +1412,7 @@ mar_more()
 
 /************************* Gem_start_menu_ex *******************************/
 void
-Gem_start_menu_ex(winid win, int style)
+Gem_start_menu_ex(winid win, int style, int glyph UNUSED, uint64_t mflags UNUSED)
 {
     win = win;
     if (invent_list) {
@@ -2519,7 +2519,7 @@ mar_destroy_nhwindow(winid window)
         use_rip = FALSE;
         break;
     case NHW_MENU:
-        Gem_start_menu_ex(window, 0); /* delete invent_list */
+        Gem_start_menu_ex(window, 0, 0, 0); /* delete invent_list */
         test_free(Menu_title);
         break;
     case 0: /* No window available, probably an error message? */

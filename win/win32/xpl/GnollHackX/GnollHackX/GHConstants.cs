@@ -29,6 +29,20 @@ namespace GnollHackX
     public sealed class RenderThreadOnlyAttribute : Attribute { }
 
     [Flags]
+    public enum GHSaveFlags : uint
+    {
+        None = 0x00,
+        NonScoring = 0x01,
+        TournamentMode = 0x02,
+        FileTrackValid = 0x04,
+        DebugMode = 0x100,
+        ExploreMode = 0x200,
+        ModernMode = 0x400,
+        CasualMode = 0x800,
+        NonTrackingMask = (NonScoring | DebugMode | ExploreMode | CasualMode)
+    }
+
+    [Flags]
     public enum ReplayVersionFlags : ulong
     {
         None = 0UL,
@@ -130,28 +144,28 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum MapSpecial : uint
+    public enum MapSpecial : UInt64
     {
-        None =              0x00000000,
-        Corpse =            0x00000001,
-        Invisible =         0x00000002,
-        Detected =          0x00000004,
-        Pet =               0x00000008,
-        Ridden =            0x00000010,
-        Statue =            0x00000020,
-        ObjectPile =        0x00000040,
-        BlackWhiteLava =    0x00000080,
-        Peaceful =          0x00000100,
-        Saddled =           0x00000200,
-        Female =            0x00000400,
-        HorizontalFlip =    0x00000800,
-        StoneInverse =      0x00001000,
-        AltColors =         0x00002000,
-        Decoration =        0x00004000,
-        Carpet =            0x00008000,
+        None =              0x00000000UL,
+        Corpse =            0x00000001UL,
+        Invisible =         0x00000002UL,
+        Detected =          0x00000004UL,
+        Pet =               0x00000008UL,
+        Ridden =            0x00000010UL,
+        Statue =            0x00000020UL,
+        ObjectPile =        0x00000040UL,
+        BlackWhiteLava =    0x00000080UL,
+        Peaceful =          0x00000100UL,
+        Saddled =           0x00000200UL,
+        Female =            0x00000400UL,
+        HorizontalFlip =    0x00000800UL,
+        StoneInverse =      0x00001000UL,
+        AltColors =         0x00002000UL,
+        Decoration =        0x00004000UL,
+        Carpet =            0x00008000UL,
 
-        Inverse =           0x10000000,
-        Underline =         0x20000000,
+        Inverse =           0x10000000UL,
+        Underline =         0x20000000UL,
     }
 
     [Flags]
@@ -941,193 +955,152 @@ namespace GnollHackX
         public int usecount;           /* overloaded for various things that tally */
         public uint oeaten;        /* nutrition left in food, if partly eaten */
 
-#if BITFIELDS
-        internal uint bitfields;
+        public ulong bitflags;
+        public byte oeroded;
+        public byte oeroded2;
+        
+        public bool cursed 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_CURSED) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_CURSED) | (value ? (ulong)obj_bitfield_types.OBJFLAG_CURSED : 0UL); }
+        }
+        public bool blessed 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_BLESSED) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_BLESSED) | (value ? (ulong)obj_bitfield_types.OBJFLAG_BLESSED : 0UL); }
+        }
+        public bool unpaid 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_UNPAID) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_UNPAID) | (value ? (ulong)obj_bitfield_types.OBJFLAG_UNPAID : 0UL); }
+        }
+        public bool no_charge 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_NO_CHARGE) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_NO_CHARGE) | (value ? (ulong)obj_bitfield_types.OBJFLAG_NO_CHARGE : 0UL); }
+        }
+        public bool known 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_KNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_KNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_KNOWN : 0UL); }
+        }
+        public bool dknown 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_DKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_DKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_DKNOWN : 0UL); }
+        }
+        public bool bknown 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_BKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_BKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_BKNOWN : 0UL); }
+        }
+        public bool rknown 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_RKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_RKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_RKNOWN : 0UL); }
+        }
+        public bool oerodeproof 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_OERODEPROOF) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_OERODEPROOF) | (value ? (ulong)obj_bitfield_types.OBJFLAG_OERODEPROOF : 0UL); }
+        }
+        public bool olocked 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_OLOCKED) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_OLOCKED) | (value ? (ulong)obj_bitfield_types.OBJFLAG_OLOCKED : 0UL); }
+        }
+        public bool obroken 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_OBROKEN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_OBROKEN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_OBROKEN : 0UL); }
+        }
+        public bool otrapped 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_OTRAPPED) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_OTRAPPED) | (value ? (ulong)obj_bitfield_types.OBJFLAG_OTRAPPED : 0UL); }
+        }
+        public bool lamplit 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_LAMPLIT) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_LAMPLIT) | (value ? (ulong)obj_bitfield_types.OBJFLAG_LAMPLIT : 0UL); }
+        }
+        public bool makingsound 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_MAKINGSOUND) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_MAKINGSOUND) | (value ? (ulong)obj_bitfield_types.OBJFLAG_MAKINGSOUND : 0UL); }
+        }
+        public bool globby 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_GLOBBY) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_GLOBBY) | (value ? (ulong)obj_bitfield_types.OBJFLAG_GLOBBY : 0UL); }
+        }
+        public bool greased 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_GREASED) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_GREASED) | (value ? (ulong)obj_bitfield_types.OBJFLAG_GREASED : 0UL); }
+        }
+        public bool nomerge 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_NOMERGE) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_NOMERGE) | (value ? (ulong)obj_bitfield_types.OBJFLAG_NOMERGE : 0UL); }
+        }
+        public bool was_thrown 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_WAS_THROWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_WAS_THROWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_WAS_THROWN : 0UL); }
+        }
+        public bool has_special_tileset 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_HAS_SPECIAL_TILESET) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_HAS_SPECIAL_TILESET) | (value ? (ulong)obj_bitfield_types.OBJFLAG_HAS_SPECIAL_TILESET : 0UL); }
+        }
+        public bool in_use 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_IN_USE) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_IN_USE) | (value ? (ulong)obj_bitfield_types.OBJFLAG_IN_USE : 0UL); }
+        }
+        public bool bypass 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_BYPASS) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_BYPASS) | (value ? (ulong)obj_bitfield_types.OBJFLAG_BYPASS : 0UL); }
+        }
+        public bool cknown 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_CKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_CKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_CKNOWN : 0UL); }
+        }
+        public bool lknown 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_LKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_LKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_LKNOWN : 0UL); }
+        }
+        public bool tknown 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_TKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_TKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_TKNOWN : 0UL); }
+        }
+        public bool nknown 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_NKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_NKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_NKNOWN : 0UL); }
+        }
+        public bool aknown 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_AKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_AKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_AKNOWN : 0UL); }
+        }
+        public bool mknown 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_MKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_MKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_MKNOWN : 0UL); }
+        }
+        public bool rotknown 
+        {
+            get { return (bitflags & (ulong)obj_bitfield_types.OBJFLAG_ROTKNOWN) != 0; } 
+            set { bitflags = (bitflags & ~(ulong)obj_bitfield_types.OBJFLAG_ROTKNOWN) | (value ? (ulong)obj_bitfield_types.OBJFLAG_ROTKNOWN : 0UL); }
+        }
 
-        public uint cursed 
-        {
-            get { return bitfields & 0x00000001U; } 
-            set { bitfields = (bitfields & ~0x00000001U) | (value & 0x00000001U); }
-        }
-        public uint blessed
-        {
-            get { return (bitfields >> 1) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 1)) | ((value & 0x00000001U) << 1); }
-        }
-        public uint unpaid
-        {
-            get { return (bitfields >> 2) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 2)) | ((value & 0x00000001U) << 2); }
-        }
-        public uint no_charge
-        {
-            get { return (bitfields >> 3) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 3)) | ((value & 0x00000001U) << 3); }
-        }
-        public uint known
-        {
-            get { return (bitfields >> 4) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 4)) | ((value & 0x00000001U) << 4); }
-        }
-        public uint dknown
-        {
-            get { return (bitfields >> 5) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 5)) | ((value & 0x00000001U) << 5); }
-        }
-        public uint bknown
-        {
-            get { return (bitfields >> 6) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 6)) | ((value & 0x00000001U) << 6); }
-        }
-        public uint rknown
-        {
-            get { return (bitfields >> 7) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 7)) | ((value & 0x00000001U) << 7); }
-        }
-        public uint oeroded
-        {
-            get { return (bitfields >> 8) & 0x00000003U; }
-            set { bitfields = (bitfields & ~(0x00000003U << 8)) | ((value & 0x00000003U) << 8); }
-        }
-        public uint oeroded2
-        {
-            get { return (bitfields >> 10) & 0x00000003U; }
-            set { bitfields = (bitfields & ~(0x00000003U << 10)) | ((value & 0x00000003U) << 10); }
-        }
-        public uint oerodeproof
-        {
-            get { return (bitfields >> 12) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 12)) | ((value & 0x00000001U) << 12); }
-        }
-        public uint olocked
-        {
-            get { return (bitfields >> 13) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 13)) | ((value & 0x00000001U) << 13); }
-        }
-        public uint obroken
-        {
-            get { return (bitfields >> 14) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 14)) | ((value & 0x00000001U) << 14); }
-        }
-        public uint otrapped
-        {
-            get { return (bitfields >> 15) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 15)) | ((value & 0x00000001U) << 15); }
-        }
-        public uint lamplit
-        {
-            get { return (bitfields >> 16) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 16)) | ((value & 0x00000001U) << 16); }
-        }
-        public uint makingsound
-        {
-            get { return (bitfields >> 17) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 17)) | ((value & 0x00000001U) << 17); }
-        }
-        public uint globby
-        {
-            get { return (bitfields >> 18) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 18)) | ((value & 0x00000001U) << 18); }
-        }
-        public uint greased
-        {
-            get { return (bitfields >> 19) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 19)) | ((value & 0x00000001U) << 19); }
-        }
-        public uint nomerge
-        {
-            get { return (bitfields >> 20) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 20)) | ((value & 0x00000001U) << 20); }
-        }
-        public uint was_thrown
-        {
-            get { return (bitfields >> 21) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 21)) | ((value & 0x00000001U) << 21); }
-        }
-        public uint has_special_tileset
-        {
-            get { return (bitfields >> 22) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 22)) | ((value & 0x00000001U) << 22); }
-        }
-        public uint in_use
-        {
-            get { return (bitfields >> 23) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 23)) | ((value & 0x00000001U) << 23); }
-        }
-        public uint bypass
-        {
-            get { return (bitfields >> 24) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 24)) | ((value & 0x00000001U) << 24); }
-        }
-        public uint cknown
-        {
-            get { return (bitfields >> 25) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 25)) | ((value & 0x00000001U) << 25); }
-        }
-        public uint lknown
-        {
-            get { return (bitfields >> 26) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 26)) | ((value & 0x00000001U) << 26); }
-        }
-        public uint tknown
-        {
-            get { return (bitfields >> 27) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 27)) | ((value & 0x00000001U) << 27); }
-        }
-        public uint nknown
-        {
-            get { return (bitfields >> 28) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 28)) | ((value & 0x00000001U) << 28); }
-        }
-        public uint aknown
-        {
-            get { return (bitfields >> 29) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 29)) | ((value & 0x00000001U) << 29); }
-        }
-        public uint mknown
-        {
-            get { return (bitfields >> 30) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 30)) | ((value & 0x00000001U) << 30); }
-        }
-        public uint rotknown
-        {
-            get { return (bitfields >> 31) & 0x00000001U; }
-            set { bitfields = (bitfields & ~(0x00000001U << 31)) | ((value & 0x00000001U) << 31); }
-        }
-#else
-        public byte cursed;
-        public byte blessed;
-        public byte unpaid;    /* on some bill */
-        public byte no_charge; /* if shk shouldn't charge for this */
-        public byte known;     /* exact nature & enchantment & charges known */
-        public byte dknown;    /* description = color or text known */
-        public byte bknown;    /* blessing or curse known */
-        public byte rknown;    /* rustproof or not known */
-        public byte oeroded;  /* rusted/burnt weapon/armor */
-        public byte oeroded2; /* corroded/rotted weapon/armor */
-        public byte oerodeproof; /* erodeproof weapon/armor */
-        public byte olocked;     /* object is locked */
-        public byte obroken;     /* lock has been broken */
-        public byte otrapped;    /* container is trapped */
-        public byte lamplit;   /* a light-source -- can be lit */
-        public byte makingsound;   /* a sound-source -- can be turned on to make noise */
-        public byte globby;    /* combines with like types on adjacent squares */
-        public byte greased;    /* covered with grease */
-        public byte nomerge;    /* set temporarily to prevent merging */
-        public byte was_thrown; /* thrown by hero since last picked up */
-        public byte has_special_tileset; /* thrown by hero since last picked up */
-        public byte in_use; /* for magic items before useup items */
-        public byte bypass; /* mark this as an object to be skipped by bhito() */
-        public byte cknown; /* contents of container assumed to be known */
-        public byte lknown; /* locked/unlocked status is known */
-        public byte tknown; /* trapped status of a container is known */
-        public byte nknown; /* artifact's true name is known */
-        public byte aknown; /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
-        public byte mknown; /* mythic quality is known */
-        public byte rotknown; /* rotting status is known */
-#endif
-
-        public uint reserved;  /* reserved for, e.g., more bitfields */
+        public uint firing_m_id;  /* m_id for monster that fired this object (for picking up back) */
 
         public uint o_id_memory;  /* This is a memory object of this o_id */
         public uint m_id_memory;  /* This is a memory object of this mimic m_id */
@@ -1408,36 +1381,34 @@ namespace GnollHackX
     [Flags]
     public enum obj_bitfield_types : ulong
     {
-        cursed =        0x00000001U,
-        blessed =       0x00000002U,
-        unpaid =        0x00000004U,
-        no_charge =     0x00000008U,
-        known =         0x00000010U,
-        dknown =        0x00000020U,
-        bknown =        0x00000040U,
-        rknown =        0x00000080U,
-        oeroded =       0x00000100U | 0x00000200U,
-        oeroded2 =      0x00000400U | 0x00000800U,
-        oerodeproof =   0x00001000U,
-        olocked =       0x00002000U,
-        degraded_horn = 0x00004000U,
-        otrapped =      0x00008000U,  /* Monsters will not pick up this item */
-        lamplit =       0x00010000U,
-        makingsound =   0x00020000U,
-        globby =        0x00040000U,
-        greased =       0x00080000U,
-        nomerge =       0x00100000U,
-        was_thrown =    0x00200000U,
-        has_special_tileset = 0x00400000U,
-        in_use =        0x00800000U,
-        bypass =        0x01000000U,
-        cknown =        0x02000000U,
-        lknown =        0x04000000U,
-        tknown =        0x08000000U,
-        nknown =        0x10000000U,
-        aknown =        0x20000000U,
-        mknown =        0x40000000U,
-        rotknown =      0x80000000U
+        OBJFLAG_CURSED                   = 0x00000001UL,
+        OBJFLAG_BLESSED                  = 0x00000002UL,
+        OBJFLAG_UNPAID                   = 0x00000004UL,
+        OBJFLAG_NO_CHARGE                = 0x00000008UL,
+        OBJFLAG_KNOWN                    = 0x00000010UL,
+        OBJFLAG_DKNOWN                   = 0x00000020UL,
+        OBJFLAG_BKNOWN                   = 0x00000040UL,
+        OBJFLAG_RKNOWN                   = 0x00000080UL,
+        OBJFLAG_OERODEPROOF              = 0x00000100UL,
+        OBJFLAG_OLOCKED                  = 0x00000200UL,
+        OBJFLAG_OBROKEN                  = 0x00000400UL,
+        OBJFLAG_OTRAPPED                 = 0x00000800UL,
+        OBJFLAG_LAMPLIT                  = 0x00001000UL,
+        OBJFLAG_MAKINGSOUND              = 0x00002000UL,
+        OBJFLAG_GLOBBY                   = 0x00004000UL,
+        OBJFLAG_GREASED                  = 0x00008000UL,
+        OBJFLAG_NOMERGE                  = 0x00010000UL,
+        OBJFLAG_WAS_THROWN               = 0x00020000UL,
+        OBJFLAG_HAS_SPECIAL_TILESET      = 0x00040000UL,
+        OBJFLAG_IN_USE                   = 0x00080000UL,
+        OBJFLAG_BYPASS                   = 0x00100000UL,
+        OBJFLAG_CKNOWN                   = 0x00200000UL,
+        OBJFLAG_LKNOWN                   = 0x00400000UL,
+        OBJFLAG_TKNOWN                   = 0x00800000UL,
+        OBJFLAG_NKNOWN                   = 0x01000000UL,
+        OBJFLAG_AKNOWN                   = 0x02000000UL,
+        OBJFLAG_MKNOWN                   = 0x04000000UL,
+        OBJFLAG_ROTKNOWN                 = 0x08000000UL
     }
 
     [Flags]
@@ -2265,7 +2236,7 @@ namespace GnollHackX
         public const float OBJECT_PIT_SCALING_FACTOR = 0.75f;
         public const int NUM_BUFF_BIT_ULONGS = 8;
         public const int BUFFS_PER_TILE = 24;
-        public const int MAX_PROPS = 170;
+        public const int MAX_PROPS = 194;
         public const int LAST_PROP = (MAX_PROPS - 1);
         public const int MaxObjectsDrawn = 12;
         public const int OBJECT_PILE_START_HEIGHT = 2;
@@ -2447,6 +2418,20 @@ namespace GnollHackX
         public const string ReplaySharedZipFileNameSuffix = ".zip";
         public const string ReplayAllSharedZipFileNamePrefix = "shared-replays-";
         public const string AzureBlobStorageReplayContainerNamePrefix = "replays";
+        public const string TransferTempDirectory = "transfer_temp";
+        public const string TransferUploadDirectory = "transfer_upload";
+        public const string TransferDownloadDirectory = "transfer_download";
+        public const string AzureBlobStorageSaveTransferContainerNamePrefix = "savetransfers";
+        /* Transfer log session-directory retention policy */
+        public const int TransferLogRetentionDays = 30;         /* Normal max age for kept session dirs */
+        public const int TransferLogShortRetentionDays = 7;     /* Max age under moderate disk pressure */
+        public const int TransferLogMaxKeepCount = 5;           /* Max sessions kept under disk pressure */
+        /* Disk-space thresholds that tighten the retention policy (bytes) */
+        public const long TransferDiskPressureCriticalBytes = 1L * 1024 * 1024 * 1024;   /* <= 1 GB: delete all */
+        public const long TransferDiskPressureHighBytes = 2L * 1024 * 1024 * 1024;       /* <= 2 GB: keep 1 */
+        public const long TransferDiskPressureMediumBytes = 5L * 1024 * 1024 * 1024;     /* <= 5 GB: keep 5, 7-day limit */
+        public const long TransferDiskPressureLowBytes = 10L * 1024 * 1024 * 1024;       /* <= 10 GB: keep 5, 30-day limit */
+
         public const string AzureBlobStorageDelimiter = "/";
         public const string AzureBlobStorageGeneralDirectoryName = "_Anonymous";
         public const bool GZipIsDefaultReplayCompression = true;

@@ -197,7 +197,7 @@ mpoisons_subj(struct monst *mtmp, struct attack *mattk)
         struct obj *mwep = (mtmp == &youmonst) ? uwep : MON_WEP(mtmp);
         /* "Foo's attack was poisoned." is pretty lame, but at least
            it's better than "sting" when not a stinging attack... */
-        return (!mwep || !mwep->opoisoned) ? "attack" : "weapon";
+        return (!mwep || !is_obj_opoisoned(mwep)) ? "attack" : "weapon";
     } else {
         return (mattk->aatyp == AT_TUCH) ? "contact"
                   : (mattk->aatyp == AT_GAZE) ? "gaze"
@@ -473,6 +473,16 @@ mattacku(struct monst *mtmp)
     if (DEADMONSTER(mtmp) || (Underwater && !is_swimmer(mtmp->data)))
         return 0;
 
+    if (M_AP_TYPE(mtmp) != M_AP_NOTHING && youseeit && distmin(u.ux, u.uy, mtmp->mx, mtmp->my) <= 1)
+    {
+        seemimic(mtmp);
+        if (!Can_detect_mimic(mtmp))
+        {
+            play_sfx_sound(SFX_STUMBLE_ON_MIMIC);
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Wait!  That's %s!", a_monnam(mtmp));
+        }
+    }
+
     /* If swallowed, can only be affected by u.ustuck */
     if (u.uswallow) {
         if (mtmp != u.ustuck)
@@ -684,17 +694,17 @@ mattacku(struct monst *mtmp)
     tmp += mtmp->mhitinc;
     if (multi < 0 || Sleeping || Paralyzed_or_immobile)
         tmp += 4;
-    if ((Invis && !has_see_invisible(mtmp)) || is_blinded(mtmp))
+    if ((Invis && !can_mon_see_invisible(mtmp)) || is_blinded(mtmp))
         tmp -= 2;
-    if (mtmp->mtrapped)
+    if (is_mon_mtrapped(mtmp))
         tmp -= 2;
     if (tmp <= 0)
         tmp = 1;
 
     /* make eels visible the moment they hit/miss us */
-    if (mdat->mlet == S_EEL && mtmp->mundetected && cansee(mtmp->mx, mtmp->my))
+    if (mdat->mlet == S_EEL && is_mon_mundetected(mtmp) && cansee(mtmp->mx, mtmp->my))
     {
-        mtmp->mundetected = 0;
+        set_mon_mundetected(mtmp, 0);
         newsym(mtmp->mx, mtmp->my);
     }
 
@@ -727,7 +737,7 @@ mattacku(struct monst *mtmp)
     unsigned int bite_butt_count = 0;
 
     boolean first_attack = TRUE;
-    boolean orig_mpeaceful = mtmp->mpeaceful;
+    boolean orig_mpeaceful = is_mon_mpeaceful(mtmp);
 
     for (i = 0; i < NATTK; i++) 
     {
@@ -735,7 +745,7 @@ mattacku(struct monst *mtmp)
         sum[i] = 0;
         mon_currwep = (struct obj *)0;
          
-        if (!orig_mpeaceful && mtmp->mpeaceful && !Conflict && !is_crazed(mtmp)) /* The monster has become peaceful in the middle of attacks, so it stops attacking */
+        if (!orig_mpeaceful && is_mon_mpeaceful(mtmp) && !Conflict && !is_crazed(mtmp)) /* The monster has become peaceful in the middle of attacks, so it stops attacking */
             break;
 
         mattk = getmattk(mtmp, &youmonst, i, sum, &alt_attk);
@@ -1405,21 +1415,21 @@ u_slip_free_core(struct monst *mtmp, struct attack *mattk, boolean stuck)
 
     /* if your cloak/armor is greased, monster slips off; this
        protection might fail (33% chance) when the armor is cursed */
-    if (obj && (obj->greased || (objects[obj->otyp].oc_flags5 & O5_PERMANENTLY_GREASED) != 0 || obj->otyp == OILSKIN_CLOAK)
-        && (!obj->cursed || rn2(3))) {
+    if (obj && (is_obj_greased(obj) || (objects[obj->otyp].oc_flags5 & O5_PERMANENTLY_GREASED) != 0 || obj->otyp == OILSKIN_CLOAK)
+        && (!is_obj_cursed(obj) || rn2(3))) {
         pline("%s %s your %s %s!", Monnam(mtmp),
               (mattk->adtyp == AD_WRAP) ? "slips off of"
                                         : (stuck ? "tries to stick to you, but fails to attach onto" : "grabs you, but cannot hold onto"),
-              obj->greased ? "greased" : "slippery",
+              is_obj_greased(obj) ? "greased" : "slippery",
               /* avoid "slippery slippery cloak"
                  for undiscovered oilskin cloak */
-              (obj->greased || objects[obj->otyp].oc_name_known)
+              (is_obj_greased(obj) || objects[obj->otyp].oc_name_known)
                   ? xname(obj)
                   : cloak_simple_name(obj));
 
-        if (obj->greased && !rn2(2)) {
+        if (is_obj_greased(obj) && !rn2(2)) {
             pline_The("grease wears off.");
-            obj->greased = 0;
+            set_obj_greased(obj, 0);
             update_inventory();
         }
         return TRUE;
@@ -1749,14 +1759,14 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
     /*  If the monster is undetected & hits you, you should know where
      *  the attack came from.
      */
-    if (mtmp->mundetected && (hides_under(mdat) || mdat->mlet == S_EEL)) {
-        mtmp->mundetected = 0;
+    if (is_mon_mundetected(mtmp) && (hides_under(mdat) || mdat->mlet == S_EEL)) {
+        set_mon_mundetected(mtmp, 0);
         if (!(Blind ? (Blind_telepat || Unblind_telepat) : Unblind_telepat)) {
             struct obj *obj;
             const char *what;
 
             if ((obj = level.objects[mtmp->mx][mtmp->my]) != 0) {
-                if (Blind && !obj->dknown)
+                if (Blind && !is_obj_dknown(obj))
                     what = something;
                 else if (is_pool(mtmp->mx, mtmp->my) && !Underwater)
                     what = "the water";
@@ -3235,6 +3245,35 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
     //Add special enchantments
     if (mattk->aatyp == AT_WEAP && omonwep) 
     {
+        if (is_obj_opoisoned(omonwep) && is_poisonable(omonwep))
+        {
+            boolean unpoisonmsg = FALSE;
+            if (randomize_obj_unpoison(omonwep))
+            {
+                /* remove poison now in case obj ends up in a bones file */
+                set_obj_opoisoned(omonwep, FALSE);
+                /* defer "obj is no longer poisoned" until after hit message */
+                unpoisonmsg = mon_visible(mtmp) && cansee(mtmp->mx, mtmp->my); /* Can see the monster and the weapon */
+            }
+            char saved_oname[BUFSZ];
+            Strcpy(saved_oname, cxname(omonwep));
+
+            char onmbuf[BUFSZ], knmbuf[BUFSZ];
+            Strcpy(onmbuf, xname(omonwep));
+            Strcpy(knmbuf, killer_xname(omonwep));
+            poisoned(onmbuf, A_STR, knmbuf,
+                /* if damage triggered life-saving,
+                   poison is limited to attrib loss */
+                0, FALSE, 2, mtmp);
+
+            if (unpoisonmsg)
+            {
+                play_sfx_sound_at_location(SFX_WEAPON_NO_LONGER_POISONED, mtmp->mx, mtmp->my);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s %s no longer poisoned.", s_suffix(Monnam(mtmp)), saved_oname,
+                    vtense(saved_oname, "are"));
+            }
+        }
+
         if (omonwep->elemental_enchantment > 0)
         {
             char onmbuf[BUFSZ], knmbuf[BUFSZ];
@@ -3346,7 +3385,7 @@ gulpmu(struct monst *mtmp, struct attack *mattk)
         if (Punished)
             unplacebc(); /* ball&chain go away */
         remove_monster(omx, omy);
-        mtmp->mtrapped = 0; /* no longer on old trap */
+        set_mon_mtrapped(mtmp, 0); /* no longer on old trap */
         place_monster(mtmp, u.ux, u.uy);
         if (mtmp->wormno)
             worm_move(mtmp);
@@ -4174,10 +4213,10 @@ could_seduce(struct monst *magr, struct monst *mdef, struct attack *mattk)
         genagr = gender(magr);
     }
     if (mdef == &youmonst) {
-        defperc = (See_invisible != 0);
+        defperc = (Can_see_invisible != 0);
         gendef = poly_gender();
     } else {
-        defperc = has_see_invisible(mdef);
+        defperc = can_mon_see_invisible(mdef);
         gendef = gender(mdef);
     }
 
@@ -4204,7 +4243,7 @@ int
 doseduce(struct monst *mon)
 {
     struct obj *ring, *nring;
-    boolean fem = mon->female; // (mon->data == &mons[PM_SUCCUBUS]); /* otherwise incubus */
+    boolean fem = is_mon_female(mon); // (mon->data == &mons[PM_SUCCUBUS]); /* otherwise incubus */
     boolean seewho, naked; /* True iff no armor */
     int attr_tot, tried_gloves = 0;
     char qbuf[QBUFSZ], Who[QBUFSZ];
@@ -4716,7 +4755,7 @@ passiveum(struct permonst *olduasmon, struct monst *mtmp, struct attack *mattk)
                 if (!rn2(20))
                     paralyse_duration = 24;
                 if (!is_blinded(mtmp) && haseyes(mtmp->data) && rn2(3)
-                    && (has_see_invisible(mtmp) || !Invis))
+                    && (can_mon_see_invisible(mtmp) || !Invis))
                 {
                     if (Blind)
                         pline_ex(ATR_NONE, CLR_MSG_WARNING, "As a blind %s, you cannot defend yourself.",
@@ -4856,9 +4895,9 @@ cloneu(void)
     mon = makemon(youmonst.data, u.ux, u.uy, MM_NO_MONSTER_INVENTORY | MM_EDOG | MM_SET_ORIGIN_COORDINATES);
     if (!mon)
         return NULL;
-    mon->mcloned = 1;
+    set_mon_mcloned(mon, 1);
     mon = christen_monst(mon, plname);
-    mon->u_know_mname = TRUE;
+    set_mon_u_know_mname(mon, TRUE);
     initedog(mon, TRUE);
     mon->m_lev = (uchar)youmonst.data->mlevel;
     //mon might need mbasehpmax stat
@@ -4877,21 +4916,21 @@ update_m_facing(struct monst *mtmp, int mdx, boolean update_symbol)
     /* Update facing */
     if (mdx != 0)
     {
-        boolean mtmp_facing_before = mtmp->facing_right;
+        boolean mtmp_facing_before = is_mon_facing_right(mtmp);
         //boolean u_facing_before = u.facing_right;
 
         if (mdx < 0)
         {
-            mtmp->facing_right = FALSE;
+            set_mon_facing_right(mtmp, FALSE);
             //u.facing_right = TRUE;
         }
         else if (mdx > 0)
         {
-            mtmp->facing_right = TRUE;
+            set_mon_facing_right(mtmp, TRUE);
             // u.facing_right = FALSE;
         }
 
-        if (update_symbol && mtmp_facing_before != mtmp->facing_right)
+        if (update_symbol && mtmp_facing_before != is_mon_facing_right(mtmp))
             newsym(mtmp->mx, mtmp->my);
         //if (u_facing_before != u.facing_right)
         //    newsym(u.ux, u.uy);

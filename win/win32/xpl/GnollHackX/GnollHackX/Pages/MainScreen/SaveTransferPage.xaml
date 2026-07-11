@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<gnh:CustomModalPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gnh="clr-namespace:GnollHackX" 
+             xmlns:controls="clr-namespace:GnollHackX.Controls"
+             BackgroundColor="Black"
+             x:Class="GnollHackX.Pages.MainScreen.SaveTransferPage"
+             Appearing="ContentPage_Appearing"
+             Disappearing="ContentPage_Disappearing">
+    <gnh:CustomModalPage.Content>
+        <Grid x:Name="RootGrid">
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <Grid x:Name="MainGrid" WidthRequest  ="900" RowSpacing="6" HorizontalOptions="Center" VerticalOptions="Fill" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <Label Grid.Row="0" x:Name="HeaderLabel" Text="Save File Transfer" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="22" TextColor="Black" FontFamily="Immortal"/>
+                <Label Grid.Row="1" x:Name="StatusLabel" Text="Loading..." HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="16" TextColor="Black" FontFamily="Immortal"/>
+
+                <ScrollView Grid.Row="2" HorizontalOptions="Fill" VerticalOptions="Fill">
+                    <StackLayout x:Name="SavesLayout" Spacing="6" HorizontalOptions="Fill" />
+                </ScrollView>
+                
+                <Label Grid.Row="2" x:Name="EmptyLabel" IsVisible="False" Text="No save files found" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="Black" FontFamily="Immortal"/>
+                
+                <Grid x:Name="BottomLayout" Grid.Row="3" HorizontalOptions="Fill" VerticalOptions="End">
+                    <StackLayout x:Name="OuterButtonMainStack" Spacing="6" Orientation="Vertical" HorizontalOptions="Center">
+                        <StackLayout x:Name="ServerStack" Spacing="6" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Picker x:Name="TransferModePicker"
+                                    Title="Select mode"
+                                    FontFamily="Diablo" 
+                                    FontSize="16"
+                                    TextColor="Black"
+                                    TitleColor="Black"
+                                    HorizontalTextAlignment="Center"
+                                    BackgroundColor="#22000000"
+                                    WidthRequest="200"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
+                                    SelectedIndexChanged="TransferModePicker_SelectedIndexChanged">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>Upload</x:String>
+                                        <x:String>Download</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </StackLayout>
+                        <StackLayout x:Name="ButtonMainStack" Spacing="6" Orientation="Horizontal" HorizontalOptions="Center">
+                            <controls:CustomImageButton Text="Transfer" x:Name="ActionButton" Clicked="ActionButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" WidthRequest="200" HeightRequest="60" HorizontalOptions="Center" VerticalOptions="Center" />
+                            <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" WidthRequest="200" HeightRequest="60" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </StackLayout>
+                    </StackLayout>
+                </Grid>
+            </Grid>
+            
+            <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
+                <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="PopupFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                        <StackLayout Spacing="9" Padding="6">
+                            <Label Text="Progress" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
+                            <Label Text="Starting..." x:Name="PopupStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            <ProgressBar x:Name="PopupProgressBar" Progress="0.0" WidthRequest  ="400" HorizontalOptions="Fill" HeightRequest="15" ProgressColor="LightBlue" />
+                            <controls:CustomImageButton Text="Cancel" x:Name="PopupCancelButton" Clicked="PopupCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
+
+            <Grid x:Name="MessagePopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
+                <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="MessagePopupFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                        <StackLayout Spacing="9" Padding="6">
+                            <Label Text="Message" x:Name="MessagePopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" HorizontalOptions="Center" />
+                            <Label Text="" x:Name="MessagePopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" />
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
+                                <controls:CustomImageButton Text="OK" x:Name="MessagePopupOkButton" Clicked="MessagePopupOkButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" />
+                                <controls:CustomImageButton Text="Cancel" x:Name="MessagePopupCancelButton" Clicked="MessagePopupCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" />
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
+        </Grid>
+    </gnh:CustomModalPage.Content>
+</gnh:CustomModalPage>

@@ -356,10 +356,10 @@ void lib_display_file(const char* filename, boolean must_exist)
 }
 
 static int last_menu_style = 0;
-void lib_start_menu_ex(winid wid, int style)
+void lib_start_menu_ex(winid wid, int style, int glyph, uint64_t mflags)
 {
     last_menu_style = style;
-    lib_callbacks.callback_start_menu_ex(wid, style);
+    lib_callbacks.callback_start_menu_ex(wid, style, glyph, mflags);
 }
 
 void lib_add_menu(winid wid, int glyph, const ANY_P* identifier, char accelerator, char group_accel, int attr, int color, const char* str, boolean presel)
@@ -400,7 +400,7 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, char a
         (uint64_t)(info.monster ? info.monster->m_id : 0),
         (cschar)info.heading_for_group_accelerator, (cschar)info.special_mark,
         (uint64_t)info.menu_flags,
-        (uchar)((info.object ? MENU_DATAFLAGS_HAS_OBJECT_DATA : 0) | (info.monster ? MENU_DATAFLAGS_HAS_MONSTER_DATA : 0) | (Hallucination ? MENU_DATAFLAGS_HALLUCINATED : 0) | (info.monster && info.monster->female ? MENU_DATAFLAGS_FEMALE : 0)),
+        (uchar)((info.object ? MENU_DATAFLAGS_HAS_OBJECT_DATA : 0) | (info.monster ? MENU_DATAFLAGS_HAS_MONSTER_DATA : 0) | (Hallucination ? MENU_DATAFLAGS_HALLUCINATED : 0) | (info.monster && is_mon_female(info.monster) ? MENU_DATAFLAGS_FEMALE : 0)),
         info.style, info.object, &ocdata, info.attrs, info.colors);
 }
 
@@ -469,13 +469,13 @@ extern const nhsym cp437toUnicode[256];
 
 void lib_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 {
-    int64_t symbol;
+    int32_t symbol;
     nhsym sym = 0;
     int ocolor = 0;
     uint64_t special = 0UL;
 
     (void)mapglyph(layers, &sym, &ocolor, &special, x, y);
-    symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (int64_t)cp437toUnicode[sym] : (int64_t)sym;
+    symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (int32_t)cp437toUnicode[sym] : (int32_t)sym;
 
     if (((special & MG_PET) && iflags.hilite_pet)
         || ((special & MG_OBJPILE) && iflags.hilite_pile)
@@ -491,7 +491,7 @@ void lib_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
         special |= MG_UNDERLINE;
     }
 
-    lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, (int32_t)symbol, ocolor, (uint32_t)special, &layers);
+    lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, &layers);
 
     if (program_state.in_bones || program_state.in_tricked)
         return;
@@ -520,7 +520,7 @@ void lib_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
             struct monst* mtmp = m_at(x, y);
             if (mtmp && (M_AP_TYPE(mtmp) == M_AP_OBJECT))
             {
-                int sensed = (Protection_from_shape_changers || sensemon(mtmp));
+                int sensed = (Can_detect_mimic(mtmp));
                 if (!sensed)
                 {
                     has_obj_mimic = TRUE;
@@ -528,7 +528,7 @@ void lib_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
                         mimic_obj = *MOBJ(mtmp);
                     else
                     {
-                        mimic_obj.otyp = mtmp->mappearance;
+                        mimic_obj.otyp = (short)mtmp->mappearance;
                         mimic_obj.oclass = objects[mimic_obj.otyp].oc_class;
                         mimic_obj.corpsenm = has_mcorpsenm(mtmp) ? MCORPSENM(mtmp) : PM_TENGU;
                         mimic_obj.quan = 1L;
@@ -1095,7 +1095,7 @@ void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
         umnbuf[16] = '\0'; /* Limit the length of the name */
         Strcat(tempbuf, umnbuf);
     }
-    else if (has_mname(mtmp) && mtmp->u_know_mname)
+    else if (has_mname(mtmp) && is_mon_u_know_mname(mtmp))
     {
         char mnbuf[BUFSZ * 2];
         Strcpy(mnbuf, MNAME(mtmp));
@@ -1117,7 +1117,7 @@ void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
     mi_ptr->mhp = mtmp->mhp;
     mi_ptr->mhpmax = mtmp->mhpmax;
 
-    mi_ptr->status_bits = get_m_status_bits(mtmp, FALSE, is_peaceful(mtmp) && !is_tame(mtmp), is_tame(mtmp), FALSE);
+    mi_ptr->status_bits = get_m_status_bits(mtmp, FALSE, appears_peaceful(mtmp) && !is_tame(mtmp), is_tame(mtmp), FALSE);
     mi_ptr->condition_bits = get_m_condition_bits(mtmp);
     get_m_buff_bits(mtmp, mi_ptr->buff_bits, FALSE);
 

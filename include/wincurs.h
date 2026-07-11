@@ -94,7 +94,7 @@ extern void curses_putstr_ex(winid wid, const char *text, int attr, int color, i
 extern void curses_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app);
 #define curses_putstr(wid, attr, text) curses_putstr_ex(wid, text, attr, NO_COLOR, 0)
 extern void curses_display_file(const char *filename, boolean must_exist);
-extern void curses_start_menu_ex(winid wid, int style);
+extern void curses_start_menu_ex(winid wid, int style, int glyph, uint64_t flags);
 extern void curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
                             char accelerator, char group_accel, int attr, int color,
                             const char *str, boolean presel);

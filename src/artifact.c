@@ -29,6 +29,20 @@ const char* artifact_invoke_names[NUM_ARTINVOKES] = {
     "earthquake", "", "", "", "", "", "", "", ""
 };
 
+#define ARTDESC_DESC_STR(A) #A
+#define ARTDESC_DESC_XSTR(A) ARTDESC_DESC_STR(A)
+
+const char* artifact_invoke_descriptions[NUM_ARTINVOKES] = {
+    "", 
+    "Restores half of lost hit points", 
+    "Restores half of spent mana, up to " ARTDESC_DESC_XSTR(MITRE_OF_HOLINESS_MAX_BOOST) " mana",
+    "", 
+    "",
+    "", "", "", "", "", "", "", "",
+    "Summons a nalfeshnee, a powerful type of demon", "", "Recharges the artifact to the maximum amount of charges", "", "", "",
+    "Causes chasms to open up, frequency and range based on experience level", "", "", "", "", "", "", "", ""
+};
+
 #define get_artifact(o) \
     (((o) && (o)->oartifact) ? &artilist[(int) (o)->oartifact] : 0)
 
@@ -364,12 +378,12 @@ artifact_exists(struct obj *otmp, const char *name, boolean mod)
                         otmp->material = objects[otmp->otyp].oc_material; /* Only the base material will do */
 
                     if (artilist[otmp->oartifact].aflags & AF_FAMOUS)
-                        otmp->nknown = TRUE;
+                        set_obj_nknown(otmp, TRUE);
 
                     if (is_quest_artifact(otmp))
-                        otmp->nknown = TRUE;
+                        set_obj_nknown(otmp, TRUE);
 
-                    if (is_obj_uncurseable(otmp) && otmp->cursed)
+                    if (is_obj_uncurseable(otmp) && is_obj_cursed(otmp))
                     {
                         uncurse(otmp);
                         otmp->enchantment = (short)abs(otmp->enchantment);
@@ -558,7 +572,7 @@ confers_luck(struct obj *uitem)
         || (
                 (objects[otyp].oc_pflags & P1_CONFERS_UNLUCK) && 
                 (
-                    ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || ((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr)
+                    ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && is_obj_cursed(uitem)) || ((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr)
                 )
             )
         );
@@ -567,7 +581,7 @@ confers_luck(struct obj *uitem)
         || (
                 (objects[otyp].oc_pflags & P1_CONFERS_LUCK) &&
                 (
-                    ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || ((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr)
+                    ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && is_obj_cursed(uitem)) || ((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr)
                 )
             )
         );
@@ -607,7 +621,7 @@ confers_unluck(struct obj *uitem)
         || (
                 (objects[otyp].oc_pflags & P1_CONFERS_UNLUCK) &&
                 (
-                    ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || ((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr)
+                    ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && is_obj_cursed(uitem)) || ((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr)
                 )
             )
         );
@@ -616,7 +630,7 @@ confers_unluck(struct obj *uitem)
             || (
                      (objects[otyp].oc_pflags & P1_CONFERS_LUCK) && 
                      (
-                        ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || ((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr)
+                        ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && is_obj_cursed(uitem)) || ((objects[otyp].oc_pflags & P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr)
                      )
                )
         );
@@ -674,28 +688,47 @@ arti_reflects(struct obj *obj)
 /* decide whether this obj is effective when attacking against shades;
    does not consider the bonus for blessed objects versus undead */
 boolean
-shade_glare(struct obj *obj)
+shade_glare(struct obj *obj, struct monst* mon)
 {
     if (!obj)
         return FALSE;
-
-    const struct artifact *arti;
 
     /* any silver object is effective */
     if (obj_counts_as_silver(obj))
         return TRUE;
 
     /* any blessed object is effective */
-    if (obj->blessed)
+    if (is_obj_blessed(obj))
         return TRUE;
 
-    /* non-silver artifacts with bonus against undead also are effective */
-    arti = get_artifact(obj);
-    if (arti && (arti->aflags & AF_DFLAG2) && (arti->mtype & M2_UNDEAD))
-        return TRUE;
+    /* non-silver artifacts with bonus against undead or demon also are effective if the target is undead or demon, respectively */
+    const struct artifact *arti = get_artifact(obj);
+    if (arti)
+    {
+        if (mon && (is_undead(mon->data) || is_vampshifter(mon)) && (arti->aflags & AF_DFLAG2) && (arti->mtype & M2_UNDEAD))
+            return TRUE;
+        if (mon && is_demon(mon->data) && (arti->aflags & AF_DFLAG2) && (arti->mtype & M2_DEMON))
+            return TRUE;
+    }
 
-    if (obj->mythic_suffix && has_obj_mythic_suffix_power(obj, MYTHIC_SUFFIX_POWER_INDEX_UNDEAD_DESTRUCTION))
-        return TRUE;
+    /* non-silver special weapons with bonus against undead or demon also are effective if the target is undead or demon, respectively */
+    int otyp = obj->otyp;
+    if (objects[otyp].oc_target_permissions)
+    {
+        if (mon && (is_undead(mon->data) || is_vampshifter(mon)) && (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) != 0 && (objects[otyp].oc_target_permissions & M2_UNDEAD) != 0)
+            return TRUE;
+        if (mon && is_demon(mon->data) && (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) != 0 && (objects[otyp].oc_target_permissions & M2_DEMON) != 0)
+            return TRUE;
+    }
+
+    /* non-silver mythic weapons with bonus against undead or demon also are effective if the target is undead or demon, respectively */
+    if (obj->mythic_suffix)
+    {
+        if (mon && (is_undead(mon->data) || is_vampshifter(mon)) && has_obj_mythic_suffix_power(obj, MYTHIC_SUFFIX_POWER_INDEX_UNDEAD_DESTRUCTION))
+            return TRUE;
+        if (mon && is_demon(mon->data) && has_obj_mythic_suffix_power(obj, MYTHIC_SUFFIX_POWER_INDEX_DEMON_SLAYING))
+            return TRUE;
+    }
 
     /* [if there was anything with special bonus against noncorporeals,
        it would be effective too] */
@@ -852,11 +885,11 @@ touch_artifact(struct obj *obj, struct monst *mon)
                 && (oart->alignment != u.ualign.type
                     || u.ualign.record < 0));
 
-            if (!obj->nknown && (oart->aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP)))
+            if (!is_obj_nknown(obj) && (oart->aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP)))
             {
                 play_sfx_sound(SFX_ARTIFACT_NAME_KNOWN);
                 pline_ex(ATR_NONE, CLR_MSG_HINT, "As you touch %s, you become aware that it is called %s!", the(cxname(obj)), bare_artifactname(obj));
-                obj->nknown = TRUE;
+                set_obj_nknown(obj, TRUE);
             }
         }
         else if (mon->mnum != PM_WIZARD_OF_YENDOR && !((mon->data->mflags3 & M3_WANTSARTI) && is_quest_artifact(obj)) /*!is_covetous(mon->data)*/ && !is_mplayer(mon->data)) {
@@ -1329,7 +1362,7 @@ Mb_hit(struct monst *magr, struct monst *mdef, struct obj *mb, double *dmgptr, i
          * into a golem, and the "cancel" effect acts as if some magical
          * energy remains in spellcasting defenders to be absorbed later.
          */
-        if (!cancel_monst(mdef, mb, youattack, FALSE, FALSE, d(3,4)+5)) {
+        if (!cancel_monst(mdef, mb, youattack, FALSE, FALSE, d(3,4)+5, 30)) {
             resisted = TRUE;
         } else {
             do_stun = FALSE;
@@ -1508,7 +1541,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                        || (youattack && mdef == u.ustuck));
 
     char artifact_hit_desc[BUFSZ] = "";
-    if(otmp->oartifact && otmp->nknown && artilist[otmp->oartifact].hit_desc && strcmp(artilist[otmp->oartifact].hit_desc, ""))
+    if(otmp->oartifact && is_obj_nknown(otmp) && artilist[otmp->oartifact].hit_desc && strcmp(artilist[otmp->oartifact].hit_desc, ""))
         Strcpy(artifact_hit_desc, artilist[otmp->oartifact].hit_desc);
     else
         Strcpy(artifact_hit_desc, cxname(otmp));
@@ -1610,7 +1643,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
     /* reverse from AD&D. */
     if (artifact_has_flag(otmp, (AF_BEHEAD | AF_BISECT)))
     {
-        if (artifact_has_flag(otmp, AF_BISECT) && dieroll == 1 && (!is_shade(mdef->data) || shade_glare(otmp)) && !(youdefend ? (Bisection_resistance || Invulnerable || is_incorporeal(mdef->data)) : resists_bisection(mdef)))
+        if (artifact_has_flag(otmp, AF_BISECT) && dieroll == 1 && (!is_shade(mdef->data) || shade_glare(otmp, mdef)) && !(youdefend ? (Bisection_resistance || Invulnerable || is_incorporeal(mdef->data)) : resists_bisection(mdef)))
         {
             Strcpy(wepdesc, The(artifact_hit_desc));
             /* not really beheading, but close */
@@ -1646,7 +1679,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                 if (vis)
                 {
                     pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts %s in half!", wepdesc, mon_nam(mdef));
-                    otmp->dknown = TRUE;
+                    set_obj_dknown(otmp, TRUE);
                 }
                 return 2;
             } 
@@ -1672,7 +1705,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                 //    u.uhp = 0;
                 *instakillptr = TRUE;
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s cuts you in half!", wepdesc);
-                otmp->dknown = TRUE;
+                set_obj_dknown(otmp, TRUE);
                 return 2;
             }
         } 
@@ -1699,7 +1732,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                     *dmgptr = 0;
                     return (vis) * 2;
                 }
-                if (is_incorporeal(mdef->data) || amorphous(mdef->data) || (is_shade(mdef->data) && !shade_glare(otmp)))
+                if (is_incorporeal(mdef->data) || amorphous(mdef->data) || (is_shade(mdef->data) && !shade_glare(otmp, mdef)))
                 {
                     if (vis)
                         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s slices through %s %s.", The(wepdesc),
@@ -1714,7 +1747,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                     {
                         pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts one of %s heads off!", The(wepdesc),
                             s_suffix(mon_nam(mdef)));
-                        otmp->dknown = TRUE;
+                        set_obj_dknown(otmp, TRUE);
                     }
                     return 1;
                 }
@@ -1735,7 +1768,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
 
                         if (Hallucination && !flags.female)
                             pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Good job Henry, but that wasn't Anne.");
-                        otmp->dknown = TRUE;
+                        set_obj_dknown(otmp, TRUE);
                     }
                     return 2;
                 }
@@ -1748,7 +1781,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                     *dmgptr = 0;
                     return 2;
                 }
-                if (is_incorporeal(youmonst.data) || amorphous(youmonst.data) || (is_shade(youmonst.data) && !shade_glare(otmp)))
+                if (is_incorporeal(youmonst.data) || amorphous(youmonst.data) || (is_shade(youmonst.data) && !shade_glare(otmp, &youmonst)))
                 {
                     pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s slices through your %s.", The(wepdesc),
                           body_part(NECK));
@@ -1760,7 +1793,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                     mdef->heads_left--;
                     *dmgptr += 0.625 * (double)(Upolyd ? u.mh : u.uhp) / (double)max(1, mdef->data->heads); //Adjusted based on Tiamat in AD&D
                     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s cuts one of your %s off!", The(wepdesc), makeplural(body_part(HEAD)));
-                    otmp->dknown = TRUE;
+                    set_obj_dknown(otmp, TRUE);
                     return 1;
                 }
                 else
@@ -1779,7 +1812,7 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                     else
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s cuts off %s last %s!", The(wepdesc), "your", body_part(HEAD));
 
-                    otmp->dknown = TRUE;
+                    set_obj_dknown(otmp, TRUE);
                     /* Should amulets fall off? */
                     return 2;
                 }
@@ -2049,7 +2082,7 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                                 else
                                     verbalize_talk1("Hah! It's just a flesh wound.");
                             }
-                            otmp->dknown = TRUE;
+                            set_obj_dknown(otmp, TRUE);
                         }
                     }
                     else
@@ -2057,7 +2090,7 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                         if (vis)
                         {
                             pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s cuts %s in half!", The(xname(otmp)), mon_nam(mdef));
-                            otmp->dknown = TRUE;
+                            set_obj_dknown(otmp, TRUE);
                         }
                         lethaldamage = TRUE;
                     }
@@ -2105,7 +2138,7 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
 
                         }
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s slices a part of %s off!", The(xname(otmp)), "you");
-                        otmp->dknown = TRUE;
+                        set_obj_dknown(otmp, TRUE);
                     }
                     else
                     {
@@ -2115,7 +2148,7 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                          * damage does not prevent death.
                          */
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s cuts you in half!", The(xname(otmp)));
-                        otmp->dknown = TRUE;
+                        set_obj_dknown(otmp, TRUE);
                         lethaldamage = TRUE;
                     }
                 }
@@ -2176,7 +2209,7 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                                 else
                                     verbalize_talk1("Hah! It's just a flesh wound.");
                             }
-                            otmp->dknown = TRUE;
+                            set_obj_dknown(otmp, TRUE);
                         }
                     }
                 }
@@ -2206,7 +2239,7 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                             totaldamagedone += damagedone;
                         }
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s slices a part of %s off!", The(xname(otmp)), "you");
-                        otmp->dknown = TRUE;
+                        set_obj_dknown(otmp, TRUE);
                     }
                 }
             }
@@ -2270,7 +2303,7 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                             if (vis)
                             {
                                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s cuts one of %s heads off!", The(xname(otmp)), s_suffix(mon_nam(mdef)));
-                                otmp->dknown = TRUE;
+                                set_obj_dknown(otmp, TRUE);
                             }
                         }
                         else
@@ -2284,7 +2317,7 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                                     mon_nam(mdef));
                                 if (Hallucination && !flags.female)
                                     pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Good job Henry, but that wasn't Anne.");
-                                otmp->dknown = TRUE;
+                                set_obj_dknown(otmp, TRUE);
                             }
                             lethaldamage = TRUE;
                         }
@@ -2307,7 +2340,7 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                             mdef->heads_left--;
                             totaldamagedone += (int)(0.625 * (double)(Upolyd ? u.mhmax : u.uhpmax) / (double)max(1, mdef->data->heads)); //Adjusted based on Tiamat in AD&D
                             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s cuts one of your %s off!", The(xname(otmp)), makeplural(body_part(HEAD)));
-                            otmp->dknown = TRUE;
+                            set_obj_dknown(otmp, TRUE);
                         }
                         else
                         {
@@ -2315,7 +2348,7 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                                 mdef->heads_left--;
 
                             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)), "you");
-                            otmp->dknown = TRUE;
+                            set_obj_dknown(otmp, TRUE);
                             lethaldamage = TRUE;
                         }
                     }
@@ -2763,6 +2796,7 @@ arti_invoke(struct obj *obj)
     int art_inv_dur_plus = artilist[obj->oartifact].inv_duration_plus;
     boolean temporary_effect = ((art_inv_dur_dice > 0 && art_inv_dur_diesize > 0) || art_inv_dur_plus > 0);
     int duration = (art_inv_dur_dice > 0 && art_inv_dur_diesize > 0 ? d(art_inv_dur_dice, art_inv_dur_diesize) : 0) + art_inv_dur_plus;
+    int max_duration = (art_inv_dur_dice > 0 && art_inv_dur_diesize > 0 ? art_inv_dur_dice * art_inv_dur_diesize : 0) + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, art_inv_dur_plus);
 
     if (oart->inv_prop > LAST_PROP)
     {
@@ -2818,9 +2852,9 @@ arti_invoke(struct obj *obj)
         {
             int epboost = (u.uenmax + 1 - u.uen) / 2;
 
-            if (epboost > 120)
-                epboost = 120; /* arbitrary */
-            else if (epboost < 12)
+            if (epboost > MITRE_OF_HOLINESS_MAX_BOOST)
+                epboost = MITRE_OF_HOLINESS_MAX_BOOST; /* arbitrary, doubled from NetHack, since there can be more mana now with more XP levels and items */
+            else if (epboost < MITRE_OF_HOLINESS_MIN_BOOST)
                 epboost = u.uenmax - u.uen;
             if (epboost) {
                 play_sfx_sound(SFX_GAIN_ENERGY);
@@ -2861,9 +2895,9 @@ arti_invoke(struct obj *obj)
                 obj->age = 0;
                 return 0;
             }
-            b_effect = (obj->blessed && (oart->role == Role_switch
+            b_effect = (is_obj_blessed(obj) && (oart->role == Role_switch
                                          || oart->role == NON_PM));
-            recharge(otmp, b_effect ? 1 : obj->cursed ? -1 : 0, TRUE, "Artifact Recharging", FALSE);
+            recharge(otmp, b_effect ? 1 : is_obj_cursed(obj) ? -1 : 0, TRUE, "Artifact Recharging", FALSE);
             break;
         }
         case ARTINVOKE_LEVEL_TELEPORT:
@@ -2890,14 +2924,14 @@ arti_invoke(struct obj *obj)
                 goto nothing_special;
 
             play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
-            otmp->blessed = obj->blessed;
-            otmp->cursed = obj->cursed;
-            otmp->bknown = obj->bknown;
-            if (obj->blessed) {
+            set_obj_blessed(otmp, is_obj_blessed(obj));
+            set_obj_cursed(otmp, is_obj_cursed(obj));
+            set_obj_bknown(otmp, is_obj_bknown(obj));
+            if (is_obj_blessed(obj)) {
                 if (otmp->enchantment < 0)
                     otmp->enchantment = 0;
                 otmp->quan += rnd(10);
-            } else if (obj->cursed) {
+            } else if (is_obj_cursed(obj)) {
                 if (otmp->enchantment > 0)
                     otmp->enchantment = 0;
             } else
@@ -3027,8 +3061,8 @@ arti_invoke(struct obj *obj)
             mon = makemon(&mons[PM_NALFESHNEE], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
             if (mon)
             {
-                mon->issummoned = TRUE;
-                (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
+                set_mon_issummoned(mon, TRUE);
+                (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE, "");
 
                 if (temporary_effect)
                 {
@@ -3055,8 +3089,8 @@ arti_invoke(struct obj *obj)
 
             if (mon)
             {
-                mon->issummoned = TRUE;
-                (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
+                set_mon_issummoned(mon, TRUE);
+                (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE, "");
 
                 if (temporary_effect)
                 {
@@ -3118,7 +3152,7 @@ arti_invoke(struct obj *obj)
         case ARTINVOKE_TIME_STOP:
         {
             play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
-            timestop(duration);
+            timestop(duration, max_duration);
             break;
         }
         case ARTINVOKE_INVOKE_WITH_TIMER:
@@ -3247,7 +3281,7 @@ static
 void
 check_arti_name_discovery(struct obj *obj)
 {
-    if (obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_INVOKED)))
+    if (obj && obj->oartifact && !is_obj_nknown(obj) && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_INVOKED)))
     {
         play_sfx_sound(SFX_ARTIFACT_NAME_KNOWN);
         if(obj->oartifact == ART_HOWLING_FLAIL)
@@ -3256,7 +3290,7 @@ check_arti_name_discovery(struct obj *obj)
         pline_ex(ATR_NONE, CLR_MSG_HINT, "As you invoke %s, %syou become aware that %s named %s!", the(cxname(obj)),
             obj->oartifact == ART_HOWLING_FLAIL ? "it lets loose a majestic howl and " : "",
             (pair_of(obj) || obj->quan > 1) ? "they are" : "it is", bare_artifactname(obj));
-        obj->nknown = TRUE;
+        set_obj_nknown(obj, TRUE);
     }
 }
 
@@ -3270,7 +3304,7 @@ create_portal(void)
     anything any;
 
     any = zeroany; /* set all bits to zero */
-    start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
+    start_menu_style(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
 
     /* use index+1 (cant use 0) as identifier */
     for (i = num_ok_dungeons = 0; i < n_dgns; i++) 
@@ -3319,7 +3353,7 @@ create_portal(void)
     else
         newlev.dlevel = dungeons[i].dunlev_ureached;
 
-    if (u.uhave.amulet || In_endgame(&u.uz) || In_endgame(&newlev)
+    if (is_uhave_amulet() || In_endgame(&u.uz) || In_endgame(&newlev)
         || newlev.dnum == u.uz.dnum || !next_to_u())
     {
         play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
@@ -3684,10 +3718,10 @@ item_is_giving_monster_power(struct monst *mon, struct obj *obj, int prop_index,
     if (obj->oartifact && (!require_known || object_stats_known(obj)) && artifact_confers_monster_power(mon, obj, prop_index))
         return TRUE;
 
-    if ((obj->mythic_prefix || obj->mythic_suffix) && (!require_known || obj->mknown) && mythic_confers_monster_power(mon, obj, prop_index))
+    if ((obj->mythic_prefix || obj->mythic_suffix) && (!require_known || is_obj_mknown(obj)) && mythic_confers_monster_power(mon, obj, prop_index))
         return TRUE;
 
-    if ((!require_known || obj->dknown) && material_confers_monster_power(mon, obj, prop_index))
+    if ((!require_known || is_obj_dknown(obj)) && material_confers_monster_power(mon, obj, prop_index))
         return TRUE;
 
     return FALSE;
@@ -3937,7 +3971,7 @@ untouchable(struct obj *obj, boolean drop_untouchable)
     beingworn = ((obj->owornmask & wearmask) != 0L
                  /* some items in use don't have any wornmask setting */
                  || (obj->oclass == TOOL_CLASS
-                     && (obj->lamplit || (obj->otyp == LEASH && obj->leashmon)
+                     && (is_obj_lamplit(obj) || (obj->otyp == LEASH && obj->leashmon)
                          || (Is_container(obj) && Has_contents(obj)))));
 
     if ((art = get_artifact(obj)) != 0) {
@@ -4025,7 +4059,7 @@ retouch_equipment(int dropflag)
     while ((obj = nxt_unbypassed_obj(invent)) != 0)
         (void) untouchable(obj, dropit);
 
-    if (had_rings != (!!uleft + !!uright) && uarmg && uarmg->cursed)
+    if (had_rings != (!!uleft + !!uright) && uarmg && is_obj_cursed(uarmg))
         uncurse(uarmg); /* temporary? hack for ring removal plausibility */
     if (had_gloves && !uarmg)
         selftouch("After losing your gloves, you");
@@ -4065,7 +4099,7 @@ count_surround_traps(int x, int y)
                 continue;
             }
             for (otmp = level.objects[dx][dy]; otmp; otmp = otmp->nexthere)
-                if (Is_container(otmp) && otmp->otrapped) {
+                if (Is_container(otmp) && is_obj_otrapped(otmp)) {
                     ++ret; /* we're counting locations, so just */
                     break; /* count the first one in a pile     */
                 }
@@ -4115,7 +4149,7 @@ is_magic_key(struct monst *mon, struct obj *obj)
     if (((obj && obj->oartifact == ART_MASTER_KEY_OF_THIEVERY)
          && ((mon == &youmonst) ? Role_if(PM_ROGUE)
                                 : (mon && mon->data == &mons[PM_ROGUE])))
-        ? !obj->cursed : obj->blessed)
+        ? !is_obj_cursed(obj) : is_obj_blessed(obj))
         return TRUE;
     return FALSE;
 }
@@ -4150,6 +4184,15 @@ const char* get_artifact_invoke_name(int specialpropindex)
         return empty_string;
 
     return artifact_invoke_names[specialpropindex - FIRST_ARTINVOKE];
+}
+
+const char* get_artifact_invoke_description(int specialpropindex)
+{
+    if (specialpropindex < FIRST_ARTINVOKE || specialpropindex >= FIRST_ARTINVOKE + SIZE(artifact_invoke_descriptions))
+        return empty_string;
+
+    int idx = specialpropindex - FIRST_ARTINVOKE;
+    return artifact_invoke_descriptions[idx] ? artifact_invoke_descriptions[idx] : empty_string;
 }
 
 boolean

@@ -796,7 +796,7 @@ amii_get_ext_cmd(void)
 #ifdef EXTMENU
     if (iflags.extmenu) {
         win = amii_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH, zerocreatewindowinfo);
-        amii_start_menu_ex(win, 0);
+        amii_start_menu_ex(win, 0, 0, 0);
         pline("#");
         amii_putstr(WIN_MESSAGE, -1, " ");
 
@@ -859,7 +859,7 @@ amii_get_ext_cmd(void)
             }
 
             win = amii_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH, zerocreatewindowinfo);
-            amii_start_menu_ex(win, 0);
+            amii_start_menu_ex(win, 0, 0 ,0);
 
             for (i = 0; extcmdlist[i].ef_txt != NULL; ++i) {
                 id.a_char = extcmdlist[i].ef_txt[0];

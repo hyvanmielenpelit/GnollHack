@@ -283,11 +283,13 @@ reset_global_variables(void)
     *ramname = 0;
     *luggagename = 0;
     *wolfname = 0;
+    *tigername = 0;
     doggender = 0;
     catgender = 0;
     horsegender = 0;
     ramgender = 0;
     wolfgender = 0;
+    tigergender = 0;
     preferred_pet = 0;
     domove_attempting = 0L;
     domove_succeeded = 0L;

@@ -43,6 +43,8 @@
                                         HorizontalOptions="Center" Clicked="btnDownloadTestFiles_Clicked" UseVaryingBackgroundImages ="True" />
                             <controls:CustomImageButton x:Name="btnImportTestFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Import Test Files" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnImportTestFiles_Clicked" UseVaryingBackgroundImages ="True" />
+                            <controls:CustomImageButton x:Name="btnDeleteTransferFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Transfer Files" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" Clicked="btnDeleteTransferFiles_Clicked" UseVaryingBackgroundImages ="True" />
                         </StackLayout>
                     </ScrollView>
                 </Grid>

@@ -48,7 +48,7 @@ enum window_option_types {
 #define PILE_LIMIT_DFLT 5
 #define HERE_WIN_SIZ_DFLT 8
 #define DEFAULT_PILE_LIMIT (iflags.wc2_herewindow ? iflags.wc2_here_window_size + 1 : PILE_LIMIT_DFLT)
-const char* mouse_cmd_names[MAX_CLICK_TYPES] = { "default", "by role", "?", "off", "look", "move", "cast", "fire", "zap" };
+const char* mouse_cmd_names[MAX_CLICK_TYPES] = { "default", "by role", "?", "off", "look", "move", "cast", "fire", "zap", "polearm" };
 
 /*
  *  NOTE:  If you add (or delete) an option, please update the short
@@ -551,6 +551,8 @@ static struct Comp_Opt {
     { "tile_width", "width of tiles", 20, DISP_IN_GAME },   /*WC*/
     { "tile_height", "height of tiles", 20, DISP_IN_GAME }, /*WC*/
     { "tile_file", "name of tile file", 70, DISP_IN_GAME }, /*WC*/
+    { "tigergender", "the gender of your (first) saber-tooth tiger (e.g., tigergender:female)", 20, DISP_IN_GAME },
+    { "tigername", "the name of your (first) saber-tooth tiger (e.g., tigername:Diego)", PL_PSIZ, DISP_IN_GAME },
     { "traps", "the symbols to use in drawing traps", MAX_TRAP_CHARS + 1,
       SET_IN_FILE },
     { "vary_msgcount", "show more old messages at a time", 20,
@@ -577,8 +579,7 @@ static struct Comp_Opt {
     { "windowchain", "window processor to use", WINTYPELEN, SET_IN_SYS },
 #endif
     { "wolfgender", "the gender of your (first) direwolf (e.g., wolfgender:female)", 20, DISP_IN_GAME },
-    { "wolfname", "the name of your (first) direwolf (e.g., wolfname:Shadow)",
-        PL_PSIZ, DISP_IN_GAME },
+    { "wolfname", "the name of your (first) direwolf (e.g., wolfname:Shadow)", PL_PSIZ, DISP_IN_GAME },
 #ifdef BACKWARD_COMPAT
     { "DECgraphics", "load DECGraphics display symbols", 70, SET_IN_FILE },
     { "IBMgraphics", "load IBMGraphics display symbols", 70, SET_IN_FILE },
@@ -1793,7 +1794,7 @@ query_attr(const char *prompt)
     if (prompt && strstri(prompt, "menu headings"))
         default_attr = iflags.menu_headings;
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
+    start_menu_style(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
     any = zeroany;
     for (i = 0; i < SIZE(attrnames); i++) {
         if (!attrnames[i].name)
@@ -2655,6 +2656,23 @@ parseoptions(char *opts, boolean tinitial, boolean tfrom_file)
         return retval;
     }
 
+    fullname = "tigername";
+    if (match_optname(opts, fullname, 9, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        else if ((op = string_for_env_opt(fullname, opts, FALSE)) != 0) {
+            nmcpy(tigername, op, PL_PSIZ);
+        }
+        else
+            return FALSE;
+        sanitize_name(tigername);
+        return retval;
+    }
+
     fullname = "doggender";
     if (match_optname(opts, fullname, 9, TRUE)) {
         if (duplicate)
@@ -2798,6 +2816,36 @@ parseoptions(char *opts, boolean tinitial, boolean tfrom_file)
                 break;
             default:
                 config_error_add("Unrecognized wolf gender '%s'.", op);
+                return FALSE;
+                break;
+            }
+        }
+        return retval;
+    }
+
+    fullname = "tigergender";
+    if (match_optname(opts, fullname, 11, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        if ((op = string_for_env_opt(fullname, opts, negated)) != 0) {
+            switch (lowc(*op)) {
+            case 'f': /* female */
+                tigergender = 2;
+                break;
+            case 'm': /* male */
+                tigergender = 1;
+                break;
+            case 'n': /* neuter or none */
+            case 'r': /* random */
+            case '*': /* random */
+                tigergender = 0;
+                break;
+            default:
+                config_error_add("Unrecognized tiger gender '%s'.", op);
                 return FALSE;
                 break;
             }
@@ -5817,9 +5865,9 @@ doset_add_menu(winid win, const char *option, int idx, int indexoffset, int notr
     Strncpy(optbuf, option ? option : "(null)", BUFSZ - 1);
     optbuf[BUFSZ - 1] = 0;
 
-    char bcbuf[BUFSZ * 2];
-    Sprintf(bcbuf, "doset_add_menu: option: %s, %s", optbuf, compopt[i].name);
-    issue_breadcrumb3(bcbuf, i, indexoffset);
+    //char bcbuf[BUFSZ * 2];
+    //Sprintf(bcbuf, "doset_add_menu: option: %s, %s", optbuf, compopt[i].name);
+    //issue_breadcrumb3(bcbuf, i, indexoffset);
     if (indexoffset == 0) {
         any.a_int = 0;
         value = get_compopt_value(option, buf2);
@@ -5884,7 +5932,7 @@ opts_add_others(winid win, const char *name, int id, char *bufx, int nset)
     if (!name)
         return;
 
-    char buf[BUFSZ] = "", buf2[BUFSZ] = "";
+    char buf[BUFSZ * 2] = "", buf2[BUFSZ * 2] = "";
     anything any = zeroany;
 
     any.a_int = id;
@@ -5933,8 +5981,6 @@ static struct other_opts {
 int
 doset(void) /* changing options via menu by Per Liboriussen */
 {
-    issue_breadcrumb("Starting doset");
-
     static boolean made_fmtstr = FALSE;
     char buf[BUFSZ] = DUMMY, buf2[BUFSZ] = DUMMY;
     const char *name;
@@ -5948,7 +5994,7 @@ doset(void) /* changing options via menu by Per Liboriussen */
     size_t longest_name_len;
 
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(tmpwin, GHMENU_STYLE_OPTIONS);
+    start_menu_style(tmpwin, GHMENU_STYLE_OPTIONS);
 
 #ifdef notyet /* SYSCF */
     /* XXX I think this is still fragile.  Fixing initial/from_file and/or
@@ -7412,6 +7458,8 @@ get_compopt_value(const char *optname, char *buf)
         Sprintf(buf, "%s", luggagename[0] ? luggagename : none);
     else if (!strcmp(optname, "wolfname"))
         Sprintf(buf, "%s", wolfname[0] ? wolfname : none);
+    else if (!strcmp(optname, "tigername"))
+        Sprintf(buf, "%s", tigername[0] ? tigername : none);
     else if (!strcmp(optname, "map_mode")) {
         i = iflags.wc_map_mode;
         Sprintf(buf, "%s",
@@ -7555,6 +7603,10 @@ get_compopt_value(const char *optname, char *buf)
         Sprintf(buf, "%s", (wolfgender == 1) ? "male"
                            : (wolfgender == 2) ? "female"
                                  : "random");
+    } else if (!strcmp(optname, "tigergender")) {
+        Sprintf(buf, "%s", (tigergender == 1) ? "male"
+                           : (tigergender == 2) ? "female"
+                                 : "random");
     } else if (!strcmp(optname, "dogbreed")) {
         Sprintf(buf, "%s", !dogbreed ? "generic"
                            : (dogbreed >= NUM_DOG_BREEDS) ? "invalid breed"
@@ -7562,7 +7614,7 @@ get_compopt_value(const char *optname, char *buf)
     } else if (!strcmp(optname, "catbreed")) {
         Sprintf(buf, "%s", !catbreed ? "generic"
                            : (catbreed >= NUM_CAT_BREEDS) ? "invalid breed"
-                                 : cat_breed_definitions[dogbreed].name ? cat_breed_definitions[dogbreed].name : "unnamed breed");
+                                 : cat_breed_definitions[catbreed].name ? cat_breed_definitions[catbreed].name : "unnamed breed");
     } else if (!strcmp(optname, "pickup_burden")) {
         Sprintf(buf, "%s", burdentype[flags.pickup_burden]);
     } else if (!strcmp(optname, "pickup_types")) {

@@ -1267,7 +1267,7 @@ mswin_display_file(const char *filename, boolean must_exist)
    be used for menus.
 */
 void
-mswin_start_menu_ex(winid wid, int style)
+mswin_start_menu_ex(winid wid, int style, int glyph UNUSED, uint64_t mflags UNUSED)
 {
     logDebug("mswin_start_menu_ex(%d)\n", wid);
     if ((wid >= 0) && (wid < MAXWINDOWS)) {

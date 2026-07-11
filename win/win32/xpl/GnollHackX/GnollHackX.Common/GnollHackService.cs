@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -304,6 +304,10 @@ namespace GnollHackX.Unknown
         public static extern int LibIsDebug();
         [DllImport(PlatformConstants.dll)]
         public static extern int LibValidateSaveFile(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_buffer);
+        [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetSaveFileInfo(string filename, ref ulong out_version, ref ulong out_compat, ref uint out_save_flags, ref long out_time_stamp, ref int out_glyph, ref int out_gui_glyph, ref long out_umoves);
+        [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetSaveFileDescription(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_char_desc, int char_desc_len, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_loc_desc, int loc_desc_len, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_mode_desc, int mode_desc_len);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibCheckCurrentFileDescriptor(string dir);
         [DllImport(PlatformConstants.dll)]
@@ -1162,6 +1166,59 @@ namespace GnollHackX.Unknown
                     res_str = res_str.Remove(index); 
             }
             return res != 0;
+        }
+
+        public bool GetSaveFileInfo(string filename, out ulong version, out ulong compat, out uint saveFlags, out long timeStamp, out int glyph, out int guiGlyph, out long turnCount)
+        {
+            ulong ver = 0;
+            ulong comp = 0;
+            uint flags = 0;
+            long stamp = 0;
+            int gl = 0;
+            int gg = 0;
+            long tc = 0;
+            int res = LibGetSaveFileInfo(filename, ref ver, ref comp, ref flags, ref stamp, ref gl, ref gg, ref tc);
+            version = ver;
+            compat = comp;
+            saveFlags = flags;
+            timeStamp = stamp;
+            glyph = gl;
+            guiGlyph = gg;
+            turnCount = tc;
+            return res != 0;
+        }
+
+        public bool GetSaveFileDescription(string filename, out string characterDesc, out string locationDesc, out string modeDesc)
+        {
+            characterDesc = "";
+            locationDesc = "";
+            modeDesc = "";
+
+            byte[] charBuf = new byte[512];
+            byte[] locBuf = new byte[512];
+            byte[] modeBuf = new byte[512];
+
+            int res = LibGetSaveFileDescription(filename, charBuf, charBuf.Length, locBuf, locBuf.Length, modeBuf, modeBuf.Length);
+            if (res != 0)
+            {
+                characterDesc = Encoding.UTF8.GetString(charBuf);
+                int idx = characterDesc.IndexOf('\0');
+                if (idx >= 0) characterDesc = characterDesc.Remove(idx);
+                characterDesc = characterDesc.Trim();
+
+                locationDesc = Encoding.UTF8.GetString(locBuf);
+                idx = locationDesc.IndexOf('\0');
+                if (idx >= 0) locationDesc = locationDesc.Remove(idx);
+                locationDesc = locationDesc.Trim();
+
+                modeDesc = Encoding.UTF8.GetString(modeBuf);
+                idx = modeDesc.IndexOf('\0');
+                if (idx >= 0) modeDesc = modeDesc.Remove(idx);
+                modeDesc = modeDesc.Trim();
+
+                return true;
+            }
+            return false;
         }
 
         public int CheckCurrentFileDescriptor()

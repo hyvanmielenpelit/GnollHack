@@ -17,8 +17,8 @@ get_objclassdata(struct obj* otmp)
     otypdata.max_charges = get_obj_max_charge(otmp);
     otypdata.semitransparent = (uchar)is_obj_semi_transparent(otmp);
 
-    otypdata.lamplit = (uchar)(otmp->lamplit || (otmp->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0);
-    otypdata.poisoned = (uchar)otmp->opoisoned;
+    otypdata.lamplit = (uchar)(is_obj_lamplit(otmp) || (otmp->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0);
+    otypdata.poisoned = (uchar)is_obj_opoisoned(otmp);
     otypdata.eroded = (uchar)otmp->oeroded;
     otypdata.eroded2 = (uchar)otmp->oeroded2;
 

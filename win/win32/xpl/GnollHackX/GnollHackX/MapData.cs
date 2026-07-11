@@ -14,7 +14,7 @@ namespace GnollHackX
         public int BkGlyph;
         public string Symbol;
         public SKColor Color;
-        public uint Special;
+        public UInt64 Special;
         public LayerInfo Layers;
         public long GlyphPrintAnimationCounterValue;
         public long GlyphPrintMainCounterValue;

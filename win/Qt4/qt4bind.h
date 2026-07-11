@@ -55,7 +55,7 @@ public:
 	static void qt_putstr(winid wid, int attr, const std::string& text);
 	static void qt_putstr(winid wid, int attr, const QString& text);
 	static void qt_display_file(const char *filename, boolean must_exist);
-	static void qt_start_menu_ex(winid wid, int style);
+	static void qt_start_menu_ex(winid wid, int style, int glyph, uint64_t mflags);
 	static void qt_add_menu(winid wid, int glyph,
 		const ANY_P * identifier, char ch, char gch, int attr, int color,
 		const char *str, boolean presel);

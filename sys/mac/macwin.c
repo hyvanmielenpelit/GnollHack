@@ -1957,7 +1957,7 @@ mac_nh_poskey(int *a, int *b, int *c)
 }
 
 void
-mac_start_menu_ex(winid win, int style)
+mac_start_menu_ex(winid win, int style UNUSED, int glyph UNUSED, uint64_t mflags UNUSED)
 {
     HideWindow(theWindows[win].its_window);
     mac_clear_nhwindow(win);

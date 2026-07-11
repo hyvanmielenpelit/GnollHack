@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -1228,6 +1228,8 @@ namespace GnollHackX
             TryReadSettings();
             await InitializeServices();
 
+            CleanTransferDirectories();
+
             GHApp.InitAdditionalTypefaces();
             GHApp.InitAdditionalCachedBitmaps();
             GHApp.InitSymbolBitmaps();
@@ -2249,6 +2251,9 @@ namespace GnollHackX
 
         public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
         {
+            if (GHApp.PushingModalPage || GHApp.IsSystemBrowserOpen) /* Ignore key presses when opening a page or using a system browser */
+                return true;
+
             bool handled = false;
             try
             {
@@ -2315,7 +2320,7 @@ namespace GnollHackX
 
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
-            if (GHApp.PushingModalPage) /* Ignore key presses when opening a page */
+            if (GHApp.PushingModalPage || GHApp.IsSystemBrowserOpen) /* Ignore key presses when opening a page or using a browser */
                 return true;
 
             bool handled = false;
@@ -2562,11 +2567,12 @@ namespace GnollHackX
 #if GNH_MAUI
                     rib.MaximumWidthRequest = 480;
                     rib.GridMargin = new Microsoft.Maui.Thickness(rib.ImgWidth / 15, 0);
+                    rib.MaximumHeightRequest = 80;
 #else
                     rib.WidthRequest = 480;
                     rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
-#endif
                     rib.HeightRequest = 80;
+#endif
                     AchievementGainedLayout.Children.Add(rib);
                 }
                 AchievementGrid.IsVisible = true;
@@ -2629,5 +2635,205 @@ namespace GnollHackX
         {
             TierOkButton_Clicked(sender, e);
         }
+
+        private class StartupSaveManifest
+        {
+            public long CreationDateUtc { get; set; }  // Unix timestamp (seconds since UTC epoch)
+        }
+
+        private void CleanTransferDirectories()
+        {
+            try
+            {
+                // 1) Clean transfer_temp folder completely, and also any numbered fallback dirs
+                //    (transfer_temp2..transfer_temp10) created when the primary dir was locked
+                string tempDir = Path.Combine(GHApp.GHPath, GHConstants.TransferTempDirectory);
+                for (int i = 0; i <= 10; i++)
+                {
+                    string candidate = i == 0 ? tempDir : tempDir + i.ToString();
+                    if (Directory.Exists(candidate))
+                    {
+                        try
+                        {
+                            Directory.Delete(candidate, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("CleanTransferDirectories: could not delete " + candidate + ": " + ex.Message);
+                        }
+                    }
+                }
+                Directory.CreateDirectory(tempDir);
+
+                // 2) Query available disk space once and prune both log directories with the same policy.
+                //    PlatformService is available here because InitializeServices() was called before us.
+                //    Returns -1 if the value cannot be determined; pruning then falls back to the normal
+                //    30-day policy without any count cap.
+                long freeBytes;
+                {
+                    ulong? freeBytesRaw = GHApp.PlatformService?.GetDeviceFreeDiskSpaceInBytes();
+                    freeBytes = freeBytesRaw.HasValue
+                        ? (freeBytesRaw.Value > (ulong)long.MaxValue ? long.MaxValue : (long)freeBytesRaw.Value)
+                        : -1L;
+                }
+                Debug.WriteLine("CleanTransferDirectories: free bytes = " + freeBytes);
+
+                string uploadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferUploadDirectory);
+                PruneTransferSessionDirs(uploadDir, freeBytes);
+
+                string downloadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferDownloadDirectory);
+                PruneTransferSessionDirs(downloadDir, freeBytes);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("CleanTransferDirectories exception: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Reads the creation timestamp (Unix seconds UTC) of a transfer session directory.
+        /// Tries the manifest JSON first; falls back to the file-system creation time.
+        /// Returns 0 if neither source can be read.
+        /// </summary>
+        private static long GetSessionCreationUtc(string sessionDir)
+        {
+            try
+            {
+                foreach (string jsonFile in Directory.GetFiles(sessionDir, "*.json"))
+                {
+                    var manifest = JsonConvert.DeserializeObject<StartupSaveManifest>(
+                        File.ReadAllText(jsonFile));
+                    if (manifest != null && manifest.CreationDateUtc > 0)
+                        return manifest.CreationDateUtc;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("GetSessionCreationUtc manifest read failed: " + ex.Message);
+            }
+            try
+            {
+                return ((DateTimeOffset)Directory.GetCreationTimeUtc(sessionDir)).ToUnixTimeSeconds();
+            }
+            catch
+            {
+                return 0L;
+            }
+        }
+
+        /// <summary>
+        /// Prunes <c>files-*</c> session subdirectories inside <paramref name="parentDir"/>
+        /// according to the available free disk space:
+        /// <list type="bullet">
+        ///   <item><description>
+        ///     &lt;= 1 GB (critical) — delete all sessions.
+        ///   </description></item>
+        ///   <item><description>
+        ///     &lt;= 2 GB (high) — keep only the single newest session.
+        ///   </description></item>
+        ///   <item><description>
+        ///     &lt;= 5 GB (medium) — keep the newest session plus up to
+        ///     <see cref="GHConstants.TransferLogMaxKeepCount"/> - 1 others that are at most
+        ///     <see cref="GHConstants.TransferLogShortRetentionDays"/> days old.
+        ///   </description></item>
+        ///   <item><description>
+        ///     &lt;= 10 GB (low) — keep the newest session plus up to
+        ///     <see cref="GHConstants.TransferLogMaxKeepCount"/> - 1 others within the normal
+        ///     <see cref="GHConstants.TransferLogRetentionDays"/>-day window.
+        ///   </description></item>
+        ///   <item><description>
+        ///     &gt; 10 GB or unknown (&lt; 0) — keep all sessions within the normal
+        ///     <see cref="GHConstants.TransferLogRetentionDays"/>-day window (original behaviour).
+        ///   </description></item>
+        /// </list>
+        /// </summary>
+        private void PruneTransferSessionDirs(string parentDir, long freeBytes)
+        {
+            if (!Directory.Exists(parentDir)) return;
+
+            // Collect all files-* session directories with their timestamps
+            var sessions = new List<(string Path, long CreationUtc)>();
+            foreach (string sessionDir in Directory.GetDirectories(parentDir))
+            {
+                if (!Path.GetFileName(sessionDir).StartsWith("files-")) continue;
+                sessions.Add((sessionDir, GetSessionCreationUtc(sessionDir)));
+            }
+            if (sessions.Count == 0) return;
+
+            // Sort newest-first (unknown dates treated as oldest)
+            sessions.Sort((a, b) => b.CreationUtc.CompareTo(a.CreationUtc));
+
+            long nowUnix  = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            long normalSec = (long)GHConstants.TransferLogRetentionDays * 86400L;
+            long shortSec  = (long)GHConstants.TransferLogShortRetentionDays * 86400L;
+            int  maxKeep   = GHConstants.TransferLogMaxKeepCount;
+
+            var toKeep = new HashSet<string>(StringComparer.Ordinal);
+
+            if (freeBytes >= 0 && freeBytes <= GHConstants.TransferDiskPressureCriticalBytes)
+            {
+                // Critical (<= 1 GB): delete everything — toKeep stays empty
+            }
+            else if (freeBytes >= 0 && freeBytes <= GHConstants.TransferDiskPressureHighBytes)
+            {
+                // High (<= 2 GB): keep only the single newest session
+                toKeep.Add(sessions[0].Path);
+            }
+            else if (freeBytes >= 0 && freeBytes <= GHConstants.TransferDiskPressureMediumBytes)
+            {
+                // Medium (<= 5 GB): keep newest + up to (maxKeep - 1) others within 7 days
+                toKeep.Add(sessions[0].Path);
+                int extras = 0;
+                for (int i = 1; i < sessions.Count && extras < maxKeep - 1; i++)
+                {
+                    long age = sessions[i].CreationUtc > 0 ? nowUnix - sessions[i].CreationUtc : long.MaxValue;
+                    if (age <= shortSec)
+                    {
+                        toKeep.Add(sessions[i].Path);
+                        extras++;
+                    }
+                }
+            }
+            else if (freeBytes >= 0 && freeBytes <= GHConstants.TransferDiskPressureLowBytes)
+            {
+                // Low (<= 10 GB): keep newest + up to (maxKeep - 1) others within 30 days
+                toKeep.Add(sessions[0].Path);
+                int extras = 0;
+                for (int i = 1; i < sessions.Count && extras < maxKeep - 1; i++)
+                {
+                    long age = sessions[i].CreationUtc > 0 ? nowUnix - sessions[i].CreationUtc : long.MaxValue;
+                    if (age <= normalSec)
+                    {
+                        toKeep.Add(sessions[i].Path);
+                        extras++;
+                    }
+                }
+            }
+            else
+            {
+                // Normal (> 10 GB or free space unknown): keep all sessions within 30 days.
+                // Sessions whose date could not be determined are kept conservatively.
+                foreach (var (path, creation) in sessions)
+                {
+                    if (creation == 0 || nowUnix - creation <= normalSec)
+                        toKeep.Add(path);
+                }
+            }
+
+            // Delete whatever was not selected for retention
+            foreach (var (path, _) in sessions)
+            {
+                if (toKeep.Contains(path)) continue;
+                try
+                {
+                    Directory.Delete(path, true);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("PruneTransferSessionDirs: could not delete " + path + ": " + ex.Message);
+                }
+            }
+        }
     }
 }
+

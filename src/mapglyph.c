@@ -59,7 +59,7 @@ mapglyph(struct layer_info layers, nhsym *ochar, int *ocolor, uint64_t *ospecial
     int offset, idx;
     int color = NO_COLOR;
     nhsym ch = 0;
-    unsigned special = 0;
+    uint64_t special = 0;
     /* condense multiple tests in macro version down to single */
     boolean has_rogue_ibm_graphics = HAS_ROGUE_IBM_GRAPHICS;
     boolean has_rogue_color = (has_rogue_ibm_graphics
@@ -381,7 +381,7 @@ mapglyph(struct layer_info layers, nhsym *ochar, int *ocolor, uint64_t *ospecial
                             color = decoration_lit_colors[color].color_woody;
                         else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
                         {
-                            if (levl[x][y].lamplit)
+                            if (is_levl_lamplit(&levl[x][y]))
                                 color = decoration_lit_colors[color].color_lit;
                             else
                                 color = decoration_lit_colors[color].color_unlit;
@@ -410,7 +410,7 @@ mapglyph(struct layer_info layers, nhsym *ochar, int *ocolor, uint64_t *ospecial
                         color = decoration_lit_colors[color].color_lit;
                     else if ((decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LIGHTABLE) != 0)
                     {
-                        if (levl[x][y].lamplit)
+                        if (is_levl_lamplit(&levl[x][y]))
                             color = decoration_lit_colors[color].color_lit;
                         else
                             color = decoration_lit_colors[color].color_unlit;

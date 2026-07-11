@@ -103,8 +103,7 @@ struct save_game_stats {
 #define SAVEFLAGS_NONE              0x00
 #define SAVEFLAGS_NON_SCORING       0x01
 #define SAVEFLAGS_TOURNAMENT_MODE   0x02
-#define SAVEFLAGS_FILETRACK_SUPPORT 0x04
-#define SAVEFLAGS_FILETRACK_ON      0x08
+#define SAVEFLAGS_FILETRACK_VALID   0x04
 
 struct save_game_data {
     char* playername;

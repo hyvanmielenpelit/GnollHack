@@ -656,9 +656,9 @@ mkshobj_at(const struct shclass *shp, int sx, int sy, uchar mkspecl, boolean des
         }
     }
     if ((!deserted && rn2(100) < min(10, depth(&u.uz)) && !MON_AT(sx, sy) && !t_at(sx, sy)
-        && (ptr = mkclass(S_MIMIC, 0)) != 0
+        && (ptr = mkclass(S_MIMIC)) != 0
         && (mtmp = makemon(ptr, sx, sy, NO_MM_FLAGS)) != 0) || (deserted && !rn2(4) && !MON_AT(sx, sy)
-            && (ptr = mkclass(S_MIMIC, 0)) != 0
+            && (ptr = mkclass(S_MIMIC)) != 0
             && (mtmp = makemon(ptr, sx, sy, NO_MM_FLAGS)) != 0)) {
         /* note: makemon will set the mimic symbol to a shop item */
         if (rn2(10) >= depth(&u.uz)) {
@@ -699,7 +699,7 @@ nameshk(struct monst *shk, const char *const *nlp)
         && sptr->flags.town) {
         /* special-case minetown lighting shk */
         shname = "+Izchak";
-        shk->female = FALSE;
+        set_mon_female(shk, FALSE);
     } else {
         /* We want variation from game to game, without needing the save
            and restore support which would be necessary for randomization;
@@ -710,7 +710,7 @@ nameshk(struct monst *shk, const char *const *nlp)
         name_wanted = ledger_no(&u.uz) + (nseed % 13) - (nseed % 5);
         if (name_wanted < 0)
             name_wanted += (13 + 5);
-        shk->female = name_wanted & 1;
+        set_mon_female(shk, name_wanted & 1);
 
         for (names_avail = 0; nlp[names_avail]; names_avail++)
             continue;
@@ -718,7 +718,7 @@ nameshk(struct monst *shk, const char *const *nlp)
         for (trycnt = 0; trycnt < 50; trycnt++) {
             if (nlp == shktools) {
                 shname = shktools[rn2(names_avail)];
-                shk->female = 0; /* reversed below for '_' prefix */
+                set_mon_female(shk, 0); /* reversed below for '_' prefix */
             } else if (name_wanted < names_avail) {
                 shname = nlp[name_wanted];
             } else if ((i = rn2(names_avail)) != 0) {
@@ -729,16 +729,16 @@ nameshk(struct monst *shk, const char *const *nlp)
                     continue;
                 continue; /* next `trycnt' iteration */
             } else {
-                shname = shk->female ? "-Lucrezia" : "+Dirk";
+                shname = is_mon_female(shk) ? "-Lucrezia" : "+Dirk";
             }
             if (*shname == '_' || *shname == '-')
-                shk->female = 1;
+                set_mon_female(shk, 1);
             else if (*shname == '|' || *shname == '+')
-                shk->female = 0;
+                set_mon_female(shk, 0);
 
             /* is name already in use on this level? */
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-                if (DEADMONSTER(mtmp) || (mtmp == shk) || !mtmp->isshk)
+                if (DEADMONSTER(mtmp) || (mtmp == shk) || !is_mon_isshk(mtmp))
                     continue;
                 if (strcmp(ESHK(mtmp)->shknam, shname))
                     continue;
@@ -770,7 +770,7 @@ free_eshk(struct monst *mtmp)
         free((genericptr_t) ESHK(mtmp));
         ESHK(mtmp) = (struct eshk *) 0;
     }
-    mtmp->isshk = 0;
+    set_mon_isshk(mtmp, 0);
 }
 
 /* create a new shopkeeper in the given room */
@@ -790,16 +790,16 @@ shkinit(const struct shclass *shp, struct mkroom *sroom)
     if (sroom->irregular) {
         int rmno = (int) ((sroom - rooms) + ROOMOFFSET);
 
-        if (isok(sx - 1, sy) && !levl[sx - 1][sy].edge
+        if (isok(sx - 1, sy) && !is_levl_edge(&levl[sx - 1][sy])
             && (int) levl[sx - 1][sy].roomno == rmno)
             sx--;
-        else if (isok(sx + 1, sy) && !levl[sx + 1][sy].edge
+        else if (isok(sx + 1, sy) && !is_levl_edge(&levl[sx + 1][sy])
                  && (int) levl[sx + 1][sy].roomno == rmno)
             sx++;
-        else if (isok(sx, sy - 1) && !levl[sx][sy - 1].edge
+        else if (isok(sx, sy - 1) && !is_levl_edge(&levl[sx][sy - 1])
                  && (int) levl[sx][sy - 1].roomno == rmno)
             sy--;
-        else if (isok(sx, sy + 1) && !levl[sx][sy + 1].edge
+        else if (isok(sx, sy + 1) && !is_levl_edge(&levl[sx][sy + 1])
                  && (int) levl[sx][sy + 1].roomno == rmno)
             sy++;
         else
@@ -860,9 +860,10 @@ shkinit(const struct shclass *shp, struct mkroom *sroom)
     }
 
     eshkp = ESHK(shk); /* makemon(...,MM_ESHK) allocates this */
-    shk->isshk = shk->mpeaceful = 1;
+    set_mon_mpeaceful(shk, 1);
+    set_mon_isshk(shk, 1);
     set_mhostility(shk);
-    shk->msleeping = 0;
+    set_mon_msleeping(shk, 0);
     shk->mtrapseen = ~0; /* we know all the traps already */
     eshkp->shoproom = (schar) ((sroom - rooms) + ROOMOFFSET);
     sroom->resident = shk;
@@ -891,7 +892,7 @@ static boolean
 stock_room_goodpos(struct mkroom *sroom, int rmno, int sh, int sx, int sy)
 {
     if (sroom->irregular) {
-        if (levl[sx][sy].edge
+        if (is_levl_edge(&levl[sx][sy])
             || (int) levl[sx][sy].roomno != rmno
             || distmin(sx, sy, doors[sh].x, doors[sh].y) <= 1)
             return FALSE;
@@ -1055,9 +1056,9 @@ stock_room(int shp_indx, struct mkroom *sroom, boolean deserted)
      */
 
     if(deserted)
-        level.flags.has_desertedshop = TRUE;
+        set_levflag_has_desertedshop(&level.flags, TRUE);
     else
-        level.flags.has_shop = TRUE;
+        set_levflag_has_shop(&level.flags, TRUE);
 }
 
 /* does shkp's shop stock this item type? */
@@ -1131,15 +1132,15 @@ shkname_core(struct monst *mtmp, boolean istrue)
 {
     static char nam[BUFSZ] = "shopkeeper";
 
-    unsigned save_isshk = mtmp->isshk;
+    unsigned save_isshk = is_mon_isshk(mtmp);
 
-    mtmp->isshk = 0; /* don't want mon_nam() calling shkname() */
+    set_mon_isshk(mtmp, 0); /* don't want mon_nam() calling shkname() */
     if (mtmp->data)
         Strcpy(nam, noit_mon_nam(mtmp));
     /* get a modifiable name buffer along with fallback result */
-    mtmp->isshk = save_isshk;
+    set_mon_isshk(mtmp, save_isshk);
 
-    if (!mtmp->isshk) {
+    if (!is_mon_isshk(mtmp)) {
         impossible("shkname: \"%s\" is not a shopkeeper.", nam);
     } else if (!has_eshk(mtmp)) {
         panic("shkname: shopkeeper \"%s\" lacks 'eshk' data.", nam);
@@ -1200,7 +1201,7 @@ is_izchak(struct monst *shkp, boolean override_hallucination)
 
     if (Hallucination && !override_hallucination)
         return FALSE;
-    if (!shkp->isshk)
+    if (!is_mon_isshk(shkp))
         return FALSE;
     /* outside of town, Izchak becomes just an ordinary shopkeeper */
     if (!in_town(shkp->mx, shkp->my))

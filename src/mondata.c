@@ -479,7 +479,7 @@ can_blnd(struct monst *magr, struct monst *mdef, uchar aatyp, struct obj *obj)
     case AT_ENGL:
         if (is_you && (Blindfolded || Unaware || u.ucreamed))
             return FALSE;
-        if (!is_you && mdef->msleeping)
+        if (!is_you && is_mon_msleeping(mdef))
             return FALSE;
         break;
 
@@ -1186,11 +1186,49 @@ name_to_mon_ex(const char *in_str, int *fem_ptr)
             { "elven-queen", PM_ELVENKING, 2 },
             { "elf queen", PM_ELVENKING, 2 },
             { "elf-queen", PM_ELVENKING, 2 },
-            { "Yeenoghu", PM_YEENAGHU, 2 },
-            { "yeenoghu", PM_YEENAGHU, 2 },
-            { "Juiblex", PM_JUBILEX, 2 },
-            { "juiblex", PM_JUBILEX, 2 },
-            /* end of list */
+            { "Yeenoghu", PM_YEENAGHU, 0 },
+            { "yeenoghu", PM_YEENAGHU, 0 },
+            { "Juiblex", PM_JUBILEX, 0 },
+            { "juiblex", PM_JUBILEX, 0 },
+
+            /* tooth ending alternatives*/
+            { "sabre-tooth tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "sabre-tooth tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large sabre-tooth tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "sabretooth tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "sabretooth tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large sabretooth tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "sabre tooth tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "sabre tooth tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large sabre tooth tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "sabertooth tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "sabertooth tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large sabertooth tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "saber tooth tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "saber tooth tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large saber tooth tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+
+            /* toothed ending alternatives*/
+            { "saber-toothed tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "saber-toothed tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large saber-toothed tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "sabre-toothed tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "sabre-toothed tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large sabre-toothed tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "sabretoothed tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "sabretoothed tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large sabretoothed tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "sabre toothed tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "sabre toothed tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large sabre toothed tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "sabertoothed tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "sabertoothed tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large sabertoothed tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+            { "saber toothed tiger cub", PM_SABER_TOOTH_TIGER_CUB, 0 },
+            { "saber toothed tiger", PM_SABER_TOOTH_TIGER, 0 },
+            { "large saber toothed tiger", PM_LARGE_SABER_TOOTH_TIGER, 0 },
+
+                /* end of list */
             { 0, NON_PM }
         };
         const struct alt_spl *namep;
@@ -1358,7 +1396,7 @@ gender(struct monst *mtmp)
 {
     if (is_neuter(mtmp->data))
         return 2;
-    return mtmp->female;
+    return is_mon_female(mtmp);
 }
 
 /*
@@ -1375,7 +1413,7 @@ pronoun_gender(struct monst *mtmp, boolean override_vis)
     if (is_neuter(mtmp->data))
         return 2;
     return (humanoid(mtmp->data) || (mtmp->data->geno & G_UNIQ)
-            || is_mname_proper_name(mtmp->data)) ? (int) mtmp->female : 2;
+            || is_mname_proper_name(mtmp->data)) ? (int) is_mon_female(mtmp) : 2;
 }
 
 /* used for nearby monsters when you go to another level */
@@ -1386,21 +1424,21 @@ levl_follower(struct monst *mtmp)
         return TRUE;
 
     /* Wizard with Amulet won't bother trying to follow across levels */
-    if (mtmp->iswiz && mon_has_amulet(mtmp))
+    if (is_mon_iswiz(mtmp) && mon_has_amulet(mtmp))
         return FALSE;
 
     /* Special NPCs do not follow you */
-    if (mtmp->isshk || mtmp->ispriest || mtmp->isnpc || mtmp->issmith)
+    if (is_mon_isshk(mtmp) || is_mon_ispriest(mtmp) || is_mon_isnpc(mtmp) || is_mon_issmith(mtmp))
         return FALSE;
     
     /* some monsters will follow even while intending to flee from you */
-    if (is_tame(mtmp) || mtmp->iswiz || is_fshk(mtmp))
+    if (is_tame(mtmp) || is_mon_iswiz(mtmp) || is_fshk(mtmp))
         return TRUE;
 
     /* stalking types follow, but won't when fleeing unless you hold
        the Amulet */
     return (boolean) ((mtmp->data->mflags2 & M2_STALK)
-                      && (!is_fleeing(mtmp) || u.uhave.amulet));
+                      && (!is_fleeing(mtmp) || is_uhave_amulet()));
 }
 
 static const short grownups[][2] = {
@@ -1508,10 +1546,21 @@ static const short grownups[][2] = {
     { PM_TREANT, PM_ELDER_TREANT },
     { PM_QUANTUM_MECHANIC, PM_ELDER_QUANTUM_MECHANIC },
     { PM_GAZER, PM_ELDER_GAZER },
+    /* Lost World growth chains */
+    { PM_TYRANNOSAURUS_REX_HATCHLING, PM_JUVENILE_TYRANNOSAURUS_REX },
+    { PM_JUVENILE_TYRANNOSAURUS_REX, PM_TYRANNOSAURUS_REX },
+    { PM_SABER_TOOTH_TIGER_CUB, PM_SABER_TOOTH_TIGER },
+    { PM_SABER_TOOTH_TIGER, PM_LARGE_SABER_TOOTH_TIGER },
+    { PM_GORILLA, PM_GIANT_GORILLA },
+    { PM_GIANT_GORILLA, PM_GARGANTUAN_GORILLA },
     { PM_AIR_ELEMENTAL, PM_ELDER_AIR_ELEMENTAL },
     { PM_EARTH_ELEMENTAL, PM_ELDER_EARTH_ELEMENTAL },
     { PM_FIRE_ELEMENTAL, PM_ELDER_FIRE_ELEMENTAL },
     { PM_WATER_ELEMENTAL, PM_ELDER_WATER_ELEMENTAL },
+    /* New monsters growth chains */
+    { PM_GRIFFON, PM_ELDER_GRIFFON },
+    { PM_RAKSHASA, PM_RAKSHASA_RAJAH },
+    { PM_RAKSHASA_RAJAH, PM_RAKSHASA_MAHARAJA },
     { NON_PM, NON_PM }
 };
 
@@ -1707,7 +1756,7 @@ befriend_with_obj(struct permonst *ptr, struct obj *obj)
     if ((ptr->mflags4 & M4_LOVES_BANANAS) && (obj)->otyp == BANANA)
         return TRUE;
 
-    if (is_hell_hound(ptr) && (obj)->oclass == FOOD_CLASS && (obj)->cursed)
+    if (is_hell_hound(ptr) && (obj)->oclass == FOOD_CLASS && is_obj_cursed((obj)))
     {
         if (!(obj->material == MAT_VEGGY
             || ((obj)->otyp == CORPSE && (obj)->corpsenm >= LOW_PM && vegetarian(&mons[(obj)->corpsenm]))))

@@ -941,7 +941,7 @@ mar_print_gl_char(winid window, xchar x, xchar y, struct layer_info layers)
 {
     nhsym ch;
     int color;
-    unsigned special;
+    uint64_t special;
 
     /* map glyph to character and color */
     (void) mapglyph(layers, &ch, &color, &special, x, y);
@@ -1010,7 +1010,7 @@ Gem_get_ext_cmd()
     const char *ptr;
 
     wind = Gem_create_nhwindow_ex(NHW_MENU, style, NO_GLYPH, zerocreatewindowinfo);
-    Gem_start_menu_ex(wind, 0);
+    Gem_start_menu_ex(wind, 0, 0, 0);
     for (i = 0; (ptr = extcmdlist[i].ef_txt); i++) {
         any.a_int = i;
         accelerator = *ptr;

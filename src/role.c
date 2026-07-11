@@ -208,7 +208,7 @@ const struct Role roles[] = {
       "Warrior with a club and a sling",
       { "Extra score from amulets of life saving and other amulets", "Can practice cannibalism", "", "", ""},
       PM_CAVEMAN,
-      PM_LITTLE_DOG,
+      PM_SABER_TOOTH_TIGER_CUB,
       PM_SHAMAN_KARNOV,
       PM_NEANDERTHAL,
       PM_TIAMAT,
@@ -2664,7 +2664,7 @@ Hello(struct monst *mtmp)
     case PM_KNIGHT:
         return "Salutations"; /* Olde English */
     case PM_SAMURAI:
-        return (mtmp && mtmp->isshk)
+        return (mtmp && is_mon_isshk(mtmp))
                     ? "Irasshaimase"
                     : "Konnichi wa"; /* Japanese */
     case PM_TOURIST:

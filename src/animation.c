@@ -1026,8 +1026,12 @@ get_player_animation(enum action_tile_types action, int roleidx, int raceidx, in
             return GNOLL_BARBARIAN_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_VALKYRIE_FEMALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_VALKYRIE_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_VALKYRIE && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
             return DWARF_VALKYRIE_FEMALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_VALKYRIE && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
+            return DWARF_VALKYRIE_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)
             return GNOLL_HEALER_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_FEMALE)
@@ -1342,8 +1346,12 @@ get_player_animation(enum action_tile_types action, int roleidx, int raceidx, in
             return GNOLL_BARBARIAN_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_VALKYRIE_FEMALE_KICK_ANIMATION;
+        if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_VALKYRIE_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_VALKYRIE && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
             return DWARF_VALKYRIE_FEMALE_KICK_ANIMATION;
+        if (roleidx == ROLE_VALKYRIE && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
+            return DWARF_VALKYRIE_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)
             return GNOLL_HEALER_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_FEMALE)
@@ -1502,7 +1510,7 @@ maybe_get_replaced_glyph(
 
             if (!(is_water_or_air_level && info.layer == LAYER_FLOOR) && (Underwater || !isok(x, above_y) || !isok(x, y)
                 || (levl[x][y].typ == levl[x][above_y].typ && levl[x][y].subtyp == levl[x][above_y].subtyp)
-                || (level.flags.hero_memory && glyph_is_specific_cmap_or_its_variation(levl[x][above_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored))
+                || (is_levflag_hero_memory(&level.flags) && glyph_is_specific_cmap_or_its_variation(levl[x][above_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored))
                 || levl[x][above_y].typ == UNDEFINED_LOCATION || (IS_SOLID_FLOOR(floortype) && (IS_DOORJOIN(levl[x][above_y].typ)))))
             {
                 /* No action */
@@ -1603,7 +1611,7 @@ maybe_get_replaced_glyph(
         }
         case REPLACEMENT_ACTION_LOCATION_LIT:
         {
-            if (isok(x, y) && get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+            if (isok(x, y) && get_location_light_range(x, y) != 0 && is_levl_lamplit(&levl[x][y]))
             {
                 /* Return the first tile with index 0 */
                 return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
@@ -1612,7 +1620,7 @@ maybe_get_replaced_glyph(
         }
         case REPLACEMENT_ACTION_LOCATION_HORIZONTAL:
         {
-            if (isok(x, y) && levl[x][y].horizontal == TRUE)
+            if (isok(x, y) && is_levl_horizontal(&levl[x][y]))
             {
                 return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             }
@@ -1664,12 +1672,12 @@ maybe_get_replaced_glyph(
             if (replacements[replacement_idx].number_of_tiles < 1)
                 return glyph;
 
-            if (otmp->olocked)
+            if (is_obj_olocked(otmp))
             {
                 int glyph_idx = 0;
                 return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             }
-            else if (otmp->obroken)
+            else if (is_obj_obroken(otmp))
             {
                 int glyph_idx = 1;
                 return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
@@ -1700,7 +1708,7 @@ maybe_get_replaced_glyph(
             if (replacements[replacement_idx].number_of_tiles < 1 || otmp->owt <= GLOB_SMALL_MAXIMUM_WEIGHT) /* Small */
                 return glyph;
 
-            if (otmp->globby)
+            if (is_obj_globby(otmp))
             {
                 /* note: appearanceidx is -1 if not set separately */
                 int glyph_idx = (otmp->owt > GLOB_LARGE_MAXIMUM_WEIGHT)
@@ -1769,7 +1777,7 @@ maybe_get_replaced_glyph(
             if (!mtmp && !(monster_flags & LMFLAGS_DROPPING_PIERCER))
                 return glyph;
 
-            if ((monster_flags & LMFLAGS_DROPPING_PIERCER) || (mtmp && mtmp->mundetected))
+            if ((monster_flags & LMFLAGS_DROPPING_PIERCER) || (mtmp && is_mon_mundetected(mtmp)))
             {
                 int glyph_idx = (monster_flags & LMFLAGS_DROPPING_PIERCER) ? 1 : 0;
                 return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
@@ -1911,7 +1919,7 @@ maybe_get_replaced_glyph(
             if (isok(x, y) && levl[x][y].decoration_typ > 0 && (levl[x][y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0)
             {
                 int glyph_idx = 0;
-                if (get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+                if (get_location_light_range(x, y) != 0 && is_levl_lamplit(&levl[x][y]))
                     glyph_idx = 1;
 
                 /* Return the first tile with index 0 */
@@ -1921,7 +1929,7 @@ maybe_get_replaced_glyph(
         }
         case REPLACEMENT_ACTION_FIREPLACE:
         {
-            if (isok(x, y) && levl[x][y].decoration_typ > 0 && get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+            if (isok(x, y) && levl[x][y].decoration_typ > 0 && get_location_light_range(x, y) != 0 && is_levl_lamplit(&levl[x][y]))
             {
                 int glyph_idx = 0;
 
@@ -2555,14 +2563,15 @@ maybe_get_animated_tile(int ntile, int tile_animation_idx, enum animation_play_t
         if (play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY
             && (interval_counter / (int64_t)animations[animation_idx].intervals_between_frames) >= (int64_t)numframes)
         {
-            if (animations[animation_idx].main_tile_use_style == ANIMATION_MAIN_TILE_IGNORE)
-            {
-                current_animation_frame = (int)animations[animation_idx].number_of_frames - 1; /* Set to last frame of the animation */
-            }
-            else
-            {
-                return ntile;  /* Return the original tile in other cases */
-            }
+            return ntile;  /* Return the original tile in other cases */
+            //if (animations[animation_idx].main_tile_use_style == ANIMATION_MAIN_TILE_IGNORE)
+            //{
+            //    current_animation_frame = (int)animations[animation_idx].number_of_frames - 1; /* Set to last frame of the animation */
+            //}
+            //else
+            //{
+            //    return ntile;  /* Return the original tile in other cases */
+            //}
         }
 
         if (current_animation_frame != main_tile_frame_position) /* 0 is the original picture */

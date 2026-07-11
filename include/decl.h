@@ -325,12 +325,14 @@ E NEARDATA char horsename[];
 E NEARDATA char ramname[];
 E NEARDATA char luggagename[];
 E NEARDATA char wolfname[];
+E NEARDATA char tigername[];
 E short doggender;
 E short catgender;
 E short horsegender;
 E short ramgender;
 /* No luggagegender, because luggages are neuter */
 E short wolfgender;
+E short tigergender;
 
 E unsigned short dogbreed;
 E unsigned short catbreed;
@@ -435,8 +437,11 @@ E NEARDATA struct obj *current_wand, *thrownobj, *kickedobj;
 E NEARDATA struct obj* trackedobj;
 E NEARDATA boolean trackedobj_gone;
 
-E NEARDATA const struct obj zeroobj; /* for init; also, &zeroobj is used
-                                      * as special value */
+E NEARDATA struct obj naughtobj; /* special value for using hands; this is a modifiable value so nothing bad happens if you accidently write to it */
+
+E NEARDATA const struct obj zeroobj; /* for init only; further, &zeroobj is NOT used
+                                      * as special value (use &naughtobj instead),
+                                      * as it would be dangerous to cast a const value to a modifiable value */
 
 E NEARDATA const anything zeroany;   /* init'd and defined in decl.c */
 
@@ -532,6 +537,7 @@ E struct c_common_strings {
 #define SUPPRESS_SADDLE 0x08
 #define EXACT_NAME 0x0F
 #define SUPPRESS_NAME 0x10
+#define SUPPRESS_POLYMORPH 0x20
 
 /* Vision */
 E NEARDATA boolean vision_full_recalc; /* TRUE if need vision recalc */

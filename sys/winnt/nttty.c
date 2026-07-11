@@ -628,7 +628,7 @@ void
 g_putch(int in_ch, boolean is_CP437)
 {
     boolean inverse = FALSE;
-    nhsym ch = in_ch;
+    nhsym ch = (nhsym)in_ch;
     if (ch < 0 && ch >= -128)
         ch += 256; /* Assume this is a char of over 127 value */
 

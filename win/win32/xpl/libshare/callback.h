@@ -81,7 +81,7 @@ typedef PutStrExColorCallback PutStrExCallback;
 typedef PutStrEx2ColorCallback PutStrEx2Callback;
 typedef PutStrExColorCallback PutMixedCallback;
 typedef void(__callconv* DisplayFileCallback)(const char*, uchar);
-typedef void(__callconv* StartMenuCallback)(int, int);
+typedef void(__callconv* StartMenuCallback)(int, int, int, uint64_t);
 typedef void(__callconv* AddMenuCallback)(int, int, int64_t, cschar, cschar, int, int, const char*, uchar);
 typedef void(__callconv* AddExtendedMenuCallback)(int, int, int64_t, cschar, cschar, int, int, const char*, uchar, int,
     uint64_t, uint64_t, cschar, cschar, uint64_t, uchar, int, struct obj*, struct objclassdata*, const char*, const char*);
@@ -93,7 +93,7 @@ typedef VoidVoidCallback MarkSynchCallback;
 typedef VoidVoidCallback WaitSynchCallback;
 typedef void(__callconv* ClipAroundCallback)(int, int, uchar);
 typedef void(__callconv* UpdatePositionBarCallback)(char*);
-typedef void(__callconv* PrintGlyphCallback)(int, int, int, int, int, int32_t, int, uint32_t, struct layer_info*);
+typedef void(__callconv* PrintGlyphCallback)(int, int, int, int, int, int32_t, int, uint64_t, struct layer_info*);
 typedef void(__callconv* IssueGuiCommandCallback)(int, int, int, const char*);
 typedef VoidConstCharCallback RawPrintCallback;
 typedef VoidConstCharCallback RawPrintBoldCallback;

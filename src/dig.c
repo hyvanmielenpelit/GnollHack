@@ -33,11 +33,11 @@ rm_waslit(void)
 {
     xchar x, y;
 
-    if (IS_FLOOR(levl[u.ux][u.uy].typ) && levl[u.ux][u.uy].waslit)
+    if (IS_FLOOR(levl[u.ux][u.uy].typ) && is_levl_waslit(&levl[u.ux][u.uy]))
         return TRUE;
     for (x = u.ux - 2; x < u.ux + 3; x++)
         for (y = u.uy - 1; y < u.uy + 2; y++)
-            if (isok(x, y) && levl[x][y].waslit)
+            if (isok(x, y) && is_levl_waslit(&levl[x][y]))
                 return TRUE;
     return FALSE;
 }
@@ -83,10 +83,10 @@ mkcavepos(xchar x, xchar y, int dist, boolean waslit, boolean rockit)
     lev->seenv = 0;
     //lev->doormask = 0;
     if (dist < 3)
-        lev->lit = (rockit ? FALSE : TRUE);
+        set_levl_lit(lev, (rockit ? FALSE : TRUE));
     if (waslit)
-        lev->waslit = (rockit ? FALSE : TRUE);
-    //lev->horizontal = FALSE;
+        set_levl_waslit(lev, (rockit ? FALSE : TRUE));
+    //set_levl_horizontal(lev, FALSE);
     /* short-circuit vision recalc */
     viz_array[y][x] = (dist < 3) ? (IN_SIGHT | COULD_SEE) : COULD_SEE;
     //lev->typ = (rockit ? STONE : ROOM); /* flags set via doormask above */
@@ -141,7 +141,7 @@ mkcavearea(boolean rockit)
         levl[u.ux][u.uy].subtyp = get_initial_location_subtype(levl[u.ux][u.uy].typ);
         levl[u.ux][u.uy].vartyp = get_initial_location_vartype(levl[u.ux][u.uy].typ, levl[u.ux][u.uy].subtyp);
         if (waslit)
-            levl[u.ux][u.uy].waslit = TRUE;
+            set_levl_waslit(&levl[u.ux][u.uy], TRUE);
         newsym(u.ux, u.uy); /* in case player is invisible */
     }
 
@@ -171,7 +171,7 @@ dig_typ(struct obj *otmp, xchar x, xchar y)
                      : IS_TREE(levl[x][y].typ)
                         ? (ispick ? DIGTYP_UNDIGGABLE : DIGTYP_TREE)
                         : (ispick && IS_ROCK(levl[x][y].typ)
-                           && (!level.flags.arboreal || (IS_WALL_OR_SDOOR(levl[x][y].typ))))
+                           && (!is_levflag_arboreal(&level.flags) || (IS_WALL_OR_SDOOR(levl[x][y].typ))))
                            ? DIGTYP_ROCK
                            : DIGTYP_UNDIGGABLE);
 }
@@ -245,7 +245,7 @@ dig_check(struct monst *madeby, boolean verbose, int x, int y)
     } 
     else if ((IS_ROCK(levl[x][y].typ) && levl[x][y].typ != SDOOR
                 && (levl[x][y].wall_info & W_NONDIGGABLE) != 0)
-               || (ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDDEN) || (!Can_dig_down(&u.uz) && !levl[x][y].candig)))
+               || (ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDDEN) || (!Can_dig_down(&u.uz) && !is_levl_candig(&levl[x][y]))))
                || (IS_DOOR_OR_SDOOR(levl[x][y].typ) && !is_door_diggable_at(x, y))
               ) 
     {
@@ -462,14 +462,14 @@ dig(void)
         {
             if (Is_earthlevel(&u.uz))
             {
-                if (wep->blessed && !rn2(3)) 
+                if (is_obj_blessed(wep) && !rn2(3)) 
                 {
                     play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                     mkcavearea(FALSE);
                     goto cleanup;
                 } 
-                else if ((wep->cursed && !rn2(4))
-                           || (!wep->blessed && !rn2(6))) 
+                else if ((is_obj_cursed(wep) && !rn2(4))
+                           || (!is_obj_blessed(wep) && !rn2(6))) 
                 {
                     play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                     mkcavearea(TRUE);
@@ -517,13 +517,13 @@ dig(void)
             int lsubtype = 0;
             int lvartype = 0;
             uchar lflags = 0;
-            if (level.flags.is_maze_lev)
+            if (is_levflag_is_maze_lev(&level.flags))
             {
                 ltype = CORR; // ROOM;
                 lsubtype = get_initial_location_subtype(ltype);
                 lvartype = get_initial_location_vartype(ltype, lsubtype);
             }
-            else if (level.flags.is_cavernous_lev && !in_town(dpx, dpy)) 
+            else if (is_levflag_is_cavernous_lev(&level.flags) && !in_town(dpx, dpy)) 
             {
                 ltype = CORR;
                 lsubtype = get_initial_location_subtype(ltype);
@@ -737,7 +737,7 @@ digactualhole(int x, int y, struct monst *madeby, int ttyp)
         return;
     }
 
-    if (ttyp != PIT && (!Can_dig_down(&u.uz) && !lev->candig)) {
+    if (ttyp != PIT && (!Can_dig_down(&u.uz) && !is_levl_candig(lev))) {
         impossible("digactualhole: can't dig %s on this level.",
                    defsyms[trap_to_defsym(ttyp)].explanation);
         ttyp = PIT;
@@ -888,7 +888,7 @@ digactualhole(int x, int y, struct monst *madeby, int ttyp)
                     } else {
                         get_level(&tolevel, depth(&u.uz) + 1);
                     }
-                    if (mtmp->isshk)
+                    if (is_mon_isshk(mtmp))
                         make_angry_shk(mtmp, 0, 0);
                     play_sfx_sound_at_location(SFX_TRAP_DOOR_OPENS, mtmp->mx, mtmp->my);
                     migrate_to_level(mtmp, ledger_no(&tolevel),
@@ -946,7 +946,7 @@ dighole(boolean pit_only, boolean by_magic, coord *cc)
 
     ttmp = t_at(dig_x, dig_y);
     lev = &levl[dig_x][dig_y];
-    nohole = (!Can_dig_down(&u.uz) && !lev->candig);
+    nohole = (!Can_dig_down(&u.uz) && !is_levl_candig(lev));
 
     if ((ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDDEN) != 0 || nohole))
         || (IS_ROCK(lev->typ) && lev->typ != SDOOR
@@ -1144,7 +1144,7 @@ dig_up_grave(coord *cc)
                 pline_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_WARNING, Hallucination ? "Dude!  The living dead!"
                     : "The grave's owner is very upset!");
             }
-            (void)makemon(mkclass(S_LESSER_UNDEAD, 0), dig_x, dig_y, NO_MM_FLAGS);
+            (void)makemon(mkclass(S_LESSER_UNDEAD), dig_x, dig_y, NO_MM_FLAGS);
             break;
         case 3:
             if (!Blind)
@@ -1161,7 +1161,7 @@ dig_up_grave(coord *cc)
                 if (dealloc)
                     otmp = 0;
             }
-            (void)makemon(mkclass(S_GREATER_UNDEAD, 0), dig_x, dig_y, NO_MM_FLAGS);
+            (void)makemon(mkclass(S_GREATER_UNDEAD), dig_x, dig_y, NO_MM_FLAGS);
             break;
         default:
             /* No corpse */
@@ -1817,11 +1817,11 @@ mdig_tunnel(struct monst *mtmp)
 //            ltype = here->floortyp, lsubtype = here->floorsubtyp, lvartype = here->floorvartyp;
 //        else
         {
-            if (level.flags.is_maze_lev)
+            if (is_levflag_is_maze_lev(&level.flags))
             {
                 ltype = CORR, lflags = 0; //ROOM
             }
-            else if (level.flags.is_cavernous_lev
+            else if (is_levflag_is_cavernous_lev(&level.flags)
                 && !in_town(mtmp->mx, mtmp->my))
             {
                 ltype = CORR, lflags = 0;
@@ -2114,7 +2114,7 @@ zap_dig(struct obj *origobj)
     //int prev_anim_counter_idx = -1;
 
     shopdoor = shopwall = FALSE;
-    maze_dig = level.flags.is_maze_lev && !Is_earthlevel(&u.uz);
+    maze_dig = is_levflag_is_maze_lev(&level.flags) && !Is_earthlevel(&u.uz);
     lzx = u.ux;
     lzy = u.uy;
     zx = u.ux + u.dx;
@@ -2367,7 +2367,7 @@ zap_dig(struct obj *origobj)
                     shopwall = TRUE;
                 }
                 watch_dig((struct monst *) 0, zx, zy, TRUE);
-                if (level.flags.is_cavernous_lev && !in_town(zx, zy)) 
+                if (is_levflag_is_cavernous_lev(&level.flags) && !in_town(zx, zy)) 
                 {
                     ltype = CORR;
                     lsubtype = get_initial_location_subtype(CORR);
@@ -2980,7 +2980,7 @@ bury_an_obj(struct obj *otmp, boolean *dealloced)
         o_unleash(otmp);
 
     debugprint("bury_an_obj1: %d", otmp->otyp);
-    if (otmp->lamplit && otmp->otyp != POT_OIL)
+    if (is_obj_lamplit(otmp) && otmp->otyp != POT_OIL)
         end_burn(otmp, TRUE);
 
     obj_extract_self(otmp);
@@ -3055,7 +3055,7 @@ bury_objs(int x, int y)
         if (costly) {
             loss += stolen_value(otmp, x, y, is_peaceful(shkp), TRUE);
             if (otmp->oclass != COIN_CLASS)
-                otmp->no_charge = 1;
+                set_obj_no_charge(otmp, 1);
         }
         otmp2 = bury_an_obj(otmp, (boolean *) 0);
     }
@@ -3214,9 +3214,9 @@ rot_corpse(anything *arg, int64_t timeout)
         struct monst *mtmp = m_at(x, y);
 
         /* a hiding monster may be exposed */
-        if (mtmp && !OBJ_AT(x, y) && mtmp->mundetected
+        if (mtmp && !OBJ_AT(x, y) && is_mon_mundetected(mtmp)
             && hides_under(mtmp->data)) {
-            mtmp->mundetected = 0;
+            set_mon_mundetected(mtmp, 0);
         } else if (x == u.ux && y == u.uy && u.uundetected && hides_under(youmonst.data))
             (void) hideunder(&youmonst);
         newsym(x, y);
@@ -3240,7 +3240,7 @@ bury_monst(struct monst *mtmp)
                       surface(mtmp->mx, mtmp->my), mon_nam(mtmp));
     }
 
-    mtmp->mburied = TRUE;
+    set_mon_mburied(mtmp, TRUE);
     wakeup(mtmp, FALSE);       /* at least give it a chance :-) */
     newsym(mtmp->mx, mtmp->my);
 }

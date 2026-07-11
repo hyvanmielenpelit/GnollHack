@@ -71,6 +71,7 @@ static const char* kind_name(short);
 static void print_queue(winid, timer_element*);
 static void insert_timer(timer_element*);
 static timer_element* remove_timer(timer_element**, short, ANY_P*);
+static timer_element* remove_timer_type(timer_element**, short);
 static void write_timer(int, timer_element*);
 static boolean mon_is_local(struct monst*);
 static boolean timer_is_local(timer_element*);
@@ -706,7 +707,7 @@ nh_timeout(void)
         baseluck -= 1;
 
     if (u.uluck != baseluck
-        && moves % ((u.uhave.amulet || u.ugangr) ? 300 : 600) == 0) {
+        && moves % ((is_uhave_amulet() || u.ugangr) ? 300 : 600) == 0) {
         /* Cursed luckstones stop bad luck from timing out; blessed luckstones
          * stop good luck from timing out; normal luckstones stop both;
          * neither is stopped if you don't have a luckstone.
@@ -1348,6 +1349,15 @@ nh_timeout(void)
             case XRAY_VISION:
                 Your_ex1_nomul(ATR_NONE, CLR_MSG_ATTENTION, "vision through the walls is starting to get blurred.");
                 break;
+            case ASTRAL_VISION:
+                if (!XRay_vision)
+                    Your_ex1_nomul(ATR_NONE, CLR_MSG_ATTENTION, "vision through the walls is starting to get blurred.");
+                else
+                    Your_ex1_nomul(ATR_NONE, CLR_MSG_ATTENTION, "vision through the walls is starting to get more short sighted.");
+                break;
+            case TRUE_SEEING:
+                Your_ex1_nomul(ATR_NONE, CLR_MSG_ATTENTION, "sight is starting to get more mundane.");
+                break;
             case WATER_WALKING:
                 You_ex1_nomul(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less able to walk on water than before.");
                 break;
@@ -1565,7 +1575,7 @@ hatch_egg(anything *arg, int64_t timeout)
                 if ((tamed && !silent)
                     || (carried(egg) && mon->data->mlet == S_DRAGON)) 
                 {
-                    if (tamedog(mon, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE)) {
+                    if (tamedog(mon, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE, "")) {
                         if (carried(egg) && mon->data->mlet != S_DRAGON)
                         {
                             mon->mtame = 20;
@@ -1725,14 +1735,14 @@ hatch_egg(anything *arg, int64_t timeout)
             {
                 /* strip leading and trailing spaces; unnames monster if all spaces */
                 (void)mungspaces(buf);
-                if ((mon->data->geno & G_UNIQ) || mon->ispriest || mon->isminion || mon->isshk || mon->issmith || mon->isnpc)
+                if ((mon->data->geno & G_UNIQ) || is_mon_ispriest(mon) || is_mon_isminion(mon) || is_mon_isshk(mon) || is_mon_issmith(mon) || is_mon_isnpc(mon))
                 {
                     pline("Unfortunately, %s will not accept the name %s.", hatchedmonnambuf, buf);
                 }
                 else
                 {
                     (void)christen_monst(mon, buf);
-                    mon->u_know_mname = 1;
+                    set_mon_u_know_mname(mon, 1);
                     /* Clear out umname */
                     if (has_umname(mon))
                         free_umname(mon);
@@ -1808,7 +1818,7 @@ slip_or_trip(void)
         what = (iflags.last_msg == PLNMSG_ONE_ITEM_HERE)
                 ? ((otmp->quan == 1L) ? "it"
                       : Hallucination ? "they" : "them")
-                : (otmp->dknown || !Blind)
+                : (is_obj_dknown(otmp) || !Blind)
                       ? doname(otmp)
                       : ((otmp2 = sobj_at(ROCK, u.ux, u.uy)) == 0
                              ? something
@@ -2442,7 +2452,7 @@ begin_burn(struct obj *obj, boolean already_lit)
         /* Infinite burn */
         do_timer = FALSE;
         do_lamplit = TRUE;
-        //obj->lamplit = 1;
+        //set_obj_lamplit(obj, 1);
 
         if (obj->otyp == MAGIC_CANDLE)
         {
@@ -2455,12 +2465,12 @@ begin_burn(struct obj *obj, boolean already_lit)
         switch (obj->otyp) 
         {
         case MAGIC_LAMP:
-            //obj->lamplit = 1;
+            //set_obj_lamplit(obj, 1);
             do_timer = FALSE;
             do_lamplit = TRUE;
             break;
         case MAGIC_CANDLE:
-            //obj->lamplit = 1;
+            //set_obj_lamplit(obj, 1);
             do_lamplit = TRUE;
             if (obj->special_quality == SPEQUAL_MAGIC_CANDLE_UNUSED)
                 obj->special_quality = SPEQUAL_MAGIC_CANDLE_PARTLY_USED;
@@ -2523,7 +2533,7 @@ begin_burn(struct obj *obj, boolean already_lit)
     if (do_timer) 
     {
         if (start_timer(turns, TIMER_OBJECT, BURN_OBJECT, obj_to_any(obj))) {
-            //obj->lamplit = 1;
+            //set_obj_lamplit(obj, 1);
             do_lamplit = TRUE;
             obj->age -= turns;
             if (carried(obj) && !already_lit)
@@ -2531,7 +2541,7 @@ begin_burn(struct obj *obj, boolean already_lit)
         }
         else 
         {
-            //obj->lamplit = 0;
+            //set_obj_lamplit(obj, 0);
             do_lamplit = FALSE;
         }
     } 
@@ -2541,14 +2551,14 @@ begin_burn(struct obj *obj, boolean already_lit)
             do_update_inventory = TRUE;
     }
 
-    if (do_lamplit && !already_lit && !obj->lamplit /* Insurance against doing two light sources */)
+    if (do_lamplit && !already_lit && !is_obj_lamplit(obj) /* Insurance against doing two light sources */)
     {
         xchar x, y;
 
         if (get_obj_location(obj, &x, &y, CONTAINED_TOO | BURIED_TOO))
         {
             new_light_source(x, y, radius, LS_OBJECT, obj_to_any(obj), 0);
-            obj->lamplit = 1;
+            set_obj_lamplit(obj, 1);
         }
         else
             impossible("begin_burn: can't get obj position");
@@ -2565,7 +2575,7 @@ begin_burn(struct obj *obj, boolean already_lit)
 void
 end_burn(struct obj *obj, boolean timer_attached)
 {
-    if (!obj->lamplit) 
+    if (!is_obj_lamplit(obj)) 
     {
         impossible("end_burn: obj %s not lit", xname(obj));
         return;
@@ -2580,7 +2590,7 @@ end_burn(struct obj *obj, boolean timer_attached)
         debugprint("end_burn");
         /* [DS] Cleanup explicitly, since timer cleanup won't happen */
         del_light_source(LS_OBJECT, obj_to_any(obj));
-        obj->lamplit = 0;
+        set_obj_lamplit(obj, 0);
         if (obj->where == OBJ_INVENT)
             update_inventory();
     }
@@ -2595,14 +2605,14 @@ static int
 cleanup_burn(anything *arg, int64_t expire_time)
 {
     struct obj *obj = arg->a_obj;
-    if (!obj->lamplit) {
+    if (!is_obj_lamplit(obj)) {
         impossible("cleanup_burn: obj %s not lit", xname(obj));
         return FALSE;
     }
 
     debugprint("cleanup_burn");
     del_light_source(LS_OBJECT, obj_to_any(obj));
-    obj->lamplit = 0;
+    set_obj_lamplit(obj, 0);
 
     /* restore unused time */
     obj->age += expire_time - monstermoves;
@@ -2738,9 +2748,9 @@ unsummon_item(anything *arg, int64_t timeout)
         struct monst* mtmp = m_at(x, y);
 
         /* a hiding monster may be exposed */
-        if (mtmp && !OBJ_AT(x, y) && mtmp->mundetected && hides_under(mtmp->data)) 
+        if (mtmp && !OBJ_AT(x, y) && is_mon_mundetected(mtmp) && hides_under(mtmp->data)) 
         {
-            mtmp->mundetected = 0;
+            set_mon_mundetected(mtmp, 0);
         }
         else if (x == u.ux && y == u.uy && u.uundetected && hides_under(youmonst.data))
             (void)hideunder(&youmonst);
@@ -2832,10 +2842,17 @@ begin_timestoptimer(int64_t duration)
     anything any = zeroany;
     if (start_timer(duration, TIMER_GLOBAL, TIME_RESTART, &any))
     {
-        //Success
+        context.time_stopped = TRUE;
     }
 }
 
+void
+restart_timestoptimer(int64_t duration, int64_t max_duration)
+{
+    int64_t time_left = stop_timer_type(TIME_RESTART);
+    int64_t new_duration = duration + time_left;
+    begin_timestoptimer(max_duration > 0 ? min(max_duration, new_duration) : new_duration);
+}
 
 int
 restart_time(anything *arg, int64_t timeout)
@@ -2844,7 +2861,7 @@ restart_time(anything *arg, int64_t timeout)
     {
         /* Do nothing */
     }
-
+    
     context.time_stopped = FALSE;
     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The flow of time seems faster again.");
     return FALSE;
@@ -3193,6 +3210,22 @@ stop_timer(short func_index, anything *arg)
     return 0L;
 }
 
+int64_t
+stop_timer_type(short func_index)
+{
+    timer_element* timer_to_delete = remove_timer_type(&timer_base, func_index);
+    if (timer_to_delete)
+    {
+        int64_t timeout = timer_to_delete->timeout;
+        anything dummyany = zeroany;
+        if (timeout_funcs[timer_to_delete->func_index].cleanup)
+            (void)(*timeout_funcs[timer_to_delete->func_index].cleanup)(&dummyany, timeout);
+        free((genericptr_t)timer_to_delete);
+        return (timeout - monstermoves);
+    }
+    return 0L;
+}
+
 /*
  * Find the timeout of specified timer; return 0 if none.
  */
@@ -3505,6 +3538,25 @@ remove_timer(timer_element **base, short func_index, anything *arg)
 
     for (prev = 0, curr = *base; curr; prev = curr, curr = curr->next)
         if (curr->func_index == func_index && curr->arg.a_void == arg->a_void)
+            break;
+
+    if (curr) {
+        if (prev)
+            prev->next = curr->next;
+        else
+            *base = curr->next;
+    }
+
+    return curr;
+}
+
+static timer_element*
+remove_timer_type(timer_element** base, short func_index)
+{
+    timer_element* prev, * curr;
+
+    for (prev = 0, curr = *base; curr; prev = curr, curr = curr->next)
+        if (curr->func_index == func_index)
             break;
 
     if (curr) {
@@ -3843,7 +3895,7 @@ static int
 cleanup_sound(anything *arg, int64_t expire_time)
 {
     struct obj* obj = arg->a_obj;
-    if (!obj->makingsound)
+    if (!is_obj_makingsound(obj))
     {
         impossible("cleanup_sound: obj %s not making sound", xname(obj));
         return FALSE;
@@ -3854,7 +3906,7 @@ cleanup_sound(anything *arg, int64_t expire_time)
     /* restore unused time */
     obj->age += expire_time - monstermoves;
 
-    obj->makingsound = 0;
+    set_obj_makingsound(obj, 0);
 
     if (obj->where == OBJ_INVENT)
         update_inventory();
@@ -4185,6 +4237,14 @@ property_expiry_message(int propidx, boolean was_flying)
         }
         see_monsters();
         break;
+    case TRUE_SEEING:
+        if (!True_seeing)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "sight has become mundane.");
+        }
+        see_monsters();
+        break;
     case WATER_WALKING:
         if (!Wwalking)
         {
@@ -4434,7 +4494,7 @@ property_expiry_message(int propidx, boolean was_flying)
         newsym(u.ux, u.uy);
         if (!Invis && !Blocks_Invisibility && !Blind) {
             play_sfx_sound(SFX_PROTECTION_END_WARNING);
-            You(!See_invisible
+            You(!Can_see_invisible
                 ? "are no longer invisible."
                 : "can no longer see through yourself.");
             stop_occupation();
@@ -4445,7 +4505,7 @@ property_expiry_message(int propidx, boolean was_flying)
         see_monsters();       /* make invis mons appear */
         newsym(u.ux, u.uy);   /* make self appear */
         stop_occupation();
-        if (!See_invisible)
+        if (!Can_see_invisible)
         {
             play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are no longer able to see invisibile monsters.");

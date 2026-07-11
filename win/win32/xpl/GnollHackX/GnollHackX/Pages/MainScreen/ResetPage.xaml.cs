@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -659,6 +659,44 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     btnDeleteAppLog.Text = "Failed";
                     btnDeleteAppLog.TextColor = GHColors.Red;
+                }
+            }
+            ResetGrid.IsEnabled = true;
+        }
+
+        private async void btnDeleteTransferFiles_Clicked(object sender, EventArgs e)
+        {
+            ResetGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            bool answer = await GHApp.DisplayMessageBox(this, "Delete Save Transfer Logs?", "Are you sure to delete all files in transfer_temp, transfer_upload, and transfer_download directories?", "Yes", "No");
+            if (answer)
+            {
+                try
+                {
+                    // Delete transfer_temp and any numbered fallback directories (transfer_temp2..10)
+                    string tempBase = Path.Combine(GHApp.GHPath, GHConstants.TransferTempDirectory);
+                    for (int i = 0; i <= 10; i++)
+                    {
+                        string tempDir = i == 0 ? tempBase : tempBase + i.ToString();
+                        if (Directory.Exists(tempDir))
+                            Directory.Delete(tempDir, true);
+                    }
+
+                    string uploadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferUploadDirectory);
+                    if (Directory.Exists(uploadDir))
+                        Directory.Delete(uploadDir, true);
+
+                    string downloadDir = Path.Combine(GHApp.GHPath, GHConstants.TransferDownloadDirectory);
+                    if (Directory.Exists(downloadDir))
+                        Directory.Delete(downloadDir, true);
+
+                    btnDeleteTransferFiles.Text = "Done";
+                    btnDeleteTransferFiles.TextColor = GHColors.Red;
+                }
+                catch
+                {
+                    btnDeleteTransferFiles.Text = "Failed";
+                    btnDeleteTransferFiles.TextColor = GHColors.Red;
                 }
             }
             ResetGrid.IsEnabled = true;

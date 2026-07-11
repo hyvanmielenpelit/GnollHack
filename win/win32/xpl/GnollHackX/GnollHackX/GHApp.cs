@@ -238,7 +238,7 @@ namespace GnollHackX
 
         private static DateTime _nowAtInit;
 
-        private static bool _saveGameBreakingChangeNotificationOn = true;
+        private static bool _saveGameBreakingChangeNotificationOn = false;
         private static DateTime _saveGameBreakingChangePublishDate = new DateTime(2026, 07, 01);
         private static DateTime _saveGameBreakingChangeLatestImminentDate = new DateTime(2026, 09, 30);
         private static DateTime _saveGameBreakingChangeExpiryDate = new DateTime(2027, 06, 30);
@@ -5595,11 +5595,11 @@ namespace GnollHackX
             }
         }
 
-        public static async Task TryVerifyXlogUserNameAsync()
+        public static async Task TryVerifyXlogUserNameAsync(bool force = false)
         {
-            if (!PostingXlogEntries && !PostingReplays && !PostingBonesFiles && !AutoUploadReplays)
+            if (!force && !PostingXlogEntries && !PostingReplays && !PostingBonesFiles && !AutoUploadReplays)
             {
-                SetXlogUserNameVerified(false, null, null);
+                //SetXlogUserNameVerified(false, null, null);
                 return;
             }
             if (XlogUserNameVerified)
@@ -7151,6 +7151,32 @@ namespace GnollHackX
             return GHConstants.AzureBlobStorageReplayContainerNamePrefix + "-" + verCompat.ToString();
         }
 
+        public static string GetAzureBlobStorageSaveTransferContainerName()
+        {
+            ulong verCompat = GHVersionCompatibility;
+            if (verCompat == 0)
+                return GHConstants.AzureBlobStorageSaveTransferContainerNamePrefix;
+            return GHConstants.AzureBlobStorageSaveTransferContainerNamePrefix + "-" + verCompat.ToString();
+        }
+
+        public static async Task CheckCreateSaveTransferContainer(string saveTransferContainerName)
+        {
+            BlobServiceClient blobServiceClient = GetBlobServiceClient();
+            if (blobServiceClient == null || string.IsNullOrEmpty(saveTransferContainerName))
+                return;
+
+            try
+            {
+                BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(saveTransferContainerName);
+                await containerClient.CreateIfNotExistsAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+
         public static async Task CheckCreateReplayContainer(string replayContainerName)
         {
             //MaybeWriteGHLog("CheckCreateReplayContainer: GetBlobServiceClient");
@@ -8102,7 +8128,7 @@ namespace GnollHackX
                                                     int bkglyph = br.ReadInt32();
                                                     int symbol = br.ReadInt32();
                                                     int ocolor = br.ReadInt32();
-                                                    uint special = br.ReadUInt32();
+                                                    ulong special = br.ReadUInt64();
                                                     int layers_size = br.ReadInt32();
                                                     byte[] layers_bytes = br.ReadBytes(layers_size);
                                                     unsafe
@@ -8368,7 +8394,9 @@ namespace GnollHackX
                                                 {
                                                     int winid = br.ReadInt32();
                                                     int style = br.ReadInt32();
-                                                    game.ClientCallback_StartMenu(winid, style);
+                                                    int glyph = br.ReadInt32();
+                                                    ulong mflags = br.ReadUInt64();
+                                                    game.ClientCallback_StartMenu(winid, style, glyph, mflags);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.AddExtendedMenu:
@@ -9236,6 +9264,9 @@ namespace GnollHackX
             await blobClient.DownloadToAsync(targetPath, cancellationToken);
         }
 
+        private static int _isSystemBrowserOpen = 0;
+        public static bool IsSystemBrowserOpen { get { return Interlocked.CompareExchange(ref _isSystemBrowserOpen, 0, 0) != 0; } set { Interlocked.Exchange(ref _isSystemBrowserOpen, value ? 1 : 0); } }
+
         public static async Task OpenBrowser(ContentPage page, string title, Uri uri, bool forceExternalBrowser = false)
         {
             try
@@ -9247,7 +9278,9 @@ namespace GnollHackX
                 }
                 else
                 {
+                    IsSystemBrowserOpen = true;
                     await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+                    IsSystemBrowserOpen = false;
                 }
             }
             catch (Exception ex)

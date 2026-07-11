@@ -275,7 +275,16 @@ struct context_info
     unsigned quick_engrave_obj_oid;
     unsigned quick_pickaxe_obj_oid;
     unsigned quick_bag_obj_oid;
-    /* Note: out of emergency ints now */
+
+    int reserved_int1;
+    int reserved_int2;
+    int reserved_int3;
+    int reserved_int4;
+
+    unsigned reserved_uint1;
+    unsigned reserved_uint2;
+    unsigned reserved_uint3;
+    unsigned reserved_uint4;
 
     short reserved_short1;
     short reserved_short2;

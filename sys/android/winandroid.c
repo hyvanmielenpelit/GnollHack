@@ -26,7 +26,7 @@ static void and_putstr_ex(winid, const char *, int, int, int);
 static void and_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
 static void and_putmixed_ex(winid, const char *, int, int, int);
 static void and_display_file(const char *, boolean);
-static void and_start_menu_ex(winid, int);
+static void and_start_menu_ex(winid, int, int, uint64_t);
 static void and_add_menu(winid,int,const ANY_P *, char,char,int,const char *, boolean);
 static void and_add_extended_menu(winid, int, const ANY_P*, char, char, int, int, const char*, boolean, struct extended_menu_info);
 static void and_end_menu_ex(winid, const char *, const char*);
@@ -444,7 +444,7 @@ void and_player_selection()
 		{
 			/* Prompt for a role */
 			win = create_nhwindow(NHW_MENU);
-			and_start_menu_ex(win, 0);
+			and_start_menu_ex(win, 0, 0, 0);
 			any.a_void = 0; /* zero out all bits */
 			any.a_int = randrole(TRUE)+1;
 			and_add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "Random", MENU_UNSELECTED);
@@ -486,7 +486,7 @@ void and_player_selection()
 			/* tty_clear_nhwindow(BASE_WINDOW); */
 			/* tty_putstr(BASE_WINDOW, 0, "Choosing Race"); */
 			win = create_nhwindow(NHW_MENU);
-			and_start_menu_ex(win, 0);
+			and_start_menu_ex(win, 0, 0, 0);
 			any.a_void = 0; /* zero out all bits */
 			any.a_int = randrace(flags.initrole)+1;
 			and_add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "random", MENU_UNSELECTED);
@@ -522,7 +522,7 @@ void and_player_selection()
 			/* tty_clear_nhwindow(BASE_WINDOW); */
 			/* tty_putstr(BASE_WINDOW, 0, "Choosing Gender"); */
 			win = create_nhwindow(NHW_MENU);
-			and_start_menu_ex(win, 0);
+			and_start_menu_ex(win, 0, 0, 0);
 			any.a_void = 0; /* zero out all bits */
 			any.a_int = randgend(flags.initrole, flags.initrace)+1;
 			and_add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "random", MENU_UNSELECTED);
@@ -556,7 +556,7 @@ void and_player_selection()
 			/* tty_clear_nhwindow(BASE_WINDOW); */
 			/* tty_putstr(BASE_WINDOW, 0, "Choosing Alignment"); */
 			win = and_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH, zerocreatewindowinfo);
-			and_start_menu_ex(win, 0);
+			and_start_menu_ex(win, 0, 0, 0);
 			any.a_void = 0; /* zero out all bits */
 			any.a_int = randalign(flags.initrole, flags.initrace)+1;
 			and_add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "random", MENU_UNSELECTED);
@@ -1166,7 +1166,7 @@ void and_display_file(const char *name, boolean complain)
 //		   before add_menu().  After calling start_menu() you may not
 //		   putstr() to the window.  Only windows of type NHW_MENU may
 //		   be used for menus.
-void and_start_menu_ex(winid wid, int style)
+void and_start_menu_ex(winid wid, int style UNUSED, int glyph UNUSED, uint64_t mflags UNUSED)
 {
 	JNICallV(jStartMenu, wid);
 }
@@ -1434,7 +1434,7 @@ void and_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 		tile = glyph2tile[glyph];
 	nhsym ch;
 	int col;
-	unsigned int special;
+	uint64_t special;
 	mapglyph(glyph, &ch, &col, &special, x, y); // , 0);
 
 	special &= ~(MG_CORPSE|MG_INVIS|MG_RIDDEN|MG_STATUE); // TODO support
@@ -1998,7 +1998,7 @@ int do_ext_cmd_menu(boolean complete)
 	const char *ptr;
 
 	wid = and_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH, zerocreatewindowinfo);
-	and_start_menu_ex(wid, 0);
+	and_start_menu_ex(wid, 0, 0, 0);
 	for(i = 0; (ptr = extcmdlist[i].ef_txt); i++)
 	{
 		flgs = extcmdlist[i].flags;

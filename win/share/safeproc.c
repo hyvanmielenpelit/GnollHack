@@ -244,7 +244,7 @@ safe_display_file(const char *fname, boolean complain)
 }
 
 void
-safe_start_menu_ex(winid window, int style)
+safe_start_menu_ex(winid window, int style, int glyph, uint64_t mflags)
 {
     return;
 }
@@ -750,12 +750,19 @@ safe_status_update(int idx, genericptr_t ptr, int chg UNUSED, int percent UNUSED
 void
 stdio_wait_synch(void)
 {
+#ifdef GNH_MOBILE
+    return;
+#else
+    if (!nhgetch)
+        return;
+
     char valid[] = {' ', '\n', '\r', '\033', '\0'};
 
     fprintf(stdout, "--More--");
     (void) fflush(stdout);
     while (!index(valid, nhgetch()))
         ;
+#endif
 }
 
 /* Add to your code: windowprocs.win_raw_print = stdio_raw_print; */
@@ -779,7 +786,7 @@ stdio_raw_print_bold(const char *str)
 int
 stdio_nhgetch(void)
 {
-    return getchar();
+    return getchar != 0 ? getchar() : safe_nhgetch();
 }
 
 

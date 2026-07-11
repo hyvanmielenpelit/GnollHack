@@ -113,14 +113,16 @@ namespace GnollHackX.Pages.MainScreen
                 rib.IsSubLblVisible = hasDuration || hasSongwriter;
                 rib.ImgWidth = 80;
                 rib.ImgHeight = 80;
+                rib.Padding = new Thickness(6);
                 rib.GridWidth = 480;
-                rib.GridHeight = 80;
+                rib.GridHeight = 160;
 #if GNH_MAUI
                 rib.MaximumWidthRequest = 480;
+                rib.MaximumHeightRequest = 160;
 #else
                 rib.WidthRequest = 480;
+                rib.HeightRequest = 160;
 #endif
-                rib.HeightRequest = 80;
                 rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
                 rib.BtnCommand = trackItem.Index;
                 rib.BtnClicked += SoundTrackButton_Clicked;

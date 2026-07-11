@@ -59,6 +59,7 @@ DOOR:locked,(19,06)
 ALTAR:(36,02),coaligned,shrine
 # Shaman Karnov
 MONSTER:('@',"Shaman Karnov"),(35,02)
+MONSTER: ('f',"large saber-tooth tiger"),(33,02),peaceful
 # The treasure of Shaman Karnov
 OBJECT:('(',"chest"),(34,02)
 CARPET:(33,01,35,03),carpet_brown_hide
@@ -95,6 +96,20 @@ MONSTER: ('h',"bugbear"),(63,10),hostile
 MONSTER: ('h',"bugbear"),(65,09),hostile
 MONSTER: ('h',"bugbear"),(67,10),hostile
 MONSTER: ('h',"bugbear"),(69,11),hostile
+
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"iguanodon"),random
+MONSTER: (':',"iguanodon"),random
+MONSTER: ('Y',"gorilla"),random
+MONSTER: ('Y',"gorilla"),random
+
 WALLIFY
 
 #
@@ -192,6 +207,24 @@ MONSTER:('H',"hill giant"),random,hostile
 MONSTER:('H',"hill giant"),random,hostile
 MONSTER:('H',"hill giant"),random,hostile
 MONSTER:'H',random,hostile
+
+MONSTER: (':',"triceratops"),random
+MONSTER: (':',"tyrannosaurus rex"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"allosaurus"),random
+MONSTER: (':',"iguanodon"),random
+MONSTER: (':',"stegosaurus"),random
+MONSTER: ('Y',"gorilla"),random
+MONSTER: ('Y',"gorilla"),random
+MONSTER: ('Y',"giant gorilla"),random
+
 WALLIFY
 
 #
@@ -254,6 +287,15 @@ MONSTER:('D',"Tiamat"),(23,10),asleep
 MONSTER:('F',"shrieker"),(26,13)
 MONSTER:('F',"shrieker"),(25,8)
 MONSTER:('F',"shrieker"),(45,11)
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"quetzalcoatlus"),random
+MONSTER: (':',"quetzalcoatlus"),random
+
 WALLIFY
 
 #
@@ -293,6 +335,21 @@ MONSTER: ('h', "bugbear"), random, hostile
 MONSTER: ('h', "bugbear"), random, hostile
 MONSTER: 'h', random, hostile
 MONSTER: ('H', "hill giant"), random, hostile
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pachycephalosaurus"),random
+MONSTER: (':',"iguanodon"),random
+MONSTER: (':',"iguanodon"),random
+MONSTER: (':',"allosaurus"),random
+MONSTER: (':',"juvenile tyrannosaurus rex"),random
+MONSTER: ('Y',"gorilla"),random
+MONSTER: ('Y',"gorilla"),random
 
 MAZE: "Cav-filb" , ' '
 INIT_MAP: mines, ':' , ' ' , true , true , random , true
@@ -328,3 +385,19 @@ MONSTER: 'h', random, hostile
 MONSTER: 'h', random, hostile
 MONSTER: ('H', "hill giant"), random, hostile
 MONSTER: ('H', "hill giant"), random, hostile
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"quetzalcoatlus"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"pteranodon"),random
+MONSTER: (':',"quetzalcoatlus"),random
+MONSTER: (':',"iguanodon"),random
+MONSTER: (':',"iguanodon"),random
+MONSTER: (':',"ankylosaurus"),random
+MONSTER: (':',"tyrannosaurus rex hatchling"),random
+MONSTER: (':',"tyrannosaurus rex hatchling"),random
+MONSTER: ('Y',"gorilla"),random
+MONSTER: ('Y',"gorilla"),random
+

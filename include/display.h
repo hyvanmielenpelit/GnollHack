@@ -53,7 +53,7 @@
           /* OR 2b. hero is using a telepathy inducing */  \
           /*        object and in range                */  \
           || (Unblind_telepat                              \
-              && (distu(mon->mx, mon->my) <= (TELEPATHY_RANGE * TELEPATHY_RANGE)))))
+              && (distu((mon)->mx, (mon)->my) <= (TELEPATHY_RANGE * TELEPATHY_RANGE)))))
 
 #define sensemon(mon) \
     (tp_sensemon(mon) || Detect_monsters || MATCH_WARN_OF_MON(mon))
@@ -65,20 +65,20 @@
 
 #define mon_warning(mon)                                                 \
     ((Warning || \
-        (Undead_warning && mon->data->mflags2 & M2_UNDEAD) \
-        || (Demon_warning && mon->data->mflags2 & M2_DEMON) \
-        || (Orc_warning && mon->data->mflags2 & M2_ORC) \
-        || (Troll_warning && mon->data->mlet == S_TROLL) \
-        || (Giant_warning && mon->data->mflags2 & M2_GIANT) \
-        || (Dragon_warning && mon->data->mlet == S_DRAGON) \
-        || (Elf_warning && mon->data->mflags2 & M2_ELF) \
-        || (Dwarf_warning && mon->data->mflags2 & M2_DWARF) \
-        || (Gnoll_warning && mon->data->mflags2 & M2_GNOLL) \
-        || (Gnome_warning && mon->data->mflags2 & M2_GNOME) \
-        || (Human_warning && mon->data->mflags2 & M2_HUMAN) \
-        || (Lycanthrope_warning && mon->data->mflags2 & M2_WERE) \
-        || (Angel_warning && mon->data->mflags2 & M2_ANGEL) \
-        || (Ogre_warning && mon->data->mlet == S_OGRE) \
+        (Undead_warning && (mon)->data->mflags2 & M2_UNDEAD) \
+        || (Demon_warning && (mon)->data->mflags2 & M2_DEMON) \
+        || (Orc_warning && (mon)->data->mflags2 & M2_ORC) \
+        || (Troll_warning && (mon)->data->mlet == S_TROLL) \
+        || (Giant_warning && (mon)->data->mflags2 & M2_GIANT) \
+        || (Dragon_warning && (mon)->data->mlet == S_DRAGON) \
+        || (Elf_warning && (mon)->data->mflags2 & M2_ELF) \
+        || (Dwarf_warning && (mon)->data->mflags2 & M2_DWARF) \
+        || (Gnoll_warning && (mon)->data->mflags2 & M2_GNOLL) \
+        || (Gnome_warning && (mon)->data->mflags2 & M2_GNOME) \
+        || (Human_warning && (mon)->data->mflags2 & M2_HUMAN) \
+        || (Lycanthrope_warning && (mon)->data->mflags2 & M2_WERE) \
+        || (Angel_warning && (mon)->data->mflags2 & M2_ANGEL) \
+        || (Ogre_warning && (mon)->data->mlet == S_OGRE) \
     ) && !is_peaceful((mon)) && (distu((mon)->mx, (mon)->my) < 100))
 
 /*     && (((int) ((mon)->m_lev / 4)) >= context.warnlevel)) */
@@ -93,9 +93,9 @@
  */
 #define mon_visible(mon) \
     (/* The hero can see the monster IF the monster                                    */ \
-     (!is_invisible(mon) || See_invisible)      /*     1. is not invisible             */ \
-        && !mon->mundetected                    /*     2. not an undetected hider      */ \
-        && !(mon->mburied || u.uburied))        /* AND 3. neither you nor it is buried */
+     (!is_invisible(mon) || See_invisible || True_seeing)      /*     1. is not invisible             */ \
+        && !is_mon_mundetected(mon)                    /*     2. not an undetected hider      */ \
+        && !(is_mon_mburied(mon) || u.uburied))        /* AND 3. neither you nor it is buried */
 
 /*
  * see_with_infrared()
@@ -106,8 +106,8 @@
  * canseemon() or canspotmon() which already check that.
  */
 #define see_with_infrared(mon)                        \
-    (!Blind && Infravision && mon && infravisible(mon->data) \
-     && couldsee(mon->mx, mon->my))
+    (!Blind && Infravision && mon && infravisible((mon)->data) \
+     && couldsee((mon)->mx, (mon)->my))
 
 /*
  * canseemon()
@@ -117,8 +117,8 @@
  * location instead of assuming it.  (And also considers worms.)
  */
 #define canseemon(mon)                                                    \
-    ((mon->wormno ? worm_known(mon)                                       \
-                  : (cansee(mon->mx, mon->my) || see_with_infrared(mon))) \
+    (((mon)->wormno ? worm_known(mon)                                       \
+                  : (cansee((mon)->mx, (mon)->my) || see_with_infrared(mon))) \
      && mon_visible(mon))
 
 /*
@@ -143,8 +143,8 @@
  */
 #define knowninvisible(mon)                                               \
     (is_invisible(mon)                                                        \
-     && ((cansee(mon->mx, mon->my) && (See_invisible || Detect_monsters)) \
-         || (Telepat && distu(mon->mx, mon->my) <= (TELEPATHY_RANGE * TELEPATHY_RANGE))))
+     && ((cansee((mon)->mx, (mon)->my) && (See_invisible || Detect_monsters || True_seeing)) \
+         || (Telepat && distu((mon)->mx, (mon)->my) <= (TELEPATHY_RANGE * TELEPATHY_RANGE))))
 
 /*
  * is_safepet(mon)
@@ -157,7 +157,7 @@
      && !Hallucination && !Stunned && goodpos(u.ux, u.uy, mon, GOODPOS_IGNOREYOU))
 
 #define is_special_peaceful(mon) \
-    ((mon)->isshk || (mon)->ispriest || (mon)->isnpc || (mon)->issmith || (mon)->isgd || (mon)->wormno || ((mon)->data->geno & G_UNIQ) || (mon)->mnum == urole.ldrnum)
+    (is_mon_isshk((mon)) || is_mon_ispriest((mon)) || is_mon_isnpc((mon)) || is_mon_issmith((mon)) || is_mon_isgd((mon)) || (mon)->wormno || ((mon)->data->geno & G_UNIQ) || (mon)->mnum == urole.ldrnum)
 
 #define is_displaceable_peaceful(mon)    \
      (mon && flags.displace_peaceful && is_peaceful(mon) && !is_special_peaceful(mon) && mon_can_move(mon) && !is_confused(mon) && !is_hallucinating(mon) && !is_stunned(mon) && goodpos(u.ux, u.uy, mon, GOODPOS_IGNOREYOU) \
@@ -169,6 +169,15 @@
 
 #define monster_invokes_context_chat(mon) \
     (!is_tame(mon) && is_mon_talkative(mon) && canspotmon(mon) && mon_can_move(mon))
+
+#define Can_detect_mimic(mon) (Protection_from_shape_changers || (True_seeing && canseemon(mon)) || sensemon(mon))
+ /* appears_peaceful: for GUI display only - true if actually peaceful,
+    or if in illusory form and player cannot sense through the disguise */
+#define appears_peaceful(mon) \
+    (is_peaceful(mon) \
+     || (has_friendly_illusory_appearance((mon)->data) \
+         && M_AP_TYPE(mon) == M_AP_MONSTER \
+         && !Can_detect_mimic(mon) && !Warning))
 
  /*
  * canseeself()
@@ -392,86 +401,86 @@
 #define warning_to_glyph(mwarnlev) ((mwarnlev) + GLYPH_WARNING_OFF)
 
 #define mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_MON_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_MON_OFF))
 #define attacking_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_ATTACK_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_ATTACK_OFF))
 #define throwing_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_THROW_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_THROW_OFF))
 #define firing_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FIRE_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FIRE_OFF))
 #define nodir_casting_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_CAST_NODIR_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_CAST_NODIR_OFF))
 #define dir_casting_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_CAST_DIR_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_CAST_DIR_OFF))
 #define special_attacking_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_SPECIAL_ATTACK_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_SPECIAL_ATTACK_OFF))
 #define kicking_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_KICK_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_KICK_OFF))
 #define passive_defense_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_PASSIVE_DEFENSE_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_PASSIVE_DEFENSE_OFF))
 #define special_attacking2_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_SPECIAL_ATTACK_2_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_SPECIAL_ATTACK_2_OFF))
 #define special_attacking3_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_SPECIAL_ATTACK_3_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_SPECIAL_ATTACK_3_OFF))
 #define item_using_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_ITEM_USE_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_ITEM_USE_OFF))
 #define door_using_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_DOOR_USE_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_DOOR_USE_OFF))
 #define dying_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_DEATH_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_DEATH_OFF))
 
 #define female_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_MON_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_MON_OFF))
 #define female_attacking_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_ATTACK_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_ATTACK_OFF))
 #define female_throwing_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_THROW_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_THROW_OFF))
 #define female_firing_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_FIRE_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_FIRE_OFF))
 #define female_nodir_casting_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_CAST_NODIR_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_CAST_NODIR_OFF))
 #define female_dir_casting_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_CAST_DIR_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_CAST_DIR_OFF))
 #define female_special_attacking_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_SPECIAL_ATTACK_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_SPECIAL_ATTACK_OFF))
 #define female_kicking_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_KICK_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_KICK_OFF))
 #define female_passive_defense_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_PASSIVE_DEFENSE_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_PASSIVE_DEFENSE_OFF))
 #define female_special_attacking2_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_SPECIAL_ATTACK_2_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_SPECIAL_ATTACK_2_OFF))
 #define female_special_attacking3_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_SPECIAL_ATTACK_3_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_SPECIAL_ATTACK_3_OFF))
 #define female_item_using_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_ITEM_USE_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_ITEM_USE_OFF))
 #define female_door_using_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_DOOR_USE_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_DOOR_USE_OFF))
 #define female_dying_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_DEATH_OFF))
+    ((is_mon_facing_right((mon)) ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_DEATH_OFF))
 
 #define any_mon_to_glyph(mon, rng)    \
   ((mon) == &youmonst ? u_to_glyph() : \
    ( \
-        (mon)->action == ACTION_TILE_ATTACK ? ((mon)->female ? female_attacking_mon_to_glyph(mon, rng) : attacking_mon_to_glyph(mon, rng)) : \
-        (mon)->action == ACTION_TILE_THROW ? ((mon)->female ? female_throwing_mon_to_glyph(mon, rng) : throwing_mon_to_glyph(mon, rng)) : \
-        (mon)->action == ACTION_TILE_FIRE ? ((mon)->female ? female_firing_mon_to_glyph(mon, rng) : firing_mon_to_glyph(mon, rng)) : \
-        (mon)->action == ACTION_TILE_CAST_NODIR ? ((mon)->female ? female_nodir_casting_mon_to_glyph(mon, rng) : nodir_casting_mon_to_glyph(mon, rng)) : \
-        (mon)->action == ACTION_TILE_CAST_DIR ? ((mon)->female ? female_dir_casting_mon_to_glyph(mon, rng) : dir_casting_mon_to_glyph(mon, rng)) : \
-        (mon)->action == ACTION_TILE_SPECIAL_ATTACK ? ((mon)->female ? female_special_attacking_mon_to_glyph(mon, rng) : special_attacking_mon_to_glyph(mon, rng)) : \
-        (mon)->action == ACTION_TILE_KICK ? ((mon)->female ? female_kicking_mon_to_glyph(mon, rng) : kicking_mon_to_glyph(mon, rng)) : \
-        (mon)->action == ACTION_TILE_PASSIVE_DEFENSE ? ((mon)->female ? female_passive_defense_mon_to_glyph(mon, rng) : passive_defense_mon_to_glyph(mon, rng)) : \
-        (mon)->action == ACTION_TILE_SPECIAL_ATTACK_2 ? ((mon)->female ? female_special_attacking2_mon_to_glyph(mon, rng) : special_attacking2_mon_to_glyph(mon, rng)) : \
-        (mon)->action == ACTION_TILE_SPECIAL_ATTACK_3 ? ((mon)->female ? female_special_attacking3_mon_to_glyph(mon, rng) : special_attacking3_mon_to_glyph(mon, rng)) : \
-        (mon)->action == ACTION_TILE_ITEM_USE ? ((mon)->female ? female_item_using_mon_to_glyph(mon, rng) : item_using_mon_to_glyph(mon, rng)) : \
-        (mon)->action == ACTION_TILE_DOOR_USE ? ((mon)->female ? female_door_using_mon_to_glyph(mon, rng) : door_using_mon_to_glyph(mon, rng)) : \
-        (mon)->action == ACTION_TILE_DEATH ? ((mon)->female ? female_dying_mon_to_glyph(mon, rng) : dying_mon_to_glyph(mon, rng)) : \
-        ((mon)->female ? female_mon_to_glyph(mon, rng) : mon_to_glyph(mon, rng)) \
+        (mon)->action == ACTION_TILE_ATTACK ? (is_mon_female((mon)) ? female_attacking_mon_to_glyph(mon, rng) : attacking_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_THROW ? (is_mon_female((mon)) ? female_throwing_mon_to_glyph(mon, rng) : throwing_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_FIRE ? (is_mon_female((mon)) ? female_firing_mon_to_glyph(mon, rng) : firing_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_CAST_NODIR ? (is_mon_female((mon)) ? female_nodir_casting_mon_to_glyph(mon, rng) : nodir_casting_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_CAST_DIR ? (is_mon_female((mon)) ? female_dir_casting_mon_to_glyph(mon, rng) : dir_casting_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_SPECIAL_ATTACK ? (is_mon_female((mon)) ? female_special_attacking_mon_to_glyph(mon, rng) : special_attacking_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_KICK ? (is_mon_female((mon)) ? female_kicking_mon_to_glyph(mon, rng) : kicking_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_PASSIVE_DEFENSE ? (is_mon_female((mon)) ? female_passive_defense_mon_to_glyph(mon, rng) : passive_defense_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_SPECIAL_ATTACK_2 ? (is_mon_female((mon)) ? female_special_attacking2_mon_to_glyph(mon, rng) : special_attacking2_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_SPECIAL_ATTACK_3 ? (is_mon_female((mon)) ? female_special_attacking3_mon_to_glyph(mon, rng) : special_attacking3_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_ITEM_USE ? (is_mon_female((mon)) ? female_item_using_mon_to_glyph(mon, rng) : item_using_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_DOOR_USE ? (is_mon_female((mon)) ? female_door_using_mon_to_glyph(mon, rng) : door_using_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_DEATH ? (is_mon_female((mon)) ? female_dying_mon_to_glyph(mon, rng) : dying_mon_to_glyph(mon, rng)) : \
+        (is_mon_female((mon)) ? female_mon_to_glyph(mon, rng) : mon_to_glyph(mon, rng)) \
    ))
 
 #define any_seen_mon_to_glyph(mon, rng) (canseemon(mon) || is_tame(mon) ? any_mon_to_glyph(mon, rng) : GLYPH_INVISIBLE)
 
 #define is_obj_activated(obj) \
-  ((obj)->lamplit || ((obj)->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0 || (obj)->invokeon || (obj)->detectioncount > 0)
+  (is_obj_lamplit((obj)) || ((obj)->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0 || (obj)->invokeon || (obj)->detectioncount > 0)
 
 /* This has the unfortunate side effect of needing a global variable    */
 /* to store a result. 'otg_temp' is defined and declared in decl.{ch}.  */
@@ -519,7 +528,7 @@
                : ((obj)->otyp == CORPSE)                                \
                      ?  (is_female_corpse_or_statue(obj) ? ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_FEMALE_BODY_OFF))  : ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_BODY_OFF)) )         \
                      : ((obj)->otyp == BOULDER) \
-                        ? cmap_with_type_to_glyph(S_extra_boulder, (obj)->has_special_tileset ? (obj)->special_tileset : get_current_cmap_type_index()) \
+                        ? cmap_with_type_to_glyph(S_extra_boulder, is_obj_has_special_tileset((obj)) ? (obj)->special_tileset : get_current_cmap_type_index()) \
                             : ((obj)->oartifact > 0) \
                                 ? ((int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_OFF) \
                                     :  ((int)(obj)->otyp + GLYPH_OBJ_OFF))
@@ -533,7 +542,7 @@
                : ((obj)->otyp == CORPSE)                                \
                      ?  (is_female_corpse_or_statue(obj) ? ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_FEMALE_BODY_OFF))  : ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_BODY_OFF)) )         \
                      : ((obj)->otyp == BOULDER) \
-                        ? cmap_with_type_to_glyph(S_extra_boulder, (obj)->has_special_tileset ? (obj)->special_tileset : get_current_cmap_type_index()) \
+                        ? cmap_with_type_to_glyph(S_extra_boulder, is_obj_has_special_tileset((obj)) ? (obj)->special_tileset : get_current_cmap_type_index()) \
                             : ((obj)->oartifact > 0) \
                                 ? ((int)((obj)->oartifact - 1) * NUM_MISSILE_DIRS + (dir_index) + GLYPH_ARTIFACT_MISSILE_OFF) \
                                     :  ((int)(obj)->otyp * NUM_MISSILE_DIRS + (dir_index) + GLYPH_OBJ_MISSILE_OFF)) )
@@ -966,7 +975,7 @@
  */
 #define maybe_display_usteed(otherwise_self)                            \
     ((u.usteed && mon_visible(u.usteed)) == TRUE                                \
-     ? (u.usteed->female == TRUE ? female_mon_to_glyph(u.usteed, rn2_on_display_rng) : mon_to_glyph(u.usteed, rn2_on_display_rng))  \
+     ? (is_mon_female(u.usteed) ? female_mon_to_glyph(u.usteed, rn2_on_display_rng) : mon_to_glyph(u.usteed, rn2_on_display_rng))  \
      : (otherwise_self))
 
 #define display_self() display_self_with_extra_info_choose_ascii(0UL, 0UL, 0, 0, FALSE)

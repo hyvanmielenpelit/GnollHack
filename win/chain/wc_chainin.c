@@ -160,9 +160,9 @@ chainin_display_file(const char *fname, boolean complain)
 }
 
 void
-chainin_start_menu_ex(winid window, int style)
+chainin_start_menu_ex(winid window, int style, int glyph, uint64_t mflags)
 {
-    (*cibase->nprocs->win_start_menu_ex)(cibase->ndata, window, style);
+    (*cibase->nprocs->win_start_menu_ex)(cibase->ndata, window, style, glyph, mflags);
 }
 
 /*

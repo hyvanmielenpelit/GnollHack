@@ -26,7 +26,7 @@ static boolean altar_prayer(boolean);
 static boolean blocked_boulder(int, int);
 
 /* simplify a few tests */
-#define Cursed_obj(obj, typ) ((obj) && (obj)->otyp == (typ) && (obj)->cursed)
+#define Cursed_obj(obj, typ) ((obj) && (obj)->otyp == (typ) && is_obj_cursed((obj)))
 
 /*
  * Logic behind deities and altars and such:
@@ -243,10 +243,10 @@ in_trouble(void)
         if (welded(uwep, &youmonst))
             return TROUBLE_UNUSEABLE_HANDS;
         if (Upolyd && nohands(youmonst.data)
-            && (!Unchanging || ((otmp = unchanger()) != 0 && otmp->cursed)))
+            && (!Unchanging || ((otmp = unchanger()) != 0 && is_obj_cursed(otmp))))
             return TROUBLE_UNUSEABLE_HANDS;
     }
-    if (Blindfolded && ublindf->cursed)
+    if (Blindfolded && is_obj_cursed(ublindf))
         return TROUBLE_CURSED_BLINDFOLD;
 
 
@@ -318,48 +318,48 @@ worst_cursed_item(void)
     if (welded(uwep, &youmonst) && (uright || bimanual(uwep))) { /* weapon */
         otmp = uwep;
     /* gloves come next, due to rings */
-    } else if (uarmg && uarmg->cursed) { /* gloves */
+    } else if (uarmg && is_obj_cursed(uarmg)) { /* gloves */
         otmp = uarmg;
     /* then shield due to two handed weapons and spells */
-    } else if (uarms && uarms->cursed) { /* shield */
+    } else if (uarms && is_obj_cursed(uarms)) { /* shield */
         otmp = uarms;
     /* then cloak due to body armor */
-    } else if (uarmc && uarmc->cursed) { /* cloak */
+    } else if (uarmc && is_obj_cursed(uarmc)) { /* cloak */
         otmp = uarmc;
     }
-    else if (uarmo && uarmo->cursed) { /* robe */
+    else if (uarmo && is_obj_cursed(uarmo)) { /* robe */
         otmp = uarmo;
-    } else if (uarm && uarm->cursed) { /* suit */
+    } else if (uarm && is_obj_cursed(uarm)) { /* suit */
         otmp = uarm;
     /* if worn helmet of opposite alignment is making you an adherent
        of the current god, he/she/it won't uncurse that for you */
-    } else if (uarmh && uarmh->cursed /* helmet */
+    } else if (uarmh && is_obj_cursed(uarmh) /* helmet */
                && uarmh->otyp != HELM_OF_OPPOSITE_ALIGNMENT) {
         otmp = uarmh;
-    } else if (uarmf && uarmf->cursed) { /* boots */
+    } else if (uarmf && is_obj_cursed(uarmf)) { /* boots */
         otmp = uarmf;
     }
-    else if (uarmb && uarmb->cursed) { /* bracers */
+    else if (uarmb && is_obj_cursed(uarmb)) { /* bracers */
         otmp = uarmb;
-    } else if (uarmu && uarmu->cursed) { /* shirt */
+    } else if (uarmu && is_obj_cursed(uarmu)) { /* shirt */
         otmp = uarmu;
-    } else if (uamul && uamul->cursed) { /* amulet */
+    } else if (uamul && is_obj_cursed(uamul)) { /* amulet */
         otmp = uamul;
-    } else if (umisc && umisc->cursed) { /* miscellaneous */
+    } else if (umisc && is_obj_cursed(umisc)) { /* miscellaneous */
         otmp = umisc;
-    } else if (umisc2 && umisc2->cursed) { /* miscellaneous */
+    } else if (umisc2 && is_obj_cursed(umisc2)) { /* miscellaneous */
         otmp = umisc2;
-    } else if (umisc3 && umisc3->cursed) { /* miscellaneous */
+    } else if (umisc3 && is_obj_cursed(umisc3)) { /* miscellaneous */
         otmp = umisc3;
-    } else if (umisc4 && umisc4->cursed) { /* miscellaneous */
+    } else if (umisc4 && is_obj_cursed(umisc4)) { /* miscellaneous */
         otmp = umisc4;
-    } else if (umisc5 && umisc5->cursed) { /* miscellaneous */
+    } else if (umisc5 && is_obj_cursed(umisc5)) { /* miscellaneous */
         otmp = umisc5;
-    } else if (uleft && uleft->cursed) { /* left ring */
+    } else if (uleft && is_obj_cursed(uleft)) { /* left ring */
         otmp = uleft;
-    } else if (uright && uright->cursed) { /* right ring */
+    } else if (uright && is_obj_cursed(uright)) { /* right ring */
         otmp = uright;
-    } else if (ublindf && ublindf->cursed) { /* eyewear */
+    } else if (ublindf && is_obj_cursed(ublindf)) { /* eyewear */
         otmp = ublindf; /* must be non-blinding lenses */
     /* if weapon wasn't handled above, do it now */
     } else if (welded(uwep, &youmonst)) { /* weapon */
@@ -368,12 +368,12 @@ worst_cursed_item(void)
     else if (welded(uarms, &youmonst)) { /* weapon */
         otmp = uarms;
         /* active secondary weapon even though it isn't welded */
-    } else if (uarms && uarms->cursed && u.twoweap) {
+    } else if (uarms && is_obj_cursed(uarms) && u.twoweap) {
         otmp = uarms;
     /* all worn items ought to be handled by now */
     } else {
         for (otmp = invent; otmp; otmp = otmp->nobj) {
-            if (!otmp->cursed)
+            if (!is_obj_cursed(otmp))
                 continue;
             if ((objects[otmp->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
                 || objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED 
@@ -531,7 +531,7 @@ fix_worst_trouble(int trouble)
             if (!Unchanging) {
                 Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "shape becomes uncertain.");
                 rehumanize(); /* "You return to {normal} form." */
-            } else if ((otmp = unchanger()) != 0 && otmp->cursed) {
+            } else if ((otmp = unchanger()) != 0 && is_obj_cursed(otmp)) {
                 /* otmp is an amulet of unchanging */
                 goto decurse;
             }
@@ -598,7 +598,7 @@ fix_worst_trouble(int trouble)
                   what ? what : (const char *) Yobjnam2(otmp, "softly glow"),
                   hcolor_multi_buf1(NH_AMBER));
             iflags.last_msg = PLNMSG_OBJ_GLOWS;
-            otmp->bknown = !Hallucination;
+            set_obj_bknown(otmp, !Hallucination);
         }
         play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
         uncurse(otmp);
@@ -669,7 +669,7 @@ fix_worst_trouble(int trouble)
         otmp = which_armor(u.usteed, W_SADDLE);
         if (!Blind) {
             pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, "%s %s.", Yobjnam2(otmp, "softly glow"), hcolor_multi_buf1(NH_AMBER));
-            otmp->bknown = TRUE;
+            set_obj_bknown(otmp, TRUE);
         }
         uncurse(otmp);
         break;
@@ -937,17 +937,15 @@ gcrownu(void)
     boolean lance_already_exists = exist_artifact(LANCE, artiname(ART_RHONGOMYNIAD));
     boolean grail_already_exists = exist_artifact(GRAIL_OF_HEALING, artiname(ART_HOLY_GRAIL));
     boolean gauntlets_already_exists = exist_artifact(GAUNTLETS_OF_BALANCE, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
-    boolean usegnollchaoticgift = (Race_if(PM_GNOLL) && !exist_artifact(FLAIL, artiname(ART_HOWLING_FLAIL)));
-    short chaotic_crowning_gift_oartifact = usegnollchaoticgift ? ART_HOWLING_FLAIL : exist_artifact(RUNESWORD, artiname(ART_STORMBRINGER)) ? ART_MOURNBLADE : ART_STORMBRINGER;
-    int chaotic_crowning_gift_baseitem = usegnollchaoticgift ? RUNED_FLAIL : RUNESWORD;
-    enum p_skills chaotic_crowning_gift_skill = usegnollchaoticgift ? P_FLAIL : P_SWORD;
-    boolean chaotic_crowning_gift_already_exists = exist_artifact(chaotic_crowning_gift_baseitem, artiname(chaotic_crowning_gift_oartifact));
+    boolean usegnollgift = (Race_if(PM_GNOLL) && ((ok_wep(uwep) && uwep->oartifact == ART_HOWLING_FLAIL) || (ok_wep(uarms) && uarms->oartifact == ART_HOWLING_FLAIL) || !exist_artifact(RUNED_FLAIL, artiname(ART_HOWLING_FLAIL))));
+    short chaotic_crowning_gift_oartifact = exist_artifact(RUNESWORD, artiname(ART_STORMBRINGER)) ? ART_MOURNBLADE : ART_STORMBRINGER;
+    boolean chaotic_crowning_gift_already_exists = exist_artifact(RUNESWORD, artiname(chaotic_crowning_gift_oartifact));
 
     switch (u.ualign.type) {
     case A_LAWFUL:
         u.uevent.uhand_of_elbereth = 1;
-        in_hand = (uwep && uwep->oartifact == ART_KATANA_OF_MASAMUNE);
-        in_hand2 = (uarms && uarms->oartifact == ART_KATANA_OF_MASAMUNE);
+        in_hand = (uwep && uwep->oartifact == (usegnollgift ? ART_HOWLING_FLAIL : ART_KATANA_OF_MASAMUNE));
+        in_hand2 = (uarms && uarms->oartifact == (usegnollgift ? ART_HOWLING_FLAIL : ART_KATANA_OF_MASAMUNE));
         play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_I_CROWN_THEE_THE_HAND_OF_ELBERETH);
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "I crown thee...  The Hand of Elbereth!");
         livelog_printf(LL_DIVINEGIFT,
@@ -955,8 +953,8 @@ gcrownu(void)
         break;
     case A_NEUTRAL:
         u.uevent.uhand_of_elbereth = 2;
-        in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE);
-        in_hand2 = (uarms && uarms->oartifact == ART_VORPAL_BLADE);
+        in_hand = (uwep && uwep->oartifact == (usegnollgift ? ART_HOWLING_FLAIL : ART_VORPAL_BLADE));
+        in_hand2 = (uarms && uarms->oartifact == (usegnollgift ? ART_HOWLING_FLAIL : ART_VORPAL_BLADE));
         play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THOU_SHALT_BE_MY_ENVOY_OF_BALANCE);
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou shalt be my Envoy of Balance!");
         livelog_printf(LL_DIVINEGIFT, "became %s Envoy of Balance",
@@ -964,8 +962,8 @@ gcrownu(void)
         break;
     case A_CHAOTIC:
         u.uevent.uhand_of_elbereth = 3;
-        in_hand = (uwep && uwep->oartifact == chaotic_crowning_gift_oartifact);
-        in_hand2 = (uarms && uarms->oartifact == chaotic_crowning_gift_oartifact);
+        in_hand = (uwep && uwep->oartifact == (usegnollgift ? ART_HOWLING_FLAIL : chaotic_crowning_gift_oartifact));
+        in_hand2 = (uarms && uarms->oartifact == (usegnollgift ? ART_HOWLING_FLAIL : chaotic_crowning_gift_oartifact));
         if (Role_if(PM_WIZARD) || Role_if(PM_PRIEST) || Role_if(PM_MONK) || Role_if(PM_TOURIST))
         {
             play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_I_CROWN_THEE_THE_GLORY_OF_ARIOCH);
@@ -974,7 +972,7 @@ gcrownu(void)
         }
         else
         {
-            boolean takelives = ((chaotic_crowning_gift_already_exists && !in_hand && !in_hand2) || chaotic_crowning_gift_oartifact == ART_HOWLING_FLAIL || Role_if(PM_VALKYRIE));
+            boolean takelives = ((chaotic_crowning_gift_already_exists && !in_hand && !in_hand2) || usegnollgift || Role_if(PM_VALKYRIE));
             play_voice_god_simple_line_by_align(u.ualign.type, takelives ? GOD_LINE_THOU_ART_CHOSEN_TO_TAKE_LIVES_FOR_MY_GLORY : GOD_LINE_THOU_ART_CHOSEN_TO_STEAL_SOULS_FOR_MY_GLORY);
             verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou art chosen to %s for My Glory!",
                 takelives ? "take lives" : "steal souls");
@@ -997,7 +995,8 @@ gcrownu(void)
                 if (obj && obj->oartifact == ART_GAUNTLETS_OF_YIN_AND_YANG)
                 {
                     obj->enchantment = 1;
-                    obj->aknown = obj->nknown = 1;
+                    set_obj_aknown(obj, 1);
+                    set_obj_nknown(obj, 1);
                     discover_artifact(ART_GAUNTLETS_OF_YIN_AND_YANG);
                     livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
                         "was bestowed with %s",
@@ -1019,7 +1018,7 @@ gcrownu(void)
             {
                 class_gift = gifttype;
                 bless(obj);
-                obj->bknown = TRUE;
+                set_obj_bknown(obj, TRUE);
                 livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                     "was bestowed with %s", an(actualoname(obj)));
                 at_your_feet("A belt");
@@ -1034,8 +1033,8 @@ gcrownu(void)
         class_gift = GOLDEN_CHEST;
 
         obj = mksobj(class_gift, FALSE, FALSE, FALSE);
-        obj->olocked = FALSE;
-        obj->otrapped = FALSE;
+        set_obj_olocked(obj, FALSE);
+        set_obj_otrapped(obj, FALSE);
 
         /* Contents */
         struct obj* otmp = (struct obj*)0;
@@ -1043,13 +1042,13 @@ gcrownu(void)
         otmp = mksobj(ROBE_OF_THE_ARCHMAGI, FALSE, FALSE, FALSE);
         bless(otmp);
         otmp->enchantment = 1 + rnd(3);
-        otmp->oerodeproof = 1;
+        set_obj_oerodeproof(otmp, 1);
         (void)add_to_container(obj, otmp);
 
         otmp = mksobj(STAFF_OF_THE_MAGI, FALSE, FALSE, FALSE);
         bless(otmp);
         otmp->enchantment = 1 + rnd(3);
-        otmp->oerodeproof = 1;
+        set_obj_oerodeproof(otmp, 1);
         (void)add_to_container(obj, otmp);
 
         otmp = mksobj(MAGIC_MARKER, TRUE, FALSE, TRUE);
@@ -1142,8 +1141,8 @@ gcrownu(void)
         class_gift = GOLDEN_CHEST;
 
         obj = mksobj(class_gift, FALSE, FALSE, FALSE);
-        obj->olocked = FALSE;
-        obj->otrapped = FALSE;
+        set_obj_olocked(obj, FALSE);
+        set_obj_otrapped(obj, FALSE);
 
         /* Contents */
         if(u.ualign.type == A_LAWFUL)
@@ -1153,14 +1152,14 @@ gcrownu(void)
             otmp = mksobj(GOWN_OF_THE_ARCHBISHOPS, FALSE, FALSE, FALSE);
             bless(otmp);
             otmp->enchantment = 1 + rnd(3);
-            otmp->oerodeproof = 1;
+            set_obj_oerodeproof(otmp, 1);
             (void)add_to_container(obj, otmp);
 
             otmp = mksobj(MACE, FALSE, FALSE, FALSE);
             bless(otmp);
             otmp->enchantment = 1 + rnd(3);
             otmp->mythic_suffix = MYTHIC_SUFFIX_BANISHMENT;
-            otmp->oerodeproof = 1;
+            set_obj_oerodeproof(otmp, 1);
             otmp->owt = weight(otmp);
             (void)add_to_container(obj, otmp);
 
@@ -1170,10 +1169,22 @@ gcrownu(void)
                 bless(otmp);
                 (void)add_to_container(obj, otmp);
             }
+            else if (!already_learnt_spell_type(SPE_WRATH_OF_GOD))
+            {
+                otmp = mksobj(SPE_WRATH_OF_GOD, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
 
             if (!already_learnt_spell_type(SPE_HOLY_WORD))
             {
                 otmp = mksobj(SPE_HOLY_WORD, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+            else if (!already_learnt_spell_type(SPE_CELESTIAL_STORM))
+            {
+                otmp = mksobj(SPE_CELESTIAL_STORM, TRUE, FALSE, TRUE);
                 bless(otmp);
                 (void)add_to_container(obj, otmp);
             }
@@ -1247,14 +1258,14 @@ gcrownu(void)
             otmp = mksobj(ROBE_OF_MAGIC_RESISTANCE, FALSE, FALSE, FALSE);
             bless(otmp);
             otmp->enchantment = 1 + rnd(3);
-            otmp->oerodeproof = 1;
+            set_obj_oerodeproof(otmp, 1);
             (void)add_to_container(obj, otmp);
 
             otmp = mksobj(MACE, FALSE, FALSE, FALSE);
             bless(otmp);
             otmp->enchantment = 1 + rnd(3);
             otmp->mythic_prefix = MYTHIC_PREFIX_WITCH_KINGS;
-            otmp->oerodeproof = 1;
+            set_obj_oerodeproof(otmp, 1);
             (void)add_to_container(obj, otmp);
 
             otmp = mksobj(RIN_THE_SERPENT_GOD, TRUE, TRUE, FALSE);
@@ -1264,6 +1275,12 @@ gcrownu(void)
             if (!already_learnt_spell_type(SPE_FINGER_OF_DEATH))
             {
                 otmp = mksobj(SPE_FINGER_OF_DEATH, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+            else if (!already_learnt_spell_type(SPE_DEATHSPELL))
+            {
+                otmp = mksobj(SPE_DEATHSPELL, TRUE, FALSE, TRUE);
                 bless(otmp);
                 (void)add_to_container(obj, otmp);
             }
@@ -1281,7 +1298,13 @@ gcrownu(void)
                 (void)add_to_container(obj, otmp);
             }
 
-            if (!already_learnt_spell_type(SPE_GREATER_UNDEATH_REPLENISHMENT))
+            if (!already_learnt_spell_type(SPE_DOMINATE_UNDEAD))
+            {
+                otmp = mksobj(SPE_DOMINATE_UNDEAD, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+            else if (!already_learnt_spell_type(SPE_GREATER_UNDEATH_REPLENISHMENT))
             {
                 otmp = mksobj(SPE_GREATER_UNDEATH_REPLENISHMENT, TRUE, FALSE, TRUE);
                 bless(otmp);
@@ -1289,26 +1312,26 @@ gcrownu(void)
             }
 
         }
-        else
+        else /* Neutral */
         {
             struct obj* otmp = (struct obj*)0;
 
             otmp = mksobj(BRACERS_OF_REFLECTION, FALSE, FALSE, FALSE);
             bless(otmp);
             otmp->enchantment = rnd(3);
-            otmp->oerodeproof = 1;
+            set_obj_oerodeproof(otmp, 1);
             (void)add_to_container(obj, otmp);
 
             otmp = mksobj(ROBE_OF_MAGIC_RESISTANCE, FALSE, FALSE, FALSE);
             bless(otmp);
             otmp->enchantment = 1 + rnd(3);
-            otmp->oerodeproof = 1;
+            set_obj_oerodeproof(otmp, 1);
             (void)add_to_container(obj, otmp);
 
             otmp = mksobj(STAFF_OF_LIFE, FALSE, FALSE, FALSE);
             bless(otmp);
             otmp->enchantment = 1 + rnd(3);
-            otmp->oerodeproof = 1;
+            set_obj_oerodeproof(otmp, 1);
             (void)add_to_container(obj, otmp);
 
             if (!already_learnt_spell_type(SPE_GAZE_OF_PETRIFICATION))
@@ -1317,8 +1340,20 @@ gcrownu(void)
                 bless(otmp);
                 (void)add_to_container(obj, otmp);
             }
+            else if (!already_learnt_spell_type(SPE_ARROW_OF_DIANA))
+            {
+                otmp = mksobj(SPE_ARROW_OF_DIANA, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
 
-            if (!already_learnt_spell_type(SPE_STICK_TO_BOA))
+            if (!already_learnt_spell_type(SPE_STICK_TO_GIANT_ANACONDA))
+            {
+                otmp = mksobj(SPE_STICK_TO_GIANT_ANACONDA, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+            else if (!already_learnt_spell_type(SPE_STICK_TO_BOA))
             {
                 otmp = mksobj(SPE_STICK_TO_BOA, TRUE, FALSE, TRUE);
                 bless(otmp);
@@ -1328,6 +1363,12 @@ gcrownu(void)
             if (!already_learnt_spell_type(SPE_SUMMON_ELDER_TREANT))
             {
                 otmp = mksobj(SPE_SUMMON_ELDER_TREANT, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
+            else if (!already_learnt_spell_type(SPE_SUMMON_TREANT))
+            {
+                otmp = mksobj(SPE_SUMMON_TREANT, TRUE, FALSE, TRUE);
                 bless(otmp);
                 (void)add_to_container(obj, otmp);
             }
@@ -1374,8 +1415,8 @@ gcrownu(void)
                 break;
             }
             obj->enchantment = 2 + rnd(3);
-            obj->oerodeproof = 1;
-            obj->mknown = TRUE;
+            set_obj_oerodeproof(obj, 1);
+            set_obj_mknown(obj, TRUE);
             at_your_feet(is_axe(obj) ? "An axe" : is_sword(obj) ? "A sword" : "A weapon");
             (void)dropyf(obj);
             u.ugifts++;
@@ -1403,7 +1444,8 @@ gcrownu(void)
                     obj->enchantment = 1;
                     if (obj->oartifact == ART_RHONGOMYNIAD)
                     {
-                        obj->aknown = obj->nknown = TRUE;
+                        set_obj_aknown(obj, TRUE);
+                        set_obj_nknown(obj, TRUE);
                         discover_artifact(ART_RHONGOMYNIAD);
                         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                             "was bestowed with %s",
@@ -1424,7 +1466,8 @@ gcrownu(void)
                     obj = oname(obj, artiname(ART_HOLY_GRAIL));
                     if (obj->oartifact == ART_HOLY_GRAIL)
                     {
-                        obj->aknown = obj->nknown = TRUE;
+                        set_obj_aknown(obj, TRUE);
+                        set_obj_nknown(obj, TRUE);
                         discover_artifact(ART_HOLY_GRAIL);
                         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
                             "was bestowed with %s",
@@ -1472,7 +1515,8 @@ gcrownu(void)
                     obj = oname(obj, artiname(ART_HOLY_GRAIL));
                     if (obj->oartifact == ART_HOLY_GRAIL)
                     {
-                        obj->aknown = obj->nknown = TRUE;
+                        set_obj_aknown(obj, TRUE);
+                        set_obj_nknown(obj, TRUE);
                         discover_artifact(ART_HOLY_GRAIL);
                         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
                             "was bestowed with %s",
@@ -1506,7 +1550,7 @@ gcrownu(void)
             obj2 = carrying(gifttype2);
             if (obj)
             {
-                if (!obj->blessed)
+                if (!is_obj_blessed(obj))
                 {
                     bless(obj);
                     class_gift = gifttype;
@@ -1514,7 +1558,7 @@ gcrownu(void)
             }
             else if (obj2)
             {
-                if (!obj2->blessed)
+                if (!is_obj_blessed(obj2))
                 {
                     bless(obj2);
                     class_gift = gifttype2;
@@ -1540,21 +1584,21 @@ gcrownu(void)
             if (obj)
             {
                 pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj));
-                if (!obj->blessed)
+                if (!is_obj_blessed(obj))
                     bless(obj);
                 obj->enchantment = max(1, obj->enchantment + 1 + rnd(3));
                 obj->exceptionality = max(obj->exceptionality, EXCEPTIONALITY_ELITE);
-                obj->oerodeproof = 1;
+                set_obj_oerodeproof(obj, 1);
                 class_gift = gifttype;
             }
             else if (obj2)
             {
                 pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj2));
-                if (!obj2->blessed)
+                if (!is_obj_blessed(obj2))
                     bless(obj2);
                 obj2->enchantment = max(1, obj2->enchantment + 1 + rnd(3));
                 obj2->exceptionality = max(obj2->exceptionality, EXCEPTIONALITY_ELITE);
-                obj2->oerodeproof = 1;
+                set_obj_oerodeproof(obj2, 1);
                 class_gift = gifttype2;
             }
             else
@@ -1565,7 +1609,7 @@ gcrownu(void)
                     bless(obj);
                     obj->enchantment = 1 + rnd(3);
                     obj->exceptionality = EXCEPTIONALITY_ELITE;
-                    obj->oerodeproof = 1;
+                    set_obj_oerodeproof(obj, 1);
                     (void)mpickobj(luggage, obj);
                     class_gift = gifttype;
                     item_cnt++;
@@ -1577,7 +1621,7 @@ gcrownu(void)
             obj = carrying(gifttype);
             if (obj)
             {
-                if (!obj->blessed)
+                if (!is_obj_blessed(obj))
                 {
                     bless(obj);
                     pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj));
@@ -1605,7 +1649,7 @@ gcrownu(void)
                 {
                     bless(obj);
                     obj->enchantment = 1 + rnd(3);
-                    obj->oerodeproof = 1;
+                    set_obj_oerodeproof(obj, 1);
                     (void)mpickobj(luggage, obj);
                     class_gift = gifttype;
                 }
@@ -1633,7 +1677,7 @@ gcrownu(void)
                     obj->exceptionality = EXCEPTIONALITY_ELITE;
                     break;
                 }
-                obj->oerodeproof = 1;
+                set_obj_oerodeproof(obj, 1);
                 obj->elemental_enchantment = LIGHTNING_ENCHANTMENT;
                 obj->quan = 20;
                 obj->owt = weight(obj);
@@ -1648,247 +1692,307 @@ gcrownu(void)
     obj2 = ok_wep(uarms) ? uarms : 0;
     if (class_gift == STRANGE_OBJECT)
     {
-        switch (u.ualign.type) 
+        if (usegnollgift)
         {
-        case A_LAWFUL:
+            char flailbuf[BUFSZ];
+            Strcpy(flailbuf, "runed flail");
+
             if (obj && in_hand)
             {
-                class_gift = KATANA;
-                Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines white for a while!", xname(obj));
+                class_gift = RUNED_FLAIL;
+                Your("%s hums ominously!", flailbuf);
                 obj->enchantment = max(1, obj->enchantment + rnd(3) + 1);
-                obj->dknown = obj->aknown = obj->nknown = TRUE;
+                set_obj_dknown(obj, TRUE);
+                set_obj_aknown(obj, TRUE);
+                set_obj_nknown(obj, TRUE);
+                discover_artifact(ART_HOWLING_FLAIL);
             }
             else if (obj2 && in_hand2)
             {
-                class_gift = KATANA;
-                Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines white for a while!", xname(obj2));
+                class_gift = RUNED_FLAIL;
+                Your("%s hums ominously!", flailbuf);
                 obj2->enchantment = max(1, obj2->enchantment + rnd(3) + 1);
-                obj2->dknown = obj2->aknown = obj2->nknown = TRUE;
+                set_obj_dknown(obj2, TRUE);
+                set_obj_aknown(obj2, TRUE);
+                set_obj_nknown(obj2, TRUE);
+                discover_artifact(ART_HOWLING_FLAIL);
             }
-            else if (!katana_already_exists)
+            else
             {
-                obj = mksobj(KATANA, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
+                obj = mksobj(RUNED_FLAIL, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
                 if (obj)
+                {
+                    class_gift = RUNED_FLAIL;
+                    obj = oname(obj, artiname(ART_HOWLING_FLAIL));
+                    obj->enchantment = 1;
+                    set_obj_aknown(obj, TRUE);
+                    set_obj_nknown(obj, TRUE);
+                    if (obj->oartifact == ART_HOWLING_FLAIL)
+                    {
+                        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                            "was bestowed with %s",
+                            artiname(ART_HOWLING_FLAIL));
+                    }
+                    at_your_feet(An(flailbuf));
+                    (void)dropyf(obj);
+                    u.ugifts++;
+                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
+                    discover_artifact(ART_HOWLING_FLAIL);
+                }
+            }
+
+            /* acquire weapon skill regardless of weapon or gift */
+            unrestrict_weapon_skill(P_FLAIL);
+        }
+        else
+        {
+            switch (u.ualign.type)
+            {
+            case A_LAWFUL:
+                if (obj && in_hand)
                 {
                     class_gift = KATANA;
-                    obj = oname(obj, artiname(ART_KATANA_OF_MASAMUNE));
-                    obj->enchantment = 1;
-                    if (obj->oartifact == ART_KATANA_OF_MASAMUNE)
+                    Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines white for a while!", xname(obj));
+                    obj->enchantment = max(1, obj->enchantment + rnd(3) + 1);
+                    set_obj_dknown(obj, TRUE);
+                    set_obj_aknown(obj, TRUE);
+                    set_obj_nknown(obj, TRUE);
+                }
+                else if (obj2 && in_hand2)
+                {
+                    class_gift = KATANA;
+                    Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines white for a while!", xname(obj2));
+                    obj2->enchantment = max(1, obj2->enchantment + rnd(3) + 1);
+                    set_obj_dknown(obj2, TRUE);
+                    set_obj_aknown(obj2, TRUE);
+                    set_obj_nknown(obj2, TRUE);
+                }
+                else if (!katana_already_exists)
+                {
+                    obj = mksobj(KATANA, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
+                    if (obj)
                     {
-                        obj->aknown = obj->nknown = TRUE;
-                        discover_artifact(ART_KATANA_OF_MASAMUNE);
+                        class_gift = KATANA;
+                        obj = oname(obj, artiname(ART_KATANA_OF_MASAMUNE));
+                        obj->enchantment = 1;
+                        if (obj->oartifact == ART_KATANA_OF_MASAMUNE)
+                        {
+                            set_obj_aknown(obj, TRUE);
+                            set_obj_nknown(obj, TRUE);
+                            discover_artifact(ART_KATANA_OF_MASAMUNE);
+                            livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
+                                "was bestowed with %s",
+                                artiname(ART_KATANA_OF_MASAMUNE));
+                        }
+                        at_your_feet("A katana");
+                        (void)dropyf(obj);
+                        u.ugifts++;
+                        issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
+                    }
+                }
+                else if (!excalibur_already_exists && obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && get_object_base_value(obj) < 2000L && !obj->oartifact)
+                {
+                    if (!Blind)
+                        Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "sword shines brightly for a moment.");
+                    obj->otyp = LONG_SWORD;
+                    obj->material = objects[obj->otyp].oc_material;
+                    obj = oname(obj, artiname(ART_EXCALIBUR));
+                    if (obj && obj->oartifact == ART_EXCALIBUR)
+                    {
+                        class_gift = LONG_SWORD;
+                        u.ugifts++;
+                        set_obj_aknown(obj, TRUE);
+                        set_obj_nknown(obj, TRUE);
+                        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                            "was bestowed with %s",
+                            artiname(ART_EXCALIBUR));
+                        issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
+                    }
+                }
+                else if (!excalibur_already_exists && obj2 && objects[obj2->otyp].oc_subtyp == WEP_LONG_SWORD && get_object_base_value(obj2) < 2000L && !obj2->oartifact)
+                {
+                    if (!Blind)
+                        Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "sword shines brightly for a moment.");
+                    obj2->otyp = LONG_SWORD;
+                    obj2->material = objects[obj2->otyp].oc_material;
+                    obj2 = oname(obj2, artiname(ART_EXCALIBUR));
+                    if (obj2 && obj2->oartifact == ART_EXCALIBUR)
+                    {
+                        class_gift = LONG_SWORD;
+                        u.ugifts++;
+                        set_obj_aknown(obj2, TRUE);
+                        set_obj_nknown(obj2, TRUE);
                         livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
                             "was bestowed with %s",
-                            artiname(ART_KATANA_OF_MASAMUNE));
+                            artiname(ART_EXCALIBUR));
+                        issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                     }
-                    at_your_feet("A katana");
-                    (void)dropyf(obj);
-                    u.ugifts++;
-                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                 }
-            }
-            else if (!excalibur_already_exists && obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && get_object_base_value(obj) < 2000L && !obj->oartifact)
-            {
-                if (!Blind)
-                    Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "sword shines brightly for a moment.");
-                obj->otyp = LONG_SWORD;
-                obj->material = objects[obj->otyp].oc_material;
-                obj = oname(obj, artiname(ART_EXCALIBUR));
-                if (obj && obj->oartifact == ART_EXCALIBUR)
+                else
                 {
-                    class_gift = LONG_SWORD;
-                    u.ugifts++;
-                    obj->aknown = obj->nknown = TRUE;
-                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
-                        "was bestowed with %s",
-                        artiname(ART_EXCALIBUR));
-                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
-                }
-            }
-            else if (!excalibur_already_exists && obj2 && objects[obj2->otyp].oc_subtyp == WEP_LONG_SWORD && get_object_base_value(obj2) < 2000L && !obj2->oartifact)
-            {
-                if (!Blind)
-                    Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "sword shines brightly for a moment.");
-                obj2->otyp = LONG_SWORD;
-                obj2->material = objects[obj2->otyp].oc_material;
-                obj2 = oname(obj2, artiname(ART_EXCALIBUR));
-                if (obj2 && obj2->oartifact == ART_EXCALIBUR)
-                {
-                    class_gift = LONG_SWORD;
-                    u.ugifts++;
-                    obj2->aknown = obj2->nknown = TRUE;
-                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
-                        "was bestowed with %s",
-                        artiname(ART_EXCALIBUR));
-                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
-                }
-            }
-            else
-            {
-                obj = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
-                if (obj)
-                {
-                    class_gift = LONG_SWORD;
-                    obj->exceptionality = EXCEPTIONALITY_CELESTIAL;
-                    obj->elemental_enchantment = FIRE_ENCHANTMENT;
-                    if (!Hate_silver)
-                        obj->material = MAT_SILVER;
-                    randomize_mythic_quality(obj, 2, &obj->mythic_prefix, &obj->mythic_suffix);
-                    obj->enchantment = 2 + rnd(3);
-                    obj->mknown = TRUE;
-                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
-                        "was bestowed with %s", an(actualoname(obj)));
-                    at_your_feet("A sword");
-                    (void)dropyf(obj);
-                    u.ugifts++;
-                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
-                    /* sword skill is acquired below */
-                }
-            }
-
-            /* acquire Excalibur's and Katana of Masamune's skill regardless of weapon or gift */
-            unrestrict_weapon_skill(P_SWORD);
-            if ((obj && obj->oartifact == ART_EXCALIBUR) || (obj2 && obj2->oartifact == ART_EXCALIBUR))
-                discover_artifact(ART_EXCALIBUR);
-            break;
-        case A_NEUTRAL:
-            if (obj && in_hand)
-            {
-                class_gift = LONG_SWORD;
-                Your("%s goes snicker-snack!", xname(obj));
-                obj->enchantment = max(1, obj->enchantment + rnd(3) + 1);
-                obj->dknown = obj->aknown = obj->nknown = TRUE;
-            }
-            else if (obj2 && in_hand2)
-            {
-                class_gift = LONG_SWORD;
-                Your("%s goes snicker-snack!", xname(obj2));
-                obj2->enchantment = max(1, obj2->enchantment + rnd(3) + 1);
-                obj2->dknown = obj2->aknown = obj2->nknown = TRUE;
-            }
-            else if (!vorpal_blade_already_exists)
-            {
-                obj = mksobj(LONG_SWORD, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
-                if (obj)
-                {
-                    class_gift = LONG_SWORD;
-                    obj = oname(obj, artiname(ART_VORPAL_BLADE));
-                    obj->enchantment = 1;
-                    obj->aknown = obj->nknown = TRUE;
-                    if (obj->oartifact == ART_VORPAL_BLADE)
+                    obj = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
+                    if (obj)
                     {
-                        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
-                            "was bestowed with %s",
-                            artiname(ART_VORPAL_BLADE));
+                        class_gift = LONG_SWORD;
+                        obj->exceptionality = EXCEPTIONALITY_CELESTIAL;
+                        obj->elemental_enchantment = FIRE_ENCHANTMENT;
+                        if (!Hate_silver)
+                            obj->material = MAT_SILVER;
+                        randomize_mythic_quality(obj, 2, &obj->mythic_prefix, &obj->mythic_suffix);
+                        obj->enchantment = 2 + rnd(3);
+                        set_obj_mknown(obj, TRUE);
+                        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
+                            "was bestowed with %s", an(actualoname(obj)));
+                        at_your_feet("A sword");
+                        (void)dropyf(obj);
+                        u.ugifts++;
+                        /* sword skill is acquired below */
                     }
-                    at_your_feet("A sword");
-                    (void)dropyf(obj);
-                    u.ugifts++;
-                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                 }
-            }
-            else
-            {
-                obj = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
-                if (obj)
+
+                /* acquire Excalibur's and Katana of Masamune's skill regardless of weapon or gift */
+                unrestrict_weapon_skill(P_SWORD);
+                if ((obj && obj->oartifact == ART_EXCALIBUR) || (obj2 && obj2->oartifact == ART_EXCALIBUR))
+                    discover_artifact(ART_EXCALIBUR);
+                break;
+            case A_NEUTRAL:
+                if (obj && in_hand)
                 {
                     class_gift = LONG_SWORD;
-                    obj->exceptionality = EXCEPTIONALITY_PRIMORDIAL;
-                    randomize_mythic_quality(obj, 2, &obj->mythic_prefix, &obj->mythic_suffix);
-                    obj->enchantment = 2 + rnd(3);
-                    obj->mknown= TRUE;
-                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
-                        "was bestowed with %s", an(actualoname(obj)));
-                    at_your_feet("A sword");
-                    (void)dropyf(obj);
-                    u.ugifts++;
-                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
-                    /* sword skill is acquired below */
+                    Your("%s goes snicker-snack!", xname(obj));
+                    obj->enchantment = max(1, obj->enchantment + rnd(3) + 1);
+                    set_obj_dknown(obj, TRUE);
+                    set_obj_aknown(obj, TRUE);
+                    set_obj_nknown(obj, TRUE);
                 }
-            }
+                else if (obj2 && in_hand2)
+                {
+                    class_gift = LONG_SWORD;
+                    Your("%s goes snicker-snack!", xname(obj2));
+                    obj2->enchantment = max(1, obj2->enchantment + rnd(3) + 1);
+                    set_obj_dknown(obj2, TRUE);
+                    set_obj_aknown(obj2, TRUE);
+                    set_obj_nknown(obj2, TRUE);
+                }
+                else if (!vorpal_blade_already_exists)
+                {
+                    obj = mksobj(LONG_SWORD, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
+                    if (obj)
+                    {
+                        class_gift = LONG_SWORD;
+                        obj = oname(obj, artiname(ART_VORPAL_BLADE));
+                        obj->enchantment = 1;
+                        set_obj_aknown(obj, TRUE);
+                        set_obj_nknown(obj, TRUE);
+                        if (obj->oartifact == ART_VORPAL_BLADE)
+                        {
+                            livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                                "was bestowed with %s",
+                                artiname(ART_VORPAL_BLADE));
+                        }
+                        at_your_feet("A sword");
+                        (void)dropyf(obj);
+                        u.ugifts++;
+                        issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
+                    }
+                }
+                else
+                {
+                    obj = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
+                    if (obj)
+                    {
+                        class_gift = LONG_SWORD;
+                        obj->exceptionality = EXCEPTIONALITY_PRIMORDIAL;
+                        randomize_mythic_quality(obj, 2, &obj->mythic_prefix, &obj->mythic_suffix);
+                        obj->enchantment = 2 + rnd(3);
+                        set_obj_mknown(obj, TRUE);
+                        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
+                            "was bestowed with %s", an(actualoname(obj)));
+                        at_your_feet("A sword");
+                        (void)dropyf(obj);
+                        u.ugifts++;
+                        /* sword skill is acquired below */
+                    }
+                }
 
-            /* acquire Vorpal Blade's skill regardless of weapon or gift */
-            unrestrict_weapon_skill(P_SWORD);
-            if ((obj && obj->oartifact == ART_VORPAL_BLADE) || (obj2 && obj2->oartifact == ART_VORPAL_BLADE))
-                discover_artifact(ART_VORPAL_BLADE);
-            break;
-        case A_CHAOTIC: {
-            char swordbuf[BUFSZ];
-
-            if (chaotic_crowning_gift_oartifact == ART_STORMBRINGER || chaotic_crowning_gift_oartifact == ART_MOURNBLADE)
+                /* acquire Vorpal Blade's skill regardless of weapon or gift */
+                unrestrict_weapon_skill(P_SWORD);
+                if ((obj && obj->oartifact == ART_VORPAL_BLADE) || (obj2 && obj2->oartifact == ART_VORPAL_BLADE))
+                    discover_artifact(ART_VORPAL_BLADE);
+                break;
+            case A_CHAOTIC: {
+                char swordbuf[BUFSZ];
                 Sprintf(swordbuf, "%s sword", hcolor(NH_BLACK));
-            else if (chaotic_crowning_gift_oartifact == ART_HOWLING_FLAIL)
-                Sprintf(swordbuf, "runed flail");
-            else
-                Sprintf(swordbuf, "item");
 
-            if (obj && in_hand)
-            {
-                class_gift = chaotic_crowning_gift_baseitem;
-                Your("%s hums ominously!", swordbuf);
-                obj->enchantment = max(1, obj->enchantment + rnd(3) + 1);
-                obj->dknown = obj->aknown = obj->nknown = TRUE;
-            }
-            else if (obj2 && in_hand2)
-            {
-                class_gift = chaotic_crowning_gift_baseitem;
-                Your("%s hums ominously!", swordbuf);
-                obj2->enchantment = max(1, obj2->enchantment + rnd(3) + 1);
-                obj2->dknown = obj2->aknown = obj2->nknown = TRUE;
-            }
-            else if (!chaotic_crowning_gift_already_exists)
-            {
-                obj = mksobj(chaotic_crowning_gift_baseitem, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
-                if (obj)
+                if (obj && in_hand)
                 {
-                    class_gift = chaotic_crowning_gift_baseitem;
-                    obj = oname(obj, artiname(chaotic_crowning_gift_oartifact));
-                    obj->enchantment = 1;
-                    obj->aknown = obj->nknown = TRUE;
-                    if (obj->oartifact == chaotic_crowning_gift_oartifact)
+                    class_gift = RUNESWORD;
+                    Your("%s hums ominously!", swordbuf);
+                    obj->enchantment = max(1, obj->enchantment + rnd(3) + 1);
+                    set_obj_dknown(obj, TRUE);
+                    set_obj_aknown(obj, TRUE);
+                    set_obj_nknown(obj, TRUE);
+                }
+                else if (obj2 && in_hand2)
+                {
+                    class_gift = RUNESWORD;
+                    Your("%s hums ominously!", swordbuf);
+                    obj2->enchantment = max(1, obj2->enchantment + rnd(3) + 1);
+                    set_obj_dknown(obj2, TRUE);
+                    set_obj_aknown(obj2, TRUE);
+                    set_obj_nknown(obj2, TRUE);
+                }
+                else if (!chaotic_crowning_gift_already_exists)
+                {
+                    obj = mksobj(RUNESWORD, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
+                    if (obj)
                     {
-                        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
-                            "was bestowed with %s",
-                            artiname(chaotic_crowning_gift_oartifact));
+                        class_gift = RUNESWORD;
+                        obj = oname(obj, artiname(chaotic_crowning_gift_oartifact));
+                        obj->enchantment = 1;
+                        set_obj_aknown(obj, TRUE);
+                        set_obj_nknown(obj, TRUE);
+                        if (obj->oartifact == chaotic_crowning_gift_oartifact)
+                        {
+                            livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
+                                "was bestowed with %s",
+                                artiname(chaotic_crowning_gift_oartifact));
+                        }
+                        at_your_feet(An(swordbuf));
+                        (void)dropyf(obj);
+                        u.ugifts++;
+                        issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                     }
-                    at_your_feet(An(swordbuf));
-                    (void)dropyf(obj);
-                    u.ugifts++;
-                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
                 }
-            }
-            else
-            {
-                obj = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
-                if (obj)
+                else
                 {
-                    class_gift = LONG_SWORD;
-                    obj->exceptionality = EXCEPTIONALITY_INFERNAL;
-                    randomize_mythic_quality(obj, 2, &obj->mythic_prefix, &obj->mythic_suffix);
-                    obj->enchantment = 2 + rnd(3);
-                    obj->mknown = TRUE;
-                    livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
-                        "was bestowed with %s", an(actualoname(obj)));
-                    at_your_feet("A sword");
-                    (void)dropyf(obj);
-                    u.ugifts++;
-                    issue_achievement(GUI_ACHIEVEMENT_WAS_GIFTED_ARTIFACT);
-                    /* acquire long sword skill */
-                    unrestrict_weapon_skill(P_SWORD);
+                    obj = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
+                    if (obj)
+                    {
+                        class_gift = LONG_SWORD;
+                        obj->exceptionality = EXCEPTIONALITY_INFERNAL;
+                        randomize_mythic_quality(obj, 2, &obj->mythic_prefix, &obj->mythic_suffix);
+                        obj->enchantment = 2 + rnd(3);
+                        set_obj_mknown(obj, TRUE);
+                        livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT | LL_SPOILER,
+                            "was bestowed with %s", an(actualoname(obj)));
+                        at_your_feet("A sword");
+                        (void)dropyf(obj);
+                        u.ugifts++;
+                    }
                 }
-            }
-            /* Acquire two-weapon combat for dual-wielding Stormbringer and Mournblade  */
-            if (chaotic_crowning_gift_oartifact == ART_STORMBRINGER || chaotic_crowning_gift_oartifact == ART_MOURNBLADE)
+                /* Acquire two-weapon combat for dual-wielding Stormbringer and Mournblade  */
                 unrestrict_weapon_skill(P_DUAL_WEAPON_COMBAT);
-            /* acquire weapon skill regardless of weapon or gift */
-            unrestrict_weapon_skill(chaotic_crowning_gift_skill);
-            if (obj && obj->oartifact == chaotic_crowning_gift_oartifact)
-                discover_artifact(chaotic_crowning_gift_oartifact);
-            break;
-        }
-        default:
-            obj = 0; /* lint */
-            break;
+                /* acquire weapon skill regardless of weapon or gift */
+                unrestrict_weapon_skill(P_SWORD);
+                if ((obj && obj->oartifact == chaotic_crowning_gift_oartifact) || (obj2 && obj2->oartifact == chaotic_crowning_gift_oartifact))
+                    discover_artifact(chaotic_crowning_gift_oartifact);
+                break;
+            }
+            default:
+                obj = 0; /* lint */
+                break;
+            }
         }
     }
 
@@ -1904,8 +2008,14 @@ gcrownu(void)
     {
         bless(obj);
         obj->oeroded = obj->oeroded2 = 0;
-        obj->oerodeproof = TRUE;
-        obj->bknown = obj->rknown = obj->nknown = obj->aknown = TRUE;
+        set_obj_oerodeproof(obj, TRUE);
+        set_obj_bknown(obj, TRUE);
+        set_obj_rknown(obj, TRUE);
+        if (obj->oartifact)
+        {
+            set_obj_nknown(obj, TRUE);
+            set_obj_aknown(obj, TRUE);
+        }
         if (obj->enchantment < 1)
             obj->enchantment = 1;
         /* acquire skill in this weapon */
@@ -1915,8 +2025,14 @@ gcrownu(void)
     {
         bless(obj2);
         obj2->oeroded = obj2->oeroded2 = 0;
-        obj2->oerodeproof = TRUE;
-        obj2->bknown = obj2->rknown = TRUE;
+        set_obj_oerodeproof(obj2, TRUE);
+        set_obj_bknown(obj2, TRUE);
+        set_obj_rknown(obj2, TRUE);
+        if (obj2->oartifact)
+        {
+            set_obj_nknown(obj2, TRUE);
+            set_obj_aknown(obj2, TRUE);
+        }
         if (obj2->enchantment < 1)
             obj2->enchantment = 1;
         /* acquire skill in this weapon */
@@ -1939,7 +2055,7 @@ gcrownu(void)
         if (!strncmpi(hofe, "the ", 4))
             hofe += 4;
 
-        u.uachieve.crowned = 1;
+        set_uachieve_crowned(1);
         achievement_gained(hofe);
         issue_achievement(GUI_ACHIEVEMENT_WAS_CROWNED);
     }
@@ -1976,7 +2092,7 @@ pleased(aligntyp g_align)
         struct obj* otmp;
         for (otmp = invent; otmp; otmp = otmp->nobj)
         {
-            if (is_obj_special_praying_item(otmp) && !otmp->blessed)
+            if (is_obj_special_praying_item(otmp) && !is_obj_blessed(otmp))
             {
                 play_sfx_sound(SFX_AURA_GLOW);
                 if (!Blind)
@@ -1986,7 +2102,7 @@ pleased(aligntyp g_align)
                         "%s with %s%s aura.", Yobjnam2(otmp, "softly glow"), an_prefix(hclr), hclr);
                 }
                 bless(otmp);
-                otmp->bknown = 1;
+                set_obj_bknown(otmp, 1);
                 update_inventory();
                 break;
             }
@@ -2091,7 +2207,7 @@ pleased(aligntyp g_align)
                     Sprintf(repair_buf, " and %s now as good as new",
                             otense(uwep, "are"));
 
-                if (uwep->cursed) 
+                if (is_obj_cursed(uwep)) 
                 {
                     if (!Blind)
                     {
@@ -2101,10 +2217,10 @@ pleased(aligntyp g_align)
                     else
                         You_feel_ex(ATR_NONE,  Hallucination ? CLR_MSG_HALLUCINATED :CLR_MSG_POSITIVE, "the power of %s over %s.", u_gname(), yname(uwep));
                     uncurse(uwep);
-                    uwep->bknown = TRUE;
+                    set_obj_bknown(uwep, TRUE);
                     *repair_buf = '\0';
                 } 
-                else if (!uwep->blessed) 
+                else if (!is_obj_blessed(uwep)) 
                 {
                     if (!Blind)
                     {
@@ -2116,7 +2232,7 @@ pleased(aligntyp g_align)
                     else
                         You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "the blessing of %s over %s.", u_gname(), yname(uwep));
                     bless(uwep);
-                    uwep->bknown = TRUE;
+                    set_obj_bknown(uwep, TRUE);
                     *repair_buf = '\0';
                 }
 
@@ -2139,7 +2255,7 @@ pleased(aligntyp g_align)
                skip if you've solved it via mastermind or destroyed the
                drawbridge (both set uopened_dbridge) or if you've already
                travelled past the Valley of the Dead (gehennom_entered) */
-            if (!u.uevent.uopened_dbridge && !u.uevent.gehennom_entered) 
+            if (!is_uevent_uopened_dbridge() && !is_uevent_gehennom_entered()) 
             {
                 if (u.uevent.uheard_tune < 1) 
                 {
@@ -2224,7 +2340,7 @@ pleased(aligntyp g_align)
             }
             for (otmp = invent; otmp; otmp = otmp->nobj) 
             {
-                if (otmp->cursed
+                if (is_obj_cursed(otmp)
                     && (otmp != uarmh /* [see worst_cursed_item()] */
                         || uarmh->otyp != HELM_OF_OPPOSITE_ALIGNMENT)) 
                 {
@@ -2233,7 +2349,7 @@ pleased(aligntyp g_align)
                         pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, no_multiattrs, multicolor_buffer, "%s %s.", Yobjnam2(otmp, "softly glow"),
                               hcolor_multi_buf1(NH_AMBER));
                         iflags.last_msg = PLNMSG_OBJ_GLOWS;
-                        otmp->bknown = TRUE;
+                        set_obj_bknown(otmp, TRUE);
                         ++any;
                     }
                     uncurse(otmp);
@@ -2340,7 +2456,7 @@ crown_here:
 
     u.uprayer_timeout = Role_if(PM_PRIEST) ? rnz(175) : rnz(350);
 
-    kick_on_butt = u.uevent.ukilled_wizard ? 1 : 0;
+    kick_on_butt = is_uevent_ukilled_wizard() ? 1 : 0;
     if (u.uevent.uhand_of_elbereth)
         kick_on_butt++;
     if (kick_on_butt)
@@ -2369,11 +2485,11 @@ water_prayer(boolean bless_water)
     {
         /* turn water into (un)holy water */
         if (otmp->otyp == POT_WATER
-            && (bless_water ? !otmp->blessed : !otmp->cursed))
+            && (bless_water ? !is_obj_blessed(otmp) : !is_obj_cursed(otmp)))
         {
-            otmp->blessed = bless_water;
-            otmp->cursed = !bless_water;
-            otmp->bknown = bc_known;
+            set_obj_blessed(otmp, bless_water);
+            set_obj_cursed(otmp, !bless_water);
+            set_obj_bknown(otmp, bc_known);
             changed += otmp->quan;
         } 
         else if (otmp->oclass == POTION_CLASS)
@@ -2416,12 +2532,12 @@ symbol_prayer(boolean bless_stuff)
         {
             boolean something_happened = FALSE;
 
-            if(bless_stuff ? !otmp->blessed : !otmp->cursed)
+            if(bless_stuff ? !is_obj_blessed(otmp) : !is_obj_cursed(otmp))
             {
                 something_happened = TRUE;
-                otmp->blessed = bless_stuff;
-                otmp->cursed = !bless_stuff;
-                otmp->bknown = bc_known;
+                set_obj_blessed(otmp, bless_stuff);
+                set_obj_cursed(otmp, !bless_stuff);
+                set_obj_bknown(otmp, bc_known);
             }
 
             if (objects[otmp->otyp].oc_charged > 0)
@@ -2702,7 +2818,7 @@ dosacrifice(void)
                         int rndval = (u.ualign.record >= PIOUS ? 5 : u.ualign.record >= DEVOUT ? 4 : u.ualign.record >= FERVENT ? 3 : u.ualign.record >= STRIDENT ? 2 : u.ualign.record >= 0 ? 1 : 0) + 2 - (int)context.dlords_summoned_via_altar;
                         if (context.dlords_summoned_via_altar <= 1 || (rndval > 1 && rn2(rndval)) || !rn2(1 + context.dlords_summoned_via_altar * (u.ualign.record < 0 ? 2 : 1)))
                         {
-                            dmon->mpeaceful = TRUE;
+                            set_mon_mpeaceful(dmon, TRUE);
                             dmon->mon_flags |= MON_FLAGS_SUMMONED_AT_ALTAR;
                             pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Luckily for you, %s appears to be pleased with your sacrifice.", itdreadful ? "that something" : dbuf);
                         }
@@ -2833,7 +2949,7 @@ dosacrifice(void)
             /* The final Test.  Did you win? */
             if (uamul == otmp)
                 Amulet_off();
-            u.uevent.ascended = 1;
+            set_uevent_ascended(1);
             debugprint("dosacrifice2: %d", otmp->otyp);
             if (carried(otmp))
                 useup(otmp); /* well, it's gone now */
@@ -2875,10 +2991,10 @@ dosacrifice(void)
             else
             { /* super big win */
                 adjalign(10);
-                if (flags.showscore && !u.uachieve.ascended)
+                if (flags.showscore && !is_uachieve_ascended())
                     context.botl = 1;
 
-                u.uachieve.ascended = 1;
+                set_uachieve_ascended(1);
 
                 play_sfx_sound(SFX_INVISIBLE_CHOIR_SINGS);
                 pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "An invisible choir sings, and you are bathed in radiance...");
@@ -3060,17 +3176,17 @@ dosacrifice(void)
 
     if (otmp->otyp == FAKE_AMULET_OF_YENDOR)
     {
-        if (!highaltar && !otmp->known)
+        if (!highaltar && !is_obj_known(otmp))
             goto too_soon;
 
         play_sfx_sound(SFX_ALTAR_THUNDERCLAP);
         You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "a nearby thunderclap.");
 
-        if (!otmp->known)
+        if (!is_obj_known(otmp))
         {
             You_ex(ATR_NONE, CLR_MSG_WARNING, "realize you have made a %s.",
                 Hallucination ? "boo-boo" : "mistake");
-            otmp->known = TRUE;
+            set_obj_known(otmp, TRUE);
             change_luck(-1, TRUE);
             return 1;
         } 
@@ -3322,7 +3438,7 @@ dosacrifice(void)
                     otmp = mksobj(get_artifact_replacement_item_otyp(), TRUE, FALSE, 2);
                     if (otmp)
                     {
-                        if (otmp->cursed)
+                        if (is_obj_cursed(otmp))
                             uncurse(otmp);
 
                         if (objects[otmp->otyp].oc_charged > CHARGED_NOT_CHARGED)
@@ -3345,17 +3461,17 @@ dosacrifice(void)
                     play_sfx_sound(SFX_ALTAR_GIFT);
                     if (otmp->enchantment < 0)
                         otmp->enchantment = 0;
-                    if (otmp->cursed)
+                    if (is_obj_cursed(otmp))
                         uncurse(otmp);
                     if(erosion_matters(otmp))
-                        otmp->oerodeproof = TRUE;
+                        set_obj_oerodeproof(otmp, TRUE);
                     if (!Hallucination && !Blind)
                     {
-                        otmp->dknown = 1;
+                        set_obj_dknown(otmp, 1);
                         makeknown(otmp->otyp);
                         if (otmp->oartifact)
                         {
-                            otmp->nknown = 1;
+                            set_obj_nknown(otmp, 1);
                             discover_artifact(otmp->oartifact);
                         }
                     }
@@ -3379,7 +3495,7 @@ dosacrifice(void)
                         if (otmp2)
                         {
                             otmp2->quan = 50;
-                            otmp2->oerodeproof = TRUE;
+                            set_obj_oerodeproof(otmp2, TRUE);
                             bless(otmp2);
                             otmp2->enchantment = rn2(4);
                             otmp2->owt = weight(otmp2);
@@ -3429,7 +3545,7 @@ dosacrifice(void)
             struct obj* otmp2;
             for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
             {
-                if (is_obj_special_praying_item(otmp2) && !otmp2->blessed)
+                if (is_obj_special_praying_item(otmp2) && !is_obj_blessed(otmp2))
                 {
                     play_sfx_sound(SFX_AURA_GLOW);
                     if (!Blind)
@@ -3439,7 +3555,7 @@ dosacrifice(void)
                             "%s with %s%s aura.", Yobjnam2(otmp2, "softly glow"), an_prefix(hclr), hclr);
                     }
                     bless(otmp2);
-                    otmp2->bknown = 1;
+                    set_obj_bknown(otmp2, 1);
                     update_inventory();
                     break;
                 }
@@ -3814,13 +3930,13 @@ doturn(void)
         if (!is_peaceful(mtmp)
             && (is_undead(mtmp->data) || is_vampshifter(mtmp)
                 || (is_demon(mtmp->data) && (u.ulevel > (MAXULEV / 2))))) {
-            mtmp->msleeping = 0;
+            set_mon_msleeping(mtmp, 0);
             if (Confusion) {
                 if (!once++)
                     pline("Unfortunately, your voice falters.");
-                mtmp->mflee = 0;
+                set_mon_mflee(mtmp, 0);
                 mtmp->mfrozen = 0;
-                mtmp->mcanmove = 1;
+                set_mon_mcanmove(mtmp, 1);
                 refresh_m_tile_gui_info(mtmp, TRUE);
             } else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, u.ulevel, 0, 0, TELL)) {
                 xlev = 6;
@@ -3840,7 +3956,7 @@ doturn(void)
                 case S_LESSER_UNDEAD:
                     if (u.ulevel >= xlev && !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, u.ulevel, 0, 0, NOTELL)) {
                         if (u.ualign.type == A_CHAOTIC) {
-                            mtmp->mpeaceful = 1;
+                            set_mon_mpeaceful(mtmp, 1);
                             set_mhostility(mtmp);
                             newsym(mtmp->mx, mtmp->my);
                         } else { /* damn them */

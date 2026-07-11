@@ -57,7 +57,7 @@ void gnome_putstr(winid wid, int attr, const char *text);
 void gnome_putstr_ex(winid wid, const char* text, int attr, int color, int app);
 void gnome_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int app);
 void gnome_display_file(const char *filename, boolean must_exist);
-void gnome_start_menu_ex(winid wid, int style);
+void gnome_start_menu_ex(winid wid, int style, int glyph, uint64_t mflags);
 void gnome_add_menu(winid wid, int glyph, const ANY_P *identifier,
                     char accelerator, char group_accel, int attr,
                     const char *str, boolean presel);

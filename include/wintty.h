@@ -205,7 +205,7 @@ E void tty_putstr_ex(winid, const char *, int, int, int);
 E void tty_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
 #define tty_putstr(x, y, z) tty_putstr_ex(x, z, y, NO_COLOR, 0);
 E void tty_display_file(const char *, boolean);
-E void tty_start_menu_ex(winid, int);
+E void tty_start_menu_ex(winid, int, int, uint64_t);
 E void tty_add_menu(winid, int, const ANY_P *, char, char, int, int,
                             const char *, boolean);
 E void tty_add_extended_menu(winid, int, const ANY_P*, char, char, int, int,

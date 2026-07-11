@@ -11,7 +11,7 @@
 
 /* Start building the text for a menu */
 void
-amii_start_menu_ex(winid window, int style)
+amii_start_menu_ex(winid window, int style, int glyph UNUSED, uint64_t mflags UNUSED)
 {
     int i;
     struct amii_WinDesc *cw;

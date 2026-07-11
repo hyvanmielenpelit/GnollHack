@@ -364,7 +364,7 @@ int basehitval(struct obj *otmp, struct monst *mon, struct monst *mattacker, int
         applicable_enchantment = (applicable_enchantment + 1 * sgn(applicable_enchantment)) / 2;
 #endif
 
-    if(mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
+    if(mattacker && cursed_items_are_positive_mon(mattacker) && is_obj_cursed(otmp))
     { 
         if (Is_weapon || Is_worn_gauntlets || Is_worn_boots)
         {
@@ -398,7 +398,7 @@ weapon_to_hit_value(struct obj *otmp, struct monst *mon, struct monst *mattacker
     /* Put weapon vs. monster type "to hit" bonuses in below: */
 
     /* Blessed weapons, gloves, and boots used against undead or demons */
-    if ((is_weapon(otmp) || is_gloves(otmp) || is_boots(otmp)) && otmp->blessed
+    if ((is_weapon(otmp) || is_gloves(otmp) || is_boots(otmp)) && is_obj_blessed(otmp)
         && (is_demon(ptr) || is_undead(ptr) || is_vampshifter(mon)))
         tmp += 2;
 
@@ -527,7 +527,7 @@ weapon_dmg_value(struct obj *otmp, struct monst *mon, struct monst *mattacker, i
                 applicable_enchantment = (applicable_enchantment + 0) / 2;
 #endif
 
-            if (mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
+            if (mattacker && cursed_items_are_positive_mon(mattacker) && is_obj_cursed(otmp))
             {
                 tmp2 += abs(applicable_enchantment);
                 if (has_obj_mythic_great_damage(otmp))
@@ -570,7 +570,7 @@ weapon_dmg_value(struct obj *otmp, struct monst *mon, struct monst *mattacker, i
     if (otmp->material <= MAT_LEATHER && thick_skinned(ptr))
         /* thick skinned/scaled creatures don't feel it */
         tmp = 0;
-    if (is_shade(ptr) && !shade_glare(otmp))
+    if (is_shade(ptr) && !shade_glare(otmp, mon))
         tmp = 0;
 
     /* "very heavy iron ball"; weight increase is in increments */
@@ -593,15 +593,15 @@ weapon_dmg_value(struct obj *otmp, struct monst *mon, struct monst *mattacker, i
     {
         int bonus = 0;
 
-        if (otmp->blessed && mon_hates_blessed(mon))
+        if (is_obj_blessed(otmp) && mon_hates_blessed(mon))
             bonus += rnd(4);
-        if (otmp->cursed && mon_hates_cursed(mon))
+        if (is_obj_cursed(otmp) && mon_hates_cursed(mon))
             bonus += rnd(4);
         if ((is_axe(otmp) || is_saw(otmp)) && is_wooden(ptr))
             bonus += rnd(8);
         if (obj_counts_as_silver(otmp) && mon_hates_silver(mon))
             bonus += rnd(20);
-        if ((artifact_light(otmp) || obj_shines_magical_light(otmp) || has_obj_mythic_magical_light(otmp)) && otmp->lamplit && mon_hates_light(mon))
+        if ((artifact_light(otmp) || obj_shines_magical_light(otmp) || has_obj_mythic_magical_light(otmp)) && is_obj_lamplit(otmp) && mon_hates_light(mon))
             bonus += rnd(20);
 
         /* if the weapon is going to get a double damage bonus, adjust
@@ -808,7 +808,7 @@ special_dmgval(struct monst *magr, struct monst *mdef, int64_t armask, int64_t *
 
     if (obj) 
     {
-        if (obj->blessed
+        if (is_obj_blessed(obj)
             && (is_undead(ptr) || is_demon(ptr) || is_vampshifter(mdef)))
             bonus += rnd(4);
         /* the only silver armor is shield of reflection (silver dragon
@@ -862,10 +862,10 @@ silver_sears(struct monst *magr UNUSED, struct monst *mdef, int64_t silverhit)
         rtyp = ((uright && (silverhit & W_RINGR) != 0L)
                 ? uright->otyp : STRANGE_OBJECT);
     boolean both,
-        l_ag = ((ltyp != STRANGE_OBJECT && uleft ? obj_counts_as_silver(uleft) : objects[ltyp].oc_material == MAT_SILVER) && uleft && uleft->dknown),
-        r_ag = ((rtyp != STRANGE_OBJECT && uright ? obj_counts_as_silver(uright) : objects[rtyp].oc_material == MAT_SILVER) && uright && uright->dknown),
-        really_l_ag = ((ltyp != STRANGE_OBJECT && uleft ? uleft->material == MAT_SILVER : objects[ltyp].oc_material == MAT_SILVER) && uleft && uleft->dknown),
-        really_r_ag = ((rtyp != STRANGE_OBJECT && uright ? uright->material == MAT_SILVER : objects[rtyp].oc_material == MAT_SILVER) && uright && uright->dknown);
+        l_ag = ((ltyp != STRANGE_OBJECT && uleft ? obj_counts_as_silver(uleft) : objects[ltyp].oc_material == MAT_SILVER) && uleft && is_obj_dknown(uleft)),
+        r_ag = ((rtyp != STRANGE_OBJECT && uright ? obj_counts_as_silver(uright) : objects[rtyp].oc_material == MAT_SILVER) && uright && is_obj_dknown(uright)),
+        really_l_ag = ((ltyp != STRANGE_OBJECT && uleft ? uleft->material == MAT_SILVER : objects[ltyp].oc_material == MAT_SILVER) && uleft && is_obj_dknown(uleft)),
+        really_r_ag = ((rtyp != STRANGE_OBJECT && uright ? uright->material == MAT_SILVER : objects[rtyp].oc_material == MAT_SILVER) && uright && is_obj_dknown(uright));
 
     if ((silverhit & (W_RINGL | W_RINGR)) != 0L) 
     {
@@ -875,7 +875,7 @@ silver_sears(struct monst *magr UNUSED, struct monst *mdef, int64_t silverhit)
            and both known; singular if multi_claw (where one of ltyp or
            rtyp will always be STRANGE_OBJECT) even if both rings are known
            silver [see hmonas(uhitm.c) for explanation of 'multi_claw'] */
-        both = ((ltyp == rtyp && uleft && uright && uleft->dknown == uright->dknown)
+        both = ((ltyp == rtyp && uleft && uright && is_obj_dknown(uleft) == is_obj_dknown(uright))
                 || (l_ag && r_ag));
         Sprintf(rings, "ring%s", both ? "s" : "");
         Your("%s%s %s %s!",
@@ -1053,7 +1053,7 @@ select_rwep(struct monst *mtmp)
 
     char mlet = mtmp->data->mlet;
 
-    propellor = (struct obj *) &zeroobj;
+    propellor = &naughtobj;
     Oselect(EGG);      /* cockatrice egg */
     if (mlet == S_KOP) /* pies are first choice for Kops */
         Oselect(CREAM_PIE);
@@ -1116,7 +1116,7 @@ select_rwep(struct monst *mtmp)
             { /* propellor */
                 for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
                     if (otmp->oclass == GEM_CLASS
-                        && (!(objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) || !otmp->cursed))
+                        && (!(objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) || !is_obj_cursed(otmp)))
                     {
                         propellor = otmp2;
                         return otmp;
@@ -1124,7 +1124,7 @@ select_rwep(struct monst *mtmp)
             }
 
             /* KMH -- This belongs here so darts will work */
-            propellor = (struct obj*)&zeroobj;
+            propellor = &naughtobj;
 
             prop = objects[rwep[i]].oc_skill;
             if (prop < 0) 
@@ -1198,7 +1198,7 @@ select_rwep(struct monst *mtmp)
                     propellor = 0;
             }
             /* propellor = obj, propellor to use
-             * propellor = &zeroobj, doesn't need a propellor
+             * propellor = &naughtobj, doesn't need a propellor
              * propellor = 0, needed one and didn't have one
              */
             if (propellor != 0) 
@@ -1230,7 +1230,7 @@ select_rwep(struct monst *mtmp)
                     {
                         for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
                         {
-                            if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && !otmp->cursed && otmp->exceptionality == (uchar)exc && !inappropriate_exceptionality(mtmp, otmp))
+                            if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && !is_obj_cursed(otmp) && otmp->exceptionality == (uchar)exc && !inappropriate_exceptionality(mtmp, otmp))
                                 return otmp;
                         }
                     }
@@ -1513,7 +1513,7 @@ mon_wield_item(struct monst *mon, boolean verbose_fail, xchar tx, xchar ty)
                    mon_nam(mon));
         return 0;
     }
-    if (obj && obj != &zeroobj) 
+    if (obj && obj != &naughtobj)
     {
         struct obj *mw_tmp = MON_WEP(mon);
 
@@ -1560,7 +1560,7 @@ mon_wield_item(struct monst *mon, boolean verbose_fail, xchar tx, xchar ty)
                     pline("%s tries to wield %s.", Monnam(mon), acxname(obj));
                     pline("%s %s!", Yname2(mw_tmp), welded_buf);
                 }
-                mw_tmp->bknown = 1;
+                set_obj_bknown(mw_tmp, 1);
             }
             mon->weapon_strategy = NO_WEAPON_WANTED;
             return 1;
@@ -1576,10 +1576,10 @@ mon_wield_item(struct monst *mon, boolean verbose_fail, xchar tx, xchar ty)
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s to %s %s!", Tobjnam(obj, "weld"),
                       is_plural(obj) ? "themselves" : "itself",
                       s_suffix(mon_nam(mon)), mbodypart(mon, HAND));
-                obj->bknown = 1;
+                set_obj_bknown(obj, 1);
             }
         }
-        if (obj && (artifact_light(obj) || has_obj_mythic_magical_light(obj) || (obj_shines_magical_light(obj) && !inappropriate_monster_character_type(mon, obj))) && !obj->lamplit) 
+        if (obj && (artifact_light(obj) || has_obj_mythic_magical_light(obj) || (obj_shines_magical_light(obj) && !inappropriate_monster_character_type(mon, obj))) && !is_obj_lamplit(obj)) 
         {
             begin_burn(obj, FALSE);
             if (canseemon(mon))
@@ -2213,7 +2213,7 @@ skill_advance(int skill)
         bot();
     }
 
-    if (!u.uachieve.role_achievement &&
+    if (!is_uachieve_role_achievement() &&
         (
             (Role_if(PM_CAVEMAN) && skill == P_BLUDGEONING_WEAPON && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
             || (Role_if(PM_MONK) && skill == P_MARTIAL_ARTS && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
@@ -2222,7 +2222,7 @@ skill_advance(int skill)
             )
        )
     {
-        u.uachieve.role_achievement = 1;
+        set_uachieve_role_achievement(1);
         char abuf[BUFSZ];
         char* ra_desc = get_role_achievement_description(1);
         strcpy_capitalized_for_title(abuf, ra_desc);
@@ -2275,7 +2275,7 @@ doskill_core(void)
     do
     {
         win = create_nhwindow(NHW_MENU);
-        start_menu_ex(win, GHMENU_STYLE_SKILLS_ALTERNATE);
+        start_menu_style(win, GHMENU_STYLE_SKILLS_ALTERNATE);
 
         for (pass = 0; pass < SIZE(skill_ranges); pass++)
         {
@@ -2429,7 +2429,7 @@ open_skill_cmd_menu(int skill_id, boolean speedy)
 
     any = zeroany;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SKILL_COMMAND_MENU, GLYPH_SKILL_TILE_OFF + skill_id, createinfo);
-    start_menu_ex(win, GHMENU_STYLE_SKILL_COMMAND);
+    start_menu_style(win, GHMENU_STYLE_SKILL_COMMAND);
 
     /* Skill description */
     Strcpy(buf, "View skill information");
@@ -3028,7 +3028,7 @@ enhance_weapon_skill(void)
         }
 
         win = create_nhwindow(NHW_MENU);
-        start_menu_ex(win, GHMENU_STYLE_SKILLS);
+        start_menu_style(win, GHMENU_STYLE_SKILLS);
 
         /* start with a legend if any entries will be annotated
            with "*" or "#" below */
@@ -4492,7 +4492,7 @@ setmnotwielded(struct monst *mon, struct obj *obj)
     if (!mon || !obj)
         return;
 
-    if ((artifact_light(obj) || has_obj_mythic_magical_light(obj) || obj_shines_magical_light(obj)) && obj->lamplit) {
+    if ((artifact_light(obj) || has_obj_mythic_magical_light(obj) || obj_shines_magical_light(obj)) && is_obj_lamplit(obj)) {
         debugprint("setmnotwielded");
         end_burn(obj, FALSE);
         if (canseemon(mon))

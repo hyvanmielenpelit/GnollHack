@@ -97,9 +97,9 @@ label_known(int scrolltype, struct obj *objlist)
         return TRUE;
     /* check inventory, including carried containers with known contents */
     for (otmp = objlist; otmp; otmp = otmp->nobj) {
-        if (otmp->otyp == scrolltype && otmp->dknown)
+        if (otmp->otyp == scrolltype && is_obj_dknown(otmp))
             return TRUE;
-        if (Has_contained_contents(otmp) && otmp->cknown
+        if (Has_contained_contents(otmp) && is_obj_cknown(otmp)
             && label_known(scrolltype, otmp->cobj))
             return TRUE;
     }
@@ -150,7 +150,7 @@ dowrite(struct obj *pen)
                      : "scroll";
     if (Blind) 
     {
-        if (!paper->dknown) 
+        if (!is_obj_dknown(paper)) 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_FAIL, "don't know if that %s is blank or not.", typeword);
@@ -165,7 +165,7 @@ dowrite(struct obj *pen)
             return 0;
         }
     }
-    paper->dknown = 1;
+    set_obj_dknown(paper, 1);
     if (paper->otyp != SCR_BLANK_PAPER && paper->otyp != SPE_BLANK_PAPER && !((paper->otyp == SPE_NOVEL || paper->otyp == SPE_MANUAL) && paper->special_quality == -1)) 
     {
         play_sfx_sound(SFX_GENERAL_NOT_IN_THE_RIGHT_CONDITION);
@@ -298,7 +298,7 @@ found_novel_or_manual:
             "became literate by writing %s", an(typeword));
 
     new_obj = mksobj(i, FALSE, FALSE, FALSE);
-    new_obj->bknown = (paper->bknown && pen->bknown);
+    set_obj_bknown(new_obj, (is_obj_bknown(paper) && is_obj_bknown(pen)));
 
     /* shk imposes a flat rate per use, not based on actual charges used */
     check_unpaid(pen);
@@ -354,8 +354,8 @@ found_novel_or_manual:
             play_simple_object_sound(pen, OBJECT_SOUND_TYPE_APPLY);
             paper->special_quality = bookidx;
             paper = oname(paper, bookname);
-            paper->blessed = (curseval > 0);
-            paper->cursed = (curseval < 0);
+            set_obj_blessed(paper, (curseval > 0));
+            set_obj_cursed(paper, (curseval < 0));
             prinv((const char*)0, paper, 0L);
             update_inventory(); /* pen charges */
         }
@@ -453,8 +453,8 @@ found_novel_or_manual:
         pline_The("spellbook warps strangely, then turns %s.",
                   new_book_description(new_obj->otyp, namebuf));
     }
-    new_obj->blessed = (curseval > 0);
-    new_obj->cursed = (curseval < 0);
+    set_obj_blessed(new_obj, (curseval > 0));
+    set_obj_cursed(new_obj, (curseval < 0));
 
     if (new_obj->otyp == SCR_MAIL)
         /* 0: delivered in-game via external event (or randomly for fake mail);
@@ -464,7 +464,7 @@ found_novel_or_manual:
        specifically chosen item so hero recognizes it even if blind;
        the exception is for being lucky writing an undiscovered scroll,
        where the label associated with the type-name isn't known yet */
-    new_obj->dknown = label_known(new_obj->otyp, invent) ? 1 : 0;
+    set_obj_dknown(new_obj, label_known(new_obj->otyp, invent) ? 1 : 0);
 
     new_obj = hold_another_object(new_obj, "Oops!  %s out of your grasp!",
                                   The(aobjnam(new_obj, "slip")),

@@ -507,7 +507,7 @@ int
 freehand(void)
 {
     return (!uwep || !welded(uwep, &youmonst)
-            || (!bimanual(uwep) && (!uarms || !uarms->cursed)));
+            || (!bimanual(uwep) && (!uarms || !is_obj_cursed(uarms))));
 }
 
 static NEARDATA const char styluses[] = { ALL_CLASSES, ALLOW_NONE,
@@ -652,7 +652,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
     case 0:
         break;
     case 1:
-        otmp = (struct obj*) &zeroobj; /* Dropping the const qualifier here, so one needs to be careful below not to modify otmp anymore */
+        otmp = &naughtobj; /* Changed to zeroobj to naughtobj due to the following: Dropping the const qualifier here, so one needs to be careful below not to modify otmp anymore */
         context.quick_engrave_obj_oid = 0;
         prompt_for_stylus = FALSE;
         break;
@@ -669,14 +669,14 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
     if (prompt_for_stylus)
     {
         otmp = getobj(styluses, "write with", 0, "");
-        if (otmp && otmp != &zeroobj && engrave_text) /* Mark as quick only if the command was quick engrave */
+        if (otmp && otmp != &naughtobj && engrave_text) /* Mark as quick only if the command was quick engrave */
             context.quick_engrave_obj_oid = otmp->o_id;
     }
 
     if (!otmp) /* otmp == zeroobj if fingers */
         return 0;
 
-    if (otmp == &zeroobj) {
+    if (otmp == &naughtobj) {
         Strcat(strcpy(fbuf, "your "), body_part(FINGERTIP));
         writer = fbuf;
     } else
@@ -711,13 +711,13 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
         return 0;
     }
     if (IS_GRAVE(levl[u.ux][u.uy].typ)) {
-        if (otmp == &zeroobj) { /* using only finger */
+        if (otmp == &naughtobj) { /* using only finger */
             You("would only make a small smudge on the %s.",
                 surface(u.ux, u.uy));
             return 0;
-        } else if (!levl[u.ux][u.uy].disturbed) {
+        } else if (!is_levl_disturbed(&levl[u.ux][u.uy])) {
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "disturb the undead!");
-            levl[u.ux][u.uy].disturbed = 1;
+            set_levl_disturbed(&levl[u.ux][u.uy], 1);
             (void) makemon(&mons[PM_GHOUL], u.ux, u.uy, NO_MM_FLAGS);
             exercise(A_WIS, FALSE);
             return 1;
@@ -782,7 +782,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
         if (zappable(otmp)) 
         {
             check_unpaid(otmp);
-            if (otmp->cursed && !rn2(WAND_BACKFIRE_CHANCE))
+            if (is_obj_cursed(otmp) && !rn2(WAND_BACKFIRE_CHANCE))
             {
                 wand_explode(otmp, 0);
                 (void)finish_obj_tracking(trackid);
@@ -1213,7 +1213,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
     }
 
     /* Tell adventurer what is going on */
-    if (otmp != &zeroobj)
+    if (otmp != &naughtobj)
         You("%s the %s with %s.", everb, eloc, doname(otmp));
     else
         You("%s the %s with your %s.", everb, eloc, body_part(FINGERTIP));
@@ -1255,7 +1255,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
         if (!u.uconduct.literate++)
             livelog_printf(LL_CONDUCT, "became literate by engraving \"%s\"", ebuf);
 
-    if (!otmp || otmp == &zeroobj)
+    if (!otmp || otmp == &naughtobj)
         play_monster_attack_floor_sound(&youmonst, 0, OBJECT_SOUND_TYPE_ENGRAVE);
     else
         play_object_floor_sound(otmp, OBJECT_SOUND_TYPE_ENGRAVE, Underwater);
@@ -1306,7 +1306,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
     case ENGRAVE:
         multi = -(len / 10);
         if (otmp->oclass == WEAPON_CLASS
-            && (otmp->otyp != ATHAME || otmp->cursed)) {
+            && (otmp->otyp != ATHAME || is_obj_cursed(otmp))) {
             multi = -len;
             maxelen = ((otmp->enchantment + 3) * 2) + 1;
             /* -2 => 3, -1 => 5, 0 => 7, +1 => 9, +2 => 11
@@ -1402,7 +1402,7 @@ doengrave_core(const char *engrave_text, uchar item_selection_style)
 
     if (!strcmp(buf, Elbereth_word))
     {
-        u.uevent.elbereth_known = 1;
+        set_uevent_elbereth_known(1);
         if (!u.uconduct.elbereths++)
         {
             livelog_printf(LL_CONDUCT, "engraved Elbereth for the first time");

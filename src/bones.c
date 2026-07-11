@@ -67,7 +67,7 @@ resetobjs(struct obj *ochain, boolean restore)
             resetobjs(otmp->cobj, restore);
         
         otmp->item_flags &= ~ITEM_FLAGS_LAVA_EFFECTS_SKIP;
-        if (otmp->in_use) 
+        if (is_obj_in_use(otmp)) 
         {
             obj_extract_self(otmp);
             dealloc_obj(otmp);
@@ -165,19 +165,20 @@ resetobjs(struct obj *ochain, boolean restore)
             /* do not zero out o_ids for ghost levels anymore */
 
             if (objects[otmp->otyp].oc_uses_known)
-                otmp->known = 0;
-            otmp->dknown = otmp->bknown = 0;
-            otmp->rknown = 0;
-            otmp->lknown = 0;
-            otmp->tknown = 0;
-            otmp->cknown = 0;
-            otmp->aknown = 0;
-            otmp->nknown = 0;
-            otmp->mknown = 0;
-            otmp->rotknown = 0;
+                set_obj_known(otmp, 0);
+            set_obj_dknown(otmp, 0);
+            set_obj_bknown(otmp, 0);
+            set_obj_rknown(otmp, 0);
+            set_obj_lknown(otmp, 0);
+            set_obj_tknown(otmp, 0);
+            set_obj_cknown(otmp, 0);
+            set_obj_aknown(otmp, 0);
+            set_obj_nknown(otmp, 0);
+            set_obj_mknown(otmp, 0);
+            set_obj_rotknown(otmp, 0);
             otmp->invlet = 0;
-            otmp->no_charge = 0;
-            otmp->was_thrown = 0;
+            set_obj_no_charge(otmp, 0);
+            set_obj_was_thrown(otmp, 0);
 
             /* strip user-supplied names */
             /* Statue and some corpse names are left intact,
@@ -262,7 +263,7 @@ resetobjs(struct obj *ochain, boolean restore)
             }
             else if (otmp->otyp == CANDELABRUM_OF_INVOCATION) 
             {
-                if (otmp->lamplit)
+                if (is_obj_lamplit(otmp))
                     end_burn(otmp, TRUE);
                 otmp->otyp = WAX_CANDLE;
                 otmp->age = 50L; /* assume used */
@@ -399,7 +400,7 @@ fixuporacle(struct monst *oracle)
     if (!Is_oracle_level(&u.uz))
         return FALSE;
 
-    oracle->mpeaceful = 1;
+    set_mon_mpeaceful(oracle, 1);
     o_ridx = levl[oracle->mx][oracle->my].roomno - ROOMOFFSET;
     if (o_ridx >= 0 && rooms[o_ridx].rtype == DELPHI)
         return TRUE; /* no fixup needed */
@@ -523,16 +524,16 @@ make_bones:
             && !(Is_sanctum(&u.uz) && mptr == &mons[PM_HIGH_PRIEST])
             && !(Inhell && mptr == &mons[PM_DEMOGORGON])
             && !(Inhell && mptr == &mons[PM_ASMODEUS])
-            && !((mtmp->mpeaceful && (mptr->geno & G_UNIQ) == 0) || mtmp->isshk || mtmp->issmith || mtmp->isnpc || mtmp->ispriest)
+            && !((is_mon_mpeaceful(mtmp) && (mptr->geno & G_UNIQ) == 0) || is_mon_isshk(mtmp) || is_mon_issmith(mtmp) || is_mon_isnpc(mtmp) || is_mon_ispriest(mtmp))
             )
-            || mtmp->iswiz 
+            || is_mon_iswiz(mtmp) 
             || (is_medusa(mptr) && !Is_medusa_level(&u.uz))
             || mptr->msound == MS_NEMESIS || mptr->msound == MS_LEADER
             || mptr == &mons[PM_VLAD_THE_IMPALER]
             || (mptr == &mons[PM_ORACLE] && !fixuporacle(mtmp)))
             mongone(mtmp);
-        else if (!mtmp->mpeaceful && (is_watch(mptr) || mptr->msound == MS_LEADER || mtmp->isshk || mtmp->issmith || mtmp->isnpc || mtmp->ispriest)) /* Shopkeepers are pacified upon loading */
-            mtmp->mpeaceful = 1;
+        else if (!is_mon_mpeaceful(mtmp) && (is_watch(mptr) || mptr->msound == MS_LEADER || is_mon_isshk(mtmp) || is_mon_issmith(mtmp) || is_mon_isnpc(mtmp) || is_mon_ispriest(mtmp))) /* Shopkeepers are pacified upon loading */
+            set_mon_mpeaceful(mtmp, 1);
     }
     if (u.usteed)
         dismount_steed(DISMOUNT_BONES);
@@ -554,7 +555,7 @@ make_bones:
 
         /* embed your possessions in your statue */
         otmp = mk_named_object(STATUE, &mons[u.umonnum], u.ux, u.uy, plname);
-        otmp->nknown = 1;
+        set_obj_nknown(otmp, 1);
 
         drop_upon_death((struct monst *) 0, otmp, u.ux, u.uy);
         if (!otmp)
@@ -568,7 +569,7 @@ make_bones:
          */
         in_mklev = TRUE;
         mtmp = makemon(&mons[PM_GHOST], u.ux, u.uy, MM_NONAME);
-        mtmp->u_know_mname = 1;
+        set_mon_u_know_mname(mtmp, 1);
         in_mklev = FALSE;
         if (!mtmp)
             return;
@@ -586,7 +587,7 @@ make_bones:
             return;
         }
         mtmp = christen_monst(mtmp, plname);
-        mtmp->u_know_mname = 1;
+        set_mon_u_know_mname(mtmp, 1);
         newsym(u.ux, u.uy);
         /* ["Your body rises from the dead as an <mname>..." used
            to be given here, but it has been moved to done() so that
@@ -604,9 +605,9 @@ make_bones:
         mtmp->mbasehpdrain = 0; /* Undead are cured on hp drain */
         update_mon_maxhp(mtmp);
         mtmp->mhp = mtmp->mhpmax;
-        mtmp->female = flags.female;
+        set_mon_female(mtmp, flags.female);
         mtmp->heads_left = mtmp->data->heads;
-        mtmp->msleeping = 1;
+        set_mon_msleeping(mtmp, 1);
     }
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         resetobjs(mtmp->minvent, FALSE);
@@ -614,8 +615,9 @@ make_bones:
         mtmp->mlstmv = 0L;
         if (mtmp->mtame)
         {
-            mtmp->mtame = mtmp->mpeaceful = 0;
-            mtmp->ispartymember = FALSE;
+            set_mon_mpeaceful(mtmp, 0);
+            mtmp->mtame = 0;
+            set_mon_ispartymember(mtmp, FALSE);
         }
     }
     for (ttmp = ftrap; ttmp; ttmp = ttmp->ntrap) {
@@ -668,7 +670,7 @@ make_bones:
        they might already be flagged as such, even when we're playing
        in normal mode, if this level came from a previous bones file */
     if (wizard)
-        level.flags.wizard_bones = 1;
+        set_levflag_wizard_bones(&level.flags, 1);
 
     fd = create_bonesfile(&u.uz, &bonesid, whynot);
     if (fd < 0) {

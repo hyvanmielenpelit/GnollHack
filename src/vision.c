@@ -180,7 +180,7 @@ does_block(int x, int y, struct rm *lev)
             return 1;
 
     /* Mimics mimicing a door or boulder or ... block light. */
-    if ((mon = m_at(x, y)) && (!is_invisible(mon) || See_invisible)
+    if ((mon = m_at(x, y)) && (!is_invisible(mon) || Can_see_invisible)
         && is_lightblocker_mappear(mon))
         return 1;
 
@@ -660,9 +660,9 @@ vision_recalc(int control)
                             struct obj* obj;
                             for (obj = o_at(col, row); obj; obj = obj->nexthere)
                             {
-                                if (!obj->dknown)
+                                if (!is_obj_dknown(obj))
                                 {
-                                    obj->dknown = 1;
+                                    set_obj_dknown(obj, 1);
                                 }
                             }
                         }
@@ -781,7 +781,7 @@ vision_recalc(int control)
 
             } 
             else if ((next_row[col] & COULD_SEE)
-                     && (lev->lit || (next_row[col] & TEMP_LIT)) && !(next_row[col] & TEMP_MAGICAL_DARKNESS) ) 
+                     && (is_levl_lit(lev) || (next_row[col] & TEMP_LIT)) && !(next_row[col] & TEMP_MAGICAL_DARKNESS) ) 
             {
                 /*
                  * We see this position because it is lit.
@@ -798,7 +798,7 @@ vision_recalc(int control)
                     dx = u.ux - col;
                     dx = sign(dx);
                     flev = &(levl[col + dx][row + dy]);
-                    if ((flev->lit || (next_array[row + dy][col + dx] & TEMP_LIT)) && !(next_array[row + dy][col + dx] & TEMP_MAGICAL_DARKNESS))
+                    if ((is_levl_lit(flev) || (next_array[row + dy][col + dx] & TEMP_LIT)) && !(next_array[row + dy][col + dx] & TEMP_MAGICAL_DARKNESS))
                     {
                         next_row[col] |= IN_SIGHT; /* we see it */
 
@@ -827,7 +827,7 @@ vision_recalc(int control)
                         newsym(col, row);
                 }
             } 
-            else if ((next_row[col] & COULD_SEE) && lev->waslit)
+            else if ((next_row[col] & COULD_SEE) && is_levl_waslit(lev))
             {
                 /*
                  * If we make it here, the hero _could see_ the location,
@@ -836,7 +836,7 @@ vision_recalc(int control)
                  * The hero can now see that it is not lit, so change waslit
                  * and update the location.
                  */
-                lev->waslit = 0; /* remember lit condition */
+                set_levl_waslit(lev, 0); /* remember lit condition */
                 newsym(col, row);
 
             /*
@@ -2858,7 +2858,7 @@ howmonseen(struct monst *mon)
     if (useemon && is_invisible(mon))
         how_seen |= MONSEEN_SEEINVIS;
     /* infravision */
-    if ((!is_invisible(mon) || See_invisible) && see_with_infrared(mon))
+    if ((!is_invisible(mon) || Can_see_invisible) && see_with_infrared(mon))
         how_seen |= MONSEEN_INFRAVIS;
     /* telepathy */
     if (tp_sensemon(mon))

@@ -394,6 +394,10 @@
 #define M7_TOURIST                  0x00000400UL   /* monster can use tourist items */
 #define M7_VALKYRIE                 0x00000800UL   /* monster can use valkyrie items */
 #define M7_WIZARD                   0x00001000UL   /* monster can use wizard items */
+/* Some free bits */
+#define M7_DINOSAUR                 0x00010000UL   /* monster is a dinosaur */
+#define M7_ILLUSORY_APPEARANCE      0x00020000UL   /* takes illusory appearance of a friendly monster using M_AP_MONSTER/mappearance */
+#define M7_FRIENDLY_ILLUSORY_APPEARANCE 0x00040000UL /* appears peaceful while in illusory appearance form */
 
 #define M8_NONE                     0x00000000UL
 
@@ -425,23 +429,23 @@
 #define G_GENDER_ONE_FOURTH  0x10000000UL
 #define G_GENDER_GEN_MASK    0x70000000UL   /* gender distribution mask, bits 0x10000000 - 0x40000000 give relative rarity: one in 2^(1 + number) is female or male */
 
-#define G_NOMINES   0x00008000UL     /* not generated in Gnomish Mines */
-#define G_YACC      0x00004000UL     /* generated on hellish pastures regardless of other flags */
-#define G_MODRON    0x00002000UL     /* generated on modron plane regardless of other flags */
-#define G_UNIQ      0x00001000UL     /* generated only once */
-#define G_NOHELL    0x00000800UL     /* not generated in "hell" */
-#define G_HELL      0x00000400UL     /* generated only in "hell" */
-#define G_NOGEN     0x00000200UL     /* generated only specially */
-#define G_STRAYED   0x00000100UL     /* generated only when the player has strayed from the his/her original alignment path */
-#define G_GENO      0x00000080UL     /* can be genocided */
-#define G_NOCORPSE  0x00000040UL     /* no corpse left ever */
-/* Reserved */
-/* Reserved */
-#define G_FREQ      0x00000007UL     /* creation frequency mask */
+#define G_NOMINES       0x00008000UL     /* not generated in Gnomish Mines */
+#define G_YACC          0x00004000UL     /* generated on hellish pastures regardless of other flags */
+#define G_MODRON        0x00002000UL     /* generated on modron plane regardless of other flags */
+#define G_UNIQ          0x00001000UL     /* generated only once */
+#define G_NOHELL        0x00000800UL     /* not generated in "hell" */
+#define G_HELL          0x00000400UL     /* generated only in "hell" */
+#define G_NOGEN         0x00000200UL     /* generated only specially */
+#define G_STRAYED       0x00000100UL     /* generated only when the player has strayed from the his/her original alignment path */
+#define G_GENO          0x00000080UL     /* can be genocided */
+#define G_NOCORPSE      0x00000040UL     /* no corpse left ever */
+#define G_PREHISTORIC   0x00000020UL     /* can appear on prehistoric levels; i.e., generated in caveman quest */
+#define G_SPECIAL_OK    0x00000010UL     /* overrides G_NOGEN on special levels indicated by G_ flags, otherwise they could not be randomly generated if G_NOGEN is specified to block generation elsewhere */
+#define G_FREQ          0x00000007UL     /* creation frequency mask */
 
 /* OBSOLETE --JG */
-#define G_SGROUP    0x00000000UL     /* 0x00000080UL appear in small groups normally */
-#define G_LGROUP    0x00000000UL     /* 0x00000040UL appear in large groups normally */
+#define G_SGROUP        0x00000000UL     /* 0x00000080UL appear in small groups normally */
+#define G_LGROUP        0x00000000UL     /* 0x00000040UL appear in large groups normally */
 
 /* for mvitals[].mvflags (variant during game) */
 #define MV_EXTINCT      0x01 /* have been extinguished as population control */

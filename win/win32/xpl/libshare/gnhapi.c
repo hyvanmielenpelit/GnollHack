@@ -588,8 +588,162 @@ LibValidateSaveFile(const char* filename, char* output_str)
         write_text2buf_utf8(buf, sizeof(buf), gnhapi_putstr_buffer);
         Strcpy(output_str, buf);
     }
+    *gnhapi_putstr_buffer = 0;
     return res;
 }
+
+DLLEXPORT int
+LibGetSaveFileInfo(const char* filename, uint64_t* out_version, uint64_t* out_compat, uint32_t* out_save_flags, int64_t* out_time_stamp, int* out_glyph, int* out_gui_glyph, int64_t* out_umoves)
+{
+    int fd;
+    int res = 0;
+    struct version_info vers_info;
+    struct savefile_info sfi;
+    int pltmpsiz = 0;
+    char plbuf[256];
+    struct save_game_stats stats;
+    *gnhapi_putstr_buffer = 0;
+
+    struct window_procs oldprocs = windowprocs;
+#ifdef SAFEPROCS
+    windowprocs = *get_safe_procs(0);
+#endif
+    windowprocs.win_putstr_ex = gnhapi_putstr_ex;
+    windowprocs.win_putstr_ex2 = gnhapi_putstr_ex2;
+    windowprocs.win_raw_print = gnhapi_raw_print;
+    windowprocs.win_issue_gui_command = gnhapi_issue_gui_command;
+
+    nh_uncompress(filename);
+    if ((fd = open_savefilepath(filename)) >= 0)
+    {
+        /* 1. version_info */
+        int rlen = (int)read(fd, (genericptr_t) &vers_info, (readLenType)sizeof vers_info);
+        minit(); /* ZEROCOMP */
+        if (rlen == sizeof vers_info)
+        {
+            /* 2. savefile_info */
+            rlen = (int)read(fd, (genericptr_t) &sfi, (readLenType)sizeof sfi);
+            if (rlen == sizeof sfi)
+            {
+                /* 3. pltmpsiz and plbuf */
+                rlen = (int)read(fd, (genericptr_t) &pltmpsiz, (readLenType)sizeof(pltmpsiz));
+                if (rlen == sizeof(pltmpsiz) && pltmpsiz >= 0 && (size_t)pltmpsiz < sizeof(plbuf))
+                {
+                    rlen = (int)read(fd, (genericptr_t) plbuf, (readLenType) pltmpsiz);
+                    if (rlen == pltmpsiz)
+                    {
+                        /* 4. save_game_stats */
+                        rlen = (int)read(fd, (genericptr_t)&stats, (readLenType)sizeof(stats));
+                        if (rlen == sizeof(stats))
+                        {
+                            if (out_version) *out_version = vers_info.incarnation;
+                            if (out_compat) *out_compat = vers_info.version_compatibility;
+                            if (out_save_flags)
+                            {
+                                uint32_t flags = stats.save_flags;
+                                if (stats.debug_mode) flags |= 0x100;
+                                if (stats.explore_mode) flags |= 0x200;
+                                if (stats.modern_mode) flags |= 0x400;
+                                if (stats.casual_mode) flags |= 0x800;
+                                *out_save_flags = flags;
+                            }
+                            if (out_time_stamp) *out_time_stamp = stats.time_stamp;
+                            if (out_glyph) *out_glyph = stats.glyph;
+                            if (out_gui_glyph) *out_gui_glyph = stats.gui_glyph;
+                            if (out_umoves) *out_umoves = stats.umoves;
+                            res = 1;
+                        }
+                    }
+                }
+            }
+        }
+        (void)nhclose(fd);
+    }
+    nh_compress(filename);
+    windowprocs = oldprocs;
+    *gnhapi_putstr_buffer = 0;
+    return res;
+}
+
+
+DLLEXPORT int
+LibGetSaveFileDescription(const char* filename, char* out_char_desc, int char_desc_len, char* out_loc_desc, int loc_desc_len, char* out_mode_desc, int mode_desc_len)
+{
+    int fd;
+    int res = 0;
+    struct version_info vers_info;
+    struct savefile_info sfi;
+    int pltmpsiz = 0;
+    char plbuf[256];
+    struct save_game_stats stats;
+    *gnhapi_putstr_buffer = 0;
+
+    struct window_procs oldprocs = windowprocs;
+#ifdef SAFEPROCS
+    windowprocs = *get_safe_procs(0);
+#endif
+    windowprocs.win_putstr_ex = gnhapi_putstr_ex;
+    windowprocs.win_putstr_ex2 = gnhapi_putstr_ex2;
+    windowprocs.win_raw_print = gnhapi_raw_print;
+    windowprocs.win_issue_gui_command = gnhapi_issue_gui_command;
+
+    nh_uncompress(filename);
+    if ((fd = open_savefilepath(filename)) >= 0)
+    {
+        int rlen = (int)read(fd, (genericptr_t) &vers_info, (readLenType)sizeof vers_info);
+        minit();
+        if (rlen == sizeof vers_info)
+        {
+            rlen = (int)read(fd, (genericptr_t) &sfi, (readLenType)sizeof sfi);
+            if (rlen == sizeof sfi)
+            {
+                rlen = (int)read(fd, (genericptr_t) &pltmpsiz, (readLenType)sizeof(pltmpsiz));
+                if (rlen == sizeof(pltmpsiz) && pltmpsiz >= 0 && (size_t)pltmpsiz < sizeof(plbuf))
+                {
+                    rlen = (int)read(fd, (genericptr_t) plbuf, (readLenType) pltmpsiz);
+                    if (rlen == pltmpsiz)
+                    {
+                        rlen = (int)read(fd, (genericptr_t)&stats, (readLenType)sizeof(stats));
+                        if (rlen == sizeof(stats))
+                        {
+                            char charbuf[BUFSZ * 2] = "";
+                            char locbuf[BUFSZ * 2] = "";
+                            char modebuf[BUFSZ * 2] = "";
+
+                            print_character_description(charbuf, stats.ulevel, stats.rolenum, stats.racenum, stats.gender, stats.alignment, "");
+                            print_location_description(locbuf, stats.level_name, stats.dgn_name, (int)stats.dlevel, stats.depth, "");
+                            print_mode_duration_description(modebuf, stats.game_difficulty, stats.umoves, stats.debug_mode, stats.explore_mode, stats.modern_mode, stats.casual_mode, (stats.save_flags & SAVEFLAGS_NON_SCORING) != 0, (stats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0, "");
+
+                            if (out_char_desc && char_desc_len > 0)
+                            {
+                                Strncpy(out_char_desc, charbuf, min(BUFSZ * 2 - 1, char_desc_len - 1));
+                                out_char_desc[min(BUFSZ * 2 - 1, char_desc_len - 1)] = '\0';
+                            }
+                            if (out_loc_desc && loc_desc_len > 0)
+                            {
+                                Strncpy(out_loc_desc, locbuf, min(BUFSZ * 2 - 1, loc_desc_len - 1));
+                                out_loc_desc[min(BUFSZ * 2 - 1, loc_desc_len - 1)] = '\0';
+                            }
+                            if (out_mode_desc && mode_desc_len > 0)
+                            {
+                                Strncpy(out_mode_desc, modebuf, min(BUFSZ * 2 - 1, mode_desc_len - 1));
+                                out_mode_desc[min(BUFSZ * 2 - 1, mode_desc_len - 1)] = '\0';
+                            }
+
+                            res = 1;
+                        }
+                    }
+                }
+            }
+        }
+        (void)nhclose(fd);
+    }
+    nh_compress(filename);
+    windowprocs = oldprocs;
+    *gnhapi_putstr_buffer = 0;
+    return res;
+}
+
 
 DLLEXPORT int
 LibCheckCurrentFileDescriptor(const char* dir)
@@ -852,7 +1006,7 @@ DLLEXPORT int GnollHackStart(char *cmdlineargs)
 
 extern struct callback_procs lib_callbacks;
 
-DLLEXPORT int RunGnollHack( char* gnhdir, char* cmdlineargs, char* engrave_quicktext, char* last_used_player_name, int right_mouse_button, int middle_mouse_button, int engrave_quickstyle, int reserved_int, uint64_t runflags, uint64_t foundmanuals, uint64_t wincap1, uint64_t wincap2, InitWindowsCallback callback_init_nhwindows, PlayerSelectionCallback callback_player_selection, AskNameCallback callback_askname, GetEventCallback callback_get_nh_event, ExitWindowsCallback callback_exit_nhwindows, SuspendWindowsCallback callback_suspend_nhwindows, ResumeWindowsCallback callback_resume_nhwindows, CreateWindowCallback callback_create_nhwindow_ex, ClearWindowCallback callback_clear_nhwindow, DisplayWindowCallback callback_display_nhwindow, DestroyWindowCallback callback_destroy_nhwindow, CursCallback callback_curs, PutStrExCallback callback_putstr_ex, PutStrEx2Callback callback_putstr_ex2, PutMixedCallback callback_putmixed_ex, DisplayFileCallback callback_display_file, StartMenuCallback callback_start_menu_ex, AddMenuCallback callback_add_menu, AddExtendedMenuCallback callback_add_extended_menu, EndMenuCallback callback_end_menu_ex, SelectMenuCallback callback_select_menu, MessageMenuCallback callback_message_menu, UpdateInventoryCallback callback_update_inventory, MarkSynchCallback callback_mark_synch, WaitSynchCallback callback_wait_synch,  /* If clipping is on */ ClipAroundCallback callback_cliparound, /* If positionbar is on */ UpdatePositionBarCallback callback_update_positionbar,  PrintGlyphCallback callback_print_glyph, IssueGuiCommandCallback callback_issue_gui_command, RawPrintCallback callback_raw_print, RawPrintBoldCallback callback_raw_print_bold, GetChCallback callback_nhgetch, PosKeyCallback callback_nh_poskey, BellCallback callback_nhbell, DoPrevMessageCallback callback_doprev_message, YnFunctionCallback callback_yn_function_ex, GetLineCallback callback_getlin_ex, GetExtCmdCallback callback_get_ext_cmd, NumberPadCallback callback_number_pad, DelayOutputCallback callback_delay_output, DelayOutputMillisecondsCallback callback_delay_output_milliseconds, DelayOutputIntervalsCallback callback_delay_output_intervals,  ChangeColorCallback callback_change_color, ChangeBackgroundCallback callback_change_background, SetFontNameCallback callback_set_font_name, GetColorStringCallback callback_get_color_string,  StartScreenCallback callback_start_screen, EndScreenCallback callback_end_screen, OutRipCallback callback_outrip, PreferenceUpdateCallback callback_preference_update, GetMsgHistoryCallback callback_getmsghistory, PutMsgHistoryCallback callback_putmsghistory, StatusInitCallback callback_status_init, StatusFinishCallback callback_status_finish, StatusEnableFieldCallback callback_status_enablefield, StatusUpdateCallback callback_status_update, CanSuspendYesCallback callback_can_suspend_yes, StretchWindowCallback callback_stretch_window, SetAnimationTimerCallback callback_set_animation_timer_interval, OpenSpecialViewCallback callback_open_special_view, StopAllSoundsCallback callback_stop_all_sounds, PlayImmediateSoundCallback callback_play_immediate_ghsound, PlayOccupationAmbientCallback callback_play_ghsound_occupation_ambient, PlayEffectAmbientCallback callback_play_ghsound_effect_ambient, SetEffectAmbientVolumeCallback callback_set_effect_ambient_volume, PlayMusicCallback callback_play_ghsound_music, PlayLevelAmbientCallback callback_play_ghsound_level_ambient, PlayEnvironmentAmbientCallback callback_play_ghsound_environment_ambient, AdjustGeneralVolumesCallback callback_adjust_ghsound_general_volumes, AddAmbientSoundCallback callback_add_ambient_ghsound, DeleteAmbientSoundCallback callback_delete_ambient_ghsound, SetAmbientVolumeCallback callback_set_ambient_ghsound_volume, ClearContextMenuCallback callback_clear_context_menu, AddContextMenuCallback callback_add_context_menu, UpdateStatusButtonCallback callback_update_status_button, ToggleAnimationTimerCallback callback_toggle_animation_timer, DisplayFloatingTextCallback callback_display_floating_text, DisplayScreenTextCallback callback_display_screen_text, DisplayPopupTextCallback callback_display_popup_text, DisplayGUIEffectCallback callback_display_gui_effect, UpdateCursorCallback callback_update_cursor, UIHasInputCallback callback_ui_has_input, ExitHackCallback callback_exit_hack,  GetCwdCallback callback_getcwd, MessageBoxCallback callback_messagebox, FreeMemoryCallback callback_free_memory, ReportPlayerNameCallback callback_report_player_name, ReportPlayTimeCallback callback_report_play_time, SendObjectDataCallback callback_send_object_data, SendMonsterDataCallback callback_send_monster_data, SendEngravingDataCallback callback_send_engraving_data )
+DLLEXPORT int RunGnollHack(char* gnhdir, char* cmdlineargs, char* engrave_quicktext, char* last_used_player_name, int right_mouse_button, int middle_mouse_button, int engrave_quickstyle, int reserved_int, uint64_t runflags, uint64_t foundmanuals, uint64_t wincap1, uint64_t wincap2, InitWindowsCallback callback_init_nhwindows, PlayerSelectionCallback callback_player_selection, AskNameCallback callback_askname, GetEventCallback callback_get_nh_event, ExitWindowsCallback callback_exit_nhwindows, SuspendWindowsCallback callback_suspend_nhwindows, ResumeWindowsCallback callback_resume_nhwindows, CreateWindowCallback callback_create_nhwindow_ex, ClearWindowCallback callback_clear_nhwindow, DisplayWindowCallback callback_display_nhwindow, DestroyWindowCallback callback_destroy_nhwindow, CursCallback callback_curs, PutStrExCallback callback_putstr_ex, PutStrEx2Callback callback_putstr_ex2, PutMixedCallback callback_putmixed_ex, DisplayFileCallback callback_display_file, StartMenuCallback callback_start_menu_ex, AddMenuCallback callback_add_menu, AddExtendedMenuCallback callback_add_extended_menu, EndMenuCallback callback_end_menu_ex, SelectMenuCallback callback_select_menu, MessageMenuCallback callback_message_menu, UpdateInventoryCallback callback_update_inventory, MarkSynchCallback callback_mark_synch, WaitSynchCallback callback_wait_synch,  /* If clipping is on */ ClipAroundCallback callback_cliparound, /* If positionbar is on */ UpdatePositionBarCallback callback_update_positionbar,  PrintGlyphCallback callback_print_glyph, IssueGuiCommandCallback callback_issue_gui_command, RawPrintCallback callback_raw_print, RawPrintBoldCallback callback_raw_print_bold, GetChCallback callback_nhgetch, PosKeyCallback callback_nh_poskey, BellCallback callback_nhbell, DoPrevMessageCallback callback_doprev_message, YnFunctionCallback callback_yn_function_ex, GetLineCallback callback_getlin_ex, GetExtCmdCallback callback_get_ext_cmd, NumberPadCallback callback_number_pad, DelayOutputCallback callback_delay_output, DelayOutputMillisecondsCallback callback_delay_output_milliseconds, DelayOutputIntervalsCallback callback_delay_output_intervals,  ChangeColorCallback callback_change_color, ChangeBackgroundCallback callback_change_background, SetFontNameCallback callback_set_font_name, GetColorStringCallback callback_get_color_string,  StartScreenCallback callback_start_screen, EndScreenCallback callback_end_screen, OutRipCallback callback_outrip, PreferenceUpdateCallback callback_preference_update, GetMsgHistoryCallback callback_getmsghistory, PutMsgHistoryCallback callback_putmsghistory, StatusInitCallback callback_status_init, StatusFinishCallback callback_status_finish, StatusEnableFieldCallback callback_status_enablefield, StatusUpdateCallback callback_status_update, CanSuspendYesCallback callback_can_suspend_yes, StretchWindowCallback callback_stretch_window, SetAnimationTimerCallback callback_set_animation_timer_interval, OpenSpecialViewCallback callback_open_special_view, StopAllSoundsCallback callback_stop_all_sounds, PlayImmediateSoundCallback callback_play_immediate_ghsound, PlayOccupationAmbientCallback callback_play_ghsound_occupation_ambient, PlayEffectAmbientCallback callback_play_ghsound_effect_ambient, SetEffectAmbientVolumeCallback callback_set_effect_ambient_volume, PlayMusicCallback callback_play_ghsound_music, PlayLevelAmbientCallback callback_play_ghsound_level_ambient, PlayEnvironmentAmbientCallback callback_play_ghsound_environment_ambient, AdjustGeneralVolumesCallback callback_adjust_ghsound_general_volumes, AddAmbientSoundCallback callback_add_ambient_ghsound, DeleteAmbientSoundCallback callback_delete_ambient_ghsound, SetAmbientVolumeCallback callback_set_ambient_ghsound_volume, ClearContextMenuCallback callback_clear_context_menu, AddContextMenuCallback callback_add_context_menu, UpdateStatusButtonCallback callback_update_status_button, ToggleAnimationTimerCallback callback_toggle_animation_timer, DisplayFloatingTextCallback callback_display_floating_text, DisplayScreenTextCallback callback_display_screen_text, DisplayPopupTextCallback callback_display_popup_text, DisplayGUIEffectCallback callback_display_gui_effect, UpdateCursorCallback callback_update_cursor, UIHasInputCallback callback_ui_has_input, ExitHackCallback callback_exit_hack,  GetCwdCallback callback_getcwd, MessageBoxCallback callback_messagebox, FreeMemoryCallback callback_free_memory, ReportPlayerNameCallback callback_report_player_name, ReportPlayTimeCallback callback_report_play_time, SendObjectDataCallback callback_send_object_data, SendMonsterDataCallback callback_send_monster_data, SendEngravingDataCallback callback_send_engraving_data )
 {
     char cmdbuf[BUFSZ] = "";
     if(cmdlineargs)

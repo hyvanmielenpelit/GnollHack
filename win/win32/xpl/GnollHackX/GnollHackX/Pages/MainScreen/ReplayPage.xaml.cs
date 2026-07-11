@@ -68,6 +68,7 @@ namespace GnollHackX.Pages.MainScreen
                 EmptyLabel.TextColor = GHColors.White;
                 FolderPicker.TextColor = GHColors.White;
                 FolderPicker.TitleColor = GHColors.White;
+                FolderPicker.BackgroundColor = Color.FromRgba(1, 1, 1, 0.15);
             }
 
             _mainPage = mainPage;

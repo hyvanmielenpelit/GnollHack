@@ -1931,7 +1931,7 @@ amii_print_glyph(winid win, xchar x, xchar y, struct layer_info layers)
     int color;
     nhsym och;
     extern const int zapcolors[];
-    unsigned special;
+    uint64_t special;
 
     /* In order for the overview window to work, we can not clip here */
     if (!WINVERS_AMIV) {

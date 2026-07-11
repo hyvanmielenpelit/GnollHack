@@ -197,6 +197,5 @@ namespace GnollHackX.Controls
             ThreadSafeWidth = Width;
             ThreadSafeHeight = Height;
         }
-
     }
 }

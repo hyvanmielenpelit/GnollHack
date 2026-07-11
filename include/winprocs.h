@@ -38,7 +38,7 @@ struct window_procs {
     void (*win_putstr_ex2)(winid, const char*, const char*, const char*, int, int, int);
     void (*win_putmixed_ex)(winid, const char *, int, int, int);
     void (*win_display_file)(const char *, boolean);
-    void (*win_start_menu_ex)(winid, int);
+    void (*win_start_menu_ex)(winid, int, int, uint64_t);
     void (*win_add_menu)(winid, int, const ANY_P *, char, char,
                                  int, int, const char *, boolean);
     void (*win_add_extended_menu)(winid, int, const ANY_P*, char, char,
@@ -151,7 +151,8 @@ extern
 #define putmixed(x, y, z) putmixed_ex(x, z, y, NO_COLOR, 0)
 #define display_file (*windowprocs.win_display_file)
 #define start_menu_ex (*windowprocs.win_start_menu_ex)
-#define start_menu(x) start_menu_ex(x, 0)
+#define start_menu(x) start_menu_ex(x, 0, 0, 0)
+#define start_menu_style(x, s) start_menu_ex(x, s, 0, 0)
 #define add_menu (*windowprocs.win_add_menu)
 #define add_active_menu(a, b, c, d, e, f, g, h, i) add_extended_menu(a, b, c, d, e, f, g, h, i, active_menu_info())
 #define add_extended_menu (*windowprocs.win_add_extended_menu)
@@ -440,7 +441,7 @@ struct chain_procs {
     void (*win_putstr_ex2)(CARGS, winid, const char*, const char*, const char*, int, int, int);
     void (*win_putmixed_ex)(CARGS, winid, const char *, int, int, int);
     void (*win_display_file)(CARGS, const char *, boolean);
-    void (*win_start_menu_ex)(CARGS, winid, int);
+    void (*win_start_menu_ex)(CARGS, winid, int, int, uint64_t);
     void (*win_add_menu)(CARGS, winid, int, const ANY_P *, char,
                                  char, int, int, const char *, boolean);
     void (*win_add_extended_menu)(CARGS, winid, int, const ANY_P*, char,
@@ -544,7 +545,7 @@ extern void safe_putstr_ex(winid, const char *, int, int, int);
 extern void safe_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
 extern void safe_putmixed_ex(winid, const char *, int, int, int);
 extern void safe_display_file(const char *, boolean);
-extern void safe_start_menu_ex(winid, int);
+extern void safe_start_menu_ex(winid, int, int, uint64_t);
 extern void safe_add_menu(winid, int, const ANY_P *, char, char,
                                   int, int, const char *, boolean);
 extern void safe_add_extended_menu(winid, int, const ANY_P*, char, char,

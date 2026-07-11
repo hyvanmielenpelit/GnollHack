@@ -853,7 +853,7 @@ class NetHackQtBind : NetHackQtBindBase
     static void qt_curs(winid wid, int x, int y);
     static void qt_putstr(winid wid, int attr, const char *text, int app, int color);
     static void qt_display_file(const char *filename, boolean must_exist);
-    static void qt_start_menu_ex(winid wid, int style);
+    static void qt_start_menu_ex(winid wid, int style, int glyph, uint64_t mflags);
     static void qt_add_menu(winid wid, int glyph, const ANY_P *identifier,
                             char ch, char gch, int attr, int color, const char *str,
                             boolean presel);

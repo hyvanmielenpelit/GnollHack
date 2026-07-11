@@ -85,7 +85,7 @@ goodpos(int x, int y, struct monst *mtmp, uint64_t gpflags)
             if (mtmp == &youmonst)
                 return (Moves_above_ground
                         || (Fire_immunity && Walks_on_water && uarmf
-                            && uarmf->oerodeproof)
+                            && is_obj_oerodeproof(uarmf))
                         || (Upolyd && likes_lava(youmonst.data)));
             else
                 return (is_flying(mtmp) || is_levitating(mtmp)
@@ -475,13 +475,13 @@ teleport_pet(struct monst *mtmp, boolean force_it)
     if (mtmp == u.usteed)
         return FALSE;
 
-    if (mtmp->mleashed) {
+    if (is_mon_mleashed(mtmp)) {
         otmp = get_mleash(mtmp);
         if (!otmp) {
             impossible("%s is leashed, without a leash.", Monnam(mtmp));
             goto release_it;
         }
-        if (otmp->cursed && !force_it) {
+        if (is_obj_cursed(otmp) && !force_it) {
             yelp(mtmp);
             return FALSE;
         } else {
@@ -528,7 +528,7 @@ scrolltele(struct obj *scroll, boolean iswizcmd, boolean iscontrolled)
     boolean result = FALSE; /* don't learn scroll */
 
     /* Disable teleportation in stronghold && Vlad's Tower */
-    if (level.flags.noteleport) 
+    if (is_levflag_noteleport(&level.flags)) 
     {
         if (!wizard || yn_query("Teleportation is not allowed on this level. Override?") != 'y') 
         {
@@ -542,7 +542,7 @@ scrolltele(struct obj *scroll, boolean iswizcmd, boolean iscontrolled)
     if (!Blinded)
         make_blinded(0L, FALSE);
 
-    if ((u.uhave.amulet || On_W_tower_level(&u.uz)) && !rn2(3)) 
+    if ((is_uhave_amulet() || On_W_tower_level(&u.uz)) && !rn2(3)) 
     {
         play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
         You_feel("disoriented for a moment.");
@@ -583,7 +583,7 @@ scrolltele(struct obj *scroll, boolean iswizcmd, boolean iscontrolled)
             result = TRUE;
         }
     } 
-    else if (scroll && scroll->blessed)
+    else if (scroll && is_obj_blessed(scroll))
     {
         /* (this used to be handled in seffects()) */
         if (yn_query("Do you wish to teleport?") == 'n')
@@ -847,7 +847,7 @@ dotelecmd(void)
         int i, tmode;
 
         win = create_nhwindow(NHW_MENU);
-        start_menu_ex(win, GHMENU_STYLE_CHOOSE_COMMAND);
+        start_menu_style(win, GHMENU_STYLE_CHOOSE_COMMAND);
         any = zeroany;
 
         for (i = 0; i < SIZE(tports); ++i)
@@ -1076,7 +1076,7 @@ level_tele(int teletype, int controltype, d_level target_level, uchar tele_flags
     if (iflags.debug_fuzzer)
         goto random_levtport;
 
-    if ((u.uhave.amulet || In_endgame(&u.uz) || (In_sokoban(&u.uz) && controltype != 2)) && !wizard)
+    if ((is_uhave_amulet() || In_endgame(&u.uz) || (In_sokoban(&u.uz) && controltype != 2)) && !wizard)
     {
         play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
         You_feel("very disoriented for a moment.");
@@ -1141,7 +1141,7 @@ level_tele(int teletype, int controltype, d_level target_level, uchar tele_flags
                 if (In_endgame(&newlevel) && !In_endgame(&u.uz)) {
                     struct obj *amu;
 
-                    if (!u.uhave.amulet
+                    if (!is_uhave_amulet()
                         && (amu = mksobj(AMULET_OF_YENDOR, TRUE, FALSE, FALSE))
                                != 0) {
                         /* ordinarily we'd use hold_another_object()
@@ -1351,7 +1351,7 @@ random_levtport:
             /* if invocation did not yet occur, teleporting into
              * the last level of Gehennom is forbidden.
              */
-            if (!wizard && Inhell && !u.uevent.invoked
+            if (!wizard && Inhell && !is_uevent_invoked()
                 && newlev >= (dungeons[u.uz.dnum].depth_start
                     + dunlevs_in_dungeon(&u.uz) - 1))
             {
@@ -1407,7 +1407,7 @@ domagicportal(struct trap *ttmp)
      * the endgame, from accidently triggering the portal to the
      * next level, and thus losing the game
      */
-    if (In_endgame(&u.uz) && !u.uhave.amulet) {
+    if (In_endgame(&u.uz) && !is_uhave_amulet()) {
         You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "dizzy for a moment, but nothing happens...");
         return;
     }
@@ -1561,16 +1561,16 @@ rloc_pos_ok(int x, int y, struct monst *mtmp)
         /* [try to] prevent a shopkeeper or temple priest from being
            sent out of his room (caller might resort to goodpos() if
            we report failure here, so this isn't full prevention) */
-        if (mtmp->isshk && inhishop(mtmp)) {
+        if (is_mon_isshk(mtmp) && inhishop(mtmp)) {
             if (levl[x][y].roomno != ESHK(mtmp)->shoproom)
                 return FALSE;
-        } else if (mtmp->ispriest && inhistemple(mtmp)) {
+        } else if (is_mon_ispriest(mtmp) && inhistemple(mtmp)) {
             if (levl[x][y].roomno != EPRI(mtmp)->shroom)
                 return FALSE;
-        } else if (mtmp->issmith && inhissmithy(mtmp)) {
+        } else if (is_mon_issmith(mtmp) && inhissmithy(mtmp)) {
             if (levl[x][y].roomno != ESMI(mtmp)->smithy_room)
                 return FALSE;
-        } else if (mtmp->isnpc && in_his_npc_room(mtmp)) {
+        } else if (is_mon_isnpc(mtmp) && in_his_npc_room(mtmp)) {
             if (levl[x][y].roomno != ENPC(mtmp)->npc_room)
                 return FALSE;
         }
@@ -1595,7 +1595,7 @@ void
 rloc_to(struct monst *mtmp, int x, int y)
 {
     int oldx = mtmp->mx, oldy = mtmp->my;
-    boolean resident_shk = mtmp->isshk && inhishop(mtmp);
+    boolean resident_shk = is_mon_isshk(mtmp) && inhishop(mtmp);
 
     if (x == mtmp->mx && y == mtmp->my && m_at(x, y) == mtmp)
         return; /* that was easy */
@@ -1661,7 +1661,7 @@ rloc(struct monst *mtmp, boolean suppress_impossible)
         return TRUE;
     }
 
-    if (mtmp->iswiz && mtmp->mx) { /* Wizard, not just arriving */
+    if (is_mon_iswiz(mtmp) && mtmp->mx) { /* Wizard, not just arriving */
         if (!In_W_tower(u.ux, u.uy, &u.uz))
             x = xupstair, y = yupstair;
         else if (!xdnladder) /* bottom level of tower */
@@ -1801,7 +1801,7 @@ mvault_tele(struct monst *mtmp)
 boolean
 tele_restrict(struct monst *mon)
 {
-    if (level.flags.noteleport)
+    if (is_levflag_noteleport(&level.flags))
     {
         if (canseemon(mon))
         {
@@ -2106,7 +2106,7 @@ random_teleport_level(void)
         max_depth =
             dunlevs_in_dungeon(&u.uz) + (dungeons[u.uz.dnum].depth_start - 1);
         /* can't reach Sanctum if the invocation hasn't been performed */
-        if (Inhell && !u.uevent.invoked)
+        if (Inhell && !is_uevent_invoked())
             max_depth -= 1;
     }
 
@@ -2146,7 +2146,7 @@ u_teleport_mon(struct monst *mtmp, boolean give_feedback)
     if((mtmp->data->geno & G_UNIQ) && tele_restrict(mtmp))
         return FALSE;
 
-    if (mtmp->ispriest && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) 
+    if (is_mon_ispriest(mtmp) && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) 
     {
         if (give_feedback)
         {
@@ -2160,7 +2160,7 @@ u_teleport_mon(struct monst *mtmp, boolean give_feedback)
         play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         special_effect_wait_until_action(0);
-        if (level.flags.noteleport && u.uswallow && mtmp == u.ustuck)
+        if (is_levflag_noteleport(&level.flags) && u.uswallow && mtmp == u.ustuck)
         {
             if (give_feedback)
                 You("are no longer inside %s!", mon_nam(mtmp));

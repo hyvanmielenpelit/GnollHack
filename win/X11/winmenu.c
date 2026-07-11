@@ -585,7 +585,7 @@ menu_popdown(struct xwindow *wp)
 /* Global functions ======================================================= */
 
 void
-X11_start_menu_ex(winid window, int style)
+X11_start_menu_ex(winid window, int style, int glyph UNUSED, uint64_t mflags UNUSED)
 {
     struct xwindow *wp;
     check_winid(window);
@@ -736,7 +736,7 @@ X11_select_menu(winid window, int how, menu_item **menu_list)
         winid newwin = X11_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH, zerocreatewindowinfo);
         struct xwindow *nwp = &window_list[newwin];
 
-        X11_start_menu_ex(newwin, 0);
+        X11_start_menu_ex(newwin, 0, 0, 0);
         move_menu(&menu_info->new_menu, &nwp->menu_information->new_menu);
         for (curr = nwp->menu_information->new_menu.base; curr;
              curr = curr->next)

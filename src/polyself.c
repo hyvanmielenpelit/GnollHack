@@ -427,7 +427,7 @@ polyself(int psflags)
 {
     char buf[BUFSZ] = DUMMY;
     int old_light, new_light, old_ambient, new_ambient, mntmp, class, tryct;
-    boolean forcecontrol = (psflags == 1), monsterpoly = (psflags == 2),
+    boolean forcecontrol = (psflags & 1) != 0, monsterpoly = (psflags & 2) != 0, forcerestrictedpoly = (psflags & 4) != 0,
             draconian = (uarm && is_dragon_scale_armor(uarm)),
             bullheaded =
                 ((umisc && umisc->otyp == NOSE_RING_OF_BULLHEADEDNESS)
@@ -548,9 +548,9 @@ polyself(int psflags)
             }
             else
             {
-                if (forcecontrol)
+                if (forcecontrol && !forcerestrictedpoly)
                     break;
-                else if (mons[mntmp].difficulty > max(5, u.ulevel * 2))
+                else if (mons[mntmp].difficulty > max(MIN_CONTROLLED_POLYMORPH_LEVEL, (3 * u.ulevel) / 2))
                 {
                     if(wizard && !forcecontrol && yn_query("Enforce polymorph control success?") == 'y')
                     {
@@ -571,11 +571,10 @@ polyself(int psflags)
             goto do_merge;
         if (bullheaded && (tryct <= 0 || mntmp == PM_MINOTAUR))
             goto do_minotaur;
-        if (isvamp && (tryct <= 0 || mntmp == PM_WOLF || mntmp == PM_FOG_CLOUD
-                       || is_bat(&mons[mntmp])))
+        if (isvamp && (tryct <= 0 || mntmp == PM_WOLF || mntmp == PM_FOG_CLOUD || is_bat(&mons[mntmp])))
             goto do_vampyr;
 
-        if (!forcecontrol && mntmp >= LOW_PM && (mons[mntmp].difficulty > max(5, u.ulevel * 3) || (!rn2(2) && mons[mntmp].difficulty > max(5, u.ulevel * 2))))
+        if ((!forcecontrol || forcerestrictedpoly) && mntmp >= LOW_PM && (mons[mntmp].difficulty > max(MIN_CONTROLLED_POLYMORPH_LEVEL, u.ulevel * 2) || (!rn2(2) && mons[mntmp].difficulty > max(MIN_CONTROLLED_POLYMORPH_LEVEL, (3 * u.ulevel) / 2))))
         {
             /* Control fails -- Randomize instead */
             pline("Oops! That form was too difficult for your polymorph control!");
@@ -616,7 +615,7 @@ polyself(int psflags)
                        re-converting scales to mail poses risk
                        of evaporation due to over enchanting */
                     uarm->otyp += GRAY_DRAGON_SCALES - GRAY_DRAGON_SCALE_MAIL;
-                    uarm->dknown = 1;
+                    set_obj_dknown(uarm, 1);
                     context.botl = 1; /* AC is changing */
                 }
                 uskin = uarm;
@@ -1163,7 +1162,7 @@ break_armor(void)
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "break out of %s!", yname(otmp));
                 exercise(A_STR, FALSE);
                 boolean had_stone_res = Stone_resistance;
-                otmp->in_use = 1;
+                set_obj_in_use(otmp, 1);
                 otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Do not burn it in lava; it is already broken */
                 (void)Armor_gone();
                 boolean ogone = finish_obj_tracking(trackidx);
@@ -1194,7 +1193,7 @@ break_armor(void)
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s tears apart!", cloak_simple_name(otmp));
-                otmp->in_use = 1;
+                set_obj_in_use(otmp, 1);
                 otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Do not burn it in lava; it is already broken */
                 (void) Cloak_off();
                 boolean ogone = finish_obj_tracking(trackidx);
@@ -1224,7 +1223,7 @@ break_armor(void)
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is torn to pieces!", robe_simple_name(otmp));
-                otmp->in_use = 1;
+                set_obj_in_use(otmp, 1);
                 otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Do not burn it in lava; it is already broken */
                 (void)Robe_off();
                 boolean ogone = finish_obj_tracking(trackidx);
@@ -1254,7 +1253,7 @@ break_armor(void)
             {
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "shirt rips to shreds!");
-                otmp->in_use = 1;
+                set_obj_in_use(otmp, 1);
                 otmp->item_flags |= ITEM_FLAGS_LAVA_EFFECTS_SKIP; /* Do not burn it in lava; it is already broken */
                 (void)Shirt_off();
                 boolean ogone = finish_obj_tracking(trackidx);
@@ -1623,14 +1622,14 @@ drop_weapon(int alone)
             if (u.twoweap) {
                 otmp = uarms;
                 uwep2gone();
-                if (otmp && otmp->in_use)
+                if (otmp && is_obj_in_use(otmp))
                     updateinv = FALSE;
                 else if (candropwep2)
                     (void)dropxf(otmp);
             }
             otmp = uwep;
             uwepgone();
-            if (otmp->in_use)
+            if (is_obj_in_use(otmp))
                 updateinv = FALSE;
             else if (candropwep)
                 (void)dropxf(otmp);
@@ -1656,7 +1655,7 @@ rehumanize(void)
             done(DIED);
         } else if (uamul && uamul->otyp == AMULET_OF_UNCHANGING) {
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s!", simpleonames(uamul), otense(uamul, "fail"));
-            uamul->dknown = 1;
+            set_obj_dknown(uamul, 1);
             makeknown(AMULET_OF_UNCHANGING);
         }
     }
@@ -1770,7 +1769,7 @@ choose_random_breath_weapon(int *intarr_ptr, int arrsize, const char *attk_name,
         maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0)) : 
         maybe_get_replaced_glyph(glyph, mon->mx, mon->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mon, 0UL, 0UL, 0UL, MAT_NONE, 0));
     menuwin = create_nhwindow_ex(NHW_MENU, 0, gui_glyph, zerocreatewindowinfo);
-    start_menu_ex(menuwin, GHMENU_STYLE_MONSTER_ABILITY);
+    start_menu_style(menuwin, GHMENU_STYLE_MONSTER_ABILITY);
 
     if (!intarr_ptr) /* Random breath weapon */
     {
@@ -2145,11 +2144,11 @@ dogaze(void)
             if (mtmp && !DEADMONSTER(mtmp) && canseemon(mtmp))
             {
                 looked++;
-                if (Invis && !has_see_invisible(mtmp))
+                if (Invis && !can_mon_see_invisible(mtmp))
                 {
                     pline("%s seems not to notice your gaze.", Monnam(mtmp));
                 }
-                else if (is_invisible(mtmp) && !See_invisible)
+                else if (is_invisible(mtmp) && !Can_see_invisible)
                 {
                     You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "see where to gaze at %s.", Monnam(mtmp));
                 }
@@ -2239,7 +2238,7 @@ dogaze(void)
                             You("gaze at %s but without effect.", mon_nam(mtmp));
                             break;
                         }
-                        else if (Blind || (is_invisible(mtmp) && !See_invisible))
+                        else if (Blind || (is_invisible(mtmp) && !Can_see_invisible))
                         {
                             You("stare blindly at %s general direction.", s_suffix(mon_nam(mtmp)));
                             break;
@@ -2583,7 +2582,8 @@ dolayegg(void)
     uegg->owt = weight(uegg);
     /* this sets hatch timers if appropriate */
     set_corpsenm(uegg, egg_type_from_parent(u.umonnum, FALSE));
-    uegg->known = uegg->dknown = 1;
+    set_obj_known(uegg, 1);
+    set_obj_dknown(uegg, 1);
     You("%s an egg.", eggs_in_water(youmonst.data) ? "spawn" : "lay");
     if (!dropy(uegg))
         stackobj(uegg);

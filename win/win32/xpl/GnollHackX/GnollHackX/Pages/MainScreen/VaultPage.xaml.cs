@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -47,6 +47,12 @@ namespace GnollHackX.Pages.MainScreen
             if (GHApp.DarkMode)
             {
                 lblHeader.TextColor = GHColors.White;
+                MessagePopupFrame.BackgroundColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
+//#if GNH_MAUI
+//                MessagePopupFrame.Stroke = GHColors.TitleGoldColor;
+//#else
+//                MessagePopupFrame.BorderColor = GHColors.TitleGoldColor;
+//#endif
             }
             Thickness gridMargin = new Thickness(110.0 / 10, 0);
             Thickness margin = new Thickness(110.0 / 8, 0, 110.0 / 8, 110.0 / 8);
@@ -189,6 +195,26 @@ namespace GnollHackX.Pages.MainScreen
             rib.HorizontalOptions = LayoutOptions.Center;
             rib.VerticalOptions = LayoutOptions.Center;
             rib.BtnClicked += btnSnapshots_Clicked;
+            _buttons.Add(rib);
+
+            rib = new LabeledImageButton();
+            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.load.png";
+            rib.ImgHighFilterQuality = true;
+            rib.LblText = "Save Transfer";
+            rib.LblFontSize = 20;
+            rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            rib.LblFontFamily = "Immortal";
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
+            rib.GridWidth = 200;
+            rib.GridHeight = 140;
+            rib.GridMargin = gridMargin;
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 140;
+            rib.Margin = margin;
+            rib.HorizontalOptions = LayoutOptions.Center;
+            rib.VerticalOptions = LayoutOptions.Center;
+            rib.BtnClicked += btnSaveTransfer_Clicked;
             _buttons.Add(rib);
         }
 
@@ -422,7 +448,7 @@ namespace GnollHackX.Pages.MainScreen
                 string errormsg = "";
                 if (!topScorePage.ReadFile(out errormsg))
                 {
-                    await GHApp.DisplayMessageBox(this, "Reading Top Scores Failed", "GnollHack failed to read the top scores file: " + errormsg, "OK");
+                    await ShowMessagePopupAsync("Reading Top Scores Failed", "GnollHack failed to read the top scores file: " + errormsg, "OK");
                     VaultGrid.IsEnabled = true;
                 }
                 else
@@ -528,10 +554,86 @@ namespace GnollHackX.Pages.MainScreen
             VaultGrid.IsEnabled = true;
         }
 
+        private async void btnSaveTransfer_Clicked(object sender, EventArgs e)
+        {
+            await OpenSaveTransferPage();
+        }
+
+        private async Task OpenSaveTransferPage()
+        {
+            VaultGrid.IsEnabled = false;
+            if (!GHApp.HasInternetAccess)
+            {
+                await ShowMessagePopupAsync("Internet Connection Required", "Internet access is required to use Save Transfer.", "OK");
+                VaultGrid.IsEnabled = true;
+                return;
+            }
+
+            if (!GHApp.XlogUserNameVerified && !string.IsNullOrEmpty(GHApp.XlogUserName))
+            {
+                MessagePopupTitleLabel.Text = "Credentials Verification";
+                MessagePopupTitleLabel.TextColor = GHColors.TitleGoldColor;
+                MessagePopupLabel.Text = "Verifying credentials... Please wait.";
+                MessagePopupOkButton.IsVisible = false;
+                MessagePopupCancelButton.IsVisible = false;
+                Thickness oldThickness = MessagePopupFrame.Padding;
+                MessagePopupFrame.Padding = new Thickness(oldThickness.Left, 18, oldThickness.Right, 24);
+                MessagePopupGrid.IsVisible = true;
+                await GHApp.TryVerifyXlogUserNameAsync(true);
+                MessagePopupOkButton.IsVisible = true;
+                MessagePopupFrame.Padding = oldThickness;
+                MessagePopupGrid.IsVisible = false;
+            }
+
+            if (string.IsNullOrEmpty(GHApp.XlogUserName) || !GHApp.XlogUserNameVerified)
+            {
+                await ShowMessagePopupAsync("Verification Required", "Registering or logging into a GnollHack server account is required for Save Transfer. Please go to Server Posting section in Settings to set this up.", "OK");
+                VaultGrid.IsEnabled = true;
+                return;
+            }
+
+            GHApp.PlayButtonClickedSound();
+            var transferPage = new SaveTransferPage();
+            await GHApp.PushModalPageAsync(transferPage);
+            await Task.Yield();
+#if GNH_MAUI
+            var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+            timer.Interval = TimeSpan.FromSeconds(0.1);
+            timer.IsRepeating = false;
+            timer.Tick += async (s, e) => { await transferPage.RefreshAsync(); };
+            timer.Start();
+#else
+            Device.StartTimer(TimeSpan.FromSeconds(0.1), () =>
+            {
+                MainThread.InvokeOnMainThreadAsync(async() => {
+                    await transferPage.RefreshAsync();
+                });
+                return false;
+            });
+#endif            
+            VaultGrid.IsEnabled = true;
+        }
+
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
             if (GHApp.PushingModalPage) /* Ignore key presses when opening a page */
                 return true;
+
+            if (MessagePopupGrid.IsVisible)
+            {
+                if (key == 27 || key == 13 || key == 32)
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        if (MessagePopupCancelButton.IsVisible)
+                            MessagePopupCancelButton_Clicked(this, EventArgs.Empty);
+                        else
+                            MessagePopupOkButton_Clicked(this, EventArgs.Empty);
+                    });
+                    return true;
+                }
+                return true;
+            }
 
             bool handled = false;
             try
@@ -578,6 +680,12 @@ namespace GnollHackX.Pages.MainScreen
                                     await OpenReplayPage();
                                 handled = true;
                                 break;
+                            case (int)'f':
+                            case (int)'F':
+                                if (VaultGrid.IsEnabled)
+                                    await OpenSaveTransferPage();
+                                handled = true;
+                                break;
                             default:
                                 break;
                         }
@@ -593,6 +701,47 @@ namespace GnollHackX.Pages.MainScreen
                 System.Diagnostics.Debug.WriteLine(ex);
             }
             return handled;
+        }
+
+        private TaskCompletionSource<bool> _messagePopupTcs;
+
+        private Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null, bool redTitle = false)
+        {
+            _messagePopupTcs = new TaskCompletionSource<bool>();
+
+            MessagePopupTitleLabel.Text = title;
+            MessagePopupTitleLabel.TextColor = redTitle ? GHColors.Red : GHColors.TitleGoldColor;
+            MessagePopupLabel.Text = message;
+
+            if (string.IsNullOrEmpty(cancelButtonText))
+            {
+                MessagePopupOkButton.Text = okButtonText;
+                MessagePopupCancelButton.IsVisible = false;
+                MessagePopupOkButton.HorizontalOptions = LayoutOptions.Center;
+            }
+            else
+            {
+                MessagePopupOkButton.Text = okButtonText;
+                MessagePopupCancelButton.Text = cancelButtonText;
+                MessagePopupCancelButton.IsVisible = true;
+                MessagePopupOkButton.HorizontalOptions = LayoutOptions.End;
+                MessagePopupCancelButton.HorizontalOptions = LayoutOptions.Start;
+            }
+
+            MessagePopupGrid.IsVisible = true;
+            return _messagePopupTcs.Task;
+        }
+
+        private void MessagePopupOkButton_Clicked(object sender, EventArgs e)
+        {
+            MessagePopupGrid.IsVisible = false;
+            _messagePopupTcs?.TrySetResult(true);
+        }
+
+        private void MessagePopupCancelButton_Clicked(object sender, EventArgs e)
+        {
+            MessagePopupGrid.IsVisible = false;
+            _messagePopupTcs?.TrySetResult(false);
         }
     }
 }

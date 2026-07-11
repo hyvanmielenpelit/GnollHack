@@ -41,11 +41,12 @@ namespace GnollHackX.Pages.MainScreen
                 lblSubtitle.TextColor = GHColors.White;
                 lblSubtitle2.TextColor = GHColors.White;
                 EmptyLabel.TextColor = GHColors.White;
-#if GNH_MAUI
-                TierFrame.Stroke = GHColors.TitleGoldColor;
-#else
-                TierFrame.BorderColor = GHColors.TitleGoldColor;
-#endif
+                TierFrame.BackgroundColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
+//#if GNH_MAUI
+//                TierFrame.Stroke = GHColors.TitleGoldColor;
+//#else
+//                TierFrame.BorderColor = GHColors.TitleGoldColor;
+//#endif
             }
             lblSubtitle.TextColor = GHApp.DarkMode ? GHColors.TitleGoldColor : GHColors.DarkGreen;
             lblSubtitle2.TextColor = GHApp.DarkMode ? GHColors.LightYellow : GHColors.SemiDarkGreen;
@@ -174,14 +175,16 @@ namespace GnollHackX.Pages.MainScreen
                     rib.IsSubLblVisible = true;
                     rib.ImgWidth = 80;
                     rib.ImgHeight = 80;
+                    rib.Padding = new Thickness(6);
                     rib.GridWidth = 480;
                     rib.GridHeight = 80;
 #if GNH_MAUI
                     rib.MaximumWidthRequest = 480;
+                    rib.MaximumHeightRequest = 80;
 #else
                     rib.WidthRequest = 480;
-#endif
                     rib.HeightRequest = 80;
+#endif
                     rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
                     rib.BtnCommand = i;
                     rib.BtnClicked += AchievementButton_Clicked;

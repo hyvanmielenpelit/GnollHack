@@ -37,6 +37,8 @@ static NEARDATA short nocreate = STRANGE_OBJECT;
 static NEARDATA short nocreate2 = STRANGE_OBJECT;
 static NEARDATA short nocreate3 = STRANGE_OBJECT;
 static NEARDATA short nocreate4 = STRANGE_OBJECT;
+static NEARDATA short nocreate5 = STRANGE_OBJECT;
+static NEARDATA short nocreate6 = STRANGE_OBJECT;
 
 /*
  *      Initial inventory for the various roles.
@@ -913,8 +915,8 @@ u_init(void)
     u.ugifts   = 0;                     /* no divine gifts bestowed */
     u.uevent.uhand_of_elbereth = 0;
     u.uevent.uheard_tune = 0;
-    u.uevent.uopened_dbridge = 0;
-    u.uevent.ukilled_wizard = 0;              /* not a demi-god yet... */
+    set_uevent_uopened_dbridge(0);
+    set_uevent_ukilled_wizard(0);              /* not a demi-god yet... */
     u.uintervene_timer = 0;
     u.mh = u.mhmax = u.basehpmax = u.mtimedone = 0;
     u.uz.dnum = u.uz0.dnum = 0;
@@ -954,6 +956,8 @@ u_init(void)
     nocreate2 = STRANGE_OBJECT;
     nocreate3 = STRANGE_OBJECT;
     nocreate4 = STRANGE_OBJECT;
+    nocreate5 = STRANGE_OBJECT;
+    nocreate6 = STRANGE_OBJECT;
 
     adjabil(0, 1);
     u.ulevel = u.ulevelmax = 1;
@@ -1603,7 +1607,7 @@ ini_inv(const struct trobj *trop)
 
                 while (otyp == WAN_WISHING || otyp == nocreate
                     || otyp == nocreate2 || otyp == nocreate3
-                    || otyp == nocreate4 || otyp == RIN_LEVITATION
+                    || otyp == nocreate4 || otyp == nocreate5 || otyp == nocreate6 || otyp == RIN_LEVITATION
                     || otyp == AMULET_OF_LIFE_SAVING
                     /* 'useless' items */
                     || is_cursed_magic_item(obj)
@@ -1678,12 +1682,15 @@ ini_inv(const struct trobj *trop)
                     break;
                 case RIN_POLYMORPH_CONTROL:
                     nocreate = RIN_POLYMORPH;
-                    nocreate2 = SPE_POLYMORPH;
+                    nocreate2 = SPE_POLYMORPH_OTHER;
                     nocreate3 = POT_POLYMORPH;
+                    nocreate4 = SPE_POLYMORPH_SELF;
+                    nocreate5 = SPE_SHAPE_CHANGE;
+                    break;
                 }
                 /* Don't have 2 of the same ring or spellbook */
                 if (obj->oclass == RING_CLASS || obj->oclass == SPBOOK_CLASS)
-                    nocreate4 = otyp;
+                    nocreate6 = otyp;
             }
 
             /* Don't start with +0 or negative rings */
@@ -1747,7 +1754,7 @@ ini_inv(const struct trobj *trop)
             if (Role_if(PM_ROGUE))
             {
                 if (obj->otyp == CROSSBOW_BOLT)
-                    obj->opoisoned = 1;
+                    set_obj_opoisoned(obj, 1);
             }
 
             /* Set sack contents*/
@@ -1867,8 +1874,11 @@ ini_inv(const struct trobj *trop)
                     int i;
 
                     otmp = mksobj(PINCH_OF_SULFUROUS_ASH, FALSE, FALSE, TRUE);
-                    otmp->known = 1;
-                    otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+                    set_obj_known(otmp, 1);
+                    set_obj_dknown(otmp, 1);
+                    set_obj_bknown(otmp, 1);
+                    set_obj_rknown(otmp, 1);
+                    set_obj_nknown(otmp, 1);
                     otmp = add_to_container(obj, otmp);
 
 
@@ -1879,16 +1889,22 @@ ini_inv(const struct trobj *trop)
                         if (otmp)
                         {
                             knows_object(otmp->otyp);
-                            otmp->known = 1;
-                            otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+                            set_obj_known(otmp, 1);
+                            set_obj_dknown(otmp, 1);
+                            set_obj_bknown(otmp, 1);
+                            set_obj_rknown(otmp, 1);
+                            set_obj_nknown(otmp, 1);
                             otmp = add_to_container(obj, otmp);
                         }
                     }
 
                     otmp = mksobj(SLIME_MOLD, TRUE, FALSE, TRUE);
                     knows_object(otmp->otyp);
-                    otmp->known = 1;
-                    otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+                    set_obj_known(otmp, 1);
+                    set_obj_dknown(otmp, 1);
+                    set_obj_bknown(otmp, 1);
+                    set_obj_rknown(otmp, 1);
+                    set_obj_nknown(otmp, 1);
                     otmp = add_to_container(obj, otmp);
 
 
@@ -1896,8 +1912,11 @@ ini_inv(const struct trobj *trop)
                     otmp = mksobj(ARROW, FALSE, FALSE, TRUE);
                     otmp->quan = 10;
                     otmp->owt = weight(otmp);
-                    otmp->known = 1;
-                    otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
+                    set_obj_known(otmp, 1);
+                    set_obj_dknown(otmp, 1);
+                    set_obj_bknown(otmp, 1);
+                    set_obj_rknown(otmp, 1);
+                    set_obj_nknown(otmp, 1);
                     otmp = add_to_container(obj, otmp);
 
                     int n = 2 + rn2(4); //2...5
@@ -1907,8 +1926,11 @@ ini_inv(const struct trobj *trop)
                         if (otmp)
                         {
                             knows_object(otmp2->otyp);
-                            otmp2->known = 1;
-                            otmp2->dknown = otmp2->bknown = otmp2->rknown = otmp2->nknown = 1;
+                            set_obj_known(otmp2, 1);
+                            set_obj_dknown(otmp2, 1);
+                            set_obj_bknown(otmp2, 1);
+                            set_obj_rknown(otmp2, 1);
+                            set_obj_nknown(otmp2, 1);
                             (void)add_to_container(obj, otmp2);
                         }
                     }
@@ -1932,7 +1954,7 @@ ini_inv(const struct trobj *trop)
                     for (i = 0; i < n; i++)
                     {
                         struct obj* otmp = mkobj(REAGENT_CLASS, FALSE, TRUE);
-                        otmp->bknown = 1;
+                        set_obj_bknown(otmp, 1);
                         if (otmp)
                         {
                             knows_object(otmp->otyp);
@@ -1954,19 +1976,24 @@ ini_inv(const struct trobj *trop)
             else
             {
                 if (objects[otyp].oc_uses_known)
-                    obj->known = 1;
-                obj->dknown = obj->bknown = obj->rknown = obj->nknown = 1;
+                    set_obj_known(obj, 1);
+                set_obj_dknown(obj, 1);
+                set_obj_bknown(obj, 1);
+                set_obj_rknown(obj, 1);
+                set_obj_nknown(obj, 1);
 
                 if (Is_container(obj) || obj->otyp == STATUE)
                 {
-                    obj->cknown = obj->lknown = obj->tknown = 1;
-                    obj->otrapped = 0;
+                    set_obj_cknown(obj, 1);
+                    set_obj_lknown(obj, 1);
+                    set_obj_tknown(obj, 1);
+                    set_obj_otrapped(obj, 0);
                 }
 
-                obj->cursed = 0;
+                set_obj_cursed(obj, 0);
 
-                if (obj->opoisoned && u.ualign.type != A_CHAOTIC)
-                    obj->opoisoned = 0;
+                if (is_obj_opoisoned(obj) && u.ualign.type != A_CHAOTIC)
+                    set_obj_opoisoned(obj, 0);
 
                 if (obj->oclass == WEAPON_CLASS || obj->oclass == TOOL_CLASS)
                 {
@@ -1981,7 +2008,7 @@ ini_inv(const struct trobj *trop)
                 if (trop->trspe != UNDEF_SPE)
                     obj->enchantment = trop->trspe;
                 if (trop->trbless != UNDEF_BLESS)
-                    obj->blessed = trop->trbless;
+                    set_obj_blessed(obj, trop->trbless);
                 if (trop->elemental_enchantment > 0)
                     obj->elemental_enchantment = trop->elemental_enchantment;
                 if (obj->elemental_enchantment == DEATH_ENCHANTMENT && u.ualign.type != A_CHAOTIC)
@@ -2108,7 +2135,7 @@ mk_obj_with_material_in_container_known(struct obj *container, int itemtype, int
     struct obj* otmp = mksobj_with_flags(itemtype, FALSE, FALSE, MKOBJ_TYPE_CONTAINER, (struct monst*)0, material, 0L, 0L, 0UL);
     if (otmp)
     {
-        otmp->bknown = 1;
+        set_obj_bknown(otmp, 1);
         /* Small kludge here to make sure that tourist starts with the right kind of slippers */
         if (otmp->otyp == COTTON_SLIPPERS)
         {
@@ -2546,7 +2573,7 @@ back_from_race:
         {
             /* Prompt for a role */
             win = create_nhwindow(NHW_MENU);
-            start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
+            start_menu_style(win, GHMENU_STYLE_CHOOSE_PLAYER);
             any = zeroany; /* zero out all bits */
             boolean didUseRecommended = FALSE;
             for (i = 0; roles[i].name.m; i++)
@@ -2697,7 +2724,7 @@ back_from_gender:
             if (n > 1)
             {
                 win = create_nhwindow(NHW_MENU);
-                start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
+                start_menu_style(win, GHMENU_STYLE_CHOOSE_PLAYER);
                 any = zeroany; /* zero out all bits */
                 boolean didUseRecommended = FALSE;
                 for (i = 0; races[i].noun; i++)
@@ -2834,7 +2861,7 @@ back_from_align:
             if (n > 1)
             {
                 win = create_nhwindow(NHW_MENU);
-                start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
+                start_menu_style(win, GHMENU_STYLE_CHOOSE_PLAYER);
                 any = zeroany; /* zero out all bits */
                 for (i = 0; i < ROLE_GENDERS; i++)
                     if (ok_gend(flags.initrole, flags.initrace, i,
@@ -2959,7 +2986,7 @@ back_from_align:
             if (n > 1)
             {
                 win = create_nhwindow(NHW_MENU);
-                start_menu_ex(win, GHMENU_STYLE_CHOOSE_PLAYER);
+                start_menu_style(win, GHMENU_STYLE_CHOOSE_PLAYER);
                 any = zeroany; /* zero out all bits */
                 for (i = 0; i < ROLE_ALIGNS; i++)
                     if (ok_align(flags.initrole, flags.initrace,
@@ -3050,7 +3077,7 @@ back_from_align:
             : NO_GLYPH;
         int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
         win = create_nhwindow_ex(NHW_MENU, 0, glyph, zerocreatewindowinfo);
-        start_menu_ex(win, GHMENU_STYLE_ACCEPT_PLAYER);
+        start_menu_style(win, GHMENU_STYLE_ACCEPT_PLAYER);
         any = zeroany; /* zero out all bits */
         any.a_int = 1;
         add_menu(win, NO_GLYPH, &any, 'y', 0, ATR_NONE, NO_COLOR, "Yes; start game",

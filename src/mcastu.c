@@ -66,7 +66,7 @@ cursetxt(struct monst *mtmp, boolean undirected)
 
         if (undirected)
             point_msg = "all around, then curses";
-        else if ((Invis && !has_see_invisible(mtmp)
+        else if ((Invis && !can_mon_see_invisible(mtmp)
                   && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                  || is_obj_mappear(&youmonst, STRANGE_OBJECT)
                  || u.uundetected)
@@ -263,8 +263,8 @@ castmu(struct monst *mtmp, struct attack *mattk, boolean thinks_it_foundyou, boo
     boolean is_ultimate = FALSE;
     boolean is_intermediate = FALSE;
     enum action_tile_types action = nodirspell ? ACTION_TILE_CAST_NODIR : ACTION_TILE_CAST_DIR;
-    boolean next2u = (distmin(u.ux, u.uy, mtmp->mx, mtmp->my) <= 1);
-    boolean show_action_tile = (next2u || !nodirspell);
+    //boolean next2u = (distmin(u.ux, u.uy, mtmp->mx, mtmp->my) <= 1);
+    boolean show_action_tile = canspotmon(mtmp) && couldsee(mtmp->mx, mtmp->my); // (next2u || !nodirspell);
 
     play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CAST);
     if(show_action_tile)
@@ -365,7 +365,7 @@ castmu(struct monst *mtmp, struct attack *mattk, boolean thinks_it_foundyou, boo
               canspotmon(mtmp) ? Monnam(mtmp) : "Something",
               is_undirected_spell(mattk->adtyp, spellnum)
                   ? ""
-                  : (Invisib && !has_see_invisible(mtmp)
+                  : (Invisib && !can_mon_see_invisible(mtmp)
                      && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                         ? " at a spot near you"
                         : (Displaced
@@ -534,7 +534,7 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
         damage = 0;
         break;
     case MGC_CLONE_WIZ:
-        if (mtmp->iswiz && context.no_of_wizards == 1)
+        if (is_mon_iswiz(mtmp) && context.no_of_wizards == 1)
         {
             play_voice_wizard_of_yendor_simple_line(mtmp, WIZARD_OF_YENDOR_LINE_DOUBLE_TROUBLE);
             pline_ex(ATR_NONE, CLR_MSG_SPELL, "Double Trouble...");
@@ -547,14 +547,14 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
     {
         int count;
 
-        if (mtmp->iswiz)
+        if (is_mon_iswiz(mtmp))
             count = summon_nasties(mtmp); /* summon something nasty */
         else
             count = summon_level_appropriate_monsters(mtmp); /* summon something appropriate */
 
         if (count == 0)
             cursetxt(mtmp, TRUE);
-        else if (mtmp->iswiz)
+        else if (is_mon_iswiz(mtmp))
         {
             play_voice_wizard_of_yendor_simple_line(mtmp,
                 count > 1 ? WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PETS :
@@ -570,7 +570,7 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
 
             /* messages not quite right if plural monsters created but
                only a single monster is seen */
-            if (Invisib && !has_see_invisible(mtmp)
+            if (Invisib && !can_mon_see_invisible(mtmp)
                 && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s around a spot near you!", mappear);
             else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
@@ -589,7 +589,7 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
 
         if (count == 0)
             cursetxt(mtmp, TRUE);
-        else if (mtmp->iswiz)
+        else if (is_mon_iswiz(mtmp))
         {
             play_voice_wizard_of_yendor_simple_line(mtmp,
                 count > 1 ? WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PETS :
@@ -605,7 +605,7 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
 
             /* messages not quite right if plural monsters created but
                only a single monster is seen */
-            if (Invisib && !has_see_invisible(mtmp)
+            if (Invisib && !can_mon_see_invisible(mtmp)
                 && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s around a spot near you!", mappear);
             else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
@@ -669,7 +669,8 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
                 strloss = (strloss + 1) / 2;
             if (Invulnerable)
                 strloss = 0;
-            losestr(rnd(strloss));
+            if (strloss > 0)
+                losestr(strloss == 1 ? 1 : rnd(strloss));
             if (u.uhp < 1)
                 done_in_by(mtmp, DIED);
         }
@@ -680,7 +681,7 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
         {
             if (canseemon(mtmp))
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly %s!", Monnam(mtmp),
-                      !See_invisible ? "disappears" : "becomes transparent");
+                      !Can_see_invisible ? "disappears" : "becomes transparent");
             increase_mon_property(mtmp, INVISIBILITY, d(2, 10) + 80);
             if (cansee(mtmp->mx, mtmp->my) && !canspotmon(mtmp))
                 map_invisible(mtmp->mx, mtmp->my);
@@ -863,7 +864,7 @@ cast_cleric_spell(struct monst *mtmp, double damage, int spellnum)
         /* Try for insects, and if there are none
            left, go for (sticks to) snakes.  -3. */
         char let = (spellnum == CLC_INSECTS ? S_ANT : S_SNAKE);
-        struct permonst *pm = mkclass(let, 0);
+        struct permonst *pm = mkclass(let);
         struct monst *mtmp2 = (struct monst *) 0;
         if (!pm)
             break;
@@ -887,14 +888,16 @@ cast_cleric_spell(struct monst *mtmp, double damage, int spellnum)
                 break;
             
             debugprint_pos();
-            if ((pm = mkclass(let, 0)) != 0
+            if ((pm = mkclass(let)) != 0
                 && (mtmp2 = makemon(pm, bypos.x, bypos.y, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL))) != 0)
             {
                 context.makemon_spef_idx++;
                 success = TRUE;
-                mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
+                mtmp2->mtame = 0;
+                set_mon_mpeaceful(mtmp2, 0);
+                set_mon_msleeping(mtmp2, 0);
                 if (!mtmp2->mtame)
-                    mtmp2->ispartymember = FALSE;
+                    set_mon_ispartymember(mtmp2, FALSE);
                 set_mhostility(mtmp2);
                 difficulty += mtmp2->data->difficulty;
                 summon_quan++;
@@ -941,7 +944,7 @@ cast_cleric_spell(struct monst *mtmp, double damage, int spellnum)
             fmt = "%s casts at a clump of sticks, but nothing happens.";
         else if (let == S_SNAKE)
             fmt = (summon_quan == 1 ? "%s transforms a stick of wood into a snake!" : "%s transforms a clump of sticks into snakes!");
-        else if (Invisib && !has_see_invisible(mtmp)
+        else if (Invisib && !can_mon_see_invisible(mtmp)
                  && (mtmp->mux != u.ux || mtmp->muy != u.uy))
             fmt = (summon_quan == 1 ? "%s summons an insect around a spot near you!" : "%s summons insects around a spot near you!");
         else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
@@ -1192,14 +1195,14 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
 
         /* don't summon monsters if it doesn't think you're around */
         if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS || spellnum == MGC_SUMMON_NASTY
-                            || (!mtmp->iswiz && spellnum == MGC_CLONE_WIZ)))
+                            || (!is_mon_iswiz(mtmp) && spellnum == MGC_CLONE_WIZ)))
             return TRUE;
 
-        if ((!mtmp->iswiz || context.no_of_wizards > 1)
+        if ((!is_mon_iswiz(mtmp) || context.no_of_wizards > 1)
             && spellnum == MGC_CLONE_WIZ)
             return TRUE;
 
-        if ((!mtmp->iswiz || context.no_of_wizards > 1)
+        if ((!is_mon_iswiz(mtmp) || context.no_of_wizards > 1)
             && spellnum == MGC_CLONE_WIZ)
             return TRUE;
 
@@ -1239,9 +1242,9 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
         /* don't summon insects if it doesn't think you're around */
         if (!mcouldseeu && (spellnum == CLC_INSECTS || spellnum == CLC_SNAKES))
             return TRUE;
-        if (spellnum == CLC_INSECTS && mkclass(S_ANT, 0) == (struct permonst*)0)
+        if (spellnum == CLC_INSECTS && mkclass(S_ANT) == (struct permonst*)0)
             return TRUE;
-        if (spellnum == CLC_SNAKES && mkclass(S_SNAKE, 0) == (struct permonst*)0)
+        if (spellnum == CLC_SNAKES && mkclass(S_SNAKE) == (struct permonst*)0)
             return TRUE;
         /* blindness spell on blinded player */
         if (spellnum == CLC_BLIND_YOU && Blinded)

@@ -633,7 +633,7 @@ enum context_menu_styles {
 #define DONAME_SHOW_QUICK_ITEMS             0x1000
 
 /* Moved from shk.c */
-#define NOTANGRY(mon) ((mon)->mpeaceful)
+#define NOTANGRY(mon) (is_mon_mpeaceful((mon)))
 #define ANGRY(mon) (!NOTANGRY(mon))
 #define IS_SHOP(x) (rooms[x].rtype >= SHOPBASE)
 
@@ -1390,7 +1390,9 @@ enum cat_breeds {
 #define INVENTORY_SWAP_RESULT   -2
 
 #define XRAY_VISION_RANGE 3
-#define ASTRAL_VISION_RANGE 4
+#define ASTRAL_VISION_RANGE 5
+#define MAX_DURATION_CONSTANT_MULTIPLIER 2
+#define MIN_CONTROLLED_POLYMORPH_LEVEL 12
 
 #endif /* GENERAL_H */
 

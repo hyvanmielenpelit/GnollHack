@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-    <DefineConstants>$(DefineConstants);BITFIELDS</DefineConstants>
+    <DefineConstants>$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -727,6 +727,9 @@
     <EmbeddedResource Update="Pages\MainScreen\ReplayPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Pages\MainScreen\SaveTransferPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Pages\MainScreen\SettingsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -756,6 +759,9 @@
     </Compile>
     <Compile Update="Pages\MainScreen\ReplayPage.xaml.cs">
       <DependentUpon>ReplayPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\MainScreen\SaveTransferPage.xaml.cs">
+      <DependentUpon>SaveTransferPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

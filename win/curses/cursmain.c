@@ -320,7 +320,7 @@ curses_create_nhwindow_ex(int type, int style UNUSED, int glyph UNUSED, struct e
     winid wid = curses_get_wid(type);
 
     if (curses_is_menu(wid) || curses_is_text(wid)) {
-        curses_start_menu_ex(wid, 0);
+        curses_start_menu_ex(wid, 0, 0, 0UL);
         curses_add_wid(wid);
     }
 
@@ -495,7 +495,7 @@ curses_display_file(const char *filename, boolean must_exist)
    be used for menus.
 */
 void
-curses_start_menu_ex(winid wid, int style)
+curses_start_menu_ex(winid wid, int style, int glyph UNUSED, uint64_t mflags UNUSED)
 {
     if (inv_update)
         return;
@@ -724,10 +724,10 @@ print_glyph(window, x, y, glyph, bkglyph)
 void
 curses_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
 {
-    nhsym ch;
+    nhsym ch = 0;
     int cch;
-    int color;
-    uint64_t special;
+    int color = NO_COLOR;
+    uint64_t special = 0;
     int attr = -1;
 
     int glyph = layers.glyph;

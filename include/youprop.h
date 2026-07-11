@@ -221,14 +221,6 @@
 #define Slimed u.uprops[SLIMED].intrinsic /* [Tom] */
 #define MummyRot u.uprops[MUMMY_ROT].intrinsic
 
-#define HHallucination u.uprops[HALLUC].intrinsic
-#define EHallucination u.uprops[HALLUC].extrinsic
-#define HHalluc_resistance u.uprops[HALLUC_RES].intrinsic
-#define EHalluc_resistance u.uprops[HALLUC_RES].extrinsic
-#define Halluc_resistance (HHalluc_resistance || EHalluc_resistance)
-#define Hallucination ((HHallucination || EHallucination) && !Halluc_resistance)
-
-
 /* Timeout, plus a worn mask */
 #define HDeaf u.uprops[DEAF].intrinsic
 #define EDeaf u.uprops[DEAF].extrinsic
@@ -315,9 +307,21 @@
 #define Hunger (HHunger || EHunger)
 
 /*** Vision and senses ***/
+#define HTrue_seeing u.uprops[TRUE_SEEING].intrinsic
+#define ETrue_seeing u.uprops[TRUE_SEEING].extrinsic
+#define True_seeing (HTrue_seeing || ETrue_seeing)
+
 #define HSee_invisible u.uprops[SEE_INVISIBLE].intrinsic
 #define ESee_invisible u.uprops[SEE_INVISIBLE].extrinsic
 #define See_invisible (HSee_invisible || ESee_invisible)
+#define Can_see_invisible (See_invisible || True_seeing)
+
+#define HHallucination u.uprops[HALLUC].intrinsic
+#define EHallucination u.uprops[HALLUC].extrinsic
+#define HHalluc_resistance u.uprops[HALLUC_RES].intrinsic
+#define EHalluc_resistance u.uprops[HALLUC_RES].extrinsic
+#define Halluc_resistance (HHalluc_resistance || EHalluc_resistance)
+#define Hallucination ((HHallucination || EHallucination) && !Halluc_resistance && !True_seeing)
 
 #define HTelepat u.uprops[TELEPAT].intrinsic
 #define ETelepat u.uprops[TELEPAT].extrinsic
@@ -430,7 +434,7 @@
 #define HInvis u.uprops[INVISIBILITY].intrinsic
 #define EInvis u.uprops[INVISIBILITY].extrinsic
 #define Invis ((HInvis || EInvis) && !Blocks_Invisibility)
-#define Invisib (Invis && !See_invisible)
+#define Invisib (Invis && !See_invisible && !True_seeing)
 /* Note: invisibility also hides inventory and steed */
 
 #define HDisplaced u.uprops[DISPLACED].intrinsic

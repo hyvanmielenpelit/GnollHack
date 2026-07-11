@@ -417,7 +417,7 @@ E void X11_putstr_ex(winid, const char *, int, int, int);
 E void X11_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
 #define X11_putstr(x, y, z) X11_putstr_ex(x, z, y, 0, 0)
 E void X11_display_file(const char *, boolean);
-E void X11_start_menu_ex(winid, int);
+E void X11_start_menu_ex(winid, int, int, uint64_t);
 E void X11_add_menu(winid, int, const ANY_P *, char, char, int,
                             const char *, boolean);
 E void X11_add_extended_menu(winid, int, const ANY_P*, char, char, int, int,

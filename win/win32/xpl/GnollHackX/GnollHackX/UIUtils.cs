@@ -4,6 +4,7 @@ using System.Text;
 using SkiaSharp;
 using System.Diagnostics;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 
 #if GNH_MAUI
@@ -1517,6 +1518,77 @@ namespace GnollHackX
             float possibleScaling = freeSpacePerTextRow / fontHeight;
 
             return Math.Max(1.0f, Math.Min(possibleScaling, Math.Min(GHConstants.WindowMessageFontSizeMaxMultiplier, (float)relevantScale)));
+        }
+
+        public static void SetMarkdownText(Label label, string markdown, string baseFontFamily, bool isDarkMode)
+        {
+            if (label == null) return;
+            if (string.IsNullOrEmpty(markdown))
+            {
+                label.Text = "";
+                return;
+            }
+
+            string pattern = @"(\*\*(.*?)\*\*|\*(.*?)\*|`(.*?)`|\[\[(.*?)\]\])";
+            var matches = Regex.Matches(markdown, pattern);
+            if (matches == null || matches.Count == 0)
+            {
+                label.Text = markdown;
+                return;
+            }
+
+            label.Text = ""; /* There was a bug in clearing the spans at least on Windows when using just FormattedText */
+
+            bool hasBaseFontFamily = !string.IsNullOrEmpty(baseFontFamily);
+            int currentIndex = 0;
+            var formattedString = new FormattedString();
+            foreach (Match match in matches)
+            {
+                if (match.Index > currentIndex)
+                {
+                    string unformatted = markdown.Substring(currentIndex, match.Index - currentIndex);
+                    formattedString.Spans.Add(
+                        hasBaseFontFamily ? new Span { Text = unformatted, FontFamily = baseFontFamily } : 
+                        new Span { Text = unformatted } );
+                }
+
+                if (match.Groups[1].Value.StartsWith("**"))
+                {
+                    formattedString.Spans.Add(
+                        hasBaseFontFamily ? new Span { Text = match.Groups[2].Value, FontAttributes = FontAttributes.Bold, FontFamily = baseFontFamily } :
+                        new Span { Text = match.Groups[2].Value, FontAttributes = FontAttributes.Bold }
+                        );
+                }
+                else if (match.Groups[1].Value.StartsWith("*"))
+                {
+                    formattedString.Spans.Add(
+                        hasBaseFontFamily ? new Span { Text = match.Groups[3].Value, FontAttributes = FontAttributes.Italic, FontFamily = baseFontFamily } :
+                        new Span { Text = match.Groups[3].Value, FontAttributes = FontAttributes.Italic });
+                }
+                else if (match.Groups[1].Value.StartsWith("`"))
+                {
+                    formattedString.Spans.Add(
+                        hasBaseFontFamily ? new Span { Text = match.Groups[4].Value, FontFamily = "DejaVuSansMono", TextColor = isDarkMode ? GHColors.LighterGray : GHColors.DarkerGray } :
+                        new Span { Text = match.Groups[4].Value, FontFamily = "DejaVuSansMono", TextColor = isDarkMode ? GHColors.LighterGray : GHColors.DarkerGray });
+                }
+                else if (match.Groups[1].Value.StartsWith("[["))
+                {
+                    formattedString.Spans.Add(
+                        hasBaseFontFamily ? new Span { Text = match.Groups[5].Value, TextColor = GHColors.TitleGoldColor, TextDecorations = TextDecorations.Underline, FontFamily = baseFontFamily } :
+                        new Span { Text = match.Groups[5].Value, TextColor = GHColors.TitleGoldColor, TextDecorations = TextDecorations.Underline });
+                }
+
+                currentIndex = match.Index + match.Length;
+            }
+
+            if (currentIndex < markdown.Length)
+            {
+                formattedString.Spans.Add(
+                    hasBaseFontFamily ? new Span { Text = markdown.Substring(currentIndex), FontFamily = baseFontFamily } :
+                    new Span { Text = markdown.Substring(currentIndex) });
+            }
+
+            label.FormattedText = formattedString;
         }
 
         public static void SetPageTheme(Page page, bool isDarkTheme)

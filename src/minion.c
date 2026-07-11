@@ -27,7 +27,7 @@ free_emin(struct monst *mtmp)
         free((genericptr_t) EMIN(mtmp));
         EMIN(mtmp) = (struct emin *) 0;
     }
-    mtmp->isminion = 0;
+    set_mon_isminion(mtmp, 0);
 }
 
 /*
@@ -72,8 +72,8 @@ msummon(struct monst *mon)
             return 0;
         }
 
-        atyp = mon->ispriest ? EPRI(mon)->shralign
-                             : mon->isminion ? EMIN(mon)->min_align
+        atyp = is_mon_ispriest(mon) ? EPRI(mon)->shralign
+                             : is_mon_isminion(mon) ? EMIN(mon)->min_align
                                              : (ptr->maligntyp == A_NONE)
                                                    ? A_NONE
                                                    : sgn(ptr->maligntyp);
@@ -203,7 +203,7 @@ msummon(struct monst *mon)
             /* an angel's alignment should match the summoner */
             //if (dtype == PM_ANGEL)
             //{
-            //    mtmp->isminion = 1;
+            //    set_mon_isminion(mtmp, 1);
             //    EMIN(mtmp)->min_align = atyp;
             //    /* renegade if same alignment but not peaceful
             //       or peaceful but different alignment */
@@ -694,7 +694,7 @@ summon_minion(aligntyp alignment, boolean talk)
         mon = makemon_limited(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_ROAMER | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END, MM2_FORCE_NONRENEGADE, 0, 0, 0, 0, 0, alignment);
         //if (mon)
         //{
-        //    mon->isminion = 1;
+        //    set_mon_isminion(mon, 1);
         //    EMIN(mon)->min_align = alignment;
         //    EMIN(mon)->renegade = FALSE;
         //}
@@ -707,7 +707,7 @@ summon_minion(aligntyp alignment, boolean talk)
         mon = makemon_limited(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_ROAMER | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END, MM2_FORCE_NONRENEGADE, 0, 0, 0, 0, 0, alignment);
         //if (mon)
         //{
-        //    mon->isminion = 1;
+        //    set_mon_isminion(mon, 1);
         //    EMIN(mon)->min_align = alignment;
         //    EMIN(mon)->renegade = FALSE;
         //}
@@ -728,7 +728,7 @@ summon_minion(aligntyp alignment, boolean talk)
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s appears before you.", Amonnam(mon));
             mon->mstrategy &= ~STRAT_APPEARMSG;
         }
-        mon->mpeaceful = FALSE;
+        set_mon_mpeaceful(mon, FALSE);
         /* don't call set_mhostility(); player was naughty */
     }
 }
@@ -749,9 +749,9 @@ demon_talk(struct monst *mtmp, boolean *stop_chat_ptr)
         ) 
     {
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s looks very angry.", Amonnam(mtmp));
-        mtmp->mpeaceful = mtmp->mtame = 0;
+        set_mon_mpeaceful(mtmp, mtmp->mtame = 0);
         if (!mtmp->mtame)
-            mtmp->ispartymember = FALSE;
+            set_mon_ispartymember(mtmp, FALSE);
 
         set_mhostility(mtmp);
         newsym(mtmp->mx, mtmp->my);
@@ -859,7 +859,7 @@ demon_talk(struct monst *mtmp, boolean *stop_chat_ptr)
         {
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "Seeing you, %s gets angry...", Amonnam(mtmp));
-            mtmp->mpeaceful = 0;
+            set_mon_mpeaceful(mtmp, 0);
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
             update_game_music();
@@ -876,7 +876,7 @@ demon_talk(struct monst *mtmp, boolean *stop_chat_ptr)
             / (100 * (1 + (sgn(u.ualign.type) == sgn(mtmp->data->maligntyp))));
 
         if (!demand || multi < 0 || Sleeping || Paralyzed_or_immobile) { /* you have no gold or can't move */
-            mtmp->mpeaceful = 0;
+            set_mon_mpeaceful(mtmp, 0);
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
             if (stop_chat_ptr)
@@ -915,7 +915,7 @@ demon_talk(struct monst *mtmp, boolean *stop_chat_ptr)
             {
                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gets angry...", Amonnam(mtmp));
-                mtmp->mpeaceful = 0;
+                set_mon_mpeaceful(mtmp, 0);
                 set_mhostility(mtmp);
                 newsym(mtmp->mx, mtmp->my);
                 update_game_music();
@@ -1009,7 +1009,7 @@ lminion(boolean ignore_difficulty, boolean is_summon)
     struct permonst *ptr;
 
     for (tryct = 0; tryct < 20; tryct++) {
-        ptr = mkclass_core(S_ANGEL, 0, A_NONE, 0, (ignore_difficulty ? (MKCLASS_FLAGS_IGNORE_DIFFICULTY) : 0UL) | (is_summon ? (MKCLASS_FLAGS_SUMMON) : 0UL));
+        ptr = mkclass_core(S_ANGEL, 0, 0, 0, A_NONE, 0, (ignore_difficulty ? (MKCLASS_FLAGS_IGNORE_DIFFICULTY) : 0UL) | (is_summon ? (MKCLASS_FLAGS_SUMMON) : 0UL));
         if (ptr && !is_lord(ptr))
             return monsndx(ptr);
     }
@@ -1040,7 +1040,7 @@ ndemon(aligntyp atyp, boolean ignore_difficulty, boolean is_summon)
     if (atyp == A_NEUTRAL)
         return NON_PM;
 #endif
-    ptr = mkclass_aligned(S_DEMON, 0, atyp, (ignore_difficulty ? (MKCLASS_FLAGS_IGNORE_DIFFICULTY) : 0UL) | (is_summon ? (MKCLASS_FLAGS_SUMMON) : 0UL));
+    ptr = mkclass_aligned(S_DEMON, atyp, (ignore_difficulty ? (MKCLASS_FLAGS_IGNORE_DIFFICULTY) : 0UL) | (is_summon ? (MKCLASS_FLAGS_SUMMON) : 0UL));
     if (ptr && is_ndemon(ptr))
         return monsndx(ptr);
     else
@@ -1122,7 +1122,7 @@ gain_guardian_angel(boolean fromspell)
              * call tamedog().
              */
             mtmp->mtame = 10;
-            mtmp->isprotector = TRUE;
+            set_mon_isprotector(mtmp, TRUE);
             u.uconduct.pets++;
             newsym(mtmp->mx, mtmp->my);
             /* make him strong enough vs. endgame foes */

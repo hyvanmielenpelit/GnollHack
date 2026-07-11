@@ -77,7 +77,7 @@
                             <Grid x:Name="ScreenResolutionGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Screen Resolution"
                                             FontFamily="Underwood" TextColor="Black"
-                                            FontSize="16"
+                                            FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
                                 <Picker Grid.Column="1" x:Name="ScreenResolutionPicker"
@@ -1273,9 +1273,6 @@
                                        FontSize="15"
                                        VerticalOptions="Center" 
                                        HorizontalOptions="Start">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="PostDiagnosticDataLabel_TapGestureRecognizer_Tapped" />
-                                    </Label.GestureRecognizers>
                                 </Label>
                                 <Switch Grid.Column="1" x:Name="PostDiagnosticDataSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="PostDiagnosticDataSwitch_Toggled" />
                             </Grid>
@@ -1418,9 +1415,6 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" >
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="BonesAllowedUsersLabel_TapGestureRecognizer_Tapped" />
-                                    </Label.GestureRecognizers>
                                 </Label>
                                 <Entry Grid.Column="1" x:Name="BonesAllowedUsersEntry" MaxLength="2047" HorizontalOptions="End" VerticalOptions="Center" Placeholder="All users" PlaceholderColor="Gray"
                                     Keyboard="Plain" TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />

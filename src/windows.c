@@ -84,7 +84,7 @@ static winid dump_create_nhwindow_ex(int, int, int, struct extended_create_windo
 static void dump_clear_nhwindow(winid);
 static void dump_display_nhwindow(winid, boolean);
 static void dump_destroy_nhwindow(winid);
-static void dump_start_menu_ex(winid, int);
+static void dump_start_menu_ex(winid, int, int, uint64_t);
 static void dump_add_menu(winid, int, const ANY_P *, char,
                                       char, int, int, const char *, boolean);
 static void dump_add_extended_menu(winid, int, const ANY_P*, char,
@@ -732,7 +732,7 @@ static void hup_getlin_ex(int, int, int, const char *, char *, const char*, cons
 static void hup_init_nhwindows(int *, char **);
 static void hup_exit_nhwindows(const char *);
 static winid hup_create_nhwindow_ex(int, int, int, struct extended_create_window_info);
-static void hup_start_menu_ex(winid, int);
+static void hup_start_menu_ex(winid, int, int, uint64_t);
 static int hup_select_menu(winid, int, MENU_ITEM_P **);
 static void hup_add_menu(winid, int, const anything *, char, char,
                                  int, int, const char *, boolean);
@@ -907,7 +907,7 @@ hup_create_nhwindow_ex(int type UNUSED, int style UNUSED, int glyph UNUSED, stru
 
 /*ARGUSED*/
 static void
-hup_start_menu_ex(winid window UNUSED, int style UNUSED)
+hup_start_menu_ex(winid window UNUSED, int style UNUSED, int glyph UNUSED, uint64_t mflags UNUSED)
 {
     return;
 }
@@ -1893,7 +1893,7 @@ dump_destroy_nhwindow(winid win UNUSED)
 
 /*ARGUSED*/
 static void
-dump_start_menu_ex(winid win UNUSED, int style UNUSED)
+dump_start_menu_ex(winid win UNUSED, int style UNUSED, int glyph UNUSED, uint64_t mflags UNUSED)
 {
     return;
 }
@@ -3037,7 +3037,7 @@ write_snapshot_json(time_t now, const char *dumplog_filepath, const char *dumpht
         if (slev)
             mptr = find_mapseen(&u.uz);
 
-        if (slev && mptr && mptr->flags.special_level_true_nature_known)
+        if (slev && mptr && is_msflag_special_level_true_nature_known(&mptr->flags))
         {
             Sprintf(level_name_buf, "%s", slev->name);
         }

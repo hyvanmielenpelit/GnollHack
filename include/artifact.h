@@ -210,6 +210,10 @@ enum invoke_prop_types {
 #define NUM_ARTINVOKES (MAX_ARTINVOKES - FIRST_ARTINVOKE)
 
 extern const char* artifact_invoke_names[NUM_ARTINVOKES];
+extern const char* artifact_invoke_descriptions[NUM_ARTINVOKES];
 extern NEARDATA struct artifact artilist[];
+
+#define MITRE_OF_HOLINESS_MIN_BOOST 12
+#define MITRE_OF_HOLINESS_MAX_BOOST 240
 
 #endif /* ARTIFACT_H */

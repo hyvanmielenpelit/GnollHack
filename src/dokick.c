@@ -106,14 +106,14 @@ kickdmg(struct monst *mon, boolean clumsy)
         dmg = 0;
 
     /* attacking a shade is normally useless */
-    if (is_shade(mon->data) && !shade_glare(uarmf))
+    if (is_shade(mon->data) && !shade_glare(uarmf, mon))
         dmg = 0;
 
     int64_t silverhit = 0;
     specialdmg = special_dmgval(&youmonst, mon, W_ARMF, &silverhit);
     dmg += specialdmg;
 
-    if (is_shade(mon->data) && !shade_glare(uarmf) && !specialdmg) {
+    if (is_shade(mon->data) && !shade_glare(uarmf, mon) && !specialdmg) {
         pline_The("%s.", kick_passes_thru);
         /* doesn't exercise skill or abuse alignment or frighten pet,
            and shades have no passive counterattack */
@@ -125,7 +125,7 @@ kickdmg(struct monst *mon, boolean clumsy)
 
     boolean kicksuccessful = FALSE;
 
-    if (!hugemonst(mon->data) && mon != u.ustuck && !mon->mtrapped)
+    if (!hugemonst(mon->data) && mon != u.ustuck && !is_mon_mtrapped(mon))
     {
         if (Magical_kicking)
         {
@@ -222,7 +222,7 @@ kickdmg(struct monst *mon, boolean clumsy)
             if (is_tame(mon))
                 monflee(mon, (dmg ? rnd(dmg) : 1), FALSE, FALSE);
             else
-                mon->mflee = 0;
+                set_mon_mflee(mon, 0);
         }
 
         boolean hurtles = FALSE;
@@ -325,12 +325,12 @@ kick_monster(struct monst *mon, xchar x, xchar y)
 
     /* reveal hidden target even if kick ends up missing (note: being
        hidden doesn't affect chance to hit so neither does this reveal) */
-    if (mon->mundetected
+    if (is_mon_mundetected(mon)
         || (M_AP_TYPE(mon) && M_AP_TYPE(mon) != M_AP_MONSTER)) 
     {
         if (M_AP_TYPE(mon))
             seemimic(mon);
-        mon->mundetected = 0;
+        set_mon_mundetected(mon, 0);
         if (!canspotmon(mon))
             map_invisible(x, y);
         else
@@ -370,7 +370,7 @@ kick_monster(struct monst *mon, xchar x, xchar y)
 
             kickdieroll = rnd(20);
             specialdmg = special_dmgval(&youmonst, mon, W_ARMF, (int64_t *) 0);
-            if (is_shade(mon->data) && !shade_glare(uarmf) && !specialdmg) {
+            if (is_shade(mon->data) && !shade_glare(uarmf, mon) && !specialdmg) {
                 /* doesn't matter whether it would have hit or missed,
                    and shades have no passive counterattack */
                 Your("%s %s.", kick_passes_thru, mon_nam(mon));
@@ -435,7 +435,7 @@ kick_monster(struct monst *mon, xchar x, xchar y)
         {
             /* check if mon catches your kick */
             if (!rn2(clumsy ? 3 : 4) && (clumsy || !bigmonst(mon->data))
-                && !is_blinded(mon) && !mon->mtrapped && !thick_skinned(mon->data)
+                && !is_blinded(mon) && !is_mon_mtrapped(mon) && !thick_skinned(mon->data)
                 && mon->data->mlet != S_EEL && haseyes(mon->data)
                 && !is_stunned(mon) && !is_confused(mon) && mon_can_move(mon)
                 && mon->data->mmove >= 12)
@@ -457,7 +457,7 @@ kick_monster(struct monst *mon, xchar x, xchar y)
                         You("kick %s.", mon_nam(mon));
                         (void)unmap_invisible_with_animation(x, y, 0);
                         pline("%s %s, %s evading your %skick.", Monnam(mon),
-                            (!level.flags.noteleport && has_teleportation(mon))
+                            (!is_levflag_noteleport(&level.flags) && has_teleportation(mon))
                             ? "teleports"
                             : is_levitating(mon)
                             ? "floats"
@@ -498,8 +498,8 @@ ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
 {
     boolean msg_given = FALSE;
 
-    if (!likes_gold(mtmp->data) && !mtmp->isshk && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc
-        && !mtmp->isgd && !is_mercenary(mtmp->data)) 
+    if (!likes_gold(mtmp->data) && !is_mon_isshk(mtmp) && !is_mon_ispriest(mtmp) && !is_mon_issmith(mtmp) && !is_mon_isnpc(mtmp)
+        && !is_mon_isgd(mtmp) && !is_mercenary(mtmp->data)) 
     {
         wakeup(mtmp, TRUE);
     }
@@ -520,17 +520,17 @@ ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
 
         int64_t umoney, value = gold->quan * objects[gold->otyp].oc_cost;
 
-        mtmp->msleeping = 0;
+        set_mon_msleeping(mtmp, 0);
         finish_meating(mtmp);
         refresh_m_tile_gui_info(mtmp, TRUE);
-        if (!mtmp->isgd && !rn2(4)) /* not always pleasing */
+        if (!is_mon_isgd(mtmp) && !rn2(4)) /* not always pleasing */
             setmangry(mtmp, TRUE);
         /* greedy monsters catch gold */
         if (cansee(mtmp->mx, mtmp->my))
             pline("%s catches the gold.", Monnam(mtmp));
         (void) mpickobj(mtmp, gold);
         gold = (struct obj *) 0; /* obj has been freed */
-        if (mtmp->isshk)
+        if (is_mon_isshk(mtmp))
         {
             int64_t robbed = ESHK(mtmp)->robbed;
 
@@ -560,7 +560,7 @@ ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
                 }
             }
         } 
-        else if (mtmp->ispriest) 
+        else if (is_mon_ispriest(mtmp)) 
         {
             if (is_peaceful(mtmp))
             {
@@ -573,11 +573,11 @@ ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
                 verbalize_angry1("Thanks, scum!");
             }
         }
-        else if (mtmp->issmith || mtmp->isnpc) 
+        else if (is_mon_issmith(mtmp) || is_mon_isnpc(mtmp)) 
         {
             if (is_peaceful(mtmp))
             {
-                if (mtmp->issmith)
+                if (is_mon_issmith(mtmp))
                     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_YOUR_ASSISTANCE);
                 else
                     play_monster_special_dialogue_line(mtmp, NPC_LINE_THANK_YOU_FOR_YOUR_ASSISTANCE);
@@ -586,14 +586,14 @@ ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
             }
             else
             {
-                if(mtmp->issmith)
+                if(is_mon_issmith(mtmp))
                     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANKS_SCUM);
                 else
                     play_monster_special_dialogue_line(mtmp, NPC_LINE_THANKS_SCUM);
                 verbalize_angry1("Thanks, scum!");
             }
         } 
-        else if (mtmp->isgd) 
+        else if (is_mon_isgd(mtmp)) 
         {
             umoney = money_cnt(invent);
             /* Some of these are iffy, because a hostile guard
@@ -636,7 +636,7 @@ ghitm(struct monst *mtmp, struct obj *gold, uchar *hitres_ptr)
                     umoney = money_cnt(invent);
                     if (value > goldreqd + (umoney + u.ulevel * rn2(5)) / ACURR(A_CHA))
                     {
-                        mtmp->mpeaceful = TRUE;
+                        set_mon_mpeaceful(mtmp, TRUE);
                         newsym(mtmp->mx, mtmp->my);
                     }
                 }
@@ -707,8 +707,8 @@ container_impact_dmg(struct obj *obj, xchar x, xchar y)
              * but it's always exactly 1 that breaks */
 
             if (costly) {
-                if (frominv && !otmp->unpaid)
-                    otmp->no_charge = 1;
+                if (frominv && !is_obj_unpaid(otmp))
+                    set_obj_no_charge(otmp, 1);
                 loss +=
                     stolen_value(otmp, x, y, is_peaceful(shkp), TRUE);
             }
@@ -721,7 +721,7 @@ container_impact_dmg(struct obj *obj, xchar x, xchar y)
                 obfree(otmp, (struct obj *) 0);
             }
             /* contents of this container are no longer known */
-            obj->cknown = 0;
+            set_obj_cknown(obj, 0);
         }
     }
     if (costly && loss) {
@@ -864,7 +864,7 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
     {
         if (is_ice(x, y))
             range += rnd(3), slide = TRUE;
-        if (kickedobj->greased)
+        if (is_obj_greased(kickedobj))
             range += rnd(3), slide = TRUE;
     }
 
@@ -879,7 +879,7 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
         range = 1;
 
     debugprint_pos();
-    costly = (!(kickedobj->no_charge && !Has_contents(kickedobj))
+    costly = (!(is_obj_no_charge(kickedobj) && !Has_contents(kickedobj))
               && (shkp = shop_keeper(*in_rooms(x, y, SHOPBASE))) != 0
               && costly_spot(x, y));
 
@@ -926,14 +926,14 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
             return 1;
         }
 
-        boolean otrp = kickedobj->otrapped;
+        boolean otrp = is_obj_otrapped(kickedobj);
 
         if (range < 2)
         {
             pline("THUD!");
         }
         container_impact_dmg(kickedobj, x, y);
-        if (kickedobj->olocked) 
+        if (is_obj_olocked(kickedobj)) 
         {
             if (!rn2(5) || (martial() && !rn2(2))) 
             {
@@ -959,7 +959,7 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
             {
                 play_simple_container_sound(kickedobj, CONTAINER_SOUND_TYPE_LID_SLAM);
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "lid slams open, then falls shut.");
-                kickedobj->lknown = 1;
+                set_obj_lknown(kickedobj, 1);
                 if (otrp)
                     (void) chest_trap(kickedobj, LEG, FALSE);
                 return 1;
@@ -1047,7 +1047,7 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
 
     uchar hitres = 0;
     if (mon) {
-        if (mon->isshk && kickedobj->where == OBJ_MINVENT
+        if (is_mon_isshk(mon) && kickedobj->where == OBJ_MINVENT
             && kickedobj->ocarry == mon)
             return 1; /* alert shk caught it */
         notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);
@@ -1073,7 +1073,7 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
 
     if (flooreffects(kickedobj, bhitpos.x, bhitpos.y, "fall"))
         return 1;
-    if (kickedobj->unpaid)
+    if (is_obj_unpaid(kickedobj))
         subfrombill(kickedobj, shkp);
     place_object(kickedobj, bhitpos.x, bhitpos.y);
     play_object_floor_sound(kickedobj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW, Underwater);
@@ -2084,11 +2084,11 @@ impact_drop(struct obj *missile, xchar x, xchar y, xchar dlev, boolean dropall)
                                    && index(u.urooms,
                                             *in_rooms(x, y, SHOPBASE))),
                                   TRUE);
-            /* set obj->no_charge to 0 */
+            /* set is_obj_no_charge(obj) to 0 */
             if (Has_contents(obj))
                 picked_container(obj); /* does the right thing */
             if (obj->oclass != COIN_CLASS)
-                obj->no_charge = 0;
+                set_obj_no_charge(obj, 0);
         }
 
         add_to_migration(obj);
@@ -2223,11 +2223,11 @@ ship_object(struct obj *otmp, xchar x, xchar y, boolean shop_floor_obj)
                  && index(u.urooms, *in_rooms(ox, oy, SHOPBASE))),
                 FALSE);
         }
-        /* set otmp->no_charge to 0 */
+        /* set is_obj_no_charge(otmp) to 0 */
         if (container)
             picked_container(otmp); /* happens to do the right thing */
         if (otmp->oclass != COIN_CLASS)
-            otmp->no_charge = 0;
+            set_obj_no_charge(otmp, 0);
     }
 
     boolean ogone = FALSE;
@@ -2268,7 +2268,7 @@ ship_object(struct obj *otmp, xchar x, xchar y, boolean shop_floor_obj)
     otmp->owornmask = (int64_t) toloc;
     /* boulder from rolling boulder trap, no longer part of the trap */
     if (otmp->otyp == BOULDER)
-        otmp->otrapped = 0;
+        set_obj_otrapped(otmp, 0);
 
     if (impact) {
         /* the objs impacted may be in a shop other than

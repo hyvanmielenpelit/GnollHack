@@ -147,10 +147,10 @@
 #define has_bloodlust(ptr) (((ptr)->mflags4 & M4_BLOODLUST) != 0L)
 #define does_disregard_own_health(ptr) (is_brave(ptr) || mindless(ptr))
 #define does_disregard_enemy_strength(ptr) (is_fearless(ptr) || mindless(ptr))
-#define mon_has_bloodlust(mtmp) (has_bloodlust((mtmp)->data) || (mtmp)->hasbloodlust)
-#define mon_disregards_own_health(mtmp) (does_disregard_own_health((mtmp)->data) || (mtmp)->disregards_own_health)
-#define mon_disregards_enemy_strength(mtmp) (does_disregard_enemy_strength((mtmp)->data) || (mtmp)->disregards_enemy_strength)
-#define is_protector(mtmp) ((mtmp)->isprotector)
+#define mon_has_bloodlust(mtmp) (has_bloodlust((mtmp)->data) || is_mon_hasbloodlust((mtmp)))
+#define mon_disregards_own_health(mtmp) (does_disregard_own_health((mtmp)->data) || is_mon_disregards_own_health((mtmp)))
+#define mon_disregards_enemy_strength(mtmp) (does_disregard_enemy_strength((mtmp)->data) || is_mon_disregards_enemy_strength((mtmp)))
+#define is_protector(mtmp) (is_mon_isprotector((mtmp)))
 #define does_split_upon_hit(ptr) (((ptr)->mflags4 & M4_SPLITS_UPON_HIT) != 0L)
 #define is_vegetarian_food(ptr) (((ptr)->mflags4 & M4_VEGETARIAN_FOOD) != 0L)
 #define is_vegan_food(ptr) (((ptr)->mflags4 & M4_VEGAN_FOOD) != 0L)
@@ -229,6 +229,8 @@
 #define is_tourist(ptr) (((ptr)->mflags7 & M7_TOURIST) != 0L)
 #define is_valkyrie(ptr) (((ptr)->mflags7 & M7_VALKYRIE) != 0L)
 #define is_wizard(ptr) (((ptr)->mflags7 & M7_WIZARD) != 0L)
+#define has_illusory_appearance(ptr) (((ptr)->mflags7 & M7_ILLUSORY_APPEARANCE) != 0L)
+#define has_friendly_illusory_appearance(ptr) (((ptr)->mflags7 & M7_FRIENDLY_ILLUSORY_APPEARANCE) != 0L)
 
 /* combinations and others */
 #define is_not_living(ptr) \
@@ -413,7 +415,7 @@
     has_property(mon, SLEEPING)
 
 #define is_sleeping(mon) \
-    (has_sleeping(mon) || (mon)->msleeping)
+    (has_sleeping(mon) || is_mon_msleeping((mon)))
 
 
 /* stun and confusion */
@@ -508,7 +510,8 @@
     ((is_charmed_or_controlled(mon) || (mon)->mtame) && (mon)->mextra && (mon)->mextra->edog) /* Note: currently a monster cannot be tame without an edog */
 
 #define is_peaceful(mon) \
-    (is_charmed_or_controlled(mon) || (mon)->mpeaceful)
+    (is_charmed_or_controlled(mon) || is_mon_mpeaceful((mon)))
+
 
 #define is_mon_protecting(mtmp) (is_protector(mtmp) && is_peaceful(mtmp))
 
@@ -523,7 +526,7 @@
     (has_fearful(mon) && !has_fear_resistance(mon) && !is_undead((mon)->data) && !mon_has_no_apparent_mind(mon) && !is_vampshifter(mon))
 
 #define is_fleeing(mon) \
-    (is_fearful(mon) || (mon)->mflee)
+    (is_fearful(mon) || is_mon_mflee((mon)))
 
 
 /* flying and levitation */
@@ -854,7 +857,7 @@
     )
 
 #define mon_can_move(mon) \
-    ((mon)->mcanmove && !is_sleeping(mon) && !is_paralyzed(mon))
+    (is_mon_mcanmove((mon)) && !is_sleeping(mon) && !is_paralyzed(mon))
 
 
 /* Conveyed propreties */
@@ -880,6 +883,10 @@
 
 #define has_see_invisible(mon) \
     (has_innate_see_invisible((mon)->data) || has_property(mon, SEE_INVISIBLE))
+#define has_true_seeing(mon) \
+    (has_property(mon, TRUE_SEEING))
+#define can_mon_see_invisible(mon) \
+    (has_see_invisible(mon) || has_true_seeing(mon))
 #define has_regeneration(mon) \
     (has_innate_regeneration((mon)->data) || has_property(mon, REGENERATION))
 #define has_energy_regeneration(mon) \

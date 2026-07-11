@@ -129,14 +129,16 @@ namespace GnollHackX.Pages.MainScreen
                     rib.IsSubLbl4Visible = true;
                     rib.ImgWidth = 80;
                     rib.ImgHeight = 80;
+                    rib.Padding = new Thickness(6);
                     rib.GridWidth = 480;
-                    rib.GridHeight = 200;
+                    rib.GridHeight = 280;
 #if GNH_MAUI
                     rib.MaximumWidthRequest = 480;
+                    rib.MaximumHeightRequest = 280;
 #else
                     rib.WidthRequest = 480;
+                    rib.HeightRequest = 280;
 #endif
-                    rib.HeightRequest = 200;
                     rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
                     rib.BtnCommand = i;
                     rib.BtnClicked += SnapshotButton_Clicked;
