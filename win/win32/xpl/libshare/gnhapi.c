@@ -588,6 +588,7 @@ LibValidateSaveFile(const char* filename, char* output_str)
         write_text2buf_utf8(buf, sizeof(buf), gnhapi_putstr_buffer);
         Strcpy(output_str, buf);
     }
+    *gnhapi_putstr_buffer = 0;
     return res;
 }
 
@@ -601,6 +602,16 @@ LibGetSaveFileInfo(const char* filename, uint64_t* out_version, uint64_t* out_co
     int pltmpsiz = 0;
     char plbuf[256];
     struct save_game_stats stats;
+    *gnhapi_putstr_buffer = 0;
+
+    struct window_procs oldprocs = windowprocs;
+#ifdef SAFEPROCS
+    windowprocs = *get_safe_procs(0);
+#endif
+    windowprocs.win_putstr_ex = gnhapi_putstr_ex;
+    windowprocs.win_putstr_ex2 = gnhapi_putstr_ex2;
+    windowprocs.win_raw_print = gnhapi_raw_print;
+    windowprocs.win_issue_gui_command = gnhapi_issue_gui_command;
 
     nh_uncompress(filename);
     if ((fd = open_savefilepath(filename)) >= 0)
@@ -649,6 +660,8 @@ LibGetSaveFileInfo(const char* filename, uint64_t* out_version, uint64_t* out_co
         (void)nhclose(fd);
     }
     nh_compress(filename);
+    windowprocs = oldprocs;
+    *gnhapi_putstr_buffer = 0;
     return res;
 }
 
@@ -663,6 +676,16 @@ LibGetSaveFileDescription(const char* filename, char* out_char_desc, int char_de
     int pltmpsiz = 0;
     char plbuf[256];
     struct save_game_stats stats;
+    *gnhapi_putstr_buffer = 0;
+
+    struct window_procs oldprocs = windowprocs;
+#ifdef SAFEPROCS
+    windowprocs = *get_safe_procs(0);
+#endif
+    windowprocs.win_putstr_ex = gnhapi_putstr_ex;
+    windowprocs.win_putstr_ex2 = gnhapi_putstr_ex2;
+    windowprocs.win_raw_print = gnhapi_raw_print;
+    windowprocs.win_issue_gui_command = gnhapi_issue_gui_command;
 
     nh_uncompress(filename);
     if ((fd = open_savefilepath(filename)) >= 0)
@@ -683,9 +706,9 @@ LibGetSaveFileDescription(const char* filename, char* out_char_desc, int char_de
                         rlen = (int)read(fd, (genericptr_t)&stats, (readLenType)sizeof(stats));
                         if (rlen == sizeof(stats))
                         {
-                            char charbuf[512] = "";
-                            char locbuf[512] = "";
-                            char modebuf[512] = "";
+                            char charbuf[BUFSZ * 2] = "";
+                            char locbuf[BUFSZ * 2] = "";
+                            char modebuf[BUFSZ * 2] = "";
 
                             print_character_description(charbuf, stats.ulevel, stats.rolenum, stats.racenum, stats.gender, stats.alignment, "");
                             print_location_description(locbuf, stats.level_name, stats.dgn_name, (int)stats.dlevel, stats.depth, "");
@@ -693,18 +716,18 @@ LibGetSaveFileDescription(const char* filename, char* out_char_desc, int char_de
 
                             if (out_char_desc && char_desc_len > 0)
                             {
-                                strncpy(out_char_desc, charbuf, char_desc_len - 1);
-                                out_char_desc[char_desc_len - 1] = '\0';
+                                Strncpy(out_char_desc, charbuf, min(BUFSZ * 2 - 1, char_desc_len - 1));
+                                out_char_desc[min(BUFSZ * 2 - 1, char_desc_len - 1)] = '\0';
                             }
                             if (out_loc_desc && loc_desc_len > 0)
                             {
-                                strncpy(out_loc_desc, locbuf, loc_desc_len - 1);
-                                out_loc_desc[loc_desc_len - 1] = '\0';
+                                Strncpy(out_loc_desc, locbuf, min(BUFSZ * 2 - 1, min(BUFSZ * 2 - 1, loc_desc_len - 1)));
+                                out_loc_desc[min(BUFSZ * 2 - 1, loc_desc_len - 1)] = '\0';
                             }
                             if (out_mode_desc && mode_desc_len > 0)
                             {
-                                strncpy(out_mode_desc, modebuf, mode_desc_len - 1);
-                                out_mode_desc[mode_desc_len - 1] = '\0';
+                                Strncpy(out_mode_desc, modebuf, min(BUFSZ * 2 - 1, mode_desc_len - 1));
+                                out_mode_desc[min(BUFSZ * 2 - 1, mode_desc_len - 1)] = '\0';
                             }
 
                             res = 1;
@@ -716,6 +739,8 @@ LibGetSaveFileDescription(const char* filename, char* out_char_desc, int char_de
         (void)nhclose(fd);
     }
     nh_compress(filename);
+    windowprocs = oldprocs;
+    *gnhapi_putstr_buffer = 0;
     return res;
 }
 
