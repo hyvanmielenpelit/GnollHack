@@ -15,7 +15,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<!--<InvariantGlobalization>true</InvariantGlobalization>-->
-		<DefineConstants>$(DefineConstants);GNH_MAUI;SENTRY;USE_SPAN_FOR_SUBSTRING</DefineConstants>
+		<DefineConstants>$(DefineConstants);GNH_MAUI;SENTRY;USE_SPAN_FOR_SUBSTRING;SKIASHARP_3119</DefineConstants>
 
 		<!-- Display name -->
 		<ApplicationTitle>GnollHack</ApplicationTitle>
@@ -71,7 +71,6 @@
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);FMOD_GNH_IOS</DefineConstants>
     <!--<DefineConstants>$(DefineConstants);METAL</DefineConstants>-->
-    <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
     <ProvisioningType>manual</ProvisioningType>
   </PropertyGroup>
 
@@ -87,7 +86,6 @@
     <!--<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>-->
     <!--<WindowsAppSDKSelfContained Condition="'$(WindowsPackageType)'=='None'">true</WindowsAppSDKSelfContained>
     <SelfContained Condition="'$(WindowsPackageType)'=='None'">true</SelfContained>-->
-    <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
   </PropertyGroup>
   
   <!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
@@ -1204,10 +1202,16 @@
 
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="!$(DefineConstants.Contains('SKIASHARP_3119'))">
 		<PackageReference Include="SkiaSharp" Version="4.150.0" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="4.150.0" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="4.150.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(DefineConstants.Contains('SKIASHARP_3119'))">
+		<PackageReference Include="SkiaSharp" Version="3.119.1" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.1" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.1" />
 	</ItemGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains('SENTRY'))">

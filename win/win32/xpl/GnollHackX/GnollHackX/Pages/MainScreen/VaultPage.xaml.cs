@@ -595,7 +595,22 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             var transferPage = new SaveTransferPage();
             await GHApp.PushModalPageAsync(transferPage);
-            await transferPage.RefreshAsync();
+            await Task.Yield();
+#if GNH_MAUI
+            var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+            timer.Interval = TimeSpan.FromSeconds(0.1);
+            timer.IsRepeating = false;
+            timer.Tick += async (s, e) => { await transferPage.RefreshAsync(); };
+            timer.Start();
+#else
+            Device.StartTimer(TimeSpan.FromSeconds(0.1), () =>
+            {
+                MainThread.InvokeOnMainThreadAsync(async() => {
+                    await transferPage.RefreshAsync();
+                });
+                return false;
+            });
+#endif            
             VaultGrid.IsEnabled = true;
         }
 

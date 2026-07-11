@@ -119,6 +119,7 @@ namespace GnollHackX.Pages.MainScreen
         private CancellationTokenSource _cts = null;
         private bool _isProcessing = false;
         private bool _appeared = false;
+        private int _isScanning = 0;
 
         public SaveTransferPage()
         {
@@ -287,11 +288,14 @@ namespace GnollHackX.Pages.MainScreen
         private async Task RefreshListAsync()
         {
             if (_isProcessing) return;
-
+            if (Interlocked.CompareExchange(ref _isScanning, 1, 0) != 0) return;
+            
             _saves.Clear();
             StatusLabel.Text = "Scanning...";
             EmptyLabel.IsVisible = false;
+            SavesLayout.Children.Clear();
             SavesLayout.IsEnabled = false;
+            await Task.Yield();
 
             try
             {
@@ -349,6 +353,7 @@ namespace GnollHackX.Pages.MainScreen
                                     TurnCount = turnCount,
                                     SaveFlags = saveFlags
                                 });
+                                await Task.Yield();
                             }
                         }
                     }
@@ -359,6 +364,7 @@ namespace GnollHackX.Pages.MainScreen
                     if (!GHApp.HasInternetAccess)
                     {
                         StatusLabel.Text = "No internet access";
+                        Interlocked.Exchange(ref _isScanning, 0);
                         return;
                     }
 
@@ -443,6 +449,7 @@ namespace GnollHackX.Pages.MainScreen
                                         TurnCount = manifest.TurnCount,
                                         SaveFlags = manifest.SaveFlags
                                     });
+                                    await Task.Yield();
                                 }
                             }
 
@@ -497,6 +504,7 @@ namespace GnollHackX.Pages.MainScreen
                 EmptyLabel.IsVisible = _saves.Count == 0;
                 SavesLayout.IsEnabled = true;
                 UpdateButtons();
+                Interlocked.Exchange(ref _isScanning, 0);
                 return;
             }
 
@@ -505,6 +513,7 @@ namespace GnollHackX.Pages.MainScreen
             PopulateSavesList();
             SavesLayout.IsEnabled = true;
             UpdateButtons();
+            Interlocked.Exchange(ref _isScanning, 0);
         }
 
         private void PopulateSavesList()
@@ -526,7 +535,7 @@ namespace GnollHackX.Pages.MainScreen
                 var rib = new RowImageButton();
 
                 // Set tile image: use gui_glyph if tiles are loaded, else fall back to you.png
-                if (GHApp.Glyph2Tile != null && GHApp._tileMap[0] != null && save.GuiGlyph > 0)
+                if (save.IsValid && GHApp.Glyph2Tile != null && GHApp._tileMap[0] != null && save.GuiGlyph > 0)
                 {
                     var gis = new GlyphImageSource();
                     gis.Glyph = save.GuiGlyph;
