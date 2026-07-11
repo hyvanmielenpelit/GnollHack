@@ -238,7 +238,7 @@ namespace GnollHackX
 
         private static DateTime _nowAtInit;
 
-        private static bool _saveGameBreakingChangeNotificationOn = true;
+        private static bool _saveGameBreakingChangeNotificationOn = false;
         private static DateTime _saveGameBreakingChangePublishDate = new DateTime(2026, 07, 01);
         private static DateTime _saveGameBreakingChangeLatestImminentDate = new DateTime(2026, 09, 30);
         private static DateTime _saveGameBreakingChangeExpiryDate = new DateTime(2027, 06, 30);
