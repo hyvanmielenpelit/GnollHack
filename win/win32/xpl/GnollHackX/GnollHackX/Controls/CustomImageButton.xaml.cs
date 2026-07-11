@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+using SkiaSharp;
+using System.Diagnostics;
 #if GNH_MAUI
 using Microsoft.Maui.Controls;
 using SkiaSharp.Views.Maui;
@@ -243,6 +244,7 @@ namespace GnollHackX.Controls
 
         private void CustomCanvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            Stopwatch sw = Stopwatch.StartNew();
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
@@ -268,6 +270,11 @@ namespace GnollHackX.Controls
                     new SKSamplingOptions(SKFilterMode.Linear),
 #endif
                     paint);
+            }
+            sw.Stop();
+            if (sw.ElapsedMilliseconds >= 3)
+            {
+                Debug.WriteLine($"[CustomImageButton] TOTAL={sw.ElapsedMilliseconds}ms Canvas={canvaswidth}x{canvasheight} Img={targetBitmap.Width}x{targetBitmap.Height}");
             }
         }
     }

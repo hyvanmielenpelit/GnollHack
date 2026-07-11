@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+using SkiaSharp;
+using System.Diagnostics;
 #if GNH_MAUI
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
@@ -318,6 +319,7 @@ namespace GnollHackX
 
         private void CustomCanvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            Stopwatch sw = Stopwatch.StartNew();
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
             SKImageInfo info = e.Info;
@@ -327,14 +329,17 @@ namespace GnollHackX
             if (canvaswidth <= 0 || canvasheight <= 0)
                 return;
 
+            string renderPath;
             if(ActiveGlyphImageSource != null)
             {
+                renderPath = "Glyph";
                 ActiveGlyphImageSource.Width = (int)canvaswidth;
                 ActiveGlyphImageSource.Height = (int)canvasheight;
                 ActiveGlyphImageSource.DrawOnCanvas(canvas, false, false, false, GHApp.FixRects, GHApp.FixFiltering);
             }
             else
             {
+                renderPath = "Bitmap";
                 SKImage targetBitmap = SourceBitmap;
                 //lock (_sourceBitmapLock)
                 //{
@@ -387,6 +392,11 @@ namespace GnollHackX
                     canvas.DrawImage(targetBitmap, sourcerect, targetrect, paint);
 #endif
                 }
+            }
+            sw.Stop();
+            if (sw.ElapsedMilliseconds >= 3)
+            {
+                Debug.WriteLine($"[GHCachedImage] TOTAL={sw.ElapsedMilliseconds}ms Path={renderPath} Canvas={canvaswidth}x{canvasheight}");
             }
         }
 

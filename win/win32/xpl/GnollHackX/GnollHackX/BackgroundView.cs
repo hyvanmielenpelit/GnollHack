@@ -1,6 +1,7 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 #if GNH_MAUI
 using SkiaSharp.Views.Maui;
@@ -70,6 +71,7 @@ namespace GnollHackX
 
         private void Base_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            Stopwatch swTotal = Stopwatch.StartNew();
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
@@ -77,7 +79,9 @@ namespace GnollHackX
             float canvasheight = e.Info.Height;
             float scale = canvaswidth == 0f || this.Width == 0.0 ? 1.0f : canvaswidth / (float)this.Width;
 
+            Stopwatch swClear = Stopwatch.StartNew();
             canvas.Clear();
+            swClear.Stop();
 
             using (SKPaint paint = new SKPaint())
             {
@@ -242,6 +246,7 @@ namespace GnollHackX
                         bkgStyle = BackgroundStyles.StretchedBitmap;
                 }
 
+                Stopwatch swBackground = Stopwatch.StartNew();
                 switch (bkgStyle)
                 {
                     case BackgroundStyles.SeamlessBitmap:
@@ -338,6 +343,9 @@ namespace GnollHackX
                         break;
                 }
 
+                swBackground.Stop();
+
+                Stopwatch swBorder = Stopwatch.StartNew();
                 if (BorderStyle > BorderStyles.None && bordertl != null && borderhorizontal != null && bordervertical != null)
                 {
                     float borderscalex = (canvaswidth / GHConstants.BackgroundBorderDivisor / 6) / Math.Max(1, bordervertical.Width);
@@ -441,6 +449,13 @@ namespace GnollHackX
                                 paint);
                         }
                     }
+                }
+                swBorder.Stop();
+
+                swTotal.Stop();
+                if (swTotal.ElapsedMilliseconds >= 5)
+                {
+                    Debug.WriteLine($"[BackgroundView] TOTAL={swTotal.ElapsedMilliseconds}ms Clear={swClear.Elapsed.TotalMilliseconds:F2}ms Background={swBackground.Elapsed.TotalMilliseconds:F2}ms Border={swBorder.Elapsed.TotalMilliseconds:F2}ms Canvas={canvaswidth}x{canvasheight}");
                 }
             }
         }
