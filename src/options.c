@@ -7614,7 +7614,7 @@ get_compopt_value(const char *optname, char *buf)
     } else if (!strcmp(optname, "catbreed")) {
         Sprintf(buf, "%s", !catbreed ? "generic"
                            : (catbreed >= NUM_CAT_BREEDS) ? "invalid breed"
-                                 : cat_breed_definitions[dogbreed].name ? cat_breed_definitions[dogbreed].name : "unnamed breed");
+                                 : cat_breed_definitions[catbreed].name ? cat_breed_definitions[catbreed].name : "unnamed breed");
     } else if (!strcmp(optname, "pickup_burden")) {
         Sprintf(buf, "%s", burdentype[flags.pickup_burden]);
     } else if (!strcmp(optname, "pickup_types")) {
