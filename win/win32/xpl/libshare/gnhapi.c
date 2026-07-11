@@ -721,7 +721,7 @@ LibGetSaveFileDescription(const char* filename, char* out_char_desc, int char_de
                             }
                             if (out_loc_desc && loc_desc_len > 0)
                             {
-                                Strncpy(out_loc_desc, locbuf, min(BUFSZ * 2 - 1, min(BUFSZ * 2 - 1, loc_desc_len - 1)));
+                                Strncpy(out_loc_desc, locbuf, min(BUFSZ * 2 - 1, loc_desc_len - 1));
                                 out_loc_desc[min(BUFSZ * 2 - 1, loc_desc_len - 1)] = '\0';
                             }
                             if (out_mode_desc && mode_desc_len > 0)
