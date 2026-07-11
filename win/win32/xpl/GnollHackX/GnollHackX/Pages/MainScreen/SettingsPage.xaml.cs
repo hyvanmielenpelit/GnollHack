@@ -12,6 +12,8 @@ using System.Net.Http;
 
 using System.Threading;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
+
 
 #if GNH_MAUI
 using GnollHackX;
@@ -42,6 +44,126 @@ namespace GnollHackX.Pages.MainScreen
         public Regex XlogUserNameValidationExpression { get; set; }
         public Regex BonesAllowedUsersValidationExpression { get; set; }
 
+        private static readonly Dictionary<string, string> _settingDescriptions = new Dictionary<string, string>
+        {
+            { "GPU Acceleration", "Enables and disables the GPU acceleration of the game. If disabled, the game uses CPU for rendering graphics. Note that GPU acceleration can cause crashes on some systems." },
+            { "Graphics", "Shows the game in 2D tile graphics or in ASCII text." },
+            { "Map FPS", "Determines the max refresh rate of the game. This can be used to save battery or to make the game smoother. The default refresh rate varies by device (typically 60 FPS)." },
+            { "Screen Resolution", "Determines the rendering resolution of the game map." },
+            { "Screen Scale", "Custom scale to make UI components larger or smaller than normal." },
+            { "Windowed Mode", "Determines if the game runs in windowed or fullscreen mode." },
+            { "Cursor Style", "*(ASCII graphics only)* Determines the way how the player character is identified in the game." },
+            { "Hide Navigation", "Determines whether to hide the operating system navigation buttons in the bottom of the screen." },
+            { "Hide Status Bar", "Determines if the top status bar of the operating system is hidden." },
+            { "Show Battery", "Displays a battery icon in the status bar indicating the current battery level." },
+            { "Show FPS", "Displays a frames-per-second icon in the status bar indicating the current refresh rate of the game." },
+            { "Show Zoom", "Displays a zoom icon in the status bar indicating the current zoom level of the map." },
+            { "Silent Mode", "Game sounds and music are not played if turned on." },
+            { "Dark Mode", "**Off (Light mode):** Menu and text window backgrounds are light and texts are black.\n**On (Dark mode):** Menu and text window backgrounds are dark and texts are white." },
+            { "Tournament Mode", "Toggles several other settings to values required by tournaments like [[Junethack]]." },
+            { "Metric System", "Enables the metric system, displaying weights in kilograms (`kg`), grams (`g`), or tons. If disabled (default), the game uses the imperial system, displaying weights in pounds (`lbs` / `lb`), ounces (`oz`), or hundredweights (`cwt`). Mirrors the `metric_system` option." },
+            { "Show Dice as Ranges", "Converts traditional D&D-style dice notation (like `2d6`) into a simple range (like `2-12`) in item descriptions. If disabled, traditional XdY notation is used. Mirrors the `show_dice_as_ranges` option." },
+            { "Show Damage Formula", "Shows the underlying dice formula (e.g., `1d6+2`) used to calculate an item's damage when examining it. Mirrors the `show_damage_formula` option." },
+            { "Menu Fade Effects", "Determines whether the texts in the menu and text pages fade in and out when opening and closing the page. Only available on Android." },
+            { "Improved Menu Images", "**Off:** Nearest neighbour (faster but worse quality).\n**On:** Bilinear interpolation (slower but better quality)." },
+            { "Highlighted Menu Keys", "**Off:** Hotkeys are grayed.\n**On:** Hotkeys are colored black/white based on light/dark mode." },
+            { "Show Equipment Icons", "Displays equipment slot icons in the inventory menu." },
+            { "Equipment Flip Animation", "Enables a 3D flip animation when equipping or taking off items." },
+            { "Worn Shows Equipment", "Determines whether the worn item command (`w`) shows a full graphical equipment screen with all body slots or a plain text list of currently worn items. Mirrors the `worn_shows_equipment` option." },
+            { "Starting and Gifted Pets", "Determines whether the player starts with a pet and receives gifted pets in special situations. Turn off the setting (or enable the option) if you are attempting a petless conduct. Mirrors the `pets_not_gifted` option (with inverted value)." },
+            { "Allow Ghost Levels", "Determines if the game uses so-called bones files of dead characters." },
+            { "Simple Command Layout", "**Off:** Shows two rows of commands in the bottom of the screen, and extra commands in more commands.\n**On:** Shows one row of commands and only the most important extra commands in more commands." },
+            { "Alternative Zoom Button", "Displays the alternative zoom toggle button in the top-right corner of the map." },
+            { "Travel Mode Button", "Displays the travel mode toggle button in the top-right corner of the map." },
+            { "Auto-Dig Button", "Displays the auto-dig toggle button in the top-right corner of the map." },
+            { "Ignore Stopping Button", "Displays the ignore stopping toggle button in the top-right corner of the map." },
+            { "Desktop Buttons", "Determines whether Stats and Equipment buttons are shown on the left and right side of command buttons." },
+            { "Skill Context Button", "Determines whether to show the skill context button near the player." },
+            { "Polearm Context Button", "Determines whether to show the polearm context button near the player." },
+            { "Single Commands Page", "Uses a single large commands page instead of categorized tabs." },
+            { "Classic Status Bar", "**Off:** Shows the modern graphical game status bar.\n**On:** Shows the game status bar in text in the NetHack style." },
+            { "Desktop Status Bar", "Displays ability scores and other extra information on the status bar." },
+            { "Show Score", "Displays the game score on the status bar." },
+            { "Show XP", "Displays experience points on the status bar." },
+            { "Right-Aligned on 2nd Row", "Moves the display location of score, experience points and gold to the 2nd status bar row." },
+            { "Show Status Screen", "Toggle for showing the status screen. The same as tapping the middle area of the status bar." },
+            { "Grid", "Determines if the game shows grid lines in the game for easier tile position discernment." },
+            { "Grid Opacity", "Adjusts the opacity of the grid lines if they are shown." },
+            { "Hit Point Bars", "Determines if the game shows hit point bars under the player character, NPCs, pets, and monsters." },
+            { "Player Mark", "Determines if a green targeting icon is displayed above the player character." },
+            { "Targeting", "Determines if a red targeting icon is displayed above hostile monsters." },
+            { "Show Pets", "Determines if the game shows pet icons in the top of the game screen (under the game status bar)." },
+            { "Pet Rows", "Determines how many rows of pet icons are allowed in the top of the screen." },
+            { "Orbs", "Determines if health and mana orbs are shown in the top left corner of the screen." },
+            { "Show Max Hit Points", "Determines if maximum hit points are shown under the current hit points in the health orb." },
+            { "Show Max Mana", "Determines if maximum mana is shown under the current mana in the mana orb." },
+            { "Messages", "Determines the number of messages shown in the bottom left corner of the screen." },
+            { "Show All", "Toggle for showing all messages. The same as tapping the message area in the game screen." },
+            { "Walk Arrows", "Determines if there are walk arrows when Travel Mode is disabled." },
+            { "Default Auto-Center", "Determines if the Auto-Center button in the game screen is enabled by default." },
+            { "Show Keyboard Shortcuts", "Determines if keyboard shortcuts are shown in menus." },
+            { "Lighter Unlit Areas", "**Off:** Unlit areas are darker.\n**On:** Unlit areas are lighter." },
+            { "Draw Wall Ends", "Determines if the game draws wall end graphics. Can be disabled to save processor time." },
+            { "Breathing Animations", "Determines if the game shows the breathing animations of various creatures." },
+            { "Empty Wish is Nothing", "**Off:** A random item is received if the wish is left blank.\n**On:** Nothing is received. Keep on to preserve wishless conduct." },
+            { "Character Click Action", "Binds clicking or tapping on the player character to execute an action appropriate to the location (e.g., descending stairs or resting). Mirrors the `self_click_action` option." },
+            { "OK on Double Click", "Double-clicking a menu item also presses OK button automatically in menus." },
+            { "Traditional Get Position", "When asked to select a location, the location is selected by moving around a tile-based game cursor using arrow icons or keyboard, rather than clicking a location on the map." },
+            { "Auto-Dig", "Automatically attempts to dig through solid rock or walls when moving into, clicking, or tapping them if wielding a suitable digging tool (like a pick-axe or mattock). Mirrors the `autodig` option." },
+            { "Ignore Stopping", "Prevents automated pathfinding travel from stopping when your character passes over items, closed doors, or engravings. Mirrors the `ignore_stopping` option." },
+            { "Right Mouse Button", "Configures the game command bound to a right mouse button click. The default \"by role\" setting triggers role-specific default actions. Mirrors the `right_click_command` option." },
+            { "Middle Mouse Button", "Configures the game command bound to a middle mouse button click. The default \"by role\" setting triggers role-specific default actions. Mirrors the `middle_click_command` option." },
+            { "Quick Engrave Text", "The default text written when using the quick engrave command (commonly set to \"Elbereth\"). Mirrors the `engrave_quicktext` option." },
+            { "Quick Engrave Style", "Selects which engraving method or tool is automatically chosen when executing the quick engrave command: ask every time, always use finger, or use last item. Mirrors the `engrave_quickstyle` option." },
+            { "Master", "Changes the volume of all sounds and music." },
+            { "Music", "Changes the volume of music." },
+            { "Ambient", "Changes the volume of ambient sounds." },
+            { "Dialogue", "Changes the volume of voice overs." },
+            { "Effects", "Changes the volume of sound effects." },
+            { "Interface", "Changes the volume of interface sounds, such as button clicks." },
+            { "Post Game Progress", "Posts updates of new events of your journey to a selected channel on a Discord Server." },
+            { "Webhook Link", "Specifies the webhook link to the channel on a Discord server where your game progress is posted." },
+            { "Post Diagnostic Data", "Enables posting of anonymous game diagnostics and crash logs to the developer server." },
+            { "Account", "Enables you to access and specify the GnollHack Server web address." },
+            { "User Name", "Your user name on the GnollHack server." },
+            { "Password", "Your password on the GnollHack server." },
+            { "Post Top Scores", "Posts your score to the GnollHack Server when your game has ended." },
+            { "Share Bones Files", "Posts bones files to the server, and allows you to encounter other players' dead characters' ghosts (if Allow Ghost Levels is on)." },
+            { "Use Blacklist", "Determines whether to use blacklist or whitelist in blocking unwanted users' bones files." },
+            { "Whitelist/Blacklist", "List of allowed or blocked user names on the GnollHack server for bones files." },
+            { "Save File Tracking", "Prevents loading backups of save files by tracking save files on the GnollHack Server." },
+            { "Record Game", "Determines whether the game records a replay of your game." },
+            { "Show Recording", "Determines whether a red dot appears on the status bar to indicate that game recording is on." },
+            { "Auto-Upload to Cloud", "Determines whether the saved replay is automatically uploaded to an Azure cloud storage." },
+            { "Cloud Storage", "Specifies a custom Azure cloud storage connection string to upload replays to." },
+            { "Developer Mode", "Activates Developer Mode, which enables [[Wizard Mode]] and editing the Options file." },
+            { "Debug Logging", "Debug information is written in the app log." },
+            { "Low-Level Logging", "Extensive logging of various low-level events. Can clog the app log quickly." },
+            { "Screen Logging", "Toggles printing of log messages directly on the game screen." },
+            { "Debug Post Channel", "Use an alternative post channel instead of the one specified under Post Game Progress." },
+            { "Show Memory", "Shows the current managed memory usage on the game screen." },
+            { "Low Disk Space Warning", "Displays a warning if free disk space is low (less than 20 MB) to prevent save game corruption." },
+            { "Load Sound Banks", "Determines if FMOD sound banks are loaded. Can be disabled to save memory, but the game will have no sounds." },
+            { "Streaming Banks to Memory", "**Off:** Streamed from inside the AAB file (uses less memory).\n**On:** Read to memory and streamed from there (uses more memory)." },
+            { "Streaming Banks to Disk", "**Off:** Streamed from inside the AAB file (uses less storage space).\n**On:** Copied to the storage and streamed from there (uses more storage space)." },
+            { "Longer Message History", "Shows 16,384 last messages instead of 250, and adds a search bar. Switches off automatically for performance reasons upon adding new messages or restarting." },
+            { "Hide Message History", "The game will not show latest messages at all. Useful for taking cleaner screenshots." },
+            { "Use Single Dumplog", "**Off:** The game asks whether to open plain text or HTML dumplog.\n**On:** Opens the dumplog based on the **Use HTML Dumplog** setting." },
+            { "Use HTML Dumplog", "If **Use Single Dumplog** is **On**, determines if the dumplog is plain text (**Off**) or HTML (**On**)." },
+            { "GZip Replay Compression", "**Off:** Zip format is used.\n**On:** GZip format is used." },
+            { "Platform Render Loop", "**Off:** .NET MAUI animation system is used.\n**On:** Platform-specific render loop linking to display refresh rate is used." },
+            { "Runtime GL Effects", "*(Experimental)* Enables runtime GL shaders for advanced visual effects on the map." },
+            { "GL Only on Map", "**Off:** Skia GL rendering is used on map, menus, and more commands page.\n**On:** Skia GL rendering is used only on map. Other pages use CPU-based rendering." },
+            { "Mipmapping on Map", "Toggles whether mipmapping is used in map rendering. Mostly obsolete." },
+            { "Adjust Rectangles", "Toggles whether the game adjusts tile rectangles to prevent Skia from drawing non-existing lines between tiles." },
+            { "Fix Filtering", "Adjusts texture coordinates to prevent graphics filtering artifacts on some devices." },
+            { "Disable Windows Key", "Prevents the Windows key from opening the Start menu, to avoid accidental focus loss during gameplay." },
+            { "Default Vi-Keys", "**Off**: The default setting for the `number_pad` option is `2` (numbers for movement).\n**On**: The default setting is `0` (vi-keys for movement)." },
+            { "On Switching Apps", "**Save Game**: The game is automatically saved and restored when the player returns. Menus close.\n**Checkpoint**: The game creates a checkpoint and doesn't close menus, but recovers to checkpoint if terminated." },
+            { "Map GPU Cache", "Determines the cache size for Skia GPU rendering for the map. Large numbers can lead to out of memory." },
+            { "Menu GPU Cache", "Determines the cache size for Skia GPU rendering for the menu and more commands pages." },
+        };
+
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
         {
             _mainPage = mainPage;
@@ -60,10 +182,8 @@ namespace GnollHackX.Pages.MainScreen
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             UIUtils.SetViewCursorOnHandler(TournamentLabel, GameCursorType.Info);
-            UIUtils.SetViewCursorOnHandler(BonesAllowedUsersLabel, GameCursorType.Info);
             UIUtils.SetViewCursorOnHandler(RecordLabel, GameCursorType.Info);
             UIUtils.SetViewCursorOnHandler(GZipLabel, GameCursorType.Info);
-            UIUtils.SetViewCursorOnHandler(PostDiagnosticDataLabel, GameCursorType.Info);
 
             _gameMenuPage = gameMenuPage;
             if (_gameMenuPage != null)
@@ -208,7 +328,86 @@ namespace GnollHackX.Pages.MainScreen
             };
             timer.Start();
 #endif
+            SetupSettingLabels(RootLayout);
             _isManualTogglingEnabled = true;
+        }
+
+        private void SetupSettingLabels(object container)
+        {
+            if (container == null) return;
+            
+            System.Collections.IEnumerable children = null;
+            bool isDarkMode = GHApp.DarkMode;
+#if GNH_MAUI
+            if (container is Microsoft.Maui.Controls.Layout layout)
+            {
+                children = layout.Children;
+            }
+#else
+            if (container is Xamarin.Forms.Layout<Xamarin.Forms.View> layout)
+            {
+                children = layout.Children;
+            }
+#endif
+
+            if (children != null)
+            {
+                foreach (var child in children)
+                {
+                    if (child is Label label)
+                    {
+                        string text = label.Text?.Trim();
+                        if (!string.IsNullOrEmpty(text) && _settingDescriptions.ContainsKey(text))
+                        {
+                            if (label.FontSize >= SaveStyleLabel.FontSize && label.FontSize <= GPULabel.FontSize)
+                            {
+                                UIUtils.SetViewCursorOnHandler(label, GameCursorType.Info);
+                                if (!label.GestureRecognizers.Any(g => g is TapGestureRecognizer))
+                                {
+                                    var tapGesture = new TapGestureRecognizer();
+                                    tapGesture.Tapped += (s, e) =>
+                                    {
+                                        ShowSettingInfoPopup(text, _settingDescriptions[text], isDarkMode);
+                                    };
+                                    label.GestureRecognizers.Add(tapGesture);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        SetupSettingLabels(child);
+                    }
+                }
+            }
+#if GNH_MAUI
+            else if (container is Microsoft.Maui.Controls.ScrollView scrollView)
+            {
+                SetupSettingLabels(scrollView.Content);
+            }
+            else if (container is Microsoft.Maui.Controls.ContentView contentView)
+            {
+                SetupSettingLabels(contentView.Content);
+            }
+#else
+            else if (container is Xamarin.Forms.ScrollView scrollView)
+            {
+                SetupSettingLabels(scrollView.Content);
+            }
+            else if (container is Xamarin.Forms.ContentView contentView)
+            {
+                SetupSettingLabels(contentView.Content);
+            }
+#endif
+        }
+
+        private void ShowSettingInfoPopup(string title, string description, bool isDarkMode)
+        {
+            PopupTitleLabel.TextColor = GHColors.TitleGoldColor;
+            PopupTitleLabel.Text = title;
+            UIUtils.SetMarkdownText(PopupLabel, description, isDarkMode);
+            PopupOkButton.IsEnabled = true;
+            PopupGrid.IsVisible = true;
         }
 
         private void SetChildrenDarkModeTextColor(View view, bool darkmode)
@@ -2488,19 +2687,6 @@ namespace GnollHackX.Pages.MainScreen
             SetTournamentModeLabelColors(TournamentSwitch.IsToggled);
         }
 
-#if GNH_MAUI
-        private void BonesAllowedUsersLabel_TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
-#else
-        private void BonesAllowedUsersLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
-#endif
-        {
-            PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
-            PopupTitleLabel.Text = BonesListSwitch.IsToggled ? "Disallowed Users for Received Bones" : "Allowed Users for Received Bones";
-            PopupLabel.Text = (BonesListSwitch.IsToggled ? "You can define users whose bones files you do not want to receive. " : "You can define the group of users from whom you want to receive bones files. ") + "User names are separated by a space or comma. User names are not case-sensitive.";
-            PopupOkButton.IsEnabled = true;
-            PopupGrid.IsVisible = true;
-        }
-
         private void PopupOkButton_Clicked(object sender, EventArgs e)
         {
             PopupOkButton.IsEnabled = false;
@@ -2553,7 +2739,11 @@ namespace GnollHackX.Pages.MainScreen
         {
             if(RecordSwitch.IsEnabled)
             {
-                //Nothing currently
+                string text = RecordLabel.Text;
+                if (!string.IsNullOrEmpty(text) && _settingDescriptions.ContainsKey(text))
+                {
+                    ShowSettingInfoPopup(text, _settingDescriptions[text], GHApp.DarkMode);
+                }
             }
             else
             {
@@ -2582,13 +2772,13 @@ namespace GnollHackX.Pages.MainScreen
         private void GZipLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
 #endif
         {
-            if (GZipSwitch.IsEnabled)
+            if (GZipSwitch.IsEnabled || _gamePage == null)
             {
-                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
-                PopupTitleLabel.Text = "Replay Compression Format";
-                PopupLabel.Text = "Replay compression format can be either zip (off) or gzip (on).";
-                PopupOkButton.IsEnabled = true;
-                PopupGrid.IsVisible = true;
+                string text = GZipLabel.Text;
+                if (!string.IsNullOrEmpty(text) && _settingDescriptions.ContainsKey(text))
+                {
+                    ShowSettingInfoPopup(text, _settingDescriptions[text], GHApp.DarkMode);
+                }
             }
             else
             {
@@ -2805,15 +2995,6 @@ namespace GnollHackX.Pages.MainScreen
         //{
         //    return true;
         //}
-
-        private void PostDiagnosticDataLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
-        {
-            PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
-            PopupTitleLabel.Text = "Post Diagnostic Data";
-            PopupLabel.Text = "Diagnostic data consists of short notifications about panics and other similar errors, which are sent only upon such occurences. The data also includes device memory and disk space information to rule out related causes.\n\nIt helps development if posting diagnostic data is switched on.";
-            PopupOkButton.IsEnabled = true;
-            PopupGrid.IsVisible = true;
-        }
 
         private void SaveFileTrackingSwitch_Toggled(object sender, ToggledEventArgs e)
         {
