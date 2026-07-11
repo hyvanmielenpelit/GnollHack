@@ -365,10 +365,9 @@ namespace GnollHackX.Pages.MainScreen
                                 {
                                     var tapGesture = new TapGestureRecognizer();
                                     string baseFontFamily = label.FontFamily; /* We need to set since there is a bug that without it iOS sets the normal font to something else in FormattedText */
-                                    double baseFontSize = label.FontSize;
                                     tapGesture.Tapped += (s, e) =>
                                     {
-                                        ShowSettingInfoPopup(text, _settingDescriptions[text], baseFontFamily, baseFontSize);
+                                        ShowSettingInfoPopup(text, _settingDescriptions[text], baseFontFamily);
                                     };
                                     label.GestureRecognizers.Add(tapGesture);
                                 }
@@ -402,11 +401,11 @@ namespace GnollHackX.Pages.MainScreen
 #endif
         }
 
-        private void ShowSettingInfoPopup(string title, string description, string baseFontFamily, double baseFontSize)
+        private void ShowSettingInfoPopup(string title, string description, string baseFontFamily)
         {
             PopupTitleLabel.TextColor = GHColors.TitleGoldColor;
             PopupTitleLabel.Text = title;
-            UIUtils.SetMarkdownText(PopupLabel, description, baseFontFamily, baseFontSize, true); /* Popups have always a dark background */
+            UIUtils.SetMarkdownText(PopupLabel, description, baseFontFamily, true); /* Popups have always a dark background */
             PopupOkButton.IsEnabled = true;
             PopupGrid.IsVisible = true;
         }
@@ -2743,7 +2742,7 @@ namespace GnollHackX.Pages.MainScreen
                 string text = RecordLabel.Text;
                 if (!string.IsNullOrEmpty(text) && _settingDescriptions.ContainsKey(text))
                 {
-                    ShowSettingInfoPopup(text, _settingDescriptions[text], RecordLabel.FontFamily, RecordLabel.FontSize);
+                    ShowSettingInfoPopup(text, _settingDescriptions[text], RecordLabel.FontFamily);
                 }
             }
             else
@@ -2778,7 +2777,7 @@ namespace GnollHackX.Pages.MainScreen
                 string text = GZipLabel.Text;
                 if (!string.IsNullOrEmpty(text) && _settingDescriptions.ContainsKey(text))
                 {
-                    ShowSettingInfoPopup(text, _settingDescriptions[text], GZipLabel.FontFamily, GZipLabel.FontSize);
+                    ShowSettingInfoPopup(text, _settingDescriptions[text], GZipLabel.FontFamily);
                 }
             }
             else

@@ -1520,7 +1520,7 @@ namespace GnollHackX
             return Math.Max(1.0f, Math.Min(possibleScaling, Math.Min(GHConstants.WindowMessageFontSizeMaxMultiplier, (float)relevantScale)));
         }
 
-        public static void SetMarkdownText(Label label, string markdown, string baseFontFamily, double baseFontSize, bool isDarkMode)
+        public static void SetMarkdownText(Label label, string markdown, string baseFontFamily, bool isDarkMode)
         {
             if (label == null) return;
             if (string.IsNullOrEmpty(markdown))
@@ -1548,33 +1548,33 @@ namespace GnollHackX
                 {
                     string unformatted = markdown.Substring(currentIndex, match.Index - currentIndex);
                     formattedString.Spans.Add(
-                        hasBaseFontFamily ? new Span { Text = unformatted, FontFamily = baseFontFamily, FontSize = baseFontSize } : 
+                        hasBaseFontFamily ? new Span { Text = unformatted, FontFamily = baseFontFamily } : 
                         new Span { Text = unformatted } );
                 }
 
                 if (match.Groups[1].Value.StartsWith("**"))
                 {
                     formattedString.Spans.Add(
-                        hasBaseFontFamily ? new Span { Text = match.Groups[2].Value, FontAttributes = FontAttributes.Bold, FontFamily = baseFontFamily, FontSize = baseFontSize } :
+                        hasBaseFontFamily ? new Span { Text = match.Groups[2].Value, FontAttributes = FontAttributes.Bold, FontFamily = baseFontFamily } :
                         new Span { Text = match.Groups[2].Value, FontAttributes = FontAttributes.Bold }
                         );
                 }
                 else if (match.Groups[1].Value.StartsWith("*"))
                 {
                     formattedString.Spans.Add(
-                        hasBaseFontFamily ? new Span { Text = match.Groups[3].Value, FontAttributes = FontAttributes.Italic, FontFamily = baseFontFamily, FontSize = baseFontSize } :
+                        hasBaseFontFamily ? new Span { Text = match.Groups[3].Value, FontAttributes = FontAttributes.Italic, FontFamily = baseFontFamily } :
                         new Span { Text = match.Groups[3].Value, FontAttributes = FontAttributes.Italic });
                 }
                 else if (match.Groups[1].Value.StartsWith("`"))
                 {
                     formattedString.Spans.Add(
-                        hasBaseFontFamily ? new Span { Text = match.Groups[4].Value, FontFamily = "DejaVuSansMono", FontSize = baseFontSize, TextColor = isDarkMode ? GHColors.LighterGray : GHColors.DarkerGray } :
+                        hasBaseFontFamily ? new Span { Text = match.Groups[4].Value, FontFamily = "DejaVuSansMono", TextColor = isDarkMode ? GHColors.LighterGray : GHColors.DarkerGray } :
                         new Span { Text = match.Groups[4].Value, FontFamily = "DejaVuSansMono", TextColor = isDarkMode ? GHColors.LighterGray : GHColors.DarkerGray });
                 }
                 else if (match.Groups[1].Value.StartsWith("[["))
                 {
                     formattedString.Spans.Add(
-                        hasBaseFontFamily ? new Span { Text = match.Groups[5].Value, TextColor = GHColors.TitleGoldColor, TextDecorations = TextDecorations.Underline, FontFamily = baseFontFamily, FontSize = baseFontSize } :
+                        hasBaseFontFamily ? new Span { Text = match.Groups[5].Value, TextColor = GHColors.TitleGoldColor, TextDecorations = TextDecorations.Underline, FontFamily = baseFontFamily } :
                         new Span { Text = match.Groups[5].Value, TextColor = GHColors.TitleGoldColor, TextDecorations = TextDecorations.Underline });
                 }
 
@@ -1584,7 +1584,7 @@ namespace GnollHackX
             if (currentIndex < markdown.Length)
             {
                 formattedString.Spans.Add(
-                    hasBaseFontFamily ? new Span { Text = markdown.Substring(currentIndex), FontFamily = baseFontFamily, FontSize = baseFontSize } :
+                    hasBaseFontFamily ? new Span { Text = markdown.Substring(currentIndex), FontFamily = baseFontFamily } :
                     new Span { Text = markdown.Substring(currentIndex) });
             }
 
