@@ -1568,8 +1568,8 @@ namespace GnollHackX
                 else if (match.Groups[1].Value.StartsWith("`"))
                 {
                     formattedString.Spans.Add(
-                        hasBaseFontFamily ? new Span { Text = match.Groups[4].Value, FontFamily = (GHApp.IsAndroid ? baseFontFamily : "DejaVuSansMono") /* There is a bug or a missing feature that Android does not show other fonts */, FontSize = baseFontSize, TextColor = GHApp.DarkMode ? GHColors.LighterGray : GHColors.DarkerGray } :
-                        new Span { Text = match.Groups[4].Value, FontFamily = (GHApp.IsAndroid ? baseFontFamily : "DejaVuSansMono"), TextColor = GHApp.DarkMode ? GHColors.LighterGray : GHColors.DarkerGray });
+                        hasBaseFontFamily ? new Span { Text = match.Groups[4].Value, FontFamily = "DejaVuSansMono", FontSize = baseFontSize, TextColor = isDarkMode ? GHColors.LighterGray : GHColors.DarkerGray } :
+                        new Span { Text = match.Groups[4].Value, FontFamily = "DejaVuSansMono", TextColor = isDarkMode ? GHColors.LighterGray : GHColors.DarkerGray });
                 }
                 else if (match.Groups[1].Value.StartsWith("[["))
                 {

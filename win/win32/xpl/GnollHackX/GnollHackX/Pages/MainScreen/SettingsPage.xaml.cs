@@ -337,7 +337,6 @@ namespace GnollHackX.Pages.MainScreen
             if (container == null) return;
             
             System.Collections.IEnumerable children = null;
-            bool isDarkMode = GHApp.DarkMode;
 #if GNH_MAUI
             if (container is Microsoft.Maui.Controls.Layout layout)
             {
@@ -369,7 +368,7 @@ namespace GnollHackX.Pages.MainScreen
                                     double baseFontSize = label.FontSize;
                                     tapGesture.Tapped += (s, e) =>
                                     {
-                                        ShowSettingInfoPopup(text, _settingDescriptions[text], baseFontFamily, baseFontSize, isDarkMode);
+                                        ShowSettingInfoPopup(text, _settingDescriptions[text], baseFontFamily, baseFontSize);
                                     };
                                     label.GestureRecognizers.Add(tapGesture);
                                 }
@@ -403,11 +402,11 @@ namespace GnollHackX.Pages.MainScreen
 #endif
         }
 
-        private void ShowSettingInfoPopup(string title, string description, string baseFontFamily, double baseFontSize, bool isDarkMode)
+        private void ShowSettingInfoPopup(string title, string description, string baseFontFamily, double baseFontSize)
         {
             PopupTitleLabel.TextColor = GHColors.TitleGoldColor;
             PopupTitleLabel.Text = title;
-            UIUtils.SetMarkdownText(PopupLabel, description, baseFontFamily, baseFontSize, isDarkMode);
+            UIUtils.SetMarkdownText(PopupLabel, description, baseFontFamily, baseFontSize, true); /* Popups have always a dark background */
             PopupOkButton.IsEnabled = true;
             PopupGrid.IsVisible = true;
         }
@@ -2744,7 +2743,7 @@ namespace GnollHackX.Pages.MainScreen
                 string text = RecordLabel.Text;
                 if (!string.IsNullOrEmpty(text) && _settingDescriptions.ContainsKey(text))
                 {
-                    ShowSettingInfoPopup(text, _settingDescriptions[text], RecordLabel.FontFamily, RecordLabel.FontSize, GHApp.DarkMode);
+                    ShowSettingInfoPopup(text, _settingDescriptions[text], RecordLabel.FontFamily, RecordLabel.FontSize);
                 }
             }
             else
@@ -2779,7 +2778,7 @@ namespace GnollHackX.Pages.MainScreen
                 string text = GZipLabel.Text;
                 if (!string.IsNullOrEmpty(text) && _settingDescriptions.ContainsKey(text))
                 {
-                    ShowSettingInfoPopup(text, _settingDescriptions[text], GZipLabel.FontFamily, GZipLabel.FontSize, GHApp.DarkMode);
+                    ShowSettingInfoPopup(text, _settingDescriptions[text], GZipLabel.FontFamily, GZipLabel.FontSize);
                 }
             }
             else
