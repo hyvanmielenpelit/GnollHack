@@ -48,7 +48,7 @@ enum window_option_types {
 #define PILE_LIMIT_DFLT 5
 #define HERE_WIN_SIZ_DFLT 8
 #define DEFAULT_PILE_LIMIT (iflags.wc2_herewindow ? iflags.wc2_here_window_size + 1 : PILE_LIMIT_DFLT)
-const char* mouse_cmd_names[MAX_CLICK_TYPES] = { "default", "by role", "?", "off", "look", "move", "cast", "fire", "zap" };
+const char* mouse_cmd_names[MAX_CLICK_TYPES] = { "default", "by role", "?", "off", "look", "move", "cast", "fire", "zap", "polearm" };
 
 /*
  *  NOTE:  If you add (or delete) an option, please update the short
