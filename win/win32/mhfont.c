@@ -171,7 +171,7 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
         break;
 
     case NHW_TEXT:
-        font_size = iflags.wc_fontsiz_menu;
+        font_size = iflags.wc_fontsiz_text;
         lgfnt.lfHeight = -font_size * GetDeviceCaps(hdc, LOGPIXELSY) / 72;   // height of font
         lgfnt.lfWidth = 0;       // average character width
         lgfnt.lfEscapement = 0;  // angle of escapement
