@@ -5421,7 +5421,7 @@ static const char* damage_type_names[] = {
 };
 
 static const char* damage_type_names_high[] = {
-    "fire or poison gas", "disintegration or cold", "ancient gold dragon", "celestial", "magic",
+    "fire or poison gas", "disintegration or cold", "ancient gold dragon", "clerical", "magic",
     "random draconic", "demon", "controlled creatures", "gnolls", "ghouls",
     "undead", "minotaurs", "random eye stalk", "random eye stalk", "bison",
     "steals amulet", "curse",
