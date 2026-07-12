@@ -863,7 +863,7 @@ namespace GnollHackX.Pages.MainScreen
                 PopupLabel.Text = "Verifying credentials... Please wait.";
                 PopupOkButton.IsVisible = false;
                 Thickness oldThickness = PopupFrame.Padding;
-                PopupFrame.Padding = new Thickness(oldThickness.Left, 18, oldThickness.Right, 24);
+                PopupFrame.Padding = new Thickness(12, 18, 12, 30);
                 PopupGrid.IsVisible = true;
                 await GHApp.TryVerifyXlogUserNameAsync(true);
                 if (!GHApp.XlogUserNameVerified)

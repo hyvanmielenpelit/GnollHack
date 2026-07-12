@@ -80,12 +80,18 @@ public partial class App : Application
          * On Android: Disable IncludeFontPadding and use SetLineSpacing(absolute, 0f)
          *             to enforce a fixed line height.
          */
-        Microsoft.Maui.Handlers.LabelHandler.Mapper.AppendToMapping(nameof(Label.FormattedText), (handler, view) =>
+        /* Shared handler logic for consistent line spacing when mixing fonts.
+         * Registered for both FormattedText and LineHeight property mappings because
+         * MAUI's MapLineHeight fires independently and calls SetLineSpacing(0, mult)
+         * with a per-line relative multiplier, which would override our absolute fix. */
+        Action<Microsoft.Maui.Handlers.LabelHandler, Microsoft.Maui.ILabel> uniformLineHeightHandler = (handler, view) =>
         {
+
+
+#if IOS
             if (view is not Label label || label.FormattedText == null || label.FormattedText.Spans.Count <= 1)
                 return;
 
-#if IOS
             if (handler.PlatformView is not UIKit.UILabel uiLabel || uiLabel.AttributedText == null || uiLabel.AttributedText.Length == 0)
                 return;
 
@@ -166,8 +172,18 @@ public partial class App : Application
             if (handler.PlatformView is not Android.Widget.TextView textView)
                 return;
 
-            /* Disable extra font padding for precise spacing */
-            textView.SetIncludeFontPadding(false);
+            if (view is not Label label || label.FormattedText == null || label.FormattedText.Spans.Count <= 1)
+            {
+                /* State leak fix: If this label was previously FormattedText, we wiped out its
+                 * native SetLineSpacing multiplier. If it is now converted back to plain Text,
+                 * MAUI doesn't automatically re-map LineHeight since the property value didn't
+                 * change. We must restore it manually. */
+                if (view is Label plainLabel && plainLabel.LineHeight >= 0)
+                {
+                    textView.SetLineSpacing(0, (float)plainLabel.LineHeight);
+                }
+                return;
+            }
 
             /* Resolve the base font from the MAUI label's FontFamily/FontSize/FontAttributes.
              * MapFont is skipped for FormattedText labels, so textView.Paint does not
@@ -189,57 +205,112 @@ public partial class App : Application
                     textView.Resources.DisplayMetrics);
             }
             var baseFm = basePaint.GetFontMetrics();
+            /* Base natural height = ascent + descent (no Leading).
+             * This matches iOS UIFont.LineHeight and is the metric we multiply
+             * by the LineHeight multiplier. */
             float baseNaturalHeight = baseFm != null
-                ? baseFm.Descent - baseFm.Ascent + System.Math.Max(0, baseFm.Leading)
+                ? baseFm.Descent - baseFm.Ascent
                 : 0;
 
             if (baseNaturalHeight <= 0)
                 return;
 
-            /* Measure each span's font natural line height by iterating MetricAffectingSpan
-             * objects in the spannable and applying them to a temporary TextPaint. */
+            /* Measure the maximum natural height of the span fonts, STRICTLY IGNORING Leading.
+             * We iterate through the span transition points and cumulatively apply all
+             * MetricAffectingSpans (e.g., AbsoluteSizeSpan + TypefaceSpan) to a TextPaint.
+             * This prevents fonts with massive native Leading (like DejaVu) from artificially
+             * inflating the line height, while still allowing intentionally large fonts
+             * (via FontSize) to correctly expand the line. */
             float maxSpanNaturalHeight = 0;
-            if (textView.TextFormatted is Android.Text.ISpannable spannable)
+            if (textView.TextFormatted is Android.Text.ISpanned spanned)
             {
-                var fontSpans = spannable.GetSpans(0, spannable.Length(),
-                    Java.Lang.Class.FromType(typeof(Android.Text.Style.MetricAffectingSpan)));
-                if (fontSpans != null)
+                int len = spanned.Length();
+                int next;
+                for (int i = 0; i < len; i = next)
                 {
-                    foreach (var span in fontSpans)
+                    next = spanned.NextSpanTransition(i, len, Java.Lang.Class.FromType(typeof(Android.Text.Style.MetricAffectingSpan)));
+
+                    var spansAtIdx = spanned.GetSpans(i, next, Java.Lang.Class.FromType(typeof(Android.Text.Style.MetricAffectingSpan)));
+                    if (spansAtIdx != null && spansAtIdx.Length > 0)
                     {
-                        if (span is Android.Text.Style.MetricAffectingSpan metricSpan)
+                        var spanPaint = new Android.Text.TextPaint(textView.Paint);
+                        foreach (var s in spansAtIdx)
                         {
-                            var spanPaint = new Android.Text.TextPaint(textView.Paint);
-                            metricSpan.UpdateMeasureState(spanPaint);
-                            var fm = spanPaint.GetFontMetrics();
-                            if (fm != null)
+                            if (s is Android.Text.Style.MetricAffectingSpan metricSpan)
                             {
-                                float h = fm.Descent - fm.Ascent + System.Math.Max(0, fm.Leading);
-                                if (h > maxSpanNaturalHeight)
-                                    maxSpanNaturalHeight = h;
+                                metricSpan.UpdateMeasureState(spanPaint);
                             }
+                        }
+                        var fm = spanPaint.GetFontMetrics();
+                        if (fm != null)
+                        {
+                            float h = fm.Descent - fm.Ascent; /* NO LEADING */
+                            if (h > maxSpanNaturalHeight)
+                                maxSpanNaturalHeight = h;
                         }
                     }
                 }
             }
 
-            /* Compute target line height as the maximum of:
-             *   (a) base font natural height × the label's LineHeight multiplier
-             *       (or × 1.0 when LineHeight is not set), which reflects the
-             *       intended spacing for lines containing only the base font;
-             *   (b) the tallest span font's natural line height (no multiplier),
-             *       so that a taller span font is never clipped.
-             * All lines become uniformly this height. */
+            /* Compute target line height based on the base font's natural height
+             * (descent − ascent) × the LineHeight multiplier.
+             * We take the Max with maxSpanNaturalHeight so that intentionally large fonts
+             * expand the line, but at 1.5x multiplier, baseTarget usually dominates
+             * normal-sized fonts like DejaVu. */
             double lineMultiplier = label.LineHeight >= 0 ? label.LineHeight : 1.0;
             float baseTarget = baseNaturalHeight * (float)lineMultiplier;
             float targetLineHeightPx = System.Math.Max(baseTarget, maxSpanNaturalHeight);
 
-            /* Enforce uniform spacing via SetLineSpacing.
-             * SetLineSpacing(add, mult) computes: lineHeight = defaultLineHeight * mult + add
-             * Setting mult=0 and add=targetLineHeightPx gives an absolute fixed height */
-            textView.SetLineSpacing(targetLineHeightPx, 0f);
+            /* Since MAUI invokes its native LineHeight mapping initially when the label
+             * is empty, textView.SetLineSpacing(0, label.LineHeight) may already be set.
+             * Later, when FormattedText is populated, MAUI's mapper skips LineHeight,
+             * leaving the multiplier intact. If we don't reset it, Android's StaticLayout
+             * will multiply our UniformLineHeightSpan by label.LineHeight AGAIN! */
+            textView.SetLineSpacing(0, 1.0f);
+
+            /* Apply a LineHeightSpan to the entire text to force uniform line heights.
+             * A LineHeightSpan.chooseHeight() callback fires for EACH line during
+             * StaticLayout and directly controls the FontMetricsInt, guaranteeing
+             * uniform height regardless of which fonts appear on that line.
+             *
+             * We create a NEW SpannableString because textView.TextFormatted returns
+             * SpannedString (immutable — no SetSpan). The constructor copies all
+             * existing spans from the source. We strip any previously-added
+             * UniformLineHeightSpan to prevent accumulation when this handler fires
+             * multiple times (registered for both FormattedText and LineHeight). */
+            if (textView.TextFormatted != null)
+            {
+                var newSpannable = new Android.Text.SpannableString(textView.TextFormatted);
+
+                /* Remove any existing UniformLineHeightSpan from previous handler runs */
+                var existingSpans = newSpannable.GetSpans(0, newSpannable.Length(),
+                    Java.Lang.Class.FromType(typeof(UniformLineHeightSpan)));
+                if (existingSpans != null)
+                {
+                    foreach (var old in existingSpans)
+                        newSpannable.RemoveSpan(old);
+                }
+
+                int targetHeightInt = (int)System.Math.Ceiling(targetLineHeightPx);
+                int baseAscentInt = baseFm != null ? (int)System.Math.Floor(baseFm.Ascent) : -targetHeightInt;
+                var uniformSpan = new UniformLineHeightSpan(targetHeightInt, baseAscentInt);
+                newSpannable.SetSpan(
+                    uniformSpan,
+                    0,
+                    newSpannable.Length(),
+                    Android.Text.SpanTypes.InclusiveInclusive);
+
+                textView.TextFormatted = newSpannable;
+            }
 #endif
-        });
+        };
+
+        /* Register for both FormattedText and LineHeight mappings.
+         * On Android, MAUI's MapLineHeight calls SetLineSpacing(0, label.LineHeight) with a
+         * relative multiplier that fires after FormattedText and overrides our absolute fix.
+         * By also appending to LineHeight, we re-apply our fix after MAUI's own handler. */
+        Microsoft.Maui.Handlers.LabelHandler.Mapper.AppendToMapping(nameof(Label.FormattedText), uniformLineHeightHandler);
+        Microsoft.Maui.Handlers.LabelHandler.Mapper.AppendToMapping(nameof(Label.LineHeight), uniformLineHeightHandler);
 #endif
 
         GHApp.Initialize();
@@ -327,3 +398,57 @@ public partial class App : Application
 
 
 }
+
+#if ANDROID
+/// <summary>
+/// A LineHeightSpan that forces every line to a uniform absolute height in pixels.
+/// Applied to the entire SpannableString, its chooseHeight() callback fires for each
+/// line during StaticLayout and directly adjusts the FontMetricsInt to produce the
+/// target height, overriding per-line font metric differences.
+/// </summary>
+internal class UniformLineHeightSpan : Java.Lang.Object, Android.Text.Style.ILineHeightSpan
+{
+    private readonly int _targetHeight;
+    private readonly int _targetAscent;
+
+    /// <summary>
+    /// Creates a span that forces every line to a uniform height.
+    /// </summary>
+    /// <param name="targetHeightPx">The desired total line height in pixels.</param>
+    /// <param name="targetAscentPx">
+    /// The ascent to use for all lines (negative value, e.g. -40).
+    /// This should be the base font's ascent so baseline positioning is consistent.
+    /// </param>
+    public UniformLineHeightSpan(int targetHeightPx, int targetAscentPx)
+    {
+        _targetHeight = targetHeightPx;
+        _targetAscent = targetAscentPx;
+    }
+
+    public void ChooseHeight(
+        Java.Lang.ICharSequence text,
+        int start,
+        int end,
+        int spanstartv,
+        int lineHeight,
+        Android.Graphics.Paint.FontMetricsInt fm)
+    {
+        if (fm == null)
+            return;
+
+        /* Force all four font metrics to fixed values so every line has
+         * exactly the same height AND the same baseline position.
+         * Without this, fm.Ascent varies per line based on the tallest
+         * font on that line, causing subtle vertical shifts even when
+         * the total height (Descent - Ascent) is the same.
+         *
+         * Ascent = _targetAscent (fixed baseline from base font)
+         * Descent = Ascent + _targetHeight
+         * Top = Ascent, Bottom = Descent (no extra leading) */
+        fm.Ascent = _targetAscent;
+        fm.Descent = _targetAscent + _targetHeight;
+        fm.Top = fm.Ascent;
+        fm.Bottom = fm.Descent;
+    }
+}
+#endif

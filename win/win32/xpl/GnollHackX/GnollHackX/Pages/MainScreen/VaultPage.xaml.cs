@@ -577,7 +577,7 @@ namespace GnollHackX.Pages.MainScreen
                 MessagePopupOkButton.IsVisible = false;
                 MessagePopupCancelButton.IsVisible = false;
                 Thickness oldThickness = MessagePopupFrame.Padding;
-                MessagePopupFrame.Padding = new Thickness(oldThickness.Left, 18, oldThickness.Right, 24);
+                MessagePopupFrame.Padding = new Thickness(12, 18, 12, 30);
                 MessagePopupGrid.IsVisible = true;
                 await GHApp.TryVerifyXlogUserNameAsync(true);
                 MessagePopupOkButton.IsVisible = true;
