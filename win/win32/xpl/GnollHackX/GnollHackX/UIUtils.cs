@@ -1243,7 +1243,7 @@ namespace GnollHackX
                 canvas.Translate(x, y);
                 canvas.Scale(scale);
                 canvas.RotateDegrees((float)((generalcounterdiff * 10) % 360));
-#if GNH_MAUI && !SKIASHARP_3119
+#if GNH_MAUI && !SKIASHARP_3119 && !SKIASHARP_SOURCE
                 using (SKPathBuilder path = new SKPathBuilder())
 #else
                 using (SKPath path = new SKPath())
@@ -1261,7 +1261,7 @@ namespace GnollHackX
                     path.Close();
                     paint.Style = SKPaintStyle.Fill;
                     paint.Color = SKColors.White.WithAlpha((byte)(255 * _sparkleAnimation[generalcounterdiff % numRows, 1]));
-#if GNH_MAUI && !SKIASHARP_3119
+#if GNH_MAUI && !SKIASHARP_3119 && !SKIASHARP_SOURCE
                     using (var finalPath = path.Detach())
                         canvas.DrawPath(finalPath, paint);
 #else

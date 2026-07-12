@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
-		<TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>
+		<!--<TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>-->
 		<!-- Uncomment to also build the MacCatalyst app. -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net10.0-maccatalyst</TargetFrameworks> -->
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
@@ -15,7 +15,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<!--<InvariantGlobalization>true</InvariantGlobalization>-->
-		<DefineConstants>$(DefineConstants);GNH_MAUI;SENTRY;USE_SPAN_FOR_SUBSTRING;SKIASHARP_4147</DefineConstants>
+		<DefineConstants>$(DefineConstants);GNH_MAUI;SENTRY;USE_SPAN_FOR_SUBSTRING;SKIASHARP_SOURCE</DefineConstants>
 
 		<!-- Display name -->
 		<ApplicationTitle>GnollHack</ApplicationTitle>
@@ -1202,23 +1202,40 @@
 
 	</ItemGroup>
 
-	<ItemGroup Condition="!$(DefineConstants.Contains('SKIASHARP_3119')) AND !$(DefineConstants.Contains('SKIASHARP_4147'))">
+	<ItemGroup Condition="!$(DefineConstants.Contains('SKIASHARP_3119')) AND !$(DefineConstants.Contains('SKIASHARP_4147')) AND !$(DefineConstants.Contains('SKIASHARP_SOURCE'))">
 		<PackageReference Include="SkiaSharp" Version="4.147.0-preview.1.1" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="4.147.0-preview.1.1" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="4.147.0-preview.1.1" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(DefineConstants.Contains('SKIASHARP_3119'))">
+	<ItemGroup Condition="$(DefineConstants.Contains('SKIASHARP_3119')) AND !$(DefineConstants.Contains('SKIASHARP_SOURCE'))">
 		<PackageReference Include="SkiaSharp" Version="3.119.1" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.1" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.1" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(DefineConstants.Contains('SKIASHARP_4147'))">
+	<ItemGroup Condition="$(DefineConstants.Contains('SKIASHARP_4147')) AND !$(DefineConstants.Contains('SKIASHARP_SOURCE'))">
 		<PackageReference Include="SkiaSharp" Version="4.147.0-preview.1.1" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="4.147.0-preview.1.1" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="4.147.0-preview.1.1" />
 	</ItemGroup>
+
+	<ItemGroup Condition="$(DefineConstants.Contains('SKIASHARP_SOURCE'))">
+		<ProjectReference Include="C:\repos\SkiaSharp\binding\SkiaSharp\SkiaSharp.csproj" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />
+		<ProjectReference Include="C:\repos\SkiaSharp\source\SkiaSharp.Views.Maui\SkiaSharp.Views.Maui.Core\SkiaSharp.Views.Maui.Core.csproj" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />
+		<ProjectReference Include="C:\repos\SkiaSharp\source\SkiaSharp.Views.Maui\SkiaSharp.Views.Maui.Controls\SkiaSharp.Views.Maui.Controls.csproj" Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041.0'" />
+
+		<PackageReference Include="SkiaSharp" Version="3.119.1" Condition="'$(TargetFramework)'!='net10.0-windows10.0.19041.0'" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.1" Condition="'$(TargetFramework)'!='net10.0-windows10.0.19041.0'" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.1" Condition="'$(TargetFramework)'!='net10.0-windows10.0.19041.0'" />
+	</ItemGroup>
+
+	<Target Name="CopyCustomSkiaSharpNative" AfterTargets="Build" Condition="$(DefineConstants.Contains('SKIASHARP_SOURCE')) AND '$(TargetFramework)'=='net10.0-windows10.0.19041.0'">
+		<Copy SourceFiles="C:\repos\SkiaSharp\output\native\windows\x64\libSkiaSharp.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="C:\repos\SkiaSharp\output\native\winui\any\SkiaSharp.Views.WinUI.Native.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="$(UserProfile)\.nuget\packages\skiasharp.nativeassets.winui\3.119.1\runtimes\win-x64\native\libEGL.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="$(UserProfile)\.nuget\packages\skiasharp.nativeassets.winui\3.119.1\runtimes\win-x64\native\libGLESv2.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+	</Target>
 
   <ItemGroup Condition="$(DefineConstants.Contains('SENTRY'))">
 		<PackageReference Include="Sentry.Maui" Version="6.6.0" />
