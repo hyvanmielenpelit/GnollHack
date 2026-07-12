@@ -758,14 +758,11 @@ getbones(void)
 
     if (validate(fd, bones) != 0) 
     {
-        if (!wizard)
-        {
 #ifdef GNH_MOBILE
-            issue_debuglog(0, "Discarding unuseable bones; no need to panic...");
+        issue_debuglog(DEBUGLOG_GENERAL, wizard ? "Unuseable bones found." : "Discarding unuseable bones; no need to panic...");
 #else
-            pline1("Discarding unuseable bones; no need to panic...");
+        pline1(wizard ? "Unuseable bones found." : "Discarding unuseable bones; no need to panic...");
 #endif
-        }
         ok = FALSE;
         (void)nhclose(fd);
     } 
