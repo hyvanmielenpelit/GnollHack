@@ -21,8 +21,6 @@ using System.Collections;
 using System.Data;
 using System.Xml.Linq;
 
-
-
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -7401,7 +7399,10 @@ namespace GnollHackX.Pages.Game
             float canvaswidth = e.Info.Width; // MainCanvasView.CanvasSize.Width;
             float canvasheight = e.Info.Height; // MainCanvasView.CanvasSize.Height;
 
-            canvas.Clear(SKColors.Black);
+            bool forceAscii = ForceAscii;
+            GHGraphicsStyle graphicsStyle = GraphicsStyle;
+            bool useAscii = forceAscii || graphicsStyle == GHGraphicsStyle.ASCII;
+            canvas.Clear(useAscii ? UIUtils.ASCIIOutOfMapBoundsColor : SKColors.Black);
             _localDarkeningFilterCachePruned = false;
             _localCompositeFilterCachePruned = false;
             _localDarkenedBitmapCachePruned = false;
@@ -7457,14 +7458,12 @@ namespace GnollHackX.Pages.Game
             bool playerMark = PlayerMark;
             bool monsterTargeting = MonsterTargeting;
             bool forceAllMessages = ForceAllMessages;
-            bool forceAscii = ForceAscii;
             bool mapLookMode = MapLookMode;
             bool zoomMiniMode = ZoomMiniMode;
             bool showDirections = ShowDirections;
             bool showNumberPad = ShowNumberPad;
             bool mapWalkMode = MapWalkMode;
             bool walkArrows = WalkArrows;
-            GHGraphicsStyle graphicsStyle = GraphicsStyle;
             int gridOpacity = GridOpacity;
             if (gridOpacity < 0 || gridOpacity > 20)
                 gridOpacity = 0;
@@ -7926,7 +7925,7 @@ namespace GnollHackX.Pages.Game
                 {
                     float tmpwidth = textPaint.MeasureText("A"); //textPaint.FontMetrics.AverageCharacterWidth;
                     float tmpheight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-                    if (graphicsStyle == GHGraphicsStyle.Tiles && !forceAscii)
+                    if (!useAscii)
                     {
                         tmpwidth = GHConstants.TileWidth * usedFontSize / GHConstants.MapFontDefaultSize;
                         tmpheight = GHConstants.TileHeight * usedFontSize / GHConstants.MapFontDefaultSize;
@@ -7948,7 +7947,7 @@ namespace GnollHackX.Pages.Game
                 float width = textPaint.MeasureText("A"); //textPaint.FontMetrics.AverageCharacterWidth;
                 float height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
 
-                if (graphicsStyle == GHGraphicsStyle.Tiles && !forceAscii)
+                if (!useAscii)
                 {
                     width = GHConstants.TileWidth * usedFontSize / GHConstants.MapFontDefaultSize * GHConstants.TileSizeAdjustmentModifier;
                     height = GHConstants.TileHeight * usedFontSize / GHConstants.MapFontDefaultSize * GHConstants.TileSizeAdjustmentModifier;
@@ -8030,8 +8029,14 @@ namespace GnollHackX.Pages.Game
                     {
                         //lock (_mapDataLock)
                         {
-                            if (graphicsStyle == GHGraphicsStyle.ASCII || forceAscii)
+                            if (useAscii)
                             {
+                                tx = (offsetX + usedOffsetX + width * startX);
+                                ty = (offsetY + usedOffsetY + height * startY);
+                                SKRect backRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width * (endX + 1), ty + textPaint.FontMetrics.Ascent + height * (endY + 1));
+                                textPaint.Style = SKPaintStyle.Fill;
+                                textPaint.Color = SKColors.Black;
+                                canvas.DrawRect(backRect, textPaint.Paint);
                                 for (int mapx = startX; mapx <= endX; mapx++)
                                 {
                                     for (int mapy = startY; mapy <= endY; mapy++)
@@ -8763,7 +8768,7 @@ namespace GnollHackX.Pages.Game
                         }
 
                         /* Cursor */
-                        if ((graphicsStyle == GHGraphicsStyle.ASCII || forceAscii) && CursorStyle == TTYCursorStyle.BlinkingUnderline && CursorIsOn && _localMapCursorX >= 1 && _localMapCursorY >= 0)
+                        if (useAscii && CursorStyle == TTYCursorStyle.BlinkingUnderline && CursorIsOn && _localMapCursorX >= 1 && _localMapCursorY >= 0)
                         {
                             int cx = _localMapCursorX, cy = _localMapCursorY;
                             str = "_";
@@ -8793,7 +8798,7 @@ namespace GnollHackX.Pages.Game
                     }
 
                     /* Floating Texts */
-                    if (graphicsStyle != GHGraphicsStyle.ASCII && !forceAscii)
+                    if (!useAscii)
                     {
                         foreach (GHFloatingText ft in _localFloatingTexts)
                         {

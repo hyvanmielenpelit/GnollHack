@@ -25,6 +25,8 @@ namespace GnollHackX
 {
     public static class UIUtils
     {
+        public static readonly SKColor ASCIIOutOfMapBoundsColor = new SKColor(32, 32, 32);
+
         private static readonly SKColor GHGray = new SKColor(128, 128, 128);
         private static readonly SKColor GHDarkGray = new SKColor(96, 96, 96);
         private static readonly SKColor GHVeryDarkGray = new SKColor(64, 64, 64);
