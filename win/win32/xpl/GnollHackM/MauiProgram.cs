@@ -50,6 +50,16 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
 	{
+#if WINDOWS && SKIASHARP_DLL_SWAP_TEST
+        // DIAGNOSTIC ONLY: Bypass SkiaSharp native version check for DLL swap testing.
+        // This must run before ANY SkiaSharp type is accessed (including UseSkiaSharp()).
+        // It sets the minimum version to 0.0, making the check always pass.
+        var versionField = typeof(SkiaSharp.SkiaSharpVersion).GetField(
+            "nativeMinimum",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+        versionField?.SetValue(null, new Version(0, 0));
+        System.Diagnostics.Debug.WriteLine("[DLL-SWAP] SkiaSharp version check bypassed");
+#endif
         GHApp.TryReadSecrets();
 
         var builder = MauiApp.CreateBuilder();
