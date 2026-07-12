@@ -14630,7 +14630,7 @@ namespace GnollHackX.Pages.Game
                             {
                                 canvas.Translate(dest_x, dest_y);
                                 canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
-#if GNH_MAUI && !SKIASHARP_3119
+#if GNH_MAUI && !SKIASHARP_3119 && !SKIASHARP_4147
                                     , SKSamplingOptions.Default
 #endif
                                     , paint);
@@ -14669,7 +14669,7 @@ namespace GnollHackX.Pages.Game
                                 {
                                     canvas.Translate(dest_x, dest_y);
                                     canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
-#if GNH_MAUI && !SKIASHARP_3119
+#if GNH_MAUI && !SKIASHARP_3119 && !SKIASHARP_4147
                                         , SKSamplingOptions.Default
 #endif
                                         , paint);
@@ -14710,7 +14710,7 @@ namespace GnollHackX.Pages.Game
                                 {
                                     canvas.Translate(dest_x, dest_y);
                                     canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
-#if GNH_MAUI && !SKIASHARP_3119
+#if GNH_MAUI && !SKIASHARP_3119 && !SKIASHARP_4147
                                         , SKSamplingOptions.Default
 #endif
                                         , paint);
@@ -14839,7 +14839,7 @@ namespace GnollHackX.Pages.Game
                         {
                             canvas.Translate(dest_x, dest_y);
                             canvas.DrawBitmap(usedForegroundBitmap, source_rt, target_rt
-#if GNH_MAUI && !SKIASHARP_3119
+#if GNH_MAUI && !SKIASHARP_3119 && !SKIASHARP_4147
                                 , SKSamplingOptions.Default
 #endif
                                 , paint);
