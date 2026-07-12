@@ -191,9 +191,14 @@ namespace GnollHackX.Pages.MainScreen
             else
                 _gamePage = null;
 
-            lblHeader.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            bool isDarkMode = GHApp.DarkMode;
+            lblHeader.TextColor = isDarkMode ? GHColors.White : GHColors.Black;
             SetTournamentModeLabelColors(GHApp.TournamentMode);
-            SetChildrenDarkModeTextColor(RootLayout, GHApp.DarkMode);
+            SetChildrenDarkModeTextColor(RootLayout, isDarkMode);
+            if (isDarkMode)
+            {
+                PopupFrame.BackgroundColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
+            }
 
             MapRefreshRateStyle defaultRefresh = UIUtils.GetDefaultMapFPS();
             List<MapRefreshRateItem> list = new List<MapRefreshRateItem>
@@ -2935,6 +2940,11 @@ namespace GnollHackX.Pages.MainScreen
                 bkgView.InvalidateSurface();
                 lblHeader.TextColor = e.Value ? GHColors.White : GHColors.Black;
                 SetChildrenDarkModeTextColor(RootLayout, e.Value);
+                if (e.Value)
+                    PopupFrame.BackgroundColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
+                else
+                    PopupFrame.BackgroundColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x99 / (double)0xFF);
+
                 if (_gameMenuPage != null)
                 {
                     _gameMenuPage.UpdateDarknessMode();

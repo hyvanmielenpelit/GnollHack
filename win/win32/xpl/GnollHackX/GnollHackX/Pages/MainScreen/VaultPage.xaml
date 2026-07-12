@@ -33,7 +33,7 @@
                     <Frame x:Name="MessagePopupFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout Spacing="9" Padding="6">
                             <Label Text="Message" x:Name="MessagePopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" HorizontalOptions="Center" />
-                            <Label Text="" x:Name="MessagePopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" />
+                            <Label Text="" x:Name="MessagePopupLabel" FontFamily="Underwood" FontSize="16" LineHeight="1.1" TextColor="White" HorizontalOptions="Center" />
                             <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
                                 <controls:CustomImageButton Text="OK" x:Name="MessagePopupOkButton" Clicked="MessagePopupOkButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" />
                                 <controls:CustomImageButton Text="Cancel" x:Name="MessagePopupCancelButton" Clicked="MessagePopupCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" />
