@@ -1627,7 +1627,7 @@ m_move(struct monst *mtmp, int after)
                        paralysis victims excluded */
                     if ((mtoo = m_at(xx, yy)) != 0
                         && (is_mon_msleeping(mtoo) || is_mon_mundetected(mtoo)
-                            || (mtoo->mappearance && !is_mon_iswiz(mtoo))
+                            || (M_AP_TYPE(mtoo) != M_AP_NOTHING && !is_mon_iswiz(mtoo))
                             || !mtoo->data->mmove))
                         continue;
                     /* the mfndpos() test for whether to allow a move to a
