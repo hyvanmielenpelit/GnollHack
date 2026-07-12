@@ -13767,9 +13767,6 @@ namespace GnollHackX.Pages.Game
             float scale, float targetscale, float scaled_x_padding, float scaled_y_padding, float scaled_tile_height,
             bool is_inventory, bool drawwallends, bool usingGL, bool highFilterQuality, bool fixRects, bool fixFiltering)
         {
-            if (autodraw == 0)
-                return;
-
             if (delayedDraw)
             {
                 ulong contents_no = 0;
@@ -13804,7 +13801,7 @@ namespace GnollHackX.Pages.Game
             /******************/
             /* AUTODRAW START */
             /******************/
-            if (GHApp._autodraws != null)
+            if (GHApp._autodraws != null && autodraw != 0)
             {
                 float opaqueness = 1;
                 int sheet_idx = 0;
