@@ -1416,10 +1416,10 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
                 bonusesprinted = TRUE;
             }
-            if (((objects[otyp].oc_skill >= P_FIRST_WEAPON && objects[otyp].oc_skill <= P_LAST_WEAPON) 
-                  || objects[otyp].oc_skill == -P_THROWN_WEAPON 
-                  || objects[otyp].oc_skill == P_SHIELD)
-                && is_weapon(obj)
+            if ((((objects[otyp].oc_skill >= P_FIRST_WEAPON && objects[otyp].oc_skill <= P_LAST_WEAPON) 
+                    || objects[otyp].oc_skill == -P_THROWN_WEAPON 
+                    || objects[otyp].oc_skill == P_SHIELD)
+                  && is_weapon(obj))
                 || (is_gloves(obj) || objects[otyp].oc_skill == P_BARE_HANDED_COMBAT)
                 || (is_boots(obj) || objects[otyp].oc_skill == P_MARTIAL_ARTS)
                 )
