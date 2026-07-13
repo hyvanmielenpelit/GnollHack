@@ -547,7 +547,7 @@ can_make_bones(void)
         return FALSE;
     }
 
-    int chance = 1 + (int)dgn_depth / 5;
+    int chance = 1 + (int)dgn_depth / 4;
     if (chance >= 2 && !wizard && !rn2(chance))  /* fewer ghosts on low levels */
     {
         bones_debuglog("NO BONES: chance >= 2 && !wizard && !rn2(chance)");
