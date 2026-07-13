@@ -72,7 +72,7 @@ struct region_type_definition {
     boolean sensed_by_touching_around;
     boolean blocks_vision;
     xchar is_light_source;
-    enum region_soundset_types soundset;
+    int32_t /* enum region_soundset_types */ soundset;
     uint64_t rt_flags;
 };
 
@@ -117,7 +117,7 @@ typedef struct nhregion {
     int glyph;       /* Which glyph to use if visible */
     anything arg;    /* Optional user argument (Ex: strength of
                         force field, damage of a fire zone, ...*/
-    enum region_types typ;  /* type of the region, normally indicating visible, audible, and game play effects */
+    int32_t /* enum region_types */ typ;  /* type of the region, normally indicating visible, audible, and game play effects */
     int dmg_dice;
     int dmg_diesize;
     int dmg_plus;

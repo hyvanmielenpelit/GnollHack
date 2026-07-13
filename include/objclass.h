@@ -853,7 +853,7 @@ struct objclass {
     int oc_critical_strike_percentage;    /* percentage to be used with A1_CRITICAL_STRIKE; can be used for other purposes for a S1_ flag, too */
 #define oc_effect_probability oc_critical_strike_percentage /* comestibles: probability of edible effect taking place */
     uchar oc_multigen_type;                 /* class number multi multigen_type */
-    enum object_soundset_types oc_soundset;
+    int32_t /* enum object_soundset_types */ oc_soundset;
 
 /* oc_dir_subtypes for spells */
 #define RAY_WND_MAGIC_MISSILE 0 

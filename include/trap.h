@@ -40,7 +40,7 @@ struct trap {
     coord launch;
     uchar ttyp;
     uchar tsubtyp;
-    enum lever_effect_types lever_effect;
+    int32_t /* enum lever_effect_types */ lever_effect;
     int64_t effect_param1;
     int64_t effect_param2;
     int64_t effect_param3;

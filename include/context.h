@@ -217,7 +217,7 @@ struct context_info
     uchar zap_animation_y[MAX_PLAYED_ZAP_ANIMATIONS];
     uchar spef_action_animation_x[MAX_PLAYED_SPECIAL_EFFECTS];
     uchar spef_action_animation_y[MAX_PLAYED_SPECIAL_EFFECTS];
-    enum layer_types spef_action_animation_layer[MAX_PLAYED_SPECIAL_EFFECTS];
+    int32_t /* enum layer_types */ spef_action_animation_layer[MAX_PLAYED_SPECIAL_EFFECTS];
 
     uint64_t u_intervals_to_wait_until_action;
     uint64_t u_intervals_to_wait_until_end;

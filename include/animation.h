@@ -2957,7 +2957,7 @@ struct special_effect_definition {
     int frames_to_sound;
     int frames_from_sound_to_action;
     int frames_from_action_to_end;
-    enum layer_types layer;
+    int32_t /* enum layer_types */ layer;
     short /*enum replacement_types*/ replacement;
     short /*enum animation_types*/ animation;
     short /*enum enlargement_types*/ enlargement;
@@ -2991,7 +2991,7 @@ struct animation_timer_list {
     uchar zap_animation_y[MAX_PLAYED_ZAP_ANIMATIONS];
     uchar spef_action_animation_x[MAX_PLAYED_SPECIAL_EFFECTS];
     uchar spef_action_animation_y[MAX_PLAYED_SPECIAL_EFFECTS];
-    enum layer_types spef_action_animation_layer[MAX_PLAYED_SPECIAL_EFFECTS];
+    int32_t /* enum layer_types */  spef_action_animation_layer[MAX_PLAYED_SPECIAL_EFFECTS];
 };
 
 #endif /* ANIMATION_H */

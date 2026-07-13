@@ -427,7 +427,7 @@ struct decoration_type_definition {
     short lootable_item3;
     schar color;
     schar color_filled;
-    enum location_soundset_types soundset;
+    int32_t /* enum location_soundset_types */ soundset;
     uint64_t dflags;
 };
 
@@ -569,7 +569,7 @@ struct carpet_type_definition {
     const char* name;
     const char* description;
     int first_doodad; //For each of four directions
-    enum carpet_tile_indexation_types tile_indexation_type;
+    int32_t /* enum carpet_tile_indexation_types */ tile_indexation_type;
     schar fixed_width;
     schar fixed_height;
     unsigned short cflags;
@@ -1557,7 +1557,7 @@ struct monster_generation_info {
 
 struct levelflags {
     char special_description[BUFSZ];
-    enum special_level_naming_types special_naming_reveal_type;
+    int32_t /* enum special_level_naming_types */ special_naming_reveal_type;
     short special_naming_seen_monster_type;
     xchar special_naming_seen_monster_class;
 

@@ -62,12 +62,12 @@ typedef struct lightsource_t {
 typedef struct soundsource_t {
     struct soundsource_t* next;
     xchar x, y;  /* source's position */
-    enum ghsound_types ghsound; /* played ghsound */
+    int32_t /* enum ghsound_types */ ghsound; /* played ghsound */
     float heard_volume; /* source's volume as heard by the player, range 0.0f to 1.0f */
     float source_volume; /* source's volume at origin, range 0.0f to 1.0f */
     short flags;
-    enum soundsource_types type;  /* type of sound source, monster, object, location */
-    enum soundsource_ambient_subtypes subtype; /* subtype of soundsource, produced always, or while lit */
+    int32_t /* enum soundsource_types */ type;  /* type of sound source, monster, object, location */
+    int32_t /* enum soundsource_ambient_subtypes */ subtype; /* subtype of soundsource, produced always, or while lit */
     anything id; /* source's identifier */
     void* ambient_ghsound_ptr; /* ambient sound pointer for storing */
 } sound_source;
