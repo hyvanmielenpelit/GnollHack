@@ -1927,7 +1927,7 @@ wiz_debug(void)
         {
             //context.suppress_container_deletion_warning = 1;
             int i;
-            issue_debuglog(DEBUGLOG_DEBUG_ONLY, "Starting mimics");
+            issue_debuglog(0, "Starting mimics");
             for (i = 0; i < 2000; i++)
             {
                 //context.suppress_container_deletion_warning = 1;
@@ -1953,14 +1953,14 @@ wiz_debug(void)
                     (void) mapglyph(layers, &ch, &color, &special, cc.x, cc.y);
 
                     Sprintf(descbuf, "Mimic %d, m_ap_type=%d, mappearance=%u, has_mobj=%d, otyp=%d, mobj_corpsenm=%d, MCORPSENM=%d", i, mon->m_ap_type, mon->mappearance, has_mobj(mon), has_mobj(mon) ? MOBJ(mon)->otyp : 0, has_mobj(mon) ? MOBJ(mon)->corpsenm : -2, has_mcorpsenm(mon) ? MCORPSENM(mon) : -2);
-                    issue_debuglog(DEBUGLOG_DEBUG_ONLY, descbuf);
+                    issue_debuglog(0, descbuf);
                     *descbuf = 0;
                     (void) do_screen_description(cc, TRUE, ch, descbuf, &firstmatch, (struct permonst**)0);
                     //context.suppress_container_deletion_warning = 1;
                     mongone(mon);
                 }
             }
-            issue_debuglog(DEBUGLOG_DEBUG_ONLY, "Starting items");
+            issue_debuglog(0, "Starting items");
             for (i = 0; i < 3000; i++)
             {
                 //context.suppress_container_deletion_warning = 1;
@@ -1988,7 +1988,7 @@ wiz_debug(void)
                         (void) mapglyph(layers, &ch, &color, &special, cc.x, cc.y);
 
                         Sprintf(descbuf, "Item %d, otyp=%d", i, otmp->otyp);
-                        issue_debuglog(DEBUGLOG_DEBUG_ONLY, descbuf);
+                        issue_debuglog(0, descbuf);
                         *descbuf = 0;
                         (void) do_screen_description(cc, TRUE, ch, descbuf, &firstmatch, (struct permonst**)0);
                         //context.suppress_container_deletion_warning = 1;

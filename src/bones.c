@@ -19,6 +19,22 @@ static void resetobjs(struct obj *, boolean);
 static boolean fixuporacle(struct monst *);
 static void mark_all_fruits_good(struct obj*);
 
+#if defined(DEBUG) && defined(GNH_MOBILE)
+static
+void bones_debuglog(const char* str)
+{
+    if (!str || !*str || !wizard)
+        return;
+    issue_debuglog(0, str);
+}
+#else
+static
+void bones_debuglog(const char* str UNUSED)
+{
+    return;
+}
+#endif
+
 static boolean
 no_bones_level(d_level *lev)
 {
@@ -28,16 +44,55 @@ no_bones_level(d_level *lev)
     if (ledger_no(&save_dlevel))
         assign_level(lev, &save_dlevel);
 
-    return (boolean) (((sptr = Is_special(lev)) != 0 && !sptr->boneid)
-                      || !dungeons[lev->dnum].boneid
-                      /* no bones on the last or multiway branch levels
-                         in any dungeon (level 1 isn't multiway) */
-                      || Is_botlevel(lev)
-                      || (Is_branchlev(lev) && lev->dlevel > 1)
-                      || (u.uz.dnum == main_dungeon_dnum && u.uz.dlevel == 1)
-                      /* no bones in the invocation level */
-                      || (In_hell(lev)
-                          && lev->dlevel == dunlevs_in_dungeon(lev) - 1));
+    boolean res;
+    res = (sptr = Is_special(lev)) != 0 && !sptr->boneid;
+    if (res)
+    {
+        bones_debuglog("bones_debug: NO BONES: !sptr->boneid");
+        return TRUE;
+    }
+    res = !dungeons[lev->dnum].boneid;
+    if (res)
+    {
+        bones_debuglog("NO BONES: !dungeons[lev->dnum].boneid");
+        return TRUE;
+    }
+    res = Is_botlevel(lev);
+    if (res)
+    {
+        bones_debuglog("NO BONES: Is_botlevel(lev)");
+        return TRUE;
+    }
+    res = Is_branchlev(lev) && lev->dlevel > 1;
+    if (res)
+    {
+        bones_debuglog("NO BONES: Is_branchlev(lev) && lev->dlevel > 1");
+        return TRUE;
+    }
+    res = u.uz.dnum == main_dungeon_dnum && u.uz.dlevel == 1;
+    if (res)
+    {
+        bones_debuglog("NO BONES: u.uz.dnum == main_dungeon_dnum && u.uz.dlevel == 1");
+        return TRUE;
+    }
+    res = In_hell(lev) && lev->dlevel == dunlevs_in_dungeon(lev) - 1;
+    if (res)
+    {
+        bones_debuglog("NO BONES: In_hell(lev) && lev->dlevel == dunlevs_in_dungeon(lev) - 1");
+        return TRUE;
+    }
+    bones_debuglog("YES BONES: no_bones_level == FALSE");
+    return FALSE;
+    //return (boolean) (((sptr = Is_special(lev)) != 0 && !sptr->boneid)
+    //                  || !dungeons[lev->dnum].boneid
+    //                  /* no bones on the last or multiway branch levels
+    //                     in any dungeon (level 1 isn't multiway) */
+    //                  || Is_botlevel(lev)
+    //                  || (Is_branchlev(lev) && lev->dlevel > 1)
+    //                  || (u.uz.dnum == main_dungeon_dnum && u.uz.dlevel == 1)
+    //                  /* no bones in the invocation level */
+    //                  || (In_hell(lev)
+    //                      && lev->dlevel == dunlevs_in_dungeon(lev) - 1));
 }
 
 /* Call this function for each fruit object saved in the bones level: it marks
@@ -441,10 +496,11 @@ boolean
 can_make_bones(void)
 {
     struct trap *ttmp;
+    bones_debuglog("can_make_bones");
 
     /* don't let multiple restarts generate multiple copies of objects
        in bones files */
-#if !defined(DEBUG) && defined(GNH_MOBILE)
+#if !defined(DEBUG)
     if (!discover || ModernMode || CasualMode || flags.non_scoring) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
         return FALSE;
     if (wizard)
@@ -453,30 +509,52 @@ can_make_bones(void)
     if (!wizard && (!discover || ModernMode || CasualMode || flags.non_scoring)) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
         return FALSE;
 #endif
+    bones_debuglog("can_make_bones: debug and wizard confirmed");
     if (!flags.bones)
+    {
+        bones_debuglog("NO BONES: !flags.bones");
         return FALSE;
+    }
     if (ledger_no(&u.uz) <= 0 || ledger_no(&u.uz) > maxledgerno())
+    {
+        bones_debuglog("NO BONES: ledger_no(&u.uz) <= 0 || ledger_no(&u.uz) > maxledgerno()");
         return FALSE;
+    }
     if (no_bones_level(&u.uz))
         return FALSE; /* no bones for specific levels */
-    if (u.uswallow) 
-        return FALSE; /* no bones when swallowed */
 
-    if (!Is_branchlev(&u.uz)) {
+    if (u.uswallow)
+    {
+        bones_debuglog("NO BONES: u.uswallow");
+        return FALSE; /* no bones when swallowed */
+    }
+
+    if (!Is_branchlev(&u.uz)) 
+    {
         /* no bones on non-branches with portals */
         for (ttmp = ftrap; ttmp; ttmp = ttmp->ntrap)
             if (ttmp->ttyp == MAGIC_PORTAL)
+            {
+                bones_debuglog("NO BONES: MAGIC_PORTAL");
                 return FALSE;
+            }
     }
 
     schar dgn_depth = depth(&u.uz);
     if (dgn_depth <= 0) /* bulletproofing for endgame */
+    {
+        bones_debuglog("NO BONES: dgn_depth <= 0");
         return FALSE;
+    }
 
     int chance = 1 + (int)dgn_depth / 5;
     if (chance >= 2 && !wizard && !rn2(chance))  /* fewer ghosts on low levels */
+    {
+        bones_debuglog("NO BONES: chance >= 2 && !wizard && !rn2(chance)");
         return FALSE;
+    }
 
+    bones_debuglog("YES BONES: can_make_bones == TRUE");
     return TRUE;
 }
 
@@ -510,6 +588,7 @@ savebones(int how, time_t when, struct obj *corpse)
         /* compression can change the file's name, so must
            wait until after any attempt to delete this file */
         compress_bonesfile();
+        issue_debuglog(0, "savebones: existing bones file");
         return;
     }
 
@@ -566,7 +645,10 @@ make_bones:
 
         drop_upon_death((struct monst *) 0, otmp, u.ux, u.uy);
         if (!otmp)
+        {
+            issue_debuglog(0, "savebones: could not create a statue");
             return; /* couldn't make statue */
+        }
         mtmp = (struct monst *) 0;
     } else if (u.ugrave_arise < LOW_PM) {
         /* drop everything */
@@ -579,7 +661,10 @@ make_bones:
         set_mon_u_know_mname(mtmp, 1);
         in_mklev = FALSE;
         if (!mtmp)
+        {
+            issue_debuglog(0, "savebones: could not create a ghost");
             return;
+        }
         mtmp = christen_monst(mtmp, plname);
         if (corpse)
             (void) obj_attach_mid(corpse, mtmp->m_id);
@@ -591,6 +676,7 @@ make_bones:
         if (!mtmp) { /* arise-type might have been genocided */
             drop_upon_death((struct monst *) 0, (struct obj *) 0, u.ux, u.uy);
             u.ugrave_arise = NON_PM; /* in case caller cares */
+            issue_debuglog(0, "savebones: could not create u.ugrave_arise");
             return;
         }
         mtmp = christen_monst(mtmp, plname);
@@ -686,6 +772,9 @@ make_bones:
         /* bones file creation problems are silent to the player.
          * Keep it that way, but place a clue into the paniclog.
          */
+        char failbuf[BUFSZ * 2];
+        Sprintf(failbuf, "savebones, cannot create bonesfile: %s", whynot);
+        issue_debuglog(0, failbuf);
         paniclog("savebones", whynot);
         return;
     }
@@ -715,6 +804,7 @@ make_bones:
                 pline("Insufficient space to create bones file.");
             (void) nhclose(fd);
             cancel_bonesfile();
+            issue_debuglog(0, "savebones: not enough disk space");
             return;
         }
         co_false(); /* make sure stuff before savelev() gets written */
@@ -772,7 +862,7 @@ getbones(void)
     if (validate(fd, bones) != 0) 
     {
 #ifdef GNH_MOBILE
-        issue_debuglog(DEBUGLOG_GENERAL, wizard ? "Unuseable bones found." : "Discarding unuseable bones; no need to panic...");
+        issue_debuglog(0, wizard ? "Unuseable bones found." : "Discarding unuseable bones; no need to panic...");
 #else
         pline1(wizard ? "Unuseable bones found." : "Discarding unuseable bones; no need to panic...");
 #endif
