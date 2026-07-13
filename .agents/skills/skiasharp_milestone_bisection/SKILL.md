@@ -5,7 +5,7 @@ description: Bisection workflow to compile and test various native Skia mileston
 
 # Bisection of Skia Milestones using Local Source Reference Builds
 
-This skill describes the workflow to bisect rendering performance regressions, crashes, or bugs by building different native Skia milestone versions (e.g., m133, m140) and integration-testing them inside GnollHack using a local source-build overlay.
+This skill describes the workflow to bisect rendering performance regressions, crashes, or bugs by building different native Skia milestone versions (e.g., m133, m140, m144) and integration-testing them inside GnollHack using a local source-build overlay.
 
 ---
 
@@ -14,10 +14,10 @@ This skill describes the workflow to bisect rendering performance regressions, c
 To test an intermediate milestone (e.g., m133) using the local `SkiaSharp` source tree, you must coordinate three layers:
 
 ```
-[Upstream Skia Commit (m133)] + [Custom C API Commits]
+[Upstream Skia Commit (mXXX)] + [Custom C API Commits]
            │
            ▼ (Compiled by ninja)
-[libSkiaSharp.dll (m133)] + [SkiaSharp.Views.WinUI.Native.dll]
+[libSkiaSharp.dll (mXXX)] + [SkiaSharp.Views.WinUI.Native.dll]
            │
            ▼ (Referenced & Bypassed Version Check)
 [SkiaSharp.dll (Local C#)] + [libEGL.dll / libGLESv2.dll (ANGLE)]
@@ -36,29 +36,22 @@ We must use a branch or merge commit in the `externals/skia` submodule that cont
    ```powershell
    cd c:\repos\SkiaSharp\externals\skia
    ```
-2. Checkout the desired milestone merge commit (e.g., for chrome/m133, commit `fb981fd71a`):
-   ```powershell
-   git checkout fb981fd71a
-   ```
+2. Checkout the desired milestone commit (see [Milestone Intricacies](#-milestone-specific-intricacies) for specific commits).
 3. Synchronize third-party dependencies:
    ```powershell
    python tools/git-sync-deps
    ```
 
----
-
-### Step 2: Cherry-Pick Missing Custom C APIs
-Since the local C# codebase is at the head of the branch (expecting the latest C API exports), older milestones will lack custom shims added by the SkiaSharp maintainers. This causes `EntryPointNotFoundException` at startup.
-
-You must cherry-pick these critical commits into your detached HEAD:
-- **`sk_fontmgr_legacy_create_typeface`** (Required for `SKTypeface.Default` startup):
-  ```powershell
-  git cherry-pick f5345469d1
-  ```
-- **Other common missing shims** (e.g., `sk_paint_compute_fast_bounds`, `sk_colorfilter_new_overdraw`):
-  Search the history using `git log fb981fd71a..origin/skiasharp --oneline -- src/c/` and cherry-pick if the C# startup/runtime crashes on them.
-
----
+### Step 2: Restore C API Files & Configuration
+If using older milestones, the C API directory (`src/c/` and `include/c/`) and build configuration files may need to be restored from a newer milestone reference commit (such as `280ec21ada` from m147):
+```powershell
+# Restore C API shims
+git checkout 280ec21ada -- src/c/
+git checkout 280ec21ada -- include/c/
+# Restore build configurations
+git checkout 280ec21ada -- gn/BUILDCONFIG.gn
+git checkout 280ec21ada -- gn/toolchain/BUILD.gn
+```
 
 ### Step 3: Build the Custom Native DLL
 Use the local compiler script to build `libSkiaSharp.dll`:
@@ -72,10 +65,8 @@ Also rebuild the WinUI native projections solution:
 1. Open and build `native/winui/SkiaSharp.Views.WinUI.Native.sln` in **Release** configuration.
 2. Ensure the output is generated at `output/native/winui/any/SkiaSharp.Views.WinUI.Native.dll`.
 
----
-
 ### Step 4: Bypass Version Compatibility Gate
-The local C# bindings expect native milestone `150.0`/`151.0` and will throw `InvalidOperationException` when they detect the native DLL has version `133.0`.
+The local C# bindings expect native milestone `150.0`/`151.0` and will throw `InvalidOperationException` when they detect the native DLL has version `133.0`, `140.0`, or `144.0`.
 
 1. Open `binding/SkiaSharp/SkiaSharpVersion.cs`.
 2. Modify `CheckNativeLibraryCompatible` to return `true` immediately to disable checking:
@@ -85,70 +76,75 @@ The local C# bindings expect native milestone `150.0`/`151.0` and will throw `In
        return true;
    }
    ```
-3. In `binding/SkiaSharp/SKCanvas.cs`, if `SetMatrix` obsolete warnings are treated as errors and block the compilation of the consumer project (e.g., GnollHack's `GamePage.xaml.cs`), downgrade the obsolete attribute check from error to warning.
 
----
-
-### Step 5: Compile Local C# Assemblies
-Build both **Debug** and **Release** configurations of the C# projects so they are available to the consumer regardless of configuration:
+### Step 5: Compile Local C# Assemblies (Important: MauiVersion Sync)
+When building the C# projects, you MUST match the `Microsoft.Maui.Controls` package version between `SkiaSharp` and `GnollHackM`.
+If they do not match, the build will fail with a `Duplicate Entry` resource error (`PRI175`/`PRI277`) for `TabbedPageStyle.xbf`.
+Evaluate the version in `GnollHackM.csproj` (e.g. `10.0.71`) and pass it as a parameter:
 ```powershell
 cd c:\repos\SkiaSharp
 # Debug builds
 dotnet build binding/SkiaSharp/SkiaSharp.csproj -c Debug /p:TargetFrameworks=net10.0-windows10.0.19041.0 /p:TargetFramework=net10.0-windows10.0.19041.0
 dotnet build source/SkiaSharp.Views.Maui/SkiaSharp.Views.Maui.Core/SkiaSharp.Views.Maui.Core.csproj -c Debug /p:TargetFrameworks=net10.0-windows10.0.19041.0 /p:TargetFramework=net10.0-windows10.0.19041.0 /p:MauiVersion=10.0.71
 dotnet build source/SkiaSharp.Views.Maui/SkiaSharp.Views.Maui.Controls/SkiaSharp.Views.Maui.Controls.csproj -c Debug /p:TargetFrameworks=net10.0-windows10.0.19041.0 /p:TargetFramework=net10.0-windows10.0.19041.0 /p:MauiVersion=10.0.71
-
-# Release builds
-dotnet build binding/SkiaSharp/SkiaSharp.csproj -c Release /p:TargetFrameworks=net10.0-windows10.0.19041.0 /p:TargetFramework=net10.0-windows10.0.19041.0
-dotnet build source/SkiaSharp.Views.Maui/SkiaSharp.Views.Maui.Core/SkiaSharp.Views.Maui.Core.csproj -c Release /p:TargetFrameworks=net10.0-windows10.0.19041.0 /p:TargetFramework=net10.0-windows10.0.19041.0 /p:MauiVersion=10.0.71
-dotnet build source/SkiaSharp.Views.Maui/SkiaSharp.Views.Maui.Controls/SkiaSharp.Views.Maui.Controls.csproj -c Release /p:TargetFrameworks=net10.0-windows10.0.19041.0 /p:TargetFramework=net10.0-windows10.0.19041.0 /p:MauiVersion=10.0.71
 ```
 
----
-
 ### Step 6: Deploy Native Libraries and ANGLE Dependencies
-Since the project references bypass NuGet packages, MSBuild will not copy the native C++ DLLs or ANGLE dependencies. We must configure a post-build target in the consumer project.
+Configure a post-build target in the consumer project (`win/win32/xpl/GnollHackM/GnollHackM.csproj`):
+```xml
+<Target Name="CopyCustomSkiaSharpNative" AfterTargets="Build" Condition="$(DefineConstants.Contains('SKIASHARP_SOURCE')) AND '$(TargetFramework)'=='net10.0-windows10.0.19041.0'">
+    <Copy SourceFiles="C:\repos\SkiaSharp\output\native\windows\x64\libSkiaSharp.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="C:\repos\SkiaSharp\output\native\winui\any\SkiaSharp.Views.WinUI.Native.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(UserProfile)\.nuget\packages\skiasharp.nativeassets.winui\3.119.1\runtimes\win-x64\native\libEGL.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(UserProfile)\.nuget\packages\skiasharp.nativeassets.winui\3.119.1\runtimes\win-x64\native\libGLESv2.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+</Target>
+```
 
-1. Open `win/win32/xpl/GnollHackM/GnollHackM.csproj`.
-2. Define the `SKIASHARP_SOURCE` ProjectReferences and add the custom post-build copy target:
-   ```xml
-   <Target Name="CopyCustomSkiaSharpNative" AfterTargets="Build" Condition="$(DefineConstants.Contains('SKIASHARP_SOURCE')) AND '$(TargetFramework)'=='net10.0-windows10.0.19041.0'">
-       <!-- Copy local custom compiled native DLLs -->
-       <Copy SourceFiles="C:\repos\SkiaSharp\output\native\windows\x64\libSkiaSharp.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
-       <Copy SourceFiles="C:\repos\SkiaSharp\output\native\winui\any\SkiaSharp.Views.WinUI.Native.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
-       <!-- Copy ANGLE OpenGL ES rendering dependencies from user's NuGet cache -->
-       <Copy SourceFiles="$(UserProfile)\.nuget\packages\skiasharp.nativeassets.winui\3.119.1\runtimes\win-x64\native\libEGL.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
-       <Copy SourceFiles="$(UserProfile)\.nuget\packages\skiasharp.nativeassets.winui\3.119.1\runtimes\win-x64\native\libGLESv2.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
-   </Target>
-   ```
-
----
-
-### Step 7: Rebuild GnollHackM
-Before compiling, terminate any running instances of the game and background MSBuild worker nodes to prevent locked file errors (`LNK1201` / `MSB3026`):
+### Step 7: Clean and Rebuild GnollHackM
+Terminate any running instances of the game and background MSBuild worker nodes to prevent locked file errors.
+Since resources can be cached, do a recursive clean of `bin` and `obj` across all sibling projects:
 ```powershell
 Stop-Process -Name "GnollHackM" -Force -ErrorAction SilentlyContinue
 Stop-Process -Name "MSBuild" -Force -ErrorAction SilentlyContinue
-```
 
-Then rebuild the application in the desired configuration:
-```powershell
-cd c:\hmp\GnollHack
-dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Release -f net10.0-windows10.0.19041.0 /p:TargetFrameworks=net10.0-windows10.0.19041.0 /p:TargetFramework=net10.0-windows10.0.19041.0 /p:MauiVersion=10.0.71
+# Recursive Clean
+Get-ChildItem -Path c:\hmp\GnollHack\win\win32\xpl\ -Directory -Recurse -Filter "bin" -ErrorAction SilentlyContinue | ForEach-Object { Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }
+Get-ChildItem -Path c:\hmp\GnollHack\win\win32\xpl\ -Directory -Recurse -Filter "obj" -ErrorAction SilentlyContinue | ForEach-Object { Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }
+
+# Rebuild with Matched MauiVersion
+dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-windows10.0.19041.0 /p:MauiVersion=10.0.71
 ```
 
 ---
 
-## 🔍 Troubleshooting & Diagnostic Checks
+## 🎯 Milestone-Specific Intricacies
 
-### Checking Symbols inside the DLL (PowerShell/Python)
-To verify if a specific entry point is actually exported by `libSkiaSharp.dll` (case-sensitive check):
-```powershell
-python -c "data = open(r'C:\repos\SkiaSharp\output\native\windows\x64\libSkiaSharp.dll', 'rb').read(); print('FOUND' if b'sk_fontmgr_legacy_create_typeface' in data else 'NOT FOUND')"
-```
+When compiling individual milestones, various C++ compiler errors will occur due to upstream API signature changes between the Skia engine and the SkiaSharp C API shims.
 
-### Unlocking Locked DLLs / PDBs
-If MSBuild complains that a file is locked by Visual Studio or another process, find the PID and kill it:
-```powershell
-Get-Process | Where-Object { $_.Modules.FileName -like "*libSkiaSharp*" } | ForEach-Object { "$($_.Name) (ID: $($_.Id))" }
-```
+### 📍 Milestone 133 (m133)
+* **Submodule Commit**: `fb981fd71a`
+* **Intricacies**:
+  * Requires cherry-picking commit `f5345469d1` to supply the startup-critical API `sk_fontmgr_legacy_create_typeface`.
+  * Older shims added in m147 that do not exist or compile in m133 must be commented out or stubbed in the restored `src/c/` C API wrappers.
+
+### 📍 Milestone 140 (m140)
+* **Submodule Commit**: `2bd8be83fe91aef59b8979e2a6d71b8ee2ea34ea`
+* **Intricacies**:
+  * **Shader Gradients**: Revert `sk_shader.cpp` to the m140 gradient-compatible version to match m140's `SkGradientShader::MakeLinear`/`MakeRadial` signatures.
+  * **Font breakText**: Modify `SkFont.h` and `SkFont.cpp` to allow `breakText()` to accept the `SkPaint` parameter.
+  * **XPS Document**: In `sk_document.cpp`, verify that the parameter signature of `SkXPS::MakeDocument` takes `SkWStream*`.
+
+### 📍 Milestone 144 (m144)
+* **Submodule Commit**: `c34bb09814208ea4930883cb6291d83948ce0217`
+* **Intricacies**:
+  * **Color Types**: Comment out the `R16` color types (`kR16_float_SkColorType`) in `include/c/sk_types.h` and `src/c/sk_enums.cpp` since m144 did not support them.
+  * **Codec Options**: Comment out `fMaxDecodeMemory` in `sk_codec_options_t` inside `include/c/sk_types.h` to prevent static size assert failures.
+  * **XPS Document**: In `src/c/sk_document.cpp`, change the `SkXPS::MakeDocument` call signature to exclude the XPS metadata struct parameter.
+  * **Path Builder**: In `src/c/sk_pathbuilder.cpp`, revert the signature calls for `rMoveTo`/`rArcTo`.
+  * **Shader Gradients**: In `src/c/sk_shader.cpp`, use the `SkColor4f::FromColor` helper method instead of the missing `SkColorColor4f` method.
+  * **Reference Count**: Add `getRefCount()` definitions to both `SkRefCntBase` and `SkNVRefCnt` in `include/core/SkRefCnt.h`.
+  * **Text Blob Bounds**: Modify `allocRunRSXform` in `include/core/SkTextBlob.h` and `src/core/SkTextBlob.cpp` to take optional bounds pointer arguments.
+  * **UTF-8 Sentinel Check**: In `src/core/SkFontPriv.h` under `CountTextElements`, add range checking to prevent negative text lengths:
+    ```csharp
+    if (byteLength < 0) return 0;
+    ```
