@@ -1382,7 +1382,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
     }
 
     /* Skill */
-    if (objects[otyp].oc_skill != P_NONE)
+    if (objects[otyp].oc_skill != P_NONE || is_otyp_gloves(otyp) || is_otyp_boots(otyp))
     {
         Strcpy(buf2, obj ? weapon_skill_name(obj) : otyp_weapon_skill_name(otyp));
         if (objects[otyp].oc_skill < 0 && objects[otyp].oc_skill != -P_THROWN_WEAPON)
@@ -1416,15 +1416,27 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
                 bonusesprinted = TRUE;
             }
-            if (((objects[otyp].oc_skill >= P_FIRST_WEAPON && objects[otyp].oc_skill <= P_LAST_WEAPON) || objects[otyp].oc_skill == -P_THROWN_WEAPON || objects[otyp].oc_skill == P_SHIELD) && is_weapon(obj))
+            if (((objects[otyp].oc_skill >= P_FIRST_WEAPON && objects[otyp].oc_skill <= P_LAST_WEAPON) 
+                  || objects[otyp].oc_skill == -P_THROWN_WEAPON 
+                  || objects[otyp].oc_skill == P_SHIELD)
+                && is_weapon(obj)
+                || (is_gloves(obj) || objects[otyp].oc_skill == P_BARE_HANDED_COMBAT)
+                || (is_boots(obj) || objects[otyp].oc_skill == P_MARTIAL_ARTS)
+                )
             {
-                
-                int skilltohitbonus = weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, objects[otyp].oc_skill == -P_THROWN_WEAPON || is_otyp_thrown_weapon_only(otyp), 0, FALSE, objects[otyp].oc_skill == -P_THROWN_WEAPON || is_otyp_thrown_weapon_only(otyp));
-                int skilldmgbonus = weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, objects[otyp].oc_skill == -P_THROWN_WEAPON || is_otyp_thrown_weapon_only(otyp), 0, FALSE, objects[otyp].oc_skill == -P_THROWN_WEAPON || is_otyp_thrown_weapon_only(otyp));
+                int skilltohitbonus = weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, objects[otyp].oc_skill == -P_THROWN_WEAPON || is_otyp_thrown_weapon_only(otyp), 0, FALSE, objects[otyp].oc_skill == -P_THROWN_WEAPON || is_otyp_thrown_weapon_only(otyp), TRUE);
+                int skilldmgbonus = weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, objects[otyp].oc_skill == -P_THROWN_WEAPON || is_otyp_thrown_weapon_only(otyp), 0, FALSE, objects[otyp].oc_skill == -P_THROWN_WEAPON || is_otyp_thrown_weapon_only(otyp), TRUE);
                 if (skilltohitbonus == skilldmgbonus)
-                    Sprintf(buf, "%s          %s%d to hit and damage", bonusesprinted ? "              " : "Skill bonuses:", skilltohitbonus >= 0 ? "+" : "", skilltohitbonus);
+                    Sprintf(buf, "%s          %s%d to hit and damage%s", 
+                        bonusesprinted ? "              " : "Skill bonuses:", 
+                        skilltohitbonus >= 0 ? "+" : "", skilltohitbonus,
+                        (is_gloves(obj) && uarmg != obj) || (is_boots(obj) && uarmf != obj) ? " (when worn)" : "");
                 else
-                    Sprintf(buf, "%s          %s%d to hit and %s%d to damage", bonusesprinted ? "              " : "Skill bonuses:", skilltohitbonus >= 0 ? "+" : "", skilltohitbonus, skilldmgbonus >= 0 ? "+" : "", skilldmgbonus);
+                    Sprintf(buf, "%s          %s%d to hit and %s%d to damage%s", 
+                        bonusesprinted ? "              " : "Skill bonuses:", 
+                        skilltohitbonus >= 0 ? "+" : "", skilltohitbonus, 
+                        skilldmgbonus >= 0 ? "+" : "", skilldmgbonus,
+                        ((is_gloves(obj) && uarmg != obj) || (is_boots(obj) && uarmf != obj) ? " (when worn)" : ""));
                 putstr(datawin, bonusesprinted ? ATR_INDENT_AT_DOUBLE_SPACE : ATR_INDENT_AT_COLON, buf);
 
                 wep_avg_dmg += skilldmgbonus;
@@ -4893,7 +4905,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                             else if (applicable_launcher)
                             {
                                 roll_to_hit += weapon_to_hit_value(applicable_launcher, &youmonst, &youmonst, 2);
-                                roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE, FALSE, TRUE, 0, TRUE, FALSE);
+                                roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE, FALSE, TRUE, 0, TRUE, FALSE, FALSE);
 
                                 if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI))
                                     && (!Upolyd || your_race(youmonst.data))
@@ -4914,7 +4926,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                             if (is_thrown_weapon_only(obj)) /* meant to be thrown */
                                 roll_to_hit += 2;
 
-                            roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE, TRUE);
+                            roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE, TRUE, FALSE);
                         }
                     }
                     else

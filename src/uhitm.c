@@ -375,7 +375,7 @@ find_roll_to_hit(struct monst *mtmp, uchar aatyp, struct obj *weapon, int *attk_
             tmp += weapon_to_hit_value(weapon, mtmp, &youmonst, 0);
         else if(uarmg)
             tmp += weapon_to_hit_value(uarmg, mtmp, &youmonst, 0);
-        nonpolytmp += weapon_skill_hit_bonus(weapon, P_NONE, FALSE, TRUE, TRUE, 0, TRUE, FALSE);
+        nonpolytmp += weapon_skill_hit_bonus(weapon, P_NONE, FALSE, TRUE, TRUE, 0, TRUE, FALSE, FALSE);
     } 
     else if (aatyp == AT_KICK && martial_bonus()) 
     {
@@ -383,7 +383,7 @@ find_roll_to_hit(struct monst *mtmp, uchar aatyp, struct obj *weapon, int *attk_
             tmp += weapon_to_hit_value(weapon, mtmp, &youmonst, 0);
         else if (uarmf)
             tmp += weapon_to_hit_value(uarmf, mtmp, &youmonst, 0);
-        nonpolytmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE, FALSE, TRUE, TRUE, 0, TRUE, FALSE);
+        nonpolytmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE, FALSE, TRUE, TRUE, 0, TRUE, FALSE, FALSE);
     }
 
     tmp += maybe_polyd(max(polytmp, nonpolytmp), nonpolytmp);
@@ -1800,7 +1800,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
     {
         /* to be valid a projectile must have had the correct projector */
         damage += adjust_damage(
-            weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, !is_golf_swing_with_stone, TRUE, 0, TRUE, ordinary_thrown),
+            weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, !is_golf_swing_with_stone, TRUE, 0, TRUE, ordinary_thrown, FALSE),
             &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE);
         /* [this assumes that `!thrown' implies wielded...] */
         use_skill(wtype, 1);
@@ -1816,7 +1816,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
     }
     else if (ordinary_thrown) //Thrown weapon skill bonus to thrown objects
     {
-        damage += adjust_damage(weapon_skill_dmg_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, 0, TRUE, TRUE),
+        damage += adjust_damage(weapon_skill_dmg_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, 0, TRUE, TRUE, FALSE),
             &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE);
 
         if (thrown == HMON_THROWN && wtype != P_THROWN_WEAPON && damage > 0)

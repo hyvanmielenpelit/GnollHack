@@ -4323,8 +4323,8 @@ status_enlightenment(int mode, int final)
         /* "you have no/basic/expert/master/grand-master skill with <skill>"
            or "you are unskilled/skilled in <skill>" */
 
-        int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE); /* Gives only pure skill bonuses */
-        int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE); /* Gives only pure skill bonuses */
+        int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE, FALSE); /* Gives only pure skill bonuses */
+        int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE, FALSE); /* Gives only pure skill bonuses */
 
         Sprintf(buf, "%s %s %s%s (%s%d to hit and %s%d to damage)", sklvlbuf,
             hav ? "skill with" : "in", skill_name(wtype, TRUE), 
@@ -4375,8 +4375,8 @@ status_enlightenment(int mode, int final)
         /* "you have no/basic/expert/master/grand-master skill with <skill>"
            or "you are unskilled/skilled in <skill>" */
 
-        int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE); /* Gives only pure skill bonuses */
-        int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE); /* Gives only pure skill bonuses */
+        int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE, FALSE); /* Gives only pure skill bonuses */
+        int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE, FALSE); /* Gives only pure skill bonuses */
 
         Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
             hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
@@ -4430,8 +4430,8 @@ print_weapon_skill_line_core(enum p_skills wtype, boolean printweaponstats, int 
         char ebuf[BUFSZ] = "";
         if (printweaponstats)
         {
-            int hitbonus = weapon_skill_hit_bonus((struct obj*)0, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE); /* Gives only pure skill bonuses */
-            int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE); /* Gives only pure skill bonuses */
+            int hitbonus = weapon_skill_hit_bonus((struct obj*)0, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE, FALSE); /* Gives only pure skill bonuses */
+            int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE, FALSE); /* Gives only pure skill bonuses */
             Sprintf(ebuf, "%s%d to hit%s%s%d to damage",
                 hitbonus >= 0 ? "+" : "", hitbonus,
                 wtype == P_SHIELD ? ", " : " and ",

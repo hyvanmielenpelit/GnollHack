@@ -95,7 +95,7 @@ kickdmg(struct monst *mon, boolean clumsy)
     if (uarmf)
         dmg += weapon_dmg_value(uarmf, mon, &youmonst, 0);
     
-    dmg += weapon_skill_dmg_bonus(uarmf, P_MARTIAL_ARTS, FALSE, FALSE, TRUE, 0, TRUE, FALSE);
+    dmg += weapon_skill_dmg_bonus(uarmf, P_MARTIAL_ARTS, FALSE, FALSE, TRUE, 0, TRUE, FALSE, FALSE);
 
     /* excessive wt affects dex, so it affects dmg */
     if (clumsy)

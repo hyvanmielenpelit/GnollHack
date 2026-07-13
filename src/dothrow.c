@@ -2029,7 +2029,7 @@ thitmonst(struct monst *mon, struct obj *obj, boolean is_golf, uchar *hitres_ptr
     dieroll = rnd(20);
 
     boolean is_golf_swing_with_stone = (hmode == HMON_GOLF && (obj->oclass == GEM_CLASS || objects[obj->otyp].oc_skill == -P_SLING));
-    int tohit_skill_bonus = weapon_skill_hit_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, 0, TRUE, TRUE);
+    int tohit_skill_bonus = weapon_skill_hit_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, 0, TRUE, TRUE, FALSE);
 
     if (obj->oclass == WEAPON_CLASS || is_weptool(obj) || obj->oclass == GEM_CLASS) 
     {
@@ -2050,7 +2050,7 @@ thitmonst(struct monst *mon, struct obj *obj, boolean is_golf, uchar *hitres_ptr
             else if (uwep)
             {
                 tmp += weapon_to_hit_value(uwep, mon, &youmonst, 2);    //tmp += uwep->enchantment - greatest_erosion(uwep);
-                nonpolytmp += weapon_skill_hit_bonus(uwep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, FALSE, TRUE, 0, TRUE, FALSE); //Players get skill bonuses
+                nonpolytmp += weapon_skill_hit_bonus(uwep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, FALSE, TRUE, 0, TRUE, FALSE, FALSE); //Players get skill bonuses
 //                if (uwep->oartifact)
 //                    tmp += spec_abon(uwep, mon);
                 /*
@@ -2078,7 +2078,7 @@ thitmonst(struct monst *mon, struct obj *obj, boolean is_golf, uchar *hitres_ptr
                 tmp -= 2;
             /* we know we're dealing with a weapon or weptool handled
                by WEAPON_SKILLS once ammo objects have been excluded */
-            nonpolytmp += weapon_skill_hit_bonus(obj, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, FALSE, TRUE, 0, TRUE, TRUE);
+            nonpolytmp += weapon_skill_hit_bonus(obj, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, FALSE, TRUE, 0, TRUE, TRUE, FALSE);
         }
 
         /* If poly'd, give maximum of player hit chance and polymorph form hit dice, otherwise use normal player chance */

@@ -2715,8 +2715,8 @@ doskilldescription(int skill_id)
             }
             else if (skill_id == P_MARTIAL_ARTS)
             {
-                int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl, FALSE, FALSE);
-                int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl, FALSE, FALSE);
+                int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl, FALSE, FALSE, FALSE);
+                int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl, FALSE, FALSE, FALSE);
                 int criticalhitpct = get_skill_critical_strike_chance(skill_id, FALSE, FALSE, lvl, FALSE, FALSE);
                 int multihitpct = martial_arts_multishot_percentage_chance(lvl);
                 Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
@@ -2731,8 +2731,8 @@ doskilldescription(int skill_id)
                 int tohitbonus, dmgbonus, criticalhitpct;
                 if (skill_id == P_BARE_HANDED_COMBAT && P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) >= P_GRAND_MASTER && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
                 {
-                    tohitbonus = weapon_skill_hit_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, FALSE, 0, FALSE, FALSE);
-                    dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, FALSE, 0, FALSE, FALSE);
+                    tohitbonus = weapon_skill_hit_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
+                    dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
                     criticalhitpct = get_skill_critical_strike_chance(P_MARTIAL_ARTS, FALSE, FALSE, 0, FALSE, FALSE);
                     Sprintf(hbuf, "from Martial Arts %s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                     Sprintf(dbuf, "from Martial Arts %s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
@@ -2745,8 +2745,8 @@ doskilldescription(int skill_id)
                 }
                 else
                 {
-                    tohitbonus = weapon_skill_hit_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl, FALSE, FALSE);
-                    dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl, FALSE, FALSE);
+                    tohitbonus = weapon_skill_hit_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl, FALSE, FALSE, FALSE);
+                    dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, skill_id, FALSE, FALSE, FALSE, lvl, FALSE, FALSE, FALSE);
                     criticalhitpct = get_skill_critical_strike_chance(skill_id, FALSE, FALSE, lvl, FALSE, FALSE);
                     Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                     Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
@@ -2755,8 +2755,8 @@ doskilldescription(int skill_id)
                     {
                     case P_THROWN_WEAPON:
                     {
-                        tohitbonus = weapon_skill_hit_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, lvl, FALSE, TRUE);
-                        dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, lvl, FALSE, TRUE);
+                        tohitbonus = weapon_skill_hit_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, lvl, FALSE, TRUE, FALSE);
+                        dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, lvl, FALSE, TRUE, FALSE);
                         int clvladj = max(-1, lvl - 2);
                         Sprintf(thbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                         Sprintf(tdbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
@@ -3389,8 +3389,8 @@ enhance_weapon_skill(void)
                     }
                     else if (i == P_MARTIAL_ARTS || i == P_TWO_HANDED_WEAPON)
                     {
-                        int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE, FALSE);
-                        int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE, FALSE);
+                        int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
+                        int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
                         int multihitpct = i == P_TWO_HANDED_WEAPON ? two_handed_weapon_multishot_percentage_chance(limited_skill_level(i, FALSE, FALSE)) 
                             : martial_arts_multishot_percentage_chance(limited_skill_level(i, FALSE, FALSE));
                         char hbuf[BUFSZ];
@@ -3411,8 +3411,8 @@ enhance_weapon_skill(void)
 
                         if (can_advance(i, speedy) || could_advance(i))
                         {
-                            int tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE, FALSE);
-                            int dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE, FALSE);
+                            int tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
+                            int dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
                             int multihitpct2 = i == P_TWO_HANDED_WEAPON ? two_handed_weapon_multishot_percentage_chance(limited_skill_level(i, TRUE, FALSE)) 
                                 : martial_arts_multishot_percentage_chance(limited_skill_level(i, TRUE, FALSE));// min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1));
                             char hbuf2[BUFSZ] = "";
@@ -3444,8 +3444,8 @@ enhance_weapon_skill(void)
                         switch (i)
                         {
                         case P_DIGGING:
-                            tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE, FALSE);
-                            dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE, FALSE);
+                            tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
+                            dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
                             criticalhitpct = digging_skill_speed_bonus(P_SKILL_LEVEL(i));
                             addplus = TRUE;
                             break;
@@ -3456,8 +3456,8 @@ enhance_weapon_skill(void)
                             addplus = TRUE;
                             break;
                         default:
-                            tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE, FALSE);
-                            dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE, FALSE);
+                            tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
+                            dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
                             criticalhitpct = get_skill_critical_strike_chance(i, FALSE, FALSE, 0, FALSE, FALSE);
                             break;
                         }
@@ -3488,8 +3488,8 @@ enhance_weapon_skill(void)
                             switch (i)
                             {
                             case P_DIGGING:
-                                tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE, FALSE);
-                                dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE, FALSE);
+                                tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
+                                dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
                                 criticalhitpct2 = digging_skill_speed_bonus(nextlevel);
                                 addplus2 = TRUE;
                                 break;
@@ -3500,8 +3500,8 @@ enhance_weapon_skill(void)
                                 addplus2 = TRUE;
                                 break;
                             default:
-                                tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE, FALSE);
-                                dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE, FALSE);
+                                tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
+                                dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE, FALSE, FALSE);
                                 criticalhitpct2 = get_skill_critical_strike_chance(i, TRUE, FALSE, 0, FALSE, FALSE);
                                 break;
                             }
@@ -3790,15 +3790,15 @@ uwep_skill_type(void)
  * Treat restricted weapons as unskilled.
  */
 int
-weapon_skill_hit_bonus(struct obj *weapon, int use_this_skill, boolean nextlevel, boolean limit_by_twoweap, uchar apply_extra_bonuses, int use_this_level, boolean use_adjusted_sklvl, boolean being_thrown)
+weapon_skill_hit_bonus(struct obj *weapon, int use_this_skill, boolean nextlevel, boolean limit_by_twoweap, uchar apply_extra_bonuses, int use_this_level, boolean use_adjusted_sklvl, boolean being_thrown, boolean assume_worn)
 {
     int bonus = 0;
     static const char bad_skill[] = "weapon_skill_hit_bonus: bad skill %d";
     boolean apply_two_weapon_bonus = apply_extra_bonuses && (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))));
     boolean apply_two_handed_weapon_bonus = apply_extra_bonuses && weapon && bimanual(weapon) && is_weapon(weapon) && !is_launcher(weapon);
     boolean apply_thrown_weapon_bonus = apply_extra_bonuses && being_thrown;
-    boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
-    boolean Is_worn_boots = (weapon && is_boots(weapon) && (weapon->owornmask & W_ARMF));
+    boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (assume_worn || (weapon->owornmask & W_ARMG)));
+    boolean Is_worn_boots = (weapon && is_boots(weapon) && (assume_worn || (weapon->owornmask & W_ARMF)));
     int wep_type = weapon_skill_type(weapon);
     int type = apply_extra_bonuses == 2 ? P_NONE : use_this_skill > P_NONE ? use_this_skill : wep_type;
     boolean apply_martial_arts_bonus = type == P_MARTIAL_ARTS && ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/) || Is_worn_boots);
@@ -4011,14 +4011,14 @@ weapon_skill_hit_bonus(struct obj *weapon, int use_this_skill, boolean nextlevel
  * Treat restricted weapons as unskilled.
  */
 int
-weapon_skill_dmg_bonus(struct obj *weapon, int use_this_skill, boolean nextlevel, boolean limit_by_twoweap, uchar apply_extra_bonuses, int use_this_level, boolean use_adjusted_sklvl, boolean being_thrown)
+weapon_skill_dmg_bonus(struct obj *weapon, int use_this_skill, boolean nextlevel, boolean limit_by_twoweap, uchar apply_extra_bonuses, int use_this_level, boolean use_adjusted_sklvl, boolean being_thrown, boolean assume_worn)
 {
     int bonus = 0;
     boolean apply_two_weapon_bonus = apply_extra_bonuses && (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))));
     boolean apply_two_handed_weapon_bonus = apply_extra_bonuses && weapon && bimanual(weapon) && is_weapon(weapon) && !is_launcher(weapon);
     boolean apply_thrown_weapon_bonus = apply_extra_bonuses && being_thrown;
-    boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
-    boolean Is_worn_boots = (weapon && is_boots(weapon) && (weapon->owornmask & W_ARMF));
+    boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (assume_worn || (weapon->owornmask & W_ARMG)));
+    boolean Is_worn_boots = (weapon && is_boots(weapon) && (assume_worn || (weapon->owornmask & W_ARMF)));
     int wep_type = weapon_skill_type(weapon);
     int type = apply_extra_bonuses == 2 ? P_NONE : use_this_skill > P_NONE ? use_this_skill : wep_type;
     boolean apply_martial_arts_bonus = type == P_MARTIAL_ARTS && ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/) || Is_worn_boots);
