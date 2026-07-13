@@ -148,3 +148,20 @@ When compiling individual milestones, various C++ compiler errors will occur due
     ```csharp
     if (byteLength < 0) return 0;
     ```
+
+### 📍 Milestone 145 (m145)
+* **Submodule Commit**: `f2bc5d570a`
+* **Intricacies**:
+  * **Build Configurations**: Keep `BUILD.gn`, `gn/opts.gni`, and `gn/shared_sources.gni` at the m145 upstream versions, and only append `SkiaSharp` and `HarfBuzzSharp` targets to the end of `BUILD.gn`. Revert `gn/gpu.gni` to the m145 version as it defines the required `skia_direct3d_sources`.
+  * **Custom SkFont shims**: Do NOT restore the entire m147 version of `SkFont.h` and `SkFont.cpp`. Keep the m145 versions and cleanly splice the custom `breakText` method declarations/implementations.
+  * **Color Types**: Comment out `R16_FLOAT_SK_COLORTYPE` in `include/c/sk_types.h` and `src/c/sk_enums.cpp`.
+  * **Reference Count & Text Blob Bounds**: Apply the same adjustments as m144.
+
+### 📍 Milestone 146 (m146)
+* **Submodule Commit**: `34769028da`
+* **Intricacies**:
+  * **Build Configurations**: Milestone 146 lacks various variables and optimized source files that were introduced in milestone 147 (such as `skia_use_partition_alloc` in `gn/skia.gni` and optimized sources like `ml3`/`ml4` in `gn/opts.gni`/`gn/shared_sources.gni`). To resolve this, keep `BUILD.gn`, `gn/opts.gni`, and `gn/shared_sources.gni` at the m146 upstream versions, and only append `SkiaSharp` and `HarfBuzzSharp` targets to the end of `BUILD.gn`. Revert `gn/gpu.gni` to the m146 version as it defines the required `skia_direct3d_sources`.
+  * **Custom SkFont shims**: Do NOT restore the entire m147 version of `SkFont.h` and `SkFont.cpp`, as they reference a missing header `SkStrikeRef.h` (introduced in m147). Instead, keep the m146 versions and cleanly splice the custom `breakText` method declarations/implementations.
+  * **Color Types**: Comment out `R16_FLOAT_SK_COLORTYPE` in `include/c/sk_types.h` and `src/c/sk_enums.cpp` since the m146 engine does not define it.
+  * **Reference Count & Text Blob Bounds**: Apply the same adjustments as m144.
+
