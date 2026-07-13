@@ -18816,7 +18816,7 @@ del_sound_source(enum soundsource_types type, anything *id)
 
     for (prev = 0, curr = sound_base; curr; prev = curr, curr = curr->next)
     {
-        if (curr->type != type)
+        if (curr->type != (int32_t)type)
             continue;
 
         if ((type == SOUNDSOURCE_LOCATION && curr->id.a_coord.x == tmp_id.a_coord.x && curr->id.a_coord.y == tmp_id.a_coord.y)

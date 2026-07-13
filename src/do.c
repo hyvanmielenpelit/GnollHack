@@ -8995,7 +8995,7 @@ dowipe(void)
         boolean isfemale = Upolyd ? is_mon_female(&(youmonst)) : flags.female;
         enum monster_soundset_types mss = isfemale ? youmonst.data->female_soundset : youmonst.data->soundset;
         enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[BAREHANDED_ATTACK_NUMBER];
-        enum object_soundset_types used_oss = uarmg ? objects[uarmg->otyp].oc_soundset : oss;
+        enum object_soundset_types used_oss = uarmg ? (enum object_soundset_types)objects[uarmg->otyp].oc_soundset : oss;
 
         static NEARDATA char buf[39];
         Sprintf(buf, "wiping off your %s", body_part(FACE));
