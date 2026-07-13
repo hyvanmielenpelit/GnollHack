@@ -111,7 +111,7 @@ namespace GnollHackX.Pages.MainScreen
     }
 
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SaveTransferPage : CustomModalPage, ICloseablePage
+    public partial class SaveTransferPage : CustomModalPage, ICloseablePage, IMessagePopupPage
     {
         private List<GHSaveTransferFile> _saves = new List<GHSaveTransferFile>();
         private GHSaveTransferFile _selectedSave = null;
@@ -629,7 +629,7 @@ namespace GnollHackX.Pages.MainScreen
             if (!selected.IsValid)
             {
                 string displayCharName = selected.Name;
-                bool confirm = await ShowMessagePopupAsync("Confirm Deletion", $"Are you sure to delete the invalid save game \"{displayCharName}\" from save file transfer?", "Yes", "No", redTitle: true);
+                bool confirm = await ShowMessagePopupAsync("Confirm Deletion", $"Are you sure to delete the invalid save game \"{displayCharName}\" from save file transfer?", "Yes", "No", titleColor: GHColors.Red);
                 if (confirm)
                 {
                     await DeleteInvalidSaveAsync(selected);
@@ -805,7 +805,7 @@ namespace GnollHackX.Pages.MainScreen
                 bool serverUp = await CheckServerUpAsync();
                 if (!serverUp)
                 {
-                    bool proceed = await ShowMessagePopupAsync("Server Unreachable", "The GnollHack tracking server is unreachable. If your save is tracked, upload will fail to register the tracking token. Do you want to proceed anyway?", "Yes", "No", redTitle: true);
+                    bool proceed = await ShowMessagePopupAsync("Server Unreachable", "The GnollHack tracking server is unreachable. If your save is tracked, upload will fail to register the tracking token. Do you want to proceed anyway?", "Yes", "No", titleColor: GHColors.Red);
                     if (!proceed)
                     {
                         throw new OperationCanceledException("Server unreachable.");
@@ -845,7 +845,7 @@ namespace GnollHackX.Pages.MainScreen
                                     if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - existingLock.CreatedUtcUnix < 3600)
                                     {
                                         // Lock is active
-                                        bool overrideLock = await ShowMessagePopupAsync("Active Lock Found", "An active Save Transfer session is currently locked on another device for this save name. Force override?", "Yes", "No", redTitle: true);
+                                        bool overrideLock = await ShowMessagePopupAsync("Active Lock Found", "An active Save Transfer session is currently locked on another device for this save name. Force override?", "Yes", "No", titleColor: GHColors.Red);
                                         if (!overrideLock)
                                         {
                                             throw new Exception("Transfer aborted: Another device has locked this save file.");
@@ -873,7 +873,7 @@ namespace GnollHackX.Pages.MainScreen
                     string manifestMsg = existingManifestCount == 1
                         ? "A save file for this character already exists in the cloud. It will be replaced. Proceed?"
                         : $"{existingManifestCount} existing cloud saves for this character were found. They will all be replaced. Proceed?";
-                    bool overwrite = await ShowMessagePopupAsync("Save Already in Cloud", manifestMsg, "Yes", "No", redTitle: true);
+                    bool overwrite = await ShowMessagePopupAsync("Save Already in Cloud", manifestMsg, "Yes", "No", titleColor: GHColors.Red);
                     if (!overwrite)
                     {
                         throw new Exception("Transfer aborted: Overwrite declined.");
@@ -985,7 +985,7 @@ namespace GnollHackX.Pages.MainScreen
                             bool continueUntracked = await ShowMessagePopupAsync(
                                 "Tracking Token Missing",
                                 "The tracking token for this save is missing. The upload will succeed but the save will not be registered as a tracked game. Proceed without tracking?",
-                                "Yes", "No", redTitle: true);
+                                "Yes", "No", titleColor: GHColors.Red);
                             if (!continueUntracked)
                             {
                                 throw new Exception("Upload aborted: tracking token missing.");
@@ -1007,9 +1007,14 @@ namespace GnollHackX.Pages.MainScreen
                             }
                         }
 
-                        SendResult sResult = await GHApp.SendSaveFileTrackingSaveRequest(this, timeStamp, Path.Combine(uploadSessionDir, playerName), saveLength, saveSha);
+                        string conflictMsg = "To avoid duplication, the same save game cannot be uploaded more than once and needs to be played further before it can be uploaded again.";
+                        SendResult sResult = await GHApp.SendSaveFileTrackingSaveRequest(this, timeStamp, Path.Combine(uploadSessionDir, playerName), saveLength, saveSha, conflictMsg, "Duplicate Upload");
                         if (!sResult.IsSuccess)
                         {
+                            if (sResult.HasHttpStatusCode && sResult.StatusCode == HttpStatusCode.Conflict)
+                            {
+                                throw new OperationCanceledException("SilentCancel");
+                            }
                             throw new Exception("Failed to register tracking token on server: " + sResult.Message);
                         }
                         createdToken = true;
@@ -1268,11 +1273,14 @@ namespace GnollHackX.Pages.MainScreen
 
                 await ShowMessagePopupAsync("Success", "Save file uploaded successfully to cloud.", "OK");
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException ex)
             {
                 PopupGrid.IsVisible = false;
                 await CleanUpUploadFailAsync(playerName, uploadSessionDir, isTracked && createdToken, containerClient, cloudFolder, saveTimeStamp);
-                await ShowMessagePopupAsync("Cancelled", "Save transfer was cancelled.", "OK");
+                if (ex.Message != "SilentCancel")
+                {
+                    await ShowMessagePopupAsync("Cancelled", "Save transfer was cancelled.", "OK");
+                }
             }
             catch (Exception ex)
             {
@@ -1305,7 +1313,7 @@ namespace GnollHackX.Pages.MainScreen
                         long len = 0;
                         string saveFile = Path.Combine(Path.Combine(GHApp.GHPath, GHConstants.SaveDirectory), playerName);
                         if (File.Exists(saveFile)) len = new FileInfo(saveFile).Length;
-                        await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, tokenPath, len, "");
+                        await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, tokenPath, len, "", GHApp.SilentMessageValue);
                     }
                 }
 
@@ -1386,7 +1394,7 @@ namespace GnollHackX.Pages.MainScreen
                         "Local Conflict",
                         $"A local save named '{playerName}' already exists {localInfo}.\n" +
                         $"This will be overwritten with the cloud version {cloudInfo}.\nProceed?",
-                        "Yes", "No", redTitle: true);
+                        "Yes", "No", titleColor: GHColors.Red);
                     if (!overwrite)
                     {
                         throw new OperationCanceledException("Download cancelled due to local file conflict.");
@@ -1403,7 +1411,7 @@ namespace GnollHackX.Pages.MainScreen
                 bool serverUp = await CheckServerUpAsync();
                 if (!serverUp && cloudFile.IsTracked)
                 {
-                    bool proceed = await ShowMessagePopupAsync("Server Unreachable", "The GnollHack tracking server is unreachable. Since the save file in cloud is tracked, download will fail to verify the tracking token. Do you want to proceed anyway?", "Yes", "No", redTitle: true);
+                    bool proceed = await ShowMessagePopupAsync("Server Unreachable", "The GnollHack tracking server is unreachable. Since the save file in cloud is tracked, download will fail to verify the tracking token. Do you want to proceed anyway?", "Yes", "No", titleColor: GHColors.Red);
                     if (!proceed)
                     {
                         throw new OperationCanceledException("Server unreachable.");
@@ -1435,7 +1443,7 @@ namespace GnollHackX.Pages.MainScreen
                                 bool overrideLock = await ShowMessagePopupAsync(
                                     "Download Locked",
                                     "An active download session is currently locked on another device for this save. This may be a stale lock from a crashed session. Force override?",
-                                    "Yes", "No", redTitle: true);
+                                    "Yes", "No", titleColor: GHColors.Red);
                                 if (!overrideLock)
                                 {
                                     throw new OperationCanceledException("Download aborted: active lock on another device.");
@@ -1663,7 +1671,7 @@ namespace GnollHackX.Pages.MainScreen
                         long timeStamp = manifest.SaveTimeStamp != 0 ? manifest.SaveTimeStamp : dlTimeStamp;
                         if (timeStamp == 0)
                             throw new Exception("Cannot consume tracking token: save file timestamp is 0.");
-                        SendResult loadResult = await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, Path.Combine(tempDir, playerName), dlSaveFi.Length, dlSaveSha);
+                        SendResult loadResult = await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, Path.Combine(tempDir, playerName), dlSaveFi.Length, dlSaveSha, GHApp.SilentMessageValue);
                         if (!loadResult.IsSuccess)
                         {
                             // Token consumption failed but local save is already placed — warn and continue
@@ -1932,12 +1940,18 @@ namespace GnollHackX.Pages.MainScreen
 
         private TaskCompletionSource<bool> _messagePopupTcs;
 
-        private Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null, bool redTitle = false)
+        public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
+#if GNH_MAUI
+            Color titleColor = null
+#else
+            Color? titleColor = null
+#endif
+            )
         {
             _messagePopupTcs = new TaskCompletionSource<bool>();
 
             MessagePopupTitleLabel.Text = title;
-            MessagePopupTitleLabel.TextColor = redTitle ? GHColors.Red : GHColors.TitleGoldColor;
+            MessagePopupTitleLabel.TextColor = titleColor ?? GHColors.TitleGoldColor;
             MessagePopupLabel.Text = message;
 
             if (string.IsNullOrEmpty(cancelButtonText))

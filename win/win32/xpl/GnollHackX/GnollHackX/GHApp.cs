@@ -6078,7 +6078,8 @@ namespace GnollHackX
             return res;
         }
 
-        public static async Task<SendResult> SendSaveFileTrackingSaveRequest(Page displayPage, long timeStamp, string fileName, long fileLength, string sha256hash)
+        public const string SilentMessageValue = "";
+        public static async Task<SendResult> SendSaveFileTrackingSaveRequest(Page displayPage, long timeStamp, string fileName, long fileLength, string sha256hash, string specialConflictMessage = null, string specialConflictTitle = null)
         {
             SendResult res;
             bool tryAgain;
@@ -6202,7 +6203,17 @@ namespace GnollHackX
                                         if (!XlogCredentialsIncorrect && XlogUserNameVerified)
                                         {
                                             if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.Conflict)
-                                                await DisplayMessageBox(displayPage, "Save File Recorded Before", "Information of this save file has already been recorded on the server before and cannot be recorded more than once. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                            {
+                                                if (specialConflictMessage != null)
+                                                {
+                                                    if (specialConflictMessage != SilentMessageValue) /* Not silent */
+                                                        await DisplayMessageBox(displayPage, specialConflictTitle ?? "Save File Recorded Before", specialConflictMessage, "OK");
+                                                }
+                                                else
+                                                {
+                                                    await DisplayMessageBox(displayPage, "Save File Recorded Before", "Information of this save file has already been recorded on the server before and cannot be recorded more than once. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                                }
+                                            }
                                             else
                                                 tryAgain = await DisplayMessageBox(displayPage, "Save File Tracking Error", "Sending save file tracking information to the server failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
                                         }
@@ -6235,7 +6246,7 @@ namespace GnollHackX
             return res;
         }
 
-        public static async Task<SendResult> SendSaveFileTrackingLoadRequest(Page displayPage, long timeStamp, string fileName, long fileLength, string sha256hash)
+        public static async Task<SendResult> SendSaveFileTrackingLoadRequest(Page displayPage, long timeStamp, string fileName, long fileLength, string sha256hash, string specialConflictMessage = null, string specialConflictTitle = null)
         {
             SendResult res;
             bool tryAgain;
@@ -6352,7 +6363,17 @@ namespace GnollHackX
                                         if (!XlogCredentialsIncorrect && XlogUserNameVerified)
                                         {
                                             if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.Conflict)
-                                                await DisplayMessageBox(displayPage, "Save File Loaded Before", "This save file has already been loaded before and cannot be loaded more than once. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                            {
+                                                if (specialConflictMessage != null)
+                                                {
+                                                    if (specialConflictMessage != "") /* Not silent */
+                                                        await DisplayMessageBox(displayPage, "Save File Loaded Before", specialConflictMessage, "OK");
+                                                }
+                                                else
+                                                {
+                                                    await DisplayMessageBox(displayPage, "Save File Loaded Before", "This save file has already been loaded before and cannot be loaded more than once. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                                }
+                                            }
                                             else
                                                 tryAgain = await DisplayMessageBox(displayPage, "Save File Tracking Error", "Save file tracking verification failed upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
                                         }
@@ -11521,22 +11542,37 @@ namespace GnollHackX
         public static async Task DisplayMessageBox(Page page, string title, string message, string cancel)
         {
             IsKeyboardHookEnabled = false;
+            if (page is IMessagePopupPage popupPage)
+            {
+                await popupPage.ShowMessagePopupAsync(title, message, cancel);
+            }
+            else
+            {
 #if GNH_MAUI
-            await page.DisplayAlertAsync(title, message, cancel);
+                await page.DisplayAlertAsync(title, message, cancel);
 #else
-            await page.DisplayAlert(title, message, cancel);
+                await page.DisplayAlert(title, message, cancel);
 #endif
+            }
             IsKeyboardHookEnabled = true;
         }
 
         public static async Task<bool> DisplayMessageBox(Page page, string title, string message, string accept, string cancel)
         {
             IsKeyboardHookEnabled = false;
+            bool res;
+            if (page is IMessagePopupPage popupPage)
+            {
+                res = await popupPage.ShowMessagePopupAsync(title, message, accept, cancel);
+            }
+            else
+            {
 #if GNH_MAUI
-            bool res = await page.DisplayAlertAsync(title, message, accept, cancel);
+                res = await page.DisplayAlertAsync(title, message, accept, cancel);
 #else
-            bool res = await page.DisplayAlert(title, message, accept, cancel);
+                res = await page.DisplayAlert(title, message, accept, cancel);
 #endif
+            }
             IsKeyboardHookEnabled = true;
             return res;
         }

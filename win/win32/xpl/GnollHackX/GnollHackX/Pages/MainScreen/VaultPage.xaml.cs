@@ -25,7 +25,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class VaultPage : CustomModalPage, ICloseablePage, IKeyPressHandlingPage
+    public partial class VaultPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IKeyPressHandlingPage
     {
         private MainPage _mainPage;
         List<LabeledImageButton> _buttons = new List<LabeledImageButton>();
@@ -705,12 +705,18 @@ namespace GnollHackX.Pages.MainScreen
 
         private TaskCompletionSource<bool> _messagePopupTcs;
 
-        private Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null, bool redTitle = false)
+        public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
+#if GNH_MAUI
+            Color titleColor = null
+#else
+            Color? titleColor = null
+#endif
+            )
         {
             _messagePopupTcs = new TaskCompletionSource<bool>();
 
             MessagePopupTitleLabel.Text = title;
-            MessagePopupTitleLabel.TextColor = redTitle ? GHColors.Red : GHColors.TitleGoldColor;
+            MessagePopupTitleLabel.TextColor = titleColor ?? GHColors.TitleGoldColor;
             MessagePopupLabel.Text = message;
 
             if (string.IsNullOrEmpty(cancelButtonText))
