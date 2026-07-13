@@ -2466,14 +2466,14 @@ namespace GnollHackX
         public const bool DefaultSimpleCmdLayout = false;
         public const int FadeFromBlackDurationAtStart = 700;
 #if DEBUG
-        public const double FadeFromBlackAtStartExtraDelaySecs = 0.50;
+        public const double FadeFromBlackAtStartExtraDelaySecs = 0.75;
 #else
-        public const double FadeFromBlackAtStartExtraDelaySecs = 0.30;
+        public const double FadeFromBlackAtStartExtraDelaySecs = 0.50;
 #endif
 #else
         public const bool DefaultSimpleCmdLayout = true;
         public const int FadeFromBlackDurationAtStart = 700;
-        public const double FadeFromBlackAtStartExtraDelaySecs = 0.15;
+        public const double FadeFromBlackAtStartExtraDelaySecs = 0.30;
 #endif
         public const bool DefaultRuntimeEffects = false;
         public const bool DefaultCharacterClickAction = false;

@@ -444,10 +444,13 @@ can_make_bones(void)
 
     /* don't let multiple restarts generate multiple copies of objects
        in bones files */
-    if (discover || ModernMode || CasualMode || flags.non_scoring) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
-        return FALSE;
 #if !defined(DEBUG) && defined(GNH_MOBILE)
+    if (!discover || ModernMode || CasualMode || flags.non_scoring) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
+        return FALSE;
     if (wizard)
+        return FALSE;
+#else
+    if (!wizard && (!discover || ModernMode || CasualMode || flags.non_scoring)) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
         return FALSE;
 #endif
     if (!flags.bones)
@@ -466,10 +469,14 @@ can_make_bones(void)
                 return FALSE;
     }
 
-    if (depth(&u.uz) <= 0                 /* bulletproofing for endgame */
-        || (!rn2(1 + (depth(&u.uz) >> 2)) /* fewer ghosts on low levels */
-            && !wizard))
+    schar dgn_depth = depth(&u.uz);
+    if (dgn_depth <= 0) /* bulletproofing for endgame */
         return FALSE;
+
+    int chance = 1 + (int)dgn_depth / 5;
+    if (chance >= 2 && !wizard && !rn2(chance))  /* fewer ghosts on low levels */
+        return FALSE;
+
     return TRUE;
 }
 
@@ -725,7 +732,13 @@ make_bones:
     commit_bonesfile(&u.uz);
     compress_bonesfile();
 #if !defined(COMPRESS) && !defined(ZLIB_COMP)
-    if (issue_gui_command && !flags.non_scoring && flags.save_file_tracking_value)
+    if (issue_gui_command
+#if !defined(DEBUG) && defined(GNH_MOBILE)
+        && !flags.non_scoring && flags.save_file_tracking_value
+#else 
+        && (wizard || (!flags.non_scoring && flags.save_file_tracking_value))
+#endif
+       )
     {
         const char* fq_bones = fqname(bones, BONESPREFIX, 0);
         issue_gui_command(GUI_CMD_POST_BONES_FILE, context.game_difficulty - MIN_DIFFICULTY_LEVEL, 0, fq_bones);

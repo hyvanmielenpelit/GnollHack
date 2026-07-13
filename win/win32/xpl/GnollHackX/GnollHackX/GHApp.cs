@@ -7325,7 +7325,7 @@ namespace GnollHackX
                 {
                     using (StreamWriter sw = File.CreateText(targetfilepath))
                     {
-                        GHPost fp = new GHPost(2, true, status_type, status_datatype, replay_filename, null, false);
+                        GHPost fp = new GHPost(3, true, status_type, status_datatype, replay_filename, null, false);
                         string json = JsonConvert.SerializeObject(fp);
                         Debug.WriteLine(json);
                         sw.Write(json);
