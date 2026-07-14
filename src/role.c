@@ -1165,7 +1165,7 @@ const struct Race races[] = {
         { STR18(100), 18, 18, 18, 18, 18 },
         /* Init (A+1dB) Lower (A+1dB) Higher (A+1dB)) */
         { 12, 0, 1, 2, 1, 0 }, /* Hit points */
-        { 2, 3, 1, 2, 1, 2 }  /* Energy */
+        { 2, 3, 0, 2, 0, 2 }  /* Energy */
     },
     {
         "elf",
@@ -1188,7 +1188,7 @@ const struct Race races[] = {
         { 18, 20, 20, 18, 16, 18 },
         /* Init (A+1dB) Lower (A+1dB) Higher (A+1dB)) */
         { 10, 0, 1, 1, 1, 0 }, /* Hit points */
-        { 6, 6, 2, 2, 2, 2 }  /* Energy */
+        { 6, 6, 1, 2, 1, 2 }  /* Energy */
     },
     {
         "dwarf",
@@ -1211,7 +1211,7 @@ const struct Race races[] = {
         { STR18(100), 16, 16, 20, 20, 16 },
         /* Init (A+1dB) Lower (A+1dB) Higher (A+1dB)) */
         { 17, 0, 1, 3, 2, 0 }, /* Hit points */
-        { 0, 2, 0, 2, 0, 2 }  /* Energy */
+        { 0, 2, -1, 2, -1, 2 }  /* Energy */
     },
     {
         "gnoll",
