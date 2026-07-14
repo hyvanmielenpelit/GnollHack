@@ -85,10 +85,10 @@ newpw(void)
         }
 
         en = enfix;
-        if (enrnd_role > 1)
-            en += rn2(enrnd_role);
-        if (enrnd_race > 1)
-            en += rn2(enrnd_race);
+        if (enrnd_role > 0)
+            en += rnd(enrnd_role);
+        if (enrnd_race > 0)
+            en += rnd(enrnd_race);
     }
     if (en <= 0)
         en = 1;
