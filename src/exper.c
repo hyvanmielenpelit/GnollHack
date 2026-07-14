@@ -70,9 +70,9 @@ newpw(void)
     if (u.ulevel == 0) {
         en = urole.enadv.infix + urace.enadv.infix;
         if (urole.enadv.inrnd > 0)
-            en += rn2(urole.enadv.inrnd + 1); //Between 0 and inrnd
+            en += rnd(urole.enadv.inrnd); //Between 1 and inrnd
         if (urace.enadv.inrnd > 0)
-            en += rn2(urace.enadv.inrnd + 1); //Between 0 and inrnd
+            en += rnd(urace.enadv.inrnd); //Between 1 and inrnd
     } else {
         enfix = 0;// (int)max(0, max(ACURR(A_INT), ACURR(A_WIS)) - 6);
         enrnd = 1;//So that enrnd 1 randomizes between 0 and 1
