@@ -64,7 +64,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       {  7, 10, 10, 13,  7,  7 },
       { 15, 20, 20, 20, 15, 10 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 11, 0, 1, 8, 1, 0 }, /* Hit points */
       { 3, 4, 2, 3, 2, 3 }, /* Energy */
       MAXULEV,
@@ -143,7 +143,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       { 16, 7, 7, 15, 16, 6 },
       { 30, 6, 7, 20, 30, 7 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 17, 0, 1, 12, 3, 0 }, /* Hit points */
       { 0, 2, 1, 2, 1, 2 }, /* Energy */
       MAXULEV,
@@ -222,7 +222,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       { 10, 7,  9,  7,  8, 6 },
       { 30, 5, 15, 15, 30, 5 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 16, 0, 1, 12, 3, 1 }, /* Hit points */
       { 1, 6, 2, 2, 2, 2 }, /* Energy */
       MAXULEV,
@@ -300,7 +300,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       {  7,  13, 13, 10, 11, 16 },
       { 15, 20, 20, 15, 25, 5 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 11, 0, 1, 7, 1, 0 }, /* Hit points */
       { 6, 3, 3, 3, 3, 3 }, /* Energy */
       MAXULEV,
@@ -378,7 +378,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       { 15,  7, 13,  8, 14, 16 },
       { 30, 5, 15, 20, 25, 5 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 15, 0, 1, 11, 3, 1 }, /* Hit points */
       { 2, 4, 2, 2, 2, 2 }, /* Energy */
       MAXULEV,
@@ -463,7 +463,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       { 10,  7, 10, 10, 10, 10 },
       { 20, 10, 20, 20, 20, 10 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 12, 0, 1, 8, 2, 1 }, /* Hit points */
       { 4, 4, 3, 2, 3, 2 }, /* Energy */
       MAXULEV,
@@ -542,7 +542,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       { 7,   7, 13,  7,  7,  7 },
       { 15, 10, 30, 15, 20, 10 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 12, 0, 1, 7, 1, 0 }, /* Hit points */
       { 6, 3, 3, 3, 3, 3 },  /* Energy */
       MAXULEV,
@@ -622,7 +622,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       { 7,   7,  7, 16,  7,  6 },
       { 20, 10, 10, 30, 20, 10 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 10, 0, 1, 8, 1, 0 }, /* Hit points */
       { 3, 2, 2, 2, 2, 2 },  /* Energy */
       MAXULEV,
@@ -715,7 +715,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       { 13,  9,  9, 14, 13, 12 },
       { 30, 5, 10, 30, 20, 5 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 13, 0, 1, 9, 1, 0 }, /* Hit points */
       { 3, 2, 2, 2, 2, 2 },  /* Energy */
       MAXULEV,
@@ -793,7 +793,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       { 10,  8, 7, 10, 17, 6 },
       { 30, 10, 8, 30, 14, 8 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 13, 0, 1, 9, 2, 1 }, /* Hit points */
       { 0, 3, 1, 2, 1, 2 }, /* Energy */
       MAXULEV,
@@ -871,7 +871,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       { 7,  10,  6,  7,  7, 10 },
       { 15, 10, 10, 15, 30, 20 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 12, 0, 1, 6, 1, 1 }, /* Hit points */
       { 3, 4, 2, 3, 2, 3 }, /* Energy */
       MAXULEV,
@@ -949,7 +949,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       { 10, 7, 7,  7, 10, 7 },
       { 30, 6, 7, 20, 30, 7 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 14, 0, 1, 10, 2, 0 }, /* Hit points */
       { 0, 2, 1, 2, 1, 2 },  /* Energy */
       MAXULEV,
@@ -1028,7 +1028,7 @@ const struct Role roles[] = {
       /* Str Int Wis Dex Con Cha */
       {  7, 13,  7,  7,  7,  7 },
       { 10, 30, 10, 20, 20, 10 },
-      /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+      /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
       { 10, 0, 1, 6, 1, 1 }, /* Hit points */
       { 8, 3, 3, 5, 3, 5 }, /* Energy */
       MAXULEV,
@@ -1097,7 +1097,7 @@ struct Role urole = {
     /* Str Int Wis Dex Con Cha */
     { 7, 7, 7, 7, 7, 7 },
     { 20, 15, 15, 20, 20, 10 },
-    /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+    /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
     { 10, 0, 0, 8, 1, 0 }, /* Hit points: initial z, d; low-levels z, d; high-level, z, d  */
     { 2, 0, 0, 2, 0, 3 }, /* Energy: initial z, d; low-levels z, d; high-level, z, d */
     14,
@@ -1163,7 +1163,7 @@ const struct Race races[] = {
         /*    Str     Int Wis Dex Con Cha */
         { 3, 3, 3, 3, 3, 3 },
         { STR18(100), 18, 18, 18, 18, 18 },
-        /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+        /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
         { 12, 0, 1, 2, 1, 0 }, /* Hit points */
         { 2, 3, 1, 2, 1, 2 }  /* Energy */
     },
@@ -1186,7 +1186,7 @@ const struct Race races[] = {
         /*  Str    Int Wis Dex Con Cha */
         { 3, 3, 3, 3, 3, 3 },
         { 18, 20, 20, 18, 16, 18 },
-        /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+        /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
         { 10, 0, 1, 1, 1, 0 }, /* Hit points */
         { 6, 6, 2, 2, 2, 2 }  /* Energy */
     },
@@ -1209,7 +1209,7 @@ const struct Race races[] = {
         /*    Str     Int Wis Dex Con Cha */
         { 3, 3, 3, 3, 3, 3 },
         { STR18(100), 16, 16, 20, 20, 16 },
-        /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+        /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
         { 17, 0, 1, 3, 2, 0 }, /* Hit points */
         { 0, 2, 0, 2, 0, 2 }  /* Energy */
     },
@@ -1232,7 +1232,7 @@ const struct Race races[] = {
         /*  Str    Int Wis Dex Con Cha */
         { 3, 3, 3, 3, 3, 3 },
         { STR18(100), 16, 16, 19, 19, 16 },
-        /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+        /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
         { 13, 0, 1, 3, 1, 0 }, /* Hit points */
         { 1, 3, 1, 0, 1, 0 }  /* Energy */
     },
@@ -1255,7 +1255,7 @@ const struct Race races[] = {
         /*  Str    Int Wis Dex Con Cha */
         { 3, 3, 3, 3, 3, 3 },
         { STR18(100), 16, 16, 18, 18, 16 },
-        /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+        /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
         { 15, 0, 1, 3, 1, 0 }, /* Hit points */
         { 1, 3, 1, 0, 1, 0 }  /* Energy */
     },
@@ -1285,7 +1285,7 @@ struct Race urace = {
     /*    Str     Int Wis Dex Con Cha */
     { 3, 3, 3, 3, 3, 3 },
     { STR18(100), 18, 18, 18, 18, 18 },
-    /* Init (A+1dB) Lower (A_Role+A_Race-1+1d(B_Role+B_Race)) Higher (A_Role+A_Race-1+1d(B_Role+B_Race)) */
+    /* Init (A+1dB) Lower (A+1dB-1) Higher (A+1dB-1)) */
     { 2, 0, 0, 2, 1, 0 }, /* Hit points */
     { 1, 0, 2, 0, 2, 0 }  /* Energy */
 };

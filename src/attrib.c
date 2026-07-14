@@ -1975,14 +1975,18 @@ newhp(void)
         if (u.ulevel < urole.xlev) 
         {
             hp = urole.hpadv.lofix + urace.hpadv.lofix;
-            if (urole.hpadv.lornd + urace.hpadv.lornd > 0)
-                hp += rn2(urole.hpadv.lornd + urace.hpadv.lornd + 1);
-        } 
+            if (urole.hpadv.lornd > 1)
+                hp += rn2(urole.hpadv.lornd);
+            if (urace.hpadv.lornd > 1)
+                hp += rn2(urace.hpadv.lornd);
+        }
         else 
         {
             hp = urole.hpadv.hifix + urace.hpadv.hifix;
-            if (urole.hpadv.hirnd + urace.hpadv.hirnd > 0)
-                hp += rn2(urole.hpadv.hirnd + urace.hpadv.hirnd + 1);
+            if (urole.hpadv.hirnd > 1)
+                hp += rn2(urole.hpadv.hirnd);
+            if (urace.hpadv.hirnd > 1)
+                hp += rn2(urace.hpadv.hirnd);
         }
     }
     if (hp <= 0)

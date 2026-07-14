@@ -65,28 +65,30 @@ newuexp(int lev)
 int
 newpw(void)
 {
-    int en = 0, enrnd, enfix;
+    int en = 0, enrnd_role = 0, enrnd_race = 0, enfix = 0;
 
     if (u.ulevel == 0) {
         en = urole.enadv.infix + urace.enadv.infix;
         if (urole.enadv.inrnd > 0)
-            en += rnd(urole.enadv.inrnd); //Between 1 and inrnd
+            en += rnd(urole.enadv.inrnd); //Between 1 and inrnd, so +1 more than what per level gives
         if (urace.enadv.inrnd > 0)
-            en += rnd(urace.enadv.inrnd); //Between 1 and inrnd
+            en += rnd(urace.enadv.inrnd); //Between 1 and inrnd, so +1 more than what per level gives
     } else {
-        enfix = 0;// (int)max(0, max(ACURR(A_INT), ACURR(A_WIS)) - 6);
-        enrnd = 1;//So that enrnd 1 randomizes between 0 and 1
         if (u.ulevel < urole.xlev) {
-            enrnd += urole.enadv.lornd + urace.enadv.lornd;
-            enfix += urole.enadv.lofix + urace.enadv.lofix;
+            enrnd_role = urole.enadv.lornd;
+            enrnd_race = urace.enadv.lornd;
+            enfix = urole.enadv.lofix + urace.enadv.lofix;
         } else {
-            enrnd += urole.enadv.hirnd + urace.enadv.hirnd;
-            enfix += urole.enadv.hifix + urace.enadv.hifix;
+            enrnd_role = urole.enadv.hirnd;
+            enrnd_race = urace.enadv.hirnd;
+            enfix = urole.enadv.hifix + urace.enadv.hifix;
         }
-        if (enrnd < 2)
-            enrnd = 2;
 
-        en = rn1(enrnd, enfix); // enermod(rn1(enrnd, enfix));
+        en = enfix;
+        if (enrnd_role > 1)
+            en += rn2(enrnd_role);
+        if (enrnd_race > 1)
+            en += rn2(enrnd_race);
     }
     if (en <= 0)
         en = 1;
