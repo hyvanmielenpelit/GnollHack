@@ -51,6 +51,7 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
 	{
         GHApp.TryReadSecrets();
+        GHApp.Edge2Edge = Microsoft.Maui.Storage.Preferences.Get("Edge2Edge", false);
 
         var builder = MauiApp.CreateBuilder();
 		builder
@@ -488,6 +489,12 @@ public static class MauiProgram
                                                 window!.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
 #pragma warning restore CS0618 // Type or member is obsolete
                                             }
+
+                                            if (GHApp.Edge2Edge)
+                                            {
+                                                AndroidX.Core.View.ViewCompat.SetOnApplyWindowInsetsListener(window!.DecorView, new BypassInsetsListener());
+                                                window!.DecorView.RequestApplyInsets();
+                                            }
                                         }
                                         if (dialogFragment.Dialog != null)
                                             dialogFragment.Dialog.KeyPress += AndroidDialogKeyPress;
@@ -627,6 +634,15 @@ public class MyFragmentLifecycleCallbacks(Action<AndroidX.Fragment.App.FragmentM
     {
         fragmentCallback?.Invoke(fm, f);
         base.OnFragmentStopped(fm, f);
+    }
+}
+
+public class BypassInsetsListener : Java.Lang.Object, AndroidX.Core.View.IOnApplyWindowInsetsListener
+{
+    public AndroidX.Core.View.WindowInsetsCompat OnApplyWindowInsets(Android.Views.View v, AndroidX.Core.View.WindowInsetsCompat insets)
+    {
+        v.SetPadding(0, 0, 0, 0);
+        return AndroidX.Core.View.WindowInsetsCompat.Consumed ?? insets;
     }
 }
 #endif

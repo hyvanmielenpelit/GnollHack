@@ -1152,8 +1152,9 @@ namespace GnollHackX.Pages.MainScreen
 
             if (Edge2EdgeStackLayout.IsVisible && Edge2EdgeSwitch.IsEnabled)
             {
+                /* Do not update GHApp.Edge2Edge, because it needs a restart */
                 Preferences.Set("Edge2Edge", Edge2EdgeSwitch.IsToggled);
-                UpdateEdge2EdgeOnAllPages(Edge2EdgeSwitch.IsToggled);
+                //UpdateEdge2EdgeOnAllPages(Edge2EdgeSwitch.IsToggled);
             }
 
 
@@ -1741,8 +1742,7 @@ namespace GnollHackX.Pages.MainScreen
                 WindowedModeLabel.TextColor = GHColors.Gray;
                 WindowedModeStackLayout.IsVisible = false;
             }
-
-            //else /* Disabled until works on Android */
+            else /* Disabled until works on Android */
             {
                 Edge2EdgeSwitch.IsEnabled = false;
                 Edge2EdgeLabel.IsEnabled = false;
@@ -3117,7 +3117,16 @@ namespace GnollHackX.Pages.MainScreen
         {
             if (_isManualTogglingEnabled)
             {
-                UpdateEdge2EdgeOnAllPages(e.Value);
+                //UpdateEdge2EdgeOnAllPages(e.Value);
+                bool oldValue = GHApp.Edge2Edge;
+                if (oldValue != e.Value)
+                {
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.Text = "Restart Required";
+                    PopupLabel.Text = "Please restart GnollHack for the changes in Edge to Edge to take effect.";
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
             }
         }
 

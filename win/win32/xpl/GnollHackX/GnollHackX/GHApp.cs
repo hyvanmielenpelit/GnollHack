@@ -123,7 +123,7 @@ namespace GnollHackX
             SetMirroredOptionsToDefaults();
             DarkMode = Preferences.Get("DarkMode", false);
             WindowedMode = Preferences.Get("WindowedMode", false);
-            Edge2Edge = Preferences.Get("Edge2Edge", false);
+            //Edge2Edge = Preferences.Get("Edge2Edge", false); /* In CreateMauiApp */
             HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);

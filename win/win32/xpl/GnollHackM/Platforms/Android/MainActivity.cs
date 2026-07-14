@@ -22,7 +22,23 @@ public class MainActivity : MauiAppCompatActivity
         Platform.Init(this, savedInstanceState);
         IsHardKeyboardConnected = Resources?.Configuration?.HardKeyboardHidden == HardKeyboardHidden.No ? true : false;
         GHApp.InitializeGC();
-        Window?.AddFlags(WindowManagerFlags.Fullscreen);
+
+        bool edge2edge = GHApp.Edge2Edge; // Microsoft.Maui.Storage.Preferences.Get("Edge2Edge", false);
+        if (edge2edge && Window != null)
+        {
+            // ANDROID 15 / .NET MAUI BUG WORKAROUND:
+            // MAUI forcefully applies WindowInsets padding to the root view on Android 15+, ignoring SafeAreaEdges="None".
+            // We intercept the insets at the DecorView level to force 0 padding.
+            AndroidX.Core.View.ViewCompat.SetOnApplyWindowInsetsListener(Window.DecorView, new BypassInsetsListener());
+            Window.DecorView.RequestApplyInsets();
+        }
+        else
+        {
+            // Reapply legacy fullscreen flag if edge-to-edge is not requested,
+            // restoring the original behavior where the notch area is letterboxed.
+            Window?.AddFlags(WindowManagerFlags.Fullscreen);
+        }
+
         if (DefaultShowNavigationBar) 
             ShowOsNavigationBar();
         else
@@ -153,6 +169,18 @@ public class MainActivity : MauiAppCompatActivity
                 activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
             }
 #pragma warning restore CS0618 // Type or member is obsolete
+        }
+    }
+
+    private class BypassInsetsListener : Java.Lang.Object, AndroidX.Core.View.IOnApplyWindowInsetsListener
+    {
+        public AndroidX.Core.View.WindowInsetsCompat OnApplyWindowInsets(Android.Views.View v, AndroidX.Core.View.WindowInsetsCompat insets)
+        {
+            // Force padding to 0 to completely ignore safe areas and draw under the notch
+            v.SetPadding(0, 0, 0, 0);
+            
+            // Return consumed insets so MAUI's internal handlers don't add padding back
+            return AndroidX.Core.View.WindowInsetsCompat.Consumed ?? insets;
         }
     }
 }
