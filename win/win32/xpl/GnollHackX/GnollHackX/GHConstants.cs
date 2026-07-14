@@ -315,80 +315,92 @@ namespace GnollHackX
     [Flags]
     public enum LayerFlags : ulong
     {
-         None =                     0x00000000U,
-         LFLAGS_L_LEGAL =           0x00000001U,
-         LFLAGS_L_ILLEGAL =         0x00000002U,
-         LFLAGS_O_PILE =            0x00004000U,
-         LFLAGS_O_IN_PIT =          0x00008000U,
-         LFLAGS_O_CHAIN =           0x00010000U,
-         LFLAGS_O_MASK =            0x0001C000U,
-         LFLAGS_E_GEN_FADE_OUT =    0x00020000U,
-         LFLAGS_E_BKG_FADE_IN =     0x00040000U,
-         LFLAGS_E_BKG_FADE_OUT =    0x00080000U,
-         LFLAGS_ZAP_LEADING_EDGE =  0x00100000U, /* First (leading) tile in a zap */
-         LFLAGS_ZAP_TRAILING_EDGE = 0x00200000U, /* Last (trailing) tile in a zap */
-         LFLAGS_ZAP_MASK = (0x00100000U | 0x00200000U),
-         LFLAGS_T_TRAPPED =         0x00400000U,
-         LFLAGS_C_DECORATION =      0x00800000U,
-         LFLAGS_C_CARPET =          0x01000000U,
-         LFLAGS_SHOWING_MEMORY =    0x02000000U, /* also implies that you cannot see the location (and hence showing memory) */
-         LFLAGS_SHOWING_DETECTION = 0x04000000U, /* Do not darken */
-         LFLAGS_ASCENSION_RADIANCE =0x08000000U, /* Lighten up */
-         LFLAGS_CAN_SEE =           0x10000000U, /* cansee(x, y) is true (if not, then darken etc.) */
-         LFLAGS_UXUY =              0x20000000U, /* x == u.ux && y == u.uy is true */
-         LFLAGS_APPEARS_UNLIT =     0x40000000U, /* looks unlit */
-         LFLAGS_NO_WALL_END_AUTODRAW=0x80000000U,/* NO_WALL_END_AUTODRAW(x, y) is true */
+         None =                     0x00000000UL,
+         LFLAGS_L_LEGAL =           0x00000001UL,
+         LFLAGS_L_ILLEGAL =         0x00000002UL,
+         LFLAGS_L_ENGRAVING =       0x00000004UL,
+
+         LFLAGS_V_XRAY_VISION =     0x00000010UL,
+         /* Free bits */
+
+         /* Reserved */
+         LFLAGS_O_CHAIN =           0x00002000UL,
+         LFLAGS_O_PILE =            0x00004000UL,
+         LFLAGS_O_IN_PIT =          0x00008000UL,
+         LFLAGS_O_MASK =            0x0000F000UL,
+         
+         /* Reserved */
+         LFLAGS_E_GEN_FADE_OUT =    0x00020000UL,
+         LFLAGS_E_BKG_FADE_IN =     0x00040000UL,
+         LFLAGS_E_BKG_FADE_OUT =    0x00080000UL,
+
+         LFLAGS_ZAP_LEADING_EDGE =  0x00100000UL, /* First (leading) tile in a zap */
+         LFLAGS_ZAP_TRAILING_EDGE = 0x00200000UL, /* Last (trailing) tile in a zap */
+         LFLAGS_ZAP_MASK = (LFLAGS_ZAP_LEADING_EDGE | LFLAGS_ZAP_TRAILING_EDGE),
+
+         LFLAGS_T_TRAPPED =         0x00400000UL,
+
+         LFLAGS_C_DECORATION =      0x00800000UL,
+         LFLAGS_C_CARPET =          0x01000000UL,
+
+         LFLAGS_SHOWING_MEMORY =    0x02000000UL, /* also implies that you cannot see the location (and hence showing memory) */
+         LFLAGS_SHOWING_DETECTION = 0x04000000UL, /* Do not darken */
+         LFLAGS_ASCENSION_RADIANCE =0x08000000UL, /* Lighten up */
+         LFLAGS_CAN_SEE =           0x10000000UL, /* cansee(x, y) is true (if not, then darken etc.) */
+         LFLAGS_UXUY =              0x20000000UL, /* x == u.ux && y == u.uy is true */
+         LFLAGS_APPEARS_UNLIT =     0x40000000UL, /* looks unlit */
+         LFLAGS_NO_WALL_END_AUTODRAW=0x80000000UL,/* NO_WALL_END_AUTODRAW(x, y) is true */
     }
 
     [Flags]
     public enum LayerMonsterFlags : ulong
     {
-        None =                              0x00000000U,
-        LMFLAGS_PET =                       0x00000001U,
-        LMFLAGS_PEACEFUL =                  0x00000002U,
-        LMFLAGS_RIDDEN =                    0x00000004U,
-        LMFLAGS_DETECTED =                  0x00000008U,
-        LMFLAGS_CANSPOTMON =                0x00000010U,
-        LMFLAGS_YOU =                       0x00000020U,
-        LMFLAGS_BEING_HIT =                 0x00000040U,
-        LMFLAGS_KILLED =                    0x00000080U,
-        LMFLAGS_U_TETHERED =                0x00000100U, /* You are tethered */
-        LMFLAGS_TETHERED =                  0x00000200U, /* Monster is tethered */
-        LMFLAGS_DROPPING_PIERCER =          0x00000400U,
-        LMFLAGS_WORM_TAIL =                 0x00000800U,
-        LMFLAGS_WORM_SEEN =                 0x00001000U,
-        LMFLAGS_WORM_HEAD =                 0x00002000U,
-        LMFLAGS_WORM_TAILEND =              0x00004000U,
-        LMFLAGS_INVISIBLE_TRANSPARENT =     0x00008000U,
-        LMFLAGS_SEMI_TRANSPARENT =          0x00010000U,
-        LMFLAGS_RADIAL_TRANSPARENCY =       0x00020000U,
-        LMFLAGS_GLASS_TRANSPARENCY =        0x00040000U,
-        LMFLAGS_CAN_SPOT_SELF =             0x00080000U,
-        LMFLAGS_LONG_WORM_WITH_TAIL =       0x00100000U,
-        LMFLAGS_LONG_WORM_TAIL =            0x00200000U,
-        LMFLAGS_BOSS_MONSTER_FIGHT =        0x00400000U,
-        LMFLAGS_FADES_UPON_DEATH =          0x00800000U,
-        LMFLAGS_FLYING =                    0x01000000U,
-        LMFLAGS_LEVITATING =                0x02000000U,
-        LMFLAGS_BLOBBY_ANIMATION =          0x04000000U,
-        LMFLAGS_SWIM_ANIMATION =            0x08000000U,
-        LMFLAGS_SPECIAL_ANIMATION =         0x10000000U,
-        LMFLAGS_HUMAN_BREATHE_ANIMATION =   0x20000000U,
-        LMFLAGS_ANIMAL_BREATHE_ANIMATION =  0x40000000U,
-        LMFLAGS_STONED =                    0x80000000U,
+        None =                              0x00000000UL,
+        LMFLAGS_PET =                       0x00000001UL,
+        LMFLAGS_PEACEFUL =                  0x00000002UL,
+        LMFLAGS_RIDDEN =                    0x00000004UL,
+        LMFLAGS_DETECTED =                  0x00000008UL,
+        LMFLAGS_CANSPOTMON =                0x00000010UL,
+        LMFLAGS_YOU =                       0x00000020UL,
+        LMFLAGS_BEING_HIT =                 0x00000040UL,
+        LMFLAGS_KILLED =                    0x00000080UL,
+        LMFLAGS_U_TETHERED =                0x00000100UL, /* You are tethered */
+        LMFLAGS_TETHERED =                  0x00000200UL, /* Monster is tethered */
+        LMFLAGS_DROPPING_PIERCER =          0x00000400UL,
+        LMFLAGS_WORM_TAIL =                 0x00000800UL,
+        LMFLAGS_WORM_SEEN =                 0x00001000UL,
+        LMFLAGS_WORM_HEAD =                 0x00002000UL,
+        LMFLAGS_WORM_TAILEND =              0x00004000UL,
+        LMFLAGS_INVISIBLE_TRANSPARENT =     0x00008000UL,
+        LMFLAGS_SEMI_TRANSPARENT =          0x00010000UL,
+        LMFLAGS_RADIAL_TRANSPARENCY =       0x00020000UL,
+        LMFLAGS_GLASS_TRANSPARENCY =        0x00040000UL,
+        LMFLAGS_CAN_SPOT_SELF =             0x00080000UL,
+        LMFLAGS_LONG_WORM_WITH_TAIL =       0x00100000UL,
+        LMFLAGS_LONG_WORM_TAIL =            0x00200000UL,
+        LMFLAGS_BOSS_MONSTER_FIGHT =        0x00400000UL,
+        LMFLAGS_FADES_UPON_DEATH =          0x00800000UL,
+        LMFLAGS_FLYING =                    0x01000000UL,
+        LMFLAGS_LEVITATING =                0x02000000UL,
+        LMFLAGS_BLOBBY_ANIMATION =          0x04000000UL,
+        LMFLAGS_SWIM_ANIMATION =            0x08000000UL,
+        LMFLAGS_SPECIAL_ANIMATION =         0x10000000UL,
+        LMFLAGS_HUMAN_BREATHE_ANIMATION =   0x20000000UL,
+        LMFLAGS_ANIMAL_BREATHE_ANIMATION =  0x40000000UL,
+        LMFLAGS_STONED =                    0x80000000UL,
     }
 
     [Flags]
     public enum LayerMissileFlags : ulong
     {
-        MISSILE_FLAGS_CORRODEABLE =  0x00000001U,
-        MISSILE_FLAGS_ROTTABLE =     0x00000002U,
-        MISSILE_FLAGS_FLAMMABLE =    0x00000004U,
-        MISSILE_FLAGS_RUSTPRONE =    0x00000008U,
-        MISSILE_FLAGS_ERODEPROOF =   0x00000010U,
-        MISSILE_FLAGS_POISONABLE =   0x00000020U,
-        MISSILE_FLAGS_TETHERED =     0x00000040U, /* Missile is tethered */
-        MISSILE_FLAGS_LIT =          0x00000080U,
+        MISSILE_FLAGS_CORRODEABLE =  0x00000001UL,
+        MISSILE_FLAGS_ROTTABLE =     0x00000002UL,
+        MISSILE_FLAGS_FLAMMABLE =    0x00000004UL,
+        MISSILE_FLAGS_RUSTPRONE =    0x00000008UL,
+        MISSILE_FLAGS_ERODEPROOF =   0x00000010UL,
+        MISSILE_FLAGS_POISONABLE =   0x00000020UL,
+        MISSILE_FLAGS_TETHERED =     0x00000040UL, /* Missile is tethered */
+        MISSILE_FLAGS_LIT =          0x00000080UL,
     }
 
 

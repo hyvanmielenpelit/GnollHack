@@ -8428,6 +8428,7 @@ namespace GnollHackX.Pages.Game
                                                                 //bool darken = DarkenedPos(mapx, mapy);
                                                                 bool validpos = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_L_LEGAL) != 0 && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
                                                                 bool invalidpos = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_L_ILLEGAL) != 0 && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
+                                                                bool canXRaySee = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_V_XRAY_VISION) != 0;
 
                                                                 // Draw rectangle with blend mode in bottom half
                                                                 //if (darken)
@@ -8454,9 +8455,27 @@ namespace GnollHackX.Pages.Game
 #endif
                                                                     paint.BlendMode = old_bm;
                                                                 }
-                                                                if (invalidpos)
+                                                                else if (invalidpos)
                                                                 {
                                                                     paint.Color = new SKColor((byte)255, (byte)0, (byte)0, (byte)72);
+                                                                    SKBlendMode old_bm = paint.BlendMode;
+                                                                    paint.BlendMode = SKBlendMode.SrcOver;
+                                                                    tx = (offsetX + usedOffsetX + width * (float)mapx);
+                                                                    ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
+                                                                    SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+#if GNH_MAP_PROFILING && DEBUG
+                                                                    StartProfiling(GHProfilingStyle.Rect);
+#endif
+                                                                    canvas.DrawRect(targetrect, paint);
+                                                                    //enlCanvas.DrawRect(targetrect, paint);
+#if GNH_MAP_PROFILING && DEBUG
+                                                                    StopProfiling(GHProfilingStyle.Rect);
+#endif
+                                                                    paint.BlendMode = old_bm;
+                                                                }
+                                                                if (canXRaySee)
+                                                                {
+                                                                    paint.Color = new SKColor((byte)0, (byte)128, (byte)255, (byte)32);
                                                                     SKBlendMode old_bm = paint.BlendMode;
                                                                     paint.BlendMode = SKBlendMode.SrcOver;
                                                                     tx = (offsetX + usedOffsetX + width * (float)mapx);

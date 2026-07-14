@@ -3401,6 +3401,8 @@ flush_screen(int cursor_on_u)
             if (cansee(x, y))
             {
                 add_glyph_buffer_layer_flags(x, y, LFLAGS_CAN_SEE, 0UL);
+                if (canxraysee(x, y) && !couldsee(x, y)) //&& !cannvsee(x, y) && !canseenormal(x, y)
+                    add_glyph_buffer_layer_flags(x, y, LFLAGS_V_XRAY_VISION, 0UL);
             }
 
             boolean is_lit_unknown_wall = (is_levl_waslit(&levl[x][y]) && IS_NON_STONE_WALL(levl[x][y].typ) && wall_angle(&levl[x][y]) == S_stone);

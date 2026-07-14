@@ -96,6 +96,9 @@ struct layer_info {
 #define LFLAGS_L_ILLEGAL                0x00000002UL
 #define LFLAGS_L_ENGRAVING              0x00000004UL /* Location has an engraving (a flag improving efficiency of locating engravings) */
 
+/* X-ray */
+#define LFLAGS_V_XRAY_VISION            0x00000010UL
+
 /* Objects */
 /* Reserved */
 #define LFLAGS_O_CHAIN                  0x00002000UL
