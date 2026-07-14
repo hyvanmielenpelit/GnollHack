@@ -109,6 +109,7 @@ namespace GnollHackX
             SetMirroredOptionsToDefaults();
             DarkMode = Preferences.Get("DarkMode", false);
             WindowedMode = Preferences.Get("WindowedMode", false);
+            Edge2Edge = Preferences.Get("Edge2Edge", false);
             HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
@@ -2530,6 +2531,13 @@ namespace GnollHackX
         {
             get { return Interlocked.CompareExchange(ref _windowedMode, 0, 0) != 0; }
             set { Interlocked.Exchange(ref _windowedMode, value ? 1 : 0); }
+        }
+
+        private static int _edge2Edge = 0;
+        public static bool Edge2Edge
+        {
+            get { return Interlocked.CompareExchange(ref _edge2Edge, 0, 0) != 0; }
+            set { Interlocked.Exchange(ref _edge2Edge, value ? 1 : 0); }
         }
 
         private static int _darkMode = 0;

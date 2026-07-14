@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
@@ -41,6 +41,13 @@ namespace GnollHackX.Droid
             IsHardKeyboardConnected = Resources?.Configuration?.HardKeyboardHidden == HardKeyboardHidden.No ? true : false;
             Window.AddFlags(WindowManagerFlags.Fullscreen);
             Window.ClearFlags(WindowManagerFlags.ForceNotFullscreen);
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
+            {
+                if (Window?.Attributes != null)
+                {
+                    Window.Attributes.LayoutInDisplayCutoutMode = LayoutInDisplayCutoutMode.ShortEdges;
+                }
+            }
             MessagingCenter.Subscribe<Object>(this, "HideOsNavigationBar", (sender) =>
             {
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.R)

@@ -124,8 +124,8 @@ namespace GnollHackX.Pages.MainScreen
         public SaveTransferPage()
         {
             InitializeComponent();
-            UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
+            //UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
                 HeaderLabel.TextColor = GHColors.White;

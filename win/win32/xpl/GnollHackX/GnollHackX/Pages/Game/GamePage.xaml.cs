@@ -939,8 +939,8 @@ namespace GnollHackX.Pages.Game
 //            On<iOS>().SetUseSafeArea(true);
 //#endif
             //UIUtils.AdjustRootLayout(RootGrid);
-            UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
+            //UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             UIUtils.SetViewCursorOnHandler(ToggleMessageNumberButton, GameCursorType.Info);
             SizeChanged += GamePage_SizeChanged;
             PropertyChanged += GamePage_PropertyChanged;
@@ -8515,7 +8515,11 @@ namespace GnollHackX.Pages.Game
                                                                         {
                                                                             paint.Color = dc.PaintColor;
                                                                             paint.ColorFilter = dc.PaintColorFilter;
+#if GNH_MAUI
+                                                                            canvas.SetMatrix(in dc.Matrix);
+#else
                                                                             canvas.SetMatrix(dc.Matrix);
+#endif
                                                                             GHApp.MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL, fixRects, fixFiltering);
                                                                             canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect
 #if GNH_MAUI
@@ -8528,13 +8532,17 @@ namespace GnollHackX.Pages.Game
                                                                         {
                                                                             paint.Color = dc.PaintColor;
                                                                             paint.ColorFilter = GetDarkeningColorFilter(darken_percentage);
+#if GNH_MAUI
+                                                                            canvas.SetMatrix(in dc.Matrix);
+#else
                                                                             canvas.SetMatrix(dc.Matrix);
+#endif
                                                                             DrawAutoDraw(dc.AutoDrawParameters.autodraw, darkeningCanvas, false, paint, dc.AutoDrawParameters.otmp_round,
-                                                                                    dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
-                                                                                    dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, 0, 0,
-                                                                                    dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, 1, 1,
-                                                                                    0, 0, height, dc.AutoDrawParameters.is_inventory,
-                                                                                    dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
+                                                                                dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
+                                                                                dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, 0, 0,
+                                                                                dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, 1, 1,
+                                                                                0, 0, height, dc.AutoDrawParameters.is_inventory,
+                                                                                dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
                                                                             paint.ColorFilter = null;
 
                                                                             /* Save to cache as immutable */
@@ -8625,12 +8633,16 @@ namespace GnollHackX.Pages.Game
                                                                         {
                                                                             paint.Color = dc.PaintColor;
                                                                             paint.ColorFilter = dc.PaintColorFilter;
+#if GNH_MAUI
+                                                                            canvas.SetMatrix(in dc.Matrix);
+#else
                                                                             canvas.SetMatrix(dc.Matrix);
+#endif
                                                                             GHApp.MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
                                                                             canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect
-    #if GNH_MAUI
+#if GNH_MAUI
                                                                             , SKSamplingOptions.Default
-    #endif
+#endif
                                                                             , paint);
                                                                             paint.ColorFilter = null;
                                                                         }
@@ -8672,7 +8684,11 @@ namespace GnollHackX.Pages.Game
 
                                                                             paint.Color = dc.PaintColor;
                                                                             paint.ColorFilter = dc.PaintColorFilter;
+#if GNH_MAUI
+                                                                            canvas.SetMatrix(in dc.Matrix);
+#else
                                                                             canvas.SetMatrix(dc.Matrix);
+#endif
                                                                             GHApp.MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
                                                                             canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect
 #if GNH_MAUI
@@ -8689,7 +8705,11 @@ namespace GnollHackX.Pages.Game
                                                                 {
                                                                     paint.Color = dc.PaintColor;
                                                                     paint.ColorFilter = dc.PaintColorFilter;
+#if GNH_MAUI
+                                                                    canvas.SetMatrix(in dc.Matrix);
+#else
                                                                     canvas.SetMatrix(dc.Matrix);
+#endif
                                                                     if (dc.IsAutoDraw)
                                                                     {
                                                                         DrawAutoDraw(dc.AutoDrawParameters.autodraw, canvas, false, paint, dc.AutoDrawParameters.otmp_round,

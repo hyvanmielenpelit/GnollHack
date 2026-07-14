@@ -37,8 +37,8 @@ namespace GnollHackX.Pages.Game
 //            On<iOS>().SetUseSafeArea(true);
 //#endif
             //UIUtils.AdjustRootLayout(RootGrid);
-            UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
+            //UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             UrlWebViewSource Source = new UrlWebViewSource
             {
                 Url = wikiUrl,

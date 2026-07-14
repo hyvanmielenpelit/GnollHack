@@ -52,6 +52,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Screen Resolution", "Determines the rendering resolution of the game map." },
             { "Screen Scale", "Custom scale to make UI components larger or smaller than normal." },
             { "Windowed Mode", "Determines if the game runs in windowed or fullscreen mode." },
+            { "Edge to Edge", "Determines whether the game screen extends over notches or similar areas." },
             { "Cursor Style", "*(ASCII graphics only)* Determines the way how the player character is indicated in the game." },
             { "Hide Navigation", "Determines whether to hide the operating system navigation buttons in the bottom of the screen." },
             { "Hide Status Bar", "Determines if the top status bar of the operating system is hidden." },
@@ -179,8 +180,8 @@ namespace GnollHackX.Pages.MainScreen
 //            On<iOS>().SetUseSafeArea(true);
 //#endif
             //UIUtils.AdjustRootLayout(RootGrid);
-            UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
+            //UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             UIUtils.SetViewCursorOnHandler(TournamentLabel, GameCursorType.Info);
             UIUtils.SetViewCursorOnHandler(RecordLabel, GameCursorType.Info);
             UIUtils.SetViewCursorOnHandler(GZipLabel, GameCursorType.Info);
@@ -1132,8 +1133,13 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.ShowIgnoreStoppingButton = ShowIgnoreStoppingButtonSwitch.IsToggled;
             Preferences.Set("ShowIgnoreStoppingButton", ShowIgnoreStoppingButtonSwitch.IsToggled);
 
-            GHApp.DarkMode = DarkModeSwitch.IsToggled;
-            Preferences.Set("DarkMode", GHApp.DarkMode);
+            bool oldDarkMode = GHApp.DarkMode;
+            Preferences.Set("DarkMode", DarkModeSwitch.IsToggled);
+            if (oldDarkMode != DarkModeSwitch.IsToggled)
+            {
+                GHApp.DarkMode = DarkModeSwitch.IsToggled;
+                UpdateDarkModeOnAllPages(DarkModeSwitch.IsToggled);
+            }
 
             GHApp.SilentMode = SilentModeSwitch.IsToggled;
             Preferences.Set("SilentMode", GHApp.SilentMode);
@@ -1143,6 +1149,13 @@ namespace GnollHackX.Pages.MainScreen
                 /* Do not update GHApp.WindowedMode, because it needs a restart */
                 Preferences.Set("WindowedMode", WindowedModeSwitch.IsToggled);
             }
+
+            if (Edge2EdgeStackLayout.IsVisible && Edge2EdgeSwitch.IsEnabled)
+            {
+                Preferences.Set("Edge2Edge", Edge2EdgeSwitch.IsToggled);
+                UpdateEdge2EdgeOnAllPages(Edge2EdgeSwitch.IsToggled);
+            }
+
 
             float generalVolume = (float)GeneralVolumeSlider.Value;
             float musicVolume = (float)MusicVolumeSlider.Value;
@@ -1321,7 +1334,7 @@ namespace GnollHackX.Pages.MainScreen
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, gridopacity = 0, savestyle = 0, maprefresh = -1, msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, zoom = false, battery = false, lowdiskspace = true, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, platformloop = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, showaltzoom = !GHConstants.DefaultSimpleCmdLayout, showtravelmode = !GHConstants.DefaultSimpleCmdLayout, showautodig = false, showignore = false, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            bool mem = false, fps = false, zoom = false, battery = false, lowdiskspace = true, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, platformloop = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, showaltzoom = !GHConstants.DefaultSimpleCmdLayout, showtravelmode = !GHConstants.DefaultSimpleCmdLayout, showautodig = false, showignore = false, darkmode = false, windowedmode = false, edge2edge = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, lowlevellogging = false, screenlogging = false, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
@@ -1369,6 +1382,7 @@ namespace GnollHackX.Pages.MainScreen
 
             darkmode = GHApp.DarkMode; // Preferences.Get("DarkMode", false);
             windowedmode = Preferences.Get("WindowedMode", false);
+            edge2edge = Preferences.Get("Edge2Edge", false);
             silentmode = Preferences.Get("SilentMode", false);
             generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
             musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
@@ -1719,12 +1733,20 @@ namespace GnollHackX.Pages.MainScreen
             DarkModeSwitch.IsToggled = darkmode;
             SilentModeSwitch.IsToggled = silentmode;
             WindowedModeSwitch.IsToggled = windowedmode;
+            Edge2EdgeSwitch.IsToggled = edge2edge;
             if (!GHApp.IsDesktop)
             {
                 WindowedModeSwitch.IsEnabled = false;
                 WindowedModeLabel.IsEnabled = false;
                 WindowedModeLabel.TextColor = GHColors.Gray;
                 WindowedModeStackLayout.IsVisible = false;
+            }
+            else
+            {
+                Edge2EdgeSwitch.IsEnabled = false;
+                Edge2EdgeLabel.IsEnabled = false;
+                Edge2EdgeLabel.TextColor = GHColors.Gray;
+                Edge2EdgeStackLayout.IsVisible = false;
             }
             NavBarSwitch.IsToggled = navbar;
             if (!GHApp.IsAndroid)
@@ -2937,6 +2959,7 @@ namespace GnollHackX.Pages.MainScreen
             if (_isManualTogglingEnabled)
             {
                 GHApp.DarkMode = e.Value;
+                SetDarkMode(e.Value);
                 bkgView.InvalidateSurface();
                 lblHeader.TextColor = e.Value ? GHColors.White : GHColors.Black;
                 SetChildrenDarkModeTextColor(RootLayout, e.Value);
@@ -3085,6 +3108,53 @@ namespace GnollHackX.Pages.MainScreen
                     PopupOkButton.IsEnabled = true;
                     PopupGrid.IsVisible = true;
                 }
+            }
+        }
+
+        private void Edge2EdgeSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (_isManualTogglingEnabled)
+            {
+                UpdateEdge2EdgeOnAllPages(e.Value);
+            }
+        }
+
+        private void UpdateEdge2EdgeOnAllPages(bool newValue)
+        {
+            bool oldEdge2Edge = GHApp.Edge2Edge;
+            if (oldEdge2Edge != newValue)
+            {
+                GHApp.Edge2Edge = newValue;
+                if (GHApp.Navigation?.ModalStack?.Count > 0)
+                {
+                    foreach (var page in GHApp.Navigation.ModalStack)
+                    {
+                        if (page is CustomContentPage customPage)
+                        {
+                            customPage?.SetEdge2Edge(newValue);
+                        }
+                    }
+                }
+                _mainPage?.SetEdge2Edge(newValue);
+            }
+        }
+        private void UpdateDarkModeOnAllPages(bool newValue)
+        {
+            bool oldDarkMode = GHApp.DarkMode;
+            if (oldDarkMode != newValue)
+            {
+                GHApp.DarkMode = newValue;
+                if (GHApp.Navigation?.ModalStack?.Count > 0)
+                {
+                    foreach (var page in GHApp.Navigation.ModalStack)
+                    {
+                        if (page is CustomContentPage customPage)
+                        {
+                            customPage?.SetDarkMode(newValue);
+                        }
+                    }
+                }
+                _mainPage?.SetDarkMode(newValue);
             }
         }
     }

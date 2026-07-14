@@ -39,8 +39,8 @@ namespace GnollHackX.Pages.MainScreen
 //            On<iOS>().SetUseSafeArea(true);
 //#endif
             //UIUtils.AdjustRootLayout(RootGrid);
-            UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
+            //UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
 
             _fileName = fileName;
             HeaderLabel.Text = header;

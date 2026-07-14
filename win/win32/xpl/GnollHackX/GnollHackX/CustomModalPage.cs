@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -18,15 +18,54 @@ using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 namespace GnollHackX
 #endif
 {
-    public partial class CustomModalPage : ContentPage
+    public partial class CustomContentPage : ContentPage
+    {
+        public CustomContentPage() : base()
+        {            
+            UpdateEdge2Edge();
+            UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            /* Content has not been set yet, as InitializeComponent has not run */
+        }
+
+        protected override void OnParentSet()
+        {
+            base.OnParentSet();
+            if (Content != null)
+            {
+                UIUtils.SetViewCursorOnHandler(Content, GameCursorType.Normal);
+            }
+        }
+
+        public void UpdateEdge2Edge()
+        {
+            SetEdge2Edge(GHApp.Edge2Edge);
+        }
+
+        public void SetEdge2Edge(bool newEdge2Edge)
+        {
+#if GNH_MAUI
+            SafeAreaEdges = newEdge2Edge ? SafeAreaEdges.None : SafeAreaEdges.All;
+#else
+            On<iOS>().SetUseSafeArea(!newEdge2Edge);
+#endif
+        }
+
+        public void UpdateDarkMode()
+        {
+            SetDarkMode(GHApp.DarkMode);
+        }
+
+        public void SetDarkMode(bool newDarkMode)
+        {
+            UIUtils.SetPageThemeAndTransitions(this, newDarkMode);
+        }
+    }
+
+    public partial class CustomModalPage : CustomContentPage
     {
         public CustomModalPage() : base()
         {
-#if GNH_MAUI
-            SafeAreaEdges = SafeAreaEdges.All;
-#else
-            On<iOS>().SetUseSafeArea(true);
-#endif
+
         }
 
         protected override void OnAppearing()

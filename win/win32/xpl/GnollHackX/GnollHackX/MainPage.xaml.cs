@@ -52,7 +52,7 @@ using GnollHackX.Controls;
 namespace GnollHackX
 #endif
 {
-    public partial class MainPage : ContentPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
+    public partial class MainPage : CustomContentPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
     {
         //private readonly object _generalTimerLock = new object();
         private int _generaTimerIsOn = 0;
@@ -86,12 +86,7 @@ namespace GnollHackX
                 GHApp.CurrentGamePage = null;
             }
             GHApp.IncrementMainConstructorRunNumber();
-#if GNH_MAUI
-            SafeAreaEdges = SafeAreaEdges.All; //On<iOS>().SetUseSafeArea(true);
-#else
-            On<iOS>().SetUseSafeArea(true);
-#endif
-            UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            //UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             //TierTitleLabel.TextColor = GHColors.TitleGoldColor;
             //TierSubNameLabel.TextColor = GHColors.LightYellow;
             if (GHApp.CurrentGHGame != null)

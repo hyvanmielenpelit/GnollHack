@@ -1612,24 +1612,34 @@ namespace GnollHackX
             {
                 page.HandlerChanged += (sender, e) =>
                 {
-                    if (sender != null && sender is Page)
+                    if (sender is Page senderPage)
                     {
-                        SetPageTheme((Page)sender, isDarkTheme);
-                        if (!(page is MainPage))
-                        {
-                            Microsoft.UI.Xaml.Controls.Panel p = page?.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Panel;
-                            if (p != null)
-                            {
-                                p.Transitions = new Microsoft.UI.Xaml.Media.Animation.TransitionCollection()
-                                {
-                                    new Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition()
-                                };
-                            }
-                        }
+                        SetPageThemeAndTransitions(senderPage, isDarkTheme);
                     }
                 };
             }
 #endif
+        }
+
+        public static void SetPageThemeAndTransitions(Page page, bool isDarkTheme)
+        {
+            if (page != null)
+            {
+                SetPageTheme(page, isDarkTheme);
+#if WINDOWS
+                if (!(page is MainPage))
+                {
+                    Microsoft.UI.Xaml.Controls.Panel p = page?.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Panel;
+                    if (p != null)
+                    {
+                        p.Transitions = new Microsoft.UI.Xaml.Media.Animation.TransitionCollection()
+                        {
+                            new Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition()
+                        };
+                    }
+                }
+#endif
+            }
         }
 
         public static void SetViewCursorOnHandler(View layout, GameCursorType cursorType)
@@ -1639,7 +1649,7 @@ namespace GnollHackX
             {
                 layout.HandlerChanged += (sender, e) =>
                 {
-                    UIUtils.ChangeElementCursor(layout, cursorType);
+                    ChangeElementCursor(layout, cursorType);
                 };
             }
 #endif
