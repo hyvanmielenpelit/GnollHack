@@ -2396,6 +2396,7 @@ namespace GnollHackX
         //public const bool DefaultShowPickNStashContextCommand = true;
         //public const bool DefaultShowPrevWepContextCommand = true;
         public const bool DefaultLighterDarkening = true;
+        public const bool DefaultColoredXRayVision = true;
         public const bool DefaultAlternativeLayerDrawing = false;
         public const float CriticalBatteryChargeLevel = 0.15f;
         public const string ForumPostQueueDirectory = "forumpost";

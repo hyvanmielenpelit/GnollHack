@@ -104,6 +104,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Default Auto-Center", "Determines if the Auto-Center button in the game screen is enabled by default." },
             { "Show Keyboard Shortcuts", "Determines if keyboard shortcuts are shown in menus." },
             { "Lighter Unlit Areas", "**Off:** Unlit areas are darker.\n**On:** Unlit areas are lighter." },
+            { "Colored X-Ray Vision", "**Off:** Areas seen in X-ray vision are colored as they are with normal vision.\n**On:** Areas seen with X-ray vision have a tinting color." },
             { "Draw Wall Ends", "Determines if the game draws wall end graphics. Can be disabled to save processor time." },
             { "Breathing Animations", "Determines if the game shows the breathing animations of various creatures." },
             { "Empty Wish is Nothing", "**Off:** A random item is received if the wish is left blank.\n**On:** Nothing is received. Keep on to preserve wishless conduct." },
@@ -1306,6 +1307,10 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.LighterDarkening = LighterDarkeningSwitch.IsToggled;
             Preferences.Set("LighterDarkening", LighterDarkeningSwitch.IsToggled);
 
+            if (_gamePage != null)
+                _gamePage.ColoredXRayVision = ColoredXRayVisionSwitch.IsToggled;
+            Preferences.Set("ColoredXRayVision", ColoredXRayVisionSwitch.IsToggled);
+
             if (AlternativeDrawingStackLayout.IsVisible)
             {
                 if (_gamePage != null)
@@ -1336,7 +1341,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             int cursor = 0, graphics = 0, gridopacity = 0, savestyle = 0, maprefresh = -1, msgnum = 0, petrows = 0;
             bool mem = false, fps = false, zoom = false, battery = false, lowdiskspace = true, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, platformloop = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, showaltzoom = !GHConstants.DefaultSimpleCmdLayout, showtravelmode = !GHConstants.DefaultSimpleCmdLayout, showautodig = false, showignore = false, darkmode = false, windowedmode = false, edge2edge = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
-            bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
+            bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = true, xrayvision = true, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, lowlevellogging = false, screenlogging = false, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, metricsystem = false, diceasranges = true, damageformula = false, wornshowsequipment = true, autodig = false, ignorestopping = false;
@@ -1496,6 +1501,7 @@ namespace GnollHackX.Pages.MainScreen
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
                 petrows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
                 lighterdarkening = Preferences.Get("LighterDarkening", GHConstants.DefaultLighterDarkening);
+                xrayvision = Preferences.Get("ColoredXRayVision", GHConstants.DefaultColoredXRayVision);
                 accuratedrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
                 wallends = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
                 breatheanimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
@@ -1563,6 +1569,7 @@ namespace GnollHackX.Pages.MainScreen
                 msgnum = _gamePage.NumDisplayedMessages;
                 petrows = _gamePage.NumDisplayedPetRows;
                 lighterdarkening = _gamePage.LighterDarkening;
+                xrayvision = _gamePage.ColoredXRayVision;
                 accuratedrawing = _gamePage.AlternativeLayerDrawing;
                 wallends = _gamePage.DrawWallEnds;
                 breatheanimations = _gamePage.BreatheAnimations;
@@ -2028,6 +2035,7 @@ namespace GnollHackX.Pages.MainScreen
             ForceMaxMessageSwitch.IsToggled = forcemaxmsg;
             ShowExtendedStatusBarSwitch.IsToggled = showexstatus;
             LighterDarkeningSwitch.IsToggled = lighterdarkening;
+            ColoredXRayVisionSwitch.IsToggled = xrayvision;
             AlternativeLayerDrawingSwitch.IsToggled = accuratedrawing;
 #if !DEBUG
             if(!AlternativeLayerDrawingSwitch.IsToggled)

@@ -471,6 +471,9 @@ namespace GnollHackX.Pages.Game
         private int _showExtendedStatusBar = 0;
         public bool ShowExtendedStatusBar { get { return Interlocked.CompareExchange(ref _showExtendedStatusBar, 0, 0) != 0; } set { Interlocked.Exchange(ref _showExtendedStatusBar, value ? 1 : 0); } }
 
+        private int _coloredXRayVision = 0;
+        public bool ColoredXRayVision { get { return Interlocked.CompareExchange(ref _coloredXRayVision, 0, 0) != 0; } set { Interlocked.Exchange(ref _coloredXRayVision, value ? 1 : 0); } }
+
         private int _lighterDarkening = 0;
         private int _lighterDarkeningUpdated = 0;
         public bool LighterDarkening
@@ -1008,6 +1011,7 @@ namespace GnollHackX.Pages.Game
             NumDisplayedPetRows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
             WalkArrows = Preferences.Get("WalkArrows", true);
             LighterDarkening = Preferences.Get("LighterDarkening", GHConstants.DefaultLighterDarkening);
+            ColoredXRayVision = Preferences.Get("ColoredXRayVision", GHConstants.DefaultColoredXRayVision);
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
             BreatheAnimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
             AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
@@ -7871,6 +7875,7 @@ namespace GnollHackX.Pages.Game
 
             long moveIntervals = Math.Max(2, (long)Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRate) / 10.0));
             bool lighterDarkening = LighterDarkening;
+            bool coloredXRayVision = ColoredXRayVision;
 #if WINDOWS
             //lock (_canvasPointerLock)
             try
@@ -8428,7 +8433,6 @@ namespace GnollHackX.Pages.Game
                                                                 //bool darken = DarkenedPos(mapx, mapy);
                                                                 bool validpos = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_L_LEGAL) != 0 && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
                                                                 bool invalidpos = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_L_ILLEGAL) != 0 && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
-                                                                bool canXRaySee = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_V_XRAY_VISION) != 0;
 
                                                                 // Draw rectangle with blend mode in bottom half
                                                                 //if (darken)
@@ -8473,23 +8477,27 @@ namespace GnollHackX.Pages.Game
 #endif
                                                                     paint.BlendMode = old_bm;
                                                                 }
-                                                                if (canXRaySee)
+
+                                                                if (coloredXRayVision)
                                                                 {
-                                                                    paint.Color = new SKColor((byte)0, (byte)128, (byte)255, (byte)32);
-                                                                    SKBlendMode old_bm = paint.BlendMode;
-                                                                    paint.BlendMode = SKBlendMode.SrcOver;
-                                                                    tx = (offsetX + usedOffsetX + width * (float)mapx);
-                                                                    ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
-                                                                    SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                                    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_V_XRAY_VISION) != 0)
+                                                                    {
+                                                                        paint.Color = new SKColor((byte)0, (byte)128, (byte)255, (byte)32);
+                                                                        SKBlendMode old_bm = paint.BlendMode;
+                                                                        paint.BlendMode = SKBlendMode.SrcOver;
+                                                                        tx = (offsetX + usedOffsetX + width * (float)mapx);
+                                                                        ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
+                                                                        SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
 #if GNH_MAP_PROFILING && DEBUG
-                                                                    StartProfiling(GHProfilingStyle.Rect);
+                                                                        StartProfiling(GHProfilingStyle.Rect);
 #endif
-                                                                    canvas.DrawRect(targetrect, paint);
-                                                                    //enlCanvas.DrawRect(targetrect, paint);
+                                                                        canvas.DrawRect(targetrect, paint);
+                                                                        //enlCanvas.DrawRect(targetrect, paint);
 #if GNH_MAP_PROFILING && DEBUG
-                                                                    StopProfiling(GHProfilingStyle.Rect);
+                                                                        StopProfiling(GHProfilingStyle.Rect);
 #endif
-                                                                    paint.BlendMode = old_bm;
+                                                                        paint.BlendMode = old_bm;
+                                                                    }
                                                                 }
                                                             }
                                                         }
