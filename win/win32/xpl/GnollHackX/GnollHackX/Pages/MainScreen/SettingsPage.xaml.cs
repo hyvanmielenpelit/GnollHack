@@ -1741,13 +1741,15 @@ namespace GnollHackX.Pages.MainScreen
                 WindowedModeLabel.TextColor = GHColors.Gray;
                 WindowedModeStackLayout.IsVisible = false;
             }
-            else
+
+            //else /* Disabled until works on Android */
             {
                 Edge2EdgeSwitch.IsEnabled = false;
                 Edge2EdgeLabel.IsEnabled = false;
                 Edge2EdgeLabel.TextColor = GHColors.Gray;
                 Edge2EdgeStackLayout.IsVisible = false;
             }
+
             NavBarSwitch.IsToggled = navbar;
             if (!GHApp.IsAndroid)
             {
