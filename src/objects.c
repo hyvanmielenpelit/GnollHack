@@ -4138,7 +4138,7 @@ SPELL("stick to snake",    "stick-patterned", None, None, "Summons a permanent s
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("create wood golem", "wooden", None, None, "Creates a permanent wood golem",
     P_NATURE_SPELL,   4,   4, 0, 
-    -1, 8, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
+    -1, 6, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_WOOD, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("stick to cobra",    "snake-patterned", None, None, "Summons a permanent cobra",
