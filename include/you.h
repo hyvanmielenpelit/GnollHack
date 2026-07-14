@@ -64,9 +64,9 @@ struct RoleName {
 
 struct RoleAdvance {
     /* "fix" is the fixed amount, "rnd" is the random amount */
-    xchar infix, inrnd; /* at character initialization */
-    xchar lofix, lornd; /* gained per level <  urole.xlev */
-    xchar hifix, hirnd; /* gained per level >= urole.xlev */
+    schar infix, inrnd; /* at character initialization */
+    schar lofix, lornd; /* gained per level <  urole.xlev */
+    schar hifix, hirnd; /* gained per level >= urole.xlev */
 };
 
 struct u_have {
