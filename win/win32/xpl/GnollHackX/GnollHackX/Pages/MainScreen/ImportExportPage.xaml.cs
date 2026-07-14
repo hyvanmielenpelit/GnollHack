@@ -619,10 +619,12 @@ namespace GnollHackX.Pages.MainScreen
             string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
             string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
             string directory4 = Path.Combine(GHApp.GHPath, GHConstants.ReplayPostQueueDirectory);
+            string directory5 = Path.Combine(GHApp.GHPath, GHConstants.GeneralTaskQueueDirectory);
             int nofiles1 = 0;
             int nofiles2 = 0;
             int nofiles3 = 0;
             int nofiles4 = 0;
+            int nofiles5 = 0;
             if (Directory.Exists(directory1))
             {
                 string[] files1 = Directory.GetFiles(directory1);
@@ -655,7 +657,15 @@ namespace GnollHackX.Pages.MainScreen
                     nofiles4 = files4.Length;
                 }
             }
-            int totalfiles = nofiles1 + nofiles2 + nofiles3 + nofiles4;
+            if (Directory.Exists(directory5))
+            {
+                string[] files5 = Directory.GetFiles(directory5);
+                if (files5 != null)
+                {
+                    nofiles5 = files5.Length;
+                }
+            }
+            int totalfiles = nofiles1 + nofiles2 + nofiles3 + nofiles4 + nofiles5;
 
             bool answer = await GHApp.DisplayMessageBox(this, "Clear Pending Tasks?", "Are you sure to delete all pending tasks on disk (" + totalfiles + " file" + (totalfiles == 1 ? "" : "s") + ")?", "Yes", "No");
             if (answer)
@@ -673,6 +683,9 @@ namespace GnollHackX.Pages.MainScreen
 
                     if (Directory.Exists(directory4))
                         Directory.Delete(directory4, true);
+
+                    if (Directory.Exists(directory5))
+                        Directory.Delete(directory5, true);
 
                     btnClearPendingTasks.Text = "Done";
                     btnClearPendingTasks.TextColor = GHColors.Red;

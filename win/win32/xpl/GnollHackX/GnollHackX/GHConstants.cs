@@ -2147,6 +2147,10 @@ namespace GnollHackX
 
     public static class GHConstants
     {
+        public const string GeneralTaskQueueDirectory = "task";
+        public const string BonesDeleteFileNamePrefix = "bonesdelete_";
+        public const string BonesDeleteFileNameSuffix = ".json";
+
         public const int MinimumFileDescriptorLimit = 16384;
         public const int CancelChar = 27;
         public const int SelfChar = 46;

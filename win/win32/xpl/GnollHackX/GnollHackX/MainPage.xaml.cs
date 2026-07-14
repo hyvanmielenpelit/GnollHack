@@ -251,10 +251,12 @@ namespace GnollHackX
                     string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
                     string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
                     string directory4 = Path.Combine(GHApp.GHPath, GHConstants.ReplayPostQueueDirectory);
+                    string directory5 = Path.Combine(GHApp.GHPath, GHConstants.GeneralTaskQueueDirectory);
                     bool has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
                     bool has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
                     bool has_files3 = Directory.Exists(directory3) && Directory.GetFiles(directory3)?.Length > 0;
                     bool has_files4 = Directory.Exists(directory4) && Directory.GetFiles(directory4)?.Length > 0;
+                    bool has_files5 = Directory.Exists(directory5) && Directory.EnumerateFiles(directory5, GHConstants.BonesDeleteFileNamePrefix + "*").Any();
                     bool missingcredentials = string.IsNullOrEmpty(GHApp.XlogUserName);
                     bool incorrectcredentials = GHApp.XlogCredentialsIncorrect;
                     bool missingorincorrectcredentials = missingcredentials || incorrectcredentials;
@@ -269,6 +271,7 @@ namespace GnollHackX
                         && (!has_files2 || !GHApp.PostingXlogEntries || missingorincorrectcredentials)
                         && (!has_files3 || !dopostbones || GHApp.GameStarted || missingorincorrectcredentials)
                         && (!has_files4 || !dopostreplays || incorrectcredentials)
+                        && (!has_files5 || GHApp.GameStarted)
                         )
                     {
                         StopGeneralTimer = true;
@@ -282,6 +285,7 @@ namespace GnollHackX
                             has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
                             has_files3 = Directory.Exists(directory3) && Directory.GetFiles(directory3)?.Length > 0;
                             has_files4 = Directory.Exists(directory4) && Directory.GetFiles(directory4)?.Length > 0;
+                            has_files5 = Directory.Exists(directory5) && Directory.EnumerateFiles(directory5, GHConstants.BonesDeleteFileNamePrefix + "*").Any();
                         }
 
                         if (hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones || dopostreplays) && !missingorincorrectcredentials)
@@ -317,6 +321,11 @@ namespace GnollHackX
                             PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
                             UpdateGeneralTimerTasksLabel(false);
                         }
+
+                        if (has_files5 && !GHApp.GameStarted)
+                        {
+                            ProcessBonesDeletions(directory5, GHConstants.BonesDeleteFileNamePrefix);
+                        }
                     }
                     GeneralTimerWorkOnTasks = false;
                 }
@@ -345,6 +354,9 @@ namespace GnollHackX
             bool missingcredentials = string.IsNullOrEmpty(GHApp.XlogUserName);
             bool incorrectcredentials = GHApp.XlogCredentialsIncorrect;
             bool missingorincorrectcredentials = missingcredentials || incorrectcredentials;
+
+            // Note: We purposefully exclude the general task queue (e.g. bones deletions) from the UI task counts 
+            // so that app exit is never blocked if a bones file is persistently locked or deletion fails.
 
             int tasks1 = _postingQueue.Count;
             //int tasks2 = hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones || dopostreplays) && !missingorincorrectcredentials ? 1 : 0;
@@ -1216,6 +1228,93 @@ namespace GnollHackX
             }
         }
 
+        private void ProcessBonesDeletions(string dir, string fileprefix)
+        {
+            if (dir != null && Directory.Exists(dir))
+            {
+                string[] filepaths = Directory.GetFiles(dir);
+                if (filepaths != null)
+                {
+                    GHApp.MaybeWriteGHLog("ProcessBonesDeletions in " + dir + ": " + filepaths.Length);
+                    foreach (string filepath in filepaths)
+                    {
+                        if (filepath != null)
+                        {
+                            FileInfo fileinfo = new FileInfo(filepath);
+                            if (fileinfo != null && fileinfo.Exists && (fileprefix == null || fileprefix == "" || fileinfo.Name.StartsWith(fileprefix)))
+                            {
+                                GHBonesDeletion bd = null;
+                                try
+                                {
+                                    string json = "";
+                                    using (Stream stream = File.OpenRead(filepath))
+                                    {
+                                        if (stream != null)
+                                        {
+                                            using (StreamReader sr = new StreamReader(stream))
+                                            {
+                                                json = sr.ReadToEnd();
+                                            }
+                                            bd = JsonConvert.DeserializeObject<GHBonesDeletion>(json);
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    GHApp.MaybeWriteGHLog("Exception occurred while reading bones deletion reminder " + filepath + ": " + ex.Message);
+                                    try
+                                    {
+                                        File.Delete(filepath); // Delete corrupted reminder file
+                                    }
+                                    catch (Exception deleteEx)
+                                    {
+                                        GHApp.MaybeWriteGHLog("Deleting corrupted reminder file failed: " + deleteEx.Message);
+                                    }
+                                    bd = null;
+                                }
+
+                                if (bd != null && !string.IsNullOrWhiteSpace(bd.BonesFileName))
+                                {
+                                    string full_filepath = Path.Combine(GHApp.GHPath, bd.BonesFileName);
+                                    bool success = false;
+                                    try
+                                    {
+                                        if (File.Exists(full_filepath))
+                                        {
+                                            File.Delete(full_filepath);
+                                            GHApp.MaybeWriteGHLog("Successfully deleted bones file from reminder: " + full_filepath);
+                                        }
+                                        else
+                                        {
+                                            // Targeted bones file does not exist, so reminder is obsolete
+                                            GHApp.MaybeWriteGHLog("Bones file in reminder does not exist: " + full_filepath);
+                                        }
+                                        success = true;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        GHApp.MaybeWriteGHLog("Deleting bones file " + full_filepath + " from reminder failed: " + ex.Message);
+                                    }
+
+                                    if (success)
+                                    {
+                                        try
+                                        {
+                                            File.Delete(filepath); // Delete the reminder file
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            GHApp.MaybeWriteGHLog("Deleting bones deletion reminder file failed: " + ex.Message);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private async Task StartUpTasks()
         {
             GHApp.InitFileDescriptors();
@@ -1414,6 +1513,13 @@ namespace GnollHackX
             {
                 Debug.WriteLine(ex.Message);
             }
+
+            string directory5 = Path.Combine(GHApp.GHPath, GHConstants.GeneralTaskQueueDirectory);
+            if (Directory.Exists(directory5))
+            {
+                ProcessBonesDeletions(directory5, GHConstants.BonesDeleteFileNamePrefix);
+            }
+
             GHApp.DebugCheckCurrentFileDescriptor("StartUpTasksFinish");
         }
 

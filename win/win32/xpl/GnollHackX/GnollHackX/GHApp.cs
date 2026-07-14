@@ -61,6 +61,20 @@ namespace GnollHackX
         public IntPtr FunctionPointer;
     }
 
+    public class GHBonesDeletion
+    {
+        public string BonesFileName { get; set; }
+
+        public GHBonesDeletion()
+        {
+        }
+
+        public GHBonesDeletion(string bonesFileName)
+        {
+            BonesFileName = bonesFileName;
+        }
+    }
+
     public static class GHApp
     {
 #if WINDOWS
@@ -4586,7 +4600,7 @@ namespace GnollHackX
                 }
                 string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory, GHConstants.UserDataDirectory,
                     GHConstants.ForumPostQueueDirectory, GHConstants.XlogPostQueueDirectory, GHConstants.BonesPostQueueDirectory, GHConstants.ReplayPostQueueDirectory,
-                    GHConstants.AppLogDirectory };
+                    GHConstants.AppLogDirectory, GHConstants.GeneralTaskQueueDirectory };
                 //These may be too large: GHConstants.ReplayDirectory, GHConstants.ReplayDownloadFromCloudDirectory
                 foreach (string ghsubdir in ghsubdirlist)
                 {
@@ -6672,6 +6686,39 @@ namespace GnollHackX
                 }
             }
         }
+        public static void SaveBonesDeletionToDisk(string bones_filename)
+        {
+            string targetpath = Path.Combine(GHPath, GHConstants.GeneralTaskQueueDirectory);
+            if (!Directory.Exists(targetpath))
+                CheckCreateDirectory(targetpath);
+            if (Directory.Exists(targetpath))
+            {
+                string targetfilename;
+                string targetfilepath;
+                int id = 0;
+                do
+                {
+                    targetfilename = GHConstants.BonesDeleteFileNamePrefix + id + GHConstants.BonesDeleteFileNameSuffix;
+                    targetfilepath = Path.Combine(targetpath, targetfilename);
+                    id++;
+                } while (File.Exists(targetfilepath));
+
+                try
+                {
+                    using (StreamWriter sw = File.CreateText(targetfilepath))
+                    {
+                        GHBonesDeletion bd = new GHBonesDeletion(bones_filename);
+                        string json = JsonConvert.SerializeObject(bd);
+                        sw.Write(json);
+                    }
+                    MaybeWriteGHLog("Bones file deletion request written to the queue on disk: " + targetfilepath);
+                }
+                catch (Exception ex)
+                {
+                    MaybeWriteGHLog("Writing the bones file deletion request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
+                }
+            }
+        }
 
         public static async Task<SendResult> SendBonesFile(string bones_filename, int status_type, int status_datatype, bool is_from_queue)
         {
@@ -6830,6 +6877,7 @@ namespace GnollHackX
                                             catch (Exception ex)
                                             {
                                                 MaybeWriteGHLog("Deleting the sent bones file from client failed: " + ex.Message);
+                                                SaveBonesDeletionToDisk(bones_filename);
                                             }
                                         }
                                         else
