@@ -11,6 +11,7 @@ GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, 
 - **UI Thread Safety**: All UI updates must be marshaled to the main thread via `MainThread.BeginInvokeOnMainThread()`.
 - **Do NOT block the UI Thread**: Long-running native calls or file I/O must run asynchronously.
 - **Cross-Platform XAML**: Use `OnPlatform` in XAML to handle differences between iOS/Android/Windows.
+- **XAML WidthRequest / HeightRequest Quirk**: If a GnollHackX XAML file has exactly two spaces between `WidthRequest` or `HeightRequest` and `=` (e.g., `WidthRequest  =` or `HeightRequest  =`), the `makedefsdroid` build process automatically converts them into `MaximumWidthRequest` and `MaximumHeightRequest` respectively for GnollHackM. You MUST preserve these exact extra spaces if you are modifying or copying these blocks to retain this functionality.
 
 ## Project Structure
 - **`GnollHackM`**: The MAUI application project (Entry point).
