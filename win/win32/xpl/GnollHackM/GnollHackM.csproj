@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
@@ -1207,9 +1207,9 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="$(DefineConstants.Contains('SKIASHARP_3119'))">
-		<PackageReference Include="SkiaSharp" Version="3.119.1" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.1" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.1" />
+		<PackageReference Include="SkiaSharp" Version="3.119.4" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.4" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.4" />
 	</ItemGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains('SENTRY'))">
