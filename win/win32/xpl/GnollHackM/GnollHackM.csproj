@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
@@ -1286,4 +1286,26 @@
 
 		<Message Importance="high" Text="Synchronized %(_AppxManifestFiles.Identity) version to $(_CalculatedVersion)" />
 	</Target>
+  <!--
+    Workaround for .NET 10.0.10 regression: When VS publishes via Publish..., MSBuild may cache
+    ResizetizeCollectItems/ResizetizeImages target results from a prior Build (that used different
+    MauiIcon items), causing stale icons to be reused. This target invalidates the Resizetizer
+    cache by deleting mauiimage.inputs if it doesn't reference the current MauiIcon source file,
+    forcing ResizetizeCollectItems to regenerate it.
+  -->
+  <Target Name="_InvalidateResizetizerCacheIfIconChanged"
+          BeforeTargets="ResizetizeCollectItems"
+          Condition="$(TargetFramework.Contains('-windows')) And Exists('$(_ResizetizerInputsFile)')">
+    <ReadLinesFromFile File="$(_ResizetizerInputsFile)">
+      <Output TaskParameter="Lines" ItemName="_CachedResizetizeInput" />
+    </ReadLinesFromFile>
+    <!-- Check if the cached input references the same icon file we have now -->
+    <PropertyGroup>
+      <_CurrentMauiIconFile>@(MauiIcon->'%(Identity)')</_CurrentMauiIconFile>
+      <_CachedInputContainsCurrentIcon>$([System.String]::new('@(_CachedResizetizeInput)').Contains('$(_CurrentMauiIconFile)'))</_CachedInputContainsCurrentIcon>
+    </PropertyGroup>
+    <!-- If the cached input doesn't reference our current icon, delete it to force regeneration -->
+    <Delete Files="$(_ResizetizerInputsFile)" Condition="'$(_CachedInputContainsCurrentIcon)' != 'True'" />
+    <Delete Files="$(_ResizetizerInputsFile).stamp" Condition="'$(_CachedInputContainsCurrentIcon)' != 'True'" />
+  </Target>
 </Project>
