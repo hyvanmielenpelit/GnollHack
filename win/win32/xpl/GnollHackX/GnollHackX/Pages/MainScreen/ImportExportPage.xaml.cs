@@ -840,25 +840,20 @@ namespace GnollHackX.Pages.MainScreen
             _messagePopupTcs?.TrySetResult(false);
             _messagePopupTcs = new TaskCompletionSource<bool>();
 
-            if (MessagePopupTitleLabel.Text != title)
-                MessagePopupTitleLabel.Text = title;
+            MessagePopupTitleLabel.Text = title;
             MessagePopupTitleLabel.TextColor = titleColor ?? GHColors.TitleGoldColor;
-            if (MessagePopupLabel.Text != message)
-                MessagePopupLabel.Text = message;
+            MessagePopupLabel.Text = message;
 
             if (string.IsNullOrEmpty(cancelButtonText))
             {
-                if (MessagePopupOkButton.Text != okButtonText)
-                    MessagePopupOkButton.Text = okButtonText;
+                MessagePopupOkButton.Text = okButtonText;
                 MessagePopupCancelButton.IsVisible = false;
                 MessagePopupOkButton.HorizontalOptions = LayoutOptions.Center;
             }
             else
             {
-                if (MessagePopupOkButton.Text != okButtonText)
-                    MessagePopupOkButton.Text = okButtonText;
-                if (MessagePopupCancelButton.Text != cancelButtonText)
-                    MessagePopupCancelButton.Text = cancelButtonText;
+                MessagePopupOkButton.Text = okButtonText;
+                MessagePopupCancelButton.Text = cancelButtonText;
                 MessagePopupCancelButton.IsVisible = true;
                 MessagePopupOkButton.HorizontalOptions = LayoutOptions.End;
                 MessagePopupCancelButton.HorizontalOptions = LayoutOptions.Start;
