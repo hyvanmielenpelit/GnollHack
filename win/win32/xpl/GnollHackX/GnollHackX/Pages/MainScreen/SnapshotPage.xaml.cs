@@ -96,7 +96,8 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     i++;
                     RowImageButton rib = new RowImageButton();
-                    if(GHApp.Glyph2Tile != null && GHApp._tileMap[0] != null && snap.gnh_compatibility <= GHApp.GHVersionNumber)
+                    if(GHApp.Glyph2Tile != null && GHApp._tileMap[0] != null 
+                        && (snap.gnh_version < GHApp.GHVersionNumber ? snap.gnh_version >= GHApp.GHVersionCompatibility : snap.gnh_version > GHApp.GHVersionNumber ? GHApp.GHVersionNumber >= snap.gnh_compatibility : true))
                     {
                         GlyphImageSource gis = new GlyphImageSource();
                         gis.Glyph = snap.gui_glyph;
