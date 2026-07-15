@@ -86,6 +86,7 @@ namespace GnollHackX
                 GHApp.CurrentGamePage = null;
             }
             GHApp.IncrementMainConstructorRunNumber();
+            //carouselView.FPSDebug = true;
             //UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             //TierTitleLabel.TextColor = GHColors.TitleGoldColor;
             //TierSubNameLabel.TextColor = GHColors.LightYellow;

@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,6 +39,20 @@ namespace GnollHackX
 
     public class ImageCarousel : SKCanvasView
     {
+        public static readonly BindableProperty FPSDebugProperty =
+            BindableProperty.Create(nameof(FPSDebug), typeof(bool), typeof(ImageCarousel), false);
+
+        public bool FPSDebug
+        {
+            get => (bool)GetValue(FPSDebugProperty);
+            set => SetValue(FPSDebugProperty, value);
+        }
+
+        private readonly System.Diagnostics.Stopwatch _fpsStopwatch = new System.Diagnostics.Stopwatch();
+        private int _frameCount = 0;
+        private double _fps = 0;
+        private double _lastFpsUpdateTime = 0;
+
         public ImageCarousel() : base()
         {
             PaintSurface += Base_PaintSurface;
@@ -111,6 +125,14 @@ namespace GnollHackX
             if (!_inited)
                 Init();
 
+            if (FPSDebug)
+            {
+                _fpsStopwatch.Restart();
+                _lastFpsUpdateTime = 0;
+                _frameCount = 0;
+                _fps = 0;
+            }
+
             InvalidateSurface();
             if(!CheckTimerOnAndSetTrue)
             {
@@ -149,7 +171,7 @@ namespace GnollHackX
                 //}
                 byte alpha = GetSecondBitmapAlpha(counter);
                 byte prevalpha = GetSecondBitmapAlpha(counter - 1);
-                if (alpha > 0 || prevalpha > 0)
+                if (alpha > 0 || prevalpha > 0 || FPSDebug)
                     InvalidateSurface();
             });
         }
@@ -157,6 +179,10 @@ namespace GnollHackX
         public void Stop()
         {
             TimerIsOn = false;
+            if (FPSDebug)
+            {
+                _fpsStopwatch.Stop();
+            }
         }
 
         private void UpdateCarousel()
@@ -183,6 +209,26 @@ namespace GnollHackX
         {
             if (!_initialDraw && !TimerIsOn)
                 return;
+
+            if (FPSDebug)
+            {
+                if (!_fpsStopwatch.IsRunning)
+                {
+                    _fpsStopwatch.Start();
+                    _lastFpsUpdateTime = 0;
+                    _frameCount = 0;
+                }
+
+                double currentTime = _fpsStopwatch.Elapsed.TotalSeconds;
+                _frameCount++;
+                double elapsed = currentTime - _lastFpsUpdateTime;
+                if (elapsed >= 0.5)
+                {
+                    _fps = _frameCount / elapsed;
+                    _frameCount = 0;
+                    _lastFpsUpdateTime = currentTime;
+                }
+            }
 
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
@@ -307,6 +353,33 @@ namespace GnollHackX
                             }
                         }
                     }
+                }
+            }
+            if (FPSDebug)
+            {
+                using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
+                {
+                    textPaint.Color = SKColors.Red;
+                    textPaint.TextSize = 24;
+                    textPaint.Paint.IsAntialias = true;
+                    string fpsText = $"FPS: {_fps:F1}";
+
+                    SKRect textBounds = new SKRect();
+                    textPaint.MeasureText(fpsText, ref textBounds);
+
+                    using (SKPaint bgPaint = new SKPaint())
+                    {
+                        bgPaint.Color = new SKColor(0, 0, 0, 180);
+                        float rectLeft = 10;
+                        float rectTop = 10;
+                        float rectRight = rectLeft + textBounds.Width + 20;
+                        float rectBottom = rectTop + textBounds.Height + 15;
+                        canvas.DrawRect(new SKRect(rectLeft, rectTop, rectRight, rectBottom), bgPaint);
+                    }
+
+                    float textX = 20;
+                    float textY = 10 + Math.Abs(textBounds.Height) + 5;
+                    textPaint.DrawTextOnCanvas(canvas, fpsText, textX, textY);
                 }
             }
             _initialDraw = false;
