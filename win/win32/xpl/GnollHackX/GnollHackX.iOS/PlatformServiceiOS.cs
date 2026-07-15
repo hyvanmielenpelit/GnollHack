@@ -340,21 +340,42 @@ namespace GnollHackX.iOS
 
         public void EnsureWindowFocus()
         {
-            /* On Mac ("Designed for iPad"), the window can lose key status
+            /* On Mac ("Designed for iPad"), the window can lose active status
              * after modal page navigation, causing buttons to not respond
-             * to clicks. Force MakeKeyAndVisible to restore interactivity.
+             * to clicks. MakeKeyAndVisible handles UIKit-level window key
+             * status; NSApplication.activateIgnoringOtherApps handles the
+             * macOS-level app activation (making the app frontmost).
              * No-op on actual iOS devices. */
             try
             {
                 if (NSProcessInfo.ProcessInfo?.IsiOSApplicationOnMac == true)
                 {
                     UIApplication.SharedApplication?.KeyWindow?.MakeKeyAndVisible();
+
+                    /* Activate at the macOS level via NSApplication ObjC runtime */
+                    IntPtr nsAppClass = ObjCRuntime.Class.GetHandle("NSApplication");
+                    if (nsAppClass != IntPtr.Zero)
+                    {
+                        IntPtr sharedApp = intptr_objc_msgSend(
+                            nsAppClass, ObjCRuntime.Selector.GetHandle("sharedApplication"));
+                        if (sharedApp != IntPtr.Zero)
+                        {
+                            void_objc_msgSend_bool(
+                                sharedApp, ObjCRuntime.Selector.GetHandle("activateIgnoringOtherApps:"), true);
+                        }
+                    }
                 }
             }
             catch
             {
             }
         }
+
+        [System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
+        private static extern IntPtr intptr_objc_msgSend(IntPtr receiver, IntPtr selector);
+
+        [System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
+        private static extern void void_objc_msgSend_bool(IntPtr receiver, IntPtr selector, bool arg1);
 
         public void HideKeyboard()
         {
