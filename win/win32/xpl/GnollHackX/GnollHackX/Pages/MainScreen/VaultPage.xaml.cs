@@ -249,6 +249,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async Task ClosePageAsync(bool playClickSound)
         {
+            _messagePopupTcs?.TrySetResult(false);
             CloseButton.IsEnabled = false;
             _backPressed = true;
             if (playClickSound)
@@ -275,6 +276,7 @@ namespace GnollHackX.Pages.MainScreen
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
+            _messagePopupTcs?.TrySetResult(false);
             GHApp.BackButtonPressed -= BackButtonPressed;
         }
         //protected override bool OnBackButtonPressed()
@@ -713,6 +715,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
             )
         {
+            _messagePopupTcs?.TrySetResult(false);
             _messagePopupTcs = new TaskCompletionSource<bool>();
 
             MessagePopupTitleLabel.Text = title;
