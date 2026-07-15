@@ -1325,9 +1325,10 @@ mon_catchup_elapsed_time(struct monst *mtmp, int64_t nmv)
             mtmp->mtame -= wilder; /* less tame */
         else if (mtmp->mtame > rn2(wilder))
             mtmp->mtame = 0; /* untame */
-        else
+        else {
             set_mon_mpeaceful(mtmp, 0);
             mtmp->mtame = 0; /* hostile! */
+        }
 
         if (!mtmp->mtame)
             set_mon_ispartymember(mtmp, FALSE);
@@ -1341,9 +1342,10 @@ mon_catchup_elapsed_time(struct monst *mtmp, int64_t nmv)
         struct edog *edog = EDOG(mtmp);
 
         if ((monstermoves > edog->hungrytime + 500 && mtmp->mhp < 3)
-            || (monstermoves > edog->hungrytime + 750))
+            || (monstermoves > edog->hungrytime + 750)) {
             set_mon_mpeaceful(mtmp, 0);
             mtmp->mtame = 0;
+        }
 
         if(!mtmp->mtame)
             set_mon_ispartymember(mtmp, 0);
