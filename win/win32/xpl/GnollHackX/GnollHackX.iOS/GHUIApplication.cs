@@ -1,4 +1,5 @@
-﻿using Foundation;
+using Foundation;
+using ObjCRuntime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace GnollHackX.iOS
 {
     public class GHUIApplication : UIApplication
     {
+        private UIKeyCommand[] _cachedKeyCommands;
+
         public GHUIApplication() : base()
         {
 
@@ -28,6 +31,170 @@ namespace GnollHackX.iOS
         public GHUIApplication(Foundation.NSObjectFlag t) : base(t)
         {
 
+        }
+
+        /* UIKeyCommand-based keyboard handling.
+         * 
+         * On iOS with a physical keyboard, PressesBegan works for all keys.
+         * However, when the iOS app runs on Mac via "Designed for iPad",
+         * macOS intercepts alphanumeric key presses for its text input system,
+         * so UIPress.Key is nil and PressesBegan silently drops them.
+         * 
+         * UIKeyCommand is Apple's recommended mechanism for keyboard input
+         * and works reliably on both iOS and Mac. When a UIKeyCommand matches,
+         * its handler is invoked instead of PressesBegan, so there is no
+         * double-firing of key events.
+         */
+
+        public override UIKeyCommand[] KeyCommands
+        {
+            get
+            {
+                if (_cachedKeyCommands == null)
+                    _cachedKeyCommands = BuildKeyCommands();
+                return _cachedKeyCommands;
+            }
+        }
+
+        private UIKeyCommand[] BuildKeyCommands()
+        {
+            var commands = new List<UIKeyCommand>();
+
+            var charSelector = new Selector("HandleCharKeyInput:");
+            var specialSelector = new Selector("HandleSpecialKeyInput:");
+
+            /* Character keys: letters, digits, and symbols */
+            string keys = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890<>!\"#$%&/()=+?,.-;:_*{}[]\'\\ §";
+
+            /* Register with no modifier (plain keys) */
+            foreach (char c in keys)
+            {
+                var cmd = UIKeyCommand.Create((NSString)c.ToString(), 0, charSelector);
+                MaybeSetPriorityOverSystem(cmd);
+                commands.Add(cmd);
+            }
+
+            /* Register with Control modifier */
+            string ctrlKeys = "abcdefghijklmnopqrstuvwxyz";
+            foreach (char c in ctrlKeys)
+            {
+                var cmd = UIKeyCommand.Create((NSString)c.ToString(), UIKeyModifierFlags.Control, charSelector);
+                MaybeSetPriorityOverSystem(cmd);
+                commands.Add(cmd);
+            }
+
+            /* Register with Alternate (Option/Alt) modifier for meta keys.
+             * Both lowercase and uppercase are registered because Alt+a and Alt+A
+             * are different commands in GnollHack. */
+            string metaKeys = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            foreach (char c in metaKeys)
+            {
+                var cmd = UIKeyCommand.Create((NSString)c.ToString(), UIKeyModifierFlags.Alternate, charSelector);
+                MaybeSetPriorityOverSystem(cmd);
+                commands.Add(cmd);
+            }
+
+            /* Special keys: arrows, enter, escape, space, tab */
+            var specialKeyInputs = new (NSString input, UIKeyModifierFlags[] modifiers)[]
+            {
+                ((NSString)UIKeyCommand.UpArrow, new UIKeyModifierFlags[] { 0, UIKeyModifierFlags.Control, UIKeyModifierFlags.Alternate, UIKeyModifierFlags.Shift }),
+                ((NSString)UIKeyCommand.DownArrow, new UIKeyModifierFlags[] { 0, UIKeyModifierFlags.Control, UIKeyModifierFlags.Alternate, UIKeyModifierFlags.Shift }),
+                ((NSString)UIKeyCommand.LeftArrow, new UIKeyModifierFlags[] { 0, UIKeyModifierFlags.Control, UIKeyModifierFlags.Alternate, UIKeyModifierFlags.Shift }),
+                ((NSString)UIKeyCommand.RightArrow, new UIKeyModifierFlags[] { 0, UIKeyModifierFlags.Control, UIKeyModifierFlags.Alternate, UIKeyModifierFlags.Shift }),
+                ((NSString)UIKeyCommand.Escape, new UIKeyModifierFlags[] { (UIKeyModifierFlags)0 }),
+                ((NSString)"\r", new UIKeyModifierFlags[] { (UIKeyModifierFlags)0 }),      /* Enter */
+                ((NSString)"\t", new UIKeyModifierFlags[] { (UIKeyModifierFlags)0 }),      /* Tab */
+            };
+
+            foreach (var (input, modifiers) in specialKeyInputs)
+            {
+                foreach (var mod in modifiers)
+                {
+                    var cmd = UIKeyCommand.Create(input, mod, specialSelector);
+                    MaybeSetPriorityOverSystem(cmd);
+                    commands.Add(cmd);
+                }
+            }
+
+            /* Numpad digits */
+            for (char c = '0'; c <= '9'; c++)
+            {
+                var cmd = UIKeyCommand.Create((NSString)c.ToString(), UIKeyModifierFlags.NumericPad, charSelector);
+                MaybeSetPriorityOverSystem(cmd);
+                commands.Add(cmd);
+            }
+
+            return commands.ToArray();
+        }
+
+        private static void MaybeSetPriorityOverSystem(UIKeyCommand cmd)
+        {
+            /* WantsPriorityOverSystemBehavior prevents macOS from intercepting
+             * key commands for its own menu shortcuts (e.g., Cmd+H for hide).
+             * Available on iOS 15+ / macOS 12+. All Apple Silicon Macs support this. */
+            if (OperatingSystem.IsIOSVersionAtLeast(15, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(15, 0))
+            {
+                cmd.WantsPriorityOverSystemBehavior = true;
+            }
+        }
+
+        [Export("HandleCharKeyInput:")]
+        public void HandleCharKeyInput(UIKeyCommand cmd)
+        {
+            if (cmd?.Input == null || cmd.Input.Length < 1)
+                return;
+
+            bool isCtrl = (cmd.ModifierFlags & UIKeyModifierFlags.Control) != 0;
+            bool isMeta = (cmd.ModifierFlags & UIKeyModifierFlags.Alternate) != 0;
+            bool isNumPad = (cmd.ModifierFlags & UIKeyModifierFlags.NumericPad) != 0;
+            char ch = cmd.Input[0];
+
+            if (isNumPad && ch >= '0' && ch <= '9')
+            {
+                /* Numpad digits are sent as special keys */
+                GHApp.SendSpecialKeyPress(GHSpecialKey.NumberPad0 + (int)(ch - '0'), false, false, false);
+            }
+            else if (ch == '$' || ch == '¢')
+            {
+                /* Dollar sign special case (some keyboards produce ¢ for $) */
+                GHApp.SendKeyPress((int)'$', false, false);
+            }
+            else
+            {
+                GHApp.SendKeyPress((int)ch, isCtrl, isMeta);
+            }
+        }
+
+        [Export("HandleSpecialKeyInput:")]
+        public void HandleSpecialKeyInput(UIKeyCommand cmd)
+        {
+            if (cmd?.Input == null)
+                return;
+
+            bool isCtrl = (cmd.ModifierFlags & UIKeyModifierFlags.Control) != 0;
+            bool isMeta = (cmd.ModifierFlags & UIKeyModifierFlags.Alternate) != 0;
+            bool isShift = (cmd.ModifierFlags & UIKeyModifierFlags.Shift) != 0;
+
+            string input = cmd.Input;
+            GHSpecialKey spkey = GHSpecialKey.None;
+
+            if (input == UIKeyCommand.UpArrow)
+                spkey = GHSpecialKey.Up;
+            else if (input == UIKeyCommand.DownArrow)
+                spkey = GHSpecialKey.Down;
+            else if (input == UIKeyCommand.LeftArrow)
+                spkey = GHSpecialKey.Left;
+            else if (input == UIKeyCommand.RightArrow)
+                spkey = GHSpecialKey.Right;
+            else if (input == UIKeyCommand.Escape)
+                spkey = GHSpecialKey.Escape;
+            else if (input.Length > 0 && (int)input[0] == 13)
+                spkey = GHSpecialKey.Enter;
+            else if (input.Length > 0 && (int)input[0] == 9)
+                spkey = GHSpecialKey.Tab;
+
+            if (spkey != GHSpecialKey.None)
+                GHApp.SendSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
         }
 
         public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
