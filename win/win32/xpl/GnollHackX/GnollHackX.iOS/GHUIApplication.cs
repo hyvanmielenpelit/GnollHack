@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UIKit;
+using System.Diagnostics;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -161,6 +162,15 @@ namespace GnollHackX.iOS
                 charCommands.Add(cmd);
             }
 
+            /* Cmd+Q: intercept quit to save game first (Mac only).
+             * On "Designed for iPad" apps, Cmd+Q immediately kills the process.
+             * By registering it as a UIKeyCommand with priority over system behavior,
+             * we can trigger the save flow instead. */
+            var quitSelector = new Selector("HandleQuitKeyInput:");
+            var quitCmd = UIKeyCommand.Create((NSString)"q", UIKeyModifierFlags.Command, quitSelector);
+            MaybeSetPriorityOverSystem(quitCmd);
+            specialCommands.Add(quitCmd);
+
             _cachedSpecialOnlyKeyCommands = specialCommands.ToArray();
             _cachedAllKeyCommands = charCommands.Concat(specialCommands).ToArray();
         }
@@ -233,6 +243,76 @@ namespace GnollHackX.iOS
 
             if (spkey != GHSpecialKey.None)
                 GHApp.SendSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
+        }
+
+        /* Cmd+Q handler: mirrors the Windows AppWindow.Closing logic.
+         * Saves the game gracefully instead of allowing immediate termination. */
+        [Export("HandleQuitKeyInput:")]
+        public void HandleQuitKeyInput(UIKeyCommand cmd)
+        {
+            try
+            {
+                var curGamePage = GHApp.CurrentGamePage;
+                if (curGamePage != null)
+                {
+                    GHApp.AddSentryBreadcrumb("HandleQuitKeyInput: Saving game before quit", GHConstants.SentryGnollHackGeneralCategoryName);
+                    MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        try
+                        {
+#if GNH_MAUI
+                            Page topPage = GHApp.PageFromTopOfModalNavigationStack();
+                            if (topPage is NamePage)
+                            {
+                                await ((NamePage)topPage).DoPressCancel();
+                            }
+                            else
+                            {
+                                await GHApp.PopAllModalPagesAboveGamePageAsync();
+                                curGamePage?.CloseMoreCommands();
+                                curGamePage?.PressCharForSaving();
+                            }
+#endif
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
+                    });
+                }
+                else
+                {
+                    var curMainPage = GHApp.CurrentMainPage;
+                    if (curMainPage != null)
+                    {
+                        MainThread.InvokeOnMainThreadAsync(async () =>
+                        {
+                            try
+                            {
+#if GNH_MAUI
+                                await curMainPage.CheckPendingOrPressOk();
+#endif
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        /* No game or main page active, allow quit */
+                        GHGame curGame = GHApp.CurrentGHGame;
+                        curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.StopAllGameSounds));
+                        GHApp.FmodService?.StopAllUISounds();
+                        GHApp.PlatformService?.CloseApplication();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)

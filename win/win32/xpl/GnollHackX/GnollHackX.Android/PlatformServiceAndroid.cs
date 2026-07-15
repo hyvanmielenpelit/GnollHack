@@ -1,4 +1,4 @@
-﻿using Android.App;
+using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
@@ -474,6 +474,10 @@ namespace GnollHackX.Droid
         public void InitializePlatform()
         {
             InitOnDemandPackStatusNotificationEventHandler();
+        }
+
+        public void EnsureWindowFocus()
+        {
         }
 
         public void HideKeyboard()

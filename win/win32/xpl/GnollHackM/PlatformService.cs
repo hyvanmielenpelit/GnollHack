@@ -1,4 +1,4 @@
-﻿using GnollHackX;
+using GnollHackX;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,6 +103,11 @@ namespace GnollHackM
         }
 
         public void InitializePlatform()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EnsureWindowFocus()
         {
             throw new NotImplementedException();
         }

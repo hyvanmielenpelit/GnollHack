@@ -1,4 +1,4 @@
-﻿#if WINDOWS && GNH_MAUI
+#if WINDOWS && GNH_MAUI
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -358,6 +358,11 @@ namespace GnollHackM
         }
 
         public void InitializePlatform()
+        {
+
+        }
+
+        public void EnsureWindowFocus()
         {
 
         }

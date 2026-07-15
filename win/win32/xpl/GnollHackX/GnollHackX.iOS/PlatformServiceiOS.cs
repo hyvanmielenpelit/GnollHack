@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -336,6 +336,24 @@ namespace GnollHackX.iOS
         public void InitializePlatform()
         {
 
+        }
+
+        public void EnsureWindowFocus()
+        {
+            /* On Mac ("Designed for iPad"), the window can lose key status
+             * after modal page navigation, causing buttons to not respond
+             * to clicks. Force MakeKeyAndVisible to restore interactivity.
+             * No-op on actual iOS devices. */
+            try
+            {
+                if (NSProcessInfo.ProcessInfo?.IsiOSApplicationOnMac == true)
+                {
+                    UIApplication.SharedApplication?.KeyWindow?.MakeKeyAndVisible();
+                }
+            }
+            catch
+            {
+            }
         }
 
         public void HideKeyboard()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -14,6 +14,7 @@ namespace GnollHackX
     public interface IPlatformService
     {
         void InitializePlatform();
+        void EnsureWindowFocus();
         void CloseApplication();
         void HideKeyboard();
         float GetPlatformScreenScale();

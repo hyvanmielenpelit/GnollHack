@@ -1006,6 +1006,7 @@ namespace GnollHackX
                 PushingModalPage = true;
                 await Task.Yield();
                 await Navigation.PushModalAsync(page);
+                _platformService?.EnsureWindowFocus();
             }
             catch (Exception ex)
             {
@@ -1023,6 +1024,7 @@ namespace GnollHackX
             {
                 await Task.Yield();
                 await Navigation.PushModalAsync(page, animated);
+                _platformService?.EnsureWindowFocus();
             }
             catch (Exception ex)
             {
