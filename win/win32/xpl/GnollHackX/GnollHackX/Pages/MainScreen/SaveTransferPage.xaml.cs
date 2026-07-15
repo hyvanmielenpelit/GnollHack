@@ -133,9 +133,9 @@ namespace GnollHackX.Pages.MainScreen
                 EmptyLabel.TextColor = GHColors.White;
                 TransferModePicker.TextColor = GHColors.White;
                 TransferModePicker.TitleColor = GHColors.White;
-                TransferModePicker.BackgroundColor = Color.FromRgba(1, 1, 1, 0.15);
-                MessagePopupFrame.BackgroundColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
-                PopupFrame.BackgroundColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
+                TransferModePicker.BackgroundColor = GHColors.PickerDarkModeBkgColor;
+                MessagePopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
+                PopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
 //#if GNH_MAUI
 //                MessagePopupFrame.Stroke = GHColors.TitleGoldColor;
 //                PopupFrame.Stroke = GHColors.TitleGoldColor;

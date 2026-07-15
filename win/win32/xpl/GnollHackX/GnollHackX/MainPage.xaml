@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<local:CustomContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<gnh:CustomContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:GnollHackX" 
+             xmlns:gnh="clr-namespace:GnollHackX" 
              xmlns:controls="clr-namespace:GnollHackX.Controls" 
              x:Class="GnollHackX.MainPage"
              NavigationPage.HasNavigationBar="false"
@@ -11,17 +11,17 @@
 
     <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
         <AbsoluteLayout  HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black">
-            <local:GHCachedImage x:Name="FmodLogoImage" Source="resource://GnollHackX.Assets.FMOD-Logo-192-White.png" HighFilterQuality="True" Opacity="0" IsVisible="true" WidthRequest="121" HeightRequest="32"
+            <gnh:GHCachedImage x:Name="FmodLogoImage" Source="resource://GnollHackX.Assets.FMOD-Logo-192-White.png" HighFilterQuality="True" Opacity="0" IsVisible="true" WidthRequest="121" HeightRequest="32"
                HorizontalOptions="Center" VerticalOptions="Center"
                AbsoluteLayout.LayoutBounds="20, 20, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" Aspect="AspectFit"/>
 
-            <local:GHCachedImage x:Name="StartLogoImage" Source="resource://GnollHackX.Assets.gnollhack-logo-test-2.png" HighFilterQuality="True" Opacity="0" IsVisible="true" HeightRequest="180" WidthRequest="180"
+            <gnh:GHCachedImage x:Name="StartLogoImage" Source="resource://GnollHackX.Assets.gnollhack-logo-test-2.png" HighFilterQuality="True" Opacity="0" IsVisible="true" HeightRequest="180" WidthRequest="180"
                HorizontalOptions="Center" VerticalOptions="Center"
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" />
 
-            <local:ImageCarousel x:Name="carouselView" IsVisible="false"
+            <gnh:ImageCarousel x:Name="carouselView" IsVisible="false"
                HorizontalOptions="Fill" VerticalOptions="Fill"
                AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                AbsoluteLayout.LayoutFlags="All" />
@@ -30,7 +30,7 @@
                AbsoluteLayout.LayoutFlags="None" >
                 <StackLayout Spacing="6">
                     <Grid Grid.Row="0" ColumnSpacing="0" RowSpacing="0" Padding="0" Margin="0" HeightRequest="100" WidthRequest="100" >
-                        <local:GHCachedImage x:Name="MainLogoImage" Source="resource://GnollHackX.Assets.gnollhack-icon-v2-512.png" HighFilterQuality="True" HeightRequest="100" WidthRequest="100"
+                        <gnh:GHCachedImage x:Name="MainLogoImage" Source="resource://GnollHackX.Assets.gnollhack-icon-v2-512.png" HighFilterQuality="True" HeightRequest="100" WidthRequest="100"
                            HorizontalOptions="Center" VerticalOptions="End"/>
                         <Button x:Name="KeyboardFocusButton" Clicked="KeyboardFocusButton_Clicked" Text="" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill"/>
                     </Grid>
@@ -68,12 +68,12 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="50" />
                     </Grid.ColumnDefinitions>
-                    <local:CustomLabel x:Name="classicModeLabel" Text="Classic Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                    <gnh:CustomLabel x:Name="classicModeLabel" Text="Classic Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
-                        <local:CustomLabel.GestureRecognizers>
+                        <gnh:CustomLabel.GestureRecognizers>
                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
-                        </local:CustomLabel.GestureRecognizers>
-                    </local:CustomLabel>
+                        </gnh:CustomLabel.GestureRecognizers>
+                    </gnh:CustomLabel>
                     <Switch x:Name="classicModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="ClassicModeSwitch_Toggled"  />
                 </Grid>
                 <Grid x:Name="casualModeGrid" RowSpacing="6" ColumnSpacing="12" IsVisible="True" Margin="0,0,0,10" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
@@ -84,12 +84,12 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="50" />
                     </Grid.ColumnDefinitions>
-                    <local:CustomLabel x:Name="casualModeLabel" Text="Casual Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                    <gnh:CustomLabel x:Name="casualModeLabel" Text="Casual Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
-                        <local:CustomLabel.GestureRecognizers>
+                        <gnh:CustomLabel.GestureRecognizers>
                             <TapGestureRecognizer Tapped="CasualTapGestureRecognizer_Tapped"/>
-                        </local:CustomLabel.GestureRecognizers>
-                    </local:CustomLabel>
+                        </gnh:CustomLabel.GestureRecognizers>
+                    </gnh:CustomLabel>
                     <Switch x:Name="casualModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="CasualModeSwitch_Toggled"  />
                 </Grid>
                 <Grid x:Name="wizardModeGrid" RowSpacing="6" ColumnSpacing="12" Margin="0,0,0,15" HorizontalOptions="Center" HeightRequest="32" VerticalOptions="Center">
@@ -100,21 +100,21 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="50" />
                     </Grid.ColumnDefinitions>
-                    <local:CustomLabel x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="LightBlue" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                    <gnh:CustomLabel x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="LightBlue" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
-                        <local:CustomLabel.GestureRecognizers>
+                        <gnh:CustomLabel.GestureRecognizers>
                             <TapGestureRecognizer Tapped="WizTapGestureRecognizer_Tapped"/>
-                        </local:CustomLabel.GestureRecognizers>
-                    </local:CustomLabel>
+                        </gnh:CustomLabel.GestureRecognizers>
+                    </gnh:CustomLabel>
                     <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="wizardModeSwitch_Toggled" />
                 </Grid>
                 <Grid x:Name="tournamentModeGrid" RowSpacing="6" ColumnSpacing="6" Margin="0,0,0,15" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
-                    <local:CustomLabel x:Name="tournamentModeLabel" Text="Tournament" TextColor="LightGreen" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                    <gnh:CustomLabel x:Name="tournamentModeLabel" Text="Tournament" TextColor="LightGreen" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="280" HeightRequest="30" HorizontalTextAlignment="Center" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
-                        <local:CustomLabel.GestureRecognizers>
+                        <gnh:CustomLabel.GestureRecognizers>
                             <TapGestureRecognizer Tapped="TournamentTapGestureRecognizer_Tapped"/>
-                        </local:CustomLabel.GestureRecognizers>
-                    </local:CustomLabel>
+                        </gnh:CustomLabel.GestureRecognizers>
+                    </gnh:CustomLabel>
                 </Grid>
                 <Grid x:Name="StartLocalGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="Center" VerticalOptions="Center">
                     <controls:CustomImageButton Text="Play Game" x:Name="StartLocalGameButton" Clicked="StartLocalGameButton_Clicked" 
@@ -242,7 +242,7 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <Label Grid.Row="0" x:Name="TierTitleLabel" Text="New Rank Claimed" FontFamily="Immortal" FontSize="23" TextColor="{x:Static local:GHColors.TitleGoldColor}"
+                            <Label Grid.Row="0" x:Name="TierTitleLabel" Text="New Rank Claimed" FontFamily="Immortal" FontSize="23" TextColor="{x:Static gnh:GHColors.TitleGoldColor}"
                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" />
                             <Grid Grid.Row="1" Margin="0,5">
                                 <Grid.ColumnDefinitions>
@@ -250,16 +250,16 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <local:GHCachedImage Grid.Column="0" x:Name="ImageLeft" HighFilterQuality="True"
+                                <gnh:GHCachedImage Grid.Column="0" x:Name="ImageLeft" HighFilterQuality="True"
                                     WidthRequest="80" HeightRequest="80" 
                                     BackgroundColor="Transparent" VerticalOptions="Center" HorizontalOptions="Start" />
-                                <local:GHCachedImage Grid.Column="2" x:Name="ImageRight" HighFilterQuality="True"
+                                <gnh:GHCachedImage Grid.Column="2" x:Name="ImageRight" HighFilterQuality="True"
                                     WidthRequest="80" HeightRequest="80" 
                                     BackgroundColor="Transparent" VerticalOptions="Center" HorizontalOptions="End" />
                                 <StackLayout Grid.Column="1" Margin="20,0" VerticalOptions="Center" HorizontalOptions="Center" >
                                     <Label x:Name="TierNameLabel" Text="Tier Name" FontFamily="Immortal" FontSize="23" TextColor="White"
                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="True" />
-                                    <Label x:Name="TierSubNameLabel" Text="Tier Specifier" Margin="0,3,0,0" FontFamily="Immortal" FontSize="23" TextColor="{x:Static local:GHColors.LightYellow}"
+                                    <Label x:Name="TierSubNameLabel" Text="Tier Specifier" Margin="0,3,0,0" FontFamily="Immortal" FontSize="23" TextColor="{x:Static gnh:GHColors.LightYellow}"
                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="False" />
                                 </StackLayout>
                             </Grid>
@@ -289,7 +289,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <Label Grid.Row="0" x:Name="AchievementTitleLabel" Text="Achievements Gained" FontFamily="Immortal" FontSize="24" TextColor="{x:Static local:GHColors.TitleGoldColor}"
+                            <Label Grid.Row="0" x:Name="AchievementTitleLabel" Text="Achievements Gained" FontFamily="Immortal" FontSize="24" TextColor="{x:Static gnh:GHColors.TitleGoldColor}"
                                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <ScrollView Grid.Row="1" x:Name="AchievementScrollView" HeightRequest  ="450" Margin="0,6,0,0" HorizontalOptions="Fill" VerticalOptions="Start">
                                 <StackLayout x:Name="AchievementGainedLayout" Spacing="6" HorizontalOptions="Fill">
@@ -355,4 +355,4 @@
             </AbsoluteLayout.GestureRecognizers>
         </AbsoluteLayout>
     </Grid>
-</local:CustomContentPage>
+</gnh:CustomContentPage>

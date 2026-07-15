@@ -199,7 +199,7 @@ namespace GnollHackX.Pages.MainScreen
             SetChildrenDarkModeTextColor(RootLayout, isDarkMode);
             if (isDarkMode)
             {
-                PopupFrame.BackgroundColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
+                PopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
             }
 
             MapRefreshRateStyle defaultRefresh = UIUtils.GetDefaultMapFPS();
@@ -2974,9 +2974,9 @@ namespace GnollHackX.Pages.MainScreen
                 lblHeader.TextColor = e.Value ? GHColors.White : GHColors.Black;
                 SetChildrenDarkModeTextColor(RootLayout, e.Value);
                 if (e.Value)
-                    PopupFrame.BackgroundColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
+                    PopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
                 else
-                    PopupFrame.BackgroundColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x99 / (double)0xFF);
+                    PopupFrame.BackgroundColor = GHColors.MsgBoxLightModeBkgColor;
 
                 if (_gameMenuPage != null)
                 {

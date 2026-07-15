@@ -30,7 +30,7 @@
             </Grid>
             <Grid x:Name="MessagePopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
-                    <Frame x:Name="MessagePopupFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="MessagePopupFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout Spacing="9" Padding="6">
                             <Label Text="Message" x:Name="MessagePopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" HorizontalOptions="Center" />
                             <Label Text="" x:Name="MessagePopupLabel" FontFamily="Underwood" FontSize="16" LineHeight="1.1" TextColor="White" HorizontalOptions="Center" />

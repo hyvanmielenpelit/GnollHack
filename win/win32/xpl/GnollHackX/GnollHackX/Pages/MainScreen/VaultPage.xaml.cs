@@ -47,7 +47,7 @@ namespace GnollHackX.Pages.MainScreen
             if (GHApp.DarkMode)
             {
                 lblHeader.TextColor = GHColors.White;
-                MessagePopupFrame.BackgroundColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
+                MessagePopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
 //#if GNH_MAUI
 //                MessagePopupFrame.Stroke = GHColors.TitleGoldColor;
 //#else

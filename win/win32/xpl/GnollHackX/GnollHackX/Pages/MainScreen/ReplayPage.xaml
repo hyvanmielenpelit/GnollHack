@@ -64,7 +64,7 @@
                                             TextColor="Black"
                                             TitleColor="Black"
                                             HorizontalTextAlignment="Center"
-                                            BackgroundColor="#22000000"
+                                            BackgroundColor="{x:Static gnh:GHColors.PickerLightModeBkgColor}"
                                             WidthRequest="200"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Center"
@@ -95,7 +95,7 @@
             </Grid>
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest  ="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
-                    <Frame x:Name="PopupFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="PopupFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout Spacing="6">
                             <Label Text="Actions" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <controls:CustomImageButton Text="Upload" x:Name="UploadButton" Clicked="UploadButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="End" VerticalOptions="Center" />
@@ -111,7 +111,7 @@
             </Grid>
             <Grid x:Name="UploadDownloadGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest  ="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
-                    <Frame x:Name="UploadDownloadFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="UploadDownloadFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout Spacing="6">
                             <Label Text="Uploading..." x:Name="UploadDownloadTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <Label Text="replay.gnhrec.gz" x:Name="UploadDownloadFileLabel" FontFamily="LatoRegular" FontSize="16" TextColor="White" VerticalTextAlignment="Start" HorizontalOptions="Center"  />
