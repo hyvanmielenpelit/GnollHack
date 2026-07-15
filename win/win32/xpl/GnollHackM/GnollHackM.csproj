@@ -1253,4 +1253,37 @@
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
 		<DefineConstants Condition="'$(MtouchUseLlvm)'=='True'">$(DefineConstants);LLVM</DefineConstants>
 	</PropertyGroup>
+
+	<!-- AUTOMATIC WINDOWS APPXMANIFEST VERSION SYNCHRONIZATION -->
+	<Target Name="SyncWindowsAppxManifestVersions" BeforeTargets="BeforeBuild;BeforeGenerateAppxManifest" Condition="$(TargetFramework.Contains('-windows'))">
+		<PropertyGroup>
+			<!-- Parse the ApplicationDisplayVersion to get parts safely -->
+			<_AppVersionClean>$(ApplicationDisplayVersion.Trim())</_AppVersionClean>
+			<_AppVersionClean Condition="'$(_AppVersionClean)' == ''">1.0</_AppVersionClean>
+			<_AppBuildClean>$(ApplicationVersion.Trim())</_AppBuildClean>
+			<_AppBuildClean Condition="'$(_AppBuildClean)' == ''">0</_AppBuildClean>
+
+			<_Major>$([System.Version]::Parse($(_AppVersionClean)).Major)</_Major>
+			<_Minor>$([System.Version]::Parse($(_AppVersionClean)).Minor)</_Minor>
+			<_Build>$([System.Version]::Parse($(_AppVersionClean)).Build)</_Build>
+			<_Revision>$([System.Version]::Parse($(_AppVersionClean)).Revision)</_Revision>
+
+			<!-- Compute the 4-part version -->
+			<_CalculatedVersion Condition="'$(_Build)' == '-1'">$(_Major).$(_Minor).$(_AppBuildClean).0</_CalculatedVersion>
+			<_CalculatedVersion Condition="'$(_Build)' != '-1' and '$(_Revision)' == '-1'">$(_Major).$(_Minor).$(_Build).$(_AppBuildClean)</_CalculatedVersion>
+			<_CalculatedVersion Condition="'$(_Build)' != '-1' and '$(_Revision)' != '-1'">$(_Major).$(_Minor).$(_Build).$(_Revision)</_CalculatedVersion>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_AppxManifestFiles Include="Platforms\Windows\Package.appxmanifest" />
+			<_AppxManifestFiles Include="Platforms\Windows\Package.MSIX.appxmanifest" />
+		</ItemGroup>
+
+		<XmlPoke XmlInputPath="%(_AppxManifestFiles.Identity)"
+				 Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10' /&gt;"
+				 Query="/ns:Package/ns:Identity/@Version"
+				 Value="$(_CalculatedVersion)" />
+
+		<Message Importance="high" Text="Synchronized %(_AppxManifestFiles.Identity) version to $(_CalculatedVersion)" />
+	</Target>
 </Project>
