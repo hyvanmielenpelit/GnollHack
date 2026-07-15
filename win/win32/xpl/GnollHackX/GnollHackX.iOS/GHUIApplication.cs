@@ -16,7 +16,8 @@ namespace GnollHackX.iOS
 {
     public class GHUIApplication : UIApplication
     {
-        private UIKeyCommand[] _cachedKeyCommands;
+        private UIKeyCommand[] _cachedAllKeyCommands;
+        private UIKeyCommand[] _cachedSpecialOnlyKeyCommands;
 
         public GHUIApplication() : base()
         {
@@ -44,21 +45,57 @@ namespace GnollHackX.iOS
          * and works reliably on both iOS and Mac. When a UIKeyCommand matches,
          * its handler is invoked instead of PressesBegan, so there is no
          * double-firing of key events.
+         * 
+         * When a text input control (UITextField / UITextView) is the first
+         * responder, only special key commands (arrows, escape, etc.) are
+         * returned so that character keys flow to the text field normally.
          */
 
         public override UIKeyCommand[] KeyCommands
         {
             get
             {
-                if (_cachedKeyCommands == null)
-                    _cachedKeyCommands = BuildKeyCommands();
-                return _cachedKeyCommands;
+                if (_cachedAllKeyCommands == null)
+                    BuildAllKeyCommands();
+
+                if (IsTextInputActive())
+                    return _cachedSpecialOnlyKeyCommands;
+                return _cachedAllKeyCommands;
             }
         }
 
-        private UIKeyCommand[] BuildKeyCommands()
+        private bool IsTextInputActive()
         {
-            var commands = new List<UIKeyCommand>();
+            try
+            {
+                UIWindow keyWindow = this.KeyWindow;
+                if (keyWindow == null)
+                    return false;
+                return HasFirstResponderOfType<UITextField>(keyWindow)
+                    || HasFirstResponderOfType<UITextView>(keyWindow);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool HasFirstResponderOfType<T>(UIView view) where T : UIView
+        {
+            if (view is T && view.IsFirstResponder)
+                return true;
+            foreach (UIView subview in view.Subviews)
+            {
+                if (HasFirstResponderOfType<T>(subview))
+                    return true;
+            }
+            return false;
+        }
+
+        private void BuildAllKeyCommands()
+        {
+            var charCommands = new List<UIKeyCommand>();
+            var specialCommands = new List<UIKeyCommand>();
 
             var charSelector = new Selector("HandleCharKeyInput:");
             var specialSelector = new Selector("HandleSpecialKeyInput:");
@@ -71,7 +108,7 @@ namespace GnollHackX.iOS
             {
                 var cmd = UIKeyCommand.Create((NSString)c.ToString(), 0, charSelector);
                 MaybeSetPriorityOverSystem(cmd);
-                commands.Add(cmd);
+                charCommands.Add(cmd);
             }
 
             /* Register with Control modifier */
@@ -80,7 +117,7 @@ namespace GnollHackX.iOS
             {
                 var cmd = UIKeyCommand.Create((NSString)c.ToString(), UIKeyModifierFlags.Control, charSelector);
                 MaybeSetPriorityOverSystem(cmd);
-                commands.Add(cmd);
+                charCommands.Add(cmd);
             }
 
             /* Register with Alternate (Option/Alt) modifier for meta keys.
@@ -91,7 +128,7 @@ namespace GnollHackX.iOS
             {
                 var cmd = UIKeyCommand.Create((NSString)c.ToString(), UIKeyModifierFlags.Alternate, charSelector);
                 MaybeSetPriorityOverSystem(cmd);
-                commands.Add(cmd);
+                charCommands.Add(cmd);
             }
 
             /* Special keys: arrows, enter, escape, space, tab */
@@ -112,7 +149,7 @@ namespace GnollHackX.iOS
                 {
                     var cmd = UIKeyCommand.Create(input, mod, specialSelector);
                     MaybeSetPriorityOverSystem(cmd);
-                    commands.Add(cmd);
+                    specialCommands.Add(cmd);
                 }
             }
 
@@ -121,10 +158,11 @@ namespace GnollHackX.iOS
             {
                 var cmd = UIKeyCommand.Create((NSString)c.ToString(), UIKeyModifierFlags.NumericPad, charSelector);
                 MaybeSetPriorityOverSystem(cmd);
-                commands.Add(cmd);
+                charCommands.Add(cmd);
             }
 
-            return commands.ToArray();
+            _cachedSpecialOnlyKeyCommands = specialCommands.ToArray();
+            _cachedAllKeyCommands = charCommands.Concat(specialCommands).ToArray();
         }
 
         private static void MaybeSetPriorityOverSystem(UIKeyCommand cmd)

@@ -1057,7 +1057,7 @@ loadstone_weight_shown_correctly(int show_weights)
     default:
         break;
     }
-    return loadstonecorrectly;
+    return loadstonecorrectly || True_seeing;
 }
 
 /*
