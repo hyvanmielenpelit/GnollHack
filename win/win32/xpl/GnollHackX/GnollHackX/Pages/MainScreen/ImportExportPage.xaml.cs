@@ -828,15 +828,103 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private TaskCompletionSource<bool> _messagePopupTcs;
+        private bool _acceptEnterSpaceForOkCancel = false;
+
+        public bool IsPopupOpen() => MessagePopupGrid.IsVisible;
+
+        public void ClosePopup()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    try
+                    {
+                        if (MessagePopupGrid.IsVisible)
+                        {
+                            if (MessagePopupCancelButton.IsVisible)
+                                MessagePopupCancelButton_Clicked(MessagePopupCancelButton, EventArgs.Empty);
+                            else
+                                MessagePopupOkButton_Clicked(MessagePopupOkButton, EventArgs.Empty);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
+        public bool SendKeyToPopup(int key, bool isCtrl, bool isMeta)
+        {
+            if (MessagePopupGrid.IsVisible)
+            {
+                if (key == ' ' || key == '\r' || key == '\n')
+                {
+                    if (!MessagePopupCancelButton.IsVisible || _acceptEnterSpaceForOkCancel)
+                    {
+                        MessagePopupOkButton_Clicked(MessagePopupOkButton, EventArgs.Empty);
+                    }
+                }
+                else
+                {
+                    char c = (char)key;
+                    string okText = MessagePopupOkButton.Text;
+                    if (!string.IsNullOrEmpty(okText) && char.ToLowerInvariant(okText[0]) == char.ToLowerInvariant(c))
+                    {
+                        MessagePopupOkButton_Clicked(MessagePopupOkButton, EventArgs.Empty);
+                    }
+                    else if (MessagePopupCancelButton.IsVisible)
+                    {
+                        string cancelText = MessagePopupCancelButton.Text;
+                        if (!string.IsNullOrEmpty(cancelText) && char.ToLowerInvariant(cancelText[0]) == char.ToLowerInvariant(c))
+                        {
+                            MessagePopupCancelButton_Clicked(MessagePopupCancelButton, EventArgs.Empty);
+                        }
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public bool SendSpecialKeyToPopup(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift)
+        {
+            if (MessagePopupGrid.IsVisible)
+            {
+                if (spkey == GHSpecialKey.Enter || spkey == GHSpecialKey.Space)
+                {
+                    if (!MessagePopupCancelButton.IsVisible || _acceptEnterSpaceForOkCancel)
+                    {
+                        MessagePopupOkButton_Clicked(MessagePopupOkButton, EventArgs.Empty);
+                    }
+                }
+                else if (spkey == GHSpecialKey.Escape)
+                {
+                    if (MessagePopupCancelButton.IsVisible)
+                        MessagePopupCancelButton_Clicked(MessagePopupCancelButton, EventArgs.Empty);
+                    else
+                        MessagePopupOkButton_Clicked(MessagePopupOkButton, EventArgs.Empty);
+                }
+                return true;
+            }
+            return false;
+        }
 
         public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
 #if GNH_MAUI
-            Microsoft.Maui.Graphics.Color titleColor = null
+            Microsoft.Maui.Graphics.Color titleColor = null, bool acceptEnterSpaceForOkCancel = false
 #else
-            Color? titleColor = null
+            Color? titleColor = null, bool acceptEnterSpaceForOkCancel = false
 #endif
             )
         {
+            _acceptEnterSpaceForOkCancel = acceptEnterSpaceForOkCancel;
             _messagePopupTcs?.TrySetResult(false);
             _messagePopupTcs = new TaskCompletionSource<bool>();
 

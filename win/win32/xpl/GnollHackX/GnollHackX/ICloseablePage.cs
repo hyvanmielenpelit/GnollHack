@@ -16,10 +16,14 @@ namespace GnollHackX
     }
     public interface IMessagePopupPage
     {
+        bool IsPopupOpen();
+        void ClosePopup();
+        bool SendKeyToPopup(int key, bool isCtrl, bool isMeta);
+        bool SendSpecialKeyToPopup(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift);
 #if GNH_MAUI
-        Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null, Microsoft.Maui.Graphics.Color titleColor = null);
+        Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null, Microsoft.Maui.Graphics.Color titleColor = null, bool acceptEnterSpaceForOkCancel = false);
 #else
-        Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null, Xamarin.Forms.Color? titleColor = null);
+        Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null, Xamarin.Forms.Color? titleColor = null, bool acceptEnterSpaceForOkCancel = false);
 #endif
     }
     public interface IKeyPressHandlingPage
