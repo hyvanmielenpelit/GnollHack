@@ -32,7 +32,7 @@ namespace GnollHackX
     public sealed class GHGame
     {
         public readonly RunGnollHackFlags StartFlags;
-        public bool PlayingReplay { get { return (StartFlags & RunGnollHackFlags.PlayingReplay) != 0; } }
+        public bool PlayingReplay => (StartFlags & RunGnollHackFlags.PlayingReplay) != 0;
         private int[] _inputBuffer = new int[GHConstants.InputBufferLength];
         private int _inputBufferLocation = -1;
         private string _getLineString = null;
@@ -74,14 +74,14 @@ namespace GnollHackX
         public readonly ConcurrentQueue<GHRequest> RequestQueue = new ConcurrentQueue<GHRequest>();
         public readonly ConcurrentQueue<GHResponse> ResponseQueue = new ConcurrentQueue<GHResponse>();
 
-        public string CharacterName 
+        public string CharacterName
         {
-            get { return Interlocked.CompareExchange(ref _characterName, null, null); }
-            set { Interlocked.Exchange(ref _characterName, value); }
+            get => Interlocked.CompareExchange(ref _characterName, null, null);
+            set => Interlocked.Exchange(ref _characterName, value);
         }
-        public bool WizardMode { get { return ActiveGamePage?.EnableWizardMode ?? false; } }
-        public bool CasualMode { get { return ActiveGamePage?.EnableCasualMode ?? false; } }
-        public bool ModernMode { get { return ActiveGamePage?.EnableModernMode ?? false; } }
+        public bool WizardMode => ActiveGamePage?.EnableWizardMode ?? false;
+        public bool CasualMode => ActiveGamePage?.EnableCasualMode ?? false;
+        public bool ModernMode => ActiveGamePage?.EnableModernMode ?? false;
 
         public GHGame(RunGnollHackFlags startFlags)
         {
@@ -140,7 +140,11 @@ namespace GnollHackX
         private bool _savedZoomMiniMode = false;
         private bool _gameHasEnded = false;
         private int _fastForwardGameOver = 0;
-        public bool FastForwardGameOver { get { return Interlocked.CompareExchange(ref _fastForwardGameOver, 0, 0) != 0; } set { Interlocked.Exchange(ref _fastForwardGameOver, value ? 1 : 0); } }
+        public bool FastForwardGameOver
+        {
+            get => Interlocked.CompareExchange(ref _fastForwardGameOver, 0, 0) != 0;
+            set => Interlocked.Exchange(ref _fastForwardGameOver, value ? 1 : 0);
+        }
 
         private void GameOverHandling()
         {
@@ -483,7 +487,11 @@ namespace GnollHackX
         }
 
         private int _saveDoneConfirmed = 0;
-        public bool SaveDoneConfirmed { get { return Interlocked.CompareExchange(ref _saveDoneConfirmed, 0, 0) != 0; } set { Interlocked.Exchange(ref _saveDoneConfirmed, value ? 1 : 0); } }
+        public bool SaveDoneConfirmed
+        {
+            get => Interlocked.CompareExchange(ref _saveDoneConfirmed, 0, 0) != 0;
+            set => Interlocked.Exchange(ref _saveDoneConfirmed, value ? 1 : 0);
+        }
 
         /* This is called from the UI thread */
         public async Task SaveGameAndWaitForFinishedConfirmation()
@@ -2073,10 +2081,18 @@ namespace GnollHackX
         }
 
         private long _gamePlayTime = 0L;
-        public long GamePlayTime { get { return Interlocked.CompareExchange(ref _gamePlayTime, 0, 0); } set { Interlocked.Exchange(ref _gamePlayTime, value); } }
+        public long GamePlayTime
+        {
+            get => Interlocked.CompareExchange(ref _gamePlayTime, 0, 0);
+            set => Interlocked.Exchange(ref _gamePlayTime, value);
+        }
 
         private long _sessionPlayTime = 0L;
-        public long SessionPlayTime { get { return Interlocked.CompareExchange(ref _sessionPlayTime, 0, 0); } set { Interlocked.Exchange(ref _sessionPlayTime, value); } }
+        public long SessionPlayTime
+        {
+            get => Interlocked.CompareExchange(ref _sessionPlayTime, 0, 0);
+            set => Interlocked.Exchange(ref _sessionPlayTime, value);
+        }
         public void AddSessionPlayTime(long addition)
         {
             if (addition < 0) /* Something's wrong */
@@ -2763,13 +2779,7 @@ namespace GnollHackX
 
         public readonly object AnimationTimerLock = new object();
         public readonly GHAnimationTimerList AnimationTimers = new GHAnimationTimerList();
-        public long GeneralAnimationCounter
-        {
-            get
-            {
-                return Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);
-            }
-        }
+        public long GeneralAnimationCounter => Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);
 
         public void ClientCallback_ToggleAnimationTimer(int timertype, int timerid, int state, int x, int y, int layer, ulong tflags)
         {
