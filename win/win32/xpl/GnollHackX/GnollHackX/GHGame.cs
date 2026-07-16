@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -4295,145 +4295,138 @@ namespace GnollHackX
                                                 writer.Write(0);
                                                 saveSize += 4L;
                                             }
-                                            else if (o is bool)
+                                            else if (o is bool b)
                                             {
-                                                writer.Write((bool)o);
+                                                writer.Write(b);
                                                 saveSize += 1L;
                                             }
-                                            else if (o is byte)
+                                            else if (o is byte by)
                                             {
-                                                writer.Write((byte)o);
+                                                writer.Write(by);
                                                 saveSize += 1L;
                                             }
-                                            else if (o is sbyte)
+                                            else if (o is sbyte sb)
                                             {
-                                                writer.Write((sbyte)o);
+                                                writer.Write(sb);
                                                 saveSize += 1L;
                                             }
-                                            else if (o is char)
+                                            else if (o is char c)
                                             {
-                                                writer.Write((char)o);
+                                                writer.Write(c);
                                                 saveSize += 2L;
                                             }
-                                            else if (o is short)
+                                            else if (o is short sVal)
                                             {
-                                                writer.Write((short)o);
+                                                writer.Write(sVal);
                                                 saveSize += 2L;
                                             }
-                                            else if (o is ushort)
+                                            else if (o is ushort usVal)
                                             {
-                                                writer.Write((ushort)o);
+                                                writer.Write(usVal);
                                                 saveSize += 2L;
                                             }
-                                            else if (o is int)
+                                            else if (o is int iVal)
                                             {
-                                                writer.Write((int)o);
+                                                writer.Write(iVal);
                                                 saveSize += 4L;
                                             }
-                                            else if (o is uint)
+                                            else if (o is uint uiVal)
                                             {
-                                                writer.Write((uint)o);
+                                                writer.Write(uiVal);
                                                 saveSize += 4L;
                                             }
-                                            else if (o is long)
+                                            else if (o is long lVal)
                                             {
-                                                writer.Write((long)o);
+                                                writer.Write(lVal);
                                                 saveSize += 8L;
                                             }
-                                            else if (o is ulong)
+                                            else if (o is ulong ulVal)
                                             {
-                                                writer.Write((ulong)o);
+                                                writer.Write(ulVal);
                                                 saveSize += 8L;
                                             }
-                                            else if (o is float)
+                                            else if (o is float fVal)
                                             {
-                                                writer.Write((float)o);
+                                                writer.Write(fVal);
                                                 saveSize += 4L;
                                             }
-                                            else if (o is double)
+                                            else if (o is double dVal)
                                             {
-                                                writer.Write((double)o);
+                                                writer.Write(dVal);
                                                 saveSize += 8L;
                                             }
-                                            else if (o is string)
+                                            else if (o is string s)
                                             {
-                                                int len = ((string)o).Length + 1;
+                                                int len = s.Length + 1;
                                                 writer.Write(len);
-                                                writer.Write((string)o);
+                                                writer.Write(s);
                                                 saveSize += 4L + (long)len;
                                             }
-                                            else if (o is byte[])
+                                            else if (o is byte[] barr)
                                             {
-                                                int len = ((byte[])o).Length;
+                                                int len = barr.Length;
                                                 writer.Write(len);
-                                                writer.Write((byte[])o);
+                                                writer.Write(barr);
                                                 saveSize += 4L + (long)len;
                                             }
-                                            else if (o is short[])
+                                            else if (o is short[] sharr)
                                             {
-                                                short[] arr = (short[])o;
-                                                writer.Write(arr.Length);
-                                                for (int j = 0; j < arr.Length; j++)
-                                                    writer.Write(arr[j]);
-                                                saveSize += 4L + (long)arr.Length * 2L;
+                                                writer.Write(sharr.Length);
+                                                for (int j = 0; j < sharr.Length; j++)
+                                                    writer.Write(sharr[j]);
+                                                saveSize += 4L + (long)sharr.Length * 2L;
                                             }
-                                            else if (o is int[])
+                                            else if (o is int[] darr)
                                             {
-                                                int[] arr = (int[])o;
-                                                writer.Write(arr.Length);
-                                                for (int j = 0; j < arr.Length; j++)
-                                                    writer.Write(arr[j]);
-                                                saveSize += 4L + (long)arr.Length * 4L;
+                                                writer.Write(darr.Length);
+                                                for (int j = 0; j < darr.Length; j++)
+                                                    writer.Write(darr[j]);
+                                                saveSize += 4L + (long)darr.Length * 4L;
                                             }
-                                            else if (o is uint[])
+                                            else if (o is uint[] udarr)
                                             {
-                                                uint[] arr = (uint[])o;
-                                                writer.Write(arr.Length);
-                                                for (int j = 0; j < arr.Length; j++)
-                                                    writer.Write(arr[j]);
-                                                saveSize += 4L + (long)arr.Length * 4L;
+                                                writer.Write(udarr.Length);
+                                                for (int j = 0; j < udarr.Length; j++)
+                                                    writer.Write(udarr[j]);
+                                                saveSize += 4L + (long)udarr.Length * 4L;
                                             }
-                                            else if (o is long[])
+                                            else if (o is long[] larr)
                                             {
-                                                long[] arr = (long[])o;
-                                                writer.Write(arr.Length);
-                                                for (int j = 0; j < arr.Length; j++)
-                                                    writer.Write(arr[j]);
-                                                saveSize += 4L + (long)arr.Length * 8L;
+                                                writer.Write(larr.Length);
+                                                for (int j = 0; j < larr.Length; j++)
+                                                    writer.Write(larr[j]);
+                                                saveSize += 4L + (long)larr.Length * 8L;
                                             }
-                                            else if (o is ulong[])
+                                            else if (o is ulong[] ularr)
                                             {
-                                                ulong[] arr = (ulong[])o;
-                                                writer.Write(arr.Length);
-                                                for (int j = 0; j < arr.Length; j++)
-                                                    writer.Write(arr[j]);
-                                                saveSize += 4L + (long)arr.Length * 8L;
+                                                writer.Write(ularr.Length);
+                                                for (int j = 0; j < ularr.Length; j++)
+                                                    writer.Write(ularr[j]);
+                                                saveSize += 4L + (long)ularr.Length * 8L;
                                             }
-                                            else if (o is float[])
+                                            else if (o is float[] farr)
                                             {
-                                                float[] arr = (float[])o;
-                                                writer.Write(arr.Length);
-                                                for (int j = 0; j < arr.Length; j++)
-                                                    writer.Write(arr[j]);
-                                                saveSize += 4L + (long)arr.Length * 4L;
+                                                writer.Write(farr.Length);
+                                                for (int j = 0; j < farr.Length; j++)
+                                                    writer.Write(farr[j]);
+                                                saveSize += 4L + (long)farr.Length * 4L;
                                             }
-                                            else if (o is string[])
+                                            else if (o is string[] sarr)
                                             {
-                                                string[] arr = (string[])o;
-                                                writer.Write(arr.Length);
+                                                writer.Write(sarr.Length);
                                                 saveSize += 4L;
-                                                for (int j = 0; j < arr.Length; j++)
+                                                for (int j = 0; j < sarr.Length; j++)
                                                 {
-                                                    if(arr[j] == null)
+                                                    if(sarr[j] == null)
                                                     {
                                                         writer.Write(0);
                                                         saveSize += 4L;
                                                     }
                                                     else
                                                     {
-                                                        writer.Write(arr[j].Length + 1);
-                                                        writer.Write(arr[j]);
-                                                        saveSize += 4L + (long)arr[j].Length + 1L;
+                                                        writer.Write(sarr[j].Length + 1);
+                                                        writer.Write(sarr[j]);
+                                                        saveSize += 4L + (long)sarr[j].Length + 1L;
                                                     }
                                                 }
                                             }
