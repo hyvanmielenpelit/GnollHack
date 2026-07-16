@@ -701,13 +701,25 @@ namespace GnollHackX.Controls
             }
         }
 
-        private void View_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => PointerEvent(sender, e, SKTouchAction.Exited);
+        private void View_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            PointerEvent(sender, e, SKTouchAction.Exited);
+        }
 
-        private void View_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => PointerEvent(sender, e, SKTouchAction.Entered);
+        private void View_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            PointerEvent(sender, e, SKTouchAction.Entered);
+        }
 
-        private void View_PointerMoved(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => PointerEvent(sender, e, SKTouchAction.Moved);
+        private void View_PointerMoved(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            PointerEvent(sender, e, SKTouchAction.Moved);
+        }
 
-        private void View_PointerCanceled(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => PointerEvent(sender, e, SKTouchAction.Cancelled);
+        private void View_PointerCanceled(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            PointerEvent(sender, e, SKTouchAction.Cancelled);
+        }
 
         private void PointerEvent(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e, SKTouchAction action)
         {

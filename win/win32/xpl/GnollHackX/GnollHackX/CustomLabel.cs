@@ -1250,7 +1250,10 @@ namespace GnollHackX
         }
 
 #if GNH_MAUI
-        public Size CustomMeasureSize(double widthConstraint, double heightConstraint) => CalculateLabelSize(widthConstraint, heightConstraint);
+        public Size CustomMeasureSize(double widthConstraint, double heightConstraint)
+        {
+            return CalculateLabelSize(widthConstraint, heightConstraint);
+        }
 #else
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {

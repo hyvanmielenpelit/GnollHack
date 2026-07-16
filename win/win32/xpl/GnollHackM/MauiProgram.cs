@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using System.Runtime.Intrinsics.Arm;
@@ -663,9 +663,15 @@ public class KeyboardHook
     private static LowLevelKeyboardProc _proc = HookCallback;
     private static IntPtr _hookID = IntPtr.Zero;
 
-    public static void Start() => _hookID = SetHook(_proc);
+    public static void Start()
+    {
+        _hookID = SetHook(_proc);
+    }
 
-    public static void Stop() => UnhookWindowsHookEx(_hookID);
+    public static void Stop()
+    {
+        UnhookWindowsHookEx(_hookID);
+    }
 
     private static IntPtr SetHook(LowLevelKeyboardProc proc)
     {
@@ -1109,9 +1115,15 @@ public class KeyboardHook
 [Service(ForegroundServiceType = ForegroundService.TypeDataSync)]
 public class SaveGameService : Service
 {
-    public override IBinder OnBind(Intent intent) => null;
+    public override IBinder OnBind(Intent intent)
+    {
+        return null;
+    }
 
-    public override void OnCreate() => base.OnCreate();
+    public override void OnCreate()
+    {
+        base.OnCreate();
+    }
 
     private static int _isSaving = 0;
     public static bool IsSaving { get => Interlocked.CompareExchange(ref _isSaving, 0, 0) != 0; set => Interlocked.Exchange(ref _isSaving, value ? 1 : 0); }

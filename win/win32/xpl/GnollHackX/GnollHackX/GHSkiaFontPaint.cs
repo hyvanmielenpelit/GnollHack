@@ -189,36 +189,47 @@ namespace GnollHackX
             }
         }
 
-        public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, SKPoint p) => DrawTextOnCanvas(canvas, text, p.X, p.Y);
+        public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, SKPoint p)
+        {
+            DrawTextOnCanvas(canvas, text, p.X, p.Y);
+        }
 #endif
 
-        public float MeasureText(string text) =>
+        public float MeasureText(string text)
+        {
 #if GNH_MAUI
-            _font.MeasureText(text, _paint);
+            return _font.MeasureText(text, _paint);
 #else
-            _paint.MeasureText(text);
+            return _paint.MeasureText(text);
 #endif
+        }
 
-        public float MeasureText(string text, ref SKRect bounds) =>
+        public float MeasureText(string text, ref SKRect bounds)
+        {
 #if GNH_MAUI
-            _font.MeasureText(text, out bounds, _paint);
+            return _font.MeasureText(text, out bounds, _paint);
 #else
-            _paint.MeasureText(text, ref bounds);
+            return _paint.MeasureText(text, ref bounds);
 #endif
+        }
 
-        public float MeasureText(ReadOnlySpan<char> text) =>
+        public float MeasureText(ReadOnlySpan<char> text)
+        {
 #if GNH_MAUI
-            _font.MeasureText(text, _paint);
+            return _font.MeasureText(text, _paint);
 #else
-            _paint.MeasureText(text);
+            return _paint.MeasureText(text);
 #endif
+        }
 
-        public float MeasureText(ReadOnlySpan<char> text, ref SKRect bounds) =>
+        public float MeasureText(ReadOnlySpan<char> text, ref SKRect bounds)
+        {
 #if GNH_MAUI
-            _font.MeasureText(text, out bounds, _paint);
+            return _font.MeasureText(text, out bounds, _paint);
 #else
-            _paint.MeasureText(text, ref bounds);
+            return _paint.MeasureText(text, ref bounds);
 #endif
+        }
 
     }
 }
