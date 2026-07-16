@@ -11110,18 +11110,8 @@ namespace GnollHackX
                 return CurrentMainPage?.HandleKeyPress(key, isCtrl, isMeta) ?? false;
             else if (topPage is IMessagePopupPage popupPage && popupPage.IsPopupOpen())
                 return popupPage.SendKeyToPopup(key, isCtrl, isMeta);
-            else if (topPage is IKeyPressHandlingPage)
-                return ((IKeyPressHandlingPage)topPage).HandleKeyPress(key, isCtrl, isMeta);
-            //else if (topPage is GamePage)
-            //    return ((GamePage)topPage).HandleKeyPress(key, isCtrl, isMeta);
-            //else if (topPage is GameMenuPage)
-            //    return ((GameMenuPage)topPage).HandleKeyPress(key, isCtrl, isMeta);
-            //else if (topPage is AboutPage)
-            //    return ((AboutPage)topPage).HandleKeyPress(key, isCtrl, isMeta);
-            //else if (topPage is VaultPage)
-            //    return ((VaultPage)topPage).HandleKeyPress(key, isCtrl, isMeta);
-            //else if (topPage is AchievementsPage)
-            //    return ((AchievementsPage)topPage).HandleKeyPress(key, isCtrl, isMeta);
+            else if (topPage is IKeyPressHandlingPage keyPressPage)
+                return keyPressPage.HandleKeyPress(key, isCtrl, isMeta);
             else
                 return false;
         }
@@ -11148,27 +11138,11 @@ namespace GnollHackX
                 return CurrentMainPage?.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
             else if (topPage is IMessagePopupPage popupPage && popupPage.IsPopupOpen())
                 return popupPage.SendSpecialKeyToPopup(spkey, isCtrl, isMeta, isShift);
-            else if (topPage is ISpecialKeyPressHandlingPage)
-                return ((ISpecialKeyPressHandlingPage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
-            //else if (topPage is GamePage)
-            //    return ((GamePage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
-            //else if (topPage is GameMenuPage)
-            //    return ((GameMenuPage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
-            //else if (topPage is NamePage)
-            //    return ((NamePage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
-            //else if (topPage is SettingsPage)
-            //    return ((SettingsPage)topPage).HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
-            //else if (topPage is OutRipPage)
-            //{
-            //    if (spkey == GHSpecialKey.Escape || spkey == GHSpecialKey.Enter || spkey == GHSpecialKey.Space)
-            //    {
-            //        ((OutRipPage)topPage).CloseOutrip();
-            //        return true;
-            //    }
-            //}
-            else if (spkey == GHSpecialKey.Escape && topPage is ICloseablePage)
+            else if (topPage is ISpecialKeyPressHandlingPage keyPressPage)
+                return keyPressPage.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
+            else if (spkey == GHSpecialKey.Escape && topPage is ICloseablePage closeablePage)
             {
-                ((ICloseablePage)topPage).ClosePage();
+                closeablePage.ClosePage();
                 return true;
             }
 
