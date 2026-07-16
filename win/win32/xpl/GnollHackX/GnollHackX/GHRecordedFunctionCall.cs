@@ -14,9 +14,9 @@ namespace GnollHackX
         object[] _args;
         DateTime _time;
 
-        public RecordedFunctionID RecordedFunctionID { get { return _recordedFunctionID; } }
-        public object[] Args { get { return _args; } }
-        public DateTime Time { get { return _time; } }
+        public RecordedFunctionID RecordedFunctionID => _recordedFunctionID;
+        public object[] Args => _args;
+        public DateTime Time => _time;
 
         public GHRecordedFunctionCall(RecordedFunctionID recordedFunctionID, object[] args, DateTime time) 
         {

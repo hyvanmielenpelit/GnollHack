@@ -16,7 +16,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" x:Name="lblHeader" Text="Settings" FontSize="24" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
+                <Label Grid.Row="0" x:Name="HeaderLabel" Text="Settings" FontSize="24" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="Center" VerticalOptions="Center" Margin="0,10,0,0" />
                 <Grid Grid.Row="1" WidthRequest  ="440" HorizontalOptions  ="Center" VerticalOptions="Fill">
                     <ScrollView x:Name="MainScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
@@ -1203,7 +1203,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="GeneralVolumeSlider" ThumbColor="#EAEAEA" MinimumTrackColor="#017AFF" MaximumTrackColor="#70666666" HorizontalOptions="End" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="GeneralVolumeSlider" ThumbColor="{x:Static gnh:GHColors.SliderThumbGray}" MinimumTrackColor="{x:Static gnh:GHColors.SliderMinimumTrackBlue}" MaximumTrackColor="{x:Static gnh:GHColors.SliderMaximumTrackGray}" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -1212,7 +1212,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="MusicVolumeSlider" ThumbColor="#EAEAEA" MinimumTrackColor="#017AFF" MaximumTrackColor="#70666666" HorizontalOptions="End" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="MusicVolumeSlider" ThumbColor="{x:Static gnh:GHColors.SliderThumbGray}" MinimumTrackColor="{x:Static gnh:GHColors.SliderMinimumTrackBlue}" MaximumTrackColor="{x:Static gnh:GHColors.SliderMaximumTrackGray}" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -1221,7 +1221,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="AmbientVolumeSlider" ThumbColor="#EAEAEA" MinimumTrackColor="#017AFF" MaximumTrackColor="#70666666" HorizontalOptions="End" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="AmbientVolumeSlider" ThumbColor="{x:Static gnh:GHColors.SliderThumbGray}" MinimumTrackColor="{x:Static gnh:GHColors.SliderMinimumTrackBlue}" MaximumTrackColor="{x:Static gnh:GHColors.SliderMaximumTrackGray}" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -1230,7 +1230,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="DialogueVolumeSlider" ThumbColor="#EAEAEA" MinimumTrackColor="#017AFF" MaximumTrackColor="#70666666" HorizontalOptions="End" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="DialogueVolumeSlider" ThumbColor="{x:Static gnh:GHColors.SliderThumbGray}" MinimumTrackColor="{x:Static gnh:GHColors.SliderMinimumTrackBlue}" MaximumTrackColor="{x:Static gnh:GHColors.SliderMaximumTrackGray}" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -1239,7 +1239,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="EffectsVolumeSlider" ThumbColor="#EAEAEA" MinimumTrackColor="#017AFF" MaximumTrackColor="#70666666" HorizontalOptions="End" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="EffectsVolumeSlider" ThumbColor="{x:Static gnh:GHColors.SliderThumbGray}" MinimumTrackColor="{x:Static gnh:GHColors.SliderMinimumTrackBlue}" MaximumTrackColor="{x:Static gnh:GHColors.SliderMaximumTrackGray}" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -1248,7 +1248,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="UIVolumeSlider" ThumbColor="#EAEAEA" MinimumTrackColor="#017AFF" MaximumTrackColor="#70666666" HorizontalOptions="End" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="UIVolumeSlider" ThumbColor="{x:Static gnh:GHColors.SliderThumbGray}" MinimumTrackColor="{x:Static gnh:GHColors.SliderMinimumTrackBlue}" MaximumTrackColor="{x:Static gnh:GHColors.SliderMaximumTrackGray}" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
 
@@ -1787,12 +1787,12 @@
                         Clicked="CloseButton_Clicked" />
             </Grid>
             <Grid x:Name="TextGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-                         Padding="10" BackgroundColor="#66000000" IsVisible="False">
+                         Padding="10" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" IsVisible="False">
                 <Grid WidthRequest  ="440" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,50,0,10" >
-                    <Frame x:Name="TextFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="TextFrame" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout x:Name="TextLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="TextCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="Center" TextColor="White" />
-                            <Entry x:Name="TextEntry" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the link here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
+                            <Entry x:Name="TextEntry" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the link here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="{x:Static gnh:GHColors.EntryBackgroundBlack}"
                                        Keyboard="Plain" HorizontalTextAlignment="Center" FontSize="20" FontFamily="LatoRegular" Completed="TextEntry_Completed" />
                             <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
                                 <Grid.RowDefinitions>
@@ -1818,7 +1818,7 @@
             </Grid>
 
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid WidthRequest  ="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
                     <Frame x:Name="PopupFrame"  BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
@@ -1838,7 +1838,7 @@
                 </Grid.GestureRecognizers>
             </Grid>
 
-            <AbsoluteLayout x:Name="WaitLayout" IsVisible="False" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000">
+            <AbsoluteLayout x:Name="WaitLayout" IsVisible="False" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.DarkerPageOverlayBlack}">
                 <Label Text="Please Wait..." FontFamily="Immortal" FontSize="30" TextColor="White"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All" />
                 <AbsoluteLayout.GestureRecognizers>

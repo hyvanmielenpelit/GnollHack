@@ -61,7 +61,7 @@
                 </Grid>
             </Grid>
             
-            <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
+            <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" IsVisible="False">
                 <Grid MaximumWidthRequest="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
                     <Border x:Name="PopupFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout Spacing="9" Padding="6">
@@ -77,7 +77,7 @@
                 </Grid.GestureRecognizers>
             </Grid>
 
-            <Grid x:Name="MessagePopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
+            <Grid x:Name="MessagePopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" IsVisible="False">
                 <Grid MaximumWidthRequest="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
                     <Border x:Name="MessagePopupFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout Spacing="9" Padding="6">

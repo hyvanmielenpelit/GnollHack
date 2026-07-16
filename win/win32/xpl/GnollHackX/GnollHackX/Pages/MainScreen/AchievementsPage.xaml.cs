@@ -37,9 +37,9 @@ namespace GnollHackX.Pages.MainScreen
             //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
-                lblHeader.TextColor = GHColors.White;
-                lblSubtitle.TextColor = GHColors.White;
-                lblSubtitle2.TextColor = GHColors.White;
+                HeaderLabel.TextColor = GHColors.White;
+                SubtitleLabel.TextColor = GHColors.White;
+                Subtitle2Label.TextColor = GHColors.White;
                 EmptyLabel.TextColor = GHColors.White;
                 TierFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
 //#if GNH_MAUI
@@ -48,8 +48,8 @@ namespace GnollHackX.Pages.MainScreen
 //                TierFrame.BorderColor = GHColors.TitleGoldColor;
 //#endif
             }
-            lblSubtitle.TextColor = GHApp.DarkMode ? GHColors.TitleGoldColor : GHColors.DarkGreen;
-            lblSubtitle2.TextColor = GHApp.DarkMode ? GHColors.LightYellow : GHColors.SemiDarkGreen;
+            SubtitleLabel.TextColor = GHApp.DarkMode ? GHColors.TitleGoldColor : GHColors.DarkGreen;
+            Subtitle2Label.TextColor = GHApp.DarkMode ? GHColors.LightYellow : GHColors.SemiDarkGreen;
             //TierTitleLabel.TextColor = GHColors.TitleGoldColor;
             //TierSubNameLabel.TextColor = GHColors.LightYellow;
         }
@@ -101,7 +101,7 @@ namespace GnollHackX.Pages.MainScreen
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 AchievementLayout.Margin = UIUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }
@@ -132,11 +132,11 @@ namespace GnollHackX.Pages.MainScreen
             AchievementTier tier = GHApp.GetAchievementTier();
             if (tier != null)
             {
-                lblSubtitle.Text = tier.Name;
+                SubtitleLabel.Text = tier.Name;
                 if (tier.SubName != null)
                 {
-                    lblSubtitle2.Text = tier.SubName;
-                    lblSubtitle2.IsVisible = true;
+                    Subtitle2Label.Text = tier.SubName;
+                    Subtitle2Label.IsVisible = true;
                 }
                 if (GHApp.IsNewAchievementTierGained())
                 {
@@ -155,7 +155,7 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             AchievementCategory[] achievementList = GHApp.AchievementCategories;
-            //lblSubtitle.Text = "Found " + manuallist.Count + " of " + maxManuals + " manuals";
+            //SubtitleLabel.Text = "Found " + manuallist.Count + " of " + maxManuals + " manuals";
             if (achievementList.Length > 0)
             {
                 for(int i = 0; i < achievementList.Length; i++)

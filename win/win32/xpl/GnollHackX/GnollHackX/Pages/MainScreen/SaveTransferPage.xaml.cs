@@ -1943,7 +1943,10 @@ namespace GnollHackX.Pages.MainScreen
         private TaskCompletionSource<bool> _messagePopupTcs;
         private bool _acceptEnterSpaceForOkCancel = false;
 
-        public bool IsPopupOpen() => MessagePopupGrid.IsVisible;
+        public bool IsPopupOpen() 
+        {
+            return MessagePopupGrid.IsVisible;
+        }
 
         public void ClosePopup()
         {

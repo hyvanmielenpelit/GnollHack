@@ -37,8 +37,8 @@ namespace GnollHackX.Pages.MainScreen
             //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
-                lblHeader.TextColor = GHColors.White;
-                lblSubtitle.TextColor = GHColors.White;
+                HeaderLabel.TextColor = GHColors.White;
+                SubtitleLabel.TextColor = GHColors.White;
                 EmptyLabel.TextColor = GHColors.White;
             }
         }
@@ -91,7 +91,7 @@ namespace GnollHackX.Pages.MainScreen
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 AchievementLayout.Margin = UIUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }
@@ -123,8 +123,8 @@ namespace GnollHackX.Pages.MainScreen
 
             int gained, visible;
             GHApp.CalculateAchievementsInCategory(categoryId, out gained, out visible);
-            lblHeader.Text = GHApp.AchievementCategories[categoryId].Name;
-            lblSubtitle.Text = "Gained " + gained + " of " + visible + " achievement" + (visible != 1 ? "s" : "");
+            HeaderLabel.Text = GHApp.AchievementCategories[categoryId].Name;
+            SubtitleLabel.Text = "Gained " + gained + " of " + visible + " achievement" + (visible != 1 ? "s" : "");
             
             Achievement[] achievementList = GHApp.AchievementDefinitions;
             if (achievementList.Length > 0)

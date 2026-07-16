@@ -34,131 +34,82 @@ namespace GnollHackX
 #endif
         }
 
-        public SKPaint Paint { get { return _paint; } }
+        public SKPaint Paint => _paint;
 
         public SKTypeface Typeface
         {
-            get
-            {
+            get =>
 #if GNH_MAUI
-                return _font.Typeface;
+              _font.Typeface;
 #else
-                return _paint.Typeface;
+                _paint.Typeface;
 #endif
-            }
-            set
-            {
+
+            set =>
 #if GNH_MAUI
                 _font.Typeface = value;
 #else
                 _paint.Typeface = value;
 #endif
-            }
+
         }
 
         public float TextSize
         {
-            get
-            {
+            get =>
 #if GNH_MAUI
-                return _font.Size;
+              _font.Size;
 #else
-                return _paint.TextSize;
+                _paint.TextSize;
 #endif
-            }
-            set
-            {
+
+            set =>
 #if GNH_MAUI
                 _font.Size = value;
 #else
                 _paint.TextSize = value;
 #endif
-            }
+
         }
 
         public SKPaintStyle Style
         {
-            get
-            {
-                return _paint.Style;
-            }
-            set
-            {
-                _paint.Style = value;
-            }
+            get => _paint.Style; set => _paint.Style = value;
         }
 
         public float StrokeWidth
         {
-            get
-            {
-                return _paint.StrokeWidth;
-            }
-            set
-            {
-                _paint.StrokeWidth = value;
-            }
+            get => _paint.StrokeWidth; set => _paint.StrokeWidth = value;
         }
 
         public SKPathEffect PathEffect
         {
-            get
-            {
-                return _paint.PathEffect;
-            }
-            set
-            {
-                _paint.PathEffect = value;
-            }
+            get => _paint.PathEffect; set => _paint.PathEffect = value;
         }
 
         public SKMaskFilter MaskFilter
         {
-            get
-            {
-                return _paint.MaskFilter;
-            }
-            set
-            {
-                _paint.MaskFilter = value;
-            }
+            get => _paint.MaskFilter; set => _paint.MaskFilter = value;
         }
 
         public SKColor Color
         {
-            get
-            {
-                return _paint.Color;
-            }
-            set
-            {
-                _paint.Color = value;
-            }
+            get => _paint.Color; set => _paint.Color = value;
         }
 
-        public SKFontMetrics FontMetrics
-        {
-            get
-            {
+        public SKFontMetrics FontMetrics =>
 #if GNH_MAUI
-                return _font.Metrics;
+                _font.Metrics;
 #else
-                return _paint.FontMetrics;
+                _paint.FontMetrics;
 #endif
-            }
-        }
 
-        public float FontSpacing
-        {
-            get
-            {
+        public float FontSpacing =>
 #if GNH_MAUI
-                return _font.Spacing;
+                _font.Spacing;
 #else
-                return _paint.FontSpacing;
+                _paint.FontSpacing;
 #endif
-            }
-        }
 
         public void DrawTextOnCanvas(SKCanvas canvas, string text, float x, float y, SKTextAlign textAlign)
         {
@@ -238,47 +189,36 @@ namespace GnollHackX
             }
         }
 
-        public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, SKPoint p)
-        {
-            DrawTextOnCanvas(canvas, text, p.X, p.Y);
-        }
+        public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, SKPoint p) => DrawTextOnCanvas(canvas, text, p.X, p.Y);
 #endif
 
-        public float MeasureText(string text)
-        {
+        public float MeasureText(string text) =>
 #if GNH_MAUI
-            return _font.MeasureText(text, _paint);
+            _font.MeasureText(text, _paint);
 #else
-            return _paint.MeasureText(text);
+            _paint.MeasureText(text);
 #endif
-        }
 
-        public float MeasureText(string text, ref SKRect bounds)
-        {
+        public float MeasureText(string text, ref SKRect bounds) =>
 #if GNH_MAUI
-            return _font.MeasureText(text, out bounds, _paint);
+            _font.MeasureText(text, out bounds, _paint);
 #else
-            return _paint.MeasureText(text, ref bounds);
+            _paint.MeasureText(text, ref bounds);
 #endif
-        }
 
-
-        public float MeasureText(ReadOnlySpan<char> text)
-        {
+        public float MeasureText(ReadOnlySpan<char> text) =>
 #if GNH_MAUI
-            return _font.MeasureText(text, _paint);
+            _font.MeasureText(text, _paint);
 #else
-            return _paint.MeasureText(text);
+            _paint.MeasureText(text);
 #endif
-        }
 
-        public float MeasureText(ReadOnlySpan<char> text, ref SKRect bounds)
-        {
+        public float MeasureText(ReadOnlySpan<char> text, ref SKRect bounds) =>
 #if GNH_MAUI
-            return _font.MeasureText(text, out bounds, _paint);
+            _font.MeasureText(text, out bounds, _paint);
 #else
-            return _paint.MeasureText(text, ref bounds);
+            _paint.MeasureText(text, ref bounds);
 #endif
-        }
+
     }
 }

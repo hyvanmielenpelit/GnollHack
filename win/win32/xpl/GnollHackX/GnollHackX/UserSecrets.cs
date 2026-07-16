@@ -20,59 +20,17 @@ namespace GnollHackX
 
         }
 
-        public string DefaultGamePostAddress
-        {
-            get
-            {
-                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultGamePostAddress);
-            }
-        }
+        public string DefaultGamePostAddress => GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultGamePostAddress);
 
-        public string DefaultDiagnosticDataPostAddress
-        {
-            get
-            {
-                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultDiagnosticDataPostAddress);
-            }
-        }
+        public string DefaultDiagnosticDataPostAddress => GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultDiagnosticDataPostAddress);
 
-        public string DefaultXlogAccountLink
-        {
-            get
-            {
-                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultXlogRegisterationAddress);
-            }
-        }
+        public string DefaultXlogAccountLink => GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultXlogRegisterationAddress);
 
-        public string DefaultXlogPostAddress
-        {
-            get
-            {
-                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultXlogPostAddress);
-            }
-        }
+        public string DefaultXlogPostAddress => GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultXlogPostAddress);
 
-        public string DefaultXlogAntiForgeryToken
-        {
-            get
-            {
-                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultXlogAntiForgeryToken);
-            }
-        }
+        public string DefaultXlogAntiForgeryToken => GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultXlogAntiForgeryToken);
 
-        public string DefaultAzureBlobStorageConnectionString
-        {
-            get
-            {
-                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultAzureBlobStorageConnectionString);
-            }
-        }
-        public string DefaultSentryDNS
-        {
-            get
-            {
-                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultSentryDSN);
-            }
-        }
+        public string DefaultAzureBlobStorageConnectionString => GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultAzureBlobStorageConnectionString);
+        public string DefaultSentryDNS => GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultSentryDSN);
     }
 }

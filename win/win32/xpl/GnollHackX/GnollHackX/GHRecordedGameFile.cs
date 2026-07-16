@@ -69,48 +69,38 @@ namespace GnollHackX
             return _isFolder ? _fileName : string.Format("{0}. {1} ({2}, {3:d/M/yyyy HH:mm:ss}, {4} file{5})", _index, _fileName, GetSizeString(), _lastWriteTime, NumberOfFiles, NumberOfFiles == 1 ? "" : "s");
         }
 
+        public string FilePath => _filePath;
+        public string FileName => _fileName;
+        public string Extension => _extension;
+        public long FileSize => CalculateTotalFileSize();
+        public DateTime CreationTime => _creationTime;
+        public DateTime LastWriteTime => _lastWriteTime;
 
-        public string FilePath { get { return _filePath; } }
-        public string FileName { get { return _fileName; } }
-        public string Extension { get { return _extension; } }
-        public long FileSize { get { return CalculateTotalFileSize(); } }
-        public DateTime CreationTime { get { return _creationTime; } }
-        public DateTime LastWriteTime { get { return _lastWriteTime; } }
+        public string FormattedIndex => _isFolder ? "" : string.Format("{0}.", _index);
+        public string FormattedName => _fileName;
+        public string FormattedInformation => _isFolder ? (string.IsNullOrWhiteSpace(_filePath) ? "" : "Folder") : string.Format("{0}, {1:d/M/yyyy HH:mm:ss}, {2} file{3}", GetSizeString(), _lastWriteTime, NumberOfFiles, NumberOfFiles == 1 ? "" : "s");
 
-        public string FormattedIndex
-        {
-            get { return _isFolder ? "" : string.Format("{0}.", _index); }
-        }
-        public string FormattedName
-        {
-            get { return _fileName; }
-        }
-        public string FormattedInformation
-        {
-            get { return _isFolder ? (string.IsNullOrWhiteSpace(_filePath) ? "" : "Folder") : string.Format("{0}, {1:d/M/yyyy HH:mm:ss}, {2} file{3}", GetSizeString(), _lastWriteTime, NumberOfFiles, NumberOfFiles == 1 ? "" : "s"); }
-        }
+        public bool IsZip => _extension == "zip";
+        public bool IsFolder => _isFolder;
 
-        public bool IsZip { get { return _extension == "zip"; } }
-        public bool IsFolder { get { return _isFolder; } }
+        public double FormattedNameFontSize => _isFolder ? 17.0 : 15.0;
+        public double FormattedInfoFontSize => _isFolder && string.IsNullOrWhiteSpace(_filePath) ? 8.0 : 15.0;
+        public bool FormattedInfoVisible => !(_isFolder && string.IsNullOrWhiteSpace(_filePath));
 
-        public double FormattedNameFontSize { get { return _isFolder ? 17.0 : 15.0; } }
-        public double FormattedInfoFontSize { get { return _isFolder && string.IsNullOrWhiteSpace(_filePath) ? 8.0 : 15.0; } }
-        public bool FormattedInfoVisible { get { return !(_isFolder && string.IsNullOrWhiteSpace(_filePath)); } }
+        public int NumberOfFiles => _numberOfFiles + _continuationFiles.Count;
 
-        public int NumberOfFiles { get { return _numberOfFiles + _continuationFiles.Count; } }
+        public List<ContinuationFile> ContinuationFiles => _continuationFiles;
 
-        public List<ContinuationFile> ContinuationFiles { get { return _continuationFiles; } }
-
-        public bool Uploaded { get { return _uploaded; } set { _uploaded = value; } }
-        public bool Downloaded { get { return _downloaded; } set { _downloaded = value; } }
+        public bool Uploaded { get => _uploaded; set => _uploaded = value; }
+        public bool Downloaded { get => _downloaded; set => _downloaded = value; }
         public
 #if GNH_MAUI
             Microsoft.Maui.Graphics.Color
 #else
             Xamarin.Forms.Color 
 #endif            
-            TextColor { get { return _downloaded && _uploaded ? GHColors.Magenta : _downloaded ? GHColors.Blue : _uploaded ? GHColors.Green : GHApp.DarkMode ? GHColors.White : GHColors.Black; } }
+            TextColor => _downloaded && _uploaded ? GHColors.Magenta : _downloaded ? GHColors.Blue : _uploaded ? GHColors.Green : GHApp.DarkMode ? GHColors.White : GHColors.Black;
 
-        public int Index { get { return _index; } set { _index = value; } }
+        public int Index { get => _index; set => _index = value; }
     }
 }

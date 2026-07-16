@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -4650,25 +4650,6 @@ namespace GnollHackX
             this.etype = etype;
             this.eflags = eflags;
             this.gflags = gflags;
-        }
-    }
-
-    public class ContextMenuButton
-    {
-        public readonly string LblText;
-        public readonly string ImgSourcePath;
-        public readonly SKImage Bitmap;
-        public readonly int BtnCommand;
-        public readonly string ShortcutText;
-        
-        //public SKRect Rect;
-        public ContextMenuButton(string lblText, string imgSourcePath, SKImage bitmap, int btnCommand)
-        {
-            LblText = lblText;
-            ImgSourcePath = imgSourcePath;
-            Bitmap = bitmap;
-            BtnCommand = btnCommand;
-            ShortcutText = GHUtils.ConstructShortcutText(btnCommand);
         }
     }
 }

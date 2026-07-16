@@ -27,13 +27,11 @@ namespace GnollHackX.Droid
         public IAssetPackManager AssetPackManager { get; private set; }
         public AssetPackStateUpdateListenerWrapper AssetPackListener { get; private set; }
 
-
         //private readonly static object _activityLock = new object();
         private static int _isHardKeyboardConnected = 0;
         public static bool IsHardKeyboardConnected
         {
-            get { return Interlocked.CompareExchange(ref _isHardKeyboardConnected, 0, 0) != 0; }
-            set { Interlocked.Exchange(ref _isHardKeyboardConnected, value ? 1 : 0); }
+            get => Interlocked.CompareExchange(ref _isHardKeyboardConnected, 0, 0) != 0; set => Interlocked.Exchange(ref _isHardKeyboardConnected, value ? 1 : 0);
         }
         protected override void OnCreate(Bundle savedInstanceState)
         {

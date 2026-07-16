@@ -105,13 +105,7 @@ namespace GnollHackX.Pages.Game
             } 
         }
         public bool IsMainCanvasDrawing { get { return Interlocked.CompareExchange(ref _isMainCanvasDrawing, 0, 0) != 0; } set { Interlocked.Exchange(ref _isMainCanvasDrawing, value ? 1 : 0); } }
-        public bool IsMainCanvasDrawingAndSetTrue 
-        { 
-            get 
-            { 
-                return Interlocked.Exchange(ref _isMainCanvasDrawing, 1) != 0;
-            }
-        }
+        public bool IsMainCanvasDrawingAndSetTrue => Interlocked.Exchange(ref _isMainCanvasDrawing, 1) != 0;
 
         private readonly string _fontSizeString = "FontS";
         private int _refreshMsgHistoryRowCounts = 1;
@@ -573,7 +567,7 @@ namespace GnollHackX.Pages.Game
 
         public SimpleImageButton StandardMeasurementButton { get { return ESCButton; } } // UseSimpleCmdLayout ? SimpleESCButton : ESCButton
         public MeasurableGrid StandardMeasurementCmdLayout { get { return StoneButtonGrid; } } // UseSimpleCmdLayout ? SimpleUpperCmdLayout : UpperCmdLayout;
-        public LabeledImageButton StandardReferenceButton { get { return UseSimpleCmdLayout ? lSimpleInventoryButton : lInventoryButton; } } // { get { return DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton; } }
+        public LabeledImageButton StandardReferenceButton { get { return UseSimpleCmdLayout ? SimpleInventoryButton : InventoryButton; } } // { get { return DesktopButtons ? RowAbilitiesButton : AbilitiesButton; } }
         public MeasurableStackLayout UsedButtonRowStack { get { return UseSimpleCmdLayout ? SimpleButtonRowStack : ButtonRowStack; } }
 
         private int _shownMessageRows = GHConstants.DefaultMessageRows;
@@ -1183,17 +1177,17 @@ namespace GnollHackX.Pages.Game
 
         private void UpdateAbilityButtonVisibility(bool isDesktop)
         {
-            lAbilitiesButton.IsVisible = !isDesktop;
-            lWornItemsButton.IsVisible = !isDesktop;
-            lRowAbilitiesButton.IsVisible = isDesktop;
-            lRowWornItemsButton.IsVisible = isDesktop;
+            AbilitiesButton.IsVisible = !isDesktop;
+            WornItemsButton.IsVisible = !isDesktop;
+            RowAbilitiesButton.IsVisible = isDesktop;
+            RowWornItemsButton.IsVisible = isDesktop;
             if (isDesktop)
             {
-                lRowAbilitiesButton.SetButtonFocus();
+                RowAbilitiesButton.SetButtonFocus();
             }
             else
             {
-                lAbilitiesButton.SetButtonFocus();
+                AbilitiesButton.SetButtonFocus();
             }
         }
 
@@ -1544,10 +1538,10 @@ namespace GnollHackX.Pages.Game
                 if (PlayingReplay)
                 {
                     //MainGrid.IsEnabled = false;
-                    lWornItemsButton.IsEnabled = false;
-                    lAbilitiesButton.IsEnabled = false;
-                    //lRowWornItemsButton.IsEnabled = false;
-                    //lRowAbilitiesButton.IsEnabled = false;
+                    WornItemsButton.IsEnabled = false;
+                    AbilitiesButton.IsEnabled = false;
+                    //RowWornItemsButton.IsEnabled = false;
+                    //RowAbilitiesButton.IsEnabled = false;
                     //ContextLayout.IsEnabled = false;
 
                     GameMenuButton.IsEnabled = false;
@@ -3034,7 +3028,7 @@ namespace GnollHackX.Pages.Game
             {
                 GameMenuButton.IsEnabled = true;
                 //SimpleGameMenuButton.IsEnabled = true;
-                lMoreButton.IsEnabled = true;
+                MoreButton.IsEnabled = true;
             }
 
             if (_isFirstAppearance)
@@ -3883,8 +3877,8 @@ namespace GnollHackX.Pages.Game
                     YnFrame.BackgroundColor = GHColors.LessTransparentBlack;
                     break;
                 default:
-                    YnGrid.BackgroundColor = GHColors.SemiTransparentBlack;
-                    YnFrame.BackgroundColor = GHColors.SemiTransparentBlack;
+                    YnGrid.BackgroundColor = GHColors.PageOverlayBlack;
+                    YnFrame.BackgroundColor = GHColors.PageOverlayBlack;
                     break;
             }
             YnGrid.IsVisible = true;
@@ -10210,7 +10204,7 @@ namespace GnollHackX.Pages.Game
                     }
                     
 
-                    float abilitybuttonbottom = (float)(stdCmdLayoutMargin.Top / canvasViewHeight) * canvasheight; ; // (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / MainCanvasView.Height) * canvasheight;
+                    float abilitybuttonbottom = (float)(stdCmdLayoutMargin.Top / canvasViewHeight) * canvasheight; ; // (float)((AbilitiesButton.Y + AbilitiesButton.Height) / MainCanvasView.Height) * canvasheight;
                     float escbuttonbottom = (float)((stdButtonY + stdButtonHeight) / canvasViewHeight) * canvasheight;
                     if (_localCanvasButtonRect.Top < escbuttonbottom)
                         _localCanvasButtonRect.Top = escbuttonbottom;
@@ -15507,14 +15501,14 @@ namespace GnollHackX.Pages.Game
             LabeledImageButton simplefirstchild = (LabeledImageButton)SimpleCmdGrid.Children[0];
             SimpleCmdGrid.HeightRequest = simplefirstchild.GridHeight;
 
-            lAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, false, buttonStats.Rows, inverseCanvasScale, customScale);
-            lWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, false, buttonStats.Rows, inverseCanvasScale, customScale);
-            lRowAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, showShortcuts, buttonStats.Rows, inverseCanvasScale, customScale);
-            lRowWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, showShortcuts, buttonStats.Rows, inverseCanvasScale, customScale);
-            //double statusbarheight = GetStatusBarHeight(); /* Requires lInventoryButton size having set to determine scaling */
+            AbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, false, buttonStats.Rows, inverseCanvasScale, customScale);
+            WornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, false, buttonStats.Rows, inverseCanvasScale, customScale);
+            RowAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, showShortcuts, buttonStats.Rows, inverseCanvasScale, customScale);
+            RowWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, showShortcuts, buttonStats.Rows, inverseCanvasScale, customScale);
+            //double statusbarheight = GetStatusBarHeight(); /* Requires InventoryButton size having set to determine scaling */
             double statusbarheight = GetStatusBarHeightEx2(inverseCanvasScale, customScale, width, height); // GetStatusBarHeightEx(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
-            lAbilitiesButton.HeightRequest = statusbarheight;
-            lWornItemsButton.HeightRequest = statusbarheight;
+            AbilitiesButton.HeightRequest = statusbarheight;
+            WornItemsButton.HeightRequest = statusbarheight;
             StoneButtonGrid.Margin = new Thickness(0, statusbarheight, 0, 0);
             //UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
             //SimpleUpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
@@ -15563,7 +15557,7 @@ namespace GnollHackX.Pages.Game
                 InterlockedTextScrollOffset = _textScrollOffset;
             }
 
-            bool useTwoRows = UIUtils.UseTwoButtonRows(width, height, lInventoryButton.GridWidth, usingDesktopButtons, usingSimpleCmdLayout);
+            bool useTwoRows = UIUtils.UseTwoButtonRows(width, height, InventoryButton.GridWidth, usingDesktopButtons, usingSimpleCmdLayout);
             if (!useTwoRows)
             {
                 /* One row */
@@ -16921,8 +16915,8 @@ namespace GnollHackX.Pages.Game
                 UIGrid.IsVisible = _showUI;
                 if (!DesktopButtons)
                 {
-                    lWornItemsButton.IsVisible = _showUI;
-                    lAbilitiesButton.IsVisible = _showUI;
+                    WornItemsButton.IsVisible = _showUI;
+                    AbilitiesButton.IsVisible = _showUI;
                 }
             });
         }
@@ -17923,7 +17917,7 @@ namespace GnollHackX.Pages.Game
             if (PlayingReplay)
                 return;
 
-            //lMoreButton.IsEnabled = false;
+            //MoreButton.IsEnabled = false;
             ShowMoreCanvas(sender, e);
         }
 
@@ -23057,13 +23051,13 @@ namespace GnollHackX.Pages.Game
                         PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can " + GHApp.GetClickTapWord(false, false) + " the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f, canvaswidth, canvasheight, 1.0f, 1.0f);
                         break;
                     case 11:
-                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton, DesktopButtons ? "Some commands are specially located." : "Some commands do not have buttons.", "Character status" + 
-                            (GHApp.ShowKeyboardShortcuts ? " (" + GHUtils.ConstructShortcutText(DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton) + ")" : ""), 
+                        PaintTipButton(canvas, textPaint, DesktopButtons ? RowAbilitiesButton : AbilitiesButton, DesktopButtons ? "Some commands are specially located." : "Some commands do not have buttons.", "Character status" + 
+                            (GHApp.ShowKeyboardShortcuts ? " (" + GHUtils.ConstructShortcutText(DesktopButtons ? RowAbilitiesButton : AbilitiesButton) + ")" : ""), 
                             1.0f, centerfontsize, fontsize, true, 0.15f, DesktopButtons ? -1.0f : 1.0f, canvaswidth, canvasheight);
                         break;
                     case 12:
-                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowWornItemsButton : lWornItemsButton, GHApp.GetClickTapWord(true, false) + " here to access worn items.", "Worn Equipment" +
-                            (GHApp.ShowKeyboardShortcuts ? " (" + GHUtils.ConstructShortcutText(DesktopButtons ? lRowWornItemsButton : lWornItemsButton) + ")" : ""),
+                        PaintTipButton(canvas, textPaint, DesktopButtons ? RowWornItemsButton : WornItemsButton, GHApp.GetClickTapWord(true, false) + " here to access worn items.", "Worn Equipment" +
+                            (GHApp.ShowKeyboardShortcuts ? " (" + GHUtils.ConstructShortcutText(DesktopButtons ? RowWornItemsButton : WornItemsButton) + ")" : ""),
                             1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, DesktopButtons ? -2.0f : 2.0f, canvaswidth, canvasheight);
                         break;
                     case 13:
@@ -23635,7 +23629,7 @@ namespace GnollHackX.Pages.Game
         public void SetSimpleLayoutCommandButton(int btnCol, int btnSelectionIndex)
         {
             LabeledImageButton[] _simpleButtions = new LabeledImageButton[6] 
-            { lSimpleInventoryButton, lSimpleSearchButton, lSimpleSwapWeaponButton, lSimpleKickButton, lSimpleCastButton, lSimpleRepeatButton };
+            { SimpleInventoryButton, SimpleSearchButton, SimpleSwapWeaponButton, SimpleKickButton, SimpleCastButton, SimpleRepeatButton };
             if (btnCol < 0 || btnCol >= _simpleButtions.Length) 
                 return;
             LabeledImageButton targetButton = _simpleButtions[btnCol];
@@ -23654,8 +23648,8 @@ namespace GnollHackX.Pages.Game
         public void SetFullLayoutCommandButton(int btnCol, int btnSelectionIndex)
         {
             LabeledImageButton[] _simpleButtions = new LabeledImageButton[13]
-            { lInventoryButton, lSearchButton, lWaitButton, lDropManyButton, lChatButton, lKickButton, lRepeatButton,
-                lSwapWeaponButton,lFireButton, lThrowButton, lCastButton, lZapButton, lApplyButton  };
+            { InventoryButton, SearchButton, WaitButton, DropManyButton, ChatButton, KickButton, RepeatButton,
+                SwapWeaponButton,FireButton, ThrowButton, CastButton, ZapButton, ApplyButton  };
             if (btnCol < 0 || btnCol >= _simpleButtions.Length)
                 return;
             LabeledImageButton targetButton = _simpleButtions[btnCol];
@@ -23690,9 +23684,8 @@ namespace GnollHackX.Pages.Game
             if (view == null)
                 return;
 
-            if (view is Grid)
+            if (view is Grid grid)
             {
-                Grid grid = (Grid)view;
                 foreach (View child in grid.Children)
                 {
                     UpdateButtonShortcutLabels(child);
@@ -23706,17 +23699,15 @@ namespace GnollHackX.Pages.Game
                     UpdateButtonShortcutLabels(child);
                 }
             }
-            else if (view is AbsoluteLayout)
+            else if (view is AbsoluteLayout layout)
             {
-                AbsoluteLayout layout = (AbsoluteLayout)view;
                 foreach (View child in layout.Children)
                 {
                     UpdateButtonShortcutLabels(child);
                 }
             }
-            else if (view is LabeledImageButton)
+            else if (view is LabeledImageButton lib)
             {
-                LabeledImageButton lib = (LabeledImageButton)view;
                 lib.ShortcutText = GHUtils.ConstructShortcutText(lib);
             }
         }

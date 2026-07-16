@@ -118,14 +118,14 @@ namespace GnollHackX.Unknown
         private float _generalVolume = 1.0f;
         private float _musicVolume = 1.0f;
         private float GeneralVolume /* Called from both UI and game thread */
-        {
-            get { return Interlocked.CompareExchange(ref _generalVolume, 0.0f, 0.0f); }
-            set { Interlocked.Exchange(ref _generalVolume, value); }
+        { 
+            get => Interlocked.CompareExchange(ref _generalVolume, 0.0f, 0.0f);
+            set => Interlocked.Exchange(ref _generalVolume, value);
         }
         private float MusicVolume /* Called from both UI and game thread */
         {
-            get { return Interlocked.CompareExchange(ref _musicVolume, 0.0f, 0.0f); }
-            set { Interlocked.Exchange(ref _musicVolume, value); }
+            get => Interlocked.CompareExchange(ref _musicVolume, 0.0f, 0.0f); 
+            set => Interlocked.Exchange(ref _musicVolume, value);
         }
 
         private float _ambientVolume = 1.0f; /* Called from game thread */
@@ -251,8 +251,6 @@ namespace GnollHackX.Unknown
 #endif
         }
 
-
-        [ThreadSafe]
         private bool FMODup()
         {
             return _initialized && GHApp.LoadBanks;
@@ -472,7 +470,6 @@ namespace GnollHackX.Unknown
             }
         }
 
-        [UIThreadOnly]
         public void ReleaseAllUISoundInstances(bool doUpdate = true)
         {
             List<GHSoundInstance>[] listoflists =
@@ -644,7 +641,6 @@ namespace GnollHackX.Unknown
         }
 
         /* Called from UI thread, no need for locking */
-        [UIThreadOnly]
         public int PlayUISound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             if (!FMODup())
@@ -703,7 +699,6 @@ namespace GnollHackX.Unknown
         }
 
         /* Called from game thread */
-        [GameThreadOnly]
         public int PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, uint play_flags)
         {
             if (!FMODup())
@@ -890,7 +885,6 @@ namespace GnollHackX.Unknown
             uiMusicInstances.Clear();
         }
 
-        [GameThreadOnly]
         public int StopAllGameSounds(ulong flags, uint dialogue_mid)
         {
             if (!FMODup())
@@ -1040,14 +1034,11 @@ namespace GnollHackX.Unknown
             res = _system.update();
             return (int)res;
         }
-
-        [UIThreadOnly]
         public int PlayUIMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             return PlayMusicCore(uiMusicInstances, ghsound, eventPath, bankid, eventVolume, soundVolume);
         }
 
-        [GameThreadOnly]
         public int PlayMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             return PlayMusicCore(musicInstances, ghsound, eventPath, bankid, eventVolume, soundVolume);
@@ -1106,7 +1097,6 @@ namespace GnollHackX.Unknown
             return (int)res;
         }
 
-        [GameThreadOnly]
         public int PlayLevelAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             if (!FMODup())
@@ -1189,7 +1179,6 @@ namespace GnollHackX.Unknown
             return (int)res;
         }
 
-        [GameThreadOnly]
         public int PlayEnvironmentAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             if (!FMODup())
@@ -1272,7 +1261,6 @@ namespace GnollHackX.Unknown
             return (int)res;
         }
 
-        [GameThreadOnly]
         public int PlayOccupationAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             if (!FMODup())
@@ -1355,7 +1343,6 @@ namespace GnollHackX.Unknown
             return (int)res;
         }
 
-        [GameThreadOnly]
         public int PlayEffectAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             if (!FMODup())
@@ -1438,8 +1425,6 @@ namespace GnollHackX.Unknown
             return (int)res;
         }
 
-
-        [GameThreadIfExistsElseUIThread]
         public int SetEffectAmbientVolume(float soundVolume)
         {
             if (!FMODup())
@@ -1478,7 +1463,6 @@ namespace GnollHackX.Unknown
             return _lastAmbientId;
         }
 
-        [GameThreadIfExistsElseUIThread]
         public int AddAmbientSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, out UInt64 soundSourceId)
         {
             if (!FMODup())
@@ -1529,7 +1513,6 @@ namespace GnollHackX.Unknown
 
         }
 
-        [GameThreadIfExistsElseUIThread]
         public int DeleteAmbientSound(UInt64 soundSourceId)
         {
             if (!FMODup())
@@ -1569,7 +1552,6 @@ namespace GnollHackX.Unknown
             return 0;
         }
 
-        [GameThreadIfExistsElseUIThread]
         public int SetAmbientSoundVolume(UInt64 soundSourceId, float soundVolume)
         {
             if (!FMODup())
@@ -1614,7 +1596,6 @@ namespace GnollHackX.Unknown
             return 0;
         }
 
-        [GameThreadIfExistsElseUIThread]
         public int AdjustGameVolumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_dialogue_volume, float new_general_sfx_volume, float new_general_game_ui_volume)
         {
             if (!FMODup())
@@ -1640,7 +1621,6 @@ namespace GnollHackX.Unknown
             return (int)result;
         }
 
-        [UIThreadOnly]
         public int AdjustUIVolumes(float new_general_volume, float new_general_music_volume, float new_general_ui_volume)
         {
             if (!FMODup())
@@ -1664,7 +1644,6 @@ namespace GnollHackX.Unknown
             return (int)result;
         }
 
-        [ThreadSafe]
         public void ToggleMuteSounds(bool mute)
         {
             if (!FMODup())
@@ -1700,7 +1679,6 @@ namespace GnollHackX.Unknown
             return result;
         }
 
-        [GameThreadIfExistsElseUIThread]
         private RESULT SetGameMusicAndAmbientVolumesWithoutUpdate(float generalVolume, float musicVolume, float ambientVolume)
         {
             RESULT result;
@@ -1714,7 +1692,6 @@ namespace GnollHackX.Unknown
             return result;
         }
 
-        [GameThreadOnly]
         private int AdjustMusicAndAmbientVolumes()
         {
             RESULT result;
@@ -1732,18 +1709,14 @@ namespace GnollHackX.Unknown
         //}
 
         private const int _maxModeFadeCounter = 10;
-        private float ModeVolume
-        {
-            get { return (_quieterMode ? _quietModeMultiplier : 1.0f) + (_quieterMode ? 1.0f : -1.0f) * (1.0f - _quietModeMultiplier) * (float)(_maxModeFadeCounter - ModeFadeCounter) / _maxModeFadeCounter; }
-        }
+        private float ModeVolume => (_quieterMode ? _quietModeMultiplier : 1.0f) + (_quieterMode ? 1.0f : -1.0f) * (1.0f - _quietModeMultiplier) * (float)(_maxModeFadeCounter - ModeFadeCounter) / _maxModeFadeCounter;
 
         //private readonly object _modeFadeLock = new object();
         private int _modeFadeCounter = _maxModeFadeCounter;
-        private int ModeFadeCounter { get { return Interlocked.CompareExchange(ref _modeFadeCounter, 0, 0); } set { Interlocked.Exchange(ref _modeFadeCounter, value); } }
+        private int ModeFadeCounter { get => Interlocked.CompareExchange(ref _modeFadeCounter, 0, 0); set => Interlocked.Exchange(ref _modeFadeCounter, value); }
 
         private int _quieterModeRequestNumber = 0;
 
-        [GameThreadOnly]
         public void ResetGameState()
         {
             _quieterModeRequestNumber = 0;
@@ -1751,7 +1724,6 @@ namespace GnollHackX.Unknown
             _soundTasks.Clear();
         }
 
-        [GameThreadOnly]
         public int SetQuieterMode(bool state)
         {
             bool prevState = _quieterModeRequestNumber > 0;
@@ -1809,7 +1781,6 @@ namespace GnollHackX.Unknown
         private ConcurrentQueue<GHSoundTask> _soundTasks = new ConcurrentQueue<GHSoundTask>();
         private ConcurrentQueue<GHSoundTask> _addedSoundTasks = new ConcurrentQueue<GHSoundTask>();
 
-        [GameThreadOnly]
         public void PollTasks()
         {
             if (!FMODup())
@@ -1848,7 +1819,6 @@ namespace GnollHackX.Unknown
             }
         }
 
-        [ThreadSafe]
         public uint GetVersionCode()
         {
             if (!FMODup())
@@ -1862,7 +1832,6 @@ namespace GnollHackX.Unknown
             return ver;
         }
 
-        [ThreadSafe]
         public string GetVersionString()
         {
             uint ver = GetVersionCode();

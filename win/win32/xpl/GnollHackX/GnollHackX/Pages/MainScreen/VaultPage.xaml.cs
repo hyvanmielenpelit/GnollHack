@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -46,7 +46,7 @@ namespace GnollHackX.Pages.MainScreen
             //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
-                lblHeader.TextColor = GHColors.White;
+                HeaderLabel.TextColor = GHColors.White;
                 MessagePopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
 //#if GNH_MAUI
 //                MessagePopupFrame.Stroke = GHColors.TitleGoldColor;
@@ -294,13 +294,13 @@ namespace GnollHackX.Pages.MainScreen
             bool _currentLandscape = _currentPageWidth > _currentPageHeight;
             bool isLandscape = width > height;
 
-            lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+            HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
             CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
 
             if (width > 0)
             {
                 //bool shouldUseFlex = width >= 460 && height >= 600; // && !GHApp.IsWindows;
-                //bool widerWidth = height < 280 + 6 + 24 + 60 + lblHeader.Margin.Top + lblHeader.Margin.Bottom + CloseButton.Margin.Top + CloseButton.Margin.Bottom;
+                //bool widerWidth = height < 280 + 6 + 24 + 60 + HeaderLabel.Margin.Top + HeaderLabel.Margin.Bottom + CloseButton.Margin.Top + CloseButton.Margin.Bottom;
                 double usedWidth = 800; // widerWidth ? 2048 : 720;
 #if GNH_MAUI
                 ViewGrid.MaximumWidthRequest = usedWidth;
@@ -708,7 +708,10 @@ namespace GnollHackX.Pages.MainScreen
         private TaskCompletionSource<bool> _messagePopupTcs;
         private bool _acceptEnterSpaceForOkCancel = false;
 
-        public bool IsPopupOpen() => MessagePopupGrid.IsVisible;
+        public bool IsPopupOpen() 
+        {
+            return MessagePopupGrid.IsVisible;
+        }
 
         public void ClosePopup()
         {

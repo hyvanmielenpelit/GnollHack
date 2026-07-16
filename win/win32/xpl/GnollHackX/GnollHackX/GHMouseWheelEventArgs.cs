@@ -11,6 +11,6 @@ namespace GnollHackX
         {
             _mouseWheelDelta = mouseWheelDelta;
         }
-        public int MouseWheelDelta { get { return _mouseWheelDelta; } }
+        public int MouseWheelDelta => _mouseWheelDelta;
     }
 }

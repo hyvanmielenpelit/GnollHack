@@ -81,7 +81,6 @@ namespace GnollHackX.Controls
 #endif
         }
 
-
 #if WINDOWS
         private bool _isHoveringEnabled = true;
         private bool _isHovering = false;
@@ -111,7 +110,7 @@ namespace GnollHackX.Controls
 #endif
         //private readonly object _isPressedLock = new object();
         private int _isPressed = 0;
-        private bool IsPressed { get { return Interlocked.CompareExchange(ref _isPressed, 0, 0) != 0; } set { Interlocked.Exchange(ref _isPressed, value ? 1 : 0); } }
+        private bool IsPressed { get => Interlocked.CompareExchange(ref _isPressed, 0, 0) != 0; set => Interlocked.Exchange(ref _isPressed, value ? 1 : 0); }
 
         public event EventHandler Clicked;
 
@@ -140,52 +139,42 @@ namespace GnollHackX.Controls
         }
         public Color TextColor
         {
-            get { return (Color)GetValue(TextColorProperty); }
-            set 
-            { 
+            get => (Color)GetValue(TextColorProperty);
+            set
+            {
                 SetValue(TextColorProperty, value);
                 customButton.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, true) : UIUtils.HoveringColorAdjustment(value, true);
             }
         }
         public Color NormalTextColor
-        {
-            get { return (Color)GetValue(NormalTextColorProperty); }
-            set { SetValue(NormalTextColorProperty, value); }
+        { get => (Color)GetValue(NormalTextColorProperty); set => SetValue(NormalTextColorProperty, value);
         }
         public Color SelectedTextColor
-        {
-            get { return (Color)GetValue(SelectedTextColorProperty); }
-            set { SetValue(SelectedTextColorProperty, value); }
+        { get => (Color)GetValue(SelectedTextColorProperty); set => SetValue(SelectedTextColorProperty, value);
         }
         public Color DisabledTextColor
-        {
-            get { return (Color)GetValue(DisabledTextColorProperty); }
-            set { SetValue(DisabledTextColorProperty, value); }
+        { get => (Color)GetValue(DisabledTextColorProperty); set => SetValue(DisabledTextColorProperty, value);
         }
         public string Text
-        {
-            get { return (string)customButton.GetValue(Button.TextProperty); }
-            set { customButton.SetValue(Button.TextProperty, value); }
+        { get => (string)customButton.GetValue(Button.TextProperty); set => customButton.SetValue(Button.TextProperty, value);
         }
         public string FontFamily
         {
-            get => (string)customButton.GetValue(Button.FontFamilyProperty);
-            set { customButton.SetValue(Button.FontFamilyProperty, value); }
+            get => (string)customButton.GetValue(Button.FontFamilyProperty); set => customButton.SetValue(Button.FontFamilyProperty, value);
         }
         public double FontSize
         {
-            get => (double)customButton.GetValue(Button.FontSizeProperty);
-            set { customButton.SetValue(Button.FontSizeProperty, value); }
+            get => (double)customButton.GetValue(Button.FontSizeProperty); set => customButton.SetValue(Button.FontSizeProperty, value);
         }
         public new double WidthRequest
         {
-            get { return (double)GetValue(CustomImageButton.WidthRequestProperty); }
-            set { SetValue(CustomImageButton.WidthRequestProperty, value); customGrid.WidthRequest = value; customCanvasView.WidthRequest = value; customButton.WidthRequest = value * ButtonRelativeWidth; customCanvasView.InvalidateSurface(); }
+            get => (double)GetValue(CustomImageButton.WidthRequestProperty);
+            set { SetValue(CustomImageButton.WidthRequestProperty, value); CustomGrid.WidthRequest = value; customCanvasView.WidthRequest = value; customButton.WidthRequest = value * ButtonRelativeWidth; customCanvasView.InvalidateSurface(); }
         }
         public new double HeightRequest
         {
-            get { return (double)GetValue(CustomImageButton.HeightRequestProperty); }
-            set { SetValue(CustomImageButton.HeightRequestProperty, value); customGrid.HeightRequest = value; customCanvasView.HeightRequest = value; customButton.HeightRequest = value; customCanvasView.InvalidateSurface(); }
+            get => (double)GetValue(CustomImageButton.HeightRequestProperty);
+            set { SetValue(CustomImageButton.HeightRequestProperty, value); CustomGrid.HeightRequest = value; customCanvasView.HeightRequest = value; customButton.HeightRequest = value; customCanvasView.InvalidateSurface(); }
         }
 
         private readonly object _propertyLock = new object();
@@ -198,7 +187,7 @@ namespace GnollHackX.Controls
                 { 
                     SetValue(CustomImageButton.IsEnabledProperty, value);
                 }
-                customGrid.IsEnabled = value;
+                CustomGrid.IsEnabled = value;
                 if (UseVaryingTextColors)
                 {
                     TextColor = !value ? DisabledTextColor : IsPressed ? SelectedTextColor : NormalTextColor;
@@ -233,7 +222,6 @@ namespace GnollHackX.Controls
                 customCanvasView.InvalidateSurface(); 
             }
         }
-
 
         private void CustomButton_Clicked(object sender, EventArgs e)
         {

@@ -28,8 +28,8 @@ namespace GnollHackX
         private int _canvasWidth = 0;
         private int _canvasHeight = 0;
 
-        public int CanvasWidth { get { return _canvasWidth == 0 ? Width :_canvasWidth; } set { _canvasWidth = value; } }
-        public int CanvasHeight { get { return _canvasHeight == 0 ? Height :_canvasHeight; } set { _canvasHeight = value; } }
+        public int CanvasWidth { get => _canvasWidth == 0 ? Width : _canvasWidth; set => _canvasWidth = value; }
+        public int CanvasHeight { get => _canvasHeight == 0 ? Height : _canvasHeight; set => _canvasHeight = value; }
         public int CanvasXStart { get; set; }
 
         protected override void OnPropertyChanged(string propertyName)

@@ -5,7 +5,6 @@ using System.Text;
 using System.Collections.Concurrent;
 using System.Threading;
 
-
 #if GNH_MAUI
 using GnollHackX;
 using SkiaSharp.Views.Maui;
@@ -73,7 +72,7 @@ namespace GnollHackX
 
         public string Text
         {
-            get { return (string)GetValue(TextProperty); }
+            get => (string)GetValue(TextProperty);
             set { SetValue(TextProperty, value); SplitRows(); UpdateLabel(); UpdateRolledDown(); IsFirst = true; }
         }
 
@@ -82,7 +81,7 @@ namespace GnollHackX
 
         public string FontFamily
         {
-            get { return (string)GetValue(FontFamilyProperty); }
+            get => (string)GetValue(FontFamilyProperty);
             set { SetValue(FontFamilyProperty, value); UpdateLabel(); }
         }
 
@@ -91,7 +90,7 @@ namespace GnollHackX
 
         public FontAttributes FontAttributes
         {
-            get { return (FontAttributes)GetValue(FontAttributesProperty); }
+            get => (FontAttributes)GetValue(FontAttributesProperty);
             set { SetValue(FontAttributesProperty, value); UpdateLabel(); }
         }
 
@@ -100,7 +99,7 @@ namespace GnollHackX
 
         public double FontSize
         {
-            get { return (double)GetValue(FontSizeProperty); }
+            get => (double)GetValue(FontSizeProperty);
             set { SetValue(FontSizeProperty, value); UpdateLabel(); }
         }
 
@@ -109,7 +108,7 @@ namespace GnollHackX
 
         public double OutlineWidth
         {
-            get { return (double)GetValue(OutlineWidthProperty); }
+            get => (double)GetValue(OutlineWidthProperty);
             set { SetValue(OutlineWidthProperty, value); UpdateLabel(); }
         }
 
@@ -118,7 +117,7 @@ namespace GnollHackX
 
         public Color TextColor
         {
-            get { return (Color)GetValue(TextColorProperty); }
+            get => (Color)GetValue(TextColorProperty);
             set { SetValue(TextColorProperty, value); UpdateLabel(); }
         }
 
@@ -127,7 +126,7 @@ namespace GnollHackX
 
         public Color OutlineColor
         {
-            get { return (Color)GetValue(OutlineColorProperty); }
+            get => (Color)GetValue(OutlineColorProperty);
             set { SetValue(OutlineColorProperty, value); UpdateLabel(); }
         }
 
@@ -136,7 +135,7 @@ namespace GnollHackX
 
         public TextAlignment HorizontalTextAlignment
         {
-            get { return (TextAlignment)GetValue(HorizontalTextAlignmentProperty); }
+            get => (TextAlignment)GetValue(HorizontalTextAlignmentProperty);
             set { SetValue(HorizontalTextAlignmentProperty, value); UpdateLabel(); }
         }
 
@@ -145,7 +144,7 @@ namespace GnollHackX
 
         public TextAlignment VerticalTextAlignment
         {
-            get { return (TextAlignment)GetValue(VerticalTextAlignmentProperty); }
+            get => (TextAlignment)GetValue(VerticalTextAlignmentProperty);
             set { SetValue(VerticalTextAlignmentProperty, value); UpdateLabel(); }
         }
 
@@ -154,7 +153,7 @@ namespace GnollHackX
 
         public bool UseSpecialSymbols
         {
-            get { return (bool)GetValue(UseSpecialSymbolsProperty); }
+            get => (bool)GetValue(UseSpecialSymbolsProperty);
             set { SetValue(UseSpecialSymbolsProperty, value); UpdateLabel(); }
         }
 
@@ -163,7 +162,7 @@ namespace GnollHackX
 
         public bool IsScrollable
         {
-            get { return (bool)GetValue(IsScrollableProperty); }
+            get => (bool)GetValue(IsScrollableProperty);
             set { UpdateScrollable(value, value && !IsScrollable); SetValue(IsScrollableProperty, value); UpdateRolledDown(); }
         }
 
@@ -172,7 +171,7 @@ namespace GnollHackX
 
         public bool InitiallyRolledDown
         {
-            get { return (bool)GetValue(InitiallyRolledDownProperty); }
+            get => (bool)GetValue(InitiallyRolledDownProperty);
             set { SetValue(InitiallyRolledDownProperty, value); UpdateRolledDown(); }
         }
 
@@ -181,7 +180,7 @@ namespace GnollHackX
 
         public char WordWrapSeparator
         {
-            get { return (char)GetValue(WordWrapSeparatorProperty); }
+            get => (char)GetValue(WordWrapSeparatorProperty);
             set { SetValue(WordWrapSeparatorProperty, value); UpdateLabel(); }
         }
 
@@ -190,7 +189,7 @@ namespace GnollHackX
 
         public bool DisplayWrapSeparator
         {
-            get { return (bool)GetValue(DisplayWrapSeparatorProperty); }
+            get => (bool)GetValue(DisplayWrapSeparatorProperty);
             set { SetValue(DisplayWrapSeparatorProperty, value); UpdateLabel(); }
         }
 
@@ -199,23 +198,20 @@ namespace GnollHackX
 
         public long GeneralAnimationCounter
         {
-            get { return (long)GetValue(GeneralAnimationCounterProperty); }
+            get => (long)GetValue(GeneralAnimationCounterProperty);
             set { SetValue(GeneralAnimationCounterProperty, value); UpdateLabelScroll(); }
         }
-
 
         private List<string> _textRows = null;
         private List<string> TextRows
         {
-            get 
-            { 
-                var res = Interlocked.CompareExchange(ref _textRows, null, null);
-                return res == null ? new List<string> { "" } : res; 
-            }
-            set
+            get
             {
-                Interlocked.Exchange(ref _textRows, value);
+                var res = Interlocked.CompareExchange(ref _textRows, null, null);
+                return res == null ? new List<string> { "" } : res;
             }
+
+            set => Interlocked.Exchange(ref _textRows, value);
         }
 
         private void SplitRows()
@@ -244,7 +240,7 @@ namespace GnollHackX
 
         //private readonly object _initialYPosLock = new object();
         private int _calculateInitialYPos = 0;
-        public bool CalculateInitialYPos { get { return Interlocked.CompareExchange(ref _calculateInitialYPos, 0, 0) != 0; } set { Interlocked.Exchange(ref _calculateInitialYPos, value ? 1 : 0); } }
+        public bool CalculateInitialYPos { get => Interlocked.CompareExchange(ref _calculateInitialYPos, 0, 0) != 0; set => Interlocked.Exchange(ref _calculateInitialYPos, value ? 1 : 0); }
 
         private void UpdateRolledDown(bool invalidateSurface = true)
         {
@@ -574,7 +570,7 @@ namespace GnollHackX
 
         private float _savedCanvasWidth = 0.0f;
         private float _interlockedCanvasHeight = 0.0f;
-        private float InterlockedCanvasHeight { get { return Interlocked.CompareExchange(ref _interlockedCanvasHeight, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _interlockedCanvasHeight, value); } }
+        private float InterlockedCanvasHeight { get => Interlocked.CompareExchange(ref _interlockedCanvasHeight, 0.0f, 0.0f); set => Interlocked.Exchange(ref _interlockedCanvasHeight, value); }
 
         private readonly object _textAreaSizeLock = new object();
         private TextAreaSize _textAreaSize;
@@ -777,7 +773,6 @@ namespace GnollHackX
             }
         }
 
-
         public double MeasureWidth(string str)
         {
             float scale = GHApp.DisplayDensity;
@@ -801,7 +796,7 @@ namespace GnollHackX
         private ConcurrentDictionary<long, TouchEntry> TouchDictionary = new ConcurrentDictionary<long, TouchEntry>();
 
         private float _interlockedTextScrollOffset = 0;
-        private float InterlockedTextScrollOffset { get { return Interlocked.CompareExchange(ref _interlockedTextScrollOffset, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _interlockedTextScrollOffset, value); } }
+        private float InterlockedTextScrollOffset { get => Interlocked.CompareExchange(ref _interlockedTextScrollOffset, 0.0f, 0.0f); set => Interlocked.Exchange(ref _interlockedTextScrollOffset, value); }
         private readonly object _textScrollLock = new object();
         private float _textScrollOffset = 0;
         private float _textScrollSpeed = 0; /* pixels per second */
@@ -812,8 +807,8 @@ namespace GnollHackX
 
         private int _reduceAnimationsSet = 0;
         private int _reduceAnimationsOn = 0;
-        private bool ReduceAnimationsSet { get { return Interlocked.CompareExchange(ref _reduceAnimationsSet, 0, 0) != 0; } set { Interlocked.Exchange(ref _reduceAnimationsSet, value ? 1 : 0); } }
-        private bool ReduceAnimationsOn { get { return Interlocked.CompareExchange(ref _reduceAnimationsOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _reduceAnimationsOn, value ? 1 : 0); } }
+        private bool ReduceAnimationsSet { get => Interlocked.CompareExchange(ref _reduceAnimationsSet, 0, 0) != 0; set => Interlocked.Exchange(ref _reduceAnimationsSet, value ? 1 : 0); }
+        private bool ReduceAnimationsOn { get => Interlocked.CompareExchange(ref _reduceAnimationsOn, 0, 0) != 0; set => Interlocked.Exchange(ref _reduceAnimationsOn, value ? 1 : 0); }
 #if GNH_MAUI
         IDispatcherTimer _timer = null;
 #else
@@ -821,16 +816,13 @@ namespace GnollHackX
         private bool StopTimer { get { return Interlocked.CompareExchange(ref _stopTimer, 0, 0) != 0; } set { Interlocked.Exchange(ref _stopTimer, value ? 1 : 0); } }
 #endif
         private int _textScrollSpeedOn = 0;
-        private bool TextScrollSpeedOn 
-        { 
-            get 
-            { 
-                return Interlocked.CompareExchange(ref _textScrollSpeedOn, 0, 0) != 0; 
-            } 
+        private bool TextScrollSpeedOn
+        {
+            get => Interlocked.CompareExchange(ref _textScrollSpeedOn, 0, 0) != 0;
             set
             {
                 Interlocked.Exchange(ref _textScrollSpeedOn, value ? 1 : 0);
-                if(value)
+                if (value)
                 {
                     if (GHApp.IsAndroid && Interlocked.Exchange(ref _reduceAnimationsSet, 1) == 0)
                         ReduceAnimationsOn = GHApp.PlatformService?.IsRemoveAnimationsOn() ?? false;
@@ -917,15 +909,15 @@ namespace GnollHackX
 
         //private readonly object _textHeightLock = new object();
         private float _textHeight = 0;
-        private float TextHeight { get { return Interlocked.CompareExchange(ref _textHeight, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _textHeight, value); } }
+        private float TextHeight { get => Interlocked.CompareExchange(ref _textHeight, 0.0f, 0.0f); set => Interlocked.Exchange(ref _textHeight, value); }
         //private readonly object _touchMovedLock = new object();
         private int _touchMoved = 0;
-        private bool TouchMoved { get { return Interlocked.CompareExchange(ref _touchMoved, 0, 0) != 0; } set { Interlocked.Exchange(ref _touchMoved, value ? 1 : 0); } }
+        private bool TouchMoved { get => Interlocked.CompareExchange(ref _touchMoved, 0, 0) != 0; set => Interlocked.Exchange(ref _touchMoved, value ? 1 : 0); }
         private DateTime _savedTimeStamp;
 
         //private readonly object _isFirstLock = new object();
         private int _isFirst = 1;
-        private bool IsFirst { get { return Interlocked.CompareExchange(ref _isFirst, 0, 0) != 0; } set { Interlocked.Exchange(ref _isFirst, value ? 1 : 0); } }
+        private bool IsFirst { get => Interlocked.CompareExchange(ref _isFirst, 0, 0) != 0; set => Interlocked.Exchange(ref _isFirst, value ? 1 : 0); }
 
         private void Base_Touch(object sender, SKTouchEventArgs e)
         {
@@ -1258,10 +1250,7 @@ namespace GnollHackX
         }
 
 #if GNH_MAUI
-        public Size CustomMeasureSize(double widthConstraint, double heightConstraint)
-        {
-            return CalculateLabelSize(widthConstraint, heightConstraint);
-        }
+        public Size CustomMeasureSize(double widthConstraint, double heightConstraint) => CalculateLabelSize(widthConstraint, heightConstraint);
 #else
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {

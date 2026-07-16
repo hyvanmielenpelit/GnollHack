@@ -15,12 +15,12 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" x:Name="lblHeader" Text="Achievements" HorizontalTextAlignment="Center" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
+                <Label Grid.Row="0" x:Name="HeaderLabel" Text="Achievements" HorizontalTextAlignment="Center" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="Center" VerticalOptions="Fill" Margin="30,10,30,10" />
                 <StackLayout Grid.Row="1" Margin="1,2,1,6">
-                    <Label x:Name="lblSubtitle" Text="" TextColor="Black" BackgroundColor="Transparent" FontFamily="Immortal" FontSize="18" 
+                    <Label x:Name="SubtitleLabel" Text="" TextColor="Black" BackgroundColor="Transparent" FontFamily="Immortal" FontSize="18" 
                        HorizontalOptions="Center" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                    <Label x:Name="lblSubtitle2" Text="" Margin="0,3,0,0" TextColor="Black" BackgroundColor="Transparent" FontFamily="Immortal" FontSize="18" 
+                    <Label x:Name="Subtitle2Label" Text="" Margin="0,3,0,0" TextColor="Black" BackgroundColor="Transparent" FontFamily="Immortal" FontSize="18" 
                        HorizontalOptions="Center" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" IsVisible="False" />
                 </StackLayout>
                 <Grid Grid.Row="2" MaximumWidthRequest="480" HorizontalOptions="Fill" VerticalOptions="Fill">
@@ -34,7 +34,7 @@
                         Clicked="Button_Clicked" />
             </Grid>
             <Grid x:Name="TierGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid x:Name="TierFrameCenterGrid" MaximumWidthRequest="640" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
                     <Border x:Name="TierFrame"  BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">

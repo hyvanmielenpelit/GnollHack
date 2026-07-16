@@ -64,54 +64,47 @@ namespace GnollHackX
 #endif
         }
 
-        public void SetValue(string str)
-        {
+        public void SetValue(string str) =>
 #if USE_SPAN_FOR_SUBSTRING
             _internalSpan = str.AsSpan();
 #else
             _internalString = str;
 #endif
-        }
-        public void SetValue(string str, int start)
-        {
+
+        public void SetValue(string str, int start) =>
 #if USE_SPAN_FOR_SUBSTRING
             _internalSpan = str.AsSpan(start);
 #else
             _internalString = str.Substring(start);
 #endif
-        }
-        public void SetValue(string str, int start, int length)
-        {
+
+        public void SetValue(string str, int start, int length) =>
 #if USE_SPAN_FOR_SUBSTRING
             _internalSpan = str.AsSpan(start, length);
 #else
             _internalString = str.Substring(start, length);
 #endif
-        }
-        public void SetValue(ReadOnlySpan<char> str)
-        {
+
+        public void SetValue(ReadOnlySpan<char> str) =>
 #if USE_SPAN_FOR_SUBSTRING
             _internalSpan = str;
 #else
             _internalString = str.ToString();
 #endif
-        }
-        public void SetValue(ReadOnlySpan<char> str, int start)
-        {
+
+        public void SetValue(ReadOnlySpan<char> str, int start) =>
 #if USE_SPAN_FOR_SUBSTRING
             _internalSpan = str.Slice(start);
 #else
             _internalString = str.Slice(start).ToString();
 #endif
-        }
-        public void SetValue(ReadOnlySpan<char> str, int start, int length)
-        {
+
+        public void SetValue(ReadOnlySpan<char> str, int start, int length) =>
 #if USE_SPAN_FOR_SUBSTRING
             _internalSpan = str.Slice(start, length);
 #else
             _internalString = str.Slice(start, length).ToString();
 #endif
-        }
 
         public GHSubstring Substring(int start)
         {
@@ -132,36 +125,23 @@ namespace GnollHackX
             return this;
         }
 #if USE_SPAN_FOR_SUBSTRING
-        public ReadOnlySpan<char> Value
-        {
-            get { return _internalSpan; }
-        }
+        public ReadOnlySpan<char> Value => _internalSpan;
 #else
-        public string Value
-        {
-            get { return _internalString; }
-        }
+        public string Value => _internalString;
 #endif
-        public int Length
-        {
-            get
-            {
+        public int Length =>
 #if USE_SPAN_FOR_SUBSTRING
-                return _internalSpan.Length;
+                _internalSpan.Length;
 #else
-                return _internalString.Length;
+                _internalString.Length;
 #endif
-            }
-        }
 
-        public bool IsEqualTo(string str)
-        {
+        public bool IsEqualTo(string str) =>
 #if USE_SPAN_FOR_SUBSTRING
-            return MemoryExtensions.CompareTo(_internalSpan, str.AsSpan(), StringComparison.Ordinal) == 0;
+            MemoryExtensions.CompareTo(_internalSpan, str.AsSpan(), StringComparison.Ordinal) == 0;
 #else
-            return _internalString == str;
+            _internalString == str;
 #endif
-        }
 
     }
 }

@@ -40,8 +40,8 @@ namespace GnollHackX.Pages.MainScreen
             //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
-                lblHeader.TextColor = GHColors.White;
-                lblSubtitle.TextColor = GHColors.White;
+                HeaderLabel.TextColor = GHColors.White;
+                SubtitleLabel.TextColor = GHColors.White;
                 EmptyLabel.TextColor = GHColors.White;
             }
         }
@@ -94,7 +94,7 @@ namespace GnollHackX.Pages.MainScreen
             int firstCatalogue = GHApp.GnollHackService.GetFirstCatalogue();
             int numCatalogues = GHApp.GnollHackService.GetNumCatalogues();
             List<StoredManual> manuallist = _manuals.Values.ToList();
-            lblSubtitle.Text = "Found " + manuallist.Count + " of " + maxManuals + " manuals";
+            SubtitleLabel.Text = "Found " + manuallist.Count + " of " + maxManuals + " manuals";
             if (manuallist.Count > 0)
             {
                 Comparison<StoredManual> comp = new Comparison<StoredManual>((m1, m2) => { return string.Compare(m1.Name, m2.Name); });
@@ -166,7 +166,7 @@ namespace GnollHackX.Pages.MainScreen
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 LibraryLayout.Margin = UIUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }

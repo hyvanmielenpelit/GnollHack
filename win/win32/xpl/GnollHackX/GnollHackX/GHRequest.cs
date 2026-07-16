@@ -293,7 +293,6 @@ namespace GnollHackX
             RequestString2 = requeststring2;
         }
 
-
         public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, int requestint2, string requeststring)
         {
             RequestingGame = ghGame;

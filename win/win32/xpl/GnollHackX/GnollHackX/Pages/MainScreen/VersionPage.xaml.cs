@@ -51,9 +51,8 @@ namespace GnollHackX.Pages.MainScreen
                 LongLabel.TextColor = GHColors.White;
                 foreach (View child in VersionInfoGrid.Children)
                 {
-                    if (child != null && child is Label)
+                    if (child is Label label)
                     {
-                        Label label = (Label)child;
                         label.TextColor = GHColors.White;
                     }
                 }
@@ -386,9 +385,9 @@ namespace GnollHackX.Pages.MainScreen
 
                 foreach (View v in VersionInfoGrid.Children)
                 {
-                    if (v is Label)
+                    if (v is Label l)
                     {
-                        ((Label)v).FontSize = newsize;
+                        l.FontSize = newsize;
                     }
                 }
                 LongTitleLabel.FontSize = newsize;

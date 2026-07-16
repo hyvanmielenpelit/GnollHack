@@ -56,36 +56,36 @@ namespace GnollHackX.Pages.Game
             if(GHApp.DarkMode)
             {
                 WhatNameLabel.TextColor = GHColors.White;
-                eName.TextColor = GHColors.White;
+                NameEntry.TextColor = GHColors.White;
             }
 
             if (!string.IsNullOrWhiteSpace(modeName))
             {
-                lblModeName.Text = "Game is in " + modeName;
-                lblModeName.IsVisible = true;
+                ModeNameLabel.Text = "Game is in " + modeName;
+                ModeNameLabel.IsVisible = true;
                 if (!string.IsNullOrWhiteSpace(modeDescription))
                 {
-                    lblModeDescription.Text = modeDescription;
-                    lblModeDescription.IsVisible = true;
+                    ModeDescriptionLabel.Text = modeDescription;
+                    ModeDescriptionLabel.IsVisible = true;
                 }
                 else
                 {
-                    lblModeDescription.Text = "";
-                    lblModeDescription.IsVisible = false;
+                    ModeDescriptionLabel.Text = "";
+                    ModeDescriptionLabel.IsVisible = false;
                 }
             }
             else
             {
-                lblModeName.Text = "";
-                lblModeDescription.Text = "";
-                lblModeName.IsVisible = false;
-                lblModeDescription.IsVisible = false;
+                ModeNameLabel.Text = "";
+                ModeDescriptionLabel.Text = "";
+                ModeNameLabel.IsVisible = false;
+                ModeDescriptionLabel.IsVisible = false;
             }
             if(_gamePage.PlayingReplay)
             {
                 mainStack.IsEnabled = false;
-                btnOK.IsEnabled = false;
-                btnCancel.IsEnabled = false;                
+                OKButton.IsEnabled = false;
+                CancelButton.IsEnabled = false;                
             }
         }
 
@@ -96,25 +96,25 @@ namespace GnollHackX.Pages.Game
 
         private async Task DoPressOk()
         {
-            btnOK.IsEnabled = false;
-            btnCancel.IsEnabled = false;
+            OKButton.IsEnabled = false;
+            CancelButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            if (string.IsNullOrWhiteSpace(eName.Text))
+            if (string.IsNullOrWhiteSpace(NameEntry.Text))
             {
-                lblError.TextColor = GHColors.Red;
-                lblError.Text = "Please enter a name.";
-                btnOK.IsEnabled = true;
-                btnCancel.IsEnabled = true;
+                ErrorLabel.TextColor = GHColors.Red;
+                ErrorLabel.Text = "Please enter a name.";
+                OKButton.IsEnabled = true;
+                CancelButton.IsEnabled = true;
                 return;
             }
 
-            string usedName = eName.Text.Trim();
+            string usedName = NameEntry.Text.Trim();
             if (!ValidationExpression.IsMatch(usedName))
             {
-                lblError.TextColor = GHColors.Red;
-                lblError.Text = "Name is invalid.";
-                btnOK.IsEnabled = true;
-                btnCancel.IsEnabled = true;
+                ErrorLabel.TextColor = GHColors.Red;
+                ErrorLabel.Text = "Name is invalid.";
+                OKButton.IsEnabled = true;
+                CancelButton.IsEnabled = true;
                 return;
             }
 
@@ -126,7 +126,7 @@ namespace GnollHackX.Pages.Game
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                eName.Text = _replayEnteredName;
+                NameEntry.Text = _replayEnteredName;
             });
         }
 
@@ -134,7 +134,7 @@ namespace GnollHackX.Pages.Game
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                eName.Focus();
+                NameEntry.Focus();
             });
         }
 
@@ -185,7 +185,7 @@ namespace GnollHackX.Pages.Game
                 timer.Tick += (s, e) => { FocusToEnterName(); };
                 timer.Start();
 #else
-                eName.Focus();
+                NameEntry.Focus();
 #endif
             }
         }
@@ -193,8 +193,8 @@ namespace GnollHackX.Pages.Game
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
-            eName.Unfocus();
-            eName.IsEnabled = false;
+            NameEntry.Unfocus();
+            NameEntry.IsEnabled = false;
         }
 
         private double _currentPageWidth = 0;
@@ -240,8 +240,8 @@ namespace GnollHackX.Pages.Game
 
         public async Task DoPressCancel()
         {
-            btnOK.IsEnabled = false;
-            btnCancel.IsEnabled = false;
+            OKButton.IsEnabled = false;
+            CancelButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
             await GHApp.PopModalPageAsync();
@@ -259,7 +259,7 @@ namespace GnollHackX.Pages.Game
                     {
                         if (key == GHSpecialKey.Escape)
                         {
-                            if (btnCancel.IsEnabled)
+                            if (CancelButton.IsEnabled)
                             {
                                 await DoPressCancel();
                                 handled = true;
@@ -267,7 +267,7 @@ namespace GnollHackX.Pages.Game
                         }
                         else if (key == GHSpecialKey.Enter)
                         {
-                            if (btnOK.IsEnabled)
+                            if (OKButton.IsEnabled)
                             {
                                 await DoPressOk();
                                 handled = true;
@@ -294,7 +294,7 @@ namespace GnollHackX.Pages.Game
 
         private async void eName_Completed(object sender, EventArgs e)
         {
-            if (btnOK.IsEnabled)
+            if (OKButton.IsEnabled)
             {
                 await DoPressOk();
             }

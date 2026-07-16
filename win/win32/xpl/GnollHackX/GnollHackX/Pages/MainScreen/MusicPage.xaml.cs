@@ -38,8 +38,8 @@ namespace GnollHackX.Pages.MainScreen
             //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
-                lblHeader.TextColor = GHColors.White;
-                lblSubtitle.TextColor = GHColors.White;
+                HeaderLabel.TextColor = GHColors.White;
+                SubtitleLabel.TextColor = GHColors.White;
                 EmptyLabel.TextColor = GHColors.White;
             }
             AddDiscoveredSoundTracks();
@@ -136,7 +136,7 @@ namespace GnollHackX.Pages.MainScreen
                 if (track?.GameAppearanceList?.Count > 0)
                     soundTrackCount++;
 
-            lblSubtitle.Text = "Found " + discoCount + " of " + soundTrackCount + " sound tracks";
+            SubtitleLabel.Text = "Found " + discoCount + " of " + soundTrackCount + " sound tracks";
             if (discoCount == 0)
                 EmptyLabel.IsVisible = true;
         }
@@ -230,7 +230,7 @@ namespace GnollHackX.Pages.MainScreen
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 SoundTrackLayout.Margin = UIUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }
@@ -262,9 +262,9 @@ namespace GnollHackX.Pages.MainScreen
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
-            lblHeader.IsEnabled = false;
+            HeaderLabel.IsEnabled = false;
             GHApp.FmodService.StopAllUISounds();
-            lblHeader.IsEnabled = true;
+            HeaderLabel.IsEnabled = true;
         }
     }
 }

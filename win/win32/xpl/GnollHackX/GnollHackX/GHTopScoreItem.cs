@@ -34,43 +34,13 @@ namespace GnollHackX
         public long StartTime { get; set; }
         public long EndTime { get; set; }
 
-        public string CharacterHPModeString
-        {
-            get
-            {
-                return CharacterString + " " + HPString + " " + DifficultyString;
-            }
-        }
+        public string CharacterHPModeString => CharacterString + " " + HPString + " " + DifficultyString;
 
-        public string CharacterString
-        {
-            get
-            {
-                return Role + " " + Race + " " + Gender + " " + Alignment + (XPLevel > 0 ? " XL:" +XPLevel : ""); 
-            }
-        }
-        public string HPString
-        {
-            get
-            {
-                return "HP:" + HP + "/" + HPMax;
-            }
-        }
-        public string TurnTimeString
-        {
-            get
-            {
-                return "on " + DeathDateString + " " + TurnString + " (" + RealTimeString + ")";
-            }
-        }
+        public string CharacterString => Role + " " + Race + " " + Gender + " " + Alignment + (XPLevel > 0 ? " XL:" + XPLevel : "");
+        public string HPString => "HP:" + HP + "/" + HPMax;
+        public string TurnTimeString => "on " + DeathDateString + " " + TurnString + " (" + RealTimeString + ")";
 
-        public string TurnString
-        {
-            get
-            {
-                return "T:" + Turns;
-            }
-        }
+        public string TurnString => "T:" + Turns;
 
         public string RealTimeString
         {
@@ -313,13 +283,7 @@ namespace GnollHackX
         }
 
         private bool _dumplogFileFound = false;
-        public bool IsDumplogButtonEnabled
-        {
-            get
-            {
-                return _dumplogFileFound;
-            }
-        }
+        public bool IsDumplogButtonEnabled => _dumplogFileFound;
 
         public Color ItemTextColor
         {

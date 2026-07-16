@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -20,15 +20,12 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Text.Json;
 
-
-
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Primitives;
-
 
 #if WINDOWS
 using Microsoft.UI;
@@ -56,17 +53,17 @@ namespace GnollHackX
     {
         //private readonly object _generalTimerLock = new object();
         private int _generaTimerIsOn = 0;
-        public bool GeneralTimerIsOn { get { return Interlocked.CompareExchange(ref _generaTimerIsOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _generaTimerIsOn, value ? 1 : 0); } }
-        public bool CheckAndSetGeneralTimerIsOn { get { return Interlocked.Exchange(ref _generaTimerIsOn, 1) != 0; } } // { get { lock (_generalTimerLock) { bool oldval = _generaTimerIsOn; _generaTimerIsOn = true; return oldval; } } }
+        public bool GeneralTimerIsOn { get => Interlocked.CompareExchange(ref _generaTimerIsOn, 0, 0) != 0; set => Interlocked.Exchange(ref _generaTimerIsOn, value ? 1 : 0); }
+        public bool CheckAndSetGeneralTimerIsOn => Interlocked.Exchange(ref _generaTimerIsOn, 1) != 0;  // { get { lock (_generalTimerLock) { bool oldval = _generaTimerIsOn; _generaTimerIsOn = true; return oldval; } } }
 
         //private readonly object _generalTimerWorkOnTasksLock = new object();
         private int _generaTimerWorkOnTasks = 0;
-        public bool GeneralTimerWorkOnTasks { get { return Interlocked.CompareExchange(ref _generaTimerWorkOnTasks, 0, 0) != 0; } set { Interlocked.Exchange(ref _generaTimerWorkOnTasks, value ? 1 : 0); } }
-        public bool CheckAndSetGeneralTimerWorkOnTasks { get { return Interlocked.Exchange(ref _generaTimerWorkOnTasks, 1) != 0; } }
+        public bool GeneralTimerWorkOnTasks { get => Interlocked.CompareExchange(ref _generaTimerWorkOnTasks, 0, 0) != 0; set => Interlocked.Exchange(ref _generaTimerWorkOnTasks, value ? 1 : 0); }
+        public bool CheckAndSetGeneralTimerWorkOnTasks => Interlocked.Exchange(ref _generaTimerWorkOnTasks, 1) != 0;
 
         //private readonly object _stopGeneralTimerLock = new object();
         private int _stopGeneraTimerIsOn = 0;
-        public bool StopGeneralTimer { get { return Interlocked.CompareExchange(ref _stopGeneraTimerIsOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _stopGeneraTimerIsOn, value ? 1 : 0); } }
+        public bool StopGeneralTimer { get => Interlocked.CompareExchange(ref _stopGeneraTimerIsOn, 0, 0) != 0; set => Interlocked.Exchange(ref _stopGeneraTimerIsOn, value ? 1 : 0); }
 #if GNH_MAUI
         IDispatcherTimer _generalTimer;
 #endif
@@ -96,7 +93,7 @@ namespace GnollHackX
                 WaitLayout.IsVisible = true;
             }
 #if WINDOWS
-            classicModeGrid.HeightRequest = 40;
+            ClassicModeGrid.HeightRequest = 40;
             casualModeGrid.HeightRequest = 40;
             wizardModeGrid.HeightRequest = 40;
             tournamentModeGrid.HeightRequest = 40;
@@ -111,17 +108,17 @@ namespace GnollHackX
                     pv.IsTabStop = false;
                 }
             };
-            casualModeSwitch.HandlerChanged += (s, e) =>
+            CasualModeSwitch.HandlerChanged += (s, e) =>
             {
-                var pv = casualModeSwitch.Handler?.PlatformView as ToggleSwitch;
+                var pv = CasualModeSwitch.Handler?.PlatformView as ToggleSwitch;
                 if (pv != null)
                 {
                     pv.IsTabStop = false;
                 }
             };
-            wizardModeSwitch.HandlerChanged += (s, e) =>
+            WizardModeSwitch.HandlerChanged += (s, e) =>
             {
-                var pv = wizardModeSwitch.Handler?.PlatformView as ToggleSwitch;
+                var pv = WizardModeSwitch.Handler?.PlatformView as ToggleSwitch;
                 if (pv != null)
                 {
                     pv.IsTabStop = false;
@@ -232,9 +229,9 @@ namespace GnollHackX
 
         private int _pendingGeneralTimerTasks = 0;
         private int PendingGeneralTimerTasks
-        {
-            get { return Interlocked.CompareExchange(ref _pendingGeneralTimerTasks, 0, 0); }
-            set { Interlocked.Exchange(ref _pendingGeneralTimerTasks, value); }
+        { 
+            get => Interlocked.CompareExchange(ref _pendingGeneralTimerTasks, 0, 0); 
+            set => Interlocked.Exchange(ref _pendingGeneralTimerTasks, value);
         }
 
         private async Task GeneralTimerTasksAsync()
@@ -774,8 +771,8 @@ namespace GnollHackX
                     Preferences.Set("NumberOfGames", numberofgames + 1L);
 
                     var gamePage = new GamePage(this);
-                    gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
-                    gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
+                    gamePage.EnableWizardMode = WizardModeSwitch.IsToggled;
+                    gamePage.EnableCasualMode = CasualModeSwitch.IsToggled;
                     gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
                     await GHApp.PushModalPageAsync(gamePage);
                     await gamePage.StartNewGame();
@@ -797,14 +794,14 @@ namespace GnollHackX
         {
             wizardModeGrid.IsVisible = GHApp.DeveloperMode && !GHApp.TournamentMode;
             if (!GHApp.DeveloperMode || GHApp.TournamentMode)
-                wizardModeSwitch.IsToggled = false;
+                WizardModeSwitch.IsToggled = false;
 
             tournamentModeGrid.IsVisible = GHApp.TournamentMode;
 
-            classicModeGrid.IsVisible = !GHApp.TournamentMode;
+            ClassicModeGrid.IsVisible = !GHApp.TournamentMode;
             classicModeSwitch.IsToggled = GHApp.ClassicMode || GHApp.TournamentMode;
             casualModeGrid.IsVisible = !GHApp.TournamentMode;
-            casualModeSwitch.IsToggled = GHApp.CasualMode && !GHApp.TournamentMode;
+            CasualModeSwitch.IsToggled = GHApp.CasualMode && !GHApp.TournamentMode;
 
             ResetButton.IsVisible = GHApp.DeveloperMode;
             OptionsButton.IsVisible = GHApp.DeveloperMode;
@@ -845,13 +842,7 @@ namespace GnollHackX
             WaitLayout.IsVisible = false;
         }
 
-        private bool AllowStartExistingGame 
-        {  
-            get 
-            {
-                return GHConstants.AllowRestartGameUponActivityDestruction && GHApp.IsAndroid && GHApp.WasGameSaved && GHApp.GameStarted; 
-            } 
-        }
+        private bool AllowStartExistingGame => GHConstants.AllowRestartGameUponActivityDestruction && GHApp.IsAndroid && GHApp.WasGameSaved && GHApp.GameStarted;
 
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
@@ -1587,7 +1578,7 @@ namespace GnollHackX
 
         //private readonly object _startUpLock = new object();
         private int _finishedLogoFadeIn = 0;
-        private bool FinishedLogoFadeIn { get { return Interlocked.CompareExchange(ref _finishedLogoFadeIn, 0, 0) != 0; } set { Interlocked.Exchange(ref _finishedLogoFadeIn, value ? 1 : 0); } }
+        private bool FinishedLogoFadeIn { get => Interlocked.CompareExchange(ref _finishedLogoFadeIn, 0, 0) != 0; set => Interlocked.Exchange(ref _finishedLogoFadeIn, value ? 1 : 0); }
 #if GNH_MAUI
         IDispatcherTimer _startUpTimer;
 #endif
@@ -2468,18 +2459,18 @@ namespace GnollHackX
                                 handled = true;
                                 break;
                             case (int)'w': //Wizard mode
-                                if (wizardModeSwitch.IsEnabled && wizardModeGrid.IsVisible && StartButtonLayout.IsVisible)
-                                    wizardModeSwitch.IsToggled = !wizardModeSwitch.IsToggled;
+                                if (WizardModeSwitch.IsEnabled && wizardModeGrid.IsVisible && StartButtonLayout.IsVisible)
+                                    WizardModeSwitch.IsToggled = !WizardModeSwitch.IsToggled;
                                 handled = true;
                                 break;
                             case (int)'c': //Classic mode
-                                if (classicModeSwitch.IsEnabled && classicModeGrid.IsVisible && StartButtonLayout.IsVisible)
+                                if (classicModeSwitch.IsEnabled && ClassicModeGrid.IsVisible && StartButtonLayout.IsVisible)
                                     classicModeSwitch.IsToggled = !classicModeSwitch.IsToggled;
                                 handled = true;
                                 break;
                             case (int)'C': //Casual mode
-                                if (casualModeSwitch.IsEnabled && casualModeGrid.IsVisible && StartButtonLayout.IsVisible)
-                                    casualModeSwitch.IsToggled = !casualModeSwitch.IsToggled;
+                                if (CasualModeSwitch.IsEnabled && casualModeGrid.IsVisible && StartButtonLayout.IsVisible)
+                                    CasualModeSwitch.IsToggled = !CasualModeSwitch.IsToggled;
                                 handled = true;
                                 break;
                             case (int)'e':

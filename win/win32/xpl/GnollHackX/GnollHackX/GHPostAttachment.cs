@@ -13,7 +13,6 @@ namespace GnollHackX
         public int AttachmentType { get; set; }
         public bool IsTemporary { get; set; }
 
-
         public GHPostAttachment()
         {
 

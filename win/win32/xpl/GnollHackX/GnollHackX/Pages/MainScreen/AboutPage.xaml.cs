@@ -45,11 +45,11 @@ namespace GnollHackX.Pages.MainScreen
             //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
-                lblHeader.TextColor = GHColors.White;
+                HeaderLabel.TextColor = GHColors.White;
             }
             if (GHApp.IsSteam)
             {
-                btnSponsor.IsVisible = false;
+                SponsorButton.IsVisible = false;
             }
         }
 
@@ -315,7 +315,7 @@ namespace GnollHackX.Pages.MainScreen
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }
         }
@@ -365,58 +365,58 @@ namespace GnollHackX.Pages.MainScreen
                         switch (key)
                         {
                             case (int)'v':
-                                if (btnVersion.IsEnabled && btnVersion.IsVisible && AboutGrid.IsEnabled)
+                                if (VersionButton.IsEnabled && VersionButton.IsVisible && AboutGrid.IsEnabled)
                                     await OpenVersionPage();
                                 handled = true;
                                 break;
                             case (int)'w':
-                                if (btnWiki.IsEnabled && btnWiki.IsVisible && AboutGrid.IsEnabled)
+                                if (WikiButton.IsEnabled && WikiButton.IsVisible && AboutGrid.IsEnabled)
                                     await OpenWikiPage();
                                 handled = true;
                                 break;
                             case (int)'c':
-                                if (btnCreditsX.IsEnabled && btnCreditsX.IsVisible && AboutGrid.IsEnabled)
+                                if (CreditsXButton.IsEnabled && CreditsXButton.IsVisible && AboutGrid.IsEnabled)
                                     await OpenCreditsPage();
                                 handled = true;
                                 break;
                             case (int)'l':
-                                if (btnLicense.IsEnabled && btnLicense.IsVisible && AboutGrid.IsEnabled)
+                                if (LicenseButton.IsEnabled && LicenseButton.IsVisible && AboutGrid.IsEnabled)
                                     await OpenLicensePage();
                                 handled = true;
                                 break;
                             case (int)'s':
-                                if (btnGitHub.IsEnabled && btnGitHub.IsVisible && AboutGrid.IsEnabled)
+                                if (GitHubButton.IsEnabled && GitHubButton.IsVisible && AboutGrid.IsEnabled)
                                     await OpenGitHubPage();
                                 handled = true;
                                 break;
                             case (int)'g':
-                                if (btnWebPage.IsEnabled && btnWebPage.IsVisible && AboutGrid.IsEnabled)
+                                if (WebPageButton.IsEnabled && WebPageButton.IsVisible && AboutGrid.IsEnabled)
                                     await OpenWebPage();
                                 handled = true;
                                 break;
                             case (int)'d':
                             case (int)'S':
-                                if (btnSponsor.IsEnabled && btnSponsor.IsVisible && AboutGrid.IsEnabled)
+                                if (SponsorButton.IsEnabled && SponsorButton.IsVisible && AboutGrid.IsEnabled)
                                     await OpenSponsorPage();
                                 handled = true;
                                 break;
                             case (int)'a':
-                                if (btnViewGHLog.IsEnabled && btnViewGHLog.IsVisible && AboutGrid.IsEnabled)
+                                if (ViewGHLogButton.IsEnabled && ViewGHLogButton.IsVisible && AboutGrid.IsEnabled)
                                     await OpenAppLog();
                                 handled = true;
                                 break;
                             case (int)'p':
-                                if (btnViewPanicLog.IsEnabled && btnViewPanicLog.IsVisible && AboutGrid.IsEnabled)
+                                if (ViewPanicLogButton.IsEnabled && ViewPanicLogButton.IsVisible && AboutGrid.IsEnabled)
                                     await OpenPanicLog();
                                 handled = true;
                                 break;
                             case (int)'m':
-                                if (btnImportExport.IsEnabled && btnImportExport.IsVisible && AboutGrid.IsEnabled)
+                                if (ImportExportButton.IsEnabled && ImportExportButton.IsVisible && AboutGrid.IsEnabled)
                                     await OpenImportExportPage();
                                 handled = true;
                                 break;
                             case (int)'r':
-                                if (btnCrashReport.IsEnabled && btnCrashReport.IsVisible && AboutGrid.IsEnabled)
+                                if (CrashReportButton.IsEnabled && CrashReportButton.IsVisible && AboutGrid.IsEnabled)
                                     await DoCrashReport();
                                 handled = true;
                                 break;

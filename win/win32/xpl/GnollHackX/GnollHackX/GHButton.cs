@@ -89,14 +89,8 @@ namespace GnollHackX
                     return GHUtils.IsCtrl(mappedCmd);
             }
         }
-        public int MappedRawCommand
-        {
-            get => GHApp.MapCommand(RawCommand);
-        }
-        public int MappedGHCommand
-        {
-            get => GHApp.MapCommand(GHCommand);
-        }
+        public int MappedRawCommand => GHApp.MapCommand(RawCommand);
+        public int MappedGHCommand => GHApp.MapCommand(GHCommand);
 
         public GHButton()
         {

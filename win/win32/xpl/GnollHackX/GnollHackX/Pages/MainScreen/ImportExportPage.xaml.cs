@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,7 +41,7 @@ namespace GnollHackX.Pages.MainScreen
             //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
-                lblHeader.TextColor = GHColors.White;
+                HeaderLabel.TextColor = GHColors.White;
                 MessagePopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
             }
         }
@@ -471,7 +471,7 @@ namespace GnollHackX.Pages.MainScreen
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }
         }
@@ -484,8 +484,8 @@ namespace GnollHackX.Pages.MainScreen
             if (answer)
             {
                 GHApp.GnollHackService.ClearSavedGames();
-                btnDeleteSavedGames.Text = "Done";
-                btnDeleteSavedGames.TextColor = GHColors.Red;
+                DeleteSavedGamesButton.Text = "Done";
+                DeleteSavedGamesButton.TextColor = GHColors.Red;
             }
             ImportExportGrid.IsEnabled = true;
         }
@@ -581,13 +581,13 @@ namespace GnollHackX.Pages.MainScreen
 
             if (didDelete && wasSuccess)
             {
-                btnDeleteReplays.Text = "Done";
-                btnDeleteReplays.TextColor = GHColors.Red;
+                DeleteReplaysButton.Text = "Done";
+                DeleteReplaysButton.TextColor = GHColors.Red;
             }
             else if (!wasSuccess)
             {
-                btnDeleteReplays.Text = "Failed";
-                btnDeleteReplays.TextColor = GHColors.Red;
+                DeleteReplaysButton.Text = "Failed";
+                DeleteReplaysButton.TextColor = GHColors.Red;
             }
             ImportExportGrid.IsEnabled = true;
         }
@@ -600,8 +600,8 @@ namespace GnollHackX.Pages.MainScreen
             if (answer)
             {
                 GHApp.GnollHackService.ClearDumplogs();
-                btnDeleteDumplogs.Text = "Done";
-                btnDeleteDumplogs.TextColor = GHColors.Red;
+                DeleteDumplogsButton.Text = "Done";
+                DeleteDumplogsButton.TextColor = GHColors.Red;
             }
             ImportExportGrid.IsEnabled = true;
         }
@@ -614,8 +614,8 @@ namespace GnollHackX.Pages.MainScreen
             if (answer)
             {
                 GHApp.GnollHackService.ClearSnapshots();
-                btnDeleteSnapshots.Text = "Done";
-                btnDeleteSnapshots.TextColor = GHColors.Red;
+                DeleteSnapshotsButton.Text = "Done";
+                DeleteSnapshotsButton.TextColor = GHColors.Red;
             }
             ImportExportGrid.IsEnabled = true;
         }
@@ -697,13 +697,13 @@ namespace GnollHackX.Pages.MainScreen
                     if (Directory.Exists(directory5))
                         Directory.Delete(directory5, true);
 
-                    btnClearPendingTasks.Text = "Done";
-                    btnClearPendingTasks.TextColor = GHColors.Red;
+                    ClearPendingTasksButton.Text = "Done";
+                    ClearPendingTasksButton.TextColor = GHColors.Red;
                 }
                 catch
                 {
-                    btnClearPendingTasks.Text = "Failed";
-                    btnClearPendingTasks.TextColor = GHColors.Red;
+                    ClearPendingTasksButton.Text = "Failed";
+                    ClearPendingTasksButton.TextColor = GHColors.Red;
                 }                
             }
             ImportExportGrid.IsEnabled = true;
@@ -830,7 +830,10 @@ namespace GnollHackX.Pages.MainScreen
         private TaskCompletionSource<bool> _messagePopupTcs;
         private bool _acceptEnterSpaceForOkCancel = false;
 
-        public bool IsPopupOpen() => MessagePopupGrid.IsVisible;
+        public bool IsPopupOpen() 
+        {
+            return MessagePopupGrid.IsVisible;
+        }
 
         public void ClosePopup()
         {

@@ -36,7 +36,7 @@ namespace GnollHackX
         }
 
         private bool _enableLongTap = false;
-        public bool EnableLongTap { get { return _enableLongTap; } set { _enableLongTap = value; if (!value) IsLongTap = false; } }
+        public bool EnableLongTap { get => _enableLongTap; set { _enableLongTap = value; if (!value) IsLongTap = false; } }
         public TimeSpan LongTapDuration = new TimeSpan(0);
 
         private DateTime _pressStart = default;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -194,7 +194,7 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage = null;
 
             bool isDarkMode = GHApp.DarkMode;
-            lblHeader.TextColor = isDarkMode ? GHColors.White : GHColors.Black;
+            HeaderLabel.TextColor = isDarkMode ? GHColors.White : GHColors.Black;
             SetTournamentModeLabelColors(GHApp.TournamentMode);
             SetChildrenDarkModeTextColor(RootLayout, isDarkMode);
             if (isDarkMode)
@@ -2584,7 +2584,7 @@ namespace GnollHackX.Pages.MainScreen
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }
         }
@@ -2971,7 +2971,7 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.DarkMode = e.Value;
                 SetDarkMode(e.Value);
                 bkgView.InvalidateSurface();
-                lblHeader.TextColor = e.Value ? GHColors.White : GHColors.Black;
+                HeaderLabel.TextColor = e.Value ? GHColors.White : GHColors.Black;
                 SetChildrenDarkModeTextColor(RootLayout, e.Value);
                 if (e.Value)
                     PopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;

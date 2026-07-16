@@ -9,10 +9,7 @@ namespace GnollHackX
         public readonly int Status;
         public readonly long DownloadedBytes;
         public readonly long TotalBytes;
-        public double PercentDownloaded
-        {
-            get { return TotalBytes > 0 ? (double)DownloadedBytes / TotalBytes : 0; }
-        }
+        public double PercentDownloaded => TotalBytes > 0 ? (double)DownloadedBytes / TotalBytes : 0;
         public readonly string CompletedAssetPackPath = null;
 
         public AssetPackStatusEventArgs()

@@ -32,7 +32,10 @@ namespace GnollHackX
         }
 
         public int ContainedObjectCount { get { return ContainedObjs.Count; } }
-        public ObjectDataItem GetContainedObjectByIndex(int index) => ContainedObjs[index];
+        public ObjectDataItem GetContainedObjectByIndex(int index) 
+        {
+            return ContainedObjs[index];
+        }
 
         public ObjectDataItem Clone()
         {

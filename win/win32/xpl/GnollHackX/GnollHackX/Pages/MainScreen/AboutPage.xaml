@@ -16,36 +16,36 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" x:Name="lblHeader" Text="About" HorizontalTextAlignment="Center" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
+                <Label Grid.Row="0" x:Name="HeaderLabel" Text="About" HorizontalTextAlignment="Center" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="Center" VerticalOptions="Fill" Margin="0,10,0,30" />
                 <Grid Grid.Row="1" WidthRequest  ="400" HorizontalOptions  ="Center" VerticalOptions="Fill">
                     <ScrollView x:Name="AboutScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
                         <StackLayout x:Name="AboutLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="1">
-                            <controls:CustomImageButton x:Name="btnVersion" Text="Version" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="VersionButton" Text="Version" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             Margin="0,0,0,16" HorizontalOptions="Center" VerticalOptions="Center" Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="False" />
                             
-                            <controls:CustomImageButton x:Name="btnCreditsX" Text="Credits" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="CreditsXButton" Text="Credits" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnCreditsX_Clicked" UseVaryingBackgroundImages ="False" />
-                            <controls:CustomImageButton x:Name="btnLicense" Text="License" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="LicenseButton" Text="License" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnLicense_Clicked" UseVaryingBackgroundImages ="False" />
-                            <controls:CustomImageButton x:Name="btnGitHub" Text="Source Code" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="GitHubButton" Text="Source Code" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnGitHub_Clicked" UseVaryingBackgroundImages ="False" />
-                            <controls:CustomImageButton x:Name="btnWiki" Text="Wiki" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="WikiButton" Text="Wiki" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnWiki_Clicked" UseVaryingBackgroundImages ="False" />
-                            <controls:CustomImageButton x:Name="btnWebPage" Text="www.gnollhack.com" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="WebPageButton" Text="www.gnollhack.com" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnWebPage_Clicked" UseVaryingBackgroundImages ="False" />
-                            <controls:CustomImageButton x:Name="btnSponsor" Text="Sponsor" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="SponsorButton" Text="Sponsor" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSponsor_Clicked" UseVaryingBackgroundImages ="False" />
                             
-                            <controls:CustomImageButton x:Name="btnImportExport" Text="Manage Files" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="ImportExportButton" Text="Manage Files" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             Margin="0,16,0,0" HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnImportExport_Clicked" UseVaryingBackgroundImages ="False" />
-                            <controls:CustomImageButton x:Name="btnCrashReport" Text="Crash Report" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="CrashReportButton" Text="Crash Report" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnCrashReport_Clicked" UseVaryingBackgroundImages ="False" />
-                            <!--<controls:CustomImageButton x:Name="btnDowngrade" Text="Downgrade" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <!--<controls:CustomImageButton x:Name="DowngradeButton" Text="Downgrade" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnDowngrade_Clicked" UseVaryingBackgroundImages ="False" />-->
-                            <controls:CustomImageButton x:Name="btnViewGHLog" Text="View App Log" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="ViewGHLogButton" Text="View App Log" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnViewGHLog_Clicked" UseVaryingBackgroundImages ="False" />
-                            <controls:CustomImageButton x:Name="btnViewPanicLog" Text="View Panic Log" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="ViewPanicLogButton" Text="View Panic Log" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnViewPanicLog_Clicked" UseVaryingBackgroundImages ="False" />
                         </StackLayout>
                     </ScrollView>

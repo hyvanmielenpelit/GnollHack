@@ -84,13 +84,13 @@ namespace GnollHackX
         private Thickness _threadSafeMargin = new Thickness();
         WeakReference<IThreadSafeView> _threadSafeParent = null;
 
-        public double ThreadSafeWidth { get { return Interlocked.CompareExchange(ref _threadSafeWidth, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeWidth, value); } }
-        public double ThreadSafeHeight { get { return Interlocked.CompareExchange(ref _threadSafeHeight, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeHeight, value); } }
-        public double ThreadSafeX { get { return Interlocked.CompareExchange(ref _threadSafeX, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeX, value); } }
-        public double ThreadSafeY { get { return Interlocked.CompareExchange(ref _threadSafeY, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeY, value); } }
-        public bool ThreadSafeIsVisible { get { return Interlocked.CompareExchange(ref _threadSafeIsVisible, 0, 0) != 0; } private set { Interlocked.Exchange(ref _threadSafeIsVisible, value ? 1 : 0); } }
+        public double ThreadSafeWidth { get => Interlocked.CompareExchange(ref _threadSafeWidth, 0.0, 0.0); private set => Interlocked.Exchange(ref _threadSafeWidth, value); }
+        public double ThreadSafeHeight { get => Interlocked.CompareExchange(ref _threadSafeHeight, 0.0, 0.0); private set => Interlocked.Exchange(ref _threadSafeHeight, value); }
+        public double ThreadSafeX { get => Interlocked.CompareExchange(ref _threadSafeX, 0.0, 0.0); private set => Interlocked.Exchange(ref _threadSafeX, value); }
+        public double ThreadSafeY { get => Interlocked.CompareExchange(ref _threadSafeY, 0.0, 0.0); private set => Interlocked.Exchange(ref _threadSafeY, value); }
+        public bool ThreadSafeIsVisible { get => Interlocked.CompareExchange(ref _threadSafeIsVisible, 0, 0) != 0; private set => Interlocked.Exchange(ref _threadSafeIsVisible, value ? 1 : 0); }
         public Thickness ThreadSafeMargin { get { lock (_propertyLock) { return _threadSafeMargin; } } private set { lock (_propertyLock) { _threadSafeMargin = value; } } }
-        public WeakReference<IThreadSafeView> ThreadSafeParent { get { return Interlocked.CompareExchange(ref _threadSafeParent, null, null); } private set { Interlocked.Exchange(ref _threadSafeParent, value); } }
+        public WeakReference<IThreadSafeView> ThreadSafeParent { get => Interlocked.CompareExchange(ref _threadSafeParent, null, null); private set => Interlocked.Exchange(ref _threadSafeParent, value); }
 
     }
 }

@@ -18,26 +18,17 @@ namespace GnollHackX
 
         public int PaddingAmount { get; set; }
 
-        public GHWindow Window { get { return _window; } }
+        public GHWindow Window => _window;
 
-        public string Text { 
-            get 
-            { 
-                return _text;
-            } 
-            set 
-            { 
-                _text = value; 
-            }
-        }
+        public string Text { get => _text; set => _text = value; }
         private List<GHPutStrInstructions> _instructionList;
 
-        public List<GHPutStrInstructions> InstructionList { get { return _instructionList; } }
+        public List<GHPutStrInstructions> InstructionList => _instructionList;
 
         private List<int> _attributeList;
         private List<int> _colorList;
-        public List<int> AttributeList { get { return _attributeList; } }
-        public List<int> ColorList { get { return _colorList; } }
+        public List<int> AttributeList => _attributeList;
+        public List<int> ColorList => _colorList;
 
         public GHPutStrItem(GHWindow window, string str)
         {
@@ -155,42 +146,17 @@ namespace GnollHackX
                     || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN)
                         return 14.5;
 
-
                 return 15.5;
             }
         }
 
-        public double LeftPaddingWidth
-        {
-            get
-            {
-                return (double)(PaddingAmount * 5);
-            }
-        }
+        public double LeftPaddingWidth => (double)(PaddingAmount * 5);
 
-        public double RightPaddingWidth
-        {
-            get
-            {
-                return (double)(PaddingAmount * 5);
-            }
-        }
+        public double RightPaddingWidth => (double)(PaddingAmount * 5);
 
-        public bool LeftVisible
-        {
-            get
-            {
-                return (PaddingAmount > 0);
-            }
-        }
+        public bool LeftVisible => (PaddingAmount > 0);
 
-        public bool RightVisible
-        {
-            get
-            {
-                return (PaddingAmount > 0);
-            }
-        }
+        public bool RightVisible => (PaddingAmount > 0);
 
         public Thickness TextMargin
         {

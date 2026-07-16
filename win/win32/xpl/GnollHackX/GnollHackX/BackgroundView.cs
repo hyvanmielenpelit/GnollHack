@@ -46,7 +46,7 @@ namespace GnollHackX
 
         public BackgroundStyles BackgroundStyle
         {
-            get { return (BackgroundStyles)GetValue(BackgroundStyleProperty); }
+            get => (BackgroundStyles)GetValue(BackgroundStyleProperty);
             set { SetValue(BackgroundStyleProperty, value); InvalidateSurface(); }
         }
 
@@ -55,7 +55,7 @@ namespace GnollHackX
 
         public BackgroundBitmaps BackgroundBitmap
         {
-            get { return (BackgroundBitmaps)GetValue(BackgroundBitmapProperty); }
+            get => (BackgroundBitmaps)GetValue(BackgroundBitmapProperty);
             set { SetValue(BackgroundBitmapProperty, value); InvalidateSurface(); }
         }
 
@@ -64,7 +64,7 @@ namespace GnollHackX
 
         public BorderStyles BorderStyle
         {
-            get { return (BorderStyles)GetValue(BorderStyleProperty); }
+            get => (BorderStyles)GetValue(BorderStyleProperty);
             set { SetValue(BorderStyleProperty, value); InvalidateSurface(); }
         }
 
@@ -444,7 +444,6 @@ namespace GnollHackX
                 }
             }
         }
-
 
         private double _currentWidth = 0;
         private double _currentHeight = 0;

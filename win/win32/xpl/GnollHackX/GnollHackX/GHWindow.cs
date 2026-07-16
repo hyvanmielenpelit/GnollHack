@@ -54,7 +54,7 @@ namespace GnollHackX
         private ghwindow_styles _winStyle = 0;
         private int _glyph;
         private ObjectDataItem _objdata = null;
-        public ObjectDataItem ObjData { get { return _objdata; } set { _objdata = value; } }
+        public ObjectDataItem ObjData { get => _objdata; set => _objdata = value; }
         private GHGame _currentGame;
         private int _winId;
         private bool _useUpperSide;
@@ -70,12 +70,12 @@ namespace GnollHackX
         public int CursX { get; set; }
         public int CursY { get; set; }
         public bool CenterHorizontally { get; set; }
-        public GHWinType WindowType { get { return _winType; } }
-        public ghwindow_styles WindowStyle { get { return _winStyle; } }
-        public int Glyph { get { return _glyph; } }
-        public bool UseUpperSide { get { return _useUpperSide; } }
-        public bool UseSpecialSymbols { get { return _useSpecialSymbols; } }
-        public bool Ascension { get { return _ascension; } }
+        public GHWinType WindowType => _winType;
+        public ghwindow_styles WindowStyle => _winStyle;
+        public int Glyph => _glyph;
+        public bool UseUpperSide => _useUpperSide;
+        public bool UseSpecialSymbols => _useSpecialSymbols;
+        public bool Ascension => _ascension;
         //public GamePage ActiveGamePage { get { return _gamePage; } }
         public bool AutoPlacement { get; set; }
         public bool AutoCarriageReturn
@@ -123,10 +123,10 @@ namespace GnollHackX
                 return res;
             }
         }
-        public int WindowID { get { return _winId; } }
+        public int WindowID => _winId;
 
         private List<GHPutStrItem> _putStrs = new List<GHPutStrItem>();
-        public List<GHPutStrItem> PutStrs { get { return _putStrs; } set { _putStrs = value; } }
+        public List<GHPutStrItem> PutStrs { get => _putStrs; set => _putStrs = value; }
 
         public bool Visible { get; set; }
         private int _width = 0;
@@ -134,8 +134,8 @@ namespace GnollHackX
 
         public GHPadding Padding = new GHPadding(10, 10, 10 , 10);
 
-        public int WidthInChars { get { return _width; } }
-        public int HeightInChars { get { return _height; } }
+        public int WidthInChars => _width;
+        public int HeightInChars => _height;
 
         public void SetWidthHeight(int width, int height, float pixelWidth, float pixelHeight)
         {
@@ -191,8 +191,8 @@ namespace GnollHackX
         }
         public float Left { get; set; }
         public float Top { get; set; }
-        public float UnscaledWidth { get { return _pixelHeight; } }
-        public float UnscaledHeight { get { return _pixelHeight; } }
+        public float UnscaledWidth => _pixelHeight;
+        public float UnscaledHeight => _pixelHeight;
 
         private float _pixelWidth = 0;
         private float _pixelHeight = 0;
@@ -203,10 +203,8 @@ namespace GnollHackX
         //private readonly object _selectedMenuItemsLock = new object();
         public List<GHMenuItem> SelectedMenuItems
         {
-            //get { lock (_selectedMenuItemsLock) { return _selectedMenuItems; } }
-            //set { lock (_selectedMenuItemsLock) { _selectedMenuItems = value; } }
-            get { return Interlocked.CompareExchange(ref _selectedMenuItems, null, null); }
-            set { Interlocked.Exchange(ref _selectedMenuItems, value); }
+            get => Interlocked.CompareExchange(ref _selectedMenuItems, null, null); 
+            set => Interlocked.Exchange(ref _selectedMenuItems, value);
         }
 
         public bool WasCancelled { get; set; } = false;

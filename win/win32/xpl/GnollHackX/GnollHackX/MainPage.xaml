@@ -60,7 +60,7 @@
             <StackLayout x:Name="StartButtonLayout" Spacing="6" Opacity="0" IsVisible="false"
               HorizontalOptions="Center" VerticalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.90, AutoSize, AutoSize"
               AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300" >
-                <Grid x:Name="classicModeGrid" RowSpacing="6" ColumnSpacing="12" IsVisible="True" Margin="0,0,0,10" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
+                <Grid x:Name="ClassicModeGrid" RowSpacing="6" ColumnSpacing="12" IsVisible="True" Margin="0,0,0,10" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
@@ -90,7 +90,7 @@
                             <TapGestureRecognizer Tapped="CasualTapGestureRecognizer_Tapped"/>
                         </gnh:CustomLabel.GestureRecognizers>
                     </gnh:CustomLabel>
-                    <Switch x:Name="casualModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="CasualModeSwitch_Toggled"  />
+                    <Switch x:Name="CasualModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="CasualModeSwitch_Toggled"  />
                 </Grid>
                 <Grid x:Name="wizardModeGrid" RowSpacing="6" ColumnSpacing="12" Margin="0,0,0,15" HorizontalOptions="Center" HeightRequest="32" VerticalOptions="Center">
                     <Grid.RowDefinitions>
@@ -106,7 +106,7 @@
                             <TapGestureRecognizer Tapped="WizTapGestureRecognizer_Tapped"/>
                         </gnh:CustomLabel.GestureRecognizers>
                     </gnh:CustomLabel>
-                    <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="wizardModeSwitch_Toggled" />
+                    <Switch x:Name="WizardModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="wizardModeSwitch_Toggled" />
                 </Grid>
                 <Grid x:Name="tournamentModeGrid" RowSpacing="6" ColumnSpacing="6" Margin="0,0,0,15" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
                     <gnh:CustomLabel x:Name="tournamentModeLabel" Text="Tournament" TextColor="LightGreen" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
@@ -124,10 +124,10 @@
             </StackLayout>
 
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
-                    <Frame x:Name="PopupFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="PopupFrame"  BackgroundColor="{x:Static gnh:GHColors.LessTransparentBlack}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <Label Text="" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
@@ -166,10 +166,10 @@
             </Grid>
 
             <Grid x:Name="AlertGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
-                    <Frame x:Name="AlertFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="AlertFrame"  BackgroundColor="{x:Static gnh:GHColors.LessTransparentBlack}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="AlertLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <Label Text="" x:Name="AlertTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
@@ -200,10 +200,10 @@
             </Grid>
 
             <Grid x:Name="EventGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
-                    <Frame x:Name="EventFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="EventFrame"  BackgroundColor="{x:Static gnh:GHColors.LessTransparentBlack}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="EventLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <Label Text="" x:Name="EventTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
@@ -232,10 +232,10 @@
             </Grid>
 
             <Grid x:Name="TierGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All" IsVisible="False">
                 <Grid x:Name="TierFrameCenterGrid" WidthRequest  ="640" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
-                    <Frame x:Name="TierFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="TierFrame"  BackgroundColor="{x:Static gnh:GHColors.LessTransparentBlack}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <Grid x:Name="TierLayoutGrid" Padding="5" RowSpacing="0"  HorizontalOptions="Center" VerticalOptions="Center">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -277,10 +277,10 @@
             </Grid>
 
             <Grid x:Name="AchievementGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid x:Name="AchievementFrameCenterGrid" WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
-                    <Frame x:Name="AchievementFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="AchievementFrame"  BackgroundColor="{x:Static gnh:GHColors.LessTransparentBlack}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <Grid x:Name="AchievementMainLayout" Padding="5" RowSpacing="0"  HorizontalOptions="Center" VerticalOptions="Center">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -314,10 +314,10 @@
             </Grid>
             
             <Grid x:Name="PendingTasksGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
-                    <Frame x:Name="PendingTasksFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="PendingTasksFrame"  BackgroundColor="{x:Static gnh:GHColors.LessTransparentBlack}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="PendingTasksLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <Label Text="Pending Tasks" x:Name="PendingTasksTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="Orange"
@@ -347,7 +347,7 @@
                 </Grid.GestureRecognizers>
             </Grid>
         </AbsoluteLayout>
-        <AbsoluteLayout x:Name="WaitLayout" IsVisible="False" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000">
+        <AbsoluteLayout x:Name="WaitLayout" IsVisible="False" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.DarkerPageOverlayBlack}">
             <Label x:Name="WaitLabel" Text="Please Wait..." FontFamily="Immortal" FontSize="30" TextColor="White"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All" />
             <AbsoluteLayout.GestureRecognizers>

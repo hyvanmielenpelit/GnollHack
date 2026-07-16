@@ -40,8 +40,8 @@ namespace GnollHackX.Pages.MainScreen
             //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
-                lblHeader.TextColor = GHColors.White;
-                lblSubtitle.TextColor = GHColors.White;
+                HeaderLabel.TextColor = GHColors.White;
+                SubtitleLabel.TextColor = GHColors.White;
                 EmptyLabel.TextColor = GHColors.White;
             }
         }
@@ -92,7 +92,7 @@ namespace GnollHackX.Pages.MainScreen
 
             int maxConsultations = GHApp.GnollHackService.GetMaxMajorConsultations();
             List<StoredManual> consultationlist = _consultations.Values.ToList();
-            lblSubtitle.Text = "Received " + consultationlist.Count + " of " + maxConsultations + " consultations";
+            SubtitleLabel.Text = "Received " + consultationlist.Count + " of " + maxConsultations + " consultations";
             if (consultationlist.Count > 0)
             {
                 Comparison<StoredManual> comp = new Comparison<StoredManual>((m1, m2) => { return string.Compare(m1.Name, m2.Name); });
@@ -200,7 +200,7 @@ namespace GnollHackX.Pages.MainScreen
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 OracleLayout.Margin = UIUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }

@@ -14,9 +14,37 @@ namespace GnollHackX
     public static class GHColors
     {
         public static Color MsgBoxDarkModeBkgColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
-        public static Color MsgBoxLightModeBkgColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x99 / (double)0xFF);
-        public static Color PickerDarkModeBkgColor = Color.FromRgba(1, 1, 1, 0.15);
-        public static Color PickerLightModeBkgColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x22 / (double)0xFF);
+        public static Color MsgBoxLightModeBkgColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x99 / 255.0);
+        public static Color PickerDarkModeBkgColor = Color.FromRgba(1.0, 1.0, 1.0, 0.15);
+        public static Color PickerLightModeBkgColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x22 / 255.0);
+        
+        public static Color LessTransparentBlack = Color.FromRgba(0.0, 0.0, 0.0, (double)0x99 / 255.0);
+        public static Color PageOverlayBlack = Color.FromRgba(0.0, 0.0, 0.0, (double)0x66 / 255.0);
+        public static Color VeryTransparentBlack = Color.FromRgba(0.0, 0.0, 0.0, (double)0x1F / 255.0);
+        public static Color DarkerPageOverlayBlack = Color.FromRgba(0.0, 0.0, 0.0, (double)0xAA / 255.0);
+        public static Color EntryBackgroundBlack = Color.FromRgba(0.0, 0.0, 0.0, (double)0x40 / 255.0);
+        public static Color SelectionHighlightOrange = Color.FromRgba((double)0xFF / 255.0, (double)0x88 / 255.0, 0.0, (double)0x88 / 255.0);
+        public static Color ButtonTextTintDarkRed = Color.FromRgba(1.0, (double)0xAA / 255.0, (double)0xAA / 255.0, 1.0);
+        public static Color DarkBackgroundBlack = Color.FromRgba((double)0x11 / 255.0, (double)0x11 / 255.0, (double)0x11 / 255.0, 1.0);
+        public static Color PlaceholderGray = Color.FromRgba((double)0x66 / 255.0, (double)0x66 / 255.0, (double)0x66 / 255.0, 1.0);
+        public static Color ReplayFrameBlack = Color.FromRgba(0.0, 0.0, 0.0, (double)0x88 / 255.0);
+        public static Color LightTransparentGray = Color.FromRgba((double)0x40 / 255.0, (double)0x40 / 255.0, (double)0x40 / 255.0, (double)0x20 / 255.0);
+        public static Color SliderThumbGray = Color.FromRgba((double)0xEA / 255.0, (double)0xEA / 255.0, (double)0xEA / 255.0, 1.0);
+        public static Color SliderMinimumTrackBlue = Color.FromRgba((double)0x01 / 255.0, (double)0x7A / 255.0, 1.0, 1.0);
+        public static Color SliderMaximumTrackGray = Color.FromRgba((double)0x66 / 255.0, (double)0x66 / 255.0, (double)0x66 / 255.0, (double)0x70 / 255.0);
+
+        public static Color BrighterRed = Color.FromRgba((double)0xFF / 255.0, 32.0 / 255.0, 32.0 / 255.0, 1.0);
+        public static Color BrighterGreen = Color.FromRgba(0.0, (double)0xFF / 255.0, 0.0, 1.0);
+        public static Color BrighterBlue = Color.FromRgba(112.0 / 255.0, 112.0 / 255.0, (double)0xFF / 255.0, 1.0);
+        public static Color BrighterBrown = Color.FromRgba(210.0 / 255.0, 128.0 / 255.0, 32.0 / 255.0, 1.0);
+        public static Color BrightBlue = Color.FromRgba(180.0 / 255.0, 200.0 / 255.0, (double)0xFF / 255.0, 1.0);
+        public static Color BrightCyan = Color.FromRgba(165.0 / 255.0, 255.0 / 255.0, (double)0xFF / 255.0, 1.0);
+        public static Color TitleGoldColor = Color.FromRgba((double)0xD4 / 255.0, (double)0xA0 / 255.0, (double)0x17 / 255.0, 1.0);
+        public static Color SemiDarkGreen = Color.FromRgba(0.0, 0.40, 0.0, 1.0);
+        public static Color DarkGreen = Color.FromRgba(0.0, 0.25, 0.0, 1.0);
+        public static Color DarkerGray = Color.FromRgba(0.2, 0.2, 0.2, 1.0);
+        public static Color LighterGray = Color.FromRgba(0.8, 0.8, 0.8, 1.0);
+        public static Color LightYellow = Color.FromRgba(0.9, 0.9, 0.5, 1.0);
 
 #if GNH_MAUI
         public static Color White = Colors.White;
@@ -39,22 +67,6 @@ namespace GnollHackX
         public static Color Beige = Colors.Beige;
         public static Color Gray = Colors.Gray;
         public static Color Transparent = Colors.Transparent;
-        public static Color LessTransparentBlack = new Color(0, 0, 0, (float)0x99 / 255);
-        public static Color SemiTransparentBlack = new Color(0, 0, 0, (float)0x66 / 255);
-        public static Color VeryTransparentBlack = new Color(0, 0, 0, (float)0x1F / 255);
-
-        public static Color BrighterRed = new Color((float)0xFF / 255, 32.0f / 255, 32.0f / 255);
-        public static Color BrighterGreen = new Color(0, (float)0xFF / 255, 0);
-        public static Color BrighterBlue = new Color(112.0f / 255, 112.0f / 255, (float)0xFF / 255);
-        public static Color BrighterBrown = new Color(210.0f / 255, 128.0f / 255, 32.0f / 255);
-        public static Color BrightBlue = new Color(180.0f / 255, 200 / 255, (float)0xFF / 255);
-        public static Color BrightCyan = new Color(165.0f / 255, 255 / 255, (float)0xFF / 255);
-        public static Color TitleGoldColor = new Color((float)0xD4 / 255, (float)0xA0 / 255, (float)0x17 / 255);
-        public static Color SemiDarkGreen = new Color(0, 0.40f, 0);
-        public static Color DarkGreen = new Color(0, 0.25f, 0);
-        public static Color DarkerGray = new Color(0.2f, 0.2f, 0.2f);
-        public static Color LighterGray = new Color(0.8f, 0.8f, 0.8f);
-        public static Color LightYellow = new Color(0.9f, 0.9f, 0.5f);
 #else
         public static Color White = Color.White;
         public static Color Black = Color.Black;
@@ -76,22 +88,6 @@ namespace GnollHackX
         public static Color Beige = Color.Beige;
         public static Color Gray = Color.Gray;
         public static Color Transparent = Color.Transparent;
-        public static Color LessTransparentBlack = new Color(0, 0, 0, (double)0x99 / 255.0);
-        public static Color SemiTransparentBlack = new Color(0, 0, 0, (double)0x66 / 255.0);
-        public static Color VeryTransparentBlack = new Color(0, 0, 0, (double)0x1F / 255.0);
-
-        public static Color BrighterRed = new Color((double)0xFF / 255.0, 32.0 / 255.0, 32.0 / 255.0);
-        public static Color BrighterGreen = new Color(0, (double)0xFF / 255, 0);
-        public static Color BrighterBlue = new Color(112.0 / 255.0, 112.0 / 255.0, (double)0xFF / 255.0);
-        public static Color BrighterBrown = new Color(210.0 / 255.0, 128.0 / 255.0, 32.0 / 255.0);
-        public static Color BrightBlue = new Color(180.0 / 255.0, 200.0 / 255.0, (double)0xFF / 255.0);
-        public static Color BrightCyan = new Color(165.0 / 255.0, 255.0 / 255.0, (double)0xFF / 255.0);
-        public static Color TitleGoldColor = new Color((double)0xD4 / 255, (double)0xA0 / 255, (double)0x17 / 255);
-        public static Color SemiDarkGreen = new Color(0, 0.40, 0);
-        public static Color DarkGreen = new Color(0, 0.25, 0);
-        public static Color DarkerGray = new Color(0.2, 0.2, 0.2);
-        public static Color LighterGray = new Color(0.8, 0.8, 0.8);
-        public static Color LightYellow = new Color(0.9, 0.9, 0.5);
 #endif
     }
 }

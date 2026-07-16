@@ -45,25 +45,25 @@ namespace GnollHackX.Pages.Game
             _gamePage = gamePage;
             if (gamePage.EnableCasualMode)
             {
-                btnSave.Text = "Save Game";
-                btnQuit.Text = "Quit Game";
+                SaveButton.Text = "Save Game";
+                QuitButton.Text = "Quit Game";
             }
             else if (!gamePage.EnableWizardMode)
             {
-                btnQuit.Text = "Delete Character";
+                QuitButton.Text = "Delete Character";
             }
 
             if (gamePage.GameEnded)
             {
-                btnQuit.Text = "Finish Game Over";
-                btnSave.TextColor = GHColors.Gray;
-                btnSave.IsEnabled = false;
-                btnOptions.TextColor = GHColors.Gray;
-                btnOptions.IsEnabled = false;
+                QuitButton.Text = "Finish Game Over";
+                SaveButton.TextColor = GHColors.Gray;
+                SaveButton.IsEnabled = false;
+                OptionsButton.TextColor = GHColors.Gray;
+                OptionsButton.IsEnabled = false;
             }
 
-            btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
-            btnGC.IsVisible = GHApp.DeveloperMode && GHApp.DebugLogMessages && GHApp.LowLevelLogging; /* Just do not show almost ever, since there is little space  */
+            OptionsButton.IsVisible = MessagesButton.IsVisible = GHApp.DeveloperMode;
+            GCButton.IsVisible = GHApp.DeveloperMode && GHApp.DebugLogMessages && GHApp.LowLevelLogging; /* Just do not show almost ever, since there is little space  */
             UpdateDarknessMode();
         }
 
@@ -71,20 +71,20 @@ namespace GnollHackX.Pages.Game
         {
             if(isLimited)
             {
-                btnSave.IsVisible = false;
-                btnQuit.IsVisible = false;
-                btnSettings.IsVisible = false;
-                btnOptions.IsVisible = false;
-                btnMessages.IsVisible = false;
-                btnGC.IsVisible = false;
-                btnVersion.IsVisible = false;
-                btnTips.IsVisible = false;
+                SaveButton.IsVisible = false;
+                QuitButton.IsVisible = false;
+                SettingsButton.IsVisible = false;
+                OptionsButton.IsVisible = false;
+                MessagesButton.IsVisible = false;
+                GCButton.IsVisible = false;
+                VersionButton.IsVisible = false;
+                TipsButton.IsVisible = false;
             }
         }
 
         public void UpdateDarknessMode()
         {
-            lblHeader.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            HeaderLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             bkgView.InvalidateSurface();
         }
 
@@ -98,8 +98,8 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
-            //GHApp.AddSentryBreadcrumb(btnSave.Text + " menu button pressed.", GHConstants.SentryGnollHackButtonClickCategoryName);
-            _gamePage.GenericButton_Clicked(btnSave, EventArgs.Empty, GHApp.MapCommand(GHUtils.Meta('s')));
+            //GHApp.AddSentryBreadcrumb(SaveButton.Text + " menu button pressed.", GHConstants.SentryGnollHackButtonClickCategoryName);
+            _gamePage.GenericButton_Clicked(SaveButton, EventArgs.Empty, GHApp.MapCommand(GHUtils.Meta('s')));
             await GHApp.PopModalPageAsync();
         }
 
@@ -113,8 +113,8 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
-            //GHApp.AddSentryBreadcrumb(btnQuit.Text + " menu button pressed.", GHConstants.SentryGnollHackButtonClickCategoryName);
-            _gamePage.GenericButton_Clicked(btnQuit, EventArgs.Empty, _gamePage.GameEnded ? 'q' : GHApp.MapCommand(GHUtils.Meta('q')));
+            //GHApp.AddSentryBreadcrumb(QuitButton.Text + " menu button pressed.", GHConstants.SentryGnollHackButtonClickCategoryName);
+            _gamePage.GenericButton_Clicked(QuitButton, EventArgs.Empty, _gamePage.GameEnded ? 'q' : GHApp.MapCommand(GHUtils.Meta('q')));
             await GHApp.PopModalPageAsync();
         }
 
@@ -161,7 +161,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             GHApp.DebugWriteRestart("ProfilingStopwatch.Restart: Options");
             GHApp.CollectNursery();
-            _gamePage.GenericButton_Clicked(btnOptions, EventArgs.Empty, GHApp.MapCommand('O'));
+            _gamePage.GenericButton_Clicked(OptionsButton, EventArgs.Empty, GHApp.MapCommand('O'));
             await GHApp.PopModalPageAsync();
         }
 
@@ -175,7 +175,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CollectNursery();
-            _gamePage.GenericButton_Clicked(btnSnapshot, EventArgs.Empty, GHApp.MapCommand(GHUtils.Meta(29)));
+            _gamePage.GenericButton_Clicked(SnapshotButton, EventArgs.Empty, GHApp.MapCommand(GHUtils.Meta(29)));
             await GHApp.PopModalPageAsync();
         }
 
@@ -226,8 +226,8 @@ namespace GnollHackX.Pages.Game
         public void UpdateLayout()
         {
             MainLayout.IsEnabled = true;
-            btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
-            btnGC.IsVisible = GHApp.DeveloperMode && GHApp.DebugLogMessages;
+            OptionsButton.IsVisible = MessagesButton.IsVisible = GHApp.DeveloperMode;
+            GCButton.IsVisible = GHApp.DeveloperMode && GHApp.DebugLogMessages;
         }
 
         private bool _backPressed = false;
@@ -262,15 +262,15 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            btnGC.Text = "Collecting...";
-            btnGC.TextColor = GHColors.Yellow;
+            GCButton.Text = "Collecting...";
+            GCButton.TextColor = GHColors.Yellow;
 
             GHApp.DebugWriteRestart("Garbage Collection Start");
             GHApp.CollectGarbage();
             GHApp.DebugWriteProfilingStopwatchTimeAndStop("Garbage Collection End");
 
-            btnGC.Text = "Done";
-            btnGC.TextColor = GHColors.Red;
+            GCButton.Text = "Done";
+            GCButton.TextColor = GHColors.Red;
             MainLayout.IsEnabled = true;
         }
 
@@ -299,7 +299,7 @@ namespace GnollHackX.Pages.Game
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
             }
         }
 
@@ -410,49 +410,49 @@ namespace GnollHackX.Pages.Game
                             case (int)'s':
                                 if(isMeta)
                                 {
-                                    if (btnSave.IsEnabled && btnSave.IsVisible && MainLayout.IsEnabled)
+                                    if (SaveButton.IsEnabled && SaveButton.IsVisible && MainLayout.IsEnabled)
                                         await CloseAndSaveGame();
                                     handled = true;
                                 }
                                 else if (!isCtrl)
                                 {
-                                    if (btnSettings.IsEnabled && btnSettings.IsVisible && MainLayout.IsEnabled)
+                                    if (SettingsButton.IsEnabled && SettingsButton.IsVisible && MainLayout.IsEnabled)
                                         await OpenSettingsPage();
                                     handled = true;
                                 }
                                 break;
                             case (int)'o':
-                                if (btnOptions.IsEnabled && btnOptions.IsVisible && MainLayout.IsEnabled)
+                                if (OptionsButton.IsEnabled && OptionsButton.IsVisible && MainLayout.IsEnabled)
                                     await CloseAndShowOptions();
                                 handled = true;
                                 break;
                             case (int)'v':
-                                if (btnVersion.IsEnabled && btnVersion.IsVisible && MainLayout.IsEnabled)
+                                if (VersionButton.IsEnabled && VersionButton.IsVisible && MainLayout.IsEnabled)
                                     await OpenVersionPage();
                                 handled = true;
                                 break;
                             case (int)'t':
-                                if (btnSnapshot.IsEnabled && btnSnapshot.IsVisible && MainLayout.IsEnabled)
+                                if (SnapshotButton.IsEnabled && SnapshotButton.IsVisible && MainLayout.IsEnabled)
                                     await TakeSnapshot();
                                 handled = true;
                                 break;
                             case (int)'l':
-                                if (btnLibrary.IsEnabled && btnLibrary.IsVisible && MainLayout.IsEnabled)
+                                if (LibraryButton.IsEnabled && LibraryButton.IsVisible && MainLayout.IsEnabled)
                                     await OpenLibraryPage();
                                 handled = true;
                                 break;
                             case (int)'d':
-                                if (btnDelphi.IsEnabled && btnDelphi.IsVisible && MainLayout.IsEnabled)
+                                if (DelphiButton.IsEnabled && DelphiButton.IsVisible && MainLayout.IsEnabled)
                                     await OpenOraclePage();
                                 handled = true;
                                 break;
                             case (int)'w':
-                                if (btnWiki.IsEnabled && btnWiki.IsVisible && MainLayout.IsEnabled)
+                                if (WikiButton.IsEnabled && WikiButton.IsVisible && MainLayout.IsEnabled)
                                     await OpenWikiPage();
                                 handled = true;
                                 break;
                             case (int)'u':
-                                if (btnTips.IsEnabled && btnTips.IsVisible && MainLayout.IsEnabled)
+                                if (TipsButton.IsEnabled && TipsButton.IsVisible && MainLayout.IsEnabled)
                                     await CloseAndShowGUITips();
                                 handled = true;
                                 break;
@@ -487,18 +487,18 @@ namespace GnollHackX.Pages.Game
                     {
                         if (key == GHSpecialKey.Escape)
                         {
-                            if (btnBackToGame.IsEnabled && btnBackToGame.IsVisible && MainLayout.IsEnabled)
+                            if (BackToGameButton.IsEnabled && BackToGameButton.IsVisible && MainLayout.IsEnabled)
                                 await BackToGame();
                         }
                         else if (isMeta && key == GHSpecialKey.A + 's' - 'a')
                         {
-                            if (btnSave.IsEnabled && btnSave.IsVisible && MainLayout.IsEnabled)
+                            if (SaveButton.IsEnabled && SaveButton.IsVisible && MainLayout.IsEnabled)
                                 await CloseAndSaveGame();
                             handled = true;
                         }
                         else if (isMeta && key == GHSpecialKey.A + 'q' - 'a')
                         {
-                            if (btnQuit.IsEnabled && btnQuit.IsVisible && MainLayout.IsEnabled)
+                            if (QuitButton.IsEnabled && QuitButton.IsVisible && MainLayout.IsEnabled)
                                 await CloseAndQuitGame();
                             handled = true;
                         }

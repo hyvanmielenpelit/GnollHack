@@ -22,16 +22,16 @@
                 </controls:SwitchableCanvasView>
                 <Frame x:Name="FadeFrame" IsVisible="False" InputTransparent="True" BackgroundColor="Black" BorderColor="Black" CornerRadius="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
 
-                <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="Start" />
-                <controls:LabeledImageButton x:Name="lAbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="Start" />
+                <controls:LabeledImageButton x:Name="WornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="Start" />
+                <controls:LabeledImageButton x:Name="AbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="Start" />
 
                 <Label x:Name="PleaseWaitLabel" Text="Please wait..." IsVisible="False" FontFamily="Diablo" TextColor="White" FontSize="36"
                        HorizontalOptions="Center" HorizontalTextAlignment="Center" 
                        VerticalOptions="Center" VerticalTextAlignment="Center"/>
 
-                <Frame x:Name="MessageFilterFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Start" >
+                <Frame x:Name="MessageFilterFrame" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" BorderColor="Black" CornerRadius="10" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Start" >
                     <StackLayout> <!-- Some versions of MAUI do not support placing Entrys in Frames -->
-                        <Entry x:Name="MessageFilterEntry" FontFamily="Underwood" FontSize="18" TextColor="White" BackgroundColor="#66000000" Placeholder="Search" PlaceholderColor="LightGray"
+                        <Entry x:Name="MessageFilterEntry" FontFamily="Underwood" FontSize="18" TextColor="White" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" Placeholder="Search" PlaceholderColor="LightGray"
                                    WidthRequest="200" Keyboard="Plain" HorizontalTextAlignment="Center" TextChanged="MessageFilterEntry_TextChanged" />
                     </StackLayout>
                 </Frame>
@@ -102,9 +102,9 @@
                         HorizontalOptions="Start" VerticalOptions="End">
                         <controls:SimpleImageButton x:Name="ToggleMessageNumberButton" BtnClicked="ToggleMessageNumberButton_Clicked" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" />
                     </gnh:MeasurableStackLayout>
-                    <gnh:MeasurableGrid Grid.Row="2" x:Name="ButtonRowGrid" HorizontalOptions="Fill" VerticalOptions="End" BackgroundColor="#66000000">
-                        <controls:LabeledImageButton x:Name="lRowAbilitiesButton" IsVisible="False" LblText="Stats" BtnLetter="A" ImgSourcePath="resource://GnollHackX.Assets.UI.home.png" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="End" />
-                        <controls:LabeledImageButton x:Name="lRowWornItemsButton" IsVisible="False" LblText="Equipment" BtnLetter="]" ImgSourcePath="resource://GnollHackX.Assets.UI.worn.png" ImgHighFilterQuality="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="End" />
+                    <gnh:MeasurableGrid Grid.Row="2" x:Name="ButtonRowGrid" HorizontalOptions="Fill" VerticalOptions="End" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}">
+                        <controls:LabeledImageButton x:Name="RowAbilitiesButton" IsVisible="False" LblText="Stats" BtnLetter="A" ImgSourcePath="resource://GnollHackX.Assets.UI.home.png" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="End" />
+                        <controls:LabeledImageButton x:Name="RowWornItemsButton" IsVisible="False" LblText="Equipment" BtnLetter="]" ImgSourcePath="resource://GnollHackX.Assets.UI.worn.png" ImgHighFilterQuality="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="End" />
                         <gnh:MeasurableStackLayout x:Name="ButtonRowStack" IsVisible="True" HorizontalOptions="Center" VerticalOptions="Center" Orientation="Vertical" Spacing="6">
                             <Grid x:Name="UpperCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="End" >
                                 <Grid.RowDefinitions>
@@ -119,13 +119,13 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <controls:LabeledImageButton Grid.Column="0" x:Name="lInventoryButton" LblText="Inventory" BtnLetter="i" ImgSourcePath="resource://GnollHackX.Assets.UI.inventory.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="1" x:Name="lSearchButton" LblText="Search" BtnLetter="s" ImgSourcePath="resource://GnollHackX.Assets.UI.search.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="2" x:Name="lWaitButton" LblText="Wait" BtnLetter="." ImgSourcePath="resource://GnollHackX.Assets.UI.wait.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="3" x:Name="lDropManyButton" LblText="Drop Items" BtnLetter="%" ImgSourcePath="resource://GnollHackX.Assets.UI.dropmany.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="4" x:Name="lChatButton" LblText="Chat" BtnLetter="C" ImgSourcePath="resource://GnollHackX.Assets.UI.chat.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="5" x:Name="lKickButton" LblText="Kick" BtnLetter="d" BtnCtrl="True" ImgSourcePath="resource://GnollHackX.Assets.UI.kick.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="6" x:Name="lRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackX.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="0" x:Name="InventoryButton" LblText="Inventory" BtnLetter="i" ImgSourcePath="resource://GnollHackX.Assets.UI.inventory.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="1" x:Name="SearchButton" LblText="Search" BtnLetter="s" ImgSourcePath="resource://GnollHackX.Assets.UI.search.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="2" x:Name="WaitButton" LblText="Wait" BtnLetter="." ImgSourcePath="resource://GnollHackX.Assets.UI.wait.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="3" x:Name="DropManyButton" LblText="Drop Items" BtnLetter="%" ImgSourcePath="resource://GnollHackX.Assets.UI.dropmany.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="4" x:Name="ChatButton" LblText="Chat" BtnLetter="C" ImgSourcePath="resource://GnollHackX.Assets.UI.chat.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="5" x:Name="KickButton" LblText="Kick" BtnLetter="d" BtnCtrl="True" ImgSourcePath="resource://GnollHackX.Assets.UI.kick.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="6" x:Name="RepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackX.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
                             </Grid>
                             <Grid x:Name="LowerCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="Start">
                                 <Grid.RowDefinitions>
@@ -140,13 +140,13 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <controls:LabeledImageButton Grid.Column="0" x:Name="lSwapWeaponButton" LblText="Swap" BtnLetter="x" ImgSourcePath="resource://GnollHackX.Assets.UI.swap.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="1" x:Name="lFireButton" LblText="Fire" BtnLetter="f" ImgSourcePath="resource://GnollHackX.Assets.UI.fire.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="2" x:Name="lThrowButton" LblText="Throw" BtnLetter="t" ImgSourcePath="resource://GnollHackX.Assets.UI.throw.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="3" x:Name="lCastButton" LblText="Cast" BtnLetter="Z" ImgSourcePath="resource://GnollHackX.Assets.UI.cast.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="4" x:Name="lZapButton" LblText="Zap" BtnLetter="z" ImgSourcePath="resource://GnollHackX.Assets.UI.zap.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="5" x:Name="lApplyButton" LblText="Apply" BtnLetter="a" ImgSourcePath="resource://GnollHackX.Assets.UI.apply.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="6" x:Name="lMoreButton" LblText="More" ImgSourcePath="resource://GnollHackX.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="0" x:Name="SwapWeaponButton" LblText="Swap" BtnLetter="x" ImgSourcePath="resource://GnollHackX.Assets.UI.swap.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="1" x:Name="FireButton" LblText="Fire" BtnLetter="f" ImgSourcePath="resource://GnollHackX.Assets.UI.fire.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="2" x:Name="ThrowButton" LblText="Throw" BtnLetter="t" ImgSourcePath="resource://GnollHackX.Assets.UI.throw.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="3" x:Name="CastButton" LblText="Cast" BtnLetter="Z" ImgSourcePath="resource://GnollHackX.Assets.UI.cast.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="4" x:Name="ZapButton" LblText="Zap" BtnLetter="z" ImgSourcePath="resource://GnollHackX.Assets.UI.zap.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="5" x:Name="ApplyButton" LblText="Apply" BtnLetter="a" ImgSourcePath="resource://GnollHackX.Assets.UI.apply.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="6" x:Name="MoreButton" LblText="More" ImgSourcePath="resource://GnollHackX.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
                             </Grid>
                         </gnh:MeasurableStackLayout>
                         <gnh:MeasurableStackLayout x:Name="SimpleButtonRowStack" IsVisible="False" HorizontalOptions="Center" VerticalOptions="Center" Orientation="Vertical" Spacing="6">
@@ -163,13 +163,13 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <controls:LabeledImageButton Grid.Column="0" x:Name="lSimpleInventoryButton" LblText="Inventory" BtnLetter="i" ImgSourcePath="resource://GnollHackX.Assets.UI.inventory.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="1" x:Name="lSimpleSearchButton" LblText="Search" BtnLetter="s" ImgSourcePath="resource://GnollHackX.Assets.UI.search.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="2" x:Name="lSimpleSwapWeaponButton" LblText="Swap" BtnLetter="x" ImgSourcePath="resource://GnollHackX.Assets.UI.swap.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="3" x:Name="lSimpleKickButton" LblText="Kick" BtnLetter="d" BtnCtrl="True" ImgSourcePath="resource://GnollHackX.Assets.UI.kick.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="4" x:Name="lSimpleCastButton" LblText="Cast" BtnLetter="Z" ImgSourcePath="resource://GnollHackX.Assets.UI.cast.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="5" x:Name="lSimpleRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackX.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
-                                <controls:LabeledImageButton Grid.Column="6" x:Name="lSimpleMoreButton" LblText="More" ImgSourcePath="resource://GnollHackX.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="0" x:Name="SimpleInventoryButton" LblText="Inventory" BtnLetter="i" ImgSourcePath="resource://GnollHackX.Assets.UI.inventory.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="1" x:Name="SimpleSearchButton" LblText="Search" BtnLetter="s" ImgSourcePath="resource://GnollHackX.Assets.UI.search.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="2" x:Name="SimpleSwapWeaponButton" LblText="Swap" BtnLetter="x" ImgSourcePath="resource://GnollHackX.Assets.UI.swap.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="3" x:Name="SimpleKickButton" LblText="Kick" BtnLetter="d" BtnCtrl="True" ImgSourcePath="resource://GnollHackX.Assets.UI.kick.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="4" x:Name="SimpleCastButton" LblText="Cast" BtnLetter="Z" ImgSourcePath="resource://GnollHackX.Assets.UI.cast.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="5" x:Name="SimpleRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackX.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
+                                <controls:LabeledImageButton Grid.Column="6" x:Name="SimpleMoreButton" LblText="More" ImgSourcePath="resource://GnollHackX.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
                             </Grid>
                         </gnh:MeasurableStackLayout>
                         <Grid.GestureRecognizers>
@@ -178,7 +178,7 @@
                     </gnh:MeasurableGrid>
                 </gnh:MeasurableGrid>
             </Grid>
-            <gnh:MeasurableGrid x:Name="MenuGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">
+            <gnh:MeasurableGrid x:Name="MenuGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.DarkerPageOverlayBlack}" IsVisible="False">
                 <gnh:BackgroundView x:Name="MenuBackground" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
                 <Grid x:Name="MenuStack" RowDefinitions="Auto,*,Auto" RowSpacing="6" ColumnSpacing="0" Margin="0" Padding="0" VerticalOptions="Fill" HorizontalOptions="Fill">
                     <Grid Grid.Row="0" >
@@ -221,9 +221,9 @@
                     </Grid.GestureRecognizers>
                 </Grid>
                 <Grid x:Name="MenuCountGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-                         BackgroundColor="#66000000" IsVisible="False">
+                         BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" IsVisible="False">
                     <Grid x:Name="MenuCountWidthGrid" WidthRequest  ="360" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Frame x:Name="MenuCountFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                        <Frame x:Name="MenuCountFrame" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                             <StackLayout Spacing="6" x:Name="MenuCountLayout" HorizontalOptions="Fill" VerticalOptions="Center">
                                 <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="Center" TextColor="White" />
                                 <Picker x:Name="CountPicker"
@@ -280,7 +280,7 @@
                     <TapGestureRecognizer />
                 </gnh:MeasurableGrid.GestureRecognizers>
             </gnh:MeasurableGrid>
-            <gnh:MeasurableGrid x:Name="TextGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">
+            <gnh:MeasurableGrid x:Name="TextGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.DarkerPageOverlayBlack}" IsVisible="False">
                 <gnh:BackgroundView x:Name="TextBackground"  BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Small" HorizontalOptions="Fill" VerticalOptions="Fill"/>
                 <Grid x:Name="TextStack" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <gnh:GHCachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
@@ -291,11 +291,11 @@
                 </gnh:MeasurableGrid.GestureRecognizers>
             </gnh:MeasurableGrid>
             <Grid x:Name="GetLineGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-                         Padding="10" BackgroundColor="#66000000" IsVisible="False">
+                         Padding="10" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" IsVisible="False">
                 <controls:SimpleImageButton x:Name="GetLineMenuButton" IsVisible="False" ImgSourcePath="resource://GnollHackX.Assets.UI.wiki.png" WidthRequest="50" HeightRequest="50" 
                                                    BtnClicked="GetLineMenuButton_BtnClicked" HorizontalOptions="End" VerticalOptions="Start" />
                 <Grid x:Name="GetLineWidthGrid" WidthRequest  ="440" HorizontalOptions  ="Center" VerticalOptions="Start" Margin="0,50,0,10" >
-                    <Frame x:Name="GetLineFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="GetLineFrame" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout x:Name="GetLineLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="Center" TextColor="White">
                                 <Label.GestureRecognizers>
@@ -303,7 +303,7 @@
                                 </Label.GestureRecognizers>
                             </Label>
                             <StackLayout Spacing="6" Orientation="Horizontal" HorizontalOptions="Center">
-                                <Entry x:Name="GetLineEntryText" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
+                                <Entry x:Name="GetLineEntryText" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="{x:Static gnh:GHColors.EntryBackgroundBlack}"
                                        Keyboard="Plain" HorizontalTextAlignment="Center" FontSize="20" TextChanged="GetLineEntryText_TextChanged" Completed="GetLineEntryText_Completed" />
                                 <controls:CustomImageButton x:Name="GetLineQuestionMarkButton" IsVisible="False" Text="?" FontSize="18" WidthRequest="50" HeightRequest="50" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="Center" 
                                             BackgroundColor="Transparent" TextColor="White"
@@ -337,9 +337,9 @@
                 </Grid.GestureRecognizers>
             </Grid>
             <Grid x:Name="YnGrid" HorizontalOptions="Fill" VerticalOptions="Fill" InputTransparent="false" 
-                         Padding="10" BackgroundColor="#66000000" IsVisible="False">
+                         Padding="10" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" IsVisible="False">
                 <Grid x:Name="YnWidthGrid" WidthRequest  ="600" HorizontalOptions  ="Center" VerticalOptions="Center">
-                    <Frame x:Name="YnFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="YnFrame" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="YnLayout" Padding="5" Spacing="6" HorizontalOptions="Center" VerticalOptions="Center" >
                             <StackLayout x:Name="YnTitleLayout" Orientation="Horizontal" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
@@ -365,9 +365,9 @@
                 </Grid.GestureRecognizers>
             </Grid>
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-                         BackgroundColor="#66000000" IsVisible="False">
+                         BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" IsVisible="False">
                 <Grid x:Name="PopupWidthGrid" WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
-                    <Frame x:Name="PopupFrame"  BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="PopupFrame"  BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <StackLayout x:Name="PopupTitleLayout" Orientation="Horizontal" Spacing="6"
@@ -388,8 +388,8 @@
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
             </Grid>
-            <gnh:MeasurableGrid x:Name="MoreCommandsGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#FF000000" IsVisible="False">
-                <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="False" CanvasType="CommandCanvas" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#FF000000"
+            <gnh:MeasurableGrid x:Name="MoreCommandsGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.Black}" IsVisible="False">
+                <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="False" CanvasType="CommandCanvas" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.Black}"
                                                PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" MouseWheel="CommandCanvas_MouseWheel" MousePointer="CommandCanvas_MousePointer"
                                                EnableTouchEvents="True" />
                 <Grid x:Name="MorePreviousGrid" IsVisible="False" WidthRequest="50" HorizontalOptions="Start" VerticalOptions="Fill">
@@ -400,7 +400,7 @@
                     <gnh:PointableButton x:Name="MoreNextLabel" Background="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" PointerEntered="NextLabelHandler_PointerEntered" PointerExited="NextLabelHandler_PointerExited" />
                     <controls:SimpleImageButton x:Name="MoreNextButton" IsVisible="False" ImgSourcePath="resource://GnollHackX.Assets.UI.page-next.png" BtnClicked="MoreNextButton_BtnClicked" HorizontalOptions="End" VerticalOptions="Center" />
                 </Grid>
-                <Entry x:Name="MoreCommandsFilterEntry" FontFamily="Underwood" FontSize="14" TextColor="White" BackgroundColor="#FF111111" Placeholder="Search" PlaceholderColor="#FF666666"
+                <Entry x:Name="MoreCommandsFilterEntry" FontFamily="Underwood" FontSize="14" TextColor="White" BackgroundColor="{x:Static gnh:GHColors.DarkBackgroundBlack}" Placeholder="Search" PlaceholderColor="{x:Static gnh:GHColors.PlaceholderGray}"
                                    WidthRequest="120" Keyboard="Plain" HorizontalTextAlignment="Start" TextChanged="MoreCommandsFilterEntry_TextChanged" 
                                    HorizontalOptions="Start" VerticalOptions="End" Margin="5" />
             </gnh:MeasurableGrid>
@@ -419,7 +419,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Frame x:Name="ReplayFrame" HorizontalOptions="Center" VerticalOptions="End" HeightRequest="65" BackgroundColor="#88000000" BorderColor="Black" Padding="4" CornerRadius="10" Margin="1">
+                <Frame x:Name="ReplayFrame" HorizontalOptions="Center" VerticalOptions="End" HeightRequest="65" BackgroundColor="{x:Static gnh:GHColors.ReplayFrameBlack}" BorderColor="Black" Padding="4" CornerRadius="10" Margin="1">
                     <Grid Margin="0" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="60" Padding="0" RowSpacing="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -436,12 +436,12 @@
                             <controls:CustomImageButton x:Name="ReplayFasterButton" Text="2.00x" Clicked="ReplayFasterButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
                             <controls:CustomImageButton IsVisible="False" x:Name="ReplayGotoButton" Text="Go To" Clicked="ReplayGotoButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
                             <controls:CustomImageButton IsVisible="False" x:Name="ReplayNextButton" Text="Next" Clicked="ReplayNextButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="12" BackgroundColor="Transparent" TextColor="White"/>
-                            <controls:CustomImageButton x:Name="ReplayQuitButton" Text="Quit" Clicked="ReplayQuitButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="#FFFFAAAA"/>
+                            <controls:CustomImageButton x:Name="ReplayQuitButton" Text="Quit" Clicked="ReplayQuitButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="{x:Static gnh:GHColors.ButtonTextTintDarkRed}"/>
                         </StackLayout>
                     </Grid>
                 </Frame>
-                <Grid x:Name="GotoTurnGrid" IsVisible="False"  BackgroundColor="#66000000" HorizontalOptions="Fill" VerticalOptions="Fill" >
-                    <Frame x:Name="GotoTurnFrame" Margin="0,50,0,10" WidthRequest  ="440" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Start">
+                <Grid x:Name="GotoTurnGrid" IsVisible="False"  BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" HorizontalOptions="Fill" VerticalOptions="Fill" >
+                    <Frame x:Name="GotoTurnFrame" Margin="0,50,0,10" WidthRequest  ="440" BackgroundColor="{x:Static gnh:GHColors.PageOverlayBlack}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Start">
                         <StackLayout x:Name="GotoTurnLayout" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Picker x:Name="GotoStylePicker"
                                         Title="Select functionality"
@@ -464,7 +464,7 @@
                             </Picker>
 
                             <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-                                <Entry x:Name="GotoTurnEntryText" Keyboard="Numeric" WidthRequest  ="360" HorizontalOptions  ="Center" Placeholder="Enter the turn here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
+                                <Entry x:Name="GotoTurnEntryText" Keyboard="Numeric" WidthRequest  ="360" HorizontalOptions  ="Center" Placeholder="Enter the turn here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="{x:Static gnh:GHColors.EntryBackgroundBlack}"
                                        HorizontalTextAlignment="Center" FontSize="20" FontFamily="Underwood" MaxLength="255" Completed="GotoTurnEntryText_Completed" />
                             </StackLayout>
                             <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">

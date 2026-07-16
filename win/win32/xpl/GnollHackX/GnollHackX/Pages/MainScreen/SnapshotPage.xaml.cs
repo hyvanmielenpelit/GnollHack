@@ -40,8 +40,8 @@ namespace GnollHackX.Pages.MainScreen
             //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
-                lblHeader.TextColor = GHColors.White;
-                lblSubtitle.TextColor = GHColors.White;
+                HeaderLabel.TextColor = GHColors.White;
+                SubtitleLabel.TextColor = GHColors.White;
                 EmptyLabel.TextColor = GHColors.White;
             }
         }
@@ -84,7 +84,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
             }
 
-            lblSubtitle.Text = _snapshots.Count + " snapshot" + (_snapshots.Count != 1 ? "s" : "") + " taken";
+            SubtitleLabel.Text = _snapshots.Count + " snapshot" + (_snapshots.Count != 1 ? "s" : "") + " taken";
             if (_snapshots.Count > 0)
             {
                 Comparison<GHSnapshot> comp = new Comparison<GHSnapshot>((snap1, snap2) => { return (int)(snap2.timestamp - snap1.timestamp); }); /* Descending */
@@ -234,7 +234,7 @@ namespace GnollHackX.Pages.MainScreen
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
-                lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 SnapshotLayout.Margin = UIUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
             }

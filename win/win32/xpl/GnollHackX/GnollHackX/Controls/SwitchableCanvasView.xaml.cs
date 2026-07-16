@@ -35,15 +35,13 @@ namespace GnollHackX.Controls
         private int _useGL = 0;
         private readonly SKGLView _internalGLView = null;
 
-        public bool UseGL 
-        {   get
-            {
-                return Interlocked.CompareExchange(ref _useGL, 0, 0) != 0;
-            }
+        public bool UseGL
+        {
+            get => Interlocked.CompareExchange(ref _useGL, 0, 0) != 0;
             set
             {
                 Interlocked.Exchange(ref _useGL, value ? 1 : 0);
-                if(HasGL)
+                if (HasGL)
                 {
                     internalCanvasView.IsVisible = !value;
                     _internalGLView.IsVisible = value;
@@ -53,7 +51,7 @@ namespace GnollHackX.Controls
             }
         }
 
-        public bool HasGL {  get { return _internalGLView != null; } }
+        public bool HasGL => _internalGLView != null;
 
         public SwitchableCanvasView()
         {
@@ -109,10 +107,10 @@ namespace GnollHackX.Controls
             ThreadSafeX = X;
             ThreadSafeY = Y;
             ThreadSafeIsVisible = IsVisible;
-            if (Parent == null || !(Parent is IThreadSafeView))
-                ThreadSafeParent = null;
+            if (Parent is IThreadSafeView parent)
+                ThreadSafeParent = new WeakReference<IThreadSafeView>(parent);
             else
-                ThreadSafeParent = new WeakReference<IThreadSafeView>((IThreadSafeView)Parent);
+                ThreadSafeParent = null;
             lock (_propertyLock)
             {
                 _threadSafeMargin = Margin;
@@ -141,7 +139,7 @@ namespace GnollHackX.Controls
 #endif
 
         private int _shutDown = 0;
-        public bool IsShutDown { get { return Interlocked.CompareExchange(ref _shutDown, 0, 0) != 0; } }
+        public bool IsShutDown => Interlocked.CompareExchange(ref _shutDown, 0, 0) != 0;
         public void ShutDown()
         {
             if (Interlocked.CompareExchange(ref _shutDown, 1, 0) == 0) // Change the value to 1 if it is 0
@@ -196,10 +194,10 @@ namespace GnollHackX.Controls
             }
             else if (e.PropertyName == nameof(Parent))
             {
-                if (Parent == null || !(Parent is IThreadSafeView))
-                    ThreadSafeParent = null;
+                if (Parent is IThreadSafeView parent)
+                    ThreadSafeParent = new WeakReference<IThreadSafeView>(parent);
                 else
-                    ThreadSafeParent = new WeakReference<IThreadSafeView>((IThreadSafeView)Parent);
+                    ThreadSafeParent = null;
             }
         }
 
@@ -213,33 +211,30 @@ namespace GnollHackX.Controls
         private Thickness _threadSafeMargin = new Thickness();
         WeakReference<IThreadSafeView> _threadSafeParent = null;
 
-        public double ThreadSafeWidth { get { return Interlocked.CompareExchange(ref _threadSafeWidth, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeWidth, value); } }
-        public double ThreadSafeHeight { get { return Interlocked.CompareExchange(ref _threadSafeHeight, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeHeight, value); } }
-        public double ThreadSafeX { get { return Interlocked.CompareExchange(ref _threadSafeX, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeX, value); } }
-        public double ThreadSafeY { get { return Interlocked.CompareExchange(ref _threadSafeY, 0.0, 0.0); } private set { Interlocked.Exchange(ref _threadSafeY, value); } }
-        public bool ThreadSafeIsVisible { get { return Interlocked.CompareExchange(ref _threadSafeIsVisible, 0, 0) != 0; } private set { Interlocked.Exchange(ref _threadSafeIsVisible, value ? 1 : 0); } }
+        public double ThreadSafeWidth { get => Interlocked.CompareExchange(ref _threadSafeWidth, 0.0, 0.0); private set => Interlocked.Exchange(ref _threadSafeWidth, value); }
+        public double ThreadSafeHeight { get => Interlocked.CompareExchange(ref _threadSafeHeight, 0.0, 0.0); private set => Interlocked.Exchange(ref _threadSafeHeight, value); }
+        public double ThreadSafeX { get => Interlocked.CompareExchange(ref _threadSafeX, 0.0, 0.0); private set => Interlocked.Exchange(ref _threadSafeX, value); }
+        public double ThreadSafeY { get => Interlocked.CompareExchange(ref _threadSafeY, 0.0, 0.0); private set => Interlocked.Exchange(ref _threadSafeY, value); }
+        public bool ThreadSafeIsVisible { get => Interlocked.CompareExchange(ref _threadSafeIsVisible, 0, 0) != 0; private set => Interlocked.Exchange(ref _threadSafeIsVisible, value ? 1 : 0); }
         public Thickness ThreadSafeMargin { get { lock (_propertyLock) { return _threadSafeMargin; } } private set { lock (_propertyLock) { _threadSafeMargin = value; } } }
-        public WeakReference<IThreadSafeView> ThreadSafeParent { get { return Interlocked.CompareExchange(ref _threadSafeParent, null, null); } private set { Interlocked.Exchange(ref _threadSafeParent, value); } }
-        
+        public WeakReference<IThreadSafeView> ThreadSafeParent { get => Interlocked.CompareExchange(ref _threadSafeParent, null, null); private set => Interlocked.Exchange(ref _threadSafeParent, value); }
+
         private void SwitchableCanvasView_SizeChanged(object sender, EventArgs e)
         {
             ThreadSafeWidth = Width;
             ThreadSafeHeight = Height;
         }
 
-        public SKSize CanvasSize { get { return UseGL && HasGL ? _internalGLView.CanvasSize : internalCanvasView.CanvasSize; } }
+        public SKSize CanvasSize => UseGL && HasGL ? _internalGLView.CanvasSize : internalCanvasView.CanvasSize;
         public bool IgnorePixelScaling
-        {
-            get { return UseGL && HasGL ? false : internalCanvasView.IgnorePixelScaling; }
-            set
-            {
-                internalCanvasView.IgnorePixelScaling = value;
-            }
-        }
-        public bool EnableTouchEvents 
         { 
-            get { return UseGL && HasGL ? _internalGLView.EnableTouchEvents : internalCanvasView.EnableTouchEvents; } 
-            set 
+            get => UseGL && HasGL ? false : internalCanvasView.IgnorePixelScaling; 
+            set => internalCanvasView.IgnorePixelScaling = value;
+        }
+        public bool EnableTouchEvents
+        {
+            get => UseGL && HasGL ? _internalGLView.EnableTouchEvents : internalCanvasView.EnableTouchEvents;
+            set
             {
                 if (HasGL)
                     _internalGLView.EnableTouchEvents = value;
@@ -528,23 +523,23 @@ namespace GnollHackX.Controls
 #else
         public CanvasTypes CanvasType { get; set; }
 #endif
-        public GHWindow GHWindow { get { return Interlocked.CompareExchange(ref _gHWindow, null, null); } set { Interlocked.Exchange(ref _gHWindow, value); } }
-        public ghmenu_styles MenuStyle { get { return (ghmenu_styles)Interlocked.CompareExchange(ref _menuStyle, 0, 0); } set { Interlocked.Exchange(ref _menuStyle, (int)value); } }
-        public ObservableCollection<GHMenuItem> MenuItems { get { return Interlocked.CompareExchange(ref _menuItems, null, null); } set { Interlocked.Exchange(ref _menuItems, value); } }
-        public List<GHPutStrItem> PutStrItems { get { return Interlocked.CompareExchange(ref _putStrItems, null, null); } set { Interlocked.Exchange(ref _putStrItems, value); } } //{ get { return _GHPutStrItems; } set { _GHPutStrItems = value; } }
+        public GHWindow GHWindow { get => Interlocked.CompareExchange(ref _gHWindow, null, null); set => Interlocked.Exchange(ref _gHWindow, value); }
+        public ghmenu_styles MenuStyle { get => (ghmenu_styles)Interlocked.CompareExchange(ref _menuStyle, 0, 0); set => Interlocked.Exchange(ref _menuStyle, (int)value); }
+        public ObservableCollection<GHMenuItem> MenuItems { get => Interlocked.CompareExchange(ref _menuItems, null, null); set => Interlocked.Exchange(ref _menuItems, value); }
+        public List<GHPutStrItem> PutStrItems { get => Interlocked.CompareExchange(ref _putStrItems, null, null); set => Interlocked.Exchange(ref _putStrItems, value); } //{ get { return _GHPutStrItems; } set { _GHPutStrItems = value; } }
 
-        public SelectionMode SelectionHow { get { return (SelectionMode)Interlocked.CompareExchange(ref _selectionHow, 0, 0); } set { Interlocked.Exchange(ref _selectionHow, (int)value); } }
-        public int SelectionIndex { get { return Interlocked.CompareExchange(ref _selectionIndex, 0, 0); } set { Interlocked.Exchange(ref _selectionIndex, value); } }
-        public long DelayedResourceCacheLimit { get { return Interlocked.CompareExchange(ref _delayedResourceCacheLimit, 0, 0); } set { Interlocked.Exchange(ref _delayedResourceCacheLimit, value); } }
-        public bool RevertBlackAndWhite { get { return Interlocked.CompareExchange(ref _revertBlackAndWhite, 0, 0) != 0; } set { Interlocked.Exchange(ref _revertBlackAndWhite, value ? 1 : 0); } }
-        public bool UseTextOutline { get { return Interlocked.CompareExchange(ref _useTextOutline, 0, 0) != 0; } set { Interlocked.Exchange(ref _useTextOutline, value ? 1 : 0); } }
-        public bool HideMenuLetters { get { return Interlocked.CompareExchange(ref _hideMenuLetters, 0, 0) != 0; } set { Interlocked.Exchange(ref _hideMenuLetters, value ? 1 : 0); } }
-        public bool MenuButtonStyle { get { return Interlocked.CompareExchange(ref _menuButtonStyle, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuButtonStyle, value ? 1 : 0); } }
-        public bool ClickOKOnSelection { get { return Interlocked.CompareExchange(ref _clickOKOnSelection, 0, 0) != 0; } set { Interlocked.Exchange(ref _clickOKOnSelection, value ? 1 : 0); } }
-        public bool MenuGlyphAtBottom { get { return Interlocked.CompareExchange(ref _menuGlyphAtBottom, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuGlyphAtBottom, value ? 1 : 0); } }
-        public bool AllowLongTap { get { return Interlocked.CompareExchange(ref _allowLongTap, 0, 0) != 0; } set { Interlocked.Exchange(ref _allowLongTap, value ? 1 : 0); } }
-        public bool SpecialClickOnLongTap { get { return Interlocked.CompareExchange(ref _specialClickOnLongTap, 0, 0) != 0; } set { Interlocked.Exchange(ref _specialClickOnLongTap, value ? 1 : 0); } }
-        public bool AllowHighlight { get { return Interlocked.CompareExchange(ref _allowHighlight, 0, 0) != 0; } set { Interlocked.Exchange(ref _allowHighlight, value ? 1 : 0); } }
+        public SelectionMode SelectionHow { get => (SelectionMode)Interlocked.CompareExchange(ref _selectionHow, 0, 0); set => Interlocked.Exchange(ref _selectionHow, (int)value); }
+        public int SelectionIndex { get => Interlocked.CompareExchange(ref _selectionIndex, 0, 0); set => Interlocked.Exchange(ref _selectionIndex, value); }
+        public long DelayedResourceCacheLimit { get => Interlocked.CompareExchange(ref _delayedResourceCacheLimit, 0, 0); set => Interlocked.Exchange(ref _delayedResourceCacheLimit, value); }
+        public bool RevertBlackAndWhite { get => Interlocked.CompareExchange(ref _revertBlackAndWhite, 0, 0) != 0; set => Interlocked.Exchange(ref _revertBlackAndWhite, value ? 1 : 0); }
+        public bool UseTextOutline { get => Interlocked.CompareExchange(ref _useTextOutline, 0, 0) != 0; set => Interlocked.Exchange(ref _useTextOutline, value ? 1 : 0); }
+        public bool HideMenuLetters { get => Interlocked.CompareExchange(ref _hideMenuLetters, 0, 0) != 0; set => Interlocked.Exchange(ref _hideMenuLetters, value ? 1 : 0); }
+        public bool MenuButtonStyle { get => Interlocked.CompareExchange(ref _menuButtonStyle, 0, 0) != 0; set => Interlocked.Exchange(ref _menuButtonStyle, value ? 1 : 0); }
+        public bool ClickOKOnSelection { get => Interlocked.CompareExchange(ref _clickOKOnSelection, 0, 0) != 0; set => Interlocked.Exchange(ref _clickOKOnSelection, value ? 1 : 0); }
+        public bool MenuGlyphAtBottom { get => Interlocked.CompareExchange(ref _menuGlyphAtBottom, 0, 0) != 0; set => Interlocked.Exchange(ref _menuGlyphAtBottom, value ? 1 : 0); }
+        public bool AllowLongTap { get => Interlocked.CompareExchange(ref _allowLongTap, 0, 0) != 0; set => Interlocked.Exchange(ref _allowLongTap, value ? 1 : 0); }
+        public bool SpecialClickOnLongTap { get => Interlocked.CompareExchange(ref _specialClickOnLongTap, 0, 0) != 0; set => Interlocked.Exchange(ref _specialClickOnLongTap, value ? 1 : 0); }
+        public bool AllowHighlight { get => Interlocked.CompareExchange(ref _allowHighlight, 0, 0) != 0; set => Interlocked.Exchange(ref _allowHighlight, value ? 1 : 0); }
 
         public void RequestResourcePurge()
         {
@@ -634,9 +629,9 @@ namespace GnollHackX.Controls
 
         //private readonly object _generalAnimationCounterLock = new object();
         public long GeneralAnimationCounter
-        {
-            get { return (long)GetValue(GeneralAnimationCounterProperty); }
-            set { SetValue(GeneralAnimationCounterProperty, value); }
+        { 
+            get => (long)GetValue(GeneralAnimationCounterProperty); 
+            set => SetValue(GeneralAnimationCounterProperty, value);
         }
 
         //private long _tickCounter = 0L;
@@ -690,7 +685,6 @@ namespace GnollHackX.Controls
 #endif
         }
 
-
 #if WINDOWS
         private void View_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
@@ -707,25 +701,13 @@ namespace GnollHackX.Controls
             }
         }
 
-        private void View_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            PointerEvent(sender, e, SKTouchAction.Exited);
-        }
+        private void View_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => PointerEvent(sender, e, SKTouchAction.Exited);
 
-        private void View_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            PointerEvent(sender, e, SKTouchAction.Entered);
-        }
+        private void View_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => PointerEvent(sender, e, SKTouchAction.Entered);
 
-        private void View_PointerMoved(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            PointerEvent(sender, e, SKTouchAction.Moved);
-        }
+        private void View_PointerMoved(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => PointerEvent(sender, e, SKTouchAction.Moved);
 
-        private void View_PointerCanceled(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            PointerEvent(sender, e, SKTouchAction.Cancelled);
-        }
+        private void View_PointerCanceled(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) => PointerEvent(sender, e, SKTouchAction.Cancelled);
 
         private void PointerEvent(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e, SKTouchAction action)
         {

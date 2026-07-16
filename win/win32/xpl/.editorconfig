@@ -1,0 +1,15 @@
+root = true
+
+[*.cs]
+csharp_style_prefer_interpolated_strings = true:warning
+csharp_style_expression_bodied_properties = true:warning
+csharp_style_expression_bodied_accessors = true:warning
+csharp_style_pattern_matching_over_is_with_cast_check = true:warning
+
+# C# 7 compatibility
+dotnet_diagnostic.IDE0071.severity = warning
+dotnet_diagnostic.IDE0022.severity = warning
+dotnet_diagnostic.IDE0025.severity = warning
+dotnet_diagnostic.IDE0027.severity = warning
+dotnet_diagnostic.IDE0020.severity = warning
+dotnet_diagnostic.IDE0038.severity = warning
