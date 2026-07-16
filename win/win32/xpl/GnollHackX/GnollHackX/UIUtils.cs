@@ -1338,11 +1338,10 @@ namespace GnollHackX
                 if (layout.Handler == null)
                     return;
 
-                if (layout.Handler.PlatformView is Microsoft.UI.Xaml.UIElement)
+                if (layout.Handler.PlatformView is Microsoft.UI.Xaml.UIElement element)
                 {
                     try
                     {
-                        Microsoft.UI.Xaml.UIElement element = (Microsoft.UI.Xaml.UIElement)layout.Handler.PlatformView;
                         element.ChangeCursor(usedCursor);
                     }
                     catch (Exception ex)
@@ -1599,8 +1598,8 @@ namespace GnollHackX
             if (page != null)
             {
                 var handler = page.Handler;
-                if (handler != null && handler.PlatformView is Microsoft.UI.Xaml.FrameworkElement)
-                    ((Microsoft.UI.Xaml.FrameworkElement)handler.PlatformView).RequestedTheme = isDarkTheme ? Microsoft.UI.Xaml.ElementTheme.Dark : Microsoft.UI.Xaml.ElementTheme.Light;
+                if (handler != null && handler.PlatformView is Microsoft.UI.Xaml.FrameworkElement element)
+                    element.RequestedTheme = isDarkTheme ? Microsoft.UI.Xaml.ElementTheme.Dark : Microsoft.UI.Xaml.ElementTheme.Light;
             }
 #endif
         }

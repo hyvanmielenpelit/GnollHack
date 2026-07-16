@@ -12030,10 +12030,26 @@ namespace GnollHackX
             }
         }
 
-        public override string ToString() => DeviceName;
-        public static IntPtr GetNearestFromWindow(IntPtr hwnd) => MonitorFromWindow(hwnd, MFW.MONITOR_DEFAULTTONEAREST);
-        public static IntPtr GetDesktopMonitorHandle() => GetNearestFromWindow(GetDesktopWindow());
-        public static IntPtr GetShellMonitorHandle() => GetNearestFromWindow(GetShellWindow());
+        public override string ToString()
+        {
+            return DeviceName;
+        }
+
+        public static IntPtr GetNearestFromWindow(IntPtr hwnd)
+        {
+            return MonitorFromWindow(hwnd, MFW.MONITOR_DEFAULTTONEAREST);
+        }
+
+        public static IntPtr GetDesktopMonitorHandle()
+        {
+            return GetNearestFromWindow(GetDesktopWindow());
+        }
+
+        public static IntPtr GetShellMonitorHandle()
+        {
+            return GetNearestFromWindow(GetShellWindow());
+        }
+
         public static GHMonitor FromWindow(IntPtr hwnd, MFW flags = MFW.MONITOR_DEFAULTTONULL)
         {
             var h = MonitorFromWindow(hwnd, flags);
