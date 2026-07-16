@@ -23,8 +23,10 @@ description: Guide on building GnollHack native C libraries, processing assets w
 3. **`dgncomp.exe`**: Compiles `dat/dungeon.pdf` into binary `dat/dungeon`.
 4. **`dlb.exe`**: Bundles all `.lev` and data files into `nhdat` archive.
    - Run: `dlb.exe cIf dat/dlb.lst bin/nhdat`
-5. **Native compilation**: `gnollhackwin.dll` (Win), `libgnollhackdroid.so` (Android), `libgnollhackios.a` (iOS).
-6. **MAUI Frontend**: `win/win32/xpl/GnollHackM/GnollHackM.csproj`.
+5. **Native compilation**: `gnollhackwin.dll` (Win), `libgnollhackdroid.so` (Android), `libgnollhackios.a` (iOS), `libgnollhackmac.a` (MacCatalyst).
+6. **MacCatalyst FMOD patching**: FMOD macOS dylibs must be patched with `vtool` to change Mach-O platform tag to `maccatalyst`. See the `vtool_fmod_patching` skill. Script: `win/win32/xpl/gnollhackmac/patch_fmod_dylibs.sh`.
+7. **MacCatalyst C engine build**: Universal (arm64+x86_64) static library built with `-target {arch}-apple-ios14.0-macabi`. Script: `win/win32/xpl/gnollhackmac/build_libgnollhackmac.sh`.
+8. **MAUI Frontend**: `win/win32/xpl/GnollHackM/GnollHackM.csproj`.
 
 ## Build Commands
 ```powershell
@@ -36,4 +38,7 @@ dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-andr
 
 # iOS
 dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-ios
+
+# MacCatalyst
+dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-maccatalyst
 ```

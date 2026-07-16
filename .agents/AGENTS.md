@@ -6,7 +6,7 @@ These rules apply to all AI-assisted development on the GnollHack codebase.
 
 GnollHack is a turn-based roguelike game derived from NetHack 3.6.2. It consists of:
 - A **C core** game engine (~120 source files in `src/`, ~114 headers in `include/`)
-- A **.NET 10.0 MAUI** graphical frontend (C#/XAML targeting Android, iOS, Windows)
+- A **.NET 10.0 MAUI** graphical frontend (C#/XAML targeting Android, iOS, MacCatalyst, Windows)
 - A **native bridge** connecting C and C# via P/Invoke callbacks (`win/win32/xpl/libshare/`)
 - **Build-time utilities** (`makedefs`, `levcomp`, `dgncomp`, `dlb`) that compile game data
 
@@ -56,6 +56,8 @@ Refer to [DEVEL/code_style.txt](file:///c:/hmp/GnollHack/DEVEL/code_style.txt) f
 | Shared C# code | `win/win32/xpl/GnollHackX/GnollHackX/` |
 | Android platform code (file-linked) | `win/win32/xpl/GnollHackX/GnollHackX.Android/` |
 | iOS platform code (file-linked) | `win/win32/xpl/GnollHackX/GnollHackX.iOS/` |
+| MacCatalyst platform files | `win/win32/xpl/GnollHackM/Platforms/MacCatalyst/` |
+| MacCatalyst build scripts | `win/win32/xpl/gnollhackmac/` |
 | FMOD audio wrappers (file-linked) | `win/win32/xpl/GnollHackX/GnollHackX.FMOD/` |
 | Native bridge (C) | `win/win32/xpl/libshare/` |
 | Native bridge (C#) | `win/win32/xpl/GnollHackX/GnollHackX.Common/GnollHackService.cs` |
@@ -69,6 +71,7 @@ Refer to [DEVEL/code_style.txt](file:///c:/hmp/GnollHack/DEVEL/code_style.txt) f
 - Windows 10 SDK
 - For Android: Android SDK with NDK
 - For iOS: Mac build host with Xcode
+- For MacCatalyst: Mac with Xcode command line tools (vtool, install_name_tool, codesign, lipo)
 
 ## Important Warnings
 

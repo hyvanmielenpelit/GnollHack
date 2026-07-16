@@ -5,7 +5,7 @@ description: Guidelines for working on the C# .NET MAUI mobile and desktop front
 
 # MAUI Frontend
 
-GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, iOS, and Windows Desktop (WinUI 3).
+GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, iOS, MacCatalyst, and Windows Desktop (WinUI 3).
 
 ## Critical Rules
 - **UI Thread Safety**: All UI updates must be marshaled to the main thread via `MainThread.BeginInvokeOnMainThread()`.
@@ -65,6 +65,7 @@ The entire game dungeon is rendered using **SkiaSharp 3.119.1** via custom canva
 | Platform | DLL Name | Library Name | Linking |
 |----------|----------|--------------|----------|
 | iOS | `__Internal` | `gnollhackios` | Static linking (`.a` archive) |
+| MacCatalyst | `__Internal` | `gnollhackmac` | Static linking (`.a` archive) |
 | Android | `libgnollhackdroid.so` | `gnollhackdroid` | Dynamic loading via `JavaSystem.LoadLibrary()` |
 | Windows | `gnollhackwin.dll` | `gnollhackwin` | Dynamic loading (MauiAsset) |
 
@@ -134,6 +135,8 @@ This pattern is used 119+ times across the codebase.
 * `IFmodService` interface for platform-independent audio API
 * Android: initialized via `FmodService.AndroidInit()` in `MainApplication` constructor
 * Native sound banks stored per-platform under `Platforms/{platform}/banks/`
+* MacCatalyst uses **desktop banks** (from `Platforms/Windows/banks/`), not mobile banks
+* FMOD on MacCatalyst uses dynamic linking (`libfmod_maccatalyst.dylib`) instead of static (`__Internal`) — see `vtool_fmod_patching` skill
 * ~10 sound-related callbacks in the `RunGnollHack` P/Invoke
 
 ---
@@ -155,6 +158,7 @@ This pattern is used 119+ times across the codebase.
 |----------|-------------|------------|
 | Android | [MainApplication.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/Platforms/Android/MainApplication.cs) | Loads native `.so` via `JavaSystem.LoadLibrary()`, initializes FMOD |
 | iOS | [Program.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/Platforms/iOS/Program.cs) | Calls `LibTest()` to verify static link, launches UIApplication |
+| MacCatalyst | [Program.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/Platforms/MacCatalyst/Program.cs) | Calls `LibTest()` to verify static link, launches UIApplication with GHUIApplication |
 | Windows | [App.xaml.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/Platforms/Windows/App.xaml.cs) | WinUI 3 app lifecycle |
 
 All platforms delegate lifecycle to `GHApp.OnStart()`, `GHApp.OnResume()`, `GHApp.OnSleep()` in [App.xaml.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/App.xaml.cs).
