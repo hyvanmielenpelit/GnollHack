@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
 		<TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>
 		<!-- Uncomment to also build the MacCatalyst app. -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net10.0-maccatalyst</TargetFrameworks> -->
+		<TargetFrameworks>$(TargetFrameworks);net10.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net10.0-tizen</TargetFrameworks> -->
@@ -74,6 +74,12 @@
     <ProvisioningType>manual</ProvisioningType>
   </PropertyGroup>
 
+	<PropertyGroup Condition="$(TargetFramework.Contains('-maccatalyst'))">
+		<RuntimeIdentifiers>maccatalyst-arm64;maccatalyst-x64</RuntimeIdentifiers>
+		<DefineConstants>$(DefineConstants);FMOD_GNH_MACCATALYST</DefineConstants>
+		<ProvisioningType>manual</ProvisioningType>
+	</PropertyGroup>
+
 	<!--<ItemGroup Condition=" '$(IncludeWindowsSDKRefFrameworkReferences)' == 'True'">
     <FrameworkReference Include="Microsoft.Windows.SDK.NET.Ref" IsImplicitlyDefined="true" Pack="false" PrivateAssets="All" />
   </ItemGroup>-->
@@ -101,6 +107,18 @@
     <!--<MtouchUseLlvm>false</MtouchUseLlvm>-->
 		<MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net10.0-maccatalyst'">
+		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
+		<CodesignProvision>Apple Dev GnollHack Mac Development 2026</CodesignProvision>
+		<CodesignEntitlements>Platforms/MacCatalyst/Entitlements.plist</CodesignEntitlements>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net10.0-maccatalyst'">
+		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
+		<CodesignProvision>Apple Dev GnollHack Mac Development 2026</CodesignProvision>
+		<CodesignEntitlements>Platforms/MacCatalyst/Entitlements.plist</CodesignEntitlements>
+	</PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net10.0-android'">
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
@@ -740,7 +758,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net10.0-ios' or '$(TargetFramework)'=='net10.0-maccatalyst'">
+	<!-- iOS-only: Native libraries (static linking) -->
+	<ItemGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
 		<NativeReference Include="Platforms\iOS\libs\libfmodstudio_iphoneos.a">
 			<Kind>Static</Kind>
 			<Frameworks>AudioToolbox CoreAudio</Frameworks>
@@ -759,6 +778,47 @@
 			<IsCxx>True</IsCxx>
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</NativeReference>
+	</ItemGroup>
+
+	<!-- MacCatalyst-only: Native libraries (dynamic FMOD + static engine) -->
+	<ItemGroup Condition="'$(TargetFramework)'=='net10.0-maccatalyst'">
+		<NativeReference Include="Platforms\MacCatalyst\libs\libfmod_maccatalyst.dylib">
+			<Kind>Dynamic</Kind>
+			<Frameworks>AudioToolbox CoreAudio AudioUnit AVFoundation</Frameworks>
+		</NativeReference>
+		<NativeReference Include="Platforms\MacCatalyst\libs\libfmodstudio_maccatalyst.dylib">
+			<Kind>Dynamic</Kind>
+			<Frameworks>AudioToolbox CoreAudio AudioUnit AVFoundation</Frameworks>
+		</NativeReference>
+		<NativeReference Include="Platforms\MacCatalyst\libs\libgnollhackmac.a">
+			<Kind>Static</Kind>
+			<ForceLoad>True</ForceLoad>
+			<IsCxx>True</IsCxx>
+		</NativeReference>
+	</ItemGroup>
+
+	<!-- iOS-only: Bundle resources (mobile banks) -->
+	<ItemGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
+		<BundleResource Include="Platforms\iOS\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<!-- MacCatalyst-only: Bundle resources (desktop banks) -->
+	<ItemGroup Condition="'$(TargetFramework)'=='net10.0-maccatalyst'">
+		<BundleResource Include="Platforms\Windows\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\Windows\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\Windows\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\Windows\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\Windows\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\Windows\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<!-- Shared iOS + MacCatalyst: gnh data, tilesets, platform source files -->
+	<ItemGroup Condition="'$(TargetFramework)'=='net10.0-ios' or '$(TargetFramework)'=='net10.0-maccatalyst'">
 		<BundleResource Include="Platforms\iOS\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\gnh\license" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\gnh\logfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
@@ -770,16 +830,10 @@
 		<BundleResource Include="Platforms\iOS\gnh\sysconf" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\gnh\xcredits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\gnh\xlogfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
-		<BundleResource Include="Platforms\iOS\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
-		<BundleResource Include="Platforms\iOS\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
-		<BundleResource Include="Platforms\iOS\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
-		<BundleResource Include="Platforms\iOS\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
-		<BundleResource Include="Platforms\iOS\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
-		<BundleResource Include="Platforms\iOS\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\tileset\gnollhack_64x96_transparent_32bits.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\tileset\gnollhack_64x96_transparent_32bits-2.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" />
-    <BundleResource Include="Platforms\iOS\tileset\gnollhack_64x96_transparent_32bits-3.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" />
-    <Compile Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
+		<BundleResource Include="Platforms\iOS\tileset\gnollhack_64x96_transparent_32bits-3.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" />
+		<Compile Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
 	</ItemGroup>
 
@@ -1229,7 +1283,7 @@
 		</MauiXaml>
 	</ItemGroup>
 
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
 		<BundleResource Include="Platforms\iOS\PrivacyInfo.xcprivacy" LogicalName="PrivacyInfo.xcprivacy" />
 	</ItemGroup>
 

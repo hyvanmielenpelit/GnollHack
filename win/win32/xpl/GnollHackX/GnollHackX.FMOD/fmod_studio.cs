@@ -17,6 +17,8 @@ namespace FMOD.Studio
     {
 #if FMOD_GNH_IOS
         public const string dll    = "__Internal";
+#elif FMOD_GNH_MACCATALYST
+        public const string dll    = "libfmodstudio_maccatalyst";
 #elif !UNITY_2021_3_OR_NEWER
         public const string dll = "fmodstudio" + VERSION.suffix;
 #endif

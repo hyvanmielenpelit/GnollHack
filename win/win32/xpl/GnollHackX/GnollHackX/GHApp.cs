@@ -2913,12 +2913,7 @@ namespace GnollHackX
         public static readonly bool IsiOS = (DeviceInfo.Platform == DevicePlatform.iOS);
         public static readonly bool IsWindows = (DeviceInfo.Platform == DevicePlatform.WinUI);
         public static readonly bool IsMacCatalyst = (DeviceInfo.Platform == DevicePlatform.MacCatalyst);
-        public static readonly bool IsDesktop =
-#if WINDOWS
-            true;
-#else
-            false;
-#endif
+        public static readonly bool IsDesktop = IsWindows || IsMacCatalyst;
         public static readonly bool IsMaui = true;
         public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
         public static readonly bool IsPackaged = (Microsoft.Maui.ApplicationModel.AppInfo.Current?.PackagingModel ?? AppPackagingModel.Unpackaged) == AppPackagingModel.Packaged;
