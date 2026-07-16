@@ -1814,7 +1814,7 @@ namespace GnollHackX
             get
             {
 #if GNH_MAUI
-#if IOS
+#if IOS || WINDOWS
                 return true;
 #else
                 return false;

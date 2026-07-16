@@ -913,7 +913,7 @@ gcrownu(void)
     struct obj *obj, *obj2;
     boolean in_hand, in_hand2;
     short class_gift = STRANGE_OBJECT, steed_gift = NON_PM;
-    struct monst* steed_gift_mon = 0;
+    struct monst* gift_mon = 0;
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
     HSee_invisible |= FROM_ACQUIRED;
@@ -1540,7 +1540,7 @@ gcrownu(void)
         struct monst* luggage = summoncreature(STRANGE_OBJECT, PM_GIANT_LUGGAGE, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION | MM_NO_MONSTER_INVENTORY, SUMMONCREATURE_FLAGS_CAPITALIZE);
         if (luggage)
         {
-            steed_gift_mon = luggage;
+            gift_mon = luggage;
 
             int item_cnt = 0;
             int gifttype = EYEGLASSES_OF_X_RAY_VISION;
@@ -1685,6 +1685,11 @@ gcrownu(void)
                 class_gift = gifttype;
             }
         }
+    }
+    else if (Role_if(PM_CAVEMAN))
+    {
+        if (!flags.pets_not_gifted)
+            steed_gift = PM_TYRANNOSAURUS_REX;
     }
 
     /* Default case */
@@ -1999,8 +2004,9 @@ gcrownu(void)
     /* Summon steed last */
     if (steed_gift > NON_PM && !(mvitals[steed_gift].mvflags & MV_GONE))
     {
-        steed_gift_mon = summoncreature(STRANGE_OBJECT, steed_gift, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION | MM_SADDLED,
+        gift_mon = summoncreature(STRANGE_OBJECT, steed_gift, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION | MM_SADDLED,
             SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH);
+        unrestrict_weapon_skill(P_RIDING);
     }
 
     /* enhance weapon regardless of alignment or artifact status */
@@ -2038,7 +2044,7 @@ gcrownu(void)
         /* acquire skill in this weapon */
         unrestrict_weapon_skill(weapon_skill_type(obj2));
     }
-    else if (class_gift == STRANGE_OBJECT && steed_gift_mon == 0)
+    else if (class_gift == STRANGE_OBJECT && gift_mon == 0)
     {
         /* opportunity knocked, but there was nobody home... */
         You_feel_ex(ATR_NONE, CLR_MSG_MYSTICAL, "unworthy.");
