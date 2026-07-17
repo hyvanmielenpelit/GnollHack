@@ -3152,6 +3152,7 @@ getobj_ex(const char *let, const char *word, int show_weights, boolean show_quic
     if (!allowall && let && otmp && !index(let, otmp->oclass)
         && !(usegold && otmp->oclass == COIN_CLASS)
         && !(!strcmp(word, "read") && (objects[otmp->otyp].oc_flags3 & O3_READABLE))
+        && !(!strcmp(word, "use or apply") && (otmp->oclass == GEM_CLASS || (objects[otmp->otyp].oc_flags3 & O3_APPLIABLE)))
         ) {
         silly_thing(word, otmp);
         return (struct obj *) 0;

@@ -4585,14 +4585,14 @@ use_gem(struct obj* otmp)
     if (otmp->otyp != GEM_OF_SEEING || (otmp->charges <= 0 && !objects[otmp->otyp].oc_name_known))
     {
         play_sfx_sound(SFX_NOTHING_FOUND);
-        You_ex(ATR_NONE, NO_COLOR, "peek closer into %s but find nothing interesting there.", thecxname(otmp));
+        You_ex(ATR_NONE, NO_COLOR, "peek into %s but there is nothing interesting there.", thecxname(otmp));
         return;
     }
 
     if (otmp->charges <= 0)
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        You_ex(ATR_NONE, NO_COLOR, "peek into %s but it remains blurred.", thecxname(otmp));
+        You_ex(ATR_NONE, NO_COLOR, "peek into %s but its interior is blurred.", thecxname(otmp));
         return;
     }
 

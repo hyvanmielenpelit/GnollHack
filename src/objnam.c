@@ -594,6 +594,8 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
         set_obj_dknown(obj, TRUE);
     if (Role_if(PM_PRIEST))
         set_obj_bknown(obj, TRUE);
+    if (obj->oartifact && True_seeing)
+        set_obj_nknown(obj, TRUE);
 
     if (iflags.override_ID) {
         known = dknown = bknown = nknown = aknown = mknown = tknown = TRUE;
