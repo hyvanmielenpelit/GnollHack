@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
@@ -157,6 +157,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\UIUtils.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\CustomCanvasView.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\CustomLabel.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\CustomContentPage.cs" />
     <None Remove="..\GnollHackX\GnollHackX\CustomModalPage.cs" />
     <None Remove="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
@@ -172,6 +173,8 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHColors.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHConstants.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHEnums.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHStructs.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHDelegates.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHDrawCommand.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHEditor.cs" />
@@ -221,6 +224,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\SecretsFile.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\SelectableShortcutButton.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\StoredManual.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Achievement.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\UserSecrets.cs" />
 		<None Remove="..\GnollHackX\GnollHackX.FMOD\fmod.cs" />
 		<None Remove="..\GnollHackX\GnollHackX.FMOD\fmod_studio.cs" />
@@ -376,6 +380,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\UIUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\CustomCanvasView.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\CustomLabel.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\CustomContentPage.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\CustomModalPage.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
@@ -391,6 +396,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHColors.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHConstants.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHEnums.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHStructs.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHDelegates.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHEditor.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHFloatingText.cs" />
@@ -441,6 +448,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\SecretsFile.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\SelectableShortcutButton.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\StoredManual.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Achievement.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\UserSecrets.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod_studio.cs" />
