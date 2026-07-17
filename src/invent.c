@@ -5653,7 +5653,7 @@ count_buc(struct obj *list, int type, boolean (*filterfunc)(struct obj*), boolea
     for (; list; list = (bynexthere ? list->nexthere : list->nobj)) {
         /* priests always know bless/curse state */
         if (Role_if(PM_PRIEST))
-            set_obj_bknown(list, COIN_CLASS);
+            set_obj_bknown(list, (list->oclass != COIN_CLASS));
         /* some actions exclude some or most items */
         if (filterfunc && !(*filterfunc)(list))
             continue;
@@ -5692,7 +5692,7 @@ tally_BUCX(struct obj *list, boolean by_nexthere, int *bcp, int *ucp, int *ccp, 
 
         /* priests always know bless/curse state */
         if (Role_if(PM_PRIEST))
-            set_obj_bknown(list, COIN_CLASS);
+            set_obj_bknown(list, (list->oclass != COIN_CLASS));
         /* coins are either uncursed or unknown based upon option setting */
         if (list->oclass == COIN_CLASS) {
             if (iflags.goldX)
