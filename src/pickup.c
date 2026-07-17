@@ -1974,7 +1974,10 @@ auto_bag_in(struct obj *objchn_container, struct obj *obj, boolean bynexthere)
     struct obj* normal_bag = 0;
     struct obj* quick_bag = 0;
     /* Note: If you know cancellation, then you know all other similar wands such as Rod of Disjunction / wand of disjunction */
-    boolean maybe_cancellation = (objects[obj->otyp].oc_name_known || objects[WAN_CANCELLATION].oc_name_known ? (objects[obj->otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0 : obj->oclass == WAND_CLASS);
+    boolean maybe_cancellation = (objects[obj->otyp].oc_name_known || objects[WAN_CANCELLATION].oc_name_known ? is_obj_mbag_destroying(obj) : obj->oclass == WAND_CLASS);
+    boolean known_cancellation = (objects[obj->otyp].oc_name_known || objects[WAN_CANCELLATION].oc_name_known) && is_obj_mbag_destroying(obj);
+    boolean maybe_mbag = objects[obj->otyp].oc_name_known ? Is_mbag(obj) : obj->oclass == TOOL_CLASS && objects[obj->otyp].oc_subtyp == TOOLTYPE_BAG;
+    boolean known_mbag = objects[obj->otyp].oc_name_known && Is_mbag(obj);
 
     for (curr = objchn_container; curr; curr = (bynexthere ? curr->nexthere : curr->nobj))
     {
@@ -1984,27 +1987,28 @@ auto_bag_in(struct obj *objchn_container, struct obj *obj, boolean bynexthere)
                 Is_proper_container(curr)
                 && !Is_specialized_container(curr)
                 && !Is_container_with_closed_lid(curr)
+                && !((known_cancellation || known_mbag) && objects[curr->otyp].oc_name_known && Is_mbag(curr)) /* With quick bags that are known to be magic bags, avoid known items that destroy magic bags */
                 )
                 quick_bag = curr;
 
             if (objects[curr->otyp].oc_name_known)
             {
-                if (curr->otyp == BAG_OF_HOLDING && is_obj_bknown(curr) && !is_obj_cursed(curr) && !maybe_cancellation)
+                if (curr->otyp == BAG_OF_HOLDING && is_obj_bknown(curr) && !is_obj_cursed(curr) && !maybe_cancellation && !maybe_mbag)
                 {
                     if (!bag_of_holding || (is_obj_blessed(curr) && !is_obj_blessed(bag_of_holding)))
                         bag_of_holding = curr;
                 }
-                else if (curr->otyp == BAG_OF_THE_GLUTTON && is_obj_bknown(curr) && !is_obj_cursed(curr) && !maybe_cancellation)
+                else if (curr->otyp == BAG_OF_THE_GLUTTON && is_obj_bknown(curr) && !is_obj_cursed(curr) && !maybe_cancellation && !maybe_mbag)
                 {
                     if (!bag_of_the_glutton || (is_obj_blessed(curr) && !is_obj_blessed(bag_of_the_glutton)))
                         bag_of_the_glutton = curr;
                 }
-                else if (curr->otyp == BAG_OF_TREASURE_HAULING && is_obj_bknown(curr) && !is_obj_cursed(curr) && !maybe_cancellation)
+                else if (curr->otyp == BAG_OF_TREASURE_HAULING && is_obj_bknown(curr) && !is_obj_cursed(curr) && !maybe_cancellation && !maybe_mbag)
                 {
                     if (!bag_of_treasure_hauling || (is_obj_blessed(curr) && !is_obj_blessed(bag_of_treasure_hauling)))
                         bag_of_treasure_hauling = curr;
                 }
-                else if (curr->otyp == BAG_OF_WIZARDRY && is_obj_bknown(curr) && !is_obj_cursed(curr) && !maybe_cancellation)
+                else if (curr->otyp == BAG_OF_WIZARDRY && is_obj_bknown(curr) && !is_obj_cursed(curr) && !maybe_cancellation && !maybe_mbag)
                 {
                     if (!bag_of_wizardry || (is_obj_blessed(curr) && !is_obj_blessed(bag_of_wizardry)))
                         bag_of_wizardry = curr;
