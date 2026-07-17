@@ -547,10 +547,11 @@ can_make_bones(void)
         return FALSE;
     }
 
-    int chance = 1 + (int)dgn_depth / 4;
-    if (chance >= 2 && !wizard && !rn2(chance))  /* fewer ghosts on low levels */
+    int no_bones_chance = 1 + (int)dgn_depth / 4;
+    /* Bones generation chance for dungeon levels 1-3 is zero (1 for no bones), 1/2 chance for 4-7, 2/3 for 8-11, 3/4 for 9-15, and so on */
+    if (!wizard && (no_bones_chance == 1 || !rn2(no_bones_chance)))
     {
-        bones_debuglog("NO BONES: chance >= 2 && !wizard && !rn2(chance)");
+        bones_debuglog("NO BONES: !wizard && (no_bones_chance == 1 || !rn2(no_bones_chance))");
         return FALSE;
     }
 
