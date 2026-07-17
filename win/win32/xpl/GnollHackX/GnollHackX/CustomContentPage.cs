@@ -93,7 +93,23 @@ namespace GnollHackX
         /// </summary>
         private void ApplyiOSEdge2Edge(bool edge2Edge)
         {
-            var window = UIKit.UIApplication.SharedApplication.KeyWindow;
+            UIKit.UIWindow window = null;
+            foreach (var scene in UIKit.UIApplication.SharedApplication.ConnectedScenes)
+            {
+                if (scene is UIKit.UIWindowScene windowScene)
+                {
+                    foreach (var w in windowScene.Windows)
+                    {
+                        if (w.IsKeyWindow)
+                        {
+                            window = w;
+                            break;
+                        }
+                    }
+                    if (window != null)
+                        break;
+                }
+            }
             if (window == null)
                 return;
 
