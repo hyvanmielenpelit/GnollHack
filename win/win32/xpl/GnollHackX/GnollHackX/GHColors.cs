@@ -17,7 +17,10 @@ namespace GnollHackX
         public static Color MsgBoxLightModeBkgColor = Color.FromRgba(0.0, 0.0, 0.0, 0.75);
         public static Color PickerDarkModeBkgColor = Color.FromRgba(1, 1, 1, 0.15);
         public static Color PickerLightModeBkgColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x22 / (double)0xFF);
-
+        public static Color MsgFilterFrameBkgColor = Color.FromRgba(0.10, 0.10, 0.10, 0.90);
+        public static Color MsgFilterEntryBkgColor = Color.FromRgba(1, 1, 1, 0.05);
+        public static Color MoreCommandsFilterEntryBkgColor = Color.FromRgba(1, 1, 1, 0.06);
+        
         public static Color LessTransparentBlack = Color.FromRgba(0.0, 0.0, 0.0, (double)0x99 / 255.0);
         public static Color SemiTransparentBlack = Color.FromRgba(0.0, 0.0, 0.0, (double)0x66 / 255.0);
         public static Color VeryTransparentBlack = Color.FromRgba(0.0, 0.0, 0.0, (double)0x1F / 255.0);
