@@ -14,7 +14,7 @@ namespace GnollHackX
     public static class GHColors
     {
         public static Color MsgBoxDarkModeBkgColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
-        public static Color MsgBoxLightModeBkgColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x99 / (double)0xFF);
+        public static Color MsgBoxLightModeBkgColor = Color.FromRgba(0.0, 0.0, 0.0, 0.75);
         public static Color PickerDarkModeBkgColor = Color.FromRgba(1, 1, 1, 0.15);
         public static Color PickerLightModeBkgColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x22 / (double)0xFF);
 

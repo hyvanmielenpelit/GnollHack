@@ -133,7 +133,7 @@ static int check_pos(int, int, int);
 static int get_bk_glyph(xchar, xchar);
 static int get_floor_layer_glyph(xchar, xchar);
 static int get_floor_doodad_layer_glyph(xchar, xchar);
-static int get_feature_doodad_layer_glyph(xchar, xchar, signed char*);
+static int get_feature_doodad_layer_glyph(xchar, xchar, schar*);
 static int get_carpet_layer_glyph(xchar, xchar);
 static int tether_glyph(int, int);
 
