@@ -1280,6 +1280,7 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
     //boolean objectshatters = FALSE;
     int critstrikeroll = rn2(100);
     enum hit_tile_types hit_tile = HIT_GENERAL;
+    struct obj* otmp2 = 0;
 
     int extratmp = 0;
     double damage = 0;
@@ -1406,8 +1407,20 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
     case AD_WERE:
     case AD_HEAL:
     case AD_PHYS:
- physical:
-        if (mattk->aatyp == AT_KICK && thick_skinned(pd)) 
+  physical:
+        if (is_shade(pd) 
+            && !(omonwep && shade_glare(omonwep, mdef))
+            && magr->data->body_material_type != MAT_SILVER /* Not silver monster */
+            && !is_angel(magr->data) /* Not blessed monster */
+            && !(mattk->aatyp == AT_CLAW && (magr->worn_item_flags & W_ARMG) != 0 && (otmp2 = which_armor(mdef, W_ARMS)) != 0 && (obj_counts_as_silver(otmp2) || is_obj_blessed(otmp2))) /* Not silver or blessed gauntlets */
+            )
+        {
+            damage = 0;
+            if (vis && canseemon(mdef) && !hittxtalreadydisplayed)
+                pline("But the attack passes harmlessly through %s.", mon_nam(mdef));
+            hittxtalreadydisplayed = TRUE;
+        }
+        else if (mattk->aatyp == AT_KICK && thick_skinned(pd)) 
         {
             damage = 0;
         } 
