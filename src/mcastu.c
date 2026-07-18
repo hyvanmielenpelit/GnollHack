@@ -685,6 +685,8 @@ cast_wizard_spell(struct monst *mtmp, double damage, int spellnum)
             increase_mon_property(mtmp, INVISIBILITY, d(2, 10) + 80);
             if (cansee(mtmp->mx, mtmp->my) && !canspotmon(mtmp))
                 map_invisible(mtmp->mx, mtmp->my);
+            newsym(mtmp->mx, mtmp->my);
+            flush_screen(1);
             damage = 0;
         } else
             impossible("no reason for monster to cast disappear spell?");

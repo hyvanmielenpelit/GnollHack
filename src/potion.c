@@ -2552,6 +2552,8 @@ do_illness: /* Pestilence's potion of healing effect */
             increase_mon_property_verbosely(mon, INVISIBILITY, duration);
             if (sawit && !canspotmon(mon) && cansee(mon->mx, mon->my))
                 map_invisible(mon->mx, mon->my);
+            newsym(mon->mx, mon->my);
+            flush_screen(1);
             break;
         }
         case POT_SLEEPING:

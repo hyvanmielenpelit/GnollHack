@@ -1201,6 +1201,8 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         special_effect_wait_until_action(0);
         increase_mon_property_verbosely_limited(mtmp, INVISIBILITY, duration, max_duration);
         special_effect_wait_until_end(0);
+        newsym(mtmp->mx, mtmp->my);
+        flush_screen(1);
         if (gainwandskill)
             wandskilladded = 3;
         if (!oldinvis && knowninvisible(mtmp)) {

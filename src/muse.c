@@ -2867,6 +2867,8 @@ use_misc(struct monst *mtmp)
         /* format monster's name before altering its visibility */
         Strcpy(nambuf, mon_nam(mtmp));
         increase_mon_property_limited(mtmp, INVISIBILITY, duration, max_duration);
+        newsym(mtmp->mx, mtmp->my);
+        flush_screen(1);
         if (vismon && is_invisible(mtmp)) { /* was seen, now invisible */
             if (canspotmon(mtmp)) {
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s body takes on a %s transparency.",
@@ -2892,6 +2894,7 @@ use_misc(struct monst *mtmp)
         mzapmsg(mtmp, otmp, TRUE);
         otmp->charges--;
         (void)increase_mon_property_verbosely_limited(mtmp, VERY_FAST, duration, max_duration);
+        refresh_m_tile_gui_info(mtmp, TRUE);
         return 2;
     case MUSE_POT_SPEED:
     case MUSE_POT_GREATER_SPEED:
@@ -2933,6 +2936,7 @@ use_misc(struct monst *mtmp)
         if(sfx > 0)
         play_sfx_sound_at_location(sfx, mtmp->mx, mtmp->my);
         m_useup(mtmp, otmp);
+        refresh_m_tile_gui_info(mtmp, TRUE);
         return 2;
     case MUSE_POT_WATER:
     case MUSE_POT_FRUIT_JUICE:
@@ -2961,6 +2965,7 @@ use_misc(struct monst *mtmp)
         mtmp->mmageultimate_used /= (!isdiluted ? 2 : 1);
         mtmp->mclericultimate_used /= (!isdiluted ? 2 : 1);
         m_useup(mtmp, otmp);
+        refresh_m_tile_gui_info(mtmp, TRUE);
         return 2;
     case MUSE_POT_EXTRA_ENERGY:
         if (!otmp)
@@ -2974,6 +2979,7 @@ use_misc(struct monst *mtmp)
         mtmp->mmageultimate_used /= (!isdiluted ? 4 : 2);
         mtmp->mclericultimate_used /= (!isdiluted ? 4 : 2);
         m_useup(mtmp, otmp);
+        refresh_m_tile_gui_info(mtmp, TRUE);
         return 2;
     case MUSE_POT_GREATER_ENERGY:
         if (!otmp)
@@ -2987,6 +2993,7 @@ use_misc(struct monst *mtmp)
         mtmp->mmageultimate_used /= (!isdiluted ? 8 : 4);
         mtmp->mclericultimate_used /= (!isdiluted ? 8 : 4);
         m_useup(mtmp, otmp);
+        refresh_m_tile_gui_info(mtmp, TRUE);
         return 2;
     case MUSE_POT_FULL_ENERGY:
         if (!otmp)
@@ -3000,6 +3007,7 @@ use_misc(struct monst *mtmp)
         mtmp->mmageultimate_used = 0;
         mtmp->mclericultimate_used = 0;
         m_useup(mtmp, otmp);
+        refresh_m_tile_gui_info(mtmp, TRUE);
         return 2;
     case MUSE_POT_RESTORE_ABILITY:
     {
@@ -3069,6 +3077,7 @@ use_misc(struct monst *mtmp)
         }
 
         m_useup(mtmp, otmp);
+        refresh_m_tile_gui_info(mtmp, TRUE);
         return 2;
     }
     case MUSE_WAN_POLYMORPH:
