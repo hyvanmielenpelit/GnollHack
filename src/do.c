@@ -5208,6 +5208,8 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                                 obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? 6 : 0, 6);
                     }
 
+                    Strcat(buf2, " + [damage increase]");
+
                     if (formula_avg_multishot_times != 1.0)
                         Strcat(buf2, ")");
 
