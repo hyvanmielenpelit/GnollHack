@@ -2922,42 +2922,49 @@ damageum(struct monst *mdef, struct attack *mattk, struct obj *omonwep, int spec
     case AD_HEAL: /* likewise */
     case AD_PHYS:
  physical:
-        if (is_shade(pd)) 
+        if (is_shade(pd)
+            && youmonst.data->body_material_type != MAT_SILVER /* Not silver monster */
+            && !is_angel(youmonst.data) /* Not blessed monster */
+            && !(mattk->aatyp == AT_CLAW && uarmg && (obj_counts_as_silver(uarmg) || is_obj_blessed(uarmg))) /* Not silver or blessed gauntlets */
+            )
         {
             damage = 0;
-            //if (!specialdmg)
-            //    impossible("bad shade attack function flow?");
+            pline("But the attack passes harmlessly through %s.", mon_nam(mdef));
         }
-        damage += adjust_damage(specialdmg, &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
-
-        if (mattk->aatyp == AT_WEAP)
+        else
         {
-            /* hmonas() uses known_hitum() to deal physical damage,
-               then also damageum() for non-AD_PHYS; don't inflict
-               extra physical damage for unusual damage types */
-            damage = 0;
-        } 
-        else if (mattk->aatyp == AT_KICK
-                   || mattk->aatyp == AT_CLAW
-                   || mattk->aatyp == AT_TUCH
-                   || mattk->aatyp == AT_HUGS)
-        {
-            if (thick_skinned(pd))
-                damage = (mattk->aatyp == AT_KICK) ? 0 : damage / 2;
+            damage += adjust_damage(specialdmg, &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
 
-            /* add ring(s) of increase damage */
-            if (u.ubasedaminc + u.udaminc > 0)
+
+            if (mattk->aatyp == AT_WEAP)
             {
-                /* applies even if damage was 0 */
-                damage += adjust_damage(u.ubasedaminc + u.udaminc, & youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
+                /* hmonas() uses known_hitum() to deal physical damage,
+                   then also damageum() for non-AD_PHYS; don't inflict
+                   extra physical damage for unusual damage types */
+                damage = 0;
             }
-            else if (damage > 0) 
+            else if (mattk->aatyp == AT_KICK
+                || mattk->aatyp == AT_CLAW
+                || mattk->aatyp == AT_TUCH
+                || mattk->aatyp == AT_HUGS)
             {
-                /* ring(s) might be negative; avoid converting
-                   0 to non-0 or positive to non-positive */
-                damage += adjust_damage(u.udaminc, &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
-                if (damage < 1)
-                    damage = 1;
+                if (thick_skinned(pd))
+                    damage = (mattk->aatyp == AT_KICK) ? 0 : damage / 2;
+
+                /* add ring(s) of increase damage */
+                if (u.ubasedaminc + u.udaminc > 0)
+                {
+                    /* applies even if damage was 0 */
+                    damage += adjust_damage(u.ubasedaminc + u.udaminc, &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
+                }
+                else if (damage > 0)
+                {
+                    /* ring(s) might be negative; avoid converting
+                       0 to non-0 or positive to non-positive */
+                    damage += adjust_damage(u.udaminc, &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
+                    if (damage < 1)
+                        damage = 1;
+                }
             }
         }
         break;
