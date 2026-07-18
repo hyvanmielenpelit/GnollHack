@@ -2818,42 +2818,64 @@ show_monster_glyph_with_extra_info_choose_ascii(int x, int y, int glyph, struct 
         if (loc_is_you || mtmp)
         {
             struct monst* used_mtmp = mtmp ? mtmp : &youmonst;
+            boolean apply_special_flags = TRUE;
+            struct permonst* used_monster_data = used_mtmp->data;
 
-            if (is_semi_transparent(used_mtmp->data) && !Hallucination)
-                extra_mflags |= LMFLAGS_SEMI_TRANSPARENT;
-
-            if (is_radially_transparent(used_mtmp->data) && !Hallucination)
-                extra_mflags |= LMFLAGS_RADIAL_TRANSPARENCY;
-
-            if (is_glass_transparent(used_mtmp->data) && !Hallucination)
-                extra_mflags |= LMFLAGS_GLASS_TRANSPARENCY;
-
-            if (is_tailed_long_worm(used_mtmp->data))
-                extra_mflags |= LMFLAGS_LONG_WORM_WITH_TAIL;
-
-            if (is_long_worm_tail(used_mtmp->data))
-                extra_mflags |= LMFLAGS_LONG_WORM_TAIL;
-
-            if (mon_fades_upon_death(used_mtmp))
-                extra_mflags |= LMFLAGS_FADES_UPON_DEATH;
+            switch (M_AP_TYPE(used_mtmp))
+            {
+            case M_AP_NOTHING:
+                break;
+            case M_AP_MONSTER:
+                if (mtmp->mappearance < NUM_MONSTERS)
+                   used_monster_data = &mons[mtmp->mappearance];
+                break;
+            case M_AP_FURNITURE:
+            case M_AP_OBJECT:
+                apply_special_flags = FALSE;
+                break;
+            }
 
             if (is_flying(used_mtmp))
                 extra_mflags |= LMFLAGS_FLYING;
 
-            if (has_swimming(used_mtmp) && IS_POOL(levl[x][y].typ) && !has_blobby_animation(used_mtmp->data) && !Hallucination)
-                extra_mflags |= LMFLAGS_SWIM_ANIMATION | (has_shark_animation(used_mtmp->data) ? LMFLAGS_SPECIAL_ANIMATION : 0UL);
-
             if (is_levitating(used_mtmp))
                 extra_mflags |= LMFLAGS_LEVITATING;
 
-            if (has_blobby_animation(used_mtmp->data) && !Hallucination)
-                extra_mflags |= LMFLAGS_BLOBBY_ANIMATION;
+            if (mon_fades_upon_death(used_mtmp))
+                extra_mflags |= LMFLAGS_FADES_UPON_DEATH;
 
-            if (has_human_breathe_animation(used_mtmp->data) && !Hallucination)
-                extra_mflags |= LMFLAGS_HUMAN_BREATHE_ANIMATION;
+            if (apply_special_flags)
+            {
+                if (is_semi_transparent(used_monster_data) && !Hallucination)
+                    extra_mflags |= LMFLAGS_SEMI_TRANSPARENT;
 
-            if (has_animal_breathe_animation(used_mtmp->data) && !Hallucination)
-                extra_mflags |= LMFLAGS_ANIMAL_BREATHE_ANIMATION;
+                if (is_radially_transparent(used_monster_data) && !Hallucination)
+                    extra_mflags |= LMFLAGS_RADIAL_TRANSPARENCY;
+
+                if (is_glass_transparent(used_monster_data) && !Hallucination)
+                    extra_mflags |= LMFLAGS_GLASS_TRANSPARENCY;
+
+                if (is_slightly_transparent(used_monster_data) && !Hallucination)
+                    extra_mflags |= LMFLAGS_SLIGHT_TRANSPARENCY;
+
+                if (is_tailed_long_worm(used_monster_data))
+                    extra_mflags |= LMFLAGS_LONG_WORM_WITH_TAIL;
+
+                if (is_long_worm_tail(used_monster_data))
+                    extra_mflags |= LMFLAGS_LONG_WORM_TAIL;
+
+                if (has_swimming(used_mtmp) && IS_POOL(levl[x][y].typ) && !has_blobby_animation(used_monster_data) && !Hallucination)
+                    extra_mflags |= LMFLAGS_SWIM_ANIMATION | (has_shark_animation(used_monster_data) ? LMFLAGS_SPECIAL_ANIMATION : 0UL);
+
+                if (has_blobby_animation(used_monster_data) && !Hallucination)
+                    extra_mflags |= LMFLAGS_BLOBBY_ANIMATION;
+
+                if (has_human_breathe_animation(used_monster_data) && !Hallucination)
+                    extra_mflags |= LMFLAGS_HUMAN_BREATHE_ANIMATION;
+
+                if (has_animal_breathe_animation(used_monster_data) && !Hallucination)
+                    extra_mflags |= LMFLAGS_ANIMAL_BREATHE_ANIMATION;
+            }
 
             if (loc_is_you)
             {
@@ -2878,8 +2900,8 @@ show_monster_glyph_with_extra_info_choose_ascii(int x, int y, int glyph, struct 
             {
                 if (is_invisible(mtmp) && canspotmon(mtmp))
                     extra_mflags |= LMFLAGS_INVISIBLE_TRANSPARENT;
-                if ((is_boss_monster(mtmp->data) || is_level_boss(mtmp)) && !is_peaceful(mtmp))
-                    extra_mflags |= LMFLAGS_BOSS_MONSTER_FIGHT;
+                //if ((is_boss_monster(mtmp->data) || is_level_boss(mtmp)) && !is_peaceful(mtmp))
+                //    extra_mflags |= LMFLAGS_BOSS_MONSTER_FIGHT;
             }
         }
        

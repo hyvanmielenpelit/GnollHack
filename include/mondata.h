@@ -231,6 +231,7 @@
 #define is_wizard(ptr) (((ptr)->mflags7 & M7_WIZARD) != 0L)
 #define has_illusory_appearance(ptr) (((ptr)->mflags7 & M7_ILLUSORY_APPEARANCE) != 0L)
 #define has_friendly_illusory_appearance(ptr) (((ptr)->mflags7 & M7_FRIENDLY_ILLUSORY_APPEARANCE) != 0L)
+#define is_slightly_transparent(ptr) (((ptr)->mflags7 & M7_SLIGHTLY_TRANSPARENT) != 0)
 
 /* combinations and others */
 #define is_not_living(ptr) \

@@ -5794,11 +5794,14 @@ namespace GnollHackX.Pages.Game
                 if (layer_idx == (int)layer_types.MAX_LAYERS)
                 {
                     if((_draw_shadow[mapx, mapy] & 2) != 0)
-                        opaqueness = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0 ? (supportsRadialTransparency ? 1.0f : 0.5f) : (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f : 0.5f;
+                        opaqueness = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0 ? (supportsRadialTransparency ? 1.0f : 0.5f) : 
+                            (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SLIGHT_TRANSPARENCY) != 0 ? 0.75f : 
+                            (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f : 
+                            0.5f;
                     else
                         opaqueness = 0.5f;
                 }
-                else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
+                else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY | LayerMonsterFlags.LMFLAGS_SLIGHT_TRANSPARENCY | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
                 {
                     _draw_shadow[mapx, mapy] |= 2;
                     return; /* Draw only the transparent shadow in the max_layers shadow layer; otherwise, if drawn twice, the result will be nontransparent */
