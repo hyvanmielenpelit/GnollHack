@@ -10299,7 +10299,7 @@ doviewpet(void)
         struct monst* mtmp;
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         {
-            if (mtmp->m_id == context.view_pet_mid && is_tame(mtmp))
+            if (mtmp->m_id == context.view_pet_mid && !DEADMONSTER(mtmp) && is_tame(mtmp))
             {
                 if (abs(mtmp->mx - u.ux) <= 1 && abs(mtmp->my - u.uy) <= 1 && !mtmp->meating && mon_can_move(mtmp))
                     return dochatmon(mtmp);
