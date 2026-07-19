@@ -196,6 +196,8 @@ namespace GnollHackX.Controls
 #endif
             bool acceptEnterSpaceForOkCancel = false)
         {
+            if (!MessagePopupOkButton.IsVisible)
+                HideNonBlockingPopup();
             _acceptEnterSpaceForOkCancel = acceptEnterSpaceForOkCancel;
             _messagePopupTcs?.TrySetResult(false);
             _messagePopupTcs = new TaskCompletionSource<bool>();
