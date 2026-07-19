@@ -3218,6 +3218,8 @@ dealloc_monst(struct monst *mon)
         dealloc_mextra(mon);
     if (mon->timed)
         mon_stop_timers(mon);
+    if (mon->m_id == context.view_pet_mid)
+        context.view_pet_mid = 0;
     if (is_mon_isshk(mon))
         debugprint("deallocated shk: mnum=%d, m_id=%u", mon->mnum, mon->m_id);
     if (mon->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED)
