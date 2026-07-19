@@ -52,23 +52,7 @@
                 <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest="280" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="Transparent" TextColor="White"
                         Clicked="CloseButton_Clicked" />
             </Grid>
-            <Grid x:Name="MessagePopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
-                <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
-                    <Frame x:Name="MessagePopupFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
-                        <StackLayout Spacing="9" Padding="6">
-                            <Label Text="Message" x:Name="MessagePopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" HorizontalOptions="Center" />
-                            <Label Text="" x:Name="MessagePopupLabel" FontFamily="Underwood" FontSize="16" LineHeight="1.1" TextColor="White" HorizontalOptions="Center" />
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
-                                <controls:CustomImageButton Text="OK" x:Name="MessagePopupOkButton" Clicked="MessagePopupOkButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" />
-                                <controls:CustomImageButton Text="Cancel" x:Name="MessagePopupCancelButton" Clicked="MessagePopupCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" />
-                            </StackLayout>
-                        </StackLayout>
-                    </Frame>
-                </Grid>
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer />
-                </Grid.GestureRecognizers>
-            </Grid>
+            <controls:MessagePopupView x:Name="MessagePopup" />
         </Grid>
     </gnh:CustomModalPage.Content>
 </gnh:CustomModalPage>

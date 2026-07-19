@@ -16,7 +16,7 @@ namespace GnollHackX
     }
     public interface IMessagePopupPage
     {
-        bool IsPopupOpen();
+        bool IsPopupOpen { get; }
         void ClosePopup();
         bool SendKeyToPopup(int key, bool isCtrl, bool isMeta);
         bool SendSpecialKeyToPopup(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift);

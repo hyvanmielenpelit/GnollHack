@@ -42,7 +42,6 @@ namespace GnollHackX.Pages.MainScreen
             if (GHApp.DarkMode)
             {
                 lblHeader.TextColor = GHColors.White;
-                MessagePopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
             }
         }
 
@@ -395,7 +394,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async Task ClosePageAsync(bool playClickedSound)
         {
-            _messagePopupTcs?.TrySetResult(false);
+            MessagePopup.CleanPopup();
             ImportExportGrid.IsEnabled = false;
             _backPressed = true;
             if (playClickedSound)
@@ -411,12 +410,9 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     try
                     {
-                        if (MessagePopupGrid.IsVisible)
+                        if (MessagePopup.IsPopupOpen)
                         {
-                            if (MessagePopupCancelButton.IsVisible)
-                                MessagePopupCancelButton_Clicked(MessagePopupCancelButton, EventArgs.Empty);
-                            else
-                                MessagePopupOkButton_Clicked(MessagePopupOkButton, EventArgs.Empty);
+                            MessagePopup.ForceClosePopup();
                         }
                         else if (ImportExportGrid.IsEnabled)
                             await ClosePageAsync(true);
@@ -452,7 +448,7 @@ namespace GnollHackX.Pages.MainScreen
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            _messagePopupTcs?.TrySetResult(false);
+            MessagePopup.CleanPopup();
             GHApp.BackButtonPressed -= BackButtonPressed;
         }
         //protected override bool OnBackButtonPressed()
@@ -827,140 +823,18 @@ namespace GnollHackX.Pages.MainScreen
             ImportExportGrid.IsEnabled = true;
         }
 
-        private TaskCompletionSource<bool> _messagePopupTcs;
-        private bool _acceptEnterSpaceForOkCancel = false;
-
-        public bool IsPopupOpen() => MessagePopupGrid.IsVisible;
-
-        public void ClosePopup()
-        {
-            try
-            {
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    try
-                    {
-                        if (MessagePopupGrid.IsVisible)
-                        {
-                            if (MessagePopupCancelButton.IsVisible)
-                                MessagePopupCancelButton_Clicked(MessagePopupCancelButton, EventArgs.Empty);
-                            else
-                                MessagePopupOkButton_Clicked(MessagePopupOkButton, EventArgs.Empty);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex);
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
-        }
-
-        public bool SendKeyToPopup(int key, bool isCtrl, bool isMeta)
-        {
-            if (MessagePopupGrid.IsVisible)
-            {
-                if (key == ' ' || key == '\r' || key == '\n')
-                {
-                    if (!MessagePopupCancelButton.IsVisible || _acceptEnterSpaceForOkCancel)
-                    {
-                        MessagePopupOkButton_Clicked(MessagePopupOkButton, EventArgs.Empty);
-                    }
-                }
-                else
-                {
-                    char c = (char)key;
-                    string okText = MessagePopupOkButton.Text;
-                    if (!string.IsNullOrEmpty(okText) && char.ToLowerInvariant(okText[0]) == char.ToLowerInvariant(c))
-                    {
-                        MessagePopupOkButton_Clicked(MessagePopupOkButton, EventArgs.Empty);
-                    }
-                    else if (MessagePopupCancelButton.IsVisible)
-                    {
-                        string cancelText = MessagePopupCancelButton.Text;
-                        if (!string.IsNullOrEmpty(cancelText) && char.ToLowerInvariant(cancelText[0]) == char.ToLowerInvariant(c))
-                        {
-                            MessagePopupCancelButton_Clicked(MessagePopupCancelButton, EventArgs.Empty);
-                        }
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
-        public bool SendSpecialKeyToPopup(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift)
-        {
-            if (MessagePopupGrid.IsVisible)
-            {
-                if (spkey == GHSpecialKey.Enter || spkey == GHSpecialKey.Space)
-                {
-                    if (!MessagePopupCancelButton.IsVisible || _acceptEnterSpaceForOkCancel)
-                    {
-                        MessagePopupOkButton_Clicked(MessagePopupOkButton, EventArgs.Empty);
-                    }
-                }
-                else if (spkey == GHSpecialKey.Escape)
-                {
-                    if (MessagePopupCancelButton.IsVisible)
-                        MessagePopupCancelButton_Clicked(MessagePopupCancelButton, EventArgs.Empty);
-                    else
-                        MessagePopupOkButton_Clicked(MessagePopupOkButton, EventArgs.Empty);
-                }
-                return true;
-            }
-            return false;
-        }
-
+        public bool IsPopupOpen => MessagePopup.IsPopupOpen;
+        public void ClosePopup() => MessagePopup.ClosePopup();
+        public bool SendKeyToPopup(int key, bool isCtrl, bool isMeta) => MessagePopup.SendKeyToPopup(key, isCtrl, isMeta);
+        public bool SendSpecialKeyToPopup(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift) => MessagePopup.SendSpecialKeyToPopup(spkey, isCtrl, isMeta, isShift);
         public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
 #if GNH_MAUI
-            Microsoft.Maui.Graphics.Color titleColor = null, bool acceptEnterSpaceForOkCancel = false
+            Color titleColor = null,
 #else
-            Color? titleColor = null, bool acceptEnterSpaceForOkCancel = false
+            Color? titleColor = null,
 #endif
-            )
-        {
-            _acceptEnterSpaceForOkCancel = acceptEnterSpaceForOkCancel;
-            _messagePopupTcs?.TrySetResult(false);
-            _messagePopupTcs = new TaskCompletionSource<bool>();
-
-            MessagePopupTitleLabel.Text = title;
-            MessagePopupTitleLabel.TextColor = titleColor ?? GHColors.TitleGoldColor;
-            MessagePopupLabel.Text = message;
-
-            if (string.IsNullOrEmpty(cancelButtonText))
-            {
-                MessagePopupOkButton.Text = okButtonText;
-                MessagePopupCancelButton.IsVisible = false;
-                MessagePopupOkButton.HorizontalOptions = LayoutOptions.Center;
-            }
-            else
-            {
-                MessagePopupOkButton.Text = okButtonText;
-                MessagePopupCancelButton.Text = cancelButtonText;
-                MessagePopupCancelButton.IsVisible = true;
-                MessagePopupOkButton.HorizontalOptions = LayoutOptions.End;
-                MessagePopupCancelButton.HorizontalOptions = LayoutOptions.Start;
-            }
-
-            MessagePopupGrid.IsVisible = true;
-            return _messagePopupTcs.Task;
-        }
-
-        private void MessagePopupOkButton_Clicked(object sender, EventArgs e)
-        {
-            MessagePopupGrid.IsVisible = false;
-            _messagePopupTcs?.TrySetResult(true);
-        }
-
-        private void MessagePopupCancelButton_Clicked(object sender, EventArgs e)
-        {
-            MessagePopupGrid.IsVisible = false;
-            _messagePopupTcs?.TrySetResult(false);
-        }
+            bool acceptEnterSpaceForOkCancel = false) => MessagePopup.ShowMessagePopupAsync(title, message, okButtonText, cancelButtonText, titleColor, acceptEnterSpaceForOkCancel);
     }
 }
+
+

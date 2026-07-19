@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" InitialTargets="InitialBuild" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|ARM">
@@ -242,8 +242,18 @@
           Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui').Replace('%3CContentView.Content%3E','').Replace('%3C/ContentView.Content%3E',''))"
           Overwrite="true"
           Encoding="UTF-8"/>
-	  <!-- <Copy SourceFiles="$(InputFile).cs" DestinationFolder="$(MauiMainDir)"/> -->
-   	  <PropertyGroup>
+	  <!-- <Copy SourceFiles=".cs" DestinationFolder=""/> -->
+	  <PropertyGroup>
+          <InputFile>$(XamarinControlsDir)MessagePopupView.xaml</InputFile>
+          <OutputFile>$(MauiMainDir)MessagePopupView.xaml</OutputFile>
+      </PropertyGroup>
+      <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui').Replace('%3CContentView.Content%3E','').Replace('%3C/ContentView.Content%3E','').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('HeightRequest  =','MaximumHeightRequest=').Replace('HorizontalOptions  =%22Center%22','HorizontalOptions=%22Fill%22').Replace('%3CFrame','%3CBorder').Replace('%3C/Frame','%3C/Border').Replace('BorderColor=%22Black%22','Stroke=%22Black%22 Padding=%2212,12%22').Replace('CornerRadius=%2210%22','StrokeThickness=%221%22 StrokeShape=%22RoundRectangle 10,10,10,10%22').Replace('CornerRadius=%220%22','StrokeThickness=%221%22 StrokeShape=%22Rectangle%22'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+
+    <PropertyGroup>
           <InputFile>$(XamarinMainDir)MainPage.xaml</InputFile>
           <OutputFile>$(MauiMainDir)MainPage.xaml</OutputFile>
       </PropertyGroup>
@@ -452,3 +462,4 @@
           Encoding="UTF-8"/>
   </Target>
 </Project>
+

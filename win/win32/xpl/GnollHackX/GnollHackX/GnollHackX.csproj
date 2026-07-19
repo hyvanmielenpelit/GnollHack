@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -679,6 +679,9 @@
     <EmbeddedResource Update="Controls\CustomImageButton.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Controls\MessagePopupView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Pages\Game\WikiPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -753,6 +756,9 @@
     </Compile>
     <Compile Update="Controls\CustomImageButton.xaml.cs">
       <DependentUpon>CustomImageButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\MessagePopupView.xaml.cs">
+      <DependentUpon>MessagePopupView.xaml</DependentUpon>
     </Compile>
     <Compile Update="Pages\MainScreen\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>

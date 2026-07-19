@@ -11108,7 +11108,7 @@ namespace GnollHackX
             Page topPage = PageFromTopOfModalNavigationStack();
             if (topPage == null)
                 return CurrentMainPage?.HandleKeyPress(key, isCtrl, isMeta) ?? false;
-            else if (topPage is IMessagePopupPage popupPage && popupPage.IsPopupOpen())
+            else if (topPage is IMessagePopupPage popupPage && popupPage.IsPopupOpen)
                 return popupPage.SendKeyToPopup(key, isCtrl, isMeta);
             else if (topPage is IKeyPressHandlingPage keyPressPage)
                 return keyPressPage.HandleKeyPress(key, isCtrl, isMeta);
@@ -11136,7 +11136,7 @@ namespace GnollHackX
             Page topPage = PageFromTopOfModalNavigationStack();
             if(topPage == null)
                 return CurrentMainPage?.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
-            else if (topPage is IMessagePopupPage popupPage && popupPage.IsPopupOpen())
+            else if (topPage is IMessagePopupPage popupPage && popupPage.IsPopupOpen)
                 return popupPage.SendSpecialKeyToPopup(spkey, isCtrl, isMeta, isShift);
             else if (topPage is ISpecialKeyPressHandlingPage keyPressPage)
                 return keyPressPage.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);

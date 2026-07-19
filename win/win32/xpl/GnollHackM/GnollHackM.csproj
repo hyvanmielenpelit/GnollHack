@@ -232,6 +232,7 @@
 		<None Remove="..\GnollHackX\GnollHackX.FMOD\fmod_dsp.cs" />
 		<None Remove="..\GnollHackX\GnollHackX.FMOD\FMODService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Controls\CustomImageButton.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Controls\MessagePopupView.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Controls\LabeledImageButton.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Controls\RowImageButton.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Controls\SimpleImageButton.xaml.cs" />
@@ -456,6 +457,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod_dsp.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.FMOD\FMODService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Controls\CustomImageButton.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Controls\MessagePopupView.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Controls\LabeledImageButton.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Controls\RowImageButton.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Controls\SimpleImageButton.xaml.cs" />
