@@ -241,7 +241,7 @@ namespace GnollHackX.Pages.MainScreen
                     {
                         if (MessagePopup.IsPopupOpen)
                         {
-                            MessagePopup.ForceClosePopup();
+                            MessagePopup.ClosePopup();
                         }
                         else if (ResetGrid.IsEnabled)
                             await ClosePageAsync(true);
@@ -261,7 +261,6 @@ namespace GnollHackX.Pages.MainScreen
 
         private async Task ClosePageAsync(bool playClickedSound)
         {
-            MessagePopup.CleanPopup();
             ResetGrid.IsEnabled = false;
             _backPressed = true;
             if (playClickedSound)
@@ -288,7 +287,6 @@ namespace GnollHackX.Pages.MainScreen
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            MessagePopup.CleanPopup();
             GHApp.BackButtonPressed -= BackButtonPressed;
         }
         //protected override bool OnBackButtonPressed()

@@ -158,7 +158,6 @@ namespace GnollHackX.Pages.MainScreen
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            MessagePopup.CleanPopup();
             GHApp.BackButtonPressed -= BackButtonPressed;
             CancelCurrentProcess();
         }
@@ -229,7 +228,6 @@ namespace GnollHackX.Pages.MainScreen
         private bool _backPressed = false;
         private async Task ClosePageAsync(bool playClickedSound)
         {
-            MessagePopup.CleanPopup();
             _backPressed = true;
             ButtonMainStack.IsEnabled = false;
             if (playClickedSound)

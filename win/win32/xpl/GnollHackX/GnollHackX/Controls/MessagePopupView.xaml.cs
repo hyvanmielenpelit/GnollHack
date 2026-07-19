@@ -24,6 +24,10 @@ namespace GnollHackX.Controls
         public MessagePopupView()
         {
             InitializeComponent();
+#if GNH_MAUI
+            Loaded += OnLoaded;
+            Unloaded += OnUnloaded;
+#endif
             IsVisible = false;
             if (GHApp.DarkMode)
             {
@@ -34,33 +38,114 @@ namespace GnollHackX.Controls
         public bool IsPopupOpen => IsVisible;
         public bool IsPopupOkCancel => MessagePopupCancelButton.IsVisible;
 
-        public void ClosePopup()
+        private Page _parentPage = null;
+
+#if GNH_MAUI
+        private void OnLoaded(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_parentPage == null)
+                {
+                    _parentPage = GetParentPage(this);
+                    if (_parentPage != null)
+                        _parentPage.Disappearing += OnPageDisappearing;
+                }
+            }
+            catch { }
+        }
+
+        private void OnUnloaded(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_parentPage != null)
+                {
+                    CleanPopup();
+                    _parentPage.Disappearing -= OnPageDisappearing;
+                    _parentPage = null;
+                }
+            }
+            catch { }
+        }
+#else
+        protected override void OnParentSet()
+        {
+            base.OnParentSet();
+
+            if (Parent != null)
+            {
+                _parentPage = GetParentPage(this);
+                if (_parentPage != null)
+                    _parentPage.Disappearing += OnPageDisappearing;
+            }
+            else
+            {
+                if (_parentPage != null)
+                {
+                    CleanPopup();
+                    _parentPage.Disappearing -= OnPageDisappearing;
+                    _parentPage = null;
+                }
+            }
+        }
+#endif
+
+        private Page GetParentPage(Element element)
+        {
+            Element current = element;
+
+            while (current != null)
+            {
+                if (current is Page page)
+                    return page;
+
+                current = current.Parent;
+            }
+
+            return null;
+        }
+
+        private void OnPageDisappearing(object sender, EventArgs e)
+        {
+            CleanPopup();
+        }
+
+        private void DismissPopup()
         {
             _messagePopupTcs?.TrySetResult(false);
             IsVisible = false;
         }
 
-        public void AcceptPopup()
+        private void AcceptPopup()
         {
             _messagePopupTcs?.TrySetResult(true);
             IsVisible = false;
         }
 
-        public void CleanPopup()
+        private void CleanPopup()
         {
-            _messagePopupTcs?.TrySetResult(false);
+            try
+            {
+                _messagePopupTcs?.TrySetResult(false);
+            }
+            catch { }
+            finally
+            {
+                _messagePopupTcs = null;
+            }
         }
 
         /// <summary>
         /// Closes the popup, accepting it if only OK is shown, or cancelling if Cancel is visible.
         /// Useful for programmatic page-close scenarios.
         /// </summary>
-        public void ForceClosePopup()
+        public void ClosePopup()
         {
             if (IsPopupOpen)
             {
                 if (IsPopupOkCancel)
-                    ClosePopup();
+                    DismissPopup();
                 else
                     AcceptPopup();
             }
@@ -146,7 +231,7 @@ namespace GnollHackX.Controls
 
         private void MessagePopupCancelButton_Clicked(object sender, EventArgs e)
         {
-            ClosePopup();
+            DismissPopup();
         }
 
         public bool SendKeyToPopup(int key, bool isCtrl, bool isMeta)
@@ -173,7 +258,7 @@ namespace GnollHackX.Controls
                         string cancelText = MessagePopupCancelButton.Text;
                         if (!string.IsNullOrEmpty(cancelText) && char.ToLowerInvariant(cancelText[0]) == char.ToLowerInvariant(c))
                         {
-                            ClosePopup();
+                            DismissPopup();
                         }
                     }
                 }
@@ -196,7 +281,7 @@ namespace GnollHackX.Controls
                 else if (spkey == GHSpecialKey.Escape)
                 {
                     if (MessagePopupCancelButton.IsVisible)
-                        ClosePopup();
+                        DismissPopup();
                     else
                         AcceptPopup();
                 }
