@@ -9605,11 +9605,15 @@ zhitu(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int d
         if (origmonst)
         {
             if (origmonst == &youmonst)
+            {
                 Sprintf(hisbuf, "%s own", uhis());
+            }
             else
+            {
                 Strcpy(hisbuf, s_suffix(x_monnam(origmonst, ARTICLE_A, (char*)0,
-                    (has_mname(origmonst) ? SUPPRESS_SADDLE : 0) | SUPPRESS_IT | SUPPRESS_HALLUCINATION,
+                    (has_mname(origmonst) ? SUPPRESS_SADDLE : 0) | SUPPRESS_IT | SUPPRESS_POLYMORPH | SUPPRESS_HALLUCINATION | ADD_HALLUCINATION_DISTORTED,
                     FALSE)));
+            }
 
             if (origobj)
             {

@@ -538,6 +538,7 @@ E struct c_common_strings {
 #define EXACT_NAME 0x0F
 #define SUPPRESS_NAME 0x10
 #define SUPPRESS_POLYMORPH 0x20
+#define ADD_HALLUCINATION_DISTORTED 0x40
 
 /* Vision */
 E NEARDATA boolean vision_full_recalc; /* TRUE if need vision recalc */
