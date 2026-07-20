@@ -23,7 +23,6 @@ namespace GnollHackX
     {
         public CustomContentPage() : base()
         {
-            Debug.WriteLine("CustomContentPage: " + GHApp.Edge2Edge);
             UpdateEdge2Edge();
             UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
             /* Content has not been set yet, as InitializeComponent has not run */
@@ -70,7 +69,6 @@ namespace GnollHackX
 
         public void SetEdge2Edge(bool newEdge2Edge)
         {
-            Debug.WriteLine("SetEdge2Edge: " + newEdge2Edge);
 #if GNH_MAUI
             /* Keep the MAUI property as belt-and-suspenders in case a future
                MAUI update fixes SafeAreaEdges propagation on iOS. */
