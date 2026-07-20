@@ -113,14 +113,14 @@ namespace GnollHackX.Controls
 
         private void DismissPopup()
         {
-            _messagePopupTcs?.TrySetResult(false);
             IsVisible = false;
+            _messagePopupTcs?.TrySetResult(false);
         }
 
         private void AcceptPopup()
         {
-            _messagePopupTcs?.TrySetResult(true);
             IsVisible = false;
+            _messagePopupTcs?.TrySetResult(true);
         }
 
         private void CleanPopup()

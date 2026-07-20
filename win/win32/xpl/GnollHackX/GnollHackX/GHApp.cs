@@ -11577,25 +11577,24 @@ namespace GnollHackX
 
         public static async Task DisplayMessageBox(Page page, string title, string message, string cancel)
         {
-            IsKeyboardHookEnabled = false;
             if (page is IMessagePopupPage popupPage)
             {
                 await popupPage.ShowMessagePopupAsync(title, message, cancel);
             }
             else
             {
+                IsKeyboardHookEnabled = false;
 #if GNH_MAUI
                 await page.DisplayAlertAsync(title, message, cancel);
 #else
                 await page.DisplayAlert(title, message, cancel);
 #endif
+                IsKeyboardHookEnabled = true;
             }
-            IsKeyboardHookEnabled = true;
         }
 
         public static async Task<bool> DisplayMessageBox(Page page, string title, string message, string accept, string cancel)
         {
-            IsKeyboardHookEnabled = false;
             bool res;
             if (page is IMessagePopupPage popupPage)
             {
@@ -11603,13 +11602,14 @@ namespace GnollHackX
             }
             else
             {
+                IsKeyboardHookEnabled = false;
 #if GNH_MAUI
                 res = await page.DisplayAlertAsync(title, message, accept, cancel);
 #else
                 res = await page.DisplayAlert(title, message, accept, cancel);
 #endif
+                IsKeyboardHookEnabled = true;
             }
-            IsKeyboardHookEnabled = true;
             return res;
         }
 

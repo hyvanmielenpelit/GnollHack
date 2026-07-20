@@ -590,21 +590,6 @@ namespace GnollHackX.Pages.MainScreen
             if (GHApp.PushingModalPage) /* Ignore key presses when opening a page */
                 return true;
 
-            if (MessagePopup.IsPopupOpen)
-            {
-                if (key == 27 || key == 13 || key == 32)
-                {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        if (key == 27) MessagePopup.SendSpecialKeyToPopup(GHSpecialKey.Escape, false, false, false);
-                        else if (key == 13) MessagePopup.SendSpecialKeyToPopup(GHSpecialKey.Enter, false, false, false);
-                        else if (key == 32) MessagePopup.SendSpecialKeyToPopup(GHSpecialKey.Space, false, false, false);
-                    });
-                    return true;
-                }
-                return true;
-            }
-
             bool handled = false;
             try
             {
