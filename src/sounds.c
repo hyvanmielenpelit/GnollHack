@@ -2351,7 +2351,7 @@ int
 dochatmon(struct monst *mtmp)
 {
     if (!mtmp || 
-        ((!canspotmon(mtmp) || is_mon_mundetected(mtmp) || M_AP_TYPE(mtmp) == M_AP_FURNITURE || M_AP_TYPE(mtmp) == M_AP_OBJECT) && !is_tame(mtmp)))
+        ((!canspotmon(mtmp) || is_undetected(mtmp) || M_AP_TYPE(mtmp) == M_AP_FURNITURE || M_AP_TYPE(mtmp) == M_AP_OBJECT) && !is_tame(mtmp)))
     {
         play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
         pline_ex1(ATR_NONE, CLR_MSG_FAIL, Blind ? "You cannot see there anyone to talk to." : "There is no-one to talk to.");

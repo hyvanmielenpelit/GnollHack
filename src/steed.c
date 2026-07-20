@@ -253,7 +253,7 @@ mount_steed(struct monst *mtmp)
     /* Can the player reach and see the monster? */
     boolean force = FALSE;      /* Quietly force this animal */
     boolean forceasked = FALSE;      /* Quietly force this animal */
-    boolean steedunseen = mtmp && ((Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters)) || is_mon_mundetected(mtmp)
+    boolean steedunseen = mtmp && ((Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters)) || is_undetected(mtmp)
         || M_AP_TYPE(mtmp) == M_AP_FURNITURE
         || M_AP_TYPE(mtmp) == M_AP_OBJECT);
 

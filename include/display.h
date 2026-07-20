@@ -83,6 +83,8 @@
 
 /*     && (((int) ((mon)->m_lev / 4)) >= context.warnlevel)) */
 
+#define is_undetected(m) (is_mon_mundetected(m) && !True_seeing)
+
 /*
  * mon_visible()
  *
@@ -94,8 +96,8 @@
 #define mon_visible(mon) \
     (/* The hero can see the monster IF the monster                                    */ \
      (!is_invisible(mon) || See_invisible || True_seeing)      /*     1. is not invisible             */ \
-        && !is_mon_mundetected(mon)                    /*     2. not an undetected hider      */ \
-        && !(is_mon_mburied(mon) || u.uburied))        /* AND 3. neither you nor it is buried */
+        && !is_undetected(mon)                                 /*     2. not an undetected hider      */ \
+        && !(is_mon_mburied(mon) || u.uburied))                /* AND 3. neither you nor it is buried */
 
 /*
  * see_with_infrared()

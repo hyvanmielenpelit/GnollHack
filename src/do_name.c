@@ -1395,7 +1395,7 @@ do_mname(void)
     if (!mtmp
         || (!sensemon(mtmp)
             && (!(cansee(cx, cy) || see_with_infrared(mtmp))
-                || is_mon_mundetected(mtmp) || M_AP_TYPE(mtmp) == M_AP_FURNITURE
+                || is_undetected(mtmp) || M_AP_TYPE(mtmp) == M_AP_FURNITURE
                 || M_AP_TYPE(mtmp) == M_AP_OBJECT
                 || (is_invisible(mtmp) && !Can_see_invisible)))) 
     {

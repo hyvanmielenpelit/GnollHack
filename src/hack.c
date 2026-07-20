@@ -2106,7 +2106,7 @@ domove_core(void)
                 You("move right into %s.", mon_nam(mtmp));
             return;
         }
-        if (context.forcefight || !is_mon_mundetected(mtmp) || sensemon(mtmp)
+        if (context.forcefight || !is_undetected(mtmp) || sensemon(mtmp)
             || ((hides_under(mtmp->data) || mtmp->data->mlet == S_EEL)
                 && !is_safepet(mtmp) && !is_displaceable_peaceful(mtmp)))
         {
