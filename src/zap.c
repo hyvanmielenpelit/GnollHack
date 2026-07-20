@@ -9604,29 +9604,52 @@ zhitu(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int d
     {
         if (origmonst)
         {
-            if (origmonst == &youmonst)
+            const char* monst_name = x_monnam(origmonst, ARTICLE_A, (char*)0,
+                (has_mname(origmonst) ? SUPPRESS_SADDLE : 0) | SUPPRESS_IT | SUPPRESS_HALLUCINATION | ADD_HALLUCINATION_DISTORTED,
+                FALSE);
+            boolean has_polymorphed_into = !!strstr(monst_name, " polymorphed into ");
+            if (has_polymorphed_into && origmonst != &youmonst)
             {
-                Sprintf(hisbuf, "%s own", uhis());
-            }
-            else
-            {
-                Strcpy(hisbuf, s_suffix(x_monnam(origmonst, ARTICLE_A, (char*)0,
-                    (has_mname(origmonst) ? SUPPRESS_SADDLE : 0) | SUPPRESS_IT | SUPPRESS_POLYMORPH | SUPPRESS_HALLUCINATION | ADD_HALLUCINATION_DISTORTED,
-                    FALSE)));
-            }
-
-            if (origobj)
-            {
-                Sprintf(killername, "%s from %s %s", fltxt, hisbuf, killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE | KXNFLAGS_SPELL));
-            }
-            else
-            {
-                if (is_buzztype_breath_weapon(type))
-                    Sprintf(killername, "%s from %s %s", fltxt, hisbuf, "breath weapon");
-                else if(is_buzztype_eyestalk(type))
-                    Sprintf(killername, "%s from %s %s", fltxt, hisbuf, "eyestalk");
+                /* Here we need to use of construct */
+                if (origobj)
+                {
+                    Sprintf(killername, "%s from %s of %s", fltxt, killer_xname_flags(origobj, KXNFLAGS_SPELL), monst_name);
+                }
                 else
-                    Sprintf(killername, "%s %s", hisbuf, fltxt);
+                {
+                    if (is_buzztype_breath_weapon(type))
+                        Sprintf(killername, "%s from %s of %s", fltxt, "the breath weapon", monst_name);
+                    else if (is_buzztype_eyestalk(type))
+                        Sprintf(killername, "%s from %s of %s", fltxt, "the eyestalk", monst_name);
+                    else
+                        Sprintf(killername, "%s of %s", fltxt, monst_name);
+                }
+            }
+            else
+            {
+                /* Here s suffix is better */
+                if (origmonst == &youmonst)
+                {
+                    Sprintf(hisbuf, "%s own", uhis());
+                }
+                else
+                {
+                    Strcpy(hisbuf, s_suffix(monst_name));
+                }
+
+                if (origobj)
+                {
+                    Sprintf(killername, "%s from %s %s", fltxt, hisbuf, killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE | KXNFLAGS_SPELL));
+                }
+                else
+                {
+                    if (is_buzztype_breath_weapon(type))
+                        Sprintf(killername, "%s from %s %s", fltxt, hisbuf, "breath weapon");
+                    else if (is_buzztype_eyestalk(type))
+                        Sprintf(killername, "%s from %s %s", fltxt, hisbuf, "eyestalk");
+                    else
+                        Sprintf(killername, "%s %s", hisbuf, fltxt);
+                }
             }
         }
         else

@@ -2247,7 +2247,7 @@ noittame_Monnam(struct monst *mtmp)
 char *
 noname_monnam(struct monst *mtmp, int article)
 {
-    return x_monnam(mtmp, article, (char *) 0, SUPPRESS_NAME, FALSE);
+    return x_monnam(mtmp, article, (char *) 0, SUPPRESS_NAME | SUPPRESS_POLYMORPH, FALSE);
 }
 
 /* monster's own name -- overrides hallucination and [in]visibility
