@@ -1965,7 +1965,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
     char *buf = nextmbuf();
     struct permonst *mdat = mtmp->data;
     const char* pm_name = mon_monster_name(mtmp); // mdat->mname;
-    boolean do_hallu, do_invis, do_it, do_saddle, do_name, do_poly, distorted;
+    boolean do_hallu, do_invis, do_it, do_saddle, do_name, do_poly, do_distorted;
     boolean name_at_start = FALSE, has_adjectives = FALSE;
     /* note: uname is always at end */
     char *bp;
@@ -1982,7 +1982,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
         article = ARTICLE_THE;
 
     do_hallu = Hallucination && !(suppress & SUPPRESS_HALLUCINATION);
-    distorted = Hallucination && (suppress & ADD_HALLUCINATION_DISTORTED) && canspotmon(mtmp);
+    do_distorted = !do_hallu && (suppress & ADD_HALLUCINATION_DISTORTED) && Hallucination && canspotmon(mtmp);
     do_poly = !Hallucination && !(suppress & SUPPRESS_POLYMORPH) && (program_state.gameover || (True_seeing && canseemon(mtmp))) && mtmp->cham >= LOW_PM && mtmp->cham < NUM_MONSTERS;
     do_invis = is_invisible(mtmp) && !(suppress & SUPPRESS_INVISIBLE);
     do_it = !canspotmon(mtmp) && article != ARTICLE_YOUR
@@ -2054,7 +2054,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
         Strcat(strcat(buf, adjective), " ");
     if (do_invis)
         Strcat(buf, "invisible ");
-    if (distorted)
+    if (do_distorted)
         Strcat(buf, "hallucinogen-distorted ");
     if (do_saddle && (mtmp->worn_item_flags & W_SADDLE) && !Blind
         && !Hallucination)
