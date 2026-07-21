@@ -49,9 +49,8 @@ nextmbuf(void)
 /* function for getpos() to highlight desired map locations.
  * parameter value 0 = initialize, 1 = highlight, 2 = done
  */
-static void (*getpos_hilitefunc)(int) = (void FDECL((*), (int))) 0;
-static int (*getpos_getinvalid)(int, int) =
-                                           (int FDECL((*), (int, int))) 0;
+static void (*getpos_hilitefunc)(int) = (void (*)(int)) 0;
+static int (*getpos_getinvalid)(int, int) = (int (*)(int, int)) 0;
 
 static void
 set_valid_pos_flags(void)
@@ -1110,8 +1109,8 @@ getpos(coord *ccp, boolean force, const char *goal, enum game_cursor_types curso
     for (i = 0; i < NUM_GLOCS; i++)
         if (garr[i])
             free((genericptr_t) garr[i]);
-    getpos_hilitefunc = (void FDECL((*), (int))) 0;
-    getpos_getinvalid = (int FDECL((*), (int, int))) 0;
+    getpos_hilitefunc = (void (*)(int)) 0;
+    getpos_getinvalid = (int (*)(int, int)) 0;
 
     flags.show_cursor_on_u = FALSE;
     flags.force_paint_at_cursor = TRUE;

@@ -1528,9 +1528,9 @@ throwit(struct obj *obj, int64_t wep_mask)
 
         mon = bhit(u.dx, u.dy, range, 0,
                    tethered_weapon ? THROWN_TETHERED_WEAPON : THROWN_WEAPON,
-                   (int FDECL((*), (struct monst *, struct obj *, struct monst *))) 0,
-                   (int FDECL((*), (struct obj *, struct obj *, struct monst *))) 0, 
-                   (int FDECL((*), (struct trap *, struct obj *, struct monst *))) 0, 
+                   (int (*)(struct monst *, struct obj *, struct monst *)) 0,
+                   (int (*)(struct obj *, struct obj *, struct monst *)) 0, 
+                   (int (*)(struct trap *, struct obj *, struct monst *)) 0, 
                    &obj, &youmonst, TRUE, FALSE);
         thrownobj = obj; /* obj may be null now */
 
@@ -2695,9 +2695,9 @@ throw_gold(struct obj *obj)
             bhitpos.y = u.uy;
         } else {
             mon = bhit(u.dx, u.dy, range, 0, THROWN_WEAPON,
-                       (int FDECL((*), (struct monst *, struct obj *, struct monst *))) 0,
-                       (int FDECL((*), (struct obj *, struct obj *, struct monst *))) 0, 
-                       (int FDECL((*), (struct trap *, struct obj *, struct monst *))) 0, 
+                       (int (*)(struct monst *, struct obj *, struct monst *)) 0,
+                       (int (*)(struct obj *, struct obj *, struct monst *)) 0, 
+                       (int (*)(struct trap *, struct obj *, struct monst *)) 0, 
                        &obj, &youmonst, TRUE, FALSE);
             if (!obj)
                 return 1; /* object is gone */

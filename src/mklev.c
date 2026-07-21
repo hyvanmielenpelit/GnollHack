@@ -24,8 +24,7 @@ static struct mkroom *pos_to_room(xchar, xchar);
 static boolean place_niche(struct mkroom *, int *, int *, int *);
 static void makeniche(int);
 static void make_niches(void);
-static int FDECL(CFDECLSPEC do_comp, (const genericptr,
-                                          const genericptr));
+static int CFDECLSPEC do_comp(const genericptr, const genericptr);
 static void dosdoor(xchar, xchar, struct mkroom *, int, uchar);
 static void join(int, int, boolean);
 static void do_room_or_subroom(struct mkroom *, int, int,

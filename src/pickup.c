@@ -166,7 +166,7 @@ query_classes(char oclasses[], boolean *one_at_a_time, boolean *everything, cons
     *one_at_a_time = *everything = m_seen = FALSE;
     if (menu_on_demand)
         *menu_on_demand = 0;
-    iletct = collect_obj_classes(ilets, objs, here, (boolean FDECL((*), (struct obj *))) 0, &itemcount);
+    iletct = collect_obj_classes(ilets, objs, here, (boolean (*)(struct obj *)) 0, &itemcount);
     if (iletct == 0)
         return FALSE;
 
@@ -1317,7 +1317,7 @@ query_category(const char *qstr, struct obj *olist, int qflags, menu_item **pick
     boolean collected_type_name;
     char invlet;
     int ccount;
-    boolean (*ofilter)(struct obj *) = (boolean FDECL((*), (struct obj *))) 0;
+    boolean (*ofilter)(struct obj *) = (boolean (*)(struct obj *)) 0;
     boolean do_unpaid = FALSE;
     boolean do_blessed = FALSE, do_cursed = FALSE, do_uncursed = FALSE,
             do_buc_unknown = FALSE, do_unidentified = FALSE, do_unknown = FALSE;
@@ -4400,7 +4400,7 @@ traditional_loot(int command_id, struct obj *applied_container, struct obj *othe
         action = "take out";
         objlist = contained_object_chain_ptr(current_container);
         actionfunc = out_container;
-        checkfunc = (int FDECL((*), (struct obj *))) 0;
+        checkfunc = (int (*)(struct obj *)) 0;
         break;
     case 1:
         action = "put in";
@@ -4425,7 +4425,7 @@ traditional_loot(int command_id, struct obj *applied_container, struct obj *othe
         action = "move to another container in inventory";
         objlist = contained_object_chain_ptr(current_container);
         actionfunc = move_container;
-        checkfunc = (int FDECL((*), (struct obj *))) 0;
+        checkfunc = (int (*)(struct obj *)) 0;
         break;
     case 3:
 #if 0
@@ -4445,19 +4445,19 @@ traditional_loot(int command_id, struct obj *applied_container, struct obj *othe
         action = "move to another container on floor";
         objlist = contained_object_chain_ptr(current_container);
         actionfunc = move_container;
-        checkfunc = (int FDECL((*), (struct obj *))) 0;
+        checkfunc = (int (*)(struct obj *)) 0;
         break;
     case 4:
         action = "take out and drop";
         objlist = contained_object_chain_ptr(current_container);
         actionfunc = out_container_and_drop;
-        checkfunc = (int FDECL((*), (struct obj *))) 0;
+        checkfunc = (int (*)(struct obj *)) 0;
         break;
     case 5:
         action = "take out and auto-stash";
         objlist = contained_object_chain_ptr(current_container);
         actionfunc = out_container_and_autostash;
-        checkfunc = (int FDECL((*), (struct obj *))) 0;
+        checkfunc = (int (*)(struct obj *)) 0;
         break;
     case 6:
         action = "pick up and put in";

@@ -56,8 +56,8 @@ static void artifact_score(struct obj *, boolean, winid);
 #endif
 static void really_done(int) NORETURN;
 static void savelife(int);
-static int FDECL(CFDECLSPEC vanqsort_cmp, (const genericptr,
-                                               const genericptr));
+static int CFDECLSPEC vanqsort_cmp(const genericptr,
+                                               const genericptr);
 static int set_vanq_order(void);
 static void list_vanquished(char, boolean, boolean);
 static void list_genocided(char, boolean, boolean);
@@ -421,7 +421,7 @@ static void
 done_hangup(int sig)
 {
     program_state.done_hup++;
-    sethanguphandler((void FDECL((*), (int) )) SIG_IGN);
+    sethanguphandler((void (*)(int)) SIG_IGN);
     done_intr(sig);
     return;
 }
@@ -2815,7 +2815,7 @@ container_contents(struct obj *list, boolean identified, boolean all_containers,
                                      ? SORTLOOT_LOOT : 0)
                                  | (flags.sortpack ? SORTLOOT_PACK : 0));
                     sortedcobj = sortloot(contained_object_chain_ptr(box), sortflags, FALSE,
-                                          (boolean FDECL((*), (struct obj *))) 0);
+                                          (boolean (*)(struct obj *)) 0);
                     totalweight = 0;
                     for (srtc = sortedcobj; ((obj = srtc->obj) != 0); ++srtc) 
                     {
@@ -2911,7 +2911,7 @@ magic_chest_contents(boolean identified, boolean all_containers, boolean reporte
                 ? SORTLOOT_LOOT : 0)
                 | (flags.sortpack ? SORTLOOT_PACK : 0));
             sortedcobj = sortloot(&magic_objs, sortflags, FALSE,
-                (boolean FDECL((*), (struct obj *))) 0);
+                (boolean (*)(struct obj *)) 0);
             totalweight = 0;
             for (srtc = sortedcobj; ((obj = srtc->obj) != 0); ++srtc)
             {

@@ -170,7 +170,7 @@ static int do_chat_npc_forge_cubic_gate(struct monst*);
 static int do_chat_npc_forge_artificial_wings(struct monst*);
 static int do_chat_npc_branch_portal(struct monst*);
 static int sell_to_npc(struct obj*, struct monst*, int, boolean);
-static int sell_many_to_npc(struct monst*, boolean FDECL((*), (struct obj *)));
+static int sell_many_to_npc(struct monst*, boolean (*)(struct obj *));
 static int do_chat_npc_enchant_accessory(struct monst*);
 static int do_chat_npc_recharge(struct monst*);
 static int do_chat_npc_blessed_recharge(struct monst*);
@@ -218,7 +218,7 @@ static boolean maybe_dragon_scales(struct obj*);
 static boolean maybe_otyp(struct obj*);
 static int otyp_for_maybe_otyp = 0;
 static boolean stop_chat = FALSE;
-static int FDECL(CFDECLSPEC available_chat_cmp, (const genericptr, const genericptr));
+static int CFDECLSPEC available_chat_cmp(const genericptr, const genericptr);
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 

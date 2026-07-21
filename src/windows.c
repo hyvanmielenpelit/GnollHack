@@ -785,7 +785,7 @@ static struct window_procs hup_procs = {
     hup_cliparound,
 #endif
 #ifdef POSITIONBAR
-    (void FDECL((*), (char *))) hup_void_fdecl_constchar_p,
+    (void (*)(char *)) hup_void_fdecl_constchar_p,
                                                       /* update_positionbar */
 #endif
     hup_print_glyph,

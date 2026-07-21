@@ -387,9 +387,9 @@ use_camera(struct obj *obj)
         else
         {
             if ((mtmp = bhit(u.dx, u.dy, COLNO, 0, FLASHED_LIGHT,
-                (int FDECL((*), (struct monst *, struct obj *, struct monst *))) 0,
-                (int FDECL((*), (struct obj *, struct obj *, struct monst *))) 0, 
-                (int FDECL((*), (struct trap *, struct obj *, struct monst *))) 0, 
+                (int (*)(struct monst *, struct obj *, struct monst *)) 0,
+                (int (*)(struct obj *, struct obj *, struct monst *)) 0, 
+                (int (*)(struct trap *, struct obj *, struct monst *)) 0, 
                 &obj, &youmonst, TRUE, FALSE)) != 0)
             {
                 obj->ox = u.ux, obj->oy = u.uy;
@@ -1384,9 +1384,9 @@ use_mirror(struct obj *obj)
         return 1;
     }
     mtmp = bhit(u.dx, u.dy, COLNO, 0, INVIS_BEAM,
-                (int FDECL((*), (struct monst *, struct obj *, struct monst *))) 0,
-                (int FDECL((*), (struct obj *, struct obj *, struct monst *))) 0, 
-                (int FDECL((*), (struct trap *, struct obj *, struct monst *))) 0, 
+                (int (*)(struct monst *, struct obj *, struct monst *)) 0,
+                (int (*)(struct obj *, struct obj *, struct monst *)) 0, 
+                (int (*)(struct trap *, struct obj *, struct monst *)) 0, 
                 &obj, &youmonst, TRUE, FALSE);
     if (!mtmp || !haseyes(mtmp->data) || notonhead)
         return 1;
