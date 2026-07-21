@@ -1631,8 +1631,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                             /* note: s_suffix returns a modifiable buffer */
                             if (haseyes(mdat)
                                 && mdat != &mons[PM_FLOATING_EYE])
-                                whom = strcat(strcat(s_suffix(whom), " "),
-                                    mbodypart(mon, FACE));
+                                whom = name_possessive(whom, mbodypart(mon, FACE));
                             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s over %s!", what,
                                 vtense(what, "splash"), whom);
                         }
@@ -2211,7 +2210,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
         }
         /* note: s_suffix returns a modifiable buffer */
         if (!is_incorporeal(mdat) && !amorphous(mdat))
-            whom = strcat(s_suffix(whom), " flesh");
+            whom = name_possessive(whom, "flesh");
         pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, fmt, whom);
     }
     if (lightobj)
@@ -2237,7 +2236,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
         }
         /* note: s_suffix returns a modifiable buffer */
         if (!is_incorporeal(mdat) && !amorphous(mdat))
-            whom = strcat(s_suffix(whom), " flesh");
+            whom = name_possessive(whom, "flesh");
         pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, fmt, whom);
     }
 
@@ -3137,8 +3136,8 @@ damageum(struct monst *mdef, struct attack *mattk, struct obj *omonwep, int spec
         if (night() && !rn2(10) && !is_cancelled(mdef)) {
             if (pd == &mons[PM_CLAY_GOLEM]) {
                 if (!Blind)
-                    pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Some writing vanishes from %s head!",
-                          s_suffix(mon_nam(mdef)));
+                    pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Some writing vanishes from %s!",
+                          mon_nam_possessive(mdef, mbodypart(mdef, HEAD)));
                 xkilled(mdef, XKILL_NOMSG);
                 /* Don't return yet; keep hp<1 and damage=0 for pet msg */
             } else {
@@ -3239,9 +3238,9 @@ damageum(struct monst *mdef, struct attack *mattk, struct obj *omonwep, int spec
             break;
 
         if ((helmet = which_armor(mdef, W_ARMH)) != 0 && rn2(8)) {
-            pline("%s %s blocks your attack to %s head.",
-                  s_suffix(Monnam(mdef)), helm_simple_name(helmet),
-                  mhis(mdef));
+            pline("%s blocks your attack to %s %s.",
+                  Monnam_possessive(mdef, helm_simple_name(helmet)),
+                  mhis(mdef), mbodypart(mdef, HEAD));
             break;
         }
 
@@ -3273,8 +3272,7 @@ damageum(struct monst *mdef, struct attack *mattk, struct obj *omonwep, int spec
             } else {
                 damage = 0;
                 if (flags.verbose)
-                    You("brush against %s %s.", s_suffix(mon_nam(mdef)),
-                        mbodypart(mdef, LEG));
+                    You("brush against %s.", mon_nam_possessive(mdef, mbodypart(mdef, LEG)));
             }
         } else
             damage = 0;
@@ -3840,8 +3838,8 @@ gulpum(struct monst *mdef, struct attack *mattk)
                 mon_nam(mdef));
             if (Slow_digestion || is_animal(youmonst.data))
             {
-                pline("Obviously, you didn't like %s taste.",
-                      s_suffix(mon_nam(mdef)));
+                pline("Obviously, you didn't like %s.",
+                      mon_nam_possessive(mdef, "taste"));
             }
         }
     }
@@ -4409,8 +4407,7 @@ passive(struct monst *mon, struct obj *weapon, boolean mhit, int malive, uchar a
             if (Blind || !flags.verbose)
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are splashed!");
             else
-                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are splashed by %s %s!", s_suffix(mon_nam(mon)),
-                    hliquid("acid"));
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are splashed by %s!", mon_nam_possessive(mon, hliquid("acid")));
 
             if (!Acid_immunity && !Invulnerable)
                 mdamageu_with_hit_tile(mon, damage, TRUE, HIT_SPLASHED_ACID);
@@ -4517,20 +4514,20 @@ passive(struct monst *mon, struct obj *weapon, boolean mhit, int malive, uchar a
                 }
                 if (!is_blinded(mon)) {
                     play_sfx_sound(SFX_GENERAL_REFLECTS);
-                    if (ureflects("%s gaze is reflected by your %s.",
-                                  s_suffix(Monnam(mon)))) {
+                    if (ureflects("%s is reflected by your %s.",
+                                  Monnam_possessive(mon, "gaze"))) {
                         ;
                     } else if (Free_action) {
                         play_sfx_sound(SFX_GENERAL_RESISTS);
-                        You_ex(ATR_NONE, CLR_MSG_WARNING, "momentarily stiffen under %s gaze!",
-                            s_suffix(mon_nam(mon)));
+                        You_ex(ATR_NONE, CLR_MSG_WARNING, "momentarily stiffen under %s!",
+                            mon_nam_possessive(mon, "gaze"));
                     } else if (Hallucination && rn2(4)) {
                         pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "%s looks %s%s.", Monnam(mon),
                               !rn2(2) ? "" : "rather ",
                               !rn2(2) ? "numb" : "stupified");
                     } else {
                         play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
-                        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frozen by %s gaze!", s_suffix(mon_nam(mon)));
+                        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frozen by %s!", mon_nam_possessive(mon, "gaze"));
                         incr_itimeout(&HParalyzed, (ACURR(A_WIS) > 12 || rn2(4)) ? basedmg : 127);
                         context.botl = context.botlx = 1;
                         refresh_u_tile_gui_info(TRUE);
@@ -4591,7 +4588,7 @@ passive(struct monst *mon, struct obj *weapon, boolean mhit, int malive, uchar a
                 {
                     u_shieldeff();
                     if (flaming(mon->data))
-                        You_ex(ATR_NONE, CLR_MSG_WARNING, "are engulfed in %s flames, but they do not burn you!", s_suffix(mon_nam(mon)));
+                        You_ex(ATR_NONE, CLR_MSG_WARNING, "are engulfed in %s, but they do not burn you!", mon_nam_possessive(mon, "flames"));
                     else
                         You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "mildly warm.");
                     ugolemeffects(AD_FIRE, damage);
@@ -4601,7 +4598,7 @@ passive(struct monst *mon, struct obj *weapon, boolean mhit, int malive, uchar a
                 if (flaming(mon->data))
                 {
                     hit_tile = HIT_ON_FIRE;
-                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are engulfed in %s flames!", s_suffix(mon_nam(mon)));
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are engulfed in %s!", mon_nam_possessive(mon, "flames"));
                 }
                 else
                     You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are suddenly very hot!");

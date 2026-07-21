@@ -779,6 +779,7 @@ E char *Adjmonnam(struct monst *, const char *);
 E char *Amonnam(struct monst *);
 E char *a_monnam(struct monst *);
 E char *distant_monnam(struct monst *, int, char *);
+E char *name_possessive_ex(const char *, const char *, const char *);
 E char *rndmonnam(char *);
 E const char *hcolor(const char *);
 E const char* hcolor_multi(const char*, int*, int);

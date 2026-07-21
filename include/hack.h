@@ -853,4 +853,12 @@ extern void gnollhack_exit(int) NORETURN;
 
 #define debugprint_pos() debugprint("Line %d in %s", __LINE__, basefilename(__FILE__))
 
+/* Polymorph-aware possessive phrases for monster names */
+#define name_possessive(name, noun) \
+    name_possessive_ex((name), (noun), (const char *)0)
+#define mon_nam_possessive(m, noun) \
+    name_possessive_ex(mon_nam(m), (noun), (const char *)0)
+#define Monnam_possessive(m, noun) \
+    name_possessive_ex(Monnam(m), (noun), (const char *)0)
+
 #endif /* HACK_H */

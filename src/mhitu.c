@@ -72,8 +72,8 @@ hitmsg(struct monst *mtmp, struct attack *mattk, int damage, boolean display_hit
                 pfmt = "%s touches you!";
                 break;
             case AT_TENT:
-                pfmt = "%s tentacles suck you!";
-                Monst_name = s_suffix(Monst_name);
+                pfmt = "%s suck you!";
+                Monst_name = name_possessive(Monst_name, "tentacles");
                 break;
             case AT_TAIL:
                 use_mhis = TRUE;
@@ -129,8 +129,8 @@ hitmsg(struct monst *mtmp, struct attack *mattk, int damage, boolean display_hit
                 pfmt = "%s lashes %s tail at you for %d damage!";
                 break;
             case AT_TENT:
-                pfmt = "%s tentacles suck you for %d damage!";
-                Monst_name = s_suffix(Monst_name);
+                pfmt = "%s suck you for %d damage!";
+                Monst_name = name_possessive(Monst_name, "tentacles");
                 break;
             case AT_EXPL:
             case AT_BOOM:
@@ -576,8 +576,7 @@ mattacku(struct monst *mtmp)
 
             obj = which_armor(mtmp, WORN_HELMET);
             if (obj && is_hard_helmet(obj)) {
-                Your("blow glances off %s %s.", s_suffix(mon_nam(mtmp)),
-                     helm_simple_name(obj));
+                Your("blow glances off %s.", mon_nam_possessive(mtmp, helm_simple_name(obj)));
             } else {
                 if (3 + find_mac(mtmp) <= rnd(20)) {
                     pline("%s is hit by a falling piercer (you)!",
@@ -1009,7 +1008,7 @@ mattacku(struct monst *mtmp)
                                 if (flags.verbose && !Blind && mon_visible(mtmp) && strikeindex > 0)
                                 {
                                     /* To be consistent with mswings */
-                                    pline("%s %s %s!", s_suffix(Monnam(mtmp)), aobjnam(mon_currwep, "strike"), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+                                    pline("%s %s!", Monnam_possessive(mtmp, aobjnam(mon_currwep, "strike")), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
                                 }
                             }
 
@@ -1316,7 +1315,7 @@ mattacku(struct monst *mtmp)
                         else if (!is_silenced(mtmp) && canseemon(mtmp))
                         {
                             if (!rn2(2))
-                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Fumes raise out of %s nostrils!", s_suffix(mon_nam(mtmp)));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Fumes raise out of %s!", mon_nam_possessive(mtmp, "nostrils"));
                             else
                                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s bellows menacingly.", Monnam(mtmp));
                         }
@@ -2039,9 +2038,9 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
                     /* Shattering is done below, here just the message */
                     objectshatters = TRUE;
                     if (omonwep->quan == 1)
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s shatters from the blow!", s_suffix(Monnam(mtmp)), xname(omonwep));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shatters from the blow!", Monnam_possessive(mtmp, xname(omonwep)));
                     else
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "One of %s %s shatters from the blow!", s_suffix(mon_nam(mtmp)), xname(omonwep));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "One of %s shatters from the blow!", mon_nam_possessive(mtmp, xname(omonwep)));
                 }
 
 
@@ -2257,8 +2256,7 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
         {
             play_sfx_sound(SFX_MONSTER_IS_POISONED);
             display_u_being_hit(HIT_POISONED, damagedealt, 0UL);
-            Sprintf(buf, "%s %s", s_suffix(Monnam(mtmp)),
-                    mpoisons_subj(mtmp, mattk));
+            Strcpy(buf, Monnam_possessive(mtmp, mpoisons_subj(mtmp, mattk)));
 
             poisoned(buf, ptmp, mon_monster_name(mtmp), mtmp->m_lev <= 8 ? 0 : 10, FALSE, mtmp->m_lev <= 2 ? 1 : mtmp->m_lev <= 5 ? 2 : 3, mtmp);
         }
@@ -2336,7 +2334,7 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
         {
             play_sfx_sound(SFX_SHARPNESS_SLICE);
             display_u_being_hit(HIT_CRITICAL, damagedealt, 0UL);
-            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s strike slices a part of you off!", s_suffix(Monnam(mtmp)));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s slices a part of you off!", Monnam_possessive(mtmp, "strike"));
         } else if (damagedealt > 0)
             display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
         break;
@@ -2420,7 +2418,7 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
         {
             play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_HOWL_IN_ANGER);
             if (!Deaf)
-                You_hear("%s hissing!", s_suffix(mon_nam(mtmp)));
+                You_hear("%s!", mon_nam_possessive(mtmp, "hissing"));
  do_stone:
             if (!Stoned && !Stone_resistance
                 && !(poly_when_stoned(youmonst.data)
@@ -3269,7 +3267,7 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
             if (unpoisonmsg)
             {
                 play_sfx_sound_at_location(SFX_WEAPON_NO_LONGER_POISONED, mtmp->mx, mtmp->my);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s %s no longer poisoned.", s_suffix(Monnam(mtmp)), saved_oname,
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s no longer poisoned.", Monnam_possessive(mtmp, saved_oname),
                     vtense(saved_oname, "are"));
             }
         }
@@ -3888,8 +3886,8 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             if (useeit)
             {
                 play_sfx_sound(SFX_GENERAL_REFLECTS);
-                (void)ureflects("%s gaze is reflected by your %s.",
-                    s_suffix(Monnam(mtmp)));
+                (void)ureflects("%s is reflected by your %s.",
+                    Monnam_possessive(mtmp, "gaze"));
 
             }
             if (mon_reflects(
@@ -3921,7 +3919,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
         }
         if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
             && !Stone_resistance) {
-            You_ex(ATR_NONE, CLR_MSG_WARNING, "meet %s gaze.", s_suffix(mon_nam(mtmp)));
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "meet %s.", mon_nam_possessive(mtmp, "gaze"));
             stop_occupation();
             if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
                 break;
@@ -3944,7 +3942,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
 
                 mtmp->mspec_used = mtmp->mspec_used + (conf + rn2(6));
                 if (!Confusion)
-                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s gaze confuses you!", s_suffix(Monnam(mtmp)));
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s confuses you!", Monnam_possessive(mtmp, "gaze"));
                 else
                     You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are getting more and more confused.");
                 if (!Confusion)
@@ -4005,7 +4003,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                     blnd += d((int)mattk->damn, (int)mattk->damd);
                 blnd += mattk->damp;
 
-                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are blinded by %s radiance!", s_suffix(mon_nam(mtmp)));
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are blinded by %s!", mon_nam_possessive(mtmp, "radiance"));
                 if (!Blind)
                     play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
                 make_blinded(1 + (int64_t) blnd, FALSE);
@@ -4119,8 +4117,8 @@ gazemu(struct monst *mtmp, struct attack *mattk)
                 already = (mtmp->mfrozen != 0); /* can't happen... */
             } else {
                 fall_asleep(-rnd(10), TRUE);
-                pline("%s gaze makes you very sleepy...",
-                      s_suffix(Monnam(mtmp)));
+                pline("%s makes you very sleepy...",
+                      Monnam_possessive(mtmp, "gaze"));
             }
         }
         break;

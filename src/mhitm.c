@@ -557,9 +557,8 @@ mattackm(struct monst *magr, struct monst *mdef)
                         else
                         {
                             if (flags.verbose && !Blind && vis)
-                                pline("%s %s %s!",
-                                    s_suffix(Monnam(magr)),
-                                    aobjnam(otmp, "strike"),
+                                pline("%s %s!",
+                                    Monnam_possessive(magr, aobjnam(otmp, "strike")),
                                     strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
 
                         }
@@ -590,12 +589,12 @@ mattackm(struct monst *magr, struct monst *mdef)
                             {
                                 set_to_zero = TRUE;
                                 if (canseemon(magr))
-                                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s shatters from the blow!", s_suffix(Monnam(magr)), xname(omonwep));
+                                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shatters from the blow!", Monnam_possessive(magr, xname(omonwep)));
                             }
                             else
                             {
                                 if (canseemon(magr))
-                                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "One of %s %s shatters from the blow!", s_suffix(mon_nam(magr)), xname(omonwep));
+                                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "One of %s shatters from the blow!", mon_nam_possessive(magr, xname(omonwep)));
                             }
                             m_useup(magr, omonwep);
                             if (set_to_zero)
@@ -920,7 +919,7 @@ hitmm(struct monst *magr, struct monst *mdef, struct attack *mattk, struct obj *
                 Sprintf(buf, "%s touches", magr_name);
                 break;
             case AT_TENT:
-                Sprintf(buf, "%s tentacles suck", s_suffix(magr_name));
+                Sprintf(buf, "%s suck", name_possessive(magr_name, "tentacles"));
                 break;
             case AT_TAIL:
                 Sprintf(buf, "%s lashes %s tail at", magr_name, mhis(magr));
@@ -1723,7 +1722,7 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
             if (vis && canspotmon(mdef) && !is_paralyzed(mdef))
             {
                 play_sfx_sound_at_location(SFX_SHARPNESS_SLICE, mdef->mx, mdef->my);
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s strike slices a part of %s off!", s_suffix(Monnam(magr)), mon_nam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s slices a part of %s off!", Monnam_possessive(magr, "strike"), mon_nam(mdef));
             }
             damage += adjust_damage((mdef->mhpmax * SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE) / 100, magr, mdef, AD_PHYS, ADFLAGS_NONE);
         }
@@ -1774,7 +1773,7 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
         else if (is_blinded(magr) || (is_invisible(mdef) && !can_mon_see_invisible(magr)))
         {
             if (canseemon(magr))
-                pline("%s stares blindly at %s general direction.", Monnam(magr), s_suffix(mon_nam(mdef)));
+                pline("%s stares blindly at %s.", Monnam(magr), mon_nam_possessive(mdef, "general direction"));
             break;
         }
 #if 0
@@ -1842,8 +1841,8 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
                 if (vis && canseemon(mdef))
                 {
                     play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mdef->mx, mdef->my);
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Some writing vanishes from %s head!",
-                          s_suffix(mon_nam(mdef)));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Some writing vanishes from %s!",
+                          mon_nam_possessive(mdef, "head"));
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is destroyed!", Monnam(mdef));
                 }
                 mondied(mdef);
@@ -1995,8 +1994,7 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
             if (vis && canspotmon(magr))
             {
                 play_sfx_sound_at_location(SFX_MONSTER_IS_POISONED, mdef->mx, mdef->my);
-                pline("%s %s was poisoned!", s_suffix(Monnam(magr)),
-                    mpoisons_subj(magr, mattk));
+                pline("%s was poisoned!", Monnam_possessive(magr, mpoisons_subj(magr, mattk)));
 
             }
             if (resists_poison(mdef)) 
@@ -2042,9 +2040,9 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
             if (vis && canspotmon(magr) && canseemon(mdef)) 
             {
                 play_sfx_sound_at_location(SFX_HELMET_BLOCKS_ATTACK, mdef->mx, mdef->my);
-                Strcpy(buf, s_suffix(Monnam(mdef)));
-                pline("%s helmet blocks %s attack to %s head.", buf,
-                      s_suffix(mon_nam(magr)), mhis(mdef));
+                Strcpy(buf, Monnam_possessive(mdef, "helmet"));
+                pline("%s blocks %s to %s head.", buf,
+                      mon_nam_possessive(magr, "attack"), mhis(mdef));
             }
             break;
         }
@@ -2422,7 +2420,7 @@ slept_monst(struct monst *mon)
     if (!mon_can_move(mon) && mon == u.ustuck
         && !sticks(youmonst.data) && !u.uswallow)
     {
-        pline("%s grip relaxes.", s_suffix(Monnam(mon)));
+        pline("%s relaxes.", Monnam_possessive(mon, "grip"));
         unstuck(mon);
     }
     newsym(mon->mx, mon->my);
@@ -2516,8 +2514,8 @@ passivemm(struct monst *magr, struct monst *mdef, boolean mhit, int mdead)
             play_sfx_sound_at_location(SFX_MONSTER_GETS_SPLASHED_BY_ACID, mdef->mx, mdef->my);
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr))
-                pline("%s is splashed by %s %s!", buf,
-                      s_suffix(mon_nam(mdef)), hliquid("acid"));
+                pline("%s is splashed by %s!", buf,
+                      mon_nam_possessive(mdef, hliquid("acid")));
             if (is_mon_immune_to_acid(magr)) 
             {
                 if (canseemon(magr))
@@ -2567,9 +2565,9 @@ passivemm(struct monst *magr, struct monst *mdef, boolean mhit, int mdead)
                     && (is_invisible(magr) || !is_invisible(mdef))) 
                 {
                     /* construct format string; guard against '%' in Monnam */
-                    Strcpy(buf, s_suffix(Monnam(mdef)));
+                    Strcpy(buf, Monnam_possessive(mdef, "gaze"));
                     (void) strNsubst(buf, "%", "%%", 0);
-                    Strcat(buf, " gaze is reflected by %s %s.");
+                    Strcat(buf, " is reflected by %s %s.");
 
                     if (mon_reflects(magr, canseemon(magr) ? buf : (char*)0))
                     {
@@ -2582,8 +2580,8 @@ passivemm(struct monst *magr, struct monst *mdef, boolean mhit, int mdead)
                     if(!resists_paralysis(mdef))
                     {
                         if (canseemon(magr))
-                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is frozen by %s gaze!", buf,
-                                  s_suffix(mon_nam(mdef)));
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is frozen by %s!", buf,
+                                  mon_nam_possessive(mdef, "gaze"));
                         play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mdef->mx, mdef->my);
                         paralyze_monst(magr, basedmg, FALSE);
                     }
@@ -2646,7 +2644,7 @@ passivemm(struct monst *magr, struct monst *mdef, boolean mhit, int mdead)
                 if (canseemon(magr)) 
                 {
                     if (flaming(mdef->data))
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is engulfed in %s flames, but they do not burn %s.", Monnam(magr), s_suffix(mon_nam(mdef)), mon_nam(magr));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is engulfed in %s, but they do not burn %s.", Monnam(magr), mon_nam_possessive(mdef, "flames"), mon_nam(magr));
                     else
                         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is mildly warmed.", Monnam(magr));
                     golemeffects(magr, AD_FIRE, damage);
@@ -2658,7 +2656,7 @@ passivemm(struct monst *magr, struct monst *mdef, boolean mhit, int mdead)
             {
                 play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mdef->mx, mdef->my);
                 if (flaming(mdef->data))
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is engulfed in %s flames!", Monnam(magr), s_suffix(mon_nam(mdef)));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is engulfed in %s!", Monnam(magr), mon_nam_possessive(mdef, "flames"));
                 else
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is suddenly very hot!", Monnam(magr));
             }

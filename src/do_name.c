@@ -4754,4 +4754,107 @@ reset_doname(void)
     via_naming = 0;
 }
 
+/*
+ * Produce a possessive phrase from a name string and a noun.
+ *
+ * For normal names:     "the goblin's hand"
+ * For polymorphed names: "the hand of the chameleon polymorphed into a goblin"
+ * For pronouns:         "Your hand", "His hand", etc.
+ *
+ * name   - the name/pronoun (e.g. from mon_nam(), Monnam(), or "Your")
+ * noun   - the thing possessed (e.g. "hand", "body", "long sword")
+ * alt_of - if non-NULL, replaces " of " for the polymorphed/pronoun case
+ *          (e.g. "wielded by" => "the long sword wielded by ...")
+ *
+ * Returns: pointer to a nextmbuf() rotating buffer.
+ */
+char *
+name_possessive_ex(const char *name, const char *noun, const char *alt_of)
+{
+    char *buf = nextmbuf();
+    boolean name_starts_upper;
+
+    if (!name || !*name) {
+        Strcpy(buf, noun ? noun : "");
+        return buf;
+    }
+    if (!noun || !*noun) {
+        Strcpy(buf, s_suffix(name));
+        return buf;
+    }
+
+    name_starts_upper = (*name >= 'A' && *name <= 'Z');
+
+    /* Check for pronoun inputs */
+    size_t namelen = strlen(name);
+    if (namelen <= 4)
+    {
+        /* Possessive adjectives: already possessive, just concatenate */
+        if (!strcmpi(name, "your") || !strcmpi(name, "his")
+            || !strcmpi(name, "her") || !strcmpi(name, "my")
+            || !strcmpi(name, "its") || !strcmpi(name, "our")) 
+        {
+            Sprintf(buf, "%s %s", name, noun);
+            if (name_starts_upper)
+                *buf = highc(*buf);
+            return buf;
+        }
+
+        /* Subject pronouns: convert to possessive adjective */
+        if (!strcmpi(name, "you") || !strcmpi(name, "he")
+            || !strcmpi(name, "she") || !strcmpi(name, "it")
+            || !strcmpi(name, "i") || !strcmpi(name, "we")
+            || !strcmpi(name, "they")) {
+            const char* poss_adj;
+            if (!strcmpi(name, "you"))
+                poss_adj = "your";
+            else if (!strcmpi(name, "he"))
+                poss_adj = "his";
+            else if (!strcmpi(name, "she"))
+                poss_adj = "her";
+            else if (!strcmpi(name, "it"))
+                poss_adj = "its";
+            else if (!strcmpi(name, "i"))
+                poss_adj = "my";
+            else if (!strcmpi(name, "we"))
+                poss_adj = "our";
+            else /* they */
+                poss_adj = "their";
+            Sprintf(buf, "%s %s", poss_adj, noun);
+            if (name_starts_upper)
+                *buf = highc(*buf);
+            return buf;
+        }
+    }
+    else if (namelen == 5 && !strcmpi(name, "their"))
+    {
+        Sprintf(buf, "%s %s", name, noun);
+        if (name_starts_upper)
+            *buf = highc(*buf);
+        return buf;
+    }
+
+    /* Check for "polymorphed into" in the name */
+    if (strstr(name, " polymorphed into ")) {
+        Sprintf(buf, "the %s %s %s", noun, alt_of ? alt_of : "of", name);
+        if (name_starts_upper) {
+            /* Capitalize "the" at start, lowercase the monster name */
+            char *p;
+            *buf = highc(*buf);
+            p = strstr(buf, alt_of ? alt_of : " of ");
+            if (p) {
+                /* Find the start of the name after the preposition */
+                p += strlen(alt_of ? alt_of : " of ");
+                if (*p)
+                    *p = lowc(*p);
+            }
+        }
+        return buf;
+    }
+
+    /* Normal case: "the goblin's hand" */
+    Sprintf(buf, "%s %s", s_suffix(name), noun);
+    return buf;
+}
+
 /*do_name.c*/
