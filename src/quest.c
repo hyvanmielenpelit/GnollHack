@@ -277,7 +277,15 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
     boolean res = FALSE;
 
     if (!is_peaceful(mtmp) || is_qstatus_pissed_off())
+    {
+        if (dopopup)
+        {
+            char pbuf[BUFSZ];
+            Sprintf(pbuf, "%s refuses to talk to you.", noittame_Monnam(mtmp));
+            popup_talk_line_ex(mtmp, pbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
+        }
         return res;
+    }
 
     /*  Rule 0: Cheater checks. */
     if (is_uhave_questart() && !is_qstatus_met_nemesis())
