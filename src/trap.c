@@ -260,7 +260,7 @@ erode_obj(struct obj *otmp, const char *ostr, int type, int ef_flags)
     {
         if (flags.verbose && print && (uvictim || vismon))
             pline("%s %s not affected by %s.",
-                  uvictim ? name_possessive("Your", ostr) : Monnam_possessive(victim, ostr),
+                  uvictim ? Name_possessive2("your", ostr) : Monnam_possessive(victim, ostr),
                   vtense(ostr, "are"), bythe[type]);
         return ER_NOTHING;
     }
@@ -299,7 +299,7 @@ erode_obj(struct obj *otmp, const char *ostr, int type, int ef_flags)
             play_simple_object_sound(otmp, obj_erode_sounds[type]);
             pline_ex(ATR_NONE, uvictim ? CLR_MSG_NEGATIVE : NO_COLOR,
                 "%s %s%s!",
-                uvictim ? name_possessive("Your", ostr)
+                uvictim ? Name_possessive2("your", ostr)
                 : vismon ? Monnam_possessive(victim, ostr)
                 : The(ostr),
                 vtense(ostr, action[type]), adverb);
@@ -325,7 +325,7 @@ erode_obj(struct obj *otmp, const char *ostr, int type, int ef_flags)
             play_simple_object_sound(otmp, obj_erode_sounds[type]);
             pline_ex(ATR_NONE, uvictim ? CLR_MSG_NEGATIVE : NO_COLOR,
                 "%s %s away!",
-                uvictim ? name_possessive("Your", ostr)
+                uvictim ? Name_possessive2("your", ostr)
                 : vismon ? Monnam_possessive(victim, ostr)
                 : The(ostr),
                 vtense(ostr, action[type]));

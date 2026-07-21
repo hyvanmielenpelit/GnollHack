@@ -840,7 +840,7 @@ eat_brains(struct monst *magr, struct monst *mdef, boolean visflag, double *dmg_
 
     if (is_incorporeal(pd)) {
         if (visflag)
-            pline("%s is unharmed.", name_possessive((mdef == &youmonst) ? "Your" : Monnam(mdef), "brain"));
+            pline("%s is unharmed.", Name_possessive2((mdef == &youmonst) ? "your" : mon_nam(mdef), "brain"));
         return MM_MISS; /* side-effects can't occur */
     } else if (magr == &youmonst) {
         You("eat %s!", mon_nam_possessive(mdef, "brain"));

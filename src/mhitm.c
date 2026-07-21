@@ -1081,7 +1081,7 @@ gulpmm(struct monst *magr, struct monst *mdef, struct attack *mattk)
     for (obj = mdef->minvent; obj; obj = obj->nobj)
         (void) snuff_lit(obj);
 
-    if (mdef->cham >= LOW_PM && is_vampshifter(mdef)
+    if (is_vampshifter(mdef)
         && newcham(mdef, &mons[mdef->cham], mdef->cham_subtype, FALSE, FALSE))
     {
         if (vis)

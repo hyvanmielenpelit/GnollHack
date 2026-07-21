@@ -4800,25 +4800,24 @@ name_possessive_ex(const char *name, const char *noun, boolean capitalize, const
         }
 
         /* Subject pronouns: convert to possessive adjective */
-        if (!strcmpi(name, "you") || !strcmpi(name, "he")
-            || !strcmpi(name, "she") || !strcmpi(name, "it")
-            || !strcmpi(name, "i") || !strcmpi(name, "we")
-            || !strcmpi(name, "they")) {
-            const char* poss_adj;
-            if (!strcmpi(name, "you"))
-                poss_adj = "your";
-            else if (!strcmpi(name, "he"))
-                poss_adj = "his";
-            else if (!strcmpi(name, "she"))
-                poss_adj = "her";
-            else if (!strcmpi(name, "it"))
-                poss_adj = "its";
-            else if (!strcmpi(name, "i"))
-                poss_adj = "my";
-            else if (!strcmpi(name, "we"))
-                poss_adj = "our";
-            else /* they */
-                poss_adj = "their";
+        const char* poss_adj = 0;
+        if (!strcmpi(name, "you"))
+            poss_adj = "your";
+        else if (!strcmpi(name, "he"))
+            poss_adj = "his";
+        else if (!strcmpi(name, "she"))
+            poss_adj = "her";
+        else if (!strcmpi(name, "it"))
+            poss_adj = "its";
+        else if (!strcmpi(name, "i"))
+            poss_adj = "my";
+        else if (!strcmpi(name, "we"))
+            poss_adj = "our";
+        else if (!strcmpi(name, "they"))
+            poss_adj = "their";
+
+        if (poss_adj)
+        {
             Sprintf(buf, "%s %s", poss_adj, noun);
             if (capitalize)
                 *buf = highc(*buf);

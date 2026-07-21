@@ -34,7 +34,10 @@ hitmsg(struct monst *mtmp, struct attack *mattk, int damage, boolean display_hit
 {
     int compat;
     const char *pfmt = 0;
-    char *Monst_name = Monnam(mtmp);
+    char* monst_name_lc = mon_nam(mtmp);
+    char Monst_name[BUFSZ];
+    Strcpy(Monst_name, monst_name_lc);
+    *Monst_name = highc(*Monst_name);
     boolean use_mhis = FALSE;
     const char* Monst_his = mhis(mtmp);
 
@@ -73,7 +76,7 @@ hitmsg(struct monst *mtmp, struct attack *mattk, int damage, boolean display_hit
                 break;
             case AT_TENT:
                 pfmt = "%s suck you!";
-                Monst_name = name_possessive(Monst_name, "tentacles");
+                Strcpy(Monst_name, Name_possessive2(monst_name_lc, "tentacles"));
                 break;
             case AT_TAIL:
                 use_mhis = TRUE;
@@ -130,7 +133,7 @@ hitmsg(struct monst *mtmp, struct attack *mattk, int damage, boolean display_hit
                 break;
             case AT_TENT:
                 pfmt = "%s suck you for %d damage!";
-                Monst_name = name_possessive(Monst_name, "tentacles");
+                Strcpy(Monst_name, Name_possessive2(monst_name_lc, "tentacles"));
                 break;
             case AT_EXPL:
             case AT_BOOM:
