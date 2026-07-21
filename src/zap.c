@@ -9607,7 +9607,8 @@ zhitu(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int d
                 if (origmonst == &youmonst)
                     Sprintf(killername, "%s from %s own %s", fltxt, uhis(), killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE | KXNFLAGS_SPELL));
                 else
-                    Sprintf(killername, "%s from %s", fltxt, name_possessive(monst_name, killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE | KXNFLAGS_SPELL)));
+                    Sprintf(killername, "%s from %s", fltxt, name_possessive_ex(monst_name, killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE | KXNFLAGS_SPELL), FALSE, 
+                        origobj->oclass == WAND_CLASS ? "zapped by" : origobj->oclass == TOOL_CLASS && objects[origobj->otyp].oc_subtyp == TOOLTYPE_HORN ? "blown by" :  "of"));
             }
             else
             {
@@ -9633,7 +9634,7 @@ zhitu(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int d
                     if (has_from)
                         Sprintf(killername, "%s from %s", fltxt, name_possessive(monst_name, noun));
                     else
-                        Strcpy(killername, name_possessive(monst_name, noun));
+                        Sprintf(killername, "%s cast by %s", noun, monst_name);
                 }
             }
         }

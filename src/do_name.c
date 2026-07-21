@@ -2065,7 +2065,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
 
     if (do_poly)
     {
-        Sprintf(eos(buf), "%s polymorphed into ", pm_monster_name(&mons[mtmp->cham], has_mmonst(mtmp) ? is_mon_female(MMONST(mtmp)) :  is_mon_female(mtmp)));
+        Sprintf(eos(buf), "%s imitating ", pm_monster_name(&mons[mtmp->cham], has_mmonst(mtmp) ? is_mon_female(MMONST(mtmp)) :  is_mon_female(mtmp)));
     }
 
     /* Put the actual monster name or type into the buffer now */
@@ -4833,8 +4833,8 @@ name_possessive_ex(const char *name, const char *noun, boolean capitalize, const
         return buf;
     }
 
-    /* Check for "polymorphed into" in the name */
-    if (strstr(name, " polymorphed into ")) 
+    /* Check for "imitating" in the name */
+    if (strstr(name, " imitating ")) 
     {
         Sprintf(buf, "the %s %s %s", noun, alt_of ? alt_of : "of", name);
         if (capitalize)
