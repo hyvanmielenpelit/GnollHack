@@ -2173,6 +2173,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
     {
         const char* fmt;
         char* whom = mon_nam(mon);
+        boolean capitalize = FALSE;
         char silverobjbuf[BUFSZ];
 
         if (canspotmon(mon)) 
@@ -2197,30 +2198,39 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                 fmt = silverobjbuf;
             }
             else if (reallysilverobj)
+            {
                 fmt = "The silver sears %s!";
+            }
             else 
             {
-                *whom = highc(*whom);
+                capitalize = TRUE;
                 fmt = "%s is seared!";
             }
         }
-        else {
-            *whom = highc(*whom); /* "it" -> "It" */
+        else 
+        {
+            capitalize = TRUE;
             fmt = "%s is seared!";
         }
         /* note: s_suffix returns a modifiable buffer */
         if (!is_incorporeal(mdat) && !amorphous(mdat))
-            whom = name_possessive(whom, "flesh");
+            whom = name_possessive_ex(whom, "flesh", capitalize, (const char*)0);
+        else if (capitalize)
+            *whom = highc(*whom); /* "it" -> "It" */
+
         pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, fmt, whom);
     }
     if (lightobj)
     {
         const char* fmt;
         char* whom = mon_nam(mon);
+        boolean capitalize = FALSE;
         char emitlightobjbuf[BUFSZ];
 
-        if (canspotmon(mon)) {
-            if (saved_oname[0]) {
+        if (canspotmon(mon)) 
+        {
+            if (saved_oname[0]) 
+            {
                 Sprintf(emitlightobjbuf,
                     "%s radiance penetrates deep into",
                     s_suffix(saved_oname));
@@ -2230,13 +2240,16 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
             else
                 fmt = "The light sears %s!";
         }
-        else {
-            *whom = highc(*whom); /* "it" -> "It" */
+        else 
+        {
+            capitalize = TRUE;
             fmt = "%s is seared!";
         }
         /* note: s_suffix returns a modifiable buffer */
         if (!is_incorporeal(mdat) && !amorphous(mdat))
-            whom = name_possessive(whom, "flesh");
+            whom = name_possessive_ex(whom, "flesh", capitalize, (const char*)0);
+        else if (capitalize)
+            *whom = highc(*whom); /* "it" -> "It" */
         pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, fmt, whom);
     }
 
