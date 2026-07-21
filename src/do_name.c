@@ -4768,21 +4768,21 @@ reset_doname(void)
  * Returns: pointer to a nextmbuf() rotating buffer.
  */
 char *
-name_possessive_ex(const char *name, const char *noun, const char *alt_of)
+name_possessive_ex(const char *name, const char *noun, boolean capitalize, const char *alt_of)
 {
     char *buf = nextmbuf();
-    boolean name_starts_upper;
-
     if (!name || !*name) {
         Strcpy(buf, noun ? noun : "");
+        if (capitalize && *buf)
+            *buf = highc(*buf);
         return buf;
     }
     if (!noun || !*noun) {
         Strcpy(buf, s_suffix(name));
+        if (capitalize)
+            *buf = highc(*buf);
         return buf;
     }
-
-    name_starts_upper = (*name >= 'A' && *name <= 'Z');
 
     /* Check for pronoun inputs */
     size_t namelen = strlen(name);
@@ -4794,7 +4794,7 @@ name_possessive_ex(const char *name, const char *noun, const char *alt_of)
             || !strcmpi(name, "its") || !strcmpi(name, "our")) 
         {
             Sprintf(buf, "%s %s", name, noun);
-            if (name_starts_upper)
+            if (capitalize)
                 *buf = highc(*buf);
             return buf;
         }
@@ -4820,7 +4820,7 @@ name_possessive_ex(const char *name, const char *noun, const char *alt_of)
             else /* they */
                 poss_adj = "their";
             Sprintf(buf, "%s %s", poss_adj, noun);
-            if (name_starts_upper)
+            if (capitalize)
                 *buf = highc(*buf);
             return buf;
         }
@@ -4828,31 +4828,24 @@ name_possessive_ex(const char *name, const char *noun, const char *alt_of)
     else if (namelen == 5 && !strcmpi(name, "their"))
     {
         Sprintf(buf, "%s %s", name, noun);
-        if (name_starts_upper)
+        if (capitalize)
             *buf = highc(*buf);
         return buf;
     }
 
     /* Check for "polymorphed into" in the name */
-    if (strstr(name, " polymorphed into ")) {
+    if (strstr(name, " polymorphed into ")) 
+    {
         Sprintf(buf, "the %s %s %s", noun, alt_of ? alt_of : "of", name);
-        if (name_starts_upper) {
-            /* Capitalize "the" at start, lowercase the monster name */
-            char *p;
+        if (capitalize)
             *buf = highc(*buf);
-            p = strstr(buf, alt_of ? alt_of : " of ");
-            if (p) {
-                /* Find the start of the name after the preposition */
-                p += strlen(alt_of ? alt_of : " of ");
-                if (*p)
-                    *p = lowc(*p);
-            }
-        }
         return buf;
     }
 
     /* Normal case: "the goblin's hand" */
     Sprintf(buf, "%s %s", s_suffix(name), noun);
+    if (capitalize)
+        *buf = highc(*buf);
     return buf;
 }
 
