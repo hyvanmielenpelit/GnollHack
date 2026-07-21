@@ -202,7 +202,7 @@ extern int n_dgns; /* from dungeon.c */
 #endif
 
 #ifdef SELECTSAVED
-static int FDECL(CFDECLSPEC savegamedata_strcmp_wrap, (const void *, const void *));
+static int CFDECLSPEC savegamedata_strcmp_wrap(const void *, const void *);
 #endif
 static char *set_bonesfile_name(char *, d_level *);
 static char *set_bonestemp_name(void);
@@ -1043,7 +1043,7 @@ clearlocks(void)
 #endif
 #if !defined(ANDROID) && !defined(GNH_MOBILE)
 #if defined(UNIX) || defined(VMS)
-        sethanguphandler((void FDECL((*), (int) )) SIG_IGN);
+        sethanguphandler((void (*)(int)) SIG_IGN);
 #endif
 #endif
         /* can't access maxledgerno() before dungeons are created -dlc */

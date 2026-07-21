@@ -11,7 +11,7 @@ static int pet_type(boolean, boolean);
 static int choose_cat_or_dog(void);
 static short choose_pet_gender(int);
 static unsigned short choose_pet_breed(int, boolean);
-static int FDECL(CFDECLSPEC breed_cmp, (const genericptr, const genericptr));
+static int CFDECLSPEC breed_cmp(const genericptr, const genericptr);
 
 static boolean petdetails_used = FALSE;
 static int petname_used = 0;
@@ -1524,7 +1524,7 @@ move_monsters_to_mydogs(boolean pets_only, boolean nearby_only)
             /* this can happen if your quest leader ejects you from the
                "home" level while a leashed pet isn't next to you */
             play_sfx_sound(SFX_LEASH_GOES_SLACK);
-            pline("%s leash goes slack.", s_suffix(Monnam(mtmp)));
+            pline("%s goes slack.", Monnam_possessive(mtmp, "leash"));
             m_unleash(mtmp, FALSE);
         }
     }
@@ -1943,8 +1943,10 @@ tamedog(struct monst *mtmp, struct obj *obj, uchar forcetaming, int charm_type, 
             if (verbose)
             {
                 const char* headstr[4] = { "first", "second", "third", "ancillary" };
-                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s %s head %s %s and seems to appreciate it a lot.",
-                    s_suffix(Monnam(mtmp)), headstr[min(3, headnum - 1)],
+                char nounbuf[BUFSZ];
+                Sprintf(nounbuf, "%s %s", headstr[min(3, headnum - 1)], mbodypart(mtmp, HEAD));
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s %s %s and seems to appreciate it a lot.",
+                    Monnam_possessive(mtmp, nounbuf),
                     thrown ? "catches" : "takes", yname(obj));
                 if (headnum < mtmp->heads_left)
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "However, %d other head%s still remain %s.", mtmp->heads_left - headnum, plur(mtmp->heads_left - headnum), is_peaceful(mtmp) ? "untamed" : "hostile");

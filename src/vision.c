@@ -551,7 +551,7 @@ vision_recalc(int control)
          *      + Monsters can see you even when you're in a pit.
          */
         view_from(u.uy, u.ux, next_array, next_rmin, next_rmax, 0,
-                  (void FDECL((*), (int, int, genericptr_t))) 0,
+                  (void (*)(int, int, genericptr_t)) 0,
                   (genericptr_t) 0);
 
         /*
@@ -625,7 +625,7 @@ vision_recalc(int control)
         } 
         else
             view_from(u.uy, u.ux, next_array, next_rmin, next_rmax, 0,
-                      (void FDECL((*), (int, int, genericptr_t))) 0,
+                      (void (*)(int, int, genericptr_t)) 0,
                       (genericptr_t) 0);
 
         /*

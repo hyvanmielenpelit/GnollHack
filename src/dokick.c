@@ -210,7 +210,7 @@ kickdmg(struct monst *mon, boolean clumsy)
         You("%s%skick %s for no damage.", effbuf, kickstylebuf, mon_nam(mon));
     }
     if (silverhit)
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Your silver boots sear %s flesh!", s_suffix(mon_nam(mon)));
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Your silver boots sear %s!", mon_nam_possessive(mon, "flesh"));
 
     boolean was_alive = !DEADMONSTER(mon);
     if (was_alive)
@@ -1038,9 +1038,9 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
     (void) snuff_candle(kickedobj);
     newsym(x, y);
     mon = bhit(u.dx, u.dy, range, 0, is_golf_swing ? GOLF_SWING : KICKED_WEAPON,
-               (int FDECL((*), (struct monst *, struct obj *, struct monst *))) 0,
-               (int FDECL((*), (struct obj *, struct obj *, struct monst *))) 0, 
-               (int FDECL((*), (struct trap *, struct obj *, struct monst *))) 0, 
+               (int (*)(struct monst *, struct obj *, struct monst *)) 0,
+               (int (*)(struct obj *, struct obj *, struct monst *)) 0, 
+               (int (*)(struct trap *, struct obj *, struct monst *)) 0, 
                &kickedobj, &youmonst, TRUE, FALSE);
     if (!kickedobj)
         return 1; /* object broken */

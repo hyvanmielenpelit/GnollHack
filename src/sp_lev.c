@@ -5651,7 +5651,7 @@ selection_floodfill(struct opvar *ov, int x, int y, boolean diagonals)
     xchar dx[SEL_FLOOD_STACK];
     xchar dy[SEL_FLOOD_STACK];
 
-    if (selection_flood_check_func == (int FDECL((*), (int, int))) 0) {
+    if (selection_flood_check_func == (int (*)(int, int)) 0) {
         opvar_free(tmp);
         return;
     }

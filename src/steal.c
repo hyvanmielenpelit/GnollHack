@@ -111,11 +111,9 @@ stealgold(struct monst *mtmp)
         newsym(u.ux, u.uy);
         if (u.usteed) {
             who = u.usteed;
-            whose = s_suffix(y_monnam(who));
             what = makeplural(mbodypart(who, FOOT));
         } else {
             who = &youmonst;
-            whose = "your";
             what = makeplural(body_part(FOOT));
         }
         /* [ avoid "between your rear regions" :-] */
@@ -124,8 +122,9 @@ stealgold(struct monst *mtmp)
         /* reduce "rear hooves/claws" to "hooves/claws" */
         if (!strncmp(what, "rear ", 5))
             what += 5;
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s quickly snatches some gold from %s %s %s!", Monnam(mtmp),
-            Moves_above_ground ? "beneath" : "between", whose, what);
+        whose = u.usteed ? mon_possessive(who, what, y_monnam) : name_possessive("your", what);
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s quickly snatches some gold from %s %s!", Monnam(mtmp),
+            Moves_above_ground ? "beneath" : "between", whose);
         if (!ygold || !rn2(5)) {
             if (!tele_restrict(mtmp))
             {
@@ -931,7 +930,7 @@ release_monster_objects(struct monst *mtmp, int show, boolean is_pet, boolean is
     {
         play_sfx_sound_at_location(SFX_ITEM_VANISHES, mtmp->mx, mtmp->my);
         if (canspotmon(mtmp))
-            pline("%s gold %s.", s_suffix(Monnam(mtmp)),
+            pline("%s %s.", Monnam_possessive(mtmp, "gold"),
                   canseemon(mtmp) ? "vanishes" : "seems to vanish");
         debugprint("release_monster_objects1: %d", otmp->otyp);
         obj_extract_self(otmp);

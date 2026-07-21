@@ -190,7 +190,7 @@ dosave0(boolean quietly)
 
 #if !defined(ANDROID) && !defined(GNH_MOBILE)
 #if defined(UNIX) || defined(VMS)
-    sethanguphandler((void FDECL((*), (int))) SIG_IGN);
+    sethanguphandler((void (*)(int)) SIG_IGN);
 #endif
 #endif
 #ifndef NO_SIGNAL

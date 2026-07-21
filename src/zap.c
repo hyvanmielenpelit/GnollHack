@@ -638,7 +638,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
             if (canseemon(mtmp))
             {
                 play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
-                (void)mon_reflects(mtmp, "Your gaze is reflected by %s %s.");
+                (void)mon_reflects(mtmp, "Your gaze is reflected by %s.");
             }
 
             if (!Blind) 
@@ -646,8 +646,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
                 if (Reflecting) 
                 {
                     play_sfx_sound(SFX_GENERAL_REFLECTS);
-                    (void)ureflects("Your reflected gaze is reflected away by your %s.",
-                        s_suffix(Monnam(mtmp)));
+                    (void)ureflects("Your reflected gaze is reflected away by your %s%s.", "");
                 }
                 if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
                     && !Stone_resistance)
@@ -1264,8 +1263,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
             res = 1;
             char buf[BUFSZ];
 
-            Sprintf(buf, "%s %s", s_suffix(Monnam(mtmp)),
-                    distant_name(obj, xname));
+            Strcpy(buf, Monnam_possessive(mtmp, distant_name(obj, xname)));
             if (cansee(mtmp->mx, mtmp->my)) {
                 if (!canspotmon(mtmp))
                     Strcpy(buf, An(distant_name(obj, xname)));
@@ -7865,7 +7863,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack, boolean all
 {
     boolean youdefend = (mdef == &youmonst);
     static const char writing_vanishes[] =
-        "Some writing vanishes from %s head!";
+        "Some writing vanishes from %s %s!";
     static const char your[] = "your"; /* should be extern */
 
     if (youdefend ? (!youattack && Antimagic_or_resistance)
@@ -7918,7 +7916,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack, boolean all
              */
             if (u.umonnum == PM_CLAY_GOLEM) {
                 if (!Blind)
-                    pline(writing_vanishes, your);
+                    pline(writing_vanishes, your, body_part(HEAD));
                 else /* note: "dark" rather than "heavy" is intentional... */
                     You_feel("%s headed.", Hallucination ? "dark" : "light");
                 u.mh = 0; /* fatal; death handled by rehumanize() */
@@ -7960,7 +7958,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack, boolean all
 
         if (mdef->data == &mons[PM_CLAY_GOLEM]) {
             if (canseemon(mdef))
-                pline(writing_vanishes, s_suffix(mon_nam(mdef)));
+                pline("Some writing vanishes from %s!", mon_nam_possessive(mdef, mbodypart(mdef, HEAD)));
             /* !allow_cancel_kill is for Magicbane, where clay golem
                will be killed somewhere back up the call/return chain... */
             if (allow_cancel_kill) {
@@ -9586,19 +9584,15 @@ zhitu(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int d
         dam = d(dmgdice, dicesize) + dmgplus;
 
     double damage = adjust_damage(dam, origmonst, &youmonst, (abstyp % 10) + 1, !(abstyp >= 20 && abstyp <= 39) ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
-    char hisbuf[BUFSZ] = "";
-
     if (origmonst && !origobj && is_buzztype_breath_weapon(type) && 
         ((abstyp % 10) == ZT_DISINTEGRATION || (abstyp % 10) == ZT_PETRIFICATION)
         )
     {
         /* Special case: Omit fltxt to avoid repetition: disintegrated/petrified by a black dragon's / gorgon's breath weapon */
         if (origmonst == &youmonst)
-            Sprintf(hisbuf, "%s own", uhis());
+            Sprintf(killername, "%s own breath weapon", uhis());
         else
-            Sprintf(hisbuf, "%s's", mon_monster_name(origmonst));
-
-        Sprintf(killername, "%s %s", hisbuf, "breath weapon");
+            Strcpy(killername, name_possessive(mon_monster_name(origmonst), "breath weapon"));
     }
     else if (fltxt)
     {
@@ -9607,48 +9601,40 @@ zhitu(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int d
             const char* monst_name = x_monnam(origmonst, ARTICLE_A, (char*)0,
                 (has_mname(origmonst) ? SUPPRESS_SADDLE : 0) | SUPPRESS_IT | SUPPRESS_HALLUCINATION | ADD_HALLUCINATION_DISTORTED,
                 FALSE);
-            boolean has_polymorphed_into = !!strstr(monst_name, " polymorphed into ");
-            if (has_polymorphed_into && origmonst != &youmonst)
+
+            if (origobj)
             {
-                /* Here we need to use of construct */
-                if (origobj)
-                {
-                    Sprintf(killername, "%s from %s of %s", fltxt, killer_xname_flags(origobj, KXNFLAGS_SPELL), monst_name);
-                }
+                if (origmonst == &youmonst)
+                    Sprintf(killername, "%s from %s own %s", fltxt, uhis(), killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE | KXNFLAGS_SPELL));
                 else
-                {
-                    if (is_buzztype_breath_weapon(type))
-                        Sprintf(killername, "%s from %s of %s", fltxt, "the breath weapon", monst_name);
-                    else if (is_buzztype_eyestalk(type))
-                        Sprintf(killername, "%s from %s of %s", fltxt, "the eyestalk", monst_name);
-                    else
-                        Sprintf(killername, "%s of %s", fltxt, monst_name);
-                }
+                    Sprintf(killername, "%s from %s", fltxt, name_possessive_ex(monst_name, killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE | KXNFLAGS_SPELL), FALSE, 
+                        origobj->oclass == WAND_CLASS ? "zapped by" : origobj->oclass == TOOL_CLASS && objects[origobj->otyp].oc_subtyp == TOOLTYPE_HORN ? "blown by" :  "of"));
             }
             else
             {
-                /* Here s suffix is better */
-                if (origmonst == &youmonst)
-                {
-                    Sprintf(hisbuf, "%s own", uhis());
-                }
-                else
-                {
-                    Strcpy(hisbuf, s_suffix(monst_name));
+                const char *noun = (const char *)0;
+                boolean has_from = FALSE;
+
+                if (is_buzztype_breath_weapon(type)) {
+                    noun = "breath weapon";
+                    has_from = TRUE;
+                } else if (is_buzztype_eyestalk(type)) {
+                    noun = "eyestalk";
+                    has_from = TRUE;
+                } else {
+                    noun = fltxt;
                 }
 
-                if (origobj)
-                {
-                    Sprintf(killername, "%s from %s %s", fltxt, hisbuf, killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE | KXNFLAGS_SPELL));
-                }
-                else
-                {
-                    if (is_buzztype_breath_weapon(type))
-                        Sprintf(killername, "%s from %s %s", fltxt, hisbuf, "breath weapon");
-                    else if (is_buzztype_eyestalk(type))
-                        Sprintf(killername, "%s from %s %s", fltxt, hisbuf, "eyestalk");
+                if (origmonst == &youmonst) {
+                    if (has_from)
+                        Sprintf(killername, "%s from %s own %s", fltxt, uhis(), noun);
                     else
-                        Sprintf(killername, "%s %s", hisbuf, fltxt);
+                        Sprintf(killername, "%s own %s", uhis(), noun);
+                } else {
+                    if (has_from)
+                        Sprintf(killername, "%s from %s", fltxt, name_possessive(monst_name, noun));
+                    else
+                        Sprintf(killername, "%s cast by %s", noun, monst_name);
                 }
             }
         }
@@ -10017,8 +10003,8 @@ check_rider_disintegration(struct monst *mon, const char *fltxt)
 
             play_sfx_sound_at_location(SFX_DISINTEGRATE, mon->mx, mon->my);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrates.", Monnam(mon));
-            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s body reintegrates before your %s!",
-                s_suffix(Monnam(mon)),
+            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s reintegrates before your %s!",
+                Monnam_possessive(mon, "body"),
                 (eyecount(youmonst.data) == 1)
                 ? body_part(EYE)
                 : makeplural(body_part(EYE)));
@@ -10430,8 +10416,7 @@ dobuzz(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int 
                         hit(fltxt, mon, exclam(0), -1, "");
                         play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mon->mx, mon->my);
                         m_shieldeff(mon);
-                        (void) mon_reflects(mon,
-                                            "But it reflects from %s %s!");
+                        (void) mon_reflects(mon, "But it reflects from %s!");
                     }
                     dx = -dx;
                     dy = -dy;
@@ -10518,9 +10503,8 @@ dobuzz(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int 
                             /* some armor was destroyed; no damage done */
                             play_sfx_sound_at_location(SFX_DISINTEGRATE, mon->mx, mon->my);
                             if (canseemon(mon))
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s is disintegrated!",
-                                      s_suffix(Monnam(mon)),
-                                      distant_name(otmp, xname));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is disintegrated!",
+                                      Monnam_possessive(mon, distant_name(otmp, xname)));
                             m_useup(mon, otmp);
                         }
                         if (zhitm_out_flags & ZHITM_FLAGS_SLEEP) // (mon_could_move && !mon_can_move(mon)) /* ZT_SLEEP */
@@ -10564,8 +10548,7 @@ dobuzz(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int 
                     play_sfx_sound(SFX_GENERAL_REFLECTS);
                     if (!Blind)
                     {
-                        (void) ureflects("But %s reflects from your %s!",
-                                         "it");
+                        (void) ureflects("But %s reflects from your %s!", "it");
                     } else
                         pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "For some reason you are not affected.");
                     dx = -dx;

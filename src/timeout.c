@@ -1676,8 +1676,7 @@ hatch_egg(anything *arg, int64_t timeout)
                 mon2 = egg->ocarry;
                 if (canseemon(mon2)
                     && (!mon2->wormno || cansee(mon2->mx, mon2->my))) {
-                    Sprintf(carriedby, "%s pack",
-                            s_suffix(a_monnam(mon2)));
+                    Strcpy(carriedby, mon_possessive(mon2, "pack", a_monnam));
                     knows_egg = TRUE;
                 } else if (is_pool(mon->mx, mon->my)) {
                     Strcpy(carriedby, "empty water");
@@ -1981,7 +1980,7 @@ lantern_message(struct obj *obj)
         You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "a lantern getting dim.");
         break;
     case OBJ_MINVENT:
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s lantern is getting dim.", s_suffix(Monnam(obj->ocarry)));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is getting dim.", Monnam_possessive(obj->ocarry, "lantern"));
         break;
     }
 }

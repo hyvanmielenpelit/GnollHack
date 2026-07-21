@@ -356,9 +356,9 @@ gold_detect(struct obj *sobj)
                 Strcpy(buf,
                    "You feel worried about your future financial situation.");
             else if (steedgold)
-                Sprintf(buf, "You feel interested in %s financial situation.",
-                        s_suffix(x_monnam(u.usteed, is_tame(u.usteed) ? ARTICLE_YOUR : ARTICLE_THE,
-                                          (char *) 0, SUPPRESS_SADDLE, FALSE)));
+                Sprintf(buf, "You feel interested in %s.",
+                        name_possessive(x_monnam(u.usteed, is_tame(u.usteed) ? ARTICLE_YOUR : ARTICLE_THE,
+                                          (char *) 0, SUPPRESS_SADDLE, FALSE), "financial situation"));
             else
                 Strcpy(buf, "You feel materially poor.");
 

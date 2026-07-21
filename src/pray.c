@@ -898,8 +898,8 @@ at_your_feet(const char *str)
         str = Something;
     if (u.uswallow) {
         /* barrier between you and the floor */
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s %s into %s %s.", str, vtense(str, "drop"),
-              s_suffix(mon_nam(u.ustuck)), mbodypart(u.ustuck, STOMACH));
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s %s into %s.", str, vtense(str, "drop"),
+              mon_nam_possessive(u.ustuck, mbodypart(u.ustuck, STOMACH)));
     } else {
         pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s %s %s your %s!", str,
               Blind ? "lands" : vtense(str, "appear"),

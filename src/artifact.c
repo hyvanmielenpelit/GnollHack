@@ -21,6 +21,8 @@ extern boolean notonhead; /* for long worms */
    dished out damage, and tracking changes to u.uhp, u.mh, Lifesaved
    when trying to avoid second wounding is too cumbersome */
 static boolean touch_blasted; /* for retouch_object() */
+static const char* const behead_msg[2] = { "%s beheads %s!",
+                                           "%s decapitates %s!" };
 
 const char* artifact_invoke_names[NUM_ARTINVOKES] = {
     "taming", "healing", "mana replenishment", "untrapping", "charging",
@@ -1712,9 +1714,6 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
         else if (artifact_has_flag(otmp, AF_BEHEAD)
                    && (dieroll == 1 || has_vorpal_vulnerability(mdef->data))) 
         {
-            static const char *const behead_msg[2] = { "%s beheads %s!",
-                                                       "%s decapitates %s!" };
-
             if (youattack && u.uswallow && mdef == u.ustuck)
                 return FALSE;
             Strcpy(wepdesc, artifact_hit_desc);
@@ -1735,8 +1734,8 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                 if (is_incorporeal(mdef->data) || amorphous(mdef->data) || (is_shade(mdef->data) && !shade_glare(otmp, mdef)))
                 {
                     if (vis)
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s slices through %s %s.", The(wepdesc),
-                              s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s slices through %s.", The(wepdesc),
+                              mon_nam_possessive(mdef, mbodypart(mdef, NECK)));
                     return 2;
                 }
                 if (mdef->heads_left > 1)
@@ -1745,8 +1744,8 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                     *dmgptr += 0.625 * (double)mdef->mhpmax / (double)max(1, mdef->data->heads); //Adjusted based on Tiamat in AD&D
                     if (vis)
                     {
-                        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts one of %s heads off!", The(wepdesc),
-                            s_suffix(mon_nam(mdef)));
+                        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts one of %s off!", The(wepdesc),
+                            mon_nam_possessive(mdef, makeplural(mbodypart(mdef, HEAD))));
                         set_obj_dknown(otmp, TRUE);
                     }
                     return 1;
@@ -1764,7 +1763,11 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
                         if (mdef->data->heads <= 1)
                             pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, behead_msg[rn2(SIZE(behead_msg))], The(wepdesc), mon_nam(mdef));
                         else
-                            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts off %s last head!", The(wepdesc), s_suffix(mon_nam(mdef)));
+                        {
+                            char nounbuf[BUFSZ];
+                            Sprintf(nounbuf, "last %s", mbodypart(mdef, HEAD));
+                            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts off %s!", The(wepdesc), mon_nam_possessive(mdef, nounbuf));
+                        }
 
                         if (Hallucination && !flags.female)
                             pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Good job Henry, but that wasn't Anne.");
@@ -2045,9 +2048,9 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                         if (vis)
                         {
                             if (youattack)
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s body.", Yobjnam2(otmp, "cut"), s_suffix(mon_nam(mdef)));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s.", Yobjnam2(otmp, "cut"), mon_nam_possessive(mdef, "body"));
                             else
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s body.", Tobjnam(otmp, "cut"), s_suffix(mon_nam(mdef)));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s.", Tobjnam(otmp, "cut"), mon_nam_possessive(mdef, "body"));
                         }
                     }
                     else if (notonhead)
@@ -2183,11 +2186,11 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                         if (vis)
                         {
                             if (youattack)
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Yobjnam2(otmp, "slice"),
-                                    s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s.", Yobjnam2(otmp, "slice"),
+                                    mon_nam_possessive(mdef, mbodypart(mdef, NECK)));
                             else
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Tobjnam(otmp, "slice"),
-                                    s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s.", Tobjnam(otmp, "slice"),
+                                    mon_nam_possessive(mdef, mbodypart(mdef, NECK)));
                         }
                     }
                     else
@@ -2264,10 +2267,6 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                     )
                 )
             {
-                static const char* const behead_msg[3] = { "%s beheads %s!",
-                                                            "%s decapitates %s!",
-                                                            "%s cuts off the last head of %s!" };
-
                 if (youattack && u.uswallow && mdef == u.ustuck)
                     ;
                 else if (!youdefend) 
@@ -2287,11 +2286,11 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                         if (vis)
                         {
                             if (youattack)
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Yobjnam2(otmp, "slice"),
-                                    s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s.", Yobjnam2(otmp, "slice"),
+                                    mon_nam_possessive(mdef, mbodypart(mdef, NECK)));
                             else
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Tobjnam(otmp, "slice"),
-                                    s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s.", Tobjnam(otmp, "slice"),
+                                    mon_nam_possessive(mdef, mbodypart(mdef, NECK)));
                         }
                     }
                     else
@@ -2302,7 +2301,7 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
                             totaldamagedone += (int)(0.625 * (double)mdef->mhpmax / (double)max(1, mdef->data->heads)); //Adjusted based on Tiamat in AD&D
                             if (vis)
                             {
-                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s cuts one of %s heads off!", The(xname(otmp)), s_suffix(mon_nam(mdef)));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s cuts one of %s off!", The(xname(otmp)), mon_nam_possessive(mdef, makeplural(mbodypart(mdef, HEAD))));
                                 set_obj_dknown(otmp, TRUE);
                             }
                         }
@@ -2313,8 +2312,7 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
 
                             if (vis)
                             {
-                                pline_ex(ATR_NONE, CLR_MSG_WARNING, behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)),
-                                    mon_nam(mdef));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)), mon_nam(mdef));
                                 if (Hallucination && !flags.female)
                                     pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Good job Henry, but that wasn't Anne.");
                                 set_obj_dknown(otmp, TRUE);

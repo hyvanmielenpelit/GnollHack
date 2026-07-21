@@ -1550,7 +1550,7 @@ mon_wield_item(struct monst *mon, boolean verbose_fail, xchar tx, xchar ty)
 
                 if (obj->otyp == PICK_AXE) 
                 {
-                    pline("Since %s weapon%s %s,", s_suffix(mon_nam(mon)),
+                    pline("Since %s%s %s,", mon_nam_possessive(mon, "weapon"),
                           plur(mw_tmp->quan), welded_buf);
                     pline("%s cannot wield that %s.", mon_nam(mon),
                           xname(obj));
@@ -1573,9 +1573,9 @@ mon_wield_item(struct monst *mon, boolean verbose_fail, xchar tx, xchar ty)
             pline("%s wields %s!", Monnam(mon), acxname(obj));
             if (mwelded(mw_tmp, mon)) 
             {
-                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s to %s %s!", Tobjnam(obj, "weld"),
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s to %s!", Tobjnam(obj, "weld"),
                       is_plural(obj) ? "themselves" : "itself",
-                      s_suffix(mon_nam(mon)), mbodypart(mon, HAND));
+                      mon_nam_possessive(mon, mbodypart(mon, HAND)));
                 set_obj_bknown(obj, 1);
             }
         }
@@ -1583,9 +1583,9 @@ mon_wield_item(struct monst *mon, boolean verbose_fail, xchar tx, xchar ty)
         {
             begin_burn(obj, FALSE);
             if (canseemon(mon))
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s in %s %s!", Tobjnam(obj, "shine"),
-                      arti_light_description(obj), s_suffix(mon_nam(mon)),
-                      mbodypart(mon, HAND));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s in %s!", Tobjnam(obj, "shine"),
+                      arti_light_description(obj),
+                      mon_nam_possessive(mon, mbodypart(mon, HAND)));
         }
         obj->owornmask = W_WEP;
         update_all_mon_statistics(mon, FALSE);
@@ -1845,11 +1845,9 @@ wet_a_towel(struct obj *obj, int amt, boolean verbose)
                                      : (!obj->special_quality ? "wet" : "wetter");
 
             if (carried(obj))
-                pline("%s gets %s.", Yobjnam2(obj, (const char *) 0),
-                      wetness);
+                pline("%s gets %s.", Yobjnam2(obj, (const char *) 0), wetness);
             else if (mcarried(obj) && canseemon(obj->ocarry))
-                pline("%s %s gets %s.", s_suffix(Monnam(obj->ocarry)),
-                      xname(obj), wetness);
+                pline("%s gets %s.", Monnam_possessive(obj->ocarry, xname(obj)), wetness);
         }
     }
     obj->special_quality = min(newspe, 7);
@@ -1880,8 +1878,8 @@ dry_a_towel(struct obj *obj, int amt, boolean verbose)
                 pline("%s dries%s.", Yobjnam2(obj, (const char *) 0),
                       !newspe ? " out" : "");
             else if (mcarried(obj) && canseemon(obj->ocarry))
-                pline("%s %s drie%s.", s_suffix(Monnam(obj->ocarry)),
-                      xname(obj), !newspe ? " out" : "");
+                pline("%s dries%s.", Monnam_possessive(obj->ocarry, xname(obj)),
+                      !newspe ? " out" : "");
         }
     }
     newspe = min(newspe, 7);
@@ -4496,8 +4494,8 @@ setmnotwielded(struct monst *mon, struct obj *obj)
         debugprint("setmnotwielded");
         end_burn(obj, FALSE);
         if (canseemon(mon))
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in %s %s %s shining.", The(xname(obj)),
-                  s_suffix(mon_nam(mon)), mbodypart(mon, HAND),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in %s %s shining.", The(xname(obj)),
+                  mon_nam_possessive(mon, mbodypart(mon, HAND)),
                   otense(obj, "stop"));
     }
     if (MON_WEP(mon) == obj)

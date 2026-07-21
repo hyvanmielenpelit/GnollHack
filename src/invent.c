@@ -21,8 +21,7 @@
 
 static void loot_classify(Loot *, struct obj *);
 static char *loot_xname(struct obj *);
-static int FDECL(CFDECLSPEC sortloot_cmp, (const genericptr,
-                                               const genericptr));
+static int CFDECLSPEC sortloot_cmp(const genericptr, const genericptr);
 static void reorder_invent(void);
 static void noarmor(boolean);
 static void invdisp_nothing(const char *, const char *);
@@ -2761,7 +2760,7 @@ getobj_ex(const char *let, const char *word, int show_weights, boolean show_quic
     /* force invent to be in invlet order before collecting candidate
        inventory letters */
     sortedinvent = sortloot(&invent, SORTLOOT_INVLET, FALSE,
-                            (boolean FDECL((*), (struct obj *))) 0);
+                            (boolean (*)(struct obj *)) 0);
 
     for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) {
         if (&bp[foo] == &buf[sizeof buf - 1]
@@ -3262,7 +3261,7 @@ construct_getobj_letters(const char *let, const char *word, boolean (*validitemf
     /* force invent to be in invlet order before collecting candidate
        inventory letters */
     sortedinvent = sortloot(&invent, SORTLOOT_INVLET, FALSE,
-        (boolean FDECL((*), (struct obj *))) 0);
+        (boolean (*)(struct obj *)) 0);
 
     for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) 
     {
@@ -3656,8 +3655,8 @@ static NEARDATA const char removeables[] = { ARMOR_CLASS, WEAPON_CLASS,
 int
 ggetobj(const char *word, int (*fn)(struct obj*), int mx, boolean combo, unsigned *resultflags, int show_weights, boolean show_quick)
 {
-    int (*ckfn)(struct obj *) = (int FDECL((*), (struct obj *))) 0;
-    boolean (*ofilter)(struct obj *) = (boolean FDECL((*), (struct obj *))) 0;
+    int (*ckfn)(struct obj *) = (int (*)(struct obj *)) 0;
+    boolean (*ofilter)(struct obj *) = (boolean (*)(struct obj *)) 0;
     boolean takeoff, ident, allflag, m_seen;
     int itemcount;
     int oletct, iletct, unpaid, oc_of_sym;
@@ -3866,7 +3865,7 @@ askchain(struct obj **objchn, const char *olets, int allflag, int (*fn)(struct o
     /* someday maybe we'll sort by 'olets' too (temporarily replace
        flags.packorder and pass SORTLOOT_PACK), but not yet... */
     sortedchn = sortloot(objchn, SORTLOOT_INVLET, FALSE,
-                         (boolean FDECL((*), (struct obj *))) 0);
+                         (boolean (*)(struct obj *)) 0);
 
     first = TRUE;
     /*
@@ -5063,7 +5062,7 @@ display_pickinv(const char *lets, char *xtra_choice, char *query, boolean want_r
     if (flags.sortpack)
         sortflags |= SORTLOOT_PACK;
     sortedinvent = sortloot(&invent, sortflags, FALSE,
-                            (boolean FDECL((*), (struct obj *))) 0);
+                            (boolean (*)(struct obj *)) 0);
 
     start_menu_style(win, addinventoryheader == 2 ? GHMENU_STYLE_INVENTORY_EQUIPMENT : addinventoryheader ? GHMENU_STYLE_INVENTORY : GHMENU_STYLE_PICK_ITEM_LIST);
     any = zeroany;
@@ -6064,7 +6063,7 @@ dotypeinv(void)
          */
         types[0] = 0;
         class_count = collect_obj_classes(types, invent, FALSE,
-                                          (boolean FDECL((*), (struct obj *))) 0,
+                                          (boolean (*)(struct obj *)) 0,
                                           &itemcount);
         if (unpaid_count || billx || unidentified_count || unknown_count || (bcnt + ccnt + ucnt + xcnt) != 0)
             types[class_count++] = ' ';
@@ -6417,8 +6416,7 @@ look_here(int obj_cnt, boolean picked_some, boolean explicit_cmd)
     if (u.uswallow && u.ustuck) {
         struct monst *mtmp = u.ustuck;
 
-        Sprintf(fbuf, "Contents of %s %s", s_suffix(mon_nam(mtmp)),
-                mbodypart(mtmp, STOMACH));
+        Sprintf(fbuf, "Contents of %s", mon_nam_possessive(mtmp, mbodypart(mtmp, STOMACH)));
         /* Skip "Contents of " by using fbuf index 12 */
         You("%s to %s what is lying in %s.", Blind ? "try" : "look around",
             verb, &fbuf[12]);
@@ -7779,8 +7777,7 @@ display_minventory(struct monst *mon, int dflags, char *title)
         have_inv = (mon->minvent != 0), have_any = (have_inv || incl_hero),
         pickings = (dflags & MINV_PICKMASK);
 
-    Sprintf(tmp, "%s %s:", s_suffix(noit_Monnam(mon)),
-            do_all ? "possessions" : "armament");
+    Sprintf(tmp, "%s:", mon_possessive(mon, do_all ? "possessions" : "armament", noit_Monnam));
 
     if (do_all ? have_any : (mon->worn_item_flags || MON_WEP(mon))) {
         /* Fool the 'weapon in hand' routine into

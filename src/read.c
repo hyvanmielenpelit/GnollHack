@@ -3558,8 +3558,8 @@ drop_boulder_on_monster(int x, int y, boolean confused, boolean byu)
             if (is_invisible(mtmp) && !canspotmon(mtmp))
                 map_invisible(mtmp->mx, mtmp->my);
         } else if (u.uswallow && mtmp == u.ustuck)
-            You_hear("something hit %s %s over your %s!",
-                     s_suffix(mon_nam(mtmp)), mbodypart(mtmp, STOMACH),
+            You_hear("something hit %s over your %s!",
+                     mon_nam_possessive(mtmp, mbodypart(mtmp, STOMACH)),
                      body_part(HEAD));
 
         if (helmet) {
@@ -3737,8 +3737,7 @@ litroom(boolean on, struct obj *obj)
             if (Blind)
                 ; /* no feedback */
             else if (is_animal(u.ustuck->data))
-                pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s %s is lit.", s_suffix(Monnam(u.ustuck)),
-                      mbodypart(u.ustuck, STOMACH));
+                pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s is lit.", Monnam_possessive(u.ustuck, mbodypart(u.ustuck, STOMACH)));
             else if (is_whirly(u.ustuck->data))
                 pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s shines briefly.", Monnam(u.ustuck));
             else

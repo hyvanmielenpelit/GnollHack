@@ -259,20 +259,20 @@ erode_obj(struct obj *otmp, const char *ostr, int type, int ef_flags)
     else if (!vulnerable || (is_obj_oerodeproof(otmp) && is_obj_rknown(otmp)))
     {
         if (flags.verbose && print && (uvictim || vismon))
-            pline("%s %s %s not affected by %s.",
-                  uvictim ? "Your" : s_suffix(Monnam(victim)),
-                  ostr, vtense(ostr, "are"), bythe[type]);
+            pline("%s %s not affected by %s.",
+                  uvictim ? Name_possessive2("your", ostr) : Monnam_possessive(victim, ostr),
+                  vtense(ostr, "are"), bythe[type]);
         return ER_NOTHING;
     }
     else if (is_obj_oerodeproof(otmp) || (is_obj_blessed(otmp) && !rnl(4)) || is_obj_protected_by_property(otmp, victim, adtyp))
     {
         if (flags.verbose && (print || is_obj_oerodeproof(otmp))
             && (uvictim || vismon || visobj))
-            pline("Somehow, %s %s %s not affected by the %s.",
-                  uvictim ? "your"
-                          : !vismon ? "the" /* visobj */
-                                    : s_suffix(mon_nam(victim)),
-                  ostr, vtense(ostr, "are"), bythe[type]);
+            pline("Somehow, %s %s not affected by the %s.",
+                  uvictim ? name_possessive("your", ostr)
+                  : vismon ? mon_nam_possessive(victim, ostr)
+                  : the(ostr),
+                  vtense(ostr, "are"), bythe[type]);
         /* We assume here that if the object is protected because it
          * is blessed, it still shows some minor signs of wear, and
          * the hero can distinguish this from an object that is
@@ -297,11 +297,12 @@ erode_obj(struct obj *otmp, const char *ostr, int type, int ef_flags)
         if (uvictim || vismon || visobj)
         {
             play_simple_object_sound(otmp, obj_erode_sounds[type]);
-            pline_ex(ATR_NONE, uvictim ? CLR_MSG_NEGATIVE : NO_COLOR, "%s %s %s%s!",
-                uvictim ? "Your"
-                : !vismon ? "The" /* visobj */
-                : s_suffix(Monnam(victim)),
-                ostr, vtense(ostr, action[type]), adverb);
+            pline_ex(ATR_NONE, uvictim ? CLR_MSG_NEGATIVE : NO_COLOR,
+                "%s %s%s!",
+                uvictim ? Name_possessive2("your", ostr)
+                : vismon ? Monnam_possessive(victim, ostr)
+                : The(ostr),
+                vtense(ostr, action[type]), adverb);
         }
 
         if (ef_flags & EF_PAY)
@@ -322,11 +323,12 @@ erode_obj(struct obj *otmp, const char *ostr, int type, int ef_flags)
         if (uvictim || vismon || visobj)
         {
             play_simple_object_sound(otmp, obj_erode_sounds[type]);
-            pline_ex(ATR_NONE, uvictim ? CLR_MSG_NEGATIVE : NO_COLOR, "%s %s %s away!",
-                uvictim ? "Your"
-                : !vismon ? "The" /* visobj */
-                : s_suffix(Monnam(victim)),
-                ostr, vtense(ostr, action[type]));
+            pline_ex(ATR_NONE, uvictim ? CLR_MSG_NEGATIVE : NO_COLOR,
+                "%s %s away!",
+                uvictim ? Name_possessive2("your", ostr)
+                : vismon ? Monnam_possessive(victim, ostr)
+                : The(ostr),
+                vtense(ostr, action[type]));
         }
 
         if (ef_flags & EF_PAY)
@@ -349,10 +351,11 @@ erode_obj(struct obj *otmp, const char *ostr, int type, int ef_flags)
             if (uvictim)
                 Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s completely %s.",
                      ostr, vtense(ostr, Blind ? "feel" : "look"), msg[type]);
-            else if (vismon || visobj)
-                pline("%s %s %s completely %s.",
-                      !vismon ? "The" : s_suffix(Monnam(victim)),
-                      ostr, vtense(ostr, "look"), msg[type]);
+            else if (vismon || visobj) {
+                pline("%s %s completely %s.",
+                        !vismon ? The(ostr) : Monnam_possessive(victim, ostr),
+                        vtense(ostr, "look"), msg[type]);
+            }
         }
         return ER_NOTHING;
     }
@@ -1349,8 +1352,8 @@ dotrap(struct trap *trap, unsigned short trflags)
         set_utrap((unsigned) rn1(4, 4), TT_BEARTRAP);
         if (u.usteed) 
         {
-            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s bear trap closes on %s %s!", A_Your[trap->madeby_u],
-                  s_suffix(mon_nam(u.usteed)), mbodypart(u.usteed, FOOT));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s bear trap closes on %s!", A_Your[trap->madeby_u],
+                  mon_nam_possessive(u.usteed, mbodypart(u.usteed, FOOT)));
             if (thitm(0, u.usteed, (struct obj*)0, dmg, FALSE))
             {
                 special_effect_wait_until_end(0);
@@ -3532,7 +3535,7 @@ mintrap(struct monst *mtmp)
                 seetrap(trap); /* before messages */
                 if (in_sight) 
                 {
-                    char buf[BUFSZ], *p, *monnm = mon_nam(mtmp);
+                    char buf[BUFSZ], *monnm = mon_nam(mtmp);
 
                     if (nolimbs(mtmp->data)
                         || is_flying(mtmp) || is_levitating(mtmp)) 
@@ -3542,11 +3545,9 @@ mintrap(struct monst *mtmp)
                     }
                     else 
                     {
-                        Strcpy(buf, s_suffix(monnm));
-                        p = eos(strcat(buf, " "));
-                        Strcpy(p, makeplural(mbodypart(mtmp, FOOT)));
+                        Strcpy(buf, mon_nam_possessive(mtmp, makeplural(mbodypart(mtmp, FOOT))));
                         /* avoid "beneath 'rear paws'" or 'rear hooves' */
-                        (void) strsubst(p, "rear ", "");
+                        (void) strsubst(buf, "rear ", "");
                     }
                     You_see("a strange vibration beneath %s.", buf);
                 }
@@ -4510,8 +4511,8 @@ acid_damage(struct obj *obj)
                 if (victim == &youmonst)
                     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Your %s.", aobjnam(obj, "fade"));
                 else if (vismon)
-                    pline("%s %s.", s_suffix(Monnam(victim)),
-                          aobjnam(obj, "fade"));
+                    pline("%s %s.", Monnam_possessive(victim, cxname(obj)),
+                        otense(obj, "fade"));
             }
         }
         obj->otyp = SCR_BLANK_PAPER;

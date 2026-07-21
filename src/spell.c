@@ -37,8 +37,7 @@ static int learn(void);
 static boolean rejectcasting(void);
 static boolean reject_specific_spell_casting(int);
 static boolean getspell(int *, int);
-static int FDECL(CFDECLSPEC spell_cmp, (const genericptr,
-                                            const genericptr));
+static int CFDECLSPEC spell_cmp(const genericptr, const genericptr);
 static boolean spellsortmenu(void);
 static boolean dospellmenu(const char *, int, int *);
 static boolean dotradspellmenu(const char*, int, int*);

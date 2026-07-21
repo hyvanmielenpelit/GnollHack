@@ -25,7 +25,7 @@ static void final_level(void);
 static void print_corpse_properties(winid, int);
 static void revive_handle_magic_chest(xchar*, struct obj**, int*, struct monst**);
 /* static boolean badspot(xchar,xchar); */
-static int FDECL(CFDECLSPEC item_wiki_cmp, (const genericptr, const genericptr));
+static int CFDECLSPEC item_wiki_cmp(const genericptr, const genericptr);
 
 extern int n_dgns; /* number of dungeons, from dungeon.c */
 
@@ -6522,11 +6522,10 @@ drop(struct obj *obj)
         if (flags.verbose) {
             char *onam_p, monbuf[BUFSZ];
 
-            /* doname can call s_suffix, reusing its buffer */
-            Strcpy(monbuf, s_suffix(mon_nam(u.ustuck)));
+            /* doname can use string buffers, so evaluate mon_nam_possessive first */
+            Strcpy(monbuf, mon_nam_possessive(u.ustuck, mbodypart(u.ustuck, STOMACH)));
             onam_p = is_unpaid(obj) ? yobjnam(obj, (char *) 0) : doname(obj);
-            You("drop %s into %s %s.", onam_p, monbuf,
-                mbodypart(u.ustuck, STOMACH));
+            You("drop %s into %s.", onam_p, monbuf);
         }
     } else {
         if ((obj->oclass == RING_CLASS || obj->otyp == MEAT_RING)
@@ -9881,8 +9880,8 @@ static void write_display_nhwindow(winid, boolean);
 static void write_destroy_nhwindow(winid);
 static void write_putstr_ex(winid, const char*, int, int, int);
 static void write_putstr_ex2(winid, const char*, const char*, const char*, int, int, int);
-static int FDECL(CFDECLSPEC spell_wiki_cmp, (const genericptr, const genericptr));
-static int FDECL(CFDECLSPEC monster_wiki_cmp, (const genericptr, const genericptr));
+static int CFDECLSPEC spell_wiki_cmp(const genericptr, const genericptr);
+static int CFDECLSPEC monster_wiki_cmp(const genericptr, const genericptr);
 
 static int write_fd = -1;
 

@@ -9,7 +9,7 @@
 
 static char *nextmbuf(void);
 static void getpos_help(boolean, const char *);
-static int FDECL(CFDECLSPEC cmp_coord_distu, (const void *, const void *));
+static int CFDECLSPEC cmp_coord_distu(const void *, const void *);
 static boolean gather_locs_interesting(int, int, int);
 static void gather_locs(coord **, int *, int);
 static int gloc_filter_floodfill_matcharea(int, int);
@@ -23,10 +23,10 @@ static char *bogusmon(char *,char *);
 static void print_catalogue(winid, struct obj*, int, uint64_t);
 static void print_artifact_catalogue(winid, struct obj*);
 static void print_mythic_power_catalogue(winid, struct obj*);
-static int FDECL(CFDECLSPEC citemsortcmp, (const void*, const void*));
-static int FDECL(CFDECLSPEC artilistsortcmp, (const void*, const void*));
-static int FDECL(CFDECLSPEC mythicprefixsortcmp, (const void*, const void*));
-static int FDECL(CFDECLSPEC mythicsuffixsortcmp, (const void*, const void*));
+static int CFDECLSPEC citemsortcmp(const void*, const void*);
+static int CFDECLSPEC artilistsortcmp(const void*, const void*);
+static int CFDECLSPEC mythicprefixsortcmp(const void*, const void*);
+static int CFDECLSPEC mythicsuffixsortcmp(const void*, const void*);
 static const char* gettitle(short*, const char* const*, int, int, uint64_t, uint64_t);
 static void set_valid_pos_flags(void);
 static void clear_valid_pos_flags(void);
@@ -49,9 +49,8 @@ nextmbuf(void)
 /* function for getpos() to highlight desired map locations.
  * parameter value 0 = initialize, 1 = highlight, 2 = done
  */
-static void (*getpos_hilitefunc)(int) = (void FDECL((*), (int))) 0;
-static int (*getpos_getinvalid)(int, int) =
-                                           (int FDECL((*), (int, int))) 0;
+static void (*getpos_hilitefunc)(int) = (void (*)(int)) 0;
+static int (*getpos_getinvalid)(int, int) = (int (*)(int, int)) 0;
 
 static void
 set_valid_pos_flags(void)
@@ -1110,8 +1109,8 @@ getpos(coord *ccp, boolean force, const char *goal, enum game_cursor_types curso
     for (i = 0; i < NUM_GLOCS; i++)
         if (garr[i])
             free((genericptr_t) garr[i]);
-    getpos_hilitefunc = (void FDECL((*), (int))) 0;
-    getpos_getinvalid = (int FDECL((*), (int, int))) 0;
+    getpos_hilitefunc = (void (*)(int)) 0;
+    getpos_getinvalid = (int (*)(int, int)) 0;
 
     flags.show_cursor_on_u = FALSE;
     flags.force_paint_at_cursor = TRUE;
@@ -2066,7 +2065,7 @@ x_monnam(struct monst *mtmp, int article, const char *adjective, int suppress, b
 
     if (do_poly)
     {
-        Sprintf(eos(buf), "%s polymorphed into ", pm_monster_name(&mons[mtmp->cham], has_mmonst(mtmp) ? is_mon_female(MMONST(mtmp)) :  is_mon_female(mtmp)));
+        Sprintf(eos(buf), "%s imitating ", pm_monster_name(&mons[mtmp->cham], has_mmonst(mtmp) ? is_mon_female(MMONST(mtmp)) :  is_mon_female(mtmp)));
     }
 
     /* Put the actual monster name or type into the buffer now */
@@ -4220,7 +4219,7 @@ print_artifact_catalogue(winid datawin, struct obj *obj)
  *   obj: Could be used to check for cursed status etc.
  */
 static void
-print_mythic_power_catalogue(winid datawin, struct obj *obj UNUSED)
+print_mythic_power_catalogue(winid datawin, struct obj* obj UNUSED)
 {
     int prefixcnt = 0;
     int suffixcnt = 0;
@@ -4752,6 +4751,101 @@ void
 reset_doname(void)
 {
     via_naming = 0;
+}
+
+/*
+ * Produce a possessive phrase from a name string and a noun.
+ *
+ * For normal names:     "the goblin's hand"
+ * For polymorphed names: "the hand of the chameleon polymorphed into a goblin"
+ * For pronouns:         "Your hand", "His hand", etc.
+ *
+ * name   - the name/pronoun (e.g. from mon_nam(), Monnam(), or "Your")
+ * noun   - the thing possessed (e.g. "hand", "body", "long sword")
+ * alt_of - if non-NULL, replaces " of " for the polymorphed/pronoun case
+ *          (e.g. "wielded by" => "the long sword wielded by ...")
+ *
+ * Returns: pointer to a nextmbuf() rotating buffer.
+ */
+char *
+name_possessive_ex(const char *name, const char *noun, boolean capitalize, const char *alt_of)
+{
+    char *buf = nextmbuf();
+    if (!name || !*name) {
+        Strcpy(buf, noun ? noun : "");
+        if (capitalize && *buf)
+            *buf = highc(*buf);
+        return buf;
+    }
+    if (!noun || !*noun) {
+        Strcpy(buf, s_suffix(name));
+        if (capitalize)
+            *buf = highc(*buf);
+        return buf;
+    }
+
+    /* Check for pronoun inputs */
+    size_t namelen = strlen(name);
+    if (namelen <= 4)
+    {
+        /* Possessive adjectives: already possessive, just concatenate */
+        if (!strcmpi(name, "your") || !strcmpi(name, "his")
+            || !strcmpi(name, "her") || !strcmpi(name, "my")
+            || !strcmpi(name, "its") || !strcmpi(name, "our")) 
+        {
+            Sprintf(buf, "%s %s", name, noun);
+            if (capitalize)
+                *buf = highc(*buf);
+            return buf;
+        }
+
+        /* Subject pronouns: convert to possessive adjective */
+        const char* poss_adj = 0;
+        if (!strcmpi(name, "you"))
+            poss_adj = "your";
+        else if (!strcmpi(name, "he"))
+            poss_adj = "his";
+        else if (!strcmpi(name, "she"))
+            poss_adj = "her";
+        else if (!strcmpi(name, "it"))
+            poss_adj = "its";
+        else if (!strcmpi(name, "i"))
+            poss_adj = "my";
+        else if (!strcmpi(name, "we"))
+            poss_adj = "our";
+        else if (!strcmpi(name, "they"))
+            poss_adj = "their";
+
+        if (poss_adj)
+        {
+            Sprintf(buf, "%s %s", poss_adj, noun);
+            if (capitalize)
+                *buf = highc(*buf);
+            return buf;
+        }
+    }
+    else if (namelen == 5 && !strcmpi(name, "their"))
+    {
+        Sprintf(buf, "%s %s", name, noun);
+        if (capitalize)
+            *buf = highc(*buf);
+        return buf;
+    }
+
+    /* Check for "imitating" in the name */
+    if (strstr(name, " imitating ")) 
+    {
+        Sprintf(buf, "the %s %s %s", noun, alt_of ? alt_of : "of", name);
+        if (capitalize)
+            *buf = highc(*buf);
+        return buf;
+    }
+
+    /* Normal case: "the goblin's hand" */
+    Sprintf(buf, "%s %s", s_suffix(name), noun);
+    if (capitalize)
+        *buf = highc(*buf);
+    return buf;
 }
 
 /*do_name.c*/
