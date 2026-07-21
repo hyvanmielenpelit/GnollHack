@@ -3585,6 +3585,8 @@ mondead_with_flags(struct monst *mtmp, uint64_t mondeadflags)
         wizdead();
     if (mtmp->data->msound == MS_NEMESIS)
         nemdead();
+    if (mtmp->data->msound == MS_LEADER)
+        leaddead();
     if (is_medusa(mtmp->data))
     {
         issue_achievement(GUI_ACHIEVEMENT_DEFEATED_MEDUSA);
@@ -4384,7 +4386,7 @@ cleanup:
 
     if (mtmp->m_id == quest_status.leader_m_id)
     { /* REAL BAD! */
-        luck_change += -5;
+        luck_change += -20;
     }
 
     change_luck((int)luck_change, TRUE);
@@ -4399,12 +4401,25 @@ cleanup:
     { /* REAL BAD! */
         play_sfx_sound(SFX_GUILTY);
         adjalign(-(u.ualign.record + ALIGNLIM / 2));
+        u.ugangr += 7; /* instantly become "extremely" angry */
         pline_ex(ATR_NONE, is_uevent_qcompleted() ? CLR_MSG_WARNING : CLR_MSG_NEGATIVE, "That was %sa bad idea...",
               is_uevent_qcompleted() ? "probably " : "");
-    } 
+        struct monst* mon;
+        for (mon = fmon; mon; mon = mon->nmon)
+        {
+            if (DEADMONSTER(mon))
+                continue;
+            if (mon->mnum == urole.guardnum && is_mon_mpeaceful(mon))
+            {
+                set_mon_mpeaceful(mon, 0);
+                newsym(mon->mx, mon->my);
+            }
+        }
+    }
     else if (mdat->msound == MS_NEMESIS)
     { /* Real good! */
-        adjalign((ALIGNLIM / 4));
+        if (!is_qstatus_killed_leader())
+            adjalign((ALIGNLIM / 4));
     }
     else if (mdat->msound == MS_GUARDIAN) 
     { /* Bad */

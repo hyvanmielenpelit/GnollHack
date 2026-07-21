@@ -124,6 +124,14 @@ nemdead(void)
 }
 
 void
+leaddead(void)
+{
+    if (!is_qstatus_killed_leader()) {
+        set_qstatus_killed_leader(TRUE);
+    }
+}
+
+void
 artitouch(struct obj *obj)
 {
     if (!is_qstatus_touched_artifact()) {
@@ -144,8 +152,8 @@ artitouch(struct obj *obj)
 boolean
 ok_to_quest(void)
 {
-    return (boolean) ((is_qstatus_got_quest() || is_qstatus_got_thanks() || is_qstatus_leader_is_dead())
-                      && is_pure(FALSE) > 0);
+    return (boolean) (((is_qstatus_got_quest() || is_qstatus_got_thanks()) && is_pure(FALSE) > 0)
+                      || is_qstatus_killed_leader());
 }
 
 boolean
@@ -267,6 +275,10 @@ static boolean
 chat_with_leader(struct monst *mtmp, boolean dopopup)
 {
     boolean res = FALSE;
+
+    if (!is_peaceful(mtmp) || is_qstatus_pissed_off())
+        return res;
+
     /*  Rule 0: Cheater checks. */
     if (is_uhave_questart() && !is_qstatus_met_nemesis())
         set_qstatus_cheater(TRUE);
@@ -338,28 +350,23 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
         }
         else if (is_pure(TRUE) < 0) 
         {
-            com_pager_ex((struct monst*)0, QT_BANISHED, ATR_NONE, CLR_MSG_NEGATIVE, dopopup);
-            res = FALSE; // For safety
-            debugprint_pos();
-            expulsion(TRUE);
+            if (!is_qstatus_pissed_off())
+            {
+                com_pager_ex((struct monst*)0, QT_BANISHED, ATR_NONE, CLR_MSG_NEGATIVE, dopopup);
+                set_qstatus_pissed_off(TRUE);
+                res = FALSE; // For safety
+                debugprint_pos();
+                expulsion(FALSE);
+            }
         }
         else if (is_pure(TRUE) == 0)
         {
             qt_pager_ex(mtmp, QT_BADALIGN, ATR_NONE, CLR_MSG_WARNING, dopopup);
-            if (quest_status.not_ready == MAX_QUEST_TRIES)
-            {
-                qt_pager_ex(mtmp, QT_LASTLEADER, ATR_NONE, CLR_MSG_NEGATIVE, dopopup);
-                res = FALSE; // For safety
-                debugprint_pos();
-                expulsion(TRUE);
-            }
-            else 
-            {
+            if (quest_status.not_ready < 255)
                 quest_status.not_ready++;
-                exercise(A_WIS, TRUE);
-                debugprint_pos();
-                expulsion(FALSE);
-            }
+            exercise(A_WIS, TRUE);
+            debugprint_pos();
+            expulsion(FALSE);
         }
         else 
         { /* You are worthy! */
@@ -377,7 +384,14 @@ leader_speaks(struct monst *mtmp)
     /* maybe you attacked leader? */
     if (!is_peaceful(mtmp)) 
     {
-        set_qstatus_pissed_off(TRUE);
+        if (!is_qstatus_pissed_off())
+        {
+            /* don't end it permanently if the leader gets angry
+             * since you're going to have to kill him to go questing... :)
+             * ...but do only show this message once. */
+            qt_pager_ex(mtmp, QT_LASTLEADER, ATR_NONE, CLR_MSG_NEGATIVE, FALSE);
+            set_qstatus_pissed_off(TRUE);
+        }
         mtmp->mstrategy &= ~STRAT_WAITMASK; /* end the inaction */
     }
     /* the quest leader might have passed through the portal into the
@@ -385,13 +399,7 @@ leader_speaks(struct monst *mtmp)
     if (!on_level(&u.uz, &qstart_level))
         return FALSE;
 
-    if (is_qstatus_pissed_off()) 
-    {
-        qt_pager_ex(mtmp, QT_LASTLEADER, ATR_NONE, CLR_MSG_NEGATIVE, FALSE);
-        debugprint_pos();
-        expulsion(TRUE); // Return FALSE for safety
-    }
-    else if(!is_uevent_qcompleted())
+    if (!is_qstatus_pissed_off() && !is_uevent_qcompleted())
         return chat_with_leader(mtmp, FALSE);
 
     return FALSE;

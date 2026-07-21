@@ -3018,6 +3018,7 @@ E const char* get_status_name(struct monst*, int);
 
 E void onquest(void);
 E void nemdead(void);
+E void leaddead(void);
 E void artitouch(struct obj *);
 E boolean ok_to_quest(void);
 E boolean leader_speaks(struct monst *);

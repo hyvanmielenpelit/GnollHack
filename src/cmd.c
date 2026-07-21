@@ -5713,7 +5713,7 @@ show_conduct(int final)
         if (!final && !iflags.in_dumplog)
             putstr(en_win, ATR_HALF_SIZE, " ");
 
-        if (!(is_uevent_qcompleted() || is_uevent_qexpelled() || is_qstatus_leader_is_dead()))
+        if (!(is_uevent_qcompleted() || is_uevent_qexpelled() || is_qstatus_leader_is_dead() || is_qstatus_killed_leader()))
         {
             if (is_qstatus_got_quest())
             {
