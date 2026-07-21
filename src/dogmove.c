@@ -755,19 +755,19 @@ m_givit(struct monst *mon, int type, struct permonst *ptr)
         if (Hallucination)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems more grounded in reality.", Monnam(mon));
         else
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s health currently seems a bit more amplified!", s_suffix(Monnam(mon)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s currently seems a bit more amplified!", Monnam_possessive(mon, "health"));
         break;
     case DEATH_RESISTANCE: /* death resistance */
         play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_DEATH_RESISTANCE, mon->mx, mon->my);
         if (Hallucination)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems immortal.", Monnam(mon));
         else
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s life force seems firmer!", s_suffix(Monnam(mon)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems firmer!", Monnam_possessive(mon, "life force"));
         break;
     case CHARM_RESISTANCE: /* charm resistance */
         play_sfx_sound_at_location(SFX_INTRINSIC_ACQUIRED_CHARM_RESISTANCE, mon->mx, mon->my);
         if (Hallucination)
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s understanding of the world seems to have improved!", s_suffix(Monnam(mon)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems to have improved!", Monnam_possessive_ex(mon, "understanding of the world", "for"));
         else
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems more firm about %s own motivations.", Monnam(mon), mhis(mon));
         break;

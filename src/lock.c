@@ -1191,9 +1191,8 @@ obstructed(int x, int y, boolean quietly)
             if ((mtmp->mx != x) || (mtmp->my != y)) {
                 /* worm tail */
                 play_sfx_sound(SFX_SOMETHING_IN_WAY);
-                pline("%s%s blocks the way!",
-                      !canspotmon(mtmp) ? Something : s_suffix(Monnam(mtmp)),
-                      !canspotmon(mtmp) ? "" : " tail");
+                pline("%s blocks the way!",
+                      !canspotmon(mtmp) ? Something : Monnam_possessive(mtmp, "tail"));
             } else {
                 play_sfx_sound(SFX_SOMETHING_IN_WAY);
                 pline("%s blocks the way!",

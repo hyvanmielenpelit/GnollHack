@@ -1008,7 +1008,10 @@ mattacku(struct monst *mtmp)
                                 if (flags.verbose && !Blind && mon_visible(mtmp) && strikeindex > 0)
                                 {
                                     /* To be consistent with mswings */
-                                    pline("%s %s!", Monnam_possessive(mtmp, aobjnam(mon_currwep, "strike")), strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+                                    pline("%s %s %s!",
+                                        Monnam_possessive(mtmp, cxname(mon_currwep)),
+                                        otense(mon_currwep, "strike"),
+                                        strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
                                 }
                             }
 
@@ -3886,13 +3889,12 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             if (useeit)
             {
                 play_sfx_sound(SFX_GENERAL_REFLECTS);
-                (void)ureflects("%s is reflected by your %s.",
-                    Monnam_possessive(mtmp, "gaze"));
+                (void)ureflects("%s is reflected by your %s.", Monnam_possessive(mtmp, "gaze"));
 
             }
             if (mon_reflects(
                 mtmp, !useeit ? (char*)0
-                : "The gaze is reflected away by %s %s!"))
+                : "The gaze is reflected away by %s!"))
             {
                 play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
                 break;
@@ -4761,7 +4763,7 @@ passiveum(struct permonst *olduasmon, struct monst *mtmp, struct attack *mattk)
                     else
                     {
                         update_u_action_core(action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
-                        if (mon_reflects(mtmp, "Your gaze is reflected by %s %s."))
+                        if (mon_reflects(mtmp, "Your gaze is reflected by %s."))
                         {
                             play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
                             return 1;

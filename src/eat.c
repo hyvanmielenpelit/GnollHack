@@ -840,16 +840,15 @@ eat_brains(struct monst *magr, struct monst *mdef, boolean visflag, double *dmg_
 
     if (is_incorporeal(pd)) {
         if (visflag)
-            pline("%s brain is unharmed.",
-                  (mdef == &youmonst) ? "Your" : s_suffix(Monnam(mdef)));
+            pline("%s is unharmed.", name_possessive((mdef == &youmonst) ? "Your" : Monnam(mdef), "brain"));
         return MM_MISS; /* side-effects can't occur */
     } else if (magr == &youmonst) {
-        You("eat %s brain!", s_suffix(mon_nam(mdef)));
+        You("eat %s!", mon_nam_possessive(mdef, "brain"));
     } else if (mdef == &youmonst) {
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "brain is being eaten!");
     } else { /* monster against monster */
         if (visflag && canspotmon(mdef))
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s brain is eaten!", s_suffix(Monnam(mdef)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is eaten!", Monnam_possessive(mdef, "brain"));
     }
 
     if (!magr || !mdef)
@@ -1029,8 +1028,8 @@ eat_brains(struct monst *magr, struct monst *mdef, boolean visflag, double *dmg_
 
             give_nutrit = TRUE;
             if (*dmg_p >= mdef->mhp && visflag && canspotmon(mdef))
-                pline("%s last thought fades away...",
-                      s_suffix(Monnam(mdef)));
+                pline("%s fades away...",
+                      Monnam_possessive(mdef, "last thought"));
         }
     }
 

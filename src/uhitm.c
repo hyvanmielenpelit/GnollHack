@@ -4505,27 +4505,38 @@ passive(struct monst *mon, struct obj *weapon, boolean mhit, int malive, uchar a
 
     /*  These only affect you if they still live.
      */
-    if (malive && !is_cancelled(mon) && rn2(3)) {
-        switch (ptr->mattk[i].adtyp) {
+    if (malive && !is_cancelled(mon) && rn2(3)) 
+    {
+        switch (ptr->mattk[i].adtyp) 
+        {
         case AD_PLYS:
-            if (ptr == &mons[PM_FLOATING_EYE]) {
-                if (!canseemon(mon)) {
+            if (ptr == &mons[PM_FLOATING_EYE]) 
+            {
+                if (!canseemon(mon)) 
+                {
                     break;
                 }
-                if (!is_blinded(mon)) {
+                if (!is_blinded(mon)) 
+                {
                     play_sfx_sound(SFX_GENERAL_REFLECTS);
-                    if (ureflects("%s is reflected by your %s.",
-                                  Monnam_possessive(mon, "gaze"))) {
+                    if (ureflects("%s is reflected by your %s.", Monnam_possessive(mon, "gaze"))) 
+                    {
                         ;
-                    } else if (Free_action) {
+                    }
+                    else if (Free_action) 
+                    {
                         play_sfx_sound(SFX_GENERAL_RESISTS);
                         You_ex(ATR_NONE, CLR_MSG_WARNING, "momentarily stiffen under %s!",
                             mon_nam_possessive(mon, "gaze"));
-                    } else if (Hallucination && rn2(4)) {
+                    }
+                    else if (Hallucination && rn2(4)) 
+                    {
                         pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "%s looks %s%s.", Monnam(mon),
                               !rn2(2) ? "" : "rather ",
                               !rn2(2) ? "numb" : "stupified");
-                    } else {
+                    } 
+                    else
+                    {
                         play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
                         You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frozen by %s!", mon_nam_possessive(mon, "gaze"));
                         incr_itimeout(&HParalyzed, (ACURR(A_WIS) > 12 || rn2(4)) ? basedmg : 127);
@@ -4533,16 +4544,22 @@ passive(struct monst *mon, struct obj *weapon, boolean mhit, int malive, uchar a
                         refresh_u_tile_gui_info(TRUE);
                         standard_hint("Do not hit floating eyes in melee unless you wear a blindfold or a towel. Use ranged weapons against them.", &u.uhint.paralyzed_by_floating_eye);
                     }
-                } else {
+                } 
+                else
+                {
                     pline("%s cannot defend itself.",
                           Adjmonnam(mon, "blind"));
                     if (!rn2(500))
                         change_luck(-1, TRUE);
                 }
-            } else if (Free_action) {
+            } 
+            else if (Free_action)
+            {
                 play_sfx_sound(SFX_GENERAL_RESISTS);
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "momentarily stiffen.");
-            } else { /* gelatinous cube */
+            }
+            else 
+            { /* gelatinous cube */
                 play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frozen by %s!", mon_nam(mon));
                 incr_itimeout(&HParalyzed, basedmg);

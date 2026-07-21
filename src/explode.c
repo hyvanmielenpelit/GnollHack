@@ -433,8 +433,7 @@ explode(int x, int y, int type, struct monst *origmonst, int dmg_n, int dmg_d, i
                        so avoid any which begins with a capital letter) */
                     do 
                     {
-                        Sprintf(hallu_buf, "%s explosion",
-                                s_suffix(rndmonnam((char *) 0)));
+                        Strcpy(hallu_buf, name_possessive(rndmonnam((char *) 0), "explosion"));
                     } while (*hallu_buf != lowc(*hallu_buf));
                     str = hallu_buf;
                 }
@@ -665,8 +664,7 @@ explode(int x, int y, int type, struct monst *origmonst, int dmg_n, int dmg_d, i
             { /* (see explanation above) */
                 do 
                 {
-                    Sprintf(hallu_buf, "%s explosion",
-                            s_suffix(rndmonnam((char *) 0)));
+                    Strcpy(hallu_buf, name_possessive(rndmonnam((char *) 0), "explosion"));
                 } 
                 while (*hallu_buf != lowc(*hallu_buf));
 

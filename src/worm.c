@@ -395,8 +395,8 @@ cutworm(struct monst *worm, xchar x, xchar y, boolean cuttier)
         place_worm_seg(worm, x, y); /* place the "head" segment back */
         if (context.mon_moving) {
             if (canspotmon(worm))
-                pline("Part of %s tail has been cut off.",
-                      s_suffix(mon_nam(worm)));
+                pline("Part of %s has been cut off.",
+                      mon_nam_possessive(worm, "tail"));
         } else
             You("cut part of the tail off of %s.", mon_nam(worm));
         toss_wsegs(new_tail, TRUE);

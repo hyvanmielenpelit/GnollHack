@@ -2360,15 +2360,13 @@ potionhit(struct monst *mon, struct obj **obj_ptr, int how)
 
             if (hit_saddle && saddle) 
             {
-                Sprintf(buf, "%s saddle",
-                        s_suffix(x_monnam(mon, ARTICLE_THE, (char *) 0,
-                                          (SUPPRESS_IT | SUPPRESS_SADDLE),
-                                          FALSE)));
+                Strcpy(buf, name_possessive(x_monnam(mon, ARTICLE_THE, (char *) 0,
+                                                     (SUPPRESS_IT | SUPPRESS_SADDLE),
+                                                     FALSE), "saddle"));
             } 
             else if (has_head(mon->data))
             {
-                Sprintf(buf, "%s %s", s_suffix(mnam),
-                        (notonhead ? "body" : "head"));
+                Strcpy(buf, name_possessive(mnam, (notonhead ? "body" : mbodypart(mon, HEAD))));
             } 
             else 
             {
@@ -2416,18 +2414,19 @@ potionhit(struct monst *mon, struct obj **obj_ptr, int how)
     } 
     else if (hit_saddle && saddle) 
     {
-        char *mnam, buf[BUFSZ], saddle_glows[BUFSZ];
+        char *mnam, saddle_glows[BUFSZ];
         boolean affected = FALSE;
         boolean useeit = !Blind && canseemon(mon) && cansee(tx, ty);
 
-        mnam = x_monnam(mon, ARTICLE_THE, (char *) 0,
-                        (SUPPRESS_IT | SUPPRESS_SADDLE), FALSE);
-        Sprintf(buf, "%s", upstart(s_suffix(mnam)));
+        mnam = upstart(x_monnam(mon, ARTICLE_THE, (char *) 0,
+                                (SUPPRESS_IT | SUPPRESS_SADDLE), FALSE));
 
         switch (obj->otyp) 
         {
         case POT_WATER:
-            Sprintf(saddle_glows, "%s %s", buf, aobjnam(saddle, "glow"));
+            Sprintf(saddle_glows, "%s %s",
+                name_possessive(mnam, cxname(saddle)),
+                otense(saddle, "glow"));
             affected = H2Opotion_dip(obj, saddle, useeit, saddle_glows);
             break;
         case POT_POLYMORPH:
@@ -2436,7 +2435,9 @@ potionhit(struct monst *mon, struct obj **obj_ptr, int how)
         }
         if (useeit && !affected)
         {
-            Sprintf(dcbuf, "%s %s wet.", buf, aobjnam(saddle, "get"));
+            Sprintf(dcbuf, "%s %s wet.",
+                name_possessive(mnam, cxname(saddle)),
+                otense(saddle, "get"));
             pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         }
     } 
@@ -4512,9 +4513,9 @@ split_mon(struct monst *mon, struct monst *mtmp)
 
     reason[0] = '\0';
     if (mtmp)
-        Sprintf(reason, " from %s heat",
-                (mtmp == &youmonst) ? the_your[1]
-                                    : (const char *) s_suffix(mon_nam(mtmp)));
+        Sprintf(reason, " from %s",
+                (mtmp == &youmonst) ? "your heat"
+                                    : mon_nam_possessive(mtmp, "heat"));
 
     if (mon)
     {

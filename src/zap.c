@@ -638,7 +638,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
             if (canseemon(mtmp))
             {
                 play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
-                (void)mon_reflects(mtmp, "Your gaze is reflected by %s %s.");
+                (void)mon_reflects(mtmp, "Your gaze is reflected by %s.");
             }
 
             if (!Blind) 
@@ -646,8 +646,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
                 if (Reflecting) 
                 {
                     play_sfx_sound(SFX_GENERAL_REFLECTS);
-                    (void)ureflects("Your reflected gaze is reflected away by your %s.",
-                        s_suffix(Monnam(mtmp)));
+                    (void)ureflects("Your reflected gaze is reflected away by your %s%s.", "");
                 }
                 if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
                     && !Stone_resistance)
@@ -10416,8 +10415,7 @@ dobuzz(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int 
                         hit(fltxt, mon, exclam(0), -1, "");
                         play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mon->mx, mon->my);
                         m_shieldeff(mon);
-                        (void) mon_reflects(mon,
-                                            "But it reflects from %s %s!");
+                        (void) mon_reflects(mon, "But it reflects from %s!");
                     }
                     dx = -dx;
                     dy = -dy;
@@ -10549,8 +10547,7 @@ dobuzz(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int 
                     play_sfx_sound(SFX_GENERAL_REFLECTS);
                     if (!Blind)
                     {
-                        (void) ureflects("But %s reflects from your %s!",
-                                         "it");
+                        (void) ureflects("But %s reflects from your %s!", "it");
                     } else
                         pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "For some reason you are not affected.");
                     dx = -dx;

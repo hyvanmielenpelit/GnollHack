@@ -330,8 +330,8 @@ use_camera(struct obj *obj)
     }
     else if (u.uswallow) 
     {
-        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "take a picture of %s %s.", s_suffix(mon_nam(u.ustuck)),
-            mbodypart(u.ustuck, STOMACH));
+        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "take a picture of %s.",
+            mon_nam_possessive(u.ustuck, mbodypart(u.ustuck, STOMACH)));
     }
     else if (u.dz) 
     {
@@ -1244,7 +1244,7 @@ check_leash(xchar x, xchar y)
                 if (um_dist(mtmp->mx, mtmp->my, 5))
                 {
                     play_sfx_sound(SFX_LEASH_SNAPS_LOOSE);
-                    pline("%s leash snaps loose!", s_suffix(Monnam(mtmp)));
+                    pline("%s snaps loose!", Monnam_possessive(mtmp, "leash"));
                     m_unleash(mtmp, FALSE);
                 } 
                 else 
@@ -1363,8 +1363,8 @@ use_mirror(struct obj *obj)
     if (u.uswallow) 
     {
         if (useeit)
-            You("reflect %s %s.", s_suffix(mon_nam(u.ustuck)),
-                mbodypart(u.ustuck, STOMACH));
+            You("reflect %s.",
+                mon_nam_possessive(u.ustuck, mbodypart(u.ustuck, STOMACH)));
         return 1;
     }
 
@@ -1432,7 +1432,7 @@ use_mirror(struct obj *obj)
     }
     else if (monable && is_medusa(mtmp->data))
     {
-        if (mon_reflects(mtmp, "The gaze is reflected away by %s %s!"))
+        if (mon_reflects(mtmp, "The gaze is reflected away by %s!"))
         {
             play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
             return 1;
@@ -2897,7 +2897,7 @@ enum jump_trajectory {
 
 /* callback routine for walk_path() */
 static boolean
-check_jump(genericptr arg, int x, int y)
+check_jump(genericptr_t arg, int x, int y)
 {
     int traj = *(int *) arg;
     struct rm *lev = &levl[x][y];
@@ -3778,7 +3778,7 @@ fig_transform(anything *arg, int64_t timeout)
                 {
                     if (canseemon(mon)
                         && (!mon->wormno || cansee(mon->mx, mon->my)))
-                        Sprintf(carriedby, "%s pack", s_suffix(a_monnam(mon)));
+                        Strcpy(carriedby, mon_possessive(mon, "pack", a_monnam));
                     else if (is_pool(mon->mx, mon->my))
                         Strcpy(carriedby, "empty water");
                     else
@@ -5014,8 +5014,8 @@ use_whip(struct obj *obj)
                     else
                     {
                         /* to floor beneath mon */
-                        You("yank %s from %s %s!", the(onambuf),
-                            s_suffix(mon_nam(mtmp)), mon_hand);
+                        You("yank %s from %s!", the(onambuf),
+                            mon_nam_possessive(mtmp, mon_hand));
                         obj_no_longer_held(otmp);
                         place_object(otmp, mtmp->mx, mtmp->my);
                         stackobj(otmp);
@@ -5070,8 +5070,8 @@ use_whip(struct obj *obj)
                     break;
                 default:
                     /* to floor beneath mon */
-                    You("yank %s from %s %s!", the(onambuf),
-                        s_suffix(mon_nam(mtmp)), mon_hand);
+                    You("yank %s from %s!", the(onambuf),
+                        mon_nam_possessive(mtmp, mon_hand));
                     obj_no_longer_held(otmp);
                     place_object(otmp, mtmp->mx, mtmp->my);
                     stackobj(otmp);

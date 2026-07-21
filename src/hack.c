@@ -3292,7 +3292,7 @@ pickup_checks(void)
         if (!u.ustuck->minvent) {
             if (is_animal(u.ustuck->data)) {
                 play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
-                You("pick up %s tongue.", s_suffix(mon_nam(u.ustuck)));
+                You("pick up %s.", mon_nam_possessive(u.ustuck, "tongue"));
                 pline("But it's kind of slimy, so you drop it.");
             }
             else

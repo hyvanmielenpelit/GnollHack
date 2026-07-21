@@ -6417,8 +6417,7 @@ look_here(int obj_cnt, boolean picked_some, boolean explicit_cmd)
     if (u.uswallow && u.ustuck) {
         struct monst *mtmp = u.ustuck;
 
-        Sprintf(fbuf, "Contents of %s %s", s_suffix(mon_nam(mtmp)),
-                mbodypart(mtmp, STOMACH));
+        Sprintf(fbuf, "Contents of %s", mon_nam_possessive(mtmp, mbodypart(mtmp, STOMACH)));
         /* Skip "Contents of " by using fbuf index 12 */
         You("%s to %s what is lying in %s.", Blind ? "try" : "look around",
             verb, &fbuf[12]);
@@ -7779,8 +7778,7 @@ display_minventory(struct monst *mon, int dflags, char *title)
         have_inv = (mon->minvent != 0), have_any = (have_inv || incl_hero),
         pickings = (dflags & MINV_PICKMASK);
 
-    Sprintf(tmp, "%s %s:", s_suffix(noit_Monnam(mon)),
-            do_all ? "possessions" : "armament");
+    Sprintf(tmp, "%s:", mon_possessive(mon, do_all ? "possessions" : "armament", noit_Monnam));
 
     if (do_all ? have_any : (mon->worn_item_flags || MON_WEP(mon))) {
         /* Fool the 'weapon in hand' routine into

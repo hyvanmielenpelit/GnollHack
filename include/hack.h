@@ -856,9 +856,17 @@ extern void gnollhack_exit(int) NORETURN;
 /* Polymorph-aware possessive phrases for monster names */
 #define name_possessive(name, noun) \
     name_possessive_ex((name), (noun), (const char *)0)
+#define mon_possessive(m, noun, func) \
+    name_possessive_ex((func)(m), (noun), (const char *)0)
+#define mon_possessive_ex(m, noun, alt_of, func) \
+    name_possessive_ex((func)(m), (noun), (alt_of))
 #define mon_nam_possessive(m, noun) \
     name_possessive_ex(mon_nam(m), (noun), (const char *)0)
 #define Monnam_possessive(m, noun) \
     name_possessive_ex(Monnam(m), (noun), (const char *)0)
+#define mon_nam_possessive_ex(m, noun, alt_of) \
+    name_possessive_ex(mon_nam(m), (noun), (alt_of))
+#define Monnam_possessive_ex(m, noun, alt_of) \
+    name_possessive_ex(Monnam(m), (noun), (alt_of))
 
 #endif /* HACK_H */

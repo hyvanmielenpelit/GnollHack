@@ -1840,7 +1840,7 @@ dosteedbreathemon(struct monst *mon)
     if (mon->mspec_used > 0)
     {
         play_sfx_sound(SFX_NOT_READY_YET);
-        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s breath weapon is not ready yet.", s_suffix(Monnam(mon)));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is not ready yet.", Monnam_possessive(mon, "breath weapon"));
         return 0;
     }
 
@@ -2240,7 +2240,7 @@ dogaze(void)
                         }
                         else if (Blind || (is_invisible(mtmp) && !Can_see_invisible))
                         {
-                            You("stare blindly at %s general direction.", s_suffix(mon_nam(mtmp)));
+                            You("stare blindly at %s.", mon_nam_possessive(mtmp, "general direction"));
                             break;
                         }
 #if 0
@@ -2248,7 +2248,7 @@ dogaze(void)
                         {
                             You("gaze at %s.", mon_nam(mtmp));
                             play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
-                            (void)mon_reflects(mtmp, "The gaze is reflected away by %s %s!");
+                            (void)mon_reflects(mtmp, "The gaze is reflected away by %s!");
                             break;
                         }
 #endif
@@ -2287,8 +2287,8 @@ dogaze(void)
                         {
                             if (!Free_action) {
                                 play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
-                                You("are frozen by %s gaze!",
-                                    s_suffix(mon_nam(mtmp)));
+                                You("are frozen by %s!",
+                                    mon_nam_possessive(mtmp, "gaze"));
                                 nomul((u.ulevel > 6 || rn2(4))
                                     ? -d((int)mtmp->m_lev + 1,
                                     (int)mtmp->data->mattk[0].damd)
@@ -2301,8 +2301,8 @@ dogaze(void)
                                 return 1;
                             }
                             else
-                                You("stiffen momentarily under %s gaze.",
-                                    s_suffix(mon_nam(mtmp)));
+                                You("stiffen momentarily under %s.",
+                                    mon_nam_possessive(mtmp, "gaze"));
                         }
                         /* Technically this one shouldn't affect you at all because
                          * the Medusa gaze is an active monster attack that only
@@ -2619,9 +2619,9 @@ domindblast(void)
             continue;
         u_sen = (has_telepathy(mtmp)) && is_blinded(mtmp);
         if (u_sen || (has_telepathy(mtmp) && rn2(2)) || !rn2(10)) {
-            You_ex(ATR_NONE, CLR_MSG_SPELL, "lock in on %s %s.", s_suffix(mon_nam(mtmp)),
-                u_sen ? "telepathy"
-                      : has_telepathy(mtmp) ? "latent telepathy" : "mind");
+            You_ex(ATR_NONE, CLR_MSG_SPELL, "lock in on %s.",
+                mon_nam_possessive(mtmp, u_sen ? "telepathy"
+                      : has_telepathy(mtmp) ? "latent telepathy" : "mind"));
             deduct_monster_hp(mtmp, adjust_damage(rnd(15), &youmonst, mtmp, AD_PSIO, ADFLAGS_NONE));
             if (DEADMONSTER(mtmp))
                 killed(mtmp);

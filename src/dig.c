@@ -2032,8 +2032,7 @@ zap_dig(struct obj *origobj)
 
         if (!is_whirly(mtmp->data)) {
             if (is_animal(mtmp->data))
-                You("pierce %s %s wall!", s_suffix(mon_nam(mtmp)),
-                    mbodypart(mtmp, STOMACH));
+                You("pierce %s wall!", mon_nam_possessive(mtmp, mbodypart(mtmp, STOMACH)));
             mtmp->mhp = 1; /* almost dead */
             expels(mtmp, mtmp->data, !is_animal(mtmp->data));
         }
@@ -2447,8 +2446,7 @@ zap_evaporation(struct obj *origobj)
         if (mtmp && !is_whirly(mtmp->data)) 
         {
             if (is_animal(mtmp->data))
-                You("dehydrate %s %s wall!", s_suffix(mon_nam(mtmp)),
-                    mbodypart(mtmp, STOMACH));
+                You("dehydrate %s wall!", mon_nam_possessive(mtmp, mbodypart(mtmp, STOMACH)));
             mtmp->mhp = 1; /* almost dead */
             expels(mtmp, mtmp->data, !is_animal(mtmp->data));
         }

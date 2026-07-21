@@ -2757,7 +2757,7 @@ E void getlock(void);
 /* ### pickup.c ### */
 
 E int collect_obj_classes(char *, struct obj *, boolean,
-                                  boolean FDECL((*), (OBJ_P)), int *);
+                                  boolean (*)(OBJ_P), int *);
 E boolean rider_corpse_revival(struct obj *, boolean, boolean*);
 E boolean menu_class_present(int);
 E void add_valid_menu_class(int);
@@ -3286,7 +3286,7 @@ E void reset_urolerace(void);
 /* ### rumors.c ### */
 
 E char *getrumor(int, char *, boolean);
-E char *get_rnd_text(const char *, char *, int FDECL((*), (int)));
+E char *get_rnd_text(const char *, char *, int (*)(int));
 E void outrumor(struct monst*, struct obj*, int, int);
 E void outoracle(struct monst*, struct obj*, boolean, int);
 E void save_oracles(int, int);
@@ -3648,7 +3648,7 @@ E boolean load_special(const char *);
 E xchar selection_getpoint(int, int, struct opvar *);
 E struct opvar *selection_opvar(char *);
 E void opvar_free_x(struct opvar *);
-E void set_selection_floodfillchk(int FDECL((*), (int,int)));
+E void set_selection_floodfillchk(int (*)(int,int));
 E void selection_floodfill(struct opvar *, int, int, boolean);
 E void create_carpet(xchar, xchar, xchar, xchar, int);
 E void reset_splev(void);

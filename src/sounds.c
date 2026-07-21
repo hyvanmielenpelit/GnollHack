@@ -2383,7 +2383,8 @@ dochatmon(struct monst *mtmp)
     if (is_silenced(mtmp) && !is_tame(mtmp))
     {
         if (canspotmon(mtmp))
-            pline("%s voice is gone and cannot answer you!", s_suffix(Monnam(mtmp)));
+            pline("%s is gone and cannot answer you!",
+                  Monnam_possessive(mtmp, "voice"));
 
         return 0;
     }
@@ -3322,7 +3323,8 @@ dochatmon(struct monst *mtmp)
 
         if (is_tame(mtmp) && mtmp->minvent && is_peaceful(mtmp)) /*  && !is_mon_issummoned(mtmp) */
         {
-            Sprintf(available_chat_list[chatnum].name, "Uncurse or bless %s items", s_suffix(noittame_mon_nam(mtmp)));
+            Sprintf(available_chat_list[chatnum].name, "Uncurse or bless %s",
+                    mon_possessive(mtmp, "items", noittame_mon_nam));
             available_chat_list[chatnum].function_ptr = &do_chat_uncurse_items;
             //available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -5110,11 +5112,16 @@ do_chat_pet_givepaw(struct monst *mtmp)
         {
             char kbuf[BUFSZ];
             if (poly_when_stoned(youmonst.data))
-                You_ex(ATR_NONE, CLR_MSG_WARNING, "touch %s %s without wearing gloves.", s_suffix(mon_nam(mtmp)), body_part(HAND));
+                You_ex(ATR_NONE, CLR_MSG_WARNING,
+                       "touch %s without wearing gloves.",
+                       mon_nam_possessive(mtmp, mbodypart(mtmp, HAND)));
             else
             {
-                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Touching %s %s without wearing gloves is a fatal mistake...", s_suffix(mon_nam(mtmp)), body_part(HAND));
-                Sprintf(kbuf, "touching %s %s without gloves", s_suffix(mon_nam(mtmp)), body_part(HAND));
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE,
+                         "Touching %s without wearing gloves is a fatal mistake...",
+                         mon_nam_possessive(mtmp, mbodypart(mtmp, HAND)));
+                Sprintf(kbuf, "touching %s without gloves",
+                        mon_nam_possessive(mtmp, mbodypart(mtmp, HAND)));
             }
             killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE;
             instapetrify(kbuf);
@@ -5907,7 +5914,8 @@ do_chat_uncurse_items(struct monst *mtmp)
     {
         any = zeroany;
         any.a_int = 1;
-        Sprintf(nbuf, "Cast a bless on %s item", s_suffix(mon_nam(mtmp)));
+        Sprintf(nbuf, "Cast a bless on %s",
+                mon_nam_possessive(mtmp, "item"));
         add_menu(win, POT_WATER + GLYPH_OBJ_OFF, &any, 0, 0, ATR_NONE, NO_COLOR, "Dip an item in a potion of water", MENU_UNSELECTED);
         cnt++;
     }
@@ -5946,7 +5954,8 @@ do_chat_uncurse_items(struct monst *mtmp)
     {
         any = zeroany;
         any.a_int = 3;
-        Sprintf(nbuf, "Cast a bless spell on %s item", s_suffix(mon_nam(mtmp)));
+        Sprintf(nbuf, "Cast a bless spell on %s",
+                mon_nam_possessive(mtmp, "item"));
         add_menu(win, SPE_BLESS - FIRST_SPELL + GLYPH_SPELL_TILE_OFF, &any, 0, 0, ATR_NONE, NO_COLOR, nbuf, MENU_UNSELECTED);
         cnt++;
     }
@@ -5982,7 +5991,8 @@ do_chat_uncurse_items(struct monst *mtmp)
     {
         any = zeroany;
         any.a_int = 4;
-        Sprintf(nbuf, "Ask %s to bless %s item", mon_nam(priest), s_suffix(mon_nam(mtmp)));
+        Sprintf(nbuf, "Ask %s to bless %s", mon_nam(priest),
+                mon_nam_possessive(mtmp, "item"));
         add_menu(win, any_mon_to_glyph(priest, rn2_on_display_rng), &any, 0, 0, ATR_NONE, NO_COLOR, nbuf, MENU_UNSELECTED);
         cnt++;
     }
@@ -5996,7 +6006,9 @@ do_chat_uncurse_items(struct monst *mtmp)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         char errbuf[BUFSZ];
-        Sprintf(errbuf, "You don't have any means to uncurse or bless %s items.", s_suffix(mon_nam(mtmp)));
+        Sprintf(errbuf,
+                "You don't have any means to uncurse or bless %s.",
+                mon_nam_possessive(mtmp, "items"));
         pline_ex1_popup(ATR_NONE, CLR_MSG_FAIL, errbuf, "Nothing to Uncurse or Bless", TRUE);
         destroy_nhwindow(win);
         return 0;

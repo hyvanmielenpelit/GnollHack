@@ -9,7 +9,7 @@
 
 static char *nextmbuf(void);
 static void getpos_help(boolean, const char *);
-static int FDECL(CFDECLSPEC cmp_coord_distu, (const void *, const void *));
+static int CFDECLSPEC cmp_coord_distu(const void *, const void *);
 static boolean gather_locs_interesting(int, int, int);
 static void gather_locs(coord **, int *, int);
 static int gloc_filter_floodfill_matcharea(int, int);
@@ -23,10 +23,10 @@ static char *bogusmon(char *,char *);
 static void print_catalogue(winid, struct obj*, int, uint64_t);
 static void print_artifact_catalogue(winid, struct obj*);
 static void print_mythic_power_catalogue(winid, struct obj*);
-static int FDECL(CFDECLSPEC citemsortcmp, (const void*, const void*));
-static int FDECL(CFDECLSPEC artilistsortcmp, (const void*, const void*));
-static int FDECL(CFDECLSPEC mythicprefixsortcmp, (const void*, const void*));
-static int FDECL(CFDECLSPEC mythicsuffixsortcmp, (const void*, const void*));
+static int CFDECLSPEC citemsortcmp(const void*, const void*);
+static int CFDECLSPEC artilistsortcmp(const void*, const void*);
+static int CFDECLSPEC mythicprefixsortcmp(const void*, const void*);
+static int CFDECLSPEC mythicsuffixsortcmp(const void*, const void*);
 static const char* gettitle(short*, const char* const*, int, int, uint64_t, uint64_t);
 static void set_valid_pos_flags(void);
 static void clear_valid_pos_flags(void);
@@ -4220,7 +4220,7 @@ print_artifact_catalogue(winid datawin, struct obj *obj)
  *   obj: Could be used to check for cursed status etc.
  */
 static void
-print_mythic_power_catalogue(winid datawin, struct obj *obj UNUSED)
+print_mythic_power_catalogue(winid datawin, struct obj* obj UNUSED)
 {
     int prefixcnt = 0;
     int suffixcnt = 0;

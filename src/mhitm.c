@@ -557,8 +557,9 @@ mattackm(struct monst *magr, struct monst *mdef)
                         else
                         {
                             if (flags.verbose && !Blind && vis)
-                                pline("%s %s!",
-                                    Monnam_possessive(magr, aobjnam(otmp, "strike")),
+                                pline("%s %s %s!",
+                                    Monnam_possessive(magr, cxname(otmp)),
+                                    otense(otmp, "strike"),
                                     strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
 
                         }
@@ -985,7 +986,7 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
         if (canseemon(mdef))
         {
             play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mdef->mx, mdef->my);
-            (void)mon_reflects(mdef, "The gaze is reflected away by %s %s.");
+            (void)mon_reflects(mdef, "The gaze is reflected away by %s.");
         }
         if (!is_blinded(mdef)) 
         {
@@ -994,8 +995,7 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
                 if (canseemon(magr))
                 {
                     play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, magr->mx, magr->my);
-                    (void)mon_reflects(magr,
-                        "The gaze is reflected away by %s %s.");
+                    (void)mon_reflects(magr, "The gaze is reflected away by %s.");
                 }
                 return MM_MISS;
             }
@@ -1783,7 +1783,7 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
             {
                 pline("%s gazes at %s.", Monnam(magr), mon_nam(mdef));
                 play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mdef->mx, mdef->my);
-                (void)mon_reflects(mdef, "The gaze is reflected away by %s %s!");
+                (void)mon_reflects(mdef, "The gaze is reflected away by %s!");
             }
             break;
         }
@@ -1842,7 +1842,7 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
                 {
                     play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mdef->mx, mdef->my);
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Some writing vanishes from %s!",
-                          mon_nam_possessive(mdef, "head"));
+                          mon_nam_possessive(mdef, mbodypart(mdef, HEAD)));
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is destroyed!", Monnam(mdef));
                 }
                 mondied(mdef);
@@ -2567,7 +2567,7 @@ passivemm(struct monst *magr, struct monst *mdef, boolean mhit, int mdead)
                     /* construct format string; guard against '%' in Monnam */
                     Strcpy(buf, Monnam_possessive(mdef, "gaze"));
                     (void) strNsubst(buf, "%", "%%", 0);
-                    Strcat(buf, " is reflected by %s %s.");
+                    Strcat(buf, " is reflected by %s.");
 
                     if (mon_reflects(magr, canseemon(magr) ? buf : (char*)0))
                     {

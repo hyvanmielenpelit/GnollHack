@@ -680,9 +680,9 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
             && mon_hates_silver(mtmp))
         {
             if (vis && otmp->material == MAT_SILVER)
-                pline_The_ex(ATR_NONE, CLR_MSG_MYSTICAL, "silver sears %s flesh!", s_suffix(mon_nam(mtmp)));
+                pline_The_ex(ATR_NONE, CLR_MSG_MYSTICAL, "silver sears %s!", mon_nam_possessive(mtmp, "flesh"));
             else if (vis)
-                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s %s flesh!", Tobjnam(otmp, "sear"), s_suffix(mon_nam(mtmp)));
+                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s %s!", Tobjnam(otmp, "sear"), mon_nam_possessive(mtmp, "flesh"));
             else if (verbose && !target)
                 pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Its flesh is seared!");
         }
@@ -891,14 +891,14 @@ m_throw(struct monst *mon, int x, int y, int dx, int dy, int range, struct obj *
                 && is_unicorn(youmonst.data)) {
                 if (singleobj->otyp > LAST_GEM) {
                     You("catch the %s.", xname(singleobj));
-                    You("are not interested in %s junk.",
-                        s_suffix(mon_nam(mon)));
+                    You("are not interested in %s.",
+                        mon_nam_possessive(mon, "junk"));
                     makeknown(singleobj->otyp);
                     (void) dropy(singleobj);
                 } else {
                     You(
-                     "accept %s gift in the spirit in which it was intended.",
-                        s_suffix(mon_nam(mon)));
+                     "accept %s in the spirit in which it was intended.",
+                        mon_nam_possessive(mon, "gift"));
                     (void) hold_another_object(singleobj,
                                                "You catch, but drop, %s.",
                                                xname(singleobj),
@@ -1208,8 +1208,8 @@ spitmm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
 
     if (is_cancelled(mtmp)) {
         if (!Deaf)
-            pline("A dry rattle comes from %s throat.",
-                  s_suffix(mon_nam(mtmp)));
+            pline("A dry rattle comes from %s.",
+                  mon_nam_possessive(mtmp, "throat"));
         return 0;
     }
     if (m_lined_up(mtarg, mtmp, TRUE, mattk->adtyp, FALSE, range)
@@ -1341,7 +1341,7 @@ eyesmm(struct monst *mtmp, struct attack *mattk, struct monst *mtarg)
         if ((typ >= AD_MAGM) && (typ <= AD_STON))
         {
             if (canseemon(mtmp))
-                pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)), eyestalk[typ - 1]);
+                pline("One of %s fires %s!", mon_nam_possessive(mtmp, "eyestalks"), eyestalk[typ - 1]);
             dobuzz((int)(-30 - (typ - 1)), (struct obj*)0, mtmp, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp,
                 mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), FALSE);
             nomul(0);
@@ -1736,8 +1736,8 @@ spitmu(struct monst *mtmp, struct attack *mattk)
     if (is_cancelled(mtmp)) 
     {
         if (!Deaf)
-            pline("A dry rattle comes from %s throat.",
-                  s_suffix(mon_nam(mtmp)));
+            pline("A dry rattle comes from %s.",
+                  mon_nam_possessive(mtmp, "throat"));
         return 0;
     }
     if (lined_up(mtmp, TRUE, mattk->adtyp, FALSE, range)
@@ -1826,7 +1826,7 @@ eyesmu(struct monst *mtmp, struct attack *mattk)
                 m_wait_until_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
 
             if (canseemon(mtmp))
-                pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)),
+                pline("One of %s fires %s!", mon_nam_possessive(mtmp, "eyestalks"),
                         eyestalk[typ - 1]);
             buzz((int)(-30 - (typ - 1)), (struct obj*)0, mtmp, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
                     mtmp->my, sgn(tbx), sgn(tby));

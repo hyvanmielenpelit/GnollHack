@@ -2272,9 +2272,8 @@ thitmonst(struct monst *mon, struct obj *obj, boolean is_golf, uchar *hitres_ptr
                 }
             }
         }
-        pline("%s into %s %s.", Tobjnam(obj, "vanish"),
-              s_suffix(mon_nam(mon)),
-              is_animal(u.ustuck->data) ? "entrails" : "currents");
+        pline("%s into %s.", Tobjnam(obj, "vanish"),
+              mon_nam_possessive(mon, is_animal(u.ustuck->data) ? "entrails" : "currents"));
     } 
     else 
     {

@@ -27,8 +27,8 @@ static void mquaffmsg(struct monst *, struct obj *);
 static boolean m_use_healing(struct monst *);
 static int mbhitm(struct monst *, struct obj *, struct monst*);
 static void mbhit(struct monst *, int,
-                              int FDECL((*), (struct monst *, struct obj *, struct monst *)),
-                              int FDECL((*), (struct obj *, struct obj *, struct monst *)), struct obj *);
+                              int (*)(struct monst *, struct obj *, struct monst *),
+                              int (*)(struct obj *, struct obj *, struct monst *), struct obj *);
 static void you_aggravate(struct monst *);
 static void mon_consume_unstone(struct monst *, struct obj *,
                                             boolean, boolean);
@@ -2871,8 +2871,8 @@ use_misc(struct monst *mtmp)
         flush_screen(1);
         if (vismon && is_invisible(mtmp)) { /* was seen, now invisible */
             if (canspotmon(mtmp)) {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s body takes on a %s transparency.",
-                      upstart(s_suffix(nambuf)),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s takes on a %s transparency.",
+                      upstart(name_possessive(nambuf, "body")),
                       Hallucination ? "normal" : "strange");
             } else {
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly you cannot see %s.", nambuf);
@@ -3224,8 +3224,8 @@ use_misc(struct monst *mtmp)
 static void
 you_aggravate(struct monst *mtmp)
 {
-    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For some reason, %s presence is known to you.",
-          s_suffix(noit_mon_nam(mtmp)));
+    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For some reason, %s is known to you.",
+          mon_possessive(mtmp, "presence", noit_mon_nam));
     cls();
 #ifdef CLIPPING
     cliparound(mtmp->mx, mtmp->my, FALSE);
@@ -3393,7 +3393,7 @@ mon_reflects(struct monst *mon, const char *str)
     if (!(mon->mprops[REFLECTING] & M_EXTRINSIC))
     {
         if (str)
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, s_suffix(mon_nam(mon)), mon->data->mlet == S_DRAGON ? "scales" : mon->data->mlet == S_TREANT ? "bark" : "body");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, mon_nam_possessive(mon, mon->data->mlet == S_DRAGON ? "scales" : mon->data->mlet == S_TREANT ? "bark" : "body"));
 
         return TRUE;
     }
@@ -3405,7 +3405,7 @@ mon_reflects(struct monst *mon, const char *str)
         {
             if (str) 
             {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, s_suffix(mon_nam(mon)), "shield");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, mon_nam_possessive(mon, "shield"));
                 makeknown(orefl->otyp);
             }
             return TRUE;
@@ -3414,7 +3414,7 @@ mon_reflects(struct monst *mon, const char *str)
         {
             if (str)
             {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, s_suffix(mon_nam(mon)), "weapon");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, mon_nam_possessive(mon, "weapon"));
                 makeknown(orefl->otyp);
             }
             return TRUE;
@@ -3423,7 +3423,7 @@ mon_reflects(struct monst *mon, const char *str)
         {
             if (str) 
             {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, s_suffix(mon_nam(mon)), "amulet");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, mon_nam_possessive(mon, "amulet"));
                 makeknown(orefl->otyp);
             }
             return TRUE;
@@ -3432,7 +3432,7 @@ mon_reflects(struct monst *mon, const char *str)
         {
             if (str)
             {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, s_suffix(mon_nam(mon)), "armor");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, mon_nam_possessive(mon, "armor"));
                 makeknown(orefl->otyp);
             }
             return TRUE;
@@ -3440,7 +3440,7 @@ mon_reflects(struct monst *mon, const char *str)
         else
         {
             if (str)
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, s_suffix(mon_nam(mon)), "item");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, mon_nam_possessive(mon, "item"));
 
             return TRUE;
         }
@@ -4080,7 +4080,7 @@ muse_unslime(struct monst *mon, struct obj *obj, struct trap *trap, boolean by_y
     if (vis) 
     {
         if (res && !DEADMONSTER(mon))
-            pline("%s slime is burned away!", s_suffix(Monnam(mon)));
+            pline("%s is burned away!", Monnam_possessive(mon, "slime"));
         if (otyp != STRANGE_OBJECT)
             makeknown(otyp);
     }

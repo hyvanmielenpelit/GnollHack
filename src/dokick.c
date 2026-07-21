@@ -210,7 +210,7 @@ kickdmg(struct monst *mon, boolean clumsy)
         You("%s%skick %s for no damage.", effbuf, kickstylebuf, mon_nam(mon));
     }
     if (silverhit)
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Your silver boots sear %s flesh!", s_suffix(mon_nam(mon)));
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Your silver boots sear %s!", mon_nam_possessive(mon, "flesh"));
 
     boolean was_alive = !DEADMONSTER(mon);
     if (was_alive)

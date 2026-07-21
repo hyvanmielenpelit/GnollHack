@@ -484,8 +484,8 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
     case PM_BLACK_UNICORN:
         if (mtmp->mrevived && rn2(2)) {
             if (canseemon(mtmp))
-                pline("%s recently regrown horn crumbles to dust.",
-                    s_suffix(Monnam(mtmp)));
+                pline("%s crumbles to dust.",
+                    Monnam_possessive(mtmp, "recently regrown horn"));
         }
         else if(!istame && !isquestmonster)
         {
@@ -3319,7 +3319,7 @@ lifesaved_monster(struct monst *mtmp)
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             play_sfx_sound_at_location(SFX_LIFE_SAVED, mtmp->mx, mtmp->my);
             special_effect_wait_until_action(0);
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s medallion begins to glow!", s_suffix(Monnam(mtmp)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s begins to glow!", Monnam_possessive(mtmp, "medallion"));
             makeknown(AMULET_OF_LIFE_SAVING);
             /* amulet is visible, but monster might not be */
             if (canseemon(mtmp)) 
@@ -3832,7 +3832,7 @@ corpse_chance(struct monst *mon, struct monst *magr, boolean was_swallowed)
     {
         if (cansee(mon->mx, mon->my) && !was_swallowed)
         {
-            pline("%s body crumbles into dust.", s_suffix(Monnam(mon)));
+            pline("%s crumbles into dust.", Monnam_possessive(mon, "body"));
             if (iflags.using_gui_sounds)
             {
                 delay_output_milliseconds(100);
@@ -3859,8 +3859,8 @@ corpse_chance(struct monst *mon, struct monst *magr, boolean was_swallowed)
                 if (magr == &youmonst) 
                 {
                     There_ex(ATR_NONE, CLR_MSG_NEGATIVE, "is an explosion in your %s!", body_part(STOMACH));
-                    Sprintf(killer.name, "%s explosion",
-                            s_suffix(mon_monster_name(mon)));
+                    Strcpy(killer.name,
+                            name_possessive(mon_monster_name(mon), "explosion"));
                     losehp(adjust_damage(tmp, mon, &youmonst, AD_PHYS, ADFLAGS_NONE), killer.name, KILLED_BY_AN);
                 } 
                 else
@@ -3881,7 +3881,7 @@ corpse_chance(struct monst *mon, struct monst *magr, boolean was_swallowed)
                 return FALSE;
             }
 
-            Sprintf(killer.name, "%s explosion", s_suffix(mon_monster_name(mon)));
+            Strcpy(killer.name, name_possessive(mon_monster_name(mon), "explosion"));
             killer.format = KILLED_BY_AN;
             
             if (mdat->mattk[i].damn)
@@ -4347,7 +4347,7 @@ xkilled(struct monst *mtmp, int xkill_flags)
             if (burycorpse && cadaver && cansee(x, y) && !is_invisible(mtmp)
                 && cadaver->where == OBJ_BURIED && !nomsg)
             {
-                pline("%s corpse ends up buried.", s_suffix(Monnam(mtmp)));
+                pline("%s ends up buried.", Monnam_possessive(mtmp, "corpse"));
             }
         }
     }
