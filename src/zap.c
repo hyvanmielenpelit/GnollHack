@@ -9608,29 +9608,37 @@ zhitu(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int d
                     Sprintf(killername, "%s from %s own %s", fltxt, uhis(), killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE | KXNFLAGS_SPELL));
                 else
                     Sprintf(killername, "%s from %s", fltxt, name_possessive_ex(monst_name, killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE | KXNFLAGS_SPELL), FALSE, 
-                        origobj->oclass == WAND_CLASS ? "zapped by" : origobj->oclass == TOOL_CLASS && objects[origobj->otyp].oc_subtyp == TOOLTYPE_HORN ? "blown by" :  "of"));
+                        origobj->oclass == WAND_CLASS ? "zapped by" : origobj->oclass == TOOL_CLASS && objects[origobj->otyp].oc_subtyp == TOOLTYPE_HORN ? "blown by" : "of"));
             }
             else
             {
                 const char *noun = (const char *)0;
                 boolean has_from = FALSE;
 
-                if (is_buzztype_breath_weapon(type)) {
+                if (is_buzztype_breath_weapon(type)) 
+                {
                     noun = "breath weapon";
                     has_from = TRUE;
-                } else if (is_buzztype_eyestalk(type)) {
+                } 
+                else if (is_buzztype_eyestalk(type)) 
+                {
                     noun = "eyestalk";
                     has_from = TRUE;
-                } else {
+                } 
+                else 
+                {
                     noun = fltxt;
                 }
 
-                if (origmonst == &youmonst) {
+                if (origmonst == &youmonst) 
+                {
                     if (has_from)
                         Sprintf(killername, "%s from %s own %s", fltxt, uhis(), noun);
                     else
                         Sprintf(killername, "%s own %s", uhis(), noun);
-                } else {
+                }
+                else 
+                {
                     if (has_from)
                         Sprintf(killername, "%s from %s", fltxt, name_possessive(monst_name, noun));
                     else
