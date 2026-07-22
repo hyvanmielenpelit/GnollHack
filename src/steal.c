@@ -930,7 +930,7 @@ release_monster_objects(struct monst *mtmp, int show, boolean is_pet, boolean is
     {
         play_sfx_sound_at_location(SFX_ITEM_VANISHES, mtmp->mx, mtmp->my);
         if (canspotmon(mtmp))
-            pline("%s %s.", Monnam_possessive(mtmp, "gold"),
+            pline("%s %s.", Monnam_possessive_ex(mtmp, "gold", "carried by"),
                   canseemon(mtmp) ? "vanishes" : "seems to vanish");
         debugprint("release_monster_objects1: %d", otmp->otyp);
         obj_extract_self(otmp);

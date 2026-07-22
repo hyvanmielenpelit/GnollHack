@@ -4511,7 +4511,7 @@ acid_damage(struct obj *obj)
                 if (victim == &youmonst)
                     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Your %s.", aobjnam(obj, "fade"));
                 else if (vismon)
-                    pline("%s %s.", Monnam_possessive(victim, cxname(obj)),
+                    pline("%s %s.", Monnam_possessive_ex(victim, cxname(obj), "carried by"),
                         otense(obj, "fade"));
             }
         }

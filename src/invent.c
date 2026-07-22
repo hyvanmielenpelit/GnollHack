@@ -7777,7 +7777,7 @@ display_minventory(struct monst *mon, int dflags, char *title)
         have_inv = (mon->minvent != 0), have_any = (have_inv || incl_hero),
         pickings = (dflags & MINV_PICKMASK);
 
-    Sprintf(tmp, "%s:", mon_possessive(mon, do_all ? "possessions" : "armament", noit_Monnam));
+    Sprintf(tmp, "%s:", mon_possessive_ex(mon, do_all ? "possessions" : "armament", TRUE, "carried by", noit_mon_nam));
 
     if (do_all ? have_any : (mon->worn_item_flags || MON_WEP(mon))) {
         /* Fool the 'weapon in hand' routine into

@@ -2360,9 +2360,9 @@ potionhit(struct monst *mon, struct obj **obj_ptr, int how)
 
             if (hit_saddle && saddle) 
             {
-                Strcpy(buf, name_possessive(x_monnam(mon, ARTICLE_THE, (char *) 0,
+                Strcpy(buf, name_possessive_ex(x_monnam(mon, ARTICLE_THE, (char *) 0,
                                                      (SUPPRESS_IT | SUPPRESS_SADDLE),
-                                                     FALSE), "saddle"));
+                                                     FALSE), "saddle", FALSE, "on"));
             } 
             else if (has_head(mon->data))
             {
@@ -2425,7 +2425,7 @@ potionhit(struct monst *mon, struct obj **obj_ptr, int how)
         {
         case POT_WATER:
             Sprintf(saddle_glows, "%s %s",
-                name_possessive(mnam, cxname(saddle)),
+                name_possessive_ex(mnam, cxname(saddle), FALSE, "on"),
                 otense(saddle, "glow"));
             affected = H2Opotion_dip(obj, saddle, useeit, saddle_glows);
             break;
@@ -2436,7 +2436,7 @@ potionhit(struct monst *mon, struct obj **obj_ptr, int how)
         if (useeit && !affected)
         {
             Sprintf(dcbuf, "%s %s wet.",
-                name_possessive(mnam, cxname(saddle)),
+                name_possessive_ex(mnam, cxname(saddle), FALSE, "on"),
                 otense(saddle, "get"));
             pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         }

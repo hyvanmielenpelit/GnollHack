@@ -1244,7 +1244,7 @@ check_leash(xchar x, xchar y)
                 if (um_dist(mtmp->mx, mtmp->my, 5))
                 {
                     play_sfx_sound(SFX_LEASH_SNAPS_LOOSE);
-                    pline("%s snaps loose!", Monnam_possessive(mtmp, "leash"));
+                    pline("%s snaps loose!", Monnam_possessive_ex(mtmp, "leash", "attached to"));
                     m_unleash(mtmp, FALSE);
                 } 
                 else 

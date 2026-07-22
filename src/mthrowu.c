@@ -892,13 +892,12 @@ m_throw(struct monst *mon, int x, int y, int dx, int dy, int range, struct obj *
                 if (singleobj->otyp > LAST_GEM) {
                     You("catch the %s.", xname(singleobj));
                     You("are not interested in %s.",
-                        mon_nam_possessive(mon, "junk"));
+                        mon_nam_possessive_ex(mon, "junk", "offered by"));
                     makeknown(singleobj->otyp);
                     (void) dropy(singleobj);
                 } else {
-                    You(
-                     "accept %s in the spirit in which it was intended.",
-                        mon_nam_possessive(mon, "gift"));
+                    You( "accept %s in the spirit in which it was intended.",
+                        mon_nam_possessive_ex(mon, "gift", "offered by"));
                     (void) hold_another_object(singleobj,
                                                "You catch, but drop, %s.",
                                                xname(singleobj),

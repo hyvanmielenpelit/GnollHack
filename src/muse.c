@@ -3401,49 +3401,44 @@ mon_reflects(struct monst *mon, const char *str)
     struct obj* orefl = what_gives_monster(mon, REFLECTING);
     if(orefl)
     {
+        const char* special_noun = 0;
+        const char* possessive_verb = orefl->owornmask ? "worn by" : "carried by";
+        boolean becomes_known = FALSE;
         if (is_shield(orefl)) 
         {
-            if (str) 
-            {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, mon_nam_possessive(mon, "shield"));
-                makeknown(orefl->otyp);
-            }
-            return TRUE;
+            special_noun = "shield";
+            becomes_known = TRUE;
+        }
+        else if (is_amulet(orefl)) 
+        {
+            special_noun = "amulet";
+            becomes_known = TRUE;
+        }
+        else if (is_bracers(orefl))
+        {
+            special_noun = "bracers";
+            becomes_known = TRUE;
         }
         else if (is_wieldable_weapon(orefl))
         {
-            if (str)
-            {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, mon_nam_possessive(mon, "weapon"));
-                makeknown(orefl->otyp);
-            }
-            return TRUE;
-        } 
-        else if (is_amulet(orefl)) 
-        {
-            if (str) 
-            {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, mon_nam_possessive(mon, "amulet"));
-                makeknown(orefl->otyp);
-            }
-            return TRUE;
+            special_noun = "weapon";
+            possessive_verb = "wielded by";
         }
-        else if (is_suit(orefl)) 
+        else if (is_suit(orefl))
         {
-            if (str)
-            {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, mon_nam_possessive(mon, "armor"));
-                makeknown(orefl->otyp);
-            }
-            return TRUE;
+            special_noun = "armor";
         }
         else
         {
-            if (str)
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, mon_nam_possessive(mon, "item"));
-
-            return TRUE;
+            special_noun = "item";
         }
+
+        if (str && special_noun)
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, mon_nam_possessive_ex(mon, special_noun, possessive_verb));
+        if (becomes_known)
+            makeknown(orefl->otyp);
+
+        return TRUE;
     }
     return FALSE;
 }

@@ -1753,7 +1753,7 @@ outer_break:
         pline("%s%s puts on %s.", Monnam(mon), buf,
             distant_name(best, doname));
         if (autocurse)
-            pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, "%s %s %s for a moment.", Monnam_possessive(mon, simpleonames(best)),
+            pline_multi_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_NEGATIVE, no_multiattrs, multicolor_buffer, "%s %s %s for a moment.", Monnam_possessive_ex(mon, simpleonames(best), "worn by"),
                 otense(best, "glow"),
                 hcolor_multi_buf2(NH_BLACK));
     }
@@ -2016,15 +2016,15 @@ mon_break_armor(struct monst *mon, boolean polyspot)
         if ((otmp = which_armor(mon, W_ARMC)) != 0) {
             if (otmp->oartifact) {
                 if (vis)
-                    pline("%s falls off!", Monnam_possessive(mon,
-                          cloak_simple_name(otmp)));
+                    pline("%s falls off!", Monnam_possessive_ex(mon,
+                          cloak_simple_name(otmp), "worn by"));
                 if (polyspot)
                     bypass_obj(otmp);
                 m_lose_armor(mon, otmp);
             } else {
                 if (vis)
-                    pline("%s tears apart!", Monnam_possessive(mon,
-                          cloak_simple_name(otmp)));
+                    pline("%s tears apart!", Monnam_possessive_ex(mon,
+                          cloak_simple_name(otmp), "worn by"));
                 else
                     You_hear("a ripping sound.");
                 m_useup(mon, otmp);
@@ -2032,7 +2032,7 @@ mon_break_armor(struct monst *mon, boolean polyspot)
         }
         if ((otmp = which_armor(mon, W_ARMU)) != 0) {
             if (vis)
-                pline("%s rips to shreds!", Monnam_possessive(mon, "shirt"));
+                pline("%s rips to shreds!", Monnam_possessive_ex(mon, "shirt", "worn by"));
             else
                 You_hear("a ripping sound.");
             m_useup(mon, otmp);
@@ -2040,7 +2040,7 @@ mon_break_armor(struct monst *mon, boolean polyspot)
     } else if (sliparm(mdat)) {
         if ((otmp = which_armor(mon, W_ARM)) != 0) {
             if (vis)
-                pline("%s falls around %s!", Monnam_possessive(mon, "armor"),
+                pline("%s falls around %s!", Monnam_possessive_ex(mon, "armor", "worn by"),
                       pronoun);
             else
                 You_hear("a thud.");
@@ -2051,8 +2051,8 @@ mon_break_armor(struct monst *mon, boolean polyspot)
         if ((otmp = which_armor(mon, W_ARMC)) != 0) {
             if (vis) {
                 if (is_whirly(mon->data))
-                    pline("%s falls, unsupported!", Monnam_possessive(mon,
-                          cloak_simple_name(otmp)));
+                    pline("%s falls, unsupported!", Monnam_possessive_ex(mon,
+                          cloak_simple_name(otmp), "worn by"));
                 else
                     pline("%s shrinks out of %s %s!", Monnam(mon), ppronoun,
                           cloak_simple_name(otmp));
@@ -2101,7 +2101,7 @@ mon_break_armor(struct monst *mon, boolean polyspot)
             /* flimsy test for horns matches polyself handling */
             && (handless_or_tiny || !is_flimsy(otmp))) {
             if (vis)
-                pline("%s falls to the %s!", Monnam_possessive(mon, "helmet"),
+                pline("%s falls to the %s!", Monnam_possessive_ex(mon, "helmet", "worn by"),
                       surface(mon->mx, mon->my));
             else
                 You_hear("a clank.");
@@ -2114,9 +2114,9 @@ mon_break_armor(struct monst *mon, boolean polyspot)
         if ((otmp = which_armor(mon, W_ARMF)) != 0) {
             if (vis) {
                 if (is_whirly(mon->data))
-                    pline("%s fall away!", Monnam_possessive(mon, "boots"));
+                    pline("%s fall away!", Monnam_possessive_ex(mon, "boots", "worn by"));
                 else
-                    pline("%s %s off %s feet!", Monnam_possessive(mon, "boots"),
+                    pline("%s %s off %s feet!", Monnam_possessive_ex(mon, "boots", "worn by"),
                           verysmall(mdat) ? "slide" : "are pushed", ppronoun);
             }
             if (polyspot)
@@ -2130,7 +2130,7 @@ mon_break_armor(struct monst *mon, boolean polyspot)
                 bypass_obj(otmp);
             m_lose_armor(mon, otmp);
             if (vis)
-                pline("%s falls off.", Monnam_possessive(mon, "saddle"));
+                pline("%s falls off.", Monnam_possessive_ex(mon, "saddle", "on"));
         }
         if (mon == u.usteed)
             goto noride;

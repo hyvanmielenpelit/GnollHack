@@ -579,7 +579,7 @@ mattacku(struct monst *mtmp)
 
             obj = which_armor(mtmp, WORN_HELMET);
             if (obj && is_hard_helmet(obj)) {
-                Your("blow glances off %s.", mon_nam_possessive(mtmp, helm_simple_name(obj)));
+                Your("blow glances off %s.", mon_nam_possessive_ex(mtmp, helm_simple_name(obj), "worn by"));
             } else {
                 if (3 + find_mac(mtmp) <= rnd(20)) {
                     pline("%s is hit by a falling piercer (you)!",
@@ -1012,7 +1012,7 @@ mattacku(struct monst *mtmp)
                                 {
                                     /* To be consistent with mswings */
                                     pline("%s %s %s!",
-                                        Monnam_possessive(mtmp, cxname(mon_currwep)),
+                                        Monnam_possessive_ex(mtmp, cxname(mon_currwep), "wielded by"),
                                         otense(mon_currwep, "strike"),
                                         strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
                                 }
@@ -2044,9 +2044,9 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
                     /* Shattering is done below, here just the message */
                     objectshatters = TRUE;
                     if (omonwep->quan == 1)
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shatters from the blow!", Monnam_possessive(mtmp, xname(omonwep)));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shatters from the blow!", Monnam_possessive_ex(mtmp, xname(omonwep), "wielded by"));
                     else
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "One of %s shatters from the blow!", mon_nam_possessive(mtmp, xname(omonwep)));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "One of %s shatters from the blow!", mon_nam_possessive_ex(mtmp, xname(omonwep), "wielded by"));
                 }
 
 
@@ -3273,7 +3273,7 @@ hitmu(struct monst *mtmp, struct attack *mattk, struct obj *omonwep)
             if (unpoisonmsg)
             {
                 play_sfx_sound_at_location(SFX_WEAPON_NO_LONGER_POISONED, mtmp->mx, mtmp->my);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s no longer poisoned.", Monnam_possessive(mtmp, saved_oname),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s no longer poisoned.", Monnam_possessive_ex(mtmp, saved_oname, "wielded by"),
                     vtense(saved_oname, "are"));
             }
         }

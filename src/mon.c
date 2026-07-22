@@ -3319,7 +3319,7 @@ lifesaved_monster(struct monst *mtmp)
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             play_sfx_sound_at_location(SFX_LIFE_SAVED, mtmp->mx, mtmp->my);
             special_effect_wait_until_action(0);
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s begins to glow!", Monnam_possessive(mtmp, "medallion"));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s begins to glow!", Monnam_possessive_ex(mtmp, "medallion", "worn by"));
             makeknown(AMULET_OF_LIFE_SAVING);
             /* amulet is visible, but monster might not be */
             if (canseemon(mtmp)) 

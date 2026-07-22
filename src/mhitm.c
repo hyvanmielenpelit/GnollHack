@@ -558,7 +558,7 @@ mattackm(struct monst *magr, struct monst *mdef)
                         {
                             if (flags.verbose && !Blind && vis)
                                 pline("%s %s %s!",
-                                    Monnam_possessive(magr, cxname(otmp)),
+                                    Monnam_possessive_ex(magr, cxname(otmp), "wielded by"),
                                     otense(otmp, "strike"),
                                     strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
 
@@ -590,12 +590,12 @@ mattackm(struct monst *magr, struct monst *mdef)
                             {
                                 set_to_zero = TRUE;
                                 if (canseemon(magr))
-                                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shatters from the blow!", Monnam_possessive(magr, xname(omonwep)));
+                                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shatters from the blow!", Monnam_possessive_ex(magr, xname(omonwep), "wielded by"));
                             }
                             else
                             {
                                 if (canseemon(magr))
-                                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "One of %s shatters from the blow!", mon_nam_possessive(magr, xname(omonwep)));
+                                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "One of %s shatters from the blow!", mon_nam_possessive_ex(magr, xname(omonwep), "wielded by"));
                             }
                             m_useup(magr, omonwep);
                             if (set_to_zero)
@@ -2040,9 +2040,9 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
             if (vis && canspotmon(magr) && canseemon(mdef)) 
             {
                 play_sfx_sound_at_location(SFX_HELMET_BLOCKS_ATTACK, mdef->mx, mdef->my);
-                Strcpy(buf, Monnam_possessive(mdef, "helmet"));
-                pline("%s blocks %s to %s head.", buf,
-                      mon_nam_possessive(magr, "attack"), mhis(mdef));
+                Strcpy(buf, Monnam_possessive_ex(mdef, "helmet", "worn by"));
+                pline("%s blocks %s to %s %s.", buf,
+                      mon_nam_possessive(magr, "attack"), mhis(mdef), mbodypart(mdef, HEAD));
             }
             break;
         }

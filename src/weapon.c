@@ -1550,8 +1550,9 @@ mon_wield_item(struct monst *mon, boolean verbose_fail, xchar tx, xchar ty)
 
                 if (obj->otyp == PICK_AXE) 
                 {
-                    pline("Since %s%s %s,", mon_nam_possessive(mon, "weapon"),
-                          plur(mw_tmp->quan), welded_buf);
+                    pline("Since %s %s,", 
+                        mon_nam_possessive_ex(mon, mw_tmp->quan == 1 ? "weapon" : "weapons", "wielded by"),
+                        welded_buf);
                     pline("%s cannot wield that %s.", mon_nam(mon),
                           xname(obj));
                 }
@@ -1847,7 +1848,7 @@ wet_a_towel(struct obj *obj, int amt, boolean verbose)
             if (carried(obj))
                 pline("%s gets %s.", Yobjnam2(obj, (const char *) 0), wetness);
             else if (mcarried(obj) && canseemon(obj->ocarry))
-                pline("%s gets %s.", Monnam_possessive(obj->ocarry, xname(obj)), wetness);
+                pline("%s gets %s.", Monnam_possessive_ex(obj->ocarry, xname(obj), obj->owornmask ?  "worn by" : "carried by"), wetness);
         }
     }
     obj->special_quality = min(newspe, 7);
@@ -1878,7 +1879,7 @@ dry_a_towel(struct obj *obj, int amt, boolean verbose)
                 pline("%s dries%s.", Yobjnam2(obj, (const char *) 0),
                       !newspe ? " out" : "");
             else if (mcarried(obj) && canseemon(obj->ocarry))
-                pline("%s dries%s.", Monnam_possessive(obj->ocarry, xname(obj)),
+                pline("%s dries%s.", Monnam_possessive_ex(obj->ocarry, xname(obj), obj->owornmask ? "worn by" : "carried by"),
                       !newspe ? " out" : "");
         }
     }

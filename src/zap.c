@@ -1263,7 +1263,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
             res = 1;
             char buf[BUFSZ];
 
-            Strcpy(buf, Monnam_possessive(mtmp, distant_name(obj, xname)));
+            Strcpy(buf, Monnam_possessive_ex(mtmp, distant_name(obj, xname), "on"));
             if (cansee(mtmp->mx, mtmp->my)) {
                 if (!canspotmon(mtmp))
                     Strcpy(buf, An(distant_name(obj, xname)));
@@ -10504,7 +10504,7 @@ dobuzz(int type, struct obj *origobj, struct monst *origmonst, int dmgdice, int 
                             play_sfx_sound_at_location(SFX_DISINTEGRATE, mon->mx, mon->my);
                             if (canseemon(mon))
                                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is disintegrated!",
-                                      Monnam_possessive(mon, distant_name(otmp, xname)));
+                                      Monnam_possessive_ex(mon, distant_name(otmp, xname), "worn by"));
                             m_useup(mon, otmp);
                         }
                         if (zhitm_out_flags & ZHITM_FLAGS_SLEEP) // (mon_could_move && !mon_can_move(mon)) /* ZT_SLEEP */

@@ -1524,7 +1524,7 @@ move_monsters_to_mydogs(boolean pets_only, boolean nearby_only)
             /* this can happen if your quest leader ejects you from the
                "home" level while a leashed pet isn't next to you */
             play_sfx_sound(SFX_LEASH_GOES_SLACK);
-            pline("%s goes slack.", Monnam_possessive(mtmp, "leash"));
+            pline("%s goes slack.", Monnam_possessive_ex(mtmp, "leash", "attached to"));
             m_unleash(mtmp, FALSE);
         }
     }

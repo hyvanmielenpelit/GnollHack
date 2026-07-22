@@ -3252,7 +3252,7 @@ damageum(struct monst *mdef, struct attack *mattk, struct obj *omonwep, int spec
 
         if ((helmet = which_armor(mdef, W_ARMH)) != 0 && rn2(8)) {
             pline("%s blocks your attack to %s %s.",
-                  Monnam_possessive(mdef, helm_simple_name(helmet)),
+                  Monnam_possessive_ex(mdef, helm_simple_name(helmet), "worn by"),
                   mhis(mdef), mbodypart(mdef, HEAD));
             break;
         }
