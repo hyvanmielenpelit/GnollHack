@@ -4747,18 +4747,12 @@ lookup_manual(const char *lookname, short *idx)
     return (const char*)0;
 }
 
-void
-reset_doname(void)
-{
-    via_naming = 0;
-}
-
 /*
  * Produce a possessive phrase from a name string and a noun.
  *
- * For normal names:     "the goblin's hand"
- * For polymorphed names: "the hand of the chameleon polymorphed into a goblin"
- * For pronouns:         "Your hand", "His hand", etc.
+ * For normal names:      "the goblin's hand"
+ * For polymorphed names: "the hand of the chameleon imitating a goblin"
+ * For pronouns:          "Your hand", "His hand", etc.
  *
  * name   - the name/pronoun (e.g. from mon_nam(), Monnam(), or "Your")
  * noun   - the thing possessed (e.g. "hand", "body", "long sword")
@@ -4846,6 +4840,12 @@ name_possessive_ex(const char *name, const char *noun, boolean capitalize, const
     if (capitalize)
         *buf = highc(*buf);
     return buf;
+}
+
+void
+reset_doname(void)
+{
+    via_naming = 0;
 }
 
 /*do_name.c*/

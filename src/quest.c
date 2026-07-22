@@ -281,7 +281,7 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
         if (dopopup)
         {
             char pbuf[BUFSZ];
-            Sprintf(pbuf, "%s refuses to talk to you.", noittame_Monnam(mtmp));
+            Sprintf(pbuf, "%s refuses to talk to you.", Monnam(mtmp));
             popup_talk_line_ex(mtmp, pbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         }
         return res;
