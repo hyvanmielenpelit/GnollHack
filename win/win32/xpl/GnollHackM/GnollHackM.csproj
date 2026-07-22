@@ -1320,7 +1320,7 @@
   </Target>
 
   <!-- Clean up large native PDB files from Release output (libSkiaSharp.pdb, libGLESv2.pdb, etc.) -->
-  <Target Name="CleanNativePdbs" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+  <Target Name="CleanNativePdbs" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows'))">
     <ItemGroup>
       <NativePdbFiles Include="$(OutputPath)\**\*.pdb" />
     </ItemGroup>
