@@ -501,12 +501,12 @@ can_make_bones(void)
     /* don't let multiple restarts generate multiple copies of objects
        in bones files */
 #if !defined(DEBUG)
-    if (!discover || ModernMode || CasualMode || flags.non_scoring) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
+    if (discover || ModernMode || CasualMode || flags.non_scoring) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
         return FALSE;
     if (wizard)
         return FALSE;
 #else
-    if (!wizard && (!discover || ModernMode || CasualMode || flags.non_scoring)) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
+    if (!wizard && (discover || ModernMode || CasualMode || flags.non_scoring)) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
         return FALSE;
 #endif
     bones_debuglog("can_make_bones: debug and wizard confirmed");
