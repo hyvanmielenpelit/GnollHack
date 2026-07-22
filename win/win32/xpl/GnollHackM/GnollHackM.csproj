@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
@@ -83,7 +83,7 @@
     <WindowsPackageType Condition="'$(GNHWindowsPackageType)' != 'MSIX'">None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 		<SelfContained>true</SelfContained>
-    <DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>
+    <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
   </PropertyGroup>
   
   <!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
@@ -1211,9 +1211,9 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="!$(DefineConstants.Contains('SKIASHARP_3119'))">
-		<PackageReference Include="SkiaSharp" Version="4.150.1" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="4.150.1" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="4.150.1" />
+		<PackageReference Include="SkiaSharp" Version="4.151.0-rc.1.1" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="4.151.0-rc.1.1" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="4.151.0-rc.1.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(DefineConstants.Contains('SKIASHARP_3119'))">
@@ -1319,3 +1319,4 @@
     <Delete Files="$(_ResizetizerInputsFile).stamp" Condition="'$(_CachedInputContainsCurrentIcon)' != 'True'" />
   </Target>
 </Project>
+                                                                                                                                                                                                                                                                     
