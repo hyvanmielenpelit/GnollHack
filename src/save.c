@@ -654,18 +654,18 @@ savelev(int fd, xchar lev, int mode)
     short tlev;
 #endif
 
-    /* if we're tearing down the current level without saving anything
-       (which happens upon entrance to the endgame or after an aborted
-       restore attempt) then we don't want to do any actual I/O */
-    if (mode == FREE_SAVE)
-        goto skip_lots;
-
     /* purge any dead monsters (necessary if we're starting
        a panic save rather than a normal one, or sometimes
        when changing levels without taking time -- e.g.
        create statue trap then immediately level teleport) */
     if (iflags.purge_monsters)
         dmonsfree();
+
+    /* if we're tearing down the current level without saving anything
+       (which happens upon entrance to the endgame or after an aborted
+       restore attempt) then we don't want to do any actual I/O */
+    if (mode == FREE_SAVE)
+        goto skip_lots;
 
     if (fd < 0)
     {
