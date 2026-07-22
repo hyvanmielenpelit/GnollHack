@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
@@ -1317,6 +1317,14 @@
     <!-- If the cached input doesn't reference our current icon, delete it to force regeneration -->
     <Delete Files="$(_ResizetizerInputsFile)" Condition="'$(_CachedInputContainsCurrentIcon)' != 'True'" />
     <Delete Files="$(_ResizetizerInputsFile).stamp" Condition="'$(_CachedInputContainsCurrentIcon)' != 'True'" />
+  </Target>
+
+  <!-- Clean up large native PDB files from Release output (libSkiaSharp.pdb, libGLESv2.pdb, etc.) -->
+  <Target Name="CleanNativePdbs" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <ItemGroup>
+      <NativePdbFiles Include="$(OutputPath)\**\*.pdb" />
+    </ItemGroup>
+    <Delete Files="@(NativePdbFiles)" />
   </Target>
 </Project>
                                                                                                                                                                                                                                                                      
