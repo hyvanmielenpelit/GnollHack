@@ -1545,6 +1545,7 @@ gcrownu(void)
             int item_cnt = 0;
             int gifttype = EYEGLASSES_OF_X_RAY_VISION;
             int gifttype2 = RIN_X_RAY_VISION;
+            
             /* Eyeglasses */
             obj = carrying(gifttype);
             obj2 = carrying(gifttype2);
@@ -1554,6 +1555,11 @@ gcrownu(void)
                 {
                     bless(obj);
                     class_gift = gifttype;
+                }
+                else if (obj2 && !is_obj_blessed(obj2))
+                {
+                    bless(obj2);
+                    class_gift = gifttype2;
                 }
             }
             else if (obj2)
@@ -1576,43 +1582,64 @@ gcrownu(void)
                 }
             }
 
-            /* Boots */
-            gifttype = SPEED_BOOTS;
-            gifttype2 = GLOVES_OF_HASTE;
-            obj = carrying(gifttype);
-            obj2 = carrying(gifttype2);
-            if (obj)
+            /* Better Hawaiian shirt */
+            if (!uarmu || (uarmu && (!uarmu->mythic_prefix || uarmu->mythic_suffix != MYTHIC_SUFFIX_ELEMENTAL_PROTECTION)))
             {
-                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj));
-                if (!is_obj_blessed(obj))
-                    bless(obj);
-                obj->enchantment = max(1, obj->enchantment + 1 + rnd(3));
-                obj->exceptionality = max(obj->exceptionality, EXCEPTIONALITY_ELITE);
-                set_obj_oerodeproof(obj, 1);
-                class_gift = gifttype;
-            }
-            else if (obj2)
-            {
-                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj2));
-                if (!is_obj_blessed(obj2))
-                    bless(obj2);
-                obj2->enchantment = max(1, obj2->enchantment + 1 + rnd(3));
-                obj2->exceptionality = max(obj2->exceptionality, EXCEPTIONALITY_ELITE);
-                set_obj_oerodeproof(obj2, 1);
-                class_gift = gifttype2;
-            }
-            else
-            {
+                gifttype = HAWAIIAN_SHIRT;
                 obj = mksobj(gifttype, FALSE, FALSE, MKOBJ_TYPE_CONTAINER);
                 if (obj)
                 {
                     bless(obj);
                     obj->enchantment = 1 + rnd(3);
                     obj->exceptionality = EXCEPTIONALITY_ELITE;
+                    obj->mythic_prefix = MYTHIC_PREFIX_ELYSIAN;
+                    obj->mythic_suffix = MYTHIC_SUFFIX_ELEMENTAL_PROTECTION;
                     set_obj_oerodeproof(obj, 1);
                     (void)mpickobj(luggage, obj);
                     class_gift = gifttype;
                     item_cnt++;
+                }
+            }
+            else
+            {
+                /* Otherwise boots or gloves as a backup */
+                gifttype = SPEED_BOOTS;
+                gifttype2 = GLOVES_OF_HASTE;
+                obj = carrying(gifttype);
+                obj2 = carrying(gifttype2);
+                if (obj)
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj));
+                    if (!is_obj_blessed(obj))
+                        bless(obj);
+                    obj->enchantment = max(1, obj->enchantment + 1 + rnd(3));
+                    obj->exceptionality = max(obj->exceptionality, EXCEPTIONALITY_ELITE);
+                    set_obj_oerodeproof(obj, 1);
+                    class_gift = gifttype;
+                }
+                else if (obj2)
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines brightly for a while!", Yname2(obj2));
+                    if (!is_obj_blessed(obj2))
+                        bless(obj2);
+                    obj2->enchantment = max(1, obj2->enchantment + 1 + rnd(3));
+                    obj2->exceptionality = max(obj2->exceptionality, EXCEPTIONALITY_ELITE);
+                    set_obj_oerodeproof(obj2, 1);
+                    class_gift = gifttype2;
+                }
+                else
+                {
+                    obj = mksobj(gifttype, FALSE, FALSE, MKOBJ_TYPE_CONTAINER);
+                    if (obj)
+                    {
+                        bless(obj);
+                        obj->enchantment = 1 + rnd(3);
+                        obj->exceptionality = EXCEPTIONALITY_ELITE;
+                        set_obj_oerodeproof(obj, 1);
+                        (void)mpickobj(luggage, obj);
+                        class_gift = gifttype;
+                        item_cnt++;
+                    }
                 }
             }
 
