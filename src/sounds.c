@@ -9859,8 +9859,8 @@ do_chat_quest_reconciliation(struct monst *mtmp)
             } else {
                 char tbuf2[BUFSZ];
                 if (!is_qstatus_got_quest()) {
-                    Sprintf(tbuf2, "%s %sthanks you for bringing %s back from the dead and gives you the quest as a sign of gratitude.",
-                        Monnam(mtmp), !was_leader_peaceful ? "calms down and " : "", mhim(mtmp));
+                    Sprintf(tbuf2, "%s %sthanks you for bringing %s back from the dead%s and gives you the quest as a sign of gratitude.",
+                        Monnam(mtmp), !was_leader_peaceful ? "calms down, " : "", mhim(mtmp), !was_leader_peaceful ? "," : "");
                     popup_talk_line_ex(mtmp, tbuf2,
                         ATR_NONE, CLR_MSG_HINT, TRUE, FALSE);
                     qt_pager_ex(mtmp, QT_ASSIGNQUEST, ATR_NONE, CLR_MSG_HINT, TRUE);
