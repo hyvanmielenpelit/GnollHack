@@ -2883,10 +2883,9 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
         mtmp->m_id = context.ident++; /* ident overflowed */
 
     set_mon_data(mtmp, ptr, 0); /* mtmp->data = ptr; */
+    /* Also called when the leader is resurrected, becoming the new leader_m_id */
     if (ptr->msound == MS_LEADER && quest_info(MS_LEADER) == mndx) {
         quest_status.leader_m_id = mtmp->m_id;
-        context.leader_start_x = x;
-        context.leader_start_y = y;
     }
     mtmp->mnum = mndx;
     mtmp->glyph = NO_GLYPH;

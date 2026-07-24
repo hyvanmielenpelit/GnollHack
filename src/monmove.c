@@ -1516,16 +1516,18 @@ m_move(struct monst *mtmp, int after)
 
     boolean leader_returning = FALSE;
 
-    if (mtmp->m_id == quest_status.leader_m_id && is_peaceful(mtmp) && isok(context.leader_start_x, context.leader_start_y)) {
-        if (!(mtmp->mstrategy & STRAT_CLOSE)) {
-            if (mtmp->mx == context.leader_start_x && mtmp->my == context.leader_start_y) {
-                mtmp->mstrategy |= STRAT_CLOSE;
-            } else {
-                gx = context.leader_start_x;
-                gy = context.leader_start_y;
-                doapproach = 1;
-                leader_returning = TRUE;
-            }
+    if (mtmp->m_id == quest_status.leader_m_id && !(mtmp->mstrategy & STRAT_CLOSE) && is_peaceful(mtmp))
+    {
+        if (!isok(context.leader_start_x, context.leader_start_y) || (mtmp->mx == context.leader_start_x && mtmp->my == context.leader_start_y))
+        {
+            mtmp->mstrategy |= STRAT_CLOSE;
+        }
+        else
+        {
+            gx = context.leader_start_x;
+            gy = context.leader_start_y;
+            doapproach = 1;
+            leader_returning = TRUE;
         }
     }
 
