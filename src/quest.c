@@ -299,6 +299,7 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
             popup_talk_line_ex(mtmp, tbuf, ATR_NONE, CLR_MSG_TALK_HAPPY, TRUE, FALSE);
         else
             pline_ex1(ATR_NONE, CLR_MSG_TALK_HAPPY, tbuf);
+            
         set_qstatus_said_grateful(TRUE);
     }
 

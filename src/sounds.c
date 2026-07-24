@@ -9606,7 +9606,8 @@ do_chat_quest_reconciliation(struct monst *mtmp)
     }
 
     /* If leader is dead, mourning — no reconciliation */
-    if (is_qstatus_leader_is_dead()) {
+    if (msound != MS_LEADER && is_qstatus_leader_is_dead()) 
+    {
         char lbuf[BUFSZ];
         Sprintf(lbuf,
             "%s is mourning for %s and is uninterested in reconciliation.",
@@ -9650,7 +9651,8 @@ do_chat_quest_reconciliation(struct monst *mtmp)
      * Leader not found on the current level and not dead.
      * Perhaps on another level — refuse reconciliation.
      */
-    if (!leader && !is_qstatus_leader_is_dead()) {
+    if (!leader && msound != MS_LEADER && !is_qstatus_leader_is_dead())
+    {
         char lbuf[BUFSZ];
         Sprintf(lbuf,
             "%s is uninterested in reconciliation, as %s cannot be found.",
@@ -9688,7 +9690,7 @@ do_chat_quest_reconciliation(struct monst *mtmp)
     if (msound == MS_LEADER && leader_is_polymorphed) {
         char lbuf[BUFSZ];
         Sprintf(lbuf,
-            "%s says that is %s needs to be reverted to %s normal form first.",
+            "%s says that %s needs to be reverted to %s normal form first.",
             noittame_Monnam(mtmp), mhe(mtmp), mhis(mtmp));
         popup_talk_line_ex(mtmp, lbuf,
             ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
@@ -9696,7 +9698,7 @@ do_chat_quest_reconciliation(struct monst *mtmp)
     }
 
     /* Too injured to talk */
-    if (mtmp->mhp < (3 * mtmp->mhpmax) / 4) {
+    if (msound != MS_LEADER && mtmp->mhp < (3 * mtmp->mhpmax) / 4) {
         char lbuf[BUFSZ];
         Sprintf(lbuf, "%s is in no mood for talking.",
             noittame_Monnam(mtmp));
@@ -9811,13 +9813,12 @@ do_chat_quest_reconciliation(struct monst *mtmp)
 
     /* === Handle resurrection quest flow === */
     boolean leader_text_shown = FALSE;
-    if (was_lkilled) {
+    if (was_lkilled) 
+    {
         set_qstatus_killed_leader(FALSE);
 
-        if (!is_qstatus_got_quest())
-            set_qstatus_got_quest(TRUE);
-
-        if (msound == MS_LEADER) {
+        if (msound == MS_LEADER) 
+        {
             /*
              * Leader reconciliation: show gratitude
              * directly. Leader refers to self.
@@ -9851,8 +9852,14 @@ do_chat_quest_reconciliation(struct monst *mtmp)
                     ATR_NONE, NO_COLOR, TRUE);
             } else {
                 char tbuf2[BUFSZ];
-                Sprintf(tbuf2, "%s %sthanks you for bringing %s back from the dead and gives you the quest as a sign of gratitude.",
-                    Monnam(mtmp), !was_leader_peaceful ? "calms down and " : "", mhim(mtmp));
+                if (!is_qstatus_got_quest()) {
+                    set_qstatus_got_quest(TRUE);
+                    Sprintf(tbuf2, "%s %sthanks you for bringing %s back from the dead and gives you the quest as a sign of gratitude.",
+                        Monnam(mtmp), !was_leader_peaceful ? "calms down and " : "", mhim(mtmp));
+                } else {
+                    Sprintf(tbuf2, "%s %sthanks you for bringing %s back from the dead.",
+                        Monnam(mtmp), !was_leader_peaceful ? "calms down and " : "", mhim(mtmp));
+                }
                 popup_talk_line_ex(mtmp, tbuf2,
                     ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
             }
