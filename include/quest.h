@@ -43,6 +43,7 @@ struct q_score {              /* Quest "scorecard" */
 #define QSCORE_BITFLAG_LEADER_IS_DEAD   0x00004000UL
 #define QSCORE_BITFLAG_KILLED_LEADER    0x00008000UL
 #define QSCORE_BITFLAG_LEADER_GRATITUDE 0x00010000UL
+#define QSCORE_BITFLAG_SAID_GRATEFUL    0x00020000UL
 
 #define is_qstatus_first_start()      get_flag(quest_status.bitflags, QSCORE_BITFLAG_FIRST_START)
 #define set_qstatus_first_start(v)    set_flag(quest_status.bitflags, QSCORE_BITFLAG_FIRST_START, (v))
@@ -111,6 +112,10 @@ struct q_score {              /* Quest "scorecard" */
 #define is_qstatus_leader_gratitude()       get_flag(quest_status.bitflags, QSCORE_BITFLAG_LEADER_GRATITUDE)
 #define set_qstatus_leader_gratitude(v)     set_flag(quest_status.bitflags, QSCORE_BITFLAG_LEADER_GRATITUDE, (v))
 #define toggle_qstatus_leader_gratitude()   toggle_flag(quest_status.bitflags, QSCORE_BITFLAG_LEADER_GRATITUDE)
+
+#define is_qstatus_said_grateful()          get_flag(quest_status.bitflags, QSCORE_BITFLAG_SAID_GRATEFUL)
+#define set_qstatus_said_grateful(v)        set_flag(quest_status.bitflags, QSCORE_BITFLAG_SAID_GRATEFUL, (v))
+#define toggle_qstatus_said_grateful()      toggle_flag(quest_status.bitflags, QSCORE_BITFLAG_SAID_GRATEFUL)
 
 #define MIN_QUEST_ALIGN 20 /* at least this align.record to start */
 /* note: align 20 matches "pious" as reported by enlightenment (cmd.c) */

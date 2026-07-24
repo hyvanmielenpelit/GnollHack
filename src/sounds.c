@@ -9863,6 +9863,7 @@ do_chat_quest_reconciliation(struct monst *mtmp)
              * when the player talks to them next.
              */
             set_qstatus_leader_gratitude(TRUE);
+            set_qstatus_said_grateful(FALSE);
         }
     }
 

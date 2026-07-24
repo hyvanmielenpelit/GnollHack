@@ -129,6 +129,7 @@ leaddead(void)
     if (!is_qstatus_killed_leader()) {
         set_qstatus_killed_leader(TRUE);
         set_qstatus_leader_gratitude(FALSE);
+        set_qstatus_said_grateful(FALSE);
     }
 }
 
@@ -288,6 +289,19 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
         return res;
     }
 
+    /* One-time gratitude for resurrection */
+    if (is_qstatus_leader_gratitude() && !is_qstatus_said_grateful()) {
+        char tbuf[BUFSZ];
+        Sprintf(tbuf, "%s expresses gratitude for bringing %s back from the dead.",
+            Monnam(mtmp), mhim(mtmp));
+        
+        if (dopopup)
+            popup_talk_line_ex(mtmp, tbuf, ATR_NONE, CLR_MSG_TALK_HAPPY, TRUE, FALSE);
+        else
+            pline_ex1(ATR_NONE, CLR_MSG_TALK_HAPPY, tbuf);
+        set_qstatus_said_grateful(TRUE);
+    }
+
     /*  Rule 0: Cheater checks. */
     if (is_uhave_questart() && !is_qstatus_met_nemesis())
         set_qstatus_cheater(TRUE);
@@ -364,6 +378,7 @@ chat_with_leader(struct monst *mtmp, boolean dopopup)
                 com_pager_ex((struct monst*)0, QT_BANISHED, ATR_NONE, CLR_MSG_NEGATIVE, dopopup);
                 set_qstatus_pissed_off(TRUE);
                 set_qstatus_leader_gratitude(FALSE);
+                set_qstatus_said_grateful(FALSE);
                 res = FALSE; // For safety
                 debugprint_pos();
                 expulsion(FALSE);
@@ -402,6 +417,7 @@ leader_speaks(struct monst *mtmp)
             qt_pager_ex(mtmp, QT_LASTLEADER, ATR_NONE, CLR_MSG_NEGATIVE, FALSE);
             set_qstatus_pissed_off(TRUE);
             set_qstatus_leader_gratitude(FALSE);
+            set_qstatus_said_grateful(FALSE);
         }
         mtmp->mstrategy &= ~STRAT_WAITMASK; /* end the inaction */
     }
