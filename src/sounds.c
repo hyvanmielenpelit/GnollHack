@@ -9883,26 +9883,37 @@ do_chat_quest_reconciliation(struct monst *mtmp)
         }
     }
 
-    /* === Print calm-down messages === */
-    if (leader && leader_in_proper_form
-        && is_peaceful(leader) && canspotmon(leader)
-        && !was_leader_peaceful && !leader_text_shown)
+    if (!leader_text_shown)
     {
-        char lbuf[BUFSZ];
-        Sprintf(lbuf, "%s calms down.", Monnam(leader));
-        pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, lbuf, "Reconciliation", TRUE);
-    }
+        /* === Print calm-down messages === */
+        boolean leader_calmed = (leader && leader_in_proper_form
+            && is_peaceful(leader) && canspotmon(leader)
+            && !was_leader_peaceful);
+        boolean guardians_calmed = (calmed_count > 0 && guardian_name);
 
-    if (calmed_count > 0 && guardian_name && !leader_text_shown)
-    {
-        char lbuf[BUFSZ];
-        if (calmed_count > 1)
-            Sprintf(lbuf, "The %s calm down.",
-                makeplural(guardian_name));
-        else
-            Sprintf(lbuf, "The %s calms down.",
-                guardian_name);
-        pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, lbuf, "Reconciliation", TRUE);
+        if (leader_calmed && guardians_calmed)
+        {
+            char lbuf[BUFSZ];
+            Sprintf(lbuf, "%s and the %s calm down.",
+                Monnam(leader),
+                calmed_count > 1 ? makeplural(guardian_name) : guardian_name);
+            pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, lbuf, "Reconciliation", TRUE);
+        }
+        else if (leader_calmed)
+        {
+            char lbuf[BUFSZ];
+            Sprintf(lbuf, "%s calms down.", Monnam(leader));
+            pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, lbuf, "Reconciliation", TRUE);
+        }
+        else if (guardians_calmed)
+        {
+            char lbuf[BUFSZ];
+            if (calmed_count > 1)
+                Sprintf(lbuf, "The %s calm down.", makeplural(guardian_name));
+            else
+                Sprintf(lbuf, "The %s calms down.", guardian_name);
+            pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, lbuf, "Reconciliation", TRUE);
+        }
     }
 
     stop_all_dialogue_of_mon_on_mobile(mtmp);
