@@ -9736,7 +9736,7 @@ do_chat_quest_reconciliation(struct monst *mtmp)
             "%s does not seem to be in need of reconciliation.",
             noittame_Monnam(mtmp));
         popup_talk_line_ex(mtmp, lbuf,
-            ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, TRUE);
+            ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
         return 0;
     }
 
@@ -9790,6 +9790,10 @@ do_chat_quest_reconciliation(struct monst *mtmp)
     if (leader && leader_in_proper_form
         && !is_peaceful(leader)) {
         set_mon_mpeaceful(leader, 1);
+        if (isok(context.leader_start_x, context.leader_start_y))
+            leader->mstrategy &= ~STRAT_WAITMASK;
+        else
+            leader->mstrategy |= STRAT_CLOSE;
         newsym(leader->mx, leader->my);
     }
 
@@ -9834,34 +9838,37 @@ do_chat_quest_reconciliation(struct monst *mtmp)
             if (is_uhave_questart()) {
                 struct obj *otmp;
                 popup_talk_line_ex(mtmp, tbuf,
-                    ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
+                    ATR_NONE, CLR_MSG_HINT, TRUE, FALSE);
                 for (otmp = invent; otmp; otmp = otmp->nobj)
                     if (is_quest_artifact(otmp))
                         break;
                 finish_quest(otmp);
             } else if (is_qstatus_got_thanks()) {
                 popup_talk_line_ex(mtmp, tbuf,
-                    ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
+                    ATR_NONE, CLR_MSG_HINT, TRUE, FALSE);
                 qt_pager_ex(mtmp, QT_POSTHANKS,
                     ATR_NONE, NO_COLOR, TRUE);
             } else if (is_qstatus_killed_nemesis()
                        || is_qstatus_touched_artifact()) {
                 popup_talk_line_ex(mtmp, tbuf,
-                    ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
+                    ATR_NONE, CLR_MSG_HINT, TRUE, FALSE);
                 qt_pager_ex(mtmp, rn1(10, QT_ENCOURAGE),
                     ATR_NONE, NO_COLOR, TRUE);
             } else {
                 char tbuf2[BUFSZ];
                 if (!is_qstatus_got_quest()) {
-                    set_qstatus_got_quest(TRUE);
                     Sprintf(tbuf2, "%s %sthanks you for bringing %s back from the dead and gives you the quest as a sign of gratitude.",
                         Monnam(mtmp), !was_leader_peaceful ? "calms down and " : "", mhim(mtmp));
+                    popup_talk_line_ex(mtmp, tbuf2,
+                        ATR_NONE, CLR_MSG_HINT, TRUE, FALSE);
+                    qt_pager_ex(mtmp, QT_ASSIGNQUEST, ATR_NONE, CLR_MSG_HINT, TRUE);
+                    set_qstatus_got_quest(TRUE);
                 } else {
                     Sprintf(tbuf2, "%s %sthanks you for bringing %s back from the dead.",
                         Monnam(mtmp), !was_leader_peaceful ? "calms down and " : "", mhim(mtmp));
+                    popup_talk_line_ex(mtmp, tbuf2,
+                        ATR_NONE, CLR_MSG_HINT, TRUE, FALSE);
                 }
-                popup_talk_line_ex(mtmp, tbuf2,
-                    ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
             }
         } else {
             /*
@@ -9881,11 +9888,10 @@ do_chat_quest_reconciliation(struct monst *mtmp)
     {
         char lbuf[BUFSZ];
         Sprintf(lbuf, "%s calms down.", Monnam(leader));
-        popup_talk_line_ex(mtmp, lbuf,
-            ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
+        pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, lbuf, "Reconciliation", TRUE);
     }
 
-    if (calmed_count > 0 && guardian_name) 
+    if (calmed_count > 0 && guardian_name && !leader_text_shown)
     {
         char lbuf[BUFSZ];
         if (calmed_count > 1)
@@ -9894,8 +9900,7 @@ do_chat_quest_reconciliation(struct monst *mtmp)
         else
             Sprintf(lbuf, "The %s calms down.",
                 guardian_name);
-        popup_talk_line_ex(mtmp, lbuf,
-            ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
+        pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, lbuf, "Reconciliation", TRUE);
     }
 
     stop_all_dialogue_of_mon_on_mobile(mtmp);

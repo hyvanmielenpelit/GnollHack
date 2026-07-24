@@ -2356,6 +2356,20 @@ set_apparxy(struct monst *mtmp)
         my = u.uy;
     }
 
+    if (mtmp->m_id == quest_status.leader_m_id && !(mtmp->mstrategy & STRAT_CLOSE) && is_peaceful(mtmp)
+        && isok(context.leader_start_x, context.leader_start_y)) 
+    {
+        if (mtmp->mx == context.leader_start_x && mtmp->my == context.leader_start_y)
+        {
+            mtmp->mstrategy |= STRAT_CLOSE;
+        }
+        else
+        {
+            mx = context.leader_start_x;
+            my = context.leader_start_y;
+        }
+    }
+
     mtmp->mux = mx;
     mtmp->muy = my;
 }

@@ -260,8 +260,8 @@ struct context_info
     boolean reserved_boolA; // suppress_container_deletion_warning;
     boolean save_checkpoint;
     boolean is_click_looking; // if so, do not clip
-    boolean reserved_boolD;
-    boolean reserved_boolE;
+    xchar leader_start_x;
+    xchar leader_start_y;
     boolean reserved_boolF;
     boolean reserved_boolG;
 
