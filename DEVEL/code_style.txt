@@ -2,18 +2,17 @@
 # Copyright (c) 2015 by Derek S. Ray
 # GnollHack may be freely redistributed.  See license for details.
 
-NetHack DevTeam Coding Style
-============================
+GnollHack Coding Style
+=======================
 
-NetHack is written in C, with a little bit of C++ to access platform
-libraries. This coding style document is concerned primarily with the style
-used for C source files. We do not have a defined style for C++ files, but C++
-should be styled in keeping with C.
+GnollHack is written in C, with a .NET MAUI frontend in C#. This coding style
+document is concerned primarily with the style used for C source files. For C#
+conventions, see the AI agent skills documentation.
 
-The code base in C files was, close to the 3.6 release, reformatted using a
-version of the clang-format tool patched to support K&R-style argument
-declarations. Due to some incompatibilities, the patch is not publicly
-available and clang-format is not expected to be regularly used.
+GnollHack is derived from NetHack 3.6.2. The original NetHack codebase used
+K&R brace placement style and K&R function declarations. GnollHack has fully
+migrated to Allman brace placement style and ANSI C89/C99 function prototypes.
+Always use the GnollHack style described here.
 
 Developers should do their best to adhere to the coding style to promote
 legible, easy-to-edit code. Legibility is paramount, so in some cases, it may
@@ -43,73 +42,99 @@ possible:
 
 Single blank lines should be used wherever convenient to improve readability.
 
+Naming Conventions
+------------------
+
+GnollHack C code uses snake_case for identifiers:
+
+- Function names: snake_case (e.g., min_npc_appearance_depth, mon_is_gecko)
+- Variable names: snake_case (e.g., signed_glyph, layer_flags, npc_room)
+- Struct field names: snake_case (e.g., animation_name, number_of_tiles)
+- Macro names: ALL_CAPS_WITH_UNDERSCORES (e.g., NPC_FLAGS_NO_GENERATION,
+  LAYER_FLOOR, MENU_FLAGS_IS_HEADING)
+- Enum values: ALL_CAPS_WITH_UNDERSCORES (e.g., LAYER_FLOOR, MAX_LAYERS)
+
+All enums and #define constants that are used across the C/C# interop boundary
+follow C naming conventions (ALL_CAPS_WITH_UNDERSCORES) so that identifiers
+can be found easily with a single search across both codebases.
+
 Functions and Control Statements
--------------------------------
+--------------------------------
+
+GnollHack uses Allman brace placement style: the opening brace appears on its
+own line, at the same indentation level as the control statement or function
+definition header.
 
 For a function definition, the return type, declarator, and opening brace
-should each appear on a line of their own. Arguments are never declared in the
-function declarator, but are declared, unintended, K&R-style before the
-opening brace:
+should each appear on a line of their own, using standard C89/C99 prototypes:
 
-    void
-    foo(i, c)
-    int i;
-    char c;
+    static boolean
+    has_npc_room(struct monst *npc)
     {
         /* function body */
     }
 
-Opening braces of control statements appear on the same line as the control
-statement:
+Opening braces of control statements appear on their own line (Allman style):
 
-    if (condition) {
+    if (condition)
+    {
         /* body */
     }
 
-Else statements and the while statements of do-while blocks appear on the same
-line as the closing brace of the if or do statement. Otherwise, closing braces
-always get a line of their own.
+Else statements and the while statements of do-while blocks appear on the
+next line after the closing brace:
 
-    if (condition) {
+    if (condition)
+    {
         /* body */
-    } else if (condition) {
-        do {
+    }
+    else if (condition)
+    {
+        do
+        {
             /* body */
         } while (condition);
-    } else {
+    }
+    else
+    {
         /* body */
     }
 
 If a control block has only a single statement, it can appear on a line of its
-own, with an indent. If the statement is a null statement, then it should be
-expressed as an empty set block, not with a semicolon, because many compilers
-will warn if a null statement is used:
+own, with an indent, either with or without braces. Use whichever is clearer
+and sufficiently risk-free in the context. However, avoid using the comma
+operator to combine multiple assignments into a single-statement body:
 
+    /* Both of these are acceptable: */
     if (condition)
         fcall();
 
-    if (condition) {
-    } else
+    if (condition)
+    {
         fcall();
-
-If multiple control blocks are being used in a row, it may be more readable to
-use braces even for single statements, and they should be used if they improve
-readability. The following is an example of poor usage:
-
-    if (condition) {
-        /* long body */
-    } else if (condition)
-        statement;
-    else {
-        /* very long body */
     }
+
+    /* BAD: do not combine assignments with comma in a single-statement body */
+    if (condition)
+        x = 1, y = 2;
+
+If a null statement is needed, it should be expressed as an empty set of
+braces, not with a semicolon, because many compilers will warn if a null
+statement is used:
+
+    if (condition)
+    {
+    }
+    else
+        fcall();
 
 Switch statements should have the case labels unindented, and the statements
 should be indented normally. The default case should occur last unless there's
 a compelling reason not to, and fallthroughs should be explicitly marked as
 such with a comment, to avoid Yeenaghu getting the touch of death again:
 
-    switch (condition) {
+    switch (condition)
+    {
     case FOO:
     case BAR:
         fcall();
@@ -127,12 +152,14 @@ initialization, and if an assignment is used as a condition, it should be
 wrapped in an additional set of parentheses for clarity:
 
     int *p;
-    if ((p = fcall())) {
+    if ((p = fcall()))
+    {
         /* body */
     }
 
     int i;
-    for (i = 1; i < 10; ++i) {
+    for (i = 1; i < 10; ++i)
+    {
         /* body */
     }
 
@@ -145,14 +172,29 @@ between a function name and the opening parenthesis of a function call, nor
 immediately inside a pair of parentheses:
 
     foo(i, j, l);
-    if ((boolean) condition) {
+    if ((boolean) condition)
+    {
         /* body */
     }
+
+Comments
+--------
+
+Use /* */ for all C comments. Do NOT use // in the C core.
+
+Legacy Code Notes
+-----------------
+
+GnollHack's C codebase has been fully converted from the original NetHack K&R
+function declaration style to ANSI C89/C99 prototypes. The old
+FDECL/NDECL/VDECL prototype macros are no longer used. Some files may still
+retain older formatting or K&R brace placement in places; when touching such
+code, convert it to the GnollHack Allman style described in this document.
 
 Vim Configuration
 =================
 
-For vim, the following settings are encouraged when editing NetHack code, to
+For vim, the following settings are encouraged when editing GnollHack code, to
 ensure that indentation is done correctly:
 
     set shiftwidth=4
@@ -190,9 +232,8 @@ There are no doubt umpteen different ways to handle this in Emacs.
 Putting the following in ~/.emacs.el is one
 
 (defun hook-c ()
-  (setq c-set-style "k&r")
+  (setq c-set-style "bsd")
   (setq c-basic-offset 4)
-  (setq indent-tabs-mode nil)
-  (c-set-offset 'knr-argdecl-intro 0))
+  (setq indent-tabs-mode nil))
 (add-hook 'c-mode-common-hook 'hook-c)
 

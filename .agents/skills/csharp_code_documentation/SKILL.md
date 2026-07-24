@@ -114,3 +114,51 @@ Use `<remarks>` to document thread safety requirements.
 - Specify if a method MUST run on the `MainThread`.
 - Specify if a method MUST run on the `GameThread`.
 - Detail any `lock()` or `Monitor.TryEnter` requirements.
+
+---
+
+## Naming Conventions for Interop
+
+GnollHack uses deliberate naming divergences from standard C# conventions for code that crosses the C/C# interop boundary. This ensures identifiers can be found with a single search across both codebases.
+
+### Interop Struct Fields: `snake_case`
+Interop structs (marked with `[StructLayout(LayoutKind.Sequential)]`) use `snake_case` field names to match the C side:
+
+```csharp
+[StructLayout(LayoutKind.Sequential)]
+public struct AnimationDefinition
+{
+    public IntPtr animation_name;
+    public int animation_type;
+    public sbyte number_of_tiles;
+    public sbyte number_of_frames;
+    // ...
+}
+```
+
+### Interop Enums and Defines: `ALL_CAPS_WITH_UNDERSCORES`
+Enums and constants that mirror C `#define` macros or enum values use `ALL_CAPS_WITH_UNDERSCORES` — both the member names and (in many cases) the enum type name itself:
+
+```csharp
+// Enum type name is snake_case to match C
+public enum layer_types
+{
+    LAYER_FLOOR = 0,
+    LAYER_CARPET,
+    LAYER_FLOOR_DOODAD,
+    // ...
+    MAX_LAYERS
+}
+
+public enum MenuFlags : ulong
+{
+    MENU_FLAGS_NONE =                       0x00000000,
+    MENU_FLAGS_IS_HEADING =                 0x00000001,
+    MENU_FLAGS_IS_GROUP_HEADING =           0x00000002,
+    // ...
+}
+```
+
+### Pure C# Code: Standard Conventions
+All other C# code (classes, properties, methods, local variables) follows standard .NET conventions: PascalCase for public members, camelCase for locals and private fields.
+

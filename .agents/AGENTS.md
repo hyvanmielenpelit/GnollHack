@@ -17,15 +17,18 @@ Refer to [DEVEL/code_style.txt](file:///c:/hmp/GnollHack/DEVEL/code_style.txt) f
 ### Required Conventions
 - **Indentation**: 4 spaces, NO tabs
 - **Line width**: 78 characters maximum
-- **Function definitions & prototypes**: GnollHack is migrating from K&R C to C99.
-  - If a file has not yet been converted, match the existing K&R style and use `FDECL`/`NDECL`/`VDECL` macros for prototypes.
-  - If a file has been converted to C99, use standard ANSI C99 prototypes and definitions.
-- **Control statements**: Opening brace on same line: `if (cond) {`
+- **Brace placement**: **Allman style** — opening brace on its own line for both functions and control statements. Legacy NetHack files may still use K&R brace placement in places; convert to Allman when touching such code.
+- **Function definitions & prototypes**: Use standard ANSI C89/C99 prototypes and definitions. The codebase has been fully converted from K&R declarations.
+- **Naming**: `snake_case` for functions, variables, and struct fields. `ALL_CAPS_WITH_UNDERSCORES` for `#define` macros and enum values.
 - **Switch/case**: `case` labels unindented within `switch`
 - **Variables**: Never declare in `for` init or conditions
+- **Single-statement bodies**: Both braced and unbraced forms are acceptable; use whichever is clearer. Do not use the comma operator to combine multiple assignments in a single-statement body.
+- **Comments**: Use `/* */` for all C comments. Do NOT use `//` in the C core.
 
 ## C# / .NET Conventions
-- Use standard C# naming: PascalCase for public members, camelCase for locals
+- **Pure C# naming**: PascalCase for public members, camelCase for locals (standard C# conventions)
+- **Interop struct fields**: Use `snake_case` to match the C side (e.g., `animation_name`, `number_of_tiles`, `layer_flags`)
+- **Interop enums and defines**: Use `ALL_CAPS_WITH_UNDERSCORES` to match C `#define`s and enum values (e.g., `LAYER_FLOOR`, `MENU_FLAGS_IS_HEADING`). The enum type name itself also uses `snake_case` on the C# side (e.g., `layer_types`) for interop consistency.
 - Always marshal UI updates to the main thread via `MainThread.BeginInvokeOnMainThread()`
 - P/Invoke strings use `MarshalAs(UnmanagedType.LPStr)` for C interop
 - Shared code between GnollHackM and GnollHackX uses `<Compile Include>` file-linking, NOT project references

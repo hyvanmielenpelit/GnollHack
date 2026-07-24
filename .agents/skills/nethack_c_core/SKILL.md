@@ -6,8 +6,18 @@ description: Guidance on modifying the GnollHack C core game logic, headers, win
 # NetHack C Core
 
 ## Critical Rules
-- **Match Surrounding Style**: GnollHack is migrating to C99. Match the file's current style (K&R or C99). Use 4-space indent, opening brace on same line for control structures, `switch` case labels unindented.
+- **Allman Brace Style**: GnollHack uses Allman brace placement — opening brace on its own line for both functions and control statements (`if`, `for`, `while`, `switch`, etc.). Legacy NetHack files may still use K&R brace placement in places; convert to Allman when touching such code.
+- **Use C89/C99 Prototypes**: The codebase has been fully converted from K&R declarations. Always use standard ANSI C89/C99 prototypes and definitions.
+- **4-space indent**, no tabs. `switch` `case` labels unindented.
 - **Do NOT use standard library directly** for common operations if a NetHack wrapper exists (e.g., use `alloc()` instead of `malloc()`, `pline()` instead of `printf()`).
+
+## Naming Conventions
+- **Functions and variables**: `snake_case` (e.g., `min_npc_appearance_depth`, `signed_glyph`, `layer_flags`)
+- **Struct fields**: `snake_case` (e.g., `animation_name`, `number_of_tiles`)
+- **`#define` macros**: `ALL_CAPS_WITH_UNDERSCORES` (e.g., `NPC_FLAGS_NO_GENERATION`, `MAX_NPC_SUBTYPES`)
+- **Enum values**: `ALL_CAPS_WITH_UNDERSCORES` (e.g., `LAYER_FLOOR`, `MAX_LAYERS`)
+- **Single-statement bodies**: Both braced and unbraced are acceptable; use whichever is clearer. Do not use the comma operator to combine multiple assignments in a single-statement body.
+- **Comments**: Use `/* */` only. Do NOT use `//` in C.
 
 ## Key Data Structures
 - **`struct monst`**: A monster instance. Tracked in the `fmon` linked list.
