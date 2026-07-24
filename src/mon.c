@@ -4418,8 +4418,11 @@ cleanup:
     }
     else if (mdat->msound == MS_NEMESIS)
     { /* Real good! */
-        if (!is_qstatus_killed_leader())
+        if (!is_qstatus_killed_leader()) {
             adjalign((ALIGNLIM / 4));
+        } else if (!is_qstatus_leader_is_dead()) {
+            adjalign((ALIGNLIM / 8));
+        }
     }
     else if (mdat->msound == MS_GUARDIAN) 
     { /* Bad */

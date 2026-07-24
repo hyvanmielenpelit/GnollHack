@@ -706,8 +706,13 @@ nh_timeout(void)
     if (flags.friday13)
         baseluck -= 1;
 
-    if (is_qstatus_killed_leader())
-        baseluck -= 4;
+    if (is_qstatus_killed_leader()) {
+        if (is_qstatus_leader_is_dead()) {
+            baseluck -= 4;
+        } else {
+            baseluck -= 2;
+        }
+    }
 
     if (u.uluck != baseluck
         && moves % ((is_uhave_amulet() || u.ugangr) ? 300 : 600) == 0) {
