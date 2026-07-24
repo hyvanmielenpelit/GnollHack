@@ -9750,7 +9750,8 @@ do_chat_quest_reconciliation(struct monst *mtmp)
     reconcile_cost = max(1L,
         (int64_t)(((2000 + u.ulevel * 200) * leader_factor
         + u.ulevel * 100
-        + angry_guardian_count * 150)
+        + angry_guardian_count * 150
+        + context.quest_guardians_killed * 300)
         * service_cost_charisma_adjustment(
               ACURR(A_CHA))));
 
@@ -9785,6 +9786,7 @@ do_chat_quest_reconciliation(struct monst *mtmp)
     /* === Revert quest flags === */
     set_qstatus_pissed_off(FALSE);
     quest_status.not_ready = 0;
+    context.quest_guardians_killed = 0;
 
     /* === Pacify leader and guardians === */
     if (leader && leader_in_proper_form

@@ -4424,6 +4424,7 @@ cleanup:
     else if (mdat->msound == MS_GUARDIAN) 
     { /* Bad */
         adjalign(-(ALIGNLIM / 8));
+        context.quest_guardians_killed++;
         if (!Hallucination)
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "That was probably a bad idea...");
         else
