@@ -9740,7 +9740,7 @@ do_chat_quest_reconciliation(struct monst *mtmp)
 
     /* Determine cost using unified formula */
     boolean was_lkilled = is_qstatus_killed_leader();
-    int leader_factor = was_leader_killed ? 2
+    int leader_factor = was_lkilled ? 2
                       : (msound == MS_LEADER
                          && !is_peaceful(mtmp)) ? 1
                       : 0;
@@ -9810,63 +9810,66 @@ do_chat_quest_reconciliation(struct monst *mtmp)
     play_sfx_sound(SFX_BUY_FROM_NPC);
 
     /* === Handle resurrection quest flow === */
-    if (was_leader_killed)
-    {
+    boolean leader_text_shown = FALSE;
+    if (was_lkilled) {
         set_qstatus_killed_leader(FALSE);
 
         if (!is_qstatus_got_quest())
             set_qstatus_got_quest(TRUE);
 
-        /*
-         * Context-aware quest progression after resurrection.
-         * Jump to the most relevant quest dialogue chapter
-         * based on how far the player has progressed.
-         */
-        /* Build personalized gratitude text:
-         * "X thanks you for bringing him/her back
-         *  from the dead." */
-        char tbuf[BUFSZ];
-        Sprintf(tbuf,
-            "%s thanks you for bringing %s back from the dead.",
-            noittame_Monnam(mtmp), mhim(mtmp));
+        if (msound == MS_LEADER) {
+            /*
+             * Leader reconciliation: show gratitude
+             * directly. Leader refers to self.
+             * If leader was hostile, prepend "calms
+             * down and".
+             */
+            leader_text_shown = TRUE;
+            char tbuf[BUFSZ];
+            Sprintf(tbuf,
+                "%s %sthanks you for bringing %s back from the dead.",
+                Monnam(mtmp), !was_leader_peaceful ? "calms down and " : "", mhim(mtmp));
 
-        if (is_uhave_questart()) {
-            /* Player has the artifact — hand it in */
-            struct obj *otmp;
-            popup_talk_line_ex(mtmp, tbuf,
-                ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
-            for (otmp = invent; otmp; otmp = otmp->nobj)
-                if (is_quest_artifact(otmp))
-                    break;
-            finish_quest(otmp);
-        } else if (is_qstatus_got_thanks()) {
-            /* Already returned artifact */
-            popup_talk_line_ex(mtmp, tbuf,
-                ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
-            qt_pager_ex(mtmp, QT_POSTHANKS,
-                ATR_NONE, NO_COLOR, TRUE);
-        } else if (is_qstatus_killed_nemesis()
-                   || is_qstatus_touched_artifact()) {
-            /* Mid-quest progress */
-            popup_talk_line_ex(mtmp, tbuf,
-                ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
-            qt_pager_ex(mtmp, rn1(10, QT_ENCOURAGE),
-                ATR_NONE, NO_COLOR, TRUE);
+            if (is_uhave_questart()) {
+                struct obj *otmp;
+                popup_talk_line_ex(mtmp, tbuf,
+                    ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
+                for (otmp = invent; otmp; otmp = otmp->nobj)
+                    if (is_quest_artifact(otmp))
+                        break;
+                finish_quest(otmp);
+            } else if (is_qstatus_got_thanks()) {
+                popup_talk_line_ex(mtmp, tbuf,
+                    ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
+                qt_pager_ex(mtmp, QT_POSTHANKS,
+                    ATR_NONE, NO_COLOR, TRUE);
+            } else if (is_qstatus_killed_nemesis()
+                       || is_qstatus_touched_artifact()) {
+                popup_talk_line_ex(mtmp, tbuf,
+                    ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
+                qt_pager_ex(mtmp, rn1(10, QT_ENCOURAGE),
+                    ATR_NONE, NO_COLOR, TRUE);
+            } else {
+                char tbuf2[BUFSZ];
+                Sprintf(tbuf2, "%s %sthanks you for bringing %s back from the dead and gives you the quest as a sign of gratitude.",
+                    Monnam(mtmp), !was_leader_peaceful ? "calms down and " : "", mhim(mtmp));
+                popup_talk_line_ex(mtmp, tbuf2,
+                    ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
+            }
         } else {
-            /* No quest progress — gratitude + grant */
-            char tbuf2[BUFSZ];
-            Sprintf(tbuf2,
-                "%s thanks you for bringing %s back from the dead and gives you the quest as a sign of gratitude.",
-                noittame_Monnam(mtmp), mhim(mtmp));
-            popup_talk_line_ex(mtmp, tbuf2,
-                ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
+            /*
+             * Guardian reconciliation: set gratitude
+             * flag so the leader delivers the text
+             * when the player talks to them next.
+             */
+            set_qstatus_leader_gratitude(TRUE);
         }
     }
 
     /* === Print calm-down messages === */
     if (leader && leader_in_proper_form
         && is_peaceful(leader) && canspotmon(leader)
-        && !was_leader_peaceful) 
+        && !was_leader_peaceful && !leader_text_shown)
     {
         char lbuf[BUFSZ];
         Sprintf(lbuf, "%s calms down.", Monnam(leader));
