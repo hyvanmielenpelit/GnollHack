@@ -4418,12 +4418,16 @@ cleanup:
     }
     else if (mdat->msound == MS_NEMESIS)
     { /* Real good! */
-        if (!is_qstatus_killed_leader())
+        if (!is_qstatus_killed_leader()) {
             adjalign((ALIGNLIM / 4));
+        } else if (!is_qstatus_leader_is_dead()) {
+            adjalign((ALIGNLIM / 8));
+        }
     }
     else if (mdat->msound == MS_GUARDIAN) 
     { /* Bad */
         adjalign(-(ALIGNLIM / 8));
+        context.quest_guardians_killed++;
         if (!Hallucination)
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "That was probably a bad idea...");
         else
@@ -4843,8 +4847,8 @@ setmangry(struct monst *mtmp, boolean via_attack)
     update_game_music();
 
     /* attacking your own quest leader will anger his or her guardians */
-    if (!context.mon_moving /* should always be the case here */
-        && mtmp->data == &mons[quest_info(MS_LEADER)])
+    if (!context.mon_moving /* only for player-initiated attacks */
+        && mtmp->mnum == quest_info(MS_LEADER))
     {
         struct monst *mon;
         struct permonst *q_guardian = &mons[quest_info(MS_GUARDIAN)];

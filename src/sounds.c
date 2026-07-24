@@ -5,6 +5,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "qtext.h"
 #include <math.h>
 
 static boolean mon_is_gecko(struct monst *);
@@ -176,6 +177,7 @@ static int do_chat_npc_recharge(struct monst*);
 static int do_chat_npc_blessed_recharge(struct monst*);
 static int do_chat_npc_teach_spells(struct monst*);
 static int do_chat_watchman_reconciliation(struct monst*);
+static int do_chat_quest_reconciliation(struct monst*);
 static int do_chat_quest_chat(struct monst*);
 static int mon_in_room(struct monst *, int);
 static int spell_service_query(struct monst*, int, int, const char*, int64_t, const char*, int);
@@ -3765,6 +3767,20 @@ dochatmon(struct monst *mtmp)
             //    any.a_char, 0, ATR_NONE, NO_COLOR,
             //    available_chat_list[chatnum].name, MENU_UNSELECTED);
 
+            chatnum++;
+        }
+
+        /* Quest Leader/Guardian Reconciliation */
+        if ((msound == MS_LEADER || msound == MS_GUARDIAN)
+            && (!is_peaceful(mtmp)
+                || (msound == MS_LEADER
+                    && (is_qstatus_killed_leader()
+                        || is_qstatus_pissed_off()))))
+        {
+            Strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
+            available_chat_list[chatnum].function_ptr = &do_chat_quest_reconciliation;
+            available_chat_list[chatnum].stops_dialogue = TRUE;
+            available_chat_list[chatnum].category = CHAT_CATEGORY_COMMERCE;
             chatnum++;
         }
 
@@ -9550,6 +9566,354 @@ do_chat_watchman_reconciliation(struct monst *mtmp)
     {
         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_ON_SECOND_THOUGHT_MAYBE_ILL_HANG_YOU_ANYWAY);
         popup_talk_line_ex(mtmp, "On second thought, maybe I'll hang you anyway.", ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, TRUE);
+    }
+
+    stop_all_dialogue_of_mon_on_mobile(mtmp);
+    return 1;
+}
+
+static int
+do_chat_quest_reconciliation(struct monst *mtmp)
+{
+    if (!mtmp)
+        return 0;
+
+    int msound = mtmp->data->msound;
+    if (mtmp->m_id == quest_status.leader_m_id
+        && msound > MS_ANIMAL)
+        msound = MS_LEADER;
+
+    int64_t umoney;
+    int64_t u_pay;
+    int64_t reconcile_cost;
+    char qbuf[QBUFSZ];
+
+    multi = 0;
+    umoney = money_cnt(invent);
+
+    if (!m_speak_check(mtmp))
+        return 0;
+
+    /* Not on the quest home level — disoriented */
+    if (!Is_qstart(&u.uz)) {
+        char lbuf[BUFSZ];
+        Sprintf(lbuf,
+            "%s is disoriented and uninterested in reconciliation.",
+            noittame_Monnam(mtmp));
+        popup_talk_line_ex(mtmp, lbuf,
+            ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
+        return 0;
+    }
+
+    /* If leader is dead, mourning — no reconciliation */
+    if (msound != MS_LEADER && is_qstatus_leader_is_dead()) 
+    {
+        char lbuf[BUFSZ];
+        Sprintf(lbuf,
+            "%s is mourning for %s and is uninterested in reconciliation.",
+            noittame_Monnam(mtmp),
+            pm_common_name(&mons[urole.ldrnum]));
+        popup_talk_line_ex(mtmp, lbuf,
+            ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
+        return 0;
+    }
+
+    /* Find leader and check their form */
+    struct monst *mon;
+    struct monst *leader = NULL;
+    boolean leader_in_proper_form = FALSE;
+    boolean leader_is_polymorphed = FALSE;
+
+    /* If we're talking to the leader, use them directly */
+    if (msound == MS_LEADER) {
+        leader = mtmp;
+        if (mtmp->data->msound > MS_ANIMAL)
+            leader_in_proper_form = TRUE;
+        if (mtmp->data != &mons[urole.ldrnum])
+            leader_is_polymorphed = TRUE;
+    } else {
+        /* Search for the leader on this level */
+        for (mon = fmon; mon; mon = mon->nmon) {
+            if (DEADMONSTER(mon))
+                continue;
+            if (mon->m_id == quest_status.leader_m_id) {
+                leader = mon;
+                if (mon->data->msound > MS_ANIMAL)
+                    leader_in_proper_form = TRUE;
+                if (mon->data != &mons[urole.ldrnum])
+                    leader_is_polymorphed = TRUE;
+                break;
+            }
+        }
+    }
+
+    /*
+     * Leader not found on the current level and not dead.
+     * Perhaps on another level — refuse reconciliation.
+     */
+    if (!leader && msound != MS_LEADER && !is_qstatus_leader_is_dead())
+    {
+        char lbuf[BUFSZ];
+        Sprintf(lbuf,
+            "%s is uninterested in reconciliation, as %s cannot be found.",
+            noittame_Monnam(mtmp),
+            mons[urole.ldrnum].mname);
+        popup_talk_line_ex(mtmp, lbuf,
+            ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
+        return 0;
+    }
+
+    boolean was_leader_peaceful = FALSE;
+    if (leader)
+        was_leader_peaceful = is_peaceful(leader);
+    /*
+     * Guardian talking, but leader is zombie/slime/mindless.
+     * The guardian is horrified and refuses.
+     */
+    if (msound == MS_GUARDIAN && leader
+        && !leader_in_proper_form) {
+        char lbuf[BUFSZ];
+        Sprintf(lbuf,
+            "%s is horrified by the state of %s and is uninterested in reconciliation.",
+            noittame_Monnam(mtmp),
+            mons[urole.ldrnum].mname);
+        popup_talk_line_ex(mtmp, lbuf,
+            ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
+        return 0;
+    }
+
+    /*
+     * Leader is polymorphed into a speaking form but not
+     * their original form. They can talk but won't
+     * reconcile until reverted.
+     */
+    if (msound == MS_LEADER && leader_is_polymorphed) {
+        char lbuf[BUFSZ];
+        Sprintf(lbuf,
+            "%s says that %s needs to be reverted to %s normal form first.",
+            noittame_Monnam(mtmp), mhe(mtmp), mhis(mtmp));
+        popup_talk_line_ex(mtmp, lbuf,
+            ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
+        return 0;
+    }
+
+    /* Too injured to talk */
+    if (msound != MS_LEADER && mtmp->mhp < (3 * mtmp->mhpmax) / 4) {
+        char lbuf[BUFSZ];
+        Sprintf(lbuf, "%s is in no mood for talking.",
+            noittame_Monnam(mtmp));
+        popup_talk_line_ex(mtmp, lbuf,
+            ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
+        return 0;
+    }
+
+    /*
+     * Check whether reconciliation is actually needed.
+     * If the leader is already peaceful and no quest flags
+     * are blocking, there's nothing to reconcile.
+     */
+    boolean needs_pacification = !is_peaceful(mtmp);
+    boolean needs_flag_fix = is_qstatus_pissed_off()
+                             || is_qstatus_killed_leader();
+    boolean any_hostile_guardian = FALSE;
+
+    /* Count angry quest guardians */
+    int angry_guardian_count = 0;
+    for (mon = fmon; mon; mon = mon->nmon) {
+        if (DEADMONSTER(mon))
+            continue;
+        if (mon->data->msound == MS_GUARDIAN
+            && !is_peaceful(mon)) {
+            angry_guardian_count++;
+            any_hostile_guardian = TRUE;
+        }
+    }
+
+    if (!needs_pacification && !needs_flag_fix
+        && !any_hostile_guardian) {
+        char lbuf[BUFSZ];
+        Sprintf(lbuf,
+            "%s does not seem to be in need of reconciliation.",
+            noittame_Monnam(mtmp));
+        popup_talk_line_ex(mtmp, lbuf,
+            ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
+        return 0;
+    }
+
+    /* Determine cost using unified formula */
+    boolean was_lkilled = is_qstatus_killed_leader();
+    int leader_factor = was_lkilled ? 2
+                      : (msound == MS_LEADER
+                         && !is_peaceful(mtmp)) ? 1
+                      : 0;
+
+    reconcile_cost = max(1L,
+        (int64_t)(((2000 + u.ulevel * 200) * leader_factor
+        + u.ulevel * 100
+        + angry_guardian_count * 150
+        + context.quest_guardians_killed * 300)
+        * service_cost_charisma_adjustment(
+              ACURR(A_CHA))));
+
+    Sprintf(qbuf,
+        "%s would accept to reconciliate for %lld %s. Agree?",
+        noittame_Monnam(mtmp),
+        (long long)reconcile_cost,
+        currency(reconcile_cost));
+
+    switch (yn_query_mon(mtmp, qbuf)) {
+    default:
+        stop_all_dialogue_of_mon_on_mobile(mtmp);
+        return 0;
+    case 'y':
+        if (umoney < reconcile_cost) {
+            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+            You_ex1_popup(
+                "don't have enough money for that!",
+                "Not Enough Money",
+                ATR_NONE, CLR_MSG_FAIL,
+                NO_GLYPH, POPUP_FLAGS_NONE);
+            stop_all_dialogue_of_mon_on_mobile(mtmp);
+            return 0;
+        }
+        u_pay = reconcile_cost;
+        break;
+    }
+
+    money2mon(mtmp, u_pay);
+    bot();
+
+    /* === Revert quest flags === */
+    set_qstatus_pissed_off(FALSE);
+    quest_status.not_ready = 0;
+    context.quest_guardians_killed = 0;
+
+    /* === Pacify leader and guardians === */
+    if (leader && leader_in_proper_form
+        && !is_peaceful(leader)) {
+        set_mon_mpeaceful(leader, 1);
+        if (isok(context.leader_start_x, context.leader_start_y))
+            leader->mstrategy &= ~STRAT_WAITMASK;
+        else
+            leader->mstrategy |= STRAT_CLOSE;
+        newsym(leader->mx, leader->my);
+    }
+
+    int calmed_count = 0;
+    const char *guardian_name = NULL;
+    for (mon = fmon; mon; mon = mon->nmon) {
+        if (DEADMONSTER(mon))
+            continue;
+        if (mon->data->msound == MS_GUARDIAN
+            && !is_peaceful(mon)) {
+            set_mon_mpeaceful(mon, 1);
+            newsym(mon->mx, mon->my);
+            if (!guardian_name)
+                guardian_name =
+                    pm_common_name(mon->data);
+            calmed_count++;
+        }
+    }
+
+    play_sfx_sound(SFX_BUY_FROM_NPC);
+
+    /* === Handle resurrection quest flow === */
+    boolean leader_text_shown = FALSE;
+    if (was_lkilled) 
+    {
+        set_qstatus_killed_leader(FALSE);
+
+        if (msound == MS_LEADER) 
+        {
+            /*
+             * Leader reconciliation: show gratitude
+             * directly. Leader refers to self.
+             * If leader was hostile, prepend "calms
+             * down and".
+             */
+            leader_text_shown = TRUE;
+            char tbuf[BUFSZ];
+            Sprintf(tbuf,
+                "%s %sthanks you for bringing %s back from the dead.",
+                Monnam(mtmp), !was_leader_peaceful ? "calms down and " : "", mhim(mtmp));
+
+            if (is_uhave_questart()) {
+                struct obj *otmp;
+                popup_talk_line_ex(mtmp, tbuf,
+                    ATR_NONE, CLR_MSG_HINT, TRUE, FALSE);
+                for (otmp = invent; otmp; otmp = otmp->nobj)
+                    if (is_quest_artifact(otmp))
+                        break;
+                finish_quest(otmp);
+            } else if (is_qstatus_got_thanks()) {
+                popup_talk_line_ex(mtmp, tbuf,
+                    ATR_NONE, CLR_MSG_HINT, TRUE, FALSE);
+                qt_pager_ex(mtmp, QT_POSTHANKS,
+                    ATR_NONE, NO_COLOR, TRUE);
+            } else if (is_qstatus_killed_nemesis()
+                       || is_qstatus_touched_artifact()) {
+                popup_talk_line_ex(mtmp, tbuf,
+                    ATR_NONE, CLR_MSG_HINT, TRUE, FALSE);
+                qt_pager_ex(mtmp, rn1(10, QT_ENCOURAGE),
+                    ATR_NONE, NO_COLOR, TRUE);
+            } else {
+                char tbuf2[BUFSZ];
+                if (!is_qstatus_got_quest()) {
+                    Sprintf(tbuf2, "%s %sthanks you for bringing %s back from the dead%s and gives you the quest as a sign of gratitude.",
+                        Monnam(mtmp), !was_leader_peaceful ? "calms down, " : "", mhim(mtmp), !was_leader_peaceful ? "," : "");
+                    popup_talk_line_ex(mtmp, tbuf2,
+                        ATR_NONE, CLR_MSG_HINT, TRUE, FALSE);
+                    qt_pager_ex(mtmp, QT_ASSIGNQUEST, ATR_NONE, CLR_MSG_HINT, TRUE);
+                    set_qstatus_got_quest(TRUE);
+                } else {
+                    Sprintf(tbuf2, "%s %sthanks you for bringing %s back from the dead.",
+                        Monnam(mtmp), !was_leader_peaceful ? "calms down and " : "", mhim(mtmp));
+                    popup_talk_line_ex(mtmp, tbuf2,
+                        ATR_NONE, CLR_MSG_HINT, TRUE, FALSE);
+                }
+            }
+        } else {
+            /*
+             * Guardian reconciliation: set gratitude
+             * flag so the leader delivers the text
+             * when the player talks to them next.
+             */
+            set_qstatus_leader_gratitude(TRUE);
+            set_qstatus_said_grateful(FALSE);
+        }
+    }
+
+    if (!leader_text_shown)
+    {
+        /* === Print calm-down messages === */
+        boolean leader_calmed = (leader && leader_in_proper_form
+            && is_peaceful(leader) && canspotmon(leader)
+            && !was_leader_peaceful);
+        boolean guardians_calmed = (calmed_count > 0 && guardian_name);
+
+        if (leader_calmed && guardians_calmed)
+        {
+            char lbuf[BUFSZ];
+            Sprintf(lbuf, "%s and the %s calm down.",
+                Monnam(leader),
+                calmed_count > 1 ? makeplural(guardian_name) : guardian_name);
+            pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, lbuf, "Reconciliation", TRUE);
+        }
+        else if (leader_calmed)
+        {
+            char lbuf[BUFSZ];
+            Sprintf(lbuf, "%s calms down.", Monnam(leader));
+            pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, lbuf, "Reconciliation", TRUE);
+        }
+        else if (guardians_calmed)
+        {
+            char lbuf[BUFSZ];
+            if (calmed_count > 1)
+                Sprintf(lbuf, "The %s calm down.", makeplural(guardian_name));
+            else
+                Sprintf(lbuf, "The %s calms down.", guardian_name);
+            pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, lbuf, "Reconciliation", TRUE);
+        }
     }
 
     stop_all_dialogue_of_mon_on_mobile(mtmp);

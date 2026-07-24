@@ -1140,7 +1140,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         res = 1;
         if (disguised_mimic)
             seemimic(mtmp);
-        if ((mtmp->cham || has_mmonst(mtmp)) && !has_unchanging(mtmp))
+        if ((mtmp->cham != NON_PM || has_mmonst(mtmp)) && !has_unchanging(mtmp))
             revert_mon_polymorph(mtmp, FALSE, TRUE, TRUE);
         if (!has_cancellation_resistance(mtmp))
         {
@@ -1158,7 +1158,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         res = 1;
         if (disguised_mimic)
             seemimic(mtmp);
-        if ((mtmp->cham || has_mmonst(mtmp)) && !has_unchanging(mtmp))
+        if ((mtmp->cham != NON_PM || has_mmonst(mtmp)) && !has_unchanging(mtmp))
             revert_mon_polymorph(mtmp, FALSE, TRUE, TRUE);
         /* Unaffected by cancellation resistance */
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
@@ -2910,7 +2910,8 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
         return (struct monst *) 0;
     }
 
-    if (cant_revive(&montype, TRUE, corpse)) 
+    boolean notrevivable = cant_revive(&montype, TRUE, corpse);
+    if (notrevivable)
     {
         /* make a zombie or doppelganger instead */
         /* note: montype has changed; mptr keeps old value for newcham() */
@@ -3083,6 +3084,9 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
         mtmp->mhp = eaten_stat(mtmp->mhp, corpse);
     /* track that this monster was revived at least once */
     mtmp->mrevived = 1;
+
+    if (by_hero && animateintomon < 0 && !notrevivable && mtmp->data->msound == MS_GUARDIAN && mtmp->mnum == quest_info(MS_GUARDIAN) && context.quest_guardians_killed > 0)
+        context.quest_guardians_killed--;
 
     if (animateintomon >= 0)
     {

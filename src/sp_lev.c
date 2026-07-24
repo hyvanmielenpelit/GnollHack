@@ -2103,6 +2103,13 @@ create_monster(monster *m, struct mkroom *croom)
                 discard_minvent(mtmp);
             invent_carrying_monster = mtmp;
         }
+
+        /* This is the original leader position */
+        if (mtmp->data->msound == MS_LEADER && quest_info(MS_LEADER) == mtmp->mnum) 
+        {
+            context.leader_start_x = x;
+            context.leader_start_y = y;
+        }
     }
 }
 

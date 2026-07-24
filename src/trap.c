@@ -676,7 +676,8 @@ animate_statue(struct obj *statue, xchar x, xchar y, int cause, int *fail_reason
     static const char historic_statue_is_gone[] =
         "that the historic statue is now gone";
 
-    if (cant_revive(&mnum, TRUE, statue)) 
+    boolean notrevivable = cant_revive(&mnum, TRUE, statue);
+    if (notrevivable)
     {
         /* mnum has changed; we won't be animating this statue as itself */
         if (mnum != PM_DOPPELGANGER)
@@ -884,6 +885,9 @@ animate_statue(struct obj *statue, xchar x, xchar y, int cause, int *fail_reason
     /* statue no longer exists */
     if (!ogone)
         delobj(statue);
+
+    if (!notrevivable && mon->data->msound == MS_GUARDIAN && mon->mnum == quest_info(MS_GUARDIAN) && context.quest_guardians_killed > 0)
+        context.quest_guardians_killed--;
 
     /* avoid hiding under nothing */
     if (x == u.ux && y == u.uy && Upolyd && hides_under(youmonst.data)

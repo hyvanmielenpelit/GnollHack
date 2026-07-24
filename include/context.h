@@ -260,8 +260,8 @@ struct context_info
     boolean reserved_boolA; // suppress_container_deletion_warning;
     boolean save_checkpoint;
     boolean is_click_looking; // if so, do not clip
-    boolean reserved_boolD;
-    boolean reserved_boolE;
+    xchar leader_start_x;
+    xchar leader_start_y;
     boolean reserved_boolF;
     boolean reserved_boolG;
 
@@ -276,7 +276,7 @@ struct context_info
     unsigned quick_pickaxe_obj_oid;
     unsigned quick_bag_obj_oid;
 
-    int reserved_int1;
+    int quest_guardians_killed;
     int reserved_int2;
     int reserved_int3;
     int reserved_int4;
