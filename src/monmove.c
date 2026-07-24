@@ -1337,7 +1337,7 @@ m_move(struct monst *mtmp, int after)
     if (!mtmp)
         return 3;
 
-    int appr;
+    int doapproach;
     xchar gx, gy, nix, niy, chcnt;
     int chi; /* could be schar except for stupid Sun-2 compiler */
     boolean likegold = 0, likegems = 0, likeobjs = 0, likemagic = 0,
@@ -1512,11 +1512,26 @@ m_move(struct monst *mtmp, int after)
     omy = mtmp->my;
     gx = mtmp->mux;
     gy = mtmp->muy;
-    appr = is_fleeing(mtmp) ? -1 : 1;
+    doapproach = is_fleeing(mtmp) ? -1 : 1;
+
+    boolean leader_returning = FALSE;
+
+    if (mtmp->m_id == quest_status.leader_m_id && is_peaceful(mtmp) && isok(context.leader_start_x, context.leader_start_y)) {
+        if (!(mtmp->mstrategy & STRAT_CLOSE)) {
+            if (mtmp->mx == context.leader_start_x && mtmp->my == context.leader_start_y) {
+                mtmp->mstrategy |= STRAT_CLOSE;
+            } else {
+                gx = context.leader_start_x;
+                gy = context.leader_start_y;
+                doapproach = 1;
+                leader_returning = TRUE;
+            }
+        }
+    }
 
     if (is_confused(mtmp) || is_stunned(mtmp) || (u.uswallow && mtmp == u.ustuck))
     {
-        appr = 0;
+        doapproach = 0;
     } 
     else 
     {
@@ -1528,16 +1543,16 @@ m_move(struct monst *mtmp, int after)
         if ((should_see && m_cannotsenseu(mtmp) && rn2(11))
             || is_obj_mappear(&youmonst,STRANGE_OBJECT)
             || (is_obj_mappear(&youmonst,GOLD_PIECE) && !likes_gold(ptr))
-            || (is_peaceful(mtmp) && !is_mon_isshk(mtmp)) /* allow shks to follow */
+            || (is_peaceful(mtmp) && !is_mon_isshk(mtmp) && !leader_returning) /* allow shks and returning leader to follow */
             || ((mtmp->mnum == PM_STALKER || ptr->mlet == S_BAT
                  || ptr->mlet == S_LIGHT) && !rn2(3)))
-            appr = 0;
+            doapproach = 0;
 
-        if (mtmp->mnum == PM_LEPRECHAUN && (appr == 1)
+        if (mtmp->mnum == PM_LEPRECHAUN && (doapproach == 1)
             && ((lepgold = findgold(mtmp->minvent))
                 && (lepgold->quan
                     > ((ygold = findgold(invent)) ? ygold->quan : 0L))))
-            appr = -1;
+            doapproach = -1;
 
         if (!should_see && can_track(ptr)) 
         {
@@ -1559,7 +1574,7 @@ m_move(struct monst *mtmp, int after)
         int throwrange = throws_rocks(youmonst.data) ? 20 : ACURRSTR / 2 + 1;
         boolean in_line = (lined_up(mtmp, FALSE, 0, FALSE, throwrange) && (distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= throwrange));
 
-        if (appr != 1 || !in_line) 
+        if (doapproach != 1 || !in_line) 
         {
             /* Monsters in combat won't pick stuff up, avoiding the
              * situation where you toss arrows at it and it has nothing
@@ -1687,14 +1702,14 @@ m_move(struct monst *mtmp, int after)
             goto look_for_obj;
         }
 
-        if (minr < SQSRCHRADIUS && appr == -1) 
+        if (minr < SQSRCHRADIUS && doapproach == -1) 
         {
             if (distmin(omx, omy, mtmp->mux, mtmp->muy) <= 3) 
             {
                 gx = mtmp->mux;
                 gy = mtmp->muy;
             } else
-                appr = 1;
+                doapproach = 1;
         }
     }
 
@@ -1753,8 +1768,8 @@ m_move(struct monst *mtmp, int after)
         nidist = dist2(nix, niy, gx, gy);
         /* allow monsters be shortsighted on some levels for balance */
         if (!is_peaceful(mtmp) && is_levflag_shortsighted(&level.flags)
-            && nidist > (couldsee(nix, niy) ? 144 : 36) && appr == 1)
-            appr = 0;
+            && nidist > (couldsee(nix, niy) ? 144 : 36) && doapproach == 1)
+            doapproach = 0;
         if (is_unicorn(ptr) && is_levflag_noteleport(&level.flags))
         {
             /* on noteleport levels, perhaps we cannot avoid hero */
@@ -1774,7 +1789,7 @@ m_move(struct monst *mtmp, int after)
             if (MON_AT(nx, ny) && (info[i] & ALLOW_MDISP)
                 && !(info[i] & ALLOW_M) && !better_with_displacing)
                 continue;
-            if (appr != 0) {
+            if (doapproach != 0) {
                 mtrk = &mtmp->mtrack[0];
                 for (j = 0; j < jcnt; mtrk++, j++)
                     if (nx == mtrk->x && ny == mtrk->y)
@@ -1784,8 +1799,8 @@ m_move(struct monst *mtmp, int after)
 
             nearer = ((ndist = dist2(nx, ny, gx, gy)) < nidist);
 
-            if ((appr == 1 && nearer) || (appr == -1 && !nearer)
-                || (!appr && !rn2(++chcnt)) || !mmoved) 
+            if ((doapproach == 1 && nearer) || (doapproach == -1 && !nearer)
+                || (!doapproach && !rn2(++chcnt)) || !mmoved) 
             {
                 nix = nx;
                 niy = ny;
@@ -2354,20 +2369,6 @@ set_apparxy(struct monst *mtmp)
  found_you:
         mx = u.ux;
         my = u.uy;
-    }
-
-    if (mtmp->m_id == quest_status.leader_m_id && !(mtmp->mstrategy & STRAT_CLOSE) && is_peaceful(mtmp)
-        && isok(context.leader_start_x, context.leader_start_y)) 
-    {
-        if (mtmp->mx == context.leader_start_x && mtmp->my == context.leader_start_y)
-        {
-            mtmp->mstrategy |= STRAT_CLOSE;
-        }
-        else
-        {
-            mx = context.leader_start_x;
-            my = context.leader_start_y;
-        }
     }
 
     mtmp->mux = mx;
