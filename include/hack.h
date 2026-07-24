@@ -873,4 +873,9 @@ extern void gnollhack_exit(int) NORETURN;
 #define Monnam_possessive_ex(m, noun, alt_of) \
     name_possessive_ex(mon_nam(m), (noun), TRUE, (alt_of))
 
+#define M_MOVE_NOMOVE_CAN_ATTACK    0
+#define M_MOVE_MOVED_CAN_ATTACK     1
+#define M_MOVE_DIED                 2
+#define M_MOVE_NOMOVE_NO_ATTACK     3
+
 #endif /* HACK_H */
