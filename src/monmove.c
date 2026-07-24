@@ -2267,10 +2267,11 @@ m_move(struct monst *mtmp, int after)
         {
             mtmp->mstrategy |= STRAT_CLOSE;
         }
-
-        check_boss_fight(mtmp);
     }
-    
+
+    if (mmoved != M_MOVE_DIED)
+        check_boss_fight(mtmp);
+
     return mmoved;
 }
 

@@ -4847,7 +4847,8 @@ setmangry(struct monst *mtmp, boolean via_attack)
     update_game_music();
 
     /* attacking your own quest leader will anger his or her guardians */
-    if (mtmp->data == &mons[quest_info(MS_LEADER)])
+    if (!context.mon_moving /* only for player-initiated attacks */
+        && mtmp->mnum == quest_info(MS_LEADER))
     {
         struct monst *mon;
         struct permonst *q_guardian = &mons[quest_info(MS_GUARDIAN)];
