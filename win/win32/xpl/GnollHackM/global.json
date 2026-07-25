@@ -1,5 +1,5 @@
 {
-    "sdk": {
-      "version": "10.0.302"
-    }
+  "sdk": {
+    "version": "11.0.100-preview.6"
+  }
 }
