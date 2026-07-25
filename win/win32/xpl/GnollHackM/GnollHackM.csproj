@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
@@ -377,6 +377,7 @@
 
 	<ItemGroup>
 		<Compile Include="..\GnollHackX\GnollHackX\BackgroundView.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\MapRenderProfiler.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHGame.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\UIUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\CustomCanvasView.cs" />
