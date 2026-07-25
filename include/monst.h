@@ -174,6 +174,7 @@ struct monst {
 #define MON_FLAGS_DEBUG_DEALLOCATED             0x00001000UL
 #define MON_FLAGS_ORC_AND_A_PIE                 0x00002000UL
 #define MON_FLAGS_ADD_UNSUMMON_TIMER            0x00004000UL
+#define MON_FLAGS_QUEST_COMPANION               0x00008000UL
 
     uint64_t mstrategy; /* for monsters with mflag3: current strategy */
 
@@ -214,6 +215,9 @@ struct monst {
 };
 
 #define newmonst() (struct monst *) alloc(sizeof (struct monst))
+
+#define is_mon_quest_companion(m) (((m)->mon_flags & MON_FLAGS_QUEST_COMPANION) != 0)
+#define set_mon_quest_companion(m, val) ((val) ? ((m)->mon_flags |= MON_FLAGS_QUEST_COMPANION) : ((m)->mon_flags &= ~MON_FLAGS_QUEST_COMPANION))
 
 /* these are in mspeed */
 #define MSLOW 1 /* slowed monster */

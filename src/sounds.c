@@ -9670,8 +9670,8 @@ do_chat_quest_reconciliation(struct monst *mtmp)
      * Guardian talking, but leader is zombie/slime/mindless.
      * The guardian is horrified and refuses.
      */
-    if (msound == MS_GUARDIAN && leader
-        && !leader_in_proper_form) {
+    if (msound == MS_GUARDIAN && leader && !leader_in_proper_form) 
+    {
         char lbuf[BUFSZ];
         Sprintf(lbuf,
             "%s is horrified by the state of %s and is uninterested in reconciliation.",
@@ -9687,23 +9687,22 @@ do_chat_quest_reconciliation(struct monst *mtmp)
      * their original form. They can talk but won't
      * reconcile until reverted.
      */
-    if (msound == MS_LEADER && leader_is_polymorphed) {
+    if (msound == MS_LEADER && leader_is_polymorphed) 
+    {
         char lbuf[BUFSZ];
         Sprintf(lbuf,
             "%s says that %s needs to be reverted to %s normal form first.",
             noittame_Monnam(mtmp), mhe(mtmp), mhis(mtmp));
-        popup_talk_line_ex(mtmp, lbuf,
-            ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
+        popup_talk_line_ex(mtmp, lbuf, ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
         return 0;
     }
 
     /* Too injured to talk */
-    if (msound != MS_LEADER && mtmp->mhp < (3 * mtmp->mhpmax) / 4) {
+    if (msound != MS_LEADER && mtmp->mhp < (3 * mtmp->mhpmax) / 4) 
+    {
         char lbuf[BUFSZ];
-        Sprintf(lbuf, "%s is in no mood for talking.",
-            noittame_Monnam(mtmp));
-        popup_talk_line_ex(mtmp, lbuf,
-            ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
+        Sprintf(lbuf, "%s is in no mood for talking.", noittame_Monnam(mtmp));
+        popup_talk_line_ex(mtmp, lbuf, ATR_NONE, CLR_MSG_TALK_ANGRY, TRUE, FALSE);
         return 0;
     }
 
@@ -9719,13 +9718,19 @@ do_chat_quest_reconciliation(struct monst *mtmp)
 
     /* Count angry quest guardians */
     int angry_guardian_count = 0;
-    for (mon = fmon; mon; mon = mon->nmon) {
+    int angry_companion_count = 0;
+    for (mon = fmon; mon; mon = mon->nmon)
+    {
         if (DEADMONSTER(mon))
             continue;
-        if (mon->data->msound == MS_GUARDIAN
-            && !is_peaceful(mon)) {
+        if (mon->data->msound == MS_GUARDIAN && !is_peaceful(mon)) 
+        {
             angry_guardian_count++;
             any_hostile_guardian = TRUE;
+        }
+        else if (is_mon_quest_companion(mon) && !is_peaceful(mon))
+        {
+            angry_companion_count++;
         }
     }
 
@@ -9751,7 +9756,8 @@ do_chat_quest_reconciliation(struct monst *mtmp)
         (int64_t)(((2000 + u.ulevel * 200) * leader_factor
         + u.ulevel * 100
         + angry_guardian_count * 150
-        + context.quest_guardians_killed * 300)
+        + angry_companion_count * 150
+        + context.quest_guardians_and_companions_killed * 300)
         * service_cost_charisma_adjustment(
               ACURR(A_CHA))));
 
@@ -9786,7 +9792,7 @@ do_chat_quest_reconciliation(struct monst *mtmp)
     /* === Revert quest flags === */
     set_qstatus_pissed_off(FALSE);
     quest_status.not_ready = 0;
-    context.quest_guardians_killed = 0;
+    context.quest_guardians_and_companions_killed = 0;
 
     /* === Pacify leader and guardians === */
     if (leader && leader_in_proper_form
@@ -9801,17 +9807,22 @@ do_chat_quest_reconciliation(struct monst *mtmp)
 
     int calmed_count = 0;
     const char *guardian_name = NULL;
-    for (mon = fmon; mon; mon = mon->nmon) {
+    for (mon = fmon; mon; mon = mon->nmon) 
+    {
         if (DEADMONSTER(mon))
             continue;
-        if (mon->data->msound == MS_GUARDIAN
-            && !is_peaceful(mon)) {
+        if (mon->data->msound == MS_GUARDIAN && !is_peaceful(mon)) 
+        {
             set_mon_mpeaceful(mon, 1);
             newsym(mon->mx, mon->my);
             if (!guardian_name)
-                guardian_name =
-                    pm_common_name(mon->data);
+                guardian_name = pm_common_name(mon->data);
             calmed_count++;
+        }
+        else if (is_mon_quest_companion(mon) && !is_peaceful(mon))
+        {
+            set_mon_mpeaceful(mon, 1);
+            newsym(mon->mx, mon->my);
         }
     }
 

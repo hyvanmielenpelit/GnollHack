@@ -1840,6 +1840,7 @@ E struct obj* mongets_noinit_item(struct monst*, int,  int);
 E int64_t mongetsgold(struct monst*, int64_t);
 E int golemhp(int);
 E boolean peace_minded(struct permonst *, boolean);
+E boolean is_mon_peace_minded(struct monst*, boolean);
 E void set_mhostility(struct monst *);
 E void newmcorpsenm(struct monst *);
 E void freemcorpsenm(struct monst *);

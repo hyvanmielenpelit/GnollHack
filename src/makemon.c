@@ -2695,6 +2695,7 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
     boolean reviving = ((mmflags2 & MM2_REVIVING) != 0);
     boolean randomize_subtype = ((mmflags2 & MM2_RANDOMIZE_SUBTYPE) != 0);
     boolean mon_name_known = ((mmflags2 & MM2_NAME_KNOWN) != 0);
+    boolean mon_quest_companion = ((mmflags2 & MM2_QUEST_COMPANION) != 0);
 
     uint64_t gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
     int origin_x = x, origin_y = y;
@@ -3003,10 +3004,11 @@ makemon_limited(struct permonst *ptr, int x, int y, uint64_t mmflags, uint64_t m
         mtmp->my0 = origin_y;
     }
 
+    set_mon_quest_companion(mtmp, mon_quest_companion);
     set_mon_mwantstodrop(mtmp, TRUE);
     set_mon_mwantstomove(mtmp, TRUE);
     set_mon_mcanmove(mtmp, TRUE);
-    set_mon_mpeaceful(mtmp, (mmflags & MM_ANGRY) ? FALSE : (mmflags & MM_PEACEFUL) ? TRUE : peace_minded(ptr, TRUE));
+    set_mon_mpeaceful(mtmp, (mmflags & MM_ANGRY) ? FALSE : (mmflags & MM_PEACEFUL) ? TRUE : is_mon_peace_minded(mtmp, TRUE));
 
     switch (ptr->mlet) 
     {
@@ -4412,6 +4414,14 @@ peace_minded(struct permonst *ptr, boolean dorandomize)
      */
     return dorandomize ? (boolean) (!!rn2(16 + (u.ualign.record < -15 ? -15 : u.ualign.record))
                       && !!rn2(2 + abs(mal))) : TRUE;
+}
+
+boolean
+is_mon_peace_minded(struct monst* mon, boolean dorandomize)
+{
+    if (!mon || !mon->data)
+        return FALSE;
+    return peace_minded(mon->data, dorandomize) || is_mon_quest_companion(mon);
 }
 
 /* Set mhostility to have the proper effect on player alignment if monster is

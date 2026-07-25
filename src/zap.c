@@ -3085,8 +3085,10 @@ revive(struct obj *corpse, boolean by_hero, int animateintomon, boolean replaceu
     /* track that this monster was revived at least once */
     mtmp->mrevived = 1;
 
-    if (by_hero && animateintomon < 0 && !notrevivable && mtmp->data->msound == MS_GUARDIAN && mtmp->mnum == quest_info(MS_GUARDIAN) && context.quest_guardians_killed > 0)
-        context.quest_guardians_killed--;
+    if (by_hero && animateintomon < 0 && !notrevivable 
+        && ((mtmp->data->msound == MS_GUARDIAN && mtmp->mnum == quest_info(MS_GUARDIAN)) || is_mon_quest_companion(mtmp)) 
+        && context.quest_guardians_and_companions_killed > 0)
+        context.quest_guardians_and_companions_killed--;
 
     if (animateintomon >= 0)
     {

@@ -121,7 +121,7 @@ MONSTER:('@',"Twoflower"),(64,03) {
 # The treasure of Twoflower
 OBJECT:('(',"chest"),(64,03)
 # Twoflower's Luggage
-MONSTER:('m',"giant luggage"),(65,03)
+MONSTER:('m',"giant luggage"),(65,03),quest_companion
 # Magic chest
 OBJECT:('(',"magic chest"),(27,02)
 

@@ -396,6 +396,7 @@ extern short tile2enlargement[MAX_TILES];
 #define MM2_REVIVING                    0x00000020UL
 #define MM2_RANDOMIZE_SUBTYPE           0x00000040UL
 #define MM2_NAME_KNOWN                  0x00000080UL
+#define MM2_QUEST_COMPANION             0x00000100UL
 
 #define NO_MKCLASS_FLAGS                0x00000000UL /* use this rather than plain 0 */
 #define MKCLASS_FLAGS_IGNORE_DIFFICULTY 0x00000001UL /* ignore difficulty restrictions */

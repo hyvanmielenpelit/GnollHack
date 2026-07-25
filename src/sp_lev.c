@@ -1805,6 +1805,8 @@ create_monster(monster *m, struct mkroom *croom)
 
     if (m->maxhp)
         mmflags |= MM_MAX_HP;
+    if (m->quest_companion)
+        mmflags2 |= MM2_QUEST_COMPANION;
     if (m->use_boss_hostility)
     {
         struct monst* lboss;
@@ -4136,6 +4138,10 @@ spo_monster(struct sp_coder *coder)
         case SP_M_V_MAXHP:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpmons.maxhp = (schar)OV_i(parm);
+            break;
+        case SP_M_V_QUEST_COMPANION:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpmons.quest_companion = (schar)OV_i(parm);
             break;
         case SP_M_V_LEVEL_ADJUSTMENT:
             if (OV_typ(parm) == SPOVAR_INT)

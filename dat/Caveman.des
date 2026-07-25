@@ -59,7 +59,7 @@ DOOR:locked,(19,06)
 ALTAR:(36,02),coaligned,shrine
 # Shaman Karnov
 MONSTER:('@',"Shaman Karnov"),(35,02)
-MONSTER: ('f',"large saber-tooth tiger"),(33,02),peaceful
+MONSTER: ('f',"large saber-tooth tiger"),(33,02),peaceful,quest_companion
 # The treasure of Shaman Karnov
 OBJECT:('(',"chest"),(34,02)
 CARPET:(33,01,35,03),carpet_brown_hide

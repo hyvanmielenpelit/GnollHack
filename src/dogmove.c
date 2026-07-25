@@ -1674,7 +1674,7 @@ find_friends(struct monst *mtmp, struct monst *mtarg, int maxdist)
             } else {
                 /* Quest leaders and guardians are always seen */
                 if (pal->data->msound == MS_LEADER
-                    || pal->data->msound == MS_GUARDIAN)
+                    || pal->data->msound == MS_GUARDIAN || is_mon_quest_companion(pal))
                     return 1;
             }
         }
@@ -1715,7 +1715,7 @@ score_targ(struct monst *mtmp, struct monst *mtarg)
 
         /* Never target quest friendlies */
         if (mtarg->data->msound == MS_LEADER
-            || mtarg->data->msound == MS_GUARDIAN)
+            || mtarg->data->msound == MS_GUARDIAN || is_mon_quest_companion(mtarg))
             return -5000L;
         /* D: Fixed angelic beings using gaze attacks on coaligned priests */
         if (faith1 && faith2 && align1 == align2 && is_peaceful(mtarg)) 
@@ -2071,7 +2071,7 @@ dog_move(struct monst *mtmp, int after)
                     || !check_mon_wants_to_attack_target(mtmp, mtmp2)
                     || (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
                     || (is_peaceful(mtmp2) && (mtmp2->data->msound == MS_GUARDIAN
-                         || mtmp2->data->msound == MS_LEADER || (!mon_has_bloodlust(mtmp)
+                         || mtmp2->data->msound == MS_LEADER || is_mon_quest_companion(mtmp2) || (!mon_has_bloodlust(mtmp)
                         && !Conflict && !is_crazed(mtmp) && !mon_has_bloodlust(mtmp))))
                     || (touch_petrifies(mtmp2->data) && !resists_ston(mtmp) && !MON_WEP(mtmp))
                     )

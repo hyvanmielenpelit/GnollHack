@@ -1455,7 +1455,7 @@ getlev(int fd, int pid, xchar lev, boolean ghostly)
                     (is_unicorn(mtmp->data)
                      && sgn(u.ualign.type) == sgn(mtmp->data->maligntyp))
                         ? TRUE
-                        : peace_minded(mtmp->data, TRUE));
+                        : is_mon_peace_minded(mtmp, TRUE));
             set_mhostility(mtmp);
             newsym(mtmp->mx, mtmp->my);
         } else if (elapsed > 0L) {

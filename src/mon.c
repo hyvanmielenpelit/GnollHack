@@ -4424,10 +4424,10 @@ cleanup:
             adjalign((ALIGNLIM / 8));
         }
     }
-    else if (mdat->msound == MS_GUARDIAN) 
+    else if (mdat->msound == MS_GUARDIAN || is_mon_quest_companion(mtmp)) 
     { /* Bad */
         adjalign(-(ALIGNLIM / 8));
-        context.quest_guardians_killed++;
+        context.quest_guardians_and_companions_killed++;
         if (!Hallucination)
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "That was probably a bad idea...");
         else
@@ -4851,7 +4851,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
         && mtmp->mnum == quest_info(MS_LEADER))
     {
         struct monst *mon;
-        struct permonst *q_guardian = &mons[quest_info(MS_GUARDIAN)];
+        int guardian_mnum = quest_info(MS_GUARDIAN);
         int got_mad = 0;
 
         /* guardians will sense this attack even if they can't see it */
@@ -4859,7 +4859,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
         {
             if (DEADMONSTER(mon))
                 continue;
-            if (mon->data == q_guardian && is_mon_mpeaceful(mon))
+            if ((mon->mnum == guardian_mnum || is_mon_quest_companion(mon)) && is_mon_mpeaceful(mon))
             {
                 set_mon_mpeaceful(mon, 0);
                 newsym(mon->mx, mon->my);
@@ -4869,7 +4869,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
         }
         if (got_mad && !Hallucination)
         {
-            const char *who = pm_common_name(q_guardian);
+            const char *who = pm_common_name(&mons[guardian_mnum]);
 
             if (got_mad > 1)
                 who = makeplural(who);

@@ -292,6 +292,7 @@ seen_traps	ST_RET(SEENTRAPS_ID);
 waitforu	ST_RET(WAITFORU_ID);
 protector	ST_RET(PROTECTOR_ID);
 maxhp		ST_RET(MAXHP_ID);
+quest_companion	ST_RET(QUEST_COMPANION_ID);
 level_boss	ST_RET(LEVEL_BOSS_ID);
 use_boss_hostility	ST_RET(BOSS_HOSTILITY_ID);
 has_backup	ST_RET(HAS_BACKUP_ID);

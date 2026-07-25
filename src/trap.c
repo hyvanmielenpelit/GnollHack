@@ -714,8 +714,7 @@ animate_statue(struct obj *statue, xchar x, xchar y, int cause, int *fail_reason
            mptr reflects the original form for use by newcham()) */
         if ((mnum == PM_DOPPELGANGER && mptr != &mons[PM_DOPPELGANGER])
             /* block quest guards from other roles */
-            || (mptr->msound == MS_GUARDIAN
-                && quest_info(MS_GUARDIAN) != mnum)) 
+            || (mptr->msound == MS_GUARDIAN && quest_info(MS_GUARDIAN) != mnum)) 
         {
             mon = makemon(&mons[PM_DOPPELGANGER], x, y,
                           MM_NO_MONSTER_INVENTORY | MM_NOCOUNTBIRTH | MM_ADJACENTOK);
@@ -886,8 +885,10 @@ animate_statue(struct obj *statue, xchar x, xchar y, int cause, int *fail_reason
     if (!ogone)
         delobj(statue);
 
-    if (!notrevivable && mon->data->msound == MS_GUARDIAN && mon->mnum == quest_info(MS_GUARDIAN) && context.quest_guardians_killed > 0)
-        context.quest_guardians_killed--;
+    if (!notrevivable 
+        && ((mon->data->msound == MS_GUARDIAN && mon->mnum == quest_info(MS_GUARDIAN)) || is_mon_quest_companion(mon)) 
+        && context.quest_guardians_and_companions_killed > 0)
+        context.quest_guardians_and_companions_killed--;
 
     /* avoid hiding under nothing */
     if (x == u.ux && y == u.uy && Upolyd && hides_under(youmonst.data)

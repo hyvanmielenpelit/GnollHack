@@ -276,7 +276,7 @@ struct context_info
     unsigned quick_pickaxe_obj_oid;
     unsigned quick_bag_obj_oid;
 
-    int quest_guardians_killed;
+    int quest_guardians_and_companions_killed;
     int reserved_int2;
     int reserved_int3;
     int reserved_int4;
