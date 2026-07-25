@@ -524,7 +524,7 @@ namespace GnollHackX.Controls
         private int _requestResourcePurge;
 
 #if GNH_MAUI
-        public CanvasTypes CanvasType { get; init; }
+        public CanvasTypes CanvasType { get; set; }
 #else
         public CanvasTypes CanvasType { get; set; }
 #endif
