@@ -4915,6 +4915,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
         };
         struct monst *mon;
         int mndx = mtmp->mnum;
+        boolean got_angry = FALSE;
 
         for (mon = fmon; mon; mon = mon->nmon) 
         {
@@ -4955,6 +4956,7 @@ setmangry(struct monst *mtmp, boolean via_attack)
                         {
                             monflee(mon, rn2(50) + 25, TRUE, !exclaimed);
                             exclaimed = TRUE;
+                            newsym(mon->mx, mon->my);
                         }
                         if (is_tame(mon)) 
                         {
@@ -4964,13 +4966,15 @@ setmangry(struct monst *mtmp, boolean via_attack)
                         else 
                         {
                             set_mon_mpeaceful(mon, 0);
+                            mtmp->mstrategy &= ~STRAT_WAITMASK;
                             adjalign(-1);
-                            update_game_music();
+                            got_angry = TRUE;
                             if (!exclaimed)
                             {
                                 play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_GET_ANGRY);
                                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gets angry!", Monnam(mon));
                             }
+                            newsym(mon->mx, mon->my);
                         }
                     }
                 } 
@@ -4984,10 +4988,15 @@ setmangry(struct monst *mtmp, boolean via_attack)
                         exclaimed = TRUE;
                     }
                     if (rn2(6))
+                    {
                         monflee(mon, rn2(25) + 15, TRUE, !exclaimed);
+                        newsym(mon->mx, mon->my);
+                    }
                 }
             }
         }
+        if (got_angry)
+            update_game_music();
     }
     flush_screen(1);
 }

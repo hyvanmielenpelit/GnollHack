@@ -3477,7 +3477,7 @@ dochatmon(struct monst *mtmp)
             && !is_watch(mtmp->data)
             && msound != MS_ORACLE
             && msound != MS_ARREST
-            && !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
+            && !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS || is_mon_quest_companion(mtmp))
             && mtmp->minvent && count_sellable_items(mtmp) > 0)
         {
             Strcpy(available_chat_list[chatnum].name, "Check items for sale");
@@ -3508,7 +3508,7 @@ dochatmon(struct monst *mtmp)
             && !is_mon_isnpc(mtmp)
             && msound != MS_ORACLE
             && msound != MS_ARREST
-            && !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
+            && !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS || is_mon_quest_companion(mtmp))
             )
         {
             Strcpy(available_chat_list[chatnum].name, "Ask to join the party");
@@ -3770,8 +3770,9 @@ dochatmon(struct monst *mtmp)
             chatnum++;
         }
 
-        /* Quest Leader/Guardian Reconciliation */
-        if ((msound == MS_LEADER || msound == MS_GUARDIAN)
+        /* Quest Leader/Guardian/Companion Reconciliation */
+        if ((msound == MS_LEADER || msound == MS_GUARDIAN || is_mon_quest_companion(mtmp))
+            && is_speaking(mtmp->data)
             && (!is_peaceful(mtmp)
                 || (msound == MS_LEADER
                     && (is_qstatus_killed_leader()
@@ -9735,7 +9736,7 @@ do_chat_quest_reconciliation(struct monst *mtmp)
     }
 
     if (!needs_pacification && !needs_flag_fix
-        && !any_hostile_guardian) {
+        && !any_hostile_guardian && angry_companion_count == 0) {
         char lbuf[BUFSZ];
         Sprintf(lbuf,
             "%s does not seem to be in need of reconciliation.",
