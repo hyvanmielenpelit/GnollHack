@@ -6272,6 +6272,7 @@ namespace GnollHackX.Pages.Game
             }
         }
     
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetSubLayerCount(ref MapData currentCell, ref LayerInfo currentLayerInfo, ObjectData currentObjCell, int layer_idx, out bool is_source_dir)
         {
             int sub_layer_cnt = 1;
@@ -6314,6 +6315,7 @@ namespace GnollHackX.Pages.Game
             return sub_layer_cnt;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         int GetSourceDirIndex(int layer_idx, int source_dir_main_idx)
         {
             int source_dir_idx = source_dir_main_idx;
@@ -6327,6 +6329,7 @@ namespace GnollHackX.Pages.Game
             return source_dir_idx;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         int GetUsedEnlargementIndex(int enlarg_idx)
         {
             int used_enl_idx = -1;
@@ -6478,6 +6481,7 @@ namespace GnollHackX.Pages.Game
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool GetEnlargementTileB(int enlargement, int enlarg_idx, bool hflip_glyph, bool vflip_glyph, int main_tile_idx, int anim_frame_idx, ref int ntile, ref int autodraw, ref int dx, ref int dy)
         {
             if (enlargement == 0 && enlarg_idx >= 0)
@@ -6841,6 +6845,7 @@ namespace GnollHackX.Pages.Game
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         float GetScaledYHeightChange(int layer_idx, int sub_layer_idx, int sub_layer_cnt, float height, int monster_height, int feature_doodad_height, float targetscale, bool is_monster_like_layer, bool tileflag_halfsize, ObjectDataItem otmp_round)
         {
             float scaled_y_height_change = 0;
@@ -6864,6 +6869,7 @@ namespace GnollHackX.Pages.Game
             return scaled_y_height_change;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void GetFlips(int signed_glyph, bool manual_hflip, bool manual_vflip, ref bool hflip_glyph, ref bool vflip_glyph)
         {
             int glyph = Math.Abs(signed_glyph);
@@ -6886,6 +6892,7 @@ namespace GnollHackX.Pages.Game
                 vflip_glyph = false;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void CheckShowingDetection(bool showing_detection, ref short obj_height, ref bool tileflag_floortile, ref bool tileflag_height_is_clipping)
         {
             if (showing_detection)
@@ -7182,6 +7189,7 @@ namespace GnollHackX.Pages.Game
         //private float[] _foundAnimationHigh = { 10f, 20f, 30f, 40f, 50f, 60f, 70f, 80f, 88f, 96f, 102f, 108f, 114f, 118f, 120f, 118f, 114f, 108f, 102f, 96f, 88f, 80f, 70f, 60f, 50f, 40f, 30f, 20f, 10f, 0f };
         private float[] _foundAnimationFactor = { 0.10f, 0.20f, 0.30f, 0.40f, 0.50f, 0.60f, 0.70f, 0.80f, 0.88f, 0.94f, 0.98f, 1.0f, 0.98f, 0.94f, 0.88f, 0.80f, 0.70f, 0.60f, 0.50f, 0.40f, 0.30f, 0.20f, 0.10f, 0f };
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void GetObjectMoveOffsets(int mapx, int mapy, ref MapData currentCell, ref LayerInfo currentLayerInfo, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, long moveIntervals, long generalcounterdiff, bool foundthisturn, int sub_layer_idx, int sub_layer_cnt, float targetscale, bool loc_is_you, float obj_height, ObjectDataItem otmp_round, ref float object_move_offset_x, ref float object_move_offset_y)
         {
             if(GHUtils.isok(object_origin_x, object_origin_y))
@@ -7210,6 +7218,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         int GetTileFromAnimation(GHAnimationTimerList localTimers, int ntile, int glyph, int mapx, int mapy, ref MapData currentCell, ref LayerInfo currentLayerInfo, int layer_idx, long generalcountervalue, bool is_monster_or_shadow_layer,
             ref int anim_frame_idx, ref int main_tile_idx, ref int autodraw)
         {
@@ -13533,6 +13542,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         bool DarkenedPos(ref LayerInfo currentLayerInfo)
         {
             bool darken;
@@ -13551,6 +13561,7 @@ namespace GnollHackX.Pages.Game
             return darken;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         int GetDarkenPercentage(ref LayerInfo currentLayerInfo, bool lighterDarkening)
         {
             bool uloc = ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0);
@@ -13560,6 +13571,7 @@ namespace GnollHackX.Pages.Game
             return darken_percentage;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void DoDarkening(SKCanvas canvas, SKPaint paint, float tx, float ty, float width, float height, int darken_percentage)
         {
             int val = (darken_percentage * 255) / 100;
@@ -13572,6 +13584,7 @@ namespace GnollHackX.Pages.Game
             paint.BlendMode = old_bm;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private SKColorFilter GetDarkeningColorFilter(int darken_percentage)
         {
             if (darken_percentage < 0) darken_percentage = 0;
@@ -13715,6 +13728,7 @@ namespace GnollHackX.Pages.Game
         /* Bit-packed cache key for darkened autodraw bitmaps (64 bits, all used).
          * Captures only fields that affect the rendered bitmap pixels.
          * o_id is intentionally excluded — visual identity is determined by otyp + charges + contents. */
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long ComputeDarkenedAutodrawCacheKey(
             int autodraw, int otyp, int darken_percentage,
             int item_charges, int item_special_quality, ulong contents_no,
@@ -13737,6 +13751,7 @@ namespace GnollHackX.Pages.Game
         }
 
         /* Bit-packed cache key: filterHash[32] | darkenPct[7] = 39 bits */
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long ComputeColorFilterCacheKey(SKColorFilter filter, int darkenPercentage)
         {
             return ((long)RuntimeHelpers.GetHashCode(filter) << 7)
@@ -13744,6 +13759,7 @@ namespace GnollHackX.Pages.Game
         }
 
         /* Bit-packed cache key: autodraw[8] | fillPct[7] | stage[2] = 17 bits */
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int ComputeAutodrawCacheKey(int autodraw, double fillPercentage, int stage)
         {
             return (autodraw << 9)
