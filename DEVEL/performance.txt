@@ -17,7 +17,7 @@ Android
   Workload:       36.1.69
   Test Device:    Google Pixel 6a
   Device OS:      Android 16
-  FPS:            50
+  FPS:            54 (52-56 typical, dropped to 50 (48-52) after a few min)
 
 iOS
 ---
