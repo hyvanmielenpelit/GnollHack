@@ -99,7 +99,7 @@ namespace GnollHackX
         public GHDrawCommand(SKMatrix matrix, SKColor paintColor, SKColorFilter paintColorFilter, int mapX, int mapY, AutoDrawParameterDefinition parameters)
         {
             Matrix = matrix;
-            SheetIdx = -1;
+            SheetIdx = 0;
             MapX = mapX;
             MapY = mapY;
             PaintColor = paintColor;

@@ -8536,15 +8536,20 @@ namespace GnollHackX.Pages.Game
                                                                     if (dc.IsAutoDraw)
                                                                     {
                                                                         SKImage usedDarkenedBitmap = null;
-                                                                        int darken_percentage = GetDarkenPercentage(ref _mapData[dc.MapX, dc.MapY].Layers, lighterDarkening);
-                                                                        AutoDrawParameterDefinition modadparams = dc.AutoDrawParameters;
-                                                                        modadparams.tx = 0;
-                                                                        modadparams.ty = 0;
-                                                                        modadparams.scaled_x_padding = 0;
-                                                                        modadparams.scaled_y_padding = 0;
-                                                                        modadparams.scale = 1;
-                                                                        modadparams.targetscale = 1;
-                                                                        SavedDarkenedAutodrawBitmap cachekey = new SavedDarkenedAutodrawBitmap(modadparams, darken_percentage);
+                                                                        int darken_percentage = GetDarkenPercentage(ref dcLayerInfo, lighterDarkening);
+                                                                        long cachekey = ComputeDarkenedAutodrawCacheKey(
+                                                                            dc.AutoDrawParameters.autodraw,
+                                                                            dc.AutoDrawParameters.otmp_round?.ObjData.otyp ?? 0,
+                                                                            darken_percentage,
+                                                                            dc.AutoDrawParameters.item_charges,
+                                                                            dc.AutoDrawParameters.item_special_quality,
+                                                                            dc.AutoDrawParameters.contents_no,
+                                                                            dc.AutoDrawParameters.tileflag_halfsize,
+                                                                            dc.AutoDrawParameters.tileflag_normalobjmissile,
+                                                                            dc.AutoDrawParameters.tileflag_fullsizeditem,
+                                                                            dc.AutoDrawParameters.is_inventory,
+                                                                            dc.AutoDrawParameters.item_lit,
+                                                                            dc.AutoDrawParameters.contents_id_sum);
                                                                         SKRect sourceRect = new SKRect(0, 0, dc.AutoDrawParameters.width, dc.AutoDrawParameters.height);
                                                                         SKRect destRect = new SKRect(dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding,
                                                                             dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding,
@@ -8635,8 +8640,8 @@ namespace GnollHackX.Pages.Game
                                                                     else
                                                                     {
                                                                         SKImage usedDarkenedBitmap = null;
-                                                                        int darken_percentage = GetDarkenPercentage(ref _mapData[dc.MapX, dc.MapY].Layers, lighterDarkening);
-                                                                        SavedDarkenedBitmap cachekey = new SavedDarkenedBitmap(dc.SourceBitmap, dc.SourceRect, darken_percentage);
+                                                                        int darken_percentage = GetDarkenPercentage(ref dcLayerInfo, lighterDarkening);
+                                                                        long cachekey = ComputeDarkenedBitmapCacheKey(dc.SheetIdx, dc.SourceRect, darken_percentage);
                                                                         SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
                                                                         if (_darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap) && usedDarkenedBitmap != null)
                                                                         {
