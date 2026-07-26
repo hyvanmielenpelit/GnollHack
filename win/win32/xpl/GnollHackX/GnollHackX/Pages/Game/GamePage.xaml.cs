@@ -8164,6 +8164,7 @@ namespace GnollHackX.Pages.Game
 
                                                             ref MapData sourceCell = ref _mapData[source_x, source_y];
                                                             ref LayerInfo sourceLayerInfo = ref sourceCell.Layers;
+                                                            ObjectData sourceObjCell = _objectData[source_x, source_y];
 
                                                             if (enl_idx >= 0 && !sourceCell.HasEnlargementOrAnimationOrSpecialHeight)
                                                                 continue;
@@ -8200,7 +8201,7 @@ namespace GnollHackX.Pages.Game
                                                                 else
                                                                 {
                                                                     bool is_source_dir;
-                                                                    int sub_layer_cnt = GetSubLayerCount(ref sourceCell, ref sourceLayerInfo, _objectData[source_x, source_y], layer_idx, out is_source_dir);
+                                                                    int sub_layer_cnt = GetSubLayerCount(ref sourceCell, ref sourceLayerInfo, sourceObjCell, layer_idx, out is_source_dir);
                                                                     for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
                                                                     {
                                                                         int signed_glyph = GHApp.NoGlyph; //Default
@@ -8218,7 +8219,7 @@ namespace GnollHackX.Pages.Game
                                                                         int adj_y = source_y;
                                                                         bool foundthisturn = false;
 
-                                                                        if (!GetLayerGlyph(source_x, source_y, ref sourceCell, ref sourceLayerInfo, _objectData[source_x, source_y], layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
+                                                                        if (!GetLayerGlyph(source_x, source_y, ref sourceCell, ref sourceLayerInfo, sourceObjCell, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
                                                                             ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
                                                                             ref object_origin_x, ref object_origin_y, ref foundthisturn))
                                                                             continue;
@@ -8534,13 +8535,14 @@ namespace GnollHackX.Pages.Game
                                                                     dodarkening = false;
                                                                     continue;
                                                                 }
-                                                                if (dodarkening && DarkenedPos(ref _mapData[dc.MapX, dc.MapY].Layers))
+                                                                ref LayerInfo dcLayerInfo = ref _mapData[dc.MapX, dc.MapY].Layers;
+                                                                if (dodarkening && DarkenedPos(ref dcLayerInfo))
                                                                 {
                                                                     darkeningCanvas.Clear(SKColors.Transparent);
                                                                     if (dc.IsAutoDraw)
                                                                     {
                                                                         SKImage usedDarkenedBitmap = null;
-                                                                        int darken_percentage = GetDarkenPercentage(ref _mapData[dc.MapX, dc.MapY].Layers, lighterDarkening);
+                                                                        int darken_percentage = GetDarkenPercentage(ref dcLayerInfo, lighterDarkening);
                                                                         AutoDrawParameterDefinition modadparams = dc.AutoDrawParameters;
                                                                         modadparams.tx = 0;
                                                                         modadparams.ty = 0;
@@ -8670,7 +8672,7 @@ namespace GnollHackX.Pages.Game
                                                                     else
                                                                     {
                                                                         SKImage usedDarkenedBitmap = null;
-                                                                        int darken_percentage = GetDarkenPercentage(ref _mapData[dc.MapX, dc.MapY].Layers, lighterDarkening);
+                                                                        int darken_percentage = GetDarkenPercentage(ref dcLayerInfo, lighterDarkening);
                                                                         SavedDarkenedBitmap cachekey = new SavedDarkenedBitmap(dc.SourceBitmap, dc.SourceRect, darken_percentage);
                                                                         SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
                                                                         if (_darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap) && usedDarkenedBitmap != null)
@@ -13675,11 +13677,12 @@ namespace GnollHackX.Pages.Game
             if (!GHUtils.isok(x, y))
                 return true;
 
-            if (_mapData[x, y].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == GHApp.UnexploredGlyph
-                || _mapData[x, y].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == GHApp.NoGlyph)
+            ref LayerInfo layers = ref _mapData[x, y].Layers;
+            if (layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == GHApp.UnexploredGlyph
+                || layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == GHApp.NoGlyph)
                 return true;
 
-            if ((_mapData[x, y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
+            if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
                 return true;
 
             return false;

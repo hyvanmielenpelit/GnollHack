@@ -31,4 +31,4 @@ Windows
   Workload:       10.0.20
   Test Device:    MSI Pulse GL66
   Device OS:      Windows 11 Home, 10.0.26200
-  FPS:            50
+  FPS:            52 (50-55 typical, 48-57 extreme)
