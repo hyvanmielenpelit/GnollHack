@@ -1,0 +1,34 @@
+GnollHack Performance Records
+==============================
+
+This file records FPS benchmarks measured in minimap mode using
+GPU rendering on the first level with the whole map revealed in
+wizard mode.
+
+
+Date: 2026-07-26
+================
+.NET: 10.0.10 (SDK 10.0.302)
+.NET MAUI: 10.0.90 (iOS: 10.0.51)
+SkiaSharp: 4.151.0-rc.1.1
+
+Android
+-------
+  Workload:       36.1.69
+  Test Device:    Google Pixel 6a
+  Device OS:      Android 16
+  FPS:            50
+
+iOS
+---
+  Workload:       26.5.10301
+  Test Device:    iPad (8th generation, 2020)
+  Device OS:      iPadOS 26.5.2
+  FPS:            60
+
+Windows
+-------
+  Workload:       10.0.20
+  Test Device:    MSI Pulse GL66
+  Device OS:      Windows 11 Home, 10.0.26200
+  FPS:            50
