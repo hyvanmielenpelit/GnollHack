@@ -70,6 +70,7 @@ namespace GnollHackX
         public SKColor PaintColor;
         public SKColorFilter PaintColorFilter;
         public bool EndDarkening;
+        public int SheetIdx;
         public int MapX;
         public int MapY;
         public bool IsAutoDraw { get; private set; }
@@ -79,7 +80,7 @@ namespace GnollHackX
         {
 
         }
-        public GHDrawCommand(SKMatrix matrix, SKRect sourceRect, SKRect destinationRect, SKImage sourceBitmap, SKColor paintColor, SKColorFilter paintColorFilter, int mapX, int mapY)
+        public GHDrawCommand(SKMatrix matrix, SKRect sourceRect, SKRect destinationRect, SKImage sourceBitmap, SKColor paintColor, SKColorFilter paintColorFilter, int sheetIdx, int mapX, int mapY)
         {
             Matrix = matrix;
             SourceRect = sourceRect;
@@ -87,6 +88,7 @@ namespace GnollHackX
             SourceBitmap = sourceBitmap;
             PaintColor = paintColor;
             PaintColorFilter = paintColorFilter;
+            SheetIdx = sheetIdx;
             MapX = mapX;
             MapY = mapY;
         }
@@ -97,6 +99,7 @@ namespace GnollHackX
         public GHDrawCommand(SKMatrix matrix, SKColor paintColor, SKColorFilter paintColorFilter, int mapX, int mapY, AutoDrawParameterDefinition parameters)
         {
             Matrix = matrix;
+            SheetIdx = -1;
             MapX = mapX;
             MapY = mapY;
             PaintColor = paintColor;
