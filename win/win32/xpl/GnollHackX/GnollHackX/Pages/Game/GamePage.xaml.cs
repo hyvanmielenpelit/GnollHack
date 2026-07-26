@@ -5185,7 +5185,7 @@ namespace GnollHackX.Pages.Game
         }
 #endif
 
-        private void PaintMapUIElements(SKCanvas canvas, GHSkiaFontPaint textPaint, SKPaint paint, SKPathEffect pathEffect, int mapx, int mapy, float width, float height, float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float targetscale, long generalcountervalue, float usedFontSize, float mapFontAscent, int monster_height, bool loc_is_you, bool canspotself, bool usingGL, bool fixRects, bool fixFiltering, bool mapGrid, int gridOpacity, bool hitPointBars, bool playerMark, bool monsterTargeting)
+        private void PaintMapUIElements(SKCanvas canvas, GHSkiaFontPaint textPaint, SKPaint paint, SKPathEffect pathEffect, ref MapData currentCell, ref LayerInfo currentLayerInfo, int mapx, int mapy, float width, float height, float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float targetscale, long generalcountervalue, float usedFontSize, float mapFontAscent, int monster_height, bool loc_is_you, bool canspotself, bool usingGL, bool fixRects, bool fixFiltering, bool mapGrid, int gridOpacity, bool hitPointBars, bool playerMark, bool monsterTargeting)
         {
             float scaled_y_height_change = 0;
             //float mapFontAscent = UsedMapFontAscent;
@@ -5217,7 +5217,7 @@ namespace GnollHackX.Pages.Game
             {
                 tx = (offsetX + usedOffsetX + base_move_offset_x + width * (float)mapx);
                 ty = (offsetY + usedOffsetY + base_move_offset_y + mapFontAscent + height * (float)mapy); /* No scaled_y_height_change */
-                DrawChain(canvas, paint, mapx, mapy, 0, true, width, height, ty, tx, 1.0f, targetscale, usingGL, false, fixRects, fixFiltering);
+                DrawChain(canvas, paint, ref currentLayerInfo, 0, true, width, height, ty, tx, 1.0f, targetscale, usingGL, false, fixRects, fixFiltering);
             }
 
             /* Cursor */
@@ -5269,12 +5269,12 @@ namespace GnollHackX.Pages.Game
             if (hitPointBars)
             {
                 /* Draw hit point bars */
-                if (((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_YOU | LayerMonsterFlags.LMFLAGS_CANSPOTMON)) != 0 || (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
-                && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_WORM_TAIL)) == 0
-                && _mapData[mapx, mapy].Layers.monster_maxhp > 0)
+                if (((currentLayerInfo.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_YOU | LayerMonsterFlags.LMFLAGS_CANSPOTMON)) != 0 || (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
+                && (currentLayerInfo.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_WORM_TAIL)) == 0
+                && currentLayerInfo.monster_maxhp > 0)
                 {
-                    int hp = _mapData[mapx, mapy].Layers.monster_hp;
-                    int hpmax = _mapData[mapx, mapy].Layers.monster_maxhp;
+                    int hp = currentLayerInfo.monster_hp;
+                    int hpmax = currentLayerInfo.monster_maxhp;
                     float fraction = (hpmax == 0 ? 0 : Math.Max(0, Math.Min(1, (float)hp / (float)hpmax)));
                     float r_mult = fraction <= 0.25f ? fraction * 2.0f + 0.5f : fraction <= 0.5f ? 1.0f : (1.0f - fraction) * 2.0f;
                     float g_mult = fraction <= 0.25f ? 0 : fraction <= 0.5f ? (fraction - 0.25f) * 4.0f : 1.0f;
@@ -5355,14 +5355,14 @@ namespace GnollHackX.Pages.Game
 #endif
                 );
 
-                if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
+                if (currentCell.Symbol != null && currentCell.Symbol != "")
                 {
                     draw_character = true;
                 }
             }
 
             /* Monster targeting mark */
-            if (monsterTargeting && !loc_is_you && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_CANSPOTMON)) != 0)
+            if (monsterTargeting && !loc_is_you && (currentLayerInfo.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_CANSPOTMON)) != 0)
             {
                 int cglyph = (int)game_ui_tile_types.MAIN_TILE_MARK + GHApp.UITileOff;
                 int ctile = GHApp.Glyph2Tile[cglyph];
@@ -5387,7 +5387,7 @@ namespace GnollHackX.Pages.Game
 #endif
                 );
 
-                if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
+                if (currentCell.Symbol != null && currentCell.Symbol != "")
                 {
                     draw_character = true;
                 }
@@ -5397,18 +5397,18 @@ namespace GnollHackX.Pages.Game
             {
                 textPaint.TextSize = usedFontSize / 4;
                 textPaint.Typeface = GHApp.DejaVuSansMonoTypeface;
-                textPaint.Color = _mapData[mapx, mapy].Color;
+                textPaint.Color = currentCell.Color;
                 //textPaint.TextAlign = SKTextAlign.Center;
                 float textheight = textPaint.FontSpacing; // FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                 float texttx = tx + width / 2;
                 float textty = ty + height / 2 - textheight / 2 - textPaint.FontMetrics.Ascent - 1f / 96f * height;
-                //canvas.DrawText(_mapData[mapx, mapy].Symbol, texttx, textty, textPaint);
-                textPaint.DrawTextOnCanvas(canvas, _mapData[mapx, mapy].Symbol, texttx, textty, SKTextAlign.Center);
+                //canvas.DrawText(currentCell.Symbol, texttx, textty, textPaint);
+                textPaint.DrawTextOnCanvas(canvas, currentCell.Symbol, texttx, textty, SKTextAlign.Center);
                 //textPaint.TextAlign = SKTextAlign.Left;
             }
 
-            if (((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_YOU | LayerMonsterFlags.LMFLAGS_CANSPOTMON)) != 0 || (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
-                && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_WORM_TAIL)) == 0)
+            if (((currentLayerInfo.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_YOU | LayerMonsterFlags.LMFLAGS_CANSPOTMON)) != 0 || (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
+                && (currentLayerInfo.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_WORM_TAIL)) == 0)
             {
                 /* Draw condition and status marks */
                 float x_scaling_factor = width / (float)(GHConstants.TileWidth);
@@ -5416,7 +5416,7 @@ namespace GnollHackX.Pages.Game
                 int max_fitted_rows = (GHConstants.TileHeight - 4) / (GHConstants.StatusMarkHeight + 2);
                 int status_count = 0;
 
-                ulong status_bits = _mapData[mapx, mapy].Layers.status_bits;
+                ulong status_bits = currentLayerInfo.status_bits;
                 if (status_bits != 0)
                 {
                     foreach (int status_mark in _statusmarkorder)
@@ -5474,7 +5474,7 @@ namespace GnollHackX.Pages.Game
                     }
                 }
 
-                ulong condition_bits = _mapData[mapx, mapy].Layers.condition_bits;
+                ulong condition_bits = currentLayerInfo.condition_bits;
                 if (condition_bits != 0)
                 {
                     int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
@@ -5537,7 +5537,7 @@ namespace GnollHackX.Pages.Game
                     if (status_count >= max_fitted_rows)
                         break;
 
-                    ulong buff_bits = _mapData[mapx, mapy].Layers.buff_bits[buff_ulong];
+                    ulong buff_bits = currentLayerInfo.buff_bits[buff_ulong];
                     int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
                     if (buff_bits != 0)
                     {
@@ -5604,7 +5604,7 @@ namespace GnollHackX.Pages.Game
             }
 
             /* Draw death and hit markers */
-            if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0)
+            if ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0)
             {
                 int mglyph = (int)general_tile_types.GENERAL_TILE_DEATH + GHApp.GeneralTileOff;
                 int mtile = GHApp.Glyph2Tile[mglyph];
@@ -5623,9 +5623,9 @@ namespace GnollHackX.Pages.Game
 #endif
                 );
             }
-            else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_BEING_HIT) != 0)
+            else if ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_BEING_HIT) != 0)
             {
-                short hit_text_num = _mapData[mapx, mapy].Layers.hit_tile;
+                short hit_text_num = currentLayerInfo.hit_tile;
                 int mglyph = Math.Max(0, Math.Min((int)hit_tile_types.MAX_HIT_TILES - 1, (int)hit_text_num)) + GHApp.HitTileOff;
                 int mtile = GHApp.Glyph2Tile[mglyph];
                 int sheet_idx = GHApp.TileSheetIdx(mtile);
@@ -5646,7 +5646,7 @@ namespace GnollHackX.Pages.Game
         }
 
 
-        private void PaintMapTile(SKCanvas canvas, bool delayedDraw, GHSkiaFontPaint textPaint, SKPaint paint, int layer_idx, int mapx, int mapy, int draw_map_x, int draw_map_y, int dx, int dy, int ntile, float width, float height, 
+        private void PaintMapTile(SKCanvas canvas, bool delayedDraw, GHSkiaFontPaint textPaint, SKPaint paint, int layer_idx, ref MapData currentCell, ref LayerInfo currentLayerInfo, ref short drawShadow, int mapx, int mapy, int draw_map_x, int draw_map_y, int dx, int dy, int ntile, float width, float height, 
             float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float base_move_offset_x, float base_move_offset_y, float object_move_offset_x, float object_move_offset_y,
             float scaled_y_height_change, float pit_border,
             float targetscale, long generalcountervalue, float usedFontSize, float mapFontAscent, int monster_height, 
@@ -5802,47 +5802,47 @@ namespace GnollHackX.Pages.Game
                 move_offset_y = base_move_offset_y;
                 if (layer_idx == (int)layer_types.MAX_LAYERS)
                 {
-                    if((_draw_shadow[mapx, mapy] & 2) != 0)
-                        opaqueness = ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0 ? (supportsRadialTransparency ? 1.0f : 0.5f) : 
-                            (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SLIGHT_TRANSPARENCY) != 0 ? 0.75f : 
-                            (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f :
-                            (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT) != 0 ? 0.5f :
-                            1.0f) * ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0 ? 0.5f : 1.0f);
+                    if((drawShadow & 2) != 0)
+                        opaqueness = ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0 ? (supportsRadialTransparency ? 1.0f : 0.5f) : 
+                            (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SLIGHT_TRANSPARENCY) != 0 ? 0.75f : 
+                            (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f :
+                            (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT) != 0 ? 0.5f :
+                            1.0f) * ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0 ? 0.5f : 1.0f);
                     else
                         opaqueness = 0.5f;
                 }
-                else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY | LayerMonsterFlags.LMFLAGS_SLIGHT_TRANSPARENCY | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
+                else if ((currentLayerInfo.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY | LayerMonsterFlags.LMFLAGS_SLIGHT_TRANSPARENCY | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
                 {
-                    _draw_shadow[mapx, mapy] |= 2;
+                    drawShadow |= 2;
                     return; /* Draw only the transparent shadow in the max_layers shadow layer; otherwise, if drawn twice, the result will be nontransparent */
                 }
 
                 /* Death transparency */
-                if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0 
-                    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_STONED) == 0
-                    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) != 0)
+                if ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0 
+                    && (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_STONED) == 0
+                    && (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) != 0)
                 {
                     opaqueness = opaqueness * ((float)(20L - Math.Min(20L, generalcounterdiff))) / 20;
                 }
 
                 /* Hovering effect */
-                if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) == 0)
+                if ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) == 0)
                 {
-                    if((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LEVITATING) != 0)
+                    if((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LEVITATING) != 0)
                     {
                         long animationframe = generalcountervalue % _hoverAnimation.Length;
                         move_offset_x += _hoverAnimation[animationframe].X * scale * targetscale;
                         move_offset_y += (-2.5f + _hoverAnimation[animationframe].Y) * scale * targetscale;
                     }
-                    else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FLYING) != 0)
+                    else if ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FLYING) != 0)
                     {
                         long animationframe = generalcountervalue % _flyingAnimation.Length;
                         move_offset_x += _flyingAnimation[animationframe].X * scale * targetscale;
                         move_offset_y += (-5f + _flyingAnimation[animationframe].Y) * scale * targetscale;
                     }
-                    else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SWIM_ANIMATION) != 0)
+                    else if ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SWIM_ANIMATION) != 0)
                     {
-                        if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SPECIAL_ANIMATION) != 0)
+                        if ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SPECIAL_ANIMATION) != 0)
                         {
                             long animationframe = generalcountervalue % _sharkAnimation.Length;
                             float target_y_change = _sharkAnimation[animationframe].Y * scale * targetscale;
@@ -5877,18 +5877,18 @@ namespace GnollHackX.Pages.Game
             }
             else if (layer_idx == (int)layer_types.LAYER_BACKGROUND_EFFECT)
             {
-                if((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_E_BKG_FADE_IN) != 0)
+                if((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_E_BKG_FADE_IN) != 0)
                 {
                     opaqueness = opaqueness * ((float)(Math.Min(20L, generalcounterdiff))) / 20;
                 }
-                else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_E_BKG_FADE_OUT) != 0)
+                else if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_E_BKG_FADE_OUT) != 0)
                 {
                     opaqueness = opaqueness * ((float)(20L - Math.Min(20L, generalcounterdiff))) / 20;
                 }
             }
             else if (layer_idx == (int)layer_types.LAYER_GENERAL_EFFECT)
             {
-                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_E_GEN_FADE_OUT) != 0)
+                if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_E_GEN_FADE_OUT) != 0)
                 {
                     opaqueness = opaqueness * ((float)(20L - Math.Min(20L, generalcounterdiff))) / 20;
                 }
@@ -5902,10 +5902,10 @@ namespace GnollHackX.Pages.Game
                     paint.ColorFilter = UIUtils.MapHighlightColorFilter;
             }
 
-            bool darken = !delayedDraw && (layer_idx <= (int)layer_types.LAYER_OBJECT) && DarkenedPos(mapx, mapy);
+            bool darken = !delayedDraw && (layer_idx <= (int)layer_types.LAYER_OBJECT) && DarkenedPos(ref currentLayerInfo);
             if (darken)
             {
-                int darken_percentage = GetDarkenPercentage(mapx, mapy, lighterDarkening);
+                int darken_percentage = GetDarkenPercentage(ref currentLayerInfo, lighterDarkening);
                 if (paint.ColorFilter != null)
                 {
                     paint.ColorFilter = GetCompositeColorFilter(paint.ColorFilter, darken_percentage);
@@ -5922,9 +5922,9 @@ namespace GnollHackX.Pages.Game
             float correction_y = 0f;
             if (is_monster_like_layer)
             {
-                if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0
-                    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_STONED) == 0
-                    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
+                if ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0
+                    && (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_STONED) == 0
+                    && (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
                 {
                     if (enlargement > 0)
                     {
@@ -5938,9 +5938,9 @@ namespace GnollHackX.Pages.Game
                         dscalex = dscaley = ((float)(90 - Math.Min(44L, generalcounterdiff))) / 90;
                 }
 
-                if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) == 0)                   
+                if ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) == 0)                   
                 {
-                    if((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_BLOBBY_ANIMATION) != 0)
+                    if((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_BLOBBY_ANIMATION) != 0)
                     {
                         long animationframe = generalcountervalue % _blobAnimation.Length;
                         dscalex *= _blobAnimation[animationframe].X;
@@ -5948,13 +5948,13 @@ namespace GnollHackX.Pages.Game
                     }
                     else if(breatheanimations)
                     {
-                        if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_HUMAN_BREATHE_ANIMATION) != 0)
+                        if ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_HUMAN_BREATHE_ANIMATION) != 0)
                         {
                             long animationframe = generalcountervalue % _humanBreatheAnimation.Length;
                             dscalex *= _humanBreatheAnimation[animationframe].X;
                             dscaley *= _humanBreatheAnimation[animationframe].Y;
                         }
-                        else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_ANIMAL_BREATHE_ANIMATION) != 0)
+                        else if ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_ANIMAL_BREATHE_ANIMATION) != 0)
                         {
                             long animationframe = generalcountervalue % _animalBreatheAnimation.Length;
                             dscalex *= _animalBreatheAnimation[animationframe].X;
@@ -5980,13 +5980,13 @@ namespace GnollHackX.Pages.Game
                 float tr_y = ty + (vflip_glyph ? height * dscaley : 0);
                 float sc_x = hflip_glyph ? -1 : 1;
                 float sc_y = vflip_glyph ? -1 : 1;
-                TranslateAndScaleCanvas(canvas, tr_x, tr_y, sc_x, sc_y, is_monster_like_layer, ref _mapData[mapx, mapy].Layers,
+                TranslateAndScaleCanvas(canvas, tr_x, tr_y, sc_x, sc_y, is_monster_like_layer, ref currentLayerInfo,
                     dx2, dy2, dscalex, dscaley, width, height, generalcounterdiff);
                 //SKAutoCanvasRestore enlRestore = null;
                 //if (enlCanvas != canvas)
                 //{
                 //    enlRestore = new SKAutoCanvasRestore(enlCanvas, true);
-                //    TranslateAndScaleCanvas(enlCanvas, tr_x, tr_y, sc_x, sc_y, is_monster_like_layer, _mapData[mapx, mapy].Layers,
+                //    TranslateAndScaleCanvas(enlCanvas, tr_x, tr_y, sc_x, sc_y, is_monster_like_layer, currentLayerInfo,
                 //        dx2, dy2, dscalex, dscaley, width, height, generalcounterdiff);
                 //}
                 SKRect targetrect;
@@ -6007,9 +6007,9 @@ namespace GnollHackX.Pages.Game
                 paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
                 _mapProfiler.StopAccum(TileProfilerAccum.CanvasTransform);
                 _mapProfiler.StartAccum(TileProfilerAccum.DrawBitmap);
-                if (supportsRadialTransparency && is_monster_like_layer && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
+                if (supportsRadialTransparency && is_monster_like_layer && (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
                 {
-                    DrawTileWithRadialTransparency(canvas, delayedDraw, TileMap[sheet_idx], sourcerect, targetrect, ref _mapData[mapx, mapy].Layers, splitY, opaqueness, paint, mapx, mapy, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+                    DrawTileWithRadialTransparency(canvas, delayedDraw, TileMap[sheet_idx], sourcerect, targetrect, ref currentLayerInfo, splitY, opaqueness, paint, mapx, mapy, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
                 }
                 else
                 {
@@ -6278,25 +6278,25 @@ namespace GnollHackX.Pages.Game
             }
         }
     
-        private int GetSubLayerCount(int mapx, int mapy, int layer_idx, out bool is_source_dir)
+        private int GetSubLayerCount(ref MapData currentCell, ref LayerInfo currentLayerInfo, ObjectData currentObjCell, int layer_idx, out bool is_source_dir)
         {
             int sub_layer_cnt = 1;
             switch (layer_idx)
             {
                 case (int)layer_types.LAYER_OBJECT:
-                    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
-                        sub_layer_cnt = _objectData[mapx, mapy].MemoryObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].MemoryObjectList.Count);
-                    else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
-                        sub_layer_cnt = _objectData[mapx, mapy].FloorObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].FloorObjectList.Count);
+                    if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
+                        sub_layer_cnt = currentObjCell.MemoryObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, currentObjCell.MemoryObjectList.Count);
+                    else if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
+                        sub_layer_cnt = currentObjCell.FloorObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, currentObjCell.FloorObjectList.Count);
                     else
                         sub_layer_cnt = 1; /* As a backup, show layer glyph (probably often NoGlyph) */
                     is_source_dir = false;
                     break;
                 case (int)layer_types.LAYER_COVER_OBJECT:
-                    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
-                        sub_layer_cnt = _objectData[mapx, mapy].CoverMemoryObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].CoverMemoryObjectList.Count);
-                    else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
-                        sub_layer_cnt = _objectData[mapx, mapy].CoverFloorObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].CoverFloorObjectList.Count);
+                    if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
+                        sub_layer_cnt = currentObjCell.CoverMemoryObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, currentObjCell.CoverMemoryObjectList.Count);
+                    else if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
+                        sub_layer_cnt = currentObjCell.CoverFloorObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, currentObjCell.CoverFloorObjectList.Count);
                     else
                         sub_layer_cnt = 1; /* As a backup, show layer glyph (probably often NoGlyph) */
                     is_source_dir = false;
@@ -6599,56 +6599,56 @@ namespace GnollHackX.Pages.Game
             return true;
         }
 
-        private bool GetLayerGlyph(int mapx, int mapy, int layer_idx, int sub_layer_idx, int source_dir_idx,
+        private bool GetLayerGlyph(int mapx, int mapy, ref MapData currentCell, ref LayerInfo currentLayerInfo, ObjectData currentObjCell, int layer_idx, int sub_layer_idx, int source_dir_idx,
             ref int signed_glyph, ref int adj_x, ref int adj_y, ref bool manual_hflip, ref bool manual_vflip,
             ref ObjectDataItem otmp_round, ref short obj_height, ref sbyte object_origin_x, ref sbyte object_origin_y, ref bool foundthisturn)
         {
             if (layer_idx == (int)layer_types.LAYER_OBJECT)
             {
-                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
+                if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
                 {
-                    otmp_round = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx];
-                    signed_glyph = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
-                    obj_height = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].TileHeight;
-                    object_origin_x = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.ox0;
-                    object_origin_y = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.oy0;
-                    foundthisturn = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].FoundThisTurn;
+                    otmp_round = currentObjCell.MemoryObjectList[sub_layer_idx];
+                    signed_glyph = currentObjCell.MemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
+                    obj_height = currentObjCell.MemoryObjectList[sub_layer_idx].TileHeight;
+                    object_origin_x = currentObjCell.MemoryObjectList[sub_layer_idx].ObjData.ox0;
+                    object_origin_y = currentObjCell.MemoryObjectList[sub_layer_idx].ObjData.oy0;
+                    foundthisturn = currentObjCell.MemoryObjectList[sub_layer_idx].FoundThisTurn;
                 }
-                else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
+                else if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
                 {
-                    otmp_round = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx];
-                    signed_glyph = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.gui_glyph;
-                    obj_height = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].TileHeight;
-                    object_origin_x = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.ox0;
-                    object_origin_y = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.oy0;
-                    foundthisturn = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].FoundThisTurn;
+                    otmp_round = currentObjCell.FloorObjectList[sub_layer_idx];
+                    signed_glyph = currentObjCell.FloorObjectList[sub_layer_idx].ObjData.gui_glyph;
+                    obj_height = currentObjCell.FloorObjectList[sub_layer_idx].TileHeight;
+                    object_origin_x = currentObjCell.FloorObjectList[sub_layer_idx].ObjData.ox0;
+                    object_origin_y = currentObjCell.FloorObjectList[sub_layer_idx].ObjData.oy0;
+                    foundthisturn = currentObjCell.FloorObjectList[sub_layer_idx].FoundThisTurn;
                 }
                 else
                 {
-                    signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? GHApp.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
+                    signed_glyph = currentLayerInfo.layer_gui_glyphs == null ? GHApp.NoGlyph : currentLayerInfo.layer_gui_glyphs[layer_idx];
                 }
             }
             else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
             {
-                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
+                if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
                 {
-                    otmp_round = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx];
-                    signed_glyph = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
-                    obj_height = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].TileHeight;
-                    object_origin_x = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.ox0;
-                    object_origin_y = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.oy0;
+                    otmp_round = currentObjCell.CoverMemoryObjectList[sub_layer_idx];
+                    signed_glyph = currentObjCell.CoverMemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
+                    obj_height = currentObjCell.CoverMemoryObjectList[sub_layer_idx].TileHeight;
+                    object_origin_x = currentObjCell.CoverMemoryObjectList[sub_layer_idx].ObjData.ox0;
+                    object_origin_y = currentObjCell.CoverMemoryObjectList[sub_layer_idx].ObjData.oy0;
                 }
-                else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
+                else if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
                 {
-                    otmp_round = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx];
-                    signed_glyph = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.gui_glyph;
-                    obj_height = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].TileHeight;
-                    object_origin_x = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.ox0;
-                    object_origin_y = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.oy0;
+                    otmp_round = currentObjCell.CoverFloorObjectList[sub_layer_idx];
+                    signed_glyph = currentObjCell.CoverFloorObjectList[sub_layer_idx].ObjData.gui_glyph;
+                    obj_height = currentObjCell.CoverFloorObjectList[sub_layer_idx].TileHeight;
+                    object_origin_x = currentObjCell.CoverFloorObjectList[sub_layer_idx].ObjData.ox0;
+                    object_origin_y = currentObjCell.CoverFloorObjectList[sub_layer_idx].ObjData.oy0;
                 }
                 else
                 {
-                    signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? GHApp.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
+                    signed_glyph = currentLayerInfo.layer_gui_glyphs == null ? GHApp.NoGlyph : currentLayerInfo.layer_gui_glyphs[layer_idx];
                 }
             }
             else if (source_dir_idx > 0)
@@ -6696,8 +6696,8 @@ namespace GnollHackX.Pages.Game
                 {
                     case (int)layer_types.LAYER_ZAP:
                         {
-                            int adjacent_zap_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_ZAP];
-                            ulong adjacent_layer_flags = (ulong)_mapData[mapx, mapy].Layers.layer_flags;
+                            int adjacent_zap_glyph = currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_ZAP];
+                            ulong adjacent_layer_flags = (ulong)currentLayerInfo.layer_flags;
 
                             if (adjacent_zap_glyph == GHApp.NoGlyph) // || !glyph_is_zap(adjacent_zap_glyph))
                                 signed_glyph = GHApp.NoGlyph;
@@ -6708,21 +6708,21 @@ namespace GnollHackX.Pages.Game
                     case (int)layer_types.LAYER_MONSTER:
                         {
                             /* Worm */
-                            uint worm_id_stored = _mapData[mapx, mapy].Layers.m_id;
+                            uint worm_id_stored = currentLayerInfo.m_id;
                             if (worm_id_stored == 0)
                                 return false;
 
-                            bool is_tailed_long_worm = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_WITH_TAIL) != 0;
-                            bool is_long_worm_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_TAIL) != 0;
-                            bool is_adj_worm_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_TAIL) != 0;
-                            bool is_adj_worm_seen = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_SEEN) != 0;
+                            bool is_tailed_long_worm = (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_WITH_TAIL) != 0;
+                            bool is_long_worm_tail = (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_TAIL) != 0;
+                            bool is_adj_worm_tail = (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_TAIL) != 0;
+                            bool is_adj_worm_seen = (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_SEEN) != 0;
                             bool worm = !is_adj_worm_tail ? false : is_adj_worm_seen ? (worm_id_stored > 0 ? true : false) : true;
                             signed_glyph = GHApp.NoGlyph;
 
-                            if (worm && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_SEEN) != 0
+                            if (worm && (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_SEEN) != 0
                                 && ((
-                                _mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0
-                                || is_adj_worm_seen || (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_SEEN) != 0))
+                                currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0
+                                || is_adj_worm_seen || (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_SEEN) != 0))
                             {
                                 if (is_tailed_long_worm && !is_adj_worm_tail)
                                 {
@@ -6730,7 +6730,7 @@ namespace GnollHackX.Pages.Game
                                 }
                                 else if (is_long_worm_tail || (is_tailed_long_worm && is_adj_worm_tail))
                                 {
-                                    int signed_main_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
+                                    int signed_main_glyph = currentLayerInfo.layer_gui_glyphs[layer_idx];
                                     int main_glyph = Math.Abs(signed_main_glyph);
                                     //int tile_animation_index = _gnollHackService.GetTileAnimationIndexFromGlyph(main_glyph);
                                     int main_tile = GHApp.Glyph2Tile[main_glyph];
@@ -6741,7 +6741,7 @@ namespace GnollHackX.Pages.Game
                                         base_source_glyph = GHApp._autodraws[wormautodraw].source_glyph4;
                                     }
 
-                                    int wdir = _mapData[mapx, mapy].Layers.wsegdir;
+                                    int wdir = currentLayerInfo.wsegdir;
                                     int tilenum = -1;
                                     if (wdir % 2 == 1)
                                     {
@@ -6823,7 +6823,7 @@ namespace GnollHackX.Pages.Game
                     case (int)layer_types.LAYER_CHAIN:
                         {
                             /* Chain */
-                            if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_CHAIN) != 0)
+                            if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_O_CHAIN) != 0)
                             {
                                 signed_glyph = (source_dir_idx / 2 - 1) + (int)general_tile_types.GENERAL_TILE_CHAIN_IS_UP + GHApp.GeneralTileOff;
                             }
@@ -6838,7 +6838,7 @@ namespace GnollHackX.Pages.Game
                 int used_layer_idx = layer_idx;
                 if (layer_idx == (int)layer_types.MAX_LAYERS)
                     used_layer_idx = (int)layer_types.LAYER_MONSTER;
-                signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? GHApp.NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[used_layer_idx];
+                signed_glyph = currentLayerInfo.layer_gui_glyphs == null ? GHApp.NoGlyph : currentLayerInfo.layer_gui_glyphs[used_layer_idx];
             }
 
             if (signed_glyph == GHApp.NoGlyph)
@@ -7053,7 +7053,7 @@ namespace GnollHackX.Pages.Game
             0.0f,
         };
 
-        void DrawEngraving(SKCanvas canvas, GHSkiaFontPaint textPaint, int mapx, int mapy, float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float mapFontAscent,
+        void DrawEngraving(SKCanvas canvas, GHSkiaFontPaint textPaint, ref MapData currentCell, int mapx, int mapy, float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float mapFontAscent,
             float width, float height, long generalcountervalue)
         {
             /* Skip drawing certain engravings */
@@ -7188,7 +7188,7 @@ namespace GnollHackX.Pages.Game
         //private float[] _foundAnimationHigh = { 10f, 20f, 30f, 40f, 50f, 60f, 70f, 80f, 88f, 96f, 102f, 108f, 114f, 118f, 120f, 118f, 114f, 108f, 102f, 96f, 88f, 80f, 70f, 60f, 50f, 40f, 30f, 20f, 10f, 0f };
         private float[] _foundAnimationFactor = { 0.10f, 0.20f, 0.30f, 0.40f, 0.50f, 0.60f, 0.70f, 0.80f, 0.88f, 0.94f, 0.98f, 1.0f, 0.98f, 0.94f, 0.88f, 0.80f, 0.70f, 0.60f, 0.50f, 0.40f, 0.30f, 0.20f, 0.10f, 0f };
 
-        void GetObjectMoveOffsets(int mapx, int mapy, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, long moveIntervals, long generalcounterdiff, bool foundthisturn, int sub_layer_idx, int sub_layer_cnt, float targetscale, bool loc_is_you, float obj_height, ObjectDataItem otmp_round, ref float object_move_offset_x, ref float object_move_offset_y)
+        void GetObjectMoveOffsets(int mapx, int mapy, ref MapData currentCell, ref LayerInfo currentLayerInfo, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, long moveIntervals, long generalcounterdiff, bool foundthisturn, int sub_layer_idx, int sub_layer_cnt, float targetscale, bool loc_is_you, float obj_height, ObjectDataItem otmp_round, ref float object_move_offset_x, ref float object_move_offset_y)
         {
             if(GHUtils.isok(object_origin_x, object_origin_y))
             {
@@ -7197,7 +7197,7 @@ namespace GnollHackX.Pages.Game
 
                 if (objectmovediffx != 0 || objectmovediffy != 0)
                 {
-                    bool use_objcounter = otmp_round == null || (otmp_round.ObjData.o_id > 0 && otmp_round.ObjData.o_id == _mapData[mapx, mapy].Layers.o_id);
+                    bool use_objcounter = otmp_round == null || (otmp_round.ObjData.o_id > 0 && otmp_round.ObjData.o_id == currentLayerInfo.o_id);
                     long usedcounterdiff = use_objcounter ? objectcounterdiff : generalcounterdiff;
                     if (usedcounterdiff >= 0 && usedcounterdiff < moveIntervals && moveIntervals != 0)
                     {
@@ -7216,13 +7216,13 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        int GetTileFromAnimation(GHAnimationTimerList localTimers, int ntile, int glyph, int mapx, int mapy, int layer_idx, long generalcountervalue, bool is_monster_or_shadow_layer,
+        int GetTileFromAnimation(GHAnimationTimerList localTimers, int ntile, int glyph, int mapx, int mapy, ref MapData currentCell, ref LayerInfo currentLayerInfo, int layer_idx, long generalcountervalue, bool is_monster_or_shadow_layer,
             ref int anim_frame_idx, ref int main_tile_idx, ref int autodraw)
         {
             sbyte mapAnimated = 0;
             int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
-            bool is_dropping_piercer = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_DROPPING_PIERCER) != 0;
-            if (localTimers.u_action_animation_counter_on && is_monster_or_shadow_layer && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
+            bool is_dropping_piercer = (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_DROPPING_PIERCER) != 0;
+            if (localTimers.u_action_animation_counter_on && is_monster_or_shadow_layer && ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
                 ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
             else if (localTimers.m_action_animation_counter_on && ((!is_dropping_piercer && is_monster_or_shadow_layer) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && localTimers.m_action_animation_x == mapx && localTimers.m_action_animation_y == mapy)
                 ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
@@ -8148,7 +8148,9 @@ namespace GnollHackX.Pages.Game
                                                 {
                                                     for (int mapx = startX; mapx <= endX; mapx++)
                                                     {
-                                                        if (_mapData[mapx, mapy].Layers.layer_glyphs == null || _mapData[mapx, mapy].Layers.layer_gui_glyphs == null)
+                                                        ref MapData currentCell = ref _mapData[mapx, mapy];
+                                                        ref LayerInfo currentLayerInfo = ref _mapData[mapx, mapy].Layers;
+                                                        if (currentLayerInfo.layer_glyphs == null || currentLayerInfo.layer_gui_glyphs == null)
                                                             continue;
                                                         int draw_cnt = _draw_order.Count;
                                                         for (int draw_idx = 0; draw_idx < draw_cnt; draw_idx++)
@@ -8162,7 +8164,7 @@ namespace GnollHackX.Pages.Game
                                                             bool is_object_like_layer = (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT);
                                                             bool is_missile_layer = (layer_idx == (int)layer_types.LAYER_MISSILE);
 
-                                                            if (layer_idx == (int)layer_types.MAX_LAYERS && (_draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph))
+                                                            if (layer_idx == (int)layer_types.MAX_LAYERS && (_draw_shadow[mapx, mapy] == 0 || currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph))
                                                             { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); continue; }
 
                                                             int source_x = mapx, source_y = mapy;
@@ -8223,15 +8225,14 @@ namespace GnollHackX.Pages.Game
                                                                 if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
                                                                 {
                                                                     _mapProfiler.StopAccum(TileProfilerAccum.IterLogic);
-                                                                    PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, mapFontAscent, monster_height, loc_is_you, canspotself, usingGL, fixRects, fixFiltering, mapGrid, gridOpacity, hitPointBars, playerMark, monsterTargeting);
+                                                                    PaintMapUIElements(canvas, textPaint, paint, pathEffect, ref _mapData[source_x, source_y], ref _mapData[source_x, source_y].Layers, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, mapFontAscent, monster_height, loc_is_you, canspotself, usingGL, fixRects, fixFiltering, mapGrid, gridOpacity, hitPointBars, playerMark, monsterTargeting);
                                                                 }
                                                                 else
                                                                 {
                                                                     bool is_source_dir;
-                                                                    int sub_layer_cnt = GetSubLayerCount(source_x, source_y, layer_idx, out is_source_dir);
+                                                                    int sub_layer_cnt = GetSubLayerCount(ref _mapData[source_x, source_y], ref _mapData[source_x, source_y].Layers, _objectData[source_x, source_y], layer_idx, out is_source_dir);
                                                                     for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
                                                                     {
-                                                                        _mapProfiler.StartAccum(TileProfilerAccum.IterLogic);
                                                                         int signed_glyph = GHApp.NoGlyph; //Default
                                                                         short obj_height = _mapData[source_x, source_y].Layers.object_height; //Default
                                                                         sbyte object_origin_x = 0; //Default
@@ -8247,17 +8248,17 @@ namespace GnollHackX.Pages.Game
                                                                         int adj_y = source_y;
                                                                         bool foundthisturn = false;
 
-                                                                        if (!GetLayerGlyph(source_x, source_y, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
+                                                                        if (!GetLayerGlyph(source_x, source_y, ref _mapData[source_x, source_y], ref _mapData[source_x, source_y].Layers, _objectData[source_x, source_y], layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
                                                                             ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
                                                                             ref object_origin_x, ref object_origin_y, ref foundthisturn))
-                                                                        { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); continue; }
+                                                                        { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); _mapProfiler.StartAccum(TileProfilerAccum.IterLogic); continue; }
 
                                                                         int glyph = Math.Abs(signed_glyph);
                                                                         if (glyph == 0 || glyph >= GHApp.Glyph2Tile.Length)
-                                                                        { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); continue; }
+                                                                        { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); _mapProfiler.StartAccum(TileProfilerAccum.IterLogic); continue; }
 
                                                                         float object_move_offset_x = 0, object_move_offset_y = 0;
-                                                                        //GetObjectMoveOffsets(source_x, source_y, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, ref object_move_offset_x, ref object_move_offset_y);
+                                                                        //GetObjectMoveOffsets(source_x, source_y, _mapData[source_x, source_y], object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, ref object_move_offset_x, ref object_move_offset_y);
 
                                                                         bool vflip_glyph = false;
                                                                         bool hflip_glyph = false;
@@ -8281,13 +8282,13 @@ namespace GnollHackX.Pages.Game
 
                                                                         /* Determine animation tile here */
                                                                         int anim_frame_idx = 0, main_tile_idx = 0;
-                                                                        ntile = GetTileFromAnimation(_localAnimationTimers, ntile, glyph, source_x, source_y, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
+                                                                        ntile = GetTileFromAnimation(_localAnimationTimers, ntile, glyph, source_x, source_y, ref currentCell, ref currentLayerInfo, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
 
                                                                         /* Draw enlargement tiles */
                                                                         int enlargement = GHApp.Tile2Enlargement[ntile];
                                                                         int dx = 0, dy = 0;
                                                                         if (!GetEnlargementTileB(enlargement, enl_idx, hflip_glyph, vflip_glyph, main_tile_idx, anim_frame_idx, ref ntile, ref autodraw, ref dx, ref dy))
-                                                                        { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); continue; }
+                                                                        { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); _mapProfiler.StartAccum(TileProfilerAccum.IterLogic); continue; }
 
                                                                         int draw_map_x = source_x + dx + (adj_x - source_x);
                                                                         int draw_map_y = source_y + dy + (adj_y - source_y);
@@ -8296,7 +8297,7 @@ namespace GnollHackX.Pages.Game
                                                                         //float enlMinDrawX = 0, enlMaxDrawX = 0, enlMinDrawY = 0, enlMaxDrawY = 0;
 
                                                                         _mapProfiler.StopAccum(TileProfilerAccum.IterLogic);
-                                                                        PaintMapTile(canvas, false, textPaint, paint, layer_idx, source_x, source_y, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                        PaintMapTile(canvas, false, textPaint, paint, layer_idx, ref _mapData[source_x, source_y], ref _mapData[source_x, source_y].Layers, ref _draw_shadow[source_x, source_y], source_x, source_y, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                             offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
                                                                             scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
@@ -8326,33 +8327,43 @@ namespace GnollHackX.Pages.Game
                                                 {
                                                     for (int mapx = startX; mapx <= endX; mapx++)
                                                     {
-                                                        if (layer_idx == (int)layer_types.LAYER_FEATURE_DOODAD && _mapData[mapx, mapy].Engraving.HasEngraving)
-                                                            DrawEngraving(canvas, textPaint, mapx, mapy, offsetX, offsetY, usedOffsetX, usedOffsetY, mapFontAscent, width, height, generalcountervalue);
+                                                        _mapProfiler.CountIter();
+                                                        _mapProfiler.StartAccum(TileProfilerAccum.IterLogic);
+                                                        ref MapData currentCell = ref _mapData[mapx, mapy];
+                                                        ObjectData currentObjCell = _objectData[mapx, mapy];
+                                                        ref LayerInfo currentLayerInfo = ref _mapData[mapx, mapy].Layers;
 
-                                                        if (_mapData[mapx, mapy].Layers.layer_glyphs == null || _mapData[mapx, mapy].Layers.layer_gui_glyphs == null)
-                                                            continue;
+                                                        if (layer_idx == (int)layer_types.LAYER_FEATURE_DOODAD && currentCell.Engraving.HasEngraving)
+                                                        {
+                                                            _mapProfiler.StopAccum(TileProfilerAccum.IterLogic);
+                                                            DrawEngraving(canvas, textPaint, ref currentCell, mapx, mapy, offsetX, offsetY, usedOffsetX, usedOffsetY, mapFontAscent, width, height, generalcountervalue);
+                                                            _mapProfiler.StartAccum(TileProfilerAccum.IterLogic);
+                                                        }
+
+                                                        if (currentLayerInfo.layer_glyphs == null || currentLayerInfo.layer_gui_glyphs == null)
+                                                        { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); continue; }
 
                                                         if (layer_idx == (int)layer_types.MAX_LAYERS
-                                                            && (_draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph)
+                                                            && (_draw_shadow[mapx, mapy] == 0 || currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph)
                                                             )
-                                                            continue;
+                                                        { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); continue; }
 
-                                                        bool loc_is_you = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
-                                                        bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
-                                                        bool canspotself = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
-                                                        sbyte monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
-                                                        sbyte feature_doodad_height = _mapData[mapx, mapy].Layers.special_feature_doodad_layer_height;
-                                                        short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
-                                                        sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
-                                                        sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
-                                                        long glyphprintmaincountervalue = _mapData[mapx, mapy].GlyphPrintMainCounterValue;
+                                                        bool loc_is_you = (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
+                                                        bool showing_detection = (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
+                                                        bool canspotself = (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
+                                                        sbyte monster_height = currentLayerInfo.special_monster_layer_height;
+                                                        sbyte feature_doodad_height = currentLayerInfo.special_feature_doodad_layer_height;
+                                                        short missile_special_quality = currentLayerInfo.missile_special_quality;
+                                                        sbyte monster_origin_x = currentLayerInfo.monster_origin_x;
+                                                        sbyte monster_origin_y = currentLayerInfo.monster_origin_y;
+                                                        long glyphprintmaincountervalue = currentCell.GlyphPrintMainCounterValue;
                                                         long maincounterdiff = maincountervalue - glyphprintmaincountervalue;
-                                                        long glyphobjectprintmaincountervalue = _mapData[mapx, mapy].GlyphObjectPrintMainCounterValue;
+                                                        long glyphobjectprintmaincountervalue = currentCell.GlyphObjectPrintMainCounterValue;
                                                         long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
-                                                        long glyphgeneralprintmaincountervalue = _mapData[mapx, mapy].GlyphGeneralPrintMainCounterValue;
+                                                        long glyphgeneralprintmaincountervalue = currentCell.GlyphGeneralPrintMainCounterValue;
                                                         long generalcounterdiff = (long)((maincountervalue - glyphgeneralprintmaincountervalue) * mainCounter2AnimationMultiplier);
-                                                        short missile_height = _mapData[mapx, mapy].Layers.missile_height;
-                                                        bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
+                                                        short missile_height = currentLayerInfo.missile_height;
+                                                        bool obj_in_pit = (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
                                                         bool isPointerHoveringOnTile = hasMapHoverLocation && mapx == mapHoverX && mapy == mapHoverY;
 
                                                         float base_move_offset_x = 0, base_move_offset_y = 0;
@@ -8362,16 +8373,17 @@ namespace GnollHackX.Pages.Game
                                                         {
                                                             if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
                                                             {
-                                                                PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, mapFontAscent, monster_height, loc_is_you, canspotself, usingGL, fixRects, fixFiltering, mapGrid, gridOpacity, hitPointBars, playerMark, monsterTargeting);
+                                                                _mapProfiler.StopAccum(TileProfilerAccum.IterLogic);
+                                                                PaintMapUIElements(canvas, textPaint, paint, pathEffect, ref currentCell, ref currentLayerInfo, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, mapFontAscent, monster_height, loc_is_you, canspotself, usingGL, fixRects, fixFiltering, mapGrid, gridOpacity, hitPointBars, playerMark, monsterTargeting);
                                                             }
                                                             else
                                                             {
                                                                 bool is_source_dir;
-                                                                int sub_layer_cnt = GetSubLayerCount(mapx, mapy, layer_idx, out is_source_dir);
+                                                                int sub_layer_cnt = GetSubLayerCount(ref currentCell, ref currentLayerInfo, currentObjCell, layer_idx, out is_source_dir);
                                                                 for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
                                                                 {
                                                                     int signed_glyph = GHApp.NoGlyph; //Default
-                                                                    short obj_height = _mapData[mapx, mapy].Layers.object_height; //Default
+                                                                    short obj_height = currentLayerInfo.object_height; //Default
                                                                     sbyte object_origin_x = 0; //Default
                                                                     sbyte object_origin_y = 0; //Default
                                                                     ObjectDataItem otmp_round = null;
@@ -8385,17 +8397,17 @@ namespace GnollHackX.Pages.Game
                                                                     int adj_y = mapy;
                                                                     bool foundthisturn = false;
 
-                                                                    if (!GetLayerGlyph(mapx, mapy, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
+                                                                    if (!GetLayerGlyph(mapx, mapy, ref currentCell, ref currentLayerInfo, currentObjCell, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
                                                                         ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
                                                                         ref object_origin_x, ref object_origin_y, ref foundthisturn))
-                                                                        continue;
+                                                                    { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); _mapProfiler.StartAccum(TileProfilerAccum.IterLogic); continue; }
 
                                                                     int glyph = Math.Abs(signed_glyph);
                                                                     if (glyph == 0 || glyph >= GHApp.Glyph2Tile.Length)
-                                                                        continue;
+                                                                    { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); _mapProfiler.StartAccum(TileProfilerAccum.IterLogic); continue; }
 
                                                                     float object_move_offset_x = 0, object_move_offset_y = 0;
-                                                                    GetObjectMoveOffsets(mapx, mapy, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, generalcounterdiff,
+                                                                    GetObjectMoveOffsets(mapx, mapy, ref currentCell, ref currentLayerInfo, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, generalcounterdiff,
                                                                         foundthisturn, sub_layer_idx, sub_layer_cnt, targetscale, loc_is_you, obj_height, otmp_round, ref object_move_offset_x, ref object_move_offset_y);
 
                                                                     bool vflip_glyph = false;
@@ -8420,7 +8432,7 @@ namespace GnollHackX.Pages.Game
 
                                                                     /* Determine animation tile here */
                                                                     int anim_frame_idx = 0, main_tile_idx = 0;
-                                                                    ntile = GetTileFromAnimation(_localAnimationTimers, ntile, glyph, mapx, mapy, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
+                                                                    ntile = GetTileFromAnimation(_localAnimationTimers, ntile, glyph, mapx, mapy, ref currentCell, ref currentLayerInfo, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
 
                                                                     /* Draw enlargement tiles */
                                                                     int enlargement = GHApp.Tile2Enlargement[ntile];
@@ -8431,36 +8443,41 @@ namespace GnollHackX.Pages.Game
                                                                         int enl_idx = GetUsedEnlargementIndex(order_idx);
                                                                         int dx = 0, dy = 0;
                                                                         if (!GetEnlargementTileB(enlargement, enl_idx, hflip_glyph, vflip_glyph, main_tile_idx, anim_frame_idx, ref ntile, ref autodraw, ref dx, ref dy))
-                                                                            continue;
+                                                                        { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); _mapProfiler.StartAccum(TileProfilerAccum.IterLogic); continue; }
 
                                                                         int draw_map_x = mapx + dx + (adj_x - mapx);
                                                                         int draw_map_y = mapy + dy + (adj_y - mapy);
 
                                                                         if ((enlargement > 0 && enl_idx >= 0 && enl_idx <= 2) || layer_idx == (int)layer_types.MAX_LAYERS)
                                                                         {
-                                                                            PaintMapTile(canvas, true, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                            _mapProfiler.StopAccum(TileProfilerAccum.IterLogic);
+                                                                            PaintMapTile(canvas, true, textPaint, paint, layer_idx, ref currentCell, ref currentLayerInfo, ref _draw_shadow[mapx, mapy], mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                                 offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
                                                                                 scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
                                                                                 isPointerHoveringOnTile, mapLookMode, lighterDarkening); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                            _mapProfiler.StartAccum(TileProfilerAccum.IterLogic);
                                                                         }
                                                                         else
                                                                         {
                                                                             //float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
-                                                                            PaintMapTile(canvas, false, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                            _mapProfiler.StopAccum(TileProfilerAccum.IterLogic);
+                                                                            PaintMapTile(canvas, false, textPaint, paint, layer_idx, ref currentCell, ref currentLayerInfo, ref _draw_shadow[mapx, mapy], mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                                 offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
                                                                                 scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                                 hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
                                                                                 isPointerHoveringOnTile, mapLookMode, lighterDarkening); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                            _mapProfiler.StartAccum(TileProfilerAccum.IterLogic);
                                                                         }
-                                                                    }
                                                                 }
                                                             }
                                                         }
+                                                        }
+                                                        _mapProfiler.StopAccum(TileProfilerAccum.IterLogic);
                                                     }
                                                 }
 
@@ -8474,9 +8491,11 @@ namespace GnollHackX.Pages.Game
                                                         {
                                                             for (int mapy = startY; mapy <= endY; mapy++)
                                                             {
+                                                                ref MapData currentCell = ref _mapData[mapx, mapy];
+                                                                ref LayerInfo currentLayerInfo = ref _mapData[mapx, mapy].Layers;
                                                                 //bool darken = DarkenedPos(mapx, mapy);
-                                                                bool validpos = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_L_LEGAL) != 0 && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
-                                                                bool invalidpos = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_L_ILLEGAL) != 0 && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
+                                                                bool validpos = (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_L_LEGAL) != 0 && (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
+                                                                bool invalidpos = (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_L_ILLEGAL) != 0 && (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
 
                                                                 // Draw rectangle with blend mode in bottom half
                                                                 //if (darken)
@@ -8524,7 +8543,7 @@ namespace GnollHackX.Pages.Game
 
                                                                 if (coloredXRayVision)
                                                                 {
-                                                                    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_V_XRAY_VISION) != 0)
+                                                                    if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_V_XRAY_VISION) != 0)
                                                                     {
                                                                         paint.Color = new SKColor((byte)0, (byte)128, (byte)255, (byte)32);
                                                                         SKBlendMode old_bm = paint.BlendMode;
@@ -8561,13 +8580,13 @@ namespace GnollHackX.Pages.Game
                                                                     dodarkening = false;
                                                                     continue;
                                                                 }
-                                                                if (dodarkening && DarkenedPos(dc.MapX, dc.MapY))
+                                                                if (dodarkening && DarkenedPos(ref _mapData[dc.MapX, dc.MapY].Layers))
                                                                 {
                                                                     darkeningCanvas.Clear(SKColors.Transparent);
                                                                     if (dc.IsAutoDraw)
                                                                     {
                                                                         SKImage usedDarkenedBitmap = null;
-                                                                        int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighterDarkening);
+                                                                        int darken_percentage = GetDarkenPercentage(ref _mapData[dc.MapX, dc.MapY].Layers, lighterDarkening);
                                                                         AutoDrawParameterDefinition modadparams = dc.AutoDrawParameters;
                                                                         modadparams.tx = 0;
                                                                         modadparams.ty = 0;
@@ -8697,7 +8716,7 @@ namespace GnollHackX.Pages.Game
                                                                     else
                                                                     {
                                                                         SKImage usedDarkenedBitmap = null;
-                                                                        int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighterDarkening);
+                                                                        int darken_percentage = GetDarkenPercentage(ref _mapData[dc.MapX, dc.MapY].Layers, lighterDarkening);
                                                                         SavedDarkenedBitmap cachekey = new SavedDarkenedBitmap(dc.SourceBitmap, dc.SourceRect, darken_percentage);
                                                                         SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
                                                                         if (_darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap) && usedDarkenedBitmap != null)
@@ -8812,8 +8831,10 @@ namespace GnollHackX.Pages.Game
                                                         {
                                                             for (int mapy = startY; mapy <= endY; mapy++)
                                                             {
-                                                                bool ascension_radiance = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_ASCENSION_RADIANCE) != 0
-                                                                    && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
+                                                                ref MapData currentCell = ref _mapData[mapx, mapy];
+                                                                ref LayerInfo currentLayerInfo = ref _mapData[mapx, mapy].Layers;
+                                                                bool ascension_radiance = (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_ASCENSION_RADIANCE) != 0
+                                                                    && (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
                                                                 if (ascension_radiance)
                                                                 {
                                                                     float multiplier = 1.0f - Math.Min(1.0f, 0.3f + (float)Math.Sqrt(Math.Pow(mapx - _local_ux, 2) + Math.Pow(mapy - _local_uy, 2)) / 6.0f);
@@ -8834,7 +8855,7 @@ namespace GnollHackX.Pages.Game
                                                                     StopProfiling(GHProfilingStyle.Rect);
 #endif
                                                                     paint.BlendMode = old_bm;
-                                                                    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
+                                                                    if ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
                                                                     {
                                                                         UIUtils.DrawSparkle(canvas, paint, tx + 0.5f * width, ty + 0.5f * height, 15f * targetscale, generalcountervalue, true);
                                                                         UIUtils.DrawSparkle(canvas, paint, tx + 0.25f * width, ty + 0.25f * height, 10f * targetscale, generalcountervalue - 10, true);
@@ -13544,28 +13565,28 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        bool DarkenedPos(int mapx, int mapy)
+        bool DarkenedPos(ref LayerInfo currentLayerInfo)
         {
             bool darken;
-            if (_mapData[mapx, mapy].Layers.layer_gui_glyphs != null
-                && (_mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == GHApp.UnexploredGlyph
-                    || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == GHApp.NoGlyph)
+            if (currentLayerInfo.layer_gui_glyphs != null
+                && (currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == GHApp.UnexploredGlyph
+                    || currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == GHApp.NoGlyph)
                 )
             {
                 darken = false;
             }
             else
             {
-                bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
-                darken = (!showing_detection && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
+                bool showing_detection = (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
+                darken = (!showing_detection && (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
             }
             return darken;
         }
 
-        int GetDarkenPercentage(int mapx, int mapy, bool lighterDarkening)
+        int GetDarkenPercentage(ref LayerInfo currentLayerInfo, bool lighterDarkening)
         {
-            bool uloc = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0);
-            bool unlit = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_APPEARS_UNLIT) != 0);
+            bool uloc = ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0);
+            bool unlit = ((currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_APPEARS_UNLIT) != 0);
             // Get values from XAML controls
             int darken_percentage = lighterDarkening ? (uloc ? 90 : unlit ? 65 : 80) : (uloc ? 85 : unlit ? 40 : 65);
             return darken_percentage;
@@ -13862,6 +13883,9 @@ namespace GnollHackX.Pages.Game
             float scale, float targetscale, float scaled_x_padding, float scaled_y_padding, float scaled_tile_height,
             bool is_inventory, bool drawwallends, bool usingGL, bool highFilterQuality, bool fixRects, bool fixFiltering)
         {
+            ref MapData currentCell = ref _mapData[mapx, mapy];
+            ref LayerInfo currentLayerInfo = ref _mapData[mapx, mapy].Layers;
+
             if (delayedDraw)
             {
                 ulong contents_no = 0;
@@ -14113,7 +14137,7 @@ namespace GnollHackX.Pages.Game
                     )
                     /*|| autodraw_u_punished*/)
                 {
-                    DrawChain(canvas, paint, mapx, mapy, autodraw, false, width, height, ty, tx, scale, targetscale, usingGL, highFilterQuality, fixRects, fixFiltering);
+                    DrawChain(canvas, paint, ref currentLayerInfo, autodraw, false, width, height, ty, tx, scale, targetscale, usingGL, highFilterQuality, fixRects, fixFiltering);
                 }
                 else if (GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LONG_WORM)
                 {
@@ -14124,10 +14148,10 @@ namespace GnollHackX.Pages.Game
                     int source_glyph_seg_dir_in = GHApp._autodraws[autodraw].source_glyph2 + 4;
                     int source_glyph_seg_layer = GHApp._autodraws[autodraw].source_glyph3;
                     int drawing_tail = GHApp._autodraws[autodraw].flags;
-                    int wdir_out = _mapData[mapx, mapy].Layers.wsegdir;
-                    int wdir_in = _mapData[mapx, mapy].Layers.reverse_prev_wsegdir;
-                    bool is_head = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_HEAD) != 0;
-                    bool is_tailend = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_TAILEND) != 0;
+                    int wdir_out = currentLayerInfo.wsegdir;
+                    int wdir_in = currentLayerInfo.reverse_prev_wsegdir;
+                    bool is_head = (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_HEAD) != 0;
+                    bool is_tailend = (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_TAILEND) != 0;
                     for (int wlayer = 0; wlayer < 5; wlayer++)
                     {
                         int source_glyph = GHApp.NoGlyph;
@@ -14405,8 +14429,8 @@ namespace GnollHackX.Pages.Game
                     int src_unlit_y = 10;
                     int src_lit_x = 6 * (1 + (int)GHApp._autodraws[autodraw].flags);
                     int src_lit_y = 10;
-                    short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
-                    bool missile_lamplit = (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_LIT) != 0;
+                    short missile_special_quality = currentLayerInfo.missile_special_quality;
+                    bool missile_lamplit = (currentLayerInfo.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_LIT) != 0;
 
                     for (int cidx = 0; cidx < Math.Min((short)7, otmp_round != null ? otmp_round.ObjData.special_quality : missile_special_quality); cidx++)
                     {
@@ -14474,8 +14498,8 @@ namespace GnollHackX.Pages.Game
                     int src_lit_x = 9 * (1 + (int)GHApp._autodraws[autodraw].flags);
                     int src_lit_y = 0;
                     int cnt = 0;
-                    short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
-                    bool missile_lamplit = (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_LIT) != 0;
+                    short missile_special_quality = currentLayerInfo.missile_special_quality;
+                    bool missile_lamplit = (currentLayerInfo.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_LIT) != 0;
 
                     for (int cidx = 0; cidx < (otmp_round != null ? Math.Min((short)otmp_round.OtypData.special_quality, otmp_round.ObjData.special_quality) : missile_special_quality); cidx++)
                     {
@@ -14956,9 +14980,9 @@ namespace GnollHackX.Pages.Game
             (otmp_round.Poisoned || otmp_round.ElementalEnchantment > 0 || otmp_round.MythicPrefix > 0 || otmp_round.MythicSuffix > 0 || otmp_round.Eroded != 0 || otmp_round.Eroded2 != 0 || otmp_round.Exceptionality > 0))
             ||
             ((layer_idx == (int)layer_types.LAYER_MISSILE) &&
-                (_mapData[mapx, mapy].Layers.missile_poisoned != 0 || _mapData[mapx, mapy].Layers.missile_elemental_enchantment > 0
-                    || _mapData[mapx, mapy].Layers.missile_eroded != 0 || _mapData[mapx, mapy].Layers.missile_eroded2 != 0 ||
-                    _mapData[mapx, mapy].Layers.missile_exceptionality > 0 || _mapData[mapx, mapy].Layers.missile_mythic_prefix > 0 || _mapData[mapx, mapy].Layers.missile_mythic_suffix > 0))
+                (currentLayerInfo.missile_poisoned != 0 || currentLayerInfo.missile_elemental_enchantment > 0
+                    || currentLayerInfo.missile_eroded != 0 || currentLayerInfo.missile_eroded2 != 0 ||
+                    currentLayerInfo.missile_exceptionality > 0 || currentLayerInfo.missile_mythic_prefix > 0 || currentLayerInfo.missile_mythic_suffix > 0))
             )
             {
                 float y_start = scaled_y_padding;
@@ -14983,18 +15007,18 @@ namespace GnollHackX.Pages.Game
                 int src_x = 0;
                 int src_y = 0;
                 int cnt = 0;
-                bool poisoned = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_poisoned != 0 : otmp_round.Poisoned);
-                byte elemental_enchantment = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_elemental_enchantment : otmp_round.ElementalEnchantment);
-                byte exceptionality = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_exceptionality : otmp_round.Exceptionality);
-                byte mythic_prefix = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_mythic_prefix : otmp_round.MythicPrefix);
-                byte mythic_suffix = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_mythic_suffix : otmp_round.MythicSuffix);
-                byte eroded = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_eroded : otmp_round.Eroded);
-                byte eroded2 = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_eroded2 : otmp_round.Eroded2);
-                bool corrodeable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_CORRODEABLE) != 0 : otmp_round.OtypData.corrodeable != 0);
-                bool rottable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_ROTTABLE) != 0 : otmp_round.OtypData.rottable != 0);
-                bool flammable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_FLAMMABLE) != 0 : otmp_round.OtypData.flammable != 0);
-                bool rustprone = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_RUSTPRONE) != 0 : otmp_round.OtypData.rustprone != 0);
-                bool poisonable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_POISONABLE) != 0 : otmp_round.OtypData.poisonable != 0);
+                bool poisoned = (layer_idx == (int)layer_types.LAYER_MISSILE ? currentLayerInfo.missile_poisoned != 0 : otmp_round.Poisoned);
+                byte elemental_enchantment = (layer_idx == (int)layer_types.LAYER_MISSILE ? currentLayerInfo.missile_elemental_enchantment : otmp_round.ElementalEnchantment);
+                byte exceptionality = (layer_idx == (int)layer_types.LAYER_MISSILE ? currentLayerInfo.missile_exceptionality : otmp_round.Exceptionality);
+                byte mythic_prefix = (layer_idx == (int)layer_types.LAYER_MISSILE ? currentLayerInfo.missile_mythic_prefix : otmp_round.MythicPrefix);
+                byte mythic_suffix = (layer_idx == (int)layer_types.LAYER_MISSILE ? currentLayerInfo.missile_mythic_suffix : otmp_round.MythicSuffix);
+                byte eroded = (layer_idx == (int)layer_types.LAYER_MISSILE ? currentLayerInfo.missile_eroded : otmp_round.Eroded);
+                byte eroded2 = (layer_idx == (int)layer_types.LAYER_MISSILE ? currentLayerInfo.missile_eroded2 : otmp_round.Eroded2);
+                bool corrodeable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (currentLayerInfo.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_CORRODEABLE) != 0 : otmp_round.OtypData.corrodeable != 0);
+                bool rottable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (currentLayerInfo.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_ROTTABLE) != 0 : otmp_round.OtypData.rottable != 0);
+                bool flammable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (currentLayerInfo.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_FLAMMABLE) != 0 : otmp_round.OtypData.flammable != 0);
+                bool rustprone = (layer_idx == (int)layer_types.LAYER_MISSILE ? (currentLayerInfo.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_RUSTPRONE) != 0 : otmp_round.OtypData.rustprone != 0);
+                bool poisonable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (currentLayerInfo.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_POISONABLE) != 0 : otmp_round.OtypData.poisonable != 0);
                 float dest_x = 0, dest_y = 0;
 
                 for (item_property_mark_types ipm_idx = 0; ipm_idx < item_property_mark_types.MAX_ITEM_PROPERTY_MARKS; ipm_idx++)
@@ -15155,11 +15179,11 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void DrawChain(SKCanvas canvas, SKPaint paint, int mapx, int mapy, int autodraw, bool autodraw_u_punished, float width, float height, float ty, float tx, float scale, float targetscale, bool usingGL, bool highFilterQuality, bool fixRects, bool fixFiltering)
+        private void DrawChain(SKCanvas canvas, SKPaint paint, ref LayerInfo currentLayerInfo, int autodraw, bool autodraw_u_punished, float width, float height, float ty, float tx, float scale, float targetscale, bool usingGL, bool highFilterQuality, bool fixRects, bool fixFiltering)
         {
             int u_x = _local_ux;
             int u_y = _local_uy;
-            if (_uChain != null && _uBall != null && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
+            if (_uChain != null && _uBall != null && (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
             {
                 int chain_x = _uChain.OtypData.obj_loc_x;
                 int chain_y = _uChain.OtypData.obj_loc_y;
