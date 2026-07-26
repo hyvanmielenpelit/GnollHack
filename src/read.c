@@ -2647,7 +2647,7 @@ seffects(struct obj *sobj, boolean *effect_happened_ptr, struct monst *targetmon
                     res = 0;
                     int save_adj = get_saving_throw_adjustment(sobj, mtmp, sobj->oclass != SPBOOK_CLASS || is_serviced_spell ? (struct monst*)0 : &youmonst);
                     if (!mtmp->mtame && !is_peaceful(mtmp)
-                        && !check_ability_resistance_success(&youmonst, A_CON, save_adj))
+                        && !check_ability_resistance_success(mtmp, A_CON, save_adj))
                     {
                         if (mtmp->m_lev < u.ulevel - 10)
                         {
