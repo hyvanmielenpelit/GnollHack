@@ -7136,6 +7136,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void GetBaseMoveOffsets(int mapx, int mapy, sbyte monster_origin_x, sbyte monster_origin_y, float width, float height, long maincounterdiff, long moveIntervals, ref float base_move_offset_x, ref float base_move_offset_y)
         {
             int movediffx = (int)monster_origin_x - mapx;
