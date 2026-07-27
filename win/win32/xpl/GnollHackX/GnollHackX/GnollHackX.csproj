@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <!--<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	<DefineConstants>$(DefineConstants);GNH_MAP_PROFILING</DefineConstants>
+	<DefineConstants>$(DefineConstants);MAP_PROFILING</DefineConstants>
   </PropertyGroup>-->
 
   <ItemGroup>

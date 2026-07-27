@@ -4422,15 +4422,16 @@ namespace GnollHackX
         public static readonly List<ScreenResolutionItem> SupportedResolutions = new List<ScreenResolutionItem>();
         public static readonly List<ScreenResolutionItem> ScreenResolutionItems = new List<ScreenResolutionItem>();
 
-#if DEBUG
+#if MAP_PROFILING
         public readonly static object ProfilingStopwatchLock = new object();
         private static Stopwatch _profilingStopwatch = new Stopwatch();
         public static Stopwatch ProfilingStopwatch { get { return _profilingStopwatch; } }
 #endif
 
+        [Conditional("MAP_PROFILING")]
         public static void DebugWriteProfilingStopwatchTimeAndStop(string label)
         {
-#if DEBUG
+#if MAP_PROFILING
             lock (ProfilingStopwatchLock)
             {
                 ProfilingStopwatch.Stop();
@@ -4440,9 +4441,10 @@ namespace GnollHackX
 #endif
         }
 
+        [Conditional("MAP_PROFILING")]
         public static void DebugWriteProfilingStopwatchTimeAndStart(string label)
         {
-#if DEBUG
+#if MAP_PROFILING
             lock (ProfilingStopwatchLock)
             {
                 ProfilingStopwatch.Stop();
@@ -4453,9 +4455,10 @@ namespace GnollHackX
 #endif
         }
 
+        [Conditional("MAP_PROFILING")]
         public static void DebugWriteRestart(string label)
         {
-#if DEBUG
+#if MAP_PROFILING
             lock (ProfilingStopwatchLock)
             {
                 Debug.WriteLine("ProfilingStopwatch: " + label + ": " + "Restart");
@@ -4464,9 +4467,10 @@ namespace GnollHackX
 #endif
         }
 
+        [Conditional("MAP_PROFILING")]
         public static void DebugWriteProfilingStopwatchTimeAndRestart(string label)
         {
-#if DEBUG
+#if MAP_PROFILING
             lock (ProfilingStopwatchLock)
             {
                 ProfilingStopwatch.Stop();
@@ -4477,6 +4481,7 @@ namespace GnollHackX
 #endif
         }
 
+        [Conditional("DEBUG")]
         public static void DebugCheckCurrentFileDescriptor(string str)
         {
 #if DEBUG
