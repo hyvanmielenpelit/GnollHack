@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -93,10 +93,10 @@ namespace GnollHackX
                 {
                     for (int j = 0; j < GHConstants.MapRows; j++)
                     {
-                        _mapDataBuffer1[i, j] = _mapDataBuffer2[i, j] = _mapDataMaster[i, j] = new MapData();
-                        _mapDataBuffer1[i, j].Glyph = _mapDataBuffer2[i, j].Glyph = _mapDataMaster[i, j].Glyph = GHApp.UnexploredGlyph;
-                        _mapDataBuffer1[i, j].BkGlyph = _mapDataBuffer2[i, j].BkGlyph = _mapDataMaster[i, j].BkGlyph = GHApp.NoGlyph;
-                        _mapDataBuffer1[i, j].NeedsUpdate = _mapDataBuffer2[i, j].NeedsUpdate = _mapDataMaster[i, j].NeedsUpdate = true;
+                        _mapDataBuffer1[GHConstants.MapIdx(i, j)] = _mapDataBuffer2[GHConstants.MapIdx(i, j)] = _mapDataMaster[GHConstants.MapIdx(i, j)] = new MapData();
+                        _mapDataBuffer1[GHConstants.MapIdx(i, j)].Glyph = _mapDataBuffer2[GHConstants.MapIdx(i, j)].Glyph = _mapDataMaster[GHConstants.MapIdx(i, j)].Glyph = GHApp.UnexploredGlyph;
+                        _mapDataBuffer1[GHConstants.MapIdx(i, j)].BkGlyph = _mapDataBuffer2[GHConstants.MapIdx(i, j)].BkGlyph = _mapDataMaster[GHConstants.MapIdx(i, j)].BkGlyph = GHApp.NoGlyph;
+                        _mapDataBuffer1[GHConstants.MapIdx(i, j)].NeedsUpdate = _mapDataBuffer2[GHConstants.MapIdx(i, j)].NeedsUpdate = _mapDataMaster[GHConstants.MapIdx(i, j)].NeedsUpdate = true;
 
                         _objectDataMaster[i, j] = new ObjectData();
                         _objectDataBuffer1[i, j] = new ObjectData();
@@ -624,38 +624,38 @@ namespace GnollHackX
                 {
                     for (int y = 0; y < GHConstants.MapRows; y++)
                     {
-                        _mapDataMaster[x, y].Glyph = GHApp.UnexploredGlyph;
-                        _mapDataMaster[x, y].BkGlyph = GHApp.NoGlyph;
-                        _mapDataMaster[x, y].Symbol = "";
-                        _mapDataMaster[x, y].Color = SKColors.Black;// default(MapData);
-                        _mapDataMaster[x, y].Special = 0;
-                        _mapDataMaster[x, y].NeedsUpdate = true;
-                        _mapDataMaster[x, y].GlyphPrintAnimationCounterValue = 0;
-                        _mapDataMaster[x, y].GlyphPrintMainCounterValue = 0;
-                        _mapDataMaster[x, y].GlyphObjectPrintAnimationCounterValue = 0;
-                        _mapDataMaster[x, y].GlyphObjectPrintMainCounterValue = 0;
-                        _mapDataMaster[x, y].GlyphGeneralPrintMainCounterValue = 0;
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].Glyph = GHApp.UnexploredGlyph;
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].BkGlyph = GHApp.NoGlyph;
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].SymbolCodePoint = 0;
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].Color = SKColors.Black;// default(MapData);
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].Special = 0;
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].NeedsUpdate = true;
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].GlyphPrintAnimationCounterValue = 0;
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].GlyphPrintMainCounterValue = 0;
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].GlyphObjectPrintAnimationCounterValue = 0;
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].GlyphObjectPrintMainCounterValue = 0;
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].GlyphGeneralPrintMainCounterValue = 0;
 
-                        _mapDataMaster[x, y].Layers = new LayerInfo();
-                        _mapDataMaster[x, y].Layers.layer_glyphs = new int[(int)layer_types.MAX_LAYERS];
-                        _mapDataMaster[x, y].Layers.layer_gui_glyphs = new int[(int)layer_types.MAX_LAYERS];
-                        _mapDataMaster[x, y].Layers.leash_mon_x = new sbyte[GHConstants.MaxLeashed + 1];
-                        _mapDataMaster[x, y].Layers.leash_mon_y = new sbyte[GHConstants.MaxLeashed + 1];
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].Layers = new LayerInfo();
+                        /* Fixed buffers are inline and zero-initialized by new LayerInfo() */
 
-                        _mapDataMaster[x, y].Layers.layer_glyphs[0] = GHApp.UnexploredGlyph;
-                        _mapDataMaster[x, y].Layers.layer_gui_glyphs[0] = GHApp.UnexploredGlyph;
-                        for (int i = 1; i < (int)layer_types.MAX_LAYERS; i++)
+                        unsafe
                         {
-                            _mapDataMaster[x, y].Layers.layer_glyphs[i] = GHApp.NoGlyph;
-                            _mapDataMaster[x, y].Layers.layer_gui_glyphs[i] = GHApp.NoGlyph;
+                            _mapDataMaster[GHConstants.MapIdx(x, y)].Layers.layer_glyphs[0] = GHApp.UnexploredGlyph;
+                            _mapDataMaster[GHConstants.MapIdx(x, y)].Layers.layer_gui_glyphs[0] = GHApp.UnexploredGlyph;
+                            for (int i = 1; i < (int)layer_types.MAX_LAYERS; i++)
+                            {
+                                _mapDataMaster[GHConstants.MapIdx(x, y)].Layers.layer_glyphs[i] = GHApp.NoGlyph;
+                                _mapDataMaster[GHConstants.MapIdx(x, y)].Layers.layer_gui_glyphs[i] = GHApp.NoGlyph;
+                            }
                         }
 
-                        _mapDataMaster[x, y].Layers.glyph = GHApp.UnexploredGlyph;
-                        _mapDataMaster[x, y].Layers.bkglyph = GHApp.NoGlyph;
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].Layers.glyph = GHApp.UnexploredGlyph;
+                        _mapDataMaster[GHConstants.MapIdx(x, y)].Layers.bkglyph = GHApp.NoGlyph;
                         ClearAllObjectDataUnlocked(x, y);
                         ClearEngravingDataUnlocked(x, y);
 
-                        _mapDataCurrent[x, y] = _mapDataMaster[x, y];
+                        _mapDataCurrent[GHConstants.MapIdx(x, y)] = _mapDataMaster[GHConstants.MapIdx(x, y)];
                     }
                 }
                 _mapDataCurrentUpdated = true;
@@ -670,7 +670,7 @@ namespace GnollHackX
                 {
                     for (int y = 0; y < GHConstants.MapRows; y++)
                     {
-                        _mapDataCurrent[x, y] = _mapDataMaster[x, y];
+                        _mapDataCurrent[GHConstants.MapIdx(x, y)] = _mapDataMaster[GHConstants.MapIdx(x, y)];
                         if (_objectDataMaster[x, y] != null)
                         {
                             if (_objectDataMaster[x, y].FloorObjectList != null)
@@ -717,6 +717,10 @@ namespace GnollHackX
                             _objectDataCurrent[x, y] = null;
                     }
                 }
+                _engravingDataCurrent.Clear();
+                foreach (var kvp in _engravingDataMaster)
+                    _engravingDataCurrent[kvp.Key] = kvp.Value;
+
                 _mapDataCurrentUpdated = true;
             }
         }
@@ -820,12 +824,14 @@ namespace GnollHackX
         }
 
 
-        private MapData[,] _mapDataMaster = new MapData[GHConstants.MapCols, GHConstants.MapRows];
-        private MapData[,] _mapDataCurrent;
+        private MapData[] _mapDataMaster = new MapData[GHConstants.MapLength];
+        private MapData[] _mapDataCurrent;
+        private Dictionary<(int, int), EngravingInfo> _engravingDataMaster = new Dictionary<(int, int), EngravingInfo>();
+        private Dictionary<(int, int), EngravingInfo> _engravingDataCurrent = new Dictionary<(int, int), EngravingInfo>();
         private bool _mapDataCurrentUpdated = true;
         private bool _mapDataCurrentIs2 = false;
-        private MapData[,] _mapDataBuffer1 = new MapData[GHConstants.MapCols, GHConstants.MapRows];
-        private MapData[,] _mapDataBuffer2 = new MapData[GHConstants.MapCols, GHConstants.MapRows];
+        private MapData[] _mapDataBuffer1 = new MapData[GHConstants.MapLength];
+        private MapData[] _mapDataBuffer2 = new MapData[GHConstants.MapLength];
         private readonly object _mapDataBufferLock = new object();
         private int _mapCursorX;
         private int _mapCursorY;
@@ -877,8 +883,8 @@ namespace GnollHackX
             SetMapSymbol(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
         }
 
-        public bool GetMapDataBuffer(out MapData[,] mapBuffer, out ObjectData[,] objectBuffer, out ObjectDataItem uBall, out ObjectDataItem uChain, out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits,
-            out int cursx, out int cursy, out game_cursor_types cursorType, out bool force_paint_at_cursor, out bool show_cursor_on_u)
+        public bool GetMapDataBuffer(out MapData[] mapBuffer, out ObjectData[,] objectBuffer, out ObjectDataItem uBall, out ObjectDataItem uChain, out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits,
+            out int cursx, out int cursy, out game_cursor_types cursorType, out bool force_paint_at_cursor, out bool show_cursor_on_u, out Dictionary<(int, int), EngravingInfo> engravingData)
         {
             bool lockTaken = false;
             //lock(_mapDataBufferLock)
@@ -904,6 +910,7 @@ namespace GnollHackX
                         cursorType = _cursorType;
                         force_paint_at_cursor = _force_paint_at_cursor;
                         show_cursor_on_u = _show_cursor_on_u;
+                        engravingData = _engravingDataCurrent;
 
                         _mapDataCurrentIs2 = !_mapDataCurrentIs2;
                         _mapDataCurrent = _mapDataCurrentIs2 ? _mapDataBuffer2 : _mapDataBuffer1;
@@ -926,6 +933,7 @@ namespace GnollHackX
                         cursorType = game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR;
                         force_paint_at_cursor = false;
                         show_cursor_on_u = false;
+                        engravingData = null;
                         return false;
                     }
                 }
@@ -944,6 +952,7 @@ namespace GnollHackX
                     cursorType = game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR;
                     force_paint_at_cursor = false;
                     show_cursor_on_u = false;
+                    engravingData = null;
                     return false;
                 }
             }
@@ -971,14 +980,14 @@ namespace GnollHackX
 
         private void SetMapSymbolOnTimerUnlocked(int x, int y, int glyph, int bkglyph, Int32 c, int color, UInt64 special, ref LayerInfo layers, long generalCounter, long mainCounter)
         {
-            if (((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0 && (_mapDataMaster[x, y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) == 0) ||
-                (layers.m_id != 0 && layers.m_id != _mapDataMaster[x, y].Layers.m_id))
+            if (((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0 && (_mapDataMaster[GHConstants.MapIdx(x, y)].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) == 0) ||
+                (layers.m_id != 0 && layers.m_id != _mapDataMaster[GHConstants.MapIdx(x, y)].Layers.m_id))
             {
                 /* Update counter value only if the monster just moved here, not, e.g. if it changes action in the same square,
                  * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
                  */
-                _mapDataMaster[x, y].GlyphPrintAnimationCounterValue = generalCounter;
-                _mapDataMaster[x, y].GlyphPrintMainCounterValue = mainCounter;
+                _mapDataMaster[GHConstants.MapIdx(x, y)].GlyphPrintAnimationCounterValue = generalCounter;
+                _mapDataMaster[GHConstants.MapIdx(x, y)].GlyphPrintMainCounterValue = mainCounter;
             }
             if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
             {
@@ -986,7 +995,8 @@ namespace GnollHackX
                 _uy = y;
                 _u_condition_bits = layers.condition_bits;
                 _u_status_bits = layers.status_bits;
-                if (layers.buff_bits != null)
+                /* buff_bits is now a fixed buffer — always valid */
+                unsafe
                 {
                     for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
                     {
@@ -994,30 +1004,30 @@ namespace GnollHackX
                     }
                 }
             }
-            if (layers.o_id != 0 && layers.o_id != _mapDataMaster[x, y].Layers.o_id)
+            if (layers.o_id != 0 && layers.o_id != _mapDataMaster[GHConstants.MapIdx(x, y)].Layers.o_id)
             {
                 /* Update counter value only if the object just moved here, not, e.g. if it changes action in the same square,
                  * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
                  */
-                _mapDataMaster[x, y].GlyphObjectPrintAnimationCounterValue = generalCounter;
-                _mapDataMaster[x, y].GlyphObjectPrintMainCounterValue = mainCounter;
+                _mapDataMaster[GHConstants.MapIdx(x, y)].GlyphObjectPrintAnimationCounterValue = generalCounter;
+                _mapDataMaster[GHConstants.MapIdx(x, y)].GlyphObjectPrintMainCounterValue = mainCounter;
             }
 
             /* General counter that gets always set */
-            _mapDataMaster[x, y].GlyphGeneralPrintAnimationCounterValue = generalCounter;
-            _mapDataMaster[x, y].GlyphGeneralPrintMainCounterValue = mainCounter;
-            _mapDataMaster[x, y].Glyph = glyph;
-            _mapDataMaster[x, y].BkGlyph = bkglyph;
-            _mapDataMaster[x, y].Symbol = Char.ConvertFromUtf32(c);
-            _mapDataMaster[x, y].Color = UIUtils.NHColor2SKColor(color, (special & 0x00002000UL) != 0 ? (int)MenuItemAttributes.AltColors : 0);
-            _mapDataMaster[x, y].Special = special;
-            _mapDataMaster[x, y].Layers = layers;
+            _mapDataMaster[GHConstants.MapIdx(x, y)].GlyphGeneralPrintAnimationCounterValue = generalCounter;
+            _mapDataMaster[GHConstants.MapIdx(x, y)].GlyphGeneralPrintMainCounterValue = mainCounter;
+            _mapDataMaster[GHConstants.MapIdx(x, y)].Glyph = glyph;
+            _mapDataMaster[GHConstants.MapIdx(x, y)].BkGlyph = bkglyph;
+            _mapDataMaster[GHConstants.MapIdx(x, y)].SymbolCodePoint = c;
+            _mapDataMaster[GHConstants.MapIdx(x, y)].Color = UIUtils.NHColor2SKColor(color, (special & 0x00002000UL) != 0 ? (int)MenuItemAttributes.AltColors : 0);
+            _mapDataMaster[GHConstants.MapIdx(x, y)].Special = special;
+            _mapDataMaster[GHConstants.MapIdx(x, y)].Layers = layers;
 
-            _mapDataMaster[x, y].NeedsUpdate = true;
-            _mapDataMaster[x, y].HasEnlargementOrAnimationOrSpecialHeight = false;
+            _mapDataMaster[GHConstants.MapIdx(x, y)].NeedsUpdate = true;
+            _mapDataMaster[GHConstants.MapIdx(x, y)].HasEnlargementOrAnimationOrSpecialHeight = false;
 
             /* copy to current */
-            _mapDataCurrent[x, y] = _mapDataMaster[x, y];
+            _mapDataCurrent[GHConstants.MapIdx(x, y)] = _mapDataMaster[GHConstants.MapIdx(x, y)];
         }
 
         private void ClearAllObjectDataUnlocked(int x, int y)
@@ -1050,7 +1060,16 @@ namespace GnollHackX
         {
             if (GHUtils.isok(x, y))
             {
-                _mapDataCurrent[x, y].Engraving = _mapDataMaster[x, y].Engraving = new EngravingInfo();
+                _mapDataMaster[GHConstants.MapIdx(x, y)].HasEngraving = false;
+                _mapDataMaster[GHConstants.MapIdx(x, y)].EngrType = 0;
+                _mapDataMaster[GHConstants.MapIdx(x, y)].EngrFlags = 0;
+                _mapDataMaster[GHConstants.MapIdx(x, y)].EngrGeneralFlags = 0;
+                _mapDataCurrent[GHConstants.MapIdx(x, y)].HasEngraving = false;
+                _mapDataCurrent[GHConstants.MapIdx(x, y)].EngrType = 0;
+                _mapDataCurrent[GHConstants.MapIdx(x, y)].EngrFlags = 0;
+                _mapDataCurrent[GHConstants.MapIdx(x, y)].EngrGeneralFlags = 0;
+                _engravingDataMaster.Remove((x, y));
+                _engravingDataCurrent.Remove((x, y));
             }
         }
 
@@ -2338,7 +2357,18 @@ namespace GnollHackX
                 if (GHUtils.isok(x, y))
                 {
                     CheckUpdateCurrentMapBufferUnlocked();
-                    _mapDataCurrent[x, y].Engraving = _mapDataMaster[x, y].Engraving = new EngravingInfo(engraving_text, etype, eflags, gflags);
+                    _mapDataMaster[GHConstants.MapIdx(x, y)].HasEngraving = true;
+                    _mapDataMaster[GHConstants.MapIdx(x, y)].EngrType = etype;
+                    _mapDataMaster[GHConstants.MapIdx(x, y)].EngrFlags = eflags;
+                    _mapDataMaster[GHConstants.MapIdx(x, y)].EngrGeneralFlags = gflags;
+                    _mapDataCurrent[GHConstants.MapIdx(x, y)].HasEngraving = true;
+                    _mapDataCurrent[GHConstants.MapIdx(x, y)].EngrType = etype;
+                    _mapDataCurrent[GHConstants.MapIdx(x, y)].EngrFlags = eflags;
+                    _mapDataCurrent[GHConstants.MapIdx(x, y)].EngrGeneralFlags = gflags;
+
+                    var engrInfo = new EngravingInfo(engraving_text, etype, eflags, gflags);
+                    _engravingDataMaster[(x, y)] = engrInfo;
+                    _engravingDataCurrent[(x, y)] = engrInfo;
                 }
             }
         }
@@ -4672,3 +4702,4 @@ namespace GnollHackX
         }
     }
 }
+

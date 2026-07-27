@@ -29,7 +29,11 @@ namespace GnollHackX
         public const int MaxXlogUserNameLength = 31;        
         public const int MaxGHWindows = 32;
         public const int MapCols = 80;
-        public const int MapRows = 21;        
+        public const int MapRows = 21;
+        public const int MapLength = MapCols * MapRows;
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public static int MapIdx(int x, int y) { return x * MapRows + y; }
         public const int DelayOutputDurationInMilliseconds = 50;
         public const int ExitWindowsWithStringDelay = 1100;
         public const int FadeToBlackDelay = 325;

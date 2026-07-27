@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
@@ -12,7 +12,7 @@ namespace GnollHackX
     {
         public int Glyph;
         public int BkGlyph;
-        public string Symbol;
+        public int SymbolCodePoint;
         public SKColor Color;
         public UInt64 Special;
         public LayerInfo Layers;
@@ -26,7 +26,10 @@ namespace GnollHackX
         public bool MapAnimated;
         public bool RedrawTile;
         public bool HasEnlargementOrAnimationOrSpecialHeight;
-        public EngravingInfo Engraving;
+        public bool HasEngraving;
+        public int EngrType;
+        public ulong EngrFlags;
+        public ulong EngrGeneralFlags;
     }
 
 }
