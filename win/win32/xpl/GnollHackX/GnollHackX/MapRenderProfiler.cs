@@ -127,6 +127,7 @@ namespace GnollHackX
         /// so different accumulators can be independently started/stopped without
         /// clobbering each other.
         /// </summary>
+        [Conditional("ENABLE_MAP_RENDER_PROFILER")]
         public void StartAccum(TileProfilerAccum accum)
         {
             _accumStartTicks[(int)accum] = _frameStopwatch.ElapsedTicks;
@@ -135,6 +136,7 @@ namespace GnollHackX
         /// <summary>
         /// Stop timing and add elapsed ticks to the given accumulator.
         /// </summary>
+        [Conditional("ENABLE_MAP_RENDER_PROFILER")]
         public void StopAccum(TileProfilerAccum accum)
         {
             _accumTicks[(int)accum] += _frameStopwatch.ElapsedTicks - _accumStartTicks[(int)accum];
@@ -143,6 +145,7 @@ namespace GnollHackX
         /// <summary>
         /// Increment the per-tile call counter (called inside PaintMapTile).
         /// </summary>
+        [Conditional("ENABLE_MAP_RENDER_PROFILER")]
         public void CountTile()
         {
             _tileCallCount++;
@@ -151,6 +154,7 @@ namespace GnollHackX
         /// <summary>
         /// Increment the iteration counter (called per inner loop iteration).
         /// </summary>
+        [Conditional("ENABLE_MAP_RENDER_PROFILER")]
         public void CountIter()
         {
             _iterCount++;
