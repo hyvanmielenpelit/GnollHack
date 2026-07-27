@@ -564,7 +564,7 @@ namespace GnollHackX.Pages.Game
             return ctype > game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR && ctype < game_cursor_types.CURSOR_STYLE_INVISIBLE;
         }
 
-        private ObjectData[,] _objectData = new ObjectData[GHConstants.MapCols, GHConstants.MapRows];
+        private ObjectData[] _objectData = new ObjectData[GHConstants.MapLength];
         private ObjectDataItem _uChain = null;
         private ObjectDataItem _uBall = null;
 
@@ -964,7 +964,7 @@ namespace GnollHackX.Pages.Game
                         _mapData[GHConstants.MapIdx(i, j)].BkGlyph = GHApp.NoGlyph;
                         _mapData[GHConstants.MapIdx(i, j)].NeedsUpdate = true;
 
-                        _objectData[i, j] = new ObjectData();
+                        _objectData[GHConstants.MapIdx(i, j)] = new ObjectData();
                     }
                 }
             //}
@@ -5675,7 +5675,7 @@ namespace GnollHackX.Pages.Game
             {
                 if (dx != 0 || dy != 0)
                 {
-                    _draw_shadow[draw_map_x, draw_map_y] |= 1;
+                    _draw_shadow[GHConstants.MapIdx(draw_map_x, draw_map_y)] |= 1;
                 }
             }
 
@@ -7349,7 +7349,7 @@ namespace GnollHackX.Pages.Game
 #endif
         private readonly StringBuilder _lineBuilder = new StringBuilder(GHConstants.LineBuilderInitialCapacity);
         private readonly string[] _attributeStrings = new string[6] { "Strength:", "Dexterity:", "Constitution:", "Intelligence:", "Wisdom:", "Charisma:" };
-        private readonly short[,] _draw_shadow = new short[GHConstants.MapCols, GHConstants.MapRows];
+        private readonly short[] _draw_shadow = new short[GHConstants.MapLength];
         private readonly GHAnimationTimerList _localAnimationTimers = new GHAnimationTimerList();
         private readonly ObjectDataItem[] _localWeaponStyleObjDataItem = new ObjectDataItem[3];
         private readonly GHStatusField[] _localStatusFields = new GHStatusField[(int)NhStatusFields.MAXBLSTATS];
@@ -7747,7 +7747,7 @@ namespace GnollHackX.Pages.Game
             game_cursor_types cursorType;
             bool force_paint_at_cursor,show_cursor_on_u;
             MapData[] mapBuffer;
-            ObjectData[,] objectBuffer;
+            ObjectData[] objectBuffer;
             ObjectDataItem uBall, uChain;
             if (curGame.GetMapDataBuffer(out mapBuffer, out objectBuffer, out uBall, out uChain, out u_x, out u_y, out condition_bits, out status_bits, ref _local_u_buff_bits,
                 out mapCursorX, out mapCursorY, out cursorType, out force_paint_at_cursor, out show_cursor_on_u, out Dictionary<(int, int), EngravingInfo> engravingData))
@@ -8175,7 +8175,7 @@ namespace GnollHackX.Pages.Game
                                                     for (int mapx = startX; mapx <= endX; mapx++)
                                                     {
                                                         ref MapData currentCell = ref _mapData[GHConstants.MapIdx(mapx, mapy)];
-                                                        ref LayerInfo currentLayerInfo = ref _mapData[GHConstants.MapIdx(mapx, mapy)].Layers;
+                                                        ref LayerInfo currentLayerInfo = ref currentCell.Layers;
                                                         int draw_cnt = _draw_order.Count;
                                                         for (int draw_idx = 0; draw_idx < draw_cnt; draw_idx++)
                                                         {
@@ -8190,7 +8190,7 @@ namespace GnollHackX.Pages.Game
 
                                                             unsafe
                                                             {
-                                                                if (layer_idx == (int)layer_types.MAX_LAYERS && (_draw_shadow[mapx, mapy] == 0 || currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph))
+                                                                if (layer_idx == (int)layer_types.MAX_LAYERS && (_draw_shadow[GHConstants.MapIdx(mapx, mapy)] == 0 || currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph))
                                                                 { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); continue; }
                                                             }
 
@@ -8257,7 +8257,7 @@ namespace GnollHackX.Pages.Game
                                                                 else
                                                                 {
                                                                     bool is_source_dir;
-                                                                    int sub_layer_cnt = GetSubLayerCount(ref _mapData[GHConstants.MapIdx(source_x, source_y)], ref _mapData[GHConstants.MapIdx(source_x, source_y)].Layers, _objectData[source_x, source_y], layer_idx, out is_source_dir);
+                                                                    int sub_layer_cnt = GetSubLayerCount(ref _mapData[GHConstants.MapIdx(source_x, source_y)], ref _mapData[GHConstants.MapIdx(source_x, source_y)].Layers, _objectData[GHConstants.MapIdx(source_x, source_y)], layer_idx, out is_source_dir);
                                                                     for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
                                                                     {
                                                                         int signed_glyph = GHApp.NoGlyph; //Default
@@ -8275,7 +8275,7 @@ namespace GnollHackX.Pages.Game
                                                                         int adj_y = source_y;
                                                                         bool foundthisturn = false;
 
-                                                                        if (!GetLayerGlyph(source_x, source_y, ref _mapData[GHConstants.MapIdx(source_x, source_y)], ref _mapData[GHConstants.MapIdx(source_x, source_y)].Layers, _objectData[source_x, source_y], layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
+                                                                        if (!GetLayerGlyph(source_x, source_y, ref _mapData[GHConstants.MapIdx(source_x, source_y)], ref _mapData[GHConstants.MapIdx(source_x, source_y)].Layers, _objectData[GHConstants.MapIdx(source_x, source_y)], layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
                                                                             ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
                                                                             ref object_origin_x, ref object_origin_y, ref foundthisturn))
                                                                         { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); _mapProfiler.StartAccum(TileProfilerAccum.IterLogic); continue; }
@@ -8324,7 +8324,7 @@ namespace GnollHackX.Pages.Game
                                                                         //float enlMinDrawX = 0, enlMaxDrawX = 0, enlMinDrawY = 0, enlMaxDrawY = 0;
 
                                                                         _mapProfiler.StopAccum(TileProfilerAccum.IterLogic);
-                                                                        PaintMapTile(canvas, false, textPaint, paint, layer_idx, ref _mapData[GHConstants.MapIdx(source_x, source_y)], ref _mapData[GHConstants.MapIdx(source_x, source_y)].Layers, ref _draw_shadow[source_x, source_y], source_x, source_y, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                        PaintMapTile(canvas, false, textPaint, paint, layer_idx, ref _mapData[GHConstants.MapIdx(source_x, source_y)], ref _mapData[GHConstants.MapIdx(source_x, source_y)].Layers, ref _draw_shadow[GHConstants.MapIdx(source_x, source_y)], source_x, source_y, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                             offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
                                                                             scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
@@ -8357,8 +8357,8 @@ namespace GnollHackX.Pages.Game
                                                         _mapProfiler.CountIter();
                                                         _mapProfiler.StartAccum(TileProfilerAccum.IterLogic);
                                                         ref MapData currentCell = ref _mapData[GHConstants.MapIdx(mapx, mapy)];
-                                                        ObjectData currentObjCell = _objectData[mapx, mapy];
-                                                        ref LayerInfo currentLayerInfo = ref _mapData[GHConstants.MapIdx(mapx, mapy)].Layers;
+                                                        ObjectData currentObjCell = _objectData[GHConstants.MapIdx(mapx, mapy)];
+                                                        ref LayerInfo currentLayerInfo = ref currentCell.Layers;
 
                                                         if (layer_idx == (int)layer_types.LAYER_FEATURE_DOODAD && currentCell.HasEngraving)
                                                         {
@@ -8371,7 +8371,7 @@ namespace GnollHackX.Pages.Game
                                                         unsafe
                                                         {
                                                             if (layer_idx == (int)layer_types.MAX_LAYERS
-                                                                && (_draw_shadow[mapx, mapy] == 0 || currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph)
+                                                                && (_draw_shadow[GHConstants.MapIdx(mapx, mapy)] == 0 || currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph)
                                                                 )
                                                             { _mapProfiler.StopAccum(TileProfilerAccum.IterLogic); continue; }
                                                         }
@@ -8479,7 +8479,7 @@ namespace GnollHackX.Pages.Game
                                                                         if ((enlargement > 0 && enl_idx >= 0 && enl_idx <= 2) || layer_idx == (int)layer_types.MAX_LAYERS)
                                                                         {
                                                                             _mapProfiler.StopAccum(TileProfilerAccum.IterLogic);
-                                                                            PaintMapTile(canvas, true, textPaint, paint, layer_idx, ref currentCell, ref currentLayerInfo, ref _draw_shadow[mapx, mapy], mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                            PaintMapTile(canvas, true, textPaint, paint, layer_idx, ref currentCell, ref currentLayerInfo, ref _draw_shadow[GHConstants.MapIdx(mapx, mapy)], mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                                 offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
                                                                                 scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
@@ -8492,7 +8492,7 @@ namespace GnollHackX.Pages.Game
                                                                         {
                                                                             //float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
                                                                             _mapProfiler.StopAccum(TileProfilerAccum.IterLogic);
-                                                                            PaintMapTile(canvas, false, textPaint, paint, layer_idx, ref currentCell, ref currentLayerInfo, ref _draw_shadow[mapx, mapy], mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                            PaintMapTile(canvas, false, textPaint, paint, layer_idx, ref currentCell, ref currentLayerInfo, ref _draw_shadow[GHConstants.MapIdx(mapx, mapy)], mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                                 offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
                                                                                 scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
@@ -8520,7 +8520,7 @@ namespace GnollHackX.Pages.Game
                                                             for (int mapy = startY; mapy <= endY; mapy++)
                                                             {
                                                                 ref MapData currentCell = ref _mapData[GHConstants.MapIdx(mapx, mapy)];
-                                                                ref LayerInfo currentLayerInfo = ref _mapData[GHConstants.MapIdx(mapx, mapy)].Layers;
+                                                                ref LayerInfo currentLayerInfo = ref currentCell.Layers;
                                                                 //bool darken = DarkenedPos(mapx, mapy);
                                                                 bool validpos = (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_L_LEGAL) != 0 && (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
                                                                 bool invalidpos = (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_L_ILLEGAL) != 0 && (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
@@ -8834,7 +8834,7 @@ namespace GnollHackX.Pages.Game
                                                             for (int mapy = startY; mapy <= endY; mapy++)
                                                             {
                                                                 ref MapData currentCell = ref _mapData[GHConstants.MapIdx(mapx, mapy)];
-                                                                ref LayerInfo currentLayerInfo = ref _mapData[GHConstants.MapIdx(mapx, mapy)].Layers;
+                                                                ref LayerInfo currentLayerInfo = ref currentCell.Layers;
                                                                 bool ascension_radiance = (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_ASCENSION_RADIANCE) != 0
                                                                     && (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
                                                                 if (ascension_radiance)
@@ -13808,7 +13808,7 @@ namespace GnollHackX.Pages.Game
             bool is_inventory, bool drawwallends, bool usingGL, bool highFilterQuality, bool fixRects, bool fixFiltering)
         {
             ref MapData currentCell = ref _mapData[GHConstants.MapIdx(mapx, mapy)];
-            ref LayerInfo currentLayerInfo = ref _mapData[GHConstants.MapIdx(mapx, mapy)].Layers;
+            ref LayerInfo currentLayerInfo = ref currentCell.Layers;
 
             if (delayedDraw)
             {

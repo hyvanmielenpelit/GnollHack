@@ -98,9 +98,9 @@ namespace GnollHackX
                         _mapDataBuffer1[GHConstants.MapIdx(i, j)].BkGlyph = _mapDataBuffer2[GHConstants.MapIdx(i, j)].BkGlyph = _mapDataMaster[GHConstants.MapIdx(i, j)].BkGlyph = GHApp.NoGlyph;
                         _mapDataBuffer1[GHConstants.MapIdx(i, j)].NeedsUpdate = _mapDataBuffer2[GHConstants.MapIdx(i, j)].NeedsUpdate = _mapDataMaster[GHConstants.MapIdx(i, j)].NeedsUpdate = true;
 
-                        _objectDataMaster[i, j] = new ObjectData();
-                        _objectDataBuffer1[i, j] = new ObjectData();
-                        _objectDataBuffer2[i, j] = new ObjectData();
+                        _objectDataMaster[GHConstants.MapIdx(i, j)] = new ObjectData();
+                        _objectDataBuffer1[GHConstants.MapIdx(i, j)] = new ObjectData();
+                        _objectDataBuffer2[GHConstants.MapIdx(i, j)] = new ObjectData();
                     }
                 }
             }
@@ -671,50 +671,50 @@ namespace GnollHackX
                     for (int y = 0; y < GHConstants.MapRows; y++)
                     {
                         _mapDataCurrent[GHConstants.MapIdx(x, y)] = _mapDataMaster[GHConstants.MapIdx(x, y)];
-                        if (_objectDataMaster[x, y] != null)
+                        if (_objectDataMaster[GHConstants.MapIdx(x, y)] != null)
                         {
-                            if (_objectDataMaster[x, y].FloorObjectList != null)
+                            if (_objectDataMaster[GHConstants.MapIdx(x, y)].FloorObjectList != null)
                             {
-                                if (_objectDataCurrent[x, y].FloorObjectList == null)
-                                    _objectDataCurrent[x, y].FloorObjectList = new List<ObjectDataItem>(16);
-                                _objectDataCurrent[x, y].FloorObjectList.Clear();
-                                _objectDataCurrent[x, y].FloorObjectList.AddRange(_objectDataMaster[x, y].FloorObjectList);
+                                if (_objectDataCurrent[GHConstants.MapIdx(x, y)].FloorObjectList == null)
+                                    _objectDataCurrent[GHConstants.MapIdx(x, y)].FloorObjectList = new List<ObjectDataItem>(16);
+                                _objectDataCurrent[GHConstants.MapIdx(x, y)].FloorObjectList.Clear();
+                                _objectDataCurrent[GHConstants.MapIdx(x, y)].FloorObjectList.AddRange(_objectDataMaster[GHConstants.MapIdx(x, y)].FloorObjectList);
                             }
                             else
-                                _objectDataCurrent[x, y].FloorObjectList = null;
+                                _objectDataCurrent[GHConstants.MapIdx(x, y)].FloorObjectList = null;
 
-                            if (_objectDataMaster[x, y].CoverFloorObjectList != null)
+                            if (_objectDataMaster[GHConstants.MapIdx(x, y)].CoverFloorObjectList != null)
                             {
-                                if (_objectDataCurrent[x, y].CoverFloorObjectList == null)
-                                    _objectDataCurrent[x, y].CoverFloorObjectList = new List<ObjectDataItem>(4);
-                                _objectDataCurrent[x, y].CoverFloorObjectList.Clear();
-                                _objectDataCurrent[x, y].CoverFloorObjectList.AddRange(_objectDataMaster[x, y].CoverFloorObjectList);
+                                if (_objectDataCurrent[GHConstants.MapIdx(x, y)].CoverFloorObjectList == null)
+                                    _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverFloorObjectList = new List<ObjectDataItem>(4);
+                                _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverFloorObjectList.Clear();
+                                _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverFloorObjectList.AddRange(_objectDataMaster[GHConstants.MapIdx(x, y)].CoverFloorObjectList);
                             }
                             else
-                                _objectDataCurrent[x, y].CoverFloorObjectList = null;
+                                _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverFloorObjectList = null;
 
-                            if (_objectDataMaster[x, y].MemoryObjectList != null)
+                            if (_objectDataMaster[GHConstants.MapIdx(x, y)].MemoryObjectList != null)
                             {
-                                if (_objectDataCurrent[x, y].MemoryObjectList == null)
-                                    _objectDataCurrent[x, y].MemoryObjectList = new List<ObjectDataItem>(16);
-                                _objectDataCurrent[x, y].MemoryObjectList.Clear();
-                                _objectDataCurrent[x, y].MemoryObjectList.AddRange(_objectDataMaster[x, y].MemoryObjectList);
+                                if (_objectDataCurrent[GHConstants.MapIdx(x, y)].MemoryObjectList == null)
+                                    _objectDataCurrent[GHConstants.MapIdx(x, y)].MemoryObjectList = new List<ObjectDataItem>(16);
+                                _objectDataCurrent[GHConstants.MapIdx(x, y)].MemoryObjectList.Clear();
+                                _objectDataCurrent[GHConstants.MapIdx(x, y)].MemoryObjectList.AddRange(_objectDataMaster[GHConstants.MapIdx(x, y)].MemoryObjectList);
                             }
                             else
-                                _objectDataCurrent[x, y].MemoryObjectList = null;
+                                _objectDataCurrent[GHConstants.MapIdx(x, y)].MemoryObjectList = null;
 
-                            if (_objectDataMaster[x, y].CoverMemoryObjectList != null)
+                            if (_objectDataMaster[GHConstants.MapIdx(x, y)].CoverMemoryObjectList != null)
                             {
-                                if (_objectDataCurrent[x, y].CoverMemoryObjectList == null)
-                                    _objectDataCurrent[x, y].CoverMemoryObjectList = new List<ObjectDataItem>(4);
-                                _objectDataCurrent[x, y].CoverMemoryObjectList.Clear();
-                                _objectDataCurrent[x, y].CoverMemoryObjectList.AddRange(_objectDataMaster[x, y].CoverMemoryObjectList);
+                                if (_objectDataCurrent[GHConstants.MapIdx(x, y)].CoverMemoryObjectList == null)
+                                    _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverMemoryObjectList = new List<ObjectDataItem>(4);
+                                _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverMemoryObjectList.Clear();
+                                _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverMemoryObjectList.AddRange(_objectDataMaster[GHConstants.MapIdx(x, y)].CoverMemoryObjectList);
                             }
                             else
-                                _objectDataCurrent[x, y].CoverMemoryObjectList = null;
+                                _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverMemoryObjectList = null;
                         }
                         else
-                            _objectDataCurrent[x, y] = null;
+                            _objectDataCurrent[GHConstants.MapIdx(x, y)] = null;
                     }
                 }
                 _engravingDataCurrent.Clear();
@@ -844,10 +844,10 @@ namespace GnollHackX
         private ulong _u_condition_bits = 0;
         private ulong _u_status_bits = 0;
         private ulong[] _u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
-        private ObjectData[,] _objectDataMaster = new ObjectData[GHConstants.MapCols, GHConstants.MapRows];
-        private ObjectData[,] _objectDataCurrent;
-        private ObjectData[,] _objectDataBuffer1 = new ObjectData[GHConstants.MapCols, GHConstants.MapRows];
-        private ObjectData[,] _objectDataBuffer2 = new ObjectData[GHConstants.MapCols, GHConstants.MapRows];
+        private ObjectData[] _objectDataMaster = new ObjectData[GHConstants.MapLength];
+        private ObjectData[] _objectDataCurrent;
+        private ObjectData[] _objectDataBuffer1 = new ObjectData[GHConstants.MapLength];
+        private ObjectData[] _objectDataBuffer2 = new ObjectData[GHConstants.MapLength];
         private ObjectDataItem _uChain = null;
         private ObjectDataItem _uBall = null;
 
@@ -883,7 +883,7 @@ namespace GnollHackX
             SetMapSymbol(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
         }
 
-        public bool GetMapDataBuffer(out MapData[] mapBuffer, out ObjectData[,] objectBuffer, out ObjectDataItem uBall, out ObjectDataItem uChain, out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits,
+        public bool GetMapDataBuffer(out MapData[] mapBuffer, out ObjectData[] objectBuffer, out ObjectDataItem uBall, out ObjectDataItem uChain, out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits,
             out int cursx, out int cursy, out game_cursor_types cursorType, out bool force_paint_at_cursor, out bool show_cursor_on_u, out Dictionary<(int, int), EngravingInfo> engravingData)
         {
             bool lockTaken = false;
@@ -1032,27 +1032,27 @@ namespace GnollHackX
 
         private void ClearAllObjectDataUnlocked(int x, int y)
         {
-            if (_objectDataMaster[x, y] != null)
+            if (_objectDataMaster[GHConstants.MapIdx(x, y)] != null)
             {
-                if (_objectDataMaster[x, y].FloorObjectList != null)
-                    _objectDataMaster[x, y].FloorObjectList.Clear();
-                if (_objectDataMaster[x, y].CoverFloorObjectList != null)
-                    _objectDataMaster[x, y].CoverFloorObjectList.Clear();
-                if (_objectDataMaster[x, y].MemoryObjectList != null)
-                    _objectDataMaster[x, y].MemoryObjectList.Clear();
-                if (_objectDataMaster[x, y].CoverMemoryObjectList != null)
-                    _objectDataMaster[x, y].CoverMemoryObjectList.Clear();
+                if (_objectDataMaster[GHConstants.MapIdx(x, y)].FloorObjectList != null)
+                    _objectDataMaster[GHConstants.MapIdx(x, y)].FloorObjectList.Clear();
+                if (_objectDataMaster[GHConstants.MapIdx(x, y)].CoverFloorObjectList != null)
+                    _objectDataMaster[GHConstants.MapIdx(x, y)].CoverFloorObjectList.Clear();
+                if (_objectDataMaster[GHConstants.MapIdx(x, y)].MemoryObjectList != null)
+                    _objectDataMaster[GHConstants.MapIdx(x, y)].MemoryObjectList.Clear();
+                if (_objectDataMaster[GHConstants.MapIdx(x, y)].CoverMemoryObjectList != null)
+                    _objectDataMaster[GHConstants.MapIdx(x, y)].CoverMemoryObjectList.Clear();
             }
-            if (_objectDataCurrent[x, y] != null)
+            if (_objectDataCurrent[GHConstants.MapIdx(x, y)] != null)
             {
-                if (_objectDataCurrent[x, y].FloorObjectList != null)
-                    _objectDataCurrent[x, y].FloorObjectList.Clear();
-                if (_objectDataCurrent[x, y].CoverFloorObjectList != null)
-                    _objectDataCurrent[x, y].CoverFloorObjectList.Clear();
-                if (_objectDataCurrent[x, y].MemoryObjectList != null)
-                    _objectDataCurrent[x, y].MemoryObjectList.Clear();
-                if (_objectDataCurrent[x, y].CoverMemoryObjectList != null)
-                    _objectDataCurrent[x, y].CoverMemoryObjectList.Clear();
+                if (_objectDataCurrent[GHConstants.MapIdx(x, y)].FloorObjectList != null)
+                    _objectDataCurrent[GHConstants.MapIdx(x, y)].FloorObjectList.Clear();
+                if (_objectDataCurrent[GHConstants.MapIdx(x, y)].CoverFloorObjectList != null)
+                    _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverFloorObjectList.Clear();
+                if (_objectDataCurrent[GHConstants.MapIdx(x, y)].MemoryObjectList != null)
+                    _objectDataCurrent[GHConstants.MapIdx(x, y)].MemoryObjectList.Clear();
+                if (_objectDataCurrent[GHConstants.MapIdx(x, y)].CoverMemoryObjectList != null)
+                    _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverMemoryObjectList.Clear();
             }
         }
 
@@ -2148,12 +2148,12 @@ namespace GnollHackX
                 lock (_mapDataBufferLock)
                 {
                     CheckUpdateCurrentMapBufferUnlocked();
-                    if (_objectDataMaster[x, y] != null && _objectDataCurrent[x, y] != null)
+                    if (_objectDataMaster[GHConstants.MapIdx(x, y)] != null && _objectDataCurrent[GHConstants.MapIdx(x, y)] != null)
                     {
                         bool is_memoryobj = (where == (int)obj_where_types.OBJ_MEMORY);
                         bool is_drawn_in_front = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_DRAWN_IN_FRONT) != 0UL;
-                        List<ObjectDataItem> masterobjectList = is_memoryobj ? (is_drawn_in_front ? _objectDataMaster[x, y].CoverMemoryObjectList : _objectDataMaster[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectDataMaster[x, y].CoverFloorObjectList : _objectDataMaster[x, y].FloorObjectList);
-                        List<ObjectDataItem> currentobjectList = is_memoryobj ? (is_drawn_in_front ? _objectDataCurrent[x, y].CoverMemoryObjectList : _objectDataCurrent[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectDataCurrent[x, y].CoverFloorObjectList : _objectDataCurrent[x, y].FloorObjectList);
+                        List<ObjectDataItem> masterobjectList = is_memoryobj ? (is_drawn_in_front ? _objectDataMaster[GHConstants.MapIdx(x, y)].CoverMemoryObjectList : _objectDataMaster[GHConstants.MapIdx(x, y)].MemoryObjectList) : (is_drawn_in_front ? _objectDataMaster[GHConstants.MapIdx(x, y)].CoverFloorObjectList : _objectDataMaster[GHConstants.MapIdx(x, y)].FloorObjectList);
+                        List<ObjectDataItem> currentobjectList = is_memoryobj ? (is_drawn_in_front ? _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverMemoryObjectList : _objectDataCurrent[GHConstants.MapIdx(x, y)].MemoryObjectList) : (is_drawn_in_front ? _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverFloorObjectList : _objectDataCurrent[GHConstants.MapIdx(x, y)].FloorObjectList);
                         ObjectDataItem newItem;
                         switch (cmdtype)
                         {
@@ -2170,25 +2170,25 @@ namespace GnollHackX
                                     {
                                         if (is_drawn_in_front)
                                         {
-                                            _objectDataMaster[x, y].CoverMemoryObjectList = new List<ObjectDataItem>(4);
+                                            _objectDataMaster[GHConstants.MapIdx(x, y)].CoverMemoryObjectList = new List<ObjectDataItem>(4);
                                         }
                                         else
                                         {
-                                            _objectDataMaster[x, y].MemoryObjectList = new List<ObjectDataItem>(16);
+                                            _objectDataMaster[GHConstants.MapIdx(x, y)].MemoryObjectList = new List<ObjectDataItem>(16);
                                         }
                                     }
                                     else
                                     {
                                         if (is_drawn_in_front)
                                         {
-                                            _objectDataMaster[x, y].CoverFloorObjectList = new List<ObjectDataItem>(4);
+                                            _objectDataMaster[GHConstants.MapIdx(x, y)].CoverFloorObjectList = new List<ObjectDataItem>(4);
                                         }
                                         else
                                         {
-                                            _objectDataMaster[x, y].FloorObjectList = new List<ObjectDataItem>(16);
+                                            _objectDataMaster[GHConstants.MapIdx(x, y)].FloorObjectList = new List<ObjectDataItem>(16);
                                         }
                                     }
-                                    masterobjectList = is_memoryobj ? (is_drawn_in_front ? _objectDataMaster[x, y].CoverMemoryObjectList : _objectDataMaster[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectDataMaster[x, y].CoverFloorObjectList : _objectDataMaster[x, y].FloorObjectList);
+                                    masterobjectList = is_memoryobj ? (is_drawn_in_front ? _objectDataMaster[GHConstants.MapIdx(x, y)].CoverMemoryObjectList : _objectDataMaster[GHConstants.MapIdx(x, y)].MemoryObjectList) : (is_drawn_in_front ? _objectDataMaster[GHConstants.MapIdx(x, y)].CoverFloorObjectList : _objectDataMaster[GHConstants.MapIdx(x, y)].FloorObjectList);
                                 }
                                 if (currentobjectList == null)
                                 {
@@ -2196,25 +2196,25 @@ namespace GnollHackX
                                     {
                                         if (is_drawn_in_front)
                                         {
-                                            _objectDataCurrent[x, y].CoverMemoryObjectList = new List<ObjectDataItem>(4);
+                                            _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverMemoryObjectList = new List<ObjectDataItem>(4);
                                         }
                                         else
                                         {
-                                            _objectDataCurrent[x, y].MemoryObjectList = new List<ObjectDataItem>(16);
+                                            _objectDataCurrent[GHConstants.MapIdx(x, y)].MemoryObjectList = new List<ObjectDataItem>(16);
                                         }
                                     }
                                     else
                                     {
                                         if (is_drawn_in_front)
                                         {
-                                            _objectDataCurrent[x, y].CoverFloorObjectList = new List<ObjectDataItem>(4);
+                                            _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverFloorObjectList = new List<ObjectDataItem>(4);
                                         }
                                         else
                                         {
-                                            _objectDataCurrent[x, y].FloorObjectList = new List<ObjectDataItem>(16);
+                                            _objectDataCurrent[GHConstants.MapIdx(x, y)].FloorObjectList = new List<ObjectDataItem>(16);
                                         }
                                     }
-                                    currentobjectList = is_memoryobj ? (is_drawn_in_front ? _objectDataCurrent[x, y].CoverMemoryObjectList : _objectDataCurrent[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectDataCurrent[x, y].CoverFloorObjectList : _objectDataCurrent[x, y].FloorObjectList);
+                                    currentobjectList = is_memoryobj ? (is_drawn_in_front ? _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverMemoryObjectList : _objectDataCurrent[GHConstants.MapIdx(x, y)].MemoryObjectList) : (is_drawn_in_front ? _objectDataCurrent[GHConstants.MapIdx(x, y)].CoverFloorObjectList : _objectDataCurrent[GHConstants.MapIdx(x, y)].FloorObjectList);
                                 }
                                 masterobjectList.Add(new ObjectDataItem(otmp, otypdata, hallucinated, foundthisturn));
                                 currentobjectList.Add(new ObjectDataItem(otmp, otypdata, hallucinated, foundthisturn));
