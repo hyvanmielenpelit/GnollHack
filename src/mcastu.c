@@ -1208,7 +1208,7 @@ spell_would_be_useless(struct monst *mtmp, unsigned int adtyp, int spellnum)
             && spellnum == MGC_CLONE_WIZ)
             return TRUE;
 
-        if ((Curse_resistance || Antimagic) && spellnum == MGC_CURSE_ITEMS)
+        if (Curse_resistance && spellnum == MGC_CURSE_ITEMS)
             return TRUE;
 
         if (Antimagic && (spellnum == MGC_WEAKEN_YOU || spellnum == MGC_STUN_YOU || spellnum == MGC_DESTRY_ARMR))
