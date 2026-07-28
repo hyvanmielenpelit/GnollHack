@@ -3155,6 +3155,13 @@ select_off(struct obj *otmp)
 
     if (!otmp)
         return 0;
+
+    if (otmp == uskin) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "take %s off; it's merged with your skin.", yname(uskin));
+        return 0;
+    }
+
     *buf = '\0'; /* lint suppression */
 
     /* special ring checks */
