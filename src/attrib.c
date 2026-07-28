@@ -2108,6 +2108,44 @@ updatemaxhp(void)
     return;
 }
 
+static int adjust_str_bonus(int tmp, int bonus)
+{
+    int i;
+    if (bonus > 0) 
+    {
+        for (i = 0; i < bonus; i++) 
+        {
+            if (tmp >= 18 && tmp < STR18(100)) 
+            {
+                tmp += STR_BONUS_PERCENTAGE_ADDITION;
+                if (tmp > STR18(100)) 
+                    tmp = STR18(100);
+            } 
+            else 
+            {
+                tmp += 1;
+            }
+        }
+    } 
+    else 
+    {
+        for (i = 0; i > bonus; i--) 
+        {
+            if (tmp > 18 && tmp <= STR18(100)) 
+            {
+                tmp -= STR_BONUS_PERCENTAGE_ADDITION;
+                if (tmp < 18) 
+                    tmp = 18;
+            } 
+            else 
+            {
+                tmp -= 1;
+            }
+        }
+    }
+    return tmp;
+}
+
 void
 updateabon(void)
 {
@@ -2320,7 +2358,12 @@ update_mon_abon(struct monst *mon)
                                 {
                                     int64_t afixmaxcandidate = objects[otyp].oc_attribute_bonus;
                                     if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-                                        afixmaxcandidate += applicable_enchantment;
+                                    {
+                                        if (i == A_STR)
+                                            afixmaxcandidate = (int64_t)adjust_str_bonus((int)afixmaxcandidate, (int)applicable_enchantment);
+                                        else
+                                            afixmaxcandidate += applicable_enchantment;
+                                    }
 
                                     /* Take the lowest maximum (most constraining) */
                                     if (afixmaxcandidate < *afixmax_ptr[i])
@@ -2330,7 +2373,12 @@ update_mon_abon(struct monst *mon)
                                 {
                                     int64_t afixmincandidate = objects[otyp].oc_attribute_bonus;
                                     if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-                                        afixmincandidate += applicable_enchantment;
+                                    {
+                                        if (i == A_STR)
+                                            afixmincandidate = (int64_t)adjust_str_bonus((int)afixmincandidate, (int)applicable_enchantment);
+                                        else
+                                            afixmincandidate += applicable_enchantment;
+                                    }
 
                                     /* Take the highest minimum (most constraining) */
                                     if (afixmincandidate > *afixmin_ptr[i])
@@ -2402,7 +2450,7 @@ update_mon_abon(struct monst *mon)
         if (worn && has_obj_mythic_great_strength(uitem))
         {
             int64_t afixmincandidate = STR18(100);
-            afixmincandidate += applicable_enchantment;
+            afixmincandidate = (int64_t)adjust_str_bonus((int)afixmincandidate, (int)applicable_enchantment);
 
             /* Take the highest minimum (most constraining) */
             if (afixmincandidate > *afixmin_ptr[A_STR])
@@ -2495,47 +2543,10 @@ boolean is_obj_worn(struct obj *uitem)
 schar
 acurr(int x)
 {
-    int tmp, i;
-    if (x == A_STR && u.abonus.a[x] != 0) 
-    {
-        tmp = u.acurr.a[x] + u.atemp.a[x];
-        int bonus = u.abonus.a[x];
-        
-        if (bonus > 0) 
-        {
-            for (i = 0; i < bonus; i++) 
-            {
-                if (tmp >= 18 && tmp < STR18(100)) 
-                {
-                    tmp += STR_BONUS_PERCENTAGE_ADDITION;
-                    if (tmp > STR18(100)) 
-                        tmp = STR18(100);
-                }
-                else 
-                {
-                    tmp += 1;
-                }
-            }
-        }
-        else 
-        {
-            for (i = 0; i > bonus; i--) 
-            {
-                if (tmp > 18 && tmp < STR18(100)) 
-                {
-                    tmp -= STR_BONUS_PERCENTAGE_ADDITION;
-                    if (tmp < 18) 
-                        tmp = 18;
-                } 
-                else 
-                {
-                    tmp -= 1;
-                }
-            }
-        }
-    } 
-    else 
-    {
+    int tmp;
+    if (x == A_STR && u.abonus.a[x] != 0) {
+        tmp = adjust_str_bonus(u.acurr.a[x] + u.atemp.a[x], u.abonus.a[x]);
+    } else {
         tmp = (u.abonus.a[x] + u.atemp.a[x] + u.acurr.a[x]);
     }
     
@@ -2575,47 +2586,10 @@ m_acurr(struct monst *mon, int x)
     if (mon == &youmonst)
         return acurr(x);
 
-    int tmp, i;
-    if (x == A_STR && mon->abonus.a[x] != 0) 
-    {
-        tmp = mon->acurr.a[x] + mon->atemp.a[x];
-        int bonus = mon->abonus.a[x];
-        
-        if (bonus > 0) 
-        {
-            for (i = 0; i < bonus; i++) 
-            {
-                if (tmp >= 18 && tmp < STR18(100)) 
-                {
-                    tmp += STR_BONUS_PERCENTAGE_ADDITION;
-                    if (tmp > STR18(100)) 
-                        tmp = STR18(100);
-                } 
-                else 
-                {
-                    tmp += 1;
-                }
-            }
-        }
-        else 
-        {
-            for (i = 0; i > bonus; i--) 
-            {
-                if (tmp > 18 && tmp < STR18(100))
-                {
-                    tmp -= STR_BONUS_PERCENTAGE_ADDITION;
-                    if (tmp < 18) 
-                        tmp = 18;
-                } 
-                else 
-                {
-                    tmp -= 1;
-                }
-            }
-        }
-    }
-    else
-    {
+    int tmp;
+    if (x == A_STR && mon->abonus.a[x] != 0) {
+        tmp = adjust_str_bonus(mon->acurr.a[x] + mon->atemp.a[x], mon->abonus.a[x]);
+    } else {
         tmp = (mon->abonus.a[x] + mon->atemp.a[x] + mon->acurr.a[x]);
     }
 
