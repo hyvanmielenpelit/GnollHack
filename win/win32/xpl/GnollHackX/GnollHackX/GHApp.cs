@@ -2132,8 +2132,8 @@ namespace GnollHackX
             CurrentMainPage?.Suspend();
             CurrentGamePage?.Suspend();
 
-            FmodService?.Suspend();
             SleepMuteMode = true;
+            FmodService?.Suspend();
 
 #if !GNH_MAUI || (!ANDROID && !IOS)
             SaveGameOnSleep();

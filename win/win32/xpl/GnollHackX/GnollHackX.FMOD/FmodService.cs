@@ -160,6 +160,9 @@ namespace GnollHackX.Unknown
         private int _initialized = 0;
         private bool Initialized { get { return Interlocked.CompareExchange(ref _initialized, 0, 0) != 0; } set { Interlocked.Exchange(ref _initialized, value ? 1 : 0); } }
 
+        private int _mixerSuspended = 0;
+        private bool MixerSuspended { get { return Interlocked.CompareExchange(ref _mixerSuspended, 0, 0) != 0; } set { Interlocked.Exchange(ref _mixerSuspended, value ? 1 : 0); } }
+
         public void InitializeFmod()
         {
             RESULT res;
@@ -200,6 +203,9 @@ namespace GnollHackX.Unknown
         {
             if (!Initialized)
                 return;
+
+            /* FMOD docs: must call mixerResume before release to avoid deadlock */
+            Resume();
             
             RESULT res;
 
@@ -230,23 +236,39 @@ namespace GnollHackX.Unknown
 
         public void Suspend()
         {
-            if (!Initialized)
+            if (!Initialized || MixerSuspended)
                 return;
 
-            if (_coresystem.hasHandle())
+            try
             {
-                _coresystem.mixerSuspend();
+                if (_coresystem.hasHandle())
+                {
+                    _coresystem.mixerSuspend();
+                    MixerSuspended = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("FmodService.Suspend exception: " + ex.Message);
             }
         }
 
         public void Resume()
         {
-            if (!Initialized)
+            if (!Initialized || !MixerSuspended)
                 return;
 
-            if (_coresystem.hasHandle())
+            try
             {
-                _coresystem.mixerResume();
+                if (_coresystem.hasHandle())
+                {
+                    _coresystem.mixerResume();
+                    MixerSuspended = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("FmodService.Resume exception: " + ex.Message);
             }
         }
 
@@ -277,7 +299,7 @@ namespace GnollHackX.Unknown
 
         private bool FMODup()
         {
-            return Initialized && GHApp.LoadBanks;
+            return Initialized && !MixerSuspended && GHApp.LoadBanks;
         }
 
         public void UnloadBanks(sound_bank_loading_type loadingType)
