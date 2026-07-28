@@ -1378,7 +1378,8 @@ m_move(struct monst *mtmp, int after)
         return M_MOVE_NOMOVE_NO_ATTACK; /* still eating */
     }
 
-    if (hides_under(ptr) && OBJ_AT(mtmp->mx, mtmp->my) && rn2(10))
+    if (hides_under(ptr) && OBJ_AT(mtmp->mx, mtmp->my)
+        && is_mon_mundetected(mtmp) && rn2(10))
         return M_MOVE_NOMOVE_CAN_ATTACK; /* do not leave hiding place */
 
     set_apparxy(mtmp);

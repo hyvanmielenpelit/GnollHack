@@ -200,12 +200,12 @@ attack_checks(struct monst *mtmp, struct obj *wep)
 
             play_sfx_sound(SFX_WAS_HIDING);
             if (!Blind && Hallucination)
-                pline("A %s %s appeared!",
-                      is_tame(mtmp) ? (call_mon_tame(mtmp) ? "allied" : "tame") : "wild", l_monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "A %s %s appeared!",
+                      is_tame(mtmp) ? (call_mon_tame(mtmp) ? "tame" : "allied") : "wild", l_monnam(mtmp));
             else if (Blind || (is_pool(mtmp->mx, mtmp->my) && !Underwater))
-                pline("Wait!  There's a hidden monster there!");
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Wait!  There's a hidden monster there!");
             else if ((obj = level.objects[mtmp->mx][mtmp->my]) != 0)
-                pline("Wait!  There's %s hiding under %s!",
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Wait!  There's %s hiding under %s!",
                       an(l_monnam(mtmp)), doname(obj));
             return TRUE;
         }

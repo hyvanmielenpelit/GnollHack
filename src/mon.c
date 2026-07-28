@@ -5231,7 +5231,7 @@ hideunder(struct monst *mtmp)
     if (is_u)
         u.uundetected = undetected;
     else
-        set_mon_mundetected(mtmp, undetected ? TRUE : FALSE); /* Since mundetected is not a boolean (either a bitfield / unsigned int or uchar) */
+        set_mon_mundetected(mtmp, undetected); /* Since mundetected is not a boolean (either a bitfield / unsigned int or uchar) */
 
     newsym(x, y);
 
