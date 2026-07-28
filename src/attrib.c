@@ -2495,7 +2495,7 @@ boolean is_obj_worn(struct obj *uitem)
 schar
 acurr(int x)
 {
-    int tmp;
+    int tmp, i;
     if (x == A_STR && u.abonus.a[x] != 0) 
     {
         tmp = u.acurr.a[x] + u.atemp.a[x];
@@ -2503,7 +2503,7 @@ acurr(int x)
         
         if (bonus > 0) 
         {
-            for (int i = 0; i < bonus; i++) 
+            for (i = 0; i < bonus; i++) 
             {
                 if (tmp >= 18 && tmp < STR18(100)) 
                 {
@@ -2519,7 +2519,7 @@ acurr(int x)
         }
         else 
         {
-            for (int i = 0; i > bonus; i--) 
+            for (i = 0; i > bonus; i--) 
             {
                 if (tmp > 18 && tmp < STR18(100)) 
                 {
@@ -2575,7 +2575,7 @@ m_acurr(struct monst *mon, int x)
     if (mon == &youmonst)
         return acurr(x);
 
-    int tmp;
+    int tmp, i;
     if (x == A_STR && mon->abonus.a[x] != 0) 
     {
         tmp = mon->acurr.a[x] + mon->atemp.a[x];
@@ -2583,7 +2583,7 @@ m_acurr(struct monst *mon, int x)
         
         if (bonus > 0) 
         {
-            for (int i = 0; i < bonus; i++) 
+            for (i = 0; i < bonus; i++) 
             {
                 if (tmp >= 18 && tmp < STR18(100)) 
                 {
@@ -2599,7 +2599,7 @@ m_acurr(struct monst *mon, int x)
         }
         else 
         {
-            for (int i = 0; i > bonus; i--) 
+            for (i = 0; i > bonus; i--) 
             {
                 if (tmp > 18 && tmp < STR18(100))
                 {
