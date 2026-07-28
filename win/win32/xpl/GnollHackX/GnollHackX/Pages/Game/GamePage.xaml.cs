@@ -7550,7 +7550,10 @@ namespace GnollHackX.Pages.Game
                         MainThread.BeginInvokeOnMainThread(() => 
                         {
                             if (!GHApp.SavingGame)
-                                GC.Collect(); 
+                            {
+                                FrameTimeProfiler.MarkGcEvent();
+                                GC.Collect();
+                            }
                         });
                         break;
                     case (int)MemoryPressureLevel.Complete:

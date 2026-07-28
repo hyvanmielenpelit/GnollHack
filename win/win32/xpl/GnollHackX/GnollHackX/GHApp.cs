@@ -601,6 +601,7 @@ namespace GnollHackX
 #endif
                 MapRefreshRateStyle mapRefreshRateStyle = curGamePage.MapRefreshRate;
                 CanvasTypes canvasType = curGamePage.GetActiveCanvas();
+                FrameTimeProfiler.TrackCanvasType(canvasType == CanvasTypes.MainCanvas);
                 int refreshRate;
                 switch (canvasType)
                 {
@@ -2085,6 +2086,7 @@ namespace GnollHackX
 
         public static void CollectGarbage()
         {
+            FrameTimeProfiler.MarkGcEvent();
             GC.Collect();
 #if !WINDOWS
             GC.WaitForPendingFinalizers();
@@ -2094,6 +2096,7 @@ namespace GnollHackX
 
         public static void CollectNursery()
         {
+            FrameTimeProfiler.MarkGcEvent();
             GC.Collect(0);
         }
 

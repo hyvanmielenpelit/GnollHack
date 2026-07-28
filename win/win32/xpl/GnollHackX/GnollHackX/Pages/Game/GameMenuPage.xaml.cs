@@ -65,6 +65,8 @@ namespace GnollHackX.Pages.Game
             btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
             btnGC.IsVisible = GHApp.DeveloperMode && GHApp.DebugLogMessages && GHApp.LowLevelLogging; /* Just do not show almost ever, since there is little space  */
             UpdateDarknessMode();
+
+            FrameTimeProfiler.MarkPauseEvent();
         }
 
         public GameMenuPage(GamePage gamePage, bool isLimited) : this(gamePage)
@@ -97,6 +99,7 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            FrameTimeProfiler.MarkPauseEvent();
             GHApp.CollectNursery();
             //GHApp.AddSentryBreadcrumb(btnSave.Text + " menu button pressed.", GHConstants.SentryGnollHackButtonClickCategoryName);
             _gamePage.GenericButton_Clicked(btnSave, EventArgs.Empty, GHApp.MapCommand(GHUtils.Meta('s')));
@@ -112,6 +115,7 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            FrameTimeProfiler.MarkPauseEvent();
             GHApp.CollectNursery();
             //GHApp.AddSentryBreadcrumb(btnQuit.Text + " menu button pressed.", GHConstants.SentryGnollHackButtonClickCategoryName);
             _gamePage.GenericButton_Clicked(btnQuit, EventArgs.Empty, _gamePage.GameEnded ? 'q' : GHApp.MapCommand(GHUtils.Meta('q')));
@@ -144,6 +148,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             _backPressed = true;
             GHApp.PlayButtonClickedSound();
+            FrameTimeProfiler.MarkPauseEvent();
             GHApp.CollectNursery();
             await GHApp.PopModalPageAsync();
             GHApp.UpdateFreeDiskSpace();
@@ -160,6 +165,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.DebugWriteRestart("ProfilingStopwatch.Restart: Options");
+            FrameTimeProfiler.MarkPauseEvent();
             GHApp.CollectNursery();
             _gamePage.GenericButton_Clicked(btnOptions, EventArgs.Empty, GHApp.MapCommand('O'));
             await GHApp.PopModalPageAsync();
@@ -174,6 +180,7 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            FrameTimeProfiler.MarkPauseEvent();
             GHApp.CollectNursery();
             _gamePage.GenericButton_Clicked(btnSnapshot, EventArgs.Empty, GHApp.MapCommand(GHUtils.Meta(29)));
             await GHApp.PopModalPageAsync();
@@ -237,6 +244,7 @@ namespace GnollHackX.Pages.Game
             {
                 _backPressed = true;
                 MainLayout.IsEnabled = false;
+                FrameTimeProfiler.MarkPauseEvent();
                 GHApp.CollectNursery();
                 await GHApp.PopModalPageAsync();
             }
@@ -285,6 +293,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             if (_gamePage.ShownTip == -1)
                 _gamePage.ShowGUITips(false);
+            FrameTimeProfiler.MarkPauseEvent();
             GHApp.CollectNursery();
             await GHApp.PopModalPageAsync();
         }
@@ -393,7 +402,6 @@ namespace GnollHackX.Pages.Game
                 if (File.Exists(filepath))
                 {
                     await GHApp.ShareFile(this, filepath, "GnollHack Frame Log");
-                    File.Delete(filepath);
                 }
                 else
                 {
