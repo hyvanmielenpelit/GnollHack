@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 
@@ -16,6 +17,17 @@ namespace GnollHackX
         public long TicksPaintStart;
         public long TicksPaintEnd;
         public long TicksFrameEnd;
+
+        /* GC collection counts at frame start (gen 0, 1, 2) */
+        public int GcCount0;
+        public int GcCount1;
+        public int GcCount2;
+
+        /* Cumulative bytes allocated at frame start */
+        public long AllocatedBytes;
+
+        /* Snapshot of the forced-GC call counter at frame start */
+        public long ForcedGcCount;
     }
 
     public struct FrameTimeStatistics
@@ -35,9 +47,13 @@ namespace GnollHackX
         public float FPS;
         public int SampleCount;
 
-        /* GC-affected frame statistics (excluded from base stats above) */
+        /* Forced GC frame statistics (excluded from base stats) */
         public int GcFrameCount;
         public float GcWorstMs;
+
+        /* Runtime (non-forced) GC frame statistics (excluded from base stats) */
+        public int RuntimeGcFrameCount;
+        public float RuntimeGcWorstMs;
 
         /* Pause-affected frame statistics (menu/text/command canvas transitions) */
         public int PauseFrameCount;
@@ -55,13 +71,12 @@ namespace GnollHackX
         private static readonly float[] _sortBuffer = new float[BufferSize];
 
         /*
-         * GC event ring buffer. Each entry is a Stopwatch timestamp recorded
-         * just before a forced GC.Collect call.  Any inter-frame gap whose
-         * interval contains one of these timestamps is tagged GC-affected and
-         * excluded from the base statistics.
+         * Monotonic counter incremented by MarkGcEvent() each time a
+         * forced GC is requested.  BeginFrame snapshots the counter so
+         * we can detect forced-GC calls between adjacent frames by
+         * comparing their snapshots — immune to GC deferral timing.
          */
-        private static readonly long[] _gcTimestamps = new long[MaxExclusionEvents];
-        private static long _gcWriteIndex = -1;
+        private static long _forcedGcCounter = 0;
 
         /*
          * Pause event ring buffer. A pause event is recorded when the active
@@ -87,12 +102,11 @@ namespace GnollHackX
 
         /// <summary>
         /// Call immediately before a forced GC.Collect / CollectGarbage /
-        /// CollectNursery to mark the current moment as a GC event.
+        /// CollectNursery to mark the current moment as a forced GC event.
         /// </summary>
         public static void MarkGcEvent()
         {
-            long idx = Interlocked.Increment(ref _gcWriteIndex);
-            _gcTimestamps[SafeIndex(idx, MaxExclusionEvents)] = Stopwatch.GetTimestamp();
+            Interlocked.Increment(ref _forcedGcCounter);
         }
 
         /// <summary>
@@ -143,27 +157,43 @@ namespace GnollHackX
             _buffer[index] = new FrameTimeSample
             {
                 FrameNumber = frameNumber,
-                TicksFrameStart = Stopwatch.GetTimestamp()
+                TicksFrameStart = Stopwatch.GetTimestamp(),
+                GcCount0 = GC.CollectionCount(0),
+                GcCount1 = GC.CollectionCount(1),
+                GcCount2 = GC.CollectionCount(2),
+                AllocatedBytes = GC.GetTotalAllocatedBytes(false),
+                ForcedGcCount = Interlocked.Read(ref _forcedGcCounter)
             };
         }
+
+        /*
+         * Index of the last frame that entered the render path (set by
+         * StampUpdate, which runs synchronously during UpdateMainCanvas).
+         * Paint-path stamps (lock, paint) use this instead of _writeIndex
+         * because PaintSurface fires asynchronously after
+         * CompositionTarget_Rendering returns and _writeIndex may have
+         * already advanced to the next frame.
+         */
+        private static long _lastRenderIndex = -1;
 
         public static void StampUpdate()
         {
             long idx = Interlocked.Read(ref _writeIndex);
             if (idx < 0) return;
+            Interlocked.Exchange(ref _lastRenderIndex, idx);
             _buffer[SafeIndex(idx, BufferSize)].TicksUpdateStart = Stopwatch.GetTimestamp();
         }
 
         public static void StampLockAttempt()
         {
-            long idx = Interlocked.Read(ref _writeIndex);
+            long idx = Interlocked.Read(ref _lastRenderIndex);
             if (idx < 0) return;
             _buffer[SafeIndex(idx, BufferSize)].TicksLockAttempt = Stopwatch.GetTimestamp();
         }
 
         public static void StampLockResult(bool acquired)
         {
-            long idx = Interlocked.Read(ref _writeIndex);
+            long idx = Interlocked.Read(ref _lastRenderIndex);
             if (idx < 0) return;
             int index = SafeIndex(idx, BufferSize);
             _buffer[index].TicksLockResult = Stopwatch.GetTimestamp();
@@ -172,14 +202,14 @@ namespace GnollHackX
 
         public static void StampPaintStart()
         {
-            long idx = Interlocked.Read(ref _writeIndex);
+            long idx = Interlocked.Read(ref _lastRenderIndex);
             if (idx < 0) return;
             _buffer[SafeIndex(idx, BufferSize)].TicksPaintStart = Stopwatch.GetTimestamp();
         }
 
         public static void StampPaintEnd()
         {
-            long idx = Interlocked.Read(ref _writeIndex);
+            long idx = Interlocked.Read(ref _lastRenderIndex);
             if (idx < 0) return;
             _buffer[SafeIndex(idx, BufferSize)].TicksPaintEnd = Stopwatch.GetTimestamp();
         }
@@ -211,14 +241,38 @@ namespace GnollHackX
             return false;
         }
 
-        private static bool IsGcAffected(long ticksStart, long ticksEnd)
+        private static bool IsForcedGc(FrameTimeSample prev, FrameTimeSample curr)
         {
-            return HasEventInInterval(_gcTimestamps, Interlocked.Read(ref _gcWriteIndex), ticksStart, ticksEnd);
+            return curr.ForcedGcCount != prev.ForcedGcCount;
         }
 
         private static bool IsPauseAffected(long ticksStart, long ticksEnd)
         {
             return HasEventInInterval(_pauseTimestamps, Interlocked.Read(ref _pauseWriteIndex), ticksStart, ticksEnd);
+        }
+
+        /// <summary>
+        /// Returns true if any GC generation's collection count increased
+        /// between the previous frame and the current frame, indicating
+        /// that a GC (forced or runtime) ran during the inter-frame gap.
+        /// </summary>
+        private static bool DidGcOccur(FrameTimeSample prev, FrameTimeSample curr)
+        {
+            return curr.GcCount0 != prev.GcCount0
+                || curr.GcCount1 != prev.GcCount1
+                || curr.GcCount2 != prev.GcCount2;
+        }
+
+        /// <summary>
+        /// Returns the highest generation that was collected between
+        /// two frames, or -1 if no GC occurred.
+        /// </summary>
+        private static int MaxGcGen(FrameTimeSample prev, FrameTimeSample curr)
+        {
+            if (curr.GcCount2 != prev.GcCount2) return 2;
+            if (curr.GcCount1 != prev.GcCount1) return 1;
+            if (curr.GcCount0 != prev.GcCount0) return 0;
+            return -1;
         }
 
         public static FrameTimeStatistics GetStatistics()
@@ -240,9 +294,13 @@ namespace GnollHackX
             int lockFailCount = 0;
             int renderedCount = 0;
 
-            /* GC-affected frame tracking */
+            /* Forced GC frame tracking */
             int gcFrameCount = 0;
             float gcWorstMs = 0;
+
+            /* Runtime (non-forced) GC frame tracking */
+            int runtimeGcFrameCount = 0;
+            float runtimeGcWorstMs = 0;
 
             /* Pause-affected frame tracking */
             int pauseFrameCount = 0;
@@ -251,6 +309,7 @@ namespace GnollHackX
             float droppedThresholdMs = targetFrameTimeMs * 1.5f;
 
             long prevRenderedFrameStart = 0;
+            FrameTimeSample prevRenderedSample = default;
             bool hasPrevRendered = false;
 
             for (int i = 0; i < sampleCount; i++)
@@ -267,15 +326,23 @@ namespace GnollHackX
                 if (hasPrevRendered)
                 {
                     float interFrameMs = (float)((curr.TicksFrameStart - prevRenderedFrameStart) * _msPerTick);
-                    bool gcHit = IsGcAffected(prevRenderedFrameStart, curr.TicksFrameStart);
+                    bool forcedGcHit = IsForcedGc(prevRenderedSample, curr);
                     bool pauseHit = IsPauseAffected(prevRenderedFrameStart, curr.TicksFrameStart);
+                    bool runtimeGcHit = !forcedGcHit && DidGcOccur(prevRenderedSample, curr);
 
-                    if (gcHit)
+                    if (forcedGcHit)
                     {
-                        /* GC happened during this gap — track separately */
+                        /* Forced GC happened during this gap — track separately */
                         gcFrameCount++;
                         if (interFrameMs > gcWorstMs)
                             gcWorstMs = interFrameMs;
+                    }
+                    else if (runtimeGcHit)
+                    {
+                        /* Runtime GC happened during this gap — track separately */
+                        runtimeGcFrameCount++;
+                        if (interFrameMs > runtimeGcWorstMs)
+                            runtimeGcWorstMs = interFrameMs;
                     }
                     else if (pauseHit)
                     {
@@ -309,6 +376,7 @@ namespace GnollHackX
                     totalPaintMs += (curr.TicksPaintEnd - curr.TicksPaintStart) * _msPerTick;
 
                 prevRenderedFrameStart = curr.TicksFrameStart;
+                prevRenderedSample = curr;
                 hasPrevRendered = true;
             }
 
@@ -348,6 +416,8 @@ namespace GnollHackX
                 SampleCount = interFrameCount,
                 GcFrameCount = gcFrameCount,
                 GcWorstMs = gcWorstMs,
+                RuntimeGcFrameCount = runtimeGcFrameCount,
+                RuntimeGcWorstMs = runtimeGcWorstMs,
                 PauseFrameCount = pauseFrameCount
             };
         }
@@ -361,11 +431,15 @@ namespace GnollHackX
                 ? $" GC:{stats.GcFrameCount}x{stats.GcWorstMs:0.0}"
                 : "";
 
+            string runtimeGcInfo = stats.RuntimeGcFrameCount > 0
+                ? $" RtGC:{stats.RuntimeGcFrameCount}x{stats.RuntimeGcWorstMs:0.0}"
+                : "";
+
             string pauseInfo = stats.PauseFrameCount > 0
                 ? $" Pse:{stats.PauseFrameCount}"
                 : "";
 
-            return $"FT: {stats.FPS:0}fps Avg:{stats.InterFrameAvgMs:0.0} SD:{stats.InterFrameStdDevMs:0.0} P95:{stats.InterFrameP95Ms:0.0} P99:{stats.InterFrameP99Ms:0.0} Max:{stats.InterFrameMaxMs:0.0} Drop:{stats.DroppedFramePct:0.0}% Lock:{stats.LockFailPct:0.0}%{gcInfo}{pauseInfo}";
+            return FormattableString.Invariant($"FT: {stats.FPS:0}fps Avg:{stats.InterFrameAvgMs:0.0} SD:{stats.InterFrameStdDevMs:0.0} P95:{stats.InterFrameP95Ms:0.0} P99:{stats.InterFrameP99Ms:0.0} Max:{stats.InterFrameMaxMs:0.0} Drop:{stats.DroppedFramePct:0.0}% Lock:{stats.LockFailPct:0.0}%{gcInfo}{runtimeGcInfo}{pauseInfo}");
         }
 
         public static void DumpToCsv(string path)
@@ -378,10 +452,12 @@ namespace GnollHackX
 
             using (StreamWriter writer = new StreamWriter(path))
             {
-                writer.WriteLine("FrameNumber,Rendered,GcAffected,PauseAffected,InterFrameMs,UpdateMs,LockWaitMs,LockAcquired,PaintMs,TotalFrameMs");
+                writer.WriteLine("FrameNumber,Rendered,ForcedGc,RuntimeGc,PauseAffected,GcGen,AllocKB,InterFrameMs,UpdateMs,LockWaitMs,LockAcquired,PaintMs,TotalFrameMs");
 
                 FrameTimeSample prev = default;
+                FrameTimeSample prevRendered = default;
                 bool hasPrev = false;
+                bool hasPrevRendered = false;
 
                 for (int i = 0; i < sampleCount; i++)
                 {
@@ -391,13 +467,37 @@ namespace GnollHackX
                     bool rendered = curr.TicksUpdateStart > 0;
 
                     float interFrameMs = 0;
-                    bool gcAffected = false;
+                    bool forcedGc = false;
+                    bool runtimeGc = false;
                     bool pauseAffected = false;
-                    if (hasPrev)
+                    int gcGen = -1;
+                    float allocKB = 0;
+                    
+                    if (rendered)
                     {
-                        interFrameMs = (float)((curr.TicksFrameStart - prev.TicksFrameStart) * _msPerTick);
-                        gcAffected = IsGcAffected(prev.TicksFrameStart, curr.TicksFrameStart);
-                        pauseAffected = IsPauseAffected(prev.TicksFrameStart, curr.TicksFrameStart);
+                        if (hasPrevRendered)
+                        {
+                            interFrameMs = (float)((curr.TicksFrameStart - prevRendered.TicksFrameStart) * _msPerTick);
+                            forcedGc = IsForcedGc(prevRendered, curr);
+                            pauseAffected = IsPauseAffected(prevRendered.TicksFrameStart, curr.TicksFrameStart);
+                            gcGen = MaxGcGen(prevRendered, curr);
+                            allocKB = (curr.AllocatedBytes - prevRendered.AllocatedBytes) / 1024f;
+                            runtimeGc = !forcedGc && DidGcOccur(prevRendered, curr);
+                        }
+                        prevRendered = curr;
+                        hasPrevRendered = true;
+                    }
+                    else
+                    {
+                        if (hasPrev)
+                        {
+                            interFrameMs = (float)((curr.TicksFrameStart - prev.TicksFrameStart) * _msPerTick);
+                            forcedGc = IsForcedGc(prev, curr);
+                            pauseAffected = IsPauseAffected(prev.TicksFrameStart, curr.TicksFrameStart);
+                            gcGen = MaxGcGen(prev, curr);
+                            allocKB = (curr.AllocatedBytes - prev.AllocatedBytes) / 1024f;
+                            runtimeGc = !forcedGc && DidGcOccur(prev, curr);
+                        }
                     }
 
                     float updateMs = curr.TicksUpdateStart > 0 && curr.TicksLockResult > 0 
@@ -412,7 +512,7 @@ namespace GnollHackX
                     float totalFrameMs = curr.TicksFrameStart > 0 && curr.TicksFrameEnd > 0 
                         ? (float)((curr.TicksFrameEnd - curr.TicksFrameStart) * _msPerTick) : 0;
 
-                    writer.WriteLine($"{curr.FrameNumber},{rendered},{gcAffected},{pauseAffected},{interFrameMs:0.00},{updateMs:0.00},{lockWaitMs:0.00},{curr.LockAcquired},{paintMs:0.00},{totalFrameMs:0.00}");
+                    writer.WriteLine(FormattableString.Invariant($"{curr.FrameNumber},{rendered},{forcedGc},{runtimeGc},{pauseAffected},{gcGen},{allocKB:0.00},{interFrameMs:0.00},{updateMs:0.00},{lockWaitMs:0.00},{curr.LockAcquired},{paintMs:0.00},{totalFrameMs:0.00}"));
 
                     prev = curr;
                     hasPrev = true;
