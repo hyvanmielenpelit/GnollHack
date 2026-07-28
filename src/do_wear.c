@@ -4270,6 +4270,7 @@ destroy_arm(struct obj *atmp)
     return 1;
 }
 
+#if 0
 void
 adj_abon(struct obj *otmp, schar delta)
 {
@@ -4300,6 +4301,7 @@ adj_abon(struct obj *otmp, schar delta)
     updatemaxen();
 
 }
+#endif
 
 /*
  * Parameters:

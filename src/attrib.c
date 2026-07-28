@@ -2495,7 +2495,49 @@ boolean is_obj_worn(struct obj *uitem)
 schar
 acurr(int x)
 {
-    int tmp = (u.abonus.a[x] + u.atemp.a[x] + u.acurr.a[x]);
+    int tmp;
+    if (x == A_STR && u.abonus.a[x] != 0) 
+    {
+        tmp = u.acurr.a[x] + u.atemp.a[x];
+        int bonus = u.abonus.a[x];
+        
+        if (bonus > 0) 
+        {
+            for (int i = 0; i < bonus; i++) 
+            {
+                if (tmp >= 18 && tmp < STR18(100)) 
+                {
+                    tmp += STR_BONUS_PERCENTAGE_ADDITION;
+                    if (tmp > STR18(100)) 
+                        tmp = STR18(100);
+                }
+                else 
+                {
+                    tmp += 1;
+                }
+            }
+        }
+        else 
+        {
+            for (int i = 0; i > bonus; i--) 
+            {
+                if (tmp > 18 && tmp < STR18(100)) 
+                {
+                    tmp -= STR_BONUS_PERCENTAGE_ADDITION;
+                    if (tmp < 18) 
+                        tmp = 18;
+                } 
+                else 
+                {
+                    tmp -= 1;
+                }
+            }
+        }
+    } 
+    else 
+    {
+        tmp = (u.abonus.a[x] + u.atemp.a[x] + u.acurr.a[x]);
+    }
     
     if (u.afixmin.a[x] > 0 && u.afixmax.a[x] > 0 && u.afixmin.a[x] > u.afixmax.a[x])
     {
@@ -2533,7 +2575,49 @@ m_acurr(struct monst *mon, int x)
     if (mon == &youmonst)
         return acurr(x);
 
-    int tmp = (mon->abonus.a[x] + mon->atemp.a[x] + mon->acurr.a[x]);
+    int tmp;
+    if (x == A_STR && mon->abonus.a[x] != 0) 
+    {
+        tmp = mon->acurr.a[x] + mon->atemp.a[x];
+        int bonus = mon->abonus.a[x];
+        
+        if (bonus > 0) 
+        {
+            for (int i = 0; i < bonus; i++) 
+            {
+                if (tmp >= 18 && tmp < STR18(100)) 
+                {
+                    tmp += STR_BONUS_PERCENTAGE_ADDITION;
+                    if (tmp > STR18(100)) 
+                        tmp = STR18(100);
+                } 
+                else 
+                {
+                    tmp += 1;
+                }
+            }
+        }
+        else 
+        {
+            for (int i = 0; i > bonus; i--) 
+            {
+                if (tmp > 18 && tmp < STR18(100))
+                {
+                    tmp -= STR_BONUS_PERCENTAGE_ADDITION;
+                    if (tmp < 18) 
+                        tmp = 18;
+                } 
+                else 
+                {
+                    tmp -= 1;
+                }
+            }
+        }
+    }
+    else
+    {
+        tmp = (mon->abonus.a[x] + mon->atemp.a[x] + mon->acurr.a[x]);
+    }
 
     if (mon->afixmin.a[x] > 0 && mon->afixmax.a[x] > 0 && mon->afixmin.a[x] > mon->afixmax.a[x])
     {

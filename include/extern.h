@@ -872,7 +872,9 @@ E struct obj *unchanger(void);
 E void reset_remarm(void);
 E int doddoremarm(void);
 E int destroy_arm(struct obj *);
+#if 0
 E void adj_abon(struct obj *, schar);
+#endif
 E boolean inaccessible_equipment(struct obj *, const char *, boolean, boolean);
 E int get_role_AC_bonus(void);
 E int get_role_MC_bonus(void);
