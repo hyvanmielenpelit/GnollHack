@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +12,8 @@ namespace GnollHackX
     {
         void InitializeFmod();
         void ShutdownFmod();
+        void Suspend();
+        void Resume();
         void ReleaseAllGameSoundInstances(bool doUpdate = true);
         void ReleaseAllUISoundInstances(bool doUpdate = true);
         void ClearLoadableSoundBanks();

@@ -157,7 +157,8 @@ namespace GnollHackX.Unknown
         }
 #endif
 
-        private bool _initialized = false;
+        private int _initialized = 0;
+        private bool Initialized { get { return Interlocked.CompareExchange(ref _initialized, 0, 0) != 0; } set { Interlocked.Exchange(ref _initialized, value ? 1 : 0); } }
 
         public void InitializeFmod()
         {
@@ -191,13 +192,13 @@ namespace GnollHackX.Unknown
             if (res != RESULT.OK)
                 return;
 
-            _initialized = true;
+            Initialized = true;
             GHApp.MaybeWriteGHLog("FMOD initialized successfully.");
         }
 
         public void ShutdownFmod()
         {
-            if (!_initialized)
+            if (!Initialized)
                 return;
             
             RESULT res;
@@ -223,8 +224,30 @@ namespace GnollHackX.Unknown
             _coresystem.close();
             _coresystem.release();
 
-            _initialized = false;
+            Initialized = false;
             GHApp.MaybeWriteGHLog("FMOD shut down successfully.");
+        }
+
+        public void Suspend()
+        {
+            if (!Initialized)
+                return;
+
+            if (_coresystem.hasHandle())
+            {
+                _coresystem.mixerSuspend();
+            }
+        }
+
+        public void Resume()
+        {
+            if (!Initialized)
+                return;
+
+            if (_coresystem.hasHandle())
+            {
+                _coresystem.mixerResume();
+            }
         }
 
         private void SetAudioSessionSettings(double rate, double blockSize)
@@ -254,7 +277,7 @@ namespace GnollHackX.Unknown
 
         private bool FMODup()
         {
-            return _initialized && GHApp.LoadBanks;
+            return Initialized && GHApp.LoadBanks;
         }
 
         public void UnloadBanks(sound_bank_loading_type loadingType)

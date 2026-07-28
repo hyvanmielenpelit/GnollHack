@@ -2132,6 +2132,7 @@ namespace GnollHackX
             CurrentMainPage?.Suspend();
             CurrentGamePage?.Suspend();
 
+            FmodService?.Suspend();
             SleepMuteMode = true;
 
 #if !GNH_MAUI || (!ANDROID && !IOS)
@@ -2260,6 +2261,7 @@ namespace GnollHackX
         private static void HandleResume(bool isRestart)
         {
             IsSuspended = false;
+            FmodService?.Resume();
             if (!UsePlatformRenderLoop)
                 PlatformService?.OverrideAnimatorDuration();
 
