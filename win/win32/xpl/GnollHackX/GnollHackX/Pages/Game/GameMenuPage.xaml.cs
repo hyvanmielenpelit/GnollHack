@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -365,6 +365,45 @@ namespace GnollHackX.Pages.Game
             {
                 Debug.WriteLine(ex.Message);
                 await GHApp.DisplayMessageBox(this, "Error Creating Message File", "An error occurred while creating the message file: " + ex.Message, "OK");
+            }
+
+            MainLayout.IsEnabled = true;
+        }
+
+        private async void btnDumpFrameLog_Clicked(object sender, EventArgs e)
+        {
+            MainLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            await GHApp.CheckAndRequestWritePermission(this);
+            await GHApp.CheckAndRequestReadPermission(this);
+
+            try
+            {
+                string ghdir = GHApp.GnollHackService.GetGnollHackPath();
+                string targetpath = Path.Combine(ghdir, GHConstants.ArchiveDirectory);
+                if (!Directory.Exists(targetpath))
+                    GHApp.CheckCreateDirectory(targetpath);
+
+                string filepath = Path.Combine(targetpath, "framelog.csv");
+                if (File.Exists(filepath))
+                    File.Delete(filepath);
+
+                FrameTimeProfiler.DumpToCsv(filepath);
+
+                if (File.Exists(filepath))
+                {
+                    await GHApp.ShareFile(this, filepath, "GnollHack Frame Log");
+                    File.Delete(filepath);
+                }
+                else
+                {
+                    await GHApp.DisplayMessageBox(this, "Frame Log File Not Found", "GnollHack could not find " + filepath + ".", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                await GHApp.DisplayMessageBox(this, "Error Creating Frame Log", "An error occurred while creating the frame log: " + ex.Message, "OK");
             }
 
             MainLayout.IsEnabled = true;

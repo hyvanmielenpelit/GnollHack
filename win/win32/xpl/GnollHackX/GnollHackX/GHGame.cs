@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -884,7 +884,9 @@ namespace GnollHackX
             //lock(_mapDataBufferLock)
             try
             {
+                FrameTimeProfiler.StampLockAttempt();
                 Monitor.TryEnter(_mapDataBufferLock, ref lockTaken); //TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks), 
+                FrameTimeProfiler.StampLockResult(lockTaken);
                 if (lockTaken)
                 {
                     if (_mapDataCurrentUpdated)
