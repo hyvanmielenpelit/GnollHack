@@ -1324,6 +1324,7 @@ namespace GnollHackX
             await InitializeServices();
 
             CleanTransferDirectories();
+            TryDeleteFrameLog();
 
             GHApp.InitAdditionalTypefaces();
             GHApp.InitAdditionalCachedBitmaps();
@@ -2789,6 +2790,20 @@ namespace GnollHackX
             catch (Exception ex)
             {
                 Debug.WriteLine("CleanTransferDirectories exception: " + ex.Message);
+            }
+        }
+
+        private void TryDeleteFrameLog()
+        {
+            try
+            {
+                string filepath = Path.Combine(GHApp.GHPath, GHConstants.ArchiveDirectory, "framelog.csv");
+                if (File.Exists(filepath))
+                    File.Delete(filepath);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("TryDeleteFrameLog: " + ex.Message);
             }
         }
 
