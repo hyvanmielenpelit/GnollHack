@@ -575,84 +575,92 @@ namespace GnollHackX
                 counter = 0;
             }
 
-            if (!UsePlatformRenderLoop || IsSuspended)
-                return;
+            FrameTimeProfiler.BeginFrame(counter);
+            try
+            {
+                if (!UsePlatformRenderLoop || IsSuspended)
+                    return;
 
-            GamePage curGamePage = CurrentGamePage;
-            if (curGamePage == null)
-                return;
-            if (CurrentGHGame == null)
-                return;
+                GamePage curGamePage = CurrentGamePage;
+                if (curGamePage == null)
+                    return;
+                if (CurrentGHGame == null)
+                    return;
 
 #if WINDOWS
-            ScreenResolutionItem curRes = CurrentScreenResolution;
-            if (curRes == null)
-                return;
-            int screenRefreshRate = (int)curRes.RefreshRate;
+                ScreenResolutionItem curRes = CurrentScreenResolution;
+                if (curRes == null)
+                    return;
+                int screenRefreshRate = (int)curRes.RefreshRate;
 //#elif ANDROID
 //            int screenRefreshRate = (int)DisplayInfoAndroid.GetRefreshRateHz();
 //#elif IOS
 //            int screenRefreshRate = (int)(_platformTicker?.GetRefreshRateHz() ?? 60.0);
 #else
-            int screenRefreshRate = (int)DisplayRefreshRate;
+                int screenRefreshRate = (int)DisplayRefreshRate;
 #endif
-            MapRefreshRateStyle mapRefreshRateStyle = curGamePage.MapRefreshRate;
-            CanvasTypes canvasType = curGamePage.GetActiveCanvas();
-            int refreshRate;
-            switch (canvasType)
-            {
-                case CanvasTypes.MainCanvas:
-                    refreshRate = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRateStyle, (float)screenRefreshRate);
-                    break;
-                case CanvasTypes.MenuCanvas:
-                case CanvasTypes.CommandCanvas:
-                case CanvasTypes.TextCanvas:
-                    refreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(mapRefreshRateStyle, (float)screenRefreshRate);
-                    break;
-                default:
-                    refreshRate = 60;
-                    break;
-            }
-
-            if (!_renderingStopWatch.IsRunning)
-            {
-                _renderingStopWatch.Restart();
-            }
-            else
-            {
-                _renderingStopWatch.Stop();
-                long ticks = _renderingStopWatch.ElapsedTicks;
-                _renderingStopWatch.Restart();
-                long ticksPerSecond = Stopwatch.Frequency;
-                long framesPerSecond = refreshRate; /* Always greater than zero */
-                long ticksPerFrame = ticksPerSecond / framesPerSecond;
-                if (ticks > ticksPerFrame)
+                MapRefreshRateStyle mapRefreshRateStyle = curGamePage.MapRefreshRate;
+                CanvasTypes canvasType = curGamePage.GetActiveCanvas();
+                int refreshRate;
+                switch (canvasType)
                 {
-                    curGamePage.RenderCanvasByCanvasType(canvasType);
-                    return;
+                    case CanvasTypes.MainCanvas:
+                        refreshRate = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRateStyle, (float)screenRefreshRate);
+                        break;
+                    case CanvasTypes.MenuCanvas:
+                    case CanvasTypes.CommandCanvas:
+                    case CanvasTypes.TextCanvas:
+                        refreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(mapRefreshRateStyle, (float)screenRefreshRate);
+                        break;
+                    default:
+                        refreshRate = 60;
+                        break;
                 }
-            }
 
-            if (screenRefreshRate <= refreshRate)
-            {
-                curGamePage.RenderCanvasByCanvasType(canvasType);
-            }
-            else
-            {
-                int divisor = screenRefreshRate / refreshRate;
-                if (divisor <= 0)
-                    divisor = 1;
-                if (divisor == 1 || counter % divisor == 0)
+                if (!_renderingStopWatch.IsRunning)
                 {
-                    int mod = screenRefreshRate % refreshRate;
-                    if (mod > 0)
+                    _renderingStopWatch.Restart();
+                }
+                else
+                {
+                    _renderingStopWatch.Stop();
+                    long ticks = _renderingStopWatch.ElapsedTicks;
+                    _renderingStopWatch.Restart();
+                    long ticksPerSecond = Stopwatch.Frequency;
+                    long framesPerSecond = refreshRate; /* Always greater than zero */
+                    long ticksPerFrame = ticksPerSecond / framesPerSecond;
+                    if (ticks > ticksPerFrame)
                     {
-                        int num = screenRefreshRate / mod;
-                        if ((counter / divisor) % num == 0)
-                            return;
+                        curGamePage.RenderCanvasByCanvasType(canvasType);
+                        return;
                     }
+                }
+
+                if (screenRefreshRate <= refreshRate)
+                {
                     curGamePage.RenderCanvasByCanvasType(canvasType);
                 }
+                else
+                {
+                    int divisor = screenRefreshRate / refreshRate;
+                    if (divisor <= 0)
+                        divisor = 1;
+                    if (divisor == 1 || counter % divisor == 0)
+                    {
+                        int mod = screenRefreshRate % refreshRate;
+                        if (mod > 0)
+                        {
+                            int num = screenRefreshRate / mod;
+                            if ((counter / divisor) % num == 0)
+                                return;
+                        }
+                        curGamePage.RenderCanvasByCanvasType(canvasType);
+                    }
+                }
+            }
+            finally
+            {
+                FrameTimeProfiler.EndFrame();
             }
         }
 

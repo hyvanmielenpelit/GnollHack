@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
@@ -146,6 +146,7 @@
 
 	<ItemGroup>
 		<None Remove="..\GnollHackX\GnollHackX\BackgroundView.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\FrameTimeProfiler.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHGame.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\UIUtils.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\CustomCanvasView.cs" />
@@ -370,6 +371,7 @@
 
 	<ItemGroup>
 		<Compile Include="..\GnollHackX\GnollHackX\BackgroundView.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\FrameTimeProfiler.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHGame.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\UIUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\CustomCanvasView.cs" />

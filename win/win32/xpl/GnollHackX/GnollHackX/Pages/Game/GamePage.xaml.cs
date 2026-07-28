@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -1811,6 +1811,11 @@ namespace GnollHackX.Pages.Game
                         GHApp.UpdateFreeDiskSpace();
                     if (ShowMemory)
                         GHApp.UpdateUsedMemory();
+                    
+                    if (GHApp.IsDebugScreenLoggingOn)
+                    {
+                        GHApp.MaybeWriteScreenLog(FrameTimeProfiler.GetScreenLogSummary());
+                    }
                 }
 
                 CursorIsOn = !CursorIsOn;
@@ -1990,6 +1995,7 @@ namespace GnollHackX.Pages.Game
 
         public void UpdateMainCanvas(MapRefreshRateStyle refreshRateStyle)
         {
+            FrameTimeProfiler.StampUpdate();
             bool resizing = IsResizing;
             if (resizing)
                 GHApp.MaybeWriteScreenLog("UpdateMainCanvas: Resizing");
@@ -5032,6 +5038,8 @@ namespace GnollHackX.Pages.Game
             if (IsMainCanvasDrawingAndSetTrue) /* In the case of some sort of reentrancy or new draw before previous is finished */
                 return;
 
+            FrameTimeProfiler.StampPaintStart();
+
             PaintMainGamePage(sender, e, isCanvasOnMainThread);
 
             if (Interlocked.Increment(ref _mainFPSCounterValue) == long.MaxValue)
@@ -5049,6 +5057,7 @@ namespace GnollHackX.Pages.Game
 
             /* Finally, flush */
             canvas.Flush();
+            FrameTimeProfiler.StampPaintEnd();
             IsMainCanvasDrawing = false;
         }
 
