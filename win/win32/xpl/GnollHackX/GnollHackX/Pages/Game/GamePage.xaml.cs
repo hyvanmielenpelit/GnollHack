@@ -7344,7 +7344,7 @@ namespace GnollHackX.Pages.Game
         long _totalFrames = 0L;
 #endif
         private readonly StringBuilder _lineBuilder = new StringBuilder(GHConstants.LineBuilderInitialCapacity);
-        private readonly string[] _attributeStrings = new string[6] { "Strength:", "Dexterity:", "Constitution:", "Intelligence:", "Wisdom:", "Charisma:" };
+        //private readonly string[] _attributeStrings = new string[6] { "Strength:", "Dexterity:", "Constitution:", "Intelligence:", "Wisdom:", "Charisma:" };
         private readonly short[,] _draw_shadow = new short[GHConstants.MapCols, GHConstants.MapRows];
         private readonly GHAnimationTimerList _localAnimationTimers = new GHAnimationTimerList();
         private readonly ObjectDataItem[] _localWeaponStyleObjDataItem = new ObjectDataItem[3];
@@ -7353,6 +7353,9 @@ namespace GnollHackX.Pages.Game
         private readonly string[] _localStatusFieldBlobTexts = new string[(int)NhStatusFields.MAXBLSTATS];
         private readonly float[] _localStatusFieldBlobTextSizes = new float[(int)NhStatusFields.MAXBLSTATS];
         private readonly float[] _localStatusFieldBlobWidths = new float[(int)NhStatusFields.MAXBLSTATS];
+        private readonly SKTextBlob[] _literalBlobs = new SKTextBlob[(int)TextBlobLiteral.NumberOfTextBlobLiterals];
+        private readonly float[] _literalBlobTextSizes = new float[(int)TextBlobLiteral.NumberOfTextBlobLiterals];
+        private readonly float[] _literalBlobWidths = new float[(int)TextBlobLiteral.NumberOfTextBlobLiterals];
         private int _local_ux = 0;
         private int _local_uy = 0;
         private ulong _local_u_condition_bits = 0;
@@ -12237,7 +12240,8 @@ namespace GnollHackX.Pages.Game
                             }
                             float text_x = (skillDest.Left + skillDest.Right) / 2;
                             float text_y = skillDest.Bottom - textPaint.FontMetrics.Ascent;
-                            textPaint.DrawTextOnCanvas(canvas, "Skills", text_x, text_y, SKTextAlign.Center);
+                            SKTextBlob skillsBlob = GetOrCreateLiteralBlob(TextBlobLiteral.Skills, textPaint, out float skillsWidth);
+                            textPaint.DrawTextOnCanvas(canvas, skillsBlob, text_x - skillsWidth / 2, text_y);
                             lastdrawnrecty = skillDest.Bottom + textPaint.FontSpacing;
                             string skillsKeyboardShortcut = SkillsKeyboardShortcut;
                             if (showKeyboardShortcuts && !string.IsNullOrEmpty(skillsKeyboardShortcut))
@@ -12273,7 +12277,8 @@ namespace GnollHackX.Pages.Game
                             }
                             float text_x = (poleDest.Left + poleDest.Right) / 2;
                             float text_y = poleDest.Bottom - textPaint.FontMetrics.Ascent;
-                            textPaint.DrawTextOnCanvas(canvas, "Polearm", text_x, text_y, SKTextAlign.Center);
+                            SKTextBlob polearmBlob = GetOrCreateLiteralBlob(TextBlobLiteral.Polearm, textPaint, out float polearmWidth);
+                            textPaint.DrawTextOnCanvas(canvas, polearmBlob, text_x - polearmWidth / 2, text_y);
                             lastdrawnrecty = poleDest.Bottom + textPaint.FontSpacing;
                             string polearmKeyboardShortcut = PolearmKeyboardShortcut;
                             if (showKeyboardShortcuts && !string.IsNullOrEmpty(polearmKeyboardShortcut))
@@ -12901,8 +12906,8 @@ namespace GnollHackX.Pages.Game
                         _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                         if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                         {
-                            string printtext = _attributeStrings[i];
-                            textPaint.DrawTextOnCanvas(canvas, printtext, tx, ty);
+                            SKTextBlob attrBlob = GetOrCreateLiteralBlob((TextBlobLiteral)((int)TextBlobLiteral.Strength + i), textPaint, out _);
+                            textPaint.DrawTextOnCanvas(canvas, attrBlob, tx, ty);
                             textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, true, false);
                             textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
                             textPaint.Color = SKColors.Black;
@@ -12932,7 +12937,8 @@ namespace GnollHackX.Pages.Game
                     _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                     if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, "Level:", tx, ty);
+                        SKTextBlob levelBlob = GetOrCreateLiteralBlob(TextBlobLiteral.Level, textPaint, out _);
+                        textPaint.DrawTextOnCanvas(canvas, levelBlob, tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
                         icon_width = icon_height * (float)GHApp._statusXPLevelBitmap.Width / (float)Math.Max(1, GHApp._statusXPLevelBitmap.Height);
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
@@ -12957,7 +12963,8 @@ namespace GnollHackX.Pages.Game
                     _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                     if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, "Experience:", tx, ty);
+                        SKTextBlob expBlob = GetOrCreateLiteralBlob(TextBlobLiteral.Experience, textPaint, out _);
+                        textPaint.DrawTextOnCanvas(canvas, expBlob, tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
@@ -12981,7 +12988,8 @@ namespace GnollHackX.Pages.Game
                     _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                     if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, "Hit dice:", tx, ty);
+                        SKTextBlob hdBlob = GetOrCreateLiteralBlob(TextBlobLiteral.HitDice, textPaint, out _);
+                        textPaint.DrawTextOnCanvas(canvas, hdBlob, tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
                         icon_width = icon_height * (float)GHApp._statusHDBitmap.Width / (float)Math.Max(1, GHApp._statusHDBitmap.Height);
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
@@ -13006,7 +13014,8 @@ namespace GnollHackX.Pages.Game
                     _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                     if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, "Alignment:", tx, ty);
+                        SKTextBlob alignBlob = GetOrCreateLiteralBlob(TextBlobLiteral.Alignment, textPaint, out _);
+                        textPaint.DrawTextOnCanvas(canvas, alignBlob, tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
@@ -13030,7 +13039,8 @@ namespace GnollHackX.Pages.Game
                     _localStatusLargestBottom = Math.Max(_localStatusLargestBottom, ty + textPaint.FontMetrics.Descent);
                     if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, "Score:", tx, ty);
+                        SKTextBlob scoreBlob = GetOrCreateLiteralBlob(TextBlobLiteral.Score, textPaint, out _);
+                        textPaint.DrawTextOnCanvas(canvas, scoreBlob, tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                         icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
@@ -13059,7 +13069,8 @@ namespace GnollHackX.Pages.Game
                     }
                     if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, "Armor class:", tx, ty);
+                        SKTextBlob acBlob = GetOrCreateLiteralBlob(TextBlobLiteral.ArmorClass, textPaint, out _);
+                        textPaint.DrawTextOnCanvas(canvas, acBlob, tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
                         icon_width = icon_height * (float)GHApp._statusACBitmap.Width / (float)Math.Max(1, GHApp._statusACBitmap.Height);
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
@@ -13092,7 +13103,8 @@ namespace GnollHackX.Pages.Game
                     }
                     if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, "Magic cancellation:", tx, ty);
+                        SKTextBlob mcBlob = GetOrCreateLiteralBlob(TextBlobLiteral.MagicCancellation, textPaint, out _);
+                        textPaint.DrawTextOnCanvas(canvas, mcBlob, tx, ty);
                         string printtext = valtext2 != "" ? valtext + "/" + valtext2 + "%" : valtext;
                         textPaint.DrawTextOnCanvas(canvas, printtext, tx + indentation, ty);
                         icon_width = icon_height * (float)GHApp._statusMCBitmap.Width / (float)Math.Max(1, GHApp._statusMCBitmap.Height);
@@ -13121,7 +13133,8 @@ namespace GnollHackX.Pages.Game
                     }
                     if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, "Move:", tx, ty);
+                        SKTextBlob moveBlob = GetOrCreateLiteralBlob(TextBlobLiteral.Move, textPaint, out _);
+                        textPaint.DrawTextOnCanvas(canvas, moveBlob, tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
                         icon_width = icon_height * (float)GHApp._statusMoveBitmap.Width / (float)Math.Max(1, GHApp._statusMoveBitmap.Height);
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
@@ -13159,7 +13172,8 @@ namespace GnollHackX.Pages.Game
                     }
                     if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, "Weapon style:", tx, ty);
+                        SKTextBlob wsBlob = GetOrCreateLiteralBlob(TextBlobLiteral.WeaponStyle, textPaint, out _);
+                        textPaint.DrawTextOnCanvas(canvas, wsBlob, tx, ty);
                         string printtext = valtext;
                         if (valtext2 != "")
                             printtext += "/" + valtext2;
@@ -13195,7 +13209,8 @@ namespace GnollHackX.Pages.Game
                     if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
                         GHSubstring printtext = valtext.Length > 11 && valtext[0] == '\\' ? new GHSubstring(valtext, 11) : new GHSubstring(valtext);
-                        textPaint.DrawTextOnCanvas(canvas, "Gold:", tx, ty);
+                        SKTextBlob goldBlob = GetOrCreateLiteralBlob(TextBlobLiteral.Gold, textPaint, out _);
+                        textPaint.DrawTextOnCanvas(canvas, goldBlob, tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, printtext.Value, tx + indentation, ty);
                         icon_width = icon_height * (float)GHApp._statusGoldBitmap.Width / (float)Math.Max(1, GHApp._statusGoldBitmap.Height);
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
@@ -13223,7 +13238,8 @@ namespace GnollHackX.Pages.Game
                     }
                     if (ty <= box_bottom_draw_threshold && ty >= box_top_draw_threshold)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, "Turns:", tx, ty);
+                        SKTextBlob turnsBlob = GetOrCreateLiteralBlob(TextBlobLiteral.Turns, textPaint, out _);
+                        textPaint.DrawTextOnCanvas(canvas, turnsBlob, tx, ty);
                         textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
                         icon_width = icon_height * (float)GHApp._statusTurnsBitmap.Width / (float)Math.Max(1, GHApp._statusTurnsBitmap.Height);
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
@@ -16108,6 +16124,48 @@ namespace GnollHackX.Pages.Game
             _localStatusFieldBlobTextSizes[fieldIdx] = textPaint.TextSize;
             _localStatusFieldBlobWidths[fieldIdx] = cachedWidth;
             return _localStatusFieldBlobs[fieldIdx];
+        }
+
+        private static readonly string[] _literalBlobTexts = new string[(int)TextBlobLiteral.NumberOfTextBlobLiterals]
+        {
+            "Level:",
+            "Experience:",
+            "Hit dice:",
+            "Alignment:",
+            "Score:",
+            "Armor class:",
+            "Magic cancellation:",
+            "Move:",
+            "Weapon style:",
+            "Gold:",
+            "Turns:",
+            "Skills",
+            "Polearm",
+            "Strength:",
+            "Dexterity:",
+            "Constitution:",
+            "Intelligence:",
+            "Wisdom:",
+            "Charisma:",
+        };
+
+        private SKTextBlob GetOrCreateLiteralBlob(TextBlobLiteral literal, GHSkiaFontPaint textPaint, out float cachedWidth)
+        {
+            int idx = (int)literal;
+            if (_literalBlobs[idx] != null
+                && _literalBlobTextSizes[idx] == textPaint.TextSize)
+            {
+                cachedWidth = _literalBlobWidths[idx];
+                return _literalBlobs[idx];
+            }
+
+            _literalBlobs[idx]?.Dispose();
+            string text = _literalBlobTexts[idx];
+            cachedWidth = textPaint.MeasureText(text);
+            _literalBlobs[idx] = textPaint.CreateTextBlob(text);
+            _literalBlobTextSizes[idx] = textPaint.TextSize;
+            _literalBlobWidths[idx] = cachedWidth;
+            return _literalBlobs[idx];
         }
 
         private SKImage GetStatIcon(int i)

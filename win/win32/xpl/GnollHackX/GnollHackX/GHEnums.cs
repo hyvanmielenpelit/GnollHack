@@ -1934,4 +1934,28 @@ namespace GnollHackX
         A,
         Z = A + 25,
     }
+
+    public enum TextBlobLiteral
+    {
+        Level = 0,
+        Experience,
+        HitDice,
+        Alignment,
+        Score,
+        ArmorClass,
+        MagicCancellation,
+        Move,
+        WeaponStyle,
+        Gold,
+        Turns,
+        Skills,
+        Polearm,
+        Strength,
+        Dexterity,
+        Constitution,
+        Intelligence,
+        Wisdom,
+        Charisma,
+        NumberOfTextBlobLiterals,
+    }
 }
