@@ -1219,6 +1219,15 @@ namespace GnollHackX.Pages.Game
                 _localMenuScreenDebugLogBlobs[i]?.Dispose();
             _localMenuScreenDebugLogBlobs.Clear();
 
+            /* Dispose cached orb text blobs */
+            _hpValBlob?.Dispose();
+            _hpMaxBlob?.Dispose();
+            _mpValBlob?.Dispose();
+            _mpMaxBlob?.Dispose();
+
+            /* Dispose cached engraving text blobs */
+            ClearEngravingBlobCache();
+
             /* Dispose of cached paint instances */
             _mapPaint.Dispose();
             _uiPaint.Dispose();
@@ -6265,6 +6274,45 @@ namespace GnollHackX.Pages.Game
         private readonly GHSkiaFontPaint _cmdTextPaint = new GHSkiaFontPaint();
         private readonly GHSkiaFontPaint _tipTextPaint = new GHSkiaFontPaint();
 
+        /* Cached orb text blobs — recreated only when the displayed value or orb size changes */
+        private SKTextBlob _hpValBlob;
+        private SKTextBlob _hpMaxBlob;
+        private SKTextBlob _mpValBlob;
+        private SKTextBlob _mpMaxBlob;
+        private string _lastHpVal;
+        private string _lastHpMax;
+        private string _lastMpVal;
+        private string _lastMpMax;
+        private float _lastOrbValTextSize;
+        private float _lastOrbMaxTextSize;
+
+        /* Cached engraving text blobs — external to MapData to avoid disposable lifecycle issues in the rotating buffer */
+        private struct EngravingBlobEntry
+        {
+            public SKTextBlob[] RowBlobs;
+            public string Text;
+            public float BaseTextSize;
+        }
+        private readonly Dictionary<int, EngravingBlobEntry> _engravingBlobCache = new Dictionary<int, EngravingBlobEntry>();
+        private int _clearEngravingBlobs = 0;
+
+        /* Called from the game thread (via GUI_CMD_DISPOSE_ENGRAVINGS) to signal the render thread */
+        internal void RequestClearEngravingBlobCache() { Interlocked.Exchange(ref _clearEngravingBlobs, 1); }
+
+        /* Called from the render thread only */
+        private void ClearEngravingBlobCache()
+        {
+            foreach (EngravingBlobEntry entry in _engravingBlobCache.Values)
+            {
+                if (entry.RowBlobs != null)
+                {
+                    for (int i = 0; i < entry.RowBlobs.Length; i++)
+                        entry.RowBlobs[i]?.Dispose();
+                }
+            }
+            _engravingBlobCache.Clear();
+        }
+
         private static void ResetPaint(SKPaint paint)
         {
             paint.Color = new SKColor(0, 0, 0, 255);
@@ -7214,9 +7262,44 @@ namespace GnollHackX.Pages.Game
                 float atwidth = textPaint.MeasureText("A");
                 if (atwidth > 0)
                 {
+                    int rowcnt = engraving.RowSplit.Length;
+
+                    /* Look up or create the blob cache entry for this map cell */
+                    int cacheKey = mapy * GHConstants.MapCols + mapx;
+                    bool needNewEntry = true;
+                    EngravingBlobEntry blobEntry = default;
+                    if (_engravingBlobCache.TryGetValue(cacheKey, out blobEntry))
+                    {
+                        if (blobEntry.Text == engraving.Text && blobEntry.BaseTextSize == atwidth
+                            && blobEntry.RowBlobs != null && blobEntry.RowBlobs.Length == rowcnt)
+                        {
+                            needNewEntry = false;
+                        }
+                        else
+                        {
+                            /* Dispose stale blobs */
+                            if (blobEntry.RowBlobs != null)
+                            {
+                                for (int i = 0; i < blobEntry.RowBlobs.Length; i++)
+                                    blobEntry.RowBlobs[i]?.Dispose();
+                            }
+                        }
+                    }
+                    if (needNewEntry)
+                    {
+                        /* Safety cap: clear entire cache if it grows too large */
+                        if (_engravingBlobCache.Count >= GHConstants.MaxEngravingBlobCacheEntries)
+                            ClearEngravingBlobCache();
+
+                        blobEntry = new EngravingBlobEntry();
+                        blobEntry.Text = engraving.Text;
+                        blobEntry.BaseTextSize = atwidth;
+                        blobEntry.RowBlobs = new SKTextBlob[rowcnt];
+                        _engravingBlobCache[cacheKey] = blobEntry;
+                    }
+
                     float wpadding = width / 32;
                     float stwidth = atwidth * 4;
-                    int rowcnt = engraving.RowSplit.Length;
                     float rscale = (width - 2 * wpadding) / stwidth;
                     float prerowheight = textPaint.FontSpacing * rscale;
                     float rowhscale = prerowheight * rowcnt > height ? height / Math.Max(0.01f, prerowheight * rowcnt) : 1.0f;
@@ -7232,20 +7315,32 @@ namespace GnollHackX.Pages.Game
                         float tscale = rowhscale * (width - 2 * wpadding) / usedtwidth;
                         textPaint.TextSize = tscale * 10;
                         float act_text_width = twidth * tscale;
+
+                        /* Create cached blob for this row if needed */
+                        if (blobEntry.RowBlobs[rowidx] == null)
+                            blobEntry.RowBlobs[rowidx] = textPaint.CreateTextBlob(str);
+                        SKTextBlob rowBlob = blobEntry.RowBlobs[rowidx];
+
                         float tx = offsetX + usedOffsetX + width * (float)mapx + wpadding + (width - act_text_width) / 2;
                         float ty = offsetY + usedOffsetY + height * (float)mapy + mapFontAscent - textPaint.FontMetrics.Ascent
                             + (height - rowheight * rowcnt) / 2 + rowidx * rowheight + (rowheight - textPaint.FontSpacing) / 2;
                         textPaint.Style = SKPaintStyle.Fill;
                         textPaint.Color = fillColor;
                         //canvas.DrawText(str, tx, ty, textPaint);
-                        textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                        if (rowBlob != null)
+                            textPaint.DrawTextOnCanvas(canvas, rowBlob, tx, ty);
+                        else
+                            textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
                         if (hasOutline)
                         {
                             textPaint.Style = SKPaintStyle.Stroke;
                             textPaint.Color = outlineColor;
                             textPaint.StrokeWidth = textPaint.TextSize / 5;
                             //canvas.DrawText(str, tx, ty, textPaint);
-                            textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                            if (rowBlob != null)
+                                textPaint.DrawTextOnCanvas(canvas, rowBlob, tx, ty);
+                            else
+                                textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
                         }
                         if ((engraving.GeneralFlags & 1) != 0)
                         {
@@ -7253,7 +7348,10 @@ namespace GnollHackX.Pages.Game
                             int alen = _shineAnimation.Length;
                             textPaint.Color = _magicShineOutlineColor.WithAlpha((byte)(_shineAnimation[generalcountervalue % alen] * 255));
                             //canvas.DrawText(str, tx, ty, textPaint);
-                            textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                            if (rowBlob != null)
+                                textPaint.DrawTextOnCanvas(canvas, rowBlob, tx, ty);
+                            else
+                                textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
                         }
                     }
                 }
@@ -7540,6 +7638,11 @@ namespace GnollHackX.Pages.Game
             _localCompositeFilterCachePruned = false;
             _localDarkenedBitmapCachePruned = false;
             _localDarkenedAutodrawBitmapCachePruned = false;
+
+            /* Check if the game thread requested an engraving blob cache clear (e.g. level change) */
+            if (Interlocked.CompareExchange(ref _clearEngravingBlobs, 0, 1) == 1)
+                ClearEngravingBlobCache();
+
             if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
 
@@ -12279,7 +12382,8 @@ namespace GnollHackX.Pages.Game
                             SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
                             healthRect = orbBorderDest;
                             //healthRectDrawn = true;
-                            DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage, ShowMaxHealthInOrb, false /* isPointerHovering && orbBorderDest.Contains(pointerHoverLocation) */);
+                            DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage, ShowMaxHealthInOrb, false /* isPointerHovering && orbBorderDest.Contains(pointerHoverLocation) */,
+                                ref _hpValBlob, ref _lastHpVal, ref _hpMaxBlob, ref _lastHpMax);
 
                             orbfillpercentage = 0.0f;
                             valtext = "";
@@ -12300,7 +12404,8 @@ namespace GnollHackX.Pages.Game
                             orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
                             manaRect = orbBorderDest;
                             //manaRectDrawn = true;
-                            DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage, ShowMaxManaInOrb, false /* isPointerHovering && orbBorderDest.Contains(pointerHoverLocation) */);
+                            DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage, ShowMaxManaInOrb, false /* isPointerHovering && orbBorderDest.Contains(pointerHoverLocation) */,
+                                ref _mpValBlob, ref _lastMpVal, ref _mpMaxBlob, ref _lastMpMax);
                             lastdrawnrecty = orbBorderDest.Bottom;
                         }
 
@@ -23511,7 +23616,8 @@ namespace GnollHackX.Pages.Game
             textPaint.DrawTextOnCanvas(canvas, str, rect.Left + padding, ty + usedoffsety + (textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent) / 2 - textPaint.FontMetrics.Ascent);
         }
 
-        private void DrawOrb(SKCanvas canvas, GHSkiaFontPaint textPaint, SKRect orbBorderDest, SKColor fillcolor, string val, string maxval, float orbfillpercentage, bool showmax, bool isHighlighted)
+        private void DrawOrb(SKCanvas canvas, GHSkiaFontPaint textPaint, SKRect orbBorderDest, SKColor fillcolor, string val, string maxval, float orbfillpercentage, bool showmax, bool isHighlighted,
+            ref SKTextBlob cachedValBlob, ref string lastVal, ref SKTextBlob cachedMaxBlob, ref string lastMax)
         {
             float orbwidth = Math.Max(0.01f, orbBorderDest.Width / 230.0f * 210.0f);
             float orbheight = Math.Max(0.01f, orbBorderDest.Width / 230.0f * 210.0f);
@@ -23564,16 +23670,26 @@ namespace GnollHackX.Pages.Game
                 if (scale > 0)
                     textPaint.TextSize = textPaint.TextSize * 0.90f / scale;
 
+                /* Recreate cached blob only when the text value or computed text size changes */
+                float valTextSize = textPaint.TextSize;
+                if (val != lastVal || valTextSize != _lastOrbValTextSize)
+                {
+                    cachedValBlob?.Dispose();
+                    cachedValBlob = textPaint.CreateTextBlob(val);
+                    lastVal = val;
+                    _lastOrbValTextSize = valTextSize;
+                }
+
                 float tx = orbDest.Left + orbDest.Width / 2;
                 float ty = orbDest.Top + (orbDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2 - textPaint.FontMetrics.Ascent;
                 textPaint.Style = SKPaintStyle.Stroke;
                 textPaint.StrokeWidth = textPaint.TextSize / 10;
                 textPaint.Color = SKColors.Black;
                 StartProfiling(GHProfilingStyle.Text);
-                textPaint.DrawTextOnCanvas(canvas, val, tx, ty, SKTextAlign.Center);
+                textPaint.DrawTextOnCanvas(canvas, val, cachedValBlob, tx, ty, SKTextAlign.Center);
                 textPaint.Style = SKPaintStyle.Fill;
                 textPaint.Color = SKColors.White;
-                textPaint.DrawTextOnCanvas(canvas, val, tx, ty, SKTextAlign.Center);
+                textPaint.DrawTextOnCanvas(canvas, val, cachedValBlob, tx, ty, SKTextAlign.Center);
                 StopProfiling(GHProfilingStyle.Text);
             }
 
@@ -23587,16 +23703,26 @@ namespace GnollHackX.Pages.Game
                 if (scale > 0)
                     textPaint.TextSize = textPaint.TextSize * 0.50f / scale;
 
+                /* Recreate cached blob only when the text value or computed text size changes */
+                float maxTextSize = textPaint.TextSize;
+                if (maxval != lastMax || maxTextSize != _lastOrbMaxTextSize)
+                {
+                    cachedMaxBlob?.Dispose();
+                    cachedMaxBlob = textPaint.CreateTextBlob(maxval);
+                    lastMax = maxval;
+                    _lastOrbMaxTextSize = maxTextSize;
+                }
+
                 float tx = orbDest.Left + orbDest.Width / 2;
                 float ty = orbDest.Bottom - 0.07f * orbDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) - textPaint.FontMetrics.Ascent;
                 textPaint.Style = SKPaintStyle.Stroke;
                 textPaint.StrokeWidth = textPaint.TextSize / 10;
                 textPaint.Color = SKColors.Black;
                 StartProfiling(GHProfilingStyle.Text);
-                textPaint.DrawTextOnCanvas(canvas, maxval, tx, ty, SKTextAlign.Center);
+                textPaint.DrawTextOnCanvas(canvas, maxval, cachedMaxBlob, tx, ty, SKTextAlign.Center);
                 textPaint.Style = SKPaintStyle.Fill;
                 textPaint.Color = SKColors.White;
-                textPaint.DrawTextOnCanvas(canvas, maxval, tx, ty, SKTextAlign.Center);
+                textPaint.DrawTextOnCanvas(canvas, maxval, cachedMaxBlob, tx, ty, SKTextAlign.Center);
                 StopProfiling(GHProfilingStyle.Text);
             }
             //textPaint.TextAlign = SKTextAlign.Left;

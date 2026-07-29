@@ -29,7 +29,8 @@ namespace GnollHackX
         public const int MaxXlogUserNameLength = 31;        
         public const int MaxGHWindows = 32;
         public const int MapCols = 80;
-        public const int MapRows = 21;        
+        public const int MapRows = 21;
+        public const int MaxEngravingBlobCacheEntries = 32;
         public const int DelayOutputDurationInMilliseconds = 50;
         public const int ExitWindowsWithStringDelay = 1100;
         public const int FadeToBlackDelay = 325;

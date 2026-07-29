@@ -1127,6 +1127,7 @@ namespace GnollHackX
         GUI_CMD_REPORT_ENGRAVE_QUICK_STYLE,
         GUI_CMD_TOGGLE_METRIC_SYSTEM,
         GUI_CMD_TOGGLE_DAMAGE_FORMULA,
+        GUI_CMD_DISPOSE_ENGRAVINGS,
     }
 
     public enum gui_achievement_categories

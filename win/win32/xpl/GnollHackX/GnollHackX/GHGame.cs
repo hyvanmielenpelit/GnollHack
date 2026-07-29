@@ -3414,6 +3414,13 @@ namespace GnollHackX
                             break;
                     }
                     break;
+                case (int)gui_command_types.GUI_CMD_DISPOSE_ENGRAVINGS:
+                    {
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null)
+                            gamePage.RequestClearEngravingBlobCache();
+                    }
+                    break;
                 case (int)gui_command_types.GUI_CMD_FADE_FROM_BLACK:
                     if (PlayingReplay && GHApp.IsReplaySearching)
                         return;

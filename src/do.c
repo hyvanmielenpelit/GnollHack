@@ -7774,6 +7774,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
     issue_simple_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
     issue_simple_gui_command(GUI_CMD_CLEAR_FLOATING_TEXTS);
     issue_simple_gui_command(GUI_CMD_CLEAR_GUI_EFFECTS);
+    issue_simple_gui_command(GUI_CMD_DISPOSE_ENGRAVINGS);
 
     /* It is a good time for the garbage collector to function */
     issue_simple_gui_command(GUI_CMD_COLLECT_GARBAGE);
