@@ -13592,6 +13592,8 @@ namespace GnollHackX.Pages.Game
 
                 if (drawwallends && GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_REPLACE_WALL_ENDS)
                 {
+                    Span<int> corner_x = stackalloc int[2] { 0, 0 };
+                    Span<int> corner_y = stackalloc int[2] { 0, 0 };
                     for (byte dir = 0; dir < 4; dir++)
                     {
                         byte dir_bit = (byte)(1 << dir);
@@ -13599,8 +13601,6 @@ namespace GnollHackX.Pages.Game
                         {
                             int rx = 0;
                             int ry = 0;
-                            int[] corner_x = new int[2];
-                            int[] corner_y = new int[2];
                             switch (dir)
                             {
                                 case 0:
