@@ -10082,64 +10082,66 @@ namespace GnollHackX.Pages.Game
                                         if(!msgHistoryItem.MatchFilter)
                                             continue;
 
+                                        /* Invalidate cached blobs if font size changed */
+                                        if (msgHistoryItem.WrappedTextBlobs.Count > 0 && msgHistoryItem.WrappedTextBlobTextSize != textPaint.TextSize)
+                                            msgHistoryItem.ClearWrappedTextBlobs();
+                                        msgHistoryItem.WrappedTextBlobTextSize = textPaint.TextSize;
+                                        int blobIdx = 0;
+
                                         int lineidx;
                                         for (lineidx = 0; lineidx < msgHistoryItem.WrappedTextRows.Count; lineidx++)
                                         {
                                             string wrappedLine = msgHistoryItem.WrappedTextRows[lineidx];
                                             int window_row_idx = j + lineidx - msgHistoryItem.WrappedTextRows.Count + 1;
+                                            bool visible = true;
                                             if (window_row_idx < 0)
+                                                visible = false;
+                                            else
                                             {
-                                                char_idx += wrappedLine.Length;
-                                                continue;
-                                            }
-                                            tx = winRect.Left + ghWindow.Padding.Left;
-                                            ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
-                                            if (forceAllMessages)
-                                            {
-                                                ty += InterlockedMessageScrollOffset;
-                                            }
-                                            if (ty + textPaint.FontMetrics.Descent < 0)
-                                            {
-                                                char_idx += wrappedLine.Length;
-                                                continue;
-                                            }
-                                            if (ty - textPaint.FontMetrics.Ascent > canvasheight)
-                                            {
-                                                char_idx += wrappedLine.Length;
-                                                continue;
+                                                tx = winRect.Left + ghWindow.Padding.Left;
+                                                ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
+                                                if (forceAllMessages)
+                                                {
+                                                    ty += InterlockedMessageScrollOffset;
+                                                }
+                                                if (ty + textPaint.FontMetrics.Descent < 0)
+                                                    visible = false;
+                                                if (ty - textPaint.FontMetrics.Ascent > canvasheight)
+                                                    visible = false;
                                             }
 
                                             if (use_one_color)
                                             {
                                                 /* Get or create cached blob for this wrapped line */
                                                 SKTextBlob wrappedBlob = null;
-                                                if (msgHistoryItem.WrappedTextBlobs.Count > 0 && msgHistoryItem.WrappedTextBlobTextSize != textPaint.TextSize)
-                                                    msgHistoryItem.ClearWrappedTextBlobs();
-                                                msgHistoryItem.WrappedTextBlobTextSize = textPaint.TextSize;
-                                                if (lineidx < msgHistoryItem.WrappedTextBlobs.Count)
-                                                    wrappedBlob = msgHistoryItem.WrappedTextBlobs[lineidx];
+                                                if (blobIdx < msgHistoryItem.WrappedTextBlobs.Count)
+                                                    wrappedBlob = msgHistoryItem.WrappedTextBlobs[blobIdx];
                                                 else
                                                 {
                                                     wrappedBlob = textPaint.CreateTextBlob(wrappedLine);
                                                     msgHistoryItem.WrappedTextBlobs.Add(wrappedBlob);
                                                 }
+                                                blobIdx++;
 
-                                                StartProfiling(GHProfilingStyle.Text);
-                                                textPaint.Style = SKPaintStyle.Stroke;
-                                                textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
-                                                textPaint.Color = SKColors.Black;
-                                                //canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                textPaint.DrawTextOnCanvas(canvas, wrappedBlob, tx, ty);
-                                                textPaint.Style = SKPaintStyle.Fill;
-                                                textPaint.StrokeWidth = 0;
-                                                textPaint.Color = printColor;
-                                                //canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                textPaint.DrawTextOnCanvas(canvas, wrappedBlob, tx, ty);
-                                                textPaint.Style = SKPaintStyle.Fill;
-                                                textPaint.StrokeWidth = 0;
-                                                textPaint.Color = SKColors.White;
+                                                if (visible)
+                                                {
+                                                    StartProfiling(GHProfilingStyle.Text);
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
+                                                    textPaint.Color = SKColors.Black;
+                                                    //canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                    textPaint.DrawTextOnCanvas(canvas, wrappedBlob, tx, ty);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.StrokeWidth = 0;
+                                                    textPaint.Color = printColor;
+                                                    //canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                    textPaint.DrawTextOnCanvas(canvas, wrappedBlob, tx, ty);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.StrokeWidth = 0;
+                                                    textPaint.Color = SKColors.White;
+                                                    StopProfiling(GHProfilingStyle.Text);
+                                                }
                                                 char_idx += wrappedLine.Length;
-                                                StopProfiling(GHProfilingStyle.Text);
                                             }
                                             else
                                             {
@@ -10161,12 +10163,23 @@ namespace GnollHackX.Pages.Game
                                                         charidx_len = char_idx2 - char_idx;
                                                     }
 
-                                                    StartProfiling(GHProfilingStyle.Text);
                                                     SKColor new_skcolor = UIUtils.NHColor2SKColor(new_nhcolor, new_nhattr);
                                                     printedsubline.SetValue(wrappedLine, charidx_start, charidx_len);
-                                                    SKTextBlob sublineBlob = textPaint.CreateTextBlob(printedsubline.Value);
-                                                    if (sublineBlob != null)
+
+                                                    /* Get or create cached blob for this color segment */
+                                                    SKTextBlob sublineBlob = null;
+                                                    if (blobIdx < msgHistoryItem.WrappedTextBlobs.Count)
+                                                        sublineBlob = msgHistoryItem.WrappedTextBlobs[blobIdx];
+                                                    else
                                                     {
+                                                        sublineBlob = textPaint.CreateTextBlob(printedsubline.Value);
+                                                        msgHistoryItem.WrappedTextBlobs.Add(sublineBlob);
+                                                    }
+                                                    blobIdx++;
+
+                                                    if (visible && sublineBlob != null)
+                                                    {
+                                                        StartProfiling(GHProfilingStyle.Text);
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
                                                         textPaint.Color = SKColors.Black;
@@ -10175,13 +10188,12 @@ namespace GnollHackX.Pages.Game
                                                         textPaint.StrokeWidth = 0;
                                                         textPaint.Color = new_skcolor;
                                                         textPaint.DrawTextOnCanvas(canvas, sublineBlob, tx, ty);
-                                                        sublineBlob.Dispose();
+                                                        StopProfiling(GHProfilingStyle.Text);
                                                     }
                                                     float twidth = textPaint.MeasureText(printedsubline.Value);
                                                     textPaint.Style = SKPaintStyle.Fill;
                                                     textPaint.StrokeWidth = 0;
                                                     textPaint.Color = SKColors.White;
-                                                    StopProfiling(GHProfilingStyle.Text);
 
                                                     tx += twidth;
                                                     char_idx += charidx_len;
