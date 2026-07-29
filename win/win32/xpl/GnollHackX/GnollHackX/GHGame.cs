@@ -1957,20 +1957,12 @@ namespace GnollHackX
             {
                 if (_ghWindows[winid] != null)
                 {
-                    GHMenuInfo oldMenuInfo = _ghWindows[winid].MenuInfo;
-                    if (oldMenuInfo != null)
-                    {
-                        try
-                        {
-                            foreach (GHMenuItem mi in oldMenuInfo.MenuItems)
-                                mi?.Dispose();
-                        }
-                        catch (Exception ex)
-                        {
-                            System.Diagnostics.Debug.WriteLine("StartMenu dispose error: " + ex.Message);
-                        }
-                        oldMenuInfo.MenuItems.Clear();
-                    }
+                    /* Do not dispose old MenuInfo's GHMenuItems here;
+                     * the render thread may still hold references to the
+                     * same GHMenuItem objects (via its ObservableCollection
+                     * copy) and actively use their text blobs and
+                     * GlyphImageSource. The old items will be GC'd once
+                     * both threads release their references. */
                     _ghWindows[winid].MenuInfo = new GHMenuInfo((ghmenu_styles)style);
                 }
             }

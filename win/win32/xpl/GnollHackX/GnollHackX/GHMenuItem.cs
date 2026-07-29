@@ -967,6 +967,11 @@ namespace GnollHackX
 
         private int _disposed = 0;
 
+        ~GHMenuItem()
+        {
+            Dispose();
+        }
+
         public void Dispose()
         {
             try
@@ -979,7 +984,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("GlyphImageSource.Dispose error: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("GHMenuItem.Dispose error: " + ex.Message);
             }
         }
     }
