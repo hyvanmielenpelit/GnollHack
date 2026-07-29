@@ -16,7 +16,7 @@ using System.Threading;
 
 namespace GnollHackX
 {
-    public sealed class GHMenuItem : IEquatable<GHMenuItem> //, INotifyPropertyChanged
+    public sealed class GHMenuItem : IEquatable<GHMenuItem>, IDisposable //, INotifyPropertyChanged
     {
         public GHMenuItem(GHMenuInfo info, int noGlyph, GamePage gamePage, Int64 identifier, char accelerator, char groupAccelerator, char specialMark,
             int attr, int color, byte[] attrs, byte[] colors, int glyph, bool useUpperSide, bool useColorForSuffixes, bool useSpecialSymbols,
@@ -963,6 +963,24 @@ namespace GnollHackX
                 _suffix2TextBlobs[i]?.Dispose();
             _suffix2TextBlobs.Clear();
             _textBlobTextSize = 0;
+        }
+
+        private int _disposed = 0;
+
+        public void Dispose()
+        {
+            try
+            {
+                if (Interlocked.Exchange(ref _disposed, 1) == 0)
+                {
+                    ClearTextBlobs();
+                    GlyphImageSource?.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("GlyphImageSource.Dispose error: " + ex.Message);
+            }
         }
     }
 }

@@ -18,13 +18,14 @@ using SkiaSharp;
 
 namespace GnollHackX
 {
-    public class GlyphImageSource : StreamImageSource
+    public class GlyphImageSource : StreamImageSource, IDisposable
     {
         public GlyphImageSource()
         {
 
         }
 
+        private readonly SKPaint _drawPaint = new SKPaint();
         private int _canvasWidth = 0;
         private int _canvasHeight = 0;
 
@@ -354,7 +355,7 @@ namespace GnollHackX
                 int anim_frame_idx = 0, main_tile_idx = 0;
                 sbyte mapAnimated = 0;
                 int tile_animation_idx = GHApp.GnollHackService.GetTileAnimationIndexFromGlyph(abs_glyph);
-                
+
                 long counter_value;
                 GHGame ghGame = GHApp.CurrentGHGame;
                 if (ghGame == null)
@@ -374,8 +375,9 @@ namespace GnollHackX
                 int tile_x, tile_y;
                 GHApp.TileSheetXY(ntile, out tile_x, out tile_y);
 
-                using (SKPaint paint = new SKPaint())
                 {
+                    SKPaint paint = _drawPaint;
+                    paint.ColorFilter = null;
 #if !GNH_MAUI
                     if(highFilterQuality)
                         paint.FilterQuality = SKFilterQuality.High;
@@ -442,7 +444,7 @@ namespace GnollHackX
 #endif
                             paint);
 
-                        if(refPage != null)
+                        if (refPage != null)
                             refPage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                 (int)layer_types.LAYER_OBJECT, 0, 0,
                                 tileflag_halfsize, false, tileflag_fullsizeditem,
@@ -486,7 +488,7 @@ namespace GnollHackX
                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                 paint);
-                            if(refPage != null)
+                            if (refPage != null)
                                 refPage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                     (int)layer_types.LAYER_OBJECT, 0, 0,
                                     tileflag_halfsize, false, true,
@@ -568,7 +570,7 @@ namespace GnollHackX
                                         new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                         paint);
-                                    if(refPage != null)
+                                    if (refPage != null)
                                         refPage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                             (int)layer_types.LAYER_OBJECT, 0, 0,
                                             tileflag_halfsize, false, true,
@@ -583,6 +585,23 @@ namespace GnollHackX
                         }
                     }
                 }
+            }
+        }
+
+        private int _disposed = 0;
+
+        public void Dispose()
+        {
+            try
+            {
+                if (Interlocked.Exchange(ref _disposed, 1) == 0)
+                {
+                    _drawPaint?.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("GlyphImageSource.Dispose error: " + ex.Message);
             }
         }
     }

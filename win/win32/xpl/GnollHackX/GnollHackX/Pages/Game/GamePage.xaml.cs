@@ -1183,75 +1183,89 @@ namespace GnollHackX.Pages.Game
 
         ~GamePage()
         {
-            /* Dispose of all bitmaps */
-            _paintBitmap.Dispose();
-            _tempBitmap.Dispose();
-            foreach (SKImage bmp in _savedRects.Values)
-                bmp.Dispose();
-            _savedRects.Clear();
-            foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
-                bmp.Dispose();
-            _darkenedAutodrawBitmaps.Clear();
-            foreach (SKImage bmp in _darkenedBitmaps.Values)
-                bmp.Dispose();
-            _darkenedBitmaps.Clear();
-            foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
-                bmp.Dispose();
-            _savedAutoDrawBitmaps.Clear();
-            ClearColorFilterCaches();
-
-            /* Dispose of all cached text blobs */
-            for (int i = 0; i < _localStatusFieldBlobs.Length; i++)
+            try
             {
-                _localStatusFieldBlobs[i]?.Dispose();
-                _localStatusFieldBlobs[i] = null;
+                /* Dispose of all bitmaps */
+                _paintBitmap.Dispose();
+                _tempBitmap.Dispose();
+                foreach (SKImage bmp in _savedRects.Values)
+                    bmp.Dispose();
+                _savedRects.Clear();
+                foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
+                    bmp.Dispose();
+                _darkenedAutodrawBitmaps.Clear();
+                foreach (SKImage bmp in _darkenedBitmaps.Values)
+                    bmp.Dispose();
+                _darkenedBitmaps.Clear();
+                foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
+                    bmp.Dispose();
+                _savedAutoDrawBitmaps.Clear();
+                ClearColorFilterCaches();
+
+                /* Dispose of all cached text blobs */
+                for (int i = 0; i < _localStatusFieldBlobs.Length; i++)
+                {
+                    _localStatusFieldBlobs[i]?.Dispose();
+                    _localStatusFieldBlobs[i] = null;
+                }
+                for (int i = 0; i < _literalBlobs.Length; i++)
+                {
+                    _literalBlobs[i]?.Dispose();
+                    _literalBlobs[i] = null;
+                }
+                for (int i = 0; i < _localContextMenuData.Count; i++)
+                    _localContextMenuData[i]?.Dispose();
+                _localContextMenuData.Clear();
+                for (int i = 0; i < _localFloatingTexts.Count; i++)
+                    _localFloatingTexts[i]?.Dispose();
+                _localFloatingTexts.Clear();
+                for (int i = 0; i < _localConditionTexts.Count; i++)
+                    _localConditionTexts[i]?.Dispose();
+                _localConditionTexts.Clear();
+                _localScreenText?.Dispose();
+                _localScreenText = null;
+                for (int i = 0; i < _localMainScreenDebugLogBlobs.Count; i++)
+                    _localMainScreenDebugLogBlobs[i]?.Dispose();
+                _localMainScreenDebugLogBlobs.Clear();
+                for (int i = 0; i < _localMenuScreenDebugLogBlobs.Count; i++)
+                    _localMenuScreenDebugLogBlobs[i]?.Dispose();
+                _localMenuScreenDebugLogBlobs.Clear();
+
+                /* Dispose cached orb text blobs */
+                _hpValBlob?.Dispose();
+                _hpMaxBlob?.Dispose();
+                _mpValBlob?.Dispose();
+                _mpMaxBlob?.Dispose();
+
+                /* Dispose cached engraving text blobs */
+                ClearEngravingBlobCache();
+
+                /* Dispose of cached paint instances */
+                _mapPaint.Dispose();
+                _uiPaint.Dispose();
+                _orbPaint.Dispose();
+                _cmdPaint.Dispose();
+                _mapTextPaint.Dispose();
+                _menuTextPaint.Dispose();
+                _textCanvasTextPaint.Dispose();
+                _cmdTextPaint.Dispose();
+                _tipTextPaint.Dispose();
+
+                /* Dispose of cached mask filters */
+                _blur.Dispose();
+                _lookBlur.Dispose();
+
+                /* Dispose of cached GlyphImageSource instances */
+                _popupImageSource?.Dispose();
+                _menuGlyphImageSource?.Dispose();
+                _ynImageSource?.Dispose();
+                _paintGlyphImageSource?.Dispose();
+                _textGlyphImageSource?.Dispose();
             }
-            for (int i = 0; i < _literalBlobs.Length; i++)
+            catch (Exception ex)
             {
-                _literalBlobs[i]?.Dispose();
-                _literalBlobs[i] = null;
+                System.Diagnostics.Debug.WriteLine("~GamePage dispose error: " + ex.Message);
             }
-            for (int i = 0; i < _localContextMenuData.Count; i++)
-                _localContextMenuData[i]?.Dispose();
-            _localContextMenuData.Clear();
-            for (int i = 0; i < _localFloatingTexts.Count; i++)
-                _localFloatingTexts[i]?.Dispose();
-            _localFloatingTexts.Clear();
-            for (int i = 0; i < _localConditionTexts.Count; i++)
-                _localConditionTexts[i]?.Dispose();
-            _localConditionTexts.Clear();
-            _localScreenText?.Dispose();
-            _localScreenText = null;
-            for (int i = 0; i < _localMainScreenDebugLogBlobs.Count; i++)
-                _localMainScreenDebugLogBlobs[i]?.Dispose();
-            _localMainScreenDebugLogBlobs.Clear();
-            for (int i = 0; i < _localMenuScreenDebugLogBlobs.Count; i++)
-                _localMenuScreenDebugLogBlobs[i]?.Dispose();
-            _localMenuScreenDebugLogBlobs.Clear();
-
-            /* Dispose cached orb text blobs */
-            _hpValBlob?.Dispose();
-            _hpMaxBlob?.Dispose();
-            _mpValBlob?.Dispose();
-            _mpMaxBlob?.Dispose();
-
-            /* Dispose cached engraving text blobs */
-            ClearEngravingBlobCache();
-
-            /* Dispose of cached paint instances */
-            _mapPaint.Dispose();
-            _uiPaint.Dispose();
-            _orbPaint.Dispose();
-            _cmdPaint.Dispose();
-            _mapTextPaint.Dispose();
-            _menuTextPaint.Dispose();
-            _textCanvasTextPaint.Dispose();
-            _cmdTextPaint.Dispose();
-            _tipTextPaint.Dispose();
-
-            /* Dispose of cached mask filters */
-            _blur.Dispose();
-            _lookBlur.Dispose();
         }
 
         private void UpdateAbilityButtonVisibility(bool isDesktop)
@@ -12156,10 +12170,11 @@ namespace GnollHackX.Pages.Game
                                                 canvas.Save();
                                                 try
                                                 {
-                                                    GlyphImageSource gis = new GlyphImageSource();
+                                                    GlyphImageSource gis = _paintGlyphImageSource;
                                                     gis.ReferenceGamePage = this;
                                                     gis.UseUpperSide = false; /* Monsters are generally full-sized */
                                                     gis.AutoSize = true;
+                                                    gis.ObjData = null;
                                                     gis.Glyph = Math.Abs(mi.gui_glyph);
                                                     gis.DoAutoSize();
                                                     float pet_scale = Math.Min(gis.Width == 0 ? 1.0f : pet_target_width / gis.Width, gis.Height == 0 ? 1.0f : pet_picture_target_height / gis.Height);

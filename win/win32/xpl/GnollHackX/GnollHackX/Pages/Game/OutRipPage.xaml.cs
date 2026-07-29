@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -101,6 +101,18 @@ namespace GnollHackX.Pages.Game
         }
 
         private GlyphImageSource _glyphImageSource = new GlyphImageSource();
+
+        ~OutRipPage()
+        {
+            try
+            {
+                _glyphImageSource?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("~OutRipPage dispose error: " + ex.Message);
+            }
+        }
 
         public GlyphImageSource GlyphImage
         {

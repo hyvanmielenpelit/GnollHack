@@ -711,13 +711,32 @@ namespace GnollHackX
                 }
             }
         }
+
+        private int _disposed = 0;
+
         public void Dispose()
         {
-            _measurePaint?.Dispose();
-            _measurePaint = null;
-            foreach (GHPutStrItem item in _putStrs)
-                item?.Dispose();
-            _putStrs.Clear();
+            try
+            {
+                if (Interlocked.Exchange(ref _disposed, 1) == 0)
+                {
+                    _measurePaint?.Dispose();
+                    _measurePaint = null;
+                    foreach (GHPutStrItem item in _putStrs)
+                        item?.Dispose();
+                    _putStrs.Clear();
+                    if (MenuInfo != null)
+                    {
+                        foreach (GHMenuItem mi in MenuInfo.MenuItems)
+                            mi?.Dispose();
+                        MenuInfo.MenuItems.Clear();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("GHWindow.Dispose error: " + ex.Message);
+            }
         }
     }
 }
