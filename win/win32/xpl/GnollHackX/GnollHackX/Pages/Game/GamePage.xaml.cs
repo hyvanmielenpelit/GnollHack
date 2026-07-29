@@ -720,7 +720,19 @@ namespace GnollHackX.Pages.Game
         public bool WalkArrows { get { return Interlocked.CompareExchange(ref _walkArrows, 0, 0) != 0; } set { Interlocked.Exchange(ref _walkArrows, value ? 1 : 0); } }
 
         private int _classicStatusBar = 0;
-        public bool ClassicStatusBar { get { return Interlocked.CompareExchange(ref _classicStatusBar, 0, 0) != 0; } set { Interlocked.Exchange(ref _classicStatusBar, value ? 1 : 0); } }
+        public bool ClassicStatusBar
+        {
+            get { return Interlocked.CompareExchange(ref _classicStatusBar, 0, 0) != 0; }
+            set
+            {
+                int prev = Interlocked.Exchange(ref _classicStatusBar, value ? 1 : 0);
+                if (value && prev == 0)
+                {
+                    GHApp.CurrentGHGame?.SyncStatusWindow();
+                }
+            }
+        }
+
 
         private int _desktopStatusBar = 0;
         private int _desktopButtons = 0;
