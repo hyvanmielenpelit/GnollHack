@@ -6044,7 +6044,8 @@ namespace GnollHackX.Pages.Game
             float splitY = -(move_offset_y + scaled_y_height_change + correction_y);
             float dx2 = dx * (hflip_glyph ? -1 : 1) * width * dscalex;
             float dy2 = dy * (vflip_glyph ? -1 : 1) * height * dscaley;
-            using (new SKAutoCanvasRestore(canvas, true))
+            canvas.Save();
+            try
             {
                 float tr_x = tx + (hflip_glyph ? width * dscalex : 0);
                 float tr_y = ty + (vflip_glyph ? height * dscaley : 0);
@@ -6094,6 +6095,10 @@ namespace GnollHackX.Pages.Game
 
                 //if (enlRestore != null)
                 //    enlRestore.Dispose();
+            }
+            finally
+            {
+                canvas.Restore();
             }
 
             DrawAutoDraw(autodraw, canvas, delayedDraw, paint, otmp_round,
@@ -8771,7 +8776,8 @@ namespace GnollHackX.Pages.Game
                                                     }
                                                     /* Enlargement bitmaps */
                                                     case (int)layer_types.MAX_LAYERS:
-                                                    using (new SKAutoCanvasRestore(canvas))
+                                                    canvas.Save();
+                                                    try
                                                     {
                                                         bool dodarkening = true;
                                                         using (SKCanvas darkeningCanvas = new SKCanvas(_paintBitmap))
@@ -9048,6 +9054,10 @@ namespace GnollHackX.Pages.Game
                                                             }
                                                         }
                                                         break;
+                                                    }
+                                                    finally
+                                                    {
+                                                        canvas.Restore();
                                                     }
                                                 }
                                             }
@@ -9426,7 +9436,8 @@ namespace GnollHackX.Pages.Game
 #endif
                                 case (int)gui_effect_types.GUI_EFFECT_POLEARM:
                                     {
-                                        using (new SKAutoCanvasRestore(canvas))
+                                        canvas.Save();
+                                        try
                                         {
                                             int dx = eff.X2 - eff.X1;
                                             int dy = eff.Y2 - eff.Y1;
@@ -9994,6 +10005,10 @@ namespace GnollHackX.Pages.Game
                                                         break;
                                                 }
                                             }
+                                        }
+                                        finally
+                                        {
+                                            canvas.Restore();
                                         }
                                     }
                                     break;
@@ -10935,7 +10950,8 @@ namespace GnollHackX.Pages.Game
                                                 if (_localWeaponStyleObjDataItem[0] != null)
                                                 {
                                                     float startpicturex = curx;
-                                                    using (new SKAutoCanvasRestore(canvas, true))
+                                                    canvas.Save();
+                                                    try
                                                     {
                                                         GlyphImageSource gis = _paintGlyphImageSource;
                                                         gis.ReferenceGamePage = this;
@@ -10954,6 +10970,10 @@ namespace GnollHackX.Pages.Game
                                                         StopProfiling(GHProfilingStyle.Bitmap);
                                                         curx += weppicturewidth;
                                                         curx += innerspacing;
+                                                    }
+                                                    finally
+                                                    {
+                                                        canvas.Restore();
                                                     }
                                                     float endpicturex = curx;
                                                     StartProfiling(GHProfilingStyle.Text);
@@ -11061,7 +11081,8 @@ namespace GnollHackX.Pages.Game
                                                     curx += print_width;
 
                                                     float startpicturex = curx;
-                                                    using (new SKAutoCanvasRestore(canvas, true))
+                                                    canvas.Save();
+                                                    try
                                                     {
                                                         GlyphImageSource gis = _paintGlyphImageSource;
                                                         gis.ReferenceGamePage = this;
@@ -11080,6 +11101,10 @@ namespace GnollHackX.Pages.Game
                                                         StopProfiling(GHProfilingStyle.Bitmap);
                                                         curx += weppicturewidth;
                                                         curx += innerspacing;
+                                                    }
+                                                    finally
+                                                    {
+                                                        canvas.Restore();
                                                     }
                                                     float endpicturex = curx;
                                                     StartProfiling(GHProfilingStyle.Text);
@@ -11198,7 +11223,8 @@ namespace GnollHackX.Pages.Game
                                                     curx += target_width;
                                                     curx += innerspacing;
 
-                                                    using (new SKAutoCanvasRestore(canvas, true))
+                                                    canvas.Save();
+                                                    try
                                                     {
                                                         GlyphImageSource gis = _paintGlyphImageSource;
                                                         gis.ReferenceGamePage = this;
@@ -11215,6 +11241,10 @@ namespace GnollHackX.Pages.Game
                                                         gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects, fixFiltering);
                                                         curx += weppicturewidth;
                                                         curx += innerspacing;
+                                                    }
+                                                    finally
+                                                    {
+                                                        canvas.Restore();
                                                     }
                                                 }
                                             }
@@ -11279,7 +11309,8 @@ namespace GnollHackX.Pages.Game
                                     curx += target_width;
                                     curx += innerspacing;
 
-                                    using (new SKAutoCanvasRestore(canvas, true))
+                                    canvas.Save();
+                                    try
                                     {
                                         GlyphImageSource gis = _paintGlyphImageSource;
                                         gis.ReferenceGamePage = this;
@@ -11296,6 +11327,10 @@ namespace GnollHackX.Pages.Game
                                         gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects, fixFiltering);
                                         curx += weppicturewidth;
                                     }
+                                    finally
+                                    {
+                                        canvas.Restore();
+                                    }
                                     curx += stdspacing;
                                 }
                                 if (_localQuickSpellGlyph != GHApp.NoGlyph)
@@ -11310,7 +11345,8 @@ namespace GnollHackX.Pages.Game
                                     );
                                     curx += target_width;
                                     curx += innerspacing;
-                                    using (new SKAutoCanvasRestore(canvas, true))
+                                    canvas.Save();
+                                    try
                                     {
                                         GlyphImageSource gis = _paintGlyphImageSource;
                                         gis.ReferenceGamePage = this;
@@ -11326,6 +11362,10 @@ namespace GnollHackX.Pages.Game
                                         canvas.Scale(wep_scale);
                                         gis.DrawOnCanvas(canvas, usingGL, false, true, fixRects, fixFiltering);
                                         curx += weppicturewidth;
+                                    }
+                                    finally
+                                    {
+                                        canvas.Restore();
                                     }
                                     curx += stdspacing;
                                 }
@@ -12083,16 +12123,18 @@ namespace GnollHackX.Pages.Game
                                         {
                                             petidx++;
                                             monst_info mi = pdi.Data;
-                                            using (new SKAutoCanvasRestore(canvas, true))
+                                            canvas.Save();
+                                            try
                                             {
                                                 canvas.ClipRect(new SKRect(tx - 1, ty - 1, tx + pet_target_width + 1, ty + pet_target_height + 2));
                                                 SKRect usedRect = new SKRect();
-                                                if(petidx < _localPetRects.Count)
+                                                if (petidx < _localPetRects.Count)
                                                     _localPetRects[petidx] = usedRect = new SKRect(tx, ty, tx + pet_target_width, ty + pet_target_height);
 
                                                 float petpicturewidth = 0f;
                                                 float petpictureheight = 0f;
-                                                using (new SKAutoCanvasRestore(canvas, true))
+                                                canvas.Save();
+                                                try
                                                 {
                                                     GlyphImageSource gis = new GlyphImageSource();
                                                     gis.ReferenceGamePage = this;
@@ -12108,6 +12150,10 @@ namespace GnollHackX.Pages.Game
                                                     StartProfiling(GHProfilingStyle.Bitmap);
                                                     gis.DrawOnCanvas(canvas, usingGL, _localIsPointerHovering && usedRect.Contains(_localPointerHoverLocation), false, fixRects, fixFiltering);
                                                     StopProfiling(GHProfilingStyle.Bitmap);
+                                                }
+                                                finally
+                                                {
+                                                    canvas.Restore();
                                                 }
 
                                                 float curpety = ty + pet_picture_target_height;
@@ -12311,21 +12357,13 @@ namespace GnollHackX.Pages.Game
                                                 else
                                                     tx += pet_target_width * 0.08f;
                                             }
-
-                                            //textPaint.TextAlign = SKTextAlign.Left;
+                                            finally
+                                            {
+                                                canvas.Restore();
+                                            }
                                         }
                                     }
                                 }
-                                //else
-                                //{
-                                //    //lock (_petDataLock)
-                                //    {
-                                //        for (int i = 0; i < _localPetRects.Count; i++)
-                                //        {
-                                //            _localPetRects[i] = new SKRect();
-                                //        }
-                                //    }
-                                //}
                             }
                         }
 
@@ -13077,7 +13115,8 @@ namespace GnollHackX.Pages.Game
                 ty += textPaint.FontSpacing * 0.5f;
             }
 
-            using (new SKAutoCanvasRestore(canvas, true))
+            canvas.Save();
+            try
             {
                 tx = bkgrect.Left + bkgrect.Width / 12.6f;
 
@@ -13634,6 +13673,10 @@ namespace GnollHackX.Pages.Game
                         }
                     }
                 }
+            }
+            finally
+            {
+                canvas.Restore();
             }
         }
 
@@ -14237,7 +14280,8 @@ namespace GnollHackX.Pages.Game
                             SKRect targetrect;
                             targetrect = new SKRect(0, 0, target_width, target_height);
 
-                            using (new SKAutoCanvasRestore(canvas, true))
+                            canvas.Save();
+                            try
                             {
                                 canvas.Translate(target_x + (hflip_seg ? width : 0), target_y + (vflip_seg ? height : 0));
                                 canvas.Scale(hflip_seg ? -1 : 1, vflip_seg ? -1 : 1, 0, 0);
@@ -14248,6 +14292,10 @@ namespace GnollHackX.Pages.Game
                                     new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                     paint);
+                            }
+                            finally
+                            {
+                                canvas.Restore();
                             }
                         }
                     }
@@ -14316,7 +14364,8 @@ namespace GnollHackX.Pages.Game
                             SKRect target_rt;
                             target_rt = new SKRect(0, 0, target_width, target_height);
 
-                            using (new SKAutoCanvasRestore(canvas, true))
+                            canvas.Save();
+                            try
                             {
                                 canvas.Translate(target_x, target_y);
                                 canvas.Scale(1, 1, 0, 0);
@@ -14327,6 +14376,10 @@ namespace GnollHackX.Pages.Game
                                     new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                     paint);
+                            }
+                            finally
+                            {
+                                canvas.Restore();
                             }
                             cnt++;
                         }
@@ -14393,7 +14446,8 @@ namespace GnollHackX.Pages.Game
                         SKRect target_rt;
                         target_rt = new SKRect(0, 0, target_width, target_height);
 
-                        using (new SKAutoCanvasRestore(canvas, true))
+                        canvas.Save();
+                        try
                         {
                             canvas.Translate(target_x, target_y);
                             canvas.Scale(1, 1, 0, 0);
@@ -14406,6 +14460,10 @@ namespace GnollHackX.Pages.Game
                                 new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                 paint);
+                        }
+                        finally
+                        {
+                            canvas.Restore();
                         }
                         cnt++;
                     }
@@ -14465,7 +14523,8 @@ namespace GnollHackX.Pages.Game
                         SKRect target_rt;
                         target_rt = new SKRect(0, 0, target_width, target_height);
 
-                        using (new SKAutoCanvasRestore(canvas, true))
+                        canvas.Save();
+                        try
                         {
                             canvas.Translate(target_x, target_y);
                             canvas.Scale(1, 1, 0, 0);
@@ -14476,6 +14535,10 @@ namespace GnollHackX.Pages.Game
                                 new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                 paint);
+                        }
+                        finally
+                        {
+                            canvas.Restore();
                         }
                     }
                 }
@@ -14555,7 +14618,8 @@ namespace GnollHackX.Pages.Game
                         SKRect target_rt;
                         target_rt = new SKRect(0, 0, target_width, target_height);
 
-                        using (new SKAutoCanvasRestore(canvas, true))
+                        canvas.Save();
+                        try
                         {
                             canvas.Translate(target_x, target_y);
                             canvas.Scale(1, 1, 0, 0);
@@ -14566,6 +14630,10 @@ namespace GnollHackX.Pages.Game
                                 new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                 paint);
+                        }
+                        finally
+                        {
+                            canvas.Restore();
                         }
                         cnt++;
                     }
@@ -14612,7 +14680,8 @@ namespace GnollHackX.Pages.Game
                         target_rt.Top = 0;
                         target_rt.Bottom = jar_height * scale * targetscale;
 
-                        using (new SKAutoCanvasRestore(canvas, true))
+                        canvas.Save();
+                        try
                         {
                             canvas.Translate(dest_x, dest_y);
                             paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
@@ -14622,6 +14691,10 @@ namespace GnollHackX.Pages.Game
                                 new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                 paint);
+                        }
+                        finally
+                        {
+                            canvas.Restore();
                         }
 
                         /* Color */
@@ -14739,7 +14812,8 @@ namespace GnollHackX.Pages.Game
 
                             semi_transparency = 0.0;
                             paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
-                            using (new SKAutoCanvasRestore(canvas, true))
+                            canvas.Save();
+                            try
                             {
                                 canvas.Translate(dest_x, dest_y);
                                 canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
@@ -14747,6 +14821,10 @@ namespace GnollHackX.Pages.Game
                                     , SKSamplingOptions.Default
 #endif
                                     , paint);
+                            }
+                            finally
+                            {
+                                canvas.Restore();
                             }
 
                             /* Middle contents */
@@ -14778,7 +14856,8 @@ namespace GnollHackX.Pages.Game
 
                                 semi_transparency = 0.2;
                                 paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
-                                using (new SKAutoCanvasRestore(canvas, true))
+                                canvas.Save();
+                                try
                                 {
                                     canvas.Translate(dest_x, dest_y);
                                     canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
@@ -14786,6 +14865,10 @@ namespace GnollHackX.Pages.Game
                                         , SKSamplingOptions.Default
 #endif
                                         , paint);
+                                }
+                                finally
+                                {
+                                    canvas.Restore();
                                 }
 
                                 /* Top contents */
@@ -14819,7 +14902,8 @@ namespace GnollHackX.Pages.Game
 
                                 semi_transparency = 0.0;
                                 paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
-                                using (new SKAutoCanvasRestore(canvas, true))
+                                canvas.Save();
+                                try
                                 {
                                     canvas.Translate(dest_x, dest_y);
                                     canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
@@ -14827,6 +14911,10 @@ namespace GnollHackX.Pages.Game
                                         , SKSamplingOptions.Default
 #endif
                                         , paint);
+                                }
+                                finally
+                                {
+                                    canvas.Restore();
                                 }
                             }
                         }
@@ -14845,7 +14933,8 @@ namespace GnollHackX.Pages.Game
                         /* Draw */
                         semi_transparency = 0.70;
                         paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
-                        using (new SKAutoCanvasRestore(canvas, true))
+                        canvas.Save();
+                        try
                         {
                             canvas.Translate(dest_x, dest_y);
                             GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL, fixRects, fixFiltering);
@@ -14854,6 +14943,10 @@ namespace GnollHackX.Pages.Game
                                 new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                 paint);
+                        }
+                        finally
+                        {
+                            canvas.Restore();
                         }
 
                         /* Fourth, opaque foreground */
@@ -14948,7 +15041,8 @@ namespace GnollHackX.Pages.Game
                         target_rt.Top = 0;
                         target_rt.Bottom = jar_height * scale * targetscale;
 
-                        using (new SKAutoCanvasRestore(canvas, true))
+                        canvas.Save();
+                        try
                         {
                             canvas.Translate(dest_x, dest_y);
                             canvas.DrawBitmap(usedForegroundBitmap, source_rt, target_rt
@@ -14956,6 +15050,10 @@ namespace GnollHackX.Pages.Game
                                 , SKSamplingOptions.Default
 #endif
                                 , paint);
+                        }
+                        finally
+                        {
+                            canvas.Restore();
                         }
 
                     }
@@ -15286,7 +15384,8 @@ namespace GnollHackX.Pages.Game
                                     int source_y = at_y + within_tile_source_y;
                                     SKRect sourcerect = new SKRect(source_x, source_y, source_x + source_width, source_y + source_height);
                                     SKRect targetrect = new SKRect(0, 0, target_width, target_height);
-                                    using (SKAutoCanvasRestore autorestore = new SKAutoCanvasRestore(canvas))
+                                    canvas.Save();
+                                    try
                                     {
                                         canvas.Translate(target_x + (hflip_link ? target_width : 0), target_y + (vflip_link ? target_height : 0));
                                         canvas.Scale(hflip_link ? -1 : 1, vflip_link ? -1 : 1, 0, 0);
@@ -15296,6 +15395,10 @@ namespace GnollHackX.Pages.Game
                                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                             paint);
+                                    }
+                                    finally
+                                    {
+                                        canvas.Restore();
                                     }
                                 }
                             }
@@ -15399,7 +15502,8 @@ namespace GnollHackX.Pages.Game
 
                                     SKRect sourcerect = new SKRect(source_x, source_y, source_x + source_width, source_y + source_height);
                                     SKRect targetrect = new SKRect(0, 0, target_width, target_height);
-                                    using (SKAutoCanvasRestore autorestore = new SKAutoCanvasRestore(canvas))
+                                    canvas.Save();
+                                    try
                                     {
                                         canvas.Translate(target_x + (hflip_link ? target_width : 0), target_y + (vflip_link ? target_height : 0));
                                         canvas.Scale(hflip_link ? -1 : 1, vflip_link ? -1 : 1, 0, 0);
@@ -15409,6 +15513,10 @@ namespace GnollHackX.Pages.Game
                                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                             paint);
+                                    }
+                                    finally
+                                    {
+                                        canvas.Restore();
                                     }
                                 }
                             }
@@ -18874,7 +18982,8 @@ namespace GnollHackX.Pages.Game
                             float glyph_start_y = y;
                             if (!(glyph_start_y + minrowheight <= 0 || glyph_start_y >= canvasheight))
                             {
-                                using (new SKAutoCanvasRestore(canvas, true))
+                                canvas.Save();
+                                try
                                 {
                                     foundItem.GlyphImageSource.AutoSize = true;
                                     foundItem.GlyphImageSource.DoAutoSize();
@@ -18885,6 +18994,10 @@ namespace GnollHackX.Pages.Game
                                         canvas.Scale(minrowheight / Math.Max(1, foundItem.GlyphImageSource.Height));
                                         foundItem.GlyphImageSource.DrawOnCanvas(canvas, usingGL, isHover, isHighFilterQuality, fixRects, fixFiltering, extraOpacity);
                                     }
+                                }
+                                finally
+                                {
+                                    canvas.Restore();
                                 }
                                 if (foundItem.MaxCount > 1)
                                 {
@@ -19262,7 +19375,8 @@ namespace GnollHackX.Pages.Game
                                         float glyph_start_y = drawbtop + Math.Max(0, (totalRowHeight - minrowheight) / 2);
                                         if (mi.IsGlyphVisible && !(glyph_start_y + minrowheight <= 0 || glyph_start_y >= canvasheight))
                                         {
-                                            using (new SKAutoCanvasRestore(canvas, true))
+                                            canvas.Save();
+                                            try
                                             {
                                                 mi.GlyphImageSource.AutoSize = true;
                                                 mi.GlyphImageSource.DoAutoSize();
@@ -19273,6 +19387,10 @@ namespace GnollHackX.Pages.Game
                                                     canvas.Scale(minrowheight / Math.Max(1, mi.GlyphImageSource.Height));
                                                     mi.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false, isHighFilterQuality, fixRects, fixFiltering);
                                                 }
+                                            }
+                                            finally
+                                            {
+                                                canvas.Restore();
                                             }
                                         }
                                         x += picturewidth + picturepadding;
@@ -25447,5 +25565,4 @@ namespace GnollHackX.Pages.Game
         }
 #endif
     }
-
 }

@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -348,7 +348,8 @@ namespace GnollHackX
                         float tx = 0, ty = 0;
                         bool hflip = false, vflip = false;
                         bool specialMatch = i == borderspecialloc && bordertlspecial != null;
-                        using (SKAutoCanvasRestore res = new SKAutoCanvasRestore(canvas, true))
+                        canvas.Save();
+                        try
                         {
                             switch (i)
                             {
@@ -388,13 +389,18 @@ namespace GnollHackX
 #endif
                                 paint);
                         }
+                        finally
+                        {
+                            canvas.Restore();
+                        }
                     }
 
                     for (int i = 0; i < 2; i++)
                     {
                         float tx = bordertl.Width * borderscale, ty = 0;
                         bool hflip = false, vflip = false;
-                        using (SKAutoCanvasRestore res = new SKAutoCanvasRestore(canvas, true))
+                        canvas.Save();
+                        try
                         {
                             if (i == 1)
                             {
@@ -414,13 +420,18 @@ namespace GnollHackX
 #endif
                                 paint);
                         }
+                        finally
+                        {
+                            canvas.Restore();
+                        }
                     }
 
                     for (int i = 0; i < 2; i++)
                     {
                         float tx = 0, ty = bordertl.Height * borderscale;
                         bool hflip = false, vflip = false;
-                        using (SKAutoCanvasRestore res = new SKAutoCanvasRestore(canvas, true))
+                        canvas.Save();
+                        try
                         {
                             if (i == 1)
                             {
@@ -439,6 +450,10 @@ namespace GnollHackX
                                 new SKSamplingOptions(SKFilterMode.Linear),
 #endif
                                 paint);
+                        }
+                        finally
+                        {
+                            canvas.Restore();
                         }
                     }
                 }

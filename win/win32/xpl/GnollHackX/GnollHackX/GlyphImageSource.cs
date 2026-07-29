@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -473,7 +473,8 @@ namespace GnollHackX
                         int n_sheet_idx = sheet_idx;
 
                         /* Main tile */
-                        using (new SKAutoCanvasRestore(canvas, true))
+                        canvas.Save();
+                        try
                         {
                             canvas.Translate(t_x + (flip_tile ? tileWidth * (1 + flipped_enl_x - enl_x) : 0), t_y);
                             canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
@@ -492,6 +493,10 @@ namespace GnollHackX
                                     0, 0, tileWidth, tileHeight,
                                     1, scale, 0, 0, tileHeight, true, drawwallends, usingGL, highFilterQuality, fixRects, fixFiltering);
 
+                        }
+                        finally
+                        {
+                            canvas.Restore();
                         }
 
                         /* Enlargement tiles */
@@ -550,7 +555,8 @@ namespace GnollHackX
                                 target_x += xpadding - CanvasXStart;
                                 target_y += ypadding;
 
-                                using (new SKAutoCanvasRestore(canvas, true))
+                                canvas.Save();
+                                try
                                 {
                                     canvas.Translate(target_x + (flip_tile ? tileWidth : 0), target_y);
                                     canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
@@ -568,6 +574,10 @@ namespace GnollHackX
                                             tileflag_halfsize, false, true,
                                             0, 0, tileWidth, tileHeight,
                                             1, scale, 0, 0, tileHeight, true, drawwallends, usingGL, highFilterQuality, fixRects, fixFiltering);
+                                }
+                                finally
+                                {
+                                    canvas.Restore();
                                 }
                             }
                         }
