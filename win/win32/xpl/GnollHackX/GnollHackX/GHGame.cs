@@ -83,6 +83,9 @@ namespace GnollHackX
         public bool CasualMode { get { return ActiveGamePage?.EnableCasualMode ?? false; } }
         public bool ModernMode { get { return ActiveGamePage?.EnableModernMode ?? false; } }
 
+        private int _useAscii = 0;
+        public bool UseAscii { get { return Interlocked.CompareExchange(ref _useAscii, 0, 0) != 0; } set { Interlocked.Exchange(ref _useAscii, value ? 1 : 0); } }
+
         public GHGame(RunGnollHackFlags startFlags)
         {
             StartFlags = startFlags;
@@ -659,7 +662,8 @@ namespace GnollHackX
                     {
                         _mapDataMaster[x, y].Glyph = GHApp.UnexploredGlyph;
                         _mapDataMaster[x, y].BkGlyph = GHApp.NoGlyph;
-                        _mapDataMaster[x, y].Symbol = "";
+                        _mapDataMaster[x, y].CodePoint = 0;
+                        _mapDataMaster[x, y].Symbol = null;
                         _mapDataMaster[x, y].Color = SKColors.Black;// default(MapData);
                         _mapDataMaster[x, y].Special = 0;
                         _mapDataMaster[x, y].NeedsUpdate = true;
@@ -1065,7 +1069,8 @@ namespace GnollHackX
             _mapDataMaster[x, y].GlyphGeneralPrintMainCounterValue = mainCounter;
             _mapDataMaster[x, y].Glyph = glyph;
             _mapDataMaster[x, y].BkGlyph = bkglyph;
-            _mapDataMaster[x, y].Symbol = Char.ConvertFromUtf32(c);
+            _mapDataMaster[x, y].CodePoint = c;
+            _mapDataMaster[x, y].Symbol = UseAscii ? MapData.CodePointToSymbol(c) : null;
             _mapDataMaster[x, y].Color = UIUtils.NHColor2SKColor(color, (special & 0x00002000UL) != 0 ? (int)MenuItemAttributes.AltColors : 0);
             _mapDataMaster[x, y].Special = special;
             _mapDataMaster[x, y].Layers = layers;

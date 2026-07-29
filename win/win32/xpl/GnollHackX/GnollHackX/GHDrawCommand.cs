@@ -76,10 +76,6 @@ namespace GnollHackX
         public bool IsAutoDraw { get; private set; }
         public AutoDrawParameterDefinition AutoDrawParameters { get; private set; }
 
-        public GHDrawCommand()
-        {
-
-        }
         public GHDrawCommand(SKMatrix matrix, SKRect sourceRect, SKRect destinationRect, SKImage sourceBitmap, SKColor paintColor, SKColorFilter paintColorFilter, int sheetIdx, int mapX, int mapY)
         {
             Matrix = matrix;
@@ -91,10 +87,29 @@ namespace GnollHackX
             SheetIdx = sheetIdx;
             MapX = mapX;
             MapY = mapY;
+#if !GNH_MAUI
+            EndDarkening = false;
+            IsAutoDraw = false;
+            AutoDrawParameters = new AutoDrawParameterDefinition();
+#endif
         }
         public GHDrawCommand(bool endDarkening)
         {
             EndDarkening = endDarkening;
+
+#if !GNH_MAUI
+            Matrix = new SKMatrix();
+            SourceRect = new SKRect();
+            DestinationRect = new SKRect();
+            SourceBitmap = null;
+            PaintColor = SKColors.Black;
+            PaintColorFilter = null;
+            SheetIdx = 0;
+            MapX = 0;
+            MapY = 0;
+            IsAutoDraw = false;
+            AutoDrawParameters = new AutoDrawParameterDefinition();
+#endif
         }
         public GHDrawCommand(SKMatrix matrix, SKColor paintColor, SKColorFilter paintColorFilter, int mapX, int mapY, AutoDrawParameterDefinition parameters)
         {
@@ -106,6 +121,13 @@ namespace GnollHackX
             PaintColorFilter = paintColorFilter;
             AutoDrawParameters = parameters;
             IsAutoDraw = true;
+
+#if !GNH_MAUI
+            EndDarkening = false;
+            SourceRect = new SKRect();
+            DestinationRect = new SKRect();
+            SourceBitmap = null;
+#endif
         }
     }
 }

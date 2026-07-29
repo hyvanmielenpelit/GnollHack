@@ -588,7 +588,17 @@ namespace GnollHackX.Pages.Game
         public int GridOpacity { get { return Interlocked.CompareExchange(ref _gridOpacity, 0, 0); } set { Interlocked.Exchange(ref _gridOpacity, value); } }
 
         public TTYCursorStyle CursorStyle { get { return (TTYCursorStyle)Interlocked.CompareExchange(ref _cursorStyle, 0, 0); } set { Interlocked.Exchange(ref _cursorStyle, (int)value); } }
-        public GHGraphicsStyle GraphicsStyle { get { return (GHGraphicsStyle)Interlocked.CompareExchange(ref _graphicsStyle, 0, 0); } set { Interlocked.Exchange(ref _graphicsStyle, (int)value); } }
+        public GHGraphicsStyle GraphicsStyle
+        {
+            get { return (GHGraphicsStyle)Interlocked.CompareExchange(ref _graphicsStyle, 0, 0); }
+            set
+            {
+                Interlocked.Exchange(ref _graphicsStyle, (int)value);
+                GHGame game = GHApp.CurrentGHGame;
+                if (game != null)
+                    game.UseAscii = (value == GHGraphicsStyle.ASCII);
+            }
+        }
         public MapRefreshRateStyle MapRefreshRate
         {
             get
@@ -3133,6 +3143,7 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = new GHGame(RunGnollHackFlags.None);
             //CurrentGame = curGame;
             GHApp.CurrentGHGame = curGame;
+            curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
             _gnollHackService.StartGnollHack(curGame);
         }
 
@@ -3141,6 +3152,7 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = new GHGame(RunGnollHackFlags.ForceLastPlayerName);
             //CurrentGame = curGame;
             GHApp.CurrentGHGame = curGame;
+            curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
             _gnollHackService.StartGnollHack(curGame);
         }
 
@@ -3149,6 +3161,7 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = new GHGame(RunGnollHackFlags.PlayingReplay);
             //CurrentGame = curGame;
             GHApp.CurrentGHGame = curGame;
+            curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
             GHApp.PlayReplay(curGame, ReplayFileName);
         }
 
@@ -5444,7 +5457,7 @@ namespace GnollHackX.Pages.Game
 #endif
                 );
 
-                if (currentCell.Symbol != null && currentCell.Symbol != "")
+                if (currentCell.CodePoint != 0)
                 {
                     draw_character = true;
                 }
@@ -5476,7 +5489,7 @@ namespace GnollHackX.Pages.Game
 #endif
                 );
 
-                if (currentCell.Symbol != null && currentCell.Symbol != "")
+                if (currentCell.CodePoint != 0)
                 {
                     draw_character = true;
                 }
@@ -5492,7 +5505,7 @@ namespace GnollHackX.Pages.Game
                 float texttx = tx + width / 2;
                 float textty = ty + height / 2 - textheight / 2 - textPaint.FontMetrics.Ascent - 1f / 96f * height;
                 //canvas.DrawText(currentCell.Symbol, texttx, textty, textPaint);
-                textPaint.DrawTextOnCanvas(canvas, currentCell.Symbol, texttx, textty, SKTextAlign.Center);
+                textPaint.DrawTextOnCanvas(canvas, MapData.CodePointToSymbol(currentCell.CodePoint), texttx, textty, SKTextAlign.Center);
                 //textPaint.TextAlign = SKTextAlign.Left;
             }
 
@@ -8305,9 +8318,16 @@ namespace GnollHackX.Pages.Game
                                     for (int mapy = startY; mapy <= endY; mapy++)
                                     {
                                         ref MapData currentCell = ref _mapData[mapx, mapy];
-                                        if (currentCell.Symbol != null && currentCell.Symbol != "")
+                                        if (currentCell.CodePoint != 0)
                                         {
                                             str = currentCell.Symbol;
+                                            if (str == null)
+                                            {
+                                                str = MapData.CodePointToSymbol(currentCell.CodePoint);
+                                                if (str == null)
+                                                    continue;
+                                                currentCell.Symbol = str;
+                                            }
                                             textPaint.Color = currentCell.Color;
                                             tx = (offsetX + usedOffsetX + width * (float)mapx);
                                             ty = (offsetY + usedOffsetY + height * (float)mapy);
