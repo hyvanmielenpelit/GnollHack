@@ -1189,6 +1189,20 @@ namespace GnollHackX.Pages.Game
                 bmp.Dispose();
             _savedAutoDrawBitmaps.Clear();
             ClearColorFilterCaches();
+            /* Dispose of cached paint instances */
+            _mapPaint.Dispose();
+            _uiPaint.Dispose();
+            _orbPaint.Dispose();
+            _cmdPaint.Dispose();
+            _mapTextPaint.Dispose();
+            _menuTextPaint.Dispose();
+            _textCanvasTextPaint.Dispose();
+            _cmdTextPaint.Dispose();
+            _tipTextPaint.Dispose();
+
+            /* Dispose of cached mask filters */
+            _blur.Dispose();
+            _lookBlur.Dispose();
         }
 
         private void UpdateAbilityButtonVisibility(bool isDesktop)
@@ -4976,8 +4990,8 @@ namespace GnollHackX.Pages.Game
         }
 
 
-        private SKMaskFilter _blur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 3.4f);
-        private SKMaskFilter _lookBlur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 20.0f);
+        private readonly SKMaskFilter _blur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 3.4f);
+        private readonly SKMaskFilter _lookBlur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 20.0f);
 
         public struct layer_draw_order_definition
         {
@@ -6197,6 +6211,32 @@ namespace GnollHackX.Pages.Game
 
         private List<GHDrawCommand> _drawCommandList = new List<GHDrawCommand>();
         private int _lastDrawCommandCount = 0;
+
+        /* Cached SKPaint instances to avoid per-frame heap allocations */
+        private readonly SKPaint _mapPaint = new SKPaint();
+        private readonly SKPaint _uiPaint = new SKPaint();
+        private readonly SKPaint _orbPaint = new SKPaint();
+        private readonly SKPaint _cmdPaint = new SKPaint();
+
+        /* Cached GHSkiaFontPaint instances (each wraps SKPaint + SKFont) */
+        private readonly GHSkiaFontPaint _mapTextPaint = new GHSkiaFontPaint();
+        private readonly GHSkiaFontPaint _menuTextPaint = new GHSkiaFontPaint();
+        private readonly GHSkiaFontPaint _textCanvasTextPaint = new GHSkiaFontPaint();
+        private readonly GHSkiaFontPaint _cmdTextPaint = new GHSkiaFontPaint();
+        private readonly GHSkiaFontPaint _tipTextPaint = new GHSkiaFontPaint();
+
+        private static void ResetPaint(SKPaint paint)
+        {
+            paint.Color = new SKColor(0, 0, 0, 255);
+            paint.Style = SKPaintStyle.Fill;
+            paint.StrokeWidth = 0;
+            paint.IsAntialias = false;
+            paint.BlendMode = SKBlendMode.SrcOver;
+            paint.ColorFilter = null;
+            paint.Shader = null;
+            paint.MaskFilter = null;
+            paint.PathEffect = null;
+        }
 
         public void DrawSplitBitmap(SKCanvas canvas, bool delayedDraw, float destSplitY, SKImage bitmap, SKRect source, SKRect dest, SKPaint paint, int sheetIdx, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering) //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
         {
@@ -7955,8 +7995,9 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
+                GHSkiaFontPaint textPaint = _mapTextPaint;
+                textPaint.Reset();
                 string str = "";
                 SKRect textBounds = new SKRect();
                 SKPathEffect pathEffect = SKPathEffect.CreateDash(_gridIntervals, 0);
@@ -8127,8 +8168,9 @@ namespace GnollHackX.Pages.Game
                             {
                                 if (GHApp.Glyph2Tile != null /* && GHApp._tilesPerRow[0] > 0 */ && GHApp.UsedTileSheets > 0)
                                 {
-                                    using (SKPaint paint = new SKPaint())
                                     {
+                                        SKPaint paint = _mapPaint;
+                                        ResetPaint(paint);
                                         //paint.FilterQuality = SKFilterQuality.None;
 
                                         Array.Clear(_draw_shadow, 0, _draw_shadow.Length);
@@ -9896,8 +9938,9 @@ namespace GnollHackX.Pages.Game
                                     break;
                             }
 
-                            using (SKPaint winPaint = new SKPaint())
                             {
+                                SKPaint winPaint = _uiPaint;
+                                ResetPaint(winPaint);
                                 //winPaint.FilterQuality = SKFilterQuality.None;
 
                                 winPaint.Color = ghWindow.BackgroundColor;
@@ -10241,8 +10284,9 @@ namespace GnollHackX.Pages.Game
                             if (target_scale == 0f)
                                 target_scale = 1f;
 
-                            using (SKPaint highQualityPaint = new SKPaint())
                             {
+                                SKPaint highQualityPaint = _uiPaint;
+                                ResetPaint(highQualityPaint);
 #if !GNH_MAUI
                                 highQualityPaint.FilterQuality = SKFilterQuality.High;
 #endif
@@ -12136,8 +12180,9 @@ namespace GnollHackX.Pages.Game
                             textPaint.Typeface = GHApp.LatoRegular;
                             float btnBaseFontSize = GHConstants.SkillButtonBaseFontSize * skillDest.Width / 50.0f;
                             textPaint.TextSize = btnBaseFontSize;
-                            using(SKPaint btnPaint = new SKPaint())
                             {
+                                SKPaint btnPaint = _uiPaint;
+                                ResetPaint(btnPaint);
                                 if (_localIsPointerHovering && skillDest.Contains(_localPointerHoverLocation))
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
@@ -12172,8 +12217,9 @@ namespace GnollHackX.Pages.Game
                             textPaint.Typeface = GHApp.LatoRegular;
                             float btnBaseFontSize = GHConstants.SkillButtonBaseFontSize * poleDest.Width / 50.0f;
                             textPaint.TextSize = btnBaseFontSize;
-                            using (SKPaint btnPaint = new SKPaint())
                             {
+                                SKPaint btnPaint = _uiPaint;
+                                ResetPaint(btnPaint);
                                 if (_localIsPointerHovering && poleDest.Contains(_localPointerHoverLocation))
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
@@ -12208,8 +12254,9 @@ namespace GnollHackX.Pages.Game
                             textPaint.Typeface = GHApp.LatoRegular;
                             float btnBaseFontSize = GHConstants.SkillButtonBaseFontSize * prevWepDest.Width / 50.0f;
                             textPaint.TextSize = btnBaseFontSize;
-                            using (SKPaint btnPaint = new SKPaint())
                             {
+                                SKPaint btnPaint = _uiPaint;
+                                ResetPaint(btnPaint);
                                 if (_localIsPointerHovering && prevWepDest.Contains(_localPointerHoverLocation))
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
@@ -12269,8 +12316,9 @@ namespace GnollHackX.Pages.Game
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
                             textPaint.TextSize = textSize;
-                            using (SKPaint btnPaint = new SKPaint())
                             {
+                                SKPaint btnPaint = _uiPaint;
+                                ResetPaint(btnPaint);
                                 if (_localIsPointerHovering && usedRect.Contains(_localPointerHoverLocation))
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
@@ -18259,8 +18307,9 @@ namespace GnollHackX.Pages.Game
             }
 #endif
 
-            using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
+                GHSkiaFontPaint textPaint = _menuTextPaint;
+                textPaint.Reset();
                 textPaint.Typeface = GHApp.UnderwoodTypeface;
                 textPaint.TextSize = GHConstants.MenuDefaultRowHeight * scale * customScale;
                 float picturewidth = 64.0f * textPaint.FontSpacing / 48.0f;
@@ -21462,8 +21511,9 @@ namespace GnollHackX.Pages.Game
                     return;
             }
 
-            using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
+                GHSkiaFontPaint textPaint = _textCanvasTextPaint;
+                textPaint.Reset();
                 if (TextCanvas.GHWindow != null && TextCanvas.GHWindow.Ascension)
                 {
                     long counter;
@@ -22017,8 +22067,9 @@ namespace GnollHackX.Pages.Game
                 buttonRows++;
             int buttonColumns = useSingleCommandPage ? Math.Max(GHConstants.MoreButtonsPerRow, (buttonNumber - 1) / buttonRows + 1) : GHConstants.MoreButtonsPerRow;
 
-            using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
+                GHSkiaFontPaint textPaint = _cmdTextPaint;
+                textPaint.Reset();
                 float cmdOffsetX = useSingleCommandPage ? 0 : MoreCmdOffsetX;
                 int curpage = useSingleCommandPage ? 0 : MoreCmdPage;
                 int pagemin = useSingleCommandPage ? 0 : cmdOffsetX > 0 ? Math.Max(EnableWizardMode ? 0 : 1, curpage - 1) : curpage;
@@ -22092,8 +22143,9 @@ namespace GnollHackX.Pages.Game
                         float btnImgWidth = Math.Min(btnImgRawWidth, btnImgRawHeight);
                         float btnImgHeight = btnImgWidth;
 
-                        using (SKPaint paint = new SKPaint())
                         {
+                            SKPaint paint = _cmdPaint;
+                            ResetPaint(paint);
                             int listIdx = -1;
                             for (int i = 0; i < buttonColumns; i++)
                             {
@@ -22673,8 +22725,9 @@ namespace GnollHackX.Pages.Game
 
             canvas.Clear(SKColors.Transparent);
 
-            using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
+                GHSkiaFontPaint textPaint = _tipTextPaint;
+                textPaint.Reset();
                 float canvaswidth = e.Info.Width; // MainCanvasView.CanvasSize.Width;
                 float canvasheight = e.Info.Height; // MainCanvasView.CanvasSize.Height;
                 bool landscape = (canvaswidth > canvasheight);
@@ -23152,8 +23205,9 @@ namespace GnollHackX.Pages.Game
             textPaint.Color = SKColors.White;
             //textPaint.TextAlign = SKTextAlign.Center;
             StartProfiling(GHProfilingStyle.Bitmap);
-            using(SKPaint paint = new SKPaint())
             {
+                SKPaint paint = _orbPaint;
+                ResetPaint(paint);
 #if !GNH_MAUI
                 paint.FilterQuality = SKFilterQuality.High;
 #endif
