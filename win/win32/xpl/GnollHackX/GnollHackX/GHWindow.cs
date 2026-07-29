@@ -1,4 +1,4 @@
-﻿#if GNH_MAUI
+#if GNH_MAUI
 using GnollHackM;
 using GnollHackX;
 #else
@@ -78,6 +78,17 @@ namespace GnollHackX
         public bool Ascension { get { return _ascension; } }
         //public GamePage ActiveGamePage { get { return _gamePage; } }
         public bool AutoPlacement { get; set; }
+        private bool ShouldPublishClone
+        {
+            get
+            {
+                if (_winType == GHWinType.Status)
+                {
+                    return _currentGame.ActiveGamePage?.ClassicStatusBar ?? true;
+                }
+                return true;
+            }
+        }
         public bool AutoCarriageReturn
         {
             get
@@ -502,7 +513,7 @@ namespace GnollHackX
                     _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
                 }
             }
-            if(append == 0)
+            if(append == 0 && ShouldPublishClone)
             {
                 _currentGame.RequestQueue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
             }
@@ -622,7 +633,7 @@ namespace GnollHackX
                     }
                 }
             }
-            if (append == 0)
+            if (append == 0 && ShouldPublishClone)
             {
                 _currentGame.RequestQueue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
             }

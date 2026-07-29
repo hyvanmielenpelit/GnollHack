@@ -128,7 +128,10 @@ namespace GnollHackX
             for (int winHandle = 0; winHandle <= _lastWindowHandle && winHandle < GHConstants.MaxGHWindows; winHandle++)
             {
                 if(_ghWindows[winHandle] != null)
-                    gamePage.UpdateGHWindow(winHandle, _ghWindows[winHandle].Clone());
+                {
+                    if (_ghWindows[winHandle].WindowType != GHWinType.Status || gamePage.ClassicStatusBar)
+                        gamePage.UpdateGHWindow(winHandle, _ghWindows[winHandle].Clone());
+                }
             }
         }
 
@@ -627,7 +630,22 @@ namespace GnollHackX
             win.CursX = 0;
             win.CursY = 0;
 
-            RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Clone()));
+            if (win.WindowType != GHWinType.Status || (ActiveGamePage?.ClassicStatusBar ?? true))
+            {
+                RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Clone()));
+            }
+        }
+
+        public void SyncStatusWindow()
+        {
+            GamePage gamePage = ActiveGamePage;
+            if (gamePage == null)
+                return;
+
+            if (_statusWindowId > 0 && _statusWindowId < GHConstants.MaxGHWindows && _ghWindows[_statusWindowId] != null)
+            {
+                gamePage.UpdateGHWindow(_statusWindowId, _ghWindows[_statusWindowId].Clone());
+            }
         }
 
         public void ClearMap()
