@@ -82,11 +82,16 @@ namespace GnollHackX
         {
             get
             {
-                if (_winType == GHWinType.Status)
+                switch (_winType)
                 {
+                case GHWinType.Status:
                     return _currentGame.ActiveGamePage?.ClassicStatusBar ?? true;
+                case GHWinType.Text:
+                case GHWinType.Menu:
+                    return false;
+                default:
+                    return true;
                 }
-                return true;
             }
         }
         public bool AutoCarriageReturn
