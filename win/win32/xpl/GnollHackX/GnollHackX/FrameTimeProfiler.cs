@@ -49,26 +49,57 @@ namespace GnollHackX
 
         /* Forced GC frame statistics (excluded from base stats) */
         public int GcFrameCount;
+        public float GcAvgMs;
+        public float GcStdDevMs;
+        public float GcP95Ms;
+        public float GcP99Ms;
         public float GcWorstMs;
 
         /* Runtime (non-forced) GC frame statistics (excluded from base stats) */
         public int RuntimeGcFrameCount;
+        public float RuntimeGcAvgMs;
+        public float RuntimeGcStdDevMs;
+        public float RuntimeGcP95Ms;
+        public float RuntimeGcP99Ms;
         public float RuntimeGcWorstMs;
 
         /* Pause-affected frame statistics (menu/text/command canvas transitions) */
         public int PauseFrameCount;
+
+        /* GC generation breakdown: how many inter-frame gaps triggered each gen */
+        public int GcGen0Count;
+        public int GcGen1Count;
+        public int GcGen2Count;
     }
 
     public static class FrameTimeProfiler
     {
+        private static int _isEnabled = 0;
+        public static bool IsEnabled
+        {
+            get { return Interlocked.CompareExchange(ref _isEnabled, 0, 0) != 0; }
+            set
+            {
+                Interlocked.Exchange(ref _isEnabled, value ? 1 : 0);
+                if (!value)
+                {
+                    /* Reset buffer so stale data is not reported when re-enabled */
+                    Interlocked.Exchange(ref _writeIndex, -1);
+                    Interlocked.Exchange(ref _lastRenderIndex, -1);
+                }
+            }
+        }
+
         private const int BufferSize = 1800;
         private const int MaxExclusionEvents = 64;
         private static readonly FrameTimeSample[] _buffer = new FrameTimeSample[BufferSize];
         private static long _writeIndex = -1;
         private static readonly double _msPerTick = 1000.0 / Stopwatch.Frequency;
 
-        /* Pre-allocated sort buffer to avoid GC pressure on mobile */
+        /* Pre-allocated sort buffers to avoid GC pressure on mobile */
         private static readonly float[] _sortBuffer = new float[BufferSize];
+        private static readonly float[] _gcSortBuffer = new float[BufferSize];
+        private static readonly float[] _runtimeGcSortBuffer = new float[BufferSize];
 
         /*
          * Monotonic counter incremented by MarkGcEvent() each time a
@@ -152,6 +183,7 @@ namespace GnollHackX
 
         public static void BeginFrame(long frameNumber)
         {
+            if (!IsEnabled) return;
             long idx = Interlocked.Increment(ref _writeIndex);
             int index = SafeIndex(idx, BufferSize);
             _buffer[index] = new FrameTimeSample
@@ -183,6 +215,7 @@ namespace GnollHackX
 
         public static void StampUpdate()
         {
+            if (!IsEnabled) return;
             long idx = Interlocked.Read(ref _writeIndex);
             if (idx < 0) return;
             Interlocked.Exchange(ref _lastRenderIndex, idx);
@@ -191,6 +224,7 @@ namespace GnollHackX
 
         public static void StampLockAttempt()
         {
+            if (!IsEnabled) return;
             long idx = Interlocked.Read(ref _lastRenderIndex);
             if (idx < 0) return;
             _buffer[SafeIndex(idx, BufferSize)].TicksLockAttempt = Stopwatch.GetTimestamp();
@@ -198,6 +232,7 @@ namespace GnollHackX
 
         public static void StampLockResult(bool acquired)
         {
+            if (!IsEnabled) return;
             long idx = Interlocked.Read(ref _lastRenderIndex);
             if (idx < 0) return;
             int index = SafeIndex(idx, BufferSize);
@@ -207,6 +242,7 @@ namespace GnollHackX
 
         public static void StampPaintStart()
         {
+            if (!IsEnabled) return;
             long idx = Interlocked.Read(ref _lastRenderIndex);
             if (idx < 0) return;
             _buffer[SafeIndex(idx, BufferSize)].TicksPaintStart = Stopwatch.GetTimestamp();
@@ -214,6 +250,7 @@ namespace GnollHackX
 
         public static void StampPaintEnd()
         {
+            if (!IsEnabled) return;
             long idx = Interlocked.Read(ref _lastRenderIndex);
             if (idx < 0) return;
             _buffer[SafeIndex(idx, BufferSize)].TicksPaintEnd = Stopwatch.GetTimestamp();
@@ -221,6 +258,7 @@ namespace GnollHackX
 
         public static void EndFrame()
         {
+            if (!IsEnabled) return;
             long idx = Interlocked.Read(ref _writeIndex);
             if (idx < 0) return;
             _buffer[SafeIndex(idx, BufferSize)].TicksFrameEnd = Stopwatch.GetTimestamp();
@@ -301,14 +339,15 @@ namespace GnollHackX
 
             /* Forced GC frame tracking */
             int gcFrameCount = 0;
-            float gcWorstMs = 0;
 
             /* Runtime (non-forced) GC frame tracking */
             int runtimeGcFrameCount = 0;
-            float runtimeGcWorstMs = 0;
 
             /* Pause-affected frame tracking */
             int pauseFrameCount = 0;
+
+            /* GC generation breakdown */
+            int gcGen0Count = 0, gcGen1Count = 0, gcGen2Count = 0;
 
             float targetFrameTimeMs = 1000f / 60f; /* Approx 16.67ms */
             float droppedThresholdMs = targetFrameTimeMs * 1.5f;
@@ -338,16 +377,22 @@ namespace GnollHackX
                     if (forcedGcHit)
                     {
                         /* Forced GC happened during this gap — track separately */
+                        _gcSortBuffer[gcFrameCount] = interFrameMs;
                         gcFrameCount++;
-                        if (interFrameMs > gcWorstMs)
-                            gcWorstMs = interFrameMs;
+                        int gen = MaxGcGen(prevRenderedSample, curr);
+                        if (gen == 0) gcGen0Count++;
+                        else if (gen == 1) gcGen1Count++;
+                        else if (gen == 2) gcGen2Count++;
                     }
                     else if (runtimeGcHit)
                     {
                         /* Runtime GC happened during this gap — track separately */
+                        _runtimeGcSortBuffer[runtimeGcFrameCount] = interFrameMs;
                         runtimeGcFrameCount++;
-                        if (interFrameMs > runtimeGcWorstMs)
-                            runtimeGcWorstMs = interFrameMs;
+                        int gen = MaxGcGen(prevRenderedSample, curr);
+                        if (gen == 0) gcGen0Count++;
+                        else if (gen == 1) gcGen1Count++;
+                        else if (gen == 2) gcGen2Count++;
                     }
                     else if (pauseHit)
                     {
@@ -403,6 +448,46 @@ namespace GnollHackX
             int p95Idx = (int)(interFrameCount * 0.95);
             int p99Idx = (int)(interFrameCount * 0.99);
 
+            /* Compute forced GC percentiles */
+            float gcAvg = 0, gcSd = 0, gcP95 = 0, gcP99 = 0, gcMax = 0;
+            if (gcFrameCount > 0)
+            {
+                Array.Sort(_gcSortBuffer, 0, gcFrameCount);
+                double gcTotal = 0;
+                for (int i = 0; i < gcFrameCount; i++) gcTotal += _gcSortBuffer[i];
+                gcAvg = (float)(gcTotal / gcFrameCount);
+                double gcSumSqDiff = 0;
+                for (int i = 0; i < gcFrameCount; i++)
+                {
+                    double d = _gcSortBuffer[i] - gcAvg;
+                    gcSumSqDiff += d * d;
+                }
+                gcSd = (float)Math.Sqrt(gcSumSqDiff / gcFrameCount);
+                gcP95 = _gcSortBuffer[Math.Min((int)(gcFrameCount * 0.95), gcFrameCount - 1)];
+                gcP99 = _gcSortBuffer[Math.Min((int)(gcFrameCount * 0.99), gcFrameCount - 1)];
+                gcMax = _gcSortBuffer[gcFrameCount - 1];
+            }
+
+            /* Compute runtime GC percentiles */
+            float rtGcAvg = 0, rtGcSd = 0, rtGcP95 = 0, rtGcP99 = 0, rtGcMax = 0;
+            if (runtimeGcFrameCount > 0)
+            {
+                Array.Sort(_runtimeGcSortBuffer, 0, runtimeGcFrameCount);
+                double rtTotal = 0;
+                for (int i = 0; i < runtimeGcFrameCount; i++) rtTotal += _runtimeGcSortBuffer[i];
+                rtGcAvg = (float)(rtTotal / runtimeGcFrameCount);
+                double rtSumSqDiff = 0;
+                for (int i = 0; i < runtimeGcFrameCount; i++)
+                {
+                    double d = _runtimeGcSortBuffer[i] - rtGcAvg;
+                    rtSumSqDiff += d * d;
+                }
+                rtGcSd = (float)Math.Sqrt(rtSumSqDiff / runtimeGcFrameCount);
+                rtGcP95 = _runtimeGcSortBuffer[Math.Min((int)(runtimeGcFrameCount * 0.95), runtimeGcFrameCount - 1)];
+                rtGcP99 = _runtimeGcSortBuffer[Math.Min((int)(runtimeGcFrameCount * 0.99), runtimeGcFrameCount - 1)];
+                rtGcMax = _runtimeGcSortBuffer[runtimeGcFrameCount - 1];
+            }
+
             return new FrameTimeStatistics
             {
                 InterFrameAvgMs = avgInterFrame,
@@ -420,31 +505,75 @@ namespace GnollHackX
                 FPS = avgInterFrame > 0 ? 1000f / avgInterFrame : 0,
                 SampleCount = interFrameCount,
                 GcFrameCount = gcFrameCount,
-                GcWorstMs = gcWorstMs,
+                GcAvgMs = gcAvg,
+                GcStdDevMs = gcSd,
+                GcP95Ms = gcP95,
+                GcP99Ms = gcP99,
+                GcWorstMs = gcMax,
                 RuntimeGcFrameCount = runtimeGcFrameCount,
-                RuntimeGcWorstMs = runtimeGcWorstMs,
-                PauseFrameCount = pauseFrameCount
+                RuntimeGcAvgMs = rtGcAvg,
+                RuntimeGcStdDevMs = rtGcSd,
+                RuntimeGcP95Ms = rtGcP95,
+                RuntimeGcP99Ms = rtGcP99,
+                RuntimeGcWorstMs = rtGcMax,
+                PauseFrameCount = pauseFrameCount,
+                GcGen0Count = gcGen0Count,
+                GcGen1Count = gcGen1Count,
+                GcGen2Count = gcGen2Count
             };
         }
 
+        private static FrameTimeStatistics _lastStats;
+
         public static string GetScreenLogSummary()
         {
-            var stats = GetStatistics();
-            if (stats.SampleCount == 0) return "FT: No data";
+            _lastStats = GetStatistics();
+            if (_lastStats.SampleCount == 0) return "FT: No data";
 
-            string gcInfo = stats.GcFrameCount > 0
-                ? $" GC:{stats.GcFrameCount}x{stats.GcWorstMs:0.0}"
+            return FormattableString.Invariant($"FT: {_lastStats.FPS:0}fps Avg:{_lastStats.InterFrameAvgMs:0.0} ({_lastStats.InterFrameStdDevMs:0.0}) P95:{_lastStats.InterFrameP95Ms:0.0} P99:{_lastStats.InterFrameP99Ms:0.0} Max:{_lastStats.InterFrameMaxMs:0.0} Drop:{_lastStats.DroppedFramePct:0.0}% Lock:{_lastStats.LockFailPct:0.0}%");
+        }
+
+        /// <summary>
+        /// Returns the forced-GC summary line, or null if no forced GC occurred.
+        /// Must be called after GetScreenLogSummary() which populates _lastStats.
+        /// </summary>
+        public static string GetScreenLogForcedGcSummary()
+        {
+            var s = _lastStats;
+            if (s.GcFrameCount == 0 && s.PauseFrameCount == 0)
+                return null;
+
+            string forced = s.GcFrameCount > 0
+                ? FormattableString.Invariant($" {s.GcFrameCount}x Avg:{s.GcAvgMs:0.0} ({s.GcStdDevMs:0.0}) P95:{s.GcP95Ms:0.0} P99:{s.GcP99Ms:0.0} Max:{s.GcWorstMs:0.0}")
                 : "";
 
-            string runtimeGcInfo = stats.RuntimeGcFrameCount > 0
-                ? $" RtGC:{stats.RuntimeGcFrameCount}x{stats.RuntimeGcWorstMs:0.0}"
+            string pause = s.PauseFrameCount > 0
+                ? FormattableString.Invariant($" Pause:{s.PauseFrameCount}")
                 : "";
 
-            string pauseInfo = stats.PauseFrameCount > 0
-                ? $" Pse:{stats.PauseFrameCount}"
+            return $"FoGC:{forced}{pause}";
+        }
+
+        /// <summary>
+        /// Returns the runtime-GC summary line, or null if no runtime GC occurred.
+        /// Must be called after GetScreenLogSummary() which populates _lastStats.
+        /// </summary>
+        public static string GetScreenLogRuntimeGcSummary()
+        {
+            var s = _lastStats;
+            if (s.RuntimeGcFrameCount == 0
+                && s.GcGen0Count == 0 && s.GcGen1Count == 0 && s.GcGen2Count == 0)
+                return null;
+
+            string runtime = s.RuntimeGcFrameCount > 0
+                ? FormattableString.Invariant($" {s.RuntimeGcFrameCount}x Avg:{s.RuntimeGcAvgMs:0.0} ({s.RuntimeGcStdDevMs:0.0}) P95:{s.RuntimeGcP95Ms:0.0} P99:{s.RuntimeGcP99Ms:0.0} Max:{s.RuntimeGcWorstMs:0.0}")
                 : "";
 
-            return FormattableString.Invariant($"FT: {stats.FPS:0}fps Avg:{stats.InterFrameAvgMs:0.0} SD:{stats.InterFrameStdDevMs:0.0} P95:{stats.InterFrameP95Ms:0.0} P99:{stats.InterFrameP99Ms:0.0} Max:{stats.InterFrameMaxMs:0.0} Drop:{stats.DroppedFramePct:0.0}% Lock:{stats.LockFailPct:0.0}%{gcInfo}{runtimeGcInfo}{pauseInfo}");
+            string gen = (s.GcGen0Count > 0 || s.GcGen1Count > 0 || s.GcGen2Count > 0)
+                ? FormattableString.Invariant($" Gen:{s.GcGen0Count}/{s.GcGen1Count}/{s.GcGen2Count}")
+                : "";
+
+            return $"RtGC:{runtime}{gen}";
         }
 
         public static void DumpToCsv(string path)

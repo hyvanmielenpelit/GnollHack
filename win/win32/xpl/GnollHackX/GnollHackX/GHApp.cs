@@ -130,6 +130,7 @@ namespace GnollHackX
             DebugLogMessages = DeveloperMode && Preferences.Get("DebugLogMessages", GHConstants.DefaultLogMessages);
             LowLevelLogging = DeveloperMode && Preferences.Get("LowLevelLogging", false);
             ScreenLogging = DeveloperMode && Preferences.Get("ScreenLogging", false);
+            FrameTimeProfiler.IsEnabled = DeveloperMode && Preferences.Get("FrameTimeProfiler", false);
             DebugPostChannel = DeveloperMode && Preferences.Get("DebugPostChannel", GHConstants.DefaultDebugPostChannel);
             TournamentMode = Preferences.Get("TournamentMode", false);
             FullVersionMode = true; // Preferences.Get("FullVersion", true);

@@ -1856,6 +1856,12 @@ namespace GnollHackX.Pages.Game
                     if (GHApp.IsDebugScreenLoggingOn)
                     {
                         GHApp.MaybeWriteScreenLog(FrameTimeProfiler.GetScreenLogSummary());
+                        string rtGc = FrameTimeProfiler.GetScreenLogRuntimeGcSummary();
+                        if (rtGc != null)
+                            GHApp.MaybeWriteScreenLog(rtGc);
+                        string foGc = FrameTimeProfiler.GetScreenLogForcedGcSummary();
+                        if (foGc != null)
+                            GHApp.MaybeWriteScreenLog(foGc);
                     }
                 }
 
