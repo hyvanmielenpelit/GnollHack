@@ -13,6 +13,30 @@ GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, 
 - **Cross-Platform XAML**: Use `OnPlatform` in XAML to handle differences between iOS/Android/Windows.
 - **XAML WidthRequest / HeightRequest Quirk**: If a GnollHackX XAML file has exactly two spaces between `WidthRequest` or `HeightRequest` and `=` (e.g., `WidthRequest  =` or `HeightRequest  =`), the `makedefsdroid` build process automatically converts them into `MaximumWidthRequest` and `MaximumHeightRequest` respectively for GnollHackM. You MUST preserve these exact extra spaces if you are modifying or copying these blocks to retain this functionality.
 
+## XAML Pipeline: GnollHackX → makedefsdroid → GnollHackM
+
+> **⚠️ CRITICAL**: XAML files in `GnollHackM/` are **auto-generated** — do NOT edit them directly.
+
+The **source of truth** for all XAML files is in the legacy Xamarin project at `win/win32/xpl/GnollHackX/GnollHackX/`. A build tool called `makedefsdroid` transforms these into MAUI-compatible XAML and copies them to `GnollHackM/`. This means:
+
+1. **Always edit XAML in `GnollHackX/GnollHackX/`** (e.g., `Pages/MainScreen/SettingsPage.xaml`)
+2. **Code-behind (`.xaml.cs`) files** are shared via `<Compile Include>` file-linking and can be edited directly — they are the same physical file for both projects
+3. **After adding/removing `x:Name` elements in XAML**, the GnollHackX solution must be built to regenerate the MAUI XAML and its code-behind `.g.cs` files for GnollHackM
+4. **Until regeneration happens**, GnollHackM builds will fail with `CS0103: The name 'ElementName' does not exist in the current context` for any newly added `x:Name` references
+
+### What to do after modifying XAML
+
+Ask the user to build the GnollHackX solution before attempting a GnollHackM build:
+
+> "I've modified the XAML in GnollHackX. Could you please build the GnollHackX solution so that `makedefsdroid` regenerates the MAUI XAML for GnollHackM?"
+
+### What makedefsdroid converts
+
+- Xamarin.Forms namespaces → .NET MAUI namespaces
+- `WidthRequest  =` (two spaces) → `MaximumWidthRequest=`
+- `HeightRequest  =` (two spaces) → `MaximumHeightRequest=`
+- Other Xamarin-to-MAUI compatibility transforms
+
 ## Project Structure
 - **`GnollHackM`**: The MAUI application project (Entry point).
 - **`GnollHackX`**: Shared code project containing Views, Pages, and Services.

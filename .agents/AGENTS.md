@@ -81,3 +81,4 @@ AI Agents MUST override their default modern C habits and adhere strictly to the
 - **Do NOT modify `nhdat` directly**: It is a packaged archive rebuilt by `dlb`
 - **The `binary/` directory** is NOT the build output directory; build output goes to `bin/$(Configuration)/$(Platform)/`
 - **Preserve existing comments and documentation** in all files unless explicitly asked to change them
+- **XAML Source of Truth**: All XAML files in `GnollHackM/` are **auto-generated** from `GnollHackX/GnollHackX/` by the `makedefsdroid` build step. **Always edit XAML in the GnollHackX source**, never directly in GnollHackM. After modifying any XAML file, ask the user to build the GnollHackX solution so `makedefsdroid` regenerates the GnollHackM XAML and the code-behind `.g.cs` files. The GnollHackM build will fail to find `x:Name` references from new XAML elements until this regeneration happens.
