@@ -531,8 +531,6 @@ namespace GnollHackX
                             curclrs[i] = color;
                     }
 
-                    PutStrs[CursY].ConvertListFromArrays();
-
                     if (AutoCarriageReturn && append == 0)
                     {
                         CursY++;
@@ -648,8 +646,6 @@ namespace GnollHackX
                             else if (i < curattrs.Count)
                                 curclrs[i] = color;
                         }
-
-                        PutStrs[CursY].ConvertListFromArrays();
 
                         if (AutoCarriageReturn && append == 0)
                         {
