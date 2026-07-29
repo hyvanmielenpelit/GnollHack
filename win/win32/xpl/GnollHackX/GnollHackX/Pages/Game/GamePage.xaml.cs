@@ -7349,6 +7349,10 @@ namespace GnollHackX.Pages.Game
         private readonly GHAnimationTimerList _localAnimationTimers = new GHAnimationTimerList();
         private readonly ObjectDataItem[] _localWeaponStyleObjDataItem = new ObjectDataItem[3];
         private readonly GHStatusField[] _localStatusFields = new GHStatusField[(int)NhStatusFields.MAXBLSTATS];
+        private readonly SKTextBlob[] _localStatusFieldBlobs = new SKTextBlob[(int)NhStatusFields.MAXBLSTATS];
+        private readonly string[] _localStatusFieldBlobTexts = new string[(int)NhStatusFields.MAXBLSTATS];
+        private readonly float[] _localStatusFieldBlobTextSizes = new float[(int)NhStatusFields.MAXBLSTATS];
+        private readonly float[] _localStatusFieldBlobWidths = new float[(int)NhStatusFields.MAXBLSTATS];
         private int _local_ux = 0;
         private int _local_uy = 0;
         private ulong _local_u_condition_bits = 0;
@@ -10432,13 +10436,15 @@ namespace GnollHackX.Pages.Game
 #endif
                                     );
                                     StopProfiling(GHProfilingStyle.Bitmap);
-                                    textPaint.MeasureText(diftext, ref bounds);
                                     //textPaint.TextAlign = SKTextAlign.Center;
                                     textPaint.Color = SKColors.Black;
                                     textPaint.TextSize = diffontsize;
+                                    float difWidth;
+                                    SKTextBlob difBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_MODE, diftext, textPaint, out difWidth);
+                                    textPaint.MeasureText(diftext, ref bounds);
                                     StartProfiling(GHProfilingStyle.Text);
                                     //canvas.DrawText(diftext, curx + target_width / 2, cury + (rowheight - (textPaint.FontSpacing)) / 2 - textPaint.FontMetrics.Ascent, textPaint);
-                                    textPaint.DrawTextOnCanvas(canvas, diftext, curx + target_width / 2, cury + (rowheight - (textPaint.FontSpacing)) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
+                                    textPaint.DrawTextOnCanvas(canvas, difBlob, curx + target_width / 2 - difWidth / 2, cury + (rowheight - (textPaint.FontSpacing)) / 2 - textPaint.FontMetrics.Ascent);
                                     StopProfiling(GHProfilingStyle.Text);
                                     curx += target_width;
                                     curx += stdspacing;
@@ -10480,10 +10486,11 @@ namespace GnollHackX.Pages.Game
                                             );
                                             curx += target_width;
                                             curx += innerspacing;
-                                            float print_width = textPaint.MeasureText(valtext);
+                                            float print_width;
+                                            SKTextBlob valBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_STR + i, valtext, textPaint, out print_width);
                                             SKColor oldColor = textPaint.Color;
                                             textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, false, false);
-                                            textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                            textPaint.DrawTextOnCanvas(canvas, valBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                             textPaint.Color = oldColor;
                                             curx += print_width + stdspacing;
                                         }
@@ -10512,8 +10519,9 @@ namespace GnollHackX.Pages.Game
                                         {
                                             curx += innerspacing;
                                             GHSubstring print_text = new GHSubstring(valtext, 0, 3);
-                                            float print_width = textPaint.MeasureText(print_text.Value);
-                                            textPaint.DrawTextOnCanvas(canvas, print_text.Value, curx, cury - textPaint.FontMetrics.Ascent);
+                                            float print_width;
+                                            SKTextBlob alignBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_ALIGN, print_text.Value, textPaint, out print_width);
+                                            textPaint.DrawTextOnCanvas(canvas, alignBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                             curx += print_width;
                                         }
 
@@ -10544,10 +10552,11 @@ namespace GnollHackX.Pages.Game
                                     StopProfiling(GHProfilingStyle.Bitmap);
                                     curx += target_width;
                                     curx += innerspacing;
-                                    float print_width = textPaint.MeasureText(valtext);
+                                    float print_width;
+                                    SKTextBlob valBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_XP, valtext, textPaint, out print_width);
                                     StartProfiling(GHProfilingStyle.Text);
                                     //canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                    textPaint.DrawTextOnCanvas(canvas, valBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                     StopProfiling(GHProfilingStyle.Text);
                                     curx += print_width + stdspacing;
                                 }
@@ -10571,10 +10580,11 @@ namespace GnollHackX.Pages.Game
                                     StopProfiling(GHProfilingStyle.Bitmap);
                                     curx += target_width;
                                     curx += innerspacing;
-                                    float print_width = textPaint.MeasureText(valtext);
+                                    float print_width;
+                                    SKTextBlob valBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_HD, valtext, textPaint, out print_width);
                                     StartProfiling(GHProfilingStyle.Text);
                                     //canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                    textPaint.DrawTextOnCanvas(canvas, valBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                     StopProfiling(GHProfilingStyle.Text);
                                     curx += print_width + stdspacing;
                                 }
@@ -10599,9 +10609,11 @@ namespace GnollHackX.Pages.Game
                                     //textPaint.TextAlign = SKTextAlign.Center;
                                     textPaint.Color = SKColors.Black;
                                     textPaint.TextSize = shieldfontsize;
+                                    float acWidth;
+                                    SKTextBlob acBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_AC, valtext, textPaint, out acWidth);
                                     StartProfiling(GHProfilingStyle.Text);
                                     //canvas.DrawText(valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
-                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
+                                    textPaint.DrawTextOnCanvas(canvas, acBlob, curx + target_width / 2 - acWidth / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent);
                                     StopProfiling(GHProfilingStyle.Text);
                                     curx += target_width;
                                     curx += stdspacing;
@@ -10635,9 +10647,11 @@ namespace GnollHackX.Pages.Game
                                     //textPaint.TextAlign = SKTextAlign.Center;
                                     textPaint.Color = SKColors.Black;
                                     textPaint.TextSize = shieldfontsize;
+                                    float mcWidth;
+                                    SKTextBlob mcBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_MC_LVL, valtext, textPaint, out mcWidth);
                                     StartProfiling(GHProfilingStyle.Text);
                                     //canvas.DrawText(valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
-                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
+                                    textPaint.DrawTextOnCanvas(canvas, mcBlob, curx + target_width / 2 - mcWidth / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent);
                                     StopProfiling(GHProfilingStyle.Text);
                                     curx += target_width;
                                     curx += innerspacing;
@@ -10645,9 +10659,10 @@ namespace GnollHackX.Pages.Game
                                     textPaint.Color = SKColors.White;
                                     textPaint.TextSize = basefontsize;
                                     string printtext = valtext2 + "%";
-                                    float print_width = textPaint.MeasureText(printtext);
+                                    float print_width;
+                                    SKTextBlob pctBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_MC_PCT, printtext, textPaint, out print_width);
                                     //canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                    textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                    textPaint.DrawTextOnCanvas(canvas, pctBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                     curx += print_width + stdspacing;
                                 }
 
@@ -10670,9 +10685,10 @@ namespace GnollHackX.Pages.Game
                                     StopProfiling(GHProfilingStyle.Bitmap);
                                     curx += target_width;
                                     curx += innerspacing;
-                                    float print_width = textPaint.MeasureText(valtext);
+                                    float print_width;
+                                    SKTextBlob valBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_MOVE, valtext, textPaint, out print_width);
                                     //canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                    textPaint.DrawTextOnCanvas(canvas, valBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                     curx += print_width + stdspacing;
                                 }
 
@@ -11136,7 +11152,8 @@ namespace GnollHackX.Pages.Game
                                 {
                                     target_width = target_scale * GHApp._statusTurnsBitmap.Width;
                                     target_height = target_scale * GHApp._statusTurnsBitmap.Height;
-                                    float print_width = textPaint.MeasureText(valtext);
+                                    float print_width;
+                                    SKTextBlob valBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_TIME, valtext, textPaint, out print_width);
                                     float newcurx = canvaswidth - hmargin - print_width - innerspacing - target_width;
                                     if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
                                     {
@@ -11154,7 +11171,7 @@ namespace GnollHackX.Pages.Game
                                         curx += target_width;
                                         curx += innerspacing;
                                         StartProfiling(GHProfilingStyle.Text);
-                                        textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                        textPaint.DrawTextOnCanvas(canvas, valBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                         StopProfiling(GHProfilingStyle.Text);
                                         curx += print_width;
                                     }
@@ -11175,7 +11192,8 @@ namespace GnollHackX.Pages.Game
                                         GHSubstring printtext = valtext.Length > 11 && valtext[0] == '\\' ? new GHSubstring(valtext, 11) : new GHSubstring(valtext);
                                         target_width = target_scale * GHApp._statusGoldBitmap.Width;
                                         target_height = target_scale * GHApp._statusGoldBitmap.Height;
-                                        float print_width = textPaint.MeasureText(printtext.Value);
+                                        float print_width;
+                                        SKTextBlob goldBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_GOLD, printtext.Value, textPaint, out print_width);
                                         float newcurx = turnsleft - (turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
                                         if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
                                         {
@@ -11190,7 +11208,7 @@ namespace GnollHackX.Pages.Game
                                             );
                                             curx += target_width;
                                             curx += innerspacing;
-                                            textPaint.DrawTextOnCanvas(canvas, printtext.Value, curx, cury - textPaint.FontMetrics.Ascent);
+                                            textPaint.DrawTextOnCanvas(canvas, goldBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                             curx += print_width;
                                         }
                                     }
@@ -11209,7 +11227,8 @@ namespace GnollHackX.Pages.Game
                                         {
                                             target_width = target_scale * GHApp._statusScoreBitmap.Width;
                                             target_height = target_scale * GHApp._statusScoreBitmap.Height;
-                                            float print_width = textPaint.MeasureText(valtext);
+                                            float print_width;
+                                            SKTextBlob valBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_SCORE, valtext, textPaint, out print_width);
                                             float newcurx = goldleft - (goldprinted || turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
                                             if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
                                             {
@@ -11224,7 +11243,7 @@ namespace GnollHackX.Pages.Game
                                                 );
                                                 curx += target_width;
                                                 curx += innerspacing;
-                                                textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                                textPaint.DrawTextOnCanvas(canvas, valBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                                 curx += print_width;
                                             }
                                         }
@@ -11241,7 +11260,8 @@ namespace GnollHackX.Pages.Game
                                         {
                                             target_width = target_scale * GHApp._statusXPPointsBitmap.Width;
                                             target_height = target_scale * GHApp._statusXPPointsBitmap.Height;
-                                            float print_width = textPaint.MeasureText(valtext);
+                                            float print_width;
+                                            SKTextBlob valBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_EXP, valtext, textPaint, out print_width);
                                             float newcurx = scoreleft - (goldprinted || turnsprinted || scoreprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
                                             if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
                                             {
@@ -11254,7 +11274,7 @@ namespace GnollHackX.Pages.Game
                                                     highQualityPaint);
                                                 curx += target_width;
                                                 curx += innerspacing;
-                                                textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                                textPaint.DrawTextOnCanvas(canvas, valBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                                 curx += print_width;
                                             }
                                         }
@@ -11275,10 +11295,11 @@ namespace GnollHackX.Pages.Game
                                 valtext = valtext.Trim();
                                 if (valtext != "")
                                 {
+                                    float textprint_length;
+                                    SKTextBlob titleBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_TITLE, valtext, textPaint, out textprint_length);
                                     StartProfiling(GHProfilingStyle.Text);
-                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                    textPaint.DrawTextOnCanvas(canvas, titleBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                     StopProfiling(GHProfilingStyle.Text);
-                                    float textprint_length = textPaint.MeasureText(valtext);
                                     curx += textprint_length;
                                     curx += stdspacing;
                                 }
@@ -11492,7 +11513,8 @@ namespace GnollHackX.Pages.Game
 
                                     target_width = target_scale * GHApp._statusDungeonLevelBitmap.Width;
                                     target_height = target_scale * GHApp._statusDungeonLevelBitmap.Height;
-                                    float print_width = textPaint.MeasureText(printtext.Value);
+                                    float print_width;
+                                    SKTextBlob lvlBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_LEVELDESC, printtext.Value, textPaint, out print_width);
                                     curx = canvaswidth - hmargin - print_width - innerspacing - target_width;
                                     dungeonleft = curx;
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
@@ -11506,7 +11528,7 @@ namespace GnollHackX.Pages.Game
                                     curx += target_width;
                                     curx += innerspacing;
                                     StartProfiling(GHProfilingStyle.Text);
-                                    textPaint.DrawTextOnCanvas(canvas, printtext.Value, curx, cury - textPaint.FontMetrics.Ascent);
+                                    textPaint.DrawTextOnCanvas(canvas, lvlBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                     StopProfiling(GHProfilingStyle.Text);
                                     curx += print_width;
                                 }
@@ -11524,7 +11546,8 @@ namespace GnollHackX.Pages.Game
                                         GHSubstring printtext = valtext.Length > 11 && valtext[0] == '\\' ? new GHSubstring(valtext, 11) : new GHSubstring(valtext);
                                         target_width = target_scale * GHApp._statusGoldBitmap.Width;
                                         target_height = target_scale * GHApp._statusGoldBitmap.Height;
-                                        float print_width = textPaint.MeasureText(printtext.Value);
+                                        float print_width;
+                                        SKTextBlob goldBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_GOLD, printtext.Value, textPaint, out print_width);
                                         float newcurx = desktopleft - stdspacing - print_width - innerspacing - target_width;
                                         if (newcurx >= final2ndrowleftcurx) /* Avoid printing status bar elements over each other */
                                         {
@@ -11538,7 +11561,7 @@ namespace GnollHackX.Pages.Game
                                             );
                                             curx += target_width;
                                             curx += innerspacing;
-                                            textPaint.DrawTextOnCanvas(canvas, printtext.Value, curx, cury - textPaint.FontMetrics.Ascent);
+                                            textPaint.DrawTextOnCanvas(canvas, goldBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                             curx += print_width;
                                         }
                                     }
@@ -11555,7 +11578,8 @@ namespace GnollHackX.Pages.Game
                                         {
                                             target_width = target_scale * GHApp._statusScoreBitmap.Width;
                                             target_height = target_scale * GHApp._statusScoreBitmap.Height;
-                                            float print_width = textPaint.MeasureText(valtext);
+                                            float print_width;
+                                            SKTextBlob valBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_SCORE, valtext, textPaint, out print_width);
                                             float newcurx = desktopleft - stdspacing - print_width - innerspacing - target_width;
                                             if (newcurx >= final2ndrowleftcurx) /* Avoid printing status bar elements over each other */
                                             {
@@ -11569,7 +11593,7 @@ namespace GnollHackX.Pages.Game
                                                 );
                                                 curx += target_width;
                                                 curx += innerspacing;
-                                                textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                                textPaint.DrawTextOnCanvas(canvas, valBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                                 curx += print_width;
                                             }
                                         }
@@ -11586,7 +11610,8 @@ namespace GnollHackX.Pages.Game
                                         {
                                             target_width = target_scale * GHApp._statusXPPointsBitmap.Width;
                                             target_height = target_scale * GHApp._statusXPPointsBitmap.Height;
-                                            float print_width = textPaint.MeasureText(valtext);
+                                            float print_width;
+                                            SKTextBlob valBlob = GetOrCreateStatusFieldBlob((int)NhStatusFields.BL_EXP, valtext, textPaint, out print_width);
                                             float newcurx = desktopleft - stdspacing - print_width - innerspacing - target_width;
                                             if (newcurx >= final2ndrowleftcurx) /* Avoid printing status bar elements over each other */
                                             {
@@ -11600,7 +11625,7 @@ namespace GnollHackX.Pages.Game
                                                 );
                                                 curx += target_width;
                                                 curx += innerspacing;
-                                                textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                                textPaint.DrawTextOnCanvas(canvas, valBlob, curx, cury - textPaint.FontMetrics.Ascent);
                                                 curx += print_width;
                                             }
                                         }
@@ -16033,6 +16058,56 @@ namespace GnollHackX.Pages.Game
                 inverseCanvasScale = 1.0f;
             float statusbarheight = UIUtils.CalculateStatusBarSkiaHeight(inverseCanvasScale, customScale, canvasViewWidth, canvasViewHeight);
             return (double)statusbarheight / (double)inverseCanvasScale;
+        }
+
+        private SKTextBlob GetOrCreateStatusFieldBlob(int fieldIdx, string text, GHSkiaFontPaint textPaint, out float cachedWidth)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                cachedWidth = 0;
+                return null;
+            }
+            if (_localStatusFieldBlobs[fieldIdx] != null
+                && _localStatusFieldBlobTexts[fieldIdx] == text
+                && _localStatusFieldBlobTextSizes[fieldIdx] == textPaint.TextSize)
+            {
+                cachedWidth = _localStatusFieldBlobWidths[fieldIdx];
+                return _localStatusFieldBlobs[fieldIdx];
+            }
+
+            _localStatusFieldBlobs[fieldIdx]?.Dispose();
+            cachedWidth = textPaint.MeasureText(text);
+            _localStatusFieldBlobs[fieldIdx] = textPaint.CreateTextBlob(text);
+            _localStatusFieldBlobTexts[fieldIdx] = text;
+            _localStatusFieldBlobTextSizes[fieldIdx] = textPaint.TextSize;
+            _localStatusFieldBlobWidths[fieldIdx] = cachedWidth;
+            return _localStatusFieldBlobs[fieldIdx];
+        }
+
+        private SKTextBlob GetOrCreateStatusFieldBlob(int fieldIdx, ReadOnlySpan<char> text, GHSkiaFontPaint textPaint, out float cachedWidth)
+        {
+            if (text.IsEmpty)
+            {
+                cachedWidth = 0;
+                return null;
+            }
+            if (_localStatusFieldBlobs[fieldIdx] != null
+                && _localStatusFieldBlobTexts[fieldIdx] != null
+                && text.SequenceEqual(_localStatusFieldBlobTexts[fieldIdx].AsSpan())
+                && _localStatusFieldBlobTextSizes[fieldIdx] == textPaint.TextSize)
+            {
+                cachedWidth = _localStatusFieldBlobWidths[fieldIdx];
+                return _localStatusFieldBlobs[fieldIdx];
+            }
+
+            _localStatusFieldBlobs[fieldIdx]?.Dispose();
+            string textStr = text.ToString();
+            cachedWidth = textPaint.MeasureText(textStr);
+            _localStatusFieldBlobs[fieldIdx] = textPaint.CreateTextBlob(text);
+            _localStatusFieldBlobTexts[fieldIdx] = textStr;
+            _localStatusFieldBlobTextSizes[fieldIdx] = textPaint.TextSize;
+            _localStatusFieldBlobWidths[fieldIdx] = cachedWidth;
+            return _localStatusFieldBlobs[fieldIdx];
         }
 
         private SKImage GetStatIcon(int i)
