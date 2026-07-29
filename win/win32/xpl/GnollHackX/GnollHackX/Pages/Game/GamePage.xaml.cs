@@ -8694,8 +8694,9 @@ namespace GnollHackX.Pages.Game
 #else
                                                                             canvas.SetMatrix(dc.Matrix);
 #endif
-                                                                            GHApp.MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect
+                                                                            SKRect dcDestRect = dc.DestinationRect;
+                                                                            GHApp.MaybeFixRects(ref cacheRect, ref dcDestRect, targetscale, usingGL, fixRects, fixFiltering);
+                                                                            canvas.DrawImage(usedDarkenedBitmap, cacheRect, dcDestRect
 #if GNH_MAUI
                                                                             , SKSamplingOptions.Default
 #endif
@@ -8745,8 +8746,9 @@ namespace GnollHackX.Pages.Game
 #else
                                                                             canvas.SetMatrix(dc.Matrix);
 #endif
-                                                                            GHApp.MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect
+                                                                            SKRect dcDestRect2 = dc.DestinationRect;
+                                                                            GHApp.MaybeFixRects(ref cacheRect, ref dcDestRect2, targetscale, usingGL, fixRects, fixFiltering);
+                                                                            canvas.DrawImage(usedDarkenedBitmap, cacheRect, dcDestRect2
 #if GNH_MAUI
                                                                             , SKSamplingOptions.Default
 #endif
@@ -8777,8 +8779,10 @@ namespace GnollHackX.Pages.Game
                                                                     }
                                                                     else
                                                                     {
-                                                                        GHApp.MaybeFixRects(ref dc.SourceRect, ref dc.DestinationRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                        canvas.DrawImage(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect
+                                                                        SKRect dcSrcRect = dc.SourceRect;
+                                                                        SKRect dcDstRect = dc.DestinationRect;
+                                                                        GHApp.MaybeFixRects(ref dcSrcRect, ref dcDstRect, targetscale, usingGL, fixRects, fixFiltering);
+                                                                        canvas.DrawImage(dc.SourceBitmap, dcSrcRect, dcDstRect
 #if GNH_MAUI
                                                                         , SKSamplingOptions.Default
 #endif
