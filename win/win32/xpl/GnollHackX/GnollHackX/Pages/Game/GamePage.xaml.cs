@@ -10157,14 +10157,19 @@ namespace GnollHackX.Pages.Game
                                                     StartProfiling(GHProfilingStyle.Text);
                                                     SKColor new_skcolor = UIUtils.NHColor2SKColor(new_nhcolor, new_nhattr);
                                                     printedsubline.SetValue(wrappedLine, charidx_start, charidx_len);
-                                                    textPaint.Style = SKPaintStyle.Stroke;
-                                                    textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
-                                                    textPaint.Color = SKColors.Black;
-                                                    textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, tx, ty);
-                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                    textPaint.StrokeWidth = 0;
-                                                    textPaint.Color = new_skcolor;
-                                                    textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, tx, ty);
+                                                    SKTextBlob sublineBlob = textPaint.CreateTextBlob(printedsubline.Value);
+                                                    if (sublineBlob != null)
+                                                    {
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
+                                                        textPaint.Color = SKColors.Black;
+                                                        textPaint.DrawTextOnCanvas(canvas, sublineBlob, tx, ty);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        textPaint.StrokeWidth = 0;
+                                                        textPaint.Color = new_skcolor;
+                                                        textPaint.DrawTextOnCanvas(canvas, sublineBlob, tx, ty);
+                                                        sublineBlob.Dispose();
+                                                    }
                                                     float twidth = textPaint.MeasureText(printedsubline.Value);
                                                     textPaint.Style = SKPaintStyle.Fill;
                                                     textPaint.StrokeWidth = 0;
@@ -19442,18 +19447,23 @@ namespace GnollHackX.Pages.Game
 
                     if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
                     {
-                        if (usetextoutline)
+                        SKTextBlob segmentBlob = textPaint.CreateTextBlob(printedsubline.Value);
+                        if (segmentBlob != null)
                         {
-                            SKColor oldcolor = textPaint.Color;
-                            textPaint.Color = revertblackandwhite ? SKColors.White : SKColors.Black;
-                            textPaint.StrokeWidth = textPaint.TextSize / 10;
-                            textPaint.Style = SKPaintStyle.Stroke;
-                            textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, x, y);
-                            textPaint.Color = oldcolor;
-                            textPaint.Style = SKPaintStyle.Fill;
-                            textPaint.StrokeWidth = 0;
+                            if (usetextoutline)
+                            {
+                                SKColor oldcolor = textPaint.Color;
+                                textPaint.Color = revertblackandwhite ? SKColors.White : SKColors.Black;
+                                textPaint.StrokeWidth = textPaint.TextSize / 10;
+                                textPaint.Style = SKPaintStyle.Stroke;
+                                textPaint.DrawTextOnCanvas(canvas, segmentBlob, x, y);
+                                textPaint.Color = oldcolor;
+                                textPaint.Style = SKPaintStyle.Fill;
+                                textPaint.StrokeWidth = 0;
+                            }
+                            textPaint.DrawTextOnCanvas(canvas, segmentBlob, x, y);
+                            segmentBlob.Dispose();
                         }
-                        textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, x, y);
                     }
 
                     if (new_nhcolor != (int)NhColor.NO_COLOR)
