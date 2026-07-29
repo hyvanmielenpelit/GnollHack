@@ -637,17 +637,17 @@ namespace GnollHackX
                         _mapDataMaster[x, y].GlyphGeneralPrintMainCounterValue = 0;
 
                         _mapDataMaster[x, y].Layers = new LayerInfo();
-                        _mapDataMaster[x, y].Layers.layer_glyphs = new int[(int)layer_types.MAX_LAYERS];
-                        _mapDataMaster[x, y].Layers.layer_gui_glyphs = new int[(int)layer_types.MAX_LAYERS];
-                        _mapDataMaster[x, y].Layers.leash_mon_x = new sbyte[GHConstants.MaxLeashed + 1];
-                        _mapDataMaster[x, y].Layers.leash_mon_y = new sbyte[GHConstants.MaxLeashed + 1];
+                        /* Fixed buffers are inline and zero-initialized by new LayerInfo() */
 
-                        _mapDataMaster[x, y].Layers.layer_glyphs[0] = GHApp.UnexploredGlyph;
-                        _mapDataMaster[x, y].Layers.layer_gui_glyphs[0] = GHApp.UnexploredGlyph;
-                        for (int i = 1; i < (int)layer_types.MAX_LAYERS; i++)
+                        unsafe
                         {
-                            _mapDataMaster[x, y].Layers.layer_glyphs[i] = GHApp.NoGlyph;
-                            _mapDataMaster[x, y].Layers.layer_gui_glyphs[i] = GHApp.NoGlyph;
+                            _mapDataMaster[x, y].Layers.layer_glyphs[0] = GHApp.UnexploredGlyph;
+                            _mapDataMaster[x, y].Layers.layer_gui_glyphs[0] = GHApp.UnexploredGlyph;
+                            for (int i = 1; i < (int)layer_types.MAX_LAYERS; i++)
+                            {
+                                _mapDataMaster[x, y].Layers.layer_glyphs[i] = GHApp.NoGlyph;
+                                _mapDataMaster[x, y].Layers.layer_gui_glyphs[i] = GHApp.NoGlyph;
+                            }
                         }
 
                         _mapDataMaster[x, y].Layers.glyph = GHApp.UnexploredGlyph;
@@ -871,7 +871,11 @@ namespace GnollHackX
 
         public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, Int32 symbol, int ocolor, UInt64 special, IntPtr layers_ptr)
         {
-            LayerInfo layers = layers_ptr == IntPtr.Zero ? new LayerInfo() : (LayerInfo)Marshal.PtrToStructure(layers_ptr, typeof(LayerInfo));
+            LayerInfo layers;
+            unsafe
+            {
+                layers = layers_ptr == IntPtr.Zero ? default : *(LayerInfo*)layers_ptr;
+            }
             RecordFunctionCall(RecordedFunctionID.PrintGlyph, winHandle, x, y, glyph, bkglyph, symbol, ocolor, special, layers);
 
             SetMapSymbol(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
@@ -988,7 +992,8 @@ namespace GnollHackX
                 _uy = y;
                 _u_condition_bits = layers.condition_bits;
                 _u_status_bits = layers.status_bits;
-                if (layers.buff_bits != null)
+                /* buff_bits is now a fixed buffer — always valid */
+                unsafe
                 {
                     for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
                     {

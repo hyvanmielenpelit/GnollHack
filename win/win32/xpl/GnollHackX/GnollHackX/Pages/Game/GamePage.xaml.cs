@@ -5534,7 +5534,11 @@ namespace GnollHackX.Pages.Game
                     if (status_count >= max_fitted_rows)
                         break;
 
-                    ulong buff_bits = currentLayerInfo.buff_bits[buff_ulong];
+                    ulong buff_bits;
+                    unsafe
+                    {
+                        buff_bits = currentLayerInfo.buff_bits[buff_ulong];
+                    }
                     int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
                     if (buff_bits != 0)
                     {
@@ -6596,7 +6600,10 @@ namespace GnollHackX.Pages.Game
                 }
                 else
                 {
-                    signed_glyph = currentLayerInfo.layer_gui_glyphs == null ? GHApp.NoGlyph : currentLayerInfo.layer_gui_glyphs[layer_idx];
+                    unsafe
+                    {
+                        signed_glyph = currentLayerInfo.layer_gui_glyphs[layer_idx];
+                    }
                 }
             }
             else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
@@ -6619,7 +6626,10 @@ namespace GnollHackX.Pages.Game
                 }
                 else
                 {
-                    signed_glyph = currentLayerInfo.layer_gui_glyphs == null ? GHApp.NoGlyph : currentLayerInfo.layer_gui_glyphs[layer_idx];
+                    unsafe
+                    {
+                        signed_glyph = currentLayerInfo.layer_gui_glyphs[layer_idx];
+                    }
                 }
             }
             else if (source_dir_idx > 0)
@@ -6667,7 +6677,11 @@ namespace GnollHackX.Pages.Game
                 {
                     case (int)layer_types.LAYER_ZAP:
                         {
-                            int adjacent_zap_glyph = currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_ZAP];
+                            int adjacent_zap_glyph;
+                            unsafe
+                            {
+                                adjacent_zap_glyph = currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_ZAP];
+                            }
                             ulong adjacent_layer_flags = (ulong)currentLayerInfo.layer_flags;
 
                             if (adjacent_zap_glyph == GHApp.NoGlyph) // || !glyph_is_zap(adjacent_zap_glyph))
@@ -6701,7 +6715,11 @@ namespace GnollHackX.Pages.Game
                                 }
                                 else if (is_long_worm_tail || (is_tailed_long_worm && is_adj_worm_tail))
                                 {
-                                    int signed_main_glyph = currentLayerInfo.layer_gui_glyphs[layer_idx];
+                                    int signed_main_glyph;
+                                    unsafe
+                                    {
+                                        signed_main_glyph = currentLayerInfo.layer_gui_glyphs[layer_idx];
+                                    }
                                     int main_glyph = Math.Abs(signed_main_glyph);
                                     //int tile_animation_index = _gnollHackService.GetTileAnimationIndexFromGlyph(main_glyph);
                                     int main_tile = GHApp.Glyph2Tile[main_glyph];
@@ -6809,7 +6827,10 @@ namespace GnollHackX.Pages.Game
                 int used_layer_idx = layer_idx;
                 if (layer_idx == (int)layer_types.MAX_LAYERS)
                     used_layer_idx = (int)layer_types.LAYER_MONSTER;
-                signed_glyph = currentLayerInfo.layer_gui_glyphs == null ? GHApp.NoGlyph : currentLayerInfo.layer_gui_glyphs[used_layer_idx];
+                unsafe
+                {
+                    signed_glyph = currentLayerInfo.layer_gui_glyphs[used_layer_idx];
+                }
             }
 
             if (signed_glyph == GHApp.NoGlyph)
@@ -8118,8 +8139,7 @@ namespace GnollHackX.Pages.Game
                                                     {
                                                         ref MapData currentCell = ref _mapData[mapx, mapy];
                                                         ref LayerInfo currentLayerInfo = ref currentCell.Layers;
-                                                        if (currentLayerInfo.layer_glyphs == null || currentLayerInfo.layer_gui_glyphs == null)
-                                                            continue;
+
                                                         int draw_cnt = _draw_order.Count;
                                                         for (int draw_idx = 0; draw_idx < draw_cnt; draw_idx++)
                                                         {
@@ -8129,9 +8149,17 @@ namespace GnollHackX.Pages.Game
                                                             bool is_monster_like_layer = (is_monster_or_shadow_layer || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT);
                                                             bool is_object_like_layer = (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT);
                                                             bool is_missile_layer = (layer_idx == (int)layer_types.LAYER_MISSILE);
+                                                            if (layer_idx == (int)layer_types.MAX_LAYERS)
+                                                            {
+                                                                if (_draw_shadow[mapx, mapy] == 0)
+                                                                    continue;
 
-                                                            if (layer_idx == (int)layer_types.MAX_LAYERS && (_draw_shadow[mapx, mapy] == 0 || currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph))
-                                                                continue;
+                                                                unsafe
+                                                                {
+                                                                    if (currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph)
+                                                                        continue;
+                                                                }
+                                                            }
 
                                                             int source_x = mapx, source_y = mapy;
                                                             switch(enl_idx)
@@ -8299,13 +8327,17 @@ namespace GnollHackX.Pages.Game
                                                         if (layer_idx == (int)layer_types.LAYER_FEATURE_DOODAD && currentCell.Engraving.HasEngraving)
                                                             DrawEngraving(canvas, textPaint, ref currentCell, mapx, mapy, offsetX, offsetY, usedOffsetX, usedOffsetY, mapFontAscent, width, height, generalcountervalue);
 
-                                                        if (currentLayerInfo.layer_glyphs == null || currentLayerInfo.layer_gui_glyphs == null)
-                                                            continue;
+                                                        if (layer_idx == (int)layer_types.MAX_LAYERS)
+                                                        {
+                                                            if (_draw_shadow[mapx, mapy] == 0)
+                                                                continue;
 
-                                                        if (layer_idx == (int)layer_types.MAX_LAYERS
-                                                            && (_draw_shadow[mapx, mapy] == 0 || currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph)
-                                                            )
-                                                            continue;
+                                                            unsafe
+                                                            {
+                                                                if (currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph)
+                                                                    continue;
+                                                            }
+                                                        }
 
                                                         bool loc_is_you = (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
                                                         bool showing_detection = (currentLayerInfo.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
@@ -13265,10 +13297,12 @@ namespace GnollHackX.Pages.Game
         bool DarkenedPos(ref LayerInfo currentLayerInfo)
         {
             bool darken;
-            if (currentLayerInfo.layer_gui_glyphs != null
-                && (currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == GHApp.UnexploredGlyph
-                    || currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == GHApp.NoGlyph)
-                )
+            int floorGlyph;
+            unsafe
+            {
+                floorGlyph = currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR];
+            }
+            if (floorGlyph == GHApp.UnexploredGlyph || floorGlyph == GHApp.NoGlyph)
             {
                 darken = false;
             }
@@ -13426,8 +13460,12 @@ namespace GnollHackX.Pages.Game
                 return true;
 
             ref LayerInfo layers = ref _mapData[x, y].Layers;
-            if (layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == GHApp.UnexploredGlyph
-                || layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == GHApp.NoGlyph)
+            int floorGlyph;
+            unsafe
+            {
+                floorGlyph = layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR];
+            }
+            if (floorGlyph == GHApp.UnexploredGlyph || floorGlyph == GHApp.NoGlyph)
                 return true;
 
             if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
@@ -17054,7 +17092,10 @@ namespace GnollHackX.Pages.Game
             {
                 if (layers.special_monster_layer_height != 0 || layers.special_feature_doodad_layer_height != 0)
                     return true;
-                gui_glyph = Math.Abs(layers.layer_gui_glyphs[i]);
+                unsafe
+                {
+                    gui_glyph = Math.Abs(layers.layer_gui_glyphs[i]);
+                }
                 if(gui_glyph != GHApp.NoGlyph)
                 {
                     ntile = GHApp.Glyph2Tile[gui_glyph];
