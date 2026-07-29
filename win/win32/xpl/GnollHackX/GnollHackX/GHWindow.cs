@@ -48,7 +48,7 @@ namespace GnollHackX
         public float Bottom { get; set; }
     }
 
-    public sealed class GHWindow
+    public sealed class GHWindow : IDisposable
     {
         private GHWinType _winType = 0;
         private ghwindow_styles _winStyle = 0;
@@ -60,6 +60,11 @@ namespace GnollHackX
         private bool _useUpperSide;
         private bool _useSpecialSymbols;
         private bool _ascension;
+
+        /* Cached GHSkiaFontPaint for MeasureText in PutStrEx/PutStrEx2 */
+        private GHSkiaFontPaint _measurePaint = null;
+        private SKTypeface _measureTypeface = null;
+        private float _measureTextSize = 0;
 
         public SKTypeface Typeface { get; set; }
         public SKColor TextColor { get; set; }
@@ -423,16 +428,142 @@ namespace GnollHackX
         //    ActiveGamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, color, special, ref layers);
         //}
 
+        private GHSkiaFontPaint GetMeasurePaint()
+        {
+            float size = TextSize * UIUtils.CalculateTextScale();
+            if (_measurePaint != null && _measureTypeface == Typeface && _measureTextSize == size)
+                return _measurePaint;
+
+            _measurePaint?.Dispose();
+            _measurePaint = new GHSkiaFontPaint()
+            {
+                Typeface = Typeface,
+                TextSize = size
+            };
+            _measureTypeface = Typeface;
+            _measureTextSize = size;
+            return _measurePaint;
+        }
+
         public void PutStrEx(int attributes, string str, int append, int color)
         {
             //lock (PutStrsLock)
             {
-                using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint()
+                GHSkiaFontPaint textPaint = GetMeasurePaint();
+
+                if (CursY >= PutStrs.Count)
                 {
-                    Typeface = Typeface,
-                    TextSize = TextSize * UIUtils.CalculateTextScale()
-                })
+                    for (int i = 0; i < CursY - PutStrs.Count + 1; i++)
+                    {
+                        PutStrs.Add(new GHPutStrItem(this, ""));
+                    }
+                }
+
+                if (CursY >= 0)
                 {
+                    if (PutStrs[CursY] == null)
+                        PutStrs[CursY] = new GHPutStrItem(this, "");
+                    else if (PutStrs[CursY].Text == null)
+                        PutStrs[CursY].Text = "";
+
+                    int len = str.Length;
+                    string curstr = PutStrs[CursY].Text;
+                    int curlen = curstr.Length;
+                    List<int> curattrs = PutStrs[CursY].AttributeList;
+                    List<int> curclrs = PutStrs[CursY].ColorList;
+
+                    //if (append != 0)
+                    //    CursX = PutStrs[CursY].Text.Length;
+
+                    int origCursX = CursX;
+
+                    if (CursX > curlen)
+                    {
+                        int n = CursX - curlen;
+                        string spaces = new String(' ', n);
+                        curstr = curstr + spaces;
+                        curlen = curstr.Length;
+                    }
+
+                    string leftstr = CursX <= 0 ? "" : curstr.Substring(0, CursX);
+                    //string rightstr = curstr.Length <= CursX + len ? "" : curstr.Substring(CursX + len, curlen - (CursX + len));
+                    PutStrs[CursY].Text = leftstr + str; // + rightstr;
+
+                    CursX += str.Length;
+
+                    // Adjust TextSize property so text is 90% of screen width
+                    float textWidth = textPaint.MeasureText(PutStrs[CursY].Text); //.Replace(' ', '_'));
+                    textWidth += Padding.Left + Padding.Right;
+                    if (textWidth > _pixelWidth)
+                        _pixelWidth = textWidth;
+
+                    if (PutStrs[CursY].Text.Length > _width)
+                        _width = PutStrs[CursY].Text.Length;
+
+                    if (CursY + 1 > _height)
+                        _height = CursY + 1;
+
+                    int i;
+                    for (i = origCursX; i < CursX; i++)
+                    {
+                        while (i > curattrs.Count)
+                            curattrs.Add(0);
+
+                        while (i > curclrs.Count)
+                            curclrs.Add((int)NhColor.CLR_WHITE);
+
+                        if (i == curattrs.Count)
+                            curattrs.Add(attributes);
+                        else if (i < curattrs.Count)
+                            curattrs[i] = attributes;
+
+                        if (i == curclrs.Count)
+                            curclrs.Add(color);
+                        else if (i < curattrs.Count)
+                            curclrs[i] = color;
+                    }
+
+                    PutStrs[CursY].ConvertListFromArrays();
+
+                    if (AutoCarriageReturn && append == 0)
+                    {
+                        CursY++;
+                        CursX = 0;
+                    }
+                }
+
+                float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+                _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
+            }
+            if(append == 0 && ShouldPublishClone)
+            {
+                _currentGame.RequestQueue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
+            }
+        }
+
+        public void PutStrEx2(string str, byte[] attributes, byte[] colors, int attribute, int color, int append)
+        {
+            if (str == null)
+                return;
+            if(attributes == null || colors == null)
+                PutStrEx(attribute, str, append, color);
+            else
+            {
+                //int len1 = str.Length;
+                //int len2 = attributes.Length;
+                //int len3 = colors.Length;
+                //int minlen = Math.Min(Math.Min(len1, len2), len3);
+
+                //for (int i = 0; i < minlen; i++)
+                //    PutStrEx(attributes[i] == (int)MenuItemAttributes.None ? attribute : attributes[i], 
+                //        str.Substring(i, 1), 
+                //        i == minlen - 1 ? append : 1, 
+                //        colors[i] == (int)NhColor.NO_COLOR ? color : colors[i]);
+
+                //lock (PutStrsLock)
+                {
+                    GHSkiaFontPaint textPaint = GetMeasurePaint();
+
                     if (CursY >= PutStrs.Count)
                     {
                         for (int i = 0; i < CursY - PutStrs.Count + 1; i++)
@@ -485,22 +616,23 @@ namespace GnollHackX
                         if (CursY + 1 > _height)
                             _height = CursY + 1;
 
-                        int i;
+                        int i, idx;
                         for (i = origCursX; i < CursX; i++)
                         {
+                            idx = i - origCursX;
                             while (i > curattrs.Count)
-                                curattrs.Add(0);
+                                curattrs.Add(attribute);
 
                             while (i > curclrs.Count)
-                                curclrs.Add((int)NhColor.CLR_WHITE);
+                                curclrs.Add(color);
 
                             if (i == curattrs.Count)
-                                curattrs.Add(attributes);
+                                curattrs.Add(idx < attributes.Length && attributes[idx] != (int)MenuItemAttributes.None ? attributes[idx] : attribute);
                             else if (i < curattrs.Count)
-                                curattrs[i] = attributes;
+                                curattrs[i] = attribute;
 
                             if (i == curclrs.Count)
-                                curclrs.Add(color);
+                                curclrs.Add(idx < colors.Length && colors[idx] != (int)NhColor.NO_COLOR ? colors[idx] : color);
                             else if (i < curattrs.Count)
                                 curclrs[i] = color;
                         }
@@ -516,126 +648,6 @@ namespace GnollHackX
 
                     float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                     _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
-                }
-            }
-            if(append == 0 && ShouldPublishClone)
-            {
-                _currentGame.RequestQueue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
-            }
-        }
-
-        public void PutStrEx2(string str, byte[] attributes, byte[] colors, int attribute, int color, int append)
-        {
-            if (str == null)
-                return;
-            if(attributes == null || colors == null)
-                PutStrEx(attribute, str, append, color);
-            else
-            {
-                //int len1 = str.Length;
-                //int len2 = attributes.Length;
-                //int len3 = colors.Length;
-                //int minlen = Math.Min(Math.Min(len1, len2), len3);
-
-                //for (int i = 0; i < minlen; i++)
-                //    PutStrEx(attributes[i] == (int)MenuItemAttributes.None ? attribute : attributes[i], 
-                //        str.Substring(i, 1), 
-                //        i == minlen - 1 ? append : 1, 
-                //        colors[i] == (int)NhColor.NO_COLOR ? color : colors[i]);
-
-                //lock (PutStrsLock)
-                {
-                    using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint()
-                    {
-                        Typeface = Typeface,
-                        TextSize = TextSize * UIUtils.CalculateTextScale()
-                    })
-                    {
-                        if (CursY >= PutStrs.Count)
-                        {
-                            for (int i = 0; i < CursY - PutStrs.Count + 1; i++)
-                            {
-                                PutStrs.Add(new GHPutStrItem(this, ""));
-                            }
-                        }
-
-                        if (CursY >= 0)
-                        {
-                            if (PutStrs[CursY] == null)
-                                PutStrs[CursY] = new GHPutStrItem(this, "");
-                            else if (PutStrs[CursY].Text == null)
-                                PutStrs[CursY].Text = "";
-
-                            int len = str.Length;
-                            string curstr = PutStrs[CursY].Text;
-                            int curlen = curstr.Length;
-                            List<int> curattrs = PutStrs[CursY].AttributeList;
-                            List<int> curclrs = PutStrs[CursY].ColorList;
-
-                            //if (append != 0)
-                            //    CursX = PutStrs[CursY].Text.Length;
-
-                            int origCursX = CursX;
-
-                            if (CursX > curlen)
-                            {
-                                int n = CursX - curlen;
-                                string spaces = new String(' ', n);
-                                curstr = curstr + spaces;
-                                curlen = curstr.Length;
-                            }
-
-                            string leftstr = CursX <= 0 ? "" : curstr.Substring(0, CursX);
-                            //string rightstr = curstr.Length <= CursX + len ? "" : curstr.Substring(CursX + len, curlen - (CursX + len));
-                            PutStrs[CursY].Text = leftstr + str; // + rightstr;
-
-                            CursX += str.Length;
-
-                            // Adjust TextSize property so text is 90% of screen width
-                            float textWidth = textPaint.MeasureText(PutStrs[CursY].Text); //.Replace(' ', '_'));
-                            textWidth += Padding.Left + Padding.Right;
-                            if (textWidth > _pixelWidth)
-                                _pixelWidth = textWidth;
-
-                            if (PutStrs[CursY].Text.Length > _width)
-                                _width = PutStrs[CursY].Text.Length;
-
-                            if (CursY + 1 > _height)
-                                _height = CursY + 1;
-
-                            int i, idx;
-                            for (i = origCursX; i < CursX; i++)
-                            {
-                                idx = i - origCursX;
-                                while (i > curattrs.Count)
-                                    curattrs.Add(attribute);
-
-                                while (i > curclrs.Count)
-                                    curclrs.Add(color);
-
-                                if (i == curattrs.Count)
-                                    curattrs.Add(idx < attributes.Length && attributes[idx] != (int)MenuItemAttributes.None ? attributes[idx] : attribute);
-                                else if (i < curattrs.Count)
-                                    curattrs[i] = attribute;
-
-                                if (i == curclrs.Count)
-                                    curclrs.Add(idx < colors.Length && colors[idx] != (int)NhColor.NO_COLOR ? colors[idx] : color);
-                                else if (i < curattrs.Count)
-                                    curclrs[i] = color;
-                            }
-
-                            PutStrs[CursY].ConvertListFromArrays();
-
-                            if (AutoCarriageReturn && append == 0)
-                            {
-                                CursY++;
-                                CursX = 0;
-                            }
-                        }
-
-                        float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-                        _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
-                    }
                 }
             }
             if (append == 0 && ShouldPublishClone)
@@ -690,6 +702,14 @@ namespace GnollHackX
                         return false;
                 }
             }
+        }
+        public void Dispose()
+        {
+            _measurePaint?.Dispose();
+            _measurePaint = null;
+            foreach (GHPutStrItem item in _putStrs)
+                item?.Dispose();
+            _putStrs.Clear();
         }
     }
 }
