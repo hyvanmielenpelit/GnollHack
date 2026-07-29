@@ -161,7 +161,12 @@ namespace GnollHackX
                 GcCount0 = GC.CollectionCount(0),
                 GcCount1 = GC.CollectionCount(1),
                 GcCount2 = GC.CollectionCount(2),
-                AllocatedBytes = GC.GetTotalAllocatedBytes(false),
+                AllocatedBytes =
+#if GNH_MAUI
+                    GC.GetTotalAllocatedBytes(false),
+#else
+                    0,
+#endif
                 ForcedGcCount = Interlocked.Read(ref _forcedGcCounter)
             };
         }
