@@ -1240,7 +1240,8 @@ namespace GnollHackX
 
             SKColor oldColor = paint.Color;
             SKPaintStyle oldStyle = paint.Style;
-            using (new SKAutoCanvasRestore(canvas, true))
+            canvas.Save();
+            try
             {
                 canvas.Translate(x, y);
                 canvas.Scale(scale);
@@ -1270,6 +1271,10 @@ namespace GnollHackX
                     canvas.DrawPath(path, paint);
 #endif
                 }
+            }
+            finally
+            {
+                canvas.Restore();
             }
             paint.Style = oldStyle;
             paint.Color = oldColor;
