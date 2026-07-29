@@ -102,7 +102,7 @@ namespace GnollHackX
             GHPutStrItem clone = new GHPutStrItem(clonedWindow, _text);
             clone.AttributeList.AddRange(_attributeList);
             clone.ColorList.AddRange(_colorList);
-            clone.InstructionList.AddRange(_instructionList);
+            clone.ConvertListFromArrays();
             return clone;
         }
 
