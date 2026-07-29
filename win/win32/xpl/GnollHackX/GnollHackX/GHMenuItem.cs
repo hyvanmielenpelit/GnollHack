@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -206,6 +206,16 @@ namespace GnollHackX
         public List<float> MainTextRowWidths { get { return Interlocked.CompareExchange(ref _mainTextRowWidths, null, null); } set { Interlocked.Exchange(ref _mainTextRowWidths, value); } }
         public List<float> SuffixTextRowWidths { get { return Interlocked.CompareExchange(ref _suffixTextRowWidths, null, null); } set { Interlocked.Exchange(ref _suffixTextRowWidths, value); } }
         public List<float> Suffix2TextRowWidths { get { return Interlocked.CompareExchange(ref _suffix2TextRowWidths, null, null); } set { Interlocked.Exchange(ref _suffix2TextRowWidths, value); } }
+
+        /* Cached text blobs for menu rendering */
+        private readonly List<SKTextBlob> _mainTextBlobs = new List<SKTextBlob>();
+        private readonly List<SKTextBlob> _suffixTextBlobs = new List<SKTextBlob>();
+        private readonly List<SKTextBlob> _suffix2TextBlobs = new List<SKTextBlob>();
+        private float _textBlobTextSize = 0;
+        public List<SKTextBlob> MainTextBlobs { get { return _mainTextBlobs; } }
+        public List<SKTextBlob> SuffixTextBlobs { get { return _suffixTextBlobs; } }
+        public List<SKTextBlob> Suffix2TextBlobs { get { return _suffix2TextBlobs; } }
+        public float TextBlobTextSize { get { return _textBlobTextSize; } set { _textBlobTextSize = value; } }
 
         private string[] _mainTextSplit;
         public string[] MainTextSplit
@@ -940,6 +950,19 @@ namespace GnollHackX
                 return ObjClassType == (sbyte)activeSlot.ObjClassType;
             }
             return false;
+        }
+        public void ClearTextBlobs()
+        {
+            for (int i = 0, n = _mainTextBlobs.Count; i < n; i++)
+                _mainTextBlobs[i]?.Dispose();
+            _mainTextBlobs.Clear();
+            for (int i = 0, n = _suffixTextBlobs.Count; i < n; i++)
+                _suffixTextBlobs[i]?.Dispose();
+            _suffixTextBlobs.Clear();
+            for (int i = 0, n = _suffix2TextBlobs.Count; i < n; i++)
+                _suffix2TextBlobs[i]?.Dispose();
+            _suffix2TextBlobs.Clear();
+            _textBlobTextSize = 0;
         }
     }
 }

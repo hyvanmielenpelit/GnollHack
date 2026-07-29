@@ -18754,6 +18754,11 @@ namespace GnollHackX.Pages.Game
                                 int suffixtextrows = 0;
                                 int suffix2textrows = 0;
 
+                                /* Invalidate cached text blobs if font size changed */
+                                if (mi.MainTextBlobs.Count > 0 && mi.TextBlobTextSize != textPaint.TextSize)
+                                    mi.ClearTextBlobs();
+                                mi.TextBlobTextSize = textPaint.TextSize;
+
                                 string[] maintextsplit = mi.MainTextSplit;
                                 string[] suffixtextsplit = mi.SuffixTextSplit;
                                 string[] suffix2textsplit = mi.Suffix2TextSplit;
@@ -18968,7 +18973,7 @@ namespace GnollHackX.Pages.Game
                                     string altFontFamily;
                                     if (UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
                                         textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
-                                    DrawTextSplit(canvas, maintextsplit, mainattrssplit, maincolorssplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                    DrawTextSplit(canvas, maintextsplit, mainattrssplit, maincolorssplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding, mi.MainTextBlobs);
                                     textPaint.Typeface = mainFont;
                                     /* Rewind and next line */
                                     x = start_x;
@@ -18985,7 +18990,7 @@ namespace GnollHackX.Pages.Game
                                         y -= textPaint.FontMetrics.Ascent;
                                         if (UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
                                             textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
-                                        DrawTextSplit(canvas, suffixtextsplit, suffixattrssplit, suffixcolorssplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                        DrawTextSplit(canvas, suffixtextsplit, suffixattrssplit, suffixcolorssplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding, mi.SuffixTextBlobs);
                                         textPaint.Typeface = mainFont;
                                         /* Rewind and next line */
                                         x = start_x;
@@ -19004,7 +19009,7 @@ namespace GnollHackX.Pages.Game
                                         y -= textPaint.FontMetrics.Ascent;
                                         if (UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
                                             textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
-                                        DrawTextSplit(canvas, suffix2textsplit, suffix2attrssplit, suffix2colorssplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                        DrawTextSplit(canvas, suffix2textsplit, suffix2attrssplit, suffix2colorssplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding, mi.Suffix2TextBlobs);
                                         textPaint.Typeface = mainFont;
                                         /* Rewind and next line */
                                         x = start_x;
@@ -19331,7 +19336,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void DrawTextSpan(SKCanvas canvas, ReadOnlySpan<char> textSpan, ReadOnlySpan<byte> attrs, ReadOnlySpan<byte> colors, List<float> rowwidths, ref float x, ref float y, ref bool isfirstprintonrow, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, float paddingAdjustment, GHSkiaFontPaint textPaint, bool usespecialsymbols, bool usetextoutline, bool revertblackandwhite, bool centertext, float totalrowwidth, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding, bool addSpace, float spaceLength)
+        private void DrawTextSpan(SKCanvas canvas, ReadOnlySpan<char> textSpan, ReadOnlySpan<byte> attrs, ReadOnlySpan<byte> colors, List<float> rowwidths, ref float x, ref float y, ref bool isfirstprintonrow, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, float paddingAdjustment, GHSkiaFontPaint textPaint, bool usespecialsymbols, bool usetextoutline, bool revertblackandwhite, bool centertext, float totalrowwidth, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding, bool addSpace, float spaceLength, List<SKTextBlob> cachedBlobs = null, int[] blobIdxRef = null)
         {
             if (textSpan.IsEmpty)
                 return;
@@ -19445,9 +19450,29 @@ namespace GnollHackX.Pages.Game
                         endposition = x + printlength;
                     }
 
+                    /* Get or create cached blob */
+                    SKTextBlob segmentBlob = null;
+                    bool disposeBlob = false;
+                    if (cachedBlobs != null)
+                    {
+                        int bi = blobIdxRef[0];
+                        if (bi < cachedBlobs.Count)
+                            segmentBlob = cachedBlobs[bi];
+                        else
+                        {
+                            segmentBlob = textPaint.CreateTextBlob(printedsubline.Value);
+                            cachedBlobs.Add(segmentBlob);
+                        }
+                        blobIdxRef[0] = bi + 1;
+                    }
+
                     if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
                     {
-                        SKTextBlob segmentBlob = textPaint.CreateTextBlob(printedsubline.Value);
+                        if (cachedBlobs == null)
+                        {
+                            segmentBlob = textPaint.CreateTextBlob(printedsubline.Value);
+                            disposeBlob = true;
+                        }
                         if (segmentBlob != null)
                         {
                             if (usetextoutline)
@@ -19462,8 +19487,9 @@ namespace GnollHackX.Pages.Game
                                 textPaint.StrokeWidth = 0;
                             }
                             textPaint.DrawTextOnCanvas(canvas, segmentBlob, x, y);
-                            segmentBlob.Dispose();
                         }
+                        if (disposeBlob)
+                            segmentBlob?.Dispose();
                     }
 
                     if (new_nhcolor != (int)NhColor.NO_COLOR)
@@ -19506,7 +19532,7 @@ namespace GnollHackX.Pages.Game
             while (startIdx >= 0);
         }
 
-        private void DrawTextSplit(SKCanvas canvas, string[] textsplit, List<byte[]> attrs_list, List<byte[]> colors_list, List<float> rowwidths, ref float x, ref float y, ref bool isfirstprintonrow, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, float paddingAdjustment, GHSkiaFontPaint textPaint, bool usespecialsymbols, bool usetextoutline, bool revertblackandwhite, bool centertext, float totalrowwidth, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding)
+        private void DrawTextSplit(SKCanvas canvas, string[] textsplit, List<byte[]> attrs_list, List<byte[]> colors_list, List<float> rowwidths, ref float x, ref float y, ref bool isfirstprintonrow, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, float paddingAdjustment, GHSkiaFontPaint textPaint, bool usespecialsymbols, bool usetextoutline, bool revertblackandwhite, bool centertext, float totalrowwidth, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding, List<SKTextBlob> cachedBlobs = null)
         {
             if (textsplit == null)
                 return;
@@ -19520,6 +19546,7 @@ namespace GnollHackX.Pages.Game
             //int rowidx = 0;
             //SKColor orig_color = textPaint.Color;
             //GHSubstring printedsubline = new GHSubstring("");
+            int[] blobIdxRef = cachedBlobs != null ? new int[] { 0 } : null;
             for (int idx = 0, cnt = textsplit.Length; idx < cnt; idx++)
             {
                 string split_str = textsplit[idx];
@@ -19530,7 +19557,7 @@ namespace GnollHackX.Pages.Game
 #if !GNH_MAUI
                     .AsSpan()
 #endif
-                    , attrs, colors, rowwidths, ref x, ref y, ref isfirstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, usespecialsymbols, usetextoutline, revertblackandwhite, centertext, totalrowwidth, curmenuoffset, glyphystart, glyphyend, glyphpadding, idx < textsplit.Length - 1, spacelength);
+                    , attrs, colors, rowwidths, ref x, ref y, ref isfirstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, usespecialsymbols, usetextoutline, revertblackandwhite, centertext, totalrowwidth, curmenuoffset, glyphystart, glyphyend, glyphpadding, idx < textsplit.Length - 1, spacelength, cachedBlobs, blobIdxRef);
 
 //                bool nowrap = false;
 //                if (string.IsNullOrWhiteSpace(split_str))
