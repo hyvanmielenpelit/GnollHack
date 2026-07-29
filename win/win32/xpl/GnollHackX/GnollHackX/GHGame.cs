@@ -810,6 +810,7 @@ namespace GnollHackX
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowVisibility, win.WindowID, true));
             if (win.WindowType == GHWinType.Menu || win.WindowType == GHWinType.Text)
             {
+                RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Clone()));
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.DisplayWindowView, win.WindowID));
             }
         }
