@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 #if GNH_MAUI
@@ -10,12 +10,18 @@ using SkiaSharp;
 
 namespace GnollHackX
 {
-    public sealed class GHScreenText
+    public sealed class GHScreenText : IDisposable
     {
         private DisplayScreenTextData _data;
         public long _created_at_count;
         private GamePage _gamePage;
         private int _animationFrequency;
+        private SKTextBlob _cachedMainBlob = null;
+        private float _cachedMainBlobTextSize = 0;
+        private SKTextBlob _cachedSuperBlob = null;
+        private float _cachedSuperBlobTextSize = 0;
+        private SKTextBlob _cachedSubBlob = null;
+        private float _cachedSubBlobTextSize = 0;
         public bool HasSuperText { get { return _data.supertext != null; } }
         public bool HasSubText { get { return _data.subtext != null; } }
 
@@ -307,6 +313,52 @@ namespace GnollHackX
         public SKColor GetSubTextOutlineColor(long counter_value)
         {
             return GetTimedColor(GetSubTextOutlineBaseColor(counter_value), counter_value);
+        }
+
+        public SKTextBlob GetOrCreateMainBlob(GHSkiaFontPaint textPaint)
+        {
+            float size = textPaint.TextSize;
+            if (_cachedMainBlob == null || _cachedMainBlobTextSize != size)
+            {
+                _cachedMainBlob?.Dispose();
+                _cachedMainBlob = textPaint.CreateTextBlob(_data.text);
+                _cachedMainBlobTextSize = size;
+            }
+            return _cachedMainBlob;
+        }
+
+        public SKTextBlob GetOrCreateSuperBlob(GHSkiaFontPaint textPaint)
+        {
+            float size = textPaint.TextSize;
+            if (_cachedSuperBlob == null || _cachedSuperBlobTextSize != size)
+            {
+                _cachedSuperBlob?.Dispose();
+                _cachedSuperBlob = textPaint.CreateTextBlob(_data.supertext);
+                _cachedSuperBlobTextSize = size;
+            }
+            return _cachedSuperBlob;
+        }
+
+        public SKTextBlob GetOrCreateSubBlob(GHSkiaFontPaint textPaint)
+        {
+            float size = textPaint.TextSize;
+            if (_cachedSubBlob == null || _cachedSubBlobTextSize != size)
+            {
+                _cachedSubBlob?.Dispose();
+                _cachedSubBlob = textPaint.CreateTextBlob(_data.subtext);
+                _cachedSubBlobTextSize = size;
+            }
+            return _cachedSubBlob;
+        }
+
+        public void Dispose()
+        {
+            _cachedMainBlob?.Dispose();
+            _cachedMainBlob = null;
+            _cachedSuperBlob?.Dispose();
+            _cachedSuperBlob = null;
+            _cachedSubBlob?.Dispose();
+            _cachedSubBlob = null;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,12 +10,14 @@ using GnollHackX.Pages.Game;
 
 namespace GnollHackX
 {
-    public sealed class GHConditionText
+    public sealed class GHConditionText : IDisposable
     {
         private DisplayConditionTextData _data;
         private long _created_at_count;
         private GamePage _gamePage;
         private int _animationFrequency;
+        private SKTextBlob _cachedBlob = null;
+        private float _cachedBlobTextSize = 0;
 
         public GHConditionText(DisplayConditionTextData data, long created_at_count, GamePage gamePage)
         {
@@ -163,6 +165,24 @@ namespace GnollHackX
         public SKColor GetOutlineColor(long counter_value)
         {
             return GetTimedColor(GetOutlineBaseColor(counter_value), counter_value);
+        }
+
+        public SKTextBlob GetOrCreateBlob(GHSkiaFontPaint textPaint)
+        {
+            float size = textPaint.TextSize;
+            if (_cachedBlob == null || _cachedBlobTextSize != size)
+            {
+                _cachedBlob?.Dispose();
+                _cachedBlob = textPaint.CreateTextBlob(_data.text);
+                _cachedBlobTextSize = size;
+            }
+            return _cachedBlob;
+        }
+
+        public void Dispose()
+        {
+            _cachedBlob?.Dispose();
+            _cachedBlob = null;
         }
     }
 }

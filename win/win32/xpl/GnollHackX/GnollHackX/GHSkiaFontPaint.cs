@@ -223,7 +223,7 @@ namespace GnollHackX
 #else
             SKTextAlign oldAlign = _paint.TextAlign;
             _paint.TextAlign = textAlign;
-            canvas.DrawText(sKTextBlob, x, y, _paint);
+            canvas.DrawText(textBlob, x, y, _paint);
             _paint.TextAlign = oldAlign;
 #endif
         }
@@ -252,6 +252,28 @@ namespace GnollHackX
             if (textBlob == null)
                 return;
             canvas.DrawText(textBlob, x, y, _paint);
+        }
+
+        public void DrawTextOnCanvas(SKCanvas canvas, string text, SKTextBlob textBlob, float x, float y, SKTextAlign textAlign)
+        {
+            if (textBlob == null)
+                return;
+#if GNH_MAUI
+            if (textAlign != SKTextAlign.Left)
+            {
+                var width = _font.MeasureText(text);
+                if (textAlign == SKTextAlign.Center)
+                    width *= 0.5f;
+                x -= width;
+            }
+
+            canvas.DrawText(textBlob, x, y, _paint);
+#else
+            SKTextAlign oldAlign = _paint.TextAlign;
+            _paint.TextAlign = textAlign;
+            canvas.DrawText(textBlob, x, y, _paint);
+            _paint.TextAlign = oldAlign;
+#endif
         }
 
 #if GNH_MAUI
