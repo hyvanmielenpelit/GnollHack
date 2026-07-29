@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 
 namespace GnollHackX
@@ -65,6 +66,9 @@ namespace GnollHackX
         private GHSkiaFontPaint _measurePaint = null;
         private SKTypeface _measureTypeface = null;
         private float _measureTextSize = 0;
+
+        /* Cached StringBuilder for string assembly in PutStrEx/PutStrEx2 */
+        private readonly StringBuilder _stringBuilder = new StringBuilder();
 
         public SKTypeface Typeface { get; set; }
         public SKColor TextColor { get; set; }
@@ -478,16 +482,20 @@ namespace GnollHackX
                     int origCursX = CursX;
 
                     if (CursX > curlen)
-                    {
-                        int n = CursX - curlen;
-                        string spaces = new String(' ', n);
-                        curstr = curstr + spaces;
-                        curlen = curstr.Length;
-                    }
+                        curlen = CursX;
 
-                    string leftstr = CursX <= 0 ? "" : curstr.Substring(0, CursX);
+                    _stringBuilder.Clear();
+                    if (CursX > 0)
+                    {
+                        int copyLen = Math.Min(CursX, curstr.Length);
+                        if (copyLen > 0)
+                            _stringBuilder.Append(curstr, 0, copyLen);
+                        if (CursX > curstr.Length)
+                            _stringBuilder.Append(' ', CursX - curstr.Length);
+                    }
+                    _stringBuilder.Append(str);
                     //string rightstr = curstr.Length <= CursX + len ? "" : curstr.Substring(CursX + len, curlen - (CursX + len));
-                    PutStrs[CursY].Text = leftstr + str; // + rightstr;
+                    PutStrs[CursY].Text = _stringBuilder.ToString();
 
                     CursX += str.Length;
 
@@ -591,16 +599,20 @@ namespace GnollHackX
                         int origCursX = CursX;
 
                         if (CursX > curlen)
-                        {
-                            int n = CursX - curlen;
-                            string spaces = new String(' ', n);
-                            curstr = curstr + spaces;
-                            curlen = curstr.Length;
-                        }
+                            curlen = CursX;
 
-                        string leftstr = CursX <= 0 ? "" : curstr.Substring(0, CursX);
+                        _stringBuilder.Clear();
+                        if (CursX > 0)
+                        {
+                            int copyLen = Math.Min(CursX, curstr.Length);
+                            if (copyLen > 0)
+                                _stringBuilder.Append(curstr, 0, copyLen);
+                            if (CursX > curstr.Length)
+                                _stringBuilder.Append(' ', CursX - curstr.Length);
+                        }
+                        _stringBuilder.Append(str);
                         //string rightstr = curstr.Length <= CursX + len ? "" : curstr.Substring(CursX + len, curlen - (CursX + len));
-                        PutStrs[CursY].Text = leftstr + str; // + rightstr;
+                        PutStrs[CursY].Text = _stringBuilder.ToString();
 
                         CursX += str.Length;
 
