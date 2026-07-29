@@ -1,15 +1,16 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Text;
+using SkiaSharp;
 #if GNH_MAUI
 using GnollHackM;
 #endif
 
 namespace GnollHackX
 {
-    public sealed class GHMsgHistoryItem
+    public sealed class GHMsgHistoryItem : IDisposable
     {
         public static readonly string[] _emptyTextSplit = { "" };
 
@@ -27,6 +28,7 @@ namespace GnollHackX
 
         /* This is accessed only by the PaintSurface thread */
         public readonly List<string> WrappedTextRows = new List<string>();
+        public readonly List<SKTextBlob> WrappedTextBlobs = new List<SKTextBlob>();
 
         /* There are protected by Interlocked */
         private string _filter = null;
@@ -81,6 +83,18 @@ namespace GnollHackX
             Attribute = attr;
             NHColor = color;
         }
+
+        public void ClearWrappedTextBlobs()
+        {
+            for (int i = 0, n = WrappedTextBlobs.Count; i < n; i++)
+                WrappedTextBlobs[i]?.Dispose();
+            WrappedTextBlobs.Clear();
+        }
+
+        public void Dispose()
+        {
+            ClearWrappedTextBlobs();
+        }
     }
 
     public sealed class GHMsgHistoryList : IEnumerable<GHMsgHistoryItem>
@@ -127,6 +141,10 @@ namespace GnollHackX
             _start = 0;
             _count = Math.Min(_capacity, oldList.Count);
             int start = oldList.Count - _count;
+            for (int i = 0; i < start; i++)
+            {
+                oldList[i]?.Dispose();
+            }
             for (int i = 0; i < _count; i++)
             {
                 _items[i] = oldList[i + start];
@@ -140,11 +158,17 @@ namespace GnollHackX
             if (IsFull)
                 return false;
 
-            _items[_start + _count] = item;
             if (_count == _capacity)
+            {
+                _items[_start]?.Dispose();
+                _items[_start + _count] = item;
                 _start++;
+            }
             else
+            {
+                _items[_start + _count] = item;
                 _count++;
+            }
 
             return true;
         }

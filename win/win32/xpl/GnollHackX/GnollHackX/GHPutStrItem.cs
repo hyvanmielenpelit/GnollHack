@@ -1,4 +1,4 @@
-﻿#if GNH_MAUI
+#if GNH_MAUI
 using GnollHackM;
 #else
 using Xamarin.Forms;
@@ -8,10 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SkiaSharp;
 
 namespace GnollHackX
 {
-    public sealed class GHPutStrItem
+    public sealed class GHPutStrItem : IDisposable
     {
         private GHWindow _window;
         private string _text;
@@ -36,8 +37,10 @@ namespace GnollHackX
 
         private List<int> _attributeList;
         private List<int> _colorList;
+        private List<SKTextBlob> _instructionBlobs = new List<SKTextBlob>();
         public List<int> AttributeList { get { return _attributeList; } }
         public List<int> ColorList { get { return _colorList; } }
+        public List<SKTextBlob> InstructionBlobs { get { return _instructionBlobs; } }
 
         public GHPutStrItem(GHWindow window, string str)
         {
@@ -54,6 +57,7 @@ namespace GnollHackX
             int curattr = 0, curclr = 0;
             int cnt = 0;
 
+            ClearInstructionBlobs();
             _instructionList.Clear();
             for (int i = 0; i < Text.Length; i++)
             {
@@ -261,6 +265,18 @@ namespace GnollHackX
                     return cnt;
                 } 
             }
+        }
+
+        public void ClearInstructionBlobs()
+        {
+            for (int i = 0, n = _instructionBlobs.Count; i < n; i++)
+                _instructionBlobs[i]?.Dispose();
+            _instructionBlobs.Clear();
+        }
+
+        public void Dispose()
+        {
+            ClearInstructionBlobs();
         }
     }
 }

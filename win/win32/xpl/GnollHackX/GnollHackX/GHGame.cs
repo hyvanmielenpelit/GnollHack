@@ -620,6 +620,8 @@ namespace GnollHackX
                     break;
             }
 
+            foreach (GHPutStrItem item in win.PutStrs)
+                item?.Dispose();
             win.PutStrs.Clear();
             win.SetWidthHeight(0, 0, 0, 0);
             win.CursX = 0;
@@ -3504,6 +3506,8 @@ namespace GnollHackX
                     ActiveGamePage?.ClearGuiEffects();
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_MESSAGE_HISTORY:
+                    for (int mi = 0; mi < _longer_message_history.Count; mi++)
+                        _longer_message_history[mi]?.Dispose();
                     _longer_message_history = new GHMsgHistoryList(_longer_message_history.Capacity, _longer_message_history.Excess);
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory));
                     break;

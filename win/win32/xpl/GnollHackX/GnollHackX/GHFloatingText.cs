@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
@@ -9,12 +9,13 @@ using GnollHackX.Pages.Game;
 #endif
 namespace GnollHackX
 {
-    public sealed class GHFloatingText
+    public sealed class GHFloatingText : IDisposable
     {
         private DisplayFloatingTextData _data;
         private long _created_at_count;
         private GamePage _gamePage;
         private int _animationFrequency;
+        private SKTextBlob _cachedBlob = null;
 
         public GHFloatingText(DisplayFloatingTextData data, long created_at_count, GamePage gamePage)
         {
@@ -188,6 +189,19 @@ namespace GnollHackX
         public SKColor GetOutlineColor(long counter_value)
         {
             return GetTimedColor(GetOutlineBaseColor(counter_value), counter_value);
+        }
+
+        public SKTextBlob GetOrCreateBlob(GHSkiaFontPaint textPaint)
+        {
+            if (_cachedBlob == null)
+                _cachedBlob = textPaint.CreateTextBlob(_data.text);
+            return _cachedBlob;
+        }
+
+        public void Dispose()
+        {
+            _cachedBlob?.Dispose();
+            _cachedBlob = null;
         }
     }
 }

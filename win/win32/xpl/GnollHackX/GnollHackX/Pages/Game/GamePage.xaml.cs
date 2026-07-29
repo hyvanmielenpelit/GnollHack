@@ -1,4 +1,4 @@
-using SkiaSharp;
+﻿using SkiaSharp;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -2647,7 +2647,10 @@ namespace GnollHackX.Pages.Game
                 for (i = _floatingTexts.Count - 1; i >= 0 && i < _floatingTexts.Count; i--)
                 {
                     if (_floatingTexts[i].IsFinished(maincountervalue))
+                    {
+                        _floatingTexts[i].Dispose();
                         _floatingTexts.RemoveAt(i);
+                    }
                 }
             }
 
@@ -8868,6 +8871,7 @@ namespace GnollHackX.Pages.Game
                             textPaint.MeasureText(str, ref textBounds);
                             tx = (offsetX + usedOffsetX + width * p.X - textBounds.Width / 2);
                             ty = (offsetY + usedOffsetY + height * p.Y - textBounds.Height / 2);
+                            SKTextBlob ftBlob = ft.GetOrCreateBlob(textPaint);
                             if (relativestrokewidth > 0)
                             {
                                 textPaint.Style = SKPaintStyle.Stroke;
@@ -8875,14 +8879,14 @@ namespace GnollHackX.Pages.Game
                                 textPaint.Color = strokecolor;
                                 StartProfiling(GHProfilingStyle.Text);
                                 //canvas.DrawText(str, tx, ty, textPaint);
-                                textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                                textPaint.DrawTextOnCanvas(canvas, ftBlob, tx, ty);
                                 StopProfiling(GHProfilingStyle.Text);
                             }
                             textPaint.Style = SKPaintStyle.Fill;
                             textPaint.Color = fillcolor;
                             StartProfiling(GHProfilingStyle.Bitmap);
                             //canvas.DrawText(str, tx, ty, textPaint);
-                            textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                            textPaint.DrawTextOnCanvas(canvas, ftBlob, tx, ty);
                             StopProfiling(GHProfilingStyle.Bitmap);
                         }
                         if (_localScreenText != null)
@@ -9910,6 +9914,7 @@ namespace GnollHackX.Pages.Game
                                             int pos = 0;
                                             float xpos = 0;
                                             float totwidth = 0;
+                                            int blobIdx = 0;
                                             foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                                             {
                                                 if (putstritem.Text == null)
@@ -9923,6 +9928,17 @@ namespace GnollHackX.Pages.Game
                                                 pos += substr.Length;
                                                 totwidth = textPaint.MeasureText(substr.Value, ref textBounds);
 
+                                                /* Get or create cached blob for this instruction segment */
+                                                SKTextBlob instrBlob = null;
+                                                if (blobIdx < putstritem.InstructionBlobs.Count)
+                                                    instrBlob = putstritem.InstructionBlobs[blobIdx];
+                                                else
+                                                {
+                                                    instrBlob = textPaint.CreateTextBlob(substr.Value);
+                                                    putstritem.InstructionBlobs.Add(instrBlob);
+                                                }
+                                                blobIdx++;
+
                                                 /* attributes */
                                                 tx = xpos + winRect.Left + ghWindow.Padding.Left;
                                                 ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + j * height;
@@ -9934,7 +9950,7 @@ namespace GnollHackX.Pages.Game
                                                     textPaint.Color = SKColors.Black;
                                                     textPaint.MaskFilter = _blur;
                                                     float shadow_offset = 0.15f * textPaint.TextSize;
-                                                    textPaint.DrawTextOnCanvas(canvas, substr.Value, tx + shadow_offset, ty + shadow_offset);
+                                                    textPaint.DrawTextOnCanvas(canvas, instrBlob, tx + shadow_offset, ty + shadow_offset);
                                                     textPaint.MaskFilter = null;
                                                 }
                                                 if (ghWindow.StrokeWidth > 0)
@@ -9942,11 +9958,11 @@ namespace GnollHackX.Pages.Game
                                                     textPaint.Style = SKPaintStyle.Stroke;
                                                     textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
                                                     textPaint.Color = SKColors.Black;
-                                                    textPaint.DrawTextOnCanvas(canvas, substr.Value, tx, ty);
+                                                    textPaint.DrawTextOnCanvas(canvas, instrBlob, tx, ty);
                                                 }
                                                 textPaint.Style = SKPaintStyle.Fill;
                                                 textPaint.Color = UIUtils.NHColor2SKColor(instr.Color < (int)NhColor.CLR_MAX ? instr.Color : (int)NhColor.CLR_WHITE, instr.Attributes);
-                                                textPaint.DrawTextOnCanvas(canvas, substr.Value, tx, ty);
+                                                textPaint.DrawTextOnCanvas(canvas, instrBlob, tx, ty);
                                                 textPaint.Style = SKPaintStyle.Fill;
                                                 xpos += totwidth;
                                                 StopProfiling(GHProfilingStyle.Text);
@@ -9986,6 +10002,7 @@ namespace GnollHackX.Pages.Game
                                         if (RefreshMsgHistoryRowCounts || msgHistoryItem.WrappedTextRows.Count == 0)
                                         {
                                             refreshsmallesttop = true;
+                                            msgHistoryItem.ClearWrappedTextBlobs();
                                             msgHistoryItem.WrappedTextRows.Clear();
                                             float lineLength = 0.0f;
                                             //string line = "";
@@ -10052,17 +10069,27 @@ namespace GnollHackX.Pages.Game
 
                                             if (use_one_color)
                                             {
+                                                /* Get or create cached blob for this wrapped line */
+                                                SKTextBlob wrappedBlob = null;
+                                                if (lineidx < msgHistoryItem.WrappedTextBlobs.Count)
+                                                    wrappedBlob = msgHistoryItem.WrappedTextBlobs[lineidx];
+                                                else
+                                                {
+                                                    wrappedBlob = textPaint.CreateTextBlob(wrappedLine);
+                                                    msgHistoryItem.WrappedTextBlobs.Add(wrappedBlob);
+                                                }
+
                                                 StartProfiling(GHProfilingStyle.Text);
                                                 textPaint.Style = SKPaintStyle.Stroke;
                                                 textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
                                                 textPaint.Color = SKColors.Black;
                                                 //canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                textPaint.DrawTextOnCanvas(canvas, wrappedLine, tx, ty);
+                                                textPaint.DrawTextOnCanvas(canvas, wrappedBlob, tx, ty);
                                                 textPaint.Style = SKPaintStyle.Fill;
                                                 textPaint.StrokeWidth = 0;
                                                 textPaint.Color = printColor;
                                                 //canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                textPaint.DrawTextOnCanvas(canvas, wrappedLine, tx, ty);
+                                                textPaint.DrawTextOnCanvas(canvas, wrappedBlob, tx, ty);
                                                 textPaint.Style = SKPaintStyle.Fill;
                                                 textPaint.StrokeWidth = 0;
                                                 textPaint.Color = SKColors.White;
@@ -17486,6 +17513,8 @@ namespace GnollHackX.Pages.Game
         {
             lock (_floatingTextLock)
             {
+                foreach (GHFloatingText ft in _floatingTexts)
+                    ft.Dispose();
                 _floatingTexts.Clear();
             }
         }

@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -206,6 +206,28 @@ namespace GnollHackX
 #endif
         }
 
+        public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, SKTextBlob textBlob, float x, float y, SKTextAlign textAlign)
+        {
+            if (textBlob == null)
+                return;
+#if GNH_MAUI
+            if (textAlign != SKTextAlign.Left)
+            {
+                var width = _font.MeasureText(text);
+                if (textAlign == SKTextAlign.Center)
+                    width *= 0.5f;
+                x -= width;
+            }
+
+            canvas.DrawText(textBlob, x, y, _paint);
+#else
+            SKTextAlign oldAlign = _paint.TextAlign;
+            _paint.TextAlign = textAlign;
+            canvas.DrawText(sKTextBlob, x, y, _paint);
+            _paint.TextAlign = oldAlign;
+#endif
+        }
+
         public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, SKPoint p, SKTextAlign textAlign)
         {
             DrawTextOnCanvas(canvas, text, p.X, p.Y, textAlign);
@@ -223,6 +245,13 @@ namespace GnollHackX
         public void DrawTextOnCanvas(SKCanvas canvas, string text, SKPoint p)
         {
             DrawTextOnCanvas(canvas, text, p.X, p.Y);
+        }
+
+        public void DrawTextOnCanvas(SKCanvas canvas, SKTextBlob textBlob, float x, float y)
+        {
+            if (textBlob == null)
+                return;
+            canvas.DrawText(textBlob, x, y, _paint);
         }
 
 #if GNH_MAUI
@@ -243,6 +272,28 @@ namespace GnollHackX
             DrawTextOnCanvas(canvas, text, p.X, p.Y);
         }
 #endif
+
+        public SKTextBlob CreateTextBlob(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return null;
+#if GNH_MAUI
+            return SKTextBlob.Create(text.AsSpan(), _font);
+#else
+            return SKTextBlob.Create(text.AsSpan(), _paint.ToFont());
+#endif
+        }
+
+        public SKTextBlob CreateTextBlob(ReadOnlySpan<char> text)
+        {
+            if (text.IsEmpty)
+                return null;
+#if GNH_MAUI
+            return SKTextBlob.Create(text, _font);
+#else
+            return SKTextBlob.Create(text, _paint.ToFont());
+#endif
+        }
 
         public float MeasureText(string text)
         {
