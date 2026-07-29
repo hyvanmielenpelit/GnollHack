@@ -1189,6 +1189,35 @@ namespace GnollHackX.Pages.Game
                 bmp.Dispose();
             _savedAutoDrawBitmaps.Clear();
             ClearColorFilterCaches();
+
+            /* Dispose of all cached text blobs */
+            for (int i = 0; i < _localStatusFieldBlobs.Length; i++)
+            {
+                _localStatusFieldBlobs[i]?.Dispose();
+                _localStatusFieldBlobs[i] = null;
+            }
+            for (int i = 0; i < _literalBlobs.Length; i++)
+            {
+                _literalBlobs[i]?.Dispose();
+                _literalBlobs[i] = null;
+            }
+            for (int i = 0; i < _localContextMenuData.Count; i++)
+                _localContextMenuData[i]?.Dispose();
+            _localContextMenuData.Clear();
+            for (int i = 0; i < _localFloatingTexts.Count; i++)
+                _localFloatingTexts[i]?.Dispose();
+            _localFloatingTexts.Clear();
+            for (int i = 0; i < _localConditionTexts.Count; i++)
+                _localConditionTexts[i]?.Dispose();
+            _localConditionTexts.Clear();
+            _localScreenText?.Dispose();
+            _localScreenText = null;
+            for (int i = 0; i < _localMainScreenDebugLogBlobs.Count; i++)
+                _localMainScreenDebugLogBlobs[i]?.Dispose();
+            _localMainScreenDebugLogBlobs.Clear();
+            for (int i = 0; i < _localMenuScreenDebugLogBlobs.Count; i++)
+                _localMenuScreenDebugLogBlobs[i]?.Dispose();
+            _localMenuScreenDebugLogBlobs.Clear();
         }
 
         private void UpdateAbilityButtonVisibility(bool isDesktop)
@@ -7897,6 +7926,8 @@ namespace GnollHackX.Pages.Game
                 Monitor.TryEnter(curGame._contextMenuDataLock, ref lockTaken);
                 if (lockTaken)
                 {
+                    for (int i = 0; i < _localContextMenuData.Count; i++)
+                        _localContextMenuData[i]?.Dispose();
                     _localContextMenuData.Clear();
                     _localContextMenuData.AddRange(curGame._contextMenuData);
                     _localContextMenuRects.Clear();
@@ -12375,12 +12406,14 @@ namespace GnollHackX.Pages.Game
                             }
                             float text_x = (imgDest.Left + imgDest.Right) / 2;
                             float text_y = imgDest.Bottom - textPaint.FontMetrics.Ascent;
-                            textPaint.DrawTextOnCanvas(canvas, cmb.LblText, text_x, text_y, SKTextAlign.Center);
+                            SKTextBlob lblBlob = cmb.GetOrCreateLblBlob(textPaint, out float lblWidth);
+                            textPaint.DrawTextOnCanvas(canvas, lblBlob, text_x - lblWidth / 2, text_y);
                             if (showKeyboardShortcuts && !string.IsNullOrEmpty(cmb.ShortcutText))
                             {
                                 textPaint.Color = SKColors.Gray;
                                 textPaint.TextSize = textSize * GHConstants.KeyboardShortcutRelativeFontSize;
-                                textPaint.DrawTextOnCanvas(canvas, cmb.ShortcutText, text_x, text_y + textPaint.FontSpacing, SKTextAlign.Center);
+                                SKTextBlob shortcutBlob = cmb.GetOrCreateShortcutBlob(textPaint, out float shortcutWidth);
+                                textPaint.DrawTextOnCanvas(canvas, shortcutBlob, text_x - shortcutWidth / 2, text_y + textPaint.FontSpacing);
                                 textPaint.TextSize = textSize;
                                 textPaint.Color = SKColors.White;
                             }

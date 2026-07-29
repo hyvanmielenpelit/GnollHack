@@ -4926,14 +4926,22 @@ namespace GnollHackX
         }
     }
 
-    public class ContextMenuButton
+    public class ContextMenuButton : IDisposable
     {
         public readonly string LblText;
         public readonly string ImgSourcePath;
         public readonly SKImage Bitmap;
         public readonly int BtnCommand;
         public readonly string ShortcutText;
-        
+
+        private SKTextBlob _cachedLblBlob;
+        private float _cachedLblTextSize;
+        private float _cachedLblWidth;
+
+        private SKTextBlob _cachedShortcutBlob;
+        private float _cachedShortcutTextSize;
+        private float _cachedShortcutWidth;
+
         //public SKRect Rect;
         public ContextMenuButton(string lblText, string imgSourcePath, SKImage bitmap, int btnCommand)
         {
@@ -4942,6 +4950,44 @@ namespace GnollHackX
             Bitmap = bitmap;
             BtnCommand = btnCommand;
             ShortcutText = GHUtils.ConstructShortcutText(btnCommand);
+        }
+
+        public SKTextBlob GetOrCreateLblBlob(GHSkiaFontPaint textPaint, out float cachedWidth)
+        {
+            if (_cachedLblBlob != null && _cachedLblTextSize == textPaint.TextSize)
+            {
+                cachedWidth = _cachedLblWidth;
+                return _cachedLblBlob;
+            }
+            _cachedLblBlob?.Dispose();
+            cachedWidth = textPaint.MeasureText(LblText);
+            _cachedLblBlob = textPaint.CreateTextBlob(LblText);
+            _cachedLblTextSize = textPaint.TextSize;
+            _cachedLblWidth = cachedWidth;
+            return _cachedLblBlob;
+        }
+
+        public SKTextBlob GetOrCreateShortcutBlob(GHSkiaFontPaint textPaint, out float cachedWidth)
+        {
+            if (_cachedShortcutBlob != null && _cachedShortcutTextSize == textPaint.TextSize)
+            {
+                cachedWidth = _cachedShortcutWidth;
+                return _cachedShortcutBlob;
+            }
+            _cachedShortcutBlob?.Dispose();
+            cachedWidth = textPaint.MeasureText(ShortcutText);
+            _cachedShortcutBlob = textPaint.CreateTextBlob(ShortcutText);
+            _cachedShortcutTextSize = textPaint.TextSize;
+            _cachedShortcutWidth = cachedWidth;
+            return _cachedShortcutBlob;
+        }
+
+        public void Dispose()
+        {
+            _cachedLblBlob?.Dispose();
+            _cachedLblBlob = null;
+            _cachedShortcutBlob?.Dispose();
+            _cachedShortcutBlob = null;
         }
     }
 }
