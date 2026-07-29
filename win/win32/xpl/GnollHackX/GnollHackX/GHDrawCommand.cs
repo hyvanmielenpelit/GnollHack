@@ -61,7 +61,7 @@ namespace GnollHackX
         }
     }
 
-    public sealed class GHDrawCommand
+    public struct GHDrawCommand
     {
         public SKMatrix Matrix;
         public SKRect SourceRect;
