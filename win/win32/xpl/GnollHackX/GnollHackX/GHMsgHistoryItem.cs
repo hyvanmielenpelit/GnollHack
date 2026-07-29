@@ -29,6 +29,7 @@ namespace GnollHackX
         /* This is accessed only by the PaintSurface thread */
         public readonly List<string> WrappedTextRows = new List<string>();
         public readonly List<SKTextBlob> WrappedTextBlobs = new List<SKTextBlob>();
+        public float WrappedTextBlobTextSize = 0;
 
         /* There are protected by Interlocked */
         private string _filter = null;

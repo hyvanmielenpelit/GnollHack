@@ -9953,6 +9953,10 @@ namespace GnollHackX.Pages.Game
                                             float xpos = 0;
                                             float totwidth = 0;
                                             int blobIdx = 0;
+                                            /* Invalidate cached blobs if font size changed */
+                                            if (putstritem.InstructionBlobs.Count > 0 && putstritem.InstructionBlobTextSize != textPaint.TextSize)
+                                                putstritem.ClearInstructionBlobs();
+                                            putstritem.InstructionBlobTextSize = textPaint.TextSize;
                                             foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                                             {
                                                 if (putstritem.Text == null)
@@ -10109,6 +10113,9 @@ namespace GnollHackX.Pages.Game
                                             {
                                                 /* Get or create cached blob for this wrapped line */
                                                 SKTextBlob wrappedBlob = null;
+                                                if (msgHistoryItem.WrappedTextBlobs.Count > 0 && msgHistoryItem.WrappedTextBlobTextSize != textPaint.TextSize)
+                                                    msgHistoryItem.ClearWrappedTextBlobs();
+                                                msgHistoryItem.WrappedTextBlobTextSize = textPaint.TextSize;
                                                 if (lineidx < msgHistoryItem.WrappedTextBlobs.Count)
                                                     wrappedBlob = msgHistoryItem.WrappedTextBlobs[lineidx];
                                                 else

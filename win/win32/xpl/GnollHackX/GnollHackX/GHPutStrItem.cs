@@ -38,9 +38,11 @@ namespace GnollHackX
         private List<int> _attributeList;
         private List<int> _colorList;
         private List<SKTextBlob> _instructionBlobs = new List<SKTextBlob>();
+        private float _instructionBlobTextSize = 0;
         public List<int> AttributeList { get { return _attributeList; } }
         public List<int> ColorList { get { return _colorList; } }
         public List<SKTextBlob> InstructionBlobs { get { return _instructionBlobs; } }
+        public float InstructionBlobTextSize { get { return _instructionBlobTextSize; } set { _instructionBlobTextSize = value; } }
 
         public GHPutStrItem(GHWindow window, string str)
         {

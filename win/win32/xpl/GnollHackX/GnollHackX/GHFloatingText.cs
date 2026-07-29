@@ -16,6 +16,7 @@ namespace GnollHackX
         private GamePage _gamePage;
         private int _animationFrequency;
         private SKTextBlob _cachedBlob = null;
+        private float _cachedBlobTextSize = 0;
 
         public GHFloatingText(DisplayFloatingTextData data, long created_at_count, GamePage gamePage)
         {
@@ -193,8 +194,12 @@ namespace GnollHackX
 
         public SKTextBlob GetOrCreateBlob(GHSkiaFontPaint textPaint)
         {
-            if (_cachedBlob == null)
+            if (_cachedBlob == null || _cachedBlobTextSize != textPaint.TextSize)
+            {
+                _cachedBlob?.Dispose();
                 _cachedBlob = textPaint.CreateTextBlob(_data.text);
+                _cachedBlobTextSize = textPaint.TextSize;
+            }
             return _cachedBlob;
         }
 
