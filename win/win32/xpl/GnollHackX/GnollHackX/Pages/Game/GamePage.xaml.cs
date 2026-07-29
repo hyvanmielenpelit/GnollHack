@@ -7426,6 +7426,9 @@ namespace GnollHackX.Pages.Game
         
         private List<string> _localMainScreenDebugLogs = new List<string>();
         private List<string> _localMainTempScreenDebugLogs = new List<string>();
+        private List<SKTextBlob> _localMainScreenDebugLogBlobs = new List<SKTextBlob>();
+        private List<SKTextBlob> _localMainTempScreenDebugLogBlobs = new List<SKTextBlob>();
+        private float _lastMainScreenLogTextSize = 0;
         private bool _localDarkeningFilterCachePruned;
         private bool _localCompositeFilterCachePruned;
         private bool _localDarkenedBitmapCachePruned;
@@ -7945,17 +7948,29 @@ namespace GnollHackX.Pages.Game
             while (GHApp.PendingScreenLogMessages.TryDequeue(out string debugMessage))
             {
                 if (!string.IsNullOrEmpty(debugMessage))
+                {
                     _localMainScreenDebugLogs.Add(debugMessage);
+                    _localMainScreenDebugLogBlobs.Add(null);
+                }
 
                 if (_localMainScreenDebugLogs.Count >= _maxSavedScreenLogs)
                 {
                     List<string> orig = _localMainScreenDebugLogs;
+                    List<SKTextBlob> origBlobs = _localMainScreenDebugLogBlobs;
+                    for (int i = 0; i < _maxSavedScreenLogs - _maxShownScreenLogs; i++)
+                        _localMainScreenDebugLogBlobs[i]?.Dispose();
                     for (int i = _maxSavedScreenLogs - _maxShownScreenLogs; i < _localMainScreenDebugLogs.Count; i++)
+                    {
                         _localMainTempScreenDebugLogs.Add(_localMainScreenDebugLogs[i]);
+                        _localMainTempScreenDebugLogBlobs.Add(_localMainScreenDebugLogBlobs[i]);
+                    }
                     _localMainScreenDebugLogs.Clear(); /* Is now empty and set as new temp below */
+                    _localMainScreenDebugLogBlobs.Clear();
                     /* Swap the lists */
                     _localMainScreenDebugLogs = _localMainTempScreenDebugLogs;
                     _localMainTempScreenDebugLogs = orig;
+                    _localMainScreenDebugLogBlobs = _localMainTempScreenDebugLogBlobs;
+                    _localMainTempScreenDebugLogBlobs = origBlobs;
                 }
             }
 
@@ -12531,16 +12546,30 @@ namespace GnollHackX.Pages.Game
                     /* Then action screen debug logging */
                     textPaint.TextSize = 14 * inverse_canvas_scale * customScale;
                     textPaint.Typeface = GHApp.LatoRegular;
+                    if (textPaint.TextSize != _lastMainScreenLogTextSize)
+                    {
+                        for (int i = 0; i < _localMainScreenDebugLogBlobs.Count; i++)
+                        {
+                            _localMainScreenDebugLogBlobs[i]?.Dispose();
+                            _localMainScreenDebugLogBlobs[i] = null;
+                        }
+                        _lastMainScreenLogTextSize = textPaint.TextSize;
+                    }
                     float textSpacing = textPaint.FontSpacing;
                     tx = 5;
                     ty = 5 - textPaint.FontMetrics.Ascent;
                     int startIndex = Math.Max(0, _localMainScreenDebugLogs.Count - _maxShownScreenLogs);
+                    for (int i = startIndex; i < _localMainScreenDebugLogs.Count; i++)
+                    {
+                        if (_localMainScreenDebugLogBlobs[i] == null)
+                            _localMainScreenDebugLogBlobs[i] = textPaint.CreateTextBlob(_localMainScreenDebugLogs[i]);
+                    }
                     textPaint.Color = SKColors.Black;
                     textPaint.StrokeWidth = textPaint.TextSize / 3;
                     textPaint.Style = SKPaintStyle.Stroke;
                     for (int i = startIndex; i < _localMainScreenDebugLogs.Count; i++)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, _localMainScreenDebugLogs[i], tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, _localMainScreenDebugLogBlobs[i], tx, ty);
                         ty += textSpacing;
                     }
                     textPaint.Color = SKColors.Red;
@@ -12548,7 +12577,7 @@ namespace GnollHackX.Pages.Game
                     ty = 5 - textPaint.FontMetrics.Ascent;
                     for (int i = startIndex; i < _localMainScreenDebugLogs.Count; i++)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, _localMainScreenDebugLogs[i], tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, _localMainScreenDebugLogBlobs[i], tx, ty);
                         ty += textSpacing;
                     }
                 }
@@ -18185,6 +18214,9 @@ namespace GnollHackX.Pages.Game
         /* To be used only from PaintSurfance thread */
         private List<string> _localMenuScreenDebugLogs = new List<string>();
         private List<string> _localMenuTempScreenDebugLogs = new List<string>();
+        private List<SKTextBlob> _localMenuScreenDebugLogBlobs = new List<SKTextBlob>();
+        private List<SKTextBlob> _localMenuTempScreenDebugLogBlobs = new List<SKTextBlob>();
+        private float _lastMenuScreenLogTextSize = 0;
         private const int _maxShownScreenLogs = 15;
         private const int _maxSavedScreenLogs = 30;
 
@@ -18246,17 +18278,29 @@ namespace GnollHackX.Pages.Game
             while (GHApp.PendingScreenLogMessages.TryDequeue(out string debugMessage))
             {
                 if (!string.IsNullOrEmpty(debugMessage))
+                {
                     _localMenuScreenDebugLogs.Add(debugMessage);
+                    _localMenuScreenDebugLogBlobs.Add(null);
+                }
 
                 if (_localMenuScreenDebugLogs.Count >= _maxSavedScreenLogs)
                 {
                     List<string> orig = _localMenuScreenDebugLogs;
+                    List<SKTextBlob> origBlobs = _localMenuScreenDebugLogBlobs;
+                    for (int i = 0; i < _maxSavedScreenLogs - _maxShownScreenLogs; i++)
+                        _localMenuScreenDebugLogBlobs[i]?.Dispose();
                     for (int i = _maxSavedScreenLogs - _maxShownScreenLogs; i < _localMenuScreenDebugLogs.Count; i++)
+                    {
                         _localMenuTempScreenDebugLogs.Add(_localMenuScreenDebugLogs[i]);
+                        _localMenuTempScreenDebugLogBlobs.Add(_localMenuScreenDebugLogBlobs[i]);
+                    }
                     _localMenuScreenDebugLogs.Clear(); /* Is now empty and set as new temp below */
+                    _localMenuScreenDebugLogBlobs.Clear();
                     /* Swap the lists */
                     _localMenuScreenDebugLogs = _localMenuTempScreenDebugLogs;
                     _localMenuTempScreenDebugLogs = orig;
+                    _localMenuScreenDebugLogBlobs = _localMenuTempScreenDebugLogBlobs;
+                    _localMenuTempScreenDebugLogBlobs = origBlobs;
                 }
             }
 
@@ -19039,16 +19083,30 @@ namespace GnollHackX.Pages.Game
                 {
                     textPaint.TextSize = 14 * scale * customScale;
                     textPaint.Typeface = GHApp.LatoRegular;
+                    if (textPaint.TextSize != _lastMenuScreenLogTextSize)
+                    {
+                        for (int i = 0; i < _localMenuScreenDebugLogBlobs.Count; i++)
+                        {
+                            _localMenuScreenDebugLogBlobs[i]?.Dispose();
+                            _localMenuScreenDebugLogBlobs[i] = null;
+                        }
+                        _lastMenuScreenLogTextSize = textPaint.TextSize;
+                    }
                     float textSpacing = textPaint.FontSpacing;
                     float tx = 5;
                     float ty = 5 - textPaint.FontMetrics.Ascent;
                     int startIndex = Math.Max(0, _localMenuScreenDebugLogs.Count - _maxShownScreenLogs);
+                    for (int i = startIndex; i < _localMenuScreenDebugLogs.Count; i++)
+                    {
+                        if (_localMenuScreenDebugLogBlobs[i] == null)
+                            _localMenuScreenDebugLogBlobs[i] = textPaint.CreateTextBlob(_localMenuScreenDebugLogs[i]);
+                    }
                     textPaint.Color = SKColors.Black;
                     textPaint.StrokeWidth = textPaint.TextSize / 3;
                     textPaint.Style = SKPaintStyle.Stroke;
                     for (int i = startIndex; i < _localMenuScreenDebugLogs.Count; i++)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, _localMenuScreenDebugLogs[i], tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, _localMenuScreenDebugLogBlobs[i], tx, ty);
                         ty += textSpacing;
                     }
                     textPaint.Color = SKColors.Red;
@@ -19056,7 +19114,7 @@ namespace GnollHackX.Pages.Game
                     ty = 5 - textPaint.FontMetrics.Ascent;
                     for (int i = startIndex; i < _localMenuScreenDebugLogs.Count; i++)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, _localMenuScreenDebugLogs[i], tx, ty);
+                        textPaint.DrawTextOnCanvas(canvas, _localMenuScreenDebugLogBlobs[i], tx, ty);
                         ty += textSpacing;
                     }
                 }
