@@ -3462,11 +3462,13 @@ namespace GnollHackX.Pages.Game
 
             lock (_localWindowLock)
             {
-                if (ghWindow.AutoPlacement && _localGHWindows[winid] != null)
+                GHWindow oldWin = _localGHWindows[winid];
+                if (ghWindow.AutoPlacement && oldWin != null)
                 {
-                    ghWindow.Left = _localGHWindows[winid].Left;
-                    ghWindow.Top = _localGHWindows[winid].Top;
+                    ghWindow.Left = oldWin.Left;
+                    ghWindow.Top = oldWin.Top;
                 }
+                oldWin?.Dispose();
                 _localGHWindows[winid] = ghWindow;
                 switch(ghWindow.WindowType)
                 {
@@ -3646,6 +3648,7 @@ namespace GnollHackX.Pages.Game
                     default:
                         break;
                 }
+                win.Dispose();
             }
         }
 

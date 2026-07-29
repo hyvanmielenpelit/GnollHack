@@ -1457,20 +1457,20 @@ namespace GnollHackX
 
         private static float _cachedStatusBarHeight = -1;
         private static float _cachedTextScale = -1;
-        
+        private static GHSkiaFontPaint _statusBarMeasurePaint = null;
+
         public static float CalculateStatusBarSkiaHeight(float textScale)
         {
             if(_cachedStatusBarHeight > 0 && _cachedTextScale == textScale)
                 return _cachedStatusBarHeight;
 
-            float statusbarheight;
-            using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
-            {
-                textPaint.Typeface = GHApp.LatoRegular;
-                textPaint.TextSize = GHConstants.StatusBarBaseFontSize * textScale;
-                float rowheight = textPaint.FontSpacing;
-                statusbarheight = rowheight * 2 + GHConstants.StatusBarVerticalMargin * 2 + GHConstants.StatusBarRowMargin;
-            }
+            if (_statusBarMeasurePaint == null)
+                _statusBarMeasurePaint = new GHSkiaFontPaint();
+
+            _statusBarMeasurePaint.Typeface = GHApp.LatoRegular;
+            _statusBarMeasurePaint.TextSize = GHConstants.StatusBarBaseFontSize * textScale;
+            float rowheight = _statusBarMeasurePaint.FontSpacing;
+            float statusbarheight = rowheight * 2 + GHConstants.StatusBarVerticalMargin * 2 + GHConstants.StatusBarRowMargin;
             _cachedStatusBarHeight = statusbarheight;
             _cachedTextScale = textScale;
             return statusbarheight;

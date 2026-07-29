@@ -583,6 +583,7 @@ namespace GnollHackX
                         _statusWindowId = 0;
                     DestroyGHWindow(ghwin);
                 }
+                _ghWindows[winHandle]?.Dispose();
                 _ghWindows[winHandle] = null;
             }
         }
@@ -844,6 +845,7 @@ namespace GnollHackX
 
                     //ghwin.Destroy();
                     DestroyGHWindow(ghwin);
+                    ghwin.Dispose();
                     _ghWindows[winHandle] = null;
                 }
                 _lastWindowHandle = -1;
