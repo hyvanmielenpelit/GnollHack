@@ -26,6 +26,26 @@ namespace GnollHackX
 #endif
         }
 
+        public void Reset()
+        {
+            _paint.Color = new SKColor(0, 0, 0, 255);
+            _paint.Style = SKPaintStyle.Fill;
+            _paint.StrokeWidth = 0;
+            _paint.IsAntialias = false;
+            _paint.BlendMode = SKBlendMode.SrcOver;
+            _paint.ColorFilter = null;
+            _paint.Shader = null;
+            _paint.MaskFilter = null;
+            _paint.PathEffect = null;
+#if GNH_MAUI
+            _font.Typeface = null;
+            _font.Size = 12;
+#else
+            _paint.Typeface = null;
+            _paint.TextSize = 12;
+#endif
+        }
+
         public void Dispose()
         {
             _paint.Dispose();

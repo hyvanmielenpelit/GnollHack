@@ -83,6 +83,7 @@ namespace GnollHackX
                 gamePage.StopTimers();
                 gamePage.ShutDownCanvasViews();
                 GHApp.DisconnectIViewHandlers(gamePage);
+                gamePage.Cleanup();
                 GHApp.CurrentGamePage = null;
             }
             GHApp.IncrementMainConstructorRunNumber();
@@ -1324,6 +1325,7 @@ namespace GnollHackX
             await InitializeServices();
 
             CleanTransferDirectories();
+            TryDeleteFrameLog();
 
             GHApp.InitAdditionalTypefaces();
             GHApp.InitAdditionalCachedBitmaps();
@@ -1845,8 +1847,8 @@ namespace GnollHackX
                 await Task.Delay(100);
                 GHApp.FmodService?.ShutdownFmod();
                 await Task.Delay(60);
-                await GHApp.FinishApp();
                 GHApp.BeforeExitApp();
+                await GHApp.FinishApp();
                 GHApp.PlatformService?.CloseApplication();
                 GHApp.AddSentryBreadcrumb("Post CloseApplication", GHConstants.SentryGnollHackGeneralCategoryName);
             }
@@ -2789,6 +2791,20 @@ namespace GnollHackX
             catch (Exception ex)
             {
                 Debug.WriteLine("CleanTransferDirectories exception: " + ex.Message);
+            }
+        }
+
+        private void TryDeleteFrameLog()
+        {
+            try
+            {
+                string filepath = Path.Combine(GHApp.GHPath, GHConstants.ArchiveDirectory, "framelog.csv");
+                if (File.Exists(filepath))
+                    File.Delete(filepath);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("TryDeleteFrameLog: " + ex.Message);
             }
         }
 

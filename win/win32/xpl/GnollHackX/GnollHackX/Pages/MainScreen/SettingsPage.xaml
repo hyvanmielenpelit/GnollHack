@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <gnh:CustomModalPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:gnh="clr-namespace:GnollHackX" 
@@ -1535,6 +1535,15 @@
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="ScreenLogSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="  Frame Time Profiler"
+                                    x:Name="FrameProfilerLabel"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="FrameProfilerSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Debug Post Channel"

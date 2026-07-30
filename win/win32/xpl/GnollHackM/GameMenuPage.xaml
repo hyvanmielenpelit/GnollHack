@@ -29,6 +29,8 @@
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnOptions_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnMessages" Text="Export Messages" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnMessages_Clicked" UseVaryingBackgroundImages ="True" />
+                        <controls:CustomImageButton x:Name="btnDumpFrameLog" Text="Dump Frame Log" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnDumpFrameLog_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnGC" Text="Collect Garbage" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnGC_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnSnapshot" Text="Take Snapshot" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"

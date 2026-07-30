@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -186,7 +186,7 @@ namespace GnollHackX
     {
         public GHGame RequestingGame { get; }
         public GHRequestType RequestType { get; set; }
-        public GHWindow RequestingGHWindow { get; set; }
+        public GHPublishedWindow RequestingGHWindow { get; set; }
         public GHMenuInfo RequestMenuInfo { get; set; }
         public GHOutRipInfo RequestOutRipInfo { get; set; }
         public string RequestString { get; set; }
@@ -211,7 +211,7 @@ namespace GnollHackX
         public GHMsgHistoryItem MessageHistoryItem { get; set; } = null;
         public string Responses { get; set; }
         public string ResponseDescriptions { get; set; }
-        public List<GHPutStrItem> RequestPutStrItems { get; set; }
+        public List<GHPublishedWindowRow> RequestPutStrItems { get; set; }
 
         public AddContextMenuData ContextMenuData { get; set; }
         public monst_info MonstInfoData { get; set; }
@@ -312,14 +312,14 @@ namespace GnollHackX
             RequestString2 = requeststring2;
         }
 
-        public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, List<GHPutStrItem> strs)
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, List<GHPublishedWindowRow> strs)
         {
             RequestingGame = ghGame;
             RequestType = requesttype;
             RequestInt = requestint;
             RequestPutStrItems = strs;
         }
-        public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, GHWindow window)
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, GHPublishedWindow window)
         {
             RequestingGame = ghGame;
             RequestType = requesttype;
@@ -327,14 +327,14 @@ namespace GnollHackX
             RequestingGHWindow = window;
         }
 
-        public GHRequest(GHGame ghGame, GHRequestType requesttype, GHWindow requestingGHWindow, GHMenuInfo menuinfo)
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, GHPublishedWindow requestingGHWindow, GHMenuInfo menuinfo)
         {
             RequestingGame = ghGame;
             RequestType = requesttype;
             RequestingGHWindow = requestingGHWindow;
             RequestMenuInfo = menuinfo;
         }
-        public GHRequest(GHGame ghGame, GHRequestType requesttype, GHWindow requestingGHWindow, GHOutRipInfo outripinfo)
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, GHPublishedWindow requestingGHWindow, GHOutRipInfo outripinfo)
         {
             RequestingGame = ghGame;
             RequestType = requesttype;

@@ -802,14 +802,14 @@ namespace GnollHackX
             }
         }
 
-        public static void ProcessAdjustedItems(List<GHPutStrItem> adjusted_list, List<GHPutStrItem> normal_list)
+        public static void ProcessAdjustedItems(List<GHPublishedWindowRow> adjusted_list, List<GHPublishedWindowRow> normal_list)
         {
             adjusted_list.Clear();
-            GHPutStrItem newpsi = null;
+            GHPublishedWindowRow newpsi = null;
 
             for (int cnt = 0; cnt < normal_list.Count; cnt++)
             {
-                GHPutStrItem psi = normal_list[cnt];
+                GHPublishedWindowRow psi = normal_list[cnt];
                 if (newpsi != null && (psi.Text == "" || psi.StartingSpaces != newpsi.PaddingAmount))
                 {
                     adjusted_list.Add(newpsi);
@@ -825,7 +825,7 @@ namespace GnollHackX
                     bool isnewpsi = false;
                     if (newpsi == null)
                     {
-                        newpsi = new GHPutStrItem(psi.Window, "");
+                        newpsi = new GHPublishedWindowRow(psi.Window, "");
                         isnewpsi = true;
                     }
 
@@ -1240,7 +1240,8 @@ namespace GnollHackX
 
             SKColor oldColor = paint.Color;
             SKPaintStyle oldStyle = paint.Style;
-            using (new SKAutoCanvasRestore(canvas, true))
+            canvas.Save();
+            try
             {
                 canvas.Translate(x, y);
                 canvas.Scale(scale);
@@ -1270,6 +1271,10 @@ namespace GnollHackX
                     canvas.DrawPath(path, paint);
 #endif
                 }
+            }
+            finally
+            {
+                canvas.Restore();
             }
             paint.Style = oldStyle;
             paint.Color = oldColor;
@@ -1457,20 +1462,20 @@ namespace GnollHackX
 
         private static float _cachedStatusBarHeight = -1;
         private static float _cachedTextScale = -1;
-        
+        private static GHSkiaFontPaint _statusBarMeasurePaint = null;
+
         public static float CalculateStatusBarSkiaHeight(float textScale)
         {
             if(_cachedStatusBarHeight > 0 && _cachedTextScale == textScale)
                 return _cachedStatusBarHeight;
 
-            float statusbarheight;
-            using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
-            {
-                textPaint.Typeface = GHApp.LatoRegular;
-                textPaint.TextSize = GHConstants.StatusBarBaseFontSize * textScale;
-                float rowheight = textPaint.FontSpacing;
-                statusbarheight = rowheight * 2 + GHConstants.StatusBarVerticalMargin * 2 + GHConstants.StatusBarRowMargin;
-            }
+            if (_statusBarMeasurePaint == null)
+                _statusBarMeasurePaint = new GHSkiaFontPaint();
+
+            _statusBarMeasurePaint.Typeface = GHApp.LatoRegular;
+            _statusBarMeasurePaint.TextSize = GHConstants.StatusBarBaseFontSize * textScale;
+            float rowheight = _statusBarMeasurePaint.FontSpacing;
+            float statusbarheight = rowheight * 2 + GHConstants.StatusBarVerticalMargin * 2 + GHConstants.StatusBarRowMargin;
             _cachedStatusBarHeight = statusbarheight;
             _cachedTextScale = textScale;
             return statusbarheight;
@@ -1723,6 +1728,23 @@ namespace GnollHackX
                     break;
                 case GHWinType.Worn:
                     break;
+            }
+        }
+
+        public static void CleanUp()
+        {
+            try
+            {
+                GHSkiaFontPaint ghsfp = _statusBarMeasurePaint;
+                if (ghsfp != null)
+                {
+                    _statusBarMeasurePaint = null;
+                    ghsfp.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
         }
     }

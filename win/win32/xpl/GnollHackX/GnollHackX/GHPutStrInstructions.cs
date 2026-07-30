@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace GnollHackX
 {
-    public sealed class GHPutStrInstructions
+    public struct GHPutStrInstructions
     {
         public readonly int Attributes;
         public readonly int Color;

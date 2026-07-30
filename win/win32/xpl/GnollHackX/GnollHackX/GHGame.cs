@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -83,6 +83,9 @@ namespace GnollHackX
         public bool CasualMode { get { return ActiveGamePage?.EnableCasualMode ?? false; } }
         public bool ModernMode { get { return ActiveGamePage?.EnableModernMode ?? false; } }
 
+        private int _useAscii = 0;
+        public bool UseAscii { get { return Interlocked.CompareExchange(ref _useAscii, 0, 0) != 0; } set { Interlocked.Exchange(ref _useAscii, value ? 1 : 0); } }
+
         public GHGame(RunGnollHackFlags startFlags)
         {
             StartFlags = startFlags;
@@ -128,7 +131,10 @@ namespace GnollHackX
             for (int winHandle = 0; winHandle <= _lastWindowHandle && winHandle < GHConstants.MaxGHWindows; winHandle++)
             {
                 if(_ghWindows[winHandle] != null)
-                    gamePage.UpdateGHWindow(winHandle, _ghWindows[winHandle].Clone());
+                {
+                    if (_ghWindows[winHandle].WindowType != GHWinType.Status || gamePage.ClassicStatusBar)
+                        gamePage.UpdateGHWindow(winHandle, _ghWindows[winHandle].Publish());
+                }
             }
         }
 
@@ -462,8 +468,11 @@ namespace GnollHackX
                 notiles = GHApp.TotalTiles;
                 tilesperrow = GHApp.DummyTilesPerRow; // For compatibility
             }
-            RecordFunctionCall(RecordedFunctionID.InitializeWindows, gl2ti, gltifl, ti2an, ti2en, ti2ad, anoffs, enoffs, reoffs, nosheets, notiles, tilesperrow,
-                animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, command_tile_off, buff_tile_off, cursor_off);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.InitializeWindows, gl2ti, gltifl, ti2an, ti2en, ti2ad, anoffs, enoffs, reoffs, nosheets, notiles, tilesperrow,
+                    animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, command_tile_off, buff_tile_off, cursor_off);
+            }
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideLoadingScreen));
         }
 
@@ -516,7 +525,10 @@ namespace GnollHackX
             Obj objdata = objdata_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(objdata_ptr, typeof(Obj));
             ObjClassData otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : (ObjClassData)Marshal.PtrToStructure(otypdata_ptr, typeof(ObjClassData));
 
-            RecordFunctionCall(RecordedFunctionID.CreateWindow, wintype, style, glyph, dataflags, objdata, otypdata);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.CreateWindow, wintype, style, glyph, dataflags, objdata, otypdata);
+            }
 
             if (_lastWindowHandle >= GHConstants.MaxGHWindows) /* Should not happen, but paranoid */
                 _lastWindowHandle = GHConstants.MaxGHWindows - 1;
@@ -547,13 +559,16 @@ namespace GnollHackX
             else if (wintype == (int)GHWinType.Status)
                 _statusWindowId = handle;
 
-            RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, handle, ghwin.Clone()));
+            RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, handle, ghwin.Publish()));
             return handle;
         }
 
         public void ClientCallback_DestroyGHWindow(int winHandle)
         {
-            RecordFunctionCall(RecordedFunctionID.DestroyWindow, winHandle);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.DestroyWindow, winHandle);
+            }
 
             if (winHandle < 0)
                 return;
@@ -589,7 +604,10 @@ namespace GnollHackX
 
         public void ClientCallback_ClearGHWindow(int winHandle)
         {
-            RecordFunctionCall(RecordedFunctionID.ClearWindow, winHandle);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.ClearWindow, winHandle);
+            }
 
             if (winHandle < 0)
                 return;
@@ -609,11 +627,26 @@ namespace GnollHackX
             }
 
             win.PutStrs.Clear();
-            win.SetWidthHeight(0, 0, 0, 0);
+            win.SetWidthHeight(0, 0);
             win.CursX = 0;
             win.CursY = 0;
 
-            RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Clone()));
+            if (win.WindowType != GHWinType.Status || (ActiveGamePage?.ClassicStatusBar ?? true))
+            {
+                RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Publish()));
+            }
+        }
+
+        public void SyncStatusWindow()
+        {
+            GamePage gamePage = ActiveGamePage;
+            if (gamePage == null)
+                return;
+
+            if (_statusWindowId > 0 && _statusWindowId < GHConstants.MaxGHWindows && _ghWindows[_statusWindowId] != null)
+            {
+                gamePage.UpdateGHWindow(_statusWindowId, _ghWindows[_statusWindowId].Publish());
+            }
         }
 
         public void ClearMap()
@@ -626,7 +659,8 @@ namespace GnollHackX
                     {
                         _mapDataMaster[x, y].Glyph = GHApp.UnexploredGlyph;
                         _mapDataMaster[x, y].BkGlyph = GHApp.NoGlyph;
-                        _mapDataMaster[x, y].Symbol = "";
+                        _mapDataMaster[x, y].CodePoint = 0;
+                        _mapDataMaster[x, y].Symbol = null;
                         _mapDataMaster[x, y].Color = SKColors.Black;// default(MapData);
                         _mapDataMaster[x, y].Special = 0;
                         _mapDataMaster[x, y].NeedsUpdate = true;
@@ -637,17 +671,17 @@ namespace GnollHackX
                         _mapDataMaster[x, y].GlyphGeneralPrintMainCounterValue = 0;
 
                         _mapDataMaster[x, y].Layers = new LayerInfo();
-                        _mapDataMaster[x, y].Layers.layer_glyphs = new int[(int)layer_types.MAX_LAYERS];
-                        _mapDataMaster[x, y].Layers.layer_gui_glyphs = new int[(int)layer_types.MAX_LAYERS];
-                        _mapDataMaster[x, y].Layers.leash_mon_x = new sbyte[GHConstants.MaxLeashed + 1];
-                        _mapDataMaster[x, y].Layers.leash_mon_y = new sbyte[GHConstants.MaxLeashed + 1];
+                        /* Fixed buffers are inline and zero-initialized by new LayerInfo() */
 
-                        _mapDataMaster[x, y].Layers.layer_glyphs[0] = GHApp.UnexploredGlyph;
-                        _mapDataMaster[x, y].Layers.layer_gui_glyphs[0] = GHApp.UnexploredGlyph;
-                        for (int i = 1; i < (int)layer_types.MAX_LAYERS; i++)
+                        unsafe
                         {
-                            _mapDataMaster[x, y].Layers.layer_glyphs[i] = GHApp.NoGlyph;
-                            _mapDataMaster[x, y].Layers.layer_gui_glyphs[i] = GHApp.NoGlyph;
+                            _mapDataMaster[x, y].Layers.layer_glyphs[0] = GHApp.UnexploredGlyph;
+                            _mapDataMaster[x, y].Layers.layer_gui_glyphs[0] = GHApp.UnexploredGlyph;
+                            for (int i = 1; i < (int)layer_types.MAX_LAYERS; i++)
+                            {
+                                _mapDataMaster[x, y].Layers.layer_glyphs[i] = GHApp.NoGlyph;
+                                _mapDataMaster[x, y].Layers.layer_gui_glyphs[i] = GHApp.NoGlyph;
+                            }
                         }
 
                         _mapDataMaster[x, y].Layers.glyph = GHApp.UnexploredGlyph;
@@ -723,7 +757,10 @@ namespace GnollHackX
 
         public void ClientCallback_DisplayGHWindow(int winHandle, byte blocking)
         {
-            RecordFunctionCall(RecordedFunctionID.DisplayWindow, winHandle, blocking);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.DisplayWindow, winHandle, blocking);
+            }
 
             if (winHandle < 0)
                 return;
@@ -775,6 +812,7 @@ namespace GnollHackX
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowVisibility, win.WindowID, true));
             if (win.WindowType == GHWinType.Menu || win.WindowType == GHWinType.Text)
             {
+                RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Publish()));
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.DisplayWindowView, win.WindowID));
             }
         }
@@ -782,7 +820,10 @@ namespace GnollHackX
         public void ClientCallback_ExitWindows(string str)
         {
             Debug.WriteLine("ClientCallback_ExitWindows");
-            RecordFunctionCall(RecordedFunctionID.ExitWindows, str);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.ExitWindows, str);
+            }
 
             ClientCallback_RawPrint(str);
 
@@ -813,7 +854,10 @@ namespace GnollHackX
 
         public int ClientCallback_PlayerSelection()
         {
-            RecordFunctionCall(RecordedFunctionID.PlayerSelection);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.PlayerSelection);
+            }
 
             Debug.WriteLine("ClientCallback_PlayerSelection");
             return 0;
@@ -848,7 +892,10 @@ namespace GnollHackX
 
         public void ClientCallback_Curs(int winHandle, int x, int y)
         {
-            RecordFunctionCall(RecordedFunctionID.Curs, winHandle, x, y);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.Curs, winHandle, x, y);
+            }
 
             if (winHandle < 0 || winHandle >= GHConstants.MaxGHWindows)
                 return;
@@ -871,8 +918,15 @@ namespace GnollHackX
 
         public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, Int32 symbol, int ocolor, UInt64 special, IntPtr layers_ptr)
         {
-            LayerInfo layers = layers_ptr == IntPtr.Zero ? new LayerInfo() : (LayerInfo)Marshal.PtrToStructure(layers_ptr, typeof(LayerInfo));
-            RecordFunctionCall(RecordedFunctionID.PrintGlyph, winHandle, x, y, glyph, bkglyph, symbol, ocolor, special, layers);
+            LayerInfo layers;
+            unsafe
+            {
+                layers = layers_ptr == IntPtr.Zero ? default : *(LayerInfo*)layers_ptr;
+            }
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.PrintGlyph, winHandle, x, y, glyph, bkglyph, symbol, ocolor, special, layers);
+            }
 
             SetMapSymbol(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
         }
@@ -884,7 +938,9 @@ namespace GnollHackX
             //lock(_mapDataBufferLock)
             try
             {
+                FrameTimeProfiler.StampLockAttempt();
                 Monitor.TryEnter(_mapDataBufferLock, ref lockTaken); //TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks), 
+                FrameTimeProfiler.StampLockResult(lockTaken);
                 if (lockTaken)
                 {
                     if (_mapDataCurrentUpdated)
@@ -986,7 +1042,8 @@ namespace GnollHackX
                 _uy = y;
                 _u_condition_bits = layers.condition_bits;
                 _u_status_bits = layers.status_bits;
-                if (layers.buff_bits != null)
+                /* buff_bits is now a fixed buffer — always valid */
+                unsafe
                 {
                     for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
                     {
@@ -1008,7 +1065,8 @@ namespace GnollHackX
             _mapDataMaster[x, y].GlyphGeneralPrintMainCounterValue = mainCounter;
             _mapDataMaster[x, y].Glyph = glyph;
             _mapDataMaster[x, y].BkGlyph = bkglyph;
-            _mapDataMaster[x, y].Symbol = Char.ConvertFromUtf32(c);
+            _mapDataMaster[x, y].CodePoint = c;
+            _mapDataMaster[x, y].Symbol = UseAscii ? MapData.CodePointToSymbol(c) : null;
             _mapDataMaster[x, y].Color = UIUtils.NHColor2SKColor(color, (special & 0x00002000UL) != 0 ? (int)MenuItemAttributes.AltColors : 0);
             _mapDataMaster[x, y].Special = special;
             _mapDataMaster[x, y].Layers = layers;
@@ -1080,12 +1138,18 @@ namespace GnollHackX
                 byte[] utf8text = Encoding.UTF8.GetBytes(CharacterName);
                 Marshal.Copy(utf8text, 0, out_string_ptr, utf8text.Length);
                 Marshal.WriteByte(out_string_ptr, utf8text.Length, 0);
-                RecordFunctionCall(RecordedFunctionID.AskName, modeName, modeDescription, CharacterName);
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.AskName, modeName, modeDescription, CharacterName);
+                }
                 return 1;
             }
             else
             {
-                RecordFunctionCall(RecordedFunctionID.AskName, modeName, modeDescription, "");
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.AskName, modeName, modeDescription, "");
+                }
                 return 0;
             }
         }
@@ -1093,13 +1157,19 @@ namespace GnollHackX
         public void ClientCallback_get_nh_event()
         {
             Debug.WriteLine("ClientCallback_get_nh_event");
-            RecordFunctionCall(RecordedFunctionID.GetEvent);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.GetEvent);
+            }
         }
 
         public void ClientCallback_ExitHack(int status)
         {
-            RecordFunctionCall(RecordedFunctionID.ExitHack, status);
-            RecordFunctionCallImmediately(RecordedFunctionID.EndOfFile);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.ExitHack, status);
+                RecordFunctionCallImmediately(RecordedFunctionID.EndOfFile);
+            }
             GHApp.MaybeWriteGHLog("ExitHack: " + status, true, GHConstants.SentryGnollHackCallbackCategoryName);
 
             switch (status)
@@ -1142,7 +1212,10 @@ namespace GnollHackX
             }
             if (FastForwardGameOver)
             {
-                RecordFunctionCall(RecordedFunctionID.GetChar, 0);
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.GetChar, 0);
+                }
                 return 0;
             }
 
@@ -1153,7 +1226,10 @@ namespace GnollHackX
                 PollResponseQueue();
                 if (FastForwardGameOver)
                 {
-                    RecordFunctionCall(RecordedFunctionID.GetChar, 0);
+                    if (IsRecording)
+                    {
+                        RecordFunctionCall(RecordedFunctionID.GetChar, 0);
+                    }
                     return 0;
                 }
             }
@@ -1168,7 +1244,10 @@ namespace GnollHackX
                 _inputBuffer[_inputBufferLocation] = 0;
                 _inputBufferLocation--;
             }
-            RecordFunctionCall(RecordedFunctionID.GetChar, res);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.GetChar, res);
+            }
             return res;
         }
 
@@ -1192,7 +1271,10 @@ namespace GnollHackX
             }
             if (FastForwardGameOver)
             {
-                RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
+                }
                 return 0;
             }
 
@@ -1205,14 +1287,20 @@ namespace GnollHackX
                     x = _touchLocX;
                     y = _touchLocY;
                     mod = _touchLocMod;
-                    RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
+                    if (IsRecording)
+                    {
+                        RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
+                    }
                     return 0;
                 }
                 Thread.Sleep(GHConstants.PollingInterval);
                 PollResponseQueue();
                 if (FastForwardGameOver)
                 {
-                    RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
+                    if (IsRecording)
+                    {
+                        RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
+                    }
                     return 0;
                 }
             }
@@ -1227,7 +1315,10 @@ namespace GnollHackX
                 _inputBuffer[_inputBufferLocation] = 0;
                 _inputBufferLocation--;
             }
-            RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, res);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, res);
+            }
             return res;
         }
 
@@ -1240,7 +1331,10 @@ namespace GnollHackX
 
             if (FastForwardGameOver)
             {
-                RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, GHConstants.CancelChar);
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, GHConstants.CancelChar);
+                }
                 return string.IsNullOrEmpty(responses) ? GHConstants.CancelChar : responses.Contains('q') ? 'q' : responses.Contains('n') ? 'n' : GHConstants.CancelChar;
             }
 
@@ -1257,7 +1351,10 @@ namespace GnollHackX
                 else
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideDirections));
                 GHApp.AddSentryBreadcrumb("YnFunction: ShowDirections End: " + res, GHConstants.SentryGnollHackCallbackCategoryName);
-                RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, res);
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, res);
+                }
                 return res;
             }
             else
@@ -1299,7 +1396,10 @@ namespace GnollHackX
                         if (responses.Contains(res))
                         {
                             GHApp.AddSentryBreadcrumb("YnFunction: Result is " + val, GHConstants.SentryGnollHackCallbackCategoryName);
-                            RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, val);
+                            if (IsRecording)
+                            {
+                                RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, val);
+                            }
                             return val;
                         }
 
@@ -1310,13 +1410,19 @@ namespace GnollHackX
                 }
             }
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideYnResponses));
-            RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, GHConstants.CancelChar);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, GHConstants.CancelChar);
+            }
             return !string.IsNullOrEmpty(def) ? def[0] : string.IsNullOrEmpty(responses) ? GHConstants.CancelChar : responses.Contains('q') ? 'q' : responses.Contains('n') ? 'n' : GHConstants.CancelChar;
         }
 
         public void ClientCallback_Cliparound(int x, int y, byte force)
         {
-            RecordFunctionCall(RecordedFunctionID.ClipAround, x, y, force);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.ClipAround, x, y, force);
+            }
             GamePage gamePage = ActiveGamePage;
             if (gamePage == null)
                 return;
@@ -1332,13 +1438,19 @@ namespace GnollHackX
 
         public void ClientCallback_RawPrint(string str)
         {
-            RecordFunctionCall(RecordedFunctionID.RawPrint, str);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.RawPrint, str);
+            }
             RawPrintEx(str, (int)MenuItemAttributes.None, (int)NhColor.NO_COLOR, false);
         }
 
         public void ClientCallback_RawPrintBold(string str)
         {
-            RecordFunctionCall(RecordedFunctionID.RawPrintBold, str);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.RawPrintBold, str);
+            }
             RawPrintEx(str, (int)MenuItemAttributes.Bold, (int)NhColor.NO_COLOR, false);
         }
 
@@ -1395,7 +1507,10 @@ namespace GnollHackX
 
         public void ClientCallback_PutStrEx(int win_id, string str, int attributes, int color, int append)
         {
-            RecordFunctionCall(RecordedFunctionID.PutStrEx, win_id, str, attributes, color, append);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.PutStrEx, win_id, str, attributes, color, append);
+            }
             if (win_id < 0 || win_id >= GHConstants.MaxGHWindows || _ghWindows[win_id] == null || str == null)
                 return;
 
@@ -1436,7 +1551,10 @@ namespace GnollHackX
                 Marshal.Copy(colors_ptr, colors, 0, str_length + 1);
             }
 
-            RecordFunctionCall(RecordedFunctionID.PutStrEx2, win_id, str, attributes, colors, attr, color, append);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.PutStrEx2, win_id, str, attributes, colors, attr, color, append);
+            }
             if (_ghWindows[win_id].WindowPrintStyle == GHWindowPrintLocations.RawPrint)
             {
                 RawPrintEx2(str, attributes, colors, attr, color, false);
@@ -1449,7 +1567,10 @@ namespace GnollHackX
 
         public void ClientCallback_DelayOutput()
         {
-            RecordFunctionCall(RecordedFunctionID.DelayOutput);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.DelayOutput);
+            }
             if (ClientCallback_UIHasInput() > 0)
                 return;
             if (!PlayingReplay || !GHApp.IsReplaySearching)
@@ -1463,7 +1584,10 @@ namespace GnollHackX
 
         public void ClientCallback_DelayOutputMilliseconds(int milliseconds)
         {
-            RecordFunctionCall(RecordedFunctionID.DelayOutputMilliseconds, milliseconds);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.DelayOutputMilliseconds, milliseconds);
+            }
             if (ClientCallback_UIHasInput() > 0)
                 return;
             if (!PlayingReplay || !GHApp.IsReplaySearching)
@@ -1474,7 +1598,10 @@ namespace GnollHackX
         }
         public void ClientCallback_DelayOutputIntervals(int intervals)
         {
-            RecordFunctionCall(RecordedFunctionID.DelayOutputIntervals, intervals);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.DelayOutputIntervals, intervals);
+            }
             if (PlayingReplay && GHApp.IsReplaySearching)
                 return;
 
@@ -1501,7 +1628,10 @@ namespace GnollHackX
 
         public void ClientCallback_PreferenceUpdate(string str)
         {
-            RecordFunctionCall(RecordedFunctionID.PreferenceUpdate, str);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.PreferenceUpdate, str);
+            }
 
             if (str == "statuslines")
             {
@@ -1514,7 +1644,10 @@ namespace GnollHackX
 
         public void ClientCallback_StatusInit(int reassessment)
         {
-            RecordFunctionCall(RecordedFunctionID.StatusInit, reassessment);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.StatusInit, reassessment);
+            }
 
             if (reassessment != 0)
                 return;
@@ -1529,12 +1662,18 @@ namespace GnollHackX
 
         public void ClientCallback_StatusFinish()
         {
-            RecordFunctionCall(RecordedFunctionID.StatusFinish);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.StatusFinish);
+            }
         }
 
         public void ClientCallback_StatusEnable(int fieldidx, string nm, string fmt, byte enable)
         {
-            RecordFunctionCall(RecordedFunctionID.StatusEnable, fieldidx, nm, fmt, enable);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.StatusEnable, fieldidx, nm, fmt, enable);
+            }
             if (fieldidx >= 0 && fieldidx < (int)NhStatusFields.MAXBLSTATS)
             {
                 lock (StatusFieldLock)
@@ -1561,7 +1700,12 @@ namespace GnollHackX
         public void ClientCallback_StatusUpdate(int fieldidx, string text, long condbits, int cng, int percent, int color, IntPtr condcolorptr)
         {
             if(fieldidx != (int)NhStatusFields.BL_CONDITION)
-                RecordFunctionCall(RecordedFunctionID.StatusUpdate, fieldidx, text, condbits, cng, percent, color, null);
+            {
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.StatusUpdate, fieldidx, text, condbits, cng, percent, color, null);
+                }
+            }
 
             long oldbits = 0L;
             if (fieldidx >= 0 && fieldidx < (int)NhStatusFields.MAXBLSTATS)
@@ -1631,7 +1775,10 @@ namespace GnollHackX
                                 }
                             }
 
-                            RecordFunctionCall(RecordedFunctionID.StatusUpdate, fieldidx, text, condbits, cng, percent, color, condcolors);
+                            if (IsRecording)
+                            {
+                                RecordFunctionCall(RecordedFunctionID.StatusUpdate, fieldidx, text, condbits, cng, percent, color, condcolors);
+                            }
                             for (int i = 0; i < (int)bl_conditions.NUM_BL_CONDITIONS; i++)
                             {
                                 long bit = 1L << i;
@@ -1797,12 +1944,21 @@ namespace GnollHackX
         public void ClientCallback_StartMenu(int winid, int style, int glyph, ulong mflags)
         {
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("StartMenu");
-            RecordFunctionCall(RecordedFunctionID.StartMenu, winid, style, glyph, mflags);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.StartMenu, winid, style, glyph, mflags);
+            }
 
             //lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null)
                 {
+                    /* Do not dispose old MenuInfo's GHMenuItems here;
+                     * the render thread may still hold references to the
+                     * same GHMenuItem objects (via its ObservableCollection
+                     * copy) and actively use their text blobs and
+                     * GlyphImageSource. The old items will be GC'd once
+                     * both threads release their references. */
                     _ghWindows[winid].MenuInfo = new GHMenuInfo((ghmenu_styles)style);
                 }
             }
@@ -1830,8 +1986,11 @@ namespace GnollHackX
                 Marshal.Copy(colors_ptr, colors, 0, attrs_colors_size);
             }
 
-            RecordFunctionCall(RecordedFunctionID.AddExtendedMenu, winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
-                maxcount, oid, mid, headingaccel, special_mark, menuflags, dataflags, style, otmpdata, otypdata, attrs, colors);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.AddExtendedMenu, winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
+                    maxcount, oid, mid, headingaccel, special_mark, menuflags, dataflags, style, otmpdata, otypdata, attrs, colors);
+            }
 
             //lock (_ghWindowsLock)
             {
@@ -1888,7 +2047,10 @@ namespace GnollHackX
         public void ClientCallback_EndMenu(int winid, string prompt, string subtitle)
         {
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("EndMenu");
-            RecordFunctionCall(RecordedFunctionID.EndMenu, winid, prompt, subtitle);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.EndMenu, winid, prompt, subtitle);
+            }
             GHApp.AddSentryBreadcrumb("EndMenu: " + (prompt != null ? prompt : "no prompt") + ", " + (subtitle != null ? subtitle : "no subtitle"), GHConstants.SentryGnollHackCallbackCategoryName);
 
             //lock (_ghWindowsLock)
@@ -1913,7 +2075,7 @@ namespace GnollHackX
                 _ghWindows[winid].SelectedMenuItems = null;
                 _ghWindows[winid].WasCancelled = false;
 
-                GHWindow clonedWindow = _ghWindows[winid].Clone();
+                GHPublishedWindow clonedWindow = _ghWindows[winid].Publish();
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, winid, clonedWindow));
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowMenuPage, clonedWindow, clonedWindow.MenuInfo));
                 enqueued = true;
@@ -2040,7 +2202,10 @@ namespace GnollHackX
             listsize = cnt < 1 ? 1 : cnt * 2;
 
             _abortShowMenuPage = false;
-            RecordFunctionCall(RecordedFunctionID.SelectMenu, winid, how, picklist, listsize, cnt);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.SelectMenu, winid, how, picklist, listsize, cnt);
+            }
             return cnt;
         }
 
@@ -2060,7 +2225,10 @@ namespace GnollHackX
 
         public void ClientCallback_ReportPlayerName(string used_player_name)
         {
-            RecordFunctionCall(RecordedFunctionID.ReportPlayerName, used_player_name);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.ReportPlayerName, used_player_name);
+            }
             _knownPlayerName = used_player_name;
             if (used_player_name != null && used_player_name != "")
             {
@@ -2088,7 +2256,10 @@ namespace GnollHackX
 
         public void ClientCallback_ReportPlayTime(long timePassed, long currentPlayTime)
         {
-            RecordFunctionCall(RecordedFunctionID.ReportPlayTime, timePassed, currentPlayTime);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.ReportPlayTime, timePassed, currentPlayTime);
+            }
             if (PlayingReplay)
                 return;
 
@@ -2105,7 +2276,10 @@ namespace GnollHackX
             Obj otmp = otmp_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(otmp_ptr, typeof(Obj));
             ObjClassData otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : (ObjClassData)Marshal.PtrToStructure(otypdata_ptr, typeof(ObjClassData));
 
-            RecordFunctionCall(RecordedFunctionID.SendObjectData, x, y, otmp, cmdtype, where, otypdata, oflags);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.SendObjectData, x, y, otmp, cmdtype, where, otypdata, oflags);
+            }
             AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
         }
 
@@ -2285,7 +2459,10 @@ namespace GnollHackX
         public void ClientCallback_SendMonsterData(int cmdtype, int x, int y, IntPtr monster_data_ptr, ulong oflags)
         {
             monst_info monster_data = monster_data_ptr == IntPtr.Zero ? new monst_info() : (monst_info)Marshal.PtrToStructure(monster_data_ptr, typeof(monst_info));
-            RecordFunctionCall(RecordedFunctionID.SendMonsterData, cmdtype, x, y, monster_data, oflags);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.SendMonsterData, cmdtype, x, y, monster_data, oflags);
+            }
             //_savedSendMonsterDataCalls.Add(new SavedSendMonsterDataCall(cmdtype, x, y, ref monster_data, oflags));
             switch (cmdtype)
             {
@@ -2320,7 +2497,10 @@ namespace GnollHackX
 
         public void ClientCallback_SendEngravingData(int cmdtype, int x, int y, string engraving_text, int etype, ulong eflags, ulong gflags)
         {
-            RecordFunctionCall(RecordedFunctionID.SendEngravingData, cmdtype, x, y, engraving_text, etype, eflags, gflags);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.SendEngravingData, cmdtype, x, y, engraving_text, etype, eflags, gflags);
+            }
             //_savedSendEngravingDataCalls.Add(new SavedSendEngravingDataCall(cmdtype, x, y, engraving_text, etype, eflags, gflags));
             switch (cmdtype)
             {
@@ -2597,7 +2777,10 @@ namespace GnollHackX
                     PollResponseQueue();
                 }
 
-                RecordFunctionCall(RecordedFunctionID.GetLine, style, attr, color, query, placeholder, linesuffix, introline, _getLineString);
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.GetLine, style, attr, color, query, placeholder, linesuffix, introline, _getLineString);
+                }
 
                 byte[] utf8text = Encoding.UTF8.GetBytes(_getLineString);
                 if (out_string_ptr != IntPtr.Zero)
@@ -2617,14 +2800,20 @@ namespace GnollHackX
 
         public void ClientCallback_ClearContextMenu()
         {
-            RecordFunctionCall(RecordedFunctionID.ClearContextMenu);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.ClearContextMenu);
+            }
             ClearContextMenu();
             //RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ClearContextMenu));
         }
 
         public void ClientCallback_AddContextMenu(int cmd_def_char, int cmd_cur_char, int style, int glyph, string cmd_text, string target_text, int attr, int color)
         {
-            RecordFunctionCall(RecordedFunctionID.AddContextMenu, cmd_def_char, cmd_cur_char, style, glyph, cmd_text, target_text, attr, color);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.AddContextMenu, cmd_def_char, cmd_cur_char, style, glyph, cmd_text, target_text, attr, color);
+            }
 
             AddContextMenuData data = new AddContextMenuData();
             data.cmd_def_char = cmd_def_char;
@@ -2641,7 +2830,10 @@ namespace GnollHackX
 
         public void ClientCallback_UpdateStatusButton(int cmd, int btn, int val, ulong bflags)
         {
-            RecordFunctionCall(RecordedFunctionID.UpdateStatusButton, cmd, btn, val, bflags);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.UpdateStatusButton, cmd, btn, val, bflags);
+            }
         }
 
         public void IncrementCounters(long counter_increment)
@@ -2773,7 +2965,10 @@ namespace GnollHackX
 
         public void ClientCallback_ToggleAnimationTimer(int timertype, int timerid, int state, int x, int y, int layer, ulong tflags)
         {
-            RecordFunctionCall(RecordedFunctionID.ToggleAnimationTimer, timertype, timerid, state, x, y, layer, tflags);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.ToggleAnimationTimer, timertype, timerid, state, x, y, layer, tflags);
+            }
             bool ison = (state != 0);
             long general_counter_value = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);
             lock (AnimationTimerLock)
@@ -2828,7 +3023,10 @@ namespace GnollHackX
 
         public void ClientCallback_DisplayFloatingText(int x, int y, string text, int style, int attr, int color, ulong tflags)
         {
-            RecordFunctionCall(RecordedFunctionID.DisplayFloatingText, x, y, text, style, attr, color, tflags);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.DisplayFloatingText, x, y, text, style, attr, color, tflags);
+            }
 
             DisplayFloatingTextData floatingTextData = new DisplayFloatingTextData();
             floatingTextData.x = x;
@@ -2843,7 +3041,10 @@ namespace GnollHackX
 
         public void ClientCallback_DisplayScreenText(string text, string supertext, string subtext, int style, int attr, int color, ulong tflags)
         {
-            RecordFunctionCall(RecordedFunctionID.DisplayScreenText, text, supertext, subtext, style, attr, color, tflags);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.DisplayScreenText, text, supertext, subtext, style, attr, color, tflags);
+            }
 
             _screenTextSet = false;
             if ((tflags & 2UL) != 0)
@@ -2905,7 +3106,10 @@ namespace GnollHackX
 
         public void ClientCallback_DisplayPopupText(string text, string title, int style, int attr, int color, int glyph, ulong tflags)
         {
-            RecordFunctionCall(RecordedFunctionID.DisplayPopupText, text, title, style, attr, color, glyph, tflags);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.DisplayPopupText, text, title, style, attr, color, glyph, tflags);
+            }
 
             DisplayScreenTextData data = new DisplayScreenTextData();
             data.text = text;
@@ -2926,7 +3130,10 @@ namespace GnollHackX
 
         public void ClientCallback_DisplayGUIEffect(int style, int subtype, int x, int y, int x2, int y2, ulong tflags)
         {
-            RecordFunctionCall(RecordedFunctionID.DisplayGUIEffect, style, subtype, x, y, x2, y2, tflags);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.DisplayGUIEffect, style, subtype, x, y, x2, y2, tflags);
+            }
 
             DisplayGUIEffectData effectData = new DisplayGUIEffectData();
             effectData.style = style;
@@ -2941,7 +3148,10 @@ namespace GnollHackX
 
         public void ClientCallback_UpdateCursor(int style, int force_paint, int show_on_u)
         {
-            RecordFunctionCall(RecordedFunctionID.UpdateCursor, style, force_paint, show_on_u);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.UpdateCursor, style, force_paint, show_on_u);
+            }
             //_gamePage.UpdateCursor(style, force_paint, show_on_u);
             UpdateCursor(style, force_paint, show_on_u);
         }
@@ -2958,7 +3168,10 @@ namespace GnollHackX
 
         public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, uint play_flags)
         {
-            RecordFunctionCall(RecordedFunctionID.PlayImmediateSound, ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues, arraysize, sound_type, play_group, dialogue_mid, play_flags);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.PlayImmediateSound, ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues, arraysize, sound_type, play_group, dialogue_mid, play_flags);
+            }
             if ((play_flags & (uint)playsound_play_flags.PLAY_FLAGS_SONG) != 0)
                 GHApp.AddDiscoveredMusic(ghsound);
 
@@ -2972,7 +3185,10 @@ namespace GnollHackX
 
         public int ClientCallback_PlayMusic(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
-            RecordFunctionCall(RecordedFunctionID.PlayMusic, ghsound, eventPath, bankid, eventVolume, soundVolume);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.PlayMusic, ghsound, eventPath, bankid, eventVolume, soundVolume);
+            }
             GHApp.AddDiscoveredMusic(ghsound);
 
             if (GHApp.FmodService != null)
@@ -2984,7 +3200,10 @@ namespace GnollHackX
         }
         public int ClientCallback_PlayLevelAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
-            RecordFunctionCall(RecordedFunctionID.PlayLevelAmbient, ghsound, eventPath, bankid, eventVolume, soundVolume);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.PlayLevelAmbient, ghsound, eventPath, bankid, eventVolume, soundVolume);
+            }
 
             if (GHApp.FmodService != null)
             {
@@ -2996,7 +3215,10 @@ namespace GnollHackX
 
         public int ClientCallback_PlayEnvironmentAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
-            RecordFunctionCall(RecordedFunctionID.PlayEnvironmentAmbient, ghsound, eventPath, bankid, eventVolume, soundVolume);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.PlayEnvironmentAmbient, ghsound, eventPath, bankid, eventVolume, soundVolume);
+            }
 
             if (GHApp.FmodService != null)
             {
@@ -3008,7 +3230,10 @@ namespace GnollHackX
 
         public int ClientCallback_PlayOccupationAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
-            RecordFunctionCall(RecordedFunctionID.PlayOccupationAmbient, ghsound, eventPath, bankid, eventVolume, soundVolume);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.PlayOccupationAmbient, ghsound, eventPath, bankid, eventVolume, soundVolume);
+            }
 
             if (GHApp.FmodService != null)
             {
@@ -3020,7 +3245,10 @@ namespace GnollHackX
 
         public int ClientCallback_PlayEffectAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
-            RecordFunctionCall(RecordedFunctionID.PlayEffectAmbient, ghsound, eventPath, bankid, eventVolume, soundVolume);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.PlayEffectAmbient, ghsound, eventPath, bankid, eventVolume, soundVolume);
+            }
 
             if (GHApp.FmodService != null)
             {
@@ -3032,7 +3260,10 @@ namespace GnollHackX
 
         public int ClientCallback_SetEffectAmbientVolume(double soundVolume)
         {
-            RecordFunctionCall(RecordedFunctionID.SetEffectAmbientVolume, soundVolume);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.SetEffectAmbientVolume, soundVolume);
+            }
 
             if (GHApp.FmodService != null)
             {
@@ -3047,11 +3278,17 @@ namespace GnollHackX
             if (GHApp.FmodService != null)
             {
                 int res = GHApp.FmodService.AddAmbientSound(ghsound, eventPath, bankid, (float)eventVolume, (float)soundVolume, out soundSourceId);
-                RecordFunctionCall(RecordedFunctionID.AddAmbientSound, ghsound, eventPath, bankid, eventVolume, soundVolume, soundSourceId, res);
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.AddAmbientSound, ghsound, eventPath, bankid, eventVolume, soundVolume, soundSourceId, res);
+                }
                 return res;
             }
             soundSourceId = 0;
-            RecordFunctionCall(RecordedFunctionID.AddAmbientSound, ghsound, eventPath, bankid, eventVolume, soundVolume, soundSourceId, 1);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.AddAmbientSound, ghsound, eventPath, bankid, eventVolume, soundVolume, soundSourceId, 1);
+            }
             return 1;
         }
         public int ClientCallback_DeleteAmbientSound(UInt64 soundSourceId)
@@ -3059,11 +3296,17 @@ namespace GnollHackX
             if (GHApp.FmodService != null)
             {
                 int res = GHApp.FmodService.DeleteAmbientSound(soundSourceId);
-                RecordFunctionCall(RecordedFunctionID.DeleteAmbientSound, soundSourceId, res);
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.DeleteAmbientSound, soundSourceId, res);
+                }
                 return res;
             }
 
-            RecordFunctionCall(RecordedFunctionID.DeleteAmbientSound, soundSourceId, 1);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.DeleteAmbientSound, soundSourceId, 1);
+            }
             return 1;
         }
         public int ClientCallback_SetAmbientSoundVolume(UInt64 soundSourceId, double soundVolume)
@@ -3071,11 +3314,17 @@ namespace GnollHackX
             if (GHApp.FmodService != null)
             {
                 int res = GHApp.FmodService.SetAmbientSoundVolume(soundSourceId, (float)soundVolume);
-                RecordFunctionCall(RecordedFunctionID.SetAmbientSoundVolume, soundSourceId, soundVolume, res);
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.SetAmbientSoundVolume, soundSourceId, soundVolume, res);
+                }
                 return res;
             }
 
-            RecordFunctionCall(RecordedFunctionID.SetAmbientSoundVolume, soundSourceId, soundVolume, 1);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.SetAmbientSoundVolume, soundSourceId, soundVolume, 1);
+            }
             return 1;
         }
 
@@ -3084,18 +3333,29 @@ namespace GnollHackX
             if (GHApp.FmodService != null)
             {
                 int res = GHApp.FmodService.StopAllGameSounds(flags, dialogue_mid);
-                RecordFunctionCall(RecordedFunctionID.StopAllSounds, flags, dialogue_mid, res);
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.StopAllSounds, flags, dialogue_mid, res);
+                }
                 return res;
             }
 
-            RecordFunctionCall(RecordedFunctionID.StopAllSounds, flags, dialogue_mid, 1);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.StopAllSounds, flags, dialogue_mid, 1);
+            }
             return 1;
         }
 
         public void ClientCallback_IssueGuiCommand(int cmd_id, int cmd_param, int cmd_param2, string cmd_str)
         {
             if(cmd_id != (int)gui_command_types.GUI_CMD_LOAD_GLYPHS)
-                RecordFunctionCall(RecordedFunctionID.IssueGuiCommand, cmd_id, cmd_param, cmd_param2, cmd_str);
+            {
+                if (IsRecording)
+                {
+                    RecordFunctionCall(RecordedFunctionID.IssueGuiCommand, cmd_id, cmd_param, cmd_param2, cmd_str);
+                }
+            }
 
             string status_str = "";
             switch (cmd_id)
@@ -3124,7 +3384,10 @@ namespace GnollHackX
                                     GHApp.GlyphTileFlags = new byte[gltifl_size];
                                 Marshal.Copy(gltifl_ptr, GHApp.GlyphTileFlags, 0, gltifl_size);
                             }
-                            RecordFunctionCall(RecordedFunctionID.IssueGuiCommand, cmd_id, GHApp.Glyph2Tile, GHApp.GlyphTileFlags);
+                            if (IsRecording)
+                            {
+                                RecordFunctionCall(RecordedFunctionID.IssueGuiCommand, cmd_id, GHApp.Glyph2Tile, GHApp.GlyphTileFlags);
+                            }
                         }
                     }
                     break;
@@ -3443,7 +3706,7 @@ namespace GnollHackX
                         {
                             if (_ghWindows[cmd_param] != null)
                             {
-                                foreach(GHPutStrItem psi in _ghWindows[cmd_param].PutStrs)
+                                foreach(GHWindowRow psi in _ghWindows[cmd_param].PutStrs)
                                 {
                                     if(windowText != "")
                                         windowText += Environment.NewLine;
@@ -3705,14 +3968,17 @@ namespace GnollHackX
 
         public void ClientCallback_OutRip(int winid, string plname, int points, string killer, string time)
         {
-            RecordFunctionCall(RecordedFunctionID.OutRip, winid, plname, points, killer, time);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.OutRip, winid, plname, points, killer, time);
+            }
 
             if (FastForwardGameOver)
                 return;
 
             if (_ghWindows[winid] != null)
             {
-                GHWindow clonedWindow = _ghWindows[winid].Clone();
+                GHPublishedWindow clonedWindow = _ghWindows[winid].Publish();
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, winid, clonedWindow));
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowOutRipPage, clonedWindow, new GHOutRipInfo(plname, points, killer, time)));
             }
@@ -3742,7 +4008,10 @@ namespace GnollHackX
             if (PlayingReplay)
                 return 0;
 
-            RecordFunctionCall(RecordedFunctionID.UIHasInput, ResponseQueue.Count);
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.UIHasInput, ResponseQueue.Count);
+            }
             return ResponseQueue.Count;
         }
 
@@ -3754,7 +4023,10 @@ namespace GnollHackX
 
         public int ClientCallback_OpenSpecialView(int viewtype, string text, string title, int attr, int color, long time_stamp)
         {
-            RecordFunctionCall(RecordedFunctionID.OpenSpecialView, viewtype, text, title, attr, color); //add time_stamp here later
+            if (IsRecording)
+            {
+                RecordFunctionCall(RecordedFunctionID.OpenSpecialView, viewtype, text, title, attr, color); //add time_stamp here later
+            }
             switch (viewtype)
             {
                 case (int)special_view_types.SPECIAL_VIEW_CHAT_MESSAGE:
@@ -4153,7 +4425,10 @@ namespace GnollHackX
         
         private void EndReplayFile()
         {
-            RecordFunctionCallImmediately(RecordedFunctionID.EndOfFile);
+            if (IsRecording)
+            {
+                RecordFunctionCallImmediately(RecordedFunctionID.EndOfFile);
+            }
             _replayTimeStamp = DateTime.Now;
             _replayContinuation = 0;
         }
@@ -4163,12 +4438,17 @@ namespace GnollHackX
             string plName = GHApp.LastUsedPlayerName;
             DateTime saved_timestamp = _replayTimeStamp;
             int next_replayContinuation = _replayContinuation + 1;
-            RecordFunctionCallImmediately(RecordedFunctionID.ContinueToNextFile, GHApp.GHVersionNumber, _replayTimeStamp.ToBinary(), plName, next_replayContinuation);
+            if (IsRecording)
+            {
+                RecordFunctionCallImmediately(RecordedFunctionID.ContinueToNextFile, GHApp.GHVersionNumber, _replayTimeStamp.ToBinary(), plName, next_replayContinuation);
+            }
             _replayTimeStamp = saved_timestamp; /* Use existing time stamp, and new continuation number */
             _replayContinuation = next_replayContinuation;
         }
 
         private List<GHRecordedFunctionCall> _recordedFunctionCalls = new List<GHRecordedFunctionCall>();
+        private bool IsRecording => GHApp.RecordGame && !PlayingReplay;
+
         private void RecordFunctionCall(RecordedFunctionID functionID, params object[] args)
         {
             if (!GHApp.RecordGame || PlayingReplay)

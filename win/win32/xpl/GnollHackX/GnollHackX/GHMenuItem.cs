@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -16,7 +16,7 @@ using System.Threading;
 
 namespace GnollHackX
 {
-    public sealed class GHMenuItem : IEquatable<GHMenuItem> //, INotifyPropertyChanged
+    public sealed class GHMenuItem : IEquatable<GHMenuItem>
     {
         public GHMenuItem(GHMenuInfo info, int noGlyph, GamePage gamePage, Int64 identifier, char accelerator, char groupAccelerator, char specialMark,
             int attr, int color, byte[] attrs, byte[] colors, int glyph, bool useUpperSide, bool useColorForSuffixes, bool useSpecialSymbols,

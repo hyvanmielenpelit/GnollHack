@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
@@ -44,8 +44,26 @@
 		<PackageCertificateThumbprint>0DE60AC858971DC05E45C172A6D7462CBA45C98A</PackageCertificateThumbprint>
 	</PropertyGroup>
 
+  <!-- DETEMINE IF MONO RUNTIME IS BEING USED -->
+  <PropertyGroup Condition="'$(TargetFramework)' != ''">
+    <!-- 1. Default the variable to false -->
+    <IsMonoRuntime>false</IsMonoRuntime>
+    <!-- 2. Helper property to clean up the platform check -->
+    <IsMobilePlatform Condition="$(TargetFramework.Contains('-android')) or $(TargetFramework.Contains('-ios'))">true</IsMobilePlatform>
+    <IsMobilePlatform Condition="'$(IsMobilePlatform)' != 'true'">false</IsMobilePlatform>
+    <!-- 3. Condition A: True if .NET 10 on Android or iOS -->
+    <IsMonoRuntime Condition="'$(IsMobilePlatform)' == 'true' and $(TargetFramework.StartsWith('net10.0'))">true</IsMonoRuntime>
+    <!-- 4. Condition B: True if .NET 11 or newer on Android or iOS AND UseMonoRuntime is true -->
+    <!-- (We use !StartsWith('net10.0') as a safe proxy for .NET 11+ assuming your project only moves forward in versions) -->
+    <IsMonoRuntime Condition="'$(IsMobilePlatform)' == 'true' and !$(TargetFramework.StartsWith('net10.0')) and '$(UseMonoRuntime)' == 'true'">true</IsMonoRuntime>
+  </PropertyGroup>
 
-	<!-- CONFIGURATION SPECIFIC PROPERTIES -->
+  <!-- CORECLR SPECIFIC PROPERTIES -->
+  <!--<PropertyGroup Condition="'$(IsMonoRuntime)' != 'true'">
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+  </PropertyGroup>-->
+
+  <!-- CONFIGURATION SPECIFIC PROPERTIES -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<UseInterpreter>false</UseInterpreter>
 		<_MauiForceXamlCForDebug Condition="!$(TargetFramework.Contains('-windows'))">true</_MauiForceXamlCForDebug>
@@ -67,7 +85,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
-    <MtouchInterpreter>-all</MtouchInterpreter>
+    <MtouchExtraArgs Condition="'$(IsMonoRuntime)' == 'true'">--setenv=MONO_GC_PARAMS=nursery-size=32m</MtouchExtraArgs>
+    <MtouchInterpreter Condition="'$(IsMonoRuntime)' == 'true'">-all</MtouchInterpreter>
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);FMOD_GNH_IOS</DefineConstants>
     <!--<DefineConstants>$(DefineConstants);METAL</DefineConstants>-->
@@ -90,7 +109,7 @@
 	<PropertyGroup Condition="'$(Configuration)'=='Debug' and $(TargetFramework.Contains('-ios'))">
 		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
 		<CodesignProvision>Apple Dev GnollHack Development 2026</CodesignProvision>
-		<MtouchLink>None</MtouchLink>
+    <MtouchLink Condition="'$(IsMonoRuntime)' == 'true'">None</MtouchLink>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release' and $(TargetFramework.Contains('-ios'))">
@@ -98,24 +117,22 @@
 		<CodesignProvision Condition="'$(ArchiveOnBuild)' == 'True'">Apple Dev GnollHack Distribution 2026</CodesignProvision>
     <CodesignKey Condition="'$(ArchiveOnBuild)' != 'True'">Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
     <CodesignProvision Condition="'$(ArchiveOnBuild)' != 'True'">Apple Dev GnollHack Development 2026</CodesignProvision>
-    <!--<MtouchUseLlvm>false</MtouchUseLlvm>-->
-		<MtouchLink>SdkOnly</MtouchLink>
+    <!--<MtouchUseLlvm Condition="'$(IsMonoRuntime)' == 'true'">false</MtouchUseLlvm>-->
+    <MtouchLink Condition="'$(IsMonoRuntime)' == 'true'">SdkOnly</MtouchLink>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug' and $(TargetFramework.Contains('-android'))">
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<PublishTrimmed>False</PublishTrimmed>
-		<Debugger>Xamarin</Debugger>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release' and $(TargetFramework.Contains('-android'))">
-		<EnableLLVM>true</EnableLLVM>
-		<RunAOTCompilation>true</RunAOTCompilation>
-		<AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <EnableLLVM Condition="'$(IsMonoRuntime)' == 'true'">true</EnableLLVM>
+    <RunAOTCompilation Condition="'$(IsMonoRuntime)' == 'true'">true</RunAOTCompilation>
+    <AndroidEnableProfiledAot Condition="'$(IsMonoRuntime)' == 'true'">false</AndroidEnableProfiledAot>
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>partial</TrimMode>
-		<Debugger>Xamarin</Debugger>
 	</PropertyGroup>
 
   <!-- GENERAL PROPERTIES -->
@@ -146,6 +163,7 @@
 
 	<ItemGroup>
 		<None Remove="..\GnollHackX\GnollHackX\BackgroundView.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\FrameTimeProfiler.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHGame.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\UIUtils.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\CustomCanvasView.cs" />
@@ -181,7 +199,8 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHNumberPickItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHOutRipInfo.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHPetDataItem.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\GHPutStrItem.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHPublishedWindowRow.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHPublishedWindow.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHRecordedRecordedGameFile.cs" />
@@ -197,6 +216,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHUserData.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHUtils.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHWindow.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHWindowRow.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GlyphImageSource.cs" />
 		<None Remove="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
@@ -370,6 +390,7 @@
 
 	<ItemGroup>
 		<Compile Include="..\GnollHackX\GnollHackX\BackgroundView.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\FrameTimeProfiler.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHGame.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\UIUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\CustomCanvasView.cs" />
@@ -405,7 +426,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHOutRipInfo.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPetDataItem.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\GHPutStrItem.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHPublishedWindowRow.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHPublishedWindow.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHRecordedGameFile.cs" />
@@ -422,6 +444,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHUserData.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHWindow.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHWindowRow.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GlyphImageSource.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
@@ -1282,10 +1305,7 @@
 			<_AppxManifestFiles Include="Platforms\Windows\Package.MSIX.appxmanifest" />
 		</ItemGroup>
 
-		<XmlPoke XmlInputPath="%(_AppxManifestFiles.Identity)"
-				 Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10' /&gt;"
-				 Query="/ns:Package/ns:Identity/@Version"
-				 Value="$(_CalculatedVersion)" />
+		<XmlPoke XmlInputPath="%(_AppxManifestFiles.Identity)" Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10' /&gt;" Query="/ns:Package/ns:Identity/@Version" Value="$(_CalculatedVersion)" />
 
 		<Message Importance="high" Text="Synchronized %(_AppxManifestFiles.Identity) version to $(_CalculatedVersion)" />
 	</Target>
@@ -1296,9 +1316,7 @@
     cache by deleting mauiimage.inputs if it doesn't reference the current MauiIcon source file,
     forcing ResizetizeCollectItems to regenerate it.
   -->
-  <Target Name="_InvalidateResizetizerCacheIfIconChanged"
-          BeforeTargets="ResizetizeCollectItems"
-          Condition="$(TargetFramework.Contains('-windows')) And Exists('$(_ResizetizerInputsFile)')">
+  <Target Name="_InvalidateResizetizerCacheIfIconChanged" BeforeTargets="ResizetizeCollectItems" Condition="$(TargetFramework.Contains('-windows')) And Exists('$(_ResizetizerInputsFile)')">
     <ReadLinesFromFile File="$(_ResizetizerInputsFile)">
       <Output TaskParameter="Lines" ItemName="_CachedResizetizeInput" />
     </ReadLinesFromFile>
@@ -1318,6 +1336,11 @@
       <NativePdbFiles Include="$(OutputPath)\**\*.pdb" />
     </ItemGroup>
     <Delete Files="@(NativePdbFiles)" />
+  </Target>
+
+  <!-- Print the value of IsMonoRuntime -->
+  <Target Name="PrintMonoRuntimeStatus" BeforeTargets="BeforeBuild">
+    <Message Text="[Diagnostics] TargetFramework: '$(TargetFramework)' | IsMonoRuntime is: '$(IsMonoRuntime)'" Importance="high" />
   </Target>
 </Project>
                                                                                                                                                                                                                                                                      

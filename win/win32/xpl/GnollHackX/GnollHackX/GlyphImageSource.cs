@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -354,7 +354,7 @@ namespace GnollHackX
                 int anim_frame_idx = 0, main_tile_idx = 0;
                 sbyte mapAnimated = 0;
                 int tile_animation_idx = GHApp.GnollHackService.GetTileAnimationIndexFromGlyph(abs_glyph);
-                
+
                 long counter_value;
                 GHGame ghGame = GHApp.CurrentGHGame;
                 if (ghGame == null)
@@ -374,8 +374,9 @@ namespace GnollHackX
                 int tile_x, tile_y;
                 GHApp.TileSheetXY(ntile, out tile_x, out tile_y);
 
-                using (SKPaint paint = new SKPaint())
+                using (var paint = new SKPaint())
                 {
+                    paint.ColorFilter = null;
 #if !GNH_MAUI
                     if(highFilterQuality)
                         paint.FilterQuality = SKFilterQuality.High;
@@ -442,7 +443,7 @@ namespace GnollHackX
 #endif
                             paint);
 
-                        if(refPage != null)
+                        if (refPage != null)
                             refPage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                 (int)layer_types.LAYER_OBJECT, 0, 0,
                                 tileflag_halfsize, false, tileflag_fullsizeditem,
@@ -473,7 +474,8 @@ namespace GnollHackX
                         int n_sheet_idx = sheet_idx;
 
                         /* Main tile */
-                        using (new SKAutoCanvasRestore(canvas, true))
+                        canvas.Save();
+                        try
                         {
                             canvas.Translate(t_x + (flip_tile ? tileWidth * (1 + flipped_enl_x - enl_x) : 0), t_y);
                             canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
@@ -485,13 +487,17 @@ namespace GnollHackX
                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                 paint);
-                            if(refPage != null)
+                            if (refPage != null)
                                 refPage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                     (int)layer_types.LAYER_OBJECT, 0, 0,
                                     tileflag_halfsize, false, true,
                                     0, 0, tileWidth, tileHeight,
                                     1, scale, 0, 0, tileHeight, true, drawwallends, usingGL, highFilterQuality, fixRects, fixFiltering);
 
+                        }
+                        finally
+                        {
+                            canvas.Restore();
                         }
 
                         /* Enlargement tiles */
@@ -550,7 +556,8 @@ namespace GnollHackX
                                 target_x += xpadding - CanvasXStart;
                                 target_y += ypadding;
 
-                                using (new SKAutoCanvasRestore(canvas, true))
+                                canvas.Save();
+                                try
                                 {
                                     canvas.Translate(target_x + (flip_tile ? tileWidth : 0), target_y);
                                     canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
@@ -562,12 +569,16 @@ namespace GnollHackX
                                         new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
                                         paint);
-                                    if(refPage != null)
+                                    if (refPage != null)
                                         refPage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                             (int)layer_types.LAYER_OBJECT, 0, 0,
                                             tileflag_halfsize, false, true,
                                             0, 0, tileWidth, tileHeight,
                                             1, scale, 0, 0, tileHeight, true, drawwallends, usingGL, highFilterQuality, fixRects, fixFiltering);
+                                }
+                                finally
+                                {
+                                    canvas.Restore();
                                 }
                             }
                         }
@@ -575,5 +586,6 @@ namespace GnollHackX
                 }
             }
         }
+
     }
 }

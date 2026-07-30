@@ -1,4 +1,4 @@
-﻿#if GNH_MAUI
+#if GNH_MAUI
 using GnollHackM;
 #else
 using Xamarin.Forms;
@@ -11,14 +11,20 @@ using System.Text;
 
 namespace GnollHackX
 {
-    public sealed class GHPutStrItem
+    /* GHPublishedWindowRow is part of the published (read-only) window snapshot.
+     * However, Text, PaddingAmount, and InstructionList are left mutable because
+     * UIUtils.ProcessAdjustedItems creates NEW GHPublishedWindowRow instances and
+     * builds them up incrementally (appending text, setting padding, adding
+     * instructions). The mutability applies only to freshly-created rows during
+     * that process, not to rows already published to the UI. */
+    public sealed class GHPublishedWindowRow
     {
-        private GHWindow _window;
+        private GHPublishedWindow _window;
         private string _text;
 
         public int PaddingAmount { get; set; }
 
-        public GHWindow Window { get { return _window; } }
+        public GHPublishedWindow Window { get { return _window; } }
 
         public string Text { 
             get 
@@ -30,74 +36,16 @@ namespace GnollHackX
                 _text = value; 
             }
         }
+        
         private List<GHPutStrInstructions> _instructionList;
 
         public List<GHPutStrInstructions> InstructionList { get { return _instructionList; } }
 
-        private List<int> _attributeList;
-        private List<int> _colorList;
-        public List<int> AttributeList { get { return _attributeList; } }
-        public List<int> ColorList { get { return _colorList; } }
-
-        public GHPutStrItem(GHWindow window, string str)
+        public GHPublishedWindowRow(GHPublishedWindow window, string str, List<GHPutStrInstructions> instructions = null)
         {
-            _instructionList = new List<GHPutStrInstructions>();
-            _attributeList = new List<int>();
-            _colorList = new List<int>();
+            _instructionList = instructions ?? new List<GHPutStrInstructions>();
             _text = str;
             _window = window;
-        }
-
-        public void ConvertListFromArrays()
-        {
-            int prevattr = 0, prevclr = 0;
-            int curattr = 0, curclr = 0;
-            int cnt = 0;
-
-            _instructionList.Clear();
-            for (int i = 0; i < Text.Length; i++)
-            {
-                prevattr = curattr;
-                prevclr = curclr;
-                cnt++;
-                curattr = i < _attributeList.Count ? _attributeList[i] : 0;
-                curclr = i < _colorList.Count ? _colorList[i] : (int)NhColor.CLR_WHITE;
-
-                if(cnt > 1 && (curattr != prevattr || curclr != prevclr))
-                {
-                    _instructionList.Add(new GHPutStrInstructions(prevattr, prevclr, cnt - 1));
-                    cnt = 1;
-                }
-                
-                if(i == Text.Length - 1)
-                {
-                    _instructionList.Add(new GHPutStrInstructions(curattr, curclr, cnt));
-                }
-            }
-        }
-
-        public void ConvertListToArrays()
-        {
-            _attributeList.Clear();
-            _colorList.Clear();
-            for(int j = 0, m = _instructionList.Count; j < m; j++)
-            {
-                GHPutStrInstructions instr = _instructionList[j];
-                for (int i = 0, n = instr.PrintLength; i < n; i++)
-                {
-                    _attributeList.Add(instr.Attributes);
-                    _colorList.Add(instr.Color);
-                }
-            }
-        }
-
-        public GHPutStrItem Clone(GHWindow clonedWindow)
-        {
-            GHPutStrItem clone = new GHPutStrItem(clonedWindow, _text);
-            clone.AttributeList.AddRange(_attributeList);
-            clone.ColorList.AddRange(_colorList);
-            clone.InstructionList.AddRange(_instructionList);
-            return clone;
         }
 
         public string TextWindowFontFamily
@@ -212,18 +160,6 @@ namespace GnollHackX
                 return res;
             }
         }
-
-        //public string GetIndentationString()
-        //{
-        //    if (string.IsNullOrEmpty(Text))
-        //        return "";
-
-        //    if (_instructionList != null && _instructionList.Count > 0)
-        //    {
-        //        return GHUtils.GetIndentationString(Text, _instructionList[0].Attributes);
-        //    }
-        //    return "";
-        //}
 
         public void GetIndentationSpan(out ReadOnlySpan<char> outSpan)
         {
