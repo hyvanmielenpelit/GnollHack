@@ -80,7 +80,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
-    <MtouchExtraArgs Condition="'$(IsMonoRuntime)' == 'true'">--setenv=MONO_GC_PARAMS=nursery-size=64m</MtouchExtraArgs>
+    <MtouchExtraArgs Condition="'$(IsMonoRuntime)' == 'true'">--setenv=MONO_GC_PARAMS=nursery-size=32m</MtouchExtraArgs>
     <MtouchInterpreter Condition="'$(IsMonoRuntime)' == 'true'">-all</MtouchInterpreter>
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);FMOD_GNH_IOS</DefineConstants>
