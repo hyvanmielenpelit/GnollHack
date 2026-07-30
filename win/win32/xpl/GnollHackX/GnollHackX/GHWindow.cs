@@ -274,19 +274,20 @@ namespace GnollHackX
 
             foreach (var row in _putStrs)
             {
-                publishedRows.Add(CreatePublishedRow(published, row, row.PublishedString));
+                publishedRows.Add(CreatePublishedRow(published, row));
             }
 
             return published;
         }
 
-        private GHPublishedWindowRow CreatePublishedRow(GHPublishedWindow published, GHWindowRow row, string text)
+        private GHPublishedWindowRow CreatePublishedRow(GHPublishedWindow published, GHWindowRow row)
         {
             List<GHPutStrInstructions> instructions = new List<GHPutStrInstructions>();
             
             int prevattr = 0, prevclr = 0;
             int curattr = 0, curclr = 0;
             int cnt = 0;
+            string text = row.PublishedString ?? row.TextStringBuilder.ToString();
 
             for (int i = 0; i < text.Length; i++)
             {
