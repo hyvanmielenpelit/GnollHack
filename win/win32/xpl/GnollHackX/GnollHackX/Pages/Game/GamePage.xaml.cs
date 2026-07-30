@@ -6327,6 +6327,7 @@ namespace GnollHackX.Pages.Game
             public SKTextBlob[] RowBlobs;
             public string Text;
             public float BaseTextSize;
+            public float TileWidth;
         }
         private readonly Dictionary<int, EngravingBlobEntry> _engravingBlobCache = new Dictionary<int, EngravingBlobEntry>();
         private int _clearEngravingBlobs = 0;
@@ -7306,6 +7307,7 @@ namespace GnollHackX.Pages.Game
                     if (_engravingBlobCache.TryGetValue(cacheKey, out blobEntry))
                     {
                         if (blobEntry.Text == engraving.Text && blobEntry.BaseTextSize == atwidth
+                            && blobEntry.TileWidth == width
                             && blobEntry.RowBlobs != null && blobEntry.RowBlobs.Length == rowcnt)
                         {
                             needNewEntry = false;
@@ -7329,6 +7331,7 @@ namespace GnollHackX.Pages.Game
                         blobEntry = new EngravingBlobEntry();
                         blobEntry.Text = engraving.Text;
                         blobEntry.BaseTextSize = atwidth;
+                        blobEntry.TileWidth = width;
                         blobEntry.RowBlobs = new SKTextBlob[rowcnt];
                         _engravingBlobCache[cacheKey] = blobEntry;
                     }
