@@ -182,7 +182,8 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHNumberPickItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHOutRipInfo.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHPetDataItem.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\GHPutStrItem.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHPublishedWindowRow.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHPublishedWindow.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHRecordedRecordedGameFile.cs" />
@@ -198,6 +199,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHUserData.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHUtils.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHWindow.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHWindowRow.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GlyphImageSource.cs" />
 		<None Remove="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
@@ -407,7 +409,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHOutRipInfo.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPetDataItem.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\GHPutStrItem.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHPublishedWindowRow.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHPublishedWindow.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHRecordedGameFile.cs" />
@@ -424,6 +427,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHUserData.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHWindow.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHWindowRow.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GlyphImageSource.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IGnollHackService.cs" />

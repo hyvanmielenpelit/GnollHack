@@ -67,9 +67,6 @@ namespace GnollHackX
         private SKTypeface _measureTypeface = null;
         private float _measureTextSize = 0;
 
-        /* Cached StringBuilder for string assembly in PutStrEx/PutStrEx2 */
-        private readonly StringBuilder _stringBuilder = new StringBuilder();
-
         public SKTypeface Typeface { get; set; }
         public SKColor TextColor { get; set; }
         public float TextSize { get; set; }
@@ -150,8 +147,8 @@ namespace GnollHackX
         }
         public int WindowID { get { return _winId; } }
 
-        private List<GHPutStrItem> _putStrs = new List<GHPutStrItem>();
-        public List<GHPutStrItem> PutStrs { get { return _putStrs; } set { _putStrs = value; } }
+        private List<GHWindowRow> _putStrs = new List<GHWindowRow>();
+        public List<GHWindowRow> PutStrs { get { return _putStrs; } set { _putStrs = value; } }
 
         public bool Visible { get; set; }
         private int _width = 0;
@@ -249,188 +246,58 @@ namespace GnollHackX
             _winId = winid;
         }
 
-        //private SKColor TransparentBlack = new SKColor(0, 0, 0, 128);
-        //public void Create()
-        //{
-        //    Typeface = GHApp.LatoRegular;
-        //    TextColor = SKColors.White;
-        //    TextSize = GHConstants.WindowBaseFontSize;
-        //    BackgroundColor = SKColors.Transparent;
-        //    switch (_winType)
-        //    {
-        //        case GHWinType.None:
-        //            break;
-        //        case GHWinType.Message:
-        //            TextSize = GHConstants.WindowMessageFontSize;
-        //            Typeface = GHApp.DejaVuSansMonoTypeface;
-        //            StrokeWidth = TextSize / 4.0f;
-        //            AutoPlacement = true;
-        //            break;
-        //        case GHWinType.Status:
-        //            TextSize = GHConstants.WindowStatusBarFontSize;
-        //            Typeface = GHApp.LatoRegular;
-        //            StrokeWidth = TextSize / 4.0f;
-        //            HasShadow = true;
-        //            Left = 0;
-        //            Top = 0;
-        //            break;
-        //        case GHWinType.Map:
-        //            TextSize = GHConstants.WindowStatusBarFontSize;
-        //            Typeface = GHApp.LatoRegular;
-        //            Left = 0;
-        //            Top = 120;
-        //            break;
-        //        case GHWinType.Menu:
-        //            TextSize = GHConstants.WindowMenuFontSize;
-        //            Typeface = GHApp.UnderwoodTypeface;
-        //            Left = 0;
-        //            Top = 150;
-        //            CenterHorizontally = true;
-        //            break;
-        //        case GHWinType.Text:
-        //            TextSize = GHConstants.WindowMenuFontSize;
-        //            Typeface = GHApp.UnderwoodTypeface;
-        //            Left = 0;
-        //            Top = 150;
-        //            CenterHorizontally = true;
-        //            break;
-        //        case GHWinType.Base:
-        //            break;
-        //        case GHWinType.Here:
-        //            TextSize = GHConstants.WindowMessageFontSize;
-        //            Typeface = GHApp.DejaVuSansMonoTypeface;
-        //            StrokeWidth = TextSize / 4.0f;
-        //            AutoPlacement = true;
-        //            break;
-        //        case GHWinType.Inventory:
-        //            break;
-        //        case GHWinType.Reserved_1:
-        //        case GHWinType.Reserved_2:
-        //        case GHWinType.Reserved_3:
-        //            break;
-        //        case GHWinType.RIP:
-        //            break;
-        //        case GHWinType.Keypad:
-        //            break;
-        //        case GHWinType.Overview:
-        //            break;
-        //        case GHWinType.Worn:
-        //            break;
-        //    }
-
-        //    //if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
-        //    //{
-        //    //    ConcurrentQueue<GHRequest> queue;
-        //    //    if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
-        //    //    {
-        //    //        queue.Enqueue(new GHRequest(_currentGame, GHRequestType.CreateWindowView, _winId, Clone()));
-        //    //    }
-        //    //}
-        //}
-        public WeakReference<GHWindow> ClonedFrom = null;
-        public GHWindow Clone()
+        public GHPublishedWindow Publish()
         {
-            GHWindow clone = new GHWindow(_winType, _winStyle, _glyph, _useUpperSide, _useSpecialSymbols, _ascension, _objdata, _winId);
-            List<GHPutStrItem> clonestrs = new List<GHPutStrItem>();
-            foreach (GHPutStrItem item in PutStrs)
+            List<GHPublishedWindowRow> publishedRows = new List<GHPublishedWindowRow>(_putStrs.Count);
+            
+            GHPublishedWindow clone = new GHPublishedWindow(
+                _winType, _winStyle, _glyph, _useUpperSide, _useSpecialSymbols, _ascension, _objdata, _winId,
+                Typeface, TextColor, TextSize, StrokeWidth, HasShadow, BackgroundColor, CursX, CursY,
+                CenterHorizontally, AutoPlacement, AutoCarriageReturn, WindowPrintStyle, publishedRows,
+                Visible, _width, _height, _pixelWidth, _pixelHeight, Padding, Left, Top,
+                MenuInfo != null ? MenuInfo.Clone() : null,
+                null, false, new WeakReference<GHWindow>(this)
+            );
+
+            foreach (var row in _putStrs)
             {
-                clonestrs.Add(item.Clone(clone));
+                publishedRows.Add(CreatePublishedRow(clone, row));
             }
-            clone.PutStrs = clonestrs;
-            clone.TextColor = TextColor;
-            clone.TextSize = TextSize;
-            clone.Typeface = Typeface;
-            clone.StrokeWidth = StrokeWidth;
-            clone.AutoPlacement = AutoPlacement;
-            clone.CursX = CursX;
-            clone.CursY = CursY;
-            clone.Visible = Visible;
-            clone.BackgroundColor = BackgroundColor;
-            clone.CenterHorizontally = CenterHorizontally;
-            clone.HasShadow = HasShadow;
-            clone.SetWidthHeight(_width, _height, _pixelWidth, _pixelHeight);
-            clone.Padding = Padding;
-            clone.MenuInfo = MenuInfo != null ? MenuInfo.Clone() : null;
-            clone.Left = Left;
-            clone.Top = Top;
-            clone.SelectedMenuItems = SelectedMenuItems;
-            clone.WasCancelled = WasCancelled;
-            clone.ClonedFrom = new WeakReference<GHWindow>(this);
+
             return clone;
         }
 
-        //public void Destroy()
-        //{
-        //    Visible = false;
-        //    ConcurrentQueue<GHRequest> queue;
-        //    if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
-        //    {
-        //        queue.Enqueue(new GHRequest(_currentGame, GHRequestType.DestroyWindowView, _winId));
-        //        if (_winType == GHWinType.Menu && MenuInfo != null && MenuInfo.MenuCloseUponDestroy)
-        //        {
-        //            queue.Enqueue(new GHRequest(_currentGame, GHRequestType.HideMenuPage, _winId));
-        //        }
-        //    }
-        //}
+        private GHPublishedWindowRow CreatePublishedRow(GHPublishedWindow clone, GHWindowRow row)
+        {
+            List<GHPutStrInstructions> instructions = new List<GHPutStrInstructions>();
+            string text = row.TextStringBuilder.ToString();
+            
+            int prevattr = 0, prevclr = 0;
+            int curattr = 0, curclr = 0;
+            int cnt = 0;
 
-        //public void Clear()
-        //{
-        //    switch(WindowType)
-        //    {
-        //        case GHWinType.Map:
-        //            ActiveGamePage.ClearMap();
-        //            break;
-        //    }
+            for (int i = 0; i < text.Length; i++)
+            {
+                prevattr = curattr;
+                prevclr = curclr;
+                cnt++;
+                curattr = i < row.AttributeList.Count ? row.AttributeList[i] : 0;
+                curclr = i < row.ColorList.Count ? row.ColorList[i] : (int)NhColor.CLR_WHITE;
 
-        //    PutStrs.Clear();
+                if (cnt > 1 && (curattr != prevattr || curclr != prevclr))
+                {
+                    instructions.Add(new GHPutStrInstructions(prevattr, prevclr, cnt - 1));
+                    cnt = 1;
+                }
+                
+                if (i == text.Length - 1)
+                {
+                    instructions.Add(new GHPutStrInstructions(curattr, curclr, cnt));
+                }
+            }
 
-        //    _height = 0;
-        //    _width = 0;
-        //    _pixelWidth = 0;
-        //    _pixelHeight = 0;
-        //    CursX = 0;
-        //    CursY = 0;
-
-        //    ConcurrentQueue<GHRequest> queue;
-        //    if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
-        //    {
-        //        if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
-        //            queue.Enqueue(new GHRequest(_currentGame, GHRequestType.ClearWindowView, _winId));
-        //        queue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
-        //    }
-        //}
-
-        //public void Display(bool blocking)
-        //{
-        //    Visible = true;
-        //    if(_winType == GHWinType.Menu || _winType == GHWinType.Text)
-        //    {
-        //        ConcurrentQueue<GHRequest> queue;
-        //        if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
-        //        {
-        //            List<GHPutStrItem> clonestrs = new List<GHPutStrItem>();
-        //            //lock (PutStrsLock) //Probably not needed since only reading from PutStrs (UI thread is not writing)
-        //            {
-        //                foreach (GHPutStrItem item in PutStrs)
-        //                {
-        //                    clonestrs.Add(item.Clone());
-        //                }
-        //            }
-        //            queue.Enqueue(new GHRequest(_currentGame, GHRequestType.DisplayWindowView, _winId, clonestrs));
-        //        }
-        //    }
-        //}
-        //public void Curs(int x, int y)
-        //{
-        //    CursX = x;
-        //    CursY = y;
-        //    if(WindowType == GHWinType.Map)
-        //        ActiveGamePage.SetMapCursor(x, y);
-        //}
-        //public void PrintGlyph(int x, int y, int glyph, int bkglyph, int symbol, int color, uint special, ref LayerInfo layers)
-        //{
-        //    ActiveGamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, color, special, ref layers);
-        //}
+            return new GHPublishedWindowRow(clone, text, instructions);
+        }
 
         private GHSkiaFontPaint GetMeasurePaint()
         {
@@ -451,7 +318,99 @@ namespace GnollHackX
 
         public void PutStrEx(int attributes, string str, int append, int color)
         {
-            //lock (PutStrsLock)
+            GHSkiaFontPaint textPaint = GetMeasurePaint();
+
+            if (CursY >= PutStrs.Count)
+            {
+                for (int i = 0; i < CursY - PutStrs.Count + 1; i++)
+                {
+                    PutStrs.Add(new GHWindowRow(this));
+                }
+            }
+
+            if (CursY >= 0)
+            {
+                var row = PutStrs[CursY];
+                if (row == null)
+                {
+                    row = new GHWindowRow(this);
+                    PutStrs[CursY] = row;
+                }
+
+                int len = str.Length;
+                int curlen = row.TextStringBuilder.Length;
+                List<int> curattrs = row.AttributeList;
+                List<int> curclrs = row.ColorList;
+
+                int origCursX = CursX;
+
+                if (CursX > curlen)
+                {
+                    row.TextStringBuilder.Append(' ', CursX - curlen);
+                }
+                else if (CursX < curlen)
+                {
+                    row.TextStringBuilder.Length = CursX;
+                }
+
+                row.TextStringBuilder.Append(str);
+
+                CursX += str.Length;
+
+                float textWidth = textPaint.MeasureText(row.TextStringBuilder.ToString());
+                textWidth += Padding.Left + Padding.Right;
+                if (textWidth > _pixelWidth)
+                    _pixelWidth = textWidth;
+
+                if (row.TextStringBuilder.Length > _width)
+                    _width = row.TextStringBuilder.Length;
+
+                if (CursY + 1 > _height)
+                    _height = CursY + 1;
+
+                int i;
+                for (i = origCursX; i < CursX; i++)
+                {
+                    while (i > curattrs.Count)
+                        curattrs.Add(0);
+
+                    while (i > curclrs.Count)
+                        curclrs.Add((int)NhColor.CLR_WHITE);
+
+                    if (i == curattrs.Count)
+                        curattrs.Add(attributes);
+                    else if (i < curattrs.Count)
+                        curattrs[i] = attributes;
+
+                    if (i == curclrs.Count)
+                        curclrs.Add(color);
+                    else if (i < curattrs.Count)
+                        curclrs[i] = color;
+                }
+
+                if (AutoCarriageReturn && append == 0)
+                {
+                    CursY++;
+                    CursX = 0;
+                }
+            }
+
+            float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+            _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
+            
+            if(append == 0 && ShouldPublishClone)
+            {
+                _currentGame.RequestQueue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Publish()));
+            }
+        }
+
+        public void PutStrEx2(string str, byte[] attributes, byte[] colors, int attribute, int color, int append)
+        {
+            if (str == null)
+                return;
+            if(attributes == null || colors == null)
+                PutStrEx(attribute, str, append, color);
+            else
             {
                 GHSkiaFontPaint textPaint = GetMeasurePaint();
 
@@ -459,74 +418,67 @@ namespace GnollHackX
                 {
                     for (int i = 0; i < CursY - PutStrs.Count + 1; i++)
                     {
-                        PutStrs.Add(new GHPutStrItem(this, ""));
+                        PutStrs.Add(new GHWindowRow(this));
                     }
                 }
 
                 if (CursY >= 0)
                 {
-                    if (PutStrs[CursY] == null)
-                        PutStrs[CursY] = new GHPutStrItem(this, "");
-                    else if (PutStrs[CursY].Text == null)
-                        PutStrs[CursY].Text = "";
+                    var row = PutStrs[CursY];
+                    if (row == null)
+                    {
+                        row = new GHWindowRow(this);
+                        PutStrs[CursY] = row;
+                    }
 
                     int len = str.Length;
-                    string curstr = PutStrs[CursY].Text;
-                    int curlen = curstr.Length;
-                    List<int> curattrs = PutStrs[CursY].AttributeList;
-                    List<int> curclrs = PutStrs[CursY].ColorList;
-
-                    //if (append != 0)
-                    //    CursX = PutStrs[CursY].Text.Length;
+                    int curlen = row.TextStringBuilder.Length;
+                    List<int> curattrs = row.AttributeList;
+                    List<int> curclrs = row.ColorList;
 
                     int origCursX = CursX;
 
                     if (CursX > curlen)
-                        curlen = CursX;
-
-                    _stringBuilder.Clear();
-                    if (CursX > 0)
                     {
-                        int copyLen = Math.Min(CursX, curstr.Length);
-                        if (copyLen > 0)
-                            _stringBuilder.Append(curstr, 0, copyLen);
-                        if (CursX > curstr.Length)
-                            _stringBuilder.Append(' ', CursX - curstr.Length);
+                        row.TextStringBuilder.Append(' ', CursX - curlen);
                     }
-                    _stringBuilder.Append(str);
-                    //string rightstr = curstr.Length <= CursX + len ? "" : curstr.Substring(CursX + len, curlen - (CursX + len));
-                    PutStrs[CursY].Text = _stringBuilder.ToString();
+                    else if (CursX < curlen)
+                    {
+                        row.TextStringBuilder.Length = CursX;
+                    }
+
+                    row.TextStringBuilder.Append(str);
 
                     CursX += str.Length;
 
-                    // Adjust TextSize property so text is 90% of screen width
-                    float textWidth = textPaint.MeasureText(PutStrs[CursY].Text); //.Replace(' ', '_'));
+                    float textWidth = textPaint.MeasureText(row.TextStringBuilder.ToString());
                     textWidth += Padding.Left + Padding.Right;
                     if (textWidth > _pixelWidth)
                         _pixelWidth = textWidth;
 
-                    if (PutStrs[CursY].Text.Length > _width)
-                        _width = PutStrs[CursY].Text.Length;
+                    if (row.TextStringBuilder.Length > _width)
+                        _width = row.TextStringBuilder.Length;
 
                     if (CursY + 1 > _height)
                         _height = CursY + 1;
 
-                    int i;
+                    int i, idx;
                     for (i = origCursX; i < CursX; i++)
                     {
+                        idx = i - origCursX;
                         while (i > curattrs.Count)
-                            curattrs.Add(0);
+                            curattrs.Add(attribute);
 
                         while (i > curclrs.Count)
-                            curclrs.Add((int)NhColor.CLR_WHITE);
+                            curclrs.Add(color);
 
                         if (i == curattrs.Count)
-                            curattrs.Add(attributes);
+                            curattrs.Add(idx < attributes.Length && attributes[idx] != (int)MenuItemAttributes.None ? attributes[idx] : attribute);
                         else if (i < curattrs.Count)
-                            curattrs[i] = attributes;
+                            curattrs[i] = attribute;
 
                         if (i == curclrs.Count)
-                            curclrs.Add(color);
+                            curclrs.Add(idx < colors.Length && colors[idx] != (int)NhColor.NO_COLOR ? colors[idx] : color);
                         else if (i < curattrs.Count)
                             curclrs[i] = color;
                     }
@@ -541,126 +493,9 @@ namespace GnollHackX
                 float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                 _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
             }
-            if(append == 0 && ShouldPublishClone)
-            {
-                _currentGame.RequestQueue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
-            }
-        }
-
-        public void PutStrEx2(string str, byte[] attributes, byte[] colors, int attribute, int color, int append)
-        {
-            if (str == null)
-                return;
-            if(attributes == null || colors == null)
-                PutStrEx(attribute, str, append, color);
-            else
-            {
-                //int len1 = str.Length;
-                //int len2 = attributes.Length;
-                //int len3 = colors.Length;
-                //int minlen = Math.Min(Math.Min(len1, len2), len3);
-
-                //for (int i = 0; i < minlen; i++)
-                //    PutStrEx(attributes[i] == (int)MenuItemAttributes.None ? attribute : attributes[i], 
-                //        str.Substring(i, 1), 
-                //        i == minlen - 1 ? append : 1, 
-                //        colors[i] == (int)NhColor.NO_COLOR ? color : colors[i]);
-
-                //lock (PutStrsLock)
-                {
-                    GHSkiaFontPaint textPaint = GetMeasurePaint();
-
-                    if (CursY >= PutStrs.Count)
-                    {
-                        for (int i = 0; i < CursY - PutStrs.Count + 1; i++)
-                        {
-                            PutStrs.Add(new GHPutStrItem(this, ""));
-                        }
-                    }
-
-                    if (CursY >= 0)
-                    {
-                        if (PutStrs[CursY] == null)
-                            PutStrs[CursY] = new GHPutStrItem(this, "");
-                        else if (PutStrs[CursY].Text == null)
-                            PutStrs[CursY].Text = "";
-
-                        int len = str.Length;
-                        string curstr = PutStrs[CursY].Text;
-                        int curlen = curstr.Length;
-                        List<int> curattrs = PutStrs[CursY].AttributeList;
-                        List<int> curclrs = PutStrs[CursY].ColorList;
-
-                        //if (append != 0)
-                        //    CursX = PutStrs[CursY].Text.Length;
-
-                        int origCursX = CursX;
-
-                        if (CursX > curlen)
-                            curlen = CursX;
-
-                        _stringBuilder.Clear();
-                        if (CursX > 0)
-                        {
-                            int copyLen = Math.Min(CursX, curstr.Length);
-                            if (copyLen > 0)
-                                _stringBuilder.Append(curstr, 0, copyLen);
-                            if (CursX > curstr.Length)
-                                _stringBuilder.Append(' ', CursX - curstr.Length);
-                        }
-                        _stringBuilder.Append(str);
-                        //string rightstr = curstr.Length <= CursX + len ? "" : curstr.Substring(CursX + len, curlen - (CursX + len));
-                        PutStrs[CursY].Text = _stringBuilder.ToString();
-
-                        CursX += str.Length;
-
-                        // Adjust TextSize property so text is 90% of screen width
-                        float textWidth = textPaint.MeasureText(PutStrs[CursY].Text); //.Replace(' ', '_'));
-                        textWidth += Padding.Left + Padding.Right;
-                        if (textWidth > _pixelWidth)
-                            _pixelWidth = textWidth;
-
-                        if (PutStrs[CursY].Text.Length > _width)
-                            _width = PutStrs[CursY].Text.Length;
-
-                        if (CursY + 1 > _height)
-                            _height = CursY + 1;
-
-                        int i, idx;
-                        for (i = origCursX; i < CursX; i++)
-                        {
-                            idx = i - origCursX;
-                            while (i > curattrs.Count)
-                                curattrs.Add(attribute);
-
-                            while (i > curclrs.Count)
-                                curclrs.Add(color);
-
-                            if (i == curattrs.Count)
-                                curattrs.Add(idx < attributes.Length && attributes[idx] != (int)MenuItemAttributes.None ? attributes[idx] : attribute);
-                            else if (i < curattrs.Count)
-                                curattrs[i] = attribute;
-
-                            if (i == curclrs.Count)
-                                curclrs.Add(idx < colors.Length && colors[idx] != (int)NhColor.NO_COLOR ? colors[idx] : color);
-                            else if (i < curattrs.Count)
-                                curclrs[i] = color;
-                        }
-
-                        if (AutoCarriageReturn && append == 0)
-                        {
-                            CursY++;
-                            CursX = 0;
-                        }
-                    }
-
-                    float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-                    _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
-                }
-            }
             if (append == 0 && ShouldPublishClone)
             {
-                _currentGame.RequestQueue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
+                _currentGame.RequestQueue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Publish()));
             }
         }
 

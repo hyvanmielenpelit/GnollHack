@@ -3428,11 +3428,11 @@ namespace GnollHackX.Pages.Game
         }
 
         private readonly object _localWindowLock = new object();
-        private GHWindow[] _localGHWindows = new GHWindow[GHConstants.MaxGHWindows];
+        private GHPublishedWindow[] _localGHWindows = new GHPublishedWindow[GHConstants.MaxGHWindows];
         private int _localMapWindowId = 0;
         private int _localMessageWindowId = 0;
         private int _localStatusWindowId = 0;
-        public void UpdateGHWindow(int winid, GHWindow ghWindow)
+        public void UpdateGHWindow(int winid, GHPublishedWindow ghWindow)
         {
             if (ghWindow == null)
                 return;
@@ -3441,7 +3441,7 @@ namespace GnollHackX.Pages.Game
 
             lock (_localWindowLock)
             {
-                GHWindow oldWin = _localGHWindows[winid];
+                GHPublishedWindow oldWin = _localGHWindows[winid];
                 if (ghWindow.AutoPlacement && oldWin != null)
                 {
                     ghWindow.Left = oldWin.Left;
@@ -3604,7 +3604,7 @@ namespace GnollHackX.Pages.Game
             if (winid < 0 || winid >= GHConstants.MaxGHWindows)
                 return;
 
-            GHWindow win = null;
+            GHPublishedWindow win = null;
             lock (_localWindowLock)
             {
                 win = _localGHWindows[winid];
@@ -3636,7 +3636,7 @@ namespace GnollHackX.Pages.Game
             if (winid < 0 || winid >= GHConstants.MaxGHWindows)
                 return;
 
-            GHWindow window = null;
+            GHPublishedWindow window = null;
             lock (_localWindowLock)
             {
                 window = _localGHWindows[winid];
@@ -3645,9 +3645,9 @@ namespace GnollHackX.Pages.Game
                 await ShowWindowCanvas(window);
         }
 
-        private async Task ShowWindowCanvas(GHWindow window)
+        private async Task ShowWindowCanvas(GHPublishedWindow window)
         {
-            List<GHPutStrItem> strs = window.PutStrs;
+            List<GHPublishedWindowRow> strs = window.PutStrs;
             /* Cancel delayed text hide */
 #if GNH_MAUI
             StopTextHideTimers();
@@ -3706,11 +3706,11 @@ namespace GnollHackX.Pages.Game
 
             //lock (TextCanvas.TextItemLock)
             {
-                List<GHPutStrItem> items = null;
+                List<GHPublishedWindowRow> items = null;
                 if (window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER 
                     || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_HAS_INDENTED_TEXT || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_DISPLAY_FILE_WITH_INDENTED_TEXT)
                 {
-                    items = new List<GHPutStrItem>();
+                    items = new List<GHPublishedWindowRow>();
                     UIUtils.ProcessAdjustedItems(items, strs);
                 }
                 else
@@ -4398,7 +4398,7 @@ namespace GnollHackX.Pages.Game
         public bool DelayedMenuShow { get { return Interlocked.CompareExchange(ref _delayedMenuShow, 0, 0) != 0; } set { Interlocked.Exchange(ref _delayedMenuShow, value ? 1 : 0); } }
         public bool DelayedMenuShowDoTextHide { get { return Interlocked.CompareExchange(ref _delayedMenuShowDoTextHide, 0, 0) != 0; } set { Interlocked.Exchange(ref _delayedMenuShowDoTextHide, value ? 1 : 0); } }
 
-        private async Task ShowMenuCanvas(GHMenuInfo menuinfo, GHWindow ghwindow)
+        private async Task ShowMenuCanvas(GHMenuInfo menuinfo, GHPublishedWindow ghwindow)
         {
             /* Cancel delayed menu hide */
 #if GNH_MAUI
@@ -4894,7 +4894,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private async Task ShowOutRipPage(GHOutRipInfo outripinfo, GHWindow ghwindow)
+        private async Task ShowOutRipPage(GHOutRipInfo outripinfo, GHPublishedWindow ghwindow)
         {
             var outRipPage = new OutRipPage(this, ghwindow, outripinfo);
             await GHApp.PushModalPageAsync(outRipPage);
@@ -4964,7 +4964,7 @@ namespace GnollHackX.Pages.Game
                 GHGame curGame = GHApp.CurrentGHGame;
                 GHWindow origWindow;
                 if (MenuCanvas.GHWindow.ClonedFrom == null)
-                    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(), true));
+                    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, (GHWindow)null, new List<GHMenuItem>(), true));
                 else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
                     curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(), true));
                 else
@@ -8135,7 +8135,7 @@ namespace GnollHackX.Pages.Game
                 if (curGame != null)
                 {
                     GetWindowIds(out mapWindowId, out messageWindowId, out statusWindowId);
-                    GHWindow win = null;
+                    GHPublishedWindow win = null;
                     lock (_localWindowLock)
                     {
                         win = _localGHWindows[mapWindowId];
@@ -9922,8 +9922,8 @@ namespace GnollHackX.Pages.Game
                 {
                     _localCanvasButtonRect.Top = 0; /* Maybe overrwritten below */
                     _localCanvasButtonRect.Bottom = canvasheight; /* Maybe overrwritten below */
-                    GHWindow ghWindow = null;
-                    GHWindow messageWindow = null;
+                    GHPublishedWindow ghWindow = null;
+                    GHPublishedWindow messageWindow = null;
                     GHSubstring substr = new GHSubstring("");
                     for (int i = 0; i < GHConstants.MaxGHWindows; i++)
                     {
@@ -10019,8 +10019,8 @@ namespace GnollHackX.Pages.Game
                                     int j = -1;
                                     if (ghWindow.PutStrs != null)
                                     {
-                                        List<GHPutStrItem> putStrs = ghWindow.PutStrs;
-                                        foreach (GHPutStrItem putstritem in putStrs)
+                                        List<GHPublishedWindowRow> putStrs = ghWindow.PutStrs;
+                                        foreach (GHPublishedWindowRow putstritem in putStrs)
                                         {
                                             if (putstritem == null)
                                                 break;
@@ -21066,7 +21066,7 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = GHApp.CurrentGHGame;
             GHWindow origWindow;
             if (MenuCanvas.GHWindow.ClonedFrom == null)
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist, false));
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, (GHWindow)null, resultlist, false));
             else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, resultlist, false));
             else
@@ -21145,7 +21145,7 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = GHApp.CurrentGHGame;
             GHWindow origWindow;
             if (MenuCanvas.GHWindow.ClonedFrom == null)
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(1), true, responseIntValue));
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, (GHWindow)null, new List<GHMenuItem>(1), true, responseIntValue));
             else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(1), true, responseIntValue));
             else
@@ -21705,7 +21705,7 @@ namespace GnollHackX.Pages.Game
                     int j = 0;
                     y += topPadding;
                     var textItems = TextCanvas.PutStrItems;
-                    foreach (GHPutStrItem putstritem in textItems)
+                    foreach (GHPublishedWindowRow putstritem in textItems)
                     {
                         int pos = 0;
                         x = leftmenupadding + leftinnerpadding;

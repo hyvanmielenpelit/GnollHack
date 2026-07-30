@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -505,10 +505,10 @@ namespace GnollHackX.Controls
         public GamePage _gamePage;
         public Grid _parentGrid;
 
-        private GHWindow _gHWindow;
+        private GHPublishedWindow _gHWindow;
         private int _menuStyle;
         private ObservableCollection<GHMenuItem> _menuItems = null;
-        private List<GHPutStrItem> _putStrItems = null;
+        private List<GHPublishedWindowRow> _putStrItems = null;
         private int _selectionHow;
         private int _selectionIndex = -1;
         private long _delayedResourceCacheLimit = -1L;
@@ -528,10 +528,10 @@ namespace GnollHackX.Controls
 #else
         public CanvasTypes CanvasType { get; set; }
 #endif
-        public GHWindow GHWindow { get { return Interlocked.CompareExchange(ref _gHWindow, null, null); } set { Interlocked.Exchange(ref _gHWindow, value); } }
+        public GHPublishedWindow GHWindow { get { return Interlocked.CompareExchange(ref _gHWindow, null, null); } set { Interlocked.Exchange(ref _gHWindow, value); } }
         public ghmenu_styles MenuStyle { get { return (ghmenu_styles)Interlocked.CompareExchange(ref _menuStyle, 0, 0); } set { Interlocked.Exchange(ref _menuStyle, (int)value); } }
         public ObservableCollection<GHMenuItem> MenuItems { get { return Interlocked.CompareExchange(ref _menuItems, null, null); } set { Interlocked.Exchange(ref _menuItems, value); } }
-        public List<GHPutStrItem> PutStrItems { get { return Interlocked.CompareExchange(ref _putStrItems, null, null); } set { Interlocked.Exchange(ref _putStrItems, value); } } //{ get { return _GHPutStrItems; } set { _GHPutStrItems = value; } }
+        public List<GHPublishedWindowRow> PutStrItems { get { return Interlocked.CompareExchange(ref _putStrItems, null, null); } set { Interlocked.Exchange(ref _putStrItems, value); } } //{ get { return _GHPutStrItems; } set { _GHPutStrItems = value; } }
 
         public SelectionMode SelectionHow { get { return (SelectionMode)Interlocked.CompareExchange(ref _selectionHow, 0, 0); } set { Interlocked.Exchange(ref _selectionHow, (int)value); } }
         public int SelectionIndex { get { return Interlocked.CompareExchange(ref _selectionIndex, 0, 0); } set { Interlocked.Exchange(ref _selectionIndex, value); } }

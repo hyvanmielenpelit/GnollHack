@@ -133,7 +133,7 @@ namespace GnollHackX
                 if(_ghWindows[winHandle] != null)
                 {
                     if (_ghWindows[winHandle].WindowType != GHWinType.Status || gamePage.ClassicStatusBar)
-                        gamePage.UpdateGHWindow(winHandle, _ghWindows[winHandle].Clone());
+                        gamePage.UpdateGHWindow(winHandle, _ghWindows[winHandle].Publish());
                 }
             }
         }
@@ -559,7 +559,7 @@ namespace GnollHackX
             else if (wintype == (int)GHWinType.Status)
                 _statusWindowId = handle;
 
-            RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, handle, ghwin.Clone()));
+            RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, handle, ghwin.Publish()));
             return handle;
         }
 
@@ -634,7 +634,7 @@ namespace GnollHackX
 
             if (win.WindowType != GHWinType.Status || (ActiveGamePage?.ClassicStatusBar ?? true))
             {
-                RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Clone()));
+                RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Publish()));
             }
         }
 
@@ -646,7 +646,7 @@ namespace GnollHackX
 
             if (_statusWindowId > 0 && _statusWindowId < GHConstants.MaxGHWindows && _ghWindows[_statusWindowId] != null)
             {
-                gamePage.UpdateGHWindow(_statusWindowId, _ghWindows[_statusWindowId].Clone());
+                gamePage.UpdateGHWindow(_statusWindowId, _ghWindows[_statusWindowId].Publish());
             }
         }
 
@@ -813,7 +813,7 @@ namespace GnollHackX
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowVisibility, win.WindowID, true));
             if (win.WindowType == GHWinType.Menu || win.WindowType == GHWinType.Text)
             {
-                RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Clone()));
+                RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Publish()));
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.DisplayWindowView, win.WindowID));
             }
         }
@@ -2077,7 +2077,7 @@ namespace GnollHackX
                 _ghWindows[winid].SelectedMenuItems = null;
                 _ghWindows[winid].WasCancelled = false;
 
-                GHWindow clonedWindow = _ghWindows[winid].Clone();
+                GHPublishedWindow clonedWindow = _ghWindows[winid].Publish();
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, winid, clonedWindow));
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowMenuPage, clonedWindow, clonedWindow.MenuInfo));
                 enqueued = true;
@@ -3708,7 +3708,7 @@ namespace GnollHackX
                         {
                             if (_ghWindows[cmd_param] != null)
                             {
-                                foreach(GHPutStrItem psi in _ghWindows[cmd_param].PutStrs)
+                                foreach(GHWindowRow psi in _ghWindows[cmd_param].PutStrs)
                                 {
                                     if(windowText != "")
                                         windowText += Environment.NewLine;
@@ -3980,7 +3980,7 @@ namespace GnollHackX
 
             if (_ghWindows[winid] != null)
             {
-                GHWindow clonedWindow = _ghWindows[winid].Clone();
+                GHPublishedWindow clonedWindow = _ghWindows[winid].Publish();
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, winid, clonedWindow));
                 RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowOutRipPage, clonedWindow, new GHOutRipInfo(plname, points, killer, time)));
             }

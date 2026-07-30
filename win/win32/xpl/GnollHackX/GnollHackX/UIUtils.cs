@@ -802,14 +802,14 @@ namespace GnollHackX
             }
         }
 
-        public static void ProcessAdjustedItems(List<GHPutStrItem> adjusted_list, List<GHPutStrItem> normal_list)
+        public static void ProcessAdjustedItems(List<GHPublishedWindowRow> adjusted_list, List<GHPublishedWindowRow> normal_list)
         {
             adjusted_list.Clear();
-            GHPutStrItem newpsi = null;
+            GHPublishedWindowRow newpsi = null;
 
             for (int cnt = 0; cnt < normal_list.Count; cnt++)
             {
-                GHPutStrItem psi = normal_list[cnt];
+                GHPublishedWindowRow psi = normal_list[cnt];
                 if (newpsi != null && (psi.Text == "" || psi.StartingSpaces != newpsi.PaddingAmount))
                 {
                     adjusted_list.Add(newpsi);
@@ -825,7 +825,7 @@ namespace GnollHackX
                     bool isnewpsi = false;
                     if (newpsi == null)
                     {
-                        newpsi = new GHPutStrItem(psi.Window, "");
+                        newpsi = new GHPublishedWindowRow(psi.Window, "");
                         isnewpsi = true;
                     }
 

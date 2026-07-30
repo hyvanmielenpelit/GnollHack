@@ -24,11 +24,11 @@ namespace GnollHackX.Pages.Game
     public partial class OutRipPage : CustomModalPage, ISpecialKeyPressHandlingPage
     {
         GamePage _gamePage;
-        GHWindow _window;
+        GHPublishedWindow _window;
         int _glyph;
         bool _playingReplay = false;
 
-        public OutRipPage(GamePage gamePage, GHWindow window, GHOutRipInfo outripinfo)
+        public OutRipPage(GamePage gamePage, GHPublishedWindow window, GHOutRipInfo outripinfo)
         {
             InitializeComponent();
 //#if GNH_MAUI
