@@ -3447,7 +3447,6 @@ namespace GnollHackX.Pages.Game
                     ghWindow.Left = oldWin.Left;
                     ghWindow.Top = oldWin.Top;
                 }
-                oldWin?.Dispose();
                 _localGHWindows[winid] = ghWindow;
                 switch(ghWindow.WindowType)
                 {
@@ -3627,7 +3626,6 @@ namespace GnollHackX.Pages.Game
                     default:
                         break;
                 }
-                win.Dispose();
             }
         }
 

@@ -49,7 +49,7 @@ namespace GnollHackX
         public float Bottom { get; set; }
     }
 
-    public sealed class GHWindow : IDisposable
+    public sealed class GHWindow
     {
         private GHWinType _winType = 0;
         private ghwindow_styles _winStyle = 0;
@@ -521,25 +521,5 @@ namespace GnollHackX
             }
         }
 
-        private int _disposed = 0;
-
-        public void Dispose()
-        {
-            try
-            {
-                if (Interlocked.Exchange(ref _disposed, 1) == 0)
-                {
-                    _putStrs.Clear();
-                    /* Do not dispose MenuInfo's GHMenuItems here;
-                     * the render thread may still hold references to
-                     * the same GHMenuItem objects and their text blobs.
-                     * They will be GC'd when all references are released. */
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("GHWindow.Dispose error: " + ex.Message);
-            }
-        }
     }
 }

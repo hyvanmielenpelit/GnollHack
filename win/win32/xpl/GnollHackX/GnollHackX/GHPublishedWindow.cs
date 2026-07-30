@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace GnollHackX
 {
-    public sealed class GHPublishedWindow : IDisposable
+    public sealed class GHPublishedWindow
     {
         public GHWinType WindowType { get; }
         public ghwindow_styles WindowStyle { get; }
@@ -157,10 +157,6 @@ namespace GnollHackX
             }
         }
 
-        public void Dispose()
-        {
-            // Nothing to dispose natively, just clearing list reference to help GC
-            PutStrs?.Clear();
-        }
+
     }
 }
