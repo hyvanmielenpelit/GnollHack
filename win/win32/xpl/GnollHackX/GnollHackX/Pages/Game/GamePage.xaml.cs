@@ -1185,7 +1185,7 @@ namespace GnollHackX.Pages.Game
         public void Cleanup()
         {
             if (Interlocked.CompareExchange(ref _isCleanedUp, 1, 0) != 0) return;
-
+            
             /* Each section has its own try/catch so a failure in one
              * does not prevent the remaining resources from being released. */
 

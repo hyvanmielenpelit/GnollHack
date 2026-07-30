@@ -95,8 +95,8 @@ namespace GnollHackX
          * These replace the old int[] / ulong[] / sbyte[] fields that
          * caused managed interior pointer overhead on CoreCLR.
          * The memory layout matches the C struct exactly. */
-        public fixed int layer_glyphs[20];     /* MAX_LAYERS = 20 */
-        public fixed int layer_gui_glyphs[20]; /* MAX_LAYERS = 20 */
+        public fixed int layer_glyphs[(int)layer_types.MAX_LAYERS];
+        public fixed int layer_gui_glyphs[(int)layer_types.MAX_LAYERS];
 
         public ulong layer_flags;
         public uint m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
@@ -118,7 +118,7 @@ namespace GnollHackX
         public ulong status_bits;
         public ulong condition_bits;
 
-        public fixed ulong buff_bits[8]; /* NUM_BUFF_BIT_ULONGS = 8 */
+        public fixed ulong buff_bits[GHConstants.NUM_BUFF_BIT_ULONGS];
 
         public sbyte wsegdir;
         public sbyte reverse_prev_wsegdir;
@@ -140,8 +140,8 @@ namespace GnollHackX
         public sbyte missile_origin_x;
         public sbyte missile_origin_y;
 
-        public fixed sbyte leash_mon_x[3]; /* MaxLeashed + 1 = 3; the last coordinate is the other end of the leash, i.e., u.ux at the time */
-        public fixed sbyte leash_mon_y[3]; /* MaxLeashed + 1 = 3; the last coordinate is the other end of the leash, i.e., u.uy at the time */
+        public fixed sbyte leash_mon_x[GHConstants.MaxLeashed + 1]; /* MaxLeashed + 1 = 3; the last coordinate is the other end of the leash, i.e., u.ux at the time */
+        public fixed sbyte leash_mon_y[GHConstants.MaxLeashed + 1]; /* MaxLeashed + 1 = 3; the last coordinate is the other end of the leash, i.e., u.uy at the time */
     }
 
     [StructLayout(LayoutKind.Sequential)]
