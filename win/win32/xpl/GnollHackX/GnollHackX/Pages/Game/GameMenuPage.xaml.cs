@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Compression;
 using System.IO;
-using System.Net.Http;
 
 
 #if GNH_MAUI
@@ -490,61 +489,12 @@ namespace GnollHackX.Pages.Game
                 debugData = GHGame.GenerateDebugData();
             }
 
-            /* 4. Upload to Overseer and open WebView */
-            string overseerUrl = GHConstants.GnollHackOverseerPage;
-            try
-            {
-                using (var httpClient = new HttpClient())
-                using (var content = new MultipartFormDataContent())
-                {
-                    content.Add(new StringContent(GHApp.XlogUserName ?? ""), "UserName");
-                    content.Add(new StringContent(GHApp.XlogPassword ?? ""), "Password");
-                    content.Add(new StringContent(GHApp.XlogAntiForgeryToken ?? ""), "AntiForgeryToken");
-
-                    if (!string.IsNullOrEmpty(snapshotHtml))
-                        content.Add(new StringContent(snapshotHtml, Encoding.UTF8, "text/html"), "SnapshotHtml");
-                    if (!string.IsNullOrEmpty(messageHistory))
-                        content.Add(new StringContent(messageHistory), "MessageHistory");
-                    if (!string.IsNullOrEmpty(directoryManifest))
-                        content.Add(new StringContent(directoryManifest), "DirectoryManifest");
-                    if (!string.IsNullOrEmpty(debugData))
-                        content.Add(new StringContent(debugData), "DebugData");
-
-                    var response = await httpClient.PostAsync(
-                        GHConstants.GnollHackOverseerPage + "/api/session/create", content);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string jsonResponse = await response.Content.ReadAsStringAsync();
-                        var result = Newtonsoft.Json.Linq.JObject.Parse(jsonResponse);
-                        string sessionId = result?["sessionId"]?.ToString() ?? "";
-                        string handoffToken = result?["handoffToken"]?.ToString() ?? "";
-
-                        overseerUrl = GHConstants.GnollHackOverseerPage +
-                                      $"/api/auth/handoff?token={handoffToken}&sessionId={sessionId}";
-                    }
-                    else
-                    {
-                        GHApp.WriteGHLog("Overseer session create failed: HTTP " + (int)response.StatusCode);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                GHApp.WriteGHLog("Overseer upload failed: " + ex.Message);
-                /* Fallback: open Overseer without context */
-            }
-
-            /* 5. Open the Overseer page */
-            if (GHApp.IsiOS)
-            {
-                await GHApp.OpenBrowser(this, "Overseer", new Uri(overseerUrl));
-            }
-            else
-            {
-                var overseerPage = new OverseerPage("Overseer", overseerUrl);
-                await GHApp.PushModalPageAsync(overseerPage);
-            }
+            /* 4. Open OverseerPage — it handles the upload + progress display */
+            var overseerPage = new OverseerPage("Overseer",
+                GHConstants.GnollHackOverseerPage,
+                snapshotHtml, messageHistory,
+                directoryManifest, debugData);
+            await GHApp.PushModalPageAsync(overseerPage);
 
             MainLayout.IsEnabled = true;
         }

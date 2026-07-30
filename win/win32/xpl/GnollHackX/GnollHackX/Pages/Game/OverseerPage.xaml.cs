@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -28,14 +31,33 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAUI
         IDispatcherTimer _timer = null;
 #endif
-        public OverseerPage(string title, string overseerUrl)
+        private string _baseOverseerUrl;
+        private string _snapshotHtml;
+        private string _messageHistory;
+        private string _directoryManifest;
+        private string _debugData;
+
+        public OverseerPage(string title, string baseOverseerUrl,
+                            string snapshotHtml, string messageHistory,
+                            string directoryManifest, string debugData)
         {
             InitializeComponent();
-            UrlWebViewSource Source = new UrlWebViewSource
+
+            _baseOverseerUrl = baseOverseerUrl;
+            _snapshotHtml = snapshotHtml;
+            _messageHistory = messageHistory;
+            _directoryManifest = directoryManifest;
+            _debugData = debugData;
+
+            /* Show a simple loading page in the WebView while the overlay is visible */
+            DisplayWebView.Source = new HtmlWebViewSource
             {
-                Url = overseerUrl,
+                Html = "<html><body style='background:#1a1a1a;color:#666;" +
+                       "font-family:sans-serif;display:flex;align-items:center;" +
+                       "justify-content:center;height:100vh;margin:0;'>" +
+                       "<p>Connecting to Gnoll Overseer...</p></body></html>"
             };
-            DisplayWebView.Source = Source;
+
             UpdateNavigationButtons(true);
 #if GNH_MAUI && WINDOWS
             if (!string.IsNullOrWhiteSpace(title))
@@ -66,6 +88,105 @@ namespace GnollHackX.Pages.Game
                 }
             };
 #endif
+        }
+
+        private async void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            GHApp.BackButtonPressed += BackButtonPressed;
+            await UploadAndConnect();
+        }
+
+        private void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            GHApp.BackButtonPressed -= BackButtonPressed;
+        }
+
+        private async Task UploadAndConnect()
+        {
+            string overseerUrl = _baseOverseerUrl;
+
+            try
+            {
+                ProgressStatusLabel.Text = "Uploading game data...";
+                UploadProgressBar.Progress = 0.3;
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.Timeout = TimeSpan.FromSeconds(10);
+                    using (var content = new MultipartFormDataContent())
+                    {
+                        content.Add(new StringContent(GHApp.XlogUserName ?? ""), "UserName");
+                        content.Add(new StringContent(GHApp.XlogPassword ?? ""), "Password");
+                        content.Add(new StringContent(GHApp.XlogAntiForgeryToken ?? ""), "AntiForgeryToken");
+
+                        if (!string.IsNullOrEmpty(_snapshotHtml))
+                            content.Add(new StringContent(_snapshotHtml, Encoding.UTF8, "text/html"), "SnapshotHtml");
+                        if (!string.IsNullOrEmpty(_messageHistory))
+                            content.Add(new StringContent(_messageHistory), "MessageHistory");
+                        if (!string.IsNullOrEmpty(_directoryManifest))
+                            content.Add(new StringContent(_directoryManifest), "DirectoryManifest");
+                        if (!string.IsNullOrEmpty(_debugData))
+                            content.Add(new StringContent(_debugData), "DebugData");
+
+                        /* Default initial prompt */
+                        content.Add(new StringContent(
+                            "Analyze my current game state and suggest what I should do next."),
+                            "InitialPrompt");
+
+                        ProgressStatusLabel.Text = "Contacting Overseer server...";
+                        UploadProgressBar.Progress = 0.6;
+
+                        var response = await httpClient.PostAsync(
+                            _baseOverseerUrl + "/api/session/create", content);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string jsonResponse = await response.Content.ReadAsStringAsync();
+                            var result = JObject.Parse(jsonResponse);
+                            string sessionId = result?["sessionId"]?.ToString() ?? "";
+                            string handoffToken = result?["handoffToken"]?.ToString() ?? "";
+
+                            overseerUrl = _baseOverseerUrl +
+                                          $"/api/auth/handoff?token={handoffToken}&sessionId={sessionId}";
+
+                            ProgressStatusLabel.Text = "Connected!";
+                            UploadProgressBar.Progress = 1.0;
+                        }
+                        else
+                        {
+                            string msg = "Overseer session failed: HTTP " + (int)response.StatusCode;
+                            GHApp.WriteGHLog(msg);
+                            ProgressStatusLabel.Text = "Connection failed. Opening without game context.";
+                            UploadProgressBar.Progress = 1.0;
+                            await Task.Delay(2000);
+                        }
+                    }
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                GHApp.WriteGHLog("Overseer upload timed out after 10 seconds.");
+                ProgressStatusLabel.Text = "Connection timed out. Opening without game context.";
+                UploadProgressBar.Progress = 1.0;
+                await Task.Delay(2000);
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("Overseer upload failed: " + ex.Message);
+                ProgressStatusLabel.Text = "Upload failed. Opening without game context.";
+                UploadProgressBar.Progress = 1.0;
+                await Task.Delay(2000);
+            }
+
+            /* Hide overlay and navigate to the final URL */
+            ProgressOverlay.IsVisible = false;
+            DisplayWebView.Source = new UrlWebViewSource { Url = overseerUrl };
+
+            /* Free the data references - they can be large */
+            _snapshotHtml = null;
+            _messageHistory = null;
+            _directoryManifest = null;
+            _debugData = null;
         }
 
         private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
@@ -190,15 +311,6 @@ namespace GnollHackX.Pages.Game
                 await ClosePageAsync(false);
             }
             return false;
-        }
-
-        private void ContentPage_Appearing(object sender, EventArgs e)
-        {
-            GHApp.BackButtonPressed += BackButtonPressed;
-        }
-        private void ContentPage_Disappearing(object sender, EventArgs e)
-        {
-            GHApp.BackButtonPressed -= BackButtonPressed;
         }
     }
 }
