@@ -102,18 +102,6 @@ namespace GnollHackX.Pages.Game
 
         private GlyphImageSource _glyphImageSource = new GlyphImageSource();
 
-        ~OutRipPage()
-        {
-            try
-            {
-                _glyphImageSource?.Dispose();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("~OutRipPage dispose error: " + ex.Message);
-            }
-        }
-
         public GlyphImageSource GlyphImage
         {
             get

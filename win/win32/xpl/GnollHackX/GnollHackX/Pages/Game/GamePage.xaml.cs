@@ -1216,13 +1216,6 @@ namespace GnollHackX.Pages.Game
                 /* Dispose of cached mask filters */
                 _blur.Dispose();
                 _lookBlur.Dispose();
-
-                /* Dispose of cached GlyphImageSource instances */
-                _popupImageSource?.Dispose();
-                _menuGlyphImageSource?.Dispose();
-                _ynImageSource?.Dispose();
-                _paintGlyphImageSource?.Dispose();
-                _textGlyphImageSource?.Dispose();
             }
             catch (Exception ex)
             {

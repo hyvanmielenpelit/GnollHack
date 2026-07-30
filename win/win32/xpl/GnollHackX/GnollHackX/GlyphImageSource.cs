@@ -18,14 +18,13 @@ using SkiaSharp;
 
 namespace GnollHackX
 {
-    public class GlyphImageSource : StreamImageSource, IDisposable
+    public class GlyphImageSource : StreamImageSource
     {
         public GlyphImageSource()
         {
 
         }
 
-        private readonly SKPaint _drawPaint = new SKPaint();
         private int _canvasWidth = 0;
         private int _canvasHeight = 0;
 
@@ -375,8 +374,8 @@ namespace GnollHackX
                 int tile_x, tile_y;
                 GHApp.TileSheetXY(ntile, out tile_x, out tile_y);
 
+                using (var paint = new SKPaint())
                 {
-                    SKPaint paint = _drawPaint;
                     paint.ColorFilter = null;
 #if !GNH_MAUI
                     if(highFilterQuality)
@@ -588,21 +587,5 @@ namespace GnollHackX
             }
         }
 
-        private int _disposed = 0;
-
-        public void Dispose()
-        {
-            try
-            {
-                if (Interlocked.Exchange(ref _disposed, 1) == 0)
-                {
-                    _drawPaint?.Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("GlyphImageSource.Dispose error: " + ex.Message);
-            }
-        }
     }
 }
