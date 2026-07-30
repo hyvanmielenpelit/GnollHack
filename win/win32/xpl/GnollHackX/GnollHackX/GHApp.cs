@@ -1002,6 +1002,10 @@ namespace GnollHackX
             {
                 var page = await Navigation.PopModalAsync();
                 DisconnectIViewHandlers(page);
+                if (page is GamePage gp)
+                {
+                    gp.Cleanup();
+                }
             }
             catch (Exception ex)
             {
@@ -2238,6 +2242,10 @@ namespace GnollHackX
                 var page = await Navigation.PopModalAsync(animated);
                 popagain = !(page is GamePage || page == null);
                 DisconnectIViewHandlers(page);
+                if (page is GamePage gp)
+                {
+                    gp.Cleanup();
+                }
             } while (popagain);
             CurrentGamePage = null;
         }

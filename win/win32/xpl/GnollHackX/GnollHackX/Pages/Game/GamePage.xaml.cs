@@ -1181,8 +1181,11 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        ~GamePage()
+        private int _isCleanedUp = 0;
+        public void Cleanup()
         {
+            if (Interlocked.CompareExchange(ref _isCleanedUp, 1, 0) != 0) return;
+
             try
             {
                 /* Dispose of all bitmaps */
@@ -1219,7 +1222,7 @@ namespace GnollHackX.Pages.Game
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("~GamePage dispose error: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("GamePage.Cleanup error: " + ex.Message);
             }
         }
 

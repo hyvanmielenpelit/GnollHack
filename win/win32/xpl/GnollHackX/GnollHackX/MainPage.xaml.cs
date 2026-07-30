@@ -83,6 +83,7 @@ namespace GnollHackX
                 gamePage.StopTimers();
                 gamePage.ShutDownCanvasViews();
                 GHApp.DisconnectIViewHandlers(gamePage);
+                gamePage.Cleanup();
                 GHApp.CurrentGamePage = null;
             }
             GHApp.IncrementMainConstructorRunNumber();
