@@ -1204,8 +1204,8 @@ namespace GnollHackX.Pages.Game
 
                 /* Dispose of cached paint instances */
                 _mapPaint.Dispose();
-                _uiPaint.Dispose();
-                _orbPaint.Dispose();
+                _mapUiPaint.Dispose();
+                _mapOrbPaint.Dispose();
                 _cmdPaint.Dispose();
                 _mapTextPaint.Dispose();
                 _menuTextPaint.Dispose();
@@ -6248,8 +6248,8 @@ namespace GnollHackX.Pages.Game
 
         /* Cached SKPaint instances to avoid per-frame heap allocations */
         private readonly SKPaint _mapPaint = new SKPaint();
-        private readonly SKPaint _uiPaint = new SKPaint();
-        private readonly SKPaint _orbPaint = new SKPaint();
+        private readonly SKPaint _mapUiPaint = new SKPaint();
+        private readonly SKPaint _mapOrbPaint = new SKPaint();
         private readonly SKPaint _cmdPaint = new SKPaint();
 
         /* Cached GHSkiaFontPaint instances (each wraps SKPaint + SKFont) */
@@ -9990,7 +9990,7 @@ namespace GnollHackX.Pages.Game
                             }
 
                             {
-                                SKPaint winPaint = _uiPaint;
+                                SKPaint winPaint = _mapUiPaint;
                                 ResetPaint(winPaint);
                                 //winPaint.FilterQuality = SKFilterQuality.None;
 
@@ -10331,7 +10331,7 @@ namespace GnollHackX.Pages.Game
                                 target_scale = 1f;
 
                             {
-                                SKPaint highQualityPaint = _uiPaint;
+                                SKPaint highQualityPaint = _mapUiPaint;
                                 ResetPaint(highQualityPaint);
 #if !GNH_MAUI
                                 highQualityPaint.FilterQuality = SKFilterQuality.High;
@@ -12251,7 +12251,7 @@ namespace GnollHackX.Pages.Game
                             float btnBaseFontSize = GHConstants.SkillButtonBaseFontSize * skillDest.Width / 50.0f;
                             textPaint.TextSize = btnBaseFontSize;
                             {
-                                SKPaint btnPaint = _uiPaint;
+                                SKPaint btnPaint = _mapUiPaint;
                                 ResetPaint(btnPaint);
                                 if (_localIsPointerHovering && skillDest.Contains(_localPointerHoverLocation))
                                 {
@@ -12288,7 +12288,7 @@ namespace GnollHackX.Pages.Game
                             float btnBaseFontSize = GHConstants.SkillButtonBaseFontSize * poleDest.Width / 50.0f;
                             textPaint.TextSize = btnBaseFontSize;
                             {
-                                SKPaint btnPaint = _uiPaint;
+                                SKPaint btnPaint = _mapUiPaint;
                                 ResetPaint(btnPaint);
                                 if (_localIsPointerHovering && poleDest.Contains(_localPointerHoverLocation))
                                 {
@@ -12325,7 +12325,7 @@ namespace GnollHackX.Pages.Game
                             float btnBaseFontSize = GHConstants.SkillButtonBaseFontSize * prevWepDest.Width / 50.0f;
                             textPaint.TextSize = btnBaseFontSize;
                             {
-                                SKPaint btnPaint = _uiPaint;
+                                SKPaint btnPaint = _mapUiPaint;
                                 ResetPaint(btnPaint);
                                 if (_localIsPointerHovering && prevWepDest.Contains(_localPointerHoverLocation))
                                 {
@@ -12387,7 +12387,7 @@ namespace GnollHackX.Pages.Game
                             textPaint.Typeface = GHApp.LatoRegular;
                             textPaint.TextSize = textSize;
                             {
-                                SKPaint btnPaint = _uiPaint;
+                                SKPaint btnPaint = _mapUiPaint;
                                 ResetPaint(btnPaint);
                                 if (_localIsPointerHovering && usedRect.Contains(_localPointerHoverLocation))
                                 {
@@ -23351,7 +23351,7 @@ namespace GnollHackX.Pages.Game
             //textPaint.TextAlign = SKTextAlign.Center;
             StartProfiling(GHProfilingStyle.Bitmap);
             {
-                SKPaint paint = _orbPaint;
+                SKPaint paint = _mapOrbPaint;
                 ResetPaint(paint);
 #if !GNH_MAUI
                 paint.FilterQuality = SKFilterQuality.High;
