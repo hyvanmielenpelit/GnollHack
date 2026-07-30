@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
@@ -44,7 +44,20 @@
 		<PackageCertificateThumbprint>0DE60AC858971DC05E45C172A6D7462CBA45C98A</PackageCertificateThumbprint>
 	</PropertyGroup>
 
-
+  <!-- DETEMINE IF MONO RUNTIME IS BEING USED -->
+  <PropertyGroup Condition="'$(TargetFramework)' != ''">
+    <!-- 1. Default the variable to false -->
+    <IsMonoRuntime>false</IsMonoRuntime>
+    <!-- 2. Helper property to clean up the platform check -->
+    <IsMobilePlatform Condition="$(TargetFramework.Contains('-android')) or $(TargetFramework.Contains('-ios'))">true</IsMobilePlatform>
+    <IsMobilePlatform Condition="'$(IsMobilePlatform)' != 'true'">false</IsMobilePlatform>
+    <!-- 3. Condition A: True if .NET 10 on Android or iOS -->
+    <IsMonoRuntime Condition="'$(IsMobilePlatform)' == 'true' and $(TargetFramework.StartsWith('net10.0'))">true</IsMonoRuntime>
+    <!-- 4. Condition B: True if .NET 11 or newer on Android or iOS AND UseMonoRuntime is true -->
+    <!-- (We use !StartsWith('net10.0') as a safe proxy for .NET 11+ assuming your project only moves forward in versions) -->
+    <IsMonoRuntime Condition="'$(IsMobilePlatform)' == 'true' and !$(TargetFramework.StartsWith('net10.0')) and '$(UseMonoRuntime)' == 'true'">true</IsMonoRuntime>
+  </PropertyGroup>
+  
 	<!-- CONFIGURATION SPECIFIC PROPERTIES -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<UseInterpreter>false</UseInterpreter>
@@ -67,7 +80,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
-    <MtouchInterpreter>-all</MtouchInterpreter>
+    <MtouchExtraArgs Condition="'$(IsMonoRuntime)' == 'true'">--setenv=MONO_GC_PARAMS=nursery-size=64m"</MtouchExtraArgs>
+    <MtouchInterpreter Condition="'$(IsMonoRuntime)' == 'true'">-all</MtouchInterpreter>
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);FMOD_GNH_IOS</DefineConstants>
     <!--<DefineConstants>$(DefineConstants);METAL</DefineConstants>-->
@@ -106,16 +120,14 @@
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<PublishTrimmed>False</PublishTrimmed>
-		<Debugger>Xamarin</Debugger>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release' and $(TargetFramework.Contains('-android'))">
-		<EnableLLVM>true</EnableLLVM>
-		<RunAOTCompilation>true</RunAOTCompilation>
-		<AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <EnableLLVM Condition="'$(IsMonoRuntime)' == 'true'">true</EnableLLVM>
+    <RunAOTCompilation Condition="'$(IsMonoRuntime)' == 'true'">true</RunAOTCompilation>
+    <AndroidEnableProfiledAot Condition="'$(IsMonoRuntime)' == 'true'">false</AndroidEnableProfiledAot>
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>partial</TrimMode>
-		<Debugger>Xamarin</Debugger>
 	</PropertyGroup>
 
   <!-- GENERAL PROPERTIES -->
