@@ -2090,6 +2090,14 @@ namespace GnollHackX
             }
         }
 
+        public static void CollectGarbageAtStart()
+        {
+            FrameTimeProfiler.MarkGcEvent();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
         public static void CollectGarbage()
         {
             FrameTimeProfiler.MarkGcEvent();

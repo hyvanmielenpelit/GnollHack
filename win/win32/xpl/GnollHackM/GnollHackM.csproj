@@ -58,6 +58,11 @@
     <IsMonoRuntime Condition="'$(IsMobilePlatform)' == 'true' and !$(TargetFramework.StartsWith('net10.0')) and '$(UseMonoRuntime)' == 'true'">true</IsMonoRuntime>
   </PropertyGroup>
 
+  <!-- CORECLR SPECIFIC PROPERTIES -->
+  <!--<PropertyGroup Condition="'$(IsMonoRuntime)' != 'true'">
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+  </PropertyGroup>-->
+
   <!-- CONFIGURATION SPECIFIC PROPERTIES -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<UseInterpreter>false</UseInterpreter>
@@ -97,6 +102,7 @@
     <WindowsPackageType Condition="'$(GNHWindowsPackageType)' != 'MSIX'">None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 		<SelfContained>true</SelfContained>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
     <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
   </PropertyGroup>
   
@@ -1300,10 +1306,7 @@
 			<_AppxManifestFiles Include="Platforms\Windows\Package.MSIX.appxmanifest" />
 		</ItemGroup>
 
-		<XmlPoke XmlInputPath="%(_AppxManifestFiles.Identity)"
-				 Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10' /&gt;"
-				 Query="/ns:Package/ns:Identity/@Version"
-				 Value="$(_CalculatedVersion)" />
+		<XmlPoke XmlInputPath="%(_AppxManifestFiles.Identity)" Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10' /&gt;" Query="/ns:Package/ns:Identity/@Version" Value="$(_CalculatedVersion)" />
 
 		<Message Importance="high" Text="Synchronized %(_AppxManifestFiles.Identity) version to $(_CalculatedVersion)" />
 	</Target>
@@ -1314,9 +1317,7 @@
     cache by deleting mauiimage.inputs if it doesn't reference the current MauiIcon source file,
     forcing ResizetizeCollectItems to regenerate it.
   -->
-  <Target Name="_InvalidateResizetizerCacheIfIconChanged"
-          BeforeTargets="ResizetizeCollectItems"
-          Condition="$(TargetFramework.Contains('-windows')) And Exists('$(_ResizetizerInputsFile)')">
+  <Target Name="_InvalidateResizetizerCacheIfIconChanged" BeforeTargets="ResizetizeCollectItems" Condition="$(TargetFramework.Contains('-windows')) And Exists('$(_ResizetizerInputsFile)')">
     <ReadLinesFromFile File="$(_ResizetizerInputsFile)">
       <Output TaskParameter="Lines" ItemName="_CachedResizetizeInput" />
     </ReadLinesFromFile>

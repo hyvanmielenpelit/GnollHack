@@ -2818,6 +2818,7 @@ namespace GnollHackX.Pages.Game
         }
         private void DoFadeFromBlackAtStart()
         {
+            GHApp.CollectGarbageAtStart();
             try
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
