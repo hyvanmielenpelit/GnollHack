@@ -1847,8 +1847,8 @@ namespace GnollHackX
                 await Task.Delay(100);
                 GHApp.FmodService?.ShutdownFmod();
                 await Task.Delay(60);
-                await GHApp.FinishApp();
                 GHApp.BeforeExitApp();
+                await GHApp.FinishApp();
                 GHApp.PlatformService?.CloseApplication();
                 GHApp.AddSentryBreadcrumb("Post CloseApplication", GHConstants.SentryGnollHackGeneralCategoryName);
             }

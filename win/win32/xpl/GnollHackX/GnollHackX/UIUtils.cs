@@ -1730,6 +1730,23 @@ namespace GnollHackX
                     break;
             }
         }
+
+        public static void CleanUp()
+        {
+            try
+            {
+                GHSkiaFontPaint ghsfp = _statusBarMeasurePaint;
+                if (ghsfp != null)
+                {
+                    _statusBarMeasurePaint = null;
+                    ghsfp.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
     }
 
     public class TouchEntry

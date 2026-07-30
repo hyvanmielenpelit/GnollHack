@@ -709,6 +709,7 @@ namespace GnollHackX
         {
             AddSentryBreadcrumb("BeforeExitApp", GHConstants.SentryGnollHackGeneralCategoryName);
             RevertScreenResolution();
+            UIUtils.CleanUp();
         }
 
         public static async Task FinishApp()

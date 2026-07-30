@@ -1186,43 +1186,68 @@ namespace GnollHackX.Pages.Game
         {
             if (Interlocked.CompareExchange(ref _isCleanedUp, 1, 0) != 0) return;
 
+            /* Each section has its own try/catch so a failure in one
+             * does not prevent the remaining resources from being released. */
+
             try
             {
-                /* Dispose of all bitmaps */
-                _paintBitmap.Dispose();
-                _tempBitmap.Dispose();
+                /* Dispose of all cached bitmaps */
+                _paintBitmap?.Dispose();
+                _tempBitmap?.Dispose();
                 foreach (SKImage bmp in _savedRects.Values)
-                    bmp.Dispose();
+                    bmp?.Dispose();
                 _savedRects.Clear();
                 foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
-                    bmp.Dispose();
+                    bmp?.Dispose();
                 _darkenedAutodrawBitmaps.Clear();
                 foreach (SKImage bmp in _darkenedBitmaps.Values)
-                    bmp.Dispose();
+                    bmp?.Dispose();
                 _darkenedBitmaps.Clear();
                 foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
-                    bmp.Dispose();
+                    bmp?.Dispose();
                 _savedAutoDrawBitmaps.Clear();
-                ClearColorFilterCaches();
-
-                /* Dispose of cached paint instances */
-                _mapPaint.Dispose();
-                _mapUiPaint.Dispose();
-                _mapOrbPaint.Dispose();
-                _cmdPaint.Dispose();
-                _mapTextPaint.Dispose();
-                _menuTextPaint.Dispose();
-                _textCanvasTextPaint.Dispose();
-                _cmdTextPaint.Dispose();
-                _tipTextPaint.Dispose();
-
-                /* Dispose of cached mask filters */
-                _blur.Dispose();
-                _lookBlur.Dispose();
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("GamePage.Cleanup error: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("GamePage.Cleanup bitmap error: " + ex.Message);
+            }
+
+            try
+            {
+                ClearColorFilterCaches();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("GamePage.Cleanup color filter error: " + ex.Message);
+            }
+
+            try
+            {
+                /* Dispose of cached paint instances */
+                _mapPaint?.Dispose();
+                _mapUiPaint?.Dispose();
+                _mapOrbPaint?.Dispose();
+                _cmdPaint?.Dispose();
+                _mapTextPaint?.Dispose();
+                _menuTextPaint?.Dispose();
+                _textCanvasTextPaint?.Dispose();
+                _cmdTextPaint?.Dispose();
+                _tipTextPaint?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("GamePage.Cleanup paint error: " + ex.Message);
+            }
+
+            try
+            {
+                /* Dispose of cached mask filters */
+                _blur?.Dispose();
+                _lookBlur?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("GamePage.Cleanup filter error: " + ex.Message);
             }
         }
 
@@ -5095,6 +5120,9 @@ namespace GnollHackX.Pages.Game
             if (IsMainCanvasDrawingAndSetTrue) /* In the case of some sort of reentrancy or new draw before previous is finished */
                 return;
 
+            if (Interlocked.CompareExchange(ref _isCleanedUp, 0, 0) != 0) /* Resources have been disposed */
+                return;
+
             FrameTimeProfiler.StampPaintStart();
 
             PaintMainGamePage(sender, e, isCanvasOnMainThread);
@@ -8714,18 +8742,20 @@ namespace GnollHackX.Pages.Game
 
                                                                             /* Save to cache as immutable */
                                                                             bool doDisposeImage = false;
+                                                                            SKBitmap newbmp = null;
                                                                             try
                                                                             {
-                                                                                SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                                                                newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
                                                                                 _paintBitmap.CopyTo(newbmp);
                                                                                 newbmp.SetImmutable();
                                                                                 SKImage newImage = SKImage.FromBitmap(newbmp);
+                                                                                newbmp = null; /* Ownership transferred to newImage */
                                                                                 usedDarkenedBitmap = newImage;
                                                                                 if (_darkenedAutodrawBitmaps.Count >= GHConstants.MaxDarkenedAutodrawBitmapCacheSize)
                                                                                 {
                                                                                     foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
                                                                                         bmp.Dispose();
-                                                                                            _darkenedAutodrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
+                                                                                    _darkenedAutodrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                                                                     _localDarkenedAutodrawBitmapCachePruned = true;
                                                                                 }
                                                                                 _darkenedAutodrawBitmaps.Add(cachekey, newImage);
@@ -8742,6 +8772,7 @@ namespace GnollHackX.Pages.Game
                                                                             }
                                                                             catch (Exception ex)
                                                                             {
+                                                                                newbmp?.Dispose();
                                                                                 Debug.WriteLine(ex.Message);
                                                                                 usedDarkenedBitmap = SKImage.FromBitmap(_paintBitmap);
                                                                                 doDisposeImage = true;
@@ -8796,12 +8827,14 @@ namespace GnollHackX.Pages.Game
 
                                                                             /* Save to cache as immutable */
                                                                             bool doDisposeImage = false;
+                                                                            SKBitmap newbmp = null;
                                                                             try
                                                                             {
-                                                                                SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                                                                newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
                                                                                 _paintBitmap.CopyTo(newbmp);
                                                                                 newbmp.SetImmutable();
                                                                                 SKImage newImage = SKImage.FromBitmap(newbmp);
+                                                                                newbmp = null; /* Ownership transferred to newImage */
                                                                                 usedDarkenedBitmap = newImage;
                                                                                 if (_darkenedBitmaps.Count >= GHConstants.MaxDarkenedBitmapCacheSize)
                                                                                 {
@@ -8814,6 +8847,7 @@ namespace GnollHackX.Pages.Game
                                                                             }
                                                                             catch (Exception ex)
                                                                             {
+                                                                                newbmp?.Dispose();
                                                                                 Debug.WriteLine(ex.Message);
                                                                                 usedDarkenedBitmap = SKImage.FromBitmap(_paintBitmap);
                                                                                 doDisposeImage = true;
@@ -14523,9 +14557,10 @@ namespace GnollHackX.Pages.Game
                                 }
                                 if (!containskey1)
                                 {
+                                    SKBitmap newbmp = null;
                                     try
                                     {
-                                        SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                        newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
                                         _paintBitmap.CopyTo(newbmp);
                                         newbmp.SetImmutable();
                                         usedContentsBitmap = newbmp;
@@ -14538,10 +14573,12 @@ namespace GnollHackX.Pages.Game
                                                 _savedAutoDrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                             }
                                             _savedAutoDrawBitmaps.Add(cachekey, newbmp);
+                                            newbmp = null; /* Ownership transferred to cache */
                                         }
                                     }
                                     catch (Exception ex)
                                     {
+                                        newbmp?.Dispose();
                                         Debug.WriteLine(ex.Message);
                                         usedContentsBitmap = _paintBitmap;
                                     }
@@ -14763,9 +14800,10 @@ namespace GnollHackX.Pages.Game
                             }
                             if (!containskey2)
                             {
+                                SKBitmap newbmp = null;
                                 try
                                 {
-                                    SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                    newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
                                     _paintBitmap.CopyTo(newbmp);
                                     newbmp.SetImmutable();
                                     usedForegroundBitmap = newbmp;
@@ -14778,10 +14816,12 @@ namespace GnollHackX.Pages.Game
                                             _savedAutoDrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                         }
                                         _savedAutoDrawBitmaps.Add(cachekey2, newbmp);
+                                        newbmp = null; /* Ownership transferred to cache */
                                     }
                                 }
                                 catch (Exception ex)
                                 {
+                                    newbmp?.Dispose();
                                     Debug.WriteLine(ex.Message);
                                     usedForegroundBitmap = _paintBitmap;
                                 }

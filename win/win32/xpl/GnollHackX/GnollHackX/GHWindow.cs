@@ -34,7 +34,7 @@ namespace GnollHackX
         Worn
     }
 
-    public sealed class GHPadding
+    public struct GHPadding
     {
         public GHPadding(float left, float top, float right, float bottom)
         {
@@ -150,8 +150,6 @@ namespace GnollHackX
         private int _width = 0;
         private int _height = 0;
 
-        public GHPadding Padding = new GHPadding(10, 10, 10 , 10);
-
         public int WidthInChars { get { return _width; } }
         public int HeightInChars { get { return _height; } }
 
@@ -235,6 +233,8 @@ namespace GnollHackX
             _winId = winid;
         }
 
+        private readonly GHPadding _defaultPadding = new GHPadding(10, 10, 10, 10);
+
         public GHPublishedWindow Publish()
         {
             List<GHPublishedWindowRow> publishedRows = new List<GHPublishedWindowRow>(_putStrs.Count);
@@ -255,19 +255,19 @@ namespace GnollHackX
                     string text = row.TextStringBuilder.ToString();
                     row.PublishedString = text;
                     float textWidth = measurePaint.MeasureText(text);
-                    textWidth += Padding.Left + Padding.Right;
+                    textWidth += _defaultPadding.Left + _defaultPadding.Right;
                     if (textWidth > pixelWidth)
                         pixelWidth = textWidth;
                 }
                 float lineHeight = measurePaint.FontMetrics.Descent - measurePaint.FontMetrics.Ascent;
-                pixelHeight = _height * lineHeight + Padding.Top + Padding.Bottom;
+                pixelHeight = _height * lineHeight + _defaultPadding.Top + _defaultPadding.Bottom;
             }
 
             GHPublishedWindow published = new GHPublishedWindow(
                 _winType, _winStyle, _glyph, _useUpperSide, _useSpecialSymbols, _ascension, _objdata, _winId,
                 Typeface, TextColor, TextSize, StrokeWidth, HasShadow, BackgroundColor, CursX, CursY,
                 CenterHorizontally, AutoPlacement, AutoCarriageReturn, WindowPrintStyle, publishedRows,
-                Visible, _width, _height, pixelWidth, pixelHeight, Padding, Left, Top,
+                Visible, _width, _height, pixelWidth, pixelHeight, _defaultPadding, Left, Top,
                 MenuInfo != null ? MenuInfo.Clone() : null,
                 null, false, new WeakReference<GHWindow>(this)
             );
@@ -374,7 +374,7 @@ namespace GnollHackX
 
                     if (i == curclrs.Count)
                         curclrs.Add(color);
-                    else if (i < curattrs.Count)
+                    else if (i < curclrs.Count)
                         curclrs[i] = color;
                 }
 
@@ -459,7 +459,7 @@ namespace GnollHackX
 
                         if (i == curclrs.Count)
                             curclrs.Add(idx < colors.Length && colors[idx] != (int)NhColor.NO_COLOR ? colors[idx] : color);
-                        else if (i < curattrs.Count)
+                        else if (i < curclrs.Count)
                             curclrs[i] = color;
                     }
 
