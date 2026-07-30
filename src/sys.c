@@ -49,11 +49,13 @@ sys_early_init(void)
 #if defined (DUMPLOG)
     sysopt.dumplogfile = (char *) 0;
     sysopt.snapshotfile = (char*)0;
+    sysopt.aifile = (char*)0;
     sysopt.dumplogurl = (char*)0;
 #endif
 #if defined (DUMPHTML)
     sysopt.dumphtmlfile = (char*)0;
     sysopt.snaphtmlfile = (char*)0;
+    sysopt.aihtmlfile = (char*)0;
     sysopt.dumphtmlfontname = (char*)0;
     sysopt.dumphtml_css_fontface_normal = (char*)0;
     sysopt.dumphtml_css_fontface_bold = (char*)0;
@@ -143,6 +145,8 @@ sysopt_release(void)
         free((genericptr_t)sysopt.dumplogfile), sysopt.dumplogfile=(char *)0;
     if (sysopt.snapshotfile)
         free((genericptr_t)sysopt.snapshotfile), sysopt.snapshotfile = (char*)0;
+    if (sysopt.aifile)
+        free((genericptr_t)sysopt.aifile), sysopt.aifile = (char*)0;
     if (sysopt.dumplogurl)
         free((genericptr_t)sysopt.dumplogurl), sysopt.dumplogurl = (char*)0;
 #endif
@@ -151,6 +155,8 @@ sysopt_release(void)
         free((genericptr_t)sysopt.dumphtmlfile), sysopt.dumphtmlfile = (char*)0;
     if (sysopt.snaphtmlfile)
         free((genericptr_t)sysopt.snaphtmlfile), sysopt.snaphtmlfile = (char*)0;
+    if (sysopt.aihtmlfile)
+        free((genericptr_t)sysopt.aihtmlfile), sysopt.aihtmlfile = (char*)0;
     if (sysopt.dumphtmlfontname)
         free((genericptr_t)sysopt.dumphtmlfontname), sysopt.dumphtmlfontname = (char*)0;
 #if defined (DUMPHTML_WEBFONT_LINK)

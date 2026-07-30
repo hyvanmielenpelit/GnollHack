@@ -3899,6 +3899,14 @@ parse_config_line(char *origbuf)
         sysopt.snapshotfile = dupstr(bufp);
 #endif
     }
+    else if (src == SET_IN_SYS && match_varname(buf, "AIFILE", 6))
+    {
+#if defined (DUMPLOG)
+        if (sysopt.aifile)
+            free((genericptr_t)sysopt.aifile);
+        sysopt.aifile = dupstr(bufp);
+#endif
+    }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTMLFILE", 12)) {
 #if defined (DUMPHTML)
         if (sysopt.dumphtmlfile)
@@ -3911,6 +3919,13 @@ parse_config_line(char *origbuf)
         if (sysopt.snaphtmlfile)
             free((genericptr_t)sysopt.snaphtmlfile);
         sysopt.snaphtmlfile = dupstr(bufp);
+#endif
+    }
+    else if (src == SET_IN_SYS && match_varname(buf, "AIHTMLFILE", 10)) {
+#if defined (DUMPHTML)
+        if (sysopt.aihtmlfile)
+            free((genericptr_t)sysopt.aihtmlfile);
+        sysopt.aihtmlfile = dupstr(bufp);
 #endif
     }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTMLFONTNAME", 16)) {
@@ -6583,6 +6598,7 @@ make_dumplog_dir(void)
 #endif
     }
 #endif
+
 #if defined(SNAPSHOT_DIR)
     /* Make SNAPSHOT_DIR if defined */
     struct stat st2 = { 0 };
@@ -6596,6 +6612,21 @@ make_dumplog_dir(void)
 #endif
     }
 #endif
+
+#if defined(AI_DIR)
+    /* Make AI_DIR if defined */
+    struct stat st3 = { 0 };
+
+    if (stat(AI_DIR, &st3) == -1)
+    {
+#if WIN32
+        (void)mkdir(AI_DIR);
+#else
+        (void)mkdir(AI_DIR, 0700);
+#endif
+    }
+#endif
+
 #endif
 }
 

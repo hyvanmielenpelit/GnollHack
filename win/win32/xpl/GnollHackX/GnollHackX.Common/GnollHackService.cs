@@ -317,6 +317,8 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetFileDescriptorLimit(int is_max_limit);
         [DllImport(PlatformConstants.dll)]
+        public static extern IntPtr LibGenerateAiSnapshot();
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetCharacterClickAction();
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetCharacterClickAction(int new_value);
@@ -395,6 +397,7 @@ namespace GnollHackX.Unknown
             ClearSavedGames();
             ClearDumplogs();
             ClearSnapshots();
+            ClearAiFiles();
         }
 
         public void ClearAllFilesInMainDirectory()
@@ -491,6 +494,27 @@ namespace GnollHackX.Unknown
         {
             string filesdir = GetGnollHackPath();
             string fulldirepath = Path.Combine(filesdir, GHConstants.SnapshotDirectory);
+            if (Directory.Exists(fulldirepath))
+            {
+                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                foreach (FileInfo file in disave.GetFiles())
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
+        public void ClearAiFiles()
+        {
+            string filesdir = GetGnollHackPath();
+            string fulldirepath = Path.Combine(filesdir, GHConstants.AiDirectory);
             if (Directory.Exists(fulldirepath))
             {
                 DirectoryInfo disave = new DirectoryInfo(fulldirepath);
@@ -628,7 +652,7 @@ namespace GnollHackX.Unknown
                 //}
 
                 /* Make relevant directories */
-                string[] ghdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory };
+                string[] ghdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory, GHConstants.AiDirectory };
                 foreach (string ghdir in ghdirlist)
                 {
                     string fulldirepath = Path.Combine(filesdir, ghdir);
@@ -1237,6 +1261,14 @@ namespace GnollHackX.Unknown
         public int GetFileDescriptorLimit(bool is_max_limit)
         {
             return LibGetFileDescriptorLimit(is_max_limit ? 1 : 0);
+        }
+        public string GenerateAiSnapshot()
+        {
+            IntPtr resptr = LibGenerateAiSnapshot();
+            if (resptr == IntPtr.Zero)
+                return null;
+            string ret = Marshal.PtrToStringAnsi(resptr);
+            return ret;
         }
 
         public bool GetCharacterClickAction()

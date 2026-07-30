@@ -4636,7 +4636,7 @@ namespace GnollHackX
                 {
                     archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
                 }
-                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory, GHConstants.UserDataDirectory,
+                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory, GHConstants.AiDirectory, GHConstants.UserDataDirectory,
                     GHConstants.ForumPostQueueDirectory, GHConstants.XlogPostQueueDirectory, GHConstants.BonesPostQueueDirectory, GHConstants.ReplayPostQueueDirectory,
                     GHConstants.AppLogDirectory, GHConstants.GeneralTaskQueueDirectory };
                 //These may be too large: GHConstants.ReplayDirectory, GHConstants.ReplayDownloadFromCloudDirectory

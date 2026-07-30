@@ -1046,6 +1046,63 @@ dump_everything(int how, time_t when)
 #endif
 }
 
+void
+dump_everything_ai(time_t when)
+{
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    char pbuf[BUFSZ];
+    char datetimebuf[24];
+
+    /* Version */
+    dump_html_ai_write(getversionstring(pbuf));
+    dump_html_ai_write("\n");
+
+    /* Game dates */
+    Strcpy(datetimebuf, yyyymmddhhmmss(ubirthday));
+    Sprintf(pbuf, "Game began %4.4s-%2.2s-%2.2s %2.2s:%2.2s:%2.2s",
+            &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
+            &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
+    Strcpy(datetimebuf, yyyymmddhhmmss(when));
+    Sprintf(eos(pbuf), ", snapshot at %4.4s-%2.2s-%2.2s %2.2s:%2.2s:%2.2s",
+            &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
+            &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
+    dump_html_ai_write(pbuf);
+    dump_html_ai_write("\n\n");
+
+    /* Character name and role */
+    Sprintf(pbuf, "%s, %s %s %s %s", plname,
+            aligns[1 - u.ualign.type].adj,
+            genders[Ufemale].adj,
+            urace.adj,
+            (Ufemale && urole.name.f) ? urole.name.f : urole.name.m);
+    dump_html_ai_write(pbuf);
+    dump_html_ai_write("\n\n");
+
+    /* Map */
+    dump_html_ai_write("=== Map ===\n");
+    dump_map_ai();
+    dump_html_ai_write("\n");
+
+    /* Status lines */
+    dump_html_ai_write("=== Status ===\n");
+    dump_html_ai_write(do_statusline1());
+    dump_html_ai_write("\n");
+    dump_html_ai_write(do_statusline2());
+    dump_html_ai_write("\n");
+    dump_html_ai_write("\n");
+
+    /* Note: inventory, messages, skills, spells, and enlightenment */
+    /* are sent separately by the C# frontend via message history */
+    /* and additional context channels */
+    dump_html_ai_write("=== Note ===\n");
+    dump_html_ai_write("Full inventory, messages, skills, spells, "
+                       "and enlightenment data are provided\n");
+    dump_html_ai_write("via separate context channels.\n");
+#else
+    nhUse(when);
+#endif
+}
+
 /* #wizdumplog command - test dump_everything(). */
 int
 wiz_dumplog(void)
@@ -1124,6 +1181,7 @@ dosnapshot(void)
 
     return 0;
 }
+
 
 
 

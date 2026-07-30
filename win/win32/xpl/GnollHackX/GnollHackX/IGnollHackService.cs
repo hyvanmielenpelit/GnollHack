@@ -23,6 +23,7 @@ namespace GnollHackX
         void ClearSavedGames();
         void ClearDumplogs();
         void ClearSnapshots();
+        void ClearAiFiles();
         void ClearBones();
         void ClearAllFilesInMainDirectory();
         void InitializeTileData();
@@ -69,6 +70,7 @@ namespace GnollHackX
         void ReportFileDescriptors();
         bool IncreaseFileDescriptorLimitToAtLeast(int min_cur);
         int GetFileDescriptorLimit(bool is_max_limit);
+        string GenerateAiSnapshot();
         int GetMaxManuals();
         int GetFirstCatalogue();
         int GetNumCatalogues();

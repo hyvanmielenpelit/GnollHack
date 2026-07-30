@@ -170,6 +170,7 @@ namespace GnollHackX
         public const string GnollHackGitHubPage = "https://github.com/hyvanmielenpelit/GnollHack";
         public const string GnollHackWebPage = "https://gnollhack.com";
         public const string GnollHackWikiPage = "https://wiki.gnollhack.com"; /* Old page on GitHub: "https://github.com/hyvanmielenpelit/GnollHack/wiki" */
+        public const string GnollHackOverseerPage = "https://overseer.gnollhack.com";
         public const string GnollHackSponsorPage = "https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english";
         public const string GnollHackGeneralDowngradePage = GnollHackWikiPage + "/Download";
         public const string GnollHackAndroidDowngradePage = GnollHackWikiPage + "/Android-Releases";
@@ -229,6 +230,7 @@ namespace GnollHackX
         public const string SaveDirectory = "save";
         public const string DumplogDirectory = "dumplog";
         public const string SnapshotDirectory = "snapshot";
+        public const string AiDirectory = "ai";
         public const string ReplayDirectory = "replay";
         public const string ReplayDownloadFromCloudDirectory = "replay-cloud";
         public const string ArchiveDirectory = "archive"; /* Directory for sharable archives and files; cleaned and deleted at program start */

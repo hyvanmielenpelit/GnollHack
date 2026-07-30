@@ -103,6 +103,8 @@ DUMPHTMLFILE=dumplog/gnollhack.%n.%d.html
 SNAPSHOTFILE=snapshot/gnollhack.%n.%d.%D.txt
 SNAPHTMLFILE=snapshot/gnollhack.%n.%d.%D.html
 SNAPJSONFILE=snapshot/gnollhack.%n.%d.%D.json
+AIFILE=snapshot/gnollhack.%n.%d.%D.ai.txt
+AIHTMLFILE=snapshot/gnollhack.%n.%d.%D.ai.html
 
 # Number of bones file pools.
 # The pool you belong to is determined at game start. You will

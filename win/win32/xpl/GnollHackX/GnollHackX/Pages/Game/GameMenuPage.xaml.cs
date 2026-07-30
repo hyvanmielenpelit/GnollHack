@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Compression;
 using System.IO;
+using System.Net.Http;
 
 
 #if GNH_MAUI
@@ -441,6 +442,113 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = true;
         }
 
+        private async void btnOverseer_Clicked(object sender, EventArgs e)
+        {
+            await OpenOverseerPage();
+        }
+
+        private async Task OpenOverseerPage()
+        {
+            MainLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+
+            string snapshotHtml = "";
+            string messageHistory = "";
+            string directoryManifest = "";
+            string debugData = "";
+
+            /* 1. Generate AI snapshot via native call (safe: game thread is idle) */
+            try
+            {
+                string filePath = GHApp.GnollHackService.GenerateAiSnapshot();
+                if (filePath != null)
+                {
+                    if (File.Exists(filePath))
+                        snapshotHtml = File.ReadAllText(filePath);
+                    else
+                        GHApp.WriteGHLog("AI snapshot file " + filePath + " does not exist.");
+                }
+                else
+                {
+                    GHApp.WriteGHLog("AI snapshot file is null.");
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("AI snapshot generation failed: " + ex.Message);
+            }
+
+            /* 2. Collect message history from the current game */
+            var currentGame = GHApp.CurrentGHGame;
+            if (currentGame != null)
+                messageHistory = currentGame.ExportFullMessageHistory();
+
+            /* 3. Developer mode extras */
+            if (GHApp.DeveloperMode)
+            {
+                directoryManifest = GHGame.GenerateDirectoryManifest();
+                debugData = GHGame.GenerateDebugData();
+            }
+
+            /* 4. Upload to Overseer and open WebView */
+            string overseerUrl = GHConstants.GnollHackOverseerPage;
+            try
+            {
+                using (var httpClient = new HttpClient())
+                using (var content = new MultipartFormDataContent())
+                {
+                    content.Add(new StringContent(GHApp.XlogUserName ?? ""), "UserName");
+                    content.Add(new StringContent(GHApp.XlogPassword ?? ""), "Password");
+                    content.Add(new StringContent(GHApp.XlogAntiForgeryToken ?? ""), "AntiForgeryToken");
+
+                    if (!string.IsNullOrEmpty(snapshotHtml))
+                        content.Add(new StringContent(snapshotHtml, Encoding.UTF8, "text/html"), "SnapshotHtml");
+                    if (!string.IsNullOrEmpty(messageHistory))
+                        content.Add(new StringContent(messageHistory), "MessageHistory");
+                    if (!string.IsNullOrEmpty(directoryManifest))
+                        content.Add(new StringContent(directoryManifest), "DirectoryManifest");
+                    if (!string.IsNullOrEmpty(debugData))
+                        content.Add(new StringContent(debugData), "DebugData");
+
+                    var response = await httpClient.PostAsync(
+                        GHConstants.GnollHackOverseerPage + "/api/session/create", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string jsonResponse = await response.Content.ReadAsStringAsync();
+                        var result = Newtonsoft.Json.Linq.JObject.Parse(jsonResponse);
+                        string sessionId = result?["sessionId"]?.ToString() ?? "";
+                        string handoffToken = result?["handoffToken"]?.ToString() ?? "";
+
+                        overseerUrl = GHConstants.GnollHackOverseerPage +
+                                      $"/api/auth/handoff?token={handoffToken}&sessionId={sessionId}";
+                    }
+                    else
+                    {
+                        GHApp.WriteGHLog("Overseer session create failed: HTTP " + (int)response.StatusCode);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("Overseer upload failed: " + ex.Message);
+                /* Fallback: open Overseer without context */
+            }
+
+            /* 5. Open the Overseer page */
+            if (GHApp.IsiOS)
+            {
+                await GHApp.OpenBrowser(this, "Overseer", new Uri(overseerUrl));
+            }
+            else
+            {
+                var overseerPage = new OverseerPage("Overseer", overseerUrl);
+                await GHApp.PushModalPageAsync(overseerPage);
+            }
+
+            MainLayout.IsEnabled = true;
+        }
+
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
             if (GHApp.PushingModalPage || GHApp.IsSystemBrowserOpen) /* Ignore key presses when opening a page or using a system browser */
@@ -497,6 +605,11 @@ namespace GnollHackX.Pages.Game
                             case (int)'w':
                                 if (btnWiki.IsEnabled && btnWiki.IsVisible && MainLayout.IsEnabled)
                                     await OpenWikiPage();
+                                handled = true;
+                                break;
+                            case (int)'e':
+                                if (btnOverseer.IsEnabled && btnOverseer.IsVisible && MainLayout.IsEnabled)
+                                    await OpenOverseerPage();
                                 handled = true;
                                 break;
                             case (int)'u':

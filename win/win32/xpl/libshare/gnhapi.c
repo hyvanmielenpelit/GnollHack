@@ -1231,3 +1231,20 @@ DLLEXPORT int RunGnollHack(char* gnhdir, char* cmdlineargs, char* engrave_quickt
     /* Start GnollHack by calling main */
     return GnollHackStart(cmdbuf);
 }
+
+DLLEXPORT const char*
+LibGenerateAiSnapshot()
+{
+    time_t dumptime;
+    char* fname;
+
+    static char output_filepath_buffer[4096] = "";
+    dumptime = getnow();
+
+    dump_open_log_ai(dumptime);
+    fname = print_dumphtml_ai_filename_to_buffer(output_filepath_buffer);
+    dump_everything_ai(dumptime);
+    dump_close_log_ai();
+
+    return fname;
+}

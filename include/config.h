@@ -623,6 +623,10 @@ typedef unsigned char uchar;
 #define SNAPSHOT_FILE        "/tmp/gnollhack.%n.%d.%D.txt"
 #endif
 
+#ifndef AI_FILE
+#define AI_FILE        "/tmp/gnollhack.%n.%d.%D.ai.txt"
+#endif
+
 #endif /* DUMPLOG */
 
 #if defined (DUMPHTML)
@@ -636,6 +640,10 @@ typedef unsigned char uchar;
 
 #ifndef SNAPHTML_FILE
 #define SNAPHTML_FILE        "/tmp/gnollhack.%n.%d.%D.html"
+#endif
+
+#ifndef AIHTML_FILE
+#define AIHTML_FILE        "/tmp/gnollhack.%n.%d.%D.ai.html"
 #endif
 
 #endif /* DUMPHTML */

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
+using Newtonsoft.Json;
 #if GNH_MAUI
 using GnollHackM;
 #else
@@ -14,7 +15,6 @@ using Xamarin.Essentials;
 #endif
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
-using Newtonsoft.Json;
 using System.Linq;
 using System.Drawing;
 using System.Runtime.InteropServices.ComTypes;
@@ -3961,6 +3961,7 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_ACHIEVEMENT:
                     GHApp.AddPendingAchievement(cmd_param);
                     break;
+
                 default:
                     break;
             }
@@ -4842,6 +4843,66 @@ namespace GnollHackX
                 }
                 while (GHApp.PauseReplay && !GHApp.IsReplaySearching);
             }
+        }
+
+        internal string ExportFullMessageHistory()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("=== Full Message History ===");
+            sb.AppendLine($"Total messages: {_longer_message_history.Count}");
+            sb.AppendLine();
+
+            int index = 0;
+            foreach (var msg in _longer_message_history)
+            {
+                sb.AppendLine($"[{index}] {msg.Text}");
+                index++;
+            }
+            return sb.ToString();
+        }
+
+        internal static string GenerateDirectoryManifest()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("=== Game Directory Manifest ===");
+            sb.AppendLine($"GHPath: {GHApp.GHPath}");
+            sb.AppendLine($"Platform: {DeviceInfo.Platform}");
+            sb.AppendLine($"App Version: {GHApp.GHVersionString}");
+            sb.AppendLine();
+
+            try
+            {
+                foreach (var file in Directory.EnumerateFiles(GHApp.GHPath, "*", SearchOption.AllDirectories))
+                {
+                    var info = new FileInfo(file);
+                    string relative = file;
+                    if (file.StartsWith(GHApp.GHPath))
+                        relative = file.Substring(GHApp.GHPath.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                    sb.AppendLine($"{relative}\t{info.Length}\t{info.LastWriteTimeUtc:O}");
+                }
+            }
+            catch (Exception ex)
+            {
+                sb.AppendLine($"Error enumerating files: {ex.Message}");
+            }
+            return sb.ToString();
+        }
+
+        internal static string GenerateDebugData()
+        {
+            var data = new
+            {
+                timestamp = DateTime.UtcNow,
+                platform = DeviceInfo.Platform.ToString(),
+                appVersion = GHApp.GHVersionString,
+                developerMode = GHApp.DeveloperMode,
+                memoryUsage = GC.GetTotalMemory(false),
+                pendingResponses = GHApp.CurrentGHGame?.ResponseQueue?.Count ?? 0,
+                debugLogMessages = GHApp.DebugLogMessages,
+                lowLevelLogging = GHApp.LowLevelLogging,
+                screenLogging = GHApp.ScreenLogging
+            };
+            return JsonConvert.SerializeObject(data, Formatting.Indented);
         }
     }
 

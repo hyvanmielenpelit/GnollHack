@@ -2429,6 +2429,67 @@ dump_map(void)
 }
 #endif /* DUMPLOG */
 
+#if defined(DUMPLOG) || defined(DUMPHTML)
+void
+dump_map_ai(void)
+{
+    int x, y, glyph;
+    int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
+    int default_glyph;
+    nhsym ch;
+    int color;
+    uint64_t special;
+    char buf[BUFSZ * 2];
+
+    default_glyph = base_cmap_to_glyph(is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored);
+
+    for (y = 0; y < ROWNO; y++)
+    {
+        for (x = 1; x < COLNO; x++)
+        {
+            ch = 0;
+            color = NO_COLOR;
+            special = 0;
+
+            glyph = reveal_terrain_getglyph(x, y, FALSE, u.uswallow, default_glyph, subset);
+            struct layer_info layers = nul_layerinfo;
+            layers.glyph = glyph;
+            (void)mapglyph(layers, &ch, &color,
+                           &special, x, y);
+
+            /* Write colored character as HTML span */
+            if (color != NO_COLOR && color >= 0 && color < 16)
+            {
+                Sprintf(buf,
+                    "<span class=\"nh_color_%d\">",
+                    color);
+                dump_html_ai_write(buf);
+            }
+
+            /* Write the character itself */
+            if (ch == '<')
+                dump_html_ai_write("&lt;");
+            else if (ch == '>')
+                dump_html_ai_write("&gt;");
+            else if (ch == '&')
+                dump_html_ai_write("&amp;");
+            else
+            {
+                buf[0] = (char)ch;
+                buf[1] = '\0';
+                dump_html_ai_write(buf);
+            }
+
+            if (color != NO_COLOR && color >= 0 && color < 16)
+            {
+                dump_html_ai_write("</span>");
+            }
+        }
+        dump_html_ai_write("\n");
+    }
+}
+#endif /* DUMPLOG || DUMPHTML */
+
 /*
  * Parameters:
  *   full: wizard|explore modes allow player to request full map

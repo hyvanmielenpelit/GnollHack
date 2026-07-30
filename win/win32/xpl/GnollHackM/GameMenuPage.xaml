@@ -43,6 +43,8 @@
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnTips_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnWiki" Text="Wiki" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnWiki_Clicked" UseVaryingBackgroundImages ="True" />
+                        <controls:CustomImageButton x:Name="btnOverseer" Text="Overseer" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnOverseer_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnLibrary" Text="Library" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnLibrary_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnDelphi" Text="Delphi" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
