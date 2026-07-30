@@ -1,4 +1,6 @@
+#if GNH_MAUI
 using GnollHackM;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Text;

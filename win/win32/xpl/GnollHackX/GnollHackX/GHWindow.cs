@@ -62,10 +62,6 @@ namespace GnollHackX
         private bool _useSpecialSymbols;
         private bool _ascension;
 
-        /* Cached GHSkiaFontPaint for MeasureText in PutStrEx/PutStrEx2 */
-        private GHSkiaFontPaint _measurePaint = null;
-        private SKTypeface _measureTypeface = null;
-        private float _measureTextSize = 0;
 
         public SKTypeface Typeface { get; set; }
         public SKColor TextColor { get; set; }
@@ -159,12 +155,10 @@ namespace GnollHackX
         public int WidthInChars { get { return _width; } }
         public int HeightInChars { get { return _height; } }
 
-        public void SetWidthHeight(int width, int height, float pixelWidth, float pixelHeight)
+        public void SetWidthHeight(int width, int height)
         {
             _width = width;
             _height = height;
-            _pixelWidth = pixelWidth;
-            _pixelHeight = pixelHeight;
         }
 
         public GHWindowPrintLocations WindowPrintStyle 
@@ -213,11 +207,6 @@ namespace GnollHackX
         }
         public float Left { get; set; }
         public float Top { get; set; }
-        public float UnscaledWidth { get { return _pixelHeight; } }
-        public float UnscaledHeight { get { return _pixelHeight; } }
-
-        private float _pixelWidth = 0;
-        private float _pixelHeight = 0;
 
         public GHMenuInfo MenuInfo { get; set; }
 
@@ -249,25 +238,47 @@ namespace GnollHackX
         public GHPublishedWindow Publish()
         {
             List<GHPublishedWindowRow> publishedRows = new List<GHPublishedWindowRow>(_putStrs.Count);
-            
-            GHPublishedWindow clone = new GHPublishedWindow(
+
+            /* Compute pixel dimensions from the final row content.
+             * This is done once at publish time rather than incrementally
+             * during each PutStrEx/PutStrEx2 call, keeping the builder simple. */
+            float pixelWidth = 0;
+            float pixelHeight = 0;
+            using (var measurePaint = new GHSkiaFontPaint()
+            {
+                Typeface = Typeface,
+                TextSize = TextSize * UIUtils.CalculateTextScale()
+            })
+            {
+                foreach (var row in _putStrs)
+                {
+                    float textWidth = measurePaint.MeasureText(row.TextStringBuilder.ToString());
+                    textWidth += Padding.Left + Padding.Right;
+                    if (textWidth > pixelWidth)
+                        pixelWidth = textWidth;
+                }
+                float lineHeight = measurePaint.FontMetrics.Descent - measurePaint.FontMetrics.Ascent;
+                pixelHeight = _height * lineHeight + Padding.Top + Padding.Bottom;
+            }
+
+            GHPublishedWindow published = new GHPublishedWindow(
                 _winType, _winStyle, _glyph, _useUpperSide, _useSpecialSymbols, _ascension, _objdata, _winId,
                 Typeface, TextColor, TextSize, StrokeWidth, HasShadow, BackgroundColor, CursX, CursY,
                 CenterHorizontally, AutoPlacement, AutoCarriageReturn, WindowPrintStyle, publishedRows,
-                Visible, _width, _height, _pixelWidth, _pixelHeight, Padding, Left, Top,
+                Visible, _width, _height, pixelWidth, pixelHeight, Padding, Left, Top,
                 MenuInfo != null ? MenuInfo.Clone() : null,
                 null, false, new WeakReference<GHWindow>(this)
             );
 
             foreach (var row in _putStrs)
             {
-                publishedRows.Add(CreatePublishedRow(clone, row));
+                publishedRows.Add(CreatePublishedRow(published, row));
             }
 
-            return clone;
+            return published;
         }
 
-        private GHPublishedWindowRow CreatePublishedRow(GHPublishedWindow clone, GHWindowRow row)
+        private GHPublishedWindowRow CreatePublishedRow(GHPublishedWindow published, GHWindowRow row)
         {
             List<GHPutStrInstructions> instructions = new List<GHPutStrInstructions>();
             string text = row.TextStringBuilder.ToString();
@@ -296,30 +307,13 @@ namespace GnollHackX
                 }
             }
 
-            return new GHPublishedWindowRow(clone, text, instructions);
+            return new GHPublishedWindowRow(published, text, instructions);
         }
 
-        private GHSkiaFontPaint GetMeasurePaint()
-        {
-            float size = TextSize * UIUtils.CalculateTextScale();
-            if (_measurePaint != null && _measureTypeface == Typeface && _measureTextSize == size)
-                return _measurePaint;
 
-            _measurePaint?.Dispose();
-            _measurePaint = new GHSkiaFontPaint()
-            {
-                Typeface = Typeface,
-                TextSize = size
-            };
-            _measureTypeface = Typeface;
-            _measureTextSize = size;
-            return _measurePaint;
-        }
 
         public void PutStrEx(int attributes, string str, int append, int color)
         {
-            GHSkiaFontPaint textPaint = GetMeasurePaint();
-
             if (CursY >= PutStrs.Count)
             {
                 for (int i = 0; i < CursY - PutStrs.Count + 1; i++)
@@ -357,11 +351,6 @@ namespace GnollHackX
 
                 CursX += str.Length;
 
-                float textWidth = textPaint.MeasureText(row.TextStringBuilder.ToString());
-                textWidth += Padding.Left + Padding.Right;
-                if (textWidth > _pixelWidth)
-                    _pixelWidth = textWidth;
-
                 if (row.TextStringBuilder.Length > _width)
                     _width = row.TextStringBuilder.Length;
 
@@ -395,9 +384,6 @@ namespace GnollHackX
                 }
             }
 
-            float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-            _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
-            
             if(append == 0 && ShouldPublishClone)
             {
                 _currentGame.RequestQueue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Publish()));
@@ -412,8 +398,6 @@ namespace GnollHackX
                 PutStrEx(attribute, str, append, color);
             else
             {
-                GHSkiaFontPaint textPaint = GetMeasurePaint();
-
                 if (CursY >= PutStrs.Count)
                 {
                     for (int i = 0; i < CursY - PutStrs.Count + 1; i++)
@@ -451,11 +435,6 @@ namespace GnollHackX
 
                     CursX += str.Length;
 
-                    float textWidth = textPaint.MeasureText(row.TextStringBuilder.ToString());
-                    textWidth += Padding.Left + Padding.Right;
-                    if (textWidth > _pixelWidth)
-                        _pixelWidth = textWidth;
-
                     if (row.TextStringBuilder.Length > _width)
                         _width = row.TextStringBuilder.Length;
 
@@ -489,9 +468,6 @@ namespace GnollHackX
                         CursX = 0;
                     }
                 }
-
-                float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-                _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
             }
             if (append == 0 && ShouldPublishClone)
             {
@@ -499,10 +475,7 @@ namespace GnollHackX
             }
         }
 
-        public SKRect GetWindowRect(float textScalingFactor)
-        {
-            return new SKRect(Left, Top, Left + UnscaledWidth * textScalingFactor, Top + UnscaledHeight * textScalingFactor);
-        }
+
 
         public double TextWindowMaximumWidth
         {
@@ -555,8 +528,6 @@ namespace GnollHackX
             {
                 if (Interlocked.Exchange(ref _disposed, 1) == 0)
                 {
-                    _measurePaint?.Dispose();
-                    _measurePaint = null;
                     _putStrs.Clear();
                     /* Do not dispose MenuInfo's GHMenuItems here;
                      * the render thread may still hold references to

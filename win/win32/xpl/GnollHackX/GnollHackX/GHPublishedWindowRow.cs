@@ -11,6 +11,12 @@ using System.Text;
 
 namespace GnollHackX
 {
+    /* GHPublishedWindowRow is part of the published (read-only) window snapshot.
+     * However, Text, PaddingAmount, and InstructionList are left mutable because
+     * UIUtils.ProcessAdjustedItems creates NEW GHPublishedWindowRow instances and
+     * builds them up incrementally (appending text, setting padding, adding
+     * instructions). The mutability applies only to freshly-created rows during
+     * that process, not to rows already published to the UI. */
     public sealed class GHPublishedWindowRow
     {
         private GHPublishedWindow _window;
@@ -37,7 +43,7 @@ namespace GnollHackX
 
         public GHPublishedWindowRow(GHPublishedWindow window, string str, List<GHPutStrInstructions> instructions = null)
         {
-            _instructionList = instructions;
+            _instructionList = instructions ?? new List<GHPutStrInstructions>();
             _text = str;
             _window = window;
         }

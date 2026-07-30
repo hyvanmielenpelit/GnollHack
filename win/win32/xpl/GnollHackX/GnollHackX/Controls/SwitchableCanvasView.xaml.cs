@@ -528,7 +528,7 @@ namespace GnollHackX.Controls
 #else
         public CanvasTypes CanvasType { get; set; }
 #endif
-        public GHPublishedWindow GHWindow { get { return Interlocked.CompareExchange(ref _gHWindow, null, null); } set { Interlocked.Exchange(ref _gHWindow, value); } }
+        public GHPublishedWindow PublishedWindow { get { return Interlocked.CompareExchange(ref _gHWindow, null, null); } set { Interlocked.Exchange(ref _gHWindow, value); } }
         public ghmenu_styles MenuStyle { get { return (ghmenu_styles)Interlocked.CompareExchange(ref _menuStyle, 0, 0); } set { Interlocked.Exchange(ref _menuStyle, (int)value); } }
         public ObservableCollection<GHMenuItem> MenuItems { get { return Interlocked.CompareExchange(ref _menuItems, null, null); } set { Interlocked.Exchange(ref _menuItems, value); } }
         public List<GHPublishedWindowRow> PutStrItems { get { return Interlocked.CompareExchange(ref _putStrItems, null, null); } set { Interlocked.Exchange(ref _putStrItems, value); } } //{ get { return _GHPutStrItems; } set { _GHPutStrItems = value; } }

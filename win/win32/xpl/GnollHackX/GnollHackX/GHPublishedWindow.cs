@@ -44,29 +44,23 @@ namespace GnollHackX
         public float UnscaledHeight { get; }
 
         public GHPadding Padding { get; }
-                // MUTABILITY EXCEPTION:
-        // Left and Top are mutable because the UI layout system calculates and sets
-        // these coordinates dynamically.
+        /* MUTABILITY EXCEPTION: Left and Top are mutable because the UI layout
+         * system calculates and sets these coordinates dynamically. */
         public float Left { get; set; }
         public float Top { get; set; }
 
         public GHMenuInfo MenuInfo { get; }
 
-        /* 
-         * SelectedMenuItems and WasCancelled represent user input returning from the UI to the game logic.
-         * For this reason, they are kept mutable in this otherwise immutable GHPublishedWindow object.
-         * The UI will modify these directly before passing the GHPublishedWindow in a GHResponse back to GHGame.
-         */
-                // MUTABILITY EXCEPTION:
-        // SelectedMenuItems and WasCancelled are left mutable because the UI layer
-        // needs to update these fields when the user interacts with the published window
-        // (e.g. checking/unchecking items, or cancelling the menu).
-        // This is safe because each menu interaction creates a fresh cloned array of the window
-        // and this data is handled with Interlocked structures or on the main thread.
+        /* MUTABILITY EXCEPTION: SelectedMenuItems and WasCancelled represent user
+         * input returning from the UI to the game logic. The UI modifies these
+         * directly before passing the GHPublishedWindow in a GHResponse back to
+         * GHGame. This is safe because each menu interaction creates a fresh
+         * published snapshot and this data is handled with Interlocked structures
+         * or on the main thread. */
         public List<GHMenuItem> SelectedMenuItems { get; set; }
         public bool WasCancelled { get; set; }
 
-        public WeakReference<GHWindow> ClonedFrom { get; }
+        public WeakReference<GHWindow> PublishedFrom { get; }
 
         public GHPublishedWindow(
             GHWinType winType, ghwindow_styles winStyle, int glyph, bool useUpperSide, 
@@ -77,7 +71,7 @@ namespace GnollHackX
             GHWindowPrintLocations windowPrintStyle, List<GHPublishedWindowRow> putStrs,
             bool visible, int widthInChars, int heightInChars, float unscaledWidth, float unscaledHeight,
             GHPadding padding, float left, float top, GHMenuInfo menuInfo,
-            List<GHMenuItem> selectedMenuItems, bool wasCancelled, WeakReference<GHWindow> clonedFrom)
+            List<GHMenuItem> selectedMenuItems, bool wasCancelled, WeakReference<GHWindow> publishedFrom)
         {
             WindowType = winType;
             WindowStyle = winStyle;
@@ -111,7 +105,7 @@ namespace GnollHackX
             MenuInfo = menuInfo;
             SelectedMenuItems = selectedMenuItems;
             WasCancelled = wasCancelled;
-            ClonedFrom = clonedFrom;
+            PublishedFrom = publishedFrom;
         }
 
         public SKRect GetWindowRect(float textScalingFactor)

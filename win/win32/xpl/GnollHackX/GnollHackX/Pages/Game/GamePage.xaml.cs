@@ -3717,7 +3717,7 @@ namespace GnollHackX.Pages.Game
                     items = strs;
 
                 TextTouchDictionary.Clear();
-                TextCanvas.GHWindow = window;
+                TextCanvas.PublishedWindow = window;
 
                 TextCanvas.PutStrItems = items;
             }
@@ -4513,7 +4513,7 @@ namespace GnollHackX.Pages.Game
             }
 
             /* Update canvas */
-            MenuCanvas.GHWindow = ghwindow;
+            MenuCanvas.PublishedWindow = ghwindow;
             MenuCanvas.MenuStyle = menuinfo.Style;
             MenuCanvas.SelectionHow = menuinfo.SelectionHow;
             MenuCanvas.SelectionIndex = -1;
@@ -4963,9 +4963,9 @@ namespace GnollHackX.Pages.Game
             {
                 GHGame curGame = GHApp.CurrentGHGame;
                 GHWindow origWindow;
-                if (MenuCanvas.GHWindow.ClonedFrom == null)
+                if (MenuCanvas.PublishedWindow.PublishedFrom == null)
                     curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, (GHWindow)null, new List<GHMenuItem>(), true));
-                else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
+                else if (MenuCanvas.PublishedWindow.PublishedFrom.TryGetTarget(out origWindow))
                     curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(), true));
                 else
                     curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, new List<GHMenuItem>(), true));
@@ -18780,7 +18780,7 @@ namespace GnollHackX.Pages.Game
                     float topPadding = 0;
                     float maintext_x_start = 0;
                     float fontspacingpadding = 0;
-                    bool wrapglyph = MenuCanvas.GHWindow != null && isEquipmentSideShown ? MenuCanvas.GHWindow.WrapGlyph : false;
+                    bool wrapglyph = MenuCanvas.PublishedWindow != null && isEquipmentSideShown ? MenuCanvas.PublishedWindow.WrapGlyph : false;
                     float glyphpadding = 0;
                     float glyphystart = isEquipmentSideShown ? 0 : scale * (float)Math.Max(0.0, MenuWindowGlyphImage.ThreadSafeY - MenuCanvas.ThreadSafeY);
                     float glyphyend = isEquipmentSideShown ? 0 : scale * (float)Math.Max(0.0, MenuWindowGlyphImage.ThreadSafeY + MenuWindowGlyphImage.ThreadSafeHeight - MenuCanvas.ThreadSafeY);
@@ -21065,9 +21065,9 @@ namespace GnollHackX.Pages.Game
 
             GHGame curGame = GHApp.CurrentGHGame;
             GHWindow origWindow;
-            if (MenuCanvas.GHWindow.ClonedFrom == null)
+            if (MenuCanvas.PublishedWindow.PublishedFrom == null)
                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, (GHWindow)null, resultlist, false));
-            else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
+            else if (MenuCanvas.PublishedWindow.PublishedFrom.TryGetTarget(out origWindow))
                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, resultlist, false));
             else
                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, resultlist, false));
@@ -21144,9 +21144,9 @@ namespace GnollHackX.Pages.Game
 
             GHGame curGame = GHApp.CurrentGHGame;
             GHWindow origWindow;
-            if (MenuCanvas.GHWindow.ClonedFrom == null)
+            if (MenuCanvas.PublishedWindow.PublishedFrom == null)
                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, (GHWindow)null, new List<GHMenuItem>(1), true, responseIntValue));
-            else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
+            else if (MenuCanvas.PublishedWindow.PublishedFrom.TryGetTarget(out origWindow))
                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(1), true, responseIntValue));
             else
                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, new List<GHMenuItem>(1), true, responseIntValue));
@@ -21661,7 +21661,7 @@ namespace GnollHackX.Pages.Game
             {
                 GHSkiaFontPaint textPaint = _textCanvasTextPaint;
                 textPaint.Reset();
-                if (TextCanvas.GHWindow != null && TextCanvas.GHWindow.Ascension)
+                if (TextCanvas.PublishedWindow != null && TextCanvas.PublishedWindow.Ascension)
                 {
                     long counter;
                     //lock (AnimationTimerLock)
@@ -21682,14 +21682,14 @@ namespace GnollHackX.Pages.Game
                 //    curmenuoffset = _textScrollOffset;
                 //}
                 y += curmenuoffset;
-                double canvasmaxwidth = TextCanvas.GHWindow != null ? TextCanvas.GHWindow.TextWindowMaximumWidth : GHConstants.DefaultTextWindowMaxWidth;
+                double canvasmaxwidth = TextCanvas.PublishedWindow != null ? TextCanvas.PublishedWindow.TextWindowMaximumWidth : GHConstants.DefaultTextWindowMaxWidth;
                 double menuwidth = Math.Max(1.0, Math.Min(canvasUIwidth, canvasmaxwidth) * customScale);
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
                 float paddingAdjustment = 0;
                 float topPadding = 0;
-                bool wrapglyph = TextCanvas.GHWindow != null ? TextCanvas.GHWindow.WrapGlyph : false;
+                bool wrapglyph = TextCanvas.PublishedWindow != null ? TextCanvas.PublishedWindow.WrapGlyph : false;
                 bool glyphVisible = TextWindowGlyphImage.ThreadSafeIsVisible;
                 double glyphX = TextWindowGlyphImage.ThreadSafeX;
                 double glyphY = TextWindowGlyphImage.ThreadSafeY;
@@ -21774,7 +21774,7 @@ namespace GnollHackX.Pages.Game
                                 TextCanvas.RevertBlackAndWhite, false);
 
                             //string[] split = str.Split(' ');
-                            DrawSplittableText(canvas, str, null, null, null, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, TextCanvas.GHWindow.UseSpecialSymbols, TextCanvas.UseTextOutline, TextCanvas.RevertBlackAndWhite, false, 0, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                            DrawSplittableText(canvas, str, null, null, null, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, TextCanvas.PublishedWindow.UseSpecialSymbols, TextCanvas.UseTextOutline, TextCanvas.RevertBlackAndWhite, false, 0, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                         }
                         j++;
                         y += textPaint.FontMetrics.Descent + fontspacingpadding;

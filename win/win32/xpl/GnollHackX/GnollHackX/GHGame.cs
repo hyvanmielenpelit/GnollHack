@@ -628,7 +628,7 @@ namespace GnollHackX
             }
 
             win.PutStrs.Clear();
-            win.SetWidthHeight(0, 0, 0, 0);
+            win.SetWidthHeight(0, 0);
             win.CursX = 0;
             win.CursY = 0;
 
