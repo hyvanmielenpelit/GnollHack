@@ -722,8 +722,6 @@ namespace GnollHackX
                 {
                     _measurePaint?.Dispose();
                     _measurePaint = null;
-                    for (int i = 0, n = _putStrs.Count; i < n; i++)
-                        _putStrs[i]?.Dispose();
                     _putStrs.Clear();
                     /* Do not dispose MenuInfo's GHMenuItems here;
                      * the render thread may still hold references to
