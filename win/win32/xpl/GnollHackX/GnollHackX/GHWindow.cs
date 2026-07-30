@@ -252,7 +252,9 @@ namespace GnollHackX
             {
                 foreach (var row in _putStrs)
                 {
-                    float textWidth = measurePaint.MeasureText(row.TextStringBuilder.ToString());
+                    string text = row.TextStringBuilder.ToString();
+                    row.PublishedString = text;
+                    float textWidth = measurePaint.MeasureText(text);
                     textWidth += Padding.Left + Padding.Right;
                     if (textWidth > pixelWidth)
                         pixelWidth = textWidth;
@@ -272,16 +274,15 @@ namespace GnollHackX
 
             foreach (var row in _putStrs)
             {
-                publishedRows.Add(CreatePublishedRow(published, row));
+                publishedRows.Add(CreatePublishedRow(published, row, row.PublishedString));
             }
 
             return published;
         }
 
-        private GHPublishedWindowRow CreatePublishedRow(GHPublishedWindow published, GHWindowRow row)
+        private GHPublishedWindowRow CreatePublishedRow(GHPublishedWindow published, GHWindowRow row, string text)
         {
             List<GHPutStrInstructions> instructions = new List<GHPutStrInstructions>();
-            string text = row.TextStringBuilder.ToString();
             
             int prevattr = 0, prevclr = 0;
             int curattr = 0, curclr = 0;

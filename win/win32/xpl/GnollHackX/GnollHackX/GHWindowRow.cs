@@ -12,6 +12,7 @@ namespace GnollHackX
         private readonly GHWindow _window;
 
         public StringBuilder TextStringBuilder { get; } = new StringBuilder(GHConstants.MapCols);
+        public string PublishedString = null;
         
         public List<int> AttributeList { get; } = new List<int>();
         public List<int> ColorList { get; } = new List<int>();
