@@ -3022,7 +3022,7 @@ dump_close_log(void)
 }
 
 void
-dump_open_log_ai(time_t now)
+dump_open_log_ai(time_t now UNUSED)
 {
 #if defined (DUMPHTML)
     char buf[BUFSZ];
