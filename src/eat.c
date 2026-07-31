@@ -2201,13 +2201,23 @@ opentin(void)
     /* perhaps it was stolen (although that should cause interruption) */
     if (!context.tin.tin
         || context.tin.tin->o_id != context.tin.o_id)
+    {
+        context.tin.tin = (struct obj *) 0;
+        context.tin.o_id = 0;
         return 0;
+    }
     if (!carried(context.tin.tin)
         && (!obj_here(context.tin.tin, u.ux, u.uy) || !can_reach_floor(TRUE)))
+    {
+        context.tin.tin = (struct obj *) 0;
+        context.tin.o_id = 0;
         return 0;
+    }
     if (context.tin.usedtime++ >= 50) {
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "give up your attempt to open the tin.");
+        context.tin.tin = (struct obj *) 0;
+        context.tin.o_id = 0;
         return 0;
     }
     if (context.tin.usedtime < context.tin.reqtime)
