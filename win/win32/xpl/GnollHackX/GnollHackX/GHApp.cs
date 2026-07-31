@@ -252,6 +252,172 @@ namespace GnollHackX
             }
         }
 
+        public static void ClearFiles()
+        {
+            ClearCoreFiles();
+            ClearTopScores();
+            ClearSavedGames();
+            ClearDumplogs();
+            ClearSnapshots();
+            ClearAiFiles();
+        }
+
+        public static void ClearAllFilesInMainDirectory()
+        {
+            string filesdir = GHPath;
+            DirectoryInfo di = new DirectoryInfo(filesdir);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+        }
+
+        public readonly static string[] TxtFilesList = { "xcredits", "license", "logfile", "perm", "record", "symbols", "sysconf", "xlogfile", "defaults.gnh" };
+        public readonly static string[] BinFilesList = { "nhdat" };
+
+        public static void ClearCoreFiles()
+        {
+            string filesdir = GHPath;
+            DirectoryInfo di = new DirectoryInfo(filesdir);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                bool found = false;
+                foreach (string txtfile in TxtFilesList)
+                {
+                    if (file.Name == txtfile)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    foreach (string binfile in BinFilesList)
+                    {
+                        if (file.Name == binfile)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (found)
+                {
+                    if (file.Name != "logfile" && file.Name != "xlogfile" && file.Name != "record" && file.Name != "defaults.gnh")
+                        file.Delete();
+                }
+            }
+        }
+
+        public static void ClearTopScores()
+        {
+            string filesdir = GHPath;
+            DirectoryInfo di = new DirectoryInfo(filesdir);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                if (file.Name == "logfile" || file.Name == "xlogfile")
+                    file.Delete();
+            }
+        }
+
+        public static void ClearSavedGames()
+        {
+            string filesdir = GHPath;
+            string fulldirepath = Path.Combine(filesdir, GHConstants.SaveDirectory);
+            if (Directory.Exists(fulldirepath))
+            {
+                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                foreach (FileInfo file in disave.GetFiles())
+                {
+                    file.Delete();
+                }
+            }
+        }
+
+        public static void ClearDumplogs()
+        {
+            string filesdir = GHPath;
+            string fulldirepath = Path.Combine(filesdir, GHConstants.DumplogDirectory);
+            if (Directory.Exists(fulldirepath))
+            {
+                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                foreach (FileInfo file in disave.GetFiles())
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
+        public static void ClearSnapshots()
+        {
+            string filesdir = GHPath;
+            string fulldirepath = Path.Combine(filesdir, GHConstants.SnapshotDirectory);
+            if (Directory.Exists(fulldirepath))
+            {
+                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                foreach (FileInfo file in disave.GetFiles())
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
+        public static void ClearAiFiles()
+        {
+            string filesdir = GHPath;
+            string fulldirepath = Path.Combine(filesdir, GHConstants.AiDirectory);
+            if (Directory.Exists(fulldirepath))
+            {
+                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                foreach (FileInfo file in disave.GetFiles())
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
+        public static void ClearBones()
+        {
+            string filesdir = GHPath;
+            DirectoryInfo di = new DirectoryInfo(filesdir);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                if (file.Name.Length > 4 && file.Name.Substring(0, 4) == "bon-")
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
+
         private static DateTime _nowAtInit;
 
         private static bool _saveGameBreakingChangeNotificationOn = false;
