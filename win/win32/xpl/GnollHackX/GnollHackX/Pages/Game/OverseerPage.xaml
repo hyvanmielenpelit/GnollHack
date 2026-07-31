@@ -49,6 +49,8 @@
                             <Label Text="What do you want to attach?" FontFamily="Underwood" FontSize="14" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
                             <controls:CustomImageButton Text="Dumplogs" x:Name="AttachDumplogsButton" Clicked="AttachDumplogsButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" />
                             <controls:CustomImageButton Text="Screenshots" x:Name="AttachScreenshotsButton" Clicked="AttachScreenshotsButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" />
+                            <controls:CustomImageButton Text="App Log" x:Name="AttachAppLogButton" Clicked="AttachAppLogButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" IsVisible="False" />
+                            <controls:CustomImageButton Text="Panic Log" x:Name="AttachPanicLogButton" Clicked="AttachPanicLogButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" IsVisible="False" />
                             <controls:CustomImageButton Text="Cancel" x:Name="AttachTypeCancelButton" Clicked="AttachTypeCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
                         </StackLayout>
                     </Frame>

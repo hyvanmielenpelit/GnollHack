@@ -29,13 +29,13 @@
                       Navigating="DisplayWebView_Navigating" Navigated="DisplayWebView_Navigated"/>
             <Grid x:Name="ProgressOverlay" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#CC000000" IsVisible="True">
                 <Grid WidthRequest="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
-                    <Frame BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Border BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout Spacing="9" Padding="6">
                             <Label Text="Gnoll Overseer" x:Name="ProgressTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
                             <Label Text="Connecting..." x:Name="ProgressStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
                             <ProgressBar x:Name="UploadProgressBar" Progress="0.0" WidthRequest="400" HorizontalOptions="Fill" HeightRequest="15" ProgressColor="LightBlue" />
                         </StackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
@@ -43,15 +43,17 @@
             </Grid>
             <Grid x:Name="AttachTypeGrid" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
                 <Grid WidthRequest="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
-                    <Frame x:Name="AttachTypeFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Border x:Name="AttachTypeFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout Spacing="9" Padding="6">
                             <Label Text="Attach to Overseer" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
                             <Label Text="What do you want to attach?" FontFamily="Underwood" FontSize="14" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
                             <controls:CustomImageButton Text="Dumplogs" x:Name="AttachDumplogsButton" Clicked="AttachDumplogsButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" />
                             <controls:CustomImageButton Text="Screenshots" x:Name="AttachScreenshotsButton" Clicked="AttachScreenshotsButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" />
+                            <controls:CustomImageButton Text="App Log" x:Name="AttachAppLogButton" Clicked="AttachAppLogButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" IsVisible="False" />
+                            <controls:CustomImageButton Text="Panic Log" x:Name="AttachPanicLogButton" Clicked="AttachPanicLogButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" IsVisible="False" />
                             <controls:CustomImageButton Text="Cancel" x:Name="AttachTypeCancelButton" Clicked="AttachTypeCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
                         </StackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
@@ -59,7 +61,7 @@
             </Grid>
             <Grid x:Name="DumplogPickerGrid" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
                 <Grid MaximumWidthRequest="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center" MaximumHeightRequest="500">
-                    <Frame x:Name="DumplogPickerFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Border x:Name="DumplogPickerFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout Spacing="9" Padding="6">
                             <Label Text="Attach Dumplog" x:Name="DumplogPickerTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
                             <Label Text="Select dumplogs to send to Overseer" x:Name="DumplogPickerSubtitleLabel" FontFamily="Underwood" FontSize="14" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
@@ -71,7 +73,7 @@
                                 <controls:CustomImageButton Text="Cancel" x:Name="DumplogCancelButton" Clicked="DumplogCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
                             </StackLayout>
                         </StackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />

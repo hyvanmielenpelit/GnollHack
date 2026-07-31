@@ -328,6 +328,32 @@ namespace GnollHackX.Pages.Game
         private void AttachButton_Clicked(object sender, EventArgs e)
         {
             GHApp.PlayButtonClickedSound();
+
+            /* Show/hide log buttons based on Developer Mode */
+            if (GHApp.DeveloperMode)
+            {
+                string appLogPath = Path.Combine(GHApp.GHPath, GHConstants.AppLogDirectory, GHConstants.AppLogFileName);
+                string panicLogPath = Path.Combine(GHApp.GHPath, "paniclog");
+
+                bool appLogExists = File.Exists(appLogPath);
+                bool panicLogExists = File.Exists(panicLogPath);
+
+                AttachAppLogButton.IsVisible = true;
+                AttachAppLogButton.IsEnabled = appLogExists;
+                AttachAppLogButton.Text = appLogExists ? "App Log" : "No App Log";
+                AttachAppLogButton.TextColor = appLogExists ? GHColors.White : GHColors.Gray;
+
+                AttachPanicLogButton.IsVisible = true;
+                AttachPanicLogButton.IsEnabled = panicLogExists;
+                AttachPanicLogButton.Text = panicLogExists ? "Panic Log" : "No Panic Log";
+                AttachPanicLogButton.TextColor = panicLogExists ? GHColors.White : GHColors.Gray;
+            }
+            else
+            {
+                AttachAppLogButton.IsVisible = false;
+                AttachPanicLogButton.IsVisible = false;
+            }
+
             AttachTypeGrid.IsVisible = true;
         }
 
@@ -664,6 +690,95 @@ namespace GnollHackX.Pages.Game
             if (bytes < 1024) return bytes + " B";
             if (bytes < 1024 * 1024) return (bytes / 1024) + " KB";
             return (bytes / (1024 * 1024)) + " MB";
+        }
+
+        /* --- App Log / Panic Log Attach (Developer Mode only) --- */
+        private async void AttachAppLogButton_Clicked(object sender, EventArgs e)
+        {
+            GHApp.PlayButtonClickedSound();
+            AttachTypeGrid.IsVisible = false;
+            string appLogPath = Path.Combine(GHApp.GHPath, GHConstants.AppLogDirectory, GHConstants.AppLogFileName);
+            await UploadLogFile(appLogPath, "App Log");
+        }
+
+        private async void AttachPanicLogButton_Clicked(object sender, EventArgs e)
+        {
+            GHApp.PlayButtonClickedSound();
+            AttachTypeGrid.IsVisible = false;
+            string panicLogPath = Path.Combine(GHApp.GHPath, "paniclog");
+            await UploadLogFile(panicLogPath, "Panic Log");
+        }
+
+        private async Task UploadLogFile(string filePath, string logName)
+        {
+            ProgressTitleLabel.Text = "Attaching " + logName;
+            ProgressStatusLabel.Text = "Reading " + logName + "...";
+            UploadProgressBar.Progress = 0.2;
+            ProgressOverlay.IsVisible = true;
+            AttachButton.IsEnabled = false;
+
+            try
+            {
+                string logContent = File.ReadAllText(filePath);
+
+                var content = new MultipartFormDataContent();
+                content.Add(new StringContent(logContent, Encoding.UTF8, "text/plain"),
+                            "LogContent", Path.GetFileName(filePath));
+                content.Add(new StringContent(logName), "LogName");
+                if (!string.IsNullOrEmpty(_sessionId))
+                    content.Add(new StringContent(_sessionId), "SessionId");
+
+                ProgressStatusLabel.Text = "Uploading " + logName + "...";
+                UploadProgressBar.Progress = 0.5;
+
+                var cts = new CancellationTokenSource();
+                using (var uploader = new HttpClientUploadWithProgress(
+                    _baseOverseerUrl + "/api/session/attach", content, cts))
+                {
+                    uploader.ProgressChanged += (totalSize, uploaded, pct) =>
+                    {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            if (pct.HasValue)
+                            {
+                                UploadProgressBar.Progress = 0.5 + (pct.Value / 100.0) * 0.45;
+                                ProgressStatusLabel.Text = "Uploading... " + Math.Round(pct.Value) + "%";
+                            }
+                        });
+                    };
+
+                    await uploader.StartUpload();
+
+                    if (uploader.Response.IsSuccessStatusCode)
+                    {
+                        ProgressStatusLabel.Text = logName + " attached!";
+                        UploadProgressBar.Progress = 1.0;
+                    }
+                    else
+                    {
+                        GHApp.WriteGHLog(logName + " attach failed: HTTP " + (int)uploader.Response.StatusCode);
+                        ProgressStatusLabel.Text = "Attach failed.";
+                        UploadProgressBar.Progress = 1.0;
+                    }
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                GHApp.WriteGHLog(logName + " upload timed out.");
+                ProgressStatusLabel.Text = "Upload timed out.";
+                UploadProgressBar.Progress = 1.0;
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog(logName + " attach failed: " + ex.Message);
+                ProgressStatusLabel.Text = "Attach failed.";
+                UploadProgressBar.Progress = 1.0;
+            }
+
+            await Task.Delay(1500);
+            ProgressOverlay.IsVisible = false;
+            ProgressTitleLabel.Text = "Gnoll Overseer";
+            AttachButton.IsEnabled = true;
         }
 
         private bool _backPressed = false;
