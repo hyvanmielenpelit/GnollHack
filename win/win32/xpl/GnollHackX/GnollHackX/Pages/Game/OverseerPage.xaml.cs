@@ -157,9 +157,10 @@ namespace GnollHackX.Pages.Game
                             { "verboseResponses", GHApp.OverseerVerboseResponses },
                             { "sendGameContext", GHApp.OverseerSendGameContext },
                             { "isGameOn", isGameOn },
-                            { "developerMode", GHApp.DeveloperMode }
+                            { "developerMode", GHApp.DeveloperMode },
+                            { "debugLogMessages", GHApp.DebugLogMessages }
                         };
-                        int overseerMode = GHApp.DeveloperMode ? 2 : (isGameOn ? 0 : 1);
+                        int overseerMode = (GHApp.DeveloperMode && GHApp.DebugLogMessages) ? 2 : (isGameOn ? 0 : 1);
                         var intSettings = new Dictionary<string, int>
                         {
                             { "overseerMode", overseerMode }

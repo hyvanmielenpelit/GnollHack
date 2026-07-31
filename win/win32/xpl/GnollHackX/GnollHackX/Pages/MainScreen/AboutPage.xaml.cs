@@ -183,7 +183,7 @@ namespace GnollHackX.Pages.MainScreen
             var overseerPage = new OverseerPage("Gnoll Overseer",
                 GHApp.OverseerAddress,
                 "", "", "",
-                GHApp.DeveloperMode ? GHGame.GenerateDebugData() : "");
+                GHApp.DeveloperMode && GHApp.DebugLogMessages ? GHGame.GenerateDebugData() : "");
             await GHApp.PushModalPageAsync(overseerPage);
             AboutGrid.IsEnabled = true;
         }

@@ -523,8 +523,8 @@ namespace GnollHackX.Pages.Game
             if (currentGame != null)
                 messageHistory = currentGame.ExportFullMessageHistory();
 
-            /* 3. Developer mode extras */
-            if (GHApp.DeveloperMode)
+            /* 3. Developer mode extras — only when both flags are on */
+            if (GHApp.DeveloperMode && GHApp.DebugLogMessages)
             {
                 directoryManifest = GHGame.GenerateDirectoryManifest();
                 debugData = GHGame.GenerateDebugData();
