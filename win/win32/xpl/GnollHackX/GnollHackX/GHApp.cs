@@ -5653,6 +5653,25 @@ namespace GnollHackX
             }
         }
 
+        public static string OverseerAddress
+        {
+            get
+            {
+                string address = GHConstants.GnollHackOverseerPage;
+#if DEBUG
+                if (XlogReleaseAccount)
+                    return address;
+                else
+                    return address?.Replace("https://", "https://test-");
+#else
+                if (UseDebugPostChannel)
+                    return address?.Replace("https://", "https://test-");
+                else
+                    return address;
+#endif
+            }
+        }
+
         public static string XlogPostAddress
         {
             get

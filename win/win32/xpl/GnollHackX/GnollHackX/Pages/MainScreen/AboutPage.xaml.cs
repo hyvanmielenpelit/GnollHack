@@ -159,7 +159,7 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var overseerPage = new OverseerPage("Overseer",
-                GHConstants.GnollHackOverseerPage,
+                GHApp.OverseerAddress,
                 "", "", "",
                 GHApp.DeveloperMode ? GHGame.GenerateDebugData() : "");
             await GHApp.PushModalPageAsync(overseerPage);
