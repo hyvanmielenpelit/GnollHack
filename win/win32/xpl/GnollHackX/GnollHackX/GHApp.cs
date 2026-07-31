@@ -75,6 +75,15 @@ namespace GnollHackX
         }
     }
 
+    public class OverseerEnvironmentData
+    {
+        public Dictionary<string, bool> BoolData { get; set; } = new Dictionary<string, bool>();
+        public Dictionary<string, int> IntData { get; set; } = new Dictionary<string, int>();
+        public Dictionary<string, long> LongData { get; set; } = new Dictionary<string, long>();
+        public Dictionary<string, double> DoubleData { get; set; } = new Dictionary<string, double>();
+        public Dictionary<string, string> StringData { get; set; } = new Dictionary<string, string>();
+    }
+
     public static class GHApp
     {
 #if WINDOWS
@@ -88,6 +97,90 @@ namespace GnollHackX
         public static bool WindowFocused { get { return Interlocked.CompareExchange(ref _windowFocused, 0, 0) != 0; } set { Interlocked.Exchange(ref _windowFocused, value ? 1 : 0); } }
 #endif
         private static Assembly _assembly = null;
+
+        public static OverseerEnvironmentData GetEnvironmentData()
+        {
+            var data = new OverseerEnvironmentData();
+
+            string manufacturer = DeviceInfo.Manufacturer;
+            if (manufacturer?.Length > 0)
+                manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
+
+            ulong TotalMemInMB = GHApp.TotalMemory / (1024 * 1024);
+            long UsedMemInBytes = GHApp.GetUsedMemoryInBytes();
+            long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
+            ulong FreeDiskSpaceInBytes = GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes();
+            ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
+            ulong TotalDiskSpaceInBytes = GHApp.PlatformService.GetDeviceTotalDiskSpaceInBytes();
+            ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
+            long UsedManagedMemInBytes = GHApp.GetUsedManagedMemoryInBytes();
+            long UsedManagedMemInMB = UsedManagedMemInBytes == -1 ? -1 : UsedManagedMemInBytes / (1024 * 1024);
+            
+            int fmodMemCur = -1, fmodMemMax = -1;
+            if (GHApp.FmodService != null)
+                GHApp.FmodService.GetStats(out fmodMemCur, out fmodMemMax);
+            long UsedSoundMemInMB = fmodMemCur == -1 ? -1 : fmodMemCur / (1024 * 1024);
+            
+            ulong UsedBitmapMemInBytes = GHApp.UsedBitmapBytes;
+            long UsedBitmapMemInMB = (long)UsedBitmapMemInBytes / (1024 * 1024);
+
+            long TotalPlayTime = GHApp.RealPlayTime;
+            long CurrentPlayTime = GHApp.AggregateSessionPlayTime;
+
+            data.StringData["Platform"] = DeviceInfo.Platform.ToString();
+            data.StringData["OSVersion"] = DeviceInfo.VersionString;
+            data.StringData["DeviceModel"] = manufacturer + " " + DeviceInfo.Model;
+            data.StringData["GHVersion"] = GHApp.GHVersionString;
+            data.StringData["GHVersionId"] = GHApp.GHVersionId;
+            data.StringData["GHConfiguration"] = GHApp.GHDebug ? "Debug" : "Release";
+            data.StringData["PortVersion"] = GHApp.GetPortVersionString();
+            data.StringData["PortBuild"] = GHApp.GetPortBuildString();
+            data.StringData["PortConfiguration"] = GHApp.IsDebug ? "Debug" : "Release";
+            data.StringData["PackagingModel"] = GHApp.IsPackaged ? "Packaged" : "Unpackaged";
+            data.StringData["Culture"] = System.Globalization.CultureInfo.CurrentCulture?.EnglishName ?? "";
+            data.StringData["FMODVersion"] = GHApp.FMODVersionString;
+            data.StringData["SkiaVersion"] = GHApp.SkiaVersionString;
+            data.StringData["FrameworkVersion"] = GHApp.FrameworkVersionString;
+            data.StringData["UIFrameworkVersion"] = (GHApp.IsMaui ? ".NET MAUI " : "XF ") + GHApp.UIFrameworkVersionString;
+            data.StringData["Compiler"] = GHApp.IsLLVM ? "LLVM" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT";
+            data.StringData["RuntimeVersion"] = GHApp.RuntimeVersionString;
+            data.StringData["GPUBackend"] = GHApp.GPUBackend ?? "";
+            data.StringData["Timestamp"] = DateTime.UtcNow.ToString("O");
+
+            data.LongData["TotalMemoryMB"] = (long)TotalMemInMB;
+            data.LongData["UsedMemoryMB"] = UsedMemInMB;
+            data.LongData["FreeDiskSpaceGB"] = (long)FreeDiskSpaceInGB;
+            data.LongData["TotalDiskSpaceGB"] = (long)TotalDiskSpaceInGB;
+            data.LongData["UsedManagedMemoryMB"] = UsedManagedMemInMB;
+            data.LongData["UsedSoundMemoryMB"] = UsedSoundMemInMB;
+            data.LongData["UsedBitmapMemoryMB"] = UsedBitmapMemInMB;
+            data.LongData["TotalPlayTimeSeconds"] = TotalPlayTime;
+            data.LongData["CurrentPlayTimeSeconds"] = CurrentPlayTime;
+            
+            long cacheSize = GHApp.CurrentGPUCacheSize;
+            data.LongData["GPUCacheSizeMB"] = cacheSize >= 0 ? (cacheSize / 1024 / 1024) : -1;
+            
+            CacheUsageInfo cacheUsage = GHApp.CurrentGPUCacheUsage;
+            data.LongData["GPUCacheUsageMB"] = cacheUsage.MaxResourceBytes >= 0 ? (cacheUsage.MaxResourceBytes / 1024 / 1024) : -1;
+            data.IntData["GPUCacheUsageResources"] = cacheUsage.MaxResources >= 0 ? cacheUsage.MaxResources : -1;
+
+            var curGame = GHApp.CurrentGHGame;
+            if (curGame != null)
+            {
+                data.LongData["GameDurationSeconds"] = curGame.GamePlayTime;
+                data.LongData["SessionPlayTimeSeconds"] = curGame.SessionPlayTime;
+                data.IntData["PendingResponses"] = curGame.ResponseQueue?.Count ?? 0;
+            }
+
+            data.BoolData["IsBeta"] = GHApp.IsBeta;
+            data.BoolData["IsPlaytest"] = GHApp.IsPlaytest;
+            data.BoolData["DeveloperMode"] = GHApp.DeveloperMode;
+            data.BoolData["LowLevelLogging"] = GHApp.LowLevelLogging;
+            data.BoolData["ScreenLogging"] = GHApp.ScreenLogging;
+            data.BoolData["DebugLogMessages"] = GHApp.DebugLogMessages;
+
+            return data;
+        }
 
         public static void Initialize()
         {

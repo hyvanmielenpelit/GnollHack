@@ -527,7 +527,6 @@ namespace GnollHackX.Pages.Game
             if (GHApp.DeveloperMode && GHApp.DebugLogMessages)
             {
                 directoryManifest = GHGame.GenerateDirectoryManifest();
-                debugData = GHGame.GenerateDebugData();
             }
 
             /* 4. Open OverseerPage — it handles the upload + progress display */
@@ -535,8 +534,7 @@ namespace GnollHackX.Pages.Game
                 GHApp.OverseerAddress,
                 GHApp.OverseerSendGameContext ? snapshotHtml : "",
                 GHApp.OverseerSendGameContext ? messageHistory : "",
-                GHApp.OverseerSendGameContext ? directoryManifest : "",
-                debugData);
+                GHApp.OverseerSendGameContext ? directoryManifest : "");
             await GHApp.PushModalPageAsync(overseerPage);
 
             MainLayout.IsEnabled = true;

@@ -46,7 +46,6 @@ namespace GnollHackX.Pages.Game
         private string _snapshotHtml;
         private string _messageHistory;
         private string _directoryManifest;
-        private string _debugData;
         private List<CheckBox> _dumplogCheckBoxes = new List<CheckBox>();
         private List<DumplogEntry> _dumplogEntries = new List<DumplogEntry>();
         private string _sessionId = "";
@@ -54,7 +53,7 @@ namespace GnollHackX.Pages.Game
 
         public OverseerPage(string title, string baseOverseerUrl,
                             string snapshotHtml, string messageHistory,
-                            string directoryManifest, string debugData)
+                            string directoryManifest)
         {
             InitializeComponent();
             bool isDarkMode = GHApp.DarkMode;
@@ -68,7 +67,6 @@ namespace GnollHackX.Pages.Game
             _snapshotHtml = snapshotHtml;
             _messageHistory = messageHistory;
             _directoryManifest = directoryManifest;
-            _debugData = debugData;
 
             /* Show a simple loading page in the WebView while the overlay is visible */
             DisplayWebView.Source = new HtmlWebViewSource
@@ -146,33 +144,31 @@ namespace GnollHackX.Pages.Game
                             content.Add(new StringContent(_messageHistory), "MessageHistory");
                         if (!string.IsNullOrEmpty(_directoryManifest))
                             content.Add(new StringContent(_directoryManifest), "DirectoryManifest");
-                        if (!string.IsNullOrEmpty(_debugData))
-                            content.Add(new StringContent(_debugData), "DebugData");
 
-                        /* Send Overseer settings as typed dictionaries */
+                        /* Send unified Environment Data (Version Info, Settings, Debug Info) */
                         bool isGameOn = GHApp.CurrentGamePage?.IsGameOn ?? false;
-                        var boolSettings = new Dictionary<string, bool>
-                        {
-                            { "allowSpoilers", GHApp.OverseerAllowSpoilers },
-                            { "verboseResponses", GHApp.OverseerVerboseResponses },
-                            { "sendGameContext", GHApp.OverseerSendGameContext },
-                            { "isGameOn", isGameOn },
-                            { "developerMode", GHApp.DeveloperMode },
-                            { "debugLogMessages", GHApp.DebugLogMessages }
-                        };
                         int overseerMode = (GHApp.DeveloperMode && GHApp.DebugLogMessages) ? 2 : (isGameOn ? 0 : 1);
-                        var intSettings = new Dictionary<string, int>
+                        
+                        string sessionTitle = "GnollHack Assistance";
+                        if (GHApp.DeveloperMode && GHApp.DebugLogMessages)
                         {
-                            { "overseerMode", overseerMode }
-                        };
-                        var stringSettings = new Dictionary<string, string>();
-                        var overseerSettings = new
+                            sessionTitle = "GnollHack Developer Console";
+                        }
+                        else if (isGameOn)
                         {
-                            boolSettings = boolSettings,
-                            intSettings = intSettings,
-                            stringSettings = stringSettings
-                        };
-                        string settingsJson = Newtonsoft.Json.JsonConvert.SerializeObject(overseerSettings);
+                            string characterName = GHApp.TournamentMode ? GHApp.LastUsedTournamentPlayerName : GHApp.LastUsedPlayerName;
+                            sessionTitle = string.IsNullOrWhiteSpace(characterName) ? "GnollHack Gameplay" : $"GnollHack Gameplay ({characterName})";
+                        }
+                        content.Add(new StringContent(sessionTitle), "Title");
+
+                        var envData = GHApp.GetEnvironmentData();
+                        envData.BoolData["allowSpoilers"] = GHApp.OverseerAllowSpoilers;
+                        envData.BoolData["verboseResponses"] = GHApp.OverseerVerboseResponses;
+                        envData.BoolData["sendGameContext"] = GHApp.OverseerSendGameContext;
+                        envData.BoolData["isGameOn"] = isGameOn;
+                        envData.IntData["overseerMode"] = overseerMode;
+
+                        string settingsJson = Newtonsoft.Json.JsonConvert.SerializeObject(envData);
                         content.Add(new StringContent(settingsJson, Encoding.UTF8, "application/json"),
                                     "OverseerSettings");
 
@@ -184,7 +180,7 @@ namespace GnollHackX.Pages.Game
                             initialPrompt = "Greet me in debug mode and briefly summarize the debug data you see.";
                             break;
                         case 1:
-                            initialPrompt = "Greet me and let me know how you can help with technical issues.";
+                            initialPrompt = "Greet me and let me know how you can help with technical issues and help learn more about GnollHack game mechanics.";
                             break;
                         default:
                             initialPrompt = isGameOn
@@ -248,7 +244,6 @@ namespace GnollHackX.Pages.Game
             _snapshotHtml = null;
             _messageHistory = null;
             _directoryManifest = null;
-            _debugData = null;
         }
 
         private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)

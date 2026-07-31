@@ -4888,22 +4888,7 @@ namespace GnollHackX
             return sb.ToString();
         }
 
-        internal static string GenerateDebugData()
-        {
-            var data = new
-            {
-                timestamp = DateTime.UtcNow,
-                platform = DeviceInfo.Platform.ToString(),
-                appVersion = GHApp.GHVersionString,
-                developerMode = GHApp.DeveloperMode,
-                memoryUsage = GC.GetTotalMemory(false),
-                pendingResponses = GHApp.CurrentGHGame?.ResponseQueue?.Count ?? 0,
-                debugLogMessages = GHApp.DebugLogMessages,
-                lowLevelLogging = GHApp.LowLevelLogging,
-                screenLogging = GHApp.ScreenLogging
-            };
-            return JsonConvert.SerializeObject(data, Formatting.Indented);
-        }
+
     }
 
     public struct SavedPrintGlyphCall
