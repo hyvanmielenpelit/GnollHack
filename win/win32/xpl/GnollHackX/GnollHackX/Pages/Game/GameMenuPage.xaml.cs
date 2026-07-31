@@ -26,7 +26,7 @@ namespace GnollHackX.Pages.Game
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class GameMenuPage : CustomModalPage, ICloseablePage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
+    public partial class GameMenuPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
     {
         public GamePage _gamePage;
  
@@ -471,6 +471,27 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
+            if (!GHApp.HasInternetAccess)
+            {
+                await ShowMessagePopupAsync("Internet Connection Required", "Internet access is required to use Gnoll Overseer.", "OK");
+                MainLayout.IsEnabled = true;
+                return;
+            }
+
+            if (!GHApp.XlogUserNameVerified && !string.IsNullOrEmpty(GHApp.XlogUserName))
+            {
+                MessagePopup.ShowNonBlockingPopup("Credentials Verification", "Verifying credentials... Please wait.");
+                await GHApp.TryVerifyXlogUserNameAsync(true);
+                MessagePopup.HideNonBlockingPopup();
+            }
+
+            if (string.IsNullOrEmpty(GHApp.XlogUserName) || !GHApp.XlogUserNameVerified)
+            {
+                await ShowMessagePopupAsync("Verification Required", "Registering a GnollHack Account is required for Gnoll Overseer. Please go to Server Posting section in Settings to set this up.", "OK");
+                MainLayout.IsEnabled = true;
+                return;
+            }
+
             string snapshotHtml = "";
             string messageHistory = "";
             string directoryManifest = "";
@@ -510,7 +531,7 @@ namespace GnollHackX.Pages.Game
             }
 
             /* 4. Open OverseerPage — it handles the upload + progress display */
-            var overseerPage = new OverseerPage("Overseer",
+            var overseerPage = new OverseerPage("Gnoll Overseer",
                 GHApp.OverseerAddress,
                 GHApp.OverseerSendGameContext ? snapshotHtml : "",
                 GHApp.OverseerSendGameContext ? messageHistory : "",
@@ -698,5 +719,18 @@ namespace GnollHackX.Pages.Game
             }
             return handled;
         }
+
+        /* IMessagePopupPage implementation */
+        public bool IsPopupOpen => MessagePopup.IsPopupOpen;
+        public void ClosePopup() => MessagePopup.ClosePopup();
+        public bool SendKeyToPopup(int key, bool isCtrl, bool isMeta) => MessagePopup.SendKeyToPopup(key, isCtrl, isMeta);
+        public bool SendSpecialKeyToPopup(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift) => MessagePopup.SendSpecialKeyToPopup(spkey, isCtrl, isMeta, isShift);
+#if GNH_MAUI
+        public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
+             Microsoft.Maui.Graphics.Color titleColor = null, bool acceptEnterSpaceForOkCancel = false) => MessagePopup.ShowMessagePopupAsync(title, message, okButtonText, cancelButtonText, titleColor, acceptEnterSpaceForOkCancel);
+#else
+        public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
+             Xamarin.Forms.Color? titleColor = null, bool acceptEnterSpaceForOkCancel = false) => MessagePopup.ShowMessagePopupAsync(title, message, okButtonText, cancelButtonText, titleColor, acceptEnterSpaceForOkCancel);
+#endif
     }
 }

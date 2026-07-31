@@ -158,7 +158,29 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            var overseerPage = new OverseerPage("Overseer",
+
+            if (!GHApp.HasInternetAccess)
+            {
+                await ShowMessagePopupAsync("Internet Connection Required", "Internet access is required to use Gnoll Overseer.", "OK");
+                AboutGrid.IsEnabled = true;
+                return;
+            }
+
+            if (!GHApp.XlogUserNameVerified && !string.IsNullOrEmpty(GHApp.XlogUserName))
+            {
+                MessagePopup.ShowNonBlockingPopup("Credentials Verification", "Verifying credentials... Please wait.");
+                await GHApp.TryVerifyXlogUserNameAsync(true);
+                MessagePopup.HideNonBlockingPopup();
+            }
+
+            if (string.IsNullOrEmpty(GHApp.XlogUserName) || !GHApp.XlogUserNameVerified)
+            {
+                await ShowMessagePopupAsync("Verification Required", "Registering a GnollHack Account is required for Gnoll Overseer. Please go to Server Posting section in Settings to set this up.", "OK");
+                AboutGrid.IsEnabled = true;
+                return;
+            }
+
+            var overseerPage = new OverseerPage("Gnoll Overseer",
                 GHApp.OverseerAddress,
                 "", "", "",
                 GHApp.DeveloperMode ? GHGame.GenerateDebugData() : "");

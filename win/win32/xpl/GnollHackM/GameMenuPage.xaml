@@ -63,6 +63,7 @@
                     <TapGestureRecognizer Tapped="DeveloperPopupOverlay_Tapped" />
                 </Grid.GestureRecognizers>
             </Grid>
+            <controls:MessagePopupView x:Name="MessagePopup" />
         </Grid>
     
 </gnh:CustomModalPage>

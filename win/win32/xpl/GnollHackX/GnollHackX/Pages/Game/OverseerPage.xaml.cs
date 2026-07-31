@@ -180,7 +180,7 @@ namespace GnollHackX.Pages.Game
                             "Analyze my current game state and suggest what I should do next."),
                             "InitialPrompt");
 
-                        ProgressStatusLabel.Text = "Contacting Overseer server...";
+                        ProgressStatusLabel.Text = "Contacting Gnoll Overseer...";
                         UploadProgressBar.Progress = 0.6;
 
                         var response = await httpClient.PostAsync(
