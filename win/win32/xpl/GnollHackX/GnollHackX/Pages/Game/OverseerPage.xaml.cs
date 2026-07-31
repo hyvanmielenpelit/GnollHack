@@ -767,6 +767,11 @@ namespace GnollHackX.Pages.Game
             {
                 string logContent = File.ReadAllText(filePath);
 
+                if (!(GHApp.DeveloperMode && GHApp.DebugLogMessages) && logContent.Length > GHConstants.MaxOverseerLogLengthNonDebug)
+                {
+                    logContent = logContent.Substring(logContent.Length - GHConstants.MaxOverseerLogLengthNonDebug);
+                }
+
                 var content = new MultipartFormDataContent();
                 content.Add(new StringContent(logContent, Encoding.UTF8, "text/plain"),
                             "LogContent", Path.GetFileName(filePath));

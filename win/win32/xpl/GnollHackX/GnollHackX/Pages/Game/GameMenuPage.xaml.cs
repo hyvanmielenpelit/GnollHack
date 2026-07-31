@@ -521,7 +521,13 @@ namespace GnollHackX.Pages.Game
             /* 2. Collect message history from the current game */
             var currentGame = GHApp.CurrentGHGame;
             if (currentGame != null)
+            {
                 messageHistory = currentGame.ExportFullMessageHistory();
+                if (!(GHApp.DeveloperMode && GHApp.DebugLogMessages) && !string.IsNullOrEmpty(messageHistory) && messageHistory.Length > GHConstants.MaxOverseerLogLengthNonDebug)
+                {
+                    messageHistory = messageHistory.Substring(messageHistory.Length - GHConstants.MaxOverseerLogLengthNonDebug);
+                }
+            }
 
             /* 3. Developer mode extras — only when both flags are on */
             if (GHApp.DeveloperMode && GHApp.DebugLogMessages)

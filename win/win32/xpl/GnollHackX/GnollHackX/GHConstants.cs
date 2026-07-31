@@ -37,6 +37,7 @@ namespace GnollHackX
         public const int FadeFromBlackDuration = 200;
         public const int MaxMessageHistoryLength = 256;
         public const int MaxLongerMessageHistoryLength = 16384;
+        public const int MaxOverseerLogLengthNonDebug = 65536 * 2;
         public const float WindowBaseFontSize = 16f;
         public const float WindowMessageFontSize = 12f;
         public const float WindowMenuFontSize = 16f;
