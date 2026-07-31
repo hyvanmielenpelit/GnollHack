@@ -50,6 +50,7 @@ namespace GnollHackX.Pages.Game
         private List<CheckBox> _dumplogCheckBoxes = new List<CheckBox>();
         private List<DumplogEntry> _dumplogEntries = new List<DumplogEntry>();
         private string _sessionId = "";
+        private bool _overseerLoaded = false;
 
         public OverseerPage(string title, string baseOverseerUrl,
                             string snapshotHtml, string messageHistory,
@@ -246,6 +247,16 @@ namespace GnollHackX.Pages.Game
         {
             NavigationLabel.Text = "";
             UpdateNavigationButtons();
+
+            /* Enable Attach button once the real Overseer page has loaded successfully */
+            if (!_overseerLoaded && e.Result == WebNavigationResult.Success
+                && e.Url != null && e.Url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            {
+                _overseerLoaded = true;
+                AttachButton.IsEnabled = true;
+                AttachButton.TextColor = GHColors.White;
+            }
+
 #if GNH_MAUI
             if(_timer == null)
             {
