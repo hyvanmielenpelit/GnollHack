@@ -165,6 +165,9 @@ namespace GnollHackX.Pages.MainScreen
             { "On Switching Apps", "**Save Game**: The game is automatically saved and restored when the player returns. Menus close.\n**Checkpoint**: The game creates a checkpoint and doesn't close menus, but recovers to checkpoint if terminated." },
             { "Map GPU Cache", "Determines the cache size for Skia GPU rendering for the map. Large numbers can lead to out of memory." },
             { "Menu GPU Cache", "Determines the cache size for Skia GPU rendering for the menu and more commands pages." },
+            { "Allow Spoilers", "When enabled, Overseer can freely discuss game mechanics, item identities, monster stats, and optimal strategies. When disabled (default), Overseer avoids revealing information the player hasn't discovered yet." },
+            { "Verbose Responses", "When enabled, Overseer provides detailed explanations and longer responses. When disabled (default), responses are concise and action-oriented." },
+            { "Send Game Context", "When enabled (default), opening Overseer from the game menu automatically sends the current game snapshot and message history. When disabled, only the chat interface opens." },
         };
 
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
@@ -997,6 +1000,14 @@ namespace GnollHackX.Pages.MainScreen
 
             GHApp.DeveloperMode = DeveloperSwitch.IsToggled;
             Preferences.Set("DeveloperMode", GHApp.DeveloperMode);
+
+            /* Overseer settings */
+            GHApp.OverseerAllowSpoilers = OverseerSpoilersSwitch.IsToggled;
+            Preferences.Set("OverseerAllowSpoilers", OverseerSpoilersSwitch.IsToggled);
+            GHApp.OverseerVerboseResponses = OverseerVerboseSwitch.IsToggled;
+            Preferences.Set("OverseerVerboseResponses", OverseerVerboseSwitch.IsToggled);
+            GHApp.OverseerSendGameContext = OverseerSendContextSwitch.IsToggled;
+            Preferences.Set("OverseerSendGameContext", OverseerSendContextSwitch.IsToggled);
             GHApp.DebugLogMessages = LogMessageSwitch.IsToggled;
             Preferences.Set("DebugLogMessages", GHApp.DebugLogMessages);
             GHApp.LowLevelLogging = LowLevelLogSwitch.IsToggled;
@@ -1777,6 +1788,11 @@ namespace GnollHackX.Pages.MainScreen
                 StatusBarLabel.TextColor = GHColors.Gray;
                 StatusBarStackLayout.IsVisible = false;
             }
+            /* Overseer switches */
+            OverseerSpoilersSwitch.IsToggled = GHApp.OverseerAllowSpoilers;
+            OverseerVerboseSwitch.IsToggled = GHApp.OverseerVerboseResponses;
+            OverseerSendContextSwitch.IsToggled = GHApp.OverseerSendGameContext;
+
             DeveloperSwitch.IsToggled = devmode;
             if (devmode)
             {

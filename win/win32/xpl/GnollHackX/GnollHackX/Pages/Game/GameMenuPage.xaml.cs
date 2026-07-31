@@ -492,8 +492,10 @@ namespace GnollHackX.Pages.Game
             /* 4. Open OverseerPage — it handles the upload + progress display */
             var overseerPage = new OverseerPage("Overseer",
                 GHConstants.GnollHackOverseerPage,
-                snapshotHtml, messageHistory,
-                directoryManifest, debugData);
+                GHApp.OverseerSendGameContext ? snapshotHtml : "",
+                GHApp.OverseerSendGameContext ? messageHistory : "",
+                GHApp.OverseerSendGameContext ? directoryManifest : "",
+                debugData);
             await GHApp.PushModalPageAsync(overseerPage);
 
             MainLayout.IsEnabled = true;

@@ -169,6 +169,9 @@ namespace GnollHackX
             AllowBones = Preferences.Get("AllowBones", true);
             //AllowPet = Preferences.Get("AllowPet", true);  //Use MirroredPetsNotGifted instead
             BonesAllowedUsers = Preferences.Get("BonesAllowedUsers", "");
+            OverseerAllowSpoilers = Preferences.Get("OverseerAllowSpoilers", false);
+            OverseerVerboseResponses = Preferences.Get("OverseerVerboseResponses", false);
+            OverseerSendGameContext = Preferences.Get("OverseerSendGameContext", true);
             EmptyWishIsNothing = Preferences.Get("EmptyWishIsNothing", true);
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
             RecordGame = Preferences.Get("RecordGame", false);
@@ -3023,6 +3026,9 @@ namespace GnollHackX
             set { PlatformService.SetStatusBarHidden(value); }
         }
         public static bool DeveloperMode { get; set; }
+        public static bool OverseerAllowSpoilers { get; set; }
+        public static bool OverseerVerboseResponses { get; set; }
+        public static bool OverseerSendGameContext { get; set; } = true;
 
         //private static readonly object _debugLock = new object();
         private static int _debugLogMessages = GHConstants.DefaultLogMessages ? 1 : 0;

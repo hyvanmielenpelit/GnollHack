@@ -148,6 +148,32 @@ namespace GnollHackX.Pages.Game
                         if (!string.IsNullOrEmpty(_debugData))
                             content.Add(new StringContent(_debugData), "DebugData");
 
+                        /* Send Overseer settings as typed dictionaries */
+                        bool isGameOn = GHApp.CurrentGamePage?.IsGameOn ?? false;
+                        var boolSettings = new Dictionary<string, bool>
+                        {
+                            { "allowSpoilers", GHApp.OverseerAllowSpoilers },
+                            { "verboseResponses", GHApp.OverseerVerboseResponses },
+                            { "sendGameContext", GHApp.OverseerSendGameContext },
+                            { "isGameOn", isGameOn },
+                            { "developerMode", GHApp.DeveloperMode }
+                        };
+                        int overseerMode = GHApp.DeveloperMode ? 2 : (isGameOn ? 0 : 1);
+                        var intSettings = new Dictionary<string, int>
+                        {
+                            { "overseerMode", overseerMode }
+                        };
+                        var stringSettings = new Dictionary<string, string>();
+                        var overseerSettings = new
+                        {
+                            boolSettings = boolSettings,
+                            intSettings = intSettings,
+                            stringSettings = stringSettings
+                        };
+                        string settingsJson = Newtonsoft.Json.JsonConvert.SerializeObject(overseerSettings);
+                        content.Add(new StringContent(settingsJson, Encoding.UTF8, "application/json"),
+                                    "OverseerSettings");
+
                         /* Default initial prompt */
                         content.Add(new StringContent(
                             "Analyze my current game state and suggest what I should do next."),
