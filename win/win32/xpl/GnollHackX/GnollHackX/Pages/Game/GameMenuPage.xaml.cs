@@ -601,10 +601,13 @@ namespace GnollHackX.Pages.Game
                                         await OpenLibraryPage();
                                     handled = true;
                                     break;
-                                case (int)'d':
+                                case (int)'D':
                                     if (btnDeveloper.IsEnabled && btnDeveloper.IsVisible && MainLayout.IsEnabled)
                                         btnDeveloper_Clicked(btnDeveloper, EventArgs.Empty);
-                                    else if (btnDelphi.IsEnabled && btnDelphi.IsVisible && MainLayout.IsEnabled)
+                                    handled = true;
+                                    break;
+                                case (int)'d':
+                                    if (btnDelphi.IsEnabled && btnDelphi.IsVisible && MainLayout.IsEnabled)
                                         await OpenOraclePage();
                                     handled = true;
                                     break;
