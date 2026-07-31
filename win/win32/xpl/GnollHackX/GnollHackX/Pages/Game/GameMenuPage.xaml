@@ -25,14 +25,8 @@
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSave_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnSettings" Text="Settings" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSettings_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnOptions" Text="Options" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnOptions_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnMessages" Text="Export Messages" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnMessages_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnDumpFrameLog" Text="Dump Frame Log" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnDumpFrameLog_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnGC" Text="Collect Garbage" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnGC_Clicked" UseVaryingBackgroundImages ="False" />
+                        <controls:CustomImageButton x:Name="btnDeveloper" Text="Developer" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="#FFFFFFAA"
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnDeveloper_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnSnapshot" Text="Take Snapshot" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSnapshot_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnVersion" Margin="0,0,0,18" Text="Version" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
@@ -51,6 +45,23 @@
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnDelphi_Clicked" UseVaryingBackgroundImages ="False" />
                     </StackLayout>
                 </ScrollView>
+            </Grid>
+            <Grid x:Name="DeveloperPopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
+                <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="DeveloperPopupFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                        <StackLayout Spacing="9" Padding="6">
+                            <Label Text="Developer Tools" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
+                            <controls:CustomImageButton x:Name="btnDevOptions" Text="Options" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnOptions_Clicked" />
+                            <controls:CustomImageButton x:Name="btnDevMessages" Text="Export Messages" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnMessages_Clicked" />
+                            <controls:CustomImageButton x:Name="btnDevDumpFrameLog" Text="Dump Frame Log" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnDumpFrameLog_Clicked" />
+                            <controls:CustomImageButton x:Name="btnDevGC" Text="Collect Garbage" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnGC_Clicked" />
+                            <controls:CustomImageButton x:Name="btnDevClose" Text="Close" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" Clicked="btnDevClose_Clicked" />
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="DeveloperPopupOverlay_Tapped" />
+                </Grid.GestureRecognizers>
             </Grid>
         </Grid>
     </gnh:CustomModalPage.Content>
