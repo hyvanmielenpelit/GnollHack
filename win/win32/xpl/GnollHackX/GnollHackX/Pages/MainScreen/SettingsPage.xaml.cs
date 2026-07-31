@@ -2329,6 +2329,11 @@ namespace GnollHackX.Pages.MainScreen
             SetTournamentModeLabelColors(TournamentSwitch.IsToggled);
             //PostXlogUserNameLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             BonesAllowedUsersLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            EngraveQuickLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+#if DEBUG
+            if (OverseerLocalAddressEntryGrid.IsVisible)
+                OverseerLocalAddressEntryLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+#endif
             if (EngraveQuickEntry.Text != null && EngraveQuickEntry.Text != "")
             {
                 if (!EngraveQuickTextValidationExpression.IsMatch(EngraveQuickEntry.Text))
@@ -2365,6 +2370,22 @@ namespace GnollHackX.Pages.MainScreen
                     return;
                 }
             }
+
+#if DEBUG
+            if (OverseerLocalAddressSwitch.IsToggled && !string.IsNullOrWhiteSpace(OverseerLocalAddressEntry.Text))
+            {
+                if (!Uri.TryCreate(OverseerLocalAddressEntry.Text, UriKind.Absolute, out Uri uriResult) || (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
+                {
+                    OverseerLocalAddressEntryLabel.TextColor = GHColors.Red;
+                    await MainScrollView.ScrollToAsync(OverseerLocalAddressEntryGrid.X, OverseerLocalAddressEntryGrid.Y, true);
+                    OverseerLocalAddressEntry.Focus();
+                    CloseButton.IsEnabled = true;
+                    _backPressed = false;
+                    return;
+                }
+            }
+#endif
+
             if (TournamentSwitch.IsToggled)
             {
                 if (!GHApp.XlogUserNameVerified || !GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
