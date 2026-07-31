@@ -172,6 +172,9 @@ namespace GnollHackX
             OverseerAllowSpoilers = Preferences.Get("OverseerAllowSpoilers", false);
             OverseerVerboseResponses = Preferences.Get("OverseerVerboseResponses", false);
             OverseerSendGameContext = Preferences.Get("OverseerSendGameContext", true);
+#if DEBUG
+            OverseerUseLocalAddress = Preferences.Get("OverseerUseLocalAddress", false);
+#endif
             EmptyWishIsNothing = Preferences.Get("EmptyWishIsNothing", true);
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
             RecordGame = Preferences.Get("RecordGame", false);
@@ -3029,6 +3032,9 @@ namespace GnollHackX
         public static bool OverseerAllowSpoilers { get; set; }
         public static bool OverseerVerboseResponses { get; set; }
         public static bool OverseerSendGameContext { get; set; } = true;
+#if DEBUG
+        public static bool OverseerUseLocalAddress { get; set; }
+#endif
 
         //private static readonly object _debugLock = new object();
         private static int _debugLogMessages = GHConstants.DefaultLogMessages ? 1 : 0;
@@ -5659,6 +5665,12 @@ namespace GnollHackX
             {
                 string address = GHConstants.GnollHackOverseerPage;
 #if DEBUG
+                if (OverseerUseLocalAddress)
+                {
+                    string localAddr = CurrentUserSecrets?.DefaultLocalOverseerAddress;
+                    if (!string.IsNullOrWhiteSpace(localAddr))
+                        return localAddr.TrimEnd('/');
+                }
                 if (XlogReleaseAccount)
                     return address;
                 else

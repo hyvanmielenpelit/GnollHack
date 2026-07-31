@@ -1008,6 +1008,10 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("OverseerVerboseResponses", OverseerVerboseSwitch.IsToggled);
             GHApp.OverseerSendGameContext = OverseerSendContextSwitch.IsToggled;
             Preferences.Set("OverseerSendGameContext", OverseerSendContextSwitch.IsToggled);
+#if DEBUG
+            GHApp.OverseerUseLocalAddress = OverseerLocalAddressSwitch.IsToggled;
+            Preferences.Set("OverseerUseLocalAddress", OverseerLocalAddressSwitch.IsToggled);
+#endif
             GHApp.DebugLogMessages = LogMessageSwitch.IsToggled;
             Preferences.Set("DebugLogMessages", GHApp.DebugLogMessages);
             GHApp.LowLevelLogging = LowLevelLogSwitch.IsToggled;
@@ -1792,6 +1796,10 @@ namespace GnollHackX.Pages.MainScreen
             OverseerSpoilersSwitch.IsToggled = GHApp.OverseerAllowSpoilers;
             OverseerVerboseSwitch.IsToggled = GHApp.OverseerVerboseResponses;
             OverseerSendContextSwitch.IsToggled = GHApp.OverseerSendGameContext;
+#if DEBUG
+            OverseerLocalAddressGrid.IsVisible = true;
+            OverseerLocalAddressSwitch.IsToggled = GHApp.OverseerUseLocalAddress;
+#endif
 
             DeveloperSwitch.IsToggled = devmode;
             if (devmode)
