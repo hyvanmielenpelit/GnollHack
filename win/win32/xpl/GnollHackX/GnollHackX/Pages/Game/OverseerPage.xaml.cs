@@ -176,10 +176,23 @@ namespace GnollHackX.Pages.Game
                         content.Add(new StringContent(settingsJson, Encoding.UTF8, "application/json"),
                                     "OverseerSettings");
 
-                        /* Default initial prompt */
-                        content.Add(new StringContent(
-                            "Analyze my current game state and suggest what I should do next."),
-                            "InitialPrompt");
+                        /* Mode-aware initial prompt for greeting */
+                        string initialPrompt;
+                        switch (overseerMode)
+                        {
+                        case 2:
+                            initialPrompt = "Greet me in debug mode and briefly summarize the debug data you see.";
+                            break;
+                        case 1:
+                            initialPrompt = "Greet me and let me know how you can help with technical issues.";
+                            break;
+                        default:
+                            initialPrompt = isGameOn
+                                ? "Greet me and give a brief observation about my current situation from the game snapshot."
+                                : "Greet me and let me know how you can help.";
+                            break;
+                        }
+                        content.Add(new StringContent(initialPrompt), "InitialPrompt");
 
                         ProgressStatusLabel.Text = "Contacting Gnoll Overseer...";
                         UploadProgressBar.Progress = 0.6;
