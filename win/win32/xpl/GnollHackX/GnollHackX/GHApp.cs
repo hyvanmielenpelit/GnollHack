@@ -174,6 +174,7 @@ namespace GnollHackX
             OverseerSendGameContext = Preferences.Get("OverseerSendGameContext", true);
 #if DEBUG
             OverseerUseLocalAddress = Preferences.Get("OverseerUseLocalAddress", false);
+            LocalOverseerAddress =  Preferences.Get("LocalOverseerAddress", null);
 #endif
             EmptyWishIsNothing = Preferences.Get("EmptyWishIsNothing", true);
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
@@ -3034,6 +3035,7 @@ namespace GnollHackX
         public static bool OverseerSendGameContext { get; set; } = true;
 #if DEBUG
         public static bool OverseerUseLocalAddress { get; set; }
+        public static string LocalOverseerAddress { get; set; }        
 #endif
 
         //private static readonly object _debugLock = new object();
@@ -5665,9 +5667,9 @@ namespace GnollHackX
             {
                 string address = GHConstants.GnollHackOverseerPage;
 #if DEBUG
-                if (OverseerUseLocalAddress)
+                if (OverseerUseLocalAddress && !string.IsNullOrEmpty(LocalOverseerAddress))
                 {
-                    string localAddr = CurrentUserSecrets?.DefaultLocalOverseerAddress;
+                    string localAddr = GHApp.LocalOverseerAddress;
                     if (!string.IsNullOrWhiteSpace(localAddr))
                         return localAddr.TrimEnd('/');
                 }

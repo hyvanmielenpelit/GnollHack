@@ -14,7 +14,6 @@ namespace GnollHackX
         public string EncodedDefaultXlogAntiForgeryToken = "";
         public string EncodedDefaultAzureBlobStorageConnectionString = "";
         public string EncodedDefaultSentryDSN = "";
-        public string EncodedDefaultLocalOverseerAddress = "";
 
         public UserSecrets()
         {
@@ -73,14 +72,6 @@ namespace GnollHackX
             get
             {
                 return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultSentryDSN);
-            }
-        }
-
-        public string DefaultLocalOverseerAddress
-        {
-            get
-            {
-                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultLocalOverseerAddress);
             }
         }
     }

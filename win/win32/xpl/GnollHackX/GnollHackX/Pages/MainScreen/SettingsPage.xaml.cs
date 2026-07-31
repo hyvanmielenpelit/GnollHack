@@ -168,6 +168,8 @@ namespace GnollHackX.Pages.MainScreen
             { "Allow Spoilers", "When enabled, Gnoll Overseer can freely discuss game mechanics, item identities, monster stats, and optimal strategies. When disabled (default), Gnoll Overseer avoids revealing information the player hasn't discovered yet." },
             { "Verbose Responses", "When enabled, Gnoll Overseer provides detailed explanations and longer responses. When disabled (default), responses are concise and action-oriented." },
             { "Send Game Context", "When enabled (default), opening Gnoll Overseer from the game menu automatically sends the current game snapshot and message history. When disabled, no such data is sent." },
+            { "Use Local Address", "Enables the Gnoll Overseer to run at a local IP address." },
+            { "Local Address", "Local IP address where Gnoll Overseer server can be found." },
         };
 
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
@@ -308,7 +310,8 @@ namespace GnollHackX.Pages.MainScreen
             ClassicStatusBarSwitch_Toggled(null, new ToggledEventArgs(ClassicStatusBarSwitch.IsToggled));
             AllowBonesSwitch_Toggled(null, new ToggledEventArgs(AllowBonesSwitch.IsToggled));
             BonesListSwitch_Toggled(null, new ToggledEventArgs(BonesListSwitch.IsToggled));
-            if(SaveFileTrackingGrid.IsVisible && !SaveFileTrackingSwitch.IsToggled)
+            OverseerLocalAddressSwitch_Toggled(null, new ToggledEventArgs(OverseerLocalAddressSwitch.IsToggled));
+            if (SaveFileTrackingGrid.IsVisible && !SaveFileTrackingSwitch.IsToggled)
                 UpdateServerPostingEnabled(SaveFileTrackingSwitch.IsToggled);
 
             if (!GHApp.RecommendedSettingsChecked)
@@ -458,6 +461,7 @@ namespace GnollHackX.Pages.MainScreen
                 Microsoft.Maui.Controls.Entry l = (Microsoft.Maui.Controls.Entry)view;
                 if (darkmode ? l.TextColor == GHColors.Black : l.TextColor == GHColors.White)
                     l.TextColor = darkmode ? GHColors.White : GHColors.Black;
+                l.BackgroundColor = darkmode ? GHColors.PickerDarkModeBkgColor : GHColors.PickerLightModeBkgColor;
             }
             else if (view is Microsoft.Maui.Controls.Picker)
             {
@@ -1011,6 +1015,11 @@ namespace GnollHackX.Pages.MainScreen
 #if DEBUG
             GHApp.OverseerUseLocalAddress = OverseerLocalAddressSwitch.IsToggled;
             Preferences.Set("OverseerUseLocalAddress", OverseerLocalAddressSwitch.IsToggled);
+            if (OverseerLocalAddressSwitch.IsToggled)
+            {
+                GHApp.LocalOverseerAddress = OverseerLocalAddressEntry.Text;
+                Preferences.Set("LocalOverseerAddress", OverseerLocalAddressEntry.Text ?? "");
+            }
 #endif
             GHApp.DebugLogMessages = LogMessageSwitch.IsToggled;
             Preferences.Set("DebugLogMessages", GHApp.DebugLogMessages);
@@ -1798,7 +1807,13 @@ namespace GnollHackX.Pages.MainScreen
             OverseerSendContextSwitch.IsToggled = GHApp.OverseerSendGameContext;
 #if DEBUG
             OverseerLocalAddressGrid.IsVisible = true;
+            OverseerLocalAddressEntryGrid.IsVisible = true;
             OverseerLocalAddressSwitch.IsToggled = GHApp.OverseerUseLocalAddress;
+            OverseerLocalAddressEntry.Text = GHApp.LocalOverseerAddress ?? "";
+            UpdateLocalAddressEntryEnabled(GHApp.OverseerUseLocalAddress);
+#else
+            OverseerLocalAddressGrid.IsVisible = false;
+            OverseerLocalAddressEntryGrid.IsVisible = false;
 #endif
 
             DeveloperSwitch.IsToggled = devmode;
@@ -2180,6 +2195,22 @@ namespace GnollHackX.Pages.MainScreen
         {
             if (e.Value && StreamingBankToMemorySwitch.IsToggled)
                 StreamingBankToMemorySwitch.IsToggled = false;
+        }
+
+        private void UpdateLocalAddressEntryEnabled(bool enabled)
+        {
+            OverseerLocalAddressEntry.IsEnabled = enabled;
+            OverseerLocalAddressEntryLabel.TextColor = enabled
+                ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
+                : GHColors.Gray;
+            OverseerLocalAddressEntry.TextColor = enabled
+                ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
+                : GHColors.Gray;
+        }
+
+        private void OverseerLocalAddressSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            UpdateLocalAddressEntryEnabled(e.Value);
         }
 
         private void DeveloperSwitch_Toggled(object sender, ToggledEventArgs e)

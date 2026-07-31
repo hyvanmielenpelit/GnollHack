@@ -1526,13 +1526,23 @@
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40"
                                   x:Name="OverseerLocalAddressGrid" IsVisible="False">
-                                <Label Text="Use Local Address"
-                                    x:Name="OverseerLocalAddressLabel"
+                                    <Label Text="Use Local Address"
+                                        x:Name="OverseerLocalAddressLabel"
+                                        FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="OverseerLocalAddressSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="OverseerLocalAddressSwitch_Toggled" />
+                            </Grid>
+                            <Grid x:Name="OverseerLocalAddressEntryGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
+                                <Label Text="  Local Address"
+                                    x:Name="OverseerLocalAddressEntryLabel" 
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="OverseerLocalAddressSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                                <Entry Grid.Column="1" x:Name="OverseerLocalAddressEntry" MaxLength="255" HorizontalOptions="End" VerticalOptions="Center" Placeholder="Enter local address" PlaceholderColor="Gray" IsEnabled="False"
+                                    Keyboard="Plain" TextColor="Black" FontFamily="LatoRegular" FontSize="14" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                             </Grid>
                             <Label Text="System" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
