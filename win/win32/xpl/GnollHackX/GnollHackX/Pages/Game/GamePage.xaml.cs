@@ -1887,6 +1887,9 @@ namespace GnollHackX.Pages.Game
                     if (GHApp.IsDebugScreenLoggingOn)
                     {
                         GHApp.MaybeWriteScreenLog(FrameTimeProfiler.GetScreenLogSummary());
+                        string mem = FrameTimeProfiler.GetScreenLogMemorySummary();
+                        if (mem != null)
+                            GHApp.MaybeWriteScreenLog(mem);
                         string rtGc = FrameTimeProfiler.GetScreenLogRuntimeGcSummary();
                         if (rtGc != null)
                             GHApp.MaybeWriteScreenLog(rtGc);
@@ -7689,8 +7692,9 @@ namespace GnollHackX.Pages.Game
                         {
                             if (!GHApp.SavingGame)
                             {
-                                FrameTimeProfiler.MarkGcEvent();
+                                FrameTimeProfiler.MarkGcBefore();
                                 GC.Collect();
+                                FrameTimeProfiler.MarkGcAfter();
                             }
                         });
                         break;

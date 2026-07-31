@@ -2092,26 +2092,29 @@ namespace GnollHackX
 
         public static void CollectGarbageAtStart()
         {
-            FrameTimeProfiler.MarkGcEvent();
+            FrameTimeProfiler.MarkGcBefore();
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
+            FrameTimeProfiler.MarkGcAfter();
         }
 
         public static void CollectGarbage()
         {
-            FrameTimeProfiler.MarkGcEvent();
+            FrameTimeProfiler.MarkGcBefore();
             GC.Collect();
 #if !WINDOWS
             GC.WaitForPendingFinalizers();
             GC.Collect();
 #endif
+            FrameTimeProfiler.MarkGcAfter();
         }
 
         public static void CollectNursery()
         {
-            FrameTimeProfiler.MarkGcEvent();
+            FrameTimeProfiler.MarkGcBefore();
             GC.Collect(0);
+            FrameTimeProfiler.MarkGcAfter();
         }
 
         public static bool IsAutoSaveUponSwitchingAppsOn
