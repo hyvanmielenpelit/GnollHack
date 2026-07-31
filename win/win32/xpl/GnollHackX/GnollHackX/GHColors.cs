@@ -13,6 +13,10 @@ namespace GnollHackX
 {
     public static class GHColors
     {
+        public static Color GeneralPageOverlayColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x66 / 255.0);
+        public static Color DarkerPageOverlayColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0xAA / 255.0);
+        public static Color ButtonGridBackgroundColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x66 / 255.0);
+        public static Color SemiTransparentDarkenedFrameBackgroundColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x66 / 255.0);
         public static Color MsgBoxPageOverlayColor = Color.FromRgba(0.0, 0.0, 0.0, (double)0x66 / 255.0);
         public static Color MsgBoxDarkModeBkgColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
         public static Color MsgBoxLightModeBkgColor = Color.FromRgba(0.0, 0.0, 0.0, 0.75);

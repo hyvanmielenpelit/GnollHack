@@ -21,6 +21,7 @@ using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
+using GnollHackX.Pages.Game;
 
 namespace GnollHackX.Pages.MainScreen
 #endif
@@ -35,14 +36,6 @@ namespace GnollHackX.Pages.MainScreen
             Disappearing += (s, e) => { _mainPage.StartCarouselViewAndEnableButtons(); };
 
             InitializeComponent();
-//#if GNH_MAUI
-//            SafeAreaEdges = SafeAreaEdges.All;
-//#else
-//            On<iOS>().SetUseSafeArea(true);
-//#endif
-            //UIUtils.AdjustRootLayout(RootGrid);
-            //UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
                 lblHeader.TextColor = GHColors.White;
@@ -153,6 +146,23 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await GHApp.OpenBrowser(this, "Wiki", new Uri(GHConstants.GnollHackWikiPage));
+            AboutGrid.IsEnabled = true;
+        }
+
+        private async void btnOverseer_Clicked(object sender, EventArgs e)
+        {
+            await OpenOverseerPage();
+        }
+
+        private async Task OpenOverseerPage()
+        {
+            AboutGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            var overseerPage = new OverseerPage("Overseer",
+                GHConstants.GnollHackOverseerPage,
+                "", "", "",
+                GHApp.DeveloperMode ? GHGame.GenerateDebugData() : "");
+            await GHApp.PushModalPageAsync(overseerPage);
             AboutGrid.IsEnabled = true;
         }
 
@@ -372,6 +382,11 @@ namespace GnollHackX.Pages.MainScreen
                             case (int)'w':
                                 if (btnWiki.IsEnabled && btnWiki.IsVisible && AboutGrid.IsEnabled)
                                     await OpenWikiPage();
+                                handled = true;
+                                break;
+                            case (int)'o':
+                                if (btnOverseer.IsEnabled && btnOverseer.IsVisible && AboutGrid.IsEnabled)
+                                    await OpenOverseerPage();
                                 handled = true;
                                 break;
                             case (int)'c':

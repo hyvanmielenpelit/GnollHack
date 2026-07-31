@@ -32,6 +32,8 @@
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnGitHub_Clicked" UseVaryingBackgroundImages ="False" />
                             <controls:CustomImageButton x:Name="btnWiki" Text="Wiki" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnWiki_Clicked" UseVaryingBackgroundImages ="False" />
+                            <controls:CustomImageButton x:Name="btnOverseer" Text="Overseer" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                            HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnOverseer_Clicked" UseVaryingBackgroundImages ="False" />
                             <controls:CustomImageButton x:Name="btnWebPage" Text="www.gnollhack.com" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnWebPage_Clicked" UseVaryingBackgroundImages ="False" />
                             <controls:CustomImageButton x:Name="btnSponsor" Text="Sponsor" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"

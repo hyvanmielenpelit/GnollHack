@@ -34,7 +34,7 @@
                         Clicked="Button_Clicked" />
             </Grid>
             <Grid x:Name="TierGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid x:Name="TierFrameCenterGrid" WidthRequest  ="640" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
                     <Frame x:Name="TierFrame"  BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">

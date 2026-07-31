@@ -177,6 +177,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHPost.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHPostAttachment.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\HttpClientDownloadWithProgress.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\HttpClientUploadWithProgress.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHApp.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHButton.cs" />
@@ -405,7 +406,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHPost.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPostAttachment.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\HttpClientDownloadWithProgress.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\HttpClientUploadWithProgress.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHApp.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHButton.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHCachedImage.cs" />

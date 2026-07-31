@@ -21,6 +21,8 @@
                                         WidthRequest="55" HeightRequest="45" HorizontalOptions="Start" VerticalOptions="Center" />
                 <controls:CustomImageButton Text="&gt;" x:Name="ForwardButton" Clicked="ForwardButton_Clicked" FontFamily="DejaVuSansMonoBold" FontSize="16" TextColor="White" BackgroundColor="Transparent" 
                                         WidthRequest="55" HeightRequest="45" HorizontalOptions="Start" VerticalOptions="Center" />
+                <controls:CustomImageButton Text="Attach" x:Name="AttachButton" Clicked="AttachButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" 
+                                        WidthRequest="110" HeightRequest="45" HorizontalOptions="Start" VerticalOptions="Center" />
                 <Label x:Name="NavigationLabel" Text="" FontFamily="Diablo" FontSize="14" TextColor="White" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center" VerticalTextAlignment="Center" />
             </StackLayout>
             <WebView Grid.Row="1" x:Name="DisplayWebView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent"
@@ -32,6 +34,42 @@
                             <Label Text="Gnoll Overseer" x:Name="ProgressTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
                             <Label Text="Connecting..." x:Name="ProgressStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
                             <ProgressBar x:Name="UploadProgressBar" Progress="0.0" WidthRequest="400" HorizontalOptions="Fill" HeightRequest="15" ProgressColor="LightBlue" />
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
+            <Grid x:Name="AttachTypeGrid" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
+                <Grid WidthRequest="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="AttachTypeFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                        <StackLayout Spacing="9" Padding="6">
+                            <Label Text="Attach to Overseer" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
+                            <Label Text="What do you want to attach?" FontFamily="Underwood" FontSize="14" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            <controls:CustomImageButton Text="Dumplogs" x:Name="AttachDumplogsButton" Clicked="AttachDumplogsButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" />
+                            <controls:CustomImageButton Text="Screenshots" x:Name="AttachScreenshotsButton" Clicked="AttachScreenshotsButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" />
+                            <controls:CustomImageButton Text="Cancel" x:Name="AttachTypeCancelButton" Clicked="AttachTypeCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
+            <Grid x:Name="DumplogPickerGrid" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
+                <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center" HeightRequest  ="500">
+                    <Frame x:Name="DumplogPickerFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                        <StackLayout Spacing="9" Padding="6">
+                            <Label Text="Attach Dumplog" x:Name="DumplogPickerTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
+                            <Label Text="Select dumplogs to send to Overseer" x:Name="DumplogPickerSubtitleLabel" FontFamily="Underwood" FontSize="14" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            <ScrollView HeightRequest="300">
+                                <StackLayout x:Name="DumplogListLayout" Spacing="4" />
+                            </ScrollView>
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="12">
+                                <controls:CustomImageButton Text="Send" x:Name="DumplogSendButton" Clicked="DumplogSendButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
+                                <controls:CustomImageButton Text="Cancel" x:Name="DumplogCancelButton" Clicked="DumplogCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
+                            </StackLayout>
                         </StackLayout>
                     </Frame>
                 </Grid>

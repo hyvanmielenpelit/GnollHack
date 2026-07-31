@@ -1796,9 +1796,9 @@
                         Clicked="CloseButton_Clicked" />
             </Grid>
             <Grid x:Name="TextGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-                         Padding="10" BackgroundColor="#66000000" IsVisible="False">
+                         Padding="10" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
                 <Grid MaximumWidthRequest="440" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,50,0,10" >
-                    <Border x:Name="TextFrame" BackgroundColor="#66000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Border x:Name="TextFrame" BackgroundColor="{x:Static gnh:GHColors.SemiTransparentDarkenedFrameBackgroundColor}" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout x:Name="TextLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="TextCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="Center" TextColor="White" />
                             <Entry x:Name="TextEntry" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the link here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
@@ -1827,7 +1827,7 @@
             </Grid>
 
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
                     <Border x:Name="PopupFrame"  BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
@@ -1847,7 +1847,7 @@
                 </Grid.GestureRecognizers>
             </Grid>
 
-            <AbsoluteLayout x:Name="WaitLayout" IsVisible="False" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000">
+            <AbsoluteLayout x:Name="WaitLayout" IsVisible="False" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.DarkerPageOverlayColor}">
                 <Label Text="Please Wait..." FontFamily="Immortal" FontSize="30" TextColor="White"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All" />
                 <AbsoluteLayout.GestureRecognizers>
