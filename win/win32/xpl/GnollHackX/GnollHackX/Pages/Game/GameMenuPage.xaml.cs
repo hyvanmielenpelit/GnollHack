@@ -495,7 +495,6 @@ namespace GnollHackX.Pages.Game
             string snapshotHtml = "";
             string messageHistory = "";
             string directoryManifest = "";
-            string debugData = "";
 
             /* 1. Generate AI snapshot via native call (safe: game thread is idle) */
             try
