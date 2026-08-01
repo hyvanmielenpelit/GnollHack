@@ -46,7 +46,7 @@
 #undef AI_DIR
 #endif
 #define AI_DIR              "ai" /* Note: this is just used to create a directory, AI_DIR still needs to have the full path */
-#define DUMPLOG_MSG_COUNT 100
+#define DUMPLOG_MSG_COUNT 50
 
 #define USER_SOUNDS
 

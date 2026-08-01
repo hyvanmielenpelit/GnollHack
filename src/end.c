@@ -896,25 +896,34 @@ should_query_disclose_option(int category, char *defquery)
 static void
 dump_plines(void)
 {
-    int i, j;
+    int i, j, msg_count;
     char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ], ** strp;
     extern char *saved_plines[];
     extern char* saved_pline_attrs[];
     extern char* saved_pline_colors[];
     extern unsigned saved_pline_index;
 
+    /* AI snapshot gets all stored messages; normal dumps get fewer */
+    msg_count = iflags.dumping_ai_snapshot
+        ? AI_SNAPSHOT_MESSAGE_COUNT : DUMPLOG_MSG_COUNT;
+
     Strcpy(buf, " "); /* one space for indentation */
     *buf2 = ATR_NONE;
     *buf3 = NO_COLOR;
     putstr(0, ATR_HEADING, "Latest messages:");
-    for (i = 0, j = (int) saved_pline_index; i < DUMPLOG_MSG_COUNT;
-         ++i, j = (j + 1) % DUMPLOG_MSG_COUNT) {
+    for (i = 0, j = (int)((saved_pline_index + SAVED_PLINE_COUNT - msg_count) % SAVED_PLINE_COUNT);
+         i < msg_count;
+         ++i, j = (j + 1) % SAVED_PLINE_COUNT)
+    {
         strp = &saved_plines[j];
         if (*strp) {
             copynchars(&buf[1], *strp, BUFSZ - 1 - 1);
+            buf[BUFSZ - 1] = 0;
             size_t len = strlen(&buf[1]);
             memcpy(&buf2[1], saved_pline_attrs[j], min(BUFSZ - 1, len));
             memcpy(&buf3[1], saved_pline_colors[j], min(BUFSZ - 1, len));
+            buf2[BUFSZ - 1] = 0;
+            buf3[BUFSZ - 1] = 0;
             putstr_ex2(0, buf, buf2, buf3, ATR_NONE, NO_COLOR, 0);
 #ifdef FREE_ALL_MEMORY
             free(*strp), *strp = 0;

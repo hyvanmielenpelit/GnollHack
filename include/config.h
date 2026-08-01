@@ -598,10 +598,17 @@ typedef unsigned char uchar;
 #endif
 
 #ifndef DUMPLOG_MSG_COUNT
-#define DUMPLOG_MSG_COUNT   100
+#define DUMPLOG_MSG_COUNT   50
 #endif
 
 #define AI_SNAPSHOT_MESSAGE_COUNT 100
+
+/* Buffer size: must be at least as large as the biggest consumer */
+#if AI_SNAPSHOT_MESSAGE_COUNT > DUMPLOG_MSG_COUNT
+#define SAVED_PLINE_COUNT AI_SNAPSHOT_MESSAGE_COUNT
+#else
+#define SAVED_PLINE_COUNT DUMPLOG_MSG_COUNT
+#endif
 
 #if defined(DUMPLOG)
 

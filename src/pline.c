@@ -48,11 +48,11 @@ static void execplinehandler(const char *);
 #if defined (DUMPLOG) || defined (DUMPHTML)
 /* also used in end.c */
 unsigned saved_pline_index = 0; /* slot in saved_plines[] to use next */
-char *saved_plines[DUMPLOG_MSG_COUNT] = { (char *) 0 };
-char* saved_pline_attrs[DUMPLOG_MSG_COUNT] = { (char*)0 };
-char* saved_pline_colors[DUMPLOG_MSG_COUNT] = { (char*)0 };
+char *saved_plines[SAVED_PLINE_COUNT] = { (char *) 0 };
+char* saved_pline_attrs[SAVED_PLINE_COUNT] = { (char*)0 };
+char* saved_pline_colors[SAVED_PLINE_COUNT] = { (char*)0 };
 
-/* keep the most recent DUMPLOG_MSG_COUNT messages */
+/* keep the most recent SAVED_PLINE_COUNT messages */
 void
 dumplogmsg(const char *line, const char *attrs, const char *colors, int attr, int color)
 {
@@ -102,7 +102,7 @@ dumplogmsg(const char *line, const char *attrs, const char *colors, int attr, in
         else
             saved_pline_colors[indx] = setstr(line, (char)color);
     }
-    saved_pline_index = (indx + 1) % DUMPLOG_MSG_COUNT;
+    saved_pline_index = (indx + 1) % SAVED_PLINE_COUNT;
 }
 
 /* called during save (unlike the interface-specific message history,
@@ -113,7 +113,7 @@ dumplogfreemessages(void)
 {
     unsigned indx;
 
-    for (indx = 0; indx < DUMPLOG_MSG_COUNT; ++indx)
+    for (indx = 0; indx < SAVED_PLINE_COUNT; ++indx)
     {
         if (saved_plines[indx])
             free((genericptr_t)saved_plines[indx]), saved_plines[indx] = 0;
