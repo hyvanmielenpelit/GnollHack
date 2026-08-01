@@ -29,7 +29,7 @@
                       Navigating="DisplayWebView_Navigating" Navigated="DisplayWebView_Navigated"/>
             <Grid x:Name="ProgressOverlay" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#CC000000" IsVisible="True">
                 <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
-                    <Frame BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="ProgressOverlayFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxDarkModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout Spacing="9" Padding="6">
                             <Label Text="Gnoll Overseer" x:Name="ProgressTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
                             <Label Text="Connecting..." x:Name="ProgressStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
