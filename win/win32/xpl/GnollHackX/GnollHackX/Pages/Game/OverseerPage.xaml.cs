@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -70,6 +71,9 @@ namespace GnollHackX.Pages.Game
              * double-navigation crashes (winrt::hresult_error) in WinUI 3 WebView2 
              * when the final URL is set shortly after. The ProgressOverlay is 
              * sufficient for the connecting UI. */
+
+            //DisplayWebView.Focused += (s, e) => { System.Diagnostics.Debug.WriteLine($"[OverseerPage] DisplayWebView.Focused: IsFocused={DisplayWebView.IsFocused}"); };
+            //DisplayWebView.Unfocused += (s, e) => { System.Diagnostics.Debug.WriteLine($"[OverseerPage] DisplayWebView.Unfocused: IsFocused={DisplayWebView.IsFocused}"); };
 
             UpdateNavigationButtons(true);
 #if GNH_MAUI && WINDOWS
@@ -278,6 +282,24 @@ namespace GnollHackX.Pages.Game
                 _overseerLoaded = true;
                 AttachButton.IsEnabled = true;
                 AttachButton.TextColor = GHColors.White;
+                
+                FocusDisplayWebView();
+#if GNH_MAUI
+                var focusTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                focusTimer.Interval = TimeSpan.FromMilliseconds(200);
+                focusTimer.IsRepeating = false;
+                focusTimer.Tick += (s, ev) =>
+                { 
+                    FocusDisplayWebView(); 
+                };
+                focusTimer.Start();
+#else
+                Device.StartTimer(TimeSpan.FromMilliseconds(200), () =>
+                {
+                    FocusDisplayWebView();
+                    return false;
+                });
+#endif
             }
 
             /* v2: Initialize JS bridge for client tool support (once only) */
@@ -312,6 +334,74 @@ namespace GnollHackX.Pages.Game
                 return false;
             });
 #endif
+        }
+
+#if GNH_MAUI && WINDOWS
+        [DllImport("user32.dll")]
+        private static extern IntPtr SetFocus(IntPtr hWnd);
+
+        private delegate bool EnumChildWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool EnumChildWindows(
+            IntPtr hwndParent, EnumChildWindowsProc lpEnumFunc, IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern int GetClassName(
+            IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+#endif
+
+        private void FocusDisplayWebView()
+        {
+#if GNH_MAUI && WINDOWS
+            try
+            {
+                var mauiWindow = Microsoft.Maui.Controls.Application.Current?.Windows
+                    ?.FirstOrDefault();
+                var nativeWindow = mauiWindow?.Handler?.PlatformView
+                    as Microsoft.UI.Xaml.Window;
+                if (nativeWindow != null)
+                {
+                    var mainHwnd = WinRT.Interop.WindowNative
+                        .GetWindowHandle(nativeWindow);
+                    if (mainHwnd != IntPtr.Zero)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[OverseerPage] FocusDisplayWebView: Found mainHwnd: {mainHwnd}");
+                        IntPtr chromeHwnd = IntPtr.Zero;
+                        EnumChildWindows(mainHwnd, (hWnd, lParam) =>
+                        {
+                            var sb = new StringBuilder(256);
+                            GetClassName(hWnd, sb, 256);
+                            string className = sb.ToString();
+                            System.Diagnostics.Debug.WriteLine($"[OverseerPage] Child Window HWND: {hWnd}, Class: '{className}'");
+                            
+                            if (className.Contains("Chrome_WidgetWin") || className.Contains("WebView2"))
+                            {
+                                chromeHwnd = hWnd;
+                                return false; /* stop enumeration */
+                            }
+                            return true;
+                        }, IntPtr.Zero);
+
+                        System.Diagnostics.Debug.WriteLine($"[OverseerPage] FocusDisplayWebView: Found chromeHwnd: {chromeHwnd}");
+                        if (chromeHwnd != IntPtr.Zero)
+                        {
+                            IntPtr prevHwnd = SetFocus(chromeHwnd);
+                            System.Diagnostics.Debug.WriteLine($"[OverseerPage] FocusDisplayWebView: SetFocus called. prevHwnd: {prevHwnd}");
+                            return;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "FocusWebView2Native failed: " + ex.Message);
+            }
+#endif
+            /* Fallback for non-Windows platforms */
+            DisplayWebView.Focus();
         }
 
         private void UpdateNavigationButtons(bool force = false)
@@ -884,6 +974,12 @@ namespace GnollHackX.Pages.Game
 #if WINDOWS
             var webView2 = DisplayWebView.Handler?.PlatformView
                 as Microsoft.UI.Xaml.Controls.WebView2;
+            //if (webView2 != null)
+            //{
+            //    webView2.GotFocus += (s, e) => { System.Diagnostics.Debug.WriteLine("[OverseerPage] PlatformView (WebView2) GotFocus"); };
+            //    webView2.LostFocus += (s, e) => { System.Diagnostics.Debug.WriteLine("[OverseerPage] PlatformView (WebView2) LostFocus"); };
+            //}
+
             if (webView2?.CoreWebView2 != null)
             {
                 webView2.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
