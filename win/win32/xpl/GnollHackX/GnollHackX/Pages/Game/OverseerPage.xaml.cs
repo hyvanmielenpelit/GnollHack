@@ -38,7 +38,7 @@ namespace GnollHackX.Pages.Game
     }
 
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class OverseerPage : CustomModalPage, ICloseablePage
+    public partial class OverseerPage : CustomModalPage, ICloseablePage, IMessagePopupPage
     {
 #if GNH_MAUI
         IDispatcherTimer _timer = null;
@@ -50,6 +50,8 @@ namespace GnollHackX.Pages.Game
         private string _sessionId = "";
         private bool _overseerLoaded = false;
         private bool _bridgeInitialized = false;
+        private DateTime _lastFailedNavigatedTime = DateTime.MinValue;
+        private string _lastFailedNavigatedUrl = null;
 
         public OverseerPage(string baseOverseerUrl, string snapshotHtml)
         {
@@ -242,16 +244,32 @@ namespace GnollHackX.Pages.Game
             _snapshotHtml = null;
         }
 
-        private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
+        private async void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
         {
-            NavigationLabel.Text = "Loading...";
+            if (_lastFailedNavigatedUrl != null && (DateTime.UtcNow - _lastFailedNavigatedTime).TotalSeconds < 1.0 && _lastFailedNavigatedUrl == e.Url)
+            {
+                LoadingIndicator.IsRunning = false;
+                LoadingIndicator.IsVisible = false;
+                UpdateNavigationButtons();
+                return;
+            }
+
+            LoadingIndicator.IsRunning = true;
+            LoadingIndicator.IsVisible = true;
             UpdateNavigationButtons();
         }
 
         private void DisplayWebView_Navigated(object sender, WebNavigatedEventArgs e)
         {
-            NavigationLabel.Text = "";
+            LoadingIndicator.IsRunning = false;
+            LoadingIndicator.IsVisible = false;
             UpdateNavigationButtons();
+
+            if (e.Result != WebNavigationResult.Success)
+            {
+                _lastFailedNavigatedTime = DateTime.UtcNow;
+                _lastFailedNavigatedUrl = e.Url;
+            }
 
             /* Enable Attach button once the real Overseer page has loaded successfully */
             if (!_overseerLoaded && e.Result == WebNavigationResult.Success
@@ -413,7 +431,7 @@ namespace GnollHackX.Pages.Game
         }
 
         /* --- Dumplog Picker --- */
-        private void AttachDumplogsButton_Clicked(object sender, EventArgs e)
+        private async void AttachDumplogsButton_Clicked(object sender, EventArgs e)
         {
             GHApp.PlayButtonClickedSound();
             AttachTypeGrid.IsVisible = false;
@@ -421,7 +439,7 @@ namespace GnollHackX.Pages.Game
             _dumplogEntries = LoadDumplogEntries();
             if (_dumplogEntries.Count == 0)
             {
-                NavigationLabel.Text = "No dumplogs found.";
+                await ShowMessagePopupAsync("No Dumplogs", "No dumplogs found.", "OK");
                 return;
             }
 
@@ -599,7 +617,7 @@ namespace GnollHackX.Pages.Game
             catch (Exception ex)
             {
                 GHApp.WriteGHLog("Screenshot pick failed: " + ex.Message);
-                NavigationLabel.Text = "Failed to pick screenshots.";
+                await ShowMessagePopupAsync("Error", "Failed to pick screenshots.", "OK");
             }
         }
 
@@ -1135,5 +1153,17 @@ namespace GnollHackX.Pages.Game
                 GHApp.WriteGHLog("SendToolResponse failed: " + ex.Message);
             }
         }
+        /* IMessagePopupPage implementation */
+        public bool IsPopupOpen => MessagePopup.IsPopupOpen;
+        public void ClosePopup() => MessagePopup.ClosePopup();
+        public bool SendKeyToPopup(int key, bool isCtrl, bool isMeta) => MessagePopup.SendKeyToPopup(key, isCtrl, isMeta);
+        public bool SendSpecialKeyToPopup(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift) => MessagePopup.SendSpecialKeyToPopup(spkey, isCtrl, isMeta, isShift);
+#if GNH_MAUI
+        public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
+             Microsoft.Maui.Graphics.Color titleColor = null, bool acceptEnterSpaceForOkCancel = false) => MessagePopup.ShowMessagePopupAsync(title, message, okButtonText, cancelButtonText, titleColor, acceptEnterSpaceForOkCancel);
+#else
+        public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
+             Xamarin.Forms.Color? titleColor = null, bool acceptEnterSpaceForOkCancel = false) => MessagePopup.ShowMessagePopupAsync(title, message, okButtonText, cancelButtonText, titleColor, acceptEnterSpaceForOkCancel);
+#endif
     }
 }

@@ -13,9 +13,9 @@
                 <RowDefinition Height="50" x:Name="ButtonRowDefinition" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Label x:Name="NavigationLabel" Text="" FontFamily="Immortal" FontSize="14" TextColor="White" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center" VerticalTextAlignment="Center" />
+            <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" Color="LightBlue" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="20" HeightRequest="20" Margin="10,0,0,0" />
             <StackLayout x:Name="NavigationLayout" HorizontalOptions="Center" Spacing="6" Padding="2" VerticalOptions="End" Orientation="Horizontal" BackgroundColor="Transparent" >
-                <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" 
+                <controls:CustomImageButton Text="Leave" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" 
                                         WidthRequest="130" HeightRequest="45" HorizontalOptions="Start" VerticalOptions="Center"/>
                 <controls:CustomImageButton Text="&lt;" x:Name="BackButton" Clicked="BackButton_Clicked" FontFamily="DejaVuSansMonoBold" FontSize="16" TextColor="White" BackgroundColor="Transparent" 
                                         WidthRequest="55" HeightRequest="45" HorizontalOptions="Start" VerticalOptions="Center" />
@@ -64,7 +64,7 @@
                         <StackLayout Spacing="9" Padding="6">
                             <Label Text="Attach Dumplog" x:Name="DumplogPickerTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
                             <Label Text="Select dumplogs to send to Overseer" x:Name="DumplogPickerSubtitleLabel" FontFamily="Underwood" FontSize="14" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
-                            <ScrollView HeightRequest="300">
+                            <ScrollView HeightRequest  ="300">
                                 <StackLayout x:Name="DumplogListLayout" Spacing="4" />
                             </ScrollView>
                             <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="12">
@@ -78,6 +78,7 @@
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
             </Grid>
+            <controls:MessagePopupView x:Name="MessagePopup" Grid.RowSpan="2" />
         </Grid>
     </gnh:CustomModalPage.Content>
 </gnh:CustomModalPage>
