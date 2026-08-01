@@ -212,7 +212,7 @@ namespace GnollHackX.Pages.MainScreen
                 Preferences.Set(GHConstants.OverseerConsentAcceptedKey, true);
             }
 
-            var overseerPage = new OverseerPage("Gnoll Overseer", GHApp.OverseerAddress, "");
+            var overseerPage = new OverseerPage(GHApp.OverseerAddress, "");
             await GHApp.PushModalPageAsync(overseerPage);
             AboutGrid.IsEnabled = true;
         }

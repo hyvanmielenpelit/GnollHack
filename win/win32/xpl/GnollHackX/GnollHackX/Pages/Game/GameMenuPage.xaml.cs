@@ -551,8 +551,7 @@ namespace GnollHackX.Pages.Game
             /* not uploaded at session start. This speeds up Overseer startup. */
 
             /* 4. Open OverseerPage — it handles the upload + progress display */
-            var overseerPage = new OverseerPage("Gnoll Overseer",
-                GHApp.OverseerAddress,
+            var overseerPage = new OverseerPage(GHApp.OverseerAddress, 
                 GHApp.OverseerSendGameContext ? snapshotHtml : "");
             await GHApp.PushModalPageAsync(overseerPage);
 

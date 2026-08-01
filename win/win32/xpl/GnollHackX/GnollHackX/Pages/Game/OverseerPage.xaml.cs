@@ -51,8 +51,7 @@ namespace GnollHackX.Pages.Game
         private bool _overseerLoaded = false;
         private bool _bridgeInitialized = false;
 
-        public OverseerPage(string title, string baseOverseerUrl,
-                            string snapshotHtml)
+        public OverseerPage(string baseOverseerUrl, string snapshotHtml)
         {
             InitializeComponent();
             bool isDarkMode = GHApp.DarkMode;
@@ -72,12 +71,6 @@ namespace GnollHackX.Pages.Game
 
             UpdateNavigationButtons(true);
 #if GNH_MAUI && WINDOWS
-            if (!string.IsNullOrWhiteSpace(title))
-            {
-                TitleLabel.Text = title;
-                TitleLabel.IsVisible = true;
-            }
-            ButtonRowDefinition.Height = 82;
             Appearing += (s, e) =>
             {
                 _timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
