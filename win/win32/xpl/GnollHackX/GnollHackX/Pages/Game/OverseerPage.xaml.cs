@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 #if GNH_MAUI
@@ -48,6 +49,7 @@ namespace GnollHackX.Pages.Game
         private List<DumplogEntry> _dumplogEntries = new List<DumplogEntry>();
         private string _sessionId = "";
         private bool _overseerLoaded = false;
+        private bool _bridgeInitialized = false;
 
         public OverseerPage(string title, string baseOverseerUrl,
                             string snapshotHtml)
@@ -113,6 +115,7 @@ namespace GnollHackX.Pages.Game
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+            CleanupJsBridge();
         }
 
         private async Task UploadAndConnect()
@@ -253,6 +256,13 @@ namespace GnollHackX.Pages.Game
                 _overseerLoaded = true;
                 AttachButton.IsEnabled = true;
                 AttachButton.TextColor = GHColors.White;
+            }
+
+            /* v2: Initialize JS bridge for client tool support (once only) */
+            if (!_bridgeInitialized && _overseerLoaded && GHApp.OverseerEnableClientTools)
+            {
+                SetupJsBridge();
+                _bridgeInitialized = true;
             }
 
 #if GNH_MAUI
@@ -829,6 +839,297 @@ namespace GnollHackX.Pages.Game
                 await ClosePageAsync(false);
             }
             return false;
+        }
+
+        /* ===================================================================
+         * v2: Client-Side Tool Bridge
+         * ===================================================================
+         * Allows the Overseer backend to request data from the running game
+         * via the Angular SPA inside the WebView. The bridge uses platform-
+         * specific mechanisms (WebView2 on Windows, JavascriptInterface on
+         * Android, WKScriptMessageHandler on iOS) to receive tool requests
+         * and returns results via EvaluateJavaScriptAsync.
+         * =================================================================== */
+
+        /// <summary>
+        /// Sets up the platform-specific JS bridge on the WebView.
+        /// All Handler-based code is wrapped in #if GNH_MAUI since
+        /// Handler.PlatformView is a MAUI-only API.
+        /// </summary>
+        private void SetupJsBridge()
+        {
+#if GNH_MAUI
+#if WINDOWS
+            var webView2 = DisplayWebView.Handler?.PlatformView
+                as Microsoft.UI.Xaml.Controls.WebView2;
+            if (webView2?.CoreWebView2 != null)
+            {
+                webView2.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+            }
+#elif ANDROID
+            var androidWebView = DisplayWebView.Handler?.PlatformView
+                as Android.Webkit.WebView;
+            if (androidWebView != null)
+            {
+                androidWebView.Settings.JavaScriptEnabled = true;
+                androidWebView.AddJavascriptInterface(
+                    new OverseerJsBridge(this), "GnollHackBridge");
+            }
+#elif IOS || MACCATALYST
+            var wkWebView = DisplayWebView.Handler?.PlatformView
+                as WebKit.WKWebView;
+            if (wkWebView != null)
+            {
+                wkWebView.Configuration.UserContentController
+                    .AddScriptMessageHandler(
+                        new OverseerScriptMessageHandler(this),
+                        "gnollhackBridge");
+            }
+#endif
+#endif // GNH_MAUI
+        }
+
+        /// <summary>
+        /// Unregisters the JS bridge on all platforms to prevent memory leaks.
+        /// iOS WKUserContentController holds a strong reference to the handler;
+        /// failing to remove it would leak the page.
+        /// </summary>
+        private void CleanupJsBridge()
+        {
+            if (!_bridgeInitialized)
+                return;
+
+#if GNH_MAUI
+#if WINDOWS
+            var webView2 = DisplayWebView.Handler?.PlatformView
+                as Microsoft.UI.Xaml.Controls.WebView2;
+            if (webView2?.CoreWebView2 != null)
+            {
+                webView2.CoreWebView2.WebMessageReceived -= OnWebMessageReceived;
+            }
+#elif ANDROID
+            var androidWebView = DisplayWebView.Handler?.PlatformView
+                as Android.Webkit.WebView;
+            if (androidWebView != null)
+            {
+                androidWebView.RemoveJavascriptInterface("GnollHackBridge");
+            }
+#elif IOS || MACCATALYST
+            var wkWebView = DisplayWebView.Handler?.PlatformView
+                as WebKit.WKWebView;
+            if (wkWebView != null)
+            {
+                wkWebView.Configuration.UserContentController
+                    .RemoveScriptMessageHandler("gnollhackBridge");
+            }
+#endif
+#endif // GNH_MAUI
+            _bridgeInitialized = false;
+        }
+
+#if GNH_MAUI && WINDOWS
+        private void OnWebMessageReceived(object sender,
+            Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs e)
+        {
+            string json = e.WebMessageAsJson;
+            HandleToolRequest(json);
+        }
+#endif
+
+        /// <summary>
+        /// Public entry point for platform bridge classes (OverseerJsBridge,
+        /// OverseerScriptMessageHandler) to forward tool requests.
+        /// </summary>
+        public void HandleToolRequestFromBridge(string json)
+        {
+            HandleToolRequest(json);
+        }
+
+        private static readonly HashSet<string> AllowedClientTools = new HashSet<string>
+        {
+            "get_full_message_history",
+            "get_directory_listing",
+            "refresh_snapshot",
+            "get_save_info"
+        };
+
+        /// <summary>
+        /// Parses and validates an incoming tool request from the Angular SPA,
+        /// then dispatches execution to a background thread.
+        /// </summary>
+        private async void HandleToolRequest(string json)
+        {
+            try
+            {
+                var request = JsonConvert.DeserializeObject<ClientToolRequest>(json);
+
+                if (request?.Type != "tool_client_request")
+                    return;
+
+                /* URL origin validation (awaited to avoid race condition) */
+                string currentUrl = await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    return (DisplayWebView.Source as UrlWebViewSource)?.Url;
+                });
+
+                if (currentUrl != null && !currentUrl.StartsWith(
+                        _baseOverseerUrl, StringComparison.OrdinalIgnoreCase))
+                {
+                    GHApp.WriteGHLog("Tool request rejected: URL mismatch.");
+                    return;
+                }
+
+                if (!AllowedClientTools.Contains(request.ToolName))
+                {
+                    SendToolResponse(request.RequestId, false, null,
+                        "Unknown tool: " + request.ToolName);
+                    return;
+                }
+
+                /* Dispatch to background thread for non-blocking execution */
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        string result = await DispatchToolCallAsync(
+                            request.ToolName, request.Parameters);
+                        SendToolResponse(request.RequestId, true, result);
+                    }
+                    catch (Exception ex)
+                    {
+                        SendToolResponse(request.RequestId, false, null,
+                                         ex.Message);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("Tool request parse error: " + ex.Message);
+            }
+        }
+
+        private const int DefaultMessageLimit = 250;
+
+        /// <summary>
+        /// Executes the requested tool. Pure C# tools run on the background
+        /// thread directly; P/Invoke tools are dispatched to the main thread
+        /// via MainThread.InvokeOnMainThreadAsync for C core safety.
+        /// </summary>
+        /// <remarks>
+        /// Threading rationale: Ideally native C library calls during gameplay
+        /// would be dispatched to the GameThread (which owns the C core state).
+        /// However, when Overseer is open via GameMenuPage the GameThread is in
+        /// a Thread.Sleep loop waiting for user input, so native state is stable
+        /// and reads from the UI thread are safe. When accessed via the About
+        /// page there is no GameThread, so UI thread is the only option.
+        /// </remarks>
+        private async Task<string> DispatchToolCallAsync(string toolName,
+            JObject parameters)
+        {
+            var currentGame = GHApp.CurrentGHGame;
+
+            switch (toolName)
+            {
+            case "get_full_message_history":
+                if (currentGame == null)
+                    throw new InvalidOperationException("No active game");
+                string history = currentGame.ExportFullMessageHistory();
+                /* Optional search filtering */
+                string searchTerm = parameters?["search_term"]?.ToString();
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    var filtered = history.Split('\n')
+                        .Where(l => l.IndexOf(searchTerm,
+                            StringComparison.OrdinalIgnoreCase) >= 0);
+                    history = string.Join("\n", filtered);
+                }
+                /* Limit message count (default 250 to avoid oversized JS payloads) */
+                int lastN = DefaultMessageLimit;
+                string lastNStr = parameters?["last_n"]?.ToString();
+                if (!string.IsNullOrEmpty(lastNStr)
+                    && int.TryParse(lastNStr, out int n) && n > 0)
+                {
+                    lastN = n;
+                }
+                var allLines = history.Split('\n');
+                if (allLines.Length > lastN)
+                    history = string.Join("\n",
+                        allLines.Skip(allLines.Length - lastN));
+                return history;
+
+            case "get_directory_listing":
+                /* Pure C# — safe on background thread */
+                return GHGame.GenerateDirectoryManifest();
+
+            case "refresh_snapshot":
+                /* P/Invoke — dispatch to main thread for C core safety */
+                return await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    return GHApp.GnollHackService.GenerateAiSnapshot();
+                });
+
+            case "get_save_info":
+                string savePath = parameters?["filename"]?.ToString();
+                if (string.IsNullOrEmpty(savePath))
+                    throw new ArgumentException("filename required");
+                if (!savePath.StartsWith(GHApp.GnollHackService.GetGnollHackPath()))
+                    throw new UnauthorizedAccessException(
+                        "Invalid save file path");
+                /* P/Invoke — dispatch to main thread for C core safety */
+                return await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    if (GHApp.GnollHackService.GetSaveFileDescription(savePath,
+                            out string charDesc, out string locDesc,
+                            out string modeDesc))
+                    {
+                        return "Character: " + charDesc
+                            + "\nLocation: " + locDesc
+                            + "\nMode: " + modeDesc;
+                    }
+                    throw new FileNotFoundException(
+                        "Save file not found or invalid");
+                });
+
+            default:
+                throw new NotSupportedException(
+                    "Tool not implemented: " + toolName);
+            }
+        }
+
+        /// <summary>
+        /// Sends a tool response back to the Angular SPA via EvaluateJavaScriptAsync.
+        /// Uses JsonConvert double-serialization for safe JS string injection.
+        /// The Angular side must JSON.parse() the received string.
+        /// </summary>
+        private async void SendToolResponse(string requestId, bool success,
+            string content, string errorMessage = null)
+        {
+            try
+            {
+                var response = new
+                {
+                    type = "tool_response",
+                    requestId = requestId,
+                    success = success,
+                    content = content ?? "",
+                    errorMessage = errorMessage
+                };
+
+                string json = JsonConvert.SerializeObject(response);
+                /* Double-serialize to get a safely escaped JS string literal
+                 * (includes surrounding quotes) */
+                string jsStringLiteral = JsonConvert.SerializeObject(json);
+
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await DisplayWebView.EvaluateJavaScriptAsync(
+                        "window.onGnollHackToolResponse(" + jsStringLiteral + ")");
+                });
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("SendToolResponse failed: " + ex.Message);
+            }
         }
     }
 }

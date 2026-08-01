@@ -170,6 +170,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\CustomLabel.cs" />
     <None Remove="..\GnollHackX\GnollHackX\CustomContentPage.cs" />
     <None Remove="..\GnollHackX\GnollHackX\CustomModalPage.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\ClientToolRequest.cs" />
     <None Remove="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPostWithAttachment.cs" />
@@ -386,7 +387,9 @@
 
     <!-- Platform specific files that are outside of folders -->
     <None Remove="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
+    <None Remove="..\GnollHackX\GnollHackX.Android\OverseerJsBridge.cs" />
     <None Remove="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
+    <None Remove="..\GnollHackX\GnollHackX.iOS\OverseerScriptMessageHandler.cs" />
     <None Remove="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
   </ItemGroup>
 
@@ -399,6 +402,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\CustomLabel.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\CustomContentPage.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\CustomModalPage.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\ClientToolRequest.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPostWithAttachment.cs" />
@@ -508,7 +512,9 @@
     
     <!-- Show some platform specific files that are outside of folders -->
     <None Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
+    <None Include="..\GnollHackX\GnollHackX.Android\OverseerJsBridge.cs" />
     <None Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
+    <None Include="..\GnollHackX\GnollHackX.iOS\OverseerScriptMessageHandler.cs" />
     <None Include="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
   </ItemGroup>
 
@@ -768,6 +774,7 @@
     <!--<AndroidAppBundleModules Include="Platforms\Android\assetpacks\ondemandassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />-->
 		<!--<AndroidAppBundleModules Include="Platforms\Android\assetpacks\installtimeassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />-->
 		<Compile Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX.Android\OverseerJsBridge.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(TargetFramework.Contains('-ios')) or $(TargetFramework.Contains('-maccatalyst'))">
@@ -811,6 +818,7 @@
     <BundleResource Include="Platforms\iOS\tileset\gnollhack_64x96_transparent_32bits-3.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" />
     <Compile Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX.iOS\OverseerScriptMessageHandler.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
