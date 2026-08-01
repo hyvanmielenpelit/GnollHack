@@ -493,8 +493,6 @@ namespace GnollHackX.Pages.Game
             }
 
             string snapshotHtml = "";
-            string messageHistory = "";
-            string directoryManifest = "";
 
             /* 1. Generate AI snapshot via native call (safe: game thread is idle) */
             try
@@ -517,29 +515,13 @@ namespace GnollHackX.Pages.Game
                 GHApp.WriteGHLog("AI snapshot generation failed: " + ex.Message);
             }
 
-            /* 2. Collect message history from the current game */
-            var currentGame = GHApp.CurrentGHGame;
-            if (currentGame != null)
-            {
-                messageHistory = currentGame.ExportFullMessageHistory();
-                if (!(GHApp.DeveloperMode && GHApp.DebugLogMessages) && !string.IsNullOrEmpty(messageHistory) && messageHistory.Length > GHConstants.MaxOverseerLogLengthNonDebug)
-                {
-                    messageHistory = messageHistory.Substring(messageHistory.Length - GHConstants.MaxOverseerLogLengthNonDebug);
-                }
-            }
-
-            /* 3. Developer mode extras — only when both flags are on */
-            if (GHApp.DeveloperMode && GHApp.DebugLogMessages)
-            {
-                directoryManifest = GHGame.GenerateDirectoryManifest();
-            }
+            /* Message history and directory manifest are now accessed via AI tools, */
+            /* not uploaded at session start. This speeds up Overseer startup. */
 
             /* 4. Open OverseerPage — it handles the upload + progress display */
             var overseerPage = new OverseerPage("Gnoll Overseer",
                 GHApp.OverseerAddress,
-                GHApp.OverseerSendGameContext ? snapshotHtml : "",
-                GHApp.OverseerSendGameContext ? messageHistory : "",
-                GHApp.OverseerSendGameContext ? directoryManifest : "");
+                GHApp.OverseerSendGameContext ? snapshotHtml : "");
             await GHApp.PushModalPageAsync(overseerPage);
 
             MainLayout.IsEnabled = true;

@@ -404,6 +404,7 @@ struct instance_flags {
     boolean sanity_check;  /* run sanity checks */
     boolean mon_polycontrol; /* debug: control monster polymorphs */
     boolean in_dumplog;    /* doing the dumplog right now? */
+    boolean dumping_ai_snapshot; /* doing the AI snapshot dump right now? */
     boolean in_parse;      /* is a command being parsed? */
 
     /* stuff that is related to options and/or user or platform preferences

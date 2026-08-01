@@ -170,6 +170,10 @@ namespace GnollHackX.Pages.MainScreen
             { "Send Game Context", "When enabled (default), opening Gnoll Overseer from the game menu automatically sends the current game snapshot and message history. When disabled, no such data is sent." },
             { "Use Local Address", "Enables the Gnoll Overseer to run at a local IP address." },
             { "Local Address", "Local IP address where Gnoll Overseer server can be found." },
+            { "AI Web Search", "When enabled (default), the AI can search the web for general information. Disable to restrict the AI to game-specific tools only." },
+            { "AI Tool Use", "When enabled (default), the AI can look up GnollHack game information such as monster stats and item properties from authoritative sources." },
+            { "Client Data Access", "When enabled (default), the AI can request additional data from your game client, such as full message history. This data is sent to your AI provider for processing." },
+            { "Game Actions", "When enabled, the AI can suggest and perform in-game actions on your behalf. All actions require your confirmation. (Coming soon)" },
         };
 
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
@@ -1012,6 +1016,10 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("OverseerVerboseResponses", OverseerVerboseSwitch.IsToggled);
             GHApp.OverseerSendGameContext = OverseerSendContextSwitch.IsToggled;
             Preferences.Set("OverseerSendGameContext", OverseerSendContextSwitch.IsToggled);
+            Preferences.Set(GHConstants.OverseerEnableWebSearchKey, OverseerWebSearchSwitch.IsToggled);
+            Preferences.Set(GHConstants.OverseerEnableToolUseKey, OverseerToolUseSwitch.IsToggled);
+            Preferences.Set(GHConstants.OverseerEnableClientToolsKey, OverseerClientToolsSwitch.IsToggled);
+            Preferences.Set(GHConstants.OverseerEnableGameActionsKey, OverseerGameActionsSwitch.IsToggled);
 #if DEBUG
             GHApp.OverseerUseLocalAddress = OverseerLocalAddressSwitch.IsToggled;
             Preferences.Set("OverseerUseLocalAddress", OverseerLocalAddressSwitch.IsToggled);
@@ -1805,6 +1813,16 @@ namespace GnollHackX.Pages.MainScreen
             OverseerSpoilersSwitch.IsToggled = GHApp.OverseerAllowSpoilers;
             OverseerVerboseSwitch.IsToggled = GHApp.OverseerVerboseResponses;
             OverseerSendContextSwitch.IsToggled = GHApp.OverseerSendGameContext;
+            OverseerWebSearchSwitch.IsToggled = Preferences.Get(GHConstants.OverseerEnableWebSearchKey, GHConstants.OverseerEnableWebSearchDefault);
+            OverseerToolUseSwitch.IsToggled = Preferences.Get(GHConstants.OverseerEnableToolUseKey, GHConstants.OverseerEnableToolUseDefault);
+            OverseerClientToolsSwitch.IsToggled = Preferences.Get(GHConstants.OverseerEnableClientToolsKey, GHConstants.OverseerEnableClientToolsDefault);
+            OverseerGameActionsSwitch.IsToggled = Preferences.Get(GHConstants.OverseerEnableGameActionsKey, GHConstants.OverseerEnableGameActionsDefault);
+            /* Enforce Tier 3->4 dependency: Game Actions requires Client Data Access */
+            OverseerGameActionsSwitch.IsEnabled = OverseerClientToolsSwitch.IsToggled;
+            if (!OverseerClientToolsSwitch.IsToggled)
+            {
+                OverseerGameActionsLabel.TextColor = GHColors.Gray;
+            }
 #if DEBUG
             OverseerLocalAddressGrid.IsVisible = true;
             OverseerLocalAddressEntryGrid.IsVisible = true;
@@ -2195,6 +2213,23 @@ namespace GnollHackX.Pages.MainScreen
         {
             if (e.Value && StreamingBankToMemorySwitch.IsToggled)
                 StreamingBankToMemorySwitch.IsToggled = false;
+        }
+
+        private void OverseerClientToolsSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            /* Enforce dependency: Game Actions requires Client Data Access */
+            if (!e.Value)
+            {
+                Preferences.Set(GHConstants.OverseerEnableGameActionsKey, false);
+                OverseerGameActionsSwitch.IsToggled = false;
+                OverseerGameActionsSwitch.IsEnabled = false;
+                OverseerGameActionsLabel.TextColor = GHColors.Gray;
+            }
+            else
+            {
+                OverseerGameActionsSwitch.IsEnabled = true;
+                OverseerGameActionsLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            }
         }
 
         private void UpdateLocalAddressEntryEnabled(bool enabled)

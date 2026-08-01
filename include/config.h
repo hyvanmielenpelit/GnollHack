@@ -598,8 +598,10 @@ typedef unsigned char uchar;
 #endif
 
 #ifndef DUMPLOG_MSG_COUNT
-#define DUMPLOG_MSG_COUNT   50
+#define DUMPLOG_MSG_COUNT   100
 #endif
+
+#define AI_SNAPSHOT_MESSAGE_COUNT 100
 
 #if defined(DUMPLOG)
 

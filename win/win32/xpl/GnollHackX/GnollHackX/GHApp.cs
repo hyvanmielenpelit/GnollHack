@@ -178,6 +178,10 @@ namespace GnollHackX
             data.BoolData["LowLevelLogging"] = GHApp.LowLevelLogging;
             data.BoolData["ScreenLogging"] = GHApp.ScreenLogging;
             data.BoolData["DebugLogMessages"] = GHApp.DebugLogMessages;
+            data.BoolData["enableWebSearch"] = Preferences.Get(GHConstants.OverseerEnableWebSearchKey, GHConstants.OverseerEnableWebSearchDefault);
+            data.BoolData["enableToolUse"] = Preferences.Get(GHConstants.OverseerEnableToolUseKey, GHConstants.OverseerEnableToolUseDefault);
+            data.BoolData["enableClientTools"] = Preferences.Get(GHConstants.OverseerEnableClientToolsKey, GHConstants.OverseerEnableClientToolsDefault);
+            data.BoolData["enableGameActions"] = Preferences.Get(GHConstants.OverseerEnableGameActionsKey, GHConstants.OverseerEnableGameActionsDefault);
 
             return data;
         }

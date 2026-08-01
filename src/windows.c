@@ -1858,6 +1858,15 @@ dump_putstr_ex(
         else
             html_dump_line(dumphtml_file, win, 0, 0, attr, color, app, str);
     }
+    /* AI snapshot: also write to the AI HTML file */
+    if (iflags.dumping_ai_snapshot && dumphtml_ai_file
+        && win != NHW_DUMPTXT)
+    {
+        if (win == NHW_STATUS)
+            html_dump_str(dumphtml_ai_file, str, 0, 0, attr, color);
+        else
+            html_dump_line(dumphtml_ai_file, win, 0, 0, attr, color, app, str);
+    }
 #endif
 }
 
@@ -1879,6 +1888,15 @@ dump_putstr_ex2(winid win, const char *str, const char *attrs, const char *color
             html_dump_str(dumphtml_file, str, attrs, colors, attr, color);
         else
             html_dump_line(dumphtml_file, win, attrs, colors, attr, color, app, str);
+    }
+    /* AI snapshot: also write to the AI HTML file */
+    if (iflags.dumping_ai_snapshot && dumphtml_ai_file
+        && win != NHW_DUMPTXT)
+    {
+        if (win == NHW_STATUS)
+            html_dump_str(dumphtml_ai_file, str, attrs, colors, attr, color);
+        else
+            html_dump_line(dumphtml_ai_file, win, attrs, colors, attr, color, app, str);
     }
 #endif
 }
@@ -2038,11 +2056,11 @@ void
 dump_redirect(boolean onoff_flag)
 {
 #if defined (DUMPLOG) && defined (DUMPHTML)
-    if (dumplog_file || dumphtml_file)
+    if (dumplog_file || dumphtml_file || (iflags.dumping_ai_snapshot && dumphtml_ai_file))
 #elif defined (DUMPLOG)
-    if (dumplog_file)
+    if (dumplog_file || (iflags.dumping_ai_snapshot && dumphtml_ai_file))
 #elif defined (DUMPHTML)
-    if (dumphtml_file)
+    if (dumphtml_file || (iflags.dumping_ai_snapshot && dumphtml_ai_file))
 #endif
     {
         if (onoff_flag) 
@@ -3041,6 +3059,9 @@ dump_open_log_ai(time_t now UNUSED)
                   ".nh_color_8{color:#888;}.nh_color_9{color:#ffa500;}.nh_color_10{color:#0f0;}.nh_color_11{color:#ff0;}\n"
                   ".nh_color_12{color:#00f;}.nh_color_13{color:#f0f;}.nh_color_14{color:#0ff;}.nh_color_15{color:#fff;}\n"
                   "</style></head><body>\n", dumphtml_ai_file);
+            /* Save windowprocs backup so dump_redirect can restore them */
+            dumplog_windowprocs_backup = windowprocs;
+            menu_headings_backup = iflags.menu_headings;
         }
     }
 #endif

@@ -172,6 +172,15 @@ namespace GnollHackX
         public const string GnollHackWebPage = "https://gnollhack.com";
         public const string GnollHackWikiPage = "https://wiki.gnollhack.com"; /* Old page on GitHub: "https://github.com/hyvanmielenpelit/GnollHack/wiki" */
         public const string GnollHackOverseerPage = "https://overseer.gnollhack.com";
+        /* Overseer Tool Use settings (4-tier trust escalation) */
+        public const string OverseerEnableWebSearchKey = "OverseerEnableWebSearch";
+        public const bool OverseerEnableWebSearchDefault = true;
+        public const string OverseerEnableToolUseKey = "OverseerEnableToolUse";
+        public const bool OverseerEnableToolUseDefault = true;
+        public const string OverseerEnableClientToolsKey = "OverseerEnableClientTools";
+        public const bool OverseerEnableClientToolsDefault = true;
+        public const string OverseerEnableGameActionsKey = "OverseerEnableGameActions";
+        public const bool OverseerEnableGameActionsDefault = false;
         public const string GnollHackSponsorPage = "https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english";
         public const string GnollHackGeneralDowngradePage = GnollHackWikiPage + "/Download";
         public const string GnollHackAndroidDowngradePage = GnollHackWikiPage + "/Android-Releases";

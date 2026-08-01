@@ -44,16 +44,13 @@ namespace GnollHackX.Pages.Game
 #endif
         private string _baseOverseerUrl;
         private string _snapshotHtml;
-        private string _messageHistory;
-        private string _directoryManifest;
         private List<CheckBox> _dumplogCheckBoxes = new List<CheckBox>();
         private List<DumplogEntry> _dumplogEntries = new List<DumplogEntry>();
         private string _sessionId = "";
         private bool _overseerLoaded = false;
 
         public OverseerPage(string title, string baseOverseerUrl,
-                            string snapshotHtml, string messageHistory,
-                            string directoryManifest)
+                            string snapshotHtml)
         {
             InitializeComponent();
             bool isDarkMode = GHApp.DarkMode;
@@ -65,8 +62,6 @@ namespace GnollHackX.Pages.Game
 
             _baseOverseerUrl = baseOverseerUrl;
             _snapshotHtml = snapshotHtml;
-            _messageHistory = messageHistory;
-            _directoryManifest = directoryManifest;
 
             /* Show a simple loading page in the WebView while the overlay is visible */
             DisplayWebView.Source = new HtmlWebViewSource
@@ -140,10 +135,6 @@ namespace GnollHackX.Pages.Game
 
                         if (!string.IsNullOrEmpty(_snapshotHtml))
                             content.Add(new StringContent(_snapshotHtml, Encoding.UTF8, "text/html"), "SnapshotHtml");
-                        if (!string.IsNullOrEmpty(_messageHistory))
-                            content.Add(new StringContent(_messageHistory), "MessageHistory");
-                        if (!string.IsNullOrEmpty(_directoryManifest))
-                            content.Add(new StringContent(_directoryManifest), "DirectoryManifest");
 
                         /* Send unified Environment Data (Version Info, Settings, Debug Info) */
                         bool isGameOn = GHApp.CurrentGamePage?.IsGameOn ?? false;
@@ -242,8 +233,6 @@ namespace GnollHackX.Pages.Game
 
             /* Free the data references - they can be large */
             _snapshotHtml = null;
-            _messageHistory = null;
-            _directoryManifest = null;
         }
 
         private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)

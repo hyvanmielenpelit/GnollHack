@@ -960,7 +960,7 @@ dump_everything(int how, time_t when)
             &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
     Strcpy(datetimebuf, yyyymmddhhmmss(when));
     Sprintf(eos(pbuf), ", %s %4.4s-%2.2s-%2.2s %2.2s:%2.2s:%2.2s",
-            how == SNAPSHOT ? "snapshot at" : "ended",
+            (how == SNAPSHOT || how == SNAPSHOT_AI) ? "snapshot at" : "ended",
             &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
             &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
     putstr(0, ATR_SUBHEADING, pbuf);
@@ -1014,10 +1014,10 @@ dump_everything(int how, time_t when)
     putstr(NHW_DUMPTXT, 0, "");
     putstr(0, ATR_HEADING, "Inventory:");
     (void) display_inventory((char *) 0, TRUE, SHOWWEIGHTS_NONE, FALSE);
-    container_contents(invent, how != SNAPSHOT, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
-    magic_chest_contents(how != SNAPSHOT, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
-    enlightenment(how == SNAPSHOT ? BASICENLIGHTENMENT | GAMEENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT),
-                  how == SNAPSHOT ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
+    container_contents(invent, how != SNAPSHOT && how != SNAPSHOT_AI, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
+    magic_chest_contents(how != SNAPSHOT && how != SNAPSHOT_AI, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
+    enlightenment((how == SNAPSHOT || how == SNAPSHOT_AI) ? BASICENLIGHTENMENT | GAMEENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT),
+                  (how == SNAPSHOT || how == SNAPSHOT_AI) ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
     debugprint("%s", "dump_skills");
     dump_skills();
@@ -1026,18 +1026,21 @@ dump_everything(int how, time_t when)
     dump_spells();
     putstr(NHW_DUMPTXT, 0, "");
     debugprint("%s", "dump: show_gamelog");
-    show_gamelog(how == SNAPSHOT ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
+    show_gamelog((how == SNAPSHOT || how == SNAPSHOT_AI) ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
-    debugprint("%s", "dump: list_vanquished");
-    list_vanquished('d', FALSE, TRUE); /* 'd' => 'y' */
+    if (how != SNAPSHOT_AI)
+    {
+        debugprint("%s", "dump: list_vanquished");
+        list_vanquished('d', FALSE, TRUE); /* 'd' => 'y' */
+    }
     putstr(NHW_DUMPTXT, 0, "");
     debugprint("%s", "dump: list_genocided");
     list_genocided('d', FALSE, TRUE); /* 'd' => 'y' */
     putstr(NHW_DUMPTXT, 0, "");
-    show_conduct(how == SNAPSHOT ? 0 : (how >= PANICKED) ? 1 : 2);
+    show_conduct((how == SNAPSHOT || how == SNAPSHOT_AI) ? 0 : (how >= PANICKED) ? 1 : 2);
     putstr(NHW_DUMPTXT, 0, "");
     debugprint("%s", "dump: show_overview");
-    show_overview(how == SNAPSHOT ? 0 : (how >= PANICKED) ? 1 : 2, how);
+    show_overview((how == SNAPSHOT || how == SNAPSHOT_AI) ? 0 : (how >= PANICKED) ? 1 : 2, how);
     putstr(NHW_DUMPTXT, 0, "");
     dump_redirect(FALSE);
 #else
@@ -1050,54 +1053,9 @@ void
 dump_everything_ai(time_t when)
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
-    char pbuf[BUFSZ];
-    char datetimebuf[24];
-
-    /* Version */
-    dump_html_ai_write(getversionstring(pbuf));
-    dump_html_ai_write("\n");
-
-    /* Game dates */
-    Strcpy(datetimebuf, yyyymmddhhmmss(ubirthday));
-    Sprintf(pbuf, "Game began %4.4s-%2.2s-%2.2s %2.2s:%2.2s:%2.2s",
-            &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
-            &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
-    Strcpy(datetimebuf, yyyymmddhhmmss(when));
-    Sprintf(eos(pbuf), ", snapshot at %4.4s-%2.2s-%2.2s %2.2s:%2.2s:%2.2s",
-            &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
-            &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
-    dump_html_ai_write(pbuf);
-    dump_html_ai_write("\n\n");
-
-    /* Character name and role */
-    Sprintf(pbuf, "%s, %s %s %s %s", plname,
-            aligns[1 - u.ualign.type].adj,
-            genders[Ufemale].adj,
-            urace.adj,
-            (Ufemale && urole.name.f) ? urole.name.f : urole.name.m);
-    dump_html_ai_write(pbuf);
-    dump_html_ai_write("\n\n");
-
-    /* Map */
-    dump_html_ai_write("=== Map ===\n");
-    dump_map_ai();
-    dump_html_ai_write("\n");
-
-    /* Status lines */
-    dump_html_ai_write("=== Status ===\n");
-    dump_html_ai_write(do_statusline1());
-    dump_html_ai_write("\n");
-    dump_html_ai_write(do_statusline2());
-    dump_html_ai_write("\n");
-    dump_html_ai_write("\n");
-
-    /* Note: inventory, messages, skills, spells, and enlightenment */
-    /* are sent separately by the C# frontend via message history */
-    /* and additional context channels */
-    dump_html_ai_write("=== Note ===\n");
-    dump_html_ai_write("Full inventory, messages, skills, spells, "
-                       "and enlightenment data are provided\n");
-    dump_html_ai_write("via separate context channels.\n");
+    iflags.dumping_ai_snapshot = TRUE;
+    dump_everything(SNAPSHOT_AI, when);
+    iflags.dumping_ai_snapshot = FALSE;
 #else
     nhUse(when);
 #endif
