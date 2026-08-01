@@ -1545,7 +1545,7 @@
                                     Keyboard="Plain" TextColor="Black" FontFamily="LatoRegular" FontSize="14" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="AI Web Search"
+                                <Label Text="Web Search"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
@@ -1553,7 +1553,7 @@
                                 <Switch Grid.Column="1" x:Name="OverseerWebSearchSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="AI Tool Use"
+                                <Label Text="Tool Use"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
