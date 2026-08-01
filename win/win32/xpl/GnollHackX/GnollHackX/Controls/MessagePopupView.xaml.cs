@@ -106,9 +106,12 @@ namespace GnollHackX.Controls
             return null;
         }
 
+        public bool CancelOnDisappearing { get; set; } = true;
+
         private void OnPageDisappearing(object sender, EventArgs e)
         {
-            CleanPopup();
+            if (CancelOnDisappearing)
+                CleanPopup();
         }
 
         private void DismissPopup()

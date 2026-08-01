@@ -517,7 +517,9 @@ namespace GnollHackX.Pages.Game
                 var tapGestureRecognizer = new TapGestureRecognizer();
                 tapGestureRecognizer.Tapped += async (s, e) =>
                 {
+                    MessagePopup.CancelOnDisappearing = false;
                     await GHApp.OpenBrowser(this, "Privacy Policy", new Uri(GHConstants.GnollHackPrivacyPolicyPage));
+                    MessagePopup.CancelOnDisappearing = true;
                 };
                 linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
                 formattedConsentMessage.Spans.Add(linkSpan);
