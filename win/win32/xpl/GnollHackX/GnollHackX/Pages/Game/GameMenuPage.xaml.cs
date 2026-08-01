@@ -529,6 +529,7 @@ namespace GnollHackX.Pages.Game
                 bool accepted = await MessagePopup.ShowMessagePopupAsync(
                     "AI Data Disclosure",
                     formattedConsentMessage,
+                    linkSpan,
                     "I Agree",
                     "Cancel");
 

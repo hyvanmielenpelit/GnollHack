@@ -191,6 +191,11 @@ namespace GnollHackX.Controls
             IsVisible = false;
         }
 
+        private Span _linkSpan = null;
+#if GNH_MAUI
+        private PointerGestureRecognizer _labelPointerGesture = null;
+#endif
+
         public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
 #if GNH_MAUI
             Color titleColor = null,
@@ -209,6 +214,7 @@ namespace GnollHackX.Controls
             MessagePopupTitleLabel.TextColor = titleColor ?? GHColors.TitleGoldColor;
             MessagePopupLabel.FormattedText = null;
             MessagePopupLabel.Text = message;
+            DetachLabelPointerGesture();
 
             if (string.IsNullOrEmpty(cancelButtonText))
             {
@@ -231,7 +237,7 @@ namespace GnollHackX.Controls
 
         }
 
-        public Task<bool> ShowMessagePopupAsync(string title, FormattedString message, string okButtonText, string cancelButtonText = null,
+        public Task<bool> ShowMessagePopupAsync(string title, FormattedString message, Span linkSpan, string okButtonText, string cancelButtonText = null,
 #if GNH_MAUI
             Color titleColor = null,
 #else
@@ -249,6 +255,11 @@ namespace GnollHackX.Controls
             MessagePopupTitleLabel.TextColor = titleColor ?? GHColors.TitleGoldColor;
             MessagePopupLabel.Text = null;
             MessagePopupLabel.FormattedText = message;
+            _linkSpan = linkSpan;
+            if (_linkSpan != null)
+                AttachLabelPointerGesture();
+            else
+                DetachLabelPointerGesture();
 
             if (string.IsNullOrEmpty(cancelButtonText))
             {
@@ -270,6 +281,66 @@ namespace GnollHackX.Controls
             return _messagePopupTcs.Task;
 
         }
+
+        private void AttachLabelPointerGesture()
+        {
+#if GNH_MAUI && WINDOWS
+            if (_labelPointerGesture != null)
+                return;
+
+            _labelPointerGesture = new PointerGestureRecognizer();
+            _labelPointerGesture.PointerMoved += OnLabelPointerMoved;
+            _labelPointerGesture.PointerExited += OnLabelPointerExited;
+            MessagePopupLabel.GestureRecognizers.Add(_labelPointerGesture);
+#endif
+        }
+
+        private void DetachLabelPointerGesture()
+        {
+#if GNH_MAUI && WINDOWS
+            _linkSpan = null;
+            if (_labelPointerGesture != null)
+            {
+                _labelPointerGesture.PointerMoved -= OnLabelPointerMoved;
+                _labelPointerGesture.PointerExited -= OnLabelPointerExited;
+                MessagePopupLabel.GestureRecognizers.Remove(_labelPointerGesture);
+                _labelPointerGesture = null;
+            }
+            UIUtils.ChangeElementCursor(MessagePopupLabel, GameCursorType.Normal);
+#endif
+        }
+
+#if GNH_MAUI && WINDOWS
+        private bool _isOverLink = false;
+
+        private void OnLabelPointerMoved(object sender, PointerEventArgs e)
+        {
+            if (_linkSpan == null)
+                return;
+
+            var pos = e.GetPosition(MessagePopupLabel);
+            if (pos == null)
+                return;
+
+            var spatial = _linkSpan as Microsoft.Maui.Controls.Internals.ISpatialElement;
+            bool overLink = spatial?.Region.Contains(pos.Value) ?? false;
+
+            if (overLink != _isOverLink)
+            {
+                _isOverLink = overLink;
+                UIUtils.ChangeElementCursor(MessagePopupLabel, overLink ? GameCursorType.Info : GameCursorType.Normal);
+            }
+        }
+
+        private void OnLabelPointerExited(object sender, PointerEventArgs e)
+        {
+            if (_isOverLink)
+            {
+                _isOverLink = false;
+                UIUtils.ChangeElementCursor(MessagePopupLabel, GameCursorType.Normal);
+            }
+        }
+#endif
 
         private void MessagePopupOkButton_Clicked(object sender, EventArgs e)
         {
