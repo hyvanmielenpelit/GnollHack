@@ -495,9 +495,8 @@ namespace GnollHackX.Pages.Game
             /* AI Data Processing Consent (Apple Guideline 5.1.2) */
             if (!GHApp.OverseerConsentAccepted)
             {
-                bool accepted = await ShowMessagePopupAsync(
-                    "AI Data Disclosure",
-                    "Gnoll Overseer uses artificial intelligence to assist you. "
+                var formattedConsentMessage = new FormattedString();
+                formattedConsentMessage.Spans.Add(new Span { Text = "Gnoll Overseer uses artificial intelligence to assist you. "
                     + "When you use Overseer, your chat messages, game data, "
                     + "and device information are sent to our server and processed "
                     + "by a third-party AI service."
@@ -507,10 +506,27 @@ namespace GnollHackX.Pages.Game
                     + "You can manage your data and delete chat sessions within Overseer."
                     + Environment.NewLine + Environment.NewLine
                     + "For full details, please review our Privacy Policy at:"
-                    + Environment.NewLine
-                    + GHConstants.GnollHackPrivacyPolicyPage
-                    + Environment.NewLine + Environment.NewLine
-                    + "Do you agree to proceed?",
+                    + Environment.NewLine });
+                
+                var linkSpan = new Span { 
+                    Text = GHConstants.GnollHackPrivacyPolicyPage, 
+                    TextColor = GHColors.LightBlue, 
+                    TextDecorations = TextDecorations.Underline 
+                };
+                
+                var tapGestureRecognizer = new TapGestureRecognizer();
+                tapGestureRecognizer.Tapped += async (s, e) =>
+                {
+                    await GHApp.OpenBrowser(this, "Privacy Policy", new Uri(GHConstants.GnollHackPrivacyPolicyPage));
+                };
+                linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
+                formattedConsentMessage.Spans.Add(linkSpan);
+
+                formattedConsentMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine + "Do you agree to proceed?" });
+
+                bool accepted = await MessagePopup.ShowMessagePopupAsync(
+                    "AI Data Disclosure",
+                    formattedConsentMessage,
                     "I Agree",
                     "Cancel");
 

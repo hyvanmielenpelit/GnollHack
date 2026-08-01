@@ -204,7 +204,48 @@ namespace GnollHackX.Controls
 
             MessagePopupTitleLabel.Text = title;
             MessagePopupTitleLabel.TextColor = titleColor ?? GHColors.TitleGoldColor;
+            MessagePopupLabel.FormattedText = null;
             MessagePopupLabel.Text = message;
+
+            if (string.IsNullOrEmpty(cancelButtonText))
+            {
+                MessagePopupOkButton.Text = okButtonText;
+                MessagePopupCancelButton.IsVisible = false;
+                MessagePopupOkButton.HorizontalOptions = LayoutOptions.Center;
+            }
+            else
+            {
+                MessagePopupOkButton.Text = okButtonText;
+                MessagePopupCancelButton.Text = cancelButtonText;
+                MessagePopupCancelButton.IsVisible = true;
+                MessagePopupOkButton.HorizontalOptions = LayoutOptions.End;
+                MessagePopupCancelButton.HorizontalOptions = LayoutOptions.Start;
+            }
+
+            IsVisible = true;
+            MessagePopupScrollView.ScrollToAsync(0, 0, false);
+            return _messagePopupTcs.Task;
+
+        }
+
+        public Task<bool> ShowMessagePopupAsync(string title, FormattedString message, string okButtonText, string cancelButtonText = null,
+#if GNH_MAUI
+            Color titleColor = null,
+#else
+            Color? titleColor = null,
+#endif
+            bool acceptEnterSpaceForOkCancel = false)
+        {
+            if (!MessagePopupOkButton.IsVisible)
+                HideNonBlockingPopup();
+            _acceptEnterSpaceForOkCancel = acceptEnterSpaceForOkCancel;
+            _messagePopupTcs?.TrySetResult(false);
+            _messagePopupTcs = new TaskCompletionSource<bool>();
+
+            MessagePopupTitleLabel.Text = title;
+            MessagePopupTitleLabel.TextColor = titleColor ?? GHColors.TitleGoldColor;
+            MessagePopupLabel.Text = null;
+            MessagePopupLabel.FormattedText = message;
 
             if (string.IsNullOrEmpty(cancelButtonText))
             {
