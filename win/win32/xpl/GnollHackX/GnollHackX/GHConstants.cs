@@ -184,7 +184,7 @@ namespace GnollHackX
         /* Overseer AI consent (Apple Guideline 5.1.2) */
         public const string OverseerConsentAcceptedKey = "OverseerConsentAccepted";
         public const bool OverseerConsentAcceptedDefault = false;
-        public const string GnollHackPrivacyPolicyPage = "https://github.com/hyvanmielenpelit/GnollHack/wiki/GnollHack-Account-Privacy-Policy";
+        public const string GnollHackPrivacyPolicyPage = "https://wiki.gnollhack.com/GnollHack%20App%20Privacy%20Policy.md";
         public const string GnollHackSponsorPage = "https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english";
         public const string GnollHackGeneralDowngradePage = GnollHackWikiPage + "/Download";
         public const string GnollHackAndroidDowngradePage = GnollHackWikiPage + "/Android-Releases";
