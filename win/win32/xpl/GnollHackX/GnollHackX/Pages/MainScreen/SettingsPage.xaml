@@ -1591,7 +1591,7 @@
                                         VerticalOptions="Center" 
                                         HorizontalOptions="End" />
                                     <controls:CustomImageButton x:Name="OverseerConsentResetButton"
-                                        Text="Reset" Clicked="OverseerConsentResetButton_Clicked"
+                                        Text="Revoke" Clicked="OverseerConsentResetButton_Clicked"
                                         FontFamily="Diablo" FontSize="13" TextColor="White"
                                         BackgroundColor="Transparent"
                                         WidthRequest="100" HeightRequest="35"
