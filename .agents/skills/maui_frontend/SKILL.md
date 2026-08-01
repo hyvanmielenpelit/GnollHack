@@ -21,14 +21,24 @@ The **source of truth** for all XAML files is in the legacy Xamarin project at `
 
 1. **Always edit XAML in `GnollHackX/GnollHackX/`** (e.g., `Pages/MainScreen/SettingsPage.xaml`)
 2. **Code-behind (`.xaml.cs`) files** are shared via `<Compile Include>` file-linking and can be edited directly — they are the same physical file for both projects
-3. **After adding/removing `x:Name` elements in XAML**, the GnollHackX solution must be built to regenerate the MAUI XAML and its code-behind `.g.cs` files for GnollHackM
+3. **After modifying any XAML**, the MAUI XAML in GnollHackM must be regenerated. The agent should attempt this itself by building the `makedefsdroid` project (see below). If `x:Name` elements were added or removed, the code-behind `.g.cs` files for GnollHackM also need regeneration.
 4. **Until regeneration happens**, GnollHackM builds will fail with `CS0103: The name 'ElementName' does not exist in the current context` for any newly added `x:Name` references
 
 ### What to do after modifying XAML
 
-Ask the user to build the GnollHackX solution before attempting a GnollHackM build:
+The XAML conversion is performed by MSBuild targets in the `makedefsdroid` project (`win/win32/vs/makedefsdroid.vcxproj`). **First, try to regenerate the MAUI XAML yourself** by building this project:
 
-> "I've modified the XAML in GnollHackX. Could you please build the GnollHackX solution so that `makedefsdroid` regenerates the MAUI XAML for GnollHackM?"
+```powershell
+# Locate MSBuild via vswhere (msbuild is not on the default PowerShell PATH)
+$msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+& $msbuild win/win32/vs/makedefsdroid.vcxproj /t:Build /p:Configuration=Debug /p:Platform=x64
+```
+
+This runs the `InitialBuild` target which transforms all GnollHackX XAML files into MAUI-compatible XAML in `GnollHackM/`.
+
+**Only if the build fails** (e.g., missing Linux/WSL build tools, MSBuild not found), fall back to asking the user:
+
+> "I've modified the XAML in GnollHackX but was unable to regenerate the MAUI XAML automatically. Could you please build the `makedefsdroid` project (or the GnollHackX solution) so that the MAUI XAML for GnollHackM is regenerated?"
 
 ### What makedefsdroid converts
 
