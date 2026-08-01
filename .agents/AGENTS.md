@@ -75,6 +75,16 @@ AI Agents MUST override their default modern C habits and adhere strictly to the
 - For Android: Android SDK with NDK
 - For iOS: Mac build host with Xcode
 
+## Subagent Use and Pair Programming
+
+Every implementation plan **MUST** include a **Subagent Use** section. Read the full guidelines in the [subagent_guidelines skill](file:///c:/hmp/GnollHack/.agents/skills/subagent_guidelines/SKILL.md) before creating any plan. Key points:
+
+- **Always document** whether subagents are needed and which model (Flash / Pro / Inherit) to use
+- **Assign suitable tasks to the human user** (cut-and-paste moves, simple find-and-replace) — this is pair programming
+- **No two agents may edit the same file concurrently** — plan file assignments to avoid conflicts
+- **Respect build dependency chains** — do not parallelize across `makedefs` / `levcomp` / `makedefsdroid` regeneration boundaries
+- **Never overwrite uncommitted changes** without explicit user permission — ask the user to commit first if corruption risk exists
+
 ## Important Warnings
 
 - **Do NOT hand-edit auto-generated files**: `include/date.h`, `include/onames.h`, `include/pm.h`, `include/vis_tab.h`, `include/animoff.h`, `include/animtotals.h`, `src/vis_tab.c`
