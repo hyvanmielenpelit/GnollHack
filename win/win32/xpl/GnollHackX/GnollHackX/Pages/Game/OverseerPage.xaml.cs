@@ -65,14 +65,10 @@ namespace GnollHackX.Pages.Game
             _baseOverseerUrl = baseOverseerUrl;
             _snapshotHtml = snapshotHtml;
 
-            /* Show a simple loading page in the WebView while the overlay is visible */
-            DisplayWebView.Source = new HtmlWebViewSource
-            {
-                Html = "<html><body style='background:#1a1a1a;color:#666;" +
-                       "font-family:sans-serif;display:flex;align-items:center;" +
-                       "justify-content:center;height:100vh;margin:0;'>" +
-                       "<p>Connecting to Gnoll Overseer...</p></body></html>"
-            };
+            /* We no longer set an initial HtmlWebViewSource here to avoid rapid 
+             * double-navigation crashes (winrt::hresult_error) in WinUI 3 WebView2 
+             * when the final URL is set shortly after. The ProgressOverlay is 
+             * sufficient for the connecting UI. */
 
             UpdateNavigationButtons(true);
 #if GNH_MAUI && WINDOWS
@@ -201,15 +197,21 @@ namespace GnollHackX.Pages.Game
                             overseerUrl = _baseOverseerUrl +
                                           $"/api/auth/handoff?token={handoffToken}&sessionId={sessionId}";
 
-                            ProgressStatusLabel.Text = "Connected!";
-                            UploadProgressBar.Progress = 1.0;
+                            MainThread.BeginInvokeOnMainThread(() =>
+                            {
+                                ProgressStatusLabel.Text = "Connected!";
+                                UploadProgressBar.Progress = 1.0;
+                            });
                         }
                         else
                         {
                             string msg = "Overseer session failed: HTTP " + (int)response.StatusCode;
                             GHApp.WriteGHLog(msg);
-                            ProgressStatusLabel.Text = "Connection failed. Opening without game context.";
-                            UploadProgressBar.Progress = 1.0;
+                            MainThread.BeginInvokeOnMainThread(() =>
+                            {
+                                ProgressStatusLabel.Text = "Connection failed. Opening without game context.";
+                                UploadProgressBar.Progress = 1.0;
+                            });
                             await Task.Delay(2000);
                         }
                     }
@@ -218,21 +220,30 @@ namespace GnollHackX.Pages.Game
             catch (TaskCanceledException)
             {
                 GHApp.WriteGHLog("Overseer upload timed out after 10 seconds.");
-                ProgressStatusLabel.Text = "Connection timed out. Opening without game context.";
-                UploadProgressBar.Progress = 1.0;
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    ProgressStatusLabel.Text = "Connection timed out. Opening without game context.";
+                    UploadProgressBar.Progress = 1.0;
+                });
                 await Task.Delay(2000);
             }
             catch (Exception ex)
             {
                 GHApp.WriteGHLog("Overseer upload failed: " + ex.Message);
-                ProgressStatusLabel.Text = "Upload failed. Opening without game context.";
-                UploadProgressBar.Progress = 1.0;
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    ProgressStatusLabel.Text = "Upload failed. Opening without game context.";
+                    UploadProgressBar.Progress = 1.0;
+                });
                 await Task.Delay(2000);
             }
 
-            /* Hide overlay and navigate to the final URL */
-            ProgressOverlay.IsVisible = false;
-            DisplayWebView.Source = new UrlWebViewSource { Url = overseerUrl };
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                /* Hide overlay and navigate to the final URL */
+                ProgressOverlay.IsVisible = false;
+                DisplayWebView.Source = new UrlWebViewSource { Url = overseerUrl };
+            });
 
             /* Free the data references - they can be large */
             _snapshotHtml = null;
