@@ -2224,6 +2224,7 @@ namespace GnollHackX.Pages.MainScreen
             /* Enforce dependency: Game Actions requires Client Data Access */
             if (!e.Value)
             {
+                GHApp.OverseerEnableGameActions = false;
                 Preferences.Set(GHConstants.OverseerEnableGameActionsKey, false);
                 OverseerGameActionsSwitch.IsToggled = false;
                 OverseerGameActionsSwitch.IsEnabled = false;
