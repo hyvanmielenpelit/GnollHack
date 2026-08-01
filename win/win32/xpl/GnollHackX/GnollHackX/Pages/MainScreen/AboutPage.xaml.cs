@@ -180,9 +180,7 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             }
 
-            var overseerPage = new OverseerPage("Gnoll Overseer",
-                GHApp.OverseerAddress,
-                "", "", "");
+            var overseerPage = new OverseerPage("Gnoll Overseer", GHApp.OverseerAddress, "");
             await GHApp.PushModalPageAsync(overseerPage);
             AboutGrid.IsEnabled = true;
         }
