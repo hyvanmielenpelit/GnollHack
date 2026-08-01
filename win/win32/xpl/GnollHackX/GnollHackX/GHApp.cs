@@ -273,6 +273,7 @@ namespace GnollHackX
             OverseerEnableToolUse = Preferences.Get(GHConstants.OverseerEnableToolUseKey, GHConstants.OverseerEnableToolUseDefault);
             OverseerEnableClientTools = Preferences.Get(GHConstants.OverseerEnableClientToolsKey, GHConstants.OverseerEnableClientToolsDefault);
             OverseerEnableGameActions = Preferences.Get(GHConstants.OverseerEnableGameActionsKey, GHConstants.OverseerEnableGameActionsDefault);
+            OverseerConsentAccepted = Preferences.Get(GHConstants.OverseerConsentAcceptedKey, GHConstants.OverseerConsentAcceptedDefault);
 #if DEBUG
             OverseerUseLocalAddress = Preferences.Get("OverseerUseLocalAddress", false);
             LocalOverseerAddress =  Preferences.Get("LocalOverseerAddress", null);
@@ -3138,6 +3139,7 @@ namespace GnollHackX
         public static bool OverseerEnableToolUse { get; set; } = true;
         public static bool OverseerEnableClientTools { get; set; } = true;
         public static bool OverseerEnableGameActions { get; set; }
+        public static bool OverseerConsentAccepted { get; set; }
 #if DEBUG
         public static bool OverseerUseLocalAddress { get; set; }
         public static string LocalOverseerAddress { get; set; }        

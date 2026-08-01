@@ -180,6 +180,38 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             }
 
+            /* AI Data Processing Consent (Apple Guideline 5.1.2) */
+            if (!GHApp.OverseerConsentAccepted)
+            {
+                bool accepted = await ShowMessagePopupAsync(
+                    "AI Data Disclosure",
+                    "Gnoll Overseer uses artificial intelligence to assist you. "
+                    + "When you use Overseer, your chat messages, game data, "
+                    + "and device information are sent to our server and processed "
+                    + "by a third-party AI service."
+                    + Environment.NewLine + Environment.NewLine
+                    + "Your data is used solely to generate responses and is not "
+                    + "used for advertising or sold to third parties. "
+                    + "You can manage your data and delete chat sessions within Overseer."
+                    + Environment.NewLine + Environment.NewLine
+                    + "For full details, please review our Privacy Policy at:"
+                    + Environment.NewLine
+                    + GHConstants.GnollHackPrivacyPolicyPage
+                    + Environment.NewLine + Environment.NewLine
+                    + "Do you agree to proceed?",
+                    "I Agree",
+                    "Cancel");
+
+                if (!accepted)
+                {
+                    AboutGrid.IsEnabled = true;
+                    return;
+                }
+
+                GHApp.OverseerConsentAccepted = true;
+                Preferences.Set(GHConstants.OverseerConsentAcceptedKey, true);
+            }
+
             var overseerPage = new OverseerPage("Gnoll Overseer", GHApp.OverseerAddress, "");
             await GHApp.PushModalPageAsync(overseerPage);
             AboutGrid.IsEnabled = true;

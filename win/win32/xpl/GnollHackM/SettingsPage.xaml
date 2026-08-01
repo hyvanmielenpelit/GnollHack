@@ -1577,6 +1577,27 @@
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="OverseerGameActionsSwitch" HorizontalOptions="End" VerticalOptions="Center" IsEnabled="False" />
                             </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="Auto,*" HeightRequest="40" HorizontalOptions="Fill">
+                                <Label Grid.Column="0" Text="AI Data Consent"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <StackLayout Grid.Column="1" Spacing="6" Orientation="Horizontal" HeightRequest="40" HorizontalOptions="End">
+                                    <Label x:Name="OverseerConsentStatusLabel"
+                                        Text="Not Accepted"
+                                        FontFamily="Underwood" TextColor="Blue"
+                                        FontSize="14"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="End" />
+                                    <controls:CustomImageButton x:Name="OverseerConsentResetButton"
+                                        Text="Reset" Clicked="OverseerConsentResetButton_Clicked"
+                                        FontFamily="Diablo" FontSize="13" TextColor="White"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="100" HeightRequest="35"
+                                        HorizontalOptions="End" VerticalOptions="Center" />
+                                </StackLayout>
+                            </Grid>
                             <Label Text="System" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Developer Mode"

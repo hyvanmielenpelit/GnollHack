@@ -174,6 +174,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Tool Use", "When enabled (default), the Gnoll Overseer can look up GnollHack game information such as monster stats and item properties from authoritative sources." },
             { "Client Data Access", "When enabled (default), the Gnoll Overseer can request additional data from your game client, such as full message history. This data is sent to your AI provider for processing." },
             { "Game Actions", "When enabled, the Gnoll Overseer can suggest and perform in-game actions on your behalf. All actions require your confirmation. (Coming soon)" },
+            { "AI Data Consent", "Shows whether you have accepted the AI data processing disclosure. Press Reset to revoke your consent; the disclosure will appear again the next time you open Overseer." },
         };
 
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
@@ -1827,6 +1828,8 @@ namespace GnollHackX.Pages.MainScreen
             {
                 OverseerGameActionsLabel.TextColor = GHColors.Gray;
             }
+            /* AI consent state */
+            UpdateConsentLabel(GHApp.OverseerConsentAccepted);
 #if DEBUG
             OverseerLocalAddressGrid.IsVisible = true;
             OverseerLocalAddressEntryGrid.IsVisible = true;
@@ -2234,6 +2237,29 @@ namespace GnollHackX.Pages.MainScreen
             {
                 OverseerGameActionsSwitch.IsEnabled = true;
                 OverseerGameActionsLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            }
+        }
+
+        private void OverseerConsentResetButton_Clicked(object sender, EventArgs e)
+        {
+            GHApp.OverseerConsentAccepted = false;
+            Preferences.Set(GHConstants.OverseerConsentAcceptedKey, false);
+            UpdateConsentLabel(false);
+        }
+
+        private void UpdateConsentLabel(bool accepted)
+        {
+            if (accepted)
+            {
+                OverseerConsentStatusLabel.Text = "Accepted";
+                OverseerConsentResetButton.IsEnabled = true;
+                OverseerConsentResetButton.TextColor = GHColors.White;
+            }
+            else
+            {
+                OverseerConsentStatusLabel.Text = "Not Accepted";
+                OverseerConsentResetButton.IsEnabled = false;
+                OverseerConsentResetButton.TextColor = GHColors.Gray;
             }
         }
 

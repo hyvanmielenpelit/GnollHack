@@ -222,6 +222,7 @@ namespace GnollHackX.Controls
             }
 
             IsVisible = true;
+            MessagePopupScrollView.ScrollToAsync(0, 0, false);
             return _messagePopupTcs.Task;
 
         }
