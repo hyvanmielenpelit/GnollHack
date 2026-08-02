@@ -1212,10 +1212,10 @@ namespace GnollHackX.Pages.Game
                 });
 
             case "get_player_library":
-                return GetPlayerLibraryResult();
+                return GetPlayerLibraryResult(parameters);
 
             case "get_oracle_consultations":
-                return GetOracleConsultationsResult();
+                return GetOracleConsultationsResult(parameters);
 
             case "get_player_dumplogs":
                 return GetPlayerDumplogsResult(parameters);
@@ -1227,54 +1227,98 @@ namespace GnollHackX.Pages.Game
         }
 
         /// <summary>
-        /// Returns the player's discovered manuals and catalogues from the game vault
-        /// as a JSON array of objects with "name" and "text" fields.
+        /// Returns the player's discovered manuals and catalogues from the game vault.
+        /// List mode (no item_id): returns just names and IDs.
+        /// Read mode (item_id specified): returns full text of that specific manual.
         /// </summary>
-        private string GetPlayerLibraryResult()
+        private string GetPlayerLibraryResult(JObject parameters)
         {
             var manuals = new Dictionary<int, StoredManual>();
             GHApp.PopulateManuals(manuals);
 
-            var result = new List<object>();
-            foreach (var kvp in manuals)
-            {
-                result.Add(new
-                {
-                    name = kvp.Value.Name ?? "",
-                    text = kvp.Value.Text ?? ""
-                });
-            }
-
-            if (result.Count == 0)
+            if (manuals.Count == 0)
                 return "[]  /* No manuals or catalogues found in the player's library. */";
 
-            return JsonConvert.SerializeObject(result);
+            string itemIdStr = parameters?["item_id"]?.ToString();
+            if (string.IsNullOrEmpty(itemIdStr))
+            {
+                /* List mode — return just names and IDs */
+                var listing = new List<object>();
+                foreach (var kvp in manuals)
+                {
+                    listing.Add(new
+                    {
+                        id = kvp.Key,
+                        name = kvp.Value.Name ?? ""
+                    });
+                }
+                return JsonConvert.SerializeObject(listing);
+            }
+            else
+            {
+                /* Read mode — return full text of a specific manual */
+                if (!int.TryParse(itemIdStr, out int itemId))
+                    throw new ArgumentException("item_id must be an integer");
+
+                if (!manuals.TryGetValue(itemId, out StoredManual manual))
+                    throw new ArgumentException(
+                        "No manual found with item_id " + itemId);
+
+                return JsonConvert.SerializeObject(new
+                {
+                    id = itemId,
+                    name = manual.Name ?? "",
+                    text = manual.Text ?? ""
+                });
+            }
         }
 
         /// <summary>
-        /// Returns the Oracle of Delphi major consultations the player has received
-        /// as a JSON array of objects with "name" and "text" fields.
+        /// Returns the Oracle of Delphi major consultations the player has received.
+        /// List mode (no item_id): returns just names and IDs.
+        /// Read mode (item_id specified): returns full text of that consultation.
         /// </summary>
-        private string GetOracleConsultationsResult()
+        private string GetOracleConsultationsResult(JObject parameters)
         {
             var consultations = new Dictionary<int, StoredManual>();
             GHApp.PopulateHints(consultations,
                 GHConstants.OracleMajorConsultationFilePrefix);
 
-            var result = new List<object>();
-            foreach (var kvp in consultations)
-            {
-                result.Add(new
-                {
-                    name = kvp.Value.Name ?? "",
-                    text = kvp.Value.Text ?? ""
-                });
-            }
-
-            if (result.Count == 0)
+            if (consultations.Count == 0)
                 return "[]  /* No Oracle consultations received yet. */";
 
-            return JsonConvert.SerializeObject(result);
+            string itemIdStr = parameters?["item_id"]?.ToString();
+            if (string.IsNullOrEmpty(itemIdStr))
+            {
+                /* List mode — return just names and IDs */
+                var listing = new List<object>();
+                foreach (var kvp in consultations)
+                {
+                    listing.Add(new
+                    {
+                        id = kvp.Key,
+                        name = kvp.Value.Name ?? ""
+                    });
+                }
+                return JsonConvert.SerializeObject(listing);
+            }
+            else
+            {
+                /* Read mode — return full text of a specific consultation */
+                if (!int.TryParse(itemIdStr, out int itemId))
+                    throw new ArgumentException("item_id must be an integer");
+
+                if (!consultations.TryGetValue(itemId, out StoredManual consultation))
+                    throw new ArgumentException(
+                        "No consultation found with item_id " + itemId);
+
+                return JsonConvert.SerializeObject(new
+                {
+                    id = itemId,
+                    name = consultation.Name ?? "",
+                    text = consultation.Text ?? ""
+                });
+            }
         }
 
         private const int MaxDumplogChars = 4000;
