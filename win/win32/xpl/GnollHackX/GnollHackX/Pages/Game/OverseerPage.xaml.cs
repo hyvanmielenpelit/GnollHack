@@ -1068,7 +1068,10 @@ namespace GnollHackX.Pages.Game
             "get_full_message_history",
             "get_directory_listing",
             "refresh_snapshot",
-            "get_save_info"
+            "get_save_info",
+            "get_player_library",
+            "get_oracle_consultations",
+            "get_player_dumplogs"
         };
 
         /// <summary>
@@ -1208,9 +1211,151 @@ namespace GnollHackX.Pages.Game
                         "Save file not found or invalid");
                 });
 
+            case "get_player_library":
+                return GetPlayerLibraryResult();
+
+            case "get_oracle_consultations":
+                return GetOracleConsultationsResult();
+
+            case "get_player_dumplogs":
+                return GetPlayerDumplogsResult(parameters);
+
             default:
                 throw new NotSupportedException(
                     "Tool not implemented: " + toolName);
+            }
+        }
+
+        /// <summary>
+        /// Returns the player's discovered manuals and catalogues from the game vault
+        /// as a JSON array of objects with "name" and "text" fields.
+        /// </summary>
+        private string GetPlayerLibraryResult()
+        {
+            var manuals = new Dictionary<int, StoredManual>();
+            GHApp.PopulateManuals(manuals);
+
+            var result = new List<object>();
+            foreach (var kvp in manuals)
+            {
+                result.Add(new
+                {
+                    name = kvp.Value.Name ?? "",
+                    text = kvp.Value.Text ?? ""
+                });
+            }
+
+            if (result.Count == 0)
+                return "[]  /* No manuals or catalogues found in the player's library. */";
+
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
+        /// Returns the Oracle of Delphi major consultations the player has received
+        /// as a JSON array of objects with "name" and "text" fields.
+        /// </summary>
+        private string GetOracleConsultationsResult()
+        {
+            var consultations = new Dictionary<int, StoredManual>();
+            GHApp.PopulateHints(consultations,
+                GHConstants.OracleMajorConsultationFilePrefix);
+
+            var result = new List<object>();
+            foreach (var kvp in consultations)
+            {
+                result.Add(new
+                {
+                    name = kvp.Value.Name ?? "",
+                    text = kvp.Value.Text ?? ""
+                });
+            }
+
+            if (result.Count == 0)
+                return "[]  /* No Oracle consultations received yet. */";
+
+            return JsonConvert.SerializeObject(result);
+        }
+
+        private const int MaxDumplogChars = 4000;
+
+        /// <summary>
+        /// Returns past game information from the player's device.
+        /// List mode (no dumplog_index): returns xlogfile summaries as JSON array.
+        /// Read mode (dumplog_index specified): returns full dumplog text for that game.
+        /// </summary>
+        private string GetPlayerDumplogsResult(JObject parameters)
+        {
+            string indexStr = parameters?["dumplog_index"]?.ToString();
+            var entries = LoadDumplogEntries();
+
+            if (string.IsNullOrEmpty(indexStr))
+            {
+                /* List mode — return lightweight summaries from xlogfile */
+                var summaries = new List<object>();
+                int idx = 0;
+                foreach (var entry in entries)
+                {
+                    summaries.Add(new
+                    {
+                        index = idx,
+                        display_name = entry.DisplayName ?? "",
+                        outcome = entry.Outcome ?? "",
+                        score = entry.Score,
+                        date = entry.DeathDate ?? "",
+                        has_dumplog = !string.IsNullOrEmpty(entry.FilePath)
+                    });
+                    idx++;
+                }
+
+                if (summaries.Count == 0)
+                    return "[]  /* No past games found on this device. */";
+
+                return JsonConvert.SerializeObject(summaries);
+            }
+            else
+            {
+                /* Read mode — return full dumplog text for a specific game */
+                if (!int.TryParse(indexStr, out int dumplogIndex) || dumplogIndex < 0)
+                    throw new ArgumentException(
+                        "dumplog_index must be a non-negative integer");
+
+                if (dumplogIndex >= entries.Count)
+                    throw new ArgumentException(
+                        "dumplog_index " + dumplogIndex
+                        + " is out of range (only " + entries.Count
+                        + " past games found)");
+
+                var entry = entries[dumplogIndex];
+                if (string.IsNullOrEmpty(entry.FilePath)
+                    || !File.Exists(entry.FilePath))
+                {
+                    return "No dumplog file found for game: "
+                        + entry.DisplayName;
+                }
+
+                /* Prefer .txt for LLM readability; HTML dumps would need stripping */
+                string txtPath = entry.FilePath;
+
+                /* If the resolved path is an HTML file, try to find the .txt version */
+                if (txtPath.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+                {
+                    string possibleTxt = Path.ChangeExtension(txtPath, ".txt");
+                    if (File.Exists(possibleTxt))
+                        txtPath = possibleTxt;
+                }
+
+                string content = File.ReadAllText(txtPath);
+                if (content.Length > MaxDumplogChars)
+                {
+                    content = content.Substring(0, MaxDumplogChars)
+                        + "\n\n[DUMPLOG TRUNCATED at " + MaxDumplogChars
+                        + " characters. Full file is "
+                        + content.Length + " characters.]";
+                }
+
+                return "=== Dumplog for: " + entry.DisplayName
+                    + " ===\n" + content;
             }
         }
 
