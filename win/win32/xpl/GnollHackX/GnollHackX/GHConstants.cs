@@ -362,7 +362,11 @@ namespace GnollHackX
 #else
         public const bool DefaultSimpleCmdLayout = true;
         public const int FadeFromBlackDurationAtStart = 700;
-        public const double FadeFromBlackAtStartExtraDelaySecs = 0.30;
+#if DEBUG
+        public const double FadeFromBlackAtStartExtraDelaySecs = 0.75;
+#else
+        public const double FadeFromBlackAtStartExtraDelaySecs = 0.40;
+#endif
 #endif
         public const bool DefaultRuntimeEffects = false;
         public const bool DefaultCharacterClickAction = false;
