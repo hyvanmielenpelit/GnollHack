@@ -150,6 +150,7 @@ namespace GnollHackX.Pages.Game
                             sessionTitle = string.IsNullOrWhiteSpace(characterName) ? "GnollHack Gameplay" : $"GnollHack Gameplay ({characterName})";
                         }
                         content.Add(new StringContent(sessionTitle), "Title");
+                        content.Add(new StringContent("true"), "IsGnollHackSession");
 
                         var envData = GHApp.GetEnvironmentData();
                         envData.BoolData["allowSpoilers"] = GHApp.OverseerAllowSpoilers;
