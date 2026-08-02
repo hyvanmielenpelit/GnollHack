@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using GnollHackX;
 
@@ -20,6 +21,7 @@ namespace GnollHackX.Controls
     {
         private TaskCompletionSource<bool> _messagePopupTcs;
         private bool _acceptEnterSpaceForOkCancel = false;
+        private CancellationTokenSource _popupTimeoutCts;
 
         public MessagePopupView()
         {
@@ -43,13 +45,12 @@ namespace GnollHackX.Controls
 #if GNH_MAUI
         private void OnLoaded(object sender, EventArgs e)
         {
+            GHApp.MaybeWriteGHLog("MessagePopupView.OnLoaded");
             try
             {
                 if (_parentPage == null)
                 {
                     _parentPage = GetParentPage(this);
-                    if (_parentPage != null)
-                        _parentPage.Disappearing += OnPageDisappearing;
                 }
             }
             catch { }
@@ -57,12 +58,12 @@ namespace GnollHackX.Controls
 
         private void OnUnloaded(object sender, EventArgs e)
         {
+            GHApp.MaybeWriteGHLog("MessagePopupView.OnUnloaded");
             try
             {
                 if (_parentPage != null)
                 {
-                    CleanPopup();
-                    _parentPage.Disappearing -= OnPageDisappearing;
+                    //CleanPopup();
                     _parentPage = null;
                 }
             }
@@ -75,12 +76,14 @@ namespace GnollHackX.Controls
 
             if (Parent != null)
             {
+                GHApp.MaybeWriteGHLog("MessagePopupView.OnParentSet: True");
                 _parentPage = GetParentPage(this);
                 if (_parentPage != null)
                     _parentPage.Disappearing += OnPageDisappearing;
             }
             else
             {
+                GHApp.MaybeWriteGHLog("MessagePopupView.OnParentSet: False");
                 if (_parentPage != null)
                 {
                     CleanPopup();
@@ -88,6 +91,12 @@ namespace GnollHackX.Controls
                     _parentPage = null;
                 }
             }
+        }
+
+        private void OnPageDisappearing(object sender, EventArgs e)
+        {
+            GHApp.MaybeWriteGHLog("MessagePopupView.OnPageDisappearing");
+            CleanPopup();
         }
 #endif
 
@@ -106,28 +115,26 @@ namespace GnollHackX.Controls
             return null;
         }
 
-        public bool CancelOnDisappearing { get; set; } = true;
-
-        private void OnPageDisappearing(object sender, EventArgs e)
-        {
-            if (CancelOnDisappearing)
-                CleanPopup();
-        }
-
         private void DismissPopup()
         {
+            GHApp.MaybeWriteGHLog("MessagePopupView.DismissPopup");
+            CancelTimeout();
             IsVisible = false;
             _messagePopupTcs?.TrySetResult(false);
         }
 
         private void AcceptPopup()
         {
+            GHApp.MaybeWriteGHLog("MessagePopupView.AcceptPopup");
+            CancelTimeout();
             IsVisible = false;
             _messagePopupTcs?.TrySetResult(true);
         }
 
         private void CleanPopup()
         {
+            GHApp.MaybeWriteGHLog("MessagePopupView.CleanPopup");
+            CancelTimeout();
             try
             {
                 _messagePopupTcs?.TrySetResult(false);
@@ -137,6 +144,27 @@ namespace GnollHackX.Controls
             {
                 _messagePopupTcs = null;
             }
+        }
+
+        private void CancelTimeout()
+        {
+            _popupTimeoutCts?.Dispose();
+            _popupTimeoutCts = null;
+        }
+
+        private void StartTimeout()
+        {
+            CancelTimeout();
+            _popupTimeoutCts = new CancellationTokenSource();
+            _popupTimeoutCts.CancelAfter(TimeSpan.FromMinutes(5));
+            _popupTimeoutCts.Token.Register(() =>
+            {
+#if GNH_MAUI
+                MainThread.BeginInvokeOnMainThread(() => DismissPopup());
+#else
+                Device.BeginInvokeOnMainThread(() => DismissPopup());
+#endif
+            });
         }
 
         /// <summary>
@@ -167,8 +195,10 @@ namespace GnollHackX.Controls
             Color? titleColor = null)
 #endif
         {
+            GHApp.MaybeWriteGHLog("MessagePopupView.ShowNonBlockingPopup");
             _messagePopupTcs?.TrySetResult(false);
             _messagePopupTcs = null;
+            CancelTimeout();
 
             MessagePopupTitleLabel.Text = title;
             MessagePopupTitleLabel.TextColor = titleColor ?? GHColors.TitleGoldColor;
@@ -206,9 +236,11 @@ namespace GnollHackX.Controls
         {
             if (!MessagePopupOkButton.IsVisible)
                 HideNonBlockingPopup();
+            GHApp.MaybeWriteGHLog("MessagePopupView.ShowMessagePopupAsync");
             _acceptEnterSpaceForOkCancel = acceptEnterSpaceForOkCancel;
             _messagePopupTcs?.TrySetResult(false);
             _messagePopupTcs = new TaskCompletionSource<bool>();
+            StartTimeout();
 
             MessagePopupTitleLabel.Text = title;
             MessagePopupTitleLabel.TextColor = titleColor ?? GHColors.TitleGoldColor;
@@ -248,8 +280,10 @@ namespace GnollHackX.Controls
             if (!MessagePopupOkButton.IsVisible)
                 HideNonBlockingPopup();
             _acceptEnterSpaceForOkCancel = acceptEnterSpaceForOkCancel;
+            GHApp.MaybeWriteGHLog("MessagePopupView.ShowMessagePopupAsync (FormattedString)");
             _messagePopupTcs?.TrySetResult(false);
             _messagePopupTcs = new TaskCompletionSource<bool>();
+            StartTimeout();
 
             MessagePopupTitleLabel.Text = title;
             MessagePopupTitleLabel.TextColor = titleColor ?? GHColors.TitleGoldColor;

@@ -21,6 +21,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using GnollHackX.Pages.Game;
+using GnollHackX.Controls;
 using GnollHackX.Pages.MainScreen;
 #endif
 using Newtonsoft.Json;
@@ -9694,16 +9695,16 @@ namespace GnollHackX
         private static int _isSystemBrowserOpen = 0;
         public static bool IsSystemBrowserOpen { get { return Interlocked.CompareExchange(ref _isSystemBrowserOpen, 0, 0) != 0; } set { Interlocked.Exchange(ref _isSystemBrowserOpen, value ? 1 : 0); } }
 
-        public static async Task OpenBrowser(ContentPage page, string title, Uri uri, bool forceExternalBrowser = false)
+        public static async Task OpenBrowser(ContentPage page, string title, Uri uri, int forceBrowser = 0)
         {
             try
             {
-                if (IsWindows && !forceExternalBrowser)
+                if (forceBrowser == 2 || (IsWindows && forceBrowser == 0))
                 {
                     var wikiPage = new WikiPage(title, uri.ToString());
                     await Navigation.PushModalAsync(wikiPage);
                 }
-                else
+                else /* forceBrowser == 1 || (!IsWindows || forceBrowser != 0) */
                 {
                     IsSystemBrowserOpen = true;
                     await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
@@ -9714,6 +9715,53 @@ namespace GnollHackX
             {
                 await DisplayMessageBox(page, "Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
             }
+        }
+
+        public static async Task<bool> QueryOverseerPrivacyConsent(ContentPage contentPage, MessagePopupView messagePopup)
+        {
+            var formattedConsentMessage = new FormattedString();
+            formattedConsentMessage.Spans.Add(new Span
+            {
+                Text = "Gnoll Overseer uses artificial intelligence to assist you. "
+                + "When you use Overseer, your chat messages, game data, "
+                + "and device information are sent to our server and processed "
+                + "by a third-party AI service."
+                + Environment.NewLine + Environment.NewLine
+                + "Your data is used solely to generate responses and is not "
+                + "used for advertising or sold to third parties. "
+                + "You can manage your data and delete chat sessions within Overseer."
+                + Environment.NewLine + Environment.NewLine
+                + "For full details, please review our Privacy Policy at:"
+                + Environment.NewLine,
+                FontFamily = "Underwood"
+            });
+
+            var linkSpan = new Span
+            {
+                Text = GHConstants.GnollHackPrivacyPolicyPage,
+                TextColor = GHColors.LightBlue,
+                TextDecorations = TextDecorations.Underline,
+                FontFamily = "Underwood"
+            };
+
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += async (s, e) =>
+            {
+                await OpenBrowser(contentPage, "Privacy Policy", new Uri(GHConstants.GnollHackPrivacyPolicyPage));
+            };
+            linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
+            formattedConsentMessage.Spans.Add(linkSpan);
+
+            formattedConsentMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine + "Do you agree to proceed?", FontFamily = "Underwood" });
+
+            bool accepted = await messagePopup.ShowMessagePopupAsync(
+                "AI Data Disclosure",
+                formattedConsentMessage,
+                linkSpan,
+                "I Agree",
+                "Cancel");
+
+            return accepted;
         }
 
         public static bool IsPageOnTopOfModalNavigationStack(Page page)

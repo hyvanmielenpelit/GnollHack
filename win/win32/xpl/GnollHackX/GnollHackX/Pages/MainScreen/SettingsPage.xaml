@@ -1578,14 +1578,14 @@
                                 <Switch Grid.Column="1" x:Name="OverseerGameActionsSwitch" HorizontalOptions="End" VerticalOptions="Center" IsEnabled="False" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="Auto,*" HeightRequest="40" HorizontalOptions="Fill">
-                                <Label Grid.Column="0" Text="AI Data Consent"
+                                <Label Grid.Column="0" Text="Data Consent"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
                                 <StackLayout Grid.Column="1" Spacing="6" Orientation="Horizontal" HeightRequest="40" HorizontalOptions="End">
                                     <Label x:Name="OverseerConsentStatusLabel"
-                                        Text="Not Accepted"
+                                        Text="None"
                                         FontFamily="Underwood" TextColor="Blue"
                                         FontSize="14"
                                         VerticalOptions="Center" 

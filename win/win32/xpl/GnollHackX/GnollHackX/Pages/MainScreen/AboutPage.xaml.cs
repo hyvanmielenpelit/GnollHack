@@ -183,43 +183,43 @@ namespace GnollHackX.Pages.MainScreen
             /* AI Data Processing Consent (Apple Guideline 5.1.2) */
             if (!GHApp.OverseerConsentAccepted)
             {
-                var formattedConsentMessage = new FormattedString();
-                formattedConsentMessage.Spans.Add(new Span { Text = "Gnoll Overseer uses artificial intelligence to assist you. "
-                    + "When you use Overseer, your chat messages, game data, "
-                    + "and device information are sent to our server and processed "
-                    + "by a third-party AI service."
-                    + Environment.NewLine + Environment.NewLine
-                    + "Your data is used solely to generate responses and is not "
-                    + "used for advertising or sold to third parties. "
-                    + "You can manage your data and delete chat sessions within Overseer."
-                    + Environment.NewLine + Environment.NewLine
-                    + "For full details, please review our Privacy Policy at:"
-                    + Environment.NewLine });
+                bool accepted = await GHApp.QueryOverseerPrivacyConsent(this, MessagePopup);
+                //var formattedConsentMessage = new FormattedString();
+                //formattedConsentMessage.Spans.Add(new Span { Text = "Gnoll Overseer uses artificial intelligence to assist you. "
+                //    + "When you use Overseer, your chat messages, game data, "
+                //    + "and device information are sent to our server and processed "
+                //    + "by a third-party AI service."
+                //    + Environment.NewLine + Environment.NewLine
+                //    + "Your data is used solely to generate responses and is not "
+                //    + "used for advertising or sold to third parties. "
+                //    + "You can manage your data and delete chat sessions within Overseer."
+                //    + Environment.NewLine + Environment.NewLine
+                //    + "For full details, please review our Privacy Policy at:"
+                //    + Environment.NewLine, FontFamily = "Underwood" });
                 
-                var linkSpan = new Span { 
-                    Text = GHConstants.GnollHackPrivacyPolicyPage, 
-                    TextColor = GHColors.LightBlue, 
-                    TextDecorations = TextDecorations.Underline 
-                };
+                //var linkSpan = new Span { 
+                //    Text = GHConstants.GnollHackPrivacyPolicyPage, 
+                //    TextColor = GHColors.LightBlue, 
+                //    TextDecorations = TextDecorations.Underline,
+                //    FontFamily = "Underwood"
+                //};
                 
-                var tapGestureRecognizer = new TapGestureRecognizer();
-                tapGestureRecognizer.Tapped += async (s, e) =>
-                {
-                    MessagePopup.CancelOnDisappearing = false;
-                    await GHApp.OpenBrowser(this, "Privacy Policy", new Uri(GHConstants.GnollHackPrivacyPolicyPage));
-                    MessagePopup.CancelOnDisappearing = true;
-                };
-                linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
-                formattedConsentMessage.Spans.Add(linkSpan);
+                //var tapGestureRecognizer = new TapGestureRecognizer();
+                //tapGestureRecognizer.Tapped += async (s, e) =>
+                //{
+                //    await GHApp.OpenBrowser(this, "Privacy Policy", new Uri(GHConstants.GnollHackPrivacyPolicyPage));
+                //};
+                //linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
+                //formattedConsentMessage.Spans.Add(linkSpan);
 
-                formattedConsentMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine + "Do you agree to proceed?" });
+                //formattedConsentMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine + "Do you agree to proceed?", FontFamily = "Underwood" });
 
-                bool accepted = await MessagePopup.ShowMessagePopupAsync(
-                    "AI Data Disclosure",
-                    formattedConsentMessage,
-                    linkSpan,
-                    "I Agree",
-                    "Cancel");
+                //bool accepted = await MessagePopup.ShowMessagePopupAsync(
+                //    "AI Data Disclosure",
+                //    formattedConsentMessage,
+                //    linkSpan,
+                //    "I Agree",
+                //    "Cancel");
 
                 if (!accepted)
                 {
