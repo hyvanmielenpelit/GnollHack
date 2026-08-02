@@ -2517,7 +2517,7 @@ namespace GnollHackX
             switch (_eventStyle)
             {
                 case 1:
-                    await GHApp.OpenBrowser(this, "Give Us a Star on GitHub", new Uri(GHConstants.GnollHackGitHubStarPage), 1);
+                    await GHApp.OpenBrowser(this, "Give Us a Star on GitHub", new Uri(GHConstants.GnollHackGitHubStarPage), ForceBrowserOptions.SystemBrowser);
                     break;
                 default:
                     break;

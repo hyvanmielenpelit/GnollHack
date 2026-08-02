@@ -1934,4 +1934,11 @@ namespace GnollHackX
         A,
         Z = A + 25,
     }
+
+    public enum ForceBrowserOptions
+    {
+        None = 0,
+        SystemBrowser = 1,
+        WebViewBrowser = 2
+    }
 }

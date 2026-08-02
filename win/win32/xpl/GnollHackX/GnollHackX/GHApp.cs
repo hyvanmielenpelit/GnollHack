@@ -9695,16 +9695,16 @@ namespace GnollHackX
         private static int _isSystemBrowserOpen = 0;
         public static bool IsSystemBrowserOpen { get { return Interlocked.CompareExchange(ref _isSystemBrowserOpen, 0, 0) != 0; } set { Interlocked.Exchange(ref _isSystemBrowserOpen, value ? 1 : 0); } }
 
-        public static async Task OpenBrowser(ContentPage page, string title, Uri uri, int forceBrowser = 0)
+        public static async Task OpenBrowser(ContentPage page, string title, Uri uri, ForceBrowserOptions forceBrowser = ForceBrowserOptions.None)
         {
             try
             {
-                if (forceBrowser == 2 || (IsWindows && forceBrowser == 0))
+                if (forceBrowser == ForceBrowserOptions.WebViewBrowser || (IsWindows && forceBrowser == ForceBrowserOptions.None))
                 {
                     var wikiPage = new WikiPage(title, uri.ToString());
                     await Navigation.PushModalAsync(wikiPage);
                 }
-                else /* forceBrowser == 1 || (!IsWindows || forceBrowser != 0) */
+                else /* forceBrowser == ForceBrowserOptions.SystemBrowser || (!IsWindows || forceBrowser != ForceBrowserOptions.None) */
                 {
                     IsSystemBrowserOpen = true;
                     await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
