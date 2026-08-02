@@ -1429,7 +1429,7 @@ const struct materialcomponentlist matlists[] =
     },
 
     { SPE_SUMMON_PHASE_SPIDER,
-        "3 threads of spider silk, mihtril ore",
+        "3 threads of spider silk, mithril ore",
         STRANGE_OBJECT,
         1,
         {
