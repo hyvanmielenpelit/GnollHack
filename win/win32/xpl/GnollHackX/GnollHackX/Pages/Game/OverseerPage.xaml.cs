@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -1071,6 +1072,7 @@ namespace GnollHackX.Pages.Game
             "get_save_info",
             "get_player_library",
             "get_oracle_consultations",
+            "get_player_xlog",
             "get_player_dumplogs"
         };
 
@@ -1217,6 +1219,9 @@ namespace GnollHackX.Pages.Game
             case "get_oracle_consultations":
                 return GetOracleConsultationsResult(parameters);
 
+            case "get_player_xlog":
+                return GetPlayerXlogResult(parameters);
+
             case "get_player_dumplogs":
                 return GetPlayerDumplogsResult(parameters);
 
@@ -1322,74 +1327,252 @@ namespace GnollHackX.Pages.Game
         }
 
         private const int MaxDumplogChars = 4000;
+        private const int DefaultXlogLimit = 50;
 
         /// <summary>
-        /// Returns past game information from the player's device.
-        /// List mode (no dumplog_index): returns xlogfile summaries as JSON array.
-        /// Read mode (dumplog_index specified): returns full dumplog text for that game.
+        /// Returns entries from the player's local xlogfile with rich metadata.
+        /// Supports pagination via limit/offset parameters. Newest entries first.
+        /// </summary>
+        private string GetPlayerXlogResult(JObject parameters)
+        {
+            string xlogPath = Path.Combine(GHApp.GHPath, "xlogfile");
+            string dumplogDir = Path.Combine(GHApp.GHPath,
+                GHConstants.DumplogDirectory);
+
+            if (!File.Exists(xlogPath))
+                return "[]  /* No xlogfile found on this device. */";
+
+            int limit = DefaultXlogLimit;
+            int offset = 0;
+            string limitStr = parameters?["limit"]?.ToString();
+            string offsetStr = parameters?["offset"]?.ToString();
+            if (!string.IsNullOrEmpty(limitStr))
+            {
+                if (int.TryParse(limitStr, out int parsedLimit)
+                    && parsedLimit > 0)
+                    limit = parsedLimit;
+            }
+            if (!string.IsNullOrEmpty(offsetStr))
+            {
+                if (int.TryParse(offsetStr, out int parsedOffset)
+                    && parsedOffset >= 0)
+                    offset = parsedOffset;
+            }
+
+            string[] allLines;
+            try
+            {
+                allLines = File.ReadAllLines(xlogPath);
+            }
+            catch (Exception ex)
+            {
+                return "Error reading xlogfile: " + ex.Message;
+            }
+
+            /* Filter blanks, reverse so newest is first */
+            var validLines = allLines
+                .Where(l => !string.IsNullOrWhiteSpace(l))
+                .Reverse()
+                .ToArray();
+
+            int totalCount = validLines.Length;
+            var page = validLines.Skip(offset).Take(limit).ToArray();
+
+            bool dirExists = Directory.Exists(dumplogDir);
+            var result = new List<object>();
+            foreach (string line in page)
+            {
+                var tsi = new GHTopScoreItem(line);
+
+                string dumplogFilename = null;
+                bool hasDumplog = false;
+                if (dirExists)
+                {
+                    string txtFile = Path.Combine(dumplogDir,
+                        tsi.GetDumplogFileName());
+                    string htmlFile = Path.Combine(dumplogDir,
+                        tsi.GetHTMLDumplogFileName());
+                    if (File.Exists(txtFile))
+                    {
+                        dumplogFilename = tsi.GetDumplogFileName();
+                        hasDumplog = true;
+                    }
+                    else if (File.Exists(htmlFile))
+                    {
+                        dumplogFilename = tsi.GetHTMLDumplogFileName();
+                        hasDumplog = true;
+                    }
+                }
+
+                result.Add(new
+                {
+                    name = tsi.Name ?? "",
+                    role = tsi.Role ?? "",
+                    race = tsi.Race ?? "",
+                    gender = tsi.Gender ?? "",
+                    alignment = tsi.Alignment ?? "",
+                    xp_level = tsi.XPLevel,
+                    hp = tsi.HP,
+                    hp_max = tsi.HPMax,
+                    mode = tsi.Mode ?? "",
+                    turns = tsi.Turns,
+                    score = tsi.Score,
+                    outcome = tsi.Outcome ?? "",
+                    death_date = tsi.DeathDateString,
+                    real_time = tsi.RealTimeString,
+                    start_time = tsi.StartTime,
+                    has_dumplog = hasDumplog,
+                    dumplog_filename = dumplogFilename
+                });
+            }
+
+            string json = JsonConvert.SerializeObject(result);
+            int remaining = totalCount - offset - page.Length;
+            if (remaining > 0)
+                json += "  /* " + remaining
+                    + " more older entries available. */";
+
+            return json;
+        }
+
+        /// <summary>
+        /// Lists and reads dumplog files that actually exist on disk.
+        /// List mode (no filename): scans dumplog directory, deduplicates
+        /// .txt/.html pairs, matches to xlog entries.
+        /// Read mode (filename specified): reads that specific dumplog file.
         /// </summary>
         private string GetPlayerDumplogsResult(JObject parameters)
         {
-            string indexStr = parameters?["dumplog_index"]?.ToString();
-            var entries = LoadDumplogEntries();
+            string dumplogDir = Path.Combine(GHApp.GHPath,
+                GHConstants.DumplogDirectory);
+            string filenameParam = parameters?["filename"]?.ToString();
 
-            if (string.IsNullOrEmpty(indexStr))
+            if (string.IsNullOrEmpty(filenameParam))
             {
-                /* List mode — return lightweight summaries from xlogfile */
-                var summaries = new List<object>();
-                int idx = 0;
-                foreach (var entry in entries)
-                {
-                    summaries.Add(new
+                /* ======== List mode ======== */
+                if (!Directory.Exists(dumplogDir))
+                    return "[]  /* No dumplog directory found. */";
+
+                /* Gather all dumplog files */
+                var allFiles = Directory.GetFiles(dumplogDir)
+                    .Where(f =>
                     {
-                        index = idx,
-                        display_name = entry.DisplayName ?? "",
-                        outcome = entry.Outcome ?? "",
-                        score = entry.Score,
-                        date = entry.DeathDate ?? "",
-                        has_dumplog = !string.IsNullOrEmpty(entry.FilePath)
-                    });
-                    idx++;
+                        string ext = Path.GetExtension(f).ToLowerInvariant();
+                        return ext == ".txt" || ext == ".html";
+                    })
+                    .ToArray();
+
+                if (allFiles.Length == 0)
+                    return "[]  /* No dumplog files found on this device. */";
+
+                /* Group by base name (without extension) to deduplicate
+                   .txt/.html pairs into a single entry per game */
+                var groups = allFiles
+                    .GroupBy(f => Path.GetFileNameWithoutExtension(f))
+                    .Select(g =>
+                    {
+                        string txtFile = g.FirstOrDefault(
+                            f => Path.GetExtension(f)
+                                .Equals(".txt",
+                                    StringComparison.OrdinalIgnoreCase));
+                        string htmlFile = g.FirstOrDefault(
+                            f => Path.GetExtension(f)
+                                .Equals(".html",
+                                    StringComparison.OrdinalIgnoreCase));
+                        string format = (txtFile != null && htmlFile != null)
+                            ? "both"
+                            : (txtFile != null ? "txt" : "html");
+                        /* Prefer txt for the primary filename */
+                        string primaryFile = txtFile ?? htmlFile;
+                        return new
+                        {
+                            PrimaryFile = primaryFile,
+                            Filename = Path.GetFileName(primaryFile),
+                            Format = format,
+                            LastWrite = File.GetLastWriteTimeUtc(
+                                primaryFile)
+                        };
+                    })
+                    .OrderByDescending(x => x.LastWrite)
+                    .Take(50)
+                    .ToArray();
+
+                /* Build reverse lookup from xlog entries */
+                var xlogLookup =
+                    new Dictionary<string, GHTopScoreItem>();
+                string xlogPath = Path.Combine(GHApp.GHPath, "xlogfile");
+                if (File.Exists(xlogPath))
+                {
+                    try
+                    {
+                        string[] lines = File.ReadAllLines(xlogPath);
+                        foreach (string line in lines)
+                        {
+                            if (string.IsNullOrWhiteSpace(line))
+                                continue;
+                            var tsi = new GHTopScoreItem(line);
+                            string txtKey = tsi.GetDumplogFileName();
+                            string htmlKey =
+                                tsi.GetHTMLDumplogFileName();
+                            if (!xlogLookup.ContainsKey(txtKey))
+                                xlogLookup[txtKey] = tsi;
+                            if (!xlogLookup.ContainsKey(htmlKey))
+                                xlogLookup[htmlKey] = tsi;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        /* xlog parse errors are non-fatal */
+                    }
                 }
 
-                if (summaries.Count == 0)
-                    return "[]  /* No past games found on this device. */";
+                var listing = new List<object>();
+                foreach (var grp in groups)
+                {
+                    GHTopScoreItem matched = null;
+                    xlogLookup.TryGetValue(grp.Filename, out matched);
 
-                return JsonConvert.SerializeObject(summaries);
+                    listing.Add(new
+                    {
+                        filename = grp.Filename,
+                        format = grp.Format,
+                        display_name = matched != null
+                            ? (matched.Name + " \u2014 "
+                                + matched.CharacterString)
+                            : (string)null,
+                        outcome = matched?.Outcome,
+                        score = matched != null
+                            ? (int?)matched.Score : null,
+                        file_size = new FileInfo(
+                            grp.PrimaryFile).Length,
+                        is_orphaned = matched == null
+                    });
+                }
+
+                return JsonConvert.SerializeObject(listing);
             }
             else
             {
-                /* Read mode — return full dumplog text for a specific game */
-                if (!int.TryParse(indexStr, out int dumplogIndex) || dumplogIndex < 0)
-                    throw new ArgumentException(
-                        "dumplog_index must be a non-negative integer");
+                /* ======== Read mode ======== */
+                /* Path traversal protection */
+                string safeName = Path.GetFileName(filenameParam);
+                string fullPath = Path.Combine(dumplogDir, safeName);
 
-                if (dumplogIndex >= entries.Count)
-                    throw new ArgumentException(
-                        "dumplog_index " + dumplogIndex
-                        + " is out of range (only " + entries.Count
-                        + " past games found)");
+                if (!File.Exists(fullPath))
+                    throw new FileNotFoundException(
+                        "Dumplog file not found: " + safeName);
 
-                var entry = entries[dumplogIndex];
-                if (string.IsNullOrEmpty(entry.FilePath)
-                    || !File.Exists(entry.FilePath))
+                string content = File.ReadAllText(fullPath);
+
+                /* Strip HTML tags if reading an HTML dumplog */
+                if (fullPath.EndsWith(".html",
+                    StringComparison.OrdinalIgnoreCase))
                 {
-                    return "No dumplog file found for game: "
-                        + entry.DisplayName;
+                    content = Regex.Replace(content, "<[^>]*>", "");
+                    /* Collapse excessive whitespace from tag removal */
+                    content = Regex.Replace(content, @"\n{3,}", "\n\n");
                 }
 
-                /* Prefer .txt for LLM readability; HTML dumps would need stripping */
-                string txtPath = entry.FilePath;
-
-                /* If the resolved path is an HTML file, try to find the .txt version */
-                if (txtPath.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
-                {
-                    string possibleTxt = Path.ChangeExtension(txtPath, ".txt");
-                    if (File.Exists(possibleTxt))
-                        txtPath = possibleTxt;
-                }
-
-                string content = File.ReadAllText(txtPath);
                 if (content.Length > MaxDumplogChars)
                 {
                     content = content.Substring(0, MaxDumplogChars)
@@ -1398,7 +1581,7 @@ namespace GnollHackX.Pages.Game
                         + content.Length + " characters.]";
                 }
 
-                return "=== Dumplog for: " + entry.DisplayName
+                return "=== Dumplog: " + safeName
                     + " ===\n" + content;
             }
         }
