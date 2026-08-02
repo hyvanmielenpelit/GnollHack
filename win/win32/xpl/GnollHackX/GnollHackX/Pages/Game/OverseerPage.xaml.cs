@@ -249,7 +249,7 @@ namespace GnollHackX.Pages.Game
             _snapshotHtml = null;
         }
 
-        private async void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
+        private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
         {
             if (_lastFailedNavigatedUrl != null && (DateTime.UtcNow - _lastFailedNavigatedTime).TotalSeconds < 1.0 && _lastFailedNavigatedUrl == e.Url)
             {
