@@ -54,9 +54,11 @@ namespace GnollHackX.Pages.Game
         private bool _bridgeInitialized = false;
         private DateTime _lastFailedNavigatedTime = DateTime.MinValue;
         private string _lastFailedNavigatedUrl = null;
+#if DEBUG
         private System.Net.Http.HttpClientHandler _sslHandler = null;
 #if IOS || MACCATALYST
         private object _iosNavigationDelegate = null;
+#endif
 #endif
 
         public OverseerPage(string baseOverseerUrl, string snapshotHtml)
@@ -117,11 +119,13 @@ namespace GnollHackX.Pages.Game
             GHApp.BackButtonPressed -= BackButtonPressed;
             CleanupJsBridge();
 
+#if DEBUG
             if (_sslHandler != null)
             {
                 _sslHandler.Dispose();
                 _sslHandler = null;
             }
+#endif
         }
 
         private async Task UploadAndConnect()
@@ -133,8 +137,12 @@ namespace GnollHackX.Pages.Game
                 ProgressStatusLabel.Text = "Uploading game data...";
                 UploadProgressBar.Progress = 0.3;
 
+#if DEBUG
                 using (var httpClient = UIUtils.CreateHttpClientForUrl(
                     _baseOverseerUrl, TimeSpan.FromSeconds(10)))
+#else
+                using (var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(10) })
+#endif
                 {
                     using (var content = new MultipartFormDataContent())
                     {
@@ -249,8 +257,10 @@ namespace GnollHackX.Pages.Game
                 await Task.Delay(2000);
             }
 
+#if DEBUG
             /* Cache the SSL handler for reuse by attach uploads */
             _sslHandler = UIUtils.CreateHttpClientHandlerForUrl(_baseOverseerUrl);
+#endif
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -639,8 +649,11 @@ namespace GnollHackX.Pages.Game
 
                 var cts = new CancellationTokenSource();
                 using (var uploader = new HttpClientUploadWithProgress(
-                    _baseOverseerUrl + "/api/session/attach", content, cts,
-                    _sslHandler))
+                    _baseOverseerUrl + "/api/session/attach", content, cts
+#if DEBUG
+                    , _sslHandler
+#endif
+                    ))
                 {
                     uploader.ProgressChanged += (totalSize, uploaded, pct) =>
                     {
@@ -762,8 +775,11 @@ namespace GnollHackX.Pages.Game
 
                 var cts = new CancellationTokenSource();
                 using (var uploader = new HttpClientUploadWithProgress(
-                    _baseOverseerUrl + "/api/session/attach", content, cts,
-                    _sslHandler))
+                    _baseOverseerUrl + "/api/session/attach", content, cts
+#if DEBUG
+                    , _sslHandler
+#endif
+                    ))
                 {
                     uploader.ProgressChanged += (totalSize, uploaded, pct) =>
                     {
@@ -914,8 +930,11 @@ namespace GnollHackX.Pages.Game
 
                 var cts = new CancellationTokenSource();
                 using (var uploader = new HttpClientUploadWithProgress(
-                    _baseOverseerUrl + "/api/session/attach", content, cts,
-                    _sslHandler))
+                    _baseOverseerUrl + "/api/session/attach", content, cts
+#if DEBUG
+                    , _sslHandler
+#endif
+                    ))
                 {
                     uploader.ProgressChanged += (totalSize, uploaded, pct) =>
                     {
@@ -991,6 +1010,7 @@ namespace GnollHackX.Pages.Game
         /// </summary>
         private void ConfigureSslBypass()
         {
+#if DEBUG
             if (!UIUtils.IsLocalUrl(_baseOverseerUrl))
                 return;
 
@@ -1018,6 +1038,7 @@ namespace GnollHackX.Pages.Game
             }
 #endif
 #endif // GNH_MAUI
+#endif // DEBUG
         }
 
         /// <summary>

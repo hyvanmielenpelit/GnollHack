@@ -6,12 +6,13 @@ using Microsoft.Maui.Platform;
 
 namespace GnollHackM
 {
+#if DEBUG
     /// <summary>
     /// Custom WebViewClient that accepts self-signed SSL certificates
     /// for private/local IP addresses. Inherits from MauiWebViewClient
     /// to preserve MAUI's Navigating/Navigated event routing.
     /// Used only for the OverseerPage when connecting to a local
-    /// development server.
+    /// development server. Only compiled in Debug configuration.
     /// </summary>
     public class GnollHackWebViewClient : MauiWebViewClient
     {
@@ -33,4 +34,5 @@ namespace GnollHackM
             base.OnReceivedSslError(view, handler, error);
         }
     }
+#endif
 }

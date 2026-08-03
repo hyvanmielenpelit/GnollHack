@@ -7,12 +7,13 @@ using Microsoft.Maui.Platform;
 
 namespace GnollHackM
 {
+#if DEBUG
     /// <summary>
     /// Custom WKNavigationDelegate that accepts self-signed SSL certificates
     /// for private/local IP addresses. Inherits from MauiWebViewNavigationDelegate
     /// to preserve MAUI's Navigating/Navigated event routing.
     /// Used only for the OverseerPage when connecting to a local
-    /// development server.
+    /// development server. Only compiled in Debug configuration.
     /// </summary>
     public class GnollHackNavigationDelegate : MauiWebViewNavigationDelegate
     {
@@ -49,4 +50,5 @@ namespace GnollHackM
                 null);
         }
     }
+#endif
 }
