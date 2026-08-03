@@ -29,15 +29,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace GnollHackX.Pages.Game
 #endif
 {
-    public class DumplogEntry
-    {
-        public string FilePath { get; set; }
-        public string DisplayName { get; set; }
-        public string Outcome { get; set; }
-        public int Score { get; set; }
-        public string DeathDate { get; set; }
-        public long FileSize { get; set; }
-    }
+
 
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class OverseerPage : CustomModalPage, ICloseablePage, IMessagePopupPage
@@ -47,15 +39,13 @@ namespace GnollHackX.Pages.Game
 #endif
         private string _baseOverseerUrl;
         private string _snapshotHtml;
-        private List<CheckBox> _dumplogCheckBoxes = new List<CheckBox>();
-        private List<DumplogEntry> _dumplogEntries = new List<DumplogEntry>();
+
         private string _sessionId = "";
         private bool _overseerLoaded = false;
         private bool _bridgeInitialized = false;
         private DateTime _lastFailedNavigatedTime = DateTime.MinValue;
         private string _lastFailedNavigatedUrl = null;
 #if DEBUG
-        private System.Net.Http.HttpClientHandler _sslHandler = null;
 #if IOS || MACCATALYST
         private object _iosNavigationDelegate = null;
 #endif
@@ -64,12 +54,7 @@ namespace GnollHackX.Pages.Game
         public OverseerPage(string baseOverseerUrl, string snapshotHtml)
         {
             InitializeComponent();
-            bool isDarkMode = GHApp.DarkMode;
-            if (isDarkMode)
-            {
-                AttachTypeFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
-                DumplogPickerFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
-            }
+
 
             _baseOverseerUrl = baseOverseerUrl;
             _snapshotHtml = snapshotHtml;
@@ -119,13 +104,7 @@ namespace GnollHackX.Pages.Game
             GHApp.BackButtonPressed -= BackButtonPressed;
             CleanupJsBridge();
 
-#if DEBUG
-            if (_sslHandler != null)
-            {
-                _sslHandler.Dispose();
-                _sslHandler = null;
-            }
-#endif
+
         }
 
         private async Task UploadAndConnect()
@@ -270,10 +249,7 @@ namespace GnollHackX.Pages.Game
                 await Task.Delay(2000);
             }
 
-#if DEBUG
-            /* Cache the SSL handler for reuse by attach uploads */
-            _sslHandler = UIUtils.CreateHttpClientHandlerForUrl(_baseOverseerUrl);
-#endif
+
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -315,13 +291,11 @@ namespace GnollHackX.Pages.Game
                 _lastFailedNavigatedUrl = e.Url;
             }
 
-            /* Enable Attach button once the real Overseer page has loaded successfully */
+            /* Track when the real Overseer page has loaded successfully */
             if (!_overseerLoaded && e.Result == WebNavigationResult.Success
                 && e.Url != null && e.Url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
                 _overseerLoaded = true;
-                AttachButton.IsEnabled = true;
-                AttachButton.TextColor = GHColors.White;
                 
                 FocusDisplayWebView();
 #if GNH_MAUI
@@ -521,479 +495,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        /* --- Attach Type Selector --- */
-        private void AttachButton_Clicked(object sender, EventArgs e)
-        {
-            GHApp.PlayButtonClickedSound();
 
-            /* Show/hide log buttons based on Developer Mode */
-            if (GHApp.DeveloperMode)
-            {
-                string appLogPath = Path.Combine(GHApp.GHPath, GHConstants.AppLogDirectory, GHConstants.AppLogFileName);
-                string panicLogPath = Path.Combine(GHApp.GHPath, "paniclog");
-
-                bool appLogExists = File.Exists(appLogPath);
-                bool panicLogExists = File.Exists(panicLogPath);
-
-                AttachAppLogButton.IsVisible = true;
-                AttachAppLogButton.IsEnabled = appLogExists;
-                AttachAppLogButton.Text = appLogExists ? "App Log" : "No App Log";
-                AttachAppLogButton.TextColor = appLogExists ? GHColors.White : GHColors.Gray;
-
-                AttachPanicLogButton.IsVisible = true;
-                AttachPanicLogButton.IsEnabled = panicLogExists;
-                AttachPanicLogButton.Text = panicLogExists ? "Panic Log" : "No Panic Log";
-                AttachPanicLogButton.TextColor = panicLogExists ? GHColors.White : GHColors.Gray;
-            }
-            else
-            {
-                AttachAppLogButton.IsVisible = false;
-                AttachPanicLogButton.IsVisible = false;
-            }
-
-            AttachTypeGrid.IsVisible = true;
-        }
-
-        private void AttachTypeCancelButton_Clicked(object sender, EventArgs e)
-        {
-            GHApp.PlayButtonClickedSound();
-            AttachTypeGrid.IsVisible = false;
-        }
-
-        /* --- Dumplog Picker --- */
-        private async void AttachDumplogsButton_Clicked(object sender, EventArgs e)
-        {
-            GHApp.PlayButtonClickedSound();
-            AttachTypeGrid.IsVisible = false;
-
-            _dumplogEntries = LoadDumplogEntries();
-            if (_dumplogEntries.Count == 0)
-            {
-                await ShowMessagePopupAsync("No Dumplogs", "No dumplogs found.", "OK");
-                return;
-            }
-
-            DumplogListLayout.Children.Clear();
-            _dumplogCheckBoxes.Clear();
-
-            foreach (var entry in _dumplogEntries)
-            {
-                var checkBox = new CheckBox { Color = GHColors.White, IsChecked = false };
-                checkBox.BindingContext = entry;
-
-                var nameLabel = new Label
-                {
-                    Text = entry.DisplayName,
-                    TextColor = GHColors.White,
-                    FontFamily = "Underwood",
-                    FontSize = 14,
-                    VerticalOptions = LayoutOptions.Center
-                };
-                var detailLabel = new Label
-                {
-                    Text = entry.Outcome + " \u2014 Score: " + entry.Score.ToString("N0")
-                           + " \u2014 " + entry.DeathDate
-                           + " (" + FormatFileSize(entry.FileSize) + ")",
-                    TextColor = GHColors.Gray,
-                    FontFamily = "Underwood",
-                    FontSize = 12,
-                    VerticalOptions = LayoutOptions.Center,
-                    Margin = new Thickness(28, 0, 0, 0)
-                };
-
-                var row = new StackLayout { Spacing = 2, Padding = new Thickness(4, 2) };
-                var headerRow = new StackLayout
-                {
-                    Orientation = StackOrientation.Horizontal,
-                    Spacing = 6
-                };
-                headerRow.Children.Add(checkBox);
-                headerRow.Children.Add(nameLabel);
-                row.Children.Add(headerRow);
-                row.Children.Add(detailLabel);
-
-                _dumplogCheckBoxes.Add(checkBox);
-                DumplogListLayout.Children.Add(row);
-            }
-
-            /* Auto-select the newest */
-            if (_dumplogCheckBoxes.Count > 0)
-                _dumplogCheckBoxes[0].IsChecked = true;
-
-            DumplogPickerGrid.IsVisible = true;
-        }
-
-        private async void DumplogSendButton_Clicked(object sender, EventArgs e)
-        {
-            GHApp.PlayButtonClickedSound();
-            DumplogPickerGrid.IsVisible = false;
-
-            var selected = _dumplogCheckBoxes
-                .Where(cb => cb.IsChecked && cb.BindingContext is DumplogEntry)
-                .Select(cb => cb.BindingContext as DumplogEntry)
-                .ToList();
-
-            if (selected.Count == 0)
-                return;
-
-            ProgressTitleLabel.Text = "Attaching Dumplogs";
-            ProgressStatusLabel.Text = "Reading dumplog files...";
-            UploadProgressBar.Progress = 0.2;
-            ProgressOverlay.IsVisible = true;
-            AttachButton.IsEnabled = false;
-
-            try
-            {
-                var content = new MultipartFormDataContent();
-                var sb = new StringBuilder();
-                foreach (var entry in selected)
-                {
-                    sb.AppendLine("=== Dumplog: " + entry.DisplayName + " ===");
-                    sb.AppendLine(File.ReadAllText(entry.FilePath));
-                    sb.AppendLine();
-                }
-                content.Add(new StringContent(sb.ToString(), Encoding.UTF8, "text/html"), "DumplogContent");
-                if (!string.IsNullOrEmpty(_sessionId))
-                    content.Add(new StringContent(_sessionId), "SessionId");
-
-                ProgressStatusLabel.Text = "Uploading " + selected.Count + " dumplog"
-                                           + (selected.Count > 1 ? "s" : "") + "...";
-                UploadProgressBar.Progress = 0.5;
-
-                var cts = new CancellationTokenSource();
-                using (var uploader = new HttpClientUploadWithProgress(
-                    _baseOverseerUrl + "/api/session/attach", content, cts
-#if DEBUG
-                    , _sslHandler
-#endif
-                    ))
-                {
-                    uploader.ProgressChanged += (totalSize, uploaded, pct) =>
-                    {
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            if (pct.HasValue)
-                            {
-                                UploadProgressBar.Progress = 0.5 + (pct.Value / 100.0) * 0.45;
-                                ProgressStatusLabel.Text = "Uploading... " + Math.Round(pct.Value) + "%";
-                            }
-                        });
-                    };
-
-                    await uploader.StartUpload();
-
-                    if (uploader.Response.IsSuccessStatusCode)
-                    {
-                        ProgressStatusLabel.Text = "Dumplogs attached!";
-                        UploadProgressBar.Progress = 1.0;
-                    }
-                    else
-                    {
-                        GHApp.WriteGHLog("Dumplog attach failed: HTTP " + (int)uploader.Response.StatusCode);
-                        ProgressStatusLabel.Text = "Attach failed (HTTP " + (int)uploader.Response.StatusCode + ").";
-                        UploadProgressBar.Progress = 1.0;
-                    }
-                }
-            }
-            catch (TaskCanceledException)
-            {
-                GHApp.WriteGHLog("Dumplog attach timed out.");
-                ProgressStatusLabel.Text = "Upload timed out.";
-                UploadProgressBar.Progress = 1.0;
-            }
-            catch (Exception ex)
-            {
-                GHApp.WriteGHLog("Dumplog attach failed: " + ex.Message);
-                ProgressStatusLabel.Text = "Attach failed.";
-                UploadProgressBar.Progress = 1.0;
-            }
-
-            await Task.Delay(1500);
-            ProgressOverlay.IsVisible = false;
-            ProgressTitleLabel.Text = "Gnoll Overseer";
-            AttachButton.IsEnabled = true;
-        }
-
-        private void DumplogCancelButton_Clicked(object sender, EventArgs e)
-        {
-            GHApp.PlayButtonClickedSound();
-            DumplogPickerGrid.IsVisible = false;
-        }
-
-        /* --- Screenshot Picker --- */
-        private async void AttachScreenshotsButton_Clicked(object sender, EventArgs e)
-        {
-            GHApp.PlayButtonClickedSound();
-            AttachTypeGrid.IsVisible = false;
-
-            await GHApp.CheckAndRequestReadPermission(this);
-
-            try
-            {
-                var pickOptions = new PickOptions
-                {
-                    PickerTitle = "Select screenshots to attach",
-                    FileTypes = FilePickerFileType.Images
-                };
-
-#if GNH_MAUI
-                var files = await FilePicker.Default.PickMultipleAsync(pickOptions);
-#else
-                var file = await FilePicker.PickAsync(pickOptions);
-                var files = file != null ? new[] { file } : System.Array.Empty<FileResult>();
-#endif
-
-                if (files == null || !files.Any())
-                    return;
-
-                await UploadScreenshots(files.ToList());
-            }
-            catch (Exception ex)
-            {
-                GHApp.WriteGHLog("Screenshot pick failed: " + ex.Message);
-                await ShowMessagePopupAsync("Error", "Failed to pick screenshots.", "OK");
-            }
-        }
-
-        private async Task UploadScreenshots(List<FileResult> files)
-        {
-            ProgressTitleLabel.Text = "Attaching Screenshots";
-            ProgressStatusLabel.Text = "Reading " + files.Count + " image"
-                                       + (files.Count > 1 ? "s" : "") + "...";
-            UploadProgressBar.Progress = 0.1;
-            ProgressOverlay.IsVisible = true;
-            AttachButton.IsEnabled = false;
-
-            try
-            {
-                var content = new MultipartFormDataContent();
-                foreach (var file in files)
-                {
-                    using (var stream = await file.OpenReadAsync())
-                    {
-                        var ms = new MemoryStream();
-                        await stream.CopyToAsync(ms);
-                        var byteContent = new ByteArrayContent(ms.ToArray());
-                        byteContent.Headers.ContentType =
-                            new System.Net.Http.Headers.MediaTypeHeaderValue(
-                                file.ContentType ?? "image/png");
-                        content.Add(byteContent, "Screenshots", file.FileName);
-                    }
-                }
-                if (!string.IsNullOrEmpty(_sessionId))
-                    content.Add(new StringContent(_sessionId), "SessionId");
-
-                ProgressStatusLabel.Text = "Uploading...";
-                UploadProgressBar.Progress = 0.3;
-
-                var cts = new CancellationTokenSource();
-                using (var uploader = new HttpClientUploadWithProgress(
-                    _baseOverseerUrl + "/api/session/attach", content, cts
-#if DEBUG
-                    , _sslHandler
-#endif
-                    ))
-                {
-                    uploader.ProgressChanged += (totalSize, uploaded, pct) =>
-                    {
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            if (pct.HasValue)
-                            {
-                                UploadProgressBar.Progress = 0.3 + (pct.Value / 100.0) * 0.65;
-                                ProgressStatusLabel.Text = "Uploading... "
-                                    + Math.Round(pct.Value) + "%";
-                            }
-                        });
-                    };
-
-                    await uploader.StartUpload();
-
-                    if (uploader.Response.IsSuccessStatusCode)
-                    {
-                        ProgressStatusLabel.Text = "Screenshots attached!";
-                        UploadProgressBar.Progress = 1.0;
-                    }
-                    else
-                    {
-                        GHApp.WriteGHLog("Screenshot attach failed: HTTP "
-                            + (int)uploader.Response.StatusCode);
-                        ProgressStatusLabel.Text = "Attach failed.";
-                        UploadProgressBar.Progress = 1.0;
-                    }
-                }
-            }
-            catch (TaskCanceledException)
-            {
-                GHApp.WriteGHLog("Screenshot upload timed out.");
-                ProgressStatusLabel.Text = "Upload timed out.";
-                UploadProgressBar.Progress = 1.0;
-            }
-            catch (Exception ex)
-            {
-                GHApp.WriteGHLog("Screenshot attach failed: " + ex.Message);
-                ProgressStatusLabel.Text = "Attach failed.";
-                UploadProgressBar.Progress = 1.0;
-            }
-
-            await Task.Delay(1500);
-            ProgressOverlay.IsVisible = false;
-            ProgressTitleLabel.Text = "Gnoll Overseer";
-            AttachButton.IsEnabled = true;
-        }
-
-        /* --- Xlog/Dumplog Helpers --- */
-        private static List<DumplogEntry> LoadDumplogEntries()
-        {
-            var entries = new List<DumplogEntry>();
-            string xlogPath = Path.Combine(GHApp.GHPath, "xlogfile");
-            string dumplogDir = Path.Combine(GHApp.GHPath, GHConstants.DumplogDirectory);
-
-            if (!File.Exists(xlogPath) || !Directory.Exists(dumplogDir))
-                return entries;
-
-            try
-            {
-                string[] lines = File.ReadAllLines(xlogPath);
-                foreach (string line in lines)
-                {
-                    if (string.IsNullOrWhiteSpace(line))
-                        continue;
-
-                    var tsi = new GHTopScoreItem(line);
-                    string htmlFile = Path.Combine(dumplogDir, tsi.GetHTMLDumplogFileName());
-                    string txtFile = Path.Combine(dumplogDir, tsi.GetDumplogFileName());
-
-                    string filePath = File.Exists(htmlFile) ? htmlFile :
-                                      File.Exists(txtFile) ? txtFile : null;
-
-                    if (filePath != null)
-                    {
-                        entries.Add(new DumplogEntry
-                        {
-                            FilePath = filePath,
-                            DisplayName = tsi.Name + " \u2014 " + tsi.CharacterString,
-                            Outcome = tsi.Outcome ?? "",
-                            Score = tsi.Score,
-                            DeathDate = tsi.DeathDateString,
-                            FileSize = new FileInfo(filePath).Length
-                        });
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                GHApp.WriteGHLog("Failed to load dumplog entries: " + ex.Message);
-            }
-
-            entries.Reverse(); /* newest first */
-            return entries;
-        }
-
-        private static string FormatFileSize(long bytes)
-        {
-            if (bytes < 1024) return bytes + " B";
-            if (bytes < 1024 * 1024) return (bytes / 1024) + " KB";
-            return (bytes / (1024 * 1024)) + " MB";
-        }
-
-        /* --- App Log / Panic Log Attach (Developer Mode only) --- */
-        private async void AttachAppLogButton_Clicked(object sender, EventArgs e)
-        {
-            GHApp.PlayButtonClickedSound();
-            AttachTypeGrid.IsVisible = false;
-            string appLogPath = Path.Combine(GHApp.GHPath, GHConstants.AppLogDirectory, GHConstants.AppLogFileName);
-            await UploadLogFile(appLogPath, "App Log");
-        }
-
-        private async void AttachPanicLogButton_Clicked(object sender, EventArgs e)
-        {
-            GHApp.PlayButtonClickedSound();
-            AttachTypeGrid.IsVisible = false;
-            string panicLogPath = Path.Combine(GHApp.GHPath, "paniclog");
-            await UploadLogFile(panicLogPath, "Panic Log");
-        }
-
-        private async Task UploadLogFile(string filePath, string logName)
-        {
-            ProgressTitleLabel.Text = "Attaching " + logName;
-            ProgressStatusLabel.Text = "Reading " + logName + "...";
-            UploadProgressBar.Progress = 0.2;
-            ProgressOverlay.IsVisible = true;
-            AttachButton.IsEnabled = false;
-
-            try
-            {
-                string logContent = File.ReadAllText(filePath);
-
-                if (!(GHApp.DeveloperMode && GHApp.DebugLogMessages) && logContent.Length > GHConstants.MaxOverseerLogLengthNonDebug)
-                {
-                    logContent = logContent.Substring(logContent.Length - GHConstants.MaxOverseerLogLengthNonDebug);
-                }
-
-                var content = new MultipartFormDataContent();
-                content.Add(new StringContent(logContent, Encoding.UTF8, "text/plain"),
-                            "LogContent", Path.GetFileName(filePath));
-                content.Add(new StringContent(logName), "LogName");
-                if (!string.IsNullOrEmpty(_sessionId))
-                    content.Add(new StringContent(_sessionId), "SessionId");
-
-                ProgressStatusLabel.Text = "Uploading " + logName + "...";
-                UploadProgressBar.Progress = 0.5;
-
-                var cts = new CancellationTokenSource();
-                using (var uploader = new HttpClientUploadWithProgress(
-                    _baseOverseerUrl + "/api/session/attach", content, cts
-#if DEBUG
-                    , _sslHandler
-#endif
-                    ))
-                {
-                    uploader.ProgressChanged += (totalSize, uploaded, pct) =>
-                    {
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            if (pct.HasValue)
-                            {
-                                UploadProgressBar.Progress = 0.5 + (pct.Value / 100.0) * 0.45;
-                                ProgressStatusLabel.Text = "Uploading... " + Math.Round(pct.Value) + "%";
-                            }
-                        });
-                    };
-
-                    await uploader.StartUpload();
-
-                    if (uploader.Response.IsSuccessStatusCode)
-                    {
-                        ProgressStatusLabel.Text = logName + " attached!";
-                        UploadProgressBar.Progress = 1.0;
-                    }
-                    else
-                    {
-                        GHApp.WriteGHLog(logName + " attach failed: HTTP " + (int)uploader.Response.StatusCode);
-                        ProgressStatusLabel.Text = "Attach failed.";
-                        UploadProgressBar.Progress = 1.0;
-                    }
-                }
-            }
-            catch (TaskCanceledException)
-            {
-                GHApp.WriteGHLog(logName + " upload timed out.");
-                ProgressStatusLabel.Text = "Upload timed out.";
-                UploadProgressBar.Progress = 1.0;
-            }
-            catch (Exception ex)
-            {
-                GHApp.WriteGHLog(logName + " attach failed: " + ex.Message);
-                ProgressStatusLabel.Text = "Attach failed.";
-                UploadProgressBar.Progress = 1.0;
-            }
-
-            await Task.Delay(1500);
-            ProgressOverlay.IsVisible = false;
-            ProgressTitleLabel.Text = "Gnoll Overseer";
-            AttachButton.IsEnabled = true;
-        }
 
         private bool _backPressed = false;
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
@@ -1163,7 +665,9 @@ namespace GnollHackX.Pages.Game
             "get_player_library",
             "get_oracle_consultations",
             "get_player_xlog",
-            "get_player_dumplogs"
+            "get_player_dumplogs",
+            "get_app_log",
+            "get_panic_log"
         };
 
         /// <summary>
@@ -1315,6 +819,12 @@ namespace GnollHackX.Pages.Game
             case "get_player_dumplogs":
                 return GetPlayerDumplogsResult(parameters);
 
+            case "get_app_log":
+                return GetAppLogResult(parameters);
+
+            case "get_panic_log":
+                return GetPanicLogResult(parameters);
+
             default:
                 throw new NotSupportedException(
                     "Tool not implemented: " + toolName);
@@ -1416,7 +926,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private const int MaxDumplogChars = 4000;
+        private const int DefaultMaxDumplogChars = 4000;
         private const int DefaultXlogLimit = 50;
 
         /// <summary>
@@ -1536,6 +1046,15 @@ namespace GnollHackX.Pages.Game
             string dumplogDir = Path.Combine(GHApp.GHPath,
                 GHConstants.DumplogDirectory);
             string filenameParam = parameters?["filename"]?.ToString();
+
+            /* Configurable truncation limit via max_length parameter */
+            int maxChars = DefaultMaxDumplogChars;
+            string maxLenStr = parameters?["max_length"]?.ToString();
+            if (!string.IsNullOrEmpty(maxLenStr)
+                && int.TryParse(maxLenStr, out int ml) && ml > 0)
+            {
+                maxChars = ml;
+            }
 
             if (string.IsNullOrEmpty(filenameParam))
             {
@@ -1663,16 +1182,93 @@ namespace GnollHackX.Pages.Game
                     content = Regex.Replace(content, @"\n{3,}", "\n\n");
                 }
 
-                if (content.Length > MaxDumplogChars)
+                if (content.Length > maxChars)
                 {
-                    content = content.Substring(0, MaxDumplogChars)
-                        + "\n\n[DUMPLOG TRUNCATED at " + MaxDumplogChars
+                    content = content.Substring(0, maxChars)
+                        + "\n\n[DUMPLOG TRUNCATED at " + maxChars
                         + " characters. Full file is "
-                        + content.Length + " characters.]";
+                        + content.Length
+                        + " characters. Use max_length parameter"
+                        + " for more.]";
                 }
 
                 return "=== Dumplog: " + safeName
                     + " ===\n" + content;
+            }
+        }
+        /// <summary>
+        /// Reads the GnollHack application log (ghlog.txt) from the device.
+        /// Supports optional filtering by search_term and limiting to last_n lines.
+        /// </summary>
+        private string GetAppLogResult(JObject parameters)
+        {
+            string logPath = Path.Combine(GHApp.GHPath,
+                GHConstants.AppLogDirectory, GHConstants.AppLogFileName);
+
+            if (!File.Exists(logPath))
+                return "No application log file found.";
+
+            string[] allLines;
+            try
+            {
+                allLines = File.ReadAllLines(logPath);
+            }
+            catch (Exception ex)
+            {
+                return "Failed to read application log: " + ex.Message;
+            }
+
+            /* Optional search filtering */
+            string searchTerm = parameters?["search_term"]?.ToString();
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                allLines = allLines
+                    .Where(l => l.IndexOf(searchTerm,
+                        StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToArray();
+            }
+
+            /* Optional line limit (from end of log) */
+            string lastNStr = parameters?["last_n"]?.ToString();
+            if (!string.IsNullOrEmpty(lastNStr)
+                && int.TryParse(lastNStr, out int n) && n > 0
+                && allLines.Length > n)
+            {
+                allLines = allLines.Skip(allLines.Length - n).ToArray();
+            }
+
+            if (allLines.Length == 0)
+            {
+                return string.IsNullOrEmpty(searchTerm)
+                    ? "Application log is empty."
+                    : "No log lines match the search term '" + searchTerm
+                        + "'.";
+            }
+
+            return string.Join("\n", allLines);
+        }
+
+        /// <summary>
+        /// Reads the GnollHack panic log from the device.
+        /// Contains C core engine panic/crash information.
+        /// </summary>
+        private string GetPanicLogResult(JObject parameters)
+        {
+            string panicPath = Path.Combine(GHApp.GHPath, "paniclog");
+
+            if (!File.Exists(panicPath))
+                return "No panic log found. No engine panics have occurred.";
+
+            try
+            {
+                string content = File.ReadAllText(panicPath);
+                if (string.IsNullOrWhiteSpace(content))
+                    return "Panic log exists but is empty.";
+                return content;
+            }
+            catch (Exception ex)
+            {
+                return "Failed to read panic log: " + ex.Message;
             }
         }
 
