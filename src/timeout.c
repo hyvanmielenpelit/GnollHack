@@ -3639,11 +3639,16 @@ obj_is_local(struct obj *obj)
         return FALSE;
     case OBJ_FLOOR:
     case OBJ_BURIED:
+    case OBJ_ONBILL:
+    case OBJ_MEMORY:
         return TRUE;
     case OBJ_CONTAINED:
         return obj_is_local(obj->ocontainer);
     case OBJ_MINVENT:
         return mon_is_local(obj->ocarry);
+    case OBJ_FREE:
+        impossible("obj_is_local: obj->where is OBJ_FREE");
+        return FALSE;
     }
     panic("obj_is_local");
     return FALSE;

@@ -1007,6 +1007,15 @@ obfree(struct obj *obj, struct obj *merge)
         if (!merge) {
             bp->useup = 1;
             set_obj_unpaid(obj, 0); /* only for doinvbill */
+            /* if obj is an active light or sound source, remove
+               those registrations now; obj is about to become
+               OBJ_ONBILL which obj_is_local() doesn't handle,
+               and stale entries would cause a panic during
+               savebones() -> savelev() */
+            if (obj_sheds_light(obj))
+                del_light_source(LS_OBJECT, obj_to_any(obj));
+            if (obj_has_sound_source(obj))
+                del_sound_source(SOUNDSOURCE_OBJECT, obj_to_any(obj));
             add_to_billobjs(obj);
             return;
         }
