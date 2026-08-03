@@ -3131,29 +3131,73 @@ namespace GnollHackX.Pages.Game
 
         protected void GNHThreadProc()
         {
-            GHGame curGame = new GHGame(RunGnollHackFlags.None);
-            //CurrentGame = curGame;
-            GHApp.CurrentGHGame = curGame;
-            curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
-            _gnollHackService.StartGnollHack(curGame);
+            try
+            {
+                GHGame curGame = new GHGame(RunGnollHackFlags.None);
+                GHApp.CurrentGHGame = curGame;
+                curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
+                _gnollHackService.StartGnollHack(curGame);
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GNHThreadProc crashed: " + ex.Message);
+#if SENTRY
+                SentrySdk.CaptureException(ex);
+#endif
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    IsGameOn = false;
+                    await GHApp.DisplayMessageBox(this, "Fatal Error",
+                        "Game engine thread crashed: " + ex.Message, "OK");
+                });
+            }
         }
 
         protected void GNHThreadProcForRestart()
         {
-            GHGame curGame = new GHGame(RunGnollHackFlags.ForceLastPlayerName);
-            //CurrentGame = curGame;
-            GHApp.CurrentGHGame = curGame;
-            curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
-            _gnollHackService.StartGnollHack(curGame);
+            try
+            {
+                GHGame curGame = new GHGame(RunGnollHackFlags.ForceLastPlayerName);
+                GHApp.CurrentGHGame = curGame;
+                curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
+                _gnollHackService.StartGnollHack(curGame);
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GNHThreadProcForRestart crashed: " + ex.Message);
+#if SENTRY
+                SentrySdk.CaptureException(ex);
+#endif
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    IsGameOn = false;
+                    await GHApp.DisplayMessageBox(this, "Fatal Error",
+                        "Game engine thread crashed: " + ex.Message, "OK");
+                });
+            }
         }
 
         protected void GNHThreadProcForReplay()
         {
-            GHGame curGame = new GHGame(RunGnollHackFlags.PlayingReplay);
-            //CurrentGame = curGame;
-            GHApp.CurrentGHGame = curGame;
-            curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
-            GHApp.PlayReplay(curGame, ReplayFileName);
+            try
+            {
+                GHGame curGame = new GHGame(RunGnollHackFlags.PlayingReplay);
+                GHApp.CurrentGHGame = curGame;
+                curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
+                GHApp.PlayReplay(curGame, ReplayFileName);
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GNHThreadProcForReplay crashed: " + ex.Message);
+#if SENTRY
+                SentrySdk.CaptureException(ex);
+#endif
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await GHApp.DisplayMessageBox(this, "Fatal Error",
+                        "Replay engine crashed: " + ex.Message, "OK");
+                });
+            }
         }
 
         private void EnqueueTask(ref List<Task> tasks, Task task)

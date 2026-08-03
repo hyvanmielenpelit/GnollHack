@@ -11616,6 +11616,9 @@ namespace GnollHackX
 
         public static async Task DisplayMessageBox(Page page, string title, string message, string cancel)
         {
+            if (page == null)
+                return;
+
             if (page is IMessagePopupPage popupPage)
             {
                 await popupPage.ShowMessagePopupAsync(title, message, cancel);
