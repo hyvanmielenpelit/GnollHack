@@ -54,6 +54,10 @@ namespace GnollHackX.Pages.Game
         private bool _bridgeInitialized = false;
         private DateTime _lastFailedNavigatedTime = DateTime.MinValue;
         private string _lastFailedNavigatedUrl = null;
+        private System.Net.Http.HttpClientHandler _sslHandler = null;
+#if IOS || MACCATALYST
+        private object _iosNavigationDelegate = null;
+#endif
 
         public OverseerPage(string baseOverseerUrl, string snapshotHtml)
         {
@@ -112,6 +116,12 @@ namespace GnollHackX.Pages.Game
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
             CleanupJsBridge();
+
+            if (_sslHandler != null)
+            {
+                _sslHandler.Dispose();
+                _sslHandler = null;
+            }
         }
 
         private async Task UploadAndConnect()
@@ -123,9 +133,9 @@ namespace GnollHackX.Pages.Game
                 ProgressStatusLabel.Text = "Uploading game data...";
                 UploadProgressBar.Progress = 0.3;
 
-                using (var httpClient = new HttpClient())
+                using (var httpClient = UIUtils.CreateHttpClientForUrl(
+                    _baseOverseerUrl, TimeSpan.FromSeconds(10)))
                 {
-                    httpClient.Timeout = TimeSpan.FromSeconds(10);
                     using (var content = new MultipartFormDataContent())
                     {
                         content.Add(new StringContent(GHApp.XlogUserName ?? ""), "UserName");
@@ -239,8 +249,13 @@ namespace GnollHackX.Pages.Game
                 await Task.Delay(2000);
             }
 
+            /* Cache the SSL handler for reuse by attach uploads */
+            _sslHandler = UIUtils.CreateHttpClientHandlerForUrl(_baseOverseerUrl);
+
             MainThread.BeginInvokeOnMainThread(() =>
             {
+                ConfigureSslBypass();
+
                 /* Hide overlay and navigate to the final URL */
                 ProgressOverlay.IsVisible = false;
                 DisplayWebView.Source = new UrlWebViewSource { Url = overseerUrl };
@@ -624,7 +639,8 @@ namespace GnollHackX.Pages.Game
 
                 var cts = new CancellationTokenSource();
                 using (var uploader = new HttpClientUploadWithProgress(
-                    _baseOverseerUrl + "/api/session/attach", content, cts))
+                    _baseOverseerUrl + "/api/session/attach", content, cts,
+                    _sslHandler))
                 {
                     uploader.ProgressChanged += (totalSize, uploaded, pct) =>
                     {
@@ -746,7 +762,8 @@ namespace GnollHackX.Pages.Game
 
                 var cts = new CancellationTokenSource();
                 using (var uploader = new HttpClientUploadWithProgress(
-                    _baseOverseerUrl + "/api/session/attach", content, cts))
+                    _baseOverseerUrl + "/api/session/attach", content, cts,
+                    _sslHandler))
                 {
                     uploader.ProgressChanged += (totalSize, uploaded, pct) =>
                     {
@@ -897,7 +914,8 @@ namespace GnollHackX.Pages.Game
 
                 var cts = new CancellationTokenSource();
                 using (var uploader = new HttpClientUploadWithProgress(
-                    _baseOverseerUrl + "/api/session/attach", content, cts))
+                    _baseOverseerUrl + "/api/session/attach", content, cts,
+                    _sslHandler))
                 {
                     uploader.ProgressChanged += (totalSize, uploaded, pct) =>
                     {
@@ -964,6 +982,43 @@ namespace GnollHackX.Pages.Game
          * Android, WKScriptMessageHandler on iOS) to receive tool requests
          * and returns results via EvaluateJavaScriptAsync.
          * =================================================================== */
+
+        /// <summary>
+        /// Configures the platform WebView to accept self-signed SSL certificates
+        /// for local/private Overseer URLs. Uses custom MauiWebViewClient (Android)
+        /// and MauiWebViewNavigationDelegate (iOS) subclasses to preserve MAUI's
+        /// Navigating/Navigated event routing.
+        /// </summary>
+        private void ConfigureSslBypass()
+        {
+            if (!UIUtils.IsLocalUrl(_baseOverseerUrl))
+                return;
+
+#if GNH_MAUI
+#if ANDROID
+            var webViewHandler = DisplayWebView.Handler
+                as Microsoft.Maui.Handlers.WebViewHandler;
+            var androidWebView = webViewHandler?.PlatformView;
+            if (androidWebView != null && webViewHandler != null)
+            {
+                androidWebView.SetWebViewClient(
+                    new GnollHackWebViewClient(webViewHandler));
+            }
+#elif IOS || MACCATALYST
+            var webViewHandler = DisplayWebView.Handler
+                as Microsoft.Maui.Handlers.WebViewHandler;
+            var wkWebView = DisplayWebView.Handler?.PlatformView
+                as WebKit.WKWebView;
+            if (wkWebView != null && webViewHandler != null)
+            {
+                _iosNavigationDelegate =
+                    new GnollHackNavigationDelegate(webViewHandler);
+                wkWebView.NavigationDelegate =
+                    (WebKit.IWKNavigationDelegate)_iosNavigationDelegate;
+            }
+#endif
+#endif // GNH_MAUI
+        }
 
         /// <summary>
         /// Sets up the platform-specific JS bridge on the WebView.

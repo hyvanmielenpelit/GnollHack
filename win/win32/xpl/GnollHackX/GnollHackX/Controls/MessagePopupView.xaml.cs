@@ -229,7 +229,7 @@ namespace GnollHackX.Controls
         }
 
         private Span _linkSpan = null;
-#if GNH_MAUI
+#if GNH_MAUI && WINDOWS
         private PointerGestureRecognizer _labelPointerGesture = null;
 #endif
 

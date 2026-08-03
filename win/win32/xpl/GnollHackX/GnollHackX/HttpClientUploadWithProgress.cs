@@ -12,6 +12,7 @@ namespace GnollHackX
         private readonly string _uploadUrl;
         private readonly HttpContent _content;
         private CancellationTokenSource _cancellationTokenSource;
+        private readonly HttpClientHandler _handler;
         private HttpClient _httpClient;
 
         public delegate void ProgressChangedHandler(
@@ -20,18 +21,22 @@ namespace GnollHackX
         public event ProgressChangedHandler ProgressChanged;
 
         public HttpClientUploadWithProgress(string uploadUrl, HttpContent content,
-            CancellationTokenSource cancellationTokenSource)
+            CancellationTokenSource cancellationTokenSource,
+            HttpClientHandler handler = null)
         {
             _uploadUrl = uploadUrl;
             _content = content;
             _cancellationTokenSource = cancellationTokenSource;
+            _handler = handler;
         }
 
         public HttpResponseMessage Response { get; private set; }
 
         public async Task StartUpload()
         {
-            _httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
+            _httpClient = _handler != null
+                ? new HttpClient(_handler, disposeHandler: false) { Timeout = TimeSpan.FromMinutes(5) }
+                : new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
 
             /* Serialize content to a MemoryStream so we know the total size */
             using (var serializedStream = new MemoryStream())
