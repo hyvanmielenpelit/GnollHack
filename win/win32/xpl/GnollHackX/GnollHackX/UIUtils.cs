@@ -20,6 +20,7 @@ using WinRT.Interop;
 #else
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
+using System.Net.Http;
 #endif
 
 namespace GnollHackX
