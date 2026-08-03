@@ -146,8 +146,21 @@ namespace GnollHackX.Pages.Game
                 {
                     using (var content = new MultipartFormDataContent())
                     {
-                        content.Add(new StringContent(GHApp.XlogUserName ?? ""), "UserName");
-                        content.Add(new StringContent(GHApp.XlogPassword ?? ""), "Password");
+#if DEBUG
+                        bool useLocalCreds = GHApp.OverseerUseLocalAddress
+                            && !string.IsNullOrEmpty(GHApp.LocalOverseerAddress);
+                        string userName = useLocalCreds
+                            ? (GHApp.LocalOverseerUserName ?? "")
+                            : (GHApp.XlogUserName ?? "");
+                        string password = useLocalCreds
+                            ? (GHApp.LocalOverseerPassword ?? "")
+                            : (GHApp.XlogPassword ?? "");
+#else
+                        string userName = GHApp.XlogUserName ?? "";
+                        string password = GHApp.XlogPassword ?? "";
+#endif
+                        content.Add(new StringContent(userName), "UserName");
+                        content.Add(new StringContent(password), "Password");
                         content.Add(new StringContent(GHApp.XlogAntiForgeryToken ?? ""), "AntiForgeryToken");
 
                         if (!string.IsNullOrEmpty(_snapshotHtml))

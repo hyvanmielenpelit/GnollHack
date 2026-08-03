@@ -1544,6 +1544,26 @@
                                 <Entry Grid.Column="1" x:Name="OverseerLocalAddressEntry" MaxLength="255" HorizontalOptions="End" VerticalOptions="Center" Placeholder="Enter local address" PlaceholderColor="Gray" IsEnabled="False"
                                     Keyboard="Plain" TextColor="Black" FontFamily="LatoRegular" FontSize="14" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                             </Grid>
+                            <Grid x:Name="OverseerLocalUserNameGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
+                                <Label Text="  Local User Name"
+                                    x:Name="OverseerLocalUserNameLabel" 
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Entry Grid.Column="1" x:Name="OverseerLocalUserNameEntry" MaxLength="255" HorizontalOptions="End" VerticalOptions="Center" Placeholder="Enter user name" PlaceholderColor="Gray" IsEnabled="False"
+                                    Keyboard="Plain" TextColor="Black" FontFamily="LatoRegular" FontSize="14" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
+                            </Grid>
+                            <Grid x:Name="OverseerLocalPasswordGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
+                                <Label Text="  Local Password"
+                                    x:Name="OverseerLocalPasswordLabel" 
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Entry Grid.Column="1" x:Name="OverseerLocalPasswordEntry" MaxLength="255" HorizontalOptions="End" VerticalOptions="Center" Placeholder="Enter password" PlaceholderColor="Gray" IsEnabled="False"
+                                    IsPassword="True" Keyboard="Plain" TextColor="Black" FontFamily="LatoRegular" FontSize="14" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
+                            </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Web Search"
                                     FontFamily="Underwood" TextColor="Black"

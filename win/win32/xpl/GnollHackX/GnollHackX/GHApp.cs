@@ -278,6 +278,8 @@ namespace GnollHackX
 #if DEBUG
             OverseerUseLocalAddress = Preferences.Get("OverseerUseLocalAddress", false);
             LocalOverseerAddress =  Preferences.Get("LocalOverseerAddress", null);
+            LocalOverseerUserName = Preferences.Get("LocalOverseerUserName", null);
+            LocalOverseerPassword = Preferences.Get("LocalOverseerPassword", null);
 #endif
             EmptyWishIsNothing = Preferences.Get("EmptyWishIsNothing", true);
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
@@ -3143,7 +3145,9 @@ namespace GnollHackX
         public static bool OverseerConsentAccepted { get; set; }
 #if DEBUG
         public static bool OverseerUseLocalAddress { get; set; }
-        public static string LocalOverseerAddress { get; set; }        
+        public static string LocalOverseerAddress { get; set; }
+        public static string LocalOverseerUserName { get; set; }
+        public static string LocalOverseerPassword { get; set; }
 #endif
 
         //private static readonly object _debugLock = new object();

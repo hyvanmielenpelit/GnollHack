@@ -1032,6 +1032,10 @@ namespace GnollHackX.Pages.MainScreen
             {
                 GHApp.LocalOverseerAddress = OverseerLocalAddressEntry.Text;
                 Preferences.Set("LocalOverseerAddress", OverseerLocalAddressEntry.Text ?? "");
+                GHApp.LocalOverseerUserName = OverseerLocalUserNameEntry.Text;
+                Preferences.Set("LocalOverseerUserName", OverseerLocalUserNameEntry.Text ?? "");
+                GHApp.LocalOverseerPassword = OverseerLocalPasswordEntry.Text;
+                Preferences.Set("LocalOverseerPassword", OverseerLocalPasswordEntry.Text ?? "");
             }
 #endif
             GHApp.DebugLogMessages = LogMessageSwitch.IsToggled;
@@ -1833,12 +1837,18 @@ namespace GnollHackX.Pages.MainScreen
 #if DEBUG
             OverseerLocalAddressGrid.IsVisible = true;
             OverseerLocalAddressEntryGrid.IsVisible = true;
+            OverseerLocalUserNameGrid.IsVisible = true;
+            OverseerLocalPasswordGrid.IsVisible = true;
             OverseerLocalAddressSwitch.IsToggled = GHApp.OverseerUseLocalAddress;
             OverseerLocalAddressEntry.Text = GHApp.LocalOverseerAddress ?? "";
+            OverseerLocalUserNameEntry.Text = GHApp.LocalOverseerUserName ?? "";
+            OverseerLocalPasswordEntry.Text = GHApp.LocalOverseerPassword ?? "";
             UpdateLocalAddressEntryEnabled(GHApp.OverseerUseLocalAddress);
 #else
             OverseerLocalAddressGrid.IsVisible = false;
             OverseerLocalAddressEntryGrid.IsVisible = false;
+            OverseerLocalUserNameGrid.IsVisible = false;
+            OverseerLocalPasswordGrid.IsVisible = false;
 #endif
 
             DeveloperSwitch.IsToggled = devmode;
@@ -2270,6 +2280,20 @@ namespace GnollHackX.Pages.MainScreen
                 ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
                 : GHColors.Gray;
             OverseerLocalAddressEntry.TextColor = enabled
+                ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
+                : GHColors.Gray;
+            OverseerLocalUserNameEntry.IsEnabled = enabled;
+            OverseerLocalUserNameLabel.TextColor = enabled
+                ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
+                : GHColors.Gray;
+            OverseerLocalUserNameEntry.TextColor = enabled
+                ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
+                : GHColors.Gray;
+            OverseerLocalPasswordEntry.IsEnabled = enabled;
+            OverseerLocalPasswordLabel.TextColor = enabled
+                ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
+                : GHColors.Gray;
+            OverseerLocalPasswordEntry.TextColor = enabled
                 ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
                 : GHColors.Gray;
         }
