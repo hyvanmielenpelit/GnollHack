@@ -79,8 +79,8 @@ AI Agents MUST override their default modern C habits and adhere strictly to the
 
 Every implementation plan **MUST** include a **Subagent Use** section. Read the full guidelines in the [subagent_guidelines skill](file:///c:/hmp/GnollHack/.agents/skills/subagent_guidelines/SKILL.md) before creating any plan. Key points:
 
-- **Always document** whether subagents are needed and which model (Flash / Pro / Inherit) to use
-- **Assign suitable tasks to the human user** (cut-and-paste moves, simple find-and-replace) — this is pair programming
+- **Always document** whether subagents are needed — default to `inherit` model (matching the orchestrator); use `flash` only for trivially mechanical search-and-replace
+- **Human task assignments are the rare exception** — only for very extensive cut-and-paste moves where AI would likely fail and waste tokens
 - **No two agents may edit the same file concurrently** — plan file assignments to avoid conflicts
 - **Respect build dependency chains** — do not parallelize across `makedefs` / `levcomp` / `makedefsdroid` regeneration boundaries
 - **Never overwrite uncommitted changes** without explicit user permission — ask the user to commit first if corruption risk exists

@@ -1,6 +1,6 @@
 ---
 name: subagent_guidelines
-description: Guidelines for using AI subagents and human pair programming in GnollHack implementation plans. Covers when to spawn subagents, which model to use (Flash, Pro, Opus), which tasks to assign to the human user, and planning constraints such as file-level exclusivity.
+description: Guidelines for using AI subagents and human pair programming in GnollHack implementation plans. Covers when to spawn subagents, model selection defaults, and planning constraints such as file-level exclusivity.
 ---
 
 # Subagent and Pair Programming Guidelines
@@ -8,8 +8,8 @@ description: Guidelines for using AI subagents and human pair programming in Gno
 ## Overview
 
 GnollHack uses a **pair programming** model for AI-assisted development. The orchestrating AI agent works together with:
-- **AI subagents** of varying capability for parallelizable tasks
-- **The human user** for tasks where humans clearly outperform AI
+- **AI subagents** for parallelizable tasks
+- **The human user** for rare tasks where humans clearly outperform AI
 
 Every implementation plan MUST include a **Subagent Use** section, even when no subagents are needed (document why).
 
@@ -26,47 +26,42 @@ Every implementation plan must contain the following section:
 ### Subagent Assignments
 | Task | Model | Rationale |
 |------|-------|-----------|
-| ... | Flash / Pro / Inherit | ... |
+| ... | Inherit / Flash | ... |
 
-### Human Assignments
+### Human Assignments (if any)
 | Task | Rationale | Fallback if Not Approved |
 |------|-----------|--------------------------|
-| ... | ... | Orchestrator / Opus subagent |
+| ... | ... | Orchestrator handles directly |
 ```
 
-When human tasks are listed, the plan MUST explicitly ask the user to approve or reject each human assignment. If the user rejects a human assignment, the orchestrator handles it directly or spawns a Claude Opus subagent (when the orchestrator is Opus).
+When human tasks are listed, the plan MUST explicitly ask the user to approve or reject each human assignment. If the user rejects a human assignment, the orchestrator handles it directly.
 
 ## Model Selection Guide
 
-### Flash (`flash`) — Mechanical Execution
+### Default: Inherit (`inherit`) — Match the Orchestrator
 
-Use for tasks that require **no judgment**, only mechanical application of a known pattern:
-- Applying the same text replacement across multiple files
-- Adding identical boilerplate entries to several files
-- Reformatting code blocks to match a known style
-- Inserting pre-written documentation blocks
+**Use for 99% of all subagent tasks.** The `inherit` model matches the orchestrator's own model (e.g., Claude Opus spawns Claude Opus subagents, Gemini 3.1 Pro spawns Gemini 3.1 Pro subagents). This ensures subagents have the same reasoning capability as the orchestrator.
 
-**Key criterion**: The subagent does NOT need to decide *what* to change — only *where* and *how* to apply a specified change.
+Suitable for virtually all tasks including:
+- Multi-file changes with reasoning required
+- Implementing new features following existing patterns
+- Updating structs across C and C# interop boundaries
+- Writing utility functions, tool handlers, or service classes
+- Researching subsystems, reviewing code, answering questions
+- Debugging, refactoring, and architectural changes
 
-### Pro (`pro`) — Limited-Scope Reasoning
+**Key principle**: If a task is worth spawning a subagent for, it's worth giving it the orchestrator's full capability.
 
-Use for tasks that require **some reasoning** but are **limited in scope**:
-- Updating a struct field across C and C# interop boundaries (needs to understand marshalling)
-- Adding a new entry to a pattern-based list where the entry requires adaptation (e.g., new monster, new sound assignment)
-- Writing a small utility function following existing patterns
-- Researching a specific subsystem to answer a targeted question
+### Exception: Flash (`flash`) — Extremely Mundane Mechanical Tasks
 
-**Key criterion**: The subagent needs to *decide what to change* based on context, but the scope is confined to a small number of files or a single subsystem.
+Use **only** for tasks that are trivially mechanical search-and-replace with **zero judgment** required:
+- Applying an identical, pre-specified text replacement across many files
+- Inserting the exact same boilerplate line into multiple files
 
-### Inherit (`inherit`) — Complex Reasoning (Opus-to-Opus)
+**Key criterion**: The subagent does NOT need to decide *what* to change — only *where* to paste an already-specified string. If there is any ambiguity, adaptation, or context-sensitivity, use `inherit` instead.
 
-Use **only when the orchestrator is Claude Opus** for tasks requiring deep reasoning:
-- Multi-file refactors with non-obvious dependency chains
-- Architectural changes spanning the C core and C# frontend
-- Tasks requiring understanding of the full system (e.g., adding a new window proc callback end-to-end)
-- Debugging complex cross-layer issues
-
-**Key criterion**: The task requires the same level of reasoning capability as the orchestrator itself.
+> [!IMPORTANT]
+> Flash is the rare exception, not the default. When in doubt, use `inherit`.
 
 ## Planning Constraints
 
@@ -105,34 +100,20 @@ This applies equally to user-made and agent-made uncommitted changes, since the 
 
 ### When to Assign to the Human
 
-The following task types are **preferred for human execution** when the count is manageable (not too many instances). The human benefits from understanding the changes firsthand.
+Assigning tasks to the human user is the **rare exception**, not the norm. Only consider it for:
 
-#### Cut-and-Paste (Move) Operations
+#### Very Extensive Cut-and-Paste (Move) Operations
 
-AI agents struggle with move operations because they require coordinating a deletion in one location and an insertion in another, potentially across files. Humans can do this atomically in Visual Studio with `Ctrl+X` → `Ctrl+V`, with full visual context of the surrounding code.
+AI agents struggle with large move operations because they require coordinating a deletion in one location and an insertion in another, potentially across files. When the code block is very large, the AI is likely to get it wrong and waste a significant number of tokens retrying. Humans can do this atomically in Visual Studio with `Ctrl+X` → `Ctrl+V`.
 
-**Assign to human when**: Code blocks need to be relocated (not copied), especially across files or within a large file where precise placement matters.
+**Assign to human when**: A large code block (50+ lines) needs to be relocated (not copied), especially across files, AND the AI would likely fail and waste tokens on retries.
 
-#### Simple Find-and-Replace via Visual Studio
-
-For a small number of replacements (roughly ≤10 in a single file), Visual Studio's `Ctrl+H` is faster and more reliable than any AI approach. The human gets a confirmation dialog showing each match, catching unintended occurrences.
-
-**Assign to human when**: A straightforward text substitution is needed in a small number of places within one file, and the pattern is unambiguous.
-
-### Benefits of Human Involvement
-
-- The human builds a **mental model** of what is changing and where
-- In a codebase as interconnected as GnollHack (C core → native bridge → C# frontend), this understanding is valuable for future development
-- Atomic operations (cut-paste) in an IDE are **more reliable** than multi-step AI tool calls
-- Visual Studio's find-and-replace provides **confirmation UI** that prevents errors
+> [!IMPORTANT]
+> For small moves, simple find-and-replace, or any task where the AI can handle it reliably, the orchestrator or a subagent should do the work — not the human. The threshold for human assignment is high: the task must be one where AI failure is likely and the token cost of retries would be substantial.
 
 ### Fallback When Human Declines
 
-If the user does not approve a human-assigned task:
-1. The **orchestrator** handles it directly, OR
-2. A **Claude Opus subagent** (`inherit` model) is spawned to handle it (when the orchestrator is Opus)
-
-The plan should document which fallback applies for each human task.
+If the user does not approve a human-assigned task, the orchestrator handles it directly.
 
 ## Example Subagent Use Section
 
@@ -145,15 +126,7 @@ Yes — the task involves changes across 8 files in 3 subsystems that can be par
 ### Subagent Assignments
 | Task | Model | Files | Rationale |
 |------|-------|-------|-----------|
-| Add `FOO_BAR` define to all platform headers | Flash | `include/pcconf.h`, `include/unixconf.h`, `include/macconf.h` | Mechanical insertion of identical `#define` line |
-| Update `struct layer_info` and marshalling | Pro | `include/layer.h`, `win/win32/xpl/libshare/GnollHackDefs.h` | Needs to understand C-to-C# struct alignment |
+| Add `FOO_BAR` define to all platform headers | Flash | `include/pcconf.h`, `include/unixconf.h`, `include/macconf.h` | Trivially mechanical insertion of identical `#define` line |
+| Update `struct layer_info` and marshalling | Inherit | `include/layer.h`, `win/win32/xpl/libshare/GnollHackDefs.h` | Needs to understand C-to-C# struct alignment |
 | Implement new window proc callback end-to-end | Inherit | `include/winprocs.h`, `src/windows.c`, `GnollHackService.cs` | Complex cross-layer change requiring deep system understanding |
-
-### Human Assignments
-| Task | Rationale | Fallback if Not Approved |
-|------|-----------|--------------------------|
-| Move `old_function()` from `src/foo.c` to `src/bar.c` | Cut-and-paste move — atomic in VS, error-prone for AI | Orchestrator handles directly |
-| Replace `OLD_NAME` → `NEW_NAME` in `src/baz.c` (3 occurrences) | Simple find-replace, user benefits from seeing the locations | Orchestrator handles directly |
-
-**User**: Please approve or reject each human assignment above.
 ```
