@@ -1070,7 +1070,7 @@ namespace GnollHackX
 
         public static uint GetMainCanvasAnimationInterval(MapRefreshRateStyle mapRefreshRate)
         {
-            return GetMainCanvasAnimationInterval(mapRefreshRate, GHApp.RoundedDisplayRefreshRate);
+            return GetMainCanvasAnimationInterval(mapRefreshRate, GHApp.RoundedReconciledRefreshRate);
         }
 
         public static uint GetMainCanvasAnimationInterval(MapRefreshRateStyle mapRefreshRate, int roundedScreenRefreshRate)
@@ -1101,7 +1101,7 @@ namespace GnollHackX
 
         public static int GetMainCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRate)
         {
-            return GetMainCanvasAnimationFrequency(mapRefreshRate, GHApp.RoundedDisplayRefreshRate);
+            return GetMainCanvasAnimationFrequency(mapRefreshRate, GHApp.RoundedReconciledRefreshRate);
         }
 
         public static int GetMainCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRate, int roundedScreenRefreshRate)
@@ -1130,7 +1130,7 @@ namespace GnollHackX
 
         public static MapRefreshRateStyle GetDefaultMapFPS()
         {
-            int roundedScreenRefreshRate = GHApp.RoundedDisplayRefreshRate;
+            int roundedScreenRefreshRate = GHApp.RoundedReconciledRefreshRate;
             bool platformLoop = GHApp.UsePlatformRenderLoop;
             return GetDefaultMapFPS(roundedScreenRefreshRate, platformLoop);
         }

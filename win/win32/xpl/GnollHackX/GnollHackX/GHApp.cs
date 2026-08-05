@@ -458,9 +458,9 @@ namespace GnollHackX
         private static ChoreographerFrameTicker _platformTicker = null;
 #elif IOS
         private static DisplayLinkTicker _platformTicker = null;
+        private static int _refreshRateSampled = 0;
 #endif
 
-        private static bool _refreshRateSampled = false;
         private static void InitializePlatformRenderLoop()
         {
 #if WINDOWS
@@ -473,17 +473,16 @@ namespace GnollHackX
             });
 
             /* Cache the actual display refresh rate (MAUI may report an incorrect value) */
-            DisplayRefreshRate = DisplayInfoAndroid.GetRefreshRateHz();
+            PlatformRefreshRate = DisplayInfoAndroid.GetRefreshRateHz();
 #elif IOS
             _platformTicker = new DisplayLinkTicker();
 
             _platformTicker.Start(deltaTime =>
             {
                 /* CADisplayLink.Duration is only valid after the first callback */
-                if (!_refreshRateSampled)
+                if (Interlocked.CompareExchange(ref _refreshRateSampled, 1, 0) == 0)
                 {
-                    _refreshRateSampled = true;
-                    DisplayRefreshRate = (float)_platformTicker.GetRefreshRateHz();
+                    PlatformRefreshRate = (float)_platformTicker.GetRefreshRateHz();
                 }
                 CompositionTarget_Rendering(null, EventArgs.Empty);
             });
@@ -597,7 +596,7 @@ namespace GnollHackX
                     return;
                 int screenRefreshRate = (int)curRes.RefreshRate;
 #else
-                int screenRefreshRate = RoundedDisplayRefreshRate;
+                int screenRefreshRate = RoundedReconciledRefreshRate;
 #endif
                 MapRefreshRateStyle mapRefreshRateStyle = curGamePage.MapRefreshRate;
                 CanvasTypes canvasType = curGamePage.GetActiveCanvas();
@@ -980,6 +979,14 @@ namespace GnollHackX
                 return;
             DisplayDensity = (float)e.DisplayInfo.Density;
             DisplayRefreshRate = e.DisplayInfo.RefreshRate;
+#if IOS
+            /* The display cadence may have changed (e.g., ProMotion switch);
+             * re-sample from CADisplayLink on the next frame */
+            Interlocked.Exchange(ref _refreshRateSampled, 0);
+#elif ANDROID
+            /* Re-query the actual display rate directly */
+            PlatformRefreshRate = DisplayInfoAndroid.GetRefreshRateHz();
+#endif
         }
 
         public static INavigation Navigation
@@ -2941,7 +2948,9 @@ namespace GnollHackX
 
 #if GNH_MAUI
         public static float _displayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);
-        public static int _roundedDisplayRefreshRate = (int)Math.Round(_displayRefreshRate);
+        public static float _platformRefreshRate = 0.0f;
+        public static float _reconciledRefreshRate = _displayRefreshRate;
+        public static int _roundedReconciledRefreshRate = (int)Math.Round(_reconciledRefreshRate);
         public static float _displayDensity = DeviceDisplay.Current.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.Current.MainDisplayInfo.Density;
         public static readonly bool IsAndroid = (DeviceInfo.Platform == DevicePlatform.Android);
         public static readonly bool IsiOS = (DeviceInfo.Platform == DevicePlatform.iOS);
@@ -2958,7 +2967,9 @@ namespace GnollHackX
         public static readonly bool IsPackaged = (Microsoft.Maui.ApplicationModel.AppInfo.Current?.PackagingModel ?? AppPackagingModel.Unpackaged) == AppPackagingModel.Packaged;
 #else
         public static float _displayRefreshRate = Math.Max(60.0f, DeviceDisplay.MainDisplayInfo.RefreshRate);
-        public static int _roundedDisplayRefreshRate = (int)Math.Round(_displayRefreshRate);
+        public static float _platformRefreshRate = 0.0f;
+        public static float _reconciledRefreshRate = _displayRefreshRate;
+        public static int _roundedReconciledRefreshRate = (int)Math.Round(_reconciledRefreshRate);
         public static float _displayDensity = DeviceDisplay.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
         public static readonly bool IsAndroid = (Device.RuntimePlatform == Device.Android);
         public static readonly bool IsiOS = (Device.RuntimePlatform == Device.iOS);
@@ -3066,17 +3077,37 @@ namespace GnollHackX
         }
         public static float DisplayRefreshRate
         {
-            get { return Interlocked.CompareExchange(ref _displayRefreshRate, 0.0f, 0.0f); }
-            set 
+            //get { return Interlocked.CompareExchange(ref _displayRefreshRate, 0.0f, 0.0f); }
+            set
             {
-                float adjValue = value <= 0.0f ? 1.0f : value;
-                Interlocked.Exchange(ref _displayRefreshRate, adjValue);
-                Interlocked.Exchange(ref _roundedDisplayRefreshRate, (int)Math.Round(adjValue));
+                Interlocked.Exchange(ref _displayRefreshRate, value <= 0.0f ? 1.0f : value);
+                ReconcileRefreshRate();
             }
         }
-        public static int RoundedDisplayRefreshRate
+        public static float PlatformRefreshRate
         {
-            get { return Interlocked.CompareExchange(ref _roundedDisplayRefreshRate, 0, 0); }
+            //get { return Interlocked.CompareExchange(ref _platformRefreshRate, 0.0f, 0.0f); }
+            set
+            {
+                Interlocked.Exchange(ref _platformRefreshRate, value < 0.0f ? 0.0f : value);
+                ReconcileRefreshRate();
+            }
+        }
+        public static float ReconciledRefreshRate
+        {
+            get { return Interlocked.CompareExchange(ref _reconciledRefreshRate, 0.0f, 0.0f); }
+        }
+        public static int RoundedReconciledRefreshRate
+        {
+            get { return Interlocked.CompareExchange(ref _roundedReconciledRefreshRate, 0, 0); }
+        }
+        private static void ReconcileRefreshRate()
+        {
+            float platform = Interlocked.CompareExchange(ref _platformRefreshRate, 0.0f, 0.0f);
+            float display = Interlocked.CompareExchange(ref _displayRefreshRate, 0.0f, 0.0f);
+            float reconciled = platform > 0.0f ? platform : display;
+            Interlocked.Exchange(ref _reconciledRefreshRate, reconciled);
+            Interlocked.Exchange(ref _roundedReconciledRefreshRate, (int)Math.Round(reconciled));
         }
 
         private static float _customScreenScale = 1.0f;
