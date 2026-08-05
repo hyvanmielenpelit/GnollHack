@@ -1131,7 +1131,7 @@ bot_via_windowport(void)
     blstats[idx][BL_MC_PCT].a.a_int = magic_negation_percentage(u.umc);
 
     /* Monster level (if Upolyd) */
-    blstats[idx][BL_HD].a.a_int = Upolyd ? (int) u.mmlev : 0; // (int) mons[u.umonnum].mlevel
+    blstats[idx][BL_HD].a.a_int = Upolyd ? (u.mmlev ? (int) u.mmlev : (int) mons[u.umonnum].mlevel) : 0; /* Note: mons[u.umonnum].mlevel part is there for compatibility with 4.3.0 Build 6 and earlier versions. It can later be removed. */
 
     /* Experience */
     blstats[idx][BL_XP].a.a_int = u.ulevel;

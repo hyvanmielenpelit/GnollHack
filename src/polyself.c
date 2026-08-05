@@ -2996,11 +2996,11 @@ boolean
 u_grow_up(struct monst *victim)
 {
     int oldtype, newtype, max_increase, cur_increase, lev_limit, hp_threshold;
+    struct permonst* ptr = youmonst.data;
 
     if (!Upolyd)
         return FALSE;
 
-    struct permonst* ptr = youmonst.data;
     if (!ptr)
         return FALSE;
 
