@@ -1896,7 +1896,7 @@ thitmonst(struct monst *mon, struct obj *obj, boolean is_golf, uchar *hitres_ptr
      */
 
     /* Plusses have been divided into poly-case, non-poly-case, and always-case */
-    polytmp += youmonst.data->mlevel;
+    polytmp += (int)youmonst.data->mlevel;
     nonpolytmp += (int)(TO_HIT_LEVEL_MULTIPLIER * (double)u.ulevel);
     tmp = -1 + Luck + u_ranged_strdex_to_hit_bonus() + find_mac(mon) + u.ubasehitinc + u.uhitinc;
 

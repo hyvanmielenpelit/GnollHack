@@ -1698,6 +1698,7 @@ corpse_after_effect(int pm, uchar gender UNUSED)
     if (conveys_level(ptr))
     {
         pluslvl(FALSE);
+        (void) u_grow_up((struct monst *) 0);
         check_intrinsics = FALSE;
     }
 

@@ -2873,6 +2873,7 @@ E void float_vs_flight(void);
 E void change_sex(void);
 E void polyself(int);
 E int polymon(int);
+E int polymon_ex(int, boolean);
 E int monster_attribute_maximum(struct permonst *, int);
 E int monster_attribute_minimum(struct permonst*, int);
 E void rehumanize(void);
@@ -2903,6 +2904,7 @@ E const char *udeadinside(void);
 E int get_ray_adtyp(uchar);
 E int get_ray_adtyp_choose(uchar, const char*, struct monst*);
 E void reset_polyself(void);
+E boolean u_grow_up(struct monst *);
 
 /* ### potion.c ### */
 

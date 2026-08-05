@@ -4510,6 +4510,7 @@ doseduce(struct monst *mon)
         case 3:
             pline("That was a very educational experience.");
             pluslvl(FALSE);
+            (void) u_grow_up((struct monst *) 0);
             exercise(A_WIS, TRUE);
             break;
         case 4:
@@ -4902,7 +4903,7 @@ cloneu(void)
     mon = christen_monst(mon, plname);
     set_mon_u_know_mname(mon, TRUE);
     initedog(mon, TRUE);
-    mon->m_lev = (uchar)youmonst.data->mlevel;
+    mon->m_lev = youmonst.data->mlevel;
     //mon might need mbasehpmax stat
     mon->mbasehpmax = u.basemhmax;
     mon->mbasehpdrain = u.basemhdrain;

@@ -770,9 +770,9 @@ struct you {
     /* Data influencing what is shown in tiles */
     boolean facing_right;
     uchar action;
+    uchar mmlev;             /* monster form level for grow-up tracking */
 
     /* A few extra bools that do not take space because of alignment padding */
-    boolean ureserved_bool1;
     boolean ureserved_bool2;
     boolean ureserved_bool3;
     boolean ureserved_bool4;

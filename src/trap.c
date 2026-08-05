@@ -4056,7 +4056,7 @@ dofiretrap(struct obj *box, int dice)
         if (alt > num)
             num = alt;
 #if 0
-        if (u.mhmax > mons[u.umonnum].mlevel)
+        if (u.mhmax > (int)mons[u.umonnum].mlevel)
         {
             u.basemhmax -= rn2(min(u.mhmax, num + 1));
             updatemaxhp();

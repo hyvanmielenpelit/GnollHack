@@ -4045,8 +4045,8 @@ grow_up(struct monst *mtmp, struct monst *victim)
 
     if (is_mplayer(ptr))
         lev_limit = MAXULEV; /* same as player */
-    else if (lev_limit < 5)
-        lev_limit = 5; /* arbitrary */
+    else if (lev_limit < MIN_GROWUP_LEV_LIMIT)
+        lev_limit = MIN_GROWUP_LEV_LIMIT;
     else if (lev_limit > MAX_MONSTER_LEVEL)
         lev_limit = MAX_MONSTER_LEVEL; //(ptr->mlevel > 49 ? 50 : 49);
 

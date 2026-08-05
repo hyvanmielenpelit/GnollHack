@@ -934,8 +934,9 @@ u_init(void)
     u.facing_right = 0;
     u.action = ACTION_TILE_NO_ACTION;
 
-    u.umonnum = u.umonster = urole.monsternum;
     u.ulycn = NON_PM;
+    u.umonnum = u.umonster = urole.monsternum;
+    u.mmlev = mons[u.umonnum].mlevel;
     set_uasmon();
     flags.female = flags.female;
 

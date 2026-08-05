@@ -1770,6 +1770,9 @@ peffects(struct obj *otmp)
             if (is_obj_blessed(otmp))
                 u.uexp = rndexp(TRUE);
 
+            /* polymorphed player may also grow into bigger monster form */
+            (void) u_grow_up((struct monst *) 0);
+
             special_effect_wait_until_end(0);
         }
         else

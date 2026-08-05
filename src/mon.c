@@ -4396,6 +4396,9 @@ cleanup:
     more_experienced(tmp, 0);
     newexplevel(); /* will decide if you go up */
 
+    /* check if polymorphed player should grow up from this kill */
+    (void) u_grow_up(mtmp);
+
     /* adjust alignment points */
     if (mtmp->m_id == quest_status.leader_m_id) 
     { /* REAL BAD! */

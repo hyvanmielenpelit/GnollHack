@@ -54,6 +54,7 @@ were_change(struct monst *mon)
     if (mon == &youmonst)
     {
         /* update innate intrinsics (mainly Drain_resistance) */
+        /* Keep u.mmlev upon were changes */
         set_uasmon(); /* new_were() doesn't do this */
     }
 }

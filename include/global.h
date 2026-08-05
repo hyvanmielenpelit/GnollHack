@@ -414,6 +414,7 @@ struct savefile_info {
 
 #define MAXULEV 50 /* max character experience level */
 #define MAX_MONSTER_LEVEL 127 /* max m_lev for a monster, maximum value for a signed char */
+#define MIN_GROWUP_LEV_LIMIT 5 /* arbitrary */
 
 #define MAXMONNO 240 /* extinct monst after this number created (JG -- doubled) */
 #define MHPMAX 500   /* maximum monster hp (JG -- seems to apply only to worms...) */

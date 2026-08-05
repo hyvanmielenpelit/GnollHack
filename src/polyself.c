@@ -38,7 +38,8 @@ static const char no_longer_petrify_resistant[] =
    change sex (ought to be an arg to polymon() and newman() instead) */
 static int sex_change_ok = 0;
 
-/* update the youmonst.data structure pointer and intrinsics */
+/* update the youmonst.data structure pointer and intrinsics 
+   set u.umonnum and u.mmlev before calling this function */
 void
 set_uasmon(void)
 {
@@ -46,6 +47,8 @@ set_uasmon(void)
     int i;
 
     set_mon_data(&youmonst, mdat, 0);
+
+    youmonst.m_lev = u.mmlev;
 
     /* Clear out FROM_FORMs*/
     for (i = 1; i <= LAST_PROP; i++)
@@ -186,6 +189,8 @@ polyman(const char *fmt, const char *arg)
         u.umonnum = u.umonster;
         flags.female = u.mfemale;
     }
+
+    u.mmlev = mons[u.umonnum].mlevel;
     set_uasmon();
 
     u.mh = u.mhmax = u.basemhmax = 0;
@@ -265,8 +270,10 @@ change_sex(void)
     else
         Strcpy(pl_character, urole.name.m);
     u.umonster = urole.monsternum;
-    if (!already_polyd) {
+    if (!already_polyd && u.umonnum != u.umonster) {
         u.umonnum = u.umonster;
+        /* Keep u.mmlev */
+        set_uasmon();
     }
 }
 
@@ -727,10 +734,16 @@ made_change:
     }
 }
 
+int
+polymon(int mntmp)
+{
+    return polymon_ex(mntmp, FALSE);
+}
+
 /* (try to) make a mntmp monster out of the player;
    returns 1 if polymorph successful */
 int
-polymon(int mntmp)
+polymon_ex(int mntmp,boolean growing_up)
 {
     char buf[BUFSZ];
     boolean sticky = sticks(youmonst.data) && u.ustuck && !u.uswallow,
@@ -798,9 +811,9 @@ polymon(int mntmp)
         Strcat(buf, (is_male(&mons[mntmp]) || is_female(&mons[mntmp]))
                        ? "" : flags.female ? "female " : "male ");
     }
-    play_sfx_sound(SFX_POLYMORPH_SUCCESS);
+    play_sfx_sound(growing_up ? SFX_GAIN_LEVEL :SFX_POLYMORPH_SUCCESS);
     Strcat(buf, pm_monster_name(&mons[mntmp], flags.female));
-    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s!", (u.umonnum != mntmp) ? "turn into" : "feel like", an(buf));
+    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s!", growing_up ? (humanoid(&mons[mntmp]) ? "become" : "grow up into") : (u.umonnum != mntmp) ? "turn into" : "feel like", an(buf));
 
     if (Stoned && poly_when_stoned(&mons[mntmp])) {
         /* poly_when_stoned already checked stone golem genocide */
@@ -810,6 +823,7 @@ polymon(int mntmp)
 
     u.mtimedone = rn1(500, 500);
     u.umonnum = mntmp;
+    u.mmlev = mons[mntmp].mlevel;
     set_uasmon();
 
     /* New stats for monster, to last only as long as polymorphed.
@@ -865,51 +879,60 @@ polymon(int mntmp)
      * We can't do the above, since there's no such thing as an
      * "experience level of you as a monster" for a polymorphed character.
      */
-    mlvl = (int) mons[mntmp].mlevel;
-    int hp = 1;
-    if (youmonst.data->mlet == S_DRAGON && mntmp >= PM_GRAY_DRAGON) 
+    mlvl = (int)mons[mntmp].mlevel;
+
+    if (!growing_up)
     {
-        hp = (int)((In_endgame(&u.uz) ? (8.0 * (double)mlvl) : ((double)d(mlvl, 8))) + constitution_hp_bonus(ACURR(A_CON)) * (double)mlvl);
-//    } else if (is_golem(youmonst.data)) {
-//        hp = golemhp(mntmp);
-    } 
-    else
-    {
-        if (!mlvl)
+        int hp = 1;
+        if (youmonst.data->mlet == S_DRAGON && mntmp >= PM_GRAY_DRAGON)
         {
-            hp = rnd(4) + (int)(constitution_hp_bonus(ACURR(A_CON)) / 2.0);
+            hp = (int)((In_endgame(&u.uz) ? (8.0 * (double)mlvl) : ((double)d(mlvl, 8))) + constitution_hp_bonus(ACURR(A_CON)) * (double)mlvl);
+            //    } else if (is_golem(youmonst.data)) {
+            //        hp = golemhp(mntmp);
         }
         else
-            hp = d(mlvl, 8) + (int)(constitution_hp_bonus(ACURR(A_CON)) * (double)mlvl);
-        /*
-        if (is_home_elemental(&mons[mntmp]))
-            hp *= 2;
-         */
-    }
-    if (hp < 1)
-        hp = 1;
-    u.mhmax = hp;
-    u.basemhmax = hp;
-    u.mh = u.mhmax;
-    updatemaxhp();
+        {
+            if (!mlvl)
+            {
+                hp = rnd(4) + (int)(constitution_hp_bonus(ACURR(A_CON)) / 2.0);
+            }
+            else
+                hp = d(mlvl, 8) + (int)(constitution_hp_bonus(ACURR(A_CON)) * (double)mlvl);
+            /*
+            if (is_home_elemental(&mons[mntmp]))
+                hp *= 2;
+             */
+        }
+        if (hp < 1)
+            hp = 1;
+        u.mhmax = hp;
+        u.basemhmax = hp;
+        u.mh = u.mhmax;
+        updatemaxhp();
 
-    if (u.ulevel < mlvl) {
-        /* Low level characters can't become high level monsters for long */
+        if (u.ulevel < mlvl) 
+        {
+            /* Low level characters can't become high level monsters for long */
 #ifdef DUMB
         /* DRS/NS 2.2.6 messes up -- Peter Kendell */
-        int mtd = u.mtimedone, ulv = u.ulevel;
+            int mtd = u.mtimedone, ulv = u.ulevel;
 
-        u.mtimedone = mtd * ulv / mlvl;
+            u.mtimedone = mtd * ulv / mlvl;
 #else
-        u.mtimedone = u.mtimedone * u.ulevel / mlvl;
+            u.mtimedone = u.mtimedone * u.ulevel / mlvl;
 #endif
+        }
     }
 
     if (uskin && mntmp != armor_to_dragon(uskin->otyp))
         skinback(FALSE);
     break_armor();
-    drop_weapon(1);
-    (void) hideunder(&youmonst);
+
+    if (!growing_up)
+    {
+        drop_weapon(1);
+        (void)hideunder(&youmonst);
+    }
 
     if (u.utrap && u.utraptype == TT_PIT) {
         set_utrap(rn1(6, 2), TT_PIT); /* time to escape resets */
@@ -2955,6 +2978,113 @@ void
 reset_polyself(void)
 {
     sex_change_ok = 0;
+}
+
+
+/*
+ * Player grows up while in polymorphed form, mirroring how
+ * grow_up() in makemon.c works for monsters.
+ * Returns TRUE if the player transformed into a bigger form.
+ * If victim is non-NULL, this is kill-based growth (HP accumulation).
+ * If victim is NULL, this is immediate growth (potion/wraith/etc).
+ *
+ * Unlike the early version, this function accumulates HP and monster
+ * levels even when no grow-up form exists or after reaching the largest
+ * form, matching the monster-side behavior.
+ */
+boolean
+u_grow_up(struct monst *victim)
+{
+    int oldtype, newtype, max_increase, cur_increase, lev_limit, hp_threshold;
+
+    if (!Upolyd)
+        return FALSE;
+
+    struct permonst* ptr = youmonst.data;
+    if (!ptr)
+        return FALSE;
+
+    oldtype = u.umonnum;
+    newtype = little_to_big(oldtype);
+
+    /* growth limits differ depending on method of advancement */
+    if (victim)
+    {
+        /* Kill-based growth — accumulate HP toward threshold */
+        hp_threshold = ((int) u.mmlev) * 8;
+        if (!u.mmlev)
+            hp_threshold = 4;
+
+        lev_limit = 3 * (int) ptr->mlevel / 2; /* same as adj_lev() */
+        /* If they can grow up, be sure the level is high enough for that */
+        if (oldtype != newtype && (int) mons[newtype].mlevel > lev_limit)
+            lev_limit = (int) mons[newtype].mlevel;
+
+        max_increase = rnd((int) victim->m_lev + 1);
+        if (u.basemhmax + max_increase > hp_threshold + 1)
+            max_increase = max((hp_threshold + 1) - u.basemhmax, 0);
+        cur_increase = (max_increase > 1) ? rn2(max_increase) : 0;
+    }
+    else
+    {
+        /* Potion/wraith — always go up a level
+           unless already at maximum */
+        max_increase = cur_increase = rnd(8);
+        hp_threshold = 0; /* smaller than basemhmax + max_increase */
+        lev_limit = MAX_MONSTER_LEVEL; /* recalc below */
+    }
+
+    u.basemhmax += max_increase;
+    u.mh += cur_increase;
+    updatemaxhp();
+
+    if (u.basemhmax <= hp_threshold)
+        return FALSE; /* doesn't gain a level */
+
+    if (lev_limit < MIN_GROWUP_LEV_LIMIT)
+        lev_limit = MIN_GROWUP_LEV_LIMIT;
+    else if (lev_limit > MAX_MONSTER_LEVEL)
+        lev_limit = MAX_MONSTER_LEVEL;
+
+    if (u.mmlev < MAX_MONSTER_LEVEL)
+    {
+        u.mmlev++;
+        youmonst.m_lev = u.mmlev;
+    }
+
+    if (u.mmlev >= mons[newtype].mlevel && newtype != oldtype)
+    {
+        /* Check if grown-up form has been genocided */
+        if (mvitals[newtype].mvflags & MV_GENOCIDED)
+        {
+            /* Player can't grow into genocided form — rehumanize */
+            pline("As you grow into %s, you revert to your original form!",
+                  an(pm_monster_name(&mons[newtype], flags.female)));
+            rehumanize();
+            return FALSE;
+        }
+
+        /* polymon_ex() handles messaging, attribute changes, equipment, duration refresh,
+           visual updates, trap interactions, etc. */
+        return !!polymon_ex(newtype, TRUE);
+    }
+
+    /* sanity checks */
+    if ((int) u.mmlev > lev_limit)
+    {
+        u.mmlev--; /* undo increment */
+        youmonst.m_lev = u.mmlev;
+        /* HP might have been allowed to grow when it shouldn't */
+        if (u.basemhmax == hp_threshold + 1)
+        {
+            u.basemhmax--;
+            updatemaxhp();
+        }
+    }
+    if (u.mh > u.mhmax)
+        u.mh = u.mhmax;
+
+    return FALSE;
 }
 
 /*polyself.c*/

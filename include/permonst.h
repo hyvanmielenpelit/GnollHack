@@ -68,8 +68,8 @@ struct permonst {
     const char* mfemalename;    /* female name, e.g. dwarf queen vs. dwarf king */
     const char* mcommonname;    /* common name for males and females, e.g. dwarf royal */
     char mlet;                  /* symbol */
-    schar mlevel,               /* base monster level */
-        mmove,                  /* move speed */
+    uchar mlevel;               /* base monster level */
+    schar mmove,                /* move speed */
         ac,                     /* (base) armor class */
         mc,                     /* (base) magic cancellation (against magical and supernatural touch attacks) */
         mr;                     /* (base) magic resistance (against all other magic) */

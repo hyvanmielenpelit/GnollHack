@@ -5710,11 +5710,11 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr)
         Strcpy(specialbuf1, "");
         if (ptr->mattk[i].aatyp == AT_SMMN && ptr->mattk[i].mlevel > 0)
         {
-            Sprintf(specialbuf1, "success %d%%", ptr->mattk[i].mlevel);
+            Sprintf(specialbuf1, "success %d%%", (int)ptr->mattk[i].mlevel);
         }
         else if (ptr->mattk[i].aatyp == AT_MAGC && ptr->mattk[i].mlevel > 0)
         {
-            Sprintf(specialbuf1, "as level %d caster", ptr->mattk[i].mlevel);
+            Sprintf(specialbuf1, "as level %d caster", (int)ptr->mattk[i].mlevel);
         }
         
         Strcpy(specialbuf2, "");

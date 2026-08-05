@@ -1131,7 +1131,7 @@ bot_via_windowport(void)
     blstats[idx][BL_MC_PCT].a.a_int = magic_negation_percentage(u.umc);
 
     /* Monster level (if Upolyd) */
-    blstats[idx][BL_HD].a.a_int = Upolyd ? (int) mons[u.umonnum].mlevel : 0;
+    blstats[idx][BL_HD].a.a_int = Upolyd ? (int) u.mmlev : 0; // (int) mons[u.umonnum].mlevel
 
     /* Experience */
     blstats[idx][BL_XP].a.a_int = u.ulevel;

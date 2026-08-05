@@ -1755,8 +1755,8 @@ create_monster(monster *m, struct mkroom *croom)
                 {
                     mmflags |= MM_MAX_HP;
                     mmflags2 |= MM2_NAME_KNOWN;
-                    int pm_level= pm->mlevel;
-                    int orig_level = orig_pm->mlevel;
+                    int pm_level= (int)pm->mlevel;
+                    int orig_level = (int)orig_pm->mlevel;
                     //int pm_difficulty = pm->difficulty;
                     //int orig_difficulty = mons[m->id].difficulty;
                     level_adjustment += min((int)pm->mlevel, max(0, orig_level - pm_level) / 2);

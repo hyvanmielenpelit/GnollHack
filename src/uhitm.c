@@ -298,7 +298,7 @@ find_roll_to_hit(struct monst *mtmp, uchar aatyp, struct obj *weapon, int *attk_
     }
     *role_roll_penalty = 0; /* default is `none' */
 
-    polytmp = youmonst.data->mlevel;
+    polytmp = (int)youmonst.data->mlevel;
     nonpolytmp = (int)(skill_multiplier * (double)u.ulevel);
     tmp = 1 + Luck + u_strdex_to_hit_bonus() + find_mac(mtmp) + u.ubasehitinc + u.uhitinc;
 

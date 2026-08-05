@@ -3082,7 +3082,7 @@ vanqsort_cmp(const genericptr vptr1, const genericptr vptr2)
     default:
     case VANQ_MLVL_MNDX:
         /* sort by monster level */
-        mlev1 = mons[indx1].mlevel, mlev2 = mons[indx2].mlevel;
+        mlev1 = (int)mons[indx1].mlevel, mlev2 = (int)mons[indx2].mlevel;
         res = mlev2 - mlev1; /* mlevel high to low */
         break;
     case VANQ_MSTR_MNDX:
@@ -3128,7 +3128,7 @@ vanqsort_cmp(const genericptr vptr1, const genericptr vptr2)
         }
         res = mcls1 - mcls2; /* class */
         if (res == 0) {
-            mlev1 = mons[indx1].mlevel, mlev2 = mons[indx2].mlevel;
+            mlev1 = (int)mons[indx1].mlevel, mlev2 = (int)mons[indx2].mlevel;
             res = mlev1 - mlev2; /* mlevel low to high */
             if (vanq_sortmode == VANQ_MCLS_HTOL)
                 res = -res; /* mlevel high to low */
