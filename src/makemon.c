@@ -3989,6 +3989,9 @@ is_mon_high_level(struct monst *mtmp)
 struct permonst *
 grow_up(struct monst *mtmp, struct monst *victim)
 {
+    if (!mtmp)
+        return (struct permonst*)0;
+
     int oldtype, newtype, max_increase, cur_increase, lev_limit, hp_threshold;
     unsigned fem;
     struct permonst *ptr = mtmp->data;
@@ -4050,7 +4053,8 @@ grow_up(struct monst *mtmp, struct monst *victim)
     else if (lev_limit > MAX_MONSTER_LEVEL)
         lev_limit = MAX_MONSTER_LEVEL; //(ptr->mlevel > 49 ? 50 : 49);
 
-    if ((int) ++mtmp->m_lev >= (int)mons[newtype].mlevel && newtype != oldtype)
+    mtmp->m_lev++;
+    if (mtmp->m_lev >= mons[newtype].mlevel && newtype != oldtype)
     {
         ptr = &mons[newtype];
         /* new form might force gender change */
@@ -4058,17 +4062,25 @@ grow_up(struct monst *mtmp, struct monst *victim)
 
         if (mvitals[newtype].mvflags & MV_GENOCIDED)
         { /* allow MV_EXTINCT */
-            if (canspotmon(mtmp))
+            if (has_unchanging(mtmp))
             {
-                int multi_colors[4] = { NO_COLOR, CLR_MSG_HINT, NO_COLOR, NO_COLOR };
-                pline_multi_ex(ATR_NONE, CLR_MSG_WARNING, no_multiattrs, multi_colors, "As %s grows up into %s, %s %s!", mon_nam(mtmp),
-                    an(pm_monster_name(ptr, is_mon_female(mtmp))), mhe(mtmp),
-                    is_not_living(ptr) ? "expires" : "dies");
+                /* Unchanging prevents changing into a genocided form */
+                goto no_mon_polymorph_here;
             }
-            set_mon_data(mtmp, ptr, mtmp->subtype); /* keep mvitals[] accurate */
-            change_mon_ability_scores(mtmp, oldtype, newtype);
-            mondied(mtmp);
-            return (struct permonst *) 0;
+            else
+            {
+                if (canspotmon(mtmp))
+                {
+                    int multi_colors[4] = { NO_COLOR, CLR_MSG_HINT, NO_COLOR, NO_COLOR };
+                    pline_multi_ex(ATR_NONE, CLR_MSG_WARNING, no_multiattrs, multi_colors, "As %s grows up into %s, %s %s!", mon_nam(mtmp),
+                        an(pm_monster_name(ptr, is_mon_female(mtmp))), mhe(mtmp),
+                        is_not_living(ptr) ? "expires" : "dies");
+                }
+                set_mon_data(mtmp, ptr, mtmp->subtype); /* keep mvitals[] accurate */
+                change_mon_ability_scores(mtmp, oldtype, newtype);
+                mondied(mtmp);
+                return (struct permonst*)0;
+            }
         } 
         else if (canspotmon(mtmp))
         {
@@ -4101,6 +4113,7 @@ grow_up(struct monst *mtmp, struct monst *victim)
         set_mon_female(mtmp, fem); /* gender might be changing */
     }
 
+no_mon_polymorph_here:
     /* sanity checks */
     if ((int) mtmp->m_lev > lev_limit) 
     {

@@ -3057,10 +3057,20 @@ u_grow_up(struct monst *victim)
         /* Check if grown-up form has been genocided */
         if (mvitals[newtype].mvflags & MV_GENOCIDED)
         {
-            /* Player can't grow into genocided form — rehumanize */
-            pline("As you grow into %s, you revert to your original form!",
-                  an(pm_monster_name(&mons[newtype], flags.female)));
-            rehumanize();
+            if (Unchanging)
+            {
+                /* Player can't grow into genocided form nor rehumanize; nothing happens, as unchanging would have prevented non-growing-up change anyway */
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "like %s for a moment.",
+                    an(pm_monster_name(&mons[newtype], flags.female)));
+                goto no_polymorph_here;
+            }
+            else
+            {
+                /* Player can't grow into genocided form — rehumanize */
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As you are about to grow into %s, you suddenly revert to your original form!",
+                    an(pm_monster_name(&mons[newtype], flags.female)));
+                rehumanize();
+            }
             return FALSE;
         }
 
@@ -3069,6 +3079,7 @@ u_grow_up(struct monst *victim)
         return !!polymon_ex(newtype, TRUE);
     }
 
+no_polymorph_here:
     /* sanity checks */
     if ((int) u.mmlev > lev_limit)
     {
