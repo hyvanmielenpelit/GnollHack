@@ -482,7 +482,15 @@ namespace GnollHackX
                 /* CADisplayLink.Duration is only valid after the first callback */
                 if (Interlocked.CompareExchange(ref _refreshRateSampled, 1, 0) == 0)
                 {
-                    PlatformRefreshRate = (float)_platformTicker.GetRefreshRateHz();
+                    try
+                    {
+                        PlatformRefreshRate = (float)_platformTicker.GetRefreshRateHz();
+                    }
+                    catch (Exception ex)
+                    {
+                        PlatformRefreshRate = 60f; // Fallback to 60Hz
+                        Debug.WriteLine(ex.Message);
+                    }
                 }
                 CompositionTarget_Rendering(null, EventArgs.Empty);
             });
@@ -12216,15 +12224,23 @@ namespace GnollHackX
     {
         public static float GetRefreshRateHz()
         {
-            var activity = Platform.CurrentActivity ?? Android.App.Application.Context as Android.App.Activity;
-            var windowManager = activity?.WindowManager;
+            try
+            {
+                var activity = Platform.CurrentActivity ?? Android.App.Application.Context as Android.App.Activity;
+                var windowManager = activity?.WindowManager;
 
 #pragma warning disable CA1422 // Suppress platform API warning
-            var display = windowManager?.DefaultDisplay;
+                var display = windowManager?.DefaultDisplay;
 #pragma warning restore CA1422
 
-            // If available, use display.Mode (API 23+)
-            return display?.RefreshRate ?? 60f; // Fallback to 60Hz
+                // If available, use display.Mode (API 23+)
+                return display?.RefreshRate ?? 60f; // Fallback to 60Hz
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return 60f; // Fallback to 60Hz
+            }
         }
     }
 #endif
