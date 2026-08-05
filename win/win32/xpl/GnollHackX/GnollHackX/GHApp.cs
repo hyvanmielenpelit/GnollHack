@@ -460,28 +460,31 @@ namespace GnollHackX
         private static DisplayLinkTicker _platformTicker = null;
 #endif
 
+        private static bool _refreshRateSampled = false;
         private static void InitializePlatformRenderLoop()
         {
 #if WINDOWS
             Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
 #elif ANDROID
-            //_platformAnimator = ValueAnimator.OfFloat(0f, 600000f);
-            //_platformAnimator.SetDuration(6000000); // milliseconds
-            //_platformAnimator.RepeatCount = ValueAnimator.Infinite;
-            //_platformAnimator.RepeatMode = ValueAnimatorRepeatMode.Restart;
-            //_platformAnimator.Update += CompositionTarget_Rendering;
-            //_platformAnimator.Start();
-
             _platformTicker = new ChoreographerFrameTicker();
             _platformTicker.Start(frameTimeNanos =>
             {
                 CompositionTarget_Rendering(null, EventArgs.Empty);
             });
+
+            /* Cache the actual display refresh rate (MAUI may report an incorrect value) */
+            DisplayRefreshRate = DisplayInfoAndroid.GetRefreshRateHz();
 #elif IOS
             _platformTicker = new DisplayLinkTicker();
 
             _platformTicker.Start(deltaTime =>
             {
+                /* CADisplayLink.Duration is only valid after the first callback */
+                if (!_refreshRateSampled)
+                {
+                    _refreshRateSampled = true;
+                    DisplayRefreshRate = (float)_platformTicker.GetRefreshRateHz();
+                }
                 CompositionTarget_Rendering(null, EventArgs.Empty);
             });
 #endif
@@ -593,12 +596,8 @@ namespace GnollHackX
                 if (curRes == null)
                     return;
                 int screenRefreshRate = (int)curRes.RefreshRate;
-//#elif ANDROID
-//            int screenRefreshRate = (int)DisplayInfoAndroid.GetRefreshRateHz();
-//#elif IOS
-//            int screenRefreshRate = (int)(_platformTicker?.GetRefreshRateHz() ?? 60.0);
 #else
-                int screenRefreshRate = (int)DisplayRefreshRate;
+                int screenRefreshRate = RoundedDisplayRefreshRate;
 #endif
                 MapRefreshRateStyle mapRefreshRateStyle = curGamePage.MapRefreshRate;
                 CanvasTypes canvasType = curGamePage.GetActiveCanvas();
@@ -607,12 +606,12 @@ namespace GnollHackX
                 switch (canvasType)
                 {
                     case CanvasTypes.MainCanvas:
-                        refreshRate = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRateStyle, (float)screenRefreshRate);
+                        refreshRate = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRateStyle, screenRefreshRate);
                         break;
                     case CanvasTypes.MenuCanvas:
                     case CanvasTypes.CommandCanvas:
                     case CanvasTypes.TextCanvas:
-                        refreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(mapRefreshRateStyle, (float)screenRefreshRate);
+                        refreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(mapRefreshRateStyle, screenRefreshRate);
                         break;
                     default:
                         refreshRate = 60;
@@ -2942,6 +2941,7 @@ namespace GnollHackX
 
 #if GNH_MAUI
         public static float _displayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);
+        public static int _roundedDisplayRefreshRate = (int)Math.Round(_displayRefreshRate);
         public static float _displayDensity = DeviceDisplay.Current.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.Current.MainDisplayInfo.Density;
         public static readonly bool IsAndroid = (DeviceInfo.Platform == DevicePlatform.Android);
         public static readonly bool IsiOS = (DeviceInfo.Platform == DevicePlatform.iOS);
@@ -2958,6 +2958,7 @@ namespace GnollHackX
         public static readonly bool IsPackaged = (Microsoft.Maui.ApplicationModel.AppInfo.Current?.PackagingModel ?? AppPackagingModel.Unpackaged) == AppPackagingModel.Packaged;
 #else
         public static float _displayRefreshRate = Math.Max(60.0f, DeviceDisplay.MainDisplayInfo.RefreshRate);
+        public static int _roundedDisplayRefreshRate = (int)Math.Round(_displayRefreshRate);
         public static float _displayDensity = DeviceDisplay.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
         public static readonly bool IsAndroid = (Device.RuntimePlatform == Device.Android);
         public static readonly bool IsiOS = (Device.RuntimePlatform == Device.iOS);
@@ -3066,7 +3067,16 @@ namespace GnollHackX
         public static float DisplayRefreshRate
         {
             get { return Interlocked.CompareExchange(ref _displayRefreshRate, 0.0f, 0.0f); }
-            set { Interlocked.Exchange(ref _displayRefreshRate, value <= 0.0f ? 1.0f : value); }
+            set 
+            {
+                float adjValue = value <= 0.0f ? 1.0f : value;
+                Interlocked.Exchange(ref _displayRefreshRate, adjValue);
+                Interlocked.Exchange(ref _roundedDisplayRefreshRate, (int)Math.Round(adjValue));
+            }
+        }
+        public static int RoundedDisplayRefreshRate
+        {
+            get { return Interlocked.CompareExchange(ref _roundedDisplayRefreshRate, 0, 0); }
         }
 
         private static float _customScreenScale = 1.0f;

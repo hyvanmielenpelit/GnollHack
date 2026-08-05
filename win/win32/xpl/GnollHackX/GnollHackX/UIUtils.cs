@@ -1070,28 +1070,28 @@ namespace GnollHackX
 
         public static uint GetMainCanvasAnimationInterval(MapRefreshRateStyle mapRefreshRate)
         {
-            return GetMainCanvasAnimationInterval(mapRefreshRate, GHApp.DisplayRefreshRate);
+            return GetMainCanvasAnimationInterval(mapRefreshRate, GHApp.RoundedDisplayRefreshRate);
         }
 
-        public static uint GetMainCanvasAnimationInterval(MapRefreshRateStyle mapRefreshRate, float screenRefreshRate)
+        public static uint GetMainCanvasAnimationInterval(MapRefreshRateStyle mapRefreshRate, int roundedScreenRefreshRate)
         {
-            if (screenRefreshRate >= 144.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS144)
+            if (roundedScreenRefreshRate >= 144 && mapRefreshRate >= MapRefreshRateStyle.MapFPS144)
                 return 7;
-            else if (screenRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
+            else if (roundedScreenRefreshRate >= 120 && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
                 return 8;
-            else if (screenRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
+            else if (roundedScreenRefreshRate >= 90 && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
                 return 11;
-            else if (screenRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
+            else if (roundedScreenRefreshRate >= 80 && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
                 return 13;
-            else if (screenRefreshRate >= 72.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS72)
+            else if (roundedScreenRefreshRate >= 72 && mapRefreshRate >= MapRefreshRateStyle.MapFPS72)
                 return 14;
-            else if (screenRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
+            else if (roundedScreenRefreshRate >= 60 && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
                 return 16;
-            else if (screenRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
+            else if (roundedScreenRefreshRate >= 40 && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
                 return 25;
-            else if (screenRefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
+            else if (roundedScreenRefreshRate >= 30 && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
                 return 33;
-            else if (screenRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
+            else if (roundedScreenRefreshRate >= 20 && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
                 return 50;
             else
                 return 100;
@@ -1101,28 +1101,28 @@ namespace GnollHackX
 
         public static int GetMainCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRate)
         {
-            return GetMainCanvasAnimationFrequency(mapRefreshRate, GHApp.DisplayRefreshRate);
+            return GetMainCanvasAnimationFrequency(mapRefreshRate, GHApp.RoundedDisplayRefreshRate);
         }
 
-        public static int GetMainCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRate, float screenRefreshRate)
+        public static int GetMainCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRate, int roundedScreenRefreshRate)
         {
-            if (screenRefreshRate >= 144.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS144)
+            if (roundedScreenRefreshRate >= 144 && mapRefreshRate >= MapRefreshRateStyle.MapFPS144)
                 return 144;
-            else if (screenRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
+            else if (roundedScreenRefreshRate >= 120 && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
                 return 120;
-            else if (screenRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
+            else if (roundedScreenRefreshRate >= 90 && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
                 return 90;
-            else if (screenRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
+            else if (roundedScreenRefreshRate >= 80 && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
                 return 80;
-            else if (screenRefreshRate >= 72.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS72)
+            else if (roundedScreenRefreshRate >= 72 && mapRefreshRate >= MapRefreshRateStyle.MapFPS72)
                 return 72;
-            else if (screenRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
+            else if (roundedScreenRefreshRate >= 60 && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
                 return 60;
-            else if (screenRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
+            else if (roundedScreenRefreshRate >= 40 && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
                 return 40;
-            else if (screenRefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
+            else if (roundedScreenRefreshRate >= 30 && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
                 return 30;
-            else if (screenRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
+            else if (roundedScreenRefreshRate >= 20 && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
                 return 20;
             else
                 return 10;
@@ -1130,19 +1130,19 @@ namespace GnollHackX
 
         public static MapRefreshRateStyle GetDefaultMapFPS()
         {
-            float screenRefreshRate = GHApp.DisplayRefreshRate;
+            int roundedScreenRefreshRate = GHApp.RoundedDisplayRefreshRate;
             bool platformLoop = GHApp.UsePlatformRenderLoop;
-            return GetDefaultMapFPS(screenRefreshRate, platformLoop);
+            return GetDefaultMapFPS(roundedScreenRefreshRate, platformLoop);
         }
-        public static MapRefreshRateStyle GetDefaultMapFPS(float screenRefreshRate, bool platformLoop)
+        public static MapRefreshRateStyle GetDefaultMapFPS(int roundedScreenRefreshRate, bool platformLoop)
         {
-            if (platformLoop && screenRefreshRate >= 80f && screenRefreshRate % 80 == 0)
+            if (platformLoop && roundedScreenRefreshRate >= 80 && roundedScreenRefreshRate % 80 == 0)
                 return MapRefreshRateStyle.MapFPS80;
-            else if (platformLoop && screenRefreshRate >= 72f && screenRefreshRate % 72 == 0)
+            else if (platformLoop && roundedScreenRefreshRate >= 72 && roundedScreenRefreshRate % 72 == 0)
                 return MapRefreshRateStyle.MapFPS72;
-            else if (screenRefreshRate >= 60f)
+            else if (roundedScreenRefreshRate >= 60)
                 return MapRefreshRateStyle.MapFPS60;
-            else if (screenRefreshRate >= 40f)
+            else if (roundedScreenRefreshRate >= 40)
                 return MapRefreshRateStyle.MapFPS40;
             else
                 return MapRefreshRateStyle.MapFPS30;
@@ -1164,9 +1164,9 @@ namespace GnollHackX
             //    return 16;
         }
 
-        public static int GetAuxiliaryCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRateStyle, float screenRefreshRate)
+        public static int GetAuxiliaryCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRateStyle, int roundedScreenRefreshRate)
         {
-            int mainInterval = GetMainCanvasAnimationFrequency(mapRefreshRateStyle, screenRefreshRate);
+            int mainInterval = GetMainCanvasAnimationFrequency(mapRefreshRateStyle, roundedScreenRefreshRate);
             return Math.Max(60, mainInterval);
         }
 

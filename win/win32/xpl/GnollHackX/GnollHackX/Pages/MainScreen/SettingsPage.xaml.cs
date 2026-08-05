@@ -213,14 +213,14 @@ namespace GnollHackX.Pages.MainScreen
                 new MapRefreshRateItem("60 FPS", false, MapRefreshRateStyle.MapFPS60),
             };
 
-            float screenRefreshRate = GHApp.DisplayRefreshRate;
-            if (screenRefreshRate >= 72.0f)
+            int roundedScreenRefreshRate = GHApp.RoundedDisplayRefreshRate;
+            if (roundedScreenRefreshRate >= 72)
                 list.Add(new MapRefreshRateItem("72 FPS", false, MapRefreshRateStyle.MapFPS72));
-            if (screenRefreshRate >= 80.0f)
+            if (roundedScreenRefreshRate >= 80)
                 list.Add(new MapRefreshRateItem("80 FPS", false, MapRefreshRateStyle.MapFPS80));
-            //if (screenRefreshRate >= 90.0f)
+            //if (roundedScreenRefreshRate >= 90)
             //    list.Add("90 fps");
-            //if (screenRefreshRate >= 120.0f)
+            //if (roundedScreenRefreshRate >= 120)
             //    list.Add("120 fps");
             RefreshRatePicker.ItemsSource = list;
 
@@ -520,11 +520,11 @@ namespace GnollHackX.Pages.MainScreen
                 if (item != null)
                 {
 #if WINDOWS
-                    float refreshRate = (float)DisplaySettingsHelper.GetCurrentResolution()?.RefreshRate;
+                    int roundedRefreshRate = (int)DisplaySettingsHelper.GetCurrentResolution()?.RefreshRate;
 #else
-                    float refreshRate = GHApp.DisplayRefreshRate;
+                    int roundedRefreshRate = GHApp.RoundedDisplayRefreshRate;
 #endif
-                    item.Value = UIUtils.GetDefaultMapFPS(refreshRate, PlatformRenderLoopGrid.IsVisible && PlatformRenderLoopSwitch.IsToggled);
+                    item.Value = UIUtils.GetDefaultMapFPS(roundedRefreshRate, PlatformRenderLoopGrid.IsVisible && PlatformRenderLoopSwitch.IsToggled);
                     item.DisplayName = "Default (" + UIUtils.GetMainCanvasAnimationFrequency(item.Value) + " FPS)";
                 }
             }
