@@ -14,18 +14,22 @@ GnollHack is a turn-based roguelike game derived from NetHack 3.6.2. It consists
 
 Refer to [DEVEL/code_style.txt](file:///c:/hmp/GnollHack/DEVEL/code_style.txt) for the complete guide.
 
-### Required C Style Conventions (STRICT C89 & ALLMAN)
-AI Agents MUST override their default modern C habits and adhere strictly to the following:
+### Required C Style Conventions (C99 & ALLMAN)
+AI Agents MUST adhere strictly to the following:
 - **Brace placement**: **Strict Allman style** — the opening brace MUST go on its own line for both functions and control statements (`if`, `for`, `while`). Legacy NetHack files may still use K&R brace placement in places; convert to Allman when touching such code.
-- **Variables**: Strict C89 rules. **NEVER** declare variables inside `for` loops or conditions. All variables must be declared at the top of the block.
-  - *BAD*: `for (int i = 0; i < 5; i++) {`
-  - *GOOD*: `int i;` (at block start) ... `for (i = 0; i < 5; i++)`
-- **Function definitions & prototypes**: Use standard ANSI prototypes (e.g. `void foo(int x)`). Do not use legacy K&R declarations. (Note: Despite using modern prototypes, you must still strictly adhere to C89 rules for variable declarations).
+- **Variables**: May be declared close to where they are first used, not only at the top of a block. However, prefer C89-style `for`-loop declarations (variable declared before the loop) because some compilers may warn on loop-scoped declarations. Loop-scoped declarations are not banned but should be avoided when practical.
+  - *Preferred*: `int i;` (before the loop) ... `for (i = 0; i < 5; i++)`
+  - *Acceptable but may warn*: `for (int i = 0; i < 5; i++)`
+  - *BAD*: declaring variables in a condition: `if (int x = foo())`
+- **Function definitions & prototypes**: Use standard ANSI C prototypes (e.g. `void foo(int x)`). Do not use legacy K&R declarations.
 - **Indentation**: 4 spaces, NO tabs. 78 characters maximum width.
 - **Naming**: `snake_case` for functions/variables. `ALL_CAPS_WITH_UNDERSCORES` for macros/enums.
 - **Switch/case**: `case` labels unindented within `switch`
 - **Single-statement bodies**: Both braced and unbraced forms are acceptable; use whichever is clearer. Do not use the comma operator to combine multiple assignments in a single-statement body.
-- **Comments**: Use `/* */` for all C comments. Do NOT use `//` in the C core.
+- **Comments**: `/* */` is the preferred comment style. `//` may be used for commenting out code or for quick inline notes about old values, but do NOT use `//` for regular documentation or explanatory comments.
+- **long long**: Allowed. Used throughout the codebase for 64-bit values.
+- **Banned C99 features**: Variable-length arrays (VLAs) are BANNED. 
+- **Discouraged C99 features**: Designated initializers, compound literals, variadic macros, `restrict`, `_Pragma`, flexible array members, `<stdbool.h>`, and `inline` should be avoided (see code_style.txt for details).
 
 ## C# / .NET Conventions
 - **Pure C# naming**: PascalCase for public members, camelCase for locals (standard C# conventions)

@@ -5,13 +5,13 @@
 GnollHack Coding Style
 =======================
 
-GnollHack is written in C, with a .NET MAUI frontend in C#. This coding style
-document is concerned primarily with the style used for C source files. For C#
-conventions, see the AI agent skills documentation.
+GnollHack is written in C (C99 standard), with a .NET MAUI frontend in C#.
+This coding style document is concerned primarily with the style used for C
+source files. For C# conventions, see the AI agent skills documentation.
 
 GnollHack is derived from NetHack 3.6.2. The original NetHack codebase used
 K&R brace placement style and K&R function declarations. GnollHack has fully
-migrated to Allman brace placement style and ANSI C89/C99 function prototypes.
+migrated to Allman brace placement style and ANSI C function prototypes.
 Always use the GnollHack style described here.
 
 Developers should do their best to adhere to the coding style to promote
@@ -66,7 +66,7 @@ own line, at the same indentation level as the control statement or function
 definition header.
 
 For a function definition, the return type, declarator, and opening brace
-should each appear on a line of their own, using standard C89/C99 prototypes:
+should each appear on a line of their own, using standard ANSI C prototypes:
 
     static boolean
     has_npc_room(struct monst *npc)
@@ -147,18 +147,43 @@ such with a comment, to avoid Yeenaghu getting the touch of death again:
         statement;
     }
 
-Variables should never be declared in a condition or a for loop
-initialization, and if an assignment is used as a condition, it should be
-wrapped in an additional set of parentheses for clarity:
+Variables may be declared close to where they are first used, not only at the
+top of a block. This improves readability by keeping declarations near their
+first use:
 
-    int *p;
-    if ((p = fcall()))
+    /* Both of these are acceptable: */
+    int count = 0;
+    for (i = 0; i < n; i++)
+    {
+        /* ... */
+        int result = some_function(i);
+        count += result;
+    }
+
+Variables should never be declared in a condition. For for-loop
+initialization, prefer C89-style declarations (variable declared before the
+loop) because some compilers may generate warnings for loop-scoped
+declarations. Loop-scoped declarations are not banned but should be avoided
+when practical:
+
+    /* Preferred: */
+    int i;
+    for (i = 1; i < 10; ++i)
     {
         /* body */
     }
 
-    int i;
-    for (i = 1; i < 10; ++i)
+    /* Acceptable but may warn on some compilers: */
+    for (int i = 1; i < 10; ++i)
+    {
+        /* body */
+    }
+
+If an assignment is used as a condition, it should be
+wrapped in an additional set of parentheses for clarity:
+
+    int *p;
+    if ((p = fcall()))
     {
         /* body */
     }
@@ -180,13 +205,54 @@ immediately inside a pair of parentheses:
 Comments
 --------
 
-Use /* */ for all C comments. Do NOT use // in the C core.
+Use /* */ for all regular C comments. The // comment style may be used to
+comment out code or to quickly retain old code at the end of a line, but
+/* */ is the generally preferred comment style for documentation and
+explanatory comments:
+
+    /* This is the preferred comment style for explanations. */
+    result = calculate_damage(mtmp);
+
+    //old_result = legacy_damage(mtmp);  /* OK: commented-out code */
+    x = 5; //was 3  /* OK: quick inline note about old value */
+
+C99 Features
+------------
+
+GnollHack targets the C99 standard. The following C99 features are used or
+permitted:
+
+- long long int (and unsigned long long int): Used throughout for 64-bit
+  values, formatting with %lld/%llu, and the int64_t/uint64_t typedefs.
+- Mixed declarations and code: Variables may be declared close to first use
+  (see the Variables section above).
+- // comments: Permitted for commenting out code (see Comments above).
+- <stdint.h> fixed-width types: int32_t, uint64_t, etc. are used where
+  appropriate, especially for interop with the C# frontend.
+- snprintf: Preferred over sprintf when a buffer size limit is needed.
+
+The following C99 features are NOT used or are explicitly banned:
+
+- Variable-length arrays (VLAs): BANNED. MSVC does not support them, and
+  they carry stack overflow risk. Always use fixed-size arrays or dynamic
+  allocation.
+- Designated initializers (e.g., .field = value): Avoid. Not currently used
+  in the codebase.
+- Compound literals: Avoid. Not currently used in the codebase.
+- Variadic macros (__VA_ARGS__): No strong need. Avoid unless clearly
+  beneficial.
+- restrict qualifier: Not used.
+- _Pragma operator: Not used.
+- Flexible array members: Not used (the traditional struct hack suffices).
+- <stdbool.h> / bool: Not used. GnollHack has its own boolean type.
+- inline functions: Rarely used (only in the PRNG code). Not actively
+  encouraged.
 
 Legacy Code Notes
 -----------------
 
 GnollHack's C codebase has been fully converted from the original NetHack K&R
-function declaration style to ANSI C89/C99 prototypes. The old
+function declaration style to ANSI C function prototypes. The old
 FDECL/NDECL/VDECL prototype macros are no longer used. Some files may still
 retain older formatting or K&R brace placement in places; when touching such
 code, convert it to the GnollHack Allman style described in this document.
