@@ -726,7 +726,7 @@ animate_statue(struct obj *statue, xchar x, xchar y, int cause, int *fail_reason
         else
         {
             boolean isfemale = !!(statue->speflags & SPEFLAGS_FEMALE);
-            boolean ismale = !!(statue->speflags & SPEFLAGS_FEMALE);
+            boolean ismale = !!(statue->speflags & SPEFLAGS_MALE);
 
             uint64_t mkflags = MM_NO_MONSTER_INVENTORY;
             if (isfemale)
