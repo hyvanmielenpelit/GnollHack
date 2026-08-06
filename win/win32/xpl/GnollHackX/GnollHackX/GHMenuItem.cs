@@ -207,6 +207,8 @@ namespace GnollHackX
         public List<float> SuffixTextRowWidths { get { return Interlocked.CompareExchange(ref _suffixTextRowWidths, null, null); } set { Interlocked.Exchange(ref _suffixTextRowWidths, value); } }
         public List<float> Suffix2TextRowWidths { get { return Interlocked.CompareExchange(ref _suffix2TextRowWidths, null, null); } set { Interlocked.Exchange(ref _suffix2TextRowWidths, value); } }
 
+        private static readonly string[] EmptyStringArray = new string[1] { "" };
+
         private string[] _mainTextSplit;
         public string[] MainTextSplit
         {
@@ -214,7 +216,7 @@ namespace GnollHackX
             {
                 var textSplit = Interlocked.CompareExchange(ref _mainTextSplit, null, null);
                 if (textSplit == null)
-                    return new string[1] { "" };
+                    return EmptyStringArray;
                 else
                     return textSplit;
             }
@@ -230,7 +232,7 @@ namespace GnollHackX
             {
                 var textSplit = Interlocked.CompareExchange(ref _suffixTextSplit, null, null);
                 if (textSplit == null)
-                    return new string[1] { "" };
+                    return EmptyStringArray;
                 else
                     return textSplit;
             }
@@ -246,7 +248,7 @@ namespace GnollHackX
             {
                 var textSplit = Interlocked.CompareExchange(ref _suffix2TextSplit, null, null);
                 if (textSplit == null)
-                    return new string[1] { "" };
+                    return EmptyStringArray;
                 else
                     return textSplit;
             }
