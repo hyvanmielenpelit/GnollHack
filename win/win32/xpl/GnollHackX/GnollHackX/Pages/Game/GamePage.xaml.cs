@@ -17875,21 +17875,21 @@ namespace GnollHackX.Pages.Game
         /// Hides overlays that could render on top of external UI (e.g. Steam overlay).
         /// Called when the window loses focus.
         /// </summary>
-        public void HideOverlaysForSteam()
-        {
-            CloseMoreCommands();
-            DismissTipView();
-        }
+        //public void HideOverlaysForSteam()
+        //{
+        //    CloseMoreCommands();
+        //    DismissTipView();
+        //}
 
-        private void DismissTipView()
-        {
-            if (TipView.IsVisible)
-            {
-                /* Skip to the end of the tip sequence and fire a release event to dismiss it cleanly */
-                ShownTip = 100;
-                TipView_Touch(this, new SKTouchEventArgs(0L, SKTouchAction.Released, new SKPoint(0, 0), true));
-            }
-        }
+        //private void DismissTipView()
+        //{
+        //    if (TipView.IsVisible)
+        //    {
+        //        /* Skip to the end of the tip sequence and fire a release event to dismiss it cleanly */
+        //        ShownTip = 100;
+        //        TipView_Touch(this, new SKTouchEventArgs(0L, SKTouchAction.Released, new SKPoint(0, 0), true));
+        //    }
+        //}
 
         public void PressCharForSaving()
         {

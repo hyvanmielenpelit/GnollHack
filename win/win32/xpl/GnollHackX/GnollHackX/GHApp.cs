@@ -11216,10 +11216,10 @@ namespace GnollHackX
                     if (spkey == GHSpecialKey.Tab && (isShift || isCtrl)) /* Keys reserved for Steam overlay navigation */
                     {
                         /* Close overlays that would render on top of the Steam overlay */
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            CurrentGamePage?.HideOverlaysForSteam();
-                        });
+                        //MainThread.BeginInvokeOnMainThread(() =>
+                        //{
+                        //    CurrentGamePage?.HideOverlaysForSteam();
+                        //});
                         return false;
                     }
                 }
