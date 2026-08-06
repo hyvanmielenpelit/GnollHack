@@ -670,7 +670,7 @@ animate_statue(struct obj *statue, xchar x, xchar y, int cause, int *fail_reason
     struct obj *item;
     coord cc;
     boolean historic = (Role_if(PM_ARCHAEOLOGIST) && statue->special_quality == SPEQUAL_STATUE_HISTORIC),
-            golem_xform = FALSE, use_saved_traits;
+            golem_xform = FALSE, use_saved_traits = FALSE;
     const char *comes_to_life;
     char statuename[BUFSZ], tmpbuf[BUFSZ];
     static const char historic_statue_is_gone[] =
@@ -757,14 +757,12 @@ animate_statue(struct obj *statue, xchar x, xchar y, int cause, int *fail_reason
         set_mon_female(mon, FALSE);
 
     /* if statue has been named, give same name to the monster */
-    /* //Applies only to nicknames, other stats are recovered from OMONST -- JG
-    if (has_oname(statue) && !unique_corpstat(mon->data))
+    if (!use_saved_traits && has_oname(statue) && !unique_corpstat(mon->data))
     {
         mon = christen_monst(mon, ONAME(statue));
         if(is_obj_nknown(statue))
             set_mon_u_know_mname(mon, 1);
     }
-    */
     if (has_uoname(statue) && !unique_corpstat(mon->data))
     {
         mon = u_name_monst(mon, UONAME(statue));

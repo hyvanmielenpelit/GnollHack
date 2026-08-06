@@ -198,7 +198,7 @@ m_init_background(struct monst *mtmp)
     if (!mtmp)
         return;
 
-    char mnamebuf[BUFSZ];
+    char mnamebuf[BUFSZ] = "";
 
     if (has_enpc(mtmp) && npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_name != 0)
         christen_monst(mtmp, npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_name);
@@ -231,10 +231,69 @@ m_init_background(struct monst *mtmp)
         christen_monst(mtmp, upstart(randomize_demon_name(mnamebuf)));
     else if ((is_human(mtmp->data) || is_quantum_mechanic(mtmp->data)) && !has_mname(mtmp))
     {
+        int nameoffset = 0;
+        const char* nameprefix = 0;
         if (is_mon_female(mtmp))
-            christen_monst(mtmp, upstart(randomize_female_human_name(mnamebuf)));
+        {
+            switch (mtmp->mnum)
+            {
+            case PM_KNIGHT:
+                nameprefix = "Lady ";
+                break;
+            case PM_ALIGNED_PRIEST:
+            case PM_HIGH_PRIEST:
+            case PM_PRIEST:
+            case PM_ABBOT:
+                nameprefix = "Mother ";
+                break;
+            case PM_MONK:
+            case PM_ACOLYTE:
+                nameprefix = "Sister ";
+                break;
+            case PM_HUMAN_KING:
+                nameprefix = "Queen ";
+            default:
+                break;
+            }
+            if (nameprefix)
+            {
+                Strcpy(mnamebuf, nameprefix);
+                nameoffset = (int)strlen(nameprefix);
+            }
+            (void)upstart(randomize_female_human_name(mnamebuf + nameoffset));
+            christen_monst(mtmp, mnamebuf);
+        }
         else
-            christen_monst(mtmp, upstart(randomize_male_human_name(mnamebuf)));
+        {
+            switch (mtmp->mnum)
+            {
+            case PM_KNIGHT:
+                nameprefix = "Sir ";
+                break;
+            case PM_ALIGNED_PRIEST:
+            case PM_HIGH_PRIEST:
+            case PM_PRIEST:
+            case PM_ABBOT:
+                nameprefix = "Father ";
+                break;
+            case PM_ACOLYTE:
+            case PM_MONK:
+                nameprefix = "Brother ";
+                break;
+            case PM_HUMAN_KING:
+                nameprefix = "King ";
+                break;
+            default:
+                break;
+            }
+            if (nameprefix)
+            {
+                Strcpy(mnamebuf, nameprefix);
+                nameoffset = (int)strlen(nameprefix);
+            }
+            (void)upstart(randomize_male_human_name(mnamebuf + nameoffset));
+            christen_monst(mtmp, mnamebuf);
+        }
     }
     else if (mtmp->data == &mons[PM_HALFLING] && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_hobbit_name(mnamebuf)));
