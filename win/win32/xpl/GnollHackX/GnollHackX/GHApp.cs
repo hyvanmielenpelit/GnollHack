@@ -9742,7 +9742,7 @@ namespace GnollHackX
 
             var linkSpan = new Span
             {
-                Text = GHConstants.GnollHackPrivacyPolicyPage,
+                Text = GHConstants.OverseerPrivacyPolicyPage,
                 TextColor = GHColors.LightBlue,
                 TextDecorations = TextDecorations.Underline,
                 FontFamily = "Underwood"
@@ -9751,7 +9751,7 @@ namespace GnollHackX
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += async (s, e) =>
             {
-                await OpenBrowser(contentPage, "Privacy Policy", new Uri(GHConstants.GnollHackPrivacyPolicyPage));
+                await OpenBrowser(contentPage, "Privacy Policy", new Uri(GHConstants.OverseerPrivacyPolicyPage));
             };
             linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
             formattedConsentMessage.Spans.Add(linkSpan);

@@ -510,7 +510,7 @@ namespace GnollHackX.Pages.Game
                 //    + Environment.NewLine, FontFamily = "Underwood" });
                 
                 //var linkSpan = new Span { 
-                //    Text = GHConstants.GnollHackPrivacyPolicyPage, 
+                //    Text = GHConstants.OverseerPrivacyPolicyPage, 
                 //    TextColor = GHColors.LightBlue, 
                 //    TextDecorations = TextDecorations.Underline,
                 //    FontFamily = "Underwood"
@@ -519,7 +519,7 @@ namespace GnollHackX.Pages.Game
                 //var tapGestureRecognizer = new TapGestureRecognizer();
                 //tapGestureRecognizer.Tapped += async (s, e) =>
                 //{
-                //    await GHApp.OpenBrowser(this, "Privacy Policy", new Uri(GHConstants.GnollHackPrivacyPolicyPage));
+                //    await GHApp.OpenBrowser(this, "Privacy Policy", new Uri(GHConstants.OverseerPrivacyPolicyPage));
                 //};
                 //linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
                 //formattedConsentMessage.Spans.Add(linkSpan);
