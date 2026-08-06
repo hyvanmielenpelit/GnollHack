@@ -1951,7 +1951,7 @@ namespace GnollHackX
 
             //lock (_ghWindowsLock)
             {
-                if (_ghWindows[winid] != null)
+                if (winid >= 0 && winid < GHConstants.MaxGHWindows && _ghWindows[winid] != null)
                 {
                     /* Do not dispose old MenuInfo's GHMenuItems here;
                      * the render thread may still hold references to the
@@ -1994,7 +1994,7 @@ namespace GnollHackX
 
             //lock (_ghWindowsLock)
             {
-                if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
+                if (winid >= 0 && winid < GHConstants.MaxGHWindows && _ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
                     bool useNumItems = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_NUM_ITEMS) != 0;
                     GHMenuItem mi = new GHMenuItem(_ghWindows[winid].MenuInfo, GHApp.NoGlyph, ActiveGamePage, identifier,
@@ -2055,7 +2055,7 @@ namespace GnollHackX
 
             //lock (_ghWindowsLock)
             {
-                if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
+                if (winid >= 0 && winid < GHConstants.MaxGHWindows && _ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
                     _ghWindows[winid].MenuInfo.Header = prompt;
                     _ghWindows[winid].MenuInfo.Subtitle = subtitle;
@@ -2066,7 +2066,7 @@ namespace GnollHackX
         bool DoShowMenu(int winid, int how)
         {
             bool enqueued = false;
-            if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
+            if (winid >= 0 && winid < GHConstants.MaxGHWindows && _ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
             {
                 SelectionMode smode = (SelectionMode)how;
                 _ghWindows[winid].MenuInfo.SelectionHow = smode;
@@ -2171,7 +2171,7 @@ namespace GnollHackX
             {
                 if (_requestSwapWeapon)
                     cnt = -2;
-                else if (_abortShowMenuPage || _ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null || _ghWindows[winid].WasCancelled || FastForwardGameOver)
+                else if (_abortShowMenuPage || winid < 0 || winid >= GHConstants.MaxGHWindows || _ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null || _ghWindows[winid].WasCancelled || FastForwardGameOver)
                     cnt = -1;
                 else if (_ghWindows[winid].SelectedMenuItems.Count <= 0)
                     cnt = 0;
