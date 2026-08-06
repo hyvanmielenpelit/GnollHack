@@ -2155,9 +2155,6 @@ namespace GnollHackX
         public static void OnUnfocus()
         {
             RevertScreenResolution();
-            //GHGame game = CurrentGHGame;
-            //if (game != null && !game.PlayingReplay && game.ActiveGamePage.IsGameOn)
-            //    game.SaveCheckPoint();
         }
 
         public static void OnStart()
@@ -11217,7 +11214,14 @@ namespace GnollHackX
                     if (spkey == GHSpecialKey.F12) /* Keys reserved for Steam use */
                         return false;
                     if (spkey == GHSpecialKey.Tab && (isShift || isCtrl)) /* Keys reserved for Steam overlay navigation */
+                    {
+                        /* Close overlays that would render on top of the Steam overlay */
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            CurrentGamePage?.HideOverlaysForSteam();
+                        });
                         return false;
+                    }
                 }
             }
 
