@@ -11,21 +11,26 @@ namespace GnollHackX.Droid
     /// Android JavaScript interface for the Overseer v2 web message bridge.
     /// Registered on the WebView as "GnollHackBridge", allowing Angular to call
     /// <c>window.GnollHackBridge.onWebMessage(jsonString)</c>.
+    /// Uses a WeakReference to avoid preventing garbage collection of the
+    /// OverseerPage after the page is dismissed.
     /// </summary>
     public class OverseerJsBridge : Java.Lang.Object
     {
-        private readonly OverseerPage _page;
+        private readonly WeakReference<OverseerPage> _pageRef;
 
         public OverseerJsBridge(OverseerPage page)
         {
-            _page = page;
+            _pageRef = new WeakReference<OverseerPage>(page);
         }
 
         [JavascriptInterface]
         [Export("onWebMessage")]
         public void OnWebMessage(string json)
         {
-            _page.HandleWebMessageFromBridge(json);
+            if (_pageRef.TryGetTarget(out var page))
+            {
+                page.HandleWebMessageFromBridge(json);
+            }
         }
     }
 }

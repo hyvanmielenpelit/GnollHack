@@ -91,7 +91,20 @@ namespace GnollHackX.Pages.Game
             GHApp.BackButtonPressed -= BackButtonPressed;
             CleanupJsBridge();
 
-
+            /* Navigate the WebView to blank to release WKWebView content
+             * process memory. Without this, each Overseer session accumulates
+             * web content that can exhaust GPU memory on memory-constrained
+             * devices (e.g. old iPads), causing SkiaSharp surfaces to fail
+             * allocation. */
+            try
+            {
+                DisplayWebView.Source = new UrlWebViewSource { Url = "about:blank" };
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "WebView blank navigation failed: " + ex.Message);
+            }
         }
 
         private async Task UploadAndConnect()
