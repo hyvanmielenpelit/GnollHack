@@ -40,7 +40,7 @@
                         <StackLayout Spacing="9" Padding="6">
                             <Label Text="Gnoll Overseer" x:Name="ProgressTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
                             <Label Text="Connecting..." x:Name="ProgressStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
-                            <ProgressBar x:Name="UploadProgressBar" Progress="0.0" WidthRequest="400" HorizontalOptions="Fill" HeightRequest="15" ProgressColor="LightBlue" />
+                            <ProgressBar x:Name="UploadProgressBar" Progress="0.0" MaximumWidthRequest="400" HorizontalOptions="Fill" HeightRequest="15" ProgressColor="LightBlue" />
                         </StackLayout>
                     </Border>
                 </Grid>
