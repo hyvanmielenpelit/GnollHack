@@ -1,13 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
-		<TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>
+		<TargetFrameworks>net11.0-android;net11.0-ios</TargetFrameworks>
 		<!-- Uncomment to also build the MacCatalyst app. -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net10.0-maccatalyst</TargetFrameworks> -->
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- <TargetFrameworks>$(TargetFrameworks);net11.0-maccatalyst</TargetFrameworks> -->
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net10.0-tizen</TargetFrameworks> -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net11.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
 		<RootNamespace>GnollHackM</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -1214,10 +1214,10 @@
 		<!--<PackageReference Include="System.Text.Json" Version="10.0.10" />-->
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 
-		<PackageReference Include="Microsoft.Maui.Controls" Condition="$(TargetFramework.Contains('-ios'))" Version="10.0.51" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Condition="$(TargetFramework.Contains('-ios'))" Version="10.0.51" />
-    <PackageReference Include="Microsoft.Maui.Controls" Condition="!$(TargetFramework.Contains('-ios'))" Version="10.0.90" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Condition="!$(TargetFramework.Contains('-ios'))" Version="10.0.90" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-ci.pr36784.7.26380.75" />
+		<PackageReference Include="Microsoft.Maui.Controls.Xaml" Version="11.0.0-ci.pr36784.7.26380.75" />
+		<PackageReference Include="Microsoft.Maui.Core" Version="11.0.0-ci.pr36784.7.26380.75" />
+		<PackageReference Include="Microsoft.Maui.Essentials" Version="11.0.0-ci.pr36784.7.26380.75" />
 
 
     <!-- Platform-specific packages -->
