@@ -391,6 +391,19 @@ namespace GnollHackX.Pages.Game
 
         private async void CloseArea_Tapped(object sender, EventArgs e)
         {
+            if (_backPressed)
+                return;
+
+            if (_overseerLoaded)
+            {
+                bool confirmed = await GHApp.DisplayMessageBox(
+                    this, "Leave Gnoll Overseer",
+                    "Are you sure you want to leave Gnoll Overseer?",
+                    "Leave", "Cancel");
+                if (!confirmed)
+                    return;
+            }
+
             await ClosePageAsync(true);
         }
 
