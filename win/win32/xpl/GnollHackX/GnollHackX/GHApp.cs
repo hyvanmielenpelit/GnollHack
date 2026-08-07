@@ -179,8 +179,6 @@ namespace GnollHackX
             data.BoolData["LowLevelLogging"] = GHApp.LowLevelLogging;
             data.BoolData["ScreenLogging"] = GHApp.ScreenLogging;
             data.BoolData["DebugLogMessages"] = GHApp.DebugLogMessages;
-            data.BoolData["enableWebSearch"] = GHApp.OverseerEnableWebSearch;
-            data.BoolData["enableToolUse"] = GHApp.OverseerEnableToolUse;
             data.BoolData["enableClientTools"] = GHApp.OverseerEnableClientTools;
             data.BoolData["enableGameActions"] = GHApp.OverseerEnableGameActions;
 
@@ -270,8 +268,6 @@ namespace GnollHackX
             OverseerAllowSpoilers = Preferences.Get("OverseerAllowSpoilers", false);
             OverseerVerboseResponses = Preferences.Get("OverseerVerboseResponses", false);
             OverseerSendGameContext = Preferences.Get("OverseerSendGameContext", true);
-            OverseerEnableWebSearch = Preferences.Get(GHConstants.OverseerEnableWebSearchKey, GHConstants.OverseerEnableWebSearchDefault);
-            OverseerEnableToolUse = Preferences.Get(GHConstants.OverseerEnableToolUseKey, GHConstants.OverseerEnableToolUseDefault);
             OverseerEnableClientTools = Preferences.Get(GHConstants.OverseerEnableClientToolsKey, GHConstants.OverseerEnableClientToolsDefault);
             OverseerEnableGameActions = Preferences.Get(GHConstants.OverseerEnableGameActionsKey, GHConstants.OverseerEnableGameActionsDefault);
             OverseerConsentAccepted = Preferences.Get(GHConstants.OverseerConsentAcceptedKey, GHConstants.OverseerConsentAcceptedDefault);
@@ -3138,8 +3134,6 @@ namespace GnollHackX
         public static bool OverseerAllowSpoilers { get; set; }
         public static bool OverseerVerboseResponses { get; set; }
         public static bool OverseerSendGameContext { get; set; } = true;
-        public static bool OverseerEnableWebSearch { get; set; } = true;
-        public static bool OverseerEnableToolUse { get; set; } = true;
         public static bool OverseerEnableClientTools { get; set; } = true;
         public static bool OverseerEnableGameActions { get; set; }
         public static bool OverseerConsentAccepted { get; set; }

@@ -173,7 +173,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Web Search", "When enabled (default), the Gnoll Overseer can search the web for general information. Disable to restrict the Overseer to game-specific tools only." },
             { "Tool Use", "When enabled (default), the Gnoll Overseer can look up GnollHack game information such as monster stats and item properties from authoritative sources." },
             { "Client Data Access", "When enabled (default), the Gnoll Overseer can request additional data from your game client, such as full message history. This data is sent to your AI provider for processing." },
-            { "Game Actions", "When enabled, the Gnoll Overseer can suggest and perform in-game actions on your behalf. All actions require your confirmation. (Coming soon)" },
+            { "Game Actions", "When enabled, the Gnoll Overseer can suggest and perform in-game actions on your behalf. All actions require your confirmation. (Unavailable in this version.)" },
             { "Data Consent", "Shows whether you have accepted the AI data processing disclosure. Press Reset to revoke your consent; the disclosure will appear again the next time you open Overseer." },
         };
 
@@ -1017,10 +1017,6 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("OverseerVerboseResponses", OverseerVerboseSwitch.IsToggled);
             GHApp.OverseerSendGameContext = OverseerSendContextSwitch.IsToggled;
             Preferences.Set("OverseerSendGameContext", OverseerSendContextSwitch.IsToggled);
-            GHApp.OverseerEnableWebSearch = OverseerWebSearchSwitch.IsToggled;
-            Preferences.Set(GHConstants.OverseerEnableWebSearchKey, OverseerWebSearchSwitch.IsToggled);
-            GHApp.OverseerEnableToolUse = OverseerToolUseSwitch.IsToggled;
-            Preferences.Set(GHConstants.OverseerEnableToolUseKey, OverseerToolUseSwitch.IsToggled);
             GHApp.OverseerEnableClientTools = OverseerClientToolsSwitch.IsToggled;
             Preferences.Set(GHConstants.OverseerEnableClientToolsKey, OverseerClientToolsSwitch.IsToggled);
             GHApp.OverseerEnableGameActions = OverseerGameActionsSwitch.IsToggled;
@@ -1822,16 +1818,11 @@ namespace GnollHackX.Pages.MainScreen
             OverseerSpoilersSwitch.IsToggled = GHApp.OverseerAllowSpoilers;
             OverseerVerboseSwitch.IsToggled = GHApp.OverseerVerboseResponses;
             OverseerSendContextSwitch.IsToggled = GHApp.OverseerSendGameContext;
-            OverseerWebSearchSwitch.IsToggled = GHApp.OverseerEnableWebSearch;
-            OverseerToolUseSwitch.IsToggled = GHApp.OverseerEnableToolUse;
             OverseerClientToolsSwitch.IsToggled = GHApp.OverseerEnableClientTools;
             OverseerGameActionsSwitch.IsToggled = GHApp.OverseerEnableGameActions;
-            /* Enforce Tier 3->4 dependency: Game Actions requires Client Data Access */
-            OverseerGameActionsSwitch.IsEnabled = OverseerClientToolsSwitch.IsToggled;
-            if (!OverseerClientToolsSwitch.IsToggled)
-            {
-                OverseerGameActionsLabel.TextColor = GHColors.Gray;
-            }
+            /* Game Actions is not active yet, make it disabled in code-behind */
+            OverseerGameActionsSwitch.IsEnabled = false;
+            OverseerGameActionsLabel.TextColor = GHColors.Gray;
             /* AI consent state */
             UpdateConsentLabel(GHApp.OverseerConsentAccepted);
 #if DEBUG
@@ -2240,14 +2231,11 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.OverseerEnableGameActions = false;
                 Preferences.Set(GHConstants.OverseerEnableGameActionsKey, false);
                 OverseerGameActionsSwitch.IsToggled = false;
-                OverseerGameActionsSwitch.IsEnabled = false;
-                OverseerGameActionsLabel.TextColor = GHColors.Gray;
             }
-            else
-            {
-                OverseerGameActionsSwitch.IsEnabled = true;
-                OverseerGameActionsLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
-            }
+            
+            /* Game Actions is not active yet, keep it disabled */
+            OverseerGameActionsSwitch.IsEnabled = false;
+            OverseerGameActionsLabel.TextColor = GHColors.Gray;
         }
 
         private void OverseerConsentResetButton_Clicked(object sender, EventArgs e)

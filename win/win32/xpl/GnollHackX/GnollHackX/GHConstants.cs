@@ -173,10 +173,6 @@ namespace GnollHackX
         public const string GnollHackWikiPage = "https://wiki.gnollhack.com"; /* Old page on GitHub: "https://github.com/hyvanmielenpelit/GnollHack/wiki" */
         public const string GnollHackOverseerPage = "https://overseer.gnollhack.com";
         /* Overseer Tool Use settings (4-tier trust escalation) */
-        public const string OverseerEnableWebSearchKey = "OverseerEnableWebSearch";
-        public const bool OverseerEnableWebSearchDefault = true;
-        public const string OverseerEnableToolUseKey = "OverseerEnableToolUse";
-        public const bool OverseerEnableToolUseDefault = true;
         public const string OverseerEnableClientToolsKey = "OverseerEnableClientTools";
         public const bool OverseerEnableClientToolsDefault = true;
         public const string OverseerEnableGameActionsKey = "OverseerEnableGameActions";

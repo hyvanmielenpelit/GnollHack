@@ -1565,22 +1565,6 @@
                                     IsPassword="True" Keyboard="Plain" TextColor="Black" FontFamily="LatoRegular" FontSize="14" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Web Search"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="OverseerWebSearchSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Tool Use"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="OverseerToolUseSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Client Data Access"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -1591,11 +1575,11 @@
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Game Actions"
                                     x:Name="OverseerGameActionsLabel"
-                                    FontFamily="Underwood" TextColor="Gray"
+                                    FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="OverseerGameActionsSwitch" HorizontalOptions="End" VerticalOptions="Center" IsEnabled="False" />
+                                <Switch Grid.Column="1" x:Name="OverseerGameActionsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="Auto,*" HeightRequest="40" HorizontalOptions="Fill">
                                 <Label Grid.Column="0" Text="Data Consent"
