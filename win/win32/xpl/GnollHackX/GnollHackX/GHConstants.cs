@@ -170,9 +170,8 @@ namespace GnollHackX
         public const bool AreMenuFadeEffectsDefault = true;
         public const string GnollHackGitHubPage = "https://github.com/hyvanmielenpelit/GnollHack";
         public const string GnollHackWebPage = "https://gnollhack.com";
-        public const string GnollHackWikiPage = "https://wiki.gnollhack.com"; /* Old page on GitHub: "https://github.com/hyvanmielenpelit/GnollHack/wiki" */
+        public const string GnollHackWikiPage = "https://wiki.gnollhack.com";
         public const string GnollHackOverseerPage = "https://overseer.gnollhack.com";
-        /* Overseer Tool Use settings (4-tier trust escalation) */
         public const string OverseerEnableClientToolsKey = "OverseerEnableClientTools";
         public const bool OverseerEnableClientToolsDefault = true;
         public const string OverseerEnableGameActionsKey = "OverseerEnableGameActions";

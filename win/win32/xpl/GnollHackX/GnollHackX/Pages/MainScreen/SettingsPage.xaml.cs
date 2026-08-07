@@ -170,8 +170,6 @@ namespace GnollHackX.Pages.MainScreen
             { "Send Game Context", "When enabled (default), opening Gnoll Overseer from the game menu automatically sends the current game snapshot and message history. When disabled, no such data is sent." },
             { "Use Local Address", "Enables the Gnoll Overseer to run at a local IP address." },
             { "Local Address", "Local IP address where Gnoll Overseer server can be found." },
-            { "Web Search", "When enabled (default), the Gnoll Overseer can search the web for general information. Disable to restrict the Overseer to game-specific tools only." },
-            { "Tool Use", "When enabled (default), the Gnoll Overseer can look up GnollHack game information such as monster stats and item properties from authoritative sources." },
             { "Client Data Access", "When enabled (default), the Gnoll Overseer can request additional data from your game client, such as full message history. This data is sent to your AI provider for processing." },
             { "Game Actions", "When enabled, the Gnoll Overseer can suggest and perform in-game actions on your behalf. All actions require your confirmation. (Unavailable in this version.)" },
             { "Data Consent", "Shows whether you have accepted the AI data processing disclosure. Press Reset to revoke your consent; the disclosure will appear again the next time you open Overseer." },
