@@ -43,6 +43,13 @@ namespace GnollHackX
         public static Color LighterGray = Color.FromRgba(0.8, 0.8, 0.8, 1.0);
         public static Color LightYellow = Color.FromRgba(0.9, 0.9, 0.5, 1.0);
 
+        /* Overseer webview-matching colors */
+        public static Color OverseerGoldColor = Color.FromRgba(224.0 / 255.0, 186.0 / 255.0, 109.0 / 255.0, 1.0);
+        public static Color OverseerBorderColor = Color.FromRgba(212.0 / 255.0, 160.0 / 255.0, 23.0 / 255.0, 0.25);
+        public static Color OverseerNavBarColor = Color.FromRgba(28.0 / 255.0, 28.0 / 255.0, 28.0 / 255.0, 1.0);
+        public static Color OverseerButtonBgColor = Color.FromRgba(30.0 / 255.0, 30.0 / 255.0, 30.0 / 255.0, 0.85);
+        public static Color OverseerPointerOverlayBkgColor = Color.FromRgba(0.15, 0.15, 0.15, 0.85);
+
 #if GNH_MAUI
         public static Color White = Colors.White;
         public static Color Black = Colors.Black;

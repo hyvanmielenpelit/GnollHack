@@ -34,9 +34,7 @@ namespace GnollHackX.Pages.Game
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class OverseerPage : CustomModalPage, ICloseablePage, IMessagePopupPage
     {
-#if GNH_MAUI
-        IDispatcherTimer _timer = null;
-#endif
+
         private string _baseOverseerUrl;
         private string _snapshotHtml;
 
@@ -67,29 +65,18 @@ namespace GnollHackX.Pages.Game
             //DisplayWebView.Focused += (s, e) => { System.Diagnostics.Debug.WriteLine($"[OverseerPage] DisplayWebView.Focused: IsFocused={DisplayWebView.IsFocused}"); };
             //DisplayWebView.Unfocused += (s, e) => { System.Diagnostics.Debug.WriteLine($"[OverseerPage] DisplayWebView.Unfocused: IsFocused={DisplayWebView.IsFocused}"); };
 
-            UpdateNavigationButtons(true);
 #if GNH_MAUI && WINDOWS
-            Appearing += (s, e) =>
+            /* Highlight the close area on pointer hover (Windows only) */
+            var pointerGesture = new PointerGestureRecognizer();
+            pointerGesture.PointerEntered += (s, e) =>
             {
-                _timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
-                _timer.Interval = TimeSpan.FromSeconds(0.5);
-                _timer.IsRepeating = true;
-                _timer.Tick += (s, e) =>
-                {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        UpdateNavigationButtons();
-                    });
-                };
-                _timer.Start();
+                CloseArea.BackgroundColor = GHColors.OverseerPointerOverlayBkgColor;
             };
-            Disappearing += (s, e) =>
+            pointerGesture.PointerExited += (s, e) =>
             {
-                if (_timer != null)
-                {
-                    _timer.Stop();
-                }
+                CloseArea.BackgroundColor = Color.FromRgba(0, 0, 0, 0);
             };
+            CloseArea.GestureRecognizers.Add(pointerGesture);
 #endif
         }
 
@@ -281,20 +268,17 @@ namespace GnollHackX.Pages.Game
             {
                 LoadingIndicator.IsRunning = false;
                 LoadingIndicator.IsVisible = false;
-                UpdateNavigationButtons();
                 return;
             }
 
             LoadingIndicator.IsRunning = true;
             LoadingIndicator.IsVisible = true;
-            UpdateNavigationButtons();
         }
 
         private void DisplayWebView_Navigated(object sender, WebNavigatedEventArgs e)
         {
             LoadingIndicator.IsRunning = false;
             LoadingIndicator.IsVisible = false;
-            UpdateNavigationButtons();
 
             if (e.Result != WebNavigationResult.Success)
             {
@@ -334,31 +318,7 @@ namespace GnollHackX.Pages.Game
                 _bridgeInitialized = true;
             }
 
-#if GNH_MAUI
-            if(_timer == null)
-            {
-                var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
-                timer.Interval = TimeSpan.FromSeconds(0.5);
-                timer.IsRepeating = false;
-                timer.Tick += (s, e) =>
-                {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        UpdateNavigationButtons();
-                    });
-                };
-                timer.Start();
-            }
-#else
-            Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
-            {
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    UpdateNavigationButtons();
-                });
-                return false;
-            });
-#endif
+
         }
 
 #if GNH_MAUI && WINDOWS
@@ -429,29 +389,15 @@ namespace GnollHackX.Pages.Game
             DisplayWebView.Focus();
         }
 
-        private void UpdateNavigationButtons(bool force = false)
-        {
-            if (force || BackButton.IsEnabled != DisplayWebView.CanGoBack)
-            {
-                BackButton.IsEnabled = DisplayWebView.CanGoBack;
-                BackButton.TextColor = BackButton.IsEnabled ? GHColors.White : GHColors.Gray;
-            }
-
-            if (force || ForwardButton.IsEnabled != DisplayWebView.CanGoForward)
-            {
-                ForwardButton.IsEnabled = DisplayWebView.CanGoForward;
-                ForwardButton.TextColor = ForwardButton.IsEnabled ? GHColors.White : GHColors.Gray;
-            }
-        }
-
-        private async void CloseButton_Clicked(object sender, EventArgs e)
+        private async void CloseArea_Tapped(object sender, EventArgs e)
         {
             await ClosePageAsync(true);
         }
 
         private async Task ClosePageAsync(bool playClickSound)
         {
-            CloseButton.IsEnabled = false;
+            if (_backPressed)
+                return;
             _backPressed = true;
             if (playClickSound)
                 GHApp.PlayButtonClickedSound();
@@ -466,7 +412,7 @@ namespace GnollHackX.Pages.Game
                 {
                     try
                     {
-                        if (CloseButton.IsEnabled)
+                        if (!_backPressed)
                             await ClosePageAsync(true);
                     }
                     catch (Exception ex)
@@ -479,30 +425,6 @@ namespace GnollHackX.Pages.Game
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex);
-            }
-        }
-
-        private void BackButton_Clicked(object sender, EventArgs e)
-        {
-            if (DisplayWebView.CanGoBack)
-            {
-                BackButton.IsEnabled = false;
-                ForwardButton.IsEnabled = false;
-                GHApp.PlayButtonClickedSound();
-                DisplayWebView.GoBack();
-                UpdateNavigationButtons();
-            }
-        }
-
-        private void ForwardButton_Clicked(object sender, EventArgs e)
-        {
-            if (DisplayWebView.CanGoForward)
-            {
-                BackButton.IsEnabled = false;
-                ForwardButton.IsEnabled = false;
-                GHApp.PlayButtonClickedSound();
-                DisplayWebView.GoForward();
-                UpdateNavigationButtons();
             }
         }
 
