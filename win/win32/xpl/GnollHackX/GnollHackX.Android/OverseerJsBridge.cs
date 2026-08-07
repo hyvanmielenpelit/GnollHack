@@ -8,9 +8,9 @@ namespace GnollHackX.Droid
 #endif
 {
     /// <summary>
-    /// Android JavaScript interface for the Overseer v2 client tool bridge.
+    /// Android JavaScript interface for the Overseer v2 web message bridge.
     /// Registered on the WebView as "GnollHackBridge", allowing Angular to call
-    /// <c>window.GnollHackBridge.onToolRequest(jsonString)</c>.
+    /// <c>window.GnollHackBridge.onWebMessage(jsonString)</c>.
     /// </summary>
     public class OverseerJsBridge : Java.Lang.Object
     {
@@ -22,10 +22,10 @@ namespace GnollHackX.Droid
         }
 
         [JavascriptInterface]
-        [Export("onToolRequest")]
-        public void OnToolRequest(string json)
+        [Export("onWebMessage")]
+        public void OnWebMessage(string json)
         {
-            _page.HandleToolRequestFromBridge(json);
+            _page.HandleWebMessageFromBridge(json);
         }
     }
 }

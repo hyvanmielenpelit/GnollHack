@@ -8,7 +8,7 @@ namespace GnollHackX.iOS
 #endif
 {
     /// <summary>
-    /// iOS WKScriptMessage handler for the Overseer v2 client tool bridge.
+    /// iOS WKScriptMessage handler for the Overseer v2 web message bridge.
     /// Registered as "gnollhackBridge", allowing Angular to call
     /// <c>window.webkit.messageHandlers.gnollhackBridge.postMessage(jsonString)</c>.
     /// </summary>
@@ -27,7 +27,7 @@ namespace GnollHackX.iOS
             string json = message.Body?.ToString();
             if (!string.IsNullOrEmpty(json))
             {
-                _page.HandleToolRequestFromBridge(json);
+                _page.HandleWebMessageFromBridge(json);
             }
         }
     }

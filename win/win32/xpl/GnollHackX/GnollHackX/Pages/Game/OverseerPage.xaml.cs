@@ -217,10 +217,21 @@ namespace GnollHackX.Pages.Game
                         else
                         {
                             string msg = "Overseer session failed: HTTP " + (int)response.StatusCode;
+                            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                            {
+                                msg += " (Please check your credentials in Settings)";
+                            }
                             GHApp.WriteGHLog(msg);
                             MainThread.BeginInvokeOnMainThread(() =>
                             {
-                                ProgressStatusLabel.Text = "Connection failed. Opening without game context.";
+                                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                                {
+                                    ProgressStatusLabel.Text = "Connection failed. Please check your credentials in Settings.";
+                                }
+                                else
+                                {
+                                    ProgressStatusLabel.Text = $"Connection failed (HTTP {(int)response.StatusCode}). Opening without game context.";
+                                }
                                 UploadProgressBar.Progress = 1.0;
                             });
                             await Task.Delay(2000);
@@ -643,17 +654,49 @@ namespace GnollHackX.Pages.Game
             Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs e)
         {
             string json = e.WebMessageAsJson;
-            HandleToolRequest(json);
+            HandleWebMessage(json);
         }
 #endif
 
         /// <summary>
         /// Public entry point for platform bridge classes (OverseerJsBridge,
-        /// OverseerScriptMessageHandler) to forward tool requests.
+        /// OverseerScriptMessageHandler) to forward messages from the Angular SPA.
         /// </summary>
-        public void HandleToolRequestFromBridge(string json)
+        public void HandleWebMessageFromBridge(string json)
         {
-            HandleToolRequest(json);
+            HandleWebMessage(json);
+        }
+
+        /// <summary>
+        /// Central dispatcher for all incoming web messages from the Angular SPA.
+        /// Routes file share/download requests to <see cref="HandleFileShareRequest"/>
+        /// and AI tool requests to <see cref="HandleToolRequest"/>.
+        /// </summary>
+        private void HandleWebMessage(string json)
+        {
+            try
+            {
+                var jObject = JObject.Parse(json);
+                string type = jObject["type"]?.ToString();
+
+                if (type == "share_text_file" || type == "download_text_file")
+                {
+                    string filename = jObject["filename"]?.ToString();
+                    string content = jObject["content"]?.ToString();
+
+                    if (!string.IsNullOrEmpty(filename) && content != null)
+                    {
+                        HandleFileShareRequest(filename, content);
+                    }
+                    return;
+                }
+
+                HandleToolRequest(json);
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("Web message parse error: " + ex.Message);
+            }
         }
 
         private static readonly HashSet<string> AllowedClientTools = new HashSet<string>
@@ -723,6 +766,31 @@ namespace GnollHackX.Pages.Game
             {
                 GHApp.WriteGHLog("Tool request parse error: " + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Handles a file share/download request from the Angular SPA.
+        /// Writes the provided text content to a temporary file and invokes
+        /// the native OS share dialog via <see cref="GHApp.ShareFile"/>.
+        /// </summary>
+        private void HandleFileShareRequest(string filename, string content)
+        {
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    string tempPath = Path.Combine(FileSystem.CacheDirectory, filename);
+                    File.WriteAllText(tempPath, content);
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await GHApp.ShareFile(this, tempPath, "Overseer Debug Log");
+                    });
+                }
+                catch (Exception ex)
+                {
+                    GHApp.WriteGHLog("Error sharing file: " + ex.Message);
+                }
+            });
         }
 
         private const int DefaultMessageLimit = 250;
