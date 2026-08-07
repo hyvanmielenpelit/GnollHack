@@ -16,6 +16,8 @@ GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, 
 ## XAML Pipeline: GnollHackX → makedefsdroid → GnollHackM
 
 > **⚠️ CRITICAL**: XAML files in `GnollHackM/` are **auto-generated** — do NOT edit them directly.
+> 
+> *Note: Although auto-generated, these `.xaml` files are currently checked into the repository for ease of use. This is expected behavior for the time being.*
 
 The **source of truth** for all XAML files is in the legacy Xamarin project at `win/win32/xpl/GnollHackX/GnollHackX/`. A build tool called `makedefsdroid` transforms these into MAUI-compatible XAML and copies them to `GnollHackM/`. This means:
 

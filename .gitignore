@@ -17,6 +17,7 @@ dat/spec_levs
 doc/Guidebook
 src/GnollHack
 src/gnollhack
+src/monstr.c
 src/Sysunix
 src/config.h-t
 src/hack.h-t

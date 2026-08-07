@@ -187,9 +187,6 @@
     <ClCompile Include="$(SrcDir)monst.c">
       <Filter>Common Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)monstr.c">
-      <Filter>Common Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)mplayer.c">
       <Filter>Common Source Files</Filter>
     </ClCompile>

@@ -2325,7 +2325,7 @@ E void monst_init(void);
 
 /* ### monstr.c ### */
 
-E void monstr_init(void);
+//E void monstr_init(void);
 
 /* ### mplayer.c ### */
 
