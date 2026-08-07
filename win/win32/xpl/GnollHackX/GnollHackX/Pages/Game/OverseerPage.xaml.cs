@@ -669,7 +669,7 @@ namespace GnollHackX.Pages.Game
 
         /// <summary>
         /// Central dispatcher for all incoming web messages from the Angular SPA.
-        /// Routes file share/download requests to <see cref="HandleFileShareRequest"/>
+        /// Routes file share requests to <see cref="HandleFileShareRequest"/>
         /// and AI tool requests to <see cref="HandleToolRequest"/>.
         /// </summary>
         private void HandleWebMessage(string json)
@@ -679,7 +679,7 @@ namespace GnollHackX.Pages.Game
                 var jObject = JObject.Parse(json);
                 string type = jObject["type"]?.ToString();
 
-                if (type == "share_text_file" || type == "download_text_file")
+                if (type == "share_text_file")
                 {
                     string filename = jObject["filename"]?.ToString();
                     string content = jObject["content"]?.ToString();
@@ -769,7 +769,7 @@ namespace GnollHackX.Pages.Game
         }
 
         /// <summary>
-        /// Handles a file share/download request from the Angular SPA.
+        /// Handles a file share request from the Angular SPA.
         /// Writes the provided text content to a temporary file and invokes
         /// the native OS share dialog via <see cref="GHApp.ShareFile"/>.
         /// </summary>
