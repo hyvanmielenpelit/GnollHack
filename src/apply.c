@@ -189,6 +189,15 @@ use_grail(struct obj *obj, boolean drink_yourself)
     else if (!getdir_ex((char*)0, TRUE))
         return 0;
 
+    if ((!u.dx && !u.dy && !u.dz) && (is_undead(youmonst.data) || is_demon(youmonst.data)))
+    {
+        char rbuf[BUFSZ];
+        Sprintf(rbuf, "You find drinking from %s remarkably repulsive. Continue?", yname(obj));
+        if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Repulsion",
+            rbuf) == 'n')
+            return 0;
+    }
+
     update_u_facing(TRUE);
 
     consume_obj_charge(obj, TRUE);
