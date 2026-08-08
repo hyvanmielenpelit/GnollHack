@@ -43,6 +43,7 @@ namespace GnollHackX.Pages.Game
         private bool _bridgeInitialized = false;
         private DateTime _lastFailedNavigatedTime = DateTime.MinValue;
         private string _lastFailedNavigatedUrl = null;
+        private bool _navigatedAwayFromSpa = false;
 #if DEBUG
 #if IOS || MACCATALYST
         private object _iosNavigationDelegate = null;
@@ -335,7 +336,27 @@ namespace GnollHackX.Pages.Game
                 _bridgeInitialized = true;
             }
 
+            /* Track when the user navigates away from the Overseer SPA
+             * to server-rendered pages (e.g. /Identity/Account/Register).
+             * The title label becomes a "return" button in this state. */
+            if (_overseerLoaded && e.Result == WebNavigationResult.Success
+                && e.Url != null)
+            {
+                bool isOnIdentityPage = false;
+                try
+                {
+                    var uri = new Uri(e.Url);
+                    isOnIdentityPage = uri.AbsolutePath.StartsWith(
+                        "/Identity/", StringComparison.OrdinalIgnoreCase);
+                }
+                catch (UriFormatException) { }
 
+                if (_navigatedAwayFromSpa != isOnIdentityPage)
+                {
+                    _navigatedAwayFromSpa = isOnIdentityPage;
+                    UpdateTitleAppearance();
+                }
+            }
         }
 
 #if GNH_MAUI && WINDOWS
@@ -404,6 +425,36 @@ namespace GnollHackX.Pages.Game
 #endif
             /* Fallback for non-Windows platforms */
             DisplayWebView.Focus();
+        }
+
+        private void TitleArea_Tapped(object sender, EventArgs e)
+        {
+            if (!_navigatedAwayFromSpa)
+                return; /* Do nothing if already on the Overseer SPA */
+
+            /* Navigate back to the Overseer base URL, which will redirect
+             * to the SPA login or chat page depending on auth state */
+            DisplayWebView.Source = new UrlWebViewSource
+            {
+                Url = _baseOverseerUrl
+            };
+        }
+
+        private void UpdateTitleAppearance()
+        {
+            /* Visual hint: show left arrow and underline title when
+             * navigated away, hide arrow and remove underline when
+             * back on the SPA */
+            if (_navigatedAwayFromSpa)
+            {
+                TitleArrowLabel.IsVisible = true;
+                TitleLabel.TextDecorations = TextDecorations.Underline;
+            }
+            else
+            {
+                TitleArrowLabel.IsVisible = false;
+                TitleLabel.TextDecorations = TextDecorations.None;
+            }
         }
 
         private async void CloseArea_Tapped(object sender, EventArgs e)
