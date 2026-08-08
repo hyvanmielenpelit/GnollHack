@@ -1065,6 +1065,13 @@ dump_everything_ai(time_t when)
     iflags.dumping_ai_snapshot = TRUE;
     dump_everything(SNAPSHOT_AI, when);
     iflags.dumping_ai_snapshot = FALSE;
+
+    /* dump_everything() -> dump_redirect(FALSE) calls status_initialize(FALSE)
+       which clears the frontend's StatusFields. Since the AI snapshot is
+       called via P/Invoke from the UI thread (not through the game command
+       queue), no game-loop bot() follows to repopulate the status bar.
+       Force-refresh now so the status bar is not left empty. */
+    bot();
 #else
     nhUse(when);
 #endif
