@@ -5,6 +5,7 @@ using SkiaSharp;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Net;
 
 
 #if GNH_MAUI
@@ -19,6 +20,7 @@ using WinRT.Interop;
 #else
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
+using System.Net.Http;
 #endif
 
 namespace GnollHackX
@@ -1730,6 +1732,88 @@ namespace GnollHackX
                     break;
             }
         }
+
+        /// <summary>
+        /// Checks whether the given URL points to a local or private network address.
+        /// Used to determine whether SSL certificate validation should be bypassed
+        /// (for development/testing with self-signed certificates).
+        /// </summary>
+        public static bool IsLocalUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                return false;
+
+            try
+            {
+                Uri uri = new Uri(url);
+                string host = uri.Host;
+
+                if (string.Equals(host, "localhost", StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                if (string.Equals(host, "::1", StringComparison.Ordinal))
+                    return true;
+
+                if (IPAddress.TryParse(host, out IPAddress ip))
+                {
+                    /* 127.0.0.0/8 */
+                    byte[] bytes = ip.GetAddressBytes();
+                    if (bytes.Length == 4)
+                    {
+                        if (bytes[0] == 127)
+                            return true;
+                        /* 10.0.0.0/8 */
+                        if (bytes[0] == 10)
+                            return true;
+                        /* 172.16.0.0/12 */
+                        if (bytes[0] == 172 && bytes[1] >= 16 && bytes[1] <= 31)
+                            return true;
+                        /* 192.168.0.0/16 */
+                        if (bytes[0] == 192 && bytes[1] == 168)
+                            return true;
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Creates an HttpClientHandler that bypasses SSL certificate validation
+        /// for local/private URLs. Returns null for production URLs.
+        /// </summary>
+        public static HttpClientHandler CreateHttpClientHandlerForUrl(string url)
+        {
+            if (!IsLocalUrl(url))
+                return null;
+
+            return new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+        }
+
+        /// <summary>
+        /// Creates an HttpClient appropriate for the given URL.
+        /// For local/private URLs, SSL certificate validation is bypassed.
+        /// </summary>
+        public static HttpClient CreateHttpClientForUrl(string url, TimeSpan timeout)
+        {
+            HttpClientHandler handler = CreateHttpClientHandlerForUrl(url);
+            HttpClient client;
+            if (handler != null)
+                client = new HttpClient(handler, disposeHandler: true);
+            else
+                client = new HttpClient();
+
+            client.Timeout = timeout;
+            return client;
+        }
+
 
         public static void CleanUp()
         {

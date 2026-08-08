@@ -317,6 +317,8 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetFileDescriptorLimit(int is_max_limit);
         [DllImport(PlatformConstants.dll)]
+        public static extern IntPtr LibGenerateAiSnapshot();
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetCharacterClickAction();
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetCharacterClickAction(int new_value);
@@ -387,145 +389,6 @@ namespace GnollHackX.Unknown
         public void UnloadLibrary()
         {
             UnloadNativeLibrary(PlatformConstants.library);
-        }
-        public void ClearFiles()
-        {
-            ClearCoreFiles();
-            ClearTopScores();
-            ClearSavedGames();
-            ClearDumplogs();
-            ClearSnapshots();
-        }
-
-        public void ClearAllFilesInMainDirectory()
-        {
-            string filesdir = GetGnollHackPath();
-            DirectoryInfo di = new DirectoryInfo(filesdir);
-            foreach (FileInfo file in di.GetFiles())
-            {
-                file.Delete();
-            }
-        }
-
-        public void ClearCoreFiles()
-        {
-            string filesdir = GetGnollHackPath();
-            DirectoryInfo di = new DirectoryInfo(filesdir);
-            foreach (FileInfo file in di.GetFiles())
-            {
-                bool found = false;
-                foreach(string txtfile in _txtfileslist)
-                {
-                    if(file.Name == txtfile)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if(!found)
-                {
-                    foreach (string binfile in _binfileslist)
-                    {
-                        if (file.Name == binfile)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-                if (found)
-                {
-                    if (file.Name != "logfile" && file.Name != "xlogfile" && file.Name != "record" && file.Name != "defaults.gnh")
-                        file.Delete();
-                }
-            }
-        }
-
-        public void ClearTopScores()
-        {
-            string filesdir = GetGnollHackPath();
-            DirectoryInfo di = new DirectoryInfo(filesdir);
-            foreach (FileInfo file in di.GetFiles())
-            {
-                if (file.Name == "logfile" || file.Name == "xlogfile")
-                    file.Delete();
-            }
-        }
-
-        public void ClearSavedGames()
-        {
-            string filesdir = GetGnollHackPath();
-            string fulldirepath = Path.Combine(filesdir, GHConstants.SaveDirectory);
-            if (Directory.Exists(fulldirepath))
-            {
-                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
-                foreach (FileInfo file in disave.GetFiles())
-                {
-                    file.Delete();
-                }
-            }
-        }
-
-        public void ClearDumplogs()
-        {
-            string filesdir = GetGnollHackPath();
-            string fulldirepath = Path.Combine(filesdir, GHConstants.DumplogDirectory);
-            if (Directory.Exists(fulldirepath))
-            {
-                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
-                foreach (FileInfo file in disave.GetFiles())
-                {
-                    try
-                    {
-                        file.Delete();
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex);
-                    }
-                }
-            }
-        }
-
-        public void ClearSnapshots()
-        {
-            string filesdir = GetGnollHackPath();
-            string fulldirepath = Path.Combine(filesdir, GHConstants.SnapshotDirectory);
-            if (Directory.Exists(fulldirepath))
-            {
-                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
-                foreach (FileInfo file in disave.GetFiles())
-                {
-                    try
-                    {
-                        file.Delete();
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex);
-                    }
-                }
-            }
-        }
-
-        public void ClearBones()
-        {
-            string filesdir = GetGnollHackPath();
-            DirectoryInfo di = new DirectoryInfo(filesdir);
-            foreach (FileInfo file in di.GetFiles())
-            {
-                if(file.Name.Length > 4 && file.Name.Substring(0, 4) == "bon-")
-                {
-                    try
-                    {
-                        file.Delete();
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex);
-                    }
-                }
-            }
         }
 
         public async Task ResetDefaultsFile()
@@ -608,9 +471,6 @@ namespace GnollHackX.Unknown
         }
 
 
-        private string[] _txtfileslist = { "xcredits", "license", "logfile", "perm", "record", "symbols", "sysconf", "xlogfile", "defaults.gnh" };
-        private string[] _binfileslist = { "nhdat" };
-
         public async Task InitializeGnollHack()
         {
             /* Unpack GnollHack files */
@@ -628,7 +488,7 @@ namespace GnollHackX.Unknown
                 //}
 
                 /* Make relevant directories */
-                string[] ghdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory };
+                string[] ghdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory, GHConstants.AiDirectory };
                 foreach (string ghdir in ghdirlist)
                 {
                     string fulldirepath = Path.Combine(filesdir, ghdir);
@@ -651,7 +511,7 @@ namespace GnollHackX.Unknown
                 AssetManager assets = MainActivity.StaticAssets;
 #endif
 
-                foreach (string txtfile in _txtfileslist)
+                foreach (string txtfile in GHApp.TxtFilesList)
                 {
 #if __IOS__
                     string extension = Path.GetExtension(txtfile);
@@ -690,7 +550,7 @@ namespace GnollHackX.Unknown
 
                 byte[] data;
                 int maxsize = 2048 * 1024;
-                foreach (string binfile in _binfileslist)
+                foreach (string binfile in GHApp.BinFilesList)
                 {
 #if __IOS__
                 string extension = Path.GetExtension(binfile);
@@ -1237,6 +1097,14 @@ namespace GnollHackX.Unknown
         public int GetFileDescriptorLimit(bool is_max_limit)
         {
             return LibGetFileDescriptorLimit(is_max_limit ? 1 : 0);
+        }
+        public string GenerateAiSnapshot()
+        {
+            IntPtr resptr = LibGenerateAiSnapshot();
+            if (resptr == IntPtr.Zero)
+                return null;
+            string ret = Marshal.PtrToStringAnsi(resptr);
+            return ret;
         }
 
         public bool GetCharacterClickAction()

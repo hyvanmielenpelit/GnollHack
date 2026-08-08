@@ -1154,7 +1154,7 @@ namespace GnollHackX
                 bool resetFiles = Preferences.Get("ResetAtStart", true);
                 if (resetFiles)
                 {
-                    GHApp.GnollHackService.ClearFiles();
+                    GHApp.ClearFiles();
                     Preferences.Set("ResetAtStart", false);
                     Preferences.Set("ResetExternalFiles", true);
                 }
@@ -1222,7 +1222,7 @@ namespace GnollHackX
         {
             try
             {
-                GHApp.GnollHackService.ClearCoreFiles();
+                GHApp.ClearCoreFiles();
             }
             catch (Exception ex)
             {
@@ -1324,6 +1324,7 @@ namespace GnollHackX
             TryReadSettings();
             await InitializeServices();
 
+            GHApp.ClearAiFiles();
             CleanTransferDirectories();
             TryDeleteFrameLog();
 
@@ -2516,7 +2517,7 @@ namespace GnollHackX
             switch (_eventStyle)
             {
                 case 1:
-                    await GHApp.OpenBrowser(this, "Give Us a Star on GitHub", new Uri(GHConstants.GnollHackGitHubStarPage), true);
+                    await GHApp.OpenBrowser(this, "Give Us a Star on GitHub", new Uri(GHConstants.GnollHackGitHubStarPage), ForceBrowserOptions.SystemBrowser);
                     break;
                 default:
                     break;

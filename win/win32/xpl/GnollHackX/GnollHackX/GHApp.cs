@@ -21,6 +21,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using GnollHackX.Pages.Game;
+using GnollHackX.Controls;
 using GnollHackX.Pages.MainScreen;
 #endif
 using Newtonsoft.Json;
@@ -75,6 +76,15 @@ namespace GnollHackX
         }
     }
 
+    public class OverseerEnvironmentData
+    {
+        public Dictionary<string, bool> BoolData { get; set; } = new Dictionary<string, bool>();
+        public Dictionary<string, int> IntData { get; set; } = new Dictionary<string, int>();
+        public Dictionary<string, long> LongData { get; set; } = new Dictionary<string, long>();
+        public Dictionary<string, double> DoubleData { get; set; } = new Dictionary<string, double>();
+        public Dictionary<string, string> StringData { get; set; } = new Dictionary<string, string>();
+    }
+
     public static class GHApp
     {
 #if WINDOWS
@@ -88,6 +98,92 @@ namespace GnollHackX
         public static bool WindowFocused { get { return Interlocked.CompareExchange(ref _windowFocused, 0, 0) != 0; } set { Interlocked.Exchange(ref _windowFocused, value ? 1 : 0); } }
 #endif
         private static Assembly _assembly = null;
+
+        public static OverseerEnvironmentData GetEnvironmentData()
+        {
+            var data = new OverseerEnvironmentData();
+
+            string manufacturer = DeviceInfo.Manufacturer;
+            if (manufacturer?.Length > 0)
+                manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
+
+            ulong TotalMemInMB = GHApp.TotalMemory / (1024 * 1024);
+            long UsedMemInBytes = GHApp.GetUsedMemoryInBytes();
+            long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
+            ulong FreeDiskSpaceInBytes = GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes();
+            ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
+            ulong TotalDiskSpaceInBytes = GHApp.PlatformService.GetDeviceTotalDiskSpaceInBytes();
+            ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
+            long UsedManagedMemInBytes = GHApp.GetUsedManagedMemoryInBytes();
+            long UsedManagedMemInMB = UsedManagedMemInBytes == -1 ? -1 : UsedManagedMemInBytes / (1024 * 1024);
+            
+            int fmodMemCur = -1, fmodMemMax = -1;
+            if (GHApp.FmodService != null)
+                GHApp.FmodService.GetStats(out fmodMemCur, out fmodMemMax);
+            long UsedSoundMemInMB = fmodMemCur == -1 ? -1 : fmodMemCur / (1024 * 1024);
+            
+            ulong UsedBitmapMemInBytes = GHApp.UsedBitmapBytes;
+            long UsedBitmapMemInMB = (long)UsedBitmapMemInBytes / (1024 * 1024);
+
+            long TotalPlayTime = GHApp.RealPlayTime;
+            long CurrentPlayTime = GHApp.AggregateSessionPlayTime;
+
+            data.StringData["Platform"] = DeviceInfo.Platform.ToString();
+            data.StringData["OSVersion"] = DeviceInfo.VersionString;
+            data.StringData["DeviceModel"] = manufacturer + " " + DeviceInfo.Model;
+            data.StringData["GHVersion"] = GHApp.GHVersionString;
+            data.StringData["GHVersionId"] = GHApp.GHVersionId;
+            data.StringData["GHConfiguration"] = GHApp.GHDebug ? "Debug" : "Release";
+            data.StringData["PortVersion"] = GHApp.GetPortVersionString();
+            data.StringData["PortBuild"] = GHApp.GetPortBuildString();
+            data.StringData["PortConfiguration"] = GHApp.IsDebug ? "Debug" : "Release";
+            data.StringData["PackagingModel"] = GHApp.IsPackaged ? "Packaged" : "Unpackaged";
+            data.StringData["Culture"] = System.Globalization.CultureInfo.CurrentCulture?.EnglishName ?? "";
+            data.StringData["FMODVersion"] = GHApp.FMODVersionString;
+            data.StringData["SkiaVersion"] = GHApp.SkiaVersionString;
+            data.StringData["FrameworkVersion"] = GHApp.FrameworkVersionString;
+            data.StringData["UIFrameworkVersion"] = (GHApp.IsMaui ? ".NET MAUI " : "XF ") + GHApp.UIFrameworkVersionString;
+            data.StringData["Compiler"] = GHApp.IsLLVM ? "LLVM" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT";
+            data.StringData["RuntimeVersion"] = GHApp.RuntimeVersionString;
+            data.StringData["GPUBackend"] = GHApp.GPUBackend ?? "";
+            data.StringData["Timestamp"] = DateTime.UtcNow.ToString("O");
+
+            data.LongData["TotalMemoryMB"] = (long)TotalMemInMB;
+            data.LongData["UsedMemoryMB"] = UsedMemInMB;
+            data.LongData["FreeDiskSpaceGB"] = (long)FreeDiskSpaceInGB;
+            data.LongData["TotalDiskSpaceGB"] = (long)TotalDiskSpaceInGB;
+            data.LongData["UsedManagedMemoryMB"] = UsedManagedMemInMB;
+            data.LongData["UsedSoundMemoryMB"] = UsedSoundMemInMB;
+            data.LongData["UsedBitmapMemoryMB"] = UsedBitmapMemInMB;
+            data.LongData["TotalPlayTimeSeconds"] = TotalPlayTime;
+            data.LongData["CurrentPlayTimeSeconds"] = CurrentPlayTime;
+            
+            long cacheSize = GHApp.CurrentGPUCacheSize;
+            data.LongData["GPUCacheSizeMB"] = cacheSize >= 0 ? (cacheSize / 1024 / 1024) : -1;
+            
+            CacheUsageInfo cacheUsage = GHApp.CurrentGPUCacheUsage;
+            data.LongData["GPUCacheUsageMB"] = cacheUsage.MaxResourceBytes >= 0 ? (cacheUsage.MaxResourceBytes / 1024 / 1024) : -1;
+            data.IntData["GPUCacheUsageResources"] = cacheUsage.MaxResources >= 0 ? cacheUsage.MaxResources : -1;
+
+            var curGame = GHApp.CurrentGHGame;
+            if (curGame != null)
+            {
+                data.LongData["GameDurationSeconds"] = curGame.GamePlayTime;
+                data.LongData["SessionPlayTimeSeconds"] = curGame.SessionPlayTime;
+                data.IntData["PendingResponses"] = curGame.ResponseQueue?.Count ?? 0;
+            }
+
+            data.BoolData["IsBeta"] = GHApp.IsBeta;
+            data.BoolData["IsPlaytest"] = GHApp.IsPlaytest;
+            data.BoolData["DeveloperMode"] = GHApp.DeveloperMode;
+            data.BoolData["LowLevelLogging"] = GHApp.LowLevelLogging;
+            data.BoolData["ScreenLogging"] = GHApp.ScreenLogging;
+            data.BoolData["DebugLogMessages"] = GHApp.DebugLogMessages;
+            data.BoolData["enableClientTools"] = GHApp.OverseerEnableClientTools;
+            data.BoolData["enableGameActions"] = GHApp.OverseerEnableGameActions;
+
+            return data;
+        }
 
         public static void Initialize()
         {
@@ -169,6 +265,18 @@ namespace GnollHackX
             AllowBones = Preferences.Get("AllowBones", true);
             //AllowPet = Preferences.Get("AllowPet", true);  //Use MirroredPetsNotGifted instead
             BonesAllowedUsers = Preferences.Get("BonesAllowedUsers", "");
+            OverseerAllowSpoilers = Preferences.Get("OverseerAllowSpoilers", false);
+            OverseerVerboseResponses = Preferences.Get("OverseerVerboseResponses", false);
+            OverseerSendGameContext = Preferences.Get("OverseerSendGameContext", true);
+            OverseerEnableClientTools = Preferences.Get(GHConstants.OverseerEnableClientToolsKey, GHConstants.OverseerEnableClientToolsDefault);
+            OverseerEnableGameActions = Preferences.Get(GHConstants.OverseerEnableGameActionsKey, GHConstants.OverseerEnableGameActionsDefault);
+            OverseerConsentAccepted = Preferences.Get(GHConstants.OverseerConsentAcceptedKey, GHConstants.OverseerConsentAcceptedDefault);
+#if DEBUG
+            OverseerUseLocalAddress = Preferences.Get("OverseerUseLocalAddress", false);
+            LocalOverseerAddress =  Preferences.Get("LocalOverseerAddress", null);
+            LocalOverseerUserName = Preferences.Get("LocalOverseerUserName", null);
+            LocalOverseerPassword = Preferences.Get("LocalOverseerPassword", null);
+#endif
             EmptyWishIsNothing = Preferences.Get("EmptyWishIsNothing", true);
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
             RecordGame = Preferences.Get("RecordGame", false);
@@ -251,6 +359,172 @@ namespace GnollHackX
                 }
             }
         }
+
+        public static void ClearFiles()
+        {
+            ClearCoreFiles();
+            ClearTopScores();
+            ClearSavedGames();
+            ClearDumplogs();
+            ClearSnapshots();
+            ClearAiFiles();
+        }
+
+        public static void ClearAllFilesInMainDirectory()
+        {
+            string filesdir = GHPath;
+            DirectoryInfo di = new DirectoryInfo(filesdir);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+        }
+
+        public readonly static string[] TxtFilesList = { "xcredits", "license", "logfile", "perm", "record", "symbols", "sysconf", "xlogfile", "defaults.gnh" };
+        public readonly static string[] BinFilesList = { "nhdat" };
+
+        public static void ClearCoreFiles()
+        {
+            string filesdir = GHPath;
+            DirectoryInfo di = new DirectoryInfo(filesdir);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                bool found = false;
+                foreach (string txtfile in TxtFilesList)
+                {
+                    if (file.Name == txtfile)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    foreach (string binfile in BinFilesList)
+                    {
+                        if (file.Name == binfile)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (found)
+                {
+                    if (file.Name != "logfile" && file.Name != "xlogfile" && file.Name != "record" && file.Name != "defaults.gnh")
+                        file.Delete();
+                }
+            }
+        }
+
+        public static void ClearTopScores()
+        {
+            string filesdir = GHPath;
+            DirectoryInfo di = new DirectoryInfo(filesdir);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                if (file.Name == "logfile" || file.Name == "xlogfile")
+                    file.Delete();
+            }
+        }
+
+        public static void ClearSavedGames()
+        {
+            string filesdir = GHPath;
+            string fulldirepath = Path.Combine(filesdir, GHConstants.SaveDirectory);
+            if (Directory.Exists(fulldirepath))
+            {
+                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                foreach (FileInfo file in disave.GetFiles())
+                {
+                    file.Delete();
+                }
+            }
+        }
+
+        public static void ClearDumplogs()
+        {
+            string filesdir = GHPath;
+            string fulldirepath = Path.Combine(filesdir, GHConstants.DumplogDirectory);
+            if (Directory.Exists(fulldirepath))
+            {
+                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                foreach (FileInfo file in disave.GetFiles())
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
+        public static void ClearSnapshots()
+        {
+            string filesdir = GHPath;
+            string fulldirepath = Path.Combine(filesdir, GHConstants.SnapshotDirectory);
+            if (Directory.Exists(fulldirepath))
+            {
+                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                foreach (FileInfo file in disave.GetFiles())
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
+        public static void ClearAiFiles()
+        {
+            string filesdir = GHPath;
+            string fulldirepath = Path.Combine(filesdir, GHConstants.AiDirectory);
+            if (Directory.Exists(fulldirepath))
+            {
+                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                foreach (FileInfo file in disave.GetFiles())
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
+        public static void ClearBones()
+        {
+            string filesdir = GHPath;
+            DirectoryInfo di = new DirectoryInfo(filesdir);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                if (file.Name.Length > 4 && file.Name.Substring(0, 4) == "bon-")
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
 
         private static DateTime _nowAtInit;
 
@@ -2871,6 +3145,18 @@ namespace GnollHackX
             set { PlatformService.SetStatusBarHidden(value); }
         }
         public static bool DeveloperMode { get; set; }
+        public static bool OverseerAllowSpoilers { get; set; }
+        public static bool OverseerVerboseResponses { get; set; }
+        public static bool OverseerSendGameContext { get; set; } = true;
+        public static bool OverseerEnableClientTools { get; set; } = true;
+        public static bool OverseerEnableGameActions { get; set; }
+        public static bool OverseerConsentAccepted { get; set; }
+#if DEBUG
+        public static bool OverseerUseLocalAddress { get; set; }
+        public static string LocalOverseerAddress { get; set; }
+        public static string LocalOverseerUserName { get; set; }
+        public static string LocalOverseerPassword { get; set; }
+#endif
 
         //private static readonly object _debugLock = new object();
         private static int _debugLogMessages = GHConstants.DefaultLogMessages ? 1 : 0;
@@ -3173,6 +3459,21 @@ namespace GnollHackX
         public static async Task<bool> EmptyBackButtonPressed(object sender, EventArgs e)
         {
             return await Task.FromResult(false);
+        }
+
+        public static void SetPlatformResizeAdjustment(bool adjustResize)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                try
+                {
+                    PlatformService?.SetAdjustResize(adjustResize);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            });
         }
 
         public static string VersionNumberToString(ulong vernum)
@@ -4685,7 +4986,7 @@ namespace GnollHackX
                 {
                     archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
                 }
-                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory, GHConstants.UserDataDirectory,
+                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory, GHConstants.AiDirectory, GHConstants.UserDataDirectory,
                     GHConstants.ForumPostQueueDirectory, GHConstants.XlogPostQueueDirectory, GHConstants.BonesPostQueueDirectory, GHConstants.ReplayPostQueueDirectory,
                     GHConstants.AppLogDirectory, GHConstants.GeneralTaskQueueDirectory };
                 //These may be too large: GHConstants.ReplayDirectory, GHConstants.ReplayDownloadFromCloudDirectory
@@ -5527,6 +5828,31 @@ namespace GnollHackX
                 {
                     return CurrentUserSecrets?.DefaultAzureBlobStorageConnectionString;
                 }
+            }
+        }
+
+        public static string OverseerAddress
+        {
+            get
+            {
+                string address = GHConstants.GnollHackOverseerPage;
+#if DEBUG
+                if (OverseerUseLocalAddress && !string.IsNullOrEmpty(LocalOverseerAddress))
+                {
+                    string localAddr = GHApp.LocalOverseerAddress;
+                    if (!string.IsNullOrWhiteSpace(localAddr))
+                        return localAddr.TrimEnd('/');
+                }
+                if (XlogReleaseAccount)
+                    return address;
+                else
+                    return address?.Replace("https://", "https://test-");
+#else
+                if (UseDebugPostChannel)
+                    return address?.Replace("https://", "https://test-");
+                else
+                    return address;
+#endif
             }
         }
 
@@ -9431,16 +9757,16 @@ namespace GnollHackX
         private static int _isSystemBrowserOpen = 0;
         public static bool IsSystemBrowserOpen { get { return Interlocked.CompareExchange(ref _isSystemBrowserOpen, 0, 0) != 0; } set { Interlocked.Exchange(ref _isSystemBrowserOpen, value ? 1 : 0); } }
 
-        public static async Task OpenBrowser(ContentPage page, string title, Uri uri, bool forceExternalBrowser = false)
+        public static async Task OpenBrowser(ContentPage page, string title, Uri uri, ForceBrowserOptions forceBrowser = ForceBrowserOptions.None)
         {
             try
             {
-                if (IsWindows && !forceExternalBrowser)
+                if (forceBrowser == ForceBrowserOptions.WebViewBrowser || (IsWindows && forceBrowser == ForceBrowserOptions.None))
                 {
                     var wikiPage = new WikiPage(title, uri.ToString());
                     await Navigation.PushModalAsync(wikiPage);
                 }
-                else
+                else /* forceBrowser == ForceBrowserOptions.SystemBrowser || (!IsWindows || forceBrowser != ForceBrowserOptions.None) */
                 {
                     IsSystemBrowserOpen = true;
                     await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
@@ -9451,6 +9777,53 @@ namespace GnollHackX
             {
                 await DisplayMessageBox(page, "Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
             }
+        }
+
+        public static async Task<bool> QueryOverseerPrivacyConsent(ContentPage contentPage, MessagePopupView messagePopup)
+        {
+            var formattedConsentMessage = new FormattedString();
+            formattedConsentMessage.Spans.Add(new Span
+            {
+                Text = "Gnoll Overseer uses artificial intelligence to assist you. "
+                + "When you use Overseer, your chat messages, game data, "
+                + "and device information are sent to our server and processed "
+                + "by a third-party AI service."
+                + Environment.NewLine + Environment.NewLine
+                + "Your data is used solely to generate responses and is not "
+                + "used for advertising or sold to third parties. "
+                + "You can manage your data and delete chat sessions within Overseer."
+                + Environment.NewLine + Environment.NewLine
+                + "For full details, please review our Privacy Policy at:"
+                + Environment.NewLine,
+                FontFamily = "Underwood"
+            });
+
+            var linkSpan = new Span
+            {
+                Text = GHConstants.OverseerPrivacyPolicyPage,
+                TextColor = GHColors.LightBlue,
+                TextDecorations = TextDecorations.Underline,
+                FontFamily = "Underwood"
+            };
+
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += async (s, e) =>
+            {
+                await OpenBrowser(contentPage, "Privacy Policy", new Uri(GHConstants.OverseerPrivacyPolicyPage));
+            };
+            linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
+            formattedConsentMessage.Spans.Add(linkSpan);
+
+            formattedConsentMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine + "Do you agree to proceed?", FontFamily = "Underwood" });
+
+            bool accepted = await messagePopup.ShowMessagePopupAsync(
+                "AI Data Disclosure",
+                formattedConsentMessage,
+                linkSpan,
+                "I Agree",
+                "Cancel");
+
+            return accepted;
         }
 
         public static bool IsPageOnTopOfModalNavigationStack(Page page)

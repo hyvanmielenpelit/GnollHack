@@ -144,7 +144,11 @@ namespace GnollHackM
         public void HideKeyboard()
         {
             throw new NotImplementedException();
-        }    
+        }
+        public void SetAdjustResize(bool adjustResize)
+        {
+
+        }
         public void HideOsNavigationBar()
         {
             throw new NotImplementedException();

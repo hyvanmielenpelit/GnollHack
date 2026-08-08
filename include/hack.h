@@ -215,7 +215,8 @@ enum game_end_types {
     ESCAPED      = 20,
     ASCENDED     = 21,
     SNAPSHOT     = 22,
-    NUM_GAME_END_TYPES = 23
+    SNAPSHOT_AI  = 23,
+    NUM_GAME_END_TYPES = 24
 };
 
 /* game events log */

@@ -5165,33 +5165,37 @@ namespace GnollHackX.Pages.Game
             if (MenuGrid.ThreadSafeIsVisible || TextGrid.ThreadSafeIsVisible || MoreCommandsGrid.ThreadSafeIsVisible || !IsGameOn)
                 return;
 
-            if (IsMainCanvasDrawingAndSetTrue) /* In the case of some sort of reentrancy or new draw before previous is finished */
-                return;
-
             if (Interlocked.CompareExchange(ref _isCleanedUp, 0, 0) != 0) /* Resources have been disposed */
                 return;
 
-            FrameTimeProfiler.StampPaintStart();
+            if (IsMainCanvasDrawingAndSetTrue) /* In the case of some sort of reentrancy or new draw before previous is finished */
+                return;
 
-            PaintMainGamePage(sender, e, isCanvasOnMainThread);
+            try
+            {
+                FrameTimeProfiler.StampPaintStart();
 
-            if (Interlocked.Increment(ref _mainFPSCounterValue) == long.MaxValue)
-                Interlocked.Exchange(ref _mainFPSCounterValue, 0L);
-            //lock (_mainFPSCounterLock)
-            //{
-            //    _mainFPSCounterValue++;
-            //    if (_mainFPSCounterValue < 0)
-            //        _mainFPSCounterValue = 0;
-            //}
+                PaintMainGamePage(sender, e, isCanvasOnMainThread);
 
-            SKImageInfo info = e.Info;
-            SKSurface surface = e.Surface;
-            SKCanvas canvas = surface.Canvas;
+                if (Interlocked.Increment(ref _mainFPSCounterValue) == long.MaxValue)
+                    Interlocked.Exchange(ref _mainFPSCounterValue, 0L);
 
-            /* Finally, flush */
-            canvas.Flush();
-            FrameTimeProfiler.StampPaintEnd();
-            IsMainCanvasDrawing = false;
+                SKImageInfo info = e.Info;
+                SKSurface surface = e.Surface;
+                SKCanvas canvas = surface.Canvas;
+
+                /* Finally, flush */
+                canvas.Flush();
+                FrameTimeProfiler.StampPaintEnd();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            finally
+            {
+                IsMainCanvasDrawing = false;
+            }
         }
 
         public CanvasTypes GetActiveCanvas()

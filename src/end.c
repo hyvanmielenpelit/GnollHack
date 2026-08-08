@@ -896,25 +896,34 @@ should_query_disclose_option(int category, char *defquery)
 static void
 dump_plines(void)
 {
-    int i, j;
+    int i, j, msg_count;
     char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ], ** strp;
     extern char *saved_plines[];
     extern char* saved_pline_attrs[];
     extern char* saved_pline_colors[];
     extern unsigned saved_pline_index;
 
+    /* AI snapshot gets all stored messages; normal dumps get fewer */
+    msg_count = iflags.dumping_ai_snapshot
+        ? AI_SNAPSHOT_MESSAGE_COUNT : DUMPLOG_MSG_COUNT;
+
     Strcpy(buf, " "); /* one space for indentation */
     *buf2 = ATR_NONE;
     *buf3 = NO_COLOR;
     putstr(0, ATR_HEADING, "Latest messages:");
-    for (i = 0, j = (int) saved_pline_index; i < DUMPLOG_MSG_COUNT;
-         ++i, j = (j + 1) % DUMPLOG_MSG_COUNT) {
+    for (i = 0, j = (int)((saved_pline_index + SAVED_PLINE_COUNT - msg_count) % SAVED_PLINE_COUNT);
+         i < msg_count;
+         ++i, j = (j + 1) % SAVED_PLINE_COUNT)
+    {
         strp = &saved_plines[j];
         if (*strp) {
             copynchars(&buf[1], *strp, BUFSZ - 1 - 1);
+            buf[BUFSZ - 1] = 0;
             size_t len = strlen(&buf[1]);
             memcpy(&buf2[1], saved_pline_attrs[j], min(BUFSZ - 1, len));
             memcpy(&buf3[1], saved_pline_colors[j], min(BUFSZ - 1, len));
+            buf2[BUFSZ - 1] = 0;
+            buf3[BUFSZ - 1] = 0;
             putstr_ex2(0, buf, buf2, buf3, ATR_NONE, NO_COLOR, 0);
 #ifdef FREE_ALL_MEMORY
             free(*strp), *strp = 0;
@@ -960,7 +969,7 @@ dump_everything(int how, time_t when)
             &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
     Strcpy(datetimebuf, yyyymmddhhmmss(when));
     Sprintf(eos(pbuf), ", %s %4.4s-%2.2s-%2.2s %2.2s:%2.2s:%2.2s",
-            how == SNAPSHOT ? "snapshot at" : "ended",
+            (how == SNAPSHOT || how == SNAPSHOT_AI) ? "snapshot at" : "ended",
             &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
             &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
     putstr(0, ATR_SUBHEADING, pbuf);
@@ -1014,10 +1023,10 @@ dump_everything(int how, time_t when)
     putstr(NHW_DUMPTXT, 0, "");
     putstr(0, ATR_HEADING, "Inventory:");
     (void) display_inventory((char *) 0, TRUE, SHOWWEIGHTS_NONE, FALSE);
-    container_contents(invent, how != SNAPSHOT, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
-    magic_chest_contents(how != SNAPSHOT, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
-    enlightenment(how == SNAPSHOT ? BASICENLIGHTENMENT | GAMEENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT),
-                  how == SNAPSHOT ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
+    container_contents(invent, how != SNAPSHOT && how != SNAPSHOT_AI, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
+    magic_chest_contents(how != SNAPSHOT && how != SNAPSHOT_AI, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
+    enlightenment((how == SNAPSHOT || how == SNAPSHOT_AI) ? BASICENLIGHTENMENT | GAMEENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT),
+                  (how == SNAPSHOT || how == SNAPSHOT_AI) ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
     debugprint("%s", "dump_skills");
     dump_skills();
@@ -1026,22 +1035,44 @@ dump_everything(int how, time_t when)
     dump_spells();
     putstr(NHW_DUMPTXT, 0, "");
     debugprint("%s", "dump: show_gamelog");
-    show_gamelog(how == SNAPSHOT ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
+    show_gamelog((how == SNAPSHOT || how == SNAPSHOT_AI) ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
-    debugprint("%s", "dump: list_vanquished");
-    list_vanquished('d', FALSE, TRUE); /* 'd' => 'y' */
+    if (how != SNAPSHOT_AI)
+    {
+        debugprint("%s", "dump: list_vanquished");
+        list_vanquished('d', FALSE, TRUE); /* 'd' => 'y' */
+    }
     putstr(NHW_DUMPTXT, 0, "");
     debugprint("%s", "dump: list_genocided");
     list_genocided('d', FALSE, TRUE); /* 'd' => 'y' */
     putstr(NHW_DUMPTXT, 0, "");
-    show_conduct(how == SNAPSHOT ? 0 : (how >= PANICKED) ? 1 : 2);
+    show_conduct((how == SNAPSHOT || how == SNAPSHOT_AI) ? 0 : (how >= PANICKED) ? 1 : 2);
     putstr(NHW_DUMPTXT, 0, "");
     debugprint("%s", "dump: show_overview");
-    show_overview(how == SNAPSHOT ? 0 : (how >= PANICKED) ? 1 : 2, how);
+    show_overview((how == SNAPSHOT || how == SNAPSHOT_AI) ? 0 : (how >= PANICKED) ? 1 : 2, how);
     putstr(NHW_DUMPTXT, 0, "");
     dump_redirect(FALSE);
 #else
     nhUse(how);
+    nhUse(when);
+#endif
+}
+
+void
+dump_everything_ai(time_t when)
+{
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    iflags.dumping_ai_snapshot = TRUE;
+    dump_everything(SNAPSHOT_AI, when);
+    iflags.dumping_ai_snapshot = FALSE;
+
+    /* dump_everything() -> dump_redirect(FALSE) calls status_initialize(FALSE)
+       which clears the frontend's StatusFields. Since the AI snapshot is
+       called via P/Invoke from the UI thread (not through the game command
+       queue), no game-loop bot() follows to repopulate the status bar.
+       Force-refresh now so the status bar is not left empty. */
+    bot();
+#else
     nhUse(when);
 #endif
 }
@@ -1124,6 +1155,7 @@ dosnapshot(void)
 
     return 0;
 }
+
 
 
 

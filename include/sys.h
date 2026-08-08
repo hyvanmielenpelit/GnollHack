@@ -23,11 +23,13 @@ struct sysopt {
 #if defined (DUMPLOG)
     char *dumplogfile; /* where the dump file is saved */
     char *snapshotfile; /* where the snapshot file is saved */
+    char* aifile; /* where the ai snapshot file is saved */
     char *dumplogurl;  /* url path for the above */
 #endif
 #if defined (DUMPHTML)
     char* dumphtmlfile; /* where the html dump is saved */
     char* snaphtmlfile; /* where the html snapshot is saved */
+    char* aihtmlfile; /* where the ai html snapshot is saved */
     char* dumphtmlfontname; /* font name for html dump */
 #if defined(DUMPHTML_WEBFONT_LINK)
     char* dumphtmlfontlink; /* css web link for the font */

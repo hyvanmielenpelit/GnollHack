@@ -477,7 +477,7 @@ namespace GnollHackX.Pages.MainScreen
             bool answer = await ShowMessagePopupAsync("Delete Saved Games?", "Are you sure to delete all saved games?", "Yes", "No");
             if (answer)
             {
-                GHApp.GnollHackService.ClearSavedGames();
+                GHApp.ClearSavedGames();
                 btnDeleteSavedGames.Text = "Done";
                 btnDeleteSavedGames.TextColor = GHColors.Red;
             }
@@ -593,7 +593,7 @@ namespace GnollHackX.Pages.MainScreen
             bool answer = await ShowMessagePopupAsync("Delete Dumplogs?", "Are you sure to delete all dumplogs?", "Yes", "No");
             if (answer)
             {
-                GHApp.GnollHackService.ClearDumplogs();
+                GHApp.ClearDumplogs();
                 btnDeleteDumplogs.Text = "Done";
                 btnDeleteDumplogs.TextColor = GHColors.Red;
             }
@@ -607,7 +607,7 @@ namespace GnollHackX.Pages.MainScreen
             bool answer = await ShowMessagePopupAsync("Delete Snapshots?", "Are you sure to delete all snapshots?", "Yes", "No");
             if (answer)
             {
-                GHApp.GnollHackService.ClearSnapshots();
+                GHApp.ClearSnapshots();
                 btnDeleteSnapshots.Text = "Done";
                 btnDeleteSnapshots.TextColor = GHColors.Red;
             }

@@ -112,6 +112,7 @@ static FILE* dumplog_file;
 #endif
 #if defined (DUMPHTML)
 static FILE* dumphtml_file;
+static FILE* dumphtml_ai_file;
 #endif
 #endif /* DUMPLOG */
 
@@ -1398,6 +1399,34 @@ print_dumphtml_filename_to_buffer(char *buf)
 #endif
     return fname;
 }
+
+char*
+print_dumphtml_ai_filename_to_buffer(char *buf)
+{
+    char* fname;
+    char* ext;
+
+#ifdef SYSCF
+    char* used_sysopt_htmlfile = sysopt.aihtmlfile;
+    if (!used_sysopt_htmlfile)
+        return 0;
+    fname = dump_fmtstr(used_sysopt_htmlfile, buf);
+#else
+    fname = dump_fmtstr(AIHTML_FILE, buf);
+#endif
+    
+    ext = strstr(fname, ".html");
+    if (ext)
+    {
+        strcpy(ext, ".ai.html");
+    }
+    else
+    {
+        strcat(fname, ".ai.html");
+    }
+
+    return fname;
+}
 #endif
 
 char *
@@ -1829,6 +1858,15 @@ dump_putstr_ex(
         else
             html_dump_line(dumphtml_file, win, 0, 0, attr, color, app, str);
     }
+    /* AI snapshot: also write to the AI HTML file */
+    if (iflags.dumping_ai_snapshot && dumphtml_ai_file
+        && win != NHW_DUMPTXT)
+    {
+        if (win == NHW_STATUS)
+            html_dump_str(dumphtml_ai_file, str, 0, 0, attr, color);
+        else
+            html_dump_line(dumphtml_ai_file, win, 0, 0, attr, color, app, str);
+    }
 #endif
 }
 
@@ -1850,6 +1888,15 @@ dump_putstr_ex2(winid win, const char *str, const char *attrs, const char *color
             html_dump_str(dumphtml_file, str, attrs, colors, attr, color);
         else
             html_dump_line(dumphtml_file, win, attrs, colors, attr, color, app, str);
+    }
+    /* AI snapshot: also write to the AI HTML file */
+    if (iflags.dumping_ai_snapshot && dumphtml_ai_file
+        && win != NHW_DUMPTXT)
+    {
+        if (win == NHW_STATUS)
+            html_dump_str(dumphtml_ai_file, str, attrs, colors, attr, color);
+        else
+            html_dump_line(dumphtml_ai_file, win, attrs, colors, attr, color, app, str);
     }
 #endif
 }
@@ -2009,11 +2056,11 @@ void
 dump_redirect(boolean onoff_flag)
 {
 #if defined (DUMPLOG) && defined (DUMPHTML)
-    if (dumplog_file || dumphtml_file)
+    if (dumplog_file || dumphtml_file || (iflags.dumping_ai_snapshot && dumphtml_ai_file))
 #elif defined (DUMPLOG)
-    if (dumplog_file)
+    if (dumplog_file || (iflags.dumping_ai_snapshot && dumphtml_ai_file))
 #elif defined (DUMPHTML)
-    if (dumphtml_file)
+    if (dumphtml_file || (iflags.dumping_ai_snapshot && dumphtml_ai_file))
 #endif
     {
         if (onoff_flag) 
@@ -2989,6 +3036,58 @@ dump_close_log(void)
         dumphtml_file = (FILE*)0;
     }
 #endif
+#endif
+}
+
+void
+dump_open_log_ai(time_t now UNUSED)
+{
+#if defined (DUMPHTML)
+    char buf[BUFSZ];
+    char* fname;
+
+    fname = print_dumphtml_ai_filename_to_buffer(buf);
+    if (fname)
+    {
+        dumphtml_ai_file = fopen(fname, "w");
+        if (dumphtml_ai_file)
+        {
+            fputs("<html><head><meta charset=\"utf-8\"><title>GnollHack AI Snapshot</title>\n"
+                  "<style>body{background:#000;color:#ccc;font-family:monospace;font-size:12px;white-space:pre;}\n"
+                  ".nh_color_0{color:#555;}.nh_color_1{color:#f00;}.nh_color_2{color:#0f0;}.nh_color_3{color:#a52a2a;}\n"
+                  ".nh_color_4{color:#00f;}.nh_color_5{color:#f0f;}.nh_color_6{color:#0ff;}.nh_color_7{color:#ccc;}\n"
+                  ".nh_color_8{color:#888;}.nh_color_9{color:#ffa500;}.nh_color_10{color:#0f0;}.nh_color_11{color:#ff0;}\n"
+                  ".nh_color_12{color:#00f;}.nh_color_13{color:#f0f;}.nh_color_14{color:#0ff;}.nh_color_15{color:#fff;}\n"
+                  "</style></head><body>\n", dumphtml_ai_file);
+            /* Save windowprocs backup so dump_redirect can restore them */
+            dumplog_windowprocs_backup = windowprocs;
+            menu_headings_backup = iflags.menu_headings;
+        }
+    }
+#endif
+}
+
+void
+dump_close_log_ai(void)
+{
+#if defined (DUMPHTML)
+    if (dumphtml_ai_file)
+    {
+        fputs("</body></html>\n", dumphtml_ai_file);
+        (void)fclose(dumphtml_ai_file);
+        dumphtml_ai_file = (FILE*)0;
+    }
+#endif
+}
+
+void
+dump_html_ai_write(const char* str)
+{
+#if defined (DUMPHTML)
+    if (dumphtml_ai_file)
+    {
+        fputs(str, dumphtml_ai_file);
+    }
 #endif
 }
 

@@ -124,7 +124,7 @@
             </StackLayout>
 
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
                     <Frame x:Name="PopupFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
@@ -166,7 +166,7 @@
             </Grid>
 
             <Grid x:Name="AlertGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
                     <Frame x:Name="AlertFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
@@ -200,7 +200,7 @@
             </Grid>
 
             <Grid x:Name="EventGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
                     <Frame x:Name="EventFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
@@ -232,7 +232,7 @@
             </Grid>
 
             <Grid x:Name="TierGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All" IsVisible="False">
                 <Grid x:Name="TierFrameCenterGrid" WidthRequest  ="640" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
                     <Frame x:Name="TierFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
@@ -277,7 +277,7 @@
             </Grid>
 
             <Grid x:Name="AchievementGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid x:Name="AchievementFrameCenterGrid" WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
                     <Frame x:Name="AchievementFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
@@ -314,7 +314,7 @@
             </Grid>
             
             <Grid x:Name="PendingTasksGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
                     <Frame x:Name="PendingTasksFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">

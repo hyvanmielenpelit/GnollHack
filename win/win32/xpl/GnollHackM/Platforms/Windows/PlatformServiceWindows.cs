@@ -372,6 +372,10 @@ namespace GnollHackM
 
         }
 
+        public void SetAdjustResize(bool adjustResize)
+        {
+        }
+
         public void HideOsNavigationBar()
         {
 

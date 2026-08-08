@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<gnh:CustomModalPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gnh="clr-namespace:GnollHackX" 
+             xmlns:controls="clr-namespace:GnollHackX.Controls"
+             BackgroundColor="Black"
+             x:Class="GnollHackX.Pages.Game.OverseerPage"
+             Appearing="ContentPage_Appearing"
+             Disappearing="ContentPage_Disappearing">
+    <gnh:CustomModalPage.Content>
+        <Grid x:Name="RootGrid" BackgroundColor="Black" HorizontalOptions="Fill" VerticalOptions="Fill">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36" x:Name="HandleRowDefinition" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Title bar -->
+            <Grid Grid.Row="0" BackgroundColor="{x:Static gnh:GHColors.OverseerNavBarColor}" HorizontalOptions="Fill" VerticalOptions="Fill">
+                <!-- Loading indicator at left -->
+                <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" Color="{x:Static gnh:GHColors.OverseerGoldColor}" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="18" HeightRequest="18" Margin="8,0,0,0" />
+                <!-- Centered title — tappable when navigated away from Overseer SPA -->
+                <Grid x:Name="TitleArea" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Fill" Padding="8,0">
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center" Spacing="4">
+                        <Label x:Name="TitleArrowLabel" Text="←" FontFamily="LatoRegular" FontSize="15" TextColor="{x:Static gnh:GHColors.OverseerGoldColor}" VerticalOptions="Center" IsVisible="False" />
+                        <Label x:Name="TitleLabel" Text="Gnoll Overseer" FontFamily="Immortal" FontSize="15" TextColor="{x:Static gnh:GHColors.OverseerGoldColor}" VerticalOptions="Center" />
+                    </StackLayout>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TitleArea_Tapped" />
+                    </Grid.GestureRecognizers>
+                </Grid>
+                <!-- Close button area - right aligned, full height, wide tap target -->
+                <Grid x:Name="CloseArea" BackgroundColor="Transparent" HorizontalOptions="End" VerticalOptions="Fill" WidthRequest="50">
+                    <Label Text="✕" FontFamily="LatoRegular" FontSize="15" TextColor="{x:Static gnh:GHColors.OverseerGoldColor}" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="CloseArea_Tapped" />
+                    </Grid.GestureRecognizers>
+                </Grid>
+            </Grid>
+
+            <!-- WebView fills remaining space -->
+            <WebView Grid.Row="1" x:Name="DisplayWebView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent"
+                      Navigating="DisplayWebView_Navigating" Navigated="DisplayWebView_Navigated"/>
+
+            <!-- Progress overlay -->
+            <Grid x:Name="ProgressOverlay" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#CC000000" IsVisible="True">
+                <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="ProgressOverlayFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxDarkModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                        <StackLayout Spacing="9" Padding="6">
+                            <Label Text="Gnoll Overseer" x:Name="ProgressTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
+                            <Label Text="Connecting..." x:Name="ProgressStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            <ProgressBar x:Name="UploadProgressBar" Progress="0.0" WidthRequest  ="400" HorizontalOptions="Fill" HeightRequest="15" ProgressColor="LightBlue" />
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
+
+            <controls:MessagePopupView x:Name="MessagePopup" Grid.RowSpan="2" />
+        </Grid>
+    </gnh:CustomModalPage.Content>
+</gnh:CustomModalPage>

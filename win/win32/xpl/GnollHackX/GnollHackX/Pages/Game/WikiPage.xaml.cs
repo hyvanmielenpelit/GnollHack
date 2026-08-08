@@ -78,13 +78,15 @@ namespace GnollHackX.Pages.Game
 
         private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
         {
-            NavigationLabel.Text = "Loading...";
+            LoadingIndicator.IsRunning = true;
+            LoadingIndicator.IsVisible = true;
             UpdateNavigationButtons();
         }
 
         private void DisplayWebView_Navigated(object sender, WebNavigatedEventArgs e)
         {
-            NavigationLabel.Text = "";
+            LoadingIndicator.IsRunning = false;
+            LoadingIndicator.IsVisible = false;
             UpdateNavigationButtons();
 #if GNH_MAUI
             if(_timer == null)

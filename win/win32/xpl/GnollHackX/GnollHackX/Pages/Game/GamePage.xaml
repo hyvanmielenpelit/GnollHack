@@ -102,7 +102,7 @@
                         HorizontalOptions="Start" VerticalOptions="End">
                         <controls:SimpleImageButton x:Name="ToggleMessageNumberButton" BtnClicked="ToggleMessageNumberButton_Clicked" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" />
                     </gnh:MeasurableStackLayout>
-                    <gnh:MeasurableGrid Grid.Row="2" x:Name="ButtonRowGrid" HorizontalOptions="Fill" VerticalOptions="End" BackgroundColor="#66000000">
+                    <gnh:MeasurableGrid Grid.Row="2" x:Name="ButtonRowGrid" HorizontalOptions="Fill" VerticalOptions="End" BackgroundColor="{x:Static gnh:GHColors.ButtonGridBackgroundColor}">
                         <controls:LabeledImageButton x:Name="lRowAbilitiesButton" IsVisible="False" LblText="Stats" BtnLetter="A" ImgSourcePath="resource://GnollHackX.Assets.UI.home.png" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="End" />
                         <controls:LabeledImageButton x:Name="lRowWornItemsButton" IsVisible="False" LblText="Equipment" BtnLetter="]" ImgSourcePath="resource://GnollHackX.Assets.UI.worn.png" ImgHighFilterQuality="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="End" />
                         <gnh:MeasurableStackLayout x:Name="ButtonRowStack" IsVisible="True" HorizontalOptions="Center" VerticalOptions="Center" Orientation="Vertical" Spacing="6">
@@ -221,9 +221,9 @@
                     </Grid.GestureRecognizers>
                 </Grid>
                 <Grid x:Name="MenuCountGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-                         BackgroundColor="#66000000" IsVisible="False">
+                         BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
                     <Grid x:Name="MenuCountWidthGrid" WidthRequest  ="360" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Frame x:Name="MenuCountFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                        <Frame x:Name="MenuCountFrame" BackgroundColor="{x:Static gnh:GHColors.SemiTransparentDarkenedFrameBackgroundColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                             <StackLayout Spacing="6" x:Name="MenuCountLayout" HorizontalOptions="Fill" VerticalOptions="Center">
                                 <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="Center" TextColor="White" />
                                 <Picker x:Name="CountPicker"
@@ -291,11 +291,11 @@
                 </gnh:MeasurableGrid.GestureRecognizers>
             </gnh:MeasurableGrid>
             <Grid x:Name="GetLineGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-                         Padding="10" BackgroundColor="#66000000" IsVisible="False">
+                         Padding="10" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
                 <controls:SimpleImageButton x:Name="GetLineMenuButton" IsVisible="False" ImgSourcePath="resource://GnollHackX.Assets.UI.wiki.png" WidthRequest="50" HeightRequest="50" 
                                                    BtnClicked="GetLineMenuButton_BtnClicked" HorizontalOptions="End" VerticalOptions="Start" />
                 <Grid x:Name="GetLineWidthGrid" WidthRequest  ="440" HorizontalOptions  ="Center" VerticalOptions="Start" Margin="0,50,0,10" >
-                    <Frame x:Name="GetLineFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="GetLineFrame" BackgroundColor="{x:Static gnh:GHColors.SemiTransparentDarkenedFrameBackgroundColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout x:Name="GetLineLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="Center" TextColor="White">
                                 <Label.GestureRecognizers>
@@ -337,9 +337,9 @@
                 </Grid.GestureRecognizers>
             </Grid>
             <Grid x:Name="YnGrid" HorizontalOptions="Fill" VerticalOptions="Fill" InputTransparent="false" 
-                         Padding="10" BackgroundColor="#66000000" IsVisible="False">
+                         Padding="10" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
                 <Grid x:Name="YnWidthGrid" WidthRequest  ="600" HorizontalOptions  ="Center" VerticalOptions="Center">
-                    <Frame x:Name="YnFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="YnFrame" BackgroundColor="{x:Static gnh:GHColors.SemiTransparentDarkenedFrameBackgroundColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="YnLayout" Padding="5" Spacing="6" HorizontalOptions="Center" VerticalOptions="Center" >
                             <StackLayout x:Name="YnTitleLayout" Orientation="Horizontal" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
@@ -365,9 +365,9 @@
                 </Grid.GestureRecognizers>
             </Grid>
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
-                         BackgroundColor="#66000000" IsVisible="False">
+                         BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
                 <Grid x:Name="PopupWidthGrid" WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
-                    <Frame x:Name="PopupFrame"  BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="PopupFrame"  BackgroundColor="{x:Static gnh:GHColors.SemiTransparentDarkenedFrameBackgroundColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <StackLayout x:Name="PopupTitleLayout" Orientation="Horizontal" Spacing="6"
@@ -440,8 +440,8 @@
                         </StackLayout>
                     </Grid>
                 </Frame>
-                <Grid x:Name="GotoTurnGrid" IsVisible="False"  BackgroundColor="#66000000" HorizontalOptions="Fill" VerticalOptions="Fill" >
-                    <Frame x:Name="GotoTurnFrame" Margin="0,50,0,10" WidthRequest  ="440" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Start">
+                <Grid x:Name="GotoTurnGrid" IsVisible="False"  BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" HorizontalOptions="Fill" VerticalOptions="Fill" >
+                    <Frame x:Name="GotoTurnFrame" Margin="0,50,0,10" WidthRequest  ="440" BackgroundColor="{x:Static gnh:GHColors.SemiTransparentDarkenedFrameBackgroundColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Start">
                         <StackLayout x:Name="GotoTurnLayout" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Picker x:Name="GotoStylePicker"
                                         Title="Select functionality"

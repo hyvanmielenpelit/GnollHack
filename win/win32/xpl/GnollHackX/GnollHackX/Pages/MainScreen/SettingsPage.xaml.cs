@@ -165,6 +165,14 @@ namespace GnollHackX.Pages.MainScreen
             { "On Switching Apps", "**Save Game**: The game is automatically saved and restored when the player returns. Menus close.\n**Checkpoint**: The game creates a checkpoint and doesn't close menus, but recovers to checkpoint if terminated." },
             { "Map GPU Cache", "Determines the cache size for Skia GPU rendering for the map. Large numbers can lead to out of memory." },
             { "Menu GPU Cache", "Determines the cache size for Skia GPU rendering for the menu and more commands pages." },
+            { "Allow Spoilers", "When enabled, Gnoll Overseer can freely discuss game mechanics, item identities, monster stats, and optimal strategies. When disabled (default), Gnoll Overseer avoids revealing information the player hasn't discovered yet." },
+            { "Verbose Responses", "When enabled, Gnoll Overseer provides detailed explanations and longer responses. When disabled (default), responses are concise and action-oriented." },
+            { "Send Game Context", "When enabled (default), opening Gnoll Overseer from the game menu automatically sends the current game snapshot and message history. When disabled, no such data is sent." },
+            { "Use Local Address", "Enables the Gnoll Overseer to run at a local IP address." },
+            { "Local Address", "Local IP address where Gnoll Overseer server can be found." },
+            { "Client Data Access", "When enabled (default), the Gnoll Overseer can request additional data from your game client, such as full message history. This data is sent to your AI provider for processing." },
+            { "Game Actions", "When enabled, the Gnoll Overseer can suggest and perform in-game actions on your behalf. All actions require your confirmation. (Unavailable in this version.)" },
+            { "Data Consent", "Shows whether you have accepted the AI data processing disclosure. Press Reset to revoke your consent; the disclosure will appear again the next time you open Overseer." },
         };
 
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
@@ -305,7 +313,8 @@ namespace GnollHackX.Pages.MainScreen
             ClassicStatusBarSwitch_Toggled(null, new ToggledEventArgs(ClassicStatusBarSwitch.IsToggled));
             AllowBonesSwitch_Toggled(null, new ToggledEventArgs(AllowBonesSwitch.IsToggled));
             BonesListSwitch_Toggled(null, new ToggledEventArgs(BonesListSwitch.IsToggled));
-            if(SaveFileTrackingGrid.IsVisible && !SaveFileTrackingSwitch.IsToggled)
+            OverseerLocalAddressSwitch_Toggled(null, new ToggledEventArgs(OverseerLocalAddressSwitch.IsToggled));
+            if (SaveFileTrackingGrid.IsVisible && !SaveFileTrackingSwitch.IsToggled)
                 UpdateServerPostingEnabled(SaveFileTrackingSwitch.IsToggled);
 
             if (!GHApp.RecommendedSettingsChecked)
@@ -455,6 +464,7 @@ namespace GnollHackX.Pages.MainScreen
                 Microsoft.Maui.Controls.Entry l = (Microsoft.Maui.Controls.Entry)view;
                 if (darkmode ? l.TextColor == GHColors.Black : l.TextColor == GHColors.White)
                     l.TextColor = darkmode ? GHColors.White : GHColors.Black;
+                l.BackgroundColor = darkmode ? GHColors.PickerDarkModeBkgColor : GHColors.PickerLightModeBkgColor;
             }
             else if (view is Microsoft.Maui.Controls.Picker)
             {
@@ -997,6 +1007,31 @@ namespace GnollHackX.Pages.MainScreen
 
             GHApp.DeveloperMode = DeveloperSwitch.IsToggled;
             Preferences.Set("DeveloperMode", GHApp.DeveloperMode);
+
+            /* Overseer settings */
+            GHApp.OverseerAllowSpoilers = OverseerSpoilersSwitch.IsToggled;
+            Preferences.Set("OverseerAllowSpoilers", OverseerSpoilersSwitch.IsToggled);
+            GHApp.OverseerVerboseResponses = OverseerVerboseSwitch.IsToggled;
+            Preferences.Set("OverseerVerboseResponses", OverseerVerboseSwitch.IsToggled);
+            GHApp.OverseerSendGameContext = OverseerSendContextSwitch.IsToggled;
+            Preferences.Set("OverseerSendGameContext", OverseerSendContextSwitch.IsToggled);
+            GHApp.OverseerEnableClientTools = OverseerClientToolsSwitch.IsToggled;
+            Preferences.Set(GHConstants.OverseerEnableClientToolsKey, OverseerClientToolsSwitch.IsToggled);
+            GHApp.OverseerEnableGameActions = OverseerGameActionsSwitch.IsToggled;
+            Preferences.Set(GHConstants.OverseerEnableGameActionsKey, OverseerGameActionsSwitch.IsToggled);
+#if DEBUG
+            GHApp.OverseerUseLocalAddress = OverseerLocalAddressSwitch.IsToggled;
+            Preferences.Set("OverseerUseLocalAddress", OverseerLocalAddressSwitch.IsToggled);
+            if (OverseerLocalAddressSwitch.IsToggled)
+            {
+                GHApp.LocalOverseerAddress = OverseerLocalAddressEntry.Text;
+                Preferences.Set("LocalOverseerAddress", OverseerLocalAddressEntry.Text ?? "");
+                GHApp.LocalOverseerUserName = OverseerLocalUserNameEntry.Text;
+                Preferences.Set("LocalOverseerUserName", OverseerLocalUserNameEntry.Text ?? "");
+                GHApp.LocalOverseerPassword = OverseerLocalPasswordEntry.Text;
+                Preferences.Set("LocalOverseerPassword", OverseerLocalPasswordEntry.Text ?? "");
+            }
+#endif
             GHApp.DebugLogMessages = LogMessageSwitch.IsToggled;
             Preferences.Set("DebugLogMessages", GHApp.DebugLogMessages);
             GHApp.LowLevelLogging = LowLevelLogSwitch.IsToggled;
@@ -1777,6 +1812,34 @@ namespace GnollHackX.Pages.MainScreen
                 StatusBarLabel.TextColor = GHColors.Gray;
                 StatusBarStackLayout.IsVisible = false;
             }
+            /* Overseer switches */
+            OverseerSpoilersSwitch.IsToggled = GHApp.OverseerAllowSpoilers;
+            OverseerVerboseSwitch.IsToggled = GHApp.OverseerVerboseResponses;
+            OverseerSendContextSwitch.IsToggled = GHApp.OverseerSendGameContext;
+            OverseerClientToolsSwitch.IsToggled = GHApp.OverseerEnableClientTools;
+            OverseerGameActionsSwitch.IsToggled = GHApp.OverseerEnableGameActions;
+            /* Game Actions is not active yet, make it disabled in code-behind */
+            OverseerGameActionsSwitch.IsEnabled = false;
+            OverseerGameActionsLabel.TextColor = GHColors.Gray;
+            /* AI consent state */
+            UpdateConsentLabel(GHApp.OverseerConsentAccepted);
+#if DEBUG
+            OverseerLocalAddressGrid.IsVisible = true;
+            OverseerLocalAddressEntryGrid.IsVisible = true;
+            OverseerLocalUserNameGrid.IsVisible = true;
+            OverseerLocalPasswordGrid.IsVisible = true;
+            OverseerLocalAddressSwitch.IsToggled = GHApp.OverseerUseLocalAddress;
+            OverseerLocalAddressEntry.Text = GHApp.LocalOverseerAddress ?? "";
+            OverseerLocalUserNameEntry.Text = GHApp.LocalOverseerUserName ?? "";
+            OverseerLocalPasswordEntry.Text = GHApp.LocalOverseerPassword ?? "";
+            UpdateLocalAddressEntryEnabled(GHApp.OverseerUseLocalAddress);
+#else
+            OverseerLocalAddressGrid.IsVisible = false;
+            OverseerLocalAddressEntryGrid.IsVisible = false;
+            OverseerLocalUserNameGrid.IsVisible = false;
+            OverseerLocalPasswordGrid.IsVisible = false;
+#endif
+
             DeveloperSwitch.IsToggled = devmode;
             if (devmode)
             {
@@ -2158,6 +2221,74 @@ namespace GnollHackX.Pages.MainScreen
                 StreamingBankToMemorySwitch.IsToggled = false;
         }
 
+        private void OverseerClientToolsSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            /* Enforce dependency: Game Actions requires Client Data Access */
+            if (!e.Value)
+            {
+                GHApp.OverseerEnableGameActions = false;
+                Preferences.Set(GHConstants.OverseerEnableGameActionsKey, false);
+                OverseerGameActionsSwitch.IsToggled = false;
+            }
+            
+            /* Game Actions is not active yet, keep it disabled */
+            OverseerGameActionsSwitch.IsEnabled = false;
+            OverseerGameActionsLabel.TextColor = GHColors.Gray;
+        }
+
+        private void OverseerConsentResetButton_Clicked(object sender, EventArgs e)
+        {
+            GHApp.OverseerConsentAccepted = false;
+            Preferences.Set(GHConstants.OverseerConsentAcceptedKey, false);
+            UpdateConsentLabel(false);
+        }
+
+        private void UpdateConsentLabel(bool accepted)
+        {
+            if (accepted)
+            {
+                OverseerConsentStatusLabel.Text = "Accepted";
+                OverseerConsentResetButton.IsEnabled = true;
+                OverseerConsentResetButton.TextColor = GHColors.White;
+            }
+            else
+            {
+                OverseerConsentStatusLabel.Text = "None";
+                OverseerConsentResetButton.IsEnabled = false;
+                OverseerConsentResetButton.TextColor = GHColors.Gray;
+            }
+        }
+
+        private void UpdateLocalAddressEntryEnabled(bool enabled)
+        {
+            OverseerLocalAddressEntry.IsEnabled = enabled;
+            OverseerLocalAddressEntryLabel.TextColor = enabled
+                ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
+                : GHColors.Gray;
+            OverseerLocalAddressEntry.TextColor = enabled
+                ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
+                : GHColors.Gray;
+            OverseerLocalUserNameEntry.IsEnabled = enabled;
+            OverseerLocalUserNameLabel.TextColor = enabled
+                ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
+                : GHColors.Gray;
+            OverseerLocalUserNameEntry.TextColor = enabled
+                ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
+                : GHColors.Gray;
+            OverseerLocalPasswordEntry.IsEnabled = enabled;
+            OverseerLocalPasswordLabel.TextColor = enabled
+                ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
+                : GHColors.Gray;
+            OverseerLocalPasswordEntry.TextColor = enabled
+                ? (GHApp.DarkMode ? GHColors.White : GHColors.Black)
+                : GHColors.Gray;
+        }
+
+        private void OverseerLocalAddressSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            UpdateLocalAddressEntryEnabled(e.Value);
+        }
+
         private void DeveloperSwitch_Toggled(object sender, ToggledEventArgs e)
         {
             if (e.Value)
@@ -2274,6 +2405,11 @@ namespace GnollHackX.Pages.MainScreen
             SetTournamentModeLabelColors(TournamentSwitch.IsToggled);
             //PostXlogUserNameLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             BonesAllowedUsersLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            EngraveQuickLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+#if DEBUG
+            if (OverseerLocalAddressEntryGrid.IsVisible)
+                OverseerLocalAddressEntryLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+#endif
             if (EngraveQuickEntry.Text != null && EngraveQuickEntry.Text != "")
             {
                 if (!EngraveQuickTextValidationExpression.IsMatch(EngraveQuickEntry.Text))
@@ -2310,6 +2446,22 @@ namespace GnollHackX.Pages.MainScreen
                     return;
                 }
             }
+
+#if DEBUG
+            if (OverseerLocalAddressSwitch.IsToggled && !string.IsNullOrWhiteSpace(OverseerLocalAddressEntry.Text))
+            {
+                if (!Uri.TryCreate(OverseerLocalAddressEntry.Text, UriKind.Absolute, out Uri uriResult) || (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
+                {
+                    OverseerLocalAddressEntryLabel.TextColor = GHColors.Red;
+                    await MainScrollView.ScrollToAsync(OverseerLocalAddressEntryGrid.X, OverseerLocalAddressEntryGrid.Y, true);
+                    OverseerLocalAddressEntry.Focus();
+                    CloseButton.IsEnabled = true;
+                    _backPressed = false;
+                    return;
+                }
+            }
+#endif
+
             if (TournamentSwitch.IsToggled)
             {
                 if (!GHApp.XlogUserNameVerified || !GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))

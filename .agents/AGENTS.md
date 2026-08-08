@@ -79,10 +79,23 @@ AI Agents MUST adhere strictly to the following:
 - For Android: Android SDK with NDK
 - For iOS: Mac build host with Xcode
 
+## Subagent Use and Pair Programming
+
+Every implementation plan **MUST** include a **Subagent Use** section. Read the full guidelines in the [subagent_guidelines skill](file:///c:/hmp/GnollHack/.agents/skills/subagent_guidelines/SKILL.md) before creating any plan. Key points:
+
+- **Always document** whether subagents are needed — default to `inherit` model (matching the orchestrator); use `flash` only for trivially mechanical search-and-replace
+- **Human task assignments are the rare exception** — only for very extensive cut-and-paste moves where AI would likely fail and waste tokens
+- **No two agents may edit the same file concurrently** — plan file assignments to avoid conflicts
+- **Respect build dependency chains** — do not parallelize across `makedefs` / `levcomp` / `makedefsdroid` regeneration boundaries
+- **Never overwrite uncommitted changes** without explicit user permission — ask the user to commit first if corruption risk exists
+
 ## Important Warnings
 
 - **Do NOT hand-edit auto-generated files**: `include/date.h`, `include/onames.h`, `include/pm.h`, `include/vis_tab.h`, `include/animoff.h`, `include/animtotals.h`, `src/vis_tab.c`
 - **Do NOT modify `nhdat` directly**: It is a packaged archive rebuilt by `dlb`
 - **The `binary/` directory** is NOT the build output directory; build output goes to `bin/$(Configuration)/$(Platform)/`
 - **Preserve existing comments and documentation** in all files unless explicitly asked to change them
-- **XAML Source of Truth**: All XAML files in `GnollHackM/` are **auto-generated** from `GnollHackX/GnollHackX/` by the `makedefsdroid` build step. **Always edit XAML in the GnollHackX source**, never directly in GnollHackM. After modifying any XAML file, ask the user to build the GnollHackX solution so `makedefsdroid` regenerates the GnollHackM XAML and the code-behind `.g.cs` files. The GnollHackM build will fail to find `x:Name` references from new XAML elements until this regeneration happens.
+- **XAML Source of Truth**: All XAML files in `GnollHackM/` are **auto-generated** from `GnollHackX/GnollHackX/` by the `makedefsdroid` build step. **Always edit XAML in the GnollHackX source**, never directly in GnollHackM. After modifying any XAML file, first try to regenerate the MAUI XAML yourself by building the `makedefsdroid` project (locate MSBuild via `vswhere.exe`, then run `& $msbuild win/win32/vs/makedefsdroid.vcxproj /t:Build /p:Configuration=Debug /p:Platform=x64`). If that fails, ask the user to build it. The GnollHackM build will fail to find `x:Name` references from new XAML elements until this regeneration happens.
+- **XAML WidthRequest / HeightRequest double-space convention**: In GnollHackX XAML (the Xamarin source), `makedefsdroid` converts `WidthRequest  =` (two spaces before `=`) into `MaximumWidthRequest=` and `HeightRequest  =` into `MaximumHeightRequest=` for GnollHackM. **Two equally critical mistakes** to avoid:
+  1. **NEVER write `MaximumWidthRequest=` or `MaximumHeightRequest=`** in GnollHackX XAML — these do not exist in Xamarin.Forms and will not compile. Use `WidthRequest  =` / `HeightRequest  =` (two spaces before `=`) instead.
+  2. **NEVER write `WidthRequest=` or `HeightRequest=` (no extra spaces)** when the intent is `MaximumWidthRequest` on the MAUI side — this produces a plain `WidthRequest` in GnollHackM, causing elements to be overly wide or tall. You MUST use the two-space form (`WidthRequest  =` / `HeightRequest  =`) to get the `Maximum` version.

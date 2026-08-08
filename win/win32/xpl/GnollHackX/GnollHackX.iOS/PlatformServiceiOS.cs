@@ -382,6 +382,11 @@ namespace GnollHackX.iOS
             UIApplication.SharedApplication.KeyWindow.EndEditing(true);
         }
 
+        public void SetAdjustResize(bool adjustResize)
+        {
+
+        }
+
         public void HideOsNavigationBar()
         {
 

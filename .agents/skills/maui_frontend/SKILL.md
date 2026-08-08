@@ -11,7 +11,27 @@ GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, 
 - **UI Thread Safety**: All UI updates must be marshaled to the main thread via `MainThread.BeginInvokeOnMainThread()`.
 - **Do NOT block the UI Thread**: Long-running native calls or file I/O must run asynchronously.
 - **Cross-Platform XAML**: Use `OnPlatform` in XAML to handle differences between iOS/Android/Windows.
-- **XAML WidthRequest / HeightRequest Quirk**: If a GnollHackX XAML file has exactly two spaces between `WidthRequest` or `HeightRequest` and `=` (e.g., `WidthRequest  =` or `HeightRequest  =`), the `makedefsdroid` build process automatically converts them into `MaximumWidthRequest` and `MaximumHeightRequest` respectively for GnollHackM. You MUST preserve these exact extra spaces if you are modifying or copying these blocks to retain this functionality.
+- **XAML `WidthRequest` / `HeightRequest` → `MaximumWidthRequest` / `MaximumHeightRequest` Convention**:
+
+  > [!CAUTION]
+  > **This is one of the most common XAML errors.** Getting this wrong causes either compilation failures or layout bugs that are hard to track down. Read this carefully.
+
+  In GnollHackX XAML (the Xamarin source files), the `makedefsdroid` build tool converts attributes with **exactly two spaces before `=`** into their `Maximum` counterparts for GnollHackM (MAUI). Specifically:
+  - `WidthRequest  =` (two spaces) → `MaximumWidthRequest=` in GnollHackM
+  - `HeightRequest  =` (two spaces) → `MaximumHeightRequest=` in GnollHackM
+
+  **There are two equally critical mistakes to avoid:**
+
+  | ❌ WRONG (in GnollHackX XAML) | Why It's Wrong | ✅ CORRECT (in GnollHackX XAML) |
+  |------|------|------|
+  | `MaximumWidthRequest="400"` | Does NOT exist in Xamarin.Forms — **will not compile** | `WidthRequest  ="400"` (two spaces before `=`) |
+  | `MaximumHeightRequest="300"` | Does NOT exist in Xamarin.Forms — **will not compile** | `HeightRequest  ="300"` (two spaces before `=`) |
+  | `WidthRequest="400"` (when you want Maximum) | Produces plain `WidthRequest` in GnollHackM — **elements become overly wide** | `WidthRequest  ="400"` (two spaces before `=`) |
+  | `HeightRequest="300"` (when you want Maximum) | Produces plain `HeightRequest` in GnollHackM — **elements become overly tall** | `HeightRequest  ="300"` (two spaces before `=`) |
+
+  **When to use each form:**
+  - Use `WidthRequest="..."` (no extra spaces, standard `=`) when you genuinely want a **fixed `WidthRequest`** on both Xamarin and MAUI sides.
+  - Use `WidthRequest  ="..."` (two spaces before `=`) when you want `MaximumWidthRequest` on the MAUI side. This is the **only** way to achieve `MaximumWidthRequest` in GnollHackM.
 
 ## XAML Pipeline: GnollHackX → makedefsdroid → GnollHackM
 
@@ -23,20 +43,31 @@ The **source of truth** for all XAML files is in the legacy Xamarin project at `
 
 1. **Always edit XAML in `GnollHackX/GnollHackX/`** (e.g., `Pages/MainScreen/SettingsPage.xaml`)
 2. **Code-behind (`.xaml.cs`) files** are shared via `<Compile Include>` file-linking and can be edited directly — they are the same physical file for both projects
-3. **After adding/removing `x:Name` elements in XAML**, the GnollHackX solution must be built to regenerate the MAUI XAML and its code-behind `.g.cs` files for GnollHackM
+3. **After modifying any XAML**, the MAUI XAML in GnollHackM must be regenerated. The agent should attempt this itself by building the `makedefsdroid` project (see below). If `x:Name` elements were added or removed, the code-behind `.g.cs` files for GnollHackM also need regeneration.
 4. **Until regeneration happens**, GnollHackM builds will fail with `CS0103: The name 'ElementName' does not exist in the current context` for any newly added `x:Name` references
 
 ### What to do after modifying XAML
 
-Ask the user to build the GnollHackX solution before attempting a GnollHackM build:
+The XAML conversion is performed by MSBuild targets in the `makedefsdroid` project (`win/win32/vs/makedefsdroid.vcxproj`). **First, try to regenerate the MAUI XAML yourself** by building this project:
 
-> "I've modified the XAML in GnollHackX. Could you please build the GnollHackX solution so that `makedefsdroid` regenerates the MAUI XAML for GnollHackM?"
+```powershell
+# Locate MSBuild via vswhere (msbuild is not on the default PowerShell PATH)
+$msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+& $msbuild win/win32/vs/makedefsdroid.vcxproj /t:Build /p:Configuration=Debug /p:Platform=x64
+```
+
+This runs the `InitialBuild` target which transforms all GnollHackX XAML files into MAUI-compatible XAML in `GnollHackM/`.
+
+**Only if the build fails** (e.g., missing Linux/WSL build tools, MSBuild not found), fall back to asking the user:
+
+> "I've modified the XAML in GnollHackX but was unable to regenerate the MAUI XAML automatically. Could you please build the `makedefsdroid` project (or the GnollHackX solution) so that the MAUI XAML for GnollHackM is regenerated?"
 
 ### What makedefsdroid converts
 
 - Xamarin.Forms namespaces → .NET MAUI namespaces
-- `WidthRequest  =` (two spaces) → `MaximumWidthRequest=`
-- `HeightRequest  =` (two spaces) → `MaximumHeightRequest=`
+- `WidthRequest  =` (two spaces) → `MaximumWidthRequest=` (**never write `MaximumWidthRequest` directly in GnollHackX!**)
+- `HeightRequest  =` (two spaces) → `MaximumHeightRequest=` (**never write `MaximumHeightRequest` directly in GnollHackX!**)
+- `WidthRequest=` (no extra spaces) is **NOT converted** — it stays as `WidthRequest=` in GnollHackM. Only use this form when you actually want a plain `WidthRequest`, not a `MaximumWidthRequest`.
 - Other Xamarin-to-MAUI compatibility transforms
 
 ## Project Structure

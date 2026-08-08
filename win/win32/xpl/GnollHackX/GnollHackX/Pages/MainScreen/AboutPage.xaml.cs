@@ -21,6 +21,7 @@ using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
+using GnollHackX.Pages.Game;
 
 namespace GnollHackX.Pages.MainScreen
 #endif
@@ -35,14 +36,6 @@ namespace GnollHackX.Pages.MainScreen
             Disappearing += (s, e) => { _mainPage.StartCarouselViewAndEnableButtons(); };
 
             InitializeComponent();
-//#if GNH_MAUI
-//            SafeAreaEdges = SafeAreaEdges.All;
-//#else
-//            On<iOS>().SetUseSafeArea(true);
-//#endif
-            //UIUtils.AdjustRootLayout(RootGrid);
-            //UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
                 lblHeader.TextColor = GHColors.White;
@@ -153,6 +146,93 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await GHApp.OpenBrowser(this, "Wiki", new Uri(GHConstants.GnollHackWikiPage));
+            AboutGrid.IsEnabled = true;
+        }
+
+        private async void btnOverseer_Clicked(object sender, EventArgs e)
+        {
+            await OpenOverseerPage();
+        }
+
+        private async Task OpenOverseerPage()
+        {
+            AboutGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+
+            if (!GHApp.HasInternetAccess)
+            {
+                await ShowMessagePopupAsync("Internet Connection Required", "Internet access is required to use Gnoll Overseer.", "OK");
+                AboutGrid.IsEnabled = true;
+                return;
+            }
+
+            if (!GHApp.XlogUserNameVerified && !string.IsNullOrEmpty(GHApp.XlogUserName))
+            {
+                MessagePopup.ShowNonBlockingPopup("Credentials Verification", "Verifying credentials... Please wait.");
+                await GHApp.TryVerifyXlogUserNameAsync(true);
+                MessagePopup.HideNonBlockingPopup();
+            }
+
+            if (string.IsNullOrEmpty(GHApp.XlogUserName) || !GHApp.XlogUserNameVerified)
+            {
+                await ShowMessagePopupAsync("Verification Required", "Registering a GnollHack Account is required for Gnoll Overseer. Please go to Server Posting section in Settings to set this up.", "OK");
+                AboutGrid.IsEnabled = true;
+                return;
+            }
+
+            /* AI Data Processing Consent (Apple Guideline 5.1.2) */
+            if (!GHApp.OverseerConsentAccepted)
+            {
+                bool accepted = await GHApp.QueryOverseerPrivacyConsent(this, MessagePopup);
+                //var formattedConsentMessage = new FormattedString();
+                //formattedConsentMessage.Spans.Add(new Span { Text = "Gnoll Overseer uses artificial intelligence to assist you. "
+                //    + "When you use Overseer, your chat messages, game data, "
+                //    + "and device information are sent to our server and processed "
+                //    + "by a third-party AI service."
+                //    + Environment.NewLine + Environment.NewLine
+                //    + "Your data is used solely to generate responses and is not "
+                //    + "used for advertising or sold to third parties. "
+                //    + "You can manage your data and delete chat sessions within Overseer."
+                //    + Environment.NewLine + Environment.NewLine
+                //    + "For full details, please review our Privacy Policy at:"
+                //    + Environment.NewLine, FontFamily = "Underwood" });
+                
+                //var linkSpan = new Span { 
+                //    Text = GHConstants.OverseerPrivacyPolicyPage, 
+                //    TextColor = GHColors.LightBlue, 
+                //    TextDecorations = TextDecorations.Underline,
+                //    FontFamily = "Underwood"
+                //};
+                
+                //var tapGestureRecognizer = new TapGestureRecognizer();
+                //tapGestureRecognizer.Tapped += async (s, e) =>
+                //{
+                //    await GHApp.OpenBrowser(this, "Privacy Policy", new Uri(GHConstants.OverseerPrivacyPolicyPage));
+                //};
+                //linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
+                //formattedConsentMessage.Spans.Add(linkSpan);
+
+                //formattedConsentMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine + "Do you agree to proceed?", FontFamily = "Underwood" });
+
+                //bool accepted = await MessagePopup.ShowMessagePopupAsync(
+                //    "AI Data Disclosure",
+                //    formattedConsentMessage,
+                //    linkSpan,
+                //    "I Agree",
+                //    "Cancel");
+
+                if (!accepted)
+                {
+                    AboutGrid.IsEnabled = true;
+                    return;
+                }
+
+                GHApp.OverseerConsentAccepted = true;
+                Preferences.Set(GHConstants.OverseerConsentAcceptedKey, true);
+            }
+
+            var overseerPage = new OverseerPage(GHApp.OverseerAddress, "");
+            await GHApp.PushModalPageAsync(overseerPage);
             AboutGrid.IsEnabled = true;
         }
 
@@ -372,6 +452,11 @@ namespace GnollHackX.Pages.MainScreen
                             case (int)'w':
                                 if (btnWiki.IsEnabled && btnWiki.IsVisible && AboutGrid.IsEnabled)
                                     await OpenWikiPage();
+                                handled = true;
+                                break;
+                            case (int)'o':
+                                if (btnOverseer.IsEnabled && btnOverseer.IsVisible && AboutGrid.IsEnabled)
+                                    await OpenOverseerPage();
                                 handled = true;
                                 break;
                             case (int)'c':

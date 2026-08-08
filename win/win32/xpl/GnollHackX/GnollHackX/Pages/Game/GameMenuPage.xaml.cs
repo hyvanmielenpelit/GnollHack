@@ -26,7 +26,7 @@ namespace GnollHackX.Pages.Game
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class GameMenuPage : CustomModalPage, ICloseablePage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
+    public partial class GameMenuPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
     {
         public GamePage _gamePage;
  
@@ -58,13 +58,11 @@ namespace GnollHackX.Pages.Game
                 btnQuit.Text = "Finish Game Over";
                 btnSave.TextColor = GHColors.Gray;
                 btnSave.IsEnabled = false;
-                btnOptions.TextColor = GHColors.Gray;
-                btnOptions.IsEnabled = false;
+                btnDevOptions.TextColor = GHColors.Gray;
+                btnDevOptions.IsEnabled = false;
             }
 
-            btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
-            btnGC.IsVisible = GHApp.DeveloperMode && GHApp.DebugLogMessages && GHApp.LowLevelLogging; /* Just do not show almost ever, since there is little space  */
-            btnDumpFrameLog.IsVisible = GHApp.DeveloperMode && FrameTimeProfiler.IsEnabled; /* Just do not show almost ever, since there is little space  */
+            btnDeveloper.IsVisible = GHApp.DeveloperMode;
             UpdateDarknessMode();
 
             FrameTimeProfiler.MarkPauseEvent();
@@ -77,9 +75,7 @@ namespace GnollHackX.Pages.Game
                 btnSave.IsVisible = false;
                 btnQuit.IsVisible = false;
                 btnSettings.IsVisible = false;
-                btnOptions.IsVisible = false;
-                btnMessages.IsVisible = false;
-                btnGC.IsVisible = false;
+                btnDeveloper.IsVisible = false;
                 btnVersion.IsVisible = false;
                 btnTips.IsVisible = false;
             }
@@ -87,7 +83,10 @@ namespace GnollHackX.Pages.Game
 
         public void UpdateDarknessMode()
         {
-            lblHeader.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            bool isDarkMode = GHApp.DarkMode;
+            lblHeader.TextColor = isDarkMode ? GHColors.White : GHColors.Black;
+            if (isDarkMode)
+                DeveloperPopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
             bkgView.InvalidateSurface();
         }
 
@@ -164,11 +163,12 @@ namespace GnollHackX.Pages.Game
         private async Task CloseAndShowOptions()
         {
             MainLayout.IsEnabled = false;
+            DeveloperPopupGrid.IsVisible = false;
             GHApp.PlayButtonClickedSound();
             GHApp.DebugWriteRestart("ProfilingStopwatch.Restart: Options");
             FrameTimeProfiler.MarkPauseEvent();
             GHApp.CollectNursery();
-            _gamePage.GenericButton_Clicked(btnOptions, EventArgs.Empty, GHApp.MapCommand('O'));
+            _gamePage.GenericButton_Clicked(btnDevOptions, EventArgs.Empty, GHApp.MapCommand('O'));
             await GHApp.PopModalPageAsync();
         }
 
@@ -234,8 +234,7 @@ namespace GnollHackX.Pages.Game
         public void UpdateLayout()
         {
             MainLayout.IsEnabled = true;
-            btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
-            btnGC.IsVisible = GHApp.DeveloperMode && GHApp.DebugLogMessages;
+            btnDeveloper.IsVisible = GHApp.DeveloperMode;
         }
 
         private bool _backPressed = false;
@@ -267,20 +266,41 @@ namespace GnollHackX.Pages.Game
         //    return true;
         //}
 
+        private void btnDeveloper_Clicked(object sender, EventArgs e)
+        {
+            GHApp.PlayButtonClickedSound();
+            btnDevDumpFrameLog.IsVisible = FrameTimeProfiler.IsEnabled;
+            DeveloperPopupGrid.IsVisible = true;
+        }
+
+        private void CloseDeveloperPopup()
+        {
+            GHApp.PlayButtonClickedSound();
+            DeveloperPopupGrid.IsVisible = false;
+        }
+
+        private void btnDevClose_Clicked(object sender, EventArgs e)
+        {
+            CloseDeveloperPopup();
+        }
+
+        private void DeveloperPopupOverlay_Tapped(object sender, EventArgs e)
+        {
+            CloseDeveloperPopup();
+        }
+
         private void btnGC_Clicked(object sender, EventArgs e)
         {
-            MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            btnGC.Text = "Collecting...";
-            btnGC.TextColor = GHColors.Yellow;
+            btnDevGC.Text = "Collecting...";
+            btnDevGC.TextColor = GHColors.Yellow;
 
             GHApp.DebugWriteRestart("Garbage Collection Start");
             GHApp.CollectGarbage();
             GHApp.DebugWriteProfilingStopwatchTimeAndStop("Garbage Collection End");
 
-            btnGC.Text = "Done";
-            btnGC.TextColor = GHColors.Red;
-            MainLayout.IsEnabled = true;
+            btnDevGC.Text = "Done";
+            btnDevGC.TextColor = GHColors.Red;
         }
 
         private async void btnTips_Clicked(object sender, EventArgs e)
@@ -441,6 +461,122 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = true;
         }
 
+        private async void btnOverseer_Clicked(object sender, EventArgs e)
+        {
+            await OpenOverseerPage();
+        }
+
+        private async Task OpenOverseerPage()
+        {
+            MainLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+
+            if (!GHApp.HasInternetAccess)
+            {
+                await ShowMessagePopupAsync("Internet Connection Required", "Internet access is required to use Gnoll Overseer.", "OK");
+                MainLayout.IsEnabled = true;
+                return;
+            }
+
+            if (!GHApp.XlogUserNameVerified && !string.IsNullOrEmpty(GHApp.XlogUserName))
+            {
+                MessagePopup.ShowNonBlockingPopup("Credentials Verification", "Verifying credentials... Please wait.");
+                await GHApp.TryVerifyXlogUserNameAsync(true);
+                MessagePopup.HideNonBlockingPopup();
+            }
+
+            if (string.IsNullOrEmpty(GHApp.XlogUserName) || !GHApp.XlogUserNameVerified)
+            {
+                await ShowMessagePopupAsync("Verification Required", "Registering a GnollHack Account is required for Gnoll Overseer. Please go to Server Posting section in Settings to set this up.", "OK");
+                MainLayout.IsEnabled = true;
+                return;
+            }
+
+            /* AI Data Processing Consent (Apple Guideline 5.1.2) */
+            if (!GHApp.OverseerConsentAccepted)
+            {
+                bool accepted = await GHApp.QueryOverseerPrivacyConsent(this, MessagePopup);
+                //var formattedConsentMessage = new FormattedString();
+                //formattedConsentMessage.Spans.Add(new Span { Text = "Gnoll Overseer uses artificial intelligence to assist you. "
+                //    + "When you use Overseer, your chat messages, game data, "
+                //    + "and device information are sent to our server and processed "
+                //    + "by a third-party AI service."
+                //    + Environment.NewLine + Environment.NewLine
+                //    + "Your data is used solely to generate responses and is not "
+                //    + "used for advertising or sold to third parties. "
+                //    + "You can manage your data and delete chat sessions within Overseer."
+                //    + Environment.NewLine + Environment.NewLine
+                //    + "For full details, please review our Privacy Policy at:"
+                //    + Environment.NewLine, FontFamily = "Underwood" });
+                
+                //var linkSpan = new Span { 
+                //    Text = GHConstants.OverseerPrivacyPolicyPage, 
+                //    TextColor = GHColors.LightBlue, 
+                //    TextDecorations = TextDecorations.Underline,
+                //    FontFamily = "Underwood"
+                //};
+                
+                //var tapGestureRecognizer = new TapGestureRecognizer();
+                //tapGestureRecognizer.Tapped += async (s, e) =>
+                //{
+                //    await GHApp.OpenBrowser(this, "Privacy Policy", new Uri(GHConstants.OverseerPrivacyPolicyPage));
+                //};
+                //linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
+                //formattedConsentMessage.Spans.Add(linkSpan);
+
+                //formattedConsentMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine + "Do you agree to proceed?", FontFamily = "Underwood" });
+
+                //bool accepted = await MessagePopup.ShowMessagePopupAsync(
+                //    "AI Data Disclosure",
+                //    formattedConsentMessage,
+                //    linkSpan,
+                //    "I Agree",
+                //    "Cancel");
+
+                if (!accepted)
+                {
+                    MainLayout.IsEnabled = true;
+                    return;
+                }
+
+                GHApp.OverseerConsentAccepted = true;
+                Preferences.Set(GHConstants.OverseerConsentAcceptedKey, true);
+            }
+
+            string snapshotHtml = "";
+
+            /* 1. Generate AI snapshot via native call (safe: game thread is idle) */
+            try
+            {
+                string filePath = GHApp.GnollHackService.GenerateAiSnapshot();
+                if (filePath != null)
+                {
+                    if (File.Exists(filePath))
+                        snapshotHtml = File.ReadAllText(filePath);
+                    else
+                        GHApp.WriteGHLog("AI snapshot file " + filePath + " does not exist.");
+                }
+                else
+                {
+                    GHApp.WriteGHLog("AI snapshot file is null.");
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("AI snapshot generation failed: " + ex.Message);
+            }
+
+            /* Message history and directory manifest are now accessed via AI tools, */
+            /* not uploaded at session start. This speeds up Overseer startup. */
+
+            /* 4. Open OverseerPage — it handles the upload + progress display */
+            var overseerPage = new OverseerPage(GHApp.OverseerAddress, 
+                GHApp.OverseerSendGameContext ? snapshotHtml : "");
+            await GHApp.PushModalPageAsync(overseerPage);
+
+            MainLayout.IsEnabled = true;
+        }
+
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
             if (GHApp.PushingModalPage || GHApp.IsSystemBrowserOpen) /* Ignore key presses when opening a page or using a system browser */
@@ -453,59 +589,102 @@ namespace GnollHackX.Pages.Game
                 {
                     try
                     {
-                        switch (key)
+                        if (DeveloperPopupGrid.IsVisible)
                         {
-                            case (int)'s':
-                                if(isMeta)
-                                {
-                                    if (btnSave.IsEnabled && btnSave.IsVisible && MainLayout.IsEnabled)
-                                        await CloseAndSaveGame();
+                            /* Developer popup is open — handle popup-specific keys */
+                            switch (key)
+                            {
+                                case (int)'o':
+                                    if (btnDevOptions.IsEnabled && btnDevOptions.IsVisible)
+                                        await CloseAndShowOptions();
                                     handled = true;
-                                }
-                                else if (!isCtrl)
-                                {
-                                    if (btnSettings.IsEnabled && btnSettings.IsVisible && MainLayout.IsEnabled)
-                                        await OpenSettingsPage();
+                                    break;
+                                case (int)'m':
+                                    if (btnDevMessages.IsEnabled && btnDevMessages.IsVisible)
+                                        btnMessages_Clicked(btnDevMessages, EventArgs.Empty);
                                     handled = true;
-                                }
-                                break;
-                            case (int)'o':
-                                if (btnOptions.IsEnabled && btnOptions.IsVisible && MainLayout.IsEnabled)
-                                    await CloseAndShowOptions();
-                                handled = true;
-                                break;
-                            case (int)'v':
-                                if (btnVersion.IsEnabled && btnVersion.IsVisible && MainLayout.IsEnabled)
-                                    await OpenVersionPage();
-                                handled = true;
-                                break;
-                            case (int)'t':
-                                if (btnSnapshot.IsEnabled && btnSnapshot.IsVisible && MainLayout.IsEnabled)
-                                    await TakeSnapshot();
-                                handled = true;
-                                break;
-                            case (int)'l':
-                                if (btnLibrary.IsEnabled && btnLibrary.IsVisible && MainLayout.IsEnabled)
-                                    await OpenLibraryPage();
-                                handled = true;
-                                break;
-                            case (int)'d':
-                                if (btnDelphi.IsEnabled && btnDelphi.IsVisible && MainLayout.IsEnabled)
-                                    await OpenOraclePage();
-                                handled = true;
-                                break;
-                            case (int)'w':
-                                if (btnWiki.IsEnabled && btnWiki.IsVisible && MainLayout.IsEnabled)
-                                    await OpenWikiPage();
-                                handled = true;
-                                break;
-                            case (int)'u':
-                                if (btnTips.IsEnabled && btnTips.IsVisible && MainLayout.IsEnabled)
-                                    await CloseAndShowGUITips();
-                                handled = true;
-                                break;
-                            default:
-                                break;
+                                    break;
+                                case (int)'f':
+                                    if (btnDevDumpFrameLog.IsEnabled && btnDevDumpFrameLog.IsVisible)
+                                        btnDumpFrameLog_Clicked(btnDevDumpFrameLog, EventArgs.Empty);
+                                    handled = true;
+                                    break;
+                                case (int)'g':
+                                    if (btnDevGC.IsEnabled && btnDevGC.IsVisible)
+                                        btnGC_Clicked(btnDevGC, EventArgs.Empty);
+                                    handled = true;
+                                    break;
+                                case ' ':
+                                case 13: /* Enter */
+                                    CloseDeveloperPopup();
+                                    handled = true;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            /* Main menu keys */
+                            switch (key)
+                            {
+                                case (int)'s':
+                                    if(isMeta)
+                                    {
+                                        if (btnSave.IsEnabled && btnSave.IsVisible && MainLayout.IsEnabled)
+                                            await CloseAndSaveGame();
+                                        handled = true;
+                                    }
+                                    else if (!isCtrl)
+                                    {
+                                        if (btnSettings.IsEnabled && btnSettings.IsVisible && MainLayout.IsEnabled)
+                                            await OpenSettingsPage();
+                                        handled = true;
+                                    }
+                                    break;
+                                case (int)'v':
+                                    if (btnVersion.IsEnabled && btnVersion.IsVisible && MainLayout.IsEnabled)
+                                        await OpenVersionPage();
+                                    handled = true;
+                                    break;
+                                case (int)'t':
+                                    if (btnSnapshot.IsEnabled && btnSnapshot.IsVisible && MainLayout.IsEnabled)
+                                        await TakeSnapshot();
+                                    handled = true;
+                                    break;
+                                case (int)'l':
+                                    if (btnLibrary.IsEnabled && btnLibrary.IsVisible && MainLayout.IsEnabled)
+                                        await OpenLibraryPage();
+                                    handled = true;
+                                    break;
+                                case (int)'D':
+                                    if (btnDeveloper.IsEnabled && btnDeveloper.IsVisible && MainLayout.IsEnabled)
+                                        btnDeveloper_Clicked(btnDeveloper, EventArgs.Empty);
+                                    handled = true;
+                                    break;
+                                case (int)'d':
+                                    if (btnDelphi.IsEnabled && btnDelphi.IsVisible && MainLayout.IsEnabled)
+                                        await OpenOraclePage();
+                                    handled = true;
+                                    break;
+                                case (int)'w':
+                                    if (btnWiki.IsEnabled && btnWiki.IsVisible && MainLayout.IsEnabled)
+                                        await OpenWikiPage();
+                                    handled = true;
+                                    break;
+                                case (int)'o':
+                                    if (btnOverseer.IsEnabled && btnOverseer.IsVisible && MainLayout.IsEnabled)
+                                        await OpenOverseerPage();
+                                    handled = true;
+                                    break;
+                                case (int)'u':
+                                    if (btnTips.IsEnabled && btnTips.IsVisible && MainLayout.IsEnabled)
+                                        await CloseAndShowGUITips();
+                                    handled = true;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -533,22 +712,34 @@ namespace GnollHackX.Pages.Game
                 {
                     try
                     {
-                        if (key == GHSpecialKey.Escape)
+                        if (DeveloperPopupGrid.IsVisible)
                         {
-                            if (btnBackToGame.IsEnabled && btnBackToGame.IsVisible && MainLayout.IsEnabled)
-                                await BackToGame();
+                            /* Developer popup is open — ESC/Enter/Space closes it */
+                            if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space)
+                            {
+                                CloseDeveloperPopup();
+                                handled = true;
+                            }
                         }
-                        else if (isMeta && key == GHSpecialKey.A + 's' - 'a')
+                        else
                         {
-                            if (btnSave.IsEnabled && btnSave.IsVisible && MainLayout.IsEnabled)
-                                await CloseAndSaveGame();
-                            handled = true;
-                        }
-                        else if (isMeta && key == GHSpecialKey.A + 'q' - 'a')
-                        {
-                            if (btnQuit.IsEnabled && btnQuit.IsVisible && MainLayout.IsEnabled)
-                                await CloseAndQuitGame();
-                            handled = true;
+                            if (key == GHSpecialKey.Escape)
+                            {
+                                if (btnBackToGame.IsEnabled && btnBackToGame.IsVisible && MainLayout.IsEnabled)
+                                    await BackToGame();
+                            }
+                            else if (isMeta && key == GHSpecialKey.A + 's' - 'a')
+                            {
+                                if (btnSave.IsEnabled && btnSave.IsVisible && MainLayout.IsEnabled)
+                                    await CloseAndSaveGame();
+                                handled = true;
+                            }
+                            else if (isMeta && key == GHSpecialKey.A + 'q' - 'a')
+                            {
+                                if (btnQuit.IsEnabled && btnQuit.IsVisible && MainLayout.IsEnabled)
+                                    await CloseAndQuitGame();
+                                handled = true;
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -563,5 +754,18 @@ namespace GnollHackX.Pages.Game
             }
             return handled;
         }
+
+        /* IMessagePopupPage implementation */
+        public bool IsPopupOpen => MessagePopup.IsPopupOpen;
+        public void ClosePopup() => MessagePopup.ClosePopup();
+        public bool SendKeyToPopup(int key, bool isCtrl, bool isMeta) => MessagePopup.SendKeyToPopup(key, isCtrl, isMeta);
+        public bool SendSpecialKeyToPopup(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift) => MessagePopup.SendSpecialKeyToPopup(spkey, isCtrl, isMeta, isShift);
+#if GNH_MAUI
+        public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
+             Microsoft.Maui.Graphics.Color titleColor = null, bool acceptEnterSpaceForOkCancel = false) => MessagePopup.ShowMessagePopupAsync(title, message, okButtonText, cancelButtonText, titleColor, acceptEnterSpaceForOkCancel);
+#else
+        public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
+             Xamarin.Forms.Color? titleColor = null, bool acceptEnterSpaceForOkCancel = false) => MessagePopup.ShowMessagePopupAsync(title, message, okButtonText, cancelButtonText, titleColor, acceptEnterSpaceForOkCancel);
+#endif
     }
 }

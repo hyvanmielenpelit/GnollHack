@@ -58,7 +58,7 @@ namespace GnollHackX.Pages.MainScreen
             bool answer = await ShowMessagePopupAsync("Delete GnollHack Core Files?", "Are you sure to delete GnollHack core files?", "Yes", "No");
             if (answer)
             {
-                GHApp.GnollHackService.ClearCoreFiles();
+                GHApp.ClearCoreFiles();
                 await GHApp.GnollHackService.InitializeGnollHack();
                 btnDeleteFiles.Text = "Done";
                 btnDeleteFiles.TextColor = GHColors.Red;
@@ -73,7 +73,7 @@ namespace GnollHackX.Pages.MainScreen
             bool answer = await ShowMessagePopupAsync("Delete Saved Games?", "Are you sure to delete all saved games?", "Yes", "No");
             if (answer)
             {
-                GHApp.GnollHackService.ClearSavedGames();
+                GHApp.ClearSavedGames();
                 btnDeleteSavedGames.Text = "Done";
                 btnDeleteSavedGames.TextColor = GHColors.Red;
             }
@@ -87,8 +87,8 @@ namespace GnollHackX.Pages.MainScreen
             bool answer = await ShowMessagePopupAsync("Delete Top Scores?", "Are you sure to delete all top scores and associated dumplogs?", "Yes", "No");
             if (answer)
             {
-                GHApp.GnollHackService.ClearTopScores();
-                GHApp.GnollHackService.ClearDumplogs();
+                GHApp.ClearTopScores();
+                GHApp.ClearDumplogs();
                 btnDeleteDumplogs.Text = "Done";
                 btnDeleteDumplogs.TextColor = GHColors.Red;
             }
@@ -102,7 +102,7 @@ namespace GnollHackX.Pages.MainScreen
             bool answer = await ShowMessagePopupAsync("Delete Bones Files?", "Are you sure to delete all bones files?", "Yes", "No");
             if (answer)
             {
-                GHApp.GnollHackService.ClearBones();
+                GHApp.ClearBones();
                 btnDeleteBones.Text = "Done";
                 btnDeleteBones.TextColor = GHColors.Red;
             }
@@ -116,7 +116,7 @@ namespace GnollHackX.Pages.MainScreen
             bool answer = await ShowMessagePopupAsync("Delete All Main Files?", "Are you sure to delete all files in the main directory?", "Yes", "No");
             if (answer)
             {
-                GHApp.GnollHackService.ClearAllFilesInMainDirectory();
+                GHApp.ClearAllFilesInMainDirectory();
                 btnDeleteAllMainFiles.Text = "Done";
                 btnDeleteAllMainFiles.TextColor = GHColors.Red;
             }

@@ -37,6 +37,7 @@ namespace GnollHackX
         public const int FadeFromBlackDuration = 200;
         public const int MaxMessageHistoryLength = 256;
         public const int MaxLongerMessageHistoryLength = 16384;
+        public const int MaxOverseerLogLengthNonDebug = 65536 * 2;
         public const float WindowBaseFontSize = 16f;
         public const float WindowMessageFontSize = 12f;
         public const float WindowMenuFontSize = 16f;
@@ -169,7 +170,16 @@ namespace GnollHackX
         public const bool AreMenuFadeEffectsDefault = true;
         public const string GnollHackGitHubPage = "https://github.com/hyvanmielenpelit/GnollHack";
         public const string GnollHackWebPage = "https://gnollhack.com";
-        public const string GnollHackWikiPage = "https://wiki.gnollhack.com"; /* Old page on GitHub: "https://github.com/hyvanmielenpelit/GnollHack/wiki" */
+        public const string GnollHackWikiPage = "https://wiki.gnollhack.com";
+        public const string GnollHackOverseerPage = "https://overseer.gnollhack.com";
+        public const string OverseerEnableClientToolsKey = "OverseerEnableClientTools";
+        public const bool OverseerEnableClientToolsDefault = true;
+        public const string OverseerEnableGameActionsKey = "OverseerEnableGameActions";
+        public const bool OverseerEnableGameActionsDefault = false;
+        /* Overseer AI consent (Apple Guideline 5.1.2) */
+        public const string OverseerConsentAcceptedKey = "OverseerConsentAccepted";
+        public const bool OverseerConsentAcceptedDefault = false;
+        public const string OverseerPrivacyPolicyPage = "https://wiki.gnollhack.com/Gnoll%20Overseer%20Privacy%20Policy.md";
         public const string GnollHackSponsorPage = "https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english";
         public const string GnollHackGeneralDowngradePage = GnollHackWikiPage + "/Download";
         public const string GnollHackAndroidDowngradePage = GnollHackWikiPage + "/Android-Releases";
@@ -229,6 +239,7 @@ namespace GnollHackX
         public const string SaveDirectory = "save";
         public const string DumplogDirectory = "dumplog";
         public const string SnapshotDirectory = "snapshot";
+        public const string AiDirectory = "ai";
         public const string ReplayDirectory = "replay";
         public const string ReplayDownloadFromCloudDirectory = "replay-cloud";
         public const string ArchiveDirectory = "archive"; /* Directory for sharable archives and files; cleaned and deleted at program start */
@@ -346,7 +357,11 @@ namespace GnollHackX
 #else
         public const bool DefaultSimpleCmdLayout = true;
         public const int FadeFromBlackDurationAtStart = 700;
-        public const double FadeFromBlackAtStartExtraDelaySecs = 0.30;
+#if DEBUG
+        public const double FadeFromBlackAtStartExtraDelaySecs = 0.75;
+#else
+        public const double FadeFromBlackAtStartExtraDelaySecs = 0.40;
+#endif
 #endif
         public const bool DefaultRuntimeEffects = false;
         public const bool DefaultCharacterClickAction = false;

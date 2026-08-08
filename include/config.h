@@ -623,6 +623,10 @@ typedef unsigned char uchar;
 #define SNAPSHOT_FILE        "/tmp/gnollhack.%n.%d.%D.txt"
 #endif
 
+#ifndef AI_FILE
+#define AI_FILE        "/tmp/gnollhack.%n.%d.%D.ai.txt"
+#endif
+
 #endif /* DUMPLOG */
 
 #if defined (DUMPHTML)
@@ -638,10 +642,26 @@ typedef unsigned char uchar;
 #define SNAPHTML_FILE        "/tmp/gnollhack.%n.%d.%D.html"
 #endif
 
+#ifndef AIHTML_FILE
+#define AIHTML_FILE        "/tmp/gnollhack.%n.%d.%D.ai.html"
+#endif
+
 #endif /* DUMPHTML */
 
 #endif /* DUMPLOG || DUMPHTML */
 
+ /* Buffer size: must be at least as large as the biggest consumer */
+#define AI_SNAPSHOT_MESSAGE_COUNT 100
+
+#ifndef DUMPLOG_MSG_COUNT
+#define SAVED_PLINE_COUNT AI_SNAPSHOT_MESSAGE_COUNT
+#else
+#if AI_SNAPSHOT_MESSAGE_COUNT > DUMPLOG_MSG_COUNT
+#define SAVED_PLINE_COUNT AI_SNAPSHOT_MESSAGE_COUNT
+#else
+#define SAVED_PLINE_COUNT DUMPLOG_MSG_COUNT
+#endif
+#endif
 
 #define USE_ISAAC64 /* Use cross-plattform, bundled RNG */
 

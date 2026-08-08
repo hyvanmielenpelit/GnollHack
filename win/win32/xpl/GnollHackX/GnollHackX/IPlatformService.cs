@@ -17,6 +17,7 @@ namespace GnollHackX
         void EnsureWindowFocus();
         void CloseApplication();
         void HideKeyboard();
+        void SetAdjustResize(bool adjustResize);
         float GetPlatformScreenScale();
         Task<Stream> GetPlatformAssetsStreamAsync(string directory, string fileName);
         bool IsRunningOnDesktop();
