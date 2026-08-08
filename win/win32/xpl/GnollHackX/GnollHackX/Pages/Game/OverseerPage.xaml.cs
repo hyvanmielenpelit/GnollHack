@@ -84,11 +84,13 @@ namespace GnollHackX.Pages.Game
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
+            GHApp.SetPlatformResizeAdjustment(true);
             await UploadAndConnect();
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
+            GHApp.SetPlatformResizeAdjustment(false);
             GHApp.BackButtonPressed -= BackButtonPressed;
             CleanupJsBridge();
 

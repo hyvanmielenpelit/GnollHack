@@ -3412,6 +3412,21 @@ namespace GnollHackX
             return await Task.FromResult(false);
         }
 
+        public static void SetPlatformResizeAdjustment(bool adjustResize)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                try
+                {
+                    PlatformService?.SetAdjustResize(adjustResize);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            });
+        }
+
         public static string VersionNumberToString(ulong vernum)
         {
             if (vernum == 0UL)

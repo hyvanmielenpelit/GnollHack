@@ -496,6 +496,22 @@ namespace GnollHackX.Droid
             }
         }
 
+        public void SetAdjustResize(bool adjustResize)
+        {
+            var activity = MainActivity.CurrentMainActivity;
+            if (activity != null && activity.Window != null)
+            {
+                if (adjustResize)
+                {
+                    activity.Window.SetSoftInputMode(SoftInput.AdjustResize);
+                }
+                else
+                {
+                    activity.Window.SetSoftInputMode(SoftInput.AdjustUnspecified);
+                }
+            }
+        }
+
         public void HideOsNavigationBar()
         {
 #if GNH_MAUI
