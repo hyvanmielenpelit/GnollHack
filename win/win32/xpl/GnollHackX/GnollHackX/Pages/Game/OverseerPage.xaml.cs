@@ -106,6 +106,10 @@ namespace GnollHackX.Pages.Game
                     "WebView blank navigation failed: " + ex.Message);
             }
         }
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
+        }
 
         private async Task UploadAndConnect()
         {
@@ -461,6 +465,15 @@ namespace GnollHackX.Pages.Game
         {
             if (!_backPressed)
             {
+                if (_overseerLoaded)
+                {
+                    bool confirmed = await GHApp.DisplayMessageBox(
+                        this, "Leave Gnoll Overseer",
+                        "Are you sure you want to leave Gnoll Overseer?",
+                        "Leave", "Cancel");
+                    if (!confirmed)
+                        return false;
+                }
                 await ClosePageAsync(false);
             }
             return false;
