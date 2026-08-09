@@ -106,6 +106,7 @@ The `GnollHack.sln` supports several solution platform configurations:
 | `Android+Windows` | Android `.so` + Windows `.dll` | Convenience config; also runs `makedefsdroid` for XAML translation |
 | `ARM64` | Android `.so` only (arm64-v8a) | Also runs `makedefsdroid` |
 | `x64` | Windows `.dll` only | Does not require WSL |
+| `iPhone` | iOS `.a` static library | Requires vcremote running on Mac |
 
 To build from the command line:
 
@@ -118,6 +119,9 @@ $msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere
 
 # Or build Windows only (no WSL needed)
 & $msbuild win/win32/vs/GnollHack.sln /t:Rebuild /p:Configuration=Debug /p:Platform=x64
+
+# Or build iOS only (requires vcremote running on Mac)
+& $msbuild win/win32/vs/GnollHack.sln /t:Rebuild /p:Configuration=Debug /p:Platform=iPhone
 ```
 
 ### Step 2: Managed C# Client (`GnollHackM.sln`)
@@ -183,9 +187,9 @@ The C core is compiled into platform-specific libraries:
 
 MSBuild post-build targets copy the libraries and assets to the appropriate `GnollHackM/Platforms/` subdirectories:
 - `aftergnollhackdll.proj` — copies Windows DLL + `nhdat` + config files to `GnollHackM/Platforms/Windows/gnh/`
-- `afterdroidutils.proj` — copies Android data files from WSL output (`C:\wsl-out\`)
+- `afterdroidutils.proj` — copies Android data files from WSL output (`C:\wsl-out\`). This directory is populated automatically by the Linux data pipeline projects (`dlbdroid`, `makedefsdroid`, etc.) that cross-compile via SSH to WSL — originally introduced during the Xamarin.Forms era.
 - `aftergnollhackdroid.proj` — copies Android `.so` library
-- `aftergnollhackios.proj` — copies iOS `.a` library from Mac output (`C:\mac-out\`)
+- `aftergnollhackios.proj` — copies iOS `.a` library from Mac output (`C:\mac-out\`). This directory is populated by the PSCP download scripts that run as a post-build event of `gnollhackios.vcxproj`.
 
 ### Android Native Build Prerequisites
 
@@ -207,7 +211,7 @@ The iOS static library requires **two separate remote connections** to a Mac:
    - This is a separate connection mechanism used only for the C#/.NET MAUI build
    - Configure via the Pair to Mac button in the VS toolbar
 3. **PuTTY/PSCP** — the C++ project's post-build event uses PSCP to download `libgnollhackios.a` from the Mac to `C:\mac-out\` on Windows:
-   - Install PuTTY and edit the existing download scripts in `win/win32/xpl/gnollhackios/` with your Mac credentials
+   - Install PuTTY and edit the existing download scripts in `win/win32/xpl/gnollhackios/` with your Mac credentials (the committed versions contain mock placeholder credentials, not real ones — the files are `.gitignore`d so your real credentials won't be committed)
    - See wiki: `c:\hmp\GnollHackWiki\Development\Install PuTTY and PSCP and Create Download Scripts for Static iOS Library Project.md`
 
 ## XAML Transformation Pipeline (`makedefsdroid`)
