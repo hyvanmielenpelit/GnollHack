@@ -14,13 +14,69 @@ This skill covers the end-to-end build process for GnollHack, from compiling the
 
 ## Prerequisites
 
-- Visual Studio 2026 with C++ Desktop (v143 build tools) and .NET MAUI workloads
+- Visual Studio 2026 with the following **workloads**:
+  - Desktop development with C++
+  - .NET Multi-platform App UI Development
+  - .NET desktop development
+  - Universal Windows Platform development
+  - Mobile development with C++ (for Android/iOS)
+  - Linux and embedded development with C++ (for Android WSL builds)
+- The following **individual components** (install via VS Installer):
+  - Windows 10 SDK (10.0.19041.0)
+  - Windows 11 SDK (10.0.22621)
+  - C++ iOS development tools
+  - MSVC v143 - VS 2022 C++ x64/x86 build tools
 - .NET SDK (check `GnollHackM.csproj` for exact target framework version)
-- Windows 10 SDK and Windows 11 SDK (see the GnollHack Wiki's "Install Visual Studio 2026" page for the specific SDK versions to install as individual components)
-- For Android: Android SDK with NDK, plus WSL with Ubuntu (for cross-compiling the native library)
-- For iOS: Mac build host with Xcode, paired via Visual Studio's "Pair to Mac" feature
+- For Android: Android SDK with NDK, plus WSL with Ubuntu (see below)
+- For iOS: Mac build host with Xcode and `vcremote`, plus PuTTY/PSCP on Windows (see below)
 
-For full workload and individual component details, refer to the GnollHack Wiki's "Install Visual Studio 2026 for .NET MAUI Development" page.
+For full details, refer to the GnollHack Wiki page at `c:\hmp\GnollHackWiki\Development\Install Visual Studio 2026 for .NET MAUI Development.md`.
+
+## External Assets
+
+The following files are **not** in the GnollHack repository and must be obtained separately. The build succeeds without them, but the app will have no tile graphics or sound, and crash reporting / cloud saves won't function.
+
+### Tilesets
+
+Three large PNG files:
+- `gnollhack_64x96_transparent_32bits.png`
+- `gnollhack_64x96_transparent_32bits-2.png`
+- `gnollhack_64x96_transparent_32bits-3.png`
+
+Obtain from the [GnollHackTileSet](https://github.com/hyvanmielenpelit/GnollHackTileSet) repository — either build from source using [TileSetCompiler](https://github.com/hyvanmielenpelit/TileSetCompiler), or download prebuilt from the [Releases](https://github.com/hyvanmielenpelit/GnollHackTileSet/releases) section. Note: prebuilt tilesets may only match GnollHack releases, not the latest commit — code and tilesets must be aligned.
+
+**Install**: Copy the PNG files to `win/win32/tileset/`.
+
+### FMOD Sound Banks
+
+Twelve `.bank` files in two flavors (6 Desktop + 6 Mobile):
+- `Auxiliary.bank`, `Intro.bank`, `Master.bank`, `Master.strings.bank`, `Music.bank`, `Preliminary.bank`
+
+Obtain from the [GnollHackSoundSet](https://github.com/hyvanmielenpelit/GnollHackSoundSet) repository — either build from source using [FMOD Studio](https://www.fmod.com/), or download prebuilt from the [Releases](https://github.com/hyvanmielenpelit/GnollHackSoundSet/releases) section.
+
+**Install**: Copy to `win/win32/bank/` so that the first level contains `Desktop/` and `Mobile/` subdirectories.
+
+### Secrets File
+
+`ghsecrets.sjson` — a JSON file with encoded webhook URLs and Azure connection strings. A template with empty values can be created:
+
+```json
+{
+   "EncodedDefaultGamePostAddress": "",
+   "EncodedDefaultDiagnosticDataPostAddress": "",
+   "EncodedDefaultXlogRegisterationAddress": "",
+   "EncodedDefaultXlogPostAddress": "",
+   "EncodedDefaultXlogAntiForgeryToken": "",
+   "EncodedDefaultAzureBlobStorageConnectionString": ""
+}
+```
+
+**Install**: Copy to `win/win32/xpl/GnollHackM/Assets/` and `win/win32/xpl/GnollHackX/GnollHackX/Assets/`.
+
+For full details on all external assets, see the GnollHack Wiki pages at:
+- `c:\hmp\GnollHackWiki\Development\Install Tile Sets and FMOD Sound Banks.md`
+- `c:\hmp\GnollHackWiki\Development\Install Secrets File.md`
+- `c:\hmp\GnollHackWiki\Development\Related Repositories.md`
 
 ## Two-Solution Build Architecture
 
@@ -40,6 +96,29 @@ Building this solution:
 3. Compiles the native libraries (`gnollhackwin.dll`, `libgnollhackdroid.so`, `libgnollhackios.a`)
 4. Runs `makedefsdroid` to transform XAML (see below)
 5. Copies all outputs (libraries, `nhdat`, tilesets, sound banks, config files) to `GnollHackM` platform directories
+
+#### Platform Configurations
+
+The `GnollHack.sln` supports several solution platform configurations:
+
+| Configuration | What It Builds | Notes |
+|--------------|---------------|-------|
+| `Android+Windows` | Android `.so` + Windows `.dll` | Convenience config; also runs `makedefsdroid` for XAML translation |
+| `ARM64` | Android `.so` only (arm64-v8a) | Also runs `makedefsdroid` |
+| `x64` | Windows `.dll` only | Does not require WSL |
+
+To build from the command line:
+
+```powershell
+# Locate MSBuild via vswhere
+$msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+
+# Build Android + Windows (requires WSL SSH running)
+& $msbuild win/win32/vs/GnollHack.sln /t:Rebuild /p:Configuration=Debug /p:Platform="Android+Windows"
+
+# Or build Windows only (no WSL needed)
+& $msbuild win/win32/vs/GnollHack.sln /t:Rebuild /p:Configuration=Debug /p:Platform=x64
+```
 
 ### Step 2: Managed C# Client (`GnollHackM.sln`)
 
@@ -100,13 +179,36 @@ The C core is compiled into platform-specific libraries:
 |----------|---------|-------------|---------------|
 | Windows | `gnollhackwin.dll` | `bin/$(Configuration)/$(Platform)/` | MSVC (v143) via `gnollhackwin.vcxproj` |
 | Android | `libgnollhackdroid.so` | `win/win32/xpl/GnollHackX/GnollHackX.Android/libs/$(TargetArchAbi)/` | Clang via WSL SSH (`gnollhackdroid.vcxproj`) |
-| iOS | `libgnollhackios.a` | `win/win32/xpl/GnollHackX/GnollHackX.iOS/Native References/` | Xcode toolchain via paired Mac (`gnollhackios.vcxproj`) |
+| iOS | `libgnollhackios.a` | `win/win32/xpl/GnollHackX/GnollHackX.iOS/Native References/` | Xcode toolchain via vcremote on Mac (`gnollhackios.vcxproj`) |
 
 MSBuild post-build targets copy the libraries and assets to the appropriate `GnollHackM/Platforms/` subdirectories:
 - `aftergnollhackdll.proj` — copies Windows DLL + `nhdat` + config files to `GnollHackM/Platforms/Windows/gnh/`
 - `afterdroidutils.proj` — copies Android data files from WSL output (`C:\wsl-out\`)
 - `aftergnollhackdroid.proj` — copies Android `.so` library
 - `aftergnollhackios.proj` — copies iOS `.a` library from Mac output (`C:\mac-out\`)
+
+### Android Native Build Prerequisites
+
+The Android native library is cross-compiled via WSL (Windows Subsystem for Linux):
+
+1. **Install WSL with Ubuntu** — see wiki page at `c:\hmp\GnollHackWiki\Development\Install Windows Subsystem for Linux.md`
+2. **Start the SSH service** in WSL before building: `sudo service ssh start`
+3. **Configure the SSH connection** in Visual Studio: Tools → Options → Cross Platform → Connection Manager — add a connection to `localhost` with your WSL username and password
+4. The `gnollhackdroid.vcxproj` project uses VS's remote build feature to compile via SSH to WSL. The data pipeline tools (`dlbdroid`, `makedefsdroid`) also use this WSL connection.
+
+### iOS Native Build Prerequisites
+
+The iOS static library requires **two separate remote connections** to a Mac:
+
+1. **vcremote** — for building the C++ static library (`libgnollhackios.a`) via `gnollhackios.vcxproj`:
+   - Install vcremote on the Mac — see wiki: `c:\hmp\GnollHackWiki\Development\Install vcremote for Static iOS Library Project.md`
+   - Configure in VS: Tools → Options → Cross Platform → C++ → iOS
+2. **Pair to Mac** — for building the .NET MAUI iOS app via `GnollHackM.csproj`:
+   - This is a separate connection mechanism used only for the C#/.NET MAUI build
+   - Configure via the Pair to Mac button in the VS toolbar
+3. **PuTTY/PSCP** — the C++ project's post-build event uses PSCP to download `libgnollhackios.a` from the Mac to `C:\mac-out\` on Windows:
+   - Install PuTTY and edit the existing download scripts in `win/win32/xpl/gnollhackios/` with your Mac credentials
+   - See wiki: `c:\hmp\GnollHackWiki\Development\Install PuTTY and PSCP and Create Download Scripts for Static iOS Library Project.md`
 
 ## XAML Transformation Pipeline (`makedefsdroid`)
 

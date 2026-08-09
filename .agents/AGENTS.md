@@ -78,6 +78,9 @@ AI Agents MUST adhere strictly to the following:
 - Windows 10 SDK
 - For Android: Android SDK with NDK
 - For iOS: Mac build host with Xcode
+- **External assets** (tilesets, sound banks, secrets file) must be obtained from separate repositories — see the `build_pipeline` skill for full details
+- **For Android builds**: WSL with SSH service running (`sudo service ssh start`) and configured in VS Connection Manager is required before building `GnollHack.sln`
+- **For iOS builds**: `vcremote` must be configured on the Mac for the C++ library build (`gnollhackios.vcxproj`); `Pair to Mac` is separately needed for the .NET MAUI project (`GnollHackM.csproj`). PSCP download scripts in `win/win32/xpl/gnollhackios/` must be configured with Mac credentials.
 
 ## Subagent Use and Pair Programming
 
