@@ -44,6 +44,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 btnSponsor.IsVisible = false;
             }
+            btnOverseer.IsVisible = GHApp.IsOverseerAvailable;
         }
 
         private async void btnCreditsX_Clicked(object sender, EventArgs e)

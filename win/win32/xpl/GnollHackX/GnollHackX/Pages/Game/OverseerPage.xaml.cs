@@ -154,10 +154,10 @@ namespace GnollHackX.Pages.Game
 
                         /* Send unified Environment Data (Version Info, Settings, Debug Info) */
                         bool isGameOn = GHApp.CurrentGamePage?.IsGameOn ?? false;
-                        int overseerMode = (GHApp.DeveloperMode && GHApp.DebugLogMessages) ? 2 : (isGameOn ? 0 : 1);
+                        int overseerMode = GHApp.IsOverseerDebugMode ? 2 : (isGameOn ? 0 : 1);
                         
                         string sessionTitle = "GnollHack Assistance";
-                        if (GHApp.DeveloperMode && GHApp.DebugLogMessages)
+                        if (GHApp.IsOverseerDebugMode)
                         {
                             sessionTitle = "GnollHack Developer Console";
                         }

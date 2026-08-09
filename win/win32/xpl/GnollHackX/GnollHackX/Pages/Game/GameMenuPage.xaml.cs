@@ -63,6 +63,7 @@ namespace GnollHackX.Pages.Game
             }
 
             btnDeveloper.IsVisible = GHApp.DeveloperMode;
+            btnOverseer.IsVisible = GHApp.IsOverseerAvailable;
             UpdateDarknessMode();
 
             FrameTimeProfiler.MarkPauseEvent();
@@ -235,6 +236,7 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = true;
             btnDeveloper.IsVisible = GHApp.DeveloperMode;
+            btnOverseer.IsVisible = GHApp.IsOverseerAvailable;
         }
 
         private bool _backPressed = false;

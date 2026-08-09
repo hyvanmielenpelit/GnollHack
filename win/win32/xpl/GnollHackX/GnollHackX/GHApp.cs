@@ -175,6 +175,7 @@ namespace GnollHackX
 
             data.BoolData["IsBeta"] = GHApp.IsBeta;
             data.BoolData["IsPlaytest"] = GHApp.IsPlaytest;
+            data.BoolData["IsSteam"] = GHApp.IsSteam;
             data.BoolData["DeveloperMode"] = GHApp.DeveloperMode;
             data.BoolData["LowLevelLogging"] = GHApp.LowLevelLogging;
             data.BoolData["ScreenLogging"] = GHApp.ScreenLogging;
@@ -3151,6 +3152,20 @@ namespace GnollHackX
         public static bool OverseerEnableClientTools { get; set; } = true;
         public static bool OverseerEnableGameActions { get; set; }
         public static bool OverseerConsentAccepted { get; set; }
+
+        /* On Steam builds, Overseer is hidden unless Developer Mode */
+        /* is enabled to ensure it is only a debug-only feature on Steam. */
+        public static bool IsOverseerAvailable => !IsSteam || DeveloperMode || IsDebug;
+
+        /* The Overseer settings section is also shown if consent was previously */
+        /* given, so the user can manage or revoke their data consent on Steam */
+        /* even after turning Developer Mode off. */
+        public static bool IsOverseerSettingsVisible => IsOverseerAvailable || OverseerConsentAccepted;
+
+        /* Overseer runs in debug mode on Steam (always) or when both */
+        /* Developer Mode and Debug Log Messages are enabled. */
+        public static bool IsOverseerDebugMode => IsSteam || (DeveloperMode && DebugLogMessages);
+
 #if DEBUG
         public static bool OverseerUseLocalAddress { get; set; }
         public static string LocalOverseerAddress { get; set; }
@@ -9782,6 +9797,21 @@ namespace GnollHackX
         public static async Task<bool> QueryOverseerPrivacyConsent(ContentPage contentPage, MessagePopupView messagePopup)
         {
             var formattedConsentMessage = new FormattedString();
+
+            /* Developer-only notice for Steam builds */
+            if (IsSteam)
+            {
+                formattedConsentMessage.Spans.Add(new Span
+                {
+                    Text = "Gnoll Overseer is available on Steam "
+                    + "for development purposes only. "
+                    + "This AI-powered feature is not part of the consumer product."
+                    + Environment.NewLine + Environment.NewLine,
+                    FontFamily = "Underwood",
+                    FontAttributes = FontAttributes.Bold
+                });
+            }
+
             formattedConsentMessage.Spans.Add(new Span
             {
                 Text = "Gnoll Overseer uses artificial intelligence to assist you. "
@@ -9816,8 +9846,10 @@ namespace GnollHackX
 
             formattedConsentMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine + "Do you agree to proceed?", FontFamily = "Underwood" });
 
+            string consentTitle = IsSteam ? "AI Developer Tool Disclosure" : "AI Data Disclosure";
+
             bool accepted = await messagePopup.ShowMessagePopupAsync(
-                "AI Data Disclosure",
+                consentTitle,
                 formattedConsentMessage,
                 linkSpan,
                 "I Agree",

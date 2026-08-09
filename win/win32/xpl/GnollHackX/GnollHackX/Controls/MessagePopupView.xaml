@@ -12,7 +12,7 @@
                 <Frame x:Name="MessagePopupFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                     <StackLayout Spacing="9" Padding="6">
                         <Label Text="Message" x:Name="MessagePopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" HorizontalOptions="Center" />
-                        <ScrollView x:Name="MessagePopupScrollView" HeightRequest  ="400" VerticalScrollBarVisibility="Default">
+                        <ScrollView x:Name="MessagePopupScrollView" HeightRequest  ="480" VerticalScrollBarVisibility="Default">
                             <Label Text="" x:Name="MessagePopupLabel" FontFamily="Underwood" FontSize="16" LineHeight="1.1" TextColor="White" HorizontalOptions="Center" />
                         </ScrollView>
                         <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">

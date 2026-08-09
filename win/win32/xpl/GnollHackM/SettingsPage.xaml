@@ -1499,6 +1499,7 @@
                                         HorizontalOptions="End" />
                                 </StackLayout>
                             </Grid>
+                            <StackLayout x:Name="OverseerSettingsSection" Spacing="0">
                             <Label Text="Overseer" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Allow Spoilers"
@@ -1602,6 +1603,7 @@
                                         HorizontalOptions="End" VerticalOptions="Center" />
                                 </StackLayout>
                             </Grid>
+                            </StackLayout>
                             <Label Text="System" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Developer Mode"

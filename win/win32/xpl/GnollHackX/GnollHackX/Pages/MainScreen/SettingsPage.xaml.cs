@@ -1008,30 +1008,33 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.DeveloperMode = DeveloperSwitch.IsToggled;
             Preferences.Set("DeveloperMode", GHApp.DeveloperMode);
 
-            /* Overseer settings */
-            GHApp.OverseerAllowSpoilers = OverseerSpoilersSwitch.IsToggled;
-            Preferences.Set("OverseerAllowSpoilers", OverseerSpoilersSwitch.IsToggled);
-            GHApp.OverseerVerboseResponses = OverseerVerboseSwitch.IsToggled;
-            Preferences.Set("OverseerVerboseResponses", OverseerVerboseSwitch.IsToggled);
-            GHApp.OverseerSendGameContext = OverseerSendContextSwitch.IsToggled;
-            Preferences.Set("OverseerSendGameContext", OverseerSendContextSwitch.IsToggled);
-            GHApp.OverseerEnableClientTools = OverseerClientToolsSwitch.IsToggled;
-            Preferences.Set(GHConstants.OverseerEnableClientToolsKey, OverseerClientToolsSwitch.IsToggled);
-            GHApp.OverseerEnableGameActions = OverseerGameActionsSwitch.IsToggled;
-            Preferences.Set(GHConstants.OverseerEnableGameActionsKey, OverseerGameActionsSwitch.IsToggled);
-#if DEBUG
-            GHApp.OverseerUseLocalAddress = OverseerLocalAddressSwitch.IsToggled;
-            Preferences.Set("OverseerUseLocalAddress", OverseerLocalAddressSwitch.IsToggled);
-            if (OverseerLocalAddressSwitch.IsToggled)
+            /* Overseer settings — only save if the section is visible */
+            if (OverseerSettingsSection.IsVisible)
             {
-                GHApp.LocalOverseerAddress = OverseerLocalAddressEntry.Text;
-                Preferences.Set("LocalOverseerAddress", OverseerLocalAddressEntry.Text ?? "");
-                GHApp.LocalOverseerUserName = OverseerLocalUserNameEntry.Text;
-                Preferences.Set("LocalOverseerUserName", OverseerLocalUserNameEntry.Text ?? "");
-                GHApp.LocalOverseerPassword = OverseerLocalPasswordEntry.Text;
-                Preferences.Set("LocalOverseerPassword", OverseerLocalPasswordEntry.Text ?? "");
-            }
+                GHApp.OverseerAllowSpoilers = OverseerSpoilersSwitch.IsToggled;
+                Preferences.Set("OverseerAllowSpoilers", OverseerSpoilersSwitch.IsToggled);
+                GHApp.OverseerVerboseResponses = OverseerVerboseSwitch.IsToggled;
+                Preferences.Set("OverseerVerboseResponses", OverseerVerboseSwitch.IsToggled);
+                GHApp.OverseerSendGameContext = OverseerSendContextSwitch.IsToggled;
+                Preferences.Set("OverseerSendGameContext", OverseerSendContextSwitch.IsToggled);
+                GHApp.OverseerEnableClientTools = OverseerClientToolsSwitch.IsToggled;
+                Preferences.Set(GHConstants.OverseerEnableClientToolsKey, OverseerClientToolsSwitch.IsToggled);
+                GHApp.OverseerEnableGameActions = OverseerGameActionsSwitch.IsToggled;
+                Preferences.Set(GHConstants.OverseerEnableGameActionsKey, OverseerGameActionsSwitch.IsToggled);
+#if DEBUG
+                GHApp.OverseerUseLocalAddress = OverseerLocalAddressSwitch.IsToggled;
+                Preferences.Set("OverseerUseLocalAddress", OverseerLocalAddressSwitch.IsToggled);
+                if (OverseerLocalAddressSwitch.IsToggled)
+                {
+                    GHApp.LocalOverseerAddress = OverseerLocalAddressEntry.Text;
+                    Preferences.Set("LocalOverseerAddress", OverseerLocalAddressEntry.Text ?? "");
+                    GHApp.LocalOverseerUserName = OverseerLocalUserNameEntry.Text;
+                    Preferences.Set("LocalOverseerUserName", OverseerLocalUserNameEntry.Text ?? "");
+                    GHApp.LocalOverseerPassword = OverseerLocalPasswordEntry.Text;
+                    Preferences.Set("LocalOverseerPassword", OverseerLocalPasswordEntry.Text ?? "");
+                }
 #endif
+            }
             GHApp.DebugLogMessages = LogMessageSwitch.IsToggled;
             Preferences.Set("DebugLogMessages", GHApp.DebugLogMessages);
             GHApp.LowLevelLogging = LowLevelLogSwitch.IsToggled;
@@ -1813,6 +1816,7 @@ namespace GnollHackX.Pages.MainScreen
                 StatusBarStackLayout.IsVisible = false;
             }
             /* Overseer switches */
+            OverseerSettingsSection.IsVisible = GHApp.IsOverseerSettingsVisible;
             OverseerSpoilersSwitch.IsToggled = GHApp.OverseerAllowSpoilers;
             OverseerVerboseSwitch.IsToggled = GHApp.OverseerVerboseResponses;
             OverseerSendContextSwitch.IsToggled = GHApp.OverseerSendGameContext;
