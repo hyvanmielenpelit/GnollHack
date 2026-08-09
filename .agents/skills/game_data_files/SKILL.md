@@ -11,10 +11,12 @@ description: Guide to understanding and modifying GnollHack game data files incl
 
 ## Data Pipeline
 1. Edit source files in `dat/` (e.g., `*.des`, `dungeon.pdf`, `data.base`).
-2. Run `makedefs` for text databases.
-3. Run `levcomp` to compile `.des` into `.lev`.
-4. Run `dgncomp` to compile `dungeon.pdf` into `dungeon`.
-5. Run `dlb` to package everything into `nhdat`.
+2. Run `makedefs` for text databases (e.g., `makedefs -d` for `data.base`, `-r` for rumors, `-h` for oracles).
+3. Run `levcomp` to compile `.des` into `.lev` (e.g., `levcomp.exe castle.des medusa.des ...` in `dat/`).
+4. Run `dgncomp` to compile `dungeon.pdf` into `dungeon` (e.g., `dgncomp.exe dungeon.pdf` in `dat/`).
+5. Run `dlb` to package everything into `nhdat` (e.g., `dlb.exe cIf dat/dlb.lst bin/nhdat`).
+
+> **Note:** When building via Visual Studio (`GnollHack.sln`), these steps run automatically via MSBuild targets. See the `build_pipeline` skill for the full flag reference table and automation details.
 
 ## Level Files (`.des`)
 - Syntax defines dungeon layouts, rooms, corridors, monsters, and objects.
@@ -27,3 +29,9 @@ description: Guide to understanding and modifying GnollHack game data files incl
 - `rumors.tru` / `rumors.fal`: Fortune cookie text.
 - `oracles.txt`: Oracle responses.
 - `engrave.txt`: Random engravings found on the floor.
+
+## Related Skills
+
+- **`build_pipeline`** — Complete `makedefs` flag reference, MSBuild automation targets, full build process
+- **`adding_game_content`** — How to add monsters, objects, and artifacts (triggers `makedefs -p` / `-o`)
+

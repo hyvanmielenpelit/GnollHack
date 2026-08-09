@@ -29,6 +29,16 @@ When in wizard mode, special commands become available:
 - Check the `paniclog` file for the stack trace (if available on the platform).
 
 ## Testing the MAUI App
-- Use `dotnet build -t:Run -f net10.0-windows10.0.19041.0` to run the Windows app locally.
+- Build and run the Windows app locally:
+  ```powershell
+  dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -t:Run -f net10.0-windows10.0.19041.0
+  ```
+  > **Note:** The exact target framework moniker may change over time. Check `GnollHackM.csproj` for the current value.
 - Use `Debug.WriteLine` in C# for console output.
 - For native C debug output, use `raw_printf` (only visible if the console is attached).
+
+## Related Skills
+
+- **`build_pipeline`** — Full build process, two-solution architecture, data pipeline, `makedefs` flags
+- **`maui_frontend`** — MAUI frontend architecture, XAML pipeline, SkiaSharp rendering
+

@@ -105,7 +105,7 @@ This runs the `InitialBuild` target which transforms all GnollHackX XAML files i
 
 ## Rendering Architecture: SkiaSharp
 
-The entire game dungeon is rendered using **SkiaSharp 3.119.1** via custom canvas views:
+The entire game dungeon is rendered using **SkiaSharp** via custom canvas views (check `GnollHackM.csproj` for the current version — note there is a conditional version selection via the `SKIASHARP_3119` preprocessor flag):
 
 * `SwitchableCanvasView` wraps `SKCanvasView` — the primary game rendering surface
 * The `PaintSurface` event handler in `GamePage.xaml.cs` performs all tile/sprite drawing
@@ -199,10 +199,12 @@ This pattern is used 119+ times across the codebase.
 
 | Integration | Package | Purpose |
 |-------------|---------|----------|
-| Crash reporting | Sentry.Maui 6.5.0 | Error tracking on all platforms |
-| Cloud storage | Azure.Storage.Blobs 12.25.0 | Cloud save/import/export |
-| JSON | Newtonsoft.Json 13.0.4 + System.Text.Json 10.0.0 | Data serialization |
-| Play Store reviews | Xamarin.Google.Android.Play.Core 1.10.3.21 | Google Play in-app review flow (Android only). Used by file-linked [PlatformServiceAndroid.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs) via `IReviewManager` / `ReviewManagerFactory`. |
+| Crash reporting | Sentry.Maui | Error tracking on all platforms |
+| Cloud storage | Azure.Storage.Blobs | Cloud save/import/export |
+| JSON | Newtonsoft.Json + System.Text.Json | Data serialization |
+| Play Store reviews | Xamarin.Google.Android.Play.Core | Google Play in-app review flow (Android only). Used by file-linked [PlatformServiceAndroid.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs) via `IReviewManager` / `ReviewManagerFactory`. |
+
+> **Note:** Refer to [GnollHackM.csproj](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/GnollHackM.csproj) for current NuGet package versions. Do not hardcode version numbers in this skill.
 
 ---
 
@@ -224,3 +226,11 @@ All platforms delegate lifecycle to `GHApp.OnStart()`, `GHApp.OnResume()`, `GHAp
 - All calls to the C engine pass through `GnollHackService`.
 - **Delegates**: Used to pass C# callbacks to C (e.g., `gh_set_display_callback()`).
 - Keep `[MarshalAs(UnmanagedType.LPStr)]` for strings crossing the bridge to convert C# Unicode to C-style UTF-8 strings.
+
+## Related Skills
+
+- **`build_pipeline`** — Full build process, data pipeline, `makedefs` flags, `makedefsdroid` XAML transformation
+- **`maui_threading`** — Thread safety patterns, lock strategies, inter-thread communication
+- **`glyph_tile_display`** — Glyph-to-tile rendering pipeline, LayerInfo, MapData double-buffering
+- **`nethack_c_core`** — C core engine, `libshare` bridge code
+- **`debugging_gnollhack`** — Wizard mode, running the MAUI app locally

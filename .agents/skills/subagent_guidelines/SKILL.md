@@ -79,6 +79,8 @@ Some GnollHack tasks are inherently sequential due to build dependencies. The pl
 - Modifying `.des` files → rebuild `levcomp` → regenerated `.lev` files → rebuild `dlb`/`nhdat`
 - Modifying XAML in `GnollHackX` → `makedefsdroid` regeneration → then update GnollHackM code-behind
 
+See the `build_pipeline` skill for full details on the data pipeline, `makedefs` flag reference, and MSBuild automation targets.
+
 ### Communication Overhead
 
 For tasks that take under 30 seconds to do directly, spawning a subagent is slower due to setup and message-passing latency. Prefer doing these yourself.
