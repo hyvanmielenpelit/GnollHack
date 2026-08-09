@@ -48,9 +48,12 @@ The **source of truth** for all XAML files is in the legacy Xamarin project at `
 
 ### What to do after modifying XAML
 
-The XAML conversion is performed by MSBuild targets in the `makedefsdroid` project (`win/win32/vs/makedefsdroid.vcxproj`). **First, try to regenerate the MAUI XAML yourself** by building this project:
+The XAML conversion is performed by MSBuild targets in the `makedefsdroid` project (`win/win32/vs/makedefsdroid.vcxproj`). Note that `makedefsdroid.vcxproj` is configured as a Linux C++ cross-compilation project (`<ApplicationType>Linux</ApplicationType>`) and requires WSL SSH service running (`sudo service ssh start`).
+
+**First, try to regenerate the MAUI XAML yourself** by building this project:
 
 ```powershell
+# Ensure WSL SSH service is running first
 # Locate MSBuild via vswhere (msbuild is not on the default PowerShell PATH)
 $msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 & $msbuild win/win32/vs/makedefsdroid.vcxproj /t:Build /p:Configuration=Debug /p:Platform=x64
@@ -58,7 +61,7 @@ $msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere
 
 This runs the `InitialBuild` target which transforms all GnollHackX XAML files into MAUI-compatible XAML in `GnollHackM/`.
 
-**Only if the build fails** (e.g., missing Linux/WSL build tools, MSBuild not found), fall back to asking the user:
+**Only if the build fails** (e.g., missing Linux/WSL build tools, SSH connection refused, MSBuild not found), fall back to asking the user:
 
 > "I've modified the XAML in GnollHackX but was unable to regenerate the MAUI XAML automatically. Could you please build the `makedefsdroid` project (or the GnollHackX solution) so that the MAUI XAML for GnollHackM is regenerated?"
 

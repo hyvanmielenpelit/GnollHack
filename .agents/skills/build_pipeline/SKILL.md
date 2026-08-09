@@ -67,7 +67,8 @@ Obtain from the [GnollHackSoundSet](https://github.com/hyvanmielenpelit/GnollHac
    "EncodedDefaultXlogRegisterationAddress": "",
    "EncodedDefaultXlogPostAddress": "",
    "EncodedDefaultXlogAntiForgeryToken": "",
-   "EncodedDefaultAzureBlobStorageConnectionString": ""
+   "EncodedDefaultAzureBlobStorageConnectionString": "",
+   "EncodedDefaultSentryDSN": ""
 }
 ```
 
@@ -105,8 +106,8 @@ The `GnollHack.sln` supports several solution platform configurations:
 |--------------|---------------|-------|
 | `Android+Windows` | Android `.so` + Windows `.dll` | Convenience config; also runs `makedefsdroid` for XAML translation |
 | `ARM64` | Android `.so` only (arm64-v8a) | Also runs `makedefsdroid` |
-| `x64` | Windows `.dll` only | Does not require WSL |
-| `iPhone` | iOS `.a` static library | Requires vcremote running on Mac |
+| `x64` | Windows `.dll` only | Does not require WSL for `gnollhackwin.dll` (though `makedefsdroid` requires WSL) |
+| `iPhone` | iOS `.a` static library | Requires `vcremote` running on Mac **and** WSL SSH active on Windows (`dlbdroid`) |
 
 To build from the command line:
 
@@ -117,10 +118,10 @@ $msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere
 # Build Android + Windows (requires WSL SSH running)
 & $msbuild win/win32/vs/GnollHack.sln /t:Rebuild /p:Configuration=Debug /p:Platform="Android+Windows"
 
-# Or build Windows only (no WSL needed)
+# Or build Windows only (no WSL needed for C engine)
 & $msbuild win/win32/vs/GnollHack.sln /t:Rebuild /p:Configuration=Debug /p:Platform=x64
 
-# Or build iOS only (requires vcremote running on Mac)
+# Or build iOS only (requires vcremote running on Mac AND WSL SSH running on Windows)
 & $msbuild win/win32/vs/GnollHack.sln /t:Rebuild /p:Configuration=Debug /p:Platform=iPhone
 ```
 
@@ -186,7 +187,7 @@ The C core is compiled into platform-specific libraries:
 | iOS | `libgnollhackios.a` | `win/win32/xpl/GnollHackX/GnollHackX.iOS/Native References/` | Xcode toolchain via vcremote on Mac (`gnollhackios.vcxproj`) |
 
 MSBuild post-build targets copy the libraries and assets to the appropriate `GnollHackM/Platforms/` subdirectories:
-- `aftergnollhackdll.proj` — copies Windows DLL + `nhdat` + config files to `GnollHackM/Platforms/Windows/gnh/`
+- `aftergnollhackdll.proj` — copies Windows DLL + FMOD DLLs to `GnollHackM/Platforms/Windows/libs/` and `nhdat` + config files to `GnollHackM/Platforms/Windows/gnh/`
 - `afterdroidutils.proj` — copies Android data files from WSL output (`C:\wsl-out\`). This directory is populated automatically by the Linux data pipeline projects (`dlbdroid`, `makedefsdroid`, etc.) that cross-compile via SSH to WSL — originally introduced during the Xamarin.Forms era.
 - `aftergnollhackdroid.proj` — copies Android `.so` library
 - `aftergnollhackios.proj` — copies iOS `.a` library from Mac output (`C:\mac-out\`). This directory is populated by the PSCP download scripts that run as a post-build event of `gnollhackios.vcxproj`.
@@ -197,22 +198,27 @@ The Android native library is cross-compiled via WSL (Windows Subsystem for Linu
 
 1. **Install WSL with Ubuntu** — see wiki page at `c:\hmp\GnollHackWiki\Development\Install Windows Subsystem for Linux.md`
 2. **Start the SSH service** in WSL before building: `sudo service ssh start`
-3. **Configure the SSH connection** in Visual Studio: Tools → Options → Cross Platform → Connection Manager — add a connection to `localhost` with your WSL username and password
+3. **Configure the SSH connection** in Visual Studio: Tools → Options → Cross Platform → Connection Manager — add a connection to `localhost` (`127.0.0.1`, port 22) with your WSL username and password
 4. The `gnollhackdroid.vcxproj` project uses VS's remote build feature to compile via SSH to WSL. The data pipeline tools (`dlbdroid`, `makedefsdroid`) also use this WSL connection.
 
 ### iOS Native Build Prerequisites
 
-The iOS static library requires **two separate remote connections** to a Mac:
+Building the iOS version requires **WSL on Windows** (to generate `nhdat` via `dlbdroid`) plus **two separate remote connections** to a Mac:
 
-1. **vcremote** — for building the C++ static library (`libgnollhackios.a`) via `gnollhackios.vcxproj`:
-   - Install vcremote on the Mac — see wiki: `c:\hmp\GnollHackWiki\Development\Install vcremote for Static iOS Library Project.md`
+1. **WSL SSH service running on Windows** — run `sudo service ssh start` in WSL. `GnollHack.sln` on platform `iPhone` depends on `dlbdroid.vcxproj` to generate the NetHack `nhdat` game data archive inside WSL.
+2. **vcremote** — for building the C++ static library (`libgnollhackios.a`) via `gnollhackios.vcxproj`:
+   - Install Xcode Command Line Tools (`xcode-select --install`) and Node.js (`brew install node`) on macOS.
+   - Install `vcremote` globally on macOS (`sudo npm install -g vcremote`). See wiki: `c:\hmp\GnollHackWiki\Development\Install vcremote for Static iOS Library Project.md`
    - Configure in VS: Tools → Options → Cross Platform → C++ → iOS
-2. **Pair to Mac** — for building the .NET MAUI iOS app via `GnollHackM.csproj`:
+3. **Pair to Mac** — for building the .NET MAUI iOS app via `GnollHackM.csproj`:
    - This is a separate connection mechanism used only for the C#/.NET MAUI build
    - Configure via the Pair to Mac button in the VS toolbar
-3. **PuTTY/PSCP** — the C++ project's post-build event uses PSCP to download `libgnollhackios.a` from the Mac to `C:\mac-out\` on Windows:
-   - Install PuTTY and edit the existing download scripts in `win/win32/xpl/gnollhackios/` with your Mac credentials (the committed versions contain mock placeholder credentials, not real ones — the files are `.gitignore`d so your real credentials won't be committed)
+4. **PuTTY/PSCP** — the C++ project's post-build event uses PSCP to download `libgnollhackios.a` from the Mac to `C:\mac-out\` on Windows:
+   - Install PuTTY and edit the existing download scripts in `win/win32/xpl/gnollhackios/` with your Mac credentials
+   - **Interactive First-Run**: Execute the download script (`.\win\win32\xpl\gnollhackios\download-Debug-ARM64.bat`) interactively in PowerShell once and press `y` to store the Mac host key in cache before building in VS.
    - See wiki: `c:\hmp\GnollHackWiki\Development\Install PuTTY and PSCP and Create Download Scripts for Static iOS Library Project.md`
+5. **Apple Developer Provisioning**:
+   - Update `<CodesignKey>` and `<CodesignProvision>` in `GnollHackM.csproj` with your developer certificate and provisioning profile name. Note: `com.soundmindgames.GnollHack` in `Info.plist` is intentional to preserve App Store bundle identity from the Xamarin app.
 
 ## XAML Transformation Pipeline (`makedefsdroid`)
 
