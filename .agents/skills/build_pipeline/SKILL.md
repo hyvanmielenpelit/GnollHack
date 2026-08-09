@@ -45,7 +45,7 @@ Three large PNG files:
 
 Obtain from the [GnollHackTileSet](https://github.com/hyvanmielenpelit/GnollHackTileSet) repository — either build from source using [TileSetCompiler](https://github.com/hyvanmielenpelit/TileSetCompiler), or download prebuilt from the [Releases](https://github.com/hyvanmielenpelit/GnollHackTileSet/releases) section. Note: prebuilt tilesets may only match GnollHack releases, not the latest commit — code and tilesets must be aligned.
 
-**Install**: Copy the PNG files to `win/win32/tileset/`.
+**Install**: Copy the PNG files to `win/win32/tileset/` *before* building the native solution.
 
 ### FMOD Sound Banks
 
@@ -54,7 +54,7 @@ Twelve `.bank` files in two flavors (6 Desktop + 6 Mobile):
 
 Obtain from the [GnollHackSoundSet](https://github.com/hyvanmielenpelit/GnollHackSoundSet) repository — either build from source using [FMOD Studio](https://www.fmod.com/), or download prebuilt from the [Releases](https://github.com/hyvanmielenpelit/GnollHackSoundSet/releases) section.
 
-**Install**: Copy to `win/win32/bank/` so that the first level contains `Desktop/` and `Mobile/` subdirectories.
+**Install**: Copy to `win/win32/bank/` so that the first level contains `Desktop/` and `Mobile/` subdirectories *before* building the native solution.
 
 ### Secrets File
 
@@ -104,7 +104,7 @@ The `GnollHack.sln` supports several solution platform configurations:
 
 | Configuration | What It Builds | Notes |
 |--------------|---------------|-------|
-| `Android+Windows` | Android `.so` + Windows `.dll` | Convenience config; also runs `makedefsdroid` for XAML translation |
+| `Android+Windows` | Android `.so` + Windows `.dll` | Convenience config; compiles `.so` for both `arm64-v8a` and `x86_64`; runs `makedefsdroid` for XAML translation |
 | `ARM64` | Android `.so` only (arm64-v8a) | Also runs `makedefsdroid` |
 | `x64` | Windows `.dll` only | Does not require WSL for `gnollhackwin.dll` (though `makedefsdroid` requires WSL) |
 | `iPhone` | iOS `.a` static library | Requires `vcremote` running on Mac **and** WSL SSH active on Windows (`dlbdroid`) |
@@ -187,7 +187,7 @@ The C core is compiled into platform-specific libraries:
 | iOS | `libgnollhackios.a` | `win/win32/xpl/GnollHackX/GnollHackX.iOS/Native References/` | Xcode toolchain via vcremote on Mac (`gnollhackios.vcxproj`) |
 
 MSBuild post-build targets copy the libraries and assets to the appropriate `GnollHackM/Platforms/` subdirectories:
-- `aftergnollhackdll.proj` — copies Windows DLL + FMOD DLLs to `GnollHackM/Platforms/Windows/libs/` and `nhdat` + config files to `GnollHackM/Platforms/Windows/gnh/`
+- `aftergnollhackdll.proj` — copies Windows DLL + FMOD runtime DLLs to `GnollHackM/Platforms/Windows/libs/` and `nhdat` + `defaults.gnh`, `license`, `symbols`, `sysconf`, `xcredits`, and `record` to `GnollHackM/Platforms/Windows/gnh/`
 - `afterdroidutils.proj` — copies Android data files from WSL output (`C:\wsl-out\`). This directory is populated automatically by the Linux data pipeline projects (`dlbdroid`, `makedefsdroid`, etc.) that cross-compile via SSH to WSL — originally introduced during the Xamarin.Forms era.
 - `aftergnollhackdroid.proj` — copies Android `.so` library
 - `aftergnollhackios.proj` — copies iOS `.a` library from Mac output (`C:\mac-out\`). This directory is populated by the PSCP download scripts that run as a post-build event of `gnollhackios.vcxproj`.
@@ -198,7 +198,7 @@ The Android native library is cross-compiled via WSL (Windows Subsystem for Linu
 
 1. **Install WSL with Ubuntu** — see wiki page at `c:\hmp\GnollHackWiki\Development\Install Windows Subsystem for Linux.md`
 2. **Start the SSH service** in WSL before building: `sudo service ssh start`
-3. **Configure the SSH connection** in Visual Studio: Tools → Options → Cross Platform → Connection Manager — add a connection to `localhost` (`127.0.0.1`, port 22) with your WSL username and password
+3. **Configure the SSH connection** in Visual Studio under **Tools → Options → Cross Platform → Connection Manager** (Host Name: `127.0.0.1`, Port: `22`, User Name & Password: your WSL credentials)
 4. The `gnollhackdroid.vcxproj` project uses VS's remote build feature to compile via SSH to WSL. The data pipeline tools (`dlbdroid`, `makedefsdroid`) also use this WSL connection.
 
 ### iOS Native Build Prerequisites
@@ -231,7 +231,7 @@ All XAML files in `GnollHackM/` are **auto-generated** from the Xamarin source i
   - Converts `HeightRequest  =` (two spaces before `=`) → `MaximumHeightRequest=`
   - Other Xamarin-to-MAUI compatibility conversions
 - **When to run**: After any XAML change in `GnollHackX/GnollHackX/`
-- **How to run manually**:
+- **How to run manually** (requires WSL SSH running):
   ```powershell
   $msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
   & $msbuild win/win32/vs/makedefsdroid.vcxproj /t:Build /p:Configuration=Debug /p:Platform=x64
