@@ -9805,7 +9805,7 @@ namespace GnollHackX
                 {
                     Text = "Gnoll Overseer is available on Steam "
                     + "for development purposes only. "
-                    + "This AI-powered feature is not part of the consumer product."
+                    + "This AI-powered efficiency tool is not part of the consumer product."
                     + Environment.NewLine + Environment.NewLine,
                     FontFamily = "Underwood",
                     FontAttributes = FontAttributes.Bold
