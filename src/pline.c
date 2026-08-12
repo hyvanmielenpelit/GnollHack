@@ -1262,7 +1262,7 @@ void debugprint
 char*
 allocate_buffer_with_debug_buffers(const char *message)
 {
-    char* long_buffer = (char*)alloc((message ? strlen(message) + 3 : 0) + (DEBUGBUFSIZ + 5) * NUM_DEBUGBUFS + 1);
+    char* long_buffer = (char*)alloc((message ? strlen(message) + 3 : 0) + (DEBUGBUFSIZ + 5) * NUM_DEBUGBUFS + 1 + DEBUGBUFSIZ + PL_NSIZ + MAX_DGN_NAME_LENGTH + MAX_LVL_NAME_LENGTH);
     if (!long_buffer)
         return 0;
 
@@ -1270,14 +1270,9 @@ allocate_buffer_with_debug_buffers(const char *message)
     *p = 0;
 
     int chars_written;
-    if (message)
-    {
-        chars_written = sprintf(p, "%s|", message);
-        if (chars_written >= 0)
-            p += chars_written;
-    }
-    else
-        *long_buffer = 0;
+    chars_written = sprintf(p, "%s|", message ? message : "");
+    if (chars_written >= 0)
+        p += chars_written;
 
     int i, j = 0;
     for (i = debug_buf_count - 1; i >= 0; i--)
@@ -1295,6 +1290,12 @@ allocate_buffer_with_debug_buffers(const char *message)
                 break;
         }
     }
+
+    char curbuf[DEBUGBUFSIZ + PL_NSIZ + MAX_DGN_NAME_LENGTH + MAX_LVL_NAME_LENGTH];
+    s_level* slev = Is_special(&u.uz);
+    Sprintf(curbuf, "|plname:%s,ux:%d,uy:%d,dnum/level:%d/%d (%s,%s),moves:%lld,role:%d,race:%d,gameover:%d,mklev:%d,bones:%d", 
+        plname, u.ux, u.uy, u.uz.dnum, u.uz.dlevel, dungeons[u.uz.dnum].dname, slev ? slev->name : "normal", (long long)moves, urole.rolenum, urace.racenum, program_state.gameover, in_mklev, program_state.in_bones);
+    Strcat(long_buffer, curbuf);
 
     return long_buffer;
 }
