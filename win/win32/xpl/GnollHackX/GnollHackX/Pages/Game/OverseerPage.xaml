@@ -49,6 +49,10 @@
                             <Label Text="Gnoll Overseer" x:Name="ProgressTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
                             <Label Text="Connecting..." x:Name="ProgressStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
                             <ProgressBar x:Name="UploadProgressBar" Progress="0.0" WidthRequest  ="400" HorizontalOptions="Fill" HeightRequest="15" ProgressColor="LightBlue" />
+                            <StackLayout x:Name="RetryButtonsPanel" IsVisible="False" Orientation="Horizontal" HorizontalOptions="Center" Spacing="20" Margin="0,15,0,0">
+                                <Button Text="Retry" Clicked="RetryButton_Clicked" FontFamily="Underwood" FontSize="16" TextColor="White" BackgroundColor="#444444" CornerRadius="5" WidthRequest="100" HeightRequest="40" />
+                                <Button Text="Close" Clicked="CloseButton_Clicked" FontFamily="Underwood" FontSize="16" TextColor="White" BackgroundColor="#444444" CornerRadius="5" WidthRequest="100" HeightRequest="40" />
+                            </StackLayout>
                         </StackLayout>
                     </Frame>
                 </Grid>

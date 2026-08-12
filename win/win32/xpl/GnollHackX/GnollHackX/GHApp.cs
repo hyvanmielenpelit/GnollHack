@@ -6441,7 +6441,7 @@ namespace GnollHackX
                         }
                         using (var cts = new CancellationTokenSource())
                         {
-                            cts.CancelAfter(string.IsNullOrEmpty(xlogentry_string) ? 5000 : xlogattachments == null || xlogattachments.Count == 0 ? 10000 : 120000);
+                            cts.CancelAfter(string.IsNullOrEmpty(xlogentry_string) ? 15000 : xlogattachments == null || xlogattachments.Count == 0 ? 10000 : 120000);
                             string responseContent = "";
                             //string htmlrequest = await multicontent.ReadAsStringAsync();
                             //Debug.WriteLine(htmlrequest);

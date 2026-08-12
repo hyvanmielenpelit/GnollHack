@@ -44,6 +44,7 @@ namespace GnollHackX.Pages.Game
         private DateTime _lastFailedNavigatedTime = DateTime.MinValue;
         private string _lastFailedNavigatedUrl = null;
         private bool _navigatedAwayFromSpa = false;
+        private bool _handoffSucceeded = false;
 #if DEBUG
 #if IOS || MACCATALYST
         private object _iosNavigationDelegate = null;
@@ -116,170 +117,210 @@ namespace GnollHackX.Pages.Game
 
         private async Task UploadAndConnect()
         {
+            _handoffSucceeded = false;
+            RetryButtonsPanel.IsVisible = false;
+            ProgressOverlay.IsVisible = true;
+            ProgressStatusLabel.Text = "Uploading game data...";
+            UploadProgressBar.Progress = 0.3;
+
             string overseerUrl = _baseOverseerUrl;
+            int[] timeouts = { 5, 5, 10, 10, 15, 20, 25 };
 
-            try
+            for (int attempt = 0; attempt < timeouts.Length; attempt++)
             {
-                ProgressStatusLabel.Text = "Uploading game data...";
-                UploadProgressBar.Progress = 0.3;
-
-#if DEBUG
-                using (var httpClient = UIUtils.CreateHttpClientForUrl(
-                    _baseOverseerUrl, TimeSpan.FromSeconds(10)))
-#else
-                using (var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(10) })
-#endif
+                try
                 {
-                    using (var content = new MultipartFormDataContent())
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
+                        ProgressStatusLabel.Text = attempt == 0
+                            ? "Contacting Gnoll Overseer..."
+                            : ("Retrying to contact Gnoll Overseer..." + (attempt >= 2 ? (" (try " + attempt + ")") : ""));
+                        UploadProgressBar.Progress = attempt == 0 ? 0.6 : 0.5;
+                    });
+
 #if DEBUG
-                        bool useLocalCreds = GHApp.OverseerUseLocalAddress
-                            && !string.IsNullOrEmpty(GHApp.LocalOverseerAddress);
-                        string userName = useLocalCreds
-                            ? (GHApp.LocalOverseerUserName ?? "")
-                            : (GHApp.XlogUserName ?? "");
-                        string password = useLocalCreds
-                            ? (GHApp.LocalOverseerPassword ?? "")
-                            : (GHApp.XlogPassword ?? "");
+                    using (var httpClient = UIUtils.CreateHttpClientForUrl(
+                        _baseOverseerUrl, TimeSpan.FromSeconds(timeouts[attempt])))
 #else
-                        string userName = GHApp.XlogUserName ?? "";
-                        string password = GHApp.XlogPassword ?? "";
+                    using (var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(timeouts[attempt]) })
 #endif
-                        content.Add(new StringContent(userName), "UserName");
-                        content.Add(new StringContent(password), "Password");
-                        content.Add(new StringContent(GHApp.XlogAntiForgeryToken ?? ""), "AntiForgeryToken");
-
-                        if (!string.IsNullOrEmpty(_snapshotHtml))
-                            content.Add(new StringContent(_snapshotHtml, Encoding.UTF8, "text/html"), "SnapshotHtml");
-
-                        /* Send unified Environment Data (Version Info, Settings, Debug Info) */
-                        bool isGameOn = GHApp.CurrentGamePage?.IsGameOn ?? false;
-                        int overseerMode = (GHApp.DeveloperMode && GHApp.DebugLogMessages) ? 2 : (isGameOn ? 0 : 1);
-                        
-                        string sessionTitle = "GnollHack Assistance";
-                        if (GHApp.DeveloperMode && GHApp.DebugLogMessages)
+                    {
+                        using (var content = new MultipartFormDataContent())
                         {
-                            sessionTitle = "GnollHack Developer Console";
-                        }
-                        else if (isGameOn)
-                        {
-                            string characterName = GHApp.TournamentMode ? GHApp.LastUsedTournamentPlayerName : GHApp.LastUsedPlayerName;
-                            sessionTitle = string.IsNullOrWhiteSpace(characterName) ? "GnollHack Gameplay" : $"GnollHack Gameplay ({characterName})";
-                        }
-                        content.Add(new StringContent(sessionTitle), "Title");
-                        content.Add(new StringContent("true"), "IsGnollHackSession");
+#if DEBUG
+                            bool useLocalCreds = GHApp.OverseerUseLocalAddress
+                                && !string.IsNullOrEmpty(GHApp.LocalOverseerAddress);
+                            string userName = useLocalCreds
+                                ? (GHApp.LocalOverseerUserName ?? "")
+                                : (GHApp.XlogUserName ?? "");
+                            string password = useLocalCreds
+                                ? (GHApp.LocalOverseerPassword ?? "")
+                                : (GHApp.XlogPassword ?? "");
+#else
+                            string userName = GHApp.XlogUserName ?? "";
+                            string password = GHApp.XlogPassword ?? "";
+#endif
+                            content.Add(new StringContent(userName), "UserName");
+                            content.Add(new StringContent(password), "Password");
+                            content.Add(new StringContent(GHApp.XlogAntiForgeryToken ?? ""), "AntiForgeryToken");
 
-                        var envData = GHApp.GetEnvironmentData();
-                        envData.BoolData["allowSpoilers"] = GHApp.OverseerAllowSpoilers;
-                        envData.BoolData["verboseResponses"] = GHApp.OverseerVerboseResponses;
-                        envData.BoolData["sendGameContext"] = GHApp.OverseerSendGameContext;
-                        envData.BoolData["isGameOn"] = isGameOn;
-                        envData.IntData["overseerMode"] = overseerMode;
+                            if (!string.IsNullOrEmpty(_snapshotHtml))
+                                content.Add(new StringContent(_snapshotHtml, Encoding.UTF8, "text/html"), "SnapshotHtml");
 
-                        string settingsJson = Newtonsoft.Json.JsonConvert.SerializeObject(envData);
-                        content.Add(new StringContent(settingsJson, Encoding.UTF8, "application/json"),
-                                    "OverseerSettings");
+                            /* Send unified Environment Data (Version Info, Settings, Debug Info) */
+                            bool isGameOn = GHApp.CurrentGamePage?.IsGameOn ?? false;
+                            int overseerMode = (GHApp.DeveloperMode && GHApp.DebugLogMessages) ? 2 : (isGameOn ? 0 : 1);
 
-                        /* Mode-aware initial prompt for greeting */
-                        string initialPrompt;
-                        switch (overseerMode)
-                        {
-                        case 2:
-                            initialPrompt = "Greet me in debug mode and briefly summarize the debug data you see.";
-                            break;
-                        case 1:
-                            initialPrompt = "Greet me and let me know how you can help with technical issues and help learn more about GnollHack game mechanics.";
-                            break;
-                        default:
-                            initialPrompt = isGameOn
-                                ? "Greet me and give a brief observation about my current situation from the game snapshot."
-                                : "Greet me and let me know how you can help.";
-                            break;
-                        }
-                        content.Add(new StringContent(initialPrompt), "InitialPrompt");
-
-                        ProgressStatusLabel.Text = "Contacting Gnoll Overseer...";
-                        UploadProgressBar.Progress = 0.6;
-
-                        var response = await httpClient.PostAsync(
-                            _baseOverseerUrl + "/api/session/create", content);
-
-                        if (response.IsSuccessStatusCode)
-                        {
-                            string jsonResponse = await response.Content.ReadAsStringAsync();
-                            var result = JObject.Parse(jsonResponse);
-                            string sessionId = result?["sessionId"]?.ToString() ?? "";
-                            _sessionId = sessionId;
-                            string handoffToken = result?["handoffToken"]?.ToString() ?? "";
-
-                            overseerUrl = _baseOverseerUrl +
-                                          $"/api/auth/handoff?token={handoffToken}&sessionId={sessionId}";
-
-                            MainThread.BeginInvokeOnMainThread(() =>
+                            string sessionTitle = "GnollHack Assistance";
+                            if (GHApp.DeveloperMode && GHApp.DebugLogMessages)
                             {
-                                ProgressStatusLabel.Text = "Connected!";
-                                UploadProgressBar.Progress = 1.0;
-                            });
-                        }
-                        else
-                        {
-                            string msg = "Overseer session failed: HTTP " + (int)response.StatusCode;
-                            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                            {
-                                msg += " (Please check your credentials in Settings)";
+                                sessionTitle = "GnollHack Developer Console";
                             }
-                            GHApp.WriteGHLog(msg);
-                            MainThread.BeginInvokeOnMainThread(() =>
+                            else if (isGameOn)
                             {
+                                string characterName = GHApp.TournamentMode ? GHApp.LastUsedTournamentPlayerName : GHApp.LastUsedPlayerName;
+                                sessionTitle = string.IsNullOrWhiteSpace(characterName) ? "GnollHack Gameplay" : $"GnollHack Gameplay ({characterName})";
+                            }
+                            content.Add(new StringContent(sessionTitle), "Title");
+                            content.Add(new StringContent("true"), "IsGnollHackSession");
+
+                            var envData = GHApp.GetEnvironmentData();
+                            envData.BoolData["allowSpoilers"] = GHApp.OverseerAllowSpoilers;
+                            envData.BoolData["verboseResponses"] = GHApp.OverseerVerboseResponses;
+                            envData.BoolData["sendGameContext"] = GHApp.OverseerSendGameContext;
+                            envData.BoolData["isGameOn"] = isGameOn;
+                            envData.IntData["overseerMode"] = overseerMode;
+
+                            string settingsJson = Newtonsoft.Json.JsonConvert.SerializeObject(envData);
+                            content.Add(new StringContent(settingsJson, Encoding.UTF8, "application/json"),
+                                        "OverseerSettings");
+
+                            /* Mode-aware initial prompt for greeting */
+                            string initialPrompt;
+                            switch (overseerMode)
+                            {
+                            case 2:
+                                initialPrompt = "Greet me in debug mode and briefly summarize the debug data you see.";
+                                break;
+                            case 1:
+                                initialPrompt = "Greet me and let me know how you can help with technical issues and help learn more about GnollHack game mechanics.";
+                                break;
+                            default:
+                                initialPrompt = isGameOn
+                                    ? "Greet me and give a brief observation about my current situation from the game snapshot."
+                                    : "Greet me and let me know how you can help.";
+                                break;
+                            }
+                            content.Add(new StringContent(initialPrompt), "InitialPrompt");
+
+                            var response = await httpClient.PostAsync(
+                                _baseOverseerUrl + "/api/session/create", content);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                string jsonResponse = await response.Content.ReadAsStringAsync();
+                                var result = JObject.Parse(jsonResponse);
+                                string sessionId = result?["sessionId"]?.ToString() ?? "";
+                                _sessionId = sessionId;
+                                string handoffToken = result?["handoffToken"]?.ToString() ?? "";
+
+                                overseerUrl = _baseOverseerUrl +
+                                              $"/api/auth/handoff?token={handoffToken}&sessionId={sessionId}";
+
+                                MainThread.BeginInvokeOnMainThread(() =>
+                                {
+                                    ProgressStatusLabel.Text = "Connected!";
+                                    UploadProgressBar.Progress = 1.0;
+                                });
+                                _handoffSucceeded = true;
+                                break;
+                            }
+                            else
+                            {
+                                string msg = "Overseer session failed: HTTP " + (int)response.StatusCode;
                                 if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                                 {
-                                    ProgressStatusLabel.Text = "Connection failed. Please check your credentials in Settings.";
+                                    msg += " (Please check your credentials in Settings)";
+                                    GHApp.WriteGHLog(msg);
+                                    MainThread.BeginInvokeOnMainThread(() =>
+                                    {
+                                        ProgressStatusLabel.Text = "Connection failed. Please check your credentials in Settings.";
+                                        UploadProgressBar.Progress = 1.0;
+                                    });
+                                    break;
                                 }
-                                else
+                                GHApp.WriteGHLog(msg);
+                                if (attempt < timeouts.Length - 1)
                                 {
-                                    ProgressStatusLabel.Text = $"Connection failed (HTTP {(int)response.StatusCode}). Opening without game context.";
+                                    await Task.Delay(1000);
+                                    continue;
                                 }
-                                UploadProgressBar.Progress = 1.0;
-                            });
-                            await Task.Delay(2000);
+                                MainThread.BeginInvokeOnMainThread(() =>
+                                {
+                                    ProgressStatusLabel.Text = $"Connection failed (HTTP {(int)response.StatusCode}). Please try again.";
+                                    UploadProgressBar.Progress = 1.0;
+                                });
+                            }
                         }
                     }
                 }
-            }
-            catch (TaskCanceledException)
-            {
-                GHApp.WriteGHLog("Overseer upload timed out after 10 seconds.");
-                MainThread.BeginInvokeOnMainThread(() =>
+                catch (TaskCanceledException)
                 {
-                    ProgressStatusLabel.Text = "Connection timed out. Opening without game context.";
-                    UploadProgressBar.Progress = 1.0;
-                });
-                await Task.Delay(2000);
-            }
-            catch (Exception ex)
-            {
-                GHApp.WriteGHLog("Overseer upload failed: " + ex.Message);
-                MainThread.BeginInvokeOnMainThread(() =>
+                    if (attempt < timeouts.Length - 1)
+                    {
+                        continue;
+                    }
+                    GHApp.WriteGHLog("Overseer upload timed out after " + (attempt + 1) + " attempts.");
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        ProgressStatusLabel.Text = "Connection timed out. The server may be starting up.";
+                        UploadProgressBar.Progress = 1.0;
+                    });
+                }
+                catch (Exception ex)
                 {
-                    ProgressStatusLabel.Text = "Upload failed. Opening without game context.";
-                    UploadProgressBar.Progress = 1.0;
-                });
-                await Task.Delay(2000);
+                    if (attempt < timeouts.Length - 1)
+                    {
+                        continue;
+                    }
+                    GHApp.WriteGHLog("Overseer upload failed: " + ex.Message);
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        ProgressStatusLabel.Text = "Connection failed. Please try again.";
+                        UploadProgressBar.Progress = 1.0;
+                    });
+                }
             }
-
-
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 ConfigureSslBypass();
 
-                /* Hide overlay and navigate to the final URL */
-                ProgressOverlay.IsVisible = false;
-                DisplayWebView.Source = new UrlWebViewSource { Url = overseerUrl };
+                if (_handoffSucceeded)
+                {
+                    /* Hide overlay and navigate to the final URL */
+                    ProgressOverlay.IsVisible = false;
+                    DisplayWebView.Source = new UrlWebViewSource { Url = overseerUrl };
+                }
+                else
+                {
+                    /* Don't navigate to bare URL — show retry/close buttons instead */
+                    RetryButtonsPanel.IsVisible = true;
+                }
             });
 
             /* Free the data references - they can be large */
             _snapshotHtml = null;
+        }
+
+        private async void RetryButton_Clicked(object sender, EventArgs e)
+        {
+            await UploadAndConnect();
+        }
+
+        private async void CloseButton_Clicked(object sender, EventArgs e)
+        {
+            await ClosePageAsync(false);
         }
 
         private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
