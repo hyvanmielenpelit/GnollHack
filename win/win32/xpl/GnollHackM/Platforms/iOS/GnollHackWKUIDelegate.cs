@@ -26,13 +26,19 @@ namespace GnollHackM
         }
 
         [Export("webView:runOpenPanelWithParameters:initiatedByFrame:completionHandler:")]
-        public void RunOpenPanel(
+        public override void RunOpenPanel(
             WKWebView webView,
             WKOpenPanelParameters parameters,
             WKFrameInfo frame,
             Action<NSUrl[]> completionHandler)
         {
-            bool allowsMultiple = parameters.AllowsMultipleSelection;
+            bool allowsMultiple = false;
+            if (OperatingSystem.IsIOSVersionAtLeast(18, 4))
+            {
+#pragma warning disable CA1416
+                allowsMultiple = parameters.AllowsMultipleSelection;
+#pragma warning restore CA1416
+            }
 
             /* Determine whether the accept list includes images.
              * WKOpenPanelParameters does not expose the accept attribute
