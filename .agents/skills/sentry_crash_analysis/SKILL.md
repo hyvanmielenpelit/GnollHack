@@ -137,6 +137,12 @@ get_sentry_resource(
 | **Debug Buffers**    | Same code paths, or different game logic areas?           |
 | **Device Resources** | Low memory/storage common across events?                  |
 
+**Burst detection**: If all events share the same user, device, and timestamps
+within a narrow window (< 60 seconds), treat them as a **single logical
+incident**, not independent crashes. Note the burst count — it indicates how
+many times the same code path was hit (e.g., iterating over a collection of
+affected objects), which itself is a diagnostic clue.
+
 Document cross-event findings prominently in the analysis report.
 
 ### A.5 Data Extraction Checklist
@@ -195,6 +201,14 @@ diagnostic clue for these crash types. Search the codebase for the exact message
 string to locate the triggering code.
 
 ### B.2 Stack Trace Analysis
+
+> [!NOTE]
+> For `impossible()` and `panic()` crashes, a native stack trace is often **not
+> available** — the error is caught in C code and reported to Sentry via the GUI
+> command callback (e.g., `GHGame.ClientCallback_IssueGuiCommand`). In these
+> cases, **the error message string itself is the primary locator**. Search the
+> codebase for the exact message text (e.g., `grep_search` for
+> `"onbill: unpaid obj not on bill"`) to find the triggering code.
 
 Follow this systematic approach:
 
@@ -264,6 +278,11 @@ Debug buffers are a **circular ring of 25 entries** from `debugprint()` calls
 scattered throughout the C codebase (~50+ source files use it). They record code
 paths reached during gameplay.
 
+> [!IMPORTANT]
+> Debug buffer entry **1 is the MOST RECENT** (the last `debugprint()` call
+> before the crash). Entry 25 is the oldest. **To read chronologically, reverse
+> the list** — start from the highest-numbered entry and work down to 1.
+
 **How to interpret them**:
 
 - Entries are numbered `1:...; 2:...; 3:...` (1 = most recent).
@@ -275,6 +294,8 @@ paths reached during gameplay.
 - Look for: repeated entries (indicating a loop or retry), entries from
   unexpected source files (indicating unusual code paths), and entries that
   correspond to the code area implicated by the stack trace.
+- Present debug buffers in the report as a **chronological table** (oldest
+  first) with columns: `#`, `Entry`, `Source File/Function`, `Interpretation`.
 
 **Limitation**: The 25-slot circular buffer overwrites old entries. If many
 `debugprint()` calls occurred between the problematic action and the crash, the
@@ -283,6 +304,11 @@ should recommend adding more targeted `debugprint()` calls in the suspected area
 if the existing buffers are insufficient.
 
 ### B.5 Game State Analysis
+
+> [!NOTE]
+> Game state data may not be present in older Sentry events, as this feature was
+> added recently. If absent, note this in the report and rely on breadcrumbs and
+> debug buffers for context about the player's situation.
 
 Game state data is appended after the debug buffers in the `extra` data field.
 Parse the pipe-delimited string:
@@ -472,22 +498,31 @@ existing one if analyzing multiple issues). Use this template:
 ## Evidence Analysis
 
 ### Stack Trace
-[Annotated stack trace with source file mappings and notes on <unknown> frames]
+[Annotated stack trace with source file mappings and notes on <unknown> frames.
+For impossible()/panic() crashes with no native stack trace, note this and
+explain how the crash location was identified via the error message string.]
 
 ### Breadcrumb Reconstruction
 [Chronological narrative of player actions before crash, highlighting the
 suspected triggering action]
 
-### Debug Buffers
-[Parsed and cross-referenced debug buffer entries with source line lookups]
+### Debug Buffer Reconstruction (chronological order)
+[Table with columns: # (chronological), Entry, Source File/Function,
+Interpretation. Present in chronological order (oldest first), not raw Sentry
+order. Cross-reference each entry with the actual source code.]
 
 ### Game State at Crash
 [Parsed game state fields with interpretation of flags like mklev, bones,
-gameover]
+gameover. If game state data is absent, note this explicitly.]
+
+### Version Currency
+[GnollHack version from the release tag compared against current version.
+Note whether the affected code has changed since the crash version.]
 
 ### Cross-Event Comparison
 [If multiple events: table comparing platforms, users, versions, breadcrumb
-patterns, and stack traces across events]
+patterns, and stack traces across events. If burst pattern detected, note
+the burst count and what it implies.]
 
 ## Conclusions
 
