@@ -838,7 +838,10 @@ handle_knapsack_prefull(int res, int container_cnt, boolean *do_auto_in_bag_ptr,
     {
         if (*used_container_ptr)
         {
-            if (stash_obj_in_container(obj, *used_container_ptr) <= 0) /* -1 if BoH blew up, 0 if couldn't do; stop in both cases */
+            int stashres = stash_obj_in_container(obj, *used_container_ptr);
+            if (stashres == -1) /* BoH blew up */
+                *used_container_ptr = 0;
+            if (stashres <= 0) /* -1 if BoH blew up, 0 if couldn't do; stop in both cases */
                 return -1;
         }
         else if (i < n - 1 && inv_cnt(FALSE) >= 52)
@@ -864,7 +867,10 @@ handle_knapsack_prefull(int res, int container_cnt, boolean *do_auto_in_bag_ptr,
                         *used_container_ptr = select_other_container(invent, (struct obj*)0, FALSE);
                         if (*used_container_ptr)
                         {
-                            if (stash_obj_in_container(obj, *used_container_ptr) <= 0) /* -1 if BoH blew up, 0 if couldn't do; stop in both cases */
+                            int stashres = stash_obj_in_container(obj, *used_container_ptr);
+                            if (stashres == -1) /* BoH blew up */
+                                *used_container_ptr = 0;
+                            if (stashres <= 0) /* -1 if BoH blew up, 0 if couldn't do; stop in both cases */
                                 return -1;
                         }
                         else
@@ -2066,7 +2072,7 @@ auto_bag_in(struct obj *objchn_container, struct obj *obj, boolean bynexthere)
             used_container = bag_of_wizardry;
         if (!used_container && bag_of_the_glutton)
             used_container = bag_of_the_glutton;
-        if (used_container)
+        if (used_container && obj != used_container)
             return stash_obj_in_container(obj, used_container);
         break;
     }
@@ -3237,12 +3243,18 @@ stash_obj_in_container(struct obj *obj, struct obj *container)
 {
     if (!obj || !container)
         return -1;
+    if (obj == container)
+        return 0;
 
     struct obj* saved_container = current_container;
     current_container = container;
+    int trackid = add_to_obj_tracking(current_container);
+    int trackid2 = add_to_obj_tracking(saved_container); /* Will be ignored if saved_container is null */
     int res = in_container(obj);
-    current_container = saved_container;
-    return res;
+    boolean container_gone = finish_obj_tracking(trackid);
+    boolean container2_gone = finish_obj_tracking(trackid2); /* Will be ignored if saved_container is null */
+    current_container = container2_gone ? (struct obj*)0 : saved_container; /* Set to null if saved_container blew up in the meanwhile somehow */
+    return container_gone || container2_gone ? -1 : res; /* Stop if container blew up, or if we could not restore saved_container */
 }
 
 /* Returns: -1 to stop, 1 item was inserted, 0 item was not inserted. */
