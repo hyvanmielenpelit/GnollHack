@@ -1270,6 +1270,7 @@ void
 u_on_rndspot(int upflag)
 {
     int up = (upflag & 1), was_in_W_tower = (upflag & 2);
+    debugprint_pos();
 
     /*
      * Place the hero at a random location within the relevant region.
@@ -1301,6 +1302,7 @@ u_on_rndspot(int upflag)
 void
 u_on_sstairs(int upflag)
 {
+    debugprint_pos();
     if (sstairs.sx)
         u_on_newpos(sstairs.sx, sstairs.sy);
     else
@@ -1311,6 +1313,7 @@ u_on_sstairs(int upflag)
 void
 u_on_upstairs(void)
 {
+    debugprint_pos();
     if (xupstair)
         u_on_newpos(xupstair, yupstair);
     else
@@ -1321,6 +1324,7 @@ u_on_upstairs(void)
 void
 u_on_dnstairs(void)
 {
+    debugprint_pos();
     if (xdnstair)
         u_on_newpos(xdnstair, ydnstair);
     else

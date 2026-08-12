@@ -315,7 +315,8 @@ place_lregion(xchar lx, xchar ly, xchar hx, xchar hy, xchar nlx, xchar nly, xcha
             if (put_lregion_here(x, y, nlx, nly, nhx, nhy, rtype, TRUE, lev))
                 return;
 
-    impossible("Couldn't place lregion type %d!", rtype);
+    s_level* slev = Is_special(&u.uz);
+    impossible("Couldn't place lregion type %d! (lx=%d,ly=%d,hx=%d,hy=%d,nlx=%d,nly=%d,nhx=%d,nhy=%d,dnum=%d,dlevel=%d,dname=%s,lname=%s)", rtype, lx, ly, hx, hy, nlx, nly, nhx, nhy, u.uz.dnum, u.uz.dlevel, dungeons[u.uz.dnum].dname, slev ? slev->name : "normal");
 }
 
 static boolean

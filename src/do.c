@@ -7846,16 +7846,19 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
     else if ((portal == MAGIC_PORTAL_TARGET_SSTAIRS_DOWN || portal == MAGIC_PORTAL_TARGET_SSTAIRS_UP) && !In_endgame(&u.uz))
     {
         /* find the special stairs on the level */
+        debugprint_pos();
         u_on_sstairs(portal == MAGIC_PORTAL_TARGET_SSTAIRS_DOWN);
     }
     else if ((portal == MAGIC_PORTAL_TARGET_STAIRS_DOWN) && !In_endgame(&u.uz))
     {
         /* find the stairs on the level */
+        debugprint_pos();
         u_on_dnstairs();
     }
     else if ((portal == MAGIC_PORTAL_TARGET_STAIRS_UP) && !In_endgame(&u.uz))
     {
         /* find the stairs on the level */
+        debugprint_pos();
         u_on_upstairs();
     }
     else if ((portal == MAGIC_PORTAL_TARGET_LADDER_DOWN) && !In_endgame(&u.uz))
@@ -7892,6 +7895,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
     {
         if (up) 
         {
+            debugprint_pos();
             if (at_ladder)
                 u_on_newpos(xdnladder, ydnladder);
             else if (newdungeon)
@@ -7910,6 +7914,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
         }
         else
         { /* down */
+            debugprint_pos();
             if (at_ladder)
                 u_on_newpos(xupladder, yupladder);
             else if (newdungeon)
@@ -7961,6 +7966,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
     { /* trap door or level_tele or In_endgame */
         if (context.reviving)
             up = TRUE;
+        debugprint_pos();
         u_on_rndspot((up ? 1 : 0) | (was_in_W_tower ? 2 : 0));
         if (falling) 
         {
@@ -8482,6 +8488,7 @@ revival_at_altar(char *wakeupbuf)
         }
         else
         {
+            debugprint_pos();
             u_on_rndspot(FALSE);
             if (MON_AT(u.ux, u.uy))
                 mnexto(m_at(u.ux, u.uy));
