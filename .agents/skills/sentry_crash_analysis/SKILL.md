@@ -374,7 +374,7 @@ immediately narrow the investigation to a specific subsystem.
 
 ### C.1 Root Cause Assessment — Confidence Scale
 
-Every analysis must assign a confidence level to its conclusions:
+Every analysis must assign a confidence level to its hypotheses:
 
 | Confidence Level | Criteria                                                    | Example                                                       |
 |-----------------|-------------------------------------------------------------|---------------------------------------------------------------|
@@ -524,7 +524,19 @@ Note whether the affected code has changed since the crash version.]
 patterns, and stack traces across events. If burst pattern detected, note
 the burst count and what it implies.]
 
-## Conclusions
+## Known Facts
+
+[Numbered list of objective, evidence-backed facts established during the
+analysis. Each fact must cite its source (stack trace, breadcrumb entry, debug
+buffer entry, game state field, or source code reference). Only include things
+that are definitively established — not interpretations or guesses.
+
+Examples:
+1. The crash is a SIGSEGV occurring inside `handle_knapsack_prefull()` (stack trace).
+2. Breadcrumbs show 17+ `docall()` prompts for different potion types in 9 seconds (breadcrumbs 14:56:55–14:57:04).
+3. The player's inventory was at 52 items (implied by `handle_knapsack_prefull` being called, which requires `inv_cnt(FALSE) >= 52` — see pickup.c:844).]
+
+## Hypotheses
 
 | # | Hypothesis | Confidence | Evidence For | Evidence Against |
 |---|-----------|-----------|--------------|------------------|
@@ -532,6 +544,25 @@ the burst count and what it implies.]
 | 2 | ...       | Med/Low   | ...          | ...              |
 
 [Or: "Insufficient data to form hypotheses. See Recommended Actions."]
+
+## Conclusion
+
+[State one of the following two outcomes:]
+
+**No definitive root cause was found.** The hypotheses above remain unconfirmed
+and require further evidence (see Recommended Actions) before a fix can be
+confidently applied.
+
+[Or:]
+
+**A definitive root cause was found.** Based on the known facts above:
+1. [Fact N] establishes that ...
+2. [Fact M] establishes that ...
+3. Therefore, [root cause] logically follows because ...
+
+[The root cause must follow logically from the Known Facts — it cannot rely on
+assumptions or speculation. If any logical step requires an unverified
+assumption, the conclusion must be "No definitive root cause was found."]
 
 ## Recommended Actions
 
