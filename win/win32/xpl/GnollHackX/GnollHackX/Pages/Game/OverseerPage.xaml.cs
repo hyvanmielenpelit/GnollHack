@@ -45,6 +45,11 @@ namespace GnollHackX.Pages.Game
         private string _lastFailedNavigatedUrl = null;
         private bool _navigatedAwayFromSpa = false;
         private bool _handoffSucceeded = false;
+#if GNH_MAUI
+#if IOS || MACCATALYST
+        private object _iosWKUIDelegate = null;
+#endif
+#endif
 #if DEBUG
 #if IOS || MACCATALYST
         private object _iosNavigationDelegate = null;
@@ -661,6 +666,20 @@ namespace GnollHackX.Pages.Game
                     .AddScriptMessageHandler(
                         new OverseerScriptMessageHandler(this),
                         "gnollhackBridge");
+
+                /* Replace the default WKUIDelegate with our custom one
+                 * that presents only the Photo Library picker (no camera)
+                 * when <input type="file"> is tapped. This avoids needing
+                 * NSCameraUsageDescription and works around the iOS
+                 * _NSIPCloneURLToTemporaryFolder crash (Sentry G6/G7). */
+                var webViewHandler = DisplayWebView.Handler
+                    as Microsoft.Maui.Handlers.WebViewHandler;
+                if (webViewHandler != null)
+                {
+                    _iosWKUIDelegate = new GnollHackWKUIDelegate(webViewHandler);
+                    wkWebView.UIDelegate =
+                        (WebKit.IWKUIDelegate)_iosWKUIDelegate;
+                }
             }
 #endif
 #endif // GNH_MAUI
