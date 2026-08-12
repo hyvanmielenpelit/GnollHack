@@ -931,13 +931,21 @@ onbill(struct obj *obj, struct monst *shkp, boolean silent)
         while (--ct >= 0)
             if (bp->bo_id == obj->o_id) {
                 if (!is_obj_unpaid(obj))
-                    impossible("onbill: paid obj on bill?");
+                {
+                    if (!silent)
+                        impossible("onbill: paid obj on bill?");
+                    set_obj_unpaid(obj, TRUE); /* Bill is the source of truth */
+                }
                 return bp;
             } else
                 bp++;
     }
-    if (is_obj_unpaid(obj) && !silent)
-        impossible("onbill: unpaid obj not on bill?");
+    if (is_obj_unpaid(obj))
+    {
+        if (!silent)
+            impossible("onbill: unpaid obj not on bill?");
+        set_obj_unpaid(obj, FALSE); /* Bill is the source of truth */
+    }
     return (struct bill_x *) 0;
 }
 
