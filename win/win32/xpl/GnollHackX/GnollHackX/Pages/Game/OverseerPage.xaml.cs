@@ -49,6 +49,9 @@ namespace GnollHackX.Pages.Game
         private object _iosNavigationDelegate = null;
 #endif
 #endif
+#if IOS || MACCATALYST
+        private object _iosPickerDelegate = null;
+#endif
 
         public OverseerPage(string baseOverseerUrl, string snapshotHtml)
         {
@@ -702,6 +705,12 @@ namespace GnollHackX.Pages.Game
                     {
                         HandleFileShareRequest(filename, content);
                     }
+                    return;
+                }
+
+                if (type == "pick_files")
+                {
+                    HandlePickFilesRequest();
                     return;
                 }
 
@@ -1389,6 +1398,247 @@ namespace GnollHackX.Pages.Game
                 GHApp.WriteGHLog("SendToolResponse failed: " + ex.Message);
             }
         }
+        private void HandlePickFilesRequest()
+        {
+#if GNH_MAUI
+#if IOS || MACCATALYST
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                UIKit.UIWindow window = null;
+                if (UIKit.UIApplication.SharedApplication?.ConnectedScenes != null)
+                {
+                    foreach (var scene in UIKit.UIApplication.SharedApplication.ConnectedScenes)
+                    {
+                        if (scene is UIKit.UIWindowScene windowScene)
+                        {
+                            foreach (var w in windowScene.Windows)
+                            {
+                                if (w.IsKeyWindow)
+                                {
+                                    window = w;
+                                    break;
+                                }
+                            }
+                        }
+                        if (window != null) break;
+                    }
+                }
+                var rootVc = window?.RootViewController;
+                if (rootVc == null) return;
+                var topVc = GetTopViewController(rootVc);
+
+                var alert = UIKit.UIAlertController.Create(
+                    null, null, UIKit.UIAlertControllerStyle.ActionSheet);
+
+                alert.AddAction(UIKit.UIAlertAction.Create(
+                    "Photo Library", UIKit.UIAlertActionStyle.Default,
+                    _ => PresentPhotoPicker(topVc)));
+
+                alert.AddAction(UIKit.UIAlertAction.Create(
+                    "Browse", UIKit.UIAlertActionStyle.Default,
+                    _ => PresentDocumentPicker(topVc)));
+
+                alert.AddAction(UIKit.UIAlertAction.Create(
+                    "Cancel", UIKit.UIAlertActionStyle.Cancel, null));
+
+                /* iPad popover anchor — required or UIAlertController crashes on iPad */
+                if (alert.PopoverPresentationController != null)
+                {
+                    alert.PopoverPresentationController.SourceView = topVc.View;
+                    alert.PopoverPresentationController.SourceRect =
+                        new CoreGraphics.CGRect(
+                            topVc.View.Bounds.X + (topVc.View.Bounds.Width / 2),
+                            topVc.View.Bounds.Y + topVc.View.Bounds.Height, 0, 0);
+                }
+
+                topVc.PresentViewController(alert, true, null);
+            });
+#endif
+#endif
+        }
+
+#if GNH_MAUI && (IOS || MACCATALYST)
+        private void PresentPhotoPicker(UIKit.UIViewController presenter)
+        {
+            var config = new PhotosUI.PHPickerConfiguration();
+            config.SelectionLimit = 5;
+            config.Filter = PhotosUI.PHPickerFilter.ImagesFilter;
+
+            var picker = new PhotosUI.PHPickerViewController(config);
+            var del = new PhotoPickerDelegate(this);
+            picker.Delegate = del;
+            /* Store strong reference to prevent GC */
+            _iosPickerDelegate = del;
+            presenter.PresentViewController(picker, true, null);
+        }
+
+        private void PresentDocumentPicker(UIKit.UIViewController presenter)
+        {
+            var types = new UniformTypeIdentifiers.UTType[]
+            {
+                UniformTypeIdentifiers.UTTypes.PlainText,
+                UniformTypeIdentifiers.UTTypes.Html,
+                UniformTypeIdentifiers.UTTypes.Png,
+                UniformTypeIdentifiers.UTTypes.Jpeg,
+                UniformTypeIdentifiers.UTTypes.WebP
+            };
+
+            var docPicker = new UIKit.UIDocumentPickerViewController(types, false);
+            docPicker.AllowsMultipleSelection = true;
+            var del = new DocumentPickerDelegate(this);
+            docPicker.Delegate = del;
+            _iosPickerDelegate = del;
+            presenter.PresentViewController(docPicker, true, null);
+        }
+
+        private class PhotoPickerDelegate : PhotosUI.PHPickerViewControllerDelegate
+        {
+            private readonly WeakReference<OverseerPage> _pageRef;
+
+            public PhotoPickerDelegate(OverseerPage page)
+            {
+                _pageRef = new WeakReference<OverseerPage>(page);
+            }
+
+            public override void DidFinishPicking(
+                PhotosUI.PHPickerViewController picker,
+                PhotosUI.PHPickerResult[] results)
+            {
+                picker.DismissViewController(true, null);
+                if (results == null || results.Length == 0) return;
+                if (!_pageRef.TryGetTarget(out var page)) return;
+
+                /* Load each image and send back to JS */
+                var remaining = results.Length;
+                var fileEntries = new List<object>();
+
+                for (int i = 0; i < results.Length; i++)
+                {
+                    var provider = results[i].ItemProvider;
+                    provider.LoadDataRepresentation(
+                        UniformTypeIdentifiers.UTTypes.Image,
+                        (data, error) =>
+                        {
+                            if (data != null && error == null)
+                            {
+                                string ext = ".jpg";
+                                string mime = "image/jpeg";
+                                
+                                var identifiers = provider.RegisteredTypeIdentifiers;
+                                foreach (var uti in identifiers)
+                                {
+                                    if (uti.Contains("png")) { ext = ".png"; mime = "image/png"; break; }
+                                    if (uti.Contains("webp")) { ext = ".webp"; mime = "image/webp"; break; }
+                                    if (uti.Contains("heic") || uti.Contains("heif")) { ext = ".heic"; mime = "image/heic"; break; }
+                                }
+
+                                string base64 = data.GetBase64EncodedString(
+                                    Foundation.NSDataBase64EncodingOptions.None);
+                                lock (fileEntries)
+                                {
+                                    fileEntries.Add(new {
+                                        name = $"photo_{fileEntries.Count + 1}{ext}",
+                                        type = mime,
+                                        dataUrl = $"data:{mime};base64,{base64}"
+                                    });
+                                }
+                            }
+                            if (System.Threading.Interlocked.Decrement(ref remaining) == 0)
+                            {
+                                page.SendPickedFilesToJs(fileEntries);
+                            }
+                        });
+                }
+            }
+        }
+
+        private class DocumentPickerDelegate : UIKit.UIDocumentPickerDelegate
+        {
+            private readonly WeakReference<OverseerPage> _pageRef;
+
+            public DocumentPickerDelegate(OverseerPage page)
+            {
+                _pageRef = new WeakReference<OverseerPage>(page);
+            }
+
+            public override void DidPickDocument(UIKit.UIDocumentPickerViewController controller, Foundation.NSUrl[] urls)
+            {
+                if (urls == null || urls.Length == 0) return;
+                if (!_pageRef.TryGetTarget(out var page)) return;
+
+                var fileEntries = new List<object>();
+
+                foreach (var url in urls)
+                {
+                    var isAccessing = url.StartAccessingSecurityScopedResource();
+                    try
+                    {
+                        var data = Foundation.NSData.FromUrl(url);
+                        if (data != null)
+                        {
+                            string ext = url.PathExtension?.ToLowerInvariant();
+                            string mime = "application/octet-stream";
+                            if (ext == "html" || ext == "htm") mime = "text/html";
+                            else if (ext == "txt") mime = "text/plain";
+                            else if (ext == "md") mime = "text/markdown";
+                            else if (ext == "png") mime = "image/png";
+                            else if (ext == "jpg" || ext == "jpeg") mime = "image/jpeg";
+                            else if (ext == "webp") mime = "image/webp";
+
+                            string base64 = data.GetBase64EncodedString(Foundation.NSDataBase64EncodingOptions.None);
+                            fileEntries.Add(new
+                            {
+                                name = url.LastPathComponent,
+                                type = mime,
+                                dataUrl = $"data:{mime};base64,{base64}"
+                            });
+                        }
+                    }
+                    finally
+                    {
+                        if (isAccessing)
+                        {
+                            url.StopAccessingSecurityScopedResource();
+                        }
+                    }
+                }
+                
+                page.SendPickedFilesToJs(fileEntries);
+            }
+        }
+
+        private static UIKit.UIViewController GetTopViewController(UIKit.UIViewController rootVc)
+        {
+            if (rootVc.PresentedViewController != null)
+                return GetTopViewController(rootVc.PresentedViewController);
+            if (rootVc is UIKit.UINavigationController navController
+                && navController.VisibleViewController != null)
+                return GetTopViewController(navController.VisibleViewController);
+            if (rootVc is UIKit.UITabBarController tabController
+                && tabController.SelectedViewController != null)
+                return GetTopViewController(tabController.SelectedViewController);
+            return rootVc;
+        }
+#endif
+
+        private async void SendPickedFilesToJs(List<object> fileEntries)
+        {
+            try
+            {
+                string json = JsonConvert.SerializeObject(fileEntries);
+                string jsLiteral = JsonConvert.SerializeObject(json);
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await DisplayWebView.EvaluateJavaScriptAsync(
+                        "window.__gnollhackReceiveFiles(" + jsLiteral + ")");
+                });
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("SendPickedFilesToJs failed: " + ex.Message);
+            }
+        }
+
         /* IMessagePopupPage implementation */
         public bool IsPopupOpen => MessagePopup.IsPopupOpen;
         public void ClosePopup() => MessagePopup.ClosePopup();
