@@ -3248,13 +3248,11 @@ stash_obj_in_container(struct obj *obj, struct obj *container)
 
     struct obj* saved_container = current_container;
     current_container = container;
-    int trackid = add_to_obj_tracking(current_container);
-    int trackid2 = add_to_obj_tracking(saved_container); /* Will be ignored if saved_container is null */
+    int trackid = add_to_obj_tracking(saved_container);
     int res = in_container(obj);
-    boolean container_gone = finish_obj_tracking(trackid);
-    boolean container2_gone = finish_obj_tracking(trackid2); /* Will be ignored if saved_container is null */
-    current_container = container2_gone ? (struct obj*)0 : saved_container; /* Set to null if saved_container blew up in the meanwhile somehow */
-    return container_gone || container2_gone ? -1 : res; /* Stop if container blew up, or if we could not restore saved_container */
+    boolean saved_container_gone = finish_obj_tracking(trackid);
+    current_container = saved_container_gone ? (struct obj*)0 : saved_container;
+    return saved_container_gone ? -1 : res;
 }
 
 /* Returns: -1 to stop, 1 item was inserted, 0 item was not inserted. */
