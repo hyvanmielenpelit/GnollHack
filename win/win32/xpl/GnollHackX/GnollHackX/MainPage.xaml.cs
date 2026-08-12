@@ -1463,17 +1463,7 @@ namespace GnollHackX
                 Debug.WriteLine(ex.Message); 
             }
 
-            try
-            {
-                /* Clean the archive temp directory */
-                string archive_path = Path.Combine(GHApp.GHPath, GHConstants.ArchiveDirectory);
-                if (Directory.Exists(archive_path))
-                    Directory.Delete(archive_path, true);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+            CleanDirectories();
 
             GHApp.PlatformService.OnDemandPackStatusNotification += OnDemandPackEventHandler;
             StartFetchOnDemandFiles();
@@ -1525,6 +1515,51 @@ namespace GnollHackX
             }
 
             GHApp.DebugCheckCurrentFileDescriptor("StartUpTasksFinish");
+        }
+
+        private void CleanDirectories()
+        {
+            try
+            {
+                /* Clean the archive temp directory */
+                string archive_path = Path.Combine(GHApp.GHPath, GHConstants.ArchiveDirectory);
+                if (Directory.Exists(archive_path))
+                    Directory.Delete(archive_path, true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+#if IOS
+            try
+            {
+                /* Clean any leftover share-cache files from a previous session.
+                 * ShareFile() copies files to CacheDirectory on iOS to work
+                 * around an NSItemProvider sandbox crash, and those copies
+                 * cannot be deleted immediately because the share sheet may
+                 * still be using them when the await returns. */
+                string cacheDir = FileSystem.CacheDirectory;
+                if (Directory.Exists(cacheDir))
+                {
+                    foreach (string file in Directory.GetFiles(cacheDir))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                        }
+                        catch (Exception ex2)
+                        {
+                            Debug.WriteLine($"Failed to delete cached share file '{file}': {ex2.Message}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
         }
 
         private void OnDemandPackEventHandler(object sender, AssetPackStatusEventArgs e)
