@@ -6242,25 +6242,25 @@ namespace GnollHackX
 
             string sharePath = filename;
             bool triedAndFailedCopying = false;
-#if IOS
-            /* iOS share sheet (NSItemProvider) may crash with a SIGABRT if the
-             * file is deep inside the app's Library sandbox directory.  Copying
-             * it to the cache directory first avoids the assertion failure in
-             * _NSIPCloneURLToTemporaryFolder. */
-            try
-            {
-                string cacheDir = FileSystem.CacheDirectory;
-                string tempFilename = Path.Combine(cacheDir, Path.GetFileName(filename));
-                File.Copy(filename, tempFilename, true);
-                sharePath = tempFilename;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Failed to copy file to cache directory for sharing: {ex.Message}");
-                triedAndFailedCopying = true;
-                sharePath = filename;
-            }
-#endif
+//#if IOS
+//            /* iOS share sheet (NSItemProvider) may crash with a SIGABRT if the
+//             * file is deep inside the app's Library sandbox directory.  Copying
+//             * it to the cache directory first avoids the assertion failure in
+//             * _NSIPCloneURLToTemporaryFolder. */
+//            try
+//            {
+//                string cacheDir = FileSystem.CacheDirectory;
+//                string tempFilename = Path.Combine(cacheDir, Path.GetFileName(filename));
+//                File.Copy(filename, tempFilename, true);
+//                sharePath = tempFilename;
+//            }
+//            catch (Exception ex)
+//            {
+//                Debug.WriteLine($"Failed to copy file to cache directory for sharing: {ex.Message}");
+//                triedAndFailedCopying = true;
+//                sharePath = filename;
+//            }
+//#endif
 
             try
             {
