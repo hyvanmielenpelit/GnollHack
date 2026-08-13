@@ -3633,17 +3633,17 @@ void start_delayed_petrification(struct monst *mtmp, boolean by_you)
     /* unstoned is checked every round in a delayed fashion */
 }
 
-void start_delayed_sliming(struct monst *mtmp, struct monst* killer, boolean by_you)
+void start_delayed_sliming(struct monst *mtmp, struct monst* killer_mon, boolean by_you)
 {
     set_mon_delayed_killer_by_you(mtmp, by_you);
 
     int existing_sliming = get_mon_property(mtmp, SLIMED);
     (void)set_mon_property_verbosely(mtmp, SLIMED, existing_sliming == 0 ? 10 : max(1, existing_sliming - 1));
-    if (killer)
+    if (killer_mon)
     {
-        if (is_peaceful(killer))
+        if (is_peaceful(killer_mon))
             mtmp->mon_flags |= MON_FLAGS_SLIMER_PEACEFUL;
-        if (is_tame(killer))
+        if (is_tame(killer_mon))
             mtmp->mon_flags |= MON_FLAGS_SLIMER_TAME;
     }
 }
