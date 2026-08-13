@@ -3085,7 +3085,7 @@ use_misc(struct monst *mtmp)
             return 2;
         mzapmsg(mtmp, otmp, TRUE);
         otmp->charges--;
-        if(newcham(mtmp, muse_newcham_mon(mtmp), 0, TRUE, FALSE))
+        if(newcham_ex(mtmp, muse_newcham_mon(mtmp), 0, TRUE, FALSE, get_obj_polymorph_duration(otmp)))
             play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
 
         if (oseen)
@@ -3097,7 +3097,7 @@ use_misc(struct monst *mtmp)
         mquaffmsg(mtmp, otmp);
         if (vismon)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly mutates!", Monnam(mtmp));
-        if (newcham(mtmp, muse_newcham_mon(mtmp), 0, FALSE, FALSE))
+        if (newcham_ex(mtmp, muse_newcham_mon(mtmp), 0, FALSE, FALSE, get_obj_polymorph_duration(otmp)))
         {
             play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
         }
@@ -3123,7 +3123,7 @@ use_misc(struct monst *mtmp)
             worm_move(mtmp);
         newsym(trapx, trapy);
 
-        if(newcham(mtmp, (struct permonst *) 0, 0, FALSE, FALSE))
+        if(newcham_ex(mtmp, (struct permonst *) 0, 0, FALSE, FALSE, standard_poly_rnd_duration()))
             play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
 
         return 2;

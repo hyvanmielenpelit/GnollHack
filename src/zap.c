@@ -1091,7 +1091,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
                 /* no corpse after system shock */
                 xkilled(mtmp, XKILL_GIVEMSG | XKILL_NOCORPSE);
             } 
-            else if (newcham(mtmp, (struct permonst *) 0, 0, polyspot, give_msg) != 0
+            else if (newcham_ex(mtmp, (struct permonst *) 0, 0, polyspot, give_msg, get_obj_polymorph_duration(otmp)) != 0
                        /* if shapechange failed because there aren't
                           enough eligible candidates (most likely for
                           vampshifter), try reverting to original form */

@@ -482,8 +482,17 @@ dog_eat(struct monst *mtmp, struct obj *obj, int x, int y, boolean devour)
 
     if (poly || slimer)
     {
-        struct permonst *ptr = slimer ? &mons[PM_GREEN_SLIME] : 0;
-        (void) newcham(mtmp, ptr, 0, FALSE, cansee(mtmp->mx, mtmp->my));
+        if (slimer)
+        {
+            /* Disease outcome — permanent transformation */
+            (void) newcham(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, cansee(mtmp->mx, mtmp->my));
+        }
+        else
+        {
+            /* Eating polymorph corpse — timed */
+            (void) newcham_ex(mtmp, (struct permonst *)0, 0, FALSE, cansee(mtmp->mx, mtmp->my),
+                standard_poly_rnd_duration());
+        }
     }
 
     /* limit "instant" growth to prevent potential abuse */

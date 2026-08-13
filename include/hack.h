@@ -881,5 +881,6 @@ extern void gnollhack_exit(int) NORETURN;
 #define M_MOVE_NOMOVE_NO_ATTACK     3
 
 #define STR_BONUS_PERCENTAGE_ADDITION 50
+#define standard_poly_rnd_duration() rn1(500, 500)
 
 #endif /* HACK_H */

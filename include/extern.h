@@ -2202,6 +2202,8 @@ E boolean validvamp(struct monst *, int *, int);
 E int select_newcham_form(struct monst *);
 E void mgender_from_permonst(struct monst *, struct permonst *);
 E int newcham(struct monst *, struct permonst *, unsigned short, boolean, boolean);
+E int newcham_ex(struct monst *, struct permonst *, unsigned short, boolean, boolean, int);
+E int get_obj_polymorph_duration(struct obj *);
 E int can_be_hatched(int);
 E int egg_type_from_parent(int, boolean);
 E boolean dead_species(int, boolean);

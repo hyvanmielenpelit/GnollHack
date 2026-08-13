@@ -1228,6 +1228,14 @@ mon_catchup_elapsed_time(struct monst *mtmp, int64_t nmv)
             mtmp->mflee_timer -= imv;
     }
 
+    if (mtmp->mpolytimer)
+    {
+        if (imv >= (int)mtmp->mpolytimer)
+            mtmp->mpolytimer = 1; /* let update_monster_timeouts() handle reversion */
+        else
+            mtmp->mpolytimer -= (short)imv;
+    }
+
     /* might recover from temporary trouble */
     if (is_mon_mtrapped(mtmp) && rn2(imv + 1) > 40 / 2)
         set_mon_mtrapped(mtmp, 0);

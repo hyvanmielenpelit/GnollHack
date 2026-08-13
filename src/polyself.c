@@ -827,7 +827,7 @@ polymon_ex(int mntmp, boolean growing_up, int duration)
         make_stoned(0L, "You turn to stone!", 0, (char *) 0, 0);
     }
 
-    u.mtimedone = duration > 0 ? duration : rn1(500, 500);
+    u.mtimedone = duration > 0 ? duration : standard_poly_rnd_duration();
     u.umonnum = mntmp;
     u.mmlev = mons[mntmp].mlevel;
     set_uasmon();

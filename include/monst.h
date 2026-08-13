@@ -129,7 +129,7 @@ struct monst {
     short mcomingtou;
     short notalktimer;
     short notraveltimer;
-    short reserved_short1;  
+    short mpolytimer;       /* polymorph reversion countdown; 0 = permanent / not polymorphed */
     short reserved_short2;
     short rumorsleft;           /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
     short mflee_timer;          /* timeout for mflee */

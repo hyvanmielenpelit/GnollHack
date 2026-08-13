@@ -1433,16 +1433,69 @@ update_monster_timeouts(void)
                         {
                             if (!resists_slime(mtmp))
                             {
-                                (void)newcham(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE);
+                                /* Check for life saving BEFORE the transformation */
+                                struct obj *lifesave = mlifesaver(mtmp);
+                                boolean is_important = (unique_corpstat(mtmp->data)
+                                    || (has_mmonst(mtmp) && unique_corpstat(MMONST(mtmp)->data))
+                                    || mbirth_limit(mtmp->mnum) < MAXMONNO
+                                    || mtmp->m_id == quest_status.leader_m_id);
+                                boolean identity_saved = (lifesave != (struct obj *)0 || is_important);
+
+                                /* Transform into green slime */
+                                if (identity_saved)
+                                {
+                                    /* Use newcham_ex with a timer — identity survives */
+                                    (void)newcham_ex(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE, standard_poly_rnd_duration());
+                                }
+                                else
+                                {
+                                    /* Permanent — identity dies */
+                                    (void)newcham(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE);
+                                }
+
+                                if (lifesave)
+                                {
+                                    /* Life saving amulet activates */
+                                    if (cansee(mtmp->mx, mtmp->my))
+                                    {
+                                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "But wait...");
+                                        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
+                                        play_sfx_sound_at_location(SFX_LIFE_SAVED, mtmp->mx, mtmp->my);
+                                        special_effect_wait_until_action(0);
+                                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION,
+                                            "%s begins to glow!", Monnam_possessive_ex(mtmp, "medallion", "worn by"));
+                                        makeknown(AMULET_OF_LIFE_SAVING);
+                                        if (canseemon(mtmp))
+                                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION,
+                                                "The form of %s seems more volatile!", mon_nam(mtmp));
+                                        play_sfx_sound_at_location(SFX_ITEM_CRUMBLES_TO_DUST, mtmp->mx, mtmp->my);
+                                        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "medallion crumbles to dust!");
+                                        special_effect_wait_until_end(0);
+                                    }
+                                    m_useup(mtmp, lifesave);
+                                    check_mon_wearable_items_next_turn(mtmp);
+                                    /* MMONST preserved, mpolytimer set — monster will revert */
+                                }
+                                else if (!is_important && has_mmonst(mtmp))
+                                {
+                                    /* No life saving, not important — delete original identity */
+                                    free_mmonst(mtmp);
+                                    mtmp->mpolytimer = 0;
+                                }
+                                /* Important monsters: MMONST preserved silently */
+
                                 break_charm(mtmp, FALSE);
 
-                                if (mtmp->mtame)
-                                    mtmp->mtame = 0;
-                                if (is_peaceful(mtmp))
+                                if (!lifesave)
                                 {
-                                    set_mon_mpeaceful(mtmp, 0);
-                                    newsym(mtmp->mx, mtmp->my);
+                                    if (mtmp->mtame)
+                                        mtmp->mtame = 0;
+                                    if (is_peaceful(mtmp))
+                                    {
+                                        set_mon_mpeaceful(mtmp, 0);
+                                    }
                                 }
+                                newsym(mtmp->mx, mtmp->my);
                             }
                         }
                         break;
@@ -1585,6 +1638,20 @@ update_monster_timeouts(void)
             set_mon_mwantstodrop(mtmp, 1);
         if (mtmp->mflee_timer && !--mtmp->mflee_timer)
             set_mon_mflee(mtmp, 0);
+        /* polymorph reversion timer */
+        if (mtmp->mpolytimer && !--mtmp->mpolytimer)
+        {
+            if (has_unchanging(mtmp))
+            {
+                /* monster has Unchanging — extend timer instead of reverting */
+                mtmp->mpolytimer = (short)min(rnd(100 * (int)mtmp->data->mlevel + 1), 32000);
+            }
+            else if (revert_mon_polymorph(mtmp, FALSE, FALSE, canspotmon(mtmp)))
+            {
+                /* successfully reverted */
+                need_update = TRUE;
+            }
+        }
         if (mtmp->notalktimer > 0)
             mtmp->notalktimer--;
         if (mtmp->notraveltimer > 0)
@@ -5967,6 +6034,13 @@ mgender_from_permonst(struct monst *mtmp, struct permonst *mdat)
 int
 newcham(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, boolean polyspot, boolean msg)
 {
+    return newcham_ex(mtmp, mdat, subtype, polyspot, msg, 0);
+}
+
+/* Extended version: duration > 0 sets mpolytimer for timed polymorph */
+int
+newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, boolean polyspot, boolean msg, int duration)
+{
     if (!mtmp)
         return 0;
 
@@ -6228,7 +6302,40 @@ newcham(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, boole
         }
     }
 
+    /* Set polymorph timer if a duration was specified */
+    if (duration > 0)
+        mtmp->mpolytimer = (short)min(duration, 32000);
+
     return 1;
+}
+
+/*
+ * Calculate polymorph duration from the source object.
+ * For potions, uses the BUC-dependent dice formula from object data.
+ * For wands, spells, and NULL, returns the default rn1(500, 500).
+ */
+int
+get_obj_polymorph_duration(struct obj *otmp)
+{
+    int polyduration = 0;
+
+    if (otmp && otmp->oclass == POTION_CLASS)
+    {
+        int dicebuc = (int)objects[otmp->otyp].oc_potion_normal_dice_buc_multiplier;
+        polyduration = (int)max(0,
+            objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 :
+            d(max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)),
+              max(1, objects[otmp->otyp].oc_potion_normal_diesize))
+            + objects[otmp->otyp].oc_potion_normal_plus
+            + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier);
+        if (otmp->odiluted)
+            polyduration /= 2;
+    }
+
+    if (polyduration <= 0)
+        polyduration = standard_poly_rnd_duration();
+
+    return polyduration;
 }
 
 /* sometimes an egg will be special */
@@ -7027,6 +7134,7 @@ revert_mon_polymorph(struct monst *mtmp, boolean override_mextra, boolean polysp
             mtmp->subtype = mtraits->subtype;
             mtmp->cham = NON_PM;
             mtmp->cham_subtype = 0;
+            mtmp->mpolytimer = 0;
             mtmp->movement = 0;
             mtmp->m_lev = mtraits->m_lev;
             mtmp->acurr = mtraits->acurr; 
@@ -7240,20 +7348,28 @@ revert_mon_polymorph(struct monst *mtmp, boolean override_mextra, boolean polysp
     if (oldmnum == mtmp->mnum && oldsubtype == mtmp->subtype && oldfemale == is_mon_female(mtmp) && oldmappearance == mtmp->mappearance && oldmaptype == mtmp->m_ap_type) // Is the same
         return 1;
 
-    if (msg) {
+    if (msg) 
+    {
         play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
         Strcpy(newname, noname_monnam(mtmp, ARTICLE_A));
         /* oldname was capitalized above; newname will be lower case */
-        if (!strcmpi(newname, "it")) { /* can't see or sense it now */
+        if (!strcmpi(newname, "it")) 
+        { /* can't see or sense it now */
             if (!!strcmpi(oldname, "it")) /* could see or sense it before */
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disappears!", oldname);
             (void)usmellmon(mdat);
         }
-        else { /* can see or sense it now */
+        else 
+        { /* can see or sense it now */
             if (!strcmpi(oldname, "it")) /* couldn't see or sense it before */
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears!", upstart(newname));
             else
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns into %s!", oldname, newname);
+            {
+                if (is_tame(mtmp))
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s reverts back into %s!", oldname, newname);
+                else
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns into %s!", oldname, newname);
+            }
         }
     }
 
