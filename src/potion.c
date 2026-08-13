@@ -2030,7 +2030,7 @@ peffects(struct obj *otmp)
             }
             else
             {
-                polyself(otmp->otyp == SPE_SHAPE_CHANGE ? 1 : otmp->otyp == SPE_POLYMORPH_SELF ? 5 : 0);
+                polyself_ex(otmp->otyp == SPE_SHAPE_CHANGE ? 1 : otmp->otyp == SPE_POLYMORPH_SELF ? 5 : 0, duration);
             }
         }
         special_effect_wait_until_end(0);
@@ -2398,7 +2398,7 @@ potionhit(struct monst *mon, struct obj **obj_ptr, int how)
             Sprintf(dcbuf, "You feel a little %s.", Hallucination ? "normal" : "strange");
             pline_ex1(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_MYSTICAL, dcbuf);
             if (!Unchanging && !Polymorph_resistance && !Antimagic_or_resistance)
-                polyself(0);
+                polyself_ex(0, duration);
             break;
         case POT_ACID:
             if (!Acid_immunity) 

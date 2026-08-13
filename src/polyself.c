@@ -432,6 +432,12 @@ newman(void)
 void
 polyself(int psflags)
 {
+    polyself_ex(psflags, 0);
+}
+
+void
+polyself_ex(int psflags, int duration)
+{
     char buf[BUFSZ] = DUMMY;
     int old_light, new_light, old_ambient, new_ambient, mntmp, class, tryct;
     boolean forcecontrol = (psflags & 1) != 0, monsterpoly = (psflags & 2) != 0, forcerestrictedpoly = (psflags & 4) != 0,
@@ -705,7 +711,7 @@ polyself(int psflags)
     }
     else
     {
-        (void) polymon(mntmp);
+        (void) polymon_ex(mntmp, FALSE, duration);
     }
     sex_change_ok--; /* reset */
 
@@ -737,13 +743,13 @@ made_change:
 int
 polymon(int mntmp)
 {
-    return polymon_ex(mntmp, FALSE);
+    return polymon_ex(mntmp, FALSE, 0);
 }
 
 /* (try to) make a mntmp monster out of the player;
    returns 1 if polymorph successful */
 int
-polymon_ex(int mntmp,boolean growing_up)
+polymon_ex(int mntmp, boolean growing_up, int duration)
 {
     char buf[BUFSZ];
     boolean sticky = sticks(youmonst.data) && u.ustuck && !u.uswallow,
@@ -821,7 +827,7 @@ polymon_ex(int mntmp,boolean growing_up)
         make_stoned(0L, "You turn to stone!", 0, (char *) 0, 0);
     }
 
-    u.mtimedone = rn1(500, 500);
+    u.mtimedone = duration > 0 ? duration : rn1(500, 500);
     u.umonnum = mntmp;
     u.mmlev = mons[mntmp].mlevel;
     set_uasmon();
@@ -3076,7 +3082,7 @@ u_grow_up(struct monst *victim)
 
         /* polymon_ex() handles messaging, attribute changes, equipment, duration refresh,
            visual updates, trap interactions, etc. */
-        return !!polymon_ex(newtype, TRUE);
+        return !!polymon_ex(newtype, TRUE, 0);
     }
 
 no_polymorph_here:
