@@ -2055,7 +2055,7 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
         {
             hit_tile = HIT_SLIMED;
             play_sfx_sound_at_location(SFX_START_SLIMING, mdef->mx, mdef->my);
-            start_delayed_sliming(mdef, FALSE);
+            start_delayed_sliming(mdef, magr, FALSE);
 #if 0
             if (!munslime(mdef, FALSE) && !DEADMONSTER(mdef)) {
                 if (newcham(mdef, &mons[PM_GREEN_SLIME], 0, FALSE,
@@ -2301,11 +2301,11 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
              * after monkilled() to provide better message ordering */
             if (mdef->cham >= LOW_PM)
             {
-                (void) newcham_ex(magr, (struct permonst *) 0, 0, FALSE, TRUE, standard_poly_rnd_duration());
+                (void) newcham_ex(magr, (struct permonst *) 0, 0, FALSE, TRUE, standard_poly_rnd_duration(), FALSE, FALSE, FALSE);
             }
             else if (pd == &mons[PM_GREEN_SLIME] && !resists_slime(magr)) 
             {
-                (void) newcham(magr, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE);
+                (void) newcham_ex(magr, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE, 0, TRUE, is_peaceful(mdef), is_tame(mdef));
             }
             else if (pd == &mons[PM_WRAITH] || pd == &mons[PM_SPECTRE] || pd == &mons[PM_KING_WRAITH])
             {

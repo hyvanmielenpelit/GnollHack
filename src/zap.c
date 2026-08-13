@@ -1091,7 +1091,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
                 /* no corpse after system shock */
                 xkilled(mtmp, XKILL_GIVEMSG | XKILL_NOCORPSE);
             } 
-            else if (newcham_ex(mtmp, (struct permonst *) 0, 0, polyspot, give_msg, get_obj_polymorph_duration(otmp)) != 0
+            else if (newcham_ex(mtmp, (struct permonst *) 0, 0, polyspot, give_msg, get_obj_polymorph_duration(otmp), FALSE, FALSE, FALSE) != 0
                        /* if shapechange failed because there aren't
                           enough eligible candidates (most likely for
                           vampshifter), try reverting to original form */
@@ -1300,6 +1300,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
             boolean was_turning_into_slime = is_turning_into_slime(mtmp);
             boolean had_slimed = !!mtmp->mprops[SLIMED];
             mtmp->mprops[SLIMED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
+            mtmp->mon_flags &= ~(MON_FLAGS_SLIMER_PEACEFUL | MON_FLAGS_SLIMER_TAME);
 
             boolean was_mummy_rotted = is_mummy_rotted(mtmp);
             boolean had_mummy_rot = !!mtmp->mprops[MUMMY_ROT];
@@ -1441,7 +1442,10 @@ cure_petrification_here:
                 }
 
                 if (has_slimed(mtmp))
+                {
                     (void)set_mon_property_b(mtmp, SLIMED, 0, canseemon(mtmp));
+                    mtmp->mon_flags &= ~(MON_FLAGS_SLIMER_PEACEFUL | MON_FLAGS_SLIMER_TAME);
+                }
 
                 if (is_tame(mtmp))
                 {

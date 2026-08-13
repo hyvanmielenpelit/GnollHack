@@ -1433,68 +1433,11 @@ update_monster_timeouts(void)
                         {
                             if (!resists_slime(mtmp))
                             {
-                                /* Check for life saving BEFORE the transformation */
-                                struct obj *lifesave = mlifesaver(mtmp);
-                                boolean is_important = (unique_corpstat(mtmp->data)
-                                    || (has_mmonst(mtmp) && unique_corpstat(MMONST(mtmp)->data))
-                                    || mbirth_limit(mtmp->mnum) < MAXMONNO
-                                    || mtmp->m_id == quest_status.leader_m_id);
-                                boolean identity_saved = (lifesave != (struct obj *)0 || is_important);
-
-                                /* Transform into green slime */
-                                if (identity_saved)
-                                {
-                                    /* Use newcham_ex with a timer — identity survives */
-                                    (void)newcham_ex(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE, standard_poly_rnd_duration());
-                                }
-                                else
-                                {
-                                    /* Permanent — identity dies */
-                                    (void)newcham(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE);
-                                }
-
-                                if (lifesave)
-                                {
-                                    /* Life saving amulet activates */
-                                    if (cansee(mtmp->mx, mtmp->my))
-                                    {
-                                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "But wait...");
-                                        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
-                                        play_sfx_sound_at_location(SFX_LIFE_SAVED, mtmp->mx, mtmp->my);
-                                        special_effect_wait_until_action(0);
-                                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION,
-                                            "%s begins to glow!", Monnam_possessive_ex(mtmp, "medallion", "worn by"));
-                                        makeknown(AMULET_OF_LIFE_SAVING);
-                                        if (canseemon(mtmp))
-                                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION,
-                                                "The form of %s seems more volatile!", mon_nam(mtmp));
-                                        play_sfx_sound_at_location(SFX_ITEM_CRUMBLES_TO_DUST, mtmp->mx, mtmp->my);
-                                        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "medallion crumbles to dust!");
-                                        special_effect_wait_until_end(0);
-                                    }
-                                    m_useup(mtmp, lifesave);
-                                    check_mon_wearable_items_next_turn(mtmp);
-                                    /* MMONST preserved, mpolytimer set — monster will revert */
-                                }
-                                else if (!is_important && has_mmonst(mtmp))
-                                {
-                                    /* No life saving, not important — delete original identity */
-                                    free_mmonst(mtmp);
-                                    mtmp->mpolytimer = 0;
-                                }
-                                /* Important monsters: MMONST preserved silently */
+                                /* Use newcham_ex with identity_death=TRUE */
+                                (void)newcham_ex(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE, 0, TRUE, (mtmp->mon_flags & MON_FLAGS_SLIMER_PEACEFUL) != 0, (mtmp->mon_flags & MON_FLAGS_SLIMER_TAME) != 0);
 
                                 break_charm(mtmp, FALSE);
 
-                                if (!lifesave)
-                                {
-                                    if (mtmp->mtame)
-                                        mtmp->mtame = 0;
-                                    if (is_peaceful(mtmp))
-                                    {
-                                        set_mon_mpeaceful(mtmp, 0);
-                                    }
-                                }
                                 newsym(mtmp->mx, mtmp->my);
                             }
                         }
@@ -6034,12 +5977,12 @@ mgender_from_permonst(struct monst *mtmp, struct permonst *mdat)
 int
 newcham(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, boolean polyspot, boolean msg)
 {
-    return newcham_ex(mtmp, mdat, subtype, polyspot, msg, 0);
+    return newcham_ex(mtmp, mdat, subtype, polyspot, msg, 0, FALSE, FALSE, FALSE);
 }
 
 /* Extended version: duration > 0 sets mpolytimer for timed polymorph */
 int
-newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, boolean polyspot, boolean msg, int duration)
+newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, boolean polyspot, boolean msg, int duration, boolean identity_death, boolean killer_peaceful, boolean killer_tame)
 {
     if (!mtmp)
         return 0;
@@ -6049,6 +5992,11 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
     struct permonst *olddata = mtmp->data;
     int oldmnum = mtmp->mnum;
     char *p, oldname[BUFSZ], l_oldname[BUFSZ], newname[BUFSZ];
+    struct obj* lifesaveitem = identity_death ? mlifesaver(mtmp) : 0;
+    boolean is_important = (unique_corpstat(mtmp->data)
+        || (has_mmonst(mtmp) && unique_corpstat(MMONST(mtmp)->data))
+        || mbirth_limit(mtmp->mnum) < MAXMONNO
+        || mtmp->m_id == quest_status.leader_m_id);
 
     debugprint("newcham0");
     issue_breadcrumb3("newcham (mnum, mid)", mtmp->mnum, (int)mtmp->m_id);
@@ -6302,9 +6250,64 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
         }
     }
 
-    /* Set polymorph timer if a duration was specified */
-    if (duration > 0)
-        mtmp->mpolytimer = (short)min(duration, 32000);
+    if (identity_death)
+    {
+        if (lifesaveitem)
+        {
+            if (cansee(mtmp->mx, mtmp->my))
+            {
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "But wait...");
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
+                play_sfx_sound_at_location(SFX_LIFE_SAVED, mtmp->mx, mtmp->my);
+                special_effect_wait_until_action(0);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION,
+                    "%s begins to glow!", Monnam_possessive_ex(mtmp, "medallion", "worn by"));
+                makeknown(AMULET_OF_LIFE_SAVING);
+                if (canseemon(mtmp))
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION,
+                        "The form of %s seems more volatile!", mon_nam(mtmp));
+                play_sfx_sound_at_location(SFX_ITEM_CRUMBLES_TO_DUST, mtmp->mx, mtmp->my);
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "medallion crumbles to dust!");
+                special_effect_wait_until_end(0);
+            }
+            m_useup(mtmp, lifesaveitem);
+            check_mon_wearable_items_next_turn(mtmp);
+            duration = standard_poly_rnd_duration();
+        }
+        else if (is_important)
+        {
+            duration = standard_poly_rnd_duration();
+        }
+        else if (has_mmonst(mtmp))
+        {
+            free_mmonst(mtmp);
+        }
+        if (!has_mmonst(mtmp))
+        {
+            if (killer_tame)
+            {
+                if (!mtmp->mtame)
+                    tamedog(mtmp, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE, "");
+            }
+            else if (killer_peaceful)
+            {
+                if (mtmp->mtame)
+                    mtmp->mtame = 0;
+                if (!is_peaceful(mtmp))
+                    set_mon_mpeaceful(mtmp, 1);
+            }
+            else
+            {
+                if (mtmp->mtame)
+                    mtmp->mtame = 0;
+                if (is_peaceful(mtmp))
+                    set_mon_mpeaceful(mtmp, 0);
+            }
+        }
+    }
+
+    /* Set polymorph timer, or set it to zero */
+    mtmp->mpolytimer = (short)min(duration, 32000);
 
     return 1;
 }

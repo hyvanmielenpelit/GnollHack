@@ -3085,7 +3085,7 @@ use_misc(struct monst *mtmp)
             return 2;
         mzapmsg(mtmp, otmp, TRUE);
         otmp->charges--;
-        if(newcham_ex(mtmp, muse_newcham_mon(mtmp), 0, TRUE, FALSE, get_obj_polymorph_duration(otmp)))
+        if(newcham_ex(mtmp, muse_newcham_mon(mtmp), 0, TRUE, FALSE, get_obj_polymorph_duration(otmp), FALSE, FALSE, FALSE))
             play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
 
         if (oseen)
@@ -3097,7 +3097,7 @@ use_misc(struct monst *mtmp)
         mquaffmsg(mtmp, otmp);
         if (vismon)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly mutates!", Monnam(mtmp));
-        if (newcham_ex(mtmp, muse_newcham_mon(mtmp), 0, FALSE, FALSE, get_obj_polymorph_duration(otmp)))
+        if (newcham_ex(mtmp, muse_newcham_mon(mtmp), 0, FALSE, FALSE, get_obj_polymorph_duration(otmp), FALSE, FALSE, FALSE))
         {
             play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
         }
@@ -3123,7 +3123,7 @@ use_misc(struct monst *mtmp)
             worm_move(mtmp);
         newsym(trapx, trapy);
 
-        if(newcham_ex(mtmp, (struct permonst *) 0, 0, FALSE, FALSE, standard_poly_rnd_duration()))
+        if(newcham_ex(mtmp, (struct permonst *) 0, 0, FALSE, FALSE, standard_poly_rnd_duration(), FALSE, FALSE, FALSE))
             play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
 
         return 2;
@@ -4081,6 +4081,7 @@ muse_unslime(struct monst *mon, struct obj *obj, struct trap *trap, boolean by_y
     }
     
     mon->mprops[SLIMED] &= ~M_TIMEOUT;
+    mon->mon_flags &= ~(MON_FLAGS_SLIMER_PEACEFUL | MON_FLAGS_SLIMER_TAME);
     /* use up monster's next move */
     mon->movement -= NORMAL_SPEED;
     mon->mlstmv = monstermoves;

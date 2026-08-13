@@ -175,6 +175,8 @@ struct monst {
 #define MON_FLAGS_ORC_AND_A_PIE                 0x00002000UL
 #define MON_FLAGS_ADD_UNSUMMON_TIMER            0x00004000UL
 #define MON_FLAGS_QUEST_COMPANION               0x00008000UL
+#define MON_FLAGS_SLIMER_PEACEFUL               0x00010000UL
+#define MON_FLAGS_SLIMER_TAME                   0x00020000UL
 
     uint64_t mstrategy; /* for monsters with mflag3: current strategy */
 

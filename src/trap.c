@@ -2094,7 +2094,7 @@ steedintrap(struct trap *trap, struct obj *otmp)
         break;
     case POLY_TRAP:
         if (!resists_magic(steed) && !resists_polymorph(steed) && !has_unchanging(steed) && !check_magic_resistance_and_inflict_damage(steed, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL)) {
-            (void) newcham_ex(steed, (struct permonst *) 0, 0, FALSE, FALSE, standard_poly_rnd_duration());
+            (void) newcham_ex(steed, (struct permonst *) 0, 0, FALSE, FALSE, standard_poly_rnd_duration(), FALSE, FALSE, FALSE);
             if (!can_saddle(steed) || !can_ride(steed))
                 dismount_steed(DISMOUNT_POLY);
             else
@@ -3493,7 +3493,7 @@ mintrap(struct monst *mtmp)
             } 
             else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, (struct monst*)0, FALSE, 0, 0, NOTELL))
             {
-                if (newcham_ex(mtmp, (struct permonst*)0, 0, FALSE, FALSE, standard_poly_rnd_duration()))
+                if (newcham_ex(mtmp, (struct permonst*)0, 0, FALSE, FALSE, standard_poly_rnd_duration(), FALSE, FALSE, FALSE))
                 {
                     play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my); // Since msg is FALSE in newcham
                     /* we're done with mptr but keep it up to date */
@@ -3633,13 +3633,19 @@ void start_delayed_petrification(struct monst *mtmp, boolean by_you)
     /* unstoned is checked every round in a delayed fashion */
 }
 
-void start_delayed_sliming(struct monst *mtmp, boolean by_you)
+void start_delayed_sliming(struct monst *mtmp, struct monst* killer, boolean by_you)
 {
     set_mon_delayed_killer_by_you(mtmp, by_you);
 
     int existing_sliming = get_mon_property(mtmp, SLIMED);
     (void)set_mon_property_verbosely(mtmp, SLIMED, existing_sliming == 0 ? 10 : max(1, existing_sliming - 1));
-
+    if (killer)
+    {
+        if (is_peaceful(killer))
+            mtmp->mon_flags |= MON_FLAGS_SLIMER_PEACEFUL;
+        if (is_tame(killer))
+            mtmp->mon_flags |= MON_FLAGS_SLIMER_TAME;
+    }
 }
 
 

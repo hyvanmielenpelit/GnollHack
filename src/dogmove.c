@@ -484,14 +484,14 @@ dog_eat(struct monst *mtmp, struct obj *obj, int x, int y, boolean devour)
     {
         if (slimer)
         {
-            /* Disease outcome — permanent transformation */
-            (void) newcham(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, cansee(mtmp->mx, mtmp->my));
+            /* Disease outcome — permanent transformation with identity death */
+            (void) newcham_ex(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, cansee(mtmp->mx, mtmp->my), 0, TRUE, FALSE, FALSE);
         }
         else
         {
             /* Eating polymorph corpse — timed */
             (void) newcham_ex(mtmp, (struct permonst *)0, 0, FALSE, cansee(mtmp->mx, mtmp->my),
-                standard_poly_rnd_duration());
+                standard_poly_rnd_duration(), FALSE, FALSE, FALSE);
         }
     }
 
