@@ -383,7 +383,45 @@ invault(void)
         EGD(guard)->ogy = y;
         assign_level(&(EGD(guard)->gdlevel), &u.uz);
         EGD(guard)->vroom = vaultroom;
-        EGD(guard)->warncnt = 0;
+        EGD(guard)->warncnt = 1;
+
+        /* Initialize guard's destination and fake corridor BEFORE any
+           player interaction (getlin prompt), so that if the game is
+           saved during the dialogue, the guard's egd data is complete
+           upon restore.  All values here depend only on gx, gy (from
+           find_guard_dest) and x, y (the guard's entry position),
+           which are already set. */
+        EGD(guard)->gdx = gx;
+        EGD(guard)->gdy = gy;
+        EGD(guard)->fcbeg = 0;
+        EGD(guard)->fakecorr[0].fx = x;
+        EGD(guard)->fakecorr[0].fy = y;
+        if (IS_WALL(levl[x][y].typ))
+        {
+            EGD(guard)->fakecorr[0].ftyp = levl[x][y].typ;
+        }
+        else
+        { /* the initial guard location is a dug door */
+            int vlt = EGD(guard)->vroom;
+            xchar lowx = rooms[vlt].lx, hix = rooms[vlt].hx;
+            xchar lowy = rooms[vlt].ly, hiy = rooms[vlt].hy;
+
+            if (x == lowx - 1 && y == lowy - 1)
+                EGD(guard)->fakecorr[0].ftyp = TLCORNER;
+            else if (x == hix + 1 && y == lowy - 1)
+                EGD(guard)->fakecorr[0].ftyp = TRCORNER;
+            else if (x == lowx - 1 && y == hiy + 1)
+                EGD(guard)->fakecorr[0].ftyp = BLCORNER;
+            else if (x == hix + 1 && y == hiy + 1)
+                EGD(guard)->fakecorr[0].ftyp = BRCORNER;
+            else if (y == lowy - 1 || y == hiy + 1)
+                EGD(guard)->fakecorr[0].ftyp = HWALL;
+            else if (x == lowx - 1 || x == hix + 1)
+                EGD(guard)->fakecorr[0].ftyp = VWALL;
+        }
+        create_simple_location(x, y, DOOR, 0, 0, D_NODOOR, 0, !IS_FLOOR(levl[x][y].typ) ? levl[x][y].floortyp : levl[x][y].typ, !IS_FLOOR(levl[x][y].typ) ? levl[x][y].floorsubtyp : levl[x][y].typ, !IS_FLOOR(levl[x][y].typ) ? levl[x][y].floorvartyp : 0, FALSE);
+        unblock_vision_and_hearing_at_point(x, y); /* doesn't block light */
+        EGD(guard)->fcend = 1;
 
         reset_faint(); /* if fainted - wake up */
         gsensed = !canspotmon(guard);
@@ -553,38 +591,6 @@ invault(void)
                 verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "Please drop that gold and follow me.");
             }
         }
-        EGD(guard)->gdx = gx;
-        EGD(guard)->gdy = gy;
-        EGD(guard)->fcbeg = 0;
-        EGD(guard)->fakecorr[0].fx = x;
-        EGD(guard)->fakecorr[0].fy = y;
-        if (IS_WALL(levl[x][y].typ)) 
-        {
-            EGD(guard)->fakecorr[0].ftyp = levl[x][y].typ;
-        }
-        else
-        { /* the initial guard location is a dug door */
-            int vlt = EGD(guard)->vroom;
-            xchar lowx = rooms[vlt].lx, hix = rooms[vlt].hx;
-            xchar lowy = rooms[vlt].ly, hiy = rooms[vlt].hy;
-
-            if (x == lowx - 1 && y == lowy - 1)
-                EGD(guard)->fakecorr[0].ftyp = TLCORNER;
-            else if (x == hix + 1 && y == lowy - 1)
-                EGD(guard)->fakecorr[0].ftyp = TRCORNER;
-            else if (x == lowx - 1 && y == hiy + 1)
-                EGD(guard)->fakecorr[0].ftyp = BLCORNER;
-            else if (x == hix + 1 && y == hiy + 1)
-                EGD(guard)->fakecorr[0].ftyp = BRCORNER;
-            else if (y == lowy - 1 || y == hiy + 1)
-                EGD(guard)->fakecorr[0].ftyp = HWALL;
-            else if (x == lowx - 1 || x == hix + 1)
-                EGD(guard)->fakecorr[0].ftyp = VWALL;
-        }
-        create_simple_location(x, y, DOOR, 0, 0, D_NODOOR, 0, !IS_FLOOR(levl[x][y].typ) ? levl[x][y].floortyp : levl[x][y].typ, !IS_FLOOR(levl[x][y].typ) ? levl[x][y].floorsubtyp : levl[x][y].typ, !IS_FLOOR(levl[x][y].typ) ? levl[x][y].floorvartyp : 0, FALSE);
-        unblock_vision_and_hearing_at_point(x, y); /* doesn't block light */
-        EGD(guard)->fcend = 1;
-        EGD(guard)->warncnt = 1;
     }
 }
 
@@ -1086,6 +1092,13 @@ gd_move(struct monst *grd)
         nx += dx;
     else
         ny += dy;
+
+    /* Safety check: ensure computed position is within map bounds */
+    if (!isok(nx, ny))
+    {
+        egrd->gddone = 1;
+        goto cleanup;
+    }
 
     while ((typ = (crm = &levl[nx][ny])->typ) != STONE) 
     {
