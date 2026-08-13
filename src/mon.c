@@ -5993,10 +5993,11 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
     int oldmnum = mtmp->mnum;
     char *p, oldname[BUFSZ], l_oldname[BUFSZ], newname[BUFSZ];
     struct obj* lifesaveitem = identity_death ? mlifesaver(mtmp) : 0;
-    boolean is_important = (unique_corpstat(mtmp->data)
-        || (has_mmonst(mtmp) && unique_corpstat(MMONST(mtmp)->data))
-        || mbirth_limit(mtmp->mnum) < MAXMONNO
-        || mtmp->m_id == quest_status.leader_m_id);
+    boolean is_important = identity_death
+        && (unique_corpstat(mtmp->data)
+            || (has_mmonst(mtmp) && unique_corpstat(MMONST(mtmp)->data))
+            || mbirth_limit(mtmp->mnum) < MAXMONNO
+            || mtmp->m_id == quest_status.leader_m_id);
 
     debugprint("newcham0");
     issue_breadcrumb3("newcham (mnum, mid)", mtmp->mnum, (int)mtmp->m_id);
