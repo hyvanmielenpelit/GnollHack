@@ -4426,7 +4426,7 @@ cleanup:
     change_luck((int)luck_change, TRUE);
 
     /* give experience points */
-    tmp = experience(mtmp);
+    tmp = experience(mtmp, (int)mvitals[mtmp->mnum].died);
     more_experienced(tmp, 0);
     newexplevel(); /* will decide if you go up */
 
@@ -6022,7 +6022,7 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
             || (has_mmonst(mtmp) && unique_corpstat(MMONST(mtmp)->data))
             || mbirth_limit(mtmp->mnum) < MAXMONNO
             || mtmp->m_id == quest_status.leader_m_id);
-    int tmp_xp = identity_death && killed_by_you ? experience(mtmp) : 0;
+    int tmp_xp = identity_death && killed_by_you ? experience(mtmp, (int)(mvitals[mtmp->mnum].died < 255 ? mvitals[mtmp->mnum].died + 1 : 255)) : 0;
 
     debugprint("newcham0");
     issue_breadcrumb3("newcham (mnum, mid)", mtmp->mnum, (int)mtmp->m_id);

@@ -2429,7 +2429,7 @@ domove_core(void)
                     if (!u.uconduct.killer++)
                         livelog_printf(LL_CONDUCT, "%s", "killed for the first time");
 
-                    tmp = experience(mtmp);
+                    tmp = experience(mtmp, (int)mvitals[mtmp->mnum].died);
                     more_experienced(tmp, 0);
                     newexplevel(); /* will decide if you go up */
                 }

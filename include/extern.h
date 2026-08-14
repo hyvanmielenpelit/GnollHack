@@ -1228,7 +1228,7 @@ E int64_t newuexp(int);
 E int newpw(void);
 E int enmaxadjustment(void);
 E void updatemaxen(void);
-E int experience(struct monst *);
+E int experience(struct monst *, int);
 E void more_experienced(int, int);
 E int64_t game_score_difficulty_adjustment(int64_t);
 
