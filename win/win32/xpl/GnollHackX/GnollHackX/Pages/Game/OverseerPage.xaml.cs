@@ -90,7 +90,14 @@ namespace GnollHackX.Pages.Game
         {
             GHApp.BackButtonPressed += BackButtonPressed;
             GHApp.SetPlatformResizeAdjustment(true);
-            await UploadAndConnect();
+            try
+            {
+                await UploadAndConnect();
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("Unhandled exception in OverseerPage: " + ex.Message);
+            }
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
@@ -343,16 +350,23 @@ namespace GnollHackX.Pages.Game
                     if (attempt < attemptConfig.Length - 1)
                     {
                         int delaySeconds = attemptConfig[attempt].Delay;
-                        for (int remaining = delaySeconds; remaining > 0; remaining--)
+                        try
                         {
-                            if (isLocalDev)
+                            for (int remaining = delaySeconds; remaining > 0; remaining--)
                             {
-                                MainThread.BeginInvokeOnMainThread(() =>
+                                if (isLocalDev)
                                 {
-                                    ErrorDetailsLabel.Text = $"{errorMsg}... Retrying in {remaining}s";
-                                });
+                                    MainThread.BeginInvokeOnMainThread(() =>
+                                    {
+                                        ErrorDetailsLabel.Text = $"{errorMsg}... Retrying in {remaining}s";
+                                    });
+                                }
+                                await Task.Delay(1000, _connectCts.Token);
                             }
-                            await Task.Delay(1000, _connectCts.Token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            break;
                         }
                         continue;
                     }
@@ -375,16 +389,23 @@ namespace GnollHackX.Pages.Game
                     if (attempt < attemptConfig.Length - 1)
                     {
                         int delaySeconds = attemptConfig[attempt].Delay;
-                        for (int remaining = delaySeconds; remaining > 0; remaining--)
+                        try
                         {
-                            if (isLocalDev)
+                            for (int remaining = delaySeconds; remaining > 0; remaining--)
                             {
-                                MainThread.BeginInvokeOnMainThread(() =>
+                                if (isLocalDev)
                                 {
-                                    ErrorDetailsLabel.Text = $"{errorMsg}... Retrying in {remaining}s";
-                                });
+                                    MainThread.BeginInvokeOnMainThread(() =>
+                                    {
+                                        ErrorDetailsLabel.Text = $"{errorMsg}... Retrying in {remaining}s";
+                                    });
+                                }
+                                await Task.Delay(1000, _connectCts.Token);
                             }
-                            await Task.Delay(1000, _connectCts.Token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            break;
                         }
                         continue;
                     }
@@ -423,7 +444,14 @@ namespace GnollHackX.Pages.Game
 
         private async void RetryButton_Clicked(object sender, EventArgs e)
         {
-            await UploadAndConnect();
+            try
+            {
+                await UploadAndConnect();
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("Unhandled exception in OverseerPage retry: " + ex.Message);
+            }
         }
 
         private async void CancelButton_Clicked(object sender, EventArgs e)
