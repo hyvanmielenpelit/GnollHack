@@ -1434,7 +1434,7 @@ update_monster_timeouts(void)
                             if (!resists_slime(mtmp))
                             {
                                 /* Use newcham_ex with identity_death=TRUE */
-                                (void)newcham_ex(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE, 0, TRUE, (mtmp->mon_flags & MON_FLAGS_SLIMER_PEACEFUL) != 0, (mtmp->mon_flags & MON_FLAGS_SLIMER_TAME) != 0);
+                                (void)newcham_ex(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE, 0, TRUE, (mtmp->mon_flags & MON_FLAGS_SLIMER_PEACEFUL) != 0, (mtmp->mon_flags & MON_FLAGS_SLIMER_TAME) != 0, is_mon_delayed_killer_by_you(mtmp));
 
                                 break_charm(mtmp, FALSE);
 
@@ -4426,7 +4426,7 @@ cleanup:
     change_luck((int)luck_change, TRUE);
 
     /* give experience points */
-    tmp = experience(mtmp, (int) mvitals[mndx].died);
+    tmp = experience(mtmp);
     more_experienced(tmp, 0);
     newexplevel(); /* will decide if you go up */
 
@@ -6001,12 +6001,12 @@ mgender_from_permonst(struct monst *mtmp, struct permonst *mdat)
 int
 newcham(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, boolean polyspot, boolean msg)
 {
-    return newcham_ex(mtmp, mdat, subtype, polyspot, msg, 0, FALSE, FALSE, FALSE);
+    return newcham_ex(mtmp, mdat, subtype, polyspot, msg, 0, FALSE, FALSE, FALSE, FALSE);
 }
 
 /* Extended version: duration > 0 sets mpolytimer for timed polymorph */
 int
-newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, boolean polyspot, boolean msg, int duration, boolean identity_death, boolean killer_peaceful, boolean killer_tame)
+newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, boolean polyspot, boolean msg, int duration, boolean identity_death, boolean killer_peaceful, boolean killer_tame, boolean killed_by_you)
 {
     if (!mtmp)
         return 0;
@@ -6022,6 +6022,7 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
             || (has_mmonst(mtmp) && unique_corpstat(MMONST(mtmp)->data))
             || mbirth_limit(mtmp->mnum) < MAXMONNO
             || mtmp->m_id == quest_status.leader_m_id);
+    int tmp_xp = identity_death && killed_by_you ? experience(mtmp) : 0;
 
     debugprint("newcham0");
     issue_breadcrumb3("newcham (mnum, mid)", mtmp->mnum, (int)mtmp->m_id);
@@ -6307,8 +6308,26 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
         {
             free_mmonst(mtmp);
         }
+
+        /* Award kill credit for the destroyed original identity */
         if (!has_mmonst(mtmp))
         {
+            /* Vanquished count for original form (always, like mondead) */
+            if (mvitals[oldmnum].died < 255)
+                mvitals[oldmnum].died++;
+
+            if (killed_by_you)
+            {
+                /* XP based on original form */
+                more_experienced(tmp_xp, 0);
+                newexplevel();
+
+                /* Pacifism conduct */
+                if (!u.uconduct.killer++)
+                    livelog_printf(LL_CONDUCT, "%s", "killed for the first time through lethal transformation");
+            }
+
+            /* Allegiance updates for the new monster */
             if (killer_tame)
             {
                 if (!mtmp->mtame)

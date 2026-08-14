@@ -2094,7 +2094,7 @@ steedintrap(struct trap *trap, struct obj *otmp)
         break;
     case POLY_TRAP:
         if (!resists_magic(steed) && !resists_polymorph(steed) && !has_unchanging(steed) && !check_magic_resistance_and_inflict_damage(steed, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL)) {
-            (void) newcham_ex(steed, (struct permonst *) 0, 0, FALSE, FALSE, standard_poly_rnd_duration(), FALSE, FALSE, FALSE);
+            (void) newcham_ex(steed, (struct permonst *) 0, 0, FALSE, FALSE, standard_poly_rnd_duration(), FALSE, FALSE, FALSE, FALSE);
             if (!can_saddle(steed) || !can_ride(steed))
                 dismount_steed(DISMOUNT_POLY);
             else
@@ -3493,7 +3493,7 @@ mintrap(struct monst *mtmp)
             } 
             else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, (struct monst*)0, FALSE, 0, 0, NOTELL))
             {
-                if (newcham_ex(mtmp, (struct permonst*)0, 0, FALSE, FALSE, standard_poly_rnd_duration(), FALSE, FALSE, FALSE))
+                if (newcham_ex(mtmp, (struct permonst*)0, 0, FALSE, FALSE, standard_poly_rnd_duration(), FALSE, FALSE, FALSE, FALSE))
                 {
                     play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my); // Since msg is FALSE in newcham
                     /* we're done with mptr but keep it up to date */

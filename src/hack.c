@@ -2424,13 +2424,12 @@ domove_core(void)
                 {
                     /* minliquid() and mintrap() call mondead() rather than
                        killed() so we duplicate some of the latter here */
-                    int tmp, mndx;
+                    int tmp;
 
                     if (!u.uconduct.killer++)
                         livelog_printf(LL_CONDUCT, "%s", "killed for the first time");
 
-                    mndx = mtmp->mnum;
-                    tmp = experience(mtmp, (int) mvitals[mndx].died);
+                    tmp = experience(mtmp);
                     more_experienced(tmp, 0);
                     newexplevel(); /* will decide if you go up */
                 }

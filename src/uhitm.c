@@ -3325,7 +3325,7 @@ damageum(struct monst *mdef, struct attack *mattk, struct obj *omonwep, int spec
                 /* this assumes newcham_ex() won't fail; since hero has
                    a slime attack, green slimes haven't been geno'd */
                 You_ex(ATR_NONE, CLR_MSG_SUCCESS, "turn %s into slime.", mon_nam(mdef));
-                if (newcham_ex(mdef, &mons[PM_GREEN_SLIME], 0, FALSE, FALSE, 0, TRUE, TRUE, TRUE))
+                if (newcham_ex(mdef, &mons[PM_GREEN_SLIME], 0, FALSE, FALSE, 0, TRUE, TRUE, TRUE, TRUE))
                     pd = mdef->data;
             }
             /* munslime attempt could have been fatal */

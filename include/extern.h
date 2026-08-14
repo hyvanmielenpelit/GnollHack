@@ -1228,7 +1228,7 @@ E int64_t newuexp(int);
 E int newpw(void);
 E int enmaxadjustment(void);
 E void updatemaxen(void);
-E int experience(struct monst *, int);
+E int experience(struct monst *);
 E void more_experienced(int, int);
 E int64_t game_score_difficulty_adjustment(int64_t);
 
@@ -2202,7 +2202,7 @@ E boolean validvamp(struct monst *, int *, int);
 E int select_newcham_form(struct monst *);
 E void mgender_from_permonst(struct monst *, struct permonst *);
 E int newcham(struct monst *, struct permonst *, unsigned short, boolean, boolean);
-E int newcham_ex(struct monst *, struct permonst *, unsigned short, boolean, boolean, int, boolean, boolean, boolean);
+E int newcham_ex(struct monst *, struct permonst *, unsigned short, boolean, boolean, int, boolean, boolean, boolean, boolean);
 E int get_obj_polymorph_duration(struct obj *);
 E int can_be_hatched(int);
 E int egg_type_from_parent(int, boolean);

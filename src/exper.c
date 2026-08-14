@@ -161,10 +161,14 @@ updatemaxen(void)
 
 /* return # of exp points for mtmp after nk killed */
 int
-experience(struct monst *mtmp, int nk)
+experience(struct monst *mtmp)
 {
+    if (!mtmp)
+        return 0;
+
     struct permonst *ptr = mtmp->data;
     int i, tmp, tmp2;
+    int nk = (int)mvitals[mtmp->mnum].died;
 
     tmp = 1 + ptr->difficulty * ptr->difficulty; //mtmp->m_lev * mtmp->m_lev;
     tmp += (int)mtmp->extra_encounter_xp;

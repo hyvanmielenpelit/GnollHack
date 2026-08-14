@@ -6676,7 +6676,7 @@ dropz(struct obj *obj, boolean with_impact)
                 {
                     /* Green slime corpse — identity death */
                     (void) newcham_ex(u.ustuck, &mons[PM_GREEN_SLIME], 0,
-                                      FALSE, TRUE, 0, TRUE, FALSE, FALSE);
+                                      FALSE, TRUE, 0, TRUE, FALSE, FALSE, TRUE);
                     if (!was_obj_freed)
                     {
                         debugprint("dropz0: %d", obj->otyp);
@@ -6688,7 +6688,7 @@ dropz(struct obj *obj, boolean with_impact)
                 {
                     /* Polymorph corpse — timed */
                     (void) newcham_ex(u.ustuck, (struct permonst *) 0, 0,
-                                      FALSE, FALSE, standard_poly_rnd_duration(), FALSE, FALSE, FALSE);
+                                      FALSE, FALSE, standard_poly_rnd_duration(), FALSE, FALSE, FALSE, FALSE);
                     if (!was_obj_freed)
                     {
                         debugprint("dropz1: %d", obj->otyp);
