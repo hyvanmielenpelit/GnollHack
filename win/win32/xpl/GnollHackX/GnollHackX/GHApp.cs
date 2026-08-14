@@ -194,7 +194,6 @@ namespace GnollHackX
             GetDependencyServices();
             PlatformService.InitializePlatform();
             GHPath = GnollHackService.GetGnollHackPath();
-            InitializeBattery();
             ProcessCommandLineArguments();
             ProcessEnvironment();
             SetProcessPriority();
