@@ -1141,7 +1141,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         if (disguised_mimic)
             seemimic(mtmp);
         if ((mtmp->cham != NON_PM || has_mmonst(mtmp)) && !has_unchanging(mtmp))
-            revert_mon_polymorph(mtmp, FALSE, TRUE, TRUE);
+            revert_mon_polymorph(mtmp, FALSE, TRUE, TRUE, TRUE);
         if (!has_cancellation_resistance(mtmp))
         {
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
@@ -1159,7 +1159,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         if (disguised_mimic)
             seemimic(mtmp);
         if ((mtmp->cham != NON_PM || has_mmonst(mtmp)) && !has_unchanging(mtmp))
-            revert_mon_polymorph(mtmp, FALSE, TRUE, TRUE);
+            revert_mon_polymorph(mtmp, FALSE, TRUE, TRUE, TRUE);
         /* Unaffected by cancellation resistance */
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);

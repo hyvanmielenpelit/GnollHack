@@ -1589,7 +1589,7 @@ update_monster_timeouts(void)
                 /* monster has Unchanging — extend timer instead of reverting */
                 mtmp->mpolytimer = (short)min(rnd(100 * (int)mtmp->data->mlevel + 1), 32000);
             }
-            else if (revert_mon_polymorph(mtmp, FALSE, FALSE, canspotmon(mtmp)))
+            else if (revert_mon_polymorph(mtmp, FALSE, FALSE, canspotmon(mtmp), is_tame(mtmp)))
             {
                 /* successfully reverted */
                 need_update = TRUE;
@@ -3409,6 +3409,30 @@ mondead_with_flags(struct monst *mtmp, uint64_t mondeadflags)
     lifesaved_monster(mtmp);
     if (!DEADMONSTER(mtmp))
         return;
+
+    /* Mplayer rehumanization: if a polymorphed mplayer has MMONST (preserved
+       original identity), revert to original form instead of dying.
+       Mirrors player rehumanize() behavior. Disintegration, digestion,
+       Unchanging, and genocide of the original form all bypass this. */
+    if (has_mmonst(mtmp)
+        && is_mplayer(MMONST(mtmp)->data)
+        && !has_unchanging(mtmp)
+        && !disintegested
+        && !(mvitals[MMONST(mtmp)->mnum].mvflags & MV_GENOCIDED))
+    {
+        int stored_hp = MMONST(mtmp)->mhp;
+
+        if (revert_mon_polymorph(mtmp, FALSE, FALSE, canspotmon(mtmp), TRUE))
+        {
+            /* Restore HP from the saved original-form HP */
+            update_mon_maxhp(mtmp);
+            mtmp->mhp = max(1, stored_hp);
+            if (mtmp->mhp > mtmp->mhpmax)
+                mtmp->mhp = mtmp->mhpmax;
+            newsym(mtmp->mx, mtmp->my);
+            return; /* monster survives */
+        }
+    }
 
     if (is_vampshifter(mtmp))
     {
@@ -7093,7 +7117,7 @@ get_saved_traits_mon(struct monst *mtmp, boolean copyof)
 }
 
 int
-revert_mon_polymorph(struct monst *mtmp, boolean override_mextra, boolean polyspot, boolean msg)
+revert_mon_polymorph(struct monst *mtmp, boolean override_mextra, boolean polyspot, boolean msg, boolean use_revert)
 {
     if (!mtmp)
         return 0;
@@ -7369,7 +7393,7 @@ revert_mon_polymorph(struct monst *mtmp, boolean override_mextra, boolean polysp
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears!", upstart(newname));
             else
             {
-                if (is_tame(mtmp))
+                if (use_revert)
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s reverts back into %s!", oldname, newname);
                 else
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns into %s!", oldname, newname);
