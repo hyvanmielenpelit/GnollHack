@@ -45,6 +45,7 @@ namespace GnollHackX.Pages.Game
         private string _lastFailedNavigatedUrl = null;
         private bool _navigatedAwayFromSpa = false;
         private bool _handoffSucceeded = false;
+        private CancellationTokenSource _connectCts;
 #if DEBUG
 #if IOS || MACCATALYST
         private object _iosNavigationDelegate = null;
@@ -94,6 +95,7 @@ namespace GnollHackX.Pages.Game
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
+            _connectCts?.Cancel();
             GHApp.SetPlatformResizeAdjustment(false);
             GHApp.BackButtonPressed -= BackButtonPressed;
             CleanupJsBridge();
@@ -120,32 +122,69 @@ namespace GnollHackX.Pages.Game
 
         private async Task UploadAndConnect()
         {
+            _connectCts?.Dispose();
+            _connectCts = new CancellationTokenSource();
+
             _handoffSucceeded = false;
             RetryButtonsPanel.IsVisible = false;
+            CancelButton.IsVisible = true;
             ProgressOverlay.IsVisible = true;
             ProgressStatusLabel.Text = "Uploading game data...";
             UploadProgressBar.Progress = 0.3;
 
             string overseerUrl = _baseOverseerUrl;
-            int[] timeouts = { 5, 5, 10, 10, 15, 20, 25 };
-
-            for (int attempt = 0; attempt < timeouts.Length; attempt++)
+            bool isLocalDev = UIUtils.IsLocalUrl(_baseOverseerUrl);
+            string connectAddress;
+#if DEBUG
+            try
             {
+                Uri uri = new Uri(_baseOverseerUrl);
+                connectAddress = $"{uri.Host}:{uri.Port}";
+            }
+            catch
+            {
+                connectAddress = _baseOverseerUrl;
+            }
+#else
+            connectAddress = GHApp.UseDebugPostChannel ? "Test Overseer Server" : "Overseer Server";
+#endif
+
+            (int Timeout, int Delay)[] attemptConfig = 
+            {
+                (10, 1),  /* Attempt 1: 10s timeout (for large snapshots), then wait 1s */
+                (10, 5),  /* Attempt 2: 10s timeout, then wait 5s */
+                (10, 10), /* Attempt 3: 10s timeout, then wait 10s */
+                (15, 15), /* Attempt 4: 15s timeout, then wait 15s */
+                (15, 20), /* Attempt 5: 15s timeout, then wait 20s */
+                (20, 30), /* Attempt 6: 20s timeout, then wait 30s */
+                (25, 0)   /* Attempt 7: 25s timeout, then give up (no delay needed) */
+            };
+
+            for (int attempt = 0; attempt < attemptConfig.Length; attempt++)
+            {
+                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
                 try
                 {
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
                         ProgressStatusLabel.Text = attempt == 0
-                            ? "Contacting Gnoll Overseer..."
-                            : ("Retrying to contact Gnoll Overseer..." + (attempt >= 2 ? (" (try " + attempt + ")") : ""));
-                        UploadProgressBar.Progress = attempt == 0 ? 0.6 : 0.5;
+                            ? $"Contacting {connectAddress}"
+                            : ($"Retrying to contact {connectAddress}" + (attempt >= 2 ? (" (" + attempt + ")") : ""));
+                        
+                        double progress = 0.3 + (0.6 * (attempt + 1.0) / attemptConfig.Length);
+                        UploadProgressBar.Progress = progress;
+                        
+                        if (isLocalDev)
+                        {
+                            ErrorDetailsLabel.Text = "...";
+                        }
                     });
 
 #if DEBUG
                     using (var httpClient = UIUtils.CreateHttpClientForUrl(
-                        _baseOverseerUrl, TimeSpan.FromSeconds(timeouts[attempt])))
+                        _baseOverseerUrl, TimeSpan.FromSeconds(attemptConfig[attempt].Timeout)))
 #else
-                    using (var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(timeouts[attempt]) })
+                    using (var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(attemptConfig[attempt].Timeout) })
 #endif
                     {
                         using (var content = new MultipartFormDataContent())
@@ -216,8 +255,10 @@ namespace GnollHackX.Pages.Game
                             }
                             content.Add(new StringContent(initialPrompt), "InitialPrompt");
 
+                            stopwatch.Start();
                             var response = await httpClient.PostAsync(
-                                _baseOverseerUrl + "/api/session/create", content);
+                                _baseOverseerUrl + "/api/session/create", content, _connectCts.Token);
+                            stopwatch.Stop();
 
                             if (response.IsSuccessStatusCode)
                             {
@@ -253,24 +294,66 @@ namespace GnollHackX.Pages.Game
                                     break;
                                 }
                                 GHApp.WriteGHLog(msg);
-                                if (attempt < timeouts.Length - 1)
+                                
+                                string errorMsg = $"HTTP {(int)response.StatusCode} ({stopwatch.ElapsedMilliseconds / 1000.0:F1}s)";
+                                if (isLocalDev)
                                 {
-                                    await Task.Delay(1000);
+                                    MainThread.BeginInvokeOnMainThread(() => ErrorDetailsLabel.Text = errorMsg);
+                                }
+                                
+                                if (attempt < attemptConfig.Length - 1)
+                                {
+                                    int delaySeconds = attemptConfig[attempt].Delay;
+                                    for (int remaining = delaySeconds; remaining > 0; remaining--)
+                                    {
+                                        if (isLocalDev)
+                                        {
+                                            MainThread.BeginInvokeOnMainThread(() =>
+                                            {
+                                                ProgressStatusLabel.Text = $"{errorMsg}... Retrying in {remaining}s";
+                                            });
+                                        }
+                                        await Task.Delay(1000, _connectCts.Token);
+                                    }
                                     continue;
                                 }
                                 MainThread.BeginInvokeOnMainThread(() =>
                                 {
                                     ProgressStatusLabel.Text = $"Connection failed (HTTP {(int)response.StatusCode}). Please try again.";
                                     UploadProgressBar.Progress = 1.0;
+                                    if (isLocalDev)
+                                        ErrorDetailsLabel.Text = $"{errorMsg} - Failed";
                                 });
                             }
                         }
                     }
                 }
+                catch (OperationCanceledException) when (_connectCts.IsCancellationRequested)
+                {
+                    /* User pressed Cancel or page was closed — exit the loop silently */
+                    break;
+                }
                 catch (TaskCanceledException)
                 {
-                    if (attempt < timeouts.Length - 1)
+                    string errorMsg = $"Timed out ({stopwatch.ElapsedMilliseconds / 1000.0:F1}s)";
+                    if (isLocalDev)
                     {
+                        MainThread.BeginInvokeOnMainThread(() => ErrorDetailsLabel.Text = errorMsg);
+                    }
+                    if (attempt < attemptConfig.Length - 1)
+                    {
+                        int delaySeconds = attemptConfig[attempt].Delay;
+                        for (int remaining = delaySeconds; remaining > 0; remaining--)
+                        {
+                            if (isLocalDev)
+                            {
+                                MainThread.BeginInvokeOnMainThread(() =>
+                                {
+                                    ErrorDetailsLabel.Text = $"{errorMsg}... Retrying in {remaining}s";
+                                });
+                            }
+                            await Task.Delay(1000, _connectCts.Token);
+                        }
                         continue;
                     }
                     GHApp.WriteGHLog("Overseer upload timed out after " + (attempt + 1) + " attempts.");
@@ -278,12 +361,31 @@ namespace GnollHackX.Pages.Game
                     {
                         ProgressStatusLabel.Text = "Connection timed out. The server may be starting up.";
                         UploadProgressBar.Progress = 1.0;
+                        if (isLocalDev)
+                            ErrorDetailsLabel.Text = $"{errorMsg} - Failed";
                     });
                 }
                 catch (Exception ex)
                 {
-                    if (attempt < timeouts.Length - 1)
+                    string errorMsg = $"{ex.Message} ({stopwatch.ElapsedMilliseconds / 1000.0:F1}s)";
+                    if (isLocalDev)
                     {
+                        MainThread.BeginInvokeOnMainThread(() => ErrorDetailsLabel.Text = errorMsg);
+                    }
+                    if (attempt < attemptConfig.Length - 1)
+                    {
+                        int delaySeconds = attemptConfig[attempt].Delay;
+                        for (int remaining = delaySeconds; remaining > 0; remaining--)
+                        {
+                            if (isLocalDev)
+                            {
+                                MainThread.BeginInvokeOnMainThread(() =>
+                                {
+                                    ErrorDetailsLabel.Text = $"{errorMsg}... Retrying in {remaining}s";
+                                });
+                            }
+                            await Task.Delay(1000, _connectCts.Token);
+                        }
                         continue;
                     }
                     GHApp.WriteGHLog("Overseer upload failed: " + ex.Message);
@@ -291,6 +393,8 @@ namespace GnollHackX.Pages.Game
                     {
                         ProgressStatusLabel.Text = "Connection failed. Please try again.";
                         UploadProgressBar.Progress = 1.0;
+                        if (isLocalDev)
+                            ErrorDetailsLabel.Text = $"{errorMsg} - Failed";
                     });
                 }
             }
@@ -298,6 +402,7 @@ namespace GnollHackX.Pages.Game
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 ConfigureSslBypass();
+                CancelButton.IsVisible = false;
 
                 if (_handoffSucceeded)
                 {
@@ -319,6 +424,12 @@ namespace GnollHackX.Pages.Game
         private async void RetryButton_Clicked(object sender, EventArgs e)
         {
             await UploadAndConnect();
+        }
+
+        private async void CancelButton_Clicked(object sender, EventArgs e)
+        {
+            _connectCts?.Cancel();
+            await ClosePageAsync(true);
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
