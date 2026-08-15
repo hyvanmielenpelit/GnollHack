@@ -6359,7 +6359,10 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
     if (duration > 0)
         mtmp->mpolytimer = (short)min(duration, 32000);
     else if (duration == 0)
-        mtmp->mpolytimer = (short)min(standard_poly_rnd_duration(), 32000);
+    {
+        int stddur = standard_poly_rnd_duration(); /* This is random, so need to save to a variable */
+        mtmp->mpolytimer = (short)min(stddur, 32000);
+    }
     else
         mtmp->mpolytimer = 0; /* permanent */
 
