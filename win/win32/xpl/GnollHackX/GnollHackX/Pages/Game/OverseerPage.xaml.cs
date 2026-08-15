@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -1699,6 +1700,11 @@ namespace GnollHackX.Pages.Game
 
         private class PhotoPickerDelegate : PhotosUI.PHPickerViewControllerDelegate
         {
+#if IOS
+            [System.Runtime.InteropServices.DllImport("libc", EntryPoint = "umask")]
+            private static extern ushort umask(ushort mask);
+#endif
+
             private readonly WeakReference<OverseerPage> _pageRef;
 
             public PhotoPickerDelegate(OverseerPage page)
@@ -1718,42 +1724,101 @@ namespace GnollHackX.Pages.Game
                 var remaining = results.Length;
                 var fileEntries = new List<object>();
 
-                for (int i = 0; i < results.Length; i++)
+                /* The game engine's gnh_umask() sets the process-wide umask to 0113, 
+                 * which strips the execute bit from newly created directories. This breaks
+                 * NSItemProvider loading methods ("Cannot load representation...") because 
+                 * it prevents traversal into its own temporary staging directories. 
+                 * Temporarily restore the default iOS umask (0022 octal = 0x12 hex = 18 dec).
+                 * The game thread is blocked (paused at the menu) while Overseer is open, 
+                 * so it's safe to change this process-wide setting temporarily. */
+                ushort savedUmask = 0;
+#if IOS
+                try
                 {
-                    var provider = results[i].ItemProvider;
-                    provider.LoadDataRepresentation(
-                        UniformTypeIdentifiers.UTTypes.Image,
-                        (data, error) =>
-                        {
-                            if (data != null && error == null)
-                            {
-                                string ext = ".jpg";
-                                string mime = "image/jpeg";
-                                
-                                var identifiers = provider.RegisteredTypeIdentifiers;
-                                foreach (var uti in identifiers)
-                                {
-                                    if (uti.Contains("png")) { ext = ".png"; mime = "image/png"; break; }
-                                    if (uti.Contains("webp")) { ext = ".webp"; mime = "image/webp"; break; }
-                                    if (uti.Contains("heic") || uti.Contains("heif")) { ext = ".heic"; mime = "image/heic"; break; }
-                                }
+                    savedUmask = umask(0x12);
+                }
+                catch (Exception ex) 
+                {
+                    GHApp.MaybeWriteGHLog(ex.Message);
+                }
+#endif
 
-                                string base64 = data.GetBase64EncodedString(
-                                    Foundation.NSDataBase64EncodingOptions.None);
-                                lock (fileEntries)
-                                {
-                                    fileEntries.Add(new {
-                                        name = $"photo_{fileEntries.Count + 1}{ext}",
-                                        type = mime,
-                                        dataUrl = $"data:{mime};base64,{base64}"
-                                    });
-                                }
-                            }
-                            if (System.Threading.Interlocked.Decrement(ref remaining) == 0)
+                try
+                {
+                    for (int i = 0; i < results.Length; i++)
+                    {
+                        var provider = results[i].ItemProvider;
+                        if (provider.CanLoadObject(typeof(UIKit.UIImage)))
+                        {
+                            provider.LoadObject<UIKit.UIImage>((obj, error) =>
                             {
+                                if (obj is UIKit.UIImage uiImage && error == null)
+                                {
+                                    var pngData = uiImage.AsPNG();
+                                    if (pngData != null)
+                                    {
+                                        string base64 = pngData.GetBase64EncodedString(
+                                            Foundation.NSDataBase64EncodingOptions.None);
+                                        lock (fileEntries)
+                                        {
+                                            fileEntries.Add(new
+                                            {
+                                                name = $"photo_{fileEntries.Count + 1}.png",
+                                                type = "image/png",
+                                                dataUrl = $"data:image/png;base64,{base64}"
+                                            });
+                                        }
+                                    }
+                                }
+                                if (Interlocked.Decrement(ref remaining) == 0)
+                                {
+                                    /* Restore the game engine's umask */
+#if IOS
+                                    try
+                                    {
+                                        umask(savedUmask);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        GHApp.MaybeWriteGHLog(ex.Message);
+                                    }
+#endif
+                                    page.SendPickedFilesToJs(fileEntries);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            if (Interlocked.Decrement(ref remaining) == 0)
+                            {
+#if IOS
+                                try
+                                {
+                                    umask(savedUmask);
+                                }
+                                catch (Exception ex)
+                                {
+                                    GHApp.MaybeWriteGHLog(ex.Message);
+                                }
+#endif
                                 page.SendPickedFilesToJs(fileEntries);
                             }
-                        });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    GHApp.MaybeWriteGHLog(ex.Message);
+#if IOS
+                    try
+                    {
+                        umask(savedUmask);
+                    }
+                    catch (Exception ex2)
+                    {
+                        GHApp.MaybeWriteGHLog(ex2.Message);
+                    }
+#endif
                 }
             }
         }
