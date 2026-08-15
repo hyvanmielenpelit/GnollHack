@@ -6348,6 +6348,7 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
                 if (is_peaceful(mtmp))
                     set_mon_mpeaceful(mtmp, 0);
             }
+            newsym(mtmp->mx, mtmp->my);
         }
     }
 
