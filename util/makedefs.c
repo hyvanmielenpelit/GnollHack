@@ -2532,8 +2532,9 @@ new_id(char *code)
         Fprintf(stderr, OUT_OF_HEADERS, qt_line);
         return FALSE;
     }
-
-    (void)strncpy(&qt_hdr.id[qt_hdr.n_hdr][0], code, LEN_HDR);
+    
+    /* Codes with LEN_HDR - 1 or fewer character include null terminator; codes with LEN_HDR or more characters are considered for LEN_HDR characters only without a null terminator; in both cases they are safe to be read with strncmp using LEN_HDR. Difference between memcpy and strncpy is here in codes of lengths 0 and 1 where the last bytes are not 0 for memcpy beyond the first 0. --JG */
+    (void)memcpy(&qt_hdr.id[qt_hdr.n_hdr][0], code, LEN_HDR); //strncpy
     msg_hdr[qt_hdr.n_hdr].n_msg = 0;
     qt_hdr.offset[qt_hdr.n_hdr++] = 0L;
     return TRUE;
