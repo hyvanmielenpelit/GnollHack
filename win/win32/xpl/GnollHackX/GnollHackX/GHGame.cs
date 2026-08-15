@@ -3795,6 +3795,8 @@ namespace GnollHackX
                             };
                             if (strs.Length > 1)
                                 sentryEvent.SetExtra("Debug Buffers", strs[1]);
+                            if (strs.Length > 2)
+                                sentryEvent.SetExtra("Game State", strs[2]);
                             sentryEvent.SetExtra("Disk Space", (GHApp.FreeDiskSpaceInBytes / (1024 * 1024)).ToString() + " MB");
                             sentryEvent.SetExtra("Used Memory", (GHApp.MemoryUsageInBytes / (1024 * 1024)).ToString() + " MB");
                             sentryEvent.SetExtra("Total Memory", (GHApp.TotalMemory / (1024 * 1024)).ToString() + " MB");
