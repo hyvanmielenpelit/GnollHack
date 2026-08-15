@@ -1291,7 +1291,7 @@ allocate_buffer_with_debug_buffers(const char *message)
         }
     }
 
-    char curbuf[DEBUGBUFSIZ + PL_NSIZ + MAX_DGN_NAME_LENGTH + MAX_LVL_NAME_LENGTH];
+    char curbuf[BUFSZ * 3 + PL_NSIZ + MAX_DGN_NAME_LENGTH + MAX_LVL_NAME_LENGTH];
     s_level* slev = Is_special(&u.uz);
     Sprintf(curbuf, "|plname:%s, ux:%d, uy:%d, dnum,level:%d,%d (%s, %s), moves:%lld, role:%d, race:%d, gamestart:%d, gameover:%d, mklev:%d, bones:%d, hallu:%d, blind:%d, conflict:%d, poly:%d, shops:%d, restoring:%d, saving:%d, reseting:%d, chkpt:%d, panic:%d, impossible:%d, dumplog:%d, exit:%d, freedata:%d", 
         plname, u.ux, u.uy, u.uz.dnum, u.uz.dlevel, dungeons[u.uz.dnum].dname, slev ? slev->name : "normal", (long long)moves, urole.rolenum, urace.racenum, 
