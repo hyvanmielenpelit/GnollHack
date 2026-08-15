@@ -890,7 +890,16 @@ namespace GnollHackX.Pages.Game
 
                 if (type == "pick_files")
                 {
-                    HandlePickFilesRequest();
+                    double srcX = 0, srcY = 0, srcW = 0, srcH = 0;
+                    var srcRect = jObject["sourceRect"];
+                    if (srcRect != null)
+                    {
+                        srcX = srcRect["x"]?.Value<double>() ?? 0;
+                        srcY = srcRect["y"]?.Value<double>() ?? 0;
+                        srcW = srcRect["width"]?.Value<double>() ?? 0;
+                        srcH = srcRect["height"]?.Value<double>() ?? 0;
+                    }
+                    HandlePickFilesRequest(srcX, srcY, srcW, srcH);
                     return;
                 }
 
@@ -1578,7 +1587,9 @@ namespace GnollHackX.Pages.Game
                 GHApp.WriteGHLog("SendToolResponse failed: " + ex.Message);
             }
         }
-        private void HandlePickFilesRequest()
+        private void HandlePickFilesRequest(
+            double srcX = 0, double srcY = 0,
+            double srcW = 0, double srcH = 0)
         {
 #if GNH_MAUI
 #if IOS || MACCATALYST
@@ -1624,11 +1635,26 @@ namespace GnollHackX.Pages.Game
                 /* iPad popover anchor — required or UIAlertController crashes on iPad */
                 if (alert.PopoverPresentationController != null)
                 {
-                    alert.PopoverPresentationController.SourceView = topVc.View;
-                    alert.PopoverPresentationController.SourceRect =
-                        new CoreGraphics.CGRect(
-                            topVc.View.Bounds.X + (topVc.View.Bounds.Width / 2),
-                            topVc.View.Bounds.Y + topVc.View.Bounds.Height, 0, 0);
+                    var wkWebView = DisplayWebView.Handler?.PlatformView
+                        as WebKit.WKWebView;
+                    if (wkWebView != null && (srcW > 0 || srcH > 0))
+                    {
+                        /* Use the WKWebView as SourceView so the rect coordinates
+                         * (CSS pixels from getBoundingClientRect) map directly
+                         * to the WebView's point coordinate system. */
+                        alert.PopoverPresentationController.SourceView = wkWebView;
+                        alert.PopoverPresentationController.SourceRect =
+                            new CoreGraphics.CGRect(srcX, srcY, srcW, srcH);
+                    }
+                    else
+                    {
+                        /* Fallback for old Angular clients that don't send sourceRect */
+                        alert.PopoverPresentationController.SourceView = topVc.View;
+                        alert.PopoverPresentationController.SourceRect =
+                            new CoreGraphics.CGRect(
+                                topVc.View.Bounds.Width / 2,
+                                topVc.View.Bounds.Height, 0, 0);
+                    }
                 }
 
                 topVc.PresentViewController(alert, true, null);
