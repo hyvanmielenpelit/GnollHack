@@ -1587,7 +1587,8 @@ update_monster_timeouts(void)
             if (has_unchanging(mtmp))
             {
                 /* monster has Unchanging — extend timer instead of reverting */
-                mtmp->mpolytimer = (short)min(rnd(100 * (int)mtmp->data->mlevel + 1), 32000);
+                int dur = rnd(100 * (int)mtmp->data->mlevel + 1);
+                mtmp->mpolytimer = (short)min(dur, 32000);
             }
             else if (revert_mon_polymorph(mtmp, FALSE, FALSE, canspotmon(mtmp), is_tame(mtmp)))
             {

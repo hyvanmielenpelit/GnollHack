@@ -1231,7 +1231,19 @@ mon_catchup_elapsed_time(struct monst *mtmp, int64_t nmv)
     if (mtmp->mpolytimer)
     {
         if (imv >= (int)mtmp->mpolytimer)
-            mtmp->mpolytimer = 1; /* let update_monster_timeouts() handle reversion */
+        {
+            mtmp->mpolytimer = 0;
+            if (has_unchanging(mtmp))
+            {
+                /* monster has Unchanging — extend timer instead of reverting */
+                int dur = rnd(100 * (int)mtmp->data->mlevel + 1);
+                mtmp->mpolytimer = (short)min(dur, 32000);
+            }
+            else if (revert_mon_polymorph(mtmp, FALSE, FALSE, FALSE, is_tame(mtmp)))
+            {
+                /* successfully reverted */
+            }
+        }
         else
             mtmp->mpolytimer -= (short)imv;
     }
