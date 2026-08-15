@@ -6368,27 +6368,54 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
 /*
  * Calculate polymorph duration from the source object.
  * For potions, uses the BUC-dependent dice formula from object data.
- * For wands, spells, and NULL, returns the default rn1(500, 500).
+ * For wands and spellbooks, uses the spell/wand duration dice formula.
+ * For NULL or other classes, returns the default rn1(500, 500).
  */
 int
 get_obj_polymorph_duration(struct obj *otmp)
 {
     int polyduration = 0;
 
-    if (otmp && otmp->oclass == POTION_CLASS)
+    if (otmp)
     {
-        int dicebuc = (int)objects[otmp->otyp].oc_potion_normal_dice_buc_multiplier;
-        polyduration = (int)max(0,
-            objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 :
-            d(max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)),
-              max(1, objects[otmp->otyp].oc_potion_normal_diesize))
-            + objects[otmp->otyp].oc_potion_normal_plus
-            + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier);
-        if (otmp->odiluted)
-            polyduration /= 2;
+        if (otmp->oclass == POTION_CLASS)
+        {
+            int dicebuc = (int)objects[otmp->otyp].oc_potion_normal_dice_buc_multiplier;
+            if (objects[otmp->otyp].oc_potion_normal_dice == -1 || objects[otmp->otyp].oc_potion_normal_diesize == -1)
+                polyduration = -1;
+            else if (objects[otmp->otyp].oc_potion_normal_dice == 0 && objects[otmp->otyp].oc_potion_normal_diesize == 0 && objects[otmp->otyp].oc_potion_normal_plus == 0)
+                polyduration = 0;
+            else
+                polyduration = (int)max(1,
+                    objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 :
+                    d(max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)),
+                        max(1, objects[otmp->otyp].oc_potion_normal_diesize))
+                    + objects[otmp->otyp].oc_potion_normal_plus
+                    + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier);
+            if (otmp->odiluted)
+            {
+                if (polyduration < 0)
+                    polyduration = 0; /* Not permanent anymore */
+                else if (polyduration >= 2)
+                    polyduration /= 2;
+            }
+        }
+        else if (otmp->oclass == WAND_CLASS || otmp->oclass == SPBOOK_CLASS)
+        {
+            if (objects[otmp->otyp].oc_spell_dur_dice == -1 || objects[otmp->otyp].oc_spell_dur_diesize == -1)
+                polyduration = -1;
+            else if (objects[otmp->otyp].oc_spell_dur_dice == 0 && objects[otmp->otyp].oc_spell_dur_diesize == 0 && objects[otmp->otyp].oc_spell_dur_plus == 0)
+                polyduration = 0;
+            else
+                polyduration = (int)max(1,
+                    objects[otmp->otyp].oc_spell_dur_dice == 0 || objects[otmp->otyp].oc_spell_dur_diesize == 0 ? 0 :
+                    d(max(1, (int)objects[otmp->otyp].oc_spell_dur_dice),
+                        max(1, (int)objects[otmp->otyp].oc_spell_dur_diesize))
+                    + (int)objects[otmp->otyp].oc_spell_dur_plus);
+        }
     }
 
-    if (polyduration <= 0)
+    if (polyduration == 0)
         polyduration = standard_poly_rnd_duration();
 
     return polyduration;
