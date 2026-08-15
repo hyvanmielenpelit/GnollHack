@@ -2214,7 +2214,10 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
             char slnbuf[BUFSZ] = "";
             skill_level_name(P_WAND, slnbuf, FALSE);
             *slnbuf = highc(*slnbuf);
-            Sprintf(buf, "Wand skill level:       %s (%.1fx base damage)", slnbuf, skill_multiplier);
+            if ((objects[otyp].oc_spell_dmg_dice > 0 && objects[otyp].oc_spell_dmg_diesize > 0) || objects[otyp].oc_spell_dmg_plus > 0)
+                Sprintf(buf, "Wand skill level:       %s (%.1fx base damage)", slnbuf, skill_multiplier);
+            else
+                Sprintf(buf, "Wand skill level:       %s", slnbuf);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
     }
@@ -2441,7 +2444,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-                if (!(objects[otyp].oc_flags5 & (O5_EFFECT_IS_HEALING | O5_EFFECT_IS_DAMAGE | O5_EFFECT_IS_MANA)))
+                if (!(objects[otyp].oc_flags5 & (O5_EFFECT_IS_HEALING | O5_EFFECT_IS_DAMAGE | O5_EFFECT_IS_MANA)) && (objects[otyp].oc_flags6 & O6_EFFECT_IS_POLYMORPH) == 0)
                 {
                     int max_duration = dice * objects[otyp].oc_potion_normal_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, plus);
                     Sprintf(buf, "Effect max duration:    %d turn%s", max_duration, max_duration == 1 ? "" : "s");
