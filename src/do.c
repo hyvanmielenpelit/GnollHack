@@ -2273,6 +2273,13 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 Sprintf(buf, "%s effect duration: %sPermanent", itemname_hc, itempadding);
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
+            else if ((objects[otyp].oc_flags6 & O6_EFFECT_IS_POLYMORPH) != 0 && objects[otyp].oc_spell_dur_dice == 0 && objects[otyp].oc_spell_dur_diesize == 0 && objects[otyp].oc_spell_dur_plus == 0)
+            {
+                Sprintf(buf, "%s effect duration: %s", itemname_hc, itempadding);
+                printdice(eos(buf), 1, STD_POLY_DIESIZE, STD_POLY_CONSTANT);
+                Strcat(buf, " turns");
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
             else if (objects[otyp].oc_spell_dur_dice > 0 || objects[otyp].oc_spell_dur_diesize > 0 || objects[otyp].oc_spell_dur_plus != 0)
             {
                 //boolean maindiceprinted = FALSE;
@@ -2320,9 +2327,12 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-                int max_duration = objects[otyp].oc_spell_dur_dice * objects[otyp].oc_spell_dur_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, applied_plus);
-                Sprintf(buf, "%s max duration:    %s%d turn%s", itemname_hc, itempadding, max_duration, max_duration == 1 ? "" : "s");
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                if ((objects[otyp].oc_flags6 & O6_EFFECT_IS_POLYMORPH) == 0)
+                {
+                    int max_duration = objects[otyp].oc_spell_dur_dice * objects[otyp].oc_spell_dur_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, applied_plus);
+                    Sprintf(buf, "%s max duration:    %s%d turn%s", itemname_hc, itempadding, max_duration, max_duration == 1 ? "" : "s");
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                }
             }
             if (objects[otyp].oc_spell_range > 0)
             {
@@ -2445,6 +2455,17 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 Sprintf(buf, "Breathe %s:       %sPermanent", brtype, brtypepadding);
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
+            else if ((objects[otyp].oc_flags6 & O6_EFFECT_IS_POLYMORPH) != 0 && (objects[otyp].oc_potion_breathe_dice == 0 && objects[otyp].oc_potion_breathe_diesize == 0 && objects[otyp].oc_potion_breathe_plus == 0))
+            {
+                const char* brtype = "duration";
+                const char* brtypepadding = "";
+                Sprintf(buf, "Breathe %s:       %s", brtype, brtypepadding);
+                printdice(eos(buf), 1, STD_POLY_DIESIZE, STD_POLY_CONSTANT);
+                Strcat(buf, " turns");
+                if (objects[otyp].oc_flags5 & O5_EFFECT_FOR_BLESSED_ONLY)
+                    Strcat(buf, " (blessed only)");
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
             else if (objects[otyp].oc_potion_breathe_dice > 0 || objects[otyp].oc_potion_breathe_diesize > 0 || objects[otyp].oc_potion_breathe_plus != 0)
             {
                 //boolean maindiceprinted = FALSE;
@@ -2505,7 +2526,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-                if (!(objects[otyp].oc_flags5 & (O5_EFFECT_IS_HEALING | O5_EFFECT_IS_DAMAGE | O5_EFFECT_IS_MANA)))
+                if (!(objects[otyp].oc_flags5 & (O5_EFFECT_IS_HEALING | O5_EFFECT_IS_DAMAGE | O5_EFFECT_IS_MANA)) && (objects[otyp].oc_flags6 & O6_EFFECT_IS_POLYMORPH) == 0)
                 {
                     int max_duration = dice * objects[otyp].oc_potion_breathe_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, plus);
                     Sprintf(buf, "Breathe max duration:   %d turn%s", max_duration, max_duration == 1 ? "" : "s");

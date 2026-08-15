@@ -2280,38 +2280,56 @@ spelldescription_core(int spell, int booktype)
     }
 
     /* Duration */
-    if (!has_spell_otyp_per_level_bonus(booktype) && (objects[booktype].oc_spell_dur_dice > 0 || objects[booktype].oc_spell_dur_diesize > 0 || objects[booktype].oc_spell_dur_plus > 0))
+    if (!has_spell_otyp_per_level_bonus(booktype))
     {
-        char plusbuf[BUFSZ];
-        //boolean maindiceprinted = FALSE;
+        if (objects[booktype].oc_spell_dur_dice == -1 || objects[booktype].oc_spell_dur_diesize == -1)
+        {
+            Strcpy(buf, "Duration:         Permanent");
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+        else if ((objects[booktype].oc_flags6 & O6_EFFECT_IS_POLYMORPH) != 0 && objects[booktype].oc_spell_dur_dice == 0 && objects[booktype].oc_spell_dur_diesize == 0 && objects[booktype].oc_spell_dur_plus == 0)
+        {
+            Strcpy(buf, "Duration:         ");
+            printdice(eos(buf), 1, STD_POLY_DIESIZE, STD_POLY_CONSTANT);
+            Strcat(buf, " turns");
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+        else if (objects[booktype].oc_spell_dur_dice > 0 || objects[booktype].oc_spell_dur_diesize > 0 || objects[booktype].oc_spell_dur_plus > 0)
+        {
+            char plusbuf[BUFSZ];
+            //boolean maindiceprinted = FALSE;
 
-        Strcpy(buf, "Duration:         ");
-        printdice(eos(buf), objects[booktype].oc_spell_dur_dice, objects[booktype].oc_spell_dur_diesize, objects[booktype].oc_spell_dur_plus);
+            Strcpy(buf, "Duration:         ");
+            printdice(eos(buf), objects[booktype].oc_spell_dur_dice, objects[booktype].oc_spell_dur_diesize, objects[booktype].oc_spell_dur_plus);
 
-        //if (objects[booktype].oc_spell_dur_dice > 0 && objects[booktype].oc_spell_dur_diesize > 0)
-        //{
-        //    maindiceprinted = TRUE;
-        //    Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dur_dice, objects[booktype].oc_spell_dur_diesize);
-        //    Strcat(buf, plusbuf); 
-        //}
+            //if (objects[booktype].oc_spell_dur_dice > 0 && objects[booktype].oc_spell_dur_diesize > 0)
+            //{
+            //    maindiceprinted = TRUE;
+            //    Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dur_dice, objects[booktype].oc_spell_dur_diesize);
+            //    Strcat(buf, plusbuf); 
+            //}
 
-        //if (objects[booktype].oc_spell_dur_plus != 0)
-        //{
-        //    if (maindiceprinted && objects[booktype].oc_spell_dur_plus > 0)
-        //    {
-        //        Sprintf(plusbuf, "+");
-        //        Strcat(buf, plusbuf);
-        //    }
-        //    Sprintf(plusbuf, "%d", objects[booktype].oc_spell_dur_plus);
-        //    Strcat(buf, plusbuf);
-        //}
-        Sprintf(plusbuf, " turn%s", (objects[booktype].oc_spell_dur_dice == 0 && objects[booktype].oc_spell_dur_diesize == 0 && objects[booktype].oc_spell_dur_plus == 1) ? "" : "s");
-        Strcat(buf, plusbuf);        
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            //if (objects[booktype].oc_spell_dur_plus != 0)
+            //{
+            //    if (maindiceprinted && objects[booktype].oc_spell_dur_plus > 0)
+            //    {
+            //        Sprintf(plusbuf, "+");
+            //        Strcat(buf, plusbuf);
+            //    }
+            //    Sprintf(plusbuf, "%d", objects[booktype].oc_spell_dur_plus);
+            //    Strcat(buf, plusbuf);
+            //}
+            Sprintf(plusbuf, " turn%s", (objects[booktype].oc_spell_dur_dice == 0 && objects[booktype].oc_spell_dur_diesize == 0 && objects[booktype].oc_spell_dur_plus == 1) ? "" : "s");
+            Strcat(buf, plusbuf);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-        int max_duration = objects[booktype].oc_spell_dur_dice * objects[booktype].oc_spell_dur_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, objects[booktype].oc_spell_dur_plus);
-        Sprintf(buf, "Maximum duration: %d turn%s", max_duration, max_duration == 1 ? "" : "s");
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            if ((objects[booktype].oc_flags6 & O6_EFFECT_IS_POLYMORPH) == 0)
+            {
+                int max_duration = objects[booktype].oc_spell_dur_dice * objects[booktype].oc_spell_dur_diesize + MAX_DURATION_CONSTANT_MULTIPLIER * max(0, objects[booktype].oc_spell_dur_plus);
+                Sprintf(buf, "Maximum duration: %d turn%s", max_duration, max_duration == 1 ? "" : "s");
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+        }
     }
 
     /* Saving throw adjustment */
