@@ -6676,7 +6676,7 @@ dropz(struct obj *obj, boolean with_impact)
                 {
                     /* Green slime corpse — identity death */
                     (void) newcham_ex(u.ustuck, &mons[PM_GREEN_SLIME], 0,
-                                      FALSE, TRUE, 0, TRUE, FALSE, FALSE, TRUE);
+                                      FALSE, TRUE, -1, TRUE, FALSE, FALSE, TRUE);
                     if (!was_obj_freed)
                     {
                         debugprint("dropz0: %d", obj->otyp);

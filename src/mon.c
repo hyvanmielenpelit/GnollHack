@@ -1434,7 +1434,7 @@ update_monster_timeouts(void)
                             if (!resists_slime(mtmp))
                             {
                                 /* Use newcham_ex with identity_death=TRUE */
-                                (void)newcham_ex(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE, 0, TRUE, (mtmp->mon_flags & MON_FLAGS_SLIMER_PEACEFUL) != 0, (mtmp->mon_flags & MON_FLAGS_SLIMER_TAME) != 0, is_mon_delayed_killer_by_you(mtmp));
+                                (void)newcham_ex(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE, -1, TRUE, (mtmp->mon_flags & MON_FLAGS_SLIMER_PEACEFUL) != 0, (mtmp->mon_flags & MON_FLAGS_SLIMER_TAME) != 0, is_mon_delayed_killer_by_you(mtmp));
 
                                 break_charm(mtmp, FALSE);
 
@@ -6001,10 +6001,10 @@ mgender_from_permonst(struct monst *mtmp, struct permonst *mdat)
 int
 newcham(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, boolean polyspot, boolean msg)
 {
-    return newcham_ex(mtmp, mdat, subtype, polyspot, msg, 0, FALSE, FALSE, FALSE, FALSE);
+    return newcham_ex(mtmp, mdat, subtype, polyspot, msg, -1, FALSE, FALSE, FALSE, FALSE);
 }
 
-/* Extended version: duration > 0 sets mpolytimer for timed polymorph */
+/* Extended version: duration > 0 = timed, duration == 0 = standard rnd, duration < 0 = permanent */
 int
 newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, boolean polyspot, boolean msg, int duration, boolean identity_death, boolean killer_peaceful, boolean killer_tame, boolean killed_by_you)
 {
@@ -6350,8 +6350,17 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
         }
     }
 
-    /* Set polymorph timer, or set it to zero */
-    mtmp->mpolytimer = (short)min(duration, 32000);
+    /* Set polymorph timer:
+     *   duration > 0  -> timed polymorph for that many turns
+     *   duration == 0 -> standard random duration (rn1(500, 500))
+     *   duration < 0  -> permanent polymorph (mpolytimer stays 0)
+     */
+    if (duration > 0)
+        mtmp->mpolytimer = (short)min(duration, 32000);
+    else if (duration == 0)
+        mtmp->mpolytimer = (short)min(standard_poly_rnd_duration(), 32000);
+    else
+        mtmp->mpolytimer = 0; /* permanent */
 
     return 1;
 }

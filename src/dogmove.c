@@ -485,7 +485,7 @@ dog_eat(struct monst *mtmp, struct obj *obj, int x, int y, boolean devour)
         if (slimer)
         {
             /* Disease outcome — permanent transformation with identity death */
-            (void) newcham_ex(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, cansee(mtmp->mx, mtmp->my), 0, TRUE, FALSE, FALSE, FALSE);
+            (void) newcham_ex(mtmp, &mons[PM_GREEN_SLIME], 0, FALSE, cansee(mtmp->mx, mtmp->my), -1, TRUE, FALSE, FALSE, FALSE);
         }
         else
         {

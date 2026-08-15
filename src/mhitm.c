@@ -2305,7 +2305,7 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
             }
             else if (pd == &mons[PM_GREEN_SLIME] && !resists_slime(magr)) 
             {
-                (void) newcham_ex(magr, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE, 0, TRUE, is_peaceful(mdef), is_tame(mdef), FALSE);
+                (void) newcham_ex(magr, &mons[PM_GREEN_SLIME], 0, FALSE, TRUE, -1, TRUE, is_peaceful(mdef), is_tame(mdef), FALSE);
             }
             else if (pd == &mons[PM_WRAITH] || pd == &mons[PM_SPECTRE] || pd == &mons[PM_KING_WRAITH])
             {
