@@ -2268,7 +2268,12 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
             }
-            if (objects[otyp].oc_spell_dur_dice > 0 || objects[otyp].oc_spell_dur_diesize > 0 || objects[otyp].oc_spell_dur_plus != 0)
+            if (objects[otyp].oc_spell_dur_dice == -1 || objects[otyp].oc_spell_dur_diesize == -1)
+            {
+                Sprintf(buf, "%s effect duration: %sPermanent", itemname_hc, itempadding);
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+            else if (objects[otyp].oc_spell_dur_dice > 0 || objects[otyp].oc_spell_dur_diesize > 0 || objects[otyp].oc_spell_dur_plus != 0)
             {
                 //boolean maindiceprinted = FALSE;
                 Sprintf(buf, "%s effect duration: %s", itemname_hc, itempadding);
@@ -2372,7 +2377,12 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
 
         if (objects[otyp].oc_class == POTION_CLASS)
         {
-            if (objects[otyp].oc_potion_normal_dice > 0 || objects[otyp].oc_potion_normal_diesize > 0 || objects[otyp].oc_potion_normal_plus != 0)
+            if ((objects[otyp].oc_flags5 & (O5_EFFECT_IS_HEALING | O5_EFFECT_IS_DAMAGE | O5_EFFECT_IS_MANA)) == 0 && (objects[otyp].oc_potion_normal_dice == -1 || objects[otyp].oc_potion_normal_diesize == -1))
+            {
+                Sprintf(buf, "Effect duration:        Permanent");
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+            else if (objects[otyp].oc_potion_normal_dice > 0 || objects[otyp].oc_potion_normal_diesize > 0 || objects[otyp].oc_potion_normal_plus != 0)
             {
                 //boolean maindiceprinted = FALSE;
                 if(objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
@@ -2428,7 +2438,14 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                 }
             }
-            if (objects[otyp].oc_potion_breathe_dice > 0 || objects[otyp].oc_potion_breathe_diesize > 0 || objects[otyp].oc_potion_breathe_plus != 0)
+            if ((objects[otyp].oc_flags5 & (O5_EFFECT_IS_HEALING | O5_EFFECT_IS_DAMAGE | O5_EFFECT_IS_MANA)) == 0 && (objects[otyp].oc_potion_breathe_dice == -1 || objects[otyp].oc_potion_breathe_diesize == -1))
+            {
+                const char* brtype = "duration";
+                const char* brtypepadding = "";
+                Sprintf(buf, "Breathe %s:       %sPermanent", brtype, brtypepadding);
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+            else if (objects[otyp].oc_potion_breathe_dice > 0 || objects[otyp].oc_potion_breathe_diesize > 0 || objects[otyp].oc_potion_breathe_plus != 0)
             {
                 //boolean maindiceprinted = FALSE;
                 const char* brtype = "duration";
