@@ -6276,7 +6276,7 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
         }
     }
 
-    if (identity_death)
+    if (identity_death && has_mmonst(mtmp))
     {
         if (lifesaveitem)
         {
@@ -6304,9 +6304,10 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
         {
             duration = standard_poly_rnd_duration();
         }
-        else if (has_mmonst(mtmp))
+        else // if (has_mmonst(mtmp))
         {
             free_mmonst(mtmp);
+            duration = -1; /* Should be already used by the caller, but let us make it sure here */
         }
 
         /* Award kill credit for the destroyed original identity */
