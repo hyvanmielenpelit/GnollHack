@@ -950,6 +950,15 @@ do_rnd_access_file(const char *fname)
         perror(filename);
         exit(EXIT_FAILURE);
     }
+
+    /* Skip UTF-8 BOM if present; editors on Windows may add one */
+    {
+        unsigned char bom[3];
+        if (fread(bom, 1, 3, ifp) != 3
+            || bom[0] != 0xEF || bom[1] != 0xBB || bom[2] != 0xBF)
+            rewind(ifp);
+    }
+
     filename[0] = '\0';
 #ifdef FILE_PREFIX
     Strcat(filename, file_prefix);
