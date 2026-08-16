@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
@@ -233,8 +233,9 @@
     <None Remove="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectData.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\PointableButton.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\Secrets.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\PointableButton.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\ReplayFileHelper.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Secrets.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\SecretsDirectory.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\SecretsFile.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\SelectableShortcutButton.cs" />
@@ -467,7 +468,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX\ObjectData.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\PointableButton.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\Secrets.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\ReplayFileHelper.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Secrets.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\SecretsDirectory.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\SecretsFile.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\SelectableShortcutButton.cs" />

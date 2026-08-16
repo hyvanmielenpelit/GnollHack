@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <gnh:CustomModalPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:gnh="clr-namespace:GnollHackX" 
@@ -22,7 +22,34 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" x:Name="HeaderLabel" Text="Select Recorded Game" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="22" TextColor="Black" FontFamily="Immortal"/>
-                <Label Grid.Row="1" x:Name="RecordingsLabel" Text="0 replays available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="16" TextColor="Black" FontFamily="Immortal"/>
+                <Grid Grid.Row="1" HorizontalOptions="Fill" VerticalOptions="Start">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Grid.ColumnSpan="2" x:Name="RecordingsLabel" Text="0 replays available" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" FontSize="16" TextColor="Black" FontFamily="Immortal"/>
+                    <Picker Grid.Column="1" x:Name="SortPicker"
+                            Title="Sort by"
+                            FontFamily="Diablo"
+                            FontSize="14"
+                            TextColor="Black"
+                            TitleColor="Black"
+                            HorizontalTextAlignment="Center"
+                            BackgroundColor="{x:Static gnh:GHColors.PickerLightModeBkgColor}"
+                            WidthRequest  ="120"
+                            VerticalOptions="Center"
+                            HorizontalOptions="End"
+                            Margin="0,0,5,0"
+                            SelectedIndexChanged="SortPicker_SelectedIndexChanged">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Date</x:String>
+                                <x:String>Name</x:String>
+                                <x:String>Size</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </Grid>
                 <CollectionView Grid.Row="2" x:Name="ReplayCollectionView" HorizontalOptions="Fill" VerticalOptions="Start" SelectionMode="Single"  BackgroundColor="Transparent" SelectionChanged="MainListView_SelectionChanged" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="gnh:GHRecordedGameFile">
@@ -116,10 +143,20 @@
                             <Label Text="Uploading..." x:Name="UploadDownloadTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <Label Text="replay.gnhrec.gz" x:Name="UploadDownloadFileLabel" FontFamily="LatoRegular" FontSize="16" TextColor="White" VerticalTextAlignment="Start" HorizontalOptions="Center"  />
                             <Label Text="Please wait..." x:Name="UploadDownloadStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" VerticalTextAlignment="Start" HorizontalOptions="Center"  />
+                            <ProgressBar x:Name="UploadDownloadProgressBar" Progress="0.0" Margin="0,5,0,5" HorizontalOptions="FillAndExpand" />
                             <controls:CustomImageButton Text="Cancel" x:Name="UploadDownloadCancelButton" Clicked="UploadDownloadCancelButton_Clicked" Margin="0,10,0,0" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="Center" VerticalOptions="Center" />
                         </StackLayout>
                     </Frame>
                 </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
+            <Grid x:Name="CloudLoadingGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
+                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                    <ActivityIndicator IsRunning="True" Color="White" />
+                    <Label x:Name="CloudLoadingLabel" Text="Loading..." FontFamily="Immortal" FontSize="18" TextColor="White" HorizontalTextAlignment="Center" />
+                </StackLayout>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>

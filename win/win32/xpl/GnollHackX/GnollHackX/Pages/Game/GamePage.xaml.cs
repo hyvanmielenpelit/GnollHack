@@ -23903,6 +23903,7 @@ namespace GnollHackX.Pages.Game
 
         private void UpdateReplayHeaderLabel()
         {
+            ReplayProgressBar.Progress = GHApp.ReplayProgress;
             int currentTurn = GHApp.ReplayTurn;
             int gotoTurn = GHApp.GoToTurn;
             string searchPattern = GHApp.ReplaySearchRegexString;

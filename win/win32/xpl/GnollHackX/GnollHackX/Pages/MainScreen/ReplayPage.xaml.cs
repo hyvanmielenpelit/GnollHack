@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -99,11 +99,11 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
             {
-                UpdateLocalRecordings();
+                await UpdateLocalRecordings();
             }
         }
 
-        private void UpdateLocalRecordings()
+        private async Task UpdateLocalRecordings()
         {
             ReplayCollectionView.SelectedItem = null;
             ReplayCollectionView.SelectedItems.Clear();
@@ -112,6 +112,9 @@ namespace GnollHackX.Pages.MainScreen
             SelectButton.IsEnabled = false;
             MoreButton.TextColor = GHColors.Gray;
             SelectButton.TextColor = GHColors.Gray;
+
+            CloudLoadingGrid.IsVisible = true;
+            CloudLoadingLabel.Text = "Loading recordings...";
 
             string dirPath = Path.Combine(GHApp.GHPath, IsDownload ? GHConstants.ReplayDownloadFromCloudDirectory : GHConstants.ReplayDirectory);
             if(IsDownload && !string.IsNullOrWhiteSpace(_subDirectoryDownload))
@@ -122,9 +125,14 @@ namespace GnollHackX.Pages.MainScreen
             {
                 dirPath = Path.Combine(dirPath, _subDirectoryLocal);
             }
-            int i = 0;
-            long totalBytes = 0L;
+            
             ObservableCollection<GHRecordedGameFile> gHRecordedGameFiles = new ObservableCollection<GHRecordedGameFile>();
+            
+            await Task.Run(() => 
+            {
+                int i = 0;
+                long totalBytes = 0L;
+
             if (Directory.Exists(dirPath))
             {
                 if (!string.IsNullOrWhiteSpace(IsDownload ? _subDirectoryDownload : _subDirectoryLocal))
@@ -140,6 +148,7 @@ namespace GnollHackX.Pages.MainScreen
                     {
                         DirectoryInfo di = new DirectoryInfo(dir);
                         gHRecordedGameFiles.Add(new GHRecordedGameFile(i, dir, di.Name, di.Extension, true, 0, 1, di.CreationTime, di.LastWriteTime));
+                                                ReplayFileHelper.ParseReplayFileName(gHRecordedGameFiles[gHRecordedGameFiles.Count - 1]);
                     }
                 }
 
@@ -154,8 +163,7 @@ namespace GnollHackX.Pages.MainScreen
                             FileInfo fi = new FileInfo(file);
                             if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
                             {
-                                bool isGZip = fi.Name.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fi.Name.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
-                                bool isNormalZip = fi.Name.Length > GHConstants.ReplayZipFileNameSuffix.Length && fi.Name.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                                var (isGZip, isNormalZip, usedZipSuffix) = ReplayFileHelper.GetCompressionInfo(fi.Name);
                                 bool isZip = isGZip || isNormalZip;
                                 if (fi.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
                                 {
@@ -214,11 +222,9 @@ namespace GnollHackX.Pages.MainScreen
                                     else
                                     {
                                         i++;
-                                        string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-                                        int middleLen = fi.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                                        if (middleLen > 0)
+                                        string middleStr = ReplayFileHelper.GetMiddlePart(fi.Name, isZip ? usedZipSuffix : null);
+                                        if (middleStr != null)
                                         {
-                                            string middleStr = fi.Name.Substring(GHConstants.ReplayFileNamePrefix.Length, middleLen);
                                             foreach (string contFile in files)
                                             {
                                                 if (contFile != null && File.Exists(contFile))
@@ -250,6 +256,7 @@ namespace GnollHackX.Pages.MainScreen
                                             }
                                         }
                                         gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, file), fi.Name, fi.Extension, false, fi.Length + contLen, 1 + noOfContFiles, fi.CreationTime, fi.LastWriteTime));
+                                        ReplayFileHelper.ParseReplayFileName(gHRecordedGameFiles[gHRecordedGameFiles.Count - 1]);
                                         totalBytes += fi.Length + contLen;
                                     }
                                 }
@@ -403,7 +410,12 @@ namespace GnollHackX.Pages.MainScreen
                     }
                 }
             }
+            });
+            
+            
+            CloudLoadingGrid.IsVisible = false;
             ReplayCollectionView.ItemsSource = gHRecordedGameFiles;
+            SortCurrentCollection();
             UpdateRecordingsLabel();
         }
 
@@ -554,14 +566,11 @@ namespace GnollHackX.Pages.MainScreen
                                                 archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
                                                 noFiles++;
 
-                                                bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
-                                                bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                                                var (isGZip, isNormalZip, usedZipSuffix) = ReplayFileHelper.GetCompressionInfo(fileName);
                                                 bool isZip = isGZip || isNormalZip;
-                                                string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-                                                int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                                                if (subLen > 0)
+                                                string subString = ReplayFileHelper.GetMiddlePart(fileName, isZip ? usedZipSuffix : null);
+                                                if (subString != null)
                                                 {
-                                                    string subString = fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
                                                     string[] files = Directory.GetFiles(dir);
                                                     if (files != null)
                                                     {
@@ -649,39 +658,14 @@ namespace GnollHackX.Pages.MainScreen
 
                                     using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
                                     {
-                                        if (!string.IsNullOrWhiteSpace(filePath) && recfile != null)
+                                        string[] files = Directory.GetFiles(filePath);
+                                        if (files != null)
                                         {
-                                            string[] files = Directory.GetFiles(filePath);
-                                            if (files != null && !string.IsNullOrEmpty(dirName))
+                                            foreach (string file in files)
                                             {
-                                                foreach (string file in files)
+                                                if (!string.IsNullOrWhiteSpace(file))
                                                 {
-                                                    if (!string.IsNullOrWhiteSpace(file))
-                                                    {
-                                                        FileInfo fi = new FileInfo(file);
-                                                        if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
-                                                        {
-                                                            archive.CreateEntryFromFile(file, Path.Combine(dirName, Path.GetFileName(file)));
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (Directory.Exists(filePath))
-                                        {
-                                            string[] files = Directory.GetFiles(filePath);
-                                            if (files != null && !string.IsNullOrEmpty(dirName))
-                                            {
-                                                foreach (string file in files)
-                                                {
-                                                    if (!string.IsNullOrWhiteSpace(file))
-                                                    {
-                                                        FileInfo fi = new FileInfo(file);
-                                                        if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
-                                                        {
-                                                            archive.CreateEntryFromFile(file, Path.Combine(dirName, Path.GetFileName(file)));
-                                                        }
-                                                    }
+                                                    archive.CreateEntryFromFile(file, Path.Combine(dirName, Path.GetFileName(file)));
                                                 }
                                             }
                                         }
@@ -701,14 +685,11 @@ namespace GnollHackX.Pages.MainScreen
                             string dir = fi.DirectoryName;
                             if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix) && Directory.Exists(dir))
                             {
-                                bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
-                                bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                                var (isGZip, isNormalZip, usedZipSuffix) = ReplayFileHelper.GetCompressionInfo(fileName);
                                 bool isZip = isGZip || isNormalZip;
-                                string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-                                int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                                if (subLen > 0)
+                                string subString = ReplayFileHelper.GetMiddlePart(fileName, isZip ? usedZipSuffix : null);
+                                if (subString != null)
                                 {
-                                    string subString = fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
                                     string zipFile = Path.Combine(targetpath, GHConstants.ReplaySharedZipFileNamePrefix + subString + GHConstants.ReplaySharedZipFileNameSuffix);
                                     if (File.Exists(zipFile))
                                         File.Delete(zipFile);
@@ -1253,6 +1234,7 @@ namespace GnollHackX.Pages.MainScreen
                                 // Write out the prefix of the virtual directory.
                                 Debug.WriteLine(i + ": Virtual directory prefix: " + blobhierarchyItem.Prefix);
                                 gHRecordedGameFiles.Add(new GHRecordedGameFile(i, blobhierarchyItem.Prefix, blobhierarchyItem.Prefix, "", true, 0, 1, DateTime.Now, DateTime.Now));
+                                                ReplayFileHelper.ParseReplayFileName(gHRecordedGameFiles[gHRecordedGameFiles.Count - 1]);
                             }
                             else if(blobhierarchyItem.Blob != null)
                             {
@@ -1292,6 +1274,7 @@ namespace GnollHackX.Pages.MainScreen
                                 Debug.WriteLine(i + ": Blob is null");
                                 //i++;
                                 //gHRecordedGameFiles.Add(new GHRecordedGameFile(i, "?", "?", "", false, 0, 1, DateTime.Now, DateTime.Now));
+                                                ReplayFileHelper.ParseReplayFileName(gHRecordedGameFiles[gHRecordedGameFiles.Count - 1]);
 
                             }
                         }
@@ -1509,19 +1492,23 @@ namespace GnollHackX.Pages.MainScreen
                                     UploadDownloadFileLabel.Text = fileName;
                                     UploadDownloadStatusLabel.Text = "Main replay file " + fileIdx + " of " + noValidFiles;
                                     GHApp.MaybeWriteGHLog("UploadButton_Clicked: UploadFromFileAsync, " + fileName + ", " + UploadDownloadStatusLabel.Text);
-                                    await GHApp.UploadFromFileAsync(blobContainerClient, prefix, filePath, _uploadDownloadCts.Token);
+                                    long currentFileSize = new FileInfo(filePath).Length;
+                                    var progress = new Progress<long>(bytesTransferred => {
+                                        Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() => {
+                                            if (currentFileSize > 0)
+                                                UploadDownloadProgressBar.Progress = (double)bytesTransferred / currentFileSize;
+                                        });
+                                    });
+                                    await GHApp.UploadFromFileAsync(blobContainerClient,  prefix, filePath, _uploadDownloadCts.Token, progress);
                                     recfile.Uploaded = true;
                                     if (UploadDownloadCancelled)
                                         break;
 
-                                    bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
-                                    bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                                    var (isGZip, isNormalZip, usedZipSuffix) = ReplayFileHelper.GetCompressionInfo(fileName);
                                     bool isZip = isGZip || isNormalZip;
-                                    string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-                                    int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                                    if (subLen > 0)
+                                    string subString = ReplayFileHelper.GetMiddlePart(fileName, isZip ? usedZipSuffix : null);
+                                    if (subString != null)
                                     {
-                                        string subString = fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
                                         string contStart = GHConstants.ReplayContinuationFileNamePrefix + subString;
                                         string[] files = Directory.GetFiles(dir);
                                         if (files != null)
@@ -1557,7 +1544,14 @@ namespace GnollHackX.Pages.MainScreen
                                                             UploadDownloadFileLabel.Text = contFI.Name;
                                                             UploadDownloadStatusLabel.Text = "Continuation " + subFileIdx + " of " + noSubFiles + " for file " + fileIdx + " of " + noValidFiles;
                                                             GHApp.MaybeWriteGHLog("UploadButton_Clicked: UploadFromFileAsync, cont, " + contFI.Name + ", " + UploadDownloadStatusLabel.Text);
-                                                            await GHApp.UploadFromFileAsync(blobContainerClient, prefix, file, _uploadDownloadCts.Token);
+                                                            long contFileSize = new FileInfo(file).Length;
+                                                            var contProgress = new Progress<long>(bytesTransferred => {
+                                                                Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() => {
+                                                                    if (contFileSize > 0)
+                                                                        UploadDownloadProgressBar.Progress = (double)bytesTransferred / contFileSize;
+                                                                });
+                                                            });
+                                                            await GHApp.UploadFromFileAsync(blobContainerClient,  prefix, file, _uploadDownloadCts.Token, contProgress);
                                                         }
                                                     }
                                                 }
@@ -1608,21 +1602,25 @@ namespace GnollHackX.Pages.MainScreen
                         string dir = fi.DirectoryName;
                         if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix) && Directory.Exists(dir))
                         {
-                            bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
-                            bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                            var (isGZip, isNormalZip, usedZipSuffix) = ReplayFileHelper.GetCompressionInfo(fileName);
                             bool isZip = isGZip || isNormalZip;
-                            string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-                            int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                            if (subLen > 0)
+                            string subString = ReplayFileHelper.GetMiddlePart(fileName, isZip ? usedZipSuffix : null);
+                            if (subString != null)
                             {
                                 UploadDownloadFileLabel.Text = fileName;
                                 UploadDownloadStatusLabel.Text = "Main replay file";
-                                await GHApp.UploadFromFileAsync(blobContainerClient, prefix, filePath, _uploadDownloadCts.Token);
+                                long currentFileSize = new FileInfo(filePath).Length;
+                                var progress = new Progress<long>(bytesTransferred => {
+                                    Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() => {
+                                        if (currentFileSize > 0)
+                                            UploadDownloadProgressBar.Progress = (double)bytesTransferred / currentFileSize;
+                                    });
+                                });
+                                await GHApp.UploadFromFileAsync(blobContainerClient,  prefix, filePath, _uploadDownloadCts.Token, progress);
 
                                 string[] files = Directory.GetFiles(dir);
                                 if (files != null)
                                 {
-                                    string subString = fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
                                     string contStart = GHConstants.ReplayContinuationFileNamePrefix + subString;
                                     int subFileIdx = 0;
                                     int noSubFiles = 0;
@@ -1655,7 +1653,14 @@ namespace GnollHackX.Pages.MainScreen
                                                     subFileIdx++;
                                                     UploadDownloadFileLabel.Text = contFI.Name;
                                                     UploadDownloadStatusLabel.Text = "Continuation " + subFileIdx + " of " + noSubFiles;
-                                                    await GHApp.UploadFromFileAsync(blobContainerClient, prefix, file, _uploadDownloadCts.Token);
+                                                    long contFileSize = new FileInfo(file).Length;
+                                                    var contProgress = new Progress<long>(bytesTransferred => {
+                                                        Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() => {
+                                                            if (contFileSize > 0)
+                                                                UploadDownloadProgressBar.Progress = (double)bytesTransferred / contFileSize;
+                                                        });
+                                                    });
+                                                    await GHApp.UploadFromFileAsync(blobContainerClient,  prefix, file, _uploadDownloadCts.Token, contProgress);
                                                 }
                                             }
                                         }
@@ -1765,7 +1770,13 @@ namespace GnollHackX.Pages.MainScreen
                                     fileIdx++;
                                     UploadDownloadFileLabel.Text = fileName;
                                     UploadDownloadStatusLabel.Text = "Main replay file " + fileIdx + " of " + noValidFiles;
-                                    await GHApp.DownloadFileAsync(blobContainerClient, prefix, filePath, recfile.FileSize, _uploadDownloadCts.Token);
+                                    var progress = new Progress<long>(bytesTransferred => {
+                                        Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() => {
+                                            if (recfile.FileSize > 0)
+                                                UploadDownloadProgressBar.Progress = (double)bytesTransferred / recfile.FileSize;
+                                        });
+                                    });
+                                    await GHApp.DownloadFileAsync(blobContainerClient,  prefix, filePath, recfile.FileSize, _uploadDownloadCts.Token, progress);
                                     recfile.Downloaded = true;
                                     if (UploadDownloadCancelled)
                                         break;
@@ -1787,7 +1798,13 @@ namespace GnollHackX.Pages.MainScreen
                                                 string contFileName = string.IsNullOrWhiteSpace(prefix) || prefix.Length >= filename.Length ? filename : filename.Substring(prefix.Length);
                                                 UploadDownloadFileLabel.Text = contFileName;
                                                 UploadDownloadStatusLabel.Text = "Continuation " + subFileIdx + " of " + noOfSubFiles + " for file " + fileIdx + " of " + noValidFiles;
-                                                await GHApp.DownloadFileAsync(blobContainerClient, prefix, filename, cfile.FileSize, _uploadDownloadCts.Token);
+                                                var contProgress = new Progress<long>(bytesTransferred => {
+                                                    Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() => {
+                                                        if (cfile.FileSize > 0)
+                                                            UploadDownloadProgressBar.Progress = (double)bytesTransferred / cfile.FileSize;
+                                                    });
+                                                });
+                                                await GHApp.DownloadFileAsync(blobContainerClient,  prefix, filename, cfile.FileSize, _uploadDownloadCts.Token, contProgress);
                                             }
                                         }
                                     }
@@ -1835,7 +1852,13 @@ namespace GnollHackX.Pages.MainScreen
                         {
                             UploadDownloadFileLabel.Text = fileName;
                             UploadDownloadStatusLabel.Text = "Main replay file";
-                            await GHApp.DownloadFileAsync(blobContainerClient, prefix, filePath, recfile.FileSize, _uploadDownloadCts.Token);
+                            var progress = new Progress<long>(bytesTransferred => {
+                                Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() => {
+                                    if (recfile.FileSize > 0)
+                                        UploadDownloadProgressBar.Progress = (double)bytesTransferred / recfile.FileSize;
+                                });
+                            });
+                            await GHApp.DownloadFileAsync(blobContainerClient,  prefix, filePath, recfile.FileSize, _uploadDownloadCts.Token, progress);
                             List<ContinuationFile> files = recfile.ContinuationFiles;
                             if (files != null)
                             {
@@ -1853,7 +1876,13 @@ namespace GnollHackX.Pages.MainScreen
                                         string contFileName = string.IsNullOrWhiteSpace(prefix) || prefix.Length >= filename.Length ? filename : filename.Substring(prefix.Length);
                                         UploadDownloadFileLabel.Text = contFileName;
                                         UploadDownloadStatusLabel.Text = "Continuation " + subFileIdx + " of " + noOfSubFiles;
-                                        await GHApp.DownloadFileAsync(blobContainerClient, prefix, filename, cfile.FileSize, _uploadDownloadCts.Token);
+                                        var contProgress = new Progress<long>(bytesTransferred => {
+                                            Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() => {
+                                                if (cfile.FileSize > 0)
+                                                    UploadDownloadProgressBar.Progress = (double)bytesTransferred / cfile.FileSize;
+                                            });
+                                        });
+                                        await GHApp.DownloadFileAsync(blobContainerClient,  prefix, filename, cfile.FileSize, _uploadDownloadCts.Token, contProgress);
                                     }
                                 }
                             }
@@ -1898,8 +1927,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private void MoreButton_Clicked(object sender, EventArgs e)
         {
+            bool hasSelection = IsMultiSelect 
+                ? (ReplayCollectionView.SelectedItems != null && ReplayCollectionView.SelectedItems.Count > 0)
+                : (ReplayCollectionView.SelectedItem != null);
+            if (!hasSelection)
+                return;
+
             MoreButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+
+            /* Hide irrelevant actions based on current tab */
+            UploadButton.IsVisible = IsLocal; /* Can only upload from local */
+            DeleteButton.IsVisible = !IsCloud; /* Cannot delete from cloud directly */
+
             PopupGrid.IsVisible = true;
         }
 
@@ -1914,6 +1954,51 @@ namespace GnollHackX.Pages.MainScreen
         {
             await UpdateLocalOrServerRecordings(e.Value);
             UpdateButtons();
+        }
+
+        private int _currentSortMode = 0; /* 0 = Date, 1 = Name, 2 = Size */
+
+        private void SortPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (SortPicker.SelectedIndex >= 0)
+            {
+                _currentSortMode = SortPicker.SelectedIndex;
+                SortCurrentCollection();
+            }
+        }
+
+        private void SortCurrentCollection()
+        {
+            if (ReplayCollectionView.ItemsSource is ObservableCollection<GHRecordedGameFile> fileCollection)
+            {
+                var folders = fileCollection.Where(f => f.IsFolder).ToList();
+                var files = fileCollection.Where(f => !f.IsFolder).ToList();
+
+                switch (_currentSortMode)
+                {
+                case 0: /* Date (newest first) */
+                    files.Sort((a, b) => b.LastWriteTime.CompareTo(a.LastWriteTime));
+                    break;
+                case 1: /* Name */
+                    files.Sort((a, b) => string.Compare(a.FormattedName, b.FormattedName, StringComparison.OrdinalIgnoreCase));
+                    break;
+                case 2: /* Size (largest first) */
+                    files.Sort((a, b) => b.FileSize.CompareTo(a.FileSize));
+                    break;
+                }
+
+                var sorted = new ObservableCollection<GHRecordedGameFile>(folders.Concat(files));
+
+                /* Re-number indices to match the new visual order */
+                int idx = 1;
+                foreach (var item in sorted)
+                {
+                    if (!item.IsFolder)
+                        item.Index = idx++;
+                }
+
+                ReplayCollectionView.ItemsSource = sorted;
+            }
         }
 
         private async void FolderPicker_SelectedIndexChanged(object sender, EventArgs e)

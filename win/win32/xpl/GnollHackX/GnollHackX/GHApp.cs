@@ -8114,59 +8114,34 @@ namespace GnollHackX
             bool res = false;
             bool isGZip = replayFileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && replayFileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
             bool isNormalZip = replayFileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && replayFileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
-            bool isZip = isGZip || isNormalZip;
-            string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-            string usedReplayFileName = replayFileName;
 
             try
             {
-                if (isZip)
+                using (FileStream fs = File.OpenRead(replayFileName))
                 {
-                    string unZippedFileName = replayFileName.Substring(0, replayFileName.Length - usedZipSuffix.Length);
-                    if (File.Exists(unZippedFileName))
-                        File.Delete(unZippedFileName);
+                    Stream dataStream = fs;
+                    ZipArchive ziparch = null;
 
-                    if (isGZip)
+                    try
                     {
-                        using (FileStream compressedFileStream = File.Open(replayFileName, FileMode.Open))
+                        if (isGZip)
                         {
-                            using (FileStream outputFileStream = File.Create(unZippedFileName))
+                            dataStream = new GZipStream(fs, CompressionMode.Decompress);
+                        }
+                        else if (isNormalZip)
+                        {
+                            ziparch = new ZipArchive(fs, ZipArchiveMode.Read);
+                            if (ziparch.Entries.Count > 0)
                             {
-                                using (var decompressor = new GZipStream(compressedFileStream, CompressionMode.Decompress))
-                                {
-                                    decompressor.CopyTo(outputFileStream);
-                                }
+                                dataStream = ziparch.Entries[0].Open();
+                            }
+                            else
+                            {
+                                throw new Exception("Zip archive is empty.");
                             }
                         }
-                    }
-                    else
-                    {
-                        using (ZipArchive ziparch = ZipFile.OpenRead(replayFileName))
-                        {
-                            string dir = Path.GetDirectoryName(replayFileName);
-                            ziparch.ExtractToDirectory(string.IsNullOrWhiteSpace(dir) ? "." : dir);
-                        }
-                    }
 
-                    if (File.Exists(unZippedFileName))
-                    {
-                        usedReplayFileName = unZippedFileName;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                out_str = ex.Message;
-                goto end_here;
-            }
-
-            try
-            {
-                using (FileStream fs = File.OpenRead(usedReplayFileName))
-                {
-                    if (fs != null)
-                    {
-                        using (BinaryReader br = new BinaryReader(fs))
+                        using (BinaryReader br = new BinaryReader(dataStream, Encoding.UTF8, true))
                         {
                             /* Header */
                             ulong verno = br.ReadUInt64();
@@ -8176,11 +8151,16 @@ namespace GnollHackX
                                 GHVersionNumber > verno ? GHVersionCompatibility <= verno : /* If the replay is made with an older GnollHack version than the current app, check that current app version's compatibility covers the replay's version */
                                 vercompat <= GHVersionNumber; /* If the replay is made with a newer GnollHack version than the current app, check that replay's version compatibility covers the current app version */
                             res = isValid;
-                            out_str = isValid ? "Replay is valid." : "Replay " + usedReplayFileName + " has invalid version: " + verno + ", compatibility: " + vercompat + " vs the app's " + GHVersionNumber + ", compatibility: " + GHVersionCompatibility;
+                            out_str = isValid ? "Replay is valid." : "Replay " + replayFileName + " has invalid version: " + verno + ", compatibility: " + vercompat + " vs the app's " + GHVersionNumber + ", compatibility: " + GHVersionCompatibility;
                         }
                     }
-                    else
-                        out_str = "Replay file stream is null.";
+                    finally
+                    {
+                        if (isGZip && dataStream != null && dataStream != fs)
+                            dataStream.Dispose();
+                        if (ziparch != null)
+                            ziparch.Dispose();
+                    }
                 }
             }
             catch (Exception ex)
@@ -8188,11 +8168,6 @@ namespace GnollHackX
                 out_str = ex.Message;
             }
 
-        end_here:
-            if (isZip && File.Exists(replayFileName) && File.Exists(usedReplayFileName) && replayFileName != usedReplayFileName)
-            {
-                File.Delete(usedReplayFileName);
-            }
             return res;
         }
 
@@ -8215,6 +8190,13 @@ namespace GnollHackX
         public static int GoToTurn { get { lock (_replayLock) { return _replayGotoTurn; } } set { lock (_replayLock) { _replayGotoTurn = value; if (value == -1) _originalReplayTurn = -1; else _originalReplayTurn = _replayTurn; } } }
         public static int OriginalReplayTurn { get { lock (_replayLock) { return _originalReplayTurn; } } }
         public static int ReplayTurn { get { lock (_replayLock) { return _replayTurn; } } set { lock (_replayLock) { _replayTurn = value; } } }
+
+        private static double _replayProgress = 0.0;
+        public static double ReplayProgress { get { return Interlocked.CompareExchange(ref _replayProgress, 0.0, 0.0); } set { Interlocked.Exchange(ref _replayProgress, value); } }
+
+        private static long _replayTotalFileSize = 0L;
+        public static long ReplayTotalFileSize { get { return Interlocked.Read(ref _replayTotalFileSize); } set { Interlocked.Exchange(ref _replayTotalFileSize, value); } }
+
         public static string ReplayRealTime { get { lock (_replayLock) { return _replayRealTime; } } set { lock (_replayLock) { _replayRealTime = value; } } }
         public static string ReplaySearchRegexString { get { lock (_replayLock) { return _replaySearchRegexString; } } set { lock (_replayLock) { _replaySearchRegexString = value; if (value == null) { _startSearchReplayTurn = -1; _replayRegex = null; } else { _startSearchReplayTurn = _replayTurn; _replayRegex = new Regex(_replaySearchRegexString); } } } }
         public static int StartSearchReplayTurn { get { lock (_replayLock) { return _startSearchReplayTurn; } } }
@@ -8278,6 +8260,43 @@ namespace GnollHackX
             if (string.IsNullOrEmpty(replayPath))
                 replayPath = Path.Combine(GHPath, GHConstants.ReplayDirectory);
 
+            long totalSizeAcrossAllFiles = 0;
+            if (!string.IsNullOrEmpty(rawFileName) && File.Exists(rawFileName))
+            {
+                totalSizeAcrossAllFiles += new FileInfo(rawFileName).Length;
+                string fName = Path.GetFileName(rawFileName);
+                int suffixLen = isZip ? usedZipSuffix.Length : 0;
+                string nameNoSuffix = fName.Substring(0, fName.Length - suffixLen);
+                if (nameNoSuffix.EndsWith(GHConstants.ReplayFileNameSuffix))
+                {
+                    string nameNoExt = nameNoSuffix.Substring(0, nameNoSuffix.Length - GHConstants.ReplayFileNameSuffix.Length);
+                    if (nameNoExt.StartsWith(GHConstants.ReplayFileNamePrefix))
+                    {
+                        string middleStr = nameNoExt.Substring(GHConstants.ReplayFileNamePrefix.Length);
+                        string contStart = GHConstants.ReplayContinuationFileNamePrefix + middleStr;
+                        if (Directory.Exists(replayPath))
+                        {
+                            foreach (string f in Directory.GetFiles(replayPath))
+                            {
+                                string pName = Path.GetFileName(f);
+                                if (pName.StartsWith(contStart) && pName.EndsWith(GHConstants.ReplayFileNameSuffix + (isZip ? usedZipSuffix : "")))
+                                {
+                                    totalSizeAcrossAllFiles += new FileInfo(f).Length;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (totalSizeAcrossAllFiles == 0)
+                totalSizeAcrossAllFiles = 1;
+
+            ReplayTotalFileSize = totalSizeAcrossAllFiles;
+            double invTotalSize = 1.0 / (double)totalSizeAcrossAllFiles;
+            long bytesReadSoFar = 0;
+            long prevFileLength = 0;
+
+
             do
             {
                 if (restartReplay)
@@ -8289,6 +8308,7 @@ namespace GnollHackX
                     ReplayRestarted = true;
                     game?.RequestQueue.Enqueue(new GHRequest(game, GHRequestType.CloseAllDialogs));
                     game?.RequestQueue.Enqueue(new GHRequest(game, GHRequestType.RestartReplay));
+                    ReplayProgress = 0.0;
                     return PlayReplayResult.Restarting;
                 }
 
@@ -8392,12 +8412,22 @@ namespace GnollHackX
                                         gamePage.EnableCasualMode = casualmode;
                                     }
 
+                                    bytesReadSoFar += prevFileLength;
+                                    prevFileLength = fs.Length;
+                                    int progressUpdateCounter = 0;
+
                                     byte cmd_byte = 0;
                                     int cmd;
                                     bool breakwhile;
                                     ulong time;
                                     do
                                     {
+                                        if (progressUpdateCounter++ > 100)
+                                        {
+                                            ReplayProgress = (double)(bytesReadSoFar + fs.Position) * invTotalSize;
+                                            progressUpdateCounter = 0;
+                                        }
+
                                         breakwhile = false;
                                         time = 0UL;
                                         prevcmd_byte = cmd_byte;
@@ -9458,6 +9488,7 @@ namespace GnollHackX
 
             if (!exitHackCalled)
                 game.ClientCallback_ExitHack(0);
+            ReplayProgress = 0.0;
             return PlayReplayResult.Success;
         }
 
@@ -9733,7 +9764,7 @@ namespace GnollHackX
             }
         }
 
-        public static async Task UploadFromFileAsync(BlobContainerClient containerClient, string prefix, string localFilePath, CancellationToken cancellationToken)
+        public static async Task UploadFromFileAsync(BlobContainerClient containerClient, string prefix, string localFilePath, CancellationToken cancellationToken, IProgress<long> progress = null)
         {
             string blobName;
             if (string.IsNullOrEmpty(prefix))
@@ -9747,10 +9778,22 @@ namespace GnollHackX
 
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
             MaybeWriteGHLog("UploadFromFileAsync: UploadAsync: " + prefix + ", " + localFilePath);
-            await blobClient.UploadAsync(localFilePath, true, cancellationToken);
+            
+            if (progress != null)
+            {
+                var options = new BlobUploadOptions { ProgressHandler = progress };
+                using (var fs = File.OpenRead(localFilePath))
+                {
+                    await blobClient.UploadAsync(fs, options, cancellationToken);
+                }
+            }
+            else
+            {
+                await blobClient.UploadAsync(localFilePath, true, cancellationToken);
+            }
         }
 
-        public static async Task DownloadFileAsync(BlobContainerClient containerClient, string prefix, string blobName, long fileLength, CancellationToken cancellationToken)
+        public static async Task DownloadFileAsync(BlobContainerClient containerClient, string prefix, string blobName, long fileLength, CancellationToken cancellationToken, IProgress<long> progress = null)
         {
             if (string.IsNullOrWhiteSpace(blobName))
                 return;
@@ -9782,7 +9825,16 @@ namespace GnollHackX
                     return;
             }
             MaybeWriteGHLog("DownloadFileAsync: DownloadToAsync: " + targetPath);
-            await blobClient.DownloadToAsync(targetPath, cancellationToken);
+            
+            if (progress != null)
+            {
+                var options = new BlobDownloadToOptions { ProgressHandler = progress };
+                await blobClient.DownloadToAsync(targetPath, options, cancellationToken);
+            }
+            else
+            {
+                await blobClient.DownloadToAsync(targetPath, cancellationToken);
+            }
         }
 
         private static int _isSystemBrowserOpen = 0;
