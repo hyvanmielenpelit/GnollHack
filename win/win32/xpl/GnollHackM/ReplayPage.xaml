@@ -26,7 +26,7 @@
                 <CollectionView Grid.Row="2" x:Name="ReplayCollectionView" HorizontalOptions="Fill" VerticalOptions="Start" SelectionMode="Single"  BackgroundColor="Transparent" SelectionChanged="MainListView_SelectionChanged" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="gnh:GHRecordedGameFile">
-                            <Grid ColumnSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" Margin="0,8">
+                            <Grid ColumnSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" Padding="10">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
@@ -44,7 +44,7 @@
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
-                                <Label Text="{Binding FormattedIndex}" Grid.Column="0" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="15" HeightRequest="35" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Text="{Binding FormattedIndex}" Grid.Column="0" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="15" HeightRequest="35" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" />
                                 <StackLayout Grid.Column="1" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center" >
                                     <Label Text="{Binding FormattedName}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="{Binding FormattedNameFontSize}" HorizontalOptions="Start" VerticalOptions="End" HorizontalTextAlignment="Start" VerticalTextAlignment="End" />
                                     <Label Text="{Binding FormattedInformation}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="{Binding FormattedInfoFontSize}" IsVisible="{Binding FormattedInfoVisible}" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" />
@@ -120,6 +120,15 @@
                         </StackLayout>
                     </Border>
                 </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
+            <Grid x:Name="CloudLoadingGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
+                <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                    <ActivityIndicator IsRunning="True" Color="White" />
+                    <Label x:Name="CloudLoadingLabel" Text="Loading..." FontFamily="Immortal" FontSize="18" TextColor="White" HorizontalTextAlignment="Center" />
+                </StackLayout>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>

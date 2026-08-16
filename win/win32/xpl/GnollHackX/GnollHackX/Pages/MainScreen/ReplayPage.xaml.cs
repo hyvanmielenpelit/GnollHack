@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -103,7 +103,7 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        private void UpdateLocalRecordings()
+        private async void UpdateLocalRecordings()
         {
             ReplayCollectionView.SelectedItem = null;
             ReplayCollectionView.SelectedItems.Clear();
@@ -122,9 +122,13 @@ namespace GnollHackX.Pages.MainScreen
             {
                 dirPath = Path.Combine(dirPath, _subDirectoryLocal);
             }
-            int i = 0;
-            long totalBytes = 0L;
+            
             ObservableCollection<GHRecordedGameFile> gHRecordedGameFiles = new ObservableCollection<GHRecordedGameFile>();
+
+            await Task.Run(() =>
+            {
+                int i = 0;
+                long totalBytes = 0L;
             if (Directory.Exists(dirPath))
             {
                 if (!string.IsNullOrWhiteSpace(IsDownload ? _subDirectoryDownload : _subDirectoryLocal))
@@ -402,7 +406,9 @@ namespace GnollHackX.Pages.MainScreen
                         }
                     }
                 }
-            }
+                }
+            });
+
             ReplayCollectionView.ItemsSource = gHRecordedGameFiles;
             UpdateRecordingsLabel();
         }
@@ -1898,8 +1904,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private void MoreButton_Clicked(object sender, EventArgs e)
         {
+            bool hasSelection = IsMultiSelect 
+                ? (ReplayCollectionView.SelectedItems != null && ReplayCollectionView.SelectedItems.Count > 0)
+                : (ReplayCollectionView.SelectedItem != null);
+            if (!hasSelection)
+                return;
+
             MoreButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+
+            /* Hide irrelevant actions based on current tab */
+            UploadButton.IsVisible = IsLocal; /* Can only upload from local */
+            DeleteButton.IsVisible = !IsCloud; /* Cannot delete from cloud directly */
+
             PopupGrid.IsVisible = true;
         }
 

@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 #if GNH_MAUI
 using GnollHackX;
@@ -20,7 +22,7 @@ namespace GnollHackX
         }
     }
 
-    public sealed class GHRecordedGameFile
+    public sealed class GHRecordedGameFile : INotifyPropertyChanged
     {
         int _index;
         string _filePath;
@@ -34,6 +36,13 @@ namespace GnollHackX
         List<ContinuationFile> _continuationFiles = new List<ContinuationFile>();
         bool _uploaded;
         bool _downloaded;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public GHRecordedGameFile(int index, string filePath, string fileName, string extension, bool isFolder, long fileSize, int numberOfFiles, DateTime creationTime, DateTime lastWriteTime)
         {
@@ -101,8 +110,16 @@ namespace GnollHackX
 
         public List<ContinuationFile> ContinuationFiles { get { return _continuationFiles; } }
 
-        public bool Uploaded { get { return _uploaded; } set { _uploaded = value; } }
-        public bool Downloaded { get { return _downloaded; } set { _downloaded = value; } }
+        public bool Uploaded 
+        { 
+            get { return _uploaded; } 
+            set { _uploaded = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(TextColor)); } 
+        }
+        public bool Downloaded 
+        { 
+            get { return _downloaded; } 
+            set { _downloaded = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(TextColor)); } 
+        }
         public
 #if GNH_MAUI
             Microsoft.Maui.Graphics.Color

@@ -8114,59 +8114,34 @@ namespace GnollHackX
             bool res = false;
             bool isGZip = replayFileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && replayFileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
             bool isNormalZip = replayFileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && replayFileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
-            bool isZip = isGZip || isNormalZip;
-            string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-            string usedReplayFileName = replayFileName;
 
             try
             {
-                if (isZip)
+                using (FileStream fs = File.OpenRead(replayFileName))
                 {
-                    string unZippedFileName = replayFileName.Substring(0, replayFileName.Length - usedZipSuffix.Length);
-                    if (File.Exists(unZippedFileName))
-                        File.Delete(unZippedFileName);
+                    Stream dataStream = fs;
+                    ZipArchive ziparch = null;
 
-                    if (isGZip)
+                    try
                     {
-                        using (FileStream compressedFileStream = File.Open(replayFileName, FileMode.Open))
+                        if (isGZip)
                         {
-                            using (FileStream outputFileStream = File.Create(unZippedFileName))
+                            dataStream = new GZipStream(fs, CompressionMode.Decompress);
+                        }
+                        else if (isNormalZip)
+                        {
+                            ziparch = new ZipArchive(fs, ZipArchiveMode.Read);
+                            if (ziparch.Entries.Count > 0)
                             {
-                                using (var decompressor = new GZipStream(compressedFileStream, CompressionMode.Decompress))
-                                {
-                                    decompressor.CopyTo(outputFileStream);
-                                }
+                                dataStream = ziparch.Entries[0].Open();
+                            }
+                            else
+                            {
+                                throw new Exception("Zip archive is empty.");
                             }
                         }
-                    }
-                    else
-                    {
-                        using (ZipArchive ziparch = ZipFile.OpenRead(replayFileName))
-                        {
-                            string dir = Path.GetDirectoryName(replayFileName);
-                            ziparch.ExtractToDirectory(string.IsNullOrWhiteSpace(dir) ? "." : dir);
-                        }
-                    }
 
-                    if (File.Exists(unZippedFileName))
-                    {
-                        usedReplayFileName = unZippedFileName;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                out_str = ex.Message;
-                goto end_here;
-            }
-
-            try
-            {
-                using (FileStream fs = File.OpenRead(usedReplayFileName))
-                {
-                    if (fs != null)
-                    {
-                        using (BinaryReader br = new BinaryReader(fs))
+                        using (BinaryReader br = new BinaryReader(dataStream, Encoding.UTF8, true))
                         {
                             /* Header */
                             ulong verno = br.ReadUInt64();
@@ -8176,11 +8151,16 @@ namespace GnollHackX
                                 GHVersionNumber > verno ? GHVersionCompatibility <= verno : /* If the replay is made with an older GnollHack version than the current app, check that current app version's compatibility covers the replay's version */
                                 vercompat <= GHVersionNumber; /* If the replay is made with a newer GnollHack version than the current app, check that replay's version compatibility covers the current app version */
                             res = isValid;
-                            out_str = isValid ? "Replay is valid." : "Replay " + usedReplayFileName + " has invalid version: " + verno + ", compatibility: " + vercompat + " vs the app's " + GHVersionNumber + ", compatibility: " + GHVersionCompatibility;
+                            out_str = isValid ? "Replay is valid." : "Replay " + replayFileName + " has invalid version: " + verno + ", compatibility: " + vercompat + " vs the app's " + GHVersionNumber + ", compatibility: " + GHVersionCompatibility;
                         }
                     }
-                    else
-                        out_str = "Replay file stream is null.";
+                    finally
+                    {
+                        if (isGZip && dataStream != null && dataStream != fs)
+                            dataStream.Dispose();
+                        if (ziparch != null)
+                            ziparch.Dispose();
+                    }
                 }
             }
             catch (Exception ex)
@@ -8188,11 +8168,6 @@ namespace GnollHackX
                 out_str = ex.Message;
             }
 
-        end_here:
-            if (isZip && File.Exists(replayFileName) && File.Exists(usedReplayFileName) && replayFileName != usedReplayFileName)
-            {
-                File.Delete(usedReplayFileName);
-            }
             return res;
         }
 
