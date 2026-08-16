@@ -368,6 +368,8 @@ namespace GnollHackX.Unknown
         public static extern void LibTerminateGnollHack(int used_exit_hack_code);
         [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetCommandFunctionPointer(int cmd);
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibUpdateGameMusic();
 
         private void LoadNativeLibrary(string libName)
         {
@@ -1217,6 +1219,11 @@ namespace GnollHackX.Unknown
         public IntPtr GetCommandFunctionPointer(int cmd)
         {
             return LibGetCommandFunctionPointer(cmd);
+        }
+
+        public void UpdateGameMusic()
+        {
+            LibUpdateGameMusic();
         }
 
         public int StartGnollHack(GHGame ghGame)

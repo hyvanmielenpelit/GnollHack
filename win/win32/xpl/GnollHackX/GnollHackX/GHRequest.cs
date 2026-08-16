@@ -117,6 +117,8 @@ namespace GnollHackX
         SetEngraveQuickStyle,
         SetMetricSystem,
         SetDamageFormula,
+        PlayMusic,
+        UpdateGameMusic,
     }
 
     public struct AddContextMenuData

@@ -30,12 +30,9 @@ using static System.Net.Mime.MediaTypeNames;
 namespace GnollHackX.Pages.Game
 #endif
 {
-
-
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class OverseerPage : CustomModalPage, ICloseablePage, IMessagePopupPage
     {
-
         private string _baseOverseerUrl;
         private string _snapshotHtml;
 
@@ -60,17 +57,8 @@ namespace GnollHackX.Pages.Game
         {
             InitializeComponent();
 
-
             _baseOverseerUrl = baseOverseerUrl;
             _snapshotHtml = snapshotHtml;
-
-            /* We no longer set an initial HtmlWebViewSource here to avoid rapid 
-             * double-navigation crashes (winrt::hresult_error) in WinUI 3 WebView2 
-             * when the final URL is set shortly after. The ProgressOverlay is 
-             * sufficient for the connecting UI. */
-
-            //DisplayWebView.Focused += (s, e) => { System.Diagnostics.Debug.WriteLine($"[OverseerPage] DisplayWebView.Focused: IsFocused={DisplayWebView.IsFocused}"); };
-            //DisplayWebView.Unfocused += (s, e) => { System.Diagnostics.Debug.WriteLine($"[OverseerPage] DisplayWebView.Unfocused: IsFocused={DisplayWebView.IsFocused}"); };
 
 #if GNH_MAUI && WINDOWS
             /* Highlight the close area on pointer hover (Windows only) */
@@ -85,6 +73,17 @@ namespace GnollHackX.Pages.Game
             };
             CloseArea.GestureRecognizers.Add(pointerGesture);
 #endif
+            GHGame curGame = GHApp.CurrentGHGame;
+            if (curGame != null)
+            {
+                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.PlayMusic, GHConstants.OverseerGHSound, GHConstants.OverseerEventPath, GHConstants.IntroBankId, GHConstants.OverseerVolume, 1.0f));
+            }
+            else
+            {
+                GHApp.FmodService.StopAllUISounds();
+                //GHApp.FmodService.LoadBanks(sound_bank_loading_type.Music);
+                GHApp.FmodService.PlayUIMusic(GHConstants.OverseerGHSound, GHConstants.OverseerEventPath, GHConstants.IntroBankId, GHConstants.OverseerVolume, 1.0f);
+            }
         }
 
         private async void ContentPage_Appearing(object sender, EventArgs e)
@@ -668,6 +667,16 @@ namespace GnollHackX.Pages.Game
             _backPressed = true;
             if (playClickSound)
                 GHApp.PlayButtonClickedSound();
+            GHGame curGame = GHApp.CurrentGHGame;
+            if (curGame != null)
+            {
+                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.UpdateGameMusic));
+            }
+            else
+            {
+                GHApp.FmodService.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
+                //GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
+            }
             await GHApp.PopModalPageAsync();
         }
 

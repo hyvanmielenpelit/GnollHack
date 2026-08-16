@@ -350,6 +350,12 @@ namespace GnollHackX
                     case GHRequestType.PlayMenuSelectSound:
                         GHApp.PlayMenuSelectSoundCore();
                         break;
+                    case GHRequestType.PlayMusic:
+                        GHApp.FmodService?.PlayMusic(response.ResponseIntValue, response.ResponseStringValue, response.X, response.GeneralVolume, response.MusicVolume);
+                        break;
+                    case GHRequestType.UpdateGameMusic:
+                        GHApp.GnollHackService?.UpdateGameMusic();
+                        break;
                     default:
                         break;
                 }

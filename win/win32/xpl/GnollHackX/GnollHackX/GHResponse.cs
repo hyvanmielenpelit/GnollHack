@@ -84,5 +84,15 @@ namespace GnollHackX
             EffectsVolume = effectsVolume;
             GameUIVolume = gameUIVolume;
         }
+        public GHResponse(GHGame ghGame, GHRequestType requestType, int ghSound, string eventPath, int bankId, float eventVolume, float soundVolume)
+        {
+            RequestingGame = ghGame;
+            RequestType = requestType;
+            ResponseIntValue = ghSound;
+            ResponseStringValue = eventPath;
+            X = bankId;
+            GeneralVolume = eventVolume;
+            MusicVolume = soundVolume;
+        }
     }
 }

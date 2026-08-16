@@ -28,14 +28,6 @@ namespace GnollHackX.Pages.MainScreen
         public MusicPage()
         {
             InitializeComponent();
-//#if GNH_MAUI
-//            SafeAreaEdges = SafeAreaEdges.All;
-//#else
-//            On<iOS>().SetUseSafeArea(true);
-//#endif
-            //UIUtils.AdjustRootLayout(RootGrid);
-            //UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
             if (GHApp.DarkMode)
             {
                 lblHeader.TextColor = GHColors.White;

@@ -951,6 +951,13 @@ LibGetCommandFunctionPointer(int cmd)
     return (void*)Cmd.commands[cmd]->ef_funct;
 }
 
+DLLEXPORT void
+LibUpdateGameMusic(void)
+{
+    if (play_ghsound_music)
+        update_game_music();
+}
+
 DLLEXPORT int GnollHackStart(char *cmdlineargs)
 {
 #define MAX_CMD_PARAMS 24

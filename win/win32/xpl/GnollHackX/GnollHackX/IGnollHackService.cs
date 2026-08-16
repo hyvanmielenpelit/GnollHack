@@ -92,5 +92,6 @@ namespace GnollHackX
         void ExitGnhThread(exit_hack_types used_exit_hack_code);
         void TerminateGnollHack(exit_hack_types used_exit_hack_code);
         IntPtr GetCommandFunctionPointer(int cmd);
+        void UpdateGameMusic();
     }
 }
