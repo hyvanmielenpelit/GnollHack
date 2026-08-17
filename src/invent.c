@@ -36,7 +36,7 @@ static int ckunpaid(struct obj *);
 static char *safeq_xprname(struct obj *);
 static char *safeq_shortxprname(struct obj *);
 static char display_pickinv(const char *, char *, char *, boolean, int64_t *, int, boolean, const char*, uchar, boolean);
-static char display_used_invlets(char);
+static char display_used_invlets(char, boolean);
 static boolean this_type_only(struct obj *);
 static void dounpaid(void);
 static void dounidentified(void);
@@ -5548,7 +5548,7 @@ display_inventory_with_header(const char *lets, boolean want_reply, int64_t *out
  *
  */
 static char
-display_used_invlets(char avoidlet)
+display_used_invlets(char avoidlet, boolean show_unused)
 {
     struct obj *otmp;
     char ilet, ret = 0;
@@ -5558,15 +5558,60 @@ display_used_invlets(char avoidlet)
     anything any;
     menu_item *selected;
 
-    if (invent) {
+    if (invent || show_unused) {
         win = create_nhwindow(NHW_MENU);
         start_menu_style(win, GHMENU_STYLE_PICK_ITEM_LIST);
+        /* If requested, show empty slots first */
+        if (show_unused)
+        {
+            int round;
+            char ulet;
+            boolean found, added_heading = FALSE;
+            char lbuf[BUFSZ];
+
+            for (round = 0; round <= 1; round++)
+                for (ulet = 'a' - round * 32; ulet <= 'z' - round * 32; ulet++)
+                {
+                    if (ulet == avoidlet)
+                        continue;
+                    found = FALSE;
+                    for (otmp = invent; otmp; otmp = otmp->nobj)
+                    {
+                        if (otmp->invlet == ulet)
+                        {
+                            found = TRUE;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        if (!added_heading)
+                        {
+                            any = zeroany;
+                            add_extended_menu(win, NO_GLYPH, &any, 0, 0,
+                                     iflags.menu_headings | ATR_HEADING,
+                                     NO_COLOR, "Unused Letters",
+                                     MENU_UNSELECTED, menu_heading_info());
+                            added_heading = TRUE;
+                        }
+                        any = zeroany;
+                        any.a_char = ulet;
+                        Sprintf(lbuf, "Letter %c", ulet);
+                        add_extended_menu(win, NO_GLYPH,
+                                 &any, ulet, 0, ATR_DIM, NO_COLOR,
+                                 lbuf, MENU_UNSELECTED,
+                                 zeroextendedmenuinfo);
+                    }
+                }
+        }
         while (!invdone) {
             any = zeroany; /* set all bits to zero */
             classcount = 0;
             for (otmp = invent; otmp; otmp = otmp->nobj) {
                 ilet = otmp->invlet;
                 if (ilet == avoidlet)
+                    continue;
+                if (otmp->oclass == COIN_CLASS) /* Coin letter cannot be adjusted, so do not show it */
                     continue;
                 if (!flags.sortpack || otmp->oclass == *classlet) {
                     if (flags.sortpack && !classcount) {
@@ -7565,21 +7610,25 @@ doorganize(void) /* inventory organizer by Del Lamb */
     /* get 'to' slot to use as destination */
     for (trycnt = 1; ; ++trycnt) {
 #ifdef GNH_MOBILE
-        let = '?';
+        let = display_used_invlets(splitting ? obj->invlet : 0, TRUE);
+        if (!let)
+            continue;
+        if (let == '\033')
+            goto noadjust;
 #else
         char qbuf[QBUFSZ];
         Sprintf(qbuf, "Adjust letter to what [%s]%s?", lets,
             invent ? " (? see used letters)" : "");
         //let = yn_function(qbuf, (char *)0, '\0', (char *)0);
         let = yn_function_core(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, qbuf, (const char*)0, '\0', (const char*)0, (const char*)0, 1UL);
-#endif
         if (let == '?' || let == '*') {
-            let = display_used_invlets(splitting ? obj->invlet : 0);
+            let = display_used_invlets(splitting ? obj->invlet : 0, FALSE);
             if (!let)
                 continue;
             if (let == '\033')
                 goto noadjust;
         }
+#endif
         if (index(quitchars, let)
             /* adjusting to same slot is meaningful since all
                compatible stacks get collected along the way,
