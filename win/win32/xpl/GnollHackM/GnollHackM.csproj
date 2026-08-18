@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- BASE PROPERTIES -->
 	<PropertyGroup>
@@ -28,7 +28,7 @@
 		<ApplicationDisplayVersion>3.10</ApplicationDisplayVersion>
 		<ApplicationVersion>408</ApplicationVersion>
 
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
@@ -44,19 +44,19 @@
 		<PackageCertificateThumbprint>0DE60AC858971DC05E45C172A6D7462CBA45C98A</PackageCertificateThumbprint>
 	</PropertyGroup>
 
-  <!-- DETEMINE IF MONO RUNTIME IS BEING USED -->
-  <PropertyGroup Condition="'$(TargetFramework)' != ''">
-    <!-- 1. Default the variable to false -->
-    <IsMonoRuntime>false</IsMonoRuntime>
-    <!-- 2. Helper property to clean up the platform check -->
-    <IsMobilePlatform Condition="$(TargetFramework.Contains('-android')) or $(TargetFramework.Contains('-ios'))">true</IsMobilePlatform>
-    <IsMobilePlatform Condition="'$(IsMobilePlatform)' != 'true'">false</IsMobilePlatform>
-    <!-- 3. Condition A: True if .NET 10 on Android or iOS -->
-    <IsMonoRuntime Condition="'$(IsMobilePlatform)' == 'true' and $(TargetFramework.StartsWith('net10.0'))">true</IsMonoRuntime>
-    <!-- 4. Condition B: True if .NET 11 or newer on Android or iOS AND UseMonoRuntime is true -->
-    <!-- (We use !StartsWith('net10.0') as a safe proxy for .NET 11+ assuming your project only moves forward in versions) -->
-    <IsMonoRuntime Condition="'$(IsMobilePlatform)' == 'true' and !$(TargetFramework.StartsWith('net10.0')) and '$(UseMonoRuntime)' == 'true'">true</IsMonoRuntime>
-  </PropertyGroup>
+    <!-- DETEMINE IF MONO RUNTIME IS BEING USED -->
+    <PropertyGroup Condition="'$(TargetFramework)' != ''">
+        <!-- 1. Default the variable to false -->
+        <IsMonoRuntime>false</IsMonoRuntime>
+        <!-- 2. Helper property to clean up the platform check -->
+        <IsMobilePlatform Condition="$(TargetFramework.Contains('-android')) or $(TargetFramework.Contains('-ios'))">true</IsMobilePlatform>
+        <IsMobilePlatform Condition="'$(IsMobilePlatform)' != 'true'">false</IsMobilePlatform>
+        <!-- 3. Condition A: True if .NET 10 on Android or iOS -->
+        <IsMonoRuntime Condition="'$(IsMobilePlatform)' == 'true' and $(TargetFramework.StartsWith('net10.0'))">true</IsMonoRuntime>
+        <!-- 4. Condition B: True if .NET 11 or newer on Android or iOS AND UseMonoRuntime is true -->
+        <!-- (We use !StartsWith('net10.0') as a safe proxy for .NET 11+ assuming your project only moves forward in versions) -->
+        <IsMonoRuntime Condition="'$(IsMobilePlatform)' == 'true' and !$(TargetFramework.StartsWith('net10.0')) and '$(UseMonoRuntime)' == 'true'">true</IsMonoRuntime>
+    </PropertyGroup>
 
   <!-- CORECLR SPECIFIC PROPERTIES -->
   <!--<PropertyGroup Condition="'$(IsMonoRuntime)' != 'true'">
@@ -67,7 +67,7 @@
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<UseInterpreter>false</UseInterpreter>
 		<_MauiForceXamlCForDebug Condition="!$(TargetFramework.Contains('-windows'))">true</_MauiForceXamlCForDebug>
-    <DebugSymbols>true</DebugSymbols>
+        <DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -78,20 +78,21 @@
 
 	<!-- FRAMEWORK SPECIFIC PROPERTIES -->
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
-    <!--<AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>-->
-    <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
-    <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
+        <!--<AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>-->
+        <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
+        <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
 		<!--<AndroidEnableProfiler>true</AndroidEnableProfiler>-->
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
-    <MtouchExtraArgs Condition="'$(IsMonoRuntime)' == 'true'">--setenv=MONO_GC_PARAMS=nursery-size=32m</MtouchExtraArgs>
-    <MtouchInterpreter Condition="'$(IsMonoRuntime)' == 'true'">-all</MtouchInterpreter>
-    <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
-    <DefineConstants>$(DefineConstants);FMOD_GNH_IOS</DefineConstants>
-    <!--<DefineConstants>$(DefineConstants);METAL</DefineConstants>-->
-    <ProvisioningType>manual</ProvisioningType>
-  </PropertyGroup>
+    <PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
+        <MtouchExtraArgs Condition="'$(IsMonoRuntime)' == 'true'">--setenv=MONO_GC_PARAMS=nursery-size=32m</MtouchExtraArgs>
+        <MtouchExtraArgs Condition="'$(IsMonoRuntime)' != 'true'">--setenv=DOTNET_GCgen0size=32000000 --setenv=DOTNET_GCGen0MaxBudget=32000000</MtouchExtraArgs>
+        <MtouchInterpreter Condition="'$(IsMonoRuntime)' == 'true'">-all</MtouchInterpreter>
+        <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
+        <DefineConstants>$(DefineConstants);FMOD_GNH_IOS</DefineConstants>
+        <!--<DefineConstants>$(DefineConstants);METAL</DefineConstants>-->
+        <ProvisioningType>manual</ProvisioningType>
+    </PropertyGroup>
 
 	<!--<ItemGroup Condition=" '$(IncludeWindowsSDKRefFrameworkReferences)' == 'True'">
     <FrameworkReference Include="Microsoft.Windows.SDK.NET.Ref" IsImplicitlyDefined="true" Pack="false" PrivateAssets="All" />
@@ -168,10 +169,10 @@
 		<None Remove="..\GnollHackX\GnollHackX\UIUtils.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\CustomCanvasView.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\CustomLabel.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\CustomContentPage.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\CustomModalPage.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\ClientToolRequest.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\CustomContentPage.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\CustomModalPage.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\ClientToolRequest.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPostWithAttachment.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\EventArgs.cs" />
@@ -224,13 +225,13 @@
 		<None Remove="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\IPlatformService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\IFMODService.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\IThreadSafeView.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\IThreadSafeView.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\MapData.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\MeasurableGrid.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\MeasurableStackLayout.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\MeasurableGrid.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\MeasurableStackLayout.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectData.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\PointableButton.cs" />
@@ -258,10 +259,10 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\AchievementsPage.xaml.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\AchievementsDisplayPage.xaml.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\OraclePage.xaml.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\AchievementsPage.xaml.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\AchievementsDisplayPage.xaml.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\OraclePage.xaml.cs" />
+        <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\SnapshotPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\ReplayPage.xaml.cs" />
@@ -374,24 +375,25 @@
 		<None Remove="Assets\UI\worn.png" />
 		<None Remove="Assets\UI\zapquick.png" />
 		<None Remove="Assets\UI\zoom.png" />
-		<None Remove="Platforms\Android\Environment.txt" />
-		<None Remove="Platforms\Android\libs\x86_64\libc++_shared.so" />
+		<None Remove="Platforms\Android\EnvironmentMono.txt" />
+        <None Remove="Platforms\Android\EnvironmentCoreCLR.txt" />
+        <None Remove="Platforms\Android\libs\x86_64\libc++_shared.so" />
 		<None Remove="Platforms\Android\libs\x86_64\libfmod.so" />
 		<None Remove="Platforms\Android\libs\x86_64\libfmodstudio.so" />
 		<None Remove="Platforms\Android\libs\x86_64\libgnollhackdroid.so" />
-    <None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-3.ghpng" />
-    <None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.ghpng" />
+        <None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-3.ghpng" />
+        <None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.ghpng" />
 		<None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.ghpng" />
 		<None Remove="Resources\AppIcon\appicon.svg" />
 		<None Remove="Resources\AppIcon\appiconfg.svg" />
 
-    <!-- Platform specific files that are outside of folders -->
-    <None Remove="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
-    <None Remove="..\GnollHackX\GnollHackX.Android\OverseerJsBridge.cs" />
-    <None Remove="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
-    <None Remove="..\GnollHackX\GnollHackX.iOS\OverseerScriptMessageHandler.cs" />
-    <None Remove="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
-  </ItemGroup>
+        <!-- Platform specific files that are outside of folders -->
+        <None Remove="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
+        <None Remove="..\GnollHackX\GnollHackX.Android\OverseerJsBridge.cs" />
+        <None Remove="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
+        <None Remove="..\GnollHackX\GnollHackX.iOS\OverseerScriptMessageHandler.cs" />
+        <None Remove="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
+    </ItemGroup>
 
 	<ItemGroup>
 		<Compile Include="..\GnollHackX\GnollHackX\BackgroundView.cs" />
@@ -400,18 +402,18 @@
 		<Compile Include="..\GnollHackX\GnollHackX\UIUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\CustomCanvasView.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\CustomLabel.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\CustomContentPage.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\CustomModalPage.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\ClientToolRequest.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\CustomContentPage.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\CustomModalPage.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\ClientToolRequest.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPostWithAttachment.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\EventArgs.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPost.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPostAttachment.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\HttpClientDownloadWithProgress.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\HttpClientUploadWithProgress.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\HttpClientUploadWithProgress.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHApp.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHButton.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHCachedImage.cs" />
@@ -456,14 +458,14 @@
 		<Compile Include="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\IPlatformService.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\IThreadSafeView.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\IFMODService.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\IThreadSafeView.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\IFMODService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\MapData.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\MeasurableGrid.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\MeasurableStackLayout.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\MeasurableGrid.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\MeasurableStackLayout.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ObjectData.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\PointableButton.cs" />
@@ -491,10 +493,10 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\AchievementsPage.xaml.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\AchievementsDisplayPage.xaml.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\OraclePage.xaml.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\AchievementsPage.xaml.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\AchievementsDisplayPage.xaml.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\OraclePage.xaml.cs" />
+        <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\SnapshotPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\ReplayPage.xaml.cs" />
@@ -510,13 +512,13 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\OverseerPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
     
-    <!-- Show some platform specific files that are outside of folders -->
-    <None Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
-    <None Include="..\GnollHackX\GnollHackX.Android\OverseerJsBridge.cs" />
-    <None Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
-    <None Include="..\GnollHackX\GnollHackX.iOS\OverseerScriptMessageHandler.cs" />
-    <None Include="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
-  </ItemGroup>
+        <!-- Show some platform specific files that are outside of folders -->
+        <None Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
+        <None Include="..\GnollHackX\GnollHackX.Android\OverseerJsBridge.cs" />
+        <None Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
+        <None Include="..\GnollHackX\GnollHackX.iOS\OverseerScriptMessageHandler.cs" />
+        <None Include="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
+    </ItemGroup>
 
 	<ItemGroup>
 		<None Remove="Assets\archristy.ttf" />
@@ -684,8 +686,8 @@
 		<None Remove="Assets\UI\symbol-cooldown.png" />
 		<None Remove="Assets\UI\symbol-food.png" />
 		<None Remove="Assets\UI\symbol-mana.png" />
-    <None Remove="Assets\UI\symbol-gold.png" />
-    <None Remove="Assets\UI\symbol-spell-abjuration.png" />
+        <None Remove="Assets\UI\symbol-gold.png" />
+        <None Remove="Assets\UI\symbol-spell-abjuration.png" />
 		<None Remove="Assets\UI\symbol-spell-arcane.png" />
 		<None Remove="Assets\UI\symbol-spell-celestial.png" />
 		<None Remove="Assets\UI\symbol-spell-clerical.png" />
@@ -770,8 +772,8 @@
 		<AndroidAsset Include="Platforms\Android\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
 		<AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
 		<AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
-    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-3.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
-    <!--<AndroidAppBundleModules Include="Platforms\Android\assetpacks\ondemandassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />-->
+        <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-3.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
+        <!--<AndroidAppBundleModules Include="Platforms\Android\assetpacks\ondemandassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />-->
 		<!--<AndroidAppBundleModules Include="Platforms\Android\assetpacks\installtimeassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />-->
 		<Compile Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.Android\OverseerJsBridge.cs" />
@@ -815,8 +817,8 @@
 		<BundleResource Include="Platforms\iOS\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\tileset\gnollhack_64x96_transparent_32bits.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\tileset\gnollhack_64x96_transparent_32bits-2.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" />
-    <BundleResource Include="Platforms\iOS\tileset\gnollhack_64x96_transparent_32bits-3.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" />
-    <Compile Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
+        <BundleResource Include="Platforms\iOS\tileset\gnollhack_64x96_transparent_32bits-3.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" />
+        <Compile Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.iOS\OverseerScriptMessageHandler.cs" />
 	</ItemGroup>
@@ -837,15 +839,15 @@
 		<MauiAsset Include="Platforms\Windows\libs\libfsbvorbis64.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-    <MauiAsset Include="Platforms\Windows\libs\opus.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiAsset>
-    <MauiAsset Include="Platforms\Windows\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\license" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</MauiAsset>
+        <MauiAsset Include="Platforms\Windows\libs\opus.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
+              <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </MauiAsset>
+        <MauiAsset Include="Platforms\Windows\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
+			    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    </MauiAsset>
+	    <MauiAsset Include="Platforms\Windows\gnh\license" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
+		    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    </MauiAsset>
 		<MauiAsset Include="Platforms\Windows\gnh\logfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
@@ -894,16 +896,20 @@
 		<MauiAsset Include="Platforms\Windows\tileset\gnollhack_64x96_transparent_32bits-2.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-    <MauiAsset Include="Platforms\Windows\tileset\gnollhack_64x96_transparent_32bits-3.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </MauiAsset>
-  </ItemGroup>
+        <MauiAsset Include="Platforms\Windows\tileset\gnollhack_64x96_transparent_32bits-3.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </MauiAsset>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <AndroidEnvironment Include="Platforms\Android\Environment.txt" />
-	</ItemGroup>
+    <ItemGroup Condition="'$(IsMonoRuntime)' == 'true'">
+        <AndroidEnvironment Include="Platforms\Android\EnvironmentMono.txt" />
+    </ItemGroup>
 
-	<ItemGroup>
+    <ItemGroup Condition="'$(IsMonoRuntime)' != 'true'">
+        <AndroidEnvironment Include="Platforms\Android\EnvironmentCoreCLR.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
 		<AndroidNativeLibrary Include="Platforms\Android\libs\x86_64\libc++_shared.so" />
 		<AndroidNativeLibrary Include="Platforms\Android\libs\x86_64\libfmod.so" />
 		<AndroidNativeLibrary Include="Platforms\Android\libs\x86_64\libfmodstudio.so" />
@@ -1171,9 +1177,9 @@
 		<EmbeddedResource Include="Assets\UI\symbol-damage.png" />
 		<EmbeddedResource Include="Assets\UI\symbol-food.png" />
 		<EmbeddedResource Include="Assets\UI\symbol-mana.png" />
-    <EmbeddedResource Include="Assets\UI\symbol-gold.png" />
-    <EmbeddedResource Include="Assets\UI\symbol-recommended.png" />
-    <EmbeddedResource Include="Assets\UI\symbol-spell-abjuration.png" />
+        <EmbeddedResource Include="Assets\UI\symbol-gold.png" />
+        <EmbeddedResource Include="Assets\UI\symbol-recommended.png" />
+        <EmbeddedResource Include="Assets\UI\symbol-spell-abjuration.png" />
 		<EmbeddedResource Include="Assets\UI\symbol-spell-arcane.png" />
 		<EmbeddedResource Include="Assets\UI\symbol-spell-celestial.png" />
 		<EmbeddedResource Include="Assets\UI\symbol-spell-clerical.png" />
@@ -1218,27 +1224,27 @@
 		<EmbeddedResource Include="Assets\UI\zoom.png" />
 		<EmbeddedResource Include="Assets\uwch.ttf" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.15.0" />
-		<PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.10" />
-		<!--<PackageReference Include="System.Text.Json" Version="10.0.10" />-->
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-
+    <ItemGroup>
+        <PackageReference Include="Azure.Identity" Version="1.15.0" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.10" />
+        <!--<PackageReference Include="System.Text.Json" Version="10.0.10" />-->
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+        <!-- Platform-specific packages -->
+        <PackageReference Include="System.Management" Version="10.0.10" Condition="$(TargetFramework.Contains('-windows'))" />
+        <PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.22" Condition="$(TargetFramework.Contains('-android'))" />
+    </ItemGroup>
+    <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0'))">
 		<PackageReference Include="Microsoft.Maui.Controls" Condition="$(TargetFramework.Contains('-ios'))" Version="10.0.51" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Condition="$(TargetFramework.Contains('-ios'))" Version="10.0.51" />
-    <PackageReference Include="Microsoft.Maui.Controls" Condition="!$(TargetFramework.Contains('-ios'))" Version="10.0.90" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Condition="!$(TargetFramework.Contains('-ios'))" Version="10.0.90" />
-
-
-    <!-- Platform-specific packages -->
-		<PackageReference Include="System.Management" Version="10.0.10" Condition="$(TargetFramework.Contains('-windows'))" />
-		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.22" Condition="$(TargetFramework.Contains('-android'))" />
-
+        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Condition="$(TargetFramework.Contains('-ios'))" Version="10.0.51" />
+        <PackageReference Include="Microsoft.Maui.Controls" Condition="!$(TargetFramework.Contains('-ios'))" Version="10.0.90" />
+        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Condition="!$(TargetFramework.Contains('-ios'))" Version="10.0.90" />
 	</ItemGroup>
+    <ItemGroup Condition="$(TargetFramework.StartsWith('net11.0'))">
+        <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-preview.7.26406.9" />
+    </ItemGroup>
 
-	<ItemGroup Condition="!$(DefineConstants.Contains('SKIASHARP_3119'))">
+    <ItemGroup Condition="!$(DefineConstants.Contains('SKIASHARP_3119'))">
 		<PackageReference Include="SkiaSharp" Version="4.151.1" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="4.151.1" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="4.151.1" />
