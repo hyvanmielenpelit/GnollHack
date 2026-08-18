@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 #if GNH_MAUI
 using Microsoft.Maui.Controls;
 using SkiaSharp.Views.Maui;

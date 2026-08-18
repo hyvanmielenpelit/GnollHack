@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="151" android:versionName="1.95" package="com.soundmindentertainment.gnollhack" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="26" android:targetSdkVersion="34" />
 	<application android:label="GnollHack" android:theme="@style/MainTheme" android:usesCleartextTraffic="true" android:icon="@mipmap/icon"></application>

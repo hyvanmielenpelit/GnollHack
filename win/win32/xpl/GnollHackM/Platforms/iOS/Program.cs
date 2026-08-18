@@ -1,4 +1,4 @@
-﻿using GnollHackM.Platforms.iOS;
+using GnollHackM.Platforms.iOS;
 using ObjCRuntime;
 using System.Runtime.InteropServices;
 using UIKit;

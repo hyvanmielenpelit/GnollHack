@@ -1,4 +1,4 @@
-﻿using Foundation;
+using Foundation;
 using GnollHackX.iOS;
 using GnollHackX.Pages.Game;
 using System;

@@ -1,4 +1,4 @@
-﻿#if !GNH_MAUI
+#if !GNH_MAUI
 using Xamarin.Forms;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]

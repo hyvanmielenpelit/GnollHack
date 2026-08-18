@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 #if GNH_MAUI
 using GnollHackM;
 #endif

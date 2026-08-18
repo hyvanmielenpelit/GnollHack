@@ -1,4 +1,4 @@
-﻿using Microsoft.Maui.Controls.Handlers.Compatibility;
+using Microsoft.Maui.Controls.Handlers.Compatibility;
 using Microsoft.Maui.Controls.Platform.Compatibility;
 using System;
 using System.Collections.Generic;

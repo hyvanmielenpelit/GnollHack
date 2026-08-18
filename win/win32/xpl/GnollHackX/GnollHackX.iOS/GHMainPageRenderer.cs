@@ -1,4 +1,4 @@
-﻿using AVFoundation;
+using AVFoundation;
 using Foundation;
 using GnollHackX;
 using GnollHackX.iOS;

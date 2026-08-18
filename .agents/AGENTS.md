@@ -59,6 +59,16 @@ The `.editorconfig` at the repository root enforces these indentation rules. AI 
 > **⚠️ Common mistake**: MSBuild project files (`.csproj`, `.vcxproj`, `.props`, `.targets`, `.proj`) use **2 spaces** per indent level — never tabs or 4 spaces. This matches the convention used by Visual Studio, `dotnet new`, and official Microsoft repositories.
 
 
+## BOM (Byte Order Mark) Policy
+
+| File Type | BOM | Reason |
+|-----------|-----|--------|
+| `.sln` | **WITH BOM** (`utf-8-bom`) | VS solution parser requires it |
+| `.vcxproj`, `.vcxproj.filters` | **WITH BOM** (`utf-8-bom`) | VS C++ project serializer convention |
+| All other files | **No BOM** (`utf-8`) | Industry standard |
+
+> **⚠️ Important**: AI agents must **never** add a UTF-8 BOM (`EF BB BF`) to files they create or modify, except for `.sln`, `.vcxproj`, and `.vcxproj.filters` files. Most AI tools create BOM-less UTF-8 by default, which is correct. If you encounter a file with an unexpected BOM, remove it. The `.editorconfig` enforces `charset = utf-8` (no BOM) globally with explicit `charset = utf-8-bom` overrides only for `.sln`, `.vcxproj`, and `.vcxproj.filters`.
+
 
 ## Key Terminology
 

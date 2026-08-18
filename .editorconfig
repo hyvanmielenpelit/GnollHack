@@ -10,13 +10,18 @@ charset = utf-8
 trim_trailing_whitespace = false
 insert_final_newline = true
 
-# Visual Studio Solution Files: tabs (VS serializer convention)
+# Visual Studio Solution Files: tabs + BOM (VS serializer convention)
 [*.sln]
 indent_style = tab
+charset = utf-8-bom
 
 # MSBuild Project Files: 2 spaces (industry standard)
 [*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj,nativeproj}]
 indent_size = 2
+
+# VS C++ Project Files: keep BOM (VS serializer writes BOM)
+[*.{vcxproj,vcxproj.filters}]
+charset = utf-8-bom
 
 # MSBuild Props & Targets: 2 spaces
 [*.{props,targets}]

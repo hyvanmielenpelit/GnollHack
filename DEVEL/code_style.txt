@@ -68,6 +68,27 @@ use by default.
 When editing any of these files, ensure that the indentation matches the
 table above. Do not use tabs in any file except .sln files.
 
+BOM (Byte Order Mark) Policy
+-----------------------------
+
+All text files use UTF-8 encoding. The BOM policy is:
+
+  File type(s)                                     BOM
+  -----------------------------------------------  ---
+  .sln (VS solution)                               WITH BOM (utf-8-bom)
+  .vcxproj, .vcxproj.filters                       WITH BOM (utf-8-bom)
+  All other files                                  No BOM (utf-8)
+
+Visual Studio's solution parser requires a UTF-8 BOM in .sln files.
+The VS C++ project serializer also writes BOM to .vcxproj and
+.vcxproj.filters files. These file types are rarely modified by AI
+agents or external tools, so their BOM is preserved by convention.
+
+All other files (including .c, .h, .cs, .xaml, .csproj, .proj, .props,
+.targets, .xml, .json, .yaml, .txt, .md) must NOT have a BOM. This is
+the industry standard and matches the .editorconfig charset = utf-8
+setting, which means UTF-8 without BOM.
+
 Naming Conventions
 ------------------
 

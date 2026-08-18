@@ -1,4 +1,4 @@
-﻿Additions allow you to add arbitrary C# to the generated classes
+Additions allow you to add arbitrary C# to the generated classes
 before they are compiled.  This can be helpful for providing convenience
 methods or adding pure C# classes.
 

@@ -1,4 +1,4 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- Remove libEGL.dll from NativeCopyLocalItems-->
   <Target Name="Angle1" AfterTargets="ResolvePackageAssets">

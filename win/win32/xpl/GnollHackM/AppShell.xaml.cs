@@ -1,4 +1,4 @@
-﻿namespace GnollHackM;
+namespace GnollHackM;
 
 public partial class AppShell : Shell
 {
