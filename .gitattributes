@@ -1,0 +1,80 @@
+# Set default behavior, in case users don't have core.autocrlf set.
+* text=auto
+
+# C / C++ source, headers, and Lex/Yacc grammar files
+*.c text
+*.h text
+*.cpp text
+*.hpp text
+*.l text
+*.y text
+
+# C# / .NET / MAUI / MSBuild
+*.cs text
+*.xaml text
+*.csproj text
+*.vcxproj text
+*.vcxproj.filters text
+*.proj text
+*.props text
+*.targets text
+
+# Game data source files
+*.des text
+*.base text
+*.def text
+*.fal text
+*.tru text
+*.txt text
+
+# Configuration and documentation
+*.xml text
+*.json text
+*.sjson text
+*.yml text
+*.yaml text
+*.config text
+*.manifest text
+*.appxmanifest text
+*.plist text
+*.xcprivacy text
+*.md text
+*.editorconfig text
+*.gitattributes text
+*.gitignore text
+
+# Files that must always have CRLF (Windows tools require it)
+*.sln text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files (images)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.bmp binary
+*.ico binary
+*.cur binary
+*.webp binary
+*.ghpng binary
+
+# Binary files (fonts)
+*.ttf binary
+*.otf binary
+*.woff binary
+
+# Binary files (native libraries and executables)
+*.dll binary
+*.exe binary
+*.so binary
+*.dylib binary
+*.a binary
+*.lib binary
+*.pdb binary
+*.jar binary
+
+# Binary files (game assets — not normally tracked, but listed for safety)
+*.bank binary
+*.lev binary
+*.pdf binary

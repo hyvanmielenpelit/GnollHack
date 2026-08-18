@@ -58,7 +58,7 @@ conventions, which are enforced by the .editorconfig at the repository root.
   .yaml, .yml                                      2 spaces
   .xaml                                            4 spaces
   .cs (C#)                                         4 spaces
-  .c, .h (C)                                       4 spaces
+  .c, .h, .cpp, .hpp, .l, .y (C/C++/Lex/Yacc)      4 spaces
   .sln (VS solution)                               Tabs
 
 These conventions match what Visual Studio, dotnet new, and the official
@@ -88,6 +88,26 @@ All other files (including .c, .h, .cs, .xaml, .csproj, .proj, .props,
 .targets, .xml, .json, .yaml, .txt, .md) must NOT have a BOM. This is
 the industry standard and matches the .editorconfig charset = utf-8
 setting, which means UTF-8 without BOM.
+
+Line Ending Policy
+-------------------
+
+All text files are stored with LF line endings in the Git repository.
+On checkout, core.autocrlf = true converts to the OS-native format:
+CRLF on Windows, LF on Linux/macOS. A .gitattributes file with
+* text=auto enforces this for all contributors.
+
+  File type(s)                                     Line Ending
+  -----------------------------------------------  -----------
+  Most text files (on Windows)                     CRLF (OS default)
+  Most text files (on Linux/macOS)                 LF (OS default)
+  .sln, .bat, .cmd                                 Always CRLF
+  .sh (shell scripts)                              LF preferred
+
+Shell scripts (.sh) and Makefiles require LF line endings to function
+on Unix-based systems. Git's autocrlf handles the normalization on
+commit, but editors should be configured to use LF for these files
+(see .editorconfig).
 
 Naming Conventions
 ------------------

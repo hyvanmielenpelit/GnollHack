@@ -5,15 +5,15 @@ root = true
 [*]
 indent_style = space
 indent_size = 4
-end_of_line = crlf
 charset = utf-8
 trim_trailing_whitespace = false
 insert_final_newline = true
 
-# Visual Studio Solution Files: tabs + BOM (VS serializer convention)
+# Visual Studio Solution Files: tabs + BOM + CRLF (VS serializer convention)
 [*.sln]
 indent_style = tab
 charset = utf-8-bom
+end_of_line = crlf
 
 # MSBuild Project Files: 2 spaces (industry standard)
 [*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj,nativeproj}]
@@ -32,25 +32,37 @@ indent_size = 2
 indent_size = 4
 
 # XML, config, manifests, and resource files: 2 spaces
-[*.{xml,config,manifest,nuspec,resx,ruleset,vsixmanifest,vsct}]
+[*.{xml,config,manifest,nuspec,resx,ruleset,vsixmanifest,vsct,appxmanifest}]
 indent_size = 2
 
+# Apple property lists and privacy manifests: 4 spaces
+[*.{plist,xcprivacy}]
+indent_size = 4
+
 # JSON: 2 spaces
-[*.json]
+[*.{json,sjson}]
 indent_size = 2
 
 # YAML: 2 spaces (tabs are forbidden in YAML spec)
 [*.{yaml,yml}]
 indent_size = 2
 
-# C source and headers: strict Allman style, 4 spaces, 78 cols
-[*.{c,h}]
+# C/C++ source, headers, Lex/Yacc: strict Allman style, 4 spaces, 78 cols
+[*.{c,h,cpp,hpp,l,y}]
 indent_size = 4
 max_line_length = 78
 
 # Game data text files: must not have a BOM
 [dat/*.txt]
 charset = utf-8
+
+# Shell scripts: must use LF (Unix interpreters require it)
+[*.sh]
+end_of_line = lf
+
+# Windows batch files: must use CRLF
+[*.{bat,cmd}]
+end_of_line = crlf
 
 # C# and VB.NET
 [*.{cs,vb}]

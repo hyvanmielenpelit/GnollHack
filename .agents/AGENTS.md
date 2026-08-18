@@ -46,7 +46,7 @@ The `.editorconfig` at the repository root enforces these indentation rules. AI 
 
 | File Type | Indent | Notes |
 |-----------|--------|-------|
-| `.c`, `.h` | **4 spaces** | C source and headers |
+| `.c`, `.h`, `.cpp`, `.hpp`, `.l`, `.y` | **4 spaces** | C/C++ source, headers, Lex/Yacc |
 | `.cs` | **4 spaces** | C# source |
 | `.xaml` | **4 spaces** | XAML layouts |
 | `.csproj`, `.vcxproj`, `.proj` | **2 spaces** | MSBuild project files |
@@ -68,6 +68,21 @@ The `.editorconfig` at the repository root enforces these indentation rules. AI 
 | All other files | **No BOM** (`utf-8`) | Industry standard |
 
 > **⚠️ Important**: AI agents must **never** add a UTF-8 BOM (`EF BB BF`) to files they create or modify, except for `.sln`, `.vcxproj`, and `.vcxproj.filters` files. Most AI tools create BOM-less UTF-8 by default, which is correct. If you encounter a file with an unexpected BOM, remove it. The `.editorconfig` enforces `charset = utf-8` (no BOM) globally with explicit `charset = utf-8-bom` overrides only for `.sln`, `.vcxproj`, and `.vcxproj.filters`.
+
+
+## Line Ending Policy
+
+Git stores all text files with **LF** line endings in the repository. On checkout, `core.autocrlf = true` converts to the OS-native format (CRLF on Windows, LF on Linux/macOS). A `.gitattributes` file with `* text=auto` enforces this for all contributors regardless of their local Git configuration.
+
+> **⚠️ AI agents frequently produce incorrect line endings.** Pay attention to line endings when creating or modifying files:
+>
+> - On **Windows**, write files with **CRLF** line endings (the OS default). Git normalizes to LF on commit automatically.
+> - On **Linux/macOS**, write files with **LF** line endings (the OS default).
+> - **Exception — `.sln`, `.bat`, `.cmd`**: These must **always** be CRLF, even on Linux, because their Windows-native parsers require it.
+>
+> **Common mistake**: Creating or modifying a shell script (`.sh`) and mixing line endings within the file. A CRLF shebang (`#!/bin/bash\r`) causes `bad interpreter: No such file or directory` on Linux/WSL. Git's `autocrlf` normalization handles this on commit, but if a script is executed directly from the working tree (e.g., via WSL mounting `/mnt/c/`), CRLF will cause failures. When in doubt, verify `.sh` files use LF line endings.
+>
+> **Why AI agents get this wrong**: Git stores all text files with **LF** internally. When AI tools read code from the Git object store (`git show`, `git cat-file`), GitHub API, or `raw.githubusercontent.com`, they receive **LF** line endings — even on Windows. The AI then reproduces those LF endings in its output. On Windows, the correct behavior is to write **CRLF** to the working tree and let Git normalize back to LF on commit. Do not blindly copy line endings from Git/GitHub source data.
 
 
 ## Key Terminology
