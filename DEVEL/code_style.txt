@@ -42,6 +42,32 @@ possible:
 
 Single blank lines should be used wherever convenient to improve readability.
 
+Non-C File Indentation Standards
+---------------------------------
+
+GnollHack contains many non-C files (MSBuild project files, XAML layouts,
+JSON configs, etc.). These files follow industry-standard indentation
+conventions, which are enforced by the .editorconfig at the repository root.
+
+  File type(s)                                     Indentation
+  -----------------------------------------------  -----------
+  .csproj, .vcxproj, .proj, .props, .targets       2 spaces
+  .vcxproj.filters, .projitems, .shproj            2 spaces
+  .xml, .config, .manifest, .resx, .nuspec         2 spaces
+  .json                                            2 spaces
+  .yaml, .yml                                      2 spaces
+  .xaml                                            4 spaces
+  .cs (C#)                                         4 spaces
+  .c, .h (C)                                       4 spaces
+  .sln (VS solution)                               Tabs
+
+These conventions match what Visual Studio, dotnet new, and the official
+Microsoft .NET repositories (dotnet/runtime, dotnet/maui, dotnet/roslyn)
+use by default.
+
+When editing any of these files, ensure that the indentation matches the
+table above. Do not use tabs in any file except .sln files.
+
 Naming Conventions
 ------------------
 

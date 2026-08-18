@@ -40,6 +40,26 @@ AI Agents MUST adhere strictly to the following:
 - Shared code between GnollHackM and GnollHackX uses `<Compile Include>` file-linking, NOT project references
 - **File-linked platform code**: GnollHackM also compiles platform-specific `.cs` files from legacy `GnollHackX.Android/` and `GnollHackX.iOS/` directories via `<Compile Include>` (within platform-conditioned `<ItemGroup>` blocks). These files may import platform-specific NuGet packages (e.g., `Xamarin.Google.Android.Play.Core` for in-app reviews). When evaluating NuGet dependencies in `GnollHackM.csproj`, always check file-linked sources in `GnollHackX.*` directories — not just `GnollHackM/` itself.
 
+## File Indentation Standards
+
+The `.editorconfig` at the repository root enforces these indentation rules. AI agents **MUST** follow them:
+
+| File Type | Indent | Notes |
+|-----------|--------|-------|
+| `.c`, `.h` | **4 spaces** | C source and headers |
+| `.cs` | **4 spaces** | C# source |
+| `.xaml` | **4 spaces** | XAML layouts |
+| `.csproj`, `.vcxproj`, `.proj` | **2 spaces** | MSBuild project files |
+| `.props`, `.targets` | **2 spaces** | MSBuild property/target sheets |
+| `.xml`, `.config`, `.manifest`, `.resx` | **2 spaces** | XML configuration files |
+| `.json` | **2 spaces** | JSON configuration |
+| `.yaml`, `.yml` | **2 spaces** | YAML (tabs are forbidden by spec) |
+| `.sln` | **Tabs** | Visual Studio solution files |
+
+> **⚠️ Common mistake**: MSBuild project files (`.csproj`, `.vcxproj`, `.props`, `.targets`, `.proj`) use **2 spaces** per indent level — never tabs or 4 spaces. This matches the convention used by Visual Studio, `dotnet new`, and official Microsoft repositories.
+
+
+
 ## Key Terminology
 
 | Term | Meaning |

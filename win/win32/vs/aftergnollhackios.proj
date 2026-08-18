@@ -1,23 +1,23 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="dirs.props"/>
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
-	<!--
+  <!--
     Inputs="$(MacOutDir)libgnollhackios.a"
     Outputs="$(iOSNativeReferencesDir)libgnollhackios.a" 
-	-->
+  -->
   <Target Name="Build">
     <Copy SkipUnchangedFiles="False" SourceFiles="$(MacOutDir)libgnollhackios.a" DestinationFolder="$(iOSNativeReferencesDir)"/>
-	<Message Text="Copied libgnollhackios.a from $(MacOutDir) to $(iOSNativeReferencesDir)" Importance="High" />
+  <Message Text="Copied libgnollhackios.a from $(MacOutDir) to $(iOSNativeReferencesDir)" Importance="High" />
     <Copy SkipUnchangedFiles="False" SourceFiles="$(MacOutDir)libgnollhackios.a" DestinationFolder="$(MauiiOSNativeReferencesDir)"/>
-	<Message Text="Copied libgnollhackios.a from $(MacOutDir) to $(MauiiOSNativeReferencesDir)" Importance="High" />
+  <Message Text="Copied libgnollhackios.a from $(MacOutDir) to $(MauiiOSNativeReferencesDir)" Importance="High" />
   </Target>
   <Target Name="Clean">
     <Delete Files="$(MacOutDir)libgnollhackios.a"/>
-	<Message Text="Deleted libgnollhackios.a from $(MacOutDir)" Importance="High" />
+  <Message Text="Deleted libgnollhackios.a from $(MacOutDir)" Importance="High" />
     <Delete Files="$(iOSNativeReferencesDir)libgnollhackios.a"/>
-	<Message Text="Deleted libgnollhackios.a from $(iOSNativeReferencesDir)" Importance="High" />
+  <Message Text="Deleted libgnollhackios.a from $(iOSNativeReferencesDir)" Importance="High" />
     <Delete Files="$(MauiiOSNativeReferencesDir)libgnollhackios.a"/>
-	<Message Text="Deleted libgnollhackios.a from $(MauiiOSNativeReferencesDir)" Importance="High" />
+  <Message Text="Deleted libgnollhackios.a from $(MauiiOSNativeReferencesDir)" Importance="High" />
   </Target>
 </Project>

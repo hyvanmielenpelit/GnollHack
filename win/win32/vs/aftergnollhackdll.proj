@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="dirs.props"/>
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
@@ -6,13 +6,13 @@
     Inputs="$(LibShareDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)xcredits;$(LibShareDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols"
     Outputs="$(MauiWindowsGnhDir)defaults.gnh;$(MauiWindowsGnhDir)license;$(MauiWindowsGnhDir)credits;$(MauiWindowsGnhDir)xcredits;$(MauiWindowsGnhDir)sysconf;$(MauiWindowsGnhDir)symbols;$(MauiWindowsGnhDir)record">
 
-  	<Copy SourceFiles="$(LibShareDir)defaults.gnh;$(DatDir)license;$(DatDir)xcredits;$(LibShareDir)sysconf;$(DatDir)symbols;$(WinWin32Dir)record" DestinationFolder="$(MauiWindowsGnhDir)"/>
-	  <Message Text="Copied GnollHack files from $(LibShareDir) to $(MauiWindowsGnhDir)" Importance="High" />
-  	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x64\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(WinFmodDir)fsbank\lib\winnt-x64\opus.dll;$(WinFmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(MauiWindowsLibsDir)"/>
-	  <Message Text="Copied FMOD files from $(WinFmodDir) to $(MauiWindowsLibsDir)" Importance="High" />
+    <Copy SourceFiles="$(LibShareDir)defaults.gnh;$(DatDir)license;$(DatDir)xcredits;$(LibShareDir)sysconf;$(DatDir)symbols;$(WinWin32Dir)record" DestinationFolder="$(MauiWindowsGnhDir)"/>
+    <Message Text="Copied GnollHack files from $(LibShareDir) to $(MauiWindowsGnhDir)" Importance="High" />
+    <Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x64\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(WinFmodDir)fsbank\lib\winnt-x64\opus.dll;$(WinFmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(MauiWindowsLibsDir)"/>
+    <Message Text="Copied FMOD files from $(WinFmodDir) to $(MauiWindowsLibsDir)" Importance="High" />
   </Target>
   <Target Name="Clean">
     <Delete Files="$(MauiWindowsGnhDir)defaults.gnh;$(MauiWindowsGnhDir)license;$(MauiWindowsGnhDir)xcredits;$(MauiWindowsGnhDir)sysconf;$(MauiWindowsGnhDir)symbols;$(MauiWindowsGnhDir)record"/>
-	<Message Text="Deleted GnollHack files from $(MauiWindowsGnhDir)" Importance="High" />
+  <Message Text="Deleted GnollHack files from $(MauiWindowsGnhDir)" Importance="High" />
   </Target>
 </Project>

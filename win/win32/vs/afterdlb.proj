@@ -1,19 +1,19 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="dirs.props"/>
   <Import Project="files.props"/>
   <Target Name="Build"
-	Inputs="$(ToolsDir)dlb.exe;@(DlbList);$(SysWinntDir)porthelp"
-	Outputs="$(BinDir)nhdat">
+  Inputs="$(ToolsDir)dlb.exe;@(DlbList);$(SysWinntDir)porthelp"
+  Outputs="$(BinDir)nhdat">
 
- 	<Copy SourceFiles="$(SysWinntDir)porthelp" DestinationFolder="$(DatDir)"/>
-	<WriteLinesToFile File="$(DatDir)dlb.lst" Lines="@(DlbList->'%(filename)%(extension)')" Overwrite="true"/>
-	<Exec Command="$(ToolsDir)dlb.exe cIf $(DatDir)dlb.lst $(BinDir)nhdat" WorkingDirectory="$(DatDir)"/>
-	<Delete Files="$(DatDir)porthelp"/>
+   <Copy SourceFiles="$(SysWinntDir)porthelp" DestinationFolder="$(DatDir)"/>
+  <WriteLinesToFile File="$(DatDir)dlb.lst" Lines="@(DlbList->'%(filename)%(extension)')" Overwrite="true"/>
+  <Exec Command="$(ToolsDir)dlb.exe cIf $(DatDir)dlb.lst $(BinDir)nhdat" WorkingDirectory="$(DatDir)"/>
+  <Delete Files="$(DatDir)porthelp"/>
 
- 	<Copy SourceFiles="$(BinDir)nhdat" DestinationFolder="$(MauiWindowsGnhDir)"/>
+   <Copy SourceFiles="$(BinDir)nhdat" DestinationFolder="$(MauiWindowsGnhDir)"/>
   </Target>
   <Target Name="Clean">
-	<Delete Files="$(BinDir)nhdat"/>
-	<Delete Files="$(MauiWindowsGnhDir)nhdat"/>
+  <Delete Files="$(BinDir)nhdat"/>
+  <Delete Files="$(MauiWindowsGnhDir)nhdat"/>
   </Target>
 </Project>

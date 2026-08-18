@@ -4,28 +4,28 @@
     <!-- -v -->
     <Defs Include = "$(DatDir)options"/>
     <Defs Include = "$(IncDir)date.h"/>
-	<!-- -o -->
+  <!-- -o -->
     <Defs Include = "$(IncDir)onames.h"/>
-	<!-- -p -->
+  <!-- -p -->
     <Defs Include = "$(IncDir)pm.h"/>
-	<!-- -z -->
+  <!-- -z -->
     <Defs Include = "$(IncDir)vis_tab.h"/>
     <Defs Include = "$(SrcDir)vis_tab.c"/>
-	<!-- -d -->
+  <!-- -d -->
     <Defs Include = "$(DatDir)data"/>
-	<!-- -r -->
+  <!-- -r -->
     <Defs Include = "$(DatDir)rumors"/>
-	<!-- -s -->
+  <!-- -s -->
     <Defs Include = "$(DatDir)engrave"/>
     <Defs Include = "$(DatDir)epitaph"/>
     <Defs Include = "$(DatDir)bogusmon"/>
-	<!-- -q -->
+  <!-- -q -->
     <Defs Include = "$(DatDir)quest.dat"/>
-	<!-- -h -->
+  <!-- -h -->
     <Defs Include = "$(DatDir)oracles"/>
-	<!-- -e -->
+  <!-- -e -->
     <Defs Include = "$(DatDir)dungeon.pdf"/>
-	<!-- -a -->
+  <!-- -a -->
     <Defs Include = "$(IncDir)animoff.h"/>
     <Defs Include = "$(IncDir)animtotals.h"/>
   </ItemGroup>
@@ -56,7 +56,7 @@
     <Desfiles Include = "tourist.des"/>
     <Desfiles Include = "tower.des"/>
     <Desfiles Include = "valkyrie.des"/>
-    <Desfiles Include = "wizard.des"/>	
+    <Desfiles Include = "wizard.des"/>
     <Desfiles Include = "yendor.des"/>
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,34 @@ charset = utf-8
 trim_trailing_whitespace = false
 insert_final_newline = true
 
+# Visual Studio Solution Files: tabs (VS serializer convention)
+[*.sln]
+indent_style = tab
+
+# MSBuild Project Files: 2 spaces (industry standard)
+[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj,nativeproj}]
+indent_size = 2
+
+# MSBuild Props & Targets: 2 spaces
+[*.{props,targets}]
+indent_size = 2
+
+# XAML files: 4 spaces (match existing codebase convention)
+[*.xaml]
+indent_size = 4
+
+# XML, config, manifests, and resource files: 2 spaces
+[*.{xml,config,manifest,nuspec,resx,ruleset,vsixmanifest,vsct}]
+indent_size = 2
+
+# JSON: 2 spaces
+[*.json]
+indent_size = 2
+
+# YAML: 2 spaces (tabs are forbidden in YAML spec)
+[*.{yaml,yml}]
+indent_size = 2
+
 # C source and headers: strict Allman style, 4 spaces, 78 cols
 [*.{c,h}]
 indent_size = 4
