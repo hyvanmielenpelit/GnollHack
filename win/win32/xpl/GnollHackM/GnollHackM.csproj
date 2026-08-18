@@ -1294,10 +1294,16 @@
   <!-- IMPLIED DEFINE CONSTANTS -->
   <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
     <DefineConstants Condition="'$(EnableLLVM)'=='True'">$(DefineConstants);LLVM</DefineConstants>
+    <DefineConstants Condition="'$(IsMonoRuntime)'!='true'">$(DefineConstants);CORECLR</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
     <DefineConstants Condition="'$(MtouchUseLlvm)'=='True'">$(DefineConstants);LLVM</DefineConstants>
+    <DefineConstants Condition="'$(IsMonoRuntime)'!='true'">$(DefineConstants);CORECLR</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
+    <DefineConstants>$(DefineConstants);CORECLR</DefineConstants>
   </PropertyGroup>
 
   <!-- AUTOMATIC WINDOWS APPXMANIFEST VERSION SYNCHRONIZATION -->

@@ -143,7 +143,7 @@ namespace GnollHackX
             data.StringData["SkiaVersion"] = GHApp.SkiaVersionString;
             data.StringData["FrameworkVersion"] = GHApp.FrameworkVersionString;
             data.StringData["UIFrameworkVersion"] = (GHApp.IsMaui ? ".NET MAUI " : "XF ") + GHApp.UIFrameworkVersionString;
-            data.StringData["Compiler"] = GHApp.IsLLVM ? "LLVM" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT";
+            data.StringData["Compiler"] = GHApp.IsLLVM ? "LLVM" : GHApp.IsCoreCLR ? "Crossgen2" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT";
             data.StringData["RuntimeVersion"] = GHApp.RuntimeVersionString;
             data.StringData["GPUBackend"] = GHApp.GPUBackend ?? "";
             data.StringData["Timestamp"] = DateTime.UtcNow.ToString("O");
@@ -1809,6 +1809,13 @@ namespace GnollHackX
 
         public static readonly bool IsLLVM =
 #if LLVM
+            true;
+#else
+            false;
+#endif
+
+        public static readonly bool IsCoreCLR =
+#if CORECLR
             true;
 #else
             false;
