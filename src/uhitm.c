@@ -3929,6 +3929,7 @@ hmonas(struct monst *mon)
         mattk = getmattk(&youmonst, mon, i, sum, &alt_attk);
         if (is_special_offhand)
         {
+            is_special_offhand = FALSE;
             temp_attack = *mattk;
             /* Extra off-hand attack causes half damage using natural attack */
             if (temp_attack.damd > 2)
@@ -3944,10 +3945,8 @@ hmonas(struct monst *mon)
         if (youmonst.data->heads > 1 && youmonst.heads_left < bite_butt_count)
             continue;
 
-        is_offhand = is_special_offhand || is_alternating_offhand || (mattk->aflags & ATTKFLAGS_OFFHAND) != 0;
+        is_offhand = is_alternating_offhand || (mattk->aflags & ATTKFLAGS_OFFHAND) != 0;
         needs_twoweap = (mattk->aflags & ATTKFLAGS_REQUIRE_TWOWEAPON) != 0;
-
-        is_special_offhand = FALSE;
         weapon = 0;
 
         /* Skip attacks that require two-weapon combat if not active */
