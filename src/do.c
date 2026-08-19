@@ -5772,12 +5772,7 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr)
         {
             if (*specialbuf1)
                 Strcat(specialbuf1, ", ");
-            if (is_offhand)
-                Strcat(specialbuf1, "off-hand");
-            if (*specialbuf1)
-                Strcat(specialbuf1, ", ");
-            if (needs_twoweapon)
-                Strcat(specialbuf1, "while two-weaponing");
+            Sprintf(eos(specialbuf1), "%s%s", needs_twoweapon ? "off-" : "left ", mbodypart(mon, HAND));
         }
 
         if (strcmp(specialbuf1, ""))

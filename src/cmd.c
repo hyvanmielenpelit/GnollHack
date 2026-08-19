@@ -4365,13 +4365,18 @@ status_enlightenment(int mode, int final)
     {
         wtype = P_DUAL_WEAPON_COMBAT;
         char sklvlbuf[20];
-        int sklvl = P_SKILL_LEVEL(wtype);
+        int sklvl = effective_twoweap_skill_level(TRUE); // P_SKILL_LEVEL(wtype);
         boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
+        boolean eff_different = sklvl != P_SKILL_LEVEL(wtype);
+        Strcpy(sklvlbuf, skill_level_name_core(sklvl));
 
         if (sklvl == P_ISRESTRICTED)
             Strcpy(sklvlbuf, "no");
         else
-            (void)lcase(skill_level_name(wtype, sklvlbuf, FALSE));
+        {
+            Strcpy(sklvlbuf, skill_level_name_core(sklvl));
+            (void)lcase(sklvlbuf);
+        }
         /* "you have no/basic/expert/master/grand-master skill with <skill>"
            or "you are unskilled/skilled in <skill>" */
 
@@ -4381,13 +4386,39 @@ status_enlightenment(int mode, int final)
         Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
             hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
 
-        if (can_advance(wtype, FALSE))
+        if (!eff_different && can_advance(wtype, FALSE))
             Sprintf(eos(buf), " and %s that",
                 !final ? "can enhance" : "could have enhanced");
         if (hav)
             you_have(buf, "");
         else
             you_are(buf, "");
+
+        if (eff_different)
+        {
+            int sklvl = effective_twoweap_skill_level(FALSE);
+            if (sklvl == P_ISRESTRICTED)
+                Strcpy(sklvlbuf, "no");
+            else
+            {
+                Strcpy(sklvlbuf, skill_level_name_core(sklvl));
+                (void)lcase(sklvlbuf);
+            }
+
+            int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE, FALSE, FALSE); /* Gives only pure skill bonuses */
+            int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE, FALSE, FALSE); /* Gives only pure skill bonuses */
+
+            Sprintf(buf, "latently %s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
+                hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
+
+            if (can_advance(wtype, FALSE))
+                Sprintf(eos(buf), " and %s that",
+                    !final ? "can enhance" : "could have enhanced");
+            if (hav)
+                you_have(buf, "");
+            else
+                you_are(buf, "");
+        }
     }
 
     /* report 'nudity' */

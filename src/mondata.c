@@ -190,6 +190,7 @@ static const NEARDATA struct mflag_description m7flag_descriptions[] = {
     { M7_TOURIST, "tourist", "tourists" },
     { M7_VALKYRIE, "valkyrie", "valkyries" },
     { M7_WIZARD, "wizard", "wizards" },
+    { M7_DUAL_WIELDER, "dual wielder", "dual wielders" },
     { 0 , "", "" }
 };
 
