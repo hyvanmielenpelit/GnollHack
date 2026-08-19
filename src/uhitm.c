@@ -3887,6 +3887,7 @@ hmonas(struct monst *mon)
     boolean odd_claw = TRUE;
     int i, tmp, armorpenalty, sum[NATTK], /* nsum = 0, */ dhit = 0, attknum = 0;
     int dieroll, multi_claw = 0;
+    struct obj* noweapon = 0;
 
     /* with just one touch/claw/weapon attack, both rings matter;
        with more than one, alternate right and left when checking
@@ -3954,7 +3955,10 @@ hmonas(struct monst *mon)
                use weapons do not have this restriction, but they also
                never have the opportunity to use two weapons) */
             if (is_offhand && uwep && bimanual(uwep))
+            {
+                is_alternating_offhand = !has_explicit_offhand && !is_alternating_offhand;
                 continue;
+            }
             /* Certain monsters don't use weapons when encountered as enemies,
              * but players who polymorph into them have hands or claws and
              * thus should be able to use weapons.  This shouldn't prohibit
@@ -3969,7 +3973,7 @@ hmonas(struct monst *mon)
                 if (uarms)
                     originalweapon = &uarms;
                 else
-                    originalweapon = uarmg ? &uarmg : &uwep;
+                    originalweapon = uarmg ? &uarmg : &noweapon;
             }
             else
             {
@@ -4046,8 +4050,6 @@ hmonas(struct monst *mon)
                     {
                         goto use_weapon;
                     }
-                    else if (uwep && bimanual(uwep))
-                        goto use_weapon;
                 }
                 else
                 {
