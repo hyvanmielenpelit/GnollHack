@@ -4396,7 +4396,7 @@ status_enlightenment(int mode, int final)
 
         if (eff_different)
         {
-            int sklvl = effective_twoweap_skill_level(FALSE);
+            sklvl = effective_twoweap_skill_level(FALSE);
             if (sklvl == P_ISRESTRICTED)
                 Strcpy(sklvlbuf, "no");
             else
@@ -4405,8 +4405,8 @@ status_enlightenment(int mode, int final)
                 (void)lcase(sklvlbuf);
             }
 
-            int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE, FALSE, FALSE); /* Gives only pure skill bonuses */
-            int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE, FALSE, FALSE); /* Gives only pure skill bonuses */
+            hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE, FALSE, FALSE); /* Gives only pure skill bonuses */
+            dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE, FALSE, FALSE, 0, TRUE, FALSE, FALSE, FALSE); /* Gives only pure skill bonuses */
 
             Sprintf(buf, "latently %s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
                 hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
