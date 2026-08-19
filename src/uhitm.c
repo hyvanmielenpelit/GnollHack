@@ -375,7 +375,7 @@ find_roll_to_hit(struct monst *mtmp, uchar aatyp, struct obj *weapon, int *attk_
             tmp += weapon_to_hit_value(weapon, mtmp, &youmonst, 0);
         else if(uarmg)
             tmp += weapon_to_hit_value(uarmg, mtmp, &youmonst, 0);
-        nonpolytmp += weapon_skill_hit_bonus(weapon, P_NONE, FALSE, TRUE, TRUE, 0, TRUE, FALSE, FALSE);
+        nonpolytmp += weapon_skill_hit_bonus(weapon, P_NONE, FALSE, TRUE, TRUE, 0, TRUE, FALSE, FALSE, TRUE);
     } 
     else if (aatyp == AT_KICK && martial_bonus()) 
     {
@@ -383,7 +383,7 @@ find_roll_to_hit(struct monst *mtmp, uchar aatyp, struct obj *weapon, int *attk_
             tmp += weapon_to_hit_value(weapon, mtmp, &youmonst, 0);
         else if (uarmf)
             tmp += weapon_to_hit_value(uarmf, mtmp, &youmonst, 0);
-        nonpolytmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE, FALSE, TRUE, TRUE, 0, TRUE, FALSE, FALSE);
+        nonpolytmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE, FALSE, TRUE, TRUE, 0, TRUE, FALSE, FALSE, TRUE);
     }
 
     tmp += maybe_polyd(max(polytmp, nonpolytmp), nonpolytmp);
@@ -1799,7 +1799,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
     {
         /* to be valid a projectile must have had the correct projector */
         damage += adjust_damage(
-            weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, !is_golf_swing_with_stone, TRUE, 0, TRUE, ordinary_thrown, FALSE),
+            weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, !is_golf_swing_with_stone, TRUE, 0, TRUE, ordinary_thrown, FALSE, TRUE),
             &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE);
         /* [this assumes that `!thrown' implies wielded...] */
         use_skill(wtype, 1);
@@ -1815,7 +1815,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
     }
     else if (ordinary_thrown) //Thrown weapon skill bonus to thrown objects
     {
-        damage += adjust_damage(weapon_skill_dmg_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, 0, TRUE, TRUE, FALSE),
+        damage += adjust_damage(weapon_skill_dmg_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, 0, TRUE, TRUE, FALSE, TRUE),
             &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE);
 
         if (thrown == HMON_THROWN && wtype != P_THROWN_WEAPON && damage > 0)
@@ -2042,7 +2042,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
     boolean skill_critical_success = FALSE;
     if (damage > 0 && !incorrect_weapon_use)
     {
-        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0, TRUE, ordinary_thrown);
+        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0, TRUE, ordinary_thrown, TRUE);
         if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
         {
             skill_critical_success = TRUE;
@@ -2685,8 +2685,8 @@ joust(struct monst *mon, struct obj *obj)
         return 0;
 
     int skill_level = P_SKILL_LEVEL(weapon_skill_type(obj));
-    if (u.twoweap && skill_level > P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT))
-        skill_level = P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT);
+    if (u.twoweap && skill_level > effective_twoweap_skill_level(TRUE))
+        skill_level = effective_twoweap_skill_level(TRUE);
 
     skill_chance += spear_skill_jousting_bonus(skill_level); /* thrusting weapon skill */
     skill_chance += spear_skill_jousting_bonus(P_SKILL_LEVEL(P_RIDING)); /* riding skill */
@@ -3384,7 +3384,7 @@ damageum(struct monst *mdef, struct attack *mattk, struct obj *omonwep, int spec
     boolean skill_critical_success = FALSE;
     if (damage > 0 && !incorrect_weapon_use)
     {
-        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0, TRUE, FALSE);
+        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0, TRUE, FALSE, TRUE);
         if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
         {
             skill_critical_success = TRUE;

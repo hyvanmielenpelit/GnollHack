@@ -102,6 +102,10 @@
 #define cantwield(ptr) (nohands(ptr) || verysmall(ptr))
 #define is_dual_wielder_form(ptr) (((ptr)->mflags7 & M7_DUAL_WIELDER) != 0L)
 #define could_twoweap(ptr) is_dual_wielder_form(ptr)
+#define effective_twoweap_skill_level(chk_poly) \
+    (((chk_poly) && Upolyd && is_dual_wielder_form(youmonst.data)) \
+     ? max(P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT), P_EXPERT) \
+     : P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT))
 #define cantweararm(ptr) (breakarm(ptr) || sliparm(ptr))
 #define throws_rocks(ptr) (((ptr)->mflags1 & M1_ROCKTHROW) != 0L)
 #define is_mname_proper_name(ptr) (((ptr)->mflags4 & M4_PROPER_NAME) != 0L)
