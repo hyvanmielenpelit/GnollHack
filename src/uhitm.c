@@ -3886,8 +3886,9 @@ hmonas(struct monst *mon)
     struct obj *weapon, **originalweapon;
     boolean odd_claw = TRUE;
     int i, tmp, armorpenalty, sum[NATTK], /* nsum = 0, */ dhit = 0, attknum = 0;
-    int dieroll, multi_claw = 0;
+    int dieroll, multi_claw = 0, multi_weap = 0;
     struct obj* noweapon = 0;
+    boolean has_explicit_offhand = FALSE;
 
     /* with just one touch/claw/weapon attack, both rings matter;
        with more than one, alternate right and left when checking
@@ -3895,23 +3896,14 @@ hmonas(struct monst *mon)
     for (i = 0; i < NATTK; i++) {
         sum[i] = 0;
         mattk = getmattk(&youmonst, mon, i, sum, &alt_attk);
-        if (mattk->aatyp == AT_WEAP
-            || mattk->aatyp == AT_CLAW || mattk->aatyp == AT_TUCH)
+        if (mattk->aatyp == AT_WEAP || mattk->aatyp == AT_CLAW || mattk->aatyp == AT_TUCH)
             ++multi_claw;
+        if (mattk->aatyp == AT_WEAP)
+            ++multi_weap;
+        if (mattk->aflags & ATTKFLAGS_OFFHAND)
+            has_explicit_offhand = TRUE;
     }
     multi_claw = (multi_claw > 1); /* switch from count to yes/no */
-
-    /* Check if any attack has explicit ATTKFLAGS_OFFHAND */
-    boolean has_explicit_offhand = FALSE;
-    for (i = 0; i < NATTK; i++)
-    {
-        mattk = getmattk(&youmonst, mon, i, sum, &alt_attk);
-        if (mattk->aflags & ATTKFLAGS_OFFHAND)
-        {
-            has_explicit_offhand = TRUE;
-            break;
-        }
-    }
 
     unsigned int bite_butt_count = 0;
     boolean offhand_attack_added = FALSE;
@@ -4383,7 +4375,7 @@ hmonas(struct monst *mon)
             break; /* No extra attacks if no longer a monster */
         if (multi < 0 || Sleeping || Paralyzed_or_immobile)
             break; /* If paralyzed while attacking, i.e. floating eye */
-        if (!has_explicit_offhand && u.twoweap && !offhand_attack_added && mattk->aatyp == AT_WEAP)
+        if (!has_explicit_offhand && u.twoweap && multi_weap == 1 && !offhand_attack_added && mattk->aatyp == AT_WEAP)
         {
             offhand_attack_added = TRUE;
             is_special_offhand = TRUE;
