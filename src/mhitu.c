@@ -806,7 +806,7 @@ mattacku(struct monst *mtmp)
         case AT_HUGS: /* automatic if prev two attacks succeed */
             /* Note: if displaced, prev attacks never succeeded */
             if ((!range2 && ((!hug_requires_two_previous_attacks(mtmp->data) && tmp > (j = rnd(20 + i))) || (hug_requires_two_previous_attacks(mtmp->data) && i >= 2 && sum[i - 1] && sum[i - 2])))
-                || mtmp == u.ustuck)
+                || (mtmp == u.ustuck && !range2))
             {
                 if (first_attack)
                 {

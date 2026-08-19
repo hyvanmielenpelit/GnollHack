@@ -272,6 +272,9 @@ kickdmg(struct monst *mon, boolean clumsy)
                     place_monster(mon, mdx, mdy);
                     if (mon->wormno)
                         worm_move(mon);
+                    /* release grab if grabber is no longer adjacent */
+                    if (mon == u.ustuck && !u.uswallow && distu(mon->mx, mon->my) > 2)
+                        unstuck(mon);
                     newsym(mon->mx, mon->my);
                     set_apparxy(mon);
                     if (mintrap(mon) == 2)

@@ -1227,6 +1227,7 @@ make_happy_shk(struct monst *shkp, boolean silentkops)
             /* if sensed, does disappear regardless whether seen */
             if (sensemon(shkp))
                 vanished = TRUE;
+            unstuck(shkp); /* release grab before leaving level */
             /* can't act as porter for the Amulet, even if shk
                happens to be going farther down rather than up */
             mdrop_special_objs(shkp);

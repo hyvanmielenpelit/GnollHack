@@ -900,6 +900,12 @@ dochug(struct monst *mtmp)
         return 0; /* uses up monster's turn */
     }
 
+    /* release grab if grabber is no longer adjacent (sanity check) */
+    if (mtmp == u.ustuck && !u.uswallow && distu(mtmp->mx, mtmp->my) > 2)
+    {
+        unstuck(mtmp);
+    }
+
     set_apparxy(mtmp);
     /* Must be done after you move and before the monster does.  The
      * set_apparxy() call in m_move() doesn't suffice since the variables

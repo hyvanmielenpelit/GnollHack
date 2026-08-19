@@ -413,7 +413,7 @@ attack(struct monst *mtmp)
      * you'll usually just swap places if this is a movement command
      */
     /* Intelligent chaotic weapons (Stormbringer) want blood */
-    if ((is_safepet(mtmp) || is_displaceable_peaceful(mtmp) || is_stopping_peaceful(mtmp)) && !context.forcefight)
+    if ((is_safepet(mtmp) || is_displaceable_peaceful(mtmp) || is_stopping_peaceful(mtmp)) && !context.forcefight && mtmp != u.ustuck)
     {
         //if (1) //!uwep || !(uwep->oartifact && artifact_has_flag(uwep, AF_BLOODTHIRSTY)))  // Always true
         {

@@ -2316,7 +2316,7 @@ domove_core(void)
      * Ceiling-hiding pets are skipped by this section of code, to
      * be caught by the normal falling-monster code.
      */
-    if (mtmp && (is_safepet(mtmp) || is_displaceable_peaceful(mtmp)) && !(is_hider(mtmp->data) && is_mon_mundetected(mtmp)))
+    if (mtmp && (is_safepet(mtmp) || is_displaceable_peaceful(mtmp)) && !(is_hider(mtmp->data) && is_mon_mundetected(mtmp)) && mtmp != u.ustuck)
     {
         /* if trapped, there's a chance the pet goes wild */
         if (is_mon_mtrapped(mtmp) && is_safepet(mtmp))

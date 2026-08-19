@@ -1127,6 +1127,7 @@ use_defensive(struct monst *mtmp)
                     pline("%s shudders for a moment.", Monnam(mtmp));
                 return 2;
             }
+            unstuck(mtmp); /* release grab before leaving level */
             get_level(&flev, nlev);
             level_teleport_effect_out(mtmp->mx, mtmp->my);
             migrate_to_level(mtmp, ledger_no(&flev), MIGR_RANDOM,
@@ -2813,6 +2814,7 @@ use_misc(struct monst *mtmp)
                         docall(otmp, dcbuf);
                 }
                 m_useup(mtmp, otmp);
+                unstuck(mtmp); /* release grab before leaving level */
                 migrate_to_level(mtmp, ledger_no(&tolevel), MIGR_RANDOM,
                                  (coord *) 0);
                 return 2;

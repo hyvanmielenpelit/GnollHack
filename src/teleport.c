@@ -1632,7 +1632,12 @@ rloc_to(struct monst *mtmp, int x, int y)
             docrt();
         }
         else
+        {
             u.ustuck = 0;
+            update_all_character_properties((struct obj*)0, TRUE);
+            context.botl = context.botlx = TRUE;
+            play_environment_ambient_sounds();
+        }
     }
 
     newsym(x, y);      /* update new location */
