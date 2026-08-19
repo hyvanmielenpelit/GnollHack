@@ -96,7 +96,6 @@ public class MainActivity : MauiAppCompatActivity
             return true;
     }
 
-    //private static readonly object _activityLock = new object();
     private static int _isHardKeyboardConnected = 0;
     public static bool IsHardKeyboardConnected
     {

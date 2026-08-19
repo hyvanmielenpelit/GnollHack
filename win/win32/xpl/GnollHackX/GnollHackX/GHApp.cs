@@ -93,7 +93,6 @@ namespace GnollHackX
         public static Microsoft.UI.Input.InputCursor WindowsCursor = null;
         public static Microsoft.UI.Input.InputCursor WindowsInfoCursor = null;
 
-        //private static readonly object _windowFocusedLock = new object();
         private static int _windowFocused = 0;
         public static bool WindowFocused { get { return Interlocked.CompareExchange(ref _windowFocused, 0, 0) != 0; } set { Interlocked.Exchange(ref _windowFocused, value ? 1 : 0); } }
 #endif
@@ -848,7 +847,6 @@ namespace GnollHackX
         }
 
         private static readonly Stopwatch _renderingStopWatch = new Stopwatch();
-        //private static readonly object _renderingLock = new object();
         private static long _renderingCounter = 0;
         private static void CompositionTarget_Rendering(object sender, object e)
         {
@@ -1744,7 +1742,6 @@ namespace GnollHackX
         public static bool ScreenResolutionChanged { get; set; }
         public static bool RecommendedSettingsChecked { get; set; }
 
-        //private static readonly object _recordGameLock = new object();
         private static int _recordGame = 0;
         public static bool RecordGame { get { return Interlocked.CompareExchange(ref _recordGame, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _recordGame, value ? 1 : 0); } }
         private static int _autoUploadReplays = 0;
@@ -1821,7 +1818,6 @@ namespace GnollHackX
             false;
 #endif
 
-        //private static readonly object _useGPULock = new object();
         private static int _useMipMap = 0;
         private static int _useGPU = 0;
         private static int _useAuxGPU = 0;
@@ -1831,7 +1827,6 @@ namespace GnollHackX
         public static bool UseAuxGPU { get { return Interlocked.CompareExchange(ref _useAuxGPU, 0, 0) != 0; } set { Interlocked.Exchange(ref _useAuxGPU, value ? 1 : 0); } }
         public static bool DisableAuxGPU { get { return Interlocked.CompareExchange(ref _disableAuxGPU, 0, 0) != 0; } set { Interlocked.Exchange(ref _disableAuxGPU, value ? 1 : 0); } }
 
-        //private static readonly object _fixRectLock = new object();
         private static int _fixRects = 0;
         public static bool FixRects { get { return Interlocked.CompareExchange(ref _fixRects, 0, 0) != 0; } set { Interlocked.Exchange(ref _fixRects, value ? 1 : 0); } }
 
@@ -1841,7 +1836,6 @@ namespace GnollHackX
         private static int _runtimeEffects = GHConstants.DefaultRuntimeEffects ? 1 : 0;
         public static bool RuntimeEffects { get { return GHConstants.EnableExperimentalFeatures && Interlocked.CompareExchange(ref _runtimeEffects, 0, 0) != 0; } set { Interlocked.Exchange(ref _runtimeEffects, value ? 1 : 0); } }
 
-        //private static readonly object _drawWallEndsLock = new object();
         private static int _drawWallEnds = GHConstants.DefaultDrawWallEnds ? 1 : 0;
         public static bool DrawWallEnds { get { return Interlocked.CompareExchange(ref _drawWallEnds, 0, 0) != 0; } set { Interlocked.Exchange(ref _drawWallEnds, value ? 1 : 0); } }
 
@@ -2327,7 +2321,6 @@ namespace GnollHackX
             }
         }
 
-        //private static readonly object _aggregateSessionPlayTimeLock = new object();
         private static long _aggregateSessionPlayTime = 0L;
         public static long AggregateSessionPlayTime { get { return Interlocked.CompareExchange(ref _aggregateSessionPlayTime, 0, 0); } set { Interlocked.Exchange(ref _aggregateSessionPlayTime, value); } }
         public static void AddAggragateSessionPlayTime(long addition)
@@ -2826,7 +2819,6 @@ namespace GnollHackX
             }
         }
 
-        //private static readonly object _keyboardLock = new object();
         private static int _ctrlDown = 0;
         private static int _altDown = 0;
         private static int _shiftDown = 0;
@@ -3164,7 +3156,6 @@ namespace GnollHackX
         public static string LocalOverseerPassword { get; set; }
 #endif
 
-        //private static readonly object _debugLock = new object();
         private static int _debugLogMessages = GHConstants.DefaultLogMessages ? 1 : 0;
         private static int _lowLevelLogging = 0;
         private static int _screenLogging = 0;
@@ -3195,7 +3186,6 @@ namespace GnollHackX
             }
         }
 
-        //private static readonly object _tournamentLock = new object();
         private static int _tournamentMode = 0;
         public static bool TournamentMode { get { return Interlocked.CompareExchange(ref _tournamentMode, 0, 0) != 0; } set { Interlocked.Exchange(ref _tournamentMode, value ? 1 : 0); } }
 
@@ -5578,7 +5568,6 @@ namespace GnollHackX
             return bitmap;
         }
 
-        //static readonly object _cachedBitmapsLock = new object();
         static readonly ConcurrentDictionary<string, SKImage> _cachedBitmaps = new ConcurrentDictionary<string, SKImage>();
 
         public static void InitBaseCachedBitmaps()
@@ -5736,7 +5725,6 @@ namespace GnollHackX
         public static readonly bool HasSentry = true;
 #else
         public static readonly bool HasSentry = false;
-        //private static readonly object _postingDiagnosticDataLock = new object();
         private static int  _postingDiagnosticData = 0;
         public static bool PostingDiagnosticData { get { return Interlocked.CompareExchange(ref _postingDiagnosticData, 0, 0) != 0; } set { Interlocked.Exchange(ref _postingDiagnosticData, value ? 1 : 0); } }
 #endif
@@ -8233,7 +8221,6 @@ namespace GnollHackX
             }
         }
 
-        //private static readonly object _gzipLock = new object();
         private static int _useGZipForReplays = GHConstants.GZipIsDefaultReplayCompression ? 1 : 0;
 
         public static bool UseGZipForReplays { get { return Interlocked.CompareExchange(ref _useGZipForReplays, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _useGZipForReplays, value ? 1 : 0); } }
@@ -9900,7 +9887,6 @@ namespace GnollHackX
             return res;
         }
 
-        //private static readonly object _preferencesLock = new object();
         private static string _lastUsedPlayerName = "";
         private static string _lastUsedTournamentPlayerName = "";
         private static int _gUITipsShown = 0;
@@ -12049,7 +12035,6 @@ namespace GnollHackX
         }
 #endif
 
-        //private static readonly object _keyboardHookLock = new object();
         private static int _isKeyboardHookEnabled = 1;
         public static bool IsKeyboardHookEnabled { get { return Interlocked.CompareExchange(ref _isKeyboardHookEnabled, 0, 0) != 0; } set { Interlocked.Exchange(ref _isKeyboardHookEnabled, value ? 1 : 0); } }
 
