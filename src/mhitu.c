@@ -3859,7 +3859,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
     if (distu(mtmp->mx, mtmp->my) > range * range)
         return 0; /* Out of range */
 
-    if ((mattk->aflags & ATTKFLAG_MUST_SEE_TARGET) && !(m_canseeu(mtmp) && m_cansee(mtmp, u.ux, u.uy)))
+    if ((mattk->aflags & ATTKFLAGS_MUST_SEE_TARGET) && !(m_canseeu(mtmp) && m_cansee(mtmp, u.ux, u.uy)))
         return 0;
 
     /* assumes that hero has to see monster's gaze in order to be

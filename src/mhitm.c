@@ -958,7 +958,7 @@ gazemm(struct monst *magr, struct monst *mdef, struct attack *mattk)
     if (dist2(magr->mx, magr->my, mdef->mx, mdef->my) > range * range)
         return 0; /* Out of range */
 
-    if ((mattk->aflags & ATTKFLAG_MUST_SEE_TARGET) && !m_cansee_m(magr, mdef))
+    if ((mattk->aflags & ATTKFLAGS_MUST_SEE_TARGET) && !m_cansee_m(magr, mdef))
         return 0;
 
     char buf[BUFSZ];

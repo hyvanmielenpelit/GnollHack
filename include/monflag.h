@@ -399,6 +399,7 @@
 #define M7_ILLUSORY_APPEARANCE      0x00020000UL   /* takes illusory appearance of a friendly monster using M_AP_MONSTER/mappearance */
 #define M7_FRIENDLY_ILLUSORY_APPEARANCE 0x00040000UL /* appears peaceful while in illusory appearance form */
 #define M7_SLIGHTLY_TRANSPARENT     0x00040000UL   /* has very minor, uncanny transparency */
+#define M7_DUAL_WIELDER             0x00080000UL   /* monster can dual wield */
 
 #define M8_NONE                     0x00000000UL
 
