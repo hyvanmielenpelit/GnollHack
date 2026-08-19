@@ -24,15 +24,75 @@
                 <Label Grid.Row="0" x:Name="HeaderLabel" Text="Select Recorded Game" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="22" TextColor="Black" FontFamily="Immortal"/>
                 <Label Grid.Row="1" x:Name="RecordingsLabel" Text="0 replays available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="16" TextColor="Black" FontFamily="Immortal"/>
                 <CollectionView Grid.Row="2" x:Name="ReplayCollectionView" ItemSizingStrategy="MeasureAllItems" HorizontalOptions="Fill" VerticalOptions="Start" SelectionMode="Single"  BackgroundColor="Transparent" SelectionChanged="MainListView_SelectionChanged" >
+                    <CollectionView.Header>
+                        <Grid x:Name="HeaderGrid" Padding="10,4" ColumnSpacing="4" HorizontalOptions="Fill">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30" />
+                                <ColumnDefinition Width="130" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="45" />
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="60" />
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="45" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="#" FontFamily="Immortal" FontSize="13" TextColor="Black" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
+                            <StackLayout Grid.Column="1" Orientation="Horizontal" Spacing="2" VerticalOptions="Center">
+                                <Label Text="Date" FontFamily="Immortal" FontSize="13" TextColor="Black" VerticalTextAlignment="Center" />
+                                <Label x:Name="DateSortArrow" Text="&#x25BC;" FontFamily="DejaVuSansMono" FontSize="10" TextColor="Black" VerticalTextAlignment="Center">
+                                    <Label.GestureRecognizers><TapGestureRecognizer Tapped="SortHeader_Tapped" CommandParameter="Date" /></Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                            <StackLayout Grid.Column="2" Orientation="Horizontal" Spacing="2" VerticalOptions="Center">
+                                <Label Text="Character" FontFamily="Immortal" FontSize="13" TextColor="Black" VerticalTextAlignment="Center" />
+                                <Label x:Name="CharacterSortArrow" Text="&#x21D5;" FontFamily="DejaVuSansMono" FontSize="10" TextColor="Black" VerticalTextAlignment="Center">
+                                    <Label.GestureRecognizers><TapGestureRecognizer Tapped="SortHeader_Tapped" CommandParameter="Character" /></Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                            <StackLayout Grid.Column="3" Orientation="Horizontal" Spacing="2" VerticalOptions="Center">
+                                <Label Text="Turn" FontFamily="Immortal" FontSize="13" TextColor="Black" VerticalTextAlignment="Center" />
+                                <Label x:Name="TurnSortArrow" Text="&#x21D5;" FontFamily="DejaVuSansMono" FontSize="10" TextColor="Black" VerticalTextAlignment="Center">
+                                    <Label.GestureRecognizers><TapGestureRecognizer Tapped="SortHeader_Tapped" CommandParameter="Turn" /></Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                            <StackLayout Grid.Column="4" Orientation="Horizontal" Spacing="2" VerticalOptions="Center">
+                                <Label Text="Version" FontFamily="Immortal" FontSize="13" TextColor="Black" VerticalTextAlignment="Center" />
+                                <Label x:Name="VersionSortArrow" Text="&#x21D5;" FontFamily="DejaVuSansMono" FontSize="10" TextColor="Black" VerticalTextAlignment="Center">
+                                    <Label.GestureRecognizers><TapGestureRecognizer Tapped="SortHeader_Tapped" CommandParameter="Version" /></Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                            <StackLayout Grid.Column="5" Orientation="Horizontal" Spacing="2" VerticalOptions="Center">
+                                <Label Text="Size" FontFamily="Immortal" FontSize="13" TextColor="Black" VerticalTextAlignment="Center" />
+                                <Label x:Name="SizeSortArrow" Text="&#x21D5;" FontFamily="DejaVuSansMono" FontSize="10" TextColor="Black" VerticalTextAlignment="Center">
+                                    <Label.GestureRecognizers><TapGestureRecognizer Tapped="SortHeader_Tapped" CommandParameter="Size" /></Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                            <StackLayout Grid.Column="6" Orientation="Horizontal" Spacing="2" VerticalOptions="Center">
+                                <Label Text="Files" FontFamily="Immortal" FontSize="13" TextColor="Black" VerticalTextAlignment="Center" />
+                                <Label x:Name="FilesSortArrow" Text="&#x21D5;" FontFamily="DejaVuSansMono" FontSize="10" TextColor="Black" VerticalTextAlignment="Center">
+                                    <Label.GestureRecognizers><TapGestureRecognizer Tapped="SortHeader_Tapped" CommandParameter="Files" /></Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                            <StackLayout Grid.Column="7" Orientation="Horizontal" Spacing="2" VerticalOptions="Center">
+                                <Label Text="Fmt" FontFamily="Immortal" FontSize="13" TextColor="Black" VerticalTextAlignment="Center" />
+                                <Label x:Name="FormatSortArrow" Text="&#x21D5;" FontFamily="DejaVuSansMono" FontSize="10" TextColor="Black" VerticalTextAlignment="Center">
+                                    <Label.GestureRecognizers><TapGestureRecognizer Tapped="SortHeader_Tapped" CommandParameter="Format" /></Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                        </Grid>
+                    </CollectionView.Header>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="gnh:GHRecordedGameFile">
-                            <Grid ColumnSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" Padding="10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
+                            <Grid ColumnSpacing="4" HorizontalOptions="Fill" VerticalOptions="Fill" Padding="10,4">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="130" />
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="45" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="60" />
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="45" />
                                 </Grid.ColumnDefinitions>
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup Name="CommonStates">
@@ -44,11 +104,14 @@
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
-                                <Label Text="{Binding FormattedIndex}" Grid.Column="0" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="15" HeightRequest="35" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" />
-                                <StackLayout Grid.Column="1" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center" >
-                                    <Label Text="{Binding FormattedName}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="{Binding FormattedNameFontSize}" HorizontalOptions="Start" VerticalOptions="End" HorizontalTextAlignment="Start" VerticalTextAlignment="End" />
-                                    <Label Text="{Binding FormattedInformation}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="{Binding FormattedInfoFontSize}" IsVisible="{Binding FormattedInfoVisible}" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" />
-                                </StackLayout>
+                                <Label Grid.Column="0" Text="{Binding FormattedIndex}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="13" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="1" Text="{Binding FormattedDate}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="12" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="2" Text="{Binding CharacterName}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="13" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="3" Text="{Binding TurnString}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="13" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="4" Text="{Binding VersionString}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="12" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="5" Text="{Binding FormattedSize}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="13" HorizontalOptions="End" VerticalOptions="Center" HorizontalTextAlignment="End" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="6" Text="{Binding FormattedFiles}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="13" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="7" Text="{Binding FormatString}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="12" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

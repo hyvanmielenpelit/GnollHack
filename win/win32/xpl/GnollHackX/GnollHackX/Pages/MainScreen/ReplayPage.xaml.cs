@@ -45,6 +45,10 @@ namespace GnollHackX.Pages.MainScreen
         string _subDirectoryDownload = null;
         string _subDirectoryServer = null;
 
+        private enum SortColumn { Date, Character, Turn, Version, Size, Files, Format }
+        private SortColumn _currentSortColumn = SortColumn.Date;
+        private bool _sortAscending = false; /* Default: newest first (descending) */
+
         public bool IsMultiSelect { get { return ReplayCollectionView.SelectionMode == SelectionMode.Multiple; } }
         public bool IsLocal { get { return FolderPicker.SelectedIndex == 0; } }
         public bool IsCloud { get { return FolderPicker.SelectedIndex == 1; } }
@@ -71,6 +75,21 @@ namespace GnollHackX.Pages.MainScreen
                 FolderPicker.BackgroundColor = GHColors.PickerDarkModeBkgColor;
                 PopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
                 UploadDownloadFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
+                foreach (View view in HeaderGrid.Children)
+                {
+                    if (view is Label)
+                    {
+                        ((Label)view).TextColor = GHColors.White;
+                    }
+                    else if (view is StackLayout)
+                    {
+                        foreach (View child in ((StackLayout)view).Children)
+                        {
+                            if (child is Label)
+                                ((Label)child).TextColor = GHColors.White;
+                        }
+                    }
+                }
             }
 
             _mainPage = mainPage;
@@ -413,6 +432,11 @@ namespace GnollHackX.Pages.MainScreen
             UpdateRecordingsLabel();
         }
 
+        private string FormatTotalSize(long totalBytes)
+        {
+            return totalBytes < 1024 * 1024 ? string.Format("{0} kB", totalBytes / 1024) : string.Format("{0:0.0} MB", (double)totalBytes / (1024 * 1024));
+        }
+
         private void UpdateRecordingsLabel()
         {
             if(IsMultiSelect)
@@ -443,7 +467,7 @@ namespace GnollHackX.Pages.MainScreen
                         }
                     }
                 }
-                RecordingsLabel.Text = i.ToString() + " replay" + (i == 1 ? "" : "s") + " selected, " + (totalBytes < 1024 * 1024 ? string.Format("{0} kB", totalBytes / 1024) : string.Format("{0:0.0} MB", (double)totalBytes / (1024 * 1024)));
+                RecordingsLabel.Text = i.ToString() + " Replay" + (i == 1 ? "" : "s") + " Selected | Total: " + FormatTotalSize(totalBytes);
                 EmptyLabel.IsVisible = showEmptyLabel;
             }
             else
@@ -467,9 +491,140 @@ namespace GnollHackX.Pages.MainScreen
                         }
                     }
                 }
-                RecordingsLabel.Text = i.ToString() + " replay" + (i == 1 ? "" : "s") + ", " + (totalBytes < 1024 * 1024 ? string.Format("{0} kB", totalBytes / 1024) : string.Format("{0:0.0} MB", (double)totalBytes / (1024 * 1024)));
+                string currentSubDir = IsLocal ? _subDirectoryLocal : (IsDownload ? _subDirectoryDownload : _subDirectoryServer);
+                if (!string.IsNullOrWhiteSpace(currentSubDir))
+                {
+                    string folderName = Path.GetFileName(currentSubDir);
+                    RecordingsLabel.Text = folderName + " (" + i.ToString() + " Replay" + (i == 1 ? "" : "s") + ", " + FormatTotalSize(totalBytes) + ")";
+                }
+                else
+                {
+                    RecordingsLabel.Text = i.ToString() + " Replay" + (i == 1 ? "" : "s") + " Found | Total: " + FormatTotalSize(totalBytes);
+                }
                 EmptyLabel.IsVisible = showEmptyLabel && i == 0;
             }
+        }
+
+        private void SortHeader_Tapped(object sender, EventArgs e)
+        {
+            if (sender is Label label && label.GestureRecognizers.Count > 0)
+            {
+                TapGestureRecognizer tap = label.GestureRecognizers[0] as TapGestureRecognizer;
+                if (tap != null && tap.CommandParameter is string columnName)
+                {
+                    SortColumn tappedColumn;
+                    if (Enum.TryParse(columnName, out tappedColumn))
+                    {
+                        if (_currentSortColumn == tappedColumn)
+                            _sortAscending = !_sortAscending;
+                        else
+                        {
+                            _currentSortColumn = tappedColumn;
+                            _sortAscending = true;
+                        }
+                        ApplySorting();
+                        UpdateSortArrows();
+                    }
+                }
+            }
+        }
+
+        private void ApplySorting()
+        {
+            if (ReplayCollectionView.ItemsSource == null)
+                return;
+
+            ObservableCollection<GHRecordedGameFile> collection = ReplayCollectionView.ItemsSource as ObservableCollection<GHRecordedGameFile>;
+            if (collection == null)
+                return;
+
+            /* Separate folders (pinned to top) from files */
+            List<GHRecordedGameFile> folders = new List<GHRecordedGameFile>();
+            List<GHRecordedGameFile> files = new List<GHRecordedGameFile>();
+            foreach (GHRecordedGameFile item in collection)
+            {
+                if (item.IsFolder)
+                    folders.Add(item);
+                else
+                    files.Add(item);
+            }
+
+            /* Sort files by selected column */
+            Comparison<GHRecordedGameFile> comparison;
+            switch (_currentSortColumn)
+            {
+            case SortColumn.Date:
+                comparison = (a, b) => DateTime.Compare(a.LastWriteTime, b.LastWriteTime);
+                break;
+            case SortColumn.Character:
+                comparison = (a, b) => string.Compare(a.CharacterName, b.CharacterName, StringComparison.OrdinalIgnoreCase);
+                break;
+            case SortColumn.Turn:
+                comparison = (a, b) =>
+                {
+                    int turnA, turnB;
+                    bool parsedA = int.TryParse(a.TurnString, out turnA);
+                    bool parsedB = int.TryParse(b.TurnString, out turnB);
+                    if (!parsedA && !parsedB) return 0;
+                    if (!parsedA) return -1;
+                    if (!parsedB) return 1;
+                    return turnA.CompareTo(turnB);
+                };
+                break;
+            case SortColumn.Version:
+                comparison = (a, b) => string.Compare(a.VersionString, b.VersionString, StringComparison.OrdinalIgnoreCase);
+                break;
+            case SortColumn.Size:
+                comparison = (a, b) => a.FileSize.CompareTo(b.FileSize);
+                break;
+            case SortColumn.Files:
+                comparison = (a, b) => a.NumberOfFiles.CompareTo(b.NumberOfFiles);
+                break;
+            case SortColumn.Format:
+                comparison = (a, b) => string.Compare(a.FormatString, b.FormatString, StringComparison.OrdinalIgnoreCase);
+                break;
+            default:
+                comparison = (a, b) => DateTime.Compare(a.LastWriteTime, b.LastWriteTime);
+                break;
+            }
+
+            files.Sort((a, b) => _sortAscending ? comparison(a, b) : comparison(b, a));
+
+            /* Reassign indexes */
+            int idx = 1;
+            foreach (GHRecordedGameFile file in files)
+                file.Index = idx++;
+
+            /* Rebuild collection: folders first (back entry stays at top), then sorted files */
+            ObservableCollection<GHRecordedGameFile> sorted = new ObservableCollection<GHRecordedGameFile>();
+
+            /* Pin back entry first, then other folders */
+            foreach (GHRecordedGameFile folder in folders)
+            {
+                if (folder.IsBackEntry)
+                    sorted.Insert(0, folder);
+                else
+                    sorted.Add(folder);
+            }
+            foreach (GHRecordedGameFile file in files)
+                sorted.Add(file);
+
+            ReplayCollectionView.ItemsSource = sorted;
+        }
+
+        private void UpdateSortArrows()
+        {
+            string inactive = "\u21D5";   /* ⇕ */
+            string ascending = "\u25B2";  /* ▲ */
+            string descending = "\u25BC"; /* ▼ */
+
+            DateSortArrow.Text = _currentSortColumn == SortColumn.Date ? (_sortAscending ? ascending : descending) : inactive;
+            CharacterSortArrow.Text = _currentSortColumn == SortColumn.Character ? (_sortAscending ? ascending : descending) : inactive;
+            TurnSortArrow.Text = _currentSortColumn == SortColumn.Turn ? (_sortAscending ? ascending : descending) : inactive;
+            VersionSortArrow.Text = _currentSortColumn == SortColumn.Version ? (_sortAscending ? ascending : descending) : inactive;
+            SizeSortArrow.Text = _currentSortColumn == SortColumn.Size ? (_sortAscending ? ascending : descending) : inactive;
+            FilesSortArrow.Text = _currentSortColumn == SortColumn.Files ? (_sortAscending ? ascending : descending) : inactive;
+            FormatSortArrow.Text = _currentSortColumn == SortColumn.Format ? (_sortAscending ? ascending : descending) : inactive;
         }
 
         private async void ShareButton_Clicked(object sender, EventArgs e)
