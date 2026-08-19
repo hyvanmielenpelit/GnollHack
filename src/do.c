@@ -5715,7 +5715,6 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr)
         char damagebuf[BUFSZ];
         char specialbuf[BUFSZ];
         char specialbuf1[BUFSZ];
-        char specialbuf2[BUFSZ];
 
         Strcpy(attypebuf, get_attack_type_text(ptr->mattk[i].aatyp));
         *attypebuf = highc(*attypebuf);
@@ -5758,21 +5757,32 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr)
             Sprintf(specialbuf1, "as level %d caster", (int)ptr->mattk[i].mlevel);
         }
         
-        Strcpy(specialbuf2, "");
         if (ptr->mattk[i].mcadj != 0)
         {
-            Sprintf(specialbuf2, "%s%d MC %s", ptr->mattk[i].mcadj > 0 ? "+" : "", ptr->mattk[i].mcadj,
+            if (*specialbuf1)
+                Strcat(specialbuf1, ", ");
+            Sprintf(eos(specialbuf1), "%s%d MC %s", ptr->mattk[i].mcadj > 0 ? "+" : "", ptr->mattk[i].mcadj,
                 ptr->mattk[i].mcadj <= 0 ? "penalty" : "bonus");
         }
 
-        if (strcmp(specialbuf1, "") || strcmp(specialbuf2, ""))
+        boolean is_offhand = (ptr->mattk[i].aflags& ATTKFLAGS_OFFHAND) != 0;
+        boolean needs_twoweapon = (ptr->mattk[i].aflags & ATTKFLAGS_REQUIRE_TWOWEAPON) != 0;
+        /* Append off-hand and two-weapon indicators */
+        if (is_offhand || needs_twoweapon)
         {
-            if (strcmp(specialbuf1, "") && strcmp(specialbuf2, ""))
-            {
-                Sprintf(specialbuf, " (%s, %s)", specialbuf1, specialbuf2);
-            }
-            else
-                Sprintf(specialbuf, " (%s)", strcmp(specialbuf1, "") ? specialbuf1 : specialbuf2);
+            if (*specialbuf1)
+                Strcat(specialbuf1, ", ");
+            if (is_offhand)
+                Strcat(specialbuf1, "off-hand");
+            if (*specialbuf1)
+                Strcat(specialbuf1, ", ");
+            if (needs_twoweapon)
+                Strcat(specialbuf1, "while two-weaponing");
+        }
+
+        if (strcmp(specialbuf1, ""))
+        {
+            Sprintf(specialbuf, " (%s)", specialbuf1);
         }
 
         Sprintf(buf, " %2d - %s%s%s%s", i + 1, attypebuf, adtypebuf, damagebuf, specialbuf);

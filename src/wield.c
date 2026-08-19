@@ -1693,7 +1693,12 @@ dotwoweapon(void)
     }
     else
     {
-        if (P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT) == P_ISRESTRICTED)
+        boolean has_skill =
+            (P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT) != P_ISRESTRICTED);
+        boolean form_can =
+            (Upolyd && is_dual_wielder_form(youmonst.data));
+
+        if (!has_skill && !form_can)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_FAIL, "do not have the dual wielding skill.");

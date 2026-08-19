@@ -3884,7 +3884,7 @@ hmonas(struct monst *mon)
 
     struct attack *mattk, alt_attk;
     struct obj *weapon, **originalweapon;
-    boolean altwep = FALSE, weapon_used = FALSE, weapon2_used = FALSE, odd_claw = TRUE;
+    boolean odd_claw = TRUE;
     int i, tmp, armorpenalty, sum[NATTK], /* nsum = 0, */ dhit = 0, attknum = 0;
     int dieroll, multi_claw = 0;
 
@@ -3899,7 +3899,25 @@ hmonas(struct monst *mon)
             ++multi_claw;
     }
     multi_claw = (multi_claw > 1); /* switch from count to yes/no */
+
+    /* Check if any attack has explicit ATTKFLAGS_OFFHAND */
+    boolean has_explicit_offhand = FALSE;
+    for (i = 0; i < NATTK; i++)
+    {
+        mattk = getmattk(&youmonst, mon, i, sum, &alt_attk);
+        if (mattk->aflags & ATTKFLAGS_OFFHAND)
+        {
+            has_explicit_offhand = TRUE;
+            break;
+        }
+    }
+
     unsigned int bite_butt_count = 0;
+    boolean offhand_attack_added = FALSE;
+    boolean is_special_offhand = FALSE;
+    boolean is_alternating_offhand = FALSE;
+    boolean is_offhand = FALSE;
+    boolean needs_twoweap = FALSE;
 
     play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_START_ATTACK);
 
@@ -3913,8 +3931,19 @@ hmonas(struct monst *mon)
         if (youmonst.data->heads > 1 && youmonst.heads_left < bite_butt_count)
             continue;
 
+        is_offhand = is_special_offhand || is_alternating_offhand || (mattk->aflags & ATTKFLAGS_OFFHAND) != 0;
+        needs_twoweap = (mattk->aflags & ATTKFLAGS_REQUIRE_TWOWEAPON) != 0;
 
+        is_special_offhand = FALSE;
         weapon = 0;
+
+        /* Skip attacks that require two-weapon combat if not active */
+        if (needs_twoweap && !u.twoweap)
+        {
+            sum[i] = 0;
+            continue;
+        }
+
         switch (mattk->aatyp) {
         case AT_WEAP:
             /* if (!uwep) goto weaponless; */
@@ -3924,7 +3953,7 @@ hmonas(struct monst *mon)
                get to make another weapon attack (note:  monsters who
                use weapons do not have this restriction, but they also
                never have the opportunity to use two weapons) */
-            if (weapon_used && sum[i - 1] && uwep && bimanual(uwep))
+            if (is_offhand && uwep && bimanual(uwep))
                 continue;
             /* Certain monsters don't use weapons when encountered as enemies,
              * but players who polymorph into them have hands or claws and
@@ -3933,23 +3962,21 @@ hmonas(struct monst *mon)
              * If monster has multiple claw attacks, only one can use weapon.
              */
 
-            if(weapon_used)
-                weapon2_used = TRUE;
+            if (is_offhand)
+            {
+                /* Off-hand attack: use uarms if available,
+                 * else fall back to gloves or bare hands */
+                if (uarms)
+                    originalweapon = &uarms;
+                else
+                    originalweapon = uarmg ? &uarmg : &uwep;
+            }
+            else
+            {
+                /* Standard weapon attack: use uwep */
+                originalweapon = &uwep;
+            }
 
-            weapon_used = TRUE;
-            /* Potential problem: if the monster gets multiple weapon attacks,
-             * we currently allow the player to get each of these as a weapon
-             * attack.  Is this really desirable?
-             */
-            /* approximate two-weapon mode; known_hitum() -> hmon() -> &c
-               might destroy the weapon argument, but it might also already
-               be Null, and we want to track that for passive() */
-            originalweapon = (altwep && uarms && u.twoweap) ? &uarms : &uwep;
-            if (u.twoweap && uarms /* set up 'altwep' flag for next iteration */
-                /* only consider seconary when wielding one-handed primary */
-                && !bimanual(uwep)
-                && !(obj_counts_as_silver(uarms) && Hate_silver))
-                altwep = !altwep; /* toggle for next attack */
             weapon = *originalweapon;
             if (!weapon) /* no need to go beyond no-gloves to rings; not ...*/
                 originalweapon = &uarmg; /*... subject to erosion damage */
@@ -4007,33 +4034,36 @@ hmonas(struct monst *mon)
                 if (breakloop)
                     break;
             }
+            is_alternating_offhand = !has_explicit_offhand && !is_alternating_offhand;
             break;
         case AT_CLAW:
-            if (uwep && !cantwield(youmonst.data) && !weapon_used)
-                goto use_weapon;
-            if (uarms && u.twoweap && !cantwield(youmonst.data) && weapon_used && !weapon2_used)
-            {
-                weapon2_used = TRUE;
-                goto use_weapon;
-            }
-            /*FALLTHRU*/
         case AT_TUCH:
-            if (uwep && youmonst.data->mlet == S_LICH && !weapon_used)
-                goto use_weapon;
-            if (uarms && u.twoweap && youmonst.data->mlet == S_LICH && weapon_used && !weapon2_used)
+            if (!cantwield(youmonst.data))
             {
-                weapon2_used = TRUE;
-                goto use_weapon;
+                if (is_offhand)
+                {
+                    if (uarms && (u.twoweap || !needs_twoweap))
+                    {
+                        goto use_weapon;
+                    }
+                    else if (uwep && bimanual(uwep))
+                        goto use_weapon;
+                }
+                else
+                {
+                    if (uwep)
+                        goto use_weapon;
+                }
             }
-            /*FALLTHRU*/
-        case AT_SMMN:
             update_u_action(mattk->action_tile ? mattk->action_tile : ACTION_TILE_CAST_NODIR);
             play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
             u_wait_until_action();
             sum[i] = damageum(mon, mattk, (struct obj*)0, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
             update_u_action_revert(ACTION_TILE_NO_ACTION);
+            is_alternating_offhand = !has_explicit_offhand && !is_alternating_offhand;
             break;
-
+        case AT_SMMN:
+            break;
         case AT_KICK:
         case AT_BITE:
         case AT_RAMS:
@@ -4299,15 +4329,6 @@ hmonas(struct monst *mon)
             break;
 
         case AT_MAGC:
-            /* No check for uwep; if wielding nothing we want to
-             * do the normal 1-2 points bare hand damage...
-             */
-            if ((youmonst.data->mlet == S_KOBOLD
-                 || youmonst.data->mlet == S_ORC
-                 || youmonst.data->mlet == S_GNOLL) && !weapon_used)
-                goto use_weapon;
-            /*FALLTHRU*/
-
         case AT_NONE:
         case AT_PASV:
         case AT_BOOM:
@@ -4349,6 +4370,12 @@ hmonas(struct monst *mon)
             break; /* No extra attacks if no longer a monster */
         if (multi < 0 || Sleeping || Paralyzed_or_immobile)
             break; /* If paralyzed while attacking, i.e. floating eye */
+        if (!has_explicit_offhand && u.twoweap && !offhand_attack_added && mattk->aatyp == AT_WEAP)
+        {
+            offhand_attack_added = TRUE;
+            is_special_offhand = TRUE;
+            i--;
+        }
     }
     
     /* return value isn't used, but make it match hitum()'s */

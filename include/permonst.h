@@ -38,7 +38,7 @@ struct attack {
 #define ATTKFLAGS_SAME_HEAD         0x00000002UL /* Does not count towards bite_butt_count */
 #define ATTKFLAGS_NO_OBJ_DMG        0x00000004UL /* Does not cause passive damage to objects */
 #define ATTKFLAGS_OFFHAND           0x00000008UL /* Is an offhand attack that uses uarms */
-#define ATTKFLAGS_REQUIRE_TWOWEAPON 0x00000010UL /* Requiers twoweapon to be on to use the attack in polymorphed form */
+#define ATTKFLAGS_REQUIRE_TWOWEAPON 0x00000010UL /* Requires twoweapon to be on to use the attack in polymorphed form */
 
 struct action_info
 {

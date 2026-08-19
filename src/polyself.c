@@ -227,8 +227,16 @@ polyman(const char *fmt, const char *arg)
         done(GENOCIDED);
     }
 
-    //if (u.twoweap && !could_twoweap(youmonst.data))
-    //    untwoweapon();
+    /* Auto-disable two-weapon fighting if the player can no longer
+     * dual wield: no player skill AND new form lacks M7_DUAL_WIELDER */
+    if (u.twoweap)
+    {
+        boolean has_skill =
+            (P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT) != P_ISRESTRICTED);
+        boolean form_can = is_dual_wielder_form(youmonst.data);
+        if (!has_skill && !form_can)
+            untwoweapon();
+    }
 
     if (u.utrap && u.utraptype == TT_PIT) {
         set_utrap(rn1(6, 2), TT_PIT); /* time to escape resets */
@@ -1666,9 +1674,13 @@ drop_weapon(int alone)
 
             if (updateinv)
                 update_inventory();
-        } /*else if (!could_twoweap(youmonst.data)) {
-            untwoweapon();
-        }*/
+        } else if (u.twoweap) {
+            boolean has_skill =
+                (P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT) != P_ISRESTRICTED);
+            boolean form_can = is_dual_wielder_form(youmonst.data);
+            if (!has_skill && !form_can)
+                untwoweapon();
+        }
     }
 }
 
