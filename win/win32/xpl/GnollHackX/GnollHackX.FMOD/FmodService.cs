@@ -243,13 +243,21 @@ namespace GnollHackX.Unknown
             {
                 if (_coresystem.hasHandle())
                 {
-                    _coresystem.mixerSuspend();
-                    MixerSuspended = true;
+                    RESULT res = _coresystem.mixerSuspend();
+                    if (res == RESULT.OK)
+                    {
+                        MixerSuspended = true;
+                        GHApp.MaybeWriteGHLog("FmodService.Suspend: mixer suspended successfully.", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    }
+                    else
+                    {
+                        GHApp.MaybeWriteGHLog($"FmodService.Suspend: mixerSuspend failed with result {res}", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                GHApp.MaybeWriteGHLog("FmodService.Suspend exception: " + ex.Message);
+                GHApp.MaybeWriteGHLog("FmodService.Suspend exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
             }
         }
 
@@ -262,13 +270,21 @@ namespace GnollHackX.Unknown
             {
                 if (_coresystem.hasHandle())
                 {
-                    _coresystem.mixerResume();
-                    MixerSuspended = false;
+                    RESULT res = _coresystem.mixerResume();
+                    if (res == RESULT.OK)
+                    {
+                        MixerSuspended = false;
+                        GHApp.MaybeWriteGHLog("FmodService.Resume: mixer resumed successfully.", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    }
+                    else
+                    {
+                        GHApp.MaybeWriteGHLog($"FmodService.Resume: mixerResume failed with result {res}", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                GHApp.MaybeWriteGHLog("FmodService.Resume exception: " + ex.Message);
+                GHApp.MaybeWriteGHLog("FmodService.Resume exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
             }
         }
 

@@ -2403,6 +2403,12 @@ namespace GnollHackX
             GC.Collect(0);
             FrameTimeProfiler.MarkGcAfter();
         }
+        public static void CollectGarbageNonBlocking()
+        {
+            FrameTimeProfiler.MarkGcBefore();
+            GC.Collect();
+            FrameTimeProfiler.MarkGcAfter();
+        }
 
         public static bool IsAutoSaveUponSwitchingAppsOn
         {
@@ -2437,6 +2443,7 @@ namespace GnollHackX
 
         public static void OnSleep()
         {
+            MaybeWriteGHLog("GHApp.OnSleep: Start", true, GHConstants.SentryGnollHackGeneralCategoryName);
             IsSuspended = true;
             if (!UsePlatformRenderLoop)
                 PlatformService?.RevertAnimatorDuration(false);
@@ -2453,7 +2460,8 @@ namespace GnollHackX
             /* Android and iOS are handled in MauiProgram */
             /* On MAUI on Android and iOS, moved saving game to SaveGameOnSleepAsync which is called in earlier events using a background task that should live long enough */
 #endif
-            CollectGarbage();
+            CollectGarbageNonBlocking();
+            MaybeWriteGHLog("GHApp.OnSleep: Finished", true, GHConstants.SentryGnollHackGeneralCategoryName);
         }
 
         public static void SaveGameOnSleep()
@@ -12175,6 +12183,7 @@ namespace GnollHackX
                 {
                     >= TrimMemory.Complete => MemoryPressureLevel.Complete,
                     >= TrimMemory.Background => MemoryPressureLevel.Background,
+                    >= TrimMemory.UiHidden => MemoryPressureLevel.Low,
                     >= TrimMemory.RunningCritical => MemoryPressureLevel.Critical,
                     >= TrimMemory.RunningLow => MemoryPressureLevel.Medium,
                     >= TrimMemory.RunningModerate => MemoryPressureLevel.Low,
