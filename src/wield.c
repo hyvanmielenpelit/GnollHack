@@ -154,12 +154,18 @@ update_hand_unweapon(int hand)
     struct obj* wep = (hand <= 1 ? uwep : uarms);
     boolean* unweapon_ptr = (hand <= 1 ? &unweapon1 : &unweapon2);
 
-     if (hand >= 2 && !u.twoweap)
+    if (hand >= 2 && !u.twoweap)
     {
         *unweapon_ptr = FALSE;
         return;
     }
-        
+
+    if (hand == 2 && uwep && bimanual(uwep))
+    {
+        *unweapon_ptr = FALSE;
+        return;
+    }
+
     if (wep)
     {
         *unweapon_ptr = is_unweapon(wep);
@@ -1702,6 +1708,14 @@ dotwoweapon(void)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_FAIL, "do not have the dual wielding skill.");
+            return 0;
+        }
+        if (uwep && bimanual(uwep))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You_ex(ATR_NONE, CLR_MSG_FAIL,
+                "cannot engage in two weapon combat while wielding a two-handed %s.",
+                is_sword(uwep) ? "sword" : "weapon");
             return 0;
         }
         play_ui_sound(UI_SOUND_START_TWO_WEAPON_COMBAT);
