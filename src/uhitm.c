@@ -3919,6 +3919,7 @@ hmonas(struct monst *mon)
     boolean is_alternating_offhand = FALSE;
     boolean is_offhand = FALSE;
     boolean needs_twoweap = FALSE;
+    struct attack temp_attack = { 0 };
 
     play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_START_ATTACK);
 
@@ -3926,6 +3927,17 @@ hmonas(struct monst *mon)
     {
         /* sum[i] = 0; -- now done above */
         mattk = getmattk(&youmonst, mon, i, sum, &alt_attk);
+        if (is_special_offhand)
+        {
+            temp_attack = *mattk;
+            /* Extra off-hand attack causes half damage using natural attack */
+            if (temp_attack.damd > 2)
+                temp_attack.damd = max(2, temp_attack.damd / 2);
+            if (temp_attack.damp > 0)
+                temp_attack.damp /= 2;
+            temp_attack.aflags |= ATTKFLAGS_OFFHAND;
+            mattk = &temp_attack;
+        }
 
         if ((mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT) && !(mattk->aflags & ATTKFLAGS_SAME_HEAD))
             bite_butt_count++;
