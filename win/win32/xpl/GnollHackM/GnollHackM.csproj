@@ -1237,8 +1237,9 @@
     <PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.22" Condition="$(TargetFramework.Contains('-android'))" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0'))">
-    <PackageReference Include="Microsoft.Maui.Controls" Condition="$(TargetFramework.Contains('-ios'))" Version="10.0.51" />
-    <PackageReference Include="Microsoft.Maui.Controls" Condition="!$(TargetFramework.Contains('-ios'))" Version="10.0.90" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.100" />
+    <!--<PackageReference Include="Microsoft.Maui.Controls" Condition="$(TargetFramework.Contains('-ios'))" Version="10.0.100" />
+    <PackageReference Include="Microsoft.Maui.Controls" Condition="!$(TargetFramework.Contains('-ios'))" Version="10.0.100" />-->
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net11.0'))">
     <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-preview.7.26406.9" />
@@ -1341,9 +1342,7 @@
     complete regeneration, we must delete not only mauiimage.inputs and stamps, but also the
     generated intermediate image and manifest directories.
   -->
-  <Target Name="_InvalidateResizetizerCacheIfIconChanged"
-          BeforeTargets="ResizetizeCollectItems"
-          Condition="$(TargetFramework.Contains('-windows')) And Exists('$(_ResizetizerInputsFile)')">
+  <Target Name="_InvalidateResizetizerCacheIfIconChanged" BeforeTargets="ResizetizeCollectItems" Condition="$(TargetFramework.Contains('-windows')) And Exists('$(_ResizetizerInputsFile)')">
     <ReadLinesFromFile File="$(_ResizetizerInputsFile)">
       <Output TaskParameter="Lines" ItemName="_CachedResizetizeInput" />
     </ReadLinesFromFile>
@@ -1358,14 +1357,11 @@
     </PropertyGroup>
 
     <!-- Delete input cache, outputs list, and Resizetizer stamp files -->
-    <Delete Files="$(_ResizetizerInputsFile);$(_ResizetizerOutputsFile);$(_ResizetizerStampFile);$(_MauiManifestStampFile)"
-            Condition="'$(_ResizetizerCacheIsStale)' == 'True'" />
+    <Delete Files="$(_ResizetizerInputsFile);$(_ResizetizerOutputsFile);$(_ResizetizerStampFile);$(_MauiManifestStampFile)" Condition="'$(_ResizetizerCacheIsStale)' == 'True'" />
 
     <!-- Remove the generated intermediate images and manifests so the C# task cannot skip them -->
-    <RemoveDir Directories="$(_MauiIntermediateImages)"
-               Condition="'$(_ResizetizerCacheIsStale)' == 'True' And Exists('$(_MauiIntermediateImages)')" />
-    <RemoveDir Directories="$(_MauiIntermediateManifest)"
-               Condition="'$(_ResizetizerCacheIsStale)' == 'True' And Exists('$(_MauiIntermediateManifest)')" />
+    <RemoveDir Directories="$(_MauiIntermediateImages)" Condition="'$(_ResizetizerCacheIsStale)' == 'True' And Exists('$(_MauiIntermediateImages)')" />
+    <RemoveDir Directories="$(_MauiIntermediateManifest)" Condition="'$(_ResizetizerCacheIsStale)' == 'True' And Exists('$(_MauiIntermediateManifest)')" />
   </Target>
 
   <!-- Clean up large native PDB files from Release output (libSkiaSharp.pdb, libGLESv2.pdb, etc.) -->
