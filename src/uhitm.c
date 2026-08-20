@@ -3912,6 +3912,7 @@ hmonas(struct monst *mon)
     boolean is_alternating_offhand = TRUE;
     boolean is_offhand = FALSE;
     boolean needs_twoweap = FALSE;
+    boolean last_primary_was_bimanual = FALSE;
     struct attack temp_attack = { 0 };
 
     play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_START_ATTACK);
@@ -3965,8 +3966,9 @@ hmonas(struct monst *mon)
                get to make another weapon attack (note:  monsters who
                use weapons do not have this restriction, but they also
                never have the opportunity to use two weapons) */
-            if (is_offhand && uwep && bimanual(uwep))
+            if (is_offhand && last_primary_was_bimanual)
             {
+                last_primary_was_bimanual = FALSE; /* Just to confirm, that we do not skip more than one attack */
                 continue;
             }
             /* Certain monsters don't use weapons when encountered as enemies,
@@ -3994,6 +3996,9 @@ hmonas(struct monst *mon)
             weapon = *originalweapon;
             if (!weapon) /* no need to go beyond no-gloves to rings; not ...*/
                 originalweapon = &uarmg; /*... subject to erosion damage */
+            
+            if (!is_offhand)
+                last_primary_was_bimanual = weapon && bimanual(weapon);
 
             struct multishot_result msres = get_multishot_stats(&youmonst, weapon, weapon, FALSE);
             int wieldermultistrike = msres.wielder_attacks;
@@ -4055,6 +4060,12 @@ hmonas(struct monst *mon)
             /* Claws use alternating system, but you can also use ATTKFLAGS_OFFHAND to make them off-hand */
             is_alternating_offhand = !is_alternating_offhand;
             is_offhand = is_offhand || is_alternating_offhand;
+            if (is_offhand && last_primary_was_bimanual)
+            {
+                last_primary_was_bimanual = FALSE; /* Just to confirm, that we do not skip more than one attack */
+                continue;
+            }
+
             if (!cantwield(youmonst.data))
             {
                 if (is_offhand)
