@@ -86,9 +86,7 @@ public partial class App : Application
          * with a per-line relative multiplier, which would override our absolute fix. */
         Action<Microsoft.Maui.Handlers.LabelHandler, Microsoft.Maui.ILabel> uniformLineHeightHandler = (handler, view) =>
         {
-
-
-#if IOS
+#if IOS //false
             if (view is not Label label || label.FormattedText == null || label.FormattedText.Spans.Count <= 1)
                 return;
 
