@@ -3884,11 +3884,11 @@ hmonas(struct monst *mon)
 
     struct attack *mattk, alt_attk;
     struct obj *weapon, **originalweapon;
-    boolean odd_claw = TRUE;
     int i, tmp, armorpenalty, sum[NATTK], /* nsum = 0, */ dhit = 0, attknum = 0;
     int dieroll, multi_claw = 0, multi_weap = 0;
     struct obj* noweapon = 0;
     boolean has_explicit_offhand = FALSE;
+    boolean u_multiwepmonster = is_multiweaponmonster(youmonst.data);
 
     /* with just one touch/claw/weapon attack, both rings matter;
        with more than one, alternate right and left when checking
@@ -3896,19 +3896,20 @@ hmonas(struct monst *mon)
     for (i = 0; i < NATTK; i++) {
         sum[i] = 0;
         mattk = getmattk(&youmonst, mon, i, sum, &alt_attk);
-        if (mattk->aatyp == AT_WEAP || mattk->aatyp == AT_CLAW || mattk->aatyp == AT_TUCH)
+        if (mattk->aatyp == AT_CLAW || mattk->aatyp == AT_TUCH)
             ++multi_claw;
         if (mattk->aatyp == AT_WEAP)
             ++multi_weap;
         if (mattk->aflags & ATTKFLAGS_OFFHAND)
             has_explicit_offhand = TRUE;
     }
-    multi_claw = (multi_claw > 1); /* switch from count to yes/no */
 
+    boolean has_implicit_offhand_claw_attack = (multi_weap > 0 && multi_claw > 0) || multi_claw > 1;
+    boolean has_multiple_hand_attacks = ((multi_claw + multi_weap) > 1); /* switch from count to yes/no */
     unsigned int bite_butt_count = 0;
     boolean offhand_attack_added = FALSE;
     boolean is_special_offhand = FALSE;
-    boolean is_alternating_offhand = FALSE;
+    boolean is_alternating_offhand = TRUE;
     boolean is_offhand = FALSE;
     boolean needs_twoweap = FALSE;
     struct attack temp_attack = { 0 };
@@ -3937,7 +3938,7 @@ hmonas(struct monst *mon)
         if (youmonst.data->heads > 1 && youmonst.heads_left < bite_butt_count)
             continue;
 
-        is_offhand = is_alternating_offhand || (mattk->aflags & ATTKFLAGS_OFFHAND) != 0;
+        is_offhand = (mattk->aflags & ATTKFLAGS_OFFHAND) != 0;
         needs_twoweap = (mattk->aflags & ATTKFLAGS_REQUIRE_TWOWEAPON) != 0;
         weapon = 0;
 
@@ -3950,16 +3951,22 @@ hmonas(struct monst *mon)
 
         switch (mattk->aatyp) {
         case AT_WEAP:
+            if (u_multiwepmonster)
+            {
+                /* Multiweapon monsters use alternating system, but you can also use ATTKFLAGS_OFFHAND to make them off-hand */
+                is_alternating_offhand = !is_alternating_offhand;
+                is_offhand = is_offhand || is_alternating_offhand;
+            }
+            /* Weapons offhand is determined by ATTKFLAGS_OFFHAND entirely */
+            is_alternating_offhand = is_offhand;
             /* if (!uwep) goto weaponless; */
  use_weapon:
-            odd_claw = !odd_claw; /* see case AT_CLAW,AT_TUCH below */
             /* if we've already hit with a two-handed weapon, we don't
                get to make another weapon attack (note:  monsters who
                use weapons do not have this restriction, but they also
                never have the opportunity to use two weapons) */
             if (is_offhand && uwep && bimanual(uwep))
             {
-                is_alternating_offhand = !has_explicit_offhand && !is_alternating_offhand;
                 continue;
             }
             /* Certain monsters don't use weapons when encountered as enemies,
@@ -4041,10 +4048,13 @@ hmonas(struct monst *mon)
                 if (breakloop)
                     break;
             }
-            is_alternating_offhand = !has_explicit_offhand && !is_alternating_offhand;
             break;
         case AT_CLAW:
         case AT_TUCH:
+        {
+            /* Claws use alternating system, but you can also use ATTKFLAGS_OFFHAND to make them off-hand */
+            is_alternating_offhand = !is_alternating_offhand;
+            is_offhand = is_offhand || is_alternating_offhand;
             if (!cantwield(youmonst.data))
             {
                 if (is_offhand)
@@ -4063,10 +4073,19 @@ hmonas(struct monst *mon)
             update_u_action(mattk->action_tile ? mattk->action_tile : ACTION_TILE_CAST_NODIR);
             play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
             u_wait_until_action();
-            sum[i] = damageum(mon, mattk, (struct obj*)0, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
+            int specialdmg;
+            int64_t silverhit = 0L;
+            specialdmg = special_dmgval(&youmonst, mon,
+                W_ARMG
+                | ((is_offhand || !has_multiple_hand_attacks)
+                    ? W_RINGL : 0L)
+                | ((!is_offhand || !has_multiple_hand_attacks)
+                    ? W_RINGR : 0L),
+                &silverhit);
+            sum[i] = damageum(mon, mattk, (struct obj*)0, specialdmg); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
             update_u_action_revert(ACTION_TILE_NO_ACTION);
-            is_alternating_offhand = !has_explicit_offhand && !is_alternating_offhand;
             break;
+        }
         case AT_SMMN:
             break;
         case AT_KICK:
@@ -4106,27 +4125,6 @@ hmonas(struct monst *mon)
 
                 specialdmg = 0; /* blessed and/or silver bonus */
                 switch (mattk->aatyp) {
-                case AT_CLAW:
-                case AT_TUCH:
-                    /* verb=="claws" may be overridden below */
-                    verb = (mattk->aatyp == AT_TUCH) ? "touch" : "claws";
-                    /* decide if silver-hater will be hit by silver ring(s);
-                       for 'multi_claw' where attacks alternate right/left,
-                       assume 'even' claw or touch attacks use right hand
-                       or paw, 'odd' ones use left for ring interaction;
-                       even vs odd is based on actual attacks rather
-                       than on index into mon->dat->mattk[] so that {bite,
-                       claw,claw} instead of {claw,claw,bite} doesn't
-                       make poly'd hero mysteriously become left-handed */
-                    odd_claw = !odd_claw;
-                    specialdmg = special_dmgval(&youmonst, mon,
-                                                W_ARMG
-                                                | ((odd_claw || !multi_claw)
-                                                   ? W_RINGL : 0L)
-                                                | ((!odd_claw || !multi_claw)
-                                                   ? W_RINGR : 0L),
-                                                &silverhit);
-                    break;
                 case AT_TENT:
                     /* assumes tentacled one's tentacles-on-head rather
                        than sea monster's tentacle-as-arm */
@@ -4375,7 +4373,7 @@ hmonas(struct monst *mon)
             break; /* No extra attacks if no longer a monster */
         if (multi < 0 || Sleeping || Paralyzed_or_immobile)
             break; /* If paralyzed while attacking, i.e. floating eye */
-        if (!has_explicit_offhand && u.twoweap && multi_weap == 1 && !offhand_attack_added && mattk->aatyp == AT_WEAP)
+        if (!has_explicit_offhand && !has_implicit_offhand_claw_attack && !(u_multiwepmonster && multi_weap > 1) && u.twoweap /* && multi_weap == 1 */ && !offhand_attack_added && mattk->aatyp == AT_WEAP)
         {
             offhand_attack_added = TRUE;
             is_special_offhand = TRUE;

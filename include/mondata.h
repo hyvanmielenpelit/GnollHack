@@ -101,10 +101,11 @@
 #define can_breathe(ptr) attacktype(ptr, AT_BREA)
 #define cantwield(ptr) (nohands(ptr) || verysmall(ptr))
 #define is_dual_wielder_form(ptr) (((ptr)->mflags7 & M7_DUAL_WIELDER) != 0L)
-#define could_twoweap(ptr) is_dual_wielder_form(ptr)
+#define is_ambidextrous(ptr) (((ptr)->mflags7 & M7_AMBIDEXTROUS) != 0L)
+#define could_twoweap(ptr) (is_dual_wielder_form(ptr) || is_ambidextrous(ptr))
 #define effective_twoweap_skill_level(chk_poly) \
-    (((chk_poly) && Upolyd && is_dual_wielder_form(youmonst.data)) \
-     ? max(P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT), P_EXPERT) \
+    (((chk_poly) && Upolyd && (is_dual_wielder_form(youmonst.data) || is_ambidextrous(youmonst.data))) \
+     ? (is_ambidextrous(youmonst.data) ? P_GRAND_MASTER : max(P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT), P_EXPERT)) \
      : P_SKILL_LEVEL(P_DUAL_WEAPON_COMBAT))
 #define cantweararm(ptr) (breakarm(ptr) || sliparm(ptr))
 #define throws_rocks(ptr) (((ptr)->mflags1 & M1_ROCKTHROW) != 0L)
