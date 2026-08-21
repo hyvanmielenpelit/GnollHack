@@ -3778,7 +3778,7 @@ doeat(void)
     {
         /* Paranoid corpse check */
         boolean corpseknown = (mvitals[otmp->corpsenm].mvflags & MV_KNOWS_CORPSE) != 0;
-        boolean death_time_known_ok = (otmp->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN) != 0 && otmp->age > monstermoves - (is_obj_bknown(otmp) ? 3 : 1) * CORPSE_ROTTING_SPEED;
+        boolean death_time_known_ok = (otmp->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN) != 0 && otmp->age > monstermoves - (is_obj_bknown(otmp) ? (is_obj_blessed(otmp) ? 5 : is_obj_cursed(otmp) ? 1 : 3) : 1) * CORPSE_ROTTING_SPEED;
         boolean maybe_unfresh = !is_obj_rotknown(otmp) && !nonrotting_corpse(otmp->corpsenm) && !death_time_known_ok;
         boolean known_rotten = is_obj_rotknown(otmp) && otmp->orotten;
         boolean known_stunning_corpse = corpseknown && has_stunning_corpse(&mons[otmp->corpsenm]) && !Stun_resistance;
