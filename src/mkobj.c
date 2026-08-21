@@ -4339,6 +4339,7 @@ dealloc_obj(struct obj *obj)
 
     if (obj->oextra)
         dealloc_oextra(obj);
+    obj->item_flags |= ITEM_FLAGS_DEBUG_DEALLOCATED;
     free((genericptr_t) obj);
 }
 

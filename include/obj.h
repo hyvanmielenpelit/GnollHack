@@ -171,6 +171,7 @@ struct obj {
 #define ITEM_FLAGS_FIRED_BY_MONSTER            0x00000004UL
 #define ITEM_FLAGS_LAVA_EFFECTS_SKIP           0x00000008UL /* The item is already on its way to be destroyed (e.g. by destroy armor scroll), so do not burn it in lava effects */
 #define ITEM_FLAGS_SAVED_UNPAID                0x00000010UL
+#define ITEM_FLAGS_DEBUG_DEALLOCATED           0x00000020UL /* Only on for deallocated objects, to identify dangling pointers */
 
     uint64_t speflags;    /* anything else that might be going on with an item, not affected by cancellation */
 

@@ -75,7 +75,8 @@ static timer_element* remove_timer_type(timer_element**, short);
 static void write_timer(int, timer_element*);
 static boolean mon_is_local(struct monst*);
 static boolean timer_is_local(timer_element*);
-static int maybe_write_timer(int, int, boolean); 
+static boolean timer_attach_deallocated(timer_element*);
+static int maybe_write_timer(int, int, boolean);
 
 static void stoned_dialogue(void);
 static void vomiting_dialogue(void);
@@ -3647,10 +3648,12 @@ obj_is_local(struct obj *obj)
     case OBJ_MINVENT:
         return mon_is_local(obj->ocarry);
     case OBJ_FREE:
-        impossible("obj_is_local: obj->where is OBJ_FREE");
+        impossible("obj_is_local: obj->where is OBJ_FREE (otyp=%d, corpsenm=%d, timed=%d, lamplit=%d, makingsound=%d, dealloc=%d)",
+            obj->otyp, obj->corpsenm, obj->timed, is_obj_lamplit(obj), is_obj_makingsound(obj), (obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0);
         return FALSE;
     }
-    panic("obj_is_local");
+    panic("obj_is_local: obj->where=%d (otyp=%d, corpsenm=%d, timed=%d, lamplit=%d, makingsound=%d, dealloc=%d)", obj->where,
+        obj->otyp, obj->corpsenm, obj->timed, is_obj_lamplit(obj), is_obj_makingsound(obj), (obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0);
     return FALSE;
 }
 
@@ -3694,6 +3697,22 @@ timer_is_local(timer_element *timer)
     return FALSE;
 }
 
+static boolean
+timer_attach_deallocated(timer_element* timer)
+{
+    switch (timer->kind) {
+    case TIMER_LEVEL:
+        return FALSE;
+    case TIMER_GLOBAL:
+        return FALSE;
+    case TIMER_OBJECT:
+        return !timer->arg.a_obj || (timer->arg.a_obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0;
+    case TIMER_MONSTER:
+        return !timer->arg.a_monst || (timer->arg.a_monst->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED) != 0;
+    }
+    return TRUE;
+}
+
 /*
  * Part of the save routine.  Count up the number of timers that would
  * be written.  If write_it is true, actually write the timer.
@@ -3708,6 +3727,9 @@ maybe_write_timer(int fd, int range, boolean write_it)
         if (range == RANGE_GLOBAL) {
             /* global timers */
 
+            if (timer_attach_deallocated(curr))
+                continue;
+
             if (!timer_is_local(curr)) {
                 count++;
                 if (write_it)
@@ -3716,6 +3738,9 @@ maybe_write_timer(int fd, int range, boolean write_it)
 
         } else {
             /* local timers */
+
+            if (timer_attach_deallocated(curr))
+                continue;
 
             if (timer_is_local(curr)) {
                 count++;

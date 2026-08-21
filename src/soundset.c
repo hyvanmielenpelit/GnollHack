@@ -19036,13 +19036,16 @@ maybe_write_soundsource(int fd, int volume, boolean write_it)
             continue;
         }
 
+        boolean is_attach_deallocated = FALSE;
         switch (ss->type)
         {
         case SOUNDSOURCE_OBJECT:
             is_global = !obj_is_local(ss->id.a_obj);
+            is_attach_deallocated = (ss->id.a_obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0;
             break;
         case SOUNDSOURCE_MONSTER:
             is_global = !mon_is_local_mx(ss->id.a_monst);
+            is_attach_deallocated = (ss->id.a_monst->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED) != 0;
             break;
         case SOUNDSOURCE_LOCATION:
             is_global = 0; /* always local */
@@ -19055,6 +19058,9 @@ maybe_write_soundsource(int fd, int volume, boolean write_it)
             impossible("maybe_write_soundsource: bad type (%d) [volume=%d]", ss->type, volume);
             break;
         }
+
+        if (is_attach_deallocated)
+            continue;
 
         /* if global and not doing local, or vice versa, count it */
         if (is_global ^ (volume == RANGE_LEVEL))

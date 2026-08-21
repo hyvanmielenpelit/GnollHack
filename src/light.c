@@ -471,13 +471,16 @@ maybe_write_ls(int fd, int range, boolean write_it)
             continue;
         }
 
+        boolean is_attach_deallocated = FALSE;
         switch (ls->type)
         {
         case LS_OBJECT:
             is_global = !obj_is_local(ls->id.a_obj);
+            is_attach_deallocated = (ls->id.a_obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0;
             break;
         case LS_MONSTER:
             is_global = !mon_is_local_mx(ls->id.a_monst);
+            is_attach_deallocated = (ls->id.a_monst->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED) != 0;
             break;
         case LS_LOCATION:
             is_global = 0; /* always local */
@@ -487,6 +490,9 @@ maybe_write_ls(int fd, int range, boolean write_it)
             impossible("maybe_write_ls: bad type (%d) [range=%d]", ls->type, range);
             break;
         }
+
+        if (is_attach_deallocated)
+            continue;
         
         /* if global and not doing local, or vice versa, count it */
         if (is_global ^ (range == RANGE_LEVEL)) 
