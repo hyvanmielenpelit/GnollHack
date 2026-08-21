@@ -44,6 +44,7 @@ throw_obj(struct obj *obj, int shotlimit, boolean firing)
     //boolean weakmultishot;
 
     /* ask "in what direction?" */
+    debugprint_pos();
     if (!getdir((char *) 0)) {
         /* No direction specified, so cancel the throw;
          * might need to undo an object split.

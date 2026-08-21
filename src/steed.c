@@ -40,6 +40,7 @@ use_saddle(struct obj *otmp)
     if (!u_handsy() && !is_telekinetic_operator(youmonst.data))
         return 0;
 
+    debugprint_pos();
     /* Select an animal */
     if (u.uswallow || Underwater || !getdir((char *) 0)) {
         pline1(Never_mind);
@@ -172,6 +173,7 @@ doride(void)
     } 
     else
     {
+        debugprint_pos();
         if (getdir((char*)0) && isok(u.ux + u.dx, u.uy + u.dy))
         {
             update_u_facing(TRUE);

@@ -85,6 +85,7 @@ use_salve(struct obj *obj, boolean drink_yourself)
         return 0;
     }
 
+    debugprint_pos();
     if (drink_yourself)
         u.dx = u.dy = u.dz = 0;
     else if (!getdir_ex((char*)0, TRUE))
@@ -184,7 +185,8 @@ use_grail(struct obj *obj, boolean drink_yourself)
         return 0;
     }
 
-    if(drink_yourself)
+    debugprint_pos();
+    if (drink_yourself)
         u.dx = u.dy = u.dz = 0;
     else if (!getdir_ex((char*)0, TRUE))
         return 0;
@@ -274,6 +276,7 @@ use_camera(struct obj *obj)
         pline_ex(ATR_NONE, NO_COLOR, "Using your camera underwater would void the warranty.");
         return 0;
     }
+    debugprint_pos();
     if (!getdir((char *) 0))
         return 0;
 
@@ -681,6 +684,7 @@ use_stethoscope(struct obj *obj)
         You_ex(ATR_NONE, CLR_MSG_FAIL, "have no free %s.", body_part(HAND));
         return 0;
     }
+    debugprint_pos();
     if (!getdir((char *) 0))
         return 0;
 
@@ -1299,6 +1303,7 @@ use_mirror(struct obj *obj)
     char mlet;
     boolean vis, invis_mirror, useeit, monable;
 
+    debugprint_pos();
     if (!getdir((char *) 0))
         return 0;
     update_u_facing(TRUE);
@@ -1536,6 +1541,7 @@ use_holysymbol(struct obj *obj)
     if (!obj)
         return 0;
 
+    debugprint_pos();
     if (!getdir((char*)0))
         return 0;
 
@@ -3413,6 +3419,7 @@ use_unicorn_horn(struct obj *obj, boolean you_only)
         did_attr;
     int trouble_list[PROP_COUNT + ATTR_COUNT];
 
+    debugprint_pos();
     if (you_only)
         u.dx = u.dy = u.dz = 0;
     else if (!getdir_ex((char*)0, TRUE))
@@ -3878,6 +3885,7 @@ use_figurine(struct obj **optr)
         if (!figurine_location_checks(obj, (coord *) 0, FALSE))
             return;
     }
+    debugprint_pos();
     if (!getdir((char *) 0)) {
         context.move = multi = 0;
         return;
@@ -4806,6 +4814,7 @@ use_whip(struct obj *obj)
         else
             res = 1;
     }
+    debugprint_pos();
     if (!getdir((char *) 0))
         return res;
 
@@ -6827,6 +6836,7 @@ use_golf_club(struct obj *obj)
         return 0;
     }
 
+    debugprint_pos();
     if (!getdir((char*)0))
         return 0;
     if (!u.dx && !u.dy)

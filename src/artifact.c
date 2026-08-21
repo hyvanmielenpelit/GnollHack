@@ -2948,6 +2948,7 @@ arti_invoke(struct obj *obj)
             pseudo.quan = 20L; /* do not let useup get it */
             double damage = 0;
 
+            debugprint_pos();
             if (!getdir((char*)0))
             {
                 pline1(Never_mind);
@@ -2980,7 +2981,8 @@ arti_invoke(struct obj *obj)
             pseudo.quan = 1L; /* do not let useup get it */
             double damage = 0;
 
-            if (!getdir((char*)0)) 
+            debugprint_pos();
+            if (!getdir((char*)0))
             {
                 pline1(Never_mind);
                 return 0;

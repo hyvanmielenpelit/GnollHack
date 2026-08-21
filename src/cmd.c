@@ -8259,6 +8259,7 @@ rhack(char *cmd)
                 func = ((struct ext_func_tab *) tlist)->ef_funct;
                 if (func)
                 {
+                    debugprint("cmd:%u=%s", tlist->key, tlist->ef_txt ? tlist->ef_txt : "?");
                     context.first_time_cmd = TRUE;
                     if (tlist->f_text && !occupation && multi)
                         set_occupation(func, tlist->f_text, tlist->attr, tlist->color, 0, 0, 0, multi);
@@ -8425,6 +8426,7 @@ getdir_ex(const char *s, boolean self_always_ok)
 {
     char dirsym;
     int is_mov;
+    debugprint_pos();
 
 retry:
     create_context_menu(CREATE_CONTEXT_MENU_IN_GETDIR);
@@ -8753,6 +8755,7 @@ dotherecmdmenu(void)
 {
     char ch;
 
+    debugprint_pos();
     if (!getdir((const char *) 0) || !isok(u.ux + u.dx, u.uy + u.dy))
         return 0;
 

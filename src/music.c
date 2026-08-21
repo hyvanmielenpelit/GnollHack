@@ -624,6 +624,7 @@ do_improvisation(struct obj *instr)
     case FROST_HORN: /* Idem wand of cold */
         consume_obj_charge(instr, TRUE);
 
+        debugprint_pos();
         if (!getdir((char *) 0)) {
             pline("%s.", Tobjnam(instr, "vibrate"));
             break;

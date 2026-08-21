@@ -2975,7 +2975,8 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
     case SPE_PORTAL:
         if (objects[otyp].oc_dir != NODIR)
         {
-            if (atme) 
+            debugprint_pos();
+            if (atme)
             {
                 u.dx = u.dy = u.dz = 0;
             } 

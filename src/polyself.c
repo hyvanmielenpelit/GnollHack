@@ -1763,6 +1763,7 @@ dobreathe(void)
     if (typ == -1)
         return 0;
 
+    debugprint_pos();
     if (!getdir((char*)0))
         return 0;
 
@@ -1899,6 +1900,7 @@ dosteedbreathemon(struct monst *mon)
         return 0;
 
     /* Then the direction */
+    debugprint_pos();
     if (!getdir((char*)0))
         return 0;
 
@@ -1928,6 +1930,7 @@ dospit(void)
     struct obj *otmp;
     struct attack *mattk;
 
+    debugprint_pos();
     if (!getdir((char *) 0))
         return 0;
     mattk = attacktype_fordmg(youmonst.data, AT_SPIT, AD_ANY);
@@ -2150,6 +2153,7 @@ dogaze(void)
         return 0;
     }
 
+    debugprint_pos();
     if (!getdir((char*)0))
         return 0;
 
@@ -2396,6 +2400,7 @@ doeyestalk(void)
         return 0;
     }
 
+    debugprint_pos();
     if (!getdir((char*)0))
         return 0;
 

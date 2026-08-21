@@ -1236,6 +1236,7 @@ doclose(void)
         return 0;
     }
 
+    debugprint_pos();
     if (!getdir((char *) 0))
         return 0;
 

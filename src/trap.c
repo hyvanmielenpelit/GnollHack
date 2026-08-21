@@ -6044,6 +6044,7 @@ untrap(boolean force)
     int boxcnt = 0;
     char the_trap[BUFSZ], qbuf[QBUFSZ];
 
+    debugprint_pos();
     if (!getdir((char *) 0))
         return 0;
 

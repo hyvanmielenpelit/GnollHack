@@ -1931,6 +1931,7 @@ doidtrap(void)
     struct trap *trap;
     int x, y, tt, glyph;
 
+    debugprint_pos();
     if (!getdir("^"))
         return 0;
     x = u.ux + u.dx;

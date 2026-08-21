@@ -1266,6 +1266,7 @@ use_pick_axe(struct obj *obj)
     }
     *dsp = 0;
     Sprintf(qbuf, "In what direction do you want to %s? [%s]", verb, dirsyms);
+    debugprint_pos();
     if (!getdir(qbuf))
         return res;
 

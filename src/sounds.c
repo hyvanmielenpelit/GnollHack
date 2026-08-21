@@ -2201,6 +2201,7 @@ dochat(void)
     struct obj* otmp;
     boolean target_is_steed = FALSE;
 
+    debugprint_pos();
     if (!getdir("Talk to whom? (in what direction)"))
     {
         /* decided not to chat */

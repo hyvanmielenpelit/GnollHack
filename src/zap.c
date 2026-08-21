@@ -6546,6 +6546,7 @@ dozapcore(struct obj *obj, boolean *stop_readchar_ptr)
     wish_insurance_check(obj->otyp == WAN_WISHING);
     check_unpaid(obj);
 
+    debugprint_pos();
     /* zappable addition done by GAN 11/03/86 */
     if (!zappable(obj))
     {
