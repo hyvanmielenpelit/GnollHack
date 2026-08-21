@@ -755,7 +755,7 @@ void print_corpse_properties(winid datawin, int mnum)
             putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
         }
 
-        if (mnum == PM_CHAMELEON || mnum == PM_DOPPELGANGER || mnum == PM_SANDESTIN)
+        if (has_polymorphing_corpse(ptr))
         {
             cnt++;
             Sprintf(buf, "  %d - Causes polymorph", cnt);

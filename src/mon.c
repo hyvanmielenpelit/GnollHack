@@ -324,6 +324,7 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
     boolean istame = is_tame(mtmp);
     boolean isquestmonster = In_quest(&u.uz)
         && (mtmp->mnum == urole.enemy1num || mtmp->mnum == urole.enemy2num || mtmp->data->mlet == urole.enemy1sym || mtmp->data->mlet == urole.enemy2sym);
+    boolean is_death_timing_known = canspotmon(mtmp) && cansee(x, y); /* Logic: Saw both the monster die AND the appearance of the corpse */
 
     /* Monsters that create death items with or without the corpse */
     if (!istame && !isquestmonster)
@@ -915,8 +916,13 @@ make_corpse(struct monst *mtmp, unsigned corpseflags, boolean createcorpse)
             obj = mkcorpstat(CORPSE, is_keeping_traits ? mtmp : 0,
                              mdat, x, y, corpstatflags);
 
-            if (obj && !is_keeping_traits && is_mon_facing_right(mtmp))
-                obj->speflags |= SPEFLAGS_FACING_RIGHT;
+            if (obj)
+            {
+                if (!is_keeping_traits && is_mon_facing_right(mtmp))
+                    obj->speflags |= SPEFLAGS_FACING_RIGHT;
+                if (is_death_timing_known)
+                    obj->item_flags |= ITEM_FLAGS_DEATH_TIMING_KNOWN;
+            }
 
             if (burythem) 
             {

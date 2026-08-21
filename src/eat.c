@@ -1483,6 +1483,9 @@ corpse_after_effect(int pm, uchar gender UNUSED)
     if (pm < LOW_PM || pm >= NUM_MONSTERS)
         return;
 
+    /* Gain knowledge of the corpse properties by eating */
+    mvitals[pm].mvflags |= MV_KNOWS_CORPSE;
+
     struct permonst* ptr = &mons[pm];
     boolean donotcheckfurther = FALSE;
     if (has_hallucinating_corpse(ptr))
@@ -1551,6 +1554,18 @@ corpse_after_effect(int pm, uchar gender UNUSED)
         return;
     }
 
+    if (has_polymorphing_corpse(ptr))
+    {
+        if (Unchanging || Polymorph_resistance || Protection_from_shape_changers) {
+            You_feel("momentarily different."); /* same as poly trap */
+        }
+        else {
+            You_feel("a change coming over you.");
+            polyself(0);
+        }
+        standard_hint("Some corpses cause to polymorph. You can check this out by using a wand of probing.", &u.uhint.ate_polymorphing_corpse);
+    }
+
     switch (pm) {
     case PM_NEWT:
         /* MRKR: "eye of newt" may give small magical energy boost */
@@ -1605,7 +1620,7 @@ corpse_after_effect(int pm, uchar gender UNUSED)
         /*FALLTHRU*/
     case PM_SMALL_MIMIC:
         tmp += 20;
-        if (!is_mimic(youmonst.data) && !Unchanging) {
+        if (!is_mimic(youmonst.data) && !Unchanging && !Polymorph_resistance && !Protection_from_shape_changers) {
             char buf[BUFSZ];
             issue_achievement(GUI_ACHIEVEMENT_POLYMORPHED_FORM);
             if (!u.uconduct.polyselfs++) /* you're changing form */
@@ -1658,37 +1673,12 @@ corpse_after_effect(int pm, uchar gender UNUSED)
         if ((HConfusion & TIMEOUT) > 2)
             make_confused(2L, FALSE);
         break;
-    case PM_CHAMELEON:
-    case PM_DOPPELGANGER:
-    case PM_SANDESTIN: /* moot--they don't leave corpses */
-        if (Unchanging || Polymorph_resistance) {
-            You_feel("momentarily different."); /* same as poly trap */
-        } else {
-            You_feel("a change coming over you.");
-            polyself(0);
-        }
-        standard_hint("Some corpses cause to polymorph. You can check this out by using a wand of probing.", &u.uhint.ate_polymorphing_corpse);
-        break;
     case PM_DISENCHANTER:
         /* picks an intrinsic at random and removes it; there's
            no feedback if hero already lacks the chosen ability */
         debugpline0("using attrcurse to strip an intrinsic");
         attrcurse();
         break;
-#if 0
-    case PM_TENTACLED_ONE:
-    case PM_ELDER_TENTACLED_ONE:
-        if (ABASE(A_INT) < ATTRMAX(A_INT)) {
-            if (!rn2(2)) {
-                pline("Yum!  That was real brain food!");
-                (void) adjattrib(A_INT, 1, FALSE);
-                break; /* don't give them telepathy, too */
-            }
-        } else {
-            pline("For some reason, that tasted bland.");
-        }
-    /*FALLTHRU*/
-#endif
     default:
         check_intrinsics = TRUE;
         break;
@@ -3464,7 +3454,7 @@ get_rotted_status(struct obj *obj)
             rotted -= 2L;
     }
 
-    return rotted;
+    return max(0, rotted);
 }
 /*
  * return 0 if the food was not dangerous.
@@ -3774,13 +3764,146 @@ doeat(void)
     {
         int res = edibility_prompts(otmp);
 
-        if (res) {
+        if (res) 
+        {
             Your(
                "%s stops tingling and your sense of smell returns to normal.",
                  body_part(NOSE));
             u.uedibility = 0;
             if (res == 1)
                 return 0;
+        }
+    }
+    else if (is_obj_rotting_corpse(otmp) && ParanoidCorpse && !is_nonedible_corpse_material(youmonst.data, otmp) && otmp->corpsenm >= LOW_PM)
+    {
+        /* Paranoid corpse check */
+        boolean corpseknown = (mvitals[otmp->corpsenm].mvflags & MV_KNOWS_CORPSE) != 0;
+        boolean death_time_known_ok = (otmp->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN) != 0 && otmp->age > monstermoves - (is_obj_bknown(otmp) ? 3 : 1) * CORPSE_ROTTING_SPEED;
+        boolean maybe_unfresh = !is_obj_rotknown(otmp) && !nonrotting_corpse(otmp->corpsenm) && !death_time_known_ok;
+        boolean known_rotten = is_obj_rotknown(otmp) && otmp->orotten;
+        boolean known_stunning_corpse = corpseknown && has_stunning_corpse(&mons[otmp->corpsenm]) && !Stun_resistance;
+        boolean known_acidic_corpse = corpseknown && has_acidic_corpse(&mons[otmp->corpsenm]) && !Acid_resistance;
+        boolean known_poisonous_corpse = corpseknown && has_poisonous_corpse(&mons[otmp->corpsenm]) && !Poison_resistance;
+        boolean known_hallucinating_corpse = corpseknown && has_hallucinating_corpse(&mons[otmp->corpsenm]) && !Halluc_resistance;
+        boolean known_sickening_corpse = corpseknown && has_sickening_corpse(&mons[otmp->corpsenm]) && !Sick_resistance;
+        boolean known_mummyrotted_corpse = corpseknown && has_mummy_rotted_corpse(&mons[otmp->corpsenm]) && !Sick_resistance;
+        boolean known_lycanthropy_corpse = is_were(&mons[otmp->corpsenm]) && !Lycanthropy_resistance;
+        boolean known_mimic_corpse = corpseknown && is_mimic(&mons[otmp->corpsenm]) && !Unchanging && !Polymorph_resistance && !Protection_from_shape_changers;
+        boolean known_polymorphing_corpse = corpseknown && has_polymorphing_corpse(&mons[otmp->corpsenm]) && !Unchanging && !Polymorph_resistance && !Protection_from_shape_changers;
+        boolean ask_rotten = TRUE;
+        char cbuf[BUFSZ], rottext[BUFSZ] = "";
+        const char* verb = otense(otmp, "are");
+        const char* obj_its = otmp->quan == 1 ? "its" : "their";
+        if (known_rotten && !corpseknown)
+            Sprintf(rottext, ", %s rotten, and %s properties are unknown", verb, obj_its);
+        else if (known_rotten)
+            Sprintf(rottext, " and %s rotten", verb);
+        else if (!corpseknown && maybe_unfresh)
+            Sprintf(rottext, " and %s properties and freshness are unknown", obj_its);
+        else if (!corpseknown)
+            Sprintf(rottext, " and %s properties are unknown", obj_its);
+        else if (maybe_unfresh)
+            Strcpy(rottext, " and may not be fresh");
+
+        if (known_sickening_corpse)
+        {
+            Sprintf(cbuf, "%s %s infected with terminal illness%s. Continue?", The(cxname(otmp)), verb, rottext);
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Infected Corpse", cbuf) == 'n')
+                return 0;
+            ask_rotten = FALSE;
+        }
+        else if (known_mummyrotted_corpse)
+        {
+            Sprintf(cbuf, "%s %s infected with mummy rot%s. Continue?", The(cxname(otmp)), verb, rottext);
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Corpse with Mummy Rot", cbuf) == 'n')
+                return 0;
+            ask_rotten = FALSE;
+        }
+        else if (known_lycanthropy_corpse)
+        {
+            Sprintf(cbuf, "%s %s infected with lycanthropy%s. Continue?", The(cxname(otmp)), verb, rottext);
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Corpse with Lycanthropy", cbuf) == 'n')
+                return 0;
+            ask_rotten = FALSE;
+        }
+        else if (known_polymorphing_corpse)
+        {
+            Sprintf(cbuf, "%s %s polymorph%s. Continue?", The(cxname(otmp)), otense(otmp, "cause"), rottext);
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Polymorphing Corpse", cbuf) == 'n')
+                return 0;
+            ask_rotten = FALSE;
+        }
+        else if (known_mimic_corpse)
+        {
+            Sprintf(cbuf, "%s %s mimicking%s. Continue?", The(cxname(otmp)), otense(otmp, "cause"), rottext);
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Corpse Causes Mimicking", cbuf) == 'n')
+                return 0;
+            ask_rotten = FALSE;
+        }
+        else if (known_hallucinating_corpse)
+        {
+            Sprintf(cbuf, "%s %s hallucination%s. Continue?", The(cxname(otmp)), otense(otmp, "cause"), rottext);
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Hallucinating Corpse", cbuf) == 'n')
+                return 0;
+            ask_rotten = FALSE;
+        }
+        else if (known_poisonous_corpse)
+        {
+            Sprintf(cbuf, "%s %s poisonous%s. Continue?", The(cxname(otmp)), verb, rottext);
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Poisonous Corpse", cbuf) == 'n')
+                return 0;
+            ask_rotten = FALSE;
+        }
+        else if (known_stunning_corpse)
+        {
+            Sprintf(cbuf, "%s %s stunning%s. Continue?", The(cxname(otmp)), verb, rottext);
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Stunning Corpse", cbuf) == 'n')
+                return 0;
+            ask_rotten = FALSE;
+        }
+        else if (known_acidic_corpse)
+        {
+            Sprintf(cbuf, "%s %s acidic%s. Continue?", The(cxname(otmp)), verb, rottext);
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Acidic Corpse", cbuf) == 'n')
+                return 0;
+            ask_rotten = FALSE;
+        }
+
+        if (ask_rotten)
+        {
+            if (known_rotten)
+            {
+                *rottext = 0;
+                if (!corpseknown)
+                    Sprintf(rottext, " and %s properties are unknown", obj_its);
+                Sprintf(cbuf, "%s %s rotten%s. Continue?", The(cxname(otmp)), verb, rottext);
+                if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Rotten Corpse", cbuf) == 'n')
+                    return 0;
+            }
+            else
+            {
+                if (!corpseknown || maybe_unfresh)
+                {
+                    if (!corpseknown && maybe_unfresh)
+                    {
+                        Sprintf(cbuf, "The freshness and properties of %s are unknown. Continue?", thecxname(otmp));
+                        if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Unknown Corpse Qualities", cbuf) == 'n')
+                            return 0;
+                    }
+                    else if (!corpseknown)
+                    {
+                        Sprintf(cbuf, "The properties of %s are unknown. Continue?", thecxname(otmp));
+                        if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Unknown Corpse Qualities", cbuf) == 'n')
+                            return 0;
+                    }
+                    else
+                    {
+                        Sprintf(cbuf, "You do not know whether %s %s fresh. Continue?", thecxname(otmp), verb);
+                        if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Unknown Corpse Freshness", cbuf) == 'n')
+                            return 0;
+                    }
+                }
+            }
         }
     }
 

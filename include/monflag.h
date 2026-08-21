@@ -401,6 +401,7 @@
 #define M7_SLIGHTLY_TRANSPARENT     0x00040000UL   /* has very minor, uncanny transparency */
 #define M7_DUAL_WIELDER             0x00080000UL   /* monster has expert skill in dual wielding*/
 #define M7_AMBIDEXTROUS             0x00100000UL   /* monster has grand master skill in dual wielding */
+#define M7_POLYMORPHING_CORPSE      0x00200000UL   /* corpse causes polymorph */
 
 #define M8_NONE                     0x00000000UL
 

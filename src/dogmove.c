@@ -937,35 +937,6 @@ dog_corpse_after_effect(struct monst *mon, struct obj *obj, uchar gender UNUSED)
         refresh_m_tile_gui_info(mon, TRUE);
         check_intrinsics = TRUE; /* might also convey poison resistance */
         break;
-    case PM_CHAOS_MIMIC:
-        tmp += 10;
-        /*FALLTHRU*/
-    case PM_GARGANTUAN_MIMIC:
-        tmp += 10;
-        /*FALLTHRU*/
-    case PM_GIANT_MIMIC:
-        tmp += 10;
-        /*FALLTHRU*/
-    case PM_LARGE_MIMIC:
-        tmp += 20;
-        /*FALLTHRU*/
-    case PM_SMALL_MIMIC:
-        tmp += 20;
-        if (!is_mimic(mon->data) && !has_unchanging(mon)) {
-            //Handled in the calling function
-            //char buf[BUFSZ];
-
-            //if(canspotmon(mon))
-            //    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s can't resist the temptation to mimic %s.", Monnam(mon),
-            //        has_hallucination(mon) ? "an orange" : "a pile of gold");
-            ///* A pile of gold can't ride. */
-            ///* ??? what if this was set before? */
-            //newcham(mon, pm, 0, FALSE, FALSE);
-            //mon->m_ap_type = M_AP_OBJECT;
-            //mon->mappearance = has_hallucination(mon) ? ORANGE : GOLD_PIECE;
-            //newsym(mon->mx, mon->my);
-        }
-        break;
     case PM_QUANTUM_MECHANIC:
     case PM_ELDER_QUANTUM_MECHANIC:
         if (canspotmon(mon))
@@ -988,19 +959,6 @@ dog_corpse_after_effect(struct monst *mon, struct obj *obj, uchar gender UNUSED)
             set_mon_property(mon, STUNNED, 2L);
         if ((mon->mprops[CONFUSION] & M_TIMEOUT) > 2)
             set_mon_property(mon, CONFUSION, 2L);
-        break;
-    case PM_CHAMELEON:
-    case PM_DOPPELGANGER:
-    case PM_SANDESTIN: /* moot--they don't leave corpses */
-        // Handled in the calling function
-        //if (canspotmon(mon) && has_unchanging(mon)) 
-        //{
-        //    pline("%s seems momentarily different.", Monnam(mon)); /* same as poly trap */
-        //}
-        //else 
-        //{
-        //    newcham(mon, (struct permonst*)0, 0, FALSE, TRUE);
-        //}
         break;
     case PM_DISENCHANTER:
         /* picks an intrinsic at random and removes it; there's

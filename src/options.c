@@ -868,7 +868,7 @@ init_options(void)
     flags.end_own = FALSE;
     flags.end_top = 3;
     flags.end_around = 2;
-    flags.paranoia_bits = PARANOID_PRAY | PARANOID_AUTOALL | PARANOID_MULTISHOT; /* old prayconfirm=TRUE */
+    flags.paranoia_bits = PARANOID_PRAY | PARANOID_AUTOALL | PARANOID_MULTISHOT | PARANOID_CORPSE; /* old prayconfirm=TRUE */
     flags.runmode = RUN_LEAP;
     iflags.msg_history = 20;
     /* msg_window has conflicting defaults for multi-interface binary */
@@ -1608,6 +1608,8 @@ static const struct paranoia_opts {
       "y to eat non-vegan food" },
     { PARANOID_MULTISHOT, "multishot", 1, (const char*)0, 0,
       "y to continue firing after target is killed" },
+    { PARANOID_CORPSE, "corpse", 1, (const char*)0, 0,
+      "y to eat corpses of unknown freshness" },
       /* for config file parsing; interactive menu skips these */
     { 0, "none", 4, 0, 0, 0 }, /* require full word match */
     { ~0, "all", 3, 0, 0, 0 }, /* ditto */

@@ -167,23 +167,24 @@ struct flag {
     uint64_t suppress_alert;
 #define NEW_MOON 0
 #define FULL_MOON 4
-    unsigned paranoia_bits; /* alternate confirmation prompting */
-#define PARANOID_CONFIRM        0x0001
-#define PARANOID_QUIT           0x0002
-#define PARANOID_DIE            0x0004
-#define PARANOID_BONES          0x0008
-#define PARANOID_HIT            0x0010
-#define PARANOID_PRAY           0x0020
-#define PARANOID_REMOVE         0x0040
-#define PARANOID_BREAK          0x0080
-#define PARANOID_WERECHANGE     0x0100
-#define PARANOID_WATER          0x0200
-#define PARANOID_TRAP           0x0400
-#define PARANOID_AUTOALL        0x0800
-#define PARANOID_TIP            0x1000
-#define PARANOID_WIELDED_WEAPON 0x2000
-#define PARANOID_VEGAN          0x4000
-#define PARANOID_MULTISHOT      0x8000
+    uint32_t paranoia_bits; /* alternate confirmation prompting */
+#define PARANOID_CONFIRM        0x00000001U
+#define PARANOID_QUIT           0x00000002U
+#define PARANOID_DIE            0x00000004U
+#define PARANOID_BONES          0x00000008U
+#define PARANOID_HIT            0x00000010U
+#define PARANOID_PRAY           0x00000020U
+#define PARANOID_REMOVE         0x00000040U
+#define PARANOID_BREAK          0x00000080U
+#define PARANOID_WERECHANGE     0x00000100U
+#define PARANOID_WATER          0x00000200U
+#define PARANOID_TRAP           0x00000400U
+#define PARANOID_AUTOALL        0x00000800U
+#define PARANOID_TIP            0x00001000U
+#define PARANOID_WIELDED_WEAPON 0x00002000U
+#define PARANOID_VEGAN          0x00004000U
+#define PARANOID_MULTISHOT      0x00008000U
+#define PARANOID_CORPSE         0x00010000U
     int pickup_burden; /* maximum burden before prompt */
     int pile_limit;    /* controls feedback when walking over objects */
     char inv_order[MAX_OBJECT_CLASSES];
@@ -713,6 +714,8 @@ enum runmode_types {
 #define ParanoidVegan ((flags.paranoia_bits & PARANOID_VEGAN) != 0)
 /* multishot: accepting continuing to fire multishot */
 #define ParanoidMultiShot ((flags.paranoia_bits & PARANOID_MULTISHOT) != 0)
+/* corpse: accepting eating corpses of unknown freshness */
+#define ParanoidCorpse ((flags.paranoia_bits & PARANOID_CORPSE) != 0)
 
 /* command parsing, mainly dealing with number_pad handling;
    not saved and restored */

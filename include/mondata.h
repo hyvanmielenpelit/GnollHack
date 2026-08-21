@@ -238,6 +238,7 @@
 #define has_illusory_appearance(ptr) (((ptr)->mflags7 & M7_ILLUSORY_APPEARANCE) != 0L)
 #define has_friendly_illusory_appearance(ptr) (((ptr)->mflags7 & M7_FRIENDLY_ILLUSORY_APPEARANCE) != 0L)
 #define is_slightly_transparent(ptr) (((ptr)->mflags7 & M7_SLIGHTLY_TRANSPARENT) != 0)
+#define has_polymorphing_corpse(ptr) (((ptr)->mflags7 & M7_POLYMORPHING_CORPSE) != 0L)
 
 /* combinations and others */
 #define is_not_living(ptr) \
@@ -921,7 +922,6 @@
 #define has_hallucinating_corpse(ptr) (((ptr)->mconveys & MC_HALLUCINATING_CORPSE) != 0L)
 #define has_sickening_corpse(ptr) (((ptr)->mconveys & MC_SICKENING_CORPSE) != 0L)
 #define has_mummy_rotted_corpse(ptr) (((ptr)->mconveys & MC_MUMMY_ROTTED_CORPSE) != 0L)
-
 
 #define is_mplayer(ptr) \
     (((ptr) >= &mons[PM_ARCHAEOLOGIST]) && ((ptr) <= &mons[PM_WIZARD]))

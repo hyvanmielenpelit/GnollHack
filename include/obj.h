@@ -163,7 +163,7 @@ struct obj {
     xchar ox0, oy0;       /* when moving, original x and y coordinates on the map where the object is coming from; used in particular when pushing boulders */
 
     int64_t quan;         /* number of items */
-    int64_t age;          /* creation date */
+    int64_t age;          /* creation turn, i.e., age = monstermoves when the item is created */
     int64_t owornmask;    /* flag in which item slot the item is worn */
     uint64_t item_flags;  /* general purpose object flags, like speflags; different item_flags will prevent merging */
 #define ITEM_FLAGS_GIVEN_BY_HERO               0x00000001UL
@@ -172,6 +172,7 @@ struct obj {
 #define ITEM_FLAGS_LAVA_EFFECTS_SKIP           0x00000008UL /* The item is already on its way to be destroyed (e.g. by destroy armor scroll), so do not burn it in lava effects */
 #define ITEM_FLAGS_SAVED_UNPAID                0x00000010UL
 #define ITEM_FLAGS_DEBUG_DEALLOCATED           0x00000020UL /* Only on for deallocated objects, to identify dangling pointers */
+#define ITEM_FLAGS_DEATH_TIMING_KNOWN          0x00000040UL /* Used to determine freshness warning for corpses */
 
     uint64_t speflags;    /* anything else that might be going on with an item, not affected by cancellation */
 
