@@ -3797,20 +3797,26 @@ doeat(void)
         char cbuf[BUFSZ], rottext[BUFSZ] = "";
         const char* verb = otense(otmp, "are");
         const char* obj_its = otmp->quan == 1 ? "its" : "their";
-        if (known_rotten && !corpseknown)
-            Sprintf(rottext, ", %s rotten, and %s properties are unknown", verb, obj_its);
-        else if (known_rotten)
-            Sprintf(rottext, " and %s rotten", verb);
-        else if (known_unfresh && !corpseknown)
-            Sprintf(rottext, ", %s unfresh, and %s properties are unknown", verb, obj_its);
-        else if (known_unfresh)
-            Sprintf(rottext, " and %s unfresh", verb);
-        else if (!corpseknown && maybe_unfresh)
-            Sprintf(rottext, " and %s properties and freshness are unknown", obj_its);
-        else if (!corpseknown)
-            Sprintf(rottext, " and %s properties are unknown", obj_its);
-        else if (maybe_unfresh)
-            Strcpy(rottext, " and may not be fresh");
+        if (!corpseknown)
+        {
+            if (known_rotten)
+                Sprintf(rottext, ", %s rotten, and %s properties are unknown", verb, obj_its);
+            else if (known_unfresh)
+                Sprintf(rottext, ", %s unfresh, and %s properties are unknown", verb, obj_its);
+            else if (maybe_unfresh)
+                Sprintf(rottext, " and %s properties and freshness are unknown", obj_its);
+            else
+                Sprintf(rottext, " and %s properties are unknown", obj_its);
+        }
+        else
+        {
+            if (known_rotten)
+                Sprintf(rottext, " and %s rotten", verb);
+            else if (known_unfresh)
+                Sprintf(rottext, " and %s unfresh", verb);
+            else if (maybe_unfresh)
+                Strcpy(rottext, " and may not be fresh");
+        }
 
         if (known_sickening_corpse)
         {
