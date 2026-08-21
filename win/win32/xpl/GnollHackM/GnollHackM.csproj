@@ -140,8 +140,7 @@
   <ItemGroup>
     <!-- MauiIcon -->
     <MauiIcon Condition="$(TargetFramework.Contains('-android'))" Include="Resources\AppIcon\appicon.png" Color="#FFFFFF" ForegroundScale="0.6" />
-    <MauiIcon Condition="$(TargetFramework.Contains('-windows')) And '$(WindowsPackageType)'!='MSIX'" Include="Resources\AppIcon\appicon.png" ForegroundScale="1.0" />
-    <MauiIcon Condition="$(TargetFramework.Contains('-windows')) And '$(WindowsPackageType)'=='MSIX'" Include="Resources\AppIcon\Windows\MSIX\appicon.png" ForegroundFile="Resources\AppIcon\Windows\MSIX\appiconmsix.png" ForegroundScale="1.0" />
+    <MauiIcon Condition="$(TargetFramework.Contains('-windows'))" Include="Resources\AppIcon\appicon.png" ForegroundScale="1.0" />
     <MauiIcon Condition="$(TargetFramework.Contains('-ios'))" Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
     <MauiIcon Condition="$(TargetFramework.Contains('-maccatalyst'))" Include="Resources\AppIcon\iOS\appicon.png" ForegroundFile="Resources\AppIcon\iOS\appiconios.png" />
 
@@ -1374,6 +1373,25 @@
   <!-- Print the value of IsMonoRuntime -->
   <Target Name="PrintMonoRuntimeStatus" BeforeTargets="BeforeBuild">
     <Message Text="[Diagnostics] TargetFramework: '$(TargetFramework)' | IsMonoRuntime is: '$(IsMonoRuntime)'" Importance="high" />
+  </Target>
+  <!-- Swap MauiIcon for MSIX builds.
+       The publish profile (.pubxml) sets GNHWindowsPackageType=MSIX, but .pubxml
+       properties are imported AFTER static ItemGroups are evaluated. This Target
+       runs before the Resizetizer collects items, so properties are fully resolved.
+       Note: The target name is ResizetizeCollectItems (not ResizetizerCollectItems). -->
+  <Target Name="UpdateMauiIconForMSIX" BeforeTargets="ResizetizeCollectItems">
+    <Message Text="[UpdateMauiIconForMSIX] Running. GNHWindowsPackageType='$(GNHWindowsPackageType)' WindowsPackageType='$(WindowsPackageType)' TargetFramework='$(TargetFramework)'" Importance="high" />
+    <ItemGroup Condition="$(TargetFramework.Contains('-windows')) And ('$(WindowsPackageType)' == 'MSIX' Or '$(GNHWindowsPackageType)' == 'MSIX')">
+      <MauiIcon Remove="Resources\AppIcon\appicon.png" />
+      <MauiIcon Include="Resources\AppIcon\Windows\MSIX\appicon.png" ForegroundFile="Resources\AppIcon\Windows\MSIX\appiconmsix.png" ForegroundScale="1.0" />
+    </ItemGroup>
+    <!-- Delete the Resizetizer image cache (resizetizer\r) to force icon re-generation.
+         VS runs a Build pass (unpackaged) before the Publish pass (MSIX), so the
+         Resizetizer would otherwise skip because the unpackaged outputs look up-to-date. -->
+    <RemoveDir Condition="$(TargetFramework.Contains('-windows')) And ('$(WindowsPackageType)' == 'MSIX' Or '$(GNHWindowsPackageType)' == 'MSIX')" Directories="$(IntermediateOutputPath)resizetizer" />
+    <Delete Condition="$(TargetFramework.Contains('-windows')) And ('$(WindowsPackageType)' == 'MSIX' Or '$(GNHWindowsPackageType)' == 'MSIX')" Files="$(IntermediateOutputPath)mauiimage.stamp;$(IntermediateOutputPath)mauiimage.inputs;$(IntermediateOutputPath)mauiimage.outputs" />
+    <Message Text="[UpdateMauiIconForMSIX] Deleted resizetizer cache at '$(IntermediateOutputPath)resizetizer'" Importance="high" />
+    <Message Text="[UpdateMauiIconForMSIX] MauiIcon is now: @(MauiIcon) ForegroundFile=%(MauiIcon.ForegroundFile)" Importance="high" />
   </Target>
 </Project>
                                                                                                                                                                                                                                                                      
