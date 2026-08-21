@@ -454,8 +454,8 @@ tty_init_nhwindows(int *argcp UNUSED, char **argv UNUSED)
     /* set up tty descriptor */
     ttyDisplay = (struct DisplayDesc *) alloc(sizeof (struct DisplayDesc));
     ttyDisplay->toplin = 0;
-    ttyDisplay->rows = hgt;
-    ttyDisplay->cols = wid;
+    ttyDisplay->rows = max(0, min(32000, hgt));
+    ttyDisplay->cols = max(0, min(32000, wid));
     ttyDisplay->curx = ttyDisplay->cury = 0;
     ttyDisplay->inmore = ttyDisplay->inread = ttyDisplay->intr = 0;
     ttyDisplay->dismiss_more = 0;
