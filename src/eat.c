@@ -3778,9 +3778,12 @@ doeat(void)
     {
         /* Paranoid corpse check */
         boolean corpseknown = (mvitals[otmp->corpsenm].mvflags & MV_KNOWS_CORPSE) != 0;
-        boolean death_time_known_ok = (otmp->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN) != 0 && otmp->age > monstermoves - (is_obj_bknown(otmp) ? (is_obj_blessed(otmp) ? 5 : is_obj_cursed(otmp) ? 1 : 3) : 1) * CORPSE_ROTTING_SPEED;
+        boolean is_corpse_age_safe = (monstermoves - otmp->age) / CORPSE_ROTTING_SPEED + (is_obj_bknown(otmp) ? (is_obj_blessed(otmp) ? -2L : is_obj_cursed(otmp) ? 2L : 0L) : 2L) <= 3L;
+        boolean death_time_known_ok = (otmp->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN) != 0 && is_corpse_age_safe;
+        boolean death_time_known_not_ok = (otmp->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN) != 0 && (is_obj_bknown(otmp) ? !is_corpse_age_safe : (monstermoves - otmp->age) / CORPSE_ROTTING_SPEED - 2L > 3L);
         boolean maybe_unfresh = !is_obj_rotknown(otmp) && !nonrotting_corpse(otmp->corpsenm) && !death_time_known_ok;
-        boolean known_rotten = is_obj_rotknown(otmp) && otmp->orotten;
+        boolean known_unfresh = !is_obj_rotknown(otmp) && !nonrotting_corpse(otmp->corpsenm) && death_time_known_not_ok;
+        boolean known_rotten = is_obj_rotknown(otmp) && (otmp->orotten || get_rotted_status(otmp) > 3L);
         boolean known_stunning_corpse = corpseknown && has_stunning_corpse(&mons[otmp->corpsenm]) && !Stun_resistance;
         boolean known_acidic_corpse = corpseknown && has_acidic_corpse(&mons[otmp->corpsenm]) && !Acid_resistance;
         boolean known_poisonous_corpse = corpseknown && has_poisonous_corpse(&mons[otmp->corpsenm]) && !Poison_resistance;
@@ -3798,6 +3801,10 @@ doeat(void)
             Sprintf(rottext, ", %s rotten, and %s properties are unknown", verb, obj_its);
         else if (known_rotten)
             Sprintf(rottext, " and %s rotten", verb);
+        else if (known_unfresh && !corpseknown)
+            Sprintf(rottext, ", %s unfresh, and %s properties are unknown", verb, obj_its);
+        else if (known_unfresh)
+            Sprintf(rottext, " and %s unfresh", verb);
         else if (!corpseknown && maybe_unfresh)
             Sprintf(rottext, " and %s properties and freshness are unknown", obj_its);
         else if (!corpseknown)
@@ -3878,6 +3885,15 @@ doeat(void)
                     Sprintf(rottext, " and %s properties are unknown", obj_its);
                 Sprintf(cbuf, "%s %s rotten%s. Continue?", The(cxname(otmp)), verb, rottext);
                 if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Rotten Corpse", cbuf) == 'n')
+                    return 0;
+            }
+            else if (known_unfresh)
+            {
+                *rottext = 0;
+                if (!corpseknown)
+                    Sprintf(rottext, " and %s properties are unknown", obj_its);
+                Sprintf(cbuf, "%s %s unfresh%s. Continue?", The(cxname(otmp)), verb, rottext);
+                if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Unfresh Corpse", cbuf) == 'n')
                     return 0;
             }
             else
