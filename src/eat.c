@@ -2504,7 +2504,8 @@ eatcorpse(struct obj *otmp)
             return 1;
         }
     }
-    else if (has_acidic_corpse(&mons[mnum]) && !Acid_immunity && !Acid_resistance)
+    else if (has_acidic_corpse(&mons[mnum]) && !Acid_immunity
+             && !(Improved_acid_resistance && (Upolyd ? u.mh : u.uhp) >= 5) && !(Acid_resistance && (Upolyd ? u.mh : u.uhp) >= 10))
     {
         tp++;
         You_ex(ATR_NONE, CLR_MSG_WARNING, "have a very bad case of stomach acid.");   /* not body_part() */
@@ -3533,6 +3534,52 @@ edibility_prompts(struct obj *otmp)
                 return 2;
         }
 
+        if (cadaver && mnum >= LOW_PM && is_were(&mons[mnum]) && !Lycanthropy_resistance)
+        {
+            /* lycanthropy */
+            Sprintf(buf, "%s like %s could be infected with lycanthropy!  %s", foodsmell,
+                it_or_they, eat_it_anyway);
+            if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_NEGATIVE, (const char*)0, buf, ynchars, 'n', yndescs, (const char*)0) == 'n')
+                return 1;
+            else
+                return 2;
+        }
+
+        if (cadaver && mnum >= LOW_PM && has_polymorphing_corpse(&mons[mnum])
+            && !Unchanging && !Polymorph_resistance && !Protection_from_shape_changers)
+        {
+            /* polymorphing */
+            Sprintf(buf, "%s like %s could cause polymorph!  %s", foodsmell,
+                it_or_they, eat_it_anyway);
+            if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_NEGATIVE, (const char*)0, buf, ynchars, 'n', yndescs, (const char*)0) == 'n')
+                return 1;
+            else
+                return 2;
+        }
+
+        if (cadaver && mnum >= LOW_PM && is_mimic(&mons[mnum])
+            && !Unchanging && !Polymorph_resistance && !Protection_from_shape_changers)
+        {
+            /* mimicking */
+            Sprintf(buf, "%s like %s could cause mimicking!  %s", foodsmell,
+                it_or_they, eat_it_anyway);
+            if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_NEGATIVE, (const char*)0, buf, ynchars, 'n', yndescs, (const char*)0) == 'n')
+                return 1;
+            else
+                return 2;
+        }
+
+        if (cadaver && mnum >= LOW_PM && has_hallucinating_corpse(&mons[mnum]) && !Halluc_resistance)
+        {
+            /* hallucinating */
+            Sprintf(buf, "%s like %s could cause hallucination!  %s", foodsmell,
+                it_or_they, eat_it_anyway);
+            if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_WARNING, (const char*)0, buf, ynchars, 'n', yndescs, (const char*)0) == 'n')
+                return 1;
+            else
+                return 2;
+        }
+
         if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ROTTEN || otmp->orotten || (cadaver && rotted > 3L)) {
             /* Rotten */
             Sprintf(buf, "%s like %s could be rotten! %s", foodsmell, it_or_they,
@@ -3585,7 +3632,8 @@ edibility_prompts(struct obj *otmp)
         }
 
         if ((objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC
-            || (cadaver && mnum >= LOW_PM && has_acidic_corpse(&mons[mnum]))) && !Acid_immunity && !Acid_resistance)
+            || (cadaver && mnum >= LOW_PM && has_acidic_corpse(&mons[mnum])))
+            && !Acid_immunity && !(Improved_acid_resistance && (Upolyd ? u.mh : u.uhp) >= 5) && !(Acid_resistance && (Upolyd ? u.mh : u.uhp) >= 10))
         {
             Sprintf(buf, "%s rather acidic.  %s", foodsmell, eat_it_anyway);
             if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_WARNING, (const char*)0, buf, ynchars, 'n', yndescs, (const char*)0) == 'n')
@@ -3785,7 +3833,8 @@ doeat(void)
         boolean known_unfresh = !is_obj_rotknown(otmp) && !nonrotting_corpse(otmp->corpsenm) && death_time_known_not_ok;
         boolean known_rotten = is_obj_rotknown(otmp) && (otmp->orotten || get_rotted_status(otmp) > 3L);
         boolean known_stunning_corpse = corpseknown && has_stunning_corpse(&mons[otmp->corpsenm]) && !Stun_resistance;
-        boolean known_acidic_corpse = corpseknown && has_acidic_corpse(&mons[otmp->corpsenm]) && !Acid_resistance;
+        boolean known_acidic_corpse = corpseknown && has_acidic_corpse(&mons[otmp->corpsenm])
+            && !Acid_immunity && !(Improved_acid_resistance && (Upolyd ? u.mh : u.uhp) >= 5) && !(Acid_resistance && (Upolyd ? u.mh : u.uhp) >= 10);
         boolean known_poisonous_corpse = corpseknown && has_poisonous_corpse(&mons[otmp->corpsenm]) && !Poison_resistance;
         boolean known_hallucinating_corpse = corpseknown && has_hallucinating_corpse(&mons[otmp->corpsenm]) && !Halluc_resistance;
         boolean known_sickening_corpse = corpseknown && has_sickening_corpse(&mons[otmp->corpsenm]) && !Sick_resistance;
@@ -3793,6 +3842,8 @@ doeat(void)
         boolean known_lycanthropy_corpse = is_were(&mons[otmp->corpsenm]) && !Lycanthropy_resistance;
         boolean known_mimic_corpse = corpseknown && is_mimic(&mons[otmp->corpsenm]) && !Unchanging && !Polymorph_resistance && !Protection_from_shape_changers;
         boolean known_polymorphing_corpse = corpseknown && has_polymorphing_corpse(&mons[otmp->corpsenm]) && !Unchanging && !Polymorph_resistance && !Protection_from_shape_changers;
+        boolean known_petrifying_corpse = corpseknown && flesh_petrifies(&mons[otmp->corpsenm]) && !Stone_resistance && !poly_when_stoned(youmonst.data);
+        boolean known_sliming_corpse = corpseknown && (otmp->corpsenm == PM_GREEN_SLIME || otmp->otyp == GLOB_OF_GREEN_SLIME) && !Unchanging && !Slime_resistance && !slimeproof(youmonst.data);
         boolean ask_rotten = TRUE;
         char cbuf[BUFSZ], rottext[BUFSZ] = "";
         const char* verb = otense(otmp, "are");
@@ -3818,7 +3869,21 @@ doeat(void)
                 Strcpy(rottext, " and may not be fresh");
         }
 
-        if (known_sickening_corpse)
+        if (known_petrifying_corpse)
+        {
+            Sprintf(cbuf, "%s %s petrifying%s. Continue?", The(cxname(otmp)), verb, rottext);
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Petrifying Corpse", cbuf) == 'n')
+                return 0;
+            ask_rotten = FALSE;
+        }
+        else if (known_sliming_corpse)
+        {
+            Sprintf(cbuf, "%s %s sliming%s. Continue?", The(cxname(otmp)), otense(otmp, "cause"), rottext);
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Sliming Corpse", cbuf) == 'n')
+                return 0;
+            ask_rotten = FALSE;
+        }
+        else if (known_sickening_corpse)
         {
             Sprintf(cbuf, "%s %s infected with terminal illness%s. Continue?", The(cxname(otmp)), verb, rottext);
             if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Infected Corpse", cbuf) == 'n')
@@ -4295,7 +4360,8 @@ doeat(void)
 
             return 2;
         }
-        else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC && !Acid_immunity && !Acid_resistance) 
+        else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC && !Acid_immunity
+                 && !(Improved_acid_resistance && (Upolyd ? u.mh : u.uhp) >= 5) && !(Acid_resistance && (Upolyd ? u.mh : u.uhp) >= 10)) 
         {
             You_ex(ATR_NONE, CLR_MSG_WARNING, "have a very bad case of stomach acid.");   /* not body_part() */
             losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_ACID, FALSE), "acidic food",
