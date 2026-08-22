@@ -61,6 +61,12 @@ namespace GnollHackX.Pages.Game
             _baseOverseerUrl = baseOverseerUrl;
             _snapshotHtml = snapshotHtml;
 
+#if GNH_MAUI
+            DisplayWebView.HandlerChanged += (s, e) =>
+            {
+                ConfigurePlatformWebViewBackground();
+            };
+#endif
 #if GNH_MAUI && WINDOWS
             /* Highlight the close area on pointer hover (Windows only) */
             var pointerGesture = new PointerGestureRecognizer();
@@ -423,6 +429,7 @@ namespace GnollHackX.Pages.Game
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
+                ConfigurePlatformWebViewBackground();
                 ConfigureSslBypass();
                 CancelButton.IsVisible = false;
 
@@ -655,6 +662,11 @@ namespace GnollHackX.Pages.Game
                 returnUrl = _baseOverseerUrl.TrimEnd('/') + "/chat";
             }
 
+            if (!string.IsNullOrEmpty(returnUrl) && returnUrl.StartsWith("/"))
+            {
+                returnUrl = _baseOverseerUrl.TrimEnd('/') + returnUrl;
+            }
+
             DisplayWebView.Source = new UrlWebViewSource
             {
                 Url = returnUrl
@@ -808,6 +820,39 @@ namespace GnollHackX.Pages.Game
 #endif
 #endif // GNH_MAUI
 #endif // DEBUG
+        }
+
+        /// <summary>
+        /// Configures the native platform WebView background color to dark
+        /// (#121212) to prevent any white flash before web content loads.
+        /// </summary>
+        private void ConfigurePlatformWebViewBackground()
+        {
+#if GNH_MAUI
+#if WINDOWS
+            var webView2 = DisplayWebView.Handler?.PlatformView
+                as Microsoft.UI.Xaml.Controls.WebView2;
+            if (webView2 != null)
+            {
+                webView2.DefaultBackgroundColor = Windows.UI.Color.FromArgb(255, 0x12, 0x12, 0x12);
+            }
+#elif ANDROID
+            var androidWebView = DisplayWebView.Handler?.PlatformView
+                as Android.Webkit.WebView;
+            if (androidWebView != null)
+            {
+                androidWebView.SetBackgroundColor(Android.Graphics.Color.Rgb(0x12, 0x12, 0x12));
+            }
+#elif IOS || MACCATALYST
+            var wkWebView = DisplayWebView.Handler?.PlatformView
+                as WebKit.WKWebView;
+            if (wkWebView != null)
+            {
+                wkWebView.Opaque = false;
+                wkWebView.BackgroundColor = UIKit.UIColor.FromRGB(0x12, 0x12, 0x12);
+            }
+#endif
+#endif // GNH_MAUI
         }
 
         /// <summary>
