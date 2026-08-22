@@ -884,5 +884,10 @@ extern void gnollhack_exit(int) NORETURN;
 #define STD_POLY_DIESIZE 500
 #define STD_POLY_CONSTANT 499
 #define standard_poly_rnd_duration() rn1(STD_POLY_DIESIZE, STD_POLY_CONSTANT + 1)
+#define u_innate_edibility_appraisal() (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
+#define u_have_edibility_appraisal() (u.uedibility || u_innate_edibility_appraisal() || Edibility_appraisal)
+#define u_innate_corpse_appraisal() (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)) || Role_if(PM_HEALER))
+#define u_can_appraise_corpses() (Corpse_property_appraisal || u_innate_corpse_appraisal())
+#define u_know_corpsenm(nm) ((mvitals[nm].mvflags & MV_KNOWS_CORPSE) != 0 || u_can_appraise_corpses())
 
 #endif /* HACK_H */

@@ -4127,8 +4127,7 @@ itemdescription_core(struct obj *obj, int otyp, struct item_description_stats *s
         /* Corpse properties */
         if (obj && is_obj_rotting_corpse(obj) && obj->corpsenm > NON_PM && obj->corpsenm < NUM_MONSTERS)
         {
-            if ((mvitals[obj->corpsenm].mvflags & MV_KNOWS_CORPSE) || Corpse_property_appraisal 
-                || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)) || Role_if(PM_HEALER))
+            if (u_know_corpsenm(obj->corpsenm))
             {
                 mvitals[obj->corpsenm].mvflags |= MV_KNOWS_CORPSE;
                 Sprintf(buf, "Corpse properties:");

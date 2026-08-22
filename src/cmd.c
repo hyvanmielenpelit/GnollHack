@@ -4673,12 +4673,12 @@ attributes_enlightenment(int unused_mode UNUSED, int final)
     if (Protection_from_armor_destruction)
         you_are("protected from armor destruction", from_what(PROTECTION_FROM_ARMOR_DESTRUCTION));
     
-    if (u.uedibility || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
+    if (u.uedibility || u_innate_edibility_appraisal())
         you_can("recognize detrimental food", "");
     else if (Edibility_appraisal)
         you_can("recognize detrimental food", from_what(EDIBILITY_APPRAISAL));
     
-    if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)) || Role_if(PM_HEALER))
+    if (u_innate_corpse_appraisal())
         you_can("recognize corpse properties", "");
     else if (Corpse_property_appraisal)
         you_can("recognize corpse properties", from_what(CORPSE_PROPERTY_APPRAISAL));

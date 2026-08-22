@@ -3799,7 +3799,7 @@ doeat(void)
     if (check_capacity((char *) 0))
         return 0;
 
-    if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)) || Edibility_appraisal)
+    if (u_innate_edibility_appraisal() || Edibility_appraisal)
     {
         int res = edibility_prompts(otmp);
 
@@ -3825,8 +3825,7 @@ doeat(void)
     else if (is_obj_rotting_corpse(otmp) && ParanoidCorpse && !is_nonedible_corpse_material(youmonst.data, otmp) && otmp->corpsenm >= LOW_PM)
     {
         /* Paranoid corpse check */
-        boolean corpseknown = (mvitals[otmp->corpsenm].mvflags & MV_KNOWS_CORPSE) != 0 || Corpse_property_appraisal 
-            || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)) || Role_if(PM_HEALER);
+        boolean corpseknown = u_know_corpsenm(otmp->corpsenm);
         boolean is_corpse_age_safe = (monstermoves - otmp->age) / CORPSE_ROTTING_SPEED + (is_obj_bknown(otmp) ? (is_obj_blessed(otmp) ? -2L : is_obj_cursed(otmp) ? 2L : 0L) : 2L) <= 3L;
         boolean death_time_known_ok = (otmp->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN) != 0 && is_corpse_age_safe;
         boolean death_time_known_not_ok = (otmp->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN) != 0 && (is_obj_bknown(otmp) ? !is_corpse_age_safe : (monstermoves - otmp->age) / CORPSE_ROTTING_SPEED - 2L > 3L);
