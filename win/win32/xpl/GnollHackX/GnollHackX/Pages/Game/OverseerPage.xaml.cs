@@ -527,18 +527,27 @@ namespace GnollHackX.Pages.Game
             if (_overseerLoaded && e.Result == WebNavigationResult.Success
                 && e.Url != null)
             {
-                bool isOnIdentityPage = false;
+                bool isAwayFromSpa = false;
                 try
                 {
                     var uri = new Uri(e.Url);
-                    isOnIdentityPage = uri.AbsolutePath.StartsWith(
-                        "/Identity/", StringComparison.OrdinalIgnoreCase);
+                    var baseUri = new Uri(_baseOverseerUrl);
+                    
+                    if (!string.Equals(uri.Host, baseUri.Host, StringComparison.OrdinalIgnoreCase) || 
+                        uri.Port != baseUri.Port)
+                    {
+                        isAwayFromSpa = true;
+                    }
+                    else if (uri.AbsolutePath.StartsWith("/Identity/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        isAwayFromSpa = true;
+                    }
                 }
                 catch (UriFormatException) { }
 
-                if (_navigatedAwayFromSpa != isOnIdentityPage)
+                if (_navigatedAwayFromSpa != isAwayFromSpa)
                 {
-                    _navigatedAwayFromSpa = isOnIdentityPage;
+                    _navigatedAwayFromSpa = isAwayFromSpa;
                     UpdateTitleAppearance();
                 }
             }
