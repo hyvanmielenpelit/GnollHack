@@ -128,10 +128,8 @@ namespace GnollHackX
                     pv.IsTabStop = false;
                 }
             };
-            UIUtils.SetStyledToolTip(classicModeLabel, "Death is permanent.",
-                new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 255, 255)));
-            UIUtils.SetStyledToolTip(casualModeLabel, "Non-scoring mode with persistent saves.",
-                new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 255, 255)));
+            UIUtils.SetStyledToolTip(classicModeLabel, "Death is permanent.");
+            UIUtils.SetStyledToolTip(casualModeLabel, "Non-scoring mode with persistent saves.");
             UIUtils.SetStyledToolTip(wizardModeLabel, "Debug mode with immortality and special commands.",
                 new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 173, 216, 230)));
 #endif

@@ -1663,6 +1663,9 @@ namespace GnollHackX
         }
 
 #if WINDOWS
+        private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush _toolTipBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 255, 255));
+        private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush _toolTipBackgroundBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(0xE0, 0x2A, 0x2A, 0x2A));
+        private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush _toolTipBorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x00, 0x00));
         private static Microsoft.UI.Xaml.Media.FontFamily _toolTipFont = null;
         //private Microsoft.UI.Xaml.Media.FontFamily _toolTipFont = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Immortal-Regular.ttf#ImmortalDiablo");
 #endif
@@ -1686,14 +1689,21 @@ namespace GnollHackX
                     var toolTip = new Microsoft.UI.Xaml.Controls.ToolTip
                     {
                         Content = textBlock,
-                        Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(0xE0, 0x1F, 0x1F, 0x1F)),
-                        BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x00, 0x00)),
+                        Background = _toolTipBackgroundBrush,
+                        BorderBrush = _toolTipBorderBrush,
                         BorderThickness = new Microsoft.UI.Xaml.Thickness(1),
                         Padding = new Microsoft.UI.Xaml.Thickness(12)
                     };
                     Microsoft.UI.Xaml.Controls.ToolTipService.SetToolTip(nativeView, toolTip);
                 }
             };
+#endif
+        }
+
+        public static void SetStyledToolTip(Microsoft.Maui.Controls.View element, string text)
+        {
+#if WINDOWS
+            SetStyledToolTip(element, text, _toolTipBrush);
 #endif
         }
 
