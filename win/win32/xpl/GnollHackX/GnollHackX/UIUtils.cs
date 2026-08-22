@@ -1668,10 +1668,8 @@ namespace GnollHackX
         private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush _toolTipBorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x00, 0x00));
         private static Microsoft.UI.Xaml.Media.FontFamily _toolTipFont = null;
         //private Microsoft.UI.Xaml.Media.FontFamily _toolTipFont = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Immortal-Regular.ttf#ImmortalDiablo");
-#endif
-        public static void SetStyledToolTip(Microsoft.Maui.Controls.View element, string text, Microsoft.UI.Xaml.Media.SolidColorBrush foreground)
+        public static void SetStyledToolTip(View element, string text, Microsoft.UI.Xaml.Media.SolidColorBrush foreground)
         {
-#if WINDOWS
             element.HandlerChanged += (s, e) =>
             {
                 if (element.Handler?.PlatformView is Microsoft.UI.Xaml.FrameworkElement nativeView)
@@ -1697,10 +1695,10 @@ namespace GnollHackX
                     Microsoft.UI.Xaml.Controls.ToolTipService.SetToolTip(nativeView, toolTip);
                 }
             };
-#endif
         }
+#endif
 
-        public static void SetStyledToolTip(Microsoft.Maui.Controls.View element, string text)
+        public static void SetStyledToolTip(View element, string text)
         {
 #if WINDOWS
             SetStyledToolTip(element, text, _toolTipBrush);
