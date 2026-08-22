@@ -639,16 +639,16 @@ namespace GnollHackX.Pages.Game
             if (!_navigatedAwayFromSpa)
                 return; /* Do nothing if already on the Overseer SPA */
 
-            /* Navigate back to the active chat session in the Overseer SPA,
-             * or fallback to base /chat URL if no session is known */
+            /* Navigate back to the last active SPA URL (e.g. specific conversation),
+             * or fallback to active _sessionId or base /chat URL */
             string returnUrl;
-            if (!string.IsNullOrEmpty(_sessionId))
-            {
-                returnUrl = _baseOverseerUrl.TrimEnd('/') + "/chat?sessionId=" + _sessionId;
-            }
-            else if (!string.IsNullOrEmpty(_lastSpaUrl))
+            if (!string.IsNullOrEmpty(_lastSpaUrl))
             {
                 returnUrl = _lastSpaUrl;
+            }
+            else if (!string.IsNullOrEmpty(_sessionId))
+            {
+                returnUrl = _baseOverseerUrl.TrimEnd('/') + "/chat?sessionId=" + _sessionId;
             }
             else
             {
@@ -955,6 +955,36 @@ namespace GnollHackX.Pages.Game
                     if (!string.IsNullOrEmpty(newSessionId))
                     {
                         _sessionId = newSessionId;
+                        _lastSpaUrl = _baseOverseerUrl.TrimEnd('/') + "/chat?sessionId=" + newSessionId;
+                    }
+                    else
+                    {
+                        _lastSpaUrl = _baseOverseerUrl.TrimEnd('/') + "/chat";
+                    }
+                    return;
+                }
+
+                if (type == "spa_url_changed")
+                {
+                    string url = jObject["url"]?.ToString();
+                    if (!string.IsNullOrEmpty(url))
+                    {
+                        _lastSpaUrl = url;
+                        try
+                        {
+                            int qIdx = url.IndexOf("sessionId=", StringComparison.OrdinalIgnoreCase);
+                            if (qIdx >= 0)
+                            {
+                                string sub = url.Substring(qIdx + "sessionId=".Length);
+                                int ampIdx = sub.IndexOf('&');
+                                string sid = ampIdx >= 0 ? sub.Substring(0, ampIdx) : sub;
+                                if (!string.IsNullOrEmpty(sid))
+                                {
+                                    _sessionId = sid;
+                                }
+                            }
+                        }
+                        catch { }
                     }
                     return;
                 }
