@@ -3986,7 +3986,7 @@ doeat(void)
                     }
                     else
                     {
-                        Sprintf(cbuf, "You do not know whether %s %s fresh. Continue?", thecxname(otmp), verb);
+                        Sprintf(cbuf, "The freshness of %s is unknown. Continue?", thecxname(otmp));
                         if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Unknown Corpse Freshness", cbuf) == 'n')
                             return 0;
                     }
