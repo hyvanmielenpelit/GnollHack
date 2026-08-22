@@ -7,7 +7,6 @@ using System.Management;
 using Windows.Graphics;
 using System.Reflection.Metadata;
 using Windows.System;
-using Microsoft.UI.Xaml;
 #elif ANDROID
 using Android.Animation;
 using Android.Views;
@@ -3506,39 +3505,6 @@ namespace GnollHackX
             string verstr = majorver.ToString() + minorver.ToString() + patchver.ToString() + "-" + editver;
             return verstr;
         }
-
-#if WINDOWS
-        private static Microsoft.UI.Xaml.Media.FontFamily _toolTipFont = null;
-        //private Microsoft.UI.Xaml.Media.FontFamily _toolTipFont = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Immortal-Regular.ttf#ImmortalDiablo");
-        public static void SetStyledToolTip(Microsoft.Maui.Controls.View element, string text, Microsoft.UI.Xaml.Media.SolidColorBrush foreground)
-        {
-            element.HandlerChanged += (s, e) =>
-            {
-                if (element.Handler?.PlatformView is Microsoft.UI.Xaml.FrameworkElement nativeView)
-                {
-                    if (_toolTipFont == null)
-                        _toolTipFont = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Assets/uwch.ttf#Underwood Champion");
-                    var textBlock = new Microsoft.UI.Xaml.Controls.TextBlock
-                    {
-                        Text = text,
-                        TextWrapping = TextWrapping.Wrap,
-                        Foreground = foreground,
-                        FontFamily = _toolTipFont,
-                        FontSize = 15
-                    };
-                    var toolTip = new Microsoft.UI.Xaml.Controls.ToolTip
-                    {
-                        Content = textBlock,
-                        Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(0xE0, 0x1F, 0x1F, 0x1F)),
-                        BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x00, 0x00)),
-                        BorderThickness = new Microsoft.UI.Xaml.Thickness(1),
-                        Padding = new Microsoft.UI.Xaml.Thickness(12)
-                    };
-                    Microsoft.UI.Xaml.Controls.ToolTipService.SetToolTip(nativeView, toolTip);
-                }
-            };
-        }
-#endif
 
         /* Force lazy loading for MAUI fonts, which seems to sometimes fail on Windows */
         public static async Task InitBaseFontsViaGrid(Grid grid)

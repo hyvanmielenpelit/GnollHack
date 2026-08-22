@@ -128,11 +128,11 @@ namespace GnollHackX
                     pv.IsTabStop = false;
                 }
             };
-            GHApp.SetStyledToolTip(classicModeLabel, "Death is permanent.",
+            UIUtils.SetStyledToolTip(classicModeLabel, "Death is permanent.",
                 new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 255, 255)));
-            GHApp.SetStyledToolTip(casualModeLabel, "Non-scoring mode with persistent saves.",
+            UIUtils.SetStyledToolTip(casualModeLabel, "Non-scoring mode with persistent saves.",
                 new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 255, 255)));
-            GHApp.SetStyledToolTip(wizardModeLabel, "Debug mode with immortality and special commands.",
+            UIUtils.SetStyledToolTip(wizardModeLabel, "Debug mode with immortality and special commands.",
                 new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 173, 216, 230)));
 #endif
             Shell.SetNavBarIsVisible(this, false);
