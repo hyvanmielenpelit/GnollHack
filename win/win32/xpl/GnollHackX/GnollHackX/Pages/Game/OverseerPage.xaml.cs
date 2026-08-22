@@ -42,6 +42,7 @@ namespace GnollHackX.Pages.Game
         private DateTime _lastFailedNavigatedTime = DateTime.MinValue;
         private string _lastFailedNavigatedUrl = null;
         private bool _navigatedAwayFromSpa = false;
+        private string _lastSpaUrl = null;
         private bool _handoffSucceeded = false;
         private CancellationTokenSource _connectCts;
 #if DEBUG
@@ -550,6 +551,18 @@ namespace GnollHackX.Pages.Game
                     _navigatedAwayFromSpa = isAwayFromSpa;
                     UpdateTitleAppearance();
                 }
+
+                if (!isAwayFromSpa)
+                {
+                    if (e.Url != null && !e.Url.Contains("/api/auth/handoff"
+#if GNH_MAUI
+                        , StringComparison.OrdinalIgnoreCase
+#endif
+                        ))
+                    {
+                        _lastSpaUrl = e.Url;
+                    }
+                }
             }
         }
 
@@ -626,11 +639,25 @@ namespace GnollHackX.Pages.Game
             if (!_navigatedAwayFromSpa)
                 return; /* Do nothing if already on the Overseer SPA */
 
-            /* Navigate back to the Overseer base URL, which will redirect
-             * to the SPA login or chat page depending on auth state */
+            /* Navigate back to the active chat session in the Overseer SPA,
+             * or fallback to base /chat URL if no session is known */
+            string returnUrl;
+            if (!string.IsNullOrEmpty(_sessionId))
+            {
+                returnUrl = _baseOverseerUrl.TrimEnd('/') + "/chat?sessionId=" + _sessionId;
+            }
+            else if (!string.IsNullOrEmpty(_lastSpaUrl))
+            {
+                returnUrl = _lastSpaUrl;
+            }
+            else
+            {
+                returnUrl = _baseOverseerUrl.TrimEnd('/') + "/chat";
+            }
+
             DisplayWebView.Source = new UrlWebViewSource
             {
-                Url = _baseOverseerUrl
+                Url = returnUrl
             };
         }
 
@@ -919,6 +946,16 @@ namespace GnollHackX.Pages.Game
                         srcH = srcRect["height"]?.Value<double>() ?? 0;
                     }
                     HandlePickFilesRequest(srcX, srcY, srcW, srcH);
+                    return;
+                }
+
+                if (type == "session_changed")
+                {
+                    string newSessionId = jObject["sessionId"]?.ToString();
+                    if (!string.IsNullOrEmpty(newSessionId))
+                    {
+                        _sessionId = newSessionId;
+                    }
                     return;
                 }
 
