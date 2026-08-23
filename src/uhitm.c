@@ -3427,6 +3427,8 @@ damageum(struct monst *mdef, struct attack *mattk, struct obj *omonwep, int spec
                 damage, extratmp, rnd(20), rn2(100)))
         {
             /* monster killed by wounding drain */
+            killed(mdef);
+            return 2;
         }
     }
 
