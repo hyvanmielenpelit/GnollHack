@@ -67,6 +67,8 @@
   <!-- Prevent DesignTimeBuilds from corrupting the Resizetizer cache during Publish -->
   <PropertyGroup Condition="'$(DesignTimeBuild)' == 'true'">
     <DisableResizetizer>true</DisableResizetizer>
+    <EnableMauiImageProcessing>false</EnableMauiImageProcessing>
+    <EnableMauiSplashScreenProcessing>false</EnableMauiSplashScreenProcessing>
   </PropertyGroup>
 
   <!-- CONFIGURATION SPECIFIC PROPERTIES -->
