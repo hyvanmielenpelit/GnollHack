@@ -1645,7 +1645,7 @@ namespace GnollHackX.Pages.MainScreen
                 // 13 & 14. Save file tracking token handling (after local copy is safe)
                 if (manifest.HasTrackingFile)
                 {
-                    PopupStatusLabel.Text = "Registering/consuming tracking token...";
+                    PopupStatusLabel.Text = "Consuming tracking token...";
                     string tempTokPath = Path.Combine(tempDir, playerName + GHConstants.SaveFileTrackingSuffix);
                     if (!File.Exists(tempTokPath)) throw new Exception("Downloaded tracking token file is missing.");
 

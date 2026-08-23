@@ -287,7 +287,7 @@ namespace GnollHackX.Pages.Game
 
                                 MainThread.BeginInvokeOnMainThread(() =>
                                 {
-                                    ProgressStatusLabel.Text = "Connected!";
+                                    ProgressStatusLabel.Text = "Connected.";
                                     UploadProgressBar.Progress = 1.0;
                                 });
                                 _handoffSucceeded = true;
