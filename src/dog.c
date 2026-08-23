@@ -1960,9 +1960,9 @@ tamedog(struct monst *mtmp, struct obj *obj, uchar forcetaming, int charm_type, 
         int headnum = (int)min(mtmp->heads_left, mtmp->heads_tamed);
 
         /* Display appropriate message */
-        if (is_cerberus && headnum > 0 && headnum <= mtmp->heads_left)
+        if (verbose)
         {
-            if (verbose)
+            if (is_cerberus && headnum > 0 && headnum <= mtmp->heads_left)
             {
                 const char* headstr[4] = { "first", "second", "third", "ancillary" };
                 char nounbuf[BUFSZ];
@@ -1973,13 +1973,10 @@ tamedog(struct monst *mtmp, struct obj *obj, uchar forcetaming, int charm_type, 
                 if (headnum < mtmp->heads_left)
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "However, %d other head%s still remain %s.", mtmp->heads_left - headnum, plur(mtmp->heads_left - headnum), is_peaceful(mtmp) ? "untamed" : "hostile");
             }
-        }
-        else if (verbose)
-        {
-            if (thrown)
-                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s catches %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
             else
-                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s takes %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
+            {
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s %s %s and seems to appreciate it a lot.", Monnam(mtmp), thrown ? "catches" : "takes", yname(obj));
+            }
         }
 
         /* Consume the food */
