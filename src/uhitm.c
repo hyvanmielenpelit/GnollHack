@@ -23,6 +23,8 @@ static void start_engulf(struct monst *);
 static void end_engulf(void);
 static int gulpum(struct monst *, struct attack *);
 static boolean hmonas(struct monst *);
+static boolean apply_weapon_special_effects(struct monst *, struct obj *,
+    double, int, int, int);
 static void nohandglow(struct monst *);
 static boolean shade_aware(struct obj *);
 
@@ -2255,122 +2257,11 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
 
     boolean uses_spell_flags = obj ? object_uses_spellbook_wand_flags_and_properties(obj) : FALSE;
 
-    int crit_strike_probability = obj ? get_critical_strike_percentage_chance(obj, mon, &youmonst) : 0;
-    int crit_strike_die_roll_threshold = crit_strike_probability / 5;
-
-    /* Wounding */
-    if (obj && !uses_spell_flags)
+    /* Apply special weapon effects (Wounding, Life Leech) */
+    if (apply_weapon_special_effects(mon, obj, damage, extratmp,
+            dieroll, critstrikeroll))
     {
-        int extradmg = 0;
-        if (
-            (
-                (objects[obj->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst)
-                && (
-                    ((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-                        && (
-                            ((objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-                                && dieroll <= crit_strike_die_roll_threshold)
-                            ||
-                            (!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-                                && critstrikeroll < crit_strike_probability))
-                        )
-                    ||
-                    (!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-                        && 1)
-                    )
-              )
-           )
-        {
-            if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-                extradmg += (int)ceil(damage);
-            else
-                extradmg += (int)ceil(adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE));
-        }
-
-        if (has_obj_mythic_wounding(obj))
-            extradmg += mythic_wounding_amount(obj);
-
-        if (extradmg > 0)
-        {
-            if (!resists_wounding(mon))
-            {
-                mon->mbasehpdrain -= extradmg;
-                update_mon_maxhp(mon);
-
-                if (mon->mhp > mon->mhpmax)
-                    mon->mhp = mon->mhpmax;
-
-                char* whom = mon_nam(mon);
-                if (canspotmon(mon))
-                {
-                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s deeply into %s!", Yobjnam2(obj, "cut"), whom);
-                }
-            }
-            if (DEADMONSTER(mon))
-            {
-                destroyed = TRUE;
-            }
-        }
-    }
-
-    /* Life leech */
-    if (obj && !resists_life_leech(mon))
-    {
-        int extradmg = 0;
-        if (
-            (!uses_spell_flags && (objects[obj->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst)
-                && (
-                    ((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-                        && (
-                            ((objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-                                && dieroll <= crit_strike_die_roll_threshold)
-                            ||
-                            (!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-                                && critstrikeroll < crit_strike_probability))
-                        )
-                    ||
-                    (!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-                        && 1)
-                    )
-                )
-            )
-        {
-            if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-                extradmg += (int)ceil(damage);
-            else
-                extradmg += (int)ceil(adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE));
-        }
-
-        if (has_obj_mythic_life_draining(obj))
-            extradmg += mythic_life_draining_amount(obj);
-
-        if (extradmg > 0)
-        {
-            boolean didleech = FALSE;
-            if (Upolyd)
-            {
-                int hpbefore = u.mh;
-                deduct_player_hp((double)-extradmg);
-                if (u.mh > hpbefore)
-                    didleech = TRUE;
-            }
-            else
-            {
-                int hpbefore = u.uhp;
-                deduct_player_hp((double)-extradmg);
-                if (u.uhp > hpbefore)
-                    didleech = TRUE;
-            }
-
-            if (didleech)
-            {
-                char* whom = mon_nam(mon);
-                if (canspotmon(mon))
-                {
-                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s the life energy from %s to you!", Yobjnam2(obj, "leech"), whom);
-                }
-            }
-        }
+        destroyed = TRUE;
     }
 
 
@@ -2851,6 +2742,152 @@ steal_it(struct monst *mdef, struct attack *mattk)
         if (!stealoid)
             break; /* only taking one item */
     }
+}
+
+/*
+ * Apply special weapon effects (Wounding, Life Leech) from an object
+ * wielded/worn by the player hitting a monster.
+ * Used by hmon_hitmon for wielded weapons and by damageum for
+ * worn armor pieces (gloves, boots, helmet) during natural attacks.
+ *
+ * Returns TRUE if the monster was killed by wounding drain.
+ *
+ * Parameters:
+ *   mon            - the target monster
+ *   obj            - the weapon or armor piece causing the effect
+ *   damage         - total damage dealt this hit (for A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+ *   extratmp       - extra damage value from weapon_extra_dmg_value
+ *   dieroll        - the d20 attack roll
+ *   critstrikeroll - the d100 critical strike roll
+ */
+static boolean
+apply_weapon_special_effects(struct monst *mon, struct obj *obj,
+    double damage, int extratmp, int dieroll, int critstrikeroll)
+{
+    if (!obj)
+        return FALSE;
+
+    boolean uses_spell_flags = object_uses_spellbook_wand_flags_and_properties(obj);
+
+    int crit_strike_probability = get_critical_strike_percentage_chance(obj, mon, &youmonst);
+    int crit_strike_die_roll_threshold = crit_strike_probability / 5;
+
+    /* Wounding */
+    if (!uses_spell_flags)
+    {
+        int extradmg = 0;
+        if (
+            (
+                (objects[obj->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst)
+                && (
+                    ((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+                        && (
+                            ((objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+                                && dieroll <= crit_strike_die_roll_threshold)
+                            ||
+                            (!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+                                && critstrikeroll < crit_strike_probability))
+                        )
+                    ||
+                    (!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+                        && 1)
+                    )
+              )
+           )
+        {
+            if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+                extradmg += (int)ceil(damage);
+            else
+                extradmg += (int)ceil(adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE));
+        }
+
+        if (has_obj_mythic_wounding(obj))
+            extradmg += mythic_wounding_amount(obj);
+
+        if (extradmg > 0)
+        {
+            if (!resists_wounding(mon))
+            {
+                mon->mbasehpdrain -= extradmg;
+                update_mon_maxhp(mon);
+
+                if (mon->mhp > mon->mhpmax)
+                    mon->mhp = mon->mhpmax;
+
+                char* whom = mon_nam(mon);
+                if (canspotmon(mon))
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s deeply into %s!", Yobjnam2(obj, "cut"), whom);
+                }
+            }
+            if (DEADMONSTER(mon))
+            {
+                return TRUE;
+            }
+        }
+    }
+
+    /* Life leech */
+    if (!resists_life_leech(mon))
+    {
+        int extradmg = 0;
+        if (
+            (!uses_spell_flags && (objects[obj->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst)
+                && (
+                    ((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+                        && (
+                            ((objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+                                && dieroll <= crit_strike_die_roll_threshold)
+                            ||
+                            (!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+                                && critstrikeroll < crit_strike_probability))
+                        )
+                    ||
+                    (!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+                        && 1)
+                    )
+                )
+            )
+        {
+            if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+                extradmg += (int)ceil(damage);
+            else
+                extradmg += (int)ceil(adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE));
+        }
+
+        if (has_obj_mythic_life_draining(obj))
+            extradmg += mythic_life_draining_amount(obj);
+
+        if (extradmg > 0)
+        {
+            boolean didleech = FALSE;
+            if (Upolyd)
+            {
+                int hpbefore = u.mh;
+                deduct_player_hp((double)-extradmg);
+                if (u.mh > hpbefore)
+                    didleech = TRUE;
+            }
+            else
+            {
+                int hpbefore = u.uhp;
+                deduct_player_hp((double)-extradmg);
+                if (u.uhp > hpbefore)
+                    didleech = TRUE;
+            }
+
+            if (didleech)
+            {
+                char* whom = mon_nam(mon);
+                if (canspotmon(mon))
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s the life energy from %s to you!", Yobjnam2(obj, "leech"), whom);
+                }
+            }
+        }
+    }
+
+    return FALSE;
 }
 
 /*
@@ -3378,6 +3415,19 @@ damageum(struct monst *mdef, struct attack *mattk, struct obj *omonwep, int spec
     default:
         damage = 0;
         break;
+    }
+
+    /* Apply special weapon effects (wounding, life leech) from armor.
+     * omonwep is only non-NULL for natural attacks with an armor piece
+     * (gloves for claws, boots for kicks, helmet for butts).
+     * Weapon attacks go through known_hitum which handles these. */
+    if (omonwep)
+    {
+        if (apply_weapon_special_effects(mdef, omonwep,
+                damage, extratmp, rnd(20), rn2(100)))
+        {
+            /* monster killed by wounding drain */
+        }
     }
 
     /* Skill-based critical strike */
@@ -4045,8 +4095,9 @@ hmonas(struct monst *mon)
                         goto passivedone;
                     }
                     /* Do not print "You hit" message; known_hitum already did it. */
+                    /* THIS IS SPECIAL INNATE PART OF NON-AD_PHYS AT_WEAP ATTACKS -- THEY GET EXTRA EFFECTS ON THE TOP OF THE WEAPON, SO DO NOT PASS THE WEAPON HERE */
                     if (dhit && mattk->adtyp != AD_SPEL && mattk->adtyp != AD_PHYS)
-                        sum[i] = damageum(mon, mattk, weapon, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
+                        sum[i] = damageum(mon, mattk, (struct obj*)0, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
 
                     update_u_action_revert(ACTION_TILE_NO_ACTION);
                 }
@@ -4093,7 +4144,7 @@ hmonas(struct monst *mon)
                 | ((!is_offhand || !has_multiple_hand_attacks)
                     ? W_RINGR : 0L),
                 &silverhit);
-            sum[i] = damageum(mon, mattk, (struct obj*)0, specialdmg); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
+            sum[i] = damageum(mon, mattk, uarmg, specialdmg); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
             update_u_action_revert(ACTION_TILE_NO_ACTION);
             break;
         }
@@ -4193,7 +4244,14 @@ hmonas(struct monst *mon)
                             silver_sears(&youmonst, mon, silverhit);
                     }
                     //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS WITHOUT HITUM (AND BELOW MORE FOR HUGS)
-                    sum[i] = damageum(mon, mattk, (struct obj*)0, specialdmg);
+                    {
+                        struct obj *attack_equipment = (struct obj*)0;
+                        if (mattk->aatyp == AT_KICK)
+                            attack_equipment = uarmf;
+                        else if (mattk->aatyp == AT_BUTT)
+                            attack_equipment = uarmh;
+                        sum[i] = damageum(mon, mattk, attack_equipment, specialdmg);
+                    }
                 }
             } else { /* !dhit */
                 missum(mon, mattk, (tmp + armorpenalty > dieroll));
