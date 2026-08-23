@@ -142,7 +142,10 @@ namespace GnollHackX.Pages.Game
             _handoffSucceeded = false;
             RetryButtonsPanel.IsVisible = false;
             CancelButton.IsVisible = true;
+            CancelButton.IsEnabled = true;
+            CancelButton.TextColor = GHColors.White;
             ProgressOverlay.IsVisible = true;
+            ProgressOverlayFrame.IsVisible = true;
             ProgressStatusLabel.Text = "Uploading game data...";
             UploadProgressBar.Progress = 0.3;
 
@@ -431,13 +434,16 @@ namespace GnollHackX.Pages.Game
             {
                 ConfigurePlatformWebViewBackground();
                 ConfigureSslBypass();
-                CancelButton.IsVisible = false;
+                //CancelButton.IsVisible = false;
+                CancelButton.IsEnabled = false;
+                CancelButton.TextColor = GHColors.Gray;
 
                 if (_handoffSucceeded)
                 {
                     /* Navigate to the final URL; keep ProgressOverlay visible
                      * until DisplayWebView_Navigated fires, so the dark overlay
                      * masks the WebView2 white surface during page load. */
+                    //ProgressOverlayFrame.IsVisible = false;
                     DisplayWebView.Source = new UrlWebViewSource { Url = overseerUrl };
                 }
                 else
