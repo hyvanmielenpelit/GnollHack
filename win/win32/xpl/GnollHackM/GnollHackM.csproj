@@ -63,6 +63,7 @@
     <ServerGarbageCollection>true</ServerGarbageCollection>
   </PropertyGroup>-->
 
+  <!-- DESIGN TIME BUILD SPECIFIC PROPERTIES -->
   <!-- Prevent DesignTimeBuilds from corrupting the Resizetizer cache during Publish -->
   <PropertyGroup Condition="'$(DesignTimeBuild)' == 'true'">
     <DisableResizetizer>true</DisableResizetizer>
@@ -1231,6 +1232,8 @@
     <EmbeddedResource Include="Assets\UI\zoom.png" />
     <EmbeddedResource Include="Assets\uwch.ttf" />
   </ItemGroup>
+
+  <!-- PACKAGE REFERENCES -->
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.15.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
@@ -1241,10 +1244,12 @@
     <PackageReference Include="System.Management" Version="10.0.11" Condition="$(TargetFramework.Contains('-windows'))" />
     <PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.22" Condition="$(TargetFramework.Contains('-android'))" />
   </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0'))">
+  
+    <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0'))">
     <PackageReference Include="Microsoft.Maui.Controls" Condition="!$(TargetFramework.Contains('-ios'))" Version="10.0.100" />
     <PackageReference Include="Microsoft.Maui.Controls" Condition="$(TargetFramework.Contains('-ios'))" Version="10.0.51" />
   </ItemGroup>
+
   <ItemGroup Condition="$(TargetFramework.StartsWith('net11.0'))">
     <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-preview.7.26406.9" />
   </ItemGroup>
@@ -1266,6 +1271,7 @@
     <PackageReference Include="Sentry.Profiling" Version="6.9.0" Condition="$(TargetFramework.Contains('-windows'))" />
   </ItemGroup>
 
+  <!-- OTHER -->
   <ItemGroup>
     <Compile Update="GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
@@ -1288,12 +1294,6 @@
     <Folder Include="Platforms\Android\prebuilt\MonoAoT\x86_64\" />
   </ItemGroup>-->
 
-  <!--<Import Project="AppxIcons.targets" Condition="$(TargetFramework.Contains('-windows'))" />-->
-
-  <!--<Import Project="MonoAoTLibraries.targets" Condition="'$(EnableLLVM)'=='True' and $(TargetFramework.Contains('-android'))" />-->
-  <Import Project="CompileMonoAoTLibraries2.targets" Condition="'$(EnableLLVM)'=='True' and $(TargetFramework.Contains('-android'))" />
-  <!--<Import Project="Angle.targets" Condition="$(TargetFramework.Contains('-windows'))" />-->
-
   <!-- IMPLIED DEFINE CONSTANTS -->
   <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
     <DefineConstants Condition="'$(EnableLLVM)'=='True'">$(DefineConstants);LLVM</DefineConstants>
@@ -1309,8 +1309,15 @@
     <DefineConstants>$(DefineConstants);CORECLR</DefineConstants>
   </PropertyGroup>
 
-  <!-- AUTOMATIC WINDOWS APPXMANIFEST VERSION SYNCHRONIZATION -->
-  <Target Name="SyncWindowsAppxManifestVersions" BeforeTargets="BeforeBuild;BeforeGenerateAppxManifest" Condition="$(TargetFramework.Contains('-windows'))">
+  <!-- IMPORTED TARGET PROJECTS -->
+  <Import Project="CompileMonoAoTLibraries2.targets" Condition="'$(EnableLLVM)'=='True' and $(TargetFramework.Contains('-android'))" />
+  <!--<Import Project="AppxIcons.targets" Condition="$(TargetFramework.Contains('-windows'))" />-->
+  <!--<Import Project="MonoAoTLibraries.targets" Condition="'$(EnableLLVM)'=='True' and $(TargetFramework.Contains('-android'))" />-->
+  <!--<Import Project="Angle.targets" Condition="$(TargetFramework.Contains('-windows'))" />-->
+
+  <!-- TARGETS -->
+  <!-- Automatic Windows package version synchronization -->
+  <Target Name="SyncWindowsAppxManifestVersions" BeforeTargets="BeforeBuild;BeforeGenerateAppxManifest" Condition="$(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'">
     <PropertyGroup>
       <!-- Parse the ApplicationDisplayVersion to get parts safely -->
       <_AppVersionClean>$(ApplicationDisplayVersion.Trim())</_AppVersionClean>
@@ -1340,10 +1347,10 @@
   </Target>
 
   <!-- Clean up large native PDB files from Release output (libSkiaSharp.pdb, libGLESv2.pdb, etc.) -->
-  <Target Name="CleanNativePdbs" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows'))">
-  <ItemGroup>
+  <Target Name="CleanNativePdbs" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'">
+    <ItemGroup>
       <NativePdbFiles Include="$(OutputPath)\**\*.pdb" />
-  </ItemGroup>
+    </ItemGroup>
     <Delete Files="@(NativePdbFiles)" />
   </Target>
 
