@@ -435,8 +435,9 @@ namespace GnollHackX.Pages.Game
 
                 if (_handoffSucceeded)
                 {
-                    /* Hide overlay and navigate to the final URL */
-                    ProgressOverlay.IsVisible = false;
+                    /* Navigate to the final URL; keep ProgressOverlay visible
+                     * until DisplayWebView_Navigated fires, so the dark overlay
+                     * masks the WebView2 white surface during page load. */
                     DisplayWebView.Source = new UrlWebViewSource { Url = overseerUrl };
                 }
                 else
@@ -502,7 +503,9 @@ namespace GnollHackX.Pages.Game
                 && e.Url != null && e.Url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
                 _overseerLoaded = true;
-                
+
+                /* Now that the page has painted, hide the connection overlay */
+                ProgressOverlay.IsVisible = false;
                 FocusDisplayWebView();
 #if GNH_MAUI
                 var focusTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
