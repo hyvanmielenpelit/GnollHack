@@ -1956,8 +1956,10 @@ tamedog(struct monst *mtmp, struct obj *obj, uchar forcetaming, int charm_type, 
     }
 
     if (obj) 
-    { /* thrown food */
+    { /* thrown or given food */
         int headnum = (int)min(mtmp->heads_left, mtmp->heads_tamed);
+
+        /* Display appropriate message */
         if (is_cerberus && headnum > 0 && headnum <= mtmp->heads_left)
         {
             if (verbose)
@@ -1971,21 +1973,29 @@ tamedog(struct monst *mtmp, struct obj *obj, uchar forcetaming, int charm_type, 
                 if (headnum < mtmp->heads_left)
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "However, %d other head%s still remain %s.", mtmp->heads_left - headnum, plur(mtmp->heads_left - headnum), is_peaceful(mtmp) ? "untamed" : "hostile");
             }
-            place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
-            /* devour the food (might grow into larger, genocided monster) */
-            debugprint("tamedog: %d", obj->otyp);
-            useupf(obj, 1L);
         }
-        else if (!thrown)
+        else if (verbose)
         {
-            if (verbose)
+            if (thrown)
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s catches %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
+            else
                 pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s takes %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
-            /* defer eating until the edog extension has been set up */
-            place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
-            /* devour the food (might grow into larger, genocided monster) */
+        }
+
+        /* Consume the food */
+        place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
+        if (has_edog(mtmp))
+        {
+            /* Monster is tame with edog — proper food handling */
             if (dog_eat(mtmp, obj, mtmp->mx, mtmp->my, TRUE) == 2)
                 return TRUE; /* oops, it died... */
             /* `obj' is now obsolete */
+        }
+        else
+        {
+            /* Monster not (yet fully) tame or no edog — just destroy the food */
+            debugprint("tamedog: %d", obj->otyp);
+            useupf(obj, 1L);
         }
     }
 
