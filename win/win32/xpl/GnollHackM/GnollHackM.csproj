@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -1337,35 +1337,6 @@
     <XmlPoke XmlInputPath="%(_AppxManifestFiles.Identity)" Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/appx/manifest/foundation/windows10' /&gt;" Query="/ns:Package/ns:Identity/@Version" Value="$(_CalculatedVersion)" />
 
     <Message Importance="high" Text="Synchronized %(_AppxManifestFiles.Identity) version to $(_CalculatedVersion)" />
-  </Target>
-  <!--
-    Workaround for .NET 10 MAUI Resizetizer caching issue:
-    When switching between Packaged (MSIX) and Unpackaged (None) builds, the icon source files
-    and metadata change. Resizetizer's internal C# task skips regenerating images if destination
-    files already exist in obj/.../resizetizer/r/ (task-level timestamp check). To force a
-    complete regeneration, we must delete not only mauiimage.inputs and stamps, but also the
-    generated intermediate image and manifest directories.
-  -->
-  <Target Name="_InvalidateResizetizerCacheIfIconChanged" BeforeTargets="ResizetizeCollectItems" Condition="$(TargetFramework.Contains('-windows')) And Exists('$(_ResizetizerInputsFile)')">
-    <ReadLinesFromFile File="$(_ResizetizerInputsFile)">
-      <Output TaskParameter="Lines" ItemName="_CachedResizetizeInput" />
-    </ReadLinesFromFile>
-
-    <PropertyGroup>
-      <_CurrentMauiIconFile>@(MauiIcon->'%(Identity)')</_CurrentMauiIconFile>
-      <_CurrentMauiIconFg>@(MauiIcon->'%(ForegroundFile)')</_CurrentMauiIconFg>
-      <_CachedInputContainsCurrentIcon>$([System.String]::new('@(_CachedResizetizeInput)').Contains('$(_CurrentMauiIconFile)'))</_CachedInputContainsCurrentIcon>
-      <_CachedInputContainsCurrentFg Condition="'$(_CurrentMauiIconFg)' != ''">$([System.String]::new('@(_CachedResizetizeInput)').Contains('$(_CurrentMauiIconFg)'))</_CachedInputContainsCurrentFg>
-      <_CachedInputContainsCurrentFg Condition="'$(_CurrentMauiIconFg)' == ''">True</_CachedInputContainsCurrentFg>
-      <_ResizetizerCacheIsStale Condition="'$(_CachedInputContainsCurrentIcon)' != 'True' Or '$(_CachedInputContainsCurrentFg)' != 'True'">True</_ResizetizerCacheIsStale>
-    </PropertyGroup>
-
-    <!-- Delete input cache, outputs list, and Resizetizer stamp files -->
-    <Delete Files="$(_ResizetizerInputsFile);$(_ResizetizerOutputsFile);$(_ResizetizerStampFile);$(_MauiManifestStampFile)" Condition="'$(_ResizetizerCacheIsStale)' == 'True'" />
-
-    <!-- Remove the generated intermediate images and manifests so the C# task cannot skip them -->
-    <RemoveDir Directories="$(_MauiIntermediateImages)" Condition="'$(_ResizetizerCacheIsStale)' == 'True' And Exists('$(_MauiIntermediateImages)')" />
-    <RemoveDir Directories="$(_MauiIntermediateManifest)" Condition="'$(_ResizetizerCacheIsStale)' == 'True' And Exists('$(_MauiIntermediateManifest)')" />
   </Target>
 
   <!-- Clean up large native PDB files from Release output (libSkiaSharp.pdb, libGLESv2.pdb, etc.) -->
