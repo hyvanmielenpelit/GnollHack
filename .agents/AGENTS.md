@@ -80,7 +80,33 @@ Git stores all text files with **LF** line endings in the repository. On checkou
 > - On **Linux/macOS**, write files with **LF** line endings (the OS default).
 > - **Exception — `.sln`, `.bat`, `.cmd`**: These must **always** be CRLF, even on Linux, because their Windows-native parsers require it.
 >
-> **Common mistake**: Creating or modifying a shell script (`.sh`) and mixing line endings within the file. A CRLF shebang (`#!/bin/bash\r`) causes `bad interpreter: No such file or directory` on Linux/WSL. Git's `autocrlf` normalization handles this on commit, but if a script is executed directly from the working tree (e.g., via WSL mounting `/mnt/c/`), CRLF will cause failures. When in doubt, verify `.sh` files use LF line endings.
+> **Detect before you edit — do not guess from the OS:**
+>
+> ```bash
+> git ls-files --eol <path>   # i/ = index, w/ = working tree (w/crlf or w/lf)
+> ```
+>
+> Without git, use `od -c <path> | head -3` and look for CR bytes.
+>
+> **Do NOT use `grep`, `head`, or `file` to detect CR.** Git Bash/MSYS and WSL
+> open files in text mode and strip CR, so these report LF for a CRLF file —
+> silently, with no error. Acting on that produces a file with mixed line
+> endings, which is worse than either convention.
+>
+> When modifying an **existing** file, match whatever `w/` reports, regardless of
+> the OS. Use the OS default only when creating a **new** file. Never mix
+> conventions within a single file.
+>
+> **Common mistake**: Creating or modifying a shell script (`.sh`) and mixing line endings within the file. A CRLF shebang (`#!/bin/bash\r`) causes `bad interpreter: No such file or directory` on Linux/WSL. Git normalizes on commit, so the repository always holds LF.
+>
+> **How `.sh` is handled in this repo**: `.sh` files are deliberately left under
+> the default `* text=auto` rule — CRLF in a Windows working tree, LF in a
+> Linux/WSL one, LF in the repository. This is correct and should **not** be
+> "fixed" with an `eol=lf` attribute. The scripts the build actually executes
+> inside WSL from the Windows tree (`createassetpack.sh`) are passed through
+> **`dos2unix` first**, in the `makedefsdroid.vcxproj` build command, together
+> with the `dat/` text files. **Do not remove those `dos2unix` calls** — they
+> look redundant but are what keeps a Windows checkout working under WSL.
 >
 > **Why AI agents get this wrong**: Git stores all text files with **LF** internally. When AI tools read code from the Git object store (`git show`, `git cat-file`), GitHub API, or `raw.githubusercontent.com`, they receive **LF** line endings — even on Windows. The AI then reproduces those LF endings in its output. On Windows, the correct behavior is to write **CRLF** to the working tree and let Git normalize back to LF on commit. Do not blindly copy line endings from Git/GitHub source data.
 

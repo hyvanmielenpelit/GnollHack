@@ -62,7 +62,7 @@ Windows
 ## Formatting Rules
 
 - **Line width**: Maximum 78 characters per line.
-- **Line endings**: Windows CRLF (`\r\n`). After writing the file, verify and convert if needed.
+- **Line endings**: Match the existing endings of `DEVEL/performance.txt` rather than assuming a platform. Check with `git ls-files --eol DEVEL/performance.txt` (`w/crlf` on Windows, `w/lf` on Linux/macOS) and append in the same convention. Never leave the file with mixed endings. See the Line Ending Policy in `AGENTS.md` — in particular, `grep` and `head` cannot reliably detect CR.
 - **Indentation**: Two spaces before field names in platform sections. Field values aligned with spaces to column 21 (after `  Test Device:    `).
 - **Platform heading underlines**: Use `-` characters matching the length of the platform name (e.g., `Android` → `-------`, `iOS` → `---`, `Windows` → `-------`).
 - **Date heading underline**: Use `=` characters matching the length of the `Date: YYYY-MM-DD` line (16 `=` characters).

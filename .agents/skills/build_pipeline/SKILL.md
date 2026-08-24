@@ -158,6 +158,32 @@ Generates headers, visibility tables, and processed data text from C sources and
 | `-e` | `dat/` | `dat/dungeon.pdf` | Dungeon definition source (input for `dgncomp`) |
 | `-a` | `dat/` | `include/animoff.h`, `include/animtotals.h` | Animation offset headers |
 
+### `dos2unix` in the WSL build commands (MANDATORY — do not remove)
+
+The WSL build commands in `makedefsdroid.vcxproj` begin with a long run of
+`dos2unix` calls over `dat/` text files, `libshare/defaults.gnh`, `sysconf`, the
+Google Play `AndroidManifest.xml` files, and `createassetpack.sh`. **These are
+mandatory, not leftover cruft.**
+
+Why: the repository stores every text file with LF. Git converts them to **CRLF
+on checkout into a Windows working tree** (`core.autocrlf = true` plus
+`* text=auto`), which is correct and intended for Windows editing. But the build
+then runs those same files **through WSL, off the Windows tree** — the command
+does `cd /mnt/c/wsl-in/assetpack; ./createassetpack.sh`. Linux tools require LF:
+a CRLF shebang fails with `bad interpreter: No such file or directory`, and the
+data tools mis-parse CRLF input.
+
+`dos2unix` is what bridges the two conventions at build time. Consequences:
+
+- **Never delete or "tidy away" a `dos2unix` call** in these build commands. The
+  build will keep working on your machine if the files happen to already be LF,
+  and break on a fresh Windows checkout — a failure that is hard to attribute.
+- **When adding a new text file or shell script** that the WSL side reads or
+  executes, add a matching `dos2unix` call for it in the same command.
+- This is also why `.sh` files are **not** pinned to `eol=lf` in
+  `.gitattributes`: they are meant to be CRLF on Windows, and `dos2unix` handles
+  the WSL side. See the Line Ending Policy in `AGENTS.md`.
+
 ### 2. `levcomp.exe` (via `afterlevcomp.proj`)
 
 Compiles human-readable level description files (`.des`) in `dat/` into binary level files (`.lev`).
@@ -203,6 +229,10 @@ The Android native library is cross-compiled via WSL (Windows Subsystem for Linu
 2. **Start the SSH service** in WSL before building: `sudo service ssh start`
 3. **Configure the SSH connection** in Visual Studio under **Tools → Options → Cross Platform → Connection Manager** (Host Name: `127.0.0.1`, Port: `22`, User Name & Password: your WSL credentials)
 4. The `gnollhackdroid.vcxproj` project uses VS's remote build feature to compile via SSH to WSL. The data pipeline tools (`dlbdroid`, `makedefsdroid`) also use this WSL connection.
+
+> **Line endings across the WSL boundary**: WSL reads the Windows working tree,
+> where text files are CRLF. The build's `dos2unix` calls convert them for the
+> Linux side and are mandatory — see the `dos2unix` section above.
 
 ### iOS Native Build Prerequisites
 
