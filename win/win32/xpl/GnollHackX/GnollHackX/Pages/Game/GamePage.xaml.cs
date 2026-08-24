@@ -61,7 +61,7 @@ namespace GnollHackX.Pages.Game
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class GamePage : CustomModalPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
+    public partial class GamePage : CustomModalPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage, IMessagePopupPage
     {
         private struct MenuClickResult
         {
@@ -4980,7 +4980,11 @@ namespace GnollHackX.Pages.Game
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
-            if (MoreCommandsGrid.IsVisible)
+            if (MessagePopup.IsPopupOpen)
+            {
+                MessagePopup.ClosePopup();
+            }
+            else if (MoreCommandsGrid.IsVisible)
             {
                 MoreCommandsGrid.IsVisible = false;
                 MoreCommandsFilterEntry.Text = "";
@@ -24337,6 +24341,31 @@ namespace GnollHackX.Pages.Game
                 ToggleZoomMiniButton_Clicked(null, null);
             if (!ZoomAlternateMode)
                 ToggleZoomAlternateButton_Clicked(null, null);
+        }
+
+        /* IMessagePopupPage implementation */
+        public bool IsPopupOpen => MessagePopup.IsPopupOpen;
+        public void ClosePopup() => MessagePopup.ClosePopup();
+        public bool SendKeyToPopup(int key, bool isCtrl, bool isMeta) => MessagePopup.SendKeyToPopup(key, isCtrl, isMeta);
+        public bool SendSpecialKeyToPopup(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift) => MessagePopup.SendSpecialKeyToPopup(spkey, isCtrl, isMeta, isShift);
+
+        /* Game requests are polled in batches and awaited together with Task.WhenAll, so more
+           than one message box can be requested at the same time. MessagePopupView holds only
+           a single TaskCompletionSource, and showing a new popup on top of an open one would
+           resolve the earlier one as false even when it has no Cancel button, sending a wrong
+           answer back to the C core. Close the previous popup explicitly instead: ClosePopup
+           answers it with Cancel, or with the only button if Cancel is not shown. It is a
+           no-op when no popup is open. */
+        public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
+#if GNH_MAUI
+            Color titleColor = null,
+#else
+            Color? titleColor = null,
+#endif
+            bool acceptEnterSpaceForOkCancel = false)
+        {
+            MessagePopup.ClosePopup();
+            return MessagePopup.ShowMessagePopupAsync(title, message, okButtonText, cancelButtonText, titleColor, acceptEnterSpaceForOkCancel);
         }
 
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)

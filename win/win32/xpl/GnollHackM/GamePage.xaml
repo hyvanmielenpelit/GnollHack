@@ -501,6 +501,7 @@
                                  ProgressColor="LightBlue" Progress="0" Margin="0,10" />
                 </StackLayout>
             </gnh:MeasurableGrid>
+            <controls:MessagePopupView x:Name="MessagePopup" />
         </Grid>
     
 </gnh:CustomModalPage>
