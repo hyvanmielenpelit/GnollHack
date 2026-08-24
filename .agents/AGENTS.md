@@ -153,7 +153,26 @@ Git stores all text files with **LF** line endings in the repository. On checkou
 - **For Android and iOS builds**: WSL with SSH service running (`sudo service ssh start`) and configured in VS Connection Manager is required before building `GnollHack.sln`, as `dlbdroid` generates the `nhdat` game data archive inside WSL
 - **For iOS builds**: `vcremote` must be configured on the Mac for the C++ library build (`gnollhackios.vcxproj`); `Pair to Mac` is separately needed for the .NET MAUI project (`GnollHackM.csproj`). PSCP download scripts in `win/win32/xpl/gnollhackios/` must be configured with Mac credentials and run interactively once to cache the Mac host key before building in VS.
 
-## Subagent Use and Pair Programming
+## Implementation Plans
+
+**Non-trivial tasks require a written implementation plan, approved by the user before any file is modified.**
+
+A plan is **required** when a task meets any of these:
+- It touches **more than one file**, or more than one subsystem (C core, native bridge, MAUI frontend, build utilities, game data)
+- It crosses a **build regeneration boundary** (`makedefs`, `levcomp`, `dgncomp`, `dlb`, `makedefsdroid`)
+- It adds or changes a **C-to-C# interop** struct, enum, or callback
+- It is a refactor, a new feature, or anything the user describes as large or non-trivial
+
+A plan is **not** required for single-file fixes, typo and comment corrections, answering questions, or read-only investigation. When in doubt, write one — a rejected plan is cheap, a wrong cross-layer change is not.
+
+### Plan Delivery
+
+- Deliver the plan as a **reviewable document** — an artifact in Claude Code, or a Markdown file for agents without artifacts. Short plans may be presented inline instead.
+- Write plan documents to a scratch location, **not** into the repository. Do not commit them unless the user asks.
+- **Wait for explicit user approval before editing any file.** Do not begin implementation alongside the plan.
+- If the plan turns out to be wrong during implementation, stop and re-confirm rather than silently diverging from what the user approved.
+
+### Subagent Use and Pair Programming
 
 Every implementation plan **MUST** include a **Subagent Use** section. Read the full guidelines in the [subagent_guidelines skill](file:///c:/hmp/GnollHack/.agents/skills/subagent_guidelines/SKILL.md) before creating any plan. Key points:
 

@@ -21,3 +21,59 @@ thin adapter layer over it.
      in .agents/skills/, mirror it into the matching .claude/skills/ stub or the skill
      will trigger on stale wording. Bodies and references are never duplicated.
      Regenerate all stubs from the canonical files rather than editing them by hand. -->
+
+## Implementation Planning Workflow (MANDATORY)
+
+**Non-trivial tasks require a written implementation plan, approved by the user
+before any source file is modified.** Read the `implementation-planning` skill
+(`.agents/skills/implementation_planning/SKILL.md`) for the full specification.
+The summary below is binding regardless of whether the skill is triggered.
+
+### When to Plan
+
+A plan is **required** when any of these are true:
+
+- The task touches **more than one file**, or more than one subsystem
+- It crosses a **build regeneration boundary** (`makedefs`, `levcomp`, `dgncomp`,
+  `dlb`, `makedefsdroid`)
+- It adds or changes a **C-to-C# interop** struct, enum, or callback
+- It is a refactor, a new feature, or anything the user describes as non-trivial
+
+A plan is **not** required for single-file fixes, typos, comment edits, answering
+questions, or read-only investigation.
+
+### Lifecycle (Five Phases)
+
+1. **Research** — read files, search code, understand implications. **No edits.**
+2. **Write the plan** — save it as a Markdown file **outside the repository**
+   (e.g., to `$TMPDIR/implementation_plan.md` or a user-configured planning
+   directory). Tell the user the file path so they can review it.
+3. **Wait for approval** — **STOP.** Do not edit any source file until the user
+   explicitly approves the plan.
+4. **Execute** — implement the approved plan step by step. If significant
+   deviation is needed, stop, update the plan, and re-confirm.
+5. **Verify** — build, test, confirm correctness. Summarize results.
+
+### Plan Document Format
+
+See the `implementation-planning` skill for the full template. The plan **must**
+include at minimum:
+
+- **Goal** — what and why
+- **Affected Files** — table of every file touched
+- **Build Impact** — which build utilities must be re-run, or "None"
+- **Proposed Changes** — grouped by component, ordered by dependency
+- **Subagent Use** — mandatory even if "No" (see `subagent-guidelines` skill)
+- **Risks** — what could break
+- **Verification Plan** — how correctness will be confirmed
+
+### Saving the Plan (Claude Code–Specific)
+
+Claude Code does not have a built-in artifact system. To deliver a reviewable
+plan document:
+
+1. Use your file-writing tool to save the plan as a `.md` file **outside** the
+   repository (e.g., `$TMPDIR/implementation_plan.md`).
+2. Print the file path in chat so the user can open and review it.
+3. Print a **brief summary** (not the full plan) directing the user to the file.
+4. Wait for the user's approval before proceeding to execution.
