@@ -67,17 +67,19 @@ include at minimum:
 - **Risks** — what could break
 - **Verification Plan** — how correctness will be confirmed
 
-### Saving the Plan
+### Saving Plans and Other Documents
 
-Plans are saved **inside the repository** under the gitignored `plans/`
-directory, using this structure:
+All AI-produced documents — implementation plans, reviews, analyses, reports, and
+other structured artifacts — are saved **inside the repository** under the
+gitignored `plans/` directory, using this structure:
 
 ```
-plans/YYYY-MM-DD/task_name/implementation_plan_v<N>.md    ← N=1 for the first version
+plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md    ← N=1 for the first version
 ```
 
-- **Date directory** (`YYYY-MM-DD`): the creation date of the **first plan** for
-  the task. Follow-up plans for the same task reuse the same date directory.
+- **Date directory** (`YYYY-MM-DD`): the creation date of the **first document**
+  for the task. Follow-up documents for the same task reuse the same date
+  directory.
 - **Task directory**: a short, descriptive `snake_case` name (e.g.,
   `game_page_update`).
 - **Create subdirectories** if they do not exist.
@@ -87,7 +89,8 @@ plans/YYYY-MM-DD/task_name/implementation_plan_v<N>.md    ← N=1 for the first 
 This applies to **all** documents in `plans/` — implementation plans, reviews,
 analyses, reports, and other plans:
 
-- **First version** always gets a `_v1` suffix (e.g., `implementation_plan_v1.md`).
+- **First version** always gets a `_v1` suffix (e.g., `implementation_plan_v1.md`,
+  `bug_analysis_v1.md`, `code_review_v1.md`).
 - **Never overwrite** an existing version. To revise, create a new file with the
   next version number (read `_v1` → write `_v2`, read `_v2` → write `_v3`).
 - Check which versions already exist before creating a revision.
@@ -95,12 +98,13 @@ analyses, reports, and other plans:
   whichever plan version was ultimately approved. The walkthrough must state
   which plan version was implemented.
 
-To deliver the plan:
+To deliver a document:
 
-1. Use your file-writing tool to create the plan at
-   `plans/YYYY-MM-DD/task_name/implementation_plan_v<N>.md` (N=1 for new plans;
+1. Use your file-writing tool to create the document at
+   `plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md` (N=1 for new documents;
    check existing versions and increment for revisions).
 2. Print the file path in chat so the user can open and review it.
-3. Print a **brief summary** (not the full plan) directing the user to the file.
-4. Wait for the user's approval before proceeding to execution.
+3. Print a **brief summary** (not the full document) directing the user to the file.
+4. For implementation plans, wait for the user's approval before proceeding to
+   execution.
 

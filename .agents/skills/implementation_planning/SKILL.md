@@ -180,16 +180,20 @@ What could break, and how it would be noticed.
 5. **Steps / Proposed Changes** — order by dependency. Build regeneration
    boundaries must fall **between** steps, never inside one.
 
-## Where to Save the Plan
+## Where to Save Plans and Other Documents
 
-Plans are saved **inside the repository** under the `plans/` directory (which is
-gitignored). The directory structure is:
+All AI-produced documents — implementation plans, reviews, analyses (including
+bug analyses), reports (including bug reports), and any other plans or structured
+artifacts — are saved **inside the repository** under the `plans/` directory
+(which is gitignored). The directory structure is:
 
 ```
 plans/
   YYYY-MM-DD/
     task_name/
       implementation_plan_v<N>.md       ← N=1 for the first version
+      code_review_v<N>.md               ← example: a review document
+      bug_analysis_v<N>.md              ← example: an analysis document
       task.md                           ← single file, based on the final approved plan
       walkthrough.md                    ← single file, post-completion summary
 ```

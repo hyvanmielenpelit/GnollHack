@@ -165,13 +165,13 @@ A plan is **required** when a task meets any of these:
 
 A plan is **not** required for single-file fixes, typo and comment corrections, answering questions, or read-only investigation. When in doubt, write one — a rejected plan is cheap, a wrong cross-layer change is not.
 
-### Plan Delivery
+### Plan and Document Delivery
 
-- Deliver the plan as a **reviewable document** — a Markdown file saved under the
-  repository's gitignored `plans/` directory:
-  `plans/YYYY-MM-DD/task_name/implementation_plan_v<N>.md` (where N=1 for the
+- Deliver plans, reviews, analyses, reports, and other structured documents as
+  **Markdown files** saved under the repository's gitignored `plans/` directory:
+  `plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md` (where N=1 for the
   first version).
-  Use the creation date of the first plan for the topic as the date directory, and
+  Use the creation date of the first document for the topic as the date directory, and
   a short `snake_case` name for the task directory. Create subdirectories as needed.
 - **Document versioning**: the first version always gets a `_v1` suffix. Never overwrite
   an existing version — to revise, create a new file with the next version number
