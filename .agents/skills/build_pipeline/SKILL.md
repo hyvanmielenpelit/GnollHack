@@ -38,6 +38,20 @@ These files are **not** in the GnollHack repository. Without them the app has no
 
 Tilesets reach the app via `copytilesetdroid.proj`; sound banks via `update-wsl-in-{debug,release}.bat`. Both run as part of `makedefsdroid`. If the banks/tilesets directories are empty, those steps fail.
 
+`ghsecrets.sjson` template (all seven keys, empty values are fine for a local build):
+
+```json
+{
+   "EncodedDefaultGamePostAddress": "",
+   "EncodedDefaultDiagnosticDataPostAddress": "",
+   "EncodedDefaultXlogRegisterationAddress": "",
+   "EncodedDefaultXlogPostAddress": "",
+   "EncodedDefaultXlogAntiForgeryToken": "",
+   "EncodedDefaultAzureBlobStorageConnectionString": "",
+   "EncodedDefaultSentryDSN": ""
+}
+```
+
 **`C:\wsl-in\` must exist before the first build** — the asset-pack staging uses plain `copy` with no `mkdir`. Create: `C:\wsl-in\assetpack\Assets\tileset\`, `C:\wsl-in\assetpack2\`, `C:\wsl-in\assetpack-maui\`, `C:\wsl-in\assetpack-maui2\`. (`C:\wsl-out\` is created automatically.)
 
 For full details, see the [GnollHack Wiki](https://github.com/hyvanmielenpelit/GnollHackWiki/tree/main/Development) pages on tilesets, sound banks, and secrets.
@@ -65,6 +79,8 @@ Building this solution: compiles build utilities → runs data pipeline → comp
 
 **For MAUI work, prefer `MauiAndroid` or `MauiAll`.** `x64` is the only WSL-free platform but does **not** run `makedefsdroid` — no XAML translation, tileset staging, or sound-bank staging.
 
+The solution defines five further platforms — `Android x64`, `iPhoneSimulator`, `Win32`, `ARM`, and `Any CPU` — which are legacy or niche; avoid them unless you specifically need one. `Any CPU` in particular is not a safe default: it builds the legacy ASCII/GUI targets and the Xamarin projects as well.
+
 ```powershell
 $msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 & $msbuild win/win32/vs/GnollHack.sln /t:Rebuild /p:Configuration=Debug /p:Platform=MauiAndroid
@@ -91,19 +107,22 @@ Game data is compiled **twice** through independent toolchains with **separate f
 
 ### 1. `makedefs.exe` (via `aftermakedefs.proj`)
 
-| Flag | Output | Description |
-|------|--------|-------------|
-| `-v` | `include/date.h` | Version and build date header |
-| `-o` | `include/onames.h` | Object name defines (from `objects.c`) |
-| `-p` | `include/pm.h` | Monster defines (from `monst.c`) |
-| `-z` | `include/vis_tab.h`, `src/vis_tab.c` | Visibility tables |
-| `-d` | `dat/data` | Processed `data.base` |
-| `-r` | `dat/rumors` | Merged `rumors.tru` + `rumors.fal` |
-| `-s` | `dat/engrave`, `dat/epitaph`, `dat/bogusmon` | Text databases |
-| `-q` | `dat/quest.dat` | Quest text |
-| `-h` | `dat/oracles` | Oracle messages |
-| `-e` | `dat/dungeon.pdf` | Dungeon definition (input for `dgncomp`) |
-| `-a` | `include/animoff.h`, `include/animtotals.h` | Animation offset headers |
+Run each flag from the working directory shown — the tool resolves its inputs
+and outputs relative to it.
+
+| Flag | Working Dir | Output | Description |
+|------|-------------|--------|-------------|
+| `-v` | `util/` | `include/date.h` | Version and build date header |
+| `-o` | `util/` | `include/onames.h` | Object name defines (from `objects.c`) |
+| `-p` | `util/` | `include/pm.h` | Monster defines (from `monst.c`) |
+| `-z` | `util/` | `include/vis_tab.h`, `src/vis_tab.c` | Visibility tables |
+| `-d` | `dat/` | `dat/data` | Processed `data.base` |
+| `-r` | `dat/` | `dat/rumors` | Merged `rumors.tru` + `rumors.fal` |
+| `-s` | `dat/` | `dat/engrave`, `dat/epitaph`, `dat/bogusmon` | Text databases |
+| `-q` | `dat/` | `dat/quest.dat` | Quest text |
+| `-h` | `dat/` | `dat/oracles` | Oracle messages |
+| `-e` | `dat/` | `dat/dungeon.pdf` | Dungeon definition (input for `dgncomp`) |
+| `-a` | `dat/` | `include/animoff.h`, `include/animtotals.h` | Animation offset headers |
 
 The mobile pipeline runs the same flags through `makedefsdroid.out` inside WSL.
 
@@ -114,14 +133,17 @@ The `makedefsdroid.vcxproj` commands begin with `dos2unix` calls over `dat/` tex
 ### 2. `levcomp.exe` (via `afterlevcomp.proj`)
 
 Compiles `.des` files in `dat/` into binary `.lev` files. Input: `<Desfiles>` item group in `files.props`.
+Run: `levcomp.exe <list of .des files>` from `dat/`.
 
 ### 3. `dgncomp.exe` (via `afterdgncomp.proj`)
 
 Compiles `dat/dungeon.pdf` (from `makedefs -e`) → `dat/dungeon`.
+Run: `dgncomp.exe dungeon.pdf` from `dat/`.
 
 ### 4. `dlb.exe` (via `afterdlb.proj`)
 
 Packages data into `nhdat` archive. Input: the `<DlbList>` item group in `files.props` — **not** `dat/dlb.lst`, which is *generated* from `<DlbList>` on every build and is gitignored.
+Run: `dlb.exe cIf dat/dlb.lst bin/$(Configuration)/$(Platform)/nhdat` from `dat/`.
 
 ## Native Library Compilation
 

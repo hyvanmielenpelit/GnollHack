@@ -146,7 +146,8 @@ Git stores all text files with **LF** line endings in the repository. On checkou
 
 - Visual Studio 2026 with C++ Desktop (v143 build tools) and .NET MAUI workloads
 - .NET 10.0 SDK
-- Windows 10 SDK
+- The .NET MAUI workload. Building from the command line rather than the Visual Studio IDE requires installing it explicitly: `dotnet workload install maui`
+- Windows SDK — install the versions the projects actually target. Check `WindowsTargetPlatformVersion` in the `.vcxproj` files under `win/win32/vs/` (currently the Windows 11 SDK, not the Windows 10 SDK) and the Windows target framework moniker in `GnollHackM.csproj`. Do not assume a fixed version; these move.
 - For Android: Android SDK with NDK
 - For iOS: Mac build host with Xcode
 - **External assets** (tilesets, sound banks, secrets file) must be obtained from separate repositories — see the `build_pipeline` skill for full details
