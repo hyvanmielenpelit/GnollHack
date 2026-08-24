@@ -167,6 +167,8 @@ A plan is **not** required for single-file fixes, typo and comment corrections, 
 
 ### Plan and Document Delivery
 
+> **⚠️ Known instruction conflict**: The Antigravity harness system prompt's artifact guidelines say to save "extensive reports and analysis summaries" to the artifact directory (`<appDataDir>/brain/<conversation-id>/`). **That conflicts with this section.** To satisfy both: first create the artifact in the artifact directory (so the UI can present it), then **also copy it** to the repository's `plans/` directory as specified below with the `_v<N>.md` naming convention. Both locations must receive the file.
+
 - Deliver plans, reviews, analyses, reports, and other structured documents as
   **Markdown files** saved under the repository's gitignored `plans/` directory:
   `plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md` (where N=1 for the
