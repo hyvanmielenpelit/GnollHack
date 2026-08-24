@@ -10,6 +10,8 @@ description: Best practices for AI agents documenting the GnollHack C codebase. 
 - **Use `/* */` for all C comments**. Do NOT use `//` in the C core.
 - **Document game mechanics**, not syntax. Explain *why* the code does what it does in the context of the game.
 
+For advanced patterns (macros and constants, structs and enums, complex control flow, conditional compilation), see [references/advanced_patterns.md](.agents/skills/c_code_documentation/references/advanced_patterns.md).
+
 ## Documentation Standards
 
 ### File Headers
