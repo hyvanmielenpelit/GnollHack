@@ -214,7 +214,7 @@
     <None Remove="..\GnollHackX\GnollHackX\GHPublishedWindow.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\GHRecordedRecordedGameFile.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHRecordedGameFile.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHResponse.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHRequest.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
@@ -224,6 +224,7 @@
     <None Remove="..\GnollHackX\GnollHackX\GHSoundTrack.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHStatusField.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHSubstring.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHTopScoreItem.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHUserData.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHUtils.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHWindow.cs" />
@@ -232,7 +233,7 @@
     <None Remove="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />
     <None Remove="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
     <None Remove="..\GnollHackX\GnollHackX\IPlatformService.cs" />
-    <None Remove="..\GnollHackX\GnollHackX\IFMODService.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\IFmodService.cs" />
     <None Remove="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
     <None Remove="..\GnollHackX\GnollHackX\IThreadSafeView.cs" />
     <None Remove="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
@@ -254,7 +255,7 @@
     <None Remove="..\GnollHackX\GnollHackX.FMOD\fmod_studio.cs" />
     <None Remove="..\GnollHackX\GnollHackX.FMOD\fmod_errors.cs" />
     <None Remove="..\GnollHackX\GnollHackX.FMOD\fmod_dsp.cs" />
-    <None Remove="..\GnollHackX\GnollHackX.FMOD\FMODService.cs" />
+    <None Remove="..\GnollHackX\GnollHackX.FMOD\FmodService.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\CustomImageButton.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\MessagePopupView.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\LabeledImageButton.xaml.cs" />
@@ -279,11 +280,13 @@
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\EditorPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Pages\Game\GamePage.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Pages\Game\NamePage.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Pages\Game\OutRipPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\Game\WikiPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\Game\OverseerPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
     <None Remove="Assets\Cursor\custom-cursor-32.cur" />
-    <None Remove="Assets\Cursor\custom-cursor-32in64.cur" />
     <None Remove="Assets\Cursor\custom-cursor-64.cur" />
     <None Remove="Assets\Cursor\info-cursor-32.cur" />
     <None Remove="Assets\Cursor\info-cursor-64.cur" />
@@ -392,8 +395,6 @@
     <None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-3.ghpng" />
     <None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.ghpng" />
     <None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.ghpng" />
-    <None Remove="Resources\AppIcon\appicon.svg" />
-    <None Remove="Resources\AppIcon\appiconfg.svg" />
 
     <!-- Platform specific files that are outside of folders -->
     <None Remove="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
@@ -468,7 +469,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\IPlatformService.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\IThreadSafeView.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX\IFMODService.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\IFmodService.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\MapData.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\MeasurableGrid.cs" />
@@ -488,7 +489,7 @@
     <Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod_studio.cs" />
     <Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod_errors.cs" />
     <Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod_dsp.cs" />
-    <Compile Include="..\GnollHackX\GnollHackX.FMOD\FMODService.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX.FMOD\FmodService.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\CustomImageButton.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\MessagePopupView.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\LabeledImageButton.xaml.cs" />
@@ -1274,18 +1275,6 @@
   </ItemGroup>
 
   <!-- OTHER -->
-  <ItemGroup>
-    <Compile Update="GamePage.xaml.cs">
-      <DependentUpon>GamePage.xaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <MauiXaml Update="GamePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-  </ItemGroup>
-
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
     <BundleResource Include="Platforms\iOS\PrivacyInfo.xcprivacy" LogicalName="PrivacyInfo.xcprivacy" />
   </ItemGroup>
