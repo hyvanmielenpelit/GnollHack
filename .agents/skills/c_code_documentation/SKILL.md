@@ -7,7 +7,13 @@ description: Best practices for AI agents documenting the GnollHack C codebase. 
 
 ## Critical Rules
 - **Never delete existing documentation**. Append to or clarify existing comments; do not replace them.
-- **Use `/* */` for all C comments**. Do NOT use `//` in the C core.
+- **Comments**: `/* */` is the preferred style for documentation and explanatory
+  comments. `//` **is permitted** and is used in thousands of places in `src/`:
+  for quick inline notes (`x = 5; //was 3`) and, in particular, for commenting
+  out **several consecutive lines** of code, where `//` is generally better than
+  `/* */` because it nests safely. `#if 0 ... #endif` is also acceptable for
+  disabling a block when that reads more clearly (it appears in ~250 places
+  across `src/`). **Do not "fix" existing `//` comments to `/* */`.**
 - **Document game mechanics**, not syntax. Explain *why* the code does what it does in the context of the game.
 
 For advanced patterns (macros and constants, structs and enums, complex control flow, conditional compilation), see [references/advanced_patterns.md](.agents/skills/c_code_documentation/references/advanced_patterns.md).
@@ -38,7 +44,8 @@ Place a block comment above the function definition (not the prototype).
 ### Inline Comments
 Use inline comments for complex bitwise operations, obscure macros, or deeply nested logic.
 ```c
-if (u.umonnum == PM_LICH) {
+if (u.umonnum == PM_LICH)
+{
     /* Liches are immune to cold damage */
     ...
 }
@@ -50,5 +57,5 @@ Document complex macros with a block comment explaining the pattern and usage.
 ## Common Idioms to Document
 - **`rn2(n)`**: Returns a random integer `0` to `n-1`.
 - **`d(n, s)`**: Rolls `n` dice with `s` sides.
-- **`Obj_gone_p(otmp)`**: Checks if an object has been freed.
+- **`DEADMONSTER(mtmp)`**: Checks whether a monster is dead but not yet unlinked from `fmon` (`include/monst.h`).
 - Iterating over `fmon` (monster list): Always document that `nmon` must be saved before processing in case the monster dies.

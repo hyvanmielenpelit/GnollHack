@@ -1,13 +1,29 @@
 ---
 name: nethack_c_core
-description: Guidance on modifying the GnollHack C core game logic, headers, windowing callbacks, sound/animation definitions, and dungeon data files. Covers K&R coding style, macro idioms, and key data structures.
+description: Guidance on modifying the GnollHack C core game logic, headers, windowing callbacks, sound/animation definitions, and dungeon data files. Covers the migration from NetHack 3.6.2 K&R style to C99 with ANSI C89 preferences and Allman braces, macro idioms, and key data structures.
 ---
 
 # NetHack C Core
 
 ## Critical Rules
-- **Allman Brace Style**: GnollHack uses Allman brace placement — opening brace on its own line for both functions and control statements (`if`, `for`, `while`, `switch`, etc.). Legacy NetHack files may still use K&R brace placement in places; convert to Allman when touching such code.
-- **Use C89/C99 Prototypes**: The codebase has been fully converted from K&R declarations. Always use standard ANSI C89/C99 prototypes and definitions.
+- **Allman Brace Style**: GnollHack uses Allman brace placement — opening brace on its own line for both functions and control statements (`if`, `for`, `while`, `switch`, etc.).
+- **Use ANSI Prototypes**: Always use standard ANSI C89/C99 prototypes and definitions.
+
+### Migration state (what "legacy" means here)
+
+GnollHack moved from NetHack 3.6.2's K&R style to **C99 with some ANSI C89
+preferences** and Allman braces. Two different things are often conflated:
+
+- **K&R function definitions are fully eliminated.** None remain anywhere in
+  `src/`. The `FDECL` / `NDECL` / `VDECL` macros are still *defined* in
+  `include/tradstdc.h`, but they have **zero call sites** — they are dead
+  scaffolding. Finding them with grep does not mean the idiom is live. Never
+  reintroduce them.
+- **Legacy *formatting* still lingers** in places: K&R brace placement, older
+  wrapping conventions.
+
+All new code is Allman + C99. Convert legacy brace placement in code you are
+already touching, but do not undertake unrelated reformatting passes.
 - **4-space indent**, no tabs. `switch` `case` labels unindented.
 - **Do NOT use standard library directly** for common operations if a NetHack wrapper exists (e.g., use `alloc()` instead of `malloc()`, `pline()` instead of `printf()`).
 
@@ -17,7 +33,13 @@ description: Guidance on modifying the GnollHack C core game logic, headers, win
 - **`#define` macros**: `ALL_CAPS_WITH_UNDERSCORES` (e.g., `NPC_FLAGS_NO_GENERATION`, `MAX_NPC_SUBTYPES`)
 - **Enum values**: `ALL_CAPS_WITH_UNDERSCORES` (e.g., `LAYER_FLOOR`, `MAX_LAYERS`)
 - **Single-statement bodies**: Both braced and unbraced are acceptable; use whichever is clearer. Do not use the comma operator to combine multiple assignments in a single-statement body.
-- **Comments**: Use `/* */` only. Do NOT use `//` in C.
+- **Comments**: `/* */` is the preferred style for documentation and explanatory
+  comments. `//` **is permitted** and is used in thousands of places in `src/`:
+  for quick inline notes (`x = 5; //was 3`) and, in particular, for commenting
+  out **several consecutive lines** of code, where `//` is generally better than
+  `/* */` because it nests safely. `#if 0 ... #endif` is also acceptable for
+  disabling a block when that reads more clearly (it appears in ~250 places
+  across `src/`). **Do not "fix" existing `//` comments to `/* */`.**
 
 ## Key Data Structures
 - **`struct monst`**: A monster instance. Tracked in the `fmon` linked list.

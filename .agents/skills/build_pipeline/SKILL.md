@@ -22,8 +22,11 @@ This skill covers the end-to-end build process for GnollHack, from compiling the
   - Mobile development with C++ (for Android/iOS)
   - Linux and embedded development with C++ (for Android WSL builds)
 - The following **individual components** (install via VS Installer):
-  - Windows 10 SDK (10.0.19041.0)
-  - Windows 11 SDK (10.0.22621)
+  - Windows 10 SDK and Windows 11 SDK — install the versions the projects
+    actually target. Check `WindowsTargetPlatformVersion` /
+    `WindowsTargetPlatformMinVersion` in the `.vcxproj` files under
+    `win/win32/vs/`, and the Windows target framework moniker in
+    `GnollHackM.csproj`. Do not assume a fixed version; these move.
   - C++ iOS development tools
   - MSVC v143 - VS 2022 C++ x64/x86 build tools
 - .NET SDK (check `GnollHackM.csproj` for exact target framework version)

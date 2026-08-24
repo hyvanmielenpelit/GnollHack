@@ -7,7 +7,7 @@ description: Guidelines on modifying the save/load system, which is complex and 
 
 ## Critical Rules
 - **Do NOT change struct padding/alignment**: The save files (`.sav`) are binary dumps of C structs. Changing the size or order of fields in `struct monst`, `struct obj`, or `struct you` WILL break save compatibility.
-- **Version Bumping**: If you modify a core struct, you MUST increment the save file version in `patchlevel.h`.
+- **Version Bumping**: If you modify a core struct, you MUST increment `EDITLEVEL` in `include/patchlevel.h`. Its comment states the rule directly: change `EDITLEVEL` when the changes to the game are save-file-breaking.
 - **Use `bwrite`/`mread`**: Never use standard `fwrite`/`fread` for game state. Use the engine's wrappers.
 
 ## How Saving Works (`src/save.c`)
@@ -17,7 +17,7 @@ description: Guidelines on modifying the save/load system, which is complex and 
 4. **Compression**: The save file is often compressed depending on platform configuration.
 
 ## How Restoring Works (`src/restore.c`)
-1. **`dorecover()`**: Entry point.
+1. **`dorestore()`**: Entry point (`src/restore.c`). There is no `dorecover()` — that name does not exist in GnollHack.
 2. **Version Check**: Compares the save file's version struct with the compiled binary's version. If they mismatch, restoration fails.
 3. **State Loading**: Reconstructs pointers. Pointers in the binary dump are invalid; the restore code runs an address-fixup pass to re-link linked lists (`nmon`, `nobj`).
 

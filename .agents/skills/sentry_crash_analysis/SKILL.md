@@ -23,6 +23,13 @@ to progress toward one — while equally importantly **avoiding false diagnoses*
 
 ## Critical Rules
 
+- **Requires the Sentry MCP server.** This skill's entire data-retrieval section
+  depends on Sentry MCP tools (`find_organizations`, `find_projects`,
+  `search_issues`, `search_events`, and the issue-detail tools). If those tools
+  are not available in the current session, say so immediately and stop — do not
+  attempt to diagnose from a pasted stack trace as though the full evidence had
+  been retrieved, and do not speculate to fill the gap. Ask the user to connect
+  the Sentry MCP server, or to supply the issue and breadcrumb data manually.
 - This skill is for **diagnosis only** — do NOT modify GnollHack source code as
   part of the analysis. Fix implementation is a separate task.
 - Always retrieve **both** issue details AND breadcrumbs before drawing any

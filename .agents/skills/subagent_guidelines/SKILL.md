@@ -63,6 +63,19 @@ Use **only** for tasks that are trivially mechanical search-and-replace with **z
 > [!IMPORTANT]
 > Flash is the rare exception, not the default. When in doubt, use `inherit`.
 
+### Mapping to a specific agent tool
+
+`inherit` and `flash` are tool-neutral tiers, not literal model names. Map them
+to whatever the current agent runner offers:
+
+| Tier | Meaning | Example mapping |
+|------|---------|-----------------|
+| `inherit` | Same capability as the orchestrator | Claude Code: omit the model override, or match the orchestrator explicitly |
+| `flash` | Cheapest/fastest tier, mechanical work only | Claude Code: `haiku` |
+
+Plans should keep writing `Inherit` / `Flash` in the assignment table; the
+orchestrator translates at spawn time.
+
 ## Planning Constraints
 
 ### File-Level Exclusivity (STRICT)
@@ -129,6 +142,6 @@ Yes — the task involves changes across 8 files in 3 subsystems that can be par
 | Task | Model | Files | Rationale |
 |------|-------|-------|-----------|
 | Add `FOO_BAR` define to all platform headers | Flash | `include/pcconf.h`, `include/unixconf.h`, `include/macconf.h` | Trivially mechanical insertion of identical `#define` line |
-| Update `struct layer_info` and marshalling | Inherit | `include/layer.h`, `win/win32/xpl/libshare/GnollHackDefs.h` | Needs to understand C-to-C# struct alignment |
+| Update `struct layer_info` and marshalling | Inherit | `include/layer.h`, `win/win32/xpl/GnollHackX/GnollHackX/GHStructs.cs` | Needs to understand C-to-C# struct alignment |
 | Implement new window proc callback end-to-end | Inherit | `include/winprocs.h`, `src/windows.c`, `GnollHackService.cs` | Complex cross-layer change requiring deep system understanding |
 ```
