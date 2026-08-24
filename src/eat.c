@@ -2451,7 +2451,6 @@ eatcorpse(struct obj *otmp)
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "(It must have died too long ago to be safe to eat.)");
             standard_hint("Corpses rot and become dangerous to eat after a while. You can check their status out by using a wand of probing.", &u.uhint.ate_rotten_corpse);
         }
-        set_obj_rotknown(otmp, TRUE);
         debugprint("eatcorpse: %d", otmp->otyp);
         if (carried(otmp))
             useup(otmp);
@@ -2541,7 +2540,6 @@ eatcorpse(struct obj *otmp)
 
     /* delay is weight dependent */
     context.victual.reqtime = get_corpse_reqtime(otmp); // 3 + ((!glob ? mons[mnum].cwt : otmp->owt) >> 6);
-    set_obj_rotknown(otmp, TRUE);
 
     if (!tp && !nonrotting_corpse(mnum) && (otmp->orotten))
     { //  || !rn2(7)
@@ -3829,12 +3827,14 @@ doeat(void)
         /* Paranoid corpse check */
         boolean corpseknown = u_know_corpsenm(otmp->corpsenm);
         boolean corpseknown_or_partly_eaten = corpseknown || otmp->oeaten;
-        boolean is_corpse_age_safe = (monstermoves - otmp->age) / CORPSE_ROTTING_SPEED + (is_obj_bknown(otmp) ? (is_obj_blessed(otmp) ? -2L : is_obj_cursed(otmp) ? 2L : 0L) : 2L) <= 3L;
-        boolean death_time_known_ok = (otmp->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN) != 0 && is_corpse_age_safe;
-        boolean death_time_known_not_ok = (otmp->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN) != 0 && (is_obj_bknown(otmp) ? !is_corpse_age_safe : (monstermoves - otmp->age) / CORPSE_ROTTING_SPEED - 2L > 3L);
-        boolean maybe_unfresh = !is_obj_rotknown(otmp) && !nonrotting_corpse(otmp->corpsenm) && !death_time_known_ok;
+        boolean is_corpse_age_safe_known = (monstermoves - peek_at_iced_corpse_age(otmp)) / CORPSE_ROTTING_SPEED + (is_obj_bknown(otmp) ? (is_obj_blessed(otmp) ? -2L : is_obj_cursed(otmp) ? 2L : 0L) : 2L) <= 3L;
+        boolean is_corpse_age_safe_actual = get_rotted_status(otmp) <= 3L;
+        boolean death_time_known_ok = (otmp->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN) != 0 && is_corpse_age_safe_known;
+        boolean death_time_known_not_ok = (otmp->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN) != 0 && (is_obj_bknown(otmp) ? !is_corpse_age_safe_known : (monstermoves - otmp->age) / CORPSE_ROTTING_SPEED - 2L > 3L);
+        boolean partly_eaten_fresh_ok = otmp->oeaten && is_corpse_age_safe_actual;
+        boolean maybe_unfresh = !is_obj_rotknown(otmp) && !nonrotting_corpse(otmp->corpsenm) && !death_time_known_ok && !partly_eaten_fresh_ok;
         boolean known_unfresh = !is_obj_rotknown(otmp) && !nonrotting_corpse(otmp->corpsenm) && death_time_known_not_ok;
-        boolean known_rotten = is_obj_rotknown(otmp) && (otmp->orotten || get_rotted_status(otmp) > 3L);
+        boolean known_rotten = is_obj_rotknown(otmp) && (otmp->orotten || !is_corpse_age_safe_actual);
         boolean known_stunning_corpse = corpseknown && has_stunning_corpse(&mons[otmp->corpsenm]) && !Stun_resistance;
         boolean known_acidic_corpse = corpseknown && has_acidic_corpse(&mons[otmp->corpsenm])
             && !Acid_immunity && !(Improved_acid_resistance && (Upolyd ? u.mh : u.uhp) >= 5) && !(Acid_resistance && (Upolyd ? u.mh : u.uhp) >= 10);
