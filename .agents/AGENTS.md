@@ -167,8 +167,17 @@ A plan is **not** required for single-file fixes, typo and comment corrections, 
 
 ### Plan Delivery
 
-- Deliver the plan as a **reviewable document** — an artifact in Claude Code, or a Markdown file for agents without artifacts. Short plans may be presented inline instead.
-- Write plan documents to a scratch location, **not** into the repository. Do not commit them unless the user asks.
+- Deliver the plan as a **reviewable document** — a Markdown file saved under the
+  repository's gitignored `plans/` directory:
+  `plans/YYYY-MM-DD/task_name/implementation_plan_v<N>.md` (where N=1 for the
+  first version).
+  Use the creation date of the first plan for the topic as the date directory, and
+  a short `snake_case` name for the task directory. Create subdirectories as needed.
+- **Document versioning**: the first version always gets a `_v1` suffix. Never overwrite
+  an existing version — to revise, create a new file with the next version number
+  (`_v2`, `_v3`, etc.). This applies to all document types (plans, reviews, analyses,
+  reports). `task.md` and `walkthrough.md` are singular (no version suffix).
+- Short plans may be presented inline instead.
 - **Wait for explicit user approval before editing any file.** Do not begin implementation alongside the plan.
 - If the plan turns out to be wrong during implementation, stop and re-confirm rather than silently diverging from what the user approved.
 

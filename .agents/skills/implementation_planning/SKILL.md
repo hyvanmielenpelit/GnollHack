@@ -182,39 +182,112 @@ What could break, and how it would be noticed.
 
 ## Where to Save the Plan
 
-- **Save the plan as a Markdown file outside the repository.** Do not save it
-  into the GnollHack source tree.
-- Preferred locations, depending on your agent harness:
-  - **Claude Code**: Save to `$TMPDIR` or a user-visible scratch directory. If
-    your harness supports artifacts, create it as an artifact file. The key
-    requirement is that the user can read and review the document.
-  - **Antigravity / other agents**: Use the agent's dedicated scratch or
-    artifact directory.
-- **Do not commit the plan** to git unless the user explicitly asks you to.
+Plans are saved **inside the repository** under the `plans/` directory (which is
+gitignored). The directory structure is:
 
-### Claude Code–Specific Guidance
+```
+plans/
+  YYYY-MM-DD/
+    task_name/
+      implementation_plan_v<N>.md       ← N=1 for the first version
+      task.md                           ← single file, based on the final approved plan
+      walkthrough.md                    ← single file, post-completion summary
+```
 
-Claude Code does not have a built-in "artifact" system, but you can achieve the
-same effect:
+### Directory Naming Rules
 
-1. **Write the plan to a file** using `write_to_file` or your file creation
-   tool. Save it to a location outside the repo, for example:
-   - `$TMPDIR/implementation_plan.md`
-   - Or a dedicated planning directory the user has configured
-2. **Tell the user the file path** so they can open and review it.
-3. **Print a short summary** in chat (not the full plan) directing the user to
-   the file.
-4. After the user approves, follow the same execute → verify lifecycle.
+- **Date directory** (`YYYY-MM-DD`): Use the creation date of the **first plan**
+  for the topic/project/task. If you create follow-up plans for the same task on
+  later dates, they go into the **same date directory** as the original plan.
+- **Task directory** (`task_name`): A short, descriptive `snake_case` name for
+  the project or task (e.g., `game_page_update`, `add_new_monster_class`,
+  `save_file_migration`).
+- **Create subdirectories** as needed — they will not exist the first time.
+
+### Document Versioning (STRICT)
+
+This rule applies to **all document types** saved in `plans/`: implementation
+plans, reviews, analyses (including bug analyses), reports (including bug
+reports), and any other plans.
+
+1. **First version**: Always append the `_v1` suffix to the filename.
+   - Example: `implementation_plan_v1.md`, `bug_analysis_v1.md`
+2. **Never overwrite an existing version.** When you read an existing document
+   (e.g., `implementation_plan_v1.md`) and want to propose changes, create a
+   **new file** with the next version number:
+   - Read `implementation_plan_v1.md` → write `implementation_plan_v2.md`
+   - Read `implementation_plan_v2.md` → write `implementation_plan_v3.md`
+3. **Determine the next version number** by checking which version files already
+   exist in the task directory. The new file gets the highest existing number
+   plus one.
+4. **Do not delete or modify** older versions. They form a revision history.
+
+> [!IMPORTANT]
+> Different AIs (or the same AI in different sessions) may propose very different
+> revisions. Preserving every version ensures the user can compare approaches and
+> revert to any prior version.
+
+**Exception — `task.md` and `walkthrough.md`**: These are **singular files**
+(no version suffix). There is only one `task.md` and one `walkthrough.md` per
+task, and they are based on whichever plan version was ultimately approved and
+implemented.
+
+### Example
+
+A task started on 2026-08-24 to update the game page UI:
+
+```
+plans/
+  2026-08-24/
+    game_page_update/
+      implementation_plan_v1.md          ← first draft
+```
+
+The user requests changes; the AI (same or different) reads v1 and creates v2:
+
+```
+plans/
+  2026-08-24/
+    game_page_update/
+      implementation_plan_v1.md          ← preserved, not overwritten
+      implementation_plan_v2.md          ← revised plan
+```
+
+After v2 is approved and implemented:
+
+```
+plans/
+  2026-08-24/
+    game_page_update/
+      implementation_plan_v1.md
+      implementation_plan_v2.md
+      task.md                            ← checklist based on v2
+      walkthrough.md                     ← references v2 as the implemented plan
+```
+
+### Agent-Specific Notes
+
+- **Claude Code**: Use your file-writing tool to create the plan file at
+  `plans/YYYY-MM-DD/task_name/implementation_plan_v<N>.md` (relative to the repo
+  root, where N=1 for the first version). Create the intermediate directories if
+  they do not exist. Tell the user the file path so they can open and review it.
+  Before creating a revision, check which versions already exist in the directory.
+- **Antigravity / other agents**: Same path convention. Use your file-writing
+  tool to save the plan file. The `plans/` directory is gitignored, so plans
+  will not be committed unless the user explicitly adds them.
 
 ## Progress Tracking
 
-After receiving user approval, create a **task checklist** to track
-implementation progress. This can be a separate file or appended to the plan.
+After receiving user approval, create a **task checklist** (`task.md`) to track
+implementation progress. There is only **one** `task.md` per task — it is based
+on whichever plan version was approved.
 
 Format:
 
 ```markdown
 # Task Checklist
+
+Based on: implementation_plan_v2.md
 
 - [ ] Uncompleted task
 - [/] In-progress task
@@ -227,15 +300,18 @@ Update the checklist as you work through each step.
 
 ## Walkthrough Document
 
-After completing all work, create a **walkthrough document** summarizing:
+After completing all work, create a **walkthrough document** (`walkthrough.md`)
+summarizing:
 
+- **Which plan version was implemented** (e.g., "Implemented
+  `implementation_plan_v2.md`")
 - What was changed (with file links)
 - What was tested
 - Validation results (build output, test results)
 - Any remaining follow-up items
 
-If this is follow-up work to an earlier task, update the existing walkthrough
-rather than creating a new one.
+There is only **one** `walkthrough.md` per task. If this is follow-up work to an
+earlier task, update the existing walkthrough rather than creating a new one.
 
 ## Quick Decision Guide
 

@@ -67,13 +67,40 @@ include at minimum:
 - **Risks** — what could break
 - **Verification Plan** — how correctness will be confirmed
 
-### Saving the Plan (Claude Code–Specific)
+### Saving the Plan
 
-Claude Code does not have a built-in artifact system. To deliver a reviewable
-plan document:
+Plans are saved **inside the repository** under the gitignored `plans/`
+directory, using this structure:
 
-1. Use your file-writing tool to save the plan as a `.md` file **outside** the
-   repository (e.g., `$TMPDIR/implementation_plan.md`).
+```
+plans/YYYY-MM-DD/task_name/implementation_plan_v<N>.md    ← N=1 for the first version
+```
+
+- **Date directory** (`YYYY-MM-DD`): the creation date of the **first plan** for
+  the task. Follow-up plans for the same task reuse the same date directory.
+- **Task directory**: a short, descriptive `snake_case` name (e.g.,
+  `game_page_update`).
+- **Create subdirectories** if they do not exist.
+
+### Document Versioning (STRICT)
+
+This applies to **all** documents in `plans/` — implementation plans, reviews,
+analyses, reports, and other plans:
+
+- **First version** always gets a `_v1` suffix (e.g., `implementation_plan_v1.md`).
+- **Never overwrite** an existing version. To revise, create a new file with the
+  next version number (read `_v1` → write `_v2`, read `_v2` → write `_v3`).
+- Check which versions already exist before creating a revision.
+- `task.md` and `walkthrough.md` are **singular** (no version suffix) — based on
+  whichever plan version was ultimately approved. The walkthrough must state
+  which plan version was implemented.
+
+To deliver the plan:
+
+1. Use your file-writing tool to create the plan at
+   `plans/YYYY-MM-DD/task_name/implementation_plan_v<N>.md` (N=1 for new plans;
+   check existing versions and increment for revisions).
 2. Print the file path in chat so the user can open and review it.
 3. Print a **brief summary** (not the full plan) directing the user to the file.
 4. Wait for the user's approval before proceeding to execution.
+

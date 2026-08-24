@@ -457,3 +457,6 @@ ASALocalRun/
 *.gcdump
 !win/win32/xpl/GnollHackX/GnollHackX.Android/libs/*
 !*.json
+
+# AI agent implementation plans
+plans/
