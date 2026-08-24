@@ -33,13 +33,41 @@ GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, 
   - Use `WidthRequest="..."` (no extra spaces, standard `=`) when you genuinely want a **fixed `WidthRequest`** on both Xamarin and MAUI sides.
   - Use `WidthRequest  ="..."` (two spaces before `=`) when you want `MaximumWidthRequest` on the MAUI side. This is the **only** way to achieve `MaximumWidthRequest` in GnollHackM.
 
+  > [!IMPORTANT]
+  > **Four files are exempt.** The conversion is declared per file in
+  > `makedefsdroid.vcxproj`, and it is applied in 26 of the 30 blocks. These four
+  > do **not** get it:
+  >
+  > - `Controls/CustomImageButton.xaml`
+  > - `Controls/LabeledImageButton.xaml`
+  > - `Controls/SimpleImageButton.xaml`
+  > - `Controls/SwitchableCanvasView.xaml`
+  >
+  > Writing `WidthRequest  ="400"` in one of those four leaves the literal
+  > two-space attribute in the generated MAUI XAML, which does not compile. Use
+  > the plain `WidthRequest="400"` form there, or add the replacement to that
+  > file's block in `makedefsdroid.vcxproj`. (`Controls/RowImageButton.xaml` and
+  > `Controls/MessagePopupView.xaml` **do** get the conversion — it is not simply
+  > "controls are excluded".)
+
+- **`HorizontalOptions  =` is the same kind of trap**: in files whose block includes it, `HorizontalOptions  ="Center"` (two spaces) is rewritten to `HorizontalOptions="Fill"` for MAUI. Use the plain one-space form unless you specifically want that MAUI-side override.
+
 ## XAML Pipeline: GnollHackX → makedefsdroid → GnollHackM
 
-> **⚠️ CRITICAL**: XAML files in `GnollHackM/` are **auto-generated** — do NOT edit them directly.
+> **⚠️ CRITICAL**: The **page and control** XAML files in `GnollHackM/` are **auto-generated** — do NOT edit them directly.
 > 
 > *Note: Although auto-generated, these `.xaml` files are currently checked into the repository for ease of use. This is expected behavior for the time being.*
 
-The **source of truth** for all XAML files is in the legacy Xamarin project at `win/win32/xpl/GnollHackX/GnollHackX/`. A build tool called `makedefsdroid` transforms these into MAUI-compatible XAML and copies them to `GnollHackM/`. This means:
+**Scope**: 30 files are generated — 6 controls and 24 pages. The app-level XAML
+in `GnollHackM` is **not** generated, has no GnollHackX source, and is edited
+directly in `GnollHackM`:
+
+- `App.xaml`
+- `AppShell.xaml`
+- `Resources/Styles/Colors.xaml`
+- `Resources/Styles/Styles.xaml`
+
+The **source of truth** for the page and control XAML is the legacy Xamarin project at `win/win32/xpl/GnollHackX/GnollHackX/`. A build tool called `makedefsdroid` transforms these into MAUI-compatible XAML and copies them to `GnollHackM/`. This means:
 
 1. **Always edit XAML in `GnollHackX/GnollHackX/`** (e.g., `Pages/MainScreen/SettingsPage.xaml`)
 2. **Code-behind (`.xaml.cs`) files** are shared via `<Compile Include>` file-linking and can be edited directly — they are the same physical file for both projects
@@ -48,7 +76,15 @@ The **source of truth** for all XAML files is in the legacy Xamarin project at `
 
 ### What to do after modifying XAML
 
-The XAML conversion is performed by MSBuild targets in the `makedefsdroid` project (`win/win32/vs/makedefsdroid.vcxproj`). Note that `makedefsdroid.vcxproj` is configured as a Linux C++ cross-compilation project (`<ApplicationType>Linux</ApplicationType>`) and requires WSL SSH service running (`sudo service ssh start`).
+The XAML conversion is performed by MSBuild targets in the `makedefsdroid` project (`win/win32/vs/makedefsdroid.vcxproj`). Note that `makedefsdroid.vcxproj` is configured as a Linux C++ cross-compilation project (`<ApplicationType>Linux</ApplicationType>`), so building it also triggers a remote compile in WSL and generally wants the WSL SSH service running (`sudo service ssh start`).
+
+> **The XAML transform itself does not need WSL.** It is declared as
+> `InitialTargets="InitialBuild"` on the project, so MSBuild runs it on *every*
+> invocation, before anything else, whatever `/t:` target you ask for. It is pure
+> Windows MSBuild (`WriteLinesToFile` with string replacements). If the WSL
+> compile afterwards fails, **the XAML has usually already been written** — check
+> the timestamps of the generated files in `GnollHackM/` before concluding the
+> regeneration did not happen.
 
 **First, try to regenerate the MAUI XAML yourself** by building this project:
 
@@ -67,11 +103,51 @@ This runs the `InitialBuild` target which transforms all GnollHackX XAML files i
 
 ### What makedefsdroid converts
 
-- Xamarin.Forms namespaces → .NET MAUI namespaces
+- Xamarin.Forms namespaces → .NET MAUI namespaces (`http://xamarin.com/schemas/2014/forms` → `http://schemas.microsoft.com/dotnet/2021/maui`)
+- `GnollHackX`, `GnollHackX.Controls`, `GnollHackX.Pages.MainScreen` → `GnollHackM`
+- `SkiaSharp.Views.Forms` → `SkiaSharp.Views.Maui.Controls`
 - `WidthRequest  =` (two spaces) → `MaximumWidthRequest=` (**never write `MaximumWidthRequest` directly in GnollHackX!**)
 - `HeightRequest  =` (two spaces) → `MaximumHeightRequest=` (**never write `MaximumHeightRequest` directly in GnollHackX!**)
 - `WidthRequest=` (no extra spaces) is **NOT converted** — it stays as `WidthRequest=` in GnollHackM. Only use this form when you actually want a plain `WidthRequest`, not a `MaximumWidthRequest`.
-- Other Xamarin-to-MAUI compatibility transforms
+- `HorizontalOptions  ="Center"` (two spaces) → `HorizontalOptions="Fill"`
+- `<Frame>` → `<Border>`, `BorderColor="Black"` → `Stroke="Black" Padding="12,12"`, `CornerRadius="10"` → `StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10"`, `CornerRadius="0"` → `StrokeThickness="1" StrokeShape="Rectangle"`
+- `UseVaryingBackgroundImages ="False"` → `UseVaryingBackgroundImages ="True"`
+- strips the `<ContentPage.Content>`, `<ContentView.Content>`, and `<gnh:CustomModalPage.Content>` wrapper elements
+
+### The transform is a per-file hardcoded list
+
+> [!CAUTION]
+> `InitialBuild` contains **one `<PropertyGroup>` + `<WriteLinesToFile>` block per
+> XAML file** — 30 of them — each naming its own input, output, and replacement
+> chain. There is no wildcard and no shared rule set.
+
+Two consequences:
+
+1. **A new XAML page or control in `GnollHackX` produces no MAUI output until you
+   add a block for it.** The `GnollHackM` build will then fail on the missing
+   file, or silently keep using a stale copy if one is already checked in.
+2. **The replacement chains differ between files.** Only 26 of 30 blocks convert
+   `WidthRequest  =`; only about half convert `<Frame>` → `<Border>`. Before
+   relying on a conversion in a particular file, read that file's block.
+
+To add a new page, copy an existing block in `makedefsdroid.vcxproj` and adjust
+the input/output paths and the replacement chain. The shape is:
+
+```xml
+<PropertyGroup>
+    <InputFile>$(XamarinStartScreenDir)MyNewPage.xaml</InputFile>
+    <OutputFile>$(MauiMainDir)MyNewPage.xaml</OutputFile>
+</PropertyGroup>
+<WriteLinesToFile
+    File="$(OutputFile)"
+    Overwrite="true"
+    Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace(...))" />
+```
+
+Pick the replacement chain from an existing page with the same needs rather than
+inventing one — the `.Replace(...)` arguments are XML-escaped (`%3C` for `&lt;`,
+`%22` for `&quot;`), and copying a working chain avoids escaping mistakes.
+Remember `makedefsdroid.vcxproj` is an MSBuild file: **2-space indentation**.
 
 ## Project Structure
 - **`GnollHackM`**: The MAUI application project (Entry point).
