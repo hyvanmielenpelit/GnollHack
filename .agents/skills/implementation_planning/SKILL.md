@@ -271,14 +271,30 @@ plans/
 
 ### Agent-Specific Notes
 
-- **Claude Code**: Use your file-writing tool to create the plan file at
-  `plans/YYYY-MM-DD/task_name/implementation_plan_v<N>.md` (relative to the repo
-  root, where N=1 for the first version). Create the intermediate directories if
-  they do not exist. Tell the user the file path so they can open and review it.
-  Before creating a revision, check which versions already exist in the directory.
+- **Claude Code**: Use your file-writing tool (e.g., `Write` / `create_file`) to
+  create the document at `plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md`
+  (relative to the repo root, where N=1 for the first version). Create the
+  intermediate directories if they do not exist. Tell the user the file path so
+  they can open and review it. Before creating a revision, check which versions
+  already exist in the directory.
 - **Antigravity / other agents**: Same path convention. Use your file-writing
-  tool to save the plan file. The `plans/` directory is gitignored, so plans
+  tool to save the document. The `plans/` directory is gitignored, so documents
   will not be committed unless the user explicitly adds them.
+
+### How to Write the File (IMPORTANT)
+
+**Always use the agent's native file-writing tool** (e.g., `Write`,
+`create_file`, `write_to_file`) to create documents. Pass the entire document
+content as a tool parameter.
+
+**Do NOT use shell commands** (`cat << EOF`, `echo`, `printf`, heredoc, etc.) to
+write document files. Markdown documents contain backticks, dollar signs, angle
+brackets, and other characters that cause shell quoting and escaping failures.
+Shell-based file writing is fragile, token-wasteful (escaping overhead), and
+produces corrupted output when it breaks.
+
+The native file-writing tool bypasses the shell entirely — the content goes
+directly from the tool parameter to the file with no quoting layer in between.
 
 ## Progress Tracking
 

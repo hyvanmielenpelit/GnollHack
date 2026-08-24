@@ -100,11 +100,13 @@ analyses, reports, and other plans:
 
 To deliver a document:
 
-1. Use your file-writing tool to create the document at
-   `plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md` (N=1 for new documents;
-   check existing versions and increment for revisions).
+1. **Use your native file-writing tool** (e.g., `Write` / `create_file`) to
+   create the document at `plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md`
+   (N=1 for new documents; check existing versions and increment for revisions).
+   **Do NOT use shell commands** (`cat << EOF`, heredoc, `echo`, etc.) — Markdown
+   content contains backticks, dollar signs, and angle brackets that cause shell
+   quoting failures and corrupted output.
 2. Print the file path in chat so the user can open and review it.
 3. Print a **brief summary** (not the full document) directing the user to the file.
 4. For implementation plans, wait for the user's approval before proceeding to
    execution.
-
