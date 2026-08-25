@@ -49,6 +49,8 @@ Every planned task follows these phases in strict order:
   dependencies, architecture, and implications.
 - **Do NOT modify any source files during this phase.** Read-only operations
   only.
+- **Do NOT read documents from the `.plans/` directory during research** — see
+  "`.plans/` Isolation During Research" below.
 - Take notes on what you find. These notes become input to the plan.
 
 ### Phase 2 — Write the Implementation Plan
@@ -110,10 +112,7 @@ accomplishes.
 ## User Review Required                          ← include if applicable
 
 Document anything that requires user review: breaking changes, significant
-design decisions, trade-offs. Use alert callouts for critical items:
-
-> [!WARNING]
-> This change modifies the save file format and breaks backward compatibility.
+design decisions, trade-offs. Use alert callouts for critical items.
 
 ## Open Questions                                ← include if applicable
 
@@ -124,7 +123,6 @@ Clarifying or design questions for the user that affect the plan.
 | File | Subsystem | Change |
 |------|-----------|--------|
 | `src/foo.c` | C core | Add new function `bar()` |
-| `include/foo.h` | C headers | Add prototype for `bar()` |
 
 ## Build Impact                                  ← mandatory for C/data changes
 
@@ -137,19 +135,9 @@ Group files by component and order by dependency (build dependencies first).
 
 ### [Component Name]
 
-Summary of changes in this component.
-
-#### [MODIFY] `filename.c`
-
-What changes in this file and why.
-
-#### [NEW] `filename.c`
-
-What this new file contains and why it is needed.
-
-#### [DELETE] `filename.c`
-
-Why this file is being removed.
+#### [MODIFY] `filename.c` — What changes and why.
+#### [NEW] `filename.c` — What this file contains and why it is needed.
+#### [DELETE] `filename.c` — Why this file is being removed.
 
 ## Subagent Use                                  ← mandatory
 
@@ -162,7 +150,7 @@ Why this file is being removed.
 
 ### Human Assignments (if any)
 | Task | Rationale | Fallback if Not Approved |
-|------|-----------|--------------------------|
+|------|-----------|--------------------------  |
 
 ## Risks                                         ← mandatory
 
@@ -352,14 +340,8 @@ Everything else still waits for approval: `task.md`, source edits, build steps.
 
 ## Progress Tracking
 
-After receiving user approval, create a **task checklist** (`task.md`) to track
-implementation progress. There is only **one** `task.md` per task — it is based
-on whichever plan version was approved.
-
-For **follow-up rounds**, create a lettered task checklist (`task_A.md`,
-`task_B.md`, etc.) — see "Follow-Up Rounds" below.
-
-Format:
+After approval, create a **task checklist** (`task.md`) based on the approved
+plan. Follow-up rounds get lettered checklists (`task_A.md`, etc.). Format:
 
 ```markdown
 # Task Checklist
@@ -377,45 +359,26 @@ Update the checklist as you work through each step.
 
 ## Walkthrough Document
 
-After completing all work, create a **walkthrough document** (`walkthrough.md`)
-summarizing:
-
-- **Which plan version was implemented** (e.g., "Implemented
-  `implementation_plan_v2.md`")
-- What was changed (with file links)
-- What was tested
-- Validation results (build output, test results)
-- Any remaining follow-up items
-
-There is only **one** `walkthrough.md` per task's original implementation. For
-**follow-up rounds**, create a lettered walkthrough (`walkthrough_A.md`,
-`walkthrough_B.md`, etc.) — see "Follow-Up Rounds" below.
+After completing all work, create `walkthrough.md` summarizing: which plan
+version was implemented, what changed (with file links), what was tested,
+validation results, and remaining follow-up items. Follow-up rounds get lettered
+walkthroughs (`walkthrough_A.md`, etc.).
 
 ## Follow-Up Rounds
 
-After an implementation plan has been executed and its walkthrough produced, the
-task may require **follow-up work** — reviews, corrections, further analyses, or
-supplementary changes that relate to the original task. These are tracked as
-**follow-up rounds** within the same task directory.
-
-### Round Identifiers
-
-Each follow-up round is identified by a **letter suffix**: `_A`, `_B`, `_C`,
-etc. The letter is assigned sequentially in the order follow-up rounds are
-created, regardless of the document type within the round. The letter groups all
-documents belonging to the same follow-up round.
+After execution and walkthrough, the task may require **follow-up work** —
+reviews, corrections, or supplementary changes. These are tracked as follow-up
+rounds within the same task directory.
 
 ### Naming Convention
 
-Every document in a follow-up round embeds the round letter between the document
-name and the version suffix:
+Each follow-up round gets a **letter suffix** (`_A`, `_B`, `_C`, ...) assigned
+sequentially. The letter is embedded between the document name and version
+suffix: `<document_name>_<round>_v<N>.md`. Check which letters exist before
+creating a new round; the next unused letter in sequence is used.
 
-```
-<document_name>_<round>_v<N>.md
-```
-
-| File Type | Original Plan | Follow-Up Round A | Follow-Up Round B |
-|-----------|--------------|-------------------|-------------------|
+| File Type | Original | Follow-Up A | Follow-Up B |
+|-----------|----------|-------------|-------------|
 | Plan / review / analysis | `implementation_plan_v1.md` | `implementation_review_A_v1.md` | `performance_analysis_B_v1.md` |
 | Task checklist | `task.md` | `task_A.md` | `task_B.md` |
 | Walkthrough | `walkthrough.md` | `walkthrough_A.md` | `walkthrough_B.md` |
@@ -430,33 +393,15 @@ name and the version suffix:
 - Task checklists (`task_A.md`) and walkthroughs (`walkthrough_A.md`) are
   **singular per round** — no version suffix, just like the originals.
 
-### Lifecycle
+### Lifecycle and Scope
 
 Each follow-up round follows the **same five-phase lifecycle** as the original
-plan (Research → Plan → Approve → Execute → Verify). The follow-up plan
-document (e.g., `implementation_review_A_v1.md`) takes the role of the
-implementation plan and requires user approval before execution begins.
+plan. The follow-up plan document requires user approval before execution.
 
-### When to Use a Follow-Up Round vs. a New Task
-
-Use a **follow-up round** when:
-
-- The work directly relates to the original task (e.g., reviewing how the
-  implementation went, fixing issues discovered during verification, adding
-  something that was deferred from the original plan)
-- The same task directory and date are appropriate
-
-Create a **new task** (new date/task directory) when:
-
-- The work is substantially independent, even if it touches the same files
-- Enough time has passed that it is a distinct effort
-- The scope has grown beyond what the original task covered
-
-### Determining the Next Round Letter
-
-Before creating a follow-up round, check which round letters already exist in
-the task directory. The new round gets the next letter in sequence (`A`, `B`,
-`C`, ...). If `_A` and `_B` exist, the next round is `_C`.
+- Use a **follow-up round** when the work directly relates to the original task
+  and the same task directory is appropriate.
+- Create a **new task** when the work is substantially independent, the scope has
+  grown beyond the original task, or enough time has passed.
 
 ### Example
 
@@ -490,3 +435,55 @@ Does it touch multiple files, cross subsystem boundaries, or involve interop?
   → YES: Write a full plan. Follow the five-phase lifecycle.
   → NO: Use judgment. When in doubt, write the plan.
 ```
+
+## `.plans/` Isolation During Research
+
+The `.plans/` directory accumulates implementation plans, analyses, reviews, and
+other structured documents from past and current tasks — including **superseded
+drafts** (`_v1` when `_v2` was approved), **rejected approaches**, and
+**stale analyses** whose assumptions may no longer hold.
+
+> [!CAUTION]
+> **Do NOT browse or read `.plans/` during Phase 1 (Research).** Old plan
+> content can corrupt your research by injecting outdated design decisions,
+> incorrect assumptions, or rejected approaches into your analysis. Base your
+> research exclusively on the **actual source code, headers, data files, build
+> scripts, and skill documentation** — these are the ground truth.
+
+### Rules for Orchestrating Agents
+
+| Situation | Rule |
+|-----------|------|
+| **Phase 1 — Research** | Do NOT read any files under `.plans/`. Research the actual codebase. |
+| **Phase 2 — Writing a plan** | Do NOT read other tasks' plans. You may read your own task's prior plan versions (e.g., `_v1` before writing `_v2`) if the user asked you to revise. |
+| **Phase 4 — Execution** | Read **only** the approved plan for the current task. Do not browse other task directories. |
+| **Follow-up rounds** | You may read the walkthrough and plan from the **same task directory** that the follow-up relates to. Do not read other tasks' plans. |
+| **Picking up another agent's work** | Read the **latest `_v<N>`** plan for the specific task you are continuing. Do not read other tasks' plans or earlier superseded versions unless the user explicitly asks. |
+
+### Rules for Subagents
+
+Subagents operate on a **strict need-to-know basis**:
+
+- **Do NOT read any files in `.plans/`** unless the orchestrator explicitly
+  provides the path to a specific document and instructs the subagent to read
+  it.
+- The orchestrator should pass the relevant context (from the approved plan)
+  **in the subagent's prompt**, not by directing the subagent to read the
+  `.plans/` directory itself.
+- If a subagent needs to understand a design decision, the orchestrator
+  includes that decision in the task description — the subagent does not go
+  looking for it in old plans.
+
+### Rationale
+
+1. **Stale data corruption**: A `_v1` plan may contain an approach that was
+   explicitly rejected. An agent reading it may unconsciously adopt the rejected
+   design.
+2. **Cross-task contamination**: Plans for unrelated tasks may describe changes
+   to the same files with different intent, confusing the agent about what the
+   current task should do.
+3. **Token waste**: `.plans/` can grow large. Reading irrelevant plans wastes
+   context window tokens that should be spent on actual source code.
+4. **Subagent scope creep**: Subagents that browse `.plans/` may discover
+   context beyond their assigned task, leading to unauthorized or out-of-scope
+   changes.

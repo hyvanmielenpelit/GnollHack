@@ -229,6 +229,7 @@ Every implementation plan **MUST** include a **Subagent Use** section. Read the 
 - **No two agents may edit the same file concurrently** — plan file assignments to avoid conflicts
 - **Respect build dependency chains** — do not parallelize across `makedefs` / `levcomp` / `makedefsdroid` regeneration boundaries
 - **Never overwrite uncommitted changes** without explicit user permission — ask the user to commit first if corruption risk exists
+- **Do NOT read `.plans/` during research** — old and superseded plans corrupt analysis; subagents must not read `.plans/` at all unless the orchestrator explicitly directs them to a specific file (see the `implementation_planning` skill)
 
 ## Important Warnings
 

@@ -125,6 +125,18 @@ Some GnollHack tasks are inherently sequential due to build dependencies. The pl
 
 See the `build_pipeline` skill for full details on the data pipeline, `makedefs` flag reference, and MSBuild automation targets.
 
+### `.plans/` Directory Isolation (STRICT)
+
+**Subagents must NOT read files in the `.plans/` directory** unless the
+orchestrator explicitly provides a specific file path and instructs the subagent
+to read it. The orchestrator should pass relevant plan context **in the
+subagent's prompt**, not by directing the subagent to browse `.plans/`. Old and
+superseded plans in that directory can corrupt the subagent's understanding of
+the task.
+
+See the `implementation_planning` skill ("`.plans/` Isolation During Research")
+for the full specification, including rules for orchestrating agents.
+
 ### Communication Overhead
 
 For tasks that take under 30 seconds to do directly, spawning a subagent is slower due to setup and message-passing latency. Prefer doing these yourself.
