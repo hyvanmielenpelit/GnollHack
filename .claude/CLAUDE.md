@@ -71,10 +71,10 @@ include at minimum:
 
 All AI-produced documents — implementation plans, reviews, analyses, reports, and
 other structured artifacts — are saved **inside the repository** under the
-gitignored `plans/` directory, using this structure:
+gitignored `.plans/` directory, using this structure:
 
 ```
-plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md    ← N=1 for the first version
+.plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md    ← N=1 for the first version
 ```
 
 - **Date directory** (`YYYY-MM-DD`): the creation date of the **first document**
@@ -91,7 +91,7 @@ plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md    ← N=1 for the first vers
 
 ### Document Versioning (STRICT)
 
-This applies to **all** documents in `plans/` — implementation plans, reviews,
+This applies to **all** documents in `.plans/` — implementation plans, reviews,
 analyses, reports, and other plans:
 
 - **First version** always gets a `_v1` suffix (e.g., `implementation_plan_v1.md`,
@@ -108,7 +108,7 @@ analyses, reports, and other plans:
 To deliver a document:
 
 1. **Use your native file-writing tool** (e.g., `Write` / `create_file`) to
-   create the document at `plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md`
+   create the document at `.plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md`
    (N=1 for new documents; check existing versions and increment for revisions).
    **Do NOT use shell commands** (`cat << EOF`, heredoc, `echo`, etc.) — Markdown
    content contains backticks, dollar signs, and angle brackets that cause shell

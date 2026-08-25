@@ -184,11 +184,11 @@ What could break, and how it would be noticed.
 
 All AI-produced documents — implementation plans, reviews, analyses (including
 bug analyses), reports (including bug reports), and any other plans or structured
-artifacts — are saved **inside the repository** under the `plans/` directory
+artifacts — are saved **inside the repository** under the `.plans/` directory
 (which is gitignored). The directory structure is:
 
 ```
-plans/
+.plans/
   YYYY-MM-DD/
     task_name/
       implementation_plan_v<N>.md       ← N=1 for the first version
@@ -233,7 +233,7 @@ plans/
 
 ### Document Versioning (STRICT)
 
-This rule applies to **all document types** saved in `plans/`: implementation
+This rule applies to **all document types** saved in `.plans/`: implementation
 plans, reviews, analyses (including bug analyses), reports (including bug
 reports), and any other plans.
 
@@ -265,7 +265,7 @@ implemented. **Follow-up rounds** get their own lettered variants (`task_A.md`,
 A task started on 2026-08-24 to update the game page UI:
 
 ```
-plans/
+.plans/
   2026-08-24/
     game_page_update/
       implementation_plan_v1.md          ← first draft
@@ -274,7 +274,7 @@ plans/
 The user requests changes; the AI (same or different) reads v1 and creates v2:
 
 ```
-plans/
+.plans/
   2026-08-24/
     game_page_update/
       implementation_plan_v1.md          ← preserved, not overwritten
@@ -284,7 +284,7 @@ plans/
 After v2 is approved and implemented:
 
 ```
-plans/
+.plans/
   2026-08-24/
     game_page_update/
       implementation_plan_v1.md
@@ -296,7 +296,7 @@ plans/
 Later, a follow-up review (round A) discovers issues and proposes corrections:
 
 ```
-plans/
+.plans/
   2026-08-24/
     game_page_update/
       implementation_plan_v1.md
@@ -311,13 +311,13 @@ plans/
 ### Agent-Specific Notes
 
 - **Claude Code**: Use your file-writing tool (e.g., `Write` / `create_file`) to
-  create the document at `plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md`
+  create the document at `.plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md`
   (relative to the repo root, where N=1 for the first version). Create the
   intermediate directories if they do not exist. Tell the user the file path so
   they can open and review it. Before creating a revision, check which versions
   already exist in the directory.
 - **Antigravity / other agents**: Same path convention. Use your file-writing
-  tool to save the document. The `plans/` directory is gitignored, so documents
+  tool to save the document. The `.plans/` directory is gitignored, so documents
   will not be committed unless the user explicitly adds them.
 
 ### How to Write the File (IMPORTANT)

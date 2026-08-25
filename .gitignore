@@ -459,4 +459,4 @@ ASALocalRun/
 !*.json
 
 # AI agent implementation plans
-plans/
+.plans/
