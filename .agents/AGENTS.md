@@ -176,6 +176,10 @@ A plan is **not** required for single-file fixes, typo and comment corrections, 
   first version).
   Use the creation date of the first document for the topic as the date directory, and
   a short `snake_case` name for the task directory. Create subdirectories as needed.
+  If a task directory with the desired name already exists, find the next free name
+  in the sequence `task_name`, `task_name_2`, `task_name_3`, ... — never rename the
+  existing folder, and never nest suffixes (e.g., `_2_3` is wrong). Use the new
+  directory for all work — do not touch the conflicting directory.
 - **Document versioning**: the first version always gets a `_v1` suffix. Never overwrite
   an existing version — to revise, create a new file with the next version number
   (`_v2`, `_v3`, etc.). This applies to all document types (plans, reviews, analyses,

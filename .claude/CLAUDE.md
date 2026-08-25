@@ -83,6 +83,11 @@ plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md    ← N=1 for the first vers
 - **Task directory**: a short, descriptive `snake_case` name (e.g.,
   `game_page_update`).
 - **Create subdirectories** if they do not exist.
+- **Conflict resolution**: if a task directory with the desired name already
+  exists under the same date, find the next free name in the sequence
+  `task_name`, `task_name_2`, `task_name_3`, ... — never rename the existing
+  folder, and never nest suffixes (e.g., `_2_3` is wrong). Use the new
+  directory for all work — do not touch the conflicting directory.
 
 ### Document Versioning (STRICT)
 

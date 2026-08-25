@@ -210,6 +210,26 @@ plans/
   the project or task (e.g., `game_page_update`, `add_new_monster_class`,
   `save_file_migration`).
 - **Create subdirectories** as needed — they will not exist the first time.
+- **Task directory conflict resolution**: Every new task (not a follow-up round)
+  gets its **own new folder**. Before creating a folder, check whether a folder
+  with the desired name already exists under the same date directory. If it
+  does, find the next free name in the sequence `task_name`, `task_name_2`,
+  `task_name_3`, ... — always use the **base name** (without any numeric
+  suffix) as the root of the sequence, and increment the number until a free
+  name is found. **Never** append a suffix to an already-suffixed name (e.g.,
+  `task_name_2_3` is wrong — the correct next name after `task_name_2` is
+  `task_name_3`). The existing folder is never renamed. Use the newly created
+  directory for all work on the new task — do not read, modify, or otherwise
+  interact with the conflicting directory.
+
+> [!IMPORTANT]
+> **Three distinct suffix types — do not confuse them:**
+>
+> | Suffix | Applies to | Meaning | Example |
+> |--------|-----------|---------|---------|
+> | `_2`, `_3`, ... | **Folder** names | Conflict resolution for separate tasks with the same name | `game_page_update_2/` |
+> | `_A`, `_B`, ... | **File** names | Follow-up round within the same task folder | `implementation_review_A_v1.md` |
+> | `_v1`, `_v2`, ... | **File** names | Document revision (never overwrite, always increment) | `implementation_plan_v2.md` |
 
 ### Document Versioning (STRICT)
 
