@@ -34,7 +34,7 @@ A plan is **not** required for:
 - Single-file bug fixes
 - Typo and comment corrections
 - Answering questions or read-only investigation
-- Minor follow-ups to an already-approved plan
+- Minor follow-ups **while executing** an already-approved plan
 
 **When in doubt, write a plan.** A rejected plan is cheap; a wrong cross-layer
 change is not.
@@ -58,16 +58,17 @@ Every planned task follows these phases in strict order:
   Save Plans and Other Documents" below.
 - Include any open questions or design decisions that the user needs to weigh in
   on — put them directly in the plan document.
-- Present the plan to the user for review.
 - If the harness confines you to its own plan file while planning, write the plan
   there and then **copy it to `.plans/` before requesting approval** — see
   "Harness Rules Take Precedence" below.
+- Present the plan to the user for review.
 
 ### Phase 3 — Obtain User Approval
 
 - **STOP and wait for the user's explicit approval before editing any source
   file.** This is a hard gate.
-- **Always print the plan's file path in chat** so the user can open it.
+- **Always print the plan's `.plans/` path in chat** so the user can open it —
+  plus the harness file's path, if the harness keeps one.
 - **How to request approval**: if the harness provides an explicit approval
   mechanism (e.g., Claude Code `ExitPlanMode`), use it. Otherwise, print a brief
   summary of the plan — not the full document — and wait. **Approval is never
@@ -477,6 +478,10 @@ Later, the user requests a performance analysis of the same feature:
 ## Quick Decision Guide
 
 ```
+Is it a minor follow-up while executing an already-approved plan?
+  → YES: Skip a new plan. Continue executing the existing one.
+  → NO: Continue ↓
+
 Is the task trivial (single file, typo, comment, question)?
   → YES: Skip the plan. Just do it.
   → NO: Continue ↓
@@ -484,8 +489,4 @@ Is the task trivial (single file, typo, comment, question)?
 Does it touch multiple files, cross subsystem boundaries, or involve interop?
   → YES: Write a full plan. Follow the five-phase lifecycle.
   → NO: Use judgment. When in doubt, write the plan.
-
-Is it a minor follow-up to an already-approved plan?
-  → YES: Skip a new plan. Continue executing the existing one.
-  → NO: Write a new plan.
 ```
