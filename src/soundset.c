@@ -19043,12 +19043,12 @@ maybe_write_soundsource(int fd, int volume, boolean write_it)
         switch (ss->type)
         {
         case SOUNDSOURCE_OBJECT:
-            is_global = !obj_is_local(ss->id.a_obj);
             is_attach_invalid = obj_attach_invalid(ss->id.a_obj, "maybe_write_soundsource", !write_it);
+            is_global = !is_attach_invalid && !obj_is_local(ss->id.a_obj);
             break;
         case SOUNDSOURCE_MONSTER:
-            is_global = !mon_is_local_mx(ss->id.a_monst);
             is_attach_invalid = mon_attach_invalid(ss->id.a_monst, "maybe_write_soundsource", !write_it);
+            is_global = !is_attach_invalid && !mon_is_local_mx(ss->id.a_monst);
             break;
         case SOUNDSOURCE_LOCATION:
             is_global = 0; /* always local */

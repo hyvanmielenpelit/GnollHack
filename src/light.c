@@ -478,12 +478,12 @@ maybe_write_ls(int fd, int range, boolean write_it)
         switch (ls->type)
         {
         case LS_OBJECT:
-            is_global = !obj_is_local(ls->id.a_obj);
             is_attach_invalid = obj_attach_invalid(ls->id.a_obj, "maybe_write_ls", !write_it);
+            is_global = !is_attach_invalid && !obj_is_local(ls->id.a_obj);
             break;
         case LS_MONSTER:
-            is_global = !mon_is_local_mx(ls->id.a_monst);
             is_attach_invalid = mon_attach_invalid(ls->id.a_monst, "maybe_write_ls", !write_it);
+            is_global = !is_attach_invalid && !mon_is_local_mx(ls->id.a_monst);
             break;
         case LS_LOCATION:
             is_global = 0; /* always local */
