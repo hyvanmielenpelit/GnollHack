@@ -68,10 +68,9 @@ Every planned task follows these phases in strict order:
 - **STOP and wait for the user's explicit approval before editing any source
   file.** This is a hard gate.
 - **Always print the plan's file path in chat** so the user can open it.
-- **How to request approval**: if the harness provides an explicit mechanism for
-  plan feedback and approval (Claude Code plan mode: the `ExitPlanMode` tool),
-  use that mechanism. Otherwise, print a brief summary of the plan — not the full
-  document — and wait for the user's approval. **Either way, approval is never
+- **How to request approval**: if the harness provides an explicit approval
+  mechanism (e.g., Claude Code `ExitPlanMode`), use it. Otherwise, print a brief
+  summary of the plan — not the full document — and wait. **Approval is never
   skipped.**
 - Do not begin implementation alongside the plan, do not "get a head start", and
   do not pre-create files "to save time."
@@ -192,20 +191,14 @@ What could break, and how it would be noticed.
 
 ### Scaling the Format
 
-The format above is the standard for **non-trivial** work — the kind that meets
-the "When a Plan Is Required" bar. Fill every mandatory section.
+The full format applies to **non-trivial** work. If a harness asks for "concise"
+plans, that means *no excessive verbosity within this format* — keep every
+mandatory section but keep each one tight. Never trim the Affected Files table.
 
-Some harnesses ask for plans that are "concise enough to scan quickly." That is
-**not a competing format**. Read it as *no excessive verbosity within this
-format*: keep every mandatory section, but keep each one tight. A complete
-Affected Files table is never trimmed for brevity — reviewing it is the point of
-the plan.
-
-For **truly trivial** work only, the harness's own concise plan format is
-acceptable, or no plan at all when the answer is short. When you take that
-shortcut, **say so in chat** — state that the abbreviated form was used because
-the task was trivial. If the user then asks for the full format, produce it as
-the **next revision** (`_v<N+1>`).
+For **truly trivial** work, the harness's own concise format (or no plan at all)
+is acceptable. State in chat that the shortcut was taken because the task was
+trivial. If the user then asks for the full format, produce it as the next
+revision (`_v<N+1>`).
 
 ## Where to Save Plans and Other Documents
 
@@ -260,26 +253,15 @@ artifacts — are saved **inside the repository** under the `.plans/` directory
 
 ### Document Versioning (STRICT)
 
-This rule applies to **all document types** saved in `.plans/`: implementation
-plans, reviews, analyses (including bug analyses), reports (including bug
-reports), and any other plans.
+This rule applies to **all document types** saved in `.plans/`.
 
-1. **First version**: Always append the `_v1` suffix to the filename.
-   - Example: `implementation_plan_v1.md`, `bug_analysis_v1.md`
-2. **Never overwrite an existing version.** When you read an existing document
-   (e.g., `implementation_plan_v1.md`) and want to propose changes, create a
-   **new file** with the next version number:
-   - Read `implementation_plan_v1.md` → write `implementation_plan_v2.md`
-   - Read `implementation_plan_v2.md` → write `implementation_plan_v3.md`
-3. **Determine the next version number** by checking which version files already
-   exist in the task directory. The new file gets the highest existing number
-   plus one.
-4. **Do not delete or modify** older versions. They form a revision history.
-
-> [!IMPORTANT]
-> Different AIs (or the same AI in different sessions) may propose very different
-> revisions. Preserving every version ensures the user can compare approaches and
-> revert to any prior version.
+1. **First version**: Always use the `_v1` suffix.
+2. **Never overwrite an existing version.** To revise, create a **new file**
+   with the next version number (read `_v1` → write `_v2`).
+3. **Determine the next version** by checking which files already exist. The new
+   file gets the highest existing number plus one.
+4. **Do not delete or modify** older versions. They form a revision history that
+   lets the user compare approaches across different AIs or sessions.
 
 **Exception — `task.md` and `walkthrough.md`**: These are **singular files**
 (no version suffix). There is only one `task.md` and one `walkthrough.md` per
@@ -289,86 +271,36 @@ implemented. **Follow-up rounds** get their own lettered variants (`task_A.md`,
 
 ### Example
 
-A task started on 2026-08-24 to update the game page UI:
+A task started on 2026-08-24 to update the game page UI. The plan goes through
+revision and then a follow-up review round:
 
 ```
 .plans/
   2026-08-24/
     game_page_update/
-      implementation_plan_v1.md          ← first draft
-```
-
-The user requests changes; the AI (same or different) reads v1 and creates v2:
-
-```
-.plans/
-  2026-08-24/
-    game_page_update/
-      implementation_plan_v1.md          ← preserved, not overwritten
-      implementation_plan_v2.md          ← revised plan
-```
-
-After v2 is approved and implemented:
-
-```
-.plans/
-  2026-08-24/
-    game_page_update/
-      implementation_plan_v1.md
-      implementation_plan_v2.md
+      implementation_plan_v1.md          ← first draft (preserved)
+      implementation_plan_v2.md          ← revised after user feedback
       task.md                            ← checklist based on v2
       walkthrough.md                     ← references v2 as the implemented plan
-```
-
-Later, a follow-up review (round A) discovers issues and proposes corrections:
-
-```
-.plans/
-  2026-08-24/
-    game_page_update/
-      implementation_plan_v1.md
-      implementation_plan_v2.md
-      task.md
-      walkthrough.md
       implementation_review_A_v1.md      ← follow-up A: review of the implementation
       task_A.md                          ← follow-up A: task checklist
       walkthrough_A.md                   ← follow-up A: walkthrough
 ```
 
-### Agent-Specific Notes
-
-- **Claude Code**: Use your file-writing tool (e.g., `Write` / `create_file`) to
-  create the document at `.plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md`
-  (relative to the repo root, where N=1 for the first version). Create the
-  intermediate directories if they do not exist. Tell the user the file path so
-  they can open and review it. Before creating a revision, check which versions
-  already exist in the directory.
-- **Antigravity / other agents**: Same path convention. Use your file-writing
-  tool to save the document. The `.plans/` directory is gitignored, so documents
-  will not be committed unless the user explicitly adds them.
-
-### How to Write the File (IMPORTANT)
+### How to Write Files
 
 **Always use the agent's native file-writing tool** (e.g., `Write`,
-`create_file`, `write_to_file`) to create documents. Pass the entire document
-content as a tool parameter.
-
-**Do NOT use shell commands** (`cat << EOF`, `echo`, `printf`, heredoc, etc.) to
-write document files. Markdown documents contain backticks, dollar signs, angle
-brackets, and other characters that cause shell quoting and escaping failures.
-Shell-based file writing is fragile, token-wasteful (escaping overhead), and
-produces corrupted output when it breaks.
-
-The native file-writing tool bypasses the shell entirely — the content goes
-directly from the tool parameter to the file with no quoting layer in between.
+`create_file`, `write_to_file`). **Do NOT use shell commands** (`cat << EOF`,
+`echo`, heredoc, etc.) — Markdown content contains backticks, dollar signs, and
+angle brackets that cause shell quoting failures and corrupted output.
 
 ## Harness Rules Take Precedence
 
-Different agent harnesses impose their own planning workflows, and some of them
-restrict where you may write. **The harness rules always win.** This skill is
-guidance layered *inside* whatever the harness permits — it tells you how to
-write a good plan, what it must contain, and where the canonical copy belongs. It
-never overrides a harness restriction.
+Agent harnesses impose their own planning workflows, and some restrict where you
+may write. **The harness rules always win.** This skill is guidance layered
+*inside* whatever the harness permits — it tells you how to write a good plan,
+what it must contain, and where the canonical copy belongs. It never overrides a
+harness restriction.
 
 ### `.plans/` Is the Source of Truth
 
@@ -379,48 +311,43 @@ file as a **working/backup copy**. The canonical document is always the one in
 
 This matters because agents hand work to each other. A different AI picking up
 the task reads the **latest `_v<N>` from `.plans/`** and writes its next revision
-**to `.plans/`** — it never looks inside a harness-private directory it does not
-share.
+**to `.plans/`** — it never looks inside a harness-private directory.
 
 ### When to Make the `.plans/` Copy
 
-**As soon as the plan document is finished, and immediately before asking the
-user to approve it.** The copy is part of delivering the plan, not part of
-executing it.
+**As soon as the plan is finished, and immediately before requesting approval.**
+The copy is part of delivering the plan, not part of executing it.
 
-Order of operations: finish writing the plan → **copy it to `.plans/`** → print
-the path → request approval. The user therefore reviews a plan that already
-exists at its canonical location, and the document survives even if the plan is
-rejected or the session ends.
+Order of operations: finish writing the plan → **copy to `.plans/`** → print
+the path → request approval via the harness mechanism (or a chat summary).
 
 > [!NOTE]
 > **This copy does not violate a harness "no other file edits" restriction.**
-> Restrictions such as Claude Code plan mode's exist to prevent the agent from
-> changing the project *before the user has approved the work*. Duplicating the
-> plan document to its canonical location is a copy operation on the planning
-> artifact itself — it modifies no source file, no build file, and no game data,
-> and it changes nothing about the project's behavior. Make the copy; do not defer
-> it to execution.
+> Such restrictions prevent the agent from changing the *project* before approval.
+> Copying the plan to its canonical location touches no source file, build file,
+> or game data. Make the copy; do not defer it to execution.
 
-Everything else still waits for approval: `task.md`, any source edit, and every
-build step.
+Everything else still waits for approval: `task.md`, source edits, build steps.
 
-### Versioning Is Per-Folder
-
-The two locations follow their own rules, and this is not a contradiction:
+### Versioning Is Per-Location
 
 | Location | Naming | Revising |
 |----------|--------|----------|
-| Harness-private plan file | Whatever the harness assigns (often an auto-generated slug) | Edit **in place**; the harness expects incremental editing |
-| `.plans/` | `<document_name>_v<N>.md` | **Never overwrite** — read the highest existing `_v<N>`, write `_v<N+1>` |
+| Harness-private plan file | Whatever the harness assigns | Edit **in place** |
+| `.plans/` | `<document_name>_v<N>.md` | **Never overwrite** — increment `_v<N>` |
 
-The strict versioning rules above bind the `.plans/` copy only.
+### Agent-Specific Notes
 
-### Requesting Approval
-
-Use the harness's explicit approval mechanism where one exists (Claude Code:
-`ExitPlanMode`); otherwise print a brief summary and wait. Print the plan's file
-path in every case. See Phase 3 above.
+- **Claude Code**: Create the document at
+  `.plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md` (relative to the repo
+  root). Create intermediate directories if they do not exist. Print the path so
+  the user can review it. Before creating a revision, check which versions
+  already exist.
+- **Antigravity**: First create the artifact in the artifact directory (so the UI
+  can present it), then also copy it to `.plans/`. Both locations must receive
+  the file.
+- **Other agents**: Same path convention. The `.plans/` directory is gitignored,
+  so documents will not be committed unless the user explicitly adds them.
 
 ## Progress Tracking
 
