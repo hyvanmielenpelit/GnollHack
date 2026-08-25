@@ -96,7 +96,9 @@ analyses, reports, and other plans:
 - Check which versions already exist before creating a revision.
 - `task.md` and `walkthrough.md` are **singular** (no version suffix) — based on
   whichever plan version was ultimately approved. The walkthrough must state
-  which plan version was implemented.
+  which plan version was implemented. **Follow-up rounds** use lettered variants
+  (`task_A.md`, `walkthrough_A.md`, etc.) — see the `implementation-planning`
+  skill for the full specification.
 
 To deliver a document:
 

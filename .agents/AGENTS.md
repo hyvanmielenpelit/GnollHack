@@ -180,6 +180,8 @@ A plan is **not** required for single-file fixes, typo and comment corrections, 
   an existing version — to revise, create a new file with the next version number
   (`_v2`, `_v3`, etc.). This applies to all document types (plans, reviews, analyses,
   reports). `task.md` and `walkthrough.md` are singular (no version suffix).
+  Follow-up rounds use lettered variants (`task_A.md`, `walkthrough_A.md`, etc.)
+  — see the `implementation_planning` skill for details.
 - Short plans may be presented inline instead.
 - **Wait for explicit user approval before editing any file.** Do not begin implementation alongside the plan.
 - If the plan turns out to be wrong during implementation, stop and re-confirm rather than silently diverging from what the user approved.

@@ -196,6 +196,9 @@ plans/
       bug_analysis_v<N>.md              ← example: an analysis document
       task.md                           ← single file, based on the final approved plan
       walkthrough.md                    ← single file, post-completion summary
+      implementation_review_A_v<N>.md   ← follow-up round A (see "Follow-Up Rounds")
+      task_A.md                         ← follow-up A task checklist
+      walkthrough_A.md                  ← follow-up A walkthrough
 ```
 
 ### Directory Naming Rules
@@ -234,7 +237,8 @@ reports), and any other plans.
 **Exception — `task.md` and `walkthrough.md`**: These are **singular files**
 (no version suffix). There is only one `task.md` and one `walkthrough.md` per
 task, and they are based on whichever plan version was ultimately approved and
-implemented.
+implemented. **Follow-up rounds** get their own lettered variants (`task_A.md`,
+`walkthrough_A.md`, etc.) — see "Follow-Up Rounds" below.
 
 ### Example
 
@@ -267,6 +271,21 @@ plans/
       implementation_plan_v2.md
       task.md                            ← checklist based on v2
       walkthrough.md                     ← references v2 as the implemented plan
+```
+
+Later, a follow-up review (round A) discovers issues and proposes corrections:
+
+```
+plans/
+  2026-08-24/
+    game_page_update/
+      implementation_plan_v1.md
+      implementation_plan_v2.md
+      task.md
+      walkthrough.md
+      implementation_review_A_v1.md      ← follow-up A: review of the implementation
+      task_A.md                          ← follow-up A: task checklist
+      walkthrough_A.md                   ← follow-up A: walkthrough
 ```
 
 ### Agent-Specific Notes
@@ -302,6 +321,9 @@ After receiving user approval, create a **task checklist** (`task.md`) to track
 implementation progress. There is only **one** `task.md` per task — it is based
 on whichever plan version was approved.
 
+For **follow-up rounds**, create a lettered task checklist (`task_A.md`,
+`task_B.md`, etc.) — see "Follow-Up Rounds" below.
+
 Format:
 
 ```markdown
@@ -330,8 +352,93 @@ summarizing:
 - Validation results (build output, test results)
 - Any remaining follow-up items
 
-There is only **one** `walkthrough.md` per task. If this is follow-up work to an
-earlier task, update the existing walkthrough rather than creating a new one.
+There is only **one** `walkthrough.md` per task's original implementation. For
+**follow-up rounds**, create a lettered walkthrough (`walkthrough_A.md`,
+`walkthrough_B.md`, etc.) — see "Follow-Up Rounds" below.
+
+## Follow-Up Rounds
+
+After an implementation plan has been executed and its walkthrough produced, the
+task may require **follow-up work** — reviews, corrections, further analyses, or
+supplementary changes that relate to the original task. These are tracked as
+**follow-up rounds** within the same task directory.
+
+### Round Identifiers
+
+Each follow-up round is identified by a **letter suffix**: `_A`, `_B`, `_C`,
+etc. The letter is assigned sequentially in the order follow-up rounds are
+created, regardless of the document type within the round. The letter groups all
+documents belonging to the same follow-up round.
+
+### Naming Convention
+
+Every document in a follow-up round embeds the round letter between the document
+name and the version suffix:
+
+```
+<document_name>_<round>_v<N>.md
+```
+
+| File Type | Original Plan | Follow-Up Round A | Follow-Up Round B |
+|-----------|--------------|-------------------|-------------------|
+| Plan / review / analysis | `implementation_plan_v1.md` | `implementation_review_A_v1.md` | `performance_analysis_B_v1.md` |
+| Task checklist | `task.md` | `task_A.md` | `task_B.md` |
+| Walkthrough | `walkthrough.md` | `walkthrough_A.md` | `walkthrough_B.md` |
+
+- The **document name** describes the content (e.g., `implementation_review`,
+  `correction_plan`, `performance_analysis`). Use `snake_case`.
+- The **round letter** (`_A`, `_B`, ...) identifies which follow-up round this
+  document belongs to.
+- The **version suffix** (`_v1`, `_v2`, ...) tracks revisions within the round,
+  following the same strict versioning rules as original plan documents: first
+  version is always `_v1`, never overwrite, increment to revise.
+- Task checklists (`task_A.md`) and walkthroughs (`walkthrough_A.md`) are
+  **singular per round** — no version suffix, just like the originals.
+
+### Lifecycle
+
+Each follow-up round follows the **same five-phase lifecycle** as the original
+plan (Research → Plan → Approve → Execute → Verify). The follow-up plan
+document (e.g., `implementation_review_A_v1.md`) takes the role of the
+implementation plan and requires user approval before execution begins.
+
+### When to Use a Follow-Up Round vs. a New Task
+
+Use a **follow-up round** when:
+
+- The work directly relates to the original task (e.g., reviewing how the
+  implementation went, fixing issues discovered during verification, adding
+  something that was deferred from the original plan)
+- The same task directory and date are appropriate
+
+Create a **new task** (new date/task directory) when:
+
+- The work is substantially independent, even if it touches the same files
+- Enough time has passed that it is a distinct effort
+- The scope has grown beyond what the original task covered
+
+### Determining the Next Round Letter
+
+Before creating a follow-up round, check which round letters already exist in
+the task directory. The new round gets the next letter in sequence (`A`, `B`,
+`C`, ...). If `_A` and `_B` exist, the next round is `_C`.
+
+### Example
+
+An original implementation is complete. The user asks for a review of the
+implementation quality:
+
+1. The agent creates `implementation_review_A_v1.md` — research and review
+   findings.
+2. The user approves the proposed corrections.
+3. The agent creates `task_A.md` and begins execution.
+4. After completion, the agent creates `walkthrough_A.md`.
+
+Later, the user requests a performance analysis of the same feature:
+
+1. The agent creates `performance_analysis_B_v1.md`.
+2. The user requests changes; the agent creates `performance_analysis_B_v2.md`.
+3. After approval, `task_B.md` and then `walkthrough_B.md`.
 
 ## Quick Decision Guide
 
