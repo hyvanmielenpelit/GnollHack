@@ -19036,16 +19036,19 @@ maybe_write_soundsource(int fd, int volume, boolean write_it)
             continue;
         }
 
-        boolean is_attach_deallocated = FALSE;
+        /* TRUE if the attached object or monster could not be found again by
+           relink_sound_sources() after a restore, in which case writing this
+           sound source would only produce an unrelinkable orphan */
+        boolean is_attach_invalid = FALSE;
         switch (ss->type)
         {
         case SOUNDSOURCE_OBJECT:
             is_global = !obj_is_local(ss->id.a_obj);
-            is_attach_deallocated = (ss->id.a_obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0;
+            is_attach_invalid = obj_attach_invalid(ss->id.a_obj, "maybe_write_soundsource", !write_it);
             break;
         case SOUNDSOURCE_MONSTER:
             is_global = !mon_is_local_mx(ss->id.a_monst);
-            is_attach_deallocated = (ss->id.a_monst->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED) != 0;
+            is_attach_invalid = mon_attach_invalid(ss->id.a_monst, "maybe_write_soundsource", !write_it);
             break;
         case SOUNDSOURCE_LOCATION:
             is_global = 0; /* always local */
@@ -19059,7 +19062,7 @@ maybe_write_soundsource(int fd, int volume, boolean write_it)
             break;
         }
 
-        if (is_attach_deallocated)
+        if (is_attach_invalid)
             continue;
 
         /* if global and not doing local, or vice versa, count it */

@@ -471,16 +471,19 @@ maybe_write_ls(int fd, int range, boolean write_it)
             continue;
         }
 
-        boolean is_attach_deallocated = FALSE;
+        /* TRUE if the attached object or monster could not be found again by
+           relink_light_sources() after a restore, in which case writing this
+           light source would only produce an unrelinkable orphan */
+        boolean is_attach_invalid = FALSE;
         switch (ls->type)
         {
         case LS_OBJECT:
             is_global = !obj_is_local(ls->id.a_obj);
-            is_attach_deallocated = (ls->id.a_obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0;
+            is_attach_invalid = obj_attach_invalid(ls->id.a_obj, "maybe_write_ls", !write_it);
             break;
         case LS_MONSTER:
             is_global = !mon_is_local_mx(ls->id.a_monst);
-            is_attach_deallocated = (ls->id.a_monst->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED) != 0;
+            is_attach_invalid = mon_attach_invalid(ls->id.a_monst, "maybe_write_ls", !write_it);
             break;
         case LS_LOCATION:
             is_global = 0; /* always local */
@@ -491,9 +494,9 @@ maybe_write_ls(int fd, int range, boolean write_it)
             break;
         }
 
-        if (is_attach_deallocated)
+        if (is_attach_invalid)
             continue;
-        
+
         /* if global and not doing local, or vice versa, count it */
         if (is_global ^ (range == RANGE_LEVEL)) 
         {

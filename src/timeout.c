@@ -75,7 +75,7 @@ static timer_element* remove_timer_type(timer_element**, short);
 static void write_timer(int, timer_element*);
 static boolean mon_is_local(struct monst*);
 static boolean timer_is_local(timer_element*);
-static boolean timer_attach_deallocated(timer_element*);
+static boolean timer_attach_invalid(timer_element*, boolean);
 static int maybe_write_timer(int, int, boolean);
 
 static void stoned_dialogue(void);
@@ -3648,12 +3648,99 @@ obj_is_local(struct obj *obj)
     case OBJ_MINVENT:
         return mon_is_local(obj->ocarry);
     case OBJ_FREE:
-        impossible("obj_is_local: obj->where is OBJ_FREE (otyp=%d, corpsenm=%d, timed=%d, lamplit=%d, makingsound=%d, dealloc=%d)",
-            obj->otyp, obj->corpsenm, obj->timed, is_obj_lamplit(obj), is_obj_makingsound(obj), (obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0);
+        impossible("obj_is_local: obj->where is OBJ_FREE (o_id=%u, otyp=%d, corpsenm=%d, timed=%d, lamplit=%d, makingsound=%d, dealloc=%d)",
+            obj->o_id, obj->otyp, obj->corpsenm, obj->timed, is_obj_lamplit(obj), is_obj_makingsound(obj), (obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0);
         return FALSE;
     }
-    panic("obj_is_local: obj->where=%d (otyp=%d, corpsenm=%d, timed=%d, lamplit=%d, makingsound=%d, dealloc=%d)", obj->where,
-        obj->otyp, obj->corpsenm, obj->timed, is_obj_lamplit(obj), is_obj_makingsound(obj), (obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0);
+    panic("obj_is_local: obj->where=%d (o_id=%u, otyp=%d, corpsenm=%d, timed=%d, lamplit=%d, makingsound=%d, dealloc=%d)", obj->where,
+        obj->o_id, obj->otyp, obj->corpsenm, obj->timed, is_obj_lamplit(obj), is_obj_makingsound(obj), (obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0);
+    return FALSE;
+}
+
+/*
+ * Return TRUE if obj cannot be recovered by find_oid() after a save/restore
+ * cycle, which means any timer, light source, or sound source attached to it
+ * must be discarded rather than written to the save file.
+ *
+ * obj->where == OBJ_FREE is supposed to mean "on no object chain", and the
+ * save file is built by walking those chains -- so such an attachment could
+ * never be relinked.  But the two facts can disagree: an object may carry a
+ * stale OBJ_FREE in 'where' while still being linked into fobj, invent, a
+ * container, or a monster's minvent.  In that case the object really is
+ * written to the save file and find_oid() really would resolve it, so the
+ * attachment must be kept.  Ask find_oid() rather than trusting 'where'.
+ *
+ * 'funcname' and 'report' only feed the diagnostics; the return value never
+ * depends on 'report'.  Callers pass report only on the counting pass so that
+ * each problem is reported once per save rather than twice.
+ */
+boolean
+obj_attach_invalid(struct obj *obj, const char *funcname, boolean report)
+{
+    if (!obj)
+    {
+        if (report)
+            impossible("%s: attached object is null", funcname);
+        return TRUE;
+    }
+
+    /* checked before anything else: a deallocated obj has already been
+       free()d, so walking the object chains with it would only compound
+       the problem */
+    if ((obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0)
+    {
+        if (report)
+            impossible("%s: attached object is deallocated (o_id=%u, otyp=%d, corpsenm=%d, timed=%d, lamplit=%d, makingsound=%d)",
+                funcname, obj->o_id, obj->otyp, obj->corpsenm, obj->timed, is_obj_lamplit(obj), is_obj_makingsound(obj));
+        return TRUE;
+    }
+
+    if (obj->where == OBJ_FREE)
+    {
+        if (find_oid(obj->o_id) == obj)
+        {
+            /* reachable after all: obj->where is stale, the chain is real.
+               Keep the attachment, it will relink correctly. */
+            if (report)
+                impossible("%s: attached object is OBJ_FREE but still on a chain (o_id=%u, otyp=%d, corpsenm=%d, timed=%d, lamplit=%d, makingsound=%d)",
+                    funcname, obj->o_id, obj->otyp, obj->corpsenm, obj->timed, is_obj_lamplit(obj), is_obj_makingsound(obj));
+            return FALSE;
+        }
+
+        /* genuinely unreachable, or a different object answers to this o_id;
+           relinking would either fail or bind to the wrong object */
+        if (report)
+            impossible("%s: attached object is OBJ_FREE and unreachable (o_id=%u, otyp=%d, corpsenm=%d, timed=%d, lamplit=%d, makingsound=%d)",
+                funcname, obj->o_id, obj->otyp, obj->corpsenm, obj->timed, is_obj_lamplit(obj), is_obj_makingsound(obj));
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+/*
+ * Monster counterpart of obj_attach_invalid().  struct monst has no 'where'
+ * field, so there is no equivalent of the OBJ_FREE check here; a monster
+ * unlinked from fmon and abandoned would still have to be caught on restore.
+ */
+boolean
+mon_attach_invalid(struct monst *mon, const char *funcname, boolean report)
+{
+    if (!mon)
+    {
+        if (report)
+            impossible("%s: attached monster is null", funcname);
+        return TRUE;
+    }
+
+    if ((mon->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED) != 0)
+    {
+        if (report)
+            impossible("%s: attached monster is deallocated (m_id=%u, mnum=%d)",
+                funcname, mon->m_id, mon->mnum);
+        return TRUE;
+    }
+
     return FALSE;
 }
 
@@ -3697,8 +3784,19 @@ timer_is_local(timer_element *timer)
     return FALSE;
 }
 
+/*
+ * Return TRUE if the thing this timer is attached to could not be found
+ * again by relink_timers() after a save/restore cycle, so that writing the
+ * timer to the save file would only produce an unrelinkable orphan.  Covers
+ * both deallocated and (for objects) unreachable OBJ_FREE attachments.
+ *
+ * 'report' is passed only on the counting pass of maybe_write_timer(), so
+ * that each problem is reported once per save rather than twice.  The return
+ * value does not depend on it -- both passes must agree, or the count written
+ * to the save file would not match the number of timers that follow it.
+ */
 static boolean
-timer_attach_deallocated(timer_element* timer)
+timer_attach_invalid(timer_element* timer, boolean report)
 {
     switch (timer->kind) {
     case TIMER_LEVEL:
@@ -3706,9 +3804,9 @@ timer_attach_deallocated(timer_element* timer)
     case TIMER_GLOBAL:
         return FALSE;
     case TIMER_OBJECT:
-        return !timer->arg.a_obj || (timer->arg.a_obj->item_flags & ITEM_FLAGS_DEBUG_DEALLOCATED) != 0;
+        return obj_attach_invalid(timer->arg.a_obj, "maybe_write_timer", report);
     case TIMER_MONSTER:
-        return !timer->arg.a_monst || (timer->arg.a_monst->mon_flags & MON_FLAGS_DEBUG_DEALLOCATED) != 0;
+        return mon_attach_invalid(timer->arg.a_monst, "maybe_write_timer", report);
     }
     return TRUE;
 }
@@ -3723,12 +3821,14 @@ maybe_write_timer(int fd, int range, boolean write_it)
     int count = 0;
     timer_element *curr;
 
-    for (curr = timer_base; curr; curr = curr->next) {
+    for (curr = timer_base; curr; curr = curr->next)
+    {
+        /* range-independent, so checked before the range split */
+        if (timer_attach_invalid(curr, !write_it))
+            continue;
+
         if (range == RANGE_GLOBAL) {
             /* global timers */
-
-            if (timer_attach_deallocated(curr))
-                continue;
 
             if (!timer_is_local(curr)) {
                 count++;
@@ -3738,9 +3838,6 @@ maybe_write_timer(int fd, int range, boolean write_it)
 
         } else {
             /* local timers */
-
-            if (timer_attach_deallocated(curr))
-                continue;
 
             if (timer_is_local(curr)) {
                 count++;
@@ -3858,56 +3955,135 @@ timer_stats(const char *hdrfmt, char *hdrbuf, int64_t *count, size_t *size)
     }
 }
 
-/* reset all timers that are marked for reseting */
+/* reset all timers that are marked for reseting
+ *
+ * A timer whose object or monster cannot be found refers to something that
+ * is not in the save file at all, so there is nothing to relink it to.  Such
+ * a timer is dropped with an impossible() rather than a panic(): the timer is
+ * worthless either way, but a panic here leaves the whole save file
+ * permanently unloadable (and, since panic() does not return, it also skips
+ * the backup-savefile fallback in load_saved_game()).  Dropping it loses
+ * nothing observable and lets the rest of the game come back.
+ *
+ * Dropped timers are only unlinked and freed -- the cleanup callback is not
+ * run and obj->timed / mon->timed are not decremented, because there is no
+ * object or monster left to clean up or decrement.  This matches what
+ * reset_timers() and save_timers()'s release_data pass do.
+ */
 void
 relink_timers(boolean ghostly)
 {
-    timer_element *curr;
+    timer_element *curr, *prev, *next_timer;
     unsigned nid;
+    boolean drop_it;
+    /* entry_index is not named 'index' because several platform config
+       headers (ntconf.h, pcconf.h, ...) do #define index strchr */
+    int entry_index = 0;    /* position in timer_base, for diagnostics */
+    int fixed_up_count = 0; /* how many relinked cleanly before a failure */
 
-    for (curr = timer_base; curr; curr = curr->next) {
-        if (curr->needs_fixup) {
-            if (curr->kind == TIMER_OBJECT) {
-                if (ghostly) {
-                    if (!lookup_id_mapping(curr->arg.a_uint, &nid))
-                    {
-                        panic("relink_timers 1");
-                        return;
-                    }
-                } else
-                    nid = curr->arg.a_uint;
-                curr->arg.a_obj = find_oid(nid);
-                if (!curr->arg.a_obj)
+    for (prev = 0, curr = timer_base; curr; curr = next_timer)
+    {
+        next_timer = curr->next; /* in case curr is removed */
+        entry_index++;
+        drop_it = FALSE;
+
+        if (curr->needs_fixup)
+        {
+            if (curr->kind == TIMER_OBJECT)
+            {
+                nid = 0;
+                if (ghostly)
                 {
-                    panic("cant find o_id %u", nid);
-                    return;
-                }
-                curr->needs_fixup = 0;
-            } else if (curr->kind == TIMER_MONSTER) {
-//                panic("relink_timers: no monster timer implemented");
-                if (ghostly) {
                     if (!lookup_id_mapping(curr->arg.a_uint, &nid))
                     {
-                        panic("relink_timers 1");
-                        return;
+                        impossible("relink_timers: no id mapping for o_id %u (func_index=%d)",
+                            curr->arg.a_uint, (int) curr->func_index);
+                        drop_it = TRUE;
                     }
                 }
                 else
                     nid = curr->arg.a_uint;
-                curr->arg.a_monst = find_mid_ew(nid);
-                if (!curr->arg.a_monst)
+
+                if (!drop_it)
                 {
-                    panic("cant find m_id %d", nid);
-                    return;
+                    curr->arg.a_obj = find_oid(nid);
+                    if (!curr->arg.a_obj)
+                    {
+                        impossible("relink_timers: cant find o_id %u (func_index=%d, ghostly=%d)",
+                            nid, (int) curr->func_index, (int) ghostly);
+                        drop_it = TRUE;
+                    }
+                    else
+                    {
+                        curr->needs_fixup = 0;
+                        fixed_up_count++;
+                    }
                 }
-                curr->needs_fixup = 0;
+            }
+            else if (curr->kind == TIMER_MONSTER)
+            {
+                nid = 0;
+                if (ghostly)
+                {
+                    if (!lookup_id_mapping(curr->arg.a_uint, &nid))
+                    {
+                        impossible("relink_timers: no id mapping for m_id %u (func_index=%d)",
+                            curr->arg.a_uint, (int) curr->func_index);
+                        drop_it = TRUE;
+                    }
+                }
+                else
+                    nid = curr->arg.a_uint;
+
+                if (!drop_it)
+                {
+                    curr->arg.a_monst = find_mid_ew(nid);
+                    if (!curr->arg.a_monst)
+                    {
+                        impossible("relink_timers: cant find m_id %u (func_index=%d, ghostly=%d)",
+                            nid, (int) curr->func_index, (int) ghostly);
+                        drop_it = TRUE;
+                    }
+                    else
+                    {
+                        curr->needs_fixup = 0;
+                        fixed_up_count++;
+                    }
+                }
             }
             else
             {
-                panic("relink_timers 2");
+                /* needs_fixup on a timer that has no id to fix up: either a
+                   logic error in write_timer()/save_timers(), or a
+                   timer_element read back at the wrong offset.  Neither is
+                   safe to continue past, so this one stays fatal -- but print
+                   enough to tell the two apart.  kind_name() reports
+                   "unknown" for an out-of-range kind, which points at
+                   corruption rather than a save-side bug.  func_index is
+                   printed as a number and deliberately not used to index
+                   timeout_funcs[], which would be a fresh out-of-bounds read
+                   if the value is garbage (and .name only exists under
+                   VERBOSE_TIMER anyway). */
+                panic("relink_timers: bad kind %d (%s) with needs_fixup=%d, ghostly=%d, func_index=%d, tid=%llu, timeout=%lld, monstermoves=%lld, arg.a_uint=%u, entry %d, %d relinked so far",
+                    (int) curr->kind, kind_name(curr->kind), (int) curr->needs_fixup,
+                    (int) ghostly, (int) curr->func_index, (unsigned long long) curr->tid,
+                    (long long) curr->timeout, (long long) monstermoves,
+                    curr->arg.a_uint, entry_index, fixed_up_count);
                 return;
             }
         }
+
+        if (drop_it)
+        {
+            if (prev)
+                prev->next = curr->next;
+            else
+                timer_base = curr->next;
+            free((genericptr_t) curr);
+            /* prev stays the same */
+        }
+        else
+            prev = curr;
     }
 }
 

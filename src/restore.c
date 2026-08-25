@@ -1377,7 +1377,15 @@ getlev(int fd, int pid, xchar lev, boolean ghostly)
         if (wizard)
             pline1(trickbuf);
         nhclose(fd);
+#ifdef GNH_MOBILE
+        set_panic_handling(3, TRUE);
+        /* the leading literal keeps this grouping as a single Sentry issue;
+           trickbuf embeds the actual PID/level numbers, which would otherwise
+           fingerprint every occurrence as a separate one */
+        panic("getlev: level/PID mismatch: %s", trickbuf);
+#else
         trickery(trickbuf);
+#endif
         return;
     }
     restcemetery(fd, &level.bonesinfo);

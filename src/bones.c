@@ -899,6 +899,12 @@ getbones(void)
 
             Sprintf(errbuf, "This is bones level '%s', not '%s'!", oldbonesid,
                     bonesid);
+#ifdef GNH_MOBILE
+            (void)nhclose(fd);
+            impossible("%s", errbuf);
+            (void)delete_bonesfile(&u.uz);
+            return 0;
+#else
             if (wizard) 
             {
                 pline1(errbuf);
@@ -906,6 +912,7 @@ getbones(void)
             }
             (void)nhclose(fd);
             trickery(errbuf);
+#endif
         }
         else 
         {
@@ -943,9 +950,9 @@ getbones(void)
             resetobjs(level.buriedobjlist, TRUE);
         }
         (void)nhclose(fd);
+        sanitize_engravings();
+        u.uroleplay.numbones++;
     }
-    sanitize_engravings();
-    u.uroleplay.numbones++;
 
     if (wizard) 
     {

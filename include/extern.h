@@ -3859,6 +3859,8 @@ E void spot_stop_timers(xchar, xchar, short);
 E int64_t spot_time_expires(xchar, xchar, short);
 E int64_t spot_time_left(xchar, xchar, short);
 E boolean obj_is_local(struct obj *);
+E boolean obj_attach_invalid(struct obj *, const char *, boolean);
+E boolean mon_attach_invalid(struct monst *, const char *, boolean);
 E void save_timers(int, int, int);
 E void restore_timers(int, int, boolean, int64_t);
 E void reset_timers(void);
