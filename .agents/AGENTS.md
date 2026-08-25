@@ -168,7 +168,33 @@ A plan is **not** required for single-file fixes, typo and comment corrections, 
 
 ### Plan and Document Delivery
 
-> **⚠️ Known instruction conflict**: The Antigravity harness system prompt's artifact guidelines say to save "extensive reports and analysis summaries" to the artifact directory (`<appDataDir>/brain/<conversation-id>/`). **That conflicts with this section.** To satisfy both: first create the artifact in the artifact directory (so the UI can present it), then **also copy it** to the repository's `.plans/` directory as specified below with the `_v<N>.md` naming convention. Both locations must receive the file.
+#### Harness Conflicts
+
+Agent harnesses impose their own planning workflows, and several of them conflict with
+this section. **The harness rules always win** — these project rules are guidance layered
+inside whatever the harness permits, never an override of a harness restriction.
+
+**General rule**: `.plans/` is the **source of truth**. A harness-private plan file is a
+working/backup copy — another AI picking up the task reads the latest `_v<N>` from
+`.plans/` and writes its next revision there, never into a harness directory it does not
+share. Copy the document into `.plans/` **as soon as it is finished and immediately
+before asking the user to approve it** — the copy is part of delivering the plan, not
+part of executing it. The user then reviews a plan that already exists at its canonical
+location, and the document survives a rejection or a lost session.
+
+**A harness "no other file edits" restriction does not block this copy.** Such
+restrictions exist to stop the agent changing the project before the work is approved.
+Copying the plan document to its canonical location touches no source file, build file,
+or game data, and changes nothing about the project's behavior. Everything else —
+`task.md`, source edits, build steps — still waits for approval.
+
+| Harness | Conflict | How to satisfy both |
+|---------|----------|---------------------|
+| **Antigravity** | Its artifact guidelines say to save "extensive reports and analysis summaries" to the artifact directory (`<appDataDir>/brain/<conversation-id>/`). | First create the artifact in the artifact directory (so the UI can present it), then **also copy it** to `.plans/` with the `_v<N>.md` naming convention. Both locations must receive the file. |
+| **Claude Code plan mode** | The harness plan file (`~/.claude/plans/<slug>.md`) is the *only* file that may be edited while plan mode is active, and it uses an auto-generated slug name with in-place editing. | Write the plan there, **copy it to `.plans/YYYY-MM-DD/task_name/implementation_plan_v1.md`**, print the path, then request approval via the `ExitPlanMode` tool — in that order. In-place editing of the harness file is fine; `_v<N>` versioning binds to the `.plans/` copy only. |
+
+See the `implementation_planning` skill ("Harness Rules Take Precedence") for the full
+specification.
 
 - Deliver plans, reviews, analyses, reports, and other structured documents as
   **Markdown files** saved under the repository's gitignored `.plans/` directory:
@@ -186,8 +212,12 @@ A plan is **not** required for single-file fixes, typo and comment corrections, 
   reports). `task.md` and `walkthrough.md` are singular (no version suffix).
   Follow-up rounds use lettered variants (`task_A.md`, `walkthrough_A.md`, etc.)
   — see the `implementation_planning` skill for details.
-- Short plans may be presented inline instead.
+- Short plans may be presented inline instead — **except** under a harness plan mode, where
+  the plan file is always written.
 - **Wait for explicit user approval before editing any file.** Do not begin implementation alongside the plan.
+  Always print the plan's file path. Use the harness's own approval mechanism where one
+  exists (Claude Code: `ExitPlanMode`); otherwise print a brief summary and wait. Approval
+  is never skipped.
 - If the plan turns out to be wrong during implementation, stop and re-confirm rather than silently diverging from what the user approved.
 
 ### Subagent Use and Pair Programming

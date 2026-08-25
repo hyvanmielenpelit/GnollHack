@@ -13,6 +13,11 @@ GnollHack uses a **pair programming** model for AI-assisted development. The orc
 
 Every implementation plan MUST include a **Subagent Use** section, even when no subagents are needed (document why).
 
+> [!IMPORTANT]
+> **The harness decides *whether* and *when* subagents may be spawned — always follow the harness.** If the harness prescribes subagents (e.g. Claude Code plan mode mandates `Explore` agents for research and a `Plan` agent for design), use them. If it forbids or restricts them, that restriction wins.
+>
+> This skill governs only **how** to use subagents once the harness permits them: which agent type, which model tier, file-level exclusivity, and build-dependency sequencing.
+
 ## Implementation Plan Requirement
 
 Every implementation plan must contain the following section:
@@ -75,6 +80,32 @@ to whatever the current agent runner offers:
 
 Plans should keep writing `Inherit` / `Flash` in the assignment table; the
 orchestrator translates at spawn time.
+
+### Agent Type vs. Model Tier
+
+**Type and tier are independent axes.** The tier is *how capable* the subagent is;
+the type is *what it is allowed to do*. Harnesses that offer named agent types
+expect you to pick both. For Claude Code:
+
+| Agent type | Use for | Can edit files? |
+|------------|---------|-----------------|
+| `Explore` | Read-only fan-out search — locating code across many files or naming conventions | No |
+| `Plan` | Design work — producing an implementation approach from research already gathered | No |
+| `general-purpose` | Execution — the actual multi-file changes an approved plan calls for | Yes |
+
+The plan's **Subagent Assignments** table keeps naming the tier (`Inherit` /
+`Flash`); name the type as well when the harness offers one.
+
+### Research Agents Are Not What the Plan Governs
+
+Where a harness prescribes research subagents during planning (Claude Code plan
+mode, Phases 1–2), those agents are **read-only** and run *before* the plan
+exists. They are not covered by the plan's **Subagent Use** section and need no
+user approval — the harness already authorized them.
+
+The **Subagent Use** section governs **execution-phase** subagents: the ones that
+will edit files after the plan is approved. Those still require the user's
+approval through the plan.
 
 ## Planning Constraints
 

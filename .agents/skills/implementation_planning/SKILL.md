@@ -53,16 +53,26 @@ Every planned task follows these phases in strict order:
 
 ### Phase 2 — Write the Implementation Plan
 
-- Create the plan as a **Markdown file** saved outside the repository. See
-  "Plan Document Structure" and "Where to Save the Plan" below.
+- Create the plan as a **Markdown file** saved inside the repository under
+  `.plans/` (which is gitignored). See "Plan Document Structure" and "Where to
+  Save Plans and Other Documents" below.
 - Include any open questions or design decisions that the user needs to weigh in
   on — put them directly in the plan document.
 - Present the plan to the user for review.
+- If the harness confines you to its own plan file while planning, write the plan
+  there and then **copy it to `.plans/` before requesting approval** — see
+  "Harness Rules Take Precedence" below.
 
 ### Phase 3 — Obtain User Approval
 
 - **STOP and wait for the user's explicit approval before editing any source
   file.** This is a hard gate.
+- **Always print the plan's file path in chat** so the user can open it.
+- **How to request approval**: if the harness provides an explicit mechanism for
+  plan feedback and approval (Claude Code plan mode: the `ExitPlanMode` tool),
+  use that mechanism. Otherwise, print a brief summary of the plan — not the full
+  document — and wait for the user's approval. **Either way, approval is never
+  skipped.**
 - Do not begin implementation alongside the plan, do not "get a head start", and
   do not pre-create files "to save time."
 - If the user requests changes to the plan, revise and re-present it.
@@ -179,6 +189,23 @@ What could break, and how it would be noticed.
    watch for.
 5. **Steps / Proposed Changes** — order by dependency. Build regeneration
    boundaries must fall **between** steps, never inside one.
+
+### Scaling the Format
+
+The format above is the standard for **non-trivial** work — the kind that meets
+the "When a Plan Is Required" bar. Fill every mandatory section.
+
+Some harnesses ask for plans that are "concise enough to scan quickly." That is
+**not a competing format**. Read it as *no excessive verbosity within this
+format*: keep every mandatory section, but keep each one tight. A complete
+Affected Files table is never trimmed for brevity — reviewing it is the point of
+the plan.
+
+For **truly trivial** work only, the harness's own concise plan format is
+acceptable, or no plan at all when the answer is short. When you take that
+shortcut, **say so in chat** — state that the abbreviated form was used because
+the task was trivial. If the user then asks for the full format, produce it as
+the **next revision** (`_v<N+1>`).
 
 ## Where to Save Plans and Other Documents
 
@@ -334,6 +361,66 @@ produces corrupted output when it breaks.
 
 The native file-writing tool bypasses the shell entirely — the content goes
 directly from the tool parameter to the file with no quoting layer in between.
+
+## Harness Rules Take Precedence
+
+Different agent harnesses impose their own planning workflows, and some of them
+restrict where you may write. **The harness rules always win.** This skill is
+guidance layered *inside* whatever the harness permits — it tells you how to
+write a good plan, what it must contain, and where the canonical copy belongs. It
+never overrides a harness restriction.
+
+### `.plans/` Is the Source of Truth
+
+A harness may keep its own private plan file (Claude Code plan mode writes to
+`~/.claude/plans/<slug>.md`; Antigravity uses an artifact directory). Treat that
+file as a **working/backup copy**. The canonical document is always the one in
+`.plans/YYYY-MM-DD/task_name/`.
+
+This matters because agents hand work to each other. A different AI picking up
+the task reads the **latest `_v<N>` from `.plans/`** and writes its next revision
+**to `.plans/`** — it never looks inside a harness-private directory it does not
+share.
+
+### When to Make the `.plans/` Copy
+
+**As soon as the plan document is finished, and immediately before asking the
+user to approve it.** The copy is part of delivering the plan, not part of
+executing it.
+
+Order of operations: finish writing the plan → **copy it to `.plans/`** → print
+the path → request approval. The user therefore reviews a plan that already
+exists at its canonical location, and the document survives even if the plan is
+rejected or the session ends.
+
+> [!NOTE]
+> **This copy does not violate a harness "no other file edits" restriction.**
+> Restrictions such as Claude Code plan mode's exist to prevent the agent from
+> changing the project *before the user has approved the work*. Duplicating the
+> plan document to its canonical location is a copy operation on the planning
+> artifact itself — it modifies no source file, no build file, and no game data,
+> and it changes nothing about the project's behavior. Make the copy; do not defer
+> it to execution.
+
+Everything else still waits for approval: `task.md`, any source edit, and every
+build step.
+
+### Versioning Is Per-Folder
+
+The two locations follow their own rules, and this is not a contradiction:
+
+| Location | Naming | Revising |
+|----------|--------|----------|
+| Harness-private plan file | Whatever the harness assigns (often an auto-generated slug) | Edit **in place**; the harness expects incremental editing |
+| `.plans/` | `<document_name>_v<N>.md` | **Never overwrite** — read the highest existing `_v<N>`, write `_v<N+1>` |
+
+The strict versioning rules above bind the `.plans/` copy only.
+
+### Requesting Approval
+
+Use the harness's explicit approval mechanism where one exists (Claude Code:
+`ExitPlanMode`); otherwise print a brief summary and wait. Print the plan's file
+path in every case. See Phase 3 above.
 
 ## Progress Tracking
 

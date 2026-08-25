@@ -45,11 +45,14 @@ questions, or read-only investigation.
 ### Lifecycle (Five Phases)
 
 1. **Research** — read files, search code, understand implications. **No edits.**
-2. **Write the plan** — save it as a Markdown file **outside the repository**
-   (e.g., to `$TMPDIR/implementation_plan.md` or a user-configured planning
-   directory). Tell the user the file path so they can review it.
+2. **Write the plan** — save it as a Markdown file **inside the repository**
+   under the gitignored `.plans/` directory (see "Saving Plans and Other
+   Documents" below). Tell the user the file path so they can review it. Under
+   plan mode, write it to the harness plan file and copy it to `.plans/` **before**
+   requesting approval — see "Claude Code Plan Mode" below.
 3. **Wait for approval** — **STOP.** Do not edit any source file until the user
-   explicitly approves the plan.
+   explicitly approves the plan. Request approval via `ExitPlanMode` when plan
+   mode is active; otherwise print a brief summary and wait.
 4. **Execute** — implement the approved plan step by step. If significant
    deviation is needed, stop, update the plan, and re-confirm.
 5. **Verify** — build, test, confirm correctness. Summarize results.
@@ -117,3 +120,41 @@ To deliver a document:
 3. Print a **brief summary** (not the full document) directing the user to the file.
 4. For implementation plans, wait for the user's approval before proceeding to
    execution.
+
+### Claude Code Plan Mode
+
+Plan mode restricts editing to its own plan file (`~/.claude/plans/<slug>.md`),
+which conflicts with the `.plans/` rule above. **The harness wins.** Resolve it
+like this:
+
+1. **Write** the plan to the harness plan file. In-place editing of that file is
+   expected and does not violate the `_v<N>` rule — versioning binds to the
+   `.plans/` copy only.
+2. **Copy** the finished plan to
+   `.plans/YYYY-MM-DD/task_name/implementation_plan_v1.md` — **before** asking for
+   approval, not after. `.plans/` is the source of truth: other AIs read revisions
+   from there and never look in `~/.claude/`, and the document then survives a
+   rejection or a lost session. Creating the task directory is part of this step.
+3. **Print** both paths in chat, plus a brief summary.
+4. **Request approval** with the `ExitPlanMode` tool. Do not ask "is this plan
+   okay?" in chat text — that is what the tool is for.
+5. **On approval**, create `task.md`, execute, and finish with `walkthrough.md`.
+
+> **Why step 2 is allowed during plan mode**: plan mode's restriction exists to
+> keep the agent from changing the project before the user approves the work.
+> Copying the plan document to its canonical location is a copy of the planning
+> artifact — it touches no source file, build file, or game data. Everything that
+> would actually change the project still waits for approval.
+
+**Subagents**: plan mode prescribes `Explore` agents for research and a `Plan`
+agent for design. Follow the harness on whether and when to spawn them. The
+`subagent-guidelines` skill governs only *how* — agent type, model tier, and
+file-level exclusivity — and its mandatory **Subagent Use** plan section covers
+execution-phase agents, not read-only planning research.
+
+**Format**: the full GnollHack plan format applies to non-trivial work. Plan
+mode's "concise enough to scan quickly" means *no excessive verbosity within that
+format*, not a smaller format. For truly trivial work, the harness's concise form
+(or no plan at all) is acceptable — say in chat that the shortcut was taken
+because the task was trivial, and produce the full format as the next revision if
+the user asks.
