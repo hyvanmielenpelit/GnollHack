@@ -3697,13 +3697,17 @@ obj_attach_invalid(struct obj *obj, const char *funcname, boolean report)
 
     if (obj->where == OBJ_FREE)
     {
-        if (find_oid(obj->o_id) == obj)
+        int where = OBJ_FREE;
+        int base_where = OBJ_FREE;
+        if (find_oid_ex(obj->o_id, &where, &base_where) == obj)
         {
             /* reachable after all: obj->where is stale, the chain is real.
                Keep the attachment, it will relink correctly. */
             if (report)
-                impossible("%s: attached object is OBJ_FREE but still on a chain (o_id=%u, otyp=%d, corpsenm=%d, timed=%d, lamplit=%d, makingsound=%d)",
-                    funcname, obj->o_id, obj->otyp, obj->corpsenm, obj->timed, is_obj_lamplit(obj), is_obj_makingsound(obj));
+                impossible("%s: attached object is OBJ_FREE but still on chain %d [base=%d] (o_id=%u, otyp=%d, corpsenm=%d, timed=%d, lamplit=%d, makingsound=%d)",
+                    funcname, where, base_where, obj->o_id, obj->otyp, obj->corpsenm, obj->timed, is_obj_lamplit(obj), is_obj_makingsound(obj));
+            /* Fix obj->where based on where the object was found */
+            obj->where = where;
             return FALSE;
         }
 

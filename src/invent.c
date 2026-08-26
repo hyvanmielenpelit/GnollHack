@@ -2443,7 +2443,8 @@ o_on(unsigned int id, struct obj *objchn)
 {
     struct obj *temp;
 
-    while (objchn) {
+    while (objchn) 
+    {
         if (objchn->o_id == id)
             return objchn;
         if (Has_contents(objchn) && (temp = o_on(id, objchn->cobj)))
@@ -2454,10 +2455,38 @@ o_on(unsigned int id, struct obj *objchn)
 }
 
 struct obj*
+o_on_ex(unsigned int id, struct obj* objchn, boolean* is_contained_ptr)
+{
+    struct obj* temp;
+
+    while (objchn) 
+    {
+        if (objchn->o_id == id)
+        {
+            if (is_contained_ptr)
+                *is_contained_ptr = FALSE;
+            return objchn;
+        }
+        if (Has_contents(objchn) && (temp = o_on_ex(id, objchn->cobj, (boolean*)0)))
+        {
+            if (is_contained_ptr)
+                *is_contained_ptr = TRUE;
+            return temp;
+        }
+        objchn = objchn->nobj;
+    }
+    if (is_contained_ptr)
+        *is_contained_ptr = FALSE;
+    return (struct obj*)0;
+}
+
+
+struct obj*
 o_on_open_inventory(unsigned int id)
 {
     struct obj* objchn = invent;
-    while (objchn) {
+    while (objchn) 
+    {
         if (objchn->o_id == id)
             return objchn;
         /* Does not check contents, since the item needs to be in open inventory */
@@ -2471,7 +2500,8 @@ o_on_memory(unsigned int id, struct obj *objchn)
 {
     struct obj* temp;
 
-    while (objchn) {
+    while (objchn) 
+    {
         if (objchn->o_id_memory == id)
             return objchn;
         if (Has_contents(objchn) && (temp = o_on_memory(id, objchn->cobj)))
@@ -2486,7 +2516,8 @@ m_on_memory(unsigned int mid, struct obj *objchn)
 {
     struct obj* temp;
 
-    while (objchn) {
+    while (objchn) 
+    {
         if (objchn->m_id_memory == mid)
             return objchn;
         if (Has_contents(objchn) && (temp = m_on_memory(mid, objchn->cobj)))
@@ -2501,7 +2532,8 @@ reduce_item_cooldown(struct obj *objchn)
 {
     boolean reached_zero = FALSE;
 
-    while (objchn) {
+    while (objchn) 
+    {
         //Reduce cooldown timer
         if (objchn->cooldownleft > 0)
         {
@@ -2551,7 +2583,8 @@ g_at(int x, int y)
 {
     struct obj *obj = level.objects[x][y];
 
-    while (obj) {
+    while (obj) 
+    {
         if (obj->oclass == COIN_CLASS)
             return obj;
         obj = obj->nexthere;

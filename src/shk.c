@@ -2132,6 +2132,77 @@ find_oid(unsigned id)
     return (struct obj *) 0;
 }
 
+struct obj*
+find_oid_ex(unsigned id, int* where_ptr, int* base_where_ptr)
+{
+    struct obj* obj;
+    struct monst* mon, * mmtmp[3];
+    int i;
+    boolean is_contained = FALSE;
+
+    /* first check various obj lists directly */
+    if ((obj = o_on_ex(id, invent, &is_contained)) != 0)
+    {
+        if (where_ptr)
+            *where_ptr = is_contained ? OBJ_CONTAINED : OBJ_INVENT;
+        if (base_where_ptr)
+            *base_where_ptr = OBJ_INVENT;
+        return obj;
+    }
+    if ((obj = o_on_ex(id, fobj, &is_contained)) != 0)
+    {
+        if (where_ptr)
+            *where_ptr = is_contained ? OBJ_CONTAINED : OBJ_FLOOR;
+        if (base_where_ptr)
+            *base_where_ptr = OBJ_FLOOR;
+        return obj;
+    }
+    if ((obj = o_on_ex(id, level.buriedobjlist, &is_contained)) != 0)
+    {
+        if (where_ptr)
+            *where_ptr = is_contained ? OBJ_CONTAINED : OBJ_BURIED;
+        if (base_where_ptr)
+            *base_where_ptr = OBJ_BURIED;
+        return obj;
+    }
+    if ((obj = o_on_ex(id, migrating_objs, &is_contained)) != 0)
+    {
+        if (where_ptr)
+            *where_ptr = is_contained ? OBJ_CONTAINED : OBJ_MIGRATING;
+        if (base_where_ptr)
+            *base_where_ptr = OBJ_MIGRATING;
+        return obj;
+    }
+    if ((obj = o_on_ex(id, magic_objs, &is_contained)) != 0)
+    {
+        if (where_ptr)
+            *where_ptr = is_contained ? OBJ_CONTAINED : OBJ_MAGIC;
+        if (base_where_ptr)
+            *base_where_ptr = OBJ_MAGIC;
+        return obj;
+    }
+
+    /* not found yet; check inventory for members of various monst lists */
+    mmtmp[0] = fmon;
+    mmtmp[1] = migrating_mons;
+    mmtmp[2] = mydogs; /* for use during level changes */
+    for (i = 0; i < 3; i++)
+        for (mon = mmtmp[i]; mon; mon = mon->nmon)
+            if ((obj = o_on_ex(id, mon->minvent, &is_contained)) != 0)
+            {
+                if (where_ptr)
+                    *where_ptr = is_contained ? OBJ_CONTAINED : OBJ_MINVENT;
+                if (base_where_ptr)
+                    *base_where_ptr = OBJ_MINVENT;
+                return obj;
+            }
+
+    if (where_ptr)
+        *where_ptr = OBJ_FREE;
+    /* not found at all */
+    return (struct obj*)0;
+}
+
 /*
  * Parameters:
  *   nochrg: alternate return value: 1: no charge, 0: shop owned,
