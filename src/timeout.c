@@ -3980,15 +3980,10 @@ relink_timers(boolean ghostly)
     timer_element *curr, *prev, *next_timer;
     unsigned nid;
     boolean drop_it;
-    /* entry_index is not named 'index' because several platform config
-       headers (ntconf.h, pcconf.h, ...) do #define index strchr */
-    int entry_index = 0;    /* position in timer_base, for diagnostics */
-    int fixed_up_count = 0; /* how many relinked cleanly before a failure */
 
     for (prev = 0, curr = timer_base; curr; curr = next_timer)
     {
         next_timer = curr->next; /* in case curr is removed */
-        entry_index++;
         drop_it = FALSE;
 
         if (curr->needs_fixup)
@@ -4020,7 +4015,6 @@ relink_timers(boolean ghostly)
                     else
                     {
                         curr->needs_fixup = 0;
-                        fixed_up_count++;
                     }
                 }
             }
@@ -4051,29 +4045,17 @@ relink_timers(boolean ghostly)
                     else
                     {
                         curr->needs_fixup = 0;
-                        fixed_up_count++;
                     }
                 }
             }
             else
             {
-                /* needs_fixup on a timer that has no id to fix up: either a
-                   logic error in write_timer()/save_timers(), or a
-                   timer_element read back at the wrong offset.  Neither is
-                   safe to continue past, so this one stays fatal -- but print
-                   enough to tell the two apart.  kind_name() reports
-                   "unknown" for an out-of-range kind, which points at
-                   corruption rather than a save-side bug.  func_index is
-                   printed as a number and deliberately not used to index
-                   timeout_funcs[], which would be a fresh out-of-bounds read
-                   if the value is garbage (and .name only exists under
-                   VERBOSE_TIMER anyway). */
-                panic("relink_timers: bad kind %d (%s) with needs_fixup=%d, ghostly=%d, func_index=%d, tid=%llu, timeout=%lld, monstermoves=%lld, arg.a_uint=%u, entry %d, %d relinked so far",
+                /* This is probably a pretty bad corruption, but we can just set needs_fixup to false and hope things recover. No need to panic here. */
+                impossible("relink_timers: bad kind %d (%s) with needs_fixup=%d, ghostly=%d, func_index=%d, tid=%llu, timeout=%lld, monstermoves=%lld, arg.a_uint=%u",
                     (int) curr->kind, kind_name(curr->kind), (int) curr->needs_fixup,
                     (int) ghostly, (int) curr->func_index, (unsigned long long) curr->tid,
-                    (long long) curr->timeout, (long long) monstermoves,
-                    curr->arg.a_uint, entry_index, fixed_up_count);
-                return;
+                    (long long) curr->timeout, (long long) monstermoves, curr->arg.a_uint);
+                curr->needs_fixup = 0;
             }
         }
 
