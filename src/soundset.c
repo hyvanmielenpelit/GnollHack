@@ -18961,59 +18961,108 @@ sound_stats(const char *hdrfmt, char *hdrbuf, int64_t *count, size_t *size)
     }
 }
 
-/* Relink all sounds that are so marked. */
+/*
+ * Relink all sounds that are so marked.
+ *
+ * A sound source whose object, monster, or region cannot be found refers
+ * to something that is not in the save file at all, so there is nothing
+ * to relink it to.  Such a source is dropped with an impossible() rather
+ * than kept with a NULL pointer, which would crash later when the list
+ * is traversed (e.g. in maybe_write_soundsource).
+ */
 void
 relink_sound_sources(boolean ghostly)
 {
-    char which;
     unsigned nid;
-    sound_source* ss;
+    sound_source *ss, *prev, *next_ss;
+    boolean drop_it;
 
-    for (ss = sound_base; ss; ss = ss->next)
+    for (prev = 0, ss = sound_base; ss; ss = next_ss)
     {
+        next_ss = ss->next; /* in case ss is removed */
+        drop_it = FALSE;
+
         if (ss->flags & SSF_NEEDS_FIXUP)
         {
-            if (ss->type == SOUNDSOURCE_OBJECT || ss->type == SOUNDSOURCE_MONSTER || ss->type == SOUNDSOURCE_LOCATION || ss->type == SOUNDSOURCE_REGION)
+            if (ss->type == SOUNDSOURCE_OBJECT || ss->type == SOUNDSOURCE_MONSTER)
             {
-                if (ghostly && ss->type != SOUNDSOURCE_LOCATION && ss->type != SOUNDSOURCE_REGION)
+                nid = 0;
+                if (ghostly)
                 {
                     if (!lookup_id_mapping(ss->id.a_uint, &nid))
-                        impossible("relink_sound_sources: no id mapping");
+                    {
+                        impossible("relink_sound_sources: no id mapping for %c_id %u",
+                            ss->type == SOUNDSOURCE_OBJECT ? 'o' : 'm', ss->id.a_uint);
+                        drop_it = TRUE;
+                    }
                 }
                 else
                     nid = ss->id.a_uint;
 
-                if (ss->type == SOUNDSOURCE_OBJECT)
+                if (!drop_it)
                 {
-                    which = 'o';
-                    ss->id.a_obj = find_oid(nid);
-                }
-                else if (ss->type == SOUNDSOURCE_MONSTER)
-                {
-                    which = 'm';
-                    ss->id.a_monst = find_mid(nid, FM_EVERYWHERE);
-                }
-                else if (ss->type == SOUNDSOURCE_LOCATION)
-                {
-                    which = 'l';
-                    ss->id = zeroany;
-                    ss->id.a_coord.x = ss->x;
-                    ss->id.a_coord.y = ss->y;
-                }
-                else if (ss->type == SOUNDSOURCE_REGION)
-                {
-                    which = 'r';
-                    ss->id.a_nhregion = find_rid(nid);
-                }
+                    if (ss->type == SOUNDSOURCE_OBJECT)
+                    {
+                        ss->id.a_obj = find_oid(nid);
+                        if (!ss->id.a_obj)
+                        {
+                            impossible("relink_sound_sources: cant find o_id %u", nid);
+                            drop_it = TRUE;
+                        }
+                    }
+                    else
+                    {
+                        ss->id.a_monst = find_mid(nid, FM_EVERYWHERE);
+                        if (!ss->id.a_monst)
+                        {
+                            impossible("relink_sound_sources: cant find m_id %u", nid);
+                            drop_it = TRUE;
+                        }
+                    }
 
-                if (!ss->id.a_monst)
-                    impossible("relink_sound_sources: cant find %c_id %d", which, nid);
+                    if (!drop_it)
+                        ss->flags &= ~SSF_NEEDS_FIXUP;
+                }
+            }
+            else if (ss->type == SOUNDSOURCE_LOCATION)
+            {
+                /* locations use coordinates, no lookup needed */
+                ss->id = zeroany;
+                ss->id.a_coord.x = ss->x;
+                ss->id.a_coord.y = ss->y;
+                ss->flags &= ~SSF_NEEDS_FIXUP;
+            }
+            else if (ss->type == SOUNDSOURCE_REGION)
+            {
+                /* regions don't go through ghostly id mapping */
+                nid = ss->id.a_uint;
+                ss->id.a_nhregion = find_rid(nid);
+                if (!ss->id.a_nhregion)
+                {
+                    impossible("relink_sound_sources: cant find r_id %u", nid);
+                    drop_it = TRUE;
+                }
+                else
+                    ss->flags &= ~SSF_NEEDS_FIXUP;
             }
             else
+            {
                 impossible("relink_sound_sources: bad type (%d)", ss->type);
-
-            ss->flags &= ~SSF_NEEDS_FIXUP;
+                drop_it = TRUE;
+            }
         }
+
+        if (drop_it)
+        {
+            if (prev)
+                prev->next = ss->next;
+            else
+                sound_base = ss->next;
+            free((genericptr_t) ss);
+            /* prev stays the same */
+        }
+        else
+            prev = ss;
     }
 }
 

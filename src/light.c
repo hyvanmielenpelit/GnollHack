@@ -401,54 +401,95 @@ light_stats(const char *hdrfmt, char *hdrbuf, int64_t *count, size_t *size)
     }
 }
 
-/* Relink all lights that are so marked. */
+/*
+ * Relink all lights that are so marked.
+ *
+ * A light source whose object or monster cannot be found refers to
+ * something that is not in the save file at all, so there is nothing to
+ * relink it to.  Such a source is dropped with an impossible() rather
+ * than kept with a NULL pointer, which would crash later when the list
+ * is traversed (e.g. in vision_recalc or maybe_write_ls).
+ */
 void
 relink_light_sources(boolean ghostly)
 {
-    char which;
     unsigned nid;
-    light_source *ls;
+    light_source *ls, *prev, *next_ls;
+    boolean drop_it;
 
-    for (ls = light_base; ls; ls = ls->next)
+    for (prev = 0, ls = light_base; ls; ls = next_ls)
     {
+        next_ls = ls->next; /* in case ls is removed */
+        drop_it = FALSE;
+
         if (ls->flags & LSF_NEEDS_FIXUP)
         {
-            if (ls->type == LS_OBJECT || ls->type == LS_MONSTER || ls->type == LS_LOCATION)
+            if (ls->type == LS_OBJECT || ls->type == LS_MONSTER)
             {
-                if (ghostly && ls->type != LS_LOCATION)
+                nid = 0;
+                if (ghostly)
                 {
                     if (!lookup_id_mapping(ls->id.a_uint, &nid))
-                        impossible("relink_light_sources: no id mapping");
+                    {
+                        impossible("relink_light_sources: no id mapping for %c_id %u",
+                            ls->type == LS_OBJECT ? 'o' : 'm', ls->id.a_uint);
+                        drop_it = TRUE;
+                    }
                 }
                 else
                     nid = ls->id.a_uint;
 
-                if (ls->type == LS_OBJECT)
+                if (!drop_it)
                 {
-                    which = 'o';
-                    ls->id.a_obj = find_oid(nid);
-                } 
-                else if (ls->type == LS_MONSTER)
-                {
-                    which = 'm';
-                    ls->id.a_monst = find_mid(nid, FM_EVERYWHERE);
-                }
-                else if (ls->type == LS_LOCATION)
-                {
-                    which = 'l';
-                    ls->id = zeroany;
-                    ls->id.a_coord.x = ls->x;
-                    ls->id.a_coord.y = ls->y;
-                }
+                    if (ls->type == LS_OBJECT)
+                    {
+                        ls->id.a_obj = find_oid(nid);
+                        if (!ls->id.a_obj)
+                        {
+                            impossible("relink_light_sources: cant find o_id %u", nid);
+                            drop_it = TRUE;
+                        }
+                    }
+                    else
+                    {
+                        ls->id.a_monst = find_mid(nid, FM_EVERYWHERE);
+                        if (!ls->id.a_monst)
+                        {
+                            impossible("relink_light_sources: cant find m_id %u", nid);
+                            drop_it = TRUE;
+                        }
+                    }
 
-                if (!ls->id.a_monst)
-                    impossible("relink_light_sources: cant find %c_id %d", which, nid);
+                    if (!drop_it)
+                        ls->flags &= ~LSF_NEEDS_FIXUP;
+                }
+            }
+            else if (ls->type == LS_LOCATION)
+            {
+                /* locations use coordinates, no lookup needed */
+                ls->id = zeroany;
+                ls->id.a_coord.x = ls->x;
+                ls->id.a_coord.y = ls->y;
+                ls->flags &= ~LSF_NEEDS_FIXUP;
             }
             else
+            {
                 impossible("relink_light_sources: bad type (%d)", ls->type);
-
-            ls->flags &= ~LSF_NEEDS_FIXUP;
+                drop_it = TRUE;
+            }
         }
+
+        if (drop_it)
+        {
+            if (prev)
+                prev->next = ls->next;
+            else
+                light_base = ls->next;
+            free((genericptr_t) ls);
+            /* prev stays the same */
+        }
+        else
+            prev = ls;
     }
 }
 
