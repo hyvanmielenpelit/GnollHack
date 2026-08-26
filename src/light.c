@@ -431,8 +431,8 @@ relink_light_sources(boolean ghostly)
                 {
                     if (!lookup_id_mapping(ls->id.a_uint, &nid))
                     {
-                        impossible("relink_light_sources: no id mapping for %c_id %u",
-                            ls->type == LS_OBJECT ? 'o' : 'm', ls->id.a_uint);
+                        impossible("relink_light_sources: no id mapping for %c_id %u (ghostly=%d)",
+                            ls->type == LS_OBJECT ? 'o' : 'm', ls->id.a_uint, (int) ghostly);
                         drop_it = TRUE;
                     }
                 }
@@ -446,7 +446,7 @@ relink_light_sources(boolean ghostly)
                         ls->id.a_obj = find_oid(nid);
                         if (!ls->id.a_obj)
                         {
-                            impossible("relink_light_sources: cant find o_id %u", nid);
+                            impossible("relink_light_sources: cant find o_id %u (ghostly=%d)", nid, (int) ghostly);
                             drop_it = TRUE;
                         }
                     }
@@ -455,7 +455,7 @@ relink_light_sources(boolean ghostly)
                         ls->id.a_monst = find_mid(nid, FM_EVERYWHERE);
                         if (!ls->id.a_monst)
                         {
-                            impossible("relink_light_sources: cant find m_id %u", nid);
+                            impossible("relink_light_sources: cant find m_id %u (ghostly=%d)", nid, (int) ghostly);
                             drop_it = TRUE;
                         }
                     }
@@ -474,7 +474,7 @@ relink_light_sources(boolean ghostly)
             }
             else
             {
-                impossible("relink_light_sources: bad type (%d)", ls->type);
+                impossible("relink_light_sources: bad type (%d, ghostly=%d)", ls->type, (int) ghostly);
                 drop_it = TRUE;
             }
         }

@@ -18991,8 +18991,8 @@ relink_sound_sources(boolean ghostly)
                 {
                     if (!lookup_id_mapping(ss->id.a_uint, &nid))
                     {
-                        impossible("relink_sound_sources: no id mapping for %c_id %u",
-                            ss->type == SOUNDSOURCE_OBJECT ? 'o' : 'm', ss->id.a_uint);
+                        impossible("relink_sound_sources: no id mapping for %c_id %u (ghostly=%d)",
+                            ss->type == SOUNDSOURCE_OBJECT ? 'o' : 'm', ss->id.a_uint, (int) ghostly);
                         drop_it = TRUE;
                     }
                 }
@@ -19006,7 +19006,7 @@ relink_sound_sources(boolean ghostly)
                         ss->id.a_obj = find_oid(nid);
                         if (!ss->id.a_obj)
                         {
-                            impossible("relink_sound_sources: cant find o_id %u", nid);
+                            impossible("relink_sound_sources: cant find o_id %u (ghostly=%d)", nid, (int) ghostly);
                             drop_it = TRUE;
                         }
                     }
@@ -19015,7 +19015,7 @@ relink_sound_sources(boolean ghostly)
                         ss->id.a_monst = find_mid(nid, FM_EVERYWHERE);
                         if (!ss->id.a_monst)
                         {
-                            impossible("relink_sound_sources: cant find m_id %u", nid);
+                            impossible("relink_sound_sources: cant find m_id %u (ghostly=%d)", nid, (int) ghostly);
                             drop_it = TRUE;
                         }
                     }
@@ -19039,7 +19039,7 @@ relink_sound_sources(boolean ghostly)
                 ss->id.a_nhregion = find_rid(nid);
                 if (!ss->id.a_nhregion)
                 {
-                    impossible("relink_sound_sources: cant find r_id %u", nid);
+                    impossible("relink_sound_sources: cant find r_id %u (ghostly=%d)", nid, (int) ghostly);
                     drop_it = TRUE;
                 }
                 else
@@ -19047,7 +19047,7 @@ relink_sound_sources(boolean ghostly)
             }
             else
             {
-                impossible("relink_sound_sources: bad type (%d)", ss->type);
+                impossible("relink_sound_sources: bad type (%d, ghostly=%d)", ss->type, (int) ghostly);
                 drop_it = TRUE;
             }
         }
