@@ -19047,6 +19047,12 @@ relink_sound_sources(boolean ghostly)
             }
             else
             {
+                if (restoring)
+                {
+                    set_panic_handling(3, TRUE);
+                    panic("relink_sound_sources: bad type (%d, ghostly=%d)", ss->type, (int) ghostly);
+                    return;
+                }
                 impossible("relink_sound_sources: bad type (%d, ghostly=%d)", ss->type, (int) ghostly);
                 drop_it = TRUE;
             }

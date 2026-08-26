@@ -77,6 +77,7 @@ static boolean mon_is_local(struct monst*);
 static boolean timer_is_local(timer_element*);
 static boolean timer_attach_invalid(timer_element*, boolean);
 static int maybe_write_timer(int, int, boolean);
+static boolean timer_looks_corrupt(timer_element*);
 
 static void stoned_dialogue(void);
 static void vomiting_dialogue(void);
@@ -3959,6 +3960,29 @@ timer_stats(const char *hdrfmt, char *hdrbuf, int64_t *count, size_t *size)
     }
 }
 
+/*
+ * Return TRUE if the timer_element's fields look inconsistent with a
+ * validly-written timer, suggesting save-file corruption rather than a
+ * one-off logic bug such as a stale needs_fixup flag on a level/global
+ * timer.
+ *
+ * The checks are conservative: any single field being out of its valid
+ * range is enough to flag the whole struct.  This is called only after
+ * the kind has already been found unexpected, so a FALSE here means
+ * "the rest of the struct looks fine, probably just a flag error".
+ */
+static boolean
+timer_looks_corrupt(timer_element *timer)
+{
+    if (timer->kind < 0 || timer->kind >= MAX_TIMER_TYPES)
+        return TRUE;
+    if (timer->func_index < 0 || timer->func_index >= NUM_TIME_FUNCS)
+        return TRUE;
+    if (timer->needs_fixup != 0 && timer->needs_fixup != 1)
+        return TRUE;
+    return FALSE;
+}
+
 /* reset all timers that are marked for reseting
  *
  * A timer whose object or monster cannot be found refers to something that
@@ -4048,14 +4072,46 @@ relink_timers(boolean ghostly)
                     }
                 }
             }
+            else if (curr->kind == TIMER_LEVEL || curr->kind == TIMER_GLOBAL)
+            {
+                /* Valid kind that carries no pointer to fix up --
+                   needs_fixup should never be set on these.  Check
+                   whether the rest of the struct looks sane: if it
+                   does, this is just a stale flag; if not, the struct
+                   was likely read at the wrong offset or is corrupt. */
+                if (restoring && timer_looks_corrupt(curr))
+                {
+                    set_panic_handling(3, TRUE);
+                    panic("relink_timers: level/global timer looks corrupt: kind=%d (%s), needs_fixup=%d, ghostly=%d, func_index=%d, tid=%llu, timeout=%lld, monstermoves=%lld, arg.a_uint=%u",
+                        (int) curr->kind, kind_name(curr->kind), (int) curr->needs_fixup,
+                        (int) ghostly, (int) curr->func_index, (unsigned long long) curr->tid,
+                        (long long) curr->timeout, (long long) monstermoves, curr->arg.a_uint);
+                    return;
+                }
+                impossible("relink_timers: unexpected needs_fixup on kind %d (%s), ghostly=%d, func_index=%d, tid=%llu, timeout=%lld, arg.a_uint=%u",
+                    (int) curr->kind, kind_name(curr->kind),
+                    (int) ghostly, (int) curr->func_index, (unsigned long long) curr->tid,
+                    (long long) curr->timeout, curr->arg.a_uint);
+                curr->needs_fixup = 0;
+            }
             else
             {
-                /* This is probably a pretty bad corruption, but we can just set needs_fixup to false and hope things recover. No need to panic here. */
-                impossible("relink_timers: bad kind %d (%s) with needs_fixup=%d, ghostly=%d, func_index=%d, tid=%llu, timeout=%lld, monstermoves=%lld, arg.a_uint=%u",
+                /* kind is outside the valid range -- the struct is
+                   garbage, not just a flag error */
+                if (restoring)
+                {
+                    set_panic_handling(3, TRUE);
+                    panic("relink_timers: garbage kind %d (%s) with needs_fixup=%d, ghostly=%d, func_index=%d, tid=%llu, timeout=%lld, monstermoves=%lld, arg.a_uint=%u",
+                        (int) curr->kind, kind_name(curr->kind), (int) curr->needs_fixup,
+                        (int) ghostly, (int) curr->func_index, (unsigned long long) curr->tid,
+                        (long long) curr->timeout, (long long) monstermoves, curr->arg.a_uint);
+                    return;
+                }
+                impossible("relink_timers: garbage kind %d (%s) with needs_fixup=%d, ghostly=%d, func_index=%d, tid=%llu, timeout=%lld, monstermoves=%lld, arg.a_uint=%u",
                     (int) curr->kind, kind_name(curr->kind), (int) curr->needs_fixup,
                     (int) ghostly, (int) curr->func_index, (unsigned long long) curr->tid,
                     (long long) curr->timeout, (long long) monstermoves, curr->arg.a_uint);
-                curr->needs_fixup = 0;
+                drop_it = TRUE;
             }
         }
 

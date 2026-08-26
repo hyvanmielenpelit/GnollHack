@@ -17,7 +17,8 @@ enum timer_type {
     TIMER_LEVEL = 0,   /* event specific to level */
     TIMER_GLOBAL,  /* event follows current play */
     TIMER_OBJECT,  /* event follows a object */
-    TIMER_MONSTER /* event follows a monster */
+    TIMER_MONSTER, /* event follows a monster */
+    MAX_TIMER_TYPES
 };
 
 /* save/restore timer ranges */
