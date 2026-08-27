@@ -404,6 +404,12 @@ namespace GnollHackX
         public const int NumGuiAchievementLongs = ((int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS - 1) / 64 + 1;
         public const ulong DefaultMetalGPUCacheSize = 256UL * 1024UL * 1024UL;
         public const ulong MaxMetalGPUCacheSize = 384UL * 1024UL * 1024UL;
+
+        /* iOS resume-freeze safety nets */
+        public const int ParkAutoResumeTimeoutMs = 1500;    /* App verifiably active this long while parked → auto-resume */
+        public const int LostResumeDetectTimeoutMs = 400;   /* Frames still arriving while IsSuspended → force HandleResume */
+        public const long MaxResizingDurationTicks = TimeSpan.TicksPerSecond; /* _isResizing safety cap (1 s) */
+        public const int PaintStallWarningMs = 3000;        /* Diagnostic only: warn if paint stalls this long */
     }
 
 }

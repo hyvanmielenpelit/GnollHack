@@ -3558,18 +3558,56 @@ namespace GnollHackX
                     GHApp.GameSaved = true;
                     GHApp.GameSaveResult = cmd_param;
                     GHApp.SavingGame = false;
-                    if(cmd_param != 0)
+                    if (cmd_param != 0)
                     {
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.CloseAllDialogs));
                     }
-                    while (!_restoreRequested)
+                    Interlocked.Exchange(ref _resumeRequestSent, 0); /* New park episode */
+                    IsWaitingForResume = true;
+                    GHApp.AddSentryBreadcrumb("GUI_CMD_WAIT_FOR_RESUME: Parking game thread",
+                                              GHConstants.SentryGnollHackGeneralCategoryName);
+                    long activeSinceTicks = 0;
+                    try
                     {
-                        Thread.Sleep(GHConstants.PollingInterval);
-                        _saveRequested = false; //Should be the case. but just in case there is some sort of a mixup going on so that we do not save and restore again in PollResponseQueue
-                        PollResponseQueue();
+                        while (!_restoreRequested)
+                        {
+                            Thread.Sleep(GHConstants.PollingInterval);
+                            _saveRequested = false; //Should be the case. but just in case there is some sort of a mixup going on so that we do not save and restore again in PollResponseQueue
+                            PollResponseQueue();
+
+                            /* Safety net: never stay parked while the app is verifiably
+                             * foreground-active. PlatformAppActive is refreshed only by
+                             * the render loop (main thread, and only while parked or
+                             * suspended), so both conditions require the app to be on
+                             * screen and active. */
+                            if (GHApp.PlatformAppActive && !GHApp.IsSuspended)
+                            {
+                                if (activeSinceTicks == 0)
+                                    activeSinceTicks = DateTime.UtcNow.Ticks;
+                                else if ((DateTime.UtcNow.Ticks - activeSinceTicks) / TimeSpan.TicksPerMillisecond
+                                         > GHConstants.ParkAutoResumeTimeoutMs)
+                                {
+                                    /* MaybeWriteGHLog with addBreadcrumb also records the
+                                     * Sentry breadcrumb, so do not add it separately. */
+                                    GHApp.MaybeWriteGHLog("GUI_CMD_WAIT_FOR_RESUME: Auto-resuming after timeout"
+                                                          + " (app active but no resume request arrived)",
+                                                          true, GHConstants.SentryGnollHackGeneralCategoryName);
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                activeSinceTicks = 0;
+                            }
+                        }
                     }
-                    _restoreRequested = false;
-                    GHApp.AddSentryBreadcrumb("GHGame GUI_CMD_WAIT_FOR_RESUME: Starting to restore saved game", GHConstants.SentryGnollHackGeneralCategoryName);
+                    finally
+                    {
+                        IsWaitingForResume = false;
+                        _restoreRequested = false;
+                        Interlocked.Exchange(ref _resumeRequestSent, 0);
+                    }
+                    GHApp.AddSentryBreadcrumb("GUI_CMD_WAIT_FOR_RESUME: Starting to restore saved game", GHConstants.SentryGnollHackGeneralCategoryName);
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_DIAGNOSTIC_DATA:
                     if (PlayingReplay)
@@ -4388,6 +4426,35 @@ namespace GnollHackX
         bool _saveRequested = false;
         bool _restoreRequested = false;
         bool _checkPointRequested = false;
+        private int _isWaitingForResume = 0;
+        private int _resumeRequestSent = 0;
+
+        /// <summary>
+        /// True while the game thread is parked inside GUI_CMD_WAIT_FOR_RESUME.
+        /// Read by the render-loop watchdog and EnsureGameThreadResumed.
+        /// </summary>
+        public bool IsWaitingForResume
+        {
+            get { return Interlocked.CompareExchange(ref _isWaitingForResume, 0, 0) != 0; }
+            private set { Interlocked.Exchange(ref _isWaitingForResume, value ? 1 : 0); }
+        }
+
+        /// <summary>
+        /// Requests that a parked game thread resume, at most once per park episode.
+        /// Several callers may legitimately try (Window.Activated, iOS OnActivated,
+        /// CheckResumeSavedGame); enqueueing more than one response would leave a stale
+        /// _restoreRequested behind that makes the *next* park exit immediately.
+        /// </summary>
+        /// <returns>True if a resume request was enqueued by this call.</returns>
+        public bool TryRequestResumeFromPark()
+        {
+            if (PlayingReplay || !IsWaitingForResume)
+                return false;
+            if (Interlocked.CompareExchange(ref _resumeRequestSent, 1, 0) != 0)
+                return false; /* Already requested for this park episode */
+            StopWaitAndResumeSavedGame();
+            return true;
+        }
 
         private void RequestSaveGame()
         {

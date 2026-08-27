@@ -1129,13 +1129,31 @@ namespace GnollHackX.Pages.Game
         private int _isResizing;
         private int _resizeVersion;
         private CancellationTokenSource _resizeCts;
-        public bool IsResizing => Volatile.Read(ref _isResizing) != 0;
+        private long _resizeStartTicks;
+        public bool IsResizing => Volatile.Read(ref _isResizing) != 0
+            && (DateTime.UtcNow.Ticks - Volatile.Read(ref _resizeStartTicks)) < GHConstants.MaxResizingDurationTicks;
 
         void DoResizeCanvasUpdatePause()
         {
             /* This is needed especially on Windows while SKGLView is being resized */
             int myVersion = Interlocked.Increment(ref _resizeVersion);
+
+            /* Anomaly check: was the previous flag still set although its deadline had
+             * already expired? That means the clearing task never ran, which used to
+             * freeze every canvas permanently. It is now harmless (IsResizing is
+             * deadline-bounded), but it is worth a breadcrumb so we learn whether it
+             * really happens. Routine set/clear traces below go to the log file only:
+             * a Windows drag-resize fires this method many times per second and would
+             * otherwise flood the Sentry breadcrumb buffer we need for diagnosis. */
+            if (Volatile.Read(ref _isResizing) != 0
+                && (DateTime.UtcNow.Ticks - Volatile.Read(ref _resizeStartTicks)) >= GHConstants.MaxResizingDurationTicks)
+            {
+                GHApp.MaybeWriteGHLog("_isResizing was still set past its deadline; the clearing task did not run",
+                                      true, GHConstants.SentryGnollHackGeneralCategoryName);
+            }
+
             /* Now the old thread does not modify _isResizing anymore, so safe to switch it on */
+            Volatile.Write(ref _resizeStartTicks, DateTime.UtcNow.Ticks);
             Interlocked.Exchange(ref _isResizing, 1);
             GHApp.MaybeWriteScreenLog("_isResizing = 1: " + myVersion);
             var newCts = new CancellationTokenSource();
@@ -22245,7 +22263,21 @@ namespace GnollHackX.Pages.Game
 
         //private readonly object _mainFPSCounterLock = new object();
         private long _mainFPSCounterValue = 0;
-        private long MainFPSCounterValue { get { return Interlocked.CompareExchange(ref _mainFPSCounterValue, 0L, 0L); } set { Interlocked.Exchange(ref _mainFPSCounterValue, value); } }
+        public long MainFPSCounterValue { get { return Interlocked.CompareExchange(ref _mainFPSCounterValue, 0L, 0L); } private set { Interlocked.Exchange(ref _mainFPSCounterValue, value); } }
+
+        /// <summary>
+        /// True when the render loop should be producing main canvas frames: a game is on,
+        /// the map canvas is on and visible, screen refreshing is enabled and no resize
+        /// pause is in effect. The paint stall watchdog uses this to avoid false positives.
+        /// </summary>
+        public bool IsMainCanvasPaintExpected
+        {
+            get
+            {
+                return IsGameOn && IsMainCanvasOn && RefreshScreen && !IsResizing
+                    && MainCanvasView.ThreadSafeIsVisible && !LoadingGrid.ThreadSafeIsVisible;
+            }
+        }
 
         //private readonly object _commandFPSCounterLock = new object();
         private long _commandFPSCounterValue = 0;
@@ -23774,6 +23806,7 @@ namespace GnollHackX.Pages.Game
 
         public void Suspend()
         {
+            ClearCanvasTouchState();
             StopMainCanvasAnimation();
             StopCommandCanvasAnimation();
             StopMenuCanvasAnimation();
@@ -23784,6 +23817,7 @@ namespace GnollHackX.Pages.Game
 
         public void Resume()
         {
+            ClearCanvasTouchState();
             if (MenuGrid.IsVisible)
             {
                 if (!MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
@@ -23800,6 +23834,23 @@ namespace GnollHackX.Pages.Game
                 StartCommandCanvasAnimation();
             else if (!LoadingGrid.IsVisible && IsMainCanvasOn /* && MainGrid.IsVisible */ && !MainCanvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 StartMainCanvasAnimation();
+        }
+
+        /// <summary>
+        /// Clears all canvas touch dictionaries and resets touch-moved flags.
+        /// Called on resign-active, suspend, and resume to prevent phantom
+        /// touches from an interrupted swipe-to-switch gesture.
+        /// </summary>
+        public void ClearCanvasTouchState()
+        {
+            TouchDictionary.Clear();
+            MenuTouchDictionary.Clear();
+            TextTouchDictionary.Clear();
+            CommandTouchDictionary.Clear();
+            _touchMoved = false;
+            _menuTouchMoved = false;
+            _textTouchMoved = false;
+            _commandTouchMoved = false;
         }
 
         void UpdateMessageFilter()

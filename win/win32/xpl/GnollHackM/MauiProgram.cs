@@ -94,7 +94,7 @@ public static class MauiProgram
 
                   // Other Sentry options can be set here.
                   options.CaptureFailedRequests = false;
-#if ANDROID
+#if ANDROID || IOS
                 options.SetBeforeSend(@event =>
                 {
                     if (@event == null)
@@ -102,6 +102,7 @@ public static class MauiProgram
 
                     var exception = @event.Exception;
 
+#if ANDROID
                     if (exception is ObjectDisposedException ioe)
                     {
                         SentrySdk.CaptureMessage($"Handled ObjectDisposedException: {ioe.Message}", SentryLevel.Warning);
@@ -118,6 +119,34 @@ public static class MauiProgram
                             }
                         }
                     }
+#endif
+#if IOS
+                    /* Capture MAUI's "already activated"/"already deactivated"
+                     * InvalidOperationException as a warning rather than an error.
+                     * If this fires, MAUI's window state machine threw and skipped
+                     * our ios.OnActivated / ios.OnResignActivation handler. */
+                    if (exception is InvalidOperationException invOp && invOp.Message != null &&
+                        (invOp.Message.Contains("already activated") ||
+                         invOp.Message.Contains("already deactivated")))
+                    {
+                        SentrySdk.CaptureMessage($"Handled InvalidOperationException: {invOp.Message}", SentryLevel.Warning);
+                        return null;
+                    }
+                    if (@event.SentryExceptions != null)
+                    {
+                        foreach (var ex in @event.SentryExceptions)
+                        {
+                            if (ex != null && ex.Type == nameof(InvalidOperationException) &&
+                                ex.Value != null &&
+                                (ex.Value.Contains("already activated") ||
+                                 ex.Value.Contains("already deactivated")))
+                            {
+                                SentrySdk.CaptureMessage($"Handled InvalidOperationException: {ex.Value}", SentryLevel.Warning);
+                                return null;
+                            }
+                        }
+                    }
+#endif
 
                     return @event;
                 });
@@ -555,6 +584,12 @@ public static class MauiProgram
                     GHGame game = GHApp.CurrentGHGame;
                     if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                     {
+                        /* Capture the generation and clear CancelSaveGame on the main
+                         * thread, before Task.Run, so they cannot race with a later
+                         * didBecomeActive setting CancelSaveGame = true. */
+                        int resignGeneration = GHApp.AppActivationGeneration;
+                        GHApp.CancelSaveGame = false;
+
                         GHApp.MaybeWriteGHLog("OnResignActivation: Starting Background Task", true, GHConstants.SentryGnollHackGeneralCategoryName);
                         IntPtr localTaskId = UIApplication.BackgroundTaskInvalid;
                         localTaskId = UIApplication.SharedApplication.BeginBackgroundTask("SaveGameTask", () =>
@@ -568,7 +603,7 @@ public static class MauiProgram
                             try
                             {
                                 GHApp.MaybeWriteGHLog("OnResignActivation: Saving game", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                                await GHApp.SaveGameOnSleepAsync();
+                                await GHApp.SaveGameOnSleepAsync(resignGeneration);
                             }
                             catch (Exception ex)
                             {
@@ -585,6 +620,7 @@ public static class MauiProgram
                 ios.OnActivated((app) =>
                 {
                     GHApp.MaybeWriteGHLog("OnActivated: Start", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    GHApp.EnsureGameThreadResumed();
                     GHApp.CheckResumeSavedGame();
                 });
             });
@@ -1156,13 +1192,20 @@ public class SaveGameService : Service
 
             //IsSaving = true;
 
+            /* Capture the activation generation and clear CancelSaveGame here, on the main
+             * thread, before Task.Run: if the app is reactivated before the queued save
+             * body starts running, SaveGameOnSleepAsync skips the save instead of parking
+             * the game thread with nobody left to unpark it. */
+            int resignGeneration = GHApp.AppActivationGeneration;
+            GHApp.CancelSaveGame = false;
+
             // Do your save operation
             Task.Run(async () =>
             {
                 try
                 {
                     GHApp.MaybeWriteGHLog("SaveGameService: Saving game, StartId=" + startId, true, GHConstants.SentryGnollHackGeneralCategoryName);
-                    await GHApp.SaveGameOnSleepAsync();
+                    await GHApp.SaveGameOnSleepAsync(resignGeneration);
                 }
                 catch (Exception ex)
                 {

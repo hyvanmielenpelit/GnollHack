@@ -848,6 +848,10 @@ namespace GnollHackX
 
         private static readonly Stopwatch _renderingStopWatch = new Stopwatch();
         private static long _renderingCounter = 0;
+        private static long _lostResumeDetectedTicks = 0; /* Debounce for lost-resume watchdog */
+        private static long _lastPaintCounter = 0;        /* Paint stall detection */
+        private static long _paintStallDetectedTicks = 0;  /* When we first noticed the stall */
+        private static bool _paintStallWarningEmitted = false;
         private static void CompositionTarget_Rendering(object sender, object e)
         {
             long counter = Interlocked.Increment(ref _renderingCounter);
@@ -860,6 +864,53 @@ namespace GnollHackX
             FrameTimeProfiler.BeginFrame(counter);
             try
             {
+                /* --- Resume watchdog (runs only while parked or suspended) --- */
+                GHGame watchdogGame = CurrentGHGame;
+                bool parked = watchdogGame?.IsWaitingForResume ?? false;
+                if (parked || IsSuspended)
+                {
+                    RefreshPlatformAppActive(); /* Only polled in these rare states, so no per-frame cost */
+                    if (IsSuspended && PlatformAppActive)
+                    {
+                        /* Frames are arriving and the platform says we are active, yet we
+                         * still think we are asleep: the resume event was lost.
+                         * Debounced by LostResumeDetectTimeoutMs. */
+                        long nowTicks = DateTime.UtcNow.Ticks;
+                        long prev = Interlocked.CompareExchange(ref _lostResumeDetectedTicks, nowTicks, 0);
+                        if (prev != 0 && (nowTicks - prev) / TimeSpan.TicksPerMillisecond
+                                         > GHConstants.LostResumeDetectTimeoutMs)
+                        {
+                            Interlocked.Exchange(ref _lostResumeDetectedTicks, 0);
+                            MaybeWriteGHLog("CompositionTarget_Rendering: Lost resume detected; forcing HandleResume",
+                                            true, GHConstants.SentryGnollHackGeneralCategoryName);
+                            /* This runs inside a platform display-link callback, so an
+                             * escaping exception would take down the app rather than
+                             * merely leave it frozen. */
+                            try
+                            {
+                                HandleResume(false);
+                            }
+                            catch (Exception ex)
+                            {
+                                MaybeWriteGHLog("CompositionTarget_Rendering: Forced HandleResume failed: " + ex.Message,
+                                                true, GHConstants.SentryGnollHackGeneralCategoryName);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Interlocked.Exchange(ref _lostResumeDetectedTicks, 0);
+                    }
+                    /* Note: the park itself is never broken from here. Unparking is
+                     * event-driven (OnFocus / iOS OnActivated) and, as a last resort,
+                     * time-based inside the park loop itself, which requires the app to
+                     * be verifiably foreground-active for ParkAutoResumeTimeoutMs. Doing
+                     * it here would unpark while the app is merely inactive (a
+                     * notification banner or the app-switcher preview still renders
+                     * frames), which would restore - and thereby consume - the save file
+                     * right before the app is backgrounded. */
+                }
+
                 if (!UsePlatformRenderLoop || IsSuspended)
                     return;
 
@@ -894,6 +945,43 @@ namespace GnollHackX
                     default:
                         refreshRate = 60;
                         break;
+                }
+
+                /* --- Paint stall diagnostic (no recovery action) ---
+                 * Only meaningful while the map canvas is the active canvas and frames are
+                 * actually expected: the main canvas paint handler deliberately returns
+                 * early while a menu, text window, the command page or the loading screen
+                 * is up, which would otherwise look like a stall. */
+                if (canvasType == CanvasTypes.MainCanvas && curGamePage.IsMainCanvasPaintExpected)
+                {
+                    long curPaintCount = curGamePage.MainFPSCounterValue;
+                    if (curPaintCount != Interlocked.Exchange(ref _lastPaintCounter, curPaintCount))
+                    {
+                        _paintStallWarningEmitted = false;
+                        Interlocked.Exchange(ref _paintStallDetectedTicks, 0);
+                    }
+                    else if (!parked)
+                    {
+                        long now = DateTime.UtcNow.Ticks;
+                        long prev = Interlocked.CompareExchange(ref _paintStallDetectedTicks, now, 0);
+                        if (prev != 0 && !_paintStallWarningEmitted
+                            && (now - prev) / TimeSpan.TicksPerMillisecond > GHConstants.PaintStallWarningMs)
+                        {
+                            _paintStallWarningEmitted = true;
+                            MaybeWriteGHLog("CompositionTarget_Rendering: Paint stall detected"
+                                + " (IsSuspended=" + IsSuspended
+                                + ", IsResizing=" + curGamePage.IsResizing
+                                + ", RefreshScreen=" + curGamePage.RefreshScreen
+                                + ", PlatformAppActive=" + PlatformAppActive + ")",
+                                true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        }
+                    }
+                }
+                else
+                {
+                    _paintStallWarningEmitted = false;
+                    Interlocked.Exchange(ref _paintStallDetectedTicks, 0);
+                    Interlocked.Exchange(ref _lastPaintCounter, curGamePage.MainFPSCounterValue);
                 }
 
                 if (!_renderingStopWatch.IsRunning)
@@ -2336,11 +2424,19 @@ namespace GnollHackX
         private static int _savingGame = 0;
         private static int _appSwitchSaveStyle = 0;
         private static int _gameSaved = 0;
+        private static int _appActivationGeneration = 0;
+        /* Deliberately starts as "not active": the park auto-resume safety net can consume
+         * a save file, so it must not act before the platform state has actually been
+         * observed. Set to active by OnFocus and, on iOS, by RefreshPlatformAppActive. */
+        private static int _platformAppActive = 0;
 
         public static bool CancelSaveGame { get { return Interlocked.CompareExchange(ref _cancelSaveGame, 0, 0) != 0; } set { Interlocked.Exchange(ref _cancelSaveGame, value ? 1 : 0); } }
         public static bool SavingGame { get { return Interlocked.CompareExchange(ref _savingGame, 0, 0) != 0; } set { Interlocked.Exchange(ref _savingGame, value ? 1 : 0); } }
         public static int AppSwitchSaveStyle { get { return TournamentMode ? 0 : Interlocked.CompareExchange(ref _appSwitchSaveStyle, 0, 0); } set { Interlocked.Exchange(ref _appSwitchSaveStyle, value); } }
         public static bool GameSaved { get { return Interlocked.CompareExchange(ref _gameSaved, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameSaved, value ? 1 : 0); } }
+        public static int AppActivationGeneration { get { return Interlocked.CompareExchange(ref _appActivationGeneration, 0, 0); } }
+        public static bool PlatformAppActive { get { return Interlocked.CompareExchange(ref _platformAppActive, 0, 0) != 0; } set { Interlocked.Exchange(ref _platformAppActive, value ? 1 : 0); } }
+
 
 
         private static readonly object _gameSaveResultLock = new object();
@@ -2429,11 +2525,22 @@ namespace GnollHackX
         public static void OnFocus()
         {
             ChangeToCustomScreenResolution();
+            Interlocked.Increment(ref _appActivationGeneration);
+            PlatformAppActive = true;
+            if (IsSuspended) /* Window.Resumed was not delivered */
+            {
+                MaybeWriteGHLog("OnFocus: Still suspended on activation; resuming now",
+                                true, GHConstants.SentryGnollHackGeneralCategoryName);
+                HandleResume(false);
+            }
+            EnsureGameThreadResumed();
         }
 
         public static void OnUnfocus()
         {
             RevertScreenResolution();
+            PlatformAppActive = false;
+            CurrentGamePage?.ClearCanvasTouchState();
         }
 
         public static void OnStart()
@@ -2494,11 +2601,18 @@ namespace GnollHackX
             }
         }
 
-        public static async Task SaveGameOnSleepAsync()
+        public static async Task SaveGameOnSleepAsync(int resignGeneration)
         {
             if (IsAutoSaveUponSwitchingAppsOn)
             {
-                CancelSaveGame = false;
+                /* CancelSaveGame = false is now set by the caller on the main thread,
+                 * before Task.Run, so it cannot race with didBecomeActive. */
+                if (AppActivationGeneration != resignGeneration)
+                {
+                    MaybeWriteGHLog("SaveGameOnSleepAsync: App reactivated before the save started; skipping save",
+                                    true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    return;
+                }
                 GHGame game = CurrentGHGame;
                 if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                 {
@@ -2536,6 +2650,50 @@ namespace GnollHackX
         }
 #endif
 
+
+        /* --- Resume safety nets ------------------------------------------- */
+
+        /// <summary>
+        /// If the game thread is parked in GUI_CMD_WAIT_FOR_RESUME, unpark it.
+        /// Safe to call repeatedly — a second request is consumed by the park
+        /// loop's exit check. No-op when no game is running or the thread is
+        /// not parked.
+        /// </summary>
+        public static void EnsureGameThreadResumed()
+        {
+            GHGame game = CurrentGHGame;
+            if (game != null && game.TryRequestResumeFromPark())
+            {
+                MaybeWriteGHLog("EnsureGameThreadResumed: Game thread was parked; unparking now",
+                                true, GHConstants.SentryGnollHackGeneralCategoryName);
+            }
+        }
+
+        /// <summary>
+        /// Polls the platform for the real foreground-active state.
+        /// On iOS this queries UIApplication.SharedApplication.ApplicationState, which is
+        /// authoritative and independent of MAUI lifecycle event delivery (main thread
+        /// only — the caller is the display-link render loop). On other platforms the
+        /// value is maintained by OnFocus / OnUnfocus instead, and is deliberately left
+        /// untouched here: "not suspended" is too loose, because a paused-but-not-stopped
+        /// app (Android between OnPause and OnStop, split screen, a dialog on top) has
+        /// IsSuspended == false while it is not active.
+        /// Only called while parked or suspended, so there is no per-frame cost.
+        /// </summary>
+        public static void RefreshPlatformAppActive()
+        {
+#if IOS
+            try
+            {
+                PlatformAppActive = UIKit.UIApplication.SharedApplication.ApplicationState
+                                    == UIKit.UIApplicationState.Active;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+#endif
+        }
 
         public static bool PopAllModalRequested = false; /* Always used from MainThread */
         public static async Task PopAllModalPagesAsync(bool animated)
@@ -2688,6 +2846,27 @@ namespace GnollHackX
                 GHGame game = CurrentGHGame;
                 if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                 {
+                    /* Unconditional bypass: if the game thread is already parked, unpark it
+                     * regardless of the WentToSleepWithGameOn preference state. This closes
+                     * the resign/activate ordering race where the save task starts after
+                     * didBecomeActive has already returned. */
+                    if (game.IsWaitingForResume)
+                    {
+                        if (game.TryRequestResumeFromPark())
+                            MaybeWriteGHLog("CheckResumeSavedGame: Game thread is parked; unparking unconditionally",
+                                            true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        try
+                        {
+                            Preferences.Set("WentToSleepWithGameOn", false);
+                            Preferences.Set("GameSaveResult", 0);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
+                        return;
+                    }
+
                     //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
                     bool wenttosleep = false;
                     try
