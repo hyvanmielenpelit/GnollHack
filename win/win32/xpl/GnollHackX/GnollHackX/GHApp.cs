@@ -3109,8 +3109,7 @@ namespace GnollHackX
             lock (_muteApplyLock)
             {
                 bool muted = IsMuted;
-                IFmodService fmod = FmodService;
-                bool applied = fmod != null && fmod.ToggleMuteSounds(muted);
+                bool applied = _fmodService != null && _fmodService.ToggleMuteSounds(muted);
                 MuteStateDirty = !applied;
             }
         }

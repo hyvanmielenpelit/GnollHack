@@ -1188,12 +1188,7 @@ namespace GnollHackX.Unknown
                     musicList.RemoveAt(musicList.Count - 1);
                 }
             }
-            /* Last line of defence: unlike PlayImmediateSound, music is not gated by
-               GHApp.IsMuted at its call sites, so ensure the master mute matches the
-               app's state before a note can be heard. */
-            GHApp.ApplyCurrentMuteState();
             res = eventInstance.start();
-            //}
             res = _system.update();
             return (int)res;
         }
