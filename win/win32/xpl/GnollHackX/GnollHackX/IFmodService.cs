@@ -40,7 +40,10 @@ namespace GnollHackX
         void StopAllUISounds();
         int AdjustGameVolumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_dialogue_volume, float new_general_sfx_volume, float new_general_game_ui_volume);
         int AdjustUIVolumes(float new_general_volume, float new_general_music_volume, float new_general_ui_volume);
-        void ToggleMuteSounds(bool mute);
+        /* Returns true if the mute state was actually pushed to FMOD. Returns false
+           when FMOD is unavailable (not initialized, mixer suspended, or banks not
+           loaded), in which case the caller must remember to apply it later. */
+        bool ToggleMuteSounds(bool mute);
         int SetQuieterMode(bool state);
         void ResetGameState();
         void PollTasks();

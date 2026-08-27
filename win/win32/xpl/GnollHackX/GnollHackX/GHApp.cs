@@ -2907,6 +2907,41 @@ namespace GnollHackX
 
         public static bool IsMuted { get { lock (_muteLock) { return _gameMuteMode || _silentMode || _sleepMuteMode || _unfocusedMuteMode; } } }
         private static readonly object _muteLock = new object();
+        private static readonly object _muteApplyLock = new object();
+
+        private static int _muteStateDirty = 0;
+        /* True when a mute change could not be pushed to FMOD (FMOD not initialized,
+           mixer suspended, or banks not loaded) and is still waiting to be applied. */
+        public static bool MuteStateDirty
+        {
+            get { return Interlocked.CompareExchange(ref _muteStateDirty, 0, 0) != 0; }
+            private set { Interlocked.Exchange(ref _muteStateDirty, value ? 1 : 0); }
+        }
+
+        /* Pushes the current mute state to FMOD unconditionally. This is level triggered
+           on purpose: ChannelGroup::setMute is idempotent, whereas an edge triggered
+           version silently loses any change made while FMOD is unavailable, leaving the
+           app audibly unmuted while IsMuted reports true.
+
+           Lock ordering is _muteApplyLock -> _muteLock and never the reverse; the mute
+           setters below release _muteLock before calling this. */
+        public static void ApplyCurrentMuteState()
+        {
+            lock (_muteApplyLock)
+            {
+                bool muted = IsMuted;
+                IFmodService fmod = FmodService;
+                bool applied = fmod != null && fmod.ToggleMuteSounds(muted);
+                MuteStateDirty = !applied;
+            }
+        }
+
+        /* Called from places where FMOD may just have become available again. */
+        public static void RetryMuteStateIfDirty()
+        {
+            if (MuteStateDirty)
+                ApplyCurrentMuteState();
+        }
 
         private static bool _gameMuteMode = false;
         public static bool GameMuteMode /* Muteness due to game state */
@@ -2920,17 +2955,11 @@ namespace GnollHackX
             }
             set
             {
-                //UpdateSoundMuteness(value, SilentMode, SleepMuteMode, UnfocusedMuteMode); 
-                bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
                 lock (_muteLock)
                 {
-                    oldGameMuted = _gameMuteMode;
-                    oldSilentMode = _silentMode;
-                    oldSleepMuteMode = _sleepMuteMode;
-                    oldUnfocusedMuteMode = _unfocusedMuteMode;
                     _gameMuteMode = value;
                 }
-                UpdateSoundMuteness(value, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
+                ApplyCurrentMuteState();
             }
         }
 
@@ -2946,17 +2975,11 @@ namespace GnollHackX
             }
             set
             {
-                //UpdateSoundMuteness(GameMuteMode, value, SleepMuteMode, UnfocusedMuteMode); 
-                bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
                 lock (_muteLock)
                 {
-                    oldGameMuted = _gameMuteMode;
-                    oldSilentMode = _silentMode;
-                    oldSleepMuteMode = _sleepMuteMode;
-                    oldUnfocusedMuteMode = _unfocusedMuteMode;
                     _silentMode = value;
                 }
-                UpdateSoundMuteness(oldGameMuted, value, oldSleepMuteMode, oldUnfocusedMuteMode, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
+                ApplyCurrentMuteState();
             }
         }
 
@@ -2972,17 +2995,11 @@ namespace GnollHackX
             }
             set
             {
-                //UpdateSoundMuteness(GameMuteMode, SilentMode, value, UnfocusedMuteMode);
-                bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
                 lock (_muteLock)
                 {
-                    oldGameMuted = _gameMuteMode;
-                    oldSilentMode = _silentMode;
-                    oldSleepMuteMode = _sleepMuteMode;
-                    oldUnfocusedMuteMode = _unfocusedMuteMode;
                     _sleepMuteMode = value;
                 }
-                UpdateSoundMuteness(oldGameMuted, oldSilentMode, value, oldUnfocusedMuteMode, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
+                ApplyCurrentMuteState();
             }
         }
 
@@ -2998,37 +3015,12 @@ namespace GnollHackX
             }
             set
             {
-                //UpdateSoundMuteness(GameMuteMode, SilentMode, SleepMuteMode, value); 
-                bool oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode;
                 lock (_muteLock)
                 {
-                    oldGameMuted = _gameMuteMode;
-                    oldSilentMode = _silentMode;
-                    oldSleepMuteMode = _sleepMuteMode;
-                    oldUnfocusedMuteMode = _unfocusedMuteMode;
                     _unfocusedMuteMode = value;
                 }
-                UpdateSoundMuteness(oldGameMuted, oldSilentMode, oldSleepMuteMode, value, oldGameMuted, oldSilentMode, oldSleepMuteMode, oldUnfocusedMuteMode);
+                ApplyCurrentMuteState();
             }
-        }
-
-        public static void UpdateSoundMuteness(bool newGameMuted, bool newSilentMode, bool newSleepMuteMode, bool newUnfocusedMuteMode, bool oldGameMuted, bool oldSilentMode, bool oldSleepMuteMode, bool oldUnfocusedMuteMode)
-        {
-            if (newGameMuted || newSilentMode || newSleepMuteMode || newUnfocusedMuteMode)
-            {
-                if (!oldGameMuted && !oldSilentMode && !oldSleepMuteMode && !oldUnfocusedMuteMode)
-                    ToggleMute(true);
-            }
-            else
-            {
-                if (oldGameMuted || oldSilentMode || oldSleepMuteMode || oldUnfocusedMuteMode)
-                    ToggleMute(false);
-            }
-        }
-
-        private static void ToggleMute(bool mute)
-        {
-            FmodService?.ToggleMuteSounds(mute);
         }
 
         //private static void MuteSounds()
@@ -3223,7 +3215,9 @@ namespace GnollHackX
         public static string GHPath { get; private set; } = ".";
 
         private static int _loadBanks = 1;
-        public static bool LoadBanks { get { return Interlocked.CompareExchange(ref _loadBanks, 0, 0) != 0; } set { Interlocked.Exchange(ref _loadBanks, value ? 1 : 0); } }
+        /* LoadBanks is one of the conditions FMODup() checks, so switching it on can make
+           a previously refused mute change applicable; retry any pending one. */
+        public static bool LoadBanks { get { return Interlocked.CompareExchange(ref _loadBanks, 0, 0) != 0; } set { Interlocked.Exchange(ref _loadBanks, value ? 1 : 0); RetryMuteStateIfDirty(); } }
 
         public static event BackButtonHandler BackButtonPressed;
 

@@ -163,8 +163,29 @@ namespace GnollHackX.Unknown
         private int _mixerSuspended = 0;
         private bool MixerSuspended { get { return Interlocked.CompareExchange(ref _mixerSuspended, 0, 0) != 0; } set { Interlocked.Exchange(ref _mixerSuspended, value ? 1 : 0); } }
 
+        /* Records that a suspend was requested even if FMOD was not yet initialized and
+           the suspend could therefore not be carried out. Without this, an OnSleep that
+           arrives before InitializeFmod leaves the mixer running, and FMOD comes up as a
+           fully live mixer while the app is already in the background. */
+        private int _suspendRequested = 0;
+        private bool SuspendRequested { get { return Interlocked.CompareExchange(ref _suspendRequested, 0, 0) != 0; } set { Interlocked.Exchange(ref _suspendRequested, value ? 1 : 0); } }
+
         public void InitializeFmod()
         {
+            if (Initialized)
+            {
+                /* Creating a second Studio system would overwrite _system and _coresystem
+                   without releasing the old ones, leaking an entire audio system and its
+                   mixer thread, and would orphan every Bank handle in _banks, which belongs
+                   to the previous system. It would also hand the app a fresh, unmuted master
+                   channel group. Today the single call site (MainPage.TryInitializeFMOD) can
+                   only run once per process, but that is an accident of control flow in
+                   another file, so guard it here and report it if it ever happens.
+                   Symmetric with the !Initialized guard in ShutdownFmod. */
+                GHApp.MaybeWriteGHLog("FmodService.InitializeFmod: FMOD is already initialized; ignoring.", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                return;
+            }
+
             RESULT res;
 
             //uint ver;
@@ -197,6 +218,14 @@ namespace GnollHackX.Unknown
 
             Initialized = true;
             GHApp.MaybeWriteGHLog("FMOD initialized successfully.");
+
+            /* A newly created system's master channel group is always unmuted. Re-apply
+               the app's mute state before anything can be played, and before honouring a
+               suspend that arrived while FMOD was still down. Order matters: FMODup()
+               refuses to act once the mixer is suspended. */
+            GHApp.ApplyCurrentMuteState();
+            if (SuspendRequested)
+                Suspend();
         }
 
         public void ShutdownFmod()
@@ -236,6 +265,7 @@ namespace GnollHackX.Unknown
 
         public void Suspend()
         {
+            SuspendRequested = true;
             if (!Initialized || MixerSuspended)
                 return;
 
@@ -263,6 +293,7 @@ namespace GnollHackX.Unknown
 
         public void Resume()
         {
+            SuspendRequested = false;
             if (!Initialized || !MixerSuspended)
                 return;
 
@@ -275,6 +306,9 @@ namespace GnollHackX.Unknown
                     {
                         MixerSuspended = false;
                         GHApp.MaybeWriteGHLog("FmodService.Resume: mixer resumed successfully.", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        /* Any mute change made while the mixer was suspended was refused
+                           by FMODup(); apply it now that FMOD is back. */
+                        GHApp.RetryMuteStateIfDirty();
                     }
                     else
                     {
@@ -1154,6 +1188,10 @@ namespace GnollHackX.Unknown
                     musicList.RemoveAt(musicList.Count - 1);
                 }
             }
+            /* Last line of defence: unlike PlayImmediateSound, music is not gated by
+               GHApp.IsMuted at its call sites, so ensure the master mute matches the
+               app's state before a note can be heard. */
+            GHApp.ApplyCurrentMuteState();
             res = eventInstance.start();
             //}
             res = _system.update();
@@ -1708,12 +1746,18 @@ namespace GnollHackX.Unknown
             return (int)result;
         }
 
-        public void ToggleMuteSounds(bool mute)
+        public bool ToggleMuteSounds(bool mute)
         {
             if (!FMODup())
-                return;
-            _coresystem.getMasterChannelGroup(out var _masterChannelGroup);
-            _masterChannelGroup.setMute(mute);
+                return false; /* FMOD APIs must not be called while the mixer is
+                                 suspended, so the caller has to defer this. */
+
+            RESULT res = _coresystem.getMasterChannelGroup(out ChannelGroup masterChannelGroup);
+            if (res != RESULT.OK)
+                return false;
+
+            res = masterChannelGroup.setMute(mute);
+            return res == RESULT.OK;
         }
 
         private RESULT AdjustVolumeType(List<GHSoundInstance> soundList, float typeVolume, float modeVolume, float generalVolume)

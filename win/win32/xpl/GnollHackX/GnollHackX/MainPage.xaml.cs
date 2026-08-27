@@ -922,6 +922,10 @@ namespace GnollHackX
                 }
                 else
                 {
+                    /* The Android activity was recreated with the process still alive, so
+                       StartUpTasks does not run on this path. Silent mode must therefore be
+                       re-read and re-applied here, before the intro music starts. */
+                    GHApp.SilentMode = Preferences.Get("SilentMode", false);
                     GHApp.FmodService?.StopAllUISounds();
                     PlayMainScreenVideoAndMusic();
                 }
@@ -1216,6 +1220,7 @@ namespace GnollHackX
             try
             {
                 GHApp.FmodService.InitializeFmod();
+                GHApp.ApplyCurrentMuteState(); /* A fresh FMOD system starts unmuted */
             }
             catch (Exception ex)
             {
@@ -1487,6 +1492,12 @@ namespace GnollHackX
             dialogueVolume = Preferences.Get("DialogueVolume", GHConstants.DefaultDialogueVolume);
             effectsVolume = Preferences.Get("EffectsVolume", GHConstants.DefaultEffectsVolume);
             uiVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
+
+            /* Apply the user's silent mode setting BEFORE any sound is started, and
+               outside the try block below, so that an exception thrown by any of the
+               FMOD calls can never leave the app running unmuted. */
+            GHApp.SilentMode = Preferences.Get("SilentMode", false);
+
             try
             {
                 /* Adjust first UI volumes */
@@ -1504,9 +1515,6 @@ namespace GnollHackX
                 }
                 if (GHApp.LoadBanks)
                     GHApp.FmodService?.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
-
-                /* Check silent mode; this also mutes everything if need be */
-                GHApp.SilentMode = Preferences.Get("SilentMode", false);
             }
             catch (Exception ex)
             {
