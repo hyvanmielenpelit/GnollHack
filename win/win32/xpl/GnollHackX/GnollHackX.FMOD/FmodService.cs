@@ -223,7 +223,7 @@ namespace GnollHackX.Unknown
                the app's mute state before anything can be played, and before honouring a
                suspend that arrived while FMOD was still down. Order matters: FMODup()
                refuses to act once the mixer is suspended. */
-            GHApp.ApplyCurrentMuteState();
+            GHApp.ApplyCurrentMuteState(this);
             if (SuspendRequested)
                 Suspend();
         }

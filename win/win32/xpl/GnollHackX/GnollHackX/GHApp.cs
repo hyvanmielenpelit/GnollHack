@@ -3104,12 +3104,14 @@ namespace GnollHackX
 
            Lock ordering is _muteApplyLock -> _muteLock and never the reverse; the mute
            setters below release _muteLock before calling this. */
-        public static void ApplyCurrentMuteState()
+        public static void ApplyCurrentMuteState(IFmodService fmod = null)
         {
+            if (fmod == null)
+                fmod = _fmodService;
             lock (_muteApplyLock)
             {
                 bool muted = IsMuted;
-                bool applied = _fmodService != null && _fmodService.ToggleMuteSounds(muted);
+                bool applied = fmod != null && fmod.ToggleMuteSounds(muted);
                 MuteStateDirty = !applied;
             }
         }
