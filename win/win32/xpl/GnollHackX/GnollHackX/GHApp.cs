@@ -3217,7 +3217,7 @@ namespace GnollHackX
         private static int _loadBanks = 1;
         /* LoadBanks is one of the conditions FMODup() checks, so switching it on can make
            a previously refused mute change applicable; retry any pending one. */
-        public static bool LoadBanks { get { return Interlocked.CompareExchange(ref _loadBanks, 0, 0) != 0; } set { Interlocked.Exchange(ref _loadBanks, value ? 1 : 0); RetryMuteStateIfDirty(); } }
+        public static bool LoadBanks { get { return Interlocked.CompareExchange(ref _loadBanks, 0, 0) != 0; } set { Interlocked.Exchange(ref _loadBanks, value ? 1 : 0); if (value) RetryMuteStateIfDirty(); } }
 
         public static event BackButtonHandler BackButtonPressed;
 
