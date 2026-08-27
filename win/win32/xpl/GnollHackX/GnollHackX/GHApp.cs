@@ -862,11 +862,11 @@ namespace GnollHackX
             }
 
             FrameTimeProfiler.BeginFrame(counter);
+            GHGame ghGame = CurrentGHGame;
             try
             {
                 /* --- Resume watchdog (runs only while parked or suspended) --- */
-                GHGame watchdogGame = CurrentGHGame;
-                bool parked = watchdogGame?.IsWaitingForResume ?? false;
+                bool parked = ghGame?.IsWaitingForResume ?? false;
                 if (parked || IsSuspended)
                 {
                     RefreshPlatformAppActive(); /* Only polled in these rare states, so no per-frame cost */
@@ -917,7 +917,7 @@ namespace GnollHackX
                 GamePage curGamePage = CurrentGamePage;
                 if (curGamePage == null)
                     return;
-                if (CurrentGHGame == null)
+                if (ghGame == null)
                     return;
 
 #if WINDOWS
@@ -2853,8 +2853,11 @@ namespace GnollHackX
                     if (game.IsWaitingForResume)
                     {
                         if (game.TryRequestResumeFromPark())
+                        {
                             MaybeWriteGHLog("CheckResumeSavedGame: Game thread is parked; unparking unconditionally",
                                             true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        }
+
                         try
                         {
                             Preferences.Set("WentToSleepWithGameOn", false);
