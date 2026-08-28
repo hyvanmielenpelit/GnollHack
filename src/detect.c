@@ -2433,7 +2433,7 @@ dump_map(void)
 void
 dump_map_ai(void)
 {
-    int x, y, glyph;
+    int x, y, glyph, sym;
     int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
     int default_glyph;
     nhsym ch;
@@ -2454,8 +2454,16 @@ dump_map_ai(void)
             glyph = reveal_terrain_getglyph(x, y, FALSE, u.uswallow, default_glyph, subset);
             struct layer_info layers = nul_layerinfo;
             layers.glyph = glyph;
-            (void)mapglyph(layers, &ch, &color,
+            sym = mapglyph(layers, &ch, &color,
                            &special, x, y);
+
+            /* Always fall back to the basic ASCII symbols, the way
+               dump_map() does when the symset is neither IBM nor Unicode.
+               The AI snapshot should read identically whatever symset the
+               player has chosen, and plain ASCII keeps CP437 and box
+               drawing glyphs out of it entirely. */
+            if (sym >= 0 && sym < MAX_CMAPPED_CHARS)
+                ch = (nhsym)defsyms[sym].sym;
 
             /* Write colored character as HTML span */
             if (color != NO_COLOR && color >= 0 && color < 16)
@@ -2466,19 +2474,9 @@ dump_map_ai(void)
                 dump_html_ai_write(buf);
             }
 
-            /* Write the character itself */
-            if (ch == '<')
-                dump_html_ai_write("&lt;");
-            else if (ch == '>')
-                dump_html_ai_write("&gt;");
-            else if (ch == '&')
-                dump_html_ai_write("&amp;");
-            else
-            {
-                buf[0] = (char)ch;
-                buf[1] = '\0';
-                dump_html_ai_write(buf);
-            }
+            /* Write the character itself.  html_dump_char() escapes it and
+               turns spaces into &nbsp; so the map keeps its alignment. */
+            dump_html_ai_write_char(ch);
 
             if (color != NO_COLOR && color >= 0 && color < 16)
             {

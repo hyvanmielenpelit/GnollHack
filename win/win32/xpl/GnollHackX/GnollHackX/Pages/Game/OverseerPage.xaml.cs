@@ -1199,11 +1199,43 @@ namespace GnollHackX.Pages.Game
                 return GHGame.GenerateDirectoryManifest();
 
             case "refresh_snapshot":
+            {
+                /* A snapshot describes a running game; there is nothing to
+                   describe when the Overseer was opened from the About page.
+                   Guarding here also keeps LibGenerateAiSnapshot() away from
+                   uninitialized game globals. */
+                if (currentGame == null)
+                    throw new InvalidOperationException("No active game");
+
+                /* Honour the player's opt-out. GameMenuPage sends an empty
+                   snapshot for the initial upload when this is off; this tool
+                   must not be a way around that choice. */
+                if (!GHApp.OverseerSendGameContext)
+                    throw new InvalidOperationException(
+                        "The player has disabled sending game context to the"
+                        + " Overseer. No snapshot is available.");
+
                 /* P/Invoke — dispatch to main thread for C core safety */
-                return await MainThread.InvokeOnMainThreadAsync(() =>
+                string snapPath = await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     return GHApp.GnollHackService.GenerateAiSnapshot();
                 });
+                if (string.IsNullOrEmpty(snapPath))
+                    throw new InvalidOperationException(
+                        "AI snapshot generation failed.");
+                if (!File.Exists(snapPath))
+                    throw new FileNotFoundException(
+                        "AI snapshot file not found: " + snapPath);
+
+                /* LibGenerateAiSnapshot returns the file path, not the
+                   snapshot; read and flatten it for the model. */
+                string snapText = SanitizeDumpHtml(File.ReadAllText(snapPath));
+                if (snapText.Length > DefaultMaxSnapshotChars)
+                    snapText = snapText.Substring(0, DefaultMaxSnapshotChars)
+                        + "\n\n[SNAPSHOT TRUNCATED at "
+                        + DefaultMaxSnapshotChars + " characters.]";
+                return snapText;
+            }
 
             case "get_save_info":
                 string savePath = parameters?["filename"]?.ToString();
@@ -1348,6 +1380,76 @@ namespace GnollHackX.Pages.Game
 
         private const int DefaultMaxDumplogChars = 4000;
         private const int DefaultXlogLimit = 50;
+
+        /* Runaway guard against oversized JS payloads, not an expected trim.
+           A full snapshot flattens to well under this. */
+        private const int DefaultMaxSnapshotChars = 60000;
+
+        /// <summary>
+        /// Converts GnollHack dump HTML (AI snapshot or HTML dumplog) into
+        /// plain text for the AI, preserving line structure. The C engine
+        /// already writes a real newline after every logical line, so
+        /// block-level tags map to "\n" and inline tags are simply removed.
+        /// </summary>
+        /// <remarks>
+        /// Entity decoding is deliberately last. While the horizontal
+        /// whitespace collapse runs, a map cell written as &amp;nbsp; is still
+        /// the literal six-character string rather than U+00A0, so the map's
+        /// column alignment survives the collapse regardless of the pattern
+        /// used. Decoding last also means no decoded text can be mistaken for
+        /// a tag by the earlier steps.
+        /// </remarks>
+        private static string SanitizeDumpHtml(string html)
+        {
+            if (string.IsNullOrWhiteSpace(html))
+                return string.Empty;
+
+            /* 1. Drop script/style blocks including their contents.
+                  dump_open_log_ai() writes a <style> block, and stripping
+                  only the tags would leave the CSS rules behind as text. */
+            string text = Regex.Replace(html,
+                @"<(script|style)\b[^>]*>.*?</\1\s*>", " ",
+                RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
+            /* 2. Table cells keep a column separator. html_dump_str() writes
+                  <td>a</td><td>b</td> with no whitespace between them and
+                  consumes the two-space column separator from the source. */
+            text = Regex.Replace(text, @"</(td|th)\s*>", "  ",
+                RegexOptions.IgnoreCase);
+
+            /* 3. Block boundaries become real line breaks. The engine writes
+                  its own newline right after each of these tags (see
+                  html_write_tags), so that newline is consumed here rather
+                  than left to double every line. An opening block tag
+                  contributes no break of its own. */
+            text = Regex.Replace(text,
+                @"(<br\s*/?>|</(p|div|section|li|tr|h[1-6]|ul|ol|table"
+                + @"|tbody|theader|pre)\s*>)[ \t]*\r?\n?",
+                "\n", RegexOptions.IgnoreCase);
+            text = Regex.Replace(text,
+                @"<(p|div|section|ul|ol|table|tbody|theader|pre|li|h[1-6])\b"
+                + @"[^>]*>[ \t]*\r?\n?",
+                "", RegexOptions.IgnoreCase);
+
+            /* 4. Anything left is an inline tag and may start mid-word, so it
+                  is removed without inserting anything. Crucially this step
+                  does NOT consume a following newline: a coloured map cell
+                  ends a row as "</span>\n" and that newline is the row
+                  break. */
+            text = Regex.Replace(text, "<[^>]*>", "");
+
+            /* 5. Collapse horizontal runs only - never newlines. */
+            text = Regex.Replace(text, @"[ \t]+", " ");
+
+            /* 6. Tidy. */
+            text = Regex.Replace(text, @"[ \t]+(\r?\n)", "$1");
+            text = Regex.Replace(text, @"(\r?\n){3,}", "\n\n");
+
+            /* 7. Decode entities last - see the remarks above. */
+            text = System.Net.WebUtility.HtmlDecode(text);
+
+            return text.Trim();
+        }
 
         /// <summary>
         /// Returns entries from the player's local xlogfile with rich metadata.
@@ -1593,13 +1695,13 @@ namespace GnollHackX.Pages.Game
 
                 string content = File.ReadAllText(fullPath);
 
-                /* Strip HTML tags if reading an HTML dumplog */
+                /* Strip HTML tags if reading an HTML dumplog. Shares the
+                   snapshot stripper so that the CSS block, the table cells
+                   and the &nbsp; map are all handled the same way. */
                 if (fullPath.EndsWith(".html",
                     StringComparison.OrdinalIgnoreCase))
                 {
-                    content = Regex.Replace(content, "<[^>]*>", "");
-                    /* Collapse excessive whitespace from tag removal */
-                    content = Regex.Replace(content, @"\n{3,}", "\n\n");
+                    content = SanitizeDumpHtml(content);
                 }
 
                 if (content.Length > maxChars)

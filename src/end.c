@@ -984,9 +984,17 @@ dump_everything(int how, time_t when)
     putstr(0, ATR_SUBHEADING, pbuf);
     putstr(NHW_DUMPTXT, 0, "");
 
+    if (how == SNAPSHOT_AI)
+        putstr(0, ATR_HEADING, "Map:");
     dump_start_screendump();
     debugprint("%s", "dump_map");
-    dump_map();
+    /* dump_map() writes only to dumplog_file and dumphtml_file, neither of
+       which is open during an AI snapshot; dump_map_ai() writes to the AI
+       file instead */
+    if (how == SNAPSHOT_AI)
+        dump_map_ai();
+    else
+        dump_map();
     debugprint("%s", "dump: do_statusline1");
     putstr(NHW_DUMPTXT, 0, do_statusline1());
     debugprint("%s", "dump: do_statusline2");
@@ -1034,6 +1042,12 @@ dump_everything(int how, time_t when)
     debugprint("%s", "dump_spells");
     dump_spells();
     putstr(NHW_DUMPTXT, 0, "");
+    if (how == SNAPSHOT_AI)
+    {
+        debugprint("%s", "dump: dump_discoveries");
+        dump_discoveries(TRUE); /* format_for_ai */
+        putstr(NHW_DUMPTXT, 0, "");
+    }
     debugprint("%s", "dump: show_gamelog");
     show_gamelog((how == SNAPSHOT || how == SNAPSHOT_AI) ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");

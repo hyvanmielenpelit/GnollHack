@@ -1602,6 +1602,10 @@ dump_render_status(void)
 #if defined(DUMPHTML)
         if (dumphtml_file)
             fprintf(dumphtml_file, "<div class=\"nh_screen\">  "); /* 2 space left margin */
+        /* The AI snapshot receives the status text through dump_putstr_ex(),
+           but not this row framing, so give it a plain 2 space margin */
+        if (iflags.dumping_ai_snapshot && dumphtml_ai_file)
+            fputs("  ", dumphtml_ai_file);
 #endif
         for (i = 0; (idx = fieldorder[row][i]) != BL_FLUSH; ++i) {
             boolean hitpointbar = (idx == BL_TITLE
@@ -1719,6 +1723,9 @@ dump_render_status(void)
 #if defined(DUMPHTML)
         if (dumphtml_file)
             fprintf(dumphtml_file, "%*s</div>\n", pad, " ");
+        /* Without this the AI snapshot's status rows run into each other */
+        if (iflags.dumping_ai_snapshot && dumphtml_ai_file)
+            fputs("\n", dumphtml_ai_file);
 #endif
     }
     return;
@@ -2311,7 +2318,7 @@ html_dump_char(FILE *fp, nhsym c, boolean replacespace)
             nhsym ch = c;
             if (!!SYMHANDLING(H_IBM) && c >= 0 && c < 256) /* Convert CP437 to Unicode */
                 ch = cp437toUnicode[c];
-            fprintf(fp, "&#%d", (int)ch);
+            fprintf(fp, "&#%d;", (int)ch); /* entity needs its terminating ; */
         }
     }
 }
@@ -2964,6 +2971,12 @@ void
 dump_start_screendump(void)
 {
 #ifdef DUMPHTML
+    /* The AI snapshot writes to its own file handle, which is the only one
+       open during LibGenerateAiSnapshot().  Wrap its screendump in <pre> so
+       that the per-row newlines dump_map_ai() writes act as line breaks. */
+    if (iflags.dumping_ai_snapshot && dumphtml_ai_file)
+        fputs("<pre class=\"nh_screen\">\n", dumphtml_ai_file);
+
     if (!dumphtml_file) return;
     html_init_sym();
     
@@ -2981,6 +2994,8 @@ dump_end_screendump(void)
         fprintf(dumphtml_file, "%s\n", SECTION_E);
         fprintf(dumphtml_file, "%s\n", DIV_E);
     }
+    if (iflags.dumping_ai_snapshot && dumphtml_ai_file)
+        fputs("</pre>\n", dumphtml_ai_file);
 #endif
 }
 
@@ -3088,6 +3103,23 @@ dump_html_ai_write(const char* str)
     {
         fputs(str, dumphtml_ai_file);
     }
+#endif
+}
+
+/* Write one map/screen character to the AI snapshot with HTML escaping.
+   replacespace is TRUE so that spaces become &nbsp; and the map keeps its
+   column alignment through whatever whitespace processing the consumer
+   applies. */
+void
+dump_html_ai_write_char(nhsym ch)
+{
+#if defined (DUMPHTML)
+    if (dumphtml_ai_file)
+    {
+        html_dump_char(dumphtml_ai_file, ch, TRUE);
+    }
+#else
+    nhUse(ch);
 #endif
 }
 

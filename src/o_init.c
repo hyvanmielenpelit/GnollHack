@@ -1145,29 +1145,69 @@ static const short uniq_objs[] = {
     BELL_OF_OPENING,
 };
 
-/* the '\' command - show discovered object types */
-int
-dodiscovered(void) /* free after Robert Viduya */
+/* Shared body of the '\' command and of the dumped discoveries section.
+ *
+ * 'dumping' selects dump file formatting over an interactive menu: heading
+ * style, no spacer, no display_nhwindow(), and no pline() (which is
+ * redirected into the dump while it is open).
+ *
+ * 'format_for_ai' adds the parts that only make sense to a machine reader,
+ * that is the Overseer AI snapshot.  A human reading a dumplog already knows
+ * how to read obj_typename() output and does not need it spelled out.  It is
+ * only meaningful together with 'dumping'.
+ *
+ * Returns the number of discoveries listed.
+ */
+static int
+list_discoveries(boolean dumping, boolean format_for_ai)
 {
     int i, dis;
     int ct = 0;
     char *s, oclass, prev_class, classes[MAX_OBJECT_CLASSES], buf[OBUFSZ];
     winid tmpwin;
 
+    /* AI formatting has no meaning outside a dump file */
+    if (!dumping)
+        format_for_ai = FALSE;
+
     tmpwin = create_nhwindow(NHW_MENU);
-    putstr(tmpwin, ATR_TITLE, "Discoveries");
-    putstr(tmpwin, ATR_HALF_SIZE, " ");
+    if (dumping)
+    {
+        /* Dump headings follow the "Inventory:" style of dump_everything() */
+        putstr(tmpwin, ATR_HEADING, "Discoveries:");
+    }
+    else
+    {
+        putstr(tmpwin, ATR_TITLE, "Discoveries");
+        putstr(tmpwin, ATR_HALF_SIZE, " ");
+    }
+
+    if (format_for_ai)
+    {
+        /* Spell out obj_typename()'s output so that the reader can map an
+           appearance to a true name in either direction */
+        putstr(tmpwin, ATR_NONE,
+               "  Format: \"true name (appearance)\";"
+               " \"called X\" is a player-assigned nickname;");
+        putstr(tmpwin, ATR_NONE,
+               "  a leading * marks a type known from the start of the"
+               " game.");
+    }
 
     /* gather "unique objects" into a pseudo-class; note that they'll
        also be displayed individually within their regular class */
     for (i = dis = 0; i < SIZE(uniq_objs); i++)
-        if (objects[uniq_objs[i]].oc_name_known) {
+    {
+        if (objects[uniq_objs[i]].oc_name_known)
+        {
             if (!dis++)
-                putstr(tmpwin, iflags.menu_headings | ATR_HEADING, "Unique items");
+                putstr(tmpwin, iflags.menu_headings | ATR_HEADING,
+                       "Unique items");
             Sprintf(buf, "  %s", OBJ_NAME(objects[uniq_objs[i]]));
             putstr(tmpwin, 0, buf);
             ++ct;
         }
+    }
     /* display any known artifacts as another pseudo-class */
     ct += disp_artifact_discoveries(tmpwin);
 
@@ -1176,14 +1216,18 @@ dodiscovered(void) /* free after Robert Viduya */
     if (!index(classes, VENOM_CLASS))
         (void) strkitten(classes, VENOM_CLASS); /* append char to string */
 
-    for (s = classes; *s; s++) {
+    for (s = classes; *s; s++)
+    {
         oclass = *s;
         prev_class = oclass + 1; /* forced different from oclass */
         for (i = bases[(int) oclass];
-             i < NUM_OBJECTS && objects[i].oc_class == oclass; i++) {
-            if ((dis = disco[i]) != 0 && interesting_to_discover(dis)) {
+             i < NUM_OBJECTS && objects[i].oc_class == oclass; i++)
+        {
+            if ((dis = disco[i]) != 0 && interesting_to_discover(dis))
+            {
                 ct++;
-                if (oclass != prev_class) {
+                if (oclass != prev_class)
+                {
                     putstr(tmpwin, iflags.menu_headings | ATR_HEADING,
                            let_to_name(oclass, FALSE, FALSE));
                     prev_class = oclass;
@@ -1191,18 +1235,46 @@ dodiscovered(void) /* free after Robert Viduya */
                 Sprintf(buf, "%s %s",
                         (objects[dis].oc_pre_discovered ? "*" : " "),
                         obj_typename(dis));
-                putstr(tmpwin, objects[dis].oc_pre_discovered ? ATR_INDENT_AT_ASTR : ATR_INDENT_AT_SPACE, buf);
+                putstr(tmpwin, objects[dis].oc_pre_discovered
+                                   ? ATR_INDENT_AT_ASTR
+                                   : ATR_INDENT_AT_SPACE, buf);
             }
         }
     }
-    if (ct == 0) {
-        You("haven't discovered anything yet...");
-    } else
+    if (ct == 0)
+    {
+        /* pline() is redirected while dumping, so the message would leak
+           into the dump file and be lost from the message window */
+        if (dumping)
+            putstr(tmpwin, ATR_NONE, "  (No object types discovered yet.)");
+        else
+            You("haven't discovered anything yet...");
+    }
+    else if (!dumping)
         display_nhwindow(tmpwin, TRUE);
     destroy_nhwindow(tmpwin);
 
+    return ct;
+}
+
+/* the '\' command - show discovered object types */
+int
+dodiscovered(void) /* free after Robert Viduya */
+{
+    (void) list_discoveries(FALSE, FALSE);
+
     return 0;
 }
+
+#if defined (DUMPLOG) || defined (DUMPHTML)
+/* dumplog / AI snapshot section listing discovered object types;
+   format_for_ai adds the machine-reader notes to the Overseer snapshot */
+void
+dump_discoveries(boolean format_for_ai)
+{
+    (void) list_discoveries(TRUE, format_for_ai);
+}
+#endif
 
 /* lower case let_to_name() output, which differs from def_oc_syms[].name */
 static char *

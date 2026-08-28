@@ -1172,6 +1172,7 @@ E void dump_open_log_ai(time_t);
 E void dump_close_log_ai(void);
 E char* print_dumphtml_ai_filename_to_buffer(char*);
 E void dump_html_ai_write(const char*);
+E void dump_html_ai_write_char(nhsym);
 E void print_selfies(winid, int);
 E void print_knight_slayings(winid, int);
 E void reset_game(void);
@@ -2515,6 +2516,9 @@ E void restnames(int);
 E void discover_object(int, boolean, boolean);
 E void undiscover_object(int);
 E int dodiscovered(void);
+#if defined (DUMPLOG) || defined (DUMPHTML)
+E void dump_discoveries(boolean);
+#endif
 E int doclassdisco(void);
 E void rename_disco(void);
 E void exceptionality_checks(struct obj*);
