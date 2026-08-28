@@ -2483,7 +2483,7 @@ dump_map_ai_write_aligned(const char *str)
 }
 
 /* Emit the two-line column ruler that precedes the AI snapshot map.  The
-   layout follows the rulers used in several dat/*.des files, e.g. Barb.des:
+   layout follows the rulers used in several .des files in dat/, e.g. Barb.des:
 
      #         1         2         3         4         5         6         7
      #12345678901234567890123456789012345678901234567890123456789012345678901
