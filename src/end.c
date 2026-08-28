@@ -985,7 +985,14 @@ dump_everything(int how, time_t when)
     putstr(NHW_DUMPTXT, 0, "");
 
     if (how == SNAPSHOT_AI)
+    {
         putstr(0, ATR_HEADING, "Map:");
+        /* The legend goes between the heading and the map, and outside the
+           screendump's <pre> block: it is ordinary prose and must not be
+           column-aligned, whereas the map and its ruler must be. */
+        debugprint("%s", "dump_map_legend_ai");
+        dump_map_legend_ai();
+    }
     dump_start_screendump();
     debugprint("%s", "dump_map");
     /* dump_map() writes only to dumplog_file and dumphtml_file, neither of

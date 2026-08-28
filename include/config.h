@@ -653,6 +653,11 @@ typedef unsigned char uchar;
  /* Buffer size: must be at least as large as the biggest consumer */
 #define AI_SNAPSHOT_MESSAGE_COUNT 100
 
+/* AI snapshot map layout.  dump_map_ai() (detect.c) prefixes every map row
+   with a right aligned row number gutter, and dump_map_legend_ai() (pager.c)
+   describes that layout to the reader, so both must agree on this. */
+#define MAP_AI_GUTTER_WIDTH 4   /* strlen("%2d: "), fits " 0: " and "20: " */
+
 #ifndef DUMPLOG_MSG_COUNT
 #define SAVED_PLINE_COUNT AI_SNAPSHOT_MESSAGE_COUNT
 #else

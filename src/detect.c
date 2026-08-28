@@ -2430,59 +2430,142 @@ dump_map(void)
 #endif /* DUMPLOG */
 
 #if defined(DUMPLOG) || defined(DUMPHTML)
+/* Return the character dump_map_ai() prints for 'glyph' at <x,y>, and report
+   the symbol index, color and mapglyph flags to the caller.  The AI snapshot
+   always falls back to the basic ASCII symbols, the way dump_map() does when
+   the symset is neither IBM nor Unicode, so that the snapshot reads
+   identically whatever symset the player has chosen and plain ASCII keeps
+   CP437 and box drawing glyphs out of it entirely.
+
+   dump_map_legend_ai() (pager.c) calls this too, so that the legend can never
+   quote a different character than the map actually printed.
+
+   Parameters:
+     osym, ocolor, ospecial: optional outputs, may be (int *)0 / (uint64_t *)0
+ */
+nhsym
+map_ai_glyph_char(int glyph, int x, int y, int *osym, int *ocolor,
+                  uint64_t *ospecial)
+{
+    struct layer_info layers = nul_layerinfo;
+    nhsym ch = 0;
+    int color = NO_COLOR;
+    int sym = 0;
+    uint64_t special = 0;
+
+    layers.glyph = glyph;
+    sym = mapglyph(layers, &ch, &color, &special, x, y);
+
+    if (sym >= 0 && sym < MAX_CMAPPED_CHARS)
+        ch = (nhsym) defsyms[sym].sym;
+
+    if (osym)
+        *osym = sym;
+    if (ocolor)
+        *ocolor = color;
+    if (ospecial)
+        *ospecial = special;
+
+    return ch;
+}
+
+/* Write a plain ASCII string into the AI snapshot one character at a time, so
+   that spaces become &nbsp; and column alignment survives whatever whitespace
+   processing the consumer applies.  Used for the map's column ruler and row
+   labels, which must line up with the map body exactly. */
+static void
+dump_map_ai_write_aligned(const char *str)
+{
+    const char *p;
+
+    for (p = str; *p; p++)
+        dump_html_ai_write_char((nhsym) *p);
+}
+
+/* Emit the two-line column ruler that precedes the AI snapshot map.  The
+   layout follows the rulers used in several dat/*.des files, e.g. Barb.des:
+
+     #         1         2         3         4         5         6         7
+     #12345678901234567890123456789012345678901234567890123456789012345678901
+
+   with the leading '#' replaced by the four column row label gutter that
+   dump_map_ai() writes in front of every map row.  The tens digit sits at its
+   own column, and the units line ends with the same right edge marker the map
+   rows carry, so that the trailing blank columns read as part of a fixed
+   width viewport rather than an unbounded margin. */
+static void
+dump_map_ai_ruler(void)
+{
+    char buf[COLNO + MAP_AI_GUTTER_WIDTH + 8];
+    char *bp;
+    int x;
+
+    /* tens line: a digit at every multiple of ten, spaces elsewhere */
+    bp = buf;
+    for (x = 0; x < MAP_AI_GUTTER_WIDTH; x++)
+        *bp++ = ' ';
+    for (x = 1; x < COLNO; x++)
+        *bp++ = (x % 10) == 0 ? (char) ('0' + x / 10) : ' ';
+    *bp = '\0';
+    dump_map_ai_write_aligned(buf);
+    dump_html_ai_write("\n");
+
+    /* units line: COLNO - 1 digits running 1234567890...  It ends in a digit
+       rather than a blank, so it is the one line of the map block that no
+       trailing-whitespace trimming anywhere downstream can shorten - which
+       makes it the authoritative column scale for the reader. */
+    bp = buf;
+    for (x = 0; x < MAP_AI_GUTTER_WIDTH; x++)
+        *bp++ = ' ';
+    for (x = 1; x < COLNO; x++)
+        *bp++ = (char) ('0' + x % 10);
+    *bp = '\0';
+    dump_map_ai_write_aligned(buf);
+    dump_html_ai_write("\n");
+}
+
 void
 dump_map_ai(void)
 {
-    int x, y, glyph, sym;
+    int x, y, glyph;
     int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
     int default_glyph;
     nhsym ch;
-    int color;
-    uint64_t special;
-    char buf[BUFSZ * 2];
+    char buf[BUFSZ];
 
     default_glyph = base_cmap_to_glyph(is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored);
 
+    dump_map_ai_ruler();
+
     for (y = 0; y < ROWNO; y++)
     {
+        /* row label gutter, MAP_AI_GUTTER_WIDTH characters wide so that both
+           " 0: " and "20: " align; the number is y, zero based */
+        Sprintf(buf, "%2d: ", y);
+        dump_map_ai_write_aligned(buf);
+
         for (x = 1; x < COLNO; x++)
         {
-            ch = 0;
-            color = NO_COLOR;
-            special = 0;
-
             glyph = reveal_terrain_getglyph(x, y, FALSE, u.uswallow, default_glyph, subset);
-            struct layer_info layers = nul_layerinfo;
-            layers.glyph = glyph;
-            sym = mapglyph(layers, &ch, &color,
-                           &special, x, y);
-
-            /* Always fall back to the basic ASCII symbols, the way
-               dump_map() does when the symset is neither IBM nor Unicode.
-               The AI snapshot should read identically whatever symset the
-               player has chosen, and plain ASCII keeps CP437 and box
-               drawing glyphs out of it entirely. */
-            if (sym >= 0 && sym < MAX_CMAPPED_CHARS)
-                ch = (nhsym)defsyms[sym].sym;
-
-            /* Write colored character as HTML span */
-            if (color != NO_COLOR && color >= 0 && color < 16)
-            {
-                Sprintf(buf,
-                    "<span class=\"nh_color_%d\">",
-                    color);
-                dump_html_ai_write(buf);
-            }
+            ch = map_ai_glyph_char(glyph, x, y, (int *) 0, (int *) 0,
+                                   (uint64_t *) 0);
 
             /* Write the character itself.  html_dump_char() escapes it and
-               turns spaces into &nbsp; so the map keeps its alignment. */
-            dump_html_ai_write_char(ch);
+               turns spaces into &nbsp; so the map keeps its alignment.
 
-            if (color != NO_COLOR && color >= 0 && color < 16)
-            {
-                dump_html_ai_write("</span>");
-            }
+               No per-character color span here: it would make each row a
+               sequence of elements rather than one text node, and an HTML
+               flattener that replaces tags with whitespace then turns a wall
+               row into "- - - -" and destroys the ruler alignment with it.
+               Color is reported per notable position by
+               dump_map_legend_ai() instead, where it names one specific
+               creature or item rather than an anonymous character. */
+            dump_html_ai_write_char(ch);
         }
+
+        /* The row ends here, at the line break.  No right edge marker: every
+           printable ASCII character is already a map symbol, so a marker
+           would be ambiguous with map content. */
         dump_html_ai_write("\n");
     }
 }

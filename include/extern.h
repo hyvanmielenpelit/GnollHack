@@ -484,6 +484,7 @@ E int dosearch(void);
 E void sokoban_detect(void);
 #if defined(DUMPLOG) || defined(DUMPHTML)
 E void dump_map(void);
+E nhsym map_ai_glyph_char(int, int, int, int *, int *, uint64_t *);
 #endif
 E void reveal_terrain(int, int);
 E int reveal_terrain_getglyph(int, int, int, boolean, int, int);
@@ -2717,6 +2718,9 @@ E int dowhatdoes(void);
 E char *dowhatdoes_core(char, char *);
 E int dohelp(void);
 E int dohistory(void);
+#if defined(DUMPLOG) || defined(DUMPHTML)
+E void dump_map_legend_ai(void);
+#endif
 
 /* ### pcmain.c ### */
 

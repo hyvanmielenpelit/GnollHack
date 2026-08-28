@@ -2468,4 +2468,577 @@ dohistory(void)
     return 0;
 }
 
+#if defined(DUMPLOG) || defined(DUMPHTML)
+
+/*
+ * AI snapshot map legend.
+ *
+ * The Overseer AI reads the snapshot's ASCII map as plain text, with no
+ * tileset and none of the hover tooltips html_dump_glyph() gives a human
+ * reading the HTML dumplog.  On its own that map is close to unreadable: a
+ * corridor and a sink are both '#', every trap is '^', and a blank cell looks
+ * like empty floor when it really means "never seen, or solid rock".
+ *
+ * dump_map_legend_ai() is printed between the "Map:" heading and the map
+ * itself, in three sections:
+ *   - reading notes: the coordinate system, what a blank cell means, that the
+ *     map is hero memory rather than live vision, plus caveats for
+ *     hallucination, blindness, being engulfed, and arboreal levels
+ *   - the symbols actually present on this map, with generic meanings from the
+ *     same tables do_screen_description() uses, and a cell count each
+ *   - notable positions with symbol, color, the description lookat() would
+ *     give, and a compass bearing from the hero
+ *
+ * It works in three stages: walk every map cell once and accumulate two flat
+ * lists (one entry per distinct symbol seen, one per notable position), sort
+ * them, then print.  Everything either list needs to know about a kind of
+ * thing - what to call it, and whether it earns coordinate lines at all -
+ * lives in the single legend_kinds[] table.
+ *
+ * Bulk terrain deliberately gets a cell count but no coordinate lines, which
+ * is what keeps the legend short on water levels and arboreal ones.
+ *
+ * Snapshot-only, like the format_for_ai parts of list_discoveries(): a human
+ * reading a dumplog has the tileset, the tooltips and the game itself in front
+ * of them and needs none of this.
+ */
+
+/* maximum coordinate lines per kind, so that an item-strewn level cannot push
+   the rest of the snapshot past the reader's size limit */
+#define LEGEND_MAX_PER_KIND 40
+
+/* One classification for both lists, in print order. */
+enum legend_kinds_types {
+    LEGEND_KIND_CREATURE = 0,
+    LEGEND_KIND_OBJECT,
+    LEGEND_KIND_TRAP,
+    LEGEND_KIND_FEATURE,
+    LEGEND_KIND_TERRAIN,
+    LEGEND_KIND_OTHER,
+
+    LEGEND_MAX_KINDS
+};
+
+static const struct legend_kind {
+    const char *label;    /* prefixes a coordinate line */
+    const char *section;  /* prefixes a symbol line */
+    const char *plural;   /* names the kind in the "and N more" line */
+    boolean has_positions; /* FALSE for bulk terrain: count it, do not list it */
+} legend_kinds[LEGEND_MAX_KINDS] = {
+    { "Creature", "Creatures",        "creatures",        TRUE  },
+    { "Object",   "Objects",          "objects",          TRUE  },
+    { "Trap",     "Traps",            "traps",            TRUE  },
+    { "Feature",  "Dungeon features", "dungeon features", TRUE  },
+    { "Terrain",  "Terrain",          "terrain cells",    FALSE },
+    { "Other",    "Other",            "other things",     FALSE }
+};
+
+/* one entry per distinct screen symbol found on the map */
+struct legend_sym_entry {
+    short sym;   /* screen symbol index, showsyms[] numbering */
+    short kind;  /* enum legend_kinds_types */
+    nhsym ch;    /* the character the map actually printed for it */
+    int count;   /* how many cells hold it */
+};
+
+/* one entry per notable position */
+struct legend_pos_entry {
+    xchar x, y;
+    short sym;
+    short kind;
+    nhsym ch;
+    schar color;
+    boolean hidden; /* a feature currently covered by something on top */
+};
+
+/* File-static rather than automatic: this runs on the UI thread of a mobile
+   app, and the two lists plus the slot map are a few kilobytes. */
+static struct legend_sym_entry legend_syms[SYM_MAX];
+static int legend_symcnt;
+static short legend_symslot[SYM_MAX]; /* sym -> legend_syms[] index, or -1 */
+static struct legend_pos_entry legend_positions[LEGEND_MAX_KINDS
+                                                * LEGEND_MAX_PER_KIND];
+static int legend_poscnt;
+static int legend_kept[LEGEND_MAX_KINDS];  /* lines kept, for the cap */
+static int legend_wanted[LEGEND_MAX_KINDS]; /* lines wanted, for "and N more" */
+
+/* Is this screen symbol a "point feature", that is, something worth its own
+   coordinate line?  Bulk terrain - floor, corridor, grass, ground, walls,
+   stone, unexplored, water, lava, ice, air, cloud, tree - is not: it gets a
+   cell count in the symbol list instead, and coordinate lines for it would
+   swamp the legend on a water level or an arboreal one.
+   Traps are excluded here because they are their own kind; that includes the
+   trap-range portals, the lever and the vibrating square. */
+static boolean
+legend_is_point_feature(int sym)
+{
+    if (sym < 0 || sym >= MAX_CMAPPED_CHARS)
+        return FALSE;
+
+    if (is_cmap_door(sym) || is_cmap_drawbridge(sym))
+        return TRUE;
+
+    switch (sym)
+    {
+    case S_ndoor:      /* doorway or broken door */
+    case S_bars:
+    case S_upstair:
+    case S_dnstair:
+    case S_upladder:
+    case S_dnladder:
+    case S_anvil:
+    case S_altar:
+    case S_grave:
+    case S_brazier:
+    case S_signpost:
+    case S_throne:
+    case S_sink:
+    case S_fountain:
+        return TRUE;
+    default:
+        break;
+    }
+
+    return FALSE;
+}
+
+/* Which kind of thing this cell holds.  Both lists classify through here.
+ *
+ * Parameters:
+ *   glyph: the displayed glyph, or NO_GLYPH to classify by symbol alone
+ *   sym:   screen symbol index from map_ai_glyph_char()
+ *
+ * The glyph is consulted first because it knows things the symbol index does
+ * not: a statue and a live monster share a monster class letter (unless
+ * flags.classic_statue_symbol is set), and only the glyph says which is
+ * which.  Passing NO_GLYPH gives the stable symbol-only answer, which is what
+ * the symbol list wants - one symbol index must always land in one section,
+ * however many different things happen to be drawn with it.
+ */
+static int
+legend_kind_of(int glyph, int sym)
+{
+    if (glyph != NO_GLYPH)
+    {
+        if (glyph_is_monster(glyph) || glyph_is_warning(glyph)
+            || glyph_is_invisible(glyph))
+            return LEGEND_KIND_CREATURE;
+        if (glyph_is_object(glyph))
+            return LEGEND_KIND_OBJECT;
+        if (glyph_is_trap(glyph))
+            return LEGEND_KIND_TRAP;
+    }
+
+    if (sym >= SYM_OFF_X)
+        return (sym - SYM_OFF_X) == SYM_INVISIBLE ? LEGEND_KIND_CREATURE
+                                                  : LEGEND_KIND_OTHER;
+    if (sym >= SYM_OFF_M) /* covers SYM_OFF_W too: both are creatures */
+        return LEGEND_KIND_CREATURE;
+    if (sym >= SYM_OFF_O)
+        return LEGEND_KIND_OBJECT;
+    if (is_cmap_trap(sym))
+        return LEGEND_KIND_TRAP;
+    if (legend_is_point_feature(sym))
+        return LEGEND_KIND_FEATURE;
+
+    return LEGEND_KIND_TERRAIN;
+}
+
+/* Generic meaning of a screen symbol index, from the same tables that
+   do_screen_description() consults when it is not looking at the map. */
+static const char *
+legend_sym_explanation(int sym)
+{
+    int idx;
+
+    if (sym >= SYM_OFF_X)
+    {
+        idx = sym - SYM_OFF_X;
+        if (idx == SYM_BOULDER)
+            return "boulder";
+        if (idx == SYM_INVISIBLE)
+            return invisexplain;
+        return "unknown";
+    }
+    if (sym >= SYM_OFF_W)
+    {
+        idx = sym - SYM_OFF_W;
+        if (idx > 0 && idx < WARNCOUNT && def_warnsyms[idx].explanation)
+            return def_warnsyms[idx].explanation;
+        return "warning of an unseen creature";
+    }
+    if (sym >= SYM_OFF_M)
+    {
+        idx = sym - SYM_OFF_M;
+        if (idx > 0 && idx < MAX_MONSTER_CLASSES && def_monsyms[idx].explain
+            && *def_monsyms[idx].explain)
+            return def_monsyms[idx].explain;
+        return "creature";
+    }
+    if (sym >= SYM_OFF_O)
+    {
+        idx = sym - SYM_OFF_O;
+        if (idx > 0 && idx < MAX_OBJECT_CLASSES && def_oc_syms[idx].explain
+            && *def_oc_syms[idx].explain)
+            return def_oc_syms[idx].explain;
+        return "object";
+    }
+
+    /* cmap.  S_unexplored and S_stone are both blank on screen, and the
+       reader has no way to tell them apart, so describe them as one thing. */
+    if (sym == S_unexplored || sym == S_stone)
+        return "never seen, or solid rock";
+    if (sym >= 0 && sym < MAX_CMAPPED_CHARS && defsyms[sym].explanation
+        && *defsyms[sym].explanation)
+        return defsyms[sym].explanation;
+
+    return "unknown";
+}
+
+/* Count one cell against its symbol, appending an entry the first time that
+   symbol is seen. */
+static void
+legend_tally_sym(int sym, nhsym ch)
+{
+    struct legend_sym_entry *e;
+
+    if (sym < 0 || sym >= SYM_MAX)
+        return;
+
+    if (legend_symslot[sym] < 0)
+    {
+        legend_symslot[sym] = (short) legend_symcnt;
+        e = &legend_syms[legend_symcnt++];
+        e->sym = (short) sym;
+        e->kind = (short) legend_kind_of(NO_GLYPH, sym);
+        e->ch = ch;
+        e->count = 0;
+    }
+    legend_syms[legend_symslot[sym]].count++;
+}
+
+/* Remember one notable position.  'wanted' is counted even past the cap, so
+   that the "and N more" line can be honest about what was dropped. */
+static void
+legend_add_pos(int kind, int x, int y, nhsym ch, int sym, int color,
+               boolean hidden)
+{
+    struct legend_pos_entry *e;
+
+    if (kind < 0 || kind >= LEGEND_MAX_KINDS
+        || !legend_kinds[kind].has_positions)
+        return;
+
+    legend_wanted[kind]++;
+    if (legend_kept[kind] >= LEGEND_MAX_PER_KIND
+        || legend_poscnt >= SIZE(legend_positions))
+        return;
+    legend_kept[kind]++;
+
+    e = &legend_positions[legend_poscnt++];
+    e->x = (xchar) x;
+    e->y = (xchar) y;
+    e->sym = (short) sym;
+    e->kind = (short) kind;
+    e->ch = ch;
+    e->color = (schar) color;
+    e->hidden = hidden;
+}
+
+/* qsort comparison routine: kind, then commonest first, then symbol index so
+   that the order is stable when two symbols are equally common */
+static int
+legend_symcmp(const void *p, const void *q)
+{
+    const struct legend_sym_entry *a = (const struct legend_sym_entry *) p;
+    const struct legend_sym_entry *b = (const struct legend_sym_entry *) q;
+
+    if (a->kind != b->kind)
+        return a->kind - b->kind;
+    if (a->count != b->count)
+        return b->count - a->count;
+
+    return a->sym - b->sym;
+}
+
+/* qsort comparison routine: kind, then reading order */
+static int
+legend_poscmp(const void *p, const void *q)
+{
+    const struct legend_pos_entry *a = (const struct legend_pos_entry *) p;
+    const struct legend_pos_entry *b = (const struct legend_pos_entry *) q;
+
+    if (a->kind != b->kind)
+        return a->kind - b->kind;
+    if (a->y != b->y)
+        return a->y - b->y;
+
+    return a->x - b->x;
+}
+
+void
+dump_map_legend_ai(void)
+{
+    static char descbuf[BUFSZ * 5], simplebuf[BUFSZ * 2], extrabuf[BUFSZ * 2];
+    static char buf[BUFSZ * 6];
+    char coordbuf[BUFSZ];
+    int x, y, i, kind, sym, color, glyph, terrain_glyph;
+    int default_glyph;
+    int hero_sym = -1;
+    int saved_terrainmode;
+    coord saved_bhitpos;
+    nhsym ch, hero_ch = 0;
+    uint64_t special;
+    int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
+
+    legend_symcnt = 0;
+    legend_poscnt = 0;
+    for (i = 0; i < SYM_MAX; i++)
+        legend_symslot[i] = -1;
+    for (i = 0; i < LEGEND_MAX_KINDS; i++)
+        legend_kept[i] = legend_wanted[i] = 0;
+
+    default_glyph = base_cmap_to_glyph(is_levflag_arboreal(&level.flags)
+                                           ? S_tree : S_unexplored);
+
+    /* lookat() -> look_at_object() -> object_from_map() marks an adjacent
+       object dknown unless terrain mode is active.  Taking a snapshot must
+       not teach the hero anything, so borrow the mechanism #terrain uses:
+       a non-zero terrainmode means "view what is already known".  All four
+       bits are set so that nothing is filtered out of the descriptions.
+       lookat() also writes bhitpos; save and restore it. */
+    saved_terrainmode = iflags.terrainmode;
+    saved_bhitpos = bhitpos;
+    iflags.terrainmode = subset;
+
+    /* Stage 1: walk the map once, in the same order and with the same
+       arguments dump_map_ai() uses, so that the legend describes the map that
+       is actually printed.  Each cell is counted against its symbol, and
+       classified for the coordinate list.
+
+       The second reveal_terrain_getglyph() call asks what the terrain alone
+       would show.  Where that differs from the displayed glyph, a point
+       feature is hidden under a creature, an item or a trap, and "there is a
+       staircase under that dragon" is exactly what the reader needs.  The
+       same kind test applies to it, so bulk terrain cannot leak in. */
+    for (y = 0; y < ROWNO; y++)
+    {
+        for (x = 1; x < COLNO; x++)
+        {
+            glyph = reveal_terrain_getglyph(x, y, FALSE, u.uswallow,
+                                            default_glyph, subset);
+            color = NO_COLOR;
+            special = 0;
+            sym = 0;
+            ch = map_ai_glyph_char(glyph, x, y, &sym, &color, &special);
+
+            legend_tally_sym(sym, ch);
+
+            /* Remember which symbol the hero's own cell produced, so that the
+               symbol list can point the reader at it.  Only when the hero is
+               actually drawn there: when it cannot sense itself the cell
+               shows terrain, and when engulfed it shows the engulfer.  Keyed
+               on the symbol index rather than on '@' so that a polymorphed
+               hero tags the right line. */
+            if (x == u.ux && y == u.uy && !u.uswallow
+                && (glyph_is_monster(glyph) || glyph_is_invisible(glyph)))
+            {
+                hero_sym = sym;
+                hero_ch = ch;
+            }
+
+            legend_add_pos(legend_kind_of(glyph, sym), x, y, ch, sym, color,
+                           FALSE);
+
+            terrain_glyph = reveal_terrain_getglyph(x, y, FALSE, u.uswallow,
+                                                    default_glyph, TER_MAP);
+            if (terrain_glyph != glyph)
+            {
+                color = NO_COLOR;
+                special = 0;
+                sym = 0;
+                ch = map_ai_glyph_char(terrain_glyph, x, y, &sym, &color,
+                                       &special);
+                if (legend_kind_of(NO_GLYPH, sym) == LEGEND_KIND_FEATURE)
+                    legend_add_pos(LEGEND_KIND_FEATURE, x, y, ch, sym, color,
+                                   TRUE);
+            }
+        }
+    }
+
+    /* Stage 2: sort both lists into print order. */
+    if (legend_symcnt > 1)
+        qsort((genericptr_t) legend_syms, legend_symcnt,
+              sizeof *legend_syms, legend_symcmp);
+    if (legend_poscnt > 1)
+        qsort((genericptr_t) legend_positions, legend_poscnt,
+              sizeof *legend_positions, legend_poscmp);
+
+    /* Stage 3: print.
+       Section 1: how to read the map. */
+    Sprintf(buf,
+            "Reading this map: the two lines above the map are a column"
+            " ruler, and the second of them numbers every column. Every map"
+            " row starts with a %d character gutter holding its row number"
+            " and \": \", then exactly %d map characters, and ends at its"
+            " line break.",
+            MAP_AI_GUTTER_WIDTH, COLNO - 1);
+    putstr(0, ATR_NONE, buf);
+    Sprintf(buf,
+            "Columns are x = 1 to %d, left to right. Rows are y = 0 to %d,"
+            " top to bottom, and the number in the gutter is y. To find"
+            " <x,y>, take row y and read the map character x positions after"
+            " the gutter. Coordinates below are written <x,y>.",
+            COLNO - 1, ROWNO - 1);
+    putstr(0, ATR_NONE, buf);
+    Sprintf(buf,
+            "There is no end-of-row marker character, because every"
+            " printable character is already a map symbol in this game. If a"
+            " row looks shorter than %d characters, its rightmost cells were"
+            " blank and something in transit trimmed them; the column ruler"
+            " is the authoritative scale.",
+            COLNO - 1);
+    putstr(0, ATR_NONE, buf);
+    if (u.uswallow)
+        Sprintf(buf,
+                "The hero is at <%d,%d>, inside the creature drawn there.",
+                (int) u.ux, (int) u.uy);
+    else if (hero_ch)
+        Sprintf(buf, "The hero is at <%d,%d>, shown as '%c'.",
+                (int) u.ux, (int) u.uy, (char) hero_ch);
+    else
+        Sprintf(buf,
+                "The hero is at <%d,%d>, but is not drawn there: it cannot"
+                " currently sense itself, so that cell shows the terrain"
+                " instead.",
+                (int) u.ux, (int) u.uy);
+    putstr(0, ATR_NONE, buf);
+    putstr(0, ATR_NONE,
+           "A blank cell is NOT open floor: it is either area the hero has"
+           " never seen or solid rock. Blank margins to the left, right,"
+           " above and below the drawn area are simply unvisited parts of the"
+           " level, not empty rooms.");
+    putstr(0, ATR_NONE,
+           "This map is the hero's memory, not live vision: creatures and"
+           " items are drawn where they were last seen and may have moved or"
+           " been taken since.");
+    if (Hallucination)
+        putstr(0, ATR_NONE,
+               "The hero is hallucinating, so every description below is"
+               " unreliable.");
+    if (Blind)
+        putstr(0, ATR_NONE,
+               "The hero is blind; the map shows only what is remembered or"
+               " felt.");
+    if (u.uswallow)
+        putstr(0, ATR_NONE,
+               "The hero has been engulfed; the map shows the interior of the"
+               " engulfing creature, not the level.");
+    if (is_levflag_arboreal(&level.flags))
+        putstr(0, ATR_NONE,
+               "This level is arboreal: cells the hero has not seen default"
+               " to trees rather than blank.");
+    putstr(0, ATR_NONE,
+           "For the full GnollHack symbol reference and map-reading guidance,"
+           " read knowledge base topic `reading_the_game_map`.");
+    /* blank separator; win 0 so it reaches the AI snapshot file too
+       (NHW_DUMPTXT is filtered out of it by dump_putstr_ex) */
+    putstr(0, 0, "");
+
+    /* Section 2: the symbols present on this map.  The section name is
+       repeated on every line rather than used as an indented heading,
+       because the reader's HTML-to-text step collapses runs of spaces and
+       indentation would be lost. */
+    putstr(0, ATR_HEADING, "Symbols on this map:");
+    for (i = 0; i < legend_symcnt; i++)
+    {
+        sym = (int) legend_syms[i].sym;
+        ch = legend_syms[i].ch;
+        kind = (int) legend_syms[i].kind;
+
+        Sprintf(buf, "%s: '%c'%s %s, %d cell%s",
+                legend_kinds[kind].section, (char) ch,
+                ch == ' ' ? " (blank)" : "",
+                legend_sym_explanation(sym), legend_syms[i].count,
+                legend_syms[i].count == 1 ? "" : "s");
+        if (sym == hero_sym)
+            Strcat(buf, legend_syms[i].count == 1
+                            ? " (this is the hero)"
+                            : " (one of them is the hero)");
+        putstr(0, ATR_NONE, buf);
+    }
+    putstr(0, 0, "");
+
+    /* Section 3: notable positions. */
+    putstr(0, ATR_HEADING, "Notable locations:");
+    if (!legend_poscnt)
+        putstr(0, ATR_NONE,
+               "Nothing notable is currently shown on the map: no creatures,"
+               " items, traps or dungeon features.");
+    for (i = 0; i < legend_poscnt; i++)
+    {
+        x = (int) legend_positions[i].x;
+        y = (int) legend_positions[i].y;
+        ch = legend_positions[i].ch;
+        sym = (int) legend_positions[i].sym;
+        kind = (int) legend_positions[i].kind;
+        color = (int) legend_positions[i].color;
+
+        Sprintf(buf, "%s <%d,%d> '%c'", legend_kinds[kind].label, x, y,
+                (char) ch);
+        /* NO_COLOR is 8, which is a real index into c_obj_colors[], so this
+           test has to come first or a colorless cell would be labelled
+           "transparent". */
+        if (color != NO_COLOR && color >= 0 && color < CLR_MAX)
+            Sprintf(eos(buf), " [%s]", c_obj_colors[color]);
+
+        if (legend_positions[i].hidden)
+        {
+            /* Described from the terrain tables: lookat() reads the live
+               display and would describe whatever is standing on top. */
+            Sprintf(eos(buf), " %s, currently hidden under something",
+                    legend_sym_explanation(sym));
+        }
+        else
+        {
+            descbuf[0] = simplebuf[0] = extrabuf[0] = '\0';
+            (void) lookat(x, y, descbuf, simplebuf, extrabuf);
+            if (!*descbuf)
+                Strcpy(descbuf, legend_sym_explanation(sym));
+            if (x == u.ux && y == u.uy)
+                Sprintf(eos(buf), " you: %s", descbuf);
+            else
+                Sprintf(eos(buf), " %s", descbuf);
+        }
+
+        if (!(x == u.ux && y == u.uy))
+        {
+            *coordbuf = '\0';
+            (void) coord_desc(x, y, coordbuf, GPCOORDS_COMPASS);
+            if (*coordbuf)
+                Sprintf(eos(buf), " %s", coordbuf);
+        }
+        putstr(0, ATR_NONE, buf);
+
+        /* the overflow note follows the last kept line of its kind */
+        if ((i + 1 == legend_poscnt
+             || (int) legend_positions[i + 1].kind != kind)
+            && legend_wanted[kind] > legend_kept[kind])
+        {
+            Sprintf(buf,
+                    "... and %d more %s on the map, not listed (legend size"
+                    " limit).",
+                    legend_wanted[kind] - legend_kept[kind],
+                    legend_kinds[kind].plural);
+            putstr(0, ATR_NONE, buf);
+        }
+    }
+    putstr(0, 0, "");
+
+    iflags.terrainmode = saved_terrainmode;
+    bhitpos = saved_bhitpos;
+}
+
+#endif /* DUMPLOG || DUMPHTML */
+
 /*pager.c*/
