@@ -1027,6 +1027,13 @@ dump_everything(int how, time_t when)
             putstr(NHW_DUMPTXT, 0, partylines[i]);
         }
     }
+    /* The status rows reach the AI snapshot from dump_status_line(), inside
+       the screendump and directly after the map, with no marker of their own.
+       Label them so that the reader is not left inferring where the map stops.
+       dump_html_ai_write() writes only to the AI file, so the human dumplogs
+       are unaffected either way. */
+    if (how == SNAPSHOT_AI)
+        dump_html_ai_write("\nStatus:\n");
     status_initialize(TRUE);
     bot();
     dump_end_screendump();

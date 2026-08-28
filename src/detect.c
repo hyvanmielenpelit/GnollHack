@@ -2535,6 +2535,10 @@ dump_map_ai(void)
 
     default_glyph = base_cmap_to_glyph(is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored);
 
+    /* Label the grid.  The legend sits between the "Map:" heading and this
+       point, so without a marker here the grid simply starts, several screens
+       of prose after the heading that announced it. */
+    dump_html_ai_write("Map grid:\n");
     dump_map_ai_ruler();
 
     for (y = 0; y < ROWNO; y++)

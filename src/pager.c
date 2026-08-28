@@ -2533,12 +2533,17 @@ static const struct legend_kind {
     { "Other",    "Other",            "other things",     FALSE }
 };
 
-/* one entry per distinct screen symbol found on the map */
+/* One entry per distinct (character, meaning) pair found on the map - not per
+   symbol index: several symbol indices can print the same character and mean
+   the same thing, and listing those separately produced a run of lines that
+   differed only in their counts.  See legend_tally_sym(). */
 struct legend_sym_entry {
-    short sym;   /* screen symbol index, showsyms[] numbering */
-    short kind;  /* enum legend_kinds_types */
-    nhsym ch;    /* the character the map actually printed for it */
-    int count;   /* how many cells hold it */
+    short sym;          /* first screen symbol index that landed here */
+    short kind;         /* enum legend_kinds_types */
+    nhsym ch;           /* the character the map actually printed for it */
+    const char *expl;   /* resolved once, on creation */
+    int count;          /* how many cells hold it */
+    boolean has_hero;   /* the hero's own cell printed this entry */
 };
 
 /* one entry per notable position */
@@ -2640,8 +2645,47 @@ legend_kind_of(int glyph, int sym)
         return LEGEND_KIND_TRAP;
     if (legend_is_point_feature(sym))
         return LEGEND_KIND_FEATURE;
+    /* The effect symbols - zap beams, explosions, sparkles, and the nine
+       swallow symbols - are not terrain, and calling them that would be
+       actively misleading when the hero is engulfed and the whole map is
+       made of them. */
+    if (sym >= S_vbeam && sym < MAX_CMAPPED_CHARS)
+        return LEGEND_KIND_OTHER;
 
     return LEGEND_KIND_TERRAIN;
+}
+
+/* defsyms[] explains eleven separate wall rows as the bare word "wall", which
+   in a legend produces a run of lines that differ only in their cell counts.
+   The table text is right for the in-game ';' command and for the human
+   dumplog, so it is left alone; the legend says which wall instead.  Returns
+   (const char *) 0 when 'sym' is not a wall. */
+static const char *
+legend_wall_explanation(int sym)
+{
+    switch (sym)
+    {
+    case S_vwall:
+        return "vertical wall";
+    case S_hwall:
+        return "horizontal wall";
+    case S_tlcorn:
+    case S_trcorn:
+    case S_blcorn:
+    case S_brcorn:
+        return "wall corner";
+    case S_crwall:
+        return "wall crossing";
+    case S_tuwall:
+    case S_tdwall:
+    case S_tlwall:
+    case S_trwall:
+        return "wall T-junction";
+    default:
+        break;
+    }
+
+    return (const char *) 0;
 }
 
 /* Generic meaning of a screen symbol index, from the same tables that
@@ -2649,6 +2693,7 @@ legend_kind_of(int glyph, int sym)
 static const char *
 legend_sym_explanation(int sym)
 {
+    const char *expl;
     int idx;
 
     if (sym >= SYM_OFF_X)
@@ -2684,37 +2729,86 @@ legend_sym_explanation(int sym)
         return "object";
     }
 
-    /* cmap.  S_unexplored and S_stone are both blank on screen, and the
-       reader has no way to tell them apart, so describe them as one thing. */
-    if (sym == S_unexplored || sym == S_stone)
-        return "never seen, or solid rock";
+    /* cmap.  S_unexplored and S_stone are both blank on screen and cannot be
+       told apart from the map alone - the note lines say so - but they are two
+       different things, and keeping them distinct here lets their cell counts
+       tell the reader how much of the level is genuinely unknown as against
+       known solid rock. */
+    if (sym == S_unexplored)
+        return "never seen by the hero";
+    if (sym == S_stone)
+        return "solid rock, mapped but not passable without digging";
+
+    expl = legend_wall_explanation(sym);
+    if (expl)
+        return expl;
+
     if (sym >= 0 && sym < MAX_CMAPPED_CHARS && defsyms[sym].explanation
         && *defsyms[sym].explanation)
         return defsyms[sym].explanation;
 
+    /* defsyms[] leaves the effect symbols unexplained, which normally does
+       not matter because they are not on a resting map.  Being engulfed is
+       the exception: then the map is made almost entirely of swallow symbols,
+       and "unknown" would be the least helpful thing to say about it. */
+    if (sym >= S_sw_tl && sym <= S_sw_br)
+        return "part of the interior of the engulfing creature";
+    if (sym >= S_vbeam && sym < MAX_CMAPPED_CHARS)
+        return "transient visual effect";
+
     return "unknown";
 }
 
-/* Count one cell against its symbol, appending an entry the first time that
-   symbol is seen. */
-static void
+/* Count one cell against its symbol, and return the entry it landed in.
+ *
+ * The first time a symbol index is seen its explanation is resolved and the
+ * existing entries are searched for one that prints the same character and
+ * means the same thing; if there is one, this symbol joins it, otherwise a new
+ * entry is appended.  That merge is what stops defsyms[]' eleven "wall" rows
+ * (and its duplicated door, water and drawbridge rows) from becoming a run of
+ * legend lines distinguishable only by their cell counts.
+ *
+ * strcmp() rather than a pointer comparison: two defsyms[] rows with identical
+ * text hold different pointers, and identical string literals elsewhere are
+ * not guaranteed to be pooled.  The scan runs at most once per distinct symbol
+ * index, over a list of at most a few dozen entries.
+ */
+static struct legend_sym_entry *
 legend_tally_sym(int sym, nhsym ch)
 {
     struct legend_sym_entry *e;
+    const char *expl;
+    int i;
 
     if (sym < 0 || sym >= SYM_MAX)
-        return;
+        return (struct legend_sym_entry *) 0;
 
     if (legend_symslot[sym] < 0)
     {
-        legend_symslot[sym] = (short) legend_symcnt;
-        e = &legend_syms[legend_symcnt++];
-        e->sym = (short) sym;
-        e->kind = (short) legend_kind_of(NO_GLYPH, sym);
-        e->ch = ch;
-        e->count = 0;
+        expl = legend_sym_explanation(sym);
+        for (i = 0; i < legend_symcnt; i++)
+        {
+            if (legend_syms[i].ch == ch && legend_syms[i].expl
+                && !strcmp(legend_syms[i].expl, expl))
+                break;
+        }
+        if (i == legend_symcnt)
+        {
+            e = &legend_syms[legend_symcnt++];
+            e->sym = (short) sym;
+            e->kind = (short) legend_kind_of(NO_GLYPH, sym);
+            e->ch = ch;
+            e->expl = expl;
+            e->count = 0;
+            e->has_hero = FALSE;
+        }
+        legend_symslot[sym] = (short) i;
     }
-    legend_syms[legend_symslot[sym]].count++;
+
+    e = &legend_syms[legend_symslot[sym]];
+    e->count++;
+
+    return e;
 }
 
 /* Remember one notable position.  'wanted' is counted even past the cap, so
@@ -2782,9 +2876,9 @@ dump_map_legend_ai(void)
     static char descbuf[BUFSZ * 5], simplebuf[BUFSZ * 2], extrabuf[BUFSZ * 2];
     static char buf[BUFSZ * 6];
     char coordbuf[BUFSZ];
+    struct legend_sym_entry *symentry;
     int x, y, i, kind, sym, color, glyph, terrain_glyph;
     int default_glyph;
-    int hero_sym = -1;
     int saved_terrainmode;
     coord saved_bhitpos;
     nhsym ch, hero_ch = 0;
@@ -2832,18 +2926,23 @@ dump_map_legend_ai(void)
             sym = 0;
             ch = map_ai_glyph_char(glyph, x, y, &sym, &color, &special);
 
-            legend_tally_sym(sym, ch);
+            symentry = legend_tally_sym(sym, ch);
 
-            /* Remember which symbol the hero's own cell produced, so that the
-               symbol list can point the reader at it.  Only when the hero is
+            /* Mark the entry the hero's own cell printed, so that the symbol
+               list can point the reader at it.  Only when the hero is
                actually drawn there: when it cannot sense itself the cell
-               shows terrain, and when engulfed it shows the engulfer.  Keyed
-               on the symbol index rather than on '@' so that a polymorphed
-               hero tags the right line. */
+               shows terrain, and when engulfed it shows the engulfer.
+
+               A flag on the entry rather than a remembered symbol index or
+               pointer: merging means the entry may have been created by a
+               different symbol index, and the qsort below moves the entries
+               around, so anything positional would go stale.  Not keyed on
+               '@' either, so that a polymorphed hero tags the right line. */
             if (x == u.ux && y == u.uy && !u.uswallow
                 && (glyph_is_monster(glyph) || glyph_is_invisible(glyph)))
             {
-                hero_sym = sym;
+                if (symentry)
+                    symentry->has_hero = TRUE;
                 hero_ch = ch;
             }
 
@@ -2952,19 +3051,22 @@ dump_map_legend_ai(void)
     putstr(0, ATR_HEADING, "Symbols on this map:");
     for (i = 0; i < legend_symcnt; i++)
     {
-        sym = (int) legend_syms[i].sym;
         ch = legend_syms[i].ch;
         kind = (int) legend_syms[i].kind;
 
         Sprintf(buf, "%s: '%c'%s %s, %d cell%s",
                 legend_kinds[kind].section, (char) ch,
                 ch == ' ' ? " (blank)" : "",
-                legend_sym_explanation(sym), legend_syms[i].count,
+                legend_syms[i].expl ? legend_syms[i].expl : "unknown",
+                legend_syms[i].count,
                 legend_syms[i].count == 1 ? "" : "s");
-        if (sym == hero_sym)
-            Strcat(buf, legend_syms[i].count == 1
-                            ? " (this is the hero)"
-                            : " (one of them is the hero)");
+        /* carry the coordinate, so that identifying the hero among several
+           cells sharing its symbol needs no cross-reference */
+        if (legend_syms[i].has_hero)
+            Sprintf(eos(buf), " (%s, at <%d,%d>)",
+                    legend_syms[i].count == 1 ? "this is the hero"
+                                              : "one of them is the hero",
+                    (int) u.ux, (int) u.uy);
         putstr(0, ATR_NONE, buf);
     }
     putstr(0, 0, "");
