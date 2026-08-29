@@ -299,6 +299,25 @@ namespace GnollHackX.Pages.Game
                             else
                             {
                                 string msg = "Overseer session failed: HTTP " + (int)response.StatusCode;
+                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                                {
+                                    /* The web server answered, so the network path is fine, but the
+                                     * Overseer application is not being served. This means the service
+                                     * is down for maintenance or a deployment. Retrying is pointless —
+                                     * and expensive, because it re-uploads the snapshot. Note that an
+                                     * overloaded server replies 503 instead, which is transient and is
+                                     * deliberately left on the normal retry path below. */
+                                    msg += " (Overseer appears to be under maintenance)";
+                                    GHApp.WriteGHLog(msg);
+                                    MainThread.BeginInvokeOnMainThread(() =>
+                                    {
+                                        ProgressStatusLabel.Text = GHConstants.OverseerMaintenanceMessage;
+                                        UploadProgressBar.Progress = 1.0;
+                                        if (isLocalDev)
+                                            ErrorDetailsLabel.Text = $"HTTP 404 from {_baseOverseerUrl}/api/session/create";
+                                    });
+                                    break;
+                                }
                                 if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                                 {
                                     msg += " (Please check your credentials in Settings)";

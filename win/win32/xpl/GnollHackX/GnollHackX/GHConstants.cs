@@ -183,6 +183,8 @@ namespace GnollHackX
         public const string OverseerConsentAcceptedKey = "OverseerConsentAccepted";
         public const bool OverseerConsentAcceptedDefault = false;
         public const string OverseerPrivacyPolicyPage = "https://wiki.gnollhack.com/Gnoll%20Overseer%20Privacy%20Policy.md";
+        /* Shown when the Overseer web server answers but the Overseer application is not being served */
+        public const string OverseerMaintenanceMessage = "Gnoll Overseer is currently unavailable. The service is most likely undergoing maintenance. Please try again later.";
         public const string GnollHackSponsorPage = "https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english";
         public const string GnollHackGeneralDowngradePage = GnollHackWikiPage + "/Download";
         public const string GnollHackAndroidDowngradePage = GnollHackWikiPage + "/Android-Releases";
