@@ -696,6 +696,7 @@ E void printweight(char*, int, boolean, boolean, boolean);
 E void printdice(char*, int, int, int);
 E int monsterdescription(struct monst*);
 E int monsterdescription_core(struct monst*, struct permonst*);
+E void dump_pet_statistics(void);
 E int dotogglehpbars(void);
 E int dotogglegrid(void);
 E int dotogglemonstertargeting(void);

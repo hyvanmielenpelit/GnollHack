@@ -658,6 +658,13 @@ typedef unsigned char uchar;
    describes that layout to the reader, so both must agree on this. */
 #define MAP_AI_GUTTER_WIDTH 4   /* strlen("%2d: "), fits " 0: " and "20: " */
 
+/* AI snapshot pet statistics.  dump_pet_statistics() (do.c) prints a full
+   monsterdescription screen per pet, roughly 30-45 lines each, and the client
+   truncates the snapshot at 60,000 characters, so an unbounded pet list could
+   push the discoveries list and the dungeon overview off the end.  Every pet
+   still appears in the roll call; this caps only the statistics blocks. */
+#define AI_SNAPSHOT_MAX_PET_STATS 6
+
 #ifndef DUMPLOG_MSG_COUNT
 #define SAVED_PLINE_COUNT AI_SNAPSHOT_MESSAGE_COUNT
 #else

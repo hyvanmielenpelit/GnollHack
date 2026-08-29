@@ -5796,6 +5796,122 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr)
     return 0;
 }
 
+#if defined (DUMPLOG) || defined (DUMPHTML)
+/* The pet's name as monsterdescription_core() titles it, so that the roll
+   call and the statistics block below it agree. */
+static const char*
+pet_dump_name(struct monst* mtmp)
+{
+    return x_monnam(mtmp, ARTICLE_NONE, (char*)0,
+                    has_mname(mtmp) ? (SUPPRESS_SADDLE | SUPPRESS_IT)
+                                    : SUPPRESS_IT, FALSE);
+}
+#endif
+
+/* Print the hero's pets into the AI snapshot: a roll call naming every tame
+   monster on the level with its position and hit points, then the same
+   statistics screen doviewpetstatistics() opens for the player, for the first
+   AI_SNAPSHOT_MAX_PET_STATS of them.
+
+   Called from dump_everything() with the window procs already swapped by
+   dump_redirect(TRUE), so the putstr() calls made here and inside
+   monsterdescription_core() go to the AI snapshot file.  Nothing printed is
+   hidden from the player: the same screen is reachable in game through the
+   pet list, and everything here is read-only with respect to game state. */
+void
+dump_pet_statistics(void)
+{
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    struct monst* mtmp;
+    char buf[BUFSZ];
+    char posbuf[BUFSZ];
+    int petcount = 0, petnum = 0, uncovered = 0, dist;
+
+    /* The same test the GUI_CMD_CLEAR_PET_DATA handler in libshare/libproc.c
+       uses to build the frontend's pet list, so the snapshot and the pet list
+       agree on who counts as a pet.  A ridden steed stays on fmon -- mounting
+       clears its map cell, not its place in the chain -- so u.usteed needs no
+       special case here. */
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    {
+        if (!DEADMONSTER(mtmp) && is_tame(mtmp))
+            petcount++;
+    }
+
+    if (!petcount)
+    {
+        /* Say so rather than printing nothing, so that "no pets" is not read
+           as "the snapshot is missing this section". */
+        putstr(0, ATR_NONE, " (None)");
+        return;
+    }
+
+    Sprintf(buf, "%d pet%s on this level.", petcount, plur(petcount));
+    putstr(0, ATR_NONE, buf);
+
+    /* Roll call.  Every pet appears here, even when the statistics blocks
+       below are capped, so that "is my pet in danger" is answerable from one
+       line each. */
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    {
+        if (DEADMONSTER(mtmp) || !is_tame(mtmp))
+            continue;
+
+        petnum++;
+        dist = distmin(u.ux, u.uy, mtmp->mx, mtmp->my);
+        if (dist == 0) /* the steed, which tracks the hero's position */
+            Strcpy(posbuf, "at your position");
+        else if (dist == 1)
+            Strcpy(posbuf, "adjacent");
+        else
+            Sprintf(posbuf, "%d squares away", dist);
+
+        /* <x,y> matches the coordinate format dump_map_legend_ai() uses, so
+           the reader can find the pet in the dumped map's row gutter.
+
+           Written as plain text rather than with ATR_ORDERED_LIST: that
+           attribute makes html_dump_str() strip the " %2d - " prefix and let
+           an HTML <ol> supply the number, which is presentational and
+           does not survive the client's HTML-to-text conversion.  The index
+           has to reach the reader; the blocks below refer to it. */
+        Sprintf(buf, " %2d - %s, <%d,%d>, %s%s, %d/%d HP", petnum,
+                pet_dump_name(mtmp), (int) mtmp->mx, (int) mtmp->my, posbuf,
+                mtmp == u.usteed ? ", being ridden" : "",
+                mtmp->mhp, mtmp->mhpmax);
+        putstr(0, ATR_NONE, buf);
+    }
+
+    uncovered = petcount - AI_SNAPSHOT_MAX_PET_STATS;
+    if (uncovered > 0)
+    {
+        /* Never cap silently: without this the reader takes the statistics
+           blocks for the whole pet list. */
+        Sprintf(buf,
+                "Full statistics follow for the first %d; the remaining %d %s"
+                " listed above only.",
+                AI_SNAPSHOT_MAX_PET_STATS, uncovered,
+                uncovered == 1 ? "is" : "are");
+        putstr(0, ATR_NONE, buf);
+    }
+
+    petnum = 0;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    {
+        if (DEADMONSTER(mtmp) || !is_tame(mtmp))
+            continue;
+        if (petnum >= AI_SNAPSHOT_MAX_PET_STATS)
+            break;
+
+        petnum++;
+        putstr(0, ATR_NONE, "");
+        Sprintf(buf, "Pet %d of %d: %s", petnum, petcount,
+                pet_dump_name(mtmp));
+        putstr(0, ATR_SUBHEADING, buf);
+        (void) monsterdescription_core(mtmp, mtmp->data);
+    }
+#endif
+}
+
 
 static const char* monster_size_names[] = {
     "tiny", "small", "medium-sized", "large", "huge",

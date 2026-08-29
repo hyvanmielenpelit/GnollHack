@@ -1041,6 +1041,16 @@ dump_everything(int how, time_t when)
 
     debugprint("%s", "dump_plines");
     dump_plines();
+    /* Pets go with the map, the status rows and the messages -- they are
+       creatures on the level, not carried goods -- and putting them ahead of
+       the inventory keeps them clear of the character limit at which the
+       client truncates the snapshot. */
+    if (how == SNAPSHOT_AI)
+    {
+        debugprint("%s", "dump: dump_pet_statistics");
+        putstr(0, ATR_HEADING, "Pets:");
+        dump_pet_statistics();
+    }
     debugprint("%s", "dump: display_inventory");
     putstr(NHW_DUMPTXT, 0, "");
     putstr(0, ATR_HEADING, "Inventory:");
@@ -1090,9 +1100,21 @@ void
 dump_everything_ai(time_t when)
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
+    uint64_t saved_wincap2 = windowprocs.wincap2;
+
+    /* The AI snapshot is plain text for a machine reader.  Frontend symbol
+       entities ("&status-3;", "&gold;") are escaped to "&amp;status-3;" by
+       html_dump_char() and decoded back by the client's sanitizer, so they
+       reach the reader as literal noise.  Every producer of them offers a
+       plain-word alternative behind this same flag, so clear it for the dump.
+       dump_redirect(FALSE) restores the whole windowprocs struct at the end
+       of dump_everything(), which would undo this anyway; restoring by hand
+       keeps the invariant local. */
+    windowprocs.wincap2 &= ~WC2_SPECIAL_SYMBOLS;
     iflags.dumping_ai_snapshot = TRUE;
     dump_everything(SNAPSHOT_AI, when);
     iflags.dumping_ai_snapshot = FALSE;
+    windowprocs.wincap2 = saved_wincap2;
 
     /* dump_everything() -> dump_redirect(FALSE) calls status_initialize(FALSE)
        which clears the frontend's StatusFields. Since the AI snapshot is
