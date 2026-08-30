@@ -162,7 +162,7 @@ dosave0(boolean quietly)
     int fd, ofd;
     xchar ltmp;
     d_level uz_save;
-    char whynot[BUFSZ];
+    char whynot[BUFSZ] = "";
     Strcpy(saved_dgnlvl_name_buf, "");
     debugprint("dosave0");
     issue_breadcrumb("Start dosave0");
@@ -329,9 +329,21 @@ dosave0(boolean quietly)
         mark_synch();
 #endif
         ofd = open_levelfile(ltmp, whynot);
-        if (ofd < 0) {
+        if (ofd < 0)
+        {
+            /* whynot names the level and the errno; it is the only clue as to
+               why the level file went missing, so report it before unwinding.
+               On mobile, open_levelfile has already appended the descriptor
+               limits to it if the failure was EMFILE. */
+            char dbuf[BUFSZ * 2];
+            Sprintf(dbuf, "dosave0: %s", whynot);
+            issue_debuglog_priority(0, dbuf);
             HUP pline1(whynot);
-            (void) nhclose(fd);
+            /* fd was handed to fdopen() by def_bufon() via store_version()
+               above, so it belongs to bw_FILE. Closing it with a plain
+               close() is a fatal fdsan violation on Android; bclose()
+               routes it to fclose() instead. */
+            bclose(fd);
             (void) delete_savefile();
             HUP Strcpy(killer.name, whynot);
             HUP done(TRICKED);
