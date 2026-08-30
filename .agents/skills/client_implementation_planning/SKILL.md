@@ -17,7 +17,8 @@ description: >-
 > `<plans-root>/hyvanmielenpelit/GnollHack/YYYY-MM-DD/task_name/implementation_plan_v1.md`,
 > resolving `<plans-root>` as `AGENT_PLANS_ROOT`, else `C:\hmp\plans`, else a `plans`
 > directory beside this one -- and if none resolves, fall back to this repository's
-> gitignored `.plans/YYYY-MM-DD/task_name/` **and say so in chat**. Never overwrite a
+> `.plans/YYYY-MM-DD/task_name/`, which is usable only because `.plans/` is gitignored
+> here (`git check-ignore -q .plans`), **and say so in chat**. Never overwrite a
 > version -- increment. Print the path; **wait for explicit approval before editing any
 > file**; track progress in `task.md`; finish with `walkthrough.md`. **Never commit or
 > push in this repository.** Clone the plans repository from

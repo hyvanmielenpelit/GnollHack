@@ -171,7 +171,10 @@ A plan is **not** required for single-file fixes, typo and comment corrections, 
 Plans, reviews, analyses, and reports are delivered as Markdown files in the shared
 `plans` repository, under `hyvanmielenpelit/GnollHack/YYYY-MM-DD/task_name/` — **not**
 inside this repository. If that repository cannot be reached, the fallback is this
-repository's gitignored `.plans/YYYY-MM-DD/task_name/`, and the agent must **say so**.
+repository's `.plans/YYYY-MM-DD/task_name/` — usable **only because `.plans/` is
+gitignored here**, which Git confirms with `git check-ignore -q .plans`. The agent must
+**say so** when it falls back. In a repository where `.plans/` is not ignored the plan
+stays in the chat and no file is written.
 The root resolution order, naming scheme, `_v<N>` versioning and harmonization rules,
 follow-up rounds, the commit protocol, and the reconciliation with each harness's own
 plan mode or artifact directory are specified in the `client_implementation_planning`
