@@ -168,11 +168,14 @@ A plan is **not** required for single-file fixes, typo and comment corrections, 
 
 ### Plan and Document Delivery
 
-Plans, reviews, analyses, and reports are delivered as Markdown files under the
-gitignored `.plans/` directory. The naming scheme, `_v<N>` versioning rules,
-follow-up rounds, and the reconciliation with each harness's own plan mode or
-artifact directory are specified in the `client_implementation_planning` skill — read it
-rather than a summary.
+Plans, reviews, analyses, and reports are delivered as Markdown files in the shared
+`plans` repository, under `hyvanmielenpelit/GnollHack/YYYY-MM-DD/task_name/` — **not**
+inside this repository. If that repository cannot be reached, the fallback is this
+repository's gitignored `.plans/YYYY-MM-DD/task_name/`, and the agent must **say so**.
+The root resolution order, naming scheme, `_v<N>` versioning and harmonization rules,
+follow-up rounds, the commit protocol, and the reconciliation with each harness's own
+plan mode or artifact directory are specified in the `client_implementation_planning`
+skill — read it rather than a summary.
 
 **Wait for explicit user approval before editing any file**, and always print the
 plan's file path. If the plan turns out to be wrong during implementation, stop
@@ -187,7 +190,20 @@ Every implementation plan **MUST** include a **Subagent Use** section. Read the 
 - **No two agents may edit the same file concurrently** — plan file assignments to avoid conflicts
 - **Respect build dependency chains** — do not parallelize across `makedefs` / `levcomp` / `makedefsdroid` regeneration boundaries
 - **Never overwrite uncommitted changes** without explicit user permission — ask the user to commit first if corruption risk exists
-- **Do NOT read `.plans/` during research** — old and superseded plans corrupt analysis; subagents must not read `.plans/` at all unless the orchestrator explicitly directs them to a specific file (see the `client_implementation_planning` skill)
+- **Do NOT read the plans repository or `.plans/` during research** — old and superseded plans corrupt analysis, and the shared store puts other repositories' plans one directory away; never read another repository's scope, and subagents must not read either location unless the orchestrator explicitly directs them to a specific file (see the `client_implementation_planning` skill)
+- **Never commit or push in this repository** — the shared `plans` repository is the only one an agent may commit to; that includes the `.plans/` fallback, which is gitignored anyway
+
+## Skill Naming
+
+Skills in this repository use the **`client_`** prefix -- GnollHack is the real client of
+the MobileGnollHackLogger server. Canonical bodies live in
+`.agents/skills/<underscore_name>/SKILL.md`; the `.claude/skills/<kebab-name>/` stubs are
+**generated** by `SharedAgentSkills\tools\sync_stubs.ps1` and must never be hand-edited.
+
+> [!IMPORTANT]
+> **Never use the `server_` prefix here.** It is reserved for **MobileGnollHackLogger**,
+> the server side of the same system. A `server_` skill in this repository would point a
+> triggering agent at the wrong codebase entirely.
 
 ## Important Warnings
 

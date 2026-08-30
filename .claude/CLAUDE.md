@@ -31,11 +31,17 @@ before any source file is modified.**
 
 - **This repository's** subsystems, build boundaries, and plan triggers are in the
   `client-implementation-planning` skill.
-- **The lifecycle, plan format, `.plans/` naming, and versioning** are in the global
-  `agent-implementation-planning` skill.
-- **Claude Code plan mode** — the harness plan file, copying to `.plans/` before
-  `ExitPlanMode`, and the `Explore` / `Plan` research agents — is in the global
+- **The lifecycle, plan format, plans repository layout, versioning, the commit
+  protocol, and the `.plans/` fallback** are in the global
+  `agent-implementation-planning` skill. Plans go to
+  `<plans-root>/hyvanmielenpelit/GnollHack/YYYY-MM-DD/task_name/`, not into this
+  repository.
+- **Claude Code plan mode** — the harness plan file, copying to the plans repository
+  before `ExitPlanMode`, reaching it via `permissions.additionalDirectories` in
+  `.claude/settings.json`, and the `Explore` / `Plan` research agents — is in the global
   `claude-plan-mode` skill.
+- **Never commit or push in this repository.** The shared `plans` repository is the only
+  one an agent may commit to.
 
 Read those rather than relying on a summary here. `.agents/AGENTS.md`, imported at the
 top of this file, carries the GnollHack-specific triggers for when a plan is required.

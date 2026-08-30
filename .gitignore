@@ -458,5 +458,6 @@ ASALocalRun/
 !win/win32/xpl/GnollHackX/GnollHackX.Android/libs/*
 !*.json
 
-# AI agent implementation plans
+# Fallback location for AI planning documents when hyvanmielenpelit/plans is
+# unreachable, plus pre-migration history. Never committed.
 .plans/

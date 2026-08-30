@@ -5,24 +5,30 @@ description: >-
   is required across the C core, native bridge, MAUI frontend, build utilities, and game
   data; the makedefs, levcomp, dgncomp, dlb, and makedefsdroid regeneration boundaries a
   plan step must never straddle; the XAML generation pipeline from GnollHackX to
-  GnollHackM; and C-to-C# interop triggers. Read before any multi-file or cross-subsystem
-  GnollHack change.
+  GnollHackM; C-to-C# interop triggers; and where plans are delivered in the shared plans
+  repository. Read before any multi-file or cross-subsystem GnollHack change.
 ---
 
 # GnollHack Implementation Planning (Project Overlay)
 
 > **If the shared skills are not installed**, this is the whole baseline:
 > a written plan is required for any change touching more than one file or crossing a
-> build boundary; save it as
-> `.plans/YYYY-MM-DD/task_name/implementation_plan_v1.md` (never overwrite a version --
-> increment); print the path; **wait for explicit approval before editing any file**;
-> track progress in `task.md`; finish with `walkthrough.md`. Install the full guidance
-> from `https://github.com/hyvanmielenpelit/SharedAgentSkills` (`.\setup.ps1`).
+> build boundary; save it in the shared plans repository as
+> `<plans-root>/hyvanmielenpelit/GnollHack/YYYY-MM-DD/task_name/implementation_plan_v1.md`,
+> resolving `<plans-root>` as `AGENT_PLANS_ROOT`, else `C:\hmp\plans`, else a `plans`
+> directory beside this one -- and if none resolves, fall back to this repository's
+> gitignored `.plans/YYYY-MM-DD/task_name/` **and say so in chat**. Never overwrite a
+> version -- increment. Print the path; **wait for explicit approval before editing any
+> file**; track progress in `task.md`; finish with `walkthrough.md`. **Never commit or
+> push in this repository.** Clone the plans repository from
+> `https://github.com/hyvanmielenpelit/plans` and install the full guidance from
+> `https://github.com/hyvanmielenpelit/SharedAgentSkills` (`.\setup.ps1`).
 
 > [!IMPORTANT]
 > **Global baseline delegation.** The 5-phase lifecycle, plan document structure, the
-> Execution Target line, `.plans/` naming and `_v<N>` versioning, follow-up rounds,
-> progress tracking, walkthroughs, and `.plans/` research isolation are defined in the
+> Execution Target line, the plans repository layout and scope directories, `_v<N>`
+> versioning and harmonization, the commit protocol, the `.plans/` fallback, follow-up
+> rounds, progress tracking, walkthroughs, and research isolation are defined in the
 > global **`agent-implementation-planning`** skill. Subagent tiers, how to resolve them,
 > and file-level exclusivity are in **`agent-subagent-guidelines`**, with GnollHack's
 > build chains in **`client_subagent_guidelines`**. Harness mechanics -- plan mode under

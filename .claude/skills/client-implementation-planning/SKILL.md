@@ -5,8 +5,8 @@ description: >-
   is required across the C core, native bridge, MAUI frontend, build utilities, and game
   data; the makedefs, levcomp, dgncomp, dlb, and makedefsdroid regeneration boundaries a
   plan step must never straddle; the XAML generation pipeline from GnollHackX to
-  GnollHackM; and C-to-C# interop triggers. Read before any multi-file or cross-subsystem
-  GnollHack change.
+  GnollHackM; C-to-C# interop triggers; and where plans are delivered in the shared plans
+  repository. Read before any multi-file or cross-subsystem GnollHack change.
 ---
 
 The full skill lives in this repository's tool-neutral agent directory (`.agents/`),

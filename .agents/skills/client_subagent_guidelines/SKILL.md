@@ -20,8 +20,9 @@ description: >-
 
 > [!IMPORTANT]
 > **Global baseline delegation.** The mandatory **Subagent Use** plan section, the model
-> tiers and the rule for choosing between them, file-level exclusivity, `.plans/`
-> isolation for subagents, communication overhead, protecting uncommitted changes, and the
+> tiers and the rule for choosing between them, file-level exclusivity, plans isolation
+> for subagents, the rule that subagents never commit, communication overhead,
+> protecting uncommitted changes, and the
 > human pair-programming threshold are all in the global **`agent-subagent-guidelines`**
 > skill.
 >
