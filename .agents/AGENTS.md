@@ -168,68 +168,26 @@ A plan is **not** required for single-file fixes, typo and comment corrections, 
 
 ### Plan and Document Delivery
 
-#### Harness Conflicts
+Plans, reviews, analyses, and reports are delivered as Markdown files under the
+gitignored `.plans/` directory. The naming scheme, `_v<N>` versioning rules,
+follow-up rounds, and the reconciliation with each harness's own plan mode or
+artifact directory are specified in the `client_implementation_planning` skill — read it
+rather than a summary.
 
-Agent harnesses impose their own planning workflows, and several of them conflict with
-this section. **The harness rules always win** — these project rules are guidance layered
-inside whatever the harness permits, never an override of a harness restriction.
-
-**General rule**: `.plans/` is the **source of truth**. A harness-private plan file is a
-working/backup copy — another AI picking up the task reads the latest `_v<N>` from
-`.plans/` and writes its next revision there, never into a harness directory it does not
-share. Copy the document into `.plans/` **as soon as it is finished and immediately
-before asking the user to approve it** — the copy is part of delivering the plan, not
-part of executing it. The user then reviews a plan that already exists at its canonical
-location, and the document survives a rejection or a lost session.
-
-**A harness "no other file edits" restriction does not block this copy.** Such
-restrictions exist to stop the agent changing the project before the work is approved.
-Copying the plan document to its canonical location touches no source file, build file,
-or game data, and changes nothing about the project's behavior. Everything else —
-`task.md`, source edits, build steps — still waits for approval.
-
-| Harness | Conflict | How to satisfy both |
-|---------|----------|---------------------|
-| **Antigravity** | Its artifact guidelines say to save "extensive reports and analysis summaries" to the artifact directory (`<appDataDir>/brain/<conversation-id>/`). | First create the artifact in the artifact directory (so the UI can present it), then **also copy it** to `.plans/` with the `_v<N>.md` naming convention. Both locations must receive the file. |
-| **Claude Code plan mode** | The harness plan file (`~/.claude/plans/<slug>.md`) is the *only* file that may be edited while plan mode is active, and it uses an auto-generated slug name with in-place editing. | Write the plan there, **copy it to `.plans/YYYY-MM-DD/task_name/implementation_plan_v1.md`**, print the path, then request approval via the `ExitPlanMode` tool — in that order. In-place editing of the harness file is fine; `_v<N>` versioning binds to the `.plans/` copy only. |
-
-See the `implementation_planning` skill ("Harness Rules Take Precedence") for the full
-specification.
-
-- Deliver plans, reviews, analyses, reports, and other structured documents as
-  **Markdown files** saved under the repository's gitignored `.plans/` directory:
-  `.plans/YYYY-MM-DD/task_name/<document_name>_v<N>.md` (where N=1 for the
-  first version).
-  Use the creation date of the first document for the topic as the date directory, and
-  a short `snake_case` name for the task directory. Create subdirectories as needed.
-  If a task directory with the desired name already exists, find the next free name
-  in the sequence `task_name`, `task_name_2`, `task_name_3`, ... — never rename the
-  existing folder, and never nest suffixes (e.g., `_2_3` is wrong). Use the new
-  directory for all work — do not touch the conflicting directory.
-- **Document versioning**: the first version always gets a `_v1` suffix. Never overwrite
-  an existing version — to revise, create a new file with the next version number
-  (`_v2`, `_v3`, etc.). This applies to all document types (plans, reviews, analyses,
-  reports). `task.md` and `walkthrough.md` are singular (no version suffix).
-  Follow-up rounds use lettered variants (`task_A.md`, `walkthrough_A.md`, etc.)
-  — see the `implementation_planning` skill for details.
-- Short plans may be presented inline instead — **except** under a harness plan mode, where
-  the plan file is always written.
-- **Wait for explicit user approval before editing any file.** Do not begin implementation alongside the plan.
-  Always print the plan's file path. Use the harness's own approval mechanism where one
-  exists (Claude Code: `ExitPlanMode`); otherwise print a brief summary and wait. Approval
-  is never skipped.
-- If the plan turns out to be wrong during implementation, stop and re-confirm rather than silently diverging from what the user approved.
+**Wait for explicit user approval before editing any file**, and always print the
+plan's file path. If the plan turns out to be wrong during implementation, stop
+and re-confirm rather than silently diverging from what the user approved.
 
 ### Subagent Use and Pair Programming
 
-Every implementation plan **MUST** include a **Subagent Use** section. Read the full guidelines in the [subagent_guidelines skill](file:///c:/hmp/GnollHack/.agents/skills/subagent_guidelines/SKILL.md) before creating any plan. Key points:
+Every implementation plan **MUST** include a **Subagent Use** section. Read the full guidelines in the [client_subagent_guidelines skill](file:///c:/hmp/GnollHack/.agents/skills/client_subagent_guidelines/SKILL.md) before creating any plan. Key points:
 
-- **Always document** whether subagents are needed — default to `inherit` model (matching the orchestrator); use `flash` only for trivially mechanical search-and-replace
+- **Always document** whether subagents are needed — default to `standard` for well-specified plan steps; escalate to `deep` for ambiguous or cross-layer work (common here); use `mechanical` only when the subagent decides nothing
 - **Human task assignments are the rare exception** — only for very extensive cut-and-paste moves where AI would likely fail and waste tokens
 - **No two agents may edit the same file concurrently** — plan file assignments to avoid conflicts
 - **Respect build dependency chains** — do not parallelize across `makedefs` / `levcomp` / `makedefsdroid` regeneration boundaries
 - **Never overwrite uncommitted changes** without explicit user permission — ask the user to commit first if corruption risk exists
-- **Do NOT read `.plans/` during research** — old and superseded plans corrupt analysis; subagents must not read `.plans/` at all unless the orchestrator explicitly directs them to a specific file (see the `implementation_planning` skill)
+- **Do NOT read `.plans/` during research** — old and superseded plans corrupt analysis; subagents must not read `.plans/` at all unless the orchestrator explicitly directs them to a specific file (see the `client_implementation_planning` skill)
 
 ## Important Warnings
 

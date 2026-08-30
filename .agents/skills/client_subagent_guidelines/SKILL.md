@@ -1,177 +1,78 @@
 ---
-name: subagent_guidelines
-description: Guidelines for using AI subagents and human pair programming in GnollHack implementation plans. Covers when to spawn subagents, model selection defaults, and planning constraints such as file-level exclusivity.
+name: client_subagent_guidelines
+description: >-
+  Subagent constraints specific to the GnollHack client repository. Covers the three build
+  dependency chains that must not be parallelized across -- makedefs to generated headers
+  to C# interop, des files to levcomp to dlb, and GnollHackX XAML to makedefsdroid to
+  GnollHackM -- and why cross-layer interop work in this repository escalates to the deep
+  tier far more often than elsewhere. Read when writing a plan's Subagent Use section for
+  GnollHack.
 ---
 
-# Subagent and Pair Programming Guidelines
+# GnollHack Subagent Guidelines (Project Overlay)
 
-## Overview
-
-GnollHack uses a **pair programming** model for AI-assisted development. The orchestrating AI agent works together with:
-- **AI subagents** for parallelizable tasks
-- **The human user** for rare tasks where humans clearly outperform AI
-
-Every implementation plan MUST include a **Subagent Use** section, even when no subagents are needed (document why).
+> **If the shared skills are not installed**, this is the whole baseline:
+> no two agents may edit the same file concurrently; do not parallelize across the build
+> chains below; never overwrite uncommitted changes without asking the user to commit
+> first; every plan must contain a **Subagent Use** section even when the answer is "no".
+> Install the full guidance from
+> `https://github.com/hyvanmielenpelit/SharedAgentSkills` (`.\setup.ps1`).
 
 > [!IMPORTANT]
-> **The harness decides *whether* and *when* subagents may be spawned — always follow the harness.** If the harness prescribes subagents (e.g. Claude Code plan mode mandates `Explore` agents for research and a `Plan` agent for design), use them. If it forbids or restricts them, that restriction wins.
+> **Global baseline delegation.** The mandatory **Subagent Use** plan section, the model
+> tiers and the rule for choosing between them, file-level exclusivity, `.plans/`
+> isolation for subagents, communication overhead, protecting uncommitted changes, and the
+> human pair-programming threshold are all in the global **`agent-subagent-guidelines`**
+> skill.
 >
-> This skill governs only **how** to use subagents once the harness permits them: which agent type, which model tier, file-level exclusivity, and build-dependency sequencing.
+> How to resolve a tier against the models your session actually offers, and the boundary
+> that an application can spawn only its own vendor's models, are in
+> `claude-code-conventions` or `gemini-antigravity-conventions`, whichever is installed.
+>
+> The sections below are what is specific to **this repository**.
 
-## Implementation Plan Requirement
+---
 
-Every implementation plan must contain the following section:
+## Build Dependency Chains
 
-```markdown
-## Subagent Use
+These are the reason this overlay exists. Each is inherently sequential: one step's output
+is the next step's input. **A plan must not parallelize across a chain**, and a
+regeneration boundary falls *between* plan steps, never inside one.
 
-### Subagents Needed
-[Yes / No — if no, explain why (e.g., "single-file change, not worth the overhead")]
+| Chain | Constraint |
+|-------|-----------|
+| `src/monst.c` / `src/objects.c` -> rebuild `makedefs` -> regenerated `include/pm.h`, `include/onames.h` -> C# interop | The generated headers must exist before any agent edits code that references the new constants. No agent may hand-edit the generated headers at any point. |
+| `dat/*.des` -> `levcomp` -> `.lev` files -> `dlb` -> `nhdat` | Level data changes are invisible until both steps have run. **Never modify `nhdat` directly.** |
+| XAML in `GnollHackX/` -> `makedefsdroid` regeneration -> GnollHackM code-behind | The GnollHackM build cannot resolve `x:Name` references from new XAML elements until the transform has run. Never edit the generated GnollHackM XAML. Adding a *new* page or control also requires a `makedefsdroid.vcxproj` edit first. |
 
-### Subagent Assignments
-| Task | Model | Rationale |
-|------|-------|-----------|
-| ... | Inherit / Flash | ... |
+See `client_implementation_planning` for the full Build Impact section, and
+`build_pipeline` for the pipeline reference.
 
-### Human Assignments (if any)
-| Task | Rationale | Fallback if Not Approved |
-|------|-----------|--------------------------|
-| ... | ... | Orchestrator handles directly |
-```
+---
 
-When human tasks are listed, the plan MUST explicitly ask the user to approve or reject each human assignment. If the user rejects a human assignment, the orchestrator handles it directly.
+## Escalation Is the Common Case Here
 
-## Model Selection Guide
+The global rule is that a well-specified step from an approved plan is `standard` work,
+escalating to `deep` when the step is ambiguous, spans a layer boundary, or touches a
+contract. **Both halves matter equally, and in this repository the second half fires
+often.**
 
-### Default: Inherit (`inherit`) — Match the Orchestrator
+GnollHack has an unusually high share of genuinely cross-layer work. Assign `deep` for
+anything touching:
 
-**Use for 99% of all subagent tasks.** The `inherit` model matches the orchestrator's own model (e.g., Claude Opus spawns Claude Opus subagents, Gemini 3.1 Pro spawns Gemini 3.1 Pro subagents). This ensures subagents have the same reasoning capability as the orchestrator.
+- **C-to-C# interop** -- struct layout, marshalling, enum values, callback signatures.
+  Getting alignment wrong produces silent corruption, not a compile error.
+- **Save-file format** -- struct alignment and file I/O that must stay compatible across
+  platforms and versions.
+- **The glyph and layer pipeline** -- glyph numbering, `LayerInfo`, tile mapping, and the
+  double-buffered map data shared across threads.
+- **Anything crossing one of the build chains above**, where the consequences of a mistake
+  only appear after a regeneration step.
 
-Suitable for virtually all tasks including:
-- Multi-file changes with reasoning required
-- Implementing new features following existing patterns
-- Updating structs across C and C# interop boundaries
-- Writing utility functions, tool handlers, or service classes
-- Researching subsystems, reviewing code, answering questions
-- Debugging, refactoring, and architectural changes
+Routine work -- adding a monster following the existing macro pattern, a localized C fix,
+a self-contained MAUI page change -- is `standard`.
 
-**Key principle**: If a task is worth spawning a subagent for, it's worth giving it the orchestrator's full capability.
-
-### Exception: Flash (`flash`) — Extremely Mundane Mechanical Tasks
-
-Use **only** for tasks that are trivially mechanical search-and-replace with **zero judgment** required:
-- Applying an identical, pre-specified text replacement across many files
-- Inserting the exact same boilerplate line into multiple files
-
-**Key criterion**: The subagent does NOT need to decide *what* to change — only *where* to paste an already-specified string. If there is any ambiguity, adaptation, or context-sensitivity, use `inherit` instead.
-
-> [!IMPORTANT]
-> Flash is the rare exception, not the default. When in doubt, use `inherit`.
-
-### Mapping to a specific agent tool
-
-`inherit` and `flash` are tool-neutral tiers, not literal model names. Map them
-to whatever the current agent runner offers:
-
-| Tier | Meaning | Example mapping |
-|------|---------|-----------------|
-| `inherit` | Same capability as the orchestrator | Claude Code: omit the model override, or match the orchestrator explicitly |
-| `flash` | Cheapest/fastest tier, mechanical work only | Claude Code: `haiku` |
-
-Plans should keep writing `Inherit` / `Flash` in the assignment table; the
-orchestrator translates at spawn time.
-
-### Agent Type vs. Model Tier
-
-**Type and tier are independent axes.** The tier is *how capable* the subagent is;
-the type is *what it is allowed to do*. Harnesses that offer named agent types
-expect you to pick both. For Claude Code:
-
-| Agent type | Use for | Can edit files? |
-|------------|---------|-----------------|
-| `Explore` | Read-only fan-out search — locating code across many files or naming conventions | No |
-| `Plan` | Design work — producing an implementation approach from research already gathered | No |
-| `general-purpose` | Execution — the actual multi-file changes an approved plan calls for | Yes |
-
-The plan's **Subagent Assignments** table keeps naming the tier (`Inherit` /
-`Flash`); name the type as well when the harness offers one.
-
-### Research Agents Are Not What the Plan Governs
-
-Where a harness prescribes research subagents during planning (Claude Code plan
-mode, Phases 1–2), those agents are **read-only** and run *before* the plan
-exists. They are not covered by the plan's **Subagent Use** section and need no
-user approval — the harness already authorized them.
-
-The **Subagent Use** section governs **execution-phase** subagents: the ones that
-will edit files after the plan is approved. Those still require the user's
-approval through the plan.
-
-## Planning Constraints
-
-### File-Level Exclusivity (STRICT)
-
-**No two agents (including the orchestrator) may edit the same file concurrently.** This is a hard planning constraint:
-- When decomposing tasks for parallel subagents, assign each agent a **non-overlapping set of files**
-- If two tasks touch the same file, they must be **sequenced**, not parallelized
-- The orchestrator must not edit a file that a subagent is also editing
-
-### Build Dependency Chains
-
-Some GnollHack tasks are inherently sequential due to build dependencies. The plan must identify these chains and not parallelize across them:
-- Modifying `monst.c` or `objects.c` → rebuild `makedefs` → regenerated headers (`pm.h`, `onames.h`) → then update C# interop
-- Modifying `.des` files → rebuild `levcomp` → regenerated `.lev` files → rebuild `dlb`/`nhdat`
-- Modifying XAML in `GnollHackX` → `makedefsdroid` regeneration → then update GnollHackM code-behind
-
-See the `build_pipeline` skill for full details on the data pipeline, `makedefs` flag reference, and MSBuild automation targets.
-
-### `.plans/` Directory Isolation (STRICT)
-
-**Subagents must NOT read files in the `.plans/` directory** unless the
-orchestrator explicitly provides a specific file path and instructs the subagent
-to read it. The orchestrator should pass relevant plan context **in the
-subagent's prompt**, not by directing the subagent to browse `.plans/`. Old and
-superseded plans in that directory can corrupt the subagent's understanding of
-the task.
-
-See the `implementation_planning` skill ("`.plans/` Isolation During Research")
-for the full specification, including rules for orchestrating agents.
-
-### Communication Overhead
-
-For tasks that take under 30 seconds to do directly, spawning a subagent is slower due to setup and message-passing latency. Prefer doing these yourself.
-
-### Protecting Uncommitted Changes (STRICT)
-
-**No agent (orchestrator or subagent) may overwrite uncommitted changes in a file without explicit user permission.** This includes restoring a file to an earlier repository version, regenerating file contents from scratch, or any operation that would discard prior edits.
-
-Before editing a file, agents should consider whether uncommitted changes (from the user or from previous agent work) exist in that file. If the planned work has a risk of corrupting or losing those changes:
-1. The **subagent** must report the risk to the **orchestrator**
-2. The **orchestrator** must ask the user to either:
-   - **Commit the changes first** (preferred), so they can be recovered if needed, OR
-   - **Explicitly approve** the work with the understanding that uncommitted changes may be lost
-3. Only after receiving user approval may the agent proceed
-
-This applies equally to user-made and agent-made uncommitted changes, since the two cannot always be distinguished.
-
-## Human Pair Programming Tasks
-
-### When to Assign to the Human
-
-Assigning tasks to the human user is the **rare exception**, not the norm. Only consider it for:
-
-#### Very Extensive Cut-and-Paste (Move) Operations
-
-AI agents struggle with large move operations because they require coordinating a deletion in one location and an insertion in another, potentially across files. When the code block is very large, the AI is likely to get it wrong and waste a significant number of tokens retrying. Humans can do this atomically in Visual Studio with `Ctrl+X` → `Ctrl+V`.
-
-**Assign to human when**: A large code block (50+ lines) needs to be relocated (not copied), especially across files, AND the AI would likely fail and waste tokens on retries.
-
-> [!IMPORTANT]
-> For small moves, simple find-and-replace, or any task where the AI can handle it reliably, the orchestrator or a subagent should do the work — not the human. The threshold for human assignment is high: the task must be one where AI failure is likely and the token cost of retries would be substantial.
-
-### Fallback When Human Declines
-
-If the user does not approve a human-assigned task, the orchestrator handles it directly.
+---
 
 ## Example Subagent Use Section
 
@@ -179,12 +80,19 @@ If the user does not approve a human-assigned task, the orchestrator handles it 
 ## Subagent Use
 
 ### Subagents Needed
-Yes — the task involves changes across 8 files in 3 subsystems that can be parallelized.
+Yes -- 8 files across 3 subsystems, with non-overlapping file sets after the makedefs step.
 
 ### Subagent Assignments
-| Task | Model | Files | Rationale |
-|------|-------|-------|-----------|
-| Add `FOO_BAR` define to all platform headers | Flash | `include/pcconf.h`, `include/unixconf.h`, `include/macconf.h` | Trivially mechanical insertion of identical `#define` line |
-| Update `struct layer_info` and marshalling | Inherit | `include/layer.h`, `win/win32/xpl/GnollHackX/GnollHackX/GHStructs.cs` | Needs to understand C-to-C# struct alignment |
-| Implement new window proc callback end-to-end | Inherit | `include/winprocs.h`, `src/windows.c`, `GnollHackService.cs` | Complex cross-layer change requiring deep system understanding |
+| Task | Tier | Files | Rationale |
+|------|------|-------|-----------|
+| Add the `FOO_BAR` define to all platform headers | mechanical | `include/pcconf.h`, `include/unixconf.h`, `include/macconf.h` | Identical pre-specified line; the subagent decides nothing |
+| Add the new monster entry following the existing MON macro pattern | standard | `src/monst.c` | Well-specified step following an established pattern |
+| Update `struct layer_info` and its C# marshalling | deep | `include/layer.h`, `win/win32/xpl/GnollHackX/GnollHackX/GHStructs.cs` | Interop struct alignment: a mistake corrupts silently rather than failing to compile |
+| Implement the new window proc callback end to end | deep | `include/winprocs.h`, `src/windows.c`, `GnollHackService.cs` | Cross-layer contract spanning C core, bridge, and frontend |
+
+Sequencing: the `makedefs` rebuild runs after the `src/monst.c` change and before any
+agent touches code referencing the regenerated constants.
+
+### Human Assignments
+None -- no large relocation operations.
 ```

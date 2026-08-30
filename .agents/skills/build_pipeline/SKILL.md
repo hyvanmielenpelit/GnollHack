@@ -234,4 +234,4 @@ More troubleshooting on the GnollHack Wiki page *Troubleshooting Building GnollH
 - **`adding_game_content`** — Adding monsters, objects, artifacts (includes `makedefs` flags)
 - **`maui_frontend`** — MAUI frontend, XAML pipeline details, SkiaSharp rendering
 - **`debugging_gnollhack`** — Wizard mode, panic logs, running the MAUI app locally
-- **`subagent_guidelines`** — Build dependency chains constraining parallel agent work
+- **`client_subagent_guidelines`** — Build dependency chains constraining parallel agent work
