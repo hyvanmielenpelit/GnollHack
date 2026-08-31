@@ -16,9 +16,11 @@ description: >-
 > build boundary; save it in the shared plans repository as
 > `<plans-root>/hyvanmielenpelit/GnollHack/YYYY-MM-DD/task_name/implementation_plan_v1.md`,
 > resolving `<plans-root>` as `AGENT_PLANS_ROOT`, else `C:\hmp\plans`, else a `plans`
-> directory beside this one -- and if none resolves, fall back to this repository's
-> `.plans/YYYY-MM-DD/task_name/`, which is usable only because `.plans/` is gitignored
-> here (`git check-ignore -q .plans`), **and say so in chat**. Never overwrite a
+> directory beside this one -- and if none resolves, fall back to the **main**
+> repository's `.plans/YYYY-MM-DD/task_name/` (this repository's when GnollHack is the main
+> one), usable only because `.plans/` is gitignored there
+> (`git check-ignore -q .plans`), **and say so in chat**. If it is not ignored, or that
+> repository is not writable from this session, keep the plan in the chat instead. Never overwrite a
 > version -- increment. Print the path; **wait for explicit approval before editing any
 > file**; track progress in `task.md`; finish with `walkthrough.md`. **Never commit or
 > push in this repository.** Clone the plans repository from
