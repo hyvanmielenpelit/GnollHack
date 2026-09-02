@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.soundmindentertainment.gnollhack">
-	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true" android:label="GnollHack">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.soundmindentertainment.gnollhack">
+	<!-- allowBackup stays on so game settings and progress are backed up. The backup
+	     rules exclude only the secure credential store; see the two files under
+	     Resources/xml for the reasoning. -->
+	<application android:allowBackup="true" android:fullBackupContent="@xml/backup_rules" android:dataExtractionRules="@xml/data_extraction_rules" tools:targetApi="31" android:icon="@mipmap/appicon" android:supportsRtl="true" android:label="GnollHack">
     <service android:name=".SaveGameService"
          android:exported="false"
          android:foregroundServiceType="dataSync" />

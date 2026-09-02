@@ -26,7 +26,21 @@ namespace GnollHackX
         public const int BUFSZ = 256;
         public const int UTF8BUFSZ = 256 * 4;
         public const int MaxEngraveQuickTextLength = 95; /* PL_ESIZ */
-        public const int MaxXlogUserNameLength = 31;        
+        public const int MaxXlogUserNameLength = 31;
+
+        /* Secure store keys. Credentials live in GHSecureStore -- the platform key store --
+           and never in Preferences, which is plaintext on every platform. The secure_
+           prefix matters: the Windows SecureStorage implementation is itself backed by
+           Preferences, so reusing the old plaintext key names could collide with the very
+           entries being retired. */
+        public const string SecureXlogUserNameKey = "secure_XlogUserName";
+        public const string SecureXlogPasswordKey = "secure_XlogPassword";
+        public const string SecureCloudStorageConnectionStringKey = "secure_CustomCloudStorageConnectionString";
+        public const string SecureLocalOverseerUserNameKey = "secure_LocalOverseerUserName";
+        public const string SecureLocalOverseerPasswordKey = "secure_LocalOverseerPassword";
+        public const int SecureStoreTimeoutMs = 5000;
+        public const string CredentialMigrationDoneKey = "CredentialMigrationV1Done";
+
         public const int MaxGHWindows = 32;
         public const int MapCols = 80;
         public const int MapRows = 21;        

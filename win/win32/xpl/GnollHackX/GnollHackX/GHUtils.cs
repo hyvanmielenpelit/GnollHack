@@ -284,6 +284,21 @@ namespace GnollHackX
             return list;
         }
 
+        /// <summary>
+        /// Renders a secret safe to write to a log or the debug output, revealing only
+        /// whether it is set and how long it is.
+        /// </summary>
+        /// <param name="secret">The secret to mask. Never appears in the result.</param>
+        /// <returns>A placeholder describing the secret without disclosing it.</returns>
+        public static string MaskSecret(string secret)
+        {
+            if (secret == null)
+                return "(null)";
+            if (secret.Length == 0)
+                return "(empty)";
+            return "***(len=" + secret.Length + ")";
+        }
+
         public static string EncryptString(string key, string plainText)
         {
             if (key == null || plainText == null || key == "" || plainText == "") return "";

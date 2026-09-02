@@ -1825,6 +1825,14 @@ namespace GnollHackX
             }
         }
 
+#if DEBUG
+        /* These two helpers can disable TLS certificate validation, so they are compiled
+           into DEBUG builds only. Their sole caller -- the local Overseer development
+           address in OverseerPage -- is DEBUG-only as well, and a release binary has no
+           business carrying a certificate-validation bypass one call away from a request
+           that sends the player's password. IsLocalUrl above stays outside the guard: the
+           Android and iOS web view clients call it in release builds. */
+
         /// <summary>
         /// Creates an HttpClientHandler that bypasses SSL certificate validation
         /// for local/private URLs. Returns null for production URLs.
@@ -1856,6 +1864,7 @@ namespace GnollHackX
             client.Timeout = timeout;
             return client;
         }
+#endif
 
 
         public static void CleanUp()

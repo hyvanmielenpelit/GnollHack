@@ -250,15 +250,16 @@ namespace GnollHackX
             CustomGameStatusLink = Preferences.Get("CustomGameStatusLink", "");
             CustomXlogAccountLink = Preferences.Get("CustomXlogAccountLink", "");
             CustomXlogPostLink = Preferences.Get("CustomXlogPostLink", "");
-            CustomCloudStorageConnectionString = Preferences.Get("CustomCloudStorageConnectionString", "");
+            /* Credentials and the cloud storage key come from the platform secure store,
+               not from Preferences. This must run before the SaveFileTracking default
+               below, which depends on the user name and password being loaded. */
+            MigrateAndLoadSecureCredentials();
             UseHTMLDumpLogs = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             UseSingleDumpLog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
             ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", DefaultStreamingBankToMemory);
             CopyStreamingBankToDisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
             ForcePostBones = IsDebug && Preferences.Get("ForcePostBones", false);
             AppSwitchSaveStyle = Preferences.Get("AppSwitchSaveStyle", IsDesktop ? 1 : 0);
-            XlogUserName = Preferences.Get("XlogUserName", "");
-            XlogPassword = Preferences.Get("XlogPassword", "");
             XlogReleaseAccount = Preferences.Get("XlogReleaseAccount", false);
             AllowBones = Preferences.Get("AllowBones", true);
             //AllowPet = Preferences.Get("AllowPet", true);  //Use MirroredPetsNotGifted instead
@@ -272,8 +273,8 @@ namespace GnollHackX
 #if DEBUG
             OverseerUseLocalAddress = Preferences.Get("OverseerUseLocalAddress", false);
             LocalOverseerAddress =  Preferences.Get("LocalOverseerAddress", null);
-            LocalOverseerUserName = Preferences.Get("LocalOverseerUserName", null);
-            LocalOverseerPassword = Preferences.Get("LocalOverseerPassword", null);
+            /* LocalOverseerUserName and LocalOverseerPassword are loaded from the secure
+               store in MigrateAndLoadSecureCredentials. */
 #endif
             EmptyWishIsNothing = Preferences.Get("EmptyWishIsNothing", true);
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
@@ -6178,6 +6179,90 @@ namespace GnollHackX
             }
         }
 
+        /// <summary>
+        /// Moves any credentials left in plaintext Preferences by an older build into the
+        /// platform secure store, then loads all of them into memory.
+        /// </summary>
+        /// <remarks>
+        /// The plaintext preference is removed only after its secure write has succeeded,
+        /// and the migration-done flag is set only when every attempted write succeeded, so
+        /// a partial failure retries on the next launch instead of logging the player out.
+        /// Called from <see cref="Initialize"/> before the SaveFileTracking default, which
+        /// depends on the user name and password being loaded.
+        /// </remarks>
+        private static void MigrateAndLoadSecureCredentials()
+        {
+            /* Old plaintext Preferences key -> secure store key. The two LocalOverseer
+               entries are only ever written by DEBUG builds, but a device that once ran one
+               may still have them, so they are migrated unconditionally -- a release build
+               cleans them up too. */
+            string[,] migrations = new string[,]
+            {
+                { "XlogUserName", GHConstants.SecureXlogUserNameKey },
+                { "XlogPassword", GHConstants.SecureXlogPasswordKey },
+                { "CustomCloudStorageConnectionString", GHConstants.SecureCloudStorageConnectionStringKey },
+                { "LocalOverseerUserName", GHConstants.SecureLocalOverseerUserNameKey },
+                { "LocalOverseerPassword", GHConstants.SecureLocalOverseerPasswordKey },
+            };
+
+            if (!Preferences.Get(GHConstants.CredentialMigrationDoneKey, false))
+            {
+                int migrated = 0, failed = 0, cleared = 0;
+                int i;
+                for (i = 0; i < migrations.GetLength(0); i++)
+                {
+                    string oldKey = migrations[i, 0];
+                    string secureKey = migrations[i, 1];
+                    try
+                    {
+                        if (!Preferences.ContainsKey(oldKey))
+                            continue;
+
+                        string plainValue = Preferences.Get(oldKey, "");
+                        if (string.IsNullOrEmpty(plainValue))
+                        {
+                            /* Nothing worth keeping; just get rid of the entry. */
+                            Preferences.Remove(oldKey);
+                            cleared++;
+                        }
+                        else if (GHSecureStore.Set(secureKey, plainValue))
+                        {
+                            Preferences.Remove(oldKey);
+                            migrated++;
+                        }
+                        else
+                        {
+                            /* Leave the plaintext in place so the player is not logged out;
+                               the migration is retried on the next launch. */
+                            failed++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        failed++;
+                        MaybeWriteGHLog("MigrateAndLoadSecureCredentials: migrating " + oldKey + " failed: " + ex.Message);
+                    }
+                }
+
+                if (failed == 0)
+                    Preferences.Set(GHConstants.CredentialMigrationDoneKey, true);
+
+                if (migrated > 0 || cleared > 0 || failed > 0)
+                    MaybeWriteGHLog("Credential migration to the secure store: " + migrated + " moved, " + cleared + " empty entries removed, " + failed + " failed.");
+            }
+
+            XlogUserName = GHSecureStore.Get(GHConstants.SecureXlogUserNameKey) ?? "";
+            XlogPassword = GHSecureStore.Get(GHConstants.SecureXlogPasswordKey) ?? "";
+            CustomCloudStorageConnectionString = GHSecureStore.Get(GHConstants.SecureCloudStorageConnectionStringKey) ?? "";
+#if DEBUG
+            LocalOverseerUserName = GHSecureStore.Get(GHConstants.SecureLocalOverseerUserNameKey);
+            LocalOverseerPassword = GHSecureStore.Get(GHConstants.SecureLocalOverseerPasswordKey);
+#endif
+
+            if (!GHSecureStore.IsAvailable)
+                MaybeWriteGHLog("The platform secure store is unavailable; credentials will not be saved between sessions. Last error: " + (GHSecureStore.LastError ?? "unknown"));
+        }
+
         public static bool AreCredentialsVerified(string username, string password)
         {
             if (!XlogUserNameVerified)
@@ -6562,14 +6647,14 @@ namespace GnollHackX
                         cdhv3.Name = "Password";
                         content3.Headers.ContentDisposition = cdhv3;
                         multicontent.Add(content3);
-                        Debug.WriteLine("Password: " + password);
+                        Debug.WriteLine("Password: " + GHUtils.MaskSecret(password));
 
                         StringContent content4 = new StringContent(XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
                         cdhv4.Name = "AntiForgeryToken";
                         content4.Headers.ContentDisposition = cdhv4;
                         multicontent.Add(content4);
-                        Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
+                        Debug.WriteLine("AntiForgeryToken: " + GHUtils.MaskSecret(XlogAntiForgeryToken));
 
                         string adjusted_entry_string = "";
                         if (!string.IsNullOrWhiteSpace(xlogentry_string))
@@ -6757,14 +6842,14 @@ namespace GnollHackX
                             cdhv3.Name = "Password";
                             content3.Headers.ContentDisposition = cdhv3;
                             multicontent.Add(content3);
-                            Debug.WriteLine("Password: " + password);
+                            Debug.WriteLine("Password: " + GHUtils.MaskSecret(password));
 
                             StringContent content4 = new StringContent(XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
                             ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
                             cdhv4.Name = "AntiForgeryToken";
                             content4.Headers.ContentDisposition = cdhv4;
                             multicontent.Add(content4);
-                            Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
+                            Debug.WriteLine("AntiForgeryToken: " + GHUtils.MaskSecret(XlogAntiForgeryToken));
 
                             StringContent content2 = new StringContent(timeStamp.ToString(), Encoding.UTF8, "text/plain");
                             ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
@@ -6933,14 +7018,14 @@ namespace GnollHackX
                             cdhv3.Name = "Password";
                             content3.Headers.ContentDisposition = cdhv3;
                             multicontent.Add(content3);
-                            Debug.WriteLine("Password: " + password);
+                            Debug.WriteLine("Password: " + GHUtils.MaskSecret(password));
 
                             StringContent content4 = new StringContent(XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
                             ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
                             cdhv4.Name = "AntiForgeryToken";
                             content4.Headers.ContentDisposition = cdhv4;
                             multicontent.Add(content4);
-                            Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
+                            Debug.WriteLine("AntiForgeryToken: " + GHUtils.MaskSecret(XlogAntiForgeryToken));
 
                             StringContent content2 = new StringContent(timeStamp.ToString(), Encoding.UTF8, "text/plain");
                             ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
@@ -7374,14 +7459,14 @@ namespace GnollHackX
                         cdhv3.Name = "Password";
                         content3.Headers.ContentDisposition = cdhv3;
                         multicontent.Add(content3);
-                        Debug.WriteLine("Password: " + password);
+                        Debug.WriteLine("Password: " + GHUtils.MaskSecret(password));
 
                         StringContent content4 = new StringContent(XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
                         cdhv4.Name = "AntiForgeryToken";
                         content4.Headers.ContentDisposition = cdhv4;
                         multicontent.Add(content4);
-                        Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
+                        Debug.WriteLine("AntiForgeryToken: " + GHUtils.MaskSecret(XlogAntiForgeryToken));
 
                         string convertedUsers = (BonesUserListIsBlack ? "!" : "") + BonesAllowedUsers.Trim();
                         StringContent content7 = new StringContent(convertedUsers, Encoding.UTF8, "text/plain");
@@ -7671,14 +7756,14 @@ namespace GnollHackX
                             cdhv3.Name = "Password";
                             content3.Headers.ContentDisposition = cdhv3;
                             multicontent.Add(content3);
-                            Debug.WriteLine("Password: " + password);
+                            Debug.WriteLine("Password: " + GHUtils.MaskSecret(password));
 
                             StringContent content4 = new StringContent(XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
                             ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
                             cdhv4.Name = "AntiForgeryToken";
                             content4.Headers.ContentDisposition = cdhv4;
                             multicontent.Add(content4);
-                            Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
+                            Debug.WriteLine("AntiForgeryToken: " + GHUtils.MaskSecret(XlogAntiForgeryToken));
 
                             string convertedUsers = (BonesUserListIsBlack ? "!" : "") + BonesAllowedUsers;
                             StringContent content7 = new StringContent(convertedUsers, Encoding.UTF8, "text/plain");

@@ -1957,6 +1957,8 @@
                     <TapGestureRecognizer />
                 </AbsoluteLayout.GestureRecognizers>
             </AbsoluteLayout>
+
+            <controls:MessagePopupView x:Name="MessagePopup" />
         </Grid>
     </gnh:CustomModalPage.Content>
 </gnh:CustomModalPage>

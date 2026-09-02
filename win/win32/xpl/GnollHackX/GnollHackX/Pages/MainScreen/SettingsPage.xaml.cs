@@ -34,7 +34,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SettingsPage : CustomModalPage, ISpecialKeyPressHandlingPage
+    public partial class SettingsPage : CustomModalPage, ISpecialKeyPressHandlingPage, IMessagePopupPage
     {
         private GamePage _gamePage;
         private GameMenuPage _gameMenuPage;
@@ -845,10 +845,14 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("CustomXlogAccountLink", _customXlogAccountLink);
             GHApp.CustomXlogPostLink = _customXlogPostLink;
             Preferences.Set("CustomXlogPostLink", _customXlogPostLink);
+            /* Credentials go to the platform secure store, never to Preferences. If the
+               store is unavailable they stay in memory for this session only, and the
+               player is told below. */
+            bool securestoreok = true;
             GHApp.XlogUserName = PostXlogUserNameEntry.Text;
-            Preferences.Set("XlogUserName", PostXlogUserNameEntry.Text);
+            securestoreok &= GHSecureStore.Set(GHConstants.SecureXlogUserNameKey, PostXlogUserNameEntry.Text);
             GHApp.XlogPassword = PostXlogPasswordEntry.Text;
-            Preferences.Set("XlogPassword", PostXlogPasswordEntry.Text);
+            securestoreok &= GHSecureStore.Set(GHConstants.SecureXlogPasswordKey, PostXlogPasswordEntry.Text);
             GHApp.BonesAllowedUsers = BonesAllowedUsersEntry.Text;
             Preferences.Set("BonesAllowedUsers", BonesAllowedUsersEntry.Text);
             GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
@@ -865,7 +869,7 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             GHApp.CustomCloudStorageConnectionString = _customCloudStorageConnectionString;
-            Preferences.Set("CustomCloudStorageConnectionString", _customCloudStorageConnectionString);
+            securestoreok &= GHSecureStore.Set(GHConstants.SecureCloudStorageConnectionStringKey, _customCloudStorageConnectionString);
 
             GHApp.XlogCredentialsIncorrect = false;
             if (!GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
@@ -1029,9 +1033,9 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.LocalOverseerAddress = OverseerLocalAddressEntry.Text;
                 Preferences.Set("LocalOverseerAddress", OverseerLocalAddressEntry.Text ?? "");
                 GHApp.LocalOverseerUserName = OverseerLocalUserNameEntry.Text;
-                Preferences.Set("LocalOverseerUserName", OverseerLocalUserNameEntry.Text ?? "");
+                securestoreok &= GHSecureStore.Set(GHConstants.SecureLocalOverseerUserNameKey, OverseerLocalUserNameEntry.Text ?? "");
                 GHApp.LocalOverseerPassword = OverseerLocalPasswordEntry.Text;
-                Preferences.Set("LocalOverseerPassword", OverseerLocalPasswordEntry.Text ?? "");
+                securestoreok &= GHSecureStore.Set(GHConstants.SecureLocalOverseerPasswordKey, OverseerLocalPasswordEntry.Text ?? "");
             }
 #endif
             GHApp.DebugLogMessages = LogMessageSwitch.IsToggled;
@@ -1375,6 +1379,18 @@ namespace GnollHackX.Pages.MainScreen
 
             if(_gamePage != null)
                 _gamePage.UpdateButtonAndUISizes();
+
+            /* Reported last, once every credential has been written, and through
+               MessagePopup rather than PopupGrid: this one has to be acknowledged, because
+               the page closes as soon as this method returns and a non-blocking overlay
+               would vanish with it before the player had read it. */
+            if (!securestoreok)
+            {
+                await ShowMessagePopupAsync("Credentials Not Saved",
+                    "This device's secure credential store is unavailable, so the credentials could not be saved. They work for this session, but will have to be entered again the next time GnollHack is started."
+                    + (string.IsNullOrEmpty(GHSecureStore.LastError) ? "" : Environment.NewLine + Environment.NewLine + "Error: " + GHSecureStore.LastError),
+                    "OK", null, GHColors.BrighterRed);
+            }
         }
 
         private void SetInitialValues()
@@ -1459,11 +1475,13 @@ namespace GnollHackX.Pages.MainScreen
             postbones = Preferences.Get("PostingBonesFiles", GHConstants.DefaultPosting);
             boneslistisblack = Preferences.Get("BonesUserListIsBlack", false);            
             customlink = Preferences.Get("CustomGameStatusLink", "");
-            customcloudstorage = Preferences.Get("CustomCloudStorageConnectionString", "");
+            /* Credentials live in the secure store, not in Preferences; GHApp loaded them
+               at startup, so take the in-memory values here. */
+            customcloudstorage = GHApp.CustomCloudStorageConnectionString ?? "";
             customxlogaccountlink = Preferences.Get("CustomXlogAccountLink", "");
             customxlogpostlink = Preferences.Get("CustomXlogPostLink", "");
-            xlog_username = Preferences.Get("XlogUserName", "");
-            xlog_password = Preferences.Get("XlogPassword", "");
+            xlog_username = GHApp.XlogUserName ?? "";
+            xlog_password = GHApp.XlogPassword ?? "";
             xlog_release_account = Preferences.Get("XlogReleaseAccount", false);
             bones_allowed_users = Preferences.Get("BonesAllowedUsers", "");
             forcepostbones = Preferences.Get("ForcePostBones", false);
@@ -2699,6 +2717,13 @@ namespace GnollHackX.Pages.MainScreen
         private bool _backPressed = false;
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
+            if (MessagePopup.IsPopupOpen)
+            {
+                /* Dismiss the popup rather than the page underneath it. */
+                MessagePopup.ClosePopup();
+                return false;
+            }
+
             if (!_backPressed)
             {
                 await ClosePageAsync(false);
@@ -3346,5 +3371,18 @@ namespace GnollHackX.Pages.MainScreen
                 _mainPage?.SetDarkMode(newValue);
             }
         }
+
+        /* IMessagePopupPage implementation */
+        public bool IsPopupOpen => MessagePopup.IsPopupOpen;
+        public void ClosePopup() => MessagePopup.ClosePopup();
+        public bool SendKeyToPopup(int key, bool isCtrl, bool isMeta) => MessagePopup.SendKeyToPopup(key, isCtrl, isMeta);
+        public bool SendSpecialKeyToPopup(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift) => MessagePopup.SendSpecialKeyToPopup(spkey, isCtrl, isMeta, isShift);
+        public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
+#if GNH_MAUI
+            Color titleColor = null,
+#else
+            Color? titleColor = null,
+#endif
+            bool acceptEnterSpaceForOkCancel = false) => MessagePopup.ShowMessagePopupAsync(title, message, okButtonText, cancelButtonText, titleColor, acceptEnterSpaceForOkCancel);
     }
 }

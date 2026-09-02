@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Backup rules for Android 11 (API 30) and below, referenced by
+  android:fullBackupContent in AndroidManifest.xml.
+
+  The GnollHack server credentials and the cloud storage key live in the platform
+  secure store (GHSecureStore, over SecureStorage), which on Android is an
+  EncryptedSharedPreferences file whose master key is held in the Android Keystore.
+  The Keystore key is never backed up, so a restored copy of that file would be
+  undecryptable on the new device: a value that looks present but is not. Excluding
+  it keeps the credentials off backup transports and makes the restore state honest,
+  because the player is then asked for them again.
+
+  Game settings and progress are in a different shared preferences file
+  (the package name plus _preferences.xml, from
+  PreferenceManager.GetDefaultSharedPreferences) and are deliberately still
+  backed up.
+-->
+<full-backup-content>
+  <exclude domain="sharedpref" path="com.soundmindentertainment.gnollhack.microsoft.maui.essentials.preferences.xml" />
+</full-backup-content>

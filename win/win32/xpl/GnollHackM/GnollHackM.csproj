@@ -219,6 +219,7 @@
     <None Remove="..\GnollHackX\GnollHackX\GHRequest.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHScreenText.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHSecureStore.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHSkiaFontPaint.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHSnapshot.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHSoundTrack.cs" />
@@ -453,6 +454,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\GHRequest.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHScreenText.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHSecureStore.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHSkiaFontPaint.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHSoundTrack.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHSnapshot.cs" />

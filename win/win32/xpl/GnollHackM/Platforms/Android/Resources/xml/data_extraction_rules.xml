@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Backup and device-transfer rules for Android 12 (API 31) and above, referenced by
+  android:dataExtractionRules in AndroidManifest.xml. See backup_rules.xml for why the
+  secure store is excluded; both sections need the same exclusion, because omitting
+  device-transfer would still copy the file during a device-to-device transfer.
+-->
+<data-extraction-rules>
+  <cloud-backup>
+    <exclude domain="sharedpref" path="com.soundmindentertainment.gnollhack.microsoft.maui.essentials.preferences.xml" />
+  </cloud-backup>
+  <device-transfer>
+    <exclude domain="sharedpref" path="com.soundmindentertainment.gnollhack.microsoft.maui.essentials.preferences.xml" />
+  </device-transfer>
+</data-extraction-rules>

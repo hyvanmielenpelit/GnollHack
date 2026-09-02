@@ -169,6 +169,18 @@ namespace GnollHackX.Pages.MainScreen
 
                 Preferences.Clear();
 
+                /* Credentials are in the platform secure store rather than in Preferences,
+                   so clearing the preferences alone would leave the password behind. */
+                GHSecureStore.RemoveAll();
+                GHApp.XlogUserName = "";
+                GHApp.XlogPassword = "";
+                GHApp.CustomCloudStorageConnectionString = "";
+#if DEBUG
+                GHApp.LocalOverseerUserName = null;
+                GHApp.LocalOverseerPassword = null;
+#endif
+                GHApp.SetXlogUserNameVerified(false, null, null);
+
                 Preferences.Set("FullVersion", GHApp.FullVersionMode);
                 if (has_resetatstart)
                     Preferences.Set("ResetAtStart", resetatstart);
