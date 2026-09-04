@@ -3032,6 +3032,7 @@ namespace GnollHackX
                 {
                     scope.SetExtra(GHConstants.SentryExtraDebugBuffers, GHConstants.SentryNoGameRunningText);
                     scope.SetExtra(GHConstants.SentryExtraGameState, GHConstants.SentryNoGameRunningText);
+                    scope.SetExtra(GHConstants.SentryExtraCrashContextStamp, GHConstants.SentryNoGameRunningText);
                 });
             }
             catch (Exception ex)
