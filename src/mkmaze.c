@@ -2026,6 +2026,14 @@ mv_bubble(struct bubble *b, int dx, int dy, boolean ini)
                 /* change u.ux0 and u.uy0? */
                 u.ux = cons->x;
                 u.uy = cons->y;
+                /* ridden steed always shares hero's location; the steed is
+                   in fmon but off the map, so it is never picked up as a
+                   CONS_MON and must be moved along with the hero here */
+                if (u.usteed)
+                {
+                    u.usteed->mx = u.ux;
+                    u.usteed->my = u.uy;
+                }
                 newsym(ux0, uy0); /* clean up old position */
 
                 if (MON_AT(cons->x, cons->y)) {
