@@ -1242,6 +1242,24 @@ const char* basefilename(const char *filepath)
 void debugprint
 (const char *s, ...)
 {
+    char tmpbuf[DEBUGBUFSIZ];
+    int debug_buf_idx;
+
+    va_list the_args;
+    va_start(the_args, s);
+    Vsnprintf(tmpbuf, DEBUGBUFSIZ, s, the_args);
+    tmpbuf[DEBUGBUFSIZ - 1] = '\0'; /* sanity */
+    va_end(the_args);
+
+    if (debug_buf_count > 0 
+        && (debug_buf_idx = (debug_buf_start + debug_buf_count - 1) % NUM_DEBUGBUFS) >= 0 
+        && !strcmp(tmpbuf, debug_buf_array[debug_buf_idx]))
+    {
+        if (debug_buf_repeats[debug_buf_idx] < 32000)
+            debug_buf_repeats[debug_buf_idx]++;
+        return;
+    }
+
     if (debug_buf_count < NUM_DEBUGBUFS)
     {
         debug_buf_count++;
@@ -1250,13 +1268,10 @@ void debugprint
     {
         debug_buf_start = (debug_buf_start + 1) % NUM_DEBUGBUFS;
     }
-    int debug_buf_idx = (debug_buf_start + debug_buf_count - 1) % NUM_DEBUGBUFS;
+    debug_buf_idx = (debug_buf_start + debug_buf_count - 1) % NUM_DEBUGBUFS;
+    debug_buf_repeats[debug_buf_idx] = 0;
     char* pbuf = debug_buf_array[debug_buf_idx];
-    va_list the_args;
-    va_start(the_args, s);
-    Vsnprintf(pbuf, DEBUGBUFSIZ, s, the_args);
-    pbuf[DEBUGBUFSIZ - 1] = '\0'; /* sanity */
-    va_end(the_args);
+    Strcpy(pbuf, tmpbuf);
 }
 
 char*
@@ -1283,7 +1298,10 @@ allocate_buffer_with_debug_buffers(const char *message)
         else
         {
             j++;
-            chars_written = sprintf(p, "%s%d:%s", j == 1 ? "" : "; ", j, debug_buf_array[idx]);
+            if (debug_buf_repeats[idx] > 0)
+                chars_written = sprintf(p, "%s%d:%s (x%d)", j == 1 ? "" : "; ", j, debug_buf_array[idx], debug_buf_repeats[idx] + 1);
+            else
+                chars_written = sprintf(p, "%s%d:%s", j == 1 ? "" : "; ", j, debug_buf_array[idx]);
             if (chars_written >= 0)
                 p += chars_written;
             else

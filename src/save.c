@@ -295,6 +295,12 @@ dosave0(boolean quietly)
     store_save_game_stats_in_file(fd, time_stamp);
     ustuck_id = (u.ustuck ? u.ustuck->m_id : 0);
     usteed_id = (u.usteed ? u.usteed->m_id : 0);
+    /* Guard for a spurious u.usteed location */
+    if (u.usteed)
+    {
+        u.usteed->mx = u.ux;
+        u.usteed->my = u.uy;
+    }
     savelev(fd, ledger_no(&u.uz), WRITE_SAVE | FREE_SAVE);
     savegamestate(fd, WRITE_SAVE | FREE_SAVE, time_stamp);
 
