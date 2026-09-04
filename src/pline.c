@@ -1277,7 +1277,7 @@ void debugprint
 char*
 allocate_buffer_with_debug_buffers(const char *message)
 {
-    char* long_buffer = (char*)alloc((message ? strlen(message) + 3 : 0) + (DEBUGBUFSIZ + 5) * NUM_DEBUGBUFS + 1 + DEBUGBUFSIZ + PL_NSIZ + MAX_DGN_NAME_LENGTH + MAX_LVL_NAME_LENGTH);
+    char* long_buffer = (char*)alloc((message ? strlen(message) + 3 : 0) + (DEBUGBUFSIZ + 5 + 9) * NUM_DEBUGBUFS + 1 + DEBUGBUFSIZ + PL_NSIZ + MAX_DGN_NAME_LENGTH + MAX_LVL_NAME_LENGTH);
     if (!long_buffer)
         return 0;
 
