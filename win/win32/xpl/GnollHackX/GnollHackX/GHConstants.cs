@@ -405,6 +405,21 @@ namespace GnollHackX
         public const string SentryGnollHackLibraryCategoryName = "GnollHack Library";
         public const string SentryGnollHackCallbackCategoryName = "GnollHack Callback";
         public const string SentryGnollHackButtonClickCategoryName = "Button Clicked";
+        /* Sentry extra data keys. The same keys are used both for the per-event extras
+           attached to impossible() and panic() events and for the periodic scope
+           snapshot posted from rhack(). Event-level extras win over scope-level ones
+           (Scope.Apply only fills in keys the event does not already have), so those
+           events keep their fresher values while hard native crashes fall back to the
+           scope snapshot. */
+        public const string SentryExtraDebugBuffers = "Debug Buffers";
+        public const string SentryExtraGameState = "Game State";
+        public const string SentryExtraCrashContextStamp = "Crash Context Snapshot";
+        public const string SentryExtraScopeSyncCheck = "Scope Sync Check";
+        /* Worst case for the debug buffers is NUM_DEBUGBUFS (40) entries of DEBUGBUFSIZ
+           (BUFSZ * 2 = 512) characters plus separators, about 20.7 kB. Real snapshots
+           are far smaller. */
+        public const int MaxSentryScopeExtraLength = 20000;
+        public const string SentryNoGameRunningText = "(no game running)";
         public const string SAVE_GAME_NOTIFICATION_CHANNEL_ID = "save_game_channel";
         public const string SingleCommandPageTitle = "Commands";
         public const int DefaultMoreButtonListSize = MoreButtonPages * MoreButtonsPerRow * MoreButtonsPerColumn + 1;

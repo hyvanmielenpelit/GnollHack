@@ -1320,6 +1320,40 @@ allocate_buffer_with_debug_buffers(const char *message)
     return long_buffer;
 }
 
+/*
+ * Push a fresh debug-buffer and game-state snapshot to the crash reporter's
+ * scope, so that a hard native crash -- which never runs any managed code --
+ * still carries them. Ordinary impossible() and panic() events attach their own,
+ * fresher, copy to the event itself, and that copy takes precedence.
+ *
+ * Call this only from points where the game is about to block for user input.
+ * The work is free there, because the player is reading the screen while it
+ * happens. Callers must be on the game thread: this reads debug_buf_array, u,
+ * moves and program_state.
+ */
+void
+post_crash_context(void)
+{
+    static boolean in_post_crash_context = FALSE;
+    char* dbufs;
+
+    if (in_post_crash_context)
+        return;
+    if (program_state.panicking || program_state.in_impossible)
+        return; /* those paths post their own, fresher, event */
+    if (!windowprocs.win_issue_gui_command)
+        return;
+
+    in_post_crash_context = TRUE;
+    dbufs = allocate_buffer_with_debug_buffers("");
+    if (dbufs)
+    {
+        issue_debuglog_crash_context(dbufs);
+        free(dbufs);
+    }
+    in_post_crash_context = FALSE;
+}
+
 
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
 static boolean use_pline_handler = TRUE;

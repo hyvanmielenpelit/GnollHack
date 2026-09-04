@@ -2882,6 +2882,7 @@ E void reset_pline(void);
 E int* get_colorless_multicolor_buffer(void);
 E void pline1_multi_ex(const char*, const char*, const char*, int, int);
 E char* allocate_buffer_with_debug_buffers(const char*);
+E void post_crash_context(void);
 E const char* basefilename(const char*);
 
 /* ### polyself.c ### */

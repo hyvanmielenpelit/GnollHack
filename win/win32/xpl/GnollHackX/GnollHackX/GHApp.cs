@@ -203,6 +203,7 @@ namespace GnollHackX
             InitBaseTypefaces();
             InitBaseCachedBitmaps();
             InitBaseButtonBitmaps();
+            InitializeSentryScopeDiagnostics();
 
 #if false //GNH_MAUI && ANDROID
             /* Switch off GPU for menus one time on MAUI Android if it is currently on */
@@ -2967,6 +2968,97 @@ namespace GnollHackX
                 {
                     Debug.WriteLine(ex.Message);
                 }
+            }
+#endif
+        }
+
+#if SENTRY
+        private static long _sentryCrashContextSequence = 0;
+
+        private static string TruncateForSentryScope(string text)
+        {
+            if (text == null || text.Length <= GHConstants.MaxSentryScopeExtraLength)
+                return text;
+            /* Keep the leading characters: allocate_buffer_with_debug_buffers emits
+               entry 1 (the newest) first, so truncating the tail drops the oldest. */
+            return text.Substring(0, GHConstants.MaxSentryScopeExtraLength) + " [truncated]";
+        }
+#endif
+
+        /* Called on the game thread from GUI_CMD_DEBUGLOG / DEBUGLOG_CRASH_CONTEXT.
+           Writes the snapshot to the Sentry scope, which the SDK mirrors into the
+           native crash reporter, so that a hard native crash carries it. Event-level
+           extras set by impossible() and panic() take precedence over these, so those
+           events keep their fresher values. */
+        public static void UpdateSentryCrashContextScope(string crashContextString)
+        {
+#if SENTRY
+            if (string.IsNullOrEmpty(crashContextString))
+                return;
+
+            try
+            {
+                string[] strs = crashContextString.Split('|');
+                string debugBuffers = strs.Length > 1 ? TruncateForSentryScope(strs[1]) : null;
+                string gameState = strs.Length > 2 ? TruncateForSentryScope(strs[2]) : null;
+                long seq = Interlocked.Increment(ref _sentryCrashContextSequence);
+                string stamp = "#" + seq + " at " + DateTime.UtcNow.ToString("o");
+
+                SentrySdk.ConfigureScope(scope =>
+                {
+                    if (debugBuffers != null)
+                        scope.SetExtra(GHConstants.SentryExtraDebugBuffers, debugBuffers);
+                    if (gameState != null)
+                        scope.SetExtra(GHConstants.SentryExtraGameState, gameState);
+                    scope.SetExtra(GHConstants.SentryExtraCrashContextStamp, stamp);
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
+        }
+
+        /* Replaces, never removes: the SDK's native scope observer logs and returns
+           early on a null value, so setting null would leave the previous, now stale,
+           snapshot in the native scope. Always write a sentinel string instead. */
+        public static void ClearSentryCrashContextScope()
+        {
+#if SENTRY
+            try
+            {
+                SentrySdk.ConfigureScope(scope =>
+                {
+                    scope.SetExtra(GHConstants.SentryExtraDebugBuffers, GHConstants.SentryNoGameRunningText);
+                    scope.SetExtra(GHConstants.SentryExtraGameState, GHConstants.SentryNoGameRunningText);
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
+        }
+
+        /* Marks the scope at startup so that a later native crash report tells us
+           whether scope sync reached the native layer at all. If this is present but
+           the crash context snapshot is not, sync works and no snapshot was taken; if
+           neither is present, sync itself is broken on this build. */
+        public static void InitializeSentryScopeDiagnostics()
+        {
+#if SENTRY
+            try
+            {
+                SentrySdk.ConfigureScope(scope =>
+                {
+                    scope.SetExtra(GHConstants.SentryExtraScopeSyncCheck,
+                                   "set at " + DateTime.UtcNow.ToString("o"));
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
 #endif
         }

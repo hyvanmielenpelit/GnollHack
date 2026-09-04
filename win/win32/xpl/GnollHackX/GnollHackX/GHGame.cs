@@ -3643,9 +3643,9 @@ namespace GnollHackX
                                 }
                             };
                             if (strs.Length > 1)
-                                sentryEvent.SetExtra("Debug Buffers", strs[1]);
+                                sentryEvent.SetExtra(GHConstants.SentryExtraDebugBuffers, strs[1]);
                             if (strs.Length > 2)
-                                sentryEvent.SetExtra("Game State", strs[2]);
+                                sentryEvent.SetExtra(GHConstants.SentryExtraGameState, strs[2]);
                             sentryEvent.SetExtra("Disk Space", (GHApp.FreeDiskSpaceInBytes / (1024 * 1024)).ToString() + " MB");
                             sentryEvent.SetExtra("Used Memory", (GHApp.MemoryUsageInBytes / (1024 * 1024)).ToString() + " MB");
                             sentryEvent.SetExtra("Total Memory", (GHApp.TotalMemory / (1024 * 1024)).ToString() + " MB");
@@ -3806,6 +3806,13 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_DEBUGLOG:
                     if(!PlayingReplay && !string.IsNullOrWhiteSpace(cmd_str))
                     {
+                        if (cmd_param == (int)debug_log_types.DEBUGLOG_CRASH_CONTEXT)
+                        {
+                            /* Handled before the logging below on purpose: these are
+                               posted at every prompt and must not reach the log file. */
+                            GHApp.UpdateSentryCrashContextScope(cmd_str);
+                            break;
+                        }
                         if (cmd_param == (int)debug_log_types.DEBUGLOG_DEBUG_ONLY && !GHApp.IsDebug)
                             break;
                         string logged_str = cmd_str + (cmd_param2 != 0 ? " [" + cmd_param2 + "]" : "");
@@ -3838,9 +3845,9 @@ namespace GnollHackX
                                 }
                             };
                             if (strs.Length > 1)
-                                sentryEvent.SetExtra("Debug Buffers", strs[1]);
+                                sentryEvent.SetExtra(GHConstants.SentryExtraDebugBuffers, strs[1]);
                             if (strs.Length > 2)
-                                sentryEvent.SetExtra("Game State", strs[2]);
+                                sentryEvent.SetExtra(GHConstants.SentryExtraGameState, strs[2]);
                             sentryEvent.SetExtra("Disk Space", (GHApp.FreeDiskSpaceInBytes / (1024 * 1024)).ToString() + " MB");
                             sentryEvent.SetExtra("Used Memory", (GHApp.MemoryUsageInBytes / (1024 * 1024)).ToString() + " MB");
                             sentryEvent.SetExtra("Total Memory", (GHApp.TotalMemory / (1024 * 1024)).ToString() + " MB");
@@ -3858,6 +3865,9 @@ namespace GnollHackX
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.GameEnded));
                     if (PlayingReplay)
                         break;
+                    /* Otherwise a later crash outside the game would carry this game's
+                       final snapshot and look as though a game were still running. */
+                    GHApp.ClearSentryCrashContextScope();
                     GHApp.TryVerifyXlogUserName(); /* In case not verified yet; in advance of possibly posting files to the server and forums */
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_MENU_POSITION_SAVING:
