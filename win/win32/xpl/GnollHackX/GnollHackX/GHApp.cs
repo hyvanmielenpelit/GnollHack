@@ -1515,6 +1515,30 @@ namespace GnollHackX
             //{
             //    MaybeWriteGHLog(ex.Message);
             //}
+#if GNH_MAUI
+            /* GC.GetConfigurationVariables requires .NET 8 or newer, so this is MAUI only;
+               the legacy Xamarin.Forms build targets netstandard2.0. */
+            try
+            {
+                /* Log the effective (post-clamp) GC configuration, so that a mis-encoded
+                   nursery setting is visible on device rather than merely intended.
+                   DOTNET_* environment values are parsed as hexadecimal, the System.GC.*
+                   runtimeconfig knobs as decimal. Configurations with a NULL public key,
+                   gen0size among them, are not reported here; see gcconfig.h. */
+                foreach (KeyValuePair<string, object> cfg in GC.GetConfigurationVariables())
+                {
+                    if (cfg.Key.StartsWith("GCGen0") || cfg.Key == "GCHeapHardLimit"
+                        || cfg.Key == "GCSegmentSize")
+                    {
+                        MaybeWriteGHLog("GC config: " + cfg.Key + " = " + cfg.Value);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog("InitializeGC: " + ex.Message);
+            }
+#endif
         }
 
         public static void InitializeBattery()

@@ -1,2 +1,9 @@
-DOTNET_GCgen0size=128000000
-DOTNET_GCGen0MaxBudget=128000000
+# CoreCLR parses DOTNET_* numeric values as HEXADECIMAL, not decimal
+# (dotnet/runtime, src/coreclr/vm/gcenv.ee.cpp: u16_strtoui64(out, &end, 16)).
+# A decimal value here is silently misread: 128000000 becomes 0x128000000 = 4.63 GiB.
+# Note that the System.GC.* runtimeconfig knobs used on Windows are the opposite:
+# they are parsed base 0, i.e. decimal unless 0x-prefixed. Do not harmonize the two.
+# Both values below are 128 MiB. Variable-name casing is case-sensitive on Android and
+# must match src/coreclr/gc/gcconfig.h exactly ("GCgen0size", "GCGen0MaxBudget").
+DOTNET_GCgen0size=0x8000000
+DOTNET_GCGen0MaxBudget=0x8000000

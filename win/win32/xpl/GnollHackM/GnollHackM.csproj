@@ -94,7 +94,10 @@
 
   <PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
     <MtouchExtraArgs Condition="'$(IsMonoRuntime)' == 'true'">--setenv=MONO_GC_PARAMS=nursery-size=32m</MtouchExtraArgs>
-    <MtouchExtraArgs Condition="'$(IsMonoRuntime)' != 'true'">--setenv=DOTNET_GCgen0size=32000000 --setenv=DOTNET_GCGen0MaxBudget=32000000</MtouchExtraArgs>
+    <!-- CoreCLR parses DOTNET_* numeric values as HEXADECIMAL (gcenv.ee.cpp uses base 16),
+         unlike the System.GC.* runtimeconfig knobs used on Windows below, which are parsed
+         base 0 and are therefore decimal. Do not harmonize the two. 0x2000000 = 32 MiB. -->
+    <MtouchExtraArgs Condition="'$(IsMonoRuntime)' != 'true'">--setenv=DOTNET_GCgen0size=0x2000000 --setenv=DOTNET_GCGen0MaxBudget=0x2000000</MtouchExtraArgs>
     <MtouchInterpreter Condition="'$(IsMonoRuntime)' == 'true'">-all</MtouchInterpreter>
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);FMOD_GNH_IOS</DefineConstants>
@@ -835,7 +838,15 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
+    <!-- runtimeconfig.json values are parsed base 0, i.e. DECIMAL unless 0x-prefixed
+         (dotnet/runtime, src/coreclr/utilcode/configuration.cpp), which is the opposite of
+         the DOTNET_* environment variables used on Android and iOS. Do not harmonize the
+         two: 32000000 below really is 32 MB. -->
     <RuntimeHostConfigurationOption Include="System.GC.Gen0MaxBudget" Value="32000000" />
+    <!-- System.GC.Gen0Size could be left commented out: src/coreclr/gc/gcconfig.h
+         declares Gen0Size with a NULL public key, so this knob is read by nothing. The
+         gen0 minimum budget can only be set through the DOTNET_GCgen0size environment
+         variable, which a packaged Windows app cannot set for itself. -->
     <RuntimeHostConfigurationOption Include="System.GC.Gen0Size" Value="32000000" />
 
     <MauiAsset Include="Platforms\Windows\libs\fmod.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
