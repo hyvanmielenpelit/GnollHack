@@ -1984,13 +1984,19 @@ namespace GnollHackX.Pages.Game
                 var remaining = results.Length;
                 var fileEntries = new List<object>();
 
-                /* The game engine's gnh_umask() sets the process-wide umask to 0113, 
-                 * which strips the execute bit from newly created directories. This breaks
-                 * NSItemProvider loading methods ("Cannot load representation...") because 
-                 * it prevents traversal into its own temporary staging directories. 
-                 * Temporarily restore the default iOS umask (0022 octal = 0x12 hex = 18 dec).
-                 * The game thread is blocked (paused at the menu) while Overseer is open, 
-                 * so it's safe to change this process-wide setting temporarily. */
+                /* The game engine's gnh_umask() used to set the process-wide umask to
+                 * 0113, which stripped the execute bit from newly created directories.
+                 * That broke NSItemProvider loading methods ("Cannot load
+                 * representation...") because it prevented traversal into its own
+                 * temporary staging directories, and it aborted the process outright
+                 * from _NSIPCloneURLToTemporaryFolder when sharing a file (Sentry
+                 * GNOLLHACK-G6/GE). gnh_umask() now ORs in 0111 and no longer strips
+                 * that bit, so this guard is belt-and-braces rather than load-bearing:
+                 * it can be removed once the engine-side fix has held in the field.
+                 * Until then, temporarily restore the default iOS umask
+                 * (0022 octal = 0x12 hex = 18 dec). The game thread is blocked (paused
+                 * at the menu) while Overseer is open, so it's safe to change this
+                 * process-wide setting temporarily. */
                 ushort savedUmask = 0;
 #if IOS
                 try

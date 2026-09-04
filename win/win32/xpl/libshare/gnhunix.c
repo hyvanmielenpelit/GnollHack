@@ -242,7 +242,19 @@ append_slash(char *name)
 void
 gnh_umask(void)
 {
-    (void)umask(0777 & ~FCMASK);
+    /*
+     * FCMASK (0664) describes the permissions we want on created *files*, and
+     * deriving the umask from it alone also masks off the execute bit.  That
+     * makes every directory created afterwards non-traversable, so nothing
+     * inside it can be opened -- not by other users, and not by us either.
+     * It broke our own mkdir() calls, and it broke the temporary staging
+     * directories Apple's NSItemProvider creates on our threads, aborting the
+     * process from _NSIPCloneURLToTemporaryFolder (Sentry GNOLLHACK-G6/GE).
+     * OR in 0111 so directories keep their search permission.  File modes are
+     * unchanged: nothing here is created with an execute bit in the first
+     * place, so 0664 stays 0664.
+     */
+    (void)umask(0777 & ~(FCMASK | 0111));
 }
 
 uint64_t
