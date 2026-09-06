@@ -269,17 +269,33 @@ namespace GnollHackX
             plan.Manifest = manifest;
             plan.Tier = tier == TileDetailTier.Auto ? ResolveAutoTier(totalMemory) : tier;
 
-            /* A sheet is as wide as the device's texture limit allows, in whole
-               tiles, and never wider than the 128 tile pitch the atlases are
-               laid out at.
-
-               The limit is additionally capped to what TileSlot can address.
-               GRContext.MaxTextureSize is 16384 on most desktop GPUs and larger
-               still on some, which would give sheets up to 170 rows -- 16320 px
-               -- and both the packed slot's 13 bit y field and the darkened
-               tile cache key's would silently wrap at 8192. Capping here rather
-               than clamping at pack time keeps every sheet addressable by
-               construction. Three sheets still hold every tile in the set. */
+            /*
+             * Sheet geometry is in practice fixed at 128 x 85 tiles,
+             * 8192 x 8160 px. Three separate limits meet here and all three
+             * land on 8192, so the arithmetic below has exactly one outcome
+             * for every possible input:
+             *
+             *   - the partition atlases are laid out at a 128 tile pitch, so a
+             *     wider sheet would not hold more per row;
+             *   - TileSlot packs the y offset in 13 bits, making 8191 px the
+             *     tallest addressable sheet, and GamePage's darkened tile cache
+             *     key packs the source rectangle's top the same way;
+             *   - MinBelievableMaxTextureSize is 8192, because the legacy
+             *     sheets are 8192 x 6144 and every supported device renders
+             *     them.
+             *
+             * The device's reported limit is therefore advisory. It is still
+             * read and logged -- a device that really does report less from a
+             * ready GPU context is worth knowing about -- but it no longer
+             * shrinks the sheet, because a smaller sheet holds fewer tiles,
+             * needs more sheets, and costs a texture bind per sheet every
+             * frame. An iPad reporting a low figure during load produced nine
+             * sheets and a frame rate around 20.
+             *
+             * The clamps are kept rather than replaced by the constant so that
+             * a genuine constraint can be reintroduced in one place if a device
+             * ever warrants it.
+             */
             int usableSize = maxTextureSize > 0
                 ? maxTextureSize : GHConstants.DefaultMaxTextureSize;
             if (usableSize < GHConstants.MinBelievableMaxTextureSize)
