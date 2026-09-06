@@ -20,6 +20,23 @@ namespace GnollHackX
 {
     public class GlyphImageSource : StreamImageSource
     {
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private static SKImage GetGuardedTileSheet(int sheetIdx)
+        {
+            SKImage[] tileMap = GHApp._tileMap;
+            if (sheetIdx >= 0 && tileMap != null && sheetIdx < tileMap.Length)
+            {
+                SKImage image = tileMap[sheetIdx];
+                if (image != null)
+                    return image;
+            }
+
+            if (Debugger.IsAttached)
+                Debugger.Break();
+
+            return null;
+        }
+
         public GlyphImageSource()
         {
 
@@ -437,11 +454,15 @@ namespace GnollHackX
                         }
 
                         GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, fixFiltering && highFilterQuality);
-                        canvas.DrawImage(GHApp._tileMap[sheet_idx], sourcerect, targetrect,
+                        SKImage tileSheet = GetGuardedTileSheet(sheet_idx);
+                        if (tileSheet != null)
+                        {
+                            canvas.DrawImage(tileSheet, sourcerect, targetrect,
 #if GNH_MAUI
-                            new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
+                                new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
-                            paint);
+                                paint);
+                        }
 
                         if (refPage != null)
                             refPage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
@@ -482,11 +503,15 @@ namespace GnollHackX
                             SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                             SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
                             GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, false);
-                            canvas.DrawImage(GHApp._tileMap[sheet_idx], sourcerect, targetrect,
+                            SKImage mainTileSheet = GetGuardedTileSheet(sheet_idx);
+                            if (mainTileSheet != null)
+                            {
+                                canvas.DrawImage(mainTileSheet, sourcerect, targetrect,
 #if GNH_MAUI
-                            new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
+                                    new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
-                                paint);
+                                    paint);
+                            }
                             if (refPage != null)
                                 refPage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                     (int)layer_types.LAYER_OBJECT, 0, 0,
@@ -564,11 +589,15 @@ namespace GnollHackX
                                     SKRect sourcerect = new SKRect(etile_x, etile_y, etile_x + GHConstants.TileWidth, etile_y + GHConstants.TileHeight);
                                     SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
                                     GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects, false);
-                                    canvas.DrawImage(GHApp._tileMap[e_sheet_idx], sourcerect, targetrect,
+                                    SKImage eTileSheet = GetGuardedTileSheet(e_sheet_idx);
+                                    if (eTileSheet != null)
+                                    {
+                                        canvas.DrawImage(eTileSheet, sourcerect, targetrect,
 #if GNH_MAUI
-                                        new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
+                                            new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
 #endif
-                                        paint);
+                                            paint);
+                                    }
                                     if (refPage != null)
                                         refPage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                             (int)layer_types.LAYER_OBJECT, 0, 0,

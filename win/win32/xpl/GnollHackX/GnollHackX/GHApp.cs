@@ -4604,6 +4604,10 @@ namespace GnollHackX
             bool deferPlayerRoles = true)
         {
             TileComposition = null;
+            if (TotalTiles <= 0)
+            {
+                TotalTiles = GnollHackService?.GetTotalTiles() ?? 0;
+            }
 
             if (!UseLegacyTileSheets)
             {
@@ -4688,8 +4692,14 @@ namespace GnollHackX
                 "gnollhack_64x96_transparent_32bits-3.ghpng"
             };
 
-            int sheetsNeeded = Math.Max(1, Math.Min(sheetNames.Length,
-                (TotalTiles - 1) / GHConstants.NumberOfTilesPerSheet + 1));
+            if (TotalTiles <= 0)
+            {
+                TotalTiles = GnollHackService?.GetTotalTiles() ?? 0;
+            }
+
+            int sheetsNeeded = TotalTiles > 0
+                ? Math.Max(1, Math.Min(sheetNames.Length, (TotalTiles - 1) / GHConstants.NumberOfTilesPerSheet + 1))
+                : sheetNames.Length;
 
             for (int i = 0; i < sheetsNeeded; i++)
             {
