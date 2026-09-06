@@ -100,7 +100,14 @@ namespace GnollHackX
         /* Must match MAX_TILE_SHEETS in include/general.h. This was 4 while the
            C side was 3, so GHGame could ask for a fourth sheet the C core never
            provided; both are now 8. */
-        public const int MaxTileSheets = 8; // 4, and 3 on the C side
+        /* Runtime destination sheets. Raised from 8 because a device whose
+           texture limit is 4096 can only fit 64 x 42 tiles in a sheet -- about
+           2688 against 10880 at 8192 -- so the whole set needs far more of
+           them there. TileSlot packs the sheet index in 4 bits and the
+           darkened tile cache key gives it 4 as well, so 16 is the ceiling
+           both already support. Unrelated to the C side's MAX_TILE_SHEETS,
+           which bounds the legacy monolithic sheets. */
+        public const int MaxTileSheets = 16; // was 8, 4, and 3 on the C side
         /* Must match MAX_TILES in include/general.h. The logical tile-ID
            ceiling; no longer derived from the number of tile sheets. */
         public const int MaxTiles = 32768;
@@ -363,6 +370,26 @@ namespace GnollHackX
         /* 8192 is the GL_MAX_TEXTURE_SIZE floor on a large fraction of Android
            GLES devices, and the legacy sheets are already exactly at it. */
         public const int DefaultMaxTextureSize = 8192;
+
+        /*
+         * Smallest texture size the tile sheet solver will believe.
+         *
+         * Set to the same 8192 the composer targets, which makes the reported
+         * limit advisory rather than an input. The justification is empirical:
+         * the legacy monolithic sheets are 8192 x 6144 and every supported
+         * device renders them, so 8192 is proven to work anywhere the fallback
+         * path works -- and the fallback path is what a device gets when
+         * composition is unavailable. A device that genuinely could not hold an
+         * 8192 px texture could not run the legacy sheets either.
+         *
+         * What the limit was actually used for was shrinking sheets, and a
+         * shrunken sheet is expensive in the one currency that matters here:
+         * an iPad reporting a low value during load produced nine sheets
+         * instead of two, nine texture binds per frame instead of two, and the
+         * frame rate fell to around 20. The reported value is still logged, so
+         * a device that really is constrained is visible rather than silent.
+         */
+        public const int MinBelievableMaxTextureSize = 8192;
         /*
          * Ceilings for the Auto tile detail tier: a device with less than
          * TileDetailLowThresholdInBytes gets Low, less than the Medium ceiling

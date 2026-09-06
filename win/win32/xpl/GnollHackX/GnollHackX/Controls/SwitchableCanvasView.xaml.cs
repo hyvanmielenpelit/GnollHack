@@ -379,7 +379,17 @@ namespace GnollHackX.Controls
                            sheet on a 4096-limited device produces a texture the
                            GPU cannot use. */
                         if (canvas?.Context != null)
+                        {
                             GHApp.MaxTextureSize = canvas.Context.MaxTextureSize;
+                            /* Logged with the tile sheet state so the ordering is
+                               visible: if this arrives after the sheets were
+                               composed, the solver ran on the default and the
+                               real limit never reached it. */
+                            GHApp.MaybeWriteGHLog(string.Format(
+                                "MaxTextureSize reported as {0}; tile sheets {1}composed",
+                                canvas.Context.MaxTextureSize,
+                                GHApp.IsTileCompositionActive ? "already " : "not yet "));
+                        }
 #endif
                         long limit = GHApp.PrimaryGPUCacheLimit;
                         Debug.WriteLine("PrimaryGPUCacheLimit is " + limit);

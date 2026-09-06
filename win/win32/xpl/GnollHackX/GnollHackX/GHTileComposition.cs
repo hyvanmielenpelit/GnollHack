@@ -282,10 +282,28 @@ namespace GnollHackX
                construction. Three sheets still hold every tile in the set. */
             int usableSize = maxTextureSize > 0
                 ? maxTextureSize : GHConstants.DefaultMaxTextureSize;
+            if (usableSize < GHConstants.MinBelievableMaxTextureSize)
+            {
+                GHApp.MaybeWriteGHLog(string.Format(
+                    "SolveBudget: reported texture limit {0} is below {1}; composing at "
+                    + "{2} anyway, which the legacy sheets already prove this device can "
+                    + "hold. A smaller sheet costs texture binds every frame.",
+                    usableSize, GHConstants.MinBelievableMaxTextureSize,
+                    GHConstants.DefaultMaxTextureSize));
+                usableSize = GHConstants.DefaultMaxTextureSize;
+            }
             usableSize = Math.Min(usableSize, TileSlot.MaxCoordinate + 1);
             plan.SheetWidthInTiles = Math.Min(GHConstants.MaxTileSheetWidthInTiles,
                 Math.Max(1, usableSize / GHConstants.TileWidth));
             plan.MaxRowsPerSheet = Math.Max(1, usableSize / GHConstants.TileHeight);
+
+            GHApp.MaybeWriteGHLog(string.Format(
+                "SolveBudget: maxTextureSize {0}, sheet {1}x{2} tiles ({3}x{4} px), "
+                + "{5} tiles per sheet, tier {6}",
+                maxTextureSize, plan.SheetWidthInTiles, plan.MaxRowsPerSheet,
+                plan.SheetWidthInTiles * GHConstants.TileWidth,
+                plan.MaxRowsPerSheet * GHConstants.TileHeight,
+                plan.SheetWidthInTiles * plan.MaxRowsPerSheet, plan.Tier));
 
             List<TilePartition> kept = new List<TilePartition>();
             foreach (TilePartition partition in manifest.partitions)
@@ -870,64 +888,63 @@ namespace GnollHackX
         /*
          * Copy a partition's atlas into the destination sheet.
          *
-         * Both the atlas and the destination lay their tiles out row-major at
-         * the same pitch, and the partition is compact in each, so the copy is
-         * one shifted-linear range: source linear [0, n) to destination linear
-         * [dstStart, dstStart + n).
+         * Both images lay their tiles out row-major, but not at the same pitch.
+         * The atlas is `partition.widthInTiles` wide, which the tile set
+         * compiler sets to min(128, tileCount); the destination is
+         * `plan.SheetWidthInTiles`, which is derived from the device's texture
+         * limit and is 64 on a 4096 px device. Reading the source at the
+         * destination's pitch therefore works only when the two happen to
+         * agree -- which they do at 128, and do not at 64, where 68 of the 110
+         * partitions in the current set are read at the wrong stride and every
+         * tile in them lands somewhere else. That is what mangled the map on a
+         * texture-limited device while leaving desktop correct.
          *
-         * When dstStart happens to sit on a row boundary that is a single
-         * full-width DrawImage. Otherwise every source row straddles two
-         * destination rows and needs two, which across a complete atlas comes
-         * to roughly 400 calls -- once, on the loading screen. The alternative,
-         * padding every partition up to a row boundary so the fast path always
-         * applies, costs 17 % of resident memory permanently, which is a bad
-         * trade for a feature whose purpose is to use less of it.
+         * So the copy walks segments that stay inside one row on both sides at
+         * once. The whole-atlas DrawImage is kept for the case where the
+         * pitches match and the destination cursor is row-aligned, which is
+         * still the common one.
          */
         private static void CopyLinearRun(SKCanvas canvas, SKBitmap source,
             TilePartition partition, TileCompositionPlan plan, int dstStart,
             List<TileRectangle> destinationRects)
         {
-            int pitch = plan.SheetWidthInTiles;
             int count = partition.tileCount;
-            int shift = dstStart % pitch;
-            int dstRow0 = dstStart / pitch;
+            int dstPitch = plan.SheetWidthInTiles;
+            int srcPitch = partition.widthInTiles > 0
+                ? partition.widthInTiles : dstPitch;
 
             using (SKImage sourceImage = SKImage.FromBitmap(source))
             {
                 if (sourceImage == null)
                     return;
 
-                if (shift == 0)
+                if (srcPitch == dstPitch && dstStart % dstPitch == 0)
                 {
                     /* Fast path: the whole atlas lands as one rectangle. */
                     DrawTileRect(canvas, sourceImage, 0, 0,
-                        Math.Min(pitch, count),
-                        (count + pitch - 1) / pitch, 0, dstRow0,
+                        Math.Min(dstPitch, count),
+                        (count + dstPitch - 1) / dstPitch, 0, dstStart / dstPitch,
                         destinationRects);
                     return;
                 }
 
-                int sourceRows = (count + pitch - 1) / pitch;
-                for (int r = 0; r < sourceRows; r++)
+                int i = 0;
+                while (i < count)
                 {
-                    int tilesInRow = Math.Min(pitch, count - r * pitch);
+                    int srcX = i % srcPitch;
+                    int srcY = i / srcPitch;
+                    int dstLinear = dstStart + i;
+                    int dstX = dstLinear % dstPitch;
+                    int dstY = dstLinear / dstPitch;
 
-                    /* Left piece: source columns 0 .. (pitch - shift - 1) land
-                       in destination row dstRow0 + r at column shift. */
-                    int leftWidth = Math.Min(pitch - shift, tilesInRow);
-                    if (leftWidth > 0)
-                    {
-                        DrawTileRect(canvas, sourceImage, 0, r, leftWidth, 1,
-                            shift, dstRow0 + r, destinationRects);
-                    }
+                    /* The longest span that stays within one source row and
+                       one destination row. */
+                    int n = Math.Min(count - i,
+                                Math.Min(srcPitch - srcX, dstPitch - dstX));
 
-                    /* Right piece: the remainder wraps into the next row. */
-                    int rightWidth = tilesInRow - leftWidth;
-                    if (rightWidth > 0)
-                    {
-                        DrawTileRect(canvas, sourceImage, leftWidth, r, rightWidth, 1,
-                            0, dstRow0 + r + 1, destinationRects);
-                    }
+                    DrawTileRect(canvas, sourceImage, srcX, srcY, n, 1,
+                        dstX, dstY, destinationRects);
+                    i += n;
                 }
             }
         }

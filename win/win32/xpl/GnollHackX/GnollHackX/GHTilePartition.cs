@@ -31,7 +31,7 @@ namespace GnollHackX
      * One tile's physical location, packed into a single int.
      *
      *   bits 31-30  unused (always zero)
-     *   bits 29-26  destination sheet index      (0 - 15, MaxTileSheets is 8)
+     *   bits 29-26  destination sheet index      (0 - 15, MaxTileSheets is 16)
      *   bits 25-13  x pixel offset in that sheet (0 - 8191)
      *   bits 12-0   y pixel offset in that sheet (0 - 8191)
      *
