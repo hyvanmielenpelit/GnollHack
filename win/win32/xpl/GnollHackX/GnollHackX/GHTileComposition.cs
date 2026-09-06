@@ -70,11 +70,14 @@ namespace GnollHackX
          */
         public int RoleSheetsStart { get; set; }
 
-        /* The character whose partitions are resident, or null while none are. */
+        /*
+         * The role and race whose partitions are resident, or null while none
+         * are. Gender and alignment are not recorded because they are not part
+         * of the residency decision -- every gender, and for a Priest every
+         * alignment, of this pair is composed together. See MatchesRole.
+         */
         public string ResidentRole { get; set; }
         public string ResidentRace { get; set; }
-        public string ResidentGender { get; set; }
-        public string ResidentAlign { get; set; }
 
         public int ResidentTiles { get; set; }
         public int SheetWidthInTiles { get; set; }
@@ -247,7 +250,9 @@ namespace GnollHackX
          * the hero is one tile per frame, so its own sheet costs at most one
          * extra bind. That is what lets sheet 2 exist at all.
          *
-         * role, race, gender and align select the player partitions to keep.
+         * role and race select the player partitions to keep; gender and
+         * alignment are accepted but not filtered on, because both change in
+         * play. See MatchesRole.
          * Passing null for role keeps every role, which is what Phase 3 of the
          * rollout does so that composition can be compared against the legacy
          * sheets with identical content.
@@ -285,7 +290,7 @@ namespace GnollHackX
             List<TilePartition> kept = new List<TilePartition>();
             foreach (TilePartition partition in manifest.partitions)
             {
-                if (!IsResident(partition, plan.Tier, role, race, gender, align))
+                if (!IsResident(partition, plan.Tier, role, race))
                     continue;
 
                 /* Bootstrap and core are never deferred whatever their metadata
@@ -308,8 +313,6 @@ namespace GnollHackX
             {
                 plan.ResidentRole = role;
                 plan.ResidentRace = race;
-                plan.ResidentGender = gender;
-                plan.ResidentAlign = align;
             }
 
             AssignToSheets(plan, kept);
@@ -350,19 +353,19 @@ namespace GnollHackX
             if (string.IsNullOrEmpty(role))
                 return false;
 
-            /* Already resident: a second call for the same character, or a
-               restore of the role that is loaded. */
+            /* Already resident. Compared on role and race only, to agree with
+               MatchesRole: every gender and alignment of that pair is composed
+               together, so a change of either needs no recomposition and must
+               not trigger one. */
             if (!string.IsNullOrEmpty(plan.ResidentRole)
                 && Matches(plan.ResidentRole, role)
-                && Matches(plan.ResidentRace, race)
-                && Matches(plan.ResidentGender, gender)
-                && Matches(plan.ResidentAlign, align))
+                && Matches(plan.ResidentRace, race))
                 return true;
 
             List<TilePartition> wanted = new List<TilePartition>();
             foreach (TilePartition partition in plan.DeferredPlayerPartitions)
             {
-                if (MatchesRole(partition, role, race, gender, align))
+                if (MatchesRole(partition, role, race))
                     wanted.Add(partition);
             }
 
@@ -398,8 +401,6 @@ namespace GnollHackX
                        because its sheets have just been given back. */
                     plan.ResidentRole = null;
                     plan.ResidentRace = null;
-                    plan.ResidentGender = null;
-                    plan.ResidentAlign = null;
                 }
 
                 int firstNewSheet = plan.Sheets.Count;
@@ -451,8 +452,6 @@ namespace GnollHackX
 
                 plan.ResidentRole = role;
                 plan.ResidentRace = race;
-                plan.ResidentGender = gender;
-                plan.ResidentAlign = align;
 
                 if (progress != null)
                     progress(1.0, "Character tiles ready.");
@@ -544,7 +543,7 @@ namespace GnollHackX
          * is a gameplay defect, not a quality setting.
          */
         private static bool IsResident(TilePartition partition, TileDetailTier tier,
-            string role, string race, string gender, string align)
+            string role, string race)
         {
             if (partition == null)
                 return false;
@@ -563,7 +562,7 @@ namespace GnollHackX
                 /* No role chosen yet: keep them all. */
                 if (string.IsNullOrEmpty(role))
                     return true;
-                if (!MatchesRole(partition, role, race, gender, align))
+                if (!MatchesRole(partition, role, race))
                     return false;
             }
 
@@ -589,13 +588,28 @@ namespace GnollHackX
             }
         }
 
+        /*
+         * Whether a player partition belongs to the character being played.
+         *
+         * Role and race only. Gender and alignment are deliberately *not*
+         * filtered even though the manifest carries both, because neither is
+         * fixed for the life of a character: an amulet of change swaps gender,
+         * and a helm of opposite alignment swaps alignment. Filtering on the
+         * value chosen at character generation would leave the tiles for the
+         * other gender -- and, for a Priest, the other two alignments --
+         * unloaded, so the player would turn into placeholders the moment
+         * either changed, with nothing to trigger a recomposition.
+         *
+         * The cost of keeping them all is small. Both genders of an ordinary
+         * role is about 174 tiles instead of 87, and the worst case in the set
+         * is a gnoll Priest at 1440 instead of 240 -- 29 MB -- because Priest
+         * is the only role with alignment-specific art.
+         */
         private static bool MatchesRole(TilePartition partition, string role,
-            string race, string gender, string align)
+            string race)
         {
             return Matches(partition.role, role)
-                && Matches(partition.race, race)
-                && Matches(partition.gender, gender)
-                && Matches(partition.align, align);
+                && Matches(partition.race, race);
         }
 
         private static bool Matches(string partitionValue, string chosen)
