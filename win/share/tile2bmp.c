@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2026-09-06 */
 
 /* GnollHack 4.0    tile2bmp.c    $NHDT-Date: 1451442061 2015/12/30 02:21:01 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.15 $ */
 /*   Copyright (c) GnollHack PC Development Team 1995                 */

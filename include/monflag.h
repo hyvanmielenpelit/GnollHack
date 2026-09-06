@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2024-08-11 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2026-09-06 */
 
 /* GnollHack 4.0    monflag.h    $NHDT-Date: 1432512778 2015/05/25 00:12:58 $  $NHDT-Branch: master $:$NHDT-Revision: 1.14 $ */
 /* Copyright (c) 1989 Mike Threepoint                  */
@@ -342,6 +342,10 @@
 #define M5_HATES_SILVER             0x04000000UL   /* In addition to lycanthropes, demons, and vampires, e.g. non-tengu imps and shade */
 #define M5_MAKES_SOUND_RANDOMLY     0x08000000UL
 #define M5_SEMI_TRANSPARENT         0x10000000UL   /* Tile drawn with some transparency (default: 50% constant) */
+/* On the MAUI client the falloff is baked into the tile sheet when it is
+   composed at load time, not applied per frame. GnollHackW is unaffected: it
+   loads the legacy monolithic sheets, which the tile set compiler emits
+   unbaked. */
 #define M5_RADIAL_TRANSPARENCY      0x20000000UL   /* Tile drawn with radial transparency (0% at center and 96% at radius of 32 and 96% thereafter) */
 #define M5_GLASS_TRANSPARENT        0x40000000UL   /* Tile drawn with 35% transparency */
 #define M5_FADES_UPON_DEATH         0x80000000UL   /* Tile fades upon death */

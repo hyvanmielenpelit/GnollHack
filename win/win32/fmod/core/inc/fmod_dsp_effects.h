@@ -1,3 +1,5 @@
+﻿/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2026-09-06 */
+
 /* ============================================================================================================= */
 /* FMOD Core API - Built-in effects header file.                                                                 */
 /* Copyright (c), Firelight Technologies Pty, Ltd. 2004-2026.                                                    */
