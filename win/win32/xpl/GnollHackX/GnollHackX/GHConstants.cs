@@ -363,10 +363,14 @@ namespace GnollHackX
         /* 8192 is the GL_MAX_TEXTURE_SIZE floor on a large fraction of Android
            GLES devices, and the legacy sheets are already exactly at it. */
         public const int DefaultMaxTextureSize = 8192;
-        /* Below this the device is treated as memory constrained and Auto picks
-           a lower tile detail tier. */
-        public const ulong TileDetailMediumThresholdInBytes = 6144 * 1024 * 1024UL;
-        public const ulong TileDetailHighThresholdInBytes = 8192 * 1024 * 1024UL;
+        /*
+         * Ceilings for the Auto tile detail tier: a device with less than
+         * TileDetailLowThresholdInBytes gets Low, less than the Medium ceiling
+         * gets Medium, and so on, with Ultra above the High ceiling.
+         */
+        public const ulong TileDetailLowThresholdInBytes = 3072 * 1024 * 1024UL;
+        public const ulong TileDetailMediumThresholdInBytes = 3584 * 1024 * 1024UL;
+        public const ulong TileDetailHighThresholdInBytes = 4096 * 1024 * 1024UL;
         /* Preference keys for the tile detail picker and the rollback toggle */
         public const string TileDetailTierPreferenceKey = "TileDetailTier";
         public const string UseLegacyTileSheetsPreferenceKey = "UseLegacyTileSheets";

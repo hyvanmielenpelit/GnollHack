@@ -518,14 +518,20 @@ namespace GnollHackX
         }
 
         /*
-         * Auto tier. The thresholds line up with the ones the app already uses
-         * to decide whether a device can afford the auxiliary GPU canvas, so a
-         * device that is treated as constrained in one place is treated as
-         * constrained here too.
+         * Auto tier, from the device's total memory:
+         *
+         *     under 3.0 GB   Low
+         *     3.0 - 3.5 GB   Medium
+         *     3.5 - 4.0 GB   High
+         *     4.0 GB and up  Ultra
+         *
+         * These are deliberately not the auxiliary GPU canvas thresholds. That
+         * relationship held only while both sat at 4 GB; the two decisions are
+         * about different resources and are now free to move independently.
          */
         public static TileDetailTier ResolveAutoTier(ulong totalMemory)
         {
-            if (totalMemory < GHConstants.DisableAuxGPUbyDefaultThresholdInBytes)
+            if (totalMemory < GHConstants.TileDetailLowThresholdInBytes)
                 return TileDetailTier.Low;
             if (totalMemory < GHConstants.TileDetailMediumThresholdInBytes)
                 return TileDetailTier.Medium;
@@ -535,12 +541,25 @@ namespace GnollHackX
         }
 
         /*
-         * Whether a partition survives the tier and the chosen role.
+         * Whether a partition is resident for the character being played.
          *
-         * Bootstrap and core content is never dropped. Everything below Ultra
-         * drops progressively more optional richness, and an essential
-         * animation is never dropped at any tier: a ray the player cannot see
-         * is a gameplay defect, not a quality setting.
+         * Residency is decided by the character, not by the tile detail tier.
+         * Every tier currently keeps every tile, and the saving comes entirely
+         * from the role and race filter below: for a gnoll Priest that is 15702
+         * tiles rather than the whole set's 24220, about 200 MB.
+         *
+         * The tier is deliberately not consulted yet. It could only separate
+         * the tiers by 81 tiles -- of 338 animations, 281 are classified
+         * essential, 38 decorative and 19 standard, and dropping the decorative
+         * ones would take every lit torch, brazier and fireplace out of the
+         * dungeon for two megabytes. Four steps that differ by that much are
+         * arithmetic dressed up as a quality setting.
+         *
+         * `tier` is kept in the signature because this is where the steps come
+         * back once the tile set is larger and more animation is classified
+         * standard or decorative. At that point each tier takes a different
+         * share, and the partition's `animationClass` -- essential, standard or
+         * decorative -- plus its layer are what it has to judge on.
          */
         private static bool IsResident(TilePartition partition, TileDetailTier tier,
             string role, string race)
@@ -548,13 +567,12 @@ namespace GnollHackX
             if (partition == null)
                 return false;
 
-            /* Bootstrap and core are tested first, before the role filter.
-               They are never dropped, and the bootstrap partition in
-               particular spans every role: filtering it by the chosen
+            /* Bootstrap is tested first, before the role filter, and is never
+               dropped. It spans every role, so filtering it by the chosen
                character would throw away the 292 base player tiles that every
-               chargen menu draws. Older manifests label it with whichever role
-               happened to come first, so this ordering is load-bearing. */
-            if (partition.partitionClass == "bootstrap" || partition.partitionClass == "core")
+               chargen menu draws; older manifests label it with whichever role
+               happened to come first, which makes this ordering load-bearing. */
+            if (partition.partitionClass == "bootstrap")
                 return true;
 
             if (partition.IsPlayerRole)
@@ -566,26 +584,10 @@ namespace GnollHackX
                     return false;
             }
 
-            bool decorative = partition.animationClass == "decorative";
-            bool essential = partition.animationClass == "essential";
-            bool effects = partition.partitionClass == "effects";
-
-            switch (tier)
-            {
-                case TileDetailTier.Ultra:
-                    return true;
-                case TileDetailTier.High:
-                    /* Drop decorative ambient animation of non-player content */
-                    return !decorative;
-                case TileDetailTier.Medium:
-                    /* Also drop the expanded effect variants */
-                    return !decorative && (!effects || essential);
-                case TileDetailTier.Low:
-                    /* Also drop everything that is not essential */
-                    return essential || partition.IsPlayerRole;
-                default:
-                    return true;
-            }
+            /* Kept for the character, at every tier. See the note above the
+               method for why the tier is not consulted and what has to change
+               before it is. */
+            return true;
         }
 
         /*
