@@ -308,23 +308,30 @@ namespace GnollHackX.Pages.MainScreen
             long TileSheetMemInMB = GHApp.TileSheetBytes / (1024 * 1024);
             if (tilePlan == null)
             {
-                TileSheetsLabel.Text = "Legacy, " + GHApp.UsedTileSheets + " sheets, "
-                    + TileSheetMemInMB + " MB"
-                    + (GHApp.UseLegacyTileSheets ? " (forced)" : " (fallback)");
-                TileResidencyLabel.Text = GHApp.TotalTiles + " tiles, all resident";
+                if (GHApp.UsedTileSheets == 0)
+                {
+                    TileSheetsLabel.Text = GHApp.UseLegacyTileSheets ? "Legacy, not loaded" : "Not loaded";
+                    TileResidencyLabel.Text = "None";
+                }
+                else
+                {
+                    TileSheetsLabel.Text = (GHApp.UseLegacyTileSheets ? "Legacy" : "Legacy fallback") + ", #" + GHApp.UsedTileSheets + ", "
+                        + TileSheetMemInMB + " MB";
+                    TileResidencyLabel.Text = "All " + GHApp.TotalTiles + " tiles";
+                }
             }
             else
             {
-                TileSheetsLabel.Text = "Composed, " + tilePlan.Sheets.Count + " sheets, "
+                TileSheetsLabel.Text = "Composed, #" + tilePlan.Sheets.Count + ", "
                     + TileSheetMemInMB + " MB";
 
                 string residency = tilePlan.ResidentTiles + " / " + GHApp.TotalTiles
-                    + " tiles, " + tilePlan.ResidentPartitions + " partitions, "
+                    + " T, " + tilePlan.ResidentPartitions + " P, "
                     + tilePlan.Tier;
-                if (!string.IsNullOrEmpty(tilePlan.ResidentRole))
-                    residency += ", " + tilePlan.ResidentRole;
+                if (!string.IsNullOrEmpty(tilePlan.ResidentRole) && tilePlan.ResidentRole.Length >= 3)
+                    residency += ", " + tilePlan.ResidentRole.Substring(0, 3);
                 else if (tilePlan.DeferredPlayerPartitions.Count > 0)
-                    residency += ", no character yet";
+                    residency += ", none";
                 TileResidencyLabel.Text = residency;
             }
 
