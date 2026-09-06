@@ -195,7 +195,7 @@ DLLEXPORT int LibGetEnlargementOff(void)
 
 DLLEXPORT int LibGetReplacementOff(void)
 {
-    return GLYPH_ANIMATION_OFF;
+    return GLYPH_REPLACEMENT_OFF;
 }
 
 DLLEXPORT int LibGetGeneralTileOff(void)
@@ -296,6 +296,80 @@ DLLEXPORT void LibSetPetMID(unsigned int m_id)
 DLLEXPORT const char* LibGetPropertyName(int prop_index)
 {
     return get_property_name(prop_index);
+}
+
+/*
+ * The role, race, gender and alignment settled before the game starts.
+ *
+ * Any of the four can come back as ROLE_NONE or ROLE_RANDOM, which means the
+ * player has not fixed it yet and the interactive selection menus still have
+ * to run. The client reads this to decide whether it can compose the tile
+ * sheet for the chosen character during the loading screen, rather than making
+ * the player wait for it after character generation.
+ *
+ * The values are indices into roles[], races[], genders[] and aligns[]; the
+ * lookups below turn them into the names the tile set uses.
+ */
+DLLEXPORT void LibGetInitPlayerFlags(int *role, int *race, int *gend, int *align)
+{
+    if (role)
+        *role = flags.initrole;
+    if (race)
+        *race = flags.initrace;
+    if (gend)
+        *gend = flags.initgend;
+    if (align)
+        *align = flags.initalign;
+}
+
+/*
+ * Names for those indices, spelled exactly as process_tiledata() writes them
+ * into the player rows of tile_definition.csv.
+ *
+ * The tile set compiler keys its player partitions on those strings, so a
+ * divergence here would not produce an error -- the client would simply fail
+ * to find any partition for the chosen character and render placeholders.
+ *
+ * A null return means the index names nothing, which is what ROLE_NONE and
+ * ROLE_RANDOM both give.
+ */
+DLLEXPORT const char* LibGetRoleName(int role_index)
+{
+    if (role_index < 0 || role_index >= NUM_ROLES)
+        return (const char *) 0;
+    return roles[role_index].name.m;
+}
+
+DLLEXPORT const char* LibGetRaceName(int race_index)
+{
+    if (race_index < 0 || race_index >= NUM_RACES)
+        return (const char *) 0;
+    return races[race_index].noun;
+}
+
+DLLEXPORT const char* LibGetGenderName(int gender_index)
+{
+    if (gender_index < 0 || gender_index >= ROLE_GENDERS)
+        return (const char *) 0;
+    return genders[gender_index].adj;
+}
+
+/*
+ * Alignment tile names are per role rather than global. process_tiledata()
+ * writes "any" for every role that lacks ROLE_ALIGNMENT_TILES, because such a
+ * role uses one set of tiles whatever the player picked; Priest is currently
+ * the only role that fans out. Reporting the true adjective for the others
+ * would name partitions that do not exist.
+ */
+DLLEXPORT const char* LibGetAlignmentTileName(int role_index, int align_index)
+{
+    if (role_index < 0 || role_index >= NUM_ROLES)
+        return (const char *) 0;
+    if (!(roles[role_index].allow & ROLE_ALIGNMENT_TILES))
+        return "any";
+    if (align_index < 0 || align_index >= ROLE_ALIGNS)
+        return (const char *) 0;
+    return aligns[align_index].adj;
 }
 
 char _dumplogbuf[BUFSZ];

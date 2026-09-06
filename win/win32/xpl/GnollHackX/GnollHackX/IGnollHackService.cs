@@ -45,6 +45,8 @@ namespace GnollHackX
         ulong GetVersionNumber();
         ulong GetVersionCompatibility();
         string GetPropertyName(int prop_index);
+        void GetInitPlayerSelection(out string role, out string race,
+            out string gender, out string align);
         List<string> GetExtendedCommands();
         string DumplogDateString(long startdate);
         void SetPetMID(uint m_id);

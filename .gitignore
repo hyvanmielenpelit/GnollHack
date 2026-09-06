@@ -53,6 +53,11 @@ include/animtotals.h
 gnollhack_64x96_transparent_32bits*.png
 gnollhack_64x96_transparent_32bits*.ghpng
 *.ghpng
+# Dynamic tile sheet composition: the partition atlases are TileSetCompiler
+# output, like the monolithic sheets above. The manifest that describes them is
+# a .json, so no image pattern matches it and it has to be excluded further
+# down, below this file's blanket "!*.json" rule.
+gnh_*.png
 win/win32/vs/*.lev
 win/win32/vs/default.nh
 win/win32/vs/dumplog
@@ -457,6 +462,11 @@ ASALocalRun/
 *.gcdump
 !win/win32/xpl/GnollHackX/GnollHackX.Android/libs/*
 !*.json
+
+# Must come after the "!*.json" above, which would otherwise re-include it:
+# gnollhack_tilemanifest.json is TileSetCompiler output that lands in
+# win/win32/tileset/ beside the gnh_*.png partition atlases it describes.
+gnollhack_tilemanifest.json
 
 # Fallback location for AI planning documents when hyvanmielenpelit/plans is
 # unreachable, plus pre-migration history. Never committed.

@@ -645,8 +645,14 @@ enum context_menu_styles {
 #define POW2_FOR_NUM_TILES_PER_SHEET 13
 #define MAX_TILE_SHEET_WIDTH 128
 #define POW2_FOR_MAX_TILE_SHEET_WIDTH 7
-#define MAX_TILE_SHEETS 3 // 2
-#define MAX_TILES (MAX_TILE_SHEETS * NUM_TILES_PER_SHEET)
+#define MAX_TILE_SHEETS 8 // 3, 2
+/* Number of runtime destination tile sheets. NUM_TILES_PER_SHEET,
+   MAX_TILE_SHEET_WIDTH and the two power-of-two constants above describe the
+   legacy monolithic sheet geometry and are still used by the legacy path. */
+#define MAX_TILES 32768 // (MAX_TILE_SHEETS * NUM_TILES_PER_SHEET)
+/* MAX_TILES is the logical tile-ID ceiling. It is deliberately no longer
+   derived from MAX_TILE_SHEETS: with dynamic tile sheet composition the number
+   of runtime sheets says nothing about how many logical tiles exist. */
 
 /* mode values for findtravelpath() and m_findtravelpath() */
 #define TRAVP_TRAVEL 0
@@ -732,6 +738,11 @@ enum gui_command_types {
     GUI_CMD_REPORT_ENGRAVE_QUICK_STYLE,
     GUI_CMD_TOGGLE_METRIC_SYSTEM,
     GUI_CMD_TOGGLE_DAMAGE_FORMULA,
+    /* Issued once the character is settled, for both a new game and a restored
+       one, so the client can compose that character's tile sheets before the
+       map is first drawn. Appended rather than inserted: the ordinals cross the
+       interop boundary and are mirrored in GHEnums.cs. */
+    GUI_CMD_REPORT_PLAYER_CHARACTER,
 };
 
 enum gui_achievement_types

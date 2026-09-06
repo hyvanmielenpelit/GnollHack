@@ -107,6 +107,8 @@ namespace GnollHackX.Pages.MainScreen
             { "Colored X-Ray Vision", ("Tint areas seen exclusively with X-ray vision.", "**Off:** Areas seen in X-ray vision and normal vision are colored in the same way.\n**On:** Areas seen exclusively with X-ray vision have a tinting color.") },
             { "Draw Wall Ends", ("Draw wall end graphics. Disable to save CPU.", "Determines if the game draws wall end graphics. Can be disabled to save processor time.") },
             { "Breathing Animations", ("Show breathing animations for creatures.", "Determines if the game shows the breathing animations of various creatures.") },
+            { "Tile Detail", ("How much optional tile art is kept in memory.", "Determines how much optional tile art is loaded. **Auto** picks a level from the amount of memory the device has. **Ultra** keeps everything. The lower levels drop decorative animation first, then the expanded effect variants, and finally everything that is not essential. Takes effect the next time a game is started.") },
+            { "Use Legacy Tile Sheets", ("Load the old fixed tile sheets instead of composing them.", "**Off:** Tile sheets are composed at load time from only the art this character needs, which uses considerably less memory.\n**On:** The three fixed tile sheets used by earlier versions are loaded instead. Turn this on only if tiles are drawn incorrectly. Takes effect the next time a game is started.") },
             { "Empty Wish is Nothing", ("Receive nothing on blank wish to preserve wishless conduct.", "**Off:** A random item is received if the wish is left blank.\n**On:** Nothing is received. Keep on to preserve wishless conduct.") },
             { "Character Click Action", ("Clicking the player performs a context-appropriate action.", "Binds clicking or tapping on the player character to execute an action appropriate to the location (e.g., descending stairs or resting). Mirrors the `self_click_action` option.") },
             { "OK on Double Click", ("Double-clicking a menu item also presses OK.", "Double-clicking a menu item also presses OK button automatically in menus.") },
@@ -988,6 +990,18 @@ namespace GnollHackX.Pages.MainScreen
             if (_gamePage != null)
                 _gamePage.BreatheAnimations = BreatheAnimationSwitch.IsToggled;
             Preferences.Set("BreatheAnimations", BreatheAnimationSwitch.IsToggled);
+
+            /* Rollback switch for tile sheet composition. It takes effect on the
+               next game start, not immediately: the sheets are composed once while
+               the game loads, so flipping this cannot re-lay-out what is already
+               resident. There is deliberately no _gamePage counterpart -- the
+               setting describes how the tile map was built, not how it is drawn. */
+            GHApp.UseLegacyTileSheets = LegacyTileSheetsSwitch.IsToggled;
+
+            /* Same timing, for the same reason. The tier is an input to the
+               budget solver, which runs once per composition. */
+            if (TileDetailPicker.SelectedIndex > -1)
+                GHApp.TileDetailTierSetting = (TileDetailTier)TileDetailPicker.SelectedIndex;
 
             if (_gamePage != null)
                 _gamePage.LongerMessageHistory = LongerMessageHistorySwitch.IsToggled;
@@ -2139,6 +2153,13 @@ namespace GnollHackX.Pages.MainScreen
 #endif
             WallEndSwitch.IsToggled = wallends;
             BreatheAnimationSwitch.IsToggled = breatheanimations;
+            /* Read straight from the preference rather than through a local: unlike
+               the drawing options above, these have no live game page counterpart
+               to prefer when a game is running. */
+            LegacyTileSheetsSwitch.IsToggled = GHApp.UseLegacyTileSheets;
+            /* TileDetailTier's members are ordered Auto, Ultra, High, Medium, Low,
+               which is the order of the picker's items, so the cast is the index. */
+            TileDetailPicker.SelectedIndex = (int)GHApp.TileDetailTierSetting;
             //Put2BagSwitch.IsToggled = put2bag;
             //PrevWepSwitch.IsToggled = prevwep;
             LongerMessageHistorySwitch.IsToggled = longermsghistory;

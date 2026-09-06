@@ -2,6 +2,13 @@
   <Import Project="dirs.props"/>
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
+  <!--
+    The three monolithic sheets are named literally here on purpose, in both
+    targets. This project stages assets for GnollHackW, which loads them
+    through winhack.rc and does not compose partitions; the partition atlases
+    would be dead weight in that build. Do not replace these with the wildcard
+    used in copytilesetdroid.proj.
+  -->
   <Target Name="Build">
     <Copy SkipUnchangedFiles="false" SourceFiles="$(BankDesktopDir)Master.bank;$(BankDesktopDir)Master.strings.bank;$(BankDesktopDir)Auxiliary.bank;$(BankDesktopDir)Intro.bank;$(BankDesktopDir)Preliminary.bank;$(BankDesktopDir)Music.bank" DestinationFolder="$(WinWin32Dir)"/>
     <Message Text="Copied sound banks from $(BankDesktopDir) to $(WinWin32Dir)" Importance="High" />

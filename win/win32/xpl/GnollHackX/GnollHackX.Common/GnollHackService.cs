@@ -245,6 +245,17 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetPropertyName(int prop_index);
         [DllImport(PlatformConstants.dll)]
+        public static extern void LibGetInitPlayerFlags(out int role, out int race,
+                                                        out int gend, out int align);
+        [DllImport(PlatformConstants.dll)]
+        public static extern IntPtr LibGetRoleName(int role_index);
+        [DllImport(PlatformConstants.dll)]
+        public static extern IntPtr LibGetRaceName(int race_index);
+        [DllImport(PlatformConstants.dll)]
+        public static extern IntPtr LibGetGenderName(int gender_index);
+        [DllImport(PlatformConstants.dll)]
+        public static extern IntPtr LibGetAlignmentTileName(int role_index, int align_index);
+        [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetExtendedCommands();
         [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibDumplogDateString(long startdate);
@@ -952,6 +963,28 @@ namespace GnollHackX.Unknown
             IntPtr resptr = LibGetPropertyName(prop_index);
             string ret = Marshal.PtrToStringAnsi(resptr);
             return ret;
+        }
+
+        /*
+         * The character chosen before the game starts, as the names the tile
+         * set uses, or null for anything the player has not settled yet.
+         *
+         * ROLE_NONE and ROLE_RANDOM both make the library return a null
+         * pointer, which arrives here as a null string; the caller reads that
+         * as "still to be chosen interactively" and cannot compose that
+         * character's tile sheet ahead of time. Alignment is asked for by role
+         * because only roles with alignment-specific tiles have per-alignment
+         * partitions; the rest report "any".
+         */
+        public void GetInitPlayerSelection(out string role, out string race,
+            out string gender, out string align)
+        {
+            int roleIdx, raceIdx, gendIdx, alignIdx;
+            LibGetInitPlayerFlags(out roleIdx, out raceIdx, out gendIdx, out alignIdx);
+            role = Marshal.PtrToStringAnsi(LibGetRoleName(roleIdx));
+            race = Marshal.PtrToStringAnsi(LibGetRaceName(raceIdx));
+            gender = Marshal.PtrToStringAnsi(LibGetGenderName(gendIdx));
+            align = Marshal.PtrToStringAnsi(LibGetAlignmentTileName(roleIdx, alignIdx));
         }
         public string DumplogDateString(long startdate)
         {

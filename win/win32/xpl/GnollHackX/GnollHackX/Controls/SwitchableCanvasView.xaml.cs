@@ -374,6 +374,12 @@ namespace GnollHackX.Controls
 #if GNH_MAUI
                         Debug.WriteLine("GRContext MaxTextureSize is " + (canvas?.Context?.MaxTextureSize.ToString() ?? "N/A"));
                         Debug.WriteLine("GRContext MaxRenderTargetSize is " + (canvas?.Context?.MaxRenderTargetSize.ToString() ?? "N/A"));
+                        /* Hand the real limit to the tile sheet budget solver.
+                           It was only logged before; composing an 8192 px wide
+                           sheet on a 4096-limited device produces a texture the
+                           GPU cannot use. */
+                        if (canvas?.Context != null)
+                            GHApp.MaxTextureSize = canvas.Context.MaxTextureSize;
 #endif
                         long limit = GHApp.PrimaryGPUCacheLimit;
                         Debug.WriteLine("PrimaryGPUCacheLimit is " + limit);

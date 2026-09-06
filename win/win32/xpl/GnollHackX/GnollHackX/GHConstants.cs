@@ -97,7 +97,13 @@ namespace GnollHackX
         public const int TileHeight = 96;
         public const int StatusMarkWidth = 16;
         public const int StatusMarkHeight = 16;
-        public const int MaxTileSheets = 4;
+        /* Must match MAX_TILE_SHEETS in include/general.h. This was 4 while the
+           C side was 3, so GHGame could ask for a fourth sheet the C core never
+           provided; both are now 8. */
+        public const int MaxTileSheets = 8; // 4, and 3 on the C side
+        /* Must match MAX_TILES in include/general.h. The logical tile-ID
+           ceiling; no longer derived from the number of tile sheets. */
+        public const int MaxTiles = 32768;
         public const int NumberOfTilesPerSheet = 8192; // 16224;
         public const int PowerOf2ForNumberOfTilesPerSheet = 13;
         public const int MaxTileSheetWidthInTiles = 128;
@@ -351,6 +357,19 @@ namespace GnollHackX
         public const int ReplayDisplayWindowDelay = 512; /* Milliseconds */
         //public const GHlong GPUResourceCacheSize = 800000000L;
         public const string AssetsTilesetDirectory = "tileset";
+
+        /* Dynamic tile sheet composition */
+        public const string TileManifestFileName = "gnollhack_tilemanifest.json";
+        /* 8192 is the GL_MAX_TEXTURE_SIZE floor on a large fraction of Android
+           GLES devices, and the legacy sheets are already exactly at it. */
+        public const int DefaultMaxTextureSize = 8192;
+        /* Below this the device is treated as memory constrained and Auto picks
+           a lower tile detail tier. */
+        public const ulong TileDetailMediumThresholdInBytes = 6144 * 1024 * 1024UL;
+        public const ulong TileDetailHighThresholdInBytes = 8192 * 1024 * 1024UL;
+        /* Preference keys for the tile detail picker and the rollback toggle */
+        public const string TileDetailTierPreferenceKey = "TileDetailTier";
+        public const string UseLegacyTileSheetsPreferenceKey = "UseLegacyTileSheets";
         public const string AssetsBanksDirectory = "banks";
         public const double StartUpTimeOut = 8.0;
 

@@ -30,6 +30,11 @@ namespace GnollHackX
         public short tile_enlargement;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxFramesPerAnimation)]
         public int[] frame_autodraw;
+        /* enum animation_classes; appended at the end of the C struct, so it
+           must stay last here too. LibGetAnimationArrayElement returns this
+           struct by value, so any layout mismatch makes every animation read
+           garbage. */
+        public int animation_class;
     }
 
     [StructLayout(LayoutKind.Sequential)]

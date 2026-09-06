@@ -165,6 +165,31 @@ enum animation_main_types
     MAX_ANIMATION_TYPES
 };
 
+/*
+ * How important an animation is to the player's understanding of what is
+ * happening on screen. The frontend's runtime tile budget solver composes its
+ * tile sheets from partitioned source atlases and drops whole animations when
+ * memory is short, highest class value first, so this is what decides which
+ * animations survive on a memory-constrained device.
+ *
+ * ANIMATION_CLASS_ESSENTIAL is deliberately 0, so that an entry left
+ * unclassified is never dropped rather than silently disappearing.
+ */
+enum animation_classes
+{
+    ANIMATION_CLASS_ESSENTIAL = 0,  /* Actions, attacks, rays, explosions,
+                                       trap effects and cursors: the player
+                                       must be able to read these. Never
+                                       dropped at any tile detail tier. */
+    ANIMATION_CLASS_STANDARD,       /* Idle and identity animations of
+                                       creatures, objects and traps. Dropped
+                                       only at the lowest tiers. */
+    ANIMATION_CLASS_DECORATIVE,     /* Ambient flavour with no gameplay
+                                       meaning: lit light sources, altars and
+                                       fountains. Dropped first. */
+    MAX_ANIMATION_CLASSES
+};
+
 struct animation_definition {
     const char* animation_name;
     enum animation_main_types animation_type;
@@ -180,6 +205,10 @@ struct animation_definition {
     schar action_execution_frame;
     short tile_enlargement; /* Animations always use the same single enlargement */
     enum autodraw_types frame_autodraw[MAX_FRAMES_PER_ANIMATION];
+    enum animation_classes animation_class; /* Appended at the end of the
+                                               struct so that the positional
+                                               initializers in animdef.c keep
+                                               their meaning */
 };
 
 enum animation_types
@@ -1169,7 +1198,7 @@ struct enlargement_definition {
     /* Enlargement position is index in the array: number from 0 to 4, X = -1 indicates main tile
             0 1 2
             3 X 4
-       Value of -1 indicates the tile does not exíst, a nonnegative value indicates tile number used for the position
+       Value of -1 indicates the tile does not exï¿½st, a nonnegative value indicates tile number used for the position
     */
     uchar position_flags[NUM_POSITIONS_IN_ENLARGEMENT];
     enum autodraw_types position_autodraw[NUM_POSITIONS_IN_ENLARGEMENT];

@@ -796,9 +796,6 @@ namespace GnollHackX.Pages.Game
         private MainPage _mainPage;
 
 
-        /* Persistent temporary bitmap */
-        SKBitmap _tempBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKImageInfo.PlatformColorType, SKAlphaType.Unpremul);
-
         //private readonly object _skillRectLock = new object();
         //private SKRect _skillRect = new SKRect();
         //public SKRect SkillRect { get { lock (_skillRectLock) { return _skillRect; } } set { lock (_skillRectLock) { _skillRect = value; } } }
@@ -1211,10 +1208,6 @@ namespace GnollHackX.Pages.Game
             {
                 /* Dispose of all cached bitmaps */
                 _paintBitmap?.Dispose();
-                _tempBitmap?.Dispose();
-                foreach (SKImage bmp in _savedRects.Values)
-                    bmp?.Dispose();
-                _savedRects.Clear();
                 foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
                     bmp?.Dispose();
                 _darkenedAutodrawBitmaps.Clear();
@@ -1484,7 +1477,6 @@ namespace GnollHackX.Pages.Game
 
                 if (!GHApp.StartGameDataSet)
                 {
-                    Task<SKImage> tileSetTask;
                     LoadingDetailsLabel.Text = "Loading Master Sound Banks...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.30, 400, Easing.Linear));
                     tasks.Add(Task.Run(() =>
@@ -1494,28 +1486,36 @@ namespace GnollHackX.Pages.Game
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
-                    LoadingDetailsLabel.Text = "Loading Tile Sheet 1/3...";
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.45, 400, Easing.Linear));
-                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits.ghpng");
-                    tasks.Add(tileSetTask);
+                    /*
+                     * Tile sheets are composed from partition atlases rather
+                     * than loaded as three fixed monolithic images, so how many
+                     * there are and what each holds is decided at run time.
+                     * Progress reporting is data driven for the same reason:
+                     * "Loading Tile Sheet 1/3" was a hardcoded string.
+                     *
+                     * Decoding and composition run on a worker thread. The old
+                     * path decoded on the awaiting main thread inside
+                     * LoadTilesetFromPlatformAssetsAsync, which is what made the
+                     * loading screen stall while sheets loaded.
+                     */
+                    LoadingDetailsLabel.Text = "Loading Tile Sheets...";
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.575, 800, Easing.Linear));
+                    tasks.Add(Task.Run(async () =>
+                    {
+                        await GHApp.LoadTileSheetsAsync(null, null, null, null,
+                            (fraction, description) =>
+                            {
+                                MainThread.BeginInvokeOnMainThread(() =>
+                                {
+                                    LoadingDetailsLabel.Text = description;
+                                });
+                            },
+                            /* Keep every role resident for a replay: playback
+                               never settles a character, so there would be
+                               nothing to trigger a later composition. */
+                            !PlayingReplay);
+                    }));
                     await Task.WhenAll(tasks);
-                    GHApp._tileMap[0] = tileSetTask.Result;
-                    tasks.Clear();
-
-                    LoadingDetailsLabel.Text = "Loading Tile Sheet 2/3...";
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.55, 200, Easing.Linear));
-                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-2.ghpng");
-                    tasks.Add(tileSetTask);
-                    await Task.WhenAll(tasks);
-                    GHApp._tileMap[1] = tileSetTask.Result;
-                    tasks.Clear();
-
-                    LoadingDetailsLabel.Text = "Loading Tile Sheet 3/3...";
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.575, 200, Easing.Linear));
-                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-3.ghpng");
-                    tasks.Add(tileSetTask);
-                    await Task.WhenAll(tasks);
-                    GHApp._tileMap[2] = tileSetTask.Result;
                     tasks.Clear();
 
                     LoadingDetailsLabel.Text = "Loading GnollHack icon...";
@@ -1605,6 +1605,36 @@ namespace GnollHackX.Pages.Game
                     tasks.Clear();
 
                     GHApp.StartGameDataSet = true;
+                }
+
+                /*
+                 * A replay started after a game in the same session finds the
+                 * tile sheets already loaded, and loaded with the player
+                 * partitions deferred -- only the character of that earlier
+                 * game is resident. A recording names no character, so nothing
+                 * would ever compose the one it needs and the whole replay
+                 * would draw placeholders where the player should be.
+                 *
+                 * Recomposing with every role resident costs the loading screen
+                 * a few seconds and the memory the game used before dynamic
+                 * composition existed. That is the right trade here: replays
+                 * are watched, not played, and correctness is the whole point.
+                 */
+                if (PlayingReplay && GHApp.TileCompositionHasDeferredRoles)
+                {
+                    LoadingDetailsLabel.Text = "Loading Tile Sheets...";
+                    await Task.Run(async () =>
+                    {
+                        await GHApp.LoadTileSheetsAsync(null, null, null, null,
+                            (fraction, description) =>
+                            {
+                                MainThread.BeginInvokeOnMainThread(() =>
+                                {
+                                    LoadingDetailsLabel.Text = description;
+                                });
+                            },
+                            false);
+                    });
                 }
 
                 LoadingDetailsLabel.Text = "Loading extended commands...";
@@ -5201,21 +5231,33 @@ namespace GnollHackX.Pages.Game
 
                 if (Interlocked.Increment(ref _mainFPSCounterValue) == long.MaxValue)
                     Interlocked.Exchange(ref _mainFPSCounterValue, 0L);
-
-                SKImageInfo info = e.Info;
-                SKSurface surface = e.Surface;
-                SKCanvas canvas = surface.Canvas;
-
-                /* Finally, flush */
-                canvas.Flush();
-                FrameTimeProfiler.StampPaintEnd();
             }
             catch (Exception ex)
             {
+                /*
+                 * This catch is why a drawing bug here is so hard to see: the
+                 * frame is abandoned wherever it threw, everything already
+                 * drawn stays on screen, and the only symptom is that whatever
+                 * came later is missing and the FPS counter above never
+                 * increments. Log it properly -- once, because it would
+                 * otherwise repeat every frame -- so the next one names itself
+                 * instead of looking like a rendering feature that quietly
+                 * stopped working.
+                 */
                 Debug.WriteLine(ex.Message);
+                if (!_paintExceptionLogged)
+                {
+                    _paintExceptionLogged = true;
+                    GHApp.MaybeWriteGHLog("PaintSurface: " + ex.ToString());
+                }
             }
             finally
             {
+                /* Finally, flush */
+                SKSurface surface = e?.Surface;
+                SKCanvas canvas = surface?.Canvas;
+                canvas?.Flush();
+                FrameTimeProfiler.StampPaintEnd();
                 IsMainCanvasDrawing = false;
             }
         }
@@ -5472,8 +5514,10 @@ namespace GnollHackX.Pages.Game
                 int mglyph = (int)game_ui_tile_types.ITEM_AUTODRAW_GRAPHICS + GHApp.UITileOff;
                 int mtile = GHApp.Glyph2Tile[mglyph];
                 int m_sheet_idx = GHApp.TileSheetIdx(mtile);
-                int source_x = GHApp.TileSheetX(mtile, m_sheet_idx) + 0;
-                int source_y = GHApp.TileSheetY(mtile, m_sheet_idx) + 64;
+                int m_tile_x, m_tile_y;
+                GHApp.TileSheetXY(mtile, out m_tile_x, out m_tile_y);
+                int source_x = m_tile_x + 0;
+                int source_y = m_tile_y + 64;
                 int source_width = 32;
                 int source_height = 32;
                 float target_x = tx + 2.0f * targetscale;
@@ -5942,15 +5986,20 @@ namespace GnollHackX.Pages.Game
 
             float move_offset_x = 0, move_offset_y = 0;
             float opaqueness = 1.0f;
-            bool supportsRadialTransparency = true; // !(GHApp.IsMaui && GHApp.IsAndroid && !GHApp.IsDebug); // Problem with LLVM
             if (is_monster_like_layer)
             {
                 move_offset_x = base_move_offset_x;
                 move_offset_y = base_move_offset_y;
                 if (layer_idx == (int)layer_types.MAX_LAYERS)
                 {
+                    /* The radial arm contributes 1.0f because the falloff is
+                       baked into the tile sheet at composition time, so the
+                       tile already carries it and must not be dimmed again.
+                       The arm still has to come first: yellow light and black
+                       light carry M5_SEMI_TRANSPARENT alongside
+                       M5_RADIAL_TRANSPARENCY, and radial wins. */
                     if((_draw_shadow[mapx, mapy] & 2) != 0)
-                        opaqueness = ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0 ? (supportsRadialTransparency ? 1.0f : 0.5f) : 
+                        opaqueness = ((currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0 ? 1.0f : 
                             (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SLIGHT_TRANSPARENCY) != 0 ? 0.75f : 
                             (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f :
                             (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT) != 0 ? 0.5f :
@@ -6151,16 +6200,9 @@ namespace GnollHackX.Pages.Game
                 //SKRect baseUpdateRect = new SKRect();
                 //SKRect enlUpdateRect = new SKRect();
                 paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                if (supportsRadialTransparency && is_monster_like_layer && (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
-                {
-                    DrawTileWithRadialTransparency(canvas, delayedDraw, TileMap[sheet_idx], sourcerect, targetrect, ref currentLayerInfo, splitY, opaqueness, paint, sheet_idx, mapx, mapy, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
-                }
-                else
-                {
-                    StartProfiling(GHProfilingStyle.Bitmap);
-                    DrawSplitBitmap(canvas, delayedDraw, splitY, TileMap[sheet_idx], sourcerect, targetrect, paint, sheet_idx, mapx, mapy, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering); //, ref baseUpdateRect, ref enlUpdateRect);
-                    StopProfiling(GHProfilingStyle.Bitmap);
-                }
+                StartProfiling(GHProfilingStyle.Bitmap);
+                DrawSplitBitmap(canvas, delayedDraw, splitY, TileMap[sheet_idx], sourcerect, targetrect, paint, sheet_idx, mapx, mapy, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering); //, ref baseUpdateRect, ref enlUpdateRect);
+                StopProfiling(GHProfilingStyle.Bitmap);
 
                 //SKRect mBaseUpdateRect = canvas.TotalMatrix.MapRect(baseUpdateRect);
                 //SKRect mEnlUpdateRect = enlCanvas.TotalMatrix.MapRect(enlUpdateRect);
@@ -6201,145 +6243,9 @@ namespace GnollHackX.Pages.Game
                 maxDrawY = mUpdateRect.Bottom;
         }
 
-        //private readonly object _saveRectLock = new object();
-        Dictionary<int, SKImage> _savedRects = new Dictionary<int, SKImage>();
-        public void DrawTileWithRadialTransparency(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int sheetIdx, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
-        {
-            bool cache = false;
-            if (sourcerect.Left % GHConstants.TileWidth == 0 && sourcerect.Top % GHConstants.TileHeight == 0
-                && sourcerect.Width == GHConstants.TileWidth && sourcerect.Height == GHConstants.TileHeight)
-                cache = true;
-
-            if (cache && RetrieveCachedRadialTile(canvas, delayedDraw, tileSheet, sourcerect, targetrect, ref layers, destSplitY, opaqueness, paint, sheetIdx, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering))
-                return;
-
-            int copywidth, copyheight;
-            if (!ProcessRadialTile(canvas, delayedDraw, tileSheet, sourcerect, targetrect, ref layers, destSplitY, opaqueness, paint, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering, out copywidth, out copyheight))
-                return;
-
-            SetRadialTileExtraTransparency(ref layers, paint, opaqueness);
-
-            SKRect tempsourcerect = new SKRect(0, 0, copywidth, copyheight);
-            if (cache)
-                CacheRadialTileAndDraw(canvas, delayedDraw, tileSheet, sourcerect, targetrect, ref layers, destSplitY, opaqueness, paint, sheetIdx, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering, tempsourcerect);
-            else
-            {
-                using (var tempImage = SKImage.FromBitmap(_tempBitmap))
-                    DrawSplitBitmap(canvas, delayedDraw, destSplitY, tempImage, tempsourcerect, targetrect, paint, sheetIdx, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
-            }
-        }
-
-        private void SetRadialTileExtraTransparency(ref LayerInfo layers, SKPaint paint, float opaqueness)
-        {
-            if ((layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0)
-                paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-        }
-
-        /* Bit-packed cache key: sheetIdx[2] | srcLeft[13] | srcTop[13] = 28 bits */
-        private static int ComputeRadialTileCacheKey(int sheetIdx, SKRect sourceRect)
-        {
-            return (sheetIdx << 26)
-                 | ((int)sourceRect.Left << 13)
-                 | (int)sourceRect.Top;
-        }
-
-        private bool RetrieveCachedRadialTile(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int sheetIdx, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
-        {
-            int sr = ComputeRadialTileCacheKey(sheetIdx, sourcerect);
-            if (_savedRects.TryGetValue(sr, out SKImage bmp) && bmp != null)
-            {
-                SKRect bmpsourcerect = new SKRect(0, 0, (float)bmp.Width, (float)bmp.Height);
-                DrawSplitBitmap(canvas, delayedDraw, destSplitY, bmp, bmpsourcerect, targetrect, paint, sheetIdx, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
-                return true;
-            }
-            return false;
-        }
-
-        private void CacheRadialTileAndDraw(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int sheetIdx, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering, SKRect tempsourcerect)
-        {
-            int sr = ComputeRadialTileCacheKey(sheetIdx, sourcerect);
-            bool containskey;
-            //lock (_saveRectLock)
-            {
-                containskey = _savedRects.ContainsKey(sr);
-            }
-            if (!containskey)
-            {
-                try
-                {
-                    SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, _tempBitmap.ColorType, _tempBitmap.AlphaType);
-                    _tempBitmap.CopyTo(newbmp);
-                    newbmp.SetImmutable();
-                    SKImage newimg = SKImage.FromBitmap(newbmp);
-                    //lock (_saveRectLock)
-                    {
-                        if (_savedRects.Count >= GHConstants.MaxBitmapCacheSize)
-                        {
-                            foreach (SKImage bmp in _savedRects.Values)
-                                bmp.Dispose();
-                            _savedRects.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
-                        }
-                        _savedRects.Add(sr, newimg);
-                    }
-                    DrawSplitBitmap(canvas, delayedDraw, destSplitY, newimg, tempsourcerect, targetrect, paint, sheetIdx, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering); //, ref baseUpdateRect, ref enlUpdateRect);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
-            }
-        }
-
-        private bool ProcessRadialTile(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering, out int copywidth, out int copyheight)
-        {
-            SKPixmap pixmapTile = tileSheet.PeekPixels();
-            if (pixmapTile == null)
-            {
-                copywidth = 0;
-                copyheight = 0;
-                return false;
-            }
-            IntPtr tempptraddr = _tempBitmap.GetPixels();
-            IntPtr tileptraddr = pixmapTile.GetPixels();
-            double mid_x = (double)GHConstants.TileWidth / 2.0 - 0.5;
-            double mid_y = (double)GHConstants.TileHeight / 2.0 - 0.5;
-            double r = 0, semi_transparency = 0;
-            byte radial_opacity = 0x00;
-            //int bytesperpixel = tileSheet.BytesPerPixel;
-            int bytesperpixel = pixmapTile.BytesPerPixel;
-            copywidth = Math.Min((int)sourcerect.Width, _tempBitmap.Width);
-            copyheight = Math.Min((int)sourcerect.Height, _tempBitmap.Height);
-            int tilemapwidth = tileSheet.Width;
-            unsafe
-            {
-                byte* tempptr = (byte*)tempptraddr.ToPointer();
-                byte* tileptr = (byte*)tileptraddr.ToPointer();
-                tileptr += ((int)sourcerect.Left + (int)sourcerect.Top * tilemapwidth) * bytesperpixel;
-
-                for (int row = 0; row < copyheight; row++)
-                {
-                    for (int col = 0; col < copywidth; col++)
-                    {
-                        r = Math.Sqrt(Math.Pow((double)col - mid_x, 2.0) + Math.Pow((double)row - mid_y, 2.0));
-                        semi_transparency = r * 0.0375; //r_constant
-                        if (semi_transparency > 0.98)
-                            semi_transparency = 0.98;
-
-                        *tempptr++ = *tileptr;       // red
-                        tileptr++;
-                        *tempptr++ = *tileptr;       // green
-                        tileptr++;
-                        *tempptr++ = *tileptr;       // blue
-                        tileptr++;
-                        radial_opacity = (byte)((double)0xFF * (1.0 - semi_transparency) * ((double)(*tileptr) / (double)0xFF));
-                        *tempptr++ = radial_opacity; // alpha
-                        tileptr++;
-                    }
-                    tileptr += (tilemapwidth - copywidth) * bytesperpixel;
-                }
-            }
-            return true;
-        }
+        /* Set once the first exception escaping PaintMainGamePage has been
+           logged, so the log is not flooded at frame rate. */
+        private bool _paintExceptionLogged = false;
 
         private List<GHDrawCommand> _drawCommandList = new List<GHDrawCommand>();
         private int _lastDrawCommandCount = 0;
@@ -6381,7 +6287,7 @@ namespace GnollHackX.Pages.Game
             if (destSplitY <= dest.Top || delayedDraw)
             {
                 if (delayedDraw)
-                    _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY));
+                    _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, GHApp.TileMapGeneration, mapX, mapY));
                 else
                 {
                     GHApp.MaybeFixRects(ref source, ref dest, targetscale, usingGL, fixRects, fixFiltering);
@@ -6394,7 +6300,7 @@ namespace GnollHackX.Pages.Game
             }
             else if (destSplitY >= dest.Bottom)
             {
-                _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY));
+                _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, GHApp.TileMapGeneration, mapX, mapY));
             }
             else
             {
@@ -6413,7 +6319,7 @@ namespace GnollHackX.Pages.Game
                     new SKSamplingOptions(SKFilterMode.Nearest, usingGL && usingMipMap ? SKMipmapMode.Nearest : SKMipmapMode.None),
 #endif
                     paint);
-                _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, enlSource, enlDest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY));
+                _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, enlSource, enlDest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, GHApp.TileMapGeneration, mapX, mapY));
             }
         }
 
@@ -7744,9 +7650,6 @@ namespace GnollHackX.Pages.Game
 
             if (clearCaches)
             {
-                foreach (SKImage bmp in _savedRects.Values)
-                    bmp.Dispose();
-                _savedRects.Clear();
                 foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
                     bmp.Dispose();
                 _savedAutoDrawBitmaps.Clear();
@@ -8754,6 +8657,12 @@ namespace GnollHackX.Pages.Game
                                                                     dodarkening = false;
                                                                     continue;
                                                                 }
+                                                                /* Tile sheet composition can replace and dispose a sheet
+                                                                   between the moment a deferred command captured its
+                                                                   SKImage and the moment this replay draws it. Skip any
+                                                                   command that was stamped against an older tile map. */
+                                                                if (dc.SourceBitmap != null && dc.SheetGeneration != GHApp.TileMapGeneration)
+                                                                    continue;
                                                                 ref LayerInfo dcLayerInfo = ref _mapData[dc.MapX, dc.MapY].Layers;
                                                                 if (dodarkening && DarkenedPos(ref dcLayerInfo))
                                                                 {
@@ -12717,7 +12626,6 @@ namespace GnollHackX.Pages.Game
                     if (Interlocked.CompareExchange(ref _printCacheStatus, 0, 1) != 0)
                     {
                         // Print cache status here
-                        GHApp.MaybeWriteScreenLog(screenLogging, "Saved rects cache length: " + (_savedRects?.Count ?? 0));
                         GHApp.MaybeWriteScreenLog(screenLogging, "Saved autodraw bitmaps cache length: " + (_savedAutoDrawBitmaps?.Count ?? 0));
                         //GHApp.MaybeWriteScreenLog(screenLogging, "Darkening color filter cache length: " + (_localDarkeningColorFilters?.Count(x => x != null) ?? 0));
                         //GHApp.MaybeWriteScreenLog(screenLogging, "Composite look color filter cache length: " + (_localCompositeLookColorFilters?.Count(x => x != null) ?? 0));
@@ -13729,11 +13637,20 @@ namespace GnollHackX.Pages.Game
             return false;
         }
 
-        /* Bit-packed cache key: darkenPct[7] | sheetIdx[2] | srcLeft[13] | srcTop[13] = 35 bits */
+        /* Bit-packed cache key: darkenPct[7] | sheetIdx[4] | srcLeft[13] | srcTop[13] = 37 bits.
+         * darkenPercentage moved from bit 28 to bit 32 when the sheet field grew
+         * from 2 bits to 4: with dynamic composition MAX_TILE_SHEETS is 8, so a
+         * sheet index needs 4 bits at 26-29 and would otherwise have collided
+         * with the darkening percentage and silently produced wrong pixels.
+         * ComputeDarkenedAutodrawCacheKey and ComputeAutodrawCacheKey carry no
+         * sheet field and are deliberately left alone. */
         private static long ComputeDarkenedBitmapCacheKey(int sheetIdx, SKRect sourceRect, int darkenPercentage)
         {
-            return ((long)darkenPercentage << 28)
-                 | ((long)sheetIdx << 26)
+            Debug.Assert(sheetIdx >= 0 && sheetIdx < 16, "sheetIdx does not fit the cache key's 4-bit field");
+            Debug.Assert((int)sourceRect.Left >= 0 && (int)sourceRect.Left < 8192, "sourceRect.Left does not fit the cache key's 13-bit field");
+            Debug.Assert((int)sourceRect.Top >= 0 && (int)sourceRect.Top < 8192, "sourceRect.Top does not fit the cache key's 13-bit field");
+            return ((long)darkenPercentage << 32)
+                 | ((long)(sheetIdx & 0x0F) << 26)
                  | ((long)(int)sourceRect.Left << 13)
                  | (long)(int)sourceRect.Top;
         }

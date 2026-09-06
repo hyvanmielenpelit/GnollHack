@@ -527,8 +527,12 @@ namespace GnollHackX.Pages.MainScreen
                 i++;
                 var rib = new RowImageButton();
 
-                // Set tile image: use gui_glyph if tiles are loaded, else fall back to you.png
-                if (save.IsValid && GHApp.Glyph2Tile != null && GHApp._tileMap[0] != null && save.GuiGlyph > 0)
+                /* Set tile image: use gui_glyph if that glyph's tile is resident,
+                   else fall back to you.png. Residency, not "a sheet exists": a
+                   composed sheet can be present while this glyph's tile is not,
+                   which would draw the missing-tile placeholder instead. */
+                if (save.IsValid && save.GuiGlyph > 0
+                    && GHApp.IsGlyphTileResident(save.GuiGlyph))
                 {
                     var gis = new GlyphImageSource();
                     gis.Glyph = save.GuiGlyph;

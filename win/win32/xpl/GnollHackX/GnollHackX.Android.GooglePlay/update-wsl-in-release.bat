@@ -19,12 +19,16 @@ copy ..\bank\Mobile\Auxiliary.bank c:\wsl-in\assetpack\Assets\banks
 copy ..\bank\Mobile\Intro.bank c:\wsl-in\assetpack\Assets\banks
 
 echo Preparing GnollHack tilesets
-copy ..\tileset\gnollhack_64x96_transparent_32bits.png ..\tileset\gnollhack_64x96_transparent_32bits.ghpng
-copy ..\tileset\gnollhack_64x96_transparent_32bits-2.png ..\tileset\gnollhack_64x96_transparent_32bits-2.ghpng
-copy ..\tileset\gnollhack_64x96_transparent_32bits-3.png ..\tileset\gnollhack_64x96_transparent_32bits-3.ghpng
+rem Dynamic composition ships one atlas per partition, so the sheet names are
+rem TileSetCompiler's to decide and cannot be listed here. Stale .ghpng files
+rem left by an earlier tile set are cleared first: nothing else removes them,
+rem and the wildcard copy below would otherwise keep shipping them.
+if exist ..\tileset\*.ghpng del /Q ..\tileset\*.ghpng
+for %%F in (..\tileset\*.png) do copy "%%F" "..\tileset\%%~nF.ghpng"
 
-echo Copying tileset to c:\wsl-in\assetpack\Assets\tileset
+echo Copying tileset and manifest to c:\wsl-in\assetpack\Assets\tileset
 copy ..\tileset\*.ghpng c:\wsl-in\assetpack\Assets\tileset
+copy ..\tileset\gnollhack_tilemanifest.json c:\wsl-in\assetpack\Assets\tileset
 
 if not exist c:\wsl-in\assetpack2 mkdir c:\wsl-in\assetpack2
 if not exist c:\wsl-in\assetpack2\Assets mkdir c:\wsl-in\assetpack2\Assets
@@ -77,8 +81,10 @@ del /Q ..\xpl\GnollHackX\GnollHackX.Android\tileset\*.*
 del /Q ..\xpl\GnollHackX\GnollHackX.iOS\tileset\*.*
 echo Copying tileset to X Android tileset
 copy ..\tileset\*.ghpng ..\xpl\GnollHackX\GnollHackX.Android\tileset
+copy ..\tileset\gnollhack_tilemanifest.json ..\xpl\GnollHackX\GnollHackX.Android\tileset
 echo Copying tileset to X iOS tileset
 copy ..\tileset\*.ghpng ..\xpl\GnollHackX\GnollHackX.iOS\tileset
+copy ..\tileset\gnollhack_tilemanifest.json ..\xpl\GnollHackX\GnollHackX.iOS\tileset
 
 echo Copying GnollHackM banks
 if not exist ..\xpl\GnollHackM\Platforms\Android\banks mkdir ..\xpl\GnollHackM\Platforms\Android\banks
@@ -103,10 +109,13 @@ del /Q ..\xpl\GnollHackM\Platforms\iOS\tileset\*.*
 del /Q ..\xpl\GnollHackM\Platforms\Windows\tileset\*.*
 echo Copying tileset to M Android tileset
 copy ..\tileset\*.ghpng ..\xpl\GnollHackM\Platforms\Android\tileset
+copy ..\tileset\gnollhack_tilemanifest.json ..\xpl\GnollHackM\Platforms\Android\tileset
 echo Copying tileset to M iOS tileset
 copy ..\tileset\*.ghpng ..\xpl\GnollHackM\Platforms\iOS\tileset
+copy ..\tileset\gnollhack_tilemanifest.json ..\xpl\GnollHackM\Platforms\iOS\tileset
 echo Copying tileset to M Windows tileset
 copy ..\tileset\*.ghpng ..\xpl\GnollHackM\Platforms\Windows\tileset
+copy ..\tileset\gnollhack_tilemanifest.json ..\xpl\GnollHackM\Platforms\Windows\tileset
 
 del /Q ..\tileset\*.ghpng
 

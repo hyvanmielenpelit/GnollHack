@@ -438,12 +438,25 @@ namespace GnollHackX
                 }
 
                 int total_tiles_used = GHApp.GnollHackService?.GetTotalTiles() ?? 0;
+                /* The legacy sheet count, derived from the tile count alone.
+                   It is still what replay recordings carry, for format
+                   compatibility, but it no longer describes the composed
+                   layout: how many sheets exist is decided by the budget
+                   solver, and GHApp.UsedTileSheets is set from its result. */
                 int total_sheets_used = Math.Min(GHConstants.MaxTileSheets, (total_tiles_used - 1) / GHConstants.NumberOfTilesPerSheet + 1);
 
                 lock (GHApp.Glyph2TileLock)
                 {
-                    GHApp.UsedTileSheets = total_sheets_used;
                     GHApp.TotalTiles = total_tiles_used;
+                    if (!GHApp.IsTileCompositionActive)
+                    {
+                        /* Legacy path: reproduce exactly the placement the old
+                           bit arithmetic computed, so rendering is unchanged.
+                           The composed path published its own slot table and
+                           sheet count while composing. */
+                        GHApp.UsedTileSheets = total_sheets_used;
+                        GHApp.BuildLegacySlotTable(total_tiles_used);
+                    }
                     //for (int i = 0; i < total_sheets_used; i++)
                     //{
                     //    GHApp.TilesPerRow[i] = GHApp._tileMap[i].Width / GHConstants.TileWidth;
@@ -470,8 +483,15 @@ namespace GnollHackX
                 anoffs = GHApp.AnimationOffsets;
                 enoffs = GHApp.EnlargementOffsets;
                 reoffs = GHApp.ReplacementOffsets;
-                nosheets = GHApp.UsedTileSheets;
                 notiles = GHApp.TotalTiles;
+                /* Replay files keep carrying the legacy sheet count, not the
+                   composed one. The recorded value describes the layout of the
+                   machine that made the recording, which need not be this one,
+                   and on playback the slot table is always rebuilt from what is
+                   actually resident -- so this field is consumed only by the
+                   legacy path and must stay format-compatible. */
+                nosheets = Math.Min(GHConstants.MaxTileSheets,
+                    (notiles - 1) / GHConstants.NumberOfTilesPerSheet + 1);
                 tilesperrow = GHApp.DummyTilesPerRow; // For compatibility
             }
             if (IsRecording)
@@ -866,7 +886,45 @@ namespace GnollHackX
             }
 
             Debug.WriteLine("ClientCallback_PlayerSelection");
+
+            /* lib_player_selection() calls this after common_player_selection()
+               has returned, so the character is fully settled here whether it
+               was predetermined or picked from the menus. Composing now means
+               the work happens before the difficulty prompt and newgame(),
+               rather than as a wait once the last menu is dismissed. */
+            ComposeTilesForCurrentCharacter();
             return 0;
+        }
+
+        /*
+         * Make the chosen character's tile sheets resident.
+         *
+         * Runs on the game thread and blocks it, which is the point: the map
+         * must not be drawn before the tiles behind it exist. Safe to call more
+         * than once -- the second call for the same character returns
+         * immediately -- and a no-op on the legacy tile sheet path, where every
+         * tile is resident from the start.
+         */
+        private void ComposeTilesForCurrentCharacter()
+        {
+            try
+            {
+                if (!GHApp.IsTileCompositionActive)
+                    return;
+
+                string role, race, gender, align;
+                GHApp.GnollHackService.GetInitPlayerSelection(out role, out race,
+                    out gender, out align);
+                if (string.IsNullOrEmpty(role))
+                    return;
+
+                GHApp.ComposeRoleSheetAsync(role, race, gender, align)
+                    .GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("ComposeTilesForCurrentCharacter: " + ex.Message);
+            }
         }
 
 
@@ -4012,6 +4070,12 @@ namespace GnollHackX
                             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.UpdateShortcutLabels));
                         }
                     }
+                    break;
+                case (int)gui_command_types.GUI_CMD_REPORT_PLAYER_CHARACTER:
+                    /* Covers the restored game, which never runs player
+                       selection. For a new game the character's tiles are
+                       already resident by now and this costs a comparison. */
+                    ComposeTilesForCurrentCharacter();
                     break;
                 case (int)gui_command_types.GUI_CMD_GAME_ENTERED_MOVELOOP:
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.GameEnteredMoveloop));

@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-08-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2026-09-06 */
 
 /* GnollHack 4.0    winhack.c    $NHDT-Date: 1449488876 2015/12/07 11:47:56 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.44 $ */
 /* Copyright (C) 2001 by Alex Kompel      */
@@ -153,9 +153,15 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdS
         //    tiles_per_line[i] += (3 - (tiles_per_line[i] % 3));
         tiles_per_line[i] = min(tiles_in_sheet[i], MAX_TILE_SHEET_WIDTH);
 
-        int resource_idx = IDB_PNG_TILES;
+        /* 0 means "no resource resolved". Defaulting to IDB_PNG_TILES here
+           made an out-of-range sheet index silently load sheet 1 again and
+           render wrong tiles for every glyph in that sheet. */
+        int resource_idx = 0;
         switch (i)
         {
+        case 0:
+            resource_idx = IDB_PNG_TILES;
+            break;
         case 1:
 #if defined(IDB_PNG_TILES_2)
             resource_idx = IDB_PNG_TILES_2;
@@ -171,6 +177,12 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdS
             resource_idx = IDB_PNG_TILES_4;
 #endif // IDB_PNG_TILES_4
             break;
+        }
+
+        if (resource_idx == 0)
+        {
+            panic("No tile sheet resource defined for tile sheet %d", i + 1);
+            return 0;
         }
 
         _GnollHack_app.bmpTiles[i] = LoadPNGFromResource(hInstance, resource_idx, TILE_BK_COLOR);

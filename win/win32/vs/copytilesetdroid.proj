@@ -1,28 +1,63 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="dirs.props"/>
   <Import Project="files.props"/>
+  <!--
+    Tile sheets are staged by wildcard rather than by name. Dynamic
+    composition ships one atlas per partition, so the file list is decided by
+    TileSetCompiler and changes whenever the tile set does; the three
+    monolithic gnollhack_64x96_* sheets are still produced in legacy mode and
+    are matched by the same glob.
+
+    The manifest is copied separately and keeps its .json extension; only
+    the sheets are renamed to .ghpng. It must land in the same place, and for
+    Android in the same asset pack, as the atlases it describes: a manifest
+    that loads while its atlases do not is worse than no manifest at all,
+    because the client would compose against partitions that are not there.
+
+    Both ItemGroups sit inside their targets on purpose. The tileset
+    directory is populated by an earlier build step, so a glob evaluated at
+    project load would see an empty or stale directory.
+  -->
   <Target Name="Build">
-    <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-3.png" DestinationFiles="$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng;$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits-3.ghpng"/>
-    <Message Text="Copied tilesets from $(TilesetDir) to $(AndroidTilesetDir) as .ghpng" Importance="High" />
-    <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-3.png" DestinationFiles="$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng;$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits-3.ghpng"/>
-    <Message Text="Copied tilesets from $(TilesetDir) to $(iOSGTilesetDir) as .ghpng" Importance="High" />
-    <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-3.png" DestinationFiles="$(MauiAndroidTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(MauiAndroidTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng;$(MauiAndroidTilesetDir)gnollhack_64x96_transparent_32bits-3.ghpng"/>
-    <Message Text="Copied tilesets from $(TilesetDir) to $(MauiAndroidTilesetDir) as .ghpng" Importance="High" />
-    <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-3.png" DestinationFiles="$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng;$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits-3.ghpng"/>
-    <Message Text="Copied tilesets from $(TilesetDir) to $(MauiiOSTilesetDir) as .ghpng" Importance="High" />
-    <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-3.png" DestinationFiles="$(MauiWindowsTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(MauiWindowsTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng;$(MauiWindowsTilesetDir)gnollhack_64x96_transparent_32bits-3.ghpng"/>
-    <Message Text="Copied tilesets from $(TilesetDir) to $(MauiWindowsTilesetDir) as .ghpng" Importance="High" />
+    <ItemGroup>
+      <TileSetSource Include="$(TilesetDir)*.png"/>
+      <TileSetManifest Include="$(TilesetDir)gnollhack_tilemanifest.json"/>
+    </ItemGroup>
+    <Error Condition=" '@(TileSetSource)' == '' " Text="No tile sheets found in $(TilesetDir). Run TileSetCompiler before building."/>
+    <Error Condition=" '@(TileSetManifest)' == '' " Text="gnollhack_tilemanifest.json is missing from $(TilesetDir). Without it the client silently falls back to the legacy tile sheets."/>
+    <Copy SkipUnchangedFiles="false" SourceFiles="@(TileSetSource)" DestinationFiles="@(TileSetSource-&gt;'$(AndroidTilesetDir)%(Filename).ghpng')"/>
+    <Copy SkipUnchangedFiles="false" SourceFiles="@(TileSetManifest)" DestinationFolder="$(AndroidTilesetDir)"/>
+    <Message Text="Copied @(TileSetSource-&gt;Count()) tilesets and the manifest from $(TilesetDir) to $(AndroidTilesetDir) as .ghpng" Importance="High" />
+    <Copy SkipUnchangedFiles="false" SourceFiles="@(TileSetSource)" DestinationFiles="@(TileSetSource-&gt;'$(iOSGTilesetDir)%(Filename).ghpng')"/>
+    <Copy SkipUnchangedFiles="false" SourceFiles="@(TileSetManifest)" DestinationFolder="$(iOSGTilesetDir)"/>
+    <Message Text="Copied @(TileSetSource-&gt;Count()) tilesets and the manifest from $(TilesetDir) to $(iOSGTilesetDir) as .ghpng" Importance="High" />
+    <Copy SkipUnchangedFiles="false" SourceFiles="@(TileSetSource)" DestinationFiles="@(TileSetSource-&gt;'$(MauiAndroidTilesetDir)%(Filename).ghpng')"/>
+    <Copy SkipUnchangedFiles="false" SourceFiles="@(TileSetManifest)" DestinationFolder="$(MauiAndroidTilesetDir)"/>
+    <Message Text="Copied @(TileSetSource-&gt;Count()) tilesets and the manifest from $(TilesetDir) to $(MauiAndroidTilesetDir) as .ghpng" Importance="High" />
+    <Copy SkipUnchangedFiles="false" SourceFiles="@(TileSetSource)" DestinationFiles="@(TileSetSource-&gt;'$(MauiiOSTilesetDir)%(Filename).ghpng')"/>
+    <Copy SkipUnchangedFiles="false" SourceFiles="@(TileSetManifest)" DestinationFolder="$(MauiiOSTilesetDir)"/>
+    <Message Text="Copied @(TileSetSource-&gt;Count()) tilesets and the manifest from $(TilesetDir) to $(MauiiOSTilesetDir) as .ghpng" Importance="High" />
+    <Copy SkipUnchangedFiles="false" SourceFiles="@(TileSetSource)" DestinationFiles="@(TileSetSource-&gt;'$(MauiWindowsTilesetDir)%(Filename).ghpng')"/>
+    <Copy SkipUnchangedFiles="false" SourceFiles="@(TileSetManifest)" DestinationFolder="$(MauiWindowsTilesetDir)"/>
+    <Message Text="Copied @(TileSetSource-&gt;Count()) tilesets and the manifest from $(TilesetDir) to $(MauiWindowsTilesetDir) as .ghpng" Importance="High" />
   </Target>
   <Target Name="Clean">
-    <Delete Files="$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng;$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits-3.ghpng"/>
-    <Message Text="Deleted tilesets from $(AndroidTilesetDir)" Importance="High" />
-    <Delete Files="$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng;$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits-3.ghpng"/>
-    <Message Text="Deleted tilesets from $(iOSGTilesetDir)" Importance="High" />
-    <Delete Files="$(MauiAndroidTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(MauiAndroidTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng;$(MauiAndroidTilesetDir)gnollhack_64x96_transparent_32bits-3.ghpng"/>
-    <Message Text="Deleted tilesets from $(MauiAndroidTilesetDir)" Importance="High" />
-    <Delete Files="$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng;$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits-3.ghpng"/>
-    <Message Text="Deleted tilesets from $(MauiiOSTilesetDir)" Importance="High" />
-    <Delete Files="$(MauiWindowsTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(MauiWindowsTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng;$(MauiWindowsTilesetDir)gnollhack_64x96_transparent_32bits-3.ghpng"/>
-    <Message Text="Deleted tilesets from $(MauiWindowsTilesetDir)" Importance="High" />
+    <ItemGroup>
+      <AndroidTileSetOutput Include="$(AndroidTilesetDir)*.ghpng;$(AndroidTilesetDir)gnollhack_tilemanifest.json"/>
+      <iOSGTileSetOutput Include="$(iOSGTilesetDir)*.ghpng;$(iOSGTilesetDir)gnollhack_tilemanifest.json"/>
+      <MauiAndroidTileSetOutput Include="$(MauiAndroidTilesetDir)*.ghpng;$(MauiAndroidTilesetDir)gnollhack_tilemanifest.json"/>
+      <MauiiOSTileSetOutput Include="$(MauiiOSTilesetDir)*.ghpng;$(MauiiOSTilesetDir)gnollhack_tilemanifest.json"/>
+      <MauiWindowsTileSetOutput Include="$(MauiWindowsTilesetDir)*.ghpng;$(MauiWindowsTilesetDir)gnollhack_tilemanifest.json"/>
+    </ItemGroup>
+    <Delete Files="@(AndroidTileSetOutput)"/>
+    <Message Text="Deleted tilesets and the manifest from $(AndroidTilesetDir)" Importance="High" />
+    <Delete Files="@(iOSGTileSetOutput)"/>
+    <Message Text="Deleted tilesets and the manifest from $(iOSGTilesetDir)" Importance="High" />
+    <Delete Files="@(MauiAndroidTileSetOutput)"/>
+    <Message Text="Deleted tilesets and the manifest from $(MauiAndroidTilesetDir)" Importance="High" />
+    <Delete Files="@(MauiiOSTileSetOutput)"/>
+    <Message Text="Deleted tilesets and the manifest from $(MauiiOSTilesetDir)" Importance="High" />
+    <Delete Files="@(MauiWindowsTileSetOutput)"/>
+    <Message Text="Deleted tilesets and the manifest from $(MauiWindowsTilesetDir)" Importance="High" />
   </Target>
 </Project>

@@ -60,6 +60,8 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" x:Name="GameDurationRowDefinition" />
                                     <RowDefinition Height="Auto" x:Name="SessionPlayTimeRowDefinition" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -130,6 +132,10 @@
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
                                 <Label Grid.Row="30" Text="Game Duration:" x:Name="GameDurationTitleLabel" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
+                                <Label Grid.Row="31" Text="Tile Sheets:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
+                                <Label Grid.Row="32" Text="Tile Residency:" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
 
                                 <Label Grid.Row="0" Grid.Column="1" x:Name="GnollHackVersionLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
@@ -194,6 +200,10 @@
                                 <Label Grid.Row="29" Grid.Column="1" x:Name="SessionTimeLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
                                 <Label Grid.Row="30" Grid.Column="1" x:Name="GameDurationLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
+                                <Label Grid.Row="31" Grid.Column="1" x:Name="TileSheetsLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
+                                <Label Grid.Row="32" Grid.Column="1" x:Name="TileResidencyLabel" Text="" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" Margin="0,0,0,4" />
                             </Grid>
                             <Grid x:Name="LongVersionGrid" RowSpacing="4">

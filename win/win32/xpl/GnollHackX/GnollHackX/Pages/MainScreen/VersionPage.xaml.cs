@@ -293,6 +293,41 @@ namespace GnollHackX.Pages.MainScreen
                 + ", S " + (UsedSoundMemInMB >= 0 ? UsedSoundMemInMB.ToString() : "?")
                 + ", B " + UsedBitmapMemInMB
                 + " MB";
+            /*
+             * Tile sheet diagnostics.
+             *
+             * The point of reporting these is that dynamic composition fails
+             * *quietly*: a missing or incompatible manifest makes the composer
+             * fall back to the legacy sheets, and the game then runs correctly
+             * and indefinitely with the whole feature dead. Nothing else in the
+             * UI says which path is live, so a measurement of tile memory or
+             * loading time could silently be a measurement of the old path.
+             * These two lines are what makes the two distinguishable.
+             */
+            TileCompositionPlan tilePlan = GHApp.TileComposition;
+            long TileSheetMemInMB = GHApp.TileSheetBytes / (1024 * 1024);
+            if (tilePlan == null)
+            {
+                TileSheetsLabel.Text = "Legacy, " + GHApp.UsedTileSheets + " sheets, "
+                    + TileSheetMemInMB + " MB"
+                    + (GHApp.UseLegacyTileSheets ? " (forced)" : " (fallback)");
+                TileResidencyLabel.Text = GHApp.TotalTiles + " tiles, all resident";
+            }
+            else
+            {
+                TileSheetsLabel.Text = "Composed, " + tilePlan.Sheets.Count + " sheets, "
+                    + TileSheetMemInMB + " MB";
+
+                string residency = tilePlan.ResidentTiles + " / " + GHApp.TotalTiles
+                    + " tiles, " + tilePlan.ResidentPartitions + " partitions, "
+                    + tilePlan.Tier;
+                if (!string.IsNullOrEmpty(tilePlan.ResidentRole))
+                    residency += ", " + tilePlan.ResidentRole;
+                else if (tilePlan.DeferredPlayerPartitions.Count > 0)
+                    residency += ", no character yet";
+                TileResidencyLabel.Text = residency;
+            }
+
             TotalPlayTimeLabel.Text = TotalPlayHours + " h " + TotalPlayMinutes + " min " + TotalPlaySeconds + " s";
             CurrentPlayTimeLabel.Text = CurrentPlayHours + " h " + CurrentPlayMinutes + " min " + CurrentPlaySeconds + " s";
             LongTitleLabel.Text = Environment.NewLine + "GnollHack Long Version Identifier:";

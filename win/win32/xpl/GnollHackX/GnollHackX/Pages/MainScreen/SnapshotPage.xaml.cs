@@ -96,7 +96,12 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     i++;
                     RowImageButton rib = new RowImageButton();
-                    if(GHApp.Glyph2Tile != null && GHApp._tileMap[0] != null 
+                    /* Ask whether this particular glyph is resident rather than
+                       whether a tile sheet exists: under composition the two are
+                       no longer the same question, and getting it wrong shows the
+                       missing-tile placeholder instead of the you.png fallback
+                       below. */
+                    if(GHApp.IsGlyphTileResident(snap.gui_glyph)
                         && (snap.gnh_version < GHApp.GHVersionNumber ? snap.gnh_version >= GHApp.GHVersionCompatibility : snap.gnh_version > GHApp.GHVersionNumber ? GHApp.GHVersionNumber >= snap.gnh_compatibility : true))
                     {
                         GlyphImageSource gis = new GlyphImageSource();

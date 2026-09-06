@@ -71,12 +71,17 @@ namespace GnollHackX
         public SKColorFilter PaintColorFilter;
         public bool EndDarkening;
         public int SheetIdx;
+        /* GHApp.TileMapGeneration at the moment this command was built.
+           A deferred command whose stamp no longer matches refers to a tile
+           sheet that composition may since have replaced and disposed, so the
+           deferred replay must skip it rather than draw from a dead SKImage. */
+        public int SheetGeneration;
         public int MapX;
         public int MapY;
         public bool IsAutoDraw { get; private set; }
         public AutoDrawParameterDefinition AutoDrawParameters { get; private set; }
 
-        public GHDrawCommand(SKMatrix matrix, SKRect sourceRect, SKRect destinationRect, SKImage sourceBitmap, SKColor paintColor, SKColorFilter paintColorFilter, int sheetIdx, int mapX, int mapY)
+        public GHDrawCommand(SKMatrix matrix, SKRect sourceRect, SKRect destinationRect, SKImage sourceBitmap, SKColor paintColor, SKColorFilter paintColorFilter, int sheetIdx, int sheetGeneration, int mapX, int mapY)
         {
             Matrix = matrix;
             SourceRect = sourceRect;
@@ -85,6 +90,7 @@ namespace GnollHackX
             PaintColor = paintColor;
             PaintColorFilter = paintColorFilter;
             SheetIdx = sheetIdx;
+            SheetGeneration = sheetGeneration;
             MapX = mapX;
             MapY = mapY;
 #if !GNH_MAUI
@@ -105,6 +111,7 @@ namespace GnollHackX
             PaintColor = SKColors.Black;
             PaintColorFilter = null;
             SheetIdx = 0;
+            SheetGeneration = 0;
             MapX = 0;
             MapY = 0;
             IsAutoDraw = false;
@@ -115,6 +122,7 @@ namespace GnollHackX
         {
             Matrix = matrix;
             SheetIdx = 0;
+            SheetGeneration = 0;
             MapX = mapX;
             MapY = mapY;
             PaintColor = paintColor;

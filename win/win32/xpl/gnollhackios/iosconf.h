@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2024-08-11 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2026-09-06 */
 
 /*	SCCS Id: @(#)iosconf.h	3.4	2011/03/31	*/
 /* Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1990, 1991, 1992, 1993. */

@@ -624,6 +624,42 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="BreatheAnimationSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Tile Detail"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Picker Grid.Column="1" x:Name="TileDetailPicker"
+                                            Title="Select tile detail"
+                                            FontFamily="Underwood"
+                                            FontSize="16"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="175"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End" >
+                                    <Picker.ItemsSource>
+                                        <x:Array Type="{x:Type x:String}">
+                                            <x:String>Auto</x:String>
+                                            <x:String>Ultra</x:String>
+                                            <x:String>High</x:String>
+                                            <x:String>Medium</x:String>
+                                            <x:String>Low</x:String>
+                                        </x:Array>
+                                    </Picker.ItemsSource>
+                                </Picker>
+                            </Grid>
+                            <Grid x:Name="LegacyTileSheetsGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label x:Name="LegacyTileSheetsLabel" Text="Use Legacy Tile Sheets"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="LegacyTileSheetsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
 
                             <Label Text="Format" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">

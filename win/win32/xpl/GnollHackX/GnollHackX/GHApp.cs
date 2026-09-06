@@ -1902,6 +1902,24 @@ namespace GnollHackX
         }
 
         public static ulong TotalMemory { get; private set; }
+
+        /*
+         * GL_MAX_TEXTURE_SIZE as reported by the live GRContext, recorded by
+         * SwitchableCanvasView once the GPU surface exists. The tile sheet
+         * budget solver reads it: a device limited to 4096 cannot hold an 8192
+         * px wide sheet, and composing one anyway produces an unusable texture.
+         * Defaults to the 8192 floor until the real value is known.
+         */
+        private static int _maxTextureSize = GHConstants.DefaultMaxTextureSize;
+        public static int MaxTextureSize
+        {
+            get { return Interlocked.CompareExchange(ref _maxTextureSize, 0, 0); }
+            set
+            {
+                if (value > 0)
+                    Interlocked.Exchange(ref _maxTextureSize, value);
+            }
+        }
         public static bool DefaultStreamingBankToMemory
         {
             get
@@ -4212,6 +4230,54 @@ namespace GnollHackX
         public static int[] ReplacementOffsets;
         public static int Glyph2TileSize;
         public static SKImage[] _tileMap = new SKImage[GHConstants.MaxTileSheets];
+
+        /*
+         * Publication lock for the tile map and the slot table below. These
+         * three are read together on the rendering thread and must be replaced
+         * together, so a writer takes _tileMapLock, publishes, and bumps
+         * TileMapGeneration. Readers on the hot path do not take the lock; they
+         * rely on the entries being published with Volatile.Write before the
+         * generation is bumped, and on deferred draw commands carrying the
+         * generation they were built against.
+         *
+         * _tileMap had no lock at all before dynamic composition: safety rested
+         * entirely on every sheet being loaded before IsGameOn became true and
+         * never being replaced afterwards. Composition breaks that assumption,
+         * because the role sheet can arrive after the map is already drawing.
+         */
+        public static readonly object _tileMapLock = new object();
+
+        private static int _tileMapGeneration = 0;
+
+        /* Bumped every time the slot table or the tile map is republished.
+           A GHDrawCommand stamped with an older generation refers to an SKImage
+           that may already have been disposed and must be skipped. */
+        public static int TileMapGeneration
+        {
+            get { return Interlocked.CompareExchange(ref _tileMapGeneration, 0, 0); }
+        }
+
+        /*
+         * Physical location of every logical tile, packed by TileSlot.
+         *
+         * Sized to MAX_TILES rather than to the live tile count, so that any
+         * valid logical tile ID is in bounds by construction and the hot path
+         * needs no range check. Zero-initialised, so an unassigned entry
+         * already points at slot 0 of sheet 0, which is the missing tile
+         * placeholder: non-residency needs no branch on the render path.
+         */
+        public static int[] TileSlots = new int[GHConstants.MaxTiles];
+
+        /*
+         * Which partition each tile came from. Needed only by residency and
+         * eviction policy, never per frame, so it is kept out of TileSlots to
+         * avoid spending hot cache lines on it.
+         */
+        public static short[] TileToPartition = new short[GHConstants.MaxTiles];
+
+        /* TileToPartition value meaning "this tile is not resident" */
+        public const short PlaceholderPartition = -1;
+
         public static int UsedTileSheets;
         public static int TotalTiles;
         public static int UnexploredGlyph;
@@ -4265,37 +4331,389 @@ namespace GnollHackX
         public static int WizButtonCount { get { return Interlocked.CompareExchange(ref _wizBtnCount, 0, 0); } set { Interlocked.Exchange(ref _wizBtnCount, value); } }
         public static List<GHCommandButtonRect> _moreBtnList = new List<GHCommandButtonRect>(GHConstants.DefaultMoreButtonListSize);
 
+        /*
+         * Tile ID -> physical location. These two used to derive the answer
+         * from the tile ID with bit arithmetic, which is what tied the whole
+         * tile set to three fixed monolithic sheets. They now read the packed
+         * slot table instead, so that composition can place a tile anywhere.
+         *
+         * The signatures are deliberately unchanged; all existing call sites
+         * work as they did. TileSlots is MAX_TILES entries long, so any valid
+         * tile ID is in bounds and no range check is needed here.
+         *
+         * This also removes a pre-existing divergence: TileSheetIdx used to
+         * clamp its result to UsedTileSheets - 1 while TileSheetXY did not, so
+         * the two could disagree about which sheet a tile lived in. The table
+         * makes them consistent by construction.
+         */
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int TileSheetIdx(int ntile)
         {
-            return ntile < GHConstants.NumberOfTilesPerSheet ? 0 : Math.Min(UsedTileSheets - 1, Math.Max(0, ntile >> GHConstants.PowerOf2ForNumberOfTilesPerSheet));
-            //return ntile >> GHConstants.PowerOf2ForNumberOfTilesPerSheet;
-            //return ntile < GHConstants.NumberOfTilesPerSheet ? 0 : (Math.Min(UsedTileSheets - 1, Math.Max(0, (ntile / GHConstants.NumberOfTilesPerSheet))));
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int TileSheetX(int ntile, int tileSheetIdx)
-        {
-            return (((ntile < GHConstants.NumberOfTilesPerSheet ? ntile : ntile % GHConstants.NumberOfTilesPerSheet) % GHConstants.MaxTileSheetWidthInTiles /* _tilesPerRow[tileSheetIdx] */) * GHConstants.TileWidth);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int TileSheetY(int ntile, int tileSheetIdx)
-        {
-            return (((ntile < GHConstants.NumberOfTilesPerSheet ? ntile : ntile % GHConstants.NumberOfTilesPerSheet) / GHConstants.MaxTileSheetWidthInTiles /* _tilesPerRow[tileSheetIdx] */) * GHConstants.TileHeight);
+            return TileSlot.SheetIdx(TileSlots[ntile]);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void TileSheetXY(int ntile, out int x, out int y)
         {
-            //int tileNumberWithinSheet = ntile < GHConstants.NumberOfTilesPerSheet ? ntile : (ntile & (GHConstants.NumberOfTilesPerSheet - 1)); // ntile % GHConstants.NumberOfTilesPerSheet;
-            //int tilesPerRowInSheet = GHConstants.MaxTileSheetWidthInTiles; // _tilesPerRow[tileSheetIdx];
-            //int row = tileNumberWithinSheet >> GHConstants.PowerOf2ForMaxTileSheetWidthInTiles; // tileNumberWithinSheet / tilesPerRowInSheet;
-            int tileNumberWithinSheet = (ntile & (GHConstants.NumberOfTilesPerSheet - 1)); // ntile % GHConstants.NumberOfTilesPerSheet;
-            x = (tileNumberWithinSheet & (GHConstants.MaxTileSheetWidthInTiles - 1)) * GHConstants.TileWidth;
-            y = (tileNumberWithinSheet >> GHConstants.PowerOf2ForMaxTileSheetWidthInTiles) * GHConstants.TileHeight;
-            //x = (tileNumberWithinSheet - row * GHConstants.MaxTileSheetWidthInTiles) * GHConstants.TileWidth;
-            //x = (tileNumberWithinSheet % tilesPerRowInSheet) * GHConstants.TileWidth;
+            int packed = TileSlots[ntile];
+            x = TileSlot.X(packed);
+            y = TileSlot.Y(packed);
+        }
+
+        /*
+         * Fill the slot table with the placement the legacy monolithic sheets
+         * imply, reproducing exactly what the old bit arithmetic computed:
+         * sheet ntile >> 13, and within the sheet a 128 tile wide row-major
+         * grid of 64 x 96 px cells.
+         *
+         * This is what the legacy load path and the rollback switch use, and it
+         * is also what makes the slot indirection itself verifiable: with this
+         * table in place, rendering is bit-identical to the pre-composition
+         * build.
+         */
+        public static void BuildLegacySlotTable(int totalTiles)
+        {
+            int[] slots = new int[GHConstants.MaxTiles];
+            short[] partitions = new short[GHConstants.MaxTiles];
+            int usableTiles = Math.Min(totalTiles, GHConstants.MaxTiles);
+
+            for (int ntile = 0; ntile < GHConstants.MaxTiles; ntile++)
+                partitions[ntile] = PlaceholderPartition;
+
+            for (int ntile = 0; ntile < usableTiles; ntile++)
+            {
+                int sheetIdx = ntile >> GHConstants.PowerOf2ForNumberOfTilesPerSheet;
+                int withinSheet = ntile & (GHConstants.NumberOfTilesPerSheet - 1);
+                int x = (withinSheet & (GHConstants.MaxTileSheetWidthInTiles - 1))
+                        * GHConstants.TileWidth;
+                int y = (withinSheet >> GHConstants.PowerOf2ForMaxTileSheetWidthInTiles)
+                        * GHConstants.TileHeight;
+                slots[ntile] = TileSlot.Pack(sheetIdx, x, y);
+                /* The legacy sheets are not partitioned, but every tile in them
+                   is resident, so record the sheet as the partition. */
+                partitions[ntile] = (short)sheetIdx;
+            }
+
+            PublishSlotTable(slots, partitions);
+        }
+
+        /*
+         * Replace the slot table as one unit and bump the generation, so that
+         * a render thread either sees the whole previous table or the whole new
+         * one, never a half-written mixture.
+         */
+        public static void PublishSlotTable(int[] slots, short[] partitions)
+        {
+            lock (_tileMapLock)
+            {
+                Volatile.Write(ref TileSlots, slots);
+                Volatile.Write(ref TileToPartition, partitions);
+                Interlocked.Increment(ref _tileMapGeneration);
+            }
+        }
+
+        /*
+         * Bytes held by the resident tile sheets.
+         *
+         * Taken under _tileMapLock rather than by walking _tileMap from the
+         * caller: composition replaces sheets while the game is running, and
+         * the locking discipline for that array belongs in here.
+         */
+        public static long TileSheetBytes
+        {
+            get
+            {
+                long total = 0;
+                lock (_tileMapLock)
+                {
+                    int i;
+                    for (i = 0; i < GHConstants.MaxTileSheets; i++)
+                    {
+                        SKImage sheet = _tileMap[i];
+                        if (sheet != null)
+                            total += sheet.Info.BytesSize64;
+                    }
+                }
+                return total;
+            }
+        }
+
+        /*
+         * Drop every sheet at or beyond an index.
+         *
+         * A second load -- a replay recomposing with all roles resident, or a
+         * fall back to the legacy sheets -- can end up using fewer sheets than
+         * the one before it. The new slot table never points at the surplus, so
+         * nothing renders wrongly, but the images would sit in _tileMap holding
+         * hundreds of megabytes for the rest of the session.
+         */
+        public static void RetireTileSheetsFrom(int firstSheetIdx)
+        {
+            int i;
+            for (i = Math.Max(0, firstSheetIdx); i < GHConstants.MaxTileSheets; i++)
+                RetireTileSheet(i);
+        }
+
+        /*
+         * Drop a sheet that is no longer part of the composition.
+         *
+         * The reference is cleared under the lock and the generation bumped, so
+         * deferred draw commands stamped against it are skipped from here on.
+         * The SKImage is deliberately *not* disposed: the render thread reads
+         * _tileMap without the lock, so a frame already in flight may still
+         * hold it, and disposing would be a use-after-free for the length of
+         * that frame. Dropping the reference lets the finalizer reclaim the
+         * native memory instead, which costs a GC cycle and is safe. This runs
+         * at most once per game start.
+         */
+        public static void RetireTileSheet(int sheetIdx)
+        {
+            if (sheetIdx < 0 || sheetIdx >= GHConstants.MaxTileSheets)
+                return;
+
+            lock (_tileMapLock)
+            {
+                SKImage retiring = Volatile.Read(ref _tileMap[sheetIdx]);
+                if (retiring != null)
+                    AddUsedBitmapBytes(-retiring.Info.BytesSize64);
+                Volatile.Write(ref _tileMap[sheetIdx], null);
+                Interlocked.Increment(ref _tileMapGeneration);
+            }
+        }
+
+        /*
+         * Publish one composed or loaded destination sheet. Bumping the
+         * generation here is what lets deferred draw commands recognise that
+         * the SKImage they captured may no longer be the current one.
+         */
+        public static void PublishTileSheet(int sheetIdx, SKImage image)
+        {
+            if (sheetIdx < 0 || sheetIdx >= GHConstants.MaxTileSheets)
+                return;
+
+            lock (_tileMapLock)
+            {
+                Volatile.Write(ref _tileMap[sheetIdx], image);
+                Interlocked.Increment(ref _tileMapGeneration);
+            }
+        }
+
+        /* True when the tile is currently in one of the composed sheets rather
+           than resolving to the missing tile placeholder. Policy only; the
+           render path never asks. */
+        public static bool IsTileResident(int ntile)
+        {
+            short[] partitions = Volatile.Read(ref TileToPartition);
+            if (partitions == null || ntile < 0 || ntile >= partitions.Length)
+                return false;
+            return partitions[ntile] != PlaceholderPartition;
+        }
+
+        /*
+         * Whether a glyph can be drawn from the tiles that are resident now.
+         *
+         * Callers outside a game used to test "Glyph2Tile != null &&
+         * _tileMap[0] != null", which was sufficient when every tile was in one
+         * of three sheets that were all loaded together. Under composition that
+         * is no longer true: a sheet can exist while the particular tile is
+         * not resident -- a save of a polymorphed character names an arbitrary
+         * monster glyph, and player partitions are deferred until a character
+         * is chosen. Testing the old condition would draw the missing-tile
+         * placeholder where the caller intends to fall back to its own icon.
+         */
+        public static bool IsGlyphTileResident(int glyph)
+        {
+            int[] glyph2tile = Glyph2Tile;
+            if (glyph2tile == null || glyph < 0 || glyph >= glyph2tile.Length)
+                return false;
+
+            int ntile = glyph2tile[glyph];
+            if (!IsTileResident(ntile))
+                return false;
+
+            int sheetIdx = TileSheetIdx(ntile);
+            if (sheetIdx < 0 || sheetIdx >= GHConstants.MaxTileSheets)
+                return false;
+            return Volatile.Read(ref _tileMap[sheetIdx]) != null;
+        }
+
+        /* The composition that is currently resident, or null when the game is
+           running on the legacy monolithic sheets. Read by the Version page so
+           that a build which silently fell back can be told apart from one that
+           is really composing -- without that check every measurement of this
+           feature would be a measurement of the legacy path. */
+        public static TileCompositionPlan TileComposition { get; private set; }
+
+        public static bool IsTileCompositionActive
+        {
+            get { return TileComposition != null; }
+        }
+
+        /*
+         * True while player partitions are being held back for a character that
+         * has not been chosen yet. Replay playback uses this to tell that the
+         * resident set does not suit it: a recording carries no role, so
+         * nothing will ever arrive to compose one.
+         */
+        public static bool TileCompositionHasDeferredRoles
+        {
+            get
+            {
+                TileCompositionPlan plan = TileComposition;
+                return plan != null && plan.DeferredPlayerPartitions.Count > 0;
+            }
+        }
+
+        /* User's rollback switch. Legacy sheets ship regardless, so forcing
+           them costs nothing and makes the composed path safe to test on real
+           hardware. */
+        public static bool UseLegacyTileSheets
+        {
+            get { return Preferences.Get(GHConstants.UseLegacyTileSheetsPreferenceKey, false); }
+            set { Preferences.Set(GHConstants.UseLegacyTileSheetsPreferenceKey, value); }
+        }
+
+        public static TileDetailTier TileDetailTierSetting
+        {
+            get
+            {
+                int stored = Preferences.Get(GHConstants.TileDetailTierPreferenceKey,
+                    (int)TileDetailTier.Auto);
+                if (stored < (int)TileDetailTier.Auto || stored > (int)TileDetailTier.Low)
+                    return TileDetailTier.Auto;
+                return (TileDetailTier)stored;
+            }
+            set { Preferences.Set(GHConstants.TileDetailTierPreferenceKey, (int)value); }
+        }
+
+        /*
+         * Load the tile sheets for this session.
+         *
+         * Composition is tried first and the legacy monolithic sheets are the
+         * fallback, taken whenever the manifest is missing, incompatible or
+         * inconsistent, or the user has set the rollback switch. Both paths end
+         * with _tileMap and the slot table published together, so nothing
+         * downstream needs to know which one ran.
+         *
+         * role, race, gender and align select the player partitions. Passing
+         * null for role keeps every role resident, which is what the game does
+         * before a character has been chosen.
+         */
+        public static async Task<bool> LoadTileSheetsAsync(string role, string race,
+            string gender, string align, Action<double, string> progress,
+            bool deferPlayerRoles = true)
+        {
+            TileComposition = null;
+
+            if (!UseLegacyTileSheets)
+            {
+                TilePartitionManifest manifest =
+                    await GHTileComposition.LoadManifestAsync(TotalTiles);
+                if (manifest != null)
+                {
+                    /* Defer the player partitions whenever the character is
+                       not known yet, which is every call from the loading
+                       screen: the library has not parsed its configuration at
+                       that point, so nothing can say which of the 73 role
+                       combinations will be needed. ComposeRoleSheetAsync()
+                       brings the right ones in once it is settled.
+
+                       Replay playback opts out. A recording carries no role,
+                       and nothing in the playback path ever settles one, so
+                       deferring would leave the recorded character's tiles as
+                       placeholders for the whole replay. */
+                    TileCompositionPlan plan = GHTileComposition.SolveBudget(manifest,
+                        TileDetailTierSetting, TotalMemory, MaxTextureSize,
+                        role, race, gender, align,
+                        deferPlayerRoles && string.IsNullOrEmpty(role));
+                    if (plan != null && await GHTileComposition.ComposeAsync(plan, progress))
+                    {
+                        TileComposition = plan;
+                        UsedTileSheets = plan.Sheets.Count;
+                        RetireTileSheetsFrom(plan.Sheets.Count);
+                        return true;
+                    }
+                    MaybeWriteGHLog("LoadTileSheetsAsync: composition failed; falling back to legacy tile sheets.");
+                }
+            }
+
+            return await LoadLegacyTileSheetsAsync(progress);
+        }
+
+        /*
+         * Bring in the tile sheets for the chosen character.
+         *
+         * Safe to call more than once and from any thread: a repeat for the
+         * same character is a no-op, and composition is serialised internally.
+         * Returns true when the character's tiles are resident, including the
+         * legacy case where they always were.
+         *
+         * Call sites, in the order the game reaches them:
+         *   - a new game, from ClientCallback_PlayerSelection, which the
+         *     library reaches before it shows any selection menu;
+         *   - a restored game, from the character in the save header, before
+         *     the game thread starts.
+         */
+        public static async Task<bool> ComposeRoleSheetAsync(string role, string race,
+            string gender, string align)
+        {
+            TileCompositionPlan plan = TileComposition;
+            if (plan == null)
+            {
+                /* Legacy sheets: every tile is resident already. */
+                return true;
+            }
+
+            bool composed = await GHTileComposition.ComposeRoleSheetsAsync(plan,
+                role, race, gender, align, null);
+            if (composed)
+                UsedTileSheets = plan.Sheets.Count;
+            else
+                MaybeWriteGHLog("ComposeRoleSheetAsync: could not compose tiles for "
+                    + role + "; that character's tiles will show as placeholders.");
+            return composed;
+        }
+
+        /*
+         * The pre-composition path, kept verbatim in behaviour: three fixed
+         * 8192 px wide sheets whose placement the slot table reproduces exactly.
+         * GnollHackW consumes the same three files.
+         */
+        public static async Task<bool> LoadLegacyTileSheetsAsync(Action<double, string> progress)
+        {
+            string[] sheetNames = new string[]
+            {
+                "gnollhack_64x96_transparent_32bits.ghpng",
+                "gnollhack_64x96_transparent_32bits-2.ghpng",
+                "gnollhack_64x96_transparent_32bits-3.ghpng"
+            };
+
+            int sheetsNeeded = Math.Max(1, Math.Min(sheetNames.Length,
+                (TotalTiles - 1) / GHConstants.NumberOfTilesPerSheet + 1));
+
+            for (int i = 0; i < sheetsNeeded; i++)
+            {
+                if (progress != null)
+                {
+                    progress((double)i / sheetsNeeded,
+                        string.Format("Loading Tile Sheet {0}/{1}...", i + 1, sheetsNeeded));
+                }
+
+                SKImage sheet = await LoadTilesetAsync(sheetNames[i]);
+                if (sheet == null)
+                {
+                    MaybeWriteGHLog("LoadLegacyTileSheetsAsync: could not load " + sheetNames[i]);
+                    return false;
+                }
+                PublishTileSheet(i, sheet);
+            }
+
+            UsedTileSheets = sheetsNeeded;
+            RetireTileSheetsFrom(sheetsNeeded);
+            BuildLegacySlotTable(TotalTiles);
+            if (progress != null)
+                progress(1.0, "Tile sheets ready.");
+            return true;
         }
 
         public static List<SelectableShortcutButton> GetSimpleShortcutButtonsToAllocate()
@@ -5414,7 +5832,7 @@ namespace GnollHackX
 
             try
             {
-                GnollHackService.Chmod(targetpath, (uint)ChmodPermissions.S_IALL);
+                GnollHackService?.Chmod(targetpath, (uint)ChmodPermissions.S_IALL);
             }
             catch (Exception ex)
             {
@@ -8912,6 +9330,18 @@ namespace GnollHackX
                                                         gltifl = GlyphTileFlags;
                                                         ti2an = Tile2Animation;
                                                     }
+                                                    /* The slot table describes the placement that is actually in
+                                                       memory, never the sheet count recorded in the replay file:
+                                                       the recording describes the layout of the machine that made
+                                                       it, which need not be this one.
+
+                                                       Under composition that placement is the composer's, and
+                                                       rebuilding the legacy one here would point every tile at
+                                                       coordinates in sheets holding entirely different art. The
+                                                       composer already published a table covering every resident
+                                                       tile, so there is nothing to rebuild. */
+                                                    if (!IsTileCompositionActive)
+                                                        BuildLegacySlotTable(TotalTiles);
                                                     unsafe
                                                     {
                                                         fixed (int* p1 = gl2ti)

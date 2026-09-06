@@ -427,6 +427,17 @@ namespace GnollHackX
         ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY
     }
 
+    /* Must match enum animation_classes in include/animation.h. How important
+       an animation is to the player's understanding of what is happening; the
+       tile budget solver drops whole animations highest value first. */
+    public enum animation_classes
+    {
+        ANIMATION_CLASS_ESSENTIAL = 0,
+        ANIMATION_CLASS_STANDARD,
+        ANIMATION_CLASS_DECORATIVE,
+        MAX_ANIMATION_CLASSES
+    }
+
     public enum animation_timer_types
     {
         ANIMATION_TIMER_GENERAL = 0,
@@ -1127,6 +1138,8 @@ namespace GnollHackX
         GUI_CMD_REPORT_ENGRAVE_QUICK_STYLE,
         GUI_CMD_TOGGLE_METRIC_SYSTEM,
         GUI_CMD_TOGGLE_DAMAGE_FORMULA,
+        /* Mirrors include/general.h. Appended there, so appended here. */
+        GUI_CMD_REPORT_PLAYER_CHARACTER,
     }
 
     public enum gui_achievement_categories
