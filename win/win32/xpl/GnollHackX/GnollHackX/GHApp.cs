@@ -4231,6 +4231,26 @@ namespace GnollHackX
         public static int Glyph2TileSize;
         public static SKImage[] _tileMap = new SKImage[GHConstants.MaxTileSheets];
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static SKImage GetGuardedTileSheet(int sheetIdx)
+        {
+#if USE_TILESET_GUARDS
+            if (sheetIdx >= 0 && _tileMap != null && sheetIdx < _tileMap.Length)
+            {
+                SKImage image = _tileMap[sheetIdx];
+                if (image != null)
+                    return image;
+            }
+
+            if (Debugger.IsAttached)
+                Debugger.Break();
+
+            return null;
+#else
+            return _tileMap[sheetIdx];
+#endif
+        }
+
         /*
          * Publication lock for the tile map and the slot table below. These
          * three are read together on the rendering thread and must be replaced
