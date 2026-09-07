@@ -126,8 +126,6 @@ namespace GnollHackX.Pages.Game
         private bool _isFirstAppearance = true;
 
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
-        private Dictionary<long, SKImage> _darkenedBitmaps = new Dictionary<long, SKImage>();
-        private Dictionary<long, SKImage> _darkenedAutodrawBitmaps = new Dictionary<long, SKImage>();
 
         private readonly object _uLock = new object();
         private int _ux = 0;
@@ -1215,12 +1213,6 @@ namespace GnollHackX.Pages.Game
                 foreach (SKImage bmp in _savedRects.Values)
                     bmp?.Dispose();
                 _savedRects.Clear();
-                foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
-                    bmp?.Dispose();
-                _darkenedAutodrawBitmaps.Clear();
-                foreach (SKImage bmp in _darkenedBitmaps.Values)
-                    bmp?.Dispose();
-                _darkenedBitmaps.Clear();
                 foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
                     bmp?.Dispose();
                 _savedAutoDrawBitmaps.Clear();
@@ -7596,8 +7588,6 @@ namespace GnollHackX.Pages.Game
         private List<string> _localMainTempScreenDebugLogs = new List<string>();
         private bool _localDarkeningFilterCachePruned;
         private bool _localCompositeFilterCachePruned;
-        private bool _localDarkenedBitmapCachePruned;
-        private bool _localDarkenedAutodrawBitmapCachePruned;
         private SKColorFilter[] _localDarkeningColorFilters = new SKColorFilter[101];
         private SKColorFilter[] _localCompositeLookColorFilters = new SKColorFilter[101];
         private SKColorFilter[] _localCompositeMapColorFilters = new SKColorFilter[101];
@@ -7620,8 +7610,6 @@ namespace GnollHackX.Pages.Game
             canvas.Clear(useAscii ? UIUtils.ASCIIOutOfMapBoundsColor : SKColors.Black);
             _localDarkeningFilterCachePruned = false;
             _localCompositeFilterCachePruned = false;
-            _localDarkenedBitmapCachePruned = false;
-            _localDarkenedAutodrawBitmapCachePruned = false;
             if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
 
@@ -7733,12 +7721,6 @@ namespace GnollHackX.Pages.Game
 
             if (clearDarkeningCaches || clearCaches)
             {
-                foreach (SKImage bmp in _darkenedBitmaps.Values)
-                    bmp.Dispose();
-                _darkenedBitmaps.Clear();
-                foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
-                    bmp.Dispose();
-                _darkenedAutodrawBitmaps.Clear();
                 ClearColorFilterCaches();
             }
 
@@ -8745,241 +8727,47 @@ namespace GnollHackX.Pages.Game
                                                     try
                                                     {
                                                         bool dodarkening = true;
-                                                        using (SKCanvas darkeningCanvas = new SKCanvas(_paintBitmap))
+                                                        foreach (GHDrawCommand dc in _drawCommandList)
                                                         {
-                                                            foreach (GHDrawCommand dc in _drawCommandList)
+                                                            if (dc.EndDarkening)
                                                             {
-                                                                if (dc.EndDarkening)
-                                                                {
-                                                                    dodarkening = false;
-                                                                    continue;
-                                                                }
-                                                                ref LayerInfo dcLayerInfo = ref _mapData[dc.MapX, dc.MapY].Layers;
-                                                                if (dodarkening && DarkenedPos(ref dcLayerInfo))
-                                                                {
-                                                                    darkeningCanvas.Clear(SKColors.Transparent);
-                                                                    if (dc.IsAutoDraw)
-                                                                    {
-                                                                        SKImage usedDarkenedBitmap = null;
-                                                                        int darken_percentage = GetDarkenPercentage(ref dcLayerInfo, lighterDarkening);
-                                                                        long cachekey = ComputeDarkenedAutodrawCacheKey(
-                                                                            dc.AutoDrawParameters.autodraw,
-                                                                            dc.AutoDrawParameters.otmp_round?.ObjData.otyp ?? 0,
-                                                                            darken_percentage,
-                                                                            dc.AutoDrawParameters.item_charges,
-                                                                            dc.AutoDrawParameters.item_special_quality,
-                                                                            dc.AutoDrawParameters.contents_no,
-                                                                            dc.AutoDrawParameters.tileflag_halfsize,
-                                                                            dc.AutoDrawParameters.tileflag_normalobjmissile,
-                                                                            dc.AutoDrawParameters.tileflag_fullsizeditem,
-                                                                            dc.AutoDrawParameters.is_inventory,
-                                                                            dc.AutoDrawParameters.item_lit,
-                                                                            dc.AutoDrawParameters.contents_id_sum);
-                                                                        SKRect sourceRect = new SKRect(0, 0, dc.AutoDrawParameters.width, dc.AutoDrawParameters.height);
-                                                                        SKRect destRect = new SKRect(dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding,
-                                                                            dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding,
-                                                                            dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding + dc.AutoDrawParameters.width * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale,
-                                                                            dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding + dc.AutoDrawParameters.height * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale);
-
-                                                                        if (_darkenedAutodrawBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap) && usedDarkenedBitmap != null)
-                                                                        {
-                                                                            paint.Color = dc.PaintColor;
-                                                                            paint.ColorFilter = dc.PaintColorFilter;
-#if GNH_MAUI
-                                                                            canvas.SetMatrix(in dc.Matrix);
-#else
-                                                                            canvas.SetMatrix(dc.Matrix);
-#endif
-                                                                            GHApp.MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect
-#if GNH_MAUI
-                                                                            , SKSamplingOptions.Default
-#endif
-                                                                            , paint);
-                                                                            paint.ColorFilter = null;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            paint.Color = dc.PaintColor;
-                                                                            paint.ColorFilter = GetDarkeningColorFilter(darken_percentage);
-#if GNH_MAUI
-                                                                            canvas.SetMatrix(in dc.Matrix);
-#else
-                                                                            canvas.SetMatrix(dc.Matrix);
-#endif
-                                                                            DrawAutoDraw(dc.AutoDrawParameters.autodraw, darkeningCanvas, false, paint, dc.AutoDrawParameters.otmp_round,
-                                                                                dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
-                                                                                dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, 0, 0,
-                                                                                dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, 1, 1,
-                                                                                0, 0, height, dc.AutoDrawParameters.is_inventory,
-                                                                                dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
-                                                                            paint.ColorFilter = null;
-
-                                                                            /* Save to cache as immutable */
-                                                                            bool doDisposeImage = false;
-                                                                            SKBitmap newbmp = null;
-                                                                            try
-                                                                            {
-                                                                                newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
-                                                                                _paintBitmap.CopyTo(newbmp);
-                                                                                newbmp.SetImmutable();
-                                                                                SKImage newImage = SKImage.FromBitmap(newbmp);
-                                                                                newbmp = null; /* Ownership transferred to newImage */
-                                                                                usedDarkenedBitmap = newImage;
-                                                                                if (_darkenedAutodrawBitmaps.Count >= GHConstants.MaxDarkenedAutodrawBitmapCacheSize)
-                                                                                {
-                                                                                    foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
-                                                                                        bmp.Dispose();
-                                                                                    _darkenedAutodrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
-                                                                                    _localDarkenedAutodrawBitmapCachePruned = true;
-                                                                                }
-                                                                                _darkenedAutodrawBitmaps.Add(cachekey, newImage);
-                                                                                if (screenLogging)
-                                                                                {
-                                                                                    GHApp.MaybeWriteScreenLog(screenLogging,
-                                                                                        $"Darkened autodraw cached: key=0x{cachekey:X16}, " +
-                                                                                        $"autodraw={dc.AutoDrawParameters.autodraw}, " +
-                                                                                        $"otyp={dc.AutoDrawParameters.otmp_round?.ObjData.otyp}, " +
-                                                                                        $"dark%={darken_percentage}, " +
-                                                                                        $"charges={dc.AutoDrawParameters.item_charges}, " +
-                                                                                        $"contNo={dc.AutoDrawParameters.contents_no}");
-                                                                                }
-                                                                            }
-                                                                            catch (Exception ex)
-                                                                            {
-                                                                                newbmp?.Dispose();
-                                                                                Debug.WriteLine(ex.Message);
-                                                                                usedDarkenedBitmap = SKImage.FromBitmap(_paintBitmap);
-                                                                                doDisposeImage = true;
-                                                                            }
-
-                                                                            paint.ColorFilter = dc.PaintColorFilter;
-                                                                            GHApp.MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect
-#if GNH_MAUI
-                                                                            , SKSamplingOptions.Default
-#endif
-                                                                            , paint);
-                                                                            if (doDisposeImage)
-                                                                                usedDarkenedBitmap.Dispose();
-                                                                            paint.ColorFilter = null;
-                                                                        }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        SKImage usedDarkenedBitmap = null;
-                                                                        int darken_percentage = GetDarkenPercentage(ref dcLayerInfo, lighterDarkening);
-                                                                        long cachekey = ComputeDarkenedBitmapCacheKey(dc.SheetIdx, dc.SourceRect, darken_percentage);
-                                                                        SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
-                                                                        if (_darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap) && usedDarkenedBitmap != null)
-                                                                        {
-                                                                            paint.Color = dc.PaintColor;
-                                                                            paint.ColorFilter = dc.PaintColorFilter;
-#if GNH_MAUI
-                                                                            canvas.SetMatrix(in dc.Matrix);
-#else
-                                                                            canvas.SetMatrix(dc.Matrix);
-#endif
-                                                                            SKRect dcDestRect = dc.DestinationRect;
-                                                                            GHApp.MaybeFixRects(ref cacheRect, ref dcDestRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, cacheRect, dcDestRect
-#if GNH_MAUI
-                                                                            , SKSamplingOptions.Default
-#endif
-                                                                            , paint);
-                                                                            paint.ColorFilter = null;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            /* Copy source bitmap to _paintCanvas and darken it */
-                                                                            paint.ColorFilter = GetDarkeningColorFilter(darken_percentage);
-                                                                            darkeningCanvas.DrawImage(dc.SourceBitmap, dc.SourceRect, cacheRect
-#if GNH_MAUI
-                                                                            , SKSamplingOptions.Default
-#endif
-                                                                            , paint);
-                                                                            paint.ColorFilter = null;
-
-                                                                            /* Save to cache as immutable */
-                                                                            bool doDisposeImage = false;
-                                                                            SKBitmap newbmp = null;
-                                                                            try
-                                                                            {
-                                                                                newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
-                                                                                _paintBitmap.CopyTo(newbmp);
-                                                                                newbmp.SetImmutable();
-                                                                                SKImage newImage = SKImage.FromBitmap(newbmp);
-                                                                                newbmp = null; /* Ownership transferred to newImage */
-                                                                                usedDarkenedBitmap = newImage;
-                                                                                if (_darkenedBitmaps.Count >= GHConstants.MaxDarkenedBitmapCacheSize)
-                                                                                {
-                                                                                    foreach (SKImage bmp in _darkenedBitmaps.Values)
-                                                                                        bmp.Dispose();
-                                                                                    _darkenedBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
-                                                                                    _localDarkenedBitmapCachePruned = true;
-                                                                                }
-                                                                                _darkenedBitmaps.Add(cachekey, newImage);
-                                                                            }
-                                                                            catch (Exception ex)
-                                                                            {
-                                                                                newbmp?.Dispose();
-                                                                                Debug.WriteLine(ex.Message);
-                                                                                usedDarkenedBitmap = SKImage.FromBitmap(_paintBitmap);
-                                                                                doDisposeImage = true;
-                                                                            }
-
-                                                                            paint.Color = dc.PaintColor;
-                                                                            paint.ColorFilter = dc.PaintColorFilter;
-#if GNH_MAUI
-                                                                            canvas.SetMatrix(in dc.Matrix);
-#else
-                                                                            canvas.SetMatrix(dc.Matrix);
-#endif
-                                                                            SKRect dcDestRect2 = dc.DestinationRect;
-                                                                            GHApp.MaybeFixRects(ref cacheRect, ref dcDestRect2, targetscale, usingGL, fixRects, fixFiltering);
-                                                                            canvas.DrawImage(usedDarkenedBitmap, cacheRect, dcDestRect2
-#if GNH_MAUI
-                                                                            , SKSamplingOptions.Default
-#endif
-                                                                            , paint);
-                                                                            if (doDisposeImage)
-                                                                                usedDarkenedBitmap.Dispose();
-                                                                            paint.ColorFilter = null;
-                                                                        }
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    paint.Color = dc.PaintColor;
-                                                                    paint.ColorFilter = dc.PaintColorFilter;
-#if GNH_MAUI
-                                                                    canvas.SetMatrix(in dc.Matrix);
-#else
-                                                                    canvas.SetMatrix(dc.Matrix);
-#endif
-                                                                    if (dc.IsAutoDraw)
-                                                                    {
-                                                                        DrawAutoDraw(dc.AutoDrawParameters.autodraw, canvas, false, paint, dc.AutoDrawParameters.otmp_round,
-                                                                            dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
-                                                                            dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, dc.AutoDrawParameters.tx, dc.AutoDrawParameters.ty,
-                                                                            dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, dc.AutoDrawParameters.scale, dc.AutoDrawParameters.targetscale,
-                                                                            dc.AutoDrawParameters.scaled_x_padding, dc.AutoDrawParameters.scaled_y_padding, dc.AutoDrawParameters.scaled_tile_height, dc.AutoDrawParameters.is_inventory,
-                                                                            dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        SKRect dcSrcRect = dc.SourceRect;
-                                                                        SKRect dcDstRect = dc.DestinationRect;
-                                                                        GHApp.MaybeFixRects(ref dcSrcRect, ref dcDstRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                        canvas.DrawImage(dc.SourceBitmap, dcSrcRect, dcDstRect
-#if GNH_MAUI
-                                                                        , SKSamplingOptions.Default
-#endif
-                                                                        , paint);
-                                                                    }
-                                                                    paint.ColorFilter = null;
-                                                                }
+                                                                dodarkening = false;
+                                                                continue;
                                                             }
+
+                                                            ref LayerInfo dcLayerInfo = ref _mapData[dc.MapX, dc.MapY].Layers;
+                                                            paint.Color = dc.PaintColor;
+                                                            if (dodarkening && DarkenedPos(ref dcLayerInfo))
+                                                                paint.ColorFilter = GetDrawCommandColorFilter(dc.PaintColorFilter,
+                                                                    GetDarkenPercentage(ref dcLayerInfo, lighterDarkening));
+                                                            else
+                                                                paint.ColorFilter = dc.PaintColorFilter;
+#if GNH_MAUI
+                                                            canvas.SetMatrix(in dc.Matrix);
+#else
+                                                            canvas.SetMatrix(dc.Matrix);
+#endif
+                                                            if (dc.IsAutoDraw)
+                                                            {
+                                                                DrawAutoDraw(dc.AutoDrawParameters.autodraw, canvas, false, paint, dc.AutoDrawParameters.otmp_round,
+                                                                    dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
+                                                                    dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, dc.AutoDrawParameters.tx, dc.AutoDrawParameters.ty,
+                                                                    dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, dc.AutoDrawParameters.scale, dc.AutoDrawParameters.targetscale,
+                                                                    dc.AutoDrawParameters.scaled_x_padding, dc.AutoDrawParameters.scaled_y_padding, dc.AutoDrawParameters.scaled_tile_height, dc.AutoDrawParameters.is_inventory,
+                                                                    dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
+                                                            }
+                                                            else
+                                                            {
+                                                                SKRect dcSrcRect = dc.SourceRect;
+                                                                SKRect dcDstRect = dc.DestinationRect;
+                                                                GHApp.MaybeFixRects(ref dcSrcRect, ref dcDstRect, targetscale, usingGL, fixRects, fixFiltering);
+                                                                canvas.DrawImage(dc.SourceBitmap, dcSrcRect, dcDstRect
+#if GNH_MAUI
+                                                                    , SKSamplingOptions.Default
+#endif
+                                                                    , paint);
+                                                            }
+                                                            paint.ColorFilter = null;
                                                         }
                                                         _lastDrawCommandCount = _drawCommandList.Count;
                                                         _drawCommandList.Clear();
@@ -12709,10 +12497,6 @@ namespace GnollHackX.Pages.Game
                         GHApp.MaybeWriteScreenLog(screenLogging, "Darkening color filter cache pruned (" + GHConstants.MaxColorFilterCacheSize + " entries)");
                     if (_localCompositeFilterCachePruned)
                         GHApp.MaybeWriteScreenLog(screenLogging, "Composite color filter cache pruned (" + GHConstants.MaxColorFilterCacheSize + " entries)");
-                    if (_localDarkenedBitmapCachePruned)
-                        GHApp.MaybeWriteScreenLog(screenLogging, "Darkened bitmap cache pruned (" + GHConstants.MaxDarkenedBitmapCacheSize + " entries)");
-                    if (_localDarkenedAutodrawBitmapCachePruned)
-                        GHApp.MaybeWriteScreenLog(screenLogging, "Darkened autodraw bitmap cache pruned (" + GHConstants.MaxDarkenedAutodrawBitmapCacheSize + " entries)");
 
                     if (Interlocked.CompareExchange(ref _printCacheStatus, 0, 1) != 0)
                     {
@@ -12723,8 +12507,6 @@ namespace GnollHackX.Pages.Game
                         //GHApp.MaybeWriteScreenLog(screenLogging, "Composite look color filter cache length: " + (_localCompositeLookColorFilters?.Count(x => x != null) ?? 0));
                         //GHApp.MaybeWriteScreenLog(screenLogging, "Composite map color filter cache length: " + (_localCompositeMapColorFilters?.Count(x => x != null) ?? 0));
                         GHApp.MaybeWriteScreenLog(screenLogging, "Composite color filter fallback cache length: " + (_localCompositeColorFiltersFallback?.Count ?? 0));
-                        GHApp.MaybeWriteScreenLog(screenLogging, "Darkened bitmap cache length: " + (_darkenedBitmaps?.Count ?? 0));
-                        GHApp.MaybeWriteScreenLog(screenLogging, "Darkened autodraw bitmap cache length: " + (_darkenedAutodrawBitmaps?.Count ?? 0));
                         GHApp.MaybeWriteScreenLog(screenLogging, "Draw command list count (last frame): " + _lastDrawCommandCount);
                     }
 
@@ -13675,6 +13457,16 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        /* commandFilter is null or one of the two highlight filters, so the composite
+           lookup takes an array fast path rather than the hash-keyed fallback. */
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private SKColorFilter GetDrawCommandColorFilter(SKColorFilter commandFilter, int darken_percentage)
+        {
+            return commandFilter != null
+                ? GetCompositeColorFilter(commandFilter, darken_percentage)
+                : GetDarkeningColorFilter(darken_percentage);
+        }
+
         private void ClearColorFilterCaches()
         {
             if (_localDarkeningColorFilters != null)
@@ -13729,40 +13521,6 @@ namespace GnollHackX.Pages.Game
             return false;
         }
 
-        /* Bit-packed cache key: darkenPct[7] | sheetIdx[2] | srcLeft[13] | srcTop[13] = 35 bits */
-        private static long ComputeDarkenedBitmapCacheKey(int sheetIdx, SKRect sourceRect, int darkenPercentage)
-        {
-            return ((long)darkenPercentage << 28)
-                 | ((long)sheetIdx << 26)
-                 | ((long)(int)sourceRect.Left << 13)
-                 | (long)(int)sourceRect.Top;
-        }
-
-        /* Bit-packed cache key for darkened autodraw bitmaps (64 bits, all used).
-         * Captures only fields that affect the rendered bitmap pixels.
-         * o_id is intentionally excluded — visual identity is determined by otyp + charges + contents. */
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static long ComputeDarkenedAutodrawCacheKey(
-            int autodraw, int otyp, int darken_percentage,
-            int item_charges, int item_special_quality, ulong contents_no,
-            bool tileflag_halfsize, bool tileflag_normalobjmissile,
-            bool tileflag_fullsizeditem, bool is_inventory,
-            bool item_lit, ulong contents_id_sum)
-        {
-            return ((long)(autodraw & 0xFF) << 56)
-                 | ((long)(otyp & 0x3FF) << 46)
-                 | ((long)(darken_percentage & 0x7F) << 39)
-                 | ((long)(item_charges & 0x7F) << 32)
-                 | ((long)(item_special_quality & 0xFF) << 24)
-                 | ((long)(contents_no & 0x3F) << 18)
-                 | ((tileflag_halfsize ? 1L : 0L) << 17)
-                 | ((tileflag_normalobjmissile ? 1L : 0L) << 16)
-                 | ((tileflag_fullsizeditem ? 1L : 0L) << 15)
-                 | ((is_inventory ? 1L : 0L) << 14)
-                 | ((item_lit ? 1L : 0L) << 13)
-                 | (long)((contents_id_sum * 6364136223846793005UL) >> 51);
-        }
-
         /* Bit-packed cache key: filterHash[32] | darkenPct[7] = 39 bits */
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static long ComputeColorFilterCacheKey(SKColorFilter filter, int darkenPercentage)
@@ -13795,32 +13553,10 @@ namespace GnollHackX.Pages.Game
 
             if (delayedDraw)
             {
-                ulong contents_no = 0;
-                ulong contents_id_sum = 0;
-                int item_charges = 0;
-                int item_special_quality = 0;
-                bool item_lit = false;
-                if (otmp_round != null)
-                {
-                    item_charges = otmp_round.ObjData.charges;
-                    item_special_quality = otmp_round.ObjData.special_quality;
-                    item_lit = otmp_round.LampLit;
-                    if(otmp_round.HasContainedObjs)
-                    {
-                        foreach (ObjectDataItem otmp in otmp_round.ContainedObjsEnumerable)
-                        {
-                            if (otmp != null)
-                            {
-                                contents_no++;
-                                contents_id_sum += otmp.ObjData.o_id;
-                            }
-                        }
-                    }
-                }
-                _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, paint.Color, paint.ColorFilter, mapx, mapy, new AutoDrawParameterDefinition(autodraw, otmp_round, layer_idx, 
+                _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, paint.Color, paint.ColorFilter, mapx, mapy, new AutoDrawParameterDefinition(autodraw, otmp_round, layer_idx,
                      tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
                      tx, ty, width, height, scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
-                     is_inventory, drawwallends, contents_no, contents_id_sum, item_charges, item_special_quality, item_lit)));
+                     is_inventory, drawwallends)));
                 return;
             }
 
@@ -14574,6 +14310,7 @@ namespace GnollHackX.Pages.Game
 
                         double semi_transparency;
                         SKBlendMode oldbm;
+                        SKColorFilter oldcf;
                         if (fill_percentage > 0.0)
                         {
                             /* Second, contents */
@@ -14607,6 +14344,10 @@ namespace GnollHackX.Pages.Game
                             else
                             {
                                 oldbm = paint.BlendMode;
+                                /* The intermediate is cached without darkening or highlighting; the cache key
+                                   carries neither, and the filter is applied when it is drawn to the canvas. */
+                                oldcf = paint.ColorFilter;
+                                paint.ColorFilter = null;
                                 using (SKCanvas _paintCanvas = new SKCanvas(_paintBitmap))
                                 {
                                     _paintCanvas.Clear(SKColors.Transparent);
@@ -14624,6 +14365,7 @@ namespace GnollHackX.Pages.Game
                                     }
                                 }
                                 paint.BlendMode = oldbm;
+                                paint.ColorFilter = oldcf;
                                 paint.Color = SKColors.Black;
                                 bool containskey1;
                                 //lock (_saveAutoDrawLock)
@@ -14849,6 +14591,10 @@ namespace GnollHackX.Pages.Game
                         else
                         {
                             oldbm = paint.BlendMode;
+                            /* The intermediate is cached without darkening or highlighting; the cache key
+                               carries neither, and the filter is applied when it is drawn to the canvas. */
+                            oldcf = paint.ColorFilter;
+                            paint.ColorFilter = null;
                             draw_color = GHApp._autodraws[autodraw].parameter2;
                             blue = (byte)(draw_color & 0xFFUL);
                             green = (byte)((draw_color & 0xFF00UL) >> 8);
@@ -14867,6 +14613,7 @@ namespace GnollHackX.Pages.Game
                                 _paintCanvas.DrawRect(target_rt, paint);
                             }
                             paint.BlendMode = oldbm;
+                            paint.ColorFilter = oldcf;
                             paint.Color = SKColors.Black;
                             bool containskey2;
                             //lock (_saveAutoDrawLock)
