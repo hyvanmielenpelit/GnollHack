@@ -5193,14 +5193,6 @@ namespace GnollHackX.Pages.Game
 
                 if (Interlocked.Increment(ref _mainFPSCounterValue) == long.MaxValue)
                     Interlocked.Exchange(ref _mainFPSCounterValue, 0L);
-
-                SKImageInfo info = e.Info;
-                SKSurface surface = e.Surface;
-                SKCanvas canvas = surface.Canvas;
-
-                /* Finally, flush */
-                canvas.Flush();
-                FrameTimeProfiler.StampPaintEnd();
             }
             catch (Exception ex)
             {
@@ -5208,6 +5200,13 @@ namespace GnollHackX.Pages.Game
             }
             finally
             {
+                /* Finally, flush */
+                SKSurface surface = e.Surface;
+                SKCanvas canvas = surface.Canvas;
+                canvas.Flush();
+
+                FrameTimeProfiler.StampPaintEnd();
+
                 IsMainCanvasDrawing = false;
             }
         }
@@ -8871,6 +8870,9 @@ namespace GnollHackX.Pages.Game
                                                                     runEnd++;
                                                                 for (int sheet = 0; sheet < sheetCount; sheet++)
                                                                 {
+                                                                    if ((_drawCommandSheetMask & (1 << sheet)) == 0)
+                                                                        continue;
+
                                                                     for (int i = runStart; i < runEnd; i++)
                                                                     {
                                                                         if (_drawCommandList[i].SheetIdx == sheet)
@@ -8881,8 +8883,8 @@ namespace GnollHackX.Pages.Game
                                                             }
                                                         }
                                                         _lastDrawCommandCount = frameCmdCount;
-                                                        _drawCommandList.Clear();
-                                                        _drawCommandSheetMask = 0;
+                                                        canvas.Restore();
+                                                        canvas.Save();
 
                                                         paint.Color = SKColors.Black;
                                                         for (int mapx = startX; mapx <= endX; mapx++)
@@ -8929,6 +8931,8 @@ namespace GnollHackX.Pages.Game
                                                     finally
                                                     {
                                                         canvas.Restore();
+                                                        _drawCommandList.Clear();
+                                                        _drawCommandSheetMask = 0;
                                                     }
                                                 }
                                             }
@@ -13568,16 +13572,6 @@ namespace GnollHackX.Pages.Game
                 _localCompositeColorFiltersFallback[key] = newFilter;
                 return newFilter;
             }
-        }
-
-        /* commandFilter is null or one of the two highlight filters, so the composite
-           lookup takes an array fast path rather than the hash-keyed fallback. */
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private SKColorFilter GetDrawCommandColorFilter(SKColorFilter commandFilter, int darken_percentage)
-        {
-            return commandFilter != null
-                ? GetCompositeColorFilter(commandFilter, darken_percentage)
-                : GetDarkeningColorFilter(darken_percentage);
         }
 
         private void ClearColorFilterCaches()
