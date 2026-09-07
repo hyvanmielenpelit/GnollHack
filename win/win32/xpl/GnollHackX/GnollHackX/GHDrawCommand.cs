@@ -64,8 +64,8 @@ namespace GnollHackX
         public int MapY;
         /* Grouping the deferred lists by sheet must not reorder across layers */
         public int LayerIdx;
-        public bool IsAutoDraw { get; private set; }
-        public AutoDrawParameterDefinition AutoDrawParameters { get; private set; }
+        public bool IsAutoDraw;
+        public AutoDrawParameterDefinition AutoDrawParameters;
 
         public GHDrawCommand(SKMatrix matrix, SKRect sourceRect, SKRect destinationRect, SKImage sourceBitmap, SKColor paintColor, SKColorFilter paintColorFilter, int sheetIdx, int mapX, int mapY, int layerIdx)
         {

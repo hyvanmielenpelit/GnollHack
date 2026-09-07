@@ -6342,9 +6342,14 @@ namespace GnollHackX.Pages.Game
             return true;
         }
 
-        private List<GHDrawCommand> _drawCommandList = new List<GHDrawCommand>(GHConstants.DefaultDrawCommandListSize);
-        private List<GHDrawCommand> _layerDrawCommandList = new List<GHDrawCommand>(GHConstants.DefaultLayerDrawCommandListSize);
-        /* Bit per tile sheet present in the corresponding list; a single bit means the
+        /* Arrays rather than lists: the command struct is large, and an array element can
+           be read and passed on by reference, where a list indexer copies the whole struct
+           on every access - the sheet grouping passes touch each command several times */
+        private GHDrawCommand[] _drawCommands = new GHDrawCommand[GHConstants.DefaultDrawCommandListSize];
+        private GHDrawCommand[] _layerDrawCommands = new GHDrawCommand[GHConstants.DefaultLayerDrawCommandListSize];
+        private int _drawCommandCount = 0;
+        private int _layerDrawCommandCount = 0;
+        /* Bit per tile sheet present in the corresponding array; a single bit means the
            sheet grouping pass can be skipped */
         private int _drawCommandSheetMask = 0;
         private int _layerDrawCommandSheetMask = 0;
@@ -6444,19 +6449,43 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void AddFrameDrawCommand(GHDrawCommand cmd)
+        private void AddFrameDrawCommand(in GHDrawCommand cmd)
         {
-            _drawCommandList.Add(cmd);
+            if (_drawCommandCount == _drawCommands.Length)
+                Array.Resize(ref _drawCommands, _drawCommands.Length * 2);
+
+            _drawCommands[_drawCommandCount++] = cmd;
             _drawCommandSheetMask |= 1 << cmd.SheetIdx;
         }
 
-        private void AddLayerDrawCommand(GHDrawCommand cmd)
+        private void AddLayerDrawCommand(in GHDrawCommand cmd)
         {
-            _layerDrawCommandList.Add(cmd);
+            if (_layerDrawCommandCount == _layerDrawCommands.Length)
+                Array.Resize(ref _layerDrawCommands, _layerDrawCommands.Length * 2);
+
+            _layerDrawCommands[_layerDrawCommandCount++] = cmd;
             _layerDrawCommandSheetMask |= 1 << cmd.SheetIdx;
         }
 
-        /* More than one bit set: the list spans several tile sheets */
+        /* The commands hold bitmap, color filter and object references, so the used part of
+           the array is cleared rather than just the count */
+        private void ResetFrameDrawCommands()
+        {
+            if (_drawCommandCount > 0)
+                Array.Clear(_drawCommands, 0, _drawCommandCount);
+            _drawCommandCount = 0;
+            _drawCommandSheetMask = 0;
+        }
+
+        private void ResetLayerDrawCommands()
+        {
+            if (_layerDrawCommandCount > 0)
+                Array.Clear(_layerDrawCommands, 0, _layerDrawCommandCount);
+            _layerDrawCommandCount = 0;
+            _layerDrawCommandSheetMask = 0;
+        }
+
+        /* More than one bit set: the array spans several tile sheets */
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool NeedsSheetGrouping(int sheetMask)
         {
@@ -6473,7 +6502,9 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void ReplayDrawCommand(SKCanvas canvas, SKPaint paint, GHDrawCommand dc, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
+        /* dc may alias the array element being replayed, which holds as long as the replay
+           itself queues no new commands: it draws with both delays turned off */
+        private void ReplayDrawCommand(SKCanvas canvas, SKPaint paint, in GHDrawCommand dc, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
         {
             paint.Color = dc.PaintColor;
             paint.ColorFilter = dc.PaintColorFilter;
@@ -6509,7 +6540,7 @@ namespace GnollHackX.Pages.Game
         /* Side enlargement tiles of one layer, replayed after that layer's own tiles */
         private void FlushLayerDrawCommands(SKCanvas canvas, SKPaint paint, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
         {
-            int cmdCount = _layerDrawCommandList.Count;
+            int cmdCount = _layerDrawCommandCount;
             if (cmdCount == 0)
                 return;
 
@@ -6519,7 +6550,7 @@ namespace GnollHackX.Pages.Game
                 if (!NeedsSheetGrouping(_layerDrawCommandSheetMask))
                 {
                     for (int i = 0; i < cmdCount; i++)
-                        ReplayDrawCommand(canvas, paint, _layerDrawCommandList[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+                        ReplayDrawCommand(canvas, paint, in _layerDrawCommands[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
                 }
                 else
                 {
@@ -6531,8 +6562,8 @@ namespace GnollHackX.Pages.Game
 
                         for (int i = 0; i < cmdCount; i++)
                         {
-                            if (_layerDrawCommandList[i].SheetIdx == sheet)
-                                ReplayDrawCommand(canvas, paint, _layerDrawCommandList[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+                            if (_layerDrawCommands[i].SheetIdx == sheet)
+                                ReplayDrawCommand(canvas, paint, in _layerDrawCommands[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
                         }
                     }
                 }
@@ -6540,8 +6571,7 @@ namespace GnollHackX.Pages.Game
             finally
             {
                 canvas.Restore();
-                _layerDrawCommandList.Clear();
-                _layerDrawCommandSheetMask = 0;
+                ResetLayerDrawCommands();
             }
         }
 
@@ -7809,10 +7839,8 @@ namespace GnollHackX.Pages.Game
 
             bool isLandscape = canvaswidth > canvasheight;
 
-            _drawCommandList.Clear();
-            _drawCommandSheetMask = 0;
-            _layerDrawCommandList.Clear();
-            _layerDrawCommandSheetMask = 0;
+            ResetFrameDrawCommands();
+            ResetLayerDrawCommands();
             _lastSheetSwitchCount = _sheetSwitchCount;
             _sheetSwitchCount = 0;
             _drawSheetIdx = -1;
@@ -8860,11 +8888,11 @@ namespace GnollHackX.Pages.Game
                                                     canvas.Save();
                                                     try
                                                     {
-                                                        int frameCmdCount = _drawCommandList.Count;
+                                                        int frameCmdCount = _drawCommandCount;
                                                         if (!NeedsSheetGrouping(_drawCommandSheetMask))
                                                         {
                                                             for (int i = 0; i < frameCmdCount; i++)
-                                                                ReplayDrawCommand(canvas, paint, _drawCommandList[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+                                                                ReplayDrawCommand(canvas, paint, in _drawCommands[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
                                                         }
                                                         else
                                                         {
@@ -8874,9 +8902,9 @@ namespace GnollHackX.Pages.Game
                                                             int runStart = 0;
                                                             while (runStart < frameCmdCount)
                                                             {
-                                                                int runLayerIdx = _drawCommandList[runStart].LayerIdx;
+                                                                int runLayerIdx = _drawCommands[runStart].LayerIdx;
                                                                 int runEnd = runStart + 1;
-                                                                while (runEnd < frameCmdCount && _drawCommandList[runEnd].LayerIdx == runLayerIdx)
+                                                                while (runEnd < frameCmdCount && _drawCommands[runEnd].LayerIdx == runLayerIdx)
                                                                     runEnd++;
                                                                 for (int sheet = 0; sheet < sheetCount; sheet++)
                                                                 {
@@ -8885,8 +8913,8 @@ namespace GnollHackX.Pages.Game
 
                                                                     for (int i = runStart; i < runEnd; i++)
                                                                     {
-                                                                        if (_drawCommandList[i].SheetIdx == sheet)
-                                                                            ReplayDrawCommand(canvas, paint, _drawCommandList[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+                                                                        if (_drawCommands[i].SheetIdx == sheet)
+                                                                            ReplayDrawCommand(canvas, paint, in _drawCommands[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
                                                                     }
                                                                 }
                                                                 runStart = runEnd;
@@ -8941,8 +8969,7 @@ namespace GnollHackX.Pages.Game
                                                     finally
                                                     {
                                                         canvas.Restore();
-                                                        _drawCommandList.Clear();
-                                                        _drawCommandSheetMask = 0;
+                                                        ResetFrameDrawCommands();
                                                     }
                                                 }
                                             }
