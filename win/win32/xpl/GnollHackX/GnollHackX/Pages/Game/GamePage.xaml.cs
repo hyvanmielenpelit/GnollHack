@@ -5185,6 +5185,10 @@ namespace GnollHackX.Pages.Game
             if (IsMainCanvasDrawingAndSetTrue) /* In the case of some sort of reentrancy or new draw before previous is finished */
                 return;
 
+            SKCanvas canvas = e.Surface.Canvas;
+            /* Save count of the state the canvas is handed over in */
+            int paintSaveCount = canvas.SaveCount;
+
             try
             {
                 FrameTimeProfiler.StampPaintStart();
@@ -5200,9 +5204,15 @@ namespace GnollHackX.Pages.Game
             }
             finally
             {
+                /* The canvas is reused between frames, so a save left on the stack would carry
+                   its clip and matrix over into the next one */
+                if (canvas.SaveCount > paintSaveCount)
+                {
+                    Debug.WriteLine("canvasView_PaintSurface: unbalanced canvas save stack");
+                    canvas.RestoreToCount(paintSaveCount);
+                }
+
                 /* Finally, flush */
-                SKSurface surface = e.Surface;
-                SKCanvas canvas = surface.Canvas;
                 canvas.Flush();
 
                 FrameTimeProfiler.StampPaintEnd();
