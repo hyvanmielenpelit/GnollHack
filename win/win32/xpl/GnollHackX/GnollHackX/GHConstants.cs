@@ -421,6 +421,7 @@ namespace GnollHackX
         public const string SAVE_GAME_NOTIFICATION_CHANNEL_ID = "save_game_channel";
         public const string SingleCommandPageTitle = "Commands";
         public const int DefaultMoreButtonListSize = MoreButtonPages * MoreButtonsPerRow * MoreButtonsPerColumn + 1;
+        public const int DefaultDrawCommandListSize = 512;
         public const int DefaultLayerDrawCommandListSize = 256;
         public const float KeyboardShortcutRelativeFontSize = 0.9f;
         public const float TextRowMultiplierWithKeyboardShortcuts = 1.0f + KeyboardShortcutRelativeFontSize;

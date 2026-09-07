@@ -59,14 +59,15 @@ namespace GnollHackX
         public SKImage SourceBitmap;
         public SKColor PaintColor;
         public SKColorFilter PaintColorFilter;
-        public bool EndDarkening;
         public int SheetIdx;
         public int MapX;
         public int MapY;
+        /* Grouping the deferred lists by sheet must not reorder across layers */
+        public int LayerIdx;
         public bool IsAutoDraw { get; private set; }
         public AutoDrawParameterDefinition AutoDrawParameters { get; private set; }
 
-        public GHDrawCommand(SKMatrix matrix, SKRect sourceRect, SKRect destinationRect, SKImage sourceBitmap, SKColor paintColor, SKColorFilter paintColorFilter, int sheetIdx, int mapX, int mapY)
+        public GHDrawCommand(SKMatrix matrix, SKRect sourceRect, SKRect destinationRect, SKImage sourceBitmap, SKColor paintColor, SKColorFilter paintColorFilter, int sheetIdx, int mapX, int mapY, int layerIdx)
         {
             Matrix = matrix;
             SourceRect = sourceRect;
@@ -77,43 +78,27 @@ namespace GnollHackX
             SheetIdx = sheetIdx;
             MapX = mapX;
             MapY = mapY;
+            LayerIdx = layerIdx;
 #if !GNH_MAUI
-            EndDarkening = false;
             IsAutoDraw = false;
             AutoDrawParameters = new AutoDrawParameterDefinition();
 #endif
         }
-        public GHDrawCommand(bool endDarkening)
-        {
-            EndDarkening = endDarkening;
-
-#if !GNH_MAUI
-            Matrix = new SKMatrix();
-            SourceRect = new SKRect();
-            DestinationRect = new SKRect();
-            SourceBitmap = null;
-            PaintColor = SKColors.Black;
-            PaintColorFilter = null;
-            SheetIdx = 0;
-            MapX = 0;
-            MapY = 0;
-            IsAutoDraw = false;
-            AutoDrawParameters = new AutoDrawParameterDefinition();
-#endif
-        }
-        public GHDrawCommand(SKMatrix matrix, SKColor paintColor, SKColorFilter paintColorFilter, int mapX, int mapY, AutoDrawParameterDefinition parameters)
+        /* sheetIdx is the sheet of the tile being decorated: it is only a grouping key,
+           the components themselves select their own sheets as they are drawn. */
+        public GHDrawCommand(SKMatrix matrix, SKColor paintColor, SKColorFilter paintColorFilter, int sheetIdx, int mapX, int mapY, AutoDrawParameterDefinition parameters)
         {
             Matrix = matrix;
-            SheetIdx = 0;
+            SheetIdx = sheetIdx;
             MapX = mapX;
             MapY = mapY;
+            LayerIdx = parameters.layer_idx;
             PaintColor = paintColor;
             PaintColorFilter = paintColorFilter;
             AutoDrawParameters = parameters;
             IsAutoDraw = true;
 
 #if !GNH_MAUI
-            EndDarkening = false;
             SourceRect = new SKRect();
             DestinationRect = new SKRect();
             SourceBitmap = null;

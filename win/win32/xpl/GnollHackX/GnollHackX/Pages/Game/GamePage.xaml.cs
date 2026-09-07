@@ -5802,7 +5802,7 @@ namespace GnollHackX.Pages.Game
             bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
             bool hflip_glyph, bool vflip_glyph,
             ObjectDataItem otmp_round, int autodraw, bool drawwallends, bool breatheanimations, long generalcounterdiff, float canvaswidth, float canvasheight, int enlargement, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering,
-            bool pointerIsHoveringOnTile, bool mapLookMode, bool lighterDarkening) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
+            bool pointerIsHoveringOnTile, bool mapLookMode, bool lighterDarkening, bool layerDelayedDraw) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
             //ref float enlMinDrawX, ref float enlMaxDrawX, ref float enlMinDrawY, ref float enlMaxDrawY)
         {
             if (!GHUtils.isok(draw_map_x, draw_map_y))
@@ -6041,7 +6041,7 @@ namespace GnollHackX.Pages.Game
                     paint.ColorFilter = UIUtils.MapHighlightColorFilter;
             }
 
-            bool darken = !delayedDraw && (layer_idx <= (int)layer_types.LAYER_OBJECT) && DarkenedPos(ref currentLayerInfo);
+            bool darken = (layer_idx <= (int)layer_types.LAYER_OBJECT) && DarkenedPos(ref currentLayerInfo);
             if (darken)
             {
                 int darken_percentage = GetDarkenPercentage(ref currentLayerInfo, lighterDarkening);
@@ -6145,12 +6145,12 @@ namespace GnollHackX.Pages.Game
                 paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
                 if (supportsRadialTransparency && is_monster_like_layer && (currentLayerInfo.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
                 {
-                    DrawTileWithRadialTransparency(canvas, delayedDraw, TileMap[sheet_idx], sourcerect, targetrect, ref currentLayerInfo, splitY, opaqueness, paint, sheet_idx, mapx, mapy, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+                    DrawTileWithRadialTransparency(canvas, delayedDraw, TileMap[sheet_idx], sourcerect, targetrect, ref currentLayerInfo, splitY, opaqueness, paint, sheet_idx, mapx, mapy, layer_idx, layerDelayedDraw, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
                 }
                 else
                 {
                     StartProfiling(GHProfilingStyle.Bitmap);
-                    DrawSplitBitmap(canvas, delayedDraw, splitY, TileMap[sheet_idx], sourcerect, targetrect, paint, sheet_idx, mapx, mapy, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering); //, ref baseUpdateRect, ref enlUpdateRect);
+                    DrawSplitBitmap(canvas, delayedDraw, splitY, TileMap[sheet_idx], sourcerect, targetrect, paint, sheet_idx, mapx, mapy, layer_idx, layerDelayedDraw, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering); //, ref baseUpdateRect, ref enlUpdateRect);
                     StopProfiling(GHProfilingStyle.Bitmap);
                 }
 
@@ -6173,7 +6173,7 @@ namespace GnollHackX.Pages.Game
                 tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
                 tx, ty, width, height,
                 scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
-                false, drawwallends, usingGL, false, fixRects, false);
+                false, drawwallends, usingGL, false, fixRects, false, sheet_idx, layerDelayedDraw);
 
             if (paint.ColorFilter != null)
             {
@@ -6195,14 +6195,14 @@ namespace GnollHackX.Pages.Game
 
         //private readonly object _saveRectLock = new object();
         Dictionary<int, SKImage> _savedRects = new Dictionary<int, SKImage>();
-        public void DrawTileWithRadialTransparency(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int sheetIdx, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
+        public void DrawTileWithRadialTransparency(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int sheetIdx, int mapX, int mapY, int layerIdx, bool layerDelayedDraw, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
         {
             bool cache = false;
             if (sourcerect.Left % GHConstants.TileWidth == 0 && sourcerect.Top % GHConstants.TileHeight == 0
                 && sourcerect.Width == GHConstants.TileWidth && sourcerect.Height == GHConstants.TileHeight)
                 cache = true;
 
-            if (cache && RetrieveCachedRadialTile(canvas, delayedDraw, tileSheet, sourcerect, targetrect, ref layers, destSplitY, opaqueness, paint, sheetIdx, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering))
+            if (cache && RetrieveCachedRadialTile(canvas, delayedDraw, tileSheet, sourcerect, targetrect, ref layers, destSplitY, opaqueness, paint, sheetIdx, mapX, mapY, layerIdx, layerDelayedDraw, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering))
                 return;
 
             int copywidth, copyheight;
@@ -6213,11 +6213,11 @@ namespace GnollHackX.Pages.Game
 
             SKRect tempsourcerect = new SKRect(0, 0, copywidth, copyheight);
             if (cache)
-                CacheRadialTileAndDraw(canvas, delayedDraw, tileSheet, sourcerect, targetrect, ref layers, destSplitY, opaqueness, paint, sheetIdx, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering, tempsourcerect);
+                CacheRadialTileAndDraw(canvas, delayedDraw, tileSheet, sourcerect, targetrect, ref layers, destSplitY, opaqueness, paint, sheetIdx, mapX, mapY, layerIdx, layerDelayedDraw, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering, tempsourcerect);
             else
             {
                 using (var tempImage = SKImage.FromBitmap(_tempBitmap))
-                    DrawSplitBitmap(canvas, delayedDraw, destSplitY, tempImage, tempsourcerect, targetrect, paint, sheetIdx, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+                    DrawSplitBitmap(canvas, delayedDraw, destSplitY, tempImage, tempsourcerect, targetrect, paint, sheetIdx, mapX, mapY, layerIdx, layerDelayedDraw, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
             }
         }
 
@@ -6235,19 +6235,19 @@ namespace GnollHackX.Pages.Game
                  | (int)sourceRect.Top;
         }
 
-        private bool RetrieveCachedRadialTile(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int sheetIdx, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
+        private bool RetrieveCachedRadialTile(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int sheetIdx, int mapX, int mapY, int layerIdx, bool layerDelayedDraw, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
         {
             int sr = ComputeRadialTileCacheKey(sheetIdx, sourcerect);
             if (_savedRects.TryGetValue(sr, out SKImage bmp) && bmp != null)
             {
                 SKRect bmpsourcerect = new SKRect(0, 0, (float)bmp.Width, (float)bmp.Height);
-                DrawSplitBitmap(canvas, delayedDraw, destSplitY, bmp, bmpsourcerect, targetrect, paint, sheetIdx, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+                DrawSplitBitmap(canvas, delayedDraw, destSplitY, bmp, bmpsourcerect, targetrect, paint, sheetIdx, mapX, mapY, layerIdx, layerDelayedDraw, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
                 return true;
             }
             return false;
         }
 
-        private void CacheRadialTileAndDraw(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int sheetIdx, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering, SKRect tempsourcerect)
+        private void CacheRadialTileAndDraw(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int sheetIdx, int mapX, int mapY, int layerIdx, bool layerDelayedDraw, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering, SKRect tempsourcerect)
         {
             int sr = ComputeRadialTileCacheKey(sheetIdx, sourcerect);
             bool containskey;
@@ -6273,7 +6273,7 @@ namespace GnollHackX.Pages.Game
                         }
                         _savedRects.Add(sr, newimg);
                     }
-                    DrawSplitBitmap(canvas, delayedDraw, destSplitY, newimg, tempsourcerect, targetrect, paint, sheetIdx, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering); //, ref baseUpdateRect, ref enlUpdateRect);
+                    DrawSplitBitmap(canvas, delayedDraw, destSplitY, newimg, tempsourcerect, targetrect, paint, sheetIdx, mapX, mapY, layerIdx, layerDelayedDraw, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects, fixFiltering); //, ref baseUpdateRect, ref enlUpdateRect);
                 }
                 catch (Exception ex)
                 {
@@ -6333,8 +6333,19 @@ namespace GnollHackX.Pages.Game
             return true;
         }
 
-        private List<GHDrawCommand> _drawCommandList = new List<GHDrawCommand>();
+        private List<GHDrawCommand> _drawCommandList = new List<GHDrawCommand>(GHConstants.DefaultDrawCommandListSize);
+        private List<GHDrawCommand> _layerDrawCommandList = new List<GHDrawCommand>(GHConstants.DefaultLayerDrawCommandListSize);
+        /* Bit per tile sheet present in the corresponding list; a single bit means the
+           sheet grouping pass can be skipped */
+        private int _drawCommandSheetMask = 0;
+        private int _layerDrawCommandSheetMask = 0;
         private int _lastDrawCommandCount = 0;
+        /* Counts tile sheet changes between consecutive tile draws. Autodraw components,
+           rectangles and text bypass the tile draw path and are not counted, so the figure
+           is comparable between runs of the same scene but is not an absolute total. */
+        private int _drawSheetIdx = -1;
+        private int _sheetSwitchCount = 0;
+        private int _lastSheetSwitchCount = 0;
 
         /* Cached SKPaint instances to avoid per-frame heap allocations */
         private readonly SKPaint _mapPaint = new SKPaint();
@@ -6362,7 +6373,7 @@ namespace GnollHackX.Pages.Game
             paint.PathEffect = null;
         }
 
-        public void DrawSplitBitmap(SKCanvas canvas, bool delayedDraw, float destSplitY, SKImage bitmap, SKRect source, SKRect dest, SKPaint paint, int sheetIdx, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering) //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
+        public void DrawSplitBitmap(SKCanvas canvas, bool delayedDraw, float destSplitY, SKImage bitmap, SKRect source, SKRect dest, SKPaint paint, int sheetIdx, int mapX, int mapY, int layerIdx, bool layerDelayedDraw, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering) //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
         {
             if (dest.Bottom <= 0 || dest.Top >= canvasheight || dest.Right < 0 || dest.Left >= canvaswidth)
                 return;
@@ -6370,13 +6381,22 @@ namespace GnollHackX.Pages.Game
             if (bitmap == null)
                 return;
 
-            if (destSplitY <= dest.Top || delayedDraw)
+            if (delayedDraw)
             {
-                if (delayedDraw)
-                    _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY));
+                AddFrameDrawCommand(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY, layerIdx));
+                return;
+            }
+
+            /* The part above destSplitY overhangs the row above and always waits for the
+               end of the frame; the rest is drawn now, or at the end of its layer. */
+            if (destSplitY <= dest.Top)
+            {
+                if (layerDelayedDraw)
+                    AddLayerDrawCommand(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY, layerIdx));
                 else
                 {
                     GHApp.MaybeFixRects(ref source, ref dest, targetscale, usingGL, fixRects, fixFiltering);
+                    CountSheetDraw(sheetIdx);
                     canvas.DrawImage(bitmap, source, dest,
 #if GNH_MAUI
                         new SKSamplingOptions(SKFilterMode.Nearest, usingGL && usingMipMap ? SKMipmapMode.Nearest: SKMipmapMode.None),
@@ -6386,7 +6406,7 @@ namespace GnollHackX.Pages.Game
             }
             else if (destSplitY >= dest.Bottom)
             {
-                _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY));
+                AddFrameDrawCommand(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY, layerIdx));
             }
             else
             {
@@ -6399,13 +6419,120 @@ namespace GnollHackX.Pages.Game
                 float sourceSplitY = source.Top + (source.Bottom - source.Top) * topDestScale;
                 SKRect enlSource = new SKRect(source.Left, source.Top, source.Right, sourceSplitY);
                 SKRect baseSource = new SKRect(source.Left, sourceSplitY, source.Right, source.Bottom);
-                GHApp.MaybeFixRects(ref baseSource, ref baseDest, targetscale, usingGL, fixRects, fixFiltering);
-                canvas.DrawImage(bitmap, baseSource, baseDest,
+                if (layerDelayedDraw)
+                    AddLayerDrawCommand(new GHDrawCommand(canvas.TotalMatrix, baseSource, baseDest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY, layerIdx));
+                else
+                {
+                    GHApp.MaybeFixRects(ref baseSource, ref baseDest, targetscale, usingGL, fixRects, fixFiltering);
+                    CountSheetDraw(sheetIdx);
+                    canvas.DrawImage(bitmap, baseSource, baseDest,
 #if GNH_MAUI
-                    new SKSamplingOptions(SKFilterMode.Nearest, usingGL && usingMipMap ? SKMipmapMode.Nearest : SKMipmapMode.None),
+                        new SKSamplingOptions(SKFilterMode.Nearest, usingGL && usingMipMap ? SKMipmapMode.Nearest : SKMipmapMode.None),
 #endif
-                    paint);
-                _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, enlSource, enlDest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY));
+                        paint);
+                }
+                AddFrameDrawCommand(new GHDrawCommand(canvas.TotalMatrix, enlSource, enlDest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY, layerIdx));
+            }
+        }
+
+        private void AddFrameDrawCommand(GHDrawCommand cmd)
+        {
+            _drawCommandList.Add(cmd);
+            _drawCommandSheetMask |= 1 << cmd.SheetIdx;
+        }
+
+        private void AddLayerDrawCommand(GHDrawCommand cmd)
+        {
+            _layerDrawCommandList.Add(cmd);
+            _layerDrawCommandSheetMask |= 1 << cmd.SheetIdx;
+        }
+
+        /* More than one bit set: the list spans several tile sheets */
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool NeedsSheetGrouping(int sheetMask)
+        {
+            return (sheetMask & (sheetMask - 1)) != 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void CountSheetDraw(int sheetIdx)
+        {
+            if (sheetIdx != _drawSheetIdx)
+            {
+                _drawSheetIdx = sheetIdx;
+                _sheetSwitchCount++;
+            }
+        }
+
+        private void ReplayDrawCommand(SKCanvas canvas, SKPaint paint, GHDrawCommand dc, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
+        {
+            paint.Color = dc.PaintColor;
+            paint.ColorFilter = dc.PaintColorFilter;
+#if GNH_MAUI
+            canvas.SetMatrix(in dc.Matrix);
+#else
+            canvas.SetMatrix(dc.Matrix);
+#endif
+            if (dc.IsAutoDraw)
+            {
+                DrawAutoDraw(dc.AutoDrawParameters.autodraw, canvas, false, paint, dc.AutoDrawParameters.otmp_round,
+                    dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
+                    dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, dc.AutoDrawParameters.tx, dc.AutoDrawParameters.ty,
+                    dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, dc.AutoDrawParameters.scale, dc.AutoDrawParameters.targetscale,
+                    dc.AutoDrawParameters.scaled_x_padding, dc.AutoDrawParameters.scaled_y_padding, dc.AutoDrawParameters.scaled_tile_height, dc.AutoDrawParameters.is_inventory,
+                    dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
+            }
+            else
+            {
+                SKRect dcSrcRect = dc.SourceRect;
+                SKRect dcDstRect = dc.DestinationRect;
+                GHApp.MaybeFixRects(ref dcSrcRect, ref dcDstRect, targetscale, usingGL, fixRects, fixFiltering);
+                CountSheetDraw(dc.SheetIdx);
+                canvas.DrawImage(dc.SourceBitmap, dcSrcRect, dcDstRect
+#if GNH_MAUI
+                    , new SKSamplingOptions(SKFilterMode.Nearest, usingGL && usingMipMap ? SKMipmapMode.Nearest : SKMipmapMode.None)
+#endif
+                    , paint);
+            }
+            paint.ColorFilter = null;
+        }
+
+        /* Side enlargement tiles of one layer, replayed after that layer's own tiles */
+        private void FlushLayerDrawCommands(SKCanvas canvas, SKPaint paint, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
+        {
+            int cmdCount = _layerDrawCommandList.Count;
+            if (cmdCount == 0)
+                return;
+
+            canvas.Save();
+            try
+            {
+                if (!NeedsSheetGrouping(_layerDrawCommandSheetMask))
+                {
+                    for (int i = 0; i < cmdCount; i++)
+                        ReplayDrawCommand(canvas, paint, _layerDrawCommandList[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+                }
+                else
+                {
+                    int sheetCount = GHApp.UsedTileSheets;
+                    for (int sheet = 0; sheet < sheetCount; sheet++)
+                    {
+                        if ((_layerDrawCommandSheetMask & (1 << sheet)) == 0)
+                            continue;
+
+                        for (int i = 0; i < cmdCount; i++)
+                        {
+                            if (_layerDrawCommandList[i].SheetIdx == sheet)
+                                ReplayDrawCommand(canvas, paint, _layerDrawCommandList[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                canvas.Restore();
+                _layerDrawCommandList.Clear();
+                _layerDrawCommandSheetMask = 0;
             }
         }
 
@@ -7674,6 +7801,12 @@ namespace GnollHackX.Pages.Game
             bool isLandscape = canvaswidth > canvasheight;
 
             _drawCommandList.Clear();
+            _drawCommandSheetMask = 0;
+            _layerDrawCommandList.Clear();
+            _layerDrawCommandSheetMask = 0;
+            _lastSheetSwitchCount = _sheetSwitchCount;
+            _sheetSwitchCount = 0;
+            _drawSheetIdx = -1;
 
 #if MAP_PROFILING
             _totalFrames++;
@@ -8481,7 +8614,7 @@ namespace GnollHackX.Pages.Game
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
+                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, false); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
                                                                     }
                                                                 }
                                                             }
@@ -8620,27 +8753,18 @@ namespace GnollHackX.Pages.Game
                                                                         int draw_map_x = mapx + dx + (adj_x - mapx);
                                                                         int draw_map_y = mapy + dy + (adj_y - mapy);
 
-                                                                        if ((enlargement > 0 && enl_idx >= 0 && enl_idx <= 2) || layer_idx == (int)layer_types.MAX_LAYERS)
-                                                                        {
-                                                                            PaintMapTile(canvas, true, textPaint, paint, ref currentCell, ref currentLayerInfo, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
-                                                                                offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
-                                                                                scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
-                                                                                monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
-                                                                                loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                                isPointerHoveringOnTile, mapLookMode, lighterDarkening); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            //float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
-                                                                            PaintMapTile(canvas, false, textPaint, paint, ref currentCell, ref currentLayerInfo, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
-                                                                                offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
-                                                                                scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
-                                                                                monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
-                                                                                loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                                isPointerHoveringOnTile, mapLookMode, lighterDarkening); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
-                                                                        }
+                                                                        /* Top row enlargement positions and monster shadows wait for the
+                                                                           end of the frame; the side positions wait for the end of the layer */
+                                                                        bool frame_delayed = (enlargement > 0 && enl_idx >= 0 && enl_idx <= 2) || layer_idx == (int)layer_types.MAX_LAYERS;
+                                                                        bool layer_delayed = !frame_delayed && enlargement > 0 && enl_idx >= 3;
+
+                                                                        PaintMapTile(canvas, frame_delayed, textPaint, paint, ref currentCell, ref currentLayerInfo, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                            offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
+                                                                            scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
+                                                                            monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
+                                                                            loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
+                                                                            hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
+                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, layer_delayed); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                     }
                                                                 }
                                                             }
@@ -8648,12 +8772,13 @@ namespace GnollHackX.Pages.Game
                                                     }
                                                 }
 
+                                                FlushLayerDrawCommands(canvas, paint, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+
                                                 switch (layer_idx)
                                                 {
                                                     /* Darkening at the end of layers */
                                                     case (int)layer_types.LAYER_OBJECT:
                                                     {
-                                                        _drawCommandList.Add(new GHDrawCommand(true));
                                                         for (int mapx = startX; mapx <= endX; mapx++)
                                                         {
                                                             for (int mapy = startY; mapy <= endY; mapy++)
@@ -8726,51 +8851,38 @@ namespace GnollHackX.Pages.Game
                                                     canvas.Save();
                                                     try
                                                     {
-                                                        bool dodarkening = true;
-                                                        foreach (GHDrawCommand dc in _drawCommandList)
+                                                        int frameCmdCount = _drawCommandList.Count;
+                                                        if (!NeedsSheetGrouping(_drawCommandSheetMask))
                                                         {
-                                                            if (dc.EndDarkening)
-                                                            {
-                                                                dodarkening = false;
-                                                                continue;
-                                                            }
-
-                                                            ref LayerInfo dcLayerInfo = ref _mapData[dc.MapX, dc.MapY].Layers;
-                                                            paint.Color = dc.PaintColor;
-                                                            if (dodarkening && DarkenedPos(ref dcLayerInfo))
-                                                                paint.ColorFilter = GetDrawCommandColorFilter(dc.PaintColorFilter,
-                                                                    GetDarkenPercentage(ref dcLayerInfo, lighterDarkening));
-                                                            else
-                                                                paint.ColorFilter = dc.PaintColorFilter;
-#if GNH_MAUI
-                                                            canvas.SetMatrix(in dc.Matrix);
-#else
-                                                            canvas.SetMatrix(dc.Matrix);
-#endif
-                                                            if (dc.IsAutoDraw)
-                                                            {
-                                                                DrawAutoDraw(dc.AutoDrawParameters.autodraw, canvas, false, paint, dc.AutoDrawParameters.otmp_round,
-                                                                    dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
-                                                                    dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, dc.AutoDrawParameters.tx, dc.AutoDrawParameters.ty,
-                                                                    dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, dc.AutoDrawParameters.scale, dc.AutoDrawParameters.targetscale,
-                                                                    dc.AutoDrawParameters.scaled_x_padding, dc.AutoDrawParameters.scaled_y_padding, dc.AutoDrawParameters.scaled_tile_height, dc.AutoDrawParameters.is_inventory,
-                                                                    dc.AutoDrawParameters.drawwallends, usingGL, false, fixRects, fixFiltering);
-                                                            }
-                                                            else
-                                                            {
-                                                                SKRect dcSrcRect = dc.SourceRect;
-                                                                SKRect dcDstRect = dc.DestinationRect;
-                                                                GHApp.MaybeFixRects(ref dcSrcRect, ref dcDstRect, targetscale, usingGL, fixRects, fixFiltering);
-                                                                canvas.DrawImage(dc.SourceBitmap, dcSrcRect, dcDstRect
-#if GNH_MAUI
-                                                                    , SKSamplingOptions.Default
-#endif
-                                                                    , paint);
-                                                            }
-                                                            paint.ColorFilter = null;
+                                                            for (int i = 0; i < frameCmdCount; i++)
+                                                                ReplayDrawCommand(canvas, paint, _drawCommandList[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
                                                         }
-                                                        _lastDrawCommandCount = _drawCommandList.Count;
+                                                        else
+                                                        {
+                                                            /* Layer order is carried by the insertion order, so each layer's
+                                                               commands form one run and only its interior is regrouped */
+                                                            int sheetCount = GHApp.UsedTileSheets;
+                                                            int runStart = 0;
+                                                            while (runStart < frameCmdCount)
+                                                            {
+                                                                int runLayerIdx = _drawCommandList[runStart].LayerIdx;
+                                                                int runEnd = runStart + 1;
+                                                                while (runEnd < frameCmdCount && _drawCommandList[runEnd].LayerIdx == runLayerIdx)
+                                                                    runEnd++;
+                                                                for (int sheet = 0; sheet < sheetCount; sheet++)
+                                                                {
+                                                                    for (int i = runStart; i < runEnd; i++)
+                                                                    {
+                                                                        if (_drawCommandList[i].SheetIdx == sheet)
+                                                                            ReplayDrawCommand(canvas, paint, _drawCommandList[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
+                                                                    }
+                                                                }
+                                                                runStart = runEnd;
+                                                            }
+                                                        }
+                                                        _lastDrawCommandCount = frameCmdCount;
                                                         _drawCommandList.Clear();
+                                                        _drawCommandSheetMask = 0;
 
                                                         paint.Color = SKColors.Black;
                                                         for (int mapx = startX; mapx <= endX; mapx++)
@@ -12508,6 +12620,7 @@ namespace GnollHackX.Pages.Game
                         //GHApp.MaybeWriteScreenLog(screenLogging, "Composite map color filter cache length: " + (_localCompositeMapColorFilters?.Count(x => x != null) ?? 0));
                         GHApp.MaybeWriteScreenLog(screenLogging, "Composite color filter fallback cache length: " + (_localCompositeColorFiltersFallback?.Count ?? 0));
                         GHApp.MaybeWriteScreenLog(screenLogging, "Draw command list count (last frame): " + _lastDrawCommandCount);
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Tile sheet switches (last frame): " + _lastSheetSwitchCount);
                     }
 
                     /* Then action screen debug logging */
@@ -13546,17 +13659,21 @@ namespace GnollHackX.Pages.Game
             bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem,
             float tx, float ty, float width, float height,
             float scale, float targetscale, float scaled_x_padding, float scaled_y_padding, float scaled_tile_height,
-            bool is_inventory, bool drawwallends, bool usingGL, bool highFilterQuality, bool fixRects, bool fixFiltering)
+            bool is_inventory, bool drawwallends, bool usingGL, bool highFilterQuality, bool fixRects, bool fixFiltering, int tileSheetIdx = 0, bool layerDelayedDraw = false)
         {
             ref MapData currentCell = ref _mapData[mapx, mapy];
             ref LayerInfo currentLayerInfo = ref currentCell.Layers;
 
-            if (delayedDraw)
+            if (delayedDraw || layerDelayedDraw)
             {
-                _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, paint.Color, paint.ColorFilter, mapx, mapy, new AutoDrawParameterDefinition(autodraw, otmp_round, layer_idx,
+                GHDrawCommand cmd = new GHDrawCommand(canvas.TotalMatrix, paint.Color, paint.ColorFilter, tileSheetIdx, mapx, mapy, new AutoDrawParameterDefinition(autodraw, otmp_round, layer_idx,
                      tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
                      tx, ty, width, height, scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
-                     is_inventory, drawwallends)));
+                     is_inventory, drawwallends));
+                if (delayedDraw)
+                    AddFrameDrawCommand(cmd);
+                else
+                    AddLayerDrawCommand(cmd);
                 return;
             }
 
