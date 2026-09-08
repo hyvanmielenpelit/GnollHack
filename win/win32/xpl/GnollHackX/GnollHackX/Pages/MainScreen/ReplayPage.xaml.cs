@@ -45,6 +45,9 @@ namespace GnollHackX.Pages.MainScreen
         string _subDirectoryDownload = null;
         string _subDirectoryServer = null;
 
+        /* The page's event handlers can each trigger a refresh, so serialize them */
+        private readonly SemaphoreSlim _refreshSemaphore = new SemaphoreSlim(1, 1);
+
         public bool IsMultiSelect { get { return ReplayCollectionView.SelectionMode == SelectionMode.Multiple; } }
         public bool IsLocal { get { return FolderPicker.SelectedIndex == 0; } }
         public bool IsCloud { get { return FolderPicker.SelectedIndex == 1; } }
@@ -99,318 +102,340 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
             {
-                UpdateLocalRecordings();
+                await UpdateLocalRecordings();
             }
         }
 
-        private async void UpdateLocalRecordings()
+        private async Task UpdateLocalRecordings()
         {
-            ReplayCollectionView.SelectedItem = null;
-            ReplayCollectionView.SelectedItems.Clear();
-            ReplayCollectionView.ItemsSource = null;
-            MoreButton.IsEnabled = false;
-            SelectButton.IsEnabled = false;
-            MoreButton.TextColor = GHColors.Gray;
-            SelectButton.TextColor = GHColors.Gray;
+            await _refreshSemaphore.WaitAsync();
+            try
+            {
+                ReplayCollectionView.SelectedItem = null;
+                ReplayCollectionView.SelectedItems.Clear();
+                ReplayCollectionView.ItemsSource = null;
+                MoreButton.IsEnabled = false;
+                SelectButton.IsEnabled = false;
+                MoreButton.TextColor = GHColors.Gray;
+                SelectButton.TextColor = GHColors.Gray;
 
-            string dirPath = Path.Combine(GHApp.GHPath, IsDownload ? GHConstants.ReplayDownloadFromCloudDirectory : GHConstants.ReplayDirectory);
-            if(IsDownload && !string.IsNullOrWhiteSpace(_subDirectoryDownload))
-            {
-                dirPath = Path.Combine(dirPath, _subDirectoryDownload);
-            }
-            else if (IsLocal && !string.IsNullOrWhiteSpace(_subDirectoryLocal))
-            {
-                dirPath = Path.Combine(dirPath, _subDirectoryLocal);
-            }
+                string dirPath = Path.Combine(GHApp.GHPath, IsDownload ? GHConstants.ReplayDownloadFromCloudDirectory : GHConstants.ReplayDirectory);
+                if(IsDownload && !string.IsNullOrWhiteSpace(_subDirectoryDownload))
+                {
+                    dirPath = Path.Combine(dirPath, _subDirectoryDownload);
+                }
+                else if (IsLocal && !string.IsNullOrWhiteSpace(_subDirectoryLocal))
+                {
+                    dirPath = Path.Combine(dirPath, _subDirectoryLocal);
+                }
             
-            ObservableCollection<GHRecordedGameFile> gHRecordedGameFiles = new ObservableCollection<GHRecordedGameFile>();
+                ObservableCollection<GHRecordedGameFile> gHRecordedGameFiles = new ObservableCollection<GHRecordedGameFile>();
 
-            await Task.Run(() =>
-            {
-                int i = 0;
-                long totalBytes = 0L;
-            if (Directory.Exists(dirPath))
-            {
-                if (!string.IsNullOrWhiteSpace(IsDownload ? _subDirectoryDownload : _subDirectoryLocal))
+                try
                 {
-                    gHRecordedGameFiles.Add(new GHRecordedGameFile(0, null, "(Back)", "", true, 0, 1, DateTime.Now, DateTime.Now));
-                }
-
-                string[] directories = Directory.GetDirectories(dirPath);
-                if(directories != null && directories.Length > 0)
-                {
-                    Array.Sort(directories);
-                    foreach(string dir in directories)
+                    await Task.Run(() =>
                     {
-                        DirectoryInfo di = new DirectoryInfo(dir);
-                        gHRecordedGameFiles.Add(new GHRecordedGameFile(i, dir, di.Name, di.Extension, true, 0, 1, di.CreationTime, di.LastWriteTime));
-                    }
-                }
-
-                string[] files = Directory.GetFiles(dirPath);
-                if (files != null && files.Length > 0)
-                {
-                    Array.Sort(files, new FileDateComparer());
-                    foreach (string file in files)
+                        int i = 0;
+                        long totalBytes = 0L;
+                    if (Directory.Exists(dirPath))
                     {
-                        if (file != null && File.Exists(file))
+                        if (!string.IsNullOrWhiteSpace(IsDownload ? _subDirectoryDownload : _subDirectoryLocal))
                         {
-                            FileInfo fi = new FileInfo(file);
-                            if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
+                            gHRecordedGameFiles.Add(new GHRecordedGameFile(0, null, "(Back)", "", true, 0, 1, DateTime.Now, DateTime.Now));
+                        }
+
+                        string[] directories = Directory.GetDirectories(dirPath);
+                        if(directories != null && directories.Length > 0)
+                        {
+                            Array.Sort(directories);
+                            foreach(string dir in directories)
                             {
-                                bool isGZip = fi.Name.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fi.Name.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
-                                bool isNormalZip = fi.Name.Length > GHConstants.ReplayZipFileNameSuffix.Length && fi.Name.EndsWith(GHConstants.ReplayZipFileNameSuffix);
-                                bool isZip = isGZip || isNormalZip;
-                                if (fi.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
+                                DirectoryInfo di = new DirectoryInfo(dir);
+                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, dir, di.Name, di.Extension, true, 0, 1, di.CreationTime, di.LastWriteTime));
+                            }
+                        }
+
+                        string[] files = Directory.GetFiles(dirPath);
+                        if (files != null && files.Length > 0)
+                        {
+                            Array.Sort(files, new FileDateComparer());
+                            foreach (string file in files)
+                            {
+                                if (file != null && File.Exists(file))
                                 {
-                                    long contLen = 0L;
-                                    int noOfContFiles = 0;
-                                    if (!isZip)
+                                    FileInfo fi = new FileInfo(file);
+                                    if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
                                     {
-                                        string zipFile = file + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
-                                        if (File.Exists(zipFile)) /* Ensure that a corresponding zip exists before deletion; then we know the unzipped file is a result of a crash during replay */
+                                        bool isGZip = fi.Name.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fi.Name.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+                                        bool isNormalZip = fi.Name.Length > GHConstants.ReplayZipFileNameSuffix.Length && fi.Name.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                                        bool isZip = isGZip || isNormalZip;
+                                        if (fi.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
                                         {
-                                            try
+                                            long contLen = 0L;
+                                            int noOfContFiles = 0;
+                                            if (!isZip)
                                             {
-                                                GHApp.DeleteReplay(file);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Debug.WriteLine(ex);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            /* Zip it */
-                                            if (GHApp.UseGZipForReplays)
-                                            {
-                                                using (FileStream originalFileStream = File.Open(file, FileMode.Open))
+                                                string zipFile = file + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
+                                                if (File.Exists(zipFile)) /* Ensure that a corresponding zip exists before deletion; then we know the unzipped file is a result of a crash during replay */
                                                 {
-                                                    using (FileStream compressedFileStream = File.Create(zipFile))
+                                                    try
                                                     {
-                                                        using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
-                                                        {
-                                                            originalFileStream.CopyTo(compressor);
-                                                        }
+                                                        GHApp.DeleteReplay(file);
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        Debug.WriteLine(ex);
                                                     }
                                                 }
-                                            }
-                                            else
-                                            {
-                                                using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                                                else
                                                 {
-                                                    archive.CreateEntryFromFile(file, Path.GetFileName(file));
-                                                }
-                                            }
-
-                                            if (File.Exists(file) && File.Exists(zipFile))
-                                                File.Delete(file);
-
-                                            if(File.Exists(zipFile))
-                                            {
-                                                i++;
-                                                FileInfo zipFI = new FileInfo(zipFile);
-                                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, zipFile), zipFI.Name, zipFI.Extension, false, zipFI.Length + 0, 1, zipFI.CreationTime, zipFI.LastWriteTime));
-                                                totalBytes += zipFI.Length + 0;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        i++;
-                                        string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-                                        int middleLen = fi.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                                        if (middleLen > 0)
-                                        {
-                                            string middleStr = fi.Name.Substring(GHConstants.ReplayFileNamePrefix.Length, middleLen);
-                                            foreach (string contFile in files)
-                                            {
-                                                if (contFile != null && File.Exists(contFile))
-                                                {
-                                                    FileInfo contFI = new FileInfo(contFile);
-                                                    if (!string.IsNullOrWhiteSpace(contFI.Name) && contFI.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix + middleStr))
+                                                    try
                                                     {
-                                                        if (contFile.EndsWith(usedZipSuffix))
+                                                        /* Zip it */
+                                                        if (GHApp.UseGZipForReplays)
                                                         {
-                                                            noOfContFiles++;
-                                                            contLen += contFI.Length;
+                                                            using (FileStream originalFileStream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+                                                            {
+                                                                using (FileStream compressedFileStream = File.Create(zipFile))
+                                                                {
+                                                                    using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
+                                                                    {
+                                                                        originalFileStream.CopyTo(compressor);
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                         else
                                                         {
-                                                            if (File.Exists(contFile + usedZipSuffix)) /* Ensure that a corresponding zip exists before deletion; then we know the unzipped file is a result of a crash during replay */
+                                                            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
                                                             {
-                                                                try
-                                                                {
-                                                                    File.Delete(contFile);
-                                                                }
-                                                                catch (Exception ex)
-                                                                {
-                                                                    Debug.WriteLine(ex);
-                                                                }
+                                                                archive.CreateEntryFromFile(file, Path.GetFileName(file));
                                                             }
                                                         }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, file), fi.Name, fi.Extension, false, fi.Length + contLen, 1 + noOfContFiles, fi.CreationTime, fi.LastWriteTime));
-                                        totalBytes += fi.Length + contLen;
-                                    }
-                                }
-                                else if (fi.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix))
-                                {
-                                    if(!isZip)
-                                    {
-                                        /* Check that is not dangling unzipped file from crash during game being recorded */
-                                        int extraRemoved = 0;
-                                        for(int j = fi.Name.Length - GHConstants.ReplayFileNameSuffix.Length - 1; j >= 0; j--)
-                                        {
-                                            char c = fi.Name[j];
-                                            if (c >= '0' && c <= '9')
-                                            {
-                                                if(j == 0)
-                                                {
-                                                    extraRemoved = 0; /* Error */
-                                                    break;
-                                                }
-                                                else
-                                                    extraRemoved++;
-                                            }
-                                            else if (c == GHConstants.ReplayFileContinuationNumberDivisor[0])
-                                            {
-                                                extraRemoved++;
-                                                break;
-                                            }
-                                            else
-                                            {
-                                                extraRemoved = 0; /* Error */
-                                                break;
-                                            }
-                                        }
-                                        int noOfDigits = 0;
-                                        for (int j = fi.Name.Length - extraRemoved - GHConstants.ReplayFileNameSuffix.Length - 1; j >= 0; j--)
-                                        {
-                                            char c = fi.Name[j];
-                                            if (c >= '0' && c <= '9')
-                                            {
-                                                if (j == 0)
-                                                {
-                                                    noOfDigits = 0; /* Error */
-                                                    break;
-                                                }
-                                                else
-                                                    noOfDigits++;
-                                            }
-                                            else if (c == GHConstants.ReplayFileNameMiddleDivisor[0])
-                                            {
-                                                /* Done successfully */
-                                                break;
-                                            }
-                                            else
-                                            {
-                                                noOfDigits = 0; /* Error */
-                                                break;
-                                            }
-                                        }
-                                        bool mainFileFound = false;
-                                        string mainFileName = null;
-                                        int middleStart = fi.Name.Length - noOfDigits - extraRemoved - GHConstants.ReplayFileNameSuffix.Length;
-                                        int middleLen = noOfDigits;
-                                        if (middleStart > 0 && middleLen > 0)
-                                        {
-                                            string middleStr = fi.Name.Substring(middleStart, middleLen);
-                                            string searchString = GHConstants.ReplayFileNameMiddleDivisor + middleStr + GHConstants.ReplayFileNameSuffix + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
-                                            foreach (string mainFile in files)
-                                            {
-                                                if (mainFile != null && File.Exists(mainFile) && mainFile.EndsWith(searchString))
-                                                {
-                                                    FileInfo mainFI = new FileInfo(mainFile);
-                                                    if (mainFI != null && mainFI.Name != null && mainFI.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
-                                                    {
-                                                        mainFileFound = true;
-                                                        mainFileName = mainFile;
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (mainFileFound && mainFileName != null)
-                                        {
-                                            FileInfo mainFI = new FileInfo(mainFileName);
-                                            int mainMiddleLen = mainFI.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix.Length : GHConstants.ReplayZipFileNameSuffix.Length);
-                                            int numberStart = fi.Name.Length - extraRemoved - GHConstants.ReplayFileNameSuffix.Length;
-                                            if (mainMiddleLen > 0 && numberStart > 0)
-                                            {
-                                                try
-                                                {
-                                                    string mainMiddleStr = mainFI.Name.Substring(GHConstants.ReplayFileNamePrefix.Length, mainMiddleLen);
-                                                    string numberStr = fi.Name.Substring(numberStart, extraRemoved + GHConstants.ReplayFileNameSuffix.Length);
-                                                    string newFileName = GHConstants.ReplayContinuationFileNamePrefix + mainMiddleStr + numberStr;
-                                                    string newFile = Path.Combine(dirPath, newFileName);
-                                                    string zipFile = newFile + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
 
-                                                    if(newFile != file)
-                                                    {
-                                                        if (File.Exists(newFile))
-                                                            File.Delete(newFile);
+                                                        if (File.Exists(file) && File.Exists(zipFile))
+                                                            File.Delete(file);
 
-                                                        File.Move(file, newFile);
-                                                    }
-
-                                                    /* Zip it */
-                                                    if (GHApp.UseGZipForReplays)
-                                                    {
-                                                        using (FileStream originalFileStream = File.Open(newFile, FileMode.Open))
+                                                        if(File.Exists(zipFile))
                                                         {
-                                                            using (FileStream compressedFileStream = File.Create(zipFile))
+                                                            i++;
+                                                            FileInfo zipFI = new FileInfo(zipFile);
+                                                            gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, zipFile), zipFI.Name, zipFI.Extension, false, zipFI.Length + 0, 1, zipFI.CreationTime, zipFI.LastWriteTime));
+                                                            totalBytes += zipFI.Length + 0;
+                                                        }
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        Debug.WriteLine(ex);
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                i++;
+                                                string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
+                                                int middleLen = fi.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
+                                                if (middleLen > 0)
+                                                {
+                                                    string middleStr = fi.Name.Substring(GHConstants.ReplayFileNamePrefix.Length, middleLen);
+                                                    foreach (string contFile in files)
+                                                    {
+                                                        if (contFile != null && File.Exists(contFile))
+                                                        {
+                                                            FileInfo contFI = new FileInfo(contFile);
+                                                            if (!string.IsNullOrWhiteSpace(contFI.Name) && contFI.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix + middleStr))
                                                             {
-                                                                using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
+                                                                if (contFile.EndsWith(usedZipSuffix))
                                                                 {
-                                                                    originalFileStream.CopyTo(compressor);
+                                                                    noOfContFiles++;
+                                                                    contLen += contFI.Length;
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (File.Exists(contFile + usedZipSuffix)) /* Ensure that a corresponding zip exists before deletion; then we know the unzipped file is a result of a crash during replay */
+                                                                    {
+                                                                        try
+                                                                        {
+                                                                            File.Delete(contFile);
+                                                                        }
+                                                                        catch (Exception ex)
+                                                                        {
+                                                                            Debug.WriteLine(ex);
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
                                                         }
+                                                    }
+                                                }
+                                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, file), fi.Name, fi.Extension, false, fi.Length + contLen, 1 + noOfContFiles, fi.CreationTime, fi.LastWriteTime));
+                                                totalBytes += fi.Length + contLen;
+                                            }
+                                        }
+                                        else if (fi.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix))
+                                        {
+                                            if(!isZip)
+                                            {
+                                                /* Check that is not dangling unzipped file from crash during game being recorded */
+                                                int extraRemoved = 0;
+                                                for(int j = fi.Name.Length - GHConstants.ReplayFileNameSuffix.Length - 1; j >= 0; j--)
+                                                {
+                                                    char c = fi.Name[j];
+                                                    if (c >= '0' && c <= '9')
+                                                    {
+                                                        if(j == 0)
+                                                        {
+                                                            extraRemoved = 0; /* Error */
+                                                            break;
+                                                        }
+                                                        else
+                                                            extraRemoved++;
+                                                    }
+                                                    else if (c == GHConstants.ReplayFileContinuationNumberDivisor[0])
+                                                    {
+                                                        extraRemoved++;
+                                                        break;
                                                     }
                                                     else
                                                     {
-                                                        using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                                                        extraRemoved = 0; /* Error */
+                                                        break;
+                                                    }
+                                                }
+                                                int noOfDigits = 0;
+                                                for (int j = fi.Name.Length - extraRemoved - GHConstants.ReplayFileNameSuffix.Length - 1; j >= 0; j--)
+                                                {
+                                                    char c = fi.Name[j];
+                                                    if (c >= '0' && c <= '9')
+                                                    {
+                                                        if (j == 0)
                                                         {
-                                                            archive.CreateEntryFromFile(newFile, Path.GetFileName(newFile));
+                                                            noOfDigits = 0; /* Error */
+                                                            break;
+                                                        }
+                                                        else
+                                                            noOfDigits++;
+                                                    }
+                                                    else if (c == GHConstants.ReplayFileNameMiddleDivisor[0])
+                                                    {
+                                                        /* Done successfully */
+                                                        break;
+                                                    }
+                                                    else
+                                                    {
+                                                        noOfDigits = 0; /* Error */
+                                                        break;
+                                                    }
+                                                }
+                                                bool mainFileFound = false;
+                                                string mainFileName = null;
+                                                int middleStart = fi.Name.Length - noOfDigits - extraRemoved - GHConstants.ReplayFileNameSuffix.Length;
+                                                int middleLen = noOfDigits;
+                                                if (middleStart > 0 && middleLen > 0)
+                                                {
+                                                    string middleStr = fi.Name.Substring(middleStart, middleLen);
+                                                    string searchString = GHConstants.ReplayFileNameMiddleDivisor + middleStr + GHConstants.ReplayFileNameSuffix + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
+                                                    foreach (string mainFile in files)
+                                                    {
+                                                        if (mainFile != null && File.Exists(mainFile) && mainFile.EndsWith(searchString))
+                                                        {
+                                                            FileInfo mainFI = new FileInfo(mainFile);
+                                                            if (mainFI != null && mainFI.Name != null && mainFI.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
+                                                            {
+                                                                mainFileFound = true;
+                                                                mainFileName = mainFile;
+                                                                break;
+                                                            }
                                                         }
                                                     }
-
-                                                    if (File.Exists(newFile) && File.Exists(zipFile))
-                                                        File.Delete(newFile);
                                                 }
-                                                catch (Exception ex)
+                                                if (mainFileFound && mainFileName != null)
                                                 {
-                                                    Debug.WriteLine(ex);
+                                                    FileInfo mainFI = new FileInfo(mainFileName);
+                                                    int mainMiddleLen = mainFI.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix.Length : GHConstants.ReplayZipFileNameSuffix.Length);
+                                                    int numberStart = fi.Name.Length - extraRemoved - GHConstants.ReplayFileNameSuffix.Length;
+                                                    if (mainMiddleLen > 0 && numberStart > 0)
+                                                    {
+                                                        try
+                                                        {
+                                                            string mainMiddleStr = mainFI.Name.Substring(GHConstants.ReplayFileNamePrefix.Length, mainMiddleLen);
+                                                            string numberStr = fi.Name.Substring(numberStart, extraRemoved + GHConstants.ReplayFileNameSuffix.Length);
+                                                            string newFileName = GHConstants.ReplayContinuationFileNamePrefix + mainMiddleStr + numberStr;
+                                                            string newFile = Path.Combine(dirPath, newFileName);
+                                                            string zipFile = newFile + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
+
+                                                            if(newFile != file)
+                                                            {
+                                                                if (File.Exists(newFile))
+                                                                    File.Delete(newFile);
+
+                                                                File.Move(file, newFile);
+                                                            }
+
+                                                            /* Zip it */
+                                                            if (GHApp.UseGZipForReplays)
+                                                            {
+                                                                using (FileStream originalFileStream = File.Open(newFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                                                                {
+                                                                    using (FileStream compressedFileStream = File.Create(zipFile))
+                                                                    {
+                                                                        using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
+                                                                        {
+                                                                            originalFileStream.CopyTo(compressor);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                                                                {
+                                                                    archive.CreateEntryFromFile(newFile, Path.GetFileName(newFile));
+                                                                }
+                                                            }
+
+                                                            if (File.Exists(newFile) && File.Exists(zipFile))
+                                                                File.Delete(newFile);
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            Debug.WriteLine(ex);
+                                                        }
+                                                    }
                                                 }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            /* Delete it */
-                                            try
-                                            {
-                                                File.Delete(file);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Debug.WriteLine(ex);
+                                                else
+                                                {
+                                                    /* Delete it */
+                                                    try
+                                                    {
+                                                        File.Delete(file);
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        Debug.WriteLine(ex);
+                                                    }
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
+                        }
+                    });
                 }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
                 }
-            });
 
-            ReplayCollectionView.ItemsSource = gHRecordedGameFiles;
-            UpdateRecordingsLabel();
+                ReplayCollectionView.ItemsSource = gHRecordedGameFiles;
+                UpdateRecordingsLabel();
+            }
+            finally
+            {
+                _refreshSemaphore.Release();
+            }
         }
 
         private void UpdateRecordingsLabel()
