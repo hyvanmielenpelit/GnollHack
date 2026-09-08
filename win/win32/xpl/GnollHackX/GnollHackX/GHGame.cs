@@ -3811,6 +3811,9 @@ namespace GnollHackX
                             /* Handled before the logging below on purpose: these are
                                posted at every prompt and must not reach the log file. */
                             GHApp.UpdateSentryCrashContextScope(cmd_str);
+                            /* This is additionally a good place to refresh disk space and memory use */
+                            GHApp.UpdateFreeDiskSpace();
+                            GHApp.UpdateUsedMemory();
                             break;
                         }
                         if (cmd_param == (int)debug_log_types.DEBUGLOG_DEBUG_ONLY && !GHApp.IsDebug)
