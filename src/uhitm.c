@@ -4102,6 +4102,15 @@ hmonas(struct monst *mon)
                         sum[i] = damageum(mon, mattk, (struct obj*)0, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
 
                     update_u_action_revert(ACTION_TILE_NO_ACTION);
+
+                    /* the innate attack above can kill or displace the defender;
+                       no further strike lands in that case */
+                    if (DEADMONSTER(mon) || m_at(u.ux + u.dx, u.uy + u.dy) != mon)
+                    {
+                        sum[i] = 2;
+                        breakloop = TRUE;
+                        break;
+                    }
                 }
                 if (breakloop)
                     break;
