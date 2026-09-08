@@ -1889,9 +1889,9 @@ namespace GnollHackX.Pages.Game
                 {
                     GHApp.LogMemory();
                     PrintCacheStatus = true;
-                    if (WarnLowDiskSpace)
+                    //if (WarnLowDiskSpace)
                         GHApp.UpdateFreeDiskSpace();
-                    if (ShowMemory)
+                    //if (ShowMemory)
                         GHApp.UpdateUsedMemory();
                     
                     if (GHApp.IsDebugScreenLoggingOn)
