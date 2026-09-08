@@ -2583,9 +2583,13 @@ namespace GnollHackX
 
             CurrentMainPage?.Suspend();
             CurrentGamePage?.Suspend();
+            MaybeWriteGHLog("GHApp.OnSleep: Pages suspended", true, GHConstants.SentryGnollHackGeneralCategoryName);
 
             SleepMuteMode = true;
+            MaybeWriteGHLog("GHApp.OnSleep: Sleep mute applied", true, GHConstants.SentryGnollHackGeneralCategoryName);
+
             FmodService?.Suspend();
+            MaybeWriteGHLog("GHApp.OnSleep: FmodService.Suspend returned", true, GHConstants.SentryGnollHackGeneralCategoryName);
 
 #if !GNH_MAUI || (!ANDROID && !IOS)
             SaveGameOnSleep();

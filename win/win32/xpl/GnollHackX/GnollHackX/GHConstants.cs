@@ -113,6 +113,7 @@ namespace GnollHackX
         public const int MaxLongImmediateSoundInstances = 48;
         public const int MaxUISoundInstances = 8;
         public const int MaxChannels = 512;
+        public const int FmodSuspendFlushPasses = 2;
         public const int MaxBitmapCacheSize = 64;
         public const int MaxColorFilterCacheSize = 128;
         public const int PIT_BOTTOM_BORDER = 2;

@@ -271,8 +271,22 @@ namespace GnollHackX.Unknown
 
             try
             {
+                /* A suspended mixer advances no event, so a STOPPED callback still owed
+                   when the mixer stops is delivered only after the next resume. The
+                   dialogue queue advances one entry per callback and quieter mode is
+                   refcounted, so a late delivery stalls the queue and leaves the game
+                   quieter. The first pass delivers the owed callbacks, the second executes
+                   the start() calls those callbacks queue in turn. */
+                if (_system.hasHandle())
+                {
+                    for (int i = 0; i < GHConstants.FmodSuspendFlushPasses; i++)
+                        _system.flushCommands();
+                    GHApp.MaybeWriteGHLog("FmodService.Suspend: flushCommands completed", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                }
+
                 if (_coresystem.hasHandle())
                 {
+                    GHApp.MaybeWriteGHLog("FmodService.Suspend: calling mixerSuspend", true, GHConstants.SentryGnollHackGeneralCategoryName);
                     RESULT res = _coresystem.mixerSuspend();
                     if (res == RESULT.OK)
                     {
@@ -592,6 +606,12 @@ namespace GnollHackX.Unknown
             }
         }
 
+        /* FMOD stores the marshalled function pointer, so the delegate must outlive
+           every event instance it is set on. */
+        private static readonly EVENT_CALLBACK _uiEventCallback = GNHUIEventCallback;
+        private static readonly EVENT_CALLBACK _immediateEventCallback = GNHImmediateEventCallback;
+        private static readonly EVENT_CALLBACK _dialogueEventCallback = GNHDialogueEventCallback;
+
         /* Returns to UI thread */
         public static RESULT GNHUIEventCallback(EVENT_CALLBACK_TYPE type, IntPtr _event, IntPtr parameters)
         {
@@ -689,7 +709,6 @@ namespace GnollHackX.Unknown
                                     {
                                         service.immediateInstances[j].queued = false;
                                         result = service.immediateInstances[j].instance.start();
-                                        result = _system.update();
                                         return RESULT.OK;
                                     }
                                 }
@@ -718,7 +737,6 @@ namespace GnollHackX.Unknown
                                     {
                                         service.longImmediateInstances[j].queued = false;
                                         result = service.longImmediateInstances[j].instance.start();
-                                        result = _system.update();
                                         return RESULT.OK;
                                     }
                                 }
@@ -751,7 +769,7 @@ namespace GnollHackX.Unknown
             if (res != RESULT.OK)
                 return (int)res;
 
-            res = eventInstance.setCallback(GNHUIEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
+            res = eventInstance.setCallback(_uiEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
             if (res != RESULT.OK)
                 return (int)res;
             res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * GeneralVolume * _uiVolume)));
@@ -852,9 +870,9 @@ namespace GnollHackX.Unknown
                     longImmediateInstances.Insert(0, ghinstance);
 
                     if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
-                        res = longImmediateInstances[0].instance.setCallback(GNHDialogueEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
+                        res = longImmediateInstances[0].instance.setCallback(_dialogueEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
                     else
-                        res = longImmediateInstances[0].instance.setCallback(GNHImmediateEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
+                        res = longImmediateInstances[0].instance.setCallback(_immediateEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
 
                     /* Fallback if queued for too long */
                     if (longImmediateInstances.Count >= GHConstants.MaxLongImmediateSoundInstances && longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1] != null && longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].queued && !longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].stopped)
@@ -878,9 +896,9 @@ namespace GnollHackX.Unknown
                     immediateInstances.Insert(0, ghinstance);
 
                     if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
-                        res = immediateInstances[0].instance.setCallback(GNHDialogueEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
+                        res = immediateInstances[0].instance.setCallback(_dialogueEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
                     else
-                        res = immediateInstances[0].instance.setCallback(GNHImmediateEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
+                        res = immediateInstances[0].instance.setCallback(_immediateEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
 
                     /* Fallback if queued for too long */
                     if (immediateInstances.Count >= GHConstants.MaxNormalImmediateSoundInstances && immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1] != null && immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].queued && !immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].stopped)
@@ -1751,6 +1769,7 @@ namespace GnollHackX.Unknown
             if (res != RESULT.OK)
                 return false;
 
+            GHApp.MaybeWriteGHLog("FmodService.ToggleMuteSounds: calling setMute", true, GHConstants.SentryGnollHackGeneralCategoryName);
             res = masterChannelGroup.setMute(mute);
             return res == RESULT.OK;
         }

@@ -95,6 +95,10 @@ public static class MauiProgram
                   // Other Sentry options can be set here.
                   options.CaptureFailedRequests = false;
 #if ANDROID || IOS
+                  /* The scope is the only channel by which the crash-context snapshot from
+                     UpdateSentryCrashContextScope reaches a native signal-handler crash. */
+                  options.EnableScopeSync = true;
+
                 options.SetBeforeSend(@event =>
                 {
                     if (@event == null)
