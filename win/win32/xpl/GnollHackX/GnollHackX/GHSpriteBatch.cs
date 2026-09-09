@@ -18,15 +18,21 @@ namespace GnollHackX
             public SKRotationScaleMatrix[] Xforms;
             public SKColor[] Colors;
             public int Count;
-
-            /* DrawAtlas reads array.Length, so the flush arrays are exact-length */
-            public SKRect[] FlushSprites;
-            public SKRotationScaleMatrix[] FlushXforms;
-            public SKColor[] FlushColors;
         }
 
         private readonly SheetBucket[] _buckets;
         private readonly int _initialCapacity;
+
+        /* DrawAtlas reads array.Length, so a flush needs arrays whose length is the sprite
+           count. Their lengths are quantised to this granularity and the arrays retained,
+           so a count that differs from frame to frame reuses one rather than allocating a
+           new one; the tail past the real count is zeroed, which leaves those quads
+           degenerate. One set serves every sheet, as a flush completes before the next
+           one starts. */
+        private const int FlushGranularity = 256;
+        private SKRect[][] _flushSprites;
+        private SKRotationScaleMatrix[][] _flushXforms;
+        private SKColor[][] _flushColors;
         private float _atlasScale;
         private float _atlasSrcHInset;
         private float _atlasSrcVInset;
@@ -36,6 +42,18 @@ namespace GnollHackX
         {
             _initialCapacity = Math.Max(16, initialCapacity);
             _buckets = new SheetBucket[GHConstants.MaxTileSheets];
+
+            int slots = FlushSlot(_initialCapacity) + 1;
+            _flushSprites = new SKRect[slots][];
+            _flushXforms = new SKRotationScaleMatrix[slots][];
+            _flushColors = new SKColor[slots][];
+        }
+
+        /* Slot n holds the arrays of length n * FlushGranularity; slot 0 is never used,
+           as an empty bucket does not flush */
+        private static int FlushSlot(int count)
+        {
+            return (count + FlushGranularity - 1) / FlushGranularity;
         }
 
         public void SetFrameGeometry(float scale, float srcHInset, float srcVInset, in SKRect cullRect)
@@ -127,17 +145,44 @@ namespace GnollHackX
             if (atlas == null)
                 return 0;
 
-            if (b.FlushSprites == null || b.FlushSprites.Length != count)
+            int slot = FlushSlot(count);
+            if (slot >= _flushSprites.Length)
             {
-                b.FlushSprites = new SKRect[count];
-                b.FlushXforms = new SKRotationScaleMatrix[count];
-                b.FlushColors = new SKColor[count];
+                /* Only reachable if Add has grown a bucket past the initial capacity */
+                int slots = slot + 1;
+                Array.Resize(ref _flushSprites, slots);
+                Array.Resize(ref _flushXforms, slots);
+                Array.Resize(ref _flushColors, slots);
             }
-            Array.Copy(b.Sprites, b.FlushSprites, count);
-            Array.Copy(b.Xforms, b.FlushXforms, count);
-            Array.Copy(b.Colors, b.FlushColors, count);
 
-            canvas.DrawAtlas(atlas, b.FlushSprites, b.FlushXforms, b.FlushColors,
+            int padded = slot * FlushGranularity;
+            if (_flushSprites[slot] == null)
+            {
+                _flushSprites[slot] = new SKRect[padded];
+                _flushXforms[slot] = new SKRotationScaleMatrix[padded];
+                _flushColors[slot] = new SKColor[padded];
+            }
+
+            SKRect[] sprites = _flushSprites[slot];
+            SKRotationScaleMatrix[] xforms = _flushXforms[slot];
+            SKColor[] colors = _flushColors[slot];
+
+            Array.Copy(b.Sprites, sprites, count);
+            Array.Copy(b.Xforms, xforms, count);
+            Array.Copy(b.Colors, colors, count);
+
+            /* The tail can still hold sprites left by a larger earlier flush of the same
+               slot, which would draw a second time. A zeroed transform has no scale, so
+               its four vertices coincide and the quad covers nothing. */
+            int tail = padded - count;
+            if (tail > 0)
+            {
+                Array.Clear(sprites, count, tail);
+                Array.Clear(xforms, count, tail);
+                Array.Clear(colors, count, tail);
+            }
+
+            canvas.DrawAtlas(atlas, sprites, xforms, colors,
                 SKBlendMode.Modulate,
 #if GNH_MAUI
                 sampling,
