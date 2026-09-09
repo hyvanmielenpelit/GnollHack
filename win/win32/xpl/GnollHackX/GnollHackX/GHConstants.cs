@@ -98,6 +98,7 @@ namespace GnollHackX
         public const int StatusMarkWidth = 16;
         public const int StatusMarkHeight = 16;
         public const int MaxTileSheets = 4;
+        public const int DefaultSpriteBatchCapacity = MapCols * MapRows * 2;
         public const int NumberOfTilesPerSheet = 8192; // 16224;
         public const int PowerOf2ForNumberOfTilesPerSheet = 13;
         public const int MaxTileSheetWidthInTiles = 128;

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -202,6 +202,7 @@
     <None Remove="..\GnollHackX\GnollHackX\GHStructs.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHDelegates.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHDrawCommand.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHSpriteBatch.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHEditor.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHFloatingText.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHConditionText.cs" />
@@ -440,6 +441,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\GHFloatingText.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHConditionText.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHDrawCommand.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHSpriteBatch.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHGUIEffect.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHNumberPickItem.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
