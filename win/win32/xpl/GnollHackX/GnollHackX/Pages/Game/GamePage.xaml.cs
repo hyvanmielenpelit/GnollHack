@@ -5811,7 +5811,7 @@ namespace GnollHackX.Pages.Game
             bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
             bool hflip_glyph, bool vflip_glyph,
             ObjectDataItem otmp_round, int autodraw, bool drawwallends, bool breatheanimations, long generalcounterdiff, float canvaswidth, float canvasheight, int enlargement, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering,
-            bool pointerIsHoveringOnTile, bool mapLookMode, bool lighterDarkening, bool layerDelayedDraw) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
+            bool pointerIsHoveringOnTile, bool mapLookMode, bool lighterDarkening, bool layerDelayedDraw, bool alternativeLayerDrawing) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
             //ref float enlMinDrawX, ref float enlMaxDrawX, ref float enlMinDrawY, ref float enlMaxDrawY)
         {
             if (!GHUtils.isok(draw_map_x, draw_map_y))
@@ -6121,27 +6121,24 @@ namespace GnollHackX.Pages.Game
             float dx2 = dx * (hflip_glyph ? -1 : 1) * width * dscalex;
             float dy2 = dy * (vflip_glyph ? -1 : 1) * height * dscaley;
 
+            /* The floor and carpet layers draw as plain full-tile blits into their own cell,
+               so they batch into DrawAtlas. Autodraw and the flips are the only variations
+               reachable there, and autodraw can also arrive from an animation frame. The
+               layer test comes first because it rejects every other layer. */
             bool canBatch = layer_idx <= (int)layer_types.LAYER_CARPET
-                && !delayedDraw
-                && !layerDelayedDraw
-                && enlargement == 0
                 && autodraw == 0
                 && !hflip_glyph
                 && !vflip_glyph
+                //&& !pointerIsHoveringOnTile
+                /* Inert on these layers: the highlight block above selects neither filter below
+                   LAYER_CARPET + 1. The test is needed only if floor or carpet ever highlight on
+                   hover -- CreateLighting adds a constant term, which a per-sprite Modulate colour
+                   cannot express, so such a tile has to take the DrawImage path instead. */
                 //&& !tileflag_halfsize
-                //&& !tileflag_normalobjmissile
-                //&& scale == 1.0f
-                //&& dscalex == 1.0f
-                //&& dscaley == 1.0f
-                //&& scaled_y_height_change == 0f
-                //&& move_offset_x == 0f
-                //&& move_offset_y == 0f
-                //&& splitY <= 0f
-                //&& source_height_deducted == 0
-                //&& opaqueness >= 1.0f
-                && !pointerIsHoveringOnTile
-                //&& sheet_idx >= 0 && sheet_idx < TileMap.Length
-                //&& TileMap[sheet_idx] != null
+                /* No floor or carpet glyph carries GLYPH_TILE_FLAG_HALF_SIZED_TILE. One that did
+                   would need the partial source rect and offset destination that the batch does not
+                   build. */
+                && !alternativeLayerDrawing /* last: never true in practice, and the cell-major loop has no flush of its own */
                 ;
 
             if (canBatch)
@@ -8537,7 +8534,8 @@ namespace GnollHackX.Pages.Game
                                         startY = Math.Max(startY, (int)(Math.Sign(altStartY) * Math.Floor(Math.Abs(altStartY))));
                                         endY = Math.Min(endY, (int)Math.Ceiling(altEndY));
 
-                                        if (AlternativeLayerDrawing)
+                                        bool alternativeLayerDrawing = AlternativeLayerDrawing;
+                                        if (alternativeLayerDrawing)
                                         {
                                             lock (_drawOrderLock)
                                             {
@@ -8707,7 +8705,7 @@ namespace GnollHackX.Pages.Game
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, false); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
+                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, false, alternativeLayerDrawing); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
                                                                     }
                                                                 }
                                                             }
@@ -8857,7 +8855,7 @@ namespace GnollHackX.Pages.Game
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, layer_delayed); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, layer_delayed, alternativeLayerDrawing); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                     }
                                                                 }
                                                             }
@@ -8877,12 +8875,12 @@ namespace GnollHackX.Pages.Game
                                                             continue;
                                                         StartProfiling(GHProfilingStyle.Bitmap);
                                                         int drawn = _spriteBatch.Flush(canvas, sheet,
-                                                            sheet < TileMap.Length ? TileMap[sheet] : null, paint,
+                                                            sheet < TileMap.Length ? TileMap[sheet] : null, paint
 #if GNH_MAUI
-                                                            new SKSamplingOptions(SKFilterMode.Nearest,
-                                                                usingGL && usingMipMap ? SKMipmapMode.Nearest : SKMipmapMode.None),
+                                                            , new SKSamplingOptions(SKFilterMode.Nearest,
+                                                                usingGL && usingMipMap ? SKMipmapMode.Nearest : SKMipmapMode.None)
 #endif
-                                                            in atlasCullRect);
+                                                            );
                                                         StopProfiling(GHProfilingStyle.Bitmap);
                                                         if (drawn > 0)
                                                             CountSheetDraw(sheet);

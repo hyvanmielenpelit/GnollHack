@@ -108,11 +108,11 @@ namespace GnollHackX
 
         /* Returns the sprite count drawn, or 0 if the bucket was empty. The caller
            restores any paint state it needs preserved. */
-        public int Flush(SKCanvas canvas, int sheetIdx, SKImage atlas, SKPaint paint,
+        public int Flush(SKCanvas canvas, int sheetIdx, SKImage atlas, SKPaint paint
 #if GNH_MAUI
-                         SKSamplingOptions sampling,
+                         , SKSamplingOptions sampling
 #endif
-                         in SKRect cullRect)
+                         )
         {
             if (sheetIdx < 0 || sheetIdx >= _buckets.Length)
                 return 0;
@@ -142,7 +142,7 @@ namespace GnollHackX
 #if GNH_MAUI
                 sampling,
 #endif
-                cullRect, paint);
+                _atlasCullRect, paint);
 
             return count;
         }
