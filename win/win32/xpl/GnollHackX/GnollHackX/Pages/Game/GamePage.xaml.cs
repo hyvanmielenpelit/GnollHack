@@ -6120,6 +6120,46 @@ namespace GnollHackX.Pages.Game
             float splitY = -(move_offset_y + scaled_y_height_change + correction_y);
             float dx2 = dx * (hflip_glyph ? -1 : 1) * width * dscalex;
             float dy2 = dy * (vflip_glyph ? -1 : 1) * height * dscaley;
+
+            bool canBatch = layer_idx <= (int)layer_types.LAYER_CARPET
+                && !delayedDraw
+                && !layerDelayedDraw
+                && enlargement == 0
+                && autodraw == 0
+                && !hflip_glyph
+                && !vflip_glyph
+                //&& !tileflag_halfsize
+                //&& !tileflag_normalobjmissile
+                //&& scale == 1.0f
+                //&& dscalex == 1.0f
+                //&& dscaley == 1.0f
+                //&& scaled_y_height_change == 0f
+                //&& move_offset_x == 0f
+                //&& move_offset_y == 0f
+                //&& splitY <= 0f
+                //&& source_height_deducted == 0
+                //&& opaqueness >= 1.0f
+                && !pointerIsHoveringOnTile
+                //&& sheet_idx >= 0 && sheet_idx < TileMap.Length
+                //&& TileMap[sheet_idx] != null
+                ;
+
+            if (canBatch)
+            {
+                /* Same reject test DrawSplitBitmap applies per tile; DrawAtlas culls only the
+                   whole call, not individual sprites */
+                if (tx + width > 0 && tx < canvaswidth && ty + height > 0 && ty < canvasheight)
+                {
+                    int darken_percentage = darken ? GetDarkenPercentage(ref currentLayerInfo, lighterDarkening) : 100;
+                    byte greyVal = (byte)((darken_percentage * 255) / 100);
+                    _spriteBatch.Add(sheet_idx, tile_x, tile_y, tx, ty, greyVal, (byte)(0xFF * opaqueness));
+                }
+
+                if (paint.ColorFilter != null)
+                    paint.ColorFilter = null;
+                return;
+            }
+
             canvas.Save();
             try
             {
@@ -6360,6 +6400,7 @@ namespace GnollHackX.Pages.Game
         private int _drawSheetIdx = -1;
         private int _sheetSwitchCount = 0;
         private int _lastSheetSwitchCount = 0;
+        private GHSpriteBatch _spriteBatch = new GHSpriteBatch(GHConstants.DefaultSpriteBatchCapacity);
 
         /* Cached SKPaint instances to avoid per-frame heap allocations */
         private readonly SKPaint _mapPaint = new SKPaint();
@@ -8358,6 +8399,21 @@ namespace GnollHackX.Pages.Game
                 if (targetscale == 0f)
                     targetscale = 1f;
 
+                _spriteBatch.Reset();
+
+                /* MaybeFixRects insets the source and pads the destination by a pixel; a uniform
+                   atlas scale cannot pad both axes independently, so the vertical source inset is
+                   solved for instead, which lands the destination on nominal+pad on both axes. */
+                bool atlasFix = (usingGL || GHApp.IsWindows) && fixRects;
+                float atlasSrcHInset = atlasFix ? 0.01f : 0f;
+                float atlasDestPad = atlasFix ? 1.0f : 0f;
+                float atlasSrcWidth = (float)GHConstants.TileWidth - 2f * atlasSrcHInset;
+                float atlasScale = (width + atlasDestPad) / atlasSrcWidth;
+                float atlasSrcHeight = (height + atlasDestPad) / atlasScale;
+                float atlasSrcVInset = ((float)GHConstants.TileHeight - atlasSrcHeight) / 2f;
+                SKRect atlasCullRect = new SKRect(0, 0, canvaswidth, canvasheight);
+                _spriteBatch.SetFrameGeometry(atlasScale, atlasSrcHInset, atlasSrcVInset, in atlasCullRect);
+
                 int startX = 1;
                 int endX = GHConstants.MapCols - 1;
                 int startY = 0;
@@ -8807,6 +8863,32 @@ namespace GnollHackX.Pages.Game
                                                             }
                                                         }
                                                     }
+                                                }
+
+                                                if (_spriteBatch.TotalCount > 0)
+                                                {
+                                                    SKColor savedColor = paint.Color;
+                                                    SKColorFilter savedFilter = paint.ColorFilter;
+                                                    paint.Color = SKColors.White;
+                                                    paint.ColorFilter = null;
+                                                    for (int sheet = 0; sheet < GHConstants.MaxTileSheets; sheet++)
+                                                    {
+                                                        if (_spriteBatch.Count(sheet) == 0)
+                                                            continue;
+                                                        StartProfiling(GHProfilingStyle.Bitmap);
+                                                        int drawn = _spriteBatch.Flush(canvas, sheet,
+                                                            sheet < TileMap.Length ? TileMap[sheet] : null, paint,
+#if GNH_MAUI
+                                                            new SKSamplingOptions(SKFilterMode.Nearest,
+                                                                usingGL && usingMipMap ? SKMipmapMode.Nearest : SKMipmapMode.None),
+#endif
+                                                            in atlasCullRect);
+                                                        StopProfiling(GHProfilingStyle.Bitmap);
+                                                        if (drawn > 0)
+                                                            CountSheetDraw(sheet);
+                                                    }
+                                                    paint.Color = savedColor;
+                                                    paint.ColorFilter = savedFilter;
                                                 }
 
                                                 FlushLayerDrawCommands(canvas, paint, targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
