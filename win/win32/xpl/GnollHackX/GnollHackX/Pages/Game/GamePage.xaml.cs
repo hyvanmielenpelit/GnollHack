@@ -5811,7 +5811,7 @@ namespace GnollHackX.Pages.Game
             bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
             bool hflip_glyph, bool vflip_glyph,
             ObjectDataItem otmp_round, int autodraw, bool drawwallends, bool breatheanimations, long generalcounterdiff, float canvaswidth, float canvasheight, int enlargement, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering,
-            bool pointerIsHoveringOnTile, bool mapLookMode, bool lighterDarkening, bool layerDelayedDraw, bool alternativeLayerDrawing) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
+            bool pointerIsHoveringOnTile, bool mapLookMode, bool lighterDarkening, bool layerDelayedDraw, bool alternativeLayerDrawing, bool spriteBatching) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
             //ref float enlMinDrawX, ref float enlMaxDrawX, ref float enlMinDrawY, ref float enlMaxDrawY)
         {
             if (!GHUtils.isok(draw_map_x, draw_map_y))
@@ -6125,7 +6125,8 @@ namespace GnollHackX.Pages.Game
                so they batch into DrawAtlas. Autodraw and the flips are the only variations
                reachable there, and autodraw can also arrive from an animation frame. The
                layer test comes first because it rejects every other layer. */
-            bool canBatch = layer_idx <= (int)layer_types.LAYER_CARPET
+            bool canBatch = spriteBatching
+                && layer_idx <= (int)layer_types.LAYER_CARPET
                 && autodraw == 0
                 && !hflip_glyph
                 && !vflip_glyph
@@ -7852,6 +7853,7 @@ namespace GnollHackX.Pages.Game
             bool breatheanimations = BreatheAnimations;
             bool fixRects = GHApp.FixRects;
             bool fixFiltering = false; /* Applies only to menus */ // GHApp.FixFiltering;
+            bool spriteBatching = GHApp.UseSpriteBatching;
 #if GNH_MAUI && ENABLE_RUNTIME_EFFECTS
             bool runtimeEffects = GHApp.RuntimeEffects && GHApp.RuntimeEffectsInited;
 #endif
@@ -8705,7 +8707,7 @@ namespace GnollHackX.Pages.Game
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, false, alternativeLayerDrawing); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
+                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, false, alternativeLayerDrawing, spriteBatching); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
                                                                     }
                                                                 }
                                                             }
@@ -8855,7 +8857,7 @@ namespace GnollHackX.Pages.Game
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, layer_delayed, alternativeLayerDrawing); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, layer_delayed, alternativeLayerDrawing, spriteBatching); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                     }
                                                                 }
                                                             }

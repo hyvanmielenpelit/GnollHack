@@ -307,6 +307,7 @@ namespace GnollHackX
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             FixFiltering = Preferences.Get("FixFiltering", IsFixFilteringDefault);
             RuntimeEffects = Preferences.Get("RuntimeEffects", GHConstants.DefaultRuntimeEffects);
+            UseSpriteBatching = Preferences.Get("UseSpriteBatching", GHConstants.DefaultUseSpriteBatching);
             DisableWindowsKey = Preferences.Get("DisableWindowsKey", false);
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
             ShowKeyboardShortcuts = Preferences.Get("ShowKeyboardShortcuts", IsDesktop);
@@ -1946,6 +1947,10 @@ namespace GnollHackX
 
         private static int _fixFiltering = 0;
         public static bool FixFiltering { get { return Interlocked.CompareExchange(ref _fixFiltering, 0, 0) != 0; } set { Interlocked.Exchange(ref _fixFiltering, value ? 1 : 0); } }
+
+        private static int _useSpriteBatching = GHConstants.DefaultUseSpriteBatching ? 1 : 0;
+        /* Read once per frame by the map paint loop; see GamePage.PaintMapTile */
+        public static bool UseSpriteBatching { get { return Interlocked.CompareExchange(ref _useSpriteBatching, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSpriteBatching, value ? 1 : 0); } }
 
         private static int _runtimeEffects = GHConstants.DefaultRuntimeEffects ? 1 : 0;
         public static bool RuntimeEffects { get { return GHConstants.EnableExperimentalFeatures && Interlocked.CompareExchange(ref _runtimeEffects, 0, 0) != 0; } set { Interlocked.Exchange(ref _runtimeEffects, value ? 1 : 0); } }

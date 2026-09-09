@@ -383,6 +383,7 @@ namespace GnollHackX
 #endif
 #endif
         public const bool DefaultRuntimeEffects = false;
+        public const bool DefaultUseSpriteBatching = true;
         public const bool DefaultCharacterClickAction = false;
         public const bool DefaultDiceAsRanges = true;
         public const bool DefaultDamageFormula = false;
