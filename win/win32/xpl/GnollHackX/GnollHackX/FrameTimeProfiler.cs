@@ -41,6 +41,10 @@ namespace GnollHackX
         public int DeltaGen0;
         public int DeltaGen1;
         public int DeltaGen2;
+
+        /* Measured across the GC.Collect call itself, so unlike a runtime
+           collection this is the real pause rather than a frame gap */
+        public long DurationTicks;
     }
 
     public struct FrameTimeStatistics
@@ -148,6 +152,8 @@ namespace GnollHackX
         private static int _beforeGen1;
         [ThreadStatic]
         private static int _beforeGen2;
+        [ThreadStatic]
+        private static long _beforeTicks;
 
         /*
          * Pause event ring buffer. A pause event is recorded when the active
@@ -181,6 +187,7 @@ namespace GnollHackX
             _beforeGen0 = GC.CollectionCount(0);
             _beforeGen1 = GC.CollectionCount(1);
             _beforeGen2 = GC.CollectionCount(2);
+            _beforeTicks = Stopwatch.GetTimestamp();
         }
 
         /// <summary>
@@ -194,13 +201,15 @@ namespace GnollHackX
             int deltaGen1 = GC.CollectionCount(1) - _beforeGen1;
             int deltaGen2 = GC.CollectionCount(2) - _beforeGen2;
 
+            long afterTicks = Stopwatch.GetTimestamp();
             long idx = Interlocked.Increment(ref _forcedGcDeltaWriteIndex);
             _forcedGcDeltas[SafeIndex(idx, MaxForcedGcEvents)] = new ForcedGcDelta
             {
-                Timestamp = Stopwatch.GetTimestamp(),
+                Timestamp = afterTicks,
                 DeltaGen0 = deltaGen0,
                 DeltaGen1 = deltaGen1,
-                DeltaGen2 = deltaGen2
+                DeltaGen2 = deltaGen2,
+                DurationTicks = _beforeTicks > 0 ? afterTicks - _beforeTicks : 0
             };
         }
 
@@ -265,6 +274,73 @@ namespace GnollHackX
 #endif
                 HeapSizeBytes = GC.GetTotalMemory(false)
             };
+
+            if (idx >= 1 && GHApp.IsDebugScreenLoggingOn)
+            {
+                FrameTimeSample prev = _buffer[SafeIndex(idx - 1, BufferSize)];
+                if (DidGcOccur(prev, _buffer[index]))
+                    LogGcEvent(prev, _buffer[index]);
+            }
+        }
+
+        /* One screen-log line per collection, so the log shows when collections landed
+           while the dashboard carries the aggregates. Consecutive samples are used
+           rather than consecutive rendered frames: the gap is tighter, so a runtime
+           collection is attributed more precisely.
+
+           Only a forced collection can report its own pause, measured across the
+           GC.Collect call. A runtime collection is discovered after the fact by the
+           change in collection counts, so the best available figure is the frame gap
+           that contained it -- the observable hitch, not the pause. The two are
+           labelled differently for that reason. */
+        private static void LogGcEvent(in FrameTimeSample prev, in FrameTimeSample curr)
+        {
+            int d0 = curr.GcCount0 - prev.GcCount0;
+            int d1 = curr.GcCount1 - prev.GcCount1;
+            int d2 = curr.GcCount2 - prev.GcCount2;
+
+            long forcedDurationTicks;
+            bool forced = TryGetForcedGcInInterval(prev.TicksFrameStart, curr.TicksFrameStart,
+                out forcedDurationTicks);
+
+            double ms = forced && forcedDurationTicks > 0
+                ? forcedDurationTicks * _msPerTick
+                : (curr.TicksFrameStart - prev.TicksFrameStart) * _msPerTick;
+
+            float heapBeforeMB = prev.HeapSizeBytes / (1024f * 1024f);
+            float heapAfterMB = curr.HeapSizeBytes / (1024f * 1024f);
+
+            /* A canvas transition in the gap makes the elapsed time meaningless, so the
+               line says so rather than presenting it as a collection cost */
+            string pause = IsPauseAffected(prev.TicksFrameStart, curr.TicksFrameStart)
+                ? " [pause]"
+                : "";
+
+            GHApp.MaybeWriteScreenLog(FormattableString.Invariant(
+                $"GC {(forced ? "forced" : "rt")} {GenerationTag(d0, d1, d2)} {ms:0.0}ms {heapBeforeMB:0}>{heapAfterMB:0}MB{pause}"));
+        }
+
+        /* Every generation whose counter moved, joined with '+'. CollectionCount(n) counts
+           collections of generation n or higher, so a gen2 collection reads as 0+1+2. A
+           gap holding more than one collection is suffixed with the count. */
+        private static string GenerationTag(int d0, int d1, int d2)
+        {
+            int mask = (d0 > 0 ? 1 : 0) | (d1 > 0 ? 2 : 0) | (d2 > 0 ? 4 : 0);
+            string gens;
+            switch (mask)
+            {
+            case 1: gens = "g0"; break;
+            case 2: gens = "g1"; break;
+            case 3: gens = "g0+1"; break;
+            case 4: gens = "g2"; break;
+            case 5: gens = "g0+2"; break;
+            case 6: gens = "g1+2"; break;
+            case 7: gens = "g0+1+2"; break;
+            default: gens = "g?"; break;
+            }
+
+            int most = Math.Max(d0, Math.Max(d1, d2));
+            return most > 1 ? gens + "x" + most.ToString(CultureInfo.InvariantCulture) : gens;
         }
 
         /*
@@ -355,19 +431,33 @@ namespace GnollHackX
         /// </summary>
         private static bool HasForcedGcInInterval(long ticksStart, long ticksEnd)
         {
+            long durationTicks;
+            return TryGetForcedGcInInterval(ticksStart, ticksEnd, out durationTicks);
+        }
+
+        /* Yields the measured duration of the last forced collect that completed in the
+           interval, so a forced collection can report its own pause instead of the frame
+           gap that contains it. */
+        private static bool TryGetForcedGcInInterval(long ticksStart, long ticksEnd, out long durationTicks)
+        {
+            durationTicks = 0;
             long writeIndex = Interlocked.Read(ref _forcedGcDeltaWriteIndex);
             if (writeIndex < 0) return false;
 
             int count = (int)Math.Min(writeIndex + 1, MaxForcedGcEvents);
             long firstIdx = writeIndex >= MaxForcedGcEvents ? writeIndex - MaxForcedGcEvents + 1 : 0;
 
+            bool found = false;
             for (int i = 0; i < count; i++)
             {
-                long ts = _forcedGcDeltas[SafeIndex(firstIdx + i, MaxForcedGcEvents)].Timestamp;
-                if (ts >= ticksStart && ts < ticksEnd)
-                    return true;
+                ForcedGcDelta delta = _forcedGcDeltas[SafeIndex(firstIdx + i, MaxForcedGcEvents)];
+                if (delta.Timestamp >= ticksStart && delta.Timestamp < ticksEnd)
+                {
+                    durationTicks = delta.DurationTicks;
+                    found = true;
+                }
             }
-            return false;
+            return found;
         }
 
         private static bool IsPauseAffected(long ticksStart, long ticksEnd)

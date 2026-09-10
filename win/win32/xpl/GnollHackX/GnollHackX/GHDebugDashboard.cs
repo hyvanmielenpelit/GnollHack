@@ -144,6 +144,7 @@ namespace GnollHackX
         private int _maxLabelChars;
         private int _maxValueChars;
         private int _maxLogChars;
+        private int _logTimeChars;
 
         /* Row index of each heading that fit-shrinking may cut at, or -1 */
         private int _gcHeadingRow = -1;
@@ -289,7 +290,7 @@ namespace GnollHackX
         /// and returns whether it did. Paint thread only. This is the
         /// only member that allocates.
         /// </summary>
-        public bool TryRefresh(bool logSectionVisible, IReadOnlyList<string> logLines, int maxLogLines)
+        public bool TryRefresh(bool logSectionVisible, IReadOnlyList<GHScreenLogEntry> logLines, int maxLogLines)
         {
             long version = Interlocked.Read(ref _version);
             bool panelCollapsed = _panelCollapsed;
@@ -299,7 +300,7 @@ namespace GnollHackX
             /* The log buffer is append-only between swaps and a swap
                changes Count, so the count plus the identity of the last
                entry detects every possible change exactly. */
-            string logTail = logCount > 0 ? logLines[logCount - 1] : null;
+            string logTail = logCount > 0 ? logLines[logCount - 1].Text : null;
 
             if (_builtVersion == version
                 && _builtPanelCollapsed == panelCollapsed
@@ -330,12 +331,13 @@ namespace GnollHackX
         }
 
         private void BuildRows(bool panelCollapsed, bool logCollapsed, bool logSectionVisible,
-            IReadOnlyList<string> logLines, int logCount, int maxLogLines)
+            IReadOnlyList<GHScreenLogEntry> logLines, int logCount, int maxLogLines)
         {
             _rows.Clear();
             _maxLabelChars = 0;
             _maxValueChars = 0;
             _maxLogChars = 0;
+            _logTimeChars = 0;
             _gcHeadingRow = -1;
             _drawHeadingRow = -1;
             _logHeadingRow = -1;
@@ -456,7 +458,9 @@ namespace GnollHackX
                     int start = Math.Max(0, logCount - maxLogLines);
                     for (int i = start; i < logCount; i++)
                     {
-                        AddRow(logLines[i], EmptyValue, SKColors.LightSalmon, RowKind.LogLine);
+                        GHScreenLogEntry entry = logLines[i];
+                        AddRow(FormattableString.Invariant($"{entry.Time:HH:mm:ss.fff}"), entry.Text,
+                            SKColors.LightSalmon, RowKind.LogLine);
                     }
                 }
             }
@@ -522,9 +526,13 @@ namespace GnollHackX
             if (kind == RowKind.LogLine)
             {
                 /* Log lines span the whole panel rather than the label
-                   column, so they must not push the value column right */
-                if (row.Label.Length > _maxLogChars)
-                    _maxLogChars = row.Label.Length;
+                   column, so they must not push the value column right.
+                   The time is fixed width, so one gap separates the two. */
+                if (row.Label.Length > _logTimeChars)
+                    _logTimeChars = row.Label.Length;
+                int combined = row.Label.Length + 1 + row.Value.Length;
+                if (combined > _maxLogChars)
+                    _maxLogChars = combined;
             }
             else
             {
@@ -646,8 +654,13 @@ namespace GnollHackX
                         {
                             textPaint.Typeface = GHApp.DejaVuSansMonoTypeface;
                             textPaint.Style = SKPaintStyle.Fill;
-                            textPaint.Color = SKColors.LightSalmon;
+                            /* Monospace, so the message column is an offset rather
+                               than a measurement */
+                            textPaint.Color = SKColors.Gray;
                             textPaint.DrawTextOnCanvas(canvas, row.Label, labelX, baseline);
+                            textPaint.Color = SKColors.LightSalmon;
+                            textPaint.DrawTextOnCanvas(canvas, row.Value,
+                                labelX + (_logTimeChars + 1) * _charAdvance, baseline);
                         }
                         else
                         {

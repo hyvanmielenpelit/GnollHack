@@ -62,6 +62,17 @@ namespace GnollHackX
         public IntPtr FunctionPointer;
     }
 
+    /// <summary>
+    /// One screen log message and the wall clock at the moment it was
+    /// emitted, rather than when a canvas drained it. Shares its clock with
+    /// the app log, so the two agree to the second.
+    /// </summary>
+    public struct GHScreenLogEntry
+    {
+        public DateTime Time;
+        public string Text;
+    }
+
     public class GHBonesDeletion
     {
         public string BonesFileName { get; set; }
@@ -8371,12 +8382,12 @@ namespace GnollHackX
                 Debug.WriteLine(loggedtext);
         }
 
-        public static readonly ConcurrentQueue<string> PendingScreenLogMessages = new ConcurrentQueue<string>();
+        public static readonly ConcurrentQueue<GHScreenLogEntry> PendingScreenLogMessages = new ConcurrentQueue<GHScreenLogEntry>();
         public static void MaybeWriteScreenLog(string loggedText)
         {
             if (IsDebugScreenLoggingOn)
             {
-                PendingScreenLogMessages.Enqueue(loggedText);
+                PendingScreenLogMessages.Enqueue(new GHScreenLogEntry { Time = DateTime.Now, Text = loggedText });
             }
         }
 
@@ -8384,7 +8395,7 @@ namespace GnollHackX
         {
             if (screenLogging)
             {
-                PendingScreenLogMessages.Enqueue(loggedText);
+                PendingScreenLogMessages.Enqueue(new GHScreenLogEntry { Time = DateTime.Now, Text = loggedText });
             }
         }
 
