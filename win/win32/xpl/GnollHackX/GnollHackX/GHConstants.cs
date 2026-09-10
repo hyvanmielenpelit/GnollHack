@@ -64,6 +64,23 @@ namespace GnollHackX
         public const float StatusBarRowMargin = 5.0f;
         public const float StatusBarShieldFontSize = StatusBarBaseFontSize * 32f / 42f;
         public const float StatusBarDifFontSize = StatusBarBaseFontSize * 24f / 42f;
+        public const float DebugDashboardBaseFontSize = 11.0f;
+        public const float DebugDashboardPadding = 6.0f;
+        public const float DebugDashboardCornerRadius = 6.0f;
+        public const float DebugDashboardLeftMargin = 8.0f;
+        public const float DebugDashboardTopMargin = 5.0f;
+        public const float DebugDashboardChevronSize = 7.0f;
+        /* Chevron hit rects are inflated to this many text rows square, so the drawn
+           triangle can stay small while the target remains reachable with a thumb */
+        public const float DebugDashboardMinTouchRows = 2.0f;
+        public const int DebugDashboardLogLines = 6;
+        public const byte DebugDashboardBackgroundAlpha = 160;
+        public const byte DebugDashboardBorderAlpha = 60;
+        public const float DebugDashboardDroppedFrameWarnPct = 1.0f;
+        public const float DebugDashboardDroppedFrameAlarmPct = 5.0f;
+        public const float DebugDashboardLockFailWarnPct = 1.0f;
+        public const float DebugDashboardP99WarnMs = 25.0f;
+        public const float DebugDashboardP99AlarmMs = 50.0f;
         public const float StatusScreenWidthThresholdMultiplierPortrait = 0.675f;
         public const float StatusScreenWidthThresholdMultiplierLandscape = 0.55f;
         public const float SkillButtonBaseFontSize = 9.5f;
@@ -129,6 +146,12 @@ namespace GnollHackX
         public const int MaxCachedTextLength = 128;
         public const int MaxMapCachedTextLength = 512;
         public const int MaxCachedTotalChars = 65536;
+        /* The dashboard's own budget, kept small and separate: its value strings are
+           mostly single-use, and a blob cache flush discards every bucket, so sharing
+           the map's cache would have the panel evicting map glyphs. */
+        public const int MaxDashboardTextBlobCacheSize = 128;
+        public const int MaxDashboardCachedTextLength = 64;
+        public const int MaxDashboardCachedTotalChars = 4096;
         public const int MaxMenuCachedTotalChars = 131072;
         public const int PIT_BOTTOM_BORDER = 2;
         public const int SPECIAL_HEIGHT_IN_PIT = -32;

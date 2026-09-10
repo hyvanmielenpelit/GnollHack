@@ -662,97 +662,14 @@ namespace GnollHackX
             };
         }
 
-        private static FrameTimeStatistics _lastStats;
-
-        public static string GetScreenLogSummary()
-        {
-            _lastStats = GetStatistics();
-            if (_lastStats.SampleCount == 0) return "FT: No data";
-
-            return FormattableString.Invariant($"FT: {_lastStats.FPS:0}fps Avg:{_lastStats.InterFrameAvgMs:0.0} ({_lastStats.InterFrameStdDevMs:0.0}) P95:{_lastStats.InterFrameP95Ms:0.0} P99:{_lastStats.InterFrameP99Ms:0.0} Max:{_lastStats.InterFrameMaxMs:0.0} Drop:{_lastStats.DroppedFramePct:0.0}% Lock:{_lastStats.LockFailPct:0.0}%");
-        }
-
         /// <summary>
-        /// Returns the memory summary line showing allocation rate,
-        /// heap size, and per-generation sizes. Returns null when
-        /// data is insufficient. Must be called after
-        /// GetScreenLogSummary() which populates _lastStats.
-        /// Format: Mem: Alloc:12.3MB/s Heap:142MB Gen:8/24/96+14
-        ///   or:   Mem: Alloc:12.3MB/s Heap:142MB Gen:?
+        /// Recomputes the statistics and hands them to the debug dashboard.
+        /// Called on the main thread at the screen log's cadence, not per frame:
+        /// the dashboard rebuilds every row string when the snapshot changes.
         /// </summary>
-        public static string GetScreenLogMemorySummary()
+        public static void PublishDashboardSnapshot()
         {
-            var s = _lastStats;
-            if (s.SampleCount == 0)
-                return null;
-
-            float heapMB = s.HeapSizeBytes / (1024f * 1024f);
-
-            string genPart;
-            if (s.Gen0SizeBytes > 0 || s.Gen1SizeBytes > 0 || s.Gen2SizeBytes > 0)
-            {
-                float g0 = s.Gen0SizeBytes / (1024f * 1024f);
-                float g1 = s.Gen1SizeBytes / (1024f * 1024f);
-                float g2 = s.Gen2SizeBytes / (1024f * 1024f);
-                if (s.LohSizeBytes > 0)
-                {
-                    float loh = s.LohSizeBytes / (1024f * 1024f);
-                    genPart = FormattableString.Invariant($"Gen:{g0:0}/{g1:0}/{g2:0}+{loh:0}");
-                }
-                else
-                {
-                    genPart = FormattableString.Invariant($"Gen:{g0:0}/{g1:0}/{g2:0}");
-                }
-            }
-            else
-            {
-                genPart = "Gen:?";
-            }
-
-            return FormattableString.Invariant($"Mem: Alloc:{s.AllocationRateMBPerSec:0.0}MB/s Heap:{heapMB:0}MB {genPart}");
-        }
-
-        /// <summary>
-        /// Returns the forced-GC summary line, or null if no forced GC occurred.
-        /// Must be called after GetScreenLogSummary() which populates _lastStats.
-        /// </summary>
-        public static string GetScreenLogForcedGcSummary()
-        {
-            var s = _lastStats;
-            if (s.GcFrameCount == 0 && s.PauseFrameCount == 0)
-                return null;
-
-            string forced = s.GcFrameCount > 0
-                ? FormattableString.Invariant($" {s.GcFrameCount}x Avg:{s.GcAvgMs:0.0} ({s.GcStdDevMs:0.0}) P95:{s.GcP95Ms:0.0} P99:{s.GcP99Ms:0.0} Max:{s.GcWorstMs:0.0}")
-                : "";
-
-            string pause = s.PauseFrameCount > 0
-                ? FormattableString.Invariant($" Pause:{s.PauseFrameCount}")
-                : "";
-
-            return $"FoGC:{forced}{pause}";
-        }
-
-        /// <summary>
-        /// Returns the runtime-GC summary line, or null if no runtime GC occurred.
-        /// Must be called after GetScreenLogSummary() which populates _lastStats.
-        /// </summary>
-        public static string GetScreenLogRuntimeGcSummary()
-        {
-            var s = _lastStats;
-            if (s.RuntimeGcFrameCount == 0
-                && s.GcGen0Count == 0 && s.GcGen1Count == 0 && s.GcGen2Count == 0)
-                return null;
-
-            string runtime = s.RuntimeGcFrameCount > 0
-                ? FormattableString.Invariant($" {s.RuntimeGcFrameCount}x Avg:{s.RuntimeGcAvgMs:0.0} ({s.RuntimeGcStdDevMs:0.0}) P95:{s.RuntimeGcP95Ms:0.0} P99:{s.RuntimeGcP99Ms:0.0} Max:{s.RuntimeGcWorstMs:0.0}")
-                : "";
-
-            string gen = (s.GcGen0Count > 0 || s.GcGen1Count > 0 || s.GcGen2Count > 0)
-                ? FormattableString.Invariant($" Gen:{s.GcGen0Count}/{s.GcGen1Count}/{s.GcGen2Count}")
-                : "";
-
-            return $"RtGC:{runtime}{gen}";
+            GHDebugDashboard.PublishFrameStats(GetStatistics(), IsEnabled);
         }
 
         public static void DumpToCsv(string path)

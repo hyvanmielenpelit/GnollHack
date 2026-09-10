@@ -117,8 +117,10 @@ namespace GnollHackX.Pages.Game
         private int _refreshMsgHistoryRowCounts = 1;
         private bool RefreshMsgHistoryRowCounts { get { return Interlocked.CompareExchange(ref _refreshMsgHistoryRowCounts, 0, 0) != 0; } set { Interlocked.Exchange(ref _refreshMsgHistoryRowCounts, value ? 1 : 0); } }
         
-        private int _printCacheStatus = 1;
-        private bool PrintCacheStatus { get { return Interlocked.CompareExchange(ref _printCacheStatus, 0, 0) != 0; } set { Interlocked.Exchange(ref _printCacheStatus, value ? 1 : 0); } }
+        /* Set on the main thread, consumed once by the paint thread. Holds the
+           dashboard's draw counters to the same cadence as its profiler snapshot;
+           publishing per frame would rebuild every row string per frame. */
+        private int _publishDashboardStats = 1;
         
         public List<string> ExtendedCommands { get; set; }
 
@@ -717,6 +719,11 @@ namespace GnollHackX.Pages.Game
         public bool ShowMaxHealthInOrb { get { return Interlocked.CompareExchange(ref _showMaxHealthInOrb, 0, 0) != 0; } set { Interlocked.Exchange(ref _showMaxHealthInOrb, value ? 1 : 0); } }
         private int _showMaxManaInOrb = 0;
         public bool ShowMaxManaInOrb { get { return Interlocked.CompareExchange(ref _showMaxManaInOrb, 0, 0) != 0; } set { Interlocked.Exchange(ref _showMaxManaInOrb, value ? 1 : 0); } }
+        /* Written on the UI thread from the touch handler, read on the paint thread */
+        private int _debugDashboardCollapsed = 0;
+        public bool DebugDashboardCollapsed { get { return Interlocked.CompareExchange(ref _debugDashboardCollapsed, 0, 0) != 0; } set { Interlocked.Exchange(ref _debugDashboardCollapsed, value ? 1 : 0); } }
+        private int _debugDashboardLogCollapsed = 0;
+        public bool DebugDashboardLogCollapsed { get { return Interlocked.CompareExchange(ref _debugDashboardLogCollapsed, 0, 0) != 0; } set { Interlocked.Exchange(ref _debugDashboardLogCollapsed, value ? 1 : 0); } }
 
         private int _playerMark = 0;
         public bool PlayerMark { get { return Interlocked.CompareExchange(ref _playerMark, 0, 0) != 0; } set { Interlocked.Exchange(ref _playerMark, value ? 1 : 0); } }
@@ -1022,6 +1029,8 @@ namespace GnollHackX.Pages.Game
             ShowOrbs = Preferences.Get("ShowOrbs", true);
             ShowMaxHealthInOrb = Preferences.Get("ShowMaxHealthInOrb", false);
             ShowMaxManaInOrb = Preferences.Get("ShowMaxManaInOrb", false);
+            DebugDashboardCollapsed = Preferences.Get("DebugDashboardCollapsed", false);
+            DebugDashboardLogCollapsed = Preferences.Get("DebugDashboardLogCollapsed", false);
             ShowPets = Preferences.Get("ShowPets", true);
             PlayerMark = Preferences.Get("PlayerMark", false);
             MonsterTargeting = Preferences.Get("MonsterTargeting", false);
@@ -1902,25 +1911,14 @@ namespace GnollHackX.Pages.Game
                 if (incrementedValue % 10 == 0)
                 {
                     GHApp.LogMemory();
-                    PrintCacheStatus = true;
+                    Interlocked.Exchange(ref _publishDashboardStats, 1);
                     //if (WarnLowDiskSpace)
                         GHApp.UpdateFreeDiskSpace();
                     //if (ShowMemory)
                         GHApp.UpdateUsedMemory();
                     
                     if (GHApp.IsDebugScreenLoggingOn)
-                    {
-                        GHApp.MaybeWriteScreenLog(FrameTimeProfiler.GetScreenLogSummary());
-                        string mem = FrameTimeProfiler.GetScreenLogMemorySummary();
-                        if (mem != null)
-                            GHApp.MaybeWriteScreenLog(mem);
-                        string rtGc = FrameTimeProfiler.GetScreenLogRuntimeGcSummary();
-                        if (rtGc != null)
-                            GHApp.MaybeWriteScreenLog(rtGc);
-                        string foGc = FrameTimeProfiler.GetScreenLogForcedGcSummary();
-                        if (foGc != null)
-                            GHApp.MaybeWriteScreenLog(foGc);
-                    }
+                        FrameTimeProfiler.PublishDashboardSnapshot();
                 }
 
                 CursorIsOn = !CursorIsOn;
@@ -6426,6 +6424,8 @@ namespace GnollHackX.Pages.Game
            produces many distinct short strings within one frame. */
         private readonly GHSkiaFontPaint _mapTextPaint = new GHSkiaFontPaint(GHConstants.MaxMapTextBlobCacheSize, GHConstants.MaxMapCachedTextLength, GHConstants.MaxCachedTotalChars);
         private readonly GHSkiaFontPaint _menuTextPaint = new GHSkiaFontPaint(GHConstants.MaxMenuTextBlobCacheSize, GHConstants.MaxCachedTextLength, GHConstants.MaxMenuCachedTotalChars);
+        private readonly GHSkiaFontPaint _dashboardTextPaint = new GHSkiaFontPaint(GHConstants.MaxDashboardTextBlobCacheSize, GHConstants.MaxDashboardCachedTextLength, GHConstants.MaxDashboardCachedTotalChars);
+        private readonly GHDebugDashboard _debugDashboard = new GHDebugDashboard();
         private readonly GHSkiaFontPaint _textCanvasTextPaint = new GHSkiaFontPaint();
         private readonly GHSkiaFontPaint _cmdTextPaint = new GHSkiaFontPaint();
         private readonly GHSkiaFontPaint _tipTextPaint = new GHSkiaFontPaint();
@@ -7859,6 +7859,10 @@ namespace GnollHackX.Pages.Game
             SKRect poleRect = new SKRect();
             SKRect prevWepRect = new SKRect();
             SKRect youRect = new SKRect();
+            /* Set where the orb geometry is in scope, consumed further down where it is not */
+            SKRect debugDashboardAnchor = new SKRect();
+            SKRect dashboardPanelToggleRect = new SKRect();
+            SKRect dashboardLogToggleRect = new SKRect();
             //bool skillRectDrawn = false;
             //bool prevWepRectDrawn = false;
             //bool healthRectDrawn = false;
@@ -7961,7 +7965,7 @@ namespace GnollHackX.Pages.Game
                     bmp.Dispose();
                 _savedAutoDrawBitmaps.Clear();
 
-                /* Request only: four of these five are owned by the main thread and this
+                /* Request only: four of these six are owned by the main thread and this
                    block can run on the map's paint thread. Each clears itself at the top
                    of its own next paint. */
                 _mapTextPaint.RequestBlobCacheClear();
@@ -7969,6 +7973,7 @@ namespace GnollHackX.Pages.Game
                 _textCanvasTextPaint.RequestBlobCacheClear();
                 _cmdTextPaint.RequestBlobCacheClear();
                 _tipTextPaint.RequestBlobCacheClear();
+                _dashboardTextPaint.RequestBlobCacheClear();
 
                 /* Move the GC to main thread just in case */
                 switch (clearCacheLevel)
@@ -8351,6 +8356,7 @@ namespace GnollHackX.Pages.Game
                 GHSkiaFontPaint textPaint = _mapTextPaint;
                 /* Owning thread only: applies a setting change and any requested clear */
                 textPaint.SyncBlobCache(textBlobCaching);
+                _dashboardTextPaint.SyncBlobCache(textBlobCaching);
                 textPaint.Reset();
                 string str = "";
                 SKRect textBounds = new SKRect();
@@ -12334,6 +12340,12 @@ namespace GnollHackX.Pages.Game
                         float lastdrawnrecty = ClassicStatusBar ? Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing) : statusbarheight;
                         tx = orbleft;
                         ty = lastdrawnrecty + 5.0f;
+                        /* Aligned with the orb column top, which in classic mode sits
+                           below the ability button rather than at the status bar */
+                        debugDashboardAnchor = new SKRect(
+                            orbleft + orbbordersize + GHConstants.DebugDashboardLeftMargin,
+                            lastdrawnrecty + GHConstants.DebugDashboardTopMargin,
+                            canvaswidth, canvasheight);
                         float oldFontSize = textPaint.TextSize;
                         float testFontSize = GHConstants.SkillButtonBaseFontSize * orbbordersize / 50.0f;
                         textPaint.TextSize = testFontSize;
@@ -12756,50 +12768,49 @@ namespace GnollHackX.Pages.Game
 
                 if (screenLogging)
                 {
-                    /* First, cache prune diagnostics — one line per cache, at most once per draw */
+                    if (Interlocked.CompareExchange(ref _publishDashboardStats, 0, 1) != 0)
+                    {
+                        GHDebugDashboard.PublishDrawStats(
+                            _lastDrawCommandCount, _lastSheetSwitchCount,
+                            _savedRects?.Count ?? 0, _savedAutoDrawBitmaps?.Count ?? 0,
+                            _localCompositeColorFiltersFallback?.Count ?? 0,
+                            _mapTextPaint, _menuTextPaint, _dashboardTextPaint);
+                    }
+
+                    /* Cache prune diagnostics — one line per cache, at most once per draw.
+                       A prune is an event, so it stays a log line; the dashboard carries
+                       only the standing cache sizes. */
                     if (_localDarkeningFilterCachePruned)
                         GHApp.MaybeWriteScreenLog(screenLogging, "Darkening color filter cache pruned (" + GHConstants.MaxColorFilterCacheSize + " entries)");
                     if (_localCompositeFilterCachePruned)
                         GHApp.MaybeWriteScreenLog(screenLogging, "Composite color filter cache pruned (" + GHConstants.MaxColorFilterCacheSize + " entries)");
+                }
 
-                    if (Interlocked.CompareExchange(ref _printCacheStatus, 0, 1) != 0)
-                    {
-                        // Print cache status here
-                        GHApp.MaybeWriteScreenLog(screenLogging, "Saved rects cache length: " + (_savedRects?.Count ?? 0));
-                        GHApp.MaybeWriteScreenLog(screenLogging, "Saved autodraw bitmaps cache length: " + (_savedAutoDrawBitmaps?.Count ?? 0));
-                        //GHApp.MaybeWriteScreenLog(screenLogging, "Darkening color filter cache length: " + (_localDarkeningColorFilters?.Count(x => x != null) ?? 0));
-                        //GHApp.MaybeWriteScreenLog(screenLogging, "Composite look color filter cache length: " + (_localCompositeLookColorFilters?.Count(x => x != null) ?? 0));
-                        //GHApp.MaybeWriteScreenLog(screenLogging, "Composite map color filter cache length: " + (_localCompositeMapColorFilters?.Count(x => x != null) ?? 0));
-                        GHApp.MaybeWriteScreenLog(screenLogging, "Composite color filter fallback cache length: " + (_localCompositeColorFiltersFallback?.Count ?? 0));
-                        GHApp.MaybeWriteScreenLog(screenLogging, "Map text blobs: " + _mapTextPaint.BlobCacheCount + "/" + _mapTextPaint.BlobCacheChars + "c, " + _mapTextPaint.BlobCacheHits + " hits, " + _mapTextPaint.BlobCacheMisses + " misses, " + _mapTextPaint.BlobCacheFlushes + " flushes");
-                        GHApp.MaybeWriteScreenLog(screenLogging, "Menu text blobs: " + _menuTextPaint.BlobCacheCount + "/" + _menuTextPaint.BlobCacheChars + "c, " + _menuTextPaint.BlobCacheHits + " hits, " + _menuTextPaint.BlobCacheMisses + " misses, " + _menuTextPaint.BlobCacheFlushes + " flushes");
-                        GHApp.MaybeWriteScreenLog(screenLogging, "Draw command list count (last frame): " + _lastDrawCommandCount);
-                        GHApp.MaybeWriteScreenLog(screenLogging, "Tile sheet switches (last frame): " + _lastSheetSwitchCount);
-                    }
+                if (screenLogging)
+                {
+                    bool panelCollapsed = DebugDashboardCollapsed;
+                    float dashLeft = debugDashboardAnchor.IsEmpty
+                        ? 5.0f + (float)(stdRefButtonWidth * inverse_canvas_scale) + GHConstants.DebugDashboardLeftMargin
+                        : debugDashboardAnchor.Left;
+                    float dashTop = debugDashboardAnchor.IsEmpty
+                        ? statusBarRect.Bottom + GHConstants.DebugDashboardTopMargin
+                        : debugDashboardAnchor.Top;
 
-                    /* Then action screen debug logging */
-                    textPaint.TextSize = 14 * inverse_canvas_scale * customScale;
-                    textPaint.Typeface = GHApp.LatoRegular;
-                    float textSpacing = textPaint.FontSpacing;
-                    tx = 5;
-                    ty = 5 - textPaint.FontMetrics.Ascent;
-                    int startIndex = Math.Max(0, _localMainScreenDebugLogs.Count - _maxShownScreenLogs);
-                    textPaint.Color = SKColors.Black;
-                    textPaint.StrokeWidth = textPaint.TextSize / 3;
-                    textPaint.Style = SKPaintStyle.Stroke;
-                    for (int i = startIndex; i < _localMainScreenDebugLogs.Count; i++)
-                    {
-                        textPaint.DrawTextOnCanvas(canvas, _localMainScreenDebugLogs[i], tx, ty);
-                        ty += textSpacing;
-                    }
-                    textPaint.Color = SKColors.Red;
-                    textPaint.Style = SKPaintStyle.Fill;
-                    ty = 5 - textPaint.FontMetrics.Ascent;
-                    for (int i = startIndex; i < _localMainScreenDebugLogs.Count; i++)
-                    {
-                        textPaint.DrawTextOnCanvas(canvas, _localMainScreenDebugLogs[i], tx, ty);
-                        ty += textSpacing;
-                    }
+                    SKRect dashMenuButtonRect = GetThreadSafeViewScreenRect(GameMenuButton);
+                    SKRect dashCanvasRect = GetThreadSafeViewScreenRect(MainCanvasView);
+                    float dashMaxRight = dashMenuButtonRect.Left - dashCanvasRect.Left;
+                    float dashMaxBottom = Math.Min(herewindowtop, messagewindowtop);
+
+                    /* Its own paint, so a flush of the panel's short-lived value strings
+                       cannot discard the map's cached blobs */
+                    _debugDashboard.SetCollapsed(panelCollapsed, DebugDashboardLogCollapsed);
+                    _debugDashboard.TryRefresh(!panelCollapsed,
+                        _localMainScreenDebugLogs, GHConstants.DebugDashboardLogLines);
+                    _debugDashboard.Draw(canvas, _dashboardTextPaint, dashLeft, dashTop, dashMaxRight, dashMaxBottom,
+                        inverse_canvas_scale * customScale);
+
+                    dashboardPanelToggleRect = _debugDashboard.PanelToggleRect;
+                    dashboardLogToggleRect = _debugDashboard.LogToggleRect;
                 }
 
 #if WINDOWS
@@ -12807,7 +12818,7 @@ namespace GnollHackX.Pages.Game
                 bool doChangeCursor = false;
                 //lock (_canvasPointerLock)
                 {
-                    GameCursorType usedCursor = _localIsPointerHovering && (statusBarRect.Contains(_localPointerHoverLocation) || youRect.Contains(_localPointerHoverLocation) || healthRect.Contains(_localPointerHoverLocation) || manaRect.Contains(_localPointerHoverLocation)) ? GameCursorType.Info : GameCursorType.Normal;
+                    GameCursorType usedCursor = _localIsPointerHovering && (statusBarRect.Contains(_localPointerHoverLocation) || youRect.Contains(_localPointerHoverLocation) || healthRect.Contains(_localPointerHoverLocation) || manaRect.Contains(_localPointerHoverLocation) || dashboardPanelToggleRect.Contains(_localPointerHoverLocation) || dashboardLogToggleRect.Contains(_localPointerHoverLocation)) ? GameCursorType.Info : GameCursorType.Normal;
                     if (usedCursor != _localCurrentCursorType)
                     {
                         doChangeCursor = true;
@@ -12905,6 +12916,8 @@ namespace GnollHackX.Pages.Game
                     _uiPoleRect = poleRect;
                     _uiPrevWepRect = prevWepRect;
                     _uiYouRect = youRect;
+                    _uiDashboardPanelToggleRect = dashboardPanelToggleRect;
+                    _uiDashboardLogToggleRect = dashboardLogToggleRect;
                 }
             }
             finally
@@ -16333,6 +16346,8 @@ namespace GnollHackX.Pages.Game
         private uint _touchWithinPet = 0;
         private bool _touchWithinYouButton = false;
         private int _touchWithinContextButton = 0;
+        private bool _touchWithinDashboardToggle = false;
+        private bool _touchWithinDashboardLogToggle = false;
         private object _savedSender = null;
         private SKTouchEventArgs _savedEventArgs = null;
 
@@ -16364,6 +16379,8 @@ namespace GnollHackX.Pages.Game
         private SKRect _uiPoleRect;
         private SKRect _uiPrevWepRect;
         private SKRect _uiYouRect;
+        private SKRect _uiDashboardPanelToggleRect;
+        private SKRect _uiDashboardLogToggleRect;
 
         private SKRect _uiLocalStatusBarRect;
         private SKRect _uiLocalHealthRect;
@@ -16372,6 +16389,8 @@ namespace GnollHackX.Pages.Game
         private SKRect _uiLocalPoleRect;
         private SKRect _uiLocalPrevWepRect;
         private SKRect _uiLocalYouRect;
+        private SKRect _uiLocalDashboardPanelToggleRect;
+        private SKRect _uiLocalDashboardLogToggleRect;
 
         private void canvasView_Touch_MainPage(object sender, SKTouchEventArgs e)
         {
@@ -16392,6 +16411,8 @@ namespace GnollHackX.Pages.Game
                         _uiLocalPoleRect = _uiPoleRect;
                         _uiLocalPrevWepRect = _uiPrevWepRect;
                         _uiLocalYouRect = _uiYouRect;
+                        _uiLocalDashboardPanelToggleRect = _uiDashboardPanelToggleRect;
+                        _uiLocalDashboardLogToggleRect = _uiDashboardLogToggleRect;
                     }
                 }
                 finally
@@ -16417,6 +16438,8 @@ namespace GnollHackX.Pages.Game
                         _touchWithinPet = 0;
                         _touchWithinYouButton = false;
                         _touchWithinContextButton = 0;
+                        _touchWithinDashboardToggle = false;
+                        _touchWithinDashboardLogToggle = false;
 
                         if (TouchDictionary.ContainsKey(e.Id))
                             TouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
@@ -16429,7 +16452,17 @@ namespace GnollHackX.Pages.Game
                         {
                             uint m_id = 0;
                             int cmd = 0;
-                            if (_uiLocalSkillRect.Contains(e.Location))
+                            /* The dashboard overlays the pet row, so its toggles are
+                               tested first; an undrawn toggle has an empty rect */
+                            if (_uiLocalDashboardPanelToggleRect.Contains(e.Location))
+                            {
+                                _touchWithinDashboardToggle = true;
+                            }
+                            else if (_uiLocalDashboardLogToggleRect.Contains(e.Location))
+                            {
+                                _touchWithinDashboardLogToggle = true;
+                            }
+                            else if (_uiLocalSkillRect.Contains(e.Location))
                             {
                                 _touchWithinSkillButton = true;
                             }
@@ -16514,7 +16547,7 @@ namespace GnollHackX.Pages.Game
 
                                 if (TouchDictionary.Count == 1)
                                 {
-                                    if (_touchWithinSkillButton || _touchWithinPoleButton || _touchWithinPrevWepButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !ShowDirections && !ShowNumberPad) || _touchWithinYouButton || _touchWithinContextButton != 0)
+                                    if (_touchWithinSkillButton || _touchWithinPoleButton || _touchWithinPrevWepButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !ShowDirections && !ShowNumberPad) || _touchWithinYouButton || _touchWithinContextButton != 0 || _touchWithinDashboardToggle || _touchWithinDashboardLogToggle)
                                     {
                                         /* Do nothing */
                                     }
@@ -16714,6 +16747,8 @@ namespace GnollHackX.Pages.Game
                                     _touchWithinPet = 0;
                                     _touchWithinYouButton = false;
                                     _touchWithinContextButton = 0;
+                                    _touchWithinDashboardToggle = false;
+                                    _touchWithinDashboardLogToggle = false;
 
                                     SKPoint prevloc = entry.Location;
                                     SKPoint curloc = e.Location;
@@ -16846,6 +16881,16 @@ namespace GnollHackX.Pages.Game
                                         _touchMoved = false;
                                     }
                                 }
+                            }
+                            else if (_touchWithinDashboardToggle)
+                            {
+                                DebugDashboardCollapsed = !DebugDashboardCollapsed;
+                                Preferences.Set("DebugDashboardCollapsed", DebugDashboardCollapsed);
+                            }
+                            else if (_touchWithinDashboardLogToggle)
+                            {
+                                DebugDashboardLogCollapsed = !DebugDashboardLogCollapsed;
+                                Preferences.Set("DebugDashboardLogCollapsed", DebugDashboardLogCollapsed);
                             }
                             else if (_touchWithinSkillButton && !PlayingReplay)
                             {

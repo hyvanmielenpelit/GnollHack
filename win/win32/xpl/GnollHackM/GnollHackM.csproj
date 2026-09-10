@@ -200,6 +200,7 @@
     <None Remove="..\GnollHackX\GnollHackX\GHConstants.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHEnums.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHStructs.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHDebugDashboard.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHDelegates.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHDrawCommand.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHSpriteBatch.cs" />
@@ -436,6 +437,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\GHConstants.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHEnums.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHStructs.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHDebugDashboard.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHDelegates.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHEditor.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHFloatingText.cs" />
