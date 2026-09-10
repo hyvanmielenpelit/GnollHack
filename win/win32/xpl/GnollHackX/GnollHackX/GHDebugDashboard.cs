@@ -61,8 +61,10 @@ namespace GnollHackX
         public int MenuBlobChars;
         public long MapBlobHits;
         public long MapBlobMisses;
+        public long MapBlobFlushes;
         public long MenuBlobHits;
         public long MenuBlobMisses;
+        public long MenuBlobFlushes;
         public int DashBlobCount;
         public long DashBlobHits;
         public long DashBlobMisses;
@@ -225,6 +227,7 @@ namespace GnollHackX
                     _staging.MapBlobChars = mapTextPaint.BlobCacheChars;
                     _staging.MapBlobHits = mapTextPaint.BlobCacheHits;
                     _staging.MapBlobMisses = mapTextPaint.BlobCacheMisses;
+                    _staging.MapBlobFlushes = mapTextPaint.BlobCacheFlushes;
                 }
                 else
                 {
@@ -232,6 +235,7 @@ namespace GnollHackX
                     _staging.MapBlobChars = 0;
                     _staging.MapBlobHits = 0;
                     _staging.MapBlobMisses = 0;
+                    _staging.MapBlobFlushes = 0;
                 }
 
                 if (menuTextPaint != null)
@@ -240,6 +244,7 @@ namespace GnollHackX
                     _staging.MenuBlobChars = menuTextPaint.BlobCacheChars;
                     _staging.MenuBlobHits = menuTextPaint.BlobCacheHits;
                     _staging.MenuBlobMisses = menuTextPaint.BlobCacheMisses;
+                    _staging.MenuBlobFlushes = menuTextPaint.BlobCacheFlushes;
                 }
                 else
                 {
@@ -247,6 +252,7 @@ namespace GnollHackX
                     _staging.MenuBlobChars = 0;
                     _staging.MenuBlobHits = 0;
                     _staging.MenuBlobMisses = 0;
+                    _staging.MenuBlobFlushes = 0;
                 }
 
                 if (dashTextPaint != null)
@@ -425,10 +431,10 @@ namespace GnollHackX
                     $"{d.DrawCommandCount}   sheets {d.SheetSwitchCount}"),
                 SKColors.White, RowKind.Value);
 
-            AddRow("map", BuildBlobSummary(d.MapBlobCount, d.MapBlobChars, d.MapBlobHits, d.MapBlobMisses),
+            AddRow("map", BuildBlobSummary(d.MapBlobCount, d.MapBlobChars, d.MapBlobHits, d.MapBlobMisses, d.MapBlobFlushes),
                 SKColors.White, RowKind.Value);
 
-            AddRow("menu", BuildBlobSummary(d.MenuBlobCount, d.MenuBlobChars, d.MenuBlobHits, d.MenuBlobMisses),
+            AddRow("menu", BuildBlobSummary(d.MenuBlobCount, d.MenuBlobChars, d.MenuBlobHits, d.MenuBlobMisses, d.MenuBlobFlushes),
                 SKColors.White, RowKind.Value);
 
             /* The panel's own cache. A flush here is expected and harmless; one on the
@@ -483,15 +489,15 @@ namespace GnollHackX
         /* Characters are reported in rounded kibicharacters and the hit rate as a whole
            percentage: both are bounded, so the same string recurs and stays cached,
            where a raw running total would be a fresh entry every refresh. */
-        private static string BuildBlobSummary(int count, int chars, long hits, long misses)
+        private static string BuildBlobSummary(int count, int chars, long hits, long misses, long flushes)
         {
             int kc = (chars + 512) / 1024;
             long total = hits + misses;
             if (total <= 0)
-                return FormattableString.Invariant($"{count} blob / {kc}kc   - % hit");
+                return FormattableString.Invariant($"{count} blob / {kc}kc   - % hit   {flushes} flush");
 
             float hitPct = (float)hits / total * 100f;
-            return FormattableString.Invariant($"{count} blob / {kc}kc   {hitPct:0} % hit");
+            return FormattableString.Invariant($"{count} blob / {kc}kc   {hitPct:0} % hit   {flushes} flush");
         }
 
         private static string BuildDashSummary(int count, long hits, long misses, long flushes)

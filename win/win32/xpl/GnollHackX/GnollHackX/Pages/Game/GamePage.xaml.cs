@@ -7889,6 +7889,7 @@ namespace GnollHackX.Pages.Game
             bool playerMark = PlayerMark;
             bool monsterTargeting = MonsterTargeting;
             bool forceAllMessages = ForceAllMessages;
+            bool longerMessageHistory = LongerMessageHistory;
             bool mapLookMode = MapLookMode;
             bool zoomMiniMode = ZoomMiniMode;
             bool showDirections = ShowDirections;
@@ -10245,6 +10246,10 @@ namespace GnollHackX.Pages.Game
                             {
                                 if (_localMsgHistory != null)
                                 {
+                                    /* Every row here is drawn once as it scrolls past, so a
+                                       cache entry is never read back; filing the whole of a
+                                       16384 message history would only flush */
+                                    textPaint.BypassBlobCache = forceAllMessages && longerMessageHistory;
                                     int j = ActualDisplayedMessages - 1, idx;
                                     float lineLengthLimit = 0.85f * canvaswidth;
                                     float spaceLength = textPaint.MeasureText(" ");
@@ -10436,6 +10441,7 @@ namespace GnollHackX.Pages.Game
                                             }
                                         }
                                     }
+                                    textPaint.BypassBlobCache = false;
                                 }
                             }
                         }

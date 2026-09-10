@@ -78,6 +78,7 @@ namespace GnollHackX
         private int _blobCount;
         private int _cachedChars;
         private bool _cacheTextBlobs;
+        private bool _bypassBlobCache;
         private int _blobCacheClearRequested;
         private bool _disposed;
         private long _blobCacheHits;
@@ -119,6 +120,7 @@ namespace GnollHackX
             _keyTypeface = null;
             _keySize = 12;
             _currentBucket = null;
+            _bypassBlobCache = false;
 #else
             _paint.Typeface = null;
             _paint.TextSize = 12;
@@ -317,6 +319,7 @@ namespace GnollHackX
         private bool CanCacheText(ReadOnlySpan<char> text)
         {
             return _cacheTextBlobs
+                && !_bypassBlobCache
                 && !_disposed
                 && !text.IsEmpty
                 && text.Length <= _maxCachedTextLength;
@@ -426,6 +429,18 @@ namespace GnollHackX
         }
 
         public bool CacheTextBlobs { get { return _cacheTextBlobs; } }
+
+        /* Text drawn while this is set is neither looked up nor filed. For text a frame
+           draws once -- a scrolling history, where a row is exposed for a few frames and
+           never returns -- a lookup can only miss, while filing it costs a key allocation
+           now and a full-cache disposal when the bound trips. Reset clears it, so a paint
+           that returns early cannot leave it set. */
+        public bool BypassBlobCache
+        {
+            get { return _bypassBlobCache; }
+            set { _bypassBlobCache = value; }
+        }
+
         public int BlobCacheCount { get { return _blobCount; } }
         public int BlobCacheChars { get { return _cachedChars; } }
         public long BlobCacheHits { get { return _blobCacheHits; } }
@@ -459,6 +474,7 @@ namespace GnollHackX
         public void RequestBlobCacheClear() { }
         public void SyncBlobCache(bool enabled) { }
         public bool CacheTextBlobs { get { return false; } }
+        public bool BypassBlobCache { get { return false; } set { } }
         public int BlobCacheCount { get { return 0; } }
         public int BlobCacheChars { get { return 0; } }
         public long BlobCacheHits { get { return 0; } }
