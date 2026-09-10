@@ -149,6 +149,11 @@ namespace GnollHackX
         /* The dashboard's own budget, kept small and separate: its value strings are
            mostly single-use, and a blob cache flush discards every bucket, so sharing
            the map's cache would have the panel evicting map glyphs. */
+        public const int MaxSavedScreenLogs = 30;
+        public const int MenuDashboardLogLines = 6;
+        public const int MaxMenuDashboardTextBlobCacheSize = 128;
+        public const int MaxMenuDashboardCachedTextLength = 64;
+        public const int MaxMenuDashboardCachedTotalChars = 4096;
         public const int MaxDashboardTextBlobCacheSize = 128;
         public const int MaxDashboardCachedTextLength = 64;
         public const int MaxDashboardCachedTotalChars = 4096;

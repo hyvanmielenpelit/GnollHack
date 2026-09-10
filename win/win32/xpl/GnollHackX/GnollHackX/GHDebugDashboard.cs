@@ -9,10 +9,21 @@ using GnollHackM;
 namespace GnollHackX
 {
     /// <summary>
+    /// Which canvas a dashboard instance draws on. The frame, memory and GC
+    /// sections are process-wide and shared; the surface decides only whether
+    /// the panel carries the map's DRAW section or the menu's MENU section.
+    /// </summary>
+    public enum GHDashboardSurface
+    {
+        Main,
+        Menu
+    }
+
+    /// <summary>
     /// One whole-frame snapshot of everything the on-screen debug
-    /// dashboard displays. Two producers on two different threads fill
-    /// disjoint field groups of a staging copy; a consumer reads the
-    /// struct back as a unit, so no reader ever sees a half-written row.
+    /// dashboard displays. Producers on separate threads fill disjoint
+    /// field groups of a staging copy; a consumer reads the struct back
+    /// as a unit, so no reader ever sees a half-written row.
     /// </summary>
     public struct GHDebugDashboardData
     {
@@ -69,6 +80,14 @@ namespace GnollHackX
         public long DashBlobHits;
         public long DashBlobMisses;
         public long DashBlobFlushes;
+
+        /* Menu surface, published from the menu paint thread */
+        public int MenuItemCount;
+        public float MenuTotalHeight;
+        public int MenuDashBlobCount;
+        public long MenuDashBlobHits;
+        public long MenuDashBlobMisses;
+        public long MenuDashBlobFlushes;
     }
 
     /// <summary>
@@ -114,6 +133,13 @@ namespace GnollHackX
             public string Value;
             public SKColor ValueColor;
             public RowKind Kind;
+        }
+
+        private readonly GHDashboardSurface _surface;
+
+        public GHDebugDashboard(GHDashboardSurface surface)
+        {
+            _surface = surface;
         }
 
         /* Rebuilt in place by TryRefresh and never reallocated */
@@ -277,6 +303,48 @@ namespace GnollHackX
         }
 
         /// <summary>
+        /// Publishes the menu surface's own counters. Called from the menu paint
+        /// thread. This bumps the version as well as PublishDrawStats does,
+        /// because PaintMainCanvas returns early while a menu is up: without it
+        /// the menu panel's numbers would sit frozen while its log kept moving.
+        /// </summary>
+        public static void PublishMenuStats(int menuItemCount, float menuTotalHeight,
+            GHSkiaFontPaint menuTextPaint, GHSkiaFontPaint menuDashTextPaint)
+        {
+            lock (_publishLock)
+            {
+                _staging.MenuItemCount = menuItemCount;
+                _staging.MenuTotalHeight = menuTotalHeight;
+
+                if (menuTextPaint != null)
+                {
+                    _staging.MenuBlobCount = menuTextPaint.BlobCacheCount;
+                    _staging.MenuBlobChars = menuTextPaint.BlobCacheChars;
+                    _staging.MenuBlobHits = menuTextPaint.BlobCacheHits;
+                    _staging.MenuBlobMisses = menuTextPaint.BlobCacheMisses;
+                    _staging.MenuBlobFlushes = menuTextPaint.BlobCacheFlushes;
+                }
+
+                if (menuDashTextPaint != null)
+                {
+                    _staging.MenuDashBlobCount = menuDashTextPaint.BlobCacheCount;
+                    _staging.MenuDashBlobHits = menuDashTextPaint.BlobCacheHits;
+                    _staging.MenuDashBlobMisses = menuDashTextPaint.BlobCacheMisses;
+                    _staging.MenuDashBlobFlushes = menuDashTextPaint.BlobCacheFlushes;
+                }
+                else
+                {
+                    _staging.MenuDashBlobCount = 0;
+                    _staging.MenuDashBlobHits = 0;
+                    _staging.MenuDashBlobMisses = 0;
+                    _staging.MenuDashBlobFlushes = 0;
+                }
+            }
+
+            Interlocked.Increment(ref _version);
+        }
+
+        /// <summary>
         /// Sets which sections are folded away. Called from the touch
         /// handler on the main thread; the next TryRefresh picks it up.
         /// </summary>
@@ -427,27 +495,47 @@ namespace GnollHackX
                 }
             }
 
+            /* One cut point for whichever of the two surface sections was emitted,
+               so fit-shrinking is unaware of the difference */
             _drawHeadingRow = _rows.Count;
-            AddRow("DRAW", EmptyValue, SKColors.White, RowKind.SectionHeading);
 
-            AddRow("cmds", FormattableString.Invariant(
-                    $"{d.DrawCommandCount}   sheets {d.SheetSwitchCount}"),
-                SKColors.White, RowKind.Value);
+            if (_surface == GHDashboardSurface.Menu)
+            {
+                AddRow("MENU", EmptyValue, SKColors.White, RowKind.SectionHeading);
 
-            AddRow("map", BuildBlobSummary(d.MapBlobCount, d.MapBlobChars, d.MapBlobHits, d.MapBlobMisses, d.MapBlobFlushes),
-                SKColors.White, RowKind.Value);
+                AddRow("items", FormattableString.Invariant(
+                        $"{d.MenuItemCount}   h {d.MenuTotalHeight:0}"),
+                    SKColors.White, RowKind.Value);
 
-            AddRow("menu", BuildBlobSummary(d.MenuBlobCount, d.MenuBlobChars, d.MenuBlobHits, d.MenuBlobMisses, d.MenuBlobFlushes),
-                SKColors.White, RowKind.Value);
+                AddRow("menu", BuildBlobSummary(d.MenuBlobCount, d.MenuBlobChars, d.MenuBlobHits, d.MenuBlobMisses, d.MenuBlobFlushes),
+                    SKColors.White, RowKind.Value);
 
-            /* The panel's own cache. A flush here is expected and harmless; one on the
-               map row is not, which is why the two are separate paints. */
-            AddRow("dash", BuildDashSummary(d.DashBlobCount, d.DashBlobHits, d.DashBlobMisses, d.DashBlobFlushes),
-                SKColors.White, RowKind.Value);
+                AddRow("dash", BuildDashSummary(d.MenuDashBlobCount, d.MenuDashBlobHits, d.MenuDashBlobMisses, d.MenuDashBlobFlushes),
+                    SKColors.White, RowKind.Value);
+            }
+            else
+            {
+                AddRow("DRAW", EmptyValue, SKColors.White, RowKind.SectionHeading);
 
-            AddRow("rect", FormattableString.Invariant(
-                    $"{d.SavedRectCount}  auto {d.SavedAutoDrawBitmapCount}  filt {d.CompositeFilterFallbackCount}"),
-                SKColors.White, RowKind.Value);
+                AddRow("cmds", FormattableString.Invariant(
+                        $"{d.DrawCommandCount}   sheets {d.SheetSwitchCount}"),
+                    SKColors.White, RowKind.Value);
+
+                AddRow("map", BuildBlobSummary(d.MapBlobCount, d.MapBlobChars, d.MapBlobHits, d.MapBlobMisses, d.MapBlobFlushes),
+                    SKColors.White, RowKind.Value);
+
+                AddRow("menu", BuildBlobSummary(d.MenuBlobCount, d.MenuBlobChars, d.MenuBlobHits, d.MenuBlobMisses, d.MenuBlobFlushes),
+                    SKColors.White, RowKind.Value);
+
+                /* The panel's own cache. A flush here is expected and harmless; one on the
+                   map row is not, which is why the two are separate paints. */
+                AddRow("dash", BuildDashSummary(d.DashBlobCount, d.DashBlobHits, d.DashBlobMisses, d.DashBlobFlushes),
+                    SKColors.White, RowKind.Value);
+
+                AddRow("rect", FormattableString.Invariant(
+                        $"{d.SavedRectCount}  auto {d.SavedAutoDrawBitmapCount}  filt {d.CompositeFilterFallbackCount}"),
+                    SKColors.White, RowKind.Value);
+            }
 
             if (logSectionVisible)
             {

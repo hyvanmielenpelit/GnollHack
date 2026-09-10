@@ -8382,12 +8382,18 @@ namespace GnollHackX
                 Debug.WriteLine(loggedtext);
         }
 
-        public static readonly ConcurrentQueue<GHScreenLogEntry> PendingScreenLogMessages = new ConcurrentQueue<GHScreenLogEntry>();
+        /* Read by every canvas that shows a debug panel, and consumed by none of them:
+           a dequeue would hand each message to whichever paint handler ran first and
+           hide it from the others. */
+        private static readonly object _screenLogLock = new object();
+        private static readonly List<GHScreenLogEntry> _screenLogMessages = new List<GHScreenLogEntry>(GHConstants.MaxSavedScreenLogs);
+        private static long _screenLogSequence = 0;
+
         public static void MaybeWriteScreenLog(string loggedText)
         {
             if (IsDebugScreenLoggingOn)
             {
-                PendingScreenLogMessages.Enqueue(new GHScreenLogEntry { Time = DateTime.Now, Text = loggedText });
+                AppendScreenLog(loggedText);
             }
         }
 
@@ -8395,7 +8401,38 @@ namespace GnollHackX
         {
             if (screenLogging)
             {
-                PendingScreenLogMessages.Enqueue(new GHScreenLogEntry { Time = DateTime.Now, Text = loggedText });
+                AppendScreenLog(loggedText);
+            }
+        }
+
+        private static void AppendScreenLog(string loggedText)
+        {
+            lock (_screenLogLock)
+            {
+                if (_screenLogMessages.Count >= GHConstants.MaxSavedScreenLogs)
+                    _screenLogMessages.RemoveAt(0);
+                _screenLogMessages.Add(new GHScreenLogEntry { Time = DateTime.Now, Text = loggedText });
+                _screenLogSequence++;
+            }
+        }
+
+        /// <summary>
+        /// Fills destination with the most recent maxLines entries and returns the
+        /// sequence number they were taken at. Nothing is removed, so every canvas
+        /// sees the whole log.
+        /// </summary>
+        public static long CopyRecentScreenLog(List<GHScreenLogEntry> destination, int maxLines)
+        {
+            if (destination == null)
+                return 0;
+
+            destination.Clear();
+            lock (_screenLogLock)
+            {
+                int start = Math.Max(0, _screenLogMessages.Count - maxLines);
+                for (int i = start; i < _screenLogMessages.Count; i++)
+                    destination.Add(_screenLogMessages[i]);
+                return _screenLogSequence;
             }
         }
 

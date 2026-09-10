@@ -121,6 +121,7 @@ namespace GnollHackX.Pages.Game
            dashboard's draw counters to the same cadence as its profiler snapshot;
            publishing per frame would rebuild every row string per frame. */
         private int _publishDashboardStats = 1;
+        private int _publishMenuDashboardStats = 1;
         
         public List<string> ExtendedCommands { get; set; }
 
@@ -727,6 +728,10 @@ namespace GnollHackX.Pages.Game
         public bool DebugDashboardCollapsed { get { return Interlocked.CompareExchange(ref _debugDashboardCollapsed, 0, 0) != 0; } set { Interlocked.Exchange(ref _debugDashboardCollapsed, value ? 1 : 0); } }
         private int _debugDashboardLogCollapsed = 0;
         public bool DebugDashboardLogCollapsed { get { return Interlocked.CompareExchange(ref _debugDashboardLogCollapsed, 0, 0) != 0; } set { Interlocked.Exchange(ref _debugDashboardLogCollapsed, value ? 1 : 0); } }
+        private int _menuDashboardCollapsed = 0;
+        public bool MenuDashboardCollapsed { get { return Interlocked.CompareExchange(ref _menuDashboardCollapsed, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuDashboardCollapsed, value ? 1 : 0); } }
+        private int _menuDashboardLogCollapsed = 0;
+        public bool MenuDashboardLogCollapsed { get { return Interlocked.CompareExchange(ref _menuDashboardLogCollapsed, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuDashboardLogCollapsed, value ? 1 : 0); } }
 
         private int _playerMark = 0;
         public bool PlayerMark { get { return Interlocked.CompareExchange(ref _playerMark, 0, 0) != 0; } set { Interlocked.Exchange(ref _playerMark, value ? 1 : 0); } }
@@ -1034,6 +1039,8 @@ namespace GnollHackX.Pages.Game
             ShowMaxManaInOrb = Preferences.Get("ShowMaxManaInOrb", false);
             DebugDashboardCollapsed = Preferences.Get("DebugDashboardCollapsed", false);
             DebugDashboardLogCollapsed = Preferences.Get("DebugDashboardLogCollapsed", false);
+            MenuDashboardCollapsed = Preferences.Get("MenuDashboardCollapsed", false);
+            MenuDashboardLogCollapsed = Preferences.Get("MenuDashboardLogCollapsed", false);
             ShowPets = Preferences.Get("ShowPets", true);
             PlayerMark = Preferences.Get("PlayerMark", false);
             MonsterTargeting = Preferences.Get("MonsterTargeting", false);
@@ -1258,6 +1265,8 @@ namespace GnollHackX.Pages.Game
                 _tipTextPaint?.Dispose();
                 _dashboardTextPaint?.Dispose();
                 _debugDashboard?.Dispose();
+                _menuDashboardTextPaint?.Dispose();
+                _menuDebugDashboard?.Dispose();
             }
             catch (Exception ex)
             {
@@ -1921,6 +1930,7 @@ namespace GnollHackX.Pages.Game
                     if (GHApp.IsDebugScreenLoggingOn)
                         FrameTimeProfiler.PublishDashboardSnapshot();
                     Interlocked.Exchange(ref _publishDashboardStats, 1);
+                    Interlocked.Exchange(ref _publishMenuDashboardStats, 1);
                     //if (WarnLowDiskSpace)
                         GHApp.UpdateFreeDiskSpace();
                     //if (ShowMemory)
@@ -6431,7 +6441,9 @@ namespace GnollHackX.Pages.Game
         private readonly GHSkiaFontPaint _mapTextPaint = new GHSkiaFontPaint(GHConstants.MaxMapTextBlobCacheSize, GHConstants.MaxMapCachedTextLength, GHConstants.MaxCachedTotalChars);
         private readonly GHSkiaFontPaint _menuTextPaint = new GHSkiaFontPaint(GHConstants.MaxMenuTextBlobCacheSize, GHConstants.MaxCachedTextLength, GHConstants.MaxMenuCachedTotalChars);
         private readonly GHSkiaFontPaint _dashboardTextPaint = new GHSkiaFontPaint(GHConstants.MaxDashboardTextBlobCacheSize, GHConstants.MaxDashboardCachedTextLength, GHConstants.MaxDashboardCachedTotalChars);
-        private readonly GHDebugDashboard _debugDashboard = new GHDebugDashboard();
+        private readonly GHDebugDashboard _debugDashboard = new GHDebugDashboard(GHDashboardSurface.Main);
+        private readonly GHSkiaFontPaint _menuDashboardTextPaint = new GHSkiaFontPaint(GHConstants.MaxMenuDashboardTextBlobCacheSize, GHConstants.MaxMenuDashboardCachedTextLength, GHConstants.MaxMenuDashboardCachedTotalChars);
+        private readonly GHDebugDashboard _menuDebugDashboard = new GHDebugDashboard(GHDashboardSurface.Menu);
         private readonly GHSkiaFontPaint _textCanvasTextPaint = new GHSkiaFontPaint();
         private readonly GHSkiaFontPaint _cmdTextPaint = new GHSkiaFontPaint();
         private readonly GHSkiaFontPaint _tipTextPaint = new GHSkiaFontPaint();
@@ -7812,8 +7824,7 @@ namespace GnollHackX.Pages.Game
         public string PolearmKeyboardShortcut { get { return Interlocked.CompareExchange(ref _polearmKeyboardShortcut, null, null); } set { Interlocked.Exchange(ref _polearmKeyboardShortcut, value); } }
         public string PrevWepKeyboardShortcut { get { return Interlocked.CompareExchange(ref _prevWepKeyboardShortcut, null, null); } set { Interlocked.Exchange(ref _prevWepKeyboardShortcut, value); } }
         
-        private List<GHScreenLogEntry> _localMainScreenDebugLogs = new List<GHScreenLogEntry>();
-        private List<GHScreenLogEntry> _localMainTempScreenDebugLogs = new List<GHScreenLogEntry>();
+        private readonly List<GHScreenLogEntry> _localMainScreenDebugLogs = new List<GHScreenLogEntry>();
         private bool _localDarkeningFilterCachePruned;
         private bool _localCompositeFilterCachePruned;
         private SKColorFilter[] _localDarkeningColorFilters = new SKColorFilter[101];
@@ -8345,23 +8356,9 @@ namespace GnollHackX.Pages.Game
             lockTaken = false;
 
 #endif
-            /* Screen logging */
-            while (GHApp.PendingScreenLogMessages.TryDequeue(out GHScreenLogEntry debugMessage))
-            {
-                if (!string.IsNullOrEmpty(debugMessage.Text))
-                    _localMainScreenDebugLogs.Add(debugMessage);
-
-                if (_localMainScreenDebugLogs.Count >= _maxSavedScreenLogs)
-                {
-                    List<GHScreenLogEntry> orig = _localMainScreenDebugLogs;
-                    for (int i = _maxSavedScreenLogs - _maxShownScreenLogs; i < _localMainScreenDebugLogs.Count; i++)
-                        _localMainTempScreenDebugLogs.Add(_localMainScreenDebugLogs[i]);
-                    _localMainScreenDebugLogs.Clear(); /* Is now empty and set as new temp below */
-                    /* Swap the lists */
-                    _localMainScreenDebugLogs = _localMainTempScreenDebugLogs;
-                    _localMainTempScreenDebugLogs = orig;
-                }
-            }
+            /* Screen logging. A copy, not a drain: the menu canvas reads the same
+               log and consuming here would hide those lines from it. */
+            GHApp.CopyRecentScreenLog(_localMainScreenDebugLogs, GHConstants.DebugDashboardLogLines);
 
             {
                 GHSkiaFontPaint textPaint = _mapTextPaint;
@@ -16399,6 +16396,8 @@ namespace GnollHackX.Pages.Game
         private SKRect _uiYouRect;
         private SKRect _uiDashboardPanelToggleRect;
         private SKRect _uiDashboardLogToggleRect;
+        private SKRect _uiMenuDashboardPanelToggleRect;
+        private SKRect _uiMenuDashboardLogToggleRect;
 
         private SKRect _uiLocalStatusBarRect;
         private SKRect _uiLocalHealthRect;
@@ -16409,6 +16408,10 @@ namespace GnollHackX.Pages.Game
         private SKRect _uiLocalYouRect;
         private SKRect _uiLocalDashboardPanelToggleRect;
         private SKRect _uiLocalDashboardLogToggleRect;
+        private SKRect _uiLocalMenuDashboardPanelToggleRect;
+        private SKRect _uiLocalMenuDashboardLogToggleRect;
+        private bool _touchWithinMenuDashboardToggle = false;
+        private bool _touchWithinMenuDashboardLogToggle = false;
 
         private void canvasView_Touch_MainPage(object sender, SKTouchEventArgs e)
         {
@@ -18580,10 +18583,7 @@ namespace GnollHackX.Pages.Game
         //}
 
         /* To be used only from PaintSurfance thread */
-        private List<GHScreenLogEntry> _localMenuScreenDebugLogs = new List<GHScreenLogEntry>();
-        private List<GHScreenLogEntry> _localMenuTempScreenDebugLogs = new List<GHScreenLogEntry>();
-        private const int _maxShownScreenLogs = 15;
-        private const int _maxSavedScreenLogs = 30;
+        private readonly List<GHScreenLogEntry> _localMenuScreenDebugLogs = new List<GHScreenLogEntry>();
 
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -18620,6 +18620,9 @@ namespace GnollHackX.Pages.Game
             }
             lockTaken = false;
 
+            SKRect menuDashboardPanelToggleRect = new SKRect();
+            SKRect menuDashboardLogToggleRect = new SKRect();
+
             canvas.Clear();
             if (MenuDrawOnlyClear)
                 return;
@@ -18640,22 +18643,7 @@ namespace GnollHackX.Pages.Game
             if (localMenuDrawBounds == null)
                 return;
 
-            while (GHApp.PendingScreenLogMessages.TryDequeue(out GHScreenLogEntry debugMessage))
-            {
-                if (!string.IsNullOrEmpty(debugMessage.Text))
-                    _localMenuScreenDebugLogs.Add(debugMessage);
-
-                if (_localMenuScreenDebugLogs.Count >= _maxSavedScreenLogs)
-                {
-                    List<GHScreenLogEntry> orig = _localMenuScreenDebugLogs;
-                    for (int i = _maxSavedScreenLogs - _maxShownScreenLogs; i < _localMenuScreenDebugLogs.Count; i++)
-                        _localMenuTempScreenDebugLogs.Add(_localMenuScreenDebugLogs[i]);
-                    _localMenuScreenDebugLogs.Clear(); /* Is now empty and set as new temp below */
-                    /* Swap the lists */
-                    _localMenuScreenDebugLogs = _localMenuTempScreenDebugLogs;
-                    _localMenuTempScreenDebugLogs = orig;
-                }
-            }
+            GHApp.CopyRecentScreenLog(_localMenuScreenDebugLogs, GHConstants.MenuDashboardLogLines);
 
             ghmenu_styles menuStyle = MenuCanvas.MenuStyle;
             int selectionIndex = MenuCanvas.SelectionIndex;
@@ -18687,6 +18675,7 @@ namespace GnollHackX.Pages.Game
                 GHSkiaFontPaint textPaint = _menuTextPaint;
                 /* Owning thread only: applies a setting change and any requested clear */
                 textPaint.SyncBlobCache(GHApp.UseTextBlobCaching);
+                _menuDashboardTextPaint.SyncBlobCache(GHApp.UseTextBlobCaching);
                 textPaint.Reset();
                 textPaint.Typeface = GHApp.UnderwoodTypeface;
                 textPaint.TextSize = GHConstants.MenuDefaultRowHeight * scale * customScale;
@@ -19447,31 +19436,41 @@ namespace GnollHackX.Pages.Game
 
                 if (screenLogging)
                 {
-                    textPaint.TextSize = 14 * scale * customScale;
-                    textPaint.Typeface = GHApp.LatoRegular;
-                    float textSpacing = textPaint.FontSpacing;
-                    float tx = 5;
-                    float ty = 5 - textPaint.FontMetrics.Ascent;
-                    int startIndex = Math.Max(0, _localMenuScreenDebugLogs.Count - _maxShownScreenLogs);
-                    textPaint.Color = SKColors.Black;
-                    textPaint.StrokeWidth = textPaint.TextSize / 3;
-                    textPaint.Style = SKPaintStyle.Stroke;
-                    for (int i = startIndex; i < _localMenuScreenDebugLogs.Count; i++)
+                    if (Interlocked.CompareExchange(ref _publishMenuDashboardStats, 0, 1) != 0)
                     {
-                        textPaint.DrawTextOnCanvas(canvas, _localMenuScreenDebugLogs[i].Text, tx, ty);
-                        ty += textSpacing;
+                        GHDebugDashboard.PublishMenuStats(
+                            menuItems?.Count ?? 0, TotalMenuHeight,
+                            _menuTextPaint, _menuDashboardTextPaint);
                     }
-                    textPaint.Color = SKColors.Red;
-                    textPaint.Style = SKPaintStyle.Fill;
-                    ty = 5 - textPaint.FontMetrics.Ascent;
-                    for (int i = startIndex; i < _localMenuScreenDebugLogs.Count; i++)
-                    {
-                        textPaint.DrawTextOnCanvas(canvas, _localMenuScreenDebugLogs[i].Text, tx, ty);
-                        ty += textSpacing;
-                    }
+
+                    bool menuPanelCollapsed = MenuDashboardCollapsed;
+                    _menuDebugDashboard.SetCollapsed(menuPanelCollapsed, MenuDashboardLogCollapsed);
+                    _menuDebugDashboard.TryRefresh(!menuPanelCollapsed,
+                        _localMenuScreenDebugLogs, GHConstants.MenuDashboardLogLines);
+                    _menuDebugDashboard.Draw(canvas, _menuDashboardTextPaint,
+                        5f, 5f, canvaswidth - 5f, canvasheight - 5f, scale * customScale);
+
+                    menuDashboardPanelToggleRect = _menuDebugDashboard.PanelToggleRect;
+                    menuDashboardLogToggleRect = _menuDebugDashboard.LogToggleRect;
                 }
             }
             canvas.Flush();
+
+            lockTaken = false;
+            try
+            {
+                Monitor.TryEnter(_uiRectLock, ref lockTaken);
+                if (lockTaken)
+                {
+                    _uiMenuDashboardPanelToggleRect = menuDashboardPanelToggleRect;
+                    _uiMenuDashboardLogToggleRect = menuDashboardLogToggleRect;
+                }
+            }
+            finally
+            {
+                if (lockTaken)
+                    Monitor.Exit(_uiRectLock);
+            }
 
             lockTaken = false;
             try
@@ -20057,7 +20056,23 @@ namespace GnollHackX.Pages.Game
                 canvasheight = 1f;
             float bottomScrollLimit = Math.Min(0, canvasheight - TotalMenuHeight);
             bool screenLogging = GHApp.IsDebugScreenLoggingOn;
-            GHApp.MaybeWriteScreenLog(screenLogging, "MenuTouch: " + e?.ActionType.ToString());
+
+            bool rectLockTaken = false;
+            try
+            {
+                Monitor.TryEnter(_uiRectLock, ref rectLockTaken);
+                if (rectLockTaken)
+                {
+                    _uiLocalMenuDashboardPanelToggleRect = _uiMenuDashboardPanelToggleRect;
+                    _uiLocalMenuDashboardLogToggleRect = _uiMenuDashboardLogToggleRect;
+                }
+            }
+            finally
+            {
+                if (rectLockTaken)
+                    Monitor.Exit(_uiRectLock);
+            }
+
             switch (e?.ActionType)
             {
                 case SKTouchAction.Entered:
@@ -20066,6 +20081,23 @@ namespace GnollHackX.Pages.Game
                     _savedMenuSender = null;
                     _savedMenuEventArgs = null;
                     _savedMenuTimeStamp = DateTime.Now;
+                    _touchWithinMenuDashboardToggle = false;
+                    _touchWithinMenuDashboardLogToggle = false;
+
+                    /* The panel overlays the menu list, so its toggles are tested
+                       before the highlight; an undrawn toggle has an empty rect */
+                    if (_uiLocalMenuDashboardPanelToggleRect.Contains(e.Location))
+                    {
+                        _touchWithinMenuDashboardToggle = true;
+                        e.Handled = true;
+                        break;
+                    }
+                    if (_uiLocalMenuDashboardLogToggleRect.Contains(e.Location))
+                    {
+                        _touchWithinMenuDashboardLogToggle = true;
+                        e.Handled = true;
+                        break;
+                    }
 
                     if (MenuTouchDictionary.ContainsKey(e.Id))
                         MenuTouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
@@ -20117,6 +20149,11 @@ namespace GnollHackX.Pages.Game
                     e.Handled = true;
                     break;
                 case SKTouchAction.Moved:
+                    if (_touchWithinMenuDashboardToggle || _touchWithinMenuDashboardLogToggle)
+                    {
+                        e.Handled = true;
+                        break;
+                    }
                     {
                         TouchEntry entry;
                         bool res = MenuTouchDictionary.TryGetValue(e.Id, out entry);
@@ -20229,6 +20266,24 @@ namespace GnollHackX.Pages.Game
                     break;
                 case SKTouchAction.Released:
                     {
+                        if (_touchWithinMenuDashboardToggle || _touchWithinMenuDashboardLogToggle)
+                        {
+                            if (_touchWithinMenuDashboardToggle)
+                            {
+                                MenuDashboardCollapsed = !MenuDashboardCollapsed;
+                                Preferences.Set("MenuDashboardCollapsed", MenuDashboardCollapsed);
+                            }
+                            else
+                            {
+                                MenuDashboardLogCollapsed = !MenuDashboardLogCollapsed;
+                                Preferences.Set("MenuDashboardLogCollapsed", MenuDashboardLogCollapsed);
+                            }
+                            _touchWithinMenuDashboardToggle = false;
+                            _touchWithinMenuDashboardLogToggle = false;
+                            e.Handled = true;
+                            break;
+                        }
+
                         _savedMenuSender = null;
                         _savedMenuEventArgs = null;
                         _savedMenuTimeStamp = DateTime.Now;
