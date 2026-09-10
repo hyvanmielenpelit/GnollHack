@@ -16723,14 +16723,22 @@ namespace GnollHackX.Pages.Game
                                             other_entry = first_entry;
                                     }
 
-                                    if (other_entry != null /* && !ZoomMiniMode */)
+                                    /* Two-finger zoom applies to the map only; the message and status
+                                       overlays own the screen while they are up */
+                                    if (other_entry != null && !ForceAllMessages && !ShowExtendedStatusBar /* && !ZoomMiniMode */)
                                     {
                                         SKPoint otherloc = other_entry.Location;
                                         float prevdist = (float)Math.Sqrt((Math.Pow((double)otherloc.X - (double)prevloc.X, 2) + Math.Pow((double)otherloc.Y - (double)prevloc.Y, 2)));
                                         float curdist = (float)Math.Sqrt((Math.Pow((double)otherloc.X - (double)curloc.X, 2) + Math.Pow((double)otherloc.Y - (double)curloc.Y, 2)));
-                                        if (prevdist > 0 && curdist > 0)
+                                        /* Below this separation the ratio is dominated by noise; NaN
+                                           coordinates fail both comparisons and are skipped here */
+                                        if (prevdist > GHConstants.MinimumPinchDistance && curdist > GHConstants.MinimumPinchDistance)
                                         {
                                             float ratio = curdist / prevdist;
+                                            if (ratio > GHConstants.MaximumPinchRatioPerEvent)
+                                                ratio = GHConstants.MaximumPinchRatioPerEvent;
+                                            else if (ratio < 1.0f / GHConstants.MaximumPinchRatioPerEvent)
+                                                ratio = 1.0f / GHConstants.MaximumPinchRatioPerEvent;
                                             AdjustZoomByRatio(ratio, curloc, prevloc, otherloc);
                                             MapFontShowPercentageDecimal = false;
                                         }
@@ -16971,6 +16979,9 @@ namespace GnollHackX.Pages.Game
 
         private void AdjustZoomByRatio(float ratio, SKPoint curloc, SKPoint prevloc, SKPoint otherloc)
         {
+            if (float.IsNaN(ratio) || float.IsInfinity(ratio) || ratio <= 0)
+                return;
+
             float curfontsize = ZoomMiniMode ? MapFontMiniRelativeSize : ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
             float newfontsize = curfontsize * ratio;
             SetZoomFontSize(newfontsize, curloc, prevloc, otherloc);
@@ -16994,7 +17005,7 @@ namespace GnollHackX.Pages.Game
                     newfontsize = GHConstants.MinimumMapFontSize;
             }
 
-            float newratio = newfontsize / Math.Max(1f, curfontsize);
+            float newratio = newfontsize / Math.Max(0.0001f, curfontsize);
             float mapFontAscent = UsedMapFontAscent;
             if (ZoomMiniMode)
                 MapFontMiniRelativeSize = newfontsize;

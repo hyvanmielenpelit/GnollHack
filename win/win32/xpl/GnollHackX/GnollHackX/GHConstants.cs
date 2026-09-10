@@ -138,6 +138,8 @@ namespace GnollHackX
         public const float MapFontDefaultSize = 72.0f;
         public const float TileSizeAdjustmentModifier = 0.9f;        
         public const float MapFontRelativeAlternateSize = 7.0f / 16.0f;
+        public const float MinimumPinchDistance = 10.0f;       /* Canvas pixels */
+        public const float MaximumPinchRatioPerEvent = 2.0f;
         public const int DefaultMessageRows = 5;
         public const int AllMessageRows = 250;
         public const int DefaultPetRows = 2;
