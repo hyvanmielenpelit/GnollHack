@@ -308,6 +308,7 @@ namespace GnollHackX
             FixFiltering = Preferences.Get("FixFiltering", IsFixFilteringDefault);
             RuntimeEffects = Preferences.Get("RuntimeEffects", GHConstants.DefaultRuntimeEffects);
             UseSpriteBatching = Preferences.Get("UseSpriteBatching", GHConstants.DefaultUseSpriteBatching);
+            UseTextBlobCaching = Preferences.Get("UseTextBlobCaching", IsUseTextBlobCachingDefault);
             DisableWindowsKey = Preferences.Get("DisableWindowsKey", false);
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
             ShowKeyboardShortcuts = Preferences.Get("ShowKeyboardShortcuts", IsDesktop);
@@ -1952,6 +1953,10 @@ namespace GnollHackX
         /* Read once per frame by the map paint loop; see GamePage.PaintMapTile */
         public static bool UseSpriteBatching { get { return Interlocked.CompareExchange(ref _useSpriteBatching, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSpriteBatching, value ? 1 : 0); } }
 
+        private static int _useTextBlobCaching = 0;
+        /* Read once per frame by each paint handler and applied via GHSkiaFontPaint.SyncBlobCache */
+        public static bool UseTextBlobCaching { get { return Interlocked.CompareExchange(ref _useTextBlobCaching, 0, 0) != 0; } set { Interlocked.Exchange(ref _useTextBlobCaching, value ? 1 : 0); } }
+
         private static int _runtimeEffects = GHConstants.DefaultRuntimeEffects ? 1 : 0;
         public static bool RuntimeEffects { get { return GHConstants.EnableExperimentalFeatures && Interlocked.CompareExchange(ref _runtimeEffects, 0, 0) != 0; } set { Interlocked.Exchange(ref _runtimeEffects, value ? 1 : 0); } }
 
@@ -2246,6 +2251,22 @@ namespace GnollHackX
 #endif
             }
         }
+        public static bool IsUseTextBlobCachingDefault
+        {
+            get
+            {
+#if GNH_MAUI
+#if ANDROID
+                return true; /* SGen's JNI bridge taxes every collection, so the allocation rate matters more here */
+#else
+                return true; /* Turn it on other platforms, too, for consistency, and since memory allocation seemed to slow down the performance more than the cache */
+#endif
+#else
+                return false;
+#endif
+            }
+        }
+
         public static bool IsUseMainMipMapDefault
         {
             get

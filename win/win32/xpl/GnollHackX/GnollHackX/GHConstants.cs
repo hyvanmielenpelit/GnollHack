@@ -117,6 +117,19 @@ namespace GnollHackX
         public const int FmodSuspendFlushPasses = 2;
         public const int MaxBitmapCacheSize = 64;
         public const int MaxColorFilterCacheSize = 128;
+        /* Text blob cache bounds. The defaults apply to any GHSkiaFontPaint that does not
+           ask for its own; GamePage overrides them for the map and menu paints. Whichever
+           bound trips first triggers a full flush. The entry count bounds wrapper and
+           dictionary overhead, the character count bounds native glyph data, and the
+           per-string length keeps one long string from consuming the character budget. */
+        public const int MaxTextBlobCacheSize = 512;
+        public const int MaxMapTextBlobCacheSize = 1024;
+        public const int MaxMenuTextBlobCacheSize = 1024;
+        public const int MaxTextBlobFontBuckets = 16;
+        public const int MaxCachedTextLength = 128;
+        public const int MaxMapCachedTextLength = 512;
+        public const int MaxCachedTotalChars = 65536;
+        public const int MaxMenuCachedTotalChars = 131072;
         public const int PIT_BOTTOM_BORDER = 2;
         public const int SPECIAL_HEIGHT_IN_PIT = -32;
         public const int SPECIAL_HEIGHT_LEVITATION = 16;

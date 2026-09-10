@@ -6421,8 +6421,11 @@ namespace GnollHackX.Pages.Game
         private readonly SKPaint _cmdPaint = new SKPaint();
 
         /* Cached GHSkiaFontPaint instances (each wraps SKPaint + SKFont) */
-        private readonly GHSkiaFontPaint _mapTextPaint = new GHSkiaFontPaint();
-        private readonly GHSkiaFontPaint _menuTextPaint = new GHSkiaFontPaint();
+        /* The map takes the long text length: message rows and engravings occasionally
+           exceed the default. The menu takes the large entry bound: a long item list
+           produces many distinct short strings within one frame. */
+        private readonly GHSkiaFontPaint _mapTextPaint = new GHSkiaFontPaint(GHConstants.MaxMapTextBlobCacheSize, GHConstants.MaxMapCachedTextLength, GHConstants.MaxCachedTotalChars);
+        private readonly GHSkiaFontPaint _menuTextPaint = new GHSkiaFontPaint(GHConstants.MaxMenuTextBlobCacheSize, GHConstants.MaxCachedTextLength, GHConstants.MaxMenuCachedTotalChars);
         private readonly GHSkiaFontPaint _textCanvasTextPaint = new GHSkiaFontPaint();
         private readonly GHSkiaFontPaint _cmdTextPaint = new GHSkiaFontPaint();
         private readonly GHSkiaFontPaint _tipTextPaint = new GHSkiaFontPaint();
@@ -7868,6 +7871,7 @@ namespace GnollHackX.Pages.Game
             bool fixRects = GHApp.FixRects;
             bool fixFiltering = false; /* Applies only to menus */ // GHApp.FixFiltering;
             bool spriteBatching = GHApp.UseSpriteBatching;
+            bool textBlobCaching = GHApp.UseTextBlobCaching;
 #if GNH_MAUI && ENABLE_RUNTIME_EFFECTS
             bool runtimeEffects = GHApp.RuntimeEffects && GHApp.RuntimeEffectsInited;
 #endif
@@ -7956,6 +7960,15 @@ namespace GnollHackX.Pages.Game
                 foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
                     bmp.Dispose();
                 _savedAutoDrawBitmaps.Clear();
+
+                /* Request only: four of these five are owned by the main thread and this
+                   block can run on the map's paint thread. Each clears itself at the top
+                   of its own next paint. */
+                _mapTextPaint.RequestBlobCacheClear();
+                _menuTextPaint.RequestBlobCacheClear();
+                _textCanvasTextPaint.RequestBlobCacheClear();
+                _cmdTextPaint.RequestBlobCacheClear();
+                _tipTextPaint.RequestBlobCacheClear();
 
                 /* Move the GC to main thread just in case */
                 switch (clearCacheLevel)
@@ -8336,6 +8349,8 @@ namespace GnollHackX.Pages.Game
 
             {
                 GHSkiaFontPaint textPaint = _mapTextPaint;
+                /* Owning thread only: applies a setting change and any requested clear */
+                textPaint.SyncBlobCache(textBlobCaching);
                 textPaint.Reset();
                 string str = "";
                 SKRect textBounds = new SKRect();
@@ -12756,6 +12771,8 @@ namespace GnollHackX.Pages.Game
                         //GHApp.MaybeWriteScreenLog(screenLogging, "Composite look color filter cache length: " + (_localCompositeLookColorFilters?.Count(x => x != null) ?? 0));
                         //GHApp.MaybeWriteScreenLog(screenLogging, "Composite map color filter cache length: " + (_localCompositeMapColorFilters?.Count(x => x != null) ?? 0));
                         GHApp.MaybeWriteScreenLog(screenLogging, "Composite color filter fallback cache length: " + (_localCompositeColorFiltersFallback?.Count ?? 0));
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Map text blobs: " + _mapTextPaint.BlobCacheCount + "/" + _mapTextPaint.BlobCacheChars + "c, " + _mapTextPaint.BlobCacheHits + " hits, " + _mapTextPaint.BlobCacheMisses + " misses, " + _mapTextPaint.BlobCacheFlushes + " flushes");
+                        GHApp.MaybeWriteScreenLog(screenLogging, "Menu text blobs: " + _menuTextPaint.BlobCacheCount + "/" + _menuTextPaint.BlobCacheChars + "c, " + _menuTextPaint.BlobCacheHits + " hits, " + _menuTextPaint.BlobCacheMisses + " misses, " + _menuTextPaint.BlobCacheFlushes + " flushes");
                         GHApp.MaybeWriteScreenLog(screenLogging, "Draw command list count (last frame): " + _lastDrawCommandCount);
                         GHApp.MaybeWriteScreenLog(screenLogging, "Tile sheet switches (last frame): " + _lastSheetSwitchCount);
                     }
@@ -18605,6 +18622,8 @@ namespace GnollHackX.Pages.Game
 
             {
                 GHSkiaFontPaint textPaint = _menuTextPaint;
+                /* Owning thread only: applies a setting change and any requested clear */
+                textPaint.SyncBlobCache(GHApp.UseTextBlobCaching);
                 textPaint.Reset();
                 textPaint.Typeface = GHApp.UnderwoodTypeface;
                 textPaint.TextSize = GHConstants.MenuDefaultRowHeight * scale * customScale;
@@ -21814,6 +21833,8 @@ namespace GnollHackX.Pages.Game
 
             {
                 GHSkiaFontPaint textPaint = _textCanvasTextPaint;
+                /* Owning thread only: applies a setting change and any requested clear */
+                textPaint.SyncBlobCache(GHApp.UseTextBlobCaching);
                 textPaint.Reset();
                 if (TextCanvas.PublishedWindow != null && TextCanvas.PublishedWindow.Ascension)
                 {
@@ -22384,6 +22405,8 @@ namespace GnollHackX.Pages.Game
 
             {
                 GHSkiaFontPaint textPaint = _cmdTextPaint;
+                /* Owning thread only: applies a setting change and any requested clear */
+                textPaint.SyncBlobCache(GHApp.UseTextBlobCaching);
                 textPaint.Reset();
                 float cmdOffsetX = useSingleCommandPage ? 0 : MoreCmdOffsetX;
                 int curpage = useSingleCommandPage ? 0 : MoreCmdPage;
@@ -23042,6 +23065,8 @@ namespace GnollHackX.Pages.Game
 
             {
                 GHSkiaFontPaint textPaint = _tipTextPaint;
+                /* Owning thread only: applies a setting change and any requested clear */
+                textPaint.SyncBlobCache(GHApp.UseTextBlobCaching);
                 textPaint.Reset();
                 float canvaswidth = e.Info.Width; // MainCanvasView.CanvasSize.Width;
                 float canvasheight = e.Info.Height; // MainCanvasView.CanvasSize.Height;
