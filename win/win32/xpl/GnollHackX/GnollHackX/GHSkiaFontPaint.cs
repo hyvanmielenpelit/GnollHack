@@ -254,6 +254,20 @@ namespace GnollHackX
             }
         }
 
+        /* Applies to geometry drawn through Paint. Text edges are governed by the font's
+           Edging on MAUI and by this flag on Xamarin. */
+        public bool IsAntialias
+        {
+            get
+            {
+                return _paint.IsAntialias;
+            }
+            set
+            {
+                _paint.IsAntialias = value;
+            }
+        }
+
         public SKFontMetrics FontMetrics
         {
             get

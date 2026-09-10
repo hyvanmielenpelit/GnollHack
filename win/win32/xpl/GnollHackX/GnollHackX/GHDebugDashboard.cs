@@ -83,7 +83,7 @@ namespace GnollHackX
     /// list is touched, and it runs only when something actually
     /// changed, while Draw allocates nothing at all.
     /// </summary>
-    public sealed class GHDebugDashboard
+    public sealed class GHDebugDashboard : IDisposable
     {
         /* Guards _staging against its two producer threads and the
            paint thread that copies it out */
@@ -123,6 +123,7 @@ namespace GnollHackX
         private SKPath _chevronDownPath;
         private SKPath _chevronRightPath;
         private float _chevronPathSize = -1f;
+        private bool _disposed;
 
         private GHDebugDashboardData _data;
 
@@ -164,7 +165,9 @@ namespace GnollHackX
 
         /// <summary>
         /// Publishes the frame timing, memory and GC groups. Called from
-        /// the main thread once per statistics refresh.
+        /// the main thread once per statistics refresh. Stages the values
+        /// only: PublishDrawStats raises the version that both halves are
+        /// read under, so one tick rebuilds the rows once.
         /// </summary>
         public static void PublishFrameStats(in FrameTimeStatistics stats, bool profilerEnabled)
         {
@@ -200,8 +203,6 @@ namespace GnollHackX
                 _staging.GcWorstMs = stats.GcWorstMs;
                 _staging.PauseFrameCount = stats.PauseFrameCount;
             }
-
-            Interlocked.Increment(ref _version);
         }
 
         /// <summary>
@@ -556,7 +557,7 @@ namespace GnollHackX
             _logToggleRect = SKRect.Empty;
             _lastDrawnRect = SKRect.Empty;
 
-            if (canvas == null || textPaint == null || _rows.Count == 0)
+            if (_disposed || canvas == null || textPaint == null || _rows.Count == 0)
                 return;
 
             SKTypeface oldTypeface = textPaint.Typeface;
@@ -564,10 +565,14 @@ namespace GnollHackX
             SKColor oldColor = textPaint.Color;
             SKPaintStyle oldStyle = textPaint.Style;
             float oldStrokeWidth = textPaint.StrokeWidth;
+            bool oldAntialias = textPaint.IsAntialias;
 
             float fontSize = GHConstants.DebugDashboardBaseFontSize * scale;
             textPaint.Typeface = GHApp.DejaVuSansMonoTypeface;
             textPaint.TextSize = fontSize;
+            /* The panel border and the chevrons are geometry, not text: text edges come
+               from the font, these come from the paint */
+            textPaint.IsAntialias = true;
 
             try
             {
@@ -719,6 +724,7 @@ namespace GnollHackX
                 textPaint.Color = oldColor;
                 textPaint.Style = oldStyle;
                 textPaint.StrokeWidth = oldStrokeWidth;
+                textPaint.IsAntialias = oldAntialias;
             }
         }
 
@@ -760,6 +766,31 @@ namespace GnollHackX
             _chevronDownPath = BuildChevronPath(size, true);
             _chevronRightPath = BuildChevronPath(size, false);
             _chevronPathSize = size;
+        }
+
+        /// <summary>
+        /// Releases the chevron paths, the only native objects this
+        /// class owns. Draw returns early afterwards, so a paint that
+        /// races teardown draws nothing rather than reading a freed
+        /// path.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+            _disposed = true;
+            if (_chevronDownPath != null)
+            {
+                _chevronDownPath.Dispose();
+                _chevronDownPath = null;
+            }
+            if (_chevronRightPath != null)
+            {
+                _chevronRightPath.Dispose();
+                _chevronRightPath = null;
+            }
+            /* Nothing may rebuild them: EnsureChevronPaths compares against this */
+            _chevronPathSize = -1f;
         }
 
         private static SKPath BuildChevronPath(float size, bool pointDown)

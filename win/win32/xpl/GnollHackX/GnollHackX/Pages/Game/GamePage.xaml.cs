@@ -1256,6 +1256,8 @@ namespace GnollHackX.Pages.Game
                 _textCanvasTextPaint?.Dispose();
                 _cmdTextPaint?.Dispose();
                 _tipTextPaint?.Dispose();
+                _dashboardTextPaint?.Dispose();
+                _debugDashboard?.Dispose();
             }
             catch (Exception ex)
             {
@@ -1914,14 +1916,15 @@ namespace GnollHackX.Pages.Game
                 if (incrementedValue % 10 == 0)
                 {
                     GHApp.LogMemory();
+                    /* Before the flag: the paint thread consumes it to publish the draw
+                       counters, and that publication is what versions both halves */
+                    if (GHApp.IsDebugScreenLoggingOn)
+                        FrameTimeProfiler.PublishDashboardSnapshot();
                     Interlocked.Exchange(ref _publishDashboardStats, 1);
                     //if (WarnLowDiskSpace)
                         GHApp.UpdateFreeDiskSpace();
                     //if (ShowMemory)
                         GHApp.UpdateUsedMemory();
-                    
-                    if (GHApp.IsDebugScreenLoggingOn)
-                        FrameTimeProfiler.PublishDashboardSnapshot();
                 }
 
                 CursorIsOn = !CursorIsOn;
