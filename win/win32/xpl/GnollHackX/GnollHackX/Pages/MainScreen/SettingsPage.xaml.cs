@@ -160,6 +160,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Mipmapping on Map", ("Toggle mipmapping for map rendering (mostly obsolete).", "Toggles whether mipmapping is used in map rendering. Mostly obsolete.") },
             { "Adjust Rectangles", ("Adjust tile rectangles to fix rendering artifacts.", "Toggles whether the game adjusts tile rectangles to prevent Skia from drawing non-existing lines between tiles.") },
             { "Fix Filtering", ("Adjust texture coords to prevent graphics filtering bugs.", "Adjusts texture coordinates to prevent graphics filtering artifacts on some devices.") },
+            { "Text Caching", ("Cache shaped text to reduce garbage collection pauses.", "**Off:** Text is reshaped on every frame.\n**On:** Shaped text is cached and reused, which reduces memory allocation and makes garbage collection pauses less frequent, at the cost of some extra memory. (Default)") },
             { "Disable Windows Key", ("Prevent Windows key from opening Start menu in-game.", "Prevents the Windows key from opening the Start menu, to avoid accidental focus loss during gameplay.") },
             { "Default Vi-Keys", ("Use vi-keys (hjklyubn) as default for movement.", "**Off**: The default setting for the `number_pad` option is `2` (numbers for movement).\n**On**: The default setting is `0` (vi-keys for movement).") },
             { "On Switching Apps", ("Save game or create checkpoint when switching apps.", "**Save Game**: The game is automatically saved and restored when the player returns. Menus close.\n**Checkpoint**: The game creates a checkpoint and doesn't close menus, but recovers to checkpoint if terminated.") },
@@ -726,7 +727,7 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.UseSpriteBatching = SpriteBatchingSwitch.IsToggled;
                 Preferences.Set("UseSpriteBatching", SpriteBatchingSwitch.IsToggled);
             }
-            if (TextBlobCachingSwitch.IsEnabled)
+            if (TextBlobCachingGrid.IsVisible && TextBlobCachingSwitch.IsEnabled)
             {
                 GHApp.UseTextBlobCaching = TextBlobCachingSwitch.IsToggled;
                 Preferences.Set("UseTextBlobCaching", TextBlobCachingSwitch.IsToggled);
@@ -1775,6 +1776,8 @@ namespace GnollHackX.Pages.MainScreen
             if (!GHApp.IsMaui)
             {
                 MipMapGrid.IsVisible = false;
+                /* The blob cache exists only in the MAUI build; see GHSkiaFontPaint */
+                TextBlobCachingGrid.IsVisible = false;
             }
             if (GHApp.IsGPUAvailable)
             {

@@ -451,6 +451,19 @@ namespace GnollHackX
 
             canvas.DrawText(blob, x, y, _paint);
         }
+#else
+        /* The blob cache is a MAUI-only feature: the Xamarin build has no SKFont and no
+           Dictionary alternate lookup. These no-ops let the shared GamePage call the same
+           API unconditionally rather than guarding every call site. */
+        public void ClearBlobCache() { }
+        public void RequestBlobCacheClear() { }
+        public void SyncBlobCache(bool enabled) { }
+        public bool CacheTextBlobs { get { return false; } }
+        public int BlobCacheCount { get { return 0; } }
+        public int BlobCacheChars { get { return 0; } }
+        public long BlobCacheHits { get { return 0; } }
+        public long BlobCacheMisses { get { return 0; } }
+        public long BlobCacheFlushes { get { return 0; } }
 #endif
 
         public void DrawTextOnCanvas(SKCanvas canvas, string text, float x, float y, SKTextAlign textAlign)
