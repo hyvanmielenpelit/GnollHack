@@ -86,6 +86,10 @@ namespace GnollHackX
         private int _useAscii = 0;
         public bool UseAscii { get { return Interlocked.CompareExchange(ref _useAscii, 0, 0) != 0; } set { Interlocked.Exchange(ref _useAscii, value ? 1 : 0); } }
 
+        private int _blobCacheCleared = 0;
+        public bool BlobCacheCleared { get { return Interlocked.CompareExchange(ref _blobCacheCleared, 0, 0) != 0; } set { Interlocked.Exchange(ref _blobCacheCleared, value ? 1 : 0); } }
+
+
         public GHGame(RunGnollHackFlags startFlags)
         {
             StartFlags = startFlags;
@@ -3412,6 +3416,24 @@ namespace GnollHackX
                     if (PlayingReplay && GHApp.IsReplaySearching)
                         return;
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.SetToBlack));
+                    break;
+                case (int)gui_command_types.GUI_CMD_CLEAR_TEXT_CACHES:
+                    {
+                        if (PlayingReplay && GHApp.IsReplaySearching)
+                            return;
+                        GamePage gamePage = ActiveGamePage;
+                        if (gamePage != null)
+                        {
+                            BlobCacheCleared = false;
+                            gamePage.ForceClearTextCaches = true;
+                            for (int i = 0; i < 8; i++)
+                            {
+                                Thread.Sleep(GHConstants.PollingInterval);
+                                if (Interlocked.CompareExchange(ref _blobCacheCleared, 0, 1) == 1)
+                                    break;
+                            }
+                        }
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_COLLECT_GARBAGE:
                     if (PlayingReplay && GHApp.IsReplaySearching)

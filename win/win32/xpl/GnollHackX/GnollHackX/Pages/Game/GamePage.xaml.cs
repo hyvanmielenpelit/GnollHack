@@ -484,6 +484,9 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        private int _forceClearTextCaches = 0;
+        public bool ForceClearTextCaches { get { return Interlocked.CompareExchange(ref _forceClearTextCaches, 0, 0) != 0; } set { Interlocked.Exchange(ref _forceClearTextCaches, value ? 1 : 0); } }
+
         private int _forceClearCaches = 0;
         public int ForceClearCaches
         {
@@ -7948,13 +7951,28 @@ namespace GnollHackX.Pages.Game
             if (mainCounter2AnimationMultiplier <= 0.0)
                 mainCounter2AnimationMultiplier = 1.0;
 
+            GHGame curGame = GHApp.CurrentGHGame;
             int clearCacheLevel = Interlocked.Exchange(ref _forceClearCaches, 0);
             bool clearCaches = clearCacheLevel > 0;
             bool clearDarkeningCaches = Interlocked.Exchange(ref _lighterDarkeningUpdated, 0) == 1;
+            bool clearTextCaches = Interlocked.Exchange(ref _forceClearTextCaches, 0) != 0;
 
             if (clearDarkeningCaches || clearCaches)
             {
                 ClearColorFilterCaches();
+            }
+
+            if (clearTextCaches || clearCaches)
+            {
+                /* Request only: four of these six are owned by the main thread and this
+                   block can run on the map's paint thread. Each clears itself at the top
+                   of its own next paint. */
+                _mapTextPaint.RequestBlobCacheClear();
+                _menuTextPaint.RequestBlobCacheClear();
+                _textCanvasTextPaint.RequestBlobCacheClear();
+                _cmdTextPaint.RequestBlobCacheClear();
+                _tipTextPaint.RequestBlobCacheClear();
+                _dashboardTextPaint.RequestBlobCacheClear();
             }
 
             if (clearCaches)
@@ -7965,16 +7983,6 @@ namespace GnollHackX.Pages.Game
                 foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
                     bmp.Dispose();
                 _savedAutoDrawBitmaps.Clear();
-
-                /* Request only: four of these six are owned by the main thread and this
-                   block can run on the map's paint thread. Each clears itself at the top
-                   of its own next paint. */
-                _mapTextPaint.RequestBlobCacheClear();
-                _menuTextPaint.RequestBlobCacheClear();
-                _textCanvasTextPaint.RequestBlobCacheClear();
-                _cmdTextPaint.RequestBlobCacheClear();
-                _tipTextPaint.RequestBlobCacheClear();
-                _dashboardTextPaint.RequestBlobCacheClear();
 
                 /* Move the GC to main thread just in case */
                 switch (clearCacheLevel)
@@ -8003,7 +8011,6 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            GHGame curGame = GHApp.CurrentGHGame;
             if (curGame == null)
                 return;
 
@@ -12836,6 +12843,8 @@ namespace GnollHackX.Pages.Game
 #endif
             }
 
+            if (clearTextCaches && curGame != null)
+                curGame.BlobCacheCleared = true;
 
             lockTaken = false;
             //lock (_uiPetRectLock)
