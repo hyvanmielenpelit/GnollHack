@@ -1037,9 +1037,10 @@ namespace GnollHackX.Pages.Game
 
             float deffontsize = GetDefaultMapFontSize();
             DefaultMapFontSize = deffontsize;
-            MapFontSize = Preferences.Get("MapFontSize", deffontsize);
-            MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", deffontsize * GHConstants.MapFontRelativeAlternateSize);
-            MapFontMiniRelativeSize = Preferences.Get("MapFontMiniRelativeSize", 1.0f);
+            float defaltfontsize = deffontsize * GHConstants.MapFontRelativeAlternateSize;
+            MapFontSize = ClampLoadedFontSize(Preferences.Get("MapFontSize", deffontsize), deffontsize, GHConstants.MinimumMapFontSize, GHConstants.MaximumMapFontSize);
+            MapFontAlternateSize = ClampLoadedFontSize(Preferences.Get("MapFontAlternateSize", defaltfontsize), defaltfontsize, GHConstants.MinimumMapFontSize, GHConstants.MaximumMapFontSize);
+            MapFontMiniRelativeSize = ClampLoadedFontSize(Preferences.Get("MapFontMiniRelativeSize", 1.0f), 1.0f, GHConstants.MinimumMapMiniRelativeFontSize, GHConstants.MaximumMapMiniRelativeFontSize);
             lock (_mapOffsetLock)
             {
                 _mapMiniOffsetX = Preferences.Get("MapMiniOffsetX", 0.0f);
@@ -1313,6 +1314,19 @@ namespace GnollHackX.Pages.Game
                 await MorePreviousButton.FadeTo(1.0);
 #endif
             }
+        }
+
+        /* Preferences may hold a value from a corrupt or hand-edited store, which the
+           matching saves never produce */
+        private static float ClampLoadedFontSize(float storedSize, float defaultSize, float minSize, float maxSize)
+        {
+            if (float.IsNaN(storedSize))
+                return defaultSize;
+            if (storedSize > maxSize)
+                return maxSize;
+            if (storedSize < minSize)
+                return minSize;
+            return storedSize;
         }
 
         private float GetDefaultMapFontSize()
