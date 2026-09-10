@@ -16664,13 +16664,13 @@ namespace GnollHackX.Pages.Game
                                                 }
                                             }
 
-                                            TouchDictionary[e.Id].Location = e.Location;
+                                            entry.Location = e.Location;
                                             _touchMoved = true;
                                         }
                                     }
 
                                 }
-                                else if (TouchDictionary.Count == 2)
+                                else /* Two or more fingers */
                                 {
                                     _savedSender = null;
                                     _savedEventArgs = null;
@@ -16684,24 +16684,48 @@ namespace GnollHackX.Pages.Game
                                     _touchWithinYouButton = false;
                                     _touchWithinContextButton = 0;
 
-                                    SKPoint prevloc = TouchDictionary[e.Id].Location;
+                                    SKPoint prevloc = entry.Location;
                                     SKPoint curloc = e.Location;
-                                    SKPoint otherloc;
 
-                                    var keys = TouchDictionary.Keys;
-                                    long other_key = 0;
-                                    foreach (long key in keys)
+                                    /* The pinch pair is the two fingers that touched down first, so an
+                                       extra finger or a resting palm neither changes nor stops the gesture */
+                                    long first_key = 0, second_key = 0;
+                                    TouchEntry first_entry = null, second_entry = null;
+                                    foreach (KeyValuePair<long, TouchEntry> kvp in TouchDictionary)
                                     {
-                                        if (key != e.Id)
+                                        TouchEntry te = kvp.Value;
+                                        if (te == null)
+                                            continue;
+                                        if (first_entry == null || te.PressTime < first_entry.PressTime
+                                            || (te.PressTime == first_entry.PressTime && kvp.Key < first_key))
                                         {
-                                            other_key = key;
-                                            break;
+                                            second_key = first_key;
+                                            second_entry = first_entry;
+                                            first_key = kvp.Key;
+                                            first_entry = te;
+                                        }
+                                        else if (second_entry == null || te.PressTime < second_entry.PressTime
+                                            || (te.PressTime == second_entry.PressTime && kvp.Key < second_key))
+                                        {
+                                            second_key = kvp.Key;
+                                            second_entry = te;
                                         }
                                     }
 
-                                    if (other_key != 0 /* && !ZoomMiniMode */)
+                                    /* Pointer id 0 is an ordinary id on Android, so pair membership is
+                                       decided by identity rather than by a sentinel key */
+                                    TouchEntry other_entry = null;
+                                    if (first_entry != null && second_entry != null)
                                     {
-                                        otherloc = TouchDictionary[other_key].Location;
+                                        if (e.Id == first_key)
+                                            other_entry = second_entry;
+                                        else if (e.Id == second_key)
+                                            other_entry = first_entry;
+                                    }
+
+                                    if (other_entry != null /* && !ZoomMiniMode */)
+                                    {
+                                        SKPoint otherloc = other_entry.Location;
                                         float prevdist = (float)Math.Sqrt((Math.Pow((double)otherloc.X - (double)prevloc.X, 2) + Math.Pow((double)otherloc.Y - (double)prevloc.Y, 2)));
                                         float curdist = (float)Math.Sqrt((Math.Pow((double)otherloc.X - (double)curloc.X, 2) + Math.Pow((double)otherloc.Y - (double)curloc.Y, 2)));
                                         if (prevdist > 0 && curdist > 0)
@@ -16712,7 +16736,9 @@ namespace GnollHackX.Pages.Game
                                         }
                                     }
 
-                                    TouchDictionary[e.Id].Location = e.Location;
+                                    /* Updated for every finger, so no stored location goes stale while a
+                                       third finger rests on the screen */
+                                    entry.Location = e.Location;
                                     _touchMoved = true;
                                 }
                             }
@@ -16864,13 +16890,10 @@ namespace GnollHackX.Pages.Game
                         }
                         break;
                     case SKTouchAction.Cancelled:
-                        if (TouchDictionary.ContainsKey(e.Id))
-                        {
-                            TouchEntry removedEntry;
-                            TouchDictionary.TryRemove(e.Id, out removedEntry);
-                        }
-                        else
-                            TouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+                        /* Android reports a cancelled gesture once, for ActionIndex only, so the
+                           other pointers never receive an event of their own */
+                        TouchDictionary.Clear();
+                        _touchMoved = false;
 
                         if(ForceAllMessages)
                         {
