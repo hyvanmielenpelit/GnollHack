@@ -3837,7 +3837,11 @@ namespace GnollHackX
                         }
                         if (cmd_param == (int)debug_log_types.DEBUGLOG_DEBUG_ONLY && !GHApp.IsDebug)
                             break;
-                        string logged_str = cmd_str + (cmd_param2 != 0 ? " [" + cmd_param2 + "]" : "");
+                        string log_msg = cmd_str;
+                        int pipe_idx = cmd_str.IndexOf('|');
+                        if (pipe_idx >= 0)
+                            log_msg = cmd_str.Substring(0, pipe_idx);
+                        string logged_str = log_msg + (cmd_param2 != 0 ? " [" + cmd_param2 + "]" : "");
                         if (!(cmd_param == (int)debug_log_types.DEBUGLOG_IMPOSSIBLE && cmd_param2 == 1)) /* Silent impossible */
                             GHApp.MaybeWriteGHLog(logged_str);
                         if (cmd_param == (int)debug_log_types.DEBUGLOG_PRIORITY)
@@ -3849,7 +3853,7 @@ namespace GnollHackX
                         else if (cmd_param == (int)debug_log_types.DEBUGLOG_PANIC || cmd_param == (int)debug_log_types.DEBUGLOG_IMPOSSIBLE || cmd_param == (int)debug_log_types.DEBUGLOG_ERROR)
                         {
 #if SENTRY
-                            string[] strs = logged_str.Split('|');
+                            string[] strs = cmd_str.Split('|');
                             if (strs == null || strs.Length == 0)
                                 break;
                             string exceptionType;
