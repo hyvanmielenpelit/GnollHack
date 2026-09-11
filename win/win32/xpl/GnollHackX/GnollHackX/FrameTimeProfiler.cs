@@ -320,27 +320,45 @@ namespace GnollHackX
                 $"GC {(forced ? "forced" : "rt")} {GenerationTag(d0, d1, d2)} {ms:0.0}ms {heapBeforeMB:0}>{heapAfterMB:0}MB{pause}"));
         }
 
-        /* Every generation whose counter moved, joined with '+'. CollectionCount(n) counts
-           collections of generation n or higher, so a gen2 collection reads as 0+1+2. A
-           gap holding more than one collection is suffixed with the count. */
+        /* Every generation that topped off a collection in the gap, ascending, each with
+           the number of collections that stopped there: "g0x3+g2" is three gen0s and one
+           gen2. CollectionCount(n) counts collections of generation n or higher, so the
+           per-level counts are differences rather than the raw deltas.
+
+           The three counters are read by separate calls, so a collection landing between
+           them leaves one sample internally inconsistent and a difference negative. Those
+           are clamped, which is also why no total is printed alongside: after a clamp the
+           parts need not sum to the gap's raw collection count. */
         private static string GenerationTag(int d0, int d1, int d2)
         {
-            int mask = (d0 > 0 ? 1 : 0) | (d1 > 0 ? 2 : 0) | (d2 > 0 ? 4 : 0);
-            string gens;
-            switch (mask)
-            {
-            case 1: gens = "g0"; break;
-            case 2: gens = "g1"; break;
-            case 3: gens = "g0+1"; break;
-            case 4: gens = "g2"; break;
-            case 5: gens = "g0+2"; break;
-            case 6: gens = "g1+2"; break;
-            case 7: gens = "g0+1+2"; break;
-            default: gens = "g?"; break;
-            }
+            int n2 = d2 > 0 ? d2 : 0;
+            int n1 = d1 - d2 > 0 ? d1 - d2 : 0;
+            int n0 = d0 - d1 > 0 ? d0 - d1 : 0;
 
-            int most = Math.Max(d0, Math.Max(d1, d2));
-            return most > 1 ? gens + "x" + most.ToString(CultureInfo.InvariantCulture) : gens;
+            if (n0 + n1 + n2 == 0)
+                return "g?";
+
+            string tag = "";
+            string sep = "";
+            if (n0 > 0)
+            {
+                tag = GenerationPart("g0", n0);
+                sep = "+";
+            }
+            if (n1 > 0)
+            {
+                tag += sep + GenerationPart("g1", n1);
+                sep = "+";
+            }
+            if (n2 > 0)
+                tag += sep + GenerationPart("g2", n2);
+
+            return tag;
+        }
+
+        private static string GenerationPart(string gen, int count)
+        {
+            return count > 1 ? gen + "x" + count.ToString(CultureInfo.InvariantCulture) : gen;
         }
 
         /*
