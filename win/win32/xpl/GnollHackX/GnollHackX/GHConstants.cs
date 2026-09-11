@@ -140,7 +140,7 @@ namespace GnollHackX
            dictionary overhead, the character count bounds native glyph data, and the
            per-string length keeps one long string from consuming the character budget. */
         public const int MaxTextBlobCacheSize = 512;
-        public const int MaxMapTextBlobCacheSize = 1024;
+        public const int MaxMapTextBlobCacheSize = 2048; /* Mostly due to various numbers, e.g., turns */
         public const int MaxMenuTextBlobCacheSize = 1024;
         public const int MaxTextBlobFontBuckets = 16;
         public const int MaxCachedTextLength = 128;
