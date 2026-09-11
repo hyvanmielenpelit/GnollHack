@@ -18,13 +18,28 @@ namespace GnollHackX
 #if GNH_MAUI
         SKFont _font = new SKFont();
 
+        /* The width is measured with the same font state the blob was shaped with, so it
+           is keyed by the bucket exactly as the blob is. Alignment needs it on every
+           draw, and measuring shapes the text again. */
+        private readonly struct BlobEntry
+        {
+            public readonly SKTextBlob Blob;
+            public readonly float Width;
+
+            public BlobEntry(SKTextBlob blob, float width)
+            {
+                Blob = blob;
+                Width = width;
+            }
+        }
+
         /* One dictionary per font state the blobs were shaped with. BySpan matches a
            ReadOnlySpan<char> against the string keys without allocating one, which is what
            lets the span draw overloads hit the cache at all. */
         private sealed class FontBucket
         {
-            public Dictionary<string, SKTextBlob> Blobs;
-            public Dictionary<string, SKTextBlob>.AlternateLookup<ReadOnlySpan<char>> BySpan;
+            public Dictionary<string, BlobEntry> Blobs;
+            public Dictionary<string, BlobEntry>.AlternateLookup<ReadOnlySpan<char>> BySpan;
         }
 
         /* A blob is fixed at creation by the typeface and size alone: it keeps drawing
@@ -319,7 +334,7 @@ namespace GnollHackX
                 }
 
                 bucket = new FontBucket();
-                bucket.Blobs = new Dictionary<string, SKTextBlob>(StringComparer.Ordinal);
+                bucket.Blobs = new Dictionary<string, BlobEntry>(StringComparer.Ordinal);
                 bucket.BySpan = bucket.Blobs.GetAlternateLookup<ReadOnlySpan<char>>();
                 _blobBuckets.Add(key, bucket);
             }
@@ -339,24 +354,23 @@ namespace GnollHackX
                 && text.Length <= _maxCachedTextLength;
         }
 
-        /* Returns a blob owned by the cache; the caller must not dispose it. Null when the
-           text shapes to no glyphs, in which case nothing is inserted and there is nothing
-           to own. */
-        private SKTextBlob GetOrCreateBlob(ReadOnlySpan<char> text)
+        /* Returns an entry owned by the cache; the caller must not dispose its blob. False
+           when the text shapes to no glyphs, in which case nothing is inserted and there
+           is nothing to own. */
+        private bool TryGetOrCreateEntry(ReadOnlySpan<char> text, out BlobEntry entry)
         {
             FontBucket bucket = GetCurrentBucket();
 
-            SKTextBlob cached;
-            if (bucket.BySpan.TryGetValue(text, out cached))
+            if (bucket.BySpan.TryGetValue(text, out entry))
             {
                 _blobCacheHits++;
-                return cached;
+                return true;
             }
 
             SKTextBlob blob = SKTextBlob.Create(text, _font);
             _blobCacheMisses++;
             if (blob == null)
-                return null;
+                return false;
 
             /* Either bound may trip first: the entry count guards wrapper and dictionary
                overhead, the character count guards native glyph data. */
@@ -373,12 +387,16 @@ namespace GnollHackX
                 bucket = GetCurrentBucket();
             }
 
+            /* Measured without the paint, matching the uncached span overload: passing it
+               would fold stroke width into the advance and shift aligned text. */
+            entry = new BlobEntry(blob, _font.MeasureText(text));
+
             /* Indexer, not Add: the TryGetValue above missed, so the key cannot already be
                present, and the indexer cannot throw and strand the blob unreferenced. */
-            bucket.Blobs[text.ToString()] = blob;
+            bucket.Blobs[text.ToString()] = entry;
             _blobCount++;
             _cachedChars += text.Length;
-            return blob;
+            return true;
         }
 
         /* Disposes every cached blob. Idempotent, and safe when the cache was never
@@ -394,10 +412,10 @@ namespace GnollHackX
                     {
                         if (bucket == null || bucket.Blobs == null)
                             continue;
-                        foreach (SKTextBlob blob in bucket.Blobs.Values)
+                        foreach (BlobEntry entry in bucket.Blobs.Values)
                         {
-                            if (blob != null)
-                                blob.Dispose();
+                            if (entry.Blob != null)
+                                entry.Blob.Dispose();
                         }
                         bucket.Blobs.Clear();
                     }
@@ -461,24 +479,24 @@ namespace GnollHackX
         public long BlobCacheMisses { get { return _blobCacheMisses; } }
         public long BlobCacheFlushes { get { return _blobCacheFlushes; } }
 
-        /* The blob belongs to the cache and is never disposed here. A shaped blob carries
-           its own glyph positions, so alignment is applied by shifting the origin -- the
-           same way the uncached span overload has always done it. */
+        /* The entry belongs to the cache and its blob is never disposed here. A shaped blob
+           carries its own glyph positions, so alignment is applied by shifting the origin
+           -- the same way the uncached span overload has always done it. */
         private void DrawCachedText(SKCanvas canvas, ReadOnlySpan<char> text, float x, float y, SKTextAlign textAlign)
         {
-            SKTextBlob blob = GetOrCreateBlob(text);
-            if (blob == null)
+            BlobEntry entry;
+            if (!TryGetOrCreateEntry(text, out entry))
                 return;
 
             if (textAlign != SKTextAlign.Left)
             {
-                var width = _font.MeasureText(text);
+                float width = entry.Width;
                 if (textAlign == SKTextAlign.Center)
                     width *= 0.5f;
                 x -= width;
             }
 
-            canvas.DrawText(blob, x, y, _paint);
+            canvas.DrawText(entry.Blob, x, y, _paint);
         }
 #else
         /* The blob cache is a MAUI-only feature: the Xamarin build has no SKFont and no

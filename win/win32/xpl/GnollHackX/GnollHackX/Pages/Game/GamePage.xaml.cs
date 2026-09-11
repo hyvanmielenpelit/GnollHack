@@ -7978,7 +7978,7 @@ namespace GnollHackX.Pages.Game
 
             if (clearTextCaches || clearCaches)
             {
-                /* Request only: four of these six are owned by the main thread and this
+                /* Request only: five of these seven are owned by the main thread and this
                    block can run on the map's paint thread. Each clears itself at the top
                    of its own next paint. */
                 _mapTextPaint.RequestBlobCacheClear();
@@ -7987,6 +7987,7 @@ namespace GnollHackX.Pages.Game
                 _cmdTextPaint.RequestBlobCacheClear();
                 _tipTextPaint.RequestBlobCacheClear();
                 _dashboardTextPaint.RequestBlobCacheClear();
+                _menuDashboardTextPaint.RequestBlobCacheClear();
             }
 
             if (clearCaches)
