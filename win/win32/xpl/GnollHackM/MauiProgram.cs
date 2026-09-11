@@ -33,7 +33,6 @@ using Microsoft.Maui.Platform;
 #if SENTRY
 using Sentry.Maui;
 #if WINDOWS
-using Sentry.Profiling;
 using Microsoft.UI.Windowing;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -77,20 +76,15 @@ public static class MauiProgram
                   // The DSN is the only required setting.
                   options.Dsn = GHApp.CurrentUserSecrets?.DefaultSentryDNS ?? "";
 
-                  // Use debug mode if you want to see what the SDK is doing.
-                  // Debug messages are written to stdout with Console.Writeline,
-                  // and are viewable in your IDE's debug console or with 'adb logcat', etc.
-                  // This option is not recommended when deploying your application.
+                  // Debug messages go to stdout through Console.WriteLine, so this stays
+                  // out of shipped builds.
+#if DEBUG
                   options.Debug = true;
+#endif
 
                   // Set TracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
                   // We recommend adjusting this value in production.
                   options.TracesSampleRate = 1.0;
-
-                  // Sample rate for profiling, applied on top of othe TracesSampleRate,
-                  // e.g. 0.2 means we want to profile 20 % of the captured transactions.
-                  // We recommend adjusting this value in production.
-                  options.ProfilesSampleRate = 1.0;
 
                   // Other Sentry options can be set here.
                   options.CaptureFailedRequests = false;
@@ -164,30 +158,15 @@ public static class MauiProgram
                 // The DSN is the only required setting.
                 options.Dsn = GHApp.CurrentUserSecrets?.DefaultSentryDNS ?? "";
 
-                // Use debug mode if you want to see what the SDK is doing.
-                // Debug messages are written to stdout with Console.Writeline,
-                // and are viewable in your IDE's debug console or with 'adb logcat', etc.
-                // This option is not recommended when deploying your application.
+                // Debug messages go to stdout through Console.WriteLine, so this stays
+                // out of shipped builds.
+#if DEBUG
                 options.Debug = true;
+#endif
 
                 // Set TracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
                 // We recommend adjusting this value in production.
                 options.TracesSampleRate = 1.0;
-
-                // Sample rate for profiling, applied on top of othe TracesSampleRate,
-                // e.g. 0.2 means we want to profile 20 % of the captured transactions.
-                // We recommend adjusting this value in production.
-                options.ProfilesSampleRate = 1.0;
-
-                // Requires NuGet package: Sentry.Profiling
-                // Note: By default, the profiler is initialized asynchronously. This can
-                // be tuned by passing a desired initialization timeout to the constructor.
-                options.AddIntegration(new ProfilingIntegration(
-                    // During startup, wait up to 500ms to profile the app startup code.
-                    // This could make launching the app a bit slower so comment it out if you
-                    // prefer profiling to start asynchronously
-                    TimeSpan.FromMilliseconds(500)
-                ));
 
                 // Other Sentry options can be set here.
                 options.CaptureFailedRequests = false;

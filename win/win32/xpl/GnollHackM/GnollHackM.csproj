@@ -1289,7 +1289,6 @@
 
   <ItemGroup Condition="$(DefineConstants.Contains('SENTRY'))">
     <PackageReference Include="Sentry.Maui" Version="6.10.0" />
-    <PackageReference Include="Sentry.Profiling" Version="6.10.0" Condition="$(TargetFramework.Contains('-windows'))" />
   </ItemGroup>
 
   <!-- OTHER -->
