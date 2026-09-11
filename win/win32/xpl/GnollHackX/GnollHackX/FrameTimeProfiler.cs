@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Tracing;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -118,6 +119,7 @@ namespace GnollHackX
         private const int BufferSize = 1800;
         private const int MaxExclusionEvents = 64;
         private const int MaxForcedGcEvents = 64;
+        private const int MaxGcReasonEvents = 64;
         private static readonly FrameTimeSample[] _buffer = new FrameTimeSample[BufferSize];
         private static long _writeIndex = -1;
         private static readonly double _msPerTick = 1000.0 / Stopwatch.Frequency;
@@ -139,6 +141,24 @@ namespace GnollHackX
          */
         private static readonly ForcedGcDelta[] _forcedGcDeltas = new ForcedGcDelta[MaxForcedGcEvents];
         private static long _forcedGcDeltaWriteIndex = -1;
+
+        /*
+         * Why the runtime began each collection, stamped when it began so an entry can
+         * be matched to the frame gap containing it, the same way a forced collection's
+         * delta is. The runtime raises a GC event carrying that reason; the ring is
+         * filled from it, and stays empty on a runtime that raises no such event.
+         */
+        private static readonly GcReasonEvent[] _gcReasons = new GcReasonEvent[MaxGcReasonEvents];
+        private static long _gcReasonWriteIndex = -1;
+        private static int _gcReasonListenerStarted = 0;
+        private static GcEventListener _gcEventListener;
+
+        private struct GcReasonEvent
+        {
+            public long Timestamp;
+            public int Depth;
+            public int Reason;
+        }
 
         /*
          * Thread-local storage for MarkGcBefore/MarkGcAfter pair.
@@ -277,6 +297,7 @@ namespace GnollHackX
 
             if (idx >= 1 && GHApp.IsDebugScreenLoggingOn)
             {
+                EnsureGcReasonListener();
                 FrameTimeSample prev = _buffer[SafeIndex(idx - 1, BufferSize)];
                 if (DidGcOccur(prev, _buffer[index]))
                     LogGcEvent(prev, _buffer[index]);
@@ -338,8 +359,13 @@ namespace GnollHackX
             GHApp.MaybeWriteScreenLog(FormattableString.Invariant(
                 $"GC {(forced ? "forced" : "rt")} {GenerationTag(d0, d1, d2)}{kindFlag}{psPart} gap:{gapMs:0.0}ms {heapBeforeMB:0}>{heapAfterMB:0}MB{lohPart}{canvasPause}"));
 
-            if (haveInfo)
-                GHApp.MaybeWriteScreenLog(BuildGcDetailLine(info));
+            int gcReason;
+            bool haveReason = TryGetGcReasonInInterval(prev.TicksFrameStart, curr.TicksFrameStart,
+                out gcReason);
+
+            if (haveInfo || haveReason)
+                GHApp.MaybeWriteScreenLog(BuildGcDetailLine(info, haveInfo,
+                    haveReason ? gcReason : -1));
         }
 
         /* The continuation line of a collection's report, carrying the counters that say
@@ -349,9 +375,18 @@ namespace GnollHackX
            make a collection dearer than its heap size suggests. "!" marks a memory load at
            or above the threshold where the runtime collects to relieve the system rather
            than because a budget ran out. Sizes are in megabytes, the pinned figure is a
-           count of objects. */
-        private static string BuildGcDetailLine(in GcInfoSnapshot info)
+           count of objects.
+
+           "why" is the runtime's own reason for starting the collection. It arrives by a
+           different route than the rest, so the line carries whichever of the two is
+           available: a collection the runtime has not yet published figures for still
+           reports why it happened. */
+        private static string BuildGcDetailLine(in GcInfoSnapshot info, bool haveInfo, int reason)
         {
+            string why = reason >= 0 ? " why:" + GcReasonName(reason) : "";
+            if (!haveInfo)
+                return "GC .." + why;
+
             string mem = "";
             if (info.MemoryAvailable > 0)
             {
@@ -366,7 +401,7 @@ namespace GnollHackX
             float promotedMB = info.Promoted / (1024f * 1024f);
 
             return FormattableString.Invariant(
-                $"GC .. poh:{pohBeforeMB:0.0}>{pohAfterMB:0.0} pin:{info.PinnedObjects} prom:{promotedMB:0.0}MB{mem}");
+                $"GC .. poh:{pohBeforeMB:0.0}>{pohAfterMB:0.0} pin:{info.PinnedObjects} prom:{promotedMB:0.0}MB{mem}{why}");
         }
 
 #if GNH_MAUI
@@ -612,6 +647,144 @@ namespace GnollHackX
                 }
             }
             return found;
+        }
+
+        /* The reason for the deepest collection that began in the interval, matching the
+           generation the line itself reports when a gap holds more than one. */
+        private static bool TryGetGcReasonInInterval(long ticksStart, long ticksEnd, out int reason)
+        {
+            reason = -1;
+            long writeIndex = Interlocked.Read(ref _gcReasonWriteIndex);
+            if (writeIndex < 0) return false;
+
+            int count = (int)Math.Min(writeIndex + 1, MaxGcReasonEvents);
+            long firstIdx = writeIndex >= MaxGcReasonEvents ? writeIndex - MaxGcReasonEvents + 1 : 0;
+
+            int bestDepth = -1;
+            bool found = false;
+            for (int i = 0; i < count; i++)
+            {
+                GcReasonEvent ev = _gcReasons[SafeIndex(firstIdx + i, MaxGcReasonEvents)];
+                if (ev.Timestamp >= ticksStart && ev.Timestamp < ticksEnd && ev.Depth >= bestDepth)
+                {
+                    bestDepth = ev.Depth;
+                    reason = ev.Reason;
+                    found = true;
+                }
+            }
+            return found;
+        }
+
+        /* Names for the runtime's collection reasons. A value outside the known set is
+           reported as its raw number rather than guessed at. */
+        private static string GcReasonName(int reason)
+        {
+            switch (reason)
+            {
+            case 0: return "alloc";
+            case 1: return "induced";
+            case 2: return "lowmem";
+            case 3: return "empty";
+            case 4: return "allocloh";
+            case 5: return "oos_soh";
+            case 6: return "oos_loh";
+            case 7: return "ind_nf";
+            case 8: return "stress";
+            case 9: return "lowmem_b";
+            case 10: return "ind_comp";
+            case 11: return "lowmem_h";
+            case 12: return "pm_full";
+            case 13: return "lowmem_hb";
+            case 14: return "bgc_soh";
+            case 15: return "bgc_loh";
+            case 16: return "bgc_step";
+            case 17: return "ind_aggr";
+            default: return "r" + reason.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        /* Subscribed on the first frame that logs, so a session that never turns debug
+           logging on never pays for the subscription. */
+        private static void EnsureGcReasonListener()
+        {
+            if (Volatile.Read(ref _gcEventListener) != null)
+                return;
+            if (Interlocked.CompareExchange(ref _gcReasonListenerStarted, 1, 0) != 0)
+                return;
+
+            try
+            {
+                Volatile.Write(ref _gcEventListener, new GcEventListener());
+            }
+            catch (Exception)
+            {
+                /* Event listening is unavailable on this runtime */
+            }
+        }
+
+        /* Listens for the runtime's own GC events, whose start event carries the reason
+           the collection was begun -- an allocation budget, a Collect call, low memory.
+           The callback runs on a runtime thread as a collection starts, so it stamps the
+           ring and does nothing else. A runtime that raises no such event never calls it,
+           leaving the reason simply absent from the log. */
+        private sealed class GcEventListener : EventListener
+        {
+            private const int GcKeyword = 0x1;
+            private const string RuntimeEventSourceName = "Microsoft-Windows-DotNETRuntime";
+
+            protected override void OnEventSourceCreated(EventSource eventSource)
+            {
+                if (eventSource == null || eventSource.Name != RuntimeEventSourceName)
+                    return;
+
+                try
+                {
+                    EnableEvents(eventSource, EventLevel.Informational, (EventKeywords)GcKeyword);
+                }
+                catch (Exception)
+                {
+                    /* Not every runtime raises the GC events */
+                }
+            }
+
+            protected override void OnEventWritten(EventWrittenEventArgs eventData)
+            {
+                try
+                {
+                    if (eventData == null || eventData.EventName == null
+                        || !eventData.EventName.StartsWith("GCStart", StringComparison.Ordinal))
+                        return;
+                    if (eventData.PayloadNames == null || eventData.Payload == null)
+                        return;
+
+                    int depth = -1;
+                    int reason = -1;
+                    int count = Math.Min(eventData.PayloadNames.Count, eventData.Payload.Count);
+                    for (int i = 0; i < count; i++)
+                    {
+                        string name = eventData.PayloadNames[i];
+                        if (name == "Depth")
+                            depth = Convert.ToInt32(eventData.Payload[i], CultureInfo.InvariantCulture);
+                        else if (name == "Reason")
+                            reason = Convert.ToInt32(eventData.Payload[i], CultureInfo.InvariantCulture);
+                    }
+
+                    if (reason < 0)
+                        return;
+
+                    long idx = Interlocked.Increment(ref _gcReasonWriteIndex);
+                    _gcReasons[SafeIndex(idx, MaxGcReasonEvents)] = new GcReasonEvent
+                    {
+                        Timestamp = Stopwatch.GetTimestamp(),
+                        Depth = depth,
+                        Reason = reason
+                    };
+                }
+                catch (Exception)
+                {
+                    /* A diagnostic must never throw out of a runtime callback */
+                }
+            }
         }
 
         private static bool IsPauseAffected(long ticksStart, long ticksEnd)
