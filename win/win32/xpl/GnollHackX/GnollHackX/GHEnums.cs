@@ -1529,6 +1529,14 @@ namespace GnollHackX
         DEBUGLOG_PANIC,
         DEBUGLOG_IMPOSSIBLE,
         DEBUGLOG_CRASH_CONTEXT,
+        DEBUGLOG_ERROR,
+    }
+
+    public enum debug_log_error_severities
+    {
+        DEBUGLOG_ERROR_NONFATAL = 0,
+        DEBUGLOG_ERROR_SILENT,
+        DEBUGLOG_ERROR_FATAL,
     }
 
     public enum popup_text_types

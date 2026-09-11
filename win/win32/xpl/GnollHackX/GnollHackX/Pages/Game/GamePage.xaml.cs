@@ -3389,7 +3389,7 @@ namespace GnollHackX.Pages.Game
                                 EnqueueTask(ref tasks, ReportPanic(req.RequestString));
                                 break;
                             case GHRequestType.Message:
-                                EnqueueTask(ref tasks, ShowMessage(req.RequestString));
+                                EnqueueTask(ref tasks, ShowMessage(req.TitleString, req.RequestString));
                                 break;
                             case GHRequestType.YnConfirmation:
                                 EnqueueTask(ref tasks, YnConfirmation(req.TitleString, req.RequestString, req.RequestString2, req.DefValueString));
@@ -23767,9 +23767,9 @@ namespace GnollHackX.Pages.Game
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.Panic));
         }
 
-        public async Task ShowMessage(string text)
+        public async Task ShowMessage(string title, string text)
         {
-            await GHApp.DisplayMessageBox(this, "Message", text != null ? text : "No message.", "OK");
+            await GHApp.DisplayMessageBox(this, title != null ? title : "Message", text != null ? text : "No message.", "OK");
 
             GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.Message));

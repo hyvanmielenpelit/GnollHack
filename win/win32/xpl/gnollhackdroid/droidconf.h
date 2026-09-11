@@ -9,7 +9,6 @@
 #define DROIDCONF_H
 
 // #define PORT_ID "Android" /* Need to use Unix since this is used in nhdat for all mobile platforms */
-#define error debuglog
 
 #define NO_FILE_LINKS /* if no hard links */
 #define LOCKDIR "." /* where to put locks */ 

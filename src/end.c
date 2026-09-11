@@ -3071,6 +3071,67 @@ nh_bail(int status, const char *mesg, boolean fullterminate)
     }
 }
 
+#ifdef GNH_MOBILE
+/* Ends the session the way the legacy ports' error() does, but tells the
+   player first and files a report carrying the debug buffers and game state.
+   Unlike panic(), it does not run the game-over path and does not present
+   itself as a GnollHack bug. Does not return. */
+/*VARARGS1*/
+void fatal_error
+(const char *str, ...)
+{
+    static boolean in_fatal_error = FALSE;
+    char buf[BUFSZ];
+    char buf2[BUFSZ * 2];
+    va_list the_args;
+
+    va_start(the_args, str);
+    Vsnprintf(buf, BUFSZ, str, the_args);
+    buf[BUFSZ - 1] = '\0'; /* sanity */
+    va_end(the_args);
+
+    Sprintf(buf2, "Fatal error: %s", buf);
+    issue_breadcrumb(buf2);
+
+    if (in_fatal_error)
+    {
+        /* A second one raised from inside the reporting below; skip straight
+           to the teardown. */
+        debugprint("%s", buf);
+    }
+    else
+    {
+        in_fatal_error = TRUE;
+
+        raw_print(buf);
+        paniclog("error", buf);
+
+        if (issue_gui_command)
+        {
+            char* dbufs = allocate_buffer_with_debug_buffers(buf);
+            if (dbufs)
+            {
+                issue_debuglog_error(DEBUGLOG_ERROR_FATAL, dbufs);
+                free(dbufs);
+            }
+        }
+
+        /* Inform the player before the windows go away; nh_bail() tears them
+           down below. */
+        if (open_special_view)
+        {
+            struct special_view_info info = { 0 };
+            info.viewtype = SPECIAL_VIEW_MESSAGE;
+            info.title = "Error";
+            info.text = buf;
+            (void) open_special_view(info);
+        }
+    }
+
+    nh_bail(EXIT_FAILURE, buf, TRUE);
+}
+#endif /* GNH_MOBILE */
+
 /* should be called with either EXIT_SUCCESS or EXIT_FAILURE */
 void
 nh_terminate(int status)

@@ -2466,7 +2466,7 @@ zerocomp_mgetc(void)
         inbufsz = read(mreadfd, (genericptr_t) inbuf, sizeof inbuf);
         if (!inbufsz) {
             if (inbufp > sizeof inbuf)
-                error("EOF on file #%d.\n", mreadfd);
+                fatal_error("EOF on file #%d.\n", mreadfd);
             inbufp = 1 + sizeof inbuf; /* exactly one warning :-) */
             return -1;
         }
@@ -2488,7 +2488,7 @@ zerocomp_mread(int fd, genericptr_t buf, size_t len)
 {
     /*int readlen = 0;*/
     if (fd < 0)
-        error("Restore error; mread attempting to read file %d.", fd);
+        fatal_error("Restore error; mread attempting to read file %d.", fd);
     mreadfd = fd;
     while (len--) {
         if (inrunlength > 0) {
@@ -2537,10 +2537,9 @@ def_mread(int fd, genericptr_t buf, size_t len)
                 (void) nhclose(fd);
                 (void) delete_tmp_backup_savefile();
                 (void) ask_delete_invalid_savefile("corrupted", TRUE);
-                error("Error restoring old game.");
+                fatal_error("Error restoring old game: %s", errorbuf);
             }
-            /* No need for panic handling, since it is mostly relevant only in restoring and ask_delete_invalid_savefile handles backups above */
-            panic("Error reading level file");
+            panic("Error reading level file: %s", errorbuf);
             return;
         }
     }

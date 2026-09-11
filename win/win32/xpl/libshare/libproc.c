@@ -1705,6 +1705,9 @@ char convert_gnhch(int ch)
     return key;
 }
 
+#if 0
+/* Unused: nothing calls this and it has no prototype. fatal_error(),
+   nonfatal_error() and silent_nonfatal_error() cover these cases. */
 void debuglog(const char* fmt, ...)
 {
     char buf[256];
@@ -1726,4 +1729,5 @@ void debuglog(const char* fmt, ...)
     else if (lib_callbacks.callback_raw_print)
         lib_raw_print(buf);
 }
+#endif
 

@@ -8,8 +8,6 @@
 #ifndef WINCONF_H
 #define WINCONF_H
 
-#define error debuglog
-
 #define TEXTCOLOR /* Color text */
 #define CHANGE_COLOR
 #define SELF_RECOVER /* Allow the game itself to recover from an aborted game */

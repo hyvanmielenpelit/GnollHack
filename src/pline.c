@@ -1221,6 +1221,98 @@ void silent_impossible
 }
 
 
+#ifdef GNH_MOBILE
+static boolean in_nonfatal_error = FALSE;
+
+/* Reports a serious but survivable condition: a Sentry event carrying the
+   debug buffers and game state, plus a modal notice to the player. Unlike
+   panic(), it returns; the caller decides how to continue. */
+/*VARARGS1*/
+void nonfatal_error
+(const char *s, ...)
+{
+    char pbuf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
+
+    va_list the_args;
+    va_start(the_args, s);
+    Vsnprintf(pbuf, BUFSZ, s, the_args);
+    pbuf[BUFSZ - 1] = '\0'; /* sanity */
+    va_end(the_args);
+
+    if (in_nonfatal_error)
+    {
+        debugprint("%s", pbuf);
+        return;
+    }
+    in_nonfatal_error = TRUE;
+
+    paniclog("error", pbuf);
+
+    /* Report to GUI */
+    if (issue_gui_command)
+    {
+        char* dbufs = allocate_buffer_with_debug_buffers(pbuf);
+        if (dbufs)
+        {
+            issue_debuglog_error(DEBUGLOG_ERROR_NONFATAL, dbufs);
+            free(dbufs);
+        }
+    }
+
+    if (open_special_view)
+    {
+        struct special_view_info info = { 0 };
+        info.viewtype = SPECIAL_VIEW_MESSAGE;
+        info.title = "Error";
+        info.text = pbuf;
+        (void) open_special_view(info);
+    }
+
+    in_nonfatal_error = FALSE;
+}
+
+/* nonfatal_error() without the notice to the player, for conditions there is
+   nothing for them to act on. */
+/*VARARGS1*/
+void silent_nonfatal_error
+(const char *s, ...)
+{
+    char pbuf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
+
+    va_list the_args;
+    va_start(the_args, s);
+    Vsnprintf(pbuf, BUFSZ, s, the_args);
+    pbuf[BUFSZ - 1] = '\0'; /* sanity */
+    va_end(the_args);
+
+    if (in_nonfatal_error)
+    {
+        debugprint("%s", pbuf);
+        return;
+    }
+    in_nonfatal_error = TRUE;
+
+    paniclog("error (silent)", pbuf);
+
+    /* Report to GUI */
+    if (issue_gui_command)
+    {
+        char* dbufs = allocate_buffer_with_debug_buffers(pbuf);
+        if (dbufs)
+        {
+            issue_debuglog_error(DEBUGLOG_ERROR_SILENT, dbufs);
+            free(dbufs);
+        }
+    }
+
+    /* Print into internal debuglog after reporting it above */
+    debugprint("%s", pbuf);
+
+    in_nonfatal_error = FALSE;
+}
+#endif /* GNH_MOBILE */
+
+
 const char* basefilename(const char *filepath)
 {
     if (!filepath)

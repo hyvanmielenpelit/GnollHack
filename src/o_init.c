@@ -801,7 +801,7 @@ init_objects(void)
             goto check;
         }
         if (sum != 1000)
-            error("init-prob error for class %d (%d%%)", oclass, sum);
+            fatal_error("init-prob error for class %d (%d%%)", oclass, sum);
         first = last;
     }
     /* shuffle descriptions */

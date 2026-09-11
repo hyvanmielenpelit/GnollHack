@@ -37,7 +37,7 @@
 extern int yyparse(void);
 extern int nh_line_number;
 const char *fname = "(stdin)";
-int fatal_error = 0;
+int fatal_errors = 0;
 
 int main(int, char **);
 void yyerror(const char *);
@@ -79,7 +79,7 @@ main(int argc, char **argv)
         init_yyin(fin);
         init_yyout(fout);
         (void) yyparse();
-        if (fatal_error > 0)
+        if (fatal_errors > 0)
             errors_encountered = TRUE;
     } else { /* Otherwise every argument is a filename */
         for (i = 1; i < argc; i++) {
@@ -135,9 +135,9 @@ main(int argc, char **argv)
             init_yyout(fout);
             (void) yyparse();
             nh_line_number = 1;
-            if (fatal_error > 0) {
+            if (fatal_errors > 0) {
                 errors_encountered = TRUE;
-                fatal_error = 0;
+                fatal_errors = 0;
             }
         }
     }
@@ -161,7 +161,7 @@ void
 yyerror(const char *s)
 {
     (void) fprintf(stderr, "%s : line %d : %s\n", fname, nh_line_number, s);
-    if (++fatal_error > MAX_ERRORS) {
+    if (++fatal_errors > MAX_ERRORS) {
         (void) fprintf(stderr, "Too many errors, good bye!\n");
         exit(EXIT_FAILURE);
     }

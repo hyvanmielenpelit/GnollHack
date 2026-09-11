@@ -491,7 +491,7 @@ void nhassert_failed(const char * exp, const char * file, int line)
 
     // strip off the newline
     message[strlen(message) - 1] = '\0';
-    error(message);
+    fatal_error("%s", message);
 }
 
 void

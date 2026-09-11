@@ -1122,7 +1122,13 @@ enum debug_log_types
     DEBUGLOG_PANIC,
     DEBUGLOG_IMPOSSIBLE,
     DEBUGLOG_CRASH_CONTEXT,
+    DEBUGLOG_ERROR,
 };
+
+/* Severity carried as the extra parameter of issue_debuglog_error(). */
+#define DEBUGLOG_ERROR_NONFATAL 0
+#define DEBUGLOG_ERROR_SILENT   1
+#define DEBUGLOG_ERROR_FATAL    2
 
 
 enum takeoff_wear_commands {

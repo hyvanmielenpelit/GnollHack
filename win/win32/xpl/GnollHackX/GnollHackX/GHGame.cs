@@ -3846,23 +3846,42 @@ namespace GnollHackX
                             SentrySdk.CaptureMessage("Log: " + logged_str);
 #endif
                         }
-                        else if (cmd_param == (int)debug_log_types.DEBUGLOG_PANIC || cmd_param == (int)debug_log_types.DEBUGLOG_IMPOSSIBLE)
+                        else if (cmd_param == (int)debug_log_types.DEBUGLOG_PANIC || cmd_param == (int)debug_log_types.DEBUGLOG_IMPOSSIBLE || cmd_param == (int)debug_log_types.DEBUGLOG_ERROR)
                         {
 #if SENTRY
                             string[] strs = logged_str.Split('|');
                             if (strs == null || strs.Length == 0)
                                 break;
+                            string exceptionType;
+                            string debugLogTypeName;
+                            if (cmd_param == (int)debug_log_types.DEBUGLOG_IMPOSSIBLE)
+                            {
+                                exceptionType = cmd_param2 == 1 ? "Silent Impossible" : "Impossible";
+                                debugLogTypeName = "DEBUGLOG_IMPOSSIBLE";
+                            }
+                            else if (cmd_param == (int)debug_log_types.DEBUGLOG_ERROR)
+                            {
+                                exceptionType = cmd_param2 == (int)debug_log_error_severities.DEBUGLOG_ERROR_FATAL ? "Fatal Error"
+                                    : cmd_param2 == (int)debug_log_error_severities.DEBUGLOG_ERROR_SILENT ? "Silent Error"
+                                    : "Error";
+                                debugLogTypeName = "DEBUGLOG_ERROR";
+                            }
+                            else
+                            {
+                                exceptionType = "Panic";
+                                debugLogTypeName = "DEBUGLOG_PANIC";
+                            }
                             var sentryEvent = new SentryEvent();
                             sentryEvent.SentryExceptions = new[]
                             {
                                 new SentryException
                                 {
-                                    Type = cmd_param == (int)debug_log_types.DEBUGLOG_IMPOSSIBLE ? (cmd_param2 == 1 ? "Silent Impossible" : "Impossible") : "Panic",
+                                    Type = exceptionType,
                                     Value = strs[0],
                                     Mechanism = new Mechanism
                                     {
                                         Type = "generic",
-                                        Description = "IssueGuiCommand: " + (cmd_param == (int)debug_log_types.DEBUGLOG_IMPOSSIBLE ? "DEBUGLOG_IMPOSSIBLE" : "DEBUGLOG_PANIC")
+                                        Description = "IssueGuiCommand: " + debugLogTypeName
                                     }
                                 }
                             };
@@ -4198,7 +4217,7 @@ namespace GnollHackX
                             break;
                         }
                         _messageFinished = false;
-                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.Message, text));
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.Message, title, text, null, null));
                         while (!_messageFinished)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);

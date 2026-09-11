@@ -1136,6 +1136,13 @@ E void done_in_by(struct monst *, int);
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */
 E void set_panic_handling(int, boolean);
 E void panic(const char *, ...) PRINTF_F(1, 2) NORETURN;
+#ifdef GNH_MOBILE
+#ifdef VMS
+E void fatal_error(const char *, ...) PRINTF_F(1, 2);
+#else
+E void fatal_error(const char *, ...) PRINTF_F(1, 2) NORETURN;
+#endif
+#endif
 #if !defined(MAKEDEFS_C) && !defined(LEV_LEX_C)
 E void done(int);
 E void container_contents(struct obj *, boolean, boolean, boolean, int, boolean);
@@ -2876,6 +2883,10 @@ E void verbalize(const char *, ...) PRINTF_F(1, 2);
 E void raw_printf(const char *, ...) PRINTF_F(1, 2);
 E void impossible(const char *, ...) PRINTF_F(1, 2);
 E void silent_impossible(const char*, ...) PRINTF_F(1, 2);
+#ifdef GNH_MOBILE
+E void nonfatal_error(const char *, ...) PRINTF_F(1, 2);
+E void silent_nonfatal_error(const char *, ...) PRINTF_F(1, 2);
+#endif
 E void debugprint(const char*, ...) PRINTF_F(1, 2);
 E void config_error_add(const char *, ...) PRINTF_F(1, 2);
 E void reset_pline(void);

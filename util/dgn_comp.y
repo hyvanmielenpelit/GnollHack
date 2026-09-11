@@ -64,7 +64,7 @@ static struct tmpbranch tmpbranch[BRANCH_LIMIT];
 
 static int in_dungeon = 0, n_dgns = -1, n_levs = -1, n_brs = -1;
 
-extern int fatal_error;
+extern int fatal_errors;
 extern const char *fname;
 extern FILE *yyin, *yyout;	/* from dgn_lex.c */
 

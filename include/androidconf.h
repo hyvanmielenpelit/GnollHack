@@ -8,8 +8,6 @@
 #ifndef ANDROIDCONF_H
 #define ANDROIDCONF_H
 
-#define error debuglog
-
 #define NO_FILE_LINKS /* if no hard links */
 #define LOCKDIR "." /* where to put locks */ 
 //#define HOLD_LOCKFILE_OPEN	/* Keep an exclusive lock on the .0 file */

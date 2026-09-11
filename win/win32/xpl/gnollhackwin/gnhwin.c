@@ -45,8 +45,7 @@ getlock(void)
     if (!lock_file(HLOCK, LOCKPREFIX, 10))
     {
         wait_synch();
-        error("%s", "");
-        return;
+        fatal_error("Cannot acquire the game lock file.");
     }
 
     regularize(lock);
@@ -59,8 +58,7 @@ getlock(void)
             goto gotlock;    /* no such file */
         perror(fq_lock);
         unlock_file(HLOCK);
-        error("Cannot open %s", fq_lock);
-        return;
+        fatal_error("Cannot open the game lock file %s.", fq_lock);
     }
     (void) close(fd);
 
@@ -68,7 +66,8 @@ getlock(void)
     {
         (void) eraseoldlocks();
         unlock_file(HLOCK);
-        error("Couldn't recover old game.");
+        /* Not fatal: the backup save file below is the fallback. */
+        nonfatal_error("Couldn't recover the old game.");
         (void)restore_backup_savefile(FALSE);
         return;
     }
@@ -79,18 +78,15 @@ gotlock:
     unlock_file(HLOCK);
     if(fd == -1)
     {
-        error("cannot creat lock file (%s).", fq_lock);
+        fatal_error("Cannot create the game lock file (%s).", fq_lock);
     }
-    else
+    if(write(fd, (genericptr_t) &hackpid, sizeof(hackpid)) != sizeof(hackpid))
     {
-        if(write(fd, (genericptr_t) &hackpid, sizeof(hackpid)) != sizeof(hackpid))
-        {
-            error("cannot write lock (%s)", fq_lock);
-        }
-        if(close(fd) == -1)
-        {
-            error("cannot close lock (%s)", fq_lock);
-        }
+        fatal_error("Cannot write the game lock file (%s).", fq_lock);
+    }
+    if(close(fd) == -1)
+    {
+        nonfatal_error("Cannot close the game lock file (%s).", fq_lock);
     }
 }
 
@@ -112,7 +108,7 @@ check_crash(void)
     if (!lock_file(HLOCK, LOCKPREFIX, 10))
     {
         wait_synch();
-        error("%s", "");
+        silent_nonfatal_error("Cannot acquire the lock file for the crash check.");
         return;
     }
 
@@ -132,7 +128,7 @@ check_crash(void)
             goto nofilefound;    /* no such file */
         perror(fq_lock);
         unlock_file(HLOCK);
-        error("Cannot open %s", fq_lock);
+        silent_nonfatal_error("Cannot open the crash-check lock file %s.", fq_lock);
         return;
     }
     (void)close(fd);

@@ -211,7 +211,7 @@ struct lc_funcdefs_parm * curr_function_param = NULL;
 int in_function_definition = 0;
 sp_lev *function_splev_backup = NULL;
 
-extern int fatal_error;
+extern int fatal_errors;
 extern int got_errors;
 extern int line_number;
 extern const char *fname;
@@ -3045,11 +3045,11 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 296 "lev_comp.y"
     {
-			if (fatal_error > 0) {
+			if (fatal_errors > 0) {
 				(void) fprintf(stderr,
               "%s: %d errors detected for level \"%s\". No output created!\n",
-					       fname, fatal_error, (yyvsp[(1) - (3)].map));
-				fatal_error = 0;
+					       fname, fatal_errors, (yyvsp[(1) - (3)].map));
+				fatal_errors = 0;
 				got_errors++;
 			} else if (!got_errors) {
 				if (!write_level_file((yyvsp[(1) - (3)].map), splev)) {

@@ -7981,7 +7981,7 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
         if (tricked_fileremoved(fd, whynot))
         {
             /* we'll reach here if running in wizard mode */
-            error("Cannot continue this game.");
+            fatal_error("Cannot continue this game: %s", whynot);
         }
         reseed_random(rn2);
         reseed_random(rn2_on_display_rng);

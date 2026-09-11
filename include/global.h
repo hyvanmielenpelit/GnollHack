@@ -480,5 +480,13 @@ struct savefile_info {
 #define GnollHack_enter(argc, argv) ((void) 0)
 #endif
 
+/* The legacy ports have a real, fatal error() (sys/winnt/winnt.c); the
+   distinctions the modern ports draw between these do not exist there. */
+#ifndef GNH_MOBILE
+#define fatal_error error
+#define nonfatal_error error
+#define silent_nonfatal_error error
+#endif
+
 
 #endif /* GLOBAL_H */
