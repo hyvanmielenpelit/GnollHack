@@ -288,11 +288,14 @@ namespace GnollHackX
            rather than consecutive rendered frames: the gap is tighter, so a runtime
            collection is attributed more precisely.
 
-           Only a forced collection can report its own pause, measured across the
-           GC.Collect call. A runtime collection is discovered after the fact by the
-           change in collection counts, so the best available figure is the frame gap
-           that contained it -- the observable hitch, not the pause. The two are
-           labelled differently for that reason. */
+           Two durations are reported. "ps" is the collection's own pause: measured
+           across the GC.Collect call for a forced collection, and taken from
+           GCMemoryInfo for a runtime one, which is discovered only after the fact.
+           "gap" is the frame gap that contained the collection -- the observable
+           hitch, which also holds whatever else the frame did, so a short pause
+           inside a long gap means the hitch was not the collection. "bl" and "bg"
+           mark a blocking against a background collection; neither appears when the
+           runtime does not report it. */
         private static void LogGcEvent(in FrameTimeSample prev, in FrameTimeSample curr)
         {
             int d0 = curr.GcCount0 - prev.GcCount0;
@@ -303,21 +306,90 @@ namespace GnollHackX
             bool forced = TryGetForcedGcInInterval(prev.TicksFrameStart, curr.TicksFrameStart,
                 out forcedDurationTicks);
 
-            double ms = forced && forcedDurationTicks > 0
+            double gapMs = (curr.TicksFrameStart - prev.TicksFrameStart) * _msPerTick;
+
+            bool concurrent;
+            double infoPauseMs;
+            long lohBefore, lohAfter;
+            bool haveInfo = TryGetLastGcInfo(out concurrent, out infoPauseMs,
+                out lohBefore, out lohAfter);
+
+            /* A forced collection may hold several GC.Collect calls, which GCMemoryInfo
+               reports only the last of, so the span measured around them wins there */
+            double pauseMs = forced && forcedDurationTicks > 0
                 ? forcedDurationTicks * _msPerTick
-                : (curr.TicksFrameStart - prev.TicksFrameStart) * _msPerTick;
+                : (haveInfo ? infoPauseMs : 0);
+
+            string kindFlag = haveInfo ? (concurrent ? " bg" : " bl") : "";
+            string psPart = pauseMs > 0
+                ? FormattableString.Invariant($" ps:{pauseMs:0.0}ms")
+                : "";
+            string lohPart = haveInfo && (lohBefore > 0 || lohAfter > 0)
+                ? FormattableString.Invariant(
+                    $" loh:{lohBefore / (1024f * 1024f):0}>{lohAfter / (1024f * 1024f):0}")
+                : "";
 
             float heapBeforeMB = prev.HeapSizeBytes / (1024f * 1024f);
             float heapAfterMB = curr.HeapSizeBytes / (1024f * 1024f);
 
             /* A canvas transition in the gap makes the elapsed time meaningless, so the
                line says so rather than presenting it as a collection cost */
-            string pause = IsPauseAffected(prev.TicksFrameStart, curr.TicksFrameStart)
+            string canvasPause = IsPauseAffected(prev.TicksFrameStart, curr.TicksFrameStart)
                 ? " [pause]"
                 : "";
 
             GHApp.MaybeWriteScreenLog(FormattableString.Invariant(
-                $"GC {(forced ? "forced" : "rt")} {GenerationTag(d0, d1, d2)} {ms:0.0}ms {heapBeforeMB:0}>{heapAfterMB:0}MB{pause}"));
+                $"GC {(forced ? "forced" : "rt")} {GenerationTag(d0, d1, d2)}{kindFlag}{psPart} gap:{gapMs:0.0}ms {heapBeforeMB:0}>{heapAfterMB:0}MB{lohPart}{canvasPause}"));
+        }
+
+#if GNH_MAUI
+        /* Index of the collection whose GCMemoryInfo was last reported */
+        private static long _lastGcInfoIndex;
+#endif
+
+        /* Pause time, kind and large object heap sizes of the most recent collection.
+           GCMemoryInfo always describes the latest collection, so its index is checked
+           against the one last reported: an index that has not advanced means the
+           runtime has not published the collection just detected and the figures on
+           hand belong to an earlier one. A background collection suspends more than
+           once and the sum of its pauses is the total suspension. */
+        private static bool TryGetLastGcInfo(out bool concurrent, out double pauseMs,
+            out long lohBefore, out long lohAfter)
+        {
+            concurrent = false;
+            pauseMs = 0;
+            lohBefore = 0;
+            lohAfter = 0;
+#if GNH_MAUI
+            try
+            {
+                GCMemoryInfo info = GC.GetGCMemoryInfo();
+                if (info.Index <= Interlocked.Read(ref _lastGcInfoIndex))
+                    return false;
+
+                Interlocked.Exchange(ref _lastGcInfoIndex, info.Index);
+                concurrent = info.Concurrent;
+
+                ReadOnlySpan<TimeSpan> pauses = info.PauseDurations;
+                for (int i = 0; i < pauses.Length; i++)
+                    pauseMs += pauses[i].TotalMilliseconds;
+
+                ReadOnlySpan<GCGenerationInfo> genInfo = info.GenerationInfo;
+                if (genInfo.Length > 3)
+                {
+                    lohBefore = genInfo[3].SizeBeforeBytes;
+                    lohAfter = genInfo[3].SizeAfterBytes;
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                /* GCMemoryInfo may not be fully supported on all runtimes */
+                return false;
+            }
+#else
+            return false;
+#endif
         }
 
         /* Every generation that topped off a collection in the gap, ascending, each with
