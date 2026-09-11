@@ -820,7 +820,7 @@ void panic
         dbufs = 0;
     }
 
-    if (open_special_view)
+    if (open_special_view && !iflags.debug_fuzzer)
     {
         /* Add mode to posted panic */
         char mbuf[BUFSZ] = "";
@@ -3118,7 +3118,7 @@ void fatal_error
 
         /* Inform the player before the windows go away; nh_bail() tears them
            down below. */
-        if (open_special_view)
+        if (open_special_view && !iflags.debug_fuzzer)
         {
             struct special_view_info info = { 0 };
             info.viewtype = SPECIAL_VIEW_MESSAGE;

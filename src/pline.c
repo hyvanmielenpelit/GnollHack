@@ -1232,12 +1232,16 @@ void nonfatal_error
 (const char *s, ...)
 {
     char pbuf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
+    char bbuf[BUFSZ * 2];
 
     va_list the_args;
     va_start(the_args, s);
     Vsnprintf(pbuf, BUFSZ, s, the_args);
     pbuf[BUFSZ - 1] = '\0'; /* sanity */
     va_end(the_args);
+
+    Sprintf(bbuf, "Nonfatal error: %s", pbuf);
+    issue_breadcrumb(bbuf);
 
     if (in_nonfatal_error)
     {
@@ -1259,7 +1263,7 @@ void nonfatal_error
         }
     }
 
-    if (open_special_view)
+    if (open_special_view && !iflags.debug_fuzzer)
     {
         struct special_view_info info = { 0 };
         info.viewtype = SPECIAL_VIEW_MESSAGE;
@@ -1278,12 +1282,16 @@ void silent_nonfatal_error
 (const char *s, ...)
 {
     char pbuf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
+    char bbuf[BUFSZ * 2];
 
     va_list the_args;
     va_start(the_args, s);
     Vsnprintf(pbuf, BUFSZ, s, the_args);
     pbuf[BUFSZ - 1] = '\0'; /* sanity */
     va_end(the_args);
+
+    Sprintf(bbuf, "Silent error: %s", pbuf);
+    issue_breadcrumb(bbuf);
 
     if (in_nonfatal_error)
     {

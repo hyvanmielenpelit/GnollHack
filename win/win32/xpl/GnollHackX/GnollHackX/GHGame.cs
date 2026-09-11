@@ -3837,10 +3837,19 @@ namespace GnollHackX
                         }
                         if (cmd_param == (int)debug_log_types.DEBUGLOG_DEBUG_ONLY && !GHApp.IsDebug)
                             break;
+                        /* Only these three carry the pipe-delimited payload that
+                           allocate_buffer_with_debug_buffers() builds; the rest are
+                           plain messages that may legitimately contain a pipe. */
+                        bool has_payload = cmd_param == (int)debug_log_types.DEBUGLOG_PANIC
+                            || cmd_param == (int)debug_log_types.DEBUGLOG_IMPOSSIBLE
+                            || cmd_param == (int)debug_log_types.DEBUGLOG_ERROR;
                         string log_msg = cmd_str;
-                        int pipe_idx = cmd_str.IndexOf('|');
-                        if (pipe_idx >= 0)
-                            log_msg = cmd_str.Substring(0, pipe_idx);
+                        if (has_payload)
+                        {
+                            int pipe_idx = cmd_str.IndexOf('|');
+                            if (pipe_idx >= 0)
+                                log_msg = cmd_str.Substring(0, pipe_idx);
+                        }
                         string logged_str = log_msg + (cmd_param2 != 0 ? " [" + cmd_param2 + "]" : "");
                         if (!(cmd_param == (int)debug_log_types.DEBUGLOG_IMPOSSIBLE && cmd_param2 == 1)) /* Silent impossible */
                             GHApp.MaybeWriteGHLog(logged_str);
