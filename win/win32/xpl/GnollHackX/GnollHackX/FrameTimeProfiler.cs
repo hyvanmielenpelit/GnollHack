@@ -308,25 +308,22 @@ namespace GnollHackX
 
             double gapMs = (curr.TicksFrameStart - prev.TicksFrameStart) * _msPerTick;
 
-            bool concurrent;
-            double infoPauseMs;
-            long lohBefore, lohAfter;
-            bool haveInfo = TryGetLastGcInfo(out concurrent, out infoPauseMs,
-                out lohBefore, out lohAfter);
+            GcInfoSnapshot info;
+            bool haveInfo = TryGetLastGcInfo(out info);
 
             /* A forced collection may hold several GC.Collect calls, which GCMemoryInfo
                reports only the last of, so the span measured around them wins there */
             double pauseMs = forced && forcedDurationTicks > 0
                 ? forcedDurationTicks * _msPerTick
-                : (haveInfo ? infoPauseMs : 0);
+                : (haveInfo ? info.PauseMs : 0);
 
-            string kindFlag = haveInfo ? (concurrent ? " bg" : " bl") : "";
+            string kindFlag = haveInfo ? (info.Concurrent ? " bg" : " bl") : "";
             string psPart = pauseMs > 0
                 ? FormattableString.Invariant($" ps:{pauseMs:0.0}ms")
                 : "";
-            string lohPart = haveInfo && (lohBefore > 0 || lohAfter > 0)
+            string lohPart = haveInfo && (info.LohBefore > 0 || info.LohAfter > 0)
                 ? FormattableString.Invariant(
-                    $" loh:{lohBefore / (1024f * 1024f):0}>{lohAfter / (1024f * 1024f):0}")
+                    $" loh:{info.LohBefore / (1024f * 1024f):0}>{info.LohAfter / (1024f * 1024f):0}")
                 : "";
 
             float heapBeforeMB = prev.HeapSizeBytes / (1024f * 1024f);
@@ -340,6 +337,36 @@ namespace GnollHackX
 
             GHApp.MaybeWriteScreenLog(FormattableString.Invariant(
                 $"GC {(forced ? "forced" : "rt")} {GenerationTag(d0, d1, d2)}{kindFlag}{psPart} gap:{gapMs:0.0}ms {heapBeforeMB:0}>{heapAfterMB:0}MB{lohPart}{canvasPause}"));
+
+            if (haveInfo)
+                GHApp.MaybeWriteScreenLog(BuildGcDetailLine(info));
+        }
+
+        /* The continuation line of a collection's report, carrying the counters that say
+           why a full collection was needed and why it cost what it did. The pinned object
+           heap, like the large object heap, is charged to the gen2 budget, so either can
+           force a gen2 while the nursery stays quiet; pinned objects block compaction and
+           make a collection dearer than its heap size suggests. "!" marks a memory load at
+           or above the threshold where the runtime collects to relieve the system rather
+           than because a budget ran out. Sizes are in megabytes, the pinned figure is a
+           count of objects. */
+        private static string BuildGcDetailLine(in GcInfoSnapshot info)
+        {
+            string mem = "";
+            if (info.MemoryAvailable > 0)
+            {
+                float loadPct = (float)info.MemoryLoad / info.MemoryAvailable * 100f;
+                string high = info.MemoryLoadThreshold > 0
+                    && info.MemoryLoad >= info.MemoryLoadThreshold ? "!" : "";
+                mem = FormattableString.Invariant($" mem:{loadPct:0}%{high}");
+            }
+
+            float pohBeforeMB = info.PohBefore / (1024f * 1024f);
+            float pohAfterMB = info.PohAfter / (1024f * 1024f);
+            float promotedMB = info.Promoted / (1024f * 1024f);
+
+            return FormattableString.Invariant(
+                $"GC .. poh:{pohBeforeMB:0.0}>{pohAfterMB:0.0} pin:{info.PinnedObjects} prom:{promotedMB:0.0}MB{mem}");
         }
 
 #if GNH_MAUI
@@ -347,19 +374,46 @@ namespace GnollHackX
         private static long _lastGcInfoIndex;
 #endif
 
-        /* Pause time, kind and large object heap sizes of the most recent collection.
-           GCMemoryInfo always describes the latest collection, so its index is checked
-           against the one last reported: an index that has not advanced means the
-           runtime has not published the collection just detected and the figures on
-           hand belong to an earlier one. A background collection suspends more than
-           once and the sum of its pauses is the total suspension. */
-        private static bool TryGetLastGcInfo(out bool concurrent, out double pauseMs,
-            out long lohBefore, out long lohAfter)
+        /* What GCMemoryInfo reports about one collection */
+        private struct GcInfoSnapshot
         {
-            concurrent = false;
-            pauseMs = 0;
-            lohBefore = 0;
-            lohAfter = 0;
+            public bool Concurrent;
+            public double PauseMs;
+            public long LohBefore;
+            public long LohAfter;
+            public long PohBefore;
+            public long PohAfter;
+            public long Promoted;
+            public long PinnedObjects;
+            public long MemoryLoad;
+            public long MemoryLoadThreshold;
+            public long MemoryAvailable;
+        }
+
+        /* The most recent collection as the runtime describes it. GCMemoryInfo always
+           describes the latest collection, so its index is checked against the one last
+           reported: an index that has not advanced means the runtime has not published
+           the collection just detected and the figures on hand belong to an earlier one.
+           A background collection suspends more than once and the sum of its pauses is
+           the total suspension. GenerationInfo runs gen0, gen1, gen2, large object heap,
+           pinned object heap, and the last two are read by index because both are charged
+           to the gen2 budget. */
+        private static bool TryGetLastGcInfo(out GcInfoSnapshot snap)
+        {
+            /* Field by field rather than a default instance, so that the build without
+               GCMemoryInfo, where nothing below fills them in, still counts them as
+               written */
+            snap.Concurrent = false;
+            snap.PauseMs = 0;
+            snap.LohBefore = 0;
+            snap.LohAfter = 0;
+            snap.PohBefore = 0;
+            snap.PohAfter = 0;
+            snap.Promoted = 0;
+            snap.PinnedObjects = 0;
+            snap.MemoryLoad = 0;
+            snap.MemoryLoadThreshold = 0;
+            snap.MemoryAvailable = 0;
 #if GNH_MAUI
             try
             {
@@ -368,17 +422,27 @@ namespace GnollHackX
                     return false;
 
                 Interlocked.Exchange(ref _lastGcInfoIndex, info.Index);
-                concurrent = info.Concurrent;
+                snap.Concurrent = info.Concurrent;
+                snap.Promoted = info.PromotedBytes;
+                snap.PinnedObjects = info.PinnedObjectsCount;
+                snap.MemoryLoad = info.MemoryLoadBytes;
+                snap.MemoryLoadThreshold = info.HighMemoryLoadThresholdBytes;
+                snap.MemoryAvailable = info.TotalAvailableMemoryBytes;
 
                 ReadOnlySpan<TimeSpan> pauses = info.PauseDurations;
                 for (int i = 0; i < pauses.Length; i++)
-                    pauseMs += pauses[i].TotalMilliseconds;
+                    snap.PauseMs += pauses[i].TotalMilliseconds;
 
                 ReadOnlySpan<GCGenerationInfo> genInfo = info.GenerationInfo;
                 if (genInfo.Length > 3)
                 {
-                    lohBefore = genInfo[3].SizeBeforeBytes;
-                    lohAfter = genInfo[3].SizeAfterBytes;
+                    snap.LohBefore = genInfo[3].SizeBeforeBytes;
+                    snap.LohAfter = genInfo[3].SizeAfterBytes;
+                }
+                if (genInfo.Length > 4)
+                {
+                    snap.PohBefore = genInfo[4].SizeBeforeBytes;
+                    snap.PohAfter = genInfo[4].SizeAfterBytes;
                 }
                 return true;
             }
