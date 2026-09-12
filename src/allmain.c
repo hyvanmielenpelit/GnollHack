@@ -1603,6 +1603,9 @@ newgame(void)
     (void)delete_error_savefile();
     delete_excess_levelfiles();
 
+    /* Post crash context data to GUI */
+    post_crash_context();
+
     /* Change to the main music */
     update_game_music();
     play_level_ambient_sounds();

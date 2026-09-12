@@ -7944,6 +7944,9 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
     }
     reset_rndmonst(NON_PM); /* u.uz change affects monster generation */
 
+    /* Post crash context data to GUI */
+    post_crash_context();
+
     /* Clear certain gui texts and effects */
     issue_simple_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
     issue_simple_gui_command(GUI_CMD_CLEAR_FLOATING_TEXTS);

@@ -7951,10 +7951,6 @@ rhack(char *cmd)
     if (firsttime)
     {
         context.nopick = 0;
-        /* About to block on user input: refresh the crash reporter's snapshot
-           here, where the cost cannot affect gameplay. Not done on the
-           rhack(save_cm) repeat path, which reads no input. */
-        post_crash_context();
         cmd = parse();
     }
 
