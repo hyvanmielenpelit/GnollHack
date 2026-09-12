@@ -1543,6 +1543,9 @@ reset_pline(void)
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
     use_pline_handler = TRUE;
 #endif
+#ifdef GNH_MOBILE
+    in_nonfatal_error = FALSE;
+#endif
 }
 
 int*

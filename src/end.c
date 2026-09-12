@@ -3072,6 +3072,8 @@ nh_bail(int status, const char *mesg, boolean fullterminate)
 }
 
 #ifdef GNH_MOBILE
+static boolean in_fatal_error = FALSE;
+
 /* Ends the session the way the legacy ports' error() does, but tells the
    player first and files a report carrying the debug buffers and game state.
    Unlike panic(), it does not run the game-over path and does not present
@@ -3080,7 +3082,6 @@ nh_bail(int status, const char *mesg, boolean fullterminate)
 void fatal_error
 (const char *str, ...)
 {
-    static boolean in_fatal_error = FALSE;
     char buf[BUFSZ];
     char buf2[BUFSZ * 2];
     va_list the_args;
@@ -4470,6 +4471,9 @@ reset_remaining_static_variables(void)
 {
 #ifdef PANICTRACE
     aborting = FALSE;
+#endif
+#ifdef GNH_MOBILE
+    in_fatal_error = FALSE;
 #endif
     reset_allmain();
     reset_apply();
