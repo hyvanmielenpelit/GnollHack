@@ -10,7 +10,7 @@ namespace GnollHackX
     /* Accumulates sprites per tile sheet for SKCanvas.DrawAtlas. Only usable for
        tiles that draw as an unrotated, uniformly scaled, unsplit blit whose only
        colour adjustment is a grey Modulate: the caller owns that guarantee. */
-    public class GHSpriteBatch
+    public class GHTileBatch
     {
         private class SheetBucket
         {
@@ -38,7 +38,7 @@ namespace GnollHackX
         private float _atlasSrcVInset;
         private SKRect _atlasCullRect;
 
-        public GHSpriteBatch(int initialCapacity)
+        public GHTileBatch(int initialCapacity)
         {
             _initialCapacity = Math.Max(16, initialCapacity);
             _buckets = new SheetBucket[GHConstants.MaxTileSheets];

@@ -1808,14 +1808,14 @@
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="FixVerticalSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
-                            <Grid x:Name="SpriteBatchingGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                            <Grid x:Name="TileBatchingGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Tile Batching"
-                                    x:Name="SpriteBatchingLabel"
+                                    x:Name="TileBatchingLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="SpriteBatchingSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="TileBatchingSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid x:Name="TextBlobCachingGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Text Caching"

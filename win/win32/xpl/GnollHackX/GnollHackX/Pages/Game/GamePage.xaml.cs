@@ -5839,7 +5839,7 @@ namespace GnollHackX.Pages.Game
             bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
             bool hflip_glyph, bool vflip_glyph,
             ObjectDataItem otmp_round, int autodraw, bool drawwallends, bool breatheanimations, long generalcounterdiff, float canvaswidth, float canvasheight, int enlargement, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering,
-            bool pointerIsHoveringOnTile, bool mapLookMode, bool lighterDarkening, bool layerDelayedDraw, bool alternativeLayerDrawing, bool spriteBatching) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
+            bool pointerIsHoveringOnTile, bool mapLookMode, bool lighterDarkening, bool layerDelayedDraw, bool alternativeLayerDrawing, bool tileBatching) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
             //ref float enlMinDrawX, ref float enlMaxDrawX, ref float enlMinDrawY, ref float enlMaxDrawY)
         {
             if (!GHUtils.isok(draw_map_x, draw_map_y))
@@ -6153,7 +6153,7 @@ namespace GnollHackX.Pages.Game
                so they batch into DrawAtlas. Autodraw and the flips are the only variations
                reachable there, and autodraw can also arrive from an animation frame. The
                layer test comes first because it rejects every other layer. */
-            bool canBatch = spriteBatching
+            bool canBatch = tileBatching
                 && layer_idx <= (int)layer_types.LAYER_CARPET
                 && autodraw == 0
                 && !hflip_glyph
@@ -6178,7 +6178,7 @@ namespace GnollHackX.Pages.Game
                 {
                     int darken_percentage = darken ? GetDarkenPercentage(ref currentLayerInfo, lighterDarkening) : 100;
                     byte greyVal = (byte)((darken_percentage * 255) / 100);
-                    _spriteBatch.Add(sheet_idx, tile_x, tile_y, tx, ty, greyVal, (byte)(0xFF * opaqueness));
+                    _tileBatch.Add(sheet_idx, tile_x, tile_y, tx, ty, greyVal, (byte)(0xFF * opaqueness));
                 }
 
                 if (paint.ColorFilter != null)
@@ -6426,7 +6426,7 @@ namespace GnollHackX.Pages.Game
         private int _drawSheetIdx = -1;
         private int _sheetSwitchCount = 0;
         private int _lastSheetSwitchCount = 0;
-        private GHSpriteBatch _spriteBatch = new GHSpriteBatch(GHConstants.DefaultSpriteBatchCapacity);
+        private GHTileBatch _tileBatch = new GHTileBatch(GHConstants.DefaultTileBatchCapacity);
 
         /* Cached SKPaint instances to avoid per-frame heap allocations */
         private readonly SKPaint _mapPaint = new SKPaint();
@@ -7891,7 +7891,7 @@ namespace GnollHackX.Pages.Game
             bool breatheanimations = BreatheAnimations;
             bool fixRects = GHApp.FixRects;
             bool fixFiltering = false; /* Applies only to menus */ // GHApp.FixFiltering;
-            bool spriteBatching = GHApp.UseTileBatching;
+            bool tileBatching = GHApp.UseTileBatching;
             bool textBlobCaching = GHApp.UseTextBlobCaching;
 #if GNH_MAUI && ENABLE_RUNTIME_EFFECTS
             bool runtimeEffects = GHApp.RuntimeEffects && GHApp.RuntimeEffectsInited;
@@ -8442,7 +8442,7 @@ namespace GnollHackX.Pages.Game
                 if (targetscale == 0f)
                     targetscale = 1f;
 
-                _spriteBatch.Reset();
+                _tileBatch.Reset();
 
                 /* MaybeFixRects insets the source and pads the destination by a pixel; a uniform
                    atlas scale cannot pad both axes independently, so the vertical source inset is
@@ -8455,7 +8455,7 @@ namespace GnollHackX.Pages.Game
                 float atlasSrcHeight = (height + atlasDestPad) / atlasScale;
                 float atlasSrcVInset = ((float)GHConstants.TileHeight - atlasSrcHeight) / 2f;
                 SKRect atlasCullRect = new SKRect(0, 0, canvaswidth, canvasheight);
-                _spriteBatch.SetFrameGeometry(atlasScale, atlasSrcHInset, atlasSrcVInset, in atlasCullRect);
+                _tileBatch.SetFrameGeometry(atlasScale, atlasSrcHInset, atlasSrcVInset, in atlasCullRect);
 
                 int startX = 1;
                 int endX = GHConstants.MapCols - 1;
@@ -8751,7 +8751,7 @@ namespace GnollHackX.Pages.Game
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, false, alternativeLayerDrawing, spriteBatching); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
+                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, false, alternativeLayerDrawing, tileBatching); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
                                                                     }
                                                                 }
                                                             }
@@ -8901,7 +8901,7 @@ namespace GnollHackX.Pages.Game
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, layer_delayed, alternativeLayerDrawing, spriteBatching); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, layer_delayed, alternativeLayerDrawing, tileBatching); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                     }
                                                                 }
                                                             }
@@ -8909,7 +8909,7 @@ namespace GnollHackX.Pages.Game
                                                     }
                                                 }
 
-                                                if (_spriteBatch.TotalCount > 0)
+                                                if (_tileBatch.TotalCount > 0)
                                                 {
                                                     SKColor savedColor = paint.Color;
                                                     SKColorFilter savedFilter = paint.ColorFilter;
@@ -8917,10 +8917,10 @@ namespace GnollHackX.Pages.Game
                                                     paint.ColorFilter = null;
                                                     for (int sheet = 0; sheet < GHConstants.MaxTileSheets; sheet++)
                                                     {
-                                                        if (_spriteBatch.Count(sheet) == 0)
+                                                        if (_tileBatch.Count(sheet) == 0)
                                                             continue;
                                                         StartProfiling(GHProfilingStyle.Bitmap);
-                                                        int drawn = _spriteBatch.Flush(canvas, sheet,
+                                                        int drawn = _tileBatch.Flush(canvas, sheet,
                                                             sheet < TileMap.Length ? TileMap[sheet] : null, paint
 #if GNH_MAUI
                                                             , new SKSamplingOptions(SKFilterMode.Nearest,

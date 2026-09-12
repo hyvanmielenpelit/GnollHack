@@ -318,8 +318,8 @@ namespace GnollHackX
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             FixFiltering = Preferences.Get("FixFiltering", IsFixFilteringDefault);
             RuntimeEffects = Preferences.Get("RuntimeEffects", GHConstants.DefaultRuntimeEffects);
-            UseTileBatching = Preferences.Get("UseTileBatching", GHConstants.DefaultUseTileBatching);
-            UseTextBlobCaching = Preferences.Get("UseTextBlobCaching", IsUseTextBlobCachingDefault);
+            UseTileBatching = Preferences.Get("UseTileBatching", GHConstants.DefaultTileBatching);
+            UseTextBlobCaching = Preferences.Get("UseTextBlobCaching", GHConstants.DefaultTextBlobCaching);
             DisableWindowsKey = Preferences.Get("DisableWindowsKey", false);
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
             ShowKeyboardShortcuts = Preferences.Get("ShowKeyboardShortcuts", IsDesktop);
@@ -1962,7 +1962,7 @@ namespace GnollHackX
         private static int _fixFiltering = 0;
         public static bool FixFiltering { get { return Interlocked.CompareExchange(ref _fixFiltering, 0, 0) != 0; } set { Interlocked.Exchange(ref _fixFiltering, value ? 1 : 0); } }
 
-        private static int _useTileBatching = GHConstants.DefaultUseTileBatching ? 1 : 0;
+        private static int _useTileBatching = GHConstants.DefaultTileBatching ? 1 : 0;
         /* DrawAtlas needs a whole 8192-wide tile sheet as one GPU texture, which iOS does
            not supply; the per-tile DrawImage path uploads only the subrect it needs */
         public static bool IsTileBatchingAvailable { get { return !IsiOS; } }
@@ -2261,21 +2261,6 @@ namespace GnollHackX
                 return true;
 #else
                 return false;
-#endif
-#else
-                return false;
-#endif
-            }
-        }
-        public static bool IsUseTextBlobCachingDefault
-        {
-            get
-            {
-#if GNH_MAUI
-#if !IOS
-                return true; /* SGen's JNI bridge taxes every collection, so the allocation rate matters more here */
-#else
-                return false; /* iOS has less memory and more efficient garbage collector, so we do not need the text cache there by default */
 #endif
 #else
                 return false;

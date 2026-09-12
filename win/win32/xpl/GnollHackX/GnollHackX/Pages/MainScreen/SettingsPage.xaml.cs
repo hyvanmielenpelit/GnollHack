@@ -265,7 +265,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             if (!GHApp.IsTileBatchingAvailable)
             {
-                SpriteBatchingGrid.IsVisible = false;
+                TileBatchingGrid.IsVisible = false;
             }
 
 
@@ -726,10 +726,10 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.RuntimeEffects = RuntimeEffectsSwitch.IsToggled;
                 Preferences.Set("RuntimeEffects", RuntimeEffectsSwitch.IsToggled);
             }
-            if (SpriteBatchingGrid.IsVisible && SpriteBatchingSwitch.IsEnabled)
+            if (TileBatchingGrid.IsVisible && TileBatchingSwitch.IsEnabled)
             {
-                GHApp.UseTileBatching = SpriteBatchingSwitch.IsToggled;
-                Preferences.Set("UseTileBatching", SpriteBatchingSwitch.IsToggled);
+                GHApp.UseTileBatching = TileBatchingSwitch.IsToggled;
+                Preferences.Set("UseTileBatching", TileBatchingSwitch.IsToggled);
             }
             if (TextBlobCachingGrid.IsVisible && TextBlobCachingSwitch.IsEnabled)
             {
@@ -1420,7 +1420,7 @@ namespace GnollHackX.Pages.MainScreen
 #if !SENTRY
             bool postdiagnostics = GHConstants.DefaultPosting;
 #endif
-            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, fixvertical = true, runtimeeffects = GHConstants.DefaultRuntimeEffects, spritebatching = GHConstants.DefaultUseTileBatching, textblobcaching = GHApp.IsUseTextBlobCachingDefault, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
+            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, fixvertical = true, runtimeeffects = GHConstants.DefaultRuntimeEffects, tilebatching = GHConstants.DefaultTileBatching, textblobcaching = GHConstants.DefaultTextBlobCaching, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
             bool experimental = GHConstants.EnableExperimentalFeatures;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
@@ -1508,8 +1508,8 @@ namespace GnollHackX.Pages.MainScreen
             fixrects = Preferences.Get("FixRects", GHApp.IsFixRectsDefault);
             fixvertical = Preferences.Get("FixFiltering", GHApp.IsFixFilteringDefault);
             runtimeeffects = Preferences.Get("RuntimeEffects", GHConstants.DefaultRuntimeEffects);
-            spritebatching = Preferences.Get("UseTileBatching", GHConstants.DefaultUseTileBatching);
-            textblobcaching = Preferences.Get("UseTextBlobCaching", GHApp.IsUseTextBlobCachingDefault);
+            tilebatching = Preferences.Get("UseTileBatching", GHConstants.DefaultTileBatching);
+            textblobcaching = Preferences.Get("UseTextBlobCaching", GHConstants.DefaultTextBlobCaching);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", GHApp.IsDesktop ? 1 : 0);
             primarygpucache = Preferences.Get("PrimaryGPUCacheLimit", -2L);
@@ -1771,7 +1771,7 @@ namespace GnollHackX.Pages.MainScreen
             AutoUploadReplaysSwitch.IsToggled = autoupload;
             DisableAuxGPUSwitch.IsToggled = disableauxgpu;
             RuntimeEffectsSwitch.IsToggled = runtimeeffects;
-            SpriteBatchingSwitch.IsToggled = spritebatching;
+            TileBatchingSwitch.IsToggled = tilebatching;
             TextBlobCachingSwitch.IsToggled = textblobcaching;
             PlatformRenderLoopSwitch.IsToggled = platformloop;
             FixRectsSwitch.IsToggled = fixrects;

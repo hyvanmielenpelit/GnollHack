@@ -115,7 +115,7 @@ namespace GnollHackX
         public const int StatusMarkWidth = 16;
         public const int StatusMarkHeight = 16;
         public const int MaxTileSheets = 4;
-        public const int DefaultSpriteBatchCapacity = MapCols * MapRows * 2;
+        public const int DefaultTileBatchCapacity = MapCols * MapRows * 2;
         public const int NumberOfTilesPerSheet = 8192; // 16224;
         public const int PowerOf2ForNumberOfTilesPerSheet = 13;
         public const int MaxTileSheetWidthInTiles = 128;
@@ -426,8 +426,17 @@ namespace GnollHackX
 #endif
 #endif
         public const bool DefaultRuntimeEffects = false;
-        public const bool DefaultUseTileBatching =
+        public const bool DefaultTileBatching =
 #if WINDOWS
+            true;
+#else
+            false;
+#endif
+        /* Android's SGen taxes every collection through its JNI bridge, and Windows has
+           the memory to spare, so both trade managed allocations for retained native
+           glyph data. iOS has less memory and a more efficient collector. */
+        public const bool DefaultTextBlobCaching =
+#if GNH_MAUI && !IOS
             true;
 #else
             false;
