@@ -1521,14 +1521,16 @@ namespace GnollHackX
 
         public static void InitializeGC()
         {
-            //try
-            //{
-            //    System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.LowLatency;
-            //}
-            //catch(Exception ex)
-            //{
-            //    MaybeWriteGHLog(ex.Message);
-            //}
+            try
+            {
+#if WINDOWS
+                System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.SustainedLowLatency;
+#endif
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog("InitializeGC: " + ex.Message);
+            }
 #if GNH_MAUI
             /* GC.GetConfigurationVariables requires .NET 8 or newer, so this is MAUI only;
                the legacy Xamarin.Forms build targets netstandard2.0. */
