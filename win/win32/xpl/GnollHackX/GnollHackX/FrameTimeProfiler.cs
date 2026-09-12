@@ -374,8 +374,14 @@ namespace GnollHackX
            force a gen2 while the nursery stays quiet; pinned objects block compaction and
            make a collection dearer than its heap size suggests. "!" marks a memory load at
            or above the threshold where the runtime collects to relieve the system rather
-           than because a budget ran out. Sizes are in megabytes, the pinned figure is a
-           count of objects.
+           than because a budget ran out. Sizes are in megabytes, the pinned and
+           finalization figures are counts of objects.
+
+           "fin" is how many objects the collection found waiting to be finalized. A
+           wrapper around a native resource is only released when it is finalized, so a
+           count that grows with the interval between collections means the collection is
+           clearing a backlog that built up rather than reclaiming what the frame just
+           allocated.
 
            "why" is the runtime's own reason for starting the collection. It arrives by a
            different route than the rest, so the line carries whichever of the two is
@@ -401,7 +407,7 @@ namespace GnollHackX
             float promotedMB = info.Promoted / (1024f * 1024f);
 
             return FormattableString.Invariant(
-                $"GC .. poh:{pohBeforeMB:0.0}>{pohAfterMB:0.0} pin:{info.PinnedObjects} prom:{promotedMB:0.0}MB{mem}{why}");
+                $"GC .. poh:{pohBeforeMB:0.0}>{pohAfterMB:0.0} pin:{info.PinnedObjects} fin:{info.FinalizationPending} prom:{promotedMB:0.0}MB{mem}{why}");
         }
 
 #if GNH_MAUI
@@ -420,6 +426,7 @@ namespace GnollHackX
             public long PohAfter;
             public long Promoted;
             public long PinnedObjects;
+            public long FinalizationPending;
             public long MemoryLoad;
             public long MemoryLoadThreshold;
             public long MemoryAvailable;
@@ -446,6 +453,7 @@ namespace GnollHackX
             snap.PohAfter = 0;
             snap.Promoted = 0;
             snap.PinnedObjects = 0;
+            snap.FinalizationPending = 0;
             snap.MemoryLoad = 0;
             snap.MemoryLoadThreshold = 0;
             snap.MemoryAvailable = 0;
@@ -460,6 +468,7 @@ namespace GnollHackX
                 snap.Concurrent = info.Concurrent;
                 snap.Promoted = info.PromotedBytes;
                 snap.PinnedObjects = info.PinnedObjectsCount;
+                snap.FinalizationPending = info.FinalizationPendingCount;
                 snap.MemoryLoad = info.MemoryLoadBytes;
                 snap.MemoryLoadThreshold = info.HighMemoryLoadThresholdBytes;
                 snap.MemoryAvailable = info.TotalAvailableMemoryBytes;
