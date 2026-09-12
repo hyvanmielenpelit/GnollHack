@@ -189,7 +189,8 @@ inven_inuse(boolean quietly)
                 Sprintf(dbuf, "A mysterious force prevents finishing off %s...", the(xname(otmp)));
                 if (!quietly)
                     impossible("%s", dbuf);
-                issue_debuglog_priority(0, dbuf);
+                else
+                    issue_debuglog_priority(0, dbuf);
             }
             else
             {
