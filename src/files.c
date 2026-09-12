@@ -1601,7 +1601,7 @@ query_about_corrupted_savefile(void)
         int res;
         info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N;
         info.title = "Corrupted Save File";
-        Sprintf(txtbuf, "Save file \"%s\" is corrupted, but you have a backup save file.  Continue loading the corrupted save file anyway?", SAVEF);
+        Sprintf(txtbuf, "Save file \"%s\" is corrupted. Do you want to delete this save file and load the backup save file instead?", SAVEF);
         info.text = txtbuf;
         res = open_special_view(info);
         if (res == 'y')
