@@ -318,7 +318,7 @@ namespace GnollHackX
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             FixFiltering = Preferences.Get("FixFiltering", IsFixFilteringDefault);
             RuntimeEffects = Preferences.Get("RuntimeEffects", GHConstants.DefaultRuntimeEffects);
-            UseSpriteBatching = Preferences.Get("UseSpriteBatching", GHConstants.DefaultUseSpriteBatching);
+            UseTileBatching = Preferences.Get("UseTileBatching", GHConstants.DefaultUseTileBatching);
             UseTextBlobCaching = Preferences.Get("UseTextBlobCaching", IsUseTextBlobCachingDefault);
             DisableWindowsKey = Preferences.Get("DisableWindowsKey", false);
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
@@ -1962,9 +1962,12 @@ namespace GnollHackX
         private static int _fixFiltering = 0;
         public static bool FixFiltering { get { return Interlocked.CompareExchange(ref _fixFiltering, 0, 0) != 0; } set { Interlocked.Exchange(ref _fixFiltering, value ? 1 : 0); } }
 
-        private static int _useSpriteBatching = GHConstants.DefaultUseSpriteBatching ? 1 : 0;
+        private static int _useTileBatching = GHConstants.DefaultUseTileBatching ? 1 : 0;
+        /* DrawAtlas needs a whole 8192-wide tile sheet as one GPU texture, which iOS does
+           not supply; the per-tile DrawImage path uploads only the subrect it needs */
+        public static bool IsTileBatchingAvailable { get { return !IsiOS; } }
         /* Read once per frame by the map paint loop; see GamePage.PaintMapTile */
-        public static bool UseSpriteBatching { get { return Interlocked.CompareExchange(ref _useSpriteBatching, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSpriteBatching, value ? 1 : 0); } }
+        public static bool UseTileBatching { get { return IsTileBatchingAvailable && Interlocked.CompareExchange(ref _useTileBatching, 0, 0) != 0; } set { Interlocked.Exchange(ref _useTileBatching, value ? 1 : 0); } }
 
         private static int _useTextBlobCaching = 0;
         /* Read once per frame by each paint handler and applied via GHSkiaFontPaint.SyncBlobCache */
@@ -2269,10 +2272,10 @@ namespace GnollHackX
             get
             {
 #if GNH_MAUI
-#if ANDROID
+#if !IOS
                 return true; /* SGen's JNI bridge taxes every collection, so the allocation rate matters more here */
 #else
-                return true; /* Turn it on other platforms, too, for consistency, and since memory allocation seemed to slow down the performance more than the cache */
+                return false; /* iOS has less memory and more efficient garbage collector, so we do not need the text cache there by default */
 #endif
 #else
                 return false;

@@ -7891,7 +7891,7 @@ namespace GnollHackX.Pages.Game
             bool breatheanimations = BreatheAnimations;
             bool fixRects = GHApp.FixRects;
             bool fixFiltering = false; /* Applies only to menus */ // GHApp.FixFiltering;
-            bool spriteBatching = GHApp.UseSpriteBatching;
+            bool spriteBatching = GHApp.UseTileBatching;
             bool textBlobCaching = GHApp.UseTextBlobCaching;
 #if GNH_MAUI && ENABLE_RUNTIME_EFFECTS
             bool runtimeEffects = GHApp.RuntimeEffects && GHApp.RuntimeEffectsInited;
