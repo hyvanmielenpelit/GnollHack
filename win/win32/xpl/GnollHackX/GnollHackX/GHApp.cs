@@ -1523,9 +1523,9 @@ namespace GnollHackX
         {
             try
             {
-#if WINDOWS
-                System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.SustainedLowLatency;
-#endif
+//#if WINDOWS
+//                System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.SustainedLowLatency;
+//#endif
             }
             catch (Exception ex)
             {
