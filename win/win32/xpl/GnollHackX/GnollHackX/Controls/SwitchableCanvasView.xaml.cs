@@ -692,6 +692,9 @@ namespace GnollHackX.Controls
 
 
 #if WINDOWS
+        private long _lastPointerMovedTimestamp = 0;
+        private static readonly long s_pointerMoveIntervalTicks = (long)(Stopwatch.Frequency / 120.0);
+
         private void View_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             if(sender is Microsoft.UI.Xaml.UIElement)
@@ -729,6 +732,21 @@ namespace GnollHackX.Controls
 
         private void PointerEvent(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e, SKTouchAction action)
         {
+            if (action == SKTouchAction.Moved)
+            {
+                long now = Stopwatch.GetTimestamp();
+                if ((now - _lastPointerMovedTimestamp) < s_pointerMoveIntervalTicks)
+                {
+                    e.Handled = true;
+                    return;
+                }
+                _lastPointerMovedTimestamp = now;
+            }
+            else
+            {
+                _lastPointerMovedTimestamp = Stopwatch.GetTimestamp();
+            }
+
             Microsoft.UI.Xaml.UIElement element = sender as Microsoft.UI.Xaml.UIElement;
             if (element != null)
             {
@@ -737,13 +755,20 @@ namespace GnollHackX.Controls
                 float scale = canvasWidth / Math.Max(1.0f, (float)ThreadSafeWidth);
                 SKPoint pointerPosition = point == null ? new SKPoint() : new SKPoint((float)point.Position.X * scale, (float)point.Position.Y * scale);
                 SKTouchEventArgs args = new SKTouchEventArgs(-1, action, pointerPosition, false);
-                if(MousePointer != null)
+                if (MousePointer != null)
                 {
                     e.Handled = true;
-                    MainThread.BeginInvokeOnMainThread(() =>
+                    if (MainThread.IsMainThread)
                     {
-                        MousePointer?.Invoke(sender, args);
-                    });
+                        MousePointer.Invoke(sender, args);
+                    }
+                    else
+                    {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            MousePointer?.Invoke(sender, args);
+                        });
+                    }
                 }
             }
         }
