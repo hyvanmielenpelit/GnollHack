@@ -2549,10 +2549,8 @@ namespace GnollHackX
         {
             FrameTimeProfiler.MarkGcBefore();
             GC.Collect();
-#if !WINDOWS
             GC.WaitForPendingFinalizers();
             GC.Collect();
-#endif
             FrameTimeProfiler.MarkGcAfter();
         }
 
