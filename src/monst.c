@@ -1363,7 +1363,7 @@ NEARDATA struct permonst mons[] = {
         M5_NONE | M5_FEMALE_TILE, M6_HUMAN_BREATHE_ANIMATION, M7_WIZARD, M8_NONE,
         5, HI_ZAP, MONSTER_SOUNDSET_ORC_MALE, MONSTER_SOUNDSET_ORC_FEMALE, NO_SOUNDSET_SUBTYPE),
     /* orc hermit */
-    ENLARGED_MON("orc hermit", None, "spell-casting orcish recluse", None, None, S_ORC, LVL(5, 9, 5, 5, 10, -5), (G_GENO | 1),
+    ENLARGED_MON("orc hermit", None, "spell-casting orcish recluse", None, None, S_ORC, LVL(5, 9, 5, 5, 10, -5), (G_GENO | G_NOGEN),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1000, 300, MS_ORC, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(12, 15, 16, 15, 16, 16),
