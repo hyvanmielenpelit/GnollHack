@@ -2561,11 +2561,14 @@ namespace GnollHackX.Pages.MainScreen
 
             try
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                /* handled is read as soon as this method returns, so the key is claimed
+                   here; the dispatched lambda yields at its first await */
+                if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter)
                 {
-                    try
+                    handled = true;
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter)
+                        try
                         {
                             if (PopupGrid.IsVisible)
                             {
@@ -2591,12 +2594,12 @@ namespace GnollHackX.Pages.MainScreen
                                     await ClosePageAsync(true);
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex);
-                    }
-                });
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {

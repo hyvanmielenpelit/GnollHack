@@ -2410,59 +2410,66 @@ namespace GnollHackX
             bool handled = false;
             try
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                /* handled is read as soon as this method returns, so the key is resolved
+                   synchronously here; the dispatched lambda yields at its first await */
+                Func<Task> pending = null;
+                if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space)
                 {
-                    try
+                    if (PendingTasksGrid.IsVisible && key == GHSpecialKey.Escape && PendingTasksCancelButton.IsVisible && PendingTasksCancelButton.IsEnabled)
                     {
-                        if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space)
+                        PendingTasksCancelButton_Clicked(this, EventArgs.Empty);
+                        handled = true;
+                    }
+                    else if (PendingTasksGrid.IsVisible && (key == GHSpecialKey.Enter || key == GHSpecialKey.Space) && PendingTasksOkButton.IsVisible && PendingTasksOkButton.IsEnabled)
+                    {
+                        pending = PendingTasksOk;
+                        handled = true;
+                    }
+                    else if (AchievementGrid.IsVisible && AchievementOkButton.IsEnabled)
+                    {
+                        AchievementOkButton_Clicked(this, EventArgs.Empty);
+                        handled = true;
+                    }
+                    else if (TierGrid.IsVisible && TierOkButton.IsEnabled)
+                    {
+                        TierOkButton_Clicked(this, EventArgs.Empty);
+                        handled = true;
+                    }
+                    else if (EventGrid.IsVisible && EventButtonGrid.IsEnabled && key == GHSpecialKey.Escape)
+                    {
+                        EventCancelButton_Clicked(this, EventArgs.Empty);
+                        handled = true;
+                    }
+                    else if (EventGrid.IsVisible && EventButtonGrid.IsEnabled && (key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
+                    {
+                        EventOkButton_Clicked(this, EventArgs.Empty);
+                        handled = true;
+                    }
+                    else if (AlertGrid.IsVisible && AlertOkButton.IsEnabled)
+                    {
+                        AlertOkButton_Clicked(this, EventArgs.Empty);
+                        handled = true;
+                    }
+                    else if (PopupGrid.IsVisible && ((PopupOkButton.IsVisible && PopupOkButton.IsEnabled) || (PopupButtonGrid.IsVisible && PopupOkButton2.IsVisible && PopupOkButton2.IsEnabled)))
+                    {
+                        pending = ClosePopup;
+                        handled = true;
+                    }
+                }
+                if (pending != null)
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        try
                         {
-                            if (PendingTasksGrid.IsVisible && key == GHSpecialKey.Escape && PendingTasksCancelButton.IsVisible && PendingTasksCancelButton.IsEnabled)
-                            {
-                                PendingTasksCancelButton_Clicked(this, EventArgs.Empty);
-                                handled = true;
-                            }
-                            else if (PendingTasksGrid.IsVisible && (key == GHSpecialKey.Enter || key == GHSpecialKey.Space) && PendingTasksOkButton.IsVisible && PendingTasksOkButton.IsEnabled)
-                            {
-                                await PendingTasksOk();
-                                handled = true;
-                            }
-                            else if (AchievementGrid.IsVisible && AchievementOkButton.IsEnabled)
-                            {
-                                AchievementOkButton_Clicked(this, EventArgs.Empty);
-                                handled = true;
-                            }
-                            else if (TierGrid.IsVisible && TierOkButton.IsEnabled)
-                            {
-                                TierOkButton_Clicked(this, EventArgs.Empty);
-                                handled = true;
-                            }
-                            else if (EventGrid.IsVisible && EventButtonGrid.IsEnabled && key == GHSpecialKey.Escape)
-                            {
-                                EventCancelButton_Clicked(this, EventArgs.Empty);
-                                handled = true;
-                            }
-                            else if (EventGrid.IsVisible && EventButtonGrid.IsEnabled && (key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
-                            {
-                                EventOkButton_Clicked(this, EventArgs.Empty);
-                                handled = true;
-                            }
-                            else if (AlertGrid.IsVisible && AlertOkButton.IsEnabled)
-                            {
-                                AlertOkButton_Clicked(this, EventArgs.Empty);
-                                handled = true;
-                            }
-                            else if (PopupGrid.IsVisible && ((PopupOkButton.IsVisible && PopupOkButton.IsEnabled) || (PopupButtonGrid.IsVisible && PopupOkButton2.IsVisible && PopupOkButton2.IsEnabled)))
-                            {
-                                await ClosePopup();
-                                handled = true;
-                            }
+                            await pending();
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex);
-                    }
-                });
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -2482,73 +2489,80 @@ namespace GnollHackX
 
             try
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                /* handled is read as soon as this method returns, so the key is resolved
+                   synchronously here; the dispatched lambda yields at its first await */
+                Func<Task> pending = null;
+                switch (key)
                 {
-                    try
+                    case (int)'p':
+                        if (StartLocalGameButton.IsEnabled && StartLocalGrid.IsEnabled && StartLocalGameButton.IsVisible && StartLocalGrid.IsVisible && UpperButtonGrid.IsVisible)
+                            pending = StartLocalGame;
+                        handled = true;
+                        break;
+                    case (int)'s':
+                        if (SettingsButton.IsEnabled && SettingsButton.IsVisible && UpperButtonGrid.IsVisible)
+                            pending = OpenSettingsPage;
+                        handled = true;
+                        break;
+                    case (int)'o':
+                        if (OptionsButton.IsEnabled && OptionsButton.IsVisible && UpperButtonGrid.IsVisible)
+                            pending = OpenOptionsPage;
+                        handled = true;
+                        break;
+                    case (int)'r':
+                        if (ResetButton.IsEnabled && ResetButton.IsVisible && UpperButtonGrid.IsVisible)
+                            pending = OpenResetPage;
+                        handled = true;
+                        break;
+                    case (int)'a':
+                        if (AboutButton.IsEnabled && AboutButton.IsVisible && UpperButtonGrid.IsVisible)
+                            pending = OpenAboutPage;
+                        handled = true;
+                        break;
+                    case (int)'v':
+                        if (VaultButton.IsEnabled && VaultButton.IsVisible && UpperButtonGrid.IsVisible)
+                            pending = OpenVaultPage;
+                        handled = true;
+                        break;
+                    case (int)'w': //Wizard mode
+                        if (wizardModeSwitch.IsEnabled && wizardModeGrid.IsVisible && StartButtonLayout.IsVisible)
+                            wizardModeSwitch.IsToggled = !wizardModeSwitch.IsToggled;
+                        handled = true;
+                        break;
+                    case (int)'c': //Classic mode
+                        if (classicModeSwitch.IsEnabled && classicModeGrid.IsVisible && StartButtonLayout.IsVisible)
+                            classicModeSwitch.IsToggled = !classicModeSwitch.IsToggled;
+                        handled = true;
+                        break;
+                    case (int)'C': //Casual mode
+                        if (casualModeSwitch.IsEnabled && casualModeGrid.IsVisible && StartButtonLayout.IsVisible)
+                            casualModeSwitch.IsToggled = !casualModeSwitch.IsToggled;
+                        handled = true;
+                        break;
+                    case (int)'e':
+                    case (int)'x':
+                    case (int)'q':
+                        if (ExitButton.IsEnabled && ExitButton.IsVisible && StartButtonLayout.IsVisible)
+                            pending = () => ExitApp();
+                        handled = true;
+                        break;
+                    default:
+                        break;
+                }
+                if (pending != null)
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        switch (key)
+                        try
                         {
-                            case (int)'p':
-                                if (StartLocalGameButton.IsEnabled && StartLocalGrid.IsEnabled && StartLocalGameButton.IsVisible && StartLocalGrid.IsVisible && UpperButtonGrid.IsVisible)
-                                    await StartLocalGame();
-                                handled = true;
-                                break;
-                            case (int)'s':
-                                if (SettingsButton.IsEnabled && SettingsButton.IsVisible && UpperButtonGrid.IsVisible)
-                                    await OpenSettingsPage();
-                                handled = true;
-                                break;
-                            case (int)'o':
-                                if (OptionsButton.IsEnabled && OptionsButton.IsVisible && UpperButtonGrid.IsVisible)
-                                    await OpenOptionsPage();
-                                handled = true;
-                                break;
-                            case (int)'r':
-                                if (ResetButton.IsEnabled && ResetButton.IsVisible && UpperButtonGrid.IsVisible)
-                                    await OpenResetPage();
-                                handled = true;
-                                break;
-                            case (int)'a':
-                                if (AboutButton.IsEnabled && AboutButton.IsVisible && UpperButtonGrid.IsVisible)
-                                    await OpenAboutPage();
-                                handled = true;
-                                break;
-                            case (int)'v':
-                                if (VaultButton.IsEnabled && VaultButton.IsVisible && UpperButtonGrid.IsVisible)
-                                    await OpenVaultPage();
-                                handled = true;
-                                break;
-                            case (int)'w': //Wizard mode
-                                if (wizardModeSwitch.IsEnabled && wizardModeGrid.IsVisible && StartButtonLayout.IsVisible)
-                                    wizardModeSwitch.IsToggled = !wizardModeSwitch.IsToggled;
-                                handled = true;
-                                break;
-                            case (int)'c': //Classic mode
-                                if (classicModeSwitch.IsEnabled && classicModeGrid.IsVisible && StartButtonLayout.IsVisible)
-                                    classicModeSwitch.IsToggled = !classicModeSwitch.IsToggled;
-                                handled = true;
-                                break;
-                            case (int)'C': //Casual mode
-                                if (casualModeSwitch.IsEnabled && casualModeGrid.IsVisible && StartButtonLayout.IsVisible)
-                                    casualModeSwitch.IsToggled = !casualModeSwitch.IsToggled;
-                                handled = true;
-                                break;
-                            case (int)'e':
-                            case (int)'x':
-                            case (int)'q':
-                                if (ExitButton.IsEnabled && ExitButton.IsVisible && StartButtonLayout.IsVisible)
-                                    await ExitApp();
-                                handled = true;
-                                break;
-                            default:
-                                break;
+                            await pending();
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex);
-                    }
-                });
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {

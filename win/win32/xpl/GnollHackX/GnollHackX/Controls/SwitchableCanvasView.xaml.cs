@@ -328,10 +328,17 @@ namespace GnollHackX.Controls
             }
             if (IsShutDown)
                 return;
-            MainThread.BeginInvokeOnMainThread(() =>
+            if (isCanvasOnMainThread)
             {
                 Touch?.Invoke(sender, e);
-            });
+            }
+            else
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Touch?.Invoke(sender, e);
+                });
+            }
         }
 
         private bool _firstDraw = true;
@@ -496,10 +503,17 @@ namespace GnollHackX.Controls
             }
             if (IsShutDown)
                 return;
-            MainThread.BeginInvokeOnMainThread(() =>
+            if (isCanvasOnMainThread)
             {
                 Touch?.Invoke(sender, e);
-            });
+            }
+            else
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Touch?.Invoke(sender, e);
+                });
+            }
         }
 
         public GamePage _gamePage;
@@ -702,10 +716,8 @@ namespace GnollHackX.Controls
                 var delta = e.GetCurrentPoint((Microsoft.UI.Xaml.UIElement)sender).Properties.MouseWheelDelta;
                 if (delta != 0)
                 {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        MouseWheel?.Invoke(sender, new GHMouseWheelEventArgs(delta));
-                    });
+                    /* WinUI raises pointer events on the UI thread */
+                    MouseWheel?.Invoke(sender, new GHMouseWheelEventArgs(delta));
                 }
             }
         }

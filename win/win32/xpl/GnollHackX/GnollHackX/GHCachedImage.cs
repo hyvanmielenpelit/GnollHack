@@ -243,10 +243,8 @@ namespace GnollHackX
             _TimerOn = anim > 0;
             if (anim > 0)
             {
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    InvalidateSurface();
-                });
+                /* Only caller is the animation timer tick, which runs on the UI thread */
+                InvalidateSurface();
             }
             return anim > 0;
         }

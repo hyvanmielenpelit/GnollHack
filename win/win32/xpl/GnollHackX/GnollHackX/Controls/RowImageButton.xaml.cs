@@ -336,32 +336,28 @@ namespace GnollHackX.Controls
         private void PlatformView_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             e.Handled = true;
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                ViewImage.IsHighlighted = true;
-                _isHovering = true;
-                LblTextColor = LblTextColor;
-                SubLblTextColor = SubLblTextColor;
-                SubLbl2TextColor = SubLbl2TextColor;
-                SubLbl3TextColor = SubLbl3TextColor;
-                SubLbl4TextColor = SubLbl4TextColor;
-            });
+            /* WinUI raises pointer events on the UI thread */
+            ViewImage.IsHighlighted = true;
+            _isHovering = true;
+            LblTextColor = LblTextColor;
+            SubLblTextColor = SubLblTextColor;
+            SubLbl2TextColor = SubLbl2TextColor;
+            SubLbl3TextColor = SubLbl3TextColor;
+            SubLbl4TextColor = SubLbl4TextColor;
         }
 
         private void PlatformView_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             e.Handled = true;
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                ViewImage.IsHighlighted = false;
-                _isHovering = false;
-                LblTextColor = LblTextColor;
-                SubLblTextColor = SubLblTextColor;
-                SubLbl2TextColor = SubLbl2TextColor;
-                SubLbl3TextColor = SubLbl3TextColor;
-                SubLbl4TextColor = SubLbl4TextColor;
-                ImgLblTextColor = ImgLblTextColor;
-            });
+            /* WinUI raises pointer events on the UI thread */
+            ViewImage.IsHighlighted = false;
+            _isHovering = false;
+            LblTextColor = LblTextColor;
+            SubLblTextColor = SubLblTextColor;
+            SubLbl2TextColor = SubLbl2TextColor;
+            SubLbl3TextColor = SubLbl3TextColor;
+            SubLbl4TextColor = SubLbl4TextColor;
+            ImgLblTextColor = ImgLblTextColor;
         }
 #else
         private bool _isHoveringEnabled = false;

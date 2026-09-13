@@ -438,82 +438,89 @@ namespace GnollHackX.Pages.MainScreen
             bool handled = false;
             try
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                /* handled is read as soon as this method returns, so the key is resolved
+                   synchronously here; the dispatched lambda yields at its first await */
+                Func<Task> pending = null;
+                switch (key)
                 {
-                    try
+                    case (int)'v':
+                        if (btnVersion.IsEnabled && btnVersion.IsVisible && AboutGrid.IsEnabled)
+                            pending = OpenVersionPage;
+                        handled = true;
+                        break;
+                    case (int)'w':
+                        if (btnWiki.IsEnabled && btnWiki.IsVisible && AboutGrid.IsEnabled)
+                            pending = OpenWikiPage;
+                        handled = true;
+                        break;
+                    case (int)'o':
+                        if (btnOverseer.IsEnabled && btnOverseer.IsVisible && AboutGrid.IsEnabled)
+                            pending = OpenOverseerPage;
+                        handled = true;
+                        break;
+                    case (int)'c':
+                        if (btnCreditsX.IsEnabled && btnCreditsX.IsVisible && AboutGrid.IsEnabled)
+                            pending = OpenCreditsPage;
+                        handled = true;
+                        break;
+                    case (int)'l':
+                        if (btnLicense.IsEnabled && btnLicense.IsVisible && AboutGrid.IsEnabled)
+                            pending = OpenLicensePage;
+                        handled = true;
+                        break;
+                    case (int)'s':
+                        if (btnGitHub.IsEnabled && btnGitHub.IsVisible && AboutGrid.IsEnabled)
+                            pending = OpenGitHubPage;
+                        handled = true;
+                        break;
+                    case (int)'g':
+                        if (btnWebPage.IsEnabled && btnWebPage.IsVisible && AboutGrid.IsEnabled)
+                            pending = OpenWebPage;
+                        handled = true;
+                        break;
+                    case (int)'d':
+                    case (int)'S':
+                        if (btnSponsor.IsEnabled && btnSponsor.IsVisible && AboutGrid.IsEnabled)
+                            pending = OpenSponsorPage;
+                        handled = true;
+                        break;
+                    case (int)'a':
+                        if (btnViewGHLog.IsEnabled && btnViewGHLog.IsVisible && AboutGrid.IsEnabled)
+                            pending = OpenAppLog;
+                        handled = true;
+                        break;
+                    case (int)'p':
+                        if (btnViewPanicLog.IsEnabled && btnViewPanicLog.IsVisible && AboutGrid.IsEnabled)
+                            pending = OpenPanicLog;
+                        handled = true;
+                        break;
+                    case (int)'m':
+                        if (btnImportExport.IsEnabled && btnImportExport.IsVisible && AboutGrid.IsEnabled)
+                            pending = OpenImportExportPage;
+                        handled = true;
+                        break;
+                    case (int)'r':
+                        if (btnCrashReport.IsEnabled && btnCrashReport.IsVisible && AboutGrid.IsEnabled)
+                            pending = DoCrashReport;
+                        handled = true;
+                        break;
+                    default:
+                        break;
+                }
+                if (pending != null)
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        switch (key)
+                        try
                         {
-                            case (int)'v':
-                                if (btnVersion.IsEnabled && btnVersion.IsVisible && AboutGrid.IsEnabled)
-                                    await OpenVersionPage();
-                                handled = true;
-                                break;
-                            case (int)'w':
-                                if (btnWiki.IsEnabled && btnWiki.IsVisible && AboutGrid.IsEnabled)
-                                    await OpenWikiPage();
-                                handled = true;
-                                break;
-                            case (int)'o':
-                                if (btnOverseer.IsEnabled && btnOverseer.IsVisible && AboutGrid.IsEnabled)
-                                    await OpenOverseerPage();
-                                handled = true;
-                                break;
-                            case (int)'c':
-                                if (btnCreditsX.IsEnabled && btnCreditsX.IsVisible && AboutGrid.IsEnabled)
-                                    await OpenCreditsPage();
-                                handled = true;
-                                break;
-                            case (int)'l':
-                                if (btnLicense.IsEnabled && btnLicense.IsVisible && AboutGrid.IsEnabled)
-                                    await OpenLicensePage();
-                                handled = true;
-                                break;
-                            case (int)'s':
-                                if (btnGitHub.IsEnabled && btnGitHub.IsVisible && AboutGrid.IsEnabled)
-                                    await OpenGitHubPage();
-                                handled = true;
-                                break;
-                            case (int)'g':
-                                if (btnWebPage.IsEnabled && btnWebPage.IsVisible && AboutGrid.IsEnabled)
-                                    await OpenWebPage();
-                                handled = true;
-                                break;
-                            case (int)'d':
-                            case (int)'S':
-                                if (btnSponsor.IsEnabled && btnSponsor.IsVisible && AboutGrid.IsEnabled)
-                                    await OpenSponsorPage();
-                                handled = true;
-                                break;
-                            case (int)'a':
-                                if (btnViewGHLog.IsEnabled && btnViewGHLog.IsVisible && AboutGrid.IsEnabled)
-                                    await OpenAppLog();
-                                handled = true;
-                                break;
-                            case (int)'p':
-                                if (btnViewPanicLog.IsEnabled && btnViewPanicLog.IsVisible && AboutGrid.IsEnabled)
-                                    await OpenPanicLog();
-                                handled = true;
-                                break;
-                            case (int)'m':
-                                if (btnImportExport.IsEnabled && btnImportExport.IsVisible && AboutGrid.IsEnabled)
-                                    await OpenImportExportPage();
-                                handled = true;
-                                break;
-                            case (int)'r':
-                                if (btnCrashReport.IsEnabled && btnCrashReport.IsVisible && AboutGrid.IsEnabled)
-                                    await DoCrashReport();
-                                handled = true;
-                                break;
-                            default:
-                                break;
+                            await pending();
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex);
-                    }
-                });
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(ex);
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {

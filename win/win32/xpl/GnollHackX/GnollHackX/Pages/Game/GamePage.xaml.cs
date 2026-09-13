@@ -1105,20 +1105,11 @@ namespace GnollHackX.Pages.Game
             {
                 UpdateMoreNextPrevButtonVisibility(true, true);
                 await Task.Delay(50);
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    CommandCanvas.InvalidateSurface();
-                });
+                CommandCanvas.InvalidateSurface();
                 await Task.Delay(50);
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    MenuCanvas.InvalidateSurface();
-                });
+                MenuCanvas.InvalidateSurface();
                 await Task.Delay(50);
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    TextCanvas.InvalidateSurface();
-                });
+                TextCanvas.InvalidateSurface();
             };
 #endif
 
@@ -1773,20 +1764,11 @@ namespace GnollHackX.Pages.Game
                 MoreCommandsGrid.IsVisible = true;
                 LoadingDetailsLabel.Text = "Initializing canvases...";
                 await Task.Delay(50);
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    MenuCanvas.InvalidateSurface();
-                });
+                MenuCanvas.InvalidateSurface();
                 await Task.Delay(50);
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    TextCanvas.InvalidateSurface();
-                });
+                TextCanvas.InvalidateSurface();
                 await Task.Delay(50);
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    CommandCanvas.InvalidateSurface();
-                });
+                CommandCanvas.InvalidateSurface();
             }
             return initAuxCanvases;
         }
@@ -1877,17 +1859,7 @@ namespace GnollHackX.Pages.Game
                             /* Note that this await is for exception handling only. The tasks start immediately execution upon calling async Task method */
                             try
                             {
-                                MainThread.InvokeOnMainThreadAsync(async () =>
-                                {
-                                    try
-                                    {
-                                        await Task.WhenAll(tasks);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Debug.WriteLine(ex);
-                                    }
-                                });
+                                _ = ObservePollTaskExceptions(tasks);
                             }
                             catch (Exception ex)
                             {
@@ -1907,6 +1879,20 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        /* The poll tasks are already running when PollRequestQueue returns; awaiting them
+           here only observes their faults */
+        private static async Task ObservePollTaskExceptions(List<Task> tasks)
+        {
+            try
+            {
+                await Task.WhenAll(tasks);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
         //private bool _mainCounterDiffZeroObserved = false;
         //private bool _renderingCounterDiffZeroObserved = false;
 
@@ -1916,146 +1902,144 @@ namespace GnollHackX.Pages.Game
 
         private void DoUpdateTimer()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            /* Only caller is the update timer tick, which runs on the UI thread */
+            long incrementedValue = Interlocked.Increment(ref _updateTimerTickCount);
+            if (incrementedValue == long.MaxValue)
+                Interlocked.Exchange(ref _updateTimerTickCount, 0);
+
+            if (incrementedValue % 10 == 0)
             {
-                long incrementedValue = Interlocked.Increment(ref _updateTimerTickCount);
-                if (incrementedValue == long.MaxValue)
-                    Interlocked.Exchange(ref _updateTimerTickCount, 0);
+                GHApp.LogMemory();
+                /* Before the flag: the paint thread consumes it to publish the draw
+                   counters, and that publication is what versions both halves */
+                if (GHApp.IsDebugScreenLoggingOn)
+                    FrameTimeProfiler.PublishDashboardSnapshot();
+                Interlocked.Exchange(ref _publishDashboardStats, 1);
+                Interlocked.Exchange(ref _publishMenuDashboardStats, 1);
+                //if (WarnLowDiskSpace)
+                    GHApp.UpdateFreeDiskSpace();
+                //if (ShowMemory)
+                    GHApp.UpdateUsedMemory();
+            }
 
-                if (incrementedValue % 10 == 0)
+            CursorIsOn = !CursorIsOn;
+
+            if (ShowFPS)
+            {
+                if (!_stopWatch.IsRunning)
                 {
-                    GHApp.LogMemory();
-                    /* Before the flag: the paint thread consumes it to publish the draw
-                       counters, and that publication is what versions both halves */
-                    if (GHApp.IsDebugScreenLoggingOn)
-                        FrameTimeProfiler.PublishDashboardSnapshot();
-                    Interlocked.Exchange(ref _publishDashboardStats, 1);
-                    Interlocked.Exchange(ref _publishMenuDashboardStats, 1);
-                    //if (WarnLowDiskSpace)
-                        GHApp.UpdateFreeDiskSpace();
-                    //if (ShowMemory)
-                        GHApp.UpdateUsedMemory();
-                }
-
-                CursorIsOn = !CursorIsOn;
-
-                if (ShowFPS)
-                {
-                    if (!_stopWatch.IsRunning)
-                    {
-                        _stopWatch.Restart();
-                    }
-                    else
-                    {
-                        _stopWatch.Stop();
-                        TimeSpan ts = _stopWatch.Elapsed;
-                        //lock (_fpslock)
-                        {
-                            long counterDiff = 0;
-                            if (MoreCommandsGrid.IsVisible)
-                            {
-                                //lock (_commandFPSCounterLock)
-                                {
-                                    long countervalue = CommandFPSCounterValue;
-                                    counterDiff = countervalue - _previousCommandFPSCounterValue;
-                                    _previousCommandFPSCounterValue = countervalue;
-                                }
-                            }
-                            else
-                            {
-                                //lock (_mainFPSCounterLock)
-                                {
-                                    long countervalue = MainFPSCounterValue;
-                                    counterDiff = countervalue - _previousMainFPSCounterValue;
-                                    _previousMainFPSCounterValue = countervalue;
-                                }
-#if false
-                                long mainFPSCounter;
-                                lock (_mainFPSCounterLock)
-                                {
-                                    mainFPSCounter = _mainFPSCounterValue;
-                                    counterDiff = _mainFPSCounterValue - _previousMainFPSCounterValue;
-                                    _previousMainFPSCounterValue = _mainFPSCounterValue;
-                                }
-                                if (GHApp.IsWindows)
-                                {
-                                    long renderingCounter = GHApp.RenderingCounter;
-                                    long renderingCounterDiff = renderingCounter - _previousRenderingCounterValue;
-                                    _previousRenderingCounterValue = renderingCounter;
-                                    if (((renderingCounterDiff == 0 &&  !_renderingCounterDiffZeroObserved) || (counterDiff == 0 && mainFPSCounter > 0 && !_mainCounterDiffZeroObserved)) && UpdateTimerTickCount > 10 && IsGameOn && IsMainCanvasOn && !LoadingGrid.IsVisible && !MoreCommandsGrid.IsVisible && !MenuGrid.IsVisible && !TextGrid.IsVisible)
-                                    {
-                                        if (counterDiff == 0 && !_mainCounterDiffZeroObserved)
-                                        {
-                                            _mainCounterDiffZeroObserved = true;
-                                            GHApp.MaybeWriteGHLog("MainCanvas counterDiff is 0");
-                                        }
-                                        if (renderingCounterDiff == 0 && !_renderingCounterDiffZeroObserved)
-                                        {
-                                            _renderingCounterDiffZeroObserved = true;
-                                            GHApp.MaybeWriteGHLog("Rendering counterDiff is 0");
-                                        }
-                                        if ((_mainCounterDiffZeroObserved || _renderingCounterDiffZeroObserved) && !PleaseWaitLabel.IsVisible)
-                                        {
-                                            PleaseWaitLabel.IsVisible = true;
-                                            StopMainCanvasAnimation();
-                                            MainCanvasView.IsVisible = false;
-                                            RefreshScreen = true;
-                                            MainCanvasView.IsVisible = true;
-                                            StartMainCanvasAnimation();
-                                        }
-                                    }
-                                    else if ((renderingCounterDiff > 0 && _renderingCounterDiffZeroObserved) || (counterDiff > 0 && _mainCounterDiffZeroObserved))
-                                    {
-                                        if (counterDiff > 0)
-                                        {
-                                            _mainCounterDiffZeroObserved = false;
-                                            GHApp.MaybeWriteGHLog("MainCanvas counter is back on");
-                                        }
-                                        if (renderingCounterDiff > 0)
-                                        {
-                                            _renderingCounterDiffZeroObserved = false;
-                                            GHApp.MaybeWriteGHLog("Rendering counter is back on");
-                                        }
-                                        if (!_mainCounterDiffZeroObserved && !_renderingCounterDiffZeroObserved && PleaseWaitLabel.IsVisible)
-                                            PleaseWaitLabel.IsVisible = false;
-                                    }
-                                }
-#endif
-                                //lock (AnimationTimerLock)
-                                //{
-                                //    currentCounterValue = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
-                                //}
-                            }
-                            //lock (_fpslock)
-                            {
-                                double calcFps = ts.TotalMilliseconds == 0.0 ? 0.0 : counterDiff / (ts.TotalMilliseconds / 1000.0);
-                                if (calcFps < 0.0f || calcFps > 500.0f) /* Just in case if it is off somehow */
-                                {
-                                    calcFps = 0.0;
-                                    counterDiff = 0;
-                                }
-                                FPS = calcFps;
-                            }
-                        }
-                        _stopWatch.Restart();
-                    }
+                    _stopWatch.Restart();
                 }
                 else
                 {
-                    if (_stopWatch.IsRunning)
-                        _stopWatch.Stop();
+                    _stopWatch.Stop();
+                    TimeSpan ts = _stopWatch.Elapsed;
+                    //lock (_fpslock)
+                    {
+                        long counterDiff = 0;
+                        if (MoreCommandsGrid.IsVisible)
+                        {
+                            //lock (_commandFPSCounterLock)
+                            {
+                                long countervalue = CommandFPSCounterValue;
+                                counterDiff = countervalue - _previousCommandFPSCounterValue;
+                                _previousCommandFPSCounterValue = countervalue;
+                            }
+                        }
+                        else
+                        {
+                            //lock (_mainFPSCounterLock)
+                            {
+                                long countervalue = MainFPSCounterValue;
+                                counterDiff = countervalue - _previousMainFPSCounterValue;
+                                _previousMainFPSCounterValue = countervalue;
+                            }
+#if false
+                            long mainFPSCounter;
+                            lock (_mainFPSCounterLock)
+                            {
+                                mainFPSCounter = _mainFPSCounterValue;
+                                counterDiff = _mainFPSCounterValue - _previousMainFPSCounterValue;
+                                _previousMainFPSCounterValue = _mainFPSCounterValue;
+                            }
+                            if (GHApp.IsWindows)
+                            {
+                                long renderingCounter = GHApp.RenderingCounter;
+                                long renderingCounterDiff = renderingCounter - _previousRenderingCounterValue;
+                                _previousRenderingCounterValue = renderingCounter;
+                                if (((renderingCounterDiff == 0 &&  !_renderingCounterDiffZeroObserved) || (counterDiff == 0 && mainFPSCounter > 0 && !_mainCounterDiffZeroObserved)) && UpdateTimerTickCount > 10 && IsGameOn && IsMainCanvasOn && !LoadingGrid.IsVisible && !MoreCommandsGrid.IsVisible && !MenuGrid.IsVisible && !TextGrid.IsVisible)
+                                {
+                                    if (counterDiff == 0 && !_mainCounterDiffZeroObserved)
+                                    {
+                                        _mainCounterDiffZeroObserved = true;
+                                        GHApp.MaybeWriteGHLog("MainCanvas counterDiff is 0");
+                                    }
+                                    if (renderingCounterDiff == 0 && !_renderingCounterDiffZeroObserved)
+                                    {
+                                        _renderingCounterDiffZeroObserved = true;
+                                        GHApp.MaybeWriteGHLog("Rendering counterDiff is 0");
+                                    }
+                                    if ((_mainCounterDiffZeroObserved || _renderingCounterDiffZeroObserved) && !PleaseWaitLabel.IsVisible)
+                                    {
+                                        PleaseWaitLabel.IsVisible = true;
+                                        StopMainCanvasAnimation();
+                                        MainCanvasView.IsVisible = false;
+                                        RefreshScreen = true;
+                                        MainCanvasView.IsVisible = true;
+                                        StartMainCanvasAnimation();
+                                    }
+                                }
+                                else if ((renderingCounterDiff > 0 && _renderingCounterDiffZeroObserved) || (counterDiff > 0 && _mainCounterDiffZeroObserved))
+                                {
+                                    if (counterDiff > 0)
+                                    {
+                                        _mainCounterDiffZeroObserved = false;
+                                        GHApp.MaybeWriteGHLog("MainCanvas counter is back on");
+                                    }
+                                    if (renderingCounterDiff > 0)
+                                    {
+                                        _renderingCounterDiffZeroObserved = false;
+                                        GHApp.MaybeWriteGHLog("Rendering counter is back on");
+                                    }
+                                    if (!_mainCounterDiffZeroObserved && !_renderingCounterDiffZeroObserved && PleaseWaitLabel.IsVisible)
+                                        PleaseWaitLabel.IsVisible = false;
+                                }
+                            }
+#endif
+                            //lock (AnimationTimerLock)
+                            //{
+                            //    currentCounterValue = Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
+                            //}
+                        }
+                        //lock (_fpslock)
+                        {
+                            double calcFps = ts.TotalMilliseconds == 0.0 ? 0.0 : counterDiff / (ts.TotalMilliseconds / 1000.0);
+                            if (calcFps < 0.0f || calcFps > 500.0f) /* Just in case if it is off somehow */
+                            {
+                                calcFps = 0.0;
+                                counterDiff = 0;
+                            }
+                            FPS = calcFps;
+                        }
+                    }
+                    _stopWatch.Restart();
                 }
-                if (PlayingReplay)
-                {
-                    string realTime = GHApp.ReplayRealTime;
-                    if (string.IsNullOrEmpty(realTime))
-                        ReplayRealTimeLabel.Text = "";
-                    else if (realTime != ReplayRealTimeLabel.Text)
-                        ReplayRealTimeLabel.Text = realTime;
+            }
+            else
+            {
+                if (_stopWatch.IsRunning)
+                    _stopWatch.Stop();
+            }
+            if (PlayingReplay)
+            {
+                string realTime = GHApp.ReplayRealTime;
+                if (string.IsNullOrEmpty(realTime))
+                    ReplayRealTimeLabel.Text = "";
+                else if (realTime != ReplayRealTimeLabel.Text)
+                    ReplayRealTimeLabel.Text = realTime;
 
-                    UpdateReplayHeaderLabel();
-                }
-            });
+                UpdateReplayHeaderLabel();
+            }
         }
 
         public async Task RestartGameAfterPageDestruction()
@@ -2220,10 +2204,8 @@ namespace GnollHackX.Pages.Game
                             }
                         }
                     }
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        MainCanvasView.InvalidateSurface();
-                    });
+                    /* Callers run on the UI thread: the platform render loop and the animation counter */
+                    MainCanvasView.InvalidateSurface();
                 }
             }
         }
@@ -2267,10 +2249,8 @@ namespace GnollHackX.Pages.Game
                     else
                         MoreCmdOffsetX = offx + delta;
                 }
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    CommandCanvas.InvalidateSurface();
-                });
+                /* Callers run on the UI thread: the platform render loop and the animation counter */
+                CommandCanvas.InvalidateSurface();
             }
         }
 
@@ -2396,10 +2376,8 @@ namespace GnollHackX.Pages.Game
                         //}
                     }
 
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        MenuCanvas.InvalidateSurface();
-                    });
+                    /* Callers run on the UI thread: the platform render loop and the animation counter */
+                    MenuCanvas.InvalidateSurface();
                     //if(doGC)
                     //{
                     //    _menuUpdateGCCounter = 0;
@@ -2510,10 +2488,8 @@ namespace GnollHackX.Pages.Game
                     }
                 }
 
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    TextCanvas.InvalidateSurface();
-                });
+                /* Callers run on the UI thread: the platform render loop and the animation counter */
+                TextCanvas.InvalidateSurface();
             }
         }
 
@@ -2852,10 +2828,8 @@ namespace GnollHackX.Pages.Game
 
         private void DoHideLoadingScreen()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                LoadingGrid.IsVisible = false;
-            });
+            /* Callers are a dispatcher timer tick and the UI thread */
+            LoadingGrid.IsVisible = false;
         }
         private void DoFadeFromBlackAtStart()
         {
@@ -4321,10 +4295,8 @@ namespace GnollHackX.Pages.Game
         }
         private void FocusToGetLineEntry()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                GetLineEntryText.Focus();
-            });
+            /* Only caller is a dispatcher timer tick, which runs on the UI thread */
+            GetLineEntryText.Focus();
         }
 
         private void HideGetLine()
@@ -5109,24 +5081,22 @@ namespace GnollHackX.Pages.Game
             GHApp.BackButtonPressed -= BackButtonPressed;
             RefreshScreen = false;
 
-            MainThread.BeginInvokeOnMainThread(() =>
+            /* Page lifecycle event; runs on the UI thread */
+            try
             {
-                try
+                Preferences.Set("MapFontSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontSize));
+                Preferences.Set("MapFontAlternateSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontAlternateSize));
+                Preferences.Set("MapFontMiniRelativeSize", Math.Min(GHConstants.MaximumMapMiniRelativeFontSize, Math.Max(GHConstants.MinimumMapMiniRelativeFontSize, MapFontMiniRelativeSize)));
+                lock (_mapOffsetLock)
                 {
-                    Preferences.Set("MapFontSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontSize));
-                    Preferences.Set("MapFontAlternateSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontAlternateSize));
-                    Preferences.Set("MapFontMiniRelativeSize", Math.Min(GHConstants.MaximumMapMiniRelativeFontSize, Math.Max(GHConstants.MinimumMapMiniRelativeFontSize, MapFontMiniRelativeSize)));
-                    lock (_mapOffsetLock)
-                    {
-                        Preferences.Set("MapMiniOffsetX", _mapMiniOffsetX);
-                        Preferences.Set("MapMiniOffsetY", _mapMiniOffsetY);
-                    }
+                    Preferences.Set("MapMiniOffsetX", _mapMiniOffsetX);
+                    Preferences.Set("MapMiniOffsetY", _mapMiniOffsetY);
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                }
-            });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
 
@@ -16937,16 +16907,14 @@ namespace GnollHackX.Pages.Game
         private bool _showUI = true;
         private void ToggleShowUI()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            /* Reached from UI-thread input handling */
+            _showUI = !_showUI;
+            UIGrid.IsVisible = _showUI;
+            if (!DesktopButtons)
             {
-                _showUI = !_showUI;
-                UIGrid.IsVisible = _showUI;
-                if (!DesktopButtons)
-                {
-                    lWornItemsButton.IsVisible = _showUI;
-                    lAbilitiesButton.IsVisible = _showUI;
-                }
-            });
+                lWornItemsButton.IsVisible = _showUI;
+                lAbilitiesButton.IsVisible = _showUI;
+            }
         }
 
         private void AdjustZoomByRatio(float ratio, SKPoint curloc, SKPoint prevloc, SKPoint otherloc)
@@ -20192,10 +20160,7 @@ namespace GnollHackX.Pages.Game
                                             clickRes.ItemIdentifier != 0 &&
                                             timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
                                         {
-                                            MainThread.BeginInvokeOnMainThread(() =>
-                                            {
-                                                MenuCanvas.InvalidateSurface();
-                                            });
+                                            MenuCanvas.InvalidateSurface();
                                             PressMenuOKButton();
                                             _menuPreviousReleaseClick = false;
                                             _menuPreviousReleaseClickIndex = -1;
@@ -20513,10 +20478,7 @@ namespace GnollHackX.Pages.Game
                                     MenuClickResult clickRes = MenuCanvas_EquipmentClickRelease(sender, e, false, screenLogging);
                                     if (clickRes.MenuItemClickIndex == -2 && MenuCancelButton.IsEnabled)
                                     {
-                                        MainThread.BeginInvokeOnMainThread(() =>
-                                        {
-                                            MenuCanvas.InvalidateSurface();
-                                        });
+                                        MenuCanvas.InvalidateSurface();
                                         RequestSwapWeaponAndCloseMenu();
                                         _menuPreviousReleaseClick = false;
                                         _menuPreviousReleaseClickIndex = -1;
@@ -20530,10 +20492,7 @@ namespace GnollHackX.Pages.Game
                                             clickRes.ItemIdentifier != 0 &&
                                             timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
                                         {
-                                            MainThread.BeginInvokeOnMainThread(() =>
-                                            {
-                                                MenuCanvas.InvalidateSurface();
-                                            });
+                                            MenuCanvas.InvalidateSurface();
                                             PressMenuOKButton();
                                             _menuPreviousReleaseClick = false;
                                             _menuPreviousReleaseClickIndex = -1;
@@ -20646,10 +20605,8 @@ namespace GnollHackX.Pages.Game
             if (curtime - _savedMenuTimeStamp < TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold * 0.8))
                 return; /* Changed touch position */
 
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                MenuCanvas_LongTap(_savedMenuSender, _savedMenuEventArgs);
-            });
+            /* Callers are a dispatcher timer tick and the UI thread */
+            MenuCanvas_LongTap(_savedMenuSender, _savedMenuEventArgs);
         }
 
         private GHMenuItem _countMenuItem = null;
@@ -20859,10 +20816,7 @@ namespace GnollHackX.Pages.Game
             okClicked = doclickok && MenuOKButton.IsEnabled;
             if (okClicked)
             {
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    MenuCanvas.InvalidateSurface();
-                });
+                MenuCanvas.InvalidateSurface();
                 PressMenuOKButton();
             }
             return new MenuClickResult(okClicked, clickIdx, identifier);
@@ -20929,10 +20883,7 @@ namespace GnollHackX.Pages.Game
             okClicked = doclickok && MenuOKButton.IsEnabled;
             if (okClicked)
             {
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    MenuCanvas.InvalidateSurface();
-                });
+                MenuCanvas.InvalidateSurface();
                 PressMenuOKButton();
             }
             return new MenuClickResult(okClicked, clickIdx, identifier);
@@ -21415,16 +21366,14 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                MenuGrid.IsVisible = false;
-                //MainGrid.IsVisible = true;
-                IsMainCanvasOn = true;
-                StopMenuCanvasAnimation();
-                MenuWindowGlyphImage.StopAnimation();
-                RefreshScreen = true;
-                StartMainCanvasAnimation();
-            });
+            /* Only caller is a dispatcher timer tick, which runs on the UI thread */
+            MenuGrid.IsVisible = false;
+            //MainGrid.IsVisible = true;
+            IsMainCanvasOn = true;
+            StopMenuCanvasAnimation();
+            MenuWindowGlyphImage.StopAnimation();
+            RefreshScreen = true;
+            StartMainCanvasAnimation();
         }
 
         //private readonly object _delayedTextHideLock = new object();
@@ -21479,23 +21428,21 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            MainThread.BeginInvokeOnMainThread(() =>
+            /* Only caller is a dispatcher timer tick, which runs on the UI thread */
+            TextGrid.IsVisible = false;
+            //MainGrid.IsVisible = true;
+            IsMainCanvasOn = true;
+            TextWindowGlyphImage.StopAnimation();
+            lock (_textScrollLock)
             {
-                TextGrid.IsVisible = false;
-                //MainGrid.IsVisible = true;
-                IsMainCanvasOn = true;
-                TextWindowGlyphImage.StopAnimation();
-                lock (_textScrollLock)
-                {
-                    _textScrollOffset = 0;
-                    _textScrollSpeed = 0;
-                    _textScrollSpeedOn = false;
-                    InterlockedTextScrollOffset = _textScrollOffset;
-                }
-                StopTextCanvasAnimation();
-                RefreshScreen = true;
-                StartMainCanvasAnimation();
-            });
+                _textScrollOffset = 0;
+                _textScrollSpeed = 0;
+                _textScrollSpeedOn = false;
+                InterlockedTextScrollOffset = _textScrollOffset;
+            }
+            StopTextCanvasAnimation();
+            RefreshScreen = true;
+            StartMainCanvasAnimation();
         }
 
         private int _menuEquipmentSideShown = 0;
@@ -23025,18 +22972,15 @@ namespace GnollHackX.Pages.Game
                 _messageScrollSpeedRecords.Clear();
                 InterlockedMessageScrollOffset = _messageScrollOffset;
             }
-            MainThread.BeginInvokeOnMainThread(() =>
+            if (MessageFilterFrame.IsVisible && MessageFilterEntry.IsVisible)
             {
-                if (MessageFilterFrame.IsVisible && MessageFilterEntry.IsVisible)
-                {
-                    MessageFilterEntry.Unfocus();
-                    ESCButton.Focus();
-                    //if (UpperCmdGrid.IsVisible)
-                    //    ESCButton.Focus();
-                    //else
-                    //    SimpleESCButton.Focus();
-                }
-            });
+                MessageFilterEntry.Unfocus();
+                ESCButton.Focus();
+                //if (UpperCmdGrid.IsVisible)
+                //    ESCButton.Focus();
+                //else
+                //    SimpleESCButton.Focus();
+            }
             bool prevForceAllMessages = ForceAllMessages;
             ForceAllMessages = !prevForceAllMessages;
         }
@@ -24647,11 +24591,8 @@ namespace GnollHackX.Pages.Game
                     {
                         MoreCmdPage = cmdPage - 1;
                         MoreCmdOffsetX = 0;
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            CommandCanvas.InvalidateSurface();
-                            UpdateMoreNextPrevButtonVisibility(true, true);
-                        });
+                        CommandCanvas.InvalidateSurface();
+                        UpdateMoreNextPrevButtonVisibility(true, true);
                     }
                     handled = true;
                 }
@@ -24661,11 +24602,8 @@ namespace GnollHackX.Pages.Game
                     {
                         MoreCmdPage = cmdPage + 1;
                         MoreCmdOffsetX = 0;
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            CommandCanvas.InvalidateSurface();
-                            UpdateMoreNextPrevButtonVisibility(true, true);
-                        });
+                        CommandCanvas.InvalidateSurface();
+                        UpdateMoreNextPrevButtonVisibility(true, true);
                     }
                     handled = true;
                 }
@@ -24675,11 +24613,8 @@ namespace GnollHackX.Pages.Game
                     {
                         MoreCmdPage = 1;
                         MoreCmdOffsetX = 0;
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            CommandCanvas.InvalidateSurface();
-                            UpdateMoreNextPrevButtonVisibility(true, true);
-                        });
+                        CommandCanvas.InvalidateSurface();
+                        UpdateMoreNextPrevButtonVisibility(true, true);
                     }
                     handled = true;
                 }
@@ -24689,11 +24624,8 @@ namespace GnollHackX.Pages.Game
                     {
                         MoreCmdPage = CurrentMoreButtonPageMaxNumber - 1;
                         MoreCmdOffsetX = 0;
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            CommandCanvas.InvalidateSurface();
-                            UpdateMoreNextPrevButtonVisibility(true, true);
-                        });
+                        CommandCanvas.InvalidateSurface();
+                        UpdateMoreNextPrevButtonVisibility(true, true);
                     }
                     handled = true;
                 }

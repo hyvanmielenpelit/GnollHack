@@ -585,113 +585,120 @@ namespace GnollHackX.Pages.Game
             bool handled = false;
             try
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                /* handled is read as soon as this method returns, so the key is resolved
+                   synchronously here; the dispatched lambda yields at its first await */
+                Func<Task> pending = null;
+                if (DeveloperPopupGrid.IsVisible)
                 {
-                    try
+                    /* Developer popup is open — handle popup-specific keys */
+                    switch (key)
                     {
-                        if (DeveloperPopupGrid.IsVisible)
-                        {
-                            /* Developer popup is open — handle popup-specific keys */
-                            switch (key)
-                            {
-                                case (int)'o':
-                                    if (btnDevOptions.IsEnabled && btnDevOptions.IsVisible)
-                                        await CloseAndShowOptions();
-                                    handled = true;
-                                    break;
-                                case (int)'m':
-                                    if (btnDevMessages.IsEnabled && btnDevMessages.IsVisible)
-                                        btnMessages_Clicked(btnDevMessages, EventArgs.Empty);
-                                    handled = true;
-                                    break;
-                                case (int)'f':
-                                    if (btnDevDumpFrameLog.IsEnabled && btnDevDumpFrameLog.IsVisible)
-                                        btnDumpFrameLog_Clicked(btnDevDumpFrameLog, EventArgs.Empty);
-                                    handled = true;
-                                    break;
-                                case (int)'g':
-                                    if (btnDevGC.IsEnabled && btnDevGC.IsVisible)
-                                        btnGC_Clicked(btnDevGC, EventArgs.Empty);
-                                    handled = true;
-                                    break;
-                                case ' ':
-                                case 13: /* Enter */
-                                    CloseDeveloperPopup();
-                                    handled = true;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            /* Main menu keys */
-                            switch (key)
-                            {
-                                case (int)'s':
-                                    if(isMeta)
-                                    {
-                                        if (btnSave.IsEnabled && btnSave.IsVisible && MainLayout.IsEnabled)
-                                            await CloseAndSaveGame();
-                                        handled = true;
-                                    }
-                                    else if (!isCtrl)
-                                    {
-                                        if (btnSettings.IsEnabled && btnSettings.IsVisible && MainLayout.IsEnabled)
-                                            await OpenSettingsPage();
-                                        handled = true;
-                                    }
-                                    break;
-                                case (int)'v':
-                                    if (btnVersion.IsEnabled && btnVersion.IsVisible && MainLayout.IsEnabled)
-                                        await OpenVersionPage();
-                                    handled = true;
-                                    break;
-                                case (int)'t':
-                                    if (btnSnapshot.IsEnabled && btnSnapshot.IsVisible && MainLayout.IsEnabled)
-                                        await TakeSnapshot();
-                                    handled = true;
-                                    break;
-                                case (int)'l':
-                                    if (btnLibrary.IsEnabled && btnLibrary.IsVisible && MainLayout.IsEnabled)
-                                        await OpenLibraryPage();
-                                    handled = true;
-                                    break;
-                                case (int)'D':
-                                    if (btnDeveloper.IsEnabled && btnDeveloper.IsVisible && MainLayout.IsEnabled)
-                                        btnDeveloper_Clicked(btnDeveloper, EventArgs.Empty);
-                                    handled = true;
-                                    break;
-                                case (int)'d':
-                                    if (btnDelphi.IsEnabled && btnDelphi.IsVisible && MainLayout.IsEnabled)
-                                        await OpenOraclePage();
-                                    handled = true;
-                                    break;
-                                case (int)'w':
-                                    if (btnWiki.IsEnabled && btnWiki.IsVisible && MainLayout.IsEnabled)
-                                        await OpenWikiPage();
-                                    handled = true;
-                                    break;
-                                case (int)'o':
-                                    if (btnOverseer.IsEnabled && btnOverseer.IsVisible && MainLayout.IsEnabled)
-                                        await OpenOverseerPage();
-                                    handled = true;
-                                    break;
-                                case (int)'u':
-                                    if (btnTips.IsEnabled && btnTips.IsVisible && MainLayout.IsEnabled)
-                                        await CloseAndShowGUITips();
-                                    handled = true;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
+                        case (int)'o':
+                            if (btnDevOptions.IsEnabled && btnDevOptions.IsVisible)
+                                pending = CloseAndShowOptions;
+                            handled = true;
+                            break;
+                        case (int)'m':
+                            if (btnDevMessages.IsEnabled && btnDevMessages.IsVisible)
+                                btnMessages_Clicked(btnDevMessages, EventArgs.Empty);
+                            handled = true;
+                            break;
+                        case (int)'f':
+                            if (btnDevDumpFrameLog.IsEnabled && btnDevDumpFrameLog.IsVisible)
+                                btnDumpFrameLog_Clicked(btnDevDumpFrameLog, EventArgs.Empty);
+                            handled = true;
+                            break;
+                        case (int)'g':
+                            if (btnDevGC.IsEnabled && btnDevGC.IsVisible)
+                                btnGC_Clicked(btnDevGC, EventArgs.Empty);
+                            handled = true;
+                            break;
+                        case ' ':
+                        case 13: /* Enter */
+                            CloseDeveloperPopup();
+                            handled = true;
+                            break;
+                        default:
+                            break;
                     }
-                    catch (Exception ex)
+                }
+                else
+                {
+                    /* Main menu keys */
+                    switch (key)
                     {
-                        Debug.WriteLine(ex);
+                        case (int)'s':
+                            if(isMeta)
+                            {
+                                if (btnSave.IsEnabled && btnSave.IsVisible && MainLayout.IsEnabled)
+                                    pending = CloseAndSaveGame;
+                                handled = true;
+                            }
+                            else if (!isCtrl)
+                            {
+                                if (btnSettings.IsEnabled && btnSettings.IsVisible && MainLayout.IsEnabled)
+                                    pending = OpenSettingsPage;
+                                handled = true;
+                            }
+                            break;
+                        case (int)'v':
+                            if (btnVersion.IsEnabled && btnVersion.IsVisible && MainLayout.IsEnabled)
+                                pending = OpenVersionPage;
+                            handled = true;
+                            break;
+                        case (int)'t':
+                            if (btnSnapshot.IsEnabled && btnSnapshot.IsVisible && MainLayout.IsEnabled)
+                                pending = TakeSnapshot;
+                            handled = true;
+                            break;
+                        case (int)'l':
+                            if (btnLibrary.IsEnabled && btnLibrary.IsVisible && MainLayout.IsEnabled)
+                                pending = OpenLibraryPage;
+                            handled = true;
+                            break;
+                        case (int)'D':
+                            if (btnDeveloper.IsEnabled && btnDeveloper.IsVisible && MainLayout.IsEnabled)
+                                btnDeveloper_Clicked(btnDeveloper, EventArgs.Empty);
+                            handled = true;
+                            break;
+                        case (int)'d':
+                            if (btnDelphi.IsEnabled && btnDelphi.IsVisible && MainLayout.IsEnabled)
+                                pending = OpenOraclePage;
+                            handled = true;
+                            break;
+                        case (int)'w':
+                            if (btnWiki.IsEnabled && btnWiki.IsVisible && MainLayout.IsEnabled)
+                                pending = OpenWikiPage;
+                            handled = true;
+                            break;
+                        case (int)'o':
+                            if (btnOverseer.IsEnabled && btnOverseer.IsVisible && MainLayout.IsEnabled)
+                                pending = OpenOverseerPage;
+                            handled = true;
+                            break;
+                        case (int)'u':
+                            if (btnTips.IsEnabled && btnTips.IsVisible && MainLayout.IsEnabled)
+                                pending = CloseAndShowGUITips;
+                            handled = true;
+                            break;
+                        default:
+                            break;
                     }
-                });
+                }
+                if (pending != null)
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        try
+                        {
+                            await pending();
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -708,45 +715,53 @@ namespace GnollHackX.Pages.Game
             bool handled = false;
             try
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                /* handled is read as soon as this method returns, so the key is resolved
+                   synchronously here; the dispatched lambda yields at its first await */
+                Func<Task> pending = null;
+                if (DeveloperPopupGrid.IsVisible)
                 {
-                    try
+                    /* Developer popup is open — ESC/Enter/Space closes it */
+                    if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space)
                     {
-                        if (DeveloperPopupGrid.IsVisible)
-                        {
-                            /* Developer popup is open — ESC/Enter/Space closes it */
-                            if (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space)
-                            {
-                                CloseDeveloperPopup();
-                                handled = true;
-                            }
-                        }
-                        else
-                        {
-                            if (key == GHSpecialKey.Escape)
-                            {
-                                if (btnBackToGame.IsEnabled && btnBackToGame.IsVisible && MainLayout.IsEnabled)
-                                    await BackToGame();
-                            }
-                            else if (isMeta && key == GHSpecialKey.A + 's' - 'a')
-                            {
-                                if (btnSave.IsEnabled && btnSave.IsVisible && MainLayout.IsEnabled)
-                                    await CloseAndSaveGame();
-                                handled = true;
-                            }
-                            else if (isMeta && key == GHSpecialKey.A + 'q' - 'a')
-                            {
-                                if (btnQuit.IsEnabled && btnQuit.IsVisible && MainLayout.IsEnabled)
-                                    await CloseAndQuitGame();
-                                handled = true;
-                            }
-                        }
+                        CloseDeveloperPopup();
+                        handled = true;
                     }
-                    catch (Exception ex)
+                }
+                else
+                {
+                    if (key == GHSpecialKey.Escape)
                     {
-                        Debug.WriteLine(ex);
+                        if (btnBackToGame.IsEnabled && btnBackToGame.IsVisible && MainLayout.IsEnabled)
+                            pending = BackToGame;
+                        handled = true;
                     }
-                });
+                    else if (isMeta && key == GHSpecialKey.A + 's' - 'a')
+                    {
+                        if (btnSave.IsEnabled && btnSave.IsVisible && MainLayout.IsEnabled)
+                            pending = CloseAndSaveGame;
+                        handled = true;
+                    }
+                    else if (isMeta && key == GHSpecialKey.A + 'q' - 'a')
+                    {
+                        if (btnQuit.IsEnabled && btnQuit.IsVisible && MainLayout.IsEnabled)
+                            pending = CloseAndQuitGame;
+                        handled = true;
+                    }
+                }
+                if (pending != null)
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        try
+                        {
+                            await pending();
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {
