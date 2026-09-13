@@ -238,35 +238,42 @@ namespace GnollHackX.Pages.MainScreen
             bool handled = false;
             try
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                /* handled is read as soon as this method returns, so the match is resolved
+                   synchronously here; the dispatched lambda yields at its first await */
+                int pendingCategoryId = 0;
+                foreach (var child in AchievementLayout.Children)
                 {
-                    try
+                    var rib = child as RowImageButton;
+                    if (rib != null)
                     {
-                        foreach (var child in AchievementLayout.Children)
+                        if (!string.IsNullOrEmpty(rib.LblText))
                         {
-                            var rib = child as RowImageButton;
-                            if (rib != null)
+
+                            char upperLetter = char.ToUpper(rib.LblText[0]);
+                            char lowerLetter = char.ToLower(rib.LblText[0]);
+                            if (key == upperLetter || key == lowerLetter)
                             {
-                                if (!string.IsNullOrEmpty(rib.LblText))
-                                {
-                                    
-                                    char upperLetter = char.ToUpper(rib.LblText[0]);
-                                    char lowerLetter = char.ToLower(rib.LblText[0]);
-                                    if (key == upperLetter || key == lowerLetter)
-                                    {
-                                        await OpenAchievementDetailsPage(rib.BtnCommand);
-                                        handled = true;
-                                        break;
-                                    }
-                                }
+                                pendingCategoryId = rib.BtnCommand;
+                                handled = true;
+                                break;
                             }
                         }
                     }
-                    catch (Exception ex)
+                }
+                if (handled)
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
-                    }
-                });
+                        try
+                        {
+                            await OpenAchievementDetailsPage(pendingCategoryId);
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(ex);
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {

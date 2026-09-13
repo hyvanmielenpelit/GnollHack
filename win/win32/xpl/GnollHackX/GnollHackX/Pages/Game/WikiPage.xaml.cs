@@ -59,10 +59,8 @@ namespace GnollHackX.Pages.Game
                 _timer.IsRepeating = true;
                 _timer.Tick += (s, e) =>
                 {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        UpdateNavigationButtons();
-                    });
+                    /* Dispatcher timer ticks on the UI thread */
+                    UpdateNavigationButtons();
                 };
                 _timer.Start();
             };
@@ -96,20 +94,16 @@ namespace GnollHackX.Pages.Game
                 timer.IsRepeating = false;
                 timer.Tick += (s, e) =>
                 {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        UpdateNavigationButtons();
-                    });
+                    /* Dispatcher timer ticks on the UI thread */
+                    UpdateNavigationButtons();
                 };
                 timer.Start();
             }
 #else
             Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
             {
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    UpdateNavigationButtons();
-                });
+                /* Device.StartTimer fires on the main thread */
+                UpdateNavigationButtons();
                 return false;
             });
 #endif

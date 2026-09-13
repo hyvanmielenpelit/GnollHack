@@ -154,26 +154,24 @@ namespace GnollHackX
 
         private void DoIncrementCounter()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            /* Only caller is the animation timer tick, which runs on the UI thread */
+            long counter = Interlocked.Increment(ref _counterValue);
+            if (counter == long.MaxValue)
             {
-                long counter = Interlocked.Increment(ref _counterValue);
-                if (counter == long.MaxValue)
-                {
-                    Interlocked.Exchange(ref _counterValue, 0);
-                    counter = 0;
-                }
-                //lock (_counterValueLock)
-                //{
-                //    _counterValue++;
-                //    if (_counterValue >= (long)int.MaxValue)
-                //        _counterValue = 0;
-                //    counter = _counterValue;
-                //}
-                byte alpha = GetSecondBitmapAlpha(counter);
-                byte prevalpha = GetSecondBitmapAlpha(counter - 1);
-                if (alpha > 0 || prevalpha > 0 || FPSDebug)
-                    InvalidateSurface();
-            });
+                Interlocked.Exchange(ref _counterValue, 0);
+                counter = 0;
+            }
+            //lock (_counterValueLock)
+            //{
+            //    _counterValue++;
+            //    if (_counterValue >= (long)int.MaxValue)
+            //        _counterValue = 0;
+            //    counter = _counterValue;
+            //}
+            byte alpha = GetSecondBitmapAlpha(counter);
+            byte prevalpha = GetSecondBitmapAlpha(counter - 1);
+            if (alpha > 0 || prevalpha > 0 || FPSDebug)
+                InvalidateSurface();
         }
 
         public void Stop()

@@ -96,13 +96,24 @@ namespace GnollHackM.Platforms.iOS
             if (platformView == null)
                 return;
 
-            platformView.BeginInvokeOnMainThread(() =>
+            /* NSObject.BeginInvokeOnMainThread posts to the run loop even when already on
+               the main thread, and allocates a dispatcher per call; this runs per frame */
+            if (NSThread.Current.IsMainThread)
             {
-                if (platformView.Handle != IntPtr.Zero && platformView.Paused && platformView.EnableSetNeedsDisplay)
-                {
-                    platformView.SetNeedsDisplay();
-                }
-            });
+                SetNeedsDisplayIfPaused(platformView);
+            }
+            else
+            {
+                platformView.BeginInvokeOnMainThread(() => SetNeedsDisplayIfPaused(platformView));
+            }
+        }
+
+        private static void SetNeedsDisplayIfPaused(SKMetalView platformView)
+        {
+            if (platformView.Handle != IntPtr.Zero && platformView.Paused && platformView.EnableSetNeedsDisplay)
+            {
+                platformView.SetNeedsDisplay();
+            }
         }
 
         public static void MapIgnorePixelScaling(iOSSKGLViewMetalHandler handler, ISKGLView view)

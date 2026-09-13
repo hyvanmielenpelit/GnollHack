@@ -593,63 +593,70 @@ namespace GnollHackX.Pages.MainScreen
             bool handled = false;
             try
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                /* handled is read as soon as this method returns, so the key is resolved
+                   synchronously here; the dispatched lambda yields at its first await */
+                Func<Task> pending = null;
+                switch (key)
                 {
-                    try
+                    case (int)'t':
+                    case (int)'T':
+                        if (VaultGrid.IsEnabled)
+                            pending = OpenTopScorePage;
+                        handled = true;
+                        break;
+                    case (int)'a':
+                    case (int)'A':
+                        if (VaultGrid.IsEnabled)
+                            pending = OpenAchievementsPage;
+                        handled = true;
+                        break;
+                    case (int)'l':
+                    case (int)'L':
+                        if (VaultGrid.IsEnabled)
+                            pending = OpenLibraryPage;
+                        handled = true;
+                        break;
+                    case (int)'m':
+                    case (int)'M':
+                        if (VaultGrid.IsEnabled)
+                            pending = OpenMusicPage;
+                        handled = true;
+                        break;
+                    case (int)'s':
+                    case (int)'S':
+                        if (VaultGrid.IsEnabled)
+                            pending = OpenSnapshotPage;
+                        handled = true;
+                        break;
+                    case (int)'r':
+                    case (int)'R':
+                        if (VaultGrid.IsEnabled)
+                            pending = OpenReplayPage;
+                        handled = true;
+                        break;
+                    case (int)'f':
+                    case (int)'F':
+                        if (VaultGrid.IsEnabled)
+                            pending = OpenSaveTransferPage;
+                        handled = true;
+                        break;
+                    default:
+                        break;
+                }
+                if (pending != null)
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        switch (key)
+                        try
                         {
-                            case (int)'t':
-                            case (int)'T':
-                                if (VaultGrid.IsEnabled)
-                                    await OpenTopScorePage();
-                                handled = true;
-                                break;
-                            case (int)'a':
-                            case (int)'A':
-                                if (VaultGrid.IsEnabled)
-                                    await OpenAchievementsPage();
-                                handled = true;
-                                break;
-                            case (int)'l':
-                            case (int)'L':
-                                if (VaultGrid.IsEnabled)
-                                    await OpenLibraryPage();
-                                handled = true;
-                                break;
-                            case (int)'m':
-                            case (int)'M':
-                                if (VaultGrid.IsEnabled)
-                                    await OpenMusicPage();
-                                handled = true;
-                                break;
-                            case (int)'s':
-                            case (int)'S':
-                                if (VaultGrid.IsEnabled)
-                                    await OpenSnapshotPage();
-                                handled = true;
-                                break;
-                            case (int)'r':
-                            case (int)'R':
-                                if (VaultGrid.IsEnabled)
-                                    await OpenReplayPage();
-                                handled = true;
-                                break;
-                            case (int)'f':
-                            case (int)'F':
-                                if (VaultGrid.IsEnabled)
-                                    await OpenSaveTransferPage();
-                                handled = true;
-                                break;
-                            default:
-                                break;
+                            await pending();
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex);
-                    }
-                });
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(ex);
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {

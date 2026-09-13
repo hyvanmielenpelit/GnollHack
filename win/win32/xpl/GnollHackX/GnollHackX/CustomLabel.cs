@@ -846,7 +846,7 @@ namespace GnollHackX
                                 {
                                     _timer.Interval = TimeSpan.FromSeconds(1.0 / UIUtils.GetGeneralAnimationFrequency());
                                     _timer.IsRepeating = true;
-                                    _timer.Tick += (s, e) => { MainThread.BeginInvokeOnMainThread(() => { UpdateLabelScroll(); }); };
+                                    _timer.Tick += (s, e) => { UpdateLabelScroll(); };
                                     _timer.Start();
                                 }
                             }
@@ -858,7 +858,7 @@ namespace GnollHackX
                             StopTimer = false;
                             Device.StartTimer(TimeSpan.FromSeconds(1.0 / UIUtils.GetGeneralAnimationFrequency()), () =>
                             {
-                                MainThread.BeginInvokeOnMainThread(() => { UpdateLabelScroll(); });
+                                UpdateLabelScroll();
                                 return !StopTimer;
                             });
 #endif

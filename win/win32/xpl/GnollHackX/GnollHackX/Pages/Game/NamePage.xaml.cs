@@ -124,18 +124,14 @@ namespace GnollHackX.Pages.Game
 
         private void ReplayDoEnterName()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                eName.Text = _replayEnteredName;
-            });
+            /* Callers are a dispatcher timer tick and the UI thread */
+            eName.Text = _replayEnteredName;
         }
 
         private void FocusToEnterName()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                eName.Focus();
-            });
+            /* Only caller is a dispatcher timer tick, which runs on the UI thread */
+            eName.Focus();
         }
 
         private bool _backPressed = false;
@@ -253,32 +249,44 @@ namespace GnollHackX.Pages.Game
             bool handled = false;
             try
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                /* handled is read as soon as this method returns, so it is set here rather
+                   than inside the dispatched lambda, which yields at its first await */
+                if (key == GHSpecialKey.Escape)
                 {
-                    try
+                    if (btnCancel.IsEnabled)
                     {
-                        if (key == GHSpecialKey.Escape)
+                        handled = true;
+                        MainThread.BeginInvokeOnMainThread(async () =>
                         {
-                            if (btnCancel.IsEnabled)
+                            try
                             {
                                 await DoPressCancel();
-                                handled = true;
                             }
-                        }
-                        else if (key == GHSpecialKey.Enter)
+                            catch (Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine(ex);
+                            }
+                        });
+                    }
+                }
+                else if (key == GHSpecialKey.Enter)
+                {
+                    if (btnOK.IsEnabled)
+                    {
+                        handled = true;
+                        MainThread.BeginInvokeOnMainThread(async () =>
                         {
-                            if (btnOK.IsEnabled)
+                            try
                             {
                                 await DoPressOk();
-                                handled = true;
                             }
-                        }
+                            catch (Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine(ex);
+                            }
+                        });
                     }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex);
-                    }
-                });
+                }
             }
             catch (Exception ex)
             {

@@ -73,25 +73,25 @@ public static class MauiProgram
 
 #if SENTRY && !WINDOWS
             .UseSentry(options => {
-                  // The DSN is the only required setting.
-                  options.Dsn = GHApp.CurrentUserSecrets?.DefaultSentryDNS ?? "";
+                // The DSN is the only required setting.
+                options.Dsn = GHApp.CurrentUserSecrets?.DefaultSentryDNS ?? "";
 
-                  // Debug messages go to stdout through Console.WriteLine, so this stays
-                  // out of shipped builds.
 #if DEBUG
-                  options.Debug = true;
+                // Debug messages go to stdout through Console.WriteLine, so this stays
+                // out of shipped builds.
+                options.Debug = true;
+
+                // Set TracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+                // We recommend adjusting this value in production.
+                options.TracesSampleRate = 1.0;
 #endif
 
-                  // Set TracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-                  // We recommend adjusting this value in production.
-                  options.TracesSampleRate = 1.0;
-
-                  // Other Sentry options can be set here.
-                  options.CaptureFailedRequests = false;
+                // Other Sentry options can be set here.
+                options.CaptureFailedRequests = false;
 #if ANDROID || IOS
-                  /* The scope is the only channel by which the crash-context snapshot from
-                     UpdateSentryCrashContextScope reaches a native signal-handler crash. */
-                  options.EnableScopeSync = true;
+                /* The scope is the only channel by which the crash-context snapshot from
+                    UpdateSentryCrashContextScope reaches a native signal-handler crash. */
+                options.EnableScopeSync = true;
 
                 options.SetBeforeSend(@event =>
                 {
@@ -158,15 +158,15 @@ public static class MauiProgram
                 // The DSN is the only required setting.
                 options.Dsn = GHApp.CurrentUserSecrets?.DefaultSentryDNS ?? "";
 
+#if DEBUG
                 // Debug messages go to stdout through Console.WriteLine, so this stays
                 // out of shipped builds.
-#if DEBUG
                 options.Debug = true;
-#endif
 
                 // Set TracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
                 // We recommend adjusting this value in production.
                 options.TracesSampleRate = 1.0;
+#endif
 
                 // Other Sentry options can be set here.
                 options.CaptureFailedRequests = false;

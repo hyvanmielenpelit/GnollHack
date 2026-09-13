@@ -59,10 +59,8 @@ namespace GnollHackX
             if (PointerEntered != null)
             {
                 e.Handled = true;
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    PointerEntered?.Invoke(sender, EventArgs.Empty);
-                });
+                /* WinUI raises pointer events on the UI thread */
+                PointerEntered?.Invoke(sender, EventArgs.Empty);
             }
         }
 
@@ -71,10 +69,8 @@ namespace GnollHackX
             if(PointerExited != null)
             {
                 e.Handled = true;
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    PointerExited?.Invoke(sender, EventArgs.Empty);
-                });
+                /* WinUI raises pointer events on the UI thread */
+                PointerExited?.Invoke(sender, EventArgs.Empty);
             }
         }
 #endif
