@@ -75,7 +75,7 @@ namespace GnollHackX
             get
             {
                 if ((uint)index >= (uint)_count)
-                    throw new ArgumentOutOfRangeException(nameof(index));
+                    ThrowIndexOutOfRange();
 
                 return ref _items[index];
             }
@@ -124,14 +124,18 @@ namespace GnollHackX
         public void Insert(int index, in T item)
         {
             if ((uint)index > (uint)_count)
-                throw new ArgumentOutOfRangeException(nameof(index));
+                ThrowIndexOutOfRange();
+
+            /* item is a reference, not a value, and may alias a slot that the shift
+               below overwrites, so it is copied out first. */
+            T inserted = item;
 
             if (_count == _items.Length)
                 Grow(_count + 1);
             if (index < _count)
                 Array.Copy(_items, index, _items, index + 1, _count - index);
 
-            _items[index] = item;
+            _items[index] = inserted;
             _count++;
         }
 
@@ -150,7 +154,7 @@ namespace GnollHackX
         public void RemoveAt(int index)
         {
             if ((uint)index >= (uint)_count)
-                throw new ArgumentOutOfRangeException(nameof(index));
+                ThrowIndexOutOfRange();
 
             _count--;
             if (index < _count)
@@ -164,7 +168,7 @@ namespace GnollHackX
         public void RemoveAtSwapBack(int index)
         {
             if ((uint)index >= (uint)_count)
-                throw new ArgumentOutOfRangeException(nameof(index));
+                ThrowIndexOutOfRange();
 
             _count--;
             if (index != _count)
@@ -258,6 +262,14 @@ namespace GnollHackX
                 return true;
 //#endif
             }
+        }
+
+        /* Kept out of its callers so that a bounds check inlines as a compare and a
+           call: constructing the exception in place bloats every inlined indexer. */
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ThrowIndexOutOfRange()
+        {
+            throw new ArgumentOutOfRangeException("index");
         }
 
         private void Grow(int minimum)

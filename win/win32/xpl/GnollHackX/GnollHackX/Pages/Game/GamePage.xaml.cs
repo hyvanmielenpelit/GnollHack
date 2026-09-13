@@ -6431,7 +6431,7 @@ namespace GnollHackX.Pages.Game
 
             if (delayedDraw)
             {
-                AddFrameDrawCommand(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY));
+                _drawCommands.Add(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY));
                 return;
             }
 
@@ -6449,7 +6449,7 @@ namespace GnollHackX.Pages.Game
             }
             else if (destSplitY >= dest.Bottom)
             {
-                AddFrameDrawCommand(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY));
+                _drawCommands.Add(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY));
             }
             else
             {
@@ -6469,20 +6469,8 @@ namespace GnollHackX.Pages.Game
                     new SKSamplingOptions(SKFilterMode.Nearest, usingGL && usingMipMap ? SKMipmapMode.Nearest : SKMipmapMode.None),
 #endif
                     paint);
-                AddFrameDrawCommand(new GHDrawCommand(canvas.TotalMatrix, enlSource, enlDest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY));
+                _drawCommands.Add(new GHDrawCommand(canvas.TotalMatrix, enlSource, enlDest, bitmap, paint.Color, paint.ColorFilter, sheetIdx, mapX, mapY));
             }
-        }
-
-        private void AddFrameDrawCommand(in GHDrawCommand cmd)
-        {
-            _drawCommands.Add(in cmd);
-        }
-
-        /* The commands hold bitmap, color filter and object references, so the used part of
-           the list is cleared rather than just the count */
-        private void ResetFrameDrawCommands()
-        {
-            _drawCommands.Clear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -7800,7 +7788,7 @@ namespace GnollHackX.Pages.Game
 
             bool isLandscape = canvaswidth > canvasheight;
 
-            ResetFrameDrawCommands();
+            _drawCommands.Clear();
             _lastSheetSwitchCount = _sheetSwitchCount;
             _sheetSwitchCount = 0;
             _drawSheetIdx = -1;
@@ -8943,7 +8931,7 @@ namespace GnollHackX.Pages.Game
                                                     finally
                                                     {
                                                         canvas.Restore();
-                                                        ResetFrameDrawCommands();
+                                                        _drawCommands.Clear();
                                                     }
                                                 }
                                             }
@@ -13687,7 +13675,7 @@ namespace GnollHackX.Pages.Game
 
             if (delayedDraw)
             {
-                AddFrameDrawCommand(new GHDrawCommand(canvas.TotalMatrix, paint.Color, paint.ColorFilter, mapx, mapy, new AutoDrawParameterDefinition(autodraw, otmp_round, layer_idx,
+                _drawCommands.Add(new GHDrawCommand(canvas.TotalMatrix, paint.Color, paint.ColorFilter, mapx, mapy, new AutoDrawParameterDefinition(autodraw, otmp_round, layer_idx,
                      tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
                      tx, ty, width, height, scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
                      is_inventory, drawwallends)));
