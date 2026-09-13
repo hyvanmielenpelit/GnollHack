@@ -62,12 +62,10 @@ namespace GnollHackX
         public int SheetIdx;
         public int MapX;
         public int MapY;
-        /* Grouping the deferred lists by sheet must not reorder across layers */
-        public int LayerIdx;
         public bool IsAutoDraw;
         public AutoDrawParameterDefinition AutoDrawParameters;
 
-        public GHDrawCommand(SKMatrix matrix, SKRect sourceRect, SKRect destinationRect, SKImage sourceBitmap, SKColor paintColor, SKColorFilter paintColorFilter, int sheetIdx, int mapX, int mapY, int layerIdx)
+        public GHDrawCommand(SKMatrix matrix, SKRect sourceRect, SKRect destinationRect, SKImage sourceBitmap, SKColor paintColor, SKColorFilter paintColorFilter, int sheetIdx, int mapX, int mapY)
         {
             Matrix = matrix;
             SourceRect = sourceRect;
@@ -78,21 +76,17 @@ namespace GnollHackX
             SheetIdx = sheetIdx;
             MapX = mapX;
             MapY = mapY;
-            LayerIdx = layerIdx;
 #if !GNH_MAUI
             IsAutoDraw = false;
             AutoDrawParameters = new AutoDrawParameterDefinition();
 #endif
         }
-        /* sheetIdx is the sheet of the tile being decorated: it is only a grouping key,
-           the components themselves select their own sheets as they are drawn. */
-        public GHDrawCommand(SKMatrix matrix, SKColor paintColor, SKColorFilter paintColorFilter, int sheetIdx, int mapX, int mapY, AutoDrawParameterDefinition parameters)
+        public GHDrawCommand(SKMatrix matrix, SKColor paintColor, SKColorFilter paintColorFilter, int mapX, int mapY, AutoDrawParameterDefinition parameters)
         {
             Matrix = matrix;
-            SheetIdx = sheetIdx;
+            SheetIdx = 0;
             MapX = mapX;
             MapY = mapY;
-            LayerIdx = parameters.layer_idx;
             PaintColor = paintColor;
             PaintColorFilter = paintColorFilter;
             AutoDrawParameters = parameters;
