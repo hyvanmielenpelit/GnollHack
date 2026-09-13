@@ -1259,11 +1259,11 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.15.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.12" />
     <!--<PackageReference Include="System.Text.Json" Version="10.0.10" />-->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <!-- Platform-specific packages -->
-    <PackageReference Include="System.Management" Version="10.0.11" Condition="$(TargetFramework.Contains('-windows'))" />
+    <PackageReference Include="System.Management" Version="10.0.12" Condition="$(TargetFramework.Contains('-windows'))" />
     <PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.23" Condition="$(TargetFramework.Contains('-android'))" />
   </ItemGroup>
   
@@ -1288,7 +1288,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains('SENTRY'))">
-    <PackageReference Include="Sentry.Maui" Version="6.10.0" />
+    <PackageReference Include="Sentry.Maui" Version="6.11.0" />
   </ItemGroup>
 
   <!-- OTHER -->
