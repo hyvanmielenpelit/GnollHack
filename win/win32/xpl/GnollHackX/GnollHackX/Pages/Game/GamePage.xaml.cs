@@ -6406,10 +6406,9 @@ namespace GnollHackX.Pages.Game
             return true;
         }
 
-        /* An array rather than a list: the command struct is large, and an array element can
-           be read and passed on by reference, where a list indexer copies the whole struct */
-        private GHDrawCommand[] _drawCommands = new GHDrawCommand[GHConstants.DefaultDrawCommandListSize];
-        private int _drawCommandCount = 0;
+        /* GHRefList rather than List: the command struct is large, and a GHRefList element
+           can be read and passed on by reference, where a list indexer copies the whole struct */
+        private readonly GHRefList<GHDrawCommand> _drawCommands = new GHRefList<GHDrawCommand>(GHConstants.DefaultDrawCommandListSize);
         private int _lastDrawCommandCount = 0;
         /* Counts tile sheet changes between consecutive tile draws. Autodraw components,
            rectangles and text bypass the tile draw path and are not counted, so the figure
@@ -6506,19 +6505,14 @@ namespace GnollHackX.Pages.Game
 
         private void AddFrameDrawCommand(in GHDrawCommand cmd)
         {
-            if (_drawCommandCount == _drawCommands.Length)
-                Array.Resize(ref _drawCommands, _drawCommands.Length * 2);
-
-            _drawCommands[_drawCommandCount++] = cmd;
+            _drawCommands.Add(in cmd);
         }
 
         /* The commands hold bitmap, color filter and object references, so the used part of
-           the array is cleared rather than just the count */
+           the list is cleared rather than just the count */
         private void ResetFrameDrawCommands()
         {
-            if (_drawCommandCount > 0)
-                Array.Clear(_drawCommands, 0, _drawCommandCount);
-            _drawCommandCount = 0;
+            _drawCommands.Clear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6531,7 +6525,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        /* dc may alias the array element being replayed, which holds as long as the replay
+        /* dc may alias the list element being replayed, which holds as long as the replay
            itself queues no new commands: it draws with the delay turned off */
         private void ReplayDrawCommand(SKCanvas canvas, SKPaint paint, in GHDrawCommand dc, float targetscale, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering)
         {
@@ -8927,7 +8921,7 @@ namespace GnollHackX.Pages.Game
                                                     canvas.Save();
                                                     try
                                                     {
-                                                        int frameCmdCount = _drawCommandCount;
+                                                        int frameCmdCount = _drawCommands.Count;
                                                         for (int i = 0; i < frameCmdCount; i++)
                                                             ReplayDrawCommand(canvas, paint, in _drawCommands[i], targetscale, usingGL, usingMipMap, fixRects, fixFiltering);
                                                         _lastDrawCommandCount = frameCmdCount;
