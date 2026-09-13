@@ -6153,7 +6153,7 @@ namespace GnollHackX.Pages.Game
                so they batch into DrawAtlas. Autodraw and the flips are the only variations
                reachable there, and autodraw can also arrive from an animation frame. The
                layer test comes first because it rejects every other layer. */
-            bool canBatch = tileBatching
+            if (tileBatching
                 && layer_idx <= (int)layer_types.LAYER_CARPET
                 && autodraw == 0
                 && !hflip_glyph
@@ -6168,9 +6168,7 @@ namespace GnollHackX.Pages.Game
                    would need the partial source rect and offset destination that the batch does not
                    build. */
                 && !alternativeLayerDrawing /* last: never true in practice, and the cell-major loop has no flush of its own */
-                ;
-
-            if (canBatch)
+                )
             {
                 /* Same reject test DrawSplitBitmap applies per tile; DrawAtlas culls only the
                    whole call, not individual sprites */
