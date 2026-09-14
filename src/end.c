@@ -3107,15 +3107,15 @@ void fatal_error
         raw_print(buf);
         paniclog("error", buf);
 
-        if (issue_gui_command)
-        {
-            char* dbufs = allocate_buffer_with_debug_buffers(buf);
-            if (dbufs)
-            {
-                issue_debuglog_error(DEBUGLOG_ERROR_FATAL, dbufs);
-                free(dbufs);
-            }
-        }
+        //if (issue_gui_command)
+        //{
+        //    char* dbufs = allocate_buffer_with_debug_buffers(buf);
+        //    if (dbufs)
+        //    {
+        //        issue_debuglog_error(DEBUGLOG_ERROR_FATAL, dbufs);
+        //        free(dbufs);
+        //    }
+        //}
 
         /* Inform the player before the windows go away; nh_bail() tears them
            down below. */

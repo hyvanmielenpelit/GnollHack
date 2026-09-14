@@ -1252,16 +1252,16 @@ void nonfatal_error
 
     paniclog("error", pbuf);
 
-    /* Report to GUI */
-    if (issue_gui_command)
-    {
-        char* dbufs = allocate_buffer_with_debug_buffers(pbuf);
-        if (dbufs)
-        {
-            issue_debuglog_error(DEBUGLOG_ERROR_NONFATAL, dbufs);
-            free(dbufs);
-        }
-    }
+    ///* Report to GUI */
+    //if (issue_gui_command)
+    //{
+    //    char* dbufs = allocate_buffer_with_debug_buffers(pbuf);
+    //    if (dbufs)
+    //    {
+    //        issue_debuglog_error(DEBUGLOG_ERROR_NONFATAL, dbufs);
+    //        free(dbufs);
+    //    }
+    //}
 
     if (open_special_view && !iflags.debug_fuzzer)
     {
@@ -1302,16 +1302,16 @@ void silent_nonfatal_error
 
     paniclog("error (silent)", pbuf);
 
-    /* Report to GUI */
-    if (issue_gui_command)
-    {
-        char* dbufs = allocate_buffer_with_debug_buffers(pbuf);
-        if (dbufs)
-        {
-            issue_debuglog_error(DEBUGLOG_ERROR_SILENT, dbufs);
-            free(dbufs);
-        }
-    }
+    ///* Report to GUI */
+    //if (issue_gui_command)
+    //{
+    //    char* dbufs = allocate_buffer_with_debug_buffers(pbuf);
+    //    if (dbufs)
+    //    {
+    //        issue_debuglog_error(DEBUGLOG_ERROR_SILENT, dbufs);
+    //        free(dbufs);
+    //    }
+    //}
 
     /* Print into internal debuglog after reporting it above */
     debugprint("%s", pbuf);
@@ -1410,9 +1410,9 @@ allocate_buffer_with_debug_buffers(const char *message)
     }
 
     char curbuf[BUFSZ * 3 + PL_NSIZ + MAX_DGN_NAME_LENGTH + MAX_LVL_NAME_LENGTH];
-    s_level* slev = Is_special(&u.uz);
+    s_level* slev;
     Sprintf(curbuf, "|plname:%s, ux:%d, uy:%d, dnum,level:%d,%d (%s, %s), moves:%lld, role:%d, race:%d, gamestart:%d, gameover:%d, mklev:%d, bones:%d, hallu:%d, blind:%d, conflict:%d, poly:%d, umonnum:%d, shops:%d, restoring:%d, saving:%d, reseting:%d, chkpt:%d, panic:%d, impossible:%d, dumplog:%d, exit:%d, freedata:%d", 
-        plname, u.ux, u.uy, u.uz.dnum, u.uz.dlevel, dungeons[u.uz.dnum].dname, slev ? slev->name : "normal", (long long)moves, urole.rolenum, urace.racenum, 
+        context.game_started ? plname : "not started", u.ux, u.uy, u.uz.dnum, u.uz.dlevel, context.game_started ? dungeons[u.uz.dnum].dname : "not started", context.game_started ? ((slev = Is_special(&u.uz)) != 0 ? slev->name : "normal") : "not started", (long long)moves, urole.rolenum, urace.racenum,
         context.game_started, program_state.gameover, in_mklev, program_state.in_bones,
         Hallucination, Blind, Conflict, Upolyd, u.umonnum, *u.ushops, restoring, saving, reseting, check_pointing, program_state.panicking, program_state.in_impossible, iflags.in_dumplog, program_state.exiting, program_state.freeing_dynamic_data);
     Strcat(long_buffer, curbuf);
