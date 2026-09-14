@@ -4103,13 +4103,20 @@ hmonas(struct monst *mon)
 
                     update_u_action_revert(ACTION_TILE_NO_ACTION);
 
-                    /* the innate attack above can kill or displace the defender;
+                    /* the innate attack above can kill the defender;
                        no further strike lands in that case */
-                    if (DEADMONSTER(mon) || m_at(u.ux + u.dx, u.uy + u.dy) != mon)
+                    if (DEADMONSTER(mon))
                     {
                         sum[i] = 2;
                         breakloop = TRUE;
                         break;
+                    }
+                    /* or displace it while still alive; treat like the
+                       worm case above and skip the remaining attacks */
+                    if (m_at(u.ux + u.dx, u.uy + u.dy) != mon)
+                    {
+                        i = NATTK; /* skip additional attacks */
+                        goto passivedone;
                     }
                 }
                 if (breakloop)
