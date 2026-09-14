@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -221,6 +221,11 @@
     <None Remove="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHRecordedGameFile.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHRefList.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Perf\GHPerfStats.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Perf\GHUiThreadProbe.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Perf\GHThermalProbe.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Perf\GHGameTurnTimer.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Perf\GHPerfRunRecord.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHResponse.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHRequest.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
@@ -459,6 +464,11 @@
     <Compile Include="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHRecordedGameFile.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHRefList.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Perf\GHPerfStats.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Perf\GHUiThreadProbe.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Perf\GHThermalProbe.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Perf\GHGameTurnTimer.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Perf\GHPerfRunRecord.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHResponse.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHRequest.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />

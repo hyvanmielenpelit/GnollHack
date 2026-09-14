@@ -867,6 +867,7 @@ namespace GnollHackX
         private static long _lastPaintCounter = 0;        /* Paint stall detection */
         private static long _paintStallDetectedTicks = 0;  /* When we first noticed the stall */
         private static bool _paintStallWarningEmitted = false;
+        private static int _lastVsyncRefreshRate = 0;      /* Screen rate last passed to FrameTimeProfiler */
         private static void CompositionTarget_Rendering(object sender, object e)
         {
             long counter = Interlocked.Increment(ref _renderingCounter);
@@ -943,6 +944,11 @@ namespace GnollHackX
 #else
                 int screenRefreshRate = RoundedReconciledRefreshRate;
 #endif
+                if (screenRefreshRate > 0 && screenRefreshRate != _lastVsyncRefreshRate)
+                {
+                    _lastVsyncRefreshRate = screenRefreshRate;
+                    FrameTimeProfiler.SetVsyncPeriodMs(1000f / screenRefreshRate);
+                }
                 MapRefreshRateStyle mapRefreshRateStyle = curGamePage.MapRefreshRate;
                 CanvasTypes canvasType = curGamePage.GetActiveCanvas();
                 FrameTimeProfiler.TrackCanvasType(canvasType == CanvasTypes.MainCanvas);
@@ -12715,6 +12721,119 @@ namespace GnollHackX
             HandleMemoryWarning(level);
         }
 #endif
+
+        /* Environment facts a performance run record carries: the device, the
+           versions, the display and the feature-toggle vector in effect. Every read
+           is guarded, so a missing service leaves its field null or default. */
+        public static GHPerfEnvironmentFacts GetPerfEnvironmentFacts()
+        {
+            GHPerfEnvironmentFacts f = new GHPerfEnvironmentFacts();
+            f.Configuration = new Dictionary<string, object>();
+
+            try
+            {
+                f.Platform = IsAndroid ? "Android" : IsiOS ? "iOS" : IsWindows ? "Windows" : RuntimePlatform;
+            }
+            catch { }
+
+            try
+            {
+                string manufacturer = DeviceInfo.Manufacturer;
+                if (manufacturer?.Length > 0)
+                    manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
+                f.DeviceModel = (manufacturer + " " + DeviceInfo.Model).Trim();
+                f.DeviceOs = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
+                f.DeviceId = f.DeviceModel + " / " + f.DeviceOs;
+            }
+            catch { }
+
+            try
+            {
+                f.AppVersion = GHVersionString;
+                f.RuntimeVersion = RuntimeVersionString;
+                f.FrameworkVersion = FrameworkVersionString;
+                f.UiFrameworkVersion = UIFrameworkVersionString;
+                f.SkiaSharpVersion = SkiaSharpVersionString;
+                f.FmodVersion = FMODVersionString;
+                f.GpuBackend = GPUBackend;
+                f.GpuCacheSize = CurrentGPUCacheSize;
+            }
+            catch { }
+
+#if DEBUG
+            f.BuildConfiguration = "Debug";
+#else
+            f.BuildConfiguration = "Release";
+#endif
+            f.GitCommit = null;
+
+            try
+            {
+#if WINDOWS
+                ScreenResolutionItem curRes = CurrentScreenResolution;
+                f.RefreshHz = curRes != null && curRes.RefreshRate > 0 ? curRes.RefreshRate : RoundedReconciledRefreshRate;
+#else
+                f.RefreshHz = RoundedReconciledRefreshRate;
+#endif
+            }
+            catch { }
+
+            AddPerfToggle(f.Configuration, "useTileBatching", () => UseTileBatching);
+            AddPerfToggle(f.Configuration, "useTextBlobCaching", () => UseTextBlobCaching);
+            AddPerfToggle(f.Configuration, "runtimeEffects", () => RuntimeEffects);
+            AddPerfToggle(f.Configuration, "usePlatformRenderLoop", () => UsePlatformRenderLoop);
+            AddPerfToggle(f.Configuration, "useMainGLCanvas", () => UseGPU);
+            AddPerfToggle(f.Configuration, "useAuxiliaryGLCanvas", () => UseAuxGPU);
+            AddPerfToggle(f.Configuration, "mapRefreshRate", () =>
+            {
+                int value = Preferences.Get("MapRefreshRate", -1);
+                return value < 0 ? (int)UIUtils.GetDefaultMapFPS() : value;
+            });
+            AddPerfToggle(f.Configuration, "useMainMipMap", () => UseMipMap);
+            AddPerfToggle(f.Configuration, "fixRects", () => FixRects);
+            AddPerfToggle(f.Configuration, "fixFiltering", () => FixFiltering);
+            AddPerfToggle(f.Configuration, "primaryGPUCacheLimit", () => PrimaryGPUCacheLimit);
+            AddPerfToggle(f.Configuration, "secondaryGPUCacheLimit", () => SecondaryGPUCacheLimit);
+            AddPerfToggle(f.Configuration, "frameTimeProfiler", () => FrameTimeProfiler.IsEnabled);
+            AddPerfToggle(f.Configuration, "screenLogging", () => ScreenLogging);
+            AddPerfToggle(f.Configuration, "debugLogMessages", () => DebugLogMessages);
+            AddPerfToggle(f.Configuration, "developerMode", () => DeveloperMode);
+            return f;
+        }
+
+        private static void AddPerfToggle(Dictionary<string, object> configuration, string key, Func<object> read)
+        {
+            try
+            {
+                configuration[key] = read();
+            }
+            catch
+            {
+                configuration[key] = null;
+            }
+        }
+    }
+
+    /* Snapshot of the environment a performance run was measured in; see
+       GHApp.GetPerfEnvironmentFacts and GnollHackX.Perf.GHPerfRunRecord */
+    public struct GHPerfEnvironmentFacts
+    {
+        public string Platform;
+        public string DeviceId;
+        public string DeviceModel;
+        public string DeviceOs;
+        public string AppVersion;
+        public string RuntimeVersion;
+        public string FrameworkVersion;
+        public string UiFrameworkVersion;
+        public string SkiaSharpVersion;
+        public string FmodVersion;
+        public string GpuBackend;
+        public long GpuCacheSize;
+        public double RefreshHz;
+        public string BuildConfiguration;
+        public string GitCommit;
+        public Dictionary<string, object> Configuration;
     }
 
     public enum MemoryPressureLevel

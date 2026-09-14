@@ -20,6 +20,7 @@ using System.Net.Http.Headers;
 using System.Collections;
 using System.Data;
 using System.Xml.Linq;
+using GnollHackX.Perf;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -1820,6 +1821,16 @@ namespace GnollHackX.Pages.Game
                 return IsGameOn;
             });
 #endif
+            /* UI-thread latency probe; developer mode only */
+            if (GHApp.DeveloperMode)
+            {
+                GHUiThreadProbe.VsyncMs = FrameTimeProfiler.VsyncPeriodMs;
+#if GNH_MAUI
+                GHUiThreadProbe.Start(Microsoft.Maui.Controls.Application.Current.Dispatcher);
+#else
+                GHUiThreadProbe.Start();
+#endif
+            }
             GHApp.UpdateFreeDiskSpace();
             GHApp.UpdateUsedMemory();
         }
@@ -1834,6 +1845,7 @@ namespace GnollHackX.Pages.Game
             StopMenuHideTimers();
             StopTextHideTimers();
 #endif
+            GHUiThreadProbe.Stop();
         }
 
         //private bool StartingPositionsSet { get; set; }
@@ -5210,13 +5222,46 @@ namespace GnollHackX.Pages.Game
                     canvas.RestoreToCount(paintSaveCount);
                 }
 
-                /* Finally, flush */
-                canvas.Flush();
-
                 FrameTimeProfiler.StampPaintEnd();
+
+                /* Finally, flush */
+                FrameTimeProfiler.StampFlushStart();
+                canvas.Flush();
+                FrameTimeProfiler.StampFlushEnd();
 
                 IsMainCanvasDrawing = false;
             }
+        }
+
+        /* Canvas facts recorded with a performance run */
+        public struct GHPerfCanvasFacts
+        {
+            public float CanvasWidth;
+            public float CanvasHeight;
+            public bool MainCanvasUsesGL;
+            public bool AuxCanvasUsesGL;
+            public int ActiveCanvas;
+            public float TileWidthScaled;
+        }
+
+        /* Thread-safe: every field is read under its own lock or from an Interlocked-backed
+           property, so this may be called from off the UI thread */
+        public GHPerfCanvasFacts GetPerfCanvasFacts()
+        {
+            GHPerfCanvasFacts facts = new GHPerfCanvasFacts();
+            lock (_savedCanvasLock)
+            {
+                facts.CanvasWidth = _savedCanvasWidth;
+                facts.CanvasHeight = _savedCanvasHeight;
+            }
+            facts.MainCanvasUsesGL = MainCanvasView.UseGL;
+            facts.AuxCanvasUsesGL = MenuCanvas.UseGL;
+            facts.ActiveCanvas = (int)GetActiveCanvas();
+            lock (_tileSizeLock)
+            {
+                facts.TileWidthScaled = _usedTileWidth;
+            }
+            return facts;
         }
 
         public CanvasTypes GetActiveCanvas()

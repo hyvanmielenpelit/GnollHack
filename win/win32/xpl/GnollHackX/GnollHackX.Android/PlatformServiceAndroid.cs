@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using GnollHackX;
+using GnollHackX.Perf;
 using Android;
 using Java.IO;
 using System.IO;
@@ -544,6 +545,145 @@ namespace GnollHackX.Droid
         public bool GetKeyboardConnected()
         {
             return MainActivity.IsHardKeyboardConnected;
+        }
+
+        /* Only reached behind the API 29 gate in GetThermalReading */
+#pragma warning disable CA1416 // Supported on: 'android' 29.0 and later
+        private static GHThermalStatus MapThermalStatus(ThermalStatus status)
+        {
+            switch (status)
+            {
+                case ThermalStatus.None:
+                    return GHThermalStatus.Nominal;
+                case ThermalStatus.Light:
+                    return GHThermalStatus.Light;
+                case ThermalStatus.Moderate:
+                    return GHThermalStatus.Moderate;
+                case ThermalStatus.Severe:
+                    return GHThermalStatus.Severe;
+                case ThermalStatus.Critical:
+                case ThermalStatus.Emergency:
+                case ThermalStatus.Shutdown:
+                    return GHThermalStatus.Critical;
+                default:
+                    return GHThermalStatus.Unknown;
+            }
+        }
+#pragma warning restore CA1416
+
+        /* Thermal status and headroom from PowerManager (API 29 and 30 respectively),
+           battery temperature and plug state from the sticky ACTION_BATTERY_CHANGED
+           broadcast, power save mode from PowerManager. Each part fails independently
+           to its Unknown/NaN value. */
+        public GHThermalReading GetThermalReading()
+        {
+            GHThermalReading r = GHThermalProbe.Unknown;
+            string thermalDetail = "thermalstatus=n/a";
+            string headroomDetail = "headroom=n/a";
+            string batteryDetail = "battery=n/a";
+            try
+            {
+                var context = Android.App.Application.Context;
+                var powerManager = context.GetSystemService(Android.Content.Context.PowerService) as PowerManager;
+                if (powerManager != null)
+                {
+                    try
+                    {
+                        if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+                        {
+#pragma warning disable CA1416 // Supported on: 'android' 29.0 and later
+                            ThermalStatus status = powerManager.CurrentThermalStatus;
+#pragma warning restore CA1416
+                            r.Status = MapThermalStatus(status);
+                            thermalDetail = "thermalstatus=" + ((int)status).ToString();
+                        }
+                    }
+                    catch
+                    {
+                        r.Status = GHThermalStatus.Unknown;
+                    }
+
+                    try
+                    {
+                        if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
+                        {
+#pragma warning disable CA1416 // Supported on: 'android' 30.0 and later
+                            r.HeadroomFraction = powerManager.GetThermalHeadroom(0);
+#pragma warning restore CA1416
+                            if (!float.IsNaN(r.HeadroomFraction))
+                                headroomDetail = "headroom=" + r.HeadroomFraction.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+                        }
+                    }
+                    catch
+                    {
+                        r.HeadroomFraction = float.NaN;
+                    }
+
+                    try
+                    {
+                        r.IsLowPower = powerManager.IsPowerSaveMode;
+                    }
+                    catch
+                    {
+                        r.IsLowPower = false;
+                    }
+                }
+
+                try
+                {
+                    Intent batteryIntent = context.RegisterReceiver(null, new IntentFilter(Intent.ActionBatteryChanged));
+                    if (batteryIntent != null)
+                    {
+                        int tenths = batteryIntent.GetIntExtra(BatteryManager.ExtraTemperature, -1);
+                        r.BatteryTempC = tenths < 0 ? float.NaN : tenths / 10.0f;
+                        int plugged = batteryIntent.GetIntExtra(BatteryManager.ExtraPlugged, 0);
+                        r.IsCharging = plugged != 0;
+                        batteryDetail = "battery=" + (float.IsNaN(r.BatteryTempC) ? "n/a" : r.BatteryTempC.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) + "C")
+                            + " plugged=" + plugged.ToString();
+                    }
+                }
+                catch
+                {
+                    r.BatteryTempC = float.NaN;
+                    r.IsCharging = false;
+                }
+
+                r.Detail = thermalDetail + " " + headroomDetail + " " + batteryDetail + " powersave=" + (r.IsLowPower ? "on" : "off");
+            }
+            catch
+            {
+                r.Detail = null;
+            }
+            r.TimestampTicks = DateTime.UtcNow.Ticks;
+            return r;
+        }
+
+        /* Window.setSustainedPerformanceMode (API 24) on the current activity, when the
+           device supports it */
+        public bool SetSustainedPerformanceMode(bool enabled)
+        {
+            try
+            {
+                if (Build.VERSION.SdkInt < BuildVersionCodes.N)
+                    return false;
+                var context = Android.App.Application.Context;
+                var powerManager = context.GetSystemService(Android.Content.Context.PowerService) as PowerManager;
+                if (powerManager == null)
+                    return false;
+#pragma warning disable CA1416 // Supported on: 'android' 24.0 and later
+                if (!powerManager.IsSustainedPerformanceModeSupported)
+                    return false;
+                Activity activity = MainActivity.CurrentMainActivity;
+                if (activity == null || activity.Window == null)
+                    return false;
+                activity.Window.SetSustainedPerformanceMode(enabled);
+#pragma warning restore CA1416
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static bool HandleOnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent e)

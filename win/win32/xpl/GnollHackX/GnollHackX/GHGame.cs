@@ -23,6 +23,7 @@ using System.Collections;
 using System.Security.Cryptography;
 using SkiaSharp;
 using System.Threading.Tasks;
+using GnollHackX.Perf;
 #if SENTRY
 using Sentry.Protocol;
 #endif
@@ -93,6 +94,7 @@ namespace GnollHackX
         public GHGame(RunGnollHackFlags startFlags)
         {
             StartFlags = startFlags;
+            GHGameTurnTimer.Reset();
 
             lock (_mapDataBufferLock)
             {
@@ -1206,7 +1208,22 @@ namespace GnollHackX
             }
         }
 
+        /* Game thread. Brackets the input wait for the turn timer; the outermost
+           entry ends the core's processing interval and the return starts the next. */
         public int ClientCallback_nhgetch()
+        {
+            GHGameTurnTimer.InputWaitStart();
+            try
+            {
+                return ClientCallback_nhgetch_Inner();
+            }
+            finally
+            {
+                GHGameTurnTimer.InputWaitEnd();
+            }
+        }
+
+        private int ClientCallback_nhgetch_Inner()
         {
             Debug.WriteLine("ClientCallback_nhgetch");
             WriteFunctionCallsAndCheckEnd();
@@ -1261,7 +1278,21 @@ namespace GnollHackX
             return res;
         }
 
+        /* Game thread. Brackets the input wait for the turn timer, as nhgetch does. */
         public int ClientCallback_nh_poskey(out int x, out int y, out int mod)
+        {
+            GHGameTurnTimer.InputWaitStart();
+            try
+            {
+                return ClientCallback_nh_poskey_Inner(out x, out y, out mod);
+            }
+            finally
+            {
+                GHGameTurnTimer.InputWaitEnd();
+            }
+        }
+
+        private int ClientCallback_nh_poskey_Inner(out int x, out int y, out int mod)
         {
             Debug.WriteLine("ClientCallback_nh_poskey");
             WriteFunctionCallsAndCheckEnd();

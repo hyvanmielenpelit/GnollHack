@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/hyvanmielenpelit/GnollHack/DEVEL/perf/schema/run-record.schema.json",
+  "title": "GnollHack performance run record",
+  "description": "One measurement run. Written by GnollHack.PerfAnalyzer ingest (external captures) and by the in-app GHPerfRunRecord (internal captures). history.jsonl holds the same objects with the raw interval arrays removed.",
+  "type": "object",
+  "required": ["schemaVersion", "id", "timestampUtc", "scenario", "arm", "buildConfiguration", "platform", "series"],
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "id": { "type": "string" },
+    "timestampUtc": { "type": "string", "format": "date-time" },
+    "scenario": { "type": "string", "description": "W0..W6, replay, or free text for hand-driven runs" },
+    "scenarioKind": { "type": "string", "enum": ["gameplay", "replay", "calibration"], "default": "gameplay" },
+    "arm": { "type": "string", "description": "Label of the configuration this run belongs to" },
+    "buildConfiguration": { "type": "string", "description": "Release or Debug; only Release is comparable" },
+    "git": {
+      "type": "object",
+      "properties": {
+        "commit": { "type": ["string", "null"] },
+        "dirty": { "type": "boolean" },
+        "tag": { "type": ["string", "null"] },
+        "branch": { "type": ["string", "null"] }
+      }
+    },
+    "platform": { "type": "string", "enum": ["Windows", "Android", "iOS"] },
+    "device": {
+      "type": "object",
+      "properties": {
+        "id": { "type": ["string", "null"], "description": "Stable identity; a new device is a new id" },
+        "model": { "type": ["string", "null"] },
+        "os": { "type": ["string", "null"] }
+      }
+    },
+    "versions": { "type": "object", "additionalProperties": { "type": "string" }, "description": "dotnet, maui, skiasharp, app, workload" },
+    "display": {
+      "type": "object",
+      "properties": {
+        "refreshHz": { "type": "number" },
+        "vsyncMs": { "type": "number" },
+        "gpuBackend": { "type": ["string", "null"] }
+      }
+    },
+    "configuration": { "type": "object", "description": "The feature-toggle vector from plan section 2.4" },
+    "thermal": {
+      "type": "object",
+      "properties": {
+        "before": { "$ref": "#/$defs/thermalReading" },
+        "after": { "$ref": "#/$defs/thermalReading" },
+        "throttled": { "type": "boolean" },
+        "gateSignal": { "type": ["string", "null"], "enum": ["none", "status", "cpuPerformancePct", "batteryTempC", null] },
+        "throttleReason": { "type": ["string", "null"] }
+      }
+    },
+    "series": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/series" }
+    },
+    "markers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "atMs": { "type": "number" },
+          "code": { "type": "integer" },
+          "label": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "notes": { "type": ["string", "null"] },
+    "excluded": { "type": "boolean" },
+    "exclusionReason": { "type": ["string", "null"] },
+    "warmupSeconds": { "type": "number" },
+    "windowSeconds": { "type": "number" }
+  },
+  "$defs": {
+    "thermalReading": {
+      "type": ["object", "null"],
+      "properties": {
+        "status": { "type": "string", "enum": ["Unknown", "Nominal", "Light", "Moderate", "Severe", "Critical"] },
+        "headroomFraction": { "type": ["number", "null"] },
+        "batteryTempC": { "type": ["number", "null"] },
+        "cpuPackageTempC": { "type": ["number", "null"] },
+        "gpuTempC": { "type": ["number", "null"] },
+        "cpuPerformancePct": { "type": ["number", "null"] },
+        "cpuFrequencyMHz": { "type": ["number", "null"] },
+        "isCharging": { "type": ["boolean", "null"] },
+        "isLowPower": { "type": ["boolean", "null"] },
+        "powerPlan": { "type": ["string", "null"] },
+        "timestampUtc": { "type": ["string", "null"] }
+      }
+    },
+    "series": {
+      "type": "object",
+      "required": ["kind", "source", "metrics"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["external", "internal"] },
+        "source": { "type": "string", "enum": ["presentmon", "gfxinfo", "instruments", "FrameTimeProfiler"] },
+        "column": { "type": ["string", "null"] },
+        "intervalsMs": { "type": ["array", "null"], "items": { "type": "number" }, "description": "Measurement window only; warm-up already removed" },
+        "frameDurationsMs": { "type": ["array", "null"], "items": { "type": "number" } },
+        "droppedCount": { "type": "integer" },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "frameDurationP50": { "type": "number" },
+            "frameDurationP90": { "type": "number" },
+            "frameDurationP95": { "type": "number" },
+            "frameDurationP99": { "type": "number" },
+            "frameDurationMax": { "type": "number" },
+            "frameDurationMean": { "type": "number" },
+            "frameDurationStdDev": { "type": "number" },
+            "fpsMean": { "type": "number" },
+            "fps1PctLow": { "type": "number" },
+            "fps01PctLow": { "type": "number" },
+            "frameOverrunP50": { "type": "number" },
+            "frameOverrunP95": { "type": "number" },
+            "frameOverrunP99": { "type": "number" },
+            "jankPct": { "type": "number", "description": "Percent of intervals over 1.5 x vsync" },
+            "hitchRatio": { "type": "number", "description": "ms of hitch per second over intervals exceeding 2 x vsync" },
+            "hitch2xPerMin": { "type": "number" },
+            "hitch4xPerMin": { "type": "number" },
+            "stutterIndex": { "type": "number", "description": "Coefficient of variation of intervals" },
+            "frameCount": { "type": "number" },
+            "windowSeconds": { "type": "number" }
+          },
+          "additionalProperties": { "type": "number" }
+        },
+        "info": { "type": "object", "additionalProperties": { "type": "string" } }
+      }
+    }
+  }
+}

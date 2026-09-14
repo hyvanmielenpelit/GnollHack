@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using GnollHackX.Perf;
 
 #if GNH_MAUI
 #else
@@ -49,5 +50,10 @@ namespace GnollHackX
         Task RequestAppReview(ContentPage page);
         int FetchOnDemandPack(string pack);
         event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
+
+        /* Thermal and power state for performance runs; never throws, Unknown when unsupported */
+        GHThermalReading GetThermalReading();
+        /* Android sustained performance mode; false where unsupported */
+        bool SetSustainedPerformanceMode(bool enabled);
     }
 }

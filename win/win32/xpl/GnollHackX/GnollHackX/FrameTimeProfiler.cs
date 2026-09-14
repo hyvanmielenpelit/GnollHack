@@ -4,6 +4,7 @@ using System.Diagnostics.Tracing;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using GnollHackX.Perf;
 
 namespace GnollHackX
 {
@@ -17,6 +18,8 @@ namespace GnollHackX
         public bool LockAcquired;
         public long TicksPaintStart;
         public long TicksPaintEnd;
+        public long TicksFlushStart;
+        public long TicksFlushEnd;
         public long TicksFrameEnd;
 
         /* GC collection counts at frame start (gen 0, 1, 2) */
@@ -58,6 +61,7 @@ namespace GnollHackX
         public float AvgUpdateMs;
         public float AvgLockWaitMs;
         public float AvgPaintMs;
+        public float AvgFlushMs;
         public int DroppedFrameCount;
         public float DroppedFramePct;
         public int LockFailCount;
@@ -98,6 +102,138 @@ namespace GnollHackX
         public long LohSizeBytes;
     }
 
+    /* A timestamped event code placed on the frame timeline by MarkEvent, so a
+       measurement window's run record can align phases and felt hitches with the
+       frame samples. */
+    public struct FrameTimeMarker
+    {
+        public long Timestamp;
+        public int Code;
+    }
+
+    /* Snapshot of the streaming statistics of the current or last measurement
+       window. Every series is summarized from a log-spaced histogram (see
+       GHPerfStats.StreamingHistogram), so the percentiles are approximate to about
+       4 percent of the value while Max and Count are exact. All fields are plain
+       values: filling the struct allocates nothing. */
+    public struct FrameTimeStreamingStatistics
+    {
+        /* Gap between consecutive rendered frames, pause-affected gaps excluded */
+        public long InterFrameCount;
+        public float InterFrameMeanMs;
+        public float InterFrameP50Ms;
+        public float InterFrameP95Ms;
+        public float InterFrameP99Ms;
+        public float InterFrameMaxMs;
+
+        /* UpdateMainCanvas until the lock result */
+        public long UpdateCount;
+        public float UpdateMeanMs;
+        public float UpdateP50Ms;
+        public float UpdateP95Ms;
+        public float UpdateP99Ms;
+        public float UpdateMaxMs;
+
+        /* Lock attempt until the lock result */
+        public long LockWaitCount;
+        public float LockWaitMeanMs;
+        public float LockWaitP50Ms;
+        public float LockWaitP95Ms;
+        public float LockWaitP99Ms;
+        public float LockWaitMaxMs;
+
+        /* PaintSurface body */
+        public long PaintCount;
+        public float PaintMeanMs;
+        public float PaintP50Ms;
+        public float PaintP95Ms;
+        public float PaintP99Ms;
+        public float PaintMaxMs;
+
+        /* GPU flush after painting */
+        public long FlushCount;
+        public float FlushMeanMs;
+        public float FlushP50Ms;
+        public float FlushP95Ms;
+        public float FlushP99Ms;
+        public float FlushMaxMs;
+
+        /* BeginFrame until EndFrame */
+        public long TotalFrameCount;
+        public float TotalFrameMeanMs;
+        public float TotalFrameP50Ms;
+        public float TotalFrameP95Ms;
+        public float TotalFrameP99Ms;
+        public float TotalFrameMaxMs;
+
+        /* Pause of each collection whose deepest generation was gen 0, 1 or 2 */
+        public long GcPauseGen0Count;
+        public float GcPauseGen0MeanMs;
+        public float GcPauseGen0P50Ms;
+        public float GcPauseGen0P95Ms;
+        public float GcPauseGen0P99Ms;
+        public float GcPauseGen0MaxMs;
+
+        public long GcPauseGen1Count;
+        public float GcPauseGen1MeanMs;
+        public float GcPauseGen1P50Ms;
+        public float GcPauseGen1P95Ms;
+        public float GcPauseGen1P99Ms;
+        public float GcPauseGen1MaxMs;
+
+        public long GcPauseGen2Count;
+        public float GcPauseGen2MeanMs;
+        public float GcPauseGen2P50Ms;
+        public float GcPauseGen2P95Ms;
+        public float GcPauseGen2P99Ms;
+        public float GcPauseGen2MaxMs;
+
+        public float VsyncPeriodMs;
+
+        /* Window start to now while open, to EndWindow once closed */
+        public float WindowElapsedMs;
+        public bool WindowOpen;
+
+        public long TickCount;
+        public long RenderedFrameCount;
+        public long LockFailCount;
+        public long PauseExcludedCount;
+
+        /* Inter-frame gaps above 1.5, 2 and 4 times the vsync period */
+        public long Hitch15xCount;
+        public long Hitch2xCount;
+        public long Hitch4xCount;
+
+        /* Sum over gaps above 2 x vsync of (gap - vsync), and the same per second
+           of window: the Apple hitch time ratio */
+        public float HitchSumMs;
+        public float HitchRatioMsPerSec;
+
+        public float FpsMean;
+
+        /* Collection-count deltas over the window */
+        public int GcGen0Count;
+        public int GcGen1Count;
+        public int GcGen2Count;
+
+        public float AllocatedMB;
+        public float AllocationRateMBPerSec;
+
+        /* Markers recorded since the window began */
+        public int MarkerCount;
+    }
+
+    /* Managed heap sizes at one instant, for the dashboard's memory rows. The
+       generation sizes are zero on a runtime that does not report them. */
+    public struct FrameTimeMemorySnapshot
+    {
+        public long HeapSizeBytes;
+        public long Gen0SizeBytes;
+        public long Gen1SizeBytes;
+        public long Gen2SizeBytes;
+        public long LohSizeBytes;
+    }
+
     public static class FrameTimeProfiler
     {
         private static int _isEnabled = 0;
@@ -107,13 +243,550 @@ namespace GnollHackX
             set
             {
                 Interlocked.Exchange(ref _isEnabled, value ? 1 : 0);
-                if (!value)
+                if (value)
                 {
+                    /* The dashboard reads the streaming window, so an enabled
+                       profiler always has one: a rolling window is opened unless a
+                       harness has one open already */
+                    if (!IsWindowOpen)
+                        BeginWindowCore(true);
+                }
+                else
+                {
+                    /* Disabling closes the window of either kind and starts none;
+                       the closing pass reads the ring, so it runs before the reset */
+                    EndWindow();
+
                     /* Reset buffer so stale data is not reported when re-enabled */
                     Interlocked.Exchange(ref _writeIndex, -1);
                     Interlocked.Exchange(ref _lastRenderIndex, -1);
+
+                    /* The gap across the disabled span is not a frame interval, and
+                       sample indices restart from zero on re-enable */
+                    Interlocked.Exchange(ref _windowPrevRenderedStart, 0);
+                    Interlocked.Exchange(ref _windowLastPhaseIndex, -1);
                 }
             }
+        }
+
+        /*
+         * Vsync period the hitch thresholds are measured against, held as the bit
+         * pattern of a double so that it can be read and written atomically on
+         * every platform. Defaults to 60 Hz until the display reports its rate.
+         */
+        private static long _vsyncPeriodBits = BitConverter.DoubleToInt64Bits(1000.0 / 60.0);
+
+        public static float VsyncPeriodMs
+        {
+            get { return (float)BitConverter.Int64BitsToDouble(Interlocked.Read(ref _vsyncPeriodBits)); }
+        }
+
+        public static void SetVsyncPeriodMs(float ms)
+        {
+            if (!(ms > 0) || float.IsInfinity(ms))
+                return;
+            Interlocked.Exchange(ref _vsyncPeriodBits, BitConverter.DoubleToInt64Bits(ms));
+        }
+
+        /* Event codes for MarkEvent */
+        public static class MarkerCodes
+        {
+            public const int FeltHitch = 1;
+            public const int PhaseStart = 2;
+            public const int PhaseEnd = 3;
+            public const int WindowBegin = 4;
+            public const int WindowEnd = 5;
+        }
+
+        /*
+         * Marker ring. MarkEvent runs on any thread and only stamps the ring, so a
+         * felt-hitch button or a phase boundary costs nothing on the frame path.
+         */
+        private const int MaxMarkers = 256;
+        private static readonly FrameTimeMarker[] _markers = new FrameTimeMarker[MaxMarkers];
+        private static long _markerWriteIndex = -1;
+
+        public static void MarkEvent(int code)
+        {
+            long idx = Interlocked.Increment(ref _markerWriteIndex);
+            int index = SafeIndex(idx, MaxMarkers);
+            _markers[index].Timestamp = Stopwatch.GetTimestamp();
+            _markers[index].Code = code;
+        }
+
+        /// <summary>
+        /// Copies the markers recorded since the last BeginWindow, or every
+        /// marker still in the ring when no window has been begun, oldest first,
+        /// up to the destination's length. Returns the number copied.
+        /// </summary>
+        public static int CopyMarkers(FrameTimeMarker[] destination)
+        {
+            if (destination == null)
+                return 0;
+
+            long writeIndex = Interlocked.Read(ref _markerWriteIndex);
+            if (writeIndex < 0)
+                return 0;
+
+            long windowStart = Interlocked.Read(ref _windowStartTicks);
+            int count = (int)Math.Min(writeIndex + 1, MaxMarkers);
+            long firstIdx = writeIndex >= MaxMarkers ? writeIndex - MaxMarkers + 1 : 0;
+
+            int copied = 0;
+            for (int i = 0; i < count && copied < destination.Length; i++)
+            {
+                FrameTimeMarker m = _markers[SafeIndex(firstIdx + i, MaxMarkers)];
+                if (windowStart > 0 && m.Timestamp < windowStart)
+                    continue;
+                destination[copied] = m;
+                copied++;
+            }
+            return copied;
+        }
+
+        private static int CountMarkersSinceWindow()
+        {
+            long writeIndex = Interlocked.Read(ref _markerWriteIndex);
+            if (writeIndex < 0)
+                return 0;
+
+            long windowStart = Interlocked.Read(ref _windowStartTicks);
+            int count = (int)Math.Min(writeIndex + 1, MaxMarkers);
+            long firstIdx = writeIndex >= MaxMarkers ? writeIndex - MaxMarkers + 1 : 0;
+
+            int n = 0;
+            for (int i = 0; i < count; i++)
+            {
+                if (windowStart > 0 && _markers[SafeIndex(firstIdx + i, MaxMarkers)].Timestamp < windowStart)
+                    continue;
+                n++;
+            }
+            return n;
+        }
+
+        /*
+         * Measurement window. The histograms accumulate in EndFrame only while the
+         * window is open and are never re-allocated: BeginWindow resets them in
+         * place. The counters are written by the frame thread alone and read from
+         * any thread; a reader may see a snapshot that is one frame inconsistent
+         * between counters, which the dashboard and the run record tolerate.
+         */
+        private static int _windowOpen = 0;
+        private static long _windowStartTicks = 0;
+        private static long _windowEndTicks = 0;
+        private static long _windowPrevRenderedStart = 0;
+
+        /* Sample index whose phase durations were last folded into the window */
+        private static long _windowLastPhaseIndex = -1;
+
+        private static readonly GHPerfStats.StreamingHistogram _histInterFrame = new GHPerfStats.StreamingHistogram();
+        private static readonly GHPerfStats.StreamingHistogram _histUpdate = new GHPerfStats.StreamingHistogram();
+        private static readonly GHPerfStats.StreamingHistogram _histLockWait = new GHPerfStats.StreamingHistogram();
+        private static readonly GHPerfStats.StreamingHistogram _histPaint = new GHPerfStats.StreamingHistogram();
+        private static readonly GHPerfStats.StreamingHistogram _histFlush = new GHPerfStats.StreamingHistogram();
+        private static readonly GHPerfStats.StreamingHistogram _histTotalFrame = new GHPerfStats.StreamingHistogram();
+        private static readonly GHPerfStats.StreamingHistogram _histGcPauseGen0 = new GHPerfStats.StreamingHistogram();
+        private static readonly GHPerfStats.StreamingHistogram _histGcPauseGen1 = new GHPerfStats.StreamingHistogram();
+        private static readonly GHPerfStats.StreamingHistogram _histGcPauseGen2 = new GHPerfStats.StreamingHistogram();
+
+        private static long _windowTickCount = 0;
+        private static long _windowRenderedCount = 0;
+        private static long _windowLockFailCount = 0;
+        private static long _windowPauseExcludedCount = 0;
+        private static long _windowHitch15xCount = 0;
+        private static long _windowHitch2xCount = 0;
+        private static long _windowHitch4xCount = 0;
+        private static double _windowHitchSumMs = 0;
+
+        /* GC counters and allocation total at BeginWindow */
+        private static int _windowGcCount0 = 0;
+        private static int _windowGcCount1 = 0;
+        private static int _windowGcCount2 = 0;
+        private static long _windowAllocatedBytes = 0;
+
+#if GNH_MAUI
+        /* Index of the collection whose pause was last folded into the window */
+        private static long _lastGcPauseInfoIndex;
+#endif
+
+        /*
+         * Whether the current or last window is a rolling one, opened by the
+         * profiler itself for the dashboard, rather than an explicit one opened by
+         * a harness through BeginWindow.
+         */
+        private static int _implicitWindow = 0;
+
+        public static bool IsWindowOpen
+        {
+            get { return Interlocked.CompareExchange(ref _windowOpen, 0, 0) != 0; }
+        }
+
+        public static bool IsImplicitWindow
+        {
+            get { return Interlocked.CompareExchange(ref _implicitWindow, 0, 0) != 0; }
+        }
+
+        /// <summary>
+        /// Opens an explicit measurement window: every streaming series and
+        /// counter starts from zero, and a WindowBegin marker is recorded. A
+        /// rolling window that is open is replaced.
+        /// </summary>
+        public static void BeginWindow()
+        {
+            BeginWindowCore(false);
+        }
+
+        /// <summary>
+        /// Restarts the rolling window from zero. Does nothing while an explicit
+        /// window is open or when no window is open.
+        /// </summary>
+        public static void ResetRollingWindow()
+        {
+            if (IsWindowOpen && IsImplicitWindow)
+                BeginWindowCore(true);
+        }
+
+        private static void BeginWindowCore(bool implicitWindow)
+        {
+            Interlocked.Exchange(ref _windowOpen, 0);
+            Interlocked.Exchange(ref _implicitWindow, implicitWindow ? 1 : 0);
+
+            _histInterFrame.Reset();
+            _histUpdate.Reset();
+            _histLockWait.Reset();
+            _histPaint.Reset();
+            _histFlush.Reset();
+            _histTotalFrame.Reset();
+            _histGcPauseGen0.Reset();
+            _histGcPauseGen1.Reset();
+            _histGcPauseGen2.Reset();
+
+            Interlocked.Exchange(ref _windowTickCount, 0);
+            Interlocked.Exchange(ref _windowRenderedCount, 0);
+            Interlocked.Exchange(ref _windowLockFailCount, 0);
+            Interlocked.Exchange(ref _windowPauseExcludedCount, 0);
+            Interlocked.Exchange(ref _windowHitch15xCount, 0);
+            Interlocked.Exchange(ref _windowHitch2xCount, 0);
+            Interlocked.Exchange(ref _windowHitch4xCount, 0);
+            Volatile.Write(ref _windowHitchSumMs, 0);
+            Interlocked.Exchange(ref _windowPrevRenderedStart, 0);
+            Interlocked.Exchange(ref _windowLastPhaseIndex, -1);
+
+            _windowGcCount0 = GC.CollectionCount(0);
+            _windowGcCount1 = GC.CollectionCount(1);
+            _windowGcCount2 = GC.CollectionCount(2);
+            Interlocked.Exchange(ref _windowAllocatedBytes,
+#if GNH_MAUI
+                GC.GetTotalAllocatedBytes(false));
+#else
+                0L);
+#endif
+
+            Interlocked.Exchange(ref _windowEndTicks, 0);
+            Interlocked.Exchange(ref _windowStartTicks, Stopwatch.GetTimestamp());
+            MarkEvent(MarkerCodes.WindowBegin);
+            Interlocked.Exchange(ref _windowOpen, 1);
+        }
+
+        /// <summary>
+        /// Closes the window: a WindowEnd marker is recorded and the series stop
+        /// accumulating, keeping their values until the next BeginWindow. Closing
+        /// an explicit window while the profiler is enabled opens a new rolling
+        /// window in its place, so the dashboard keeps updating.
+        /// </summary>
+        public static void EndWindow()
+        {
+            if (Interlocked.Exchange(ref _windowOpen, 0) == 0)
+                return;
+            bool wasImplicit = IsImplicitWindow;
+            Interlocked.Exchange(ref _windowEndTicks, Stopwatch.GetTimestamp());
+            MarkEvent(MarkerCodes.WindowEnd);
+
+            /* The latest sample's phases lag one frame behind and would otherwise
+               never be folded in */
+            long idx = Interlocked.Read(ref _writeIndex);
+            if (idx >= 0)
+                AccumulateWindowPhases(idx, Interlocked.Read(ref _windowStartTicks));
+
+            if (!wasImplicit && IsEnabled)
+                BeginWindowCore(true);
+        }
+
+        /* Folds sample idx into the open window at EndFrame on the frame thread.
+
+           Only the frame-start timestamps and the update stamp are final at this
+           point: PaintSurface runs after the frame callback returns on every
+           platform, so the lock, paint and flush stamps of sample idx arrive during
+           the next frame. The inter-frame gap, hitch tallies, rendered count and GC
+           handling therefore read sample idx, while the phase durations and the
+           lock-fail count are taken from sample idx - 1, whose stamps have had a
+           full frame to land. EndWindow folds in the phases of the latest sample so
+           the lag loses no frame. A phase counts only when both its stamps are set. */
+        private static void AccumulateWindowSample(long idx, in FrameTimeSample curr)
+        {
+            long windowStart = Interlocked.Read(ref _windowStartTicks);
+            float vsyncMs = VsyncPeriodMs;
+
+            if (curr.TicksUpdateStart > 0)
+            {
+                Interlocked.Increment(ref _windowRenderedCount);
+
+                long prevStart = Interlocked.Read(ref _windowPrevRenderedStart);
+                if (prevStart > 0 && curr.TicksFrameStart > prevStart)
+                {
+                    if (IsPauseAffected(prevStart, curr.TicksFrameStart))
+                    {
+                        Interlocked.Increment(ref _windowPauseExcludedCount);
+                    }
+                    else
+                    {
+                        float gapMs = (float)((curr.TicksFrameStart - prevStart) * _msPerTick);
+                        _histInterFrame.Add(gapMs);
+                        if (gapMs > vsyncMs * 1.5f)
+                            Interlocked.Increment(ref _windowHitch15xCount);
+                        if (gapMs > vsyncMs * 2f)
+                        {
+                            Interlocked.Increment(ref _windowHitch2xCount);
+                            Volatile.Write(ref _windowHitchSumMs,
+                                Volatile.Read(ref _windowHitchSumMs) + (gapMs - vsyncMs));
+                        }
+                        if (gapMs > vsyncMs * 4f)
+                            Interlocked.Increment(ref _windowHitch4xCount);
+                    }
+                }
+                Interlocked.Exchange(ref _windowPrevRenderedStart, curr.TicksFrameStart);
+            }
+
+            if (idx >= 1)
+                AccumulateWindowPhases(idx - 1, windowStart);
+
+            /* GC pause, attributed to the deepest generation collected between this
+               sample and the one before it. Only samples that both lie inside the
+               window are compared, so a collection straddling BeginWindow is left
+               out. This is the one place the frame path may allocate: reading
+               GCMemoryInfo builds its generation and pause arrays, and it is read
+               only on a frame where a collection has just been detected. */
+            if (idx >= 1)
+            {
+                FrameTimeSample prev = _buffer[SafeIndex(idx - 1, BufferSize)];
+                if (prev.TicksFrameStart >= windowStart && prev.TicksFrameStart < curr.TicksFrameStart
+                    && DidGcOccur(prev, curr))
+                {
+                    long forcedDurationTicks;
+                    bool forced = TryGetForcedGcInInterval(prev.TicksFrameStart, curr.TicksFrameStart,
+                        out forcedDurationTicks);
+
+                    double pauseMs = 0;
+                    if (forced && forcedDurationTicks > 0)
+                    {
+                        pauseMs = forcedDurationTicks * _msPerTick;
+                    }
+                    else
+                    {
+                        double infoPauseMs;
+                        if (TryGetLastGcPauseMs(out infoPauseMs))
+                            pauseMs = infoPauseMs;
+                    }
+
+                    if (pauseMs > 0)
+                    {
+                        int gen = MaxGcGen(prev, curr);
+                        if (gen == 2)
+                            _histGcPauseGen2.Add((float)pauseMs);
+                        else if (gen == 1)
+                            _histGcPauseGen1.Add((float)pauseMs);
+                        else if (gen == 0)
+                            _histGcPauseGen0.Add((float)pauseMs);
+                    }
+                }
+            }
+        }
+
+        /* Folds the phase durations of one sample into the window. Each sample index
+           is folded at most once: the index last folded is claimed by compare-and-
+           swap, so the closing pass in EndWindow and a frame that races it cannot
+           both count the same sample. The sample must lie inside the window. */
+        private static void AccumulateWindowPhases(long idx, long windowStart)
+        {
+            long last = Interlocked.Read(ref _windowLastPhaseIndex);
+            if (idx <= last)
+                return;
+            if (Interlocked.CompareExchange(ref _windowLastPhaseIndex, idx, last) != last)
+                return;
+
+            FrameTimeSample s = _buffer[SafeIndex(idx, BufferSize)];
+            if (s.TicksFrameStart < windowStart)
+                return;
+
+            if (s.TicksUpdateStart > 0)
+            {
+                if (s.TicksLockAttempt > 0 && !s.LockAcquired)
+                    Interlocked.Increment(ref _windowLockFailCount);
+                if (s.TicksLockResult > 0)
+                    _histUpdate.Add((float)((s.TicksLockResult - s.TicksUpdateStart) * _msPerTick));
+                if (s.TicksLockAttempt > 0 && s.TicksLockResult > 0)
+                    _histLockWait.Add((float)((s.TicksLockResult - s.TicksLockAttempt) * _msPerTick));
+                if (s.TicksPaintStart > 0 && s.TicksPaintEnd > 0)
+                    _histPaint.Add((float)((s.TicksPaintEnd - s.TicksPaintStart) * _msPerTick));
+                if (s.TicksFlushStart > 0 && s.TicksFlushEnd > 0)
+                    _histFlush.Add((float)((s.TicksFlushEnd - s.TicksFlushStart) * _msPerTick));
+            }
+
+            if (s.TicksFrameStart > 0 && s.TicksFrameEnd > 0)
+                _histTotalFrame.Add((float)((s.TicksFrameEnd - s.TicksFrameStart) * _msPerTick));
+        }
+
+        /* Total suspension of the latest collection the runtime has published and
+           the window has not yet counted. Kept apart from TryGetLastGcInfo, whose
+           own index the screen log consumes, so both consumers see each collection
+           once. */
+        private static bool TryGetLastGcPauseMs(out double pauseMs)
+        {
+            pauseMs = 0;
+#if GNH_MAUI
+            try
+            {
+                GCMemoryInfo info = GC.GetGCMemoryInfo();
+                if (info.Index <= Interlocked.Read(ref _lastGcPauseInfoIndex))
+                    return false;
+
+                Interlocked.Exchange(ref _lastGcPauseInfoIndex, info.Index);
+                ReadOnlySpan<TimeSpan> pauses = info.PauseDurations;
+                for (int i = 0; i < pauses.Length; i++)
+                    pauseMs += pauses[i].TotalMilliseconds;
+                return true;
+            }
+            catch (Exception)
+            {
+                /* GCMemoryInfo may not be fully supported on all runtimes */
+                return false;
+            }
+#else
+            return false;
+#endif
+        }
+
+        private static void FillSeries(GHPerfStats.StreamingHistogram hist, out long count,
+            out float meanMs, out float p50Ms, out float p95Ms, out float p99Ms, out float maxMs)
+        {
+            count = hist.Count;
+            meanMs = (float)hist.Mean;
+            p50Ms = hist.Percentile(50);
+            p95Ms = hist.Percentile(95);
+            p99Ms = hist.Percentile(99);
+            maxMs = hist.Max;
+        }
+
+        /// <summary>
+        /// Summarizes the current or last window from the streaming histograms and
+        /// counters without allocating. Safe to call from any thread while the
+        /// frame thread is accumulating; the fields may then be a frame apart from
+        /// one another, which is tolerated.
+        /// </summary>
+        public static FrameTimeStreamingStatistics GetStreamingStatistics()
+        {
+            FrameTimeStreamingStatistics s = new FrameTimeStreamingStatistics();
+
+            FillSeries(_histInterFrame, out s.InterFrameCount, out s.InterFrameMeanMs,
+                out s.InterFrameP50Ms, out s.InterFrameP95Ms, out s.InterFrameP99Ms, out s.InterFrameMaxMs);
+            FillSeries(_histUpdate, out s.UpdateCount, out s.UpdateMeanMs,
+                out s.UpdateP50Ms, out s.UpdateP95Ms, out s.UpdateP99Ms, out s.UpdateMaxMs);
+            FillSeries(_histLockWait, out s.LockWaitCount, out s.LockWaitMeanMs,
+                out s.LockWaitP50Ms, out s.LockWaitP95Ms, out s.LockWaitP99Ms, out s.LockWaitMaxMs);
+            FillSeries(_histPaint, out s.PaintCount, out s.PaintMeanMs,
+                out s.PaintP50Ms, out s.PaintP95Ms, out s.PaintP99Ms, out s.PaintMaxMs);
+            FillSeries(_histFlush, out s.FlushCount, out s.FlushMeanMs,
+                out s.FlushP50Ms, out s.FlushP95Ms, out s.FlushP99Ms, out s.FlushMaxMs);
+            FillSeries(_histTotalFrame, out s.TotalFrameCount, out s.TotalFrameMeanMs,
+                out s.TotalFrameP50Ms, out s.TotalFrameP95Ms, out s.TotalFrameP99Ms, out s.TotalFrameMaxMs);
+            FillSeries(_histGcPauseGen0, out s.GcPauseGen0Count, out s.GcPauseGen0MeanMs,
+                out s.GcPauseGen0P50Ms, out s.GcPauseGen0P95Ms, out s.GcPauseGen0P99Ms, out s.GcPauseGen0MaxMs);
+            FillSeries(_histGcPauseGen1, out s.GcPauseGen1Count, out s.GcPauseGen1MeanMs,
+                out s.GcPauseGen1P50Ms, out s.GcPauseGen1P95Ms, out s.GcPauseGen1P99Ms, out s.GcPauseGen1MaxMs);
+            FillSeries(_histGcPauseGen2, out s.GcPauseGen2Count, out s.GcPauseGen2MeanMs,
+                out s.GcPauseGen2P50Ms, out s.GcPauseGen2P95Ms, out s.GcPauseGen2P99Ms, out s.GcPauseGen2MaxMs);
+
+            s.VsyncPeriodMs = VsyncPeriodMs;
+            s.WindowOpen = IsWindowOpen;
+
+            long windowStart = Interlocked.Read(ref _windowStartTicks);
+            long windowEnd = s.WindowOpen ? Stopwatch.GetTimestamp() : Interlocked.Read(ref _windowEndTicks);
+            double elapsedMs = windowStart > 0 && windowEnd > windowStart
+                ? (windowEnd - windowStart) * _msPerTick
+                : 0;
+            s.WindowElapsedMs = (float)elapsedMs;
+
+            s.TickCount = Interlocked.Read(ref _windowTickCount);
+            s.RenderedFrameCount = Interlocked.Read(ref _windowRenderedCount);
+            s.LockFailCount = Interlocked.Read(ref _windowLockFailCount);
+            s.PauseExcludedCount = Interlocked.Read(ref _windowPauseExcludedCount);
+            s.Hitch15xCount = Interlocked.Read(ref _windowHitch15xCount);
+            s.Hitch2xCount = Interlocked.Read(ref _windowHitch2xCount);
+            s.Hitch4xCount = Interlocked.Read(ref _windowHitch4xCount);
+
+            double hitchSumMs = Volatile.Read(ref _windowHitchSumMs);
+            s.HitchSumMs = (float)hitchSumMs;
+            double elapsedSec = elapsedMs / 1000.0;
+            s.HitchRatioMsPerSec = elapsedSec > 0 ? (float)(hitchSumMs / elapsedSec) : 0;
+            s.FpsMean = elapsedSec > 0 ? (float)(s.RenderedFrameCount / elapsedSec) : 0;
+
+            s.GcGen0Count = GC.CollectionCount(0) - _windowGcCount0;
+            s.GcGen1Count = GC.CollectionCount(1) - _windowGcCount1;
+            s.GcGen2Count = GC.CollectionCount(2) - _windowGcCount2;
+
+            long allocatedNow =
+#if GNH_MAUI
+                GC.GetTotalAllocatedBytes(false);
+#else
+                0;
+#endif
+            double allocatedMB = (allocatedNow - Interlocked.Read(ref _windowAllocatedBytes)) / (1024.0 * 1024.0);
+            if (allocatedMB < 0)
+                allocatedMB = 0;
+            s.AllocatedMB = (float)allocatedMB;
+            s.AllocationRateMBPerSec = elapsedSec > 0 ? (float)(allocatedMB / elapsedSec) : 0;
+
+            s.MarkerCount = CountMarkersSinceWindow();
+            return s;
+        }
+
+        /// <summary>
+        /// Copies the exact inter-frame gaps, in ms, of the rendered frames still in
+        /// the ring buffer whose start lies at or after the window start, oldest
+        /// first, skipping pause-affected gaps, up to the destination's length.
+        /// Returns the number copied. The ring holds the last 1800 ticks, so a long
+        /// window yields only its tail.
+        /// </summary>
+        public static int CopyWindowIntervals(float[] destination)
+        {
+            if (destination == null || destination.Length == 0)
+                return 0;
+
+            long currentWriteIndex = Interlocked.Read(ref _writeIndex);
+            if (currentWriteIndex < 0)
+                return 0;
+
+            long windowStart = Interlocked.Read(ref _windowStartTicks);
+            int sampleCount = (int)Math.Min(currentWriteIndex + 1, BufferSize);
+            long startIndex = currentWriteIndex >= BufferSize ? currentWriteIndex - BufferSize + 1 : 0;
+
+            int copied = 0;
+            long prevRenderedStart = 0;
+            for (int i = 0; i < sampleCount && copied < destination.Length; i++)
+            {
+                FrameTimeSample curr = _buffer[SafeIndex(startIndex + i, BufferSize)];
+                if (curr.TicksUpdateStart == 0 || curr.TicksFrameStart < windowStart)
+                    continue;
+
+                if (prevRenderedStart > 0 && curr.TicksFrameStart > prevRenderedStart
+                    && !IsPauseAffected(prevRenderedStart, curr.TicksFrameStart))
+                {
+                    destination[copied] = (float)((curr.TicksFrameStart - prevRenderedStart) * _msPerTick);
+                    copied++;
+                }
+                prevRenderedStart = curr.TicksFrameStart;
+            }
+            return copied;
         }
 
         private const int BufferSize = 1800;
@@ -294,6 +967,9 @@ namespace GnollHackX
 #endif
                 HeapSizeBytes = GC.GetTotalMemory(false)
             };
+
+            if (IsWindowOpen)
+                Interlocked.Increment(ref _windowTickCount);
 
             if (idx >= 1 && GHApp.IsDebugScreenLoggingOn)
             {
@@ -594,12 +1270,32 @@ namespace GnollHackX
             _buffer[SafeIndex(idx, BufferSize)].TicksPaintEnd = Stopwatch.GetTimestamp();
         }
 
+        public static void StampFlushStart()
+        {
+            if (!IsEnabled) return;
+            long idx = Interlocked.Read(ref _lastRenderIndex);
+            if (idx < 0) return;
+            _buffer[SafeIndex(idx, BufferSize)].TicksFlushStart = Stopwatch.GetTimestamp();
+        }
+
+        public static void StampFlushEnd()
+        {
+            if (!IsEnabled) return;
+            long idx = Interlocked.Read(ref _lastRenderIndex);
+            if (idx < 0) return;
+            _buffer[SafeIndex(idx, BufferSize)].TicksFlushEnd = Stopwatch.GetTimestamp();
+        }
+
         public static void EndFrame()
         {
             if (!IsEnabled) return;
             long idx = Interlocked.Read(ref _writeIndex);
             if (idx < 0) return;
-            _buffer[SafeIndex(idx, BufferSize)].TicksFrameEnd = Stopwatch.GetTimestamp();
+            int index = SafeIndex(idx, BufferSize);
+            _buffer[index].TicksFrameEnd = Stopwatch.GetTimestamp();
+
+            if (IsWindowOpen)
+                AccumulateWindowSample(idx, in _buffer[index]);
         }
 
         /// <summary>
@@ -839,6 +1535,7 @@ namespace GnollHackX
             double totalUpdateMs = 0;
             double totalLockWaitMs = 0;
             double totalPaintMs = 0;
+            double totalFlushMs = 0;
             int droppedCount = 0;
             int lockAttemptCount = 0;
             int lockFailCount = 0;
@@ -954,6 +1651,9 @@ namespace GnollHackX
                 if (curr.TicksPaintStart > 0 && curr.TicksPaintEnd > 0)
                     totalPaintMs += (curr.TicksPaintEnd - curr.TicksPaintStart) * _msPerTick;
 
+                if (curr.TicksFlushStart > 0 && curr.TicksFlushEnd > 0)
+                    totalFlushMs += (curr.TicksFlushEnd - curr.TicksFlushStart) * _msPerTick;
+
                 prevRenderedFrameStart = curr.TicksFrameStart;
                 prevRenderedSample = curr;
                 hasPrevRendered = true;
@@ -1057,6 +1757,7 @@ namespace GnollHackX
                 AvgUpdateMs = renderedCount > 0 ? (float)(totalUpdateMs / renderedCount) : 0,
                 AvgLockWaitMs = renderedCount > 0 ? (float)(totalLockWaitMs / renderedCount) : 0,
                 AvgPaintMs = renderedCount > 0 ? (float)(totalPaintMs / renderedCount) : 0,
+                AvgFlushMs = renderedCount > 0 ? (float)(totalFlushMs / renderedCount) : 0,
                 DroppedFrameCount = droppedCount,
                 DroppedFramePct = interFrameCount > 0 ? (float)droppedCount / interFrameCount * 100f : 0,
                 LockFailCount = lockFailCount,
@@ -1089,13 +1790,67 @@ namespace GnollHackX
         }
 
         /// <summary>
-        /// Recomputes the statistics and hands them to the debug dashboard.
-        /// Called on the main thread at the screen log's cadence, not per frame:
-        /// the dashboard rebuilds every row string when the snapshot changes.
+        /// Reads the current heap sizes. This runs twice a second on the
+        /// dashboard's publish path, not per frame, so the arrays that reading
+        /// GCMemoryInfo builds are an acceptable allocation here.
+        /// </summary>
+        public static FrameTimeMemorySnapshot GetMemorySnapshot()
+        {
+            FrameTimeMemorySnapshot m = new FrameTimeMemorySnapshot();
+            m.HeapSizeBytes = GC.GetTotalMemory(false);
+#if GNH_MAUI
+            try
+            {
+                GCMemoryInfo gcInfo = GC.GetGCMemoryInfo();
+                ReadOnlySpan<GCGenerationInfo> genInfo = gcInfo.GenerationInfo;
+                if (genInfo.Length > 0) m.Gen0SizeBytes = genInfo[0].SizeAfterBytes;
+                if (genInfo.Length > 1) m.Gen1SizeBytes = genInfo[1].SizeAfterBytes;
+                if (genInfo.Length > 2) m.Gen2SizeBytes = genInfo[2].SizeAfterBytes;
+                if (genInfo.Length > 3) m.LohSizeBytes = genInfo[3].SizeAfterBytes;
+            }
+            catch (Exception)
+            {
+                /* GCMemoryInfo may not be fully supported on all runtimes */
+            }
+#endif
+            return m;
+        }
+
+        /*
+         * The thermal reading calls into the platform, so the publish path reads
+         * it at most once per interval and republishes the cached reading between.
+         */
+        private const double ThermalReadIntervalMs = 5000.0;
+        private static long _lastThermalReadTicks = 0;
+        private static GHThermalReading _lastThermalReading = GHThermalProbe.Unknown;
+
+        /// <summary>
+        /// Summarizes the streaming window, the heap, the UI thread and game
+        /// turn probes and the thermal state, and hands them to the debug
+        /// dashboard. Called on the main thread at the screen log's cadence, not
+        /// per frame: the dashboard rebuilds every row string when the snapshot
+        /// changes. Nothing here sorts or scans the sample ring, so publishing
+        /// does not disturb what it measures.
         /// </summary>
         public static void PublishDashboardSnapshot()
         {
-            GHDebugDashboard.PublishFrameStats(GetStatistics(), IsEnabled);
+            FrameTimeStreamingStatistics stats = GetStreamingStatistics();
+            FrameTimeMemorySnapshot memory = GetMemorySnapshot();
+
+            long now = Stopwatch.GetTimestamp();
+            if (_lastThermalReadTicks == 0
+                || (now - _lastThermalReadTicks) * _msPerTick >= ThermalReadIntervalMs)
+            {
+                _lastThermalReading = GHThermalProbe.Read();
+                _lastThermalReadTicks = now;
+            }
+            GHThermalReading thermal = _lastThermalReading;
+
+            GHDebugDashboard.PublishFrameStats(in stats, in memory, IsEnabled,
+                GHUiThreadProbe.LatencyP99Ms, GHUiThreadProbe.LatencyMaxMs,
+                GHUiThreadProbe.LateTickCount, GHUiThreadProbe.TickCount,
+                GHGameTurnTimer.ProcessingP95Ms, GHGameTurnTimer.ProcessingMaxMs,
+                thermal.Status, thermal.CpuPerformancePct, thermal.BatteryTempC);
         }
 
         public static void DumpToCsv(string path)
@@ -1108,7 +1863,7 @@ namespace GnollHackX
 
             using (StreamWriter writer = new StreamWriter(path))
             {
-                writer.WriteLine("FrameNumber,Rendered,ForcedGc,RuntimeGc,PauseAffected,GcGen,AllocKB,HeapMB,InterFrameMs,UpdateMs,LockWaitMs,LockAcquired,PaintMs,TotalFrameMs");
+                writer.WriteLine("FrameNumber,Rendered,ForcedGc,RuntimeGc,PauseAffected,GcGen,AllocKB,HeapMB,InterFrameMs,UpdateMs,LockWaitMs,LockAcquired,PaintMs,FlushMs,TotalFrameMs");
 
                 FrameTimeSample prev = default;
                 FrameTimeSample prevRendered = default;
@@ -1166,10 +1921,13 @@ namespace GnollHackX
                     float paintMs = curr.TicksPaintStart > 0 && curr.TicksPaintEnd > 0 
                         ? (float)((curr.TicksPaintEnd - curr.TicksPaintStart) * _msPerTick) : 0;
                     
-                    float totalFrameMs = curr.TicksFrameStart > 0 && curr.TicksFrameEnd > 0 
+                    float flushMs = curr.TicksFlushStart > 0 && curr.TicksFlushEnd > 0
+                        ? (float)((curr.TicksFlushEnd - curr.TicksFlushStart) * _msPerTick) : 0;
+
+                    float totalFrameMs = curr.TicksFrameStart > 0 && curr.TicksFrameEnd > 0
                         ? (float)((curr.TicksFrameEnd - curr.TicksFrameStart) * _msPerTick) : 0;
 
-                    writer.WriteLine(FormattableString.Invariant($"{curr.FrameNumber},{rendered},{forcedGc},{runtimeGc},{pauseAffected},{gcGen},{allocKB:0.00},{heapMB:0.00},{interFrameMs:0.00},{updateMs:0.00},{lockWaitMs:0.00},{curr.LockAcquired},{paintMs:0.00},{totalFrameMs:0.00}"));
+                    writer.WriteLine(FormattableString.Invariant($"{curr.FrameNumber},{rendered},{forcedGc},{runtimeGc},{pauseAffected},{gcGen},{allocKB:0.00},{heapMB:0.00},{interFrameMs:0.00},{updateMs:0.00},{lockWaitMs:0.00},{curr.LockAcquired},{paintMs:0.00},{flushMs:0.00},{totalFrameMs:0.00}"));
 
                     prev = curr;
                     hasPrev = true;

@@ -1,4 +1,5 @@
 using GnollHackX;
+using GnollHackX.Perf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -162,6 +163,14 @@ namespace GnollHackM
             throw new NotImplementedException();
         }
         public bool GetKeyboardConnected()
+        {
+            return false;
+        }
+        public GHThermalReading GetThermalReading()
+        {
+            return GHThermalProbe.Unknown;
+        }
+        public bool SetSustainedPerformanceMode(bool enabled)
         {
             return false;
         }

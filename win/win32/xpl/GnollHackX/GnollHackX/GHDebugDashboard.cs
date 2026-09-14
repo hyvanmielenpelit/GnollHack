@@ -2,6 +2,7 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using GnollHackX.Perf;
 #if GNH_MAUI
 using GnollHackM;
 #endif
@@ -27,10 +28,11 @@ namespace GnollHackX
     /// </summary>
     public struct GHDebugDashboardData
     {
-        /* Frame timing, copied from FrameTimeStatistics */
+        /* Frame timing, copied from FrameTimeStreamingStatistics of the current
+           measurement window */
         public float FPS;
         public float InterFrameAvgMs;
-        public float InterFrameStdDevMs;
+        public float InterFrameP50Ms;
         public float InterFrameP95Ms;
         public float InterFrameP99Ms;
         public float InterFrameMaxMs;
@@ -38,6 +40,28 @@ namespace GnollHackX
         public float LockFailPct;
         public int SampleCount;
         public bool ProfilerEnabled;
+        public long Hitch2xCount;
+        public long Hitch4xCount;
+        public float HitchRatioMsPerSec;
+        public float UpdateP95Ms;
+        public float LockWaitP95Ms;
+        public float PaintP95Ms;
+        public float PaintMaxMs;
+        public float FlushP95Ms;
+        public float FlushMaxMs;
+        public float WindowElapsedS;
+        /* "roll" for the profiler's own rolling window, "win" for a harness's */
+        public string WindowKind;
+
+        /* UI thread probe */
+        public long UiTickCount;
+        public float UiLatencyP99Ms;
+        public float UiLatencyMaxMs;
+        public float UiLatePct;
+
+        /* Game turn timer */
+        public float GameTurnP95Ms;
+        public float GameTurnMaxMs;
 
         /* Memory */
         public float AllocationRateMBPerSec;
@@ -47,7 +71,8 @@ namespace GnollHackX
         public long Gen2SizeBytes;
         public long LohSizeBytes;
 
-        /* GC */
+        /* GC: pauses of every collection in the window, and the collection-count
+           deltas by generation */
         public int RuntimeGcFrameCount;
         public int GcGen0Count;
         public int GcGen1Count;
@@ -55,10 +80,14 @@ namespace GnollHackX
         public float RuntimeGcAvgMs;
         public float RuntimeGcP99Ms;
         public float RuntimeGcWorstMs;
-        public int GcFrameCount;
+        /* Inter-frame gaps excluded for a canvas transition */
         public int PauseFrameCount;
-        public float GcAvgMs;
-        public float GcWorstMs;
+
+        /* Thermal state, read at most every few seconds */
+        public string ThermalStatus;
+        public GHThermalStatus ThermalStatusCode;
+        public float CpuPerformancePct;
+        public float BatteryTempC;
 
         /* Draw and caches, published from the paint thread */
         public int DrawCommandCount;
@@ -112,6 +141,14 @@ namespace GnollHackX
 
         private const string Ellipsis = "...";
         private const string EmptyValue = "";
+        private const string Unavailable = "?";
+
+        /* Value colour thresholds for the rows without a GHConstants entry */
+        private const float HitchRatioWarnMsPerSec = 2.0f;
+        private const float HitchRatioAlarmMsPerSec = 8.0f;
+        private const float UiLateWarnPct = 5.0f;
+        private const float UiLateAlarmPct = 20.0f;
+        private const float CpuPerformanceWarnPct = 90.0f;
 
         /* Monospace advance probe. One character is enough because the
            dashboard font is fixed-pitch, so a row's width is its
@@ -189,45 +226,83 @@ namespace GnollHackX
         public SKRect LogToggleRect { get { return _logToggleRect; } }
         public SKRect LastDrawnRect { get { return _lastDrawnRect; } }
 
+        private const string WindowKindRolling = "roll";
+        private const string WindowKindExplicit = "win";
+
         /// <summary>
-        /// Publishes the frame timing, memory and GC groups. Called from
-        /// the main thread once per statistics refresh. Stages the values
-        /// only: PublishDrawStats raises the version that both halves are
-        /// read under, so one tick rebuilds the rows once.
+        /// Publishes the frame timing, UI thread, game turn, memory, GC and
+        /// thermal groups. Called from the main thread once per statistics
+        /// refresh. Stages the values only: PublishDrawStats raises the
+        /// version that both halves are read under, so one tick rebuilds the
+        /// rows once. Allocation-free: the two strings staged are constants.
         /// </summary>
-        public static void PublishFrameStats(in FrameTimeStatistics stats, bool profilerEnabled)
+        public static void PublishFrameStats(in FrameTimeStreamingStatistics stats,
+            in FrameTimeMemorySnapshot memory, bool profilerEnabled,
+            float uiLatencyP99Ms, float uiLatencyMaxMs, long uiLateTicks, long uiTicks,
+            float gameTurnP95Ms, float gameTurnMaxMs,
+            GHThermalStatus thermalStatus, float cpuPerformancePct, float batteryTempC)
         {
+            long gcCount = stats.GcPauseGen0Count + stats.GcPauseGen1Count + stats.GcPauseGen2Count;
+            float gcAvgMs = gcCount > 0
+                ? (float)((stats.GcPauseGen0Count * (double)stats.GcPauseGen0MeanMs
+                    + stats.GcPauseGen1Count * (double)stats.GcPauseGen1MeanMs
+                    + stats.GcPauseGen2Count * (double)stats.GcPauseGen2MeanMs) / gcCount)
+                : 0f;
+
             lock (_publishLock)
             {
-                _staging.FPS = stats.FPS;
-                _staging.InterFrameAvgMs = stats.InterFrameAvgMs;
-                _staging.InterFrameStdDevMs = stats.InterFrameStdDevMs;
+                _staging.FPS = stats.FpsMean;
+                _staging.InterFrameAvgMs = stats.InterFrameMeanMs;
+                _staging.InterFrameP50Ms = stats.InterFrameP50Ms;
                 _staging.InterFrameP95Ms = stats.InterFrameP95Ms;
                 _staging.InterFrameP99Ms = stats.InterFrameP99Ms;
                 _staging.InterFrameMaxMs = stats.InterFrameMaxMs;
-                _staging.DroppedFramePct = stats.DroppedFramePct;
-                _staging.LockFailPct = stats.LockFailPct;
-                _staging.SampleCount = stats.SampleCount;
+                _staging.DroppedFramePct = 100f * stats.Hitch15xCount / Math.Max(1L, stats.InterFrameCount);
+                _staging.LockFailPct = 100f * stats.LockFailCount / Math.Max(1L, stats.RenderedFrameCount);
+                _staging.SampleCount = (int)Math.Min(int.MaxValue, stats.InterFrameCount);
                 _staging.ProfilerEnabled = profilerEnabled;
+                _staging.Hitch2xCount = stats.Hitch2xCount;
+                _staging.Hitch4xCount = stats.Hitch4xCount;
+                _staging.HitchRatioMsPerSec = stats.HitchRatioMsPerSec;
+                _staging.UpdateP95Ms = stats.UpdateP95Ms;
+                _staging.LockWaitP95Ms = stats.LockWaitP95Ms;
+                _staging.PaintP95Ms = stats.PaintP95Ms;
+                _staging.PaintMaxMs = stats.PaintMaxMs;
+                _staging.FlushP95Ms = stats.FlushP95Ms;
+                _staging.FlushMaxMs = stats.FlushMaxMs;
+                _staging.WindowElapsedS = stats.WindowElapsedMs / 1000f;
+                _staging.WindowKind = FrameTimeProfiler.IsImplicitWindow ? WindowKindRolling : WindowKindExplicit;
+
+                _staging.UiTickCount = uiTicks;
+                _staging.UiLatencyP99Ms = uiLatencyP99Ms;
+                _staging.UiLatencyMaxMs = uiLatencyMaxMs;
+                _staging.UiLatePct = 100f * uiLateTicks / Math.Max(1L, uiTicks);
+
+                _staging.GameTurnP95Ms = gameTurnP95Ms;
+                _staging.GameTurnMaxMs = gameTurnMaxMs;
 
                 _staging.AllocationRateMBPerSec = stats.AllocationRateMBPerSec;
-                _staging.HeapSizeBytes = stats.HeapSizeBytes;
-                _staging.Gen0SizeBytes = stats.Gen0SizeBytes;
-                _staging.Gen1SizeBytes = stats.Gen1SizeBytes;
-                _staging.Gen2SizeBytes = stats.Gen2SizeBytes;
-                _staging.LohSizeBytes = stats.LohSizeBytes;
+                _staging.HeapSizeBytes = memory.HeapSizeBytes;
+                _staging.Gen0SizeBytes = memory.Gen0SizeBytes;
+                _staging.Gen1SizeBytes = memory.Gen1SizeBytes;
+                _staging.Gen2SizeBytes = memory.Gen2SizeBytes;
+                _staging.LohSizeBytes = memory.LohSizeBytes;
 
-                _staging.RuntimeGcFrameCount = stats.RuntimeGcFrameCount;
-                _staging.RuntimeGcAvgMs = stats.RuntimeGcAvgMs;
-                _staging.RuntimeGcP99Ms = stats.RuntimeGcP99Ms;
-                _staging.RuntimeGcWorstMs = stats.RuntimeGcWorstMs;
+                _staging.RuntimeGcFrameCount = (int)Math.Min(int.MaxValue, gcCount);
+                _staging.RuntimeGcAvgMs = gcAvgMs;
+                _staging.RuntimeGcP99Ms = Math.Max(stats.GcPauseGen0P99Ms,
+                    Math.Max(stats.GcPauseGen1P99Ms, stats.GcPauseGen2P99Ms));
+                _staging.RuntimeGcWorstMs = Math.Max(stats.GcPauseGen0MaxMs,
+                    Math.Max(stats.GcPauseGen1MaxMs, stats.GcPauseGen2MaxMs));
                 _staging.GcGen0Count = stats.GcGen0Count;
                 _staging.GcGen1Count = stats.GcGen1Count;
                 _staging.GcGen2Count = stats.GcGen2Count;
-                _staging.GcFrameCount = stats.GcFrameCount;
-                _staging.GcAvgMs = stats.GcAvgMs;
-                _staging.GcWorstMs = stats.GcWorstMs;
-                _staging.PauseFrameCount = stats.PauseFrameCount;
+                _staging.PauseFrameCount = (int)Math.Min(int.MaxValue, stats.PauseExcludedCount);
+
+                _staging.ThermalStatus = GHThermalProbe.StatusName(thermalStatus);
+                _staging.ThermalStatusCode = thermalStatus;
+                _staging.CpuPerformancePct = cpuPerformancePct;
+                _staging.BatteryTempC = batteryTempC;
             }
         }
 
@@ -431,7 +506,7 @@ namespace GnollHackX
                     SKColors.White, RowKind.SectionHeading);
 
                 AddRow("avg", FormattableString.Invariant(
-                        $"{d.InterFrameAvgMs:0.0} ms   sd {d.InterFrameStdDevMs:0.0}"),
+                        $"{d.InterFrameAvgMs:0.0} ms   p50 {d.InterFrameP50Ms:0.0}"),
                     SKColors.White, RowKind.Value);
 
                 SKColor p99Color = SKColors.White;
@@ -455,6 +530,60 @@ namespace GnollHackX
                         $"{d.DroppedFramePct:0.0} %  lock {d.LockFailPct:0.0} %  n {d.SampleCount}"),
                     dropColor, RowKind.Value);
 
+                SKColor hitchColor = SKColors.White;
+                if (d.HitchRatioMsPerSec > HitchRatioAlarmMsPerSec)
+                    hitchColor = SKColors.Red;
+                else if (d.HitchRatioMsPerSec > HitchRatioWarnMsPerSec)
+                    hitchColor = SKColors.Orange;
+
+                AddRow("hitch", FormattableString.Invariant(
+                        $"2x {d.Hitch2xCount}  4x {d.Hitch4xCount}  {d.HitchRatioMsPerSec:0.0} ms/s"),
+                    hitchColor, RowKind.Value);
+
+                AddRow("upd", FormattableString.Invariant(
+                        $"p95 {d.UpdateP95Ms:0.0}  wait {d.LockWaitP95Ms:0.0}"),
+                    SKColors.White, RowKind.Value);
+
+                AddRow("paint", FormattableString.Invariant(
+                        $"p95 {d.PaintP95Ms:0.0}  max {d.PaintMaxMs:0.0}"),
+                    SKColors.White, RowKind.Value);
+
+                AddRow("flush", FormattableString.Invariant(
+                        $"p95 {d.FlushP95Ms:0.0}  max {d.FlushMaxMs:0.0}"),
+                    SKColors.White, RowKind.Value);
+
+                /* Whole seconds, so the string recurs between refreshes */
+                AddRow("win", FormattableString.Invariant(
+                        $"{d.WindowKind} {d.WindowElapsedS:0} s  excl {d.PauseFrameCount}"),
+                    SKColors.White, RowKind.Value);
+
+                if (d.UiTickCount > 0)
+                {
+                    AddRow("UI", EmptyValue, SKColors.White, RowKind.SectionHeading);
+
+                    AddRow("lat", FormattableString.Invariant(
+                            $"p99 {d.UiLatencyP99Ms:0.0}  max {d.UiLatencyMaxMs:0.0}"),
+                        SKColors.White, RowKind.Value);
+
+                    SKColor lateColor = SKColors.White;
+                    if (d.UiLatePct > UiLateAlarmPct)
+                        lateColor = SKColors.Red;
+                    else if (d.UiLatePct > UiLateWarnPct)
+                        lateColor = SKColors.Orange;
+
+                    AddRow("late", FormattableString.Invariant($"{d.UiLatePct:0.0} %"),
+                        lateColor, RowKind.Value);
+                }
+
+                if (d.GameTurnMaxMs > 0f)
+                {
+                    AddRow("GAME", EmptyValue, SKColors.White, RowKind.SectionHeading);
+
+                    AddRow("turn", FormattableString.Invariant(
+                            $"p95 {d.GameTurnP95Ms:0.0}  max {d.GameTurnMaxMs:0.0}"),
+                        SKColors.White, RowKind.Value);
+                }
+
                 AddRow("MEMORY", EmptyValue, SKColors.White, RowKind.SectionHeading);
 
                 float heapMB = d.HeapSizeBytes / (1024f * 1024f);
@@ -464,17 +593,16 @@ namespace GnollHackX
 
                 AddRow("gen", BuildGenerationSizes(d), SKColors.White, RowKind.Value);
 
-                bool hasRuntimeGc = d.RuntimeGcFrameCount > 0
+                bool hasGc = d.RuntimeGcFrameCount > 0
                     || d.GcGen0Count > 0 || d.GcGen1Count > 0 || d.GcGen2Count > 0;
-                bool hasForcedGc = d.GcFrameCount > 0 || d.PauseFrameCount > 0;
-                if (hasRuntimeGc || hasForcedGc)
+                if (hasGc)
                 {
                     _gcHeadingRow = _rows.Count;
                     AddRow("GC", EmptyValue, SKColors.White, RowKind.SectionHeading);
 
                     if (d.RuntimeGcFrameCount > 0)
                     {
-                        AddRow("rt", FormattableString.Invariant(
+                        AddRow("pause", FormattableString.Invariant(
                                 $"{d.RuntimeGcFrameCount}x avg {d.RuntimeGcAvgMs:0.0} p99 {d.RuntimeGcP99Ms:0.0} max {d.RuntimeGcWorstMs:0.0}"),
                             SKColors.White, RowKind.Value);
                     }
@@ -485,14 +613,32 @@ namespace GnollHackX
                                 $"{d.GcGen0Count} / {d.GcGen1Count} / {d.GcGen2Count}"),
                             SKColors.White, RowKind.Value);
                     }
-
-                    if (hasForcedGc)
-                    {
-                        AddRow("forc", FormattableString.Invariant(
-                                $"{d.GcFrameCount}x avg {d.GcAvgMs:0.0} max {d.GcWorstMs:0.0}  pause {d.PauseFrameCount}"),
-                            SKColors.White, RowKind.Value);
-                    }
                 }
+
+                AddRow("THERM", EmptyValue, SKColors.White, RowKind.SectionHeading);
+
+                SKColor thermalColor = SKColors.White;
+                if (d.ThermalStatusCode >= GHThermalStatus.Severe)
+                    thermalColor = SKColors.Red;
+                else if (d.ThermalStatusCode == GHThermalStatus.Moderate)
+                    thermalColor = SKColors.Orange;
+
+                AddRow("stat", d.ThermalStatus, thermalColor, RowKind.Value);
+
+                /* NaN marks a figure the platform does not expose */
+                SKColor cpuColor = SKColors.White;
+                if (!float.IsNaN(d.CpuPerformancePct) && d.CpuPerformancePct < CpuPerformanceWarnPct)
+                    cpuColor = SKColors.Orange;
+
+                AddRow("cpu", float.IsNaN(d.CpuPerformancePct)
+                        ? Unavailable
+                        : FormattableString.Invariant($"{d.CpuPerformancePct:0} %"),
+                    cpuColor, RowKind.Value);
+
+                AddRow("batt", float.IsNaN(d.BatteryTempC)
+                        ? Unavailable
+                        : FormattableString.Invariant($"{d.BatteryTempC:0.0} C"),
+                    SKColors.White, RowKind.Value);
             }
 
             /* One cut point for whichever of the two surface sections was emitted,

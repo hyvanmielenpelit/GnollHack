@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>GnollHackX.UnitTests</RootNamespace>
+    <AssemblyName>GnollHackX.UnitTests</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!-- The linked files take their MAUI branch, which is the one the shipping app compiles. -->
+    <DefineConstants>$(DefineConstants);GNH_MAUI</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <!-- Same version as GnollHackM.csproj's default (non-SKIASHARP_3119) item group. -->
+    <PackageReference Include="SkiaSharp" Version="4.151.2" />
+  </ItemGroup>
+
+  <!-- The subjects are the same files the app compiles, linked rather than copied. -->
+  <ItemGroup>
+    <Compile Include="..\..\GnollHackX\GnollHackX\Perf\GHPerfStats.cs" Link="Shared\GHPerfStats.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Perf\GHGameTurnTimer.cs" Link="Shared\GHGameTurnTimer.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\FrameTimeProfiler.cs" Link="Shared\FrameTimeProfiler.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHRefList.cs" Link="Shared\GHRefList.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHTileBatch.cs" Link="Shared\GHTileBatch.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHSkiaFontPaint.cs" Link="Shared\GHSkiaFontPaint.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHDrawCommand.cs" Link="Shared\GHDrawCommand.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHConstants.cs" Link="Shared\GHConstants.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHEnums.cs" Link="Shared\GHEnums.cs" />
+  </ItemGroup>
+
+</Project>
