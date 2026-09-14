@@ -28,6 +28,10 @@ namespace GnollHackX.Pages.MainScreen
         private string _fileName;
         private int _fixedWidth;
         private bool _isHtml;
+#if GNH_MAUI && WINDOWS
+        /* HTML source held back until WebView2 has initialized successfully. */
+        private HtmlWebViewSource _pendingHtmlSource = null;
+#endif
 
         public DisplayFilePage(string fileName, string header) : this(fileName, header, 0)
         {
@@ -49,6 +53,9 @@ namespace GnollHackX.Pages.MainScreen
         public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare, bool isHtml, bool isScrolledDown)
         {
             InitializeComponent();
+#if GNH_MAUI && WINDOWS
+            DisplayWebView.Loaded += DisplayWebView_Loaded;
+#endif
 //#if GNH_MAUI
 //            SafeAreaEdges = SafeAreaEdges.All;
 //#else
@@ -126,6 +133,47 @@ namespace GnollHackX.Pages.MainScreen
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
         }
+
+#if GNH_MAUI && WINDOWS
+        /* MAUI's WebViewHandler dereferences CoreWebView2 without a null check when
+           WebView2 initialization fails, so the core is initialized here first and the
+           source is assigned only on success. */
+        private async void DisplayWebView_Loaded(object sender, EventArgs e)
+        {
+            HtmlWebViewSource source = _pendingHtmlSource;
+            if (source == null)
+                return;
+            _pendingHtmlSource = null;
+            try
+            {
+                var webView2 = DisplayWebView.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.WebView2;
+                if (webView2 != null)
+                    await webView2.EnsureCoreWebView2Async();
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("WebView2 initialization failed: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
+                ShowHtmlDisplayError();
+                return;
+            }
+            try
+            {
+                DisplayWebView.Source = source;
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("WebView2 source assignment failed: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
+                ShowHtmlDisplayError();
+            }
+        }
+
+        private void ShowHtmlDisplayError()
+        {
+            DisplayWebView.IsVisible = false;
+            TextLabel.Text = "Failed to initialize the web view. HTML content cannot be displayed on this computer.";
+            TextLabel.IsVisible = true;
+        }
+#endif
         //protected override bool OnBackButtonPressed()
         //{
         //    return true;
@@ -143,7 +191,11 @@ namespace GnollHackX.Pages.MainScreen
                     var htmlSource = new HtmlWebViewSource();
                     htmlSource.Html = text;
                     htmlSource.BaseUrl = GHApp.PlatformService.GetBaseUrl();
+#if GNH_MAUI && WINDOWS
+                    _pendingHtmlSource = htmlSource;
+#else
                     DisplayWebView.Source = htmlSource;
+#endif
                     DisplayWebView.IsVisible = true;
                 }
                 else
