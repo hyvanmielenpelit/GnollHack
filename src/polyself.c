@@ -28,6 +28,7 @@ static void polyman(const char *, const char *);
 static void break_armor(void);
 static void drop_weapon(int);
 static int armor_to_dragon(int);
+static int form_to_dragon(int);
 static void newman(void);
 static void polysense(void);
 
@@ -939,8 +940,16 @@ polymon_ex(int mntmp, boolean growing_up, int duration)
         }
     }
 
-    if (uskin && mntmp != armor_to_dragon(uskin->otyp))
-        skinback(FALSE);
+    /* Merged dragon scales stay merged across the dragon's ages;
+       any non-dragon form unmerges them */
+    if (uskin)
+    {
+        int form_dragon = form_to_dragon(mntmp);
+
+        if (form_dragon == NON_PM
+            || form_dragon != armor_to_dragon(uskin->otyp))
+            skinback(FALSE);
+    }
     break_armor();
 
     if (!growing_up)
@@ -2941,6 +2950,53 @@ armor_to_dragon(int atyp)
         return PM_YELLOW_DRAGON;
     default:
         return -1;
+    }
+}
+
+/* Adult dragon that a hatchling, adult, or ancient dragon form belongs to;
+   NON_PM for any other form */
+static int
+form_to_dragon(int mntmp)
+{
+    switch (mntmp) {
+    case PM_GRAY_DRAGON_HATCHLING:
+    case PM_GRAY_DRAGON:
+    case PM_ANCIENT_GRAY_DRAGON:
+        return PM_GRAY_DRAGON;
+    case PM_SILVER_DRAGON_HATCHLING:
+    case PM_SILVER_DRAGON:
+    case PM_ANCIENT_SILVER_DRAGON:
+        return PM_SILVER_DRAGON;
+    case PM_RED_DRAGON_HATCHLING:
+    case PM_RED_DRAGON:
+    case PM_ANCIENT_RED_DRAGON:
+        return PM_RED_DRAGON;
+    case PM_ORANGE_DRAGON_HATCHLING:
+    case PM_ORANGE_DRAGON:
+    case PM_ANCIENT_ORANGE_DRAGON:
+        return PM_ORANGE_DRAGON;
+    case PM_WHITE_DRAGON_HATCHLING:
+    case PM_WHITE_DRAGON:
+    case PM_ANCIENT_WHITE_DRAGON:
+        return PM_WHITE_DRAGON;
+    case PM_BLACK_DRAGON_HATCHLING:
+    case PM_BLACK_DRAGON:
+    case PM_ANCIENT_BLACK_DRAGON:
+        return PM_BLACK_DRAGON;
+    case PM_BLUE_DRAGON_HATCHLING:
+    case PM_BLUE_DRAGON:
+    case PM_ANCIENT_BLUE_DRAGON:
+        return PM_BLUE_DRAGON;
+    case PM_GREEN_DRAGON_HATCHLING:
+    case PM_GREEN_DRAGON:
+    case PM_ANCIENT_GREEN_DRAGON:
+        return PM_GREEN_DRAGON;
+    case PM_YELLOW_DRAGON_HATCHLING:
+    case PM_YELLOW_DRAGON:
+    case PM_ANCIENT_YELLOW_DRAGON:
+        return PM_YELLOW_DRAGON;
+    default:
+        return NON_PM;
     }
 }
 
