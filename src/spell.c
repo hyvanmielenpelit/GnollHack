@@ -4562,6 +4562,8 @@ add_alt_spell_cast_menu_item(winid tmpwin, int i, int splaction)
     *fullname = highc(*fullname);
 
     int glyph = spell_to_glyph(splnum);
+    debugprint("alt_cast_menu: i=%d, splnum=%d, sp_id=%d, spellorder=%d",
+        i, splnum, (int)spellid(splnum), (int)flags.spellorder);
     print_spell_level_symbol(levelbuf, spellid(splnum));
     if (OBJ_ITEM_DESC(spellid(splnum)))
     {
