@@ -55,6 +55,8 @@ namespace GnollHackX.Pages.MainScreen
             InitializeComponent();
 #if GNH_MAUI && WINDOWS
             DisplayWebView.Loaded += DisplayWebView_Loaded;
+            DisplayWebView.HandlerChanged += (s, e) => ConfigureWebView2Background();
+            DisplayWebView.Navigated += DisplayWebView_Navigated;
 #endif
 //#if GNH_MAUI
 //            SafeAreaEdges = SafeAreaEdges.All;
@@ -77,7 +79,7 @@ namespace GnollHackX.Pages.MainScreen
                 HeaderLabel.TextColor = GHColors.White;
                 TextLabel.TextColor = GHColors.White;
             }
-            if (GHApp.IsiOS && _isHtml)
+            if ((GHApp.IsiOS || GHApp.IsWindows) && _isHtml)
                 DisplayWebView.Opacity = 0.0;
         }
 
@@ -132,6 +134,9 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+#if GNH_MAUI && WINDOWS
+            DisplayWebView.Navigated -= DisplayWebView_Navigated;
+#endif
         }
 
 #if GNH_MAUI && WINDOWS
@@ -146,6 +151,7 @@ namespace GnollHackX.Pages.MainScreen
             _pendingHtmlSource = null;
             try
             {
+                ConfigureWebView2Background();
                 var webView2 = DisplayWebView.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.WebView2;
                 if (webView2 != null)
                     await webView2.EnsureCoreWebView2Async();
@@ -165,6 +171,30 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.MaybeWriteGHLog("WebView2 source assignment failed: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
                 ShowHtmlDisplayError();
             }
+        }
+
+        /* The WebView starts at opacity 0 on Windows so the WebView2 surface is not
+           seen before content exists; reveal it once the HTML has loaded. */
+        private async void DisplayWebView_Navigated(object sender, WebNavigatedEventArgs e)
+        {
+            try
+            {
+                if (DisplayWebView.Opacity < 1.0)
+                    await DisplayWebView.FadeToAsync(1.0, 256);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
+        /* WebView2 paints an opaque white surface until content renders; match the
+           dumplog body colour instead. */
+        private void ConfigureWebView2Background()
+        {
+            var webView2 = DisplayWebView.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.WebView2;
+            if (webView2 != null)
+                webView2.DefaultBackgroundColor = Windows.UI.Color.FromArgb(255, 0x22, 0x22, 0x22);
         }
 
         private void ShowHtmlDisplayError()
