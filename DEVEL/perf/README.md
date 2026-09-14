@@ -71,6 +71,13 @@ The vsync period is the display refresh period actually in effect and is recorde
    process is visible in the record.
 8. **Android reference runs** are done on a charged, unplugged device (charging heats
    it) with the screen at a fixed brightness, no other apps recently used.
+9. **Power state is a controlled factor.** Whether the device is plugged in changes the
+   CPU governor, the power plan, and the thermal budget on every platform, so it is
+   recorded before and after each run (`thermal.powerState`: `charging`, `battery`,
+   `changed`, `unknown`), held constant for a whole batch, and never varied between the
+   arms of a comparison. A run whose state changed mid-window is excluded; a comparison
+   whose runs mix states is flagged in the report. The batch driver warns when Windows
+   starts on battery or Android starts charging, and when the state changes between runs.
 
 ## Statistics
 

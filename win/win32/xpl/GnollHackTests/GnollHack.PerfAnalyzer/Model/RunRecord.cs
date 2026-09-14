@@ -103,6 +103,7 @@ namespace GnollHack.PerfAnalyzer.Model
         public bool Throttled { get; set; }
         public string GateSignal { get; set; }       /* which signal decided Throttled */
         public string ThrottleReason { get; set; }
+        public string PowerState { get; set; }       /* charging, battery, changed, unknown */
     }
 
     public sealed class Series

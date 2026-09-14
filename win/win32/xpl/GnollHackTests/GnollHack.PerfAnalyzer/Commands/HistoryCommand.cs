@@ -89,7 +89,7 @@ namespace GnollHack.PerfAnalyzer.Commands
                 Console.WriteLine("history: no file at " + file);
                 return 0;
             }
-            Console.WriteLine("timestamp             | platform | scenario | arm | build            | P50   | P99   | 1%low | hitch | thr");
+            Console.WriteLine("timestamp             | platform | scenario | arm | build            | P50   | P99   | 1%low | hitch | thr | power");
             foreach (string line in File.ReadLines(file))
             {
                 if (line.Trim().Length == 0)
@@ -114,7 +114,8 @@ namespace GnollHack.PerfAnalyzer.Commands
                     + " | " + m.GetValueOrDefault(MetricNames.FrameDurationP99).ToString("0.00").PadLeft(5)
                     + " | " + m.GetValueOrDefault(MetricNames.Fps1PctLow).ToString("0.0").PadLeft(5)
                     + " | " + m.GetValueOrDefault(MetricNames.HitchRatio).ToString("0.00").PadLeft(5)
-                    + " | " + (r.Thermal.Throttled ? "yes" : "no"));
+                    + " | " + (r.Thermal.Throttled ? "yes" : "no ")
+                    + " | " + (r.Thermal.PowerState ?? ThermalGate.PowerState(r.Thermal)));
             }
             return 0;
         }

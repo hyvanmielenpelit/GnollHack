@@ -20,6 +20,22 @@ namespace GnollHack.PerfAnalyzer.Model
             return i < 0 ? 0 : i;
         }
 
+        /* "charging", "battery", "changed" (state differed between the before and after
+           readings) or "unknown". A run whose power state changed mid-window is not
+           comparable to anything and is excluded; arms whose power states differ are
+           flagged by the comparison, since a charging phone runs hotter and a laptop on
+           battery runs a different power plan. */
+        public static string PowerState(ThermalInfo t)
+        {
+            bool? b = t?.Before?.IsCharging, a = t?.After?.IsCharging;
+            if (!b.HasValue && !a.HasValue)
+                return "unknown";
+            if (b.HasValue && a.HasValue && b.Value != a.Value)
+                return "changed";
+            bool v = b ?? a.Value;
+            return v ? "charging" : "battery";
+        }
+
         public static void Apply(RunRecord r)
         {
             ThermalInfo t = r.Thermal;
@@ -28,6 +44,7 @@ namespace GnollHack.PerfAnalyzer.Model
             t.Throttled = false;
             t.GateSignal = "none";
             t.ThrottleReason = null;
+            t.PowerState = PowerState(t);
 
             ThermalReading b = t.Before, a = t.After;
             int rb = b == null ? 0 : Rank(b.Status);

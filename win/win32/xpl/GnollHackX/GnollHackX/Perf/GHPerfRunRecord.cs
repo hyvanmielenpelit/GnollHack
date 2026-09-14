@@ -180,6 +180,11 @@ namespace GnollHackX.Perf
                 rec.ExclusionReason = "too few intervals: " + count.ToString(CultureInfo.InvariantCulture)
                     + " < " + MinimumIntervalCount.ToString(CultureInfo.InvariantCulture);
             }
+            else if (rec.Thermal.PowerState == "changed")
+            {
+                rec.Excluded = true;
+                rec.ExclusionReason = "power state changed during the run (plugged or unplugged)";
+            }
             return rec;
         }
 
@@ -354,6 +359,14 @@ namespace GnollHackX.Perf
             t.Throttled = false;
             t.GateSignal = "none";
             t.ThrottleReason = null;
+            bool beforeKnown = before.Status != GHThermalStatus.Unknown || !float.IsNaN(before.CpuPerformancePct) || !float.IsNaN(before.BatteryTempC);
+            bool afterKnown = after.Status != GHThermalStatus.Unknown || !float.IsNaN(after.CpuPerformancePct) || !float.IsNaN(after.BatteryTempC);
+            if (!beforeKnown && !afterKnown)
+                t.PowerState = "unknown";
+            else if (beforeKnown && afterKnown && before.IsCharging != after.IsCharging)
+                t.PowerState = "changed";
+            else
+                t.PowerState = (beforeKnown ? before.IsCharging : after.IsCharging) ? "charging" : "battery";
 
             if (before.Status > GHThermalStatus.Moderate || after.Status > GHThermalStatus.Moderate)
             {
@@ -554,6 +567,10 @@ namespace GnollHackX.Perf
 
         [JsonProperty("throttleReason")]
         public string ThrottleReason;
+
+        /* charging, battery, changed (differs between the readings), unknown */
+        [JsonProperty("powerState")]
+        public string PowerState = "unknown";
     }
 
     public sealed class GHPerfSeries

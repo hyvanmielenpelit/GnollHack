@@ -130,7 +130,13 @@ namespace GnollHack.PerfAnalyzer.Commands
             md.AppendLine("| Build | " + Join(a.Used.Select(r => (r.Git.Tag ?? Short(r.Git.Commit)) + " " + r.BuildConfiguration)) + " | " + Join(b.Used.Select(r => (r.Git.Tag ?? Short(r.Git.Commit)) + " " + r.BuildConfiguration)) + " |");
             md.AppendLine("| Device | " + Join(a.Used.Select(r => r.Device.Model ?? r.Device.Id)) + " | " + Join(b.Used.Select(r => r.Device.Model ?? r.Device.Id)) + " |");
             md.AppendLine("| Platform | " + Join(a.Used.Select(r => r.Platform)) + " | " + Join(b.Used.Select(r => r.Platform)) + " |");
+            md.AppendLine("| Power | " + Join(a.Used.Select(PowerOf)) + " | " + Join(b.Used.Select(PowerOf)) + " |");
             md.AppendLine();
+            HashSet<string> powers = new HashSet<string>(a.Used.Concat(b.Used).Select(PowerOf).Where(p => p != "unknown"));
+            if (powers.Count > 1)
+                md.AppendLine("> **Warning:** power state differs between runs (" + string.Join(", ", powers) + "). A charging device and one on battery are different experiments; hold the state constant and rerun.");
+            if (a.Used.Concat(b.Used).Any(r => PowerOf(r) == "unknown"))
+                md.AppendLine("> **Note:** at least one run has no power-state reading.");
             if (a.Used.Any(r => r.BuildConfiguration != "Release") || b.Used.Any(r => r.BuildConfiguration != "Release"))
                 md.AppendLine("> **Warning:** at least one run is not a Release build. Section 2.5 of the plan says such runs are not comparable to shipped builds.");
             if (a.Used.Select(r => r.Scenario).Distinct().Count() > 1 || b.Used.Select(r => r.Scenario).Distinct().Count() > 1
@@ -270,7 +276,7 @@ namespace GnollHack.PerfAnalyzer.Commands
         {
             md.AppendLine("## Thermal and environment: " + arm.Label);
             md.AppendLine();
-            md.AppendLine("| Run | Before | After | CPU perf % | CPU temp | GPU temp | Battery temp | Charging | Power plan | Gate | Throttled |");
+            md.AppendLine("| Run | Before | After | CPU perf % | CPU temp | GPU temp | Battery temp | Power | Power plan | Gate | Throttled |");
             md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|");
             foreach (RunRecord r in arm.Runs)
             {
@@ -281,7 +287,7 @@ namespace GnollHack.PerfAnalyzer.Commands
                     + " | " + Fo(b?.CpuPackageTempC) + " -> " + Fo(af?.CpuPackageTempC)
                     + " | " + Fo(b?.GpuTempC) + " -> " + Fo(af?.GpuTempC)
                     + " | " + Fo(b?.BatteryTempC) + " -> " + Fo(af?.BatteryTempC)
-                    + " | " + (b?.IsCharging?.ToString() ?? "?")
+                    + " | " + PowerOf(r)
                     + " | " + (b?.PowerPlan ?? "?")
                     + " | " + (r.Thermal.GateSignal ?? "none")
                     + " | " + (r.Thermal.Throttled ? "**yes**: " + r.Thermal.ThrottleReason : "no") + " |");
@@ -307,6 +313,7 @@ namespace GnollHack.PerfAnalyzer.Commands
             return p + (mw.Exact ? " (exact)" : " (asymptotic)");
         }
         private static string Rel(double baseline, double rel) { return baseline == 0 ? "n/a" : Signed(rel * 100, 1) + "%"; }
+        private static string PowerOf(RunRecord r) { return r.Thermal?.PowerState ?? ThermalGate.PowerState(r.Thermal); }
         private static string Short(string commit) { return string.IsNullOrEmpty(commit) ? "?" : (commit.Length > 9 ? commit.Substring(0, 9) : commit); }
         private static string Join(IEnumerable<string> s) { return string.Join(", ", s.Where(x => x != null).Distinct()); }
     }

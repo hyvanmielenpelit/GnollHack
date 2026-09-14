@@ -48,7 +48,8 @@
         "after": { "$ref": "#/$defs/thermalReading" },
         "throttled": { "type": "boolean" },
         "gateSignal": { "type": ["string", "null"], "enum": ["none", "status", "cpuPerformancePct", "batteryTempC", null] },
-        "throttleReason": { "type": ["string", "null"] }
+        "throttleReason": { "type": ["string", "null"] },
+        "powerState": { "type": ["string", "null"], "enum": ["charging", "battery", "changed", "unknown", null], "description": "Plugged-in state before and after; 'changed' excludes the run" }
       }
     },
     "series": {

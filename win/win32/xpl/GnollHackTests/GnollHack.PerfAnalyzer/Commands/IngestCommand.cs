@@ -76,11 +76,17 @@ namespace GnollHack.PerfAnalyzer.Commands
                 r.Excluded = true;
                 r.ExclusionReason = "throttled: " + r.Thermal.ThrottleReason;
             }
+            else if (r.Thermal.PowerState == "changed")
+            {
+                r.Excluded = true;
+                r.ExclusionReason = "power state changed during the run (plugged or unplugged)";
+            }
 
             r.Save(outPath);
             Console.WriteLine("ingest: " + outPath + "  frames=" + s.IntervalsMs.Length
                 + "  P99=" + s.Metrics[MetricNames.FrameDurationP99].ToString("0.00", CultureInfo.InvariantCulture) + " ms"
                 + "  hitch=" + s.Metrics[MetricNames.HitchRatio].ToString("0.00", CultureInfo.InvariantCulture) + " ms/s"
+                + "  power=" + (r.Thermal.PowerState ?? "unknown")
                 + (r.Excluded ? "  EXCLUDED: " + r.ExclusionReason : ""));
             return 0;
         }
