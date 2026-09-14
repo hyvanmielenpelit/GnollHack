@@ -3096,37 +3096,35 @@ void fatal_error
 
     if (in_fatal_error)
     {
-        /* A second one raised from inside the reporting below; skip straight
-           to the teardown. */
+        /* A second one raised from inside the reporting or teardown below;
+           exit directly rather than re-entering nh_bail(), like panic() */
         debugprint("%s", buf);
+        NH_abort();
     }
-    else
+    in_fatal_error = TRUE;
+
+    raw_print(buf);
+    paniclog("error", buf);
+
+    if (issue_gui_command)
     {
-        in_fatal_error = TRUE;
-
-        raw_print(buf);
-        paniclog("error", buf);
-
-        if (issue_gui_command)
+        char* dbufs = allocate_buffer_with_debug_buffers(buf);
+        if (dbufs)
         {
-            char* dbufs = allocate_buffer_with_debug_buffers(buf);
-            if (dbufs)
-            {
-                issue_debuglog_error(DEBUGLOG_ERROR_FATAL, dbufs);
-                free(dbufs);
-            }
+            issue_debuglog_error(DEBUGLOG_ERROR_FATAL, dbufs);
+            free(dbufs);
         }
+    }
 
-        /* Inform the player before the windows go away; nh_bail() tears them
-           down below. */
-        if (open_special_view && iflags.window_inited && !iflags.debug_fuzzer)
-        {
-            struct special_view_info info = { 0 };
-            info.viewtype = SPECIAL_VIEW_MESSAGE;
-            info.title = "Error";
-            info.text = buf;
-            (void) open_special_view(info);
-        }
+    /* Inform the player before the windows go away; nh_bail() tears them
+       down below. */
+    if (open_special_view && iflags.window_inited && !iflags.debug_fuzzer)
+    {
+        struct special_view_info info = { 0 };
+        info.viewtype = SPECIAL_VIEW_MESSAGE;
+        info.title = "Error";
+        info.text = buf;
+        (void) open_special_view(info);
     }
 
     nh_bail(EXIT_FAILURE, buf, TRUE);
