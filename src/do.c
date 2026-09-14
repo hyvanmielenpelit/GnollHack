@@ -7944,9 +7944,6 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
     }
     reset_rndmonst(NON_PM); /* u.uz change affects monster generation */
 
-    /* Post crash context data to GUI */
-    post_crash_context();
-
     /* Clear certain gui texts and effects */
     issue_simple_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
     issue_simple_gui_command(GUI_CMD_CLEAR_FLOATING_TEXTS);
@@ -8196,6 +8193,10 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
     /* Reset the screen. */
     vision_reset(); /* reset the blockages */
     debugprint_pos();
+
+    /* Post crash context data to GUI on the new level */
+    post_crash_context();
+
     docrt();        /* does a full vision recalc */
     flush_screen(-1);
 
