@@ -2622,7 +2622,7 @@ namespace GnollHackX
             /* Android and iOS are handled in MauiProgram */
             /* On MAUI on Android and iOS, moved saving game to SaveGameOnSleepAsync which is called in earlier events using a background task that should live long enough */
 #endif
-            CollectGarbageNonBlocking();
+            //CollectGarbageNonBlocking();
             MaybeWriteGHLog("GHApp.OnSleep: Finished", true, GHConstants.SentryGnollHackGeneralCategoryName);
         }
 
