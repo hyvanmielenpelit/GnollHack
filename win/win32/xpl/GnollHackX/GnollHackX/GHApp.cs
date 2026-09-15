@@ -225,6 +225,15 @@ namespace GnollHackX
                 Preferences.Set("GNH420Build57AndroidAuxGPUCheckCompleted", true);
             }
 #endif
+#if true
+            /* Switch off Text Blob caching on Android and Windows as too slow */
+            if (!IsiOS && !Preferences.Get("GNH430Build18AndroidTextCaching", false))
+            {
+                if (Preferences.ContainsKey("UseTextBlobCaching")) /* Revert to default, off on all platforms */
+                    Preferences.Remove("UseTextBlobCaching");
+                Preferences.Set("GNH430Build18AndroidTextCaching", true);
+            }
+#endif
 
             SetMirroredOptionsToDefaults();
             DarkMode = Preferences.Get("DarkMode", false);
