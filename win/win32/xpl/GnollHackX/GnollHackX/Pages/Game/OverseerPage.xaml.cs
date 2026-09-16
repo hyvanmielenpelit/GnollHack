@@ -31,7 +31,7 @@ namespace GnollHackX.Pages.Game
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class OverseerPage : CustomModalPage, ICloseablePage, IMessagePopupPage
+    public partial class OverseerPage : CustomModalPage, ICloseablePage, IMessagePopupPage, ISpecialKeyPressHandlingPage
     {
         private string _baseOverseerUrl;
         private string _snapshotHtml;
@@ -799,6 +799,37 @@ namespace GnollHackX.Pages.Game
                 await ClosePageAsync(false);
             }
             return false;
+        }
+
+        /* ISpecialKeyPressHandlingPage implementation: ESC follows the same
+           confirm-then-close path as the back button, so that ClosePage() can
+           stay silent for forced closes */
+        public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
+        {
+            bool handled = false;
+            try
+            {
+                if (key == GHSpecialKey.Escape)
+                {
+                    handled = true;
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        try
+                        {
+                            await BackButtonPressed(this, EventArgs.Empty);
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(ex);
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+            return handled;
         }
 
         /* ===================================================================
