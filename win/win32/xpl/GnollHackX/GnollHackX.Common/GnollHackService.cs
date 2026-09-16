@@ -1014,6 +1014,8 @@ namespace GnollHackX.Unknown
 
         public bool ValidateSaveFile(string filename, out string res_str)
         {
+            GHApp.AddSentryBreadcrumb("ValidateSaveFile: " + (filename != null ? filename : "null"), GHConstants.SentryGnollHackGeneralCategoryName);
+
             byte[] buffer = new byte[256 * 4];
             Array.Clear(buffer, 0, buffer.Length);
             int res = LibValidateSaveFile(filename, buffer);
@@ -1032,6 +1034,8 @@ namespace GnollHackX.Unknown
 
         public bool GetSaveFileInfo(string filename, out ulong version, out ulong compat, out uint saveFlags, out long timeStamp, out int glyph, out int guiGlyph, out long turnCount)
         {
+            GHApp.AddSentryBreadcrumb("GetSaveFileInfo: " + (filename != null ? filename : "null"), GHConstants.SentryGnollHackGeneralCategoryName);
+
             ulong ver = 0;
             ulong comp = 0;
             uint flags = 0;
@@ -1052,6 +1056,8 @@ namespace GnollHackX.Unknown
 
         public bool GetSaveFileDescription(string filename, out string characterDesc, out string locationDesc, out string modeDesc)
         {
+            GHApp.AddSentryBreadcrumb("GetSaveFileDescription: " + (filename != null ? filename : "null"), GHConstants.SentryGnollHackGeneralCategoryName);
+
             characterDesc = "";
             locationDesc = "";
             modeDesc = "";

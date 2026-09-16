@@ -1183,6 +1183,8 @@ namespace GnollHackX.Pages.Game
             JObject parameters)
         {
             var currentGame = GHApp.CurrentGHGame;
+            GHApp.AddSentryBreadcrumb("OverseerPage.DispatchToolCallAsync: " + toolName
+                + " (GHGame=" + (currentGame != null) + ")", GHConstants.SentryGnollHackGeneralCategoryName);
 
             switch (toolName)
             {

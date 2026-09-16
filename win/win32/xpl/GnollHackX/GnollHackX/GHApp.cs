@@ -2537,6 +2537,8 @@ namespace GnollHackX
 
         public static void CollectGarbageAtStart()
         {
+            AddSentryBreadcrumb("CollectGarbageAtStart", GHConstants.SentryGnollHackGeneralCategoryName);
+
             FrameTimeProfiler.MarkGcBefore();
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -2546,6 +2548,8 @@ namespace GnollHackX
 
         public static void CollectGarbage()
         {
+            AddSentryBreadcrumb("CollectGarbage", GHConstants.SentryGnollHackGeneralCategoryName);
+
             FrameTimeProfiler.MarkGcBefore();
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -2639,10 +2643,13 @@ namespace GnollHackX
         {
             if (IsAutoSaveUponSwitchingAppsOn)
             {
+                AddSentryBreadcrumb("SaveGameOnSleep: IsAutoSaveUponSwitchingAppsOn", GHConstants.SentryGnollHackGeneralCategoryName);
+                
                 CancelSaveGame = false;
                 GHGame game = CurrentGHGame;
                 if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
                 {
+                    AddSentryBreadcrumb("SaveGameOnSleep: IsGameOn", GHConstants.SentryGnollHackGeneralCategoryName);
                     //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                     try
                     {
@@ -2658,7 +2665,7 @@ namespace GnollHackX
                         GamePage gamePage = game.ActiveGamePage;
                         if (gamePage != null && gamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
                             gamePage.FastForwardRequested = true;
-                        MaybeWriteGHLog("OnSleep: SaveGameAndWaitForResume", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        MaybeWriteGHLog("SaveGameOnSleep: SaveGameAndWaitForResume", true, GHConstants.SentryGnollHackGeneralCategoryName);
                         game.SaveGameAndWaitForResume();
                     }
                 }
@@ -2806,8 +2813,10 @@ namespace GnollHackX
 
         private static void HandleResume(bool isRestart)
         {
+            MaybeWriteGHLog("GHApp.HandleResume: Start (isRestart=" + isRestart + ")", true, GHConstants.SentryGnollHackGeneralCategoryName);
             IsSuspended = false;
             FmodService?.Resume();
+            MaybeWriteGHLog("GHApp.HandleResume: FmodService.Resume returned", true, GHConstants.SentryGnollHackGeneralCategoryName);
             if (!UsePlatformRenderLoop)
                 PlatformService?.OverrideAnimatorDuration();
 
@@ -2900,6 +2909,7 @@ namespace GnollHackX
 #else
             /* iOS is handled in MauiProgram */
 #endif
+            MaybeWriteGHLog("GHApp.HandleResume: Finished", true, GHConstants.SentryGnollHackGeneralCategoryName);
         }
 
         public static void CheckResumeSavedGame()
