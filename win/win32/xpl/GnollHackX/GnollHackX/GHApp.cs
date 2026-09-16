@@ -216,24 +216,7 @@ namespace GnollHackX
             InitBaseButtonBitmaps();
             InitializeSentryScopeDiagnostics();
 
-#if false //GNH_MAUI && ANDROID
-            /* Switch off GPU for menus one time on MAUI Android if it is currently on */
-            if(IsAndroid && !Preferences.Get("GNH420Build57AndroidAuxGPUCheckCompleted", false))
-            {
-                if (Preferences.ContainsKey("DisableAuxiliaryGLCanvas")) /* Revert to default, which is now on by default for Android */
-                    Preferences.Remove("DisableAuxiliaryGLCanvas");
-                Preferences.Set("GNH420Build57AndroidAuxGPUCheckCompleted", true);
-            }
-#endif
-#if true
-            /* Switch off Text Blob caching on Android and Windows as too slow */
-            if (!IsiOS && !Preferences.Get("GNH430Build18AndroidTextCaching", false))
-            {
-                if (Preferences.ContainsKey("UseTextBlobCaching")) /* Revert to default, off on all platforms */
-                    Preferences.Remove("UseTextBlobCaching");
-                Preferences.Set("GNH430Build18AndroidTextCaching", true);
-            }
-#endif
+            DoMigrations();
 
             SetMirroredOptionsToDefaults();
             DarkMode = Preferences.Get("DarkMode", false);
@@ -367,6 +350,28 @@ namespace GnollHackX
             ChangeToCustomScreenResolution();
             InitializePlatformRenderLoop();
             InitializeMemoryWarnings();
+        }
+
+        private static void DoMigrations()
+        {
+#if false //GNH_MAUI && ANDROID
+            /* Switch off GPU for menus one time on MAUI Android if it is currently on */
+            if(IsAndroid && !Preferences.Get("GNH420Build57AndroidAuxGPUCheckCompleted", false))
+            {
+                if (Preferences.ContainsKey("DisableAuxiliaryGLCanvas")) /* Revert to default, which is now on by default for Android */
+                    Preferences.Remove("DisableAuxiliaryGLCanvas");
+                Preferences.Set("GNH420Build57AndroidAuxGPUCheckCompleted", true);
+            }
+#endif
+#if true
+            /* Switch off Text Blob caching on Android and Windows as too slow */
+            if (!IsiOS && !Preferences.Get("GNH430Build18AndroidTextCaching", false))
+            {
+                if (Preferences.ContainsKey("UseTextBlobCaching")) /* Revert to default, off on all platforms */
+                    Preferences.Remove("UseTextBlobCaching");
+                Preferences.Set("GNH430Build18AndroidTextCaching", true);
+            }
+#endif
         }
 
         private static void CheckSaveGameBreakingVersionWarning()
