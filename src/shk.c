@@ -4392,7 +4392,7 @@ repair_damage(struct monst *shkp, struct damage *tmp_dam, int *once, boolean cat
 }
 
 /*
- * shk_move: return 1: moved  0: didn't  -1: let m_move do it  -2: died
+ * shk_move: return 1: moved  0: didn't  3: attacked, no move  -1: let m_move do it  -2: died
  */
 int
 shk_move(struct monst *shkp)
@@ -4415,8 +4415,9 @@ shk_move(struct monst *shkp)
         if (ANGRY(shkp) || is_crazed(shkp) || (Conflict && !check_ability_resistance_success(shkp, A_WIS, 0))) {
             if (Displaced)
                 Your("displaced image doesn't fool %s!", shkname(shkp));
-            (void) mattacku(shkp);
-            return 0;
+            if (mattacku(shkp))
+                return -2;
+            return M_MOVE_NOMOVE_NO_ATTACK;
         }
         if (eshkp->following) {
             if (strncmp(eshkp->customer, plname, PL_NSIZ)) 

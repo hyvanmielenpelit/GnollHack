@@ -1417,6 +1417,8 @@ m_move(struct monst *mtmp, int after)
         mmoved = shk_move(mtmp);
         if (mmoved == -2)
             return M_MOVE_DIED;
+        if (mmoved == M_MOVE_NOMOVE_NO_ATTACK)
+            goto endmov; /* attacked the hero from its own move routine */
         if (mmoved >= 0)
             goto postmov;
         mmoved = M_MOVE_NOMOVE_CAN_ATTACK; /* follow player outside shop */
@@ -1464,6 +1466,8 @@ m_move(struct monst *mtmp, int after)
         mmoved = pri_move(mtmp);
         if (mmoved == -2)
             return M_MOVE_DIED;
+        if (mmoved == M_MOVE_NOMOVE_NO_ATTACK)
+            goto endmov; /* attacked the hero from its own move routine */
         if (mmoved >= 0)
             goto postmov;
         mmoved = M_MOVE_NOMOVE_CAN_ATTACK;
@@ -1474,6 +1478,8 @@ m_move(struct monst *mtmp, int after)
         mmoved = smith_move(mtmp);
         if (mmoved == -2)
             return M_MOVE_DIED;
+        if (mmoved == M_MOVE_NOMOVE_NO_ATTACK)
+            goto endmov; /* attacked the hero from its own move routine */
         if (mmoved >= 0)
             goto postmov;
         mmoved = M_MOVE_NOMOVE_CAN_ATTACK;
@@ -1484,6 +1490,8 @@ m_move(struct monst *mtmp, int after)
         mmoved = npc_move(mtmp);
         if (mmoved == -2)
             return M_MOVE_DIED;
+        if (mmoved == M_MOVE_NOMOVE_NO_ATTACK)
+            goto endmov; /* attacked the hero from its own move routine */
         if (mmoved >= 0)
             goto postmov;
         mmoved = M_MOVE_NOMOVE_CAN_ATTACK;
@@ -2276,6 +2284,7 @@ m_move(struct monst *mtmp, int after)
         }
     }
 
+ endmov:
     if (mmoved != M_MOVE_DIED)
         check_boss_fight(mtmp);
 

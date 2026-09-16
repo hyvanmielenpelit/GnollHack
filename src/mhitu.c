@@ -471,6 +471,18 @@ mattacku(struct monst *mtmp)
     /* Are further physical attack attempts useless? */
     debugprint("mattacku 1: mnum=%d, ranged=%d, range2=%d, foundyou=%d, mux=%d, muy=%d, ux=%d, uy=%d", mtmp->mnum, ranged, range2, foundyou, (int)mtmp->mux, (int)mtmp->muy, (int)u.ux, (int)u.uy);
 
+    /* The monster's belief about the hero's position may be stale if the
+       hero was relocated since set_apparxy() ran, e.g. by an earlier attack
+       in the same move. When nothing hides the hero, set_apparxy() resolves
+       to the true position, so refresh it instead of attacking thin air. */
+    if (!foundyou && !m_cannotsenseu(mtmp) && !Displaced && !Underwater)
+    {
+        set_apparxy(mtmp);
+        range2 = !monnear(mtmp, mtmp->mux, mtmp->muy);
+        foundyou = (mtmp->mux == u.ux && mtmp->muy == u.uy);
+        debugprint("mattacku refresh: mnum=%d, range2=%d, foundyou=%d, mux=%d, muy=%d", mtmp->mnum, range2, foundyou, (int)mtmp->mux, (int)mtmp->muy);
+    }
+
     if (!ranged)
         nomul(0);
     if (DEADMONSTER(mtmp) || (Underwater && !is_swimmer(mtmp->data)))
@@ -740,6 +752,7 @@ mattacku(struct monst *mtmp)
 
     boolean first_attack = TRUE;
     boolean orig_mpeaceful = is_mon_mpeaceful(mtmp);
+    xchar orig_ux = u.ux, orig_uy = u.uy;
 
     for (i = 0; i < NATTK; i++) 
     {
@@ -1351,6 +1364,8 @@ mattacku(struct monst *mtmp)
             return 1; /* attacker dead */
         if (sum[i] == 3)
             break; /* attacker teleported, no more attacks */
+        if (!u.uswallow && (u.ux != orig_ux || u.uy != orig_uy))
+            break; /* hero relocated (e.g. AD_TLPT), remaining attacks target the old square */
         /* sum[i] == 0: unsuccessful attack */
     }
     return 0;

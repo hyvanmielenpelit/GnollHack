@@ -174,7 +174,7 @@ forget_npc_entry(struct monst *npc)
 }
 
 /*
- * npc_move: return 1: moved  0: didn't  -1: let m_move do it  -2: died
+ * npc_move: return 1: moved  0: didn't  3: attacked, no move  -1: let m_move do it  -2: died
  */
 int npc_move(struct monst *npc)
 {
@@ -211,8 +211,9 @@ int npc_move(struct monst *npc)
         {
             if (Displaced)
                 Your("displaced image doesn't fool %s!", mon_nam(npc));
-            (void)mattacku(npc);
-            return 0;
+            if (mattacku(npc))
+                return -2;
+            return M_MOVE_NOMOVE_NO_ATTACK;
         }
         else if (index(u.urooms, npc_room))
         {

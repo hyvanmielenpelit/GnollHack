@@ -248,7 +248,7 @@ inhissmithy(struct monst *smith)
 
 
 /*
- * pri_move: return 1: moved  0: didn't  -1: let m_move do it  -2: died
+ * pri_move: return 1: moved  0: didn't  3: attacked, no move  -1: let m_move do it  -2: died
  */
 int
 pri_move(struct monst *priest)
@@ -278,8 +278,9 @@ pri_move(struct monst *priest)
         {
             if (Displaced)
                 Your("displaced image doesn't fool %s!", mon_nam(priest));
-            (void) mattacku(priest);
-            return 0;
+            if (mattacku(priest))
+                return -2;
+            return M_MOVE_NOMOVE_NO_ATTACK;
         } 
         else if (index(u.urooms, temple)) 
         {
@@ -624,7 +625,7 @@ priestini(d_level *lvl, struct mkroom *sroom, int sx, int sy, boolean sanctum, i
 }
 
 /*
- * smith_move: return 1: moved  0: didn't  -1: let m_move do it  -2: died
+ * smith_move: return 1: moved  0: didn't  3: attacked, no move  -1: let m_move do it  -2: died
  */
 int
 smith_move(struct monst *smith)
@@ -654,8 +655,9 @@ smith_move(struct monst *smith)
         {
             if (Displaced)
                 Your("displaced image doesn't fool %s!", mon_nam(smith));
-            (void)mattacku(smith);
-            return 0;
+            if (mattacku(smith))
+                return -2;
+            return M_MOVE_NOMOVE_NO_ATTACK;
         }
         else if (index(u.urooms, smithy))
         {
