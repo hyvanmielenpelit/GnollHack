@@ -2865,8 +2865,8 @@ namespace GnollHackX.Pages.MainScreen
         {
             XlogTestButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            bool hasNoUserName = string.IsNullOrEmpty(PostXlogUserNameEntry.Text);
-            bool hasNoPassword = string.IsNullOrEmpty(PostXlogPasswordEntry.Text);
+            bool hasNoUserName = string.IsNullOrWhiteSpace(PostXlogUserNameEntry.Text);
+            bool hasNoPassword = string.IsNullOrWhiteSpace(PostXlogPasswordEntry.Text);
             if (hasNoUserName || hasNoPassword)
             {
                 PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);

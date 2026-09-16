@@ -6318,6 +6318,9 @@ namespace GnollHackX
 
         public static string XlogUserName { get { return Interlocked.CompareExchange(ref _xlogUserName, null, null); } set { Interlocked.Exchange(ref _xlogUserName, value); } }
         public static string XlogPassword { get { return Interlocked.CompareExchange(ref _xlogPassword, null, null); } set { Interlocked.Exchange(ref _xlogPassword, value); } }
+        /* The tracking and xlog endpoints require both fields; the server rejects a
+           blank or whitespace-only value with 400 before checking anything else. */
+        public static bool HasXlogCredentials { get { return !string.IsNullOrWhiteSpace(XlogUserName) && !string.IsNullOrWhiteSpace(XlogPassword); } }
         public static string XlogAntiForgeryToken
         {
             get

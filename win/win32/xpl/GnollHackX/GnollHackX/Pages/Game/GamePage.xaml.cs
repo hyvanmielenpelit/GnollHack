@@ -3581,6 +3581,14 @@ namespace GnollHackX.Pages.Game
                 return;
             }
 
+            if (!GHApp.HasXlogCredentials)
+            {
+                await GHApp.DisplayMessageBox(this, "Save File Tracking Credentials Missing", "Your GnollHack account credentials are missing but save file tracking is on. Please go to Settings and either switch save file tracking off or add user name and password under Server Posting section.", "OK");
+                GHApp.MaybeWriteGHLog("Save file tracking skipped: account credentials are not set (SaveFileTrackingSave)");
+                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, 12));
+                return;
+            }
+
             SendResult res = await GHApp.SendSaveFileTrackingSaveRequest(this, timeStamp, fileName, fileLength, sha256hash);
             curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, res.IsSuccess ? 0 : res.IsException ? 1000 : (int)res.StatusCode));
         }
@@ -3603,6 +3611,14 @@ namespace GnollHackX.Pages.Game
             {
                 await GHApp.DisplayMessageBox(this, "No Tracking File for Save File", "The tracking file for the save file \'" + fileName + "' does not exist. Aborting tracking after loading.", "OK");
                 curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, 11));
+                return;
+            }
+
+            if (!GHApp.HasXlogCredentials)
+            {
+                await GHApp.DisplayMessageBox(this, "Save File Tracking Credentials Missing", "Your GnollHack account credentials are missing but save file tracking is on. Please go to Settings and either switch save file tracking off or add user name and password under Server Posting section.", "OK");
+                GHApp.MaybeWriteGHLog("Save file tracking skipped: account credentials are not set (SaveFileTrackingLoad)");
+                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, 12));
                 return;
             }
 

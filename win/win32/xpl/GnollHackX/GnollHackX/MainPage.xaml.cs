@@ -764,6 +764,23 @@ namespace GnollHackX
                     }
                 }
 
+                if (GHApp.IsSaveFileTrackingNeeded && GHApp.SaveFileTracking && !GHApp.HasXlogCredentials
+                    && !wizardModeSwitch.IsToggled && !casualModeSwitch.IsToggled)
+                {
+                    bool hasNoUserName = string.IsNullOrWhiteSpace(GHApp.XlogUserName);
+                    bool hasNoPassword = string.IsNullOrWhiteSpace(GHApp.XlogPassword);
+                    string missing = hasNoUserName && hasNoPassword ? "user name and password are" : hasNoUserName ? "user name is" : "password is";
+                    _popupStyle = popup_style.GeneralDialog;
+                    PopupCheckBoxLayout.IsVisible = false;
+                    PopupTitleLabel.TextColor = GHColors.Orange;
+                    PopupTitleLabel.Text = "Save File Tracking Credentials Missing";
+                    PopupLabel.Text = "Your GnollHack account " + missing + " missing but save file tracking is on. Please go to Settings and either switch save file tracking off or add user name and password under Server Posting section before starting the game.";
+                    PopupGrid.IsVisible = true;
+                    StartLocalGrid.IsEnabled = true;
+                    GHApp.AddSentryBreadcrumb("Popup: " + PopupTitleLabel.Text, GHConstants.SentryGnollHackGeneralCategoryName);
+                    return;
+                }
+
                 StartLocalGameButton.TextColor = GHColors.Gray;
                 //carouselView.Stop();
                 carouselView.ShutDown();
