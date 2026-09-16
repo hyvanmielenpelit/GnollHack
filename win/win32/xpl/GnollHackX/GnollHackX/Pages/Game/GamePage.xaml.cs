@@ -3581,13 +3581,8 @@ namespace GnollHackX.Pages.Game
                 return;
             }
 
-            if (!GHApp.HasXlogCredentials)
-            {
-                await GHApp.DisplayMessageBox(this, "Save File Tracking Credentials Missing", "Your GnollHack account credentials are missing but save file tracking is on. Please go to Settings and either switch save file tracking off or add user name and password under Server Posting section.", "OK");
-                GHApp.MaybeWriteGHLog("Save file tracking skipped: account credentials are not set (SaveFileTrackingSave)");
-                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, 12));
+            if (!await CheckSaveFileTrackingCredentials(GHRequestType.SaveFileTrackingSave))
                 return;
-            }
 
             SendResult res = await GHApp.SendSaveFileTrackingSaveRequest(this, timeStamp, fileName, fileLength, sha256hash);
             curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, res.IsSuccess ? 0 : res.IsException ? 1000 : (int)res.StatusCode));
@@ -3614,16 +3609,28 @@ namespace GnollHackX.Pages.Game
                 return;
             }
 
-            if (!GHApp.HasXlogCredentials)
-            {
-                await GHApp.DisplayMessageBox(this, "Save File Tracking Credentials Missing", "Your GnollHack account credentials are missing but save file tracking is on. Please go to Settings and either switch save file tracking off or add user name and password under Server Posting section.", "OK");
-                GHApp.MaybeWriteGHLog("Save file tracking skipped: account credentials are not set (SaveFileTrackingLoad)");
-                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, 12));
+            if (!await CheckSaveFileTrackingCredentials(GHRequestType.SaveFileTrackingLoad))
                 return;
-            }
 
             SendResult res = await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, fileName, fileLength, sha256hash);
             curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, res.IsSuccess ? 0 : res.IsException ? 1000 : (int)res.StatusCode));
+        }
+
+        /* Response code 12: tracking skipped because the account credentials are blank.
+           10 and 11 are the file-name and tracking-file checks above. */
+        private async Task<bool> CheckSaveFileTrackingCredentials(GHRequestType requestType)
+        {
+            if (GHApp.HasXlogCredentials)
+                return true;
+
+            bool hasNoUserName = string.IsNullOrWhiteSpace(GHApp.XlogUserName);
+            bool hasNoPassword = string.IsNullOrWhiteSpace(GHApp.XlogPassword);
+            string missing = hasNoUserName && hasNoPassword ? "user name and password are" : hasNoUserName ? "user name is" : "password is";
+            await GHApp.DisplayMessageBox(this, "Save File Tracking Credentials Missing", "Your GnollHack account " + missing + " missing but save file tracking is on. Please go to Settings and either switch save file tracking off or add user name and password under Server Posting section.", "OK");
+            GHApp.MaybeWriteGHLog("Save file tracking skipped: account credentials are not set (" + requestType + ")");
+            GHGame curGame = GHApp.CurrentGHGame;
+            curGame.ResponseQueue.Enqueue(new GHResponse(curGame, requestType, 12));
+            return false;
         }
 
 
