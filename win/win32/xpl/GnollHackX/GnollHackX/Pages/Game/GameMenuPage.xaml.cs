@@ -60,6 +60,8 @@ namespace GnollHackX.Pages.Game
                 btnSave.IsEnabled = false;
                 btnDevOptions.TextColor = GHColors.Gray;
                 btnDevOptions.IsEnabled = false;
+                btnDevAiSnapshot.TextColor = GHColors.Gray;
+                btnDevAiSnapshot.IsEnabled = false;
             }
 
             btnDeveloper.IsVisible = GHApp.DeveloperMode;
@@ -235,6 +237,7 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = true;
             btnDeveloper.IsVisible = GHApp.DeveloperMode;
+            btnDevAiSnapshot.IsVisible = GHApp.DebugLogMessages;
         }
 
         private bool _backPressed = false;
@@ -270,6 +273,8 @@ namespace GnollHackX.Pages.Game
         {
             GHApp.PlayButtonClickedSound();
             btnDevDumpFrameLog.IsVisible = FrameTimeProfiler.IsEnabled;
+            btnDevAiSnapshot.IsVisible = GHApp.DebugLogMessages;
+            DeveloperPopupGrid.IsEnabled = true;
             DeveloperPopupGrid.IsVisible = true;
         }
 
@@ -349,7 +354,7 @@ namespace GnollHackX.Pages.Game
 
         private async void btnMessages_Clicked(object sender, EventArgs e)
         {
-            MainLayout.IsEnabled = false;
+            DeveloperPopupGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await GHApp.CheckAndRequestWritePermission(this);
             await GHApp.CheckAndRequestReadPermission(this);
@@ -397,12 +402,12 @@ namespace GnollHackX.Pages.Game
                 await GHApp.DisplayMessageBox(this, "Error Creating Message File", "An error occurred while creating the message file: " + ex.Message, "OK");
             }
 
-            MainLayout.IsEnabled = true;
+            DeveloperPopupGrid.IsEnabled = true;
         }
 
         private async void btnDumpFrameLog_Clicked(object sender, EventArgs e)
         {
-            MainLayout.IsEnabled = false;
+            DeveloperPopupGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await GHApp.CheckAndRequestWritePermission(this);
             await GHApp.CheckAndRequestReadPermission(this);
@@ -435,7 +440,52 @@ namespace GnollHackX.Pages.Game
                 await GHApp.DisplayMessageBox(this, "Error Creating Frame Log", "An error occurred while creating the frame log: " + ex.Message, "OK");
             }
 
-            MainLayout.IsEnabled = true;
+            DeveloperPopupGrid.IsEnabled = true;
+        }
+
+        private async void btnAiSnapshot_Clicked(object sender, EventArgs e)
+        {
+            DeveloperPopupGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            await GHApp.CheckAndRequestWritePermission(this);
+            await GHApp.CheckAndRequestReadPermission(this);
+
+            try
+            {
+                /* Game thread is idle while the menu is open, so the native
+                   call is safe here, as in OpenOverseerPage() */
+                string snapshotpath = GHApp.GnollHackService.GenerateAiSnapshot();
+                if (string.IsNullOrEmpty(snapshotpath))
+                {
+                    await GHApp.DisplayMessageBox(this, "AI Snapshot Failed", "GnollHack could not generate an AI snapshot.", "OK");
+                }
+                else
+                {
+                    /* The native side returns the sysconf path, which is relative to the GnollHack directory */
+                    if (!Path.IsPathRooted(snapshotpath))
+                        snapshotpath = Path.Combine(GHApp.GHPath, snapshotpath);
+
+                    if (File.Exists(snapshotpath))
+                    {
+                        string aidir = Path.Combine(GHApp.GHPath, GHConstants.AiDirectory);
+                        GHApp.CheckCreateDirectory(aidir);
+                        string filepath = Path.Combine(aidir, Path.GetFileName(snapshotpath));
+                        File.Copy(snapshotpath, filepath, true);
+                        await GHApp.ShareFile(this, filepath, "GnollHack AI Snapshot");
+                    }
+                    else
+                    {
+                        await GHApp.DisplayMessageBox(this, "AI Snapshot File Not Found", "GnollHack could not find " + snapshotpath + ".", "OK");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                await GHApp.DisplayMessageBox(this, "Error Creating AI Snapshot", "An error occurred while creating the AI snapshot: " + ex.Message, "OK");
+            }
+
+            DeveloperPopupGrid.IsEnabled = true;
         }
 
         private async void btnWiki_Clicked(object sender, EventArgs e)
@@ -590,36 +640,44 @@ namespace GnollHackX.Pages.Game
                 Func<Task> pending = null;
                 if (DeveloperPopupGrid.IsVisible)
                 {
-                    /* Developer popup is open — handle popup-specific keys */
-                    switch (key)
+                    if (DeveloperPopupGrid.IsEnabled)
                     {
-                        case (int)'o':
-                            if (btnDevOptions.IsEnabled && btnDevOptions.IsVisible)
-                                pending = CloseAndShowOptions;
-                            handled = true;
-                            break;
-                        case (int)'m':
-                            if (btnDevMessages.IsEnabled && btnDevMessages.IsVisible)
-                                btnMessages_Clicked(btnDevMessages, EventArgs.Empty);
-                            handled = true;
-                            break;
-                        case (int)'f':
-                            if (btnDevDumpFrameLog.IsEnabled && btnDevDumpFrameLog.IsVisible)
-                                btnDumpFrameLog_Clicked(btnDevDumpFrameLog, EventArgs.Empty);
-                            handled = true;
-                            break;
-                        case (int)'g':
-                            if (btnDevGC.IsEnabled && btnDevGC.IsVisible)
-                                btnGC_Clicked(btnDevGC, EventArgs.Empty);
-                            handled = true;
-                            break;
-                        case ' ':
-                        case 13: /* Enter */
-                            CloseDeveloperPopup();
-                            handled = true;
-                            break;
-                        default:
-                            break;
+                        /* Developer popup is open — handle popup-specific keys */
+                        switch (key)
+                        {
+                            case (int)'o':
+                                if (btnDevOptions.IsEnabled && btnDevOptions.IsVisible)
+                                    pending = CloseAndShowOptions;
+                                handled = true;
+                                break;
+                            case (int)'m':
+                                if (btnDevMessages.IsEnabled && btnDevMessages.IsVisible)
+                                    btnMessages_Clicked(btnDevMessages, EventArgs.Empty);
+                                handled = true;
+                                break;
+                            case (int)'f':
+                                if (btnDevDumpFrameLog.IsEnabled && btnDevDumpFrameLog.IsVisible)
+                                    btnDumpFrameLog_Clicked(btnDevDumpFrameLog, EventArgs.Empty);
+                                handled = true;
+                                break;
+                            case (int)'a':
+                                if (DeveloperPopupGrid.IsEnabled && btnDevAiSnapshot.IsEnabled && btnDevAiSnapshot.IsVisible)
+                                    btnAiSnapshot_Clicked(btnDevAiSnapshot, EventArgs.Empty);
+                                handled = true;
+                                break;
+                            case (int)'g':
+                                if (btnDevGC.IsEnabled && btnDevGC.IsVisible)
+                                    btnGC_Clicked(btnDevGC, EventArgs.Empty);
+                                handled = true;
+                                break;
+                            case ' ':
+                            case 13: /* Enter */
+                                CloseDeveloperPopup();
+                                handled = true;
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
                 else
