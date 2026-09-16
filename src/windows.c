@@ -2010,6 +2010,20 @@ dump_add_extended_menu(winid win UNUSED, int glyph UNUSED, const anything *ident
         html_write_tags(dumphtml_file, win, attr, color, 0, FALSE, info, FALSE);
         fprintf(dumphtml_file, "%s\n", "</div>");
     }
+    /* AI snapshot: menu rows are the inventory listing, so keep the
+       inventory letter and use the dumplog's plain-text layout rather than
+       list items.  Escaping goes through html_dump_str() like the rest of
+       the AI file. */
+    if (iflags.dumping_ai_snapshot && dumphtml_ai_file)
+    {
+        fputs("<div>", dumphtml_ai_file);
+        if (glyph == NO_GLYPH)
+            fputs(" ", dumphtml_ai_file);
+        else
+            fprintf(dumphtml_ai_file, "  %c - ", ch);
+        html_dump_str(dumphtml_ai_file, str, 0, 0, ATR_NONE, NO_COLOR);
+        fputs("</div>\n", dumphtml_ai_file);
+    }
 #endif
 }
 
@@ -2018,10 +2032,15 @@ static void
 dump_end_menu_ex(winid win UNUSED, const char *str UNUSED, const char *str2 UNUSED)
 {
 #ifdef DUMPLOG
-    if (dumplog_file) 
+    if (dumplog_file)
     {
         fputs("\n", dumplog_file);
     }
+#endif
+#ifdef DUMPHTML
+    /* AI snapshot: blank line after the menu, as in the dumplog */
+    if (iflags.dumping_ai_snapshot && dumphtml_ai_file)
+        fputs("<br />\n", dumphtml_ai_file);
 #endif
 
 //    char buf[UTF8BUFSZ * 4 + 3] = "";
