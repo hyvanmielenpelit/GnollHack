@@ -372,6 +372,14 @@ namespace GnollHackX
                 Preferences.Set("GNH430Build18AndroidTextCaching", true);
             }
 #endif
+#if true
+            /* Switch off Text Blob caching on Android and Windows as too slow */
+            if (!Preferences.Get("GNH430Build19AiSnapshotFix", false))
+            {
+                ClearAiFilesFromSnapshot();
+                Preferences.Set("GNH430Build19AiSnapshotFix", true);
+            }
+#endif
         }
 
         private static void CheckSaveGameBreakingVersionWarning()
@@ -530,6 +538,107 @@ namespace GnollHackX
                     }
                 }
             }
+        }
+
+        private static void ClearAiFilesFromSnapshot()
+        {
+            string filesdir = GHPath;
+            /* AI files that a sysconf pointing at the snapshot directory leaves there; the rest of that directory belongs to SnapshotPage */
+            string snapshotdirpath = Path.Combine(filesdir, GHConstants.SnapshotDirectory);
+            if (Directory.Exists(snapshotdirpath))
+            {
+                DirectoryInfo disnap = new DirectoryInfo(snapshotdirpath);
+                foreach (FileInfo file in disnap.GetFiles())
+                {
+                    if (!file.Name.EndsWith(AiSnapshotHtmlSuffix, StringComparison.OrdinalIgnoreCase)
+                        && !file.Name.EndsWith(AiSnapshotNativeTextSuffix, StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
+        private const string AiSnapshotHtmlSuffix = ".ai.html";
+        private const string AiSnapshotNativeTextSuffix = ".ai.txt"; /* AIFILE in sysconf; reserved for the C core */
+        private const string AiSnapshotSanitizedSuffix = ".ai.sanitized.txt";
+
+        /// <summary>
+        /// Generates an AI snapshot, sanitizes it, and saves the sanitized text beside the HTML in the AI directory.
+        /// Must run on the main thread with the game thread idle, like the native call it wraps.
+        /// </summary>
+        /// <param name="textFilePath">Full path of the sanitized text file, or null if it could not be written.</param>
+        /// <returns>The sanitized snapshot text, untruncated, or null if generation failed.</returns>
+        public static string GenerateAiSnapshotText(out string textFilePath)
+        {
+            return GenerateAiSnapshotText(out textFilePath, out _);
+        }
+
+        /// <param name="textFilePath">Full path of the sanitized text file, or null if it could not be written.</param>
+        /// <param name="html">The dump HTML the text was made from, or null if generation failed.</param>
+        /// <returns>The sanitized snapshot text, untruncated, or null if generation failed.</returns>
+        public static string GenerateAiSnapshotText(out string textFilePath, out string html)
+        {
+            textFilePath = null;
+            html = null;
+            string aidir = Path.Combine(GHPath, GHConstants.AiDirectory);
+
+            /* Sanitized files are left for the startup wipe, since a share target may still be reading one */
+            if (Directory.Exists(aidir))
+            {
+                DirectoryInfo diai = new DirectoryInfo(aidir);
+                foreach (FileInfo file in diai.GetFiles("*" + AiSnapshotHtmlSuffix))
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+
+            string htmlpath = GnollHackService.GenerateAiSnapshot();
+            if (string.IsNullOrEmpty(htmlpath))
+                return null;
+
+            /* The native side returns the sysconf path, which is relative to the GnollHack directory */
+            if (!Path.IsPathRooted(htmlpath))
+                htmlpath = Path.Combine(GHPath, htmlpath);
+            if (!File.Exists(htmlpath))
+                return null;
+
+            html = File.ReadAllText(htmlpath);
+            string text = OverseerPage.SanitizeDumpHtml(html);
+
+            try
+            {
+                string filename = Path.GetFileName(htmlpath);
+                if (filename.EndsWith(AiSnapshotHtmlSuffix, StringComparison.OrdinalIgnoreCase))
+                    filename = filename.Substring(0, filename.Length - AiSnapshotHtmlSuffix.Length) + AiSnapshotSanitizedSuffix;
+                else
+                    filename += ".sanitized.txt";
+
+                /* Always the AI directory, whichever directory sysconf put the HTML in */
+                string target = Path.Combine(aidir, filename);
+                CheckCreateDirectory(aidir);
+                File.WriteAllText(target, text, new UTF8Encoding(false));
+                textFilePath = target;
+            }
+            catch (Exception ex)
+            {
+                WriteGHLog("Writing the sanitized AI snapshot failed: " + ex.Message);
+            }
+
+            return text;
         }
 
         public static void ClearBones()

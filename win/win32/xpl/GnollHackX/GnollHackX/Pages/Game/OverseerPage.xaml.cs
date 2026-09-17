@@ -34,6 +34,7 @@ namespace GnollHackX.Pages.Game
     public partial class OverseerPage : CustomModalPage, ICloseablePage, IMessagePopupPage, ISpecialKeyPressHandlingPage
     {
         private string _baseOverseerUrl;
+        private string _snapshotText;
         private string _snapshotHtml;
 
         private string _sessionId = "";
@@ -54,11 +55,14 @@ namespace GnollHackX.Pages.Game
         private object _iosPickerDelegate = null;
 #endif
 
-        public OverseerPage(string baseOverseerUrl, string snapshotHtml)
+        /// <param name="snapshotText">The sanitized AI snapshot, or empty for no game context.</param>
+        /// <param name="snapshotHtml">The dump HTML the text was made from, for servers that read only SnapshotHtml.</param>
+        public OverseerPage(string baseOverseerUrl, string snapshotText, string snapshotHtml = null)
         {
             InitializeComponent();
 
             _baseOverseerUrl = baseOverseerUrl;
+            _snapshotText = snapshotText;
             _snapshotHtml = snapshotHtml;
 
 #if GNH_MAUI
@@ -223,6 +227,9 @@ namespace GnollHackX.Pages.Game
                             content.Add(new StringContent(password), "Password");
                             content.Add(new StringContent(GHApp.XlogAntiForgeryToken ?? ""), "AntiForgeryToken");
 
+                            /* A server that knows SnapshotText prefers it; one that does not sanitizes SnapshotHtml itself */
+                            if (!string.IsNullOrEmpty(_snapshotText))
+                                content.Add(new StringContent(_snapshotText, Encoding.UTF8, "text/plain"), "SnapshotText");
                             if (!string.IsNullOrEmpty(_snapshotHtml))
                                 content.Add(new StringContent(_snapshotHtml, Encoding.UTF8, "text/html"), "SnapshotHtml");
 
@@ -472,8 +479,13 @@ namespace GnollHackX.Pages.Game
                 }
             });
 
-            /* Free the data references - they can be large */
-            _snapshotHtml = null;
+            /* Free the data references - they can be large. Kept after a
+               failed attempt: the retry uploads it again. */
+            if (_handoffSucceeded)
+            {
+                _snapshotText = null;
+                _snapshotHtml = null;
+            }
         }
 
         private async void RetryButton_Clicked(object sender, EventArgs e)
@@ -1268,25 +1280,15 @@ namespace GnollHackX.Pages.Game
                         + " Overseer. No snapshot is available.");
 
                 /* P/Invoke — dispatch to main thread for C core safety */
-                string snapPath = await MainThread.InvokeOnMainThreadAsync(() =>
+                string snapText = await MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    return GHApp.GnollHackService.GenerateAiSnapshot();
+                    return GHApp.GenerateAiSnapshotText(out _);
                 });
-                if (string.IsNullOrEmpty(snapPath))
+                if (snapText == null)
                     throw new InvalidOperationException(
                         "AI snapshot generation failed.");
-                if (!File.Exists(snapPath))
-                    throw new FileNotFoundException(
-                        "AI snapshot file not found: " + snapPath);
 
-                /* LibGenerateAiSnapshot returns the file path, not the
-                   snapshot; read and flatten it for the model. */
-                string snapText = SanitizeDumpHtml(File.ReadAllText(snapPath));
-                if (snapText.Length > DefaultMaxSnapshotChars)
-                    snapText = snapText.Substring(0, DefaultMaxSnapshotChars)
-                        + "\n\n[SNAPSHOT TRUNCATED at "
-                        + DefaultMaxSnapshotChars + " characters.]";
-                return snapText;
+                return TruncateSnapshotForLlm(snapText);
             }
 
             case "get_save_info":
@@ -1437,21 +1439,44 @@ namespace GnollHackX.Pages.Game
            A full snapshot flattens to well under this. */
         private const int DefaultMaxSnapshotChars = 60000;
 
+        /* U+00A0, by code point: a literal one is indistinguishable from a space */
+        private const char NonBreakingSpace = (char)0x00A0;
+
+        /// <summary>
+        /// Caps sanitized snapshot text at <see cref="DefaultMaxSnapshotChars"/>
+        /// and marks the cut. Never splits a surrogate pair.
+        /// </summary>
+        internal static string TruncateSnapshotForLlm(string text)
+        {
+            if (text == null || text.Length <= DefaultMaxSnapshotChars)
+                return text;
+
+            int cap = DefaultMaxSnapshotChars;
+            if (char.IsHighSurrogate(text[cap - 1]))
+                cap--;
+            return text.Substring(0, cap)
+                + "\n\n[SNAPSHOT TRUNCATED at "
+                + DefaultMaxSnapshotChars + " characters.]";
+        }
+
         /// <summary>
         /// Converts GnollHack dump HTML (AI snapshot or HTML dumplog) into
         /// plain text for the AI, preserving line structure. The C engine
         /// already writes a real newline after every logical line, so
         /// block-level tags map to "\n" and inline tags are simply removed.
+        /// This function is the reference; the Overseer server keeps a
+        /// transcription of it (DumpHtmlSanitizer.Sanitize).
         /// </summary>
         /// <remarks>
-        /// Entity decoding is deliberately last. While the horizontal
+        /// Entity decoding comes after every collapse. While the horizontal
         /// whitespace collapse runs, a map cell written as &amp;nbsp; is still
         /// the literal six-character string rather than U+00A0, so the map's
         /// column alignment survives the collapse regardless of the pattern
-        /// used. Decoding last also means no decoded text can be mistaken for
-        /// a tag by the earlier steps.
+        /// used. Decoding after the tag steps also means no decoded text can
+        /// be mistaken for a tag. Only the one-for-one U+00A0 normalization
+        /// follows the decode.
         /// </remarks>
-        private static string SanitizeDumpHtml(string html)
+        public static string SanitizeDumpHtml(string html)
         {
             if (string.IsNullOrWhiteSpace(html))
                 return string.Empty;
@@ -1476,11 +1501,11 @@ namespace GnollHackX.Pages.Game
                   contributes no break of its own. */
             text = Regex.Replace(text,
                 @"(<br\s*/?>|</(p|div|section|li|tr|h[1-6]|ul|ol|table"
-                + @"|tbody|theader|pre)\s*>)[ \t]*\r?\n?",
+                + @"|tbody|thead|theader|pre)\s*>)[ \t]*\r?\n?",
                 "\n", RegexOptions.IgnoreCase);
             text = Regex.Replace(text,
-                @"<(p|div|section|ul|ol|table|tbody|theader|pre|li|h[1-6])\b"
-                + @"[^>]*>[ \t]*\r?\n?",
+                @"<(p|div|section|ul|ol|table|tbody|thead|theader|tr|pre|li"
+                + @"|h[1-6])\b[^>]*>[ \t]*\r?\n?",
                 "", RegexOptions.IgnoreCase);
 
             /* 4. Anything left is an inline tag and may start mid-word, so it
@@ -1497,8 +1522,14 @@ namespace GnollHackX.Pages.Game
             text = Regex.Replace(text, @"[ \t]+(\r?\n)", "$1");
             text = Regex.Replace(text, @"(\r?\n){3,}", "\n\n");
 
-            /* 7. Decode entities last - see the remarks above. */
+            /* 7. Decode entities after every collapse - see the remarks
+                  above. */
             text = System.Net.WebUtility.HtmlDecode(text);
+
+            /* 8. U+00A0 goes back to an ASCII space now that every collapse
+                  has run. One for one, so the map's columns are unchanged,
+                  and plain spaces cost fewer tokens. */
+            text = text.Replace(NonBreakingSpace, ' ');
 
             return text.Trim();
         }

@@ -1403,8 +1403,10 @@ print_dumphtml_filename_to_buffer(char *buf)
 char*
 print_dumphtml_ai_filename_to_buffer(char *buf)
 {
+    static const char ai_ext[] = ".ai.html";
+    static const char html_ext[] = ".html";
     char* fname;
-    char* ext;
+    size_t len, extlen, htmllen;
 
 #ifdef SYSCF
     char* used_sysopt_htmlfile = sysopt.aihtmlfile;
@@ -1414,15 +1416,22 @@ print_dumphtml_ai_filename_to_buffer(char *buf)
 #else
     fname = dump_fmtstr(AIHTML_FILE, buf);
 #endif
-    
-    ext = strstr(fname, ".html");
-    if (ext)
+
+    /* The name ends in exactly one .ai.html; only the end is examined,
+       since %n may expand to a player name containing an extension */
+    len = strlen(fname);
+    extlen = sizeof ai_ext - 1;
+    if (len < extlen || strcmp(fname + len - extlen, ai_ext) != 0)
     {
-        strcpy(ext, ".ai.html");
-    }
-    else
-    {
-        strcat(fname, ".ai.html");
+        htmllen = sizeof html_ext - 1;
+        if (len >= htmllen && strcmp(fname + len - htmllen, html_ext) == 0)
+        {
+            strcpy(fname + len - htmllen, ai_ext);
+        }
+        else
+        {
+            strcat(fname, ai_ext);
+        }
     }
 
     return fname;

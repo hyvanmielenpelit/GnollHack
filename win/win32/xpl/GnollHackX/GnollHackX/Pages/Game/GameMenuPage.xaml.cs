@@ -454,29 +454,14 @@ namespace GnollHackX.Pages.Game
             {
                 /* Game thread is idle while the menu is open, so the native
                    call is safe here, as in OpenOverseerPage() */
-                string snapshotpath = GHApp.GnollHackService.GenerateAiSnapshot();
-                if (string.IsNullOrEmpty(snapshotpath))
+                string snapshottext = GHApp.GenerateAiSnapshotText(out string filepath);
+                if (snapshottext == null || filepath == null)
                 {
                     await GHApp.DisplayMessageBox(this, "AI Snapshot Failed", "GnollHack could not generate an AI snapshot.", "OK");
                 }
                 else
                 {
-                    /* The native side returns the sysconf path, which is relative to the GnollHack directory */
-                    if (!Path.IsPathRooted(snapshotpath))
-                        snapshotpath = Path.Combine(GHApp.GHPath, snapshotpath);
-
-                    if (File.Exists(snapshotpath))
-                    {
-                        string aidir = Path.Combine(GHApp.GHPath, GHConstants.AiDirectory);
-                        GHApp.CheckCreateDirectory(aidir);
-                        string filepath = Path.Combine(aidir, Path.GetFileName(snapshotpath));
-                        File.Copy(snapshotpath, filepath, true);
-                        await GHApp.ShareFile(this, filepath, "GnollHack AI Snapshot");
-                    }
-                    else
-                    {
-                        await GHApp.DisplayMessageBox(this, "AI Snapshot File Not Found", "GnollHack could not find " + snapshotpath + ".", "OK");
-                    }
+                    await GHApp.ShareFile(this, filepath, "GnollHack AI Snapshot");
                 }
             }
             catch (Exception ex)
@@ -593,23 +578,20 @@ namespace GnollHackX.Pages.Game
                 Preferences.Set(GHConstants.OverseerConsentAcceptedKey, true);
             }
 
+            string snapshotText = "";
             string snapshotHtml = "";
 
             /* 1. Generate AI snapshot via native call (safe: game thread is idle) */
             try
             {
-                string filePath = GHApp.GnollHackService.GenerateAiSnapshot();
-                if (filePath != null)
+                string text = OverseerPage.TruncateSnapshotForLlm(GHApp.GenerateAiSnapshotText(out _, out string html));
+                if (text != null)
                 {
-                    if (File.Exists(filePath))
-                        snapshotHtml = File.ReadAllText(filePath);
-                    else
-                        GHApp.WriteGHLog("AI snapshot file " + filePath + " does not exist.");
+                    snapshotText = text;
+                    snapshotHtml = html ?? "";
                 }
                 else
-                {
-                    GHApp.WriteGHLog("AI snapshot file is null.");
-                }
+                    GHApp.WriteGHLog("AI snapshot generation failed.");
             }
             catch (Exception ex)
             {
@@ -621,6 +603,7 @@ namespace GnollHackX.Pages.Game
 
             /* 4. Open OverseerPage — it handles the upload + progress display */
             var overseerPage = new OverseerPage(GHApp.OverseerAddress, 
+                GHApp.OverseerSendGameContext ? snapshotText : "",
                 GHApp.OverseerSendGameContext ? snapshotHtml : "");
             await GHApp.PushModalPageAsync(overseerPage);
 
