@@ -373,7 +373,7 @@ namespace GnollHackX
             }
 #endif
 #if true
-            /* Switch off Text Blob caching on Android and Windows as too slow */
+            /* Clear AI files from the wrong directory (snapshot) */
             if (!Preferences.Get("GNH430Build19AiSnapshotFix", false))
             {
                 ClearAiFilesFromSnapshot();
