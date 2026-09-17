@@ -68,6 +68,9 @@ static const char* get_targeting_description(int);
 static void move_spell_to_top(int);
 static void move_spell_to_bottom(int);
 static int dosetquickspell_core(int);
+#if defined (DUMPLOG) || defined (DUMPHTML)
+static void dump_spell_details_ai(int, char *);
+#endif
 
 
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
@@ -6042,6 +6045,42 @@ void move_spell_to_bottom(int splidx)
 }
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
+/* Append to 'outbuf' what the cast and mixing menus show for spell 'spell'
+   beyond success and castings. */
+static void
+dump_spell_details_ai(int spell, char *outbuf)
+{
+    char lvlbuf[BUFSZ];
+    double manacost = ceil(10 * get_spell_mana_cost(spell)) / 10;
+    int cooldown = getspellcooldown(spell);
+    int cooldownleft = spellcooldownleft(spell);
+    int matcomp = spellmatcomp(spell);
+
+    if (spellknow(spell) <= 0)
+    {
+        Strcpy(outbuf, "; FORGOTTEN, cannot be cast until relearned");
+        return;
+    }
+
+    print_spell_level_text(lvlbuf, spellid(spell), TRUE, 0, TRUE);
+    Sprintf(outbuf, "; %s, %.1f mana", lvlbuf, manacost);
+
+    if (cooldown <= 0)
+        Strcat(outbuf, ", no cooldown");
+    else if (cooldownleft > 0)
+        Sprintf(eos(outbuf), ", cooldown %d turn%s (%d left before it can be cast again)",
+                cooldown, plur(cooldown), cooldownleft);
+    else
+        Sprintf(eos(outbuf), ", cooldown %d turn%s (ready)", cooldown, plur(cooldown));
+
+    if (matcomp > 0)
+        Sprintf(eos(outbuf), "; components: %s (%d casting%s per mix)",
+                matlists[matcomp].description_short,
+                matlists[matcomp].spellsgained, plur(matlists[matcomp].spellsgained));
+    else
+        Strcat(outbuf, "; no components");
+}
+
 void
 dump_spells(void)
 {
@@ -6052,7 +6091,7 @@ dump_spells(void)
     else
     {
         int i;
-        char buf[BUFSZ];
+        char buf[BUFSZ * 2];
         char spellnamebuf[BUFSZ];
         char castingsbuf[BUFSZ] = "";
         char successbuf[BUFSZ] = "";
@@ -6075,7 +6114,22 @@ dump_spells(void)
             Sprintf(successbuf, "%d%% success", pct_lim);
 
             Sprintf(buf, "  %-34s  %-13s%s", spellnamebuf, successbuf, castingsbuf);
+            if (iflags.dumping_ai_snapshot)
+            {
+                /* the success column is padded when no castings follow it */
+                (void) trimspaces(buf);
+                dump_spell_details_ai(i, eos(buf));
+            }
             putstr(0, ATR_TABLE_ROW | (i == 0 ? ATR_START_TABLE : 0) | (i == spell_cnt - 1 ? ATR_END_TABLE : 0), buf);
+        }
+        if (iflags.dumping_ai_snapshot)
+        {
+            putstr(0, ATR_NONE,
+                   "Castings left = castings already prepared by mixing the"
+                   " spell's material components. At 0 the spell cannot be"
+                   " cast until its components are mixed again. A spell with"
+                   " no castings figure and \"no components\" can be cast"
+                   " whenever mana and cooldown allow.");
         }
     }
 }

@@ -653,6 +653,11 @@ typedef unsigned char uchar;
  /* Buffer size: must be at least as large as the biggest consumer */
 #define AI_SNAPSHOT_MESSAGE_COUNT 100
 
+/* Version of the AI snapshot's text format, printed at the top of the
+   snapshot.  Increase it whenever a reader of the flattened text could tell
+   the difference: a line added, removed, moved or reworded. */
+#define AI_SNAPSHOT_FORMAT_VERSION 2
+
 /* AI snapshot map layout.  dump_map_ai() (detect.c) prefixes every map row
    with a right aligned row number gutter, and dump_map_legend_ai() (pager.c)
    describes that layout to the reader, so both must agree on this. */

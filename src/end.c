@@ -19,6 +19,8 @@
 #include "dlb.h"
 #include <math.h>
 
+extern const char *hu_stat[]; /* hunger status from eat.c */
+
 /* add b to int64_t a, convert wraparound to max value */
 #define nowrap_add(a, b) (a = ((a + game_score_difficulty_adjustment(b)) < 0 ? LONG_MAX : (a + game_score_difficulty_adjustment(b))))
 
@@ -955,6 +957,12 @@ dump_everything(int how, time_t when)
 
     debugprint("%s", "dump_everything");
 
+    if (how == SNAPSHOT_AI)
+    {
+        Sprintf(pbuf, "Snapshot format: %d", AI_SNAPSHOT_FORMAT_VERSION);
+        putstr(0, ATR_NONE, pbuf);
+    }
+
     /* one line version ID, which includes build date+time;
        it's conceivable that the game started with a different
        build date+time or even with an older GnollHack version,
@@ -1037,6 +1045,37 @@ dump_everything(int how, time_t when)
     status_initialize(TRUE);
     bot();
     dump_end_screendump();
+    if (how == SNAPSHOT_AI)
+    {
+        /* hu_stat[NOT_HUNGRY] is blank and the others are space padded */
+        if (u.uhs == NOT_HUNGRY)
+            Strcpy(pbuf, "Hunger: not hungry");
+        else
+        {
+            char hungerbuf[BUFSZ];
+
+            Strcpy(hungerbuf, hu_stat[u.uhs]);
+            (void) mungspaces(hungerbuf);
+            *hungerbuf = lowc(*hungerbuf);
+            Sprintf(pbuf, "Hunger: %s", hungerbuf);
+        }
+        putstr(0, ATR_NONE, pbuf);
+        putstr(0, ATR_NONE,
+               "Status key: MC = magic cancellation level/percent chance, MS ="
+               " movement speed, XL = experience level/points, S = score, T ="
+               " turns, \"Skill\" = a skill can be advanced now, \"2Weap\" ="
+               " fighting with two weapons. The game mode and difficulty"
+               " letters are spelled out under \"Game:\". Fields the player"
+               " has switched off are absent.");
+        putstr(0, ATR_NONE,
+               "W = weapon style, right hand then /left hand: - bare hands, g"
+               " gloved bare hands, mg weapon gloves, M melee weapon, T"
+               " throwing weapon, MT melee weapon that can be thrown, P"
+               " polearm, D digging tool, MD melee weapon that digs, A ammo"
+               " held in hand, R launcher with matching ammo quivered (Re"
+               " wrong ammo, R0 no ammo), S shield, 2h prefix two-handed, c"
+               " corpse, ! potion, * other item.");
+    }
     putstr(NHW_DUMPTXT, 0, "");
 
     debugprint("%s", "dump_plines");
@@ -1054,9 +1093,26 @@ dump_everything(int how, time_t when)
     debugprint("%s", "dump: display_inventory");
     putstr(NHW_DUMPTXT, 0, "");
     putstr(0, ATR_HEADING, "Inventory:");
-    (void) display_inventory((char *) 0, TRUE, SHOWWEIGHTS_NONE, FALSE);
-    container_contents(invent, how != SNAPSHOT && how != SNAPSHOT_AI, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
-    magic_chest_contents(how != SNAPSHOT && how != SNAPSHOT_AI, TRUE, FALSE, SHOWWEIGHTS_NONE, FALSE);
+    if (how == SNAPSHOT_AI)
+    {
+        putstr(0, ATR_NONE,
+               "An item with no blessed, uncursed or cursed word has unknown"
+               " blessed/cursed status (gold never shows one).");
+        putstr(0, ATR_NONE,
+               "An item named only by its appearance (a brown mushroom, an"
+               " orange potion, a scroll labeled GHOTI, a shimmering"
+               " spellbook) is NOT identified; appearances are randomized"
+               " every game. Only the Discoveries section maps appearances to"
+               " types.");
+        putstr(0, ATR_NONE,
+               "Each item's weight follows it in parentheses; a stack shows"
+               " the weight of the whole stack. Weights are rounded, so they"
+               " may not add up exactly to the total in the weight summary,"
+               " which is authoritative.");
+    }
+    (void) display_inventory((char *) 0, TRUE, how == SNAPSHOT_AI ? SHOWWEIGHTS_INVENTORY : SHOWWEIGHTS_NONE, FALSE);
+    container_contents(invent, how != SNAPSHOT && how != SNAPSHOT_AI, TRUE, FALSE, how == SNAPSHOT_AI ? SHOWWEIGHTS_OTHER_INVENTORY : SHOWWEIGHTS_NONE, FALSE);
+    magic_chest_contents(how != SNAPSHOT && how != SNAPSHOT_AI, TRUE, FALSE, how == SNAPSHOT_AI ? SHOWWEIGHTS_OTHER_INVENTORY : SHOWWEIGHTS_NONE, FALSE);
     enlightenment((how == SNAPSHOT || how == SNAPSHOT_AI) ? BASICENLIGHTENMENT | GAMEENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT),
                   (how == SNAPSHOT || how == SNAPSHOT_AI) ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
@@ -1101,6 +1157,10 @@ dump_everything_ai(time_t when)
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
     uint64_t saved_wincap2 = windowprocs.wincap2;
+    boolean saved_implicit_uncursed = iflags.implicit_uncursed;
+    boolean saved_inventory_weights_last = flags.inventory_weights_last;
+    boolean saved_show_weight_summary = flags.show_weight_summary;
+    boolean saved_detailed_weights = flags.detailed_weights;
 
     /* The AI snapshot is plain text for a machine reader.  Frontend symbol
        entities ("&status-3;", "&gold;") are escaped to "&amp;status-3;" by
@@ -1111,9 +1171,23 @@ dump_everything_ai(time_t when)
        of dump_everything(), which would undo this anyway; restoring by hand
        keeps the invariant local. */
     windowprocs.wincap2 &= ~WC2_SPECIAL_SYMBOLS;
+    /* Player display options that change the wording of the inventory are
+       pinned, so that one game state always produces one snapshot: every
+       known-uncursed item says "uncursed", weights follow the item name in
+       pounds or kilograms, and the weight summary is present.  The choice
+       between pounds and kilograms stays the player's.  This function must
+       keep a single exit path, or the player's options are left changed. */
+    iflags.implicit_uncursed = FALSE;
+    flags.inventory_weights_last = TRUE;
+    flags.show_weight_summary = TRUE;
+    flags.detailed_weights = FALSE;
     iflags.dumping_ai_snapshot = TRUE;
     dump_everything(SNAPSHOT_AI, when);
     iflags.dumping_ai_snapshot = FALSE;
+    flags.detailed_weights = saved_detailed_weights;
+    flags.show_weight_summary = saved_show_weight_summary;
+    flags.inventory_weights_last = saved_inventory_weights_last;
+    iflags.implicit_uncursed = saved_implicit_uncursed;
     windowprocs.wincap2 = saved_wincap2;
 
     /* dump_everything() -> dump_redirect(FALSE) calls status_initialize(FALSE)

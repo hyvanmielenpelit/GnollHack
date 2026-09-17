@@ -236,6 +236,7 @@ static void game_enlightenment(int, int);
 static void characteristics_enlightenment(int, int);
 static void one_characteristic(int, int, int);
 static void status_enlightenment(int, int);
+static void known_item_properties_enlightenment(void);
 static void attributes_enlightenment(int, int);
 
 static void add_herecmd_menuitem(winid, int (*)(void),
@@ -3395,6 +3396,43 @@ attrval(int attrindx, int attrvalue, char resultbuf[])
     return resultbuf;
 }
 
+/* AI snapshot: properties conferred by carried items whose conferring of them
+   the player knows about; a subset of what magic enlightenment lists */
+static void
+known_item_properties_enlightenment(void)
+{
+    char buf[BUFSZ * 2];
+    struct obj *otmp;
+    const char *noun;
+    int prop;
+    boolean found = FALSE;
+
+    enlght_out(" ", ATR_HALF_SIZE);
+    enlght_out("Known properties:", ATR_SUBHEADING);
+    for (prop = 1; prop <= LAST_PROP; prop++)
+    {
+        if (!u.uprops[prop].extrinsic)
+            continue;
+        noun = get_property_name(prop);
+        if (!noun || !*noun)
+            continue;
+        for (otmp = invent; otmp; otmp = otmp->nobj)
+        {
+            if (!item_is_giving_known_power(otmp, prop))
+                continue;
+            Sprintf(buf, " %s, from %c - %s", noun, otmp->invlet, cxname(otmp));
+            *(buf + 1) = highc(*(buf + 1));
+            enlght_out(buf, ATR_NONE);
+            found = TRUE;
+        }
+    }
+    if (!found)
+        enlght_out(" None conferred by items known to the player.", ATR_NONE);
+    enlght_out(" This lists item-conferred properties only; innate and"
+               " temporary ones are under Current Status or not shown.",
+               ATR_NONE);
+}
+
 /*
  * Parameters:
  *   mode: BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT
@@ -3444,6 +3482,8 @@ enlightenment(int mode, int final)
        various troubles (turning to stone, trapped, confusion, &c);
        shown for both basic and magic enlightenment */
     status_enlightenment(mode, final);
+    if (iflags.dumping_ai_snapshot)
+        known_item_properties_enlightenment();
     /* remaining attributes; shown for potion,&c or wizard mode and
        explore mode ^X or end of game disclosure */
     if (mode & MAGICENLIGHTENMENT) {
@@ -3800,32 +3840,37 @@ game_enlightenment(int mode UNUSED, int final)
     Sprintf(buf, "%s", modebuf);
     enl_msg("You ", "have been playing the game for ", "had been playing the game for ", buf, "");
 
-    if (iflags.save_file_secure)
+    /* where the save file lives and whether it is tracked has no bearing
+       on play, so the AI snapshot leaves it out */
+    if (!iflags.dumping_ai_snapshot)
     {
-        enl_msg("You ", "are ", "were ", "playing the game on a secure server", "");
-    }
-    else
-    {
-        if (!iflags.save_file_tracking_supported)
-            enl_msg("Save file tracking ", "is ", "was ", "not supported on your platform", "");
+        if (iflags.save_file_secure)
+        {
+            enl_msg("You ", "are ", "were ", "playing the game on a secure server", "");
+        }
         else
         {
-            if (wizard || discover || CasualMode)
-            {
-                enl_msg("Your game mode ", "is ", "was ", "not eligible for save file tracking", "");
-            }
+            if (!iflags.save_file_tracking_supported)
+                enl_msg("Save file tracking ", "is ", "was ", "not supported on your platform", "");
             else
             {
-                if (!iflags.save_file_tracking_needed)
+                if (wizard || discover || CasualMode)
                 {
-                    enl_msg("Save file tracking ", "is ", "was ", "supported but not needed on your platform", "");
+                    enl_msg("Your game mode ", "is ", "was ", "not eligible for save file tracking", "");
                 }
                 else
                 {
-                    enl_msg("Save file tracking ", "is ", "was ", "supported and needed on your platform", "");
-                    enl_msg("Save file tracking ", "is ", "was ", iflags.save_file_tracking_on ? "on" : "off", "");
+                    if (!iflags.save_file_tracking_needed)
+                    {
+                        enl_msg("Save file tracking ", "is ", "was ", "supported but not needed on your platform", "");
+                    }
+                    else
+                    {
+                        enl_msg("Save file tracking ", "is ", "was ", "supported and needed on your platform", "");
+                        enl_msg("Save file tracking ", "is ", "was ", iflags.save_file_tracking_on ? "on" : "off", "");
+                    }
+                    enl_msg("Your save file ", "has been ", "had been ", flags.save_file_tracking_value ? "successfully " : "unsuccessfully ", "tracked");
                 }
-                enl_msg("Your save file ", "has been ", "had been ", flags.save_file_tracking_value ? "successfully " : "unsuccessfully ", "tracked");
             }
         }
     }

@@ -375,7 +375,8 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
         headbuf,
         name);
 
-    Sprintf(buf, "level %d %s%s", accurate ? pm->difficulty : rn2(3) ? rnd(30) : rnd(80),
+    Sprintf(buf, iflags.dumping_ai_snapshot ? "difficulty %d %s%s" : "level %d %s%s",
+            accurate ? pm->difficulty : rn2(3) ? rnd(30) : rnd(80),
             (mtmp->mx != x || mtmp->my != y)
                 ? "tail of "
                 : "",
@@ -421,6 +422,13 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
                     Sprintf(eos(buf), ", hungry");
         }
     }
+    /* Only for a creature seen by sight at its own position: detection,
+       telepathy and warning show that something is there, not what it holds.
+       distant_name() does not mark the weapon as seen. */
+    if (iflags.dumping_ai_snapshot && accurate && !u.uswallow
+        && mtmp->mx == x && mtmp->my == y && MON_WEP(mtmp)
+        && (howmonseen(mtmp) & (MONSEEN_NORMAL | MONSEEN_SEEINVIS)) != 0)
+        Sprintf(eos(buf), ", wielding %s", an(distant_name(MON_WEP(mtmp), xname)));
     if (extrabuf) {
         unsigned how_seen = howmonseen(mtmp);
 
@@ -2655,32 +2663,28 @@ legend_kind_of(int glyph, int sym)
     return LEGEND_KIND_TERRAIN;
 }
 
-/* defsyms[] explains eleven separate wall rows as the bare word "wall", which
-   in a legend produces a run of lines that differ only in their cell counts.
-   The table text is right for the in-game ';' command and for the human
-   dumplog, so it is left alone; the legend says which wall instead.  Returns
-   (const char *) 0 when 'sym' is not a wall. */
+/* defsyms[] has eleven separate wall rows.  The legend counts them together,
+   one row per printed character, because no reader has needed the corner,
+   crossing and T-junction counts.  The table text is left alone for the
+   in-game ';' command and the human dumplog.  Returns (const char *) 0 when
+   'sym' is not a wall. */
 static const char *
 legend_wall_explanation(int sym)
 {
     switch (sym)
     {
     case S_vwall:
-        return "vertical wall";
     case S_hwall:
-        return "horizontal wall";
     case S_tlcorn:
     case S_trcorn:
     case S_blcorn:
     case S_brcorn:
-        return "wall corner";
     case S_crwall:
-        return "wall crossing";
     case S_tuwall:
     case S_tdwall:
     case S_tlwall:
     case S_trwall:
-        return "wall T-junction";
+        return "wall";
     default:
         break;
     }
@@ -2990,14 +2994,10 @@ dump_map_legend_ai(void)
             " the gutter. Coordinates below are written <x,y>.",
             COLNO - 1, ROWNO - 1);
     putstr(0, ATR_NONE, buf);
-    Sprintf(buf,
-            "There is no end-of-row marker character, because every"
-            " printable character is already a map symbol in this game. If a"
-            " row looks shorter than %d characters, its rightmost cells were"
-            " blank and something in transit trimmed them; the column ruler"
-            " is the authoritative scale.",
-            COLNO - 1);
-    putstr(0, ATR_NONE, buf);
+    putstr(0, ATR_NONE,
+           "There is no end-of-row marker character, because every printable"
+           " character is already a map symbol in this game. Rows may arrive"
+           " right-trimmed; the column ruler is the authoritative scale.");
     if (u.uswallow)
         Sprintf(buf,
                 "The hero is at <%d,%d>, inside the creature drawn there.",
@@ -3111,6 +3111,8 @@ dump_map_legend_ai(void)
                 Sprintf(eos(buf), " you: %s", descbuf);
             else
                 Sprintf(eos(buf), " %s", descbuf);
+            if (*extrabuf)
+                Sprintf(eos(buf), " [seen: %s]", extrabuf);
         }
 
         if (!(x == u.ux && y == u.uy))

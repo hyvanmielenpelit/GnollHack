@@ -6150,6 +6150,11 @@ show_gamelog(int final)
     win = create_nhwindow(NHW_TEXT);
     Sprintf(buf, "%s events:", final ? "Major" : "Logged");
     putstr(win, ATR_TITLE, buf);
+    if (iflags.dumping_ai_snapshot)
+        putstr(win, ATR_NONE,
+               "Level numbers in this list are counted within their own"
+               " dungeon branch. Status, Background and the dungeon overview"
+               " use absolute depth (Dlvl).");
     for (llmsg = gamelog; llmsg; llmsg = llmsg->next) {
         if (final && !majorevent(llmsg))
             continue;

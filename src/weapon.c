@@ -4830,10 +4830,11 @@ void
 dump_skills(void)
 {
     int i;
-    char buf[BUFSZ];
+    char buf[BUFSZ * 2];
     char skillnamebufC[BUFSZ];
     char skilllevelbuf[BUFSZ];
     char skillmaxbuf[BUFSZ];
+    char skillnextbuf[BUFSZ];
     putstr(0, ATR_HEADING, program_state.gameover ? "Final Skills:" : "Current Skills:");
 
     int skill_cnt = 0;
@@ -4858,10 +4859,59 @@ dump_skills(void)
         (void)skill_level_name(i, skillmaxbuf, TRUE);
 
         Sprintf(buf, "  %-34s  %s / %s", skillnamebufC, skilllevelbuf, skillmaxbuf);
+        if (iflags.dumping_ai_snapshot)
+        {
+            int lvl = P_SKILL_LEVEL(i);
+
+            if (lvl >= P_MAX_SKILL_LEVEL(i))
+                Strcat(buf, "; at maximum");
+            else
+            {
+                /* lvl < maximum <= P_GRAND_MASTER, so lvl + 1 is in range */
+                int xl_needed = urole.skill_advance_levels[i][lvl + 1];
+                int slots = slots_required(i);
+                int needed = practice_needed_to_advance(i, lvl);
+
+                (void) skill_level_name(i, skillnextbuf, 2);
+                if (can_advance(i, FALSE))
+                    Sprintf(eos(buf), "; CAN ADVANCE NOW to %s, costs %d slot%s",
+                            skillnextbuf, slots, plur(slots));
+                else if (u.skills_advanced >= P_SKILL_LIMIT)
+                    Strcat(buf, "; cannot advance, general advancement limit reached");
+                else if (could_advance(i))
+                    Sprintf(eos(buf), "; ready for %s but it costs %d slot%s, more than are available",
+                            skillnextbuf, slots, plur(slots));
+                else if (P_NONTRAINABLE(i) && xl_needed <= 0)
+                    Sprintf(eos(buf), "; to %s: not advanced by training, costs %d slot%s",
+                            skillnextbuf, slots, plur(slots));
+                else
+                {
+                    /* can_advance() accepts either route */
+                    Sprintf(eos(buf), "; to %s:", skillnextbuf);
+                    if (!P_NONTRAINABLE(i))
+                        Sprintf(eos(buf), " training %d/%d", (int) P_ADVANCE(i), needed);
+                    if (xl_needed > 0)
+                        Sprintf(eos(buf), "%s experience level %d/%d",
+                                !P_NONTRAINABLE(i) ? " or" : "", (int) u.ulevel, xl_needed);
+                    Sprintf(eos(buf), ", costs %d slot%s", slots, plur(slots));
+                }
+            }
+        }
         putstr(0, ATR_TABLE_ROW | (skill_idx == 1 ? ATR_START_TABLE : 0) | (skill_idx == skill_cnt ? ATR_END_TABLE : 0), buf);
     }
     Sprintf(buf, "You %s %d skill slot%s available", program_state.gameover ? "had" : "have", u.weapon_slots, plur(u.weapon_slots));
     putstr(0, ATR_PARAGRAPH_LINE, buf);
+    if (iflags.dumping_ai_snapshot && !P_RESTRICTED(P_BARE_HANDED_COMBAT)
+        && !P_RESTRICTED(P_MARTIAL_ARTS))
+    {
+        boolean trains_martial = adjusted_skill_level(P_BARE_HANDED_COMBAT) >= P_GRAND_MASTER;
+
+        Sprintf(buf, "Unarmed hits currently train: %s (they train Martial"
+                " arts only once effective Bare handed combat is Grand Master;"
+                " kicks always train Martial arts).",
+                trains_martial ? "Martial arts" : "Bare handed combat");
+        putstr(0, ATR_PARAGRAPH_LINE, buf);
+    }
 }
 
 short
