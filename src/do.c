@@ -5846,10 +5846,11 @@ dump_pet_statistics(void)
         return;
     }
 
-    Sprintf(buf, "%d pet%s on this level.", petcount, plur(petcount));
+    Sprintf(buf, "%d pet%s on this level. Roll call, one line per pet:",
+            petcount, plur(petcount));
     putstr(0, ATR_NONE, buf);
 
-    /* Roll call.  Every pet appears here, even when the statistics blocks
+    /* Roll call. Every pet appears here, even when the statistics blocks
        below are capped, so that "is my pet in danger" is answerable from one
        line each. */
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
@@ -5894,6 +5895,13 @@ dump_pet_statistics(void)
         putstr(0, ATR_NONE, buf);
     }
 
+    /* The statistics screen has headings and blank lines of its own, so each
+       block is closed explicitly, and so is the section. */
+    putstr(0, ATR_NONE,
+           "A statistics block follows for each pet, running from its"
+           " \"Pet N of M:\" line to its \"End of pet N of M.\" line."
+           " Everything between those two lines describes that pet only.");
+
     petnum = 0;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
@@ -5908,7 +5916,12 @@ dump_pet_statistics(void)
                 pet_dump_name(mtmp));
         putstr(0, ATR_SUBHEADING, buf);
         (void) monsterdescription_core(mtmp, mtmp->data);
+        Sprintf(buf, "End of pet %d of %d.", petnum, petcount);
+        putstr(0, ATR_NONE, buf);
     }
+    putstr(0, ATR_NONE, "");
+    putstr(0, ATR_NONE,
+           "End of pets. Nothing below this line belongs to a pet.");
 #endif
 }
 
