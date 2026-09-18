@@ -948,6 +948,7 @@ dump_everything(int how, time_t when)
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
     char pbuf[BUFSZ], datetimebuf[24]; /* [24]: room for 64-bit bogus value */
+    winid winno = how == SNAPSHOT_AI ? 0 : NHW_DUMPTXT;
 
     dump_redirect(TRUE);
     if (!iflags.in_dumplog)
@@ -968,7 +969,7 @@ dump_everything(int how, time_t when)
        build date+time or even with an older GnollHack version,
        but we only have access to the one it finished under */
     putstr(0, ATR_SUBHEADING, getversionstring(pbuf));
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(winno, 0, "");
 
     /* game start and end date+time to disambiguate version date+time */
     Strcpy(datetimebuf, yyyymmddhhmmss(ubirthday));
@@ -981,7 +982,7 @@ dump_everything(int how, time_t when)
             &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
             &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
     putstr(0, ATR_SUBHEADING, pbuf);
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(winno, 0, "");
 
     /* character name and basic role info */
     Sprintf(pbuf, "%s, %s %s %s %s", plname,
@@ -990,7 +991,7 @@ dump_everything(int how, time_t when)
             urace.adj,
             (Ufemale && urole.name.f) ? urole.name.f : urole.name.m);
     putstr(0, ATR_SUBHEADING, pbuf);
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(winno, 0, "");
 
     if (how == SNAPSHOT_AI)
     {
@@ -1045,6 +1046,7 @@ dump_everything(int how, time_t when)
     status_initialize(TRUE);
     bot();
     dump_end_screendump();
+
     if (how == SNAPSHOT_AI)
     {
         /* hu_stat[NOT_HUNGRY] is blank and the others are space padded */
@@ -1076,7 +1078,7 @@ dump_everything(int how, time_t when)
                " wrong ammo, R0 no ammo), S shield, 2h prefix two-handed, c"
                " corpse, ! potion, * other item.");
     }
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(winno, 0, "");
 
     debugprint("%s", "dump_plines");
     dump_plines();
@@ -1087,11 +1089,12 @@ dump_everything(int how, time_t when)
     if (how == SNAPSHOT_AI)
     {
         debugprint("%s", "dump: dump_pet_statistics");
+        putstr(0, ATR_NONE, "");
         putstr(0, ATR_HEADING, "Pets:");
         dump_pet_statistics();
     }
     debugprint("%s", "dump: display_inventory");
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(winno, 0, "");
     putstr(0, ATR_HEADING, "Inventory:");
     if (how == SNAPSHOT_AI)
     {
@@ -1117,36 +1120,36 @@ dump_everything(int how, time_t when)
     magic_chest_contents(how != SNAPSHOT && how != SNAPSHOT_AI, TRUE, FALSE, how == SNAPSHOT_AI ? SHOWWEIGHTS_OTHER_INVENTORY : SHOWWEIGHTS_NONE, FALSE);
     enlightenment((how == SNAPSHOT || how == SNAPSHOT_AI) ? BASICENLIGHTENMENT | GAMEENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT),
                   (how == SNAPSHOT || how == SNAPSHOT_AI) ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(winno, 0, "");
     debugprint("%s", "dump_skills");
     dump_skills();
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(winno, 0, "");
     debugprint("%s", "dump_spells");
     dump_spells();
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(winno, 0, "");
     if (how == SNAPSHOT_AI)
     {
         debugprint("%s", "dump: dump_discoveries");
         dump_discoveries(TRUE); /* format_for_ai */
-        putstr(NHW_DUMPTXT, 0, "");
+        putstr(winno, 0, "");
     }
     debugprint("%s", "dump: show_gamelog");
     show_gamelog((how == SNAPSHOT || how == SNAPSHOT_AI) ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(winno, 0, "");
     if (how != SNAPSHOT_AI)
     {
         debugprint("%s", "dump: list_vanquished");
         list_vanquished('d', FALSE, TRUE); /* 'd' => 'y' */
+        putstr(winno, 0, "");
     }
-    putstr(NHW_DUMPTXT, 0, "");
     debugprint("%s", "dump: list_genocided");
     list_genocided('d', FALSE, TRUE); /* 'd' => 'y' */
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(winno, 0, "");
     show_conduct((how == SNAPSHOT || how == SNAPSHOT_AI) ? 0 : (how >= PANICKED) ? 1 : 2);
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(winno, 0, "");
     debugprint("%s", "dump: show_overview");
     show_overview((how == SNAPSHOT || how == SNAPSHOT_AI) ? 0 : (how >= PANICKED) ? 1 : 2, how);
-    putstr(NHW_DUMPTXT, 0, "");
+    putstr(winno, 0, "");
     dump_redirect(FALSE);
 #else
     nhUse(how);
@@ -1184,7 +1187,9 @@ dump_everything_ai(time_t when)
     flags.show_weight_summary = TRUE;
     flags.detailed_weights = FALSE;
     iflags.dumping_ai_snapshot = TRUE;
+
     dump_everything(SNAPSHOT_AI, when);
+
     iflags.dumping_ai_snapshot = FALSE;
     flags.detailed_weights = saved_detailed_weights;
     flags.show_weight_summary = saved_show_weight_summary;
