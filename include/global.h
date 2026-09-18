@@ -462,6 +462,9 @@ struct savefile_info {
 #define LL_GAME_RESTORE 0x20000 /* Game restore when uploading to cloud */
 #define LL_GAME_SAVE    0x40000 /* Game save when uploading to cloud */
 
+#define LL_AI           0x80000 /* Extra information for the AI snapshot; kept
+                                 * in the game log only and shown nowhere else */
+
 /* #chronicle details */
 /* 'major' events for dumplog; inclusion or exclusion here may need tuning */
 #define LL_majors                                                        \
@@ -469,6 +472,7 @@ struct savefile_info {
      | LL_ARTIFACT | LL_GENOCIDE | LL_DUMP) /* explicitly for dumplog */
 #define majorevent(m) (((m)->flags & LL_majors) != 0)
 #define spoilerevent(m) (((m)->flags & LL_SPOILER) != 0)
+#define aionlyevent(m) (((m)->flags & LL_AI) != 0)
 
 #define LL_postables                                                        \
     (LL_WISH | LL_ACHIEVE | LL_UMONST | LL_DIVINEGIFT | LL_LIFESAVE \

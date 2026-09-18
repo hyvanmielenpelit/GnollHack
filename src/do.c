@@ -8430,6 +8430,11 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
         else
         {
             livelog_printf(LL_DEBUG, "entered new level %d, %s.", dunlev(&u.uz), dungeons[u.uz.dnum].dname);
+            /* the number above is counted within the dungeon branch */
+            if ((int) new_level_depth != dunlev(&u.uz))
+                livelog_printf(LL_AI, "%s level %d is at absolute depth Dlvl %d.",
+                               dungeons[u.uz.dnum].dname, dunlev(&u.uz),
+                               (int) new_level_depth);
         }
     }
 

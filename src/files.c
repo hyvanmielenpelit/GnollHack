@@ -6003,6 +6003,7 @@ livelog_write_string(unsigned int ll_type, const char *buffer)
     FILE* livelogfile;
 
     if (!(ll_type & sysopt.livelog)) return;
+    if (ll_type == LL_AI) return;
     if ((ll_type == LL_CONDUCT) && (moves < sysopt.ll_conduct_turns)) return;
     if (lock_file(LIVELOGFILE, SCOREPREFIX, 10)) {
         if (!(livelogfile = fopen_datafile(LIVELOGFILE, "a", SCOREPREFIX))) {
@@ -6160,6 +6161,8 @@ show_gamelog(int final)
             continue;
         if (!final && !wizard && spoilerevent(llmsg))
             continue;
+        if (aionlyevent(llmsg) && !iflags.dumping_ai_snapshot)
+            continue;
 
         eventcnt++;
     }
@@ -6167,6 +6170,8 @@ show_gamelog(int final)
         if (final && !majorevent(llmsg))
             continue;
         if (!final && !wizard && spoilerevent(llmsg))
+            continue;
+        if (aionlyevent(llmsg) && !iflags.dumping_ai_snapshot)
             continue;
         if (!eventidx++)
             putstr(win, ATR_START_TABLE | ATR_TABLE_HEADER, " Turn  ");
