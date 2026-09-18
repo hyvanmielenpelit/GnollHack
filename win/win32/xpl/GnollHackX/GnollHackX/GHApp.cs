@@ -5118,6 +5118,7 @@ namespace GnollHackX
             new SelectableShortcutButton("Set Quick Spell", "Quick Spell", (char)4, false, true, 0, AppResourceName + ".Assets.UI.quickset.png"),
             new SelectableShortcutButton("Swap Handedness", "Handedness", 'h', false, true, 0, AppResourceName + ".Assets.UI.handedness.png"),
             new SelectableShortcutButton("Swap Weapon", "Swap", 'x', false, false, 0, AppResourceName + ".Assets.UI.swap.png"),
+            new SelectableShortcutButton("Teleport", "Teleport", 't', true, false, 0, AppResourceName + ".Assets.UI.teleport.png"),
             new SelectableShortcutButton("Throw", "Throw", 't', false, false, 0, AppResourceName + ".Assets.UI.throw.png"),
             new SelectableShortcutButton("Travel", "Travel", '_', false, false, 0, AppResourceName + ".Assets.UI.travel.png"),
             new SelectableShortcutButton("Two-Weapon Fighting", "2-Weapon", 'x', true, false, 0, AppResourceName + ".Assets.UI.twoweap.png"),
