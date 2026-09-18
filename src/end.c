@@ -1077,6 +1077,12 @@ dump_everything(int how, time_t when)
                " held in hand, R launcher with matching ammo quivered (Re"
                " wrong ammo, R0 no ammo), S shield, 2h prefix two-handed, c"
                " corpse, ! potion, * other item.");
+        putstr(0, ATR_NONE,
+               "This snapshot does not print the hero's numeric Luck,"
+               " alignment record or prayer cooldown. Their absence says"
+               " nothing about their values. Use what is printed, such as"
+               " messages and cues on items like (shimmering), and otherwise"
+               " say that advice depending on them is uncertain.");
     }
     putstr(winno, 0, "");
 
@@ -1114,6 +1120,19 @@ dump_everything(int how, time_t when)
                " the weight of the whole stack. Weights are rounded, so they"
                " may not add up exactly to the total in the weight summary,"
                " which is authoritative.");
+        putstr(0, ATR_NONE,
+               "An item that uses charges shows them as (N charges, M"
+               " rechargings) when the count is known. When no count is"
+               " printed the remaining charges are not known; a word such as"
+               " empty in the name may still say something.");
+        if (!u.uconduct.unvegan || !u.uconduct.unvegetarian)
+            putstr(0, ATR_NONE,
+                   "not vegan and not vegetarian inside a tag mark known food"
+                   " that would break a conduct the hero still keeps; the"
+                   " Voluntary challenges section says which conducts those"
+                   " are. A food with no such tag is not thereby safe for the"
+                   " conduct: unidentified food and a tin whose contents are"
+                   " not known are never tagged.");
     }
     (void) display_inventory((char *) 0, TRUE, how == SNAPSHOT_AI ? SHOWWEIGHTS_INVENTORY : SHOWWEIGHTS_NONE, FALSE);
     container_contents(invent, how != SNAPSHOT && how != SNAPSHOT_AI, TRUE, FALSE, how == SNAPSHOT_AI ? SHOWWEIGHTS_OTHER_INVENTORY : SHOWWEIGHTS_NONE, FALSE);
@@ -1166,6 +1185,7 @@ dump_everything_ai(time_t when)
     boolean saved_inventory_weights_last = flags.inventory_weights_last;
     boolean saved_show_weight_summary = flags.show_weight_summary;
     boolean saved_detailed_weights = flags.detailed_weights;
+    boolean saved_long_charge_text = flags.long_charge_text;
 
     /* The AI snapshot is plain text for a machine reader.  Frontend symbol
        entities ("&status-3;", "&gold;") are escaped to "&amp;status-3;" by
@@ -1179,18 +1199,21 @@ dump_everything_ai(time_t when)
     /* Player display options that change the wording of the inventory are
        pinned, so that one game state always produces one snapshot: every
        known-uncursed item says "uncursed", weights follow the item name in
-       pounds or kilograms, and the weight summary is present.  The choice
-       between pounds and kilograms stays the player's.  This function must
+       pounds or kilograms, the weight summary is present, and charges are
+       written out as "(N charges, M rechargings)".  The choice between
+       pounds and kilograms stays the player's.  This function must
        keep a single exit path, or the player's options are left changed. */
     iflags.implicit_uncursed = FALSE;
     flags.inventory_weights_last = TRUE;
     flags.show_weight_summary = TRUE;
     flags.detailed_weights = FALSE;
+    flags.long_charge_text = TRUE;
     iflags.dumping_ai_snapshot = TRUE;
 
     dump_everything(SNAPSHOT_AI, when);
 
     iflags.dumping_ai_snapshot = FALSE;
+    flags.long_charge_text = saved_long_charge_text;
     flags.detailed_weights = saved_detailed_weights;
     flags.show_weight_summary = saved_show_weight_summary;
     flags.inventory_weights_last = saved_inventory_weights_last;

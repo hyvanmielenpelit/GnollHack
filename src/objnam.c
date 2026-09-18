@@ -76,6 +76,8 @@ static boolean singplur_lookup(char *, char *, boolean,
                                            const char *const *);
 static char *singplur_compound(char *);
 static char *xname_flags(struct obj *, unsigned);
+static void ai_snapshot_food_conducts(struct obj *, boolean, boolean *,
+                                      boolean *);
 static void append_ai_snapshot_tag(struct obj *, char *);
 static boolean badman(const char *, boolean);
 static boolean material_wish_success(int, int);
@@ -1121,6 +1123,61 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
    are formatted into BUFSZ behind a short lead (end.c) */
 #define AI_TAG_LINE_LIMIT (BUFSZ - 16)
 
+/* Which still-intact food conducts eating 'obj' would break, judged only
+   from what its printed name already tells.  The tests mirror the conduct
+   counting in eat.c (eatcorpse, eating_conducts, doeat); keep them in step.
+   Reads only: no prompt, no random number. */
+static void
+ai_snapshot_food_conducts(struct obj *obj, boolean unidentified,
+                          boolean *breaks_vegan, boolean *breaks_vegetarian)
+{
+    int mnum = NON_PM;
+
+    *breaks_vegan = *breaks_vegetarian = FALSE;
+    if (obj->oclass != FOOD_CLASS || unidentified)
+        return;
+
+    if (is_obj_rotting_corpse(obj))
+    {
+        mnum = obj->corpsenm;
+    }
+    else if (obj->otyp == TIN)
+    {
+        /* xname prints a tin's contents only when it is known */
+        if (is_obj_known(obj)
+            && obj->special_quality != SPEQUAL_TIN_CONTAINS_SPINACH)
+            mnum = obj->corpsenm;
+    }
+    else
+    {
+        switch (obj->material)
+        {
+        case MAT_ORGANIC:
+        case MAT_FLESH:
+            *breaks_vegan = TRUE;
+            *breaks_vegetarian = (obj->otyp != EGG);
+            break;
+        default:
+            if (obj->otyp == PANCAKE || obj->otyp == FORTUNE_COOKIE
+                || obj->otyp == CREAM_PIE || obj->otyp == CANDY_BAR
+                || obj->otyp == LUMP_OF_ROYAL_JELLY)
+                *breaks_vegan = TRUE;
+            break;
+        }
+    }
+
+    if (mnum >= LOW_PM && mnum < NUM_MONSTERS)
+    {
+        *breaks_vegan = !vegan(&mons[mnum]);
+        *breaks_vegetarian = !vegetarian(&mons[mnum]);
+    }
+
+    if (u.uconduct.unvegan)
+        *breaks_vegan = FALSE;
+    if (u.uconduct.unvegetarian)
+        *breaks_vegetarian = FALSE;
+}
+
 /* Append the AI snapshot's bracketed knowledge tag to doname text 'bp'.
    The identity test mirrors the opening of xname_flags(); keep the two in
    step.  Reads knowledge bits only. */
@@ -1131,8 +1188,9 @@ append_ai_snapshot_tag(struct obj *obj, char *bp)
     boolean artifact_description_exists;
     boolean unidentified = FALSE, typenamed = FALSE, labelled = FALSE,
             bucunknown, unseencontents;
+    boolean notvegan, notvegetarian, knowledge, conduct;
     boolean withnames;
-    int typ, pass;
+    int typ, pass, withconduct;
 
     if (iflags.override_ID)
         return;
@@ -1167,46 +1225,66 @@ append_ai_snapshot_tag(struct obj *obj, char *bp)
     bucunknown = obj->oclass != COIN_CLASS && !is_obj_bknown(obj);
     unseencontents = Is_container(obj) && !is_obj_cknown(obj);
 
-    if (!unidentified && !labelled && !bucunknown && !unseencontents)
+    ai_snapshot_food_conducts(obj, unidentified, &notvegan, &notvegetarian);
+
+    knowledge = unidentified || labelled || bucunknown || unseencontents;
+    conduct = notvegan || notvegetarian;
+    if (!knowledge && !conduct)
         return;
 
-    /* first with the player's names quoted, then without them */
+    /* first with the player's names quoted, then without them; within
+       each, first with the conduct components, then without them */
     for (pass = 0; pass < 2; pass++)
     {
         withnames = (pass == 0);
-        Strcpy(tagbuf, " [");
-        if (unidentified)
-            Strcat(tagbuf, "unidentified; ");
-        if (typenamed)
+        for (withconduct = 1; withconduct >= 0; withconduct--)
         {
-            if (withnames)
-                Sprintf(eos(tagbuf),
-                        "\"%.32s\" = the player's own name for this item"
-                        " type; ",
-                        objects[typ].oc_uname);
-            else
-                Strcat(tagbuf, "player-named; ");
-        }
-        if (labelled)
-        {
-            if (withnames)
-                Sprintf(eos(tagbuf),
-                        "\"%.32s\" = a label written by the player; ",
-                        UONAME(obj));
-            else
-                Strcat(tagbuf, "player-labelled; ");
-        }
-        if (bucunknown)
-            Strcat(tagbuf, "BUC unknown; ");
-        if (unseencontents)
-            Strcat(tagbuf, "contents not yet seen; ");
-        /* replace the last separator */
-        Strcpy(eos(tagbuf) - 2, "]");
+            /* skip an attempt that repeats the other or has nothing in it */
+            if (withconduct ? !conduct : !knowledge)
+                continue;
 
-        if (strlen(bp) + strlen(tagbuf) <= AI_TAG_LINE_LIMIT)
-        {
-            Strcat(bp, tagbuf);
-            return;
+            Strcpy(tagbuf, " [");
+            if (unidentified)
+                Strcat(tagbuf, "unidentified; ");
+            if (typenamed)
+            {
+                if (withnames)
+                    Sprintf(eos(tagbuf),
+                            "\"%.32s\" = the player's own name for this item"
+                            " type; ",
+                            objects[typ].oc_uname);
+                else
+                    Strcat(tagbuf, "player-named; ");
+            }
+            if (labelled)
+            {
+                if (withnames)
+                    Sprintf(eos(tagbuf),
+                            "\"%.32s\" = a label written by the player; ",
+                            UONAME(obj));
+                else
+                    Strcat(tagbuf, "player-labelled; ");
+            }
+            if (bucunknown)
+                Strcat(tagbuf, "BUC unknown; ");
+            if (unseencontents)
+                Strcat(tagbuf, "contents not yet seen; ");
+            if (withconduct && notvegan)
+                Strcat(tagbuf, "not vegan; ");
+            if (withconduct && notvegetarian)
+                Strcat(tagbuf, "not vegetarian; ");
+
+            /* a tag with no component has no separator to replace */
+            if (strlen(tagbuf) <= 2)
+                continue;
+            /* replace the last separator */
+            Strcpy(eos(tagbuf) - 2, "]");
+
+            if (strlen(bp) + strlen(tagbuf) <= AI_TAG_LINE_LIMIT)
+            {
+                Strcat(bp, tagbuf);
+                return;
+            }
         }
         if (!typenamed && !labelled)
             return;

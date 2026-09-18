@@ -2842,12 +2842,23 @@ show_overview(int why, int reason)
     (void) recalc_mapseen();
 
     win = create_nhwindow(NHW_MENU);
+    if (iflags.dumping_ai_snapshot)
+    {
+        putstr(win, ATR_TITLE, "Dungeon overview:");
+        putstr(win, ATR_NONE,
+               "Each branch's level range shows how far the hero has explored"
+               " it, not how deep the branch goes. The entries below are the"
+               " levels the hero remembers; a range does not mean every level"
+               " inside it was visited, and its last level is not necessarily"
+               " the branch's end.");
+    }
     /* show the endgame levels before the rest of the dungeon,
        so that the Planes (dnum 5-ish) come out above main dungeon (dnum 0) */
     if (In_endgame(&u.uz))
         traverse_mapseenchn(TRUE, win, why, reason, &lastdun);
     /* if game is over or we're not in the endgame yet, show the dungeon */
-    if (why > 0 || !In_endgame(&u.uz) || reason == SNAPSHOT)
+    if (why > 0 || !In_endgame(&u.uz) || reason == SNAPSHOT
+        || reason == SNAPSHOT_AI)
         traverse_mapseenchn(FALSE, win, why, reason, &lastdun);
     display_nhwindow(win, TRUE);
     destroy_nhwindow(win);
@@ -3073,6 +3084,15 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
             Sprintf(dbuf, "Levels %d to %d",
                     depthstart,
                     depthstart + dungeons[dnum].dunlev_ureached - 1);
+        if (iflags.dumping_ai_snapshot)
+        {
+            if (*dbuf)
+                Strcat(dbuf, " reached so far");
+            /* depthstart is forced to 1 for these two */
+            if (dnum == quest_dnum || dnum == knox_level.dnum)
+                Sprintf(eos(dbuf), "%slevels here are numbered from 1, not"
+                        " by absolute depth", *dbuf ? "; " : "");
+        }
 #ifdef GNH_MOBILE
         putstr(win, ATR_TITLE | ATR_ALIGN_CENTER, dungeons[dnum].dname);
         if(strcmp(dbuf, ""))

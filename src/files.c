@@ -6155,7 +6155,8 @@ show_gamelog(int final)
         putstr(win, ATR_NONE,
                "Level numbers in this list are counted within their own"
                " dungeon branch. Status, Background and the dungeon overview"
-               " use absolute depth (Dlvl).");
+               " use absolute depth (Dlvl), except that the overview numbers"
+               " the Quest and Fort Ludios from 1.");
     for (llmsg = gamelog; llmsg; llmsg = llmsg->next) {
         if (final && !majorevent(llmsg))
             continue;
