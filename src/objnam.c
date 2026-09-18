@@ -76,6 +76,7 @@ static boolean singplur_lookup(char *, char *, boolean,
                                            const char *const *);
 static char *singplur_compound(char *);
 static char *xname_flags(struct obj *, unsigned);
+static void append_ai_snapshot_tag(struct obj *, char *);
 static boolean badman(const char *, boolean);
 static boolean material_wish_success(int, int);
 
@@ -1114,6 +1115,102 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
     }
 
     return buf;
+}
+
+/* longest doname an AI snapshot tag may produce; container content lines
+   are formatted into BUFSZ behind a short lead (end.c) */
+#define AI_TAG_LINE_LIMIT (BUFSZ - 16)
+
+/* Append the AI snapshot's bracketed knowledge tag to doname text 'bp'.
+   The identity test mirrors the opening of xname_flags(); keep the two in
+   step.  Reads knowledge bits only. */
+static void
+append_ai_snapshot_tag(struct obj *obj, char *bp)
+{
+    char tagbuf[BUFSZ];
+    boolean artifact_description_exists;
+    boolean unidentified = FALSE, typenamed = FALSE, labelled = FALSE,
+            bucunknown, unseencontents;
+    boolean withnames;
+    int typ, pass;
+
+    if (iflags.override_ID)
+        return;
+
+    artifact_description_exists = obj->oartifact
+        && artilist[obj->oartifact].desc
+        && strcmp(artilist[obj->oartifact].desc, "");
+    typ = (obj->oartifact
+           && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT)
+        ? artilist[obj->oartifact].maskotyp : obj->otyp;
+
+    if (!obj_is_pname(obj))
+    {
+        if (typ == AMULET_OF_YENDOR || typ == FAKE_AMULET_OF_YENDOR)
+            unidentified = !is_obj_known(obj);
+        else if (artifact_description_exists)
+            unidentified = TRUE;
+        else if (!objects[typ].oc_name_known && OBJ_DESCR(objects[typ]))
+            unidentified = TRUE;
+
+        /* these print their actual name whether or not they were seen */
+        if (!unidentified && !is_obj_dknown(obj)
+            && obj->oclass != COIN_CLASS && obj->oclass != CHAIN_CLASS
+            && obj->oclass != ROCK_CLASS && obj->oclass != BALL_CLASS
+            && obj->oclass != ART_CLASS && !is_dragon_scales(obj)
+            && typ != SLIME_MOLD && !is_obj_globby(obj))
+            unidentified = TRUE;
+    }
+    typenamed = unidentified && is_obj_dknown(obj)
+        && objects[typ].oc_uname != 0;
+    labelled = has_uoname(obj) ? TRUE : FALSE;
+    bucunknown = obj->oclass != COIN_CLASS && !is_obj_bknown(obj);
+    unseencontents = Is_container(obj) && !is_obj_cknown(obj);
+
+    if (!unidentified && !labelled && !bucunknown && !unseencontents)
+        return;
+
+    /* first with the player's names quoted, then without them */
+    for (pass = 0; pass < 2; pass++)
+    {
+        withnames = (pass == 0);
+        Strcpy(tagbuf, " [");
+        if (unidentified)
+            Strcat(tagbuf, "unidentified; ");
+        if (typenamed)
+        {
+            if (withnames)
+                Sprintf(eos(tagbuf),
+                        "\"%.32s\" = the player's own name for this item"
+                        " type; ",
+                        objects[typ].oc_uname);
+            else
+                Strcat(tagbuf, "player-named; ");
+        }
+        if (labelled)
+        {
+            if (withnames)
+                Sprintf(eos(tagbuf),
+                        "\"%.32s\" = a label written by the player; ",
+                        UONAME(obj));
+            else
+                Strcat(tagbuf, "player-labelled; ");
+        }
+        if (bucunknown)
+            Strcat(tagbuf, "BUC unknown; ");
+        if (unseencontents)
+            Strcat(tagbuf, "contents not yet seen; ");
+        /* replace the last separator */
+        Strcpy(eos(tagbuf) - 2, "]");
+
+        if (strlen(bp) + strlen(tagbuf) <= AI_TAG_LINE_LIMIT)
+        {
+            Strcat(bp, tagbuf);
+            return;
+        }
+        if (!typenamed && !labelled)
+            return;
+    }
 }
 
 /* similar to simple_typename but minimal_xname operates on a particular
@@ -2160,6 +2257,11 @@ weapon_here:
         Sprintf(buf, "%s (%s)", bp, weightbuf);
         Strcpy(bp, buf);
     }
+
+    if (iflags.dumping_ai_snapshot
+        && (obj->where == OBJ_INVENT || obj->where == OBJ_CONTAINED
+            || obj->where == OBJ_MAGIC))
+        append_ai_snapshot_tag(obj, bp);
 
     if (comparison_stats)
     {

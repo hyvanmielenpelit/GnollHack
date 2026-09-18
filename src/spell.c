@@ -6055,6 +6055,8 @@ dump_spell_details_ai(int spell, char *outbuf)
     int cooldown = getspellcooldown(spell);
     int cooldownleft = spellcooldownleft(spell);
     int matcomp = spellmatcomp(spell);
+    /* a string literal; read only */
+    const char *attrdesc = get_spell_attribute_description(spellid(spell));
 
     if (spellknow(spell) <= 0)
     {
@@ -6064,6 +6066,10 @@ dump_spell_details_ai(int spell, char *outbuf)
 
     print_spell_level_text(lvlbuf, spellid(spell), TRUE, 0, TRUE);
     Sprintf(outbuf, "; %s, %.1f mana", lvlbuf, manacost);
+
+    if (strcmp(attrdesc, "None") && strcmp(attrdesc, "Not applicable"))
+        Sprintf(eos(outbuf), ", casting stat: %c%s %d", lowc(*attrdesc),
+                attrdesc + 1, attribute_value_for_spellbook(spellid(spell)));
 
     if (cooldown <= 0)
         Strcat(outbuf, ", no cooldown");

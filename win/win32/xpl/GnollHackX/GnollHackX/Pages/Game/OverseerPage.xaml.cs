@@ -1442,21 +1442,131 @@ namespace GnollHackX.Pages.Game
         /* U+00A0, by code point: a literal one is indistinguishable from a space */
         private const char NonBreakingSpace = (char)0x00A0;
 
+        /* Newest messages and pet statistics blocks that a trim always keeps */
+        private const int SnapshotTrimKeptMessages = 20;
+        private const int SnapshotTrimKeptPetBlocks = 2;
+
+        /* Room reserved under the cap for the trim marker */
+        private const int SnapshotTrimMarkerReserve = 120;
+
+        private static readonly Regex _petBlockHeadingRegex = new Regex(@"^Pet \d+ of \d+: ", RegexOptions.Compiled);
+
         /// <summary>
-        /// Caps sanitized snapshot text at <see cref="DefaultMaxSnapshotChars"/>
-        /// and marks the cut. Never splits a surrogate pair.
+        /// Caps sanitized snapshot text at <see cref="DefaultMaxSnapshotChars"/>.
         /// </summary>
         internal static string TruncateSnapshotForLlm(string text)
         {
-            if (text == null || text.Length <= DefaultMaxSnapshotChars)
+            return TruncateSnapshotForLlm(text, DefaultMaxSnapshotChars);
+        }
+
+        /// <summary>
+        /// Caps sanitized snapshot text at <paramref name="cap"/> characters.
+        /// The sections at the end (Discoveries, Logged events, the dungeon
+        /// overview) are authoritative for the reader, so the oldest messages,
+        /// the pet statistics blocks past the second and trailing blanks on
+        /// map rows go first, and a marker names what went. Only when that is
+        /// not enough is the tail cut, without splitting a surrogate pair.
+        /// Section headings are matched as the C engine prints them.
+        /// </summary>
+        internal static string TruncateSnapshotForLlm(string text, int cap)
+        {
+            if (text == null || cap <= 0 || text.Length <= cap)
                 return text;
 
-            int cap = DefaultMaxSnapshotChars;
-            if (char.IsHighSurrogate(text[cap - 1]))
-                cap--;
-            return text.Substring(0, cap)
+            List<string> lines = new List<string>(text.Split('\n'));
+            int length = text.Length;
+            int target = Math.Max(1, cap - SnapshotTrimMarkerReserve);
+            int droppedMessages = 0;
+            int droppedPetBlocks = 0;
+
+            int first = FindSnapshotLine(lines, "Latest messages:", 0);
+            if (first >= 0)
+            {
+                first++;
+                while (first < lines.Count && lines[first].Trim().Length == 0)
+                    first++;
+                int end = first;
+                while (end < lines.Count && lines[end].Trim().Length > 0
+                    && lines[end].Trim() != "Pets:" && lines[end].Trim() != "Inventory:")
+                    end++;
+                while (length > target && end - first > SnapshotTrimKeptMessages)
+                {
+                    length -= lines[first].Length + 1;
+                    lines.RemoveAt(first);
+                    end--;
+                    droppedMessages++;
+                }
+            }
+
+            if (length > target)
+            {
+                int sectionEnd = FindSnapshotLine(lines, "Inventory:", 0);
+                if (sectionEnd < 0)
+                    sectionEnd = lines.Count;
+                List<int> blockStarts = new List<int>();
+                for (int i = 0; i < sectionEnd; i++)
+                {
+                    if (_petBlockHeadingRegex.IsMatch(lines[i]))
+                        blockStarts.Add(i);
+                }
+                for (int b = blockStarts.Count - 1; b >= SnapshotTrimKeptPetBlocks && length > target; b--)
+                {
+                    int blockEnd = b + 1 < blockStarts.Count ? blockStarts[b + 1] : sectionEnd;
+                    for (int i = blockEnd - 1; i >= blockStarts[b]; i--)
+                    {
+                        length -= lines[i].Length + 1;
+                        lines.RemoveAt(i);
+                    }
+                    sectionEnd -= blockEnd - blockStarts[b];
+                    blockStarts.RemoveAt(b);
+                    droppedPetBlocks++;
+                }
+            }
+
+            if (length > target)
+            {
+                int row = FindSnapshotLine(lines, "Map grid:", 0);
+                if (row >= 0)
+                {
+                    for (row++; row < lines.Count && lines[row].Trim() != "Status:"; row++)
+                    {
+                        string trimmed = lines[row].TrimEnd(' ', NonBreakingSpace, '\r');
+                        length -= lines[row].Length - trimmed.Length;
+                        lines[row] = trimmed;
+                    }
+                }
+            }
+
+            string result = string.Join("\n", lines);
+            List<string> dropped = new List<string>();
+            if (droppedMessages > 0)
+                dropped.Add(droppedMessages + " oldest messages");
+            if (droppedPetBlocks > 0)
+                dropped.Add(droppedPetBlocks + " pet statistics blocks");
+            string droppedText = string.Join(", ", dropped);
+
+            if (dropped.Count == 0 && result.Length <= cap)
+                return result;
+            if (result.Length <= target)
+                return dropped.Count > 0 ? result + "\n\n[SNAPSHOT TRIMMED: " + droppedText + "]" : result;
+
+            int cut = Math.Min(target, result.Length);
+            if (char.IsHighSurrogate(result[cut - 1]))
+                cut--;
+            return result.Substring(0, cut)
                 + "\n\n[SNAPSHOT TRUNCATED at "
-                + DefaultMaxSnapshotChars + " characters.]";
+                + cap + " characters"
+                + (dropped.Count > 0 ? "; also trimmed: " + droppedText : "") + ".]";
+        }
+
+        private static int FindSnapshotLine(List<string> lines, string heading, int start)
+        {
+            for (int i = start; i < lines.Count; i++)
+            {
+                if (lines[i].Trim() == heading)
+                    return i;
+            }
+            return -1;
         }
 
         /// <summary>

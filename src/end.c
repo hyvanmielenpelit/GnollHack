@@ -1096,14 +1096,16 @@ dump_everything(int how, time_t when)
     if (how == SNAPSHOT_AI)
     {
         putstr(0, ATR_NONE,
-               "An item with no blessed, uncursed or cursed word has unknown"
-               " blessed/cursed status (gold never shows one).");
-        putstr(0, ATR_NONE,
-               "An item named only by its appearance (a brown mushroom, an"
-               " orange potion, a scroll labeled GHOTI, a shimmering"
-               " spellbook) is NOT identified; appearances are randomized"
-               " every game. Only the Discoveries section maps appearances to"
-               " types.");
+               "Tags in square brackets: [unidentified] marks an item known"
+               " only by its appearance, which is randomized every game;"
+               " only the Discoveries section maps appearances to types. A"
+               " quoted name in a tag, or the words player-named or"
+               " player-labelled, mean the name on that line was given by"
+               " the player and proves nothing about the item. [BUC unknown]"
+               " marks an item whose blessed or cursed state is not known."
+               " [contents not yet seen] marks a container the player has"
+               " not looked inside; a container known to be empty says"
+               " \"empty\" in its name.");
         putstr(0, ATR_NONE,
                "Each item's weight follows it in parentheses; a stack shows"
                " the weight of the whole stack. Weights are rounded, so they"
