@@ -1249,7 +1249,7 @@ LibGenerateAiSnapshot()
     dumptime = getnow();
 
     dump_open_log_ai(dumptime);
-    fname = print_dumphtml_ai_filename_to_buffer(output_filepath_buffer);
+    fname = print_dumpai_filename_to_buffer(output_filepath_buffer);
     dump_everything_ai(dumptime);
     dump_close_log_ai();
 

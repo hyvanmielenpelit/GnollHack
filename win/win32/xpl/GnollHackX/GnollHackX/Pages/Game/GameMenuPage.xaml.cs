@@ -579,17 +579,13 @@ namespace GnollHackX.Pages.Game
             }
 
             string snapshotText = "";
-            string snapshotHtml = "";
 
             /* 1. Generate AI snapshot via native call (safe: game thread is idle) */
             try
             {
-                string text = OverseerPage.TruncateSnapshotForLlm(GHApp.GenerateAiSnapshotText(out _, out string html));
+                string text = OverseerPage.TruncateSnapshotForLlm(GHApp.GenerateAiSnapshotText(out _));
                 if (text != null)
-                {
                     snapshotText = text;
-                    snapshotHtml = html ?? "";
-                }
                 else
                     GHApp.WriteGHLog("AI snapshot generation failed.");
             }
@@ -602,9 +598,8 @@ namespace GnollHackX.Pages.Game
             /* not uploaded at session start. This speeds up Overseer startup. */
 
             /* 4. Open OverseerPage — it handles the upload + progress display */
-            var overseerPage = new OverseerPage(GHApp.OverseerAddress, 
-                GHApp.OverseerSendGameContext ? snapshotText : "",
-                GHApp.OverseerSendGameContext ? snapshotHtml : "");
+            var overseerPage = new OverseerPage(GHApp.OverseerAddress,
+                GHApp.OverseerSendGameContext ? snapshotText : "");
             await GHApp.PushModalPageAsync(overseerPage);
 
             MainLayout.IsEnabled = true;

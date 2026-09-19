@@ -2469,19 +2469,6 @@ map_ai_glyph_char(int glyph, int x, int y, int *osym, int *ocolor,
     return ch;
 }
 
-/* Write a plain ASCII string into the AI snapshot one character at a time, so
-   that spaces become &nbsp; and column alignment survives whatever whitespace
-   processing the consumer applies.  Used for the map's column ruler and row
-   labels, which must line up with the map body exactly. */
-static void
-dump_map_ai_write_aligned(const char *str)
-{
-    const char *p;
-
-    for (p = str; *p; p++)
-        dump_html_ai_write_char((nhsym) *p);
-}
-
 /* Emit the two-line column ruler that precedes the AI snapshot map.  The
    layout follows the rulers used in several .des files in dat/, e.g. Barb.des:
 
@@ -2507,8 +2494,8 @@ dump_map_ai_ruler(void)
     for (x = 1; x < COLNO; x++)
         *bp++ = (x % 10) == 0 ? (char) ('0' + x / 10) : ' ';
     *bp = '\0';
-    dump_map_ai_write_aligned(buf);
-    dump_html_ai_write("\n");
+    dump_ai_write(buf);
+    dump_ai_write("\n");
 
     /* units line: COLNO - 1 digits running 1234567890...  It ends in a digit
        rather than a blank, so it is the one line of the map block that no
@@ -2520,8 +2507,8 @@ dump_map_ai_ruler(void)
     for (x = 1; x < COLNO; x++)
         *bp++ = (char) ('0' + x % 10);
     *bp = '\0';
-    dump_map_ai_write_aligned(buf);
-    dump_html_ai_write("\n");
+    dump_ai_write(buf);
+    dump_ai_write("\n");
 }
 
 void
@@ -2531,14 +2518,15 @@ dump_map_ai(void)
     int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
     int default_glyph;
     nhsym ch;
-    char buf[BUFSZ];
+    char buf[MAP_AI_GUTTER_WIDTH + COLNO * 4 + 1]; /* up to 4 bytes per cell */
+    char *bp;
 
     default_glyph = base_cmap_to_glyph(is_levflag_arboreal(&level.flags) ? S_tree : S_unexplored);
 
     /* Label the grid.  The legend sits between the "Map:" heading and this
        point, so without a marker here the grid simply starts, several screens
        of prose after the heading that announced it. */
-    dump_html_ai_write("Map grid:\n");
+    dump_ai_write("Map grid:\n");
     dump_map_ai_ruler();
 
     for (y = 0; y < ROWNO; y++)
@@ -2546,7 +2534,7 @@ dump_map_ai(void)
         /* row label gutter, MAP_AI_GUTTER_WIDTH characters wide so that both
            " 0: " and "20: " align; the number is y, zero based */
         Sprintf(buf, "%2d: ", y);
-        dump_map_ai_write_aligned(buf);
+        bp = eos(buf);
 
         for (x = 1; x < COLNO; x++)
         {
@@ -2554,23 +2542,22 @@ dump_map_ai(void)
             ch = map_ai_glyph_char(glyph, x, y, (int *) 0, (int *) 0,
                                    (uint64_t *) 0);
 
-            /* Write the character itself.  html_dump_char() escapes it and
-               turns spaces into &nbsp; so the map keeps its alignment.
+            /* Write the character itself; a monster or object symbol may lie
+               outside ASCII.
 
-               No per-character color span here: it would make each row a
-               sequence of elements rather than one text node, and an HTML
-               flattener that replaces tags with whitespace then turns a wall
-               row into "- - - -" and destroys the ruler alignment with it.
-               Color is reported per notable position by
-               dump_map_legend_ai() instead, where it names one specific
-               creature or item rather than an anonymous character. */
-            dump_html_ai_write_char(ch);
+               The row is plain text with no color in it.  Color is reported
+               per notable position by dump_map_legend_ai() instead, where it
+               names one specific creature or item rather than an anonymous
+               character. */
+            write_nhsym_utf8(&bp, ch, !!SYMHANDLING(H_IBM), TRUE);
         }
+        *bp = '\0';
 
         /* The row ends here, at the line break.  No right edge marker: every
            printable ASCII character is already a map symbol, so a marker
            would be ambiguous with map content. */
-        dump_html_ai_write("\n");
+        dump_ai_write(buf);
+        dump_ai_write("\n");
     }
 }
 #endif /* DUMPLOG || DUMPHTML */

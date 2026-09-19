@@ -65,7 +65,7 @@ static void list_vanquished(char, boolean, boolean);
 static void list_genocided(char, boolean, boolean);
 static boolean should_query_disclose_option(int, char *);
 #if defined (DUMPLOG) || defined (DUMPHTML)
-static void dump_plines(void);
+static void dump_plines(int);
 #endif
 static void dump_everything(int, time_t);
 static int num_extinct(void);
@@ -896,7 +896,7 @@ should_query_disclose_option(int category, char *defquery)
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
 static void
-dump_plines(void)
+dump_plines(int how)
 {
     int i, j, msg_count;
     char buf[BUFSZ], buf2[BUFSZ], buf3[BUFSZ], ** strp;
@@ -928,9 +928,19 @@ dump_plines(void)
             buf3[BUFSZ - 1] = 0;
             putstr_ex2(0, buf, buf2, buf3, ATR_NONE, NO_COLOR, 0);
 #ifdef FREE_ALL_MEMORY
-            free(*strp), *strp = 0;
-            free((genericptr_t)saved_pline_attrs[j]), saved_pline_attrs[j] = 0;
-            free((genericptr_t)saved_pline_colors[j]), saved_pline_colors[j] = 0;
+            /* a snapshot leaves the game running, and the next one needs
+               these messages again; so does #wizdumplog, which passes a
+               game-ending how */
+            if (how != SNAPSHOT && how != SNAPSHOT_AI
+                && program_state.gameover)
+            {
+                free(*strp);
+                *strp = 0;
+                free((genericptr_t)saved_pline_attrs[j]);
+                saved_pline_attrs[j] = 0;
+                free((genericptr_t)saved_pline_colors[j]);
+                saved_pline_colors[j] = 0;
+            }
 #endif
         }
     }
@@ -996,9 +1006,8 @@ dump_everything(int how, time_t when)
     if (how == SNAPSHOT_AI)
     {
         putstr(0, ATR_HEADING, "Map:");
-        /* The legend goes between the heading and the map, and outside the
-           screendump's <pre> block: it is ordinary prose and must not be
-           column-aligned, whereas the map and its ruler must be. */
+        /* The legend goes between the heading and the map grid: it is
+           ordinary prose, whereas the map and its ruler are column-aligned. */
         debugprint("%s", "dump_map_legend_ai");
         dump_map_legend_ai();
     }
@@ -1039,10 +1048,10 @@ dump_everything(int how, time_t when)
     /* The status rows reach the AI snapshot from dump_status_line(), inside
        the screendump and directly after the map, with no marker of their own.
        Label them so that the reader is not left inferring where the map stops.
-       dump_html_ai_write() writes only to the AI file, so the human dumplogs
+       dump_ai_write() writes only to the AI file, so the human dumplogs
        are unaffected either way. */
     if (how == SNAPSHOT_AI)
-        dump_html_ai_write("\nStatus:\n");
+        dump_ai_write("\nStatus:\n");
     status_initialize(TRUE);
     bot();
     dump_end_screendump();
@@ -1095,7 +1104,7 @@ dump_everything(int how, time_t when)
     putstr(winno, 0, "");
 
     debugprint("%s", "dump_plines");
-    dump_plines();
+    dump_plines(how);
     /* Pets go with the map, the status rows and the messages -- they are
        creatures on the level, not carried goods -- and putting them ahead of
        the inventory keeps them clear of the character limit at which the
@@ -1203,10 +1212,9 @@ dump_everything_ai(time_t when)
     boolean saved_showrace = flags.showrace;
 
     /* The AI snapshot is plain text for a machine reader.  Frontend symbol
-       entities ("&status-3;", "&gold;") are escaped to "&amp;status-3;" by
-       html_dump_char() and decoded back by the client's sanitizer, so they
-       reach the reader as literal noise.  Every producer of them offers a
-       plain-word alternative behind this same flag, so clear it for the dump.
+       entities ("&status-3;", "&gold;") would reach that reader as literal
+       noise.  Every producer of them offers a plain-word alternative behind
+       this same flag, so clear it for the dump.
        dump_redirect(FALSE) restores the whole windowprocs struct at the end
        of dump_everything(), which would undo this anyway; restoring by hand
        keeps the invariant local. */

@@ -35,7 +35,6 @@ namespace GnollHackX.Pages.Game
     {
         private string _baseOverseerUrl;
         private string _snapshotText;
-        private string _snapshotHtml;
 
         private string _sessionId = "";
         private bool _overseerLoaded = false;
@@ -55,15 +54,13 @@ namespace GnollHackX.Pages.Game
         private object _iosPickerDelegate = null;
 #endif
 
-        /// <param name="snapshotText">The sanitized AI snapshot, or empty for no game context.</param>
-        /// <param name="snapshotHtml">The dump HTML the text was made from, for servers that read only SnapshotHtml.</param>
-        public OverseerPage(string baseOverseerUrl, string snapshotText, string snapshotHtml = null)
+        /// <param name="snapshotText">The AI snapshot text, or empty for no game context.</param>
+        public OverseerPage(string baseOverseerUrl, string snapshotText)
         {
             InitializeComponent();
 
             _baseOverseerUrl = baseOverseerUrl;
             _snapshotText = snapshotText;
-            _snapshotHtml = snapshotHtml;
 
 #if GNH_MAUI
             DisplayWebView.HandlerChanged += (s, e) =>
@@ -227,11 +224,8 @@ namespace GnollHackX.Pages.Game
                             content.Add(new StringContent(password), "Password");
                             content.Add(new StringContent(GHApp.XlogAntiForgeryToken ?? ""), "AntiForgeryToken");
 
-                            /* A server that knows SnapshotText prefers it; one that does not sanitizes SnapshotHtml itself */
                             if (!string.IsNullOrEmpty(_snapshotText))
                                 content.Add(new StringContent(_snapshotText, Encoding.UTF8, "text/plain"), "SnapshotText");
-                            if (!string.IsNullOrEmpty(_snapshotHtml))
-                                content.Add(new StringContent(_snapshotHtml, Encoding.UTF8, "text/html"), "SnapshotHtml");
 
                             /* Send unified Environment Data (Version Info, Settings, Debug Info) */
                             bool isGameOn = GHApp.CurrentGamePage?.IsGameOn ?? false;
@@ -484,7 +478,6 @@ namespace GnollHackX.Pages.Game
             if (_handoffSucceeded)
             {
                 _snapshotText = null;
-                _snapshotHtml = null;
             }
         }
 
@@ -1570,7 +1563,7 @@ namespace GnollHackX.Pages.Game
         }
 
         /// <summary>
-        /// Converts GnollHack dump HTML (AI snapshot or HTML dumplog) into
+        /// Converts GnollHack dump HTML (HTML dumplog) into
         /// plain text for the AI, preserving line structure. The C engine
         /// already writes a real newline after every logical line, so
         /// block-level tags map to "\n" and inline tags are simply removed.
@@ -1592,7 +1585,7 @@ namespace GnollHackX.Pages.Game
                 return string.Empty;
 
             /* 1. Drop script/style blocks including their contents.
-                  dump_open_log_ai() writes a <style> block, and stripping
+                  The HTML dumplog carries a <style> block, and stripping
                   only the tags would leave the CSS rules behind as text. */
             string text = Regex.Replace(html,
                 @"<(script|style)\b[^>]*>.*?</\1\s*>", " ",

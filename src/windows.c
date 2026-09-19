@@ -112,8 +112,11 @@ static FILE* dumplog_file;
 #endif
 #if defined (DUMPHTML)
 static FILE* dumphtml_file;
-static FILE* dumphtml_ai_file;
 #endif
+static void dump_ai_putstr(winid, const char*, int);
+static FILE* dumpai_file;
+static boolean dumpai_midline = FALSE;    /* last write left a line open */
+static boolean dumpai_prev_blank = FALSE; /* last complete line was blank */
 #endif /* DUMPLOG */
 
 #ifdef HANGUPHANDLING
@@ -1399,44 +1402,22 @@ print_dumphtml_filename_to_buffer(char *buf)
 #endif
     return fname;
 }
+#endif
 
 char*
-print_dumphtml_ai_filename_to_buffer(char *buf)
+print_dumpai_filename_to_buffer(char *buf)
 {
-    static const char ai_ext[] = ".ai.html";
-    static const char html_ext[] = ".html";
     char* fname;
-    size_t len, extlen, htmllen;
 
 #ifdef SYSCF
-    char* used_sysopt_htmlfile = sysopt.aihtmlfile;
-    if (!used_sysopt_htmlfile)
+    if (!sysopt.aifile)
         return 0;
-    fname = dump_fmtstr(used_sysopt_htmlfile, buf);
+    fname = dump_fmtstr(sysopt.aifile, buf);
 #else
-    fname = dump_fmtstr(AIHTML_FILE, buf);
+    fname = dump_fmtstr(AI_FILE, buf);
 #endif
-
-    /* The name ends in exactly one .ai.html; only the end is examined,
-       since %n may expand to a player name containing an extension */
-    len = strlen(fname);
-    extlen = sizeof ai_ext - 1;
-    if (len < extlen || strcmp(fname + len - extlen, ai_ext) != 0)
-    {
-        htmllen = sizeof html_ext - 1;
-        if (len >= htmllen && strcmp(fname + len - htmllen, html_ext) == 0)
-        {
-            strcpy(fname + len - htmllen, ai_ext);
-        }
-        else
-        {
-            strcat(fname, ai_ext);
-        }
-    }
-
     return fname;
 }
-#endif
 
 char *
 dump_fmtstr(const char *fmt, char *buf)
@@ -1611,10 +1592,6 @@ dump_render_status(void)
 #if defined(DUMPHTML)
         if (dumphtml_file)
             fprintf(dumphtml_file, "<div class=\"nh_screen\">  "); /* 2 space left margin */
-        /* The AI snapshot receives the status text through dump_putstr_ex(),
-           but not this row framing, so give it a plain 2 space margin */
-        if (iflags.dumping_ai_snapshot && dumphtml_ai_file)
-            fputs("  ", dumphtml_ai_file);
 #endif
         for (i = 0; (idx = fieldorder[row][i]) != BL_FLUSH; ++i) {
             boolean hitpointbar = (idx == BL_TITLE
@@ -1732,10 +1709,14 @@ dump_render_status(void)
 #if defined(DUMPHTML)
         if (dumphtml_file)
             fprintf(dumphtml_file, "%*s</div>\n", pad, " ");
-        /* Without this the AI snapshot's status rows run into each other */
-        if (iflags.dumping_ai_snapshot && dumphtml_ai_file)
-            fputs("\n", dumphtml_ai_file);
 #endif
+        /* Without this the AI snapshot's status rows run into each other */
+        if (iflags.dumping_ai_snapshot && dumpai_file && dumpai_midline)
+        {
+            fputs("\n", dumpai_file);
+            dumpai_midline = FALSE;
+            dumpai_prev_blank = FALSE;
+        }
     }
     return;
 }
@@ -1846,18 +1827,49 @@ dump_status_update(int fldidx, genericptr_t ptr, int chg UNUSED, int percent, in
 
 
 
+/* AI snapshot text sink.  NHW_DUMPTXT lines duplicate the status rows for the
+   text dumplog and are skipped; NHW_STATUS fragments are written without a
+   newline, dump_render_status() ends each row.  A second consecutive blank
+   line is dropped. */
+static void
+dump_ai_putstr(winid win, const char *buf, int app)
+{
+    boolean blank;
+
+    if (!iflags.dumping_ai_snapshot || !dumpai_file || win == NHW_DUMPTXT)
+        return;
+
+    if (win == NHW_STATUS)
+    {
+        if (!*buf)
+            return;
+        /* a status row opens with a 2 space margin; a row with no fields
+           writes nothing at all */
+        if (!dumpai_midline)
+            fputs("  ", dumpai_file);
+        fputs(buf, dumpai_file);
+        dumpai_midline = TRUE;
+        dumpai_prev_blank = FALSE;
+        return;
+    }
+
+    blank = !app && !dumpai_midline && (!*buf || !strcmp(buf, " "));
+    if (blank && dumpai_prev_blank)
+        return;
+
+    fprintf(dumpai_file, "%s%s", blank ? "" : buf, app ? "" : "\n");
+    dumpai_midline = app ? TRUE : FALSE;
+    dumpai_prev_blank = blank;
+}
+
 /*ARGSUSED*/
 static void
 dump_putstr_ex(
-#ifdef DUMPHTML
     winid win,
-#else
-    winid win UNUSED,
-#endif
     const char *str,
     int attr UNUSED,
     int color UNUSED,
-    int app UNUSED)
+    int app)
 {
     char buf[UTF8BUFSZ * 2] = "";
     if(str)
@@ -1874,16 +1886,8 @@ dump_putstr_ex(
         else
             html_dump_line(dumphtml_file, win, 0, 0, attr, color, app, str);
     }
-    /* AI snapshot: also write to the AI HTML file */
-    if (iflags.dumping_ai_snapshot && dumphtml_ai_file
-        && win != NHW_DUMPTXT)
-    {
-        if (win == NHW_STATUS)
-            html_dump_str(dumphtml_ai_file, str, 0, 0, attr, color);
-        else
-            html_dump_line(dumphtml_ai_file, win, 0, 0, attr, color, app, str);
-    }
 #endif
+    dump_ai_putstr(win, buf, app);
 }
 
 /*ARGSUSED*/
@@ -1905,16 +1909,8 @@ dump_putstr_ex2(winid win, const char *str, const char *attrs, const char *color
         else
             html_dump_line(dumphtml_file, win, attrs, colors, attr, color, app, str);
     }
-    /* AI snapshot: also write to the AI HTML file */
-    if (iflags.dumping_ai_snapshot && dumphtml_ai_file
-        && win != NHW_DUMPTXT)
-    {
-        if (win == NHW_STATUS)
-            html_dump_str(dumphtml_ai_file, str, attrs, colors, attr, color);
-        else
-            html_dump_line(dumphtml_ai_file, win, attrs, colors, attr, color, app, str);
-    }
 #endif
+    dump_ai_putstr(win, buf, app);
 }
 
 /*ARGSUSED*/
@@ -2019,21 +2015,17 @@ dump_add_extended_menu(winid win UNUSED, int glyph UNUSED, const anything *ident
         html_write_tags(dumphtml_file, win, attr, color, 0, FALSE, info, FALSE);
         fprintf(dumphtml_file, "%s\n", "</div>");
     }
-    /* AI snapshot: menu rows are the inventory listing, so keep the
-       inventory letter and use the dumplog's plain-text layout rather than
-       list items.  Escaping goes through html_dump_str() like the rest of
-       the AI file. */
-    if (iflags.dumping_ai_snapshot && dumphtml_ai_file)
-    {
-        fputs("<div>", dumphtml_ai_file);
-        if (glyph == NO_GLYPH)
-            fputs(" ", dumphtml_ai_file);
-        else
-            fprintf(dumphtml_ai_file, "  %c - ", ch);
-        html_dump_str(dumphtml_ai_file, str, 0, 0, ATR_NONE, NO_COLOR);
-        fputs("</div>\n", dumphtml_ai_file);
-    }
 #endif
+    /* AI snapshot: the text dumplog's menu row layout */
+    if (iflags.dumping_ai_snapshot && dumpai_file)
+    {
+        if (glyph == NO_GLYPH)
+            fprintf(dumpai_file, " %s\n", buf);
+        else
+            fprintf(dumpai_file, "  %c - %s\n", ch, buf);
+        dumpai_midline = FALSE;
+        dumpai_prev_blank = FALSE;
+    }
 }
 
 /*ARGSUSED*/
@@ -2046,11 +2038,8 @@ dump_end_menu_ex(winid win UNUSED, const char *str UNUSED, const char *str2 UNUS
         fputs("\n", dumplog_file);
     }
 #endif
-#ifdef DUMPHTML
     /* AI snapshot: blank line after the menu, as in the dumplog */
-    if (iflags.dumping_ai_snapshot && dumphtml_ai_file)
-        fputs("<br />\n", dumphtml_ai_file);
-#endif
+    dump_ai_putstr(0, "", 0);
 
 //    char buf[UTF8BUFSZ * 4 + 3] = "";
 //    char buf1[UTF8BUFSZ * 2] = "";
@@ -2090,13 +2079,14 @@ dump_select_menu(winid win UNUSED, int how UNUSED, menu_item **item)
 void
 dump_redirect(boolean onoff_flag)
 {
-#if defined (DUMPLOG) && defined (DUMPHTML)
-    if (dumplog_file || dumphtml_file || (iflags.dumping_ai_snapshot && dumphtml_ai_file))
-#elif defined (DUMPLOG)
-    if (dumplog_file || (iflags.dumping_ai_snapshot && dumphtml_ai_file))
-#elif defined (DUMPHTML)
-    if (dumphtml_file || (iflags.dumping_ai_snapshot && dumphtml_ai_file))
+    if (
+#ifdef DUMPLOG
+        dumplog_file ||
 #endif
+#ifdef DUMPHTML
+        dumphtml_file ||
+#endif
+        (iflags.dumping_ai_snapshot && dumpai_file))
     {
         if (onoff_flag) 
         {
@@ -2999,12 +2989,6 @@ void
 dump_start_screendump(void)
 {
 #ifdef DUMPHTML
-    /* The AI snapshot writes to its own file handle, which is the only one
-       open during LibGenerateAiSnapshot().  Wrap its screendump in <pre> so
-       that the per-row newlines dump_map_ai() writes act as line breaks. */
-    if (iflags.dumping_ai_snapshot && dumphtml_ai_file)
-        fputs("<pre class=\"nh_screen\">\n", dumphtml_ai_file);
-
     if (!dumphtml_file) return;
     html_init_sym();
     
@@ -3022,8 +3006,6 @@ dump_end_screendump(void)
         fprintf(dumphtml_file, "%s\n", SECTION_E);
         fprintf(dumphtml_file, "%s\n", DIV_E);
     }
-    if (iflags.dumping_ai_snapshot && dumphtml_ai_file)
-        fputs("</pre>\n", dumphtml_ai_file);
 #endif
 }
 
@@ -3085,23 +3067,18 @@ dump_close_log(void)
 void
 dump_open_log_ai(time_t now UNUSED)
 {
-#if defined (DUMPHTML)
+#if defined (DUMPLOG) || defined (DUMPHTML)
     char buf[BUFSZ];
     char* fname;
 
-    fname = print_dumphtml_ai_filename_to_buffer(buf);
+    fname = print_dumpai_filename_to_buffer(buf);
     if (fname)
     {
-        dumphtml_ai_file = fopen(fname, "w");
-        if (dumphtml_ai_file)
+        dumpai_file = fopen(fname, "w");
+        if (dumpai_file)
         {
-            fputs("<html><head><meta charset=\"utf-8\"><title>GnollHack AI Snapshot</title>\n"
-                  "<style>body{background:#000;color:#ccc;font-family:monospace;font-size:12px;white-space:pre;}\n"
-                  ".nh_color_0{color:#555;}.nh_color_1{color:#f00;}.nh_color_2{color:#0f0;}.nh_color_3{color:#a52a2a;}\n"
-                  ".nh_color_4{color:#00f;}.nh_color_5{color:#f0f;}.nh_color_6{color:#0ff;}.nh_color_7{color:#ccc;}\n"
-                  ".nh_color_8{color:#888;}.nh_color_9{color:#ffa500;}.nh_color_10{color:#0f0;}.nh_color_11{color:#ff0;}\n"
-                  ".nh_color_12{color:#00f;}.nh_color_13{color:#f0f;}.nh_color_14{color:#0ff;}.nh_color_15{color:#fff;}\n"
-                  "</style></head><body>\n", dumphtml_ai_file);
+            dumpai_midline = FALSE;
+            dumpai_prev_blank = FALSE;
             /* Save windowprocs backup so dump_redirect can restore them */
             dumplog_windowprocs_backup = windowprocs;
             menu_headings_backup = iflags.menu_headings;
@@ -3113,41 +3090,28 @@ dump_open_log_ai(time_t now UNUSED)
 void
 dump_close_log_ai(void)
 {
-#if defined (DUMPHTML)
-    if (dumphtml_ai_file)
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    if (dumpai_file)
     {
-        fputs("</body></html>\n", dumphtml_ai_file);
-        (void)fclose(dumphtml_ai_file);
-        dumphtml_ai_file = (FILE*)0;
+        (void)fclose(dumpai_file);
+        dumpai_file = (FILE*)0;
     }
 #endif
 }
 
+/* Write a string to the AI snapshot as is.  Callers end their own lines. */
 void
-dump_html_ai_write(const char* str)
+dump_ai_write(const char* str)
 {
-#if defined (DUMPHTML)
-    if (dumphtml_ai_file)
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    if (dumpai_file)
     {
-        fputs(str, dumphtml_ai_file);
-    }
-#endif
-}
-
-/* Write one map/screen character to the AI snapshot with HTML escaping.
-   replacespace is TRUE so that spaces become &nbsp; and the map keeps its
-   column alignment through whatever whitespace processing the consumer
-   applies. */
-void
-dump_html_ai_write_char(nhsym ch)
-{
-#if defined (DUMPHTML)
-    if (dumphtml_ai_file)
-    {
-        html_dump_char(dumphtml_ai_file, ch, TRUE);
+        fputs(str, dumpai_file);
+        dumpai_midline = FALSE;
+        dumpai_prev_blank = FALSE;
     }
 #else
-    nhUse(ch);
+    nhUse(str);
 #endif
 }
 

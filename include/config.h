@@ -597,6 +597,10 @@ typedef unsigned char uchar;
 #define SNAPJSON_FILE        "/tmp/gnollhack.%n.%d.%D.json"
 #endif
 
+#ifndef AI_FILE
+#define AI_FILE        "/tmp/gnollhack.%n.%d.%D.ai.txt"
+#endif
+
 #ifndef DUMPLOG_MSG_COUNT
 #define DUMPLOG_MSG_COUNT   50
 #endif
@@ -621,10 +625,6 @@ typedef unsigned char uchar;
 
 #ifndef SNAPSHOT_FILE
 #define SNAPSHOT_FILE        "/tmp/gnollhack.%n.%d.%D.txt"
-#endif
-
-#ifndef AI_FILE
-#define AI_FILE        "/tmp/gnollhack.%n.%d.%D.ai.txt"
 #endif
 
 #endif /* DUMPLOG */
@@ -656,7 +656,7 @@ typedef unsigned char uchar;
 /* Version of the AI snapshot's text format, printed at the top of the
    snapshot.  Increase it whenever a reader of the flattened text could tell
    the difference: a line added, removed, moved or reworded. */
-#define AI_SNAPSHOT_FORMAT_VERSION 5
+#define AI_SNAPSHOT_FORMAT_VERSION 6
 
 /* AI snapshot map layout.  dump_map_ai() (detect.c) prefixes every map row
    with a right aligned row number gutter, and dump_map_legend_ai() (pager.c)
