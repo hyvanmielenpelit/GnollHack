@@ -1355,6 +1355,7 @@ namespace GnollHackX
             CleanTransferDirectories();
             TryDeleteFrameLog();
             TryDeleteMessageExports();
+            TryDeleteOverseerDebugLogs();
 
             GHApp.InitAdditionalTypefaces();
             GHApp.InitAdditionalCachedBitmaps();
@@ -2913,6 +2914,33 @@ namespace GnollHackX
             catch (Exception ex)
             {
                 Debug.WriteLine("TryDeleteMessageExports: " + ex.Message);
+            }
+        }
+
+        private void TryDeleteOverseerDebugLogs()
+        {
+            try
+            {
+                /* OverseerPage writes these to the cache directory under a file name chosen by the Overseer web app */
+                string dirpath = FileSystem.CacheDirectory;
+                if (string.IsNullOrEmpty(dirpath) || !Directory.Exists(dirpath))
+                    return;
+
+                foreach (string filepath in Directory.GetFiles(dirpath, "overseer-debug-log*.txt"))
+                {
+                    try
+                    {
+                        File.Delete(filepath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("TryDeleteOverseerDebugLogs: " + ex.Message);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("TryDeleteOverseerDebugLogs: " + ex.Message);
             }
         }
 
