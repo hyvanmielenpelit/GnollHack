@@ -1188,9 +1188,10 @@ append_ai_snapshot_tag(struct obj *obj, char *bp)
     boolean artifact_description_exists;
     boolean unidentified = FALSE, typenamed = FALSE, labelled = FALSE,
             bucunknown, unseencontents;
-    boolean notvegan, notvegetarian, knowledge, conduct, spell;
+    boolean notvegan, notvegetarian, knowledge, conduct, spell, invoke;
     boolean withnames;
-    int typ, pass, detail;
+    const char *invokename = 0;
+    int typ, pass, detail, invprop;
 
     if (iflags.override_ID)
         return;
@@ -1235,22 +1236,34 @@ append_ai_snapshot_tag(struct obj *obj, char *bp)
     }
     spell = (*spellfull != '\0');
 
+    /* same knowledge test as the artifact powers in the item description */
+    if (obj->oartifact && !unidentified && object_stats_known(obj))
+    {
+        invprop = artilist[obj->oartifact].inv_prop;
+        if (invprop > LAST_PROP)
+            invokename = get_artifact_invoke_name(invprop);
+        else if (invprop > 0)
+            invokename = get_property_name_ex(invprop).prop_noun;
+    }
+    invoke = (invokename && *invokename);
+
     knowledge = unidentified || labelled || bucunknown || unseencontents;
     conduct = notvegan || notvegetarian;
-    if (!knowledge && !conduct && !spell)
+    if (!knowledge && !conduct && !spell && !invoke)
         return;
 
     /* first with the player's names quoted, then without them; within
-       each, first with the conduct components and the full spell text,
-       then with the short spell text, then with neither */
+       each, first with the conduct components, the full spell text and
+       the invoke power, then with the short spell text and the invoke
+       power, then with none of them */
     for (pass = 0; pass < 2; pass++)
     {
         withnames = (pass == 0);
         for (detail = 2; detail >= 0; detail--)
         {
             /* skip an attempt that repeats the other or has nothing in it */
-            if (detail == 2 ? !(conduct || spell)
-                : detail == 1 ? !spell
+            if (detail == 2 ? !(conduct || spell || invoke)
+                : detail == 1 ? !(spell || invoke)
                 : !knowledge)
                 continue;
 
@@ -1288,6 +1301,8 @@ append_ai_snapshot_tag(struct obj *obj, char *bp)
             if (detail && spell)
                 Sprintf(eos(tagbuf), "%s; ",
                         detail == 2 ? spellfull : spellshort);
+            if (detail && invoke)
+                Sprintf(eos(tagbuf), "invoke: %.60s; ", invokename);
 
             /* a tag with no component has no separator to replace */
             if (strlen(tagbuf) <= 2)

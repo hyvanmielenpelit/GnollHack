@@ -1153,6 +1153,11 @@ dump_everything(int how, time_t when)
                " blessed it can fail, and a cursed book always fails. A"
                " spellbook whose tag says nothing about its spell is either"
                " unidentified or not a book of a castable spell.");
+        putstr(0, ATR_NONE,
+               "An artifact's tag names what the invoke command does with it,"
+               " once the player knows the artifact. That is separate from"
+               " what applying, quaffing, wearing or wielding it does, and an"
+               " artifact marked repowering cannot be invoked again yet.");
     }
     (void) display_inventory((char *) 0, TRUE, how == SNAPSHOT_AI ? SHOWWEIGHTS_INVENTORY : SHOWWEIGHTS_NONE, FALSE);
     container_contents(invent, how != SNAPSHOT && how != SNAPSHOT_AI, TRUE, FALSE, how == SNAPSHOT_AI ? SHOWWEIGHTS_OTHER_INVENTORY : SHOWWEIGHTS_NONE, FALSE);

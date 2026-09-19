@@ -375,7 +375,7 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
         headbuf,
         name);
 
-    Sprintf(buf, iflags.dumping_ai_snapshot ? "difficulty %d %s%s" : "level %d %s%s",
+    Sprintf(buf, "level %d %s%s",
             accurate ? pm->difficulty
             : rn2_on_display_rng(3) ? 1 + rn2_on_display_rng(30)
                                     : 1 + rn2_on_display_rng(80),

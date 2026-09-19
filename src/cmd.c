@@ -7965,9 +7965,16 @@ ai_key_text(uchar key, char *outbuf)
 void
 dump_key_bindings_ai(void)
 {
-    static const char *const ai_key_cmds[] = {
-        "ability", "apply", "cast", "engrave", "invoke", "kick", "light",
-        "pray", "quaff", "read", "zap"
+    /* cmd is looked up with ext_cmd_from_txt(); note, if any, is printed
+       after it in parentheses */
+    static const struct ai_key_cmd {
+        const char *cmd, *note;
+    } ai_key_cmds[] = {
+        { "ability", 0 }, { "apply", 0 }, { "cast", 0 }, { "engrave", 0 },
+        { "invoke", 0 }, { "itemsin", "put items in a container" },
+        { "itemsout", "take items out of a container" }, { "kick", 0 },
+        { "light", 0 }, { "pray", 0 }, { "quaff", 0 }, { "read", 0 },
+        { "zap", 0 }
     };
     char linebuf[BUFSZ * 2], piece[BUFSZ], keybuf[16];
     int i, key, idx, nkeys, ncmds = 0;
@@ -7979,11 +7986,13 @@ dump_key_bindings_ai(void)
 
     for (i = 0; i < SIZE(ai_key_cmds); i++)
     {
-        idx = ext_cmd_from_txt(ai_key_cmds[i]);
+        idx = ext_cmd_from_txt(ai_key_cmds[i].cmd);
         if (idx < 0)
             continue;
 
-        Sprintf(piece, "%s %s", ncmds ? "," : "", ai_key_cmds[i]);
+        Sprintf(piece, "%s %s", ncmds ? "," : "", ai_key_cmds[i].cmd);
+        if (ai_key_cmds[i].note)
+            Sprintf(eos(piece), " (%s)", ai_key_cmds[i].note);
         nkeys = 0;
         for (key = 1; key < 256; key++)
         {
