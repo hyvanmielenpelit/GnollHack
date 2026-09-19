@@ -2449,6 +2449,10 @@ mswin_putmsghistory_ex(const char *msg, const char* attrs, const char* colors, b
 
     if (!msg)
         return; /* end of message history restore */
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    /* saved_plines[] is not saved, so it is refilled from the history */
+    dumplogmsg(msg, attrs, colors, ATR_NONE, NO_COLOR);
+#endif
     save_sound_opt = GetNHApp()->bNoSounds;
     GetNHApp()->bNoSounds =
         TRUE; /* disable sounds while restoring message history */

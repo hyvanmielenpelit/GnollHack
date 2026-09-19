@@ -918,6 +918,12 @@ void lib_putmsghistory_ex(const char* msg, const char* attrs, const char* colors
     if (msg)
         write_text2buf_utf8(_bigbuf, sizeof(_bigbuf), msg);
 
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    /* saved_plines[] is not saved, so it is refilled from the history */
+    if (msg)
+        dumplogmsg(msg, attrs, colors, ATR_NONE, NO_COLOR);
+#endif
+
     lib_callbacks.callback_putmsghistory(msg ? _bigbuf : 0, attrs, colors, (uchar)is_restoring);
 }
 
