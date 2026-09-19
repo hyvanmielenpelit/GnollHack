@@ -1354,6 +1354,7 @@ namespace GnollHackX
             GHApp.ClearAiFiles();
             CleanTransferDirectories();
             TryDeleteFrameLog();
+            TryDeleteMessageExports();
 
             GHApp.InitAdditionalTypefaces();
             GHApp.InitAdditionalCachedBitmaps();
@@ -2885,6 +2886,33 @@ namespace GnollHackX
             catch (Exception ex)
             {
                 Debug.WriteLine("TryDeleteFrameLog: " + ex.Message);
+            }
+        }
+
+        private void TryDeleteMessageExports()
+        {
+            try
+            {
+                string dirpath = Path.Combine(GHApp.GHPath, GHConstants.ArchiveDirectory);
+                if (!Directory.Exists(dirpath))
+                    return;
+
+                /* The file name carries the version number, so match the exports of earlier versions, too */
+                foreach (string filepath in Directory.GetFiles(dirpath, "messages-*.txt"))
+                {
+                    try
+                    {
+                        File.Delete(filepath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("TryDeleteMessageExports: " + ex.Message);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("TryDeleteMessageExports: " + ex.Message);
             }
         }
 

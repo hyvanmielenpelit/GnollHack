@@ -389,7 +389,6 @@ namespace GnollHackX.Pages.Game
                 if (File.Exists(filepath))
                 {
                     await GHApp.ShareFile(this, filepath, "GnollHack Messages");
-                    File.Delete(filepath);
                 }
                 else
                 {
