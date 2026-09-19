@@ -2915,7 +2915,7 @@ legend_print_remembered_objects(int x, int y)
     if (!total)
         return;
 
-    Sprintf(buf, "Item <%d,%d> remembered under %s: ", x, y,
+    Sprintf(buf, "Item%s <%d,%d> remembered under %s: ", plur(total), x, y,
             (x == u.ux && y == u.uy) ? "you" : "that creature");
     for (otmp = levl[x][y].hero_memory_layers.memory_objchn; otmp;
          otmp = otmp->nexthere)

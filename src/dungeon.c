@@ -3119,7 +3119,8 @@ describe_cemetery_who(const char *who, char *outbuf)
 static void
 print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
 {
-    char buf[BUFSZ], tmpbuf[BUFSZ];
+    /* buf holds a whole level line, whose features are appended unchecked */
+    char buf[BUFSZ * 2], tmpbuf[BUFSZ];
     int i, depthstart, dnum;
     boolean after_list = FALSE; /* see overview_separator() */
     boolean died_here = (final == 2 && on_level(&u.uz, &mptr->lev));
@@ -3250,6 +3251,18 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
             else if (nkinds == 0)
                 /* no kinds recorded: saved before they were kept */
                 ADDNTOBUF("shop", mptr->feat.nshop);
+            else if (nkinds == 1)
+            {
+                /* several shops of one kind; "jewelers" is its own plural */
+                const char *kindnam = shop_string(onekind);
+
+                Sprintf(eos(buf), "%s%s %s", COMMA,
+                        seen_string(mptr->feat.nshop, kindnam),
+                        kindnam[strlen(kindnam) - 1] == 's'
+                            ? kindnam : makeplural(kindnam));
+                if (untended)
+                    Strcat(buf, " (some untended)");
+            }
             else
             {
                 /* the last kind is joined with "and"; after_list then closes
