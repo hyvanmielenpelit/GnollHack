@@ -6118,6 +6118,14 @@ dump_spells(void)
             Strcpy(spellnamebuf, spellname(i));
             *spellnamebuf = highc(*spellnamebuf);
             Sprintf(successbuf, "%d%% success", pct_lim);
+            if (iflags.dumping_ai_snapshot)
+            {
+                /* same figure and condition as the spell description screen */
+                int pct_base = percent_success(i, FALSE);
+
+                if (pct_base < 0 || pct_base > 100)
+                    Sprintf(eos(successbuf), " (base %d%%)", pct_base);
+            }
 
             Sprintf(buf, "  %-34s  %-13s%s", spellnamebuf, successbuf, castingsbuf);
             if (iflags.dumping_ai_snapshot)
@@ -6135,7 +6143,10 @@ dump_spells(void)
                    " spell's material components. At 0 the spell cannot be"
                    " cast until its components are mixed again. A spell with"
                    " no castings figure and \"no components\" can be cast"
-                   " whenever mana and cooldown allow.");
+                   " whenever mana and cooldown allow. A base figure in"
+                   " parentheses is the success chance before it is limited"
+                   " to 0-100%; it shows how far a 0% spell is from castable"
+                   " and how much margin a 100% spell has.");
         }
     }
 }

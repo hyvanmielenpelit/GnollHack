@@ -2881,6 +2881,8 @@ dump_map_legend_ai(void)
     static char buf[BUFSZ * 6];
     char coordbuf[BUFSZ];
     struct legend_sym_entry *symentry;
+    struct obj *otmp;
+    boolean anylit = FALSE;
     int x, y, i, kind, sym, color, glyph, terrain_glyph;
     int default_glyph;
     int saved_terrainmode;
@@ -3013,6 +3015,11 @@ dump_map_legend_ai(void)
                 (int) u.ux, (int) u.uy);
     putstr(0, ATR_NONE, buf);
     putstr(0, ATR_NONE,
+           "After a notable location, an offset such as (3n,2e) is its"
+           " distance from the hero in cells, north/south first and then"
+           " east/west. (adjacent, northwest) means one step away in that"
+           " direction.");
+    putstr(0, ATR_NONE,
            "A blank cell is NOT open floor: it is either area the hero has"
            " never seen or solid rock. Blank margins to the left, right,"
            " above and below the drawn area are simply unvisited parts of the"
@@ -3021,6 +3028,12 @@ dump_map_legend_ai(void)
            "This map is the hero's memory, not live vision: creatures and"
            " items are drawn where they were last seen and may have moved or"
            " been taken since.");
+    putstr(0, ATR_NONE,
+           "A symbol described as \"in dark\" is floor the hero remembers"
+           " but does not see right now, because it is out of the line of"
+           " sight or beyond the light. The same symbol without \"in dark\""
+           " is floor in view at this moment. Neither says whether the cell"
+           " itself is lit.");
     if (Hallucination)
         putstr(0, ATR_NONE,
                "The hero is hallucinating, so every description below is"
@@ -3119,7 +3132,10 @@ dump_map_legend_ai(void)
         {
             *coordbuf = '\0';
             (void) coord_desc(x, y, coordbuf, GPCOORDS_COMPASS);
-            if (*coordbuf)
+            /* a one-step offset comes back as a bare "(direction)" */
+            if (*coordbuf == '(' && distmin(u.ux, u.uy, x, y) == 1)
+                Sprintf(eos(buf), " (adjacent, %s", coordbuf + 1);
+            else if (*coordbuf)
                 Sprintf(eos(buf), " %s", coordbuf);
         }
         putstr(0, ATR_NONE, buf);
@@ -3137,6 +3153,26 @@ dump_map_legend_ai(void)
             putstr(0, ATR_NONE, buf);
         }
     }
+    putstr(0, 0, "");
+
+    /* lit light sources the hero carries */
+    Strcpy(buf, "Light: the hero carries ");
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+    {
+        const char *nam;
+
+        if (!is_obj_lamplit(otmp))
+            continue;
+        nam = doname(otmp);
+        /* ", x - ", the name and the closing period */
+        if (strlen(buf) + strlen(nam) + 8 >= sizeof buf)
+            break;
+        Sprintf(eos(buf), "%s%c - %s",
+                anylit ? ", " : "a lit light source: ", otmp->invlet, nam);
+        anylit = TRUE;
+    }
+    Strcat(buf, anylit ? "." : "no lit light source.");
+    putstr(0, ATR_NONE, buf);
     putstr(0, 0, "");
 
     iflags.terrainmode = saved_terrainmode;

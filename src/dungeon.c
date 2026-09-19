@@ -3132,10 +3132,17 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
     }
     if (on_level(&u.uz, &mptr->lev))
     {
-        Sprintf(buf, " <- You %s here.",
+        Sprintf(buf, " <- You %s here",
             (!final || (final == 1 && how == ASCENDED)) ? "are"
             : (final == 1 && how == ESCAPED) ? "left from"
             : "were");
+        /* i is the number printed above; it differs from the level's number
+           within its branch wherever the branch is numbered by depth */
+        if (iflags.dumping_ai_snapshot && i != mptr->lev.dlevel
+            && !In_endgame(&mptr->lev))
+            Sprintf(eos(buf), " (level %d of %s)", (int) mptr->lev.dlevel,
+                    dungeons[dnum].dname);
+        Strcat(buf, ".");
 
         putstr_ex(win, buf, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_RED, 1);
     }

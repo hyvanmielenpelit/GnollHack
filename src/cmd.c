@@ -7882,6 +7882,92 @@ update_bindings_list(void)
     }
 }
 
+#if defined (DUMPLOG) || defined (DUMPHTML)
+/* Spell 'key' the way the command menus do: "k", "Ctrl-d", "Alt-p".
+   Returns FALSE for a key that has no such spelling. */
+static boolean
+ai_key_text(uchar key, char *outbuf)
+{
+    const uchar altmask = 0x80;
+    const uchar ctrlmask = 0x20 | 0x40;
+    const char *prefix = "";
+    uchar ch = key;
+
+    *outbuf = '\0';
+    /* M(0)..M(9) are internal keypad codes, not keys */
+    if (!key || (key >= (uchar) M(0) && key <= (uchar) M(9)))
+        return FALSE;
+
+    if ((key & ctrlmask) == 0)
+    {
+        prefix = "Ctrl-";
+        ch = (uchar) (key | ctrlmask);
+    }
+    else if ((key & altmask) == altmask)
+    {
+        prefix = "Alt-";
+        ch = (uchar) (key & ~altmask);
+    }
+
+    if (ch < 0x21 || ch > 0x7E)
+        return FALSE;
+
+    Sprintf(outbuf, "%s%c", prefix, (char) ch);
+    return TRUE;
+}
+
+/* AI snapshot: one line naming the keys currently bound to a fixed list of
+   common commands.  Read from Cmd.commands[], so number_pad and the player's
+   own bindings are reflected.  A command with no key is left out. */
+void
+dump_key_bindings_ai(void)
+{
+    static const char *const ai_key_cmds[] = {
+        "ability", "apply", "cast", "engrave", "invoke", "kick", "light",
+        "pray", "quaff", "read", "zap"
+    };
+    char linebuf[BUFSZ * 2], piece[BUFSZ], keybuf[16];
+    int i, key, idx, nkeys, ncmds = 0;
+
+    Sprintf(linebuf,
+            "Keys (for a player with a keyboard; on a touch screen use the"
+            " command of the same name instead): number_pad is %s.",
+            iflags.num_pad ? "on" : "off");
+
+    for (i = 0; i < SIZE(ai_key_cmds); i++)
+    {
+        idx = ext_cmd_from_txt(ai_key_cmds[i]);
+        if (idx < 0)
+            continue;
+
+        Sprintf(piece, "%s %s", ncmds ? "," : "", ai_key_cmds[i]);
+        nkeys = 0;
+        for (key = 1; key < 256; key++)
+        {
+            if (Cmd.commands[key] != &extcmdlist[idx]
+                || !ai_key_text((uchar) key, keybuf))
+                continue;
+            if (strlen(piece) + strlen(keybuf) + 5 >= sizeof piece)
+                break;
+            Sprintf(eos(piece), "%s%s", nkeys ? " or " : " ", keybuf);
+            nkeys++;
+        }
+        if (!nkeys)
+            continue;
+        /* room for the closing period */
+        if (strlen(linebuf) + strlen(piece) + 2 >= sizeof linebuf)
+            break;
+        Strcat(linebuf, piece);
+        ncmds++;
+    }
+
+    if (!ncmds)
+        return;
+    Strcat(linebuf, ".");
+    putstr(0, ATR_NONE, linebuf);
+}
+#endif /* DUMPLOG || DUMPHTML */
+
 /* non-movement commands which accept 'm' prefix to request menu operation */
 static boolean
 accept_menu_prefix(int (*cmd_func)(void))

@@ -415,6 +415,9 @@ E int dozoommini(void);
 E int dozoomhalf(void);
 E void zoomtoscale(double);
 E void update_bindings_list(void);
+#if defined(DUMPLOG) || defined(DUMPHTML)
+E void dump_key_bindings_ai(void);
+#endif
 E void create_context_menu(enum create_context_menu_types);
 E void reset_found_this_turn(void);
 E void clear_found_this_turn_at(int, int);
@@ -650,6 +653,7 @@ E int wipeoff(void);
 E int dodrop(void);
 E int doitemdescriptions(void);
 E int docharacterstatistics(void);
+E double current_known_nutrition_usage(void);
 E const char* get_damage_type_text(short);
 E const char* get_defense_type_text(int);
 E const char* get_monster_size_text(int);

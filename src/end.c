@@ -1062,6 +1062,12 @@ dump_everything(int how, time_t when)
             Sprintf(pbuf, "Hunger: %s", hungerbuf);
         }
         putstr(0, ATR_NONE, pbuf);
+        Sprintf(pbuf,
+                "Known nutrition usage: %.2f per turn, as on the character"
+                " statistics screen (1 is the normal rate). The nutrition"
+                " counter itself is not shown to the player.",
+                current_known_nutrition_usage());
+        putstr(0, ATR_NONE, pbuf);
         putstr(0, ATR_NONE,
                "Status key: MC = magic cancellation level/percent chance, MS ="
                " movement speed, XL = experience level/points, S = score, T ="
@@ -1083,6 +1089,8 @@ dump_everything(int how, time_t when)
                " nothing about their values. Use what is printed, such as"
                " messages and cues on items like (shimmering), and otherwise"
                " say that advice depending on them is uncertain.");
+        debugprint("%s", "dump_key_bindings_ai");
+        dump_key_bindings_ai();
     }
     putstr(winno, 0, "");
 
@@ -1186,6 +1194,13 @@ dump_everything_ai(time_t when)
     boolean saved_show_weight_summary = flags.show_weight_summary;
     boolean saved_detailed_weights = flags.detailed_weights;
     boolean saved_long_charge_text = flags.long_charge_text;
+    boolean saved_dark_room = flags.dark_room;
+    boolean saved_lit_corridor = flags.lit_corridor;
+    boolean saved_use_color = iflags.use_color;
+    boolean saved_classic_colors = flags.classic_colors;
+    boolean saved_classic_statue_symbol = flags.classic_statue_symbol;
+    boolean saved_show_decorations = flags.show_decorations;
+    boolean saved_showrace = flags.showrace;
 
     /* The AI snapshot is plain text for a machine reader.  Frontend symbol
        entities ("&status-3;", "&gold;") are escaped to "&amp;status-3;" by
@@ -1202,17 +1217,37 @@ dump_everything_ai(time_t when)
        pounds or kilograms, the weight summary is present, and charges are
        written out as "(N charges, M rechargings)".  The choice between
        pounds and kilograms stays the player's.  This function must
-       keep a single exit path, or the player's options are left changed. */
+       keep a single exit path, or the player's options are left changed.
+
+       The map and its legend are drawn through mapglyph(), so every display
+       option it reads is pinned to its default as well: floor out of view
+       shows as "in dark", corridors are not shown lit, colours are on and
+       not the classic set, a statue shows its monster's letter, decorations
+       are coloured, and the hero is shown by role. */
     iflags.implicit_uncursed = FALSE;
     flags.inventory_weights_last = TRUE;
     flags.show_weight_summary = TRUE;
     flags.detailed_weights = FALSE;
     flags.long_charge_text = TRUE;
+    flags.dark_room = TRUE;
+    flags.lit_corridor = FALSE;
+    iflags.use_color = TRUE;
+    flags.classic_colors = FALSE;
+    flags.classic_statue_symbol = FALSE;
+    flags.show_decorations = TRUE;
+    flags.showrace = FALSE;
     iflags.dumping_ai_snapshot = TRUE;
 
     dump_everything(SNAPSHOT_AI, when);
 
     iflags.dumping_ai_snapshot = FALSE;
+    flags.showrace = saved_showrace;
+    flags.show_decorations = saved_show_decorations;
+    flags.classic_statue_symbol = saved_classic_statue_symbol;
+    flags.classic_colors = saved_classic_colors;
+    iflags.use_color = saved_use_color;
+    flags.lit_corridor = saved_lit_corridor;
+    flags.dark_room = saved_dark_room;
     flags.long_charge_text = saved_long_charge_text;
     flags.detailed_weights = saved_detailed_weights;
     flags.show_weight_summary = saved_show_weight_summary;

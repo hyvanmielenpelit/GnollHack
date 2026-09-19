@@ -24,6 +24,7 @@ static int currentlevel_rewrite(void);
 static void final_level(void);
 static void print_corpse_properties(winid, int);
 static void revive_handle_magic_chest(xchar*, struct obj**, int*, struct monst**);
+static void get_known_props(boolean *);
 /* static boolean badspot(xchar,xchar); */
 static int CFDECLSPEC item_wiki_cmp(const genericptr, const genericptr);
 
@@ -62,6 +63,39 @@ dodrop(void)
         reset_occupations();
 
     return result;
+}
+
+/* Mark in known_props[], which has MAX_PROPS elements, every property the
+   player knows the hero to have: it is innate or from the current form, an
+   item known to grant it is in use, or it is a timed effect that is not a
+   recurring one. */
+static void
+get_known_props(boolean *known_props)
+{
+    int i;
+
+    for (i = 0; i < MAX_PROPS; i++)
+        known_props[i] = FALSE;
+
+    for (i = 1; i <= LAST_PROP; i++)
+    {
+        if ((u.uprops[i].intrinsic & (INTRINSIC | FROM_FORM)) != 0
+            || (u.uprops[i].extrinsic && what_gives(i, TRUE))
+            || ((u.uprops[i].intrinsic & TIMEOUT) != 0
+                && !property_definitions[i].recurring))
+            known_props[i] = TRUE;
+    }
+}
+
+/* Nutrition used per turn as far as the player can know it; the figure the
+   character statistics screen shows. */
+double
+current_known_nutrition_usage(void)
+{
+    boolean known_props[MAX_PROPS];
+
+    get_known_props(known_props);
+    return calchungry(known_props);
 }
 
 /* the '}' command - Character statistics */
@@ -270,8 +304,10 @@ docharacterstatistics(void)
     }
 
 
-    boolean known_props[MAX_PROPS] = { 0 };
-    
+    boolean known_props[MAX_PROPS];
+
+    get_known_props(known_props);
+
     /* Current intrinsics */
     Sprintf(buf, "Intrinsic and known extrinsic abilities:");
     putstr(datawin, ATR_HEADING, buf);
@@ -288,10 +324,9 @@ docharacterstatistics(void)
         {
             obj = what_gives(i, TRUE);
         }
-        if (innate_intrinsic || obj || (temporary_intrinsic && !is_recurring))
+        if (known_props[i])
         {
             intrinsic_count++;
-            known_props[i] = TRUE;
 
             char dbuf2[BUFSZ];
             char dbuf3[BUFSZ];
