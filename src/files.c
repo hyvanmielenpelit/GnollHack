@@ -5342,19 +5342,44 @@ testinglog(const char *filenm, const char *type, const char *reason)
 #ifdef SELF_RECOVER
 
 /* ----------  BEGIN INTERNAL RECOVER ----------- */
+
+/* Why the last recover_savefile() gave up. A fixed phrase, never formatted:
+   the crash reporter groups events by message text, so variable detail goes
+   to debugprint() instead. */
+static const char *recover_failure_reason = (const char *) 0;
+
+const char *
+get_recover_savefile_failure_reason(void)
+{
+    return recover_failure_reason ? recover_failure_reason
+                                  : "reason not recorded";
+}
+
+/* Common tail for a truncated or invalid level 0 checkpoint header. The
+   caller has already set recover_failure_reason. */
+static void
+recover_header_read_failed(int gfd)
+{
+    raw_printf("\nError reading %s -- can't recover.\n", lock);
+    (void) nhclose(gfd);
+}
+
 boolean
 recover_savefile(void)
 {
     int gfd, lfd, sfd;
     int lev, savelev, hpid;
     int pltmpsiz;
+    int rlen;
     xchar levc;
     struct version_info version_data;
     int processed[256];
-    char savename[SAVESIZE], errbuf[BUFSZ];
+    char savename[SAVESIZE], errbuf[BUFSZ] = "";
     struct savefile_info sfi;
     struct save_game_stats gamestats;
     char tmpplbuf[PL_NSIZ];
+
+    recover_failure_reason = (const char *) 0;
 
     for (lev = 0; lev < 256; lev++)
         processed[lev] = 0;
@@ -5368,38 +5393,105 @@ recover_savefile(void)
      *  and game state
      */
     gfd = open_levelfile(0, errbuf);
-    if (gfd < 0) {
+    if (gfd < 0)
+    {
         raw_printf("%s\n", errbuf);
+        recover_failure_reason =
+            "the level 0 checkpoint file could not be opened";
+        debugprint("recover_savefile: open level 0 failed (%s)", errbuf);
         return FALSE;
     }
-    if (read(gfd, (genericptr_t) &hpid, (readLenType)sizeof hpid) != sizeof hpid) {
+    rlen = (int) read(gfd, (genericptr_t) &hpid, (readLenType)sizeof hpid);
+    if (rlen != (int) sizeof hpid)
+    {
         raw_printf("\n%s\n%s\n",
             "Checkpoint data incompletely written or subsequently clobbered.",
                    "Recovery impossible.");
+        recover_failure_reason =
+            "the checkpoint file was incompletely written";
+        debugprint("recover_savefile: pid read %d of %d",
+                   rlen, (int) sizeof hpid);
         (void) nhclose(gfd);
         return FALSE;
     }
-    if (read(gfd, (genericptr_t) &savelev, (readLenType)sizeof(savelev))
-        != sizeof(savelev)) {
+    rlen = (int) read(gfd, (genericptr_t) &savelev,
+                      (readLenType)sizeof(savelev));
+    if (rlen != (int) sizeof(savelev))
+    {
         raw_printf(
          "\nCheckpointing was not in effect for %s -- recovery impossible.\n",
                    lock);
+        recover_failure_reason = "checkpointing was not in effect";
+        debugprint("recover_savefile: level number read %d of %d",
+                   rlen, (int) sizeof(savelev));
         (void) nhclose(gfd);
         return FALSE;
     }
-    if ((read(gfd, (genericptr_t) savename, (readLenType)sizeof savename)
-         != sizeof savename)
-        || (read(gfd, (genericptr_t) &version_data, (readLenType)sizeof version_data)
-            != sizeof version_data)
-        || (read(gfd, (genericptr_t) &sfi, (readLenType)sizeof sfi) != sizeof sfi)
-        || (read(gfd, (genericptr_t) &pltmpsiz, (readLenType)sizeof pltmpsiz)
-            != sizeof pltmpsiz) || (pltmpsiz > PL_NSIZ)
-        || (read(gfd, (genericptr_t) &tmpplbuf, (readLenType)pltmpsiz) != pltmpsiz)
-        || (read(gfd, (genericptr_t)&gamestats, (readLenType)sizeof gamestats) != sizeof gamestats)
-        )
+    rlen = (int) read(gfd, (genericptr_t) savename,
+                      (readLenType)sizeof savename);
+    if (rlen != (int) sizeof savename)
     {
-        raw_printf("\nError reading %s -- can't recover.\n", lock);
-        (void) nhclose(gfd);
+        recover_failure_reason = "the save file name could not be read";
+        debugprint("recover_savefile: save name read %d of %d",
+                   rlen, (int) sizeof savename);
+        recover_header_read_failed(gfd);
+        return FALSE;
+    }
+    rlen = (int) read(gfd, (genericptr_t) &version_data,
+                      (readLenType)sizeof version_data);
+    if (rlen != (int) sizeof version_data)
+    {
+        recover_failure_reason = "the version information could not be read";
+        debugprint("recover_savefile: version read %d of %d",
+                   rlen, (int) sizeof version_data);
+        recover_header_read_failed(gfd);
+        return FALSE;
+    }
+    rlen = (int) read(gfd, (genericptr_t) &sfi, (readLenType)sizeof sfi);
+    if (rlen != (int) sizeof sfi)
+    {
+        recover_failure_reason =
+            "the save file information could not be read";
+        debugprint("recover_savefile: savefile info read %d of %d",
+                   rlen, (int) sizeof sfi);
+        recover_header_read_failed(gfd);
+        return FALSE;
+    }
+    rlen = (int) read(gfd, (genericptr_t) &pltmpsiz,
+                      (readLenType)sizeof pltmpsiz);
+    if (rlen != (int) sizeof pltmpsiz)
+    {
+        recover_failure_reason = "the player name size could not be read";
+        debugprint("recover_savefile: name size read %d of %d",
+                   rlen, (int) sizeof pltmpsiz);
+        recover_header_read_failed(gfd);
+        return FALSE;
+    }
+    if (pltmpsiz > PL_NSIZ)
+    {
+        recover_failure_reason = "the player name size was out of range";
+        debugprint("recover_savefile: name size %d exceeds %d",
+                   pltmpsiz, (int) PL_NSIZ);
+        recover_header_read_failed(gfd);
+        return FALSE;
+    }
+    rlen = (int) read(gfd, (genericptr_t) &tmpplbuf, (readLenType)pltmpsiz);
+    if (rlen != pltmpsiz)
+    {
+        recover_failure_reason = "the player name could not be read";
+        debugprint("recover_savefile: player name read %d of %d",
+                   rlen, pltmpsiz);
+        recover_header_read_failed(gfd);
+        return FALSE;
+    }
+    rlen = (int) read(gfd, (genericptr_t) &gamestats,
+                      (readLenType)sizeof gamestats);
+    if (rlen != (int) sizeof gamestats)
+    {
+        recover_failure_reason = "the game statistics could not be read";
+        debugprint("recover_savefile: game stats read %d of %d",
+                   rlen, (int) sizeof gamestats);
+        recover_header_read_failed(gfd);
         return FALSE;
     }
 
@@ -5418,15 +5510,23 @@ recover_savefile(void)
      */
     set_savefile_name(TRUE);
     sfd = create_savefile();
-    if (sfd < 0) {
+    if (sfd < 0)
+    {
         raw_printf("\nCannot recover savefile %s.\n", SAVEF);
+        recover_failure_reason =
+            "the recovered save file could not be created";
+        debugprint("recover_savefile: create save failed (errno %d)", errno);
         (void) nhclose(gfd);
         return FALSE;
     }
 
     lfd = open_levelfile(savelev, errbuf);
-    if (lfd < 0) {
+    if (lfd < 0)
+    {
         raw_printf("\n%s\n", errbuf);
+        recover_failure_reason = "the current level file could not be opened";
+        debugprint("recover_savefile: open level %d failed (%s)",
+                   savelev, errbuf);
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         delete_savefile();
@@ -5434,8 +5534,13 @@ recover_savefile(void)
     }
 
     if (write(sfd, (genericptr_t) &version_data, sizeof version_data)
-        != sizeof version_data) {
+        != sizeof version_data)
+    {
         raw_printf("\nError writing %s; recovery failed.", SAVEF);
+        recover_failure_reason =
+            "the version information could not be written";
+        debugprint("recover_savefile: write version failed (errno %d)",
+                   errno);
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         (void) nhclose(lfd);
@@ -5443,9 +5548,14 @@ recover_savefile(void)
         return FALSE;
     }
 
-    if (write(sfd, (genericptr_t) &sfi, sizeof sfi) != sizeof sfi) {
+    if (write(sfd, (genericptr_t) &sfi, sizeof sfi) != sizeof sfi)
+    {
         raw_printf("\nError writing %s; recovery failed (savefile_info).\n",
                    SAVEF);
+        recover_failure_reason =
+            "the save file information could not be written";
+        debugprint("recover_savefile: write savefile info failed (errno %d)",
+                   errno);
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         (void) nhclose(lfd);
@@ -5454,9 +5564,13 @@ recover_savefile(void)
     }
 
     if (write(sfd, (genericptr_t) &pltmpsiz, sizeof pltmpsiz)
-        != sizeof pltmpsiz) {
+        != sizeof pltmpsiz)
+    {
         raw_printf("Error writing %s; recovery failed (player name size).\n",
                    SAVEF);
+        recover_failure_reason = "the player name size could not be written";
+        debugprint("recover_savefile: write name size failed (errno %d)",
+                   errno);
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         (void) nhclose(lfd);
@@ -5464,9 +5578,13 @@ recover_savefile(void)
         return FALSE;
     }
 
-    if (write(sfd, (genericptr_t) &tmpplbuf, pltmpsiz) != pltmpsiz) {
+    if (write(sfd, (genericptr_t) &tmpplbuf, pltmpsiz) != pltmpsiz)
+    {
         raw_printf("Error writing %s; recovery failed (player name).\n",
                    SAVEF);
+        recover_failure_reason = "the player name could not be written";
+        debugprint("recover_savefile: write player name failed (errno %d)",
+                   errno);
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         (void) nhclose(lfd);
@@ -5474,9 +5592,13 @@ recover_savefile(void)
         return FALSE;
     }
 
-    if (write(sfd, (genericptr_t)&gamestats, sizeof gamestats) != sizeof gamestats) {
+    if (write(sfd, (genericptr_t)&gamestats, sizeof gamestats) != sizeof gamestats)
+    {
         raw_printf("\nError writing %s; recovery failed (save_game_stats).\n",
             SAVEF);
+        recover_failure_reason = "the game statistics could not be written";
+        debugprint("recover_savefile: write game stats failed (errno %d)",
+                   errno);
         (void)nhclose(gfd);
         (void)nhclose(sfd);
         (void)nhclose(lfd);
@@ -5485,7 +5607,11 @@ recover_savefile(void)
     }
 
     /* copy current level */
-    if (!copy_bytes(lfd, sfd)) {
+    if (!copy_bytes(lfd, sfd))
+    {
+        recover_failure_reason = "the current level could not be copied";
+        debugprint("recover_savefile: copy level %d failed (errno %d)",
+                   savelev, errno);
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         (void) nhclose(lfd);
@@ -5496,7 +5622,11 @@ recover_savefile(void)
     processed[savelev] = 1;
 
     /* copy game state */
-    if (!copy_bytes(gfd, sfd)) {
+    if (!copy_bytes(gfd, sfd))
+    {
+        recover_failure_reason = "the game state could not be copied";
+        debugprint("recover_savefile: copy game state failed (errno %d)",
+                   errno);
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         delete_savefile();
@@ -5515,7 +5645,12 @@ recover_savefile(void)
                 /* any or all of these may not exist */
                 levc = (xchar) lev;
                 (void)write(sfd, (genericptr_t) &levc, sizeof(levc));
-                if (!copy_bytes(lfd, sfd)) {
+                if (!copy_bytes(lfd, sfd))
+                {
+                    recover_failure_reason =
+                        "a dungeon level could not be copied";
+                    debugprint("recover_savefile: copy level %d failed"
+                               " (errno %d)", lev, errno);
                     (void) nhclose(lfd);
                     (void) nhclose(sfd);
                     delete_savefile();

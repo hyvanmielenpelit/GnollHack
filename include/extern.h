@@ -1348,6 +1348,7 @@ E boolean check_existing_error_save_file(void);
 
 #ifdef SELF_RECOVER
 E boolean recover_savefile(void);
+E const char *get_recover_savefile_failure_reason(void);
 #endif
 #ifdef SYSCF_FILE
 E void assure_syscf_file(void);

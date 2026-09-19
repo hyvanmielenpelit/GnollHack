@@ -66,8 +66,10 @@ getlock(void)
     {
         (void) eraseoldlocks();
         unlock_file(HLOCK);
-        /* Not fatal: the backup save file below is the fallback. */
-        nonfatal_error("Couldn't recover the old game.");
+        /* Not fatal: the backup save file below is the fallback. The reason
+           is a fixed phrase, so the reporter groups these by cause. */
+        nonfatal_error("Couldn't recover the old game: %s.",
+                       get_recover_savefile_failure_reason());
         (void)restore_backup_savefile(FALSE);
         return;
     }
