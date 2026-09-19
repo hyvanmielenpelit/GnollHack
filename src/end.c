@@ -1272,9 +1272,9 @@ dump_everything_ai(time_t when)
     windowprocs.wincap2 = saved_wincap2;
 
     /* dump_everything() -> dump_redirect(FALSE) calls status_initialize(FALSE)
-       which clears the frontend's StatusFields. Since the AI snapshot is
-       called via P/Invoke from the UI thread (not through the game command
-       queue), no game-loop bot() follows to repopulate the status bar.
+       which clears the frontend's StatusFields. The AI snapshot runs on the
+       game thread from inside a frontend wait loop, so no game-loop bot()
+       follows to repopulate the status bar.
        Force-refresh now so the status bar is not left empty. */
     bot();
 #else

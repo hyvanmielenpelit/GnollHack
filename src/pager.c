@@ -424,13 +424,6 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
                     Sprintf(eos(buf), ", hungry");
         }
     }
-    /* Only for a creature seen by sight at its own position: detection,
-       telepathy and warning show that something is there, not what it holds.
-       distant_name() does not mark the weapon as seen. */
-    if (iflags.dumping_ai_snapshot && accurate && !u.uswallow
-        && mtmp->mx == x && mtmp->my == y && MON_WEP(mtmp)
-        && (howmonseen(mtmp) & (MONSEEN_NORMAL | MONSEEN_SEEINVIS)) != 0)
-        Sprintf(eos(buf), ", wielding %s", an(distant_name(MON_WEP(mtmp), xname)));
     /* the conditions drawn on the creature's tile; flying, levitating and
        lycanthropy go by species there, which the name already conveys */
     if (iflags.dumping_ai_snapshot && accurate && !u.uswallow
@@ -3157,8 +3150,10 @@ dump_map_legend_ai(void)
             Sprintf(eos(buf), " [%s]", c_obj_colors[color]);
 
         *stairbuf = '\0';
-        if (kind == LEGEND_KIND_FEATURE && !u.uswallow)
-            ai_stair_destination_text(x, y, stairbuf);
+        if (kind == LEGEND_KIND_FEATURE && !u.uswallow
+            && (sym == S_upstair || sym == S_dnstair
+                || sym == S_upladder || sym == S_dnladder))
+            ai_stair_destination_text(x, y, sym, stairbuf);
 
         if (legend_positions[i].hidden)
         {

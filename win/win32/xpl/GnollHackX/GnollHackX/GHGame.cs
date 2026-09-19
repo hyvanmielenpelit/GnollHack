@@ -190,6 +190,22 @@ namespace GnollHackX
                 GHApp.GnollHackService?.TallyRealTime();
             }
 
+            /* The native snapshot call reads the game data, so it runs here on the game thread */
+            TaskCompletionSource<string> aiSnapshotRequest = Interlocked.Exchange(ref _pendingAiSnapshot, null);
+            if (aiSnapshotRequest != null)
+            {
+                string aiSnapshotPath = null;
+                try
+                {
+                    aiSnapshotPath = GHApp.GnollHackService?.GenerateAiSnapshot();
+                }
+                catch (Exception ex)
+                {
+                    GHApp.MaybeWriteGHLog("GHGame PollResponseQueue: AI snapshot failed: " + ex.Message);
+                }
+                aiSnapshotRequest.TrySetResult(aiSnapshotPath);
+            }
+
             GHApp.ProcessDiscoveredMusic();
             GHApp.ProcessPendingAchievements();
             GHApp.CheckWriteUserDataToDisk();
@@ -4563,6 +4579,41 @@ namespace GnollHackX
             if (PlayingReplay)
                 return;
             _timeTallyRequested = true;
+        }
+
+        private TaskCompletionSource<string> _pendingAiSnapshot;
+
+        /// <summary>
+        /// Asks the game thread to generate an AI snapshot on its next PollResponseQueue().
+        /// Callable from any thread. At most one request is pending at a time; a call made
+        /// while one is pending returns that request's task. The continuations run
+        /// asynchronously, so none of them executes on the game thread.
+        /// </summary>
+        /// <returns>A task that completes with the path the native side returned, or with
+        /// null if it refused or failed. The task stays incomplete while the game thread
+        /// does not poll, so callers bound the wait and then call WithdrawAiSnapshotRequest().</returns>
+        public Task<string> RequestAiSnapshotPathAsync()
+        {
+            if (PlayingReplay)
+                return Task.FromResult<string>(null);
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+            TaskCompletionSource<string> pending = Interlocked.CompareExchange(ref _pendingAiSnapshot, tcs, null);
+            return pending != null ? pending.Task : tcs.Task;
+        }
+
+        /// <summary>
+        /// Withdraws a request made with RequestAiSnapshotPathAsync() that the game thread has
+        /// not taken yet, and completes its task with null. Does nothing if the game thread
+        /// has already taken the request or if another request is pending. Callable from any thread.
+        /// </summary>
+        /// <param name="task">The task RequestAiSnapshotPathAsync() returned.</param>
+        public void WithdrawAiSnapshotRequest(Task<string> task)
+        {
+            TaskCompletionSource<string> pending = Interlocked.CompareExchange(ref _pendingAiSnapshot, null, null);
+            if (pending == null || pending.Task != task)
+                return;
+            if (Interlocked.CompareExchange(ref _pendingAiSnapshot, null, pending) == pending)
+                pending.TrySetResult(null);
         }
         
         private void EndReplayFile()

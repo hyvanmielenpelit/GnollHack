@@ -79,6 +79,7 @@ static char *tunesuffix(mapseen *, char *);
 static int overview_depthstart(int);
 static void overview_level_description(mapseen *, boolean, char *);
 static boolean overview_knows_branch(d_level *, d_level *);
+static void ai_stair_out_of_dungeon_text(char *);
 
 #ifdef DEBUG
 #define DD dungeons[i]
@@ -2199,13 +2200,27 @@ overview_knows_branch(d_level *here, d_level *there)
     return FALSE;
 }
 
+/* AI snapshot text for a staircase or ladder leading out of the dungeon
+   on dungeon level 1, chosen by whether the hero holds the Amulet. */
+static void
+ai_stair_out_of_dungeon_text(char *outbuf)
+{
+    Strcpy(outbuf, is_uhave_amulet()
+           ? " out of the dungeon"
+           : " out of the dungeon (climbing it without the Amulet"
+             " of Yendor ends the game)");
+}
+
 /* For the AI snapshot's map legend: where the staircase or ladder at <x,y>
    of the current level leads, as text to follow its description, or an
    empty string.  Says only what the overview and the staircase's own tile
-   already show.  The order of the tests follows next_level() and
-   prev_level(). */
+   already show.  A staircase or ladder symbol displayed where the level
+   has no such feature at that spot is answered from the symbol's own
+   up/down direction instead, so what is printed does not depend on
+   whether the feature is real.  The order of the tests follows
+   next_level() and prev_level(). */
 void
-ai_stair_destination_text(int x, int y, char *outbuf)
+ai_stair_destination_text(int x, int y, int sym, char *outbuf)
 {
     d_level dest;
     mapseen *mptr;
@@ -2219,10 +2234,7 @@ ai_stair_destination_text(int x, int y, char *outbuf)
     {
         if (sstairs.up && !u.uz.dnum && u.uz.dlevel == 1)
         {
-            Strcpy(outbuf, is_uhave_amulet()
-                   ? " out of the dungeon"
-                   : " out of the dungeon (climbing it without the Amulet"
-                     " of Yendor ends the game)");
+            ai_stair_out_of_dungeon_text(outbuf);
             return;
         }
         dest = sstairs.tolev;
@@ -2235,6 +2247,21 @@ ai_stair_destination_text(int x, int y, char *outbuf)
     }
     else if ((xdnstair && x == xdnstair && y == ydnstair)
              || (xdnladder && x == xdnladder && y == ydnladder))
+    {
+        dest.dnum = u.uz.dnum;
+        dest.dlevel = u.uz.dlevel + 1;
+    }
+    else if (sym == S_upstair || sym == S_upladder)
+    {
+        if (!u.uz.dnum && u.uz.dlevel == 1)
+        {
+            ai_stair_out_of_dungeon_text(outbuf);
+            return;
+        }
+        dest.dnum = u.uz.dnum;
+        dest.dlevel = u.uz.dlevel - 1;
+    }
+    else if (sym == S_dnstair || sym == S_dnladder)
     {
         dest.dnum = u.uz.dnum;
         dest.dlevel = u.uz.dlevel + 1;

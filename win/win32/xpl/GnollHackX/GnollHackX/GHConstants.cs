@@ -253,6 +253,9 @@ namespace GnollHackX
         public const int MaxRefreshRate = 120;
         public const int PollingFrequency = 60;
         public const int PollingInterval = 15;
+        public const int FmodDrainTimeoutMs = 2000;
+        public const int FmodBankEnterTimeoutMs = 3000;
+        public const int AiSnapshotTimeoutMs = 5000;
         public const int SavePollingTimeoutCount = 1500;
         public const double DefaultTextWindowMaxWidth = 600.0;
         public const double WindowHideIntervals = 5.0;

@@ -1258,9 +1258,7 @@ namespace GnollHackX.Pages.Game
             case "refresh_snapshot":
             {
                 /* A snapshot describes a running game; there is nothing to
-                   describe when the Overseer was opened from the About page.
-                   Guarding here also keeps LibGenerateAiSnapshot() away from
-                   uninitialized game globals. */
+                   describe when the Overseer was opened from the About page. */
                 if (currentGame == null)
                     throw new InvalidOperationException("No active game");
 
@@ -1272,11 +1270,9 @@ namespace GnollHackX.Pages.Game
                         "The player has disabled sending game context to the"
                         + " Overseer. No snapshot is available.");
 
-                /* P/Invoke — dispatch to main thread for C core safety */
-                string snapText = await MainThread.InvokeOnMainThreadAsync(() =>
-                {
-                    return GHApp.GenerateAiSnapshotText(out _);
-                });
+                /* The game thread makes the native call on its next poll */
+                AiSnapshotResult snapResult = await GHApp.GenerateAiSnapshotTextAsync();
+                string snapText = snapResult != null ? snapResult.Text : null;
                 if (snapText == null)
                     throw new InvalidOperationException(
                         "AI snapshot generation failed.");
@@ -1443,6 +1439,7 @@ namespace GnollHackX.Pages.Game
         private const int SnapshotTrimMarkerReserve = 120;
 
         private static readonly Regex _petBlockHeadingRegex = new Regex(@"^Pet \d+ of \d+: ", RegexOptions.Compiled);
+        private static readonly Regex _petBlockEndRegex = new Regex(@"^End of pet \d+ of \d+\.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Caps sanitized snapshot text at <see cref="DefaultMaxSnapshotChars"/>.
@@ -1453,7 +1450,7 @@ namespace GnollHackX.Pages.Game
         }
 
         /// <summary>
-        /// Caps sanitized snapshot text at <paramref name="cap"/> characters.
+        /// Caps snapshot text at <paramref name="cap"/> characters.
         /// The sections at the end (Discoveries, Logged events, the dungeon
         /// overview) are authoritative for the reader, so the oldest messages,
         /// the pet statistics blocks past the second and trailing blanks on
@@ -1493,25 +1490,38 @@ namespace GnollHackX.Pages.Game
 
             if (length > target)
             {
+                /* The pet blocks lie before the Inventory: heading; without that heading none is trimmed */
                 int sectionEnd = FindSnapshotLine(lines, "Inventory:", 0);
-                if (sectionEnd < 0)
-                    sectionEnd = lines.Count;
                 List<int> blockStarts = new List<int>();
                 for (int i = 0; i < sectionEnd; i++)
                 {
                     if (_petBlockHeadingRegex.IsMatch(lines[i]))
                         blockStarts.Add(i);
                 }
+                /* A block runs from its heading through its "End of pet N of M." line, which
+                   is looked for up to the next block; a block without that line is kept */
+                int searchEnd = sectionEnd;
                 for (int b = blockStarts.Count - 1; b >= SnapshotTrimKeptPetBlocks && length > target; b--)
                 {
-                    int blockEnd = b + 1 < blockStarts.Count ? blockStarts[b + 1] : sectionEnd;
-                    for (int i = blockEnd - 1; i >= blockStarts[b]; i--)
+                    int blockStart = blockStarts[b];
+                    int blockEnd = -1;
+                    for (int i = blockStart + 1; i < searchEnd; i++)
+                    {
+                        if (_petBlockEndRegex.IsMatch(lines[i].Trim()))
+                        {
+                            blockEnd = i;
+                            break;
+                        }
+                    }
+                    /* Whether this block goes or stays, the next older one ends before its heading */
+                    searchEnd = blockStart;
+                    if (blockEnd < 0)
+                        continue;
+                    for (int i = blockEnd; i >= blockStart; i--)
                     {
                         length -= lines[i].Length + 1;
                         lines.RemoveAt(i);
                     }
-                    sectionEnd -= blockEnd - blockStarts[b];
-                    blockStarts.RemoveAt(b);
                     droppedPetBlocks++;
                 }
             }

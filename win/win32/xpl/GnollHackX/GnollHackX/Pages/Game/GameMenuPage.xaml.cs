@@ -451,16 +451,16 @@ namespace GnollHackX.Pages.Game
 
             try
             {
-                /* Game thread is idle while the menu is open, so the native
-                   call is safe here, as in OpenOverseerPage() */
-                string snapshottext = GHApp.GenerateAiSnapshotText(out string filepath);
-                if (snapshottext == null || filepath == null)
+                /* The game thread generates the snapshot on its next poll,
+                   as in OpenOverseerPage() */
+                AiSnapshotResult snapshot = await GHApp.GenerateAiSnapshotTextAsync();
+                if (snapshot == null || snapshot.Text == null || snapshot.FilePath == null)
                 {
                     await GHApp.DisplayMessageBox(this, "AI Snapshot Failed", "GnollHack could not generate an AI snapshot.", "OK");
                 }
                 else
                 {
-                    await GHApp.ShareFile(this, filepath, "GnollHack AI Snapshot");
+                    await GHApp.ShareFile(this, snapshot.FilePath, "GnollHack AI Snapshot");
                 }
             }
             catch (Exception ex)
@@ -579,10 +579,11 @@ namespace GnollHackX.Pages.Game
 
             string snapshotText = "";
 
-            /* 1. Generate AI snapshot via native call (safe: game thread is idle) */
+            /* 1. Generate AI snapshot (the game thread makes the native call on its next poll) */
             try
             {
-                string text = OverseerPage.TruncateSnapshotForLlm(GHApp.GenerateAiSnapshotText(out _));
+                AiSnapshotResult snapshot = await GHApp.GenerateAiSnapshotTextAsync();
+                string text = OverseerPage.TruncateSnapshotForLlm(snapshot != null ? snapshot.Text : null);
                 if (text != null)
                     snapshotText = text;
                 else

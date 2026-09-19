@@ -570,16 +570,27 @@ namespace GnollHackX
 
         /// <summary>
         /// Generates an AI snapshot and returns its text with LF line endings.
-        /// Must run on the main thread with the game thread idle, like the native call it wraps.
+        /// The game thread produces the snapshot on its next poll, so this can be awaited from any thread.
         /// </summary>
-        /// <param name="textFilePath">Full path of the snapshot text file, or null if generation failed.</param>
-        /// <returns>The snapshot text, untruncated, or null if generation failed.</returns>
-        public static string GenerateAiSnapshotText(out string textFilePath)
+        /// <returns>The untruncated snapshot text and the full path of its file, or null if there is no
+        /// running game, the game thread does not answer within GHConstants.AiSnapshotTimeoutMs, or the
+        /// native side refuses or fails.</returns>
+        public static async Task<AiSnapshotResult> GenerateAiSnapshotTextAsync()
         {
-            textFilePath = null;
+            GHGame curGame = CurrentGHGame;
+            if (curGame == null)
+                return null;
 
             /* Earlier snapshot files are left for the startup wipe, since a share target may still be reading one */
-            string textpath = GnollHackService.GenerateAiSnapshot();
+            Task<string> request = curGame.RequestAiSnapshotPathAsync();
+            Task finished = await Task.WhenAny(request, Task.Delay(GHConstants.AiSnapshotTimeoutMs));
+            if (finished != request)
+            {
+                curGame.WithdrawAiSnapshotRequest(request);
+                return null;
+            }
+
+            string textpath = await request;
             if (string.IsNullOrEmpty(textpath))
                 return null;
 
@@ -593,8 +604,7 @@ namespace GnollHackX
 
             /* The C runtime writes CRLF on Windows; TruncateSnapshotForLlm() splits on LF */
             string text = File.ReadAllText(textpath).Replace("\r\n", "\n").Replace('\r', '\n');
-            textFilePath = textpath;
-            return text.Trim();
+            return new AiSnapshotResult(text.Trim(), textpath);
         }
 
         public static void ClearBones()
@@ -3650,7 +3660,7 @@ namespace GnollHackX
         public static string GHPath { get; private set; } = ".";
 
         private static int _loadBanks = 1;
-        /* LoadBanks is one of the conditions FMODup() checks, so switching it on can make
+        /* LoadBanks is one of the conditions TryEnterFmod() checks, so switching it on can make
            a previously refused mute change applicable; retry any pending one. */
         public static bool LoadBanks { get { return Interlocked.CompareExchange(ref _loadBanks, 0, 0) != 0; } set { Interlocked.Exchange(ref _loadBanks, value ? 1 : 0); if (value) RetryMuteStateIfDirty(); } }
 
@@ -12879,6 +12889,23 @@ namespace GnollHackX
         public DiscoveredMusic(int ghsound)
         {
             this.ghsound = ghsound;
+        }
+    }
+
+    /// <summary>
+    /// An AI snapshot produced by GHApp.GenerateAiSnapshotTextAsync().
+    /// </summary>
+    public class AiSnapshotResult
+    {
+        /// <summary>The snapshot text with LF line endings, untruncated.</summary>
+        public string Text { get; private set; }
+        /// <summary>Full path of the snapshot text file.</summary>
+        public string FilePath { get; private set; }
+
+        public AiSnapshotResult(string text, string filePath)
+        {
+            Text = text;
+            FilePath = filePath;
         }
     }
 

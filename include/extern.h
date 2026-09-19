@@ -1065,7 +1065,7 @@ E void overview_stats(winid, const char *, int64_t *, size_t *);
 E void remdun_mapseen(int);
 E const char *endgamelevelname(char *, int);
 E mapseen* find_mapseen(d_level*);
-E void ai_stair_destination_text(int, int, char *);
+E void ai_stair_destination_text(int, int, int, char *);
 E void check_special_level_naming_by_mon(struct monst*);
 E void set_special_level_seen(d_level*, boolean);
 
@@ -1183,7 +1183,7 @@ E int wiz_dumplog(void);
 E int dosnapshot(void);
 E void dump_everything_ai(time_t);
 E void dump_map_ai(void);
-E void dump_open_log_ai(time_t);
+E boolean dump_open_log_ai(time_t);
 E void dump_close_log_ai(void);
 E char* print_dumpai_filename_to_buffer(char*);
 E void dump_ai_write(const char*);

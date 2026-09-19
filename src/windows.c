@@ -3064,13 +3064,34 @@ dump_close_log(void)
 #endif
 }
 
-void
-dump_open_log_ai(time_t now UNUSED)
+/* Opens the AI snapshot file; returns TRUE if it is open for writing */
+boolean
+dump_open_log_ai(time_t now)
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
     char buf[BUFSZ];
     char* fname;
 
+    /* The dump writers write to every dump file that is open, and
+       dumplog_windowprocs_backup holds a single backup, so the AI
+       snapshot is refused while a dumplog is open */
+#ifdef DUMPLOG
+    if (dumplog_file)
+        return FALSE;
+#endif
+#ifdef DUMPHTML
+    if (dumphtml_file)
+        return FALSE;
+#endif
+    /* A snapshot that did not reach dump_close_log_ai() leaves this open */
+    if (dumpai_file)
+    {
+        (void)fclose(dumpai_file);
+        dumpai_file = (FILE*)0;
+    }
+
+    /* dump_fmtstr() reads the date fields of the file name from this */
+    dumplog_now = now;
     fname = print_dumpai_filename_to_buffer(buf);
     if (fname)
     {
@@ -3082,9 +3103,13 @@ dump_open_log_ai(time_t now UNUSED)
             /* Save windowprocs backup so dump_redirect can restore them */
             dumplog_windowprocs_backup = windowprocs;
             menu_headings_backup = iflags.menu_headings;
+            return TRUE;
         }
     }
+#else
+    nhUse(now);
 #endif
+    return FALSE;
 }
 
 void

@@ -1246,9 +1246,23 @@ LibGenerateAiSnapshot()
     char* fname;
 
     static char output_filepath_buffer[4096] = "";
+
+    /* The snapshot reads the hero, the inventory, the level and the
+       message history, so it is refused unless a started game is in
+       memory and is not being saved, restored, reset, freed or ended;
+       a snapshot already in progress owns the snapshot file */
+    if (!(context.game_started && program_state.something_worth_saving
+        && !program_state.gameover && !program_state.panicking
+        && !program_state.in_tricked && !program_state.exiting
+        && !program_state.freeing_dynamic_data
+        && !saving && !restoring && !reseting && !check_pointing
+        && !iflags.dumping_ai_snapshot))
+        return 0;
+
     dumptime = getnow();
 
-    dump_open_log_ai(dumptime);
+    if (!dump_open_log_ai(dumptime))
+        return 0;
     fname = print_dumpai_filename_to_buffer(output_filepath_buffer);
     dump_everything_ai(dumptime);
     dump_close_log_ai();
