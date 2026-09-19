@@ -656,7 +656,7 @@ typedef unsigned char uchar;
 /* Version of the AI snapshot's text format, printed at the top of the
    snapshot.  Increase it whenever a reader of the flattened text could tell
    the difference: a line added, removed, moved or reworded. */
-#define AI_SNAPSHOT_FORMAT_VERSION 8
+#define AI_SNAPSHOT_FORMAT_VERSION 9
 
 /* AI snapshot map layout.  dump_map_ai() (detect.c) prefixes every map row
    with a right aligned row number gutter, and dump_map_legend_ai() (pager.c)

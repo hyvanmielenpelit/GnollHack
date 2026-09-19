@@ -76,6 +76,9 @@ static const char *seen_string(xchar, const char *);
 static const char *br_string2(branch *);
 static const char *shop_string(int);
 static char *tunesuffix(mapseen *, char *);
+static int overview_depthstart(int);
+static void overview_level_description(mapseen *, boolean, char *);
+static boolean overview_knows_branch(d_level *, d_level *);
 
 #ifdef DEBUG
 #define DD dungeons[i]
@@ -2178,6 +2181,103 @@ find_mapseen(d_level *lev)
     return mptr;
 }
 
+/* Does the overview record the branch joining levels 'here' and 'there'?
+   The record is kept on the level a branch starts from, whichever of the
+   two that is, and only once the hero has travelled the branch; see
+   recbranch_mapseen().  Forgetting that level clears it. */
+static boolean
+overview_knows_branch(d_level *here, d_level *there)
+{
+    mapseen *mptr;
+
+    if ((mptr = find_mapseen(here)) != 0 && mptr->br
+        && on_level(&mptr->br->end2, there))
+        return TRUE;
+    if ((mptr = find_mapseen(there)) != 0 && mptr->br
+        && on_level(&mptr->br->end2, here))
+        return TRUE;
+    return FALSE;
+}
+
+/* For the AI snapshot's map legend: where the staircase or ladder at <x,y>
+   of the current level leads, as text to follow its description, or an
+   empty string.  Says only what the overview and the staircase's own tile
+   already show.  The order of the tests follows next_level() and
+   prev_level(). */
+void
+ai_stair_destination_text(int x, int y, char *outbuf)
+{
+    d_level dest;
+    mapseen *mptr;
+    char descbuf[BUFSZ];
+
+    *outbuf = '\0';
+    if (In_endgame(&u.uz))
+        return;
+
+    if (sstairs.sx && x == sstairs.sx && y == sstairs.sy)
+    {
+        if (sstairs.up && !u.uz.dnum && u.uz.dlevel == 1)
+        {
+            Strcpy(outbuf, is_uhave_amulet()
+                   ? " out of the dungeon"
+                   : " out of the dungeon (climbing it without the Amulet"
+                     " of Yendor ends the game)");
+            return;
+        }
+        dest = sstairs.tolev;
+    }
+    else if ((xupstair && x == xupstair && y == yupstair)
+             || (xupladder && x == xupladder && y == yupladder))
+    {
+        dest.dnum = u.uz.dnum;
+        dest.dlevel = u.uz.dlevel - 1;
+    }
+    else if ((xdnstair && x == xdnstair && y == ydnstair)
+             || (xdnladder && x == xdnladder && y == ydnladder))
+    {
+        dest.dnum = u.uz.dnum;
+        dest.dlevel = u.uz.dlevel + 1;
+    }
+    else
+        return;
+
+    if (dest.dlevel < 1 || dest.dlevel > dunlevs_in_dungeon(&dest)
+        || In_endgame(&dest))
+        return;
+
+    /* a record the hero has lost counts as no record */
+    mptr = find_mapseen(&dest);
+    if (mptr && (is_msflag_forgot(&mptr->flags)
+                 || is_msflag_unreachable(&mptr->flags)))
+        mptr = (mapseen *) 0;
+
+    if (dest.dnum != u.uz.dnum)
+    {
+        /* where a branch leads is known only once it has been travelled */
+        if (!overview_knows_branch(&u.uz, &dest))
+        {
+            Strcpy(outbuf, " to another dungeon branch");
+            return;
+        }
+        Sprintf(outbuf, " to %s, Level %d", dungeons[dest.dnum].dname,
+                overview_depthstart(dest.dnum) + dest.dlevel - 1);
+    }
+    else
+    {
+        Sprintf(outbuf, " to Level %d",
+                overview_depthstart(dest.dnum) + dest.dlevel - 1);
+    }
+
+    /* the name only where the overview prints the level */
+    if (mptr && interest_mapseen(mptr))
+    {
+        overview_level_description(mptr, TRUE, descbuf);
+        if (*descbuf)
+            Sprintf(eos(outbuf), " (%.80s)", descbuf);
+    }
+}
+
 static mapseen *
 find_mapseen_by_str(const char *s)
 {
@@ -3116,6 +3216,88 @@ describe_cemetery_who(const char *who, char *outbuf)
     return TRUE;
 }
 
+/* first level number the overview prints for dungeon 'dnum' */
+static int
+overview_depthstart(int dnum)
+{
+    if (dnum == quest_dnum || dnum == knox_level.dnum)
+        return 1;
+    return dungeons[dnum].depth_start;
+}
+
+/* The overview's one-line description of a level, without indentation or
+   full stop; empty when it has none.  The cases are assumed to be mutually
+   exclusive.  Each is knowledge the hero has: recalc_mapseen(),
+   mapseen_temple() and set_special_level_seen() set these flags only once
+   the evidence has been met.  'brief' leaves out what only the overview
+   has room for. */
+static void
+overview_level_description(mapseen *mptr, boolean brief, char *outbuf)
+{
+    char tmpbuf[BUFSZ];
+    s_level *slev;
+
+    *outbuf = '\0';
+    if (is_msflag_oracle(&mptr->flags))
+    {
+        Strcpy(outbuf, "Oracle of Delphi");
+    }
+    else if (In_sokoban(&mptr->lev))
+    {
+        if (!brief)
+            Strcpy(outbuf, is_msflag_sokosolved(&mptr->flags) ? "Solved"
+                                                              : "Unsolved");
+    }
+    else if (is_msflag_bigroom(&mptr->flags))
+    {
+        Strcpy(outbuf, "A very big room");
+    }
+    else if (is_msflag_roguelevel(&mptr->flags))
+    {
+        Strcpy(outbuf, "A primitive area");
+    }
+    else if (on_level(&mptr->lev, &qstart_level))
+    {
+        Sprintf(outbuf, "Home%s",
+                is_msflag_unreachable(&mptr->flags) ? " (no way back...)"
+                                                    : "");
+        if (is_uevent_qcompleted())
+            Sprintf(outbuf, "Completed quest for %s", ldrname());
+        else if (is_msflag_questing(&mptr->flags))
+            Sprintf(outbuf, "Given quest by %s", ldrname());
+    }
+    else if (is_msflag_ludios(&mptr->flags))
+    {
+        /* presence of the ludios branch in #overview output indicates that
+           the player has made it onto the level; presence of this annotation
+           indicates that the fort's entrance has been seen (or mapped) */
+        Strcpy(outbuf, "Fort Ludios");
+    }
+    else if (is_msflag_castle(&mptr->flags))
+    {
+        Sprintf(outbuf, "The castle%s",
+                brief ? "" : tunesuffix(mptr, tmpbuf));
+    }
+    else if (is_msflag_valley(&mptr->flags))
+    {
+        Strcpy(outbuf, "Valley of the Dead");
+    }
+    else if (is_msflag_msanctum(&mptr->flags))
+    {
+        Strcpy(outbuf, "Moloch's Sanctum");
+    }
+    else if (is_msflag_special_level(&mptr->flags)) //(Inhell || Is_medusa_level(&mptr->lev))
+    {
+        if ((slev = Is_special(&mptr->lev)) != 0)
+        {
+            if (is_msflag_special_level_true_nature_known(&mptr->flags))
+                Strcpy(outbuf, slev->name);
+            else if (strcmp(mptr->flags.special_description, ""))
+                Strcpy(outbuf, mptr->flags.special_description);
+        }
+    }
+}
+
 static void
 print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
 {
@@ -3130,12 +3312,9 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
      * other text.
      */
     dnum = mptr->lev.dnum;
-    if (dnum == quest_dnum || dnum == knox_level.dnum)
-        depthstart = 1;
-    else
-        depthstart = dungeons[dnum].depth_start;
+    depthstart = overview_depthstart(dnum);
 
-    if (printdun) 
+    if (printdun)
     {
         char dbuf[BUFSZ * 2];
         if (dungeons[dnum].dunlev_ureached == dungeons[dnum].entry_lev
@@ -3354,45 +3533,9 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
 
     /* we assume that these are mutually exclusive */
     *buf = '\0';
-    if is_msflag_oracle(&(mptr->flags)) {
-        Sprintf(buf, "%sOracle of Delphi.", PREFIX);
-    } else if (In_sokoban(&mptr->lev)) {
-        Sprintf(buf, "%s%s.", PREFIX,
-                is_msflag_sokosolved(&mptr->flags) ? "Solved" : "Unsolved");
-    } else if is_msflag_bigroom(&(mptr->flags)) {
-        Sprintf(buf, "%sA very big room.", PREFIX);
-    } else if is_msflag_roguelevel(&(mptr->flags)) {
-        Sprintf(buf, "%sA primitive area.", PREFIX);
-    } else if (on_level(&mptr->lev, &qstart_level)) {
-        Sprintf(buf, "%sHome%s.", PREFIX,
-                is_msflag_unreachable(&mptr->flags) ? " (no way back...)" : "");
-        if (is_uevent_qcompleted())
-            Sprintf(buf, "%sCompleted quest for %s.", PREFIX, ldrname());
-        else if is_msflag_questing(&(mptr->flags))
-            Sprintf(buf, "%sGiven quest by %s.", PREFIX, ldrname());
-    } else if is_msflag_ludios(&(mptr->flags)) {
-        /* presence of the ludios branch in #overview output indicates that
-           the player has made it onto the level; presence of this annotation
-           indicates that the fort's entrance has been seen (or mapped) */
-        Sprintf(buf, "%sFort Ludios.", PREFIX);
-    } else if is_msflag_castle(&(mptr->flags)) {
-        Sprintf(buf, "%sThe castle%s.", PREFIX, tunesuffix(mptr, tmpbuf));
-    } else if is_msflag_valley(&(mptr->flags)) {
-        Sprintf(buf, "%sValley of the Dead.", PREFIX);
-    } else if is_msflag_msanctum(&(mptr->flags)) {
-        Sprintf(buf, "%sMoloch's Sanctum.", PREFIX);
-    }
-    else if is_msflag_special_level(&(mptr->flags)) //(Inhell || Is_medusa_level(&mptr->lev))
-    {
-        s_level* slev;
-        if ((slev = Is_special(&mptr->lev)) != 0)
-        {
-            if (is_msflag_special_level_true_nature_known(&mptr->flags))
-                Sprintf(buf, "%s%s.", PREFIX, slev->name);
-            else if(strcmp(mptr->flags.special_description, ""))
-                Sprintf(buf, "%s%s.", PREFIX, mptr->flags.special_description);
-        }
-    }
+    overview_level_description(mptr, FALSE, tmpbuf);
+    if (*tmpbuf)
+        Sprintf(buf, "%s%s.", PREFIX, tmpbuf);
 
     if (*buf)
         putstr(win, ATR_INDENT_AT_SPACE, buf);

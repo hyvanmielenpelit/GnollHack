@@ -43,6 +43,7 @@ static boolean dospellmenu(const char *, int, int *);
 static boolean dotradspellmenu(const char*, int, int*);
 static boolean doaltspellmenu(const char*, int, int*);
 static int percent_success(int, boolean);
+static int percent_success_for_type(int, int, boolean);
 static int attribute_value_for_spellbook(int);
 #if 0
 static char *spellretention(int, char *);
@@ -5182,8 +5183,18 @@ get_object_spell_casting_penalty(struct obj *obj)
     return (int64_t)(res * (double)ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER);
 }
 
+/* success chance of the spell in slot 'spell' of the hero's spell list */
 static int
 percent_success(int spell, boolean limited)
+{
+    return percent_success_for_type(spellid(spell), (int) spellev(spell),
+                                    limited);
+}
+
+/* success chance the hero would have with a spell of object type 'otyp'
+   and level 'spell_level', whether or not it is in the spell list */
+static int
+percent_success_for_type(int otyp, int spell_level, boolean limited)
 {
     /* Intrinsic and learned ability are combined to calculate
      * the probability of player's success at cast a given spell.
@@ -5192,11 +5203,11 @@ percent_success(int spell, boolean limited)
     int64_t armor_penalty_percentage;
     int skill;
 
-    statused = attribute_value_for_spellbook(spellid(spell));
+    statused = attribute_value_for_spellbook(otyp);
 
     /* Calculate intrinsic ability (armor_penalty) */
     armor_penalty_percentage = 0L; // urole.spelbase;
-    if (!(objects[spellid(spell)].oc_spell_flags & S1_NO_SOMATIC_COMPONENT))
+    if (!(objects[otyp].oc_spell_flags & S1_NO_SOMATIC_COMPONENT))
     {
         if (uarm)
             armor_penalty_percentage += get_object_spell_casting_penalty(uarm);
@@ -5238,9 +5249,9 @@ percent_success(int spell, boolean limited)
 
     /* Calculate success chance */
     chance = -130;
-    chance += -50 * (spellev(spell) + 0);
+    chance += -50 * (spell_level + 0);
 
-    skill = P_SKILL_LEVEL(spell_skilltype(spellid(spell)));
+    skill = P_SKILL_LEVEL(spell_skilltype(otyp));
 
     int64_t bonus = 0L;
     bonus += 15L * (int64_t)statused;
@@ -5372,6 +5383,75 @@ already_learnt_spell_type(int otyp)
             return TRUE;
 
     return FALSE;
+}
+
+/* For the AI snapshot's inventory tag: what the spell of an identified
+   spellbook is, and what casting it would be like for the hero now, from
+   the routines the spell list and study_book() use.  'shortform' stops
+   after the success chance.  Leaves 'outbuf' empty for anything but a
+   book of a castable spell whose statistics the hero knows.  Reads only. */
+void
+ai_spellbook_tag_text(struct obj *book, boolean shortform, char *outbuf)
+{
+    char lvlbuf[BUFSZ];
+    int otyp, i, pct_lim, pct_base, matcomp, turns;
+    boolean known = FALSE, forgotten = FALSE;
+    double manacost;
+
+    *outbuf = '\0';
+    if (!book || book->oclass != SPBOOK_CLASS)
+        return;
+    otyp = book->otyp;
+    if ((objects[otyp].oc_flags & O1_NON_SPELL_SPELLBOOK) != 0
+        || !object_stats_known(book))
+        return;
+
+    for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+    {
+        if (spellid(i) == otyp)
+        {
+            known = TRUE;
+            forgotten = (spellknow(i) <= 0);
+            break;
+        }
+    }
+
+    if (known && !forgotten)
+    {
+        Strcpy(outbuf, "already learned");
+        return;
+    }
+
+    print_spell_level_text(lvlbuf, otyp, TRUE, 0, TRUE);
+    pct_lim = percent_success_for_type(
+        otyp, (int) objects[otyp].oc_spell_level, TRUE);
+    pct_base = percent_success_for_type(
+        otyp, (int) objects[otyp].oc_spell_level, FALSE);
+
+    Sprintf(outbuf, "%s, %s; if %s now: %d%% success", lvlbuf,
+            forgotten ? "learned but FORGOTTEN" : "not learned",
+            forgotten ? "relearned" : "learned", pct_lim);
+    /* same condition as the spell list */
+    if (pct_base < 0 || pct_base > 100)
+        Sprintf(eos(outbuf), " (base %d%%)", pct_base);
+    if (shortform)
+        return;
+
+    manacost = ceil(10 * get_spellbook_adjusted_mana_cost(otyp)) / 10;
+    Sprintf(eos(outbuf), ", %.1f mana", manacost);
+
+    matcomp = objects[otyp].oc_material_components;
+    if (matcomp > 0)
+        Sprintf(eos(outbuf), ", components: %.60s",
+                matlists[matcomp].description_short);
+
+    /* study_book()'s delay; learn() uses up a second unit on half the
+       turns when vision is enhanced */
+    turns = min(8, max(1, (int) objects[otyp].oc_spell_level))
+            * (int) objects[otyp].oc_delay;
+    if (Enhanced_vision)
+        turns = (2 * turns + 2) / 3;
+    Sprintf(eos(outbuf), ", about %d turn%s to learn", turns, plur(turns));
 }
 
 

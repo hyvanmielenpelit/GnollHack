@@ -1142,6 +1142,17 @@ dump_everything(int how, time_t when)
                    " are. A food with no such tag is not thereby safe for the"
                    " conduct: unidentified food and a tin whose contents are"
                    " not known are never tagged.");
+        putstr(0, ATR_NONE,
+               "A spellbook's tag gives its spell's level and school, and for"
+               " a spell the hero cannot cast at present, what casting it"
+               " would be like if it were learned now: the success chance,"
+               " with the unlimited base figure when that is below 0% or"
+               " above 100%, the mana cost, any material components, and the"
+               " turns of uninterrupted study needed to learn it. Studying is"
+               " never instant and danger interrupts it; unless the book is"
+               " blessed it can fail, and a cursed book always fails. A"
+               " spellbook whose tag says nothing about its spell is either"
+               " unidentified or not a book of a castable spell.");
     }
     (void) display_inventory((char *) 0, TRUE, how == SNAPSHOT_AI ? SHOWWEIGHTS_INVENTORY : SHOWWEIGHTS_NONE, FALSE);
     container_contents(invent, how != SNAPSHOT && how != SNAPSHOT_AI, TRUE, FALSE, how == SNAPSHOT_AI ? SHOWWEIGHTS_OTHER_INVENTORY : SHOWWEIGHTS_NONE, FALSE);

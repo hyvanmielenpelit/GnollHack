@@ -1065,6 +1065,7 @@ E void overview_stats(winid, const char *, int64_t *, size_t *);
 E void remdun_mapseen(int);
 E const char *endgamelevelname(char *, int);
 E mapseen* find_mapseen(d_level*);
+E void ai_stair_destination_text(int, int, char *);
 E void check_special_level_naming_by_mon(struct monst*);
 E void set_special_level_seen(d_level*, boolean);
 
@@ -3745,6 +3746,7 @@ E void dump_spells(void);
 #endif
 E void sortspells(void);
 E void print_spell_level_text(char*, int, boolean, uchar, boolean);
+E void ai_spellbook_tag_text(struct obj *, boolean, char *);
 E void reset_spells(void);
 E int64_t get_object_spell_casting_penalty(struct obj*);
 E const char* spelltypemnemonic(int);

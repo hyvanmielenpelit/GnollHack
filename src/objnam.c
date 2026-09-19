@@ -1184,13 +1184,13 @@ ai_snapshot_food_conducts(struct obj *obj, boolean unidentified,
 static void
 append_ai_snapshot_tag(struct obj *obj, char *bp)
 {
-    char tagbuf[BUFSZ];
+    char tagbuf[BUFSZ * 2], spellfull[BUFSZ], spellshort[BUFSZ];
     boolean artifact_description_exists;
     boolean unidentified = FALSE, typenamed = FALSE, labelled = FALSE,
             bucunknown, unseencontents;
-    boolean notvegan, notvegetarian, knowledge, conduct;
+    boolean notvegan, notvegetarian, knowledge, conduct, spell;
     boolean withnames;
-    int typ, pass, withconduct;
+    int typ, pass, detail;
 
     if (iflags.override_ID)
         return;
@@ -1227,20 +1227,31 @@ append_ai_snapshot_tag(struct obj *obj, char *bp)
 
     ai_snapshot_food_conducts(obj, unidentified, &notvegan, &notvegetarian);
 
+    spellfull[0] = spellshort[0] = '\0';
+    if (!unidentified)
+    {
+        ai_spellbook_tag_text(obj, FALSE, spellfull);
+        ai_spellbook_tag_text(obj, TRUE, spellshort);
+    }
+    spell = (*spellfull != '\0');
+
     knowledge = unidentified || labelled || bucunknown || unseencontents;
     conduct = notvegan || notvegetarian;
-    if (!knowledge && !conduct)
+    if (!knowledge && !conduct && !spell)
         return;
 
     /* first with the player's names quoted, then without them; within
-       each, first with the conduct components, then without them */
+       each, first with the conduct components and the full spell text,
+       then with the short spell text, then with neither */
     for (pass = 0; pass < 2; pass++)
     {
         withnames = (pass == 0);
-        for (withconduct = 1; withconduct >= 0; withconduct--)
+        for (detail = 2; detail >= 0; detail--)
         {
             /* skip an attempt that repeats the other or has nothing in it */
-            if (withconduct ? !conduct : !knowledge)
+            if (detail == 2 ? !(conduct || spell)
+                : detail == 1 ? !spell
+                : !knowledge)
                 continue;
 
             Strcpy(tagbuf, " [");
@@ -1270,10 +1281,13 @@ append_ai_snapshot_tag(struct obj *obj, char *bp)
                 Strcat(tagbuf, "BUC unknown; ");
             if (unseencontents)
                 Strcat(tagbuf, "contents not yet seen; ");
-            if (withconduct && notvegan)
+            if (detail && notvegan)
                 Strcat(tagbuf, "not vegan; ");
-            if (withconduct && notvegetarian)
+            if (detail && notvegetarian)
                 Strcat(tagbuf, "not vegetarian; ");
+            if (detail && spell)
+                Sprintf(eos(tagbuf), "%s; ",
+                        detail == 2 ? spellfull : spellshort);
 
             /* a tag with no component has no separator to replace */
             if (strlen(tagbuf) <= 2)

@@ -2938,7 +2938,7 @@ dump_map_legend_ai(void)
 {
     static char descbuf[BUFSZ * 5], simplebuf[BUFSZ * 2], extrabuf[BUFSZ * 2];
     static char buf[BUFSZ * 6];
-    char coordbuf[BUFSZ];
+    char coordbuf[BUFSZ], stairbuf[BUFSZ];
     struct legend_sym_entry *symentry;
     struct obj *otmp;
     boolean anylit = FALSE;
@@ -3156,12 +3156,19 @@ dump_map_legend_ai(void)
         if (color != NO_COLOR && color >= 0 && color < CLR_MAX)
             Sprintf(eos(buf), " [%s]", c_obj_colors[color]);
 
+        *stairbuf = '\0';
+        if (kind == LEGEND_KIND_FEATURE && !u.uswallow)
+            ai_stair_destination_text(x, y, stairbuf);
+
         if (legend_positions[i].hidden)
         {
             /* Described from the terrain tables: lookat() reads the live
                display and would describe whatever is standing on top. */
-            Sprintf(eos(buf), " %s, currently hidden under something",
-                    legend_sym_explanation(sym));
+            Sprintf(eos(buf), " %s%s, %s", legend_sym_explanation(sym),
+                    stairbuf,
+                    (x == u.ux && y == u.uy && !u.uswallow)
+                        ? "the hero is standing on it"
+                        : "currently hidden under something");
         }
         else
         {
@@ -3170,9 +3177,9 @@ dump_map_legend_ai(void)
             if (!*descbuf)
                 Strcpy(descbuf, legend_sym_explanation(sym));
             if (x == u.ux && y == u.uy)
-                Sprintf(eos(buf), " you: %s", descbuf);
+                Sprintf(eos(buf), " you: %s%s", descbuf, stairbuf);
             else
-                Sprintf(eos(buf), " %s", descbuf);
+                Sprintf(eos(buf), " %s%s", descbuf, stairbuf);
             if (*extrabuf)
                 Sprintf(eos(buf), " [seen: %s]", extrabuf);
         }
