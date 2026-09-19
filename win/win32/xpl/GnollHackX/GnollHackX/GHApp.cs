@@ -2685,6 +2685,7 @@ namespace GnollHackX
         public static void OnSleep()
         {
             MaybeWriteGHLog("GHApp.OnSleep: Start", true, GHConstants.SentryGnollHackGeneralCategoryName);
+            SetSentryTag(GHConstants.SentryTagAppLifecycle, "sleeping");
             IsSuspended = true;
             if (!UsePlatformRenderLoop)
                 PlatformService?.RevertAnimatorDuration(false);
@@ -2884,6 +2885,7 @@ namespace GnollHackX
         private static void HandleResume(bool isRestart)
         {
             MaybeWriteGHLog("GHApp.HandleResume: Start (isRestart=" + isRestart + ")", true, GHConstants.SentryGnollHackGeneralCategoryName);
+            SetSentryTag(GHConstants.SentryTagAppLifecycle, "active");
             IsSuspended = false;
             FmodService?.Resume();
             MaybeWriteGHLog("GHApp.HandleResume: FmodService.Resume returned", true, GHConstants.SentryGnollHackGeneralCategoryName);
@@ -3086,6 +3088,20 @@ namespace GnollHackX
                 {
                     Debug.WriteLine(ex.Message);
                 }
+            }
+#endif
+        }
+
+        public static void SetSentryTag(string key, string value)
+        {
+#if SENTRY
+            try
+            {
+                SentrySdk.ConfigureScope(scope => scope.SetTag(key, value));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
 #endif
         }

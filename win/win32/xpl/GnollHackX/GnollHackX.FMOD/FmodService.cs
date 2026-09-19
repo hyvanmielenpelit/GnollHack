@@ -170,6 +170,16 @@ namespace GnollHackX.Unknown
         private int _suspendRequested = 0;
         private bool SuspendRequested { get { return Interlocked.CompareExchange(ref _suspendRequested, 0, 0) != 0; } set { Interlocked.Exchange(ref _suspendRequested, value ? 1 : 0); } }
 
+        /* FMOD APIs must not be entered from other threads while the mixer is being
+           suspended or resumed, or the system shut down; FMODup() reports down for the
+           duration. Set only inside Suspend, Resume and ShutdownFmod, never before FMOD
+           is initialized, so InitializeFmod can still apply the mute state while a
+           suspend is pending. */
+        private int _lifecycleTransition = 0;
+        private bool InLifecycleTransition { get { return Interlocked.CompareExchange(ref _lifecycleTransition, 0, 0) != 0; } }
+        private bool TryBeginLifecycleTransition() { return Interlocked.CompareExchange(ref _lifecycleTransition, 1, 0) == 0; }
+        private void EndLifecycleTransition() { Interlocked.Exchange(ref _lifecycleTransition, 0); }
+
         public void InitializeFmod()
         {
             if (Initialized)
@@ -217,6 +227,7 @@ namespace GnollHackX.Unknown
                 return;
 
             Initialized = true;
+            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, "running");
             GHApp.MaybeWriteGHLog("FMOD initialized successfully.");
 
             /* A newly created system's master channel group is always unmuted. Re-apply
@@ -235,31 +246,46 @@ namespace GnollHackX.Unknown
 
             /* FMOD docs: must call mixerResume before release to avoid deadlock */
             Resume();
-            
-            RESULT res;
 
-            // 1. Stop all events
-            _system.flushCommands(); // Make sure any queued commands finish
-            _system.update(); // Apply any changes
-
-            ReleaseAllUISoundInstances(); // Normally called from UI thread
-
-            // 2. Unload all banks
-            for (int i = _banks.Count - 1; i >= 0; i--)
+            Interlocked.Exchange(ref _lifecycleTransition, 1);
+            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, "shutting_down");
+            try
             {
-                res = _banks[i].Bank.unload();
-                _banks[i].Bank.clearHandle();
-                _banks.RemoveAt(i);
+                RESULT res;
+
+                // 1. Stop all events
+                GHApp.MaybeWriteGHLog("FmodService.ShutdownFmod: flushCommands", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                _system.flushCommands(); // Make sure any queued commands finish
+                GHApp.MaybeWriteGHLog("FmodService.ShutdownFmod: update", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                _system.update(); // Apply any changes
+
+                GHApp.MaybeWriteGHLog("FmodService.ShutdownFmod: releasing UI sound instances", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                ReleaseAllUISoundInstances(); // Normally called from UI thread
+
+                // 2. Unload all banks
+                GHApp.MaybeWriteGHLog("FmodService.ShutdownFmod: unloading banks", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                for (int i = _banks.Count - 1; i >= 0; i--)
+                {
+                    res = _banks[i].Bank.unload();
+                    _banks[i].Bank.clearHandle();
+                    _banks.RemoveAt(i);
+                }
+
+                // 3. Release the Studio system
+                GHApp.MaybeWriteGHLog("FmodService.ShutdownFmod: releasing studio system", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                _system.release();
+
+                // 4. Close & release the core system
+                GHApp.MaybeWriteGHLog("FmodService.ShutdownFmod: closing core system", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                _coresystem.close();
+                GHApp.MaybeWriteGHLog("FmodService.ShutdownFmod: releasing core system", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                _coresystem.release();
             }
-
-            // 3. Release the Studio system
-            _system.release();
-
-            // 4. Close & release the core system
-            _coresystem.close();
-            _coresystem.release();
-
-            Initialized = false;
+            finally
+            {
+                Initialized = false;
+                EndLifecycleTransition();
+            }
             GHApp.MaybeWriteGHLog("FMOD shut down successfully.");
         }
 
@@ -269,6 +295,26 @@ namespace GnollHackX.Unknown
             if (!Initialized || MixerSuspended)
                 return;
 
+            if (!TryBeginLifecycleTransition())
+                return; /* The transition in flight reconciles with SuspendRequested when it ends */
+
+            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, "suspending");
+            try
+            {
+                SuspendMixer();
+            }
+            finally
+            {
+                EndLifecycleTransition();
+            }
+            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, MixerSuspended ? "suspended" : "running");
+
+            if (!SuspendRequested && MixerSuspended)
+                Resume();
+        }
+
+        private void SuspendMixer()
+        {
             try
             {
                 /* A suspended mixer advances no event, so a STOPPED callback still owed
@@ -311,6 +357,32 @@ namespace GnollHackX.Unknown
             if (!Initialized || !MixerSuspended)
                 return;
 
+            if (!TryBeginLifecycleTransition())
+                return; /* The transition in flight reconciles with SuspendRequested when it ends */
+
+            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, "resuming");
+            bool resumed;
+            try
+            {
+                resumed = ResumeMixer();
+            }
+            finally
+            {
+                EndLifecycleTransition();
+            }
+            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, MixerSuspended ? "suspended" : "running");
+
+            /* Any mute change made while the mixer was suspended was refused
+               by FMODup(); apply it now that FMOD is back. */
+            if (resumed)
+                GHApp.RetryMuteStateIfDirty();
+
+            if (SuspendRequested && !MixerSuspended)
+                Suspend();
+        }
+
+        private bool ResumeMixer()
+        {
             try
             {
                 if (_coresystem.hasHandle())
@@ -320,9 +392,7 @@ namespace GnollHackX.Unknown
                     {
                         MixerSuspended = false;
                         GHApp.MaybeWriteGHLog("FmodService.Resume: mixer resumed successfully.", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                        /* Any mute change made while the mixer was suspended was refused
-                           by FMODup(); apply it now that FMOD is back. */
-                        GHApp.RetryMuteStateIfDirty();
+                        return true;
                     }
                     else
                     {
@@ -334,6 +404,7 @@ namespace GnollHackX.Unknown
             {
                 GHApp.MaybeWriteGHLog("FmodService.Resume exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
             }
+            return false;
         }
 
         private void SetAudioSessionSettings(double rate, double blockSize)
@@ -363,7 +434,7 @@ namespace GnollHackX.Unknown
 
         private bool FMODup()
         {
-            return Initialized && !MixerSuspended && GHApp.LoadBanks;
+            return Initialized && !MixerSuspended && !InLifecycleTransition && GHApp.LoadBanks;
         }
 
         public void UnloadBanks(sound_bank_loading_type loadingType)
