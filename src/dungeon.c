@@ -2841,17 +2841,18 @@ show_overview(int why, int reason)
     /* lazy initialization */
     (void) recalc_mapseen();
 
-    win = create_nhwindow(NHW_MENU);
     if (iflags.dumping_ai_snapshot)
     {
-        putstr(win, ATR_TITLE, "Dungeon overview:");
-        putstr(win, ATR_NONE,
-               "Each branch's level range shows how far the hero has explored"
-               " it, not how deep the branch goes. The entries below are the"
-               " levels the hero remembers; a range does not mean every level"
-               " inside it was visited, and its last level is not necessarily"
-               " the branch's end.");
+        putstr(0, ATR_TITLE, "Dungeon overview:");
+        putstr(0, ATR_NONE,
+            "Each branch's level range shows how far the hero has explored"
+            " it, not how deep the branch goes. The entries below are the"
+            " levels the hero remembers; a range does not mean every level"
+            " inside it was visited, and its last level is not necessarily"
+            " the branch's end.");
     }
+
+    win = create_nhwindow(NHW_MENU);
     /* show the endgame levels before the rest of the dungeon,
        so that the Planes (dnum 5-ish) come out above main dungeon (dnum 0) */
     if (In_endgame(&u.uz))
