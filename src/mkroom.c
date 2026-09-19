@@ -403,6 +403,8 @@ mkdesertedshop(void)
 
     /* Change back to get the right message */
     sroom->rtype = DESERTEDSHOP;
+    /* the kind of shop it was stocked as; the dungeon overview names it */
+    sroom->rsubtype = SHOPBASE + i;
 
     context.made_deserted_shop = 1;
 

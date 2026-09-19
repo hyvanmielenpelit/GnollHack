@@ -376,7 +376,9 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
         name);
 
     Sprintf(buf, iflags.dumping_ai_snapshot ? "difficulty %d %s%s" : "level %d %s%s",
-            accurate ? pm->difficulty : rn2(3) ? rnd(30) : rnd(80),
+            accurate ? pm->difficulty
+            : rn2_on_display_rng(3) ? 1 + rn2_on_display_rng(30)
+                                    : 1 + rn2_on_display_rng(80),
             (mtmp->mx != x || mtmp->my != y)
                 ? "tail of "
                 : "",
@@ -429,6 +431,27 @@ look_at_monster(char *buf, char *simplebuf, char *extrabuf, struct monst *mtmp, 
         && mtmp->mx == x && mtmp->my == y && MON_WEP(mtmp)
         && (howmonseen(mtmp) & (MONSEEN_NORMAL | MONSEEN_SEEINVIS)) != 0)
         Sprintf(eos(buf), ", wielding %s", an(distant_name(MON_WEP(mtmp), xname)));
+    /* the conditions drawn on the creature's tile; flying, levitating and
+       lycanthropy go by species there, which the name already conveys */
+    if (iflags.dumping_ai_snapshot && accurate && !u.uswallow
+        && mtmp->mx == x && mtmp->my == y)
+    {
+        uint64_t conds = get_m_condition_bits(mtmp)
+                         & ~(uint64_t) (BL_MASK_LEV | BL_MASK_FLY
+                                        | BL_MASK_LYCANTHROPY);
+        char condbuf[BUFSZ];
+        int cond;
+
+        for (cond = 0; cond < NUM_BL_CONDITIONS; cond++)
+        {
+            if ((conds & ((uint64_t) 1 << cond)) == 0
+                || !condition_names[cond])
+                continue;
+            Strcpy(condbuf, condition_names[cond]);
+            *condbuf = lowc(*condbuf);
+            Sprintf(eos(buf), ", %s", condbuf);
+        }
+    }
     if (extrabuf) {
         unsigned how_seen = howmonseen(mtmp);
 
@@ -2874,6 +2897,42 @@ legend_poscmp(const void *p, const void *q)
     return a->x - b->x;
 }
 
+#define LEGEND_MAX_UNDER 5
+
+/* AI snapshot: the items the hero remembers at <x,y>, which the creature
+   drawn there covers on the map */
+static void
+legend_print_remembered_objects(int x, int y)
+{
+    static char buf[BUFSZ * 6];
+    struct obj *otmp;
+    const char *nam;
+    int total = 0, shown = 0;
+
+    for (otmp = levl[x][y].hero_memory_layers.memory_objchn; otmp;
+         otmp = otmp->nexthere)
+        total++;
+    if (!total)
+        return;
+
+    Sprintf(buf, "Item <%d,%d> remembered under %s: ", x, y,
+            (x == u.ux && y == u.uy) ? "you" : "that creature");
+    for (otmp = levl[x][y].hero_memory_layers.memory_objchn; otmp;
+         otmp = otmp->nexthere)
+    {
+        if (shown >= LEGEND_MAX_UNDER)
+            break;
+        nam = distant_name(otmp, doname);
+        if (strlen(buf) + strlen(nam) + 32 >= sizeof buf)
+            break;
+        Sprintf(eos(buf), "%s%s", shown ? ", " : "", nam);
+        shown++;
+    }
+    if (shown < total)
+        Sprintf(eos(buf), "%sand %d more", shown ? ", " : "", total - shown);
+    putstr(0, ATR_NONE, buf);
+}
+
 void
 dump_map_legend_ai(void)
 {
@@ -2982,24 +3041,14 @@ dump_map_legend_ai(void)
     /* Stage 3: print.
        Section 1: how to read the map. */
     Sprintf(buf,
-            "Reading this map: the two lines above the map are a column"
-            " ruler, and the second of them numbers every column. Every map"
-            " row starts with a %d character gutter holding its row number"
-            " and \": \", then exactly %d map characters, and ends at its"
-            " line break.",
-            MAP_AI_GUTTER_WIDTH, COLNO - 1);
+            "Reading this map: coordinates are <x,y>, x = 1 to %d left to"
+            " right, y = 0 to %d top to bottom. Each map row starts with a %d"
+            " character gutter holding y and \": \"; the character x"
+            " positions after the gutter is cell <x,y>. The two lines above"
+            " the map are a column ruler. Rows may arrive right-trimmed and"
+            " have no end marker.",
+            COLNO - 1, ROWNO - 1, MAP_AI_GUTTER_WIDTH);
     putstr(0, ATR_NONE, buf);
-    Sprintf(buf,
-            "Columns are x = 1 to %d, left to right. Rows are y = 0 to %d,"
-            " top to bottom, and the number in the gutter is y. To find"
-            " <x,y>, take row y and read the map character x positions after"
-            " the gutter. Coordinates below are written <x,y>.",
-            COLNO - 1, ROWNO - 1);
-    putstr(0, ATR_NONE, buf);
-    putstr(0, ATR_NONE,
-           "There is no end-of-row marker character, because every printable"
-           " character is already a map symbol in this game. Rows may arrive"
-           " right-trimmed; the column ruler is the authoritative scale.");
     if (u.uswallow)
         Sprintf(buf,
                 "The hero is at <%d,%d>, inside the creature drawn there.",
@@ -3139,6 +3188,9 @@ dump_map_legend_ai(void)
                 Sprintf(eos(buf), " %s", coordbuf);
         }
         putstr(0, ATR_NONE, buf);
+        if (kind == LEGEND_KIND_CREATURE && !legend_positions[i].hidden
+            && !u.uswallow)
+            legend_print_remembered_objects(x, y);
 
         /* the overflow note follows the last kept line of its kind */
         if ((i + 1 == legend_poscnt

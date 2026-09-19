@@ -236,7 +236,7 @@ static void game_enlightenment(int, int);
 static void characteristics_enlightenment(int, int);
 static void one_characteristic(int, int, int);
 static void status_enlightenment(int, int);
-static void known_item_properties_enlightenment(void);
+static void known_properties_enlightenment(void);
 static void attributes_enlightenment(int, int);
 
 static void add_herecmd_menuitem(winid, int (*)(void),
@@ -3396,40 +3396,83 @@ attrval(int attrindx, int attrvalue, char resultbuf[])
     return resultbuf;
 }
 
-/* AI snapshot: properties conferred by carried items whose conferring of them
-   the player knows about; a subset of what magic enlightenment lists */
+/* AI snapshot: every property the player knows the hero to have, with where
+   it comes from; the set the character statistics screen lists */
 static void
-known_item_properties_enlightenment(void)
+known_properties_enlightenment(void)
 {
     char buf[BUFSZ * 2];
+    boolean known_props[MAX_PROPS];
+    struct propname pn;
     struct obj *otmp;
-    const char *noun;
+    const char *nam, *sep;
+    int64_t innate;
     int prop;
-    boolean found = FALSE;
+    boolean found = FALSE, anyitem;
 
+    get_known_props(known_props);
     enlght_out(" ", ATR_HALF_SIZE);
     enlght_out("Known properties:", ATR_SUBHEADING);
     for (prop = 1; prop <= LAST_PROP; prop++)
     {
-        if (!u.uprops[prop].extrinsic)
+        if (!known_props[prop])
             continue;
-        noun = get_property_name(prop);
-        if (!noun || !*noun)
+        pn = get_property_name_ex(prop);
+        if (!pn.prop_noun || !*pn.prop_noun)
             continue;
-        for (otmp = invent; otmp; otmp = otmp->nobj)
+
+        Sprintf(buf, " %s", pn.prop_noun);
+        *(buf + 1) = highc(*(buf + 1));
+        if (pn.prop_desc)
+            Sprintf(eos(buf), " (%s)", pn.prop_desc);
+
+        sep = ": ";
+        innate = u.uprops[prop].intrinsic & (INTRINSIC | FROM_FORM);
+        if (innate)
         {
-            if (!item_is_giving_known_power(otmp, prop))
-                continue;
-            Sprintf(buf, " %s, from %c - %s", noun, otmp->invlet, cxname(otmp));
-            *(buf + 1) = highc(*(buf + 1));
-            enlght_out(buf, ATR_NONE);
-            found = TRUE;
+            Sprintf(eos(buf), "%sfrom %s", sep,
+                    (innate & FROM_RACE) ? "race"
+                    : (innate & FROM_ROLE) ? "role"
+                    : (innate & FROM_ACQUIRED) ? "an acquired intrinsic"
+                    : "polymorphed form");
+            sep = "; ";
         }
+
+        anyitem = FALSE;
+        if (u.uprops[prop].extrinsic)
+        {
+            for (otmp = invent; otmp; otmp = otmp->nobj)
+            {
+                if (!item_is_giving_known_power(otmp, prop))
+                    continue;
+                nam = cxname(otmp);
+                /* "; from x - ", the name, and room for the clause below */
+                if (strlen(buf) + strlen(nam) + 40 >= sizeof buf)
+                    break;
+                Sprintf(eos(buf), "%sfrom %c - %s", sep, otmp->invlet, nam);
+                sep = "; ";
+                anyitem = TRUE;
+            }
+            /* get_known_props() goes by what_gives(), which also covers
+               carried and invoked artifacts */
+            if (!anyitem && (otmp = what_gives(prop, TRUE)) != 0 
+                && (nam = cxname(otmp)) != 0 && strlen(buf) + strlen(nam) + 40 < sizeof buf)
+            {
+                Sprintf(eos(buf), "%sfrom %c - %s", sep, otmp->invlet, nam);
+                sep = "; ";
+            }
+        }
+
+        if ((u.uprops[prop].intrinsic & TIMEOUT) != 0
+            && !property_definitions[prop].recurring)
+            Sprintf(eos(buf), "%stemporary effect", sep);
+
+        enlght_out(buf, ATR_NONE);
+        found = TRUE;
     }
     if (!found)
-        enlght_out(" None conferred by items known to the player.", ATR_NONE);
-    enlght_out(" This lists item-conferred properties only; innate and"
-               " temporary ones are under Current Status or not shown.",
+        enlght_out(" None known to the player.", ATR_NONE);
+    enlght_out(" Properties the player has not learned of are not listed.",
                ATR_NONE);
 }
 
@@ -3483,7 +3526,7 @@ enlightenment(int mode, int final)
        shown for both basic and magic enlightenment */
     status_enlightenment(mode, final);
     if (iflags.dumping_ai_snapshot)
-        known_item_properties_enlightenment();
+        known_properties_enlightenment();
     /* remaining attributes; shown for potion,&c or wizard mode and
        explore mode ^X or end of game disclosure */
     if (mode & MAGICENLIGHTENMENT) {

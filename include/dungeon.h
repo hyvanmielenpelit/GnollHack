@@ -283,6 +283,16 @@ uchar npcroomtype;
 #define MSFLAG_YACC_HINT_SHOWN                   0x00020000UL /* received hint for the Hellish Pastures level */
 #define MSFLAG_QUANTUM_HINT_SHOWN                0x00040000UL /* received hint for the Large Circular Dungeon level */
 #define MSFLAG_LOST_WORLD_HINT_SHOWN             0x00080000UL /* reserved -- received hint for the Lost World level */
+        /* from bit 32 up: the kinds of shop seen on the level, one bit per
+           room type from SHOPBASE to MAXRTYPE; not UL constants, which are
+           32 bits wide on Windows */
+#define MSFLAG_SHOPKIND_SHIFT 32
+#define MSFLAG_SHOPKIND_COUNT (MAXRTYPE - SHOPBASE + 1)
+#define MSFLAG_SHOPKIND_MASK \
+    ((((uint64_t) 1 << MSFLAG_SHOPKIND_COUNT) - 1) << MSFLAG_SHOPKIND_SHIFT)
+#define msflag_shopkind_bit(rtype) \
+    (((uint64_t) 1) << (MSFLAG_SHOPKIND_SHIFT + ((rtype) - SHOPBASE)))
+#define MSFLAG_SHOP_UNTENDED (((uint64_t) 1) << 63) /* one of the seen shops is untended */
     } flags;
     /* custom naming */
     char *custom;

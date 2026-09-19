@@ -24,7 +24,6 @@ static int currentlevel_rewrite(void);
 static void final_level(void);
 static void print_corpse_properties(winid, int);
 static void revive_handle_magic_chest(xchar*, struct obj**, int*, struct monst**);
-static void get_known_props(boolean *);
 /* static boolean badspot(xchar,xchar); */
 static int CFDECLSPEC item_wiki_cmp(const genericptr, const genericptr);
 
@@ -69,7 +68,7 @@ dodrop(void)
    player knows the hero to have: it is innate or from the current form, an
    item known to grant it is in use, or it is a timed effect that is not a
    recurring one. */
-static void
+void
 get_known_props(boolean *known_props)
 {
     int i;
@@ -5877,11 +5876,14 @@ dump_pet_statistics(void)
     {
         /* Say so rather than printing nothing, so that "no pets" is not read
            as "the snapshot is missing this section". */
-        putstr(0, ATR_NONE, " (None)");
+        putstr(0, ATR_NONE,
+               " (None on this level. Pets left on other levels are not"
+               " listed.)");
         return;
     }
 
-    Sprintf(buf, "%d pet%s on this level. Roll call, one line per pet:",
+    Sprintf(buf, "%d pet%s on this level; pets left on other levels are not"
+            " listed. Roll call, one line per pet:",
             petcount, plur(petcount));
     putstr(0, ATR_NONE, buf);
 

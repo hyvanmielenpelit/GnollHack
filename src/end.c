@@ -1079,19 +1079,13 @@ dump_everything(int how, time_t when)
         putstr(0, ATR_NONE, pbuf);
         putstr(0, ATR_NONE,
                "Status key: MC = magic cancellation level/percent chance, MS ="
-               " movement speed, XL = experience level/points, S = score, T ="
+               " movement speed (12 is normal; monster speeds use the same"
+               " scale), XL = experience level/points, S = score, T ="
                " turns, \"Skill\" = a skill can be advanced now, \"2Weap\" ="
                " fighting with two weapons. The game mode and difficulty"
                " letters are spelled out under \"Game:\". Fields the player"
                " has switched off are absent.");
-        putstr(0, ATR_NONE,
-               "W = weapon style, right hand then /left hand: - bare hands, g"
-               " gloved bare hands, mg weapon gloves, M melee weapon, T"
-               " throwing weapon, MT melee weapon that can be thrown, P"
-               " polearm, D digging tool, MD melee weapon that digs, A ammo"
-               " held in hand, R launcher with matching ammo quivered (Re"
-               " wrong ammo, R0 no ammo), S shield, 2h prefix two-handed, c"
-               " corpse, ! potion, * other item.");
+        dump_weapon_style_key_ai();
         putstr(0, ATR_NONE,
                "This snapshot does not print the hero's numeric Luck,"
                " alignment record or prayer cooldown. Their absence says"
@@ -1122,19 +1116,14 @@ dump_everything(int how, time_t when)
     if (how == SNAPSHOT_AI)
     {
         putstr(0, ATR_NONE,
-               "Tags in square brackets: [unidentified] marks an item known"
-               " only by its appearance, which is randomized every game;"
-               " only the Discoveries section maps appearances to types. A"
-               " quoted name in a tag, or the words player-named or"
-               " player-labelled, mean the name on that line was given by"
-               " the player: it is the player's guess or note and is no"
-               " evidence of what the item is or does. Only the absence of"
-               " [unidentified] says that an item is identified. [BUC"
-               " unknown] marks an item whose blessed or cursed state is not"
-               " known."
-               " [contents not yet seen] marks a container the player has"
-               " not looked inside; a container known to be empty says"
-               " \"empty\" in its name.");
+               "Tags in square brackets: [unidentified] = known only by an"
+               " appearance that is randomized every game; only Discoveries"
+               " maps appearances to types, and only the absence of the tag"
+               " means identified. A quoted name, player-named or"
+               " player-labelled = the player's own note, no evidence of what"
+               " the item is. [BUC unknown] = blessed or cursed state not"
+               " known. [contents not yet seen] = a container not yet looked"
+               " into; one known to be empty says \"empty\" in its name.");
         putstr(0, ATR_NONE,
                "Each item's weight follows it in parentheses; a stack shows"
                " the weight of the whole stack. Weights are rounded, so they"

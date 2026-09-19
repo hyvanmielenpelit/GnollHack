@@ -109,6 +109,9 @@ extern NEARDATA struct room_definition room_definitions[NUM_ROOM_TYPES];
 
 #define MAXRTYPE (CANDLESHOP) /* maximum valid room type */
 #define UNIQUESHOP (CANDLESHOP) /* shops here & above not randomly gen'd. */
+/* mapseen feat.shoptype of a shop without its keeper; not a room type, and
+   below SHOPBASE so that it cannot collide with a kind of shop */
+#define UNTENDED_SHOP_TYPE (SHOPBASE - 1)
 
 /* Special type for search_special() */
 #define ANY_TYPE (-1)

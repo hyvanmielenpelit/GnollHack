@@ -4808,6 +4808,77 @@ print_quivered_weapon_style_string(char *buf)
         Strcpy(buf, "-");
 }
 
+/* what print_weapon_style_string() codes mean, without the "2h" prefix */
+static const struct weapon_style_key {
+    const char *code, *text;
+} weapon_style_keys[] = {
+    { "-", "bare hands" },
+    { "g", "gloved bare hands" },
+    { "mg", "weapon gloves" },
+    { "c", "corpse" },
+    { "!", "potion" },
+    { "*", "other item" },
+    { "R", "launcher with matching ammo quivered" },
+    { "Re", "launcher with the wrong ammo quivered" },
+    { "R0", "launcher with nothing quivered" },
+    { "A", "ammo held in hand" },
+    { "T", "throwing weapon" },
+    { "P", "polearm" },
+    { "M", "melee weapon" },
+    { "MT", "melee weapon that can be thrown" },
+    { "MD", "melee weapon that digs" },
+    { "MTD", "melee weapon that can be thrown and digs" },
+    { "D", "digging tool" },
+    { "S", "shield" },
+    { "MS", "melee weapon that is also a shield" },
+};
+
+/* AI snapshot: explain the weapon style codes now on the status line */
+void
+dump_weapon_style_key_ai(void)
+{
+    char buf[BUFSZ * 2], code[BUFSZ];
+    const char *p;
+    int hand, k;
+    boolean any = FALSE, unknown = FALSE;
+
+    Strcpy(buf, "W = weapon style, right hand then /left hand. Here:");
+    for (hand = 0; hand < 2 && !unknown; hand++)
+    {
+        print_weapon_style_string(code, hand == 1);
+        if (!*code)
+            continue;
+        p = !strncmp(code, "2h", 2) ? code + 2 : code;
+        for (k = 0; k < SIZE(weapon_style_keys); k++)
+        {
+            if (!strcmp(p, weapon_style_keys[k].code))
+                break;
+        }
+        if (k == SIZE(weapon_style_keys))
+        {
+            unknown = TRUE;
+            break;
+        }
+        Sprintf(eos(buf), "%s %s%s = %s%s", any ? ";" : "",
+                hand == 1 ? "/" : "", code, p != code ? "two-handed " : "",
+                weapon_style_keys[k].text);
+        any = TRUE;
+    }
+
+    if (unknown || !any)
+        Strcpy(buf,
+               "W = weapon style, right hand then /left hand: - bare hands, g"
+               " gloved bare hands, mg weapon gloves, M melee weapon, T"
+               " throwing weapon, MT melee weapon that can be thrown, P"
+               " polearm, D digging tool, MD melee weapon that digs, A ammo"
+               " held in hand, R launcher with matching ammo quivered (Re"
+               " wrong ammo, R0 no ammo), S shield, 2h prefix two-handed, c"
+               " corpse, ! potion, * other item.");
+    else
+        Strcat(buf, ".");
+    putstr(0, ATR_NONE, buf);
+}
+
 int
 exceptionality_digging_speed_bonus(struct obj *obj)
 {
@@ -4879,17 +4950,23 @@ dump_skills(void)
                 else if (u.skills_advanced >= P_SKILL_LIMIT)
                     Strcat(buf, "; cannot advance, general advancement limit reached");
                 else if (could_advance(i))
-                    Sprintf(eos(buf), "; ready for %s but it costs %d slot%s, more than are available",
-                            skillnextbuf, slots, plur(slots));
+                    Sprintf(eos(buf), "; NOT YET, short of slots: %s costs %d slot%s, %d available",
+                            skillnextbuf, slots, plur(slots), u.weapon_slots);
                 else if (P_NONTRAINABLE(i) && xl_needed <= 0)
-                    Sprintf(eos(buf), "; to %s: not advanced by training, costs %d slot%s",
+                    Sprintf(eos(buf), "; NOT YET: %s is not reached by training, costs %d slot%s",
                             skillnextbuf, slots, plur(slots));
                 else
                 {
                     /* can_advance() accepts either route */
-                    Sprintf(eos(buf), "; to %s:", skillnextbuf);
+                    int remaining = needed - (int) P_ADVANCE(i);
+
+                    Sprintf(eos(buf), "; NOT YET: %s needs", skillnextbuf);
                     if (!P_NONTRAINABLE(i))
+                    {
                         Sprintf(eos(buf), " training %d/%d", (int) P_ADVANCE(i), needed);
+                        if (remaining > 0)
+                            Sprintf(eos(buf), " (%d more)", remaining);
+                    }
                     if (xl_needed > 0)
                         Sprintf(eos(buf), "%s experience level %d/%d",
                                 !P_NONTRAINABLE(i) ? " or" : "", (int) u.ulevel, xl_needed);

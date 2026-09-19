@@ -2480,6 +2480,7 @@ recalc_mapseen(void)
 
     /* reset all features; mptr->feat.* = 0; */
     (void) memset((genericptr_t) &mptr->feat, 0, sizeof mptr->feat);
+    mptr->flags.bitflags &= ~(MSFLAG_SHOPKIND_MASK | MSFLAG_SHOP_UNTENDED);
     /* reset most flags; some level-specific ones are left as-is */
     if is_msflag_unreachable(&(mptr->flags)) {
         set_msflag_unreachable(&mptr->flags, 0); /* reached it; Eye of the Aethiopica? */
@@ -2550,10 +2551,16 @@ recalc_mapseen(void)
     {
         if (mptr->msrooms[i].seen) 
         {
-            if (rooms[i].rtype >= SHOPBASE) 
+            if (rooms[i].rtype >= SHOPBASE || rooms[i].rtype == DESERTEDSHOP)
             {
-                if (mptr->msrooms[i].untended)
-                    mptr->feat.shoptype = DESERTEDSHOP;
+                /* a deserted shop is listed as an untended shop of the kind
+                   it was stocked as, which its rsubtype holds */
+                boolean deserted = (rooms[i].rtype == DESERTEDSHOP);
+                boolean untended = (deserted || mptr->msrooms[i].untended);
+                int kind = deserted ? rooms[i].rsubtype : rooms[i].rtype;
+
+                if (untended)
+                    mptr->feat.shoptype = UNTENDED_SHOP_TYPE;
                 else if (!mptr->feat.nshop)
                     mptr->feat.shoptype = rooms[i].rtype;
                 else if (mptr->feat.shoptype != (unsigned) rooms[i].rtype)
@@ -2561,7 +2568,11 @@ recalc_mapseen(void)
                 count = mptr->feat.nshop + 1;
                 if (count <= 3)
                     mptr->feat.nshop = count;
-            } 
+                if (kind >= SHOPBASE && kind <= MAXRTYPE)
+                    mptr->flags.bitflags |= msflag_shopkind_bit(kind);
+                if (untended)
+                    mptr->flags.bitflags |= MSFLAG_SHOP_UNTENDED;
+            }
             else if (rooms[i].rtype == TEMPLE) 
             {
                 /* altar and temple alignment handled below */
@@ -2965,7 +2976,7 @@ shop_string(int rtype)
 
     /* Yuck, redundancy...but shclass.name doesn't cut it as a noun */
     switch (rtype) {
-    case SHOPBASE - 1:
+    case UNTENDED_SHOP_TYPE:
         str = "untended shop";
         break; /* see recalc_mapseen */
     case SHOPBASE:
@@ -2991,6 +3002,9 @@ shop_string(int rtype)
         break;
     case WANDSHOP:
         str = "wand shop";
+        break;
+    case TOOLSHOP:
+        str = "tool shop";
         break;
     case BOOKSHOP:
         str = "bookstore";
@@ -3040,7 +3054,18 @@ tunesuffix(mapseen *mptr, char *outbuf)
 /* K&R: don't require support for concatenation of adjacent string literals */
 #define PREFIX "      " /* two TABs + empty BULLET: six spaces */
 #endif
-#define COMMA (i++ > 0 ? ", " : PREFIX)
+/* The separator in front of the next feature on an overview line.  A feature
+   that printed a list of its own sets *after_list, so that the list is closed
+   off with a semicolon rather than running into the feature after it. */
+static const char *
+overview_separator(int *count, boolean *after_list)
+{
+    const char *sep = (*count)++ == 0 ? PREFIX : *after_list ? "; " : ", ";
+
+    *after_list = FALSE;
+    return sep;
+}
+#define COMMA overview_separator(&i, &after_list)
 /* "iterate" once; safe to use as ``if (cond) ADDTOBUF(); else whatever;'' */
 #define ADDNTOBUF(nam, var)                                                  \
     do {                                                                     \
@@ -3048,7 +3073,8 @@ tunesuffix(mapseen *mptr, char *outbuf)
             Sprintf(eos(buf), "%s%s %s", COMMA, seen_string((var), (nam)), \
                     var != 1 ? makeplural(nam) : (nam));                                       \
     } while (0)
-#define ADDTOBUF(nam, var)                           \
+#define MAX_LISTED_SHOP_KINDS 5
+#define ADDTOBUF(nam, var)                        \
     do {                                             \
         if (var)                                     \
             Sprintf(eos(buf), "%s%s", COMMA, (nam)); \
@@ -3095,6 +3121,7 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
 {
     char buf[BUFSZ], tmpbuf[BUFSZ];
     int i, depthstart, dnum;
+    boolean after_list = FALSE; /* see overview_separator() */
     boolean died_here = (final == 2 && on_level(&u.uz, &mptr->lev));
 
     /* Damnable special cases */
@@ -3197,13 +3224,61 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
         /* List interests in an order vaguely corresponding to
          * how important they are.
          */
-        if (mptr->feat.nshop > 0) 
+        if (mptr->feat.nshop > 0)
         {
-            if (mptr->feat.nshop > 1)
-                ADDNTOBUF("shop", mptr->feat.nshop);
-            else
+            uint64_t kinds = mptr->flags.bitflags & MSFLAG_SHOPKIND_MASK;
+            int rtype, nkinds = 0, listed = 0, onekind = SHOPBASE;
+            boolean untended =
+                (mptr->flags.bitflags & MSFLAG_SHOP_UNTENDED) != 0;
+
+            for (rtype = SHOPBASE; rtype <= MAXRTYPE; rtype++)
+            {
+                if ((kinds & msflag_shopkind_bit(rtype)) != 0)
+                {
+                    nkinds++;
+                    onekind = rtype;
+                }
+            }
+
+            if (mptr->feat.nshop == 1 && nkinds == 1 && untended)
+                /* an untended shop is an ordinary shop without its keeper */
+                Sprintf(eos(buf), "%san untended %s", COMMA,
+                        shop_string(onekind));
+            else if (mptr->feat.nshop == 1)
                 Sprintf(eos(buf), "%s%s", COMMA,
                         an(shop_string(mptr->feat.shoptype)));
+            else if (nkinds == 0)
+                /* no kinds recorded: saved before they were kept */
+                ADDNTOBUF("shop", mptr->feat.nshop);
+            else
+            {
+                /* the last kind is joined with "and"; after_list then closes
+                   the kinds off from the features listed after them */
+                int tolist = min(nkinds, MAX_LISTED_SHOP_KINDS);
+
+                ADDNTOBUF("shop", mptr->feat.nshop);
+                Strcat(buf, ": ");
+                for (rtype = SHOPBASE; rtype <= MAXRTYPE; rtype++)
+                {
+                    if ((kinds & msflag_shopkind_bit(rtype)) == 0)
+                        continue;
+                    if (listed >= tolist || strlen(buf) + 64 >= sizeof buf)
+                        break;
+                    Sprintf(eos(buf), "%s%s",
+                            !listed ? ""
+                            : (listed == tolist - 1 && tolist == nkinds)
+                              ? " and " : ", ",
+                            an(shop_string(rtype)));
+                    listed++;
+                }
+                if (listed < nkinds)
+                    Sprintf(eos(buf), "%s%d more kind%s",
+                            listed ? " and " : "", nkinds - listed,
+                            plur(nkinds - listed));
+                if (untended)
+                    Strcat(buf, " (some untended)");
+                after_list = TRUE;
+            }
         }
 
         if (mptr->feat.naltar > 0) 

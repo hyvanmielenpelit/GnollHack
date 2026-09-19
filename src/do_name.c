@@ -2382,7 +2382,7 @@ rndmonnam(char *code)
     if (name >= SPECIAL_PM) {
         mname = bogusmon(buf, code);
     } else {
-        mname = strcpy(buf, pm_monster_name(&mons[name], !rn2(2)));
+        mname = strcpy(buf, pm_monster_name(&mons[name], !rn2_on_display_rng(2)));
     }
     return mname;
 #undef BOGUSMONSIZE
