@@ -175,7 +175,7 @@ namespace GnollHackX.Unknown
 
         /* FMOD APIs must not be entered from other threads while the mixer is being
            suspended or resumed, or the system shut down. _lifecycleTransition and
-           _activeCalls enforce that together: TryEnterFmod() counts the caller into
+           _activeCalls enforce that together: TryEnterFmodMonitor() counts the caller into
            _activeCalls and only then tests the flag, backing out if it is set, while a
            transition sets the flag and only then waits for _activeCalls to drain to zero.
            Both sides go through Interlocked, so either the caller sees the flag or the
@@ -187,11 +187,11 @@ namespace GnollHackX.Unknown
         private bool TryBeginLifecycleTransition() { return Interlocked.CompareExchange(ref _lifecycleTransition, 1, 0) == 0; }
         private void EndLifecycleTransition() { Interlocked.Exchange(ref _lifecycleTransition, 0); }
 
-        /* Number of calls currently between a successful enter and ExitFmod(). Entry is
-           re-entrant; every successful enter is paired with one ExitFmod(). */
+        /* Number of calls currently between a successful enter and ExitFmodMonitor(). Entry is
+           re-entrant; every successful enter is paired with one ExitFmodMonitor(). */
         private int _activeCalls = 0;
 
-        private bool TryEnterFmod()
+        private bool TryEnterFmodMonitor()
         {
             Interlocked.Increment(ref _activeCalls);
             if (Initialized && !MixerSuspended && !InLifecycleTransition && GHApp.LoadBanks)
@@ -234,7 +234,7 @@ namespace GnollHackX.Unknown
             return true;
         }
 
-        private void ExitFmod()
+        private void ExitFmodMonitor()
         {
             Interlocked.Decrement(ref _activeCalls);
         }
@@ -310,7 +310,7 @@ namespace GnollHackX.Unknown
             /* A newly created system's master channel group is always unmuted. Re-apply
                the app's mute state before anything can be played, and before honouring a
                suspend that arrived while FMOD was still down. Order matters:
-               TryEnterFmod() refuses to act once the mixer is suspended. */
+               TryEnterFmodMonitor() refuses to act once the mixer is suspended. */
             GHApp.ApplyCurrentMuteState(this);
             if (SuspendRequested)
                 Suspend();
@@ -486,7 +486,7 @@ namespace GnollHackX.Unknown
             GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, MixerSuspended ? "suspended" : "running");
 
             /* Any mute change made while the mixer was suspended was refused
-               by TryEnterFmod(); apply it now that FMOD is back. */
+               by TryEnterFmodMonitor(); apply it now that FMOD is back. */
             if (resumed)
                 GHApp.RetryMuteStateIfDirty();
 
@@ -585,7 +585,7 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
 
             //RESULT res;
@@ -635,7 +635,7 @@ namespace GnollHackX.Unknown
                                 }
                                 finally
                                 {
-                                    ExitFmod();
+                                    ExitFmodMonitor();
                                 }
                             }
                         }
@@ -666,7 +666,7 @@ namespace GnollHackX.Unknown
                                 }
                                 finally
                                 {
-                                    ExitFmod();
+                                    ExitFmodMonitor();
                                 }
                             }
                         }
@@ -756,7 +756,7 @@ namespace GnollHackX.Unknown
 
         public void PlayTestSound()
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return;
             try
             {
@@ -772,13 +772,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public void StopTestSound()
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return;
             try
             {
@@ -790,7 +790,7 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
@@ -823,7 +823,7 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
@@ -868,7 +868,7 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
@@ -1050,7 +1050,7 @@ namespace GnollHackX.Unknown
         /* Called from UI thread, no need for locking */
         public int PlayUISound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -1107,14 +1107,14 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         /* Called from game thread */
         public int PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, uint play_flags)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -1272,13 +1272,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public void StopAllUISounds()
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return;
             try
             {
@@ -1306,13 +1306,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public int StopAllGameSounds(ulong flags, uint dialogue_mid)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -1462,7 +1462,7 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
@@ -1478,7 +1478,7 @@ namespace GnollHackX.Unknown
 
         private int PlayMusicCore(List<GHSoundInstance> musicList, int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -1530,13 +1530,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public int PlayLevelAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -1618,13 +1618,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public int PlayEnvironmentAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -1706,13 +1706,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public int PlayOccupationAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -1794,13 +1794,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public int PlayEffectAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -1882,14 +1882,14 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
 
         public int SetEffectAmbientVolume(float soundVolume)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -1916,7 +1916,7 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
@@ -1933,7 +1933,7 @@ namespace GnollHackX.Unknown
 
         public int AddAmbientSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, out UInt64 soundSourceId)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
             {
                 soundSourceId = 0;
                 return 1;
@@ -1983,13 +1983,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public int DeleteAmbientSound(UInt64 soundSourceId)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -2028,13 +2028,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public int SetAmbientSoundVolume(UInt64 soundSourceId, float soundVolume)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -2078,13 +2078,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public int AdjustGameVolumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_dialogue_volume, float new_general_sfx_volume, float new_general_game_ui_volume)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -2109,13 +2109,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public int AdjustUIVolumes(float new_general_volume, float new_general_music_volume, float new_general_ui_volume)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 1;
             try
             {
@@ -2138,13 +2138,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public bool ToggleMuteSounds(bool mute)
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return false; /* FMOD APIs must not be called while the mixer is
                                  suspended, so the caller has to defer this. */
             try
@@ -2159,7 +2159,7 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
@@ -2297,7 +2297,7 @@ namespace GnollHackX.Unknown
 
         public void PollTasks()
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return;
             try
             {
@@ -2335,13 +2335,13 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
         public uint GetVersionCode()
         {
-            if (!TryEnterFmod())
+            if (!TryEnterFmodMonitor())
                 return 0;
             try
             {
@@ -2354,7 +2354,7 @@ namespace GnollHackX.Unknown
             }
             finally
             {
-                ExitFmod();
+                ExitFmodMonitor();
             }
         }
 
