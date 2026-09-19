@@ -3246,6 +3246,58 @@ dealloc_monst(struct monst *mon)
     free((genericptr_t) mon);
 }
 
+/* mtmp is dead but is on migrating_mons: send its inventory on to its destination
+   level, and move the body to fmon so that dmonsfree() frees it */
+static void
+detach_migrating_mon(struct monst *mtmp, boolean is_mon_dead)
+{
+    struct obj *otmp, *otmp2;
+    struct monst *mtmp2;
+
+    for (otmp = mtmp->minvent; otmp; otmp = otmp2)
+    {
+        otmp2 = otmp->nobj;
+        /* objects that release_monster_objects() removes from the game stay in minvent for it;
+           the condition must match the one there */
+        if (((otmp->speflags & SPEFLAGS_CLONED_ITEM) || ((is_mon_issummoned(mtmp) || is_mon_ispartymember(mtmp)) && (!is_mon_dead || otmp->oclass == COIN_CLASS)))
+            && !is_obj_unremovable_from_the_game(otmp)
+            && !is_quest_artifact(otmp)
+            )
+            continue;
+
+        otmp->item_flags &= ~ITEM_FLAGS_GIVEN_BY_HERO;
+        if (otmp->owornmask & W_WEP)
+            setmnotwielded(mtmp, otmp);
+        obj_extract_self(otmp);
+        add_to_migration(otmp);
+        otmp->ox = mtmp->mux; /* destination dnum */
+        otmp->oy = mtmp->muy; /* destination dlevel */
+        /* carried down by the monster, so nothing breaks on delivery */
+        otmp->owornmask = (int64_t) (MIGR_RANDOM | MIGR_NOBREAK);
+    }
+
+    /* wormno holds the segment count while migrating */
+    mtmp->wormno = 0;
+
+    if (mtmp == migrating_mons)
+    {
+        migrating_mons = mtmp->nmon;
+    }
+    else
+    {
+        for (mtmp2 = migrating_mons; mtmp2; mtmp2 = mtmp2->nmon)
+        {
+            if (mtmp2->nmon == mtmp)
+            {
+                mtmp2->nmon = mtmp->nmon;
+                break;
+            }
+        }
+    }
+    mtmp->nmon = fmon;
+    fmon = mtmp;
+}
+
 /*
  * Parameters:
  *   mptr: reflects mtmp->data _prior_ to mtmp's death
@@ -3268,8 +3320,27 @@ m_detach(struct monst *mtmp, struct permonst *mptr, boolean is_mon_dead)
     /* to prevent an infinite release_monster_objects-flooreffects-hmon-killed loop */
     set_mon_mtrapped(mtmp, 0);
     mtmp->mhp = 0; /* simplify some tests: force mhp to 0 */
+    if (!onmap)
+    {
+        struct monst *mtmp2;
+        boolean migrating = FALSE;
+
+        for (mtmp2 = migrating_mons; mtmp2; mtmp2 = mtmp2->nmon)
+        {
+            if (mtmp2 == mtmp)
+            {
+                migrating = TRUE;
+                break;
+            }
+        }
+        if (migrating)
+        {
+            debugprint("m_detach: mnum=%d died while migrating to %d/%d", mtmp->mnum, mtmp->mux, mtmp->muy);
+            detach_migrating_mon(mtmp, is_mon_dead);
+        }
+    }
     release_monster_objects(mtmp, 0, FALSE, is_mon_dead);
-    if (onmap || mtmp == level.monsters[0][0]) 
+    if (onmap || mtmp == level.monsters[0][0])
     {
         debugprint_pos();
         if (mtmp->wormno)
@@ -3277,15 +3348,15 @@ m_detach(struct monst *mtmp, struct permonst *mptr, boolean is_mon_dead)
         else
             remove_monster(mtmp->mx, mtmp->my);
     }
+    unstuck(mtmp);
     if (emitted_light_range(mptr))
         del_light_source(LS_MONSTER, monst_to_any(mtmp));
     if (mon_ambient_sound(mptr))
         del_sound_source(SOUNDSOURCE_MONSTER, monst_to_any(mtmp));
-    if (M_AP_TYPE(mtmp))
+    if (M_AP_TYPE(mtmp) && onmap)
         seemimic(mtmp);
     if (onmap)
         newsym(mtmp->mx, mtmp->my);
-    unstuck(mtmp);
     if (onmap)
         fill_pit(mtmp->mx, mtmp->my);
 

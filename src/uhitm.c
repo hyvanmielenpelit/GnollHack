@@ -1974,7 +1974,17 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
         }
     }
 
-    if (jousting && obj && !isdisintegrated) 
+    /* Rolled before knockback so that the knockback guards see the final damage */
+    boolean skill_critical_roll = FALSE;
+    if (!incorrect_weapon_use)
+    {
+        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0, TRUE, ordinary_thrown, TRUE);
+        if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
+            skill_critical_roll = TRUE;
+    }
+    boolean mon_left_level = FALSE;
+
+    if (jousting && obj && !isdisintegrated)
     {
         damage += adjust_damage(d(2, (obj == uwep) ? 10 : 2), &youmonst, mon, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE); /* [was in weapon_dmg_value()] */
         You("joust %s%s", mon_nam(mon), canseemon(mon) ? exclam((int)ceil(damage)) : ".");
@@ -2007,12 +2017,14 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
             }
         }
         /* avoid migrating a dead monster */
-        if (mon->mhp > (int)ceil(damage)) 
+        if (!isinstakilled && mon->mhp > (int)ceil(skill_critical_roll ? damage * 2 : damage))
         {
             mhurtle(mon, u.dx, u.dy, 1);
             mdat = mon->data; /* in case of a polymorph trap */
             if (DEADMONSTER(mon))
                 already_killed = TRUE;
+            else if (!mon_is_local_mx(mon))
+                mon_left_level = TRUE;
         }
         hittxt = TRUE;
 
@@ -2029,12 +2041,14 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s from your powerful strike!", Monnam(mon),
                     makeplural(stagger(mon->data, "stagger")));
             /* avoid migrating a dead monster */
-            if (mon->mhp >(int)ceil(damage)) 
+            if (!isinstakilled && mon->mhp > (int)ceil(skill_critical_roll ? damage * 2 : damage))
             {
                 mhurtle(mon, u.dx, u.dy, 1);
                 mdat = mon->data; /* in case of a polymorph trap */
                 if (DEADMONSTER(mon))
                     already_killed = TRUE;
+                else if (!mon_is_local_mx(mon))
+                    mon_left_level = TRUE;
             }
             hittxt = TRUE;
         }
@@ -2042,14 +2056,10 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
 
     /* Skill-based critical strike */
     boolean skill_critical_success = FALSE;
-    if (damage > 0 && !incorrect_weapon_use)
+    if (damage > 0 && skill_critical_roll)
     {
-        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0, TRUE, ordinary_thrown, TRUE);
-        if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
-        {
-            skill_critical_success = TRUE;
-            damage *= 2;
-        }
+        skill_critical_success = TRUE;
+        damage *= 2;
     }
 
     if (isinstakilled)
@@ -2093,7 +2103,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
     }
     if ((does_split_upon_hit(mdat))
         /* pudding is alive and healthy enough to split */
-        && mon->mhp > 1 && !is_cancelled(mon)
+        && mon->mhp > 1 && !is_cancelled(mon) && !mon_left_level
         /* iron weapon using melee or polearm hit [3.6.1: metal weapon too;
            also allow either or both weapons to cause split when twoweap] */
         && obj && (obj == uwep || obj == uarms)
@@ -2143,7 +2153,8 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                     canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
             }
 
-            display_m_being_hit(mon, hit_tile, damagedealt, 0UL, TRUE);
+            if (!mon_left_level)
+                display_m_being_hit(mon, hit_tile, damagedealt, 0UL, TRUE);
         }
         else 
         {
@@ -2162,13 +2173,15 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                     canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
             }
 
-            display_m_being_hit(mon, hit_tile, damagedealt, 0UL, TRUE);
+            if (!mon_left_level)
+                display_m_being_hit(mon, hit_tile, damagedealt, 0UL, TRUE);
         }
     }
     else if (hittxt && displaysustain && damagedealt > 0)
     {
         pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange2, "%s sustains %d damage!", Monnam(mon), damagedealt);
-        display_m_being_hit(mon, hit_tile, damagedealt, 0UL, TRUE);
+        if (!mon_left_level)
+            display_m_being_hit(mon, hit_tile, damagedealt, 0UL, TRUE);
     }
 
     if (silvermsg) 
@@ -2258,7 +2271,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
     boolean uses_spell_flags = obj ? object_uses_spellbook_wand_flags_and_properties(obj) : FALSE;
 
     /* Apply special weapon effects (Wounding, Life Leech) */
-    if (apply_weapon_special_effects(mon, obj, damage, extratmp,
+    if (!mon_left_level && apply_weapon_special_effects(mon, obj, damage, extratmp,
             dieroll, critstrikeroll))
     {
         destroyed = TRUE;
@@ -2396,7 +2409,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                     killed(mon); /* takes care of most messages */
             }
         }
-        else if (u.umconf && hand_to_hand) 
+        else if (u.umconf && hand_to_hand && !mon_left_level)
         {
             nohandglow(mon);
             if (!is_confused(mon) && !check_ability_resistance_success(mon, A_WIS, 0))
