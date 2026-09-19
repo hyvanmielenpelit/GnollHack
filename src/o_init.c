@@ -1188,7 +1188,8 @@ list_discoveries(boolean dumping, boolean format_for_ai)
            appearance to a true name in either direction */
         putstr(tmpwin, ATR_NONE,
                "  Format: \"true name (appearance)\";"
-               " \"called X\" is a player-assigned nickname;");
+               " \"called X\" is a nickname the player gave a type that is"
+               " not identified: a guess, not an identification;");
         putstr(tmpwin, ATR_NONE,
                "  a leading * marks a type known from the start of the"
                " game.");

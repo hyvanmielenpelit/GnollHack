@@ -67,6 +67,7 @@ static void print_branch(winid, int, int, int, boolean,
 static mapseen *load_mapseen(int);
 static void save_mapseen(int, mapseen *);
 static mapseen *find_mapseen_by_str(const char *);
+static boolean describe_cemetery_who(const char *, char *);
 static void print_mapseen(winid, mapseen *, int, int, boolean);
 static boolean interest_mapseen(mapseen *);
 static void traverse_mapseenchn(boolean, winid,
@@ -3053,6 +3054,42 @@ tunesuffix(mapseen *mptr, char *outbuf)
             Sprintf(eos(buf), "%s%s", COMMA, (nam)); \
     } while (0)
 
+/* Rewrite a cemetery name "name-Rol-Rac-Gen-Aln" (bones.c) into 'outbuf' as
+   "name (chaotic female gnollish Priestess)".  Returns FALSE, leaving
+   'outbuf' untouched, when 'who' does not end in four known file codes. */
+static boolean
+describe_cemetery_who(const char *who, char *outbuf)
+{
+    char code[4][4];
+    size_t len = strlen(who);
+    int i, rolenum, racenum, gendnum, alignnum;
+    const char *p;
+
+    /* at least one character of name before the four "-Xxx" groups */
+    if (len < 4 * 4 + 1)
+        return FALSE;
+    for (i = 0; i < 4; i++)
+    {
+        p = who + len - 4 * (4 - i);
+        if (*p != '-')
+            return FALSE;
+        Strncpy(code[i], p + 1, 3);
+        code[i][3] = '\0';
+    }
+    rolenum = str2role(code[0]);
+    racenum = str2race(code[1]);
+    gendnum = str2gend(code[2]);
+    alignnum = str2align(code[3]);
+    if (rolenum < 0 || racenum < 0 || gendnum < 0 || alignnum < 0)
+        return FALSE;
+
+    Sprintf(outbuf, "%.*s (%s %s %s %s)", (int) (len - 4 * 4), who,
+            aligns[alignnum].adj, genders[gendnum].adj, races[racenum].adj,
+            (gendnum == 1 && roles[rolenum].name.f)
+                ? roles[rolenum].name.f : roles[rolenum].name.m);
+    return TRUE;
+}
+
 static void
 print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
 {
@@ -3316,6 +3353,9 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
         int totalkncnt = kncnt;
         if (kncnt) {
             Sprintf(buf, "%s%s", PREFIX, "Final resting place for");
+            if (iflags.dumping_ai_snapshot)
+                Strcat(buf, " (each an earlier hero whose possessions, mostly"
+                            " cursed, lie there, usually with their ghost)");
             putstr_ex(win, buf, ATR_INDENT_AT_SPACE, NO_COLOR, final && totalkncnt == 1);
             if (died_here) {
                 /* disclosure occurs before bones creation, so listing dead
@@ -3332,7 +3372,13 @@ print_mapseen(winid win, mapseen *mptr, int final, int how, boolean printdun)
             }
             for (bp = mptr->final_resting_place; bp; bp = bp->next) {
                 if (bp->bonesknown || wizard || final) {
-                    Sprintf(buf, "%s%s%s, %s%c", final && totalkncnt == 1 ? " " : PREFIX, final && totalkncnt == 1 ? "" : TAB, bp->who,
+                    const char *who = bp->who;
+
+                    /* tmpbuf is free once the died_here line is out */
+                    if (iflags.dumping_ai_snapshot
+                        && describe_cemetery_who(bp->who, tmpbuf))
+                        who = tmpbuf;
+                    Sprintf(buf, "%s%s%s, %s%c", final && totalkncnt == 1 ? " " : PREFIX, final && totalkncnt == 1 ? "" : TAB, who,
                             bp->how, --kncnt ? ',' : '.');
                     putstr_ex(win, buf, ATR_INDENT_AT_SPACE, NO_COLOR, final && totalkncnt == 1 && kncnt);
                 }

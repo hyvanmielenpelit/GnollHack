@@ -1250,8 +1250,8 @@ append_ai_snapshot_tag(struct obj *obj, char *bp)
             {
                 if (withnames)
                     Sprintf(eos(tagbuf),
-                            "\"%.32s\" = the player's own name for this item"
-                            " type; ",
+                            "\"%.32s\" = the player's own guess or note, not"
+                            " an identification; ",
                             objects[typ].oc_uname);
                 else
                     Strcat(tagbuf, "player-named; ");
@@ -1260,7 +1260,8 @@ append_ai_snapshot_tag(struct obj *obj, char *bp)
             {
                 if (withnames)
                     Sprintf(eos(tagbuf),
-                            "\"%.32s\" = a label written by the player; ",
+                            "\"%.32s\" = a label the player wrote on it, not"
+                            " an identification; ",
                             UONAME(obj));
                 else
                     Strcat(tagbuf, "player-labelled; ");

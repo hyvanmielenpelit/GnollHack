@@ -3753,7 +3753,10 @@ dopray(void)
     if (!can_pray(TRUE))
         return 0;
 
-    if (wizard && p_type >= 0) 
+    livelog_printf(LL_AI, "prayed to %s%s", align_gname(p_aligntyp),
+                   context.spellpray ? " by casting the prayer spell" : "");
+
+    if (wizard && p_type >= 0)
     {
         if (yn_query("Force the gods to be pleased?") == 'y') 
         {

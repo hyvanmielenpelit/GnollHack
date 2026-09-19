@@ -1127,8 +1127,11 @@ dump_everything(int how, time_t when)
                " only the Discoveries section maps appearances to types. A"
                " quoted name in a tag, or the words player-named or"
                " player-labelled, mean the name on that line was given by"
-               " the player and proves nothing about the item. [BUC unknown]"
-               " marks an item whose blessed or cursed state is not known."
+               " the player: it is the player's guess or note and is no"
+               " evidence of what the item is or does. Only the absence of"
+               " [unidentified] says that an item is identified. [BUC"
+               " unknown] marks an item whose blessed or cursed state is not"
+               " known."
                " [contents not yet seen] marks a container the player has"
                " not looked inside; a container known to be empty says"
                " \"empty\" in its name.");

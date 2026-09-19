@@ -6152,11 +6152,18 @@ show_gamelog(int final)
     Sprintf(buf, "%s events:", final ? "Major" : "Logged");
     putstr(win, ATR_TITLE, buf);
     if (iflags.dumping_ai_snapshot)
+    {
         putstr(win, ATR_NONE,
                "Level numbers in this list are counted within their own"
                " dungeon branch. Status, Background and the dungeon overview"
                " use absolute depth (Dlvl), except that the overview numbers"
                " the Quest and Fort Ludios from 1.");
+        putstr(win, ATR_NONE,
+               "Each prayer is listed as \"prayed to <god>\" at the turn it"
+               " was made; a game begun on an older version may have earlier"
+               " prayers that are not listed. How soon the hero can safely"
+               " pray again is not shown to the player and is not printed.");
+    }
     for (llmsg = gamelog; llmsg; llmsg = llmsg->next) {
         if (final && !majorevent(llmsg))
             continue;

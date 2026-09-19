@@ -2669,7 +2669,7 @@ GENERAL_TOOL("large five-branched candelabrum", None, None, None, None,
     O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_NO_PICKUP, O4_FULL_SIZED_BITMAP | O4_CANDELABRUM, O5_LIGHT_SOURCE, O6_NONE, PERMITTED_ALL),
 
 /* other tools */
-TOOL("expensive camera",    None, None, None, "Camera's flashlight frightens the target monster. Can be used to take selfies with nearby monsters.",
+TOOL("expensive camera",    None, None, None, "Camera's flash blinds a monster next to you.\nIt may scare away a monster up to two squares away.\nMonsters that resist blindness are unaffected.\nCan be used to take selfies with nearby monsters.",
     TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, 
     CHARGED_MAGIC_MARKER, RECHARGING_CAMERA, 10, 12,200, 0, 0, 0, 0, 0, 0,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_PLASTIC, CLR_BLACK, 24, OBJECT_SOUNDSET_CAMERA, 
