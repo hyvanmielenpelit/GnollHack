@@ -1046,6 +1046,12 @@ namespace GnollHackX
                     DisplayAlertGrid("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. This may have been instructed by the operating system or the user." + (GHApp.GameSaveStatus == 0 ? " Your game may be recoverable from the crash." : " Your game was saved before the termination."), "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
+                if (GHApp.InformAboutSaveFailedOnBackground)
+                {
+                    GHApp.InformAboutSaveFailedOnBackground = false;
+                    DisplayAlertGrid("Save Error", "The last background save attempt failed because a game data file was missing. It may have been removed by the operating system. Your game may have been recovered from the most recent available checkpoint or backup save.", "OK", GHColors.Orange);
+                    previousInformationShown = true;
+                }
                 if (GHApp.InformAboutIncompatibleSavedGames)
                 {
                     GHApp.InformAboutIncompatibleSavedGames = false;

@@ -237,7 +237,9 @@ namespace GnollHackX
             LoadBanks = Preferences.Get("LoadSoundBanks", true);
             GameSaveStatus = Preferences.Get("GameSaveResult", 0);
             InformAboutGameTermination = Preferences.Get("WentToSleepWithGameOn", false);
+            InformAboutSaveFailedOnBackground = Preferences.Get("SaveFailedOnBackground", false);
             Preferences.Set("WentToSleepWithGameOn", false);
+            Preferences.Set("SaveFailedOnBackground", false);
             Preferences.Set("GameSaveResult", 0);
             InformAboutCrashReport = !InformAboutGameTermination;
 
@@ -2179,6 +2181,7 @@ namespace GnollHackX
         public static int GameSaveStatus = 0;
         public static bool InformAboutGameTermination = false;
         public static bool InformAboutCrashReport = false;
+        public static bool InformAboutSaveFailedOnBackground = false;
         public static bool InformAboutIncompatibleSavedGames = false;
         public static bool InformAboutRecordingSetOff = false;
         public static bool InformAboutFreeDiskSpace = false;
@@ -2784,6 +2787,17 @@ namespace GnollHackX
                         if (gamePage != null && gamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
                             game.ActiveGamePage.FastForwardRequested = true;
                         await game.SaveGameAndWaitForFinishedConfirmation();
+                        if (GameSaveResult == 0)
+                        {
+                            try
+                            {
+                                Preferences.Set("SaveFailedOnBackground", true);
+                            }
+                            catch (Exception ex2)
+                            {
+                                Debug.WriteLine(ex2);
+                            }
+                        }
                     }
                 }
             }

@@ -488,8 +488,8 @@ struct savefile_info {
    distinctions the modern ports draw between these do not exist there. */
 #ifndef GNH_MOBILE
 #define fatal_error error
-#define nonfatal_error error
-#define silent_nonfatal_error error
+#define nonfatal_error debugprint
+#define silent_nonfatal_error debugprint
 #endif
 
 

@@ -334,6 +334,7 @@ dosave0(boolean quietly)
         }
         mark_synch();
 #endif
+        debugprint("dosave0: opening level %d", (int)ltmp);
         ofd = open_levelfile(ltmp, whynot);
         if (ofd < 0)
         {
@@ -341,9 +342,9 @@ dosave0(boolean quietly)
                why the level file went missing, so report it before unwinding.
                On mobile, open_levelfile has already appended the descriptor
                limits to it if the failure was EMFILE. */
-            char dbuf[BUFSZ * 2];
-            Sprintf(dbuf, "dosave0: %s", whynot);
-            issue_debuglog_priority(0, dbuf);
+            //char dbuf[BUFSZ * 2];
+            //Sprintf(dbuf, "dosave0: %s", whynot);
+            //issue_debuglog_priority(0, dbuf);
             HUP pline1(whynot);
             /* fd was handed to fdopen() by def_bufon() via store_version()
                above, so it belongs to bw_FILE. Closing it with a plain
@@ -351,8 +352,15 @@ dosave0(boolean quietly)
                routes it to fclose() instead. */
             bclose(fd);
             (void) delete_savefile();
+#ifdef GNH_MOBILE
+            if (quietly)
+                silent_nonfatal_error("dosave0: %s", whynot);
+            else
+                nonfatal_error("dosave0: %s", whynot);
+#else
             HUP Strcpy(killer.name, whynot);
             HUP done(TRICKED);
+#endif
             saving = FALSE;
             return 0;
         }
@@ -553,12 +561,17 @@ boolean
 tricked_fileremoved(int fd, char *whynot)
 {
     if (fd < 0) {
+#ifndef GNH_MOBILE
         program_state.in_tricked = 1;
         pline1(whynot);
         pline("Probably someone removed it.");
         Strcpy(killer.name, whynot);
         done(TRICKED);
         program_state.in_tricked = 0;
+#else
+        if (!wizard || yn_query("A level file was not found. Try continue?") != 'y')
+            fatal_error("Cannot continue this game: %s. Probably someone removed it.", whynot);
+#endif
         return TRUE;
     }
     return FALSE;
@@ -584,7 +597,8 @@ savestateinlock(void)
      * noop pid rewriting will take place on the first "checkpoint" after
      * the game is started or restored, if checkpointing is off.
      */
-    if (flags.ins_chkpt || havestate) {
+    if (flags.ins_chkpt || havestate) 
+    {
         /* save the rest of the current game state in the lock file,
          * following the original int pid, the current level number,
          * and the current savefile name, which should not be subject
@@ -596,24 +610,38 @@ savestateinlock(void)
             return;
 
         (void) read(fd, (genericptr_t) &hpid, (readLenType)sizeof(hpid));
-        if (hackpid != hpid) {
+        if (hackpid != hpid)
+        {
             Sprintf(whynot, "Level #0 pid (%d) doesn't match ours (%d)!",
                     hpid, hackpid);
             pline1(whynot);
+#ifdef GNH_MOBILE
+            nonfatal_error("savestateinlock: %s", whynot);
+            (void)nhclose(fd);
+            return;
+#else
             Strcpy(killer.name, whynot);
             done(TRICKED);
+#endif
         }
         (void) nhclose(fd);
 
         fd = create_levelfile(0, whynot);
-        if (fd < 0) {
+        if (fd < 0) 
+        {
             pline1(whynot);
+#ifdef GNH_MOBILE
+            nonfatal_error("savestateinlock: %s", whynot);
+            return;
+#else
             Strcpy(killer.name, whynot);
             done(TRICKED);
             return;
+#endif
         }
         (void) write(fd, (genericptr_t) &hackpid, sizeof(hackpid));
-        if (flags.ins_chkpt) {
+        if (flags.ins_chkpt) 
+        {
             int currlev = ledger_no(&u.uz);
             int64_t time_stamp = (int64_t)getnow();
 
