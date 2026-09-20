@@ -1046,12 +1046,8 @@ namespace GnollHackX
                     DisplayAlertGrid("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. This may have been instructed by the operating system or the user." + (GHApp.GameSaveStatus == 0 ? " Your game may be recoverable from the crash." : " Your game was saved before the termination."), "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
-                if (GHApp.InformAboutSaveFailedOnBackground)
-                {
-                    GHApp.InformAboutSaveFailedOnBackground = false;
-                    DisplayAlertGrid("Save Error", "A background save could not complete because a game data file was missing. It may have been removed by the operating system or by another program. Your most recent checkpoint or backup save should still be available.", "OK", GHColors.Orange);
+                if (DisplaySaveFailedOnBackgroundInfo())
                     previousInformationShown = true;
-                }
                 if (GHApp.InformAboutIncompatibleSavedGames)
                 {
                     GHApp.InformAboutIncompatibleSavedGames = false;
@@ -2672,6 +2668,25 @@ namespace GnollHackX
                 return (achA == null ? 0 : 1) - (achB == null ? 0 : 1);
 
             return string.Compare(achA.SortName, achB.SortName);
+        }
+
+        /* Returns true when the notice was shown, so callers can suppress other prompts */
+        public bool DisplaySaveFailedOnBackgroundInfo()
+        {
+            if (!GHApp.InformAboutSaveFailedOnBackground)
+                return false;
+
+            GHApp.InformAboutSaveFailedOnBackground = false;
+            try
+            {
+                Preferences.Set("SaveFailedOnBackground", false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            DisplayAlertGrid("Save Error", "A background save could not complete because a game data file was missing. It may have been removed by the operating system or by another program. Your most recent checkpoint or backup save should still be available.", "OK", GHColors.Orange);
+            return true;
         }
 
         public bool DisplayAchievementsGained()

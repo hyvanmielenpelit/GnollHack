@@ -2571,6 +2571,7 @@ namespace GnollHackX
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
+                    InformAboutSaveFailedOnBackground = true;
                     try
                     {
                         Preferences.Set("SaveFailedOnBackground", true);

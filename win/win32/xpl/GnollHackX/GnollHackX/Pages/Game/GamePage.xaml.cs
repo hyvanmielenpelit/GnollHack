@@ -4484,7 +4484,10 @@ namespace GnollHackX.Pages.Game
             if (GHApp.DoAppExitOnReturn)
                 _mainPage.ForceCloseApp();
             else
+            {
+                _mainPage.DisplaySaveFailedOnBackgroundInfo();
                 _mainPage.DisplayAchievementsGained();
+            }
             await _mainPage.StartGeneralTimerAsync(); /* Just to be doubly sure */
         }
 
