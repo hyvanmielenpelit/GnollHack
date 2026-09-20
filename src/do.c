@@ -8030,8 +8030,10 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
         fd = open_levelfile(new_ledger, whynot);
         if (tricked_fileremoved(fd, whynot))
         {
-            /* we'll reach here if running in wizard mode */
-            silent_nonfatal_error("Trying to continue this game despite error: %s", whynot);
+            /* Reached only when done(TRICKED) returns, which happens in
+               wizard mode on the legacy ports; there is still no level file
+               to read. */
+            fatal_error("Cannot continue this game: %s", whynot);
         }
         reseed_random(rn2);
         reseed_random(rn2_on_display_rng);

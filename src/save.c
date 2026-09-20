@@ -227,6 +227,40 @@ dosave0(boolean quietly)
 
     HUP mark_synch(); /* flush any buffered screen output */
 
+    /* Every other level file is folded into the save after the in-core level
+       and game state have been released, so a file that cannot be opened at
+       that point leaves nothing to return to. Check them while the game is
+       still intact. */
+    {
+        xchar chklev;
+        xchar chkmax = maxledgerno();
+        int chkfd;
+
+        for (chklev = (xchar) 1; chklev <= chkmax; chklev++)
+        {
+            if (chklev == ledger_no(&u.uz))
+                continue;
+            if (!(level_info[chklev].flags & LFILE_EXISTS))
+                continue;
+            chkfd = open_levelfile(chklev, whynot);
+            if (chkfd < 0)
+            {
+                HUP pline1(whynot);
+                if (quietly)
+                    silent_nonfatal_error(
+                        "dosave0 precheck: %s (player on %d/%d)", whynot,
+                        (int) u.uz.dnum, (int) u.uz.dlevel);
+                else
+                    nonfatal_error(
+                        "dosave0 precheck: %s (player on %d/%d)", whynot,
+                        (int) u.uz.dnum, (int) u.uz.dlevel);
+                saving = FALSE;
+                return 0;
+            }
+            (void) nhclose(chkfd);
+        }
+    }
+
     fd = create_savefile();
     if (fd < 0) {
         HUP pline("Cannot open save file.");
@@ -338,13 +372,10 @@ dosave0(boolean quietly)
         ofd = open_levelfile(ltmp, whynot);
         if (ofd < 0)
         {
-            /* whynot names the level and the errno; it is the only clue as to
-               why the level file went missing, so report it before unwinding.
-               On mobile, open_levelfile has already appended the descriptor
+            /* The in-core level and game state were released above, so there
+               is nothing to return to. whynot names the level and the errno;
+               on mobile open_levelfile has already appended the descriptor
                limits to it if the failure was EMFILE. */
-            //char dbuf[BUFSZ * 2];
-            //Sprintf(dbuf, "dosave0: %s", whynot);
-            //issue_debuglog_priority(0, dbuf);
             HUP pline1(whynot);
             /* fd was handed to fdopen() by def_bufon() via store_version()
                above, so it belongs to bw_FILE. Closing it with a plain
@@ -353,10 +384,9 @@ dosave0(boolean quietly)
             bclose(fd);
             (void) delete_savefile();
 #ifdef GNH_MOBILE
-            if (quietly)
-                silent_nonfatal_error("dosave0: %s", whynot);
-            else
-                nonfatal_error("dosave0: %s", whynot);
+            fatal_error("dosave0: %s (ledger %d of %d, player on %d/%d)",
+                        whynot, (int) ltmp, (int) maxnoofledgers,
+                        (int) uz_save.dnum, (int) uz_save.dlevel);
 #else
             HUP Strcpy(killer.name, whynot);
             HUP done(TRICKED);
@@ -569,8 +599,8 @@ tricked_fileremoved(int fd, char *whynot)
         done(TRICKED);
         program_state.in_tricked = 0;
 #else
-        if (!wizard || yn_query("A level file was not found. Try continue?") != 'y')
-            fatal_error("Cannot continue this game: %s. Probably someone removed it.", whynot);
+        fatal_error("Cannot continue this game: %s. "
+                    "Probably someone removed it.", whynot);
 #endif
         return TRUE;
     }
@@ -597,7 +627,7 @@ savestateinlock(void)
      * noop pid rewriting will take place on the first "checkpoint" after
      * the game is started or restored, if checkpointing is off.
      */
-    if (flags.ins_chkpt || havestate) 
+    if (flags.ins_chkpt || havestate)
     {
         /* save the rest of the current game state in the lock file,
          * following the original int pid, the current level number,
@@ -627,7 +657,7 @@ savestateinlock(void)
         (void) nhclose(fd);
 
         fd = create_levelfile(0, whynot);
-        if (fd < 0) 
+        if (fd < 0)
         {
             pline1(whynot);
 #ifdef GNH_MOBILE
@@ -640,7 +670,7 @@ savestateinlock(void)
 #endif
         }
         (void) write(fd, (genericptr_t) &hackpid, sizeof(hackpid));
-        if (flags.ins_chkpt) 
+        if (flags.ins_chkpt)
         {
             int currlev = ledger_no(&u.uz);
             int64_t time_stamp = (int64_t)getnow();

@@ -396,7 +396,8 @@ DLLEXPORT void LibSaveAndRestoreSavedGame(int save_style)
 #ifdef INSURANCE
             save_currentstate();
 #endif
-            issue_parametered_gui_command(GUI_CMD_WAIT_FOR_RESUME, 0);
+            issue_parametered_gui_command(GUI_CMD_WAIT_FOR_RESUME,
+                                          SAVE_RESUME_CHECKPOINT);
             break;
         default:
         case 0: /* Save game with checkpoint as a backup */
@@ -411,7 +412,8 @@ DLLEXPORT void LibSaveAndRestoreSavedGame(int save_style)
 #endif
             int saveres = dosave0(TRUE);
             issue_breadcrumb2("LibSaveAndRestoreSavedGame: Saved", saveres);
-            issue_parametered_gui_command(GUI_CMD_WAIT_FOR_RESUME, saveres);
+            issue_parametered_gui_command(GUI_CMD_WAIT_FOR_RESUME,
+                saveres ? SAVE_RESUME_SAVED : SAVE_RESUME_FAILED);
             if (saveres)
             {
                 exit_hack_code = EXITHACK_RESTART_EXISTING; /* reload upon exit */

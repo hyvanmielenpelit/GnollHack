@@ -2565,8 +2565,31 @@ namespace GnollHackX
                 Interlocked.Exchange(ref _aggregateSessionPlayTime, 0);
         }
 
+        public static void SetBackgroundSaveFailed()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    try
+                    {
+                        Preferences.Set("SaveFailedOnBackground", true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
         private static int _cancelSaveGame = 0;
         private static int _savingGame = 0;
+        private static int _backgroundSaveInProgress = 0;
         private static int _appSwitchSaveStyle = 0;
         private static int _gameSaved = 0;
         private static int _appActivationGeneration = 0;
@@ -2577,6 +2600,8 @@ namespace GnollHackX
 
         public static bool CancelSaveGame { get { return Interlocked.CompareExchange(ref _cancelSaveGame, 0, 0) != 0; } set { Interlocked.Exchange(ref _cancelSaveGame, value ? 1 : 0); } }
         public static bool SavingGame { get { return Interlocked.CompareExchange(ref _savingGame, 0, 0) != 0; } set { Interlocked.Exchange(ref _savingGame, value ? 1 : 0); } }
+        /* True while an OnSleep-initiated save is outstanding; the GUI_CMD_WAIT_FOR_RESUME handler reports a failure to the player only then */
+        public static bool BackgroundSaveInProgress { get { return Interlocked.CompareExchange(ref _backgroundSaveInProgress, 0, 0) != 0; } set { Interlocked.Exchange(ref _backgroundSaveInProgress, value ? 1 : 0); } }
         public static int AppSwitchSaveStyle { get { return TournamentMode ? 0 : Interlocked.CompareExchange(ref _appSwitchSaveStyle, 0, 0); } set { Interlocked.Exchange(ref _appSwitchSaveStyle, value); } }
         public static bool GameSaved { get { return Interlocked.CompareExchange(ref _gameSaved, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameSaved, value ? 1 : 0); } }
         public static int AppActivationGeneration { get { return Interlocked.CompareExchange(ref _appActivationGeneration, 0, 0); } }
@@ -2750,6 +2775,7 @@ namespace GnollHackX
                         if (gamePage != null && gamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
                             gamePage.FastForwardRequested = true;
                         MaybeWriteGHLog("SaveGameOnSleep: SaveGameAndWaitForResume", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        BackgroundSaveInProgress = true;
                         game.SaveGameAndWaitForResume();
                     }
                 }
@@ -2786,18 +2812,8 @@ namespace GnollHackX
                         GamePage gamePage = game.ActiveGamePage;
                         if (gamePage != null && gamePage.GameEnded && OperatingSystemKillsAppsOnBackground)
                             game.ActiveGamePage.FastForwardRequested = true;
+                        BackgroundSaveInProgress = true;
                         await game.SaveGameAndWaitForFinishedConfirmation();
-                        if (GameSaveResult == 0)
-                        {
-                            try
-                            {
-                                Preferences.Set("SaveFailedOnBackground", true);
-                            }
-                            catch (Exception ex2)
-                            {
-                                Debug.WriteLine(ex2);
-                            }
-                        }
                     }
                 }
             }
@@ -2911,6 +2927,8 @@ namespace GnollHackX
             MaybeWriteGHLog("GHApp.HandleResume: Start (isRestart=" + isRestart + ")", true, GHConstants.SentryGnollHackGeneralCategoryName);
             SetSentryTag(GHConstants.SentryTagAppLifecycle, "active");
             IsSuspended = false;
+            /* Save style 2 produces no GUI_CMD_WAIT_FOR_RESUME callback, so the flag would otherwise stay raised into the next save */
+            BackgroundSaveInProgress = false;
             FmodService?.Resume();
             MaybeWriteGHLog("GHApp.HandleResume: FmodService.Resume returned", true, GHConstants.SentryGnollHackGeneralCategoryName);
             if (!UsePlatformRenderLoop)

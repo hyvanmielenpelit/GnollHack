@@ -528,6 +528,8 @@ namespace GnollHackX
 
             SaveDoneConfirmed = false;
             ResponseQueue.Enqueue(new GHResponse(this, GHRequestType.SaveGameAndWaitForResume));
+            if (GHApp.AppSwitchSaveStyle == 2) /* Checkpoint only and no wait: no GUI_CMD_WAIT_FOR_RESUME will arrive */
+                return;
             /* This keeps background task and the app alive */
             for (int i = 0; i < GHConstants.SavePollingTimeoutCount; i++)
             {
@@ -3592,11 +3594,16 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_WAIT_FOR_RESUME:
                     if (PlayingReplay)
                         break;
-                    SaveDoneConfirmed = true;
                     GHApp.GameSaved = true;
                     GHApp.GameSaveResult = cmd_param;
                     GHApp.SavingGame = false;
-                    if (cmd_param != 0)
+                    if (cmd_param == (int)save_resume_results.SAVE_RESUME_FAILED && GHApp.BackgroundSaveInProgress)
+                        GHApp.SetBackgroundSaveFailed();
+                    GHApp.BackgroundSaveInProgress = false;
+                    /* Last: SaveGameAndWaitForFinishedConfirmation returns on this,
+                       and the fields above must already be visible to it. */
+                    SaveDoneConfirmed = true;
+                    if (cmd_param == (int)save_resume_results.SAVE_RESUME_SAVED)
                     {
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.CloseAllDialogs));
                     }

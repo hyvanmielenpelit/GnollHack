@@ -1539,6 +1539,13 @@ namespace GnollHackX
         DEBUGLOG_ERROR_FATAL,
     }
 
+    public enum save_resume_results
+    {
+        SAVE_RESUME_FAILED = 0,
+        SAVE_RESUME_SAVED,
+        SAVE_RESUME_CHECKPOINT,
+    }
+
     public enum popup_text_types
     {
         POPUP_TEXT_GENERAL = 0,

@@ -1130,6 +1130,11 @@ enum debug_log_types
 #define DEBUGLOG_ERROR_SILENT   1
 #define DEBUGLOG_ERROR_FATAL    2
 
+/* Parameter of GUI_CMD_WAIT_FOR_RESUME: what the save attempt produced. */
+#define SAVE_RESUME_FAILED     0
+#define SAVE_RESUME_SAVED      1
+#define SAVE_RESUME_CHECKPOINT 2
+
 
 enum takeoff_wear_commands {
     TAKEOFF_WEAR_CMD_TAKEOFF = 0,

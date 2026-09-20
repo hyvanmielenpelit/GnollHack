@@ -1049,7 +1049,7 @@ namespace GnollHackX
                 if (GHApp.InformAboutSaveFailedOnBackground)
                 {
                     GHApp.InformAboutSaveFailedOnBackground = false;
-                    DisplayAlertGrid("Save Error", "The last background save attempt failed because a game data file was missing. It may have been removed by the operating system. Your game may have been recovered from the most recent available checkpoint or backup save.", "OK", GHColors.Orange);
+                    DisplayAlertGrid("Save Error", "A background save could not complete because a game data file was missing. It may have been removed by the operating system or by another program. Your most recent checkpoint or backup save should still be available.", "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
                 if (GHApp.InformAboutIncompatibleSavedGames)
