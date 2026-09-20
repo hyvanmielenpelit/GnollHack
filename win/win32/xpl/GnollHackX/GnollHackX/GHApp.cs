@@ -237,8 +237,8 @@ namespace GnollHackX
             LoadBanks = Preferences.Get("LoadSoundBanks", true);
             GameSaveStatus = Preferences.Get("GameSaveResult", 0);
             InformAboutGameTermination = Preferences.Get("WentToSleepWithGameOn", false);
-            InformAboutSaveFailedOnBackground = Preferences.Get("SaveFailedOnBackground", false);
             Preferences.Set("WentToSleepWithGameOn", false);
+            InformAboutSaveFailedOnBackground = Preferences.Get("SaveFailedOnBackground", false);
             Preferences.Set("SaveFailedOnBackground", false);
             Preferences.Set("GameSaveResult", 0);
             InformAboutCrashReport = !InformAboutGameTermination;
@@ -2565,16 +2565,16 @@ namespace GnollHackX
                 Interlocked.Exchange(ref _aggregateSessionPlayTime, 0);
         }
 
-        public static void SetBackgroundSaveFailed()
+        public static void SetBackgroundSaveFailed(bool failed)
         {
             try
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    InformAboutSaveFailedOnBackground = true;
+                    InformAboutSaveFailedOnBackground = failed;
                     try
                     {
-                        Preferences.Set("SaveFailedOnBackground", true);
+                        Preferences.Set("SaveFailedOnBackground", failed);
                     }
                     catch (Exception ex)
                     {

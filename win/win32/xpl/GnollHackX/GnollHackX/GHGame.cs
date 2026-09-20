@@ -3598,7 +3598,9 @@ namespace GnollHackX
                     GHApp.GameSaveResult = cmd_param;
                     GHApp.SavingGame = false;
                     if (cmd_param == (int)save_resume_results.SAVE_RESUME_FAILED && GHApp.BackgroundSaveInProgress)
-                        GHApp.SetBackgroundSaveFailed();
+                        GHApp.SetBackgroundSaveFailed(true);
+                    else if (cmd_param == (int)save_resume_results.SAVE_RESUME_SAVED)
+                        GHApp.SetBackgroundSaveFailed(false);
                     GHApp.BackgroundSaveInProgress = false;
                     /* Last: SaveGameAndWaitForFinishedConfirmation returns on this,
                        and the fields above must already be visible to it. */
@@ -3942,6 +3944,8 @@ namespace GnollHackX
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.GameEnded));
                     if (PlayingReplay)
                         break;
+                    /* The notice points at a checkpoint of a game that no longer exists */
+                    GHApp.SetBackgroundSaveFailed(false);
                     /* Otherwise a later crash outside the game would carry this game's
                        final snapshot and look as though a game were still running. */
                     GHApp.ClearSentryCrashContextScope();
