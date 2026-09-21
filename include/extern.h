@@ -1347,6 +1347,7 @@ E boolean check_existing_save_file(void);
 E boolean check_existing_error_save_file(void);
 
 #ifdef SELF_RECOVER
+E boolean level0_file_lacks_checkpoint(const char *);
 E boolean recover_savefile(void);
 E const char *get_recover_savefile_failure_reason(void);
 #endif

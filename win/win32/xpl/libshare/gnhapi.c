@@ -428,6 +428,24 @@ DLLEXPORT void LibSaveAndRestoreSavedGame(int save_style)
             break;
         }
     }
+    else
+    {
+        char buf[BUFSZ];
+
+        Sprintf(buf,
+                "LibSaveAndRestoreSavedGame: skipped (style=%d, started=%d, "
+                "worth=%d, over=%d, panic=%d, tricked=%d, exiting=%d, "
+                "freeing=%d, saving=%d, restoring=%d, reseting=%d, "
+                "chkpt=%d, ignore=%d)",
+                save_style, (int)context.game_started,
+                (int)program_state.something_worth_saving,
+                (int)program_state.gameover, (int)program_state.panicking,
+                (int)program_state.in_tricked, (int)program_state.exiting,
+                (int)program_state.freeing_dynamic_data, (int)saving,
+                (int)restoring, (int)reseting, (int)check_pointing,
+                (int)ignore_onsleep_autosave);
+        issue_breadcrumb(buf);
+    }
     return;
 }
 

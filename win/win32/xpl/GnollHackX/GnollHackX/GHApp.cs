@@ -236,12 +236,17 @@ namespace GnollHackX
             CasualMode = Preferences.Get("CasualMode", false);
             LoadBanks = Preferences.Get("LoadSoundBanks", true);
             GameSaveStatus = Preferences.Get("GameSaveResult", 0);
-            InformAboutGameTermination = Preferences.Get("WentToSleepWithGameOn", false);
+            bool wentToSleepWithGameOn = Preferences.Get("WentToSleepWithGameOn", false);
+            bool wentToSleepBeforeGameStart = Preferences.Get("WentToSleepBeforeGameStart", false);
+            InformAboutGameTermination = wentToSleepWithGameOn && !wentToSleepBeforeGameStart;
             Preferences.Set("WentToSleepWithGameOn", false);
+            Preferences.Set("WentToSleepBeforeGameStart", false);
             InformAboutSaveFailedOnBackground = Preferences.Get("SaveFailedOnBackground", false);
             Preferences.Set("SaveFailedOnBackground", false);
             Preferences.Set("GameSaveResult", 0);
-            InformAboutCrashReport = !InformAboutGameTermination;
+            InformAboutCrashReport = !wentToSleepWithGameOn;
+            if (wentToSleepWithGameOn && wentToSleepBeforeGameStart)
+                AddSentryBreadcrumb("Previous session was terminated in the background before its game started", GHConstants.SentryGnollHackGeneralCategoryName);
 
             CheckSaveGameBreakingVersionWarning();
 
@@ -2764,6 +2769,7 @@ namespace GnollHackX
                     try
                     {
                         Preferences.Set("WentToSleepWithGameOn", true);
+                        Preferences.Set("WentToSleepBeforeGameStart", !(game.ActiveGamePage?.GameEnteredMoveloop ?? false));
                         Preferences.Set("GameSaveResult", 0);
                     }
                     catch (Exception ex)
@@ -2802,6 +2808,7 @@ namespace GnollHackX
                     try
                     {
                         Preferences.Set("WentToSleepWithGameOn", true);
+                        Preferences.Set("WentToSleepBeforeGameStart", !(game.ActiveGamePage?.GameEnteredMoveloop ?? false));
                         Preferences.Set("GameSaveResult", 0);
                     }
                     catch (Exception ex)

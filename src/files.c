@@ -5364,6 +5364,35 @@ recover_header_read_failed(int gfd)
     (void) nhclose(gfd);
 }
 
+/* TRUE if the level 0 file ends before a complete level number, i.e. no
+   checkpoint was ever written into it. FALSE if it has one, or on an open or
+   read error, which recover_savefile() then reports. */
+boolean
+level0_file_lacks_checkpoint(const char *fq_level0)
+{
+    int fd, rlen, hpid, savelev;
+    boolean lacks = FALSE;
+
+    fd = open(fq_level0, O_RDONLY | O_BINARY, 0);
+    if (fd < 0)
+        return FALSE;
+
+    rlen = (int) read(fd, (genericptr_t) &hpid, (readLenType) sizeof hpid);
+    if (rlen >= 0 && rlen < (int) sizeof hpid)
+    {
+        lacks = TRUE;
+    }
+    else if (rlen == (int) sizeof hpid)
+    {
+        rlen = (int) read(fd, (genericptr_t) &savelev,
+                          (readLenType) sizeof savelev);
+        if (rlen >= 0 && rlen < (int) sizeof savelev)
+            lacks = TRUE;
+    }
+    (void) close(fd);
+    return lacks;
+}
+
 boolean
 recover_savefile(void)
 {

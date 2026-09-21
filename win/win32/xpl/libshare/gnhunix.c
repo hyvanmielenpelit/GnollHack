@@ -75,6 +75,14 @@ getlock(void)
     }
     (void) close(fd);
 
+    if (level0_file_lacks_checkpoint(fq_lock))
+    {
+        /* No checkpoint was ever written: nothing to recover */
+        debugprint("getlock: level 0 file has no checkpoint");
+        issue_breadcrumb("getlock: removed a level 0 file with no checkpoint");
+        goto gotlock;
+    }
+
     if(!recover_savefile())
     {
         (void) eraseoldlocks();
@@ -147,6 +155,9 @@ check_crash(void)
         return;
     }
     (void)close(fd);
+
+    if (level0_file_lacks_checkpoint(fq_lock))
+        goto nofilefound;
 
     struct special_view_info info = { 0 };
     info.viewtype = SPECIAL_VIEW_CRASH_DETECTED;
