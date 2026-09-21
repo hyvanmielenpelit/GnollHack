@@ -90,36 +90,67 @@ get_sentry_resource(
 )
 ```
 
-**2. Breadcrumbs** — chronological record of player actions before the crash:
+**2. Breadcrumbs** — chronological record of player actions before the crash.
+`get_sentry_resource` has no breadcrumbs resource type; its `resourceType`
+accepts only `issue`, `event`, `trace`, `ai_conversation`, `replay`, `monitor`,
+and `snapshot`. Breadcrumbs come from the `get_issue_breadcrumbs` catalog tool,
+called through the Sentry MCP's `execute_sentry_tool`:
 
 ```
-get_sentry_resource(
-    resourceType     = "breadcrumbs",
-    resourceId       = "GNOLLHACK-XX",
-    organizationSlug = "hyvan-mielen-pelit-ry",
-    regionUrl        = "https://de.sentry.io"
+execute_sentry_tool(
+    name      = "get_issue_breadcrumbs",
+    arguments = {
+        organizationSlug: "hyvan-mielen-pelit-ry",
+        regionUrl:        "https://de.sentry.io",
+        issueId:          "GNOLLHACK-XX",
+        eventId:          "<32-hex event id>"
+    }
 )
 ```
 
-Both calls are independent and can be made in parallel.
+`eventId` defaults to `"latest"`, which returns only the most recent event's
+trail. When the issue has several events, fetch breadcrumbs **per event**, with
+an explicit `eventId` for each one taken from the A.4 event listing — the
+breadcrumb sequences are compared across events in A.4.
+
+Both calls are independent and can be made in parallel. The per-event
+breadcrumb calls can also run in parallel once A.4 has listed the event IDs.
+
+> [!NOTE]
+> `get_issue_breadcrumbs`, `search_issue_events`, and `get_event_attachment` are
+> **catalog tools**, not top-level MCP tools. Searching for them with
+> `ToolSearch` finds nothing, and that is not evidence that breadcrumbs are
+> unavailable. Call them by name through `execute_sentry_tool`.
+> `search_sentry_tools` discovers catalog tools and returns their input
+> schemas — use it to confirm argument names, and to find any other long-tail
+> Sentry operation (e.g., `get_event_attachment` for files attached to an
+> event, which also requires `projectSlug = "gnollhack"` and the `eventId`).
 
 ### A.4 Multi-Event Investigation
 
 Check the **occurrences count** from the issue details. If the issue has
 multiple events, examine all of them:
 
-**1. List individual events:**
+**1. List individual events** with the `search_issue_events` catalog tool,
+called through `execute_sentry_tool` like the breadcrumbs call in A.3:
 
 ```
-search_events(
-    organizationSlug = "hyvan-mielen-pelit-ry",
-    regionUrl        = "https://de.sentry.io",
-    dataset          = "errors",
-    query            = "issue:GNOLLHACK-XX",
-    sort             = "-timestamp",
-    limit            = 25
+execute_sentry_tool(
+    name      = "search_issue_events",
+    arguments = {
+        organizationSlug: "hyvan-mielen-pelit-ry",
+        regionUrl:        "https://de.sentry.io",
+        issueId:          "GNOLLHACK-XX",
+        sort:             "-timestamp",
+        period:           "90d",
+        limit:            25
+    }
 )
 ```
+
+Each result carries its `eventID`, which steps 2 and 3 take as input. An
+optional `query` narrows the list with natural language or Sentry search
+syntax (e.g., `release:X.Y.Z.N`).
 
 **2. Fetch each event's details:**
 
@@ -132,7 +163,21 @@ get_sentry_resource(
 )
 ```
 
-**3. Cross-event comparison** (mandatory when multiple events exist):
+**3. Fetch each event's breadcrumbs** with an explicit `eventId`, as in A.3:
+
+```
+execute_sentry_tool(
+    name      = "get_issue_breadcrumbs",
+    arguments = {
+        organizationSlug: "hyvan-mielen-pelit-ry",
+        regionUrl:        "https://de.sentry.io",
+        issueId:          "GNOLLHACK-XX",
+        eventId:          "<event_id>"
+    }
+)
+```
+
+**4. Cross-event comparison** (mandatory when multiple events exist):
 
 | Comparison Axis      | What to Look For                                          |
 |----------------------|-----------------------------------------------------------|
