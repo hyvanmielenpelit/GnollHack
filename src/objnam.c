@@ -81,6 +81,7 @@ static void ai_snapshot_food_conducts(struct obj *, boolean, boolean *,
 static void append_ai_snapshot_tag(struct obj *, char *);
 static boolean badman(const char *, boolean);
 static boolean material_wish_success(int, int);
+static int wishable_material_word_length(const char*, int*);
 
 struct Jitem {
     int item;
@@ -4458,12 +4459,21 @@ readobjnam(char *bp, struct obj *no_wish, boolean is_wiz_wish, boolean *removed_
 
 
     int foundkey = FALSE;
-    for (;;) 
+    /* A material word followed by prefixes ("adamantium legendary spiked
+       shield") is skipped, and put back in front of the object name after
+       the prefixes have been parsed */
+    char* matwordp = 0;
+    int matwordlen = 0;
+    for (;;)
     {
         int l;
 
         if (!bp || !*bp)
+        {
+            if (matwordp)
+                break;
             goto any;
+        }
         if (!strncmpi(bp, "an ", l = 3) || !strncmpi(bp, "a ", l = 2)) {
             cnt = 1;
         } else if (!strncmpi(bp, "the ", l = 4)) {
@@ -4649,6 +4659,14 @@ readobjnam(char *bp, struct obj *no_wish, boolean is_wiz_wish, boolean *removed_
                 }
             }
 
+            if (!anythingfound && !matwordp
+                && (matwordlen = wishable_material_word_length(bp, (int*)0)) > 0)
+            {
+                matwordp = bp;
+                l = matwordlen + 1;
+                anythingfound = TRUE;
+            }
+
             if (!anythingfound)
             {
                 foundkey = find_key_otyp_by_description(bp, &key_otyp, &key_special_quality);
@@ -4656,6 +4674,14 @@ readobjnam(char *bp, struct obj *no_wish, boolean is_wiz_wish, boolean *removed_
             }
         }
         bp += l;
+    }
+    if (matwordp)
+    {
+        if (*bp)
+            memmove(matwordp + matwordlen + 1, bp, strlen(bp) + 1);
+        else
+            matwordp[matwordlen] = '\0';
+        bp = matwordp;
     }
     if (!cnt)
         cnt = 1; /* will be changed to 2 if makesingular() changes string */
@@ -5555,54 +5581,24 @@ retry:
 
     if (!material)
     {
-        int m;
-        /* Check for materials */
-        for (m = MAT_NONE + 1; m < MAX_MATERIAL_TYPES; m++)
+        /* Check up to 4 words for a material word */
+        char originalbuf[OBUFSZ];
+        char* mbp = originalbuf;
+        int mlen, w;
+
+        Strcpy(originalbuf, bp);
+        for (w = 0; w < 4 && mbp; w++)
         {
-            if (material_definitions[m].wishable)
+            if ((mlen = wishable_material_word_length(mbp, &material)) > 0)
             {
-                size_t mlen = strlen(material_definitions[m].object_prefix);
-                size_t mlena = material_definitions[m].adjective ? strlen(material_definitions[m].adjective) : 0;
-
-                char startbuf[OBUFSZ] = "";
-                char originalbuf[OBUFSZ] = "";
-                Strcpy(originalbuf, bp);
-                size_t bplen = strlen(originalbuf);
-                char* mbp = originalbuf;
-                char* spacep = 0;
-                /* Check up to 4 words for a material word */
-                int w;
-                for (w = 0; w < 4; w++)
-                {
-                    if (!mbp || !*mbp)
-                        break;
-
-                    if ((!strncmpi(mbp, material_definitions[m].object_prefix, mlen) && bplen >= mlen + 1 && *(mbp + mlen) == ' ')
-                        || (material_definitions[m].adjective && !strncmpi(mbp, material_definitions[m].adjective, mlena) && bplen >= mlena + 1 && *(mbp + mlena) == ' '))
-                    {
-                        mbp += mlen + 1;
-                        Sprintf(bp, "%s%s", startbuf, mbp);
-                        material = m;
-                        goto retry;
-                    }
-                    spacep = index(mbp, ' ');
-                    if (spacep)
-                    {
-                        spacep++;
-                        int len = (int)(spacep - originalbuf);
-                        if (len > 0 && (int)bplen > len)
-                        {
-                            Strncpy(startbuf, mbp, (size_t)len);
-                            startbuf[len + 1] = '\0';
-                            mbp += len;
-                        }
-                        else
-                            break;
-                    }
-                    else
-                        break;
-                }
+                /* originalbuf now holds the words before the material word */
+                *mbp = '\0';
+                Sprintf(bp, "%s%s", originalbuf, mbp + mlen + 1);
+                goto retry;
             }
+            mbp = index(mbp, ' ');
+            if (mbp)
+                mbp++;
         }
     }
 
@@ -6549,6 +6545,39 @@ boolean material_wish_success(int otyp, int material)
         }
     }
     return FALSE;
+}
+
+/* Length of the wishable material word (object prefix or adjective) that
+   starts str and is followed by a space, or 0 if there is none; the
+   material goes to *material_ptr if it is not null */
+static int
+wishable_material_word_length(const char* str, int* material_ptr)
+{
+    int m;
+    for (m = MAT_NONE + 1; m < MAX_MATERIAL_TYPES; m++)
+    {
+        const char* prefix = material_definitions[m].object_prefix;
+        const char* adjective = material_definitions[m].adjective;
+        int plen = (int)strlen(prefix);
+        int alen = adjective ? (int)strlen(adjective) : 0;
+        int len = 0;
+
+        if (!material_definitions[m].wishable)
+            continue;
+
+        if (!strncmpi(str, prefix, plen) && str[plen] == ' ')
+            len = plen;
+        else if (adjective && !strncmpi(str, adjective, alen) && str[alen] == ' ')
+            len = alen;
+
+        if (len > 0)
+        {
+            if (material_ptr)
+                *material_ptr = m;
+            return len;
+        }
+    }
+    return 0;
 }
 
 /*
