@@ -189,6 +189,7 @@ namespace GnollHackX
             data.BoolData["LowLevelLogging"] = GHApp.LowLevelLogging;
             data.BoolData["ScreenLogging"] = GHApp.ScreenLogging;
             data.BoolData["DebugLogMessages"] = GHApp.DebugLogMessages;
+            data.BoolData["KeyboardConnected"] = GHApp.IsKeyboardConnected;
             data.BoolData["enableClientTools"] = GHApp.OverseerEnableClientTools;
             data.BoolData["enableGameActions"] = GHApp.OverseerEnableGameActions;
 

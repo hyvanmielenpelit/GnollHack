@@ -1092,6 +1092,24 @@ dump_everything(int how, time_t when)
                " nothing about their values. Use what is printed, such as"
                " messages and cues on items like (shimmering), and otherwise"
                " say that advice depending on them is uncertain.");
+        /* Printed in both states, so that its absence means an older
+           snapshot.  The spoiler rule is restated here because spoiler-free
+           mode is an Overseer setting the game does not know about. */
+        if (is_uevent_elbereth_known() || u.uconduct.elbereths > 0)
+            putstr(0, ATR_NONE,
+                   "Elbereth: the hero has learned of the Elbereth engraving"
+                   " in this game, so explaining it to the player is not a"
+                   " spoiler.");
+        else
+            putstr(0, ATR_NONE,
+                   "Elbereth: the hero has not learned of the Elbereth"
+                   " engraving in this game. If the player has spoiler-free"
+                   " mode on, telling them about Elbereth (its name, that"
+                   " engraving it wards off monsters, or how it works) is"
+                   " therefore a spoiler, unless you can see that they"
+                   " already know of it, for example because they mention it"
+                   " themselves or Latest messages show a fortune or rumor"
+                   " about it.");
         debugprint("%s", "dump_key_bindings_ai");
         dump_key_bindings_ai();
     }

@@ -2734,6 +2734,7 @@ E char *dowhatdoes_core(char, char *);
 E int dohelp(void);
 E int dohistory(void);
 #if defined(DUMPLOG) || defined(DUMPHTML)
+E char *ai_location_text(int, int, char *);
 E void dump_map_legend_ai(void);
 #endif
 

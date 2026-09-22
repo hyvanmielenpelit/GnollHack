@@ -2510,8 +2510,8 @@ dohistory(void)
  *     hallucination, blindness, being engulfed, and arboreal levels
  *   - the symbols actually present on this map, with generic meanings from the
  *     same tables do_screen_description() uses, and a cell count each
- *   - notable positions with symbol, color, the description lookat() would
- *     give, and a compass bearing from the hero
+ *   - notable positions with their distance and compass offset from the
+ *     hero, symbol, color, and the description lookat() would give
  *
  * It works in three stages: walk every map cell once and accumulate two flat
  * lists (one entry per distinct symbol seen, one per notable position), sort
@@ -2890,6 +2890,34 @@ legend_poscmp(const void *p, const void *q)
     return a->x - b->x;
 }
 
+/* AI snapshot: "<x,y>, N squares away (2n,5e)" for a square other than the
+   hero's, or "<x,y>, at the hero's position".  N counts moves, a diagonal
+   step being one, and a zero part of the offset is left out, as in (4w).
+   outbuf must hold BUFSZ. */
+char *
+ai_location_text(int x, int y, char *outbuf)
+{
+    int dx = x - u.ux, dy = y - u.uy, dist = distmin(u.ux, u.uy, x, y);
+
+    Sprintf(outbuf, "<%d,%d>", x, y);
+    if (!dist)
+    {
+        Strcat(outbuf, ", at the hero's position");
+        return outbuf;
+    }
+
+    Sprintf(eos(outbuf), ", %d square%s away (", dist, plur(dist));
+    if (dy)
+        Sprintf(eos(outbuf), "%d%c", abs(dy), dy > 0 ? 's' : 'n');
+    if (dy && dx)
+        Strcat(outbuf, ",");
+    if (dx)
+        Sprintf(eos(outbuf), "%d%c", abs(dx), dx > 0 ? 'e' : 'w');
+    Strcat(outbuf, ")");
+
+    return outbuf;
+}
+
 #define LEGEND_MAX_UNDER 5
 
 /* AI snapshot: the items the hero remembers at <x,y>, which the creature
@@ -2898,6 +2926,7 @@ static void
 legend_print_remembered_objects(int x, int y)
 {
     static char buf[BUFSZ * 6];
+    char locbuf[BUFSZ];
     struct obj *otmp;
     const char *nam;
     int total = 0, shown = 0;
@@ -2908,7 +2937,8 @@ legend_print_remembered_objects(int x, int y)
     if (!total)
         return;
 
-    Sprintf(buf, "Item%s <%d,%d> remembered under %s: ", plur(total), x, y,
+    Sprintf(buf, "Item%s %s, remembered under %s: ", plur(total),
+            ai_location_text(x, y, locbuf),
             (x == u.ux && y == u.uy) ? "you" : "that creature");
     for (otmp = levl[x][y].hero_memory_layers.memory_objchn; otmp;
          otmp = otmp->nexthere)
@@ -3057,10 +3087,20 @@ dump_map_legend_ai(void)
                 (int) u.ux, (int) u.uy);
     putstr(0, ATR_NONE, buf);
     putstr(0, ATR_NONE,
-           "After a notable location, an offset such as (3n,2e) is its"
-           " distance from the hero in cells, north/south first and then"
-           " east/west. (adjacent, northwest) means one step away in that"
-           " direction.");
+           "Every location below, except the hero's own, is written as"
+           " <x,y> followed by its distance from the hero in squares and"
+           " its offset, for example <34,7>, 5 squares away (2n,5e): two"
+           " squares north and five east. The distance is the number of"
+           " moves, a diagonal step counting as one, so it is the larger"
+           " of the two parts. A part that is zero is left out, as in (4w);"
+           " a location on the hero's own square says \"at the hero's"
+           " position\" instead.");
+    putstr(0, ATR_NONE,
+           "The player does not see these coordinates: the game does not"
+           " normally show them. Use <x,y> only to cross-reference this"
+           " snapshot. To tell the player where something is, give its"
+           " direction and distance from the hero in words (north is up on"
+           " the screen, east is to the right), or name a nearby landmark.");
     putstr(0, ATR_NONE,
            "A blank cell is NOT open floor: it is either area the hero has"
            " never seen or solid rock. Blank margins to the left, right,"
@@ -3141,8 +3181,8 @@ dump_map_legend_ai(void)
         kind = (int) legend_positions[i].kind;
         color = (int) legend_positions[i].color;
 
-        Sprintf(buf, "%s <%d,%d> '%c'", legend_kinds[kind].label, x, y,
-                (char) ch);
+        Sprintf(buf, "%s %s: '%c'", legend_kinds[kind].label,
+                ai_location_text(x, y, coordbuf), (char) ch);
         /* NO_COLOR is 8, which is a real index into c_obj_colors[], so this
            test has to come first or a colorless cell would be labelled
            "transparent". */
@@ -3177,17 +3217,6 @@ dump_map_legend_ai(void)
                 Sprintf(eos(buf), " %s%s", descbuf, stairbuf);
             if (*extrabuf)
                 Sprintf(eos(buf), " [seen: %s]", extrabuf);
-        }
-
-        if (!(x == u.ux && y == u.uy))
-        {
-            *coordbuf = '\0';
-            (void) coord_desc(x, y, coordbuf, GPCOORDS_COMPASS);
-            /* a one-step offset comes back as a bare "(direction)" */
-            if (*coordbuf == '(' && distmin(u.ux, u.uy, x, y) == 1)
-                Sprintf(eos(buf), " (adjacent, %s", coordbuf + 1);
-            else if (*coordbuf)
-                Sprintf(eos(buf), " %s", coordbuf);
         }
         putstr(0, ATR_NONE, buf);
         if (kind == LEGEND_KIND_CREATURE && !legend_positions[i].hidden

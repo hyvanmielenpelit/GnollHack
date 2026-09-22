@@ -5859,7 +5859,7 @@ dump_pet_statistics(void)
     struct monst* mtmp;
     char buf[BUFSZ];
     char posbuf[BUFSZ];
-    int petcount = 0, petnum = 0, uncovered = 0, dist;
+    int petcount = 0, petnum = 0, uncovered = 0;
 
     /* The same test the GUI_CMD_CLEAR_PET_DATA handler in libshare/libproc.c
        uses to build the frontend's pet list, so the snapshot and the pet list
@@ -5896,24 +5896,20 @@ dump_pet_statistics(void)
             continue;
 
         petnum++;
-        dist = distmin(u.ux, u.uy, mtmp->mx, mtmp->my);
-        if (dist == 0) /* the steed, which tracks the hero's position */
-            Strcpy(posbuf, "at your position");
-        else if (dist == 1)
-            Strcpy(posbuf, "adjacent");
-        else
-            Sprintf(posbuf, "%d squares away", dist);
 
-        /* <x,y> matches the coordinate format dump_map_legend_ai() uses, so
-           the reader can find the pet in the dumped map's row gutter.
+        /* The location text comes from ai_location_text(), shared with
+           dump_map_legend_ai(), so a pet's line and its map legend line
+           carry the same <x,y>, distance and offset.  A ridden steed is on
+           the hero's square.
 
            Written as plain text rather than with ATR_ORDERED_LIST: that
            attribute makes html_dump_str() strip the " %2d - " prefix and let
            an HTML <ol> supply the number, which is presentational and
            does not survive the client's HTML-to-text conversion.  The index
            has to reach the reader; the blocks below refer to it. */
-        Sprintf(buf, " %2d - %s, <%d,%d>, %s%s, %d/%d HP", petnum,
-                pet_dump_name(mtmp), (int) mtmp->mx, (int) mtmp->my, posbuf,
+        Sprintf(buf, " %2d - %s, %s%s, %d/%d HP", petnum,
+                pet_dump_name(mtmp),
+                ai_location_text((int) mtmp->mx, (int) mtmp->my, posbuf),
                 mtmp == u.usteed ? ", being ridden" : "",
                 mtmp->mhp, mtmp->mhpmax);
         putstr(0, ATR_NONE, buf);
