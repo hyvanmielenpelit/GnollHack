@@ -1094,22 +1094,23 @@ dump_everything(int how, time_t when)
                " say that advice depending on them is uncertain.");
         /* Printed in both states, so that its absence means an older
            snapshot.  The spoiler rule is restated here because spoiler-free
-           mode is an Overseer setting the game does not know about. */
+           mode is an Overseer setting the game does not know about.  The
+           AI may quote this text to the player, so it says nothing about
+           what Elbereth is or does. */
         if (is_uevent_elbereth_known() || u.uconduct.elbereths > 0)
             putstr(0, ATR_NONE,
-                   "Elbereth: the hero has learned of the Elbereth engraving"
-                   " in this game, so explaining it to the player is not a"
-                   " spoiler.");
+                   "Elbereth: the hero has learned of it in this game, so"
+                   " explaining it to the player is not a spoiler.");
         else
             putstr(0, ATR_NONE,
-                   "Elbereth: the hero has not learned of the Elbereth"
-                   " engraving in this game. If the player has spoiler-free"
-                   " mode on, telling them about Elbereth (its name, that"
-                   " engraving it wards off monsters, or how it works) is"
-                   " therefore a spoiler, unless you can see that they"
-                   " already know of it, for example because they mention it"
-                   " themselves or Latest messages show a fortune or rumor"
-                   " about it.");
+                   "Elbereth: the hero has not learned of it in this game."
+                   " If the player has spoiler-free mode on, everything about"
+                   " Elbereth is a spoiler, even when the player asks about"
+                   " it by name: do not explain, describe or hint at it."
+                   " Decline as you would for any other spoiler, and do not"
+                   " quote or paraphrase this note. Only a fortune or rumor"
+                   " about Elbereth in Latest messages means the player has"
+                   " read of it, and then explaining it is not a spoiler.");
         debugprint("%s", "dump_key_bindings_ai");
         dump_key_bindings_ai();
     }
