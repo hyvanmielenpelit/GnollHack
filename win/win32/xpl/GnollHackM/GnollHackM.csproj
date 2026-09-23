@@ -75,7 +75,7 @@
   <!-- CONFIGURATION SPECIFIC PROPERTIES -->
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <UseInterpreter>false</UseInterpreter>
-    <_MauiForceXamlCForDebug Condition="!$(TargetFramework.Contains('-windows'))">true</_MauiForceXamlCForDebug>
+    <_MauiForceXamlCForDebug Condition="!$(TargetFramework.Contains('-windows')) and '$(MauiXamlInflator)' != 'SourceGen'">true</_MauiForceXamlCForDebug>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
