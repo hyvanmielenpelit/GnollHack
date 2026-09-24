@@ -45,6 +45,9 @@ static boolean doaltspellmenu(const char*, int, int*);
 static int percent_success(int, boolean);
 static int percent_success_for_type(int, int, boolean);
 static int attribute_value_for_spellbook(int);
+static int spellbook_read_ability(int);
+static const char *spellbook_difficulty_word(int);
+static void ai_study_risk_text(struct obj *, char *);
 #if 0
 static char *spellretention(int, char *);
 static int throwspell(int);
@@ -886,32 +889,16 @@ study_book(struct obj *spellbook)
             {
 
                 /* uncursed - chance to fail */
-                int read_ability = attribute_value_for_spellbook(spellbook->otyp)
-                    + 8 
-                    + u.ulevel
-                    + 4 * max(0, P_SKILL_LEVEL(spell_skilltype(spellbook->otyp)) - 1)
-                    - 2 * (int)objects[booktype].oc_spell_level
-                    + (Enhanced_vision ? 2 : 0);
+                int read_ability = spellbook_read_ability(booktype);
 
                 if (read_ability < 20 && !confused) //Role_if(PM_WIZARD) && 
                 {
                     char qbuf[QBUFSZ];
-                    char descbuf[BUFSZ] = "difficult";
 
-                    if (read_ability <= 0)
-                        Sprintf(descbuf, "%sseems impossible", perusetext ? "still " : "");
-                    else if (read_ability <= 4)
-                        Sprintf(descbuf, "%sseems extremely difficult", perusetext ? "still " : "");
-                    else if (read_ability <= 8)
-                        Sprintf(descbuf, "%sseems very difficult", perusetext ? "still " : "");
-                    else if (read_ability <= 12)
-                        Sprintf(descbuf, "%sseems difficult", perusetext ? "still " : "");
-                    else if (read_ability <= 16)
-                        Sprintf(descbuf, "%sseems somewhat difficult", perusetext ? "still " : "");
-                    else
-                        Sprintf(descbuf, "%sseems a bit difficult", perusetext ? "still " : "");
-
-                    Sprintf(qbuf, "This spellbook %s to comprehend. Continue?", descbuf);
+                    Sprintf(qbuf, "This spellbook %sseems %s to comprehend."
+                                  " Continue?",
+                            perusetext ? "still " : "",
+                            spellbook_difficulty_word(read_ability));
 
                     if (yn_query(qbuf) != 'y') 
                     {
@@ -5320,6 +5307,85 @@ attribute_value_for_spellbook(int objectid)
 
 }
 
+/* study_book()'s ability to read an uncursed book of type 'otyp'; the
+   study fails when rnd(20) exceeds it */
+static int
+spellbook_read_ability(int otyp)
+{
+    return attribute_value_for_spellbook(otyp)
+        + 8
+        + u.ulevel
+        + 4 * max(0, P_SKILL_LEVEL(spell_skilltype(otyp)) - 1)
+        - 2 * (int) objects[otyp].oc_spell_level
+        + (Enhanced_vision ? 2 : 0);
+}
+
+/* The word study_book()'s prompt uses for 'read_ability'; 0 when the
+   ability is high enough that it does not ask */
+static const char *
+spellbook_difficulty_word(int read_ability)
+{
+    if (read_ability >= 20)
+        return (const char *) 0;
+    if (read_ability <= 0)
+        return "impossible";
+    if (read_ability <= 4)
+        return "extremely difficult";
+    if (read_ability <= 8)
+        return "very difficult";
+    if (read_ability <= 12)
+        return "difficult";
+    if (read_ability <= 16)
+        return "somewhat difficult";
+    return "a bit difficult";
+}
+
+/* For the AI snapshot's spellbook tag: what studying 'book' risks, by
+   study_book()'s rules and in its prompt's words.  Uses the book's curse
+   status only when the hero knows it.  Reads only. */
+static void
+ai_study_risk_text(struct obj *book, char *outbuf)
+{
+    int ability;
+    boolean bknown = is_obj_bknown(book);
+    const char *word;
+
+    if (book->otyp == SPE_BOOK_OF_THE_DEAD
+        || book->otyp == SPE_BOOK_OF_MODRON)
+    {
+        Strcpy(outbuf, "study: never fails");
+        return;
+    }
+    if (bknown && is_obj_blessed(book))
+    {
+        Strcpy(outbuf, "study: never fails (blessed)");
+        return;
+    }
+    if (bknown && is_obj_cursed(book))
+    {
+        Strcpy(outbuf, "study: always fails (cursed)");
+        return;
+    }
+
+    ability = spellbook_read_ability(book->otyp);
+    word = spellbook_difficulty_word(ability);
+
+    if (!word)
+        Strcpy(outbuf, bknown ? "study: never fails"
+                              : "study: never fails unless cursed");
+    else if (ability <= 0)
+        Sprintf(outbuf, "study: %s (the game's word: %s)",
+                bknown ? "always fails" : "always fails unless blessed",
+                word);
+    else if (bknown)
+        Sprintf(outbuf, "study: may fail (the game's word: %s)", word);
+    else
+        Sprintf(outbuf,
+                "study: may fail if uncursed (the game's word: %s),"
+                " never if blessed, always if cursed",
+                word);
+}
+
 #if 0
 static char *
 spellretention(int idx, char *outbuf)
@@ -5388,12 +5454,13 @@ already_learnt_spell_type(int otyp)
 /* For the AI snapshot's inventory tag: what the spell of an identified
    spellbook is, and what casting it would be like for the hero now, from
    the routines the spell list and study_book() use.  'shortform' stops
-   after the success chance.  Leaves 'outbuf' empty for anything but a
-   book of a castable spell whose statistics the hero knows.  Reads only. */
+   after the success chance and the study risk.  Leaves 'outbuf' empty for
+   anything but a book of a castable spell whose statistics the hero
+   knows.  Reads only. */
 void
 ai_spellbook_tag_text(struct obj *book, boolean shortform, char *outbuf)
 {
-    char lvlbuf[BUFSZ];
+    char lvlbuf[BUFSZ], studybuf[BUFSZ];
     int otyp, i, pct_lim, pct_base, matcomp, turns;
     boolean known = FALSE, forgotten = FALSE;
     double manacost;
@@ -5434,6 +5501,8 @@ ai_spellbook_tag_text(struct obj *book, boolean shortform, char *outbuf)
     /* same condition as the spell list */
     if (pct_base < 0 || pct_base > 100)
         Sprintf(eos(outbuf), " (base %d%%)", pct_base);
+    ai_study_risk_text(book, studybuf);
+    Sprintf(eos(outbuf), "; %s", studybuf);
     if (shortform)
         return;
 

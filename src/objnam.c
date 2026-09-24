@@ -1179,17 +1179,45 @@ ai_snapshot_food_conducts(struct obj *obj, boolean unidentified,
         *breaks_vegetarian = FALSE;
 }
 
+/* For the AI snapshot: the age of a corpse whose death the hero
+   witnessed, as the effective age the rot and sacrifice checks use.
+   Leaves 'outbuf' empty for anything else.  Reads only. */
+void
+ai_corpse_age_text(struct obj *obj, char *outbuf)
+{
+    int64_t age;
+
+    *outbuf = '\0';
+    if (!obj || obj->otyp != CORPSE
+        || !(obj->item_flags & ITEM_FLAGS_DEATH_TIMING_KNOWN))
+        return;
+
+    age = monstermoves - peek_at_iced_corpse_age(obj);
+    if (age < 0)
+        age = 0;
+    if (obj->speflags & SPEFLAGS_CORPSE_ON_ICE)
+        Sprintf(outbuf,
+                "death witnessed; kept on ice, so it has aged as if it"
+                " died about %lld turn%s ago",
+                (long long) age, plur(age));
+    else
+        Sprintf(outbuf, "death witnessed, about %lld turn%s ago",
+                (long long) age, plur(age));
+}
+
 /* Append the AI snapshot's bracketed knowledge tag to doname text 'bp'.
    The identity test mirrors the opening of xname_flags(); keep the two in
    step.  Reads knowledge bits only. */
 static void
 append_ai_snapshot_tag(struct obj *obj, char *bp)
 {
-    char tagbuf[BUFSZ * 2], spellfull[BUFSZ], spellshort[BUFSZ];
+    char tagbuf[BUFSZ * 2], spellfull[BUFSZ * 2], spellshort[BUFSZ * 2];
+    char invokestate[BUFSZ], ageinfo[BUFSZ];
     boolean artifact_description_exists;
     boolean unidentified = FALSE, typenamed = FALSE, labelled = FALSE,
             bucunknown, unseencontents;
-    boolean notvegan, notvegetarian, knowledge, conduct, spell, invoke;
+    boolean notvegan, notvegetarian, knowledge, conduct, spell, invoke,
+            corpseage;
     boolean withnames;
     const char *invokename = 0;
     int typ, pass, detail, invprop;
@@ -1247,24 +1275,30 @@ append_ai_snapshot_tag(struct obj *obj, char *bp)
             invokename = get_property_name_ex(invprop).prop_noun;
     }
     invoke = (invokename && *invokename);
+    invokestate[0] = '\0';
+    if (invoke)
+        ai_invoke_state_text(obj, invokestate);
+
+    ai_corpse_age_text(obj, ageinfo);
+    corpseage = (*ageinfo != '\0');
 
     knowledge = unidentified || labelled || bucunknown || unseencontents;
     conduct = notvegan || notvegetarian;
-    if (!knowledge && !conduct && !spell && !invoke)
+    if (!knowledge && !conduct && !spell && !invoke && !corpseage)
         return;
 
     /* first with the player's names quoted, then without them; within
-       each, first with the conduct components, the full spell text and
-       the invoke power, then with the short spell text and the invoke
-       power, then with none of them */
+       each, first with the conduct components, the full spell text, the
+       invoke power and a corpse's age, then with the short spell text,
+       the invoke power and the age, then with none of them */
     for (pass = 0; pass < 2; pass++)
     {
         withnames = (pass == 0);
         for (detail = 2; detail >= 0; detail--)
         {
             /* skip an attempt that repeats the other or has nothing in it */
-            if (detail == 2 ? !(conduct || spell || invoke)
-                : detail == 1 ? !(spell || invoke)
+            if (detail == 2 ? !(conduct || spell || invoke || corpseage)
+                : detail == 1 ? !(spell || invoke || corpseage)
                 : !knowledge)
                 continue;
 
@@ -1303,7 +1337,10 @@ append_ai_snapshot_tag(struct obj *obj, char *bp)
                 Sprintf(eos(tagbuf), "%s; ",
                         detail == 2 ? spellfull : spellshort);
             if (detail && invoke)
-                Sprintf(eos(tagbuf), "invoke: %.60s; ", invokename);
+                Sprintf(eos(tagbuf), "invoke: %.60s (%s); ", invokename,
+                        invokestate);
+            if (detail && corpseage)
+                Sprintf(eos(tagbuf), "%s; ", ageinfo);
 
             /* a tag with no component has no separator to replace */
             if (strlen(tagbuf) <= 2)

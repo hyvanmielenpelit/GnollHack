@@ -66,6 +66,7 @@ static void list_genocided(char, boolean, boolean);
 static boolean should_query_disclose_option(int, char *);
 #if defined (DUMPLOG) || defined (DUMPHTML)
 static void dump_plines(int);
+static void dump_prayer_line_ai(void);
 #endif
 static void dump_everything(int, time_t);
 static int num_extinct(void);
@@ -945,6 +946,51 @@ dump_plines(int how)
         }
     }
 }
+
+/* first version whose every build logs prayers as LL_AI "prayed to" */
+#define AI_PRAYER_LOG_FIRST_VERSION \
+    (((uint64_t) 4 << 24) | ((uint64_t) 3 << 16) | ((uint64_t) 0 << 8) \
+     | (uint64_t) 21)
+
+/* The AI snapshot's one-line prayer history, from the logged events and
+   the conduct counter; the prayer timeout stays unprinted */
+static void
+dump_prayer_line_ai(void)
+{
+    struct gamelog_line *llmsg;
+    int64_t last_turn = -1, ago;
+    char buf[BUFSZ];
+
+    for (llmsg = gamelog; llmsg; llmsg = llmsg->next)
+    {
+        if ((llmsg->flags & LL_AI) != 0 && llmsg->text
+            && !strncmp(llmsg->text, "prayed to ", 10)
+            && llmsg->turn > last_turn)
+            last_turn = llmsg->turn;
+    }
+
+    if (!u.uconduct.gnostic)
+    {
+        Strcpy(buf, "Prayer: the hero has never prayed in this game.");
+    }
+    else if (last_turn >= 0)
+    {
+        ago = moves - last_turn;
+        Sprintf(buf, "Prayer: last prayed at turn %lld, %lld turn%s ago.",
+                (long long) last_turn, (long long) ago, plur(ago));
+    }
+    else if (flags.version_number_at_start >= AI_PRAYER_LOG_FIRST_VERSION)
+    {
+        Strcpy(buf, "Prayer: the hero has not prayed in this game.");
+    }
+    else
+    {
+        Strcpy(buf, "Prayer: none is logged, but this game began on a"
+                    " version that did not log prayers, so an earlier"
+                    " prayer cannot be ruled out.");
+    }
+    putstr(0, ATR_NONE, buf);
+}
 #endif
 
 
@@ -1092,6 +1138,7 @@ dump_everything(int how, time_t when)
                " nothing about their values. Use what is printed, such as"
                " messages and cues on items like (shimmering), and otherwise"
                " say that advice depending on them is uncertain.");
+        dump_prayer_line_ai();
         /* Printed in both states, so that its absence means an older
            snapshot.  The spoiler rule is restated here because spoiler-free
            mode is an Overseer setting the game does not know about.  The

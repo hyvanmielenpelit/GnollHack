@@ -312,7 +312,16 @@ look_at_object(char *buf, int x, int y, int glyph)
 
         Strcpy(buf, used_obj_name ? used_obj_name : "indescribable object");
 
-        if (fakeobj) 
+        if (iflags.dumping_ai_snapshot)
+        {
+            char agebuf[BUFSZ];
+
+            ai_corpse_age_text(otmp, agebuf);
+            if (*agebuf && strlen(buf) + strlen(agebuf) + 3 < BUFSZ)
+                Sprintf(eos(buf), " [%s]", agebuf);
+        }
+
+        if (fakeobj)
         {
             otmp->where = OBJ_FREE; /* object_from_map set it to OBJ_FLOOR */
             dealloc_obj(otmp), otmp = 0;
@@ -2926,7 +2935,7 @@ static void
 legend_print_remembered_objects(int x, int y)
 {
     static char buf[BUFSZ * 6];
-    char locbuf[BUFSZ];
+    char locbuf[BUFSZ], agebuf[BUFSZ];
     struct obj *otmp;
     const char *nam;
     int total = 0, shown = 0;
@@ -2946,9 +2955,12 @@ legend_print_remembered_objects(int x, int y)
         if (shown >= LEGEND_MAX_UNDER)
             break;
         nam = distant_name(otmp, doname);
-        if (strlen(buf) + strlen(nam) + 32 >= sizeof buf)
+        ai_corpse_age_text(otmp, agebuf);
+        if (strlen(buf) + strlen(nam) + strlen(agebuf) + 35 >= sizeof buf)
             break;
         Sprintf(eos(buf), "%s%s", shown ? ", " : "", nam);
+        if (*agebuf)
+            Sprintf(eos(buf), " [%s]", agebuf);
         shown++;
     }
     if (shown < total)
@@ -2968,6 +2980,7 @@ dump_map_legend_ai(void)
     int x, y, i, kind, sym, color, glyph, terrain_glyph;
     int default_glyph;
     int saved_terrainmode;
+    int floor_lit = 0, floor_dark = 0, corr_lit = 0, corr_dark = 0;
     coord saved_bhitpos;
     nhsym ch, hero_ch = 0;
     uint64_t special;
@@ -3050,6 +3063,29 @@ dump_map_legend_ai(void)
                     legend_add_pos(LEGEND_KIND_FEATURE, x, y, ch, sym, color,
                                    TRUE);
             }
+
+            /* remembered lighting of the floor the hero has seen */
+            if (!u.uswallow && levl[x][y].seenv)
+            {
+                schar seentyp = lastseentyp[x][y];
+                boolean waslit = is_levl_waslit(&levl[x][y]) != 0;
+
+                if (seentyp == ROOM || seentyp == GRASS
+                    || seentyp == GROUND)
+                {
+                    if (waslit)
+                        floor_lit++;
+                    else
+                        floor_dark++;
+                }
+                else if (seentyp == CORR)
+                {
+                    if (waslit)
+                        corr_lit++;
+                    else
+                        corr_dark++;
+                }
+            }
         }
     }
 
@@ -3115,7 +3151,8 @@ dump_map_legend_ai(void)
            " but does not see right now, because it is out of the line of"
            " sight or beyond the light. The same symbol without \"in dark\""
            " is floor in view at this moment. Neither says whether the cell"
-           " itself is lit.");
+           " itself is lit; the Lighting line at the end of this legend, when"
+           " present, counts how much of the remembered floor was lit.");
     if (Hallucination)
         putstr(0, ATR_NONE,
                "The hero is hallucinating, so every description below is"
@@ -3256,6 +3293,28 @@ dump_map_legend_ai(void)
     }
     Strcat(buf, anylit ? "." : "no lit light source.");
     putstr(0, ATR_NONE, buf);
+
+    /* the level's own light as the hero remembers it, from Stage 1 */
+    if (floor_lit + floor_dark + corr_lit + corr_dark > 0)
+    {
+        Strcpy(buf, "Lighting (the level's own light as the hero remembers"
+                    " it, not light the hero carries):");
+        if (floor_lit + floor_dark > 0)
+            Sprintf(eos(buf),
+                    " of the remembered room floor, %d cell%s %s lit when"
+                    " last seen and %d %s dark;",
+                    floor_lit, plur(floor_lit),
+                    floor_lit == 1 ? "was" : "were", floor_dark,
+                    floor_dark == 1 ? "was" : "were");
+        if (corr_lit + corr_dark > 0)
+            Sprintf(eos(buf),
+                    " of the remembered corridors, %d %s lit and %d"
+                    " dark;",
+                    corr_lit, corr_lit == 1 ? "was" : "were", corr_dark);
+        Sprintf(eos(buf), " the hero's own position is %s.",
+                is_levl_waslit(&levl[u.ux][u.uy]) ? "lit" : "dark");
+        putstr(0, ATR_NONE, buf);
+    }
     putstr(0, 0, "");
 
     iflags.terrainmode = saved_terrainmode;

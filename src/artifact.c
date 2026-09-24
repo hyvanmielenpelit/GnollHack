@@ -2699,6 +2699,52 @@ static NEARDATA const char recharge_type[] = { ALLOW_COUNT, ALL_CLASSES, 0 };
 static NEARDATA const char invoke_types[] = { ALL_CLASSES, 0 };
 /* #invoke: an "ugly check" filters out most objects */
 
+/* For the AI snapshot's invoke tag: whether #invoke of 'obj' would use
+   its power now, by the checks arti_invoke() makes and in the same
+   order; keep the two in step.  Charges the hero does not know are not
+   tested.  Leaves 'outbuf' empty for an object without an invoke power.
+   Reads only. */
+void
+ai_invoke_state_text(struct obj *obj, char *outbuf)
+{
+    const struct artifact *oart = get_artifact(obj);
+    const char *prefix;
+    boolean charges_unknown = FALSE;
+
+    *outbuf = '\0';
+    if (!oart || !oart->inv_prop)
+        return;
+
+    prefix = obj->invokeon ? "on; "
+             : obj->invokeleft > 0 ? "active; " : "";
+    if ((oart->aflags & AF_INVOKE_REQUIRES_WORN) && !is_worn_correctly(obj))
+    {
+        Sprintf(outbuf, "%smust be worn first", prefix);
+        return;
+    }
+    if (oart->aflags & AF_INVOKE_EXPENDS_CHARGE)
+    {
+        if (!is_obj_known(obj))
+        {
+            charges_unknown = TRUE;
+        }
+        else if (obj->charges <= 0)
+        {
+            Sprintf(outbuf, "%sno charges left", prefix);
+            return;
+        }
+    }
+    if (obj->repowerleft > 0)
+        Sprintf(outbuf, "%srepowering", prefix);
+    else if (u.uen < oart->inv_mana_cost)
+        Sprintf(outbuf, "%sneeds %d mana, the hero has %d", prefix,
+                oart->inv_mana_cost, u.uen);
+    else
+        Sprintf(outbuf, "%s%s", prefix,
+                charges_unknown ? "ready if it has a charge left"
+                                : "ready");
+}
+
 /* the #invoke command */
 int
 doinvoke(void)
