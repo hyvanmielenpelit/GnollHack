@@ -206,8 +206,8 @@ namespace GnollHackX
             GetDependencyServices();
             PlatformService.InitializePlatform();
             GHPath = GnollHackService.GetGnollHackPath();
-            ProcessCommandLineArguments();
             ProcessEnvironment();
+            ProcessCommandLineArguments();
             SetProcessPriority();
 
             TotalMemory = PlatformService.GetDeviceMemoryInBytes();
