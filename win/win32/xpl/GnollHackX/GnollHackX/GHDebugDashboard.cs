@@ -27,6 +27,16 @@ namespace GnollHackX
     /// </summary>
     public struct GHDebugDashboardData
     {
+        /* What reached the screen, from the frame timeline's online estimate */
+        public float DisplayedFps;
+        public float MeasuredRefreshHz;
+        public int AssumedRefreshHz;
+        public int TargetFps;
+        public float HitchRatioMsPerSec;
+        public float PacingErrorRmsMs;
+        public long CoalescedCount;
+        public string LastCadenceChange;
+
         /* Frame timing, copied from FrameTimeStatistics */
         public float FPS;
         public float InterFrameAvgMs;
@@ -232,6 +242,27 @@ namespace GnollHackX
         }
 
         /// <summary>
+        /// Publishes the screen group: the displayed frame rate and pacing as
+        /// estimated from the frame timeline. Called from the main thread
+        /// together with PublishFrameStats.
+        /// </summary>
+        public static void PublishScreenStats(float displayedFps, float measuredRefreshHz, int assumedRefreshHz,
+            int targetFps, float hitchRatioMsPerSec, float pacingErrorRmsMs, long coalescedCount, string lastCadenceChange)
+        {
+            lock (_publishLock)
+            {
+                _staging.DisplayedFps = displayedFps;
+                _staging.MeasuredRefreshHz = measuredRefreshHz;
+                _staging.AssumedRefreshHz = assumedRefreshHz;
+                _staging.TargetFps = targetFps;
+                _staging.HitchRatioMsPerSec = hitchRatioMsPerSec;
+                _staging.PacingErrorRmsMs = pacingErrorRmsMs;
+                _staging.CoalescedCount = coalescedCount;
+                _staging.LastCadenceChange = lastCadenceChange;
+            }
+        }
+
+        /// <summary>
         /// Publishes the draw and cache group. Called from the paint
         /// thread, which owns the two font paints and is therefore the
         /// only thread allowed to read their cache counters.
@@ -427,6 +458,30 @@ namespace GnollHackX
             }
             else
             {
+                AddRow("SCREEN", FormattableString.Invariant($"{d.DisplayedFps:0} fps"),
+                    SKColors.White, RowKind.SectionHeading);
+
+                /* The pacing logic divides the refresh rate it believes in; a panel running
+                   at another rate paces unevenly */
+                bool refreshMismatch = d.AssumedRefreshHz > 0 && d.MeasuredRefreshHz > 0
+                    && Math.Abs(d.AssumedRefreshHz - d.MeasuredRefreshHz) > 0.05f * d.MeasuredRefreshHz;
+                AddRow("hz", FormattableString.Invariant(
+                        $"{d.MeasuredRefreshHz:0.0}  asm {d.AssumedRefreshHz}  tgt {d.TargetFps}"),
+                    refreshMismatch ? SKColors.Orange : SKColors.White, RowKind.Value);
+
+                /* Apple's hitch time ratio bands: under 5 ms/s good, over 10 critical */
+                SKColor hitchColor = SKColors.White;
+                if (d.HitchRatioMsPerSec > 10f)
+                    hitchColor = SKColors.Red;
+                else if (d.HitchRatioMsPerSec > 5f)
+                    hitchColor = SKColors.Orange;
+                AddRow("hitch", FormattableString.Invariant(
+                        $"{d.HitchRatioMsPerSec:0.0} ms/s  err {d.PacingErrorRmsMs:0.0} ms"),
+                    hitchColor, RowKind.Value);
+
+                AddRow("coal", FormattableString.Invariant($"{d.CoalescedCount}  {d.LastCadenceChange}"),
+                    SKColors.White, RowKind.Value);
+
                 AddRow("FRAME", FormattableString.Invariant($"{d.FPS:0} fps"),
                     SKColors.White, RowKind.SectionHeading);
 

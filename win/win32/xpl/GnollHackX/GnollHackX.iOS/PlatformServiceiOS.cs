@@ -10,6 +10,7 @@ using Xamarin.Essentials;
 #endif
 using System.Runtime.InteropServices;
 using GnollHackX;
+using GnollHackX.Performance;
 
 using Foundation;
 using UIKit;
@@ -404,6 +405,89 @@ namespace GnollHackX.iOS
         public bool GetKeyboardConnected()
         {
             return GCKeyboard.CoalescedKeyboard != null;
+        }
+
+        /* NSProcessInfo thermal state (Fair maps to Light, Serious to Moderate) and
+           low power mode; charging from UIDevice battery state. iOS exposes no
+           battery temperature or headroom. */
+        public GHThermalReading GetThermalReading()
+        {
+            GHThermalReading r = GHThermalProbe.Unknown;
+            string thermalDetail = "thermalstate=n/a";
+            string batteryDetail = "battery=n/a";
+            try
+            {
+                NSProcessInfo info = NSProcessInfo.ProcessInfo;
+                if (info != null)
+                {
+                    try
+                    {
+                        NSProcessInfoThermalState state = info.ThermalState;
+                        switch (state)
+                        {
+                            case NSProcessInfoThermalState.Nominal:
+                                r.Status = GHThermalStatus.Nominal;
+                                break;
+                            case NSProcessInfoThermalState.Fair:
+                                r.Status = GHThermalStatus.Light;
+                                break;
+                            case NSProcessInfoThermalState.Serious:
+                                r.Status = GHThermalStatus.Moderate;
+                                break;
+                            case NSProcessInfoThermalState.Critical:
+                                r.Status = GHThermalStatus.Critical;
+                                break;
+                            default:
+                                r.Status = GHThermalStatus.Unknown;
+                                break;
+                        }
+                        thermalDetail = "thermalstate=" + ((int)state).ToString();
+                    }
+                    catch
+                    {
+                        r.Status = GHThermalStatus.Unknown;
+                    }
+
+                    try
+                    {
+                        r.IsLowPower = info.LowPowerModeEnabled;
+                    }
+                    catch
+                    {
+                        r.IsLowPower = false;
+                    }
+                }
+
+                try
+                {
+                    UIDevice device = UIDevice.CurrentDevice;
+                    if (device != null)
+                    {
+                        if (!device.BatteryMonitoringEnabled)
+                            device.BatteryMonitoringEnabled = true;
+                        UIDeviceBatteryState batteryState = device.BatteryState;
+                        r.IsCharging = batteryState == UIDeviceBatteryState.Charging || batteryState == UIDeviceBatteryState.Full;
+                        batteryDetail = "battery=" + ((int)batteryState).ToString();
+                    }
+                }
+                catch
+                {
+                    r.IsCharging = false;
+                }
+
+                r.Detail = thermalDetail + " " + batteryDetail + " lowpower=" + (r.IsLowPower ? "on" : "off");
+            }
+            catch
+            {
+                r.Detail = null;
+            }
+            r.TimestampTicks = DateTime.UtcNow.Ticks;
+            return r;
+        }
+
+        public bool SetSustainedPerformanceMode(bool enabled)
+        {
+            return false;
         }
     }
 }

@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/hyvanmielenpelit/GnollHack/DEVEL/performance/schema/run-record.schema.json",
+  "title": "GnollHack performance run record",
+  "description": "One measurement window, written by the in-app GHPerformanceRunRecord and read by the offline analyzer.",
+  "type": "object",
+  "required": ["schemaVersion", "runId", "scenario", "arm", "startedUtc", "endedUtc", "windowSeconds", "environment", "thermal", "clock", "display", "smoothness", "onScreenPacing", "series", "uiThread", "files"],
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 2 },
+    "runId": { "type": "string" },
+    "scenario": { "type": "string" },
+    "arm": { "type": "string", "description": "Label of the configuration this run belongs to" },
+    "startedUtc": { "type": "string", "format": "date-time" },
+    "endedUtc": { "type": "string", "format": "date-time" },
+    "windowSeconds": { "type": "number" },
+    "environment": { "$ref": "#/$defs/environment" },
+    "thermal": {
+      "type": "object",
+      "required": ["before", "after"],
+      "properties": {
+        "before": { "$ref": "#/$defs/thermalReading" },
+        "after": { "$ref": "#/$defs/thermalReading" }
+      }
+    },
+    "clock": {
+      "type": "object",
+      "required": ["stopwatchFrequency", "firstAnchor", "latestAnchor"],
+      "properties": {
+        "stopwatchFrequency": { "type": "integer" },
+        "firstAnchor": { "$ref": "#/$defs/clockAnchor" },
+        "latestAnchor": { "$ref": "#/$defs/clockAnchor" }
+      }
+    },
+    "display": {
+      "type": "object",
+      "properties": {
+        "measuredRefreshHz": { "type": "number" },
+        "assumedRefreshHz": { "type": "number" },
+        "targetFps": { "type": "number" },
+        "assumedRefreshMismatch": { "type": "boolean" }
+      }
+    },
+    "smoothness": { "$ref": "#/$defs/smoothness" },
+    "onScreenPacing": { "$ref": "#/$defs/pacingMetrics" },
+    "series": {
+      "type": "object",
+      "properties": {
+        "onScreenIntervalsMs": { "type": "array", "items": { "type": "number" }, "description": "Gaps between displayed frames, excluding paused gaps, in order" },
+        "pacingErrorMs": { "type": "array", "items": { "type": "number" }, "description": "Pacing error of the same frames, in the same order" }
+      }
+    },
+    "uiThread": {
+      "type": "object",
+      "properties": {
+        "latencyP50Ms": { "type": "number" },
+        "latencyP95Ms": { "type": "number" },
+        "latencyP99Ms": { "type": "number" },
+        "latencyMaxMs": { "type": "number" },
+        "tickCount": { "type": "integer" },
+        "lateTickCount": { "type": "integer" }
+      }
+    },
+    "files": {
+      "type": "object",
+      "required": ["frameTimeline", "compositorFrames"],
+      "properties": {
+        "frameTimeline": { "type": "string", "description": "File name only, alongside the JSON document" },
+        "compositorFrames": { "type": "string", "description": "File name only, alongside the JSON document" }
+      }
+    }
+  },
+  "$defs": {
+    "environment": {
+      "type": "object",
+      "properties": {
+        "platform": { "type": ["string", "null"] },
+        "deviceId": { "type": ["string", "null"] },
+        "deviceModel": { "type": ["string", "null"] },
+        "deviceOs": { "type": ["string", "null"] },
+        "appVersion": { "type": ["string", "null"] },
+        "runtimeVersion": { "type": ["string", "null"] },
+        "frameworkVersion": { "type": ["string", "null"] },
+        "uiFrameworkVersion": { "type": ["string", "null"] },
+        "skiaSharpVersion": { "type": ["string", "null"] },
+        "fmodVersion": { "type": ["string", "null"] },
+        "gpuBackend": { "type": ["string", "null"] },
+        "gpuCacheSize": { "type": "integer" },
+        "mainCanvasUsesGpu": { "type": "boolean" },
+        "mapRefreshRateSetting": { "type": ["string", "null"] },
+        "reportedRefreshHz": { "type": "number" },
+        "buildConfiguration": { "type": ["string", "null"] },
+        "gitCommit": { "type": ["string", "null"] },
+        "configuration": { "type": "object", "description": "The feature-toggle vector in effect when the run was captured" }
+      }
+    },
+    "thermalReading": {
+      "type": ["object", "null"],
+      "properties": {
+        "status": { "type": "string", "enum": ["Unknown", "Nominal", "Light", "Moderate", "Severe", "Critical"] },
+        "headroomFraction": { "type": ["number", "null"] },
+        "batteryTempC": { "type": ["number", "null"] },
+        "cpuPerformancePct": { "type": ["number", "null"] },
+        "isCharging": { "type": "boolean" },
+        "isLowPower": { "type": "boolean" }
+      }
+    },
+    "clockAnchor": {
+      "type": ["object", "null"],
+      "properties": {
+        "platformNanos": { "type": "integer" },
+        "stopwatchTicks": { "type": "integer" }
+      }
+    },
+    "causeEntry": {
+      "type": "object",
+      "properties": {
+        "count": { "type": "integer" },
+        "hitchMs": { "type": "number" }
+      }
+    },
+    "smoothness": {
+      "type": "object",
+      "properties": {
+        "tickCount": { "type": "integer" },
+        "paintedCount": { "type": "integer" },
+        "displayedCount": { "type": "integer" },
+        "droppedCount": { "type": "integer" },
+        "coalescedCount": { "type": "integer" },
+        "notRunCount": { "type": "integer" },
+        "pausedGapCount": { "type": "integer" },
+        "windowMs": { "type": "number" },
+        "measuredRefreshHz": { "type": "number" },
+        "assumedRefreshHz": { "type": "number" },
+        "targetFps": { "type": "number" },
+        "assumedRefreshMismatch": { "type": "boolean" },
+        "displayedFps": { "type": "number" },
+        "tileAnimationFps": { "type": "number" },
+        "hitchCount": { "type": "integer" },
+        "hitchRatioMsPerSec": { "type": "number" },
+        "judderCount": { "type": "integer" },
+        "judderPct": { "type": "number" },
+        "pacingErrorRmsMs": { "type": "number" },
+        "pacingErrorP99Ms": { "type": "number" },
+        "repeatedRefreshesPerSec": { "type": "number" },
+        "latencyP50Ms": { "type": "number" },
+        "latencyP99Ms": { "type": "number" },
+        "callbackLatenessP99Ms": { "type": "number" },
+        "paintP50Ms": { "type": "number" },
+        "paintP99Ms": { "type": "number" },
+        "gcCount": { "type": "integer" },
+        "presentSource": { "type": "string", "enum": ["None", "Estimated", "Measured"] },
+        "unattributedShare": { "type": "number" },
+        "causes": {
+          "type": "object",
+          "description": "One entry per GHHitchCause value except None",
+          "additionalProperties": { "$ref": "#/$defs/causeEntry" }
+        }
+      }
+    },
+    "pacingMetrics": {
+      "type": "object",
+      "properties": {
+        "count": { "type": "integer" },
+        "windowMs": { "type": "number" },
+        "targetPeriodMs": { "type": "number" },
+        "refreshPeriodMs": { "type": "number" },
+        "fpsMean": { "type": "number" },
+        "fps1PctLow": { "type": "number" },
+        "fps01PctLow": { "type": "number" },
+        "p50": { "type": "number" },
+        "p90": { "type": "number" },
+        "p95": { "type": "number" },
+        "p99": { "type": "number" },
+        "max": { "type": "number" },
+        "min": { "type": "number" },
+        "meanMs": { "type": "number" },
+        "stdDevMs": { "type": "number" },
+        "stutterIndex": { "type": "number" },
+        "jankPct": { "type": "number" },
+        "hitchRatioMsPerSec": { "type": "number" },
+        "hitch2xCount": { "type": "integer" },
+        "hitch4xCount": { "type": "integer" },
+        "hitch2xPerMin": { "type": "number" },
+        "hitch4xPerMin": { "type": "number" },
+        "overrunP50": { "type": "number" },
+        "overrunP95": { "type": "number" },
+        "overrunP99": { "type": "number" }
+      }
+    }
+  }
+}

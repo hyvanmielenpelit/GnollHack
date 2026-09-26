@@ -6,6 +6,7 @@ using System.Text;
 
 using System.Runtime.InteropServices;
 using GnollHackX;
+using GnollHackX.Performance;
 using System.Runtime.Intrinsics.Arm;
 using Windows.Services.Store;
 using Windows.System;
@@ -391,6 +392,147 @@ namespace GnollHackM
         public bool GetKeyboardConnected()
         {
             return true;
+        }
+
+        /* CPU performance is read through PDH (pdh.dll), the same source as the
+           "% Processor Performance" performance counter: actual CPU frequency as a
+           percentage of nominal. A rate counter needs two samples, so the query is
+           collected at most once per 500 ms and the value derived from the previous
+           pair is returned; the very first reading is NaN. The counter set can be
+           missing or disabled, in which case every reading is NaN. */
+        [StructLayout(LayoutKind.Explicit, Size = 16)]
+        private struct PDH_FMT_COUNTERVALUE
+        {
+            [FieldOffset(0)]
+            public uint CStatus;
+            [FieldOffset(8)]
+            public double doubleValue;
+        }
+
+        [DllImport("pdh.dll", CharSet = CharSet.Unicode)]
+        private static extern uint PdhOpenQueryW(string szDataSource, IntPtr dwUserData, out IntPtr phQuery);
+
+        [DllImport("pdh.dll", CharSet = CharSet.Unicode)]
+        private static extern uint PdhAddEnglishCounterW(IntPtr hQuery, string szFullCounterPath, IntPtr dwUserData, out IntPtr phCounter);
+
+        [DllImport("pdh.dll")]
+        private static extern uint PdhCollectQueryData(IntPtr hQuery);
+
+        [DllImport("pdh.dll")]
+        private static extern uint PdhGetFormattedCounterValue(IntPtr hCounter, uint dwFormat, IntPtr lpdwType, out PDH_FMT_COUNTERVALUE pValue);
+
+        private const uint PDH_FMT_DOUBLE = 0x00000200;
+        private const uint PDH_CSTATUS_VALID_DATA = 0x00000000;
+        private const uint PDH_CSTATUS_NEW_DATA = 0x00000001;
+        private const long CpuPerfMinSampleIntervalTicks = 500 * TimeSpan.TicksPerMillisecond;
+        private const string CpuPerfCounterPath = @"\Processor Information(_Total)\% Processor Performance";
+
+        private static readonly object _cpuPerfLock = new object();
+        private static IntPtr _cpuPerfQuery = IntPtr.Zero;
+        private static IntPtr _cpuPerfCounter = IntPtr.Zero;
+        private static bool _cpuPerfInitTried = false;
+        private static long _cpuPerfLastSampleTicks = 0;
+        private static float _cpuPerfLastValue = float.NaN;
+
+        private static float ReadCpuPerformancePct()
+        {
+            lock (_cpuPerfLock)
+            {
+                try
+                {
+                    if (!_cpuPerfInitTried)
+                    {
+                        _cpuPerfInitTried = true;
+                        IntPtr query;
+                        if (PdhOpenQueryW(null, IntPtr.Zero, out query) == 0 && query != IntPtr.Zero)
+                        {
+                            IntPtr counter;
+                            if (PdhAddEnglishCounterW(query, CpuPerfCounterPath, IntPtr.Zero, out counter) == 0 && counter != IntPtr.Zero)
+                            {
+                                _cpuPerfQuery = query;
+                                _cpuPerfCounter = counter;
+                            }
+                        }
+                    }
+
+                    if (_cpuPerfQuery == IntPtr.Zero || _cpuPerfCounter == IntPtr.Zero)
+                        return float.NaN;
+
+                    long now = DateTime.UtcNow.Ticks;
+                    if (_cpuPerfLastSampleTicks != 0 && now - _cpuPerfLastSampleTicks < CpuPerfMinSampleIntervalTicks)
+                        return _cpuPerfLastValue;
+
+                    if (PdhCollectQueryData(_cpuPerfQuery) != 0)
+                        return _cpuPerfLastValue;
+
+                    bool hadPrevious = _cpuPerfLastSampleTicks != 0;
+                    _cpuPerfLastSampleTicks = now;
+                    if (!hadPrevious)
+                        return float.NaN; /* Only one sample; a rate needs two */
+
+                    PDH_FMT_COUNTERVALUE value;
+                    uint res = PdhGetFormattedCounterValue(_cpuPerfCounter, PDH_FMT_DOUBLE, IntPtr.Zero, out value);
+                    if (res == 0 && (value.CStatus == PDH_CSTATUS_VALID_DATA || value.CStatus == PDH_CSTATUS_NEW_DATA))
+                        _cpuPerfLastValue = (float)value.doubleValue;
+                    return _cpuPerfLastValue;
+                }
+                catch
+                {
+                    return float.NaN;
+                }
+            }
+        }
+
+        public GHThermalReading GetThermalReading()
+        {
+            GHThermalReading r = GHThermalProbe.Unknown;
+            try
+            {
+                r.CpuPerformancePct = ReadCpuPerformancePct();
+            }
+            catch
+            {
+                r.CpuPerformancePct = float.NaN;
+            }
+
+            string batteryDetail = "battery=unknown";
+            try
+            {
+                global::Windows.System.Power.BatteryStatus batteryStatus = global::Windows.System.Power.PowerManager.BatteryStatus;
+                r.IsCharging = batteryStatus == global::Windows.System.Power.BatteryStatus.Charging;
+                batteryDetail = "battery=" + batteryStatus.ToString();
+            }
+            catch
+            {
+                r.IsCharging = false;
+            }
+
+            try
+            {
+                r.IsLowPower = global::Windows.System.Power.PowerManager.EnergySaverStatus == global::Windows.System.Power.EnergySaverStatus.On;
+            }
+            catch
+            {
+                r.IsLowPower = false;
+            }
+
+            try
+            {
+                r.Detail = "cpuperf=" + (float.IsNaN(r.CpuPerformancePct) ? "n/a" : r.CpuPerformancePct.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))
+                    + " " + batteryDetail
+                    + " energysaver=" + (r.IsLowPower ? "on" : "off");
+            }
+            catch
+            {
+                r.Detail = null;
+            }
+            r.TimestampTicks = DateTime.UtcNow.Ticks;
+            return r;
+        }
+
+        public bool SetSustainedPerformanceMode(bool enabled)
+        {
+            return false;
         }
 
     }

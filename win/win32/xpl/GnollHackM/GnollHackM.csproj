@@ -241,6 +241,16 @@
     <None Remove="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />
     <None Remove="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
     <None Remove="..\GnollHackX\GnollHackX\IPlatformService.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHFrameMarker.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHFrameRecord.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHFrameTimeline.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceEnvironment.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceRunRecord.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceStatistics.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHPresentFeedback.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHSmoothnessMetrics.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHUiThreadProbe.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHThermalProbe.cs" />
     <None Remove="..\GnollHackX\GnollHackX\IFmodService.cs" />
     <None Remove="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
     <None Remove="..\GnollHackX\GnollHackX\IThreadSafeView.cs" />
@@ -407,7 +417,9 @@
     <!-- Platform specific files that are outside of folders -->
     <None Remove="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
     <None Remove="..\GnollHackX\GnollHackX.Android\OverseerJsBridge.cs" />
+    <None Remove="..\GnollHackX\GnollHackX.Android\PresentFeedbackAndroid.cs" />
     <None Remove="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
+    <None Remove="..\GnollHackX\GnollHackX.iOS\PresentFeedbackiOS.cs" />
     <None Remove="..\GnollHackX\GnollHackX.iOS\OverseerScriptMessageHandler.cs" />
     <None Remove="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
   </ItemGroup>
@@ -479,6 +491,16 @@
     <Compile Include="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\IGnollHackService.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\IPlatformService.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHFrameMarker.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHFrameRecord.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHFrameTimeline.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceEnvironment.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceRunRecord.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceStatistics.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPresentFeedback.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHSmoothnessMetrics.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHUiThreadProbe.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHThermalProbe.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\ICloseablePage.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\IThreadSafeView.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\IFmodService.cs" />
@@ -536,7 +558,9 @@
     <!-- Show some platform specific files that are outside of folders -->
     <None Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
     <None Include="..\GnollHackX\GnollHackX.Android\OverseerJsBridge.cs" />
+    <None Include="..\GnollHackX\GnollHackX.Android\PresentFeedbackAndroid.cs" />
     <None Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
+    <None Include="..\GnollHackX\GnollHackX.iOS\PresentFeedbackiOS.cs" />
     <None Include="..\GnollHackX\GnollHackX.iOS\OverseerScriptMessageHandler.cs" />
     <None Include="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
   </ItemGroup>
@@ -798,6 +822,7 @@
     <!--<AndroidAppBundleModules Include="Platforms\Android\assetpacks\installtimeassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />-->
     <Compile Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
     <Compile Include="..\GnollHackX\GnollHackX.Android\OverseerJsBridge.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX.Android\PresentFeedbackAndroid.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.Contains('-ios')) or $(TargetFramework.Contains('-maccatalyst'))">
@@ -842,6 +867,7 @@
     <Compile Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
     <Compile Include="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
     <Compile Include="..\GnollHackX\GnollHackX.iOS\OverseerScriptMessageHandler.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX.iOS\PresentFeedbackiOS.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.Contains('-windows'))">

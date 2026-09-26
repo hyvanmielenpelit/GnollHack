@@ -1,0 +1,44 @@
+# Perfetto trace config for GnollHack frame-pipeline captures (text proto).
+# Capture-AndroidFrames.ps1 substitutes {PACKAGE} and {DURATION_MS}, converts line endings
+# to LF, and pushes the result to the device.
+#
+# android.surfaceflinger.frametimeline (Android 12+) records, for every app frame, the
+# expected and actual present times and SurfaceFlinger's jank classification.
+# atrace_apps enables the app's own GH.Tick / GH.Paint / GH.Flush sections and the
+# GH.FrameId / GH.PaintFrameId counters, which tie each frame to the in-app timeline.
+
+buffers: { size_kb: 65536 fill_policy: RING_BUFFER }
+buffers: { size_kb: 8192 }
+
+data_sources: {
+  config {
+    name: "linux.ftrace"
+    ftrace_config {
+      ftrace_events: "sched/sched_switch"
+      ftrace_events: "sched/sched_wakeup"
+      ftrace_events: "power/cpu_frequency"
+      ftrace_events: "power/cpu_idle"
+      ftrace_events: "thermal/thermal_temperature"
+      atrace_categories: "gfx"
+      atrace_categories: "view"
+      atrace_categories: "input"
+      atrace_categories: "sched"
+      atrace_categories: "freq"
+      atrace_categories: "thermal"
+      atrace_apps: "{PACKAGE}"
+    }
+  }
+}
+
+data_sources: { config { name: "android.surfaceflinger.frametimeline" } }
+data_sources: { config { name: "android.gpu.memory" } }
+
+data_sources: {
+  config {
+    name: "linux.process_stats"
+    target_buffer: 1
+    process_stats_config { scan_all_processes_on_start: true }
+  }
+}
+
+duration_ms: {DURATION_MS}

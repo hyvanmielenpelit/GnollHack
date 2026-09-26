@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Compression;
 using System.IO;
+using GnollHackX.Performance;
 
 
 #if GNH_MAUI
@@ -418,11 +419,36 @@ namespace GnollHackX.Pages.Game
                 if (!Directory.Exists(targetpath))
                     GHApp.CheckCreateDirectory(targetpath);
 
-                string filepath = Path.Combine(targetpath, "framelog.csv");
-                if (File.Exists(filepath))
-                    File.Delete(filepath);
+                string frameLogPath = Path.Combine(targetpath, "framelog.csv");
+                string filepath = Path.Combine(targetpath, "framelog.zip");
+                foreach (string oldFile in new string[] { frameLogPath, filepath })
+                {
+                    if (File.Exists(oldFile))
+                        File.Delete(oldFile);
+                }
 
-                FrameTimeProfiler.DumpToCsv(filepath);
+                FrameTimeProfiler.DumpToCsv(frameLogPath);
+
+                /* A run record of everything the frame timeline still holds, with its CSVs */
+                List<string> parts = new List<string> { frameLogPath };
+                string runJsonPath = GHPerformanceRunRecord.SaveRecent(GHPerformanceRunRecord.DefaultDirectory, "manual", "dump");
+                if (runJsonPath != null)
+                {
+                    string runDir = Path.GetDirectoryName(runJsonPath);
+                    string stem = Path.GetFileNameWithoutExtension(runJsonPath);
+                    parts.Add(runJsonPath);
+                    parts.Add(Path.Combine(runDir, "frametimeline_" + stem + ".csv"));
+                    parts.Add(Path.Combine(runDir, "compositorframes_" + stem + ".csv"));
+                }
+
+                using (ZipArchive archive = ZipFile.Open(filepath, ZipArchiveMode.Create))
+                {
+                    foreach (string part in parts)
+                    {
+                        if (File.Exists(part))
+                            archive.CreateEntryFromFile(part, Path.GetFileName(part));
+                    }
+                }
 
                 if (File.Exists(filepath))
                 {

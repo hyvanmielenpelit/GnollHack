@@ -20,6 +20,7 @@ using System.Net.Http.Headers;
 using System.Collections;
 using System.Data;
 using System.Xml.Linq;
+using GnollHackX.Performance;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -2099,12 +2100,29 @@ namespace GnollHackX.Pages.Game
         public void UpdateMainCanvas(MapRefreshRateStyle refreshRateStyle)
         {
             FrameTimeProfiler.StampUpdate();
+            if (GHFrameTimeline.IsEnabled)
+            {
+                GHGame timelineGame = GHApp.CurrentGHGame;
+                if (timelineGame != null)
+                    GHFrameTimeline.StampUpdate(timelineGame.MainCounterValue, timelineGame.GeneralAnimationCounter);
+            }
             bool resizing = IsResizing;
             if (resizing)
+            {
                 GHApp.MaybeWriteScreenLog("UpdateMainCanvas: Resizing");
+                GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.Resizing);
+            }
+            else if (!RefreshScreen)
+            {
+                GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.RefreshOff);
+            }
             if (RefreshScreen && !resizing)
             {
-                if (MainCanvasView.ThreadSafeIsVisible)
+                if (!MainCanvasView.ThreadSafeIsVisible)
+                {
+                    GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.NotVisible);
+                }
+                else
                 {
                     if (ForceAllMessages)
                     {
@@ -2128,7 +2146,10 @@ namespace GnollHackX.Pages.Game
                             canvasheight = _savedCanvasHeight;
                         }
                         if (canvasheight <= 0)
+                        {
+                            GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.NoCanvasSize);
                             return;
+                        }
 
                         lock (_messageScrollLock)
                         {
@@ -2205,6 +2226,7 @@ namespace GnollHackX.Pages.Game
                         }
                     }
                     /* Callers run on the UI thread: the platform render loop and the animation counter */
+                    GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.Invalidated);
                     MainCanvasView.InvalidateSurface();
                 }
             }
@@ -5191,6 +5213,11 @@ namespace GnollHackX.Pages.Game
         private GlyphImageSource _paintGlyphImageSource = new GlyphImageSource();
         private SKBitmap _paintBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
         private bool _mainCanvasThreadChecked = false;
+
+        /* Content counters the current map paint drew; written and read on the paint thread */
+        private long _paintedMainCounterValue = 0;
+        private long _paintedGeneralCounterValue = 0;
+
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             bool isCanvasOnMainThread = MainThread.IsMainThread;
@@ -5200,18 +5227,33 @@ namespace GnollHackX.Pages.Game
                 GHApp.MaybeWriteGHLog("canvasView_PaintSurface not on main thread!");
             }
 
+            long paintFrameId = GHFrameTimeline.BeginPaint(isCanvasOnMainThread);
+
             if (MenuGrid.ThreadSafeIsVisible || TextGrid.ThreadSafeIsVisible || MoreCommandsGrid.ThreadSafeIsVisible || !IsGameOn)
+            {
+                GHFrameTimeline.SetPaintOutcome(paintFrameId, GHPaintOutcome.OverlayVisible);
                 return;
+            }
 
             if (Interlocked.CompareExchange(ref _isCleanedUp, 0, 0) != 0) /* Resources have been disposed */
+            {
+                GHFrameTimeline.SetPaintOutcome(paintFrameId, GHPaintOutcome.CleanedUp);
                 return;
+            }
 
             if (IsMainCanvasDrawingAndSetTrue) /* In the case of some sort of reentrancy or new draw before previous is finished */
+            {
+                GHFrameTimeline.SetPaintOutcome(paintFrameId, GHPaintOutcome.Reentrant);
                 return;
+            }
+
+            GHPresentFeedback.PaintBegin(paintFrameId);
 
             SKCanvas canvas = e.Surface.Canvas;
             /* Save count of the state the canvas is handed over in */
             int paintSaveCount = canvas.SaveCount;
+            _paintedMainCounterValue = 0;
+            _paintedGeneralCounterValue = 0;
 
             try
             {
@@ -5225,6 +5267,7 @@ namespace GnollHackX.Pages.Game
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+                GHFrameTimeline.SetPaintOutcome(paintFrameId, GHPaintOutcome.Failed);
             }
             finally
             {
@@ -5236,10 +5279,20 @@ namespace GnollHackX.Pages.Game
                     canvas.RestoreToCount(paintSaveCount);
                 }
 
+                GHFrameTimeline.StampDrawEnd(paintFrameId);
+                GHPresentFeedback.FlushBegin(paintFrameId);
+
                 /* Finally, flush */
                 canvas.Flush();
 
                 FrameTimeProfiler.StampPaintEnd();
+                if (paintFrameId != 0)
+                {
+                    GHGame paintedGame = GHApp.CurrentGHGame;
+                    GHFrameTimeline.EndPaint(paintFrameId, _paintedMainCounterValue, _paintedGeneralCounterValue,
+                        paintedGame != null ? paintedGame.MapDataGeneration : 0);
+                    GHPresentFeedback.PaintEnd(paintFrameId);
+                }
 
                 IsMainCanvasDrawing = false;
             }
@@ -7730,7 +7783,10 @@ namespace GnollHackX.Pages.Game
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e, bool isCanvasOnMainThread)
         {
             if (!IsMainCanvasOn || GHApp.IsReplaySearching)
+            {
+                GHFrameTimeline.SetCurrentPaintOutcome(GHPaintOutcome.MainCanvasOff);
                 return;
+            }
 
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
@@ -7745,7 +7801,10 @@ namespace GnollHackX.Pages.Game
             _localDarkeningFilterCachePruned = false;
             _localCompositeFilterCachePruned = false;
             if (canvaswidth <= 16 || canvasheight <= 16)
+            {
+                GHFrameTimeline.SetCurrentPaintOutcome(GHPaintOutcome.CanvasTooSmall);
                 return;
+            }
 
             bool lockTaken = false;
             try
@@ -7921,13 +7980,18 @@ namespace GnollHackX.Pages.Game
             }
 
             if (curGame == null)
+            {
+                GHFrameTimeline.SetCurrentPaintOutcome(GHPaintOutcome.NoGame);
                 return;
+            }
 
             bool screenLogging = GHApp.IsDebugScreenLoggingOn;
             long generalcountervalue, maincountervalue;
             maincountervalue = curGame.MainCounterValue; // Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             /* Moved general_animation_counter outside of the lock to minimize the time spent in lock;  since InvalidateSurface is called after IncrementCounters and nothing else modifies general_animation_counter, generalcountervalue should be consistent of the copy result below */
             generalcountervalue = curGame.GeneralAnimationCounter; // Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
+            _paintedMainCounterValue = maincountervalue;
+            _paintedGeneralCounterValue = generalcountervalue;
             //lock (AnimationTimerLock)
             //{
             //    /* Note that animation timer is updated too frequently so that it does not make sense to use TryEnter; however, since InvalidateSurface is called after IncrementCounters, there should practically never be a conflict here due to IncrementCounters */
@@ -12804,6 +12868,10 @@ namespace GnollHackX.Pages.Game
                     Monitor.Exit(_uiRectLock);
             }
             lockTaken = false;
+
+            if (GHFrameTimeline.IsEnabled)
+                GHFrameMarker.Draw(canvas, canvaswidth, canvasheight, GHFrameTimeline.CurrentPaintFrameId, maincountervalue,
+                    UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRate), GHApp.DisplayDensity);
 
 #if MAP_PROFILING
             if ((_totalFrames % 120) == 0)

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 2,
+  "runId": "run2-sample",
+  "scenario": "W1",
+  "arm": "B",
+  "startedUtc": "2026-09-26T10:05:00.0000000Z",
+  "endedUtc": "2026-09-26T10:05:01.0000000Z",
+  "windowSeconds": 0.7,
+  "environment": {
+    "platform": "Windows",
+    "deviceModel": "Sample Laptop",
+    "osVersion": "Windows 11",
+    "buildConfiguration": "Release",
+    "appVersion": "4.1.3"
+  },
+  "thermal": {
+    "before": { "status": "Nominal", "isCharging": true },
+    "after": { "status": "Nominal", "isCharging": true }
+  },
+  "clock": { "stopwatchFrequency": 10000000 },
+  "display": {
+    "measuredRefreshHz": 60.001,
+    "assumedRefreshHz": 60,
+    "targetFps": 60,
+    "assumedRefreshMismatch": false
+  },
+  "smoothness": {
+    "displayedFps": 60.0,
+    "hitchCount": 0,
+    "hitchRatioMsPerSec": 0.0,
+    "judderPct": 0.0,
+    "pacingErrorRmsMs": 0.1,
+    "pacingErrorP99Ms": 0.2,
+    "displayedCount": 40,
+    "droppedCount": 0,
+    "presentSource": "Estimated",
+    "causes": {}
+  },
+  "series": {
+    "onScreenIntervalsMs": [16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667, 16.667]
+  },
+  "files": {}
+}

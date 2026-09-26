@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 2,
+  "runId": "run1-sample",
+  "scenario": "W1",
+  "arm": "A",
+  "startedUtc": "2026-09-26T10:00:00.0000000Z",
+  "endedUtc": "2026-09-26T10:00:01.0000000Z",
+  "windowSeconds": 0.7,
+  "environment": {
+    "platform": "Windows",
+    "deviceModel": "Sample Laptop",
+    "osVersion": "Windows 11",
+    "buildConfiguration": "Release",
+    "appVersion": "4.1.3"
+  },
+  "thermal": {
+    "before": { "status": "Nominal", "isCharging": true },
+    "after": { "status": "Nominal", "isCharging": true }
+  },
+  "clock": {
+    "stopwatchFrequency": 10000000,
+    "firstAnchor": null,
+    "latestAnchor": null
+  },
+  "display": {
+    "measuredRefreshHz": 59.998,
+    "assumedRefreshHz": 60,
+    "targetFps": 60,
+    "assumedRefreshMismatch": false
+  },
+  "smoothness": {
+    "displayedFps": 58.5,
+    "tileAnimationFps": 28.5,
+    "hitchCount": 1,
+    "hitchRatioMsPerSec": 25.0,
+    "judderCount": 1,
+    "judderPct": 2.564,
+    "pacingErrorRmsMs": 2.669,
+    "pacingErrorP99Ms": 10.667,
+    "repeatedRefreshesPerSec": 1.5,
+    "latencyP50Ms": 16.667,
+    "latencyP99Ms": 29.5,
+    "callbackLatenessP99Ms": 0.2,
+    "paintP50Ms": 4.0,
+    "paintP99Ms": 19.6,
+    "gcCount": 1,
+    "presentSource": "Estimated",
+    "tickCount": 40,
+    "paintedCount": 40,
+    "displayedCount": 40,
+    "droppedCount": 0,
+    "coalescedCount": 0,
+    "notRunCount": 0,
+    "pausedGapCount": 0,
+    "windowMs": 666.667,
+    "measuredRefreshHz": 59.998,
+    "assumedRefreshHz": 60,
+    "targetFps": 60,
+    "assumedRefreshMismatch": false,
+    "unattributedShare": 0,
+    "causes": {
+      "PaintCpu": { "count": 1, "hitchMs": 16.667 }
+    }
+  },
+  "onScreenPacing": {
+    "count": 39,
+    "windowMs": 666.667,
+    "fpsMean": 58.5,
+    "p50": 16.667,
+    "p99": 26.667,
+    "max": 33.334
+  },
+  "series": {
+    "onScreenIntervalsMs": [16.666, 16.667, 16.667, 16.666, 16.667, 16.667, 16.666, 16.667, 16.667, 16.666, 16.667, 16.667, 16.666, 16.667, 16.667, 16.666, 16.667, 16.667, 16.666, 33.334, 16.666, 16.667, 16.667, 16.666, 16.667, 16.667, 16.666, 16.667, 16.667, 16.666, 16.667, 16.667, 16.666, 16.667, 16.667, 16.666, 16.667, 16.667, 16.666],
+    "pacingErrorMs": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16.667, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  },
+  "uiThread": {
+    "callbackLatenessP99Ms": 0.2
+  },
+  "files": {
+    "frameTimeline": "frametimeline_run1.csv",
+    "compositorFrames": "compositorframes_run1.csv"
+  }
+}

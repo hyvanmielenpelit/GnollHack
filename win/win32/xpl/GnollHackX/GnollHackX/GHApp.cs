@@ -52,6 +52,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using GnollHackX.Performance;
 
 namespace GnollHackX
 {
@@ -840,6 +841,7 @@ namespace GnollHackX
 #if ANDROID
         //private static ValueAnimator _platformAnimator = null;
         private static ChoreographerFrameTicker _platformTicker = null;
+        private static int _platformClockAnchorCounter = 0;
 #elif IOS
         private static DisplayLinkTicker _platformTicker = null;
         private static int _refreshRateSampled = 0;
@@ -847,18 +849,53 @@ namespace GnollHackX
 
         private static void InitializePlatformRenderLoop()
         {
+            GHCadenceMonitor.ChangeLog = MaybeWriteScreenLog;
+            /* The UI-thread probe runs exactly while the frame timeline records */
+            GHPresentFeedback.ActiveChanged = active =>
+            {
+                if (active)
+                {
+                    GHUiThreadProbe.Reset();
+#if GNH_MAUI
+                    GHUiThreadProbe.Start(Microsoft.Maui.Controls.Application.Current?.Dispatcher);
+#else
+                    GHUiThreadProbe.Start();
+#endif
+                    GHUiThreadProbe.BeginWindow();
+                }
+                else
+                {
+                    GHUiThreadProbe.EndWindow();
+                    GHUiThreadProbe.Stop();
+                }
+            };
 #if WINDOWS
+            GHPresentFeedback.Register(new PresentFeedbackWindows());
             Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
 #elif ANDROID
+            GHPresentFeedback.Register(new PresentFeedbackAndroid());
             _platformTicker = new ChoreographerFrameTicker();
             _platformTicker.Start(frameTimeNanos =>
             {
+                if (GHFrameTimeline.IsEnabled)
+                {
+                    /* frameTimeNanos is System.nanoTime; re-anchored about once a second */
+                    if ((_platformClockAnchorCounter++ & 63) == 0 || !GHFrameTimeline.HasClockAnchor)
+                    {
+                        long before = Stopwatch.GetTimestamp();
+                        long nanos = Java.Lang.JavaSystem.NanoTime();
+                        long after = Stopwatch.GetTimestamp();
+                        GHFrameTimeline.UpdatePlatformClockAnchor(nanos, before + (after - before) / 2);
+                    }
+                    GHFrameTimeline.SetPendingPlatformFrame(GHFrameTimeline.PlatformNanosToTicks(frameTimeNanos), 0, 0);
+                }
                 CompositionTarget_Rendering(null, EventArgs.Empty);
             });
 
             /* Cache the actual display refresh rate (MAUI may report an incorrect value) */
             PlatformRefreshRate = DisplayInfoAndroid.GetRefreshRateHz();
 #elif IOS
+            GHPresentFeedback.Register(new PresentFeedbackiOS());
             _platformTicker = new DisplayLinkTicker();
 
             _platformTicker.Start(deltaTime =>
@@ -974,6 +1011,16 @@ namespace GnollHackX
             }
 
             FrameTimeProfiler.BeginFrame(counter);
+            GHPresentFeedback.Sync();
+#if WINDOWS
+            /* RenderingTime has its own epoch; only its cadence is used. The vsync comes from DWM. */
+            if (GHFrameTimeline.IsEnabled && e is Microsoft.UI.Xaml.Media.RenderingEventArgs renderingArgs)
+                PresentFeedbackWindows.CaptureFrame(GHFrameTimeline.TimeSpanTicksToTicks(renderingArgs.RenderingTime.Ticks));
+#endif
+            long timelineFrameId = GHFrameTimeline.BeginTick();
+            GHPresentFeedback.TickBegin(timelineFrameId);
+            GHPacingDecision pacing = GHPacingDecision.NotSet;
+            bool auxiliaryCanvas = false;
             GHGame ghGame = CurrentGHGame;
             try
             {
@@ -1024,18 +1071,30 @@ namespace GnollHackX
                 }
 
                 if (!UsePlatformRenderLoop || IsSuspended)
+                {
+                    pacing = IsSuspended ? GHPacingDecision.Suspended : GHPacingDecision.PlatformLoopOff;
                     return;
+                }
 
                 GamePage curGamePage = CurrentGamePage;
                 if (curGamePage == null)
+                {
+                    pacing = GHPacingDecision.NoGamePage;
                     return;
+                }
                 if (ghGame == null)
+                {
+                    pacing = GHPacingDecision.NoGame;
                     return;
+                }
 
 #if WINDOWS
                 ScreenResolutionItem curRes = CurrentScreenResolution;
                 if (curRes == null)
+                {
+                    pacing = GHPacingDecision.NoResolution;
                     return;
+                }
                 int screenRefreshRate = (int)curRes.RefreshRate;
 #else
                 int screenRefreshRate = RoundedReconciledRefreshRate;
@@ -1058,6 +1117,8 @@ namespace GnollHackX
                         refreshRate = 60;
                         break;
                 }
+                auxiliaryCanvas = canvasType != CanvasTypes.MainCanvas;
+                GHFrameTimeline.StampTarget(refreshRate, screenRefreshRate);
 
                 /* --- Paint stall diagnostic (no recovery action) ---
                  * Only meaningful while the map canvas is the active canvas and frames are
@@ -1110,6 +1171,7 @@ namespace GnollHackX
                     long ticksPerFrame = ticksPerSecond / framesPerSecond;
                     if (ticks > ticksPerFrame)
                     {
+                        pacing = GHPacingDecision.RenderedCatchUp;
                         curGamePage.RenderCanvasByCanvasType(canvasType);
                         return;
                     }
@@ -1117,6 +1179,7 @@ namespace GnollHackX
 
                 if (screenRefreshRate <= refreshRate)
                 {
+                    pacing = GHPacingDecision.Rendered;
                     curGamePage.RenderCanvasByCanvasType(canvasType);
                 }
                 else
@@ -1131,15 +1194,26 @@ namespace GnollHackX
                         {
                             int num = screenRefreshRate / mod;
                             if ((counter / divisor) % num == 0)
+                            {
+                                pacing = GHPacingDecision.SkippedModulo;
                                 return;
+                            }
                         }
+                        pacing = GHPacingDecision.Rendered;
                         curGamePage.RenderCanvasByCanvasType(canvasType);
+                    }
+                    else
+                    {
+                        pacing = GHPacingDecision.SkippedDivisor;
                     }
                 }
             }
             finally
             {
                 FrameTimeProfiler.EndFrame();
+                GHPacingDecision finalPacing = auxiliaryCanvas ? GHPacingDecision.AuxiliaryCanvas : pacing;
+                GHFrameTimeline.EndTick(finalPacing);
+                GHPresentFeedback.TickEnd(timelineFrameId, finalPacing);
             }
         }
 
@@ -13257,6 +13331,7 @@ namespace GnollHackX
         private CADisplayLink _displayLink = null;
         private Action<double> _onFrame = null;
         private double _lastTimestamp;
+        private int _clockAnchorCounter = 0;
 
         public void Start(Action<double> onFrame)
         {
@@ -13272,6 +13347,22 @@ namespace GnollHackX
 
                 var deltaTime = _displayLink.Timestamp - _lastTimestamp;
                 _lastTimestamp = _displayLink.Timestamp;
+
+                if (GHFrameTimeline.IsEnabled)
+                {
+                    /* Display link times are CACurrentMediaTime seconds; re-anchored about once a second */
+                    if ((_clockAnchorCounter++ & 63) == 0 || !GHFrameTimeline.HasClockAnchor)
+                    {
+                        long before = Stopwatch.GetTimestamp();
+                        double mediaTime = CAAnimation.CurrentMediaTime();
+                        long after = Stopwatch.GetTimestamp();
+                        GHFrameTimeline.UpdatePlatformClockAnchor((long)Math.Round(mediaTime * 1e9), before + (after - before) / 2);
+                    }
+                    GHFrameTimeline.SetPendingPlatformFrame(
+                        GHFrameTimeline.PlatformNanosToTicks((long)Math.Round(_displayLink.Timestamp * 1e9)),
+                        GHFrameTimeline.PlatformNanosToTicks((long)Math.Round(_displayLink.TargetTimestamp * 1e9)),
+                        0);
+                }
 
                 _onFrame?.Invoke(deltaTime); // delta in seconds
             });

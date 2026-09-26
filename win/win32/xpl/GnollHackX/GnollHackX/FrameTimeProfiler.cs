@@ -4,6 +4,7 @@ using System.Diagnostics.Tracing;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using GnollHackX.Performance;
 
 namespace GnollHackX
 {
@@ -107,6 +108,7 @@ namespace GnollHackX
             set
             {
                 Interlocked.Exchange(ref _isEnabled, value ? 1 : 0);
+                GHFrameTimeline.IsEnabled = value;
                 if (!value)
                 {
                     /* Reset buffer so stale data is not reported when re-enabled */
@@ -866,7 +868,10 @@ namespace GnollHackX
             /* Latest heap size */
             long latestHeapSize = 0;
 
-            float targetFrameTimeMs = 1000f / 60f; /* Approx 16.67ms */
+            /* The map's target rate, not the panel's: a frame deliberately held for two
+               refreshes at 60 FPS on a 120 Hz panel is on time */
+            int targetFps = GHFrameTimeline.LastTargetFps;
+            float targetFrameTimeMs = 1000f / (targetFps > 0 ? targetFps : 60);
             float droppedThresholdMs = targetFrameTimeMs * 1.5f;
 
             long prevRenderedFrameStart = 0;
@@ -1095,6 +1100,11 @@ namespace GnollHackX
         /// </summary>
         public static void PublishDashboardSnapshot()
         {
+            GHDebugDashboard.PublishScreenStats((float)GHCadenceMonitor.DisplayedFps,
+                GHFrameTimeline.MeasuredRefreshPeriodMs > 0 ? (float)(1000.0 / GHFrameTimeline.MeasuredRefreshPeriodMs) : 0f,
+                GHFrameTimeline.LastAssumedRefreshHz, GHFrameTimeline.LastTargetFps,
+                (float)GHCadenceMonitor.HitchRatioMsPerSec, (float)GHCadenceMonitor.PacingErrorRmsMs,
+                GHFrameTimeline.CoalescedCount, GHCadenceMonitor.LastChange);
             GHDebugDashboard.PublishFrameStats(GetStatistics(), IsEnabled);
         }
 

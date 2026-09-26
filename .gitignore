@@ -108,6 +108,7 @@ win/win32/xpl/GnollHackM/.maui/*
 win/win32/xpl/GnollHackM/.meteor/*
 *.lastbuildstate
 *.csv
+!win/win32/xpl/GnollHackTests/**/TestData/**/*.csv
 *.wav
 *.mp3
 # *.mp4
@@ -119,6 +120,7 @@ enc_temp_folder
 _Isincrementalbuild
 *.payload.desc
 *.ps1
+!DEVEL/performance/scripts/*.ps1
 
 # User-specific files
 *.suo

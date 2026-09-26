@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
+using GnollHackX.Performance;
 #if GNH_MAUI
 using GnollHackM;
 #else
@@ -959,6 +960,11 @@ namespace GnollHackX
             SetMapSymbol(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
         }
 
+        private long _mapDataGeneration = 0;
+
+        /* Number of map data buffer swaps the paint has taken; a paint that sees it advance drew new map data */
+        public long MapDataGeneration { get { return Interlocked.Read(ref _mapDataGeneration); } }
+
         public bool GetMapDataBuffer(out MapData[,] mapBuffer, out ObjectData[,] objectBuffer, out ObjectDataItem uBall, out ObjectDataItem uChain, out int ux, out int uy, out ulong u_condition_bits, out ulong u_status_bits, ref ulong[] u_buff_bits,
             out int cursx, out int cursy, out game_cursor_types cursorType, out bool force_paint_at_cursor, out bool show_cursor_on_u)
         {
@@ -966,9 +972,11 @@ namespace GnollHackX
             //lock(_mapDataBufferLock)
             try
             {
+                long lockAttemptTicks = Stopwatch.GetTimestamp();
                 FrameTimeProfiler.StampLockAttempt();
-                Monitor.TryEnter(_mapDataBufferLock, ref lockTaken); //TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks), 
+                Monitor.TryEnter(_mapDataBufferLock, ref lockTaken); //TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks),
                 FrameTimeProfiler.StampLockResult(lockTaken);
+                GHFrameTimeline.StampLock(lockAttemptTicks, Stopwatch.GetTimestamp(), lockTaken);
                 if (lockTaken)
                 {
                     if (_mapDataCurrentUpdated)
@@ -993,6 +1001,7 @@ namespace GnollHackX
                         _mapDataCurrent = _mapDataCurrentIs2 ? _mapDataBuffer2 : _mapDataBuffer1;
                         _objectDataCurrent = _mapDataCurrentIs2 ? _objectDataBuffer2 : _objectDataBuffer1;
                         _mapDataCurrentUpdated = false;
+                        Interlocked.Increment(ref _mapDataGeneration);
                         return true;
                     }
                     else
