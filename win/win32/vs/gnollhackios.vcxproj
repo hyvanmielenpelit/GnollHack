@@ -484,8 +484,8 @@
   <!-- The Xcode project generator hardcodes IPHONEOS_DEPLOYMENT_TARGET = 8.1 in the
        target-level build settings, which override AdditionalBuildSettings. Rewrite every
        IPHONEOS_DEPLOYMENT_TARGET value after generation, before the project is copied to
-       the Mac. -->
+       the Mac, and report the values the project then holds. -->
   <Target Name="GHSetXcodeDeploymentTarget" AfterTargets="GenerateXCodeProj" Condition="Exists('$(PbxprojDirectory)\project.pbxproj')">
-    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$p='$(PbxprojDirectory)\project.pbxproj'; $t=[IO.File]::ReadAllText($p); $n=[Text.RegularExpressions.Regex]::Replace($t, '(IPHONEOS_DEPLOYMENT_TARGET&lt;/key&gt;\s*&lt;string&gt;)[0-9.]+(&lt;/string&gt;)', '${1}$(GHiOSDeploymentTarget)${2}'); if ($n -ne $t) { [IO.File]::WriteAllText($p, $n) }&quot;" />
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$p='$(PbxprojDirectory)\project.pbxproj'; $t=[IO.File]::ReadAllText($p); $n=[Text.RegularExpressions.Regex]::Replace($t, '(IPHONEOS_DEPLOYMENT_TARGET&lt;/key&gt;\s*&lt;string&gt;)[0-9.]+(&lt;/string&gt;)', '${1}$(GHiOSDeploymentTarget)${2}'); if ($n -ne $t) { [IO.File]::WriteAllText($p, $n) }; $v=([Text.RegularExpressions.Regex]::Matches($n, 'IPHONEOS_DEPLOYMENT_TARGET&lt;/key&gt;\s*&lt;string&gt;([0-9.]+)') | ForEach-Object { $_.Groups[1].Value } | Select-Object -Unique) -join ', '; Write-Output ('$(ProjectName): iOS deployment target ' + $v + ' (generated Xcode project)')&quot;" StandardOutputImportance="High" />
   </Target>
 </Project>

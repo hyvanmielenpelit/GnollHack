@@ -479,4 +479,7 @@
     <Message Text="Start cleaning aftergnollhackdroid.proj" Importance="High" />
     <MSBuild Projects="aftergnollhackdroid.proj" Targets="Clean" Properties="Configuration=$(Configuration);TargetArchAbi=$(TargetArchAbi)" />
   </Target>
+  <Target Name="GHReportAndroidApiLevel" BeforeTargets="ClCompile">
+    <Message Text="$(ProjectName): Android API level $(AndroidAPILevelNumber) (clang target $(ClangTarget), NDK $(NDKVersion))" Importance="High" />
+  </Target>
 </Project>
