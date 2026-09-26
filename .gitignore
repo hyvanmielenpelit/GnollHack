@@ -463,6 +463,11 @@ ASALocalRun/
 gnh_*.png
 gnh_*.ghpng
 
+# Performance run records and analyzer reports saved inside the test projects; the
+# TestData fixtures are named run.json, not run_*.json
+win/win32/xpl/GnollHackTests/**/run_*.json
+win/win32/xpl/GnollHackTests/**/*.md
+
 # Fallback location for AI planning documents when hyvanmielenpelit/plans is
 # unreachable, plus pre-migration history. Never committed.
 .plans/

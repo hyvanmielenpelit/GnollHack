@@ -15,7 +15,8 @@ namespace GnollHack.PerformanceAnalyzer.Readers
             "FrameId,VsyncMs,ExpectedPresentMs,PlatformFrameMs,RefreshPeriodMs,CallbackStartMs,CallbackEndMs,"
             + "TargetFps,AssumedRefreshHz,Pacing,MainCounter,GeneralCounter,Invalidate,InvalidateMs,"
             + "Paint,PaintOnUiThread,PaintStartMs,LockAttemptMs,LockResultMs,LockAcquired,DrawEndMs,FlushEndMs,"
-            + "PaintedMainCounter,PaintedGeneralCounter,PaintedMapGeneration,DisplayedAtMs,PresentSource,Flags,Gc0,Gc1,Gc2";
+            + "PaintedMainCounter,PaintedGeneralCounter,PaintedMapGeneration,DisplayedAtMs,PresentSource,Flags,Gc0,Gc1,Gc2,"
+            + "RequestMs,ContentEvents";
 
         /* fallbackFrequency is used when the file has no "# StopwatchFrequency=" line, e.g.
            the run JSON's clock.stopwatchFrequency */
@@ -87,6 +88,8 @@ namespace GnollHack.PerformanceAnalyzer.Readers
                 r.GcCount0 = (int)Long(f, c, "Gc0");
                 r.GcCount1 = (int)Long(f, c, "Gc1");
                 r.GcCount2 = (int)Long(f, c, "Gc2");
+                r.RequestTicks = Duration(f, c, "RequestMs", t.Clock);
+                r.ContentEvents = (GHContentEvent)Long(f, c, "ContentEvents");
                 records.Add(r);
             }
             /* GHSmoothnessMetrics wants FrameId order, which is the order the app writes */
@@ -155,7 +158,9 @@ namespace GnollHack.PerformanceAnalyzer.Readers
                     ((int)r.Flags).ToString(CultureInfo.InvariantCulture),
                     r.GcCount0.ToString(CultureInfo.InvariantCulture),
                     r.GcCount1.ToString(CultureInfo.InvariantCulture),
-                    r.GcCount2.ToString(CultureInfo.InvariantCulture)
+                    r.GcCount2.ToString(CultureInfo.InvariantCulture),
+                    r.RequestTicks == 0 ? "" : MsText(clock.DurationTicksToMs(r.RequestTicks)),
+                    ((int)r.ContentEvents).ToString(CultureInfo.InvariantCulture)
                 })).Append(Csv.Crlf);
             }
             File.WriteAllText(path, sb.ToString(), new UTF8Encoding(false));

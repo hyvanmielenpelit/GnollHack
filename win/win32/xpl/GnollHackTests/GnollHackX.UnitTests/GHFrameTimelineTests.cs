@@ -115,6 +115,44 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void RequestWork_IsAttachedToTheNextTick()
+        {
+            Restart();
+            RenderedTick(1);
+            GHFrameTimeline.AddRequestWork(GHContentEvent.FloatingText, 100);
+            GHFrameTimeline.AddRequestWork(GHContentEvent.Message, 50);
+            RenderedTick(2);
+            RenderedTick(3);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHContentEvent.None, r[0].ContentEvents);
+            Assert.Equal(GHContentEvent.FloatingText | GHContentEvent.Message, r[1].ContentEvents);
+            Assert.Equal(150, r[1].RequestTicks);
+            Assert.Equal(GHContentEvent.None, r[2].ContentEvents);
+            Assert.Equal(0, r[2].RequestTicks);
+        }
+
+        [Fact]
+        public void PaintOfNewMapData_IsMarkedMapUpdate()
+        {
+            Restart();
+            long[] generations = { 5, 5, 6 };
+            for (int i = 0; i < generations.Length; i++)
+            {
+                RenderedTick(i + 1);
+                long painted = GHFrameTimeline.BeginPaint(true);
+                GHFrameTimeline.EndPaint(painted, i + 1, 0, generations[i]);
+            }
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHContentEvent.None, r[0].ContentEvents & GHContentEvent.MapUpdate);
+            Assert.Equal(GHContentEvent.None, r[1].ContentEvents & GHContentEvent.MapUpdate);
+            Assert.Equal(GHContentEvent.MapUpdate, r[2].ContentEvents & GHContentEvent.MapUpdate);
+        }
+
+        [Fact]
         public void PaintWithoutInvalidation_IsCountedAsOrphan()
         {
             Restart();

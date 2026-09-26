@@ -48,6 +48,11 @@ namespace GnollHackX.Performance
         private static long _lastPlatformFrameTicks = 0;
         private static long _lastCallbackStartTicks = 0;
 
+        /* UI-thread request work since the last tick, handed to the next one */
+        private static int _pendingContentEvents = 0;
+        private static long _pendingRequestTicks = 0;
+        private static long _lastPaintedMapGeneration = -1;
+
         /* Platform clock anchor; the first and latest pairs are kept to expose drift */
         private static GHClockAnchor _anchor;
         private static GHClockAnchor _firstAnchor;
@@ -122,6 +127,9 @@ namespace GnollHackX.Performance
             _pendingPlatformFrameTicks = 0;
             _lastPlatformFrameTicks = 0;
             _lastCallbackStartTicks = 0;
+            Interlocked.Exchange(ref _pendingContentEvents, 0);
+            Interlocked.Exchange(ref _pendingRequestTicks, 0);
+            Interlocked.Exchange(ref _lastPaintedMapGeneration, -1);
             _periodDeltaCount = 0;
             _periodDeltaIndex = 0;
             Interlocked.Exchange(ref _measuredPeriodTicks, 0);
@@ -229,9 +237,32 @@ namespace GnollHackX.Performance
             _pendingVsyncTicks = 0;
             _pendingExpectedPresentTicks = 0;
             _pendingPlatformFrameTicks = 0;
+            r.ContentEvents = (GHContentEvent)Interlocked.Exchange(ref _pendingContentEvents, 0);
+            r.RequestTicks = Interlocked.Exchange(ref _pendingRequestTicks, 0);
 
             _ring[idx] = r;
             return id;
+        }
+
+        /* Called by the UI thread after a batch of game requests: what kinds of content they
+           brought and how long handling them took. Attached to the next tick, whose callback
+           that work may have delayed and whose paint first shows the content. */
+        public static void AddRequestWork(GHContentEvent events, long elapsedTicks)
+        {
+            if (!IsEnabled)
+                return;
+            if (events != GHContentEvent.None)
+            {
+                int current, updated;
+                do
+                {
+                    current = Interlocked.CompareExchange(ref _pendingContentEvents, 0, 0);
+                    updated = current | (int)events;
+                }
+                while (Interlocked.CompareExchange(ref _pendingContentEvents, updated, current) != current);
+            }
+            if (elapsedTicks > 0)
+                Interlocked.Add(ref _pendingRequestTicks, elapsedTicks);
         }
 
         private static void AddPeriodDelta(long delta)
@@ -411,6 +442,9 @@ namespace GnollHackX.Performance
             _ring[idx].PaintedMainCounter = paintedMainCounter;
             _ring[idx].PaintedGeneralCounter = paintedGeneralCounter;
             _ring[idx].PaintedMapGeneration = paintedMapGeneration;
+            long previousGeneration = Interlocked.Exchange(ref _lastPaintedMapGeneration, paintedMapGeneration);
+            if (previousGeneration >= 0 && paintedMapGeneration != previousGeneration)
+                _ring[idx].ContentEvents |= GHContentEvent.MapUpdate;
             if (_ring[idx].Paint == GHPaintOutcome.Painted)
                 GHCadenceMonitor.OnPaintCompleted(_ring[idx].VsyncTicks, _ring[idx].RefreshPeriodTicks,
                     _ring[idx].FlushEndTicks, _ring[idx].TargetFps, paintedMainCounter);
@@ -525,7 +559,8 @@ namespace GnollHackX.Performance
                 w.WriteLine("FrameId,VsyncMs,ExpectedPresentMs,PlatformFrameMs,RefreshPeriodMs,CallbackStartMs,CallbackEndMs,"
                     + "TargetFps,AssumedRefreshHz,Pacing,MainCounter,GeneralCounter,Invalidate,InvalidateMs,"
                     + "Paint,PaintOnUiThread,PaintStartMs,LockAttemptMs,LockResultMs,LockAcquired,DrawEndMs,FlushEndMs,"
-                    + "PaintedMainCounter,PaintedGeneralCounter,PaintedMapGeneration,DisplayedAtMs,PresentSource,Flags,Gc0,Gc1,Gc2");
+                    + "PaintedMainCounter,PaintedGeneralCounter,PaintedMapGeneration,DisplayedAtMs,PresentSource,Flags,Gc0,Gc1,Gc2,"
+                    + "RequestMs,ContentEvents");
                 if (n == 0)
                     return;
 
@@ -569,7 +604,9 @@ namespace GnollHackX.Performance
                         ((int)r.Flags).ToString(CultureInfo.InvariantCulture),
                         r.GcCount0.ToString(CultureInfo.InvariantCulture),
                         r.GcCount1.ToString(CultureInfo.InvariantCulture),
-                        r.GcCount2.ToString(CultureInfo.InvariantCulture)
+                        r.GcCount2.ToString(CultureInfo.InvariantCulture),
+                        r.RequestTicks == 0 ? "" : Ms(r.RequestTicks),
+                        ((int)r.ContentEvents).ToString(CultureInfo.InvariantCulture)
                     }));
                 }
             }

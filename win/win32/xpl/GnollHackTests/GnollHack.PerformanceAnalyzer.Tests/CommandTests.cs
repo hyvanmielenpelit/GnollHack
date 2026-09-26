@@ -7,6 +7,16 @@ namespace GnollHack.PerformanceAnalyzer.Tests
 {
     public class CommandTests
     {
+        /* One-sided Fisher exact test on [a b; c d]: hand-checkable hypergeometric tails */
+        [Theory]
+        [InlineData(3, 0, 0, 3, 0.05)]          /* 1 / C(6,3) */
+        [InlineData(0, 3, 3, 0, 1.0)]           /* the whole distribution */
+        [InlineData(2, 1, 1, 2, 0.5)]           /* (9 + 1) / 20 */
+        public void FisherGreater_MatchesTheHypergeometricTail(int a, int b, int c, int d, double expected)
+        {
+            Assert.Equal(expected, SmoothnessCommand.FisherGreater(a, b, c, d), 9);
+        }
+
         [Fact]
         public void RunRecordLoad_ConvertsAnInAppRecord()
         {

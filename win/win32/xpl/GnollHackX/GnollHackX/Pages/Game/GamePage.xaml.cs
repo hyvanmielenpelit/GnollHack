@@ -3241,6 +3241,52 @@ namespace GnollHackX.Pages.Game
             tasks.Add(task);
         }
 
+        /* The frame timeline's category for the content a request brings */
+        private static GHContentEvent ContentEventOf(GHRequestType requestType)
+        {
+            switch (requestType)
+            {
+                case GHRequestType.DisplayFloatingText:
+                    return GHContentEvent.FloatingText;
+                case GHRequestType.DisplayScreenText:
+                case GHRequestType.DisplayPopupText:
+                case GHRequestType.HidePopupText:
+                    return GHContentEvent.ScreenText;
+                case GHRequestType.DisplayConditionText:
+                    return GHContentEvent.ConditionText;
+                case GHRequestType.DisplayGUIEffect:
+                    return GHContentEvent.GuiEffect;
+                case GHRequestType.DisplayScreenFilter:
+                case GHRequestType.FadeToBlack:
+                case GHRequestType.FadeFromBlack:
+                case GHRequestType.SetToBlack:
+                    return GHContentEvent.ScreenFilter;
+                case GHRequestType.PrintHistory:
+                case GHRequestType.PrintHistoryItem:
+                case GHRequestType.PrintTopLine:
+                    return GHContentEvent.Message;
+                case GHRequestType.ClipAround:
+                case GHRequestType.ZoomNormal:
+                case GHRequestType.ZoomIn:
+                case GHRequestType.ZoomOut:
+                case GHRequestType.ZoomMini:
+                case GHRequestType.ZoomHalf:
+                case GHRequestType.ZoomToScale:
+                case GHRequestType.ToggleZoomMini:
+                    return GHContentEvent.ViewChange;
+                case GHRequestType.ShowMenuPage:
+                case GHRequestType.HideMenuPage:
+                case GHRequestType.DisplayWindowView:
+                case GHRequestType.DestroyWindowView:
+                case GHRequestType.HideTextWindow:
+                case GHRequestType.UpdateGHWindow:
+                case GHRequestType.UpdateGHWindowVisibility:
+                    return GHContentEvent.Window;
+                default:
+                    return GHContentEvent.OtherRequest;
+            }
+        }
+
         private List<Task> PollRequestQueue()
         {
             List<Task> tasks = null;
@@ -3248,8 +3294,17 @@ namespace GnollHackX.Pages.Game
             if (curGame != null)
             {
                 GHRequest req;
+                bool timelineOn = GHFrameTimeline.IsEnabled;
+                long requestWorkStart = 0;
+                GHContentEvent requestEvents = GHContentEvent.None;
                 while (curGame.RequestQueue.TryDequeue(out req))
                 {
+                    if (timelineOn)
+                    {
+                        if (requestWorkStart == 0)
+                            requestWorkStart = Stopwatch.GetTimestamp();
+                        requestEvents |= ContentEventOf(req.RequestType);
+                    }
                     try
                     {
                         switch (req.RequestType)
@@ -3526,6 +3581,8 @@ namespace GnollHackX.Pages.Game
                         Debug.WriteLine(ex);
                     }
                 }
+                if (requestWorkStart != 0)
+                    GHFrameTimeline.AddRequestWork(requestEvents, Stopwatch.GetTimestamp() - requestWorkStart);
             }
             return tasks;
         }

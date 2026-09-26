@@ -314,6 +314,67 @@ namespace GnollHackX.UnitTests
             Assert.Equal(GHHitchCause.UiThreadLateGc, DominantCause(s));
         }
 
+        /* A floating text arrives with a request batch long enough to delay the next callback:
+           the requests are charged, and the event table ties the hitches to floating texts */
+        [Fact]
+        public void RequestBatchBeforeLateCallback_IsUiThreadRequests_AndCorrelatesWithItsEvent()
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            for (int i = 0; i < 120; i++)
+            {
+                bool text = i % 12 == 6;
+                if (text)
+                    t.NextVsync += period;
+                int idx = t.Tick(period, 60, 60, GHPacingDecision.Rendered, true, 3.0, 1.0, text ? 12.0 : 0.2);
+                if (text)
+                {
+                    GHFrameRecord r = t.Records[idx];
+                    r.ContentEvents = GHContentEvent.FloatingText;
+                    r.RequestTicks = Ms(14);
+                    t.Records[idx] = r;
+                }
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(10, s.HitchCount);
+            Assert.Equal(GHHitchCause.UiThreadRequests, DominantCause(s));
+            Assert.Equal(TotalAttributed(s), s.CauseCount[(int)GHHitchCause.UiThreadRequests]);
+            Assert.Equal(10, s.EventGapCount[0]);
+            Assert.Equal(10, s.EventHitchCount[0]);
+            Assert.Equal(0, s.QuietHitchCount);
+            Assert.True(s.QuietGapCount > 90, "quiet gaps " + s.QuietGapCount);
+        }
+
+        /* Floating texts that arrive without slowing anything are not hitches */
+        [Fact]
+        public void HarmlessEvents_DoNotCorrelate()
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            for (int i = 0; i < 120; i++)
+            {
+                int idx = t.Tick(period, 60, 60, GHPacingDecision.Rendered, true);
+                if (i % 12 == 6)
+                {
+                    GHFrameRecord r = t.Records[idx];
+                    r.ContentEvents = GHContentEvent.FloatingText;
+                    r.RequestTicks = Ms(0.5);
+                    t.Records[idx] = r;
+                }
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(0, s.HitchCount);
+            Assert.Equal(10, s.EventGapCount[0]);
+            Assert.Equal(0, s.EventHitchCount[0]);
+            Assert.Equal("FloatingText+Message", GHSmoothnessMetrics.ContentEventNames(GHContentEvent.FloatingText | GHContentEvent.Message));
+        }
+
         /* A long map paint on the UI thread delays the next callback: the paint is charged, not the thread */
         [Fact]
         public void LongUiThreadPaint_IsPaintCpuNotUiThread()

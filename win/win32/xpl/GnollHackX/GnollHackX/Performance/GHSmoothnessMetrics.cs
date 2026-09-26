@@ -19,7 +19,8 @@ namespace GnollHackX.Performance
         PaintCpu = 8,
         Gpu = 9,
         Compositor = 10,        /* the app was on time; the frame was dropped or shown late downstream */
-        Unattributed = 11
+        Unattributed = 11,
+        UiThreadRequests = 12   /* a display callback was late after the UI thread handled game requests */
     }
 
     /* One distinct frame that reached the display */
@@ -35,6 +36,7 @@ namespace GnollHackX.Performance
         public long DisplayDelayTicks;  /* measured display time minus the vsync the frame was ready for; 0 when estimated */
         public GHPresentSource Source;
         public GHHitchCause Cause;
+        public GHContentEvent ContentEvents;    /* content that appeared during the gap */
         public bool IsHitch;            /* the previous frame stayed on screen more than R/2 beyond T */
         public bool IsJudder;           /* abs(PacingErrorTicks) > R/4 */
         public bool IsPausedGap;        /* the gap spans a menu, overlay, suspension or resize */
@@ -77,6 +79,15 @@ namespace GnollHackX.Performance
         public readonly int[] CauseCount = new int[GHSmoothnessMetrics.CauseCount];
         public readonly double[] CauseMs = new double[GHSmoothnessMetrics.CauseCount];
         public double UnattributedShare;    /* of hitch time; a quality measure of the instrument */
+
+        /* Content events against hitches, over the unpaused gaps: per event kind (indexed by
+           bit position of GHContentEvent), the gaps in which it happened and how many of them
+           were hitches; and the same for gaps with no event at all. A hitch rate well above
+           the quiet rate ties the hitches to that kind of content. */
+        public readonly int[] EventGapCount = new int[GHSmoothnessMetrics.ContentEventKinds];
+        public readonly int[] EventHitchCount = new int[GHSmoothnessMetrics.ContentEventKinds];
+        public int QuietGapCount;
+        public int QuietHitchCount;
     }
 
     /* Reconstructs what reached the display from the frame timeline and computes the
@@ -94,18 +105,44 @@ namespace GnollHackX.Performance
        display time keeps it. */
     public static class GHSmoothnessMetrics
     {
-        public const int CauseCount = 12;
+        public const int CauseCount = 13;
+        public const int ContentEventKinds = 10;
 
         private static readonly string[] _causeNames = new string[]
         {
             "None", "DisplayMode", "UiThreadLateGc", "UiThreadLate", "PacingPolicy", "PaintNotRun",
-            "DispatchLate", "GameLock", "PaintCpu", "Gpu", "Compositor", "Unattributed"
+            "DispatchLate", "GameLock", "PaintCpu", "Gpu", "Compositor", "Unattributed", "UiThreadRequests"
+        };
+
+        private static readonly string[] _contentEventNames = new string[]
+        {
+            "FloatingText", "ScreenText", "ConditionText", "GuiEffect", "ScreenFilter",
+            "Message", "ViewChange", "Window", "OtherRequest", "MapUpdate"
         };
 
         public static string CauseName(GHHitchCause cause)
         {
             int i = (int)cause;
             return i >= 0 && i < _causeNames.Length ? _causeNames[i] : "Unknown";
+        }
+
+        /* Name of the content event kind at a bit position of GHContentEvent */
+        public static string ContentEventName(int kind)
+        {
+            return kind >= 0 && kind < _contentEventNames.Length ? _contentEventNames[kind] : "Unknown";
+        }
+
+        /* Names of every event in a mask, joined with '+', or "" for none */
+        public static string ContentEventNames(GHContentEvent events)
+        {
+            string text = "";
+            for (int k = 0; k < ContentEventKinds; k++)
+            {
+                if (((int)events & (1 << k)) == 0)
+                    continue;
+                text = text.Length == 0 ? _contentEventNames[k] : text + "+" + _contentEventNames[k];
+            }
+            return text;
         }
 
         private static double TicksToMs(double ticks)
@@ -472,6 +509,28 @@ namespace GnollHackX.Performance
 
                 displayed[j].IsHitch = gap > target + refresh / 2;
                 displayed[j].IsJudder = Math.Abs(displayed[j].PacingErrorTicks) > refresh / 4;
+
+                GHContentEvent gapEvents = GHContentEvent.None;
+                for (int i = prevIdx + 1; i <= curIdx; i++)
+                    gapEvents |= records[i].ContentEvents;
+                displayed[j].ContentEvents = gapEvents;
+                if (gapEvents == GHContentEvent.None)
+                {
+                    s.QuietGapCount++;
+                    if (displayed[j].IsHitch)
+                        s.QuietHitchCount++;
+                }
+                else
+                {
+                    for (int k = 0; k < ContentEventKinds; k++)
+                    {
+                        if (((int)gapEvents & (1 << k)) == 0)
+                            continue;
+                        s.EventGapCount[k]++;
+                        if (displayed[j].IsHitch)
+                            s.EventHitchCount[k]++;
+                    }
+                }
                 if (displayed[j].IsHitch)
                 {
                     s.HitchCount++;
@@ -551,9 +610,11 @@ namespace GnollHackX.Performance
 
             /* 2. UI thread: a missed callback or a callback well after its vsync. When the
                UI thread was busy painting the map across that vsync, the paint is the
-               cause, not the thread. */
-            bool uiLate = false, gc = false;
+               cause, not the thread; when it spent more than half a refresh handling game
+               requests before the late callback, the requests are. */
+            bool uiLate = false, gc = false, requests = false;
             GHHitchCause ownPaint = GHHitchCause.None;
+            long requestTicks = 0;
             for (int i = prevIdx + 1; i <= curIdx; i++)
             {
                 GHFrameRecord r = records[i];
@@ -564,9 +625,12 @@ namespace GnollHackX.Performance
                     || (r.VsyncTicks != 0 && r.CallbackStartTicks - r.VsyncTicks > halfRefresh);
                 if (r.GcCount0 != q.GcCount0 || r.GcCount1 != q.GcCount1 || r.GcCount2 != q.GcCount2)
                     gc = true;
+                requestTicks += r.RequestTicks;
                 if (!late)
                     continue;
                 uiLate = true;
+                if (requestTicks > halfRefresh)
+                    requests = true;
                 long deadline = (cur != 0 ? cur : r.CallbackStartTicks) + halfRefresh;
                 long missedVsync = prev != 0 ? prev + refreshPeriod : deadline - halfRefresh;
                 for (int k = prevIdx; k < i && ownPaint == GHHitchCause.None; k++)
@@ -584,6 +648,8 @@ namespace GnollHackX.Performance
             }
             if (ownPaint != GHHitchCause.None)
                 return ownPaint;
+            if (requests)
+                return GHHitchCause.UiThreadRequests;
             if (uiLate)
                 return gc ? GHHitchCause.UiThreadLateGc : GHHitchCause.UiThreadLate;
 

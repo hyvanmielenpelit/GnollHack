@@ -154,6 +154,18 @@
           "type": "object",
           "description": "One entry per GHHitchCause value except None",
           "additionalProperties": { "$ref": "#/$defs/causeEntry" }
+        },
+        "contentEvents": {
+          "type": "object",
+          "description": "One entry per GHContentEvent kind, plus None for gaps without any event: unpaused gaps in which it happened and how many of them were hitches",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "gaps": { "type": "integer" },
+              "hitches": { "type": "integer" }
+            },
+            "required": ["gaps", "hitches"]
+          }
         }
       }
     },

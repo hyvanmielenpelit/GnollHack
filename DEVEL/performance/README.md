@@ -113,6 +113,7 @@ that exceeded its budget:
 |-------|-------|------|
 | 1 | `DisplayMode` | The measured refresh period moved by more than 5 % across the gap, or the pacing logic assumes a rate more than 5 % off the measured one |
 | 2 | `PaintCpu` / `Gpu` | A late or missed callback while the UI thread was still painting the previous map frame |
+| 2 | `UiThreadRequests` | A late or missed callback after the UI thread spent more than `R/2` handling game requests (floating texts, messages, windows, ...) |
 | 2 | `UiThreadLateGc` / `UiThreadLate` | A missed callback, or a callback more than `R/2` after its vsync, with or without a collection in the gap |
 | 3 | `PacingPolicy` | A modulo skip or catch-up render in the gap, or a refresh-to-target ratio the divisor pattern cannot pace evenly (within the pattern's longest hold) |
 | 4 | `PaintNotRun` | A rendered tick in the gap produced no paint (coalesced, early return, no invalidation) |
@@ -122,6 +123,19 @@ that exceeded its budget:
 | 8 | `Gpu` | Flush over `T/2`, or a compositor frame's GPU time over `R` |
 | 9 | `Compositor` | Measured on screen later than the vsync it was ready for, a painted frame in the gap never shown, or the compositor ran long |
 | 10 | `Unattributed` | Nothing identified. Its share of hitch time is reported as a measure of the instrument itself |
+
+### Content events
+
+Each record also carries the content that appeared since the previous tick and the time the
+UI thread spent handling the game's requests before it. Requests are sorted into
+`FloatingText`, `ScreenText`, `ConditionText`, `GuiEffect`, `ScreenFilter`, `Message`,
+`ViewChange`, `Window` and `OtherRequest`; `MapUpdate` marks a paint that drew new map data.
+The report's **Content events** table compares, per kind, the hitch rate of the gaps in which
+that content appeared with the hitch rate of gaps in which nothing did, with a one-sided
+Fisher exact p-value. A rate far above the quiet one, with a small p, ties the hitches to that
+content; the worst-hitch tables then show, per tick, the request time and the events, next to
+the paint's draw and flush times that say *how* the content cost the frame. Kinds often arrive
+together, so read the rate of one kind with the others in view.
 
 Offline, the analyzer segments the run with PELT change-point detection over 250 ms buckets of
 displayed FPS and pacing error, and lists the events near each boundary (refresh change,

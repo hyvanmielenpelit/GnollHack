@@ -52,6 +52,24 @@ namespace GnollHackX.Performance
         Measured = 2
     }
 
+    /* Content that appeared since the previous tick, from the requests the UI thread
+       processed, plus MapUpdate, set by a paint that drew new map data */
+    [Flags]
+    public enum GHContentEvent : ushort
+    {
+        None = 0,
+        FloatingText = 1,
+        ScreenText = 2,         /* screen and popup texts */
+        ConditionText = 4,
+        GuiEffect = 8,
+        ScreenFilter = 16,      /* screen filters and fades */
+        Message = 32,           /* message history and top line */
+        ViewChange = 64,        /* zoom and clipping */
+        Window = 128,           /* windows, menus and pages shown or hidden */
+        OtherRequest = 256,
+        MapUpdate = 512
+    }
+
     [Flags]
     public enum GHFrameFlags : byte
     {
@@ -98,6 +116,10 @@ namespace GnollHackX.Performance
 
         /* L6-L7 present */
         public long DisplayedAtTicks;
+
+        /* UI-thread request work since the previous tick */
+        public long RequestTicks;
+        public GHContentEvent ContentEvents;
 
         public int GcCount0;
         public int GcCount1;

@@ -290,6 +290,19 @@ namespace GnollHackX.Performance
                 cj.HitchMs = R(s.CauseMs[i]);
                 j.Causes[GHSmoothnessMetrics.CauseName(cause)] = cj;
             }
+
+            j.ContentEvents = new Dictionary<string, ContentEventJson>();
+            for (int k = 0; k < GHSmoothnessMetrics.ContentEventKinds; k++)
+            {
+                ContentEventJson ej = new ContentEventJson();
+                ej.Gaps = s.EventGapCount[k];
+                ej.Hitches = s.EventHitchCount[k];
+                j.ContentEvents[GHSmoothnessMetrics.ContentEventName(k)] = ej;
+            }
+            ContentEventJson quiet = new ContentEventJson();
+            quiet.Gaps = s.QuietGapCount;
+            quiet.Hitches = s.QuietHitchCount;
+            j.ContentEvents["None"] = quiet;
             return j;
         }
 
@@ -669,6 +682,10 @@ namespace GnollHackX.Performance
 
             [JsonProperty("causes")]
             public Dictionary<string, CauseJson> Causes;
+
+            /* Per content event kind, and "None" for gaps without any: unpaused gaps and how many were hitches */
+            [JsonProperty("contentEvents")]
+            public Dictionary<string, ContentEventJson> ContentEvents;
         }
 
         private sealed class CauseJson
@@ -678,6 +695,15 @@ namespace GnollHackX.Performance
 
             [JsonProperty("hitchMs")]
             public double HitchMs;
+        }
+
+        private sealed class ContentEventJson
+        {
+            [JsonProperty("gaps")]
+            public int Gaps;
+
+            [JsonProperty("hitches")]
+            public int Hitches;
         }
 
         private sealed class PacingJson

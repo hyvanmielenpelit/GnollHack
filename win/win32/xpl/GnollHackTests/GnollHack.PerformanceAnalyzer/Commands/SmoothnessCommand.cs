@@ -132,6 +132,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             WriteJoins(md, res);
             WriteHeadline(md, res);
             WriteCauses(md, res);
+            WriteContentEvents(md, res);
             WriteWorstHitches(md, res);
             WriteChangePoints(md, res);
             return md.ToString();
@@ -266,6 +267,74 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             md.AppendLine();
         }
 
+        /* Hitch rate in gaps where a kind of content appeared, against gaps where nothing did.
+           The p-value is Fisher's exact test, one-sided: the chance of at least that many
+           hitches among the event gaps if hitches fell on event and quiet gaps alike. */
+        private static void WriteContentEvents(StringBuilder md, SmoothnessResult res)
+        {
+            GHSmoothnessSummary s = res.Summary;
+            md.AppendLine("## Content events");
+            md.AppendLine();
+            int quietGaps = s.QuietGapCount;
+            int quietHitches = s.QuietHitchCount;
+            bool any = false;
+            for (int k = 0; k < GHSmoothnessMetrics.ContentEventKinds; k++)
+                any |= s.EventGapCount[k] > 0;
+            if (!any)
+            {
+                md.AppendLine("No content events were recorded (the capture predates them, or nothing appeared).");
+                md.AppendLine();
+                return;
+            }
+            double quietRate = quietGaps > 0 ? (double)quietHitches / quietGaps : double.NaN;
+            md.AppendLine("A gap is the time between two displayed frames; an event belongs to the gap in which the UI thread received it (map updates: in which a paint first drew them). "
+                + "Gaps with no event: " + quietGaps + ", of which " + quietHitches + " hitches ("
+                + (double.IsNaN(quietRate) ? "n/a" : F(100.0 * quietRate, 1) + " %") + ").");
+            md.AppendLine();
+            md.AppendLine("| Event | Gaps | Hitches | Hitch rate | Relative to quiet gaps | p (Fisher, one-sided) |");
+            md.AppendLine("|---|---|---|---|---|---|");
+            for (int k = 0; k < GHSmoothnessMetrics.ContentEventKinds; k++)
+            {
+                int gaps = s.EventGapCount[k];
+                if (gaps == 0)
+                    continue;
+                int hitches = s.EventHitchCount[k];
+                double rate = (double)hitches / gaps;
+                string relative = double.IsNaN(quietRate) ? "n/a"
+                    : quietRate == 0 ? (hitches > 0 ? "quiet gaps had none" : "both none")
+                    : F(rate / quietRate, 1) + " x";
+                double p = quietGaps > 0 ? FisherGreater(hitches, gaps - hitches, quietHitches, quietGaps - quietHitches) : double.NaN;
+                md.AppendLine("| " + GHSmoothnessMetrics.ContentEventName(k) + " | " + gaps + " | " + hitches
+                    + " | " + F(100.0 * rate, 1) + " % | " + relative
+                    + " | " + (double.IsNaN(p) ? "n/a" : (p < 0.0001 ? "< 0.0001" : F(p, 4))) + " |");
+            }
+            md.AppendLine();
+            md.AppendLine("Kinds often arrive together (a hit can bring a floating text, a message and a map update in one gap), so a high rate for one kind can be carried by another; compare the worst-hitch tables' Events column.");
+            md.AppendLine();
+        }
+
+        /* P(X >= a) for the top-left cell of the 2x2 table [a b; c d] with fixed margins
+           (hypergeometric), computed with log factorials */
+        public static double FisherGreater(int a, int b, int c, int d)
+        {
+            int n = a + b + c + d;
+            int row1 = a + b, col1 = a + c;
+            double[] logFact = new double[n + 1];
+            for (int i = 1; i <= n; i++)
+                logFact[i] = logFact[i - 1] + Math.Log(i);
+            double logDenominator = logFact[n] - logFact[row1] - logFact[n - row1] - logFact[col1] - logFact[n - col1];
+            int max = Math.Min(row1, col1);
+            double p = 0;
+            for (int x = a; x <= max; x++)
+            {
+                int bx = row1 - x, cx = col1 - x, dx = n - row1 - col1 + x;
+                if (bx < 0 || cx < 0 || dx < 0)
+                    continue;
+                p += Math.Exp(-(logFact[x] + logFact[bx] + logFact[cx] + logFact[dx]) - logDenominator);
+            }
+            return Math.Min(1.0, p);
+        }
+
         private static void WriteWorstHitches(StringBuilder md, SmoothnessResult res)
         {
             CapturedTimeline t = res.Timeline;
@@ -310,13 +379,13 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                     + F(gapMs, 1) + " ms (+" + F(overMs, 1) + "), content step " + d.ContentStep + ", cause "
                     + GHSmoothnessMetrics.CauseName(d.Cause) + ", " + d.Source.ToString().ToLowerInvariant());
                 md.AppendLine();
-                md.AppendLine("| Frame | Vsync | Callback | Invalidate | Paint start | Lock attempt/result | Draw end | Flush end | Displayed | Pacing | Paint | Cause | Jank type |");
-                md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|---|");
+                md.AppendLine("| Frame | Vsync | Callback | Requests ms | Events | Invalidate | Paint start | Lock attempt/result | Draw end | Flush end | Displayed | Pacing | Paint | Cause | Jank type |");
+                md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|");
                 int from = prev.RecordIndex;
                 int to = d.RecordIndex;
                 if (to - from + 1 > MaxStageRows)
                 {
-                    md.AppendLine("| ... " + (to - from + 1 - MaxStageRows) + " earlier ticks omitted | | | | | | | | | | | | |");
+                    md.AppendLine("| ... " + (to - from + 1 - MaxStageRows) + " earlier ticks omitted | | | | | | | | | | | | | | |");
                     from = to - MaxStageRows + 1;
                 }
                 for (int i = from; i <= to; i++)
@@ -338,6 +407,8 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                     md.AppendLine("| " + r.FrameId
                         + " | " + T(t, r.VsyncTicks)
                         + " | " + T(t, r.CallbackStartTicks) + (r.CallbackEndTicks != 0 ? " to " + T(t, r.CallbackEndTicks) : "")
+                        + " | " + (r.RequestTicks != 0 ? F(t.Clock.DurationTicksToMs(r.RequestTicks), 2) : "")
+                        + " | " + GHSmoothnessMetrics.ContentEventNames(r.ContentEvents)
                         + " | " + T(t, r.InvalidateTicks)
                         + " | " + T(t, r.PaintStartTicks) + (r.PaintStartTicks != 0 ? (r.PaintOnUiThread ? " UI" : " GL") : "")
                         + " | " + lockText
