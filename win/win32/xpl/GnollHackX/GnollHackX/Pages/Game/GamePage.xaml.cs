@@ -2037,7 +2037,11 @@ namespace GnollHackX.Pages.Game
                 if (string.IsNullOrEmpty(realTime))
                     ReplayRealTimeLabel.Text = "";
                 else if (realTime != ReplayRealTimeLabel.Text)
+                {
                     ReplayRealTimeLabel.Text = realTime;
+                    /* An all-zero game time carries no information and is shown dimmed */
+                    ReplayRealTimeLabel.Opacity = HasNonZeroDigit(realTime) ? 1.0 : 0.5;
+                }
 
                 UpdateReplayHeaderLabel();
             }
@@ -24131,6 +24135,16 @@ namespace GnollHackX.Pages.Game
                 ApplyReplayControlsLock();
 
             UpdateReplayHeaderLabel();
+        }
+
+        private static bool HasNonZeroDigit(string text)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (text[i] >= '1' && text[i] <= '9')
+                    return true;
+            }
+            return false;
         }
 
         /* Replaces the replay header text while non-null, e.g. a performance suite's

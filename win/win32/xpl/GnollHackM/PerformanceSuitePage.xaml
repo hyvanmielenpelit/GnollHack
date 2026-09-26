@@ -22,12 +22,12 @@
                 <Grid Grid.Row="1" MaximumWidthRequest="560" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <ScrollView x:Name="MainScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
                         <StackLayout x:Name="MainLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="6" Padding="16,0,16,12">
-                            <!-- Setup labels are underlined because tapping one shows an explanation -->
+                            <!-- Tapping a setup label shows an explanation -->
                             <StackLayout x:Name="SetupLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="6">
                                 <Label Text="Setup" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" HorizontalOptions="Start" Margin="0,4,0,2" />
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="ReplayLabel" Text="Replay" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                    <Label Grid.Column="0" x:Name="ReplayLabel" Text="Replay" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                         </Label.GestureRecognizers>
@@ -40,7 +40,7 @@
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="StartTurnLabel" Text="Start turn" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                    <Label Grid.Column="0" x:Name="StartTurnLabel" Text="Start turn" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                         </Label.GestureRecognizers>
@@ -50,7 +50,7 @@
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="ScenarioLabel" Text="Scenario" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                    <Label Grid.Column="0" x:Name="ScenarioLabel" Text="Scenario" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                         </Label.GestureRecognizers>
@@ -61,7 +61,7 @@
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="RunsLabel" Text="Measured runs" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                    <Label Grid.Column="0" x:Name="RunsLabel" Text="Measured runs" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                         </Label.GestureRecognizers>
@@ -72,7 +72,7 @@
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="WarmUpRunLabel" Text="Warm-up run" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                    <Label Grid.Column="0" x:Name="WarmUpRunLabel" Text="Warm-up run" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                         </Label.GestureRecognizers>
@@ -81,7 +81,7 @@
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="PageModeLabel" Text="Page mode" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                    <Label Grid.Column="0" x:Name="PageModeLabel" Text="Page mode" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                         </Label.GestureRecognizers>
@@ -92,17 +92,17 @@
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="ArmLabelLabel" Text="Arm label" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                    <Label Grid.Column="0" x:Name="ArmLabelLabel" Text="Arm label" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                         </Label.GestureRecognizers>
                                     </Label>
-                                    <Entry Grid.Column="1" x:Name="ArmLabelEntry" Keyboard="Plain" WidthRequest="220" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                    <Entry Grid.Column="1" x:Name="ArmLabelEntry" Keyboard="Plain" WidthRequest="240" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
                                         VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="WarmUpSecondsLabel" Text="Warm-up seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                    <Label Grid.Column="0" x:Name="WarmUpSecondsLabel" Text="Warm-up seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                         </Label.GestureRecognizers>
@@ -112,7 +112,7 @@
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="WindowSecondsLabel" Text="Window seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                    <Label Grid.Column="0" x:Name="WindowSecondsLabel" Text="Window seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                         </Label.GestureRecognizers>
@@ -122,7 +122,7 @@
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="CooldownSecondsLabel" Text="Cool-down seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                    <Label Grid.Column="0" x:Name="CooldownSecondsLabel" Text="Cool-down seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                         </Label.GestureRecognizers>
@@ -132,7 +132,7 @@
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="EstimatedDurationTitleLabel" Text="Estimated duration" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                    <Label Grid.Column="0" x:Name="EstimatedDurationTitleLabel" Text="Estimated duration" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                         </Label.GestureRecognizers>
@@ -147,7 +147,7 @@
 
                             <BoxView HeightRequest="1" Color="Gray" HorizontalOptions="Fill" />
 
-                            <Label x:Name="ResultsLabel" Text="Results" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" TextDecorations="Underline" HorizontalOptions="Start" Margin="0,8,0,2">
+                            <Label x:Name="ResultsLabel" Text="Results" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" HorizontalOptions="Start" Margin="0,8,0,2">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                 </Label.GestureRecognizers>
@@ -159,7 +159,7 @@
                                 HorizontalOptions="Fill" VerticalOptions="Start" BackgroundColor="Transparent" SelectionChanged="SuiteCollectionView_SelectionChanged">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="mainscreen:PerformanceSuiteListItem">
-                                        <StackLayout Orientation="Vertical" Spacing="1" Padding="4,5" HorizontalOptions="Fill">
+                                        <StackLayout Orientation="Vertical" Spacing="1" Padding="{Binding RowPadding}" HorizontalOptions="Fill">
                                             <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8" HorizontalOptions="Fill">
                                                 <Label Grid.Column="0" Text="{Binding DateText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
                                                 <Label Grid.Column="1" Text="{Binding ScenarioText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="TailTruncation" />

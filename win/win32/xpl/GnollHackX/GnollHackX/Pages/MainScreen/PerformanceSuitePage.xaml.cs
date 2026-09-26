@@ -35,6 +35,7 @@ namespace GnollHackX.Pages.MainScreen
         public string MarkersText { get; set; }
         public bool HasMarkers { get; set; }
         public Color ItemTextColor { get; set; }
+        public Thickness RowPadding { get; set; }
     }
 
     [XamlCompilation(XamlCompilationOptions.Compile)]
@@ -596,6 +597,9 @@ namespace GnollHackX.Pages.MainScreen
             item.HasMarkers = markers.Count > 0;
 
             item.ItemTextColor = darkMode ? GHColors.White : GHColors.Black;
+            /* Windows draws a selection check box inside the row's left edge and the list's
+               scroll bar over its right edge */
+            item.RowPadding = GHApp.IsWindows ? new Thickness(34, 5, 20, 5) : new Thickness(4, 5, 10, 5);
             return item;
         }
 
@@ -950,7 +954,8 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         /* Recursively recolors black-on-light setup text (labels, entries, pickers) for
-           dark mode, matching SettingsPage's SetChildrenDarkModeTextColor. */
+           dark mode, matching SettingsPage's SetChildrenDarkModeTextColor, and gives entries
+           and pickers the shaded input background of the current mode. */
         private void SetChildrenDarkModeTextColor(View view, bool darkmode)
         {
             if (view == null)
@@ -984,12 +989,14 @@ namespace GnollHackX.Pages.MainScreen
                 Microsoft.Maui.Controls.Entry l = (Microsoft.Maui.Controls.Entry)view;
                 if (darkmode ? l.TextColor == GHColors.Black : l.TextColor == GHColors.White)
                     l.TextColor = darkmode ? GHColors.White : GHColors.Black;
+                l.BackgroundColor = darkmode ? GHColors.PickerDarkModeBkgColor : GHColors.PickerLightModeBkgColor;
             }
             else if (view is Microsoft.Maui.Controls.Picker)
             {
                 Microsoft.Maui.Controls.Picker l = (Microsoft.Maui.Controls.Picker)view;
                 l.TextColor = darkmode ? GHColors.White : GHColors.Black;
                 l.TitleColor = darkmode ? GHColors.White : GHColors.Black;
+                l.BackgroundColor = darkmode ? GHColors.PickerDarkModeBkgColor : GHColors.PickerLightModeBkgColor;
             }
 #else
             else if (view is Xamarin.Forms.Entry)
@@ -997,12 +1004,14 @@ namespace GnollHackX.Pages.MainScreen
                 Xamarin.Forms.Entry l = (Xamarin.Forms.Entry)view;
                 if (darkmode ? l.TextColor == GHColors.Black : l.TextColor == GHColors.White)
                     l.TextColor = darkmode ? GHColors.White : GHColors.Black;
+                l.BackgroundColor = darkmode ? GHColors.PickerDarkModeBkgColor : GHColors.PickerLightModeBkgColor;
             }
             else if (view is Xamarin.Forms.Picker)
             {
                 Xamarin.Forms.Picker l = (Xamarin.Forms.Picker)view;
                 l.TextColor = darkmode ? GHColors.White : GHColors.Black;
                 l.TitleColor = darkmode ? GHColors.White : GHColors.Black;
+                l.BackgroundColor = darkmode ? GHColors.PickerDarkModeBkgColor : GHColors.PickerLightModeBkgColor;
             }
 #endif
         }
