@@ -14,10 +14,14 @@ namespace GnollHack.PerformanceAnalyzer.Model
            display { measuredRefreshHz, assumedRefreshHz, targetFps, assumedRefreshMismatch },
            smoothness { displayedFps, hitchRatioMsPerSec, ..., causes { <CauseName>: { count, hitchMs } } },
            onScreenPacing {...}, series { onScreenIntervalsMs, pacingErrorMs },
-           uiThread {...}, files { frameTimeline, compositorFrames } }
+           uiThread {...}, files { frameTimeline, compositorFrames },
+           suite { suiteId, runIndex, pageMode, isWarmUp, replayFileName, replayBytes,
+                   replaySha256, startTurn, turnReached, excludedReason } }
 
-       The files named under "files" sit next to the JSON. Parsing is tolerant: a missing
-       member reads as zero or null. */
+       The files named under "files" sit next to the JSON. The "suite" block is written
+       only for runs taken by the in-app Performance Suite; its optional excludedReason
+       (e.g. "warm-up run", "replay ended") overrides the analyzer's own exclusion rules.
+       Parsing is tolerant: a missing member reads as zero or null. */
     public sealed class InAppRun
     {
         public int SchemaVersion;
@@ -46,6 +50,8 @@ namespace GnollHack.PerformanceAnalyzer.Model
         public float[] PacingErrorMs = new float[0];
         public string FrameTimelineFile;
         public string CompositorFramesFile;
+        public JsonElement Suite;
+        public string SuiteExcludedReason;
 
         /* A v2 in-app record, as opposed to a run record in the analyzer's own schema */
         public static bool IsInAppRun(JsonElement root)
@@ -139,6 +145,11 @@ namespace GnollHack.PerformanceAnalyzer.Model
                 r.FrameTimelineFile = Str(files, "frameTimeline");
                 r.CompositorFramesFile = Str(files, "compositorFrames");
             }
+            if (root.TryGetProperty("suite", out JsonElement suite) && suite.ValueKind == JsonValueKind.Object)
+            {
+                r.Suite = suite.Clone();
+                r.SuiteExcludedReason = Str(suite, "excludedReason");
+            }
             return r;
         }
 
@@ -200,6 +211,11 @@ namespace GnollHack.PerformanceAnalyzer.Model
             string version = EnvString("appVersion", "version");
             if (version != null)
                 r.Versions["app"] = version;
+            AddVersion(r, "runtime", EnvString("runtimeVersion"));
+            AddVersion(r, "framework", EnvString("frameworkVersion"));
+            AddVersion(r, "uiFramework", EnvString("uiFrameworkVersion"));
+            AddVersion(r, "skiaSharp", EnvString("skiaSharpVersion"));
+            AddVersion(r, "fmod", EnvString("fmodVersion"));
             r.Display.RefreshHz = MeasuredRefreshHz > 0 ? MeasuredRefreshHz : AssumedRefreshHz;
             r.Display.VsyncMs = r.Display.RefreshHz > 0 ? 1000.0 / r.Display.RefreshHz : 0;
             r.Display.TargetFps = TargetFps > 0 ? TargetFps : r.Display.RefreshHz;
@@ -215,6 +231,11 @@ namespace GnollHack.PerformanceAnalyzer.Model
             {
                 r.Excluded = true;
                 r.ExclusionReason = "fewer than 100 on-screen intervals (" + onScreenCount + ")";
+            }
+            if (!string.IsNullOrEmpty(SuiteExcludedReason))
+            {
+                r.Excluded = true;
+                r.ExclusionReason = SuiteExcludedReason;
             }
 
             Series s = new Series
@@ -233,6 +254,12 @@ namespace GnollHack.PerformanceAnalyzer.Model
                 s.Info["presentSource"] = PresentSource;
             r.Series.Add(s);
             return r;
+        }
+
+        private static void AddVersion(RunRecord r, string key, string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+                r.Versions[key] = value;
         }
 
         private static GHClockAnchor? Anchor(JsonElement e, string name)

@@ -308,6 +308,7 @@ namespace GnollHackX
         public const string ReplayDirectory = "replay";
         public const string ReplayDownloadFromCloudDirectory = "replay-cloud";
         public const string ArchiveDirectory = "archive"; /* Directory for sharable archives and files; cleaned and deleted at program start */
+        public const string PerformanceDirectory = "performance"; /* Directory for performance run records; persistent, not cleaned at program start */
         public const string UploadDirectory = "upload"; /* Directory for uploadable files; files are never cleaned automatically, only upon successful upload */
         public const string TempDirectory = "temp";  /* Created and deleted on the go */
         public const string ZipDirectory = "zip";

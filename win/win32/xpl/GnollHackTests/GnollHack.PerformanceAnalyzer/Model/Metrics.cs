@@ -31,13 +31,9 @@ namespace GnollHack.PerformanceAnalyzer.Model
            and the pre-registered regression thresholds (see DEVEL/performance/README.md's
            Statistics section). Absolute thresholds expressed against the display are now
            in target-period units, since the target content rate can differ from the
-           refresh rate. */
-        public static readonly DecisionMetric[] Decision =
-        {
-            new DecisionMetric(FrameDurationP99, "ms", higherIsWorse: true, relativeThreshold: 0.20, absoluteThresholdTargetPeriod: 1.0),
-            new DecisionMetric(HitchRatio, "ms/s", higherIsWorse: true, relativeThreshold: 0, absoluteThreshold: 2.0),
-            new DecisionMetric(Fps1PctLow, "fps", higherIsWorse: false, relativeThreshold: 0.10),
-        };
+           refresh rate. Defined in GHPerformanceComparison, shared with the in-app
+           harness. */
+        public static readonly GHDecisionMetric[] Decision = GHPerformanceComparison.ExternalDecision;
 
         /* Reported alongside, not decided on. */
         public static readonly string[] Reported =
@@ -63,13 +59,9 @@ namespace GnollHack.PerformanceAnalyzer.Model
         public const string DroppedCount = "droppedCount";
         public const string DisplayedCount = "displayedCount";
 
-        /* Decision metrics of the smoothness series, read directly from the run records */
-        public static readonly DecisionMetric[] SmoothnessDecision =
-        {
-            new DecisionMetric(HitchRatioMsPerSec, "ms/s", higherIsWorse: true, relativeThreshold: 0, absoluteThreshold: 2.0),
-            new DecisionMetric(PacingErrorRmsMs, "ms", higherIsWorse: true, relativeThreshold: 0, absoluteThreshold: 1.0),
-            new DecisionMetric(DisplayedFps, "fps", higherIsWorse: false, relativeThreshold: 0.05),
-        };
+        /* Decision metrics of the smoothness series, read directly from the run records.
+           Defined in GHPerformanceComparison, shared with the in-app harness. */
+        public static readonly GHDecisionMetric[] SmoothnessDecision = GHPerformanceComparison.SmoothnessDecision;
 
         public static readonly string[] SmoothnessReported =
         {
@@ -77,7 +69,7 @@ namespace GnollHack.PerformanceAnalyzer.Model
             TileAnimationFps, HitchCount, DroppedCount, DisplayedCount
         };
 
-        public static DecisionMetric[] DecisionFor(string seriesKind)
+        public static GHDecisionMetric[] DecisionFor(string seriesKind)
         {
             return IsSmoothness(seriesKind) ? SmoothnessDecision : Decision;
         }
@@ -90,27 +82,6 @@ namespace GnollHack.PerformanceAnalyzer.Model
         public static bool IsSmoothness(string seriesKind)
         {
             return string.Equals(seriesKind, SmoothnessSeries, StringComparison.OrdinalIgnoreCase);
-        }
-    }
-
-    public sealed class DecisionMetric
-    {
-        public string Name { get; }
-        public string Unit { get; }
-        public bool HigherIsWorse { get; }
-        public double RelativeThreshold { get; }
-        public double AbsoluteThreshold { get; }
-        public double AbsoluteThresholdTargetPeriod { get; }
-
-        public DecisionMetric(string name, string unit, bool higherIsWorse, double relativeThreshold,
-                              double absoluteThreshold = 0, double absoluteThresholdTargetPeriod = 0)
-        {
-            Name = name;
-            Unit = unit;
-            HigherIsWorse = higherIsWorse;
-            RelativeThreshold = relativeThreshold;
-            AbsoluteThreshold = absoluteThreshold;
-            AbsoluteThresholdTargetPeriod = absoluteThresholdTargetPeriod;
         }
     }
 

@@ -244,9 +244,13 @@
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHFrameMarker.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHFrameRecord.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHFrameTimeline.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceComparison.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceEnvironment.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceRunRecord.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceStatistics.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteRunner.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteStore.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceTextReport.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPresentFeedback.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHSmoothnessMetrics.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHUiThreadProbe.cs" />
@@ -281,6 +285,7 @@
     <None Remove="..\GnollHackX\GnollHackX\Controls\SimpleImageButton.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\SwitchableCanvasView.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\AboutPage.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\PerformanceSuitePage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\ResetPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\SettingsPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
@@ -494,9 +499,13 @@
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHFrameMarker.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHFrameRecord.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHFrameTimeline.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceComparison.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceEnvironment.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceRunRecord.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceStatistics.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteRunner.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteStore.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceTextReport.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPresentFeedback.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHSmoothnessMetrics.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHUiThreadProbe.cs" />
@@ -531,6 +540,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\Controls\SimpleImageButton.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\SwitchableCanvasView.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\AboutPage.xaml.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\PerformanceSuitePage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\ResetPage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\SettingsPage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />

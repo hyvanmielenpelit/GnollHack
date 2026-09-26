@@ -40,12 +40,6 @@ namespace GnollHack.PerformanceAnalyzer.Commands
        intervals. */
     public static class CompareCommand
     {
-        private const double CadenceToleranceFraction = 0.01;
-
-        /* Below this many used runs in either arm, a decision would rest on too little
-           data to trust the bootstrap CI, so every decision row is refused instead */
-        private const int MinRunsForVerdict = 3;
-
         private sealed class Arm
         {
             public string Label;
@@ -76,12 +70,12 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             double refreshMs = allUsed.Select(r => r.Display.VsyncMs).Where(v => v > 0).DefaultIfEmpty(16.667).First();
             double targetMs = allUsed.Select(TargetPeriodOf).Where(v => v > 0).DefaultIfEmpty(refreshMs).First();
 
-            if (CadenceMismatch(allUsed, CadenceToleranceFraction, out string cadenceDetail))
+            if (CadenceMismatch(allUsed, GHPerformanceComparison.CadenceToleranceFraction, out string cadenceDetail))
             {
                 if (!allowMixedCadence)
                 {
                     Console.Error.WriteLine("compare: cadence differs between runs by more than "
-                        + (CadenceToleranceFraction * 100).ToString("0.#", CultureInfo.InvariantCulture)
+                        + (GHPerformanceComparison.CadenceToleranceFraction * 100).ToString("0.#", CultureInfo.InvariantCulture)
                         + " percent (" + cadenceDetail + "); pass --allow-mixed-cadence to compare anyway");
                     return 1;
                 }
@@ -119,29 +113,9 @@ namespace GnollHack.PerformanceAnalyzer.Commands
            by more than the tolerance fraction of the smallest value. */
         private static bool CadenceMismatch(List<RunRecord> runs, double tolerance, out string detail)
         {
-            List<double> refresh = runs.Select(r => r.Display.VsyncMs).Where(v => v > 0).ToList();
-            List<double> target = runs.Select(TargetPeriodOf).Where(v => v > 0).ToList();
-            if (!WithinTolerance(refresh, tolerance, out double refMin, out double refMax))
-            {
-                detail = "refresh period from " + F(refMin) + " to " + F(refMax) + " ms";
-                return true;
-            }
-            if (!WithinTolerance(target, tolerance, out double tMin, out double tMax))
-            {
-                detail = "target period from " + F(tMin) + " to " + F(tMax) + " ms";
-                return true;
-            }
-            detail = null;
-            return false;
-        }
-
-        private static bool WithinTolerance(List<double> values, double tolerance, out double min, out double max)
-        {
-            min = values.Count > 0 ? values.Min() : 0;
-            max = values.Count > 0 ? values.Max() : 0;
-            if (min <= 0)
-                return true;
-            return (max - min) / min <= tolerance;
+            List<double> refresh = runs.Select(r => r.Display.VsyncMs).ToList();
+            List<double> target = runs.Select(TargetPeriodOf).ToList();
+            return GHPerformanceComparison.CadenceMismatch(refresh, target, tolerance, out detail);
         }
 
         private static Arm LoadArm(List<string> inputs, string label, string seriesKind, bool includeThrottled, bool includeExcluded)
@@ -185,7 +159,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                     continue;
                 arm.Used.Add(r);
             }
-            foreach (DecisionMetric dm in MetricNames.DecisionFor(seriesKind))
+            foreach (GHDecisionMetric dm in MetricNames.DecisionFor(seriesKind))
                 arm.PerRun[dm.Name] = arm.Used.Select(r => (float)r.FindSeries(seriesKind).Metrics[dm.Name]).ToArray();
             /* A run missing a reported (non-decision) metric is left out of that metric's
                array rather than counted as zero, which would read as a false regression or
@@ -309,9 +283,9 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             md.AppendLine();
             md.AppendLine("| Metric | " + a.Label + " median | " + b.Label + " median | Diff | 95% CI | Rel. | MDE | MWU p | Verdict |");
             md.AppendLine("|---|---|---|---|---|---|---|---|---|");
-            bool tooFewRuns = Math.Min(a.Used.Count, b.Used.Count) < MinRunsForVerdict;
+            bool tooFewRuns = Math.Min(a.Used.Count, b.Used.Count) < GHPerformanceComparison.MinRunsForVerdict;
             List<string> verdicts = new List<string>();
-            foreach (DecisionMetric dm in MetricNames.DecisionFor(kind))
+            foreach (GHDecisionMetric dm in MetricNames.DecisionFor(kind))
                 verdicts.Add(WriteDecisionRow(md, dm, a, b, targetMs, resamples, seed, tooFewRuns));
             foreach (string name in MetricNames.ReportedFor(kind))
             {
@@ -322,57 +296,28 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             md.AppendLine();
             if (tooFewRuns)
             {
-                md.AppendLine("**Overall:** no decision was made: fewer than " + MinRunsForVerdict
+                md.AppendLine("**Overall:** no decision was made: fewer than " + GHPerformanceComparison.MinRunsForVerdict
                     + " used runs per arm (" + a.Used.Count + " and " + b.Used.Count + ").");
             }
             else
             {
-                int regressions = verdicts.Count(v => v == "REGRESSION");
-                int improvements = verdicts.Count(v => v == "improvement");
+                GHPerformanceComparison.Tally(verdicts, out int regressions, out int improvements);
                 md.AppendLine("**Overall:** " + (regressions > 0 ? regressions + " decision metric(s) regressed. " : "no decision metric regressed. ")
                     + (improvements > 0 ? improvements + " improved. " : "")
                     + "Runs per arm: " + a.Used.Count + " and " + b.Used.Count + "."
-                    + (Math.Min(a.Used.Count, b.Used.Count) < 5 ? " Fewer than 5 runs per arm: treat the verdict as provisional and read the MDE column." : ""));
+                    + (Math.Min(a.Used.Count, b.Used.Count) < GHPerformanceComparison.ProvisionalBelowRuns ? " Fewer than 5 runs per arm: treat the verdict as provisional and read the MDE column." : ""));
             }
             md.AppendLine();
         }
 
-        private static string WriteDecisionRow(StringBuilder md, DecisionMetric dm, Arm a, Arm b, double targetMs, int resamples, ulong seed, bool tooFewRuns)
+        private static string WriteDecisionRow(StringBuilder md, GHDecisionMetric dm, Arm a, Arm b, double targetMs, int resamples, ulong seed, bool tooFewRuns)
         {
             float[] va = a.PerRun[dm.Name], vb = b.PerRun[dm.Name];
-            double medA = GHPerformanceStatistics.Median(va), medB = GHPerformanceStatistics.Median(vb);
-            GHPerformanceStatistics.Interval ci = GHPerformanceStatistics.BootstrapDifferenceCi(va, vb, GHPerformanceStatistics.StatMedian, resamples, 0.95, seed);
-            double diff = medB - medA;
-            double rel = medA != 0 ? diff / Math.Abs(medA) : 0;
-            double sdPooled = PooledSd(va, vb);
-            double mde = GHPerformanceStatistics.MinimumDetectableEffect(sdPooled, Math.Min(va.Length, vb.Length), 0.05);
-            GHPerformanceStatistics.MannWhitneyResult mw = GHPerformanceStatistics.MannWhitneyU(va, vb);
-
-            string verdict;
-            if (tooFewRuns)
-            {
-                /* The CI, MDE and p-value are still informative, but too few runs were used
-                   to trust a verdict built on them */
-                verdict = "too few runs (need " + MinRunsForVerdict + ")";
-            }
-            else
-            {
-                bool ciExcludesZero = ci.Low > 0 || ci.High < 0;
-                double absThreshold = dm.AbsoluteThreshold > 0 ? dm.AbsoluteThreshold : dm.AbsoluteThresholdTargetPeriod * targetMs;
-                bool beyondThreshold = (dm.RelativeThreshold > 0 && Math.Abs(rel) > dm.RelativeThreshold)
-                                    || (absThreshold > 0 && Math.Abs(diff) > absThreshold);
-                bool worse = dm.HigherIsWorse ? diff > 0 : diff < 0;
-                if (ciExcludesZero && beyondThreshold)
-                    verdict = worse ? "REGRESSION" : "improvement";
-                else if (ciExcludesZero)
-                    verdict = worse ? "worse, under threshold" : "better, under threshold";
-                else
-                    verdict = "no evidence";
-            }
-            md.AppendLine("| **" + dm.Name + "** (" + dm.Unit + ") | " + F(medA) + " | " + F(medB) + " | " + Signed(diff)
-                + " | [" + Signed(ci.Low) + ", " + Signed(ci.High) + "] | " + Rel(medA, rel) + " | +/-" + F(mde)
-                + " | " + P(mw) + " | " + verdict + " |");
-            return verdict;
+            GHMetricDecision d = GHPerformanceComparison.Decide(dm, va, vb, targetMs, tooFewRuns, resamples, seed);
+            md.AppendLine("| **" + dm.Name + "** (" + dm.Unit + ") | " + F(d.MedianA) + " | " + F(d.MedianB) + " | " + Signed(d.Diff)
+                + " | [" + Signed(d.Ci.Low) + ", " + Signed(d.Ci.High) + "] | " + Rel(d.MedianA, d.Rel) + " | +/-" + F(d.Mde)
+                + " | " + P(d.MannWhitney) + " | " + d.Verdict + " |");
+            return d.Verdict;
         }
 
         private static void WriteInfoRow(StringBuilder md, string name, Arm a, Arm b, int resamples, ulong seed)
@@ -384,7 +329,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             GHPerformanceStatistics.Interval ci = GHPerformanceStatistics.BootstrapDifferenceCi(va, vb, GHPerformanceStatistics.StatMedian, resamples, 0.95, seed);
             double diff = medB - medA;
             double rel = medA != 0 ? diff / Math.Abs(medA) : 0;
-            double mde = GHPerformanceStatistics.MinimumDetectableEffect(PooledSd(va, vb), Math.Min(va.Length, vb.Length), 0.05);
+            double mde = GHPerformanceStatistics.MinimumDetectableEffect(GHPerformanceComparison.PooledSd(va, vb), Math.Min(va.Length, vb.Length), 0.05);
             GHPerformanceStatistics.MannWhitneyResult mw = GHPerformanceStatistics.MannWhitneyU(va, vb);
             md.AppendLine("| " + name + " | " + F(medA) + " | " + F(medB) + " | " + Signed(diff)
                 + " | [" + Signed(ci.Low) + ", " + Signed(ci.High) + "] | " + Rel(medA, rel) + " | +/-" + F(mde)
@@ -441,15 +386,6 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                     + " | " + (r.Thermal.Throttled ? "**yes**: " + r.Thermal.ThrottleReason : "no") + " |");
             }
             md.AppendLine();
-        }
-
-        private static double PooledSd(float[] a, float[] b)
-        {
-            double sa = GHPerformanceStatistics.StdDev(a), sb = GHPerformanceStatistics.StdDev(b);
-            int na = a.Length, nb = b.Length;
-            if (na + nb <= 2)
-                return 0;
-            return Math.Sqrt(((na - 1) * sa * sa + (nb - 1) * sb * sb) / (na + nb - 2));
         }
 
         /* A metric absent from the run's Metrics dictionary, as NaN rather than a thrown

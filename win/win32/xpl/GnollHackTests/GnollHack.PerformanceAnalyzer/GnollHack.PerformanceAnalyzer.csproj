@@ -11,9 +11,10 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
-  <!-- The statistics and the smoothness analysis are the same files the app compiles, so device and desktop agree. -->
+  <!-- The statistics, the smoothness analysis and the comparison decisions are the same files the app compiles, so device and desktop agree. -->
   <ItemGroup>
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceStatistics.cs" Link="Shared\GHPerformanceStatistics.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceComparison.cs" Link="Shared\GHPerformanceComparison.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHFrameRecord.cs" Link="Shared\GHFrameRecord.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHFrameTimeline.cs" Link="Shared\GHFrameTimeline.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPresentFeedback.cs" Link="Shared\GHPresentFeedback.cs" />

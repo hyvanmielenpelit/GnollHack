@@ -16,15 +16,18 @@ namespace GnollHackX.Performance
        (schema v2) describes and the offline analyzer reads: a scenario and arm label, the
        environment the run was measured in, thermal readings taken before and after, the
        smoothness summary and on-screen pacing metrics GHSmoothnessMetrics computes, the
-       raw on-screen interval and pacing-error series, and the UI thread latency probe.
+       raw on-screen interval and pacing-error series, the UI thread latency probe, and,
+       for a run that is part of a suite, an optional "suite" object.
 
        BeginWindow and EndWindowAndSave bracket a measurement: BeginWindow remembers
        whether the frame timeline was already running, enables it, notes the first frame of
        the window, and takes the first thermal reading; EndWindowAndSave takes the second
        reading, saves the window's frames (the JSON and the two CSV dumps), and restores
-       the timeline to whatever state it was in before BeginWindow. SaveRecent writes the
-       same document from everything the timeline still holds, with no window. None of the
-       three throws.
+       the timeline to whatever state it was in before BeginWindow. Both have an overload
+       that takes or hands back a GHPerformanceRunContext/GHPerformanceRunResult for a
+       suite runner; the plain overloads are these with no context and the result
+       discarded. SaveRecent writes the same document from everything the timeline still
+       holds, with no window. None of the three throws.
 
        Window commands let a script bracket a window without touching the device: while
        the timeline is enabled the app polls ExportDirectory for window.cmd, and on Android
@@ -33,6 +36,40 @@ namespace GnollHackX.Performance
        names the record's JSON file.
 
        Must compile under C# 7.3 (the legacy netstandard2.0 project). */
+    /* A performance suite's run-level context, folded into a saved record's "suite"
+       object and consulted for the run result's ExcludedReason. TurnReached and
+       ExcludedReason are meant to be set by the caller on the same instance passed to
+       BeginWindow, any time before EndWindowAndSave: ExcludedReason preset here (e.g.
+       "warm-up run", "replay ended") always wins over the reasons EndWindowAndSave
+       derives on its own (throttling, a power state change, too few on-screen
+       intervals). */
+    public sealed class GHPerformanceRunContext
+    {
+        public string SuiteId;
+        public int RunIndex;
+        public string PageMode;        /* shared, fresh */
+        public bool IsWarmUp;
+        public string ReplayFileName;
+        public long ReplayBytes;
+        public string ReplaySha256;
+        public int StartTurn;
+        public int TurnReached = -1;   /* set by the caller before EndWindowAndSave */
+        public string ExcludedReason;  /* preset by the caller, e.g. "warm-up run", "replay ended" */
+    }
+
+    /* What EndWindowAndSave(directory, out result) hands back alongside the JSON path,
+       so a suite runner does not need to re-read or re-parse the file it just wrote. */
+    public sealed class GHPerformanceRunResult
+    {
+        public string JsonPath;
+        public GHSmoothnessSummary Summary;
+        public float[] OnScreenIntervalsMs;
+        public GHThermalReading ThermalBefore;
+        public GHThermalReading ThermalAfter;
+        public int OnScreenIntervalCount;
+        public string ExcludedReason;  /* null when the run is usable */
+    }
+
     public static class GHPerformanceRunRecord
     {
         public const int CurrentSchemaVersion = 2;
@@ -48,6 +85,7 @@ namespace GnollHackX.Performance
         private static GHThermalReading _thermalBefore;
         private static DateTime _startedUtc;
         private static long _windowFromFrameId = 1;
+        private static GHPerformanceRunContext _context = null;
 
         /* The reading taken when the timeline was last enabled: SaveRecent's "before" */
         private static GHThermalReading _thermalAtActivation;
@@ -124,10 +162,20 @@ namespace GnollHackX.Performance
            a window is open replaces it. */
         public static void BeginWindow(string scenario, string arm)
         {
+            BeginWindow(scenario, arm, null);
+        }
+
+        /* Same as BeginWindow(scenario, arm), but also remembers a suite run context by
+           reference: fields the caller sets on it up to EndWindowAndSave (TurnReached,
+           ExcludedReason) are included in the saved record's "suite" object and in the
+           run result's ExcludedReason. */
+        public static void BeginWindow(string scenario, string arm, GHPerformanceRunContext context)
+        {
             try
             {
                 _scenario = scenario ?? "";
                 _arm = arm ?? "";
+                _context = context;
                 _wasTimelineEnabledBeforeWindow = GHFrameTimeline.IsEnabled;
                 FrameTimeProfiler.IsEnabled = true;
                 _windowFromFrameId = GHFrameTimeline.LastFrameId + 1;
@@ -139,6 +187,7 @@ namespace GnollHackX.Performance
             }
             catch
             {
+                _context = null;
                 Interlocked.Exchange(ref _windowOpen, 0);
             }
         }
@@ -149,15 +198,31 @@ namespace GnollHackX.Performance
            path, or null on any failure. */
         public static string EndWindowAndSave(string directory)
         {
+            GHPerformanceRunResult result;
+            return EndWindowAndSave(directory, out result);
+        }
+
+        /* Same as EndWindowAndSave(directory), but also hands back the computed
+           smoothness summary, the on-screen interval series, both thermal readings and
+           the interval count, so a suite runner does not need to re-read or re-parse the
+           JSON it just wrote. result is non-null whenever a JSON was written; on failure
+           result may be null and the method returns null, as EndWindowAndSave(directory)
+           always did. */
+        public static string EndWindowAndSave(string directory, out GHPerformanceRunResult result)
+        {
+            result = null;
             if (Interlocked.CompareExchange(ref _windowOpen, 0, 1) != 1)
                 return null;
+            GHPerformanceRunContext context = _context;
+            _context = null;
             try
             {
                 return Save(directory, _scenario, _arm, _startedUtc, _thermalBefore, GHThermalProbe.Read(),
-                    _windowFromFrameId, GHFrameTimeline.LastFrameId);
+                    _windowFromFrameId, GHFrameTimeline.LastFrameId, context, out result);
             }
             catch
             {
+                result = null;
                 return null;
             }
             finally
@@ -188,11 +253,33 @@ namespace GnollHackX.Performance
                 if (!GHFrameTimeline.IsEnabled)
                     return null;
                 long last = GHFrameTimeline.LastFrameId;
-                GHFrameRecord[] probe = new GHFrameRecord[GHFrameTimeline.Capacity];
-                int n = GHFrameTimeline.CopyRecords(probe, 1, last);
-                if (n == 0)
+                if (last <= 0)
                     return null;
-                double spanSeconds = (double)(probe[n - 1].CallbackStartTicks - probe[0].CallbackStartTicks) / Stopwatch.Frequency;
+                /* Frame ids are contiguous, so the oldest retained id is known without
+                   scanning for it; only its record and the last record's are needed for
+                   the span, not a copy of the whole ring. */
+                long first = Math.Max(1, last - GHFrameTimeline.Capacity + 1);
+                GHFrameRecord[] endpoint = new GHFrameRecord[1];
+                long firstTicks = 0, lastTicks = 0;
+                bool haveEndpoints = GHFrameTimeline.CopyRecords(endpoint, first, first) == 1;
+                if (haveEndpoints)
+                {
+                    firstTicks = endpoint[0].CallbackStartTicks;
+                    haveEndpoints = GHFrameTimeline.CopyRecords(endpoint, last, last) == 1;
+                    lastTicks = endpoint[0].CallbackStartTicks;
+                }
+                if (!haveEndpoints)
+                {
+                    /* An endpoint slot did not hold its id; take the span from every
+                       retained record instead */
+                    GHFrameRecord[] probe = new GHFrameRecord[GHFrameTimeline.Capacity];
+                    int n = GHFrameTimeline.CopyRecords(probe, 1, last);
+                    if (n == 0)
+                        return null;
+                    firstTicks = probe[0].CallbackStartTicks;
+                    lastTicks = probe[n - 1].CallbackStartTicks;
+                }
+                double spanSeconds = (double)(lastTicks - firstTicks) / Stopwatch.Frequency;
                 DateTime startedUtc = DateTime.UtcNow - TimeSpan.FromSeconds(Math.Max(0, spanSeconds));
                 GHThermalReading now = GHThermalProbe.Read();
                 GHThermalReading before = _hasThermalAtActivation ? _thermalAtActivation : now;
@@ -204,9 +291,25 @@ namespace GnollHackX.Performance
             }
         }
 
+        /* The window.cmd and pre-existing SaveRecent/EndWindowAndSave path: no context,
+           result discarded. */
         private static string Save(string directory, string scenario, string arm, DateTime startedUtc,
             GHThermalReading thermalBefore, GHThermalReading thermalAfter, long fromFrameId, long toFrameId)
         {
+            GHPerformanceRunResult result;
+            return Save(directory, scenario, arm, startedUtc, thermalBefore, thermalAfter, fromFrameId, toFrameId,
+                null, out result);
+        }
+
+        /* Builds the summary and both CSVs from one copy of the ring so they agree, writes
+           the JSON, and hands back the pieces a suite runner needs (result) alongside the
+           JSON path. context is folded into the JSON's "suite" object and into
+           result.ExcludedReason; both are null when the caller passes no context. */
+        private static string Save(string directory, string scenario, string arm, DateTime startedUtc,
+            GHThermalReading thermalBefore, GHThermalReading thermalAfter, long fromFrameId, long toFrameId,
+            GHPerformanceRunContext context, out GHPerformanceRunResult result)
+        {
+            result = null;
             DateTime endedUtc = DateTime.UtcNow;
 
             /* One copy of the ring feeds the summary and both CSVs, so they agree */
@@ -235,12 +338,57 @@ namespace GnollHackX.Performance
             GHFrameTimeline.WriteCsv(Path.Combine(directory, timelineCsvName), recordBuffer, n);
             GHFrameTimeline.WriteCompositorCsv(Path.Combine(directory, compositorCsvName), compositorBuffer, m, originTicks);
 
+            SeriesJson series = BuildSeries(displayed, displayedCount);
             object doc = BuildDocument(stem, scenario, arm, startedUtc, endedUtc, thermalBefore, thermalAfter,
-                summary, displayed, displayedCount, timelineCsvName, compositorCsvName);
+                summary, series, timelineCsvName, compositorCsvName, context);
 
             string json = JsonConvert.SerializeObject(doc, _jsonSettings);
             File.WriteAllText(jsonPath, json + Environment.NewLine, new UTF8Encoding(false));
+
+            result = new GHPerformanceRunResult();
+            result.JsonPath = jsonPath;
+            result.Summary = summary;
+            result.OnScreenIntervalsMs = ToFloatArray(series.OnScreenIntervalsMs);
+            result.OnScreenIntervalCount = result.OnScreenIntervalsMs.Length;
+            result.ThermalBefore = thermalBefore;
+            result.ThermalAfter = thermalAfter;
+            result.ExcludedReason = ComputeExcludedReason(context, thermalBefore, thermalAfter, result.OnScreenIntervalCount);
             return jsonPath;
+        }
+
+        private static float[] ToFloatArray(double[] values)
+        {
+            if (values == null)
+                return new float[0];
+            float[] result = new float[values.Length];
+            for (int i = 0; i < values.Length; i++)
+                result[i] = (float)values[i];
+            return result;
+        }
+
+        /* The exclusion verdict for a saved run, first match wins: the context's own
+           preset reason; throttling, from the thermal status ranks and the CPU
+           performance percent GHPerformanceComparison.ClassifyThrottle already weighs;
+           a power state change between the two readings; too few on-screen intervals to
+           be meaningful. Returns null when none apply, including when context is null. */
+        private static string ComputeExcludedReason(GHPerformanceRunContext context, GHThermalReading before,
+            GHThermalReading after, int onScreenIntervalCount)
+        {
+            if (context != null && !string.IsNullOrEmpty(context.ExcludedReason))
+                return context.ExcludedReason;
+            try
+            {
+                var throttle = GHPerformanceComparison.ClassifyThrottle((int)before.Status, (int)after.Status,
+                    before.CpuPerformancePct, after.CpuPerformancePct);
+                if (throttle.Throttled)
+                    return "throttled";
+            }
+            catch { }
+            if (before.PowerStateKnown && after.PowerStateKnown && before.IsCharging != after.IsCharging)
+                return "power state changed";
+            if (onScreenIntervalCount < 100)
+                return "fewer than 100 on-screen intervals";
+            return null;
         }
 
         /* ---- Window commands ---- */
@@ -426,6 +574,7 @@ namespace GnollHackX.Performance
             StopWindowTimer();
             if (_windowPhase == 2 && Interlocked.CompareExchange(ref _windowOpen, 0, 1) == 1)
                 RestoreTimeline();
+            _context = null;
             _windowPhase = 0;
         }
 
@@ -440,7 +589,7 @@ namespace GnollHackX.Performance
 
         private static object BuildDocument(string runId, string scenario, string arm, DateTime startedUtc, DateTime endedUtc,
             GHThermalReading before, GHThermalReading after, GHSmoothnessSummary summary,
-            GHDisplayedFrame[] displayed, int displayedCount, string timelineCsvName, string compositorCsvName)
+            SeriesJson series, string timelineCsvName, string compositorCsvName, GHPerformanceRunContext context)
         {
             GHPerformanceEnvironmentFacts facts = GHPerformanceEnvironment.Capture();
 
@@ -459,10 +608,33 @@ namespace GnollHackX.Performance
             doc.Display = BuildDisplay(summary);
             doc.Smoothness = BuildSmoothness(summary);
             doc.OnScreenPacing = BuildPacing(summary.OnScreenPacing);
-            doc.Series = BuildSeries(displayed, displayedCount);
+            doc.Series = series;
             doc.UiThread = BuildUiThread();
             doc.Files = new FilesJson { FrameTimeline = timelineCsvName, CompositorFrames = compositorCsvName };
+            doc.Suite = BuildSuite(context);
             return doc;
+        }
+
+        /* Null when the run was not part of a suite, so the JSON carries no "suite"
+           property at all; ExcludedReason here is only the caller's own preset reason,
+           never the reasons ComputeExcludedReason derives (those follow from fields the
+           document already carries elsewhere: thermal, on-screen interval count). */
+        private static SuiteJson BuildSuite(GHPerformanceRunContext context)
+        {
+            if (context == null)
+                return null;
+            SuiteJson j = new SuiteJson();
+            j.SuiteId = context.SuiteId;
+            j.RunIndex = context.RunIndex;
+            j.PageMode = context.PageMode;
+            j.IsWarmUp = context.IsWarmUp;
+            j.ReplayFileName = context.ReplayFileName;
+            j.ReplayBytes = context.ReplayBytes;
+            j.ReplaySha256 = context.ReplaySha256;
+            j.StartTurn = context.StartTurn;
+            j.TurnReached = context.TurnReached;
+            j.ExcludedReason = context.ExcludedReason;
+            return j;
         }
 
         private static EnvironmentJson BuildEnvironment(GHPerformanceEnvironmentFacts f)
@@ -714,6 +886,10 @@ namespace GnollHackX.Performance
 
             [JsonProperty("files")]
             public FilesJson Files;
+
+            /* Omitted entirely (not even as null) when the run was not part of a suite */
+            [JsonProperty("suite", NullValueHandling = NullValueHandling.Ignore)]
+            public SuiteJson Suite;
         }
 
         private sealed class EnvironmentJson
@@ -1111,6 +1287,41 @@ namespace GnollHackX.Performance
 
             [JsonProperty("compositorFrames")]
             public string CompositorFrames;
+        }
+
+        /* Present only when the run was part of a suite (see DocRoot.Suite) */
+        private sealed class SuiteJson
+        {
+            [JsonProperty("suiteId")]
+            public string SuiteId;
+
+            [JsonProperty("runIndex")]
+            public int RunIndex;
+
+            [JsonProperty("pageMode")]
+            public string PageMode;
+
+            [JsonProperty("isWarmUp")]
+            public bool IsWarmUp;
+
+            [JsonProperty("replayFileName")]
+            public string ReplayFileName;
+
+            [JsonProperty("replayBytes")]
+            public long ReplayBytes;
+
+            [JsonProperty("replaySha256")]
+            public string ReplaySha256;
+
+            [JsonProperty("startTurn")]
+            public int StartTurn;
+
+            [JsonProperty("turnReached")]
+            public int TurnReached;
+
+            /* Only the caller's preset reason; omitted when not set */
+            [JsonProperty("excludedReason", NullValueHandling = NullValueHandling.Ignore)]
+            public string ExcludedReason;
         }
     }
 }

@@ -68,9 +68,27 @@
         "frameTimeline": { "type": "string", "description": "File name only, alongside the JSON document" },
         "compositorFrames": { "type": "string", "description": "File name only, alongside the JSON document" }
       }
-    }
+    },
+    "suite": { "$ref": "#/$defs/suite" }
   },
   "$defs": {
+    "suite": {
+      "type": "object",
+      "description": "Present only in runs measured by the in-app Performance Suite",
+      "required": ["suiteId", "runIndex", "pageMode", "isWarmUp", "replayFileName", "replayBytes", "replaySha256", "startTurn", "turnReached"],
+      "properties": {
+        "suiteId": { "type": "string" },
+        "runIndex": { "type": "integer", "description": "0 is the warm-up run when the suite has one" },
+        "pageMode": { "type": "string", "enum": ["shared", "fresh"] },
+        "isWarmUp": { "type": "boolean" },
+        "replayFileName": { "type": "string" },
+        "replayBytes": { "type": "integer" },
+        "replaySha256": { "type": "string" },
+        "startTurn": { "type": "integer" },
+        "turnReached": { "type": "integer", "description": "Replay turn at the end of the window; -1 when unknown" },
+        "excludedReason": { "type": "string", "description": "Why the suite excluded this run, e.g. \"warm-up run\"; absent when the run is used. The analyzer marks such a run excluded" }
+      }
+    },
     "environment": {
       "type": "object",
       "properties": {

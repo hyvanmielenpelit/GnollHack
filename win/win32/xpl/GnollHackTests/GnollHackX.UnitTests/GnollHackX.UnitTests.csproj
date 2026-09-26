@@ -31,6 +31,8 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHFrameTimeline.cs" Link="Shared\GHFrameTimeline.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPresentFeedback.cs" Link="Shared\GHPresentFeedback.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHSmoothnessMetrics.cs" Link="Shared\GHSmoothnessMetrics.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceComparison.cs" Link="Shared\GHPerformanceComparison.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceTextReport.cs" Link="Shared\GHPerformanceTextReport.cs" />
   </ItemGroup>
 
 </Project>

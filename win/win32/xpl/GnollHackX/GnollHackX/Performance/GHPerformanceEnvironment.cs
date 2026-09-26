@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 #if GNH_MAUI
 using GnollHackM;
 using Microsoft.Maui.Devices;
@@ -85,7 +86,7 @@ namespace GnollHackX.Performance
 #else
             f.BuildConfiguration = "Release";
 #endif
-            f.GitCommit = null;
+            f.GitCommit = ReadGitCommit();
 
             try
             {
@@ -117,6 +118,28 @@ namespace GnollHackX.Performance
             AddToggle(f.Configuration, "debugLogMessages", () => GHApp.DebugLogMessages);
             AddToggle(f.Configuration, "developerMode", () => GHApp.DeveloperMode);
             return f;
+        }
+
+        /* The part of the assembly's informational version after its first '+' (the
+           format `dotnet build`/MinVer-style versioning stamps a git commit in), or null
+           when there is no '+' or no attribute. Never throws. */
+        private static string ReadGitCommit()
+        {
+            try
+            {
+                AssemblyInformationalVersionAttribute attribute = Attribute.GetCustomAttribute(
+                    typeof(GHPerformanceEnvironment).Assembly, typeof(AssemblyInformationalVersionAttribute))
+                    as AssemblyInformationalVersionAttribute;
+                string version = attribute != null ? attribute.InformationalVersion : null;
+                if (string.IsNullOrEmpty(version))
+                    return null;
+                int plus = version.IndexOf('+');
+                return plus >= 0 && plus + 1 < version.Length ? version.Substring(plus + 1) : null;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private static void AddToggle(Dictionary<string, object> configuration, string key, Func<object> read)
