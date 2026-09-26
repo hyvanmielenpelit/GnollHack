@@ -145,7 +145,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(StlIncludeDirectories);$(Sysroot)\usr\include;$(Sysroot)\usr\include\$(AndroidHeaderTriple);$(VS_NdkRoot)\sources\android\support\include;$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <!-- __ANDROID_API__=$(AndroidAPILevelNumber); is redundant: the toolset's clang target android$(AndroidAPILevelNumber) already defines it -->
       <CppLanguageStandard>Default</CppLanguageStandard>
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
     </ClCompile>
@@ -172,7 +173,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(StlIncludeDirectories);$(Sysroot)\usr\include;$(Sysroot)\usr\include\$(AndroidHeaderTriple);$(VS_NdkRoot)\sources\android\support\include;$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <!-- __ANDROID_API__=$(AndroidAPILevelNumber); is redundant: the toolset's clang target android$(AndroidAPILevelNumber) already defines it -->
       <CppLanguageStandard>Default</CppLanguageStandard>
     </ClCompile>
     <Link>
@@ -198,7 +200,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(StlIncludeDirectories);$(Sysroot)\usr\include;$(Sysroot)\usr\include\$(AndroidHeaderTriple);$(VS_NdkRoot)\sources\android\support\include;$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <!-- __ANDROID_API__=$(AndroidAPILevelNumber); is redundant: the toolset's clang target android$(AndroidAPILevelNumber) already defines it -->
       <CppLanguageStandard>Default</CppLanguageStandard>
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
     </ClCompile>
@@ -228,7 +231,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(StlIncludeDirectories);$(Sysroot)\usr\include;$(Sysroot)\usr\include\$(AndroidHeaderTriple);$(VS_NdkRoot)\sources\android\support\include;$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <!-- __ANDROID_API__=$(AndroidAPILevelNumber); is redundant: the toolset's clang target android$(AndroidAPILevelNumber) already defines it -->
       <CppLanguageStandard>Default</CppLanguageStandard>
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
     </ClCompile>
