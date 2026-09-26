@@ -5284,26 +5284,27 @@ namespace GnollHackX.Pages.Game
                 GHApp.MaybeWriteGHLog("canvasView_PaintSurface not on main thread!");
             }
 
-            long paintFrameId = GHFrameTimeline.BeginPaint(isCanvasOnMainThread);
-
+            /* The early returns record their outcome without taking over the frame of a paint
+               that may still be in progress */
             if (MenuGrid.ThreadSafeIsVisible || TextGrid.ThreadSafeIsVisible || MoreCommandsGrid.ThreadSafeIsVisible || !IsGameOn)
             {
-                GHFrameTimeline.SetPaintOutcome(paintFrameId, GHPaintOutcome.OverlayVisible);
+                GHFrameTimeline.SkipPaint(isCanvasOnMainThread, GHPaintOutcome.OverlayVisible);
                 return;
             }
 
             if (Interlocked.CompareExchange(ref _isCleanedUp, 0, 0) != 0) /* Resources have been disposed */
             {
-                GHFrameTimeline.SetPaintOutcome(paintFrameId, GHPaintOutcome.CleanedUp);
+                GHFrameTimeline.SkipPaint(isCanvasOnMainThread, GHPaintOutcome.CleanedUp);
                 return;
             }
 
             if (IsMainCanvasDrawingAndSetTrue) /* In the case of some sort of reentrancy or new draw before previous is finished */
             {
-                GHFrameTimeline.SetPaintOutcome(paintFrameId, GHPaintOutcome.Reentrant);
+                GHFrameTimeline.SkipPaint(isCanvasOnMainThread, GHPaintOutcome.Reentrant);
                 return;
             }
 
+            long paintFrameId = GHFrameTimeline.BeginPaint(isCanvasOnMainThread);
             GHPresentFeedback.PaintBegin(paintFrameId);
 
             SKCanvas canvas = e.Surface.Canvas;
@@ -8204,7 +8205,10 @@ namespace GnollHackX.Pages.Game
                 lockTaken = false;
             }
             if (_mapData == null)
+            {
+                GHFrameTimeline.SetCurrentPaintOutcome(GHPaintOutcome.NoGame);
                 return;
+            }
 
             lockTaken = false;
             //lock (_floatingTextLock)

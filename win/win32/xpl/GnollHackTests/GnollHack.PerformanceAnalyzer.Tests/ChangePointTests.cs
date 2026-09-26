@@ -1,11 +1,42 @@
 using GnollHack.PerformanceAnalyzer.Commands;
 using GnollHack.PerformanceAnalyzer.Model;
+using GnollHackX.Performance;
 using Xunit;
 
 namespace GnollHack.PerformanceAnalyzer.Tests
 {
     public class ChangePointTests
     {
+        /* A displayed-frame stream at the given capture times, steady pacing (no pacing
+           error), for feeding ChangePoints.Detect directly without a frame timeline CSV */
+        private static GHDisplayedFrame[] DisplayedAt(TimelineClock clock, IEnumerable<double> atMs)
+        {
+            List<GHDisplayedFrame> list = new List<GHDisplayedFrame>();
+            long prevTicks = 0;
+            bool first = true;
+            long frameId = 1;
+            foreach (double ms in atMs)
+            {
+                long ticks = clock.MsToTicks(ms);
+                list.Add(new GHDisplayedFrame
+                {
+                    FrameId = frameId++,
+                    DisplayedAtTicks = ticks,
+                    GapTicks = first ? 0 : ticks - prevTicks,
+                    PacingErrorTicks = 0,
+                    Source = GHPresentSource.Estimated
+                });
+                prevTicks = ticks;
+                first = false;
+            }
+            return list.ToArray();
+        }
+
+        private static CapturedTimeline TimelineOf(TimelineClock clock, List<GHFrameRecord> records)
+        {
+            return new CapturedTimeline { Clock = clock, Records = records.ToArray(), Count = records.Count };
+        }
+
         private static double Gaussian(Random rng)
         {
             double u1 = 1.0 - rng.NextDouble();
@@ -133,6 +164,65 @@ namespace GnollHack.PerformanceAnalyzer.Tests
             ChangePoints.TimelineEvent gc = Assert.Single(r.Changes.Events);
             Assert.Equal("gc", gc.Kind);
             Assert.Equal(31.0 * 1000.0 / 60.0, gc.AtMs, 2);
+        }
+
+        [Fact]
+        public void Detect_FpsStepWithATargetChangeEvent_FindsABoundaryThatListsTheEvent()
+        {
+            TimelineClock clock = new TimelineClock(10_000_000, null);
+            List<double> atMs = new List<double>();
+            for (int i = 0; i < 120; i++)
+                atMs.Add(i * 25.0);                    /* 40 fps for 3000 ms: 12 buckets */
+            for (int i = 0; i < 120; i++)
+                atMs.Add(3000.0 + i * 50.0);            /* 20 fps for 6000 ms */
+            GHDisplayedFrame[] displayed = DisplayedAt(clock, atMs);
+
+            List<GHFrameRecord> records = new List<GHFrameRecord>
+            {
+                new GHFrameRecord { CallbackStartTicks = clock.MsToTicks(2990.0), TargetFps = 40, GcCount0 = 0 },
+                new GHFrameRecord { CallbackStartTicks = clock.MsToTicks(3000.0), TargetFps = 20, GcCount0 = 1 }
+            };
+            CapturedTimeline t = TimelineOf(clock, records);
+
+            ChangePoints.Result r = ChangePoints.Detect(t, displayed, displayed.Length);
+
+            ChangePoints.Boundary b = Assert.Single(r.Boundaries);
+            Assert.InRange(b.Bucket, 8, 16);
+            Assert.True(b.InFps);
+            Assert.Contains(b.Events, e => e.Kind == "target");
+            Assert.Contains(b.Events, e => e.Kind == "gc");
+        }
+
+        [Fact]
+        public void Detect_PauseInTheMiddle_IsAMissingBucketNotAChangePoint()
+        {
+            TimelineClock clock = new TimelineClock(10_000_000, null);
+            List<double> atMs = new List<double>();
+            for (int i = 0; i < 80; i++)
+                atMs.Add(i * 25.0);                     /* 40 fps, 0-2000 ms: 8 buckets */
+            /* no frames displayed 2000-3000 ms: the game is not rendering the map */
+            for (int i = 0; i < 80; i++)
+                atMs.Add(3000.0 + i * 25.0);             /* 40 fps resumes, 3000-5000 ms */
+            GHDisplayedFrame[] displayed = DisplayedAt(clock, atMs);
+
+            List<GHFrameRecord> records = new List<GHFrameRecord>();
+            for (double ms = 2000.0; ms < 3000.0; ms += 25.0)
+            {
+                records.Add(new GHFrameRecord
+                {
+                    CallbackStartTicks = clock.MsToTicks(ms),
+                    Pacing = GHPacingDecision.AuxiliaryCanvas
+                });
+            }
+            CapturedTimeline t = TimelineOf(clock, records);
+
+            ChangePoints.Result r = ChangePoints.Detect(t, displayed, displayed.Length);
+
+            Assert.True(r.Series.Missing[8]);
+            Assert.True(r.Series.Missing[11]);
+            Assert.False(r.Series.Missing[0]);
+            Assert.False(r.Series.Missing[12]);
+            Assert.Empty(r.Boundaries);
         }
     }
 }

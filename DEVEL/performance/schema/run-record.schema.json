@@ -100,8 +100,10 @@
         "headroomFraction": { "type": ["number", "null"] },
         "batteryTempC": { "type": ["number", "null"] },
         "cpuPerformancePct": { "type": ["number", "null"] },
-        "isCharging": { "type": "boolean" },
-        "isLowPower": { "type": "boolean" }
+        "isCharging": { "type": ["boolean", "null"], "description": "On external power; null when the platform did not report it" },
+        "isLowPower": { "type": ["boolean", "null"] },
+        "detail": { "type": ["string", "null"], "description": "The platform's raw readings as short free text" },
+        "timestampUtc": { "type": ["string", "null"], "description": "When the reading was taken, ISO 8601" }
       }
     },
     "clockAnchor": {

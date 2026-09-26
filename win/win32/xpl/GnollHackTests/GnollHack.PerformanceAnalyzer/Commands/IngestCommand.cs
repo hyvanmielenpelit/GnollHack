@@ -74,6 +74,8 @@ namespace GnollHack.PerformanceAnalyzer.Commands
 
             if (r.WarmupSeconds > 0)
                 s.IntervalsMs = TrimWarmup(s.IntervalsMs, r.WarmupSeconds, out int trimmed, ref s);
+            if (r.WindowSeconds > 0)
+                s.IntervalsMs = TrimToWindow(s.IntervalsMs, r.WindowSeconds, ref s);
             MetricsComputer.Fill(s, r.Display.TargetPeriodMs, r.Display.VsyncMs);
             r.Series.Add(s);
             if (fromApp != null)
@@ -126,6 +128,31 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             {
                 float[] d = new float[s.FrameDurationsMs.Length - i];
                 Array.Copy(s.FrameDurationsMs, i, d, 0, d.Length);
+                s.FrameDurationsMs = d;
+            }
+            return rest;
+        }
+
+        /* Keeps the run's intervals to --window seconds of playtime, measured from the
+           start of the (already warm-up-trimmed) series: the tail past the window is
+           dropped so that runs of different lengths compare over the same span. */
+        private static float[] TrimToWindow(float[] intervals, double windowSeconds, ref Series s)
+        {
+            double limit = windowSeconds * 1000.0;
+            double acc = 0;
+            int kept = 0;
+            while (kept < intervals.Length && acc + intervals[kept] <= limit)
+            {
+                acc += intervals[kept];
+                kept++;
+            }
+            s.Info["windowTrimmedFrames"] = (intervals.Length - kept).ToString(CultureInfo.InvariantCulture);
+            float[] rest = new float[kept];
+            Array.Copy(intervals, 0, rest, 0, kept);
+            if (s.FrameDurationsMs != null && s.FrameDurationsMs.Length > kept)
+            {
+                float[] d = new float[kept];
+                Array.Copy(s.FrameDurationsMs, 0, d, 0, kept);
                 s.FrameDurationsMs = d;
             }
             return rest;

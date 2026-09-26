@@ -15,7 +15,9 @@ namespace GnollHack.PerformanceAnalyzer.Model
         public int DroppedPresents;             /* matched to a present or frame that never reached the screen */
         public int GlThreadLeftEstimated;       /* Perfetto: painted off the UI thread, not joined */
         public int DisplayedBeforeReady;        /* measured display earlier than the flush end: a clock mismatch */
+        public int SharedPresents;              /* PresentMon: two frames' chosen present was the same one */
         public double OffsetMs = double.NaN;    /* Perfetto: capture ms minus trace ms */
+        public double OffsetSpreadMs = double.NaN; /* Perfetto: P90 - P10 of the offsets, a drift check */
         public int OffsetSamples;
         public Dictionary<long, string> JankTypeByFrameId = new Dictionary<long, string>();
         public Dictionary<long, string> PresentTypeByFrameId = new Dictionary<long, string>();
@@ -71,6 +73,7 @@ namespace GnollHack.PerformanceAnalyzer.Model
             }
             int[] order = Enumerable.Range(0, np).OrderBy(k => presentMs[k]).ToArray();
             double[] sortedPresent = order.Select(k => presentMs[k]).ToArray();
+            HashSet<int> usedPresents = new HashSet<int>();
 
             /* The display time of the first displayed present at or after position s */
             double NextDisplayed(int s)
@@ -96,6 +99,13 @@ namespace GnollHack.PerformanceAnalyzer.Model
                     rep.Unmatched++;
                     continue;
                 }
+                /* Two flushes before one present: the present carried the later content, so
+                   the earlier frame was superseded and this frame's chosen present was
+                   already given to it. Giving the later frame the next present instead
+                   would be wrong: that present belongs to whatever the app drew after it,
+                   not to content this frame already lost the race to show. */
+                if (!usedPresents.Add(order[pos]))
+                    rep.SharedPresents++;
                 double shown = displayMs[order[pos]];
                 if (double.IsNaN(shown))
                 {
@@ -145,6 +155,9 @@ namespace GnollHack.PerformanceAnalyzer.Model
             rep.OffsetMs = offsets.Count % 2 == 1
                 ? offsets[offsets.Count / 2]
                 : (offsets[offsets.Count / 2 - 1] + offsets[offsets.Count / 2]) / 2.0;
+            /* How much the capture-to-trace offset drifts across the run: a wide spread
+               means the median above is a poor single alignment for the whole capture */
+            rep.OffsetSpreadMs = NearestRankPercentile(offsets, 90) - NearestRankPercentile(offsets, 10);
 
             /* Several layers can report one token; the latest present is when all of the
                frame's content is on screen */
@@ -231,6 +244,17 @@ namespace GnollHack.PerformanceAnalyzer.Model
                 rep.Matched++;
             }
             return rep;
+        }
+
+        /* The value at rank ceil(p/100 * n) of a sorted list, 1-indexed and clamped to
+           [1, n]: the nearest-rank percentile, with no interpolation between samples */
+        private static double NearestRankPercentile(List<double> sorted, double p)
+        {
+            if (sorted.Count == 0)
+                return double.NaN;
+            int rank = (int)Math.Ceiling(p / 100.0 * sorted.Count);
+            rank = Math.Max(1, Math.Min(sorted.Count, rank));
+            return sorted[rank - 1];
         }
 
         private static int LowerBound(double[] sorted, double value)

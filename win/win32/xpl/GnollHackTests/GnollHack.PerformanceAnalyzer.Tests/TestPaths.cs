@@ -7,9 +7,12 @@ namespace GnollHack.PerformanceAnalyzer.Tests
        vsync after it has no callback and its content reaches the screen one refresh
        late: one hitch, charged to PaintCpu. The Gen 0 GC count advances at frame 31.
 
-       presentmon_two_swapchains.csv: one present per run1 frame on swap chain A, 0.5 ms
-       after the flush, shown 6 ms after the estimated vsync; frame 31's present is NA
-       (never displayed). Five presents on swap chain B and three of another process.
+       presentmon_v1.csv / presentmon_v2.csv: one present per run1 frame on swap chain A,
+       0.5 ms after the flush, shown 6 ms after the estimated vsync; frame 31's present is
+       never displayed (v1: Dropped=1; v2: DisplayLatency/DisplayedTime=NA). Five presents
+       on swap chain B and three of another process. Both are generated from the same
+       underlying presents, one under PresentMon 1.x column names and one under 2.x, so a
+       join against either produces the same result.
 
        perfetto: SurfaceFlinger frames for every run1 tick token, presented 5 ms after the
        estimated vsync, trace clock = capture ms + 5,000,000 ms; frame 21 is "App Deadline
@@ -27,7 +30,8 @@ namespace GnollHack.PerformanceAnalyzer.Tests
         public static string Run1Json { get { return Data("run1", "run.json"); } }
         public static string Run2Json { get { return Data("run2", "run.json"); } }
         public static string Run1Timeline { get { return Data("run1", "frametimeline_run1.csv"); } }
-        public static string PresentMon { get { return Data("presentmon_two_swapchains.csv"); } }
+        public static string PresentMonV1 { get { return Data("presentmon_v1.csv"); } }
+        public static string PresentMonV2 { get { return Data("presentmon_v2.csv"); } }
         public static string PerfettoDir { get { return Data("perfetto"); } }
         public static string GfxinfoDir { get { return Data("gfxinfo_gap"); } }
 

@@ -850,9 +850,11 @@ namespace GnollHackX
         private static void InitializePlatformRenderLoop()
         {
             GHCadenceMonitor.ChangeLog = MaybeWriteScreenLog;
-            /* The UI-thread probe runs exactly while the frame timeline records */
+            /* The UI-thread probe and the window command poller run exactly while the frame
+               timeline records */
             GHPresentFeedback.ActiveChanged = active =>
             {
+                GHPerformanceRunRecord.OnTimelineActivated(active);
                 if (active)
                 {
                     GHUiThreadProbe.Reset();
@@ -1013,11 +1015,18 @@ namespace GnollHackX
             FrameTimeProfiler.BeginFrame(counter);
             GHPresentFeedback.Sync();
 #if WINDOWS
-            /* RenderingTime has its own epoch; only its cadence is used. The vsync comes from DWM. */
+            /* RenderingTime has its own epoch; only its cadence is used. The vsync comes from DWM,
+               whose query is not part of the callback's lateness. */
+            long timelineCallbackStart = 0;
             if (GHFrameTimeline.IsEnabled && e is Microsoft.UI.Xaml.Media.RenderingEventArgs renderingArgs)
+            {
+                timelineCallbackStart = Stopwatch.GetTimestamp();
                 PresentFeedbackWindows.CaptureFrame(GHFrameTimeline.TimeSpanTicksToTicks(renderingArgs.RenderingTime.Ticks));
-#endif
+            }
+            long timelineFrameId = GHFrameTimeline.BeginTick(timelineCallbackStart);
+#else
             long timelineFrameId = GHFrameTimeline.BeginTick();
+#endif
             GHPresentFeedback.TickBegin(timelineFrameId);
             GHPacingDecision pacing = GHPacingDecision.NotSet;
             bool auxiliaryCanvas = false;

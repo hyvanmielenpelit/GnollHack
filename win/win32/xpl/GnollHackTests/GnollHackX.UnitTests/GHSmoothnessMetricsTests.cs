@@ -85,8 +85,13 @@ namespace GnollHackX.UnitTests
             /* Callbacks for seconds of steady pacing on a panel at screenHz */
             public void Run(double seconds, int screenHz, int assumedHz, int targetFps, bool paintOnUi = true)
             {
-                long period = F / screenHz;
-                int count = (int)Math.Round(seconds * screenHz);
+                RunPeriod(seconds, F / screenHz, assumedHz, targetFps, paintOnUi);
+            }
+
+            /* The same on a panel with an exact period, e.g. 59.94 Hz */
+            public void RunPeriod(double seconds, long period, int assumedHz, int targetFps, bool paintOnUi = true)
+            {
+                int count = (int)Math.Round(seconds * F / period);
                 for (int i = 0; i < count; i++)
                 {
                     long counter = FrameId + 1;
@@ -155,22 +160,140 @@ namespace GnollHackX.UnitTests
             Assert.Equal(0, s.OnScreenPacing.JankPct, 6);
         }
 
-        /* H1 induced on a 60 Hz device: map 40 FPS alternates one and two refreshes */
+        /* H1 induced on a 60 Hz device: map 40 FPS alternates one and two refreshes. The panel
+           runs at 59.94 Hz, so the two-refresh hold (33.37 ms) is longer than T + R/2 would
+           allow; it is the longest on-time hold and must not be a hitch. */
         [Fact]
         public void H1_40On60_AlternatesAndIsAttributedToPacing()
         {
             Timeline t = new Timeline();
-            t.Run(3.0, 60, 60, 40);
+            t.RunPeriod(3.0, Ms(1000.0 / 59.94), 60, 40);
             GHDisplayedFrame[] d;
             int n;
             GHSmoothnessSummary s = t.Analyze(out d, out n);
 
             Assert.Equal(40.0, s.DisplayedFps, 0);
-            /* Every gap is 16.7 or 33.3 ms against a 25 ms target: 8.3 ms off */
+            /* Every gap is 16.7 or 33.4 ms against a 25 ms target: 8.3 ms off */
             Assert.Equal(1000.0 / 120.0, s.PacingErrorRmsMs, 1);
             Assert.True(s.JudderPct > 95, "judder " + s.JudderPct);
             Assert.Equal(0, s.HitchCount);
+            Assert.Equal(0.0, s.OnScreenPacing.JankPct, 6);
             Assert.Equal(GHHitchCause.PacingPolicy, DominantCause(s));
+        }
+
+        /* The same cadence with one rendered tick lost: a three-refresh hold is a hitch */
+        [Fact]
+        public void H1_40On60_ThreeRefreshHold_IsAHitch()
+        {
+            Timeline t = new Timeline();
+            t.Run(3.0, 60, 60, 40);
+            /* A rendered tick right after a modulo skip, well inside the run */
+            int lost = -1;
+            for (int i = 90; i < t.Records.Count && lost < 0; i++)
+            {
+                if (t.Records[i].Pacing == GHPacingDecision.Rendered && t.Records[i - 1].Pacing == GHPacingDecision.SkippedModulo)
+                    lost = i;
+            }
+            GHFrameRecord r = t.Records[lost];
+            GHFrameRecord blank = new GHFrameRecord();
+            blank.FrameId = r.FrameId;
+            blank.VsyncTicks = r.VsyncTicks;
+            blank.RefreshPeriodTicks = r.RefreshPeriodTicks;
+            blank.CallbackStartTicks = r.CallbackStartTicks;
+            blank.CallbackEndTicks = r.CallbackEndTicks;
+            blank.TargetFps = r.TargetFps;
+            blank.AssumedRefreshHz = r.AssumedRefreshHz;
+            blank.Pacing = GHPacingDecision.SkippedDivisor;
+            t.Records[lost] = blank;
+
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(1, s.HitchCount);
+            for (int j = 1; j < n; j++)
+            {
+                if (d[j].IsHitch)
+                    Assert.Equal(Ms(50.0), d[j].GapTicks, (double)Ms(0.1));
+            }
+        }
+
+        /* Cadences of panels this hardware lacks: each alternates holds within the pattern */
+        [Theory]
+        [InlineData(90, 60)]
+        [InlineData(120, 80)]
+        public void NonDivisorCadence_JuddersWithoutHitches(int screenHz, int targetFps)
+        {
+            Timeline t = new Timeline();
+            t.Run(3.0, screenHz, screenHz, targetFps);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(targetFps, s.DisplayedFps, 0);
+            Assert.Equal(0, s.HitchCount);
+            Assert.True(s.JudderPct > 60, "judder " + s.JudderPct);
+            Assert.Equal(TotalAttributed(s), s.CauseCount[(int)GHHitchCause.PacingPolicy]);
+        }
+
+        /* 60 on 165 Hz: the modulo skip holds a frame four refreshes, past the three that
+           T = 2.75 R rounds up to, so the pattern itself produces hitches, all its own */
+        [Fact]
+        public void Cadence_60On165_PatternHitchesAreThePolicys()
+        {
+            Timeline t = new Timeline();
+            t.Run(3.0, 165, 165, 60);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.True(s.HitchCount > 0);
+            Assert.True(s.JudderPct > 60, "judder " + s.JudderPct);
+            Assert.Equal(GHHitchCause.PacingPolicy, DominantCause(s));
+            Assert.Equal(TotalAttributed(s), s.CauseCount[(int)GHHitchCause.PacingPolicy]);
+        }
+
+        /* An adaptive panel drops from 120 to 60 Hz. The measured period is a running
+           median, as in the app, so it lags the change by several ticks, and the pacing
+           logic's assumed rate follows the median. The hitches while both lag are the
+           display mode's, not the UI thread's. */
+        [Fact]
+        public void H2_RefreshDropWithLaggingMedian_IsDisplayMode()
+        {
+            Timeline t = new Timeline();
+            List<long> deltas = new List<long>();
+            long lastVsync = 0;
+            for (int i = 0; i < 360; i++)
+            {
+                long period = i < 240 ? F / 120 : F / 60;
+                if (lastVsync != 0)
+                    deltas.Add(t.NextVsync - lastVsync);
+                lastVsync = t.NextVsync;
+                long measured = MedianOfLast(deltas, 15);
+                int assumed = measured > 0 ? (int)Math.Round((double)F / measured) : 120;
+                long counter = t.FrameId + 1;
+                int idx = t.Tick(period, assumed, 60, Decide(counter, assumed, 60), true);
+                GHFrameRecord r = t.Records[idx];
+                r.RefreshPeriodTicks = measured;
+                t.Records[idx] = r;
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.True(s.HitchCount > 0, "hitches " + s.HitchCount);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadLate]);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadLateGc]);
+            Assert.Equal(GHHitchCause.DisplayMode, DominantCause(s));
+        }
+
+        private static long MedianOfLast(List<long> values, int window)
+        {
+            if (values.Count == 0)
+                return 0;
+            List<long> last = values.GetRange(Math.Max(0, values.Count - window), Math.Min(window, values.Count));
+            last.Sort();
+            return last[last.Count / 2];
         }
 
         /* H1 on the Windows PC at 144 Hz with map 60: four 13.9 ms frames, then 27.8 ms */
@@ -348,6 +471,105 @@ namespace GnollHackX.UnitTests
             Assert.True(s.QuietGapCount > 90, "quiet gaps " + s.QuietGapCount);
         }
 
+        /* Request work on an on-time tick does not explain a later tick that a collection
+           made late: requests are charged only on the late tick itself */
+        [Fact]
+        public void RequestsOnAnEarlierTick_DoNotTakeTheBlameForAGcLateTick()
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            int gc = 0;
+            List<int> lateTicks = new List<int>();
+            for (int i = 0; i < 120; i++)
+            {
+                if (i % 20 == 9)
+                {
+                    /* Skipped, on time, with 9 ms of requests */
+                    int skipped = t.Tick(period, 60, 60, GHPacingDecision.SkippedDivisor, true);
+                    GHFrameRecord q = t.Records[skipped];
+                    q.RequestTicks = Ms(9);
+                    q.GcCount0 = gc;
+                    t.Records[skipped] = q;
+                    continue;
+                }
+                bool late = i % 20 == 10;
+                if (late)
+                {
+                    t.NextVsync += period;
+                    gc++;
+                }
+                int idx = t.Tick(period, 60, 60, GHPacingDecision.Rendered, true, 3.0, 1.0, late ? 12.0 : 0.2);
+                GHFrameRecord r = t.Records[idx];
+                r.GcCount0 = gc;
+                t.Records[idx] = r;
+                if (late)
+                    lateTicks.Add(idx);
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadRequests]);
+            int checkedFrames = 0;
+            for (int j = 1; j < n; j++)
+            {
+                if (!lateTicks.Contains(d[j].RecordIndex))
+                    continue;
+                Assert.True(d[j].IsHitch);
+                Assert.Equal(GHHitchCause.UiThreadLateGc, d[j].Cause);
+                checkedFrames++;
+            }
+            Assert.Equal(lateTicks.Count, checkedFrames);
+        }
+
+        /* A long map-lock stall in a gap that also holds a modulo skip is the lock's: the
+           skip explains a gap only as long as the pattern's own holds */
+        [Fact]
+        public void LongStallInAModuloGap_IsNotPacingPolicy()
+        {
+            Timeline t = new Timeline();
+            t.Run(3.0, 60, 60, 40, false);
+            int stalled = -1;
+            for (int i = 90; i < t.Records.Count && stalled < 0; i++)
+            {
+                if (t.Records[i].Pacing == GHPacingDecision.Rendered && t.Records[i - 1].Pacing == GHPacingDecision.SkippedModulo)
+                    stalled = i;
+            }
+            long stall = Ms(60);
+            GHFrameRecord r = t.Records[stalled];
+            r.LockResultTicks += stall;
+            r.DrawEndTicks += stall;
+            r.FlushEndTicks += stall;
+            t.Records[stalled] = r;
+            /* The GL thread is busy meanwhile, so the invalidations it misses are coalesced */
+            for (int i = stalled + 1; i < t.Records.Count && t.Records[i].PaintStartTicks < r.FlushEndTicks; i++)
+            {
+                GHFrameRecord c = t.Records[i];
+                if (c.Paint != GHPaintOutcome.Painted)
+                    continue;
+                c.Paint = GHPaintOutcome.Coalesced;
+                c.PaintStartTicks = 0;
+                c.LockAttemptTicks = 0;
+                c.LockResultTicks = 0;
+                c.DrawEndTicks = 0;
+                c.FlushEndTicks = 0;
+                c.PaintedMainCounter = 0;
+                t.Records[i] = c;
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            t.Analyze(out d, out n);
+
+            GHDisplayedFrame hit = default(GHDisplayedFrame);
+            for (int j = 0; j < n; j++)
+            {
+                if (d[j].RecordIndex == stalled)
+                    hit = d[j];
+            }
+            Assert.True(hit.IsHitch);
+            Assert.Equal(GHHitchCause.GameLock, hit.Cause);
+        }
+
         /* Floating texts that arrive without slowing anything are not hitches */
         [Fact]
         public void HarmlessEvents_DoNotCorrelate()
@@ -398,7 +620,47 @@ namespace GnollHackX.UnitTests
             Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadLate]);
         }
 
-        /* A frame measured on screen a refresh later than it was ready for is the compositor's */
+        /* A long UI-thread paint that stays under the draw and flush budgets can still make
+           the next callback late at a half-rate target: the paint is charged, not the thread */
+        [Fact]
+        public void LongUiThreadPaintAtHalfRate_DelaysTheCallback_IsPaintCpu()
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            bool delayNext = false;
+            for (int i = 0; i < 180; i++)
+            {
+                long counter = t.FrameId + 1;
+                GHPacingDecision pacing = Decide(counter, 60, 30);
+                bool longPaint = pacing == GHPacingDecision.Rendered && i % 30 == 11;
+                /* 20 ms draw and 6 ms flush: under 3T/4 and T/2 at T = 33.3 ms, but past the
+                   next (skipped) tick's vsync by 10 ms, which delays its callback */
+                t.Tick(period, 60, 30, pacing, true, longPaint ? 20.0 : 3.0, longPaint ? 6.0 : 1.0,
+                       delayNext ? 10.0 : 0.2);
+                delayNext = longPaint;
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadLate]);
+            int judged = 0;
+            for (int j = 1; j < n; j++)
+            {
+                GHFrameRecord prev = t.Records[d[j - 1].RecordIndex];
+                if (prev.DrawEndTicks - prev.PaintStartTicks < Ms(19))
+                    continue;
+                /* The frame after the long one: its gap holds the late callback */
+                Assert.True(d[j].IsJudder || d[j].IsHitch);
+                Assert.Equal(GHHitchCause.PaintCpu, d[j].Cause);
+                judged++;
+            }
+            Assert.True(judged >= 5, "judged " + judged);
+        }
+
+        /* A frame measured on screen later than the vsync it was ready for is the
+           compositor's. It is shown off the grid, so no frame is dropped and the late
+           display itself decides. */
         [Fact]
         public void MeasuredLateDisplay_IsCompositor()
         {
@@ -410,7 +672,7 @@ namespace GnollHackX.UnitTests
                 GHFrameRecord r = t.Records[idx];
                 long display = r.VsyncTicks + period;
                 if (i % 12 == 6)
-                    display += period;
+                    display += period * 3 / 4;
                 r.DisplayedAtTicks = display;
                 r.PresentSource = GHPresentSource.Measured;
                 t.Records[idx] = r;
@@ -420,8 +682,13 @@ namespace GnollHackX.UnitTests
             GHSmoothnessSummary s = t.Analyze(out d, out n);
 
             Assert.Equal(GHPresentSource.Measured, s.PresentSource);
+            Assert.Equal(0, s.DroppedCount);
             Assert.True(s.HitchCount >= 9, "hitches " + s.HitchCount);
-            Assert.Equal(GHHitchCause.Compositor, DominantCause(s));
+            for (int j = 1; j < n; j++)
+            {
+                if (d[j].IsHitch)
+                    Assert.Equal(GHHitchCause.Compositor, d[j].Cause);
+            }
         }
 
         /* Two GL-thread paints ready before the same vsync: only the later one reaches the display */
@@ -499,6 +766,38 @@ namespace GnollHackX.UnitTests
             finally
             {
                 GHCadenceMonitor.ChangeLog = null;
+                GHCadenceMonitor.Reset();
+            }
+        }
+
+        /* Three paints land on one vsync, then two refreshes later one paint, then one
+           refresh later three again. Only the last paint of a vsync is shown, as in Analyze:
+           the two-refresh gap advances one step (+R) and the one-refresh gap three (-2R), an
+           RMS of R * sqrt(2.5), 26 ms. Judging each vsync by its first paint would give
+           R / sqrt(2), 12 ms. A 250 ms bucket holds an uneven count of the two gaps, so the
+           reading lands near, not on, 26 ms. */
+        [Fact]
+        public void CadenceMonitor_SeveralPaintsOnOneVsync_JudgesTheLastOne()
+        {
+            GHCadenceMonitor.Reset();
+            try
+            {
+                long t = 1000 * F;
+                long counter = 1;
+                long period60 = F / 60;
+                for (int i = 0; i < 40; i++)
+                {
+                    GHCadenceMonitor.OnPaintCompleted(t, period60, t + Ms(2), 60, counter++);
+                    GHCadenceMonitor.OnPaintCompleted(t, period60, t + Ms(3), 60, counter++);
+                    GHCadenceMonitor.OnPaintCompleted(t, period60, t + Ms(4), 60, counter++);
+                    t += 2 * period60;
+                    GHCadenceMonitor.OnPaintCompleted(t, period60, t + Ms(2), 60, counter++);
+                    t += period60;
+                }
+                Assert.InRange(GHCadenceMonitor.PacingErrorRmsMs, 24.0, 29.0);
+            }
+            finally
+            {
                 GHCadenceMonitor.Reset();
             }
         }

@@ -38,7 +38,8 @@ time, any unevenness in *when* frames appear is seen as unevenness in *motion*.
 ## What is recorded
 
 With **Settings > Frame Time Profiler** on (developer mode), the app keeps a ring of the
-last 8640 display callbacks (60 s at 144 Hz), one record per callback:
+last 20736 display callbacks (144 s at 144 Hz, about 6 MB while the profiler is on), one
+record per callback:
 
 - the platform's vsync time and the measured refresh period (median of recent vsync deltas);
 - the pacing decision (rendered, catch-up, skipped by divisor, skipped by modulo, auxiliary
@@ -74,7 +75,19 @@ markers.
 (`run_*.json` plus `frametimeline_*.csv` and `compositorframes_*.csv`) to the archive's
 `performance` directory and shares it with the legacy `framelog.csv` as `framelog.zip`. The
 app clears the archive directory when it starts, so keep the shared zip or copy the files
-before restarting; `Run-PerformanceSuite.ps1` copies each record before it stops the app.
+before restarting. Its "before" thermal reading is the one taken when the profiler was
+switched on, and the record says when that was.
+
+**Window commands** bracket exactly the protocol's window instead. While the profiler is on
+the app accepts one line, `begin <scenario> <arm> <delaySeconds> <windowSeconds>` (or `end`,
+`cancel`): it opens a window after the delay, saves that window's frames after the window,
+and then writes `window.done`, naming the saved JSON, next to the record. On Windows the
+line is written to `window.cmd` in the archive's `performance` directory, which the app
+polls every 500 ms. On Android it is a broadcast,
+`adb shell am broadcast -a <package>.PERFORMANCE_WINDOW -p <package> --es command '<line>'`,
+and the record goes to `/sdcard/Android/data/<package>/files/performance/`, where
+`adb pull` can reach it. `Run-PerformanceSuite.ps1` sends the command at the start of each
+capture, so the in-app record covers the same window as PresentMon or Perfetto.
 
 ## Metrics
 
@@ -91,7 +104,7 @@ the main-counter advance since then.
 | Metric | Definition |
 |--------|------------|
 | Displayed FPS | Displayed frames per second, pauses (menus, overlays, suspension, resizes) excluded |
-| Hitch time ratio | Sum of `g_j - T` over frames with `g_j > T + R/2`, per second. Apple's bands: under 5 ms/s good, 5 to 10 warning, over 10 critical |
+| Hitch time ratio | Sum of `g_j - T` over frames with `g_j > H + R/2`, per second, where `H` is the longest on-time hold: `T` rounded up to whole refreshes (`max(T, ceil(T/R - 0.05) * R)`), since a frame can only change at a vsync. At 40 FPS on 60 Hz the two-refresh hold is on time and only three refreshes are a hitch; at a divisor rate `H = T`. Apple's bands: under 5 ms/s good, 5 to 10 warning, over 10 critical |
 | Pacing error | `e_j = g_j - dc_j * T`: zero for perfectly even motion at any frame rate. RMS and P99 of its magnitude |
 | Judder | Share of frames with `abs(e_j) > R/4`. A target rate that does not divide the refresh rate makes judder unavoidable: 40 FPS on 60 Hz alternates one and two refreshes, an error of exactly `R/2` on every frame |
 | Dropped, coalesced, not run | Painted but never shown; invalidated but merged into a later paint; rendered but the paint returned early |
@@ -111,11 +124,11 @@ that exceeded its budget:
 
 | Order | Cause | Test |
 |-------|-------|------|
-| 1 | `DisplayMode` | The measured refresh period moved by more than 5 % across the gap, or the pacing logic assumes a rate more than 5 % off the measured one |
+| 1 | `DisplayMode` | The measured refresh period moved by more than 5 % across the gap or within the few ticks after it (the measurement is a running median, which lags a real change), or the pacing logic assumes a rate more than 5 % off the measured one |
 | 2 | `PaintCpu` / `Gpu` | A late or missed callback while the UI thread was still painting the previous map frame |
-| 2 | `UiThreadRequests` | A late or missed callback after the UI thread spent more than `R/2` handling game requests (floating texts, messages, windows, ...) |
+| 2 | `UiThreadRequests` | A late or missed callback on a tick whose request handling (floating texts, messages, windows, ...) took more than `R/2`; it takes precedence over a collection in the same gap |
 | 2 | `UiThreadLateGc` / `UiThreadLate` | A missed callback, or a callback more than `R/2` after its vsync, with or without a collection in the gap |
-| 3 | `PacingPolicy` | A modulo skip or catch-up render in the gap, or a refresh-to-target ratio the divisor pattern cannot pace evenly (within the pattern's longest hold) |
+| 3 | `PacingPolicy` | A modulo skip or catch-up render in the gap, or a refresh-to-target ratio the divisor pattern cannot pace evenly; either only when the gap is within the pattern's longest hold (two divisor steps) |
 | 4 | `PaintNotRun` | A rendered tick in the gap produced no paint (coalesced, early return, no invalidation) |
 | 5 | `DispatchLate` | A paint started more than `R/2` after its invalidation |
 | 6 | `GameLock` | Map data lock wait over `T/4` |
@@ -147,14 +160,18 @@ target change, canvas pause, GC).
    trimming, and different JIT behaviour. The analyzer refuses to append a non-Release run
    to `history.jsonl`.
 2. **Warm-up** of 10 seconds is discarded. **Window** of 60 seconds for scripted
-   scenarios, 120 seconds for gameplay.
+   scenarios, 120 seconds for gameplay; `Run-PerformanceSuite.ps1` picks it from
+   `-ScenarioKind` unless `-WindowSeconds` is given.
 3. **Repetitions**: at least 5 runs per configuration for a decision, 3 for a smoke
-   check. The report prints the minimum detectable effect at the observed spread; raise
-   the count when it is too coarse for the question.
+   check. Below 3 runs in either arm `compare` makes no decision and prints the minimum
+   detectable effect only. The report prints the minimum detectable effect at the observed
+   spread; raise the count when it is too coarse for the question.
 4. **Interleaving**: ABBA then BAAB, never AAAA BBBB, so that drift within the batch
    affects both arms equally. `Run-PerformanceSuite.ps1 -Pairs 2` produces exactly that.
 5. **Cool-down** of 20 seconds between runs, extended until the device is back in the
-   thermal class it started the batch in (up to 5 minutes).
+   thermal class it started the batch in (up to 5 minutes). On Windows, which has no
+   thermal status, the class is the processor performance counter compared with the batch
+   start: more than 10 points lower is throttled.
 6. **One variable per comparison.** A configuration is the full toggle vector; an A/B
    run varies exactly one entry.
 7. **Windows reference runs** are done plugged in, on the High performance power plan,
@@ -186,7 +203,13 @@ target change, canvas pause, GC).
   delta, the Hodges-Lehmann shift, and bootstrap intervals on the median and P99
   differences. Pooled intervals are not independent, so this level never decides.
 - **No outlier removal.** A hitch is the phenomenon. Runs are excluded only for a recorded
-  reason: thermal throttling, too few frames, capture failure.
+  reason: thermal throttling, a power state that changed during the run, or fewer than 100
+  frames (external series) or on-screen intervals (in-app records). A run whose capture
+  failed produces no record; the batch script logs it as skipped and continues.
+- **Windows throttling** is judged from the processor performance counter, which reads
+  well under 100 on an idle machine under the Balanced plan: a run counts as throttled only
+  when the reading taken after the run is under 90 % and at least 10 points below the one
+  taken before it. The reason names the power plan.
 - **Minimum detectable effect** is printed so that "no difference" reads as "no difference
   larger than X".
 
@@ -208,7 +231,9 @@ uneven-cadence case is induced with the map FPS setting:
 | iPad (8th generation) | Map 40 | Filmed at 240 fps with the iPhone 11: the frame marker advances one then two refreshes |
 
 Not covered by this hardware: adaptive and LTPO Android panels, ProMotion, and 90 / 165 Hz
-panels. The unit tests cover their cadences with synthetic timelines.
+panels. The unit tests cover 60 on 90 Hz, 80 on 120 Hz, 60 on 165 Hz and a 120 to 60 Hz drop
+whose measured period lags the change, with synthetic timelines; variable-period (LTPO,
+ProMotion) timelines are not covered.
 
 ## Scenarios
 
@@ -224,7 +249,10 @@ panels. The unit tests cover their cadences with synthetic timelines.
 
 ## Running a batch
 
-Windows, Build 14 versus HEAD, with in-app records joined to PresentMon (elevated console):
+Windows, Build 14 versus HEAD, with in-app records joined to PresentMon (elevated console;
+PresentMon 2.x). The profiler must be on in both builds so that they accept the window
+command. Without in-app records, pass `-BuildConfiguration Release`: the script no longer
+assumes it, and `history` refuses a run whose build configuration is unknown.
 
 ```powershell
 DEVEL\performance\scripts\Run-PerformanceSuite.ps1 -Platform Windows `
@@ -234,15 +262,17 @@ DEVEL\performance\scripts\Run-PerformanceSuite.ps1 -Platform Windows `
     -InAppRecordDir <GnollHack path>\archive\performance
 ```
 
-Android, with Perfetto and its CSV export (`trace_processor_shell` on `PATH`, in
-`TRACE_PROCESSOR`, or `-TraceProcessorPath`); copy each shared `framelog.zip`'s files into
-the `-InAppRecordDir` directory when the script asks for them:
+Android, with Perfetto and its CSV export (Android 12 or later; `trace_processor_shell` from
+`-TraceProcessorPath`, the `TRACE_PROCESSOR` environment variable, or `PATH`, in that
+order). `-InApp` sends the window command and pulls the record; when a device refuses
+`adb pull` from `Android/data`, the script falls back to asking for Dump Frame Log and
+waiting for the shared files in `-InAppRecordDir`:
 
 ```powershell
 DEVEL\performance\scripts\Run-PerformanceSuite.ps1 -Platform Android `
     -ArmAPackage com.hyvanmielenpelit.gnollhack -ArmALabel GPU `
     -ArmBPackage com.hyvanmielenpelit.gnollhack -ArmBLabel CPU `
-    -Scenario W-idle -Pairs 2 -Perfetto -OutDir C:\performance\idle -InAppRecordDir C:\performance\inbox
+    -Scenario W-idle -Pairs 2 -Perfetto -OutDir C:\performance\idle -InApp -InAppRecordDir C:\performance\inbox
 ```
 
 Each run directory gets `smoothness.md`; the batch gets `report.md` (external series) and,
@@ -251,12 +281,19 @@ setting or install the other build when the script announces the arm.
 
 ## Analyzer
 
-Build once with `dotnet build win\win32\xpl\GnollHackTests\GnollHackTests.sln -c Release`.
+Build and test from the `GnollHackTests` directory, so that its `global.json` selects the SDK
+(`dotnet` looks for `global.json` from the current directory, not the solution's):
+
+```powershell
+cd win\win32\xpl\GnollHackTests
+dotnet build GnollHackTests.sln -c Release
+dotnet test GnollHackTests.sln -c Release
+```
 
 ```powershell
 $a = 'win\win32\xpl\GnollHackTests\GnollHack.PerformanceAnalyzer\bin\Release\net10.0\GnollHack.PerformanceAnalyzer.exe'
-& $a smoothness run_20260926_101500_manual_dump.json --presentmon presentmon.csv --process GnollHackM --out smoothness.md
-& $a smoothness run_20260926_101500_manual_dump.json --perfetto C:\performance\idle\01_GPU\gfxinfo --out smoothness.md
+& $a smoothness run_20260926_101500_123_manual_dump.json --presentmon presentmon.csv --process GnollHackM --out smoothness.md
+& $a smoothness run_20260926_101500_123_manual_dump.json --perfetto C:\performance\idle\01_GPU\gfxinfo --out smoothness.md
 & $a compare --a runsA --b runsB --label-a GPU --label-b CPU --series smoothness --out report_smoothness.md
 & $a ingest --presentmon run.csv --process GnollHackM --refresh-hz 144 --target-fps 72 --out run.json
 & $a history --file DEVEL\performance\history.jsonl --append runsA runsB
@@ -281,10 +318,10 @@ subsystem.
 | Path | What |
 |------|------|
 | `scripts/Run-PerformanceSuite.ps1` | Interleaved two-arm batch driver: launches the app, captures presented frames, collects in-app records, gates on thermal state, analyzes, compares, appends to history |
-| `scripts/Capture-PresentMon.ps1` | Windows: presentation timing for one process with PresentMon, QPC timestamps included |
+| `scripts/Capture-PresentMon.ps1` | Windows: presentation timing for one process with PresentMon 2.x, QPC timestamps included |
 | `scripts/Capture-AndroidFrames.ps1` | Android: `gfxinfo framestats` polling, optional Perfetto trace and CSV export |
 | `scripts/Get-ThermalState.ps1` | Thermal and power facts for the Windows host or an Android device, as JSON |
-| `scripts/Common.ps1` | Shared helpers (tool resolution, JSON writing, git facts) |
+| `scripts/Common.ps1` | Shared helpers (tool resolution, native calls that write to stderr, JSON writing, git facts) |
 | `perfetto/frametimeline.pbtxt` | Perfetto trace config |
 | `perfetto/export_frames.sql`, `perfetto/export_app_slices.sql` | `trace_processor` queries behind the Perfetto CSVs |
 | `schema/run-record.schema.json` | The in-app run record format (schema v2) |

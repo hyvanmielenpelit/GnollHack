@@ -13,7 +13,7 @@ function Write-PerformanceJson {
         [Parameter(Mandatory = $true)] $Object,
         [Parameter(Mandatory = $true)] [string] $Path
     )
-    $json = $Object | ConvertTo-Json -Depth 20
+    $json = ConvertTo-Json -InputObject $Object -Depth 20
     [System.IO.File]::WriteAllText($Path, $json + "`r`n", (Get-PerformanceUtf8NoBom))
 }
 
@@ -29,6 +29,41 @@ function Get-PerformanceUtcStamp {
 
 function Get-PerformanceFileStamp {
     return (Get-Date).ToString('yyyyMMdd_HHmmss')
+}
+
+# Runs a native executable without tripping the Stop-preference stderr crash: a native
+# command that writes to stderr and exits 0 throws NativeCommandError when the caller's
+# $ErrorActionPreference is 'Stop' and the call redirects stderr (2>&1 or 2>$null). This
+# sets 'Continue' for the duration of the call only, splits the merged stream back into
+# stdout lines and stderr lines, and restores the caller's preference even if the call
+# throws for an unrelated reason (e.g. the executable does not exist).
+function Invoke-PerformanceNative {
+    param(
+        [Parameter(Mandatory = $true)] [string] $Exe,
+        [Parameter(Mandatory = $true)] [string[]] $Arguments
+    )
+    $previousPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    $stdout = New-Object System.Collections.ArrayList
+    $stderr = New-Object System.Collections.ArrayList
+    try {
+        $raw = & $Exe @Arguments 2>&1
+        foreach ($item in @($raw)) {
+            if ($item -is [System.Management.Automation.ErrorRecord]) {
+                [void]$stderr.Add($item.ToString())
+            } else {
+                [void]$stdout.Add([string]$item)
+            }
+        }
+        $code = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $previousPreference
+    }
+    return @{
+        Output   = [string[]]@($stdout.ToArray())
+        Stderr   = [string[]]@($stderr.ToArray())
+        ExitCode = [int]$code
+    }
 }
 
 # Resolves adb: explicit path, then PATH, then the known SDK locations. Throws with an
@@ -107,21 +142,46 @@ function Invoke-PerformanceAnalyzer {
     if ($LASTEXITCODE -ne 0) { throw "Analyzer failed (exit $LASTEXITCODE): $($Arguments -join ' ')" }
 }
 
-# Git facts for the record. Never throws: a missing git is reported as unknown.
+# Git facts for the record. Never throws: a missing git, or any single failing call, is
+# reported as unknown rather than skipping the rest of the facts.
 function Get-PerformanceGitFacts {
     param([string] $RepoRoot)
     $facts = @{ commit = $null; dirty = $false; tag = $null; branch = $null }
     $git = Get-Command git -ErrorAction SilentlyContinue
     if ($null -eq $git) { return $facts }
+
     try {
-        $facts.commit = (& git -C $RepoRoot rev-parse HEAD 2>$null | Select-Object -First 1)
-        $facts.branch = (& git -C $RepoRoot rev-parse --abbrev-ref HEAD 2>$null | Select-Object -First 1)
-        $tag = (& git -C $RepoRoot describe --tags --exact-match 2>$null | Select-Object -First 1)
-        if ($tag) { $facts.tag = $tag }
-        $status = (& git -C $RepoRoot status --porcelain 2>$null)
-        if ($status) { $facts.dirty = $true }
+        $r = Invoke-PerformanceNative -Exe $git.Source -Arguments @('-C', $RepoRoot, 'rev-parse', 'HEAD')
+        if ($r.ExitCode -eq 0 -and $r.Output.Count -gt 0) { $facts.commit = $r.Output[0] }
     } catch { }
+
+    try {
+        $r = Invoke-PerformanceNative -Exe $git.Source -Arguments @('-C', $RepoRoot, 'rev-parse', '--abbrev-ref', 'HEAD')
+        if ($r.ExitCode -eq 0 -and $r.Output.Count -gt 0) { $facts.branch = $r.Output[0] }
+    } catch { }
+
+    try {
+        $r = Invoke-PerformanceNative -Exe $git.Source -Arguments @('-C', $RepoRoot, 'describe', '--tags', '--exact-match')
+        if ($r.ExitCode -eq 0 -and $r.Output.Count -gt 0) { $facts.tag = $r.Output[0] }
+    } catch { }
+
+    try {
+        $r = Invoke-PerformanceNative -Exe $git.Source -Arguments @('-C', $RepoRoot, 'status', '--porcelain')
+        if ($r.ExitCode -eq 0 -and $r.Output.Count -gt 0) { $facts.dirty = $true }
+    } catch { }
+
     return $facts
+}
+
+# True on an elevated (Run as administrator) console; PresentMon's ETW session and some
+# thermal signals need one.
+function Test-PerformanceElevated {
+    try {
+        $id = [Security.Principal.WindowsIdentity]::GetCurrent()
+        return (New-Object Security.Principal.WindowsPrincipal($id)).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    } catch {
+        return $false
+    }
 }
 
 # Counts down on the console without Read-Host, so the script never blocks on stdin.

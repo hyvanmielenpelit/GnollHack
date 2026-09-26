@@ -14,18 +14,23 @@ namespace GnollHackX.Performance
 
        Threading: BeginTick, the Stamp* tick methods and EndTick run on the UI thread; the
        paint methods run on whichever thread paints the map (the UI thread, or the GL thread
-       on Android). A paint never overlaps another paint. Records are read at the end of a
-       window; a read racing a write may see one torn record, which the consumers tolerate.
+       on Android). A paint never overlaps another paint, except one that returns early
+       because a paint is in progress; SkipPaint records it without taking over the paint's
+       frame. Records are read at the end of a window; a read racing a write may see one
+       torn record, which the consumers tolerate.
 
        The ring is allocated when the timeline is first enabled, so a session that never
        enables it pays one boolean check per call. Must compile under C# 7.3. */
     public static class GHFrameTimeline
     {
-        /* 60 s at 144 Hz */
-        public const int Capacity = 8640;
+        /* 144 s at 144 Hz: a 120 s window with room to spare */
+        public const int Capacity = 20736;
 
         private const int PeriodWindow = 15;
         private const long NanosPerSecond = 1000000000L;
+
+        /* Ticks until a change of the refresh period moves the measured median */
+        public const int PeriodMedianLag = PeriodWindow / 2 + 1;
 
         private static int _enabled = 0;
         private static GHFrameRecord[] _ring = null;
@@ -53,10 +58,21 @@ namespace GnollHackX.Performance
         private static long _pendingRequestTicks = 0;
         private static long _lastPaintedMapGeneration = -1;
 
-        /* Platform clock anchor; the first and latest pairs are kept to expose drift */
-        private static GHClockAnchor _anchor;
-        private static GHClockAnchor _firstAnchor;
-        private static int _hasAnchor = 0;
+        /* Platform clock anchor; the first and latest pairs are kept to expose drift. The UI
+           thread writes it and the FrameMetrics thread reads it, so each pair is an immutable
+           object swapped by reference and never read half-written. */
+        private sealed class AnchorBox
+        {
+            public readonly GHClockAnchor Value;
+
+            public AnchorBox(GHClockAnchor value)
+            {
+                Value = value;
+            }
+        }
+
+        private static AnchorBox _anchor = null;
+        private static AnchorBox _firstAnchor = null;
 
         /* Measured refresh period: median of recent positive frame-time deltas */
         private static readonly long[] _periodDeltas = new long[PeriodWindow];
@@ -72,6 +88,10 @@ namespace GnollHackX.Performance
             get { return Interlocked.CompareExchange(ref _enabled, 0, 0) != 0; }
             set
             {
+                /* Enabling resets the ring, so a repeated enable must not wipe it under the
+                   paint and FrameMetrics threads */
+                if (value == IsEnabled)
+                    return;
                 if (value)
                 {
                     if (_ring == null)
@@ -105,9 +125,25 @@ namespace GnollHackX.Performance
             }
         }
 
-        public static bool HasClockAnchor { get { return Interlocked.CompareExchange(ref _hasAnchor, 0, 0) != 0; } }
-        public static GHClockAnchor FirstClockAnchor { get { return _firstAnchor; } }
-        public static GHClockAnchor LatestClockAnchor { get { return _anchor; } }
+        public static bool HasClockAnchor { get { return Volatile.Read(ref _anchor) != null; } }
+
+        public static GHClockAnchor FirstClockAnchor
+        {
+            get
+            {
+                AnchorBox a = Volatile.Read(ref _firstAnchor);
+                return a != null ? a.Value : new GHClockAnchor();
+            }
+        }
+
+        public static GHClockAnchor LatestClockAnchor
+        {
+            get
+            {
+                AnchorBox a = Volatile.Read(ref _anchor);
+                return a != null ? a.Value : new GHClockAnchor();
+            }
+        }
 
         private static void Reset()
         {
@@ -133,7 +169,8 @@ namespace GnollHackX.Performance
             _periodDeltaCount = 0;
             _periodDeltaIndex = 0;
             Interlocked.Exchange(ref _measuredPeriodTicks, 0);
-            Interlocked.Exchange(ref _hasAnchor, 0);
+            Volatile.Write(ref _anchor, null);
+            Volatile.Write(ref _firstAnchor, null);
             GHCadenceMonitor.Reset();
         }
 
@@ -153,16 +190,18 @@ namespace GnollHackX.Performance
             GHClockAnchor a;
             a.PlatformNanos = platformNanos;
             a.StopwatchTicks = stopwatchTicks;
-            _anchor = a;
-            if (Interlocked.Exchange(ref _hasAnchor, 1) == 0)
-                _firstAnchor = a;
+            AnchorBox box = new AnchorBox(a);
+            if (Volatile.Read(ref _firstAnchor) == null)
+                Volatile.Write(ref _firstAnchor, box);
+            Volatile.Write(ref _anchor, box);
         }
 
         public static long PlatformNanosToTicks(long platformNanos)
         {
-            if (platformNanos == 0 || !HasClockAnchor)
+            AnchorBox box = Volatile.Read(ref _anchor);
+            if (platformNanos == 0 || box == null)
                 return 0;
-            GHClockAnchor a = _anchor;
+            GHClockAnchor a = box.Value;
             double deltaTicks = (platformNanos - a.PlatformNanos) * (double)Stopwatch.Frequency / NanosPerSecond;
             return a.StopwatchTicks + (long)Math.Round(deltaTicks);
         }
@@ -196,7 +235,16 @@ namespace GnollHackX.Performance
         {
             if (!IsEnabled)
                 return 0;
-            long now = Stopwatch.GetTimestamp();
+            return BeginTick(Stopwatch.GetTimestamp());
+        }
+
+        /* callbackStartTicks: when the display callback began, taken before any platform
+           query the callback makes ahead of the tick */
+        public static long BeginTick(long callbackStartTicks)
+        {
+            if (!IsEnabled)
+                return 0;
+            long now = callbackStartTicks != 0 ? callbackStartTicks : Stopwatch.GetTimestamp();
             long id = Interlocked.Increment(ref _lastFrameId);
             int idx = IndexOf(id);
 
@@ -346,19 +394,36 @@ namespace GnollHackX.Performance
 
         /* ---- Paint (paint thread) ---- */
 
-        /* Called first thing in the map's paint handler, before any early return. Takes the
-           pending invalidation, marks every earlier invalidation that no paint picked up as
-           coalesced, and returns the frame being painted, or 0 for a paint no tick asked for. */
+        /* Called by the map's paint handler once it is going to draw; its early returns call
+           SkipPaint instead. Takes the pending invalidation, marks every earlier invalidation
+           that no paint picked up as coalesced, and returns the frame being painted, or 0 for
+           a paint no tick asked for. */
         public static long BeginPaint(bool onUiThread)
         {
             if (!IsEnabled)
                 return 0;
+            return TakePendingPaint(onUiThread, GHPaintOutcome.Painted, true);
+        }
+
+        /* For a paint handler that returns before drawing: takes the pending invalidation
+           and records the outcome, as BeginPaint would, but leaves the frame of any paint in
+           progress as the current one. */
+        public static void SkipPaint(bool onUiThread, GHPaintOutcome outcome)
+        {
+            if (!IsEnabled)
+                return;
+            TakePendingPaint(onUiThread, outcome, false);
+        }
+
+        private static long TakePendingPaint(bool onUiThread, GHPaintOutcome outcome, bool takeOver)
+        {
             long now = Stopwatch.GetTimestamp();
             long id = Interlocked.Exchange(ref _pendingPaintFrameId, 0);
             if (id <= 0)
             {
                 Interlocked.Increment(ref _orphanPaintCount);
-                Interlocked.Exchange(ref _currentPaintFrameId, 0);
+                if (takeOver)
+                    Interlocked.Exchange(ref _currentPaintFrameId, 0);
                 return 0;
             }
 
@@ -382,8 +447,9 @@ namespace GnollHackX.Performance
                 return 0;
             _ring[idx].PaintStartTicks = now;
             _ring[idx].PaintOnUiThread = onUiThread;
-            _ring[idx].Paint = GHPaintOutcome.Painted;
-            Interlocked.Exchange(ref _currentPaintFrameId, id);
+            _ring[idx].Paint = outcome;
+            if (takeOver)
+                Interlocked.Exchange(ref _currentPaintFrameId, id);
             return id;
         }
 
@@ -452,17 +518,6 @@ namespace GnollHackX.Performance
 
         /* ---- Presentation ---- */
 
-        public static void SetDisplayed(long frameId, long displayedTicks, GHPresentSource source)
-        {
-            if (frameId <= 0 || !IsEnabled)
-                return;
-            int idx = IndexOf(frameId);
-            if (_ring[idx].FrameId != frameId)
-                return;
-            _ring[idx].DisplayedAtTicks = displayedTicks;
-            _ring[idx].PresentSource = source;
-        }
-
         public static long CompositorFrameCount { get { return Interlocked.Read(ref _compositorCount); } }
 
         public static void AddCompositorFrame(ref GHCompositorFrame frame)
@@ -479,6 +534,13 @@ namespace GnollHackX.Performance
         /* Copies the retained compositor frames, oldest first, and returns the count */
         public static int CopyCompositorFrames(GHCompositorFrame[] destination)
         {
+            return CopyCompositorFrames(destination, long.MinValue, long.MaxValue);
+        }
+
+        /* Copies the retained compositor frames whose intended vsync lies in
+           [fromTicks, toTicks], oldest first, and returns the count */
+        public static int CopyCompositorFrames(GHCompositorFrame[] destination, long fromTicks, long toTicks)
+        {
             GHCompositorFrame[] ring = _compositorRing;
             if (destination == null || ring == null)
                 return 0;
@@ -488,7 +550,12 @@ namespace GnollHackX.Performance
             long first = Math.Max(0, total - Capacity);
             int n = 0;
             for (long k = first; k < total && n < destination.Length; k++)
-                destination[n++] = ring[(int)(k % Capacity)];
+            {
+                GHCompositorFrame f = ring[(int)(k % Capacity)];
+                if (f.IntendedVsyncTicks < fromTicks || f.IntendedVsyncTicks > toTicks)
+                    continue;
+                destination[n++] = f;
+            }
             return n;
         }
 
@@ -498,12 +565,19 @@ namespace GnollHackX.Performance
            Capacity entries) and returns the count copied. */
         public static int CopyRecords(GHFrameRecord[] destination)
         {
+            return CopyRecords(destination, 1, long.MaxValue);
+        }
+
+        /* Copies the retained records with FrameId in [fromFrameId, toFrameId], oldest
+           first, and returns the count copied. */
+        public static int CopyRecords(GHFrameRecord[] destination, long fromFrameId, long toFrameId)
+        {
             if (destination == null || _ring == null)
                 return 0;
-            long last = Interlocked.Read(ref _lastFrameId);
+            long last = Math.Min(Interlocked.Read(ref _lastFrameId), toFrameId);
             if (last <= 0)
                 return 0;
-            long first = Math.Max(1, last - Capacity + 1);
+            long first = Math.Max(Math.Max(1, fromFrameId), last - Capacity + 1);
             int n = 0;
             for (long id = first; id <= last && n < destination.Length; id++)
             {
@@ -538,7 +612,12 @@ namespace GnollHackX.Performance
         {
             GHFrameRecord[] records = new GHFrameRecord[Capacity];
             int n = CopyRecords(records);
+            WriteCsv(path, records, n);
+        }
 
+        /* DumpToCsv for records already copied with CopyRecords */
+        public static void WriteCsv(string path, GHFrameRecord[] records, int n)
+        {
             using (StreamWriter w = new StreamWriter(path))
             {
                 w.WriteLine("# GHFrameTimeline v1");
@@ -549,10 +628,12 @@ namespace GnollHackX.Performance
                     w.WriteLine("# OriginStopwatchTicks=" + records[0].CallbackStartTicks.ToString(CultureInfo.InvariantCulture));
                 if (HasClockAnchor)
                 {
-                    w.WriteLine("# FirstAnchor platformNanos=" + _firstAnchor.PlatformNanos.ToString(CultureInfo.InvariantCulture)
-                        + " stopwatchTicks=" + _firstAnchor.StopwatchTicks.ToString(CultureInfo.InvariantCulture));
-                    w.WriteLine("# LatestAnchor platformNanos=" + _anchor.PlatformNanos.ToString(CultureInfo.InvariantCulture)
-                        + " stopwatchTicks=" + _anchor.StopwatchTicks.ToString(CultureInfo.InvariantCulture));
+                    GHClockAnchor firstAnchor = FirstClockAnchor;
+                    GHClockAnchor latestAnchor = LatestClockAnchor;
+                    w.WriteLine("# FirstAnchor platformNanos=" + firstAnchor.PlatformNanos.ToString(CultureInfo.InvariantCulture)
+                        + " stopwatchTicks=" + firstAnchor.StopwatchTicks.ToString(CultureInfo.InvariantCulture));
+                    w.WriteLine("# LatestAnchor platformNanos=" + latestAnchor.PlatformNanos.ToString(CultureInfo.InvariantCulture)
+                        + " stopwatchTicks=" + latestAnchor.StopwatchTicks.ToString(CultureInfo.InvariantCulture));
                 }
                 w.WriteLine("# OrphanPaints=" + OrphanPaintCount.ToString(CultureInfo.InvariantCulture)
                     + " Coalesced=" + CoalescedCount.ToString(CultureInfo.InvariantCulture));
@@ -577,7 +658,7 @@ namespace GnollHackX.Performance
                         r.FrameId.ToString(CultureInfo.InvariantCulture),
                         Ms(r.VsyncTicks, origin),
                         Ms(r.ExpectedPresentTicks, origin),
-                        r.PlatformFrameTicks == 0 ? "" : Ms(r.PlatformFrameTicks - platformOrigin),
+                        r.PlatformFrameTicks == 0 ? "" : Ms(r.PlatformFrameTicks, platformOrigin),
                         Ms(r.RefreshPeriodTicks),
                         Ms(r.CallbackStartTicks, origin),
                         Ms(r.CallbackEndTicks, origin),
@@ -622,12 +703,19 @@ namespace GnollHackX.Performance
 
             GHCompositorFrame[] frames = new GHCompositorFrame[Capacity];
             int n = CopyCompositorFrames(frames);
+            WriteCompositorCsv(path, frames, n, origin);
+        }
 
+        /* DumpCompositorFramesToCsv for frames already copied; originTicks is the first
+           record's callback start, 0 when there are no records */
+        public static void WriteCompositorCsv(string path, GHCompositorFrame[] frames, int n, long originTicks)
+        {
+            long origin = originTicks;
             using (StreamWriter w = new StreamWriter(path))
             {
                 w.WriteLine("# GHCompositorFrames v1");
                 w.WriteLine("# StopwatchFrequency=" + Stopwatch.Frequency.ToString(CultureInfo.InvariantCulture));
-                if (nRecords > 0)
+                if (origin != 0)
                     w.WriteLine("# OriginStopwatchTicks=" + origin.ToString(CultureInfo.InvariantCulture));
                 w.WriteLine("Source,IntendedVsyncMs,VsyncMs,SyncStartMs,CompletedMs,GpuDurationMs,DeadlineRaw,"
                     + "RefreshPeriodMs,ComposeMs,RefreshCount,ComposedFrameCount,DroppedSinceLast,FirstDrawFrame");

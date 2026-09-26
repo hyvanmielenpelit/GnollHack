@@ -88,7 +88,7 @@ namespace GnollHack.PerformanceAnalyzer.Tests
                 Assert.Equal(a.Clock.OriginDeviceTicks, b.Clock.OriginDeviceTicks);
                 for (int i = 0; i < a.Count; i++)
                     Assert.Equal(a.Records[i], b.Records[i]);
-                Assert.Equal(File.ReadAllText(TestPaths.Run1Timeline), File.ReadAllText(tmp));
+                Assert.Equal(File.ReadAllText(TestPaths.Run1Timeline).Replace("\r\n", "\n"), File.ReadAllText(tmp).Replace("\r\n", "\n"));
             }
             finally
             {

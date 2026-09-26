@@ -44,6 +44,20 @@ namespace GnollHackX.UnitTests
             Assert.Equal(new float[] { 50f, 15f, 40f, 20f, 35f }, unsorted);
         }
 
+        /* T and R in ms: a divisor cadence holds T; a non-divisor one holds the next whole
+           refresh count above T; a measured period a hair off still rounds as intended */
+        [Theory]
+        [InlineData(16.6667, 16.6667, 16.6667)]
+        [InlineData(25.0, 16.6667, 33.3333)]
+        [InlineData(16.6667, 6.9444, 20.8333)]
+        [InlineData(33.3333, 16.6700, 33.3400)]
+        [InlineData(33.3333, 16.6600, 33.3333)]
+        [InlineData(10.0, 16.6667, 16.6667)]
+        public void OnTimeHold_IsTheNextWholeRefreshCount(double targetMs, double refreshMs, double expected)
+        {
+            Assert.Equal(expected, GHPerformanceStatistics.OnTimeHold(targetMs, refreshMs), 3);
+        }
+
         [Fact]
         public void NormalCdf_MatchesTable()
         {
@@ -165,19 +179,32 @@ namespace GnollHackX.UnitTests
             Assert.Equal(0.0, m.HitchRatioMsPerSec, 1e-9);
         }
 
-        /* Alternating 11.1 / 22.3 ms at T = 16.667, R = 11.111: the late threshold is
-           T + R/2 = 22.2225 ms, which 22.3 clears and 11.1 does not, so exactly half the
-           intervals are jank. */
+        /* At T = 16.667, R = 11.111 (60 FPS on 90 Hz) a frame is held one or two refreshes
+           on time, so the late threshold is 2R + R/2 = 27.78 ms. Alternating two-refresh
+           (22.2 ms) and three-refresh (33.3 ms) holds: exactly half the intervals are jank. */
         [Fact]
         public void ComputePacing_AlternatingIntervals_HalfExceedLateThreshold()
         {
             float[] intervals = new float[100];
             int i;
             for (i = 0; i < intervals.Length; i++)
-                intervals[i] = (i % 2 == 0) ? 11.1f : 22.3f;
+                intervals[i] = (i % 2 == 0) ? 22.2f : 33.3f;
 
             GHPerformanceStatistics.PacingMetrics m = GHPerformanceStatistics.ComputePacing(intervals, 16.667, 11.111);
             Assert.Equal(50.0, m.JankPct, 1e-9);
+        }
+
+        /* The two-refresh hold of a non-divisor cadence is on time, not jank */
+        [Fact]
+        public void ComputePacing_TwoRefreshHoldOfANonDivisorCadence_IsNotJank()
+        {
+            float[] intervals = new float[100];
+            int i;
+            for (i = 0; i < intervals.Length; i++)
+                intervals[i] = (i % 2 == 0) ? 16.683f : 33.367f;
+
+            GHPerformanceStatistics.PacingMetrics m = GHPerformanceStatistics.ComputePacing(intervals, 25.0, 16.683);
+            Assert.Equal(0.0, m.JankPct, 1e-9);
         }
 
         [Fact]

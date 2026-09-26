@@ -450,7 +450,15 @@ namespace GnollHackX.Pages.Game
                     }
                 }
 
-                if (File.Exists(filepath))
+                if (runJsonPath == null)
+                {
+                    /* With the profiler off there is no run record and the legacy log is empty */
+                    if (File.Exists(filepath))
+                        File.Delete(filepath);
+                    await GHApp.DisplayMessageBox(this, "No Frame Log",
+                        "The frame timeline holds no frames. Enable Settings > Frame Time Profiler first, then play for a while.", "OK");
+                }
+                else if (File.Exists(filepath))
                 {
                     await GHApp.ShareFile(this, filepath, "GnollHack Frame Log");
                 }

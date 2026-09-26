@@ -28,9 +28,10 @@ namespace GnollHack.PerformanceAnalyzer.Model
         public const string WindowSeconds = "windowSeconds";
 
         /* The metrics the comparison decides on, with the direction in which "worse" lies
-           and the plan's pre-registered regression thresholds (section 2.2). Absolute
-           thresholds expressed against the display are now in target-period units, since
-           the target content rate can differ from the refresh rate. */
+           and the pre-registered regression thresholds (see DEVEL/performance/README.md's
+           Statistics section). Absolute thresholds expressed against the display are now
+           in target-period units, since the target content rate can differ from the
+           refresh rate. */
         public static readonly DecisionMetric[] Decision =
         {
             new DecisionMetric(FrameDurationP99, "ms", higherIsWorse: true, relativeThreshold: 0.20, absoluteThresholdTargetPeriod: 1.0),

@@ -972,11 +972,13 @@ namespace GnollHackX
             //lock(_mapDataBufferLock)
             try
             {
-                long lockAttemptTicks = Stopwatch.GetTimestamp();
+                bool timelineOn = GHFrameTimeline.IsEnabled;
+                long lockAttemptTicks = timelineOn ? Stopwatch.GetTimestamp() : 0;
                 FrameTimeProfiler.StampLockAttempt();
                 Monitor.TryEnter(_mapDataBufferLock, ref lockTaken); //TimeSpan.FromTicks(GHConstants.MapDataLockTimeOutTicks),
                 FrameTimeProfiler.StampLockResult(lockTaken);
-                GHFrameTimeline.StampLock(lockAttemptTicks, Stopwatch.GetTimestamp(), lockTaken);
+                if (timelineOn)
+                    GHFrameTimeline.StampLock(lockAttemptTicks, Stopwatch.GetTimestamp(), lockTaken);
                 if (lockTaken)
                 {
                     if (_mapDataCurrentUpdated)

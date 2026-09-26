@@ -1,4 +1,5 @@
 using GnollHack.PerformanceAnalyzer.Commands;
+using System.Text.Json;
 
 namespace GnollHack.PerformanceAnalyzer
 {
@@ -45,6 +46,21 @@ namespace GnollHack.PerformanceAnalyzer
                 Console.Error.WriteLine("error: " + ex.Message);
                 return 1;
             }
+            catch (JsonException ex)
+            {
+                Console.Error.WriteLine("error: " + ex.Message);
+                return 1;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.Error.WriteLine("error: " + ex.Message);
+                return 1;
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.Error.WriteLine("error: " + ex.Message);
+                return 1;
+            }
         }
 
         private static void PrintHelp()
@@ -55,8 +71,8 @@ namespace GnollHack.PerformanceAnalyzer
             Console.WriteLine("          [--arm A] [--scenario W1] [--scenario-kind gameplay|replay] [--platform Windows|Android]");
             Console.WriteLine("          [--process <exe name>] [--refresh-hz 60] [--target-fps <fps>] [--warmup <s>] [--window <s>]");
             Console.WriteLine("          [--env-before <json>] [--env-after <json>] [--build-config Release]");
-            Console.WriteLine("          [--commit <sha>] [--tag <tag>] [--dirty] [--device-id X] [--device-model X] [--device-os X]");
-            Console.WriteLine("          [--run-json <in-app run.json>]");
+            Console.WriteLine("          [--commit <sha>] [--tag <tag>] [--branch X] [--dirty] [--device-id X] [--device-model X] [--device-os X]");
+            Console.WriteLine("          [--run-json <in-app run.json>] [--id X] [--timestamp <iso>]");
             Console.WriteLine("          [--version-<name> <v> ...] [--config-<name> <v> ...] [--include-throttled] [--notes text]");
             Console.WriteLine();
             Console.WriteLine("  compare --a <dir|run.json ...> --b <dir|run.json ...> [--label-a X] [--label-b Y]");

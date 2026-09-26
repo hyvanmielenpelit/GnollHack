@@ -10,8 +10,13 @@ namespace GnollHack.PerformanceAnalyzer.Model
        the last displayed frame are kept. Two series are built per bucket: displayed FPS
        (displayed frames in the bucket times 4) and the RMS pacing error of the displayed
        frames in the bucket whose gap is judged (not the first frame, not a paused gap), 0
-       when there is none. Each series is segmented by PELT under a Gaussian mean-change
-       cost, and the boundaries of both are merged. */
+       when there is none. A bucket that contains the callback start of any pause tick
+       (GHSmoothnessMetrics.IsPauseTick: an auxiliary canvas, suspension, a resize, an
+       overlay, or anything else that stops the map render) is missing: PELT runs over the
+       remaining buckets only, so a pause can never look like a change in how the game
+       renders, and segment means are averaged over non-missing buckets only. Each series
+       is segmented by PELT under a Gaussian mean-change cost, and the boundaries of both
+       are merged. */
     public static class ChangePoints
     {
         public const double BucketMs = 250.0;
@@ -157,6 +162,9 @@ namespace GnollHack.PerformanceAnalyzer.Model
         {
             public double[] DisplayedFps = new double[0];
             public double[] PacingErrorRmsMs = new double[0];
+            /* A bucket that contains the callback start of a pause tick: excluded from
+               PELT and from segment means */
+            public bool[] Missing = new bool[0];
             public int Count { get { return DisplayedFps.Length; } }
         }
 
@@ -172,6 +180,7 @@ namespace GnollHack.PerformanceAnalyzer.Model
             int[] frames = new int[n];
             double[] errSq = new double[n];
             int[] judged = new int[n];
+            bool[] missing = new bool[n];
             for (int j = 0; j < displayedCount; j++)
             {
                 double ms = t.Clock.TicksToMs(displayed[j].DisplayedAtTicks);
@@ -186,8 +195,21 @@ namespace GnollHack.PerformanceAnalyzer.Model
                     judged[k]++;
                 }
             }
+            for (int i = 0; i < t.Count; i++)
+            {
+                GHFrameRecord r = t.Records[i];
+                if (r.CallbackStartTicks == 0)
+                    continue;
+                double ms = t.Clock.TicksToMs(r.CallbackStartTicks);
+                int k = (int)Math.Floor(ms / BucketMs);
+                if (k < 0 || k >= n)
+                    continue;
+                if (GHSmoothnessMetrics.IsPauseTick(ref r))
+                    missing[k] = true;
+            }
             b.DisplayedFps = new double[n];
             b.PacingErrorRmsMs = new double[n];
+            b.Missing = missing;
             for (int k = 0; k < n; k++)
             {
                 b.DisplayedFps[k] = frames[k] * (1000.0 / BucketMs);
@@ -241,11 +263,23 @@ namespace GnollHack.PerformanceAnalyzer.Model
             if (n == 0)
                 return res;
 
-            double fpsFloor = Math.Max(FpsSigmaFloorQuantization, FpsSigmaFloorRelative * Math.Abs(Median(res.Series.DisplayedFps)));
-            res.FpsPenalty = DefaultPenalty(res.Series.DisplayedFps, fpsFloor);
-            res.PacingPenalty = DefaultPenalty(res.Series.PacingErrorRmsMs, PacingSigmaFloorMs);
-            int[] fpsCps = Pelt(res.Series.DisplayedFps, res.FpsPenalty, MinSegmentBuckets);
-            int[] pacingCps = Pelt(res.Series.PacingErrorRmsMs, res.PacingPenalty, MinSegmentBuckets);
+            /* PELT runs on the buckets that were not a pause, compacted to one contiguous
+               array; a change-point index in that array is mapped back to its bucket index
+               through kept[] before anything downstream sees it */
+            List<int> kept = new List<int>(n);
+            for (int k = 0; k < n; k++)
+            {
+                if (!res.Series.Missing[k])
+                    kept.Add(k);
+            }
+            double[] fpsKept = kept.Select(k => res.Series.DisplayedFps[k]).ToArray();
+            double[] pacingKept = kept.Select(k => res.Series.PacingErrorRmsMs[k]).ToArray();
+
+            double fpsFloor = Math.Max(FpsSigmaFloorQuantization, FpsSigmaFloorRelative * Math.Abs(Median(fpsKept)));
+            res.FpsPenalty = DefaultPenalty(fpsKept, fpsFloor);
+            res.PacingPenalty = DefaultPenalty(pacingKept, PacingSigmaFloorMs);
+            int[] fpsCps = Pelt(fpsKept, res.FpsPenalty, MinSegmentBuckets).Select(c => kept[c]).ToArray();
+            int[] pacingCps = Pelt(pacingKept, res.PacingPenalty, MinSegmentBuckets).Select(c => kept[c]).ToArray();
 
             /* Boundaries of the two series within a bucket of each other are one change */
             SortedDictionary<int, Boundary> merged = new SortedDictionary<int, Boundary>();
@@ -271,26 +305,47 @@ namespace GnollHack.PerformanceAnalyzer.Model
             {
                 if (end <= start)
                     continue;
-                Segment s = new Segment { StartBucket = start, EndBucket = end };
-                s.MeanDisplayedFps = res.Series.DisplayedFps.Skip(start).Take(end - start).Average();
-                s.MeanPacingErrorMs = res.Series.PacingErrorRmsMs.Skip(start).Take(end - start).Average();
-                res.Segments.Add(s);
+                /* A segment with no non-missing bucket (a boundary landing inside, or right
+                   after, a long pause) carries nothing to average and is skipped */
+                List<int> segBuckets = new List<int>(end - start);
+                for (int k = start; k < end; k++)
+                {
+                    if (!res.Series.Missing[k])
+                        segBuckets.Add(k);
+                }
+                if (segBuckets.Count > 0)
+                {
+                    Segment s = new Segment { StartBucket = start, EndBucket = end };
+                    s.MeanDisplayedFps = segBuckets.Select(k => res.Series.DisplayedFps[k]).Average();
+                    s.MeanPacingErrorMs = segBuckets.Select(k => res.Series.PacingErrorRmsMs[k]).Average();
+                    res.Segments.Add(s);
+                }
                 start = end;
             }
             return res;
         }
 
-        private static bool IsCanvasPause(ref GHFrameRecord r)
+        /* The pause kind named in a timeline event's text: the two pacing decisions with
+           their own name, the overlay case, and "map not shown" for every other reason
+           GHSmoothnessMetrics.IsPauseTick stops the map render (a resize, an invisible or
+           refresh-off window, the platform loop being off, or no game/page/resolution) */
+        private static string PauseKindText(ref GHFrameRecord r)
         {
-            return r.Pacing == GHPacingDecision.AuxiliaryCanvas || r.Paint == GHPaintOutcome.OverlayVisible
-                || r.Pacing == GHPacingDecision.Suspended;
+            if (r.Pacing == GHPacingDecision.AuxiliaryCanvas)
+                return "auxiliary canvas";
+            if (r.Pacing == GHPacingDecision.Suspended)
+                return "suspended";
+            if (r.Paint == GHPaintOutcome.OverlayVisible)
+                return "overlay visible";
+            return "map not shown";
         }
 
         /* Timeline events that can explain a change: a measured refresh period moving by
            more than 5 % from the last reported one, a change of the map's target FPS, the
-           start and end of a canvas pause (an auxiliary canvas, an overlay covering the
-           map, or suspension), and a collection (the GC counters advancing between two
-           ticks). Stamped at the tick's callback start. */
+           start and end of a pause tick (GHSmoothnessMetrics.IsPauseTick: an auxiliary
+           canvas, suspension, an overlay covering the map, or anything else that stops the
+           map render), and a collection (the GC counters advancing between two ticks).
+           Stamped at the tick's callback start. */
         public static List<TimelineEvent> Events(CapturedTimeline t)
         {
             List<TimelineEvent> ev = new List<TimelineEvent>();
@@ -328,12 +383,10 @@ namespace GnollHack.PerformanceAnalyzer.Model
                         ev.Add(new TimelineEvent { AtMs = at, Kind = "target", Text = "target FPS " + lastTarget + " -> " + r.TargetFps });
                     lastTarget = r.TargetFps;
                 }
-                bool pause = IsCanvasPause(ref r);
+                bool pause = GHSmoothnessMetrics.IsPauseTick(ref r);
                 if (pause != inPause)
                 {
-                    string kind = pause
-                        ? (r.Pacing == GHPacingDecision.AuxiliaryCanvas ? "auxiliary canvas" : r.Pacing == GHPacingDecision.Suspended ? "suspended" : "overlay visible")
-                        : pauseKind;
+                    string kind = pause ? PauseKindText(ref r) : pauseKind;
                     ev.Add(new TimelineEvent { AtMs = at, Kind = "pause", Text = "canvas pause " + (pause ? "begins" : "ends") + " (" + kind + ")" });
                     inPause = pause;
                     pauseKind = kind;

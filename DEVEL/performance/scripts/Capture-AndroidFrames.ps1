@@ -49,13 +49,21 @@ New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
 function Invoke-Adb {
     param([string[]] $Arguments)
-    $out = & $adb @serialArgs @Arguments 2>$null
-    if ($LASTEXITCODE -ne 0) { throw "adb $($Arguments -join ' ') failed with exit code $LASTEXITCODE" }
-    return $out
+    $result = Invoke-PerformanceNative -Exe $adb -Arguments (@($serialArgs) + $Arguments)
+    if ($result.ExitCode -ne 0) { throw "adb $($Arguments -join ' ') failed with exit code $($result.ExitCode)" }
+    return $result.Output
 }
 
-$state = Invoke-Adb -Arguments @('get-state')
-if (($state | Select-Object -First 1).Trim() -ne 'device') { throw "No device in 'device' state (got '$state')." }
+# adb get-state prints nothing (rather than a non-zero exit) when no device is attached,
+# and under Set-StrictMode indexing into that empty result would itself throw; check the
+# count first so the "no device" case is reported clearly instead of as a strict-mode error.
+$state = @(Invoke-Adb -Arguments @('get-state'))
+if ($state.Count -eq 0) {
+    throw 'No device connected (adb get-state returned no output).'
+}
+if ($state[0].Trim() -ne 'device') {
+    throw "No device in 'device' state (got '$($state[0])')."
+}
 
 $perfettoDir = Join-Path $PSScriptRoot '..\perfetto'
 $perfettoJob = $null
@@ -84,17 +92,17 @@ while ($sw.Elapsed.TotalSeconds -lt $Seconds) {
     if ($now -ge $next) {
         $poll++
         $file = Join-Path $OutDir ('framestats_{0:D4}.txt' -f $poll)
-        $text = & $adb @serialArgs shell dumpsys gfxinfo $Package framestats 2>$null
-        [System.IO.File]::WriteAllText($file, (($text -join "`n") + "`n"), (Get-PerformanceUtf8NoBom))
+        $call = Invoke-PerformanceNative -Exe $adb -Arguments (@($serialArgs) + @('shell', 'dumpsys', 'gfxinfo', $Package, 'framestats'))
+        [System.IO.File]::WriteAllText($file, (($call.Output -join "`n") + "`n"), (Get-PerformanceUtf8NoBom))
         $next = $now + $PollSeconds
     }
     Start-Sleep -Milliseconds 100
 }
 $sw.Stop()
 
-$summary = & $adb @serialArgs shell dumpsys gfxinfo $Package 2>$null
-[System.IO.File]::WriteAllText((Join-Path $OutDir 'summary.txt'), (($summary -join "`n") + "`n"), (Get-PerformanceUtf8NoBom))
-$jank = ($summary | Where-Object { $_ -match 'Janky frames' } | Select-Object -First 1)
+$summaryCall = Invoke-PerformanceNative -Exe $adb -Arguments (@($serialArgs) + @('shell', 'dumpsys', 'gfxinfo', $Package))
+[System.IO.File]::WriteAllText((Join-Path $OutDir 'summary.txt'), (($summaryCall.Output -join "`n") + "`n"), (Get-PerformanceUtf8NoBom))
+$jank = ($summaryCall.Output | Where-Object { $_ -match 'Janky frames' } | Select-Object -First 1)
 Write-PerformanceLog ("gfxinfo: {0} polls; {1}" -f $poll, $jank)
 
 if ($null -ne $perfettoJob) {
@@ -103,8 +111,8 @@ if ($null -ne $perfettoJob) {
     Receive-Job -Job $perfettoJob | ForEach-Object { Write-Verbose $_ }
     Remove-Job -Job $perfettoJob -Force
     $tracePath = Join-Path $OutDir 'trace.pftrace'
-    & $adb @serialArgs pull /data/misc/perfetto-traces/gnh.pftrace $tracePath 2>$null | Out-Null
-    if ($LASTEXITCODE -eq 0 -and (Test-Path -LiteralPath $tracePath)) {
+    $pullResult = Invoke-PerformanceNative -Exe $adb -Arguments (@($serialArgs) + @('pull', '/data/misc/perfetto-traces/gnh.pftrace', $tracePath))
+    if ($pullResult.ExitCode -eq 0 -and (Test-Path -LiteralPath $tracePath)) {
         Write-PerformanceLog ("Perfetto: trace pulled to {0}" -f $tracePath)
         $tp = Resolve-PerformanceTraceProcessor -TraceProcessorPath $TraceProcessorPath
         if ($tp) {
@@ -114,16 +122,12 @@ if ($null -ne $perfettoJob) {
                 [System.IO.File]::WriteAllText($sqlLocal, $sqlText, (Get-PerformanceUtf8NoBom))
                 $csvName = $query.Replace('export_', 'perfetto_') + '.csv'
                 $csvPath = Join-Path $OutDir $csvName
-                $prev = $ErrorActionPreference
-                $ErrorActionPreference = 'Continue'
-                $rows = & $tp -q $sqlLocal $tracePath 2>$null
-                $code = $LASTEXITCODE
-                $ErrorActionPreference = $prev
-                if ($code -eq 0) {
-                    [System.IO.File]::WriteAllText($csvPath, (($rows -join "`n") + "`n"), (Get-PerformanceUtf8NoBom))
-                    Write-PerformanceLog ("Perfetto: {0} rows -> {1}" -f (@($rows).Count - 1), $csvName)
+                $tpResult = Invoke-PerformanceNative -Exe $tp -Arguments @('-q', $sqlLocal, $tracePath)
+                if ($tpResult.ExitCode -eq 0) {
+                    [System.IO.File]::WriteAllText($csvPath, (($tpResult.Output -join "`n") + "`n"), (Get-PerformanceUtf8NoBom))
+                    Write-PerformanceLog ("Perfetto: {0} rows -> {1}" -f (@($tpResult.Output).Count - 1), $csvName)
                 } else {
-                    Write-Warning ("trace_processor_shell failed on {0} (exit code {1})." -f $query, $code)
+                    Write-Warning ("trace_processor_shell failed on {0} (exit code {1})." -f $query, $tpResult.ExitCode)
                 }
             }
         } else {

@@ -107,11 +107,25 @@ namespace GnollHackX.Performance
             return mean > 0 ? 1000.0 / mean : 0;
         }
 
+        /* The longest a frame is held on time for target period T on a display with refresh
+           period R, in the unit of the arguments. A frame can only change at a vsync, so a T
+           that is not a whole number of refreshes is held up to the next whole number above
+           it: 40 FPS on 60 Hz alternates one and two refreshes, and two is on time. The 5 %
+           tolerance keeps a measured T/R of 2.0004 from counting as three refreshes. */
+        public static double OnTimeHold(double targetPeriod, double refreshPeriod)
+        {
+            if (refreshPeriod <= 0)
+                return targetPeriod;
+            double refreshes = Math.Max(1.0, Math.Ceiling(targetPeriod / refreshPeriod - 0.05));
+            return Math.Max(targetPeriod, refreshes * refreshPeriod);
+        }
+
         /* Frame pacing metrics of a series of on-screen durations, judged against the target
            content period T (1 / map FPS in effect) and the display refresh period R. A frame
            deliberately held for several refreshes to reach T is on time; a frame held at
-           least half a refresh longer than T is late. Definitions:
-             jankPct        share of intervals exceeding T + R/2
+           least half a refresh longer than the longest on-time hold (OnTimeHold) is late.
+           Definitions:
+             jankPct        share of intervals exceeding OnTimeHold(T, R) + R/2
              hitchRatio     sum over those intervals of (interval - T), divided by the
                             window length: ms of hitch per second, the Apple hitch time
                             ratio measured against the intended cadence
@@ -181,7 +195,7 @@ namespace GnollHackX.Performance
             {
                 double jank = 0, hitchSum = 0;
                 int h2 = 0, h4 = 0;
-                double tLate = targetPeriodMs + m.RefreshPeriodMs / 2.0;
+                double tLate = OnTimeHold(targetPeriodMs, m.RefreshPeriodMs) + m.RefreshPeriodMs / 2.0;
                 double t2 = 2.0 * targetPeriodMs, t4 = 4.0 * targetPeriodMs;
                 for (int i = 0; i < n; i++)
                 {
@@ -488,8 +502,8 @@ namespace GnollHackX.Performance
             return p > 1 ? 1 : p;
         }
 
-        /* Standard normal CDF via the complementary error function (Abramowitz and
-           Stegun 7.1.26, absolute error below 1.5e-7). */
+        /* Standard normal CDF via the complementary error function (the Chebyshev fit
+           erfcc of Numerical Recipes, fractional error below 1.2e-7). */
         public static double NormalCdf(double x)
         {
             return 0.5 * Erfc(-x / Math.Sqrt(2.0));

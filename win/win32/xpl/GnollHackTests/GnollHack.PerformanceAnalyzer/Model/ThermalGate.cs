@@ -1,11 +1,14 @@
 namespace GnollHack.PerformanceAnalyzer.Model
 {
-    /* The plan's thermal exclusion rule (section 2.3). A run is flagged throttled when the
-       platform reports a status above Moderate on Android or Fair on iOS (both map to
-       "Moderate" here), or when the Windows processor performance counter fell below 90
-       percent, or, with no better signal, when a thermal reading rose by two classes
-       across the run. The gate signal that decided is recorded so that a reader knows
-       which sensor spoke. */
+    /* The thermal exclusion rule (see DEVEL/performance/README.md's Protocol section). A
+       run is flagged throttled when the platform reports a status above Moderate on
+       Android or Fair on iOS (both map to "Moderate" here), or when the Windows
+       processor performance counter's after reading is below 90 percent and either
+       there is no before reading or the after reading is at least 10 points below it, or,
+       with no better signal, when a thermal reading rose by two classes across the run.
+       A before reading alone never gates: an idle machine that happened to sample under
+       90 percent before the run started is not evidence the run itself throttled. The
+       gate signal that decided is recorded so that a reader knows which sensor spoke. */
     public static class ThermalGate
     {
         public const double WindowsCpuPerformanceFloorPct = 90.0;
@@ -57,13 +60,14 @@ namespace GnollHack.PerformanceAnalyzer.Model
                 return;
             }
             double? perfB = b?.CpuPerformancePct, perfA = a?.CpuPerformancePct;
-            if ((perfB.HasValue && perfB.Value < WindowsCpuPerformanceFloorPct)
-                || (perfA.HasValue && perfA.Value < WindowsCpuPerformanceFloorPct))
+            if (perfA.HasValue && perfA.Value < WindowsCpuPerformanceFloorPct
+                && (!perfB.HasValue || perfA.Value < perfB.Value - 10.0))
             {
                 t.Throttled = true;
                 t.GateSignal = "cpuPerformancePct";
+                string plan = b?.PowerPlan ?? a?.PowerPlan ?? "unknown plan";
                 t.ThrottleReason = "processor performance " + Fmt(perfB) + "% -> " + Fmt(perfA) + "% (floor "
-                    + WindowsCpuPerformanceFloorPct + "%)";
+                    + WindowsCpuPerformanceFloorPct + "%, " + plan + ")";
                 return;
             }
             if (rb > 0 && ra > 0)

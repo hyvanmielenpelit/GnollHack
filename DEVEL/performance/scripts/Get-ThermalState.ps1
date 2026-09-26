@@ -6,7 +6,20 @@ Reads the thermal and power state of the Windows host, or of an Android device, 
 Emits one JSON object with the fields the analyzer's EnvJson reader expects:
 status, headroomFraction, batteryTempC, cpuPackageTempC, gpuTempC, cpuPerformancePct,
 cpuFrequencyMHz, isCharging, isLowPower, powerPlan, timestampUtc, plus source-specific
-extras. Missing sensors are null, never guessed.
+extras. A field stays null when its sensor is missing or its query failed; nothing is
+guessed.
+
+Null on Windows: status (stays "Unknown"; there is no thermal status API for user code,
+so the analyzer's gate uses cpuPerformancePct instead), headroomFraction, batteryTempC,
+and isLowPower (no equivalent signal is read here). cpuPackageTempC, gpuTempC /
+gpuClockMHz / gpuThrottleReasons, cpuPerformancePct / cpuFrequencyMHz /
+cpuUtilizationPct, powerPlan and refreshHz are each null only when their own query fails
+or the sensor is absent (a thermal zone, an NVIDIA GPU).
+
+Null on Android: cpuPerformancePct and headroomFraction (not measured on this platform).
+cpuPackageTempC and gpuTempC are null unless a matching thermal zone is reported;
+batteryTempC, isLowPower and cpuFrequencyMHz are null when their dumpsys or sysfs read
+fails; status stays "Unknown" unless dumpsys thermalservice reports a code.
 
 Windows signals, in order of value:
   cpuPerformancePct  \Processor Information(_Total)\% Processor Performance sampled over
@@ -60,10 +73,7 @@ function Get-WindowsThermal {
         topProcesses = @()
     }
 
-    try {
-        $id = [Security.Principal.WindowsIdentity]::GetCurrent()
-        $r.elevated = (New-Object Security.Principal.WindowsPrincipal($id)).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-    } catch { }
+    $r.elevated = Test-PerformanceElevated
 
     # Processor performance and frequency, averaged over the sample period. The
     # performance counter is the throttling signal that needs no elevation: it is the
@@ -107,9 +117,9 @@ function Get-WindowsThermal {
     if ($null -eq $smi -and (Test-Path 'C:\Windows\System32\nvidia-smi.exe')) { $smi = @{ Source = 'C:\Windows\System32\nvidia-smi.exe' } }
     if ($null -ne $smi) {
         try {
-            $q = & $smi.Source --query-gpu=temperature.gpu,clocks.sm,clocks.max.sm,clocks_throttle_reasons.active,utilization.gpu --format=csv,noheader,nounits 2>$null
-            if ($LASTEXITCODE -eq 0 -and $q) {
-                $parts = ($q | Select-Object -First 1) -split ','
+            $call = Invoke-PerformanceNative -Exe $smi.Source -Arguments @('--query-gpu=temperature.gpu,clocks.sm,clocks.max.sm,clocks_throttle_reasons.active,utilization.gpu', '--format=csv,noheader,nounits')
+            if ($call.ExitCode -eq 0 -and $call.Output.Count -gt 0) {
+                $parts = ($call.Output | Select-Object -First 1) -split ','
                 if ($parts.Count -ge 4) {
                     $r.gpuTempC = [double]($parts[0].Trim())
                     $r.gpuClockMHz = [double]($parts[1].Trim())
@@ -122,18 +132,36 @@ function Get-WindowsThermal {
     }
 
     try {
-        $scheme = (& powercfg /getactivescheme 2>$null | Select-Object -First 1)
-        if ($scheme -match '\((.+)\)\s*$') { $r.powerPlan = $Matches[1] }
+        $call = Invoke-PerformanceNative -Exe 'powercfg' -Arguments @('/getactivescheme')
+        if ($call.ExitCode -eq 0 -and $call.Output.Count -gt 0) {
+            $scheme = $call.Output[0]
+            if ($scheme -match '\((.+)\)\s*$') { $r.powerPlan = $Matches[1] }
+        }
     } catch { }
 
+    # isCharging means "on external power". BatteryStatus (root\wmi) exposes PowerOnline
+    # directly when present; otherwise Win32_Battery.BatteryStatus values 2 (AC), 3, 6, 7,
+    # 8, 9 (charging in its various states) and 11 (partially charged) all mean external
+    # power is present, and every other value means the battery alone is supplying power.
+    # No battery instance at all means a desktop, which is always on AC.
     try {
-        $bat = Get-CimInstance -ClassName Win32_Battery -ErrorAction Stop | Select-Object -First 1
-        if ($null -ne $bat) {
-            # BatteryStatus 2 = AC power; 1 = discharging
-            $r.isCharging = ($bat.BatteryStatus -ne 1)
-            $r['batteryPct'] = $bat.EstimatedChargeRemaining
+        $onlineStatus = $null
+        $wmiBattery = $null
+        try { $wmiBattery = @(Get-CimInstance -Namespace 'root\wmi' -ClassName BatteryStatus -ErrorAction Stop) } catch { $wmiBattery = $null }
+        if ($null -ne $wmiBattery -and $wmiBattery.Count -gt 0) {
+            $onlineStatus = $false
+            foreach ($b in $wmiBattery) { if ($b.PowerOnline) { $onlineStatus = $true } }
+        }
+        if ($null -ne $onlineStatus) {
+            $r.isCharging = $onlineStatus
         } else {
-            $r.isCharging = $true
+            $bat = Get-CimInstance -ClassName Win32_Battery -ErrorAction Stop | Select-Object -First 1
+            if ($null -ne $bat) {
+                $r.isCharging = (@(2, 3, 6, 7, 8, 9, 11) -contains $bat.BatteryStatus)
+                $r['batteryPct'] = $bat.EstimatedChargeRemaining
+            } else {
+                $r.isCharging = $true
+            }
         }
     } catch { }
 
@@ -142,10 +170,41 @@ function Get-WindowsThermal {
         if ($null -ne $vc) { $r.refreshHz = $vc.CurrentRefreshRate; $r['gpuName'] = $vc.Name }
     } catch { }
 
+    # Top CPU consumers by current activity, not lifetime total: % Processor Time per
+    # process over the same sample window as above, normalized by the logical processor
+    # count so a single busy thread does not read over 100. Falls back to the lifetime
+    # CPU-seconds sort when the counter is unavailable.
     try {
-        $procs = Get-Process | Where-Object { $_.CPU -gt 0 } | Sort-Object CPU -Descending | Select-Object -First 5
-        $r.topProcesses = @($procs | ForEach-Object { @{ name = $_.ProcessName; cpuSeconds = [Math]::Round($_.CPU, 1) } })
-    } catch { }
+        $cpuCount = [Environment]::ProcessorCount
+        if ($cpuCount -lt 1) { $cpuCount = 1 }
+        $procSamples = [Math]::Max(2, $SampleSeconds)
+        $procData = Get-Counter -Counter '\Process(*)\% Processor Time' -SampleInterval 1 -MaxSamples $procSamples -ErrorAction Stop
+        $totals = @{}
+        foreach ($set in $procData) {
+            foreach ($s in $set.CounterSamples) {
+                if ($s.InstanceName -eq '_total' -or $s.InstanceName -eq 'idle') { continue }
+                if (-not $totals.ContainsKey($s.InstanceName)) { $totals[$s.InstanceName] = New-Object System.Collections.Generic.List[double] }
+                [void]$totals[$s.InstanceName].Add($s.CookedValue)
+            }
+        }
+        # Instances of one executable (code, code#1, ...) are summed under its name.
+        # Sort-Object needs objects, not hashtables, to sort by a key.
+        $byName = @{}
+        foreach ($entry in $totals.GetEnumerator()) {
+            $name = $entry.Key -replace '#\d+$', ''
+            $avg = (($entry.Value | Measure-Object -Average).Average) / $cpuCount
+            if ($byName.ContainsKey($name)) { $byName[$name] += $avg } else { $byName[$name] = $avg }
+        }
+        $top = $byName.GetEnumerator() | ForEach-Object {
+            [pscustomobject]@{ name = $_.Key; cpuPct = [Math]::Round($_.Value, 1) }
+        } | Sort-Object cpuPct -Descending | Select-Object -First 5
+        $r.topProcesses = @($top | ForEach-Object { @{ name = $_.name; cpuPct = $_.cpuPct } })
+    } catch {
+        try {
+            $procs = Get-Process | Where-Object { $_.CPU -gt 0 } | Sort-Object CPU -Descending | Select-Object -First 5
+            $r.topProcesses = @($procs | ForEach-Object { @{ name = $_.ProcessName; cpuSeconds = [Math]::Round($_.CPU, 1) } })
+        } catch { }
+    }
 
     # Windows has no thermal status API for user code; the status stays Unknown and the
     # analyzer gates on cpuPerformancePct instead.
@@ -175,8 +234,9 @@ function Get-AndroidThermal {
     }
     $statusNames = @('Nominal', 'Light', 'Moderate', 'Severe', 'Critical', 'Emergency', 'Shutdown')
 
-    $ts = & $adb @serialArgs shell dumpsys thermalservice 2>$null
-    if ($LASTEXITCODE -eq 0 -and $ts) {
+    $call = Invoke-PerformanceNative -Exe $adb -Arguments (@($serialArgs) + @('shell', 'dumpsys', 'thermalservice'))
+    if ($call.ExitCode -eq 0 -and $call.Output.Count -gt 0) {
+        $ts = $call.Output
         $joined = ($ts -join "`n")
         if ($joined -match 'Thermal Status:\s*(\d+)') {
             $code = [int]$Matches[1]
@@ -203,9 +263,9 @@ function Get-AndroidThermal {
         $r['thermalserviceError'] = 'dumpsys thermalservice failed or returned nothing'
     }
 
-    $bat = & $adb @serialArgs shell dumpsys battery 2>$null
-    if ($LASTEXITCODE -eq 0 -and $bat) {
-        $joined = ($bat -join "`n")
+    $call = Invoke-PerformanceNative -Exe $adb -Arguments (@($serialArgs) + @('shell', 'dumpsys', 'battery'))
+    if ($call.ExitCode -eq 0 -and $call.Output.Count -gt 0) {
+        $joined = ($call.Output -join "`n")
         if ($joined -match 'temperature:\s*(\d+)') { $r.batteryTempC = ([int]$Matches[1]) / 10.0 }
         if ($joined -match 'AC powered:\s*(true|false)') { $ac = $Matches[1] -eq 'true' } else { $ac = $false }
         if ($joined -match 'USB powered:\s*(true|false)') { $usb = $Matches[1] -eq 'true' } else { $usb = $false }
@@ -214,13 +274,13 @@ function Get-AndroidThermal {
         if ($joined -match 'level:\s*(\d+)') { $r['batteryPct'] = [int]$Matches[1] }
     }
 
-    $lp = & $adb @serialArgs shell settings get global low_power 2>$null
-    if ($LASTEXITCODE -eq 0 -and $lp) { $r.isLowPower = (($lp | Select-Object -First 1).Trim() -eq '1') }
+    $call = Invoke-PerformanceNative -Exe $adb -Arguments (@($serialArgs) + @('shell', 'settings', 'get', 'global', 'low_power'))
+    if ($call.ExitCode -eq 0 -and $call.Output.Count -gt 0) { $r.isLowPower = (($call.Output[0]).Trim() -eq '1') }
 
     # Current CPU frequency of the big cores, when the sysfs node is readable
-    $freq = & $adb @serialArgs shell 'cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq 2>/dev/null' 2>$null
-    if ($LASTEXITCODE -eq 0 -and $freq) {
-        $vals = @($freq | ForEach-Object { $_.Trim() } | Where-Object { $_ -match '^\d+$' } | ForEach-Object { [double]$_ / 1000.0 })
+    $call = Invoke-PerformanceNative -Exe $adb -Arguments (@($serialArgs) + @('shell', 'cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq 2>/dev/null'))
+    if ($call.ExitCode -eq 0 -and $call.Output.Count -gt 0) {
+        $vals = @($call.Output | ForEach-Object { $_.Trim() } | Where-Object { $_ -match '^\d+$' } | ForEach-Object { [double]$_ / 1000.0 })
         if ($vals.Count -gt 0) { $r.cpuFrequencyMHz = ($vals | Measure-Object -Maximum).Maximum; $r['cpuFrequenciesMHz'] = $vals }
     }
 
@@ -237,5 +297,5 @@ if ($OutFile) {
     Write-PerformanceJson -Object $result -Path $OutFile
     Write-PerformanceLog ("Thermal state written to {0} (status {1}, cpuPerf {2}, cpuTemp {3}, battTemp {4})" -f $OutFile, $result.status, $result.cpuPerformancePct, $result.cpuPackageTempC, $result.batteryTempC)
 } else {
-    $result | ConvertTo-Json -Depth 20
+    ConvertTo-Json -InputObject $result -Depth 20
 }

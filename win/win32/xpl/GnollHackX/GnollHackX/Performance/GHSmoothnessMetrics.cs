@@ -37,7 +37,7 @@ namespace GnollHackX.Performance
         public GHPresentSource Source;
         public GHHitchCause Cause;
         public GHContentEvent ContentEvents;    /* content that appeared during the gap */
-        public bool IsHitch;            /* the previous frame stayed on screen more than R/2 beyond T */
+        public bool IsHitch;            /* the previous frame stayed on screen more than R/2 beyond its longest on-time hold */
         public bool IsJudder;           /* abs(PacingErrorTicks) > R/4 */
         public bool IsPausedGap;        /* the gap spans a menu, overlay, suspension or resize */
     }
@@ -150,6 +150,7 @@ namespace GnollHackX.Performance
             return ticks * 1000.0 / Stopwatch.Frequency;
         }
 
+        /* The median measured refresh period, 0 when no record has one */
         private static long MedianPeriod(GHFrameRecord[] records, int n)
         {
             List<long> periods = new List<long>();
@@ -159,9 +160,15 @@ namespace GnollHackX.Performance
                     periods.Add(records[i].RefreshPeriodTicks);
             }
             if (periods.Count == 0)
-                return Stopwatch.Frequency / 60;
+                return 0;
             periods.Sort();
             return periods[periods.Count / 2];
+        }
+
+        /* A gap longer than this is a hitch: half a refresh beyond the longest on-time hold */
+        public static long HitchThresholdTicks(long targetPeriodTicks, long refreshPeriodTicks)
+        {
+            return (long)GHPerformanceStatistics.OnTimeHold(targetPeriodTicks, refreshPeriodTicks) + refreshPeriodTicks / 2;
         }
 
         private static int ModeShort(GHFrameRecord[] records, int n, bool target)
@@ -300,7 +307,9 @@ namespace GnollHackX.Performance
             return -1;
         }
 
-        private static bool IsPauseTick(ref GHFrameRecord r)
+        /* A tick during which the map is not being shown: a menu, overlay, suspension,
+           resize or anything else that stops the map render */
+        public static bool IsPauseTick(ref GHFrameRecord r)
         {
             switch (r.Pacing)
             {
@@ -341,8 +350,9 @@ namespace GnollHackX.Performance
             if (compositor == null)
                 m = 0;
 
-            long period = MedianPeriod(records, n);
-            s.MeasuredRefreshHz = period > 0 ? (double)Stopwatch.Frequency / period : 0;
+            long measuredPeriod = MedianPeriod(records, n);
+            long period = measuredPeriod > 0 ? measuredPeriod : Stopwatch.Frequency / 60;
+            s.MeasuredRefreshHz = measuredPeriod > 0 ? (double)Stopwatch.Frequency / measuredPeriod : 0;
             int targetMode = ModeShort(records, n, true);
             int assumedMode = ModeShort(records, n, false);
             s.TargetFps = targetMode;
@@ -502,12 +512,12 @@ namespace GnollHackX.Performance
                 errSq += errMs * errMs;
                 absErrMs.Add(Math.Abs(errMs));
 
-                long holdRefreshes = (long)Math.Round((double)gap / refresh);
-                long intendedRefreshes = (long)Math.Round((double)target / refresh);
+                long holdRefreshes = (long)Math.Round((double)gap / refresh, MidpointRounding.AwayFromZero);
+                long intendedRefreshes = (long)Math.Round((double)target / refresh, MidpointRounding.AwayFromZero);
                 if (holdRefreshes > intendedRefreshes)
                     repeats += holdRefreshes - intendedRefreshes;
 
-                displayed[j].IsHitch = gap > target + refresh / 2;
+                displayed[j].IsHitch = gap > HitchThresholdTicks(target, refresh);
                 displayed[j].IsJudder = Math.Abs(displayed[j].PacingErrorTicks) > refresh / 4;
 
                 GHContentEvent gapEvents = GHContentEvent.None;
@@ -541,7 +551,7 @@ namespace GnollHackX.Performance
 
                 if (displayed[j].IsHitch || displayed[j].IsJudder)
                 {
-                    GHHitchCause cause = Attribute(records, prevIdx, curIdx, compositor, m, isDisplayed, target, refresh,
+                    GHHitchCause cause = Attribute(records, n, prevIdx, curIdx, compositor, m, isDisplayed, target, refresh,
                                                    gap, displayed[j].DisplayDelayTicks);
                     displayed[j].Cause = cause;
                     s.CauseCount[(int)cause]++;
@@ -584,17 +594,20 @@ namespace GnollHackX.Performance
 
         /* Charges the gap before a late or uneven frame to the first stage, in pipeline
            order, that exceeded its budget. prevIdx and curIdx are the records of the
-           displayed frames on either side of the gap. */
-        public static GHHitchCause Attribute(GHFrameRecord[] records, int prevIdx, int curIdx,
+           displayed frames on either side of the gap; n is the number of records. */
+        public static GHHitchCause Attribute(GHFrameRecord[] records, int n, int prevIdx, int curIdx,
                                              GHCompositorFrame[] compositor, int m, bool[] isDisplayed,
                                              long targetPeriod, long refreshPeriod, long gapTicks, long displayDelayTicks)
         {
             long halfRefresh = refreshPeriod / 2;
 
             /* 1. Display mode: the measured period moved by more than 5 % across the gap, or
-               the pacing logic is dividing a refresh rate the panel is not running at */
+               the pacing logic is dividing a refresh rate the panel is not running at. The
+               measured period is a running median, so a change shows in the records up to
+               PeriodMedianLag ticks after the gap it caused. */
             long p0 = records[prevIdx].RefreshPeriodTicks;
-            for (int i = prevIdx + 1; i <= curIdx; i++)
+            int lastPeriodIdx = Math.Min(n - 1, curIdx + GHFrameTimeline.PeriodMedianLag);
+            for (int i = prevIdx + 1; i <= lastPeriodIdx; i++)
             {
                 long p = records[i].RefreshPeriodTicks;
                 if (p0 > 0 && p > 0 && Math.Abs(p - p0) > p0 / 20)
@@ -611,10 +624,10 @@ namespace GnollHackX.Performance
             /* 2. UI thread: a missed callback or a callback well after its vsync. When the
                UI thread was busy painting the map across that vsync, the paint is the
                cause, not the thread; when it spent more than half a refresh handling game
-               requests before the late callback, the requests are. */
+               requests just before the late callback, the requests are, even with a
+               collection in the gap. */
             bool uiLate = false, gc = false, requests = false;
             GHHitchCause ownPaint = GHHitchCause.None;
-            long requestTicks = 0;
             for (int i = prevIdx + 1; i <= curIdx; i++)
             {
                 GHFrameRecord r = records[i];
@@ -625,11 +638,10 @@ namespace GnollHackX.Performance
                     || (r.VsyncTicks != 0 && r.CallbackStartTicks - r.VsyncTicks > halfRefresh);
                 if (r.GcCount0 != q.GcCount0 || r.GcCount1 != q.GcCount1 || r.GcCount2 != q.GcCount2)
                     gc = true;
-                requestTicks += r.RequestTicks;
                 if (!late)
                     continue;
                 uiLate = true;
-                if (requestTicks > halfRefresh)
+                if (r.RequestTicks > halfRefresh)
                     requests = true;
                 long deadline = (cur != 0 ? cur : r.CallbackStartTicks) + halfRefresh;
                 long missedVsync = prev != 0 ? prev + refreshPeriod : deadline - halfRefresh;
@@ -657,17 +669,18 @@ namespace GnollHackX.Performance
                or a ratio of refresh to target rate the divisor pattern cannot pace evenly.
                Such a pattern holds frames for at most two divisor steps; a longer gap has
                another cause. */
-            for (int i = prevIdx + 1; i <= curIdx; i++)
-            {
-                GHPacingDecision p = records[i].Pacing;
-                if (p == GHPacingDecision.SkippedModulo || p == GHPacingDecision.RenderedCatchUp)
-                    return GHHitchCause.PacingPolicy;
-            }
             int targetFps = records[curIdx].TargetFps;
-            if (assumedHz > targetFps && targetFps > 0 && assumedHz % targetFps != 0)
+            long divisor = assumedHz > targetFps && targetFps > 0 ? assumedHz / targetFps : 1;
+            bool withinPattern = gapTicks <= 2 * divisor * refreshPeriod + refreshPeriod / 4;
+            if (withinPattern)
             {
-                long divisor = Math.Max(1, assumedHz / targetFps);
-                if (gapTicks <= 2 * divisor * refreshPeriod + refreshPeriod / 4)
+                for (int i = prevIdx + 1; i <= curIdx; i++)
+                {
+                    GHPacingDecision p = records[i].Pacing;
+                    if (p == GHPacingDecision.SkippedModulo || p == GHPacingDecision.RenderedCatchUp)
+                        return GHHitchCause.PacingPolicy;
+                }
+                if (assumedHz > targetFps && targetFps > 0 && assumedHz % targetFps != 0)
                     return GHHitchCause.PacingPolicy;
             }
 
@@ -739,7 +752,9 @@ namespace GnollHackX.Performance
        GHSmoothnessMetrics without the compositor refinement, over 250 ms buckets. A change
        is reported when the displayed rate of the last second differs from that of the three
        seconds before by more than 10 % for a full second, or when the measured refresh
-       period moves by more than 5 % for a full second. Runs on the paint thread. */
+       period moves by more than 5 % for a full second. A vsync's frame is judged when the
+       next vsync's first paint arrives, since a later paint on the same vsync replaces it.
+       Runs on the paint thread. */
     public static class GHCadenceMonitor
     {
         private const int Buckets = 16;
@@ -757,8 +772,12 @@ namespace GnollHackX.Performance
         private static double _bucketErrSq = 0;
         private static int _bucketErrCount = 0;
 
+        /* The newest vsync a paint landed on and the counter of its latest paint, and the
+           displayed frame before it */
         private static long _lastBoundary = 0;
         private static long _lastCounter = 0;
+        private static long _shownBoundary = 0;
+        private static long _shownCounter = 0;
         private static int _changeStreak = 0;
         private static int _refreshStreak = 0;
         private static long _reportedPeriod = 0;
@@ -788,6 +807,8 @@ namespace GnollHackX.Performance
             _bucketErrCount = 0;
             _lastBoundary = 0;
             _lastCounter = 0;
+            _shownBoundary = 0;
+            _shownCounter = 0;
             _changeStreak = 0;
             _refreshStreak = 0;
             _reportedPeriod = 0;
@@ -812,16 +833,17 @@ namespace GnollHackX.Performance
 
             if (boundary > _lastBoundary)
             {
-                if (_lastBoundary != 0)
+                /* The previous vsync is final: its latest paint is the frame shown there */
+                if (_lastBoundary != 0 && _shownBoundary != 0)
                 {
-                    long gap = boundary - _lastBoundary;
+                    long gap = _lastBoundary - _shownBoundary;
                     /* A gap of a second or more is a pause, not a frame */
                     if (gap < freq)
                     {
                         _bucketFrames++;
-                        if (gap > target + refreshPeriodTicks / 2)
+                        if (gap > GHSmoothnessMetrics.HitchThresholdTicks(target, refreshPeriodTicks))
                             _bucketHitchMs += (gap - target) * 1000.0 / freq;
-                        long step = paintedMainCounter - _lastCounter;
+                        long step = _lastCounter - _shownCounter;
                         if (step > 0 && step < 1000)
                         {
                             double errMs = (gap - step * target) * 1000.0 / freq;
@@ -830,7 +852,17 @@ namespace GnollHackX.Performance
                         }
                     }
                 }
+                if (_lastBoundary != 0)
+                {
+                    _shownBoundary = _lastBoundary;
+                    _shownCounter = _lastCounter;
+                }
                 _lastBoundary = boundary;
+                _lastCounter = paintedMainCounter;
+            }
+            else if (boundary == _lastBoundary)
+            {
+                /* Two paints on one vsync: the later one is shown */
                 _lastCounter = paintedMainCounter;
             }
 

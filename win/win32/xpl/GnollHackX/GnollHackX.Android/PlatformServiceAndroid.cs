@@ -638,6 +638,7 @@ namespace GnollHackX.Droid
                         r.BatteryTempC = tenths < 0 ? float.NaN : tenths / 10.0f;
                         int plugged = batteryIntent.GetIntExtra(BatteryManager.ExtraPlugged, 0);
                         r.IsCharging = plugged != 0;
+                        r.PowerStateKnown = true;
                         batteryDetail = "battery=" + (float.IsNaN(r.BatteryTempC) ? "n/a" : r.BatteryTempC.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) + "C")
                             + " plugged=" + plugged.ToString();
                     }

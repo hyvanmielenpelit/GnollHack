@@ -467,6 +467,7 @@ namespace GnollHackX.iOS
                             device.BatteryMonitoringEnabled = true;
                         UIDeviceBatteryState batteryState = device.BatteryState;
                         r.IsCharging = batteryState == UIDeviceBatteryState.Charging || batteryState == UIDeviceBatteryState.Full;
+                        r.PowerStateKnown = batteryState != UIDeviceBatteryState.Unknown;
                         batteryDetail = "battery=" + ((int)batteryState).ToString();
                     }
                 }

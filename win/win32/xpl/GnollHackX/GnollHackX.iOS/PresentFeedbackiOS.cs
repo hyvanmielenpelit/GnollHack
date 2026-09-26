@@ -35,6 +35,10 @@ namespace GnollHackM
         private static extern void gh_signpost_event(int kind, long value);
 
         private bool _initialized = false;
+        /* Each interval is ended only when its begin was emitted; the end calls arrive even
+           after the timeline was switched off mid-interval */
+        private bool _tickOpen = false;
+        private bool _paintOpen = false;
         private bool _flushOpen = false;
 #endif
 
@@ -53,15 +57,21 @@ namespace GnollHackM
         {
 #if GNH_IOS_SIGNPOSTS
             if (_initialized)
+            {
                 gh_signpost_tick_begin((ulong)frameId);
+                _tickOpen = true;
+            }
 #endif
         }
 
         public void TickEnd(long frameId, GHPacingDecision pacing)
         {
 #if GNH_IOS_SIGNPOSTS
-            if (_initialized)
+            if (_tickOpen)
+            {
+                _tickOpen = false;
                 gh_signpost_tick_end((ulong)frameId, (int)pacing);
+            }
 #endif
         }
 
@@ -69,14 +79,17 @@ namespace GnollHackM
         {
 #if GNH_IOS_SIGNPOSTS
             if (_initialized)
+            {
                 gh_signpost_paint_begin((ulong)frameId);
+                _paintOpen = true;
+            }
 #endif
         }
 
         public void FlushBegin(long frameId)
         {
 #if GNH_IOS_SIGNPOSTS
-            if (_initialized)
+            if (_paintOpen)
             {
                 gh_signpost_flush_begin((ulong)frameId);
                 _flushOpen = true;
@@ -88,13 +101,14 @@ namespace GnollHackM
         public void PaintEnd(long frameId)
         {
 #if GNH_IOS_SIGNPOSTS
-            if (_initialized)
+            if (_flushOpen)
             {
-                if (_flushOpen)
-                {
-                    _flushOpen = false;
-                    gh_signpost_flush_end((ulong)frameId);
-                }
+                _flushOpen = false;
+                gh_signpost_flush_end((ulong)frameId);
+            }
+            if (_paintOpen)
+            {
+                _paintOpen = false;
                 gh_signpost_paint_end((ulong)frameId);
             }
 #endif

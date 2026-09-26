@@ -31,8 +31,11 @@ namespace GnollHack.PerformanceAnalyzer.Readers
         public bool HasQpc { get { return TimeColumn != null; } }
     }
 
-    /* Reads a PresentMon CSV. PresentMon 1.x and 2.x name their columns differently, so
-       every column is chosen from a preference list and the choice is recorded.
+    /* Reads a PresentMon CSV. PresentMon 1.x names its columns `Dropped, TimeInSeconds,
+       QPCTime, MsBetweenPresents, MsUntilDisplayed, MsBetweenDisplayChange`; 2.x renames
+       them to `CPUStartQPC, FrameTime, CPUBusy, DisplayLatency, DisplayedTime` and has no
+       `Dropped` column: a frame that never reached the screen reads `NA` in its display
+       fields. Every column is chosen from a preference list and the choice is recorded.
 
        Rows are filtered to the named process, then to one swap chain: a process can
        present to several (a XAML island, an overlay, a secondary window), and mixing their
@@ -48,9 +51,11 @@ namespace GnollHack.PerformanceAnalyzer.Readers
     {
         private static readonly string[] IntervalPreference =
         {
-            "MsBetweenDisplayChange",   /* 2.x: time between the displayed frames */
+            "MsBetweenDisplayChange",   /* 1.x: time between the displayed frames */
+            "DisplayedTime",            /* 2.x: how long each displayed frame stayed on screen */
             "MsBetweenPresents",        /* 1.x and 2.x: time between application presents */
-            "msBetweenPresents"
+            "msBetweenPresents",
+            "FrameTime"                 /* 2.x: time between application presents */
         };
 
         private static readonly string[] ProcessColumns = { "Application", "ProcessName" };
@@ -60,7 +65,11 @@ namespace GnollHack.PerformanceAnalyzer.Readers
         /* 2.x --qpc_time writes CPUStartQPC; 1.x writes a QPC present time under one of
            the other names */
         private static readonly string[] QpcColumns = { "CPUStartQPC", "TimeInQPC", "QPCTime", "CPUStartQPCTime" };
-        private static readonly string[] DisplayedColumns = { "MsUntilDisplayed", "MsDisplayLatency" };
+        private static readonly string[] DisplayedColumns = { "MsUntilDisplayed", "DisplayLatency", "MsDisplayLatency" };
+
+        /* Only meaningful when the time column is the 2.x CPU start: how long the
+           application ran before presenting, in milliseconds */
+        private static readonly string[] BusyColumns = { "MsCPUBusy", "CPUBusy" };
 
         private sealed class Table
         {
@@ -161,6 +170,7 @@ namespace GnollHack.PerformanceAnalyzer.Readers
                 throw new InvalidDataException("PresentMon CSV has no interval column (looked for " + string.Join(", ", IntervalPreference) + "): " + path);
             int ci = t.Col[intervalCol];
             int cd = t.Find(DroppedColumns);
+            int cDisp = t.Find(DisplayedColumns);
 
             List<float> intervals = new List<float>(t.Rows.Count);
             int dropped = 0;
@@ -171,8 +181,17 @@ namespace GnollHack.PerformanceAnalyzer.Readers
                 if (f.Length <= ci)
                     continue;
                 rows++;
-                if (cd >= 0 && f.Length > cd && f[cd].Trim() == "1")
+                if (cd >= 0)
+                {
+                    if (f.Length > cd && f[cd].Trim() == "1")
+                        dropped++;
+                }
+                /* 2.x drops the Dropped column: an unparsable (NA) display field is the
+                   only sign a present never reached the screen */
+                else if (cDisp >= 0 && !Csv.TryDouble(Csv.Field(f, cDisp), out _))
+                {
                     dropped++;
+                }
                 if (!float.TryParse(f[ci].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float v))
                     continue;
                 /* The first row's interval is measured against nothing meaningful */
@@ -223,10 +242,12 @@ namespace GnollHack.PerformanceAnalyzer.Readers
             if (ct < 0)
                 return cap;
             cap.TimeColumn = t.Header[ct].Trim();
-            cap.TimesInMs = cap.TimeColumn.EndsWith("Ms", StringComparison.OrdinalIgnoreCase)
+            cap.TimesInMs = cap.TimeColumn.Equals("CPUStartQPCTime", StringComparison.OrdinalIgnoreCase)
+                || cap.TimeColumn.Equals("TimeInMs", StringComparison.OrdinalIgnoreCase)
+                || cap.TimeColumn.EndsWith("Ms", StringComparison.OrdinalIgnoreCase)
                 || cap.TimeColumn.IndexOf("InMs", StringComparison.OrdinalIgnoreCase) >= 0;
             bool cpuStart = cap.TimeColumn.StartsWith("CPUStart", StringComparison.OrdinalIgnoreCase);
-            int cBusy = cpuStart && t.Col.TryGetValue("MsCPUBusy", out int b) ? b : -1;
+            int cBusy = cpuStart ? t.Find(BusyColumns) : -1;
             int cDisp = t.Find(DisplayedColumns);
             cap.DisplayColumn = cDisp >= 0 ? t.Header[cDisp].Trim() : null;
             int cd = t.Find(DroppedColumns);

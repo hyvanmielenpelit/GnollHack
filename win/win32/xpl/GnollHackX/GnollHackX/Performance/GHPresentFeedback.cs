@@ -28,7 +28,10 @@ namespace GnollHackX.Performance
 
     /* Routes the frame pipeline's markers to the platform backend and to an EventSource that
        ETW, EventPipe, and in-process listeners can consume. The platform backend is active
-       exactly while the frame timeline is enabled. */
+       exactly while the frame timeline is enabled. The markers that close a trace section
+       (TickEnd, FlushBegin, PaintEnd) are forwarded even while inactive, so a section opened
+       just before the timeline was switched off is still closed; the backends guard each
+       with their own open flags. */
     public static class GHPresentFeedback
     {
         private static IGHPresentFeedback _platform = null;
@@ -89,7 +92,7 @@ namespace GnollHackX.Performance
                 return;
             GHRenderingEventSource.Log.TickEnd(frameId, (long)pacing);
             IGHPresentFeedback platform = _platform;
-            if (platform != null && IsActive)
+            if (platform != null)
                 platform.TickEnd(frameId, pacing);
         }
 
@@ -109,7 +112,7 @@ namespace GnollHackX.Performance
                 return;
             GHRenderingEventSource.Log.FlushBegin(frameId);
             IGHPresentFeedback platform = _platform;
-            if (platform != null && IsActive)
+            if (platform != null)
                 platform.FlushBegin(frameId);
         }
 
@@ -119,7 +122,7 @@ namespace GnollHackX.Performance
                 return;
             GHRenderingEventSource.Log.PaintEnd(frameId);
             IGHPresentFeedback platform = _platform;
-            if (platform != null && IsActive)
+            if (platform != null)
                 platform.PaintEnd(frameId);
         }
 

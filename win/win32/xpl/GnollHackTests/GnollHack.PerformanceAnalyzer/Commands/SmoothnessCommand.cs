@@ -150,11 +150,12 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                 md.AppendLine();
                 if (!j.Available)
                     continue;
-                md.AppendLine("| Painted frames | Matched | Left estimated | Dropped presents | GL-thread left estimated | Displayed before ready | Trace offset ms |");
-                md.AppendLine("|---|---|---|---|---|---|---|");
+                md.AppendLine("| Painted frames | Matched | Left estimated | Dropped presents | Shared presents | GL-thread left estimated | Displayed before ready | Trace offset ms | Offset spread ms |");
+                md.AppendLine("|---|---|---|---|---|---|---|---|---|");
                 md.AppendLine("| " + j.PaintedFrames + " | " + j.Matched + " | " + j.Unmatched + " | " + j.DroppedPresents
-                    + " | " + j.GlThreadLeftEstimated + " | " + j.DisplayedBeforeReady
-                    + " | " + (double.IsNaN(j.OffsetMs) ? "n/a" : F(j.OffsetMs, 3) + " (" + j.OffsetSamples + " ticks)") + " |");
+                    + " | " + j.SharedPresents + " | " + j.GlThreadLeftEstimated + " | " + j.DisplayedBeforeReady
+                    + " | " + (double.IsNaN(j.OffsetMs) ? "n/a" : F(j.OffsetMs, 3) + " (" + j.OffsetSamples + " ticks)")
+                    + " | " + (double.IsNaN(j.OffsetSpreadMs) ? "n/a" : F(j.OffsetSpreadMs, 3)) + " |");
                 md.AppendLine();
                 foreach (string n in j.Notes)
                     md.AppendLine("- " + n);
@@ -431,9 +432,10 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             md.AppendLine();
             md.AppendLine("PELT over " + F(ChangePoints.BucketMs, 0) + " ms buckets of displayed FPS and of pacing-error RMS, Gaussian mean-change cost, "
                 + "minimum segment " + ChangePoints.MinSegmentBuckets + " buckets, penalty 2 sigma^2 ln(n) with sigma from the MAD of first differences "
-                + "(floored; FPS penalty " + F(c.FpsPenalty, 1) + ", pacing penalty " + F(c.PacingPenalty, 2) + "). Buckets: " + c.Series.Count + ".");
+                + "(floored; FPS penalty " + F(c.FpsPenalty, 1) + ", pacing penalty " + F(c.PacingPenalty, 2) + "). Buckets: " + c.Series.Count
+                + ", of which " + c.Series.Missing.Count(m => m) + " hold a pause and are left out.");
             md.AppendLine();
-            if (c.Series.Count < 2 * ChangePoints.MinSegmentBuckets)
+            if (c.Series.Missing.Count(m => !m) < 2 * ChangePoints.MinSegmentBuckets)
             {
                 md.AppendLine("The window is too short for change-point detection.");
                 md.AppendLine();

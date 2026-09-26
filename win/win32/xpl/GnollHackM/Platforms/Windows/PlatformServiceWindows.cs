@@ -498,9 +498,13 @@ namespace GnollHackM
             string batteryDetail = "battery=unknown";
             try
             {
+                /* On external power: a full battery on AC and a desktop without a battery
+                   both count, which BatteryStatus.Charging alone would miss */
+                global::Windows.System.Power.PowerSupplyStatus supply = global::Windows.System.Power.PowerManager.PowerSupplyStatus;
                 global::Windows.System.Power.BatteryStatus batteryStatus = global::Windows.System.Power.PowerManager.BatteryStatus;
-                r.IsCharging = batteryStatus == global::Windows.System.Power.BatteryStatus.Charging;
-                batteryDetail = "battery=" + batteryStatus.ToString();
+                r.IsCharging = supply != global::Windows.System.Power.PowerSupplyStatus.NotPresent;
+                r.PowerStateKnown = true;
+                batteryDetail = "battery=" + batteryStatus.ToString() + " supply=" + supply.ToString();
             }
             catch
             {

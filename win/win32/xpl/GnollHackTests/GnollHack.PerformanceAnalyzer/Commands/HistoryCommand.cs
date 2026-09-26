@@ -12,7 +12,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
        A history line is the run record without its raw interval arrays, so the file
        stays small and diffable. The file is append-only: this command never rewrites
        it, and refuses a record whose id is already present. Debug-configuration runs are
-       refused too; see plan section 2.5. */
+       refused too; see DEVEL/performance/README.md's Protocol section. */
     public static class HistoryCommand
     {
         public static int Run(Args a)
@@ -38,7 +38,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                     try
                     {
                         using JsonDocument d = JsonDocument.Parse(line);
-                        if (d.RootElement.TryGetProperty("id", out JsonElement id))
+                        if (d.RootElement.TryGetProperty("id", out JsonElement id) && id.ValueKind == JsonValueKind.String)
                             existing.Add(id.GetString());
                     }
                     catch (JsonException) { }

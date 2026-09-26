@@ -210,6 +210,13 @@ namespace GnollHack.PerformanceAnalyzer.Model
             r.Thermal.After = ThermalAfter;
             ThermalGate.Apply(r);
 
+            int onScreenCount = OnScreenIntervalsMs?.Length ?? 0;
+            if (!r.Excluded && onScreenCount < 100)
+            {
+                r.Excluded = true;
+                r.ExclusionReason = "fewer than 100 on-screen intervals (" + onScreenCount + ")";
+            }
+
             Series s = new Series
             {
                 Kind = MetricNames.SmoothnessSeries,

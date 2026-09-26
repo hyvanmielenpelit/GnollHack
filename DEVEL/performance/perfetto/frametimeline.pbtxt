@@ -1,4 +1,6 @@
-# Perfetto trace config for GnollHack frame-pipeline captures (text proto).
+# Perfetto trace config for GnollHack frame-pipeline captures (text proto). Requires
+# Android 12 or later: android.surfaceflinger.frametimeline and the "thermal" atrace
+# category are both introduced there.
 # Capture-AndroidFrames.ps1 substitutes {PACKAGE} and {DURATION_MS}, converts line endings
 # to LF, and pushes the result to the device.
 #
@@ -6,9 +8,20 @@
 # expected and actual present times and SurfaceFlinger's jank classification.
 # atrace_apps enables the app's own GH.Tick / GH.Paint / GH.Flush sections and the
 # GH.FrameId / GH.PaintFrameId counters, which tie each frame to the in-app timeline.
+#
+# write_into_file / file_write_period_ms stream the trace to disk in 2.5 s chunks instead
+# of holding it all in the ring buffer, so a capture longer than the buffer still keeps
+# its early frames; flush_period_ms forces periodic flushes of buffered data sources so a
+# chunk boundary does not lose the last few events before it. target_buffer: 1 routes the
+# frame timeline and GPU memory data sources to the 8 MB buffer below, away from the
+# high-volume ftrace stream in buffer 0.
 
 buffers: { size_kb: 65536 fill_policy: RING_BUFFER }
 buffers: { size_kb: 8192 }
+
+write_into_file: true
+file_write_period_ms: 2500
+flush_period_ms: 10000
 
 data_sources: {
   config {
@@ -30,8 +43,8 @@ data_sources: {
   }
 }
 
-data_sources: { config { name: "android.surfaceflinger.frametimeline" } }
-data_sources: { config { name: "android.gpu.memory" } }
+data_sources: { config { name: "android.surfaceflinger.frametimeline" target_buffer: 1 } }
+data_sources: { config { name: "android.gpu.memory" target_buffer: 1 } }
 
 data_sources: {
   config {

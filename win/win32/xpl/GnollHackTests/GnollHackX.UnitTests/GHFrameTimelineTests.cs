@@ -259,10 +259,12 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
-        public void Dump_WritesOneRowPerTick()
+        public void Dump_WritesOneRowPerTick_WithTheHeadersFieldCount()
         {
             Restart();
+            GHFrameTimeline.SetPendingPlatformFrame(0, 0, 5000);
             RenderedTick(1);
+            GHFrameTimeline.SetPendingPlatformFrame(0, 0, 5000 + Frequency / 60);
             RenderedTick(2);
             string path = Path.Combine(Path.GetTempPath(), "ghframetimeline_test_" + System.Guid.NewGuid().ToString("N") + ".csv");
             try
@@ -270,17 +272,22 @@ namespace GnollHackX.UnitTests
                 GHFrameTimeline.DumpToCsv(path);
                 string[] lines = File.ReadAllLines(path);
                 int dataRows = 0;
-                bool header = false;
+                string[] header = null;
                 foreach (string line in lines)
                 {
                     if (line.StartsWith("#"))
                         continue;
-                    if (!header)
+                    string[] fields = line.Split(',');
+                    if (header == null)
                     {
                         Assert.StartsWith("FrameId,", line);
-                        header = true;
+                        header = fields;
                         continue;
                     }
+                    Assert.Equal(header.Length, fields.Length);
+                    /* The platform frame time is relative to the first one, which reads 0 */
+                    int platformColumn = System.Array.IndexOf(header, "PlatformFrameMs");
+                    Assert.Equal(dataRows == 0 ? "0.000" : "16.667", fields[platformColumn]);
                     dataRows++;
                 }
                 Assert.Equal(2, dataRows);
@@ -290,6 +297,55 @@ namespace GnollHackX.UnitTests
                 if (File.Exists(path))
                     File.Delete(path);
             }
+        }
+
+        [Fact]
+        public void EnablingAgain_KeepsTheRing()
+        {
+            Restart();
+            RenderedTick(1);
+            GHFrameTimeline.IsEnabled = true;
+            int n;
+            Snapshot(out n);
+            Assert.Equal(1, n);
+        }
+
+        /* A paint that returns early while another paint is in progress takes its own
+           invalidation but leaves the other paint its frame */
+        [Fact]
+        public void SkipPaint_DuringAPaint_KeepsThePaintsFrame()
+        {
+            Restart();
+            long first = RenderedTick(1);
+            long painting = GHFrameTimeline.BeginPaint(false);
+            Assert.Equal(first, painting);
+            long second = RenderedTick(2);
+            GHFrameTimeline.SkipPaint(true, GHPaintOutcome.Reentrant);
+            Assert.Equal(painting, GHFrameTimeline.CurrentPaintFrameId);
+            GHFrameTimeline.SetCurrentPaintOutcome(GHPaintOutcome.CanvasTooSmall);
+            GHFrameTimeline.EndPaint(painting, 1, 0, 0);
+            Assert.Equal(0, GHFrameTimeline.CurrentPaintFrameId);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHPaintOutcome.CanvasTooSmall, r[0].Paint);
+            Assert.Equal(second, r[1].FrameId);
+            Assert.Equal(GHPaintOutcome.Reentrant, r[1].Paint);
+        }
+
+        [Fact]
+        public void ClockAnchor_KeepsTheFirstPairAndFollowsTheLatest()
+        {
+            Restart();
+            Assert.False(GHFrameTimeline.HasClockAnchor);
+            GHFrameTimeline.UpdatePlatformClockAnchor(1000000000L, 5000);
+            GHFrameTimeline.UpdatePlatformClockAnchor(3000000000L, 5000 + 2 * Frequency + 7);
+            Assert.True(GHFrameTimeline.HasClockAnchor);
+            Assert.Equal(1000000000L, GHFrameTimeline.FirstClockAnchor.PlatformNanos);
+            Assert.Equal(3000000000L, GHFrameTimeline.LatestClockAnchor.PlatformNanos);
+            Assert.Equal(5000 + 2 * Frequency + 7, GHFrameTimeline.PlatformNanosToTicks(3000000000L));
+            Restart();
+            Assert.False(GHFrameTimeline.HasClockAnchor);
         }
     }
 }

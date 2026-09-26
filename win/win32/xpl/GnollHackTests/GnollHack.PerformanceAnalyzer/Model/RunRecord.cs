@@ -3,8 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace GnollHack.PerformanceAnalyzer.Model
 {
-    /* One measurement run. Mirrors DEVEL/performance/schema/run-record.schema.json; the
-       in-app GHPerformanceStatistics writes the same shape. A record may carry several
+    /* One measurement run. This v1 shape is the analyzer's own and has no schema file;
+       the in-app (schema v2) record that Load converts from is described by
+       DEVEL/performance/schema/run-record.schema.json. A record may carry several
        series: the app's internal FrameTimeProfiler series and an external one from
        PresentMon or gfxinfo, and the in-app smoothness series of a schema v2 record,
        each with its own metrics. */
@@ -46,14 +47,21 @@ namespace GnollHack.PerformanceAnalyzer.Model
             NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
         };
 
-        /* Reads a run record, or converts an in-app (schema v2) record to one */
+        /* Reads a run record, or converts an in-app (schema v2) record to one; returns
+           null for JSON that is neither, such as a bare env_before.json/env_after.json
+           thermal reading sitting alongside the runs in an arm directory */
         public static RunRecord Load(string path)
         {
             string text = File.ReadAllText(path);
             using (JsonDocument doc = JsonDocument.Parse(text))
             {
-                if (InAppRun.IsInAppRun(doc.RootElement))
-                    return InAppRun.FromJson(doc.RootElement, path).ToRunRecord();
+                JsonElement root = doc.RootElement;
+                if (InAppRun.IsInAppRun(root))
+                    return InAppRun.FromJson(root, path).ToRunRecord();
+                if (root.ValueKind != JsonValueKind.Object
+                    || !root.TryGetProperty("series", out JsonElement series)
+                    || series.ValueKind != JsonValueKind.Array)
+                    return null;
             }
             return JsonSerializer.Deserialize<RunRecord>(text, JsonOptions);
         }

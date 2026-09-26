@@ -8,8 +8,10 @@ and writes its per-frame CSV. PresentMon observes the OS presentation path, so t
 resulting MsBetweenPresents / MsBetweenDisplayChange columns are the ground truth the
 plan's external series is built on, independent of anything the app measures itself.
 
-PresentMon 2.x needs to run elevated for its ETW session on most machines; 1.x console
-builds generally do too. The script tells you if the tool exited non-zero.
+This script targets PresentMon 2.x's double-dash argument names; a 1.x console build,
+which takes single-dash options instead, is not supported here. PresentMon needs to run
+elevated for its ETW session on most machines. The script tells you if the tool exited
+non-zero.
 
 .EXAMPLE
 .\Capture-PresentMon.ps1 -ProcessName GnollHackM -Seconds 60 -OutCsv run1.csv
@@ -34,9 +36,10 @@ if (Test-Path -LiteralPath $OutCsv) { Remove-Item -LiteralPath $OutCsv -Force }
 $outDir = Split-Path -Parent $OutCsv
 if ($outDir -and -not (Test-Path -LiteralPath $outDir)) { New-Item -ItemType Directory -Force -Path $outDir | Out-Null }
 
-# Argument names differ between PresentMon 1.x and 2.x; both accept these forms.
-# --qpc_time adds raw QPC timestamps, which are the app's Stopwatch ticks on Windows, so
-# each present can be joined to the in-app frame timeline by time.
+# PresentMon 2.x only: these are double-dash long options. The 1.x console build takes
+# single-dash options instead (-process_name, -output_file, ...) and is not handled here.
+# --qpc_time adds a raw QPC timestamp column (CPUStartQPC), which is the app's Stopwatch
+# ticks on Windows, so each present can be joined to the in-app frame timeline by time.
 $pmArgs = @(
     '--process_name', $exe,
     '--output_file', $OutCsv,

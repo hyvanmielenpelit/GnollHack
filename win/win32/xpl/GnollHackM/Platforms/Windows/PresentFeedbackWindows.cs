@@ -69,14 +69,22 @@ namespace GnollHackM
         private static extern int DwmGetCompositionTimingInfo(IntPtr hwnd, ref DWM_TIMING_INFO pTimingInfo);
 
         private static readonly uint TimingInfoSize = (uint)Marshal.SizeOf(typeof(DWM_TIMING_INFO));
-        private static int _timingUnavailable = 0;
+
+        /* DWM fails transiently, e.g. during a display mode change, so the query is retried
+           on every callback and given up only after this many failures in a row */
+        private const int MaxConsecutiveFailures = 120;
+
+        /* Render-loop (UI) thread only */
+        private static int _consecutiveFailures = 0;
+        private static bool _timingUnavailable = false;
+        private static ulong _lastRefreshCount = 0;
 
         /* Called by the render loop before the tick with CompositionTarget.Rendering's
            RenderingTime in Stopwatch units. Hands the latest vblank to the timeline as the
-           tick's vsync and records DWM's refresh and composition counters. */
+           tick's vsync and records DWM's refresh and composition counters, once per refresh. */
         public static void CaptureFrame(long renderingTimeTicks)
         {
-            if (_timingUnavailable != 0)
+            if (_timingUnavailable)
             {
                 GHFrameTimeline.SetPendingPlatformFrame(0, 0, renderingTimeTicks);
                 return;
@@ -95,13 +103,23 @@ namespace GnollHackM
             }
             if (hr != 0)
             {
-                _timingUnavailable = 1;
+                if (++_consecutiveFailures >= MaxConsecutiveFailures)
+                {
+                    _timingUnavailable = true;
+                    GnollHackX.GHApp.MaybeWriteGHLog("DwmGetCompositionTimingInfo failed " + MaxConsecutiveFailures
+                        + " times in a row (HRESULT 0x" + hr.ToString("X8") + "); frame timeline continues without DWM timing");
+                }
                 GHFrameTimeline.SetPendingPlatformFrame(0, 0, renderingTimeTicks);
                 return;
             }
+            _consecutiveFailures = 0;
 
             long vblank = (long)info.qpcVBlank;
             GHFrameTimeline.SetPendingPlatformFrame(vblank, 0, renderingTimeTicks);
+
+            if (info.cRefresh == _lastRefreshCount)
+                return;
+            _lastRefreshCount = info.cRefresh;
 
             GHCompositorFrame frame = new GHCompositorFrame();
             frame.Source = GHCompositorSource.WindowsDwm;
@@ -117,7 +135,11 @@ namespace GnollHackM
         public void SetActive(bool active)
         {
             if (active)
-                _timingUnavailable = 0;
+            {
+                _timingUnavailable = false;
+                _consecutiveFailures = 0;
+                _lastRefreshCount = 0;
+            }
         }
 
         public void TickBegin(long frameId)

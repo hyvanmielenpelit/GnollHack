@@ -24,8 +24,9 @@ namespace GnollHackX.Performance
         public float HeadroomFraction;   /* 0..1+, NaN when unavailable (Android API 30+ GetThermalHeadroom) */
         public float BatteryTempC;       /* NaN when unavailable */
         public float CpuPerformancePct;  /* Windows: actual/nominal CPU frequency percent; NaN elsewhere */
-        public bool IsCharging;
+        public bool IsCharging;          /* on external power */
         public bool IsLowPower;
+        public bool PowerStateKnown;     /* IsCharging and IsLowPower were actually read */
         public long TimestampTicks;      /* DateTime.UtcNow.Ticks */
         public string Detail;            /* short free text, may be null */
     }
@@ -54,6 +55,7 @@ namespace GnollHackX.Performance
                 r.CpuPerformancePct = float.NaN;
                 r.IsCharging = false;
                 r.IsLowPower = false;
+                r.PowerStateKnown = false;
                 r.TimestampTicks = DateTime.UtcNow.Ticks;
                 r.Detail = null;
                 return r;
