@@ -24060,8 +24060,46 @@ namespace GnollHackX.Pages.Game
                 ReplaySlowerButton.TextColor = GHColors.White;
                 ReplaySlowerButton.IsEnabled = true;
             }
+            if (_replayControlsLocked)
+                ApplyReplayControlsLock();
             UpdateReplayHeaderLabel();
         }
+
+        /* Playback controls other than Quit are locked while a performance suite drives the
+           replay; Quit stays available and aborts the suite. UI thread only. */
+        private bool _replayControlsLocked = false;
+
+        public void SetReplayControlsLocked(bool locked)
+        {
+            _replayControlsLocked = locked;
+            if (locked)
+                ApplyReplayControlsLock();
+            else
+            {
+                ReplayPauseButton.IsEnabled = true;
+                ReplayGotoButton.IsEnabled = true;
+                ReplayGotoButton.TextColor = GHColors.White;
+                ReplayNextButton.IsEnabled = true;
+                ReplayNextButton.TextColor = GHColors.White;
+                UpdateReplayPauseButton();
+                UpdateReplaySpeedButtons();
+            }
+        }
+
+        private void ApplyReplayControlsLock()
+        {
+            ReplayPauseButton.IsEnabled = false;
+            ReplayPauseButton.TextColor = GHColors.Gray;
+            ReplaySlowerButton.IsEnabled = false;
+            ReplaySlowerButton.TextColor = GHColors.Gray;
+            ReplayFasterButton.IsEnabled = false;
+            ReplayFasterButton.TextColor = GHColors.Gray;
+            ReplayGotoButton.IsEnabled = false;
+            ReplayGotoButton.TextColor = GHColors.Gray;
+            ReplayNextButton.IsEnabled = false;
+            ReplayNextButton.TextColor = GHColors.Gray;
+        }
+
         /* Pauses or resumes the replay and shows it on the Pause/Play button; UI thread only */
         public void SetReplayPaused(bool paused)
         {
@@ -24089,6 +24127,8 @@ namespace GnollHackX.Pages.Game
                 ReplayGotoButton.IsVisible = false;
                 ReplayNextButton.IsVisible = false;
             }
+            if (_replayControlsLocked)
+                ApplyReplayControlsLock();
 
             UpdateReplayHeaderLabel();
         }
@@ -24163,6 +24203,8 @@ namespace GnollHackX.Pages.Game
         }
         private void ReplayFasterButton_Clicked(object sender, EventArgs e)
         {
+            if (_replayControlsLocked)
+                return;
             if(GHApp.ReplaySpeed < 128)
             {
                 GHApp.ReplaySpeed = GHApp.ReplaySpeed * 2;
@@ -24173,6 +24215,8 @@ namespace GnollHackX.Pages.Game
 
         private void ReplaySlowerButton_Clicked(object sender, EventArgs e)
         {
+            if (_replayControlsLocked)
+                return;
             if (GHApp.ReplaySpeed > 1.0 / 128)
             {
                 GHApp.ReplaySpeed = GHApp.ReplaySpeed / 2;
@@ -24182,12 +24226,16 @@ namespace GnollHackX.Pages.Game
 
         private void ReplayPauseButton_Clicked(object sender, EventArgs e)
         {
+            if (_replayControlsLocked)
+                return;
             GHApp.PauseReplay = !GHApp.PauseReplay;
             UpdateReplayPauseButton();
         }
 
         private void ReplayGotoButton_Clicked(object sender, EventArgs e)
         {
+            if (_replayControlsLocked)
+                return;
             if (GotoStylePicker.SelectedIndex < 1)
                 GotoTurnEntryText.Text = "";
             GotoTurnEntryText.IsEnabled = true;
@@ -24205,6 +24253,8 @@ namespace GnollHackX.Pages.Game
 
         private void ReplayNextButton_Clicked(object sender, EventArgs e)
         {
+            if (_replayControlsLocked)
+                return;
             ReplayNextButton.IsEnabled = false;
             if (GHApp.ReplayTurn >= 0)
             {

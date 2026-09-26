@@ -25,9 +25,11 @@ namespace GnollHackX.Performance
        replayed window or prompt to close, apply the scenario (idle pauses
        the replay, minimap pauses it and switches to the minimap, playback lets it
        play), warm up, measure one window, and save it. Between runs: cool down, wait
-       for the thermal state to be no worse than at the suite start (at most 300 s),
-       then either seek the same game page back (shared) or close it and open a new
-       one (fresh; the cool-down then happens on the page below the game page).
+       for the platform thermal status to be no worse than at the suite start (at most
+       300 s; no wait where the platform reports none), then either seek the same game
+       page back (shared) or close it and open a new one (fresh; the cool-down then
+       happens on the page below the game page). The replay header shows the run and
+       its phase.
 
        Everything runs on the UI thread as one async task. Every wait polls at least
        every 100 ms and aborts the suite when the replay ended (GHApp.GameStarted went
@@ -49,7 +51,6 @@ namespace GnollHackX.Performance
         private const int ThermalGatePollMs = 15 * 1000;
         private const int ThermalGateTimeoutMs = 300 * 1000;
         private const int AfterGarbageCollectionMs = 500;
-        private const float CpuThrottleDropPct = 10.0f;
         private const int MaxSeconds = 24 * 60 * 60;
 
         private const string ScenarioIdle = "idle";
@@ -125,7 +126,6 @@ namespace GnollHackX.Performance
                 GHThermalProbe.Read();
                 await Task.Delay(ThermalPrimeMs);
                 s.StartThermal = GHThermalProbe.Read();
-                s.StartThermalRank = ThermalRank(s.StartThermal, s.StartThermal);
 
                 s.ReplaySha256 = GHPerformanceSuiteStore.ComputeSha256(replayPath);
                 s.ReplayBytes = new FileInfo(replayPath).Length;
@@ -143,7 +143,7 @@ namespace GnollHackX.Performance
             }
             CurrentSuiteId = s.SuiteId;
             Log("started " + s.SuiteId + " (" + s.Scenario + ", " + s.PageMode + ", " + setup.Runs + " runs"
-                + (setup.WarmUpRun ? " + warm-up" : "") + ", thermal class " + ThermalClass(s.StartThermal, s.StartThermal) + ")");
+                + (setup.WarmUpRun ? " + warm-up" : "") + ", thermal status " + GHThermalProbe.StatusName(s.StartThermal.Status) + ")");
 
             bool profilerWasEnabled = FrameTimeProfiler.IsEnabled;
             FrameTimeProfiler.IsEnabled = true;
@@ -289,10 +289,12 @@ namespace GnollHackX.Performance
                     s.ActivePage.SetZoomMini();
                 }
 
-                s.ActivePage.SetReplayHeaderOverride(isWarmUp ? "Performance suite: warm-up run"
-                    : "Performance suite: run " + runIndex + " of " + setup.Runs);
-
+                s.RunLabel = isWarmUp ? "warm-up run" : "run " + runIndex + " of " + setup.Runs;
+                SetPhase(s, "warming up " + setup.WarmUpSeconds + " s");
                 await WaitAsync(s, setup.WarmUpSeconds * 1000L, true);
+
+                /* Set before the window opens, so the label is unchanged throughout it */
+                SetPhase(s, "measuring " + setup.WindowSeconds + " s");
                 await MeasureAsync(s, runIndex, isWarmUp);
 
                 if (runIndex < lastRunIndex)
@@ -333,7 +335,7 @@ namespace GnollHackX.Performance
             GHPerformanceSuiteSetup setup = s.Setup;
             if (s.IsShared)
             {
-                s.ActivePage.SetReplayHeaderOverride("Performance suite: cooling down");
+                SetPhase(s, "cooling down " + setup.CooldownSeconds + " s");
                 s.ActivePage.SetReplayPaused(true);
                 await WaitAsync(s, setup.CooldownSeconds * 1000L, true);
                 await ThermalGateAsync(s, true);
@@ -377,6 +379,7 @@ namespace GnollHackX.Performance
                start turn is 1 or less; otherwise one turn before the start turn, whose
                last turn then plays at normal speed */
             await page.StartReplay(s.ReplayPath, s.InitialFromTurn);
+            page.SetReplayControlsLocked(true);
             s.RunnerStopping = false;
             if (!GHApp.GameStarted || GHApp.StopReplay)
                 throw new SuiteAbortException("the replay could not be started");
@@ -415,52 +418,45 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* Waits until the thermal state is no worse than at the suite start, polling
-           every 15 s for at most 300 s; on timeout the next run goes ahead anyway */
+        /* Waits until the platform thermal status is no worse than at the suite start,
+           polling every 15 s for at most 300 s; on timeout the next run goes ahead anyway.
+           Without a platform thermal status (Windows) there is no gate: the processor
+           performance percent mostly reflects turbo boost, which falls whenever the
+           replay is paused, so it cannot tell a throttled machine from an idle one. Runs
+           measured while throttled are still excluded by the per-run rule. */
         private static async Task ThermalGateAsync(SuiteState s, bool gameExpected)
         {
+            if (s.StartThermal.Status == GHThermalStatus.Unknown)
+                return;
             Stopwatch sw = Stopwatch.StartNew();
+            bool announced = false;
             while (true)
             {
                 GHThermalReading now = GHThermalProbe.Read();
-                if (ThermalRank(now, s.StartThermal) <= s.StartThermalRank)
+                if (now.Status == GHThermalStatus.Unknown || now.Status <= s.StartThermal.Status)
                     return;
                 if (sw.ElapsedMilliseconds >= ThermalGateTimeoutMs)
                 {
-                    Log("thermal gate timed out in " + s.SuiteId + ": " + ThermalClass(now, s.StartThermal)
-                        + " vs " + ThermalClass(s.StartThermal, s.StartThermal) + " at the suite start");
+                    Log("thermal gate timed out in " + s.SuiteId + ": " + GHThermalProbe.StatusName(now.Status)
+                        + " vs " + GHThermalProbe.StatusName(s.StartThermal.Status) + " at the suite start");
                     return;
+                }
+                if (!announced)
+                {
+                    SetPhase(s, "waiting for the device to cool");
+                    announced = true;
                 }
                 await WaitAsync(s, ThermalGatePollMs, gameExpected);
             }
         }
 
-        /* The platform thermal status when known; otherwise (Windows) "throttled" when
-           the CPU performance percent is more than 10 points below the suite start,
-           else "nominal" */
-        private static string ThermalClass(GHThermalReading reading, GHThermalReading suiteStart)
+        /* Shows the suite's progress in the replay header; set once per phase, so the label
+           does not change during a measurement window */
+        private static void SetPhase(SuiteState s, string phase)
         {
-            if (reading.Status != GHThermalStatus.Unknown)
-                return GHThermalProbe.StatusName(reading.Status);
-            return IsCpuThrottled(reading, suiteStart) ? "throttled" : "nominal";
-        }
-
-        /* ThermalClass as an ordinal comparable across both kinds of class: a known
-           status by its enum value, "nominal" as Nominal, "throttled" as Severe */
-        private static int ThermalRank(GHThermalReading reading, GHThermalReading suiteStart)
-        {
-            if (reading.Status != GHThermalStatus.Unknown)
-                return (int)reading.Status;
-            return IsCpuThrottled(reading, suiteStart) ? (int)GHThermalStatus.Severe : (int)GHThermalStatus.Nominal;
-        }
-
-        private static bool IsCpuThrottled(GHThermalReading reading, GHThermalReading suiteStart)
-        {
-            float now = reading.CpuPerformancePct;
-            float start = suiteStart.CpuPerformancePct;
-            if (float.IsNaN(now) || float.IsNaN(start))
-                return false;
-            return now < start - CpuThrottleDropPct;
+            if (s.ActivePage == null || string.IsNullOrEmpty(s.RunLabel))
+                return;
+            s.ActivePage.SetReplayHeaderOverride(char.ToUpperInvariant(s.RunLabel[0]) + s.RunLabel.Substring(1) + ": " + phase);
         }
 
         /* Ends a window left open by an abort, excluded with the abort reason */
@@ -591,7 +587,7 @@ namespace GnollHackX.Performance
             public string ReplaySha256;
             public long ReplayBytes;
             public GHThermalReading StartThermal;
-            public int StartThermalRank;
+            public string RunLabel;                    /* "warm-up run" or "run i of n", for the header */
 
             public GamePage ActivePage;                 /* null when no game page of the suite is open */
             public Page PageBelow;                     /* top of the modal stack before the game page was pushed */

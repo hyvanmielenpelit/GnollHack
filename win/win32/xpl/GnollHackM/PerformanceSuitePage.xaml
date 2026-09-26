@@ -21,128 +21,173 @@
                     HorizontalOptions="Center" VerticalOptions="Fill" Margin="0,10,0,20" />
                 <Grid Grid.Row="1" MaximumWidthRequest="560" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <ScrollView x:Name="MainScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
-                        <StackLayout x:Name="MainLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="6">
-                            <StackLayout x:Name="SetupLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="4">
-                                <Label Text="Setup" FontFamily="Diablo" FontSize="18" TextColor="Black" HorizontalOptions="Start" Margin="0,0,0,4" />
+                        <StackLayout x:Name="MainLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="6" Padding="16,0,16,12">
+                            <!-- Setup labels are underlined because tapping one shows an explanation -->
+                            <StackLayout x:Name="SetupLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="6">
+                                <Label Text="Setup" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" HorizontalOptions="Start" Margin="0,4,0,2" />
 
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
-                                    <Label Grid.Column="0" Text="Replay" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Picker Grid.Column="1" x:Name="ReplayPicker" Title="Select a replay" FontFamily="Underwood" FontSize="14" TextColor="Black" TitleColor="Black"
-                                        BackgroundColor="Transparent" WidthRequest="340" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="ReplayLabel" Text="Replay" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Picker Grid.Column="1" x:Name="ReplayPicker" Title="Select a replay" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="240" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
+                                    <Label Grid.Column="1" x:Name="NoReplaysLabel" IsVisible="False" Text="No replays found" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="StartTurnLabel" Text="Start turn" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Entry Grid.Column="1" x:Name="StartTurnEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="ScenarioLabel" Text="Scenario" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Picker Grid.Column="1" x:Name="ScenarioPicker" Title="Select a scenario" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="175" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
                                         SelectedIndexChanged="Setup_SelectedIndexChanged" />
                                 </Grid>
-                                <Label x:Name="NoReplaysLabel" IsVisible="False" Text="No replays found. Record a game first." FontFamily="Underwood" FontSize="13" TextColor="Black" HorizontalOptions="Start" />
 
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
-                                    <Label Grid.Column="0" Text="Start Turn" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Entry Grid.Column="1" x:Name="StartTurnEntry" Keyboard="Numeric" WidthRequest="120" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="14" TextColor="Black"
-                                        TextChanged="Setup_TextChanged" />
-                                </Grid>
-                                <Label Text="Choose a turn with more than warm-up + window seconds of content after it. Early turns seek faster." FontFamily="Underwood" FontSize="11" TextColor="Gray" HorizontalOptions="Start" />
-
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
-                                    <Label Grid.Column="0" Text="Scenario" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Picker Grid.Column="1" x:Name="ScenarioPicker" FontFamily="Underwood" FontSize="14" TextColor="Black" TitleColor="Black"
-                                        BackgroundColor="Transparent" WidthRequest="200" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="RunsLabel" Text="Measured runs" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Picker Grid.Column="1" x:Name="RunsPicker" Title="Select runs" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="175" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
                                         SelectedIndexChanged="Setup_SelectedIndexChanged" />
                                 </Grid>
 
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
-                                    <Label Grid.Column="0" Text="Measured runs (warm-up run not counted)" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Picker Grid.Column="1" x:Name="RunsPicker" FontFamily="Underwood" FontSize="14" TextColor="Black" TitleColor="Black"
-                                        BackgroundColor="Transparent" WidthRequest="100" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
-                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
-                                </Grid>
-
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
-                                    <Label Grid.Column="0" Text="Warm-up run" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="WarmUpRunLabel" Text="Warm-up run" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
                                     <Switch Grid.Column="1" x:Name="WarmUpRunSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="Setup_Toggled" />
                                 </Grid>
 
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
-                                    <Label Grid.Column="0" Text="Page mode" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Picker Grid.Column="1" x:Name="PageModePicker" FontFamily="Underwood" FontSize="14" TextColor="Black" TitleColor="Black"
-                                        BackgroundColor="Transparent" WidthRequest="200" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="PageModeLabel" Text="Page mode" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Picker Grid.Column="1" x:Name="PageModePicker" Title="Select a page mode" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="175" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
                                         SelectedIndexChanged="Setup_SelectedIndexChanged" />
                                 </Grid>
 
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
-                                    <Label Grid.Column="0" Text="Arm label" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Entry Grid.Column="1" x:Name="ArmLabelEntry" Keyboard="Plain" WidthRequest="300" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="14" TextColor="Black"
-                                        TextChanged="Setup_TextChanged" />
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="ArmLabelLabel" Text="Arm label" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Entry Grid.Column="1" x:Name="ArmLabelEntry" Keyboard="Plain" WidthRequest="220" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
                                 </Grid>
 
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
-                                    <Label Grid.Column="0" Text="Warm-up seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Entry Grid.Column="1" x:Name="WarmUpSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="14" TextColor="Black"
-                                        TextChanged="Setup_TextChanged" />
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="WarmUpSecondsLabel" Text="Warm-up seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Entry Grid.Column="1" x:Name="WarmUpSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
                                 </Grid>
 
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
-                                    <Label Grid.Column="0" Text="Window seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Entry Grid.Column="1" x:Name="WindowSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="14" TextColor="Black"
-                                        TextChanged="Setup_TextChanged" />
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="WindowSecondsLabel" Text="Window seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Entry Grid.Column="1" x:Name="WindowSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
                                 </Grid>
 
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
-                                    <Label Grid.Column="0" Text="Cool-down seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
-                                    <Entry Grid.Column="1" x:Name="CooldownSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="14" TextColor="Black"
-                                        TextChanged="Setup_TextChanged" />
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="CooldownSecondsLabel" Text="Cool-down seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Entry Grid.Column="1" x:Name="CooldownSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
                                 </Grid>
 
-                                <Label x:Name="EstimatedDurationLabel" Text="Estimated duration: -" FontFamily="Underwood" FontSize="13" TextColor="Black" HorizontalOptions="Start" Margin="0,6,0,0" />
-                                <Label x:Name="StoreNoteLabel" FontFamily="Underwood" FontSize="11" TextColor="Gray" HorizontalOptions="Start" />
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="EstimatedDurationTitleLabel" Text="Estimated duration" FontFamily="Underwood" FontSize="15" TextColor="Black" TextDecorations="Underline" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Label Grid.Column="1" x:Name="EstimatedDurationLabel" Text="-" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End" />
+                                </Grid>
 
-                                <controls:CustomImageButton x:Name="btnRunSuite" Text="Run Suite" WidthRequest="320" HeightRequest="46" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                    Margin="0,10,0,16" HorizontalOptions="Center" VerticalOptions="Center" Clicked="btnRunSuite_Clicked" UseVaryingBackgroundImages ="True" />
+                                <controls:CustomImageButton x:Name="btnRunSuite" Text="Run Suite" WidthRequest="280" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="0,12,0,12" HorizontalOptions="Center" VerticalOptions="Center" Clicked="btnRunSuite_Clicked" UseVaryingBackgroundImages ="True" />
                             </StackLayout>
 
-                            <BoxView HeightRequest="1" Color="Gray" HorizontalOptions="Fill" Margin="0,0,0,8" />
+                            <BoxView HeightRequest="1" Color="Gray" HorizontalOptions="Fill" />
 
-                            <Label Text="Results" FontFamily="Diablo" FontSize="18" TextColor="Black" HorizontalOptions="Start" Margin="0,0,0,4" />
-                            <Label x:Name="NoSuitesLabel" IsVisible="False" Text="No performance suites yet. Run one above." FontFamily="Underwood" FontSize="13" TextColor="Black" HorizontalOptions="Start" />
+                            <Label x:Name="ResultsLabel" Text="Results" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" TextDecorations="Underline" HorizontalOptions="Start" Margin="0,8,0,2">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                            <Label x:Name="NoSuitesLabel" IsVisible="False" Text="No performance suites yet. Run one above." FontFamily="Underwood" FontSize="15" TextColor="Black" HorizontalOptions="Start" />
 
-                            <CollectionView x:Name="SuiteCollectionView" ItemSizingStrategy="MeasureAllItems" SelectionMode="Multiple" HeightRequest="260"
+                            <!-- Two lines per suite: date, scenario, runs and median hitch; then arm label, markers and size -->
+                            <CollectionView x:Name="SuiteCollectionView" ItemSizingStrategy="MeasureAllItems" SelectionMode="Multiple" HeightRequest="300"
                                 HorizontalOptions="Fill" VerticalOptions="Start" BackgroundColor="Transparent" SelectionChanged="SuiteCollectionView_SelectionChanged">
-                                <CollectionView.Header>
-                                    <Grid x:Name="SuiteHeaderGrid" ColumnDefinitions="105,70,*,40,80,60" ColumnSpacing="4" Padding="4,2" HorizontalOptions="Fill">
-                                        <Label Grid.Column="0" Text="Date" FontSize="12" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
-                                        <Label Grid.Column="1" Text="Scenario" FontSize="12" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
-                                        <Label Grid.Column="2" Text="Label" FontSize="12" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
-                                        <Label Grid.Column="3" Text="Runs" FontSize="12" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
-                                        <Label Grid.Column="4" Text="Hitch ms/s" FontSize="12" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
-                                        <Label Grid.Column="5" Text="Size" FontSize="12" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
-                                    </Grid>
-                                </CollectionView.Header>
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="mainscreen:PerformanceSuiteListItem">
-                                        <Grid Padding="4,3" ColumnDefinitions="105,70,*,40,80,60" ColumnSpacing="4" HorizontalOptions="Fill">
-                                            <Label Grid.Column="0" Text="{Binding DateText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
-                                            <Label Grid.Column="1" Text="{Binding ScenarioText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
-                                            <StackLayout Grid.Column="2" Spacing="0">
-                                                <Label Text="{Binding LabelText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
-                                                <Label Text="{Binding MarkersText}" IsVisible="{Binding HasMarkers}" FontSize="11" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
-                                            </StackLayout>
-                                            <Label Grid.Column="3" Text="{Binding RunsText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
-                                            <Label Grid.Column="4" Text="{Binding HitchText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
-                                            <Label Grid.Column="5" Text="{Binding SizeText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
-                                        </Grid>
+                                        <StackLayout Orientation="Vertical" Spacing="1" Padding="4,5" HorizontalOptions="Fill">
+                                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8" HorizontalOptions="Fill">
+                                                <Label Grid.Column="0" Text="{Binding DateText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
+                                                <Label Grid.Column="1" Text="{Binding ScenarioText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="TailTruncation" />
+                                                <Label Grid.Column="2" Text="{Binding RunsText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
+                                                <Label Grid.Column="3" Text="{Binding HitchText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMonoBold" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
+                                            </Grid>
+                                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" HorizontalOptions="Fill">
+                                                <Label Grid.Column="0" Text="{Binding LabelText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="TailTruncation" />
+                                                <Label Grid.Column="1" Text="{Binding MarkersText}" IsVisible="{Binding HasMarkers}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" FontAttributes="Italic" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
+                                                <Label Grid.Column="2" Text="{Binding SizeText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
+                                            </Grid>
+                                        </StackLayout>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>
 
-                            <FlexLayout x:Name="ResultButtonsLayout" Direction="Row" Wrap="Wrap" JustifyContent="Center" AlignContent="Center" HorizontalOptions="Fill" Margin="0,6,0,0">
-                                <controls:CustomImageButton x:Name="btnViewReport" Text="View Report" WidthRequest="150" HeightRequest="42" FontFamily="Diablo" FontSize="14" BackgroundColor="Transparent" TextColor="White"
+                            <FlexLayout x:Name="ResultButtonsLayout" Direction="Row" Wrap="Wrap" JustifyContent="Center" AlignItems="Center" AlignContent="Center" HorizontalOptions="Fill" Margin="0,6,0,0">
+                                <controls:CustomImageButton x:Name="btnViewReport" Text="Report" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
                                     Margin="3" IsEnabled="False" Clicked="btnViewReport_Clicked" UseVaryingBackgroundImages ="True" />
-                                <controls:CustomImageButton x:Name="btnSetBaseline" Text="Set as Baseline" WidthRequest="150" HeightRequest="42" FontFamily="Diablo" FontSize="14" BackgroundColor="Transparent" TextColor="White"
+                                <controls:CustomImageButton x:Name="btnSetBaseline" Text="Set Baseline" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
                                     Margin="3" IsEnabled="False" Clicked="btnSetBaseline_Clicked" UseVaryingBackgroundImages ="True" />
-                                <controls:CustomImageButton x:Name="btnCompareBaseline" Text="Compare with Baseline" WidthRequest="190" HeightRequest="42" FontFamily="Diablo" FontSize="14" BackgroundColor="Transparent" TextColor="White"
+                                <controls:CustomImageButton x:Name="btnCompareBaseline" Text="Compare" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
                                     Margin="3" IsEnabled="False" Clicked="btnCompareBaseline_Clicked" UseVaryingBackgroundImages ="True" />
-                                <controls:CustomImageButton x:Name="btnShare" Text="Share" WidthRequest="120" HeightRequest="42" FontFamily="Diablo" FontSize="14" BackgroundColor="Transparent" TextColor="White"
+                                <controls:CustomImageButton x:Name="btnShare" Text="Share" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
                                     Margin="3" IsEnabled="False" Clicked="btnShare_Clicked" UseVaryingBackgroundImages ="True" />
-                                <controls:CustomImageButton x:Name="btnDelete" Text="Delete" WidthRequest="120" HeightRequest="42" FontFamily="Diablo" FontSize="14" BackgroundColor="Transparent" TextColor="White"
+                                <controls:CustomImageButton x:Name="btnDelete" Text="Delete" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
                                     Margin="3" IsEnabled="False" Clicked="btnDelete_Clicked" UseVaryingBackgroundImages ="True" />
-                                <controls:CustomImageButton x:Name="btnImportResults" Text="Import Results" WidthRequest="150" HeightRequest="42" FontFamily="Diablo" FontSize="14" BackgroundColor="Transparent" TextColor="White"
+                                <controls:CustomImageButton x:Name="btnImportResults" Text="Import" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
                                     Margin="3" Clicked="btnImportResults_Clicked" UseVaryingBackgroundImages ="True" />
                             </FlexLayout>
                         </StackLayout>

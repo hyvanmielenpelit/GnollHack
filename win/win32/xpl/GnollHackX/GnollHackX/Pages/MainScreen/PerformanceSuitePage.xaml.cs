@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -70,8 +71,8 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        /* Backs the Replay picker: the file name shown to the user, with the full
-           path kept alongside it for use by the runner. */
+        /* Backs the Replay picker: a short display name derived from the file name,
+           with the full path kept alongside it for use by the runner. */
         private sealed class ReplayItem
         {
             public readonly string DisplayName;
@@ -89,6 +90,10 @@ namespace GnollHackX.Pages.MainScreen
 
         private string _pendingSelectSuiteId;
 
+        /* Explanation shown in a message box when the keyed label is tapped; the
+           label's own text is the message box title. */
+        private readonly Dictionary<Label, string> _labelExplanations = new Dictionary<Label, string>();
+
         public PerformanceSuitePage() : this(null)
         {
         }
@@ -101,19 +106,64 @@ namespace GnollHackX.Pages.MainScreen
                 lblHeader.TextColor = GHColors.White;
             }
             SetChildrenDarkModeTextColor(MainLayout, GHApp.DarkMode);
-            SetChildrenDarkModeTextColor(SuiteHeaderGrid, GHApp.DarkMode);
 
+            InitializeInfoLabels();
             InitializePickers();
             LoadPreferences();
             PopulateReplays();
             UpdateEstimatedDuration();
-            StoreNoteLabel.Text = GHApp.IsWindows
-                ? "Both builds share this store."
-                : "Share suites before reinstalling the app; import them afterwards.";
 
             /* The results list itself is populated from ContentPage_Appearing, once the
                page is actually about to become visible, matching ReplayPage. */
             _pendingSelectSuiteId = selectSuiteId;
+        }
+
+        private void InitializeInfoLabels()
+        {
+            AddInfoLabel(ReplayLabel,
+                "Lists the replays in the replay folder, newest first. For Minimap, record a wizard-mode game and press Ctrl+F to map the level first. For Playback, record a stretch with fighting and effects.");
+            AddInfoLabel(StartTurnLabel,
+                "The replay turn at which each run starts. Choose a turn with more than warm-up + window seconds of content after it. Early turns seek faster.");
+            AddInfoLabel(ScenarioLabel,
+                "Idle: the replay is paused at the player's command prompt and only animations run. Minimap: the same in minimap mode. Playback: the replay plays at normal speed through the window.");
+            AddInfoLabel(RunsLabel,
+                "The warm-up run is not counted. At least 3 measured runs are needed for a verdict, and 5 or more for a firm one.");
+            AddInfoLabel(WarmUpRunLabel,
+                "Run 0 is measured but excluded from the results. It absorbs the loading and garbage-collection storm after the game page opens.");
+            AddInfoLabel(PageModeLabel,
+                "Shared page restarts the replay in place, which also collects garbage. Fresh page closes and reopens the game page for each run.");
+            AddInfoLabel(ArmLabelLabel,
+                "Suites with the same label pool into one arm when compared. The default is the app version and commit.");
+            AddInfoLabel(WarmUpSecondsLabel,
+                "Seconds each run plays the scenario before measuring starts.");
+            AddInfoLabel(WindowSecondsLabel,
+                "Seconds measured in each run.");
+            AddInfoLabel(CooldownSecondsLabel,
+                "Seconds of pause between runs, letting the device cool down before the next run.");
+            AddInfoLabel(EstimatedDurationTitleLabel,
+                "Every run, including the warm-up run, takes its warm-up, window and cool-down seconds plus an allowance for loading and seeking.");
+            AddInfoLabel(ResultsLabel,
+                "Suites are saved on this device. "
+                + (GHApp.IsWindows
+                    ? "Both builds share this store."
+                    : "Share suites before reinstalling the app, and import them afterwards.")
+                + " Tap suites to select them; Report, Set Baseline and Compare need exactly one.");
+        }
+
+        private void AddInfoLabel(Label label, string explanation)
+        {
+            _labelExplanations[label] = explanation;
+            UIUtils.SetViewCursorOnHandler(label, GameCursorType.Info);
+            UIUtils.SetStyledToolTip(label, explanation);
+        }
+
+        private async void InfoLabel_Tapped(object sender, EventArgs e)
+        {
+            Label label = sender as Label;
+            string explanation;
+            if (label == null || !_labelExplanations.TryGetValue(label, out explanation))
+                return;
+            await GHApp.DisplayMessageBox(this, label.Text, explanation, "OK");
         }
 
         private void InitializePickers()
@@ -248,7 +298,7 @@ namespace GnollHackX.Pages.MainScreen
                             if (!isGZip && !isZip && !isPlain)
                                 continue;
 
-                            items.Add(new ReplayItem(fi.Name, fi.FullName));
+                            items.Add(new ReplayItem(GetReplayDisplayName(fi.Name), fi.FullName));
                         }
                     }
                 }
@@ -277,6 +327,62 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
+        /* The replay file name without its prefix and suffixes, with the trailing
+           timestamp (DateTime.ToBinary, written as an unsigned or, in old names, a
+           signed number) shown as a local "yyyy-MM-dd HH:mm" when it decodes to a
+           plausible date. */
+        private static string GetReplayDisplayName(string fileName)
+        {
+            string name = fileName ?? "";
+            if (name.EndsWith(GHConstants.ReplayGZipFileNameSuffix))
+                name = name.Substring(0, name.Length - GHConstants.ReplayGZipFileNameSuffix.Length);
+            else if (name.EndsWith(GHConstants.ReplayZipFileNameSuffix))
+                name = name.Substring(0, name.Length - GHConstants.ReplayZipFileNameSuffix.Length);
+            if (name.EndsWith(GHConstants.ReplayFileNameSuffix))
+                name = name.Substring(0, name.Length - GHConstants.ReplayFileNameSuffix.Length);
+            if (name.StartsWith(GHConstants.ReplayFileNamePrefix))
+                name = name.Substring(GHConstants.ReplayFileNamePrefix.Length);
+
+            int divisorIndex = name.LastIndexOf(GHConstants.ReplayFileNameMiddleDivisor, StringComparison.Ordinal);
+            if (divisorIndex > 0 && divisorIndex < name.Length - 1)
+            {
+                string stampText = name.Substring(divisorIndex + 1);
+                int cutIndex = divisorIndex;
+                bool negative = name[divisorIndex - 1] == GHConstants.ReplayFileNameMiddleDivisor[0];
+                if (negative)
+                    cutIndex = divisorIndex - 1;
+
+                long binary = 0;
+                bool parsed;
+                if (negative)
+                {
+                    parsed = long.TryParse("-" + stampText, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out binary);
+                }
+                else
+                {
+                    ulong unsignedBinary;
+                    parsed = ulong.TryParse(stampText, NumberStyles.None, CultureInfo.InvariantCulture, out unsignedBinary);
+                    if (parsed)
+                        binary = unchecked((long)unsignedBinary);
+                }
+
+                if (parsed && cutIndex > 0)
+                {
+                    try
+                    {
+                        DateTime stamp = DateTime.FromBinary(binary).ToLocalTime();
+                        if (stamp.Year >= 2000 && stamp.Year < 2200)
+                            return name.Substring(0, cutIndex) + " " + stamp.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+                    }
+                    catch (ArgumentException)
+                    {
+                        /* Not a DateTime binary; keep the name as it is */
+                    }
+                }
+            }
+            return name;
+        }
+
         private void Setup_TextChanged(object sender, TextChangedEventArgs e)
         {
             UpdateEstimatedDuration();
@@ -298,12 +404,12 @@ namespace GnollHackX.Pages.MainScreen
             {
                 GHPerformanceSuiteSetup setup = BuildSetupFromFieldsLenient();
                 TimeSpan estimate = GHPerformanceSuiteRunner.EstimateDuration(setup);
-                EstimatedDurationLabel.Text = "Estimated duration: " + FormatDuration(estimate);
+                EstimatedDurationLabel.Text = FormatDuration(estimate);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex);
-                EstimatedDurationLabel.Text = "Estimated duration: -";
+                EstimatedDurationLabel.Text = "-";
             }
         }
 
@@ -365,9 +471,9 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             int warmUpSeconds;
-            if (!int.TryParse(WarmUpSecondsEntry.Text, out warmUpSeconds) || warmUpSeconds <= 0)
+            if (!int.TryParse(WarmUpSecondsEntry.Text, out warmUpSeconds) || warmUpSeconds < 0)
             {
-                await GHApp.DisplayMessageBox(this, "Invalid Warm-up Seconds", "Warm-up seconds must be a positive number.", "OK");
+                await GHApp.DisplayMessageBox(this, "Invalid Warm-up Seconds", "Warm-up seconds must be zero or a positive number.", "OK");
                 return;
             }
 
@@ -379,9 +485,9 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             int cooldownSeconds;
-            if (!int.TryParse(CooldownSecondsEntry.Text, out cooldownSeconds) || cooldownSeconds <= 0)
+            if (!int.TryParse(CooldownSecondsEntry.Text, out cooldownSeconds) || cooldownSeconds < 0)
             {
-                await GHApp.DisplayMessageBox(this, "Invalid Cool-down Seconds", "Cool-down seconds must be a positive number.", "OK");
+                await GHApp.DisplayMessageBox(this, "Invalid Cool-down Seconds", "Cool-down seconds must be zero or a positive number.", "OK");
                 return;
             }
 
@@ -472,11 +578,11 @@ namespace GnollHackX.Pages.MainScreen
         {
             PerformanceSuiteListItem item = new PerformanceSuiteListItem();
             item.SuiteId = info.SuiteId;
-            item.DateText = info.StartedUtc.ToLocalTime().ToString("g");
+            item.DateText = info.StartedUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
             item.ScenarioText = info.Scenario;
             item.LabelText = info.ArmLabel;
-            item.RunsText = info.RunsUsed.ToString();
-            item.HitchText = double.IsNaN(info.MedianHitchRatioMsPerSec) ? "n/a" : info.MedianHitchRatioMsPerSec.ToString("0.00");
+            item.RunsText = info.RunsUsed.ToString(CultureInfo.InvariantCulture) + (info.RunsUsed == 1 ? " run" : " runs");
+            item.HitchText = double.IsNaN(info.MedianHitchRatioMsPerSec) ? "n/a" : info.MedianHitchRatioMsPerSec.ToString("0.00", CultureInfo.InvariantCulture) + " ms/s";
             item.SizeText = FormatSize(info.SizeBytes);
 
             List<string> markers = new List<string>();
@@ -496,10 +602,10 @@ namespace GnollHackX.Pages.MainScreen
         private static string FormatSize(long bytes)
         {
             if (bytes >= 1024 * 1024)
-                return (bytes / (1024.0 * 1024.0)).ToString("0.0") + " MB";
+                return (bytes / (1024.0 * 1024.0)).ToString("0.0", CultureInfo.InvariantCulture) + " MB";
             if (bytes >= 1024)
-                return (bytes / 1024.0).ToString("0.0") + " KB";
-            return bytes + " B";
+                return (bytes / 1024.0).ToString("0.0", CultureInfo.InvariantCulture) + " KB";
+            return bytes.ToString(CultureInfo.InvariantCulture) + " B";
         }
 
         /* Rebuilds the results list from the store and, when selectSuiteId is given,

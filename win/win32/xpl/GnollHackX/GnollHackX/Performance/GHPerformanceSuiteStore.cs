@@ -84,6 +84,33 @@ namespace GnollHackX.Performance
         public const string StatusComplete = "complete";
         public const string StatusAborted = "aborted";
 
+        /* The number the text ends with, e.g. 60 for "MapFPS60"; 0 when it ends in no digit */
+        private static double TrailingNumber(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return 0;
+            int start = text.Length;
+            while (start > 0 && char.IsDigit(text[start - 1]))
+                start--;
+            double value;
+            if (start == text.Length || !double.TryParse(text.Substring(start), NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
+                return 0;
+            return value;
+        }
+
+        /* The manifest's status, except that a suite still marked running which the runner
+           is not running was interrupted when the app stopped mid-suite */
+        private static string EffectiveStatus(ManifestJson manifest, out string abortReason)
+        {
+            abortReason = manifest.AbortReason;
+            if (manifest.Status == StatusRunning && manifest.SuiteId != GHPerformanceSuiteRunner.CurrentSuiteId)
+            {
+                abortReason = "interrupted: the app stopped during the suite";
+                return StatusAborted;
+            }
+            return manifest.Status;
+        }
+
         public const string OriginLocal = "local";
         public const string OriginImported = "imported";
 
@@ -825,8 +852,9 @@ namespace GnollHackX.Performance
                 info.ArmLabel = manifest.Setup != null ? manifest.Setup.ArmLabel : null;
                 info.PageMode = manifest.Setup != null ? manifest.Setup.PageMode : null;
                 info.StartedUtc = ParseIso(manifest.StartedUtc);
-                info.Status = manifest.Status;
-                info.AbortReason = manifest.AbortReason;
+                string abortReason;
+                info.Status = EffectiveStatus(manifest, out abortReason);
+                info.AbortReason = abortReason;
                 info.Origin = manifest.Origin;
                 info.ComparabilityKey = manifest.ComparabilityKey;
 
@@ -907,8 +935,9 @@ namespace GnollHackX.Performance
                 suite.StartTurn = setup.StartTurn;
             }
 
-            suite.Status = manifest.Status;
-            suite.AbortReason = manifest.AbortReason;
+            string abortReason;
+            suite.Status = EffectiveStatus(manifest, out abortReason);
+            suite.AbortReason = abortReason;
             suite.StartedUtc = ParseIso(manifest.StartedUtc);
             suite.Origin = manifest.Origin;
 
@@ -926,10 +955,12 @@ namespace GnollHackX.Performance
                 suite.UiFrameworkVersion = env.UiFrameworkVersion;
                 suite.SkiaSharpVersion = env.SkiaSharpVersion;
                 suite.FmodVersion = env.FmodVersion;
-                double parsed;
-                suite.MapFpsSetting = double.TryParse(env.MapRefreshRateSetting, NumberStyles.Float,
-                    CultureInfo.InvariantCulture, out parsed) ? parsed : 0;
+                suite.MapFpsSetting = TrailingNumber(env.MapRefreshRateSetting);
             }
+            /* The setting is a MapRefreshRateStyle name such as "MapFPS60"; without digits the
+               suite's measured target rate stands in */
+            if (suite.MapFpsSetting <= 0)
+                suite.MapFpsSetting = manifest.TargetFps;
             suite.MeasuredRefreshHz = manifest.MeasuredRefreshHz;
 
             for (int i = 0; i < manifest.Runs.Count; i++)
