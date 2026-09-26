@@ -9,7 +9,8 @@ namespace GnollHackX.Performance
     public enum GHTraceEvent : int
     {
         CadenceChange = 1,      /* value: displayed frames per second after the change */
-        RefreshChange = 2       /* value: measured refresh period in microseconds */
+        RefreshChange = 2,      /* value: the panel's refresh period in microseconds */
+        CallbackCadenceChange = 3   /* value: display callback period in microseconds */
     }
 
     /* A platform's presentation feedback and trace markers. SetActive runs on the UI thread;

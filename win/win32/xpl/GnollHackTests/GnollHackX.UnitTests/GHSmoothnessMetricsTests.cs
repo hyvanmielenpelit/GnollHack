@@ -437,6 +437,86 @@ namespace GnollHackX.UnitTests
             Assert.Equal(GHHitchCause.UiThreadLateGc, DominantCause(s));
         }
 
+        /* With pause data, a collection explains a late callback only if it paused long
+           enough to make it late: 1 ms does not, 15 ms does */
+        [Theory]
+        [InlineData(1.0, GHHitchCause.UiThreadLate)]
+        [InlineData(15.0, GHHitchCause.UiThreadLateGc)]
+        public void GcPause_DecidesWhetherALateCallbackIsGc(double pauseMs, GHHitchCause expected)
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            int gc = 0;
+            long pause = Ms(100);
+            List<int> lateTicks = new List<int>();
+            for (int i = 0; i < 120; i++)
+            {
+                bool stall = i % 30 == 15;
+                if (stall)
+                {
+                    t.NextVsync += period;
+                    gc++;
+                    pause += Ms(pauseMs);
+                }
+                int idx = t.Tick(period, 60, 60, GHPacingDecision.Rendered, true, 3.0, 1.0, stall ? 12.0 : 0.2);
+                GHFrameRecord r = t.Records[idx];
+                r.GcCount0 = gc;
+                r.GcPauseTicks = pause;
+                t.Records[idx] = r;
+                if (stall)
+                    lateTicks.Add(idx);
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.True(s.GcPauseDataAvailable);
+            Assert.Equal(4 * pauseMs, s.GcPauseMs, 1);
+            int judged = 0;
+            for (int j = 1; j < n; j++)
+            {
+                if (!lateTicks.Contains(d[j].RecordIndex))
+                    continue;
+                Assert.Equal(expected, d[j].Cause);
+                judged++;
+            }
+            Assert.Equal(lateTicks.Count, judged);
+        }
+
+        /* The compositor calls the render loop on every other vblank for two seconds while
+           the panel keeps its rate and the UI thread is idle: the hitches are the UI
+           framework's cadence, from the first one on, not the display mode or the thread */
+        [Fact]
+        public void CallbacksAtHalfThePanelRate_AreFrameworkCadence()
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            List<long> deltas = new List<long>();
+            long lastVsync = 0;
+            for (int i = 0; i < 360; i++)
+            {
+                bool throttled = i >= 120 && i < 180;
+                long step = throttled ? 2 * period : period;
+                if (lastVsync != 0)
+                    deltas.Add(t.NextVsync - lastVsync);
+                lastVsync = t.NextVsync;
+                int idx = t.Tick(step, 60, 60, GHPacingDecision.Rendered, true);
+                GHFrameRecord r = t.Records[idx];
+                r.RefreshPeriodTicks = period;
+                r.CallbackPeriodTicks = deltas.Count > 0 ? MedianOfLast(deltas, 15) : period;
+                t.Records[idx] = r;
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.True(s.HitchCount > 50, "hitches " + s.HitchCount);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.DisplayMode]);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadLate]);
+            Assert.Equal(TotalAttributed(s), s.CauseCount[(int)GHHitchCause.FrameworkCadence]);
+            Assert.Equal(60.0, s.MeasuredRefreshHz, 0);
+        }
+
         /* A floating text arrives with a request batch long enough to delay the next callback:
            the requests are charged, and the event table ties the hitches to floating texts */
         [Fact]
@@ -751,17 +831,91 @@ namespace GnollHackX.UnitTests
                 /* 5 s at 60 FPS, then 5 s at 30 FPS */
                 for (int i = 0; i < 300; i++)
                 {
-                    GHCadenceMonitor.OnPaintCompleted(t, period60, t + Ms(4), 60, counter++);
+                    GHCadenceMonitor.OnPaintCompleted(t, period60, period60, t + Ms(4), 60, counter++);
                     t += period60;
                 }
                 for (int i = 0; i < 150; i++)
                 {
-                    GHCadenceMonitor.OnPaintCompleted(t, period60, t + Ms(4), 60, counter++);
+                    GHCadenceMonitor.OnPaintCompleted(t, period60, period60, t + Ms(4), 60, counter++);
                     t += 2 * period60;
                 }
                 Assert.Single(changes);
                 Assert.StartsWith("CADENCE 60->30", changes[0]);
                 Assert.Equal(30.0, GHCadenceMonitor.DisplayedFps, 0);
+            }
+            finally
+            {
+                GHCadenceMonitor.ChangeLog = null;
+                GHCadenceMonitor.Reset();
+            }
+        }
+
+        /* Callbacks at half the panel's rate for two seconds: CALLBACKS reports the drop and
+           the return, and REFRESH stays silent because the panel did not change */
+        [Fact]
+        public void CadenceMonitor_CallbackDropIsCallbacksNotRefresh()
+        {
+            GHCadenceMonitor.Reset();
+            List<string> changes = new List<string>();
+            GHCadenceMonitor.ChangeLog = delegate (string text) { changes.Add(text); };
+            try
+            {
+                long t = 1000 * F;
+                long counter = 1;
+                long period = F / 144;
+                for (int i = 0; i < 720; i++)
+                {
+                    GHCadenceMonitor.OnPaintCompleted(t, period, period, t + Ms(2), 144, counter++);
+                    t += period;
+                }
+                for (int i = 0; i < 144; i++)
+                {
+                    GHCadenceMonitor.OnPaintCompleted(t, period, 2 * period, t + Ms(2), 144, counter++);
+                    t += 2 * period;
+                }
+                for (int i = 0; i < 720; i++)
+                {
+                    GHCadenceMonitor.OnPaintCompleted(t, period, period, t + Ms(2), 144, counter++);
+                    t += period;
+                }
+                Assert.DoesNotContain(changes, c => c.StartsWith("REFRESH"));
+                List<string> callbacks = changes.FindAll(c => c.StartsWith("CALLBACKS"));
+                Assert.Equal(2, callbacks.Count);
+                Assert.StartsWith("CALLBACKS 6.9->13.9 ms", callbacks[0]);
+                Assert.StartsWith("CALLBACKS 13.9->6.9 ms", callbacks[1]);
+            }
+            finally
+            {
+                GHCadenceMonitor.ChangeLog = null;
+                GHCadenceMonitor.Reset();
+            }
+        }
+
+        /* A panel change the callbacks follow, as on a platform without a separate panel
+           period: REFRESH reports it and CALLBACKS stays silent */
+        [Fact]
+        public void CadenceMonitor_PanelChangeIsRefreshNotCallbacks()
+        {
+            GHCadenceMonitor.Reset();
+            List<string> changes = new List<string>();
+            GHCadenceMonitor.ChangeLog = delegate (string text) { changes.Add(text); };
+            try
+            {
+                long t = 1000 * F;
+                long counter = 1;
+                long p120 = F / 120, p60 = F / 60;
+                for (int i = 0; i < 600; i++)
+                {
+                    GHCadenceMonitor.OnPaintCompleted(t, p120, p120, t + Ms(2), 60, counter++);
+                    t += p120;
+                }
+                for (int i = 0; i < 300; i++)
+                {
+                    GHCadenceMonitor.OnPaintCompleted(t, p60, p60, t + Ms(2), 60, counter++);
+                    t += p60;
+                }
+                Assert.Single(changes, c => c.StartsWith("REFRESH 8.3->16.7"));
+                Assert.DoesNotContain(changes, c => c.StartsWith("CALLBACKS"));
             }
             finally
             {
@@ -787,11 +941,11 @@ namespace GnollHackX.UnitTests
                 long period60 = F / 60;
                 for (int i = 0; i < 40; i++)
                 {
-                    GHCadenceMonitor.OnPaintCompleted(t, period60, t + Ms(2), 60, counter++);
-                    GHCadenceMonitor.OnPaintCompleted(t, period60, t + Ms(3), 60, counter++);
-                    GHCadenceMonitor.OnPaintCompleted(t, period60, t + Ms(4), 60, counter++);
+                    GHCadenceMonitor.OnPaintCompleted(t, period60, period60, t + Ms(2), 60, counter++);
+                    GHCadenceMonitor.OnPaintCompleted(t, period60, period60, t + Ms(3), 60, counter++);
+                    GHCadenceMonitor.OnPaintCompleted(t, period60, period60, t + Ms(4), 60, counter++);
                     t += 2 * period60;
-                    GHCadenceMonitor.OnPaintCompleted(t, period60, t + Ms(2), 60, counter++);
+                    GHCadenceMonitor.OnPaintCompleted(t, period60, period60, t + Ms(2), 60, counter++);
                     t += period60;
                 }
                 Assert.InRange(GHCadenceMonitor.PacingErrorRmsMs, 24.0, 29.0);

@@ -96,6 +96,59 @@ namespace GnollHack.PerformanceAnalyzer.Tests
             }
         }
 
+        /* A capture from before GcPauseMs and CallbackPeriodMs: both read as 0, so the
+           analysis has no pause data and judges GC by the counts */
+        [Fact]
+        public void Read_WithoutPauseAndCallbackColumns_ReadsZeros()
+        {
+            string[] lines = File.ReadAllLines(TestPaths.Run1Timeline).Select(l =>
+                l.StartsWith("#") ? l : l.Substring(0, l.LastIndexOf(',', l.LastIndexOf(',') - 1))).ToArray();
+            Assert.EndsWith("RequestMs,ContentEvents", lines.First(l => l.StartsWith("FrameId")));
+            string tmp = TestPaths.TempFile(".csv");
+            try
+            {
+                File.WriteAllLines(tmp, lines);
+                CapturedTimeline t = FrameTimelineCsv.Read(tmp);
+                Assert.Equal(40, t.Count);
+                Assert.All(t.Records.Take(t.Count), r => Assert.Equal(0, r.GcPauseTicks));
+                Assert.All(t.Records.Take(t.Count), r => Assert.Equal(0, r.CallbackPeriodTicks));
+                GHDisplayedFrame[] displayed = new GHDisplayedFrame[t.Count];
+                GHSmoothnessSummary s = GHSmoothnessMetrics.Analyze(t.Records, t.Count, null, 0, displayed, out int n);
+                Assert.False(s.GcPauseDataAvailable);
+                Assert.Equal(0.0, s.CallbackRefreshHz);
+            }
+            finally
+            {
+                File.Delete(tmp);
+            }
+        }
+
+        [Fact]
+        public void WriteThenRead_KeepsPauseAndCallbackPeriod()
+        {
+            CapturedTimeline a = FrameTimelineCsv.Read(TestPaths.Run1Timeline);
+            for (int i = 0; i < a.Count; i++)
+            {
+                a.Records[i].GcPauseTicks = a.Clock.MsToTicks(100.0 + i) - a.Clock.MsToTicks(0);
+                a.Records[i].CallbackPeriodTicks = a.Records[i].RefreshPeriodTicks * 2;
+            }
+            string tmp = TestPaths.TempFile(".csv");
+            try
+            {
+                FrameTimelineCsv.Write(tmp, a);
+                CapturedTimeline b = FrameTimelineCsv.Read(tmp);
+                for (int i = 0; i < a.Count; i++)
+                {
+                    Assert.Equal(LocalMs(a.Records[i].GcPauseTicks), LocalMs(b.Records[i].GcPauseTicks), 3);
+                    Assert.Equal(LocalMs(a.Records[i].CallbackPeriodTicks), LocalMs(b.Records[i].CallbackPeriodTicks), 3);
+                }
+            }
+            finally
+            {
+                File.Delete(tmp);
+            }
+        }
+
         [Fact]
         public void Read_WithoutFrequencyLine_UsesTheFallback()
         {

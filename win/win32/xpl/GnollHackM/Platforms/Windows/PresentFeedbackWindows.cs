@@ -80,8 +80,9 @@ namespace GnollHackM
         private static ulong _lastRefreshCount = 0;
 
         /* Called by the render loop before the tick with CompositionTarget.Rendering's
-           RenderingTime in Stopwatch units. Hands the latest vblank to the timeline as the
-           tick's vsync and records DWM's refresh and composition counters, once per refresh. */
+           RenderingTime in Stopwatch units. Hands the latest vblank and the panel's refresh
+           period to the timeline for the tick, and records DWM's refresh and composition
+           counters, once per refresh. */
         public static void CaptureFrame(long renderingTimeTicks)
         {
             if (_timingUnavailable)
@@ -114,8 +115,10 @@ namespace GnollHackM
             }
             _consecutiveFailures = 0;
 
+            /* qpcRefreshPeriod is the panel's own period, independent of how often the
+               compositor calls the render loop */
             long vblank = (long)info.qpcVBlank;
-            GHFrameTimeline.SetPendingPlatformFrame(vblank, 0, renderingTimeTicks);
+            GHFrameTimeline.SetPendingPlatformFrame(vblank, 0, renderingTimeTicks, (long)info.qpcRefreshPeriod);
 
             if (info.cRefresh == _lastRefreshCount)
                 return;

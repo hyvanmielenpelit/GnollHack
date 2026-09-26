@@ -7,7 +7,9 @@ namespace GnollHack.PerformanceAnalyzer.Readers
 {
     /* Reads and writes the app's frametimeline*.csv (GHFrameTimeline.DumpToCsv). Columns are
        found by header name, so a reordered or extended file still reads; a missing column
-       reads as zero. Times come back as ticks of this machine's Stopwatch (TimelineClock).
+       reads as zero, so a capture from before GcPauseMs and CallbackPeriodMs has no pause
+       data and no separate callback period. Times come back as ticks of this machine's
+       Stopwatch (TimelineClock).
        Enum columns are written by name and parsed by name, or by number as a fallback. */
     public static class FrameTimelineCsv
     {
@@ -16,7 +18,7 @@ namespace GnollHack.PerformanceAnalyzer.Readers
             + "TargetFps,AssumedRefreshHz,Pacing,MainCounter,GeneralCounter,Invalidate,InvalidateMs,"
             + "Paint,PaintOnUiThread,PaintStartMs,LockAttemptMs,LockResultMs,LockAcquired,DrawEndMs,FlushEndMs,"
             + "PaintedMainCounter,PaintedGeneralCounter,PaintedMapGeneration,DisplayedAtMs,PresentSource,Flags,Gc0,Gc1,Gc2,"
-            + "RequestMs,ContentEvents";
+            + "RequestMs,ContentEvents,GcPauseMs,CallbackPeriodMs";
 
         /* fallbackFrequency is used when the file has no "# StopwatchFrequency=" line, e.g.
            the run JSON's clock.stopwatchFrequency */
@@ -90,6 +92,8 @@ namespace GnollHack.PerformanceAnalyzer.Readers
                 r.GcCount2 = (int)Long(f, c, "Gc2");
                 r.RequestTicks = Duration(f, c, "RequestMs", t.Clock);
                 r.ContentEvents = (GHContentEvent)Long(f, c, "ContentEvents");
+                r.GcPauseTicks = Duration(f, c, "GcPauseMs", t.Clock);
+                r.CallbackPeriodTicks = Duration(f, c, "CallbackPeriodMs", t.Clock);
                 records.Add(r);
             }
             /* GHSmoothnessMetrics wants FrameId order, which is the order the app writes */
@@ -160,7 +164,9 @@ namespace GnollHack.PerformanceAnalyzer.Readers
                     r.GcCount1.ToString(CultureInfo.InvariantCulture),
                     r.GcCount2.ToString(CultureInfo.InvariantCulture),
                     r.RequestTicks == 0 ? "" : MsText(clock.DurationTicksToMs(r.RequestTicks)),
-                    ((int)r.ContentEvents).ToString(CultureInfo.InvariantCulture)
+                    ((int)r.ContentEvents).ToString(CultureInfo.InvariantCulture),
+                    r.GcPauseTicks == 0 ? "" : MsText(clock.DurationTicksToMs(r.GcPauseTicks)),
+                    r.CallbackPeriodTicks == 0 ? "" : MsText(clock.DurationTicksToMs(r.CallbackPeriodTicks))
                 })).Append(Csv.Crlf);
             }
             File.WriteAllText(path, sb.ToString(), new UTF8Encoding(false));

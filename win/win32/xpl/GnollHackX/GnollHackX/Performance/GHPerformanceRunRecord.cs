@@ -507,6 +507,7 @@ namespace GnollHackX.Performance
         {
             DisplayJson d = new DisplayJson();
             d.MeasuredRefreshHz = R(s.MeasuredRefreshHz);
+            d.CallbackRefreshHz = R(s.CallbackRefreshHz);
             d.AssumedRefreshHz = R(s.AssumedRefreshHz);
             d.TargetFps = R(s.TargetFps);
             d.AssumedRefreshMismatch = s.AssumedRefreshMismatch;
@@ -543,6 +544,8 @@ namespace GnollHackX.Performance
             j.PaintP50Ms = R(s.PaintP50Ms);
             j.PaintP99Ms = R(s.PaintP99Ms);
             j.GcCount = s.GcCount;
+            j.GcPauseMs = R(s.GcPauseMs);
+            j.GcPauseDataAvailable = s.GcPauseDataAvailable;
             j.PresentSource = s.PresentSource.ToString();
             j.UnattributedShare = R(s.UnattributedShare);
 
@@ -857,6 +860,10 @@ namespace GnollHackX.Performance
             [JsonProperty("measuredRefreshHz")]
             public double MeasuredRefreshHz;
 
+            /* The display callback rate; below measuredRefreshHz when callbacks are skipped */
+            [JsonProperty("callbackRefreshHz")]
+            public double CallbackRefreshHz;
+
             [JsonProperty("assumedRefreshHz")]
             public double AssumedRefreshHz;
 
@@ -949,6 +956,13 @@ namespace GnollHackX.Performance
 
             [JsonProperty("gcCount")]
             public int GcCount;
+
+            [JsonProperty("gcPauseMs")]
+            public double GcPauseMs;
+
+            /* False when the runtime reports no pause time; GC attribution then uses counts */
+            [JsonProperty("gcPauseDataAvailable")]
+            public bool GcPauseDataAvailable;
 
             [JsonProperty("presentSource")]
             public string PresentSource;

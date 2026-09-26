@@ -91,7 +91,8 @@ namespace GnollHackX.Performance
         public long VsyncTicks;
         public long ExpectedPresentTicks;
         public long PlatformFrameTicks;
-        public long RefreshPeriodTicks;     /* measured, median of recent platform frame deltas */
+        public long RefreshPeriodTicks;     /* the panel's period as the platform reports it, else CallbackPeriodTicks */
+        public long CallbackPeriodTicks;    /* median of recent platform frame deltas: the display callback cadence */
 
         /* L1 callback */
         public long CallbackStartTicks;
@@ -121,6 +122,7 @@ namespace GnollHackX.Performance
         public long RequestTicks;
         public GHContentEvent ContentEvents;
 
+        public long GcPauseTicks;           /* total GC pause time of the process at the callback start; 0 when unknown */
         public int GcCount0;
         public int GcCount1;
         public int GcCount2;

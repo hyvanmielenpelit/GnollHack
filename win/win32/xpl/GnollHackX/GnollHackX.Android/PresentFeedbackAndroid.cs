@@ -297,6 +297,9 @@ namespace GnollHackM
             case GHTraceEvent.RefreshChange:
                 Android.OS.Trace.SetCounter("GH.RefreshPeriodUs", value);
                 break;
+            case GHTraceEvent.CallbackCadenceChange:
+                Android.OS.Trace.SetCounter("GH.CallbackPeriodUs", value);
+                break;
             }
         }
 #pragma warning restore CA1416

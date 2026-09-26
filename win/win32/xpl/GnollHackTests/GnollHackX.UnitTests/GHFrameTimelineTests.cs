@@ -232,6 +232,60 @@ namespace GnollHackX.UnitTests
             Assert.Equal(Frequency / 60, GHFrameTimeline.MeasuredRefreshPeriodTicks);
         }
 
+        /* A platform-reported panel period is the refresh period; the callback period
+           follows the callbacks, here on every other vblank. A missing report is bridged
+           for PeriodWindow ticks, then the callback median takes over. */
+        [Fact]
+        public void ReportedPanelPeriod_IsTheRefreshPeriod_CallbacksHaveTheirOwn()
+        {
+            Restart();
+            long panel = Frequency / 144;
+            long t = 1000 * Frequency;
+            for (int i = 0; i < 20; i++)
+            {
+                t += 2 * panel;
+                GHFrameTimeline.SetPendingPlatformFrame(0, 0, t, panel);
+                GHFrameTimeline.BeginTick();
+            }
+            Assert.Equal(panel, GHFrameTimeline.MeasuredRefreshPeriodTicks);
+            Assert.Equal(2 * panel, GHFrameTimeline.MeasuredCallbackPeriodTicks);
+
+            for (int i = 0; i < 15; i++)
+            {
+                t += 2 * panel;
+                GHFrameTimeline.SetPendingPlatformFrame(0, 0, t);
+                GHFrameTimeline.BeginTick();
+            }
+            Assert.Equal(panel, GHFrameTimeline.MeasuredRefreshPeriodTicks);
+
+            t += 2 * panel;
+            GHFrameTimeline.SetPendingPlatformFrame(0, 0, t);
+            GHFrameTimeline.BeginTick();
+            Assert.Equal(2 * panel, GHFrameTimeline.MeasuredRefreshPeriodTicks);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(panel, r[19].RefreshPeriodTicks);
+            Assert.Equal(2 * panel, r[19].CallbackPeriodTicks);
+        }
+
+        [Fact]
+        public void GcPause_IsSampledPerTick_AndGrowsWithACollection()
+        {
+            Restart();
+            GHFrameTimeline.BeginTick();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            GHFrameTimeline.BeginTick();
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(2, n);
+            Assert.True(r[0].GcPauseTicks >= 0);
+            Assert.True(r[1].GcPauseTicks > r[0].GcPauseTicks, r[0].GcPauseTicks + " -> " + r[1].GcPauseTicks);
+        }
+
         [Fact]
         public void RepeatedPlatformFrameTime_IsFlaggedAsDuplicate()
         {

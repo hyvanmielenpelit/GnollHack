@@ -84,7 +84,8 @@ void gh_signpost_paint_end(uint64_t frame_id)
 }
 
 /* kind: 1 = cadence change (value: displayed FPS),
-         2 = refresh change (value: refresh period in microseconds) */
+         2 = refresh change (value: refresh period in microseconds),
+         3 = callback cadence change (value: callback period in microseconds) */
 void gh_signpost_event(int kind, int64_t value)
 {
     if (!gh_signposts_on())
@@ -99,6 +100,11 @@ void gh_signpost_event(int kind, int64_t value)
     case 2:
         os_signpost_event_emit(gh_render_log, OS_SIGNPOST_ID_EXCLUSIVE,
                                "RefreshChange", "period_us %lld",
+                               (long long)value);
+        break;
+    case 3:
+        os_signpost_event_emit(gh_render_log, OS_SIGNPOST_ID_EXCLUSIVE,
+                               "CallbackCadenceChange", "period_us %lld",
                                (long long)value);
         break;
     default:

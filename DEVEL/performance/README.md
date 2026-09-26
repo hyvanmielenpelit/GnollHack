@@ -41,7 +41,9 @@ With **Settings > Frame Time Profiler** on (developer mode), the app keeps a rin
 last 20736 display callbacks (144 s at 144 Hz, about 6 MB while the profiler is on), one
 record per callback:
 
-- the platform's vsync time and the measured refresh period (median of recent vsync deltas);
+- the platform's vsync time; the refresh period, which is the panel's own where the
+  platform reports it (Windows: DWM) and otherwise the median of recent vsync deltas; and the
+  callback period, the median interval between display callbacks;
 - the pacing decision (rendered, catch-up, skipped by divisor, skipped by modulo, auxiliary
   canvas, suspended, ...), the target map rate and the refresh rate the pacing logic assumed;
 - the content counters requested by the tick and the counters and map data generation the
@@ -49,7 +51,8 @@ record per callback:
 - the invalidation outcome, and the paint outcome (painted, coalesced into a later paint,
   overlay visible, reentrant, ...), with the paint's thread, start, lock, draw end and flush
   end;
-- GC counts.
+- GC counts, and the process's total GC pause time (`GC.GetTotalPauseDuration`; the Mono
+  runtime on Android and iOS may not report it, and a record then says so).
 
 Every stage refers to the frame by its `FrameId`, so a paint on another thread, or one merged
 into a later one, is attributed to the tick that requested it. The platform side adds:
@@ -68,8 +71,18 @@ the block moves evenly.
 The debug dashboard's **SCREEN** section shows the displayed rate, the measured, assumed and
 target rates (orange when the assumed rate is off by more than 5 %), the hitch time ratio,
 the pacing error, the coalesced paints and the last cadence change. Cadence changes are also
-written to the screen log (`CADENCE 60->30 fps`, `REFRESH 8.3->16.7 ms`) and emitted as trace
-markers.
+written to the screen log and emitted as trace markers:
+
+| Line | Meaning |
+|------|---------|
+| `CADENCE 60->30 fps` | The displayed frame rate of the last second differs from that of the three seconds before by more than 10 % |
+| `REFRESH 8.3->16.7 ms` | The panel's refresh period changed for a full second: a display mode switch, variable refresh rate, or an adaptive panel |
+| `CALLBACKS 6.9->13.9 ms (panel 6.9 ms)` | The display callbacks left the panel's rate (or returned to it) for a full second while the panel did not change: the UI framework called the render loop less often than the panel refreshed. Only where the platform reports the panel period separately (Windows); elsewhere the callbacks are the vsync measurement |
+
+`compositorframes_*.csv` in a dump has DWM's own `RefreshPeriodMs` per frame on Windows. With
+variable refresh rate enabled, DWM reports the panel's maximum rate while the panel may run
+slower, so callbacks read as below the panel's rate; record whether VRR is on (protocol
+rule 10).
 
 **Developer menu > Dump Frame Log** writes a run record of everything the ring holds
 (`run_*.json` plus `frametimeline_*.csv` and `compositorframes_*.csv`) to the archive's
@@ -127,7 +140,9 @@ that exceeded its budget:
 | 1 | `DisplayMode` | The measured refresh period moved by more than 5 % across the gap or within the few ticks after it (the measurement is a running median, which lags a real change), or the pacing logic assumes a rate more than 5 % off the measured one |
 | 2 | `PaintCpu` / `Gpu` | A late or missed callback while the UI thread was still painting the previous map frame |
 | 2 | `UiThreadRequests` | A late or missed callback on a tick whose request handling (floating texts, messages, windows, ...) took more than `R/2`; it takes precedence over a collection in the same gap |
-| 2 | `UiThreadLateGc` / `UiThreadLate` | A missed callback, or a callback more than `R/2` after its vsync, with or without a collection in the gap |
+| 2 | `UiThreadLateGc` | A missed callback, or a callback more than `R/2` after its vsync, and collections in the gap paused the process for at least `R/2` in total: long enough to explain the lateness. Without pause data (Mono, older captures), any collection in the gap counts, and the report says so |
+| 2 | `FrameworkCadence` | A late or missed callback, not explained by the above, while the callback period ran at 1.5 refreshes or more around the gap: the UI framework delivered callbacks below the panel's rate for a while (Windows) |
+| 2 | `UiThreadLate` | A late or missed callback that nothing above explains |
 | 3 | `PacingPolicy` | A modulo skip or catch-up render in the gap, or a refresh-to-target ratio the divisor pattern cannot pace evenly; either only when the gap is within the pattern's longest hold (two divisor steps) |
 | 4 | `PaintNotRun` | A rendered tick in the gap produced no paint (coalesced, early return, no invalidation) |
 | 5 | `DispatchLate` | A paint started more than `R/2` after its invalidation |

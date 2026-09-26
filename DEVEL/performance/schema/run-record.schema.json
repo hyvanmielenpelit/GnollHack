@@ -34,7 +34,8 @@
     "display": {
       "type": "object",
       "properties": {
-        "measuredRefreshHz": { "type": "number" },
+        "measuredRefreshHz": { "type": "number", "description": "The panel's rate: reported by the platform where it can (Windows: DWM), else measured from display callbacks" },
+        "callbackRefreshHz": { "type": "number", "description": "The display callback rate; below measuredRefreshHz when the UI framework skips callbacks" },
         "assumedRefreshHz": { "type": "number" },
         "targetFps": { "type": "number" },
         "assumedRefreshMismatch": { "type": "boolean" }
@@ -150,6 +151,8 @@
         "paintP50Ms": { "type": "number" },
         "paintP99Ms": { "type": "number" },
         "gcCount": { "type": "integer" },
+        "gcPauseMs": { "type": "number", "description": "Total GC pause over the window; 0 when not reported" },
+        "gcPauseDataAvailable": { "type": "boolean", "description": "The runtime reported GC pause time; when false, GC attribution uses the collection counts" },
         "presentSource": { "type": "string", "enum": ["None", "Estimated", "Measured"] },
         "unattributedShare": { "type": "number" },
         "causes": {

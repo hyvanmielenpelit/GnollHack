@@ -215,7 +215,9 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             Row(md, "Paint P50 (ms)", F(s.PaintP50Ms), app, "paintP50Ms");
             Row(md, "Paint P99 (ms)", F(s.PaintP99Ms), app, "paintP99Ms");
             Row(md, "GC count (gen 0)", s.GcCount.ToString(CultureInfo.InvariantCulture), app, "gcCount");
+            Row(md, "GC pause (ms, total)", s.GcPauseDataAvailable ? F(s.GcPauseMs, 1) : "not reported", app, "gcPauseMs");
             Row(md, "Measured refresh (Hz)", F(s.MeasuredRefreshHz), app, "measuredRefreshHz");
+            Row(md, "Callback rate (Hz)", s.CallbackRefreshHz > 0 ? F(s.CallbackRefreshHz) : "not recorded", app, "callbackRefreshHz");
             Row(md, "Assumed refresh (Hz)", F(s.AssumedRefreshHz, 0), app, "assumedRefreshHz");
             Row(md, "Target FPS", F(s.TargetFps, 0), app, "targetFps");
             md.AppendLine("| Assumed refresh mismatch (> 5 %) | " + (s.AssumedRefreshMismatch ? "**yes**" : "no") + " | "
@@ -229,8 +231,23 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             if (estimated > 0 && measured > 0)
                 md.AppendLine("> **Note:** display times are mixed: " + measured + " measured, " + estimated
                     + " estimated. A gap between a measured and an estimated frame carries the pipeline latency the estimate does not model.");
-            if (s.AssumedRefreshMismatch || (estimated > 0 && measured > 0))
+            if (!s.GcPauseDataAvailable)
+                md.AppendLine("> **Note:** this capture has no GC pause time (the runtime does not report it, or the capture predates it); a late callback with a collection in its gap is charged to GC by the collection counts alone.");
+            if (s.AssumedRefreshMismatch || (estimated > 0 && measured > 0) || !s.GcPauseDataAvailable)
                 md.AppendLine();
+        }
+
+        /* The collections since the previous tick, e.g. "g0 2.4 ms" or "g2", or "" for none */
+        private static string GcText(CapturedTimeline t, int i)
+        {
+            if (i <= 0)
+                return "";
+            GHFrameRecord r = t.Records[i], q = t.Records[i - 1];
+            string gen = r.GcCount2 != q.GcCount2 ? "g2" : r.GcCount1 != q.GcCount1 ? "g1" : r.GcCount0 != q.GcCount0 ? "g0" : "";
+            long pause = r.GcPauseTicks > q.GcPauseTicks ? r.GcPauseTicks - q.GcPauseTicks : 0;
+            if (pause == 0)
+                return gen;
+            return (gen.Length > 0 ? gen + " " : "") + F(t.Clock.DurationTicksToMs(pause), 1) + " ms";
         }
 
         private static void Row(StringBuilder md, string label, string recomputed, Dictionary<string, double> app, string key)
@@ -380,13 +397,13 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                     + F(gapMs, 1) + " ms (+" + F(overMs, 1) + "), content step " + d.ContentStep + ", cause "
                     + GHSmoothnessMetrics.CauseName(d.Cause) + ", " + d.Source.ToString().ToLowerInvariant());
                 md.AppendLine();
-                md.AppendLine("| Frame | Vsync | Callback | Requests ms | Events | Invalidate | Paint start | Lock attempt/result | Draw end | Flush end | Displayed | Pacing | Paint | Cause | Jank type |");
-                md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|");
+                md.AppendLine("| Frame | Vsync | Callback | Requests ms | GC | Events | Invalidate | Paint start | Lock attempt/result | Draw end | Flush end | Displayed | Pacing | Paint | Cause | Jank type |");
+                md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|");
                 int from = prev.RecordIndex;
                 int to = d.RecordIndex;
                 if (to - from + 1 > MaxStageRows)
                 {
-                    md.AppendLine("| ... " + (to - from + 1 - MaxStageRows) + " earlier ticks omitted | | | | | | | | | | | | | | |");
+                    md.AppendLine("| ... " + (to - from + 1 - MaxStageRows) + " earlier ticks omitted | | | | | | | | | | | | | | | |");
                     from = to - MaxStageRows + 1;
                 }
                 for (int i = from; i <= to; i++)
@@ -409,6 +426,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                         + " | " + T(t, r.VsyncTicks)
                         + " | " + T(t, r.CallbackStartTicks) + (r.CallbackEndTicks != 0 ? " to " + T(t, r.CallbackEndTicks) : "")
                         + " | " + (r.RequestTicks != 0 ? F(t.Clock.DurationTicksToMs(r.RequestTicks), 2) : "")
+                        + " | " + GcText(t, i)
                         + " | " + GHSmoothnessMetrics.ContentEventNames(r.ContentEvents)
                         + " | " + T(t, r.InvalidateTicks)
                         + " | " + T(t, r.PaintStartTicks) + (r.PaintStartTicks != 0 ? (r.PaintOnUiThread ? " UI" : " GL") : "")

@@ -50,8 +50,14 @@ namespace GnollHackX.Performance
         private static long _pendingVsyncTicks = 0;
         private static long _pendingExpectedPresentTicks = 0;
         private static long _pendingPlatformFrameTicks = 0;
+        private static long _pendingRefreshPeriodTicks = 0;
         private static long _lastPlatformFrameTicks = 0;
         private static long _lastCallbackStartTicks = 0;
+
+        /* The panel period the platform last reported, and the ticks since; it stands in for
+           up to PeriodWindow ticks when a report is missing, e.g. a transient DWM failure */
+        private static long _lastReportedRefreshPeriodTicks = 0;
+        private static int _ticksSinceReportedPeriod = int.MaxValue;
 
         /* UI-thread request work since the last tick, handed to the next one */
         private static int _pendingContentEvents = 0;
@@ -74,12 +80,14 @@ namespace GnollHackX.Performance
         private static AnchorBox _anchor = null;
         private static AnchorBox _firstAnchor = null;
 
-        /* Measured refresh period: median of recent positive frame-time deltas */
+        /* Callback period: median of recent positive frame-time deltas. The refresh period
+           is the platform-reported panel period when there is one, else the same median. */
         private static readonly long[] _periodDeltas = new long[PeriodWindow];
         private static readonly long[] _periodSortBuffer = new long[PeriodWindow];
         private static int _periodDeltaCount = 0;
         private static int _periodDeltaIndex = 0;
         private static long _measuredPeriodTicks = 0;
+        private static long _measuredCallbackPeriodTicks = 0;
 
         public static long Frequency { get { return Stopwatch.Frequency; } }
 
@@ -125,6 +133,17 @@ namespace GnollHackX.Performance
             }
         }
 
+        public static long MeasuredCallbackPeriodTicks { get { return Interlocked.Read(ref _measuredCallbackPeriodTicks); } }
+
+        public static double MeasuredCallbackPeriodMs
+        {
+            get
+            {
+                long p = MeasuredCallbackPeriodTicks;
+                return p > 0 ? p * 1000.0 / Stopwatch.Frequency : 0;
+            }
+        }
+
         public static bool HasClockAnchor { get { return Volatile.Read(ref _anchor) != null; } }
 
         public static GHClockAnchor FirstClockAnchor
@@ -161,14 +180,18 @@ namespace GnollHackX.Performance
             _pendingVsyncTicks = 0;
             _pendingExpectedPresentTicks = 0;
             _pendingPlatformFrameTicks = 0;
+            _pendingRefreshPeriodTicks = 0;
             _lastPlatformFrameTicks = 0;
             _lastCallbackStartTicks = 0;
+            _lastReportedRefreshPeriodTicks = 0;
+            _ticksSinceReportedPeriod = int.MaxValue;
             Interlocked.Exchange(ref _pendingContentEvents, 0);
             Interlocked.Exchange(ref _pendingRequestTicks, 0);
             Interlocked.Exchange(ref _lastPaintedMapGeneration, -1);
             _periodDeltaCount = 0;
             _periodDeltaIndex = 0;
             Interlocked.Exchange(ref _measuredPeriodTicks, 0);
+            Interlocked.Exchange(ref _measuredCallbackPeriodTicks, 0);
             Volatile.Write(ref _anchor, null);
             Volatile.Write(ref _firstAnchor, null);
             GHCadenceMonitor.Reset();
@@ -219,14 +242,36 @@ namespace GnollHackX.Performance
 
         /* Called by the platform callback immediately before the tick it describes.
            vsyncTicks and expectedPresentTicks are in the Stopwatch domain (0 if unknown);
-           platformFrameTicks is in Stopwatch units with the platform's own epoch. */
-        public static void SetPendingPlatformFrame(long vsyncTicks, long expectedPresentTicks, long platformFrameTicks)
+           platformFrameTicks is in Stopwatch units with the platform's own epoch;
+           refreshPeriodTicks is the panel's period when the platform reports it (Windows:
+           DWM), 0 otherwise. */
+        public static void SetPendingPlatformFrame(long vsyncTicks, long expectedPresentTicks, long platformFrameTicks,
+                                                   long refreshPeriodTicks = 0)
         {
             if (!IsEnabled)
                 return;
             _pendingVsyncTicks = vsyncTicks;
             _pendingExpectedPresentTicks = expectedPresentTicks;
             _pendingPlatformFrameTicks = platformFrameTicks;
+            _pendingRefreshPeriodTicks = refreshPeriodTicks;
+        }
+
+        /* Total GC pause time of the process so far, in Stopwatch ticks; 0 when the runtime
+           does not report it */
+        private static long ReadGcPauseTicks()
+        {
+#if GNH_MAUI
+            try
+            {
+                return TimeSpanTicksToTicks(GC.GetTotalPauseDuration().Ticks);
+            }
+            catch
+            {
+                return 0;
+            }
+#else
+            return 0;
+#endif
         }
 
         /* ---- Tick (UI thread) ---- */
@@ -257,6 +302,7 @@ namespace GnollHackX.Performance
             r.GcCount0 = GC.CollectionCount(0);
             r.GcCount1 = GC.CollectionCount(1);
             r.GcCount2 = GC.CollectionCount(2);
+            r.GcPauseTicks = ReadGcPauseTicks();
 
             /* The platform's own frame time is the better period source; callback start
                times carry the UI thread's scheduling jitter */
@@ -280,11 +326,24 @@ namespace GnollHackX.Performance
                     AddPeriodDelta(delta);
             }
             _lastCallbackStartTicks = now;
-            r.RefreshPeriodTicks = Interlocked.Read(ref _measuredPeriodTicks);
+            r.CallbackPeriodTicks = Interlocked.Read(ref _measuredCallbackPeriodTicks);
+
+            if (_pendingRefreshPeriodTicks > 0)
+            {
+                _lastReportedRefreshPeriodTicks = _pendingRefreshPeriodTicks;
+                _ticksSinceReportedPeriod = 0;
+            }
+            else if (_ticksSinceReportedPeriod < int.MaxValue)
+            {
+                _ticksSinceReportedPeriod++;
+            }
+            r.RefreshPeriodTicks = _ticksSinceReportedPeriod <= PeriodWindow ? _lastReportedRefreshPeriodTicks : r.CallbackPeriodTicks;
+            Interlocked.Exchange(ref _measuredPeriodTicks, r.RefreshPeriodTicks);
 
             _pendingVsyncTicks = 0;
             _pendingExpectedPresentTicks = 0;
             _pendingPlatformFrameTicks = 0;
+            _pendingRefreshPeriodTicks = 0;
             r.ContentEvents = (GHContentEvent)Interlocked.Exchange(ref _pendingContentEvents, 0);
             r.RequestTicks = Interlocked.Exchange(ref _pendingRequestTicks, 0);
 
@@ -323,7 +382,7 @@ namespace GnollHackX.Performance
             int n = _periodDeltaCount;
             Array.Copy(_periodDeltas, _periodSortBuffer, n);
             Array.Sort(_periodSortBuffer, 0, n);
-            Interlocked.Exchange(ref _measuredPeriodTicks, _periodSortBuffer[n / 2]);
+            Interlocked.Exchange(ref _measuredCallbackPeriodTicks, _periodSortBuffer[n / 2]);
         }
 
         private static int _lastTargetFps = 0;
@@ -513,7 +572,7 @@ namespace GnollHackX.Performance
                 _ring[idx].ContentEvents |= GHContentEvent.MapUpdate;
             if (_ring[idx].Paint == GHPaintOutcome.Painted)
                 GHCadenceMonitor.OnPaintCompleted(_ring[idx].VsyncTicks, _ring[idx].RefreshPeriodTicks,
-                    _ring[idx].FlushEndTicks, _ring[idx].TargetFps, paintedMainCounter);
+                    _ring[idx].CallbackPeriodTicks, _ring[idx].FlushEndTicks, _ring[idx].TargetFps, paintedMainCounter);
         }
 
         /* ---- Presentation ---- */
@@ -607,7 +666,8 @@ namespace GnollHackX.Performance
 
         /* One row per tick. Times are milliseconds since the first retained tick's callback
            start; PlatformFrame keeps the platform's epoch and is relative to its own first
-           value. Lines starting with '#' carry metadata. */
+           value. GcPause is the process's total GC pause so far. Lines starting with '#'
+           carry metadata. */
         public static void DumpToCsv(string path)
         {
             GHFrameRecord[] records = new GHFrameRecord[Capacity];
@@ -641,7 +701,7 @@ namespace GnollHackX.Performance
                     + "TargetFps,AssumedRefreshHz,Pacing,MainCounter,GeneralCounter,Invalidate,InvalidateMs,"
                     + "Paint,PaintOnUiThread,PaintStartMs,LockAttemptMs,LockResultMs,LockAcquired,DrawEndMs,FlushEndMs,"
                     + "PaintedMainCounter,PaintedGeneralCounter,PaintedMapGeneration,DisplayedAtMs,PresentSource,Flags,Gc0,Gc1,Gc2,"
-                    + "RequestMs,ContentEvents");
+                    + "RequestMs,ContentEvents,GcPauseMs,CallbackPeriodMs");
                 if (n == 0)
                     return;
 
@@ -687,7 +747,9 @@ namespace GnollHackX.Performance
                         r.GcCount1.ToString(CultureInfo.InvariantCulture),
                         r.GcCount2.ToString(CultureInfo.InvariantCulture),
                         r.RequestTicks == 0 ? "" : Ms(r.RequestTicks),
-                        ((int)r.ContentEvents).ToString(CultureInfo.InvariantCulture)
+                        ((int)r.ContentEvents).ToString(CultureInfo.InvariantCulture),
+                        Ms(r.GcPauseTicks),
+                        Ms(r.CallbackPeriodTicks)
                     }));
                 }
             }

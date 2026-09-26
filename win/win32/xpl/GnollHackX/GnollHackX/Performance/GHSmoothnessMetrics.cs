@@ -9,8 +9,8 @@ namespace GnollHackX.Performance
     public enum GHHitchCause : byte
     {
         None = 0,
-        DisplayMode = 1,        /* the measured refresh period changed */
-        UiThreadLateGc = 2,     /* a display callback was missed or late, with a collection in the gap */
+        DisplayMode = 1,        /* the panel's refresh period changed */
+        UiThreadLateGc = 2,     /* a display callback was missed or late, and GC paused long enough to explain it */
         UiThreadLate = 3,       /* a display callback was missed or late */
         PacingPolicy = 4,       /* the render loop's skip pattern */
         PaintNotRun = 5,        /* a rendered tick produced no paint */
@@ -20,7 +20,8 @@ namespace GnollHackX.Performance
         Gpu = 9,
         Compositor = 10,        /* the app was on time; the frame was dropped or shown late downstream */
         Unattributed = 11,
-        UiThreadRequests = 12   /* a display callback was late after the UI thread handled game requests */
+        UiThreadRequests = 12,  /* a display callback was late after the UI thread handled game requests */
+        FrameworkCadence = 13   /* the UI framework delivered display callbacks below the panel's rate */
     }
 
     /* One distinct frame that reached the display */
@@ -53,6 +54,7 @@ namespace GnollHackX.Performance
         public int PausedGapCount;
         public double WindowMs;             /* first to last displayed frame, pauses excluded */
         public double MeasuredRefreshHz;
+        public double CallbackRefreshHz;    /* the display callback rate; below MeasuredRefreshHz when callbacks are skipped */
         public double AssumedRefreshHz;
         public double TargetFps;
         public bool AssumedRefreshMismatch; /* the pacing logic assumed a rate more than 5 % off */
@@ -74,6 +76,8 @@ namespace GnollHackX.Performance
         public double PaintP50Ms;
         public double PaintP99Ms;
         public int GcCount;
+        public double GcPauseMs;            /* total GC pause over the window */
+        public bool GcPauseDataAvailable;   /* the runtime reported pause time; else GC is judged by counts */
         public GHPresentSource PresentSource;    /* Measured only when every displayed frame was measured */
         public GHPerformanceStatistics.PacingMetrics OnScreenPacing;
         public readonly int[] CauseCount = new int[GHSmoothnessMetrics.CauseCount];
@@ -105,13 +109,14 @@ namespace GnollHackX.Performance
        display time keeps it. */
     public static class GHSmoothnessMetrics
     {
-        public const int CauseCount = 13;
+        public const int CauseCount = 14;
         public const int ContentEventKinds = 10;
 
         private static readonly string[] _causeNames = new string[]
         {
             "None", "DisplayMode", "UiThreadLateGc", "UiThreadLate", "PacingPolicy", "PaintNotRun",
-            "DispatchLate", "GameLock", "PaintCpu", "Gpu", "Compositor", "Unattributed", "UiThreadRequests"
+            "DispatchLate", "GameLock", "PaintCpu", "Gpu", "Compositor", "Unattributed", "UiThreadRequests",
+            "FrameworkCadence"
         };
 
         private static readonly string[] _contentEventNames = new string[]
@@ -150,14 +155,16 @@ namespace GnollHackX.Performance
             return ticks * 1000.0 / Stopwatch.Frequency;
         }
 
-        /* The median measured refresh period, 0 when no record has one */
-        private static long MedianPeriod(GHFrameRecord[] records, int n)
+        /* The median refresh period (or, with callbackPeriod, the median callback period),
+           0 when no record has one */
+        private static long MedianPeriod(GHFrameRecord[] records, int n, bool callbackPeriod = false)
         {
             List<long> periods = new List<long>();
             for (int i = 0; i < n; i++)
             {
-                if (records[i].RefreshPeriodTicks > 0)
-                    periods.Add(records[i].RefreshPeriodTicks);
+                long p = callbackPeriod ? records[i].CallbackPeriodTicks : records[i].RefreshPeriodTicks;
+                if (p > 0)
+                    periods.Add(p);
             }
             if (periods.Count == 0)
                 return 0;
@@ -353,6 +360,15 @@ namespace GnollHackX.Performance
             long measuredPeriod = MedianPeriod(records, n);
             long period = measuredPeriod > 0 ? measuredPeriod : Stopwatch.Frequency / 60;
             s.MeasuredRefreshHz = measuredPeriod > 0 ? (double)Stopwatch.Frequency / measuredPeriod : 0;
+            long callbackPeriod = MedianPeriod(records, n, true);
+            s.CallbackRefreshHz = callbackPeriod > 0 ? (double)Stopwatch.Frequency / callbackPeriod : 0;
+
+            /* GC pause time is judged only when the runtime reported some; a runtime that
+               does not leaves every record at 0 */
+            bool pauseAvailable = false;
+            for (int i = 0; i < n && !pauseAvailable; i++)
+                pauseAvailable = records[i].GcPauseTicks != 0;
+            s.GcPauseDataAvailable = pauseAvailable;
             int targetMode = ModeShort(records, n, true);
             int assumedMode = ModeShort(records, n, false);
             s.TargetFps = targetMode;
@@ -552,7 +568,7 @@ namespace GnollHackX.Performance
                 if (displayed[j].IsHitch || displayed[j].IsJudder)
                 {
                     GHHitchCause cause = Attribute(records, n, prevIdx, curIdx, compositor, m, isDisplayed, target, refresh,
-                                                   gap, displayed[j].DisplayDelayTicks);
+                                                   gap, displayed[j].DisplayDelayTicks, pauseAvailable);
                     displayed[j].Cause = cause;
                     s.CauseCount[(int)cause]++;
                     if (displayed[j].IsHitch)
@@ -576,6 +592,7 @@ namespace GnollHackX.Performance
             s.PaintP50Ms = Percentile(paintMs, 50);
             s.PaintP99Ms = Percentile(paintMs, 99);
             s.GcCount = (records[n - 1].GcCount0 - records[0].GcCount0);
+            s.GcPauseMs = pauseAvailable ? TicksToMs(Math.Max(0, records[n - 1].GcPauseTicks - records[0].GcPauseTicks)) : 0;
             s.PresentSource = d == 0 ? GHPresentSource.None : (allMeasured ? GHPresentSource.Measured : GHPresentSource.Estimated);
             s.OnScreenPacing = GHPerformanceStatistics.ComputePacing(gapsMs.ToArray(), TicksToMs(targetPeriodMode), TicksToMs(period));
             s.UnattributedShare = hitchMs > 0 ? s.CauseMs[(int)GHHitchCause.Unattributed] / hitchMs : 0;
@@ -594,10 +611,13 @@ namespace GnollHackX.Performance
 
         /* Charges the gap before a late or uneven frame to the first stage, in pipeline
            order, that exceeded its budget. prevIdx and curIdx are the records of the
-           displayed frames on either side of the gap; n is the number of records. */
+           displayed frames on either side of the gap; n is the number of records.
+           pauseAvailable says the records carry GC pause time; without it a collection in
+           the gap is judged by the GC counts alone. */
         public static GHHitchCause Attribute(GHFrameRecord[] records, int n, int prevIdx, int curIdx,
                                              GHCompositorFrame[] compositor, int m, bool[] isDisplayed,
-                                             long targetPeriod, long refreshPeriod, long gapTicks, long displayDelayTicks)
+                                             long targetPeriod, long refreshPeriod, long gapTicks, long displayDelayTicks,
+                                             bool pauseAvailable)
         {
             long halfRefresh = refreshPeriod / 2;
 
@@ -625,8 +645,16 @@ namespace GnollHackX.Performance
                UI thread was busy painting the map across that vsync, the paint is the
                cause, not the thread; when it spent more than half a refresh handling game
                requests just before the late callback, the requests are, even with a
-               collection in the gap. */
-            bool uiLate = false, gc = false, requests = false;
+               collection in the gap. A collection is the cause when it paused the process
+               for at least half a refresh in the gap (with pause data), or ran at all
+               (without). With the thread not otherwise explained, a late callback while the
+               callback period ran at 1.5 refreshes or more is the UI framework's cadence:
+               the median shows it delivered callbacks below the panel's rate for a while.
+               Like the refresh period, the median lags a real change by up to
+               PeriodMedianLag ticks, so the records after the gap are consulted too. */
+            bool uiLate = false, countsMoved = false, requests = false;
+            int firstLate = -1;
+            long pauseTicks = 0;
             GHHitchCause ownPaint = GHHitchCause.None;
             for (int i = prevIdx + 1; i <= curIdx; i++)
             {
@@ -637,10 +665,14 @@ namespace GnollHackX.Performance
                 bool late = (cur != 0 && prev != 0 && cur - prev > refreshPeriod + halfRefresh)
                     || (r.VsyncTicks != 0 && r.CallbackStartTicks - r.VsyncTicks > halfRefresh);
                 if (r.GcCount0 != q.GcCount0 || r.GcCount1 != q.GcCount1 || r.GcCount2 != q.GcCount2)
-                    gc = true;
+                    countsMoved = true;
+                if (r.GcPauseTicks > q.GcPauseTicks)
+                    pauseTicks += r.GcPauseTicks - q.GcPauseTicks;
                 if (!late)
                     continue;
                 uiLate = true;
+                if (firstLate < 0)
+                    firstLate = i;
                 if (r.RequestTicks > halfRefresh)
                     requests = true;
                 long deadline = (cur != 0 ? cur : r.CallbackStartTicks) + halfRefresh;
@@ -663,7 +695,19 @@ namespace GnollHackX.Performance
             if (requests)
                 return GHHitchCause.UiThreadRequests;
             if (uiLate)
-                return gc ? GHHitchCause.UiThreadLateGc : GHHitchCause.UiThreadLate;
+            {
+                bool gc = pauseAvailable ? pauseTicks >= halfRefresh : countsMoved;
+                if (gc)
+                    return GHHitchCause.UiThreadLateGc;
+                int lastCadenceIdx = Math.Min(n - 1, curIdx + GHFrameTimeline.PeriodMedianLag);
+                for (int k = firstLate; k <= lastCadenceIdx; k++)
+                {
+                    long cb = records[k].CallbackPeriodTicks;
+                    if (cb > 0 && cb * 2 >= refreshPeriod * 3)
+                        return GHHitchCause.FrameworkCadence;
+                }
+                return GHHitchCause.UiThreadLate;
+            }
 
             /* 3. Pacing policy: the loop's own irregular skip or catch-up render in the gap,
                or a ratio of refresh to target rate the divisor pattern cannot pace evenly.
@@ -751,8 +795,11 @@ namespace GnollHackX.Performance
        dashboard and for cadence-change events. It uses the same display-time rule as
        GHSmoothnessMetrics without the compositor refinement, over 250 ms buckets. A change
        is reported when the displayed rate of the last second differs from that of the three
-       seconds before by more than 10 % for a full second, or when the measured refresh
-       period moves by more than 5 % for a full second. A vsync's frame is judged when the
+       seconds before by more than 10 % for a full second, when the refresh period moves by
+       more than 5 % for a full second (REFRESH), or when the display callbacks arrive more
+       than 5 % slower or faster than the panel refreshes, or return to its rate, for a full
+       second (CALLBACKS). Where the platform reports no panel period of its own, the two
+       periods are one measurement and only REFRESH fires. A vsync's frame is judged when the
        next vsync's first paint arrives, since a later paint on the same vsync replaces it.
        Runs on the paint thread. */
     public static class GHCadenceMonitor
@@ -781,6 +828,9 @@ namespace GnollHackX.Performance
         private static int _changeStreak = 0;
         private static int _refreshStreak = 0;
         private static long _reportedPeriod = 0;
+        private static int _callbackStreak = 0;
+        private static bool _reportedCallbacksOff = false;     /* last report: callbacks off the panel's rate */
+        private static long _reportedCallbackPeriod = 0;       /* the period reported with it */
 
         private static double _displayedFps = 0;
         private static double _hitchRatio = 0;
@@ -812,14 +862,17 @@ namespace GnollHackX.Performance
             _changeStreak = 0;
             _refreshStreak = 0;
             _reportedPeriod = 0;
+            _callbackStreak = 0;
+            _reportedCallbacksOff = false;
+            _reportedCallbackPeriod = 0;
             _displayedFps = 0;
             _hitchRatio = 0;
             _pacingErrorRmsMs = 0;
             _lastChange = "";
         }
 
-        public static void OnPaintCompleted(long vsyncTicks, long refreshPeriodTicks, long flushEndTicks,
-                                            int targetFps, long paintedMainCounter)
+        public static void OnPaintCompleted(long vsyncTicks, long refreshPeriodTicks, long callbackPeriodTicks,
+                                            long flushEndTicks, int targetFps, long paintedMainCounter)
         {
             if (flushEndTicks == 0 || refreshPeriodTicks <= 0)
                 return;
@@ -872,7 +925,7 @@ namespace GnollHackX.Performance
                 double seconds = (double)elapsed / freq;
                 PushBucket(_bucketFrames / seconds, _bucketHitchMs / seconds,
                            _bucketErrCount > 0 ? Math.Sqrt(_bucketErrSq / _bucketErrCount) : 0,
-                           refreshPeriodTicks);
+                           refreshPeriodTicks, callbackPeriodTicks);
                 _bucketStart = flushEndTicks;
                 _bucketFrames = 0;
                 _bucketHitchMs = 0;
@@ -895,7 +948,8 @@ namespace GnollHackX.Performance
             return _sortScratch[n / 2];
         }
 
-        private static void PushBucket(double fps, double hitchRatio, double errRms, long refreshPeriodTicks)
+        private static void PushBucket(double fps, double hitchRatio, double errRms, long refreshPeriodTicks,
+                                       long callbackPeriodTicks)
         {
             _fpsRing[_ringIndex] = fps;
             _ringIndex = (_ringIndex + 1) % Buckets;
@@ -951,6 +1005,37 @@ namespace GnollHackX.Performance
             else
             {
                 _refreshStreak = 0;
+            }
+
+            /* Callbacks leaving the panel's rate, moving while off it, or returning to it; a
+               panel change the callbacks follow is REFRESH's alone */
+            if (callbackPeriodTicks > 0 && refreshPeriodTicks > 0)
+            {
+                bool off = Math.Abs(callbackPeriodTicks - refreshPeriodTicks) > refreshPeriodTicks / 20;
+                bool changed = off != _reportedCallbacksOff
+                    || (off && Math.Abs(callbackPeriodTicks - _reportedCallbackPeriod) > _reportedCallbackPeriod / 20);
+                if (changed)
+                {
+                    _callbackStreak++;
+                    if (_callbackStreak >= PersistBuckets)
+                    {
+                        long fromTicks = _reportedCallbacksOff ? _reportedCallbackPeriod : refreshPeriodTicks;
+                        double oldMs = fromTicks * 1000.0 / Stopwatch.Frequency;
+                        double newMs = callbackPeriodTicks * 1000.0 / Stopwatch.Frequency;
+                        double panelMs = refreshPeriodTicks * 1000.0 / Stopwatch.Frequency;
+                        Report(GHTraceEvent.CallbackCadenceChange, (long)Math.Round(newMs * 1000.0),
+                            "CALLBACKS " + oldMs.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)
+                            + "->" + newMs.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " ms (panel "
+                            + panelMs.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + " ms)");
+                        _reportedCallbacksOff = off;
+                        _reportedCallbackPeriod = callbackPeriodTicks;
+                        _callbackStreak = 0;
+                    }
+                }
+                else
+                {
+                    _callbackStreak = 0;
+                }
             }
         }
 

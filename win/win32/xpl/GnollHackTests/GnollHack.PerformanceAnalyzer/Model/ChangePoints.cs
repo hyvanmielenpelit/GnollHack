@@ -340,16 +340,18 @@ namespace GnollHack.PerformanceAnalyzer.Model
             return "map not shown";
         }
 
-        /* Timeline events that can explain a change: a measured refresh period moving by
-           more than 5 % from the last reported one, a change of the map's target FPS, the
+        /* Timeline events that can explain a change: the refresh period moving by more
+           than 5 % from the last reported one, the display callbacks leaving the panel's
+           rate by more than 5 % or returning to it, a change of the map's target FPS, the
            start and end of a pause tick (GHSmoothnessMetrics.IsPauseTick: an auxiliary
            canvas, suspension, an overlay covering the map, or anything else that stops the
-           map render), and a collection (the GC counters advancing between two ticks).
-           Stamped at the tick's callback start. */
+           map render), and a collection (the GC counters advancing between two ticks, with
+           the pause when recorded). Stamped at the tick's callback start. */
         public static List<TimelineEvent> Events(CapturedTimeline t)
         {
             List<TimelineEvent> ev = new List<TimelineEvent>();
             long reportedPeriod = 0;
+            bool callbacksOff = false;
             int lastTarget = 0;
             bool inPause = false;
             string pauseKind = null;
@@ -377,6 +379,22 @@ namespace GnollHack.PerformanceAnalyzer.Model
                         reportedPeriod = p;
                     }
                 }
+                if (p > 0 && r.CallbackPeriodTicks > 0)
+                {
+                    bool off = Math.Abs(r.CallbackPeriodTicks - p) > p / 20;
+                    if (off != callbacksOff)
+                    {
+                        ev.Add(new TimelineEvent
+                        {
+                            AtMs = at,
+                            Kind = "callbacks",
+                            Text = off
+                                ? "callbacks every " + F(t.Clock.DurationTicksToMs(r.CallbackPeriodTicks)) + " ms, panel " + F(t.Clock.DurationTicksToMs(p)) + " ms"
+                                : "callbacks back at the panel's rate"
+                        });
+                        callbacksOff = off;
+                    }
+                }
                 if (r.TargetFps > 0)
                 {
                     if (lastTarget > 0 && r.TargetFps != lastTarget)
@@ -395,8 +413,9 @@ namespace GnollHack.PerformanceAnalyzer.Model
                 {
                     GHFrameRecord q = t.Records[i - 1];
                     string gen = r.GcCount2 != q.GcCount2 ? "2" : r.GcCount1 != q.GcCount1 ? "1" : r.GcCount0 != q.GcCount0 ? "0" : null;
+                    long gcPause = r.GcPauseTicks > q.GcPauseTicks ? r.GcPauseTicks - q.GcPauseTicks : 0;
                     if (gen != null)
-                        ev.Add(new TimelineEvent { AtMs = at, Kind = "gc", Text = "GC (gen " + gen + ")" });
+                        ev.Add(new TimelineEvent { AtMs = at, Kind = "gc", Text = "GC (gen " + gen + ")" + (gcPause > 0 ? ", " + F(t.Clock.DurationTicksToMs(gcPause)) + " ms" : "") });
                 }
             }
             return ev;
