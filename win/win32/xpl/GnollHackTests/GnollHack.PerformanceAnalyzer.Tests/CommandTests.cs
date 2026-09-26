@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using GnollHack.PerformanceAnalyzer.Commands;
 using GnollHack.PerformanceAnalyzer.Model;
 using GnollHack.PerformanceAnalyzer.Readers;
@@ -157,6 +158,101 @@ namespace GnollHack.PerformanceAnalyzer.Tests
             finally
             {
                 File.Delete(outPath);
+            }
+        }
+
+        /* A copy of the run1 capture in a new temporary directory; returns its run.json */
+        private static string CopyRun1(string dir)
+        {
+            Directory.CreateDirectory(dir);
+            foreach (string f in Directory.GetFiles(Path.GetDirectoryName(TestPaths.Run1Json)))
+                File.Copy(f, Path.Combine(dir, Path.GetFileName(f)));
+            return Path.Combine(dir, "run.json");
+        }
+
+        [Fact]
+        public void Smoothness_MarkNearTheHitch_WritesMarkedMoments()
+        {
+            string dir = Path.Combine(Path.GetTempPath(), "ghpa_marks_" + Guid.NewGuid().ToString("N"));
+            string outPath = TestPaths.TempFile(".md");
+            try
+            {
+                string runJson = CopyRun1(dir);
+                JsonNode root = JsonNode.Parse(File.ReadAllText(runJson));
+                root["marks"] = new JsonArray(new JsonObject
+                {
+                    ["frameId"] = 22,
+                    ["utc"] = "2026-09-26T10:00:00.3666667Z",
+                    ["msFromWindowStart"] = 366.7
+                });
+                File.WriteAllText(runJson, root.ToJsonString(), new System.Text.UTF8Encoding(false));
+
+                int code = SmoothnessCommand.Run(new Args(new[] { "smoothness", runJson, "--out", outPath }));
+                Assert.Equal(0, code);
+                string md = File.ReadAllText(outPath);
+                string[] lines = md.Replace("\r\n", "\n").Split('\n');
+                Assert.Contains("## Marked moments", md);
+                Assert.True(md.IndexOf("## Worst hitches") < md.IndexOf("## Marked moments"));
+                Assert.True(md.IndexOf("## Marked moments") < md.IndexOf("## Change points"));
+                Assert.Contains("1 moment marked as a felt stutter, from the run record.", md);
+                Assert.Contains("### Mark 1: frame 22 at 366.7 ms", lines);
+                Assert.Single(lines, l => l.StartsWith("- Wall clock: 2026-09-26 10:00:00.366 UTC ("));
+                Assert.Contains("- Measurement window: 366.7 ms after its start", lines);
+                Assert.Contains("| Frame | Displayed ms | From mark ms | Gap ms | Over target ms | Content step | Cause | Source | Worst rank |", lines);
+                Assert.Single(lines, l => l.StartsWith("| 21 | ") && l.EndsWith("| PaintCpu | estimated | 1 |"));
+                Assert.Contains("Stage timeline of the nearest hitch, frame 21:", lines);
+            }
+            finally
+            {
+                Directory.Delete(dir, true);
+                File.Delete(outPath);
+            }
+        }
+
+        [Fact]
+        public void Smoothness_NoMarks_WritesNoMarkedMoments()
+        {
+            SmoothnessResult r = SmoothnessCommand.Analyze(TestPaths.Run1Json, null, null, null);
+            Assert.Empty(r.Run.Marks);
+            Assert.Empty(r.Marks);
+            string md = SmoothnessCommand.BuildReport(r);
+            Assert.DoesNotContain("Marked moments", md);
+            Assert.DoesNotContain("Wall clock", md);
+        }
+
+        /* Without marks in the run record, frames flagged UserMark in the timeline are the
+           marks, placed on the wall clock by the timeline's OriginUtc line */
+        [Fact]
+        public void Smoothness_UserMarkFlag_IsTheFallback()
+        {
+            string dir = Path.Combine(Path.GetTempPath(), "ghpa_marks_" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                string runJson = CopyRun1(dir);
+                string timeline = Path.Combine(dir, Path.GetFileName(TestPaths.Run1Timeline));
+                List<string> lines = File.ReadAllLines(timeline).ToList();
+                int flagsColumn = Array.IndexOf(lines.First(l => l.StartsWith("FrameId,")).Split(','), "Flags");
+                int frame20 = lines.FindIndex(l => l.StartsWith("20,"));
+                string[] fields = lines[frame20].Split(',');
+                fields[flagsColumn] = ((int)FrameTimelineCsv.UserMarkFlag).ToString();
+                lines[frame20] = string.Join(",", fields);
+                lines.Insert(lines.FindIndex(l => l.StartsWith("# OriginStopwatchTicks=")) + 1,
+                    "# OriginUtc utc=2026-09-26T10:00:00.0000000Z stopwatchTicks=123456780000");
+                File.WriteAllLines(timeline, lines);
+
+                SmoothnessResult r = SmoothnessCommand.Analyze(runJson, null, null, null);
+                MarkedMoment m = Assert.Single(r.Marks);
+                Assert.Equal(20, m.FrameId);
+                Assert.Equal(316.667, m.Ms, 3);
+                Assert.Equal(new DateTime(2026, 9, 26, 10, 0, 0, DateTimeKind.Utc).AddTicks(3166670), m.Utc);
+                string md = SmoothnessCommand.BuildReport(r);
+                Assert.Contains("from the frame timeline's UserMark flags.", md);
+                Assert.Contains("### Mark 1: frame 20 at 316.7 ms", md);
+                Assert.Contains("| Wall clock at 0 ms | 2026-09-26 10:00:00.000 UTC (", md);
+            }
+            finally
+            {
+                Directory.Delete(dir, true);
             }
         }
 

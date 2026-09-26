@@ -150,6 +150,80 @@ namespace GnollHack.PerformanceAnalyzer.Tests
         }
 
         [Fact]
+        public void Read_OriginUtcLine_RoundTrips()
+        {
+            const string utcText = "2026-09-26T12:34:56.1234567Z";
+            const string originLine = "# OriginUtc utc=" + utcText + " stopwatchTicks=123456780000";
+            DateTime expected = new DateTime(2026, 9, 26, 12, 34, 56, DateTimeKind.Utc).AddTicks(1234567);
+            List<string> lines = File.ReadAllLines(TestPaths.Run1Timeline).ToList();
+            int at = lines.FindIndex(l => l.StartsWith("# OriginStopwatchTicks=")) + 1;
+            lines.Insert(at, originLine);
+            lines.Insert(at + 1, "# SomeFutureLine alpha=1 beta");
+            string tmp = TestPaths.TempFile(".csv");
+            string tmp2 = TestPaths.TempFile(".csv");
+            try
+            {
+                File.WriteAllLines(tmp, lines);
+                CapturedTimeline a = FrameTimelineCsv.Read(tmp);
+                Assert.Equal(40, a.Count);
+                Assert.Equal(expected, FrameTimelineCsv.OriginUtc(a));
+                Assert.Equal(DateTimeKind.Utc, FrameTimelineCsv.OriginUtc(a).Value.Kind);
+                Assert.Equal(123456780000L, FrameTimelineCsv.OriginUtcStopwatchTicks(a));
+                Assert.Equal(expected.AddMilliseconds(500), FrameTimelineCsv.UtcAtMs(a, 500));
+                Assert.Equal(500.0, FrameTimelineCsv.MsAtUtc(a, expected.AddMilliseconds(500)), 6);
+
+                FrameTimelineCsv.Write(tmp2, a);
+                Assert.Equal(File.ReadAllText(tmp).Replace("\r\n", "\n"), File.ReadAllText(tmp2).Replace("\r\n", "\n"));
+
+                /* a timeline with no source lines writes the line from its metadata */
+                a.MetadataLines.Clear();
+                FrameTimelineCsv.Write(tmp2, a);
+                Assert.Contains(originLine, File.ReadAllLines(tmp2));
+                CapturedTimeline b = FrameTimelineCsv.Read(tmp2);
+                Assert.Equal(expected, FrameTimelineCsv.OriginUtc(b));
+                Assert.Equal(123456780000L, FrameTimelineCsv.OriginUtcStopwatchTicks(b));
+            }
+            finally
+            {
+                File.Delete(tmp);
+                File.Delete(tmp2);
+            }
+        }
+
+        /* OriginUtc read one second after capture time 0 sits at 1000 ms */
+        [Fact]
+        public void UtcAtMs_PlacesOriginUtcAtItsStopwatchTick()
+        {
+            DateTime utc = new DateTime(2026, 9, 26, 12, 0, 0, DateTimeKind.Utc);
+            List<string> lines = File.ReadAllLines(TestPaths.Run1Timeline).ToList();
+            lines.Insert(lines.FindIndex(l => l.StartsWith("# OriginStopwatchTicks=")) + 1,
+                "# OriginUtc utc=" + utc.ToString("o") + " stopwatchTicks=123466780000");
+            string tmp = TestPaths.TempFile(".csv");
+            try
+            {
+                File.WriteAllLines(tmp, lines);
+                CapturedTimeline t = FrameTimelineCsv.Read(tmp);
+                Assert.Equal(utc, FrameTimelineCsv.UtcAtMs(t, 1000));
+                Assert.Equal(utc.AddSeconds(-1), FrameTimelineCsv.UtcAtMs(t, 0));
+            }
+            finally
+            {
+                File.Delete(tmp);
+            }
+        }
+
+        [Fact]
+        public void Read_WithoutOriginUtcLine_HasNoWallClock()
+        {
+            CapturedTimeline t = FrameTimelineCsv.Read(TestPaths.Run1Timeline);
+            Assert.Equal(40, t.Count);
+            Assert.Null(FrameTimelineCsv.OriginUtc(t));
+            Assert.Null(FrameTimelineCsv.OriginUtcStopwatchTicks(t));
+            Assert.Null(FrameTimelineCsv.UtcAtMs(t, 0));
+            Assert.True(double.IsNaN(FrameTimelineCsv.MsAtUtc(t, DateTime.UtcNow)));
+        }
+
+        [Fact]
         public void Read_WithoutFrequencyLine_UsesTheFallback()
         {
             string[] lines = File.ReadAllLines(TestPaths.Run1Timeline)

@@ -18,9 +18,11 @@ namespace GnollHackX.Performance
        registered in GHPerformanceSuiteStore.
 
        Run 0 is the optional warm-up run (saved but excluded); runs 1..Runs are
-       measured. Every run seeks the replay to StartTurn - 1 and lets it play the last
-       turn at normal speed, so each run, the first included, reaches the start turn
-       the same way. Per run: wait for the start turn, apply the scenario (idle pauses
+       measured. A new game page plays the replay from its beginning as the Replay page
+       does when the start turn is 1 or less, and otherwise seeks to StartTurn - 1 and
+       lets it play the last turn at normal speed; a shared page restarts in place by
+       seeking back to StartTurn - 1. Per run: wait for the start turn and for any
+       replayed window or prompt to close, apply the scenario (idle pauses
        the replay, minimap pauses it and switches to the minimap, playback lets it
        play), warm up, measure one window, and save it. Between runs: cool down, wait
        for the thermal state to be no worse than at the suite start (at most 300 s),
@@ -116,6 +118,7 @@ namespace GnollHackX.Performance
                 s.Arm = setup.ArmLabel ?? "";
                 s.StartTurn = setup.StartTurn;
                 s.SeekTurn = Math.Max(0, setup.StartTurn - 1);
+                s.InitialFromTurn = setup.StartTurn <= 1 ? -1 : s.SeekTurn;
 
                 /* The first reading primes rate counters (Windows needs two samples
                    500 ms apart); the second is the suite-start reading */
@@ -243,19 +246,46 @@ namespace GnollHackX.Performance
             {
                 bool isWarmUp = runIndex == 0;
 
+                /* Pausing while a replayed window or prompt is open would freeze it on screen
+                   (its hide never comes) and hide the map for the whole window */
                 bool reached = await WaitUntilAsync(s,
-                    delegate { return !GHApp.IsReplaySearching && GHApp.ReplayTurn >= s.StartTurn; },
+                    delegate { return !GHApp.IsReplaySearching && GHApp.ReplayTurn >= s.StartTurn && !s.ActivePage.IsOverlayOpen; },
                     StartTurnPollMs, StartTurnTimeoutMs, true);
                 if (!reached)
                     throw new SuiteAbortException("could not reach the start turn");
 
+                if (s.Scenario == ScenarioIdle || s.Scenario == ScenarioMinimap)
+                {
+                    /* Pause at the next replayed input record: the recorded player is being
+                       prompted for a command, so the map is drawn and nothing else is pending.
+                       The replay thread sleeps there for ReplayStandardDelay and checks the pause
+                       before its next record, so the replay freezes at that prompt. The start
+                       turn alone can come before the map is first drawn, e.g. turn 1 before the
+                       game's intro. An input record that dismisses a window does not count, so
+                       the count restarts while a window or prompt is open. */
+                    long inputRecords = GHApp.ReplayInputRecordCount;
+                    bool prompted = await WaitUntilAsync(s,
+                        delegate
+                        {
+                            if (s.ActivePage.IsOverlayOpen)
+                            {
+                                inputRecords = GHApp.ReplayInputRecordCount;
+                                return false;
+                            }
+                            return GHApp.ReplayInputRecordCount > inputRecords;
+                        },
+                        StartTurnPollMs, StartTurnTimeoutMs, true);
+                    if (!prompted)
+                        throw new SuiteAbortException("the replay did not reach a player prompt");
+                }
+
                 if (s.Scenario == ScenarioIdle)
                 {
-                    GHApp.PauseReplay = true;
+                    s.ActivePage.SetReplayPaused(true);
                 }
                 else if (s.Scenario == ScenarioMinimap)
                 {
-                    GHApp.PauseReplay = true;
+                    s.ActivePage.SetReplayPaused(true);
                     s.ActivePage.SetZoomMini();
                 }
 
@@ -304,11 +334,11 @@ namespace GnollHackX.Performance
             if (s.IsShared)
             {
                 s.ActivePage.SetReplayHeaderOverride("Performance suite: cooling down");
-                GHApp.PauseReplay = true;
+                s.ActivePage.SetReplayPaused(true);
                 await WaitAsync(s, setup.CooldownSeconds * 1000L, true);
                 await ThermalGateAsync(s, true);
 
-                GHApp.PauseReplay = false;
+                s.ActivePage.SetReplayPaused(false);
                 if (s.Scenario == ScenarioMinimap)
                     s.ActivePage.ExitZoomMini();
                 s.ActivePage.SetReplayHeaderOverride(null);
@@ -318,7 +348,7 @@ namespace GnollHackX.Performance
             }
             else
             {
-                GHApp.PauseReplay = false;
+                s.ActivePage.SetReplayPaused(false);
                 if (!await StopGamePageAsync(s))
                     throw new SuiteAbortException("the replay did not stop");
                 await WaitAsync(s, setup.CooldownSeconds * 1000L, false);
@@ -343,9 +373,10 @@ namespace GnollHackX.Performance
                 throw new SuiteAbortException("the game page could not be opened");
             s.ActivePage = page;
 
-            /* Seeking to the turn the replay is already on does not restart it, so the
-               target is one turn earlier; the last turn then plays at normal speed */
-            await page.StartReplay(s.ReplayPath, s.SeekTurn);
+            /* From the beginning without a search, as the Replay page starts, when the
+               start turn is 1 or less; otherwise one turn before the start turn, whose
+               last turn then plays at normal speed */
+            await page.StartReplay(s.ReplayPath, s.InitialFromTurn);
             s.RunnerStopping = false;
             if (!GHApp.GameStarted || GHApp.StopReplay)
                 throw new SuiteAbortException("the replay could not be started");
@@ -376,7 +407,7 @@ namespace GnollHackX.Performance
             if (s.ActivePage == null)
                 return;
             s.ActivePage.SetReplayHeaderOverride(null);
-            GHApp.PauseReplay = false;
+            s.ActivePage.SetReplayPaused(false);
             if (!await StopGamePageAsync(s))
             {
                 Log("the game page did not close within " + (PageGoneTimeoutMs / 1000) + " s");
@@ -554,7 +585,8 @@ namespace GnollHackX.Performance
             public bool IsShared;
             public string Arm;
             public int StartTurn;
-            public int SeekTurn;
+            public int SeekTurn;                       /* target of a shared page's seek back */
+            public int InitialFromTurn;                /* -1 plays from the beginning without a search */
             public string SuiteId;
             public string ReplaySha256;
             public long ReplayBytes;

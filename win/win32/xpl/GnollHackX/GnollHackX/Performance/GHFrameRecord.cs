@@ -75,7 +75,8 @@ namespace GnollHackX.Performance
     {
         None = 0,
         DuplicateCallback = 1,  /* the platform reported the same frame time as the previous callback */
-        OrphanPaint = 2         /* a paint ran with no pending invalidation, e.g. after a layout pass */
+        OrphanPaint = 2,        /* a paint ran with no pending invalidation, e.g. after a layout pass */
+        UserMark = 4            /* the user marked this frame as a felt stutter */
     }
 
     /* One display callback and everything that followed from it. Every tick field is in the

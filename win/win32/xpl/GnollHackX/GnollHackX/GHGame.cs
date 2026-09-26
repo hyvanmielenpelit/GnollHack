@@ -1153,6 +1153,10 @@ namespace GnollHackX
 
         public int Replay_AskName(string modeName, string modeDescription, string enteredPlayerName)
         {
+            /* A search skips the wait between showing and hiding the name page, so the hide
+               would pop the modal stack while the name page's push is still in progress */
+            if (GHApp.IsReplaySearching)
+                return 0;
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.AskName, modeName, modeDescription, enteredPlayerName));
             WaitAndCheckPauseReplay(GHConstants.ReplayAskNameDelay2);
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideAskNamePage));

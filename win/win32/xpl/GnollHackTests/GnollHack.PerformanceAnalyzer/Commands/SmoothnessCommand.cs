@@ -15,7 +15,19 @@ namespace GnollHack.PerformanceAnalyzer.Commands
         public int DisplayedCount;
         public List<JoinReport> Joins = new List<JoinReport>();
         public ChangePoints.Result Changes;
+        public List<MarkedMoment> Marks = new List<MarkedMoment>();
+        public string MarkSource;
         public List<string> Warnings = new List<string>();
+    }
+
+    /* A frame the user marked as a felt stutter, placed on the timeline */
+    public sealed class MarkedMoment
+    {
+        public long FrameId;
+        public DateTime? Utc;
+        public double Ms = double.NaN;                  /* ms since the first tick's callback start */
+        public double MsFromWindowStart = double.NaN;
+        public int RecordIndex = -1;                    /* -1 when the frame is not in the timeline */
     }
 
     /* Recomputes an in-app run's smoothness from its frame timeline, optionally with
@@ -30,10 +42,15 @@ namespace GnollHack.PerformanceAnalyzer.Commands
        --perfetto joins SurfaceFlinger's present times from perfetto_frames.csv and
        perfetto_app_slices.csv in the directory. When both are given, PresentMon is
        applied first and Perfetto overrides the frames it matches. The analysis itself is
-       GHSmoothnessMetrics.Analyze, the code the app runs. */
+       GHSmoothnessMetrics.Analyze, the code the app runs.
+
+       Moments the user marked as felt stutters come from the run record's "marks" array,
+       or, when it has none, from the frames whose flags carry UserMark; the report lists
+       the hitches displayed within MarkWindowMs of each. */
     public static class SmoothnessCommand
     {
         public const int WorstHitchCount = 10;
+        public const double MarkWindowMs = 3000;
         private const int MaxStageRows = 16;
 
         public static int Run(Args a)
@@ -105,7 +122,47 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             res.Displayed = new GHDisplayedFrame[Math.Max(1, t.Count)];
             res.Summary = GHSmoothnessMetrics.Analyze(t.Records, t.Count, t.Compositor, t.CompositorCount, res.Displayed, out res.DisplayedCount);
             res.Changes = ChangePoints.Detect(t, res.Displayed, res.DisplayedCount);
+            CollectMarks(res);
             return res;
+        }
+
+        private static void CollectMarks(SmoothnessResult res)
+        {
+            CapturedTimeline t = res.Timeline;
+            if (res.Run.Marks.Count > 0)
+            {
+                res.MarkSource = "the run record";
+                foreach (RunMark rm in res.Run.Marks)
+                {
+                    MarkedMoment m = new MarkedMoment { FrameId = rm.FrameId, Utc = rm.Utc, MsFromWindowStart = rm.MsFromWindowStart };
+                    m.RecordIndex = t.IndexOfFrameId(rm.FrameId);
+                    if (m.RecordIndex >= 0)
+                        m.Ms = RecordMs(t, m.RecordIndex);
+                    else if (rm.Utc.HasValue)
+                        m.Ms = FrameTimelineCsv.MsAtUtc(t, rm.Utc.Value);
+                    if (!m.Utc.HasValue)
+                        m.Utc = FrameTimelineCsv.UtcAtMs(t, m.Ms);
+                    res.Marks.Add(m);
+                }
+                return;
+            }
+            for (int i = 0; i < t.Count; i++)
+            {
+                if ((t.Records[i].Flags & FrameTimelineCsv.UserMarkFlag) == 0)
+                    continue;
+                MarkedMoment m = new MarkedMoment { FrameId = t.Records[i].FrameId, RecordIndex = i, Ms = RecordMs(t, i) };
+                m.Utc = FrameTimelineCsv.UtcAtMs(t, m.Ms);
+                res.Marks.Add(m);
+            }
+            if (res.Marks.Count > 0)
+                res.MarkSource = "the frame timeline's UserMark flags";
+        }
+
+        /* A tick's time: its callback start, or its vsync when the callback start is unknown */
+        private static double RecordMs(CapturedTimeline t, int i)
+        {
+            GHFrameRecord r = t.Records[i];
+            return t.Ms(r.CallbackStartTicks != 0 ? r.CallbackStartTicks : r.VsyncTicks);
         }
 
         public static string BuildReport(SmoothnessResult res)
@@ -122,6 +179,9 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             md.AppendLine("| Run record | " + Path.GetFileName(run.SourcePath) + " |");
             md.AppendLine("| Frame timeline | " + Path.GetFileName(res.Timeline.Path) + " (" + res.Timeline.Count + " ticks, Stopwatch frequency "
                 + res.Timeline.Clock.DeviceFrequency + (res.Timeline.Clock.OriginDeviceTicks.HasValue ? ", origin known" : ", no origin line") + ") |");
+            DateTime? utcAtZero = FrameTimelineCsv.UtcAtMs(res.Timeline, 0);
+            if (utcAtZero.HasValue)
+                md.AppendLine("| Wall clock at 0 ms | " + WallClock(utcAtZero.Value) + " |");
             md.AppendLine("| Compositor frames | " + (res.Timeline.CompositorPath != null ? Path.GetFileName(res.Timeline.CompositorPath) + " (" + res.Timeline.CompositorCount + " frames)" : "none") + " |");
             md.AppendLine();
             foreach (string w in res.Warnings)
@@ -134,6 +194,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             WriteCauses(md, res);
             WriteContentEvents(md, res);
             WriteWorstHitches(md, res);
+            WriteMarkedMoments(md, res);
             WriteChangePoints(md, res);
             return md.ToString();
         }
@@ -358,30 +419,16 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             CapturedTimeline t = res.Timeline;
             md.AppendLine("## Worst hitches");
             md.AppendLine();
-            List<int> hitches = new List<int>();
-            for (int j = 1; j < res.DisplayedCount; j++)
-            {
-                if (res.Displayed[j].IsHitch)
-                    hitches.Add(j);
-            }
+            List<int> hitches = WorstHitches(res, AllHitches(res));
             if (hitches.Count == 0)
             {
                 md.AppendLine("No hitches.");
                 md.AppendLine();
                 return;
             }
-            hitches = hitches.OrderByDescending(j => res.Displayed[j].GapTicks - res.Displayed[j].TargetPeriodTicks)
-                .ThenBy(j => j).Take(WorstHitchCount).ToList();
 
-            Dictionary<int, GHDisplayedFrame> byRecord = new Dictionary<int, GHDisplayedFrame>();
-            for (int j = 0; j < res.DisplayedCount; j++)
-                byRecord[res.Displayed[j].RecordIndex] = res.Displayed[j];
-            Dictionary<long, string> jank = new Dictionary<long, string>();
-            foreach (JoinReport jr in res.Joins)
-            {
-                foreach (KeyValuePair<long, string> kv in jr.JankTypeByFrameId)
-                    jank[kv.Key] = kv.Value;
-            }
+            Dictionary<int, GHDisplayedFrame> byRecord = DisplayedByRecord(res);
+            Dictionary<long, string> jank = JankByFrameId(res);
 
             md.AppendLine("Times are ms since the first tick's callback start. Each table covers the ticks from the frame shown before the gap to the frame that ended it.");
             md.AppendLine();
@@ -390,57 +437,187 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             {
                 rank++;
                 GHDisplayedFrame d = res.Displayed[j];
-                GHDisplayedFrame prev = res.Displayed[j - 1];
                 double gapMs = t.Clock.DurationTicksToMs(d.GapTicks);
                 double overMs = t.Clock.DurationTicksToMs(d.GapTicks - d.TargetPeriodTicks);
                 md.AppendLine("### " + rank + ". Frame " + d.FrameId + " at " + F(t.Ms(d.DisplayedAtTicks), 1) + " ms: gap "
                     + F(gapMs, 1) + " ms (+" + F(overMs, 1) + "), content step " + d.ContentStep + ", cause "
                     + GHSmoothnessMetrics.CauseName(d.Cause) + ", " + d.Source.ToString().ToLowerInvariant());
                 md.AppendLine();
-                md.AppendLine("| Frame | Vsync | Callback | Requests ms | GC | Events | Invalidate | Paint start | Lock attempt/result | Draw end | Flush end | Displayed | Pacing | Paint | Cause | Jank type |");
-                md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|");
-                int from = prev.RecordIndex;
-                int to = d.RecordIndex;
-                if (to - from + 1 > MaxStageRows)
+                WriteStageTable(md, res, j, byRecord, jank);
+            }
+        }
+
+        /* Indices into res.Displayed of every hitch, in display order */
+        private static List<int> AllHitches(SmoothnessResult res)
+        {
+            List<int> hitches = new List<int>();
+            for (int j = 1; j < res.DisplayedCount; j++)
+            {
+                if (res.Displayed[j].IsHitch)
+                    hitches.Add(j);
+            }
+            return hitches;
+        }
+
+        /* The WorstHitchCount hitches with the most time beyond the target period, worst first */
+        private static List<int> WorstHitches(SmoothnessResult res, List<int> hitches)
+        {
+            return hitches.OrderByDescending(j => res.Displayed[j].GapTicks - res.Displayed[j].TargetPeriodTicks)
+                .ThenBy(j => j).Take(WorstHitchCount).ToList();
+        }
+
+        private static Dictionary<int, GHDisplayedFrame> DisplayedByRecord(SmoothnessResult res)
+        {
+            Dictionary<int, GHDisplayedFrame> byRecord = new Dictionary<int, GHDisplayedFrame>();
+            for (int j = 0; j < res.DisplayedCount; j++)
+                byRecord[res.Displayed[j].RecordIndex] = res.Displayed[j];
+            return byRecord;
+        }
+
+        private static Dictionary<long, string> JankByFrameId(SmoothnessResult res)
+        {
+            Dictionary<long, string> jank = new Dictionary<long, string>();
+            foreach (JoinReport jr in res.Joins)
+            {
+                foreach (KeyValuePair<long, string> kv in jr.JankTypeByFrameId)
+                    jank[kv.Key] = kv.Value;
+            }
+            return jank;
+        }
+
+        /* The per-tick stage timeline of hitch res.Displayed[j]: the ticks from the frame
+           shown before the gap to the frame that ended it, the latest MaxStageRows at most */
+        private static void WriteStageTable(StringBuilder md, SmoothnessResult res, int j,
+            Dictionary<int, GHDisplayedFrame> byRecord, Dictionary<long, string> jank)
+        {
+            CapturedTimeline t = res.Timeline;
+            GHDisplayedFrame d = res.Displayed[j];
+            GHDisplayedFrame prev = res.Displayed[j - 1];
+            md.AppendLine("| Frame | Vsync | Callback | Requests ms | GC | Events | Invalidate | Paint start | Lock attempt/result | Draw end | Flush end | Displayed | Pacing | Paint | Cause | Jank type |");
+            md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|");
+            int from = prev.RecordIndex;
+            int to = d.RecordIndex;
+            if (to - from + 1 > MaxStageRows)
+            {
+                md.AppendLine("| ... " + (to - from + 1 - MaxStageRows) + " earlier ticks omitted | | | | | | | | | | | | | | | |");
+                from = to - MaxStageRows + 1;
+            }
+            for (int i = from; i <= to; i++)
+            {
+                GHFrameRecord r = t.Records[i];
+                string displayed;
+                string cause = "";
+                if (byRecord.TryGetValue(i, out GHDisplayedFrame df))
                 {
-                    md.AppendLine("| ... " + (to - from + 1 - MaxStageRows) + " earlier ticks omitted | | | | | | | | | | | | | | | |");
-                    from = to - MaxStageRows + 1;
+                    displayed = T(t, df.DisplayedAtTicks) + (df.Source == GHPresentSource.Measured ? " (m)" : " (e)");
+                    if (i == d.RecordIndex)
+                        cause = GHSmoothnessMetrics.CauseName(df.Cause);
                 }
-                for (int i = from; i <= to; i++)
+                else
                 {
-                    GHFrameRecord r = t.Records[i];
-                    string displayed;
-                    string cause = "";
-                    if (byRecord.TryGetValue(i, out GHDisplayedFrame df))
-                    {
-                        displayed = T(t, df.DisplayedAtTicks) + (df.Source == GHPresentSource.Measured ? " (m)" : " (e)");
-                        if (i == d.RecordIndex)
-                            cause = GHSmoothnessMetrics.CauseName(df.Cause);
-                    }
-                    else
-                    {
-                        displayed = r.Paint == GHPaintOutcome.Painted && r.FlushEndTicks != 0 ? "dropped" : "";
-                    }
-                    string lockText = r.LockAttemptTicks == 0 ? "" : T(t, r.LockAttemptTicks) + " / " + T(t, r.LockResultTicks) + (r.LockAcquired ? "" : " (not acquired)");
-                    md.AppendLine("| " + r.FrameId
-                        + " | " + T(t, r.VsyncTicks)
-                        + " | " + T(t, r.CallbackStartTicks) + (r.CallbackEndTicks != 0 ? " to " + T(t, r.CallbackEndTicks) : "")
-                        + " | " + (r.RequestTicks != 0 ? F(t.Clock.DurationTicksToMs(r.RequestTicks), 2) : "")
-                        + " | " + GcText(t, i)
-                        + " | " + GHSmoothnessMetrics.ContentEventNames(r.ContentEvents)
-                        + " | " + T(t, r.InvalidateTicks)
-                        + " | " + T(t, r.PaintStartTicks) + (r.PaintStartTicks != 0 ? (r.PaintOnUiThread ? " UI" : " GL") : "")
-                        + " | " + lockText
-                        + " | " + T(t, r.DrawEndTicks)
-                        + " | " + T(t, r.FlushEndTicks)
-                        + " | " + displayed
-                        + " | " + r.Pacing
-                        + " | " + r.Paint
-                        + " | " + cause
-                        + " | " + (jank.TryGetValue(r.FrameId, out string jt) ? jt : "") + " |");
+                    displayed = r.Paint == GHPaintOutcome.Painted && r.FlushEndTicks != 0 ? "dropped" : "";
+                }
+                string lockText = r.LockAttemptTicks == 0 ? "" : T(t, r.LockAttemptTicks) + " / " + T(t, r.LockResultTicks) + (r.LockAcquired ? "" : " (not acquired)");
+                md.AppendLine("| " + r.FrameId
+                    + " | " + T(t, r.VsyncTicks)
+                    + " | " + T(t, r.CallbackStartTicks) + (r.CallbackEndTicks != 0 ? " to " + T(t, r.CallbackEndTicks) : "")
+                    + " | " + (r.RequestTicks != 0 ? F(t.Clock.DurationTicksToMs(r.RequestTicks), 2) : "")
+                    + " | " + GcText(t, i)
+                    + " | " + GHSmoothnessMetrics.ContentEventNames(r.ContentEvents)
+                    + " | " + T(t, r.InvalidateTicks)
+                    + " | " + T(t, r.PaintStartTicks) + (r.PaintStartTicks != 0 ? (r.PaintOnUiThread ? " UI" : " GL") : "")
+                    + " | " + lockText
+                    + " | " + T(t, r.DrawEndTicks)
+                    + " | " + T(t, r.FlushEndTicks)
+                    + " | " + displayed
+                    + " | " + r.Pacing
+                    + " | " + r.Paint
+                    + " | " + cause
+                    + " | " + (jank.TryGetValue(r.FrameId, out string jt) ? jt : "") + " |");
+            }
+            md.AppendLine();
+        }
+
+        /* One subsection per mark: its wall-clock and capture times, a row per hitch
+           displayed within MarkWindowMs of it, and the stage timeline of the nearest one.
+           Nothing is written when the run has no marks. */
+        private static void WriteMarkedMoments(StringBuilder md, SmoothnessResult res)
+        {
+            if (res.Marks.Count == 0)
+                return;
+            CapturedTimeline t = res.Timeline;
+            List<int> hitches = AllHitches(res);
+            List<int> worst = WorstHitches(res, hitches);
+            Dictionary<int, GHDisplayedFrame> byRecord = DisplayedByRecord(res);
+            Dictionary<long, string> jank = JankByFrameId(res);
+
+            md.AppendLine("## Marked moments");
+            md.AppendLine();
+            md.AppendLine(res.Marks.Count + (res.Marks.Count == 1 ? " moment" : " moments") + " marked as a felt stutter, from " + res.MarkSource + ". "
+                + "Times are ms since the first tick's callback start, as in the worst-hitch tables; a mark sits at its frame's callback start. "
+                + "Each table lists the hitches displayed within " + F(MarkWindowMs / 1000.0, 0) + " s of the mark; the stage timeline of the nearest one follows it. "
+                + "Local times are in the time zone of the machine that ran the analyzer.");
+            md.AppendLine();
+            int k = 0;
+            foreach (MarkedMoment m in res.Marks)
+            {
+                k++;
+                md.AppendLine("### Mark " + k + ": frame " + m.FrameId + (double.IsNaN(m.Ms) ? "" : " at " + F(m.Ms, 1) + " ms"));
+                md.AppendLine();
+                md.AppendLine("- Wall clock: " + (m.Utc.HasValue ? WallClock(m.Utc.Value) : "unknown"));
+                if (!double.IsNaN(m.MsFromWindowStart))
+                    md.AppendLine("- Measurement window: " + F(m.MsFromWindowStart, 1) + " ms after its start");
+                if (m.RecordIndex < 0)
+                    md.AppendLine("- Frame " + m.FrameId + " is not in the frame timeline"
+                        + (double.IsNaN(m.Ms) ? "; the mark cannot be placed." : "; placed by its wall-clock time."));
+                md.AppendLine();
+                if (double.IsNaN(m.Ms))
+                    continue;
+
+                List<int> near = new List<int>();
+                foreach (int j in hitches)
+                {
+                    double at = t.Ms(res.Displayed[j].DisplayedAtTicks);
+                    if (!double.IsNaN(at) && Math.Abs(at - m.Ms) <= MarkWindowMs)
+                        near.Add(j);
+                }
+                if (near.Count == 0)
+                {
+                    md.AppendLine("No hitches within " + F(MarkWindowMs / 1000.0, 0) + " s.");
+                    md.AppendLine();
+                    continue;
+                }
+                md.AppendLine("| Frame | Displayed ms | From mark ms | Gap ms | Over target ms | Content step | Cause | Source | Worst rank |");
+                md.AppendLine("|---|---|---|---|---|---|---|---|---|");
+                foreach (int j in near)
+                {
+                    GHDisplayedFrame d = res.Displayed[j];
+                    double at = t.Ms(d.DisplayedAtTicks);
+                    int rank = worst.IndexOf(j);
+                    md.AppendLine("| " + d.FrameId
+                        + " | " + F(at, 1)
+                        + " | " + (at >= m.Ms ? "+" : "") + F(at - m.Ms, 1)
+                        + " | " + F(t.Clock.DurationTicksToMs(d.GapTicks), 1)
+                        + " | +" + F(t.Clock.DurationTicksToMs(d.GapTicks - d.TargetPeriodTicks), 1)
+                        + " | " + d.ContentStep
+                        + " | " + GHSmoothnessMetrics.CauseName(d.Cause)
+                        + " | " + d.Source.ToString().ToLowerInvariant()
+                        + " | " + (rank >= 0 ? (rank + 1).ToString(CultureInfo.InvariantCulture) : "") + " |");
                 }
                 md.AppendLine();
+                int nearest = near.OrderBy(j => Math.Abs(t.Ms(res.Displayed[j].DisplayedAtTicks) - m.Ms)).ThenBy(j => j).First();
+                md.AppendLine("Stage timeline of the nearest hitch, frame " + res.Displayed[nearest].FrameId + ":");
+                md.AppendLine();
+                WriteStageTable(md, res, nearest, byRecord, jank);
             }
+        }
+
+        /* "2026-09-26 12:34:56.123 UTC (2026-09-26 15:34:56.123 +03:00 local)" */
+        private static string WallClock(DateTime utc)
+        {
+            DateTimeOffset local = new DateTimeOffset(DateTime.SpecifyKind(utc, DateTimeKind.Utc)).ToLocalTime();
+            return utc.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture) + " UTC ("
+                + local.ToString("yyyy-MM-dd HH:mm:ss.fff zzz", CultureInfo.InvariantCulture) + " local)";
         }
 
         private static void WriteChangePoints(StringBuilder md, SmoothnessResult res)

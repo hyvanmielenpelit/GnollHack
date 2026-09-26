@@ -24062,6 +24062,13 @@ namespace GnollHackX.Pages.Game
             }
             UpdateReplayHeaderLabel();
         }
+        /* Pauses or resumes the replay and shows it on the Pause/Play button; UI thread only */
+        public void SetReplayPaused(bool paused)
+        {
+            GHApp.PauseReplay = paused;
+            UpdateReplayPauseButton();
+        }
+
         private void UpdateReplayPauseButton()
         {
             if(GHApp.PauseReplay)
@@ -24094,6 +24101,16 @@ namespace GnollHackX.Pages.Game
         {
             _replayHeaderOverride = text;
             UpdateReplayHeaderLabel();
+        }
+
+        /* A menu, text window, prompt or popup covers the map; UI thread only */
+        public bool IsOverlayOpen
+        {
+            get
+            {
+                return MenuGrid.IsVisible || TextGrid.IsVisible || GetLineGrid.IsVisible || YnGrid.IsVisible
+                    || PopupGrid.IsVisible || MoreCommandsGrid.IsVisible;
+            }
         }
 
         private void UpdateReplayHeaderLabel()
@@ -24735,6 +24752,16 @@ namespace GnollHackX.Pages.Game
             }
             else if(key == GHSpecialKey.None)
             {
+                handled = true;
+            }
+            else if (key == GHSpecialKey.F8 && FrameTimeProfiler.IsEnabled)
+            {
+                /* Marks the frame on screen as a stutter, during play and replays alike */
+                long frameId = GHFrameTimeline.LastFrameId;
+                if (GHFrameTimeline.MarkUser(frameId))
+                    GHApp.MaybeWriteScreenLog("MARK frame " + frameId);
+                else
+                    GHApp.MaybeWriteScreenLog("MARK failed for frame " + frameId);
                 handled = true;
             }
             else if (TipView.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space))

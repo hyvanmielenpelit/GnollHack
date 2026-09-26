@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 
@@ -56,11 +57,12 @@ namespace GnollHackX.Performance
         public readonly List<GHReportRun> Runs = new List<GHReportRun>();
     }
 
-    /* Renders a GHReportSuite or a GHComparisonResult as plain, fixed-width text for
-       the phone report viewer and the share zip. Every line is at most MaxLineWidth
-       characters and lines are joined with "\n" only. Deterministic: nothing here
-       reads the current time, so the same inputs always render the same text. Must
-       compile under C# 7.3. */
+    /* Renders a GHReportSuite, a GHComparisonResult, or the hitches of a stretch of
+       the frame timeline as plain, fixed-width text for the phone report viewer and
+       the share zip. Every line is at most MaxLineWidth characters and lines are
+       joined with "\n" only. Deterministic: nothing here reads the current time, so
+       the same inputs always render the same text, apart from RecentHitchesReport
+       showing mark times in the local time zone. Must compile under C# 7.3. */
     public static class GHPerformanceTextReport
     {
         public const int MaxLineWidth = 78;
@@ -130,6 +132,50 @@ namespace GnollHackX.Performance
             AppendCauseTotals(sb, usedA);
             Line(sb, "Cause totals, arm B:");
             AppendCauseTotals(sb, usedB);
+            return sb.ToString();
+        }
+
+        /* The hitches of a stretch of the frame timeline and those around the moments the
+           user marked. displayed and summary are what GHSmoothnessMetrics.Analyze returned
+           for records[0..recordCount); the marks are frame ids with the UTC time of each
+           mark in DateTime ticks, oldest first. Times are in seconds relative to the last
+           record's callback start, the end of the span. */
+        public static string RecentHitchesReport(GHFrameRecord[] records, int recordCount, GHDisplayedFrame[] displayed,
+            int displayedCount, GHSmoothnessSummary summary, long[] markFrameIds, long[] markUtcTicks, int markCount)
+        {
+            StringBuilder sb = new StringBuilder();
+            Line(sb, "Recent hitches");
+            if (records == null || summary == null)
+                recordCount = 0;
+            else
+                recordCount = Math.Min(recordCount, records.Length);
+            if (recordCount <= 0)
+            {
+                Line(sb, "No frame data.");
+                return sb.ToString();
+            }
+            displayedCount = displayed == null ? 0 : Math.Max(0, Math.Min(displayedCount, displayed.Length));
+            markCount = markFrameIds == null || markUtcTicks == null
+                ? 0 : Math.Max(0, Math.Min(markCount, Math.Min(markFrameIds.Length, markUtcTicks.Length)));
+
+            long spanEnd = records[recordCount - 1].CallbackStartTicks;
+            double spanSeconds = (double)(spanEnd - records[0].CallbackStartTicks) / Stopwatch.Frequency;
+            Line(sb, Truncate("Span: " + Fmt(spanSeconds) + " s  Ticks: "
+                + recordCount.ToString(CultureInfo.InvariantCulture)
+                + "  Displayed frames: " + displayedCount.ToString(CultureInfo.InvariantCulture), MaxLineWidth));
+            Line(sb, Truncate("Displayed FPS: " + Fmt(summary.DisplayedFps)
+                + "  Hitch ratio: " + Fmt(summary.HitchRatioMsPerSec) + " ms/s"
+                + "  Hitches: " + summary.HitchCount.ToString(CultureInfo.InvariantCulture), MaxLineWidth));
+            Line(sb, Truncate("GC: " + summary.GcCount.ToString(CultureInfo.InvariantCulture) + " collection(s), pause "
+                + (summary.GcPauseDataAvailable ? Fmt(summary.GcPauseMs) + " ms" : "n/a"), MaxLineWidth));
+            Line(sb, "");
+            AppendMarkedMoments(sb, records, recordCount, displayed, displayedCount, spanEnd,
+                markFrameIds, markUtcTicks, markCount);
+            Line(sb, "");
+            AppendWorstHitches(sb, records, recordCount, displayed, displayedCount, spanEnd,
+                summary.GcPauseDataAvailable);
+            Line(sb, "");
+            AppendRecentCauseTotals(sb, displayed, displayedCount);
             return sb.ToString();
         }
 
@@ -291,6 +337,13 @@ namespace GnollHackX.Performance
                     ms[c] += s.CauseMs[c];
                 }
             }
+            AppendCauseRows(sb, counts, ms);
+        }
+
+        /* One row per cause with a nonzero count, or "none"; counts and ms are indexed
+           by GHHitchCause */
+        private static void AppendCauseRows(StringBuilder sb, int[] counts, double[] ms)
+        {
             double totalMs = 0;
             for (int c = 0; c < GHSmoothnessMetrics.CauseCount; c++)
                 totalMs += ms[c];
@@ -462,6 +515,239 @@ namespace GnollHackX.Performance
             Line(sb, Truncate(text, MaxLineWidth));
             if (result.Provisional)
                 Line(sb, "Fewer than 5 runs per arm: provisional; read the MDE.");
+        }
+
+        /* ---- recent hitches ---- */
+
+        private const int WorstHitchCount = 10;
+        private const int MarkHitchLimit = 10;
+        private const int MarkWindowSeconds = 3;
+        private const string DetailIndent = "     ";
+
+        private static double TicksToMs(long ticks)
+        {
+            return ticks * 1000.0 / Stopwatch.Frequency;
+        }
+
+        private static string RelativeSeconds(long ticks, long spanEnd)
+        {
+            return SignedFmt((double)(ticks - spanEnd) / Stopwatch.Frequency) + " s";
+        }
+
+        private static string LocalClock(long utcTicks)
+        {
+            if (utcTicks <= 0 || utcTicks > DateTime.MaxValue.Ticks)
+                return "??:??:??.???";
+            return new DateTime(utcTicks, DateTimeKind.Utc).ToLocalTime()
+                .ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture);
+        }
+
+        /* Index of the record with frameId, -1 when absent; records are in FrameId order */
+        private static int FindRecord(GHFrameRecord[] records, int count, long frameId)
+        {
+            int lo = 0, hi = count - 1;
+            while (lo <= hi)
+            {
+                int mid = (lo + hi) / 2;
+                long id = records[mid].FrameId;
+                if (id == frameId)
+                    return mid;
+                if (id < frameId)
+                    lo = mid + 1;
+                else
+                    hi = mid - 1;
+            }
+            return -1;
+        }
+
+        /* A displayed frame that ended a hitch, with the records on both sides of its gap
+           among the first recordCount */
+        private static bool IsReportableHitch(GHDisplayedFrame[] displayed, int j, int recordCount)
+        {
+            return j > 0 && displayed[j].IsHitch
+                && displayed[j].RecordIndex >= 0 && displayed[j].RecordIndex < recordCount
+                && displayed[j - 1].RecordIndex >= 0 && displayed[j - 1].RecordIndex < recordCount;
+        }
+
+        /* Larger gap first, then earlier first */
+        private static void SortByGapDescending(List<int> indexes, GHDisplayedFrame[] displayed)
+        {
+            indexes.Sort(delegate (int a, int b)
+            {
+                int cmp = displayed[b].GapTicks.CompareTo(displayed[a].GapTicks);
+                return cmp != 0 ? cmp : a.CompareTo(b);
+            });
+        }
+
+        /* "<time>  gap <ms> ms (+<ms> over target)  <cause>" */
+        private static string HitchText(GHDisplayedFrame f, long spanEnd)
+        {
+            return RelativeSeconds(f.DisplayedAtTicks, spanEnd)
+                + "  gap " + Fmt(TicksToMs(f.GapTicks)) + " ms"
+                + " (" + SignedFmt(TicksToMs(f.GapTicks - f.TargetPeriodTicks)) + " over target)"
+                + "  " + GHSmoothnessMetrics.CauseName(f.Cause);
+        }
+
+        /* For each mark, oldest first: its local time, its time in the span, and the
+           hitches displayed within MarkWindowSeconds of the marked tick's callback start;
+           past MarkHitchLimit of them, the largest are listed in time order */
+        private static void AppendMarkedMoments(StringBuilder sb, GHFrameRecord[] records, int recordCount,
+            GHDisplayedFrame[] displayed, int displayedCount, long spanEnd,
+            long[] markFrameIds, long[] markUtcTicks, int markCount)
+        {
+            Line(sb, "Marked moments:");
+            if (markCount == 0)
+            {
+                Line(sb, "  none");
+                return;
+            }
+            long window = MarkWindowSeconds * Stopwatch.Frequency;
+            string windowText = MarkWindowSeconds.ToString(CultureInfo.InvariantCulture) + " s";
+            List<int> near = new List<int>();
+            for (int i = 0; i < markCount; i++)
+            {
+                string when = LocalClock(markUtcTicks[i]);
+                string frame = "frame " + markFrameIds[i].ToString(CultureInfo.InvariantCulture);
+                int idx = FindRecord(records, recordCount, markFrameIds[i]);
+                if (idx < 0)
+                {
+                    Line(sb, Truncate("  " + when + "  " + frame + " is not in the span", MaxLineWidth));
+                    continue;
+                }
+                long markTicks = records[idx].CallbackStartTicks;
+                Line(sb, Truncate("  " + when + "  " + RelativeSeconds(markTicks, spanEnd) + "  " + frame,
+                    MaxLineWidth));
+
+                near.Clear();
+                for (int j = 1; j < displayedCount; j++)
+                {
+                    if (IsReportableHitch(displayed, j, recordCount)
+                        && Math.Abs(displayed[j].DisplayedAtTicks - markTicks) <= window)
+                        near.Add(j);
+                }
+                if (near.Count == 0)
+                {
+                    Line(sb, "    no hitch within " + windowText);
+                    continue;
+                }
+                int more = 0;
+                if (near.Count > MarkHitchLimit)
+                {
+                    more = near.Count - MarkHitchLimit;
+                    SortByGapDescending(near, displayed);
+                    near.RemoveRange(MarkHitchLimit, more);
+                    near.Sort();
+                }
+                for (int k = 0; k < near.Count; k++)
+                    Line(sb, Truncate("    " + HitchText(displayed[near[k]], spanEnd), MaxLineWidth));
+                if (more > 0)
+                    Line(sb, "    ... and " + more.ToString(CultureInfo.InvariantCulture)
+                        + " smaller hitch(es) within " + windowText);
+            }
+        }
+
+        /* The WorstHitchCount largest hitches: the gap, the paint stages of the tick that
+           ended it, the request work and collections during it, and its content events */
+        private static void AppendWorstHitches(StringBuilder sb, GHFrameRecord[] records, int recordCount,
+            GHDisplayedFrame[] displayed, int displayedCount, long spanEnd, bool pauseAvailable)
+        {
+            Line(sb, "Worst hitches (largest gap first):");
+            List<int> hitches = new List<int>();
+            for (int j = 1; j < displayedCount; j++)
+            {
+                if (IsReportableHitch(displayed, j, recordCount))
+                    hitches.Add(j);
+            }
+            if (hitches.Count == 0)
+            {
+                Line(sb, "  none");
+                return;
+            }
+            SortByGapDescending(hitches, displayed);
+            int shown = Math.Min(WorstHitchCount, hitches.Count);
+            for (int k = 0; k < shown; k++)
+            {
+                int j = hitches[k];
+                string rank = PadL((k + 1).ToString(CultureInfo.InvariantCulture), 3) + ". ";
+                Line(sb, Truncate(rank + HitchText(displayed[j], spanEnd), MaxLineWidth));
+                Line(sb, Truncate(DetailIndent
+                    + StageText(records, displayed[j - 1].RecordIndex, displayed[j].RecordIndex, pauseAvailable),
+                    MaxLineWidth));
+                AppendEventNames(sb, displayed[j].ContentEvents);
+            }
+        }
+
+        /* Draw and flush time of the tick that ended a gap, the request work handled
+           during the gap, and whether a collection ran in it, with its pause time when
+           the runtime reports one; the same derivations GHSmoothnessMetrics.Attribute uses */
+        private static string StageText(GHFrameRecord[] records, int prevIdx, int curIdx, bool pauseAvailable)
+        {
+            GHFrameRecord r = records[curIdx];
+            GHFrameRecord p = records[prevIdx];
+            string draw = r.PaintStartTicks != 0 && r.DrawEndTicks != 0
+                ? Fmt(TicksToMs(r.DrawEndTicks - r.PaintStartTicks)) + " ms" : "n/a";
+            string flush = r.DrawEndTicks != 0 && r.FlushEndTicks != 0
+                ? Fmt(TicksToMs(r.FlushEndTicks - r.DrawEndTicks)) + " ms" : "n/a";
+            long requestTicks = 0;
+            for (int i = prevIdx + 1; i <= curIdx; i++)
+                requestTicks += records[i].RequestTicks;
+            bool countsMoved = r.GcCount0 != p.GcCount0 || r.GcCount1 != p.GcCount1 || r.GcCount2 != p.GcCount2;
+            long pauseTicks = pauseAvailable ? Math.Max(0, r.GcPauseTicks - p.GcPauseTicks) : 0;
+            string gc;
+            if (!countsMoved && pauseTicks == 0)
+                gc = "no";
+            else if (pauseAvailable)
+                gc = "yes (" + Fmt(TicksToMs(pauseTicks)) + " ms)";
+            else
+                gc = "yes";
+            return "draw " + draw + "  flush " + flush + "  requests " + Fmt(TicksToMs(requestTicks)) + " ms"
+                + "  GC " + gc;
+        }
+
+        /* "events:" and the content events of a gap, wrapped at MaxLineWidth */
+        private static void AppendEventNames(StringBuilder sb, GHContentEvent events)
+        {
+            string line = DetailIndent + "events:";
+            bool any = false;
+            for (int k = 0; k < GHSmoothnessMetrics.ContentEventKinds; k++)
+            {
+                if (((int)events & (1 << k)) == 0)
+                    continue;
+                string name = GHSmoothnessMetrics.ContentEventName(k);
+                string piece = (any ? ", " : " ") + name;
+                if (any && line.Length + piece.Length + 1 > MaxLineWidth)
+                {
+                    Line(sb, line + ",");
+                    line = DetailIndent + "  " + name;
+                }
+                else
+                {
+                    line += piece;
+                }
+                any = true;
+            }
+            if (!any)
+                line += " none";
+            Line(sb, Truncate(line, MaxLineWidth));
+        }
+
+        /* Hitch counts and time beyond target per cause, from the displayed frames */
+        private static void AppendRecentCauseTotals(StringBuilder sb, GHDisplayedFrame[] displayed, int displayedCount)
+        {
+            Line(sb, "Hitch causes (span):");
+            int[] counts = new int[GHSmoothnessMetrics.CauseCount];
+            double[] ms = new double[GHSmoothnessMetrics.CauseCount];
+            for (int j = 1; j < displayedCount; j++)
+            {
+                if (!displayed[j].IsHitch)
+                    continue;
+                int c = (int)displayed[j].Cause;
+                if (c >= GHSmoothnessMetrics.CauseCount)
+                    continue;
+                counts[c]++;
+                ms[c] += TicksToMs(displayed[j].GapTicks - displayed[j].TargetPeriodTicks);
+            }
+            AppendCauseRows(sb, counts, ms);
         }
 
         /* ---- run selection ---- */

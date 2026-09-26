@@ -30,7 +30,10 @@ namespace GnollHackX.Pages.Game
     public partial class GameMenuPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
     {
         public GamePage _gamePage;
- 
+
+        /* The frame on screen when the player opened this menu */
+        private readonly long _openedAtFrameId;
+
         public GameMenuPage(GamePage gamePage)
         {
             InitializeComponent();
@@ -69,6 +72,7 @@ namespace GnollHackX.Pages.Game
             UpdateDarknessMode();
 
             FrameTimeProfiler.MarkPauseEvent();
+            _openedAtFrameId = GHFrameTimeline.LastFrameId;
         }
 
         public GameMenuPage(GamePage gamePage, bool isLimited) : this(gamePage)
@@ -274,6 +278,8 @@ namespace GnollHackX.Pages.Game
         {
             GHApp.PlayButtonClickedSound();
             btnDevDumpFrameLog.IsVisible = FrameTimeProfiler.IsEnabled;
+            btnDevMarkStutter.IsVisible = FrameTimeProfiler.IsEnabled;
+            btnDevAnalyzeRecent.IsVisible = FrameTimeProfiler.IsEnabled;
             btnDevAiSnapshot.IsVisible = GHApp.DebugLogMessages;
             DeveloperPopupGrid.IsEnabled = true;
             DeveloperPopupGrid.IsVisible = true;
@@ -448,6 +454,21 @@ namespace GnollHackX.Pages.Game
                         if (File.Exists(part))
                             archive.CreateEntryFromFile(part, Path.GetFileName(part));
                     }
+
+                    /* The in-app screen log, which holds entries only while screen logging is on */
+                    List<GHScreenLogEntry> screenLog = new List<GHScreenLogEntry>(GHConstants.MaxSavedScreenLogs);
+                    GHApp.CopyRecentScreenLog(screenLog, GHConstants.MaxSavedScreenLogs);
+                    if (screenLog.Count > 0)
+                    {
+                        ZipArchiveEntry screenLogEntry = archive.CreateEntry("screenlog.txt");
+                        using (StreamWriter sw = new StreamWriter(screenLogEntry.Open(), new UTF8Encoding(false)))
+                        {
+                            foreach (GHScreenLogEntry logEntry in screenLog)
+                            {
+                                sw.WriteLine(FormattableString.Invariant($"{logEntry.Time:HH:mm:ss.fff}") + " " + logEntry.Text);
+                            }
+                        }
+                    }
                 }
 
                 if (runJsonPath == null)
@@ -471,6 +492,60 @@ namespace GnollHackX.Pages.Game
             {
                 Debug.WriteLine(ex.Message);
                 await GHApp.DisplayMessageBox(this, "Error Creating Frame Log", "An error occurred while creating the frame log: " + ex.Message, "OK");
+            }
+
+            DeveloperPopupGrid.IsEnabled = true;
+        }
+
+        private async void btnMarkStutter_Clicked(object sender, EventArgs e)
+        {
+            DeveloperPopupGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+
+            bool ok = GHFrameTimeline.MarkUser(_openedAtFrameId);
+            if (ok)
+                await GHApp.DisplayMessageBox(this, "Stutter Marked",
+                    "Marked the frame shown when this menu was opened. Dump Frame Log or Analyze Recent to see it.", "OK");
+            else
+                await GHApp.DisplayMessageBox(this, "Stutter Not Marked",
+                    "Could not mark: the frame timeline is off or no longer holds that frame.", "OK");
+
+            DeveloperPopupGrid.IsEnabled = true;
+        }
+
+        private async void btnAnalyzeRecent_Clicked(object sender, EventArgs e)
+        {
+            DeveloperPopupGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+
+            try
+            {
+                string text = GHPerformanceRunRecord.BuildRecentHitchesReport(_openedAtFrameId, 30.0);
+                if (text == null)
+                {
+                    await GHApp.DisplayMessageBox(this, "No Frame Data",
+                        "No frame data. Turn on the Frame Time Profiler and play for a while.", "OK");
+                }
+                else
+                {
+                    string targetpath = Path.Combine(GHApp.GHPath, GHConstants.ArchiveDirectory);
+                    if (!Directory.Exists(targetpath))
+                        GHApp.CheckCreateDirectory(targetpath);
+                    string filepath = Path.Combine(targetpath, "recent_hitches.txt");
+                    File.WriteAllText(filepath, text, new UTF8Encoding(false));
+
+                    var displFilePage = new DisplayFilePage(filepath, "Recent Hitches", GHPerformanceTextReport.MaxLineWidth, true, false, false);
+                    string errormsg;
+                    if (!displFilePage.ReadFile(out errormsg))
+                        await GHApp.DisplayMessageBox(this, "Error Opening Report", "GnollHack cannot open the report file: " + errormsg, "OK");
+                    else
+                        await GHApp.PushModalPageAsync(displFilePage);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                await GHApp.DisplayMessageBox(this, "Error Analyzing Frames", "An error occurred while analyzing recent frames: " + ex.Message, "OK");
             }
 
             DeveloperPopupGrid.IsEnabled = true;
@@ -670,6 +745,16 @@ namespace GnollHackX.Pages.Game
                             case (int)'f':
                                 if (btnDevDumpFrameLog.IsEnabled && btnDevDumpFrameLog.IsVisible)
                                     btnDumpFrameLog_Clicked(btnDevDumpFrameLog, EventArgs.Empty);
+                                handled = true;
+                                break;
+                            case (int)'k':
+                                if (btnDevMarkStutter.IsEnabled && btnDevMarkStutter.IsVisible)
+                                    btnMarkStutter_Clicked(btnDevMarkStutter, EventArgs.Empty);
+                                handled = true;
+                                break;
+                            case (int)'r':
+                                if (btnDevAnalyzeRecent.IsEnabled && btnDevAnalyzeRecent.IsVisible)
+                                    btnAnalyzeRecent_Clicked(btnDevAnalyzeRecent, EventArgs.Empty);
                                 handled = true;
                                 break;
                             case (int)'a':

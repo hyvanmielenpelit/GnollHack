@@ -86,7 +86,8 @@ rule 10).
 
 **Developer menu > Dump Frame Log** writes a run record of everything the ring holds
 (`run_*.json` plus `frametimeline_*.csv` and `compositorframes_*.csv`) to the archive's
-`performance` directory and shares it with the legacy `framelog.csv` as `framelog.zip`. The
+`performance` directory and shares it with the legacy `framelog.csv`, and with `screenlog.txt`
+when the screen log holds entries, as `framelog.zip`. The
 app clears the archive directory when it starts, so keep the shared zip or copy the files
 before restarting. Its "before" thermal reading is the one taken when the profiler was
 switched on, and the record says when that was.
@@ -101,6 +102,26 @@ polls every 500 ms. On Android it is a broadcast,
 and the record goes to `/sdcard/Android/data/<package>/files/performance/`, where
 `adb pull` can reach it. `Run-PerformanceSuite.ps1` sends the command at the start of each
 capture, so the in-app record covers the same window as PresentMon or Perfetto.
+
+### Stutter tools
+
+For a stutter felt during play or a replay, while the profiler records. The Developer button
+of the game menu is shown in developer mode; its frame tools only while the profiler is on.
+
+| Tool | What it does |
+|------|--------------|
+| **Game menu > Developer > Mark Stutter** | Marks the frame that was on screen when the game menu was opened; reports a failure when the frame ring no longer holds it |
+| **F8** (Windows) | Marks the current frame, in play and in replays. With screen logging on, the screen log gets `MARK frame N` (or `MARK failed for frame N`) |
+| **Game menu > Developer > Analyze Recent** | A plain-text report of the last 30 s before the game menu was opened, shown in the viewer and written to `archive/recent_hitches.txt`: displayed FPS, hitch ratio and GC of the span; **Marked moments**, each mark with the hitches displayed within 3 s either side of it (the ten largest when there are more); the ten worst hitches, each with its cause, the draw and flush times of the tick that ended it, the request time and collections in the gap, and its content events; and the hitch causes of the span |
+
+A mark sets the `UserMark` flag on the frame's record and enters a ring of the last 32 marks.
+Every saved run record (Dump Frame Log, a window command, a suite run) lists the marks in its
+range as `marks`: frame id, UTC time, and milliseconds from the first saved tick. The frame
+timeline CSV's `# OriginUtc` header line gives the wall-clock time of the tick its millisecond
+columns count from, so a row can be matched with a screen recording or the screen log.
+Offline, the `smoothness` report has a **Marked moments** section: for each mark (from
+`marks`, or from the `UserMark` flags when the record has none), the hitches displayed within
+3 s of it and the stage timeline of the nearest one.
 
 ## Metrics
 
@@ -262,6 +283,135 @@ ProMotion) timelines are not covered.
 | W-menus | Inventory open and close every 2 s (canvas switches; excluded as pauses) |
 | replay | A reference `.gnhrec` played back at speed 1.0: identical content in both arms |
 
+## In-app Performance Suite
+
+The suite measures a build on the device itself, with no PC: a series of measurement windows
+over one recorded replay, each started from the same turn, saved as ordinary run records and
+compared on the device. **About > Performance Suite** opens it; the button is shown only with
+developer mode on and **Settings > Frame Time Profiler** on. The runner switches the profiler
+on for the suite and restores it afterwards.
+
+### Setup
+
+The page remembers the last setup.
+
+| Field | Default | Meaning |
+|-------|---------|---------|
+| Replay | none | A main replay file in `<GHPath>/replay`, newest first; continuation files are not listed |
+| Start Turn | 1 | The turn every run starts from, at least 1 |
+| Scenario | Idle | **Idle**: the replay pauses at the start turn, leaving only tile animations (W-idle). **Minimap**: the replay pauses and the map switches to minimap zoom (W1). **Playback**: the replay keeps playing (replay) |
+| Measured runs | 6 | 3, 5, 6 or 8, not counting the warm-up run |
+| Warm-up run | On | Run 0, a full run that is saved but excluded as `warm-up run` |
+| Page mode | Shared page | **Shared page**: one game page for every run. **Fresh page per run**: a new game page for each run |
+| Arm label | `<app version> <short commit>` | Names the arm; suites with the same label pool into one arm |
+| Warm-up, window and cool-down seconds | 10, 60, 20 | Per run, as in the Protocol |
+
+The estimated duration is (measured runs + warm-up run) x (15 s for the seek + warm-up +
+window + cool-down): about 12 minutes with the defaults.
+
+### What a suite does
+
+1. The first game page plays the replay from its beginning, exactly as the Replay page starts
+   it, when the start turn is 1 or less; otherwise it seeks to start turn - 1 and plays the
+   last turn at normal speed.
+2. The runner waits, for at most 120 s, until the start turn is reached and no replayed menu,
+   text window, prompt or popup covers the map, and applies the scenario. The replay header
+   shows the progress: `Performance suite: run N of M`, `warm-up run` or `cooling down`.
+3. Warm-up, then the measurement window, saved with the suite's context.
+4. Cool-down, then a thermal gate: the next run waits until the thermal class is no worse than
+   at the suite start, checking every 15 s, and goes ahead after 300 s regardless. On Windows
+   the class comes from the processor performance counter: more than 10 points below the
+   suite start is throttled.
+5. The next run starts. With a shared page the replay, paused during the cool-down, seeks back
+   to start turn - 1, which restarts it in place and collects garbage. With a fresh page the
+   game page closes before the cool-down, which then runs on the suite page, and after a
+   collection a new game page starts as in step 1.
+
+The suite aborts when the replay ends, the user stops it, the app goes to the background
+(minimizing counts on Windows), or the start turn is not reached; between fresh pages, also
+when a game or another page is opened. Finished runs are kept, a window open at that moment is
+saved excluded with the abort reason, and the suite's status becomes `aborted` with the
+reason. Measured runs are otherwise excluded by the rules under [Statistics](#statistics).
+
+### Recording a benchmark replay
+
+- The start turn must leave at least warm-up plus window seconds of replayed content after
+  it; early turns seek faster.
+- **Minimap**: record in wizard mode and reveal the level with Ctrl+F before the start turn,
+  so that the minimap draws the whole level.
+- **Playback**: start at a stretch with fighting and spell or screen-filter effects.
+
+### Results, comparison and baselines
+
+Each suite is a folder `<GHPath>/performance/suites/<suiteId>/`, where `<suiteId>` is
+`yyyyMMdd_HHmmss_<scenario>_<device model>` in UTC. It holds `suite.json`
+(`schema/suite-manifest.schema.json`), each run's `run_*.json`, `frametimeline_*.csv` and
+`compositorframes_*.csv`, and `report.txt`. `<GHPath>/performance/baselines.json` records one
+baseline arm label per comparability key. Unlike `archive`, the `performance` directory is not
+cleared when the app starts.
+
+The results list shows each suite's date, scenario, label, used runs, median hitch ratio and
+size, tagged `baseline`, `aborted` or `imported`. A used run is a measured run with a summary
+and no exclusion reason.
+
+| Button | Action |
+|--------|--------|
+| View Report | `report.txt`: setup, replay size, SHA-256 and start turn, environment, the run table, the medians of the used runs, hitch causes and content events |
+| Set as Baseline | Records the suite's arm label as the baseline for its comparability key |
+| Compare with Baseline | Compares the suite's arm with the baseline arm of its key |
+| Share, Import Results | See [Share and Import](#share-and-import) |
+| Delete | Deletes the selected suites' folders; `baselines.json` is left as it is |
+
+The **comparability key** is the scenario, the replay's SHA-256, the start turn, the page
+mode, the map FPS setting and the measured refresh rate rounded to whole hertz, fixed when the
+suite finishes. A comparison pools, per arm, every suite with the same key and the same arm
+label: arm A the baseline label, arm B the selected suite's. Suites with another key never
+enter it. It refuses when the suite is still running, no baseline is set for its key, the
+suite's own label is the baseline label, or either arm has no used runs.
+
+The decision is the one `compare --series smoothness` makes offline, from the same code
+(`GHPerformanceComparison`), as described under [Statistics](#statistics). With fewer than 3
+used runs in either arm there is no verdict; below 5 the verdict is marked provisional. The
+report lists both arms' versions and what differs between them, the verdict per metric, and
+each arm's hitch causes.
+
+### Two builds on one device
+
+- **Windows**: unpackaged builds share one store. Run a suite in each build, set the older
+  build's suite as the baseline, and compare the newer one's. The default arm labels differ,
+  since they carry the version and commit.
+- **Android and iOS**: a reinstall may wipe the app's data, and the store with it. Share the
+  suites before installing another build and import them afterwards. Interleave in blocks:
+  3 runs with the old build, install the new build, 6 runs, reinstall the old build, 3 runs.
+  Both old-build suites carry the same label and pool into one 6-run arm, so drift over the
+  session affects both arms alike.
+
+### Share and Import
+
+**Share** zips the selected suites into
+`archive/GnollHack_Performance_<device model>_<timestamp>.zip`, each suite's folder with its
+`report.txt` rewritten and, when the suite compares with its baseline, a `comparison.txt`,
+and hands the zip to the system share sheet. **Import Results** picks a zip and checks every
+top-level folder before extracting anything: a `suite.json` with a `manifestVersion`, and
+every run file it names present with schema version 2. Valid folders move into the store,
+tagged `imported`; a suite whose id is already present is skipped, never overwritten; the
+others are reported with the reason.
+
+On a PC, unzip the archive and run the analyzer on the suite folders (`$a` as in
+[Analyzer](#analyzer)):
+
+```powershell
+& $a smoothness <suite>\run_<...>.json --out smoothness.md
+& $a compare --a <old suite 1> --a <old suite 2> --b <new suite> --label-a Old --label-b New --series smoothness --out report_smoothness.md
+```
+
+`smoothness` takes one run record at a time. `compare` reads every `*.json` of a folder and
+ignores `suite.json`, which is not a run record. The warm-up run and a window cut short by an
+abort stay out through the `excludedReason` of the record's `suite` object, and the other runs
+go through the analyzer's own exclusion rules (`--include-excluded` brings excluded runs in).
+`compare` does not check the comparability key; it refuses runs whose refresh or target
+period differ (protocol rule 10).
+
 ## Running a batch
 
 Windows, Build 14 versus HEAD, with in-app records joined to PresentMon (elevated console;
@@ -285,10 +435,13 @@ waiting for the shared files in `-InAppRecordDir`:
 
 ```powershell
 DEVEL\performance\scripts\Run-PerformanceSuite.ps1 -Platform Android `
-    -ArmAPackage com.hyvanmielenpelit.gnollhack -ArmALabel GPU `
-    -ArmBPackage com.hyvanmielenpelit.gnollhack -ArmBLabel CPU `
+    -ArmAPackage <package> -ArmALabel GPU `
+    -ArmBPackage <package> -ArmBLabel CPU `
     -Scenario W-idle -Pairs 2 -Perfetto -OutDir C:\performance\idle -InApp -InAppRecordDir C:\performance\inbox
 ```
+
+`<package>` is the application id of the installed build; read it from the device with
+`adb shell pm list packages` (`adb shell pm list packages gnollhack` narrows the list).
 
 Each run directory gets `smoothness.md`; the batch gets `report.md` (external series) and,
 with in-app records, `report_smoothness.md`. When both arms are the same package, change the
@@ -339,5 +492,6 @@ subsystem.
 | `scripts/Common.ps1` | Shared helpers (tool resolution, native calls that write to stderr, JSON writing, git facts) |
 | `perfetto/frametimeline.pbtxt` | Perfetto trace config |
 | `perfetto/export_frames.sql`, `perfetto/export_app_slices.sql` | `trace_processor` queries behind the Perfetto CSVs |
-| `schema/run-record.schema.json` | The in-app run record format (schema v2) |
+| `schema/run-record.schema.json` | The in-app run record format (schema v2), with the optional `suite` object of a suite run and the `marks` array |
+| `schema/suite-manifest.schema.json` | The `suite.json` manifest of an in-app Performance Suite (manifest version 1) |
 | `history.jsonl` | Append-only record of Release runs, created on first append |

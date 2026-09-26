@@ -9,7 +9,9 @@ namespace GnollHack.PerformanceAnalyzer.Readers
        found by header name, so a reordered or extended file still reads; a missing column
        reads as zero, so a capture from before GcPauseMs and CallbackPeriodMs has no pause
        data and no separate callback period. Times come back as ticks of this machine's
-       Stopwatch (TimelineClock).
+       Stopwatch (TimelineClock). An optional "# OriginUtc utc=<o> stopwatchTicks=<n>" line
+       gives the first record's wall-clock time (OriginUtc); unknown '#' lines are kept as
+       metadata and otherwise ignored.
        Enum columns are written by name and parsed by name, or by number as a fallback. */
     public static class FrameTimelineCsv
     {
@@ -19,6 +21,13 @@ namespace GnollHack.PerformanceAnalyzer.Readers
             + "Paint,PaintOnUiThread,PaintStartMs,LockAttemptMs,LockResultMs,LockAcquired,DrawEndMs,FlushEndMs,"
             + "PaintedMainCounter,PaintedGeneralCounter,PaintedMapGeneration,DisplayedAtMs,PresentSource,Flags,Gc0,Gc1,Gc2,"
             + "RequestMs,ContentEvents,GcPauseMs,CallbackPeriodMs";
+
+        /* Metadata keys of the "# OriginUtc utc=... stopwatchTicks=..." line */
+        public const string OriginUtcKey = "OriginUtc.utc";
+        public const string OriginUtcTicksKey = "OriginUtc.stopwatchTicks";
+
+        /* GHFrameFlags.UserMark: the user marked this frame as a felt stutter */
+        public const GHFrameFlags UserMarkFlag = GHFrameFlags.UserMark;
 
         /* fallbackFrequency is used when the file has no "# StopwatchFrequency=" line, e.g.
            the run JSON's clock.stopwatchFrequency */
@@ -120,6 +129,13 @@ namespace GnollHack.PerformanceAnalyzer.Readers
                 sb.Append("# StopwatchFrequency=" + clock.DeviceFrequency.ToString(CultureInfo.InvariantCulture)).Append(Csv.Crlf);
                 if (clock.OriginDeviceTicks.HasValue)
                     sb.Append("# OriginStopwatchTicks=" + clock.OriginDeviceTicks.Value.ToString(CultureInfo.InvariantCulture)).Append(Csv.Crlf);
+                if (t.Metadata.TryGetValue(OriginUtcKey, out string originUtc))
+                {
+                    sb.Append("# OriginUtc utc=" + originUtc);
+                    if (t.Metadata.TryGetValue(OriginUtcTicksKey, out string originUtcTicks))
+                        sb.Append(" stopwatchTicks=" + originUtcTicks);
+                    sb.Append(Csv.Crlf);
+                }
             }
             sb.Append(Header).Append(Csv.Crlf);
 
@@ -200,6 +216,51 @@ namespace GnollHack.PerformanceAnalyzer.Readers
                     }
                 }
             }
+        }
+
+        /* The wall-clock time of the first record, from the "# OriginUtc utc=<o> stopwatchTicks=<n>"
+           line; null when the capture predates that line or its value does not parse */
+        public static DateTime? OriginUtc(CapturedTimeline t)
+        {
+            return t.Metadata.TryGetValue(OriginUtcKey, out string v) ? ParseUtc(v) : null;
+        }
+
+        /* The device Stopwatch tick at which OriginUtc was read, or null */
+        public static long? OriginUtcStopwatchTicks(CapturedTimeline t)
+        {
+            return MetaLong(t.Metadata, OriginUtcTicksKey);
+        }
+
+        /* The wall-clock time of a capture time (ms since the first tick's callback start).
+           OriginUtc is placed at its own stopwatchTicks when both it and OriginStopwatchTicks
+           are known, and at capture time 0 otherwise. Null without an OriginUtc line. */
+        public static DateTime? UtcAtMs(CapturedTimeline t, double ms)
+        {
+            DateTime? origin = OriginUtc(t);
+            if (!origin.HasValue || double.IsNaN(ms))
+                return null;
+            double originMs = 0;
+            long? originTicks = OriginUtcStopwatchTicks(t);
+            if (originTicks.HasValue && t.Clock.OriginDeviceTicks.HasValue)
+                originMs = t.Clock.DeviceTicksToMs(originTicks.Value);
+            return origin.Value.AddTicks((long)Math.Round((ms - originMs) * TimeSpan.TicksPerMillisecond));
+        }
+
+        /* The capture time of a wall-clock time; the inverse of UtcAtMs, NaN without an
+           OriginUtc line */
+        public static double MsAtUtc(CapturedTimeline t, DateTime utc)
+        {
+            DateTime? atZero = UtcAtMs(t, 0);
+            return atZero.HasValue ? (utc - atZero.Value).Ticks / (double)TimeSpan.TicksPerMillisecond : double.NaN;
+        }
+
+        /* An ISO 8601 time as UTC; a time without a zone designator is taken as UTC */
+        public static DateTime? ParseUtc(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s))
+                return null;
+            return DateTime.TryParse(s.Trim(), CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out DateTime d) ? d : null;
         }
 
         internal static long? MetaLong(Dictionary<string, string> meta, string key)

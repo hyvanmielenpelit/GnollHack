@@ -5,6 +5,15 @@ using GnollHackX.Performance;
 
 namespace GnollHack.PerformanceAnalyzer.Model
 {
+    /* A frame the user marked as a felt stutter, from the run record's "marks" array */
+    public sealed class RunMark
+    {
+        public long FrameId;
+        public string UtcText;
+        public DateTime? Utc;               /* null when "utc" is absent or does not parse */
+        public double MsFromWindowStart;    /* NaN when absent */
+    }
+
     /* An in-app run record, schema version 2, as the app writes it at the end of a
        measurement window:
 
@@ -16,12 +25,14 @@ namespace GnollHack.PerformanceAnalyzer.Model
            onScreenPacing {...}, series { onScreenIntervalsMs, pacingErrorMs },
            uiThread {...}, files { frameTimeline, compositorFrames },
            suite { suiteId, runIndex, pageMode, isWarmUp, replayFileName, replayBytes,
-                   replaySha256, startTurn, turnReached, excludedReason } }
+                   replaySha256, startTurn, turnReached, excludedReason },
+           marks [ { frameId, utc, msFromWindowStart } ] }
 
        The files named under "files" sit next to the JSON. The "suite" block is written
        only for runs taken by the in-app Performance Suite; its optional excludedReason
        (e.g. "warm-up run", "replay ended") overrides the analyzer's own exclusion rules.
-       Parsing is tolerant: a missing member reads as zero or null. */
+       "marks" lists the frames the user marked as felt stutters and is absent when there
+       are none. Parsing is tolerant: a missing member reads as zero or null. */
     public sealed class InAppRun
     {
         public int SchemaVersion;
@@ -52,6 +63,7 @@ namespace GnollHack.PerformanceAnalyzer.Model
         public string CompositorFramesFile;
         public JsonElement Suite;
         public string SuiteExcludedReason;
+        public List<RunMark> Marks = new List<RunMark>();
 
         /* A v2 in-app record, as opposed to a run record in the analyzer's own schema */
         public static bool IsInAppRun(JsonElement root)
@@ -149,6 +161,18 @@ namespace GnollHack.PerformanceAnalyzer.Model
             {
                 r.Suite = suite.Clone();
                 r.SuiteExcludedReason = Str(suite, "excludedReason");
+            }
+            if (root.TryGetProperty("marks", out JsonElement marks) && marks.ValueKind == JsonValueKind.Array)
+            {
+                foreach (JsonElement m in marks.EnumerateArray())
+                {
+                    if (m.ValueKind != JsonValueKind.Object || !m.TryGetProperty("frameId", out JsonElement fid) || !TryNumber(fid, out double frameId))
+                        continue;
+                    RunMark mark = new RunMark { FrameId = (long)frameId, UtcText = Str(m, "utc") };
+                    mark.Utc = FrameTimelineCsv.ParseUtc(mark.UtcText);
+                    mark.MsFromWindowStart = m.TryGetProperty("msFromWindowStart", out JsonElement w) && TryNumber(w, out double wms) ? wms : double.NaN;
+                    r.Marks.Add(mark);
+                }
             }
             return r;
         }

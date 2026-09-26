@@ -16,8 +16,9 @@ namespace GnollHackX.Performance
        (schema v2) describes and the offline analyzer reads: a scenario and arm label, the
        environment the run was measured in, thermal readings taken before and after, the
        smoothness summary and on-screen pacing metrics GHSmoothnessMetrics computes, the
-       raw on-screen interval and pacing-error series, the UI thread latency probe, and,
-       for a run that is part of a suite, an optional "suite" object.
+       raw on-screen interval and pacing-error series, the UI thread latency probe, and
+       two optional parts: a "suite" object for a run that is part of a suite, and a
+       "marks" array of the frames the user marked in the saved range.
 
        BeginWindow and EndWindowAndSave bracket a measurement: BeginWindow remembers
        whether the frame timeline was already running, enables it, notes the first frame of
@@ -27,7 +28,8 @@ namespace GnollHackX.Performance
        that takes or hands back a GHPerformanceRunContext/GHPerformanceRunResult for a
        suite runner; the plain overloads are these with no context and the result
        discarded. SaveRecent writes the same document from everything the timeline still
-       holds, with no window. None of the three throws.
+       holds, with no window. BuildRecentHitchesReport renders the last seconds the
+       timeline holds as plain text instead, saving nothing. None of these throws.
 
        Window commands let a script bracket a window without touching the device: while
        the timeline is enabled the app polls ExportDirectory for window.cmd, and on Android
@@ -316,11 +318,8 @@ namespace GnollHackX.Performance
             GHFrameRecord[] recordBuffer = new GHFrameRecord[GHFrameTimeline.Capacity];
             int n = GHFrameTimeline.CopyRecords(recordBuffer, fromFrameId, toFrameId);
             long originTicks = n > 0 ? recordBuffer[0].CallbackStartTicks : 0;
-            long margin = Stopwatch.Frequency / 4;
             GHCompositorFrame[] compositorBuffer = new GHCompositorFrame[GHFrameTimeline.Capacity];
-            int m = n > 0
-                ? GHFrameTimeline.CopyCompositorFrames(compositorBuffer, originTicks - margin, recordBuffer[n - 1].CallbackStartTicks + margin)
-                : 0;
+            int m = CopyCompositorFramesFor(recordBuffer, n, compositorBuffer);
             GHDisplayedFrame[] displayed = new GHDisplayedFrame[n];
             int displayedCount;
             GHSmoothnessSummary summary = GHSmoothnessMetrics.Analyze(recordBuffer, n, compositorBuffer, m,
@@ -340,7 +339,7 @@ namespace GnollHackX.Performance
 
             SeriesJson series = BuildSeries(displayed, displayedCount);
             object doc = BuildDocument(stem, scenario, arm, startedUtc, endedUtc, thermalBefore, thermalAfter,
-                summary, series, timelineCsvName, compositorCsvName, context);
+                summary, series, timelineCsvName, compositorCsvName, context, BuildMarks(recordBuffer, n));
 
             string json = JsonConvert.SerializeObject(doc, _jsonSettings);
             File.WriteAllText(jsonPath, json + Environment.NewLine, new UTF8Encoding(false));
@@ -354,6 +353,126 @@ namespace GnollHackX.Performance
             result.ThermalAfter = thermalAfter;
             result.ExcludedReason = ComputeExcludedReason(context, thermalBefore, thermalAfter, result.OnScreenIntervalCount);
             return jsonPath;
+        }
+
+        /* Compositor frames within a quarter second of the records' callback starts, so
+           the frames around both ends are joined too; returns the count copied */
+        private static int CopyCompositorFramesFor(GHFrameRecord[] records, int n, GHCompositorFrame[] destination)
+        {
+            if (n <= 0)
+                return 0;
+            long margin = Stopwatch.Frequency / 4;
+            return GHFrameTimeline.CopyCompositorFrames(destination, records[0].CallbackStartTicks - margin,
+                records[n - 1].CallbackStartTicks + margin);
+        }
+
+        /* The user marks whose frame is among records[0..n), oldest first, with their
+           frame ids and UTC times (DateTime ticks); returns the count */
+        private static int CopyMarksIn(GHFrameRecord[] records, int n, long[] frameIds, long[] utcTicks)
+        {
+            if (n <= 0)
+                return 0;
+            long first = records[0].FrameId;
+            long last = records[n - 1].FrameId;
+            int total = GHFrameTimeline.CopyMarks(frameIds, utcTicks);
+            int kept = 0;
+            for (int i = 0; i < total; i++)
+            {
+                if (frameIds[i] < first || frameIds[i] > last)
+                    continue;
+                frameIds[kept] = frameIds[i];
+                utcTicks[kept] = utcTicks[i];
+                kept++;
+            }
+            return kept;
+        }
+
+        /* The saved window's marks for the JSON, null when there are none. A mark whose
+           record is missing from the copy (a torn read) is left out. */
+        private static MarkJson[] BuildMarks(GHFrameRecord[] records, int n)
+        {
+            long[] frameIds = new long[GHFrameTimeline.MaxMarks];
+            long[] utcTicks = new long[GHFrameTimeline.MaxMarks];
+            int count = CopyMarksIn(records, n, frameIds, utcTicks);
+            if (count == 0)
+                return null;
+            long originTicks = records[0].CallbackStartTicks;
+            List<MarkJson> marks = new List<MarkJson>();
+            for (int i = 0; i < count; i++)
+            {
+                int idx = FindRecord(records, n, frameIds[i]);
+                if (idx < 0)
+                    continue;
+                MarkJson j = new MarkJson();
+                j.FrameId = frameIds[i];
+                j.Utc = new DateTime(utcTicks[i], DateTimeKind.Utc).ToString("o", CultureInfo.InvariantCulture);
+                j.MsFromWindowStart = R((records[idx].CallbackStartTicks - originTicks) * 1000.0 / Stopwatch.Frequency);
+                marks.Add(j);
+            }
+            return marks.Count > 0 ? marks.ToArray() : null;
+        }
+
+        /* Index of the record with frameId, -1 when absent; records are in FrameId order */
+        private static int FindRecord(GHFrameRecord[] records, int n, long frameId)
+        {
+            int lo = 0, hi = n - 1;
+            while (lo <= hi)
+            {
+                int mid = (lo + hi) / 2;
+                long id = records[mid].FrameId;
+                if (id == frameId)
+                    return mid;
+                if (id < frameId)
+                    lo = mid + 1;
+                else
+                    hi = mid - 1;
+            }
+            return -1;
+        }
+
+        /* A plain-text report of the hitches in the last `seconds` up to toFrameId (every
+           retained tick when seconds is not positive), with the user marks in that range:
+           see GHPerformanceTextReport.RecentHitchesReport. Returns null when the timeline
+           is off or holds nothing up to toFrameId; never throws. */
+        public static string BuildRecentHitchesReport(long toFrameId, double seconds)
+        {
+            try
+            {
+                if (!GHFrameTimeline.IsEnabled)
+                    return null;
+                GHFrameRecord[] all = new GHFrameRecord[GHFrameTimeline.Capacity];
+                int total = GHFrameTimeline.CopyRecords(all, 1, toFrameId);
+                if (total == 0)
+                    return null;
+
+                int first = 0;
+                if (seconds > 0)
+                {
+                    double fromTicks = all[total - 1].CallbackStartTicks - seconds * Stopwatch.Frequency;
+                    while (first < total - 1 && all[first].CallbackStartTicks < fromTicks)
+                        first++;
+                }
+                int n = total - first;
+                GHFrameRecord[] records = new GHFrameRecord[n];
+                Array.Copy(all, first, records, 0, n);
+
+                GHCompositorFrame[] compositor = new GHCompositorFrame[GHFrameTimeline.Capacity];
+                int m = CopyCompositorFramesFor(records, n, compositor);
+                GHDisplayedFrame[] displayed = new GHDisplayedFrame[n];
+                int displayedCount;
+                GHSmoothnessSummary summary = GHSmoothnessMetrics.Analyze(records, n, compositor, m,
+                    displayed, out displayedCount);
+
+                long[] markFrameIds = new long[GHFrameTimeline.MaxMarks];
+                long[] markUtcTicks = new long[GHFrameTimeline.MaxMarks];
+                int markCount = CopyMarksIn(records, n, markFrameIds, markUtcTicks);
+                return GHPerformanceTextReport.RecentHitchesReport(records, n, displayed, displayedCount, summary,
+                    markFrameIds, markUtcTicks, markCount);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private static float[] ToFloatArray(double[] values)
@@ -589,7 +708,8 @@ namespace GnollHackX.Performance
 
         private static object BuildDocument(string runId, string scenario, string arm, DateTime startedUtc, DateTime endedUtc,
             GHThermalReading before, GHThermalReading after, GHSmoothnessSummary summary,
-            SeriesJson series, string timelineCsvName, string compositorCsvName, GHPerformanceRunContext context)
+            SeriesJson series, string timelineCsvName, string compositorCsvName, GHPerformanceRunContext context,
+            MarkJson[] marks)
         {
             GHPerformanceEnvironmentFacts facts = GHPerformanceEnvironment.Capture();
 
@@ -612,6 +732,7 @@ namespace GnollHackX.Performance
             doc.UiThread = BuildUiThread();
             doc.Files = new FilesJson { FrameTimeline = timelineCsvName, CompositorFrames = compositorCsvName };
             doc.Suite = BuildSuite(context);
+            doc.Marks = marks;
             return doc;
         }
 
@@ -890,6 +1011,25 @@ namespace GnollHackX.Performance
             /* Omitted entirely (not even as null) when the run was not part of a suite */
             [JsonProperty("suite", NullValueHandling = NullValueHandling.Ignore)]
             public SuiteJson Suite;
+
+            /* The user marks in the saved range; omitted entirely when there are none */
+            [JsonProperty("marks", NullValueHandling = NullValueHandling.Ignore)]
+            public MarkJson[] Marks;
+        }
+
+        /* A frame the user marked as a felt stutter */
+        private sealed class MarkJson
+        {
+            [JsonProperty("frameId")]
+            public long FrameId;
+
+            /* When the mark was made, ISO 8601 round-trip format */
+            [JsonProperty("utc")]
+            public string Utc;
+
+            /* The marked tick's callback start, from the first saved tick's */
+            [JsonProperty("msFromWindowStart")]
+            public double MsFromWindowStart;
         }
 
         private sealed class EnvironmentJson

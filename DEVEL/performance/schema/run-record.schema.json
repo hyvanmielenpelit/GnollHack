@@ -69,7 +69,20 @@
         "compositorFrames": { "type": "string", "description": "File name only, alongside the JSON document" }
       }
     },
-    "suite": { "$ref": "#/$defs/suite" }
+    "suite": { "$ref": "#/$defs/suite" },
+    "marks": {
+      "type": "array",
+      "description": "Frames the user marked as a felt stutter (Mark Stutter, F8) within the saved range; absent when there are none",
+      "items": {
+        "type": "object",
+        "required": ["frameId", "utc", "msFromWindowStart"],
+        "properties": {
+          "frameId": { "type": "integer" },
+          "utc": { "type": "string", "format": "date-time", "description": "When the mark was made" },
+          "msFromWindowStart": { "type": "number", "description": "The marked frame's callback start, relative to the first saved record's" }
+        }
+      }
+    }
   },
   "$defs": {
     "suite": {

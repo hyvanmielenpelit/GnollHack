@@ -8900,6 +8900,15 @@ namespace GnollHackX
             }
         }
 
+        /* Menus, prompts and popups show, wait and hide; a search skips the wait, so the hide
+           could overtake the show and leave them on screen. They are not shown while searching */
+        public static bool ReplayShouldShowPrompt { get { return !IsReplaySearching; } }
+
+        /* Replayed input records (the recorded player being prompted for a command) since
+           the app started; monotonic */
+        private static long _replayInputRecordCount = 0;
+        public static long ReplayInputRecordCount { get { return Interlocked.Read(ref _replayInputRecordCount); } }
+
         public static void ResetReplay()
         {
             lock (_replayLock)
@@ -9346,6 +9355,7 @@ namespace GnollHackX
                                             case (int)RecordedFunctionID.GetChar:
                                                 {
                                                     int res = br.ReadInt32();
+                                                    Interlocked.Increment(ref _replayInputRecordCount);
                                                     /* No function call in replay */
                                                     //game.ClientCallback_nhgetch();
                                                     if (!IsReplaySearching)
@@ -9358,6 +9368,7 @@ namespace GnollHackX
                                                     int y = br.ReadInt32();
                                                     int mod = br.ReadInt32();
                                                     int res = br.ReadInt32();
+                                                    Interlocked.Increment(ref _replayInputRecordCount);
                                                     /* No function call in replay */
                                                     //game.ClientCallback_nh_poskey();
                                                     if (!IsReplaySearching)
@@ -9379,7 +9390,7 @@ namespace GnollHackX
                                                     ulong ynflags = br.ReadUInt64();
                                                     int res = br.ReadInt32();
                                                     CheckReplaySearchMatch(question);
-                                                    if (ReplayShouldCallFunction)
+                                                    if (ReplayShouldShowPrompt)
                                                         game.ClientCallback_YnFunction(style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags);
                                                 }
                                                 break;
@@ -9656,7 +9667,7 @@ namespace GnollHackX
                                                         br.ReadInt64();
                                                     int listsize = br.ReadInt32();
                                                     int count = br.ReadInt32();
-                                                    if (ReplayShouldCallFunction)
+                                                    if (ReplayShouldShowPrompt)
                                                         game.Replay_SelectMenu(winid, how, count);
                                                 }
                                                 break;
@@ -9756,7 +9767,7 @@ namespace GnollHackX
                                                     string line = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     CheckReplaySearchMatch(query);
                                                     CheckReplaySearchMatch(line);
-                                                    if (ReplayShouldCallFunction)
+                                                    if (ReplayShouldShowPrompt)
                                                         game.Replay_GetLine(style, attr, color, query, placeholder, linesuffix, introline, IntPtr.Zero, line);
                                                 }
                                                 break;
@@ -9834,7 +9845,7 @@ namespace GnollHackX
                                                     int color = br.ReadInt32();
                                                     int glyph = br.ReadInt32();
                                                     ulong tflags = br.ReadUInt64();
-                                                    if (ReplayShouldCallFunction)
+                                                    if (ReplayShouldShowPrompt)
                                                         game.ClientCallback_DisplayPopupText(text, title, style, attr, color, glyph, tflags);
                                                 }
                                                 break;

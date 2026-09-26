@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using GnollHackX.Performance;
 using Xunit;
 
@@ -7,7 +9,8 @@ namespace GnollHackX.UnitTests
 {
     /* Covers the plain-text renderer in GHPerformanceTextReport: the fixed line width,
        identity/label truncation, the run table, the medians and cause/event summaries,
-       and the A/B comparison report built on top of GHPerformanceComparison. */
+       the A/B comparison report built on top of GHPerformanceComparison, and the recent
+       hitches report over a synthetic frame timeline. */
     public class GHPerformanceTextReportTests
     {
         private const int Resamples = GHPerformanceComparison.DefaultResamples;
@@ -260,6 +263,140 @@ namespace GnollHackX.UnitTests
             string report = GHPerformanceTextReport.ComparisonReport(result, suitesA, suitesB);
 
             Assert.Contains("provisional", report);
+        }
+
+        private static long Ms(double ms)
+        {
+            return (long)Math.Round(ms * Stopwatch.Frequency / 1000.0);
+        }
+
+        /* count ticks of 60 FPS on a 60 Hz panel, painted on the UI thread, in which the
+           display callback before stallIndex is missed and the one at stallIndex runs late
+           across a collection, as in GHSmoothnessMetricsTests */
+        private static GHFrameRecord[] StallTimeline(int count, int stallIndex)
+        {
+            long period = Stopwatch.Frequency / 60;
+            long vsync = 1000 * Stopwatch.Frequency;
+            long counter = 1000;
+            int gc = 0;
+            List<GHFrameRecord> records = new List<GHFrameRecord>();
+            for (int i = 0; i < count; i++)
+            {
+                bool stall = i == stallIndex;
+                if (stall)
+                {
+                    vsync += period;
+                    gc++;
+                }
+                counter++;
+                GHFrameRecord r = new GHFrameRecord();
+                r.FrameId = i + 1;
+                r.VsyncTicks = vsync;
+                r.RefreshPeriodTicks = period;
+                r.CallbackStartTicks = vsync + Ms(stall ? 12.0 : 0.2);
+                r.CallbackEndTicks = r.CallbackStartTicks + Ms(0.3);
+                r.TargetFps = 60;
+                r.AssumedRefreshHz = 60;
+                r.Pacing = GHPacingDecision.Rendered;
+                r.MainCounter = counter;
+                r.GeneralCounter = counter / 2;
+                r.Invalidate = GHInvalidateOutcome.Invalidated;
+                r.InvalidateTicks = r.CallbackStartTicks + Ms(0.1);
+                r.Paint = GHPaintOutcome.Painted;
+                r.PaintOnUiThread = true;
+                r.PaintStartTicks = r.InvalidateTicks + Ms(0.2);
+                r.LockAttemptTicks = r.PaintStartTicks + Ms(0.1);
+                r.LockResultTicks = r.LockAttemptTicks + Ms(0.01);
+                r.LockAcquired = true;
+                r.DrawEndTicks = r.PaintStartTicks + Ms(3.0);
+                r.FlushEndTicks = r.DrawEndTicks + Ms(1.0);
+                r.PaintedMainCounter = counter;
+                r.PaintedGeneralCounter = counter / 2;
+                r.GcCount0 = gc;
+                if (stall)
+                    r.ContentEvents = GHContentEvent.FloatingText | GHContentEvent.Message;
+                records.Add(r);
+                vsync += period;
+            }
+            return records.ToArray();
+        }
+
+        private static string Section(string report, string startsWith, string endsBefore)
+        {
+            int start = report.IndexOf(startsWith, StringComparison.Ordinal);
+            Assert.True(start >= 0, "missing section " + startsWith);
+            int end = report.IndexOf(endsBefore, start, StringComparison.Ordinal);
+            Assert.True(end > start, "missing section " + endsBefore);
+            return report.Substring(start, end - start);
+        }
+
+        [Fact]
+        public void RecentHitchesReport_ListsTheHitchNearAMark_AndItsCause()
+        {
+            int stallIndex = 60;
+            GHFrameRecord[] records = StallTimeline(120, stallIndex);
+            GHDisplayedFrame[] displayed = new GHDisplayedFrame[records.Length];
+            int displayedCount;
+            GHSmoothnessSummary summary = GHSmoothnessMetrics.Analyze(records, records.Length, null, 0,
+                displayed, out displayedCount);
+            Assert.True(summary.HitchCount >= 1, "hitches " + summary.HitchCount);
+
+            int hitch = -1;
+            for (int j = 1; j < displayedCount && hitch < 0; j++)
+            {
+                if (displayed[j].IsHitch)
+                    hitch = j;
+            }
+            double gapMs = displayed[hitch].GapTicks * 1000.0 / Stopwatch.Frequency;
+            string gapText = "gap " + gapMs.ToString("0.00", CultureInfo.InvariantCulture) + " ms";
+            string causeName = GHSmoothnessMetrics.CauseName(displayed[hitch].Cause);
+
+            long markUtcTicks = new DateTime(2026, 9, 26, 12, 34, 56, 789, DateTimeKind.Utc).Ticks;
+            string markClock = new DateTime(markUtcTicks, DateTimeKind.Utc).ToLocalTime()
+                .ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture);
+            long[] markFrameIds = { records[stallIndex].FrameId };
+            long[] markTicks = { markUtcTicks };
+
+            string report = GHPerformanceTextReport.RecentHitchesReport(records, records.Length, displayed,
+                displayedCount, summary, markFrameIds, markTicks, 1);
+
+            AssertNoLineExceedsMaxWidth(report);
+            Assert.DoesNotContain("\r", report);
+            Assert.StartsWith("Recent hitches\n", report);
+
+            string marked = Section(report, "Marked moments:", "Worst hitches");
+            Assert.Contains(markClock, marked);
+            Assert.Contains(gapText, marked);
+            Assert.Contains(causeName, marked);
+            Assert.DoesNotContain("no hitch within", marked);
+
+            string worst = Section(report, "Worst hitches", "Hitch causes");
+            Assert.Contains(gapText, worst);
+            Assert.Contains(causeName, worst);
+            Assert.Contains("FloatingText", worst);
+
+            string causes = report.Substring(report.IndexOf("Hitch causes", StringComparison.Ordinal));
+            Assert.Contains(causeName, causes);
+        }
+
+        [Fact]
+        public void RecentHitchesReport_MarkFarFromAnyHitch_SaysSo()
+        {
+            /* Ten seconds with the stall at 9 s, marked at 0.5 s */
+            GHFrameRecord[] records = StallTimeline(600, 540);
+            GHDisplayedFrame[] displayed = new GHDisplayedFrame[records.Length];
+            int displayedCount;
+            GHSmoothnessSummary summary = GHSmoothnessMetrics.Analyze(records, records.Length, null, 0,
+                displayed, out displayedCount);
+            Assert.True(summary.HitchCount >= 1, "hitches " + summary.HitchCount);
+            long[] markFrameIds = { records[30].FrameId };
+            long[] markTicks = { new DateTime(2026, 9, 26, 12, 0, 0, DateTimeKind.Utc).Ticks };
+
+            string report = GHPerformanceTextReport.RecentHitchesReport(records, records.Length, displayed,
+                displayedCount, summary, markFrameIds, markTicks, 1);
+
+            AssertNoLineExceedsMaxWidth(report);
+            Assert.Contains("no hitch within 3 s", Section(report, "Marked moments:", "Worst hitches"));
         }
     }
 }

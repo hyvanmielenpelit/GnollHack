@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using GnollHackX.Performance;
 using Xunit;
@@ -400,6 +401,133 @@ namespace GnollHackX.UnitTests
             Assert.Equal(5000 + 2 * Frequency + 7, GHFrameTimeline.PlatformNanosToTicks(3000000000L));
             Restart();
             Assert.False(GHFrameTimeline.HasClockAnchor);
+        }
+
+        private static int CopyMarks(out long[] frameIds, out long[] utcTicks)
+        {
+            frameIds = new long[GHFrameTimeline.MaxMarks + 4];
+            utcTicks = new long[GHFrameTimeline.MaxMarks + 4];
+            return GHFrameTimeline.CopyMarks(frameIds, utcTicks);
+        }
+
+        [Fact]
+        public void MarkUser_FlagsTheRecord_AndIsCopiedWithTheCurrentUtcTime()
+        {
+            Restart();
+            RenderedTick(1);
+            long id = RenderedTick(2);
+            long before = DateTime.UtcNow.Ticks;
+            Assert.True(GHFrameTimeline.MarkUser(id));
+            long after = DateTime.UtcNow.Ticks;
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHFrameFlags.None, r[0].Flags & GHFrameFlags.UserMark);
+            Assert.Equal(GHFrameFlags.UserMark, r[1].Flags & GHFrameFlags.UserMark);
+
+            long[] ids, ticks;
+            Assert.Equal(1, CopyMarks(out ids, out ticks));
+            Assert.Equal(id, ids[0]);
+            Assert.InRange(ticks[0], before, after);
+        }
+
+        [Fact]
+        public void MarkUser_OfAFrameNotRetained_ReturnsFalse()
+        {
+            Restart();
+            Assert.False(GHFrameTimeline.MarkUser(1));
+            long id = RenderedTick(1);
+            Assert.False(GHFrameTimeline.MarkUser(0));
+            Assert.False(GHFrameTimeline.MarkUser(id + 1));
+
+            long[] ids, ticks;
+            Assert.Equal(0, CopyMarks(out ids, out ticks));
+        }
+
+        [Fact]
+        public void MarkUser_WithTheTimelineOff_ReturnsFalse()
+        {
+            Restart();
+            long id = RenderedTick(1);
+            GHFrameTimeline.IsEnabled = false;
+            Assert.False(GHFrameTimeline.MarkUser(id));
+            long[] ids, ticks;
+            Assert.Equal(0, CopyMarks(out ids, out ticks));
+        }
+
+        [Fact]
+        public void Marks_KeepTheNewestMaxMarks_OldestFirst()
+        {
+            Restart();
+            int total = GHFrameTimeline.MaxMarks + 8;
+            for (int i = 0; i < total; i++)
+                Assert.True(GHFrameTimeline.MarkUser(RenderedTick(i + 1)));
+
+            long[] ids, ticks;
+            int n = CopyMarks(out ids, out ticks);
+            Assert.Equal(GHFrameTimeline.MaxMarks, n);
+            for (int i = 0; i < n; i++)
+            {
+                Assert.Equal(total - GHFrameTimeline.MaxMarks + 1 + i, ids[i]);
+                if (i > 0)
+                    Assert.True(ticks[i] >= ticks[i - 1]);
+            }
+        }
+
+        [Fact]
+        public void Reset_ClearsTheMarks()
+        {
+            Restart();
+            Assert.True(GHFrameTimeline.MarkUser(RenderedTick(1)));
+            Restart();
+            long[] ids, ticks;
+            Assert.Equal(0, CopyMarks(out ids, out ticks));
+
+            /* The same frame id recorded again is not marked */
+            RenderedTick(1);
+            Assert.Equal(0, CopyMarks(out ids, out ticks));
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHFrameFlags.None, r[0].Flags & GHFrameFlags.UserMark);
+        }
+
+        [Fact]
+        public void WriteCsv_WritesOneOriginUtcLine_ForTheFirstRecord()
+        {
+            Restart();
+            RenderedTick(1);
+            RenderedTick(2);
+            int n;
+            GHFrameRecord[] records = Snapshot(out n);
+            string path = Path.Combine(Path.GetTempPath(), "ghframetimeline_test_" + System.Guid.NewGuid().ToString("N") + ".csv");
+            try
+            {
+                long before = DateTime.UtcNow.Ticks;
+                GHFrameTimeline.WriteCsv(path, records, n);
+                long after = DateTime.UtcNow.Ticks;
+
+                const string prefix = "# OriginUtc utc=";
+                List<string> originLines = new List<string>();
+                foreach (string line in File.ReadAllLines(path))
+                {
+                    if (line.StartsWith(prefix, StringComparison.Ordinal))
+                        originLines.Add(line);
+                }
+                Assert.Single(originLines);
+
+                string[] parts = originLines[0].Substring(prefix.Length).Split(' ');
+                Assert.Equal(2, parts.Length);
+                DateTime utc = DateTime.Parse(parts[0], CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                Assert.Equal(DateTimeKind.Utc, utc.Kind);
+                /* The first tick ran a moment before the write */
+                Assert.InRange(utc.Ticks, before - TimeSpan.TicksPerMinute, after);
+                Assert.Equal("stopwatchTicks=" + records[0].CallbackStartTicks.ToString(CultureInfo.InvariantCulture), parts[1]);
+            }
+            finally
+            {
+                if (File.Exists(path))
+                    File.Delete(path);
+            }
         }
     }
 }

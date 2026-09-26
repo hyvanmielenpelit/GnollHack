@@ -17,7 +17,8 @@ namespace GnollHackX.Performance
        on Android). A paint never overlaps another paint, except one that returns early
        because a paint is in progress; SkipPaint records it without taking over the paint's
        frame. Records are read at the end of a window; a read racing a write may see one
-       torn record, which the consumers tolerate.
+       torn record, which the consumers tolerate. User marks may be added and read from
+       any thread.
 
        The ring is allocated when the timeline is first enabled, so a session that never
        enables it pays one boolean check per call. Must compile under C# 7.3. */
@@ -88,6 +89,15 @@ namespace GnollHackX.Performance
         private static int _periodDeltaIndex = 0;
         private static long _measuredPeriodTicks = 0;
         private static long _measuredCallbackPeriodTicks = 0;
+
+        /* User marks: the marked frame and the UTC time of the mark (DateTime ticks), in a
+           ring of MaxMarks slots indexed by the running mark count. A slot's frame id is
+           written last and cleared first, so a reader sees 0 rather than a half-written
+           mark. */
+        public const int MaxMarks = 32;
+        private static readonly long[] _markFrameIds = new long[MaxMarks];
+        private static readonly long[] _markUtcTicks = new long[MaxMarks];
+        private static long _markCount = 0;
 
         public static long Frequency { get { return Stopwatch.Frequency; } }
 
@@ -194,6 +204,12 @@ namespace GnollHackX.Performance
             Interlocked.Exchange(ref _measuredCallbackPeriodTicks, 0);
             Volatile.Write(ref _anchor, null);
             Volatile.Write(ref _firstAnchor, null);
+            Interlocked.Exchange(ref _markCount, 0);
+            for (int i = 0; i < MaxMarks; i++)
+            {
+                Volatile.Write(ref _markFrameIds[i], 0);
+                Volatile.Write(ref _markUtcTicks[i], 0);
+            }
             GHCadenceMonitor.Reset();
         }
 
@@ -238,6 +254,24 @@ namespace GnollHackX.Performance
         public static long TimeSpanTicksToTicks(long timeSpanTicks)
         {
             return (long)Math.Round(timeSpanTicks * (double)Stopwatch.Frequency / TimeSpan.TicksPerSecond);
+        }
+
+        /* The UTC time of a Stopwatch reading as DateTime ticks, from readings of both
+           clocks taken now; clamped to DateTime's range. The platform clock anchor does not
+           relate the Stopwatch to UTC, so it cannot serve here. */
+        private static long StopwatchTicksToUtcTicks(long stopwatchTicks)
+        {
+            long nowTicks = Stopwatch.GetTimestamp();
+            long nowUtcTicks = DateTime.UtcNow.Ticks;
+            double elapsed = (double)(nowTicks - stopwatchTicks) * TimeSpan.TicksPerSecond / Stopwatch.Frequency;
+            double maxElapsed = nowUtcTicks;
+            double minElapsed = (double)nowUtcTicks - DateTime.MaxValue.Ticks;
+            if (elapsed > maxElapsed)
+                return 0;
+            if (elapsed < minElapsed)
+                return DateTime.MaxValue.Ticks;
+            long utcTicks = nowUtcTicks - (long)Math.Round(elapsed);
+            return Math.Max(0, Math.Min(DateTime.MaxValue.Ticks, utcTicks));
         }
 
         /* Called by the platform callback immediately before the tick it describes.
@@ -575,6 +609,63 @@ namespace GnollHackX.Performance
                     _ring[idx].CallbackPeriodTicks, _ring[idx].FlushEndTicks, _ring[idx].TargetFps, paintedMainCounter);
         }
 
+        /* ---- User marks (any thread) ---- */
+
+        private static bool IsRetained(GHFrameRecord[] ring, long frameId)
+        {
+            long last = Interlocked.Read(ref _lastFrameId);
+            if (frameId <= 0 || frameId > last || frameId <= last - Capacity)
+                return false;
+            return ring[IndexOf(frameId)].FrameId == frameId;
+        }
+
+        /* Marks a retained frame as one where the user felt a stutter: sets UserMark on its
+           record and adds the frame with the current UTC time to the mark ring, overwriting
+           the oldest mark when the ring is full. Returns false when the timeline is off or
+           empty, or the frame is no longer retained. Does not allocate. */
+        public static bool MarkUser(long frameId)
+        {
+            if (!IsEnabled)
+                return false;
+            GHFrameRecord[] ring = _ring;
+            if (ring == null || !IsRetained(ring, frameId))
+                return false;
+            ring[IndexOf(frameId)].Flags |= GHFrameFlags.UserMark;
+
+            long utcTicks = DateTime.UtcNow.Ticks;
+            long n = Interlocked.Increment(ref _markCount);
+            int slot = (int)((n - 1) % MaxMarks);
+            Volatile.Write(ref _markFrameIds[slot], 0);
+            Volatile.Write(ref _markUtcTicks[slot], utcTicks);
+            Volatile.Write(ref _markFrameIds[slot], frameId);
+            return true;
+        }
+
+        /* Copies the marks whose frame is still retained, oldest first, up to the length of
+           the shorter array, and returns the count copied. utcTicks receives DateTime ticks
+           in UTC. */
+        public static int CopyMarks(long[] frameIds, long[] utcTicks)
+        {
+            GHFrameRecord[] ring = _ring;
+            if (frameIds == null || utcTicks == null || ring == null)
+                return 0;
+            long total = Interlocked.Read(ref _markCount);
+            int room = Math.Min(frameIds.Length, utcTicks.Length);
+            int n = 0;
+            for (long k = Math.Max(0, total - MaxMarks); k < total && n < room; k++)
+            {
+                int slot = (int)(k % MaxMarks);
+                long id = Volatile.Read(ref _markFrameIds[slot]);
+                long ticks = Volatile.Read(ref _markUtcTicks[slot]);
+                if (id != Volatile.Read(ref _markFrameIds[slot]) || !IsRetained(ring, id))
+                    continue;
+                frameIds[n] = id;
+                utcTicks[n] = ticks;
+                n++;
+            }
+            return n;
+        }
+
         /* ---- Presentation ---- */
 
         public static long CompositorFrameCount { get { return Interlocked.Read(ref _compositorCount); } }
@@ -685,7 +776,14 @@ namespace GnollHackX.Performance
                 /* The absolute Stopwatch tick every relative time is measured from; on Windows
                    it is a QPC value, which lets external QPC-stamped captures be joined */
                 if (n > 0)
-                    w.WriteLine("# OriginStopwatchTicks=" + records[0].CallbackStartTicks.ToString(CultureInfo.InvariantCulture));
+                {
+                    long originTicks = records[0].CallbackStartTicks;
+                    w.WriteLine("# OriginStopwatchTicks=" + originTicks.ToString(CultureInfo.InvariantCulture));
+                    /* The wall-clock time of the origin, for joining captures stamped in UTC */
+                    DateTime originUtc = new DateTime(StopwatchTicksToUtcTicks(originTicks), DateTimeKind.Utc);
+                    w.WriteLine("# OriginUtc utc=" + originUtc.ToString("o", CultureInfo.InvariantCulture)
+                        + " stopwatchTicks=" + originTicks.ToString(CultureInfo.InvariantCulture));
+                }
                 if (HasClockAnchor)
                 {
                     GHClockAnchor firstAnchor = FirstClockAnchor;
