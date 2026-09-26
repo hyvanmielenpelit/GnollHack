@@ -31,6 +31,8 @@ void gh_signpost_init(void)
                                       OS_LOG_CATEGORY_POINTS_OF_INTEREST);
 }
 
+static int gh_signposts_on(void) GH_SIGNPOST_AVAILABLE;
+
 static int gh_signposts_on(void)
 {
     return gh_render_log != NULL && os_signpost_enabled(gh_render_log);

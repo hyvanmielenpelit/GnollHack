@@ -67,13 +67,13 @@
     <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>XCode_6_1</PlatformToolset>
-    <AdditionalBuildSettings>IPHONEOS_DEPLOYMENT_TARGET=11.0;ALWAYS_SEARCH_USER_PATHS=NO;</AdditionalBuildSettings>
+    <AdditionalBuildSettings>IPHONEOS_DEPLOYMENT_TARGET=15.0;ALWAYS_SEARCH_USER_PATHS=NO;</AdditionalBuildSettings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>XCode_6_1</PlatformToolset>
-    <AdditionalBuildSettings>IPHONEOS_DEPLOYMENT_TARGET=11.0;ALWAYS_SEARCH_USER_PATHS=NO;</AdditionalBuildSettings>
+    <AdditionalBuildSettings>IPHONEOS_DEPLOYMENT_TARGET=15.0;ALWAYS_SEARCH_USER_PATHS=NO;</AdditionalBuildSettings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <iOSConfigurationType>StaticLibrary</iOSConfigurationType>
@@ -477,4 +477,15 @@
 	  <Message Text="Start rebuilding aftergnollhackios.proj" Importance="High" />
 	  <MSBuild Projects="aftergnollhackios.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>-->
+  <PropertyGroup>
+    <!-- Not lower than the ios SupportedOSPlatformVersion in GnollHackM.csproj -->
+    <GHiOSDeploymentTarget>15.0</GHiOSDeploymentTarget>
+  </PropertyGroup>
+  <!-- The Xcode project generator hardcodes IPHONEOS_DEPLOYMENT_TARGET = 8.1 in the
+       target-level build settings, which override AdditionalBuildSettings. Rewrite every
+       IPHONEOS_DEPLOYMENT_TARGET value after generation, before the project is copied to
+       the Mac. -->
+  <Target Name="GHSetXcodeDeploymentTarget" AfterTargets="GenerateXCodeProj" Condition="Exists('$(PbxprojDirectory)\project.pbxproj')">
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$p='$(PbxprojDirectory)\project.pbxproj'; $t=[IO.File]::ReadAllText($p); $n=[Text.RegularExpressions.Regex]::Replace($t, '(IPHONEOS_DEPLOYMENT_TARGET&lt;/key&gt;\s*&lt;string&gt;)[0-9.]+(&lt;/string&gt;)', '${1}$(GHiOSDeploymentTarget)${2}'); if ($n -ne $t) { [IO.File]::WriteAllText($p, $n) }&quot;" />
+  </Target>
 </Project>
