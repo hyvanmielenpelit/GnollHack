@@ -3173,12 +3173,12 @@ do_vision(void)
 #ifdef VISION_TABLES
     C_close_gen();
     C_far_gen();
-    Fprintf(ofp, "\nvoid vis_tab_init() { return; }\n");
 #endif /* VISION_TABLES */
 
     SpinCursor(3);
 
     Fprintf(ofp, "\n#endif /* VISION_TABLES */\n");
+    Fprintf(ofp, "\nvoid vis_tab_init(void) { return; }\n");
     Fprintf(ofp, "\n/*vis_tab.c*/\n");
 
     Fclose(ofp);
