@@ -24086,8 +24086,26 @@ namespace GnollHackX.Pages.Game
             UpdateReplayHeaderLabel();
         }
 
+        /* Replaces the replay header text while non-null, e.g. a performance suite's
+           progress; UI thread only */
+        private string _replayHeaderOverride = null;
+
+        public void SetReplayHeaderOverride(string text)
+        {
+            _replayHeaderOverride = text;
+            UpdateReplayHeaderLabel();
+        }
+
         private void UpdateReplayHeaderLabel()
         {
+            string headerOverride = _replayHeaderOverride;
+            if (headerOverride != null)
+            {
+                if (ReplayHeaderLabel.Text != headerOverride)
+                    ReplayHeaderLabel.Text = headerOverride;
+                return;
+            }
+
             int currentTurn = GHApp.ReplayTurn;
             int gotoTurn = GHApp.GoToTurn;
             string searchPattern = GHApp.ReplaySearchRegexString;
@@ -24514,6 +24532,12 @@ namespace GnollHackX.Pages.Game
         public void SetZoomMini()
         {
             if (!ZoomMiniMode)
+                ToggleZoomMiniButton_Clicked(null, null);
+        }
+        /* Leaves minimap mode without touching the normal-mode map font size */
+        public void ExitZoomMini()
+        {
+            if (ZoomMiniMode)
                 ToggleZoomMiniButton_Clicked(null, null);
         }
         public void SetZoomHalf()

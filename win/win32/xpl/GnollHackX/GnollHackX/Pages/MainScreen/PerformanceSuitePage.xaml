@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<gnh:CustomModalPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gnh="clr-namespace:GnollHackX"
+             xmlns:controls="clr-namespace:GnollHackX.Controls"
+             xmlns:mainscreen="clr-namespace:GnollHackX.Pages.MainScreen"
+             BackgroundColor="Black"
+             x:Class="GnollHackX.Pages.MainScreen.PerformanceSuitePage"
+             Appearing="ContentPage_Appearing"
+             Disappearing="ContentPage_Disappearing">
+    <gnh:CustomModalPage.Content>
+        <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <Grid x:Name="PerformanceSuiteGrid" RowSpacing="6" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" x:Name="lblHeader" Text="Performance Suite" HorizontalTextAlignment="Center" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
+                    HorizontalOptions="Center" VerticalOptions="Fill" Margin="0,10,0,20" />
+                <Grid Grid.Row="1" WidthRequest  ="560" HorizontalOptions  ="Center" VerticalOptions="Fill">
+                    <ScrollView x:Name="MainScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+                        <StackLayout x:Name="MainLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="6">
+                            <StackLayout x:Name="SetupLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="4">
+                                <Label Text="Setup" FontFamily="Diablo" FontSize="18" TextColor="Black" HorizontalOptions="Start" Margin="0,0,0,4" />
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
+                                    <Label Grid.Column="0" Text="Replay" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="ReplayPicker" Title="Select a replay" FontFamily="Underwood" FontSize="14" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="340" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
+                                </Grid>
+                                <Label x:Name="NoReplaysLabel" IsVisible="False" Text="No replays found. Record a game first." FontFamily="Underwood" FontSize="13" TextColor="Black" HorizontalOptions="Start" />
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
+                                    <Label Grid.Column="0" Text="Start Turn" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Entry Grid.Column="1" x:Name="StartTurnEntry" Keyboard="Numeric" WidthRequest="120" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="14" TextColor="Black"
+                                        TextChanged="Setup_TextChanged" />
+                                </Grid>
+                                <Label Text="Choose a turn with more than warm-up + window seconds of content after it. Early turns seek faster." FontFamily="Underwood" FontSize="11" TextColor="Gray" HorizontalOptions="Start" />
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
+                                    <Label Grid.Column="0" Text="Scenario" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="ScenarioPicker" FontFamily="Underwood" FontSize="14" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="200" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
+                                    <Label Grid.Column="0" Text="Measured runs (warm-up run not counted)" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="RunsPicker" FontFamily="Underwood" FontSize="14" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="100" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
+                                    <Label Grid.Column="0" Text="Warm-up run" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Switch Grid.Column="1" x:Name="WarmUpRunSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="Setup_Toggled" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
+                                    <Label Grid.Column="0" Text="Page mode" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="PageModePicker" FontFamily="Underwood" FontSize="14" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="200" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
+                                    <Label Grid.Column="0" Text="Arm label" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Entry Grid.Column="1" x:Name="ArmLabelEntry" Keyboard="Plain" WidthRequest="300" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="14" TextColor="Black"
+                                        TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
+                                    <Label Grid.Column="0" Text="Warm-up seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Entry Grid.Column="1" x:Name="WarmUpSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="14" TextColor="Black"
+                                        TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
+                                    <Label Grid.Column="0" Text="Window seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Entry Grid.Column="1" x:Name="WindowSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="14" TextColor="Black"
+                                        TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="36">
+                                    <Label Grid.Column="0" Text="Cool-down seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" />
+                                    <Entry Grid.Column="1" x:Name="CooldownSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="14" TextColor="Black"
+                                        TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Label x:Name="EstimatedDurationLabel" Text="Estimated duration: -" FontFamily="Underwood" FontSize="13" TextColor="Black" HorizontalOptions="Start" Margin="0,6,0,0" />
+                                <Label x:Name="StoreNoteLabel" FontFamily="Underwood" FontSize="11" TextColor="Gray" HorizontalOptions="Start" />
+
+                                <controls:CustomImageButton x:Name="btnRunSuite" Text="Run Suite" WidthRequest="320" HeightRequest="46" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="0,10,0,16" HorizontalOptions="Center" VerticalOptions="Center" Clicked="btnRunSuite_Clicked" UseVaryingBackgroundImages ="False" />
+                            </StackLayout>
+
+                            <BoxView HeightRequest="1" Color="Gray" HorizontalOptions="Fill" Margin="0,0,0,8" />
+
+                            <Label Text="Results" FontFamily="Diablo" FontSize="18" TextColor="Black" HorizontalOptions="Start" Margin="0,0,0,4" />
+                            <Label x:Name="NoSuitesLabel" IsVisible="False" Text="No performance suites yet. Run one above." FontFamily="Underwood" FontSize="13" TextColor="Black" HorizontalOptions="Start" />
+
+                            <CollectionView x:Name="SuiteCollectionView" ItemSizingStrategy="MeasureAllItems" SelectionMode="Multiple" HeightRequest="260"
+                                HorizontalOptions="Fill" VerticalOptions="Start" BackgroundColor="Transparent" SelectionChanged="SuiteCollectionView_SelectionChanged">
+                                <CollectionView.Header>
+                                    <Grid x:Name="SuiteHeaderGrid" ColumnDefinitions="105,70,*,40,80,60" ColumnSpacing="4" Padding="4,2" HorizontalOptions="Fill">
+                                        <Label Grid.Column="0" Text="Date" FontSize="12" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
+                                        <Label Grid.Column="1" Text="Scenario" FontSize="12" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
+                                        <Label Grid.Column="2" Text="Label" FontSize="12" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
+                                        <Label Grid.Column="3" Text="Runs" FontSize="12" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
+                                        <Label Grid.Column="4" Text="Hitch ms/s" FontSize="12" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
+                                        <Label Grid.Column="5" Text="Size" FontSize="12" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
+                                    </Grid>
+                                </CollectionView.Header>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="mainscreen:PerformanceSuiteListItem">
+                                        <Grid Padding="4,3" ColumnDefinitions="105,70,*,40,80,60" ColumnSpacing="4" HorizontalOptions="Fill">
+                                            <Label Grid.Column="0" Text="{Binding DateText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
+                                            <Label Grid.Column="1" Text="{Binding ScenarioText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
+                                            <StackLayout Grid.Column="2" Spacing="0">
+                                                <Label Text="{Binding LabelText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
+                                                <Label Text="{Binding MarkersText}" IsVisible="{Binding HasMarkers}" FontSize="11" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
+                                            </StackLayout>
+                                            <Label Grid.Column="3" Text="{Binding RunsText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
+                                            <Label Grid.Column="4" Text="{Binding HitchText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
+                                            <Label Grid.Column="5" Text="{Binding SizeText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
+                            <FlexLayout x:Name="ResultButtonsLayout" Direction="Row" Wrap="Wrap" JustifyContent="Center" AlignContent="Center" HorizontalOptions="Fill" Margin="0,6,0,0">
+                                <controls:CustomImageButton x:Name="btnViewReport" Text="View Report" WidthRequest="150" HeightRequest="42" FontFamily="Diablo" FontSize="14" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="3" IsEnabled="False" Clicked="btnViewReport_Clicked" UseVaryingBackgroundImages ="False" />
+                                <controls:CustomImageButton x:Name="btnSetBaseline" Text="Set as Baseline" WidthRequest="150" HeightRequest="42" FontFamily="Diablo" FontSize="14" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="3" IsEnabled="False" Clicked="btnSetBaseline_Clicked" UseVaryingBackgroundImages ="False" />
+                                <controls:CustomImageButton x:Name="btnCompareBaseline" Text="Compare with Baseline" WidthRequest="190" HeightRequest="42" FontFamily="Diablo" FontSize="14" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="3" IsEnabled="False" Clicked="btnCompareBaseline_Clicked" UseVaryingBackgroundImages ="False" />
+                                <controls:CustomImageButton x:Name="btnShare" Text="Share" WidthRequest="120" HeightRequest="42" FontFamily="Diablo" FontSize="14" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="3" IsEnabled="False" Clicked="btnShare_Clicked" UseVaryingBackgroundImages ="False" />
+                                <controls:CustomImageButton x:Name="btnDelete" Text="Delete" WidthRequest="120" HeightRequest="42" FontFamily="Diablo" FontSize="14" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="3" IsEnabled="False" Clicked="btnDelete_Clicked" UseVaryingBackgroundImages ="False" />
+                                <controls:CustomImageButton x:Name="btnImportResults" Text="Import Results" WidthRequest="150" HeightRequest="42" FontFamily="Diablo" FontSize="14" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="3" Clicked="btnImportResults_Clicked" UseVaryingBackgroundImages ="False" />
+                            </FlexLayout>
+                        </StackLayout>
+                    </ScrollView>
+                </Grid>
+                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest="280" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="Transparent" TextColor="White"
+                        Clicked="Button_Clicked" />
+            </Grid>
+            <controls:MessagePopupView x:Name="MessagePopup" />
+        </Grid>
+    </gnh:CustomModalPage.Content>
+</gnh:CustomModalPage>

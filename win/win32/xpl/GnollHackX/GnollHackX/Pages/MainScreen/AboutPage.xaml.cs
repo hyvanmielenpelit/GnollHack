@@ -44,6 +44,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 btnSponsor.IsVisible = false;
             }
+            btnPerformanceSuite.IsVisible = GHApp.DeveloperMode && Preferences.Get("FrameTimeProfiler", false);
         }
 
         private async void btnCreditsX_Clicked(object sender, EventArgs e)
@@ -430,6 +431,20 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = true;
         }
 
+        private async void btnPerformanceSuite_Clicked(object sender, EventArgs e)
+        {
+            await OpenPerformanceSuitePage();
+        }
+
+        private async Task OpenPerformanceSuitePage()
+        {
+            AboutGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            var suitePage = new PerformanceSuitePage();
+            await GHApp.PushModalPageAsync(suitePage);
+            AboutGrid.IsEnabled = true;
+        }
+
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
             if (GHApp.PushingModalPage || GHApp.IsSystemBrowserOpen) /* Ignore key presses when opening a page or using a system browser */
@@ -502,6 +517,11 @@ namespace GnollHackX.Pages.MainScreen
                     case (int)'r':
                         if (btnCrashReport.IsEnabled && btnCrashReport.IsVisible && AboutGrid.IsEnabled)
                             pending = DoCrashReport;
+                        handled = true;
+                        break;
+                    case (int)'f':
+                        if (btnPerformanceSuite.IsEnabled && btnPerformanceSuite.IsVisible && AboutGrid.IsEnabled)
+                            pending = OpenPerformanceSuitePage;
                         handled = true;
                         break;
                     default:

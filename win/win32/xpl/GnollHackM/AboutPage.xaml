@@ -47,6 +47,8 @@
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnDowngrade_Clicked" UseVaryingBackgroundImages ="True" />-->
                             <controls:CustomImageButton x:Name="btnViewGHLog" Text="View App Log" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnViewGHLog_Clicked" UseVaryingBackgroundImages ="True" />
+                            <controls:CustomImageButton x:Name="btnPerformanceSuite" Text="Performance Suite" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        Margin="0,16,0,0" HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnPerformanceSuite_Clicked" UseVaryingBackgroundImages ="True" />
                             <controls:CustomImageButton x:Name="btnViewPanicLog" Text="View Panic Log" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnViewPanicLog_Clicked" UseVaryingBackgroundImages ="True" />
                         </StackLayout>

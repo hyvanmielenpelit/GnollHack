@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/hyvanmielenpelit/GnollHack/DEVEL/performance/schema/suite-manifest.schema.json",
+  "title": "GnollHack performance suite manifest",
+  "description": "suite.json: one in-app Performance Suite, written by GHPerformanceSuiteStore next to the suite's run records (run-record.schema.json). It never has a top-level schemaVersion, smoothness or series property, so the offline analyzer never mistakes it for a run record. Doubles are written as 0 where the value was NaN or infinite.",
+  "type": "object",
+  "required": ["manifestVersion", "suiteId", "status", "origin", "startedUtc", "setup", "environment", "runs"],
+  "properties": {
+    "manifestVersion": { "type": "integer", "const": 1 },
+    "suiteId": { "type": "string", "description": "yyyyMMdd_HHmmss_<scenario>_<device model>, in UTC; a numeric suffix is added on collision" },
+    "status": { "type": "string", "enum": ["running", "complete", "aborted"] },
+    "abortReason": { "type": ["string", "null"] },
+    "origin": { "type": "string", "enum": ["local", "imported"] },
+    "importedUtc": { "type": ["string", "null"], "format": "date-time" },
+    "startedUtc": { "type": "string", "format": "date-time" },
+    "endedUtc": { "type": ["string", "null"], "format": "date-time" },
+    "setup": { "$ref": "#/$defs/setup" },
+    "environment": { "$ref": "#/$defs/environment" },
+    "comparabilityKey": { "type": ["string", "null"], "description": "scenario|replaySha256|startTurn|pageMode|mapRefreshRateSetting|round(measuredRefreshHz); set when the suite finishes. Suites are compared only within one key" },
+    "measuredRefreshHz": { "type": "number", "description": "Median over the runs with a summary" },
+    "targetFps": { "type": "number", "description": "Median over the runs with a summary" },
+    "runs": { "type": "array", "items": { "$ref": "#/$defs/run" } }
+  },
+  "$defs": {
+    "setup": {
+      "type": "object",
+      "properties": {
+        "replayFileName": { "type": "string" },
+        "replayBytes": { "type": "integer" },
+        "replaySha256": { "type": ["string", "null"] },
+        "startTurn": { "type": "integer" },
+        "scenario": { "type": "string", "enum": ["idle", "minimap", "playback"] },
+        "runs": { "type": "integer", "description": "Measured runs, not counting the warm-up run" },
+        "armLabel": { "type": "string" },
+        "pageMode": { "type": "string", "enum": ["shared", "fresh"] },
+        "warmUpRun": { "type": "boolean" },
+        "warmUpSeconds": { "type": "integer" },
+        "windowSeconds": { "type": "integer" },
+        "cooldownSeconds": { "type": "integer" }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "properties": {
+        "platform": { "type": ["string", "null"] },
+        "deviceModel": { "type": ["string", "null"] },
+        "deviceOs": { "type": ["string", "null"] },
+        "appVersion": { "type": ["string", "null"] },
+        "gitCommit": { "type": ["string", "null"] },
+        "buildConfiguration": { "type": ["string", "null"] },
+        "runtimeVersion": { "type": ["string", "null"] },
+        "frameworkVersion": { "type": ["string", "null"] },
+        "uiFrameworkVersion": { "type": ["string", "null"] },
+        "skiaSharpVersion": { "type": ["string", "null"] },
+        "fmodVersion": { "type": ["string", "null"] },
+        "mapRefreshRateSetting": { "type": ["string", "null"] }
+      }
+    },
+    "run": {
+      "type": "object",
+      "properties": {
+        "index": { "type": "integer", "description": "0 is the warm-up run when the suite has one" },
+        "isWarmUp": { "type": "boolean" },
+        "runFile": { "type": ["string", "null"], "description": "File name of the run record, alongside suite.json; null when the run produced no record" },
+        "turnReached": { "type": "integer" },
+        "excludedReason": { "type": ["string", "null"], "description": "Null when the run is used" },
+        "thermalBefore": { "$ref": "#/$defs/thermal" },
+        "thermalAfter": { "$ref": "#/$defs/thermal" },
+        "summary": { "oneOf": [{ "$ref": "#/$defs/summary" }, { "type": "null" }] }
+      }
+    },
+    "thermal": {
+      "type": ["object", "null"],
+      "properties": {
+        "status": { "type": "string", "enum": ["Unknown", "Nominal", "Light", "Moderate", "Severe", "Critical"] },
+        "cpuPerformancePct": { "type": "number", "description": "0 when not reported" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "description": "The part of GHSmoothnessSummary the suite report and the comparison use",
+      "properties": {
+        "displayedFps": { "type": "number" },
+        "hitchRatioMsPerSec": { "type": "number" },
+        "pacingErrorRmsMs": { "type": "number" },
+        "pacingErrorP99Ms": { "type": "number" },
+        "judderPct": { "type": "number" },
+        "droppedCount": { "type": "integer" },
+        "displayedCount": { "type": "integer" },
+        "gcCount": { "type": "integer" },
+        "gcPauseMs": { "type": "number" },
+        "gcPauseDataAvailable": { "type": "boolean" },
+        "measuredRefreshHz": { "type": "number" },
+        "targetFps": { "type": "number" },
+        "causeCount": { "type": "array", "items": { "type": "integer" }, "description": "Indexed by GHHitchCause" },
+        "causeMs": { "type": "array", "items": { "type": "number" }, "description": "Indexed by GHHitchCause" },
+        "eventGapCount": { "type": "array", "items": { "type": "integer" }, "description": "Indexed by GHContentEvent bit position" },
+        "eventHitchCount": { "type": "array", "items": { "type": "integer" }, "description": "Indexed by GHContentEvent bit position" },
+        "quietGapCount": { "type": "integer" },
+        "quietHitchCount": { "type": "integer" }
+      }
+    }
+  }
+}
