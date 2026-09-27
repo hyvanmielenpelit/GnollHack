@@ -16,7 +16,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <!--<MauiXamlInflator>SourceGen</MauiXamlInflator>-->
     <!--<InvariantGlobalization>true</InvariantGlobalization>-->
-    <DefineConstants>$(DefineConstants);GNH_MAUI;SENTRY;USE_SPAN_FOR_SUBSTRING</DefineConstants>
+    <DefineConstants>$(DefineConstants);GNH_MAUI;SENTRY;USE_SPAN_FOR_SUBSTRING;ENABLE_RAW_RENDERING</DefineConstants>
 
     <!-- Display name -->
     <ApplicationTitle>GnollHack</ApplicationTitle>

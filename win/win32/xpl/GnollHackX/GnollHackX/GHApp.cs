@@ -2877,6 +2877,15 @@ namespace GnollHackX
             GC.Collect(0);
             FrameTimeProfiler.MarkGcAfter();
         }
+
+        public static void CollectGarbagePlatformDependent()
+        {
+            /* Full collections seem to be necessary on Windows to reduce stuttering after closing grids; Android full collections are too long; and iOS really does not either, so just collecting the nursery is fine there */
+            //if (IsWindows)
+            //    CollectGarbage();
+            //else
+                CollectNursery();
+        }
         public static void CollectGarbageNonBlocking()
         {
             FrameTimeProfiler.MarkGcBefore();

@@ -4205,7 +4205,7 @@ namespace GnollHackX.Pages.Game
         private void HideYnResponses()
         {
             YnGrid.IsVisible = false;
-            GHApp.CollectGarbage();
+            GHApp.CollectGarbagePlatformDependent();
         }
         private void DoShowDirections()
         {
@@ -21534,7 +21534,7 @@ namespace GnollHackX.Pages.Game
             IsMainCanvasOn = true;
             StopMenuCanvasAnimation();
             MenuWindowGlyphImage.StopAnimation();
-            GHApp.CollectGarbage();
+            GHApp.CollectGarbagePlatformDependent();
             RefreshScreen = true;
             StartMainCanvasAnimation();
         }
@@ -21604,7 +21604,7 @@ namespace GnollHackX.Pages.Game
                 InterlockedTextScrollOffset = _textScrollOffset;
             }
             StopTextCanvasAnimation();
-            GHApp.CollectGarbage();
+            GHApp.CollectGarbagePlatformDependent();
             RefreshScreen = true;
             StartMainCanvasAnimation();
         }
@@ -23087,7 +23087,7 @@ namespace GnollHackX.Pages.Game
             IsMainCanvasOn = true;
             UpdateMoreNextPrevButtonVisibility(true, true);
             StopCommandCanvasAnimation();
-            GHApp.CollectGarbage();
+            GHApp.CollectGarbagePlatformDependent();
             RefreshScreen = true;
             StartMainCanvasAnimation();
         }
