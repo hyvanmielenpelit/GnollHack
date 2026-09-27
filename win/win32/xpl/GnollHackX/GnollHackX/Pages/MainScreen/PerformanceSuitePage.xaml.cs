@@ -122,28 +122,40 @@ namespace GnollHackX.Pages.MainScreen
         private void InitializeInfoLabels()
         {
             AddInfoLabel(ReplayLabel,
+                "The replay each run plays",
                 "Lists the replays in the replay folder, newest first. For Minimap, record a wizard-mode game and press Ctrl+F to map the level first. For Playback, record a stretch with fighting and effects.");
             AddInfoLabel(StartTurnLabel,
+                "The replay turn each run starts at",
                 "The replay turn at which each run starts. Choose a turn with more than warm-up + window seconds of content after it. Early turns seek faster.");
             AddInfoLabel(ScenarioLabel,
+                "What is measured: idle, minimap or playback",
                 "Idle: the replay is paused at the player's command prompt and only animations run. Minimap: the same in minimap mode. Playback: the replay plays at normal speed through the window.");
             AddInfoLabel(RunsLabel,
+                "Measured runs, not counting the warm-up run",
                 "The warm-up run is not counted. At least 3 measured runs are needed for a verdict, and 5 or more for a firm one.");
             AddInfoLabel(WarmUpRunLabel,
+                "An extra first run, excluded from the results",
                 "Run 0 is measured but excluded from the results. It absorbs the loading and garbage-collection storm after the game page opens.");
             AddInfoLabel(PageModeLabel,
+                "Reuse one game page, or open a new one per run",
                 "Shared page restarts the replay in place, which also collects garbage. Fresh page closes and reopens the game page for each run.");
             AddInfoLabel(ArmLabelLabel,
-                "Suites with the same label pool into one arm when compared. The default is the app version and commit.");
+                "Suites with the same label are compared as one",
+                "Suites with the same label pool into one arm when compared. The default is the app version and commit; an edited label is kept until another build is installed.");
             AddInfoLabel(WarmUpSecondsLabel,
+                "Seconds played before measuring",
                 "Seconds each run plays the scenario before measuring starts.");
             AddInfoLabel(WindowSecondsLabel,
+                "Seconds measured per run",
                 "Seconds measured in each run.");
             AddInfoLabel(CooldownSecondsLabel,
+                "Seconds of rest between runs",
                 "Seconds of pause between runs, letting the device cool down before the next run.");
             AddInfoLabel(EstimatedDurationTitleLabel,
+                "Approximate time for the whole suite",
                 "Every run, including the warm-up run, takes its warm-up, window and cool-down seconds plus an allowance for loading and seeking.");
             AddInfoLabel(ResultsLabel,
+                "Suites saved on this device",
                 "Suites are saved on this device. "
                 + (GHApp.IsWindows
                     ? "Both builds share this store."
@@ -151,11 +163,12 @@ namespace GnollHackX.Pages.MainScreen
                 + " Tap suites to select them; Report, Set Baseline and Compare need exactly one.");
         }
 
-        private void AddInfoLabel(Label label, string explanation)
+        /* The tooltip is a short summary; tapping the label shows the full explanation */
+        private void AddInfoLabel(Label label, string tooltip, string explanation)
         {
             _labelExplanations[label] = explanation;
             UIUtils.SetViewCursorOnHandler(label, GameCursorType.Info);
-            UIUtils.SetStyledToolTip(label, explanation);
+            UIUtils.SetStyledToolTip(label, tooltip);
         }
 
         private async void InfoLabel_Tapped(object sender, EventArgs e)
@@ -205,10 +218,17 @@ namespace GnollHackX.Pages.MainScreen
             WindowSecondsEntry.Text = Preferences.Get("PerformanceSuiteWindowSeconds", 60).ToString();
             CooldownSecondsEntry.Text = Preferences.Get("PerformanceSuiteCooldownSeconds", 20).ToString();
 
-            string defaultLabel = BuildDefaultArmLabel();
-            string savedLabel = Preferences.Get("PerformanceSuiteLabel", defaultLabel);
-            ArmLabelEntry.Text = string.IsNullOrWhiteSpace(savedLabel) ? defaultLabel : savedLabel;
+            /* The saved label is kept only while the build's default label is the one it was
+               saved under; another build starts from its own default, so that it never
+               pools into the previous build's arm */
+            _defaultArmLabel = BuildDefaultArmLabel();
+            string savedLabel = Preferences.Get("PerformanceSuiteLabel", "");
+            string savedDefaultLabel = Preferences.Get("PerformanceSuiteLabelDefault", "");
+            bool sameBuild = string.Equals(savedDefaultLabel, _defaultArmLabel, StringComparison.Ordinal);
+            ArmLabelEntry.Text = !sameBuild || string.IsNullOrWhiteSpace(savedLabel) ? _defaultArmLabel : savedLabel;
         }
+
+        private string _defaultArmLabel = "";
 
         /* "<app version> <short commit>", omitting the commit when it is unknown. */
         private string BuildDefaultArmLabel()
@@ -565,6 +585,7 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("PerformanceSuiteWarmUpRun", setup.WarmUpRun);
             Preferences.Set("PerformanceSuitePageMode", setup.PageMode);
             Preferences.Set("PerformanceSuiteLabel", setup.ArmLabel);
+            Preferences.Set("PerformanceSuiteLabelDefault", _defaultArmLabel);
             Preferences.Set("PerformanceSuiteWarmUpSeconds", setup.WarmUpSeconds);
             Preferences.Set("PerformanceSuiteWindowSeconds", setup.WindowSeconds);
             Preferences.Set("PerformanceSuiteCooldownSeconds", setup.CooldownSeconds);
