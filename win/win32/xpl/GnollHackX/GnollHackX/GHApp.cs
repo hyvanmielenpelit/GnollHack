@@ -13090,6 +13090,8 @@ namespace GnollHackX
             Description = description;
             IsCurrent = isCurrent;
             IsIntegratedGraphics = isIntegratedGraphics;
+            MinRefreshRate = minRefreshRate;
+            MaxRefreshRate = maxRefreshRate;
         }
     }
 
