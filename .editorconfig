@@ -47,10 +47,10 @@ indent_size = 2
 [*.{yaml,yml}]
 indent_size = 2
 
-# C/C++ source, headers, Lex/Yacc: strict Allman style, 4 spaces, 78 cols
+# C/C++ source, headers, Lex/Yacc: strict Allman style, 4 spaces, 120 cols
 [*.{c,h,cpp,hpp,l,y}]
 indent_size = 4
-max_line_length = 78
+max_line_length = 120
 
 # Game data text files: must not have a BOM
 [dat/*.txt]
