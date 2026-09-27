@@ -31,18 +31,20 @@ namespace GnollHackX.Performance
             sampler (so the pre-window has samples), starts the countdown and closes
             the menu.
          3. Settles for SettleSeconds, so the menu's pause mark and collection fall
-            outside the window; starts the per-process interval (and on Windows the
-            render adapter probe) on the thread pool, waits for its begin collect at
-            most ProcessIntervalBeginWaitMs, then opens the measurement window.
+            outside the window; starts the per-process interval on the thread pool,
+            waits for its begin collect at most ProcessIntervalBeginWaitMs, then opens
+            the measurement window, which on Windows also starts the render adapter
+            probe (GHPerformanceRunRecord.BeginWindow).
          4. Measures for WindowSeconds, polling every 100 ms for an abort: the app went
             to the background, a page opened over the game page, or the game ended.
             An aborted window is discarded unsaved and no report is written; the
             report retention still runs, deleting folders left by a test the app was
             killed during.
-         5. Saves the window into ReportsDirectory/<stamp>/, reads what must be read on
-            the UI thread (GPU context, profiler statistics, recent hitches), then on
-            the thread pool ends the adapter probe and re-captures the environment
-            fingerprint.
+         5. Saves the window into ReportsDirectory/<stamp>/, which on Windows also ends
+            the render adapter probe; reads what must be read on the UI thread (GPU
+            context, profiler statistics, recent hitches), then on the thread pool reads
+            the probe's last result and the GPU preference and re-captures the
+            environment fingerprint.
          6. Builds GHDiagnosisFacts, diagnoses, writes
             ReportsDirectory/perftest_<stamp>.txt, keeps the newest MaxKeptReports
             reports, and opens the report page.
@@ -207,7 +209,6 @@ namespace GnollHackX.Performance
                 {
                     GHDiagnosticCountdown.Stop();
                     ReleaseSampler(s);
-                    await EndAdapterProbeQuietlyAsync(s);
                     string reportsDirectory = ReportsDirectory;
                     await Task.Run(delegate { ApplyRetention(reportsDirectory); });
                     Log("cancelled: " + (abortReason ?? "unknown reason"));
@@ -238,16 +239,10 @@ namespace GnollHackX.Performance
 
             await WaitAsync(s, SettleSeconds * 1000L);
 
-            /* The per-process begin collect (and the adapter probe's) run on the thread
-               pool; the window opens once they are done, or after
-               ProcessIntervalBeginWaitMs at most */
+            /* The per-process begin collect runs on the thread pool; the window opens once
+               it is done, or after ProcessIntervalBeginWaitMs at most */
             Task begin = GHSystemLoadSampler.StartProcessIntervalAsync();
-            Task probeBegin = null;
-#if GNH_MAUI && WINDOWS
-            probeBegin = Task.Run(delegate { return GHRenderAdapterProbeWindows.Begin(); });
-            s.AdapterProbeStarted = true;
-#endif
-            await WaitUntilAsync(s, delegate { return begin.IsCompleted && (probeBegin == null || probeBegin.IsCompleted); },
+            await WaitUntilAsync(s, delegate { return begin.IsCompleted; },
                 BeginPollMs, GHSystemLoadSampler.ProcessIntervalBeginWaitMs);
 
             GHPerformanceRunContext ctx = new GHPerformanceRunContext();
@@ -290,30 +285,6 @@ namespace GnollHackX.Performance
                 return;
             s.OpenWindow = null;
             GHPerformanceRunRecord.DiscardWindow();
-        }
-
-        /* Closes the Windows adapter probe's query after an abort */
-        private static async Task EndAdapterProbeQuietlyAsync(TestState s)
-        {
-#if GNH_MAUI && WINDOWS
-            if (!s.AdapterProbeStarted)
-                return;
-            s.AdapterProbeStarted = false;
-            try
-            {
-                await Task.Run(delegate
-                {
-                    GHRenderAdapter render;
-                    GHRenderAdapterProbeWindows.End(out render, null);
-                });
-            }
-            catch (Exception ex)
-            {
-                Log("ending the adapter probe failed: " + ex.Message);
-            }
-#else
-            await Task.FromResult(0);
-#endif
         }
 
         /* After the window: the facts, the report and its page. Returns a message to show
@@ -370,14 +341,12 @@ namespace GnollHackX.Performance
             f.CountdownShown = true;
             f.FrameDetailText = frameDetail;
 
-            /* Thread pool: the adapter probe's second collect and the DXGI enumeration,
-               the GPU preference (registry) and the environment fingerprint (WMI) */
+            /* Thread pool: the adapter probe's last result, the GPU preference (registry)
+               and the environment fingerprint (WMI) */
             PostWindowData post = null;
             try
             {
-                bool probeStarted = s.AdapterProbeStarted;
-                s.AdapterProbeStarted = false;
-                post = await Task.Run(delegate { return CollectPostWindow(probeStarted); });
+                post = await Task.Run(delegate { return CollectPostWindow(); });
             }
             catch (Exception ex)
             {
@@ -572,18 +541,18 @@ namespace GnollHackX.Performance
             return list;
         }
 
-        /* Thread pool only */
-        private static PostWindowData CollectPostWindow(bool adapterProbeStarted)
+        /* Thread pool only. The adapter facts are the probe's last result, which the run
+           record's EndWindowAndSave has just refreshed; none when no probe of this process
+           has named a render adapter. */
+        private static PostWindowData CollectPostWindow()
         {
             PostWindowData d = new PostWindowData();
 #if GNH_MAUI && WINDOWS
             try
             {
                 List<GHRenderAdapter> all = new List<GHRenderAdapter>();
-                GHRenderAdapter render = null;
-                bool known = false;
-                if (adapterProbeStarted)
-                    known = GHRenderAdapterProbeWindows.End(out render, all);
+                GHRenderAdapter render;
+                bool known = GHRenderAdapterProbeWindows.TryGetLast(out render, all);
                 if (known && render != null)
                 {
                     d.RenderAdapterName = render.Name;
@@ -601,7 +570,7 @@ namespace GnollHackX.Performance
                     string kind = a.IsIntegrated == true ? "integrated" : a.IsIntegrated == false ? "discrete" : "kind unknown";
                     lines.Add((string.IsNullOrEmpty(a.Name) ? "unnamed adapter" : a.Name) + " (" + kind + ", "
                         + a.DedicatedVideoMemoryMB.ToString(CultureInfo.InvariantCulture) + " MB"
-                        + (known && ReferenceEquals(a, render) ? ", renders the map" : "") + ")");
+                        + (known && render != null && a.Luid == render.Luid ? ", renders the map" : "") + ")");
                 }
                 d.Adapters = lines;
             }
@@ -793,7 +762,6 @@ namespace GnollHackX.Performance
             public GamePage GamePage;
             public bool MenuClosed;                    /* messages go to the game page from here on */
             public bool SamplerHeld;                   /* the test's GHSystemLoadSampler acquire is outstanding */
-            public bool AdapterProbeStarted;           /* Windows: the adapter probe's Begin was started */
             public GHPerformanceRunContext OpenWindow; /* non-null while the window is open */
             public Stopwatch WindowClock;              /* started when the window opened */
             public double WindowElapsedSeconds = double.NaN;

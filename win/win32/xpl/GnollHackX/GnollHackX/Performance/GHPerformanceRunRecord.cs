@@ -24,10 +24,11 @@ namespace GnollHackX.Performance
 
        BeginWindow and EndWindowAndSave bracket a measurement: BeginWindow remembers
        whether the frame timeline was already running, enables it, notes the first frame of
-       the window, and takes the first thermal reading; EndWindowAndSave takes the second
-       reading, saves the window's frames (the JSON and the two CSV dumps), and restores
-       the timeline to whatever state it was in before BeginWindow. DiscardWindow ends a
-       window without saving it. BeginWindow and EndWindowAndSave have an overload
+       the window, takes the first thermal reading and, on Windows, starts the render
+       adapter probe; EndWindowAndSave takes the second reading, ends the probe, saves the
+       window's frames (the JSON and the two CSV dumps), and restores the timeline to
+       whatever state it was in before BeginWindow. DiscardWindow ends a window without
+       saving it. BeginWindow and EndWindowAndSave have an overload
        that takes or hands back a GHPerformanceRunContext/GHPerformanceRunResult for a
        suite runner; the plain overloads are these with no context and the result
        discarded. SaveRecent writes the same document from everything the timeline still
@@ -95,6 +96,18 @@ namespace GnollHackX.Performance
         private static GHPerformanceRunContext _context = null;
         private static long _windowStartTicks;         /* DateTime.UtcNow.Ticks at BeginWindow */
         private static int _windowSamplerHeld = 0;     /* 1 while the window's sampler acquire is outstanding */
+
+#if GNH_MAUI && WINDOWS
+        /* The render adapter probe (GHRenderAdapterProbeWindows). Every probe call runs on
+           the thread pool, queued after the previous one so a late End never closes a
+           newer window's query. _adapterProbeBegin is the open window's Begin, null when
+           none is outstanding. Both fields are guarded by _adapterProbeLock. */
+        private const int AdapterProbeBeginWaitMs = 1000;
+        private const int AdapterProbeEndWaitMs = 2000;
+        private static readonly object _adapterProbeLock = new object();
+        private static Task _adapterProbeTail = null;
+        private static Task<bool> _adapterProbeBegin = null;
+#endif
 
         /* The reading taken when the timeline was last enabled: SaveRecent's "before" */
         private static GHThermalReading _thermalAtActivation;
@@ -169,10 +182,12 @@ namespace GnollHackX.Performance
         /* Starts a measurement window: holds the background load sampler until the window
            ends, remembers whether the frame timeline was already enabled, enables it, notes
            the window's first frame, restarts the UI thread probe's statistics, reads the
-           thermal state, and notes the start time. It never collects the per-process
-           interval: callers start that on the thread pool before calling this
-           (GHSystemLoadSampler.StartProcessIntervalAsync). A second call while a window is
-           open replaces it. */
+           thermal state, notes the start time and, once the window is open, starts the
+           Windows render adapter probe's Begin on the thread pool without waiting for it.
+           It never collects the per-process interval: callers start that on the thread
+           pool before calling this (GHSystemLoadSampler.StartProcessIntervalAsync). A
+           second call while a window is open replaces it; the new probe Begin restarts
+           the replaced window's probe interval. */
         public static void BeginWindow(string scenario, string arm)
         {
             BeginWindow(scenario, arm, null);
@@ -199,14 +214,109 @@ namespace GnollHackX.Performance
                 _startedUtc = DateTime.UtcNow;
                 _windowStartTicks = _startedUtc.Ticks;
                 Interlocked.Exchange(ref _windowOpen, 1);
+                StartAdapterProbe();
             }
             catch
             {
                 _context = null;
                 Interlocked.Exchange(ref _windowOpen, 0);
                 ReleaseWindowSampler();
+                AbandonAdapterProbe();
             }
         }
+
+        /* Queues the render adapter probe's Begin for the window that just opened; a
+           Begin still outstanding from a replaced window is superseded, since Begin
+           restarts the interval. Windows only; never throws. */
+        private static void StartAdapterProbe()
+        {
+#if GNH_MAUI && WINDOWS
+            try
+            {
+                lock (_adapterProbeLock)
+                {
+                    _adapterProbeBegin = QueueAdapterProbeLocked(delegate { return GHRenderAdapterProbeWindows.Begin(); });
+                }
+            }
+            catch
+            {
+                /* The window works without the probe */
+            }
+#endif
+        }
+
+        /* Ends the window's render adapter probe, if one was begun, and waits at most
+           AdapterProbeBeginWaitMs for its Begin and then AdapterProbeEndWaitMs for its End,
+           so the probe's last result (GHRenderAdapterProbeWindows.TryGetLast) is current
+           when the record is built. The result itself is not used here. Windows only;
+           never throws. */
+        private static void EndAdapterProbe()
+        {
+#if GNH_MAUI && WINDOWS
+            try
+            {
+                Task<bool> begin;
+                Task<bool> end;
+                lock (_adapterProbeLock)
+                {
+                    begin = _adapterProbeBegin;
+                    _adapterProbeBegin = null;
+                    if (begin == null)
+                        return;
+                    end = QueueAdapterProbeLocked(EndAdapterProbeStep);
+                }
+                begin.Wait(AdapterProbeBeginWaitMs);
+                end.Wait(AdapterProbeEndWaitMs);
+            }
+            catch
+            {
+                /* The record is saved without a fresh probe result */
+            }
+#endif
+        }
+
+        /* Ends the probe of a window that closes without reaching EndAdapterProbe
+           (discarded, lost to a failed BeginWindow, or a save that threw first), without
+           waiting, so its PDH query closes. Windows only; never throws. */
+        private static void AbandonAdapterProbe()
+        {
+#if GNH_MAUI && WINDOWS
+            try
+            {
+                lock (_adapterProbeLock)
+                {
+                    if (_adapterProbeBegin == null)
+                        return;
+                    _adapterProbeBegin = null;
+                    QueueAdapterProbeLocked(EndAdapterProbeStep);
+                }
+            }
+            catch
+            {
+            }
+#endif
+        }
+
+#if GNH_MAUI && WINDOWS
+        private static bool EndAdapterProbeStep()
+        {
+            GHRenderAdapter render;
+            return GHRenderAdapterProbeWindows.End(out render, null);
+        }
+
+        /* Runs step on the thread pool after every probe call queued before it, whatever
+           their outcome. Call under _adapterProbeLock. */
+        private static Task<bool> QueueAdapterProbeLocked(Func<bool> step)
+        {
+            Task<bool> next;
+            if (_adapterProbeTail == null)
+                next = Task.Run(step);
+            else
+                next = _adapterProbeTail.ContinueWith(delegate (Task previous) { return step(); }, TaskScheduler.Default);
+            _adapterProbeTail = next;
+            return next;
+        }
+#endif
 
         /* At most one sampler acquire is outstanding for the window, whatever the
            sequence of BeginWindow, EndWindowAndSave and cancellations; none is taken
@@ -240,9 +350,11 @@ namespace GnollHackX.Performance
            the interval count, so a suite runner does not need to re-read or re-parse the
            JSON it just wrote. result is non-null whenever a JSON was written; on failure
            result may be null and the method returns null, as EndWindowAndSave(directory)
-           always did. Once the window has closed, the per-process interval is ended and
-           the window's background report built from the sampler; the sampler hold taken
-           by BeginWindow is released whatever happens. */
+           always did. Once the window has closed, the per-process interval is ended, the
+           window's background report built from the sampler, and on Windows the render
+           adapter probe ended before the record is built, waiting at most 3 s in all; the
+           sampler hold taken by BeginWindow is released and the probe ended whatever
+           happens. */
         public static string EndWindowAndSave(string directory, out GHPerformanceRunResult result)
         {
             result = null;
@@ -256,6 +368,7 @@ namespace GnollHackX.Performance
                 GHThermalReading thermalAfter = GHThermalProbe.Read();
                 long toFrameId = GHFrameTimeline.LastFrameId;
                 GHBackgroundReport background = BuildWindowBackground(_windowStartTicks, windowEndTicks);
+                EndAdapterProbe();
                 return Save(directory, _scenario, _arm, _startedUtc, _thermalBefore, thermalAfter,
                     _windowFromFrameId, toFrameId, context, background, out result);
             }
@@ -268,11 +381,13 @@ namespace GnollHackX.Performance
             {
                 RestoreTimeline();
                 ReleaseWindowSampler();
+                AbandonAdapterProbe();
             }
         }
 
         /* Ends the window without writing anything: restores the timeline's previous enabled
-           state and releases the window's sampler hold. False when no window was open. */
+           state, releases the window's sampler hold and ends the render adapter probe
+           without waiting. False when no window was open. */
         public static bool DiscardWindow()
         {
             if (Interlocked.CompareExchange(ref _windowOpen, 0, 1) != 1)
@@ -285,6 +400,7 @@ namespace GnollHackX.Performance
             finally
             {
                 ReleaseWindowSampler();
+                AbandonAdapterProbe();
             }
             return true;
         }

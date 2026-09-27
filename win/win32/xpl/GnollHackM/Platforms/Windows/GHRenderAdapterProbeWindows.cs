@@ -22,7 +22,9 @@ namespace GnollHackM
        engine instances and takes the first sample; End takes the second, sums the 3D engine
        utilization per adapter LUID, and names the busiest adapter through DXGI. Both run on
        a thread-pool thread, never on the UI thread, and never throw: every failure returns
-       false. Begin while already begun restarts the interval. */
+       false. Begin while already begun restarts the interval. A successful End is kept
+       as the process's last result, which TryGetLast hands out on any thread; the render
+       adapter cannot change within a process. */
     public static class GHRenderAdapterProbeWindows
     {
         [StructLayout(LayoutKind.Explicit, Size = 16)]
@@ -103,6 +105,13 @@ namespace GnollHackM
         private static int _ownPid = -1;
         private static bool _begun = false;
 
+        /* The last successful End's render adapter and adapter list; null and empty until
+           an End has succeeded. Their own lock, so a reader never waits for a PDH collect
+           or a DXGI enumeration. */
+        private static readonly object _lastLock = new object();
+        private static GHRenderAdapter _lastRender = null;
+        private static List<GHRenderAdapter> _lastAdapters = new List<GHRenderAdapter>();
+
         public static bool Begin()
         {
             lock (_lock)
@@ -150,7 +159,8 @@ namespace GnollHackM
         /* all is cleared and filled with every DXGI adapter, software ones included, even
            when the render adapter is unknown. render is the adapter with the most 3D engine
            utilization by this process over the interval; false and null when there was none
-           or it is not among the DXGI adapters. The query is closed in every case. */
+           or it is not among the DXGI adapters. The query is closed in every case. A true
+           result also replaces the last result TryGetLast reads, with copies. */
         public static bool End(out GHRenderAdapter render, List<GHRenderAdapter> all)
         {
             render = null;
@@ -193,6 +203,15 @@ namespace GnollHackM
                     {
                         if (adapters[i].Luid == renderLuid)
                         {
+                            List<GHRenderAdapter> copies = new List<GHRenderAdapter>(adapters.Count);
+                            for (int j = 0; j < adapters.Count; j++)
+                                copies.Add(CopyAdapter(adapters[j]));
+                            GHRenderAdapter renderCopy = CopyAdapter(adapters[i]);
+                            lock (_lastLock)
+                            {
+                                _lastRender = renderCopy;
+                                _lastAdapters = copies;
+                            }
                             render = adapters[i];
                             return true;
                         }
@@ -205,6 +224,64 @@ namespace GnollHackM
                     return false;
                 }
             }
+        }
+
+        /* The last successful End's result, as copies: render, and all (when non-null)
+           cleared and filled with every DXGI adapter of that End. False, with render null
+           and all empty, until an End has succeeded. Any thread; never throws. */
+        public static bool TryGetLast(out GHRenderAdapter render, List<GHRenderAdapter> all)
+        {
+            render = null;
+            try
+            {
+                if (all != null)
+                    all.Clear();
+                lock (_lastLock)
+                {
+                    if (_lastRender == null)
+                        return false;
+                    if (all != null)
+                    {
+                        for (int i = 0; i < _lastAdapters.Count; i++)
+                            all.Add(CopyAdapter(_lastAdapters[i]));
+                    }
+                    render = CopyAdapter(_lastRender);
+                    return true;
+                }
+            }
+            catch
+            {
+                render = null;
+                return false;
+            }
+        }
+
+        /* The fingerprint's hardware.renderAdapter value: "<Name> (software)", "<Name>
+           (integrated)", "<Name> (discrete)", or "<Name>" when IsIntegrated is unknown;
+           software wins over integrated. Null for a null adapter or an empty name. */
+        public static string FingerprintValue(GHRenderAdapter a)
+        {
+            if (a == null || string.IsNullOrWhiteSpace(a.Name))
+                return null;
+            string name = a.Name.Trim();
+            if (a.IsSoftware)
+                return name + " (software)";
+            if (a.IsIntegrated == true)
+                return name + " (integrated)";
+            if (a.IsIntegrated == false)
+                return name + " (discrete)";
+            return name;
+        }
+
+        private static GHRenderAdapter CopyAdapter(GHRenderAdapter a)
+        {
+            GHRenderAdapter copy = new GHRenderAdapter();
+            copy.Name = a.Name;
+            copy.Luid = a.Luid;
+            copy.IsSoftware = a.IsSoftware;
+            copy.IsIntegrated = a.IsIntegrated;
+            copy.DedicatedVideoMemoryMB = a.DedicatedVideoMemoryMB;
+            return copy;
         }
 
         private static void CloseQuery()

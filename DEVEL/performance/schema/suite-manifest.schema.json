@@ -15,7 +15,7 @@
     "startedUtc": { "type": "string", "format": "date-time" },
     "endedUtc": { "type": ["string", "null"], "format": "date-time" },
     "setup": { "$ref": "#/$defs/setup" },
-    "environment": { "$ref": "#/$defs/environment" },
+    "environment": { "$ref": "#/$defs/environment", "description": "The environment captured when the suite's first window (warm-up or run 1) ended, so values set on the first paint and the render adapter are present; the one written when the suite is created is provisional until then" },
     "fingerprintAtEnd": { "$ref": "#/$defs/fingerprint", "description": "The fingerprint re-captured when the suite finished; absent before that, and when the capture failed" },
     "environmentChanged": { "type": "boolean", "description": "Whether fingerprintAtEnd differs from environment.fingerprint in a key outside meta and code (changed, added or removed); absent when either fingerprint is missing" },
     "comparabilityKey": { "type": ["string", "null"], "description": "scenario|replaySha256|startTurn|pageMode|mapRefreshRateSetting|round(measuredRefreshHz); set when the suite finishes. Suites are compared only within one key" },
@@ -56,7 +56,7 @@
         "skiaSharpVersion": { "type": ["string", "null"] },
         "fmodVersion": { "type": ["string", "null"] },
         "mapRefreshRateSetting": { "type": ["string", "null"] },
-        "fingerprint": { "$ref": "#/$defs/fingerprint", "description": "The environment fingerprint at the suite start; absent in manifests written before fingerprints existed" }
+        "fingerprint": { "$ref": "#/$defs/fingerprint", "description": "The environment fingerprint when the suite's first window ended (at its creation until then); absent in manifests written before fingerprints existed" }
       }
     },
     "fingerprint": {

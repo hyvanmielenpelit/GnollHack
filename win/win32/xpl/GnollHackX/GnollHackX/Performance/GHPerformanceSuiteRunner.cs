@@ -33,7 +33,8 @@ namespace GnollHackX.Performance
        (shared) or close it and open a new one (fresh; the cool-down then happens on the
        page below the game page). The replay header shows the run and its phase. The
        background load sampler runs for the whole suite; the environment fingerprint is
-       captured at its start (CreateSuite) and again at its end (FinishSuite).
+       captured at its start (CreateSuite), replaced once its first window is saved
+       (UpdateEnvironment), and captured again at its end (FinishSuite).
 
        Everything runs on the UI thread as one async task. Every wait polls at least
        every 100 ms and aborts the suite when the replay ended (GHApp.GameStarted went
@@ -127,7 +128,7 @@ namespace GnollHackX.Performance
                 s.InitialFromTurn = setup.StartTurn <= 1 ? -1 : s.SeekTurn;
 
                 /* The first environment capture can block for seconds (WMI); later ones,
-                   CreateSuite's and every run record's, read its cache */
+                   CreateSuite's, UpdateEnvironment's and every run record's, read its cache */
                 await Task.Run(delegate { GHPerformanceEnvironment.CaptureFingerprint(false); });
 
                 /* The first reading primes rate counters (Windows needs two samples
@@ -581,6 +582,9 @@ namespace GnollHackX.Performance
             }
         }
 
+        /* Ends the window and registers the run. The suite's first saved window, warm-up
+           or run 1, also replaces the provisional environment CreateSuite stored: by then
+           the page has painted and the run record has captured the render adapter. */
         private static void SaveWindow(SuiteState s, GHPerformanceRunContext ctx)
         {
             GHPerformanceRunResult result;
@@ -591,6 +595,11 @@ namespace GnollHackX.Performance
                 return;
             }
             GHPerformanceSuiteStore.AddRun(s.SuiteId, ctx, result);
+            if (!s.EnvironmentUpdated)
+            {
+                s.EnvironmentUpdated = true;
+                GHPerformanceSuiteStore.UpdateEnvironment(s.SuiteId);
+            }
         }
 
         /* Waits about ms milliseconds in steps of at most 100 ms, checking for an abort
@@ -696,6 +705,7 @@ namespace GnollHackX.Performance
             public Page PageBelow;                     /* top of the modal stack before the game page was pushed */
             public bool RunnerStopping;                /* StopReplay was set by the runner */
             public GHPerformanceRunContext OpenWindow; /* non-null while a window is open */
+            public bool EnvironmentUpdated;            /* UpdateEnvironment has run after the first saved window */
 
             public bool SamplerHeld;                   /* the suite's GHSystemLoadSampler acquire is outstanding */
             public Stopwatch SamplerClock;             /* started at that acquire */

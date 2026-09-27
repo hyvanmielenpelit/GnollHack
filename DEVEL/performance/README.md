@@ -386,8 +386,32 @@ at the start and end of every batch.
 | `component` | `component.<assembly name>` for every loaded assembly except those starting with `System`, `mscorlib`, `netstandard`, `Microsoft.CSharp`, `Microsoft.VisualBasic`, `Microsoft.Win32` or `GnollHack`; `component.native.skia`, `component.native.fmod`; Windows: `component.windowsAppSdk`, `component.winui` | In-app; e.g. `component.SkiaSharp`, `component.Microsoft.Maui.Controls` |
 | `os` | `os.platform`, `os.version`, `os.build` (Windows `26200.6584`), `os.displayVersion`, `os.edition`, `os.pendingReboot`; Android: `os.securityPatch`, `os.fingerprint`; script, Windows: `os.latestHotfix` | |
 | `driver` | `driver.gpu<N>.version`, `driver.gpu<N>.date` (Windows, `<N>` 0-based in WMI order); script, Android: `driver.gles` | |
-| `hardware` | `hardware.deviceModel`, `hardware.cpu`, `hardware.logicalProcessors`, `hardware.memoryGB`, `hardware.gpu<N>`; Android: `hardware.soc` | |
-| `settings` | `settings.<toggle>` for every entry of the record's `environment.configuration`; `settings.mapRefreshRate`, `settings.gpuBackend`, `settings.gpuCacheSize`, `settings.mainCanvasUsesGpu`, `settings.refreshHz`, `settings.backgroundSampler`; Windows: `settings.powerPlan`, `settings.powerMode` | |
+| `hardware` | `hardware.deviceModel`, `hardware.cpu`, `hardware.logicalProcessors`, `hardware.memoryGB`, `hardware.gpu<N>`; Android: `hardware.soc`; Windows, in-app: `hardware.renderAdapter` | |
+| `settings` | `settings.<toggle>` for every entry of the record's `environment.configuration`; `settings.mapRefreshRate`, `settings.gpuBackend`, `settings.gpuCacheSize`, `settings.mainCanvasUsesGpu`, `settings.refreshHz`, `settings.backgroundSampler`; Windows: `settings.powerPlan`, `settings.powerMode`; Windows, in-app: `settings.gpuPreference` | |
+
+`hardware.gpu<N>` lists the installed adapters; two Windows keys record which one the app
+uses:
+
+- `settings.gpuPreference`: the Windows graphics preference for the app's executable, from
+  `HKCU\Software\Microsoft\DirectX\UserGpuPreferences`: `Auto`, `Integrated`, `Dedicated`,
+  `Not set` or `Not found`.
+- `hardware.renderAdapter`: the adapter the app renders on, `<name> (discrete)`,
+  `<name> (integrated)` or `<name> (software)`, measured by the render adapter probe during
+  the process's first measurement window. It is absent before that window ends, and when
+  the app renders on the CPU (`settings.mainCanvasUsesGpu` records that case). The adapter
+  cannot change within a process, so the value stays current.
+
+A suite's starting fingerprint is taken when its first window ends, warm-up or run 1; the
+one written when the suite is created is provisional until then. By that point the game
+page has painted, which sets `settings.gpuBackend` and `settings.gpuCacheSize`, and the
+first window has measured `hardware.renderAdapter`. A change between the suite's creation
+and the end of its first window, which only opens the page and warms up, is therefore not
+reported as a change during the suite.
+
+Offline fingerprints from `Get-EnvironmentFingerprint.ps1` carry neither key: the script
+does not know the app's executable path, which the preference lookup needs, and cannot
+probe the app's rendering. This is safe, because fingerprints from different sources are
+compared on the keys both sides recorded only (see below).
 
 A record or manifest written before fingerprints existed gets one mapped from its per-field
 environment (`appVersion` to `code.appVersion`, `skiaSharpVersion` to
@@ -463,7 +487,8 @@ differs within the arm reads `mixed`, and a key missing from any of them is left
 - **Lines.** Runs are grouped into lines of like-for-like measurements: platform, device
   model, scenario, scenario kind, series, refresh and target periods (to 0.1 ms), and the
   hash of the `settings` category. A changed setting therefore starts a new line rather
-  than showing up as a step. `--series` picks one series; without it every run joins one
+  than showing up as a step; this includes `settings.gpuPreference`, so switching the GPU
+  starts a new line. `--series` picks one series; without it every run joins one
   line per series it carries (external, smoothness).
 - **Batches.** Within a line, runs are grouped by their `batch` (the leaf name of the
   batch's `-OutDir`, or the suite id of an in-app record), or by date, arm and commit for

@@ -1260,6 +1260,32 @@ namespace GnollHackM
                     LocalMachineKeyExists(@"SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired")
                     || LocalMachineKeyExists(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending"));
                 AddPowerFingerprint(fingerprint);
+                AddGpuFingerprint(fingerprint);
+            }
+            catch
+            {
+            }
+        }
+
+        /* Read on every call: settings.gpuPreference, the app's Windows graphics preference
+           (GHApp.GetActiveGPU), and hardware.renderAdapter, the adapter the render adapter
+           probe last found this process rendering on; absent before the process's first
+           successful probe */
+        private static void AddGpuFingerprint(Dictionary<string, string> fingerprint)
+        {
+            try
+            {
+                PutFingerprint(fingerprint, "settings.gpuPreference", GHApp.GetActiveGPU());
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                GHRenderAdapter render;
+                if (GHRenderAdapterProbeWindows.TryGetLast(out render, null))
+                    PutFingerprint(fingerprint, "hardware.renderAdapter", GHRenderAdapterProbeWindows.FingerprintValue(render));
             }
             catch
             {

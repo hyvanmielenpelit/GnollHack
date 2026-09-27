@@ -185,8 +185,9 @@ namespace GnollHackX.Performance
         }
 
         /* Creates a new suite directory under SuitesDirectory and writes its manifest with
-           status "running", environment captured now, and startedUtc now. Returns the new
-           suiteId, or null on failure. */
+           status "running", environment captured now, and startedUtc now. The environment
+           is provisional until UpdateEnvironment replaces it. Returns the new suiteId, or
+           null on failure. */
         public static string CreateSuite(GHPerformanceSuiteSetup setup, string replaySha256, long replayBytes)
         {
             if (setup == null)
@@ -218,6 +219,33 @@ namespace GnollHackX.Performance
             catch
             {
                 return null;
+            }
+        }
+
+        /* Replaces the manifest's environment, fingerprint included, with one captured
+           now and rewrites suite.json. The suite runner calls it once, when the suite's
+           first window has been saved: the game page has painted by then, so the values
+           set on the first paint are present. The suite id is unchanged. */
+        public static void UpdateEnvironment(string suiteId)
+        {
+            if (string.IsNullOrEmpty(suiteId))
+                return;
+            try
+            {
+                GHPerformanceEnvironmentFacts facts = GHPerformanceEnvironment.Capture();
+                lock (_lock)
+                {
+                    string dir = SuiteDirectory(suiteId);
+                    ManifestJson manifest = ReadManifest(dir);
+                    if (manifest == null)
+                        return;
+                    manifest.Environment = BuildEnvironmentJson(facts);
+                    WriteManifest(dir, manifest);
+                }
+            }
+            catch
+            {
+                /* The provisional environment from CreateSuite stays */
             }
         }
 
@@ -1860,7 +1888,8 @@ namespace GnollHackX.Performance
             [JsonProperty("mapRefreshRateSetting")]
             public string MapRefreshRateSetting;
 
-            /* The environment fingerprint at the suite start; omitted in older manifests */
+            /* The environment fingerprint when the suite's first window ended (at its
+               creation until then); omitted in older manifests */
             [JsonProperty("fingerprint", NullValueHandling = NullValueHandling.Ignore)]
             public Dictionary<string, string> Fingerprint;
         }
