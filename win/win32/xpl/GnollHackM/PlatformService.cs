@@ -174,6 +174,18 @@ namespace GnollHackM
         {
             return false;
         }
+        public bool TryGetSystemLoadSample(ref GHSystemLoadSample sample)
+        {
+            return false;
+        }
+        public bool TryCollectProcessInterval(bool begin, List<GHProcessLoad> rows, out float otherGpuPct)
+        {
+            otherGpuPct = float.NaN;
+            return false;
+        }
+        public void AddEnvironmentFingerprint(Dictionary<string, string> fingerprint, bool refresh)
+        {
+        }
     }
 }
 #endif

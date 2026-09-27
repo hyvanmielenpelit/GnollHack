@@ -16,12 +16,23 @@ namespace GnollHack.PerformanceAnalyzer.Model
        remaining buckets only, so a pause can never look like a change in how the game
        renders, and segment means are averaged over non-missing buckets only. Each series
        is segmented by PELT under a Gaussian mean-change cost, and the boundaries of both
-       are merged. */
+       are merged.
+
+       An in-app run's background samples add "background" events: other CPU rising by
+       at least BackgroundRisePct points between consecutive samples, or disk busy at
+       least BackgroundDiskBusyPct, stamped at the sample's time from the window start
+       (the first saved tick, capture time 0). They are linked to a boundary within
+       BackgroundEventWindowMs, since the samples are a second apart; every other event
+       within EventWindowMs. */
     public static class ChangePoints
     {
         public const double BucketMs = 250.0;
         public const int MinSegmentBuckets = 4;
         public const double EventWindowMs = 500.0;
+        public const double BackgroundEventWindowMs = 1000.0;
+        public const double BackgroundRisePct = 15.0;
+        public const double BackgroundDiskBusyPct = 80.0;
+        public const string BackgroundEventKind = "background";
 
         /* The smallest noise levels the penalty assumes. A steady stream makes the MAD of
            the first differences zero, and a zero penalty would split on every wobble: FPS
@@ -254,11 +265,15 @@ namespace GnollHack.PerformanceAnalyzer.Model
             public List<TimelineEvent> Events = new List<TimelineEvent>();
         }
 
-        public static Result Detect(CapturedTimeline t, GHDisplayedFrame[] displayed, int displayedCount)
+        /* background: the in-app record's background samples, or null */
+        public static Result Detect(CapturedTimeline t, GHDisplayedFrame[] displayed, int displayedCount,
+            IList<BackgroundSample> background = null)
         {
             Result res = new Result();
             res.Series = Bucket(t, displayed, displayedCount);
             res.Events = Events(t);
+            if (background != null && background.Count > 0)
+                res.Events = res.Events.Concat(BackgroundEvents(background)).OrderBy(e => e.AtMs).ToList();
             int n = res.Series.Count;
             if (n == 0)
                 return res;
@@ -297,7 +312,7 @@ namespace GnollHack.PerformanceAnalyzer.Model
             foreach (Boundary b in res.Boundaries)
             {
                 double at = b.Bucket * BucketMs;
-                b.Events = res.Events.Where(e => Math.Abs(e.AtMs - at) <= EventWindowMs).ToList();
+                b.Events = res.Events.Where(e => Math.Abs(e.AtMs - at) <= (e.Kind == BackgroundEventKind ? BackgroundEventWindowMs : EventWindowMs)).ToList();
             }
 
             int start = 0;
@@ -421,9 +436,37 @@ namespace GnollHack.PerformanceAnalyzer.Model
             return ev;
         }
 
+        /* Background events from a run's background samples, in sample order: a rise of
+           other CPU by at least BackgroundRisePct points from the previous sample that
+           carries it, and every sample with disk busy at least BackgroundDiskBusyPct */
+        public static List<TimelineEvent> BackgroundEvents(IList<BackgroundSample> samples)
+        {
+            List<TimelineEvent> ev = new List<TimelineEvent>();
+            if (samples == null)
+                return ev;
+            double? prevOther = null;
+            foreach (BackgroundSample s in samples.Where(x => x != null).OrderBy(x => x.T))
+            {
+                double at = s.T * 1000.0;
+                double? other = s.OtherOrDerived;
+                if (other.HasValue && prevOther.HasValue && other.Value - prevOther.Value >= BackgroundRisePct)
+                    ev.Add(new TimelineEvent { AtMs = at, Kind = BackgroundEventKind, Text = "other CPU " + F0(prevOther.Value) + " -> " + F0(other.Value) + " %" });
+                if (s.Disk.HasValue && s.Disk.Value >= BackgroundDiskBusyPct)
+                    ev.Add(new TimelineEvent { AtMs = at, Kind = BackgroundEventKind, Text = "disk busy " + F0(s.Disk.Value) + " %" });
+                if (other.HasValue)
+                    prevOther = other;
+            }
+            return ev;
+        }
+
         private static string F(double v)
         {
             return v.ToString("0.00", CultureInfo.InvariantCulture);
+        }
+
+        private static string F0(double v)
+        {
+            return v.ToString("0", CultureInfo.InvariantCulture);
         }
     }
 }

@@ -774,8 +774,12 @@ namespace GnollHackX
         private static int _isCompleteClearCachesAndMemoryOk = 1;
         public static bool IsCompleteClearCachesAndMemoryOk { get { return Interlocked.CompareExchange(ref _isCompleteClearCachesAndMemoryOk, 0, 0) != 0; } set { Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, value ? 1 : 0); } }
 
+        /* Memory warnings received at any level since startup */
+        public static int MemoryPressureEventCount;
+
         private static void HandleMemoryWarning(MemoryPressureLevel level)
         {
+            Interlocked.Increment(ref MemoryPressureEventCount);
             switch (level)
             {
                 case MemoryPressureLevel.Low:

@@ -33,6 +33,8 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHSmoothnessMetrics.cs" Link="Shared\GHSmoothnessMetrics.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceComparison.cs" Link="Shared\GHPerformanceComparison.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceTextReport.cs" Link="Shared\GHPerformanceTextReport.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHBackgroundLoad.cs" Link="Shared\GHBackgroundLoad.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHEnvironmentFingerprint.cs" Link="Shared\GHEnvironmentFingerprint.cs" />
   </ItemGroup>
 
 </Project>

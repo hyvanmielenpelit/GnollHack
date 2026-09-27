@@ -19,6 +19,8 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHFrameTimeline.cs" Link="Shared\GHFrameTimeline.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPresentFeedback.cs" Link="Shared\GHPresentFeedback.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHSmoothnessMetrics.cs" Link="Shared\GHSmoothnessMetrics.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHBackgroundLoad.cs" Link="Shared\GHBackgroundLoad.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHEnvironmentFingerprint.cs" Link="Shared\GHEnvironmentFingerprint.cs" />
   </ItemGroup>
 
 </Project>

@@ -23,9 +23,18 @@ own version instead of the repository's HEAD (see -BuildConfiguration below).
 
 Sequence: for -Pairs 2 the order is A B B A  B A A B (ABBA then BAAB), which
 balances slow drift within the batch. Every run writes:
-  <OutDir>\<nn>_<arm>\env_before.json, env_after.json, capture (CSV or framestats
-  directory), run.json
-and the batch writes report.md and appends to history.jsonl. On Windows, PresentMon
+  <OutDir>\<nn>_<arm>\env_gate.json, env_before.json, env_after.json, capture (CSV or
+  framestats directory), run.json, and the background load captured during the capture:
+    Windows  load_system.csv (1 s whole-machine CPU, own process CPU, disk idle, available
+             memory, hard page reads; typeperf, counter file load_system_counters.txt),
+             load_processes.csv (per-process CPU and GPU engine averages over the
+             capture, one Get-Counter sample written in typeperf's CSV shape)
+    Android  load_android.txt (1 s /proc/stat, /proc/<pid>/stat and memory blocks) and
+             load_android_stderr.txt
+and the batch writes env_batch_start.json, fingerprint_batch_start.json,
+fingerprint_batch_end.json and report.md, and appends to history.jsonl. The batch id
+passed to ingest is the leaf name of -OutDir; a warning lists every fingerprint key
+outside meta.* that differs between batch start and end. On Windows, PresentMon
 needs an elevated console, so the script checks this up front and throws before the
 batch starts rather than partway through it. A run whose capture, in-app collection or
 ingest fails is logged with a warning and skipped rather than aborting the batch; the
@@ -44,6 +53,12 @@ cpuPerformancePct within 10 points of the batch-start reading (a fixed 90 percen
 would gate out an idle machine that started on the Balanced power plan). Up to
 -MaxGateWaitSeconds are spent waiting; after that the run proceeds and the record says
 the gate timed out.
+
+Quiet gate: after the thermal gate, the script waits until a 5 s sample shows other CPU
+(whole-machine CPU minus the arm's own process, as a share of total capacity) under 10
+percent and disk busy under 50 percent (disk on Windows only), sampling back to back for
+up to -MaxQuietWaitSeconds (default 120). On timeout the run proceeds and its notes carry
+"quiet gate timed out (other CPU N %)".
 
 In-app records (-InAppRecordDir, and -InApp on Android): with the frame profiler
 enabled in the app, the script times the capture window itself by sending the app a
@@ -90,6 +105,7 @@ param(
     [int] $WindowSeconds = 0,
     [int] $CooldownSeconds = 20,
     [int] $MaxGateWaitSeconds = 300,
+    [int] $MaxQuietWaitSeconds = 120,
     [double] $RefreshHz = 0,
     [double] $TargetFps = 0,
     [string] $Serial,
@@ -183,6 +199,7 @@ if (-not $DeviceId) { $DeviceId = ($DeviceModel + ' / ' + $DeviceOs) }
 
 $analyzer = Resolve-PerformanceAnalyzer -RepoRoot $repoRoot
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
+$batchId = Split-Path $OutDir.TrimEnd('\', '/') -Leaf
 $git = Get-PerformanceGitFacts -RepoRoot $repoRoot
 
 if ($WindowSeconds -le 0) {
@@ -234,6 +251,71 @@ function Wait-ForThermalClass {
         }
         Write-PerformanceLog ("Thermal gate: class {0}, waiting for {1}" -f $cls, $Target)
         Start-Sleep -Seconds 15
+    }
+}
+
+# Samples 5 s windows back to back until one is quiet or -MaxQuietWaitSeconds have
+# passed. Returns $null when quiet, else the note for the run record.
+function Wait-ForQuiet {
+    param($Arm)
+    $sw = [System.Diagnostics.Stopwatch]::StartNew()
+    while ($true) {
+        if ($Platform -eq 'Android') {
+            $q = Test-PerformanceQuiet -Seconds 5 -Android -Serial $Serial -AdbPath $AdbPath -PackageName $Arm.package
+        } else {
+            $q = Test-PerformanceQuiet -Seconds 5 -ProcessName $Arm.process
+        }
+        if ($q.Quiet) { return $null }
+        if ($sw.Elapsed.TotalSeconds -ge $MaxQuietWaitSeconds) {
+            $note = 'quiet gate timed out (other CPU {0} %)' -f [int][Math]::Round([double]$q.OtherCpuPct)
+            Write-Warning ("Quiet gate timed out after {0} s (other CPU {1} %, disk busy {2} %); proceeding" -f [int]$sw.Elapsed.TotalSeconds, $q.OtherCpuPct, $q.DiskBusyPct)
+            return $note
+        }
+        Write-PerformanceLog ("Quiet gate: other CPU {0} %, disk busy {1} %; waiting" -f $q.OtherCpuPct, $q.DiskBusyPct)
+    }
+}
+
+# Writes the environment fingerprint; never throws, so a failed capture only drops
+# --fingerprint from ingest.
+function Write-BatchFingerprint {
+    param([string] $Path)
+    try {
+        if ($Platform -eq 'Android') {
+            & (Join-Path $PSScriptRoot 'Get-EnvironmentFingerprint.ps1') -Android -Serial $Serial -AdbPath $AdbPath -OutFile $Path | Out-Null
+        } else {
+            & (Join-Path $PSScriptRoot 'Get-EnvironmentFingerprint.ps1') -RepositoryRoot $repoRoot -OutFile $Path | Out-Null
+        }
+    } catch {
+        Write-Warning ("Environment fingerprint failed: {0}" -f $_.Exception.Message)
+    }
+}
+
+# Warns about every fingerprint key outside meta.* whose value differs between the two
+# files, including keys present on one side only.
+function Compare-BatchFingerprint {
+    param([string] $StartPath, [string] $EndPath)
+    if (-not (Test-Path -LiteralPath $StartPath) -or -not (Test-Path -LiteralPath $EndPath)) { return }
+    try {
+        $a = Get-Content -LiteralPath $StartPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $b = Get-Content -LiteralPath $EndPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $names = @()
+        foreach ($p in $a.PSObject.Properties) { if ($names -notcontains $p.Name) { $names += $p.Name } }
+        foreach ($p in $b.PSObject.Properties) { if ($names -notcontains $p.Name) { $names += $p.Name } }
+        $diffs = @()
+        foreach ($name in ($names | Sort-Object)) {
+            if ($name -like 'meta.*') { continue }
+            $va = '(absent)'; $vb = '(absent)'
+            $pa = $a.PSObject.Properties[$name]; if ($null -ne $pa) { $va = [string]$pa.Value }
+            $pb = $b.PSObject.Properties[$name]; if ($null -ne $pb) { $vb = [string]$pb.Value }
+            if ($va -cne $vb) { $diffs += ('{0}: {1} -> {2}' -f $name, $va, $vb) }
+        }
+        if ($diffs.Count -gt 0) {
+            Write-Warning ("The environment changed during the batch: {0}" -f ($diffs -join '; '))
+        } else {
+            Write-PerformanceLog 'Environment fingerprint unchanged over the batch'
+        }
+    } catch {
+        Write-Warning ("Fingerprint comparison failed: {0}" -f $_.Exception.Message)
     }
 }
 
@@ -384,6 +466,10 @@ $batchPower = $batchStart.isCharging
 Write-PerformanceLog ("Batch starting thermal class: {0}; power: {1}" -f $targetClass, $(if ($null -eq $batchPower) { 'unknown' } elseif ($batchPower) { 'charging' } else { 'battery' }))
 if ($Platform -eq 'Windows' -and $batchPower -eq $false) { Write-Warning 'Windows reference runs are done plugged in (protocol rule 7). This batch is on battery.' }
 if ($Platform -eq 'Android' -and $batchPower -eq $true) { Write-Warning 'Android reference runs are done unplugged (protocol rule 8): charging heats the device. This batch is charging.' }
+$fingerprintStart = Join-Path $OutDir 'fingerprint_batch_start.json'
+$fingerprintEnd = Join-Path $OutDir 'fingerprint_batch_end.json'
+Write-BatchFingerprint -Path $fingerprintStart
+Write-PerformanceLog ("Batch id: {0}" -f $batchId)
 
 $useInApp = $false
 if ($Platform -eq 'Windows') { $useInApp = [bool]$InAppRecordDir } else { $useInApp = ($InApp -or [bool]$InAppRecordDir) }
@@ -401,12 +487,14 @@ foreach ($key in $order) {
     Write-PerformanceLog ("===== Run {0}/{1}: arm {2} ({3}) =====" -f $n, $order.Count, $key, $arm.label)
 
     $gateOk = Wait-ForThermalClass -Target $targetClass -ProbePath (Join-Path $runDir 'env_gate.json')
+    $quietNote = Wait-ForQuiet -Arm $arm
     $before = Read-Thermal -Path (Join-Path $runDir 'env_before.json')
     if ($null -ne $batchPower -and $null -ne $before.isCharging -and $before.isCharging -ne $batchPower) {
         Write-Warning ("Power state changed since the batch started (now {0}). The record will say so; the comparison will flag it." -f $(if ($before.isCharging) { 'charging' } else { 'battery' }))
     }
 
     $proc = $null
+    $loadSampler = $null
     try {
         $namesAtStart = @()
         if ($InAppRecordDir -and (Test-Path -LiteralPath $InAppRecordDir)) {
@@ -422,6 +510,11 @@ foreach ($key in $order) {
         }
 
         $captureSeconds = $WarmupSeconds + $WindowSeconds
+        if ($Platform -eq 'Windows') {
+            $loadSampler = Start-PerformanceLoadSampler -Dir $runDir -Seconds $captureSeconds -ProcessName $arm.process
+        } else {
+            $loadSampler = Start-PerformanceLoadSampler -Dir $runDir -Seconds $captureSeconds -Android -Serial $Serial -AdbPath $AdbPath -PackageName $arm.package
+        }
         $capturePath = $null
         if ($Platform -eq 'Windows') {
             $capturePath = Join-Path $runDir 'presentmon.csv'
@@ -430,6 +523,7 @@ foreach ($key in $order) {
             $capturePath = Join-Path $runDir 'gfxinfo'
             & (Join-Path $PSScriptRoot 'Capture-AndroidFrames.ps1') -Package $arm.package -Seconds $captureSeconds -OutDir $capturePath -Serial $Serial -AdbPath $AdbPath -Perfetto:$Perfetto -TraceProcessorPath $TraceProcessorPath
         }
+        Stop-PerformanceLoadSampler -Handle $loadSampler
 
         $inAppJson = $null
         if ($useInApp) {
@@ -479,8 +573,19 @@ foreach ($key in $order) {
         }
         if ($Platform -eq 'Windows') { $ingest += @('--presentmon', $capturePath, '--process', $arm.process) } else { $ingest += @('--gfxinfo', $capturePath) }
         if ($inAppJson) { $ingest += @('--run-json', $inAppJson) }
+        $ingest += @('--batch', $batchId)
+        if (Test-Path -LiteralPath $fingerprintStart) { $ingest += @('--fingerprint', $fingerprintStart) }
+        $loadSystem = Join-Path $runDir 'load_system.csv'
+        $loadProcesses = Join-Path $runDir 'load_processes.csv'
+        $loadAndroid = Join-Path $runDir 'load_android.txt'
+        if (Test-Path -LiteralPath $loadSystem) { $ingest += @('--env-during-system', $loadSystem) }
+        if (Test-Path -LiteralPath $loadProcesses) { $ingest += @('--env-during-processes', $loadProcesses) }
+        if (Test-Path -LiteralPath $loadAndroid) { $ingest += @('--env-during-android', $loadAndroid) }
         $noteText = $Notes
         if (-not $gateOk) { $noteText = ($noteText + ' thermal gate timed out before this run').Trim() }
+        if ($quietNote) {
+            if ($noteText) { $noteText = $noteText + '; ' + $quietNote } else { $noteText = $quietNote }
+        }
         if ($noteText) { $ingest += @('--notes', $noteText) }
         Invoke-PerformanceAnalyzer -Exe $analyzer -Arguments $ingest
         $runFiles[$key] += $runJson
@@ -489,6 +594,7 @@ foreach ($key in $order) {
         Write-Warning ("Run {0} ({1}) failed and is skipped: {2}" -f $n, $arm.label, $reason)
         $skippedRuns += [pscustomobject]@{ Run = $n; Arm = $arm.label; Reason = $reason }
     } finally {
+        Stop-PerformanceLoadSampler -Handle $loadSampler
         Stop-Arm -Arm $arm -Proc $proc
     }
 
@@ -502,6 +608,9 @@ if ($skippedRuns.Count -gt 0) {
     Write-PerformanceLog ("{0} run(s) were skipped:" -f $skippedRuns.Count)
     foreach ($s in $skippedRuns) { Write-PerformanceLog ("  Run {0} ({1}): {2}" -f $s.Run, $s.Arm, $s.Reason) }
 }
+
+Write-BatchFingerprint -Path $fingerprintEnd
+Compare-BatchFingerprint -StartPath $fingerprintStart -EndPath $fingerprintEnd
 
 # ---- Analysis --------------------------------------------------------------------------
 Write-Host ''

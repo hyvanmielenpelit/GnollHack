@@ -37,7 +37,14 @@ namespace GnollHack.PerformanceAnalyzer.Commands
        that carry their smoothness series, on the metrics the app reported: hitch time
        ratio (worse above an absolute 2 ms/s), pacing error RMS (absolute 1 ms), and
        displayed FPS (relative 5 percent). The interval level then pools the on-screen
-       intervals. */
+       intervals.
+
+       Background load and environment: the run tables carry each run's background
+       verdict letter and other-CPU P90 ("bg"); runs with an elevated verdict stay in the
+       decision, and a sensitivity line repeats the run-level decisions without them.
+       "Environment differences" diffs the arms' common fingerprints and names the
+       attribution (code, environment, confounded or none), warning when more than one
+       setting differs. */
     public static class CompareCommand
     {
         private sealed class Arm
@@ -88,6 +95,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             WriteRunTable(md, armA, seriesKind);
             WriteRunTable(md, armB, seriesKind);
             WriteRunLevel(md, armA, armB, seriesKind, targetMs, resamples, seed);
+            WriteEnvironment(md, armA, armB);
             WriteIntervalLevel(md, armA, armB, resamples, seed);
             WriteThermal(md, armA);
             WriteThermal(md, armB);
@@ -210,8 +218,8 @@ namespace GnollHack.PerformanceAnalyzer.Commands
         {
             md.AppendLine("## Runs: " + arm.Label);
             md.AppendLine();
-            md.AppendLine("| Run | Displayed | Window s | Displayed FPS | Hitch ms/s | Pacing RMS | Pacing P99 | Judder % | Dropped | Present source | Thermal | Used |");
-            md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|");
+            md.AppendLine("| Run | Displayed | Window s | Displayed FPS | Hitch ms/s | Pacing RMS | Pacing P99 | Judder % | Dropped | Present source | bg | Thermal | Used |");
+            md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|---|");
             foreach (RunRecord r in arm.Runs)
             {
                 Series s = r.FindSeries(kind);
@@ -221,7 +229,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                 string name = Path.GetFileNameWithoutExtension(r.Configuration["_file"].GetString());
                 if (s == null || s.Metrics.Count == 0)
                 {
-                    md.AppendLine("| " + name + " | no `" + kind + "` series | | | | | | | | | " + thermal + " | no |");
+                    md.AppendLine("| " + name + " | no `" + kind + "` series | | | | | | | | | " + HistoryCommand.BackgroundCell(r) + " | " + thermal + " | no |");
                     continue;
                 }
                 Dictionary<string, double> m = s.Metrics;
@@ -235,6 +243,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                     + " | " + F(Mv(m, MetricNames.JudderPct), 1)
                     + " | " + Iv(m, MetricNames.DroppedCount)
                     + " | " + (s.Info.GetValueOrDefault("presentSource") ?? "?")
+                    + " | " + HistoryCommand.BackgroundCell(r)
                     + " | " + thermal + " | " + (used ? "yes" : "no" + (r.Excluded ? " (" + r.ExclusionReason + ")" : "")) + " |");
             }
             md.AppendLine();
@@ -249,8 +258,8 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             }
             md.AppendLine("## Runs: " + arm.Label);
             md.AppendLine();
-            md.AppendLine("| Run | Frames | Window s | P50 | P95 | P99 | Max | Mean FPS | 1% low | Hitch ms/s | Jank % | Thermal | Used |");
-            md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|---|");
+            md.AppendLine("| Run | Frames | Window s | P50 | P95 | P99 | Max | Mean FPS | 1% low | Hitch ms/s | Jank % | bg | Thermal | Used |");
+            md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|");
             foreach (RunRecord r in arm.Runs)
             {
                 Series s = r.FindSeries(kind);
@@ -259,7 +268,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                     + (r.Thermal.Throttled ? " THROTTLED" : "");
                 if (s == null || s.Metrics.Count == 0)
                 {
-                    md.AppendLine("| " + Path.GetFileNameWithoutExtension(r.Configuration["_file"].GetString()) + " | no `" + kind + "` series | | | | | | | | | | " + thermal + " | no |");
+                    md.AppendLine("| " + Path.GetFileNameWithoutExtension(r.Configuration["_file"].GetString()) + " | no `" + kind + "` series | | | | | | | | | | " + HistoryCommand.BackgroundCell(r) + " | " + thermal + " | no |");
                     continue;
                 }
                 Dictionary<string, double> m = s.Metrics;
@@ -269,6 +278,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                     + " | " + F(Mv(m, MetricNames.FrameDurationP50)) + " | " + F(Mv(m, MetricNames.FrameDurationP95)) + " | " + F(Mv(m, MetricNames.FrameDurationP99))
                     + " | " + F(Mv(m, MetricNames.FrameDurationMax), 1) + " | " + F(Mv(m, MetricNames.FpsMean), 1) + " | " + F(Mv(m, MetricNames.Fps1PctLow), 1)
                     + " | " + F(Mv(m, MetricNames.HitchRatio)) + " | " + F(Mv(m, MetricNames.JankPct), 1)
+                    + " | " + HistoryCommand.BackgroundCell(r)
                     + " | " + thermal + " | " + (used ? "yes" : "no" + (r.Excluded ? " (" + r.ExclusionReason + ")" : "")) + " |");
             }
             md.AppendLine();
@@ -308,6 +318,97 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                     + (Math.Min(a.Used.Count, b.Used.Count) < GHPerformanceComparison.ProvisionalBelowRuns ? " Fewer than 5 runs per arm: treat the verdict as provisional and read the MDE column." : ""));
             }
             md.AppendLine();
+            md.AppendLine("**Sensitivity:** " + Sensitivity(a, b, kind, targetMs, resamples, seed, verdicts));
+            md.AppendLine();
+        }
+
+        private static bool IsElevated(RunRecord r)
+        {
+            return r.BackgroundVerdict >= GHBackgroundVerdict.Elevated;
+        }
+
+        /* The run-level decisions recomputed without the used runs whose background
+           verdict is elevated (or busy, when --include-excluded let busy runs in) */
+        private static string Sensitivity(Arm a, Arm b, string kind, double targetMs, int resamples, ulong seed, List<string> verdicts)
+        {
+            int k = a.Used.Count(IsElevated) + b.Used.Count(IsElevated);
+            if (k == 0)
+                return "no used run was measured under elevated background load.";
+            string without = "Without the " + k + " elevated run" + (k == 1 ? "" : "s") + ": ";
+            int restA = a.Used.Count(r => !IsElevated(r)), restB = b.Used.Count(r => !IsElevated(r));
+            if (restA == 0 || restB == 0)
+                return without + "an arm has no run left (" + restA + " and " + restB + "), so no decision can be recomputed.";
+            bool tooFewRuns = Math.Min(restA, restB) < GHPerformanceComparison.MinRunsForVerdict;
+            List<string> changes = new List<string>();
+            GHDecisionMetric[] metrics = MetricNames.DecisionFor(kind);
+            for (int i = 0; i < metrics.Length; i++)
+            {
+                GHDecisionMetric dm = metrics[i];
+                float[] va = Keep(a, dm.Name), vb = Keep(b, dm.Name);
+                GHMetricDecision d = GHPerformanceComparison.Decide(dm, va, vb, targetMs, tooFewRuns, resamples, seed);
+                if (d.Verdict != verdicts[i])
+                    changes.Add(dm.Name + " " + verdicts[i] + " -> " + d.Verdict);
+            }
+            if (changes.Count == 0)
+                return without + "decisions unchanged.";
+            return without + "decisions change: " + string.Join("; ", changes) + ".";
+        }
+
+        /* An arm's per-run values of a metric, without its elevated runs */
+        private static float[] Keep(Arm arm, string metric)
+        {
+            float[] all = arm.PerRun[metric];
+            List<float> kept = new List<float>();
+            for (int i = 0; i < arm.Used.Count && i < all.Length; i++)
+            {
+                if (!IsElevated(arm.Used[i]))
+                    kept.Add(all[i]);
+            }
+            return kept.ToArray();
+        }
+
+        /* The common fingerprint of each arm's used runs, their diff, the attribution
+           label and the one-variable check */
+        private static void WriteEnvironment(StringBuilder md, Arm a, Arm b)
+        {
+            Dictionary<string, string> fa = CommonFingerprint(a.Used);
+            Dictionary<string, string> fb = CommonFingerprint(b.Used);
+            List<GHFingerprintChange> diff = GHEnvironmentFingerprint.Diff(fa, fb);
+            md.AppendLine("## Environment differences");
+            md.AppendLine();
+            md.AppendLine("Common fingerprint of the used runs: " + fa.Count + " keys (" + a.Label + "), " + fb.Count + " keys (" + b.Label
+                + "); a key whose value differs within an arm reads \"" + GHEnvironmentFingerprint.MixedValue + "\". "
+                + a.Label + " -> " + b.Label + ":");
+            md.AppendLine();
+            md.AppendLine("```");
+            StringBuilder lines = new StringBuilder();
+            GHEnvironmentFingerprint.AppendReportLines(lines, diff, 0);
+            foreach (string line in lines.ToString().Split('\n'))
+            {
+                if (line.Length > 0)
+                    md.AppendLine(line);
+            }
+            md.AppendLine("```");
+            md.AppendLine();
+            md.AppendLine("Attribution: " + GHEnvironmentFingerprint.AttributionLabel(diff));
+            if (GHEnvironmentFingerprint.SettingsViolation(diff))
+            {
+                md.AppendLine();
+                md.AppendLine("> **Warning:** " + GHEnvironmentFingerprint.SettingsViolationText
+                    + " between the arms; the comparison varies more than one variable.");
+            }
+            md.AppendLine();
+        }
+
+        public static Dictionary<string, string> CommonFingerprint(IEnumerable<RunRecord> runs)
+        {
+            List<IDictionary<string, string>> list = new List<IDictionary<string, string>>();
+            foreach (RunRecord r in runs)
+            {
+                r.NormalizeLegacy();
+                list.Add(r.Fingerprint);
+            }
+            return GHEnvironmentFingerprint.CommonValues(list);
         }
 
         private static string WriteDecisionRow(StringBuilder md, GHDecisionMetric dm, Arm a, Arm b, double targetMs, int resamples, ulong seed, bool tooFewRuns)
@@ -369,8 +470,8 @@ namespace GnollHack.PerformanceAnalyzer.Commands
         {
             md.AppendLine("## Thermal and environment: " + arm.Label);
             md.AppendLine();
-            md.AppendLine("| Run | Before | After | CPU perf % | CPU temp | GPU temp | Battery temp | Power | Power plan | Gate | Throttled |");
-            md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|");
+            md.AppendLine("| Run | Before | After | CPU perf % | CPU temp | GPU temp | Battery temp | Power | Power plan | Gate | Throttled | Other CPU P90 | Top suspect |");
+            md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|---|---|");
             foreach (RunRecord r in arm.Runs)
             {
                 ThermalReading b = r.Thermal.Before, af = r.Thermal.After;
@@ -383,9 +484,36 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                     + " | " + PowerOf(r)
                     + " | " + (b?.PowerPlan ?? "?")
                     + " | " + (r.Thermal.GateSignal ?? "none")
-                    + " | " + (r.Thermal.Throttled ? "**yes**: " + r.Thermal.ThrottleReason : "no") + " |");
+                    + " | " + (r.Thermal.Throttled ? "**yes**: " + r.Thermal.ThrottleReason : "no")
+                    + " | " + OtherCpuP90(r)
+                    + " | " + TopSuspect(r) + " |");
             }
             md.AppendLine();
+        }
+
+        private static string OtherCpuP90(RunRecord r)
+        {
+            double? p90 = r.DecisiveBackground?.Window?.OtherCpuP90Pct;
+            return p90.HasValue ? F(p90.Value, 1) + " (" + BackgroundInfo.VerdictLetter(r.BackgroundVerdict) + ")" : "?";
+        }
+
+        /* The busiest listed non-measurement process of any background block */
+        private static string TopSuspect(RunRecord r)
+        {
+            if (r.Background == null)
+                return "?";
+            BackgroundProcess best = null;
+            foreach (BackgroundInfo b in r.Background)
+            {
+                BackgroundProcess p = b?.TopSuspect();
+                if (p != null && (best == null || Math.Max(p.CpuPct ?? 0, p.GpuPct ?? 0) > Math.Max(best.CpuPct ?? 0, best.GpuPct ?? 0)))
+                    best = p;
+            }
+            if (best == null)
+                return "none";
+            bool gpu = (best.GpuPct ?? 0) > (best.CpuPct ?? 0);
+            return best.Name + " (" + (best.Category ?? GHBackgroundLoad.CategoryOf(best.Name)) + ") "
+                + (gpu ? "GPU " + F(best.GpuPct ?? 0, 1) : F(best.CpuPct ?? 0, 1)) + " %";
         }
 
         /* A metric absent from the run's Metrics dictionary, as NaN rather than a thrown

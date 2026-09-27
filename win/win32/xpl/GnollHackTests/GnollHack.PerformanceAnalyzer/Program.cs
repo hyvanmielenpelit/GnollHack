@@ -21,6 +21,8 @@ namespace GnollHack.PerformanceAnalyzer
                     return SmoothnessCommand.Run(a);
                 case "history":
                     return HistoryCommand.Run(a);
+                case "drift":
+                    return DriftCommand.Run(a);
                 case "help":
                 case null:
                     PrintHelp();
@@ -74,6 +76,8 @@ namespace GnollHack.PerformanceAnalyzer
             Console.WriteLine("          [--commit <sha>] [--tag <tag>] [--branch X] [--dirty] [--device-id X] [--device-model X] [--device-os X]");
             Console.WriteLine("          [--run-json <in-app run.json>] [--id X] [--timestamp <iso>]");
             Console.WriteLine("          [--version-<name> <v> ...] [--config-<name> <v> ...] [--include-throttled] [--notes text]");
+            Console.WriteLine("          [--batch <id>] [--fingerprint <json> ...] [--env-during-system <load_system.csv>]");
+            Console.WriteLine("          [--env-during-processes <load_processes.csv>] [--env-during-android <load_android.txt>]");
             Console.WriteLine();
             Console.WriteLine("  compare --a <dir|run.json ...> --b <dir|run.json ...> [--label-a X] [--label-b Y]");
             Console.WriteLine("          [--series external|internal|smoothness] [--resamples 2000] [--seed 1]");
@@ -84,6 +88,9 @@ namespace GnollHack.PerformanceAnalyzer
             Console.WriteLine();
             Console.WriteLine("  history --file <history.jsonl> --append <run.json|dir ...> [--allow-debug]");
             Console.WriteLine("  history --file <history.jsonl> --list [--scenario W1] [--platform Windows]");
+            Console.WriteLine();
+            Console.WriteLine("  drift   --file <history.jsonl> [--scenario W1] [--platform Windows] [--device <model>]");
+            Console.WriteLine("          [--series smoothness|external] [--resamples 2000] [--seed 1] [--out report.md]");
         }
     }
 }

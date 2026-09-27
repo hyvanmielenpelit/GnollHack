@@ -121,7 +121,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             CapturedTimeline t = res.Timeline;
             res.Displayed = new GHDisplayedFrame[Math.Max(1, t.Count)];
             res.Summary = GHSmoothnessMetrics.Analyze(t.Records, t.Count, t.Compositor, t.CompositorCount, res.Displayed, out res.DisplayedCount);
-            res.Changes = ChangePoints.Detect(t, res.Displayed, res.DisplayedCount);
+            res.Changes = ChangePoints.Detect(t, res.Displayed, res.DisplayedCount, res.Run.Background?.Samples);
             CollectMarks(res);
             return res;
         }

@@ -25,14 +25,18 @@ namespace GnollHack.PerformanceAnalyzer.Model
            onScreenPacing {...}, series { onScreenIntervalsMs, pacingErrorMs },
            uiThread {...}, files { frameTimeline, compositorFrames },
            suite { suiteId, runIndex, pageMode, isWarmUp, replayFileName, replayBytes,
-                   replaySha256, startTurn, turnReached, excludedReason },
-           marks [ { frameId, utc, msFromWindowStart } ] }
+                   replaySha256, startTurn, turnReached, excludedReason, notes },
+           marks [ { frameId, utc, msFromWindowStart } ],
+           background { samplerVersion, source, intervalMs, ..., verdict, reason } }
 
        The files named under "files" sit next to the JSON. The "suite" block is written
        only for runs taken by the in-app Performance Suite; its optional excludedReason
        (e.g. "warm-up run", "replay ended") overrides the analyzer's own exclusion rules.
        "marks" lists the frames the user marked as felt stutters and is absent when there
-       are none. Parsing is tolerant: a missing member reads as zero or null. */
+       are none. environment.fingerprint (a flat object of strings) and the top-level
+       "background" block are optional; a record without a fingerprint gets one mapped
+       from its per-field environment. Parsing is tolerant: a missing member reads as
+       zero or null. */
     public sealed class InAppRun
     {
         public int SchemaVersion;
@@ -63,7 +67,11 @@ namespace GnollHack.PerformanceAnalyzer.Model
         public string CompositorFramesFile;
         public JsonElement Suite;
         public string SuiteExcludedReason;
+        public string SuiteId;
+        public string SuiteNotes;
         public List<RunMark> Marks = new List<RunMark>();
+        public Dictionary<string, string> Fingerprint;      /* null when the record has none */
+        public BackgroundInfo Background;                   /* null when the record has none */
 
         /* A v2 in-app record, as opposed to a run record in the analyzer's own schema */
         public static bool IsInAppRun(JsonElement root)
@@ -93,7 +101,11 @@ namespace GnollHack.PerformanceAnalyzer.Model
             r.EndedUtc = Str(root, "endedUtc");
             r.WindowSeconds = Num(root, "windowSeconds");
             if (root.TryGetProperty("environment", out JsonElement env) && env.ValueKind == JsonValueKind.Object)
+            {
                 r.Environment = env.Clone();
+                if (env.TryGetProperty("fingerprint", out JsonElement fp) && fp.ValueKind == JsonValueKind.Object)
+                    r.Fingerprint = EnvJson.FingerprintFromElement(fp);
+            }
             if (root.TryGetProperty("thermal", out JsonElement th) && th.ValueKind == JsonValueKind.Object)
             {
                 if (th.TryGetProperty("before", out JsonElement b) && b.ValueKind == JsonValueKind.Object)
@@ -161,6 +173,15 @@ namespace GnollHack.PerformanceAnalyzer.Model
             {
                 r.Suite = suite.Clone();
                 r.SuiteExcludedReason = Str(suite, "excludedReason");
+                r.SuiteId = Str(suite, "suiteId");
+                r.SuiteNotes = Str(suite, "notes");
+            }
+            if (root.TryGetProperty("background", out JsonElement bg) && bg.ValueKind == JsonValueKind.Object)
+            {
+                try { r.Background = bg.Deserialize<BackgroundInfo>(RunRecord.JsonOptions); }
+                catch (JsonException) { r.Background = null; }
+                if (r.Background != null && string.IsNullOrEmpty(r.Background.Source))
+                    r.Background.Source = BackgroundInfo.SourceInApp;
             }
             if (root.TryGetProperty("marks", out JsonElement marks) && marks.ValueKind == JsonValueKind.Array)
             {
@@ -211,7 +232,9 @@ namespace GnollHack.PerformanceAnalyzer.Model
            "smoothness" series: the decision metrics are read as the app reported them,
            and the classic pacing metrics are computed from onScreenIntervalsMs. The
            environment keys read are assumptions about the app's naming and fall back to
-           null when absent. */
+           null when absent. Batch is suite.suiteId and suite.notes is appended to Notes.
+           Exclusion, first match wins: the suite's excludedReason, throttled, power state
+           changed, a busy background verdict, fewer than 100 on-screen intervals. */
         public RunRecord ToRunRecord()
         {
             RunRecord r = new RunRecord
@@ -249,17 +272,22 @@ namespace GnollHack.PerformanceAnalyzer.Model
             r.Thermal.Before = ThermalBefore;
             r.Thermal.After = ThermalAfter;
             ThermalGate.Apply(r);
+            r.Batch = SuiteId;
+            if (!string.IsNullOrEmpty(SuiteNotes))
+                r.Notes = string.IsNullOrEmpty(r.Notes) ? SuiteNotes : r.Notes + "; " + SuiteNotes;
+            if (Fingerprint != null && Fingerprint.Count > 0)
+                r.Fingerprint = new Dictionary<string, string>(Fingerprint);
+            r.NormalizeLegacy();
+            if (Background != null)
+                r.Background = new List<BackgroundInfo> { Background };
 
             int onScreenCount = OnScreenIntervalsMs?.Length ?? 0;
-            if (!r.Excluded && onScreenCount < 100)
+            string reason = ExclusionReasonFor(r, SuiteExcludedReason, false, onScreenCount < 100,
+                "fewer than 100 on-screen intervals (" + onScreenCount + ")");
+            if (reason != null)
             {
                 r.Excluded = true;
-                r.ExclusionReason = "fewer than 100 on-screen intervals (" + onScreenCount + ")";
-            }
-            if (!string.IsNullOrEmpty(SuiteExcludedReason))
-            {
-                r.Excluded = true;
-                r.ExclusionReason = SuiteExcludedReason;
+                r.ExclusionReason = reason;
             }
 
             Series s = new Series
@@ -278,6 +306,31 @@ namespace GnollHack.PerformanceAnalyzer.Model
                 s.Info["presentSource"] = PresentSource;
             r.Series.Add(s);
             return r;
+        }
+
+        /* The exclusion reason of a run, first match wins: the preset reason, throttled
+           (unless includeThrottled), power state changed during the run, a busy
+           background verdict ("background load: ..."), too few intervals; null when none
+           applies. Shared by ToRunRecord and ingest so that both paths exclude in the
+           same order. */
+        public static string ExclusionReasonFor(RunRecord r, string presetReason, bool includeThrottled, bool tooFewIntervals, string tooFewText)
+        {
+            if (!string.IsNullOrEmpty(presetReason))
+                return presetReason;
+            if (r.Thermal.Throttled && !includeThrottled)
+                return "throttled: " + r.Thermal.ThrottleReason;
+            if (r.Thermal.PowerState == "changed")
+                return "power state changed during the run (plugged or unplugged)";
+            if (r.BackgroundVerdict == GHBackgroundVerdict.Busy)
+            {
+                string bgReason = r.DecisiveBackground?.Reason;
+                if (string.IsNullOrEmpty(bgReason))
+                    return GHBackgroundLoad.ReasonPrefix + GHBackgroundLoad.VerdictBusyName;
+                return bgReason.StartsWith(GHBackgroundLoad.ReasonPrefix, StringComparison.Ordinal) ? bgReason : GHBackgroundLoad.ReasonPrefix + bgReason;
+            }
+            if (tooFewIntervals)
+                return tooFewText;
+            return null;
         }
 
         private static void AddVersion(RunRecord r, string key, string value)

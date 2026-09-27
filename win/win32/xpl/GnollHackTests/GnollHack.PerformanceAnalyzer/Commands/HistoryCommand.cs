@@ -9,10 +9,13 @@ namespace GnollHack.PerformanceAnalyzer.Commands
          history --file <history.jsonl> --append <run.json ...>
          history --file <history.jsonl> --list [--scenario W1] [--platform Windows]
 
-       A history line is the run record without its raw interval arrays, so the file
+       A history line is the run record without its raw interval arrays and without the
+       per-second samples of its background blocks (their summaries stay), so the file
        stays small and diffable. The file is append-only: this command never rewrites
        it, and refuses a record whose id is already present. Debug-configuration runs are
-       refused too; see DEVEL/performance/README.md's Protocol section. */
+       refused too; see DEVEL/performance/README.md's Protocol section. The list shows
+       each run's batch and its background verdict letter (q quiet, e elevated, B busy,
+       ? unknown) with the other-CPU P90 of the deciding block. */
     public static class HistoryCommand
     {
         public static int Run(Args a)
@@ -69,6 +72,14 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                         s.IntervalsMs = null;
                         s.FrameDurationsMs = null;
                     }
+                    if (r.Background != null)
+                    {
+                        foreach (BackgroundInfo b in r.Background)
+                        {
+                            if (b != null)
+                                b.Samples = null;
+                        }
+                    }
                     r.Configuration.Remove("_file");
                     JsonSerializerOptions compact = new JsonSerializerOptions(RunRecord.JsonOptions) { WriteIndented = false };
                     sb.Append(JsonSerializer.Serialize(r, compact)).Append("\r\n");
@@ -89,7 +100,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                 Console.WriteLine("history: no file at " + file);
                 return 0;
             }
-            Console.WriteLine("timestamp             | platform | scenario | arm | build            | P50   | P99   | 1%low | hitch | thr | power");
+            Console.WriteLine("timestamp             | platform | scenario | arm | batch        | build            | P50   | P99   | 1%low | hitch | thr | bg    | power");
             foreach (string line in File.ReadLines(file))
             {
                 if (line.Trim().Length == 0)
@@ -109,15 +120,34 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                     + " | " + (r.Platform ?? "").PadRight(8)
                     + " | " + (r.Scenario ?? "").PadRight(8)
                     + " | " + (r.Arm ?? "").PadRight(3)
+                    + " | " + Clip(r.Batch ?? "", 12).PadRight(12)
                     + " | " + ((r.Git.Tag ?? r.Git.Commit ?? "?") + " " + r.BuildConfiguration).PadRight(16)
                     + " | " + m.GetValueOrDefault(MetricNames.FrameDurationP50).ToString("0.00").PadLeft(5)
                     + " | " + m.GetValueOrDefault(MetricNames.FrameDurationP99).ToString("0.00").PadLeft(5)
                     + " | " + m.GetValueOrDefault(MetricNames.Fps1PctLow).ToString("0.0").PadLeft(5)
                     + " | " + m.GetValueOrDefault(MetricNames.HitchRatio).ToString("0.00").PadLeft(5)
                     + " | " + (r.Thermal.Throttled ? "yes" : "no ")
+                    + " | " + BackgroundCell(r).PadRight(5)
                     + " | " + (r.Thermal.PowerState ?? ThermalGate.PowerState(r.Thermal)));
             }
             return 0;
+        }
+
+        /* The run's background verdict letter and the deciding block's other-CPU P90 as
+           an integer, e.g. "e 12"; "?" when the run has no background block */
+        public static string BackgroundCell(RunRecord r)
+        {
+            BackgroundInfo b = r.DecisiveBackground;
+            if (b == null)
+                return "?";
+            double? p90 = b.Window?.OtherCpuP90Pct;
+            return BackgroundInfo.VerdictLetter(r.BackgroundVerdict)
+                + (p90.HasValue ? " " + Math.Round(p90.Value).ToString("0", System.Globalization.CultureInfo.InvariantCulture) : "");
+        }
+
+        private static string Clip(string s, int width)
+        {
+            return s.Length <= width ? s : s.Substring(0, width);
         }
     }
 }
