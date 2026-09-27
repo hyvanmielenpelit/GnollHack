@@ -1,4 +1,4 @@
-#if WINDOWS && GNH_MAUI
+#if WINDOWS && GNH_MAUI && ENABLE_RAW_RENDERING
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;

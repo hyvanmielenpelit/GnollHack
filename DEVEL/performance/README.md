@@ -403,10 +403,10 @@ uses:
 
 `code.renderSubscription` names what drives the render loop: `raw` or `managed` on Windows,
 for the raw-ABI and the CsWinRT subscription to `CompositionTarget.Rendering`, `none` before
-the loop starts, and `platform` elsewhere. It follows the build's
-`GHConstants.UseRawRenderingSubscription`, but falls back from `raw` to `managed` at run time
-when the raw subscription cannot be made or delivers no frames, so it can differ between two
-runs of one build.
+the loop starts, and `platform` elsewhere. It is `raw` only in a build that defines
+`ENABLE_RAW_RENDERING`, which no project defines by default. Such a build still falls back
+from `raw` to `managed` at run time when the raw subscription cannot be made or delivers no
+frames, so the value can differ between two runs of one build.
 
 A suite's starting fingerprint is taken when its first window ends, warm-up or run 1; the
 one written when the suite is created is provisional until then. By that point the game

@@ -845,6 +845,14 @@ namespace GnollHackX
 #if WINDOWS
         /* 0 = not subscribed, 1 = managed CompositionTarget.Rendering event, 2 = raw ABI subscription */
         private static int _windowsRenderSubscription = 0;
+
+        private static void SubscribeManagedRendering()
+        {
+            Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
+            _windowsRenderSubscription = 1;
+        }
+
+#if ENABLE_RAW_RENDERING
         private static int _rawRenderingLivenessChecks = 0;
         private static int _rawRenderingSilentActiveChecks = 0;
         private static readonly Action _rawRenderingCallback = RawRenderingCallback;
@@ -852,12 +860,6 @@ namespace GnollHackX
         private static void RawRenderingCallback()
         {
             CompositionTarget_Rendering(null, null);
-        }
-
-        private static void SubscribeManagedRendering()
-        {
-            Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
-            _windowsRenderSubscription = 1;
         }
 
         private static void ScheduleRawRenderingLivenessCheck()
@@ -888,6 +890,7 @@ namespace GnollHackX
                 });
             });
         }
+#endif
 
         private static bool TryGetRenderingTimeTicks(object e, out long ticks)
         {
@@ -897,7 +900,12 @@ namespace GnollHackX
                 ticks = renderingArgs.RenderingTime.Ticks;
                 return true;
             }
+#if ENABLE_RAW_RENDERING
             return RenderingSubscriptionWindows.TryGetCurrentRenderingTimeTicks(out ticks);
+#else
+            ticks = 0;
+            return false;
+#endif
         }
 #endif
 
@@ -956,8 +964,8 @@ namespace GnollHackX
             };
 #if WINDOWS
             GHPresentFeedback.Register(new PresentFeedbackWindows());
-            if (GHConstants.UseRawRenderingSubscription
-                && RenderingSubscriptionWindows.TrySubscribe(_rawRenderingCallback))
+#if ENABLE_RAW_RENDERING
+            if (RenderingSubscriptionWindows.TrySubscribe(_rawRenderingCallback))
             {
                 _windowsRenderSubscription = 2;
                 ScheduleRawRenderingLivenessCheck();
@@ -966,6 +974,9 @@ namespace GnollHackX
             {
                 SubscribeManagedRendering();
             }
+#else
+            SubscribeManagedRendering();
+#endif
             MaybeWriteGHLog("Render loop: " + RenderSubscriptionName + " Rendering subscription",
                             true, GHConstants.SentryGnollHackGeneralCategoryName);
 #elif ANDROID
@@ -1334,9 +1345,11 @@ namespace GnollHackX
         public static void StopPlatformRenderLoop()
         {
 #if WINDOWS
+#if ENABLE_RAW_RENDERING
             if (_windowsRenderSubscription == 2)
                 RenderingSubscriptionWindows.Unsubscribe();
-            else if (_windowsRenderSubscription == 1)
+#endif
+            if (_windowsRenderSubscription == 1)
                 Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
             _windowsRenderSubscription = 0;
 #elif ANDROID
