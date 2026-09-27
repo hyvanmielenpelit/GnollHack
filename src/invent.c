@@ -4478,7 +4478,7 @@ ddoinv(void)
         }
     } while (return_to_inv);
     issue_gui_command(GUI_CMD_TOGGLE_MENU_POSITION_SAVING, GHMENU_STYLE_INVENTORY, 0, (char*)0);
-    issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
+    //issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
     return 0;
 }
 
@@ -4521,7 +4521,7 @@ doseeworn(void)
                 }
         }
     } while (return_to_inv);
-    issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
+    //issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
     return 0;
 }
 
@@ -4883,8 +4883,8 @@ dolastpickeditem(void)
     {
         int ret = display_item_command_menu(selobj, -1, (boolean*)0);
         context.last_picked_obj_show_duration_left++;
-        if(!ret) /* Nothing happened, so presumably the window is closing without further action, so good time to collect garbage */
-            issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
+        //if(!ret) /* Nothing happened, so presumably the window is closing without further action, so good time to collect garbage */
+        //    issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
         return ret;
     }
     else

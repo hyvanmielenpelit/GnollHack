@@ -1109,7 +1109,7 @@ doability(void)
         else
             return 0;
     } while (!res);
-    issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
+    //issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
     return res;
 }
 
@@ -10523,8 +10523,8 @@ doviewpet(void)
                 else
                 {
                     int res = doviewpetstatistics(mtmp);
-                    if (!res)
-                        issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
+                    //if (!res)
+                    //    issue_gui_command(GUI_CMD_COLLECT_GARBAGE, 1, 0, (char*)0);
                     return res;
                 }
             }
