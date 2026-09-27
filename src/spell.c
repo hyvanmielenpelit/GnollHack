@@ -465,6 +465,21 @@ learn(void)
         return 0 ;
     }
 
+    if (!is_castable_spell_otyp((int) booktype))
+    {
+        if (booktype == SPE_BLANK_PAPER)
+        {
+            pline("The spellbook you studied turns out to be all blank.");
+            makeknown(booktype);
+        }
+        else
+            impossible("learn: otyp %d is not a spell", (int) booktype);
+
+        context.spbook.book = 0;
+        context.spbook.o_id = 0;
+        return 0;
+    }
+
     /* Possible failures */
     boolean reading_result = context.spbook.reading_result;
     if (reading_result == READING_RESULT_FAIL)
@@ -2512,6 +2527,15 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
     //struct obj *pseudo;
     boolean effect_happened = TRUE;
     //coord cc;
+
+    if (spell < 0 || spell >= MAXSPELL || !is_castable_spell_otyp((int) spellid(spell)))
+    {
+        impossible("spelleffects: slot %d holds otyp %d, which is not a castable spell",
+            spell, (spell >= 0 && spell < MAXSPELL) ? (int) spellid(spell) : -1);
+        if (stop_readchar_ptr)
+            *stop_readchar_ptr = TRUE;
+        return 0;
+    }
 
     /*
      * Reject attempting to cast while stunned or with no free hands.
@@ -5432,6 +5456,20 @@ spellretention(int idx, char *outbuf)
 }
 #endif
 
+/* TRUE if otyp is a spellbook whose spell can be held in the spell list */
+boolean
+is_castable_spell_otyp(int otyp)
+{
+    if (otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
+        return FALSE;
+    if (objects[otyp].oc_class != SPBOOK_CLASS)
+        return FALSE;
+    if ((objects[otyp].oc_flags & O1_NON_SPELL_SPELLBOOK) != 0)
+        return FALSE;
+    return (boolean) (objects[otyp].oc_skill >= P_FIRST_SPELL
+                      && objects[otyp].oc_skill <= P_LAST_SPELL);
+}
+
 boolean
 already_learnt_spell_type(int otyp)
 {
@@ -5529,6 +5567,12 @@ void
 initialspell(struct obj *obj)
 {
     int i, otyp = obj->otyp;
+
+    if (!is_castable_spell_otyp(otyp))
+    {
+        impossible("initialspell: otyp %d is not a spell", otyp);
+        return;
+    }
 
     for (i = 0; i < MAXSPELL; i++)
         if (spellid(i) == NO_SPELL || spellid(i) == otyp)

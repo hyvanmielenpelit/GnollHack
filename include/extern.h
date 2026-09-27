@@ -3736,6 +3736,7 @@ E int dovspell(void);
 E int dosortspell(void);
 E void initialspell(struct obj *);
 E boolean already_learnt_spell_type(int);
+E boolean is_castable_spell_otyp(int);
 E int domix(void);
 E int getspellcooldown(int);
 E const char* domatcompname(const struct materialcomponent*);

@@ -11888,8 +11888,10 @@ spell_teaching(struct monst *mtmp, int *spell_otyps)
 
     for (spell_otyp_ptr = spell_otyps; spell_otyp_ptr && *spell_otyp_ptr > STRANGE_OBJECT; spell_otyp_ptr++)
     {
-        cnt++;
         int i = *spell_otyp_ptr;
+        if (!is_castable_spell_otyp(i))
+            continue;
+        cnt++;
         if (!already_learnt_spell_type(i))
             not_known_cnt++;
     }
@@ -11924,7 +11926,7 @@ spell_teaching(struct monst *mtmp, int *spell_otyps)
     {
         int i = *spell_otyp_ptr;
 
-        if (already_learnt_spell_type(i))
+        if (!is_castable_spell_otyp(i) || already_learnt_spell_type(i))
             continue;
 
         any = zeroany;
@@ -11983,7 +11985,7 @@ spell_teaching(struct monst *mtmp, int *spell_otyps)
     if ((pick_count = select_menu(win, PICK_ONE, &selected)) > 0)
     {
         int spell_to_learn = selected->item.a_int;
-        if (spell_to_learn > 0 && objects[spell_to_learn].oc_class == SPBOOK_CLASS)
+        if (is_castable_spell_otyp(spell_to_learn))
         {
             char* txt = 0;
             struct obj pseudo = zeroobj;
@@ -12037,6 +12039,13 @@ learn_spell_func(struct monst *mtmp)
 
     int i = 0;
     int booktype = (short)context.spbook.book->otyp;
+
+    if (!is_castable_spell_otyp(booktype))
+    {
+        impossible("learn_spell_func: otyp %d is not a learnable spell", booktype);
+        return 0;
+    }
+
     char learnbuf[BUFSZ] = "";
 
     char splname[BUFSZ];
