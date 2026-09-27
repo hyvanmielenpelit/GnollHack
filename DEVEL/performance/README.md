@@ -381,7 +381,7 @@ at the start and end of every batch.
 | Category | Keys | Notes |
 |----------|------|-------|
 | `meta` | `meta.fingerprintVersion` (`1`), `meta.capturedUtc` | Never diffed |
-| `code` | `code.appVersion`, `code.gitCommit`, `code.buildConfiguration`, `code.portVersion`, `code.portBuild` | In-app |
+| `code` | `code.appVersion`, `code.gitCommit`, `code.buildConfiguration`, `code.portVersion`, `code.portBuild`, `code.renderSubscription` | In-app |
 | `toolchain` | `toolchain.runtime`, `toolchain.framework`, `toolchain.compiler`, `toolchain.sdk` (the build's SDK, assembly metadata `GHBuildSdkVersion`), `toolchain.packaging`; script: `toolchain.dotnetSdk` (the host's `dotnet --version` in `GnollHackTests`) | |
 | `component` | `component.<assembly name>` for every loaded assembly except those starting with `System`, `mscorlib`, `netstandard`, `Microsoft.CSharp`, `Microsoft.VisualBasic`, `Microsoft.Win32` or `GnollHack`; `component.native.skia`, `component.native.fmod`; Windows: `component.windowsAppSdk`, `component.winui` | In-app; e.g. `component.SkiaSharp`, `component.Microsoft.Maui.Controls` |
 | `os` | `os.platform`, `os.version`, `os.build` (Windows `26200.6584`), `os.displayVersion`, `os.edition`, `os.pendingReboot`; Android: `os.securityPatch`, `os.fingerprint`; script, Windows: `os.latestHotfix` | |
@@ -400,6 +400,13 @@ uses:
   the process's first measurement window. It is absent before that window ends, and when
   the app renders on the CPU (`settings.mainCanvasUsesGpu` records that case). The adapter
   cannot change within a process, so the value stays current.
+
+`code.renderSubscription` names what drives the render loop: `raw` or `managed` on Windows,
+for the raw-ABI and the CsWinRT subscription to `CompositionTarget.Rendering`, `none` before
+the loop starts, and `platform` elsewhere. It follows the build's
+`GHConstants.UseRawRenderingSubscription`, but falls back from `raw` to `managed` at run time
+when the raw subscription cannot be made or delivers no frames, so it can differ between two
+runs of one build.
 
 A suite's starting fingerprint is taken when its first window ends, warm-up or run 1; the
 one written when the suite is created is provisional until then. By that point the game

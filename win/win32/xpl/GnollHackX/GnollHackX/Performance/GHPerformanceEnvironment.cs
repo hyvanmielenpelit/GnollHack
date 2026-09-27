@@ -180,6 +180,7 @@ namespace GnollHackX.Performance
 
             AddIfMissing(fp, "code.portVersion", () => GHApp.GetPortVersionString());
             AddIfMissing(fp, "code.portBuild", () => GHApp.GetPortBuildString());
+            AddIfMissing(fp, "code.renderSubscription", () => GHApp.RenderSubscriptionName);
             AddIfMissing(fp, "toolchain.compiler",
                 () => GHApp.IsLLVM ? "LLVM" : GHApp.IsCoreCLR ? "Crossgen2" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT");
             AddIfMissing(fp, "toolchain.sdk", ReadBuildSdkVersion);

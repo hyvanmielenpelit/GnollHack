@@ -842,6 +842,85 @@ namespace GnollHackX
         public static bool PushingModalPage { get { return Interlocked.CompareExchange(ref _handlingKeyPress, 0, 0) != 0; } set { Interlocked.Exchange(ref _handlingKeyPress, value ? 1 : 0); } }
 
 
+#if WINDOWS
+        /* 0 = not subscribed, 1 = managed CompositionTarget.Rendering event, 2 = raw ABI subscription */
+        private static int _windowsRenderSubscription = 0;
+        private static int _rawRenderingLivenessChecks = 0;
+        private static int _rawRenderingSilentActiveChecks = 0;
+        private static readonly Action _rawRenderingCallback = RawRenderingCallback;
+
+        private static void RawRenderingCallback()
+        {
+            CompositionTarget_Rendering(null, null);
+        }
+
+        private static void SubscribeManagedRendering()
+        {
+            Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
+            _windowsRenderSubscription = 1;
+        }
+
+        private static void ScheduleRawRenderingLivenessCheck()
+        {
+            Task.Delay(GHConstants.RawRenderingLivenessCheckMs).ContinueWith(t =>
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    if (_windowsRenderSubscription != 2 || RenderingSubscriptionWindows.CallbackCount > 0)
+                        return;
+                    if (PlatformAppActive)
+                    {
+                        if (++_rawRenderingSilentActiveChecks >= 2)
+                        {
+                            RenderingSubscriptionWindows.Unsubscribe();
+                            SubscribeManagedRendering();
+                            MaybeWriteGHLog("Render loop: raw Rendering subscription delivered no frames; using the managed subscription",
+                                            true, GHConstants.SentryGnollHackGeneralCategoryName);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        _rawRenderingSilentActiveChecks = 0;
+                    }
+                    if (++_rawRenderingLivenessChecks < 12)
+                        ScheduleRawRenderingLivenessCheck();
+                });
+            });
+        }
+
+        private static bool TryGetRenderingTimeTicks(object e, out long ticks)
+        {
+            Microsoft.UI.Xaml.Media.RenderingEventArgs renderingArgs = e as Microsoft.UI.Xaml.Media.RenderingEventArgs;
+            if (renderingArgs != null)
+            {
+                ticks = renderingArgs.RenderingTime.Ticks;
+                return true;
+            }
+            return RenderingSubscriptionWindows.TryGetCurrentRenderingTimeTicks(out ticks);
+        }
+#endif
+
+        public static string RenderSubscriptionName
+        {
+            get
+            {
+#if WINDOWS
+                switch (_windowsRenderSubscription)
+                {
+                case 1:
+                    return "managed";
+                case 2:
+                    return "raw";
+                default:
+                    return "none";
+                }
+#else
+                return "platform";
+#endif
+            }
+        }
+
 #if ANDROID
         //private static ValueAnimator _platformAnimator = null;
         private static ChoreographerFrameTicker _platformTicker = null;
@@ -877,7 +956,18 @@ namespace GnollHackX
             };
 #if WINDOWS
             GHPresentFeedback.Register(new PresentFeedbackWindows());
-            Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
+            if (GHConstants.UseRawRenderingSubscription
+                && RenderingSubscriptionWindows.TrySubscribe(_rawRenderingCallback))
+            {
+                _windowsRenderSubscription = 2;
+                ScheduleRawRenderingLivenessCheck();
+            }
+            else
+            {
+                SubscribeManagedRendering();
+            }
+            MaybeWriteGHLog("Render loop: " + RenderSubscriptionName + " Rendering subscription",
+                            true, GHConstants.SentryGnollHackGeneralCategoryName);
 #elif ANDROID
             GHPresentFeedback.Register(new PresentFeedbackAndroid());
             _platformTicker = new ChoreographerFrameTicker();
@@ -1022,10 +1112,15 @@ namespace GnollHackX
             /* RenderingTime has its own epoch; only its cadence is used. The vsync comes from DWM,
                whose query is not part of the callback's lateness. */
             long timelineCallbackStart = 0;
-            if (GHFrameTimeline.IsEnabled && e is Microsoft.UI.Xaml.Media.RenderingEventArgs renderingArgs)
+            if (GHFrameTimeline.IsEnabled)
             {
-                timelineCallbackStart = Stopwatch.GetTimestamp();
-                PresentFeedbackWindows.CaptureFrame(GHFrameTimeline.TimeSpanTicksToTicks(renderingArgs.RenderingTime.Ticks));
+                long callbackStart = Stopwatch.GetTimestamp();
+                long renderingTimeTicks;
+                if (TryGetRenderingTimeTicks(e, out renderingTimeTicks))
+                {
+                    timelineCallbackStart = callbackStart;
+                    PresentFeedbackWindows.CaptureFrame(GHFrameTimeline.TimeSpanTicksToTicks(renderingTimeTicks));
+                }
             }
             long timelineFrameId = GHFrameTimeline.BeginTick(timelineCallbackStart);
 #else
@@ -1239,7 +1334,11 @@ namespace GnollHackX
         public static void StopPlatformRenderLoop()
         {
 #if WINDOWS
-            Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            if (_windowsRenderSubscription == 2)
+                RenderingSubscriptionWindows.Unsubscribe();
+            else if (_windowsRenderSubscription == 1)
+                Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            _windowsRenderSubscription = 0;
 #elif ANDROID
             //if (_platformAnimator != null)
             //{
