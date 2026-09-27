@@ -4205,6 +4205,7 @@ namespace GnollHackX.Pages.Game
         private void HideYnResponses()
         {
             YnGrid.IsVisible = false;
+            GHApp.CollectGarbage();
         }
         private void DoShowDirections()
         {
@@ -21533,6 +21534,7 @@ namespace GnollHackX.Pages.Game
             IsMainCanvasOn = true;
             StopMenuCanvasAnimation();
             MenuWindowGlyphImage.StopAnimation();
+            GHApp.CollectGarbage();
             RefreshScreen = true;
             StartMainCanvasAnimation();
         }
@@ -21602,6 +21604,7 @@ namespace GnollHackX.Pages.Game
                 InterlockedTextScrollOffset = _textScrollOffset;
             }
             StopTextCanvasAnimation();
+            GHApp.CollectGarbage();
             RefreshScreen = true;
             StartMainCanvasAnimation();
         }
