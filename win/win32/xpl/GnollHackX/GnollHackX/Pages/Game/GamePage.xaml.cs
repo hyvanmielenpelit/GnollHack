@@ -23087,6 +23087,7 @@ namespace GnollHackX.Pages.Game
             IsMainCanvasOn = true;
             UpdateMoreNextPrevButtonVisibility(true, true);
             StopCommandCanvasAnimation();
+            GHApp.CollectGarbage();
             RefreshScreen = true;
             StartMainCanvasAnimation();
         }
