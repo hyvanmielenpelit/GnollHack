@@ -207,13 +207,17 @@ target change, canvas pause, GC).
 5. **Cool-down** of 20 seconds between runs, extended until the device is back in the
    thermal class it started the batch in (up to 5 minutes). On Windows, which has no
    thermal status, the class is the processor performance counter compared with the batch
-   start: more than 10 points lower is throttled.
+   start: more than 10 points lower is throttled. After the thermal gate a **quiet gate**
+   waits until the last 5 seconds average other CPU under 10 % and disk busy under 50 %,
+   for at most 120 s; a run started after a timeout carries the note
+   `quiet gate timed out (other CPU N %)`.
 6. **One variable per comparison.** A configuration is the full toggle vector; an A/B
    run varies exactly one entry.
 7. **Windows reference runs** are done plugged in, on the High performance power plan,
    with the laptop on a hard surface, starting from a cold machine. Close other
-   applications; the thermal probe lists the top CPU consumers so a busy background
-   process is visible in the record.
+   applications. A load sampler runs through every measurement window; a run it judges
+   `busy` is excluded, and one it judges `elevated` is kept and annotated (see
+   [Background load and environment drift](#background-load-and-environment-drift)).
 8. **Android reference runs** are done on a charged, unplugged device (charging heats
    it) with the screen at a fixed brightness, no other apps recently used.
 9. **Power state is a controlled factor.** Whether the device is plugged in changes the
@@ -239,15 +243,269 @@ target change, canvas pause, GC).
   delta, the Hodges-Lehmann shift, and bootstrap intervals on the median and P99
   differences. Pooled intervals are not independent, so this level never decides.
 - **No outlier removal.** A hitch is the phenomenon. Runs are excluded only for a recorded
-  reason: thermal throttling, a power state that changed during the run, or fewer than 100
-  frames (external series) or on-screen intervals (in-app records). A run whose capture
-  failed produces no record; the batch script logs it as skipped and continues.
+  reason, the first that applies: a reason preset by the suite (`warm-up run`, an abort),
+  thermal throttling, a power state that changed during the run, a `busy` background
+  verdict (reason `background load: ...`), or fewer than 100 frames (external series) or
+  on-screen intervals (in-app records). A run whose capture failed produces no record; the
+  batch script logs it as skipped and continues.
+- **Elevated background load annotates, it does not exclude.** A run with an `elevated`
+  verdict stays in the decision. A comparison with such runs adds a sensitivity line: the
+  run-level decisions recomputed without them, and whether any of them changes. Read a
+  decision that changes as fragile, and rerun under quiet conditions.
 - **Windows throttling** is judged from the processor performance counter, which reads
   well under 100 on an idle machine under the Balanced plan: a run counts as throttled only
   when the reading taken after the run is under 90 % and at least 10 points below the one
   taken before it. The reason names the power plan.
 - **Minimum detectable effect** is printed so that "no difference" reads as "no difference
   larger than X".
+
+## Background load and environment drift
+
+Two things move the numbers without any code change: other processes competing for the
+machine during a run, and an environment that differs between runs (a Windows update, a GPU
+driver, a NuGet package, a .NET SDK or runtime, an Android security patch, a setting). Both
+measuring paths sample the machine's load during every window and record an environment
+fingerprint, so that a run measured under load is flagged or excluded, and a difference is
+attributed to what actually changed. The rules are shared code: `GHBackgroundLoad` and
+`GHEnvironmentFingerprint` in `win/win32/xpl/GnollHackX/GnollHackX/Performance/`, compiled
+into the app and the analyzer alike.
+
+### Sampling
+
+**In the app**, `GHSystemLoadSampler` reads the platform once a second on its own thread
+into a ring of the last 900 samples. A suite holds it from start to end, so the quiet gate
+and each window's 10 s pre-window have samples; a commanded window starts it when the window
+opens, so its record has no pre-window; Dump Frame Log adds a block, without processes, only
+while a suite or window holds the sampler. On Windows the per-process table comes from one
+PDH collect just before the window and one after it, which PDH turns into each process's
+average over the interval: the top 8 processes by CPU, plus up to 3 by GPU. The sampler is on
+by default; the `PerformanceBackgroundSampler` preference, which has no setting in the UI,
+switches it off, and the fingerprint records it as `settings.backgroundSampler`.
+
+**`Run-PerformanceSuite.ps1`** samples each capture, warm-up included. On Windows a hidden
+`typeperf` writes the whole-machine counters once a second to `load_system.csv`, and a
+background job runs one `Get-Counter` sample as long as the capture over `\Process(*)` and
+`\GPU Engine(*)`, written to `load_processes.csv` in `typeperf`'s CSV shape. (`typeperf`
+cannot do this itself: it reads `-si` in mm:ss form as 1 s, and `-sc 2` averages the
+interval after the window.) On Android an `adb shell` loop appends `/proc/stat`, the app's
+`/proc/<pid>/stat` and `/proc/meminfo` to `load_android.txt` once a second, and falls back to
+`top -b` when `/proc/stat` is not readable. `ingest --env-during-*` turns the files into an
+`external` background block whose window starts at the first sample plus the warm-up.
+
+| Signal | Windows, in-app | Android, in-app | iOS, in-app | Windows, script | Android, script |
+|--------|-----------------|-----------------|-------------|-----------------|-----------------|
+| Whole-machine CPU | `\Processor(_Total)\% Processor Time` | not readable by an app | not readable by an app | Same counter | `/proc/stat`, or `top` |
+| Own CPU | Process times | `Process.ElapsedCpuTime` | Process CPU time | `\Process(<name>)\% Processor Time` | `/proc/<pid>/stat`; none from `top` |
+| Disk busy | 100 - `\PhysicalDisk(_Total)\% Idle Time` | no | no | Same counter | no |
+| Available memory | `GlobalMemoryStatusEx` | `ActivityManager.MemoryInfo` | The process's own headroom (`os_proc_available_memory`), in MB only | `\Memory\Available MBytes`; the percentage needs `hardware.memoryGB` | `MemAvailable` of `MemTotal` |
+| Hard page reads | `\Memory\Pages Input/sec` | no | no | Same counter | no |
+| Low-memory flag | no | `MemoryInfo.LowMemory` | no | no | no |
+| Memory-pressure events | no | The app's memory warnings | The app's memory warnings | no | no |
+| Per-process CPU | PDH, window average | no | no | `Get-Counter`, capture average | no |
+| Other processes' 3D GPU | PDH, busiest adapter | no | no | Busiest adapter **including the app**: recorded with a note, never judged | no |
+
+"Other CPU" is whole-machine CPU minus this process's own, as a percentage of total logical
+capacity, never below 0. Without a whole-machine reading there is no other CPU: on Android
+and iOS the in-app verdict is therefore `unknown` unless a memory rule fires, and on iOS,
+whose memory reading is the app's own headroom and no percentage, only a memory warning can
+fire one.
+
+### Verdict
+
+`GHBackgroundLoad.Classify` judges the window's summary, and on Windows its per-process
+table, against pre-registered thresholds. Percentiles are nearest-rank over the 1 Hz
+samples.
+
+| Signal | Elevated (annotate) | Busy (exclude) |
+|--------|---------------------|----------------|
+| Other CPU, P90 over the window | >= 10 % | >= 25 % |
+| Other CPU spikes | | >= 50 % in >= 10 % of the samples |
+| Disk busy, P90 | >= 50 % | never: the app's own disk activity cannot be separated |
+| Available physical memory, minimum | < 10 % of total | < 5 % of total |
+| Hard page reads, P90 | >= 200 /s | >= 1000 /s |
+| Other processes' 3D GPU, window average | >= 10 % | >= 30 % |
+| A known activity (below), its processes' summed CPU | >= 2 % | covered by the CPU rules |
+| Android `LowMemory` in any sample | | yes |
+| Memory-pressure events during the window | >= 1 | |
+
+- **`unknown`** when fewer than half the expected samples are present, or when there is no
+  other-CPU signal and no memory rule (low memory, available memory, hard page reads,
+  memory pressure) fires.
+- Otherwise **`busy`** when any busy rule fires, else **`elevated`** when any elevated rule
+  fires, else **`quiet`**.
+- The **reason** of an `elevated` or `busy` run names that level's facts and up to two
+  suspect processes, in at most 100 characters, for example
+  `background load: other CPU P90 31 %; wsl-vm (vmmemWSL 22 %), build-tools (devenv 5 %)`.
+  A busy run's reason is its exclusion reason.
+- An ingested record can carry both an `in-app` and an `external` block. Its verdict is the
+  worst one that is not `unknown`.
+
+**Known activities** are matched on the process name, case-insensitively and exactly, after
+an instance suffix `#N` and a trailing `.exe` are stripped; any other process is `other`:
+
+| Category | Processes |
+|----------|-----------|
+| `windows-update` | `TiWorker`, `TrustedInstaller`, `MoUsoCoreWorker`, `usocoreworker`, `wuauclt`, `WaaSMedicAgent`, `SIHClient`, `msiexec` |
+| `antivirus` | `MsMpEng`, `MpCmdRun`, `NisSrv`, `MpDefenderCoreService` |
+| `indexer` | `SearchIndexer`, `SearchProtocolHost`, `SearchFilterHost` |
+| `wsl-vm` | `vmmem`, `vmmemWSL`, `VmmemWSA`, `vmwp` |
+| `build-tools` | `devenv`, `MSBuild`, `VBCSCompiler`, `cl`, `link`, `clang`, `lld-link`, `dotnet`, `ServiceHub.Host.dotnet.x64`, `ServiceHub.RoslynCodeAnalysisService` |
+| `sync` | `OneDrive`, `Dropbox`, `GoogleDriveFS` |
+| `telemetry` | `CompatTelRunner`, `DiagTrack` |
+| `measurement` | `PresentMon`, `typeperf`, `powershell`, `pwsh`, `adb`: listed, never counted as an activity, never named as a suspect |
+
+### Quiet gate
+
+Before each run, both paths wait until the last 5 seconds average other CPU under 10 % and
+disk busy under 50 % (disk is ignored where it is not reported), polling once a second for
+at most 120 s. On timeout the run goes ahead and carries the note
+`quiet gate timed out (other CPU N %)`: `suite.notes` in the in-app record, `notes` in the
+ingested one.
+
+- **In the app** the gate runs before the first run and after the thermal gate before each
+  later one, and needs at least 3 samples with a CPU reading. Without a whole-machine CPU
+  reading (Android, iOS) or with the sampler off there is no gate.
+- **`Run-PerformanceSuite.ps1`** gates after the thermal gate and before it launches the
+  arm, sampling 5 s windows back to back for up to `-MaxQuietWaitSeconds` (default 120).
+  When no CPU reading is possible the gate counts as quiet.
+
+### Environment fingerprint
+
+A fingerprint is a flat map of string keys `<category>.<name>` to string values: booleans
+are `true`/`false`, numbers use the invariant culture. It is captured into every in-app run
+record (`environment.fingerprint`), at the start and end of every suite (`suite.json`:
+`environment.fingerprint` and `fingerprintAtEnd`), and by `Get-EnvironmentFingerprint.ps1`
+at the start and end of every batch.
+
+| Category | Keys | Notes |
+|----------|------|-------|
+| `meta` | `meta.fingerprintVersion` (`1`), `meta.capturedUtc` | Never diffed |
+| `code` | `code.appVersion`, `code.gitCommit`, `code.buildConfiguration`, `code.portVersion`, `code.portBuild` | In-app |
+| `toolchain` | `toolchain.runtime`, `toolchain.framework`, `toolchain.compiler`, `toolchain.sdk` (the build's SDK, assembly metadata `GHBuildSdkVersion`), `toolchain.packaging`; script: `toolchain.dotnetSdk` (the host's `dotnet --version` in `GnollHackTests`) | |
+| `component` | `component.<assembly name>` for every loaded assembly except those starting with `System`, `mscorlib`, `netstandard`, `Microsoft.CSharp`, `Microsoft.VisualBasic`, `Microsoft.Win32` or `GnollHack`; `component.native.skia`, `component.native.fmod`; Windows: `component.windowsAppSdk`, `component.winui` | In-app; e.g. `component.SkiaSharp`, `component.Microsoft.Maui.Controls` |
+| `os` | `os.platform`, `os.version`, `os.build` (Windows `26200.6584`), `os.displayVersion`, `os.edition`, `os.pendingReboot`; Android: `os.securityPatch`, `os.fingerprint`; script, Windows: `os.latestHotfix` | |
+| `driver` | `driver.gpu<N>.version`, `driver.gpu<N>.date` (Windows, `<N>` 0-based in WMI order); script, Android: `driver.gles` | |
+| `hardware` | `hardware.deviceModel`, `hardware.cpu`, `hardware.logicalProcessors`, `hardware.memoryGB`, `hardware.gpu<N>`; Android: `hardware.soc` | |
+| `settings` | `settings.<toggle>` for every entry of the record's `environment.configuration`; `settings.mapRefreshRate`, `settings.gpuBackend`, `settings.gpuCacheSize`, `settings.mainCanvasUsesGpu`, `settings.refreshHz`, `settings.backgroundSampler`; Windows: `settings.powerPlan`, `settings.powerMode` | |
+
+A record or manifest written before fingerprints existed gets one mapped from its per-field
+environment (`appVersion` to `code.appVersion`, `skiaSharpVersion` to
+`component.SkiaSharp`, `deviceModel` to `hardware.deviceModel`, each toggle to
+`settings.<key>`, and so on), without `meta.fingerprintVersion`. New captures write the same
+keys for those values, so old and new records diff meaningfully. `ingest` takes the in-app
+record's fingerprint first, then fills the keys it lacks from `--fingerprint` files, then
+from the record's own fields, and marks the result `meta.source`: `in-app` when an in-app
+record took part, else `script`. `Get-EnvironmentFingerprint.ps1` writes `os.version`,
+`hardware.cpu`, `hardware.memoryGB` and `hardware.deviceModel` in the app's formats, but the
+two sources still record different key sets, so when `compare` or `drift` meets fingerprints
+from different sources it compares only the keys both sides recorded and says so.
+
+**Diff.** Every key but `meta.*` is compared, and each difference is one of:
+
+| Kind | When | Counts as a change |
+|------|------|--------------------|
+| Changed | Present on both sides with different values | yes |
+| Added, Removed | Present on one side only, and both sides carry `meta.fingerprintVersion` | yes |
+| NotCompared | A `component.*` key present on one side only: assemblies load lazily, so an assembly that was not loaded yet at the capture is not a change. Reports give only their count | no |
+| Unknown | Present on one side only, and at least one side is a legacy record, which never recorded the key; reported as `(not recorded)` | no |
+
+**Attribution** is drawn from the changes, with categories listed in the order code,
+toolchain, component, os, driver, hardware, settings:
+
+| Label | Meaning |
+|-------|---------|
+| `none` | Nothing counted differs |
+| `code` | Only `code.*` keys differ: the comparison measures the code change |
+| `environment: <categories>` | No `code.*` key differs: the difference belongs to the environment |
+| `confounded: <categories>` | Code and something else both differ: the effect cannot be assigned to either |
+
+More than one changed `settings.*` key adds the warning `more than one setting differs`
+(protocol rule 6). When several runs or suites are pooled into an arm, a key whose value
+differs within the arm reads `mixed`, and a key missing from any of them is left out.
+
+### What the reports show
+
+- **In-app suite report** (`report.txt`): an **Environment** section, one line per category
+  with a 12-character hash of its keys and their count, followed by the changed keys when
+  the environment changed during the suite (`environmentChanged` in `suite.json`: a change
+  outside `meta` and `code`); a **Bg** column in the run table, the verdict's letter (`q`
+  quiet, `e` elevated, `B` busy) and the other-CPU P90, or `?`; a `note:` line under a run
+  with a note; a **Background load** section with the verdict counts and the suspects the
+  elevated and busy runs name most often; and **Changes since the previous comparable
+  suite**, the most recent earlier suite with the same comparability key on the same device,
+  its median hitch ratio then and now, and the fingerprint changes since then. That last
+  section is descriptive only; the baseline comparison decides.
+- **In-app comparison** (Compare with Baseline, `comparison.txt`): **Environment
+  differences (A -> B)** between the arms' pooled fingerprints, the **Attribution** line, a
+  warning when it is confounded or more than one setting differs, and, when any used run is
+  elevated, the sensitivity line (`Without the N elevated runs: decision unchanged`, or the
+  metrics whose verdict changes). The list of suites marks a suite `bg` when a run was
+  excluded for background load, and `env changed` when its environment changed during it.
+- **`compare`**: a `bg` column in both run tables (`e 12`: the verdict letter and the
+  other-CPU P90), an **Environment differences** section with the common fingerprint of each
+  arm's used runs and the attribution, and a **Sensitivity** line under the run-level
+  decision. With `--include-excluded`, busy runs are left out of the sensitivity
+  recomputation too.
+- **`history --list`** shows each run's batch and background verdict.
+- **`smoothness`**: in-app background samples add `background` events (other CPU rising by
+  15 points or more between samples, disk busy of 80 % or more) near the change-point
+  boundaries.
+
+### Reading a drift report
+
+`drift` looks for steps over time in `history.jsonl` and attributes each one:
+
+```powershell
+& $a drift --file DEVEL\performance\history.jsonl --scenario W1 --platform Windows --out drift.md
+```
+
+- **Lines.** Runs are grouped into lines of like-for-like measurements: platform, device
+  model, scenario, scenario kind, series, refresh and target periods (to 0.1 ms), and the
+  hash of the `settings` category. A changed setting therefore starts a new line rather
+  than showing up as a step. `--series` picks one series; without it every run joins one
+  line per series it carries (external, smoothness).
+- **Batches.** Within a line, runs are grouped by their `batch` (the leaf name of the
+  batch's `-OutDir`, or the suite id of an in-app record), or by date, arm and commit for
+  older records. A batch with at least 3 used runs is compared with the previous batch and,
+  when that shows no shift, with the pooled previous up to 3 batches, which catches slow
+  drift; the pool never reaches back across a detected shift. A shift is a metric whose
+  bootstrap interval excludes zero and whose difference exceeds `compare`'s pre-registered
+  threshold (see [Statistics](#statistics)).
+- **The table**, one per line: each batch's used and total runs, the metric medians,
+  **Delta** (the shifted metrics, signed, with their verdict), **bg** (the counts of `q`,
+  `e`, `B` and `?` runs and the mean other-CPU P90) and **Attribution**.
+- **Shifts** lists each step with the medians before and after, the interval, the
+  attribution and the changed keys. The attribution is the fingerprint label of the two
+  sides' common fingerprints; `none` becomes `background` when at least half of the later
+  batch's runs were elevated or busy, and `unexplained -- rerun under quiet conditions`
+  otherwise. A different number of throttled runs or a different power state is appended as
+  context.
+
+For example, a hitch-ratio step labeled `environment: driver`, listing
+`driver.gpu0.version` with its old and new values, says that the GPU driver changed between
+the batches and the code did not: rerun the old build on the new driver before blaming or
+crediting a commit. `confounded: code, component` means a commit and a package upgrade
+arrived together, and only a run that separates them can say which one moved the numbers.
+
+### Known limitations
+
+- **Short-lived processes** (single `cl.exe` compilations, for example) are missing from the
+  per-process tables, which list processes alive at both ends of the interval. Their CPU
+  still counts in the 1 Hz whole-machine other CPU.
+- **Measurement tools count as other CPU** in the script's samples: PresentMon, `typeperf`,
+  the `Get-Counter` job's PowerShell and `adb` run beside the app. The `measurement`
+  category keeps them from being blamed, but not out of the other-CPU figures.
+- **Capacity dilution.** Other CPU is a share of all logical processors, so on a machine
+  with many threads one busy core reads as a few percent, below the elevated threshold,
+  while it can still compete with the UI or render thread.
+- **Android `/proc/stat`** is readable from `adb shell` only where the vendor's SELinux
+  policy allows it. The `top` fallback gives whole-machine CPU but not the app's own, so the
+  external other CPU, and with it the verdict, stays `unknown`.
+- **iOS** reports neither whole-machine CPU nor a system memory percentage, so its verdict
+  is `unknown` unless a memory warning arrives during the window.
+- **The script's per-process averages** cover the whole capture, warm-up included, and
+  start only once the background job is up, so they overhang the capture's end by about
+  the job's start-up time.
 
 ## Test matrix
 
@@ -319,9 +577,15 @@ window + cool-down): about 12 minutes with the defaults.
    shows the progress: `Performance suite: run N of M`, `warm-up run` or `cooling down`.
 3. Warm-up, then the measurement window, saved with the suite's context.
 4. Cool-down, then a thermal gate: the next run waits until the thermal class is no worse than
-   at the suite start, checking every 15 s, and goes ahead after 300 s regardless. On Windows
-   the class comes from the processor performance counter: more than 10 points below the
-   suite start is throttled.
+   at the suite start, checking every 15 s, and goes ahead after 300 s regardless. Windows
+   reports no thermal class, so there is no gate there: the processor performance counter
+   mostly follows turbo boost, which drops whenever the replay pauses. A run measured while
+   throttled is still excluded by the per-run rule. Then the quiet gate, which also runs
+   before the first run: the next run waits, for at most 120 s, until the last 5 seconds
+   average other CPU under 10 % and disk busy under 50 %, and the replay header shows
+   `waiting for a quiet system (other CPU N %)`. After a timeout the run carries the note
+   `quiet gate timed out (other CPU N %)`. There is no quiet gate on Android and iOS, which
+   give an app no whole-machine CPU reading.
 5. The next run starts. With a shared page the replay, paused during the cool-down, seeks back
    to start turn - 1, which restarts it in place and collects garbage. With a fresh page the
    game page closes before the cool-down, which then runs on the suite page, and after a
@@ -351,12 +615,13 @@ baseline arm label per comparability key. Unlike `archive`, the `performance` di
 cleared when the app starts.
 
 The results list shows each suite's date, scenario, label, used runs, median hitch ratio and
-size, tagged `baseline`, `aborted` or `imported`. A used run is a measured run with a summary
-and no exclusion reason.
+size, tagged `baseline`, `aborted`, `imported`, `bg` (a run was excluded for background
+load) or `env changed` (the environment fingerprint changed during the suite). A used run is
+a measured run with a summary and no exclusion reason.
 
 | Button | Action |
 |--------|--------|
-| View Report | `report.txt`: setup, replay size, SHA-256 and start turn, environment, the run table, the medians of the used runs, hitch causes and content events |
+| View Report | `report.txt`: setup, replay size, SHA-256 and start turn, environment and its fingerprint by category, the run table with each run's background verdict, the background load, the medians of the used runs, the changes since the previous comparable suite, hitch causes and content events |
 | Set as Baseline | Records the suite's arm label as the baseline for its comparability key |
 | Compare with Baseline | Compares the suite's arm with the baseline arm of its key |
 | Share, Import Results | See [Share and Import](#share-and-import) |
@@ -365,15 +630,20 @@ and no exclusion reason.
 The **comparability key** is the scenario, the replay's SHA-256, the start turn, the page
 mode, the map FPS setting and the measured refresh rate rounded to whole hertz, fixed when the
 suite finishes. A comparison pools, per arm, every suite with the same key and the same arm
-label: arm A the baseline label, arm B the selected suite's. Suites with another key never
-enter it. It refuses when the suite is still running, no baseline is set for its key, the
-suite's own label is the baseline label, or either arm has no used runs.
+label that was measured on the selected suite's device: arm A the baseline label, arm B the
+selected suite's. Suites with another key never enter it. The device matches when every
+`hardware.*` key and `os.platform` present in both fingerprints agree, or, for suites
+without a fingerprint, when platform and device model agree. It refuses when the suite is
+still running, no baseline is set for its key, the suite's own label is the baseline label,
+the baseline arm has no used runs on this device but has suites on another ("Baseline
+measured on a different device"), or either arm has no used runs.
 
 The decision is the one `compare --series smoothness` makes offline, from the same code
 (`GHPerformanceComparison`), as described under [Statistics](#statistics). With fewer than 3
 used runs in either arm there is no verdict; below 5 the verdict is marked provisional. The
-report lists both arms' versions and what differs between them, the verdict per metric, and
-each arm's hitch causes.
+report lists both arms' versions, their environment differences and the attribution, the
+verdict per metric, the sensitivity line when a used run was elevated, and each arm's hitch
+causes (see [What the reports show](#what-the-reports-show)).
 
 ### Two builds on one device
 
@@ -447,6 +717,21 @@ Each run directory gets `smoothness.md`; the batch gets `report.md` (external se
 with in-app records, `report_smoothness.md`. When both arms are the same package, change the
 setting or install the other build when the script announces the arm.
 
+Background load and environment files:
+
+| File | Where | What |
+|------|-------|------|
+| `load_system.csv`, `load_system_counters.txt` | Run, Windows | `typeperf` at 1 s over the capture: whole-machine CPU, the arm's process CPU, disk idle, available memory, hard page reads; the second file is its counter list |
+| `load_processes.csv` | Run, Windows | Per-process CPU and GPU engine averages over the capture, in `typeperf`'s CSV shape |
+| `load_android.txt`, `load_android_stderr.txt` | Run, Android | The 1 s `/proc/stat`, `/proc/<pid>/stat` and `/proc/meminfo` blocks, or the `top` fallback |
+| `env_gate.json`, `env_before.json`, `env_after.json` | Run | `Get-ThermalState.ps1`, which also gives a one-shot load reading: disk busy, available memory, hard page reads, top processes, known activities and pending reboot on Windows, `dumpsys cpuinfo` on Android |
+| `fingerprint_batch_start.json`, `fingerprint_batch_end.json` | Batch | `Get-EnvironmentFingerprint.ps1` before the first run and after the last; the script warns about every key outside `meta.*` that differs between the two |
+
+The script passes each run's load files, the start fingerprint and the batch id (the leaf
+name of `-OutDir`) to `ingest`. Before each run, after the thermal gate, it waits for a quiet
+machine for up to `-MaxQuietWaitSeconds` (default 120); see
+[Quiet gate](#quiet-gate).
+
 ## Analyzer
 
 Build and test from the `GnollHackTests` directory, so that its `global.json` selects the SDK
@@ -465,11 +750,22 @@ $a = 'win\win32\xpl\GnollHackTests\GnollHack.PerformanceAnalyzer\bin\Release\net
 & $a compare --a runsA --b runsB --label-a GPU --label-b CPU --series smoothness --out report_smoothness.md
 & $a ingest --presentmon run.csv --process GnollHackM --refresh-hz 144 --target-fps 72 --out run.json
 & $a history --file DEVEL\performance\history.jsonl --append runsA runsB
+& $a history --file DEVEL\performance\history.jsonl --list --scenario W1
+& $a drift --file DEVEL\performance\history.jsonl --scenario W1 --out drift.md
 ```
 
 The `smoothness` report gives the headline metrics (recomputed and as the app reported
 them), the join statistics for measured display times, the hitch-cause table, the ten worst
 hitches each with its full stage timeline, and the change-point segments.
+
+`ingest` also takes `--batch <id>`, `--fingerprint <json>` (repeatable; the files of
+`Get-EnvironmentFingerprint.ps1`), and the per-run load files as `--env-during-system
+<load_system.csv>`, `--env-during-processes <load_processes.csv>` or `--env-during-android
+<load_android.txt>`, which become the record's `external` background block. With
+`--run-json` it also takes the in-app record's fingerprint, batch (its suite id), notes and
+background block, and it excludes in the same order as the app. A history line keeps the
+background blocks without their per-second samples. `drift` finds steps over time in the
+history and attributes them; see [Reading a drift report](#reading-a-drift-report).
 
 ## iOS signposts
 
@@ -485,13 +781,14 @@ subsystem.
 
 | Path | What |
 |------|------|
-| `scripts/Run-PerformanceSuite.ps1` | Interleaved two-arm batch driver: launches the app, captures presented frames, collects in-app records, gates on thermal state, analyzes, compares, appends to history |
+| `scripts/Run-PerformanceSuite.ps1` | Interleaved two-arm batch driver: launches the app, captures presented frames and the background load, collects in-app records, gates on thermal state and a quiet machine, fingerprints the environment at batch start and end, analyzes, compares, appends to history |
 | `scripts/Capture-PresentMon.ps1` | Windows: presentation timing for one process with PresentMon 2.x, QPC timestamps included |
 | `scripts/Capture-AndroidFrames.ps1` | Android: `gfxinfo framestats` polling, optional Perfetto trace and CSV export |
-| `scripts/Get-ThermalState.ps1` | Thermal and power facts for the Windows host or an Android device, as JSON |
-| `scripts/Common.ps1` | Shared helpers (tool resolution, native calls that write to stderr, JSON writing, git facts) |
+| `scripts/Get-ThermalState.ps1` | Thermal and power facts for the Windows host or an Android device, as JSON, with a one-shot background load reading (top processes, known activities, disk, memory, pending reboot) |
+| `scripts/Get-EnvironmentFingerprint.ps1` | The environment fingerprint of the Windows host or an Android device, as flat JSON in the shared key scheme |
+| `scripts/Common.ps1` | Shared helpers (tool resolution, native calls that write to stderr, JSON writing, git facts, the background load sampler and the quiet check) |
 | `perfetto/frametimeline.pbtxt` | Perfetto trace config |
 | `perfetto/export_frames.sql`, `perfetto/export_app_slices.sql` | `trace_processor` queries behind the Perfetto CSVs |
-| `schema/run-record.schema.json` | The in-app run record format (schema v2), with the optional `suite` object of a suite run and the `marks` array |
-| `schema/suite-manifest.schema.json` | The `suite.json` manifest of an in-app Performance Suite (manifest version 1) |
+| `schema/run-record.schema.json` | The in-app run record format (schema v2), with the optional `suite` object of a suite run, the `marks` array, the `background` block and `environment.fingerprint` |
+| `schema/suite-manifest.schema.json` | The `suite.json` manifest of an in-app Performance Suite (manifest version 1), with the fingerprints at start and end and each run's background verdict |
 | `history.jsonl` | Append-only record of Release runs, created on first append |

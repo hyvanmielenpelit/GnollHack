@@ -17,6 +17,35 @@ namespace GnollHackX.Performance
         public GHSmoothnessSummary Summary;
         public int TurnReached = -1;
         public string ExcludedReason;
+        public string BackgroundVerdict;            /* a GHBackgroundLoad verdict name; null when not recorded */
+        public double OtherCpuP90Pct = double.NaN;  /* NaN when not recorded */
+        public string BackgroundReason;             /* set for elevated and busy runs */
+        public string Notes;                        /* e.g. a quiet gate timeout before the run */
+    }
+
+    /* The most recent earlier finished suite with the same comparability key on the same
+       hardware, as the suite report describes it. Changes is the fingerprint diff from
+       that suite to this one. */
+    public sealed class GHReportPreviousSuite
+    {
+        public string SuiteId;
+        public string ArmLabel;
+        public DateTime StartedUtc;
+        public int RunsUsed;
+        public double MedianHitchRatioMsPerSec = double.NaN;
+        public readonly List<GHFingerprintChange> Changes = new List<GHFingerprintChange>();
+    }
+
+    /* What a comparison report adds to the comparison itself: each arm's pooled
+       fingerprint (null computes it from the arm's suites), the number of used runs of
+       both arms with an elevated background verdict, and the comparison recomputed
+       without them (null when it could not be computed). */
+    public sealed class GHReportComparisonContext
+    {
+        public Dictionary<string, string> FingerprintA;
+        public Dictionary<string, string> FingerprintB;
+        public int ElevatedRuns;
+        public GHComparisonResult WithoutElevated;
     }
 
     /* One recorded performance suite: its identity, the device and build it ran on,
@@ -54,6 +83,11 @@ namespace GnollHackX.Performance
         public string FmodVersion;
         public double MapFpsSetting;
         public double MeasuredRefreshHz;
+        public Dictionary<string, string> Fingerprint;       /* at the suite start; null when not recorded */
+        public Dictionary<string, string> FingerprintAtEnd;  /* null when not recorded */
+        public bool EnvironmentChanged;
+        public GHReportPreviousSuite Previous;                /* null when there is none */
+        public bool? BackgroundSamplerEnabled;                /* null when not recorded */
         public readonly List<GHReportRun> Runs = new List<GHReportRun>();
     }
 
@@ -76,10 +110,15 @@ namespace GnollHackX.Performance
         private const int DropColW = 5;
         private const int GcColW = 4;
         private const int GcMsColW = 8;
-        private const int TurnColW = 6;
+        private const int BgColW = 5;
+        private const int TurnColW = 5;
         private const int StatusColW = MaxLineWidth
             - (RunColW + FpsColW + HitchColW + PaceColW + JudderColW + DropColW
-               + GcColW + GcMsColW + TurnColW);
+               + GcColW + GcMsColW + BgColW + TurnColW);
+
+        /* Width of the category name in the environment section */
+        private const int CategoryColW = 11;
+        private const int MaxSuspects = 3;
 
         public static string SuiteReport(GHReportSuite suite)
         {
@@ -92,10 +131,16 @@ namespace GnollHackX.Performance
 
             AppendIdentity(sb, suite);
             Line(sb, "");
+            AppendEnvironment(sb, suite);
+            Line(sb, "");
             AppendRunTable(sb, suite);
+            Line(sb, "");
+            AppendBackgroundSummary(sb, suite);
             Line(sb, "");
             List<GHReportRun> used = UsedRuns(suite);
             AppendMedians(sb, used);
+            Line(sb, "");
+            AppendPreviousSuite(sb, suite, used);
             Line(sb, "");
             AppendCauseTotals(sb, used);
             Line(sb, "");
@@ -105,6 +150,15 @@ namespace GnollHackX.Performance
 
         public static string ComparisonReport(GHComparisonResult result,
             IList<GHReportSuite> suitesA, IList<GHReportSuite> suitesB)
+        {
+            return ComparisonReport(result, suitesA, suitesB, null);
+        }
+
+        /* The comparison report with the environment differences, the attribution and,
+           when context counts elevated runs, the sensitivity line; a null context pools
+           each arm's fingerprint from its suites and prints no sensitivity line. */
+        public static string ComparisonReport(GHComparisonResult result,
+            IList<GHReportSuite> suitesA, IList<GHReportSuite> suitesB, GHReportComparisonContext context)
         {
             StringBuilder sb = new StringBuilder();
             if (result == null)
@@ -120,11 +174,12 @@ namespace GnollHackX.Performance
             Line(sb, "");
             AppendVersionLines(sb, "A", suitesA);
             AppendVersionLines(sb, "B", suitesB);
-            AppendVersionDifferences(sb, suitesA, suitesB);
+            AppendEnvironmentDifferences(sb, suitesA, suitesB, context);
             Line(sb, "");
             AppendVerdictTable(sb, result);
             Line(sb, "");
             AppendOverallLine(sb, result);
+            AppendSensitivity(sb, result, context);
             Line(sb, "");
             List<GHReportRun> usedA = UsedRunsOfSuites(suitesA);
             List<GHReportRun> usedB = UsedRunsOfSuites(suitesB);
@@ -228,6 +283,260 @@ namespace GnollHackX.Performance
                 + suite.StartedUtc.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
         }
 
+        /* One line per fingerprint category with its short hash and key count, then the
+           keys that changed between the suite's start and end when they did. */
+        private static void AppendEnvironment(StringBuilder sb, GHReportSuite suite)
+        {
+            Line(sb, "Environment:");
+            Dictionary<string, string> fp = suite.Fingerprint;
+            if (fp == null || fp.Count == 0)
+            {
+                Line(sb, "  not recorded");
+                return;
+            }
+            List<string> categories = FingerprintCategories(fp);
+            for (int i = 0; i < categories.Count; i++)
+            {
+                int count = CountCategoryKeys(fp, categories[i]);
+                Line(sb, Truncate("  " + PadR(categories[i], CategoryColW)
+                    + GHEnvironmentFingerprint.ShortHash(fp, categories[i])
+                    + "  " + count.ToString(CultureInfo.InvariantCulture) + (count == 1 ? " key" : " keys"),
+                    MaxLineWidth));
+            }
+            if (!fp.ContainsKey(GHEnvironmentFingerprint.MetaFingerprintVersionKey))
+                Line(sb, "  (legacy record: per-field environment values only)");
+            if (suite.EnvironmentChanged)
+            {
+                Line(sb, "Environment changed during the suite:");
+                GHEnvironmentFingerprint.AppendReportLines(sb,
+                    CountedChanges(GHEnvironmentFingerprint.Diff(fp, suite.FingerprintAtEnd)), MaxLineWidth);
+            }
+        }
+
+        /* The categories of fp other than meta, in attribution order, then ordinally */
+        private static List<string> FingerprintCategories(Dictionary<string, string> fp)
+        {
+            List<string> categories = new List<string>();
+            foreach (KeyValuePair<string, string> kv in fp)
+            {
+                string category = GHEnvironmentFingerprint.CategoryOf(kv.Key);
+                if (category != GHEnvironmentFingerprint.CategoryMeta && !categories.Contains(category))
+                    categories.Add(category);
+            }
+            categories.Sort(delegate (string x, string y)
+            {
+                int c = GHEnvironmentFingerprint.CategoryRank(x).CompareTo(GHEnvironmentFingerprint.CategoryRank(y));
+                return c != 0 ? c : string.CompareOrdinal(x, y);
+            });
+            return categories;
+        }
+
+        private static int CountCategoryKeys(Dictionary<string, string> fp, string category)
+        {
+            int n = 0;
+            foreach (KeyValuePair<string, string> kv in fp)
+            {
+                if (GHEnvironmentFingerprint.CategoryOf(kv.Key) == category)
+                    n++;
+            }
+            return n;
+        }
+
+        /* The Changed, Added and Removed entries of changes */
+        private static List<GHFingerprintChange> CountedChanges(List<GHFingerprintChange> changes)
+        {
+            List<GHFingerprintChange> list = new List<GHFingerprintChange>();
+            for (int i = 0; i < changes.Count; i++)
+            {
+                GHFingerprintChangeKind kind = changes[i].Kind;
+                if (kind == GHFingerprintChangeKind.Changed || kind == GHFingerprintChangeKind.Added
+                    || kind == GHFingerprintChangeKind.Removed)
+                    list.Add(changes[i]);
+            }
+            return list;
+        }
+
+        /* The suite's own fingerprint, or one mapped from its per-field environment when
+           it has none */
+        public static Dictionary<string, string> EffectiveFingerprint(GHReportSuite suite)
+        {
+            if (suite == null)
+                return null;
+            if (suite.Fingerprint != null && suite.Fingerprint.Count > 0)
+                return suite.Fingerprint;
+            return GHEnvironmentFingerprint.FromLegacyFields(suite.AppVersion, suite.GitCommit, suite.BuildConfiguration,
+                suite.RuntimeVersion, suite.FrameworkVersion, suite.UiFrameworkVersion, suite.SkiaSharpVersion,
+                suite.FmodVersion, suite.Platform, suite.DeviceOs, suite.DeviceModel, null, null, null);
+        }
+
+        /* The common values (GHEnvironmentFingerprint.CommonValues) of the suites'
+           effective fingerprints */
+        public static Dictionary<string, string> PooledFingerprint(IList<GHReportSuite> suites)
+        {
+            List<IDictionary<string, string>> list = new List<IDictionary<string, string>>();
+            if (suites != null)
+            {
+                for (int i = 0; i < suites.Count; i++)
+                    list.Add(EffectiveFingerprint(suites[i]));
+            }
+            return GHEnvironmentFingerprint.CommonValues(list);
+        }
+
+        /* Counts of background verdicts over every run and the suspects the elevated and
+           busy runs name most often */
+        private static void AppendBackgroundSummary(StringBuilder sb, GHReportSuite suite)
+        {
+            int quiet = 0, elevated = 0, busy = 0, unknown = 0, none = 0;
+            Dictionary<string, int> suspects = new Dictionary<string, int>(StringComparer.Ordinal);
+            for (int i = 0; i < suite.Runs.Count; i++)
+            {
+                GHReportRun run = suite.Runs[i];
+                string verdict = run.BackgroundVerdict;
+                if (string.IsNullOrEmpty(verdict))
+                    none++;
+                else if (verdict == GHBackgroundLoad.VerdictQuietName)
+                    quiet++;
+                else if (verdict == GHBackgroundLoad.VerdictElevatedName)
+                    elevated++;
+                else if (verdict == GHBackgroundLoad.VerdictBusyName)
+                    busy++;
+                else
+                    unknown++;
+
+                string reason = run.BackgroundReason;
+                if (string.IsNullOrEmpty(reason) && run.ExcludedReason != null
+                    && run.ExcludedReason.StartsWith(GHBackgroundLoad.ReasonPrefix, StringComparison.Ordinal))
+                    reason = run.ExcludedReason;
+                List<string> named = SuspectsOf(reason);
+                for (int j = 0; j < named.Count; j++)
+                {
+                    int n;
+                    suspects.TryGetValue(named[j], out n);
+                    suspects[named[j]] = n + 1;
+                }
+            }
+
+            if (quiet + elevated + busy + unknown == 0)
+            {
+                Line(sb, "Background load: not recorded"
+                    + (suite.BackgroundSamplerEnabled == false ? " (sampler off)" : ""));
+                return;
+            }
+            Line(sb, "Background load:");
+            List<string> parts = new List<string>();
+            AddCount(parts, quiet, GHBackgroundLoad.VerdictQuietName);
+            AddCount(parts, elevated, GHBackgroundLoad.VerdictElevatedName);
+            AddCount(parts, busy, GHBackgroundLoad.VerdictBusyName);
+            AddCount(parts, unknown, GHBackgroundLoad.VerdictUnknownName);
+            AddCount(parts, none, "not recorded");
+            Line(sb, Truncate("  " + string.Join(", ", parts.ToArray()), MaxLineWidth));
+
+            if (suspects.Count == 0)
+                return;
+            List<KeyValuePair<string, int>> ranked = new List<KeyValuePair<string, int>>(suspects);
+            ranked.Sort(delegate (KeyValuePair<string, int> x, KeyValuePair<string, int> y)
+            {
+                int c = y.Value.CompareTo(x.Value);
+                return c != 0 ? c : string.CompareOrdinal(x.Key, y.Key);
+            });
+            StringBuilder text = new StringBuilder("  Suspects: ");
+            for (int i = 0; i < ranked.Count && i < MaxSuspects; i++)
+            {
+                if (i > 0)
+                    text.Append(", ");
+                text.Append(ranked[i].Key);
+                text.Append(" (");
+                text.Append(ranked[i].Value.ToString(CultureInfo.InvariantCulture));
+                text.Append(ranked[i].Value == 1 ? " run)" : " runs)");
+            }
+            Line(sb, Truncate(text.ToString(), MaxLineWidth));
+        }
+
+        private static void AddCount(List<string> parts, int count, string name)
+        {
+            if (count > 0)
+                parts.Add(count.ToString(CultureInfo.InvariantCulture) + " " + name);
+        }
+
+        /* The distinct suspects a background reason names: the known activities among
+           its facts ("wsl-vm 22 %") and the categories of its named processes
+           ("wsl-vm (vmmemWSL 22 %)"), a process of the "other" category by its name. */
+        private static List<string> SuspectsOf(string reason)
+        {
+            List<string> found = new List<string>();
+            if (string.IsNullOrEmpty(reason) || !reason.StartsWith(GHBackgroundLoad.ReasonPrefix, StringComparison.Ordinal))
+                return found;
+            string body = reason.Substring(GHBackgroundLoad.ReasonPrefix.Length);
+            if (body.EndsWith("...", StringComparison.Ordinal))
+                body = body.Substring(0, body.Length - 3);
+            string[] groups = body.Split(new string[] { "; " }, StringSplitOptions.None);
+            for (int g = 0; g < groups.Length; g++)
+            {
+                string[] pieces = groups[g].Split(new string[] { ", " }, StringSplitOptions.None);
+                for (int i = 0; i < pieces.Length; i++)
+                {
+                    string piece = pieces[i].Trim();
+                    string suspect = null;
+                    if (g == 0)
+                    {
+                        int space = piece.IndexOf(' ');
+                        if (space > 0 && space + 1 < piece.Length && char.IsDigit(piece[space + 1])
+                            && IsActivityCategory(piece.Substring(0, space)))
+                            suspect = piece.Substring(0, space);
+                    }
+                    else
+                    {
+                        int paren = piece.IndexOf(" (", StringComparison.Ordinal);
+                        if (paren > 0)
+                        {
+                            suspect = piece.Substring(0, paren);
+                            if (suspect == GHBackgroundLoad.CategoryOther)
+                            {
+                                string rest = piece.Substring(paren + 2);
+                                int space = rest.IndexOf(' ');
+                                suspect = space > 0 ? rest.Substring(0, space) : null;
+                            }
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(suspect) && !found.Contains(suspect))
+                        found.Add(suspect);
+                }
+            }
+            return found;
+        }
+
+        private static bool IsActivityCategory(string name)
+        {
+            return name == GHBackgroundLoad.CategoryWindowsUpdate || name == GHBackgroundLoad.CategoryAntivirus
+                || name == GHBackgroundLoad.CategoryIndexer || name == GHBackgroundLoad.CategoryWslVm
+                || name == GHBackgroundLoad.CategoryBuildTools || name == GHBackgroundLoad.CategorySync
+                || name == GHBackgroundLoad.CategoryTelemetry;
+        }
+
+        /* The previous comparable suite's median against this one's and the fingerprint
+           changes since it; descriptive only */
+        private static void AppendPreviousSuite(StringBuilder sb, GHReportSuite suite, List<GHReportRun> used)
+        {
+            GHReportPreviousSuite p = suite.Previous;
+            if (p == null)
+            {
+                Line(sb, "Previous comparable suite: none");
+                return;
+            }
+            List<double> hitch = new List<double>();
+            for (int i = 0; i < used.Count; i++)
+                hitch.Add(used[i].Summary.HitchRatioMsPerSec);
+
+            Line(sb, "Changes since the previous comparable suite:");
+            Line(sb, Truncate("  " + OrNA(p.ArmLabel) + ", started "
+                + p.StartedUtc.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) + " UTC, "
+                + p.RunsUsed.ToString(CultureInfo.InvariantCulture) + " used run(s)", MaxLineWidth));
+            Line(sb, Truncate("  Median hitch: " + Fmt(p.MedianHitchRatioMsPerSec) + " ms/s then, "
+                + Fmt(Median(hitch)) + " ms/s now", MaxLineWidth));
+            GHEnvironmentFingerprint.AppendReportLines(sb, p.Changes, MaxLineWidth);
+            Line(sb, "  Descriptive only: the baseline comparison is the decision.");
+        }
+
         private static void AppendRunTable(StringBuilder sb, GHReportSuite suite)
         {
             Line(sb, "Runs:");
@@ -241,7 +550,25 @@ namespace GnollHackX.Performance
             return PadR("Run", RunColW) + PadR("FPS", FpsColW) + PadR("Hitch", HitchColW)
                 + PadR("PaceRMS", PaceColW) + PadR("Judder", JudderColW)
                 + PadR("Drop", DropColW) + PadR("GC#", GcColW) + PadR("GCms", GcMsColW)
-                + PadR("Turn", TurnColW) + PadR("Status", StatusColW);
+                + PadR("Bg", BgColW) + PadR("Turn", TurnColW) + PadR("Status", StatusColW);
+        }
+
+        /* The background verdict's letter (q quiet, e elevated, B busy), followed by the
+           other CPU P90 as an integer when known; "?" when unknown or not recorded */
+        private static string BackgroundLabel(GHReportRun run)
+        {
+            string letter;
+            if (run.BackgroundVerdict == GHBackgroundLoad.VerdictQuietName)
+                letter = "q";
+            else if (run.BackgroundVerdict == GHBackgroundLoad.VerdictElevatedName)
+                letter = "e";
+            else if (run.BackgroundVerdict == GHBackgroundLoad.VerdictBusyName)
+                letter = "B";
+            else
+                return "?";
+            if (double.IsNaN(run.OtherCpuP90Pct) || double.IsInfinity(run.OtherCpuP90Pct))
+                return letter;
+            return letter + Math.Max(0, run.OtherCpuP90Pct).ToString("F0", CultureInfo.InvariantCulture);
         }
 
         private static void AppendRunRow(StringBuilder sb, GHReportRun run)
@@ -249,6 +576,7 @@ namespace GnollHackX.Performance
             string runLabel = run.IsWarmUp ? "W" : run.Index.ToString(CultureInfo.InvariantCulture);
             string turnLabel = run.TurnReached >= 0
                 ? run.TurnReached.ToString(CultureInfo.InvariantCulture) : "?";
+            string bgLabel = BackgroundLabel(run);
             GHSmoothnessSummary s = run.Summary;
             string mainPart;
             string status;
@@ -258,7 +586,7 @@ namespace GnollHackX.Performance
                 mainPart = PadR(runLabel, RunColW) + PadR("n/a", FpsColW)
                     + PadR("n/a", HitchColW) + PadR("n/a", PaceColW) + PadR("n/a", JudderColW)
                     + PadR("n/a", DropColW) + PadR("n/a", GcColW) + PadR("n/a", GcMsColW)
-                    + PadR(turnLabel, TurnColW);
+                    + PadR(bgLabel, BgColW) + PadR(turnLabel, TurnColW);
                 status = "no record";
             }
             else
@@ -271,6 +599,7 @@ namespace GnollHackX.Performance
                     + PadR(s.DroppedCount.ToString(CultureInfo.InvariantCulture), DropColW)
                     + PadR(s.GcCount.ToString(CultureInfo.InvariantCulture), GcColW)
                     + PadR(gcMs, GcMsColW)
+                    + PadR(bgLabel, BgColW)
                     + PadR(turnLabel, TurnColW);
                 if (run.ExcludedReason != null)
                     status = run.ExcludedReason;
@@ -287,6 +616,8 @@ namespace GnollHackX.Performance
                 Line(sb, mainPart);
                 Line(sb, "    " + Truncate(status, MaxLineWidth - 4));
             }
+            if (!string.IsNullOrEmpty(run.Notes))
+                Line(sb, "    note: " + Truncate(run.Notes, MaxLineWidth - 10));
         }
 
         /* ---- medians, hitch causes, content events (shared with the comparison) ---- */
@@ -425,35 +756,69 @@ namespace GnollHackX.Performance
             }
         }
 
-        private static void AppendVersionDifferences(StringBuilder sb,
-            IList<GHReportSuite> suitesA, IList<GHReportSuite> suitesB)
+        /* The categorized fingerprint diff from arm A's pooled fingerprint to arm B's (a
+           key whose suites disagree within an arm reads "mixed"), its attribution label,
+           and a warning when the label is confounded or more than one setting differs */
+        private static void AppendEnvironmentDifferences(StringBuilder sb,
+            IList<GHReportSuite> suitesA, IList<GHReportSuite> suitesB, GHReportComparisonContext context)
         {
-            List<string> a = DistinctBuilds(suitesA);
-            List<string> b = DistinctBuilds(suitesB);
-            if (a.Count != 1 || b.Count != 1)
+            Dictionary<string, string> a = context != null && context.FingerprintA != null
+                ? context.FingerprintA : PooledFingerprint(suitesA);
+            Dictionary<string, string> b = context != null && context.FingerprintB != null
+                ? context.FingerprintB : PooledFingerprint(suitesB);
+            List<GHFingerprintChange> changes = GHEnvironmentFingerprint.Diff(a, b);
+
+            Line(sb, "Environment differences (A -> B):");
+            GHEnvironmentFingerprint.AppendReportLines(sb, changes, MaxLineWidth);
+            string label = GHEnvironmentFingerprint.AttributionLabel(changes);
+            Line(sb, Truncate("Attribution: " + label, MaxLineWidth));
+            if (label.StartsWith(GHEnvironmentFingerprint.AttributionConfoundedPrefix, StringComparison.Ordinal))
+                Line(sb, "Warning: code and environment both differ; the result is confounded.");
+            if (GHEnvironmentFingerprint.SettingsViolation(changes))
+                Line(sb, "Warning: " + GHEnvironmentFingerprint.SettingsViolationText
+                    + "; compare one change at a time.");
+        }
+
+        /* Whether leaving out the elevated runs changes any metric's verdict: "decision
+           unchanged" on the same line, else one indented line per changed metric;
+           nothing when no used run was elevated */
+        private static void AppendSensitivity(StringBuilder sb, GHComparisonResult result,
+            GHReportComparisonContext context)
+        {
+            if (context == null || context.ElevatedRuns <= 0)
+                return;
+            string head = "Without the " + context.ElevatedRuns.ToString(CultureInfo.InvariantCulture)
+                + (context.ElevatedRuns == 1 ? " elevated run:" : " elevated runs:");
+            GHComparisonResult without = context.WithoutElevated;
+            if (without == null)
             {
-                Line(sb, "Differences: cannot compare (multiple builds within an arm).");
+                Line(sb, Truncate(head + " an arm has no used runs left", MaxLineWidth));
                 return;
             }
-
-            string[] pa = a[0].Split('|');
-            string[] pb = b[0].Split('|');
-            string[] names = { "App version", "Commit", "SkiaSharp", "Framework", "Runtime" };
-            List<string> diffs = new List<string>();
-            for (int i = 0; i < names.Length; i++)
+            List<string> changes = new List<string>();
+            for (int i = 0; i < result.Decisions.Count; i++)
             {
-                if (pa[i] != pb[i])
-                    diffs.Add(names[i] + " " + pa[i] + " -> " + pb[i]);
+                GHMetricDecision d = result.Decisions[i];
+                string name = d.Metric != null ? d.Metric.Name : null;
+                for (int j = 0; j < without.Decisions.Count; j++)
+                {
+                    GHMetricDecision w = without.Decisions[j];
+                    string wName = w.Metric != null ? w.Metric.Name : null;
+                    if (wName != name)
+                        continue;
+                    if (!string.Equals(w.Verdict, d.Verdict, StringComparison.Ordinal))
+                        changes.Add("  " + OrNA(name) + " changes to " + OrNA(w.Verdict));
+                    break;
+                }
             }
-
-            if (diffs.Count == 0)
+            if (changes.Count == 0)
             {
-                Line(sb, "Differences: none");
+                Line(sb, Truncate(head + " decision unchanged", MaxLineWidth));
                 return;
             }
-            Line(sb, "Differences:");
-            for (int i = 0; i < diffs.Count; i++)
-                Line(sb, Truncate("  " + diffs[i], MaxLineWidth));
+            Line(sb, Truncate(head, MaxLineWidth));
+            for (int i = 0; i < changes.Count; i++)
+                Line(sb, Truncate(changes[i], MaxLineWidth));
         }
 
         /* One '|'-joined combo per distinct (AppVersion, short commit, SkiaSharp,

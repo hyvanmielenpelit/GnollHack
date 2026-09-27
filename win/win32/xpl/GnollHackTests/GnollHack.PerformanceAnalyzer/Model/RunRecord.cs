@@ -85,6 +85,40 @@ namespace GnollHack.PerformanceAnalyzer.Model
             return Series.FirstOrDefault(s => string.Equals(s.Kind, kind, StringComparison.OrdinalIgnoreCase));
         }
 
+        /* Which side recorded the fingerprint: the app ("in-app") or only the host
+           script ("script"). The two record some facts under different keys. */
+        public const string MetaSourceKey = "meta.source";
+        public const string SourceInAppValue = "in-app";
+        public const string SourceScriptValue = "script";
+
+        /* GHEnvironmentFingerprint.Diff, except that when the two fingerprints come from
+           different sources (or either is a mix), keys only one side holds are left out
+           instead of being reported as added or removed */
+        public static List<GHFingerprintChange> DiffFingerprints(IDictionary<string, string> a, IDictionary<string, string> b, out bool sourcesDiffer)
+        {
+            string sa = null, sb = null;
+            if (a != null)
+                a.TryGetValue(MetaSourceKey, out sa);
+            if (b != null)
+                b.TryGetValue(MetaSourceKey, out sb);
+            sourcesDiffer = sa != null && sb != null
+                && (sa != sb || sa == GHEnvironmentFingerprint.MixedValue || sb == GHEnvironmentFingerprint.MixedValue);
+            if (!sourcesDiffer || a == null || b == null)
+                return GHEnvironmentFingerprint.Diff(a, b);
+            Dictionary<string, string> sharedA = new Dictionary<string, string>();
+            Dictionary<string, string> sharedB = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, string> kv in a)
+            {
+                string other;
+                if (b.TryGetValue(kv.Key, out other))
+                {
+                    sharedA[kv.Key] = kv.Value;
+                    sharedB[kv.Key] = other;
+                }
+            }
+            return GHEnvironmentFingerprint.Diff(sharedA, sharedB);
+        }
+
         /* Gives a record without a fingerprint the one its per-field environment maps to */
         public void NormalizeLegacy()
         {

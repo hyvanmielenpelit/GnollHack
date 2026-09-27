@@ -230,14 +230,23 @@ namespace GnollHackX.Pages.MainScreen
 
         private string _defaultArmLabel = "";
 
-        /* "<app version> <short commit>", omitting the commit when it is unknown. */
+        /* "<app version> <short commit>", omitting the commit when it is unknown. The
+           commit is the part after '+' of the informational version of the assembly
+           GHPerformanceEnvironment reads it from; a full environment capture is avoided
+           here, since its first call can block on WMI. */
         private string BuildDefaultArmLabel()
         {
             string version = GHApp.GHVersionString;
             string commit = null;
             try
             {
-                commit = GHPerformanceEnvironment.Capture().GitCommit;
+                System.Reflection.AssemblyInformationalVersionAttribute attribute = System.Attribute.GetCustomAttribute(
+                    typeof(GHPerformanceEnvironment).Assembly, typeof(System.Reflection.AssemblyInformationalVersionAttribute))
+                    as System.Reflection.AssemblyInformationalVersionAttribute;
+                string informational = attribute != null ? attribute.InformationalVersion : null;
+                int plus = informational != null ? informational.IndexOf('+') : -1;
+                if (plus >= 0 && plus + 1 < informational.Length)
+                    commit = informational.Substring(plus + 1);
             }
             catch (Exception ex)
             {
@@ -614,6 +623,10 @@ namespace GnollHackX.Pages.MainScreen
                 markers.Add("aborted");
             if (!string.IsNullOrEmpty(info.Origin) && info.Origin.IndexOf("import", StringComparison.OrdinalIgnoreCase) >= 0)
                 markers.Add("imported");
+            if (info.HasBackgroundExclusion)
+                markers.Add("bg");
+            if (info.EnvironmentChanged)
+                markers.Add("env changed");
             item.MarkersText = string.Join(", ", markers);
             item.HasMarkers = markers.Count > 0;
 
@@ -953,6 +966,22 @@ namespace GnollHackX.Pages.MainScreen
             PerformanceSuiteGrid.IsEnabled = true;
             RefreshSuiteList(_pendingSelectSuiteId);
             _pendingSelectSuiteId = null;
+            WarmEnvironmentCache();
+        }
+
+        /* The first environment capture can block for seconds (WMI); running it once on
+           the thread pool lets the later captures on the UI thread (the suite manifest,
+           the run records, the share zip) read the cache */
+        private static void WarmEnvironmentCache()
+        {
+            try
+            {
+                Task.Run(delegate { GHPerformanceEnvironment.CaptureFingerprint(false); });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {

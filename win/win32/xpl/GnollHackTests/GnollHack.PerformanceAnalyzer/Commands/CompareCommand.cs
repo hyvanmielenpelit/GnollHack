@@ -373,9 +373,16 @@ namespace GnollHack.PerformanceAnalyzer.Commands
         {
             Dictionary<string, string> fa = CommonFingerprint(a.Used);
             Dictionary<string, string> fb = CommonFingerprint(b.Used);
-            List<GHFingerprintChange> diff = GHEnvironmentFingerprint.Diff(fa, fb);
+            bool sourcesDiffer;
+            List<GHFingerprintChange> diff = RunRecord.DiffFingerprints(fa, fb, out sourcesDiffer);
             md.AppendLine("## Environment differences");
             md.AppendLine();
+            if (sourcesDiffer)
+            {
+                md.AppendLine("The arms' fingerprints come from different sources (the app and the host script), "
+                    + "so only the keys both arms recorded are compared.");
+                md.AppendLine();
+            }
             md.AppendLine("Common fingerprint of the used runs: " + fa.Count + " keys (" + a.Label + "), " + fb.Count + " keys (" + b.Label
                 + "); a key whose value differs within an arm reads \"" + GHEnvironmentFingerprint.MixedValue + "\". "
                 + a.Label + " -> " + b.Label + ":");

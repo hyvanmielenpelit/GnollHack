@@ -48,6 +48,8 @@ namespace GnollHackX.Performance
         public long SizeBytes;
         public string ComparabilityKey;
         public bool IsBaseline;                   /* the baseline label for this key equals ArmLabel */
+        public bool HasBackgroundExclusion;       /* a run was excluded for background load */
+        public bool EnvironmentChanged;           /* the environment changed during the suite */
     }
 
     /* What ImportZip hands back: the suite ids it moved into the store, the ones already
@@ -70,7 +72,8 @@ namespace GnollHackX.Performance
        scan cannot mistake it for one; manifestVersion is its own version tag instead.
        Every double written to a manifest maps NaN and Infinity to 0 (see R below), the
        same convention GHPerformanceRunRecord.R uses for the per-run JSON, so the file
-       never carries Newtonsoft's non-standard NaN token.
+       never carries Newtonsoft's non-standard NaN token; the exception is a run's
+       "background" object, where null marks a signal the platform did not report.
 
        Every public member catches its own exceptions and fails soft (null, false, or an
        empty result) rather than throwing; manifest reads, edits and writes are serialized
@@ -238,6 +241,7 @@ namespace GnollHackX.Performance
                     run.Index = context.RunIndex;
                     run.IsWarmUp = context.IsWarmUp;
                     run.TurnReached = context.TurnReached;
+                    run.Notes = context.Notes;
 
                     if (result != null)
                     {
@@ -246,6 +250,7 @@ namespace GnollHackX.Performance
                         run.ThermalBefore = BuildThermalJson(result.ThermalBefore);
                         run.ThermalAfter = BuildThermalJson(result.ThermalAfter);
                         run.Summary = result.Summary != null ? BuildSummaryJson(result.Summary) : null;
+                        run.Background = BuildRunBackgroundJson(result.Background);
                     }
                     else
                     {
@@ -279,11 +284,20 @@ namespace GnollHackX.Performance
             }
         }
 
+        /* FinishSuite with no fingerprint captured at the end */
+        public static void FinishSuite(string suiteId, string status, string abortReason)
+        {
+            FinishSuite(suiteId, status, abortReason, null);
+        }
+
         /* Sets status and endedUtc, computes measuredRefreshHz/targetFps as the median
            over every run with a summary (warm-up and excluded runs included), computes
-           comparabilityKey from that measured refresh rate, rewrites suite.json, and
-           writes report.txt. */
-        public static void FinishSuite(string suiteId, string status, string abortReason)
+           comparabilityKey from that measured refresh rate, records fingerprintAtEnd and
+           whether the environment changed since the suite start (any changed, added or
+           removed key outside meta and code), rewrites suite.json, and writes
+           report.txt. */
+        public static void FinishSuite(string suiteId, string status, string abortReason,
+            Dictionary<string, string> fingerprintAtEnd)
         {
             if (string.IsNullOrEmpty(suiteId))
                 return;
@@ -314,6 +328,14 @@ namespace GnollHackX.Performance
                     manifest.MeasuredRefreshHz = R(measuredMedian);
                     manifest.TargetFps = R(Median(target));
                     manifest.ComparabilityKey = ComputeComparabilityKey(manifest, measuredMedian);
+
+                    if (fingerprintAtEnd != null && fingerprintAtEnd.Count > 0)
+                    {
+                        manifest.FingerprintAtEnd = fingerprintAtEnd;
+                        Dictionary<string, string> atStart = manifest.Environment != null ? manifest.Environment.Fingerprint : null;
+                        if (atStart != null && atStart.Count > 0)
+                            manifest.EnvironmentChanged = EnvironmentDiffers(atStart, fingerprintAtEnd);
+                    }
 
                     WriteManifest(dir, manifest);
                 }
@@ -378,15 +400,22 @@ namespace GnollHackX.Performance
             return Path.Combine(SuiteDirectory(suiteId), ReportFileName);
         }
 
-        /* Renders and writes report.txt for the suite; returns its path, or null on
-           failure (including when the suite cannot be loaded). */
+        /* Renders and writes report.txt for the suite, with the previous comparable suite
+           (FindPreviousSuite) when there is one; returns its path, or null on failure
+           (including when the suite cannot be loaded). */
         public static string WriteReport(string suiteId)
         {
             try
             {
-                GHReportSuite suite = LoadReportSuite(suiteId);
-                if (suite == null)
+                ManifestJson manifest;
+                lock (_lock)
+                {
+                    manifest = ReadManifest(SuiteDirectory(suiteId));
+                }
+                if (manifest == null)
                     return null;
+                GHReportSuite suite = MapToReportSuite(manifest);
+                suite.Previous = FindPreviousSuite(suite, manifest.ComparabilityKey);
                 string text = GHPerformanceTextReport.SuiteReport(suite);
                 string path = ReportPath(suiteId);
                 string dir = Path.GetDirectoryName(path);
@@ -453,10 +482,13 @@ namespace GnollHackX.Performance
         }
 
         /* Compares this suite's arm against the recorded baseline arm for its
-           comparability key, over every finished suite that shares the key. Refuses
-           (returns false, with a short sentence in refusal) when the suite has not
-           finished, no baseline is set for its key, the suite's own label is the
-           baseline label, or either arm has no used runs. */
+           comparability key, over every finished suite that shares the key and was
+           measured on this suite's hardware (SameDevice). Refuses (returns false, with a
+           short sentence in refusal) when the suite has not finished, no baseline is set
+           for its key, the suite's own label is the baseline label, the baseline arm has
+           no used runs on this device, or either arm has no used runs. The report also
+           carries each arm's pooled fingerprint and the comparison recomputed without
+           the runs whose background verdict was elevated. */
         public static bool TryCompareWithBaseline(string suiteId, out GHComparisonResult result, out string reportText, out string refusal)
         {
             result = null;
@@ -499,10 +531,19 @@ namespace GnollHackX.Performance
                     return false;
                 }
 
+                GHReportSuite candidate = MapToReportSuite(manifest);
                 List<GHReportSuite> suitesA = LoadReportSuitesForArm(key, baselineLabel);
                 List<GHReportSuite> suitesB = LoadReportSuitesForArm(key, label);
-                List<GHSmoothnessSummary> usedA = UsedSummaries(suitesA);
-                List<GHSmoothnessSummary> usedB = UsedSummaries(suitesB);
+                List<GHReportSuite> otherDeviceA = RemoveOtherDevices(suitesA, candidate);
+                RemoveOtherDevices(suitesB, candidate);
+                List<GHSmoothnessSummary> usedA = UsedSummaries(suitesA, false);
+                List<GHSmoothnessSummary> usedB = UsedSummaries(suitesB, false);
+                if (usedA.Count == 0 && otherDeviceA.Count > 0)
+                {
+                    refusal = "Baseline measured on a different device (" + DeviceLabel(otherDeviceA[0])
+                        + " vs " + DeviceLabel(candidate) + ").";
+                    return false;
+                }
                 if (usedA.Count == 0 || usedB.Count == 0)
                 {
                     refusal = "One of the two arms has no used runs.";
@@ -514,7 +555,20 @@ namespace GnollHackX.Performance
 
                 result = GHPerformanceComparison.CompareSmoothness(baselineLabel, usedA, label, usedB, targetPeriodMs,
                     GHPerformanceComparison.DefaultResamples, GHPerformanceComparison.DefaultSeed);
-                reportText = GHPerformanceTextReport.ComparisonReport(result, suitesA, suitesB);
+
+                GHReportComparisonContext context = new GHReportComparisonContext();
+                context.FingerprintA = GHPerformanceTextReport.PooledFingerprint(suitesA);
+                context.FingerprintB = GHPerformanceTextReport.PooledFingerprint(suitesB);
+                context.ElevatedRuns = CountElevatedUsedRuns(suitesA) + CountElevatedUsedRuns(suitesB);
+                if (context.ElevatedRuns > 0)
+                {
+                    List<GHSmoothnessSummary> quietA = UsedSummaries(suitesA, true);
+                    List<GHSmoothnessSummary> quietB = UsedSummaries(suitesB, true);
+                    if (quietA.Count > 0 && quietB.Count > 0)
+                        context.WithoutElevated = GHPerformanceComparison.CompareSmoothness(baselineLabel, quietA, label,
+                            quietB, targetPeriodMs, GHPerformanceComparison.DefaultResamples, GHPerformanceComparison.DefaultSeed);
+                }
+                reportText = GHPerformanceTextReport.ComparisonReport(result, suitesA, suitesB, context);
                 return true;
             }
             catch
@@ -765,6 +819,24 @@ namespace GnollHackX.Performance
             j.SkiaSharpVersion = f.SkiaSharpVersion;
             j.FmodVersion = f.FmodVersion;
             j.MapRefreshRateSetting = f.MapRefreshRateSetting;
+            j.Fingerprint = f.Fingerprint;
+            return j;
+        }
+
+        /* The run's background verdict and headline values; null when there is no report */
+        private static RunBackgroundJson BuildRunBackgroundJson(GHBackgroundReport r)
+        {
+            if (r == null)
+                return null;
+            RunBackgroundJson j = new RunBackgroundJson();
+            j.Verdict = r.VerdictName;
+            if (r.Window != null)
+            {
+                j.OtherCpuP90Pct = RN(r.Window.OtherCpuP90Pct);
+                j.DiskBusyP90Pct = RN(r.Window.DiskBusyP90Pct);
+                j.AvailableMemoryMinPct = RN(r.Window.AvailableMemoryMinPct);
+            }
+            j.Reason = r.Reason;
             return j;
         }
 
@@ -868,7 +940,11 @@ namespace GnollHackX.Performance
                         used++;
                         hitch.Add(r.Summary.HitchRatioMsPerSec);
                     }
+                    if (r != null && r.ExcludedReason != null
+                        && r.ExcludedReason.StartsWith(GHBackgroundLoad.ReasonPrefix, StringComparison.Ordinal))
+                        info.HasBackgroundExclusion = true;
                 }
+                info.EnvironmentChanged = manifest.EnvironmentChanged.HasValue && manifest.EnvironmentChanged.Value;
                 info.RunsUsed = used;
                 info.MedianHitchRatioMsPerSec = Median(hitch);
                 info.SizeBytes = DirectorySizeBytes(dir);
@@ -956,7 +1032,22 @@ namespace GnollHackX.Performance
                 suite.SkiaSharpVersion = env.SkiaSharpVersion;
                 suite.FmodVersion = env.FmodVersion;
                 suite.MapFpsSetting = TrailingNumber(env.MapRefreshRateSetting);
+                /* A manifest written before fingerprints existed maps its per-field
+                   environment onto the same keys */
+                if (env.Fingerprint != null && env.Fingerprint.Count > 0)
+                    suite.Fingerprint = env.Fingerprint;
+                else
+                    suite.Fingerprint = GHEnvironmentFingerprint.FromLegacyFields(env.AppVersion, env.GitCommit,
+                        env.BuildConfiguration, env.RuntimeVersion, env.FrameworkVersion, env.UiFrameworkVersion,
+                        env.SkiaSharpVersion, env.FmodVersion, env.Platform, env.DeviceOs, env.DeviceModel,
+                        env.MapRefreshRateSetting, null, null);
             }
+            suite.FingerprintAtEnd = manifest.FingerprintAtEnd;
+            suite.EnvironmentChanged = manifest.EnvironmentChanged.HasValue && manifest.EnvironmentChanged.Value;
+            string samplerSetting;
+            if (suite.Fingerprint != null
+                && suite.Fingerprint.TryGetValue(GHEnvironmentFingerprint.SettingsKey("backgroundSampler"), out samplerSetting))
+                suite.BackgroundSamplerEnabled = samplerSetting == "true";
             /* The setting is a MapRefreshRateStyle name such as "MapFPS60"; without digits the
                suite's measured target rate stands in */
             if (suite.MapFpsSetting <= 0)
@@ -973,6 +1064,13 @@ namespace GnollHackX.Performance
                 run.TurnReached = r.TurnReached;
                 run.ExcludedReason = r.ExcludedReason;
                 run.Summary = ReconstructSummary(r.Summary);
+                run.Notes = r.Notes;
+                if (r.Background != null)
+                {
+                    run.BackgroundVerdict = r.Background.Verdict;
+                    run.OtherCpuP90Pct = r.Background.OtherCpuP90Pct.HasValue ? r.Background.OtherCpuP90Pct.Value : double.NaN;
+                    run.BackgroundReason = r.Background.Reason;
+                }
                 suite.Runs.Add(run);
             }
             return suite;
@@ -1044,7 +1142,9 @@ namespace GnollHackX.Performance
             return list;
         }
 
-        private static List<GHSmoothnessSummary> UsedSummaries(List<GHReportSuite> suites)
+        /* The used runs' summaries; with skipElevated, without the runs whose background
+           verdict was elevated */
+        private static List<GHSmoothnessSummary> UsedSummaries(List<GHReportSuite> suites, bool skipElevated)
         {
             List<GHSmoothnessSummary> list = new List<GHSmoothnessSummary>();
             for (int i = 0; i < suites.Count; i++)
@@ -1053,11 +1153,139 @@ namespace GnollHackX.Performance
                 for (int j = 0; j < suite.Runs.Count; j++)
                 {
                     GHReportRun r = suite.Runs[j];
-                    if (!r.IsWarmUp && string.IsNullOrEmpty(r.ExcludedReason) && r.Summary != null)
+                    if (!r.IsWarmUp && string.IsNullOrEmpty(r.ExcludedReason) && r.Summary != null
+                        && !(skipElevated && IsElevated(r)))
                         list.Add(r.Summary);
                 }
             }
             return list;
+        }
+
+        private static bool IsElevated(GHReportRun r)
+        {
+            return r.BackgroundVerdict == GHBackgroundLoad.VerdictElevatedName;
+        }
+
+        private static int CountElevatedUsedRuns(List<GHReportSuite> suites)
+        {
+            int n = 0;
+            for (int i = 0; i < suites.Count; i++)
+            {
+                GHReportSuite suite = suites[i];
+                for (int j = 0; j < suite.Runs.Count; j++)
+                {
+                    GHReportRun r = suite.Runs[j];
+                    if (!r.IsWarmUp && string.IsNullOrEmpty(r.ExcludedReason) && r.Summary != null && IsElevated(r))
+                        n++;
+                }
+            }
+            return n;
+        }
+
+        /* Removes from suites those not measured on candidate's device, returning them */
+        private static List<GHReportSuite> RemoveOtherDevices(List<GHReportSuite> suites, GHReportSuite candidate)
+        {
+            List<GHReportSuite> removed = new List<GHReportSuite>();
+            for (int i = suites.Count - 1; i >= 0; i--)
+            {
+                if (SameDevice(candidate, suites[i]))
+                    continue;
+                removed.Insert(0, suites[i]);
+                suites.RemoveAt(i);
+            }
+            return removed;
+        }
+
+        /* Whether two suites ran on the same device: every hardware.* key and os.platform
+           present in both fingerprints agrees; when no such key is present in both, the
+           manifests' platform and device model agree. */
+        private static bool SameDevice(GHReportSuite a, GHReportSuite b)
+        {
+            Dictionary<string, string> fa = a.Fingerprint;
+            Dictionary<string, string> fb = b.Fingerprint;
+            int compared = 0;
+            if (fa != null && fb != null)
+            {
+                foreach (KeyValuePair<string, string> kv in fa)
+                {
+                    if (kv.Key != GHEnvironmentFingerprint.OsPlatformKey
+                        && GHEnvironmentFingerprint.CategoryOf(kv.Key) != GHEnvironmentFingerprint.CategoryHardware)
+                        continue;
+                    string other;
+                    if (!fb.TryGetValue(kv.Key, out other))
+                        continue;
+                    compared++;
+                    if (!string.Equals(kv.Value, other, StringComparison.Ordinal))
+                        return false;
+                }
+            }
+            if (compared > 0)
+                return true;
+            return string.Equals(a.Platform, b.Platform, StringComparison.Ordinal)
+                && string.Equals(a.DeviceModel, b.DeviceModel, StringComparison.Ordinal);
+        }
+
+        private static string DeviceLabel(GHReportSuite suite)
+        {
+            string model;
+            if (suite.Fingerprint != null
+                && suite.Fingerprint.TryGetValue(GHEnvironmentFingerprint.HardwareDeviceModelKey, out model)
+                && !string.IsNullOrEmpty(model))
+                return model;
+            return !string.IsNullOrEmpty(suite.DeviceModel) ? suite.DeviceModel : "unknown device";
+        }
+
+        /* The most recent finished suite started before suite, with the same
+           comparability key, on the same device; null when there is none or on failure */
+        private static GHReportPreviousSuite FindPreviousSuite(GHReportSuite suite, string comparabilityKey)
+        {
+            if (suite == null || string.IsNullOrEmpty(comparabilityKey))
+                return null;
+            try
+            {
+                List<GHPerformanceSuiteInfo> all = ListSuites();
+                for (int i = 0; i < all.Count; i++)
+                {
+                    GHPerformanceSuiteInfo info = all[i];
+                    if (info.SuiteId == suite.SuiteId || info.Status == StatusRunning
+                        || info.StartedUtc >= suite.StartedUtc
+                        || !string.Equals(info.ComparabilityKey, comparabilityKey, StringComparison.Ordinal))
+                        continue;
+                    GHReportSuite previous = LoadReportSuite(info.SuiteId);
+                    if (previous == null || !SameDevice(suite, previous))
+                        continue;
+
+                    GHReportPreviousSuite p = new GHReportPreviousSuite();
+                    p.SuiteId = previous.SuiteId;
+                    p.ArmLabel = previous.ArmLabel;
+                    p.StartedUtc = previous.StartedUtc;
+                    p.RunsUsed = info.RunsUsed;
+                    p.MedianHitchRatioMsPerSec = info.MedianHitchRatioMsPerSec;
+                    p.Changes.AddRange(GHEnvironmentFingerprint.Diff(previous.Fingerprint, suite.Fingerprint));
+                    return p;
+                }
+            }
+            catch
+            {
+                /* The report goes without the section */
+            }
+            return null;
+        }
+
+        /* Any changed, added or removed key outside meta and code */
+        private static bool EnvironmentDiffers(Dictionary<string, string> atStart, Dictionary<string, string> atEnd)
+        {
+            List<GHFingerprintChange> changes = GHEnvironmentFingerprint.Diff(atStart, atEnd);
+            for (int i = 0; i < changes.Count; i++)
+            {
+                GHFingerprintChange c = changes[i];
+                if (c.Category == GHEnvironmentFingerprint.CategoryCode)
+                    continue;
+                if (c.Kind == GHFingerprintChangeKind.Changed || c.Kind == GHFingerprintChangeKind.Added
+                    || c.Kind == GHFingerprintChangeKind.Removed)
+                    return true;
+            }
+            return false;
         }
 
         private static double MedianTargetFps(List<GHReportSuite> suitesA, List<GHReportSuite> suitesB)
@@ -1423,6 +1651,14 @@ namespace GnollHackX.Performance
             return Math.Round(value, 3);
         }
 
+        /* A background value: NaN and Infinity are null, not 0 */
+        private static double? RN(float value)
+        {
+            if (float.IsNaN(value) || float.IsInfinity(value))
+                return null;
+            return Math.Round((double)value, 3);
+        }
+
         /* ---- manifest JSON shape ---- */
 
         private sealed class ManifestJson
@@ -1456,6 +1692,15 @@ namespace GnollHackX.Performance
 
             [JsonProperty("environment")]
             public EnvironmentJson Environment;
+
+            /* The fingerprint re-captured when the suite finished; omitted before that */
+            [JsonProperty("fingerprintAtEnd", NullValueHandling = NullValueHandling.Ignore)]
+            public Dictionary<string, string> FingerprintAtEnd;
+
+            /* Whether it differs from environment.fingerprint outside meta and code;
+               omitted when either fingerprint is missing */
+            [JsonProperty("environmentChanged", NullValueHandling = NullValueHandling.Ignore)]
+            public bool? EnvironmentChanged;
 
             [JsonProperty("comparabilityKey")]
             public string ComparabilityKey;
@@ -1546,6 +1791,10 @@ namespace GnollHackX.Performance
 
             [JsonProperty("mapRefreshRateSetting")]
             public string MapRefreshRateSetting;
+
+            /* The environment fingerprint at the suite start; omitted in older manifests */
+            [JsonProperty("fingerprint", NullValueHandling = NullValueHandling.Ignore)]
+            public Dictionary<string, string> Fingerprint;
         }
 
         private sealed class RunJson
@@ -1575,6 +1824,34 @@ namespace GnollHackX.Performance
             /* Null when the run produced no record */
             [JsonProperty("summary")]
             public SummaryJson Summary;
+
+            /* Omitted when the run has no background report */
+            [JsonProperty("background", NullValueHandling = NullValueHandling.Ignore)]
+            public RunBackgroundJson Background;
+
+            /* e.g. a quiet gate timeout before the run; omitted when not set */
+            [JsonProperty("notes", NullValueHandling = NullValueHandling.Ignore)]
+            public string Notes;
+        }
+
+        /* A run's background verdict and headline window values; null where the platform
+           did not report the signal */
+        private sealed class RunBackgroundJson
+        {
+            [JsonProperty("verdict")]
+            public string Verdict;
+
+            [JsonProperty("otherCpuP90Pct")]
+            public double? OtherCpuP90Pct;
+
+            [JsonProperty("diskBusyP90Pct")]
+            public double? DiskBusyP90Pct;
+
+            [JsonProperty("availableMemoryMinPct")]
+            public double? AvailableMemoryMinPct;
+
+            [JsonProperty("reason")]
+            public string Reason;
         }
 
         private sealed class ThermalJson

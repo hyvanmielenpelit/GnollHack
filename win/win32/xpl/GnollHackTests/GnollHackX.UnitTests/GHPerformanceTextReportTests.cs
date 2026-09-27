@@ -8,9 +8,11 @@ using Xunit;
 namespace GnollHackX.UnitTests
 {
     /* Covers the plain-text renderer in GHPerformanceTextReport: the fixed line width,
-       identity/label truncation, the run table, the medians and cause/event summaries,
-       the A/B comparison report built on top of GHPerformanceComparison, and the recent
-       hitches report over a synthetic frame timeline. */
+       identity/label truncation, the run table with its background column, the
+       environment, background and previous-suite sections, the medians and cause/event
+       summaries, the A/B comparison report built on top of GHPerformanceComparison with
+       its environment attribution and sensitivity line, and the recent hitches report
+       over a synthetic frame timeline. */
     public class GHPerformanceTextReportTests
     {
         private const int Resamples = GHPerformanceComparison.DefaultResamples;
@@ -232,7 +234,9 @@ namespace GnollHackX.UnitTests
 
             AssertNoLineExceedsMaxWidth(report);
             Assert.Contains(GHPerformanceComparison.VerdictRegression, report);
-            Assert.Contains("SkiaSharp 3.116.1 -> 3.118.0", report);
+            /* Suites without a fingerprint are diffed on their per-field environment */
+            Assert.Contains("component.SkiaSharp: 3.116.1 -> 3.118.0", report);
+            Assert.Contains("Attribution: environment: component", report);
         }
 
         [Fact]
@@ -263,6 +267,241 @@ namespace GnollHackX.UnitTests
             string report = GHPerformanceTextReport.ComparisonReport(result, suitesA, suitesB);
 
             Assert.Contains("provisional", report);
+        }
+
+        private static Dictionary<string, string> BuildFingerprint(string gitCommit, string osBuild)
+        {
+            return new Dictionary<string, string>
+            {
+                { GHEnvironmentFingerprint.MetaFingerprintVersionKey, GHEnvironmentFingerprint.FingerprintVersion },
+                { GHEnvironmentFingerprint.MetaCapturedUtcKey, "2026-09-26T12:00:00.0000000Z" },
+                { GHEnvironmentFingerprint.CodeAppVersionKey, "1.2.3" },
+                { GHEnvironmentFingerprint.CodeGitCommitKey, gitCommit },
+                { GHEnvironmentFingerprint.OsPlatformKey, "Android" },
+                { "os.build", osBuild },
+                { GHEnvironmentFingerprint.HardwareDeviceModelKey, "Pixel 8" },
+                { "settings.useTileBatching", "true" },
+                { "settings.backgroundSampler", "true" }
+            };
+        }
+
+        /* Runs 1, 2 and 4 of BuildSuite with quiet, elevated and busy background verdicts */
+        private static GHReportSuite BuildSuiteWithBackground()
+        {
+            GHReportSuite suite = BuildSuite();
+            suite.Runs[1].BackgroundVerdict = GHBackgroundLoad.VerdictQuietName;
+            suite.Runs[1].OtherCpuP90Pct = 3.2;
+            suite.Runs[2].BackgroundVerdict = GHBackgroundLoad.VerdictElevatedName;
+            suite.Runs[2].OtherCpuP90Pct = 12.0;
+            suite.Runs[2].BackgroundReason = "background load: other CPU P90 12 %; build-tools (devenv 5 %)";
+            suite.Runs[4].BackgroundVerdict = GHBackgroundLoad.VerdictBusyName;
+            suite.Runs[4].OtherCpuP90Pct = 31.0;
+            suite.Runs[4].BackgroundReason = "background load: other CPU P90 31 %, wsl-vm 22 %; wsl-vm (vmmemWSL 22 %)";
+            suite.Runs[4].ExcludedReason = suite.Runs[4].BackgroundReason;
+            return suite;
+        }
+
+        [Fact]
+        public void SuiteReport_BackgroundColumnShowsVerdictLetterAndOtherCpu()
+        {
+            GHReportSuite suite = BuildSuiteWithBackground();
+            string report = GHPerformanceTextReport.SuiteReport(suite);
+
+            AssertNoLineExceedsMaxWidth(report);
+            string table = Section(report, "Runs:", "Background load");
+            Assert.Contains(" Bg ", table);
+            Assert.Contains(" q3 ", table);
+            Assert.Contains(" e12 ", table);
+            Assert.Contains(" B31 ", table);
+        }
+
+        [Fact]
+        public void SuiteReport_BackgroundSummaryCountsVerdictsAndSuspects()
+        {
+            GHReportSuite suite = BuildSuiteWithBackground();
+            string report = GHPerformanceTextReport.SuiteReport(suite);
+
+            string background = Section(report, "Background load:", "Medians");
+            Assert.Contains("1 quiet, 1 elevated, 1 busy, 3 not recorded", background);
+            /* wsl-vm is named twice in the busy run's reason but counts once per run */
+            Assert.Contains("Suspects: build-tools (1 run), wsl-vm (1 run)", background);
+            /* Elevated runs stay in the medians */
+            Assert.Contains("Medians (3 used run(s))", report);
+        }
+
+        [Fact]
+        public void SuiteReport_WithoutBackgroundData_SaysNotRecorded()
+        {
+            GHReportSuite suite = BuildSuite();
+            suite.BackgroundSamplerEnabled = false;
+            string report = GHPerformanceTextReport.SuiteReport(suite);
+
+            Assert.Contains("Background load: not recorded (sampler off)", report);
+        }
+
+        [Fact]
+        public void SuiteReport_NotesArePrintedUnderTheirRun()
+        {
+            GHReportSuite suite = BuildSuite();
+            suite.Runs[2].Notes = "quiet gate timed out (other CPU 14 %)";
+            string report = GHPerformanceTextReport.SuiteReport(suite);
+
+            AssertNoLineExceedsMaxWidth(report);
+            Assert.Contains("\n    note: quiet gate timed out (other CPU 14 %)\n", report);
+        }
+
+        [Fact]
+        public void SuiteReport_EnvironmentSection_HashesPerCategoryAndChangesDuringTheSuite()
+        {
+            GHReportSuite suite = BuildSuite();
+            suite.Fingerprint = BuildFingerprint("abcdef0", "26200.1");
+            suite.FingerprintAtEnd = BuildFingerprint("abcdef0", "26200.2");
+            suite.EnvironmentChanged = true;
+            string report = GHPerformanceTextReport.SuiteReport(suite);
+
+            AssertNoLineExceedsMaxWidth(report);
+            string environment = Section(report, "Environment:", "Runs:");
+            Assert.Contains(GHEnvironmentFingerprint.ShortHash(suite.Fingerprint, "code"), environment);
+            Assert.Contains(GHEnvironmentFingerprint.ShortHash(suite.Fingerprint, "settings"), environment);
+            Assert.DoesNotContain("meta", environment);
+            Assert.Contains("Environment changed during the suite:", environment);
+            Assert.Contains("  os.build: 26200.1 -> 26200.2", environment);
+        }
+
+        [Fact]
+        public void SuiteReport_WithoutFingerprint_EnvironmentIsNotRecorded()
+        {
+            GHReportSuite suite = BuildSuite();
+            string report = GHPerformanceTextReport.SuiteReport(suite);
+
+            Assert.Contains("Environment:\n  not recorded\n", report);
+            Assert.Contains("Previous comparable suite: none", report);
+        }
+
+        [Fact]
+        public void SuiteReport_PreviousSuiteSection_ShowsBothMediansAndTheChanges()
+        {
+            GHReportSuite suite = BuildSuite();
+            suite.Fingerprint = BuildFingerprint("abcdef0", "26200.2");
+            GHReportPreviousSuite previous = new GHReportPreviousSuite
+            {
+                SuiteId = "suite-2026-09-20-0001",
+                ArmLabel = "1.2.2 1234567",
+                StartedUtc = new DateTime(2026, 9, 20, 8, 30, 0, DateTimeKind.Utc),
+                RunsUsed = 5,
+                MedianHitchRatioMsPerSec = 0.75
+            };
+            previous.Changes.AddRange(GHEnvironmentFingerprint.Diff(BuildFingerprint("1234567", "26200.1"), suite.Fingerprint));
+            suite.Previous = previous;
+            string report = GHPerformanceTextReport.SuiteReport(suite);
+
+            AssertNoLineExceedsMaxWidth(report);
+            string section = Section(report, "Changes since the previous comparable suite:", "Hitch causes");
+            Assert.Contains("1.2.2 1234567, started 2026-09-20 08:30 UTC", section);
+            /* Used runs 1-3 have hitch ratios 1.2, 0.9 and 1.1 */
+            Assert.Contains("0.75 ms/s then, 1.10 ms/s now", section);
+            Assert.Contains("  code.gitCommit: 1234567 -> abcdef0", section);
+            Assert.Contains("  os.build: 26200.1 -> 26200.2", section);
+            Assert.Contains("the baseline comparison is the decision", section);
+        }
+
+        [Fact]
+        public void ComparisonReport_ConfoundedAndSettingsViolation_AreWarned()
+        {
+            List<GHSmoothnessSummary> a = HitchSeries(1.0);
+            List<GHSmoothnessSummary> b = HitchSeries(6.0);
+            GHComparisonResult result = GHPerformanceComparison.CompareSmoothness("A", a, "B", b, TargetPeriodMs, Resamples, Seed);
+
+            GHReportSuite suiteA = BuildSuiteWithSkiaVersion("3.116.1");
+            suiteA.Fingerprint = BuildFingerprint("1111111", "26200.1");
+            GHReportSuite suiteB = BuildSuiteWithSkiaVersion("3.116.1");
+            suiteB.Fingerprint = BuildFingerprint("2222222", "26200.2");
+            suiteB.Fingerprint["settings.useTileBatching"] = "false";
+            suiteB.Fingerprint["settings.backgroundSampler"] = "false";
+
+            string report = GHPerformanceTextReport.ComparisonReport(result,
+                new List<GHReportSuite> { suiteA }, new List<GHReportSuite> { suiteB });
+
+            AssertNoLineExceedsMaxWidth(report);
+            Assert.Contains("  code.gitCommit: 1111111 -> 2222222", report);
+            Assert.Contains("Attribution: confounded: code, os, settings", report);
+            Assert.Contains("Warning: code and environment both differ", report);
+            Assert.Contains("Warning: " + GHEnvironmentFingerprint.SettingsViolationText, report);
+        }
+
+        [Fact]
+        public void ComparisonReport_PoolsMixedValuesWithinAnArm()
+        {
+            List<GHSmoothnessSummary> a = HitchSeries(1.0);
+            List<GHSmoothnessSummary> b = HitchSeries(1.0);
+            GHComparisonResult result = GHPerformanceComparison.CompareSmoothness("A", a, "B", b, TargetPeriodMs, Resamples, Seed);
+
+            GHReportSuite a1 = BuildSuiteWithSkiaVersion("3.116.1");
+            a1.Fingerprint = BuildFingerprint("1111111", "26200.1");
+            GHReportSuite a2 = BuildSuiteWithSkiaVersion("3.116.1");
+            a2.Fingerprint = BuildFingerprint("1111111", "26200.2");
+            GHReportSuite b1 = BuildSuiteWithSkiaVersion("3.116.1");
+            b1.Fingerprint = BuildFingerprint("1111111", "26200.2");
+
+            string report = GHPerformanceTextReport.ComparisonReport(result,
+                new List<GHReportSuite> { a1, a2 }, new List<GHReportSuite> { b1 });
+
+            Assert.Contains("  os.build: " + GHEnvironmentFingerprint.MixedValue + " -> 26200.2", report);
+            Assert.Contains("Attribution: environment: os", report);
+            Assert.DoesNotContain("Warning:", report);
+        }
+
+        [Fact]
+        public void ComparisonReport_SensitivityLine_ReportsAChangedDecision()
+        {
+            List<GHSmoothnessSummary> a = HitchSeries(1.0);
+            List<GHSmoothnessSummary> b = HitchSeries(6.0);
+            GHComparisonResult result = GHPerformanceComparison.CompareSmoothness("A", a, "B", b, TargetPeriodMs, Resamples, Seed);
+            GHComparisonResult without = GHPerformanceComparison.CompareSmoothness("A", a.GetRange(0, 2), "B",
+                b.GetRange(0, 2), TargetPeriodMs, Resamples, Seed);
+            GHReportComparisonContext context = new GHReportComparisonContext { ElevatedRuns = 6, WithoutElevated = without };
+
+            List<GHReportSuite> suitesA = new List<GHReportSuite> { BuildSuiteWithSkiaVersion("3.116.1") };
+            List<GHReportSuite> suitesB = new List<GHReportSuite> { BuildSuiteWithSkiaVersion("3.116.1") };
+            string report = GHPerformanceTextReport.ComparisonReport(result, suitesA, suitesB, context);
+
+            AssertNoLineExceedsMaxWidth(report);
+            Assert.Contains("Without the 6 elevated runs:\n", report);
+            Assert.Contains("  " + GHPerformanceComparison.HitchRatioMsPerSec + " changes to "
+                + GHPerformanceComparison.VerdictTooFewRuns, report);
+            Assert.DoesNotContain("decision unchanged", report);
+        }
+
+        [Fact]
+        public void ComparisonReport_SensitivityLine_ReportsAnUnchangedDecision()
+        {
+            List<GHSmoothnessSummary> a = HitchSeries(1.0);
+            List<GHSmoothnessSummary> b = HitchSeries(6.0);
+            GHComparisonResult result = GHPerformanceComparison.CompareSmoothness("A", a, "B", b, TargetPeriodMs, Resamples, Seed);
+            GHReportComparisonContext context = new GHReportComparisonContext { ElevatedRuns = 1, WithoutElevated = result };
+
+            List<GHReportSuite> suitesA = new List<GHReportSuite> { BuildSuiteWithSkiaVersion("3.116.1") };
+            List<GHReportSuite> suitesB = new List<GHReportSuite> { BuildSuiteWithSkiaVersion("3.116.1") };
+            string report = GHPerformanceTextReport.ComparisonReport(result, suitesA, suitesB, context);
+
+            AssertNoLineExceedsMaxWidth(report);
+            Assert.Contains("Without the 1 elevated run: decision unchanged", report);
+        }
+
+        [Fact]
+        public void ComparisonReport_NoElevatedRuns_PrintsNoSensitivityLine()
+        {
+            List<GHSmoothnessSummary> a = HitchSeries(1.0);
+            List<GHSmoothnessSummary> b = HitchSeries(6.0);
+            GHComparisonResult result = GHPerformanceComparison.CompareSmoothness("A", a, "B", b, TargetPeriodMs, Resamples, Seed);
+            GHReportComparisonContext context = new GHReportComparisonContext { ElevatedRuns = 0 };
+
+            List<GHReportSuite> suitesA = new List<GHReportSuite> { BuildSuiteWithSkiaVersion("3.116.1") };
+            List<GHReportSuite> suitesB = new List<GHReportSuite> { BuildSuiteWithSkiaVersion("3.116.1") };
+            string report = GHPerformanceTextReport.ComparisonReport(result, suitesA, suitesB, context);
+
+            Assert.DoesNotContain("Without the", report);
+            Assert.Contains("Attribution: none", report);
         }
 
         private static long Ms(double ms)

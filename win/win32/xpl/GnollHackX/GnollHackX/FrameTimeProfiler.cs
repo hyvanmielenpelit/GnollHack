@@ -163,6 +163,25 @@ namespace GnollHackX
         }
 
         /*
+         * Memory pressure reported to the runtime through GC.AddMemoryPressure and
+         * GC.RemoveMemoryPressure, totalled from the runtime's pressure events. The
+         * runtime starts a gen2 once the pressure added since the last gen2 exceeds a
+         * budget of 4 to 40 MB, and only a gen2 resets that count, so the log reports
+         * the pressure added between consecutive gen2s. Removals do not offset additions
+         * within an interval; they only shrink the budget of later ones.
+         */
+        private static long _pressureAddedBytes;
+        private static long _pressureAddCount;
+        private static long _pressureRemovedBytes;
+        private static int _pressureEventsSeen;
+
+        /* Totals as they stood at the previous gen2 the log reported, and when */
+        private static long _pressureAddedAtGen2;
+        private static long _pressureAddCountAtGen2;
+        private static long _pressureRemovedAtGen2;
+        private static long _pressureTicksAtGen2;
+
+        /*
          * Thread-local storage for MarkGcBefore/MarkGcAfter pair.
          * Each thread can have one outstanding MarkGcBefore call.
          * Using ThreadLocal to handle the case where forced GC is
@@ -368,6 +387,51 @@ namespace GnollHackX
             if (haveInfo || haveReason)
                 GHApp.MaybeWriteScreenLog(BuildGcDetailLine(info, haveInfo,
                     haveReason ? gcReason : -1));
+
+            if (d2 > 0)
+            {
+                string pressureLine = BuildPressureLine(curr.TicksFrameStart);
+                if (pressureLine != null)
+                    GHApp.MaybeWriteScreenLog(pressureLine);
+            }
+        }
+
+        /* The memory pressure added and removed since the previous gen2 the log reported,
+           the interval it built up over, and the rate that implies. "n" counts the
+           additions; CsWinRT adds 1000 bytes for every native object reference it
+           creates, so there it is the number of wrappers created. Events reach the
+           listener on a dispatch thread some milliseconds late, so the few raised just
+           before the collection may be counted in the next interval instead. Null until
+           the runtime has raised a pressure event. */
+        private static string BuildPressureLine(long ticksNow)
+        {
+            if (Volatile.Read(ref _pressureEventsSeen) == 0)
+                return null;
+
+            long added = Interlocked.Read(ref _pressureAddedBytes);
+            long addCount = Interlocked.Read(ref _pressureAddCount);
+            long removed = Interlocked.Read(ref _pressureRemovedBytes);
+
+            long addedDelta = added - _pressureAddedAtGen2;
+            long addCountDelta = addCount - _pressureAddCountAtGen2;
+            long removedDelta = removed - _pressureRemovedAtGen2;
+            double seconds = _pressureTicksAtGen2 > 0
+                ? (ticksNow - _pressureTicksAtGen2) / (double)Stopwatch.Frequency
+                : 0;
+
+            _pressureAddedAtGen2 = added;
+            _pressureAddCountAtGen2 = addCount;
+            _pressureRemovedAtGen2 = removed;
+            _pressureTicksAtGen2 = ticksNow;
+
+            float addedMB = addedDelta / (1024f * 1024f);
+            float removedMB = removedDelta / (1024f * 1024f);
+            string span = seconds > 0
+                ? FormattableString.Invariant($" {seconds:0}s {addedMB / seconds:0.00}MB/s")
+                : "";
+
+            return FormattableString.Invariant(
+                $"GC .. amp:+{addedMB:0.0}MB n:{addCountDelta / 1000f:0.0}k -{removedMB:0.0}MB{span}");
         }
 
         /* The continuation line of a collection's report, carrying the counters that say
@@ -725,6 +789,7 @@ namespace GnollHackX
 
             try
             {
+                _pressureTicksAtGen2 = Stopwatch.GetTimestamp();
                 Volatile.Write(ref _gcEventListener, new GcEventListener());
             }
             catch (Exception)
@@ -737,11 +802,19 @@ namespace GnollHackX
            the collection was begun -- an allocation budget, a Collect call, low memory.
            The callback runs on a runtime thread as a collection starts, so it stamps the
            ring and does nothing else. A runtime that raises no such event never calls it,
-           leaving the reason simply absent from the log. */
+           leaving the reason simply absent from the log.
+
+           The same listener totals the runtime's memory pressure events, which are raised
+           only at the verbose level. That level also brings allocation ticks and the
+           collector's internal events, and the runtime walks the raising thread's stack
+           for each, so the rest are dropped by identifier before anything is read. */
         private sealed class GcEventListener : EventListener
         {
             private const int GcKeyword = 0x1;
             private const string RuntimeEventSourceName = "Microsoft-Windows-DotNETRuntime";
+            private const int GcStartEventId = 1;
+            private const int IncreaseMemoryPressureEventId = 200;
+            private const int DecreaseMemoryPressureEventId = 201;
 
             protected override void OnEventSourceCreated(EventSource eventSource)
             {
@@ -750,7 +823,7 @@ namespace GnollHackX
 
                 try
                 {
-                    EnableEvents(eventSource, EventLevel.Informational, (EventKeywords)GcKeyword);
+                    EnableEvents(eventSource, EventLevel.Verbose, (EventKeywords)GcKeyword);
                 }
                 catch (Exception)
                 {
@@ -762,7 +835,17 @@ namespace GnollHackX
             {
                 try
                 {
-                    if (eventData == null || eventData.EventName == null
+                    if (eventData == null)
+                        return;
+
+                    int eventId = eventData.EventId;
+                    if (eventId == IncreaseMemoryPressureEventId || eventId == DecreaseMemoryPressureEventId)
+                    {
+                        RecordPressure(eventData, eventId == IncreaseMemoryPressureEventId);
+                        return;
+                    }
+
+                    if (eventId != GcStartEventId || eventData.EventName == null
                         || !eventData.EventName.StartsWith("GCStart", StringComparison.Ordinal))
                         return;
                     if (eventData.PayloadNames == null || eventData.Payload == null)
@@ -795,6 +878,25 @@ namespace GnollHackX
                 {
                     /* A diagnostic must never throw out of a runtime callback */
                 }
+            }
+
+            /* The byte count is the first payload field of both pressure events */
+            private static void RecordPressure(EventWrittenEventArgs eventData, bool isIncrease)
+            {
+                if (eventData.Payload == null || eventData.Payload.Count < 1)
+                    return;
+
+                long bytes = Convert.ToInt64(eventData.Payload[0], CultureInfo.InvariantCulture);
+                if (isIncrease)
+                {
+                    Interlocked.Add(ref _pressureAddedBytes, bytes);
+                    Interlocked.Increment(ref _pressureAddCount);
+                }
+                else
+                {
+                    Interlocked.Add(ref _pressureRemovedBytes, bytes);
+                }
+                Volatile.Write(ref _pressureEventsSeen, 1);
             }
         }
 

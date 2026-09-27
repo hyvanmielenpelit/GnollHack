@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,10 +28,12 @@ namespace GnollHackX.Performance
        the replay, minimap pauses it and switches to the minimap, playback lets it
        play), warm up, measure one window, and save it. Between runs: cool down, wait
        for the platform thermal status to be no worse than at the suite start (at most
-       300 s; no wait where the platform reports none), then either seek the same game
-       page back (shared) or close it and open a new one (fresh; the cool-down then
-       happens on the page below the game page). The replay header shows the run and
-       its phase.
+       300 s; no wait where the platform reports none), wait for a quiet system (at most
+       120 s; also once before the first run), then either seek the same game page back
+       (shared) or close it and open a new one (fresh; the cool-down then happens on the
+       page below the game page). The replay header shows the run and its phase. The
+       background load sampler runs for the whole suite; the environment fingerprint is
+       captured at its start (CreateSuite) and again at its end (FinishSuite).
 
        Everything runs on the UI thread as one async task. Every wait polls at least
        every 100 ms and aborts the suite when the replay ended (GHApp.GameStarted went
@@ -50,6 +54,7 @@ namespace GnollHackX.Performance
         private const int ThermalPrimeMs = 600;
         private const int ThermalGatePollMs = 15 * 1000;
         private const int ThermalGateTimeoutMs = 300 * 1000;
+        private const int QuietGatePollMs = 1000;
         private const int AfterGarbageCollectionMs = 500;
         private const int MaxSeconds = 24 * 60 * 60;
 
@@ -121,11 +126,24 @@ namespace GnollHackX.Performance
                 s.SeekTurn = Math.Max(0, setup.StartTurn - 1);
                 s.InitialFromTurn = setup.StartTurn <= 1 ? -1 : s.SeekTurn;
 
+                /* The first environment capture can block for seconds (WMI); later ones,
+                   CreateSuite's and every run record's, read its cache */
+                await Task.Run(delegate { GHPerformanceEnvironment.CaptureFingerprint(false); });
+
                 /* The first reading primes rate counters (Windows needs two samples
                    500 ms apart); the second is the suite-start reading */
                 GHThermalProbe.Read();
                 await Task.Delay(ThermalPrimeMs);
                 s.StartThermal = GHThermalProbe.Read();
+
+                /* Held for the whole suite, so the quiet gate and every pre-window have
+                   samples */
+                if (GHSystemLoadSampler.Enabled)
+                {
+                    GHSystemLoadSampler.Acquire();
+                    s.SamplerHeld = true;
+                    s.SamplerClock = Stopwatch.StartNew();
+                }
 
                 s.ReplaySha256 = GHPerformanceSuiteStore.ComputeSha256(replayPath);
                 s.ReplayBytes = new FileInfo(replayPath).Length;
@@ -133,11 +151,13 @@ namespace GnollHackX.Performance
             }
             catch (Exception ex)
             {
+                ReleaseSampler(s);
                 Interlocked.Exchange(ref _isRunning, 0);
                 return "Could not create the performance suite: " + ex.Message;
             }
             if (string.IsNullOrEmpty(s.SuiteId))
             {
+                ReleaseSampler(s);
                 Interlocked.Exchange(ref _isRunning, 0);
                 return "Could not create the performance suite.";
             }
@@ -179,14 +199,27 @@ namespace GnollHackX.Performance
                     Log("closing the game page failed: " + ex.Message);
                 }
                 FrameTimeProfiler.IsEnabled = profilerWasEnabled;
+                /* Re-read, WMI included, off the UI thread, with the profiler restored as
+                   it was at the suite-start capture */
+                Dictionary<string, string> fingerprintAtEnd = null;
                 try
                 {
-                    GHPerformanceSuiteStore.FinishSuite(s.SuiteId, aborted ? "aborted" : "complete", aborted ? abortReason : null);
+                    fingerprintAtEnd = await Task.Run(delegate { return GHPerformanceEnvironment.CaptureFingerprint(true); });
+                }
+                catch (Exception ex)
+                {
+                    Log("capturing the environment at the end of " + s.SuiteId + " failed: " + ex.Message);
+                }
+                try
+                {
+                    GHPerformanceSuiteStore.FinishSuite(s.SuiteId, aborted ? "aborted" : "complete", aborted ? abortReason : null,
+                        fingerprintAtEnd);
                 }
                 catch (Exception ex)
                 {
                     Log("finishing " + s.SuiteId + " failed: " + ex.Message);
                 }
+                ReleaseSampler(s);
                 CurrentSuiteId = null;
                 Interlocked.Exchange(ref _isRunning, 0);
             }
@@ -240,6 +273,10 @@ namespace GnollHackX.Performance
             GHPerformanceSuiteSetup setup = s.Setup;
             int firstRunIndex = setup.WarmUpRun ? 0 : 1;
             int lastRunIndex = setup.Runs;
+
+            /* No game page yet: the wait aborts when another page opens over this one */
+            s.PageBelow = GHApp.PageFromTopOfModalNavigationStack();
+            await QuietGateAsync(s, false);
 
             await OpenGamePageAsync(s);
             for (int runIndex = firstRunIndex; runIndex <= lastRunIndex; runIndex++)
@@ -315,6 +352,14 @@ namespace GnollHackX.Performance
             ctx.StartTurn = s.StartTurn;
             if (isWarmUp)
                 ctx.ExcludedReason = "warm-up run";
+            ctx.Notes = s.PendingNote;
+            s.PendingNote = null;
+
+            /* The per-process begin collect runs on the thread pool; the window opens
+               once it is done, or after ProcessIntervalBeginWaitMs at most */
+            Task begin = GHSystemLoadSampler.StartProcessIntervalAsync();
+            await WaitUntilAsync(s, delegate { return begin.IsCompleted; }, StartTurnPollMs,
+                GHSystemLoadSampler.ProcessIntervalBeginWaitMs, true);
 
             GHPerformanceRunRecord.BeginWindow(s.Scenario, s.Arm, ctx);
             if (!GHPerformanceRunRecord.IsWindowOpen)
@@ -339,6 +384,7 @@ namespace GnollHackX.Performance
                 s.ActivePage.SetReplayPaused(true);
                 await WaitAsync(s, setup.CooldownSeconds * 1000L, true);
                 await ThermalGateAsync(s, true);
+                await QuietGateAsync(s, true);
 
                 s.ActivePage.SetReplayPaused(false);
                 if (s.Scenario == ScenarioMinimap)
@@ -355,6 +401,7 @@ namespace GnollHackX.Performance
                     throw new SuiteAbortException("the replay did not stop");
                 await WaitAsync(s, setup.CooldownSeconds * 1000L, false);
                 await ThermalGateAsync(s, false);
+                await QuietGateAsync(s, false);
 
                 GHApp.CollectGarbage();
                 await WaitAsync(s, AfterGarbageCollectionMs, false);
@@ -448,6 +495,62 @@ namespace GnollHackX.Performance
                 }
                 await WaitAsync(s, ThermalGatePollMs, gameExpected);
             }
+        }
+
+        /* Waits until the last GHBackgroundLoad.QuietWindowSeconds average other CPU and
+           disk busy below the quiet thresholds (GHSystemLoadSampler.IsQuiet), polling
+           every second for at most GHBackgroundLoad.QuietGateTimeoutSeconds; on timeout
+           the next run goes ahead and carries a note saying so. No gate without the
+           sampler, or when it has produced no CPU sample QuietWindowSeconds + 1 s after
+           the suite acquired it (no whole-machine CPU on the platform). */
+        private static async Task QuietGateAsync(SuiteState s, bool gameExpected)
+        {
+            if (!s.SamplerHeld || s.SamplerClock == null)
+                return;
+            long settleMs = (GHBackgroundLoad.QuietWindowSeconds + 1) * 1000L - s.SamplerClock.ElapsedMilliseconds;
+            if (!GHSystemLoadSampler.HasCpuSignal && settleMs > 0)
+                await WaitAsync(s, settleMs, gameExpected);
+            if (!GHSystemLoadSampler.HasCpuSignal)
+                return;
+
+            Stopwatch sw = Stopwatch.StartNew();
+            string shown = null;
+            while (true)
+            {
+                float otherCpuMean, diskBusyMean;
+                if (GHSystemLoadSampler.IsQuiet(out otherCpuMean, out diskBusyMean))
+                    return;
+                string otherText = FormatPercent(otherCpuMean);
+                if (sw.ElapsedMilliseconds >= GHBackgroundLoad.QuietGateTimeoutSeconds * 1000L)
+                {
+                    Log("quiet gate timed out in " + s.SuiteId + ": other CPU " + otherText + " %, disk busy "
+                        + FormatPercent(diskBusyMean) + " %");
+                    s.PendingNote = "quiet gate timed out (other CPU " + otherText + " %)";
+                    return;
+                }
+                if (otherText != shown)
+                {
+                    SetPhase(s, "waiting for a quiet system (other CPU " + otherText + " %)");
+                    shown = otherText;
+                }
+                await WaitAsync(s, QuietGatePollMs, gameExpected);
+            }
+        }
+
+        private static string FormatPercent(float value)
+        {
+            if (float.IsNaN(value) || float.IsInfinity(value))
+                return "?";
+            return value.ToString("F0", CultureInfo.InvariantCulture);
+        }
+
+        /* Releases the suite's sampler hold, once */
+        private static void ReleaseSampler(SuiteState s)
+        {
+            if (!s.SamplerHeld)
+                return;
+            s.SamplerHeld = false;
+            GHSystemLoadSampler.Release();
         }
 
         /* Shows the suite's progress in the replay header; set once per phase, so the label
@@ -593,6 +696,10 @@ namespace GnollHackX.Performance
             public Page PageBelow;                     /* top of the modal stack before the game page was pushed */
             public bool RunnerStopping;                /* StopReplay was set by the runner */
             public GHPerformanceRunContext OpenWindow; /* non-null while a window is open */
+
+            public bool SamplerHeld;                   /* the suite's GHSystemLoadSampler acquire is outstanding */
+            public Stopwatch SamplerClock;             /* started at that acquire */
+            public string PendingNote;                 /* for the next run's context, e.g. a quiet gate timeout */
         }
     }
 }

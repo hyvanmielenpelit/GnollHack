@@ -12,7 +12,8 @@ Always: meta.fingerprintVersion ("1") and meta.capturedUtc (never diffed).
 
 Windows:
   os.platform          "Windows"
-  os.version           10.0.<CurrentBuild>, from HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion
+  os.version           WinUI <major>.<minor>.<CurrentBuild>.<UBR>, from HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion;
+                       the format the app records (DeviceInfo platform and version)
   os.build             <CurrentBuild>.<UBR>, e.g. 26200.6584
   os.displayVersion    DisplayVersion, e.g. 25H2
   os.edition           EditionID
@@ -22,10 +23,11 @@ Windows:
   driver.gpu<N>.version, driver.gpu<N>.date, hardware.gpu<N>
                        Win32_VideoController, 0-based in the order CIM returns adapters;
                        the date is yyyy-MM-dd
-  hardware.cpu         Win32_Processor name
+  hardware.cpu         ProcessorNameString of CentralProcessor\0, as the app reads it
   hardware.logicalProcessors
-  hardware.memoryGB    installed memory (Win32_PhysicalMemory), in GB
-  hardware.deviceModel Win32_ComputerSystem manufacturer and model
+  hardware.memoryGB    usable physical memory (TotalVisibleMemorySize) in GB, one decimal, as the
+                       app records it
+  hardware.deviceModel Win32_ComputerSystem manufacturer (first letter upper-cased) and model
   settings.powerPlan   powercfg /getactivescheme: the well-known scheme name for its GUID,
                        else the GUID
   toolchain.dotnetSdk  dotnet --version, run in win\win32\xpl\GnollHackTests so that its
@@ -33,11 +35,11 @@ Windows:
 
 Android (-Android, optional -Serial and -AdbPath), from getprop and dumpsys:
   os.platform          "Android"
-  os.version           ro.build.version.release
+  os.version           "Android " + ro.build.version.release
   os.build             ro.build.version.incremental
   os.securityPatch     ro.build.version.security_patch
   os.fingerprint       ro.build.fingerprint
-  hardware.deviceModel ro.product.model
+  hardware.deviceModel ro.product.manufacturer (first letter upper-cased) and ro.product.model
   hardware.soc         ro.soc.model, else ro.hardware
   driver.gles          the GLES: line of dumpsys SurfaceFlinger
 
@@ -83,6 +85,14 @@ function Get-RegistryValue {
     return $prop.Value
 }
 
+# Manufacturer with its first letter upper-cased, then the model: the app's DeviceModel
+function Format-DeviceModel {
+    param([string] $Manufacturer, [string] $Model)
+    $m = ''
+    if ($Manufacturer) { $m = $Manufacturer.Substring(0, 1).ToUpperInvariant() + $Manufacturer.Substring(1) }
+    return ($m + ' ' + $Model).Trim()
+}
+
 function Get-WindowsFingerprint {
     param([hashtable] $Map, [string] $RepoRoot)
     Add-FingerprintValue $Map 'os.platform' 'Windows'
@@ -93,8 +103,8 @@ function Get-WindowsFingerprint {
         $minor = Get-RegistryValue $cv 'CurrentMinorVersionNumber'
         $build = Get-RegistryValue $cv 'CurrentBuild'
         $ubr = Get-RegistryValue $cv 'UBR'
-        if ($null -ne $major -and $null -ne $minor -and $null -ne $build) {
-            Add-FingerprintValue $Map 'os.version' ('{0}.{1}.{2}' -f $major, $minor, $build)
+        if ($null -ne $major -and $null -ne $minor -and $null -ne $build -and $null -ne $ubr) {
+            Add-FingerprintValue $Map 'os.version' ('WinUI {0}.{1}.{2}.{3}' -f $major, $minor, $build, $ubr)
         }
         if ($null -ne $build) {
             if ($null -ne $ubr) { Add-FingerprintValue $Map 'os.build' ('{0}.{1}' -f $build, $ubr) } else { Add-FingerprintValue $Map 'os.build' $build }
@@ -124,25 +134,20 @@ function Get-WindowsFingerprint {
     } catch { }
 
     try {
-        $cpu = Get-CimInstance -ClassName Win32_Processor -ErrorAction Stop | Select-Object -First 1
-        if ($null -ne $cpu) { Add-FingerprintValue $Map 'hardware.cpu' $cpu.Name }
+        $cpu = Get-ItemProperty -LiteralPath 'HKLM:\HARDWARE\DESCRIPTION\System\CentralProcessor\0' -ErrorAction Stop
+        Add-FingerprintValue $Map 'hardware.cpu' (Get-RegistryValue $cpu 'ProcessorNameString')
     } catch { }
     Add-FingerprintValue $Map 'hardware.logicalProcessors' ([Environment]::ProcessorCount)
 
     try {
-        $modules = @(Get-CimInstance -ClassName Win32_PhysicalMemory -ErrorAction Stop)
-        $bytes = 0.0
-        foreach ($m in $modules) { $bytes += [double]$m.Capacity }
-        if ($bytes -le 0) {
-            $cs = Get-CimInstance -ClassName Win32_ComputerSystem -ErrorAction Stop
-            $bytes = [double]$cs.TotalPhysicalMemory
-        }
-        if ($bytes -gt 0) { Add-FingerprintValue $Map 'hardware.memoryGB' ([Math]::Round($bytes / 1GB, 1)) }
+        $os = Get-CimInstance -ClassName Win32_OperatingSystem -ErrorAction Stop
+        $kb = [double]$os.TotalVisibleMemorySize
+        if ($kb -gt 0) { Add-FingerprintValue $Map 'hardware.memoryGB' (($kb / 1MB).ToString('F1', $invariant)) }
     } catch { }
 
     try {
         $cs = Get-CimInstance -ClassName Win32_ComputerSystem -ErrorAction Stop
-        Add-FingerprintValue $Map 'hardware.deviceModel' (($cs.Manufacturer + ' ' + $cs.Model).Trim())
+        Add-FingerprintValue $Map 'hardware.deviceModel' (Format-DeviceModel $cs.Manufacturer $cs.Model)
     } catch { }
 
     try {
@@ -154,7 +159,7 @@ function Get-WindowsFingerprint {
                 $wellKnown = @{
                     '381b4222-f694-41f0-9685-ff5bb260df2e' = 'Balanced'
                     '8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c' = 'High performance'
-                    'a1841308-3542-4fab-bc81-f71556f20b4a' = 'Power saver'
+                    'a1841308-3541-4fab-bc81-f71556f20b4a' = 'Power saver'
                     'e9a42b02-d5df-448d-aa00-03f14749eb61' = 'Ultimate Performance'
                 }
                 if ($wellKnown.ContainsKey($guid)) { Add-FingerprintValue $Map 'settings.powerPlan' $wellKnown[$guid] }
@@ -199,14 +204,18 @@ function Get-AndroidFingerprint {
         }
     }
     $pairs = @(
-        @('os.version', 'ro.build.version.release'),
         @('os.build', 'ro.build.version.incremental'),
         @('os.securityPatch', 'ro.build.version.security_patch'),
-        @('os.fingerprint', 'ro.build.fingerprint'),
-        @('hardware.deviceModel', 'ro.product.model')
+        @('os.fingerprint', 'ro.build.fingerprint')
     )
     foreach ($pair in $pairs) {
         if ($props.ContainsKey($pair[1])) { Add-FingerprintValue $Map $pair[0] $props[$pair[1]] }
+    }
+    if ($props.ContainsKey('ro.build.version.release')) { Add-FingerprintValue $Map 'os.version' ('Android ' + $props['ro.build.version.release']) }
+    if ($props.ContainsKey('ro.product.model')) {
+        $manufacturer = $null
+        if ($props.ContainsKey('ro.product.manufacturer')) { $manufacturer = $props['ro.product.manufacturer'] }
+        Add-FingerprintValue $Map 'hardware.deviceModel' (Format-DeviceModel $manufacturer $props['ro.product.model'])
     }
     if ($props.ContainsKey('ro.soc.model') -and $props['ro.soc.model'].Trim()) {
         Add-FingerprintValue $Map 'hardware.soc' $props['ro.soc.model']

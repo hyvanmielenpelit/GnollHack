@@ -82,7 +82,8 @@
           "msFromWindowStart": { "type": "number", "description": "The marked frame's callback start, relative to the first saved record's" }
         }
       }
-    }
+    },
+    "background": { "$ref": "#/$defs/background" }
   },
   "$defs": {
     "suite": {
@@ -99,7 +100,8 @@
         "replaySha256": { "type": "string" },
         "startTurn": { "type": "integer" },
         "turnReached": { "type": "integer", "description": "Replay turn at the end of the window; -1 when unknown" },
-        "excludedReason": { "type": "string", "description": "Why the suite excluded this run, e.g. \"warm-up run\"; absent when the run is used. The analyzer marks such a run excluded" }
+        "excludedReason": { "type": "string", "description": "Why the suite excluded this run, e.g. \"warm-up run\"; absent when the run is used. The analyzer marks such a run excluded" },
+        "notes": { "type": "string", "description": "Free text about the run, e.g. \"quiet gate timed out (other CPU 14 %)\"; absent when there is none. The analyzer appends it to the record's notes" }
       }
     },
     "environment": {
@@ -122,7 +124,83 @@
         "reportedRefreshHz": { "type": "number" },
         "buildConfiguration": { "type": ["string", "null"] },
         "gitCommit": { "type": ["string", "null"] },
-        "configuration": { "type": "object", "description": "The feature-toggle vector in effect when the run was captured" }
+        "configuration": { "type": "object", "description": "The feature-toggle vector in effect when the run was captured" },
+        "fingerprint": { "$ref": "#/$defs/fingerprint" }
+      }
+    },
+    "fingerprint": {
+      "type": "object",
+      "description": "The environment fingerprint (GHEnvironmentFingerprint): flat \"<category>.<name>\" keys, categories meta, code, toolchain, component, os, driver, hardware and settings; string values, booleans as \"true\"/\"false\", numbers in the invariant culture. Absent in records written before fingerprints existed",
+      "additionalProperties": { "type": "string" }
+    },
+    "background": {
+      "type": "object",
+      "description": "The machine's load around the measurement window (GHSystemLoadSampler); absent when the sampler is off or failed. A signal the platform does not report is null and missing from signals",
+      "required": ["samplerVersion", "source", "intervalMs", "signals", "window", "verdict"],
+      "properties": {
+        "samplerVersion": { "type": "integer" },
+        "source": { "type": "string", "description": "\"in-app\" in a record the app writes; the analyzer also has \"external\" blocks" },
+        "intervalMs": { "type": "integer", "description": "Sample interval, 1000" },
+        "logicalProcessors": { "type": "integer" },
+        "coverage": { "type": ["number", "null"], "description": "Fraction of the expected window samples present; below 0.5 the verdict is unknown" },
+        "samplerBusyMs": { "type": ["number", "null"], "description": "Time the sampler's ticks took during the window" },
+        "signals": { "type": "array", "items": { "type": "string", "enum": ["systemCpu", "disk", "memory", "hardFaults", "processes", "gpu"] } },
+        "window": { "$ref": "#/$defs/backgroundSummary" },
+        "preWindow": { "$ref": "#/$defs/backgroundSummary", "description": "The up to 10 s before the window start" },
+        "otherGpuPct": { "type": ["number", "null"], "description": "Other processes' 3D engine utilization over the process interval, busiest adapter" },
+        "processes": { "type": "array", "items": { "$ref": "#/$defs/backgroundProcess" }, "description": "The top 8 processes by CPU, then up to 3 by GPU, over the process interval; empty where the platform has no per-process data" },
+        "activities": { "type": "array", "items": { "$ref": "#/$defs/backgroundActivity" }, "description": "Known background activities among processes, by CPU descending" },
+        "samples": { "type": "array", "items": { "$ref": "#/$defs/backgroundSample" }, "description": "The pre-window and window samples, in time order" },
+        "verdict": { "type": "string", "enum": ["quiet", "elevated", "busy", "unknown"] },
+        "reason": { "type": ["string", "null"], "description": "Set for elevated and busy, at most 100 characters, e.g. \"background load: other CPU P90 31 %; wsl-vm (vmmemWSL 22 %)\"; a busy run's exclusion reason" }
+      }
+    },
+    "backgroundSummary": {
+      "type": ["object", "null"],
+      "description": "Signals over a time range; a percentile is nearest-rank. Null values mark signals with no data",
+      "properties": {
+        "samples": { "type": "integer" },
+        "otherCpuMeanPct": { "type": ["number", "null"], "description": "Machine CPU minus this process, of total logical capacity" },
+        "otherCpuP90Pct": { "type": ["number", "null"] },
+        "otherCpuMaxPct": { "type": ["number", "null"] },
+        "otherCpuSpikeShare": { "type": ["number", "null"], "description": "Fraction of the samples with other CPU at 50 percent or more" },
+        "diskBusyMeanPct": { "type": ["number", "null"], "description": "100 - % Idle Time" },
+        "diskBusyP90Pct": { "type": ["number", "null"] },
+        "availableMemoryMinPct": { "type": ["number", "null"], "description": "Of total physical memory" },
+        "availableMemoryMinMB": { "type": ["integer", "null"] },
+        "hardFaultsP90PerSec": { "type": ["number", "null"], "description": "Hard page reads" },
+        "memoryPressureEvents": { "type": "integer", "description": "The app's memory warnings during the range (Android, iOS)" },
+        "lowMemory": { "type": "boolean", "description": "Android MemoryInfo.LowMemory in any sample" }
+      }
+    },
+    "backgroundProcess": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "cpuPct": { "type": ["number", "null"], "description": "Of total logical capacity" },
+        "gpuPct": { "type": ["number", "null"] },
+        "category": { "type": "string", "description": "windows-update, antivirus, indexer, wsl-vm, build-tools, sync, telemetry, measurement or other" }
+      }
+    },
+    "backgroundActivity": {
+      "type": "object",
+      "properties": {
+        "category": { "type": "string" },
+        "processes": { "type": "array", "items": { "type": "string" } },
+        "cpuPct": { "type": ["number", "null"], "description": "The processes' summed CPU, of total logical capacity" }
+      }
+    },
+    "backgroundSample": {
+      "type": "object",
+      "description": "One 1 Hz sample; percentages, null where not reported",
+      "properties": {
+        "t": { "type": ["number", "null"], "description": "Seconds from the window start, negative before it" },
+        "sys": { "type": ["number", "null"], "description": "Whole-machine CPU" },
+        "own": { "type": ["number", "null"], "description": "This process's CPU" },
+        "other": { "type": ["number", "null"] },
+        "disk": { "type": ["number", "null"], "description": "Disk busy" },
+        "availPct": { "type": ["number", "null"], "description": "Available physical memory" },
+        "faults": { "type": ["number", "null"], "description": "Hard page reads per second" }
       }
     },
     "thermalReading": {

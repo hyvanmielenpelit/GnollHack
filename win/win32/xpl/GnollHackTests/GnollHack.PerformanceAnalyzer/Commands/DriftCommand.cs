@@ -303,12 +303,15 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             s.Before.AddRange(before);
             Dictionary<string, string> common = before.Count == 1 ? before[0].Common
                 : CompareCommand.CommonFingerprint(before.SelectMany(b => b.Used.Count > 0 ? b.Used : b.Runs));
-            s.Changes = GHEnvironmentFingerprint.Diff(common, after.Common);
+            bool sourcesDiffer;
+            s.Changes = RunRecord.DiffFingerprints(common, after.Common, out sourcesDiffer);
             s.Label = GHEnvironmentFingerprint.AttributionLabel(s.Changes);
             if (s.Label == GHEnvironmentFingerprint.AttributionNone)
                 s.Label = after.Runs.Count > 0 && 2 * after.ElevatedOrBusy >= after.Runs.Count ? LabelBackground : LabelUnexplained;
 
             List<string> context = new List<string>();
+            if (sourcesDiffer)
+                context.Add("fingerprints from different sources, shared keys compared");
             int throttledBefore = before.Sum(b => b.Throttled);
             if (throttledBefore != after.Throttled)
                 context.Add("throttled runs " + throttledBefore + " -> " + after.Throttled);

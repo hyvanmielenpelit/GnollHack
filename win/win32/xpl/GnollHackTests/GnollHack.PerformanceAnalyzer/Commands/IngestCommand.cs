@@ -182,6 +182,8 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                 }
             }
             GHEnvironmentFingerprint.MergeMissing(fp, r.LegacyFingerprint());
+            if (!fp.ContainsKey(RunRecord.MetaSourceKey))
+                fp[RunRecord.MetaSourceKey] = inApp != null ? RunRecord.SourceInAppValue : RunRecord.SourceScriptValue;
             return fp;
         }
 

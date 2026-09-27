@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 #if GNH_MAUI
 using GnollHackM;
@@ -17,8 +18,9 @@ namespace GnollHackX.Performance
        environment the run was measured in, thermal readings taken before and after, the
        smoothness summary and on-screen pacing metrics GHSmoothnessMetrics computes, the
        raw on-screen interval and pacing-error series, the UI thread latency probe, and
-       two optional parts: a "suite" object for a run that is part of a suite, and a
-       "marks" array of the frames the user marked in the saved range.
+       three optional parts: a "suite" object for a run that is part of a suite, a
+       "marks" array of the frames the user marked in the saved range, and a
+       "background" block of the machine's load around the window (GHSystemLoadSampler).
 
        BeginWindow and EndWindowAndSave bracket a measurement: BeginWindow remembers
        whether the frame timeline was already running, enables it, notes the first frame of
@@ -57,6 +59,7 @@ namespace GnollHackX.Performance
         public int StartTurn;
         public int TurnReached = -1;   /* set by the caller before EndWindowAndSave */
         public string ExcludedReason;  /* preset by the caller, e.g. "warm-up run", "replay ended" */
+        public string Notes;           /* e.g. a quiet gate timeout before the run; the record's "suite.notes" */
     }
 
     /* What EndWindowAndSave(directory, out result) hands back alongside the JSON path,
@@ -70,6 +73,7 @@ namespace GnollHackX.Performance
         public GHThermalReading ThermalAfter;
         public int OnScreenIntervalCount;
         public string ExcludedReason;  /* null when the run is usable */
+        public GHBackgroundReport Background;  /* null when the sampler is off or failed */
     }
 
     public static class GHPerformanceRunRecord
@@ -88,13 +92,16 @@ namespace GnollHackX.Performance
         private static DateTime _startedUtc;
         private static long _windowFromFrameId = 1;
         private static GHPerformanceRunContext _context = null;
+        private static long _windowStartTicks;         /* DateTime.UtcNow.Ticks at BeginWindow */
+        private static int _windowSamplerHeld = 0;     /* 1 while the window's sampler acquire is outstanding */
 
         /* The reading taken when the timeline was last enabled: SaveRecent's "before" */
         private static GHThermalReading _thermalAtActivation;
         private static bool _hasThermalAtActivation = false;
 
-        /* Window command state. The poll timer runs on the thread pool and only posts; every
-           other member below is used on the main thread. */
+        /* Window command state. The poll timer runs on the thread pool and only posts; the
+           window timer, also on the thread pool, reads _windowPhase and _windowGeneration
+           before it posts. Every other use of the members below is on the main thread. */
         private static Timer _pollTimer = null;
         private static string _commandDirectory = null;
         private static Timer _windowTimer = null;
@@ -158,10 +165,13 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* Starts a measurement window: remembers whether the frame timeline was already
-           enabled, enables it, notes the window's first frame, restarts the UI thread probe's
-           statistics, reads the thermal state, and notes the start time. A second call while
-           a window is open replaces it. */
+        /* Starts a measurement window: holds the background load sampler until the window
+           ends, remembers whether the frame timeline was already enabled, enables it, notes
+           the window's first frame, restarts the UI thread probe's statistics, reads the
+           thermal state, and notes the start time. It never collects the per-process
+           interval: callers start that on the thread pool before calling this
+           (GHSystemLoadSampler.StartProcessIntervalAsync). A second call while a window is
+           open replaces it. */
         public static void BeginWindow(string scenario, string arm)
         {
             BeginWindow(scenario, arm, null);
@@ -175,6 +185,7 @@ namespace GnollHackX.Performance
         {
             try
             {
+                AcquireWindowSampler();
                 _scenario = scenario ?? "";
                 _arm = arm ?? "";
                 _context = context;
@@ -185,13 +196,32 @@ namespace GnollHackX.Performance
                 GHUiThreadProbe.BeginWindow();
                 _thermalBefore = GHThermalProbe.Read();
                 _startedUtc = DateTime.UtcNow;
+                _windowStartTicks = _startedUtc.Ticks;
                 Interlocked.Exchange(ref _windowOpen, 1);
             }
             catch
             {
                 _context = null;
                 Interlocked.Exchange(ref _windowOpen, 0);
+                ReleaseWindowSampler();
             }
+        }
+
+        /* At most one sampler acquire is outstanding for the window, whatever the
+           sequence of BeginWindow, EndWindowAndSave and cancellations; none is taken
+           while the sampler is disabled, since Acquire then counts nothing */
+        private static void AcquireWindowSampler()
+        {
+            if (!GHSystemLoadSampler.Enabled)
+                return;
+            if (Interlocked.Exchange(ref _windowSamplerHeld, 1) == 0)
+                GHSystemLoadSampler.Acquire();
+        }
+
+        private static void ReleaseWindowSampler()
+        {
+            if (Interlocked.Exchange(ref _windowSamplerHeld, 0) == 1)
+                GHSystemLoadSampler.Release();
         }
 
         /* Ends the window, writes run_<stamp>_<scenario>_<arm>.json plus the frame
@@ -209,7 +239,9 @@ namespace GnollHackX.Performance
            the interval count, so a suite runner does not need to re-read or re-parse the
            JSON it just wrote. result is non-null whenever a JSON was written; on failure
            result may be null and the method returns null, as EndWindowAndSave(directory)
-           always did. */
+           always did. Once the window has closed, the per-process interval is ended and
+           the window's background report built from the sampler; the sampler hold taken
+           by BeginWindow is released whatever happens. */
         public static string EndWindowAndSave(string directory, out GHPerformanceRunResult result)
         {
             result = null;
@@ -219,8 +251,12 @@ namespace GnollHackX.Performance
             _context = null;
             try
             {
-                return Save(directory, _scenario, _arm, _startedUtc, _thermalBefore, GHThermalProbe.Read(),
-                    _windowFromFrameId, GHFrameTimeline.LastFrameId, context, out result);
+                long windowEndTicks = DateTime.UtcNow.Ticks;
+                GHThermalReading thermalAfter = GHThermalProbe.Read();
+                long toFrameId = GHFrameTimeline.LastFrameId;
+                GHBackgroundReport background = BuildWindowBackground(_windowStartTicks, windowEndTicks);
+                return Save(directory, _scenario, _arm, _startedUtc, _thermalBefore, thermalAfter,
+                    _windowFromFrameId, toFrameId, context, background, out result);
             }
             catch
             {
@@ -230,6 +266,25 @@ namespace GnollHackX.Performance
             finally
             {
                 RestoreTimeline();
+                ReleaseWindowSampler();
+            }
+        }
+
+        /* Ends the per-process interval and builds the report for the window; null when
+           the sampler is disabled or fails */
+        private static GHBackgroundReport BuildWindowBackground(long windowStartTicks, long windowEndTicks)
+        {
+            try
+            {
+                List<GHProcessLoad> rows;
+                float otherGpuPct;
+                bool haveRows = GHSystemLoadSampler.EndProcessInterval(out rows, out otherGpuPct);
+                return GHSystemLoadSampler.BuildReport(windowStartTicks, windowEndTicks,
+                    haveRows ? rows : null, haveRows ? otherGpuPct : float.NaN);
+            }
+            catch
+            {
+                return null;
             }
         }
 
@@ -285,7 +340,11 @@ namespace GnollHackX.Performance
                 DateTime startedUtc = DateTime.UtcNow - TimeSpan.FromSeconds(Math.Max(0, spanSeconds));
                 GHThermalReading now = GHThermalProbe.Read();
                 GHThermalReading before = _hasThermalAtActivation ? _thermalAtActivation : now;
-                return Save(directory, scenario ?? "", arm ?? "", startedUtc, before, now, 1, last);
+                /* Whatever the sampler's ring holds over the span, without processes */
+                GHBackgroundReport background = null;
+                if (GHSystemLoadSampler.IsRunning)
+                    background = GHSystemLoadSampler.BuildReport(startedUtc.Ticks, DateTime.UtcNow.Ticks, null, float.NaN);
+                return Save(directory, scenario ?? "", arm ?? "", startedUtc, before, now, 1, last, background);
             }
             catch
             {
@@ -293,23 +352,24 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* The window.cmd and pre-existing SaveRecent/EndWindowAndSave path: no context,
-           result discarded. */
+        /* The SaveRecent path: no context, result discarded. */
         private static string Save(string directory, string scenario, string arm, DateTime startedUtc,
-            GHThermalReading thermalBefore, GHThermalReading thermalAfter, long fromFrameId, long toFrameId)
+            GHThermalReading thermalBefore, GHThermalReading thermalAfter, long fromFrameId, long toFrameId,
+            GHBackgroundReport background)
         {
             GHPerformanceRunResult result;
             return Save(directory, scenario, arm, startedUtc, thermalBefore, thermalAfter, fromFrameId, toFrameId,
-                null, out result);
+                null, background, out result);
         }
 
         /* Builds the summary and both CSVs from one copy of the ring so they agree, writes
            the JSON, and hands back the pieces a suite runner needs (result) alongside the
            JSON path. context is folded into the JSON's "suite" object and into
-           result.ExcludedReason; both are null when the caller passes no context. */
+           result.ExcludedReason; both are null when the caller passes no context.
+           background, null when there is none, becomes the JSON's "background" block. */
         private static string Save(string directory, string scenario, string arm, DateTime startedUtc,
             GHThermalReading thermalBefore, GHThermalReading thermalAfter, long fromFrameId, long toFrameId,
-            GHPerformanceRunContext context, out GHPerformanceRunResult result)
+            GHPerformanceRunContext context, GHBackgroundReport background, out GHPerformanceRunResult result)
         {
             result = null;
             DateTime endedUtc = DateTime.UtcNow;
@@ -339,7 +399,7 @@ namespace GnollHackX.Performance
 
             SeriesJson series = BuildSeries(displayed, displayedCount);
             object doc = BuildDocument(stem, scenario, arm, startedUtc, endedUtc, thermalBefore, thermalAfter,
-                summary, series, timelineCsvName, compositorCsvName, context, BuildMarks(recordBuffer, n));
+                summary, series, timelineCsvName, compositorCsvName, context, BuildMarks(recordBuffer, n), background);
 
             string json = JsonConvert.SerializeObject(doc, _jsonSettings);
             File.WriteAllText(jsonPath, json + Environment.NewLine, new UTF8Encoding(false));
@@ -351,7 +411,9 @@ namespace GnollHackX.Performance
             result.OnScreenIntervalCount = result.OnScreenIntervalsMs.Length;
             result.ThermalBefore = thermalBefore;
             result.ThermalAfter = thermalAfter;
-            result.ExcludedReason = ComputeExcludedReason(context, thermalBefore, thermalAfter, result.OnScreenIntervalCount);
+            result.Background = background;
+            result.ExcludedReason = ComputeExcludedReason(context, thermalBefore, thermalAfter, result.OnScreenIntervalCount,
+                background);
             return jsonPath;
         }
 
@@ -488,10 +550,11 @@ namespace GnollHackX.Performance
         /* The exclusion verdict for a saved run, first match wins: the context's own
            preset reason; throttling, from the thermal status ranks and the CPU
            performance percent GHPerformanceComparison.ClassifyThrottle already weighs;
-           a power state change between the two readings; too few on-screen intervals to
-           be meaningful. Returns null when none apply, including when context is null. */
+           a power state change between the two readings; a busy background verdict, as
+           its reason ("background load: ..."); too few on-screen intervals to be
+           meaningful. Returns null when none apply, including when context is null. */
         private static string ComputeExcludedReason(GHPerformanceRunContext context, GHThermalReading before,
-            GHThermalReading after, int onScreenIntervalCount)
+            GHThermalReading after, int onScreenIntervalCount, GHBackgroundReport background)
         {
             if (context != null && !string.IsNullOrEmpty(context.ExcludedReason))
                 return context.ExcludedReason;
@@ -505,6 +568,9 @@ namespace GnollHackX.Performance
             catch { }
             if (before.PowerStateKnown && after.PowerStateKnown && before.IsCharging != after.IsCharging)
                 return "power state changed";
+            if (background != null && background.Verdict == GHBackgroundVerdict.Busy)
+                return !string.IsNullOrEmpty(background.Reason)
+                    ? background.Reason : GHBackgroundLoad.ReasonPrefix + GHBackgroundLoad.VerdictBusyName;
             if (onScreenIntervalCount < 100)
                 return "fewer than 100 on-screen intervals";
             return null;
@@ -514,9 +580,10 @@ namespace GnollHackX.Performance
 
         /* Called on the main thread whenever the frame timeline starts or stops recording:
            takes the reading SaveRecent uses as "before" (which also primes rate counters
-           such as the Windows processor performance counter), and runs the window command
-           poller exactly while the timeline records. Stopping cancels a commanded window
-           that has not begun or not ended. */
+           such as the Windows processor performance counter), warms the environment
+           fingerprint cache on the thread pool, since its first capture can block, and runs
+           the window command poller exactly while the timeline records. Stopping cancels a
+           commanded window that has not begun or not ended. */
         public static void OnTimelineActivated(bool active)
         {
             try
@@ -525,6 +592,7 @@ namespace GnollHackX.Performance
                 {
                     _thermalAtActivation = GHThermalProbe.Read();
                     _hasThermalAtActivation = true;
+                    Task.Run(delegate { GHPerformanceEnvironment.CaptureFingerprint(false); });
                     _commandDirectory = ExportDirectory;
                     if (_pollTimer == null)
                         _pollTimer = new Timer(PollCommandFile, null, CommandPollMs, CommandPollMs);
@@ -631,9 +699,19 @@ namespace GnollHackX.Performance
             _windowTimer = new Timer(OnWindowTimer, generation, DueMs(delaySeconds), Timeout.Infinite);
         }
 
+        /* Runs on the thread pool. Before a window begins, the per-process interval's
+           begin collect runs here, so the main thread never waits for it. */
         private static void OnWindowTimer(object state)
         {
             int generation = (int)state;
+            if (Volatile.Read(ref _windowPhase) == 1 && generation == Volatile.Read(ref _windowGeneration))
+            {
+                try
+                {
+                    GHSystemLoadSampler.StartProcessIntervalAsync().Wait(GHSystemLoadSampler.ProcessIntervalBeginWaitMs);
+                }
+                catch { }
+            }
             PostToMainThread(delegate { StepWindow(generation); });
         }
 
@@ -692,7 +770,10 @@ namespace GnollHackX.Performance
         {
             StopWindowTimer();
             if (_windowPhase == 2 && Interlocked.CompareExchange(ref _windowOpen, 0, 1) == 1)
+            {
                 RestoreTimeline();
+                ReleaseWindowSampler();
+            }
             _context = null;
             _windowPhase = 0;
         }
@@ -709,7 +790,7 @@ namespace GnollHackX.Performance
         private static object BuildDocument(string runId, string scenario, string arm, DateTime startedUtc, DateTime endedUtc,
             GHThermalReading before, GHThermalReading after, GHSmoothnessSummary summary,
             SeriesJson series, string timelineCsvName, string compositorCsvName, GHPerformanceRunContext context,
-            MarkJson[] marks)
+            MarkJson[] marks, GHBackgroundReport background)
         {
             GHPerformanceEnvironmentFacts facts = GHPerformanceEnvironment.Capture();
 
@@ -733,7 +814,90 @@ namespace GnollHackX.Performance
             doc.Files = new FilesJson { FrameTimeline = timelineCsvName, CompositorFrames = compositorCsvName };
             doc.Suite = BuildSuite(context);
             doc.Marks = marks;
+            doc.Background = BuildBackground(background);
             return doc;
+        }
+
+        /* The "background" block; null (omitted) when there is no report. NaN values are
+           written as null. */
+        private static BackgroundJson BuildBackground(GHBackgroundReport r)
+        {
+            if (r == null)
+                return null;
+            BackgroundJson j = new BackgroundJson();
+            j.SamplerVersion = r.SamplerVersion;
+            j.Source = r.Source;
+            j.IntervalMs = r.IntervalMs;
+            j.LogicalProcessors = r.LogicalProcessors;
+            j.Coverage = N(r.Coverage);
+            j.SamplerBusyMs = N(r.SamplerBusyMs);
+            j.Signals = r.Signals.ToArray();
+            j.Window = BuildBackgroundSummary(r.Window);
+            j.PreWindow = BuildBackgroundSummary(r.PreWindow);
+            j.OtherGpuPct = N(r.OtherGpuPct);
+
+            j.Processes = new BackgroundProcessJson[r.Processes.Count];
+            for (int i = 0; i < r.Processes.Count; i++)
+            {
+                GHProcessLoad p = r.Processes[i];
+                BackgroundProcessJson pj = new BackgroundProcessJson();
+                pj.Name = p.Name;
+                pj.CpuPct = N(p.CpuPct);
+                pj.GpuPct = N(p.GpuPct);
+                pj.Category = !string.IsNullOrEmpty(p.Category) ? p.Category : GHBackgroundLoad.CategoryOf(p.Name);
+                j.Processes[i] = pj;
+            }
+
+            int activityCount = r.Activities != null ? r.Activities.Count : 0;
+            j.Activities = new BackgroundActivityJson[activityCount];
+            for (int i = 0; i < activityCount; i++)
+            {
+                GHBackgroundActivity a = r.Activities[i];
+                BackgroundActivityJson aj = new BackgroundActivityJson();
+                aj.Category = a.Category;
+                aj.Processes = a.Processes.ToArray();
+                aj.CpuPct = N(a.CpuPct);
+                j.Activities[i] = aj;
+            }
+
+            j.Samples = new BackgroundSampleJson[r.Samples.Count];
+            for (int i = 0; i < r.Samples.Count; i++)
+            {
+                GHBackgroundReportSample s = r.Samples[i];
+                BackgroundSampleJson sj = new BackgroundSampleJson();
+                sj.T = N(s.T);
+                sj.Sys = N(s.Sys);
+                sj.Own = N(s.Own);
+                sj.Other = N(s.Other);
+                sj.Disk = N(s.Disk);
+                sj.AvailPct = N(s.AvailPct);
+                sj.Faults = N(s.Faults);
+                j.Samples[i] = sj;
+            }
+
+            j.Verdict = r.VerdictName;
+            j.Reason = r.Reason;
+            return j;
+        }
+
+        private static BackgroundSummaryJson BuildBackgroundSummary(GHBackgroundSummary s)
+        {
+            if (s == null)
+                return null;
+            BackgroundSummaryJson j = new BackgroundSummaryJson();
+            j.Samples = s.Samples;
+            j.OtherCpuMeanPct = N(s.OtherCpuMeanPct);
+            j.OtherCpuP90Pct = N(s.OtherCpuP90Pct);
+            j.OtherCpuMaxPct = N(s.OtherCpuMaxPct);
+            j.OtherCpuSpikeShare = N(s.OtherCpuSpikeShare);
+            j.DiskBusyMeanPct = N(s.DiskBusyMeanPct);
+            j.DiskBusyP90Pct = N(s.DiskBusyP90Pct);
+            j.AvailableMemoryMinPct = N(s.AvailableMemoryMinPct);
+            j.AvailableMemoryMinMB = s.AvailableMemoryMinMB >= 0 ? (long?)s.AvailableMemoryMinMB : null;
+            j.HardFaultsP90PerSec = N(s.HardFaultsP90PerSec);
+            j.MemoryPressureEvents = s.MemoryPressureEvents;
+            j.LowMemory = s.LowMemory;
+            return j;
         }
 
         /* Null when the run was not part of a suite, so the JSON carries no "suite"
@@ -755,6 +919,7 @@ namespace GnollHackX.Performance
             j.StartTurn = context.StartTurn;
             j.TurnReached = context.TurnReached;
             j.ExcludedReason = context.ExcludedReason;
+            j.Notes = context.Notes;
             return j;
         }
 
@@ -779,6 +944,7 @@ namespace GnollHackX.Performance
             e.BuildConfiguration = f.BuildConfiguration;
             e.GitCommit = f.GitCommit;
             e.Configuration = f.Configuration;
+            e.Fingerprint = f.Fingerprint;
             return e;
         }
 
@@ -941,6 +1107,14 @@ namespace GnollHackX.Performance
             return Math.Round(value, 3);
         }
 
+        /* The background block's rounding: NaN and Infinity become null, not 0 */
+        private static double? N(float value)
+        {
+            if (float.IsNaN(value) || float.IsInfinity(value))
+                return null;
+            return Math.Round((double)value, 3);
+        }
+
         private static string SafeFileToken(string value)
         {
             if (string.IsNullOrEmpty(value))
@@ -1015,6 +1189,156 @@ namespace GnollHackX.Performance
             /* The user marks in the saved range; omitted entirely when there are none */
             [JsonProperty("marks", NullValueHandling = NullValueHandling.Ignore)]
             public MarkJson[] Marks;
+
+            /* The background load around the window; omitted entirely when there is no report */
+            [JsonProperty("background", NullValueHandling = NullValueHandling.Ignore)]
+            public BackgroundJson Background;
+        }
+
+        /* The "background" block (DEVEL/performance/schema/run-record.schema.json):
+           signals a platform does not report are null and missing from "signals" */
+        private sealed class BackgroundJson
+        {
+            [JsonProperty("samplerVersion")]
+            public int SamplerVersion;
+
+            [JsonProperty("source")]
+            public string Source;
+
+            [JsonProperty("intervalMs")]
+            public int IntervalMs;
+
+            [JsonProperty("logicalProcessors")]
+            public int LogicalProcessors;
+
+            /* Fraction of the expected window samples present */
+            [JsonProperty("coverage")]
+            public double? Coverage;
+
+            /* Time the sampler's ticks took during the window */
+            [JsonProperty("samplerBusyMs")]
+            public double? SamplerBusyMs;
+
+            [JsonProperty("signals")]
+            public string[] Signals;
+
+            [JsonProperty("window")]
+            public BackgroundSummaryJson Window;
+
+            /* The up to 10 s before the window start */
+            [JsonProperty("preWindow")]
+            public BackgroundSummaryJson PreWindow;
+
+            [JsonProperty("otherGpuPct")]
+            public double? OtherGpuPct;
+
+            [JsonProperty("processes")]
+            public BackgroundProcessJson[] Processes;
+
+            [JsonProperty("activities")]
+            public BackgroundActivityJson[] Activities;
+
+            [JsonProperty("samples")]
+            public BackgroundSampleJson[] Samples;
+
+            /* quiet, elevated, busy or unknown */
+            [JsonProperty("verdict")]
+            public string Verdict;
+
+            /* Set for elevated and busy; at most 100 characters */
+            [JsonProperty("reason")]
+            public string Reason;
+        }
+
+        private sealed class BackgroundSummaryJson
+        {
+            [JsonProperty("samples")]
+            public int Samples;
+
+            [JsonProperty("otherCpuMeanPct")]
+            public double? OtherCpuMeanPct;
+
+            [JsonProperty("otherCpuP90Pct")]
+            public double? OtherCpuP90Pct;
+
+            [JsonProperty("otherCpuMaxPct")]
+            public double? OtherCpuMaxPct;
+
+            [JsonProperty("otherCpuSpikeShare")]
+            public double? OtherCpuSpikeShare;
+
+            [JsonProperty("diskBusyMeanPct")]
+            public double? DiskBusyMeanPct;
+
+            [JsonProperty("diskBusyP90Pct")]
+            public double? DiskBusyP90Pct;
+
+            [JsonProperty("availableMemoryMinPct")]
+            public double? AvailableMemoryMinPct;
+
+            [JsonProperty("availableMemoryMinMB")]
+            public long? AvailableMemoryMinMB;
+
+            [JsonProperty("hardFaultsP90PerSec")]
+            public double? HardFaultsP90PerSec;
+
+            [JsonProperty("memoryPressureEvents")]
+            public int MemoryPressureEvents;
+
+            [JsonProperty("lowMemory")]
+            public bool LowMemory;
+        }
+
+        private sealed class BackgroundProcessJson
+        {
+            [JsonProperty("name")]
+            public string Name;
+
+            [JsonProperty("cpuPct")]
+            public double? CpuPct;
+
+            [JsonProperty("gpuPct")]
+            public double? GpuPct;
+
+            [JsonProperty("category")]
+            public string Category;
+        }
+
+        private sealed class BackgroundActivityJson
+        {
+            [JsonProperty("category")]
+            public string Category;
+
+            [JsonProperty("processes")]
+            public string[] Processes;
+
+            [JsonProperty("cpuPct")]
+            public double? CpuPct;
+        }
+
+        /* One sample; t is seconds from the window start, negative before it */
+        private sealed class BackgroundSampleJson
+        {
+            [JsonProperty("t")]
+            public double? T;
+
+            [JsonProperty("sys")]
+            public double? Sys;
+
+            [JsonProperty("own")]
+            public double? Own;
+
+            [JsonProperty("other")]
+            public double? Other;
+
+            [JsonProperty("disk")]
+            public double? Disk;
+
+            [JsonProperty("availPct")]
+            public double? AvailPct;
+
+            [JsonProperty("faults")]
+            public double? Faults;
         }
 
         /* A frame the user marked as a felt stutter */
@@ -1087,6 +1411,10 @@ namespace GnollHackX.Performance
 
             [JsonProperty("configuration")]
             public Dictionary<string, object> Configuration;
+
+            /* Flat "<category>.<name>" string map (GHEnvironmentFingerprint) */
+            [JsonProperty("fingerprint", NullValueHandling = NullValueHandling.Ignore)]
+            public Dictionary<string, string> Fingerprint;
         }
 
         private sealed class ThermalJson
@@ -1462,6 +1790,10 @@ namespace GnollHackX.Performance
             /* Only the caller's preset reason; omitted when not set */
             [JsonProperty("excludedReason", NullValueHandling = NullValueHandling.Ignore)]
             public string ExcludedReason;
+
+            /* e.g. a quiet gate timeout before the run; omitted when not set */
+            [JsonProperty("notes", NullValueHandling = NullValueHandling.Ignore)]
+            public string Notes;
         }
     }
 }

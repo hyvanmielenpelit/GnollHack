@@ -9,6 +9,39 @@ namespace GnollHack.PerformanceAnalyzer.Tests
 {
     public class BackgroundAndDriftTests
     {
+        [Fact]
+        public void DiffFingerprints_DifferentSources_ComparesSharedKeysOnly()
+        {
+            Dictionary<string, string> inApp = new Dictionary<string, string>
+            {
+                { GHEnvironmentFingerprint.MetaFingerprintVersionKey, "1" },
+                { RunRecord.MetaSourceKey, RunRecord.SourceInAppValue },
+                { "os.build", "26200.6584" },
+                { "settings.useTileBatching", "true" },
+                { "component.SkiaSharp", "3.119.4" }
+            };
+            Dictionary<string, string> script = new Dictionary<string, string>
+            {
+                { GHEnvironmentFingerprint.MetaFingerprintVersionKey, "1" },
+                { RunRecord.MetaSourceKey, RunRecord.SourceScriptValue },
+                { "os.build", "26200.6725" },
+                { "toolchain.dotnetSdk", "10.0.401" }
+            };
+
+            bool sourcesDiffer;
+            List<GHFingerprintChange> diff = RunRecord.DiffFingerprints(inApp, script, out sourcesDiffer);
+
+            Assert.True(sourcesDiffer);
+            GHFingerprintChange only = Assert.Single(diff);
+            Assert.Equal("os.build", only.Key);
+            Assert.Equal(GHFingerprintChangeKind.Changed, only.Kind);
+            Assert.Equal("environment: os", GHEnvironmentFingerprint.AttributionLabel(diff));
+
+            List<GHFingerprintChange> sameSource = RunRecord.DiffFingerprints(inApp, inApp, out sourcesDiffer);
+            Assert.False(sourcesDiffer);
+            Assert.Empty(sameSource);
+        }
+
         private static RunRecord SyntheticSmoothnessRun(string arm, double hitchRatio, double pacingRms, double displayedFps)
         {
             RunRecord r = new RunRecord

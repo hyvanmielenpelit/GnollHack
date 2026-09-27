@@ -278,6 +278,7 @@ namespace GnollHack.PerformanceAnalyzer.Model
             if (Fingerprint != null && Fingerprint.Count > 0)
                 r.Fingerprint = new Dictionary<string, string>(Fingerprint);
             r.NormalizeLegacy();
+            r.Fingerprint[RunRecord.MetaSourceKey] = RunRecord.SourceInAppValue;
             if (Background != null)
                 r.Background = new List<BackgroundInfo> { Background };
 
