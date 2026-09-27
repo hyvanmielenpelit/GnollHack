@@ -73,7 +73,7 @@ namespace GnollHackX
         /* Chevron hit rects are inflated to this many text rows square, so the drawn
            triangle can stay small while the target remains reachable with a thumb */
         public const float DebugDashboardMinTouchRows = 2.0f;
-        public const int DebugDashboardLogLines = 6;
+        public const int DebugDashboardLogLines = 10;
         public const byte DebugDashboardBackgroundAlpha = 160;
         public const byte DebugDashboardBorderAlpha = 60;
         public const float DebugDashboardDroppedFrameWarnPct = 1.0f;
