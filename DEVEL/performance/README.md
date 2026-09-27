@@ -353,6 +353,7 @@ an instance suffix `#N` and a trailing `.exe` are stripped; any other process is
 | `sync` | `OneDrive`, `Dropbox`, `GoogleDriveFS` |
 | `telemetry` | `CompatTelRunner`, `DiagTrack` |
 | `measurement` | `PresentMon`, `typeperf`, `powershell`, `pwsh`, `adb`: listed, never counted as an activity, never named as a suspect |
+| `compositor` | `dwm`: listed, never counted as an activity, never named as a suspect, and its GPU use is subtracted from the other processes' GPU share before the GPU rules apply, since the compositor's load follows the frames the app itself presents |
 
 ### Quiet gate
 

@@ -370,15 +370,15 @@ namespace GnollHack.PerformanceAnalyzer.Model
             }
         }
 
-        /* The highest-CPU (else highest-GPU) listed process outside the measurement
-           category, or null */
+        /* The highest-CPU (else highest-GPU) listed process outside the ignored
+           categories (GHBackgroundLoad.IsIgnoredCategory), or null */
         public BackgroundProcess TopSuspect()
         {
             if (Processes == null)
                 return null;
             return Processes
-                .Where(p => p != null && GHBackgroundLoad.CategoryOf(p.Name) != GHBackgroundLoad.CategoryMeasurement
-                    && p.Category != GHBackgroundLoad.CategoryMeasurement)
+                .Where(p => p != null && !GHBackgroundLoad.IsIgnoredCategory(GHBackgroundLoad.CategoryOf(p.Name))
+                    && !GHBackgroundLoad.IsIgnoredCategory(p.Category))
                 .OrderByDescending(p => Math.Max(p.CpuPct ?? 0, p.GpuPct ?? 0))
                 .ThenBy(p => p.Name, StringComparer.Ordinal)
                 .FirstOrDefault(p => Math.Max(p.CpuPct ?? 0, p.GpuPct ?? 0) > 0);

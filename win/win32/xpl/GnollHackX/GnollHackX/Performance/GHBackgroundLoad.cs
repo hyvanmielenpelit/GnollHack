@@ -177,6 +177,7 @@ namespace GnollHackX.Performance
         public const string CategorySync = "sync";
         public const string CategoryTelemetry = "telemetry";
         public const string CategoryMeasurement = "measurement";
+        public const string CategoryCompositor = "compositor";
         public const string CategoryOther = "other";
 
         private static readonly Dictionary<string, string> KnownProcesses = BuildKnownProcesses();
@@ -194,7 +195,37 @@ namespace GnollHackX.Performance
             AddCategory(d, CategorySync, new string[] { "OneDrive", "Dropbox", "GoogleDriveFS" });
             AddCategory(d, CategoryTelemetry, new string[] { "CompatTelRunner", "DiagTrack" });
             AddCategory(d, CategoryMeasurement, new string[] { "PresentMon", "typeperf", "powershell", "pwsh", "adb" });
+            AddCategory(d, CategoryCompositor, new string[] { "dwm" });
             return d;
+        }
+
+        /* True for the categories that are never an activity or a suspect: the measurement
+           tooling, and the desktop compositor, whose load follows the frames this app
+           presents. */
+        public static bool IsIgnoredCategory(string category)
+        {
+            return category == CategoryMeasurement || category == CategoryCompositor;
+        }
+
+        /* Other processes' GPU use minus the compositor's, never negative; NaN when
+           otherGpuPct is NaN. The compositor rows' GPU is subtracted as reported, so a
+           compositor spread over several adapters can take the result to 0. */
+        public static float OtherGpuWithoutCompositor(float otherGpuPct, IList<GHProcessLoad> processes)
+        {
+            if (float.IsNaN(otherGpuPct))
+                return float.NaN;
+            float compositor = 0f;
+            if (processes != null)
+            {
+                for (int i = 0; i < processes.Count; i++)
+                {
+                    /* By name too: older records store the compositor as "other" */
+                    GHProcessLoad p = processes[i];
+                    if (EffectiveCategory(p) == CategoryCompositor || CategoryOf(p.Name) == CategoryCompositor)
+                        compositor += OrZero(p.GpuPct);
+                }
+            }
+            return Math.Max(0f, otherGpuPct - compositor);
         }
 
         private static void AddCategory(Dictionary<string, string> d, string category, string[] names)
@@ -272,8 +303,8 @@ namespace GnollHackX.Performance
         }
 
         /* The known activities among processes: one entry per category other than
-           CategoryOther and CategoryMeasurement, with its process names and summed CPU,
-           ordered by CPU descending, then category. */
+           CategoryOther and the ignored categories (IsIgnoredCategory), with its process
+           names and summed CPU, ordered by CPU descending, then category. */
         public static List<GHBackgroundActivity> BuildActivities(IList<GHProcessLoad> processes)
         {
             List<GHBackgroundActivity> result = new List<GHBackgroundActivity>();
@@ -283,7 +314,7 @@ namespace GnollHackX.Performance
             {
                 GHProcessLoad p = processes[i];
                 string category = EffectiveCategory(p);
-                if (category == CategoryOther || category == CategoryMeasurement)
+                if (category == CategoryOther || IsIgnoredCategory(category))
                     continue;
                 GHBackgroundActivity activity = null;
                 for (int j = 0; j < result.Count; j++)
@@ -467,13 +498,15 @@ namespace GnollHackX.Performance
         }
 
         /* The verdict for a summary and the processes of the same range. otherGpuPct is
-           the other processes' 3D GPU engine average, NaN when unreported. Unknown when
+           the other processes' 3D GPU engine average, NaN when unreported; the GPU rules
+           use it without the compositor's share (OtherGpuWithoutCompositor). Unknown when
            coverage is below MinCoverage, or when there is no CPU signal and no memory
            rule (low memory, available memory, hard faults, memory pressure) fires.
            Otherwise Busy when a busy rule fires, else Elevated when an elevated rule
            fires, else Quiet. reason is null unless the verdict is Elevated or Busy; it
            then names the facts of that level and up to two suspect processes, never one
-           of CategoryMeasurement, in at most MaxReasonLength characters. */
+           of an ignored category (IsIgnoredCategory), in at most MaxReasonLength
+           characters. */
         public static GHBackgroundVerdict Classify(GHBackgroundSummary s, IList<GHProcessLoad> processes, float otherGpuPct,
                                                    out string reason)
         {
@@ -495,12 +528,13 @@ namespace GnollHackX.Performance
             }
             if (!float.IsNaN(s.OtherCpuSpikeShare) && s.OtherCpuSpikeShare >= BusySpikeShare)
                 busy.Add("other CPU >= " + Pct(SpikeOtherCpuPct) + " % in " + Pct(s.OtherCpuSpikeShare * 100f) + " % of samples");
-            if (!float.IsNaN(otherGpuPct))
+            float appGpuPct = OtherGpuWithoutCompositor(otherGpuPct, processes);
+            if (!float.IsNaN(appGpuPct))
             {
-                string fact = "other GPU " + Pct(otherGpuPct) + " %";
-                if (otherGpuPct >= BusyOtherGpuPct)
+                string fact = "other GPU " + Pct(appGpuPct) + " %";
+                if (appGpuPct >= BusyOtherGpuPct)
                     busy.Add(fact);
-                else if (otherGpuPct >= ElevatedOtherGpuPct)
+                else if (appGpuPct >= ElevatedOtherGpuPct)
                     elevated.Add(fact);
             }
             if (s.LowMemory)
@@ -592,7 +626,7 @@ namespace GnollHackX.Performance
                 for (int i = 0; i < processes.Count; i++)
                 {
                     GHProcessLoad p = processes[i];
-                    if (EffectiveCategory(p) == CategoryMeasurement || CategoryOf(p.Name) == CategoryMeasurement)
+                    if (IsIgnoredCategory(EffectiveCategory(p)) || IsIgnoredCategory(CategoryOf(p.Name)))
                         continue;
                     if (SuspectScore(p) < KnownActivityMinCpuPct)
                         continue;

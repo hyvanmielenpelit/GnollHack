@@ -16,7 +16,7 @@ namespace GnollHackX.UnitTests
         private static readonly DateTime Now = new DateTime(2026, 9, 27, 14, 5, 0);
 
         /* A fully known, healthy, quiet run that produces no finding at all. Hitch-cause
-           time is below the share gate (1 ms/s over 30 s). */
+           time is below the share gate (MinCauseMsPerSec over 30 s). */
         private static GHDiagnosisFacts HealthyFacts()
         {
             GHDiagnosisFacts f = new GHDiagnosisFacts();
@@ -89,12 +89,14 @@ namespace GnollHackX.UnitTests
             return f;
         }
 
-        /* Cause times: every cause zero except the given (cause, ms) pairs */
+        /* Cause times: every cause zero except the given (cause, ms) pairs. The ms values are
+           written per 1 ms/s of share gate and scaled by MinCauseMsPerSec, so a pair list
+           summing to 30 ms over the 30 s window sits exactly at the gate. */
         private static void Causes(GHDiagnosisFacts f, params object[] pairs)
         {
             f.CauseMs = new double[GHSmoothnessMetrics.CauseCount];
             for (int i = 0; i + 1 < pairs.Length; i += 2)
-                f.CauseMs[(int)(GHHitchCause)pairs[i]] = Convert.ToDouble(pairs[i + 1]);
+                f.CauseMs[(int)(GHHitchCause)pairs[i]] = Convert.ToDouble(pairs[i + 1]) * GHPerformanceDiagnosis.MinCauseMsPerSec;
         }
 
         private static GHDiagnosisFinding Find(GHDiagnosisResult r, string code)
@@ -230,13 +232,29 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
-        public void ThermalThrottled_ClassifyThrottleCpuDrop_Fires()
+        public void ClassifyThrottleCpuDrop_IsClockCapNotThermal()
         {
             GHDiagnosisFacts f = HealthyFacts();
             f.CpuPerformancePctAfter = 89.9f;
-            AssertFires(f, GHPerformanceDiagnosis.CodeThermalThrottled, GHFindingSeverity.Likely);
+            AssertFires(f, GHPerformanceDiagnosis.CodeCpuClockCapped, GHFindingSeverity.Suspect);
+            AssertSilent(f, GHPerformanceDiagnosis.CodeThermalThrottled);
 
             f.CpuPerformancePctAfter = 90f;
+            AssertSilent(f, GHPerformanceDiagnosis.CodeCpuClockCapped);
+            AssertSilent(f, GHPerformanceDiagnosis.CodeThermalThrottled);
+        }
+
+        [Fact]
+        public void Primary_BusyBackgroundOutranksClockDrop()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            f.CpuPerformancePctBefore = 92f;
+            f.CpuPerformancePctAfter = 71f;                         /* Heat, Suspect */
+            f.BackgroundVerdict = GHBackgroundVerdict.Busy;         /* Background, Likely */
+
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+
+            Assert.Equal(GHPerformanceDiagnosis.CodeBackgroundBusy, r.Primary.Code);
             AssertSilent(f, GHPerformanceDiagnosis.CodeThermalThrottled);
         }
 
@@ -262,10 +280,13 @@ namespace GnollHackX.UnitTests
         [Fact]
         public void CpuClockCapped_Boundary()
         {
+            /* A steady clock, so only the absolute floor applies, not ClassifyThrottle's drop rule */
             GHDiagnosisFacts f = HealthyFacts();
+            f.CpuPerformancePctBefore = 59.9f;
             f.CpuPerformancePctAfter = 59.9f;
             AssertFires(f, GHPerformanceDiagnosis.CodeCpuClockCapped, GHFindingSeverity.Suspect);
 
+            f.CpuPerformancePctBefore = 60f;
             f.CpuPerformancePctAfter = 60f;
             AssertSilent(f, GHPerformanceDiagnosis.CodeCpuClockCapped);
         }
@@ -565,7 +586,7 @@ namespace GnollHackX.UnitTests
         [Theory]
         [InlineData(30.0, 70.0, true)]
         [InlineData(29.0, 71.0, false)]
-        [InlineData(20.0, 9.9, false)]  /* 29.9 ms over 30 s is below the share gate */
+        [InlineData(20.0, 9.9, false)]  /* 29.9 gate units over 30 s are below the share gate */
         [InlineData(20.0, 10.0, true)]
         public void GpuBound_ShareAndGate(double gpuMs, double otherMs, bool fires)
         {
@@ -589,6 +610,36 @@ namespace GnollHackX.UnitTests
             f.WindowSeconds = 30f;
             f.CauseMs = null;
             AssertSilent(f, GHPerformanceDiagnosis.CodeGpuBound);
+        }
+
+        /* A healthy Windows laptop run: 4 hitches, 1.9 ms/s, mostly PaintCpu */
+        [Fact]
+        public void Shares_HealthyRunFewHitches_NameNoCause()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.HitchRatioMsPerSec = 1.944f;
+            f.CauseMs = new double[GHSmoothnessMetrics.CauseCount];
+            f.CauseMs[(int)GHHitchCause.PaintCpu] = 41.642;
+            f.CauseMs[(int)GHHitchCause.UiThreadLate] = 16.652;
+
+            AssertSilent(f, GHPerformanceDiagnosis.CodePaintHeavy);
+            AssertSilent(f, GHPerformanceDiagnosis.CodeUiThreadBusy);
+        }
+
+        [Fact]
+        public void OtherGpuLoad_ExcludesCompositor()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.OtherGpuPct = 16.296f;
+            f.Processes = new List<GHProcessLoad>
+            {
+                new GHProcessLoad("dwm", 0.452f, 16.294f),
+                new GHProcessLoad("chrome", 0.052f, 0.001f)
+            };
+            AssertSilent(f, GHPerformanceDiagnosis.CodeOtherGpuLoad);
+
+            f.Processes[0] = new GHProcessLoad("dwm.exe", 0.452f, 4f);   /* 12.3 % left for other apps */
+            AssertFires(f, GHPerformanceDiagnosis.CodeOtherGpuLoad, GHFindingSeverity.Suspect);
         }
 
         /* ------------------------------------------------------------------ Display */
@@ -623,6 +674,27 @@ namespace GnollHackX.UnitTests
                 AssertFires(f, GHPerformanceDiagnosis.CodeRefreshBelowMax, GHFindingSeverity.Suspect);
             else
                 AssertSilent(f, GHPerformanceDiagnosis.CodeRefreshBelowMax);
+        }
+
+        /* A 144 Hz laptop panel at 120 Hz: only relevant when the Map FPS target reaches it */
+        [Fact]
+        public void RefreshBelowMax_OnlyWhenDisplayCapsFrameRate()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.MeasuredRefreshHz = 120.039f;
+            f.DisplayMaxRefreshHz = 144f;
+
+            f.TargetFps = 60f;
+            AssertSilent(f, GHPerformanceDiagnosis.CodeRefreshBelowMax);
+            AssertFires(f, GHPerformanceDiagnosis.CodeMapFpsCap, GHFindingSeverity.Info);
+
+            f.TargetFps = 120f;
+            f.DisplayedFps = 119f;
+            AssertFires(f, GHPerformanceDiagnosis.CodeRefreshBelowMax, GHFindingSeverity.Suspect);
+            AssertSilent(f, GHPerformanceDiagnosis.CodeMapFpsCap);
+
+            f.TargetFps = float.NaN;
+            AssertSilent(f, GHPerformanceDiagnosis.CodeRefreshBelowMax);
         }
 
         [Fact]
@@ -1155,9 +1227,9 @@ namespace GnollHackX.UnitTests
 
             Assert.Contains("\n  GPU         ok    rendering on NVIDIA GeForce RTX 3060 (discrete)\n", report);
             Assert.Contains("\n  Game        warn  Map drawing is CPU-heavy (PAINT_HEAVY)\n", report);
-            Assert.Contains("\n  PaintCpu               60.0 ms    60 %\n", report);
-            Assert.Contains("\n  Unattributed           40.0 ms    40 %\n", report);
-            Assert.Contains("\n  total                 100.0 ms  (3.3 ms/s)\n", report);
+            Assert.Contains("\n  PaintCpu              300.0 ms    60 %\n", report);
+            Assert.Contains("\n  Unattributed          200.0 ms    40 %\n", report);
+            Assert.Contains("\n  total                 500.0 ms  (16.7 ms/s)\n", report);
         }
 
         [Fact]

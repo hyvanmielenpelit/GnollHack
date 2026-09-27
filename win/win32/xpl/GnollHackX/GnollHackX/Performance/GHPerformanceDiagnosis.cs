@@ -177,8 +177,9 @@ namespace GnollHackX.Performance
         public const float PoorHitchRatioMsPerSec = 25f;
 
         /* A hitch-cause share counts only when the summed cause time is at least this
-           many ms per second of window. */
-        public const double MinCauseMsPerSec = 1.0;
+           many ms per second of window: the healthy hitch-ratio bound, so that the few
+           hitches of a healthy run name no cause. */
+        public const double MinCauseMsPerSec = 5.0;
 
         /* Heat */
         public const int ThermalThrottledRank = 3;          /* Moderate */
@@ -574,9 +575,13 @@ namespace GnollHackX.Performance
 
         private static void AddHeatFindings(GHDiagnosisFacts f, List<GHDiagnosisFinding> list)
         {
+            /* Only a reported thermal status counts as heat here; a processor clock drop can as well be
+               a power limit, so it goes to CPU_CLOCK_CAPPED */
             GHThrottleVerdict throttle = GHPerformanceComparison.ClassifyThrottle(f.ThermalRankBefore, f.ThermalRankAfter,
                 f.CpuPerformancePctBefore, f.CpuPerformancePctAfter);
-            if (throttle.Throttled || f.ThermalRankAfter >= ThermalThrottledRank)
+            bool statusThrottled = throttle.Throttled && throttle.Signal == GHThrottleSignal.Status;
+            bool clockThrottled = throttle.Throttled && throttle.Signal == GHThrottleSignal.CpuPerformancePct;
+            if (statusThrottled || f.ThermalRankAfter >= ThermalThrottledRank)
             {
                 Add(list, CodeThermalThrottled, GHFindingArea.Heat, GHFindingSeverity.Likely,
                     "The device is thermally throttled",
@@ -596,11 +601,16 @@ namespace GnollHackX.Performance
                     + "setting.");
             }
 
-            if (Known(f.CpuPerformancePctAfter) && f.CpuPerformancePctAfter < CpuClockCappedPct)
+            bool lowClock = Known(f.CpuPerformancePctAfter) && f.CpuPerformancePctAfter < CpuClockCappedPct;
+            if (lowClock || clockThrottled)
             {
+                string evidence = Known(f.CpuPerformancePctBefore)
+                    ? "CPU clock " + F0(f.CpuPerformancePctBefore) + " % -> " + F0(f.CpuPerformancePctAfter)
+                      + " % of base during the test"
+                    : "CPU clock " + F0(f.CpuPerformancePctAfter) + " % of base after the test";
                 Add(list, CodeCpuClockCapped, GHFindingArea.Heat, GHFindingSeverity.Suspect,
-                    "The CPU runs well below its base clock",
-                    "CPU clock " + F0(f.CpuPerformancePctAfter) + " % of base after the test",
+                    "The CPU clock is capped (heat or power limit)",
+                    evidence,
                     "Check the cooling and the vents, and the Windows power mode; a laptop may also cap its clock "
                     + "on battery.");
             }
@@ -725,12 +735,13 @@ namespace GnollHackX.Performance
                 }
             }
 
-            if (Known(f.OtherGpuPct) && f.OtherGpuPct >= OtherGpuSuspectPct)
+            float appGpuPct = GHBackgroundLoad.OtherGpuWithoutCompositor(f.OtherGpuPct, f.Processes);
+            if (Known(appGpuPct) && appGpuPct >= OtherGpuSuspectPct)
             {
                 Add(list, CodeOtherGpuLoad, GHFindingArea.Background,
-                    f.OtherGpuPct >= OtherGpuLikelyPct ? GHFindingSeverity.Likely : GHFindingSeverity.Suspect,
+                    appGpuPct >= OtherGpuLikelyPct ? GHFindingSeverity.Likely : GHFindingSeverity.Suspect,
                     "Another app is using the GPU",
-                    "other processes' 3D GPU use " + F1(f.OtherGpuPct) + " %",
+                    "other processes' 3D GPU use " + F1(appGpuPct) + " %, compositor excluded",
                     "Close video players, browsers playing video, screen recorders and other games.");
             }
         }
@@ -896,7 +907,11 @@ namespace GnollHackX.Performance
                     + "fullscreen.");
             }
 
-            if (Known(f.MeasuredRefreshHz) && Known(f.DisplayMaxRefreshHz) && f.MeasuredRefreshHz > 0f
+            /* Only when the refresh rate is what caps the frame rate, i.e. MAP_FPS_CAP does not
+               apply: below a lower Map FPS target the display rate changes nothing */
+            bool displayCaps = Known(f.TargetFps) && f.TargetFps > 0f && Known(f.MeasuredRefreshHz)
+                && (double)f.TargetFps >= MapFpsCapFraction * f.MeasuredRefreshHz;
+            if (displayCaps && Known(f.DisplayMaxRefreshHz) && f.MeasuredRefreshHz > 0f
                 && f.DisplayMaxRefreshHz > 0f
                 && (double)f.MeasuredRefreshHz <= RefreshBelowMaxFraction * f.DisplayMaxRefreshHz)
             {

@@ -497,6 +497,79 @@ namespace GnollHackX.UnitTests
             Assert.DoesNotContain(GHBackgroundLoad.CategoryMeasurement, reason);
         }
 
+        /* The compositor's GPU use follows this app's own frames: a Windows laptop run with
+           dwm as the whole other GPU share */
+        [Fact]
+        public void Classify_CompositorGpu_IsNotOtherLoadNorASuspect()
+        {
+            string reason;
+            GHBackgroundVerdict v = GHBackgroundLoad.Classify(QuietSummary(),
+                Processes(new GHProcessLoad("dwm", 0.429f, 16.135f), new GHProcessLoad("svchost", 0.491f, 0f)),
+                16.135f, out reason);
+
+            Assert.Equal(GHBackgroundVerdict.Quiet, v);
+            Assert.Null(reason);
+        }
+
+        [Fact]
+        public void Classify_CompositorExcluded_OtherAppGpuStillCounts()
+        {
+            GHBackgroundSummary s = QuietSummary();
+            s.OtherCpuP90Pct = 12f;
+            string reason;
+            GHBackgroundVerdict v = GHBackgroundLoad.Classify(s,
+                Processes(new GHProcessLoad("dwm.exe", 1f, 16f), new GHProcessLoad("vlc", 1f, 14f)),
+                30f, out reason);
+
+            Assert.Equal(GHBackgroundVerdict.Elevated, v);
+            Assert.Contains("other GPU 14 %", reason);
+            Assert.Contains("other (vlc GPU 14 %)", reason);
+            Assert.DoesNotContain("dwm", reason);
+            Assert.DoesNotContain(GHBackgroundLoad.CategoryCompositor, reason);
+        }
+
+        [Theory]
+        [InlineData(16.135f, 16.135f, 0f)]
+        [InlineData(30f, 16f, 14f)]
+        [InlineData(10f, 16f, 0f)]      /* compositor spread over adapters: clamped */
+        [InlineData(float.NaN, 16f, float.NaN)]
+        public void OtherGpuWithoutCompositor_SubtractsDwm(float otherGpu, float dwmGpu, float expected)
+        {
+            float result = GHBackgroundLoad.OtherGpuWithoutCompositor(otherGpu,
+                Processes(new GHProcessLoad("dwm", 0.5f, dwmGpu), new GHProcessLoad("chrome", 0.1f, 0.001f)));
+
+            if (float.IsNaN(expected))
+                Assert.True(float.IsNaN(result));
+            else
+                Assert.Equal(expected, result, 3);
+        }
+
+        [Fact]
+        public void OtherGpuWithoutCompositor_RecognizesStoredOtherCategoryByName()
+        {
+            /* Records written before the compositor category store dwm as "other" */
+            GHProcessLoad stored = new GHProcessLoad("dwm", 0.5f, 16f);
+            stored.Category = GHBackgroundLoad.CategoryOther;
+
+            Assert.Equal(4f, GHBackgroundLoad.OtherGpuWithoutCompositor(20f, Processes(stored)), 3);
+            Assert.Equal(20f, GHBackgroundLoad.OtherGpuWithoutCompositor(20f, null), 3);
+        }
+
+        [Fact]
+        public void CompositorAndMeasurement_AreIgnoredCategories()
+        {
+            Assert.Equal(GHBackgroundLoad.CategoryCompositor, GHBackgroundLoad.CategoryOf("DWM.exe"));
+            Assert.True(GHBackgroundLoad.IsIgnoredCategory(GHBackgroundLoad.CategoryCompositor));
+            Assert.True(GHBackgroundLoad.IsIgnoredCategory(GHBackgroundLoad.CategoryMeasurement));
+            Assert.False(GHBackgroundLoad.IsIgnoredCategory(GHBackgroundLoad.CategoryOther));
+            Assert.False(GHBackgroundLoad.IsIgnoredCategory(GHBackgroundLoad.CategoryAntivirus));
+
+            List<GHBackgroundActivity> activities = GHBackgroundLoad.BuildActivities(
+                Processes(new GHProcessLoad("dwm", 5f, 16f), new GHProcessLoad("MsMpEng", 3f, float.NaN)));
+            Assert.Single(activities);
+            Assert.Equal(GHBackgroundLoad.CategoryAntivirus, activities[0].Category);
+        }
+
         [Fact]
         public void Classify_ManyFactsAndLongNames_ReasonWithinMaxLength()
         {

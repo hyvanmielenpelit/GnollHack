@@ -558,19 +558,22 @@ namespace GnollHackX.Performance
 #endif
         }
 
-        /* The performance settings that differ from the defaults their preference loads
-           in GHApp use */
+        /* The performance features switched off although their default, as used by the
+           preference loads in GHApp, is on; turning a feature on is never listed */
         private static List<string> NonDefaultPerformanceSettings()
         {
             List<string> list = new List<string>();
+            /* The defaults are per-platform constants; locals keep every branch reachable */
             bool platformLoopDefault = GHApp.IsPlatformRenderLoopAvailable && GHConstants.IsPlatformRenderLoopDefault;
-            if (GHApp.UsePlatformRenderLoop != platformLoopDefault)
-                list.Add(GHApp.UsePlatformRenderLoop ? "platform render loop on" : "platform render loop off");
+            bool tileBatchingDefault = GHConstants.DefaultTileBatching;
+            bool textBlobCachingDefault = GHConstants.DefaultTextBlobCaching;
+            if (platformLoopDefault && !GHApp.UsePlatformRenderLoop)
+                list.Add("platform render loop off");
             /* Forced off where unavailable (iOS) */
-            if (GHApp.IsTileBatchingAvailable && GHApp.UseTileBatching != GHConstants.DefaultTileBatching)
-                list.Add(GHApp.UseTileBatching ? "tile batching on" : "tile batching off");
-            if (GHApp.UseTextBlobCaching != GHConstants.DefaultTextBlobCaching)
-                list.Add(GHApp.UseTextBlobCaching ? "text blob caching on" : "text blob caching off");
+            if (GHApp.IsTileBatchingAvailable && tileBatchingDefault && !GHApp.UseTileBatching)
+                list.Add("tile batching off");
+            if (textBlobCachingDefault && !GHApp.UseTextBlobCaching)
+                list.Add("text blob caching off");
             return list;
         }
 

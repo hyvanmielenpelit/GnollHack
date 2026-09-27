@@ -50,8 +50,9 @@ Windows signals, in order of value:
     topProcesses       top 5 of \Process(*)\% Processor Time as { name, cpuPct }, cpuPct
                        normalized by the logical processor count.
     activities         known background activities as { category, processes, cpuPct },
-                       cpuPct normalized the same way; categories "other" and
-                       "measurement" and those under 0.1 % are left out.
+                       cpuPct normalized the same way; categories "other",
+                       "measurement" and "compositor" and those under 0.1 % are left
+                       out.
   pendingReboot      true when the Windows Update RebootRequired or the Component Based
                      Servicing RebootPending registry key exists.
 
@@ -89,11 +90,13 @@ $KnownProcessCategories = [ordered]@{
     'sync' = @('OneDrive', 'Dropbox', 'GoogleDriveFS')
     'telemetry' = @('CompatTelRunner', 'DiagTrack')
     'measurement' = @('PresentMon', 'typeperf', 'powershell', 'pwsh', 'adb')
+    'compositor' = @('dwm')
 }
 
 # Groups per-process CPU (already normalized by the logical processor count) into known
-# activities. Categories "other" and "measurement" are left out, as are categories whose
-# processes sum to under 0.1 %. Returns entries { category, processes, cpuPct }, busiest first.
+# activities. Categories "other", "measurement" and "compositor" are left out, as are
+# categories whose processes sum to under 0.1 %. Returns entries { category, processes,
+# cpuPct }, busiest first.
 function Get-KnownActivities {
     param([hashtable] $CpuByName)
     $lookup = @{}
@@ -105,7 +108,7 @@ function Get-KnownActivities {
         $key = ([string]$entry.Key) -replace '#\d+$', ''
         if (-not $lookup.ContainsKey($key)) { continue }
         $known = $lookup[$key]
-        if ($known.category -eq 'measurement') { continue }
+        if ($known.category -eq 'measurement' -or $known.category -eq 'compositor') { continue }
         if ([double]$entry.Value -le 0) { continue }
         if (-not $groups.ContainsKey($known.category)) { $groups[$known.category] = @{ cpu = 0.0; members = @{} } }
         $groups[$known.category].cpu += [double]$entry.Value

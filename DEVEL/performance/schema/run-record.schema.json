@@ -179,7 +179,7 @@
         "name": { "type": "string" },
         "cpuPct": { "type": ["number", "null"], "description": "Of total logical capacity" },
         "gpuPct": { "type": ["number", "null"] },
-        "category": { "type": "string", "description": "windows-update, antivirus, indexer, wsl-vm, build-tools, sync, telemetry, measurement or other" }
+        "category": { "type": "string", "description": "windows-update, antivirus, indexer, wsl-vm, build-tools, sync, telemetry, measurement, compositor or other" }
       }
     },
     "backgroundActivity": {
