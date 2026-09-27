@@ -457,7 +457,7 @@ namespace GnollHackX
 #else
         public const bool IsPlatformRenderLoopDefault = false;
 #endif
-        public const bool UseRawRenderingSubscription = true;
+        public const bool UseRawRenderingSubscription = false;
         public const int RawRenderingLivenessCheckMs = 5000;
         public const bool AllowRestartGameUponActivityDestruction = true;
         public const string SentryGnollHackGeneralCategoryName = "GnollHack Information";
