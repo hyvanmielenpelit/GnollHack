@@ -642,6 +642,23 @@ namespace GnollHackX.UnitTests
             AssertFires(f, GHPerformanceDiagnosis.CodeOtherGpuLoad, GHFindingSeverity.Suspect);
         }
 
+        [Fact]
+        public void Report_OtherGpuShownWithoutCompositor()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.OtherGpuPct = 17.337f;
+            f.Processes = new List<GHProcessLoad> { new GHProcessLoad("dwm", 0.367f, 17.182f) };
+            string report = GHPerformanceDiagnosis.BuildReport(f, GHPerformanceDiagnosis.Diagnose(f), Now);
+
+            Assert.Contains("other GPU 0 %, compositor 17 %", report);
+            Assert.DoesNotContain("other GPU 17 %", report);
+
+            f.Processes = new List<GHProcessLoad> { new GHProcessLoad("vlc", 1f, 17f) };
+            report = GHPerformanceDiagnosis.BuildReport(f, GHPerformanceDiagnosis.Diagnose(f), Now);
+            Assert.Contains("other GPU 17 %", report);
+            Assert.DoesNotContain("compositor 17 %", report);
+        }
+
         /* ------------------------------------------------------------------ Display */
 
         [Theory]

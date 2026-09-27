@@ -573,6 +573,20 @@ namespace GnollHackX.Performance
             return causes + " " + F0(share * 100.0) + " % of hitch time";
         }
 
+        /* "other GPU N %" as the GPU rules see it, without the compositor's share, which
+           follows as ", compositor M %" when it is at least 1 %; "other GPU n/a" when unknown */
+        private static string OtherGpuText(GHDiagnosisFacts f)
+        {
+            float app = GHBackgroundLoad.OtherGpuWithoutCompositor(f.OtherGpuPct, f.Processes);
+            if (!Known(app))
+                return "other GPU " + NA;
+            string text = "other GPU " + F0(app) + " %";
+            float compositor = f.OtherGpuPct - app;
+            if (compositor >= 1f)
+                text += ", compositor " + F0(compositor) + " %";
+            return text;
+        }
+
         private static void AddHeatFindings(GHDiagnosisFacts f, List<GHDiagnosisFinding> list)
         {
             /* Only a reported thermal status counts as heat here; a processor clock drop can as well be
@@ -1113,7 +1127,7 @@ namespace GnollHackX.Performance
                     if (Known(f.OtherCpuP90Pct))
                         parts.Add("other CPU P90 " + F0(f.OtherCpuP90Pct) + " %");
                     if (Known(f.OtherGpuPct))
-                        parts.Add("other GPU " + F0(f.OtherGpuPct) + " %");
+                        parts.Add(OtherGpuText(f));
                 }
                 break;
             case GHFindingArea.Memory:
@@ -1342,7 +1356,7 @@ namespace GnollHackX.Performance
 
             string background = f.BackgroundSamplerDisabled ? "sampler disabled"
                 : GHBackgroundLoad.VerdictName(f.BackgroundVerdict) + ", other CPU P90 " + F0(f.OtherCpuP90Pct)
-                + " %, disk busy P90 " + F0(f.DiskBusyP90Pct) + " %, other GPU " + F0(f.OtherGpuPct) + " %";
+                + " %, disk busy P90 " + F0(f.DiskBusyP90Pct) + " %, " + OtherGpuText(f);
             AppendWrapped(sb, "  Background: ", "    ", background);
             if (!string.IsNullOrEmpty(f.BackgroundReason))
                 AppendWrapped(sb, "  Background reason: ", "    ", f.BackgroundReason);
