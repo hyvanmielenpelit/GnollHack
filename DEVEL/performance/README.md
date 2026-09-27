@@ -613,7 +613,8 @@ Each suite is a folder `<GHPath>/performance/suites/<suiteId>/`, where `<suiteId
 (`schema/suite-manifest.schema.json`), each run's `run_*.json`, `frametimeline_*.csv` and
 `compositorframes_*.csv`, and `report.txt`. `<GHPath>/performance/baselines.json` records one
 baseline arm label per comparability key. Unlike `archive`, the `performance` directory is not
-cleared when the app starts.
+cleared when the app starts. Reset > Delete Performance Data deletes it entirely, together with
+the archive's performance files and, on Android, the external `performance` export directory.
 
 The results list shows each suite's date, scenario, label, used runs, median hitch ratio and
 size, tagged `baseline`, `aborted`, `imported`, `bg` (a run was excluded for background

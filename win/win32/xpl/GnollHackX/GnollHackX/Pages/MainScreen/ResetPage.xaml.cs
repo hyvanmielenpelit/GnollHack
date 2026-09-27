@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using GnollHackX.Performance;
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -676,6 +677,39 @@ namespace GnollHackX.Pages.MainScreen
                     btnDeleteAppLog.Text = "Failed";
                     btnDeleteAppLog.TextColor = GHColors.Red;
                 }
+            }
+            ResetGrid.IsEnabled = true;
+        }
+
+        private async void btnDeletePerformanceData_Clicked(object sender, EventArgs e)
+        {
+            ResetGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            if (GHPerformanceSuiteRunner.IsRunning || GHPerformanceDiagnosticRunner.IsRunning || GHPerformanceRunRecord.IsWindowOpen)
+            {
+                await ShowMessagePopupAsync("Performance Measurement Running", "Performance data cannot be deleted while a performance measurement is running.", "OK");
+                ResetGrid.IsEnabled = true;
+                return;
+            }
+            bool answer = await ShowMessagePopupAsync("Delete Performance Data?", "Are you sure to delete all performance suites, performance test reports and baselines?", "Yes", "No");
+            if (answer)
+            {
+                string error = await Task.Run(() =>
+                {
+                    string deleteError;
+                    GHPerformanceSuiteStore.DeleteAllPerformanceData(out deleteError);
+                    return deleteError;
+                });
+                if (error == null)
+                {
+                    btnDeletePerformanceData.Text = "Done";
+                }
+                else
+                {
+                    btnDeletePerformanceData.Text = "Failed";
+                    System.Diagnostics.Debug.WriteLine(error);
+                }
+                btnDeletePerformanceData.TextColor = GHColors.Red;
             }
             ResetGrid.IsEnabled = true;
         }

@@ -601,6 +601,74 @@ namespace GnollHackX.Performance
             }
         }
 
+        /* Deletes all performance data: the store root (suites, diagnostics, baselines.json),
+           the archive's performance directory, share zips and import staging folders, and on
+           Android the external export directory. False, with the first failure in error, when
+           anything could not be deleted; the remaining locations are still attempted. */
+        public static bool DeleteAllPerformanceData(out string error)
+        {
+            string firstError = null;
+            lock (_lock)
+            {
+                string archiveDir = Path.Combine(GHApp.GHPath, GHConstants.ArchiveDirectory);
+                List<string> directories = new List<string>();
+                directories.Add(Path.Combine(GHApp.GHPath, GHConstants.PerformanceDirectory));
+                directories.Add(Path.Combine(archiveDir, "performance"));
+#if GNH_MAUI && ANDROID
+                try
+                {
+                    Java.IO.File external = Android.App.Application.Context.GetExternalFilesDir(null);
+                    if (external != null)
+                        directories.Add(Path.Combine(external.AbsolutePath, "performance"));
+                }
+                catch (Exception ex)
+                {
+                    firstError = ex.Message;
+                }
+#endif
+                try
+                {
+                    if (Directory.Exists(archiveDir))
+                    {
+                        directories.AddRange(Directory.GetDirectories(archiveDir, ImportStagingPrefix + "*"));
+                        foreach (string zip in Directory.GetFiles(archiveDir, ShareZipPrefix + "*.zip"))
+                        {
+                            try
+                            {
+                                File.Delete(zip);
+                            }
+                            catch (Exception ex)
+                            {
+                                if (firstError == null)
+                                    firstError = ex.Message;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (firstError == null)
+                        firstError = ex.Message;
+                }
+
+                foreach (string dir in directories)
+                {
+                    try
+                    {
+                        if (Directory.Exists(dir))
+                            Directory.Delete(dir, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (firstError == null)
+                            firstError = ex.Message;
+                    }
+                }
+            }
+            error = firstError;
+            return firstError == null;
+        }
+
         /* Zips every listed suite's directory (report.txt written first if missing, and
            a comparison.txt added when TryCompareWithBaseline succeeds for it) into
            GHPath/archive/GnollHack_Performance_<device>_<timestamp>.zip. Returns the zip

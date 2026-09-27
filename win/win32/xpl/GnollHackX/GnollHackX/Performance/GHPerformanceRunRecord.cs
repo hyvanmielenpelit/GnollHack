@@ -26,7 +26,8 @@ namespace GnollHackX.Performance
        whether the frame timeline was already running, enables it, notes the first frame of
        the window, and takes the first thermal reading; EndWindowAndSave takes the second
        reading, saves the window's frames (the JSON and the two CSV dumps), and restores
-       the timeline to whatever state it was in before BeginWindow. Both have an overload
+       the timeline to whatever state it was in before BeginWindow. DiscardWindow ends a
+       window without saving it. BeginWindow and EndWindowAndSave have an overload
        that takes or hands back a GHPerformanceRunContext/GHPerformanceRunResult for a
        suite runner; the plain overloads are these with no context and the result
        discarded. SaveRecent writes the same document from everything the timeline still
@@ -268,6 +269,24 @@ namespace GnollHackX.Performance
                 RestoreTimeline();
                 ReleaseWindowSampler();
             }
+        }
+
+        /* Ends the window without writing anything: restores the timeline's previous enabled
+           state and releases the window's sampler hold. False when no window was open. */
+        public static bool DiscardWindow()
+        {
+            if (Interlocked.CompareExchange(ref _windowOpen, 0, 1) != 1)
+                return false;
+            _context = null;
+            try
+            {
+                RestoreTimeline();
+            }
+            finally
+            {
+                ReleaseWindowSampler();
+            }
+            return true;
         }
 
         /* Ends the per-process interval and builds the report for the window; null when
@@ -769,11 +788,8 @@ namespace GnollHackX.Performance
         private static void CancelWindowCommand()
         {
             StopWindowTimer();
-            if (_windowPhase == 2 && Interlocked.CompareExchange(ref _windowOpen, 0, 1) == 1)
-            {
-                RestoreTimeline();
-                ReleaseWindowSampler();
-            }
+            if (_windowPhase == 2)
+                DiscardWindow();
             _context = null;
             _windowPhase = 0;
         }

@@ -36,9 +36,9 @@ namespace GnollHackX.Performance
             most ProcessIntervalBeginWaitMs, then opens the measurement window.
          4. Measures for WindowSeconds, polling every 100 ms for an abort: the app went
             to the background, a page opened over the game page, or the game ended.
-            An aborted window is still saved into the test's folder, excluded with the
-            abort reason, as saving is what closes it; no report is written, and the
-            report retention then deletes that folder with any other orphaned one.
+            An aborted window is discarded unsaved and no report is written; the
+            report retention still runs, deleting folders left by a test the app was
+            killed during.
          5. Saves the window into ReportsDirectory/<stamp>/, reads what must be read on
             the UI thread (GPU context, profiler statistics, recent hitches), then on
             the thread pool ends the adapter probe and re-captures the environment
@@ -200,7 +200,7 @@ namespace GnollHackX.Performance
                 finally
                 {
                     if (!completed)
-                        CloseOpenWindow(s, abortReason);
+                        DiscardOpenWindow(s);
                 }
 
                 if (!completed)
@@ -283,21 +283,13 @@ namespace GnollHackX.Performance
                 Log("the window of " + s.StampText + " could not be saved");
         }
 
-        /* Saves a window left open by an abort, excluded with the abort reason */
-        private static void CloseOpenWindow(TestState s, string reason)
+        /* Discards a window left open by an abort; nothing is saved */
+        private static void DiscardOpenWindow(TestState s)
         {
             if (s.OpenWindow == null)
                 return;
-            try
-            {
-                s.OpenWindow.ExcludedReason = "aborted: " + (string.IsNullOrEmpty(reason) ? "unknown reason" : reason);
-                SaveWindow(s);
-            }
-            catch (Exception ex)
-            {
-                s.OpenWindow = null;
-                Log("saving the aborted window failed: " + ex.Message);
-            }
+            s.OpenWindow = null;
+            GHPerformanceRunRecord.DiscardWindow();
         }
 
         /* Closes the Windows adapter probe's query after an abort */
