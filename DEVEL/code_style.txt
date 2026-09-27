@@ -26,7 +26,7 @@ Indentation and Spacing
 The basic indentation is 4 spaces wide. All indentation is done using space
 characters, not tabs.
 
-Lines should be at most 78 characters wide. If a line would be longer than the
+Lines should be at most 120 characters wide. If a line would be longer than the
 limit, the line should be wrapped and the wrapped portion should be aligned
 with the parentheses or brackets containing the wrap. If there is no set of
 parentheses or brackets, the line should be indented four spaces. Wrapping
@@ -335,7 +335,7 @@ ensure that indentation is done correctly:
     set expandtab
     set tabstop=4
     set shiftround
-    set textwidth=78
+    set textwidth=120
     set cindent
     set filetype=c
 

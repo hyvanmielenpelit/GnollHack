@@ -73,7 +73,7 @@ namespace GnollHackX
         /* Chevron hit rects are inflated to this many text rows square, so the drawn
            triangle can stay small while the target remains reachable with a thumb */
         public const float DebugDashboardMinTouchRows = 2.0f;
-        public const int DebugDashboardLogLines = 6;
+        public const int DebugDashboardLogLines = 10;
         public const byte DebugDashboardBackgroundAlpha = 160;
         public const byte DebugDashboardBorderAlpha = 60;
         public const float DebugDashboardDroppedFrameWarnPct = 1.0f;
@@ -308,6 +308,7 @@ namespace GnollHackX
         public const string ReplayDirectory = "replay";
         public const string ReplayDownloadFromCloudDirectory = "replay-cloud";
         public const string ArchiveDirectory = "archive"; /* Directory for sharable archives and files; cleaned and deleted at program start */
+        public const string PerformanceDirectory = "performance"; /* Directory for performance run records; persistent, not cleaned at program start */
         public const string UploadDirectory = "upload"; /* Directory for uploadable files; files are never cleaned automatically, only upon successful upload */
         public const string TempDirectory = "temp";  /* Created and deleted on the go */
         public const string ZipDirectory = "zip";
@@ -455,6 +456,9 @@ namespace GnollHackX
         public const bool IsPlatformRenderLoopDefault = true;
 #else
         public const bool IsPlatformRenderLoopDefault = false;
+#endif
+#if ENABLE_RAW_RENDERING
+        public const int RawRenderingLivenessCheckMs = 5000;
 #endif
         public const bool AllowRestartGameUponActivityDestruction = true;
         public const string SentryGnollHackGeneralCategoryName = "GnollHack Information";

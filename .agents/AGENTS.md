@@ -22,7 +22,7 @@ AI Agents MUST adhere strictly to the following:
   - *Acceptable but may warn*: `for (int i = 0; i < 5; i++)`
   - *BAD*: declaring variables in a condition: `if (int x = foo())`
 - **Function definitions & prototypes**: Use standard ANSI C prototypes (e.g. `void foo(int x)`). Do not use legacy K&R declarations.
-- **Indentation**: 4 spaces, NO tabs. 78 characters maximum width.
+- **Indentation**: 4 spaces, NO tabs. 120 characters maximum width.
 - **Naming**: `snake_case` for functions/variables. `ALL_CAPS_WITH_UNDERSCORES` for macros/enums.
 - **Switch/case**: `case` labels unindented within `switch`
 - **Single-statement bodies**: Both braced and unbraced forms are acceptable; use whichever is clearer. Do not use the comma operator to combine multiple assignments in a single-statement body.

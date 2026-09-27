@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using GnollHackX;
+using GnollHackX.Performance;
 using Android;
 using Java.IO;
 using System.IO;
@@ -544,6 +545,286 @@ namespace GnollHackX.Droid
         public bool GetKeyboardConnected()
         {
             return MainActivity.IsHardKeyboardConnected;
+        }
+
+        /* Only reached behind the API 29 gate in GetThermalReading */
+#pragma warning disable CA1416 // Supported on: 'android' 29.0 and later
+        private static GHThermalStatus MapThermalStatus(ThermalStatus status)
+        {
+            switch (status)
+            {
+                case ThermalStatus.None:
+                    return GHThermalStatus.Nominal;
+                case ThermalStatus.Light:
+                    return GHThermalStatus.Light;
+                case ThermalStatus.Moderate:
+                    return GHThermalStatus.Moderate;
+                case ThermalStatus.Severe:
+                    return GHThermalStatus.Severe;
+                case ThermalStatus.Critical:
+                case ThermalStatus.Emergency:
+                case ThermalStatus.Shutdown:
+                    return GHThermalStatus.Critical;
+                default:
+                    return GHThermalStatus.Unknown;
+            }
+        }
+#pragma warning restore CA1416
+
+        /* Thermal status and headroom from PowerManager (API 29 and 30 respectively),
+           battery temperature and plug state from the sticky ACTION_BATTERY_CHANGED
+           broadcast, power save mode from PowerManager. Each part fails independently
+           to its Unknown/NaN value. */
+        public GHThermalReading GetThermalReading()
+        {
+            GHThermalReading r = GHThermalProbe.Unknown;
+            string thermalDetail = "thermalstatus=n/a";
+            string headroomDetail = "headroom=n/a";
+            string batteryDetail = "battery=n/a";
+            try
+            {
+                var context = Android.App.Application.Context;
+                var powerManager = context.GetSystemService(Android.Content.Context.PowerService) as PowerManager;
+                if (powerManager != null)
+                {
+                    try
+                    {
+                        if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+                        {
+#pragma warning disable CA1416 // Supported on: 'android' 29.0 and later
+                            ThermalStatus status = powerManager.CurrentThermalStatus;
+#pragma warning restore CA1416
+                            r.Status = MapThermalStatus(status);
+                            thermalDetail = "thermalstatus=" + ((int)status).ToString();
+                        }
+                    }
+                    catch
+                    {
+                        r.Status = GHThermalStatus.Unknown;
+                    }
+
+                    try
+                    {
+                        if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
+                        {
+#pragma warning disable CA1416 // Supported on: 'android' 30.0 and later
+                            r.HeadroomFraction = powerManager.GetThermalHeadroom(0);
+#pragma warning restore CA1416
+                            if (!float.IsNaN(r.HeadroomFraction))
+                                headroomDetail = "headroom=" + r.HeadroomFraction.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+                        }
+                    }
+                    catch
+                    {
+                        r.HeadroomFraction = float.NaN;
+                    }
+
+                    try
+                    {
+                        r.IsLowPower = powerManager.IsPowerSaveMode;
+                    }
+                    catch
+                    {
+                        r.IsLowPower = false;
+                    }
+                }
+
+                try
+                {
+                    Intent batteryIntent = context.RegisterReceiver(null, new IntentFilter(Intent.ActionBatteryChanged));
+                    if (batteryIntent != null)
+                    {
+                        int tenths = batteryIntent.GetIntExtra(BatteryManager.ExtraTemperature, -1);
+                        r.BatteryTempC = tenths < 0 ? float.NaN : tenths / 10.0f;
+                        int plugged = batteryIntent.GetIntExtra(BatteryManager.ExtraPlugged, 0);
+                        r.IsCharging = plugged != 0;
+                        r.PowerStateKnown = true;
+                        batteryDetail = "battery=" + (float.IsNaN(r.BatteryTempC) ? "n/a" : r.BatteryTempC.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) + "C")
+                            + " plugged=" + plugged.ToString();
+                    }
+                }
+                catch
+                {
+                    r.BatteryTempC = float.NaN;
+                    r.IsCharging = false;
+                }
+
+                r.Detail = thermalDetail + " " + headroomDetail + " " + batteryDetail + " powersave=" + (r.IsLowPower ? "on" : "off");
+            }
+            catch
+            {
+                r.Detail = null;
+            }
+            r.TimestampTicks = DateTime.UtcNow.Ticks;
+            return r;
+        }
+
+        /* Window.setSustainedPerformanceMode (API 24) on the current activity, when the
+           device supports it */
+        public bool SetSustainedPerformanceMode(bool enabled)
+        {
+            try
+            {
+                if (Build.VERSION.SdkInt < BuildVersionCodes.N)
+                    return false;
+                var context = Android.App.Application.Context;
+                var powerManager = context.GetSystemService(Android.Content.Context.PowerService) as PowerManager;
+                if (powerManager == null)
+                    return false;
+#pragma warning disable CA1416 // Supported on: 'android' 24.0 and later
+                if (!powerManager.IsSustainedPerformanceModeSupported)
+                    return false;
+                Activity activity = MainActivity.CurrentMainActivity;
+                if (activity == null || activity.Window == null)
+                    return false;
+                activity.Window.SetSustainedPerformanceMode(enabled);
+#pragma warning restore CA1416
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /* Background load: available memory and the low-memory flag from
+           ActivityManager.MemoryInfo, own CPU from the process's elapsed CPU time over the
+           wall time since the previous call (NaN on the first call), and the memory
+           warning count. System CPU, disk and hard faults are not readable by an app. */
+        private readonly object _loadSampleLock = new object();
+        private ActivityManager _loadActivityManager = null;
+        private ActivityManager.MemoryInfo _loadMemoryInfo = null;
+        private long _loadLastCpuMs = -1;
+        private long _loadLastTimestamp = 0;
+
+        public bool TryGetSystemLoadSample(ref GHSystemLoadSample sample)
+        {
+            lock (_loadSampleLock)
+            {
+                try
+                {
+                    bool any = false;
+                    long nowTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+                    try
+                    {
+                        if (_loadActivityManager == null)
+                            _loadActivityManager = Android.App.Application.Context.GetSystemService(Android.Content.Context.ActivityService) as ActivityManager;
+                        if (_loadMemoryInfo == null)
+                            _loadMemoryInfo = new ActivityManager.MemoryInfo();
+                        if (_loadActivityManager != null)
+                        {
+                            _loadActivityManager.GetMemoryInfo(_loadMemoryInfo);
+                            long availMem = _loadMemoryInfo.AvailMem;
+                            long totalMem = _loadMemoryInfo.TotalMem;
+                            if (availMem >= 0)
+                                sample.AvailableMemoryMB = availMem / (1024L * 1024L);
+                            if (totalMem > 0 && availMem >= 0)
+                                sample.AvailableMemoryPct = (float)(availMem * 100.0 / totalMem);
+                            sample.LowMemory = _loadMemoryInfo.LowMemory;
+                            any = true;
+                        }
+                    }
+                    catch
+                    {
+                    }
+
+                    try
+                    {
+                        long cpuMs = Android.OS.Process.ElapsedCpuTime;
+                        if (_loadLastCpuMs >= 0 && nowTimestamp > _loadLastTimestamp)
+                        {
+                            double wallMs = (nowTimestamp - _loadLastTimestamp) * 1000.0 / System.Diagnostics.Stopwatch.Frequency;
+                            double capacity = wallMs * Math.Max(1, System.Environment.ProcessorCount);
+                            if (capacity > 0)
+                                sample.OwnCpuPct = (float)Math.Min(100.0, Math.Max(0.0, (cpuMs - _loadLastCpuMs) * 100.0 / capacity));
+                        }
+                        _loadLastCpuMs = cpuMs;
+                        _loadLastTimestamp = nowTimestamp;
+                        any = true;
+                    }
+                    catch
+                    {
+                    }
+
+                    sample.MemoryPressureEvents = Interlocked.CompareExchange(ref GHApp.MemoryPressureEventCount, 0, 0);
+                    sample.TimestampTicks = DateTime.UtcNow.Ticks;
+                    return any;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        public bool TryCollectProcessInterval(bool begin, List<GHProcessLoad> rows, out float otherGpuPct)
+        {
+            otherGpuPct = float.NaN;
+            return false;
+        }
+
+        private static void PutFingerprint(Dictionary<string, string> fingerprint, string key, string value)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+                fingerprint[key] = value.Trim();
+        }
+
+        public void AddEnvironmentFingerprint(Dictionary<string, string> fingerprint, bool refresh)
+        {
+            if (fingerprint == null)
+                return;
+            try
+            {
+                PutFingerprint(fingerprint, "os.build", Build.VERSION.Incremental);
+            }
+            catch
+            {
+            }
+            try
+            {
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
+                {
+#pragma warning disable CA1416 // Supported on: 'android' 23.0 and later
+                    PutFingerprint(fingerprint, "os.securityPatch", Build.VERSION.SecurityPatch);
+#pragma warning restore CA1416
+                }
+            }
+            catch
+            {
+            }
+            try
+            {
+                PutFingerprint(fingerprint, "os.fingerprint", Build.Fingerprint);
+            }
+            catch
+            {
+            }
+            try
+            {
+                string soc = null;
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.S)
+                {
+#pragma warning disable CA1416 // Supported on: 'android' 31.0 and later
+                    soc = Build.SocModel;
+#pragma warning restore CA1416
+                }
+                if (string.IsNullOrWhiteSpace(soc) || string.Equals(soc, "unknown", StringComparison.OrdinalIgnoreCase))
+                    soc = Build.Hardware;
+                PutFingerprint(fingerprint, "hardware.soc", soc);
+            }
+            catch
+            {
+            }
+            PutFingerprint(fingerprint, "hardware.logicalProcessors", GHEnvironmentFingerprint.FormatValue(System.Environment.ProcessorCount));
+            try
+            {
+                ulong totalMem = GetDeviceMemoryInBytes();
+                if (totalMem > 0)
+                    PutFingerprint(fingerprint, "hardware.memoryGB", (totalMem / (1024.0 * 1024.0 * 1024.0)).ToString("F1", System.Globalization.CultureInfo.InvariantCulture));
+            }
+            catch
+            {
+            }
         }
 
         public static bool HandleOnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent e)

@@ -49,15 +49,20 @@
             <Grid x:Name="DeveloperPopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
                 <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
                     <Frame x:Name="DeveloperPopupFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
-                        <StackLayout Spacing="9" Padding="6">
-                            <Label Text="Developer Tools" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
-                            <controls:CustomImageButton x:Name="btnDevOptions" Text="Options" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnOptions_Clicked" />
-                            <controls:CustomImageButton x:Name="btnDevMessages" Text="Export Messages" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnMessages_Clicked" />
-                            <controls:CustomImageButton x:Name="btnDevDumpFrameLog" Text="Dump Frame Log" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnDumpFrameLog_Clicked" />
-                            <controls:CustomImageButton x:Name="btnDevAiSnapshot" Text="Export AI Snapshot" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnAiSnapshot_Clicked" />
-                            <controls:CustomImageButton x:Name="btnDevGC" Text="Collect Garbage" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnGC_Clicked" />
-                            <controls:CustomImageButton x:Name="btnDevClose" Text="Close" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" Clicked="btnDevClose_Clicked" />
-                        </StackLayout>
+                        <ScrollView>
+                            <StackLayout Spacing="9" Padding="6">
+                                <Label Text="Developer Tools" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
+                                <controls:CustomImageButton x:Name="btnDevOptions" Text="Options" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnOptions_Clicked" />
+                                <controls:CustomImageButton x:Name="btnDevMessages" Text="Export Messages" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnMessages_Clicked" />
+                                <controls:CustomImageButton x:Name="btnDevDumpFrameLog" Text="Dump Frame Log" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnDumpFrameLog_Clicked" />
+                                <controls:CustomImageButton x:Name="btnDevMarkStutter" Text="Mark Stutter" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnMarkStutter_Clicked" />
+                                <controls:CustomImageButton x:Name="btnDevAnalyzeRecent" Text="Analyze Recent" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnAnalyzeRecent_Clicked" />
+                                <controls:CustomImageButton x:Name="btnDevTestPerformance" Text="Test Performance" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnTestPerformance_Clicked" />
+                                <controls:CustomImageButton x:Name="btnDevAiSnapshot" Text="Export AI Snapshot" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnAiSnapshot_Clicked" />
+                                <controls:CustomImageButton x:Name="btnDevGC" Text="Collect Garbage" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnGC_Clicked" />
+                                <controls:CustomImageButton x:Name="btnDevClose" Text="Close" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" Clicked="btnDevClose_Clicked" />
+                            </StackLayout>
+                        </ScrollView>
                     </Frame>
                 </Grid>
                 <Grid.GestureRecognizers>

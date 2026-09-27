@@ -1,0 +1,533 @@
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using GnollHackX.Performance;
+using Xunit;
+
+namespace GnollHackX.UnitTests
+{
+    /* GHFrameTimeline and GHCadenceMonitor are static; every test class that touches them
+       joins one collection, which xunit runs sequentially. */
+    [Collection(StaticStateCollection)]
+    public class GHFrameTimelineTests
+    {
+        public const string StaticStateCollection = "GHFrameTimeline static state";
+
+        private static readonly long Frequency = Stopwatch.Frequency;
+
+        private static void Restart()
+        {
+            GHFrameTimeline.IsEnabled = false;
+            GHFrameTimeline.IsEnabled = true;
+        }
+
+        private static GHFrameRecord[] Snapshot(out int count)
+        {
+            GHFrameRecord[] records = new GHFrameRecord[GHFrameTimeline.Capacity];
+            count = GHFrameTimeline.CopyRecords(records);
+            return records;
+        }
+
+        /* One tick that renders and invalidates, as the render loop does */
+        private static long RenderedTick(long mainCounter)
+        {
+            long id = GHFrameTimeline.BeginTick();
+            GHFrameTimeline.StampTarget(60, 120);
+            GHFrameTimeline.StampUpdate(mainCounter, mainCounter / 2);
+            GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.Invalidated);
+            GHFrameTimeline.EndTick(GHPacingDecision.Rendered);
+            return id;
+        }
+
+        [Fact]
+        public void Disabled_RecordsNothing()
+        {
+            GHFrameTimeline.IsEnabled = false;
+            Assert.Equal(0, GHFrameTimeline.BeginTick());
+            Assert.Equal(0, GHFrameTimeline.BeginPaint(true));
+            Restart();
+            int n;
+            Snapshot(out n);
+            Assert.Equal(0, n);
+        }
+
+        [Fact]
+        public void Paint_IsAttributedToTheTickThatInvalidated()
+        {
+            Restart();
+            long id = RenderedTick(10);
+            long painted = GHFrameTimeline.BeginPaint(false);
+            Assert.Equal(id, painted);
+            GHFrameTimeline.StampLock(1, 2, true);
+            GHFrameTimeline.StampDrawEnd(painted);
+            GHFrameTimeline.EndPaint(painted, 10, 5, 3);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(1, n);
+            Assert.Equal(GHPacingDecision.Rendered, r[0].Pacing);
+            Assert.Equal(GHInvalidateOutcome.Invalidated, r[0].Invalidate);
+            Assert.Equal(GHPaintOutcome.Painted, r[0].Paint);
+            Assert.False(r[0].PaintOnUiThread);
+            Assert.True(r[0].LockAcquired);
+            Assert.Equal(10, r[0].MainCounter);
+            Assert.Equal(10, r[0].PaintedMainCounter);
+            Assert.Equal(5, r[0].PaintedGeneralCounter);
+            Assert.Equal(3, r[0].PaintedMapGeneration);
+            Assert.Equal((short)60, r[0].TargetFps);
+            Assert.Equal((short)120, r[0].AssumedRefreshHz);
+            Assert.True(r[0].FlushEndTicks >= r[0].PaintStartTicks);
+        }
+
+        [Fact]
+        public void LaterInvalidation_BeforeAnyPaint_CoalescesTheEarlierOne()
+        {
+            Restart();
+            long first = RenderedTick(1);
+            long second = RenderedTick(2);
+            long painted = GHFrameTimeline.BeginPaint(false);
+            Assert.Equal(second, painted);
+            GHFrameTimeline.EndPaint(painted, 2, 1, 0);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(2, n);
+            Assert.Equal(first, r[0].FrameId);
+            Assert.Equal(GHPaintOutcome.Coalesced, r[0].Paint);
+            Assert.Equal(GHPaintOutcome.Painted, r[1].Paint);
+            Assert.Equal(1, GHFrameTimeline.CoalescedCount);
+        }
+
+        [Fact]
+        public void SkippedTicks_AreNotCoalesced()
+        {
+            Restart();
+            RenderedTick(1);
+            GHFrameTimeline.BeginTick();
+            GHFrameTimeline.EndTick(GHPacingDecision.SkippedDivisor);
+            long painted = GHFrameTimeline.BeginPaint(true);
+            Assert.Equal(1, painted);
+            Assert.Equal(0, GHFrameTimeline.CoalescedCount);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHPacingDecision.SkippedDivisor, r[1].Pacing);
+            Assert.Equal(GHPaintOutcome.None, r[1].Paint);
+        }
+
+        [Fact]
+        public void RequestWork_IsAttachedToTheNextTick()
+        {
+            Restart();
+            RenderedTick(1);
+            GHFrameTimeline.AddRequestWork(GHContentEvent.FloatingText, 100);
+            GHFrameTimeline.AddRequestWork(GHContentEvent.Message, 50);
+            RenderedTick(2);
+            RenderedTick(3);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHContentEvent.None, r[0].ContentEvents);
+            Assert.Equal(GHContentEvent.FloatingText | GHContentEvent.Message, r[1].ContentEvents);
+            Assert.Equal(150, r[1].RequestTicks);
+            Assert.Equal(GHContentEvent.None, r[2].ContentEvents);
+            Assert.Equal(0, r[2].RequestTicks);
+        }
+
+        [Fact]
+        public void PaintOfNewMapData_IsMarkedMapUpdate()
+        {
+            Restart();
+            long[] generations = { 5, 5, 6 };
+            for (int i = 0; i < generations.Length; i++)
+            {
+                RenderedTick(i + 1);
+                long painted = GHFrameTimeline.BeginPaint(true);
+                GHFrameTimeline.EndPaint(painted, i + 1, 0, generations[i]);
+            }
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHContentEvent.None, r[0].ContentEvents & GHContentEvent.MapUpdate);
+            Assert.Equal(GHContentEvent.None, r[1].ContentEvents & GHContentEvent.MapUpdate);
+            Assert.Equal(GHContentEvent.MapUpdate, r[2].ContentEvents & GHContentEvent.MapUpdate);
+        }
+
+        [Fact]
+        public void PaintWithoutInvalidation_IsCountedAsOrphan()
+        {
+            Restart();
+            Assert.Equal(0, GHFrameTimeline.BeginPaint(true));
+            Assert.Equal(1, GHFrameTimeline.OrphanPaintCount);
+        }
+
+        [Fact]
+        public void EarlyReturn_RecordsItsOutcome()
+        {
+            Restart();
+            RenderedTick(1);
+            long painted = GHFrameTimeline.BeginPaint(true);
+            GHFrameTimeline.SetCurrentPaintOutcome(GHPaintOutcome.CanvasTooSmall);
+            GHFrameTimeline.EndPaint(painted, 0, 0, 0);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHPaintOutcome.CanvasTooSmall, r[0].Paint);
+        }
+
+        [Fact]
+        public void Ring_KeepsTheNewestCapacityTicksInOrder()
+        {
+            Restart();
+            int total = GHFrameTimeline.Capacity + 10;
+            for (int i = 0; i < total; i++)
+            {
+                GHFrameTimeline.BeginTick();
+                GHFrameTimeline.EndTick(GHPacingDecision.Rendered);
+            }
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHFrameTimeline.Capacity, n);
+            Assert.Equal(11, r[0].FrameId);
+            Assert.Equal(total, r[n - 1].FrameId);
+            for (int i = 1; i < n; i++)
+                Assert.Equal(r[i - 1].FrameId + 1, r[i].FrameId);
+        }
+
+        [Fact]
+        public void RefreshPeriod_IsTheMedianOfPlatformFrameDeltas()
+        {
+            Restart();
+            long period = Frequency / 120;
+            long t = 1000 * Frequency;
+            for (int i = 0; i < 20; i++)
+            {
+                /* One missed vsync in the middle must not move the median */
+                t += i == 10 ? 2 * period : period;
+                GHFrameTimeline.SetPendingPlatformFrame(0, 0, t);
+                GHFrameTimeline.BeginTick();
+                GHFrameTimeline.EndTick(GHPacingDecision.Rendered);
+            }
+            Assert.Equal(period, GHFrameTimeline.MeasuredRefreshPeriodTicks);
+            Assert.Equal(1000.0 / 120.0, GHFrameTimeline.MeasuredRefreshPeriodMs, 3);
+        }
+
+        [Fact]
+        public void RefreshPeriod_FollowsARateChange()
+        {
+            Restart();
+            long t = 1000 * Frequency;
+            for (int i = 0; i < 20; i++)
+            {
+                t += Frequency / 120;
+                GHFrameTimeline.SetPendingPlatformFrame(0, 0, t);
+                GHFrameTimeline.BeginTick();
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                t += Frequency / 60;
+                GHFrameTimeline.SetPendingPlatformFrame(0, 0, t);
+                GHFrameTimeline.BeginTick();
+            }
+            Assert.Equal(Frequency / 60, GHFrameTimeline.MeasuredRefreshPeriodTicks);
+        }
+
+        /* A platform-reported panel period is the refresh period; the callback period
+           follows the callbacks, here on every other vblank. A missing report is bridged
+           for PeriodWindow ticks, then the callback median takes over. */
+        [Fact]
+        public void ReportedPanelPeriod_IsTheRefreshPeriod_CallbacksHaveTheirOwn()
+        {
+            Restart();
+            long panel = Frequency / 144;
+            long t = 1000 * Frequency;
+            for (int i = 0; i < 20; i++)
+            {
+                t += 2 * panel;
+                GHFrameTimeline.SetPendingPlatformFrame(0, 0, t, panel);
+                GHFrameTimeline.BeginTick();
+            }
+            Assert.Equal(panel, GHFrameTimeline.MeasuredRefreshPeriodTicks);
+            Assert.Equal(2 * panel, GHFrameTimeline.MeasuredCallbackPeriodTicks);
+
+            for (int i = 0; i < 15; i++)
+            {
+                t += 2 * panel;
+                GHFrameTimeline.SetPendingPlatformFrame(0, 0, t);
+                GHFrameTimeline.BeginTick();
+            }
+            Assert.Equal(panel, GHFrameTimeline.MeasuredRefreshPeriodTicks);
+
+            t += 2 * panel;
+            GHFrameTimeline.SetPendingPlatformFrame(0, 0, t);
+            GHFrameTimeline.BeginTick();
+            Assert.Equal(2 * panel, GHFrameTimeline.MeasuredRefreshPeriodTicks);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(panel, r[19].RefreshPeriodTicks);
+            Assert.Equal(2 * panel, r[19].CallbackPeriodTicks);
+        }
+
+        [Fact]
+        public void GcPause_IsSampledPerTick_AndGrowsWithACollection()
+        {
+            Restart();
+            GHFrameTimeline.BeginTick();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            GHFrameTimeline.BeginTick();
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(2, n);
+            Assert.True(r[0].GcPauseTicks >= 0);
+            Assert.True(r[1].GcPauseTicks > r[0].GcPauseTicks, r[0].GcPauseTicks + " -> " + r[1].GcPauseTicks);
+        }
+
+        [Fact]
+        public void RepeatedPlatformFrameTime_IsFlaggedAsDuplicate()
+        {
+            Restart();
+            GHFrameTimeline.SetPendingPlatformFrame(0, 0, 5000);
+            GHFrameTimeline.BeginTick();
+            GHFrameTimeline.SetPendingPlatformFrame(0, 0, 5000);
+            GHFrameTimeline.BeginTick();
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHFrameFlags.None, r[0].Flags & GHFrameFlags.DuplicateCallback);
+            Assert.Equal(GHFrameFlags.DuplicateCallback, r[1].Flags & GHFrameFlags.DuplicateCallback);
+        }
+
+        [Fact]
+        public void ClockAnchor_ConvertsPlatformNanosToStopwatchTicks()
+        {
+            Restart();
+            Assert.Equal(0, GHFrameTimeline.PlatformNanosToTicks(123));
+            GHFrameTimeline.UpdatePlatformClockAnchor(1000000000L, 5000);
+            Assert.Equal(5000 + Frequency, GHFrameTimeline.PlatformNanosToTicks(2000000000L));
+            Assert.Equal(5000 - Frequency / 2, GHFrameTimeline.PlatformNanosToTicks(500000000L));
+            Assert.Equal(1000000000L, GHFrameTimeline.FirstClockAnchor.PlatformNanos);
+        }
+
+        [Fact]
+        public void Dump_WritesOneRowPerTick_WithTheHeadersFieldCount()
+        {
+            Restart();
+            GHFrameTimeline.SetPendingPlatformFrame(0, 0, 5000);
+            RenderedTick(1);
+            GHFrameTimeline.SetPendingPlatformFrame(0, 0, 5000 + Frequency / 60);
+            RenderedTick(2);
+            string path = Path.Combine(Path.GetTempPath(), "ghframetimeline_test_" + System.Guid.NewGuid().ToString("N") + ".csv");
+            try
+            {
+                GHFrameTimeline.DumpToCsv(path);
+                string[] lines = File.ReadAllLines(path);
+                int dataRows = 0;
+                string[] header = null;
+                foreach (string line in lines)
+                {
+                    if (line.StartsWith("#"))
+                        continue;
+                    string[] fields = line.Split(',');
+                    if (header == null)
+                    {
+                        Assert.StartsWith("FrameId,", line);
+                        header = fields;
+                        continue;
+                    }
+                    Assert.Equal(header.Length, fields.Length);
+                    /* The platform frame time is relative to the first one, which reads 0 */
+                    int platformColumn = System.Array.IndexOf(header, "PlatformFrameMs");
+                    Assert.Equal(dataRows == 0 ? "0.000" : "16.667", fields[platformColumn]);
+                    dataRows++;
+                }
+                Assert.Equal(2, dataRows);
+            }
+            finally
+            {
+                if (File.Exists(path))
+                    File.Delete(path);
+            }
+        }
+
+        [Fact]
+        public void EnablingAgain_KeepsTheRing()
+        {
+            Restart();
+            RenderedTick(1);
+            GHFrameTimeline.IsEnabled = true;
+            int n;
+            Snapshot(out n);
+            Assert.Equal(1, n);
+        }
+
+        /* A paint that returns early while another paint is in progress takes its own
+           invalidation but leaves the other paint its frame */
+        [Fact]
+        public void SkipPaint_DuringAPaint_KeepsThePaintsFrame()
+        {
+            Restart();
+            long first = RenderedTick(1);
+            long painting = GHFrameTimeline.BeginPaint(false);
+            Assert.Equal(first, painting);
+            long second = RenderedTick(2);
+            GHFrameTimeline.SkipPaint(true, GHPaintOutcome.Reentrant);
+            Assert.Equal(painting, GHFrameTimeline.CurrentPaintFrameId);
+            GHFrameTimeline.SetCurrentPaintOutcome(GHPaintOutcome.CanvasTooSmall);
+            GHFrameTimeline.EndPaint(painting, 1, 0, 0);
+            Assert.Equal(0, GHFrameTimeline.CurrentPaintFrameId);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHPaintOutcome.CanvasTooSmall, r[0].Paint);
+            Assert.Equal(second, r[1].FrameId);
+            Assert.Equal(GHPaintOutcome.Reentrant, r[1].Paint);
+        }
+
+        [Fact]
+        public void ClockAnchor_KeepsTheFirstPairAndFollowsTheLatest()
+        {
+            Restart();
+            Assert.False(GHFrameTimeline.HasClockAnchor);
+            GHFrameTimeline.UpdatePlatformClockAnchor(1000000000L, 5000);
+            GHFrameTimeline.UpdatePlatformClockAnchor(3000000000L, 5000 + 2 * Frequency + 7);
+            Assert.True(GHFrameTimeline.HasClockAnchor);
+            Assert.Equal(1000000000L, GHFrameTimeline.FirstClockAnchor.PlatformNanos);
+            Assert.Equal(3000000000L, GHFrameTimeline.LatestClockAnchor.PlatformNanos);
+            Assert.Equal(5000 + 2 * Frequency + 7, GHFrameTimeline.PlatformNanosToTicks(3000000000L));
+            Restart();
+            Assert.False(GHFrameTimeline.HasClockAnchor);
+        }
+
+        private static int CopyMarks(out long[] frameIds, out long[] utcTicks)
+        {
+            frameIds = new long[GHFrameTimeline.MaxMarks + 4];
+            utcTicks = new long[GHFrameTimeline.MaxMarks + 4];
+            return GHFrameTimeline.CopyMarks(frameIds, utcTicks);
+        }
+
+        [Fact]
+        public void MarkUser_FlagsTheRecord_AndIsCopiedWithTheCurrentUtcTime()
+        {
+            Restart();
+            RenderedTick(1);
+            long id = RenderedTick(2);
+            long before = DateTime.UtcNow.Ticks;
+            Assert.True(GHFrameTimeline.MarkUser(id));
+            long after = DateTime.UtcNow.Ticks;
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHFrameFlags.None, r[0].Flags & GHFrameFlags.UserMark);
+            Assert.Equal(GHFrameFlags.UserMark, r[1].Flags & GHFrameFlags.UserMark);
+
+            long[] ids, ticks;
+            Assert.Equal(1, CopyMarks(out ids, out ticks));
+            Assert.Equal(id, ids[0]);
+            Assert.InRange(ticks[0], before, after);
+        }
+
+        [Fact]
+        public void MarkUser_OfAFrameNotRetained_ReturnsFalse()
+        {
+            Restart();
+            Assert.False(GHFrameTimeline.MarkUser(1));
+            long id = RenderedTick(1);
+            Assert.False(GHFrameTimeline.MarkUser(0));
+            Assert.False(GHFrameTimeline.MarkUser(id + 1));
+
+            long[] ids, ticks;
+            Assert.Equal(0, CopyMarks(out ids, out ticks));
+        }
+
+        [Fact]
+        public void MarkUser_WithTheTimelineOff_ReturnsFalse()
+        {
+            Restart();
+            long id = RenderedTick(1);
+            GHFrameTimeline.IsEnabled = false;
+            Assert.False(GHFrameTimeline.MarkUser(id));
+            long[] ids, ticks;
+            Assert.Equal(0, CopyMarks(out ids, out ticks));
+        }
+
+        [Fact]
+        public void Marks_KeepTheNewestMaxMarks_OldestFirst()
+        {
+            Restart();
+            int total = GHFrameTimeline.MaxMarks + 8;
+            for (int i = 0; i < total; i++)
+                Assert.True(GHFrameTimeline.MarkUser(RenderedTick(i + 1)));
+
+            long[] ids, ticks;
+            int n = CopyMarks(out ids, out ticks);
+            Assert.Equal(GHFrameTimeline.MaxMarks, n);
+            for (int i = 0; i < n; i++)
+            {
+                Assert.Equal(total - GHFrameTimeline.MaxMarks + 1 + i, ids[i]);
+                if (i > 0)
+                    Assert.True(ticks[i] >= ticks[i - 1]);
+            }
+        }
+
+        [Fact]
+        public void Reset_ClearsTheMarks()
+        {
+            Restart();
+            Assert.True(GHFrameTimeline.MarkUser(RenderedTick(1)));
+            Restart();
+            long[] ids, ticks;
+            Assert.Equal(0, CopyMarks(out ids, out ticks));
+
+            /* The same frame id recorded again is not marked */
+            RenderedTick(1);
+            Assert.Equal(0, CopyMarks(out ids, out ticks));
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHFrameFlags.None, r[0].Flags & GHFrameFlags.UserMark);
+        }
+
+        [Fact]
+        public void WriteCsv_WritesOneOriginUtcLine_ForTheFirstRecord()
+        {
+            Restart();
+            RenderedTick(1);
+            RenderedTick(2);
+            int n;
+            GHFrameRecord[] records = Snapshot(out n);
+            string path = Path.Combine(Path.GetTempPath(), "ghframetimeline_test_" + System.Guid.NewGuid().ToString("N") + ".csv");
+            try
+            {
+                long before = DateTime.UtcNow.Ticks;
+                GHFrameTimeline.WriteCsv(path, records, n);
+                long after = DateTime.UtcNow.Ticks;
+
+                const string prefix = "# OriginUtc utc=";
+                List<string> originLines = new List<string>();
+                foreach (string line in File.ReadAllLines(path))
+                {
+                    if (line.StartsWith(prefix, StringComparison.Ordinal))
+                        originLines.Add(line);
+                }
+                Assert.Single(originLines);
+
+                string[] parts = originLines[0].Substring(prefix.Length).Split(' ');
+                Assert.Equal(2, parts.Length);
+                DateTime utc = DateTime.Parse(parts[0], CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                Assert.Equal(DateTimeKind.Utc, utc.Kind);
+                /* The first tick ran a moment before the write */
+                Assert.InRange(utc.Ticks, before - TimeSpan.TicksPerMinute, after);
+                Assert.Equal("stopwatchTicks=" + records[0].CallbackStartTicks.ToString(CultureInfo.InvariantCulture), parts[1]);
+            }
+            finally
+            {
+                if (File.Exists(path))
+                    File.Delete(path);
+            }
+        }
+    }
+}

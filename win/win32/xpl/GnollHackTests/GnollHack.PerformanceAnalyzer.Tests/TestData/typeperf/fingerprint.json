@@ -1,0 +1,11 @@
+{
+  "meta.fingerprintVersion": "1",
+  "meta.capturedUtc": "2026-09-27T10:56:00.0000000Z",
+  "os.platform": "Windows",
+  "os.build": "26200.6584",
+  "hardware.deviceModel": "MSI Test",
+  "hardware.logicalProcessors": "8",
+  "hardware.memoryGB": "32",
+  "driver.gpu0.version": "32.0.15.6094",
+  "settings.powerPlan": "Balanced"
+}

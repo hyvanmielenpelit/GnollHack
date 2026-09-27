@@ -52,6 +52,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using GnollHackX.Performance;
 
 namespace GnollHackX
 {
@@ -205,8 +206,8 @@ namespace GnollHackX
             GetDependencyServices();
             PlatformService.InitializePlatform();
             GHPath = GnollHackService.GetGnollHackPath();
-            ProcessCommandLineArguments();
             ProcessEnvironment();
+            ProcessCommandLineArguments();
             SetProcessPriority();
 
             TotalMemory = PlatformService.GetDeviceMemoryInBytes();
@@ -773,8 +774,12 @@ namespace GnollHackX
         private static int _isCompleteClearCachesAndMemoryOk = 1;
         public static bool IsCompleteClearCachesAndMemoryOk { get { return Interlocked.CompareExchange(ref _isCompleteClearCachesAndMemoryOk, 0, 0) != 0; } set { Interlocked.Exchange(ref _isCompleteClearCachesAndMemoryOk, value ? 1 : 0); } }
 
+        /* Memory warnings received at any level since startup */
+        public static int MemoryPressureEventCount;
+
         private static void HandleMemoryWarning(MemoryPressureLevel level)
         {
+            Interlocked.Increment(ref MemoryPressureEventCount);
             switch (level)
             {
                 case MemoryPressureLevel.Low:
@@ -837,9 +842,97 @@ namespace GnollHackX
         public static bool PushingModalPage { get { return Interlocked.CompareExchange(ref _handlingKeyPress, 0, 0) != 0; } set { Interlocked.Exchange(ref _handlingKeyPress, value ? 1 : 0); } }
 
 
+#if WINDOWS
+        /* 0 = not subscribed, 1 = managed CompositionTarget.Rendering event, 2 = raw ABI subscription */
+        private static int _windowsRenderSubscription = 0;
+
+        private static void SubscribeManagedRendering()
+        {
+            Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
+            _windowsRenderSubscription = 1;
+        }
+
+#if ENABLE_RAW_RENDERING
+        private static int _rawRenderingLivenessChecks = 0;
+        private static int _rawRenderingSilentActiveChecks = 0;
+        private static readonly Action _rawRenderingCallback = RawRenderingCallback;
+
+        private static void RawRenderingCallback()
+        {
+            CompositionTarget_Rendering(null, null);
+        }
+
+        private static void ScheduleRawRenderingLivenessCheck()
+        {
+            Task.Delay(GHConstants.RawRenderingLivenessCheckMs).ContinueWith(t =>
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    if (_windowsRenderSubscription != 2 || RenderingSubscriptionWindows.CallbackCount > 0)
+                        return;
+                    if (PlatformAppActive)
+                    {
+                        if (++_rawRenderingSilentActiveChecks >= 2)
+                        {
+                            RenderingSubscriptionWindows.Unsubscribe();
+                            SubscribeManagedRendering();
+                            MaybeWriteGHLog("Render loop: raw Rendering subscription delivered no frames; using the managed subscription",
+                                            true, GHConstants.SentryGnollHackGeneralCategoryName);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        _rawRenderingSilentActiveChecks = 0;
+                    }
+                    if (++_rawRenderingLivenessChecks < 12)
+                        ScheduleRawRenderingLivenessCheck();
+                });
+            });
+        }
+#endif
+
+        private static bool TryGetRenderingTimeTicks(object e, out long ticks)
+        {
+            Microsoft.UI.Xaml.Media.RenderingEventArgs renderingArgs = e as Microsoft.UI.Xaml.Media.RenderingEventArgs;
+            if (renderingArgs != null)
+            {
+                ticks = renderingArgs.RenderingTime.Ticks;
+                return true;
+            }
+#if ENABLE_RAW_RENDERING
+            return RenderingSubscriptionWindows.TryGetCurrentRenderingTimeTicks(out ticks);
+#else
+            ticks = 0;
+            return false;
+#endif
+        }
+#endif
+
+        public static string RenderSubscriptionName
+        {
+            get
+            {
+#if WINDOWS
+                switch (_windowsRenderSubscription)
+                {
+                case 1:
+                    return "managed";
+                case 2:
+                    return "raw";
+                default:
+                    return "none";
+                }
+#else
+                return "platform";
+#endif
+            }
+        }
+
 #if ANDROID
         //private static ValueAnimator _platformAnimator = null;
         private static ChoreographerFrameTicker _platformTicker = null;
+        private static int _platformClockAnchorCounter = 0;
 #elif IOS
         private static DisplayLinkTicker _platformTicker = null;
         private static int _refreshRateSampled = 0;
@@ -847,18 +940,69 @@ namespace GnollHackX
 
         private static void InitializePlatformRenderLoop()
         {
+            GHCadenceMonitor.ChangeLog = MaybeWriteScreenLog;
+            /* The UI-thread probe and the window command poller run exactly while the frame
+               timeline records */
+            GHPresentFeedback.ActiveChanged = active =>
+            {
+                GHPerformanceRunRecord.OnTimelineActivated(active);
+                if (active)
+                {
+                    GHUiThreadProbe.Reset();
+#if GNH_MAUI
+                    GHUiThreadProbe.Start(Microsoft.Maui.Controls.Application.Current?.Dispatcher);
+#else
+                    GHUiThreadProbe.Start();
+#endif
+                    GHUiThreadProbe.BeginWindow();
+                }
+                else
+                {
+                    GHUiThreadProbe.EndWindow();
+                    GHUiThreadProbe.Stop();
+                }
+            };
 #if WINDOWS
-            Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
+            GHPresentFeedback.Register(new PresentFeedbackWindows());
+#if ENABLE_RAW_RENDERING
+            if (RenderingSubscriptionWindows.TrySubscribe(_rawRenderingCallback))
+            {
+                _windowsRenderSubscription = 2;
+                ScheduleRawRenderingLivenessCheck();
+            }
+            else
+            {
+                SubscribeManagedRendering();
+            }
+#else
+            SubscribeManagedRendering();
+#endif
+            MaybeWriteGHLog("Render loop: " + RenderSubscriptionName + " Rendering subscription",
+                            true, GHConstants.SentryGnollHackGeneralCategoryName);
 #elif ANDROID
+            GHPresentFeedback.Register(new PresentFeedbackAndroid());
             _platformTicker = new ChoreographerFrameTicker();
             _platformTicker.Start(frameTimeNanos =>
             {
+                if (GHFrameTimeline.IsEnabled)
+                {
+                    /* frameTimeNanos is System.nanoTime; re-anchored about once a second */
+                    if ((_platformClockAnchorCounter++ & 63) == 0 || !GHFrameTimeline.HasClockAnchor)
+                    {
+                        long before = Stopwatch.GetTimestamp();
+                        long nanos = Java.Lang.JavaSystem.NanoTime();
+                        long after = Stopwatch.GetTimestamp();
+                        GHFrameTimeline.UpdatePlatformClockAnchor(nanos, before + (after - before) / 2);
+                    }
+                    GHFrameTimeline.SetPendingPlatformFrame(GHFrameTimeline.PlatformNanosToTicks(frameTimeNanos), 0, 0);
+                }
                 CompositionTarget_Rendering(null, EventArgs.Empty);
             });
 
             /* Cache the actual display refresh rate (MAUI may report an incorrect value) */
             PlatformRefreshRate = DisplayInfoAndroid.GetRefreshRateHz();
 #elif IOS
+            GHPresentFeedback.Register(new PresentFeedbackiOS());
             _platformTicker = new DisplayLinkTicker();
 
             _platformTicker.Start(deltaTime =>
@@ -974,6 +1118,28 @@ namespace GnollHackX
             }
 
             FrameTimeProfiler.BeginFrame(counter);
+            GHPresentFeedback.Sync();
+#if WINDOWS
+            /* RenderingTime has its own epoch; only its cadence is used. The vsync comes from DWM,
+               whose query is not part of the callback's lateness. */
+            long timelineCallbackStart = 0;
+            if (GHFrameTimeline.IsEnabled)
+            {
+                long callbackStart = Stopwatch.GetTimestamp();
+                long renderingTimeTicks;
+                if (TryGetRenderingTimeTicks(e, out renderingTimeTicks))
+                {
+                    timelineCallbackStart = callbackStart;
+                    PresentFeedbackWindows.CaptureFrame(GHFrameTimeline.TimeSpanTicksToTicks(renderingTimeTicks));
+                }
+            }
+            long timelineFrameId = GHFrameTimeline.BeginTick(timelineCallbackStart);
+#else
+            long timelineFrameId = GHFrameTimeline.BeginTick();
+#endif
+            GHPresentFeedback.TickBegin(timelineFrameId);
+            GHPacingDecision pacing = GHPacingDecision.NotSet;
+            bool auxiliaryCanvas = false;
             GHGame ghGame = CurrentGHGame;
             try
             {
@@ -1024,18 +1190,30 @@ namespace GnollHackX
                 }
 
                 if (!UsePlatformRenderLoop || IsSuspended)
+                {
+                    pacing = IsSuspended ? GHPacingDecision.Suspended : GHPacingDecision.PlatformLoopOff;
                     return;
+                }
 
                 GamePage curGamePage = CurrentGamePage;
                 if (curGamePage == null)
+                {
+                    pacing = GHPacingDecision.NoGamePage;
                     return;
+                }
                 if (ghGame == null)
+                {
+                    pacing = GHPacingDecision.NoGame;
                     return;
+                }
 
 #if WINDOWS
                 ScreenResolutionItem curRes = CurrentScreenResolution;
                 if (curRes == null)
+                {
+                    pacing = GHPacingDecision.NoResolution;
                     return;
+                }
                 int screenRefreshRate = (int)curRes.RefreshRate;
 #else
                 int screenRefreshRate = RoundedReconciledRefreshRate;
@@ -1058,6 +1236,8 @@ namespace GnollHackX
                         refreshRate = 60;
                         break;
                 }
+                auxiliaryCanvas = canvasType != CanvasTypes.MainCanvas;
+                GHFrameTimeline.StampTarget(refreshRate, screenRefreshRate);
 
                 /* --- Paint stall diagnostic (no recovery action) ---
                  * Only meaningful while the map canvas is the active canvas and frames are
@@ -1110,6 +1290,7 @@ namespace GnollHackX
                     long ticksPerFrame = ticksPerSecond / framesPerSecond;
                     if (ticks > ticksPerFrame)
                     {
+                        pacing = GHPacingDecision.RenderedCatchUp;
                         curGamePage.RenderCanvasByCanvasType(canvasType);
                         return;
                     }
@@ -1117,6 +1298,7 @@ namespace GnollHackX
 
                 if (screenRefreshRate <= refreshRate)
                 {
+                    pacing = GHPacingDecision.Rendered;
                     curGamePage.RenderCanvasByCanvasType(canvasType);
                 }
                 else
@@ -1131,15 +1313,26 @@ namespace GnollHackX
                         {
                             int num = screenRefreshRate / mod;
                             if ((counter / divisor) % num == 0)
+                            {
+                                pacing = GHPacingDecision.SkippedModulo;
                                 return;
+                            }
                         }
+                        pacing = GHPacingDecision.Rendered;
                         curGamePage.RenderCanvasByCanvasType(canvasType);
+                    }
+                    else
+                    {
+                        pacing = GHPacingDecision.SkippedDivisor;
                     }
                 }
             }
             finally
             {
                 FrameTimeProfiler.EndFrame();
+                GHPacingDecision finalPacing = auxiliaryCanvas ? GHPacingDecision.AuxiliaryCanvas : pacing;
+                GHFrameTimeline.EndTick(finalPacing);
+                GHPresentFeedback.TickEnd(timelineFrameId, finalPacing);
             }
         }
 
@@ -1152,7 +1345,13 @@ namespace GnollHackX
         public static void StopPlatformRenderLoop()
         {
 #if WINDOWS
-            Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
+#if ENABLE_RAW_RENDERING
+            if (_windowsRenderSubscription == 2)
+                RenderingSubscriptionWindows.Unsubscribe();
+#endif
+            if (_windowsRenderSubscription == 1)
+                Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            _windowsRenderSubscription = 0;
 #elif ANDROID
             //if (_platformAnimator != null)
             //{
@@ -2677,6 +2876,15 @@ namespace GnollHackX
             FrameTimeProfiler.MarkGcBefore();
             GC.Collect(0);
             FrameTimeProfiler.MarkGcAfter();
+        }
+
+        public static void CollectGarbagePlatformDependent()
+        {
+            /* Full collections seem to be necessary on Windows to reduce stuttering after closing grids; Android full collections are too long; and iOS really does not either, so just collecting the nursery is fine there */
+            //if (IsWindows)
+            //    CollectGarbage();
+            //else
+                CollectNursery();
         }
         public static void CollectGarbageNonBlocking()
         {
@@ -8817,6 +9025,15 @@ namespace GnollHackX
             }
         }
 
+        /* Menus, prompts and popups show, wait and hide; a search skips the wait, so the hide
+           could overtake the show and leave them on screen. They are not shown while searching */
+        public static bool ReplayShouldShowPrompt { get { return !IsReplaySearching; } }
+
+        /* Replayed input records (the recorded player being prompted for a command) since
+           the app started; monotonic */
+        private static long _replayInputRecordCount = 0;
+        public static long ReplayInputRecordCount { get { return Interlocked.Read(ref _replayInputRecordCount); } }
+
         public static void ResetReplay()
         {
             lock (_replayLock)
@@ -9263,6 +9480,7 @@ namespace GnollHackX
                                             case (int)RecordedFunctionID.GetChar:
                                                 {
                                                     int res = br.ReadInt32();
+                                                    Interlocked.Increment(ref _replayInputRecordCount);
                                                     /* No function call in replay */
                                                     //game.ClientCallback_nhgetch();
                                                     if (!IsReplaySearching)
@@ -9275,6 +9493,7 @@ namespace GnollHackX
                                                     int y = br.ReadInt32();
                                                     int mod = br.ReadInt32();
                                                     int res = br.ReadInt32();
+                                                    Interlocked.Increment(ref _replayInputRecordCount);
                                                     /* No function call in replay */
                                                     //game.ClientCallback_nh_poskey();
                                                     if (!IsReplaySearching)
@@ -9296,7 +9515,7 @@ namespace GnollHackX
                                                     ulong ynflags = br.ReadUInt64();
                                                     int res = br.ReadInt32();
                                                     CheckReplaySearchMatch(question);
-                                                    if (ReplayShouldCallFunction)
+                                                    if (ReplayShouldShowPrompt)
                                                         game.ClientCallback_YnFunction(style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags);
                                                 }
                                                 break;
@@ -9573,7 +9792,7 @@ namespace GnollHackX
                                                         br.ReadInt64();
                                                     int listsize = br.ReadInt32();
                                                     int count = br.ReadInt32();
-                                                    if (ReplayShouldCallFunction)
+                                                    if (ReplayShouldShowPrompt)
                                                         game.Replay_SelectMenu(winid, how, count);
                                                 }
                                                 break;
@@ -9673,7 +9892,7 @@ namespace GnollHackX
                                                     string line = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     CheckReplaySearchMatch(query);
                                                     CheckReplaySearchMatch(line);
-                                                    if (ReplayShouldCallFunction)
+                                                    if (ReplayShouldShowPrompt)
                                                         game.Replay_GetLine(style, attr, color, query, placeholder, linesuffix, introline, IntPtr.Zero, line);
                                                 }
                                                 break;
@@ -9751,7 +9970,7 @@ namespace GnollHackX
                                                     int color = br.ReadInt32();
                                                     int glyph = br.ReadInt32();
                                                     ulong tflags = br.ReadUInt64();
-                                                    if (ReplayShouldCallFunction)
+                                                    if (ReplayShouldShowPrompt)
                                                         game.ClientCallback_DisplayPopupText(text, title, style, attr, color, glyph, tflags);
                                                 }
                                                 break;
@@ -12996,6 +13215,8 @@ namespace GnollHackX
             Description = description;
             IsCurrent = isCurrent;
             IsIntegratedGraphics = isIntegratedGraphics;
+            MinRefreshRate = minRefreshRate;
+            MaxRefreshRate = maxRefreshRate;
         }
     }
 
@@ -13257,6 +13478,7 @@ namespace GnollHackX
         private CADisplayLink _displayLink = null;
         private Action<double> _onFrame = null;
         private double _lastTimestamp;
+        private int _clockAnchorCounter = 0;
 
         public void Start(Action<double> onFrame)
         {
@@ -13272,6 +13494,22 @@ namespace GnollHackX
 
                 var deltaTime = _displayLink.Timestamp - _lastTimestamp;
                 _lastTimestamp = _displayLink.Timestamp;
+
+                if (GHFrameTimeline.IsEnabled)
+                {
+                    /* Display link times are CACurrentMediaTime seconds; re-anchored about once a second */
+                    if ((_clockAnchorCounter++ & 63) == 0 || !GHFrameTimeline.HasClockAnchor)
+                    {
+                        long before = Stopwatch.GetTimestamp();
+                        double mediaTime = CAAnimation.CurrentMediaTime();
+                        long after = Stopwatch.GetTimestamp();
+                        GHFrameTimeline.UpdatePlatformClockAnchor((long)Math.Round(mediaTime * 1e9), before + (after - before) / 2);
+                    }
+                    GHFrameTimeline.SetPendingPlatformFrame(
+                        GHFrameTimeline.PlatformNanosToTicks((long)Math.Round(_displayLink.Timestamp * 1e9)),
+                        GHFrameTimeline.PlatformNanosToTicks((long)Math.Round(_displayLink.TargetTimestamp * 1e9)),
+                        0);
+                }
 
                 _onFrame?.Invoke(deltaTime); // delta in seconds
             });

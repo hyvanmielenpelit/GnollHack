@@ -1,0 +1,317 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/hyvanmielenpelit/GnollHack/DEVEL/performance/schema/run-record.schema.json",
+  "title": "GnollHack performance run record",
+  "description": "One measurement window, written by the in-app GHPerformanceRunRecord and read by the offline analyzer.",
+  "type": "object",
+  "required": ["schemaVersion", "runId", "scenario", "arm", "startedUtc", "endedUtc", "windowSeconds", "environment", "thermal", "clock", "display", "smoothness", "onScreenPacing", "series", "uiThread", "files"],
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 2 },
+    "runId": { "type": "string" },
+    "scenario": { "type": "string" },
+    "arm": { "type": "string", "description": "Label of the configuration this run belongs to" },
+    "startedUtc": { "type": "string", "format": "date-time" },
+    "endedUtc": { "type": "string", "format": "date-time" },
+    "windowSeconds": { "type": "number" },
+    "environment": { "$ref": "#/$defs/environment" },
+    "thermal": {
+      "type": "object",
+      "required": ["before", "after"],
+      "properties": {
+        "before": { "$ref": "#/$defs/thermalReading" },
+        "after": { "$ref": "#/$defs/thermalReading" }
+      }
+    },
+    "clock": {
+      "type": "object",
+      "required": ["stopwatchFrequency", "firstAnchor", "latestAnchor"],
+      "properties": {
+        "stopwatchFrequency": { "type": "integer" },
+        "firstAnchor": { "$ref": "#/$defs/clockAnchor" },
+        "latestAnchor": { "$ref": "#/$defs/clockAnchor" }
+      }
+    },
+    "display": {
+      "type": "object",
+      "properties": {
+        "measuredRefreshHz": { "type": "number", "description": "The panel's rate: reported by the platform where it can (Windows: DWM), else measured from display callbacks" },
+        "callbackRefreshHz": { "type": "number", "description": "The display callback rate; below measuredRefreshHz when the UI framework skips callbacks" },
+        "assumedRefreshHz": { "type": "number" },
+        "targetFps": { "type": "number" },
+        "assumedRefreshMismatch": { "type": "boolean" }
+      }
+    },
+    "smoothness": { "$ref": "#/$defs/smoothness" },
+    "onScreenPacing": { "$ref": "#/$defs/pacingMetrics" },
+    "series": {
+      "type": "object",
+      "properties": {
+        "onScreenIntervalsMs": { "type": "array", "items": { "type": "number" }, "description": "Gaps between displayed frames, excluding paused gaps, in order" },
+        "pacingErrorMs": { "type": "array", "items": { "type": "number" }, "description": "Pacing error of the same frames, in the same order" }
+      }
+    },
+    "uiThread": {
+      "type": "object",
+      "properties": {
+        "latencyP50Ms": { "type": "number" },
+        "latencyP95Ms": { "type": "number" },
+        "latencyP99Ms": { "type": "number" },
+        "latencyMaxMs": { "type": "number" },
+        "tickCount": { "type": "integer" },
+        "lateTickCount": { "type": "integer" }
+      }
+    },
+    "files": {
+      "type": "object",
+      "required": ["frameTimeline", "compositorFrames"],
+      "properties": {
+        "frameTimeline": { "type": "string", "description": "File name only, alongside the JSON document" },
+        "compositorFrames": { "type": "string", "description": "File name only, alongside the JSON document" }
+      }
+    },
+    "suite": { "$ref": "#/$defs/suite" },
+    "marks": {
+      "type": "array",
+      "description": "Frames the user marked as a felt stutter (Mark Stutter, F8) within the saved range; absent when there are none",
+      "items": {
+        "type": "object",
+        "required": ["frameId", "utc", "msFromWindowStart"],
+        "properties": {
+          "frameId": { "type": "integer" },
+          "utc": { "type": "string", "format": "date-time", "description": "When the mark was made" },
+          "msFromWindowStart": { "type": "number", "description": "The marked frame's callback start, relative to the first saved record's" }
+        }
+      }
+    },
+    "background": { "$ref": "#/$defs/background" }
+  },
+  "$defs": {
+    "suite": {
+      "type": "object",
+      "description": "Present only in runs measured by the in-app Performance Suite",
+      "required": ["suiteId", "runIndex", "pageMode", "isWarmUp", "replayFileName", "replayBytes", "replaySha256", "startTurn", "turnReached"],
+      "properties": {
+        "suiteId": { "type": "string" },
+        "runIndex": { "type": "integer", "description": "0 is the warm-up run when the suite has one" },
+        "pageMode": { "type": "string", "enum": ["shared", "fresh"] },
+        "isWarmUp": { "type": "boolean" },
+        "replayFileName": { "type": "string" },
+        "replayBytes": { "type": "integer" },
+        "replaySha256": { "type": "string" },
+        "startTurn": { "type": "integer" },
+        "turnReached": { "type": "integer", "description": "Replay turn at the end of the window; -1 when unknown" },
+        "excludedReason": { "type": "string", "description": "Why the suite excluded this run, e.g. \"warm-up run\"; absent when the run is used. The analyzer marks such a run excluded" },
+        "notes": { "type": "string", "description": "Free text about the run, e.g. \"quiet gate timed out (other CPU 14 %)\"; absent when there is none. The analyzer appends it to the record's notes" }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "properties": {
+        "platform": { "type": ["string", "null"] },
+        "deviceId": { "type": ["string", "null"] },
+        "deviceModel": { "type": ["string", "null"] },
+        "deviceOs": { "type": ["string", "null"] },
+        "appVersion": { "type": ["string", "null"] },
+        "runtimeVersion": { "type": ["string", "null"] },
+        "frameworkVersion": { "type": ["string", "null"] },
+        "uiFrameworkVersion": { "type": ["string", "null"] },
+        "skiaSharpVersion": { "type": ["string", "null"] },
+        "fmodVersion": { "type": ["string", "null"] },
+        "gpuBackend": { "type": ["string", "null"] },
+        "gpuCacheSize": { "type": "integer" },
+        "mainCanvasUsesGpu": { "type": "boolean" },
+        "mapRefreshRateSetting": { "type": ["string", "null"] },
+        "reportedRefreshHz": { "type": "number" },
+        "buildConfiguration": { "type": ["string", "null"] },
+        "gitCommit": { "type": ["string", "null"] },
+        "configuration": { "type": "object", "description": "The feature-toggle vector in effect when the run was captured" },
+        "fingerprint": { "$ref": "#/$defs/fingerprint" }
+      }
+    },
+    "fingerprint": {
+      "type": "object",
+      "description": "The environment fingerprint (GHEnvironmentFingerprint): flat \"<category>.<name>\" keys, categories meta, code, toolchain, component, os, driver, hardware and settings; string values, booleans as \"true\"/\"false\", numbers in the invariant culture. Absent in records written before fingerprints existed",
+      "additionalProperties": { "type": "string" }
+    },
+    "background": {
+      "type": "object",
+      "description": "The machine's load around the measurement window (GHSystemLoadSampler); absent when the sampler is off or failed. A signal the platform does not report is null and missing from signals",
+      "required": ["samplerVersion", "source", "intervalMs", "signals", "window", "verdict"],
+      "properties": {
+        "samplerVersion": { "type": "integer" },
+        "source": { "type": "string", "description": "\"in-app\" in a record the app writes; the analyzer also has \"external\" blocks" },
+        "intervalMs": { "type": "integer", "description": "Sample interval, 1000" },
+        "logicalProcessors": { "type": "integer" },
+        "coverage": { "type": ["number", "null"], "description": "Fraction of the expected window samples present; below 0.5 the verdict is unknown" },
+        "samplerBusyMs": { "type": ["number", "null"], "description": "Time the sampler's ticks took during the window" },
+        "signals": { "type": "array", "items": { "type": "string", "enum": ["systemCpu", "disk", "memory", "hardFaults", "processes", "gpu"] } },
+        "window": { "$ref": "#/$defs/backgroundSummary" },
+        "preWindow": { "$ref": "#/$defs/backgroundSummary", "description": "The up to 10 s before the window start" },
+        "otherGpuPct": { "type": ["number", "null"], "description": "Other processes' 3D engine utilization over the process interval, busiest adapter" },
+        "processes": { "type": "array", "items": { "$ref": "#/$defs/backgroundProcess" }, "description": "The top 8 processes by CPU, then up to 3 by GPU, over the process interval; empty where the platform has no per-process data" },
+        "activities": { "type": "array", "items": { "$ref": "#/$defs/backgroundActivity" }, "description": "Known background activities among processes, by CPU descending" },
+        "samples": { "type": "array", "items": { "$ref": "#/$defs/backgroundSample" }, "description": "The pre-window and window samples, in time order" },
+        "verdict": { "type": "string", "enum": ["quiet", "elevated", "busy", "unknown"] },
+        "reason": { "type": ["string", "null"], "description": "Set for elevated and busy, at most 100 characters, e.g. \"background load: other CPU P90 31 %; wsl-vm (vmmemWSL 22 %)\"; a busy run's exclusion reason" }
+      }
+    },
+    "backgroundSummary": {
+      "type": ["object", "null"],
+      "description": "Signals over a time range; a percentile is nearest-rank. Null values mark signals with no data",
+      "properties": {
+        "samples": { "type": "integer" },
+        "otherCpuMeanPct": { "type": ["number", "null"], "description": "Machine CPU minus this process, of total logical capacity" },
+        "otherCpuP90Pct": { "type": ["number", "null"] },
+        "otherCpuMaxPct": { "type": ["number", "null"] },
+        "otherCpuSpikeShare": { "type": ["number", "null"], "description": "Fraction of the samples with other CPU at 50 percent or more" },
+        "diskBusyMeanPct": { "type": ["number", "null"], "description": "100 - % Idle Time" },
+        "diskBusyP90Pct": { "type": ["number", "null"] },
+        "availableMemoryMinPct": { "type": ["number", "null"], "description": "Of total physical memory" },
+        "availableMemoryMinMB": { "type": ["integer", "null"] },
+        "hardFaultsP90PerSec": { "type": ["number", "null"], "description": "Hard page reads" },
+        "memoryPressureEvents": { "type": "integer", "description": "The app's memory warnings during the range (Android, iOS)" },
+        "lowMemory": { "type": "boolean", "description": "Android MemoryInfo.LowMemory in any sample" }
+      }
+    },
+    "backgroundProcess": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "cpuPct": { "type": ["number", "null"], "description": "Of total logical capacity" },
+        "gpuPct": { "type": ["number", "null"] },
+        "category": { "type": "string", "description": "windows-update, antivirus, indexer, wsl-vm, build-tools, sync, telemetry, measurement, compositor or other" }
+      }
+    },
+    "backgroundActivity": {
+      "type": "object",
+      "properties": {
+        "category": { "type": "string" },
+        "processes": { "type": "array", "items": { "type": "string" } },
+        "cpuPct": { "type": ["number", "null"], "description": "The processes' summed CPU, of total logical capacity" }
+      }
+    },
+    "backgroundSample": {
+      "type": "object",
+      "description": "One 1 Hz sample; percentages, null where not reported",
+      "properties": {
+        "t": { "type": ["number", "null"], "description": "Seconds from the window start, negative before it" },
+        "sys": { "type": ["number", "null"], "description": "Whole-machine CPU" },
+        "own": { "type": ["number", "null"], "description": "This process's CPU" },
+        "other": { "type": ["number", "null"] },
+        "disk": { "type": ["number", "null"], "description": "Disk busy" },
+        "availPct": { "type": ["number", "null"], "description": "Available physical memory" },
+        "faults": { "type": ["number", "null"], "description": "Hard page reads per second" }
+      }
+    },
+    "thermalReading": {
+      "type": ["object", "null"],
+      "properties": {
+        "status": { "type": "string", "enum": ["Unknown", "Nominal", "Light", "Moderate", "Severe", "Critical"] },
+        "headroomFraction": { "type": ["number", "null"] },
+        "batteryTempC": { "type": ["number", "null"] },
+        "cpuPerformancePct": { "type": ["number", "null"] },
+        "isCharging": { "type": ["boolean", "null"], "description": "On external power; null when the platform did not report it" },
+        "isLowPower": { "type": ["boolean", "null"] },
+        "detail": { "type": ["string", "null"], "description": "The platform's raw readings as short free text" },
+        "timestampUtc": { "type": ["string", "null"], "description": "When the reading was taken, ISO 8601" }
+      }
+    },
+    "clockAnchor": {
+      "type": ["object", "null"],
+      "properties": {
+        "platformNanos": { "type": "integer" },
+        "stopwatchTicks": { "type": "integer" }
+      }
+    },
+    "causeEntry": {
+      "type": "object",
+      "properties": {
+        "count": { "type": "integer" },
+        "hitchMs": { "type": "number" }
+      }
+    },
+    "smoothness": {
+      "type": "object",
+      "properties": {
+        "tickCount": { "type": "integer" },
+        "paintedCount": { "type": "integer" },
+        "displayedCount": { "type": "integer" },
+        "droppedCount": { "type": "integer" },
+        "coalescedCount": { "type": "integer" },
+        "notRunCount": { "type": "integer" },
+        "pausedGapCount": { "type": "integer" },
+        "windowMs": { "type": "number" },
+        "measuredRefreshHz": { "type": "number" },
+        "assumedRefreshHz": { "type": "number" },
+        "targetFps": { "type": "number" },
+        "assumedRefreshMismatch": { "type": "boolean" },
+        "displayedFps": { "type": "number" },
+        "tileAnimationFps": { "type": "number" },
+        "hitchCount": { "type": "integer" },
+        "hitchRatioMsPerSec": { "type": "number" },
+        "judderCount": { "type": "integer" },
+        "judderPct": { "type": "number" },
+        "pacingErrorRmsMs": { "type": "number" },
+        "pacingErrorP99Ms": { "type": "number" },
+        "repeatedRefreshesPerSec": { "type": "number" },
+        "latencyP50Ms": { "type": "number" },
+        "latencyP99Ms": { "type": "number" },
+        "callbackLatenessP99Ms": { "type": "number" },
+        "paintP50Ms": { "type": "number" },
+        "paintP99Ms": { "type": "number" },
+        "gcCount": { "type": "integer" },
+        "gcPauseMs": { "type": "number", "description": "Total GC pause over the window; 0 when not reported" },
+        "gcPauseDataAvailable": { "type": "boolean", "description": "The runtime reported GC pause time; when false, GC attribution uses the collection counts" },
+        "presentSource": { "type": "string", "enum": ["None", "Estimated", "Measured"] },
+        "unattributedShare": { "type": "number" },
+        "causes": {
+          "type": "object",
+          "description": "One entry per GHHitchCause value except None",
+          "additionalProperties": { "$ref": "#/$defs/causeEntry" }
+        },
+        "contentEvents": {
+          "type": "object",
+          "description": "One entry per GHContentEvent kind, plus None for gaps without any event: unpaused gaps in which it happened and how many of them were hitches",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "gaps": { "type": "integer" },
+              "hitches": { "type": "integer" }
+            },
+            "required": ["gaps", "hitches"]
+          }
+        }
+      }
+    },
+    "pacingMetrics": {
+      "type": "object",
+      "properties": {
+        "count": { "type": "integer" },
+        "windowMs": { "type": "number" },
+        "targetPeriodMs": { "type": "number" },
+        "refreshPeriodMs": { "type": "number" },
+        "fpsMean": { "type": "number" },
+        "fps1PctLow": { "type": "number" },
+        "fps01PctLow": { "type": "number" },
+        "p50": { "type": "number" },
+        "p90": { "type": "number" },
+        "p95": { "type": "number" },
+        "p99": { "type": "number" },
+        "max": { "type": "number" },
+        "min": { "type": "number" },
+        "meanMs": { "type": "number" },
+        "stdDevMs": { "type": "number" },
+        "stutterIndex": { "type": "number" },
+        "jankPct": { "type": "number" },
+        "hitchRatioMsPerSec": { "type": "number" },
+        "hitch2xCount": { "type": "integer" },
+        "hitch4xCount": { "type": "integer" },
+        "hitch2xPerMin": { "type": "number" },
+        "hitch4xPerMin": { "type": "number" },
+        "overrunP50": { "type": "number" },
+        "overrunP95": { "type": "number" },
+        "overrunP99": { "type": "number" }
+      }
+    }
+  }
+}

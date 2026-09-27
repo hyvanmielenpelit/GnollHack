@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<gnh:CustomModalPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gnh="clr-namespace:GnollHackM"
+             xmlns:controls="clr-namespace:GnollHackM"
+             xmlns:mainscreen="clr-namespace:GnollHackM"
+             BackgroundColor="Black"
+             x:Class="GnollHackM.PerformanceSuitePage"
+             Appearing="ContentPage_Appearing"
+             Disappearing="ContentPage_Disappearing">
+    
+        <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <Grid x:Name="PerformanceSuiteGrid" RowSpacing="6" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" x:Name="lblHeader" Text="Performance Suite" HorizontalTextAlignment="Center" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
+                    HorizontalOptions="Center" VerticalOptions="Fill" Margin="0,10,0,20" />
+                <Grid Grid.Row="1" MaximumWidthRequest="560" HorizontalOptions="Fill" VerticalOptions="Fill">
+                    <ScrollView x:Name="MainScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+                        <StackLayout x:Name="MainLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="6" Padding="16,0,16,12">
+                            <!-- Tapping a setup label shows an explanation -->
+                            <StackLayout x:Name="SetupLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="6">
+                                <Label Text="Setup" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" HorizontalOptions="Start" Margin="0,4,0,2" />
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="ReplayLabel" Text="Replay" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Picker Grid.Column="1" x:Name="ReplayPicker" Title="Select a replay" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="240" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
+                                    <Label Grid.Column="1" x:Name="NoReplaysLabel" IsVisible="False" Text="No replays found" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="StartTurnLabel" Text="Start turn" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Entry Grid.Column="1" x:Name="StartTurnEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="ScenarioLabel" Text="Scenario" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Picker Grid.Column="1" x:Name="ScenarioPicker" Title="Select a scenario" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="175" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="RunsLabel" Text="Measured runs" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Picker Grid.Column="1" x:Name="RunsPicker" Title="Select runs" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="175" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="WarmUpRunLabel" Text="Warm-up run" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Switch Grid.Column="1" x:Name="WarmUpRunSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="Setup_Toggled" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="PageModeLabel" Text="Page mode" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Picker Grid.Column="1" x:Name="PageModePicker" Title="Select a page mode" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="175" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="ArmLabelLabel" Text="Arm label" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Entry Grid.Column="1" x:Name="ArmLabelEntry" Keyboard="Plain" WidthRequest="240" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="WarmUpSecondsLabel" Text="Warm-up seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Entry Grid.Column="1" x:Name="WarmUpSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="WindowSecondsLabel" Text="Window seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Entry Grid.Column="1" x:Name="WindowSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="CooldownSecondsLabel" Text="Cool-down seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Entry Grid.Column="1" x:Name="CooldownSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="EstimatedDurationTitleLabel" Text="Estimated duration" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Label Grid.Column="1" x:Name="EstimatedDurationLabel" Text="-" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End" />
+                                </Grid>
+
+                                <controls:CustomImageButton x:Name="btnRunSuite" Text="Run Suite" WidthRequest="280" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="0,12,0,12" HorizontalOptions="Center" VerticalOptions="Center" Clicked="btnRunSuite_Clicked" UseVaryingBackgroundImages ="True" />
+                            </StackLayout>
+
+                            <BoxView HeightRequest="1" Color="Gray" HorizontalOptions="Fill" />
+
+                            <Label x:Name="ResultsLabel" Text="Results" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" HorizontalOptions="Start" Margin="0,8,0,2">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                            <Label x:Name="NoSuitesLabel" IsVisible="False" Text="No performance suites yet. Run one above." FontFamily="Underwood" FontSize="15" TextColor="Black" HorizontalOptions="Start" />
+
+                            <!-- Two lines per suite: date, scenario, runs and median hitch; then arm label, markers and size -->
+                            <CollectionView x:Name="SuiteCollectionView" ItemSizingStrategy="MeasureAllItems" SelectionMode="Multiple" HeightRequest="300"
+                                HorizontalOptions="Fill" VerticalOptions="Start" BackgroundColor="Transparent" SelectionChanged="SuiteCollectionView_SelectionChanged">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="mainscreen:PerformanceSuiteListItem">
+                                        <StackLayout Orientation="Vertical" Spacing="1" Padding="{Binding RowPadding}" HorizontalOptions="Fill">
+                                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8" HorizontalOptions="Fill">
+                                                <Label Grid.Column="0" Text="{Binding DateText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
+                                                <Label Grid.Column="1" Text="{Binding ScenarioText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="TailTruncation" />
+                                                <Label Grid.Column="2" Text="{Binding RunsText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
+                                                <Label Grid.Column="3" Text="{Binding HitchText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMonoBold" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
+                                            </Grid>
+                                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" HorizontalOptions="Fill">
+                                                <Label Grid.Column="0" Text="{Binding LabelText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="TailTruncation" />
+                                                <Label Grid.Column="1" Text="{Binding MarkersText}" IsVisible="{Binding HasMarkers}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" FontAttributes="Italic" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
+                                                <Label Grid.Column="2" Text="{Binding SizeText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
+                                            </Grid>
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
+                            <FlexLayout x:Name="ResultButtonsLayout" Direction="Row" Wrap="Wrap" JustifyContent="Center" AlignItems="Center" AlignContent="Center" HorizontalOptions="Fill" Margin="0,6,0,0">
+                                <controls:CustomImageButton x:Name="btnViewReport" Text="Report" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="3" IsEnabled="False" Clicked="btnViewReport_Clicked" UseVaryingBackgroundImages ="True" />
+                                <controls:CustomImageButton x:Name="btnSetBaseline" Text="Set Baseline" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="3" IsEnabled="False" Clicked="btnSetBaseline_Clicked" UseVaryingBackgroundImages ="True" />
+                                <controls:CustomImageButton x:Name="btnCompareBaseline" Text="Compare" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="3" IsEnabled="False" Clicked="btnCompareBaseline_Clicked" UseVaryingBackgroundImages ="True" />
+                                <controls:CustomImageButton x:Name="btnShare" Text="Share" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="3" IsEnabled="False" Clicked="btnShare_Clicked" UseVaryingBackgroundImages ="True" />
+                                <controls:CustomImageButton x:Name="btnDelete" Text="Delete" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="3" IsEnabled="False" Clicked="btnDelete_Clicked" UseVaryingBackgroundImages ="True" />
+                                <controls:CustomImageButton x:Name="btnImportResults" Text="Import" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
+                                    Margin="3" Clicked="btnImportResults_Clicked" UseVaryingBackgroundImages ="True" />
+                            </FlexLayout>
+                        </StackLayout>
+                    </ScrollView>
+                </Grid>
+                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest="280" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="Transparent" TextColor="White"
+                        Clicked="Button_Clicked" />
+            </Grid>
+            <controls:MessagePopupView x:Name="MessagePopup" />
+        </Grid>
+    
+</gnh:CustomModalPage>

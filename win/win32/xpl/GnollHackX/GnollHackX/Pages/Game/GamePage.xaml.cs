@@ -20,6 +20,7 @@ using System.Net.Http.Headers;
 using System.Collections;
 using System.Data;
 using System.Xml.Linq;
+using GnollHackX.Performance;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -644,6 +645,18 @@ namespace GnollHackX.Pages.Game
         {
             get { return MainCanvasView.UseGL; }
             set { MainCanvasView.UseGL = value; }
+        }
+
+        /* UI thread only. Null when the main canvas does not use GL; otherwise whether it
+           has a live GRContext (ResourceCacheLimit is -1 without one). */
+        public bool? MainCanvasGpuContextLive
+        {
+            get
+            {
+                if (!UseMainGLCanvas)
+                    return null;
+                return MainCanvasView.ResourceCacheLimit >= 0;
+            }
         }
 
         public bool UseAuxiliaryGLCanvas
@@ -2036,7 +2049,11 @@ namespace GnollHackX.Pages.Game
                 if (string.IsNullOrEmpty(realTime))
                     ReplayRealTimeLabel.Text = "";
                 else if (realTime != ReplayRealTimeLabel.Text)
+                {
                     ReplayRealTimeLabel.Text = realTime;
+                    /* An all-zero game time carries no information and is shown dimmed */
+                    ReplayRealTimeLabel.Opacity = HasNonZeroDigit(realTime) ? 1.0 : 0.5;
+                }
 
                 UpdateReplayHeaderLabel();
             }
@@ -2099,12 +2116,29 @@ namespace GnollHackX.Pages.Game
         public void UpdateMainCanvas(MapRefreshRateStyle refreshRateStyle)
         {
             FrameTimeProfiler.StampUpdate();
+            if (GHFrameTimeline.IsEnabled)
+            {
+                GHGame timelineGame = GHApp.CurrentGHGame;
+                if (timelineGame != null)
+                    GHFrameTimeline.StampUpdate(timelineGame.MainCounterValue, timelineGame.GeneralAnimationCounter);
+            }
             bool resizing = IsResizing;
             if (resizing)
+            {
                 GHApp.MaybeWriteScreenLog("UpdateMainCanvas: Resizing");
+                GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.Resizing);
+            }
+            else if (!RefreshScreen)
+            {
+                GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.RefreshOff);
+            }
             if (RefreshScreen && !resizing)
             {
-                if (MainCanvasView.ThreadSafeIsVisible)
+                if (!MainCanvasView.ThreadSafeIsVisible)
+                {
+                    GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.NotVisible);
+                }
+                else
                 {
                     if (ForceAllMessages)
                     {
@@ -2128,7 +2162,10 @@ namespace GnollHackX.Pages.Game
                             canvasheight = _savedCanvasHeight;
                         }
                         if (canvasheight <= 0)
+                        {
+                            GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.NoCanvasSize);
                             return;
+                        }
 
                         lock (_messageScrollLock)
                         {
@@ -2205,6 +2242,7 @@ namespace GnollHackX.Pages.Game
                         }
                     }
                     /* Callers run on the UI thread: the platform render loop and the animation counter */
+                    GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.Invalidated);
                     MainCanvasView.InvalidateSurface();
                 }
             }
@@ -3219,6 +3257,52 @@ namespace GnollHackX.Pages.Game
             tasks.Add(task);
         }
 
+        /* The frame timeline's category for the content a request brings */
+        private static GHContentEvent ContentEventOf(GHRequestType requestType)
+        {
+            switch (requestType)
+            {
+                case GHRequestType.DisplayFloatingText:
+                    return GHContentEvent.FloatingText;
+                case GHRequestType.DisplayScreenText:
+                case GHRequestType.DisplayPopupText:
+                case GHRequestType.HidePopupText:
+                    return GHContentEvent.ScreenText;
+                case GHRequestType.DisplayConditionText:
+                    return GHContentEvent.ConditionText;
+                case GHRequestType.DisplayGUIEffect:
+                    return GHContentEvent.GuiEffect;
+                case GHRequestType.DisplayScreenFilter:
+                case GHRequestType.FadeToBlack:
+                case GHRequestType.FadeFromBlack:
+                case GHRequestType.SetToBlack:
+                    return GHContentEvent.ScreenFilter;
+                case GHRequestType.PrintHistory:
+                case GHRequestType.PrintHistoryItem:
+                case GHRequestType.PrintTopLine:
+                    return GHContentEvent.Message;
+                case GHRequestType.ClipAround:
+                case GHRequestType.ZoomNormal:
+                case GHRequestType.ZoomIn:
+                case GHRequestType.ZoomOut:
+                case GHRequestType.ZoomMini:
+                case GHRequestType.ZoomHalf:
+                case GHRequestType.ZoomToScale:
+                case GHRequestType.ToggleZoomMini:
+                    return GHContentEvent.ViewChange;
+                case GHRequestType.ShowMenuPage:
+                case GHRequestType.HideMenuPage:
+                case GHRequestType.DisplayWindowView:
+                case GHRequestType.DestroyWindowView:
+                case GHRequestType.HideTextWindow:
+                case GHRequestType.UpdateGHWindow:
+                case GHRequestType.UpdateGHWindowVisibility:
+                    return GHContentEvent.Window;
+                default:
+                    return GHContentEvent.OtherRequest;
+            }
+        }
+
         private List<Task> PollRequestQueue()
         {
             List<Task> tasks = null;
@@ -3226,8 +3310,17 @@ namespace GnollHackX.Pages.Game
             if (curGame != null)
             {
                 GHRequest req;
+                bool timelineOn = GHFrameTimeline.IsEnabled;
+                long requestWorkStart = 0;
+                GHContentEvent requestEvents = GHContentEvent.None;
                 while (curGame.RequestQueue.TryDequeue(out req))
                 {
+                    if (timelineOn)
+                    {
+                        if (requestWorkStart == 0)
+                            requestWorkStart = Stopwatch.GetTimestamp();
+                        requestEvents |= ContentEventOf(req.RequestType);
+                    }
                     try
                     {
                         switch (req.RequestType)
@@ -3504,6 +3597,8 @@ namespace GnollHackX.Pages.Game
                         Debug.WriteLine(ex);
                     }
                 }
+                if (requestWorkStart != 0)
+                    GHFrameTimeline.AddRequestWork(requestEvents, Stopwatch.GetTimestamp() - requestWorkStart);
             }
             return tasks;
         }
@@ -4110,6 +4205,7 @@ namespace GnollHackX.Pages.Game
         private void HideYnResponses()
         {
             YnGrid.IsVisible = false;
+            GHApp.CollectGarbagePlatformDependent();
         }
         private void DoShowDirections()
         {
@@ -5191,6 +5287,11 @@ namespace GnollHackX.Pages.Game
         private GlyphImageSource _paintGlyphImageSource = new GlyphImageSource();
         private SKBitmap _paintBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
         private bool _mainCanvasThreadChecked = false;
+
+        /* Content counters the current map paint drew; written and read on the paint thread */
+        private long _paintedMainCounterValue = 0;
+        private long _paintedGeneralCounterValue = 0;
+
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             bool isCanvasOnMainThread = MainThread.IsMainThread;
@@ -5200,18 +5301,34 @@ namespace GnollHackX.Pages.Game
                 GHApp.MaybeWriteGHLog("canvasView_PaintSurface not on main thread!");
             }
 
+            /* The early returns record their outcome without taking over the frame of a paint
+               that may still be in progress */
             if (MenuGrid.ThreadSafeIsVisible || TextGrid.ThreadSafeIsVisible || MoreCommandsGrid.ThreadSafeIsVisible || !IsGameOn)
+            {
+                GHFrameTimeline.SkipPaint(isCanvasOnMainThread, GHPaintOutcome.OverlayVisible);
                 return;
+            }
 
             if (Interlocked.CompareExchange(ref _isCleanedUp, 0, 0) != 0) /* Resources have been disposed */
+            {
+                GHFrameTimeline.SkipPaint(isCanvasOnMainThread, GHPaintOutcome.CleanedUp);
                 return;
+            }
 
             if (IsMainCanvasDrawingAndSetTrue) /* In the case of some sort of reentrancy or new draw before previous is finished */
+            {
+                GHFrameTimeline.SkipPaint(isCanvasOnMainThread, GHPaintOutcome.Reentrant);
                 return;
+            }
+
+            long paintFrameId = GHFrameTimeline.BeginPaint(isCanvasOnMainThread);
+            GHPresentFeedback.PaintBegin(paintFrameId);
 
             SKCanvas canvas = e.Surface.Canvas;
             /* Save count of the state the canvas is handed over in */
             int paintSaveCount = canvas.SaveCount;
+            _paintedMainCounterValue = 0;
+            _paintedGeneralCounterValue = 0;
 
             try
             {
@@ -5225,6 +5342,7 @@ namespace GnollHackX.Pages.Game
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+                GHFrameTimeline.SetPaintOutcome(paintFrameId, GHPaintOutcome.Failed);
             }
             finally
             {
@@ -5236,10 +5354,20 @@ namespace GnollHackX.Pages.Game
                     canvas.RestoreToCount(paintSaveCount);
                 }
 
+                GHFrameTimeline.StampDrawEnd(paintFrameId);
+                GHPresentFeedback.FlushBegin(paintFrameId);
+
                 /* Finally, flush */
                 canvas.Flush();
 
                 FrameTimeProfiler.StampPaintEnd();
+                if (paintFrameId != 0)
+                {
+                    GHGame paintedGame = GHApp.CurrentGHGame;
+                    GHFrameTimeline.EndPaint(paintFrameId, _paintedMainCounterValue, _paintedGeneralCounterValue,
+                        paintedGame != null ? paintedGame.MapDataGeneration : 0);
+                    GHPresentFeedback.PaintEnd(paintFrameId);
+                }
 
                 IsMainCanvasDrawing = false;
             }
@@ -7730,7 +7858,10 @@ namespace GnollHackX.Pages.Game
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e, bool isCanvasOnMainThread)
         {
             if (!IsMainCanvasOn || GHApp.IsReplaySearching)
+            {
+                GHFrameTimeline.SetCurrentPaintOutcome(GHPaintOutcome.MainCanvasOff);
                 return;
+            }
 
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
@@ -7745,7 +7876,10 @@ namespace GnollHackX.Pages.Game
             _localDarkeningFilterCachePruned = false;
             _localCompositeFilterCachePruned = false;
             if (canvaswidth <= 16 || canvasheight <= 16)
+            {
+                GHFrameTimeline.SetCurrentPaintOutcome(GHPaintOutcome.CanvasTooSmall);
                 return;
+            }
 
             bool lockTaken = false;
             try
@@ -7921,13 +8055,18 @@ namespace GnollHackX.Pages.Game
             }
 
             if (curGame == null)
+            {
+                GHFrameTimeline.SetCurrentPaintOutcome(GHPaintOutcome.NoGame);
                 return;
+            }
 
             bool screenLogging = GHApp.IsDebugScreenLoggingOn;
             long generalcountervalue, maincountervalue;
             maincountervalue = curGame.MainCounterValue; // Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             /* Moved general_animation_counter outside of the lock to minimize the time spent in lock;  since InvalidateSurface is called after IncrementCounters and nothing else modifies general_animation_counter, generalcountervalue should be consistent of the copy result below */
             generalcountervalue = curGame.GeneralAnimationCounter; // Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
+            _paintedMainCounterValue = maincountervalue;
+            _paintedGeneralCounterValue = generalcountervalue;
             //lock (AnimationTimerLock)
             //{
             //    /* Note that animation timer is updated too frequently so that it does not make sense to use TryEnter; however, since InvalidateSurface is called after IncrementCounters, there should practically never be a conflict here due to IncrementCounters */
@@ -8083,7 +8222,10 @@ namespace GnollHackX.Pages.Game
                 lockTaken = false;
             }
             if (_mapData == null)
+            {
+                GHFrameTimeline.SetCurrentPaintOutcome(GHPaintOutcome.NoGame);
                 return;
+            }
 
             lockTaken = false;
             //lock (_floatingTextLock)
@@ -12804,6 +12946,12 @@ namespace GnollHackX.Pages.Game
                     Monitor.Exit(_uiRectLock);
             }
             lockTaken = false;
+
+            if (GHFrameTimeline.IsEnabled)
+                GHFrameMarker.Draw(canvas, canvaswidth, canvasheight, GHFrameTimeline.CurrentPaintFrameId, maincountervalue,
+                    UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRate), GHApp.DisplayDensity);
+            if (GHDiagnosticCountdown.IsActive)
+                GHDiagnosticCountdown.Draw(canvas, canvaswidth, canvasheight, GHApp.DisplayDensity);
 
 #if MAP_PROFILING
             if ((_totalFrames % 120) == 0)
@@ -21386,6 +21534,7 @@ namespace GnollHackX.Pages.Game
             IsMainCanvasOn = true;
             StopMenuCanvasAnimation();
             MenuWindowGlyphImage.StopAnimation();
+            GHApp.CollectGarbagePlatformDependent();
             RefreshScreen = true;
             StartMainCanvasAnimation();
         }
@@ -21455,6 +21604,7 @@ namespace GnollHackX.Pages.Game
                 InterlockedTextScrollOffset = _textScrollOffset;
             }
             StopTextCanvasAnimation();
+            GHApp.CollectGarbagePlatformDependent();
             RefreshScreen = true;
             StartMainCanvasAnimation();
         }
@@ -22937,6 +23087,7 @@ namespace GnollHackX.Pages.Game
             IsMainCanvasOn = true;
             UpdateMoreNextPrevButtonVisibility(true, true);
             StopCommandCanvasAnimation();
+            GHApp.CollectGarbagePlatformDependent();
             RefreshScreen = true;
             StartMainCanvasAnimation();
         }
@@ -23931,8 +24082,53 @@ namespace GnollHackX.Pages.Game
                 ReplaySlowerButton.TextColor = GHColors.White;
                 ReplaySlowerButton.IsEnabled = true;
             }
+            if (_replayControlsLocked)
+                ApplyReplayControlsLock();
             UpdateReplayHeaderLabel();
         }
+
+        /* Playback controls other than Quit are locked while a performance suite drives the
+           replay; Quit stays available and aborts the suite. UI thread only. */
+        private bool _replayControlsLocked = false;
+
+        public void SetReplayControlsLocked(bool locked)
+        {
+            _replayControlsLocked = locked;
+            if (locked)
+                ApplyReplayControlsLock();
+            else
+            {
+                ReplayPauseButton.IsEnabled = true;
+                ReplayGotoButton.IsEnabled = true;
+                ReplayGotoButton.TextColor = GHColors.White;
+                ReplayNextButton.IsEnabled = true;
+                ReplayNextButton.TextColor = GHColors.White;
+                UpdateReplayPauseButton();
+                UpdateReplaySpeedButtons();
+            }
+        }
+
+        private void ApplyReplayControlsLock()
+        {
+            ReplayPauseButton.IsEnabled = false;
+            ReplayPauseButton.TextColor = GHColors.Gray;
+            ReplaySlowerButton.IsEnabled = false;
+            ReplaySlowerButton.TextColor = GHColors.Gray;
+            ReplayFasterButton.IsEnabled = false;
+            ReplayFasterButton.TextColor = GHColors.Gray;
+            ReplayGotoButton.IsEnabled = false;
+            ReplayGotoButton.TextColor = GHColors.Gray;
+            ReplayNextButton.IsEnabled = false;
+            ReplayNextButton.TextColor = GHColors.Gray;
+        }
+
+        /* Pauses or resumes the replay and shows it on the Pause/Play button; UI thread only */
+        public void SetReplayPaused(bool paused)
+        {
+            GHApp.PauseReplay = paused;
+            UpdateReplayPauseButton();
+        }
+
         private void UpdateReplayPauseButton()
         {
             if(GHApp.PauseReplay)
@@ -23953,12 +24149,52 @@ namespace GnollHackX.Pages.Game
                 ReplayGotoButton.IsVisible = false;
                 ReplayNextButton.IsVisible = false;
             }
+            if (_replayControlsLocked)
+                ApplyReplayControlsLock();
 
             UpdateReplayHeaderLabel();
         }
 
+        private static bool HasNonZeroDigit(string text)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (text[i] >= '1' && text[i] <= '9')
+                    return true;
+            }
+            return false;
+        }
+
+        /* Replaces the replay header text while non-null, e.g. a performance suite's
+           progress; UI thread only */
+        private string _replayHeaderOverride = null;
+
+        public void SetReplayHeaderOverride(string text)
+        {
+            _replayHeaderOverride = text;
+            UpdateReplayHeaderLabel();
+        }
+
+        /* A menu, text window, prompt or popup covers the map; UI thread only */
+        public bool IsOverlayOpen
+        {
+            get
+            {
+                return MenuGrid.IsVisible || TextGrid.IsVisible || GetLineGrid.IsVisible || YnGrid.IsVisible
+                    || PopupGrid.IsVisible || MoreCommandsGrid.IsVisible;
+            }
+        }
+
         private void UpdateReplayHeaderLabel()
         {
+            string headerOverride = _replayHeaderOverride;
+            if (headerOverride != null)
+            {
+                if (ReplayHeaderLabel.Text != headerOverride)
+                    ReplayHeaderLabel.Text = headerOverride;
+                return;
+            }
+
             int currentTurn = GHApp.ReplayTurn;
             int gotoTurn = GHApp.GoToTurn;
             string searchPattern = GHApp.ReplaySearchRegexString;
@@ -23999,6 +24235,8 @@ namespace GnollHackX.Pages.Game
         }
         private void ReplayFasterButton_Clicked(object sender, EventArgs e)
         {
+            if (_replayControlsLocked)
+                return;
             if(GHApp.ReplaySpeed < 128)
             {
                 GHApp.ReplaySpeed = GHApp.ReplaySpeed * 2;
@@ -24009,6 +24247,8 @@ namespace GnollHackX.Pages.Game
 
         private void ReplaySlowerButton_Clicked(object sender, EventArgs e)
         {
+            if (_replayControlsLocked)
+                return;
             if (GHApp.ReplaySpeed > 1.0 / 128)
             {
                 GHApp.ReplaySpeed = GHApp.ReplaySpeed / 2;
@@ -24018,12 +24258,16 @@ namespace GnollHackX.Pages.Game
 
         private void ReplayPauseButton_Clicked(object sender, EventArgs e)
         {
+            if (_replayControlsLocked)
+                return;
             GHApp.PauseReplay = !GHApp.PauseReplay;
             UpdateReplayPauseButton();
         }
 
         private void ReplayGotoButton_Clicked(object sender, EventArgs e)
         {
+            if (_replayControlsLocked)
+                return;
             if (GotoStylePicker.SelectedIndex < 1)
                 GotoTurnEntryText.Text = "";
             GotoTurnEntryText.IsEnabled = true;
@@ -24041,6 +24285,8 @@ namespace GnollHackX.Pages.Game
 
         private void ReplayNextButton_Clicked(object sender, EventArgs e)
         {
+            if (_replayControlsLocked)
+                return;
             ReplayNextButton.IsEnabled = false;
             if (GHApp.ReplayTurn >= 0)
             {
@@ -24387,6 +24633,12 @@ namespace GnollHackX.Pages.Game
             if (!ZoomMiniMode)
                 ToggleZoomMiniButton_Clicked(null, null);
         }
+        /* Leaves minimap mode without touching the normal-mode map font size */
+        public void ExitZoomMini()
+        {
+            if (ZoomMiniMode)
+                ToggleZoomMiniButton_Clicked(null, null);
+        }
         public void SetZoomHalf()
         {
             if (ZoomMiniMode)
@@ -24582,6 +24834,16 @@ namespace GnollHackX.Pages.Game
             }
             else if(key == GHSpecialKey.None)
             {
+                handled = true;
+            }
+            else if (key == GHSpecialKey.F8 && FrameTimeProfiler.IsEnabled)
+            {
+                /* Marks the frame on screen as a stutter, during play and replays alike */
+                long frameId = GHFrameTimeline.LastFrameId;
+                if (GHFrameTimeline.MarkUser(frameId))
+                    GHApp.MaybeWriteScreenLog("MARK frame " + frameId);
+                else
+                    GHApp.MaybeWriteScreenLog("MARK failed for frame " + frameId);
                 handled = true;
             }
             else if (TipView.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
