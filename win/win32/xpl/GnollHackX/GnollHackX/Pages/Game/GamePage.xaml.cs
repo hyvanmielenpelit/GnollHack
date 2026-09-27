@@ -647,6 +647,18 @@ namespace GnollHackX.Pages.Game
             set { MainCanvasView.UseGL = value; }
         }
 
+        /* UI thread only. Null when the main canvas does not use GL; otherwise whether it
+           has a live GRContext (ResourceCacheLimit is -1 without one). */
+        public bool? MainCanvasGpuContextLive
+        {
+            get
+            {
+                if (!UseMainGLCanvas)
+                    return null;
+                return MainCanvasView.ResourceCacheLimit >= 0;
+            }
+        }
+
         public bool UseAuxiliaryGLCanvas
         {
             get { return CommandCanvas.UseGL; }
@@ -12937,6 +12949,8 @@ namespace GnollHackX.Pages.Game
             if (GHFrameTimeline.IsEnabled)
                 GHFrameMarker.Draw(canvas, canvaswidth, canvasheight, GHFrameTimeline.CurrentPaintFrameId, maincountervalue,
                     UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRate), GHApp.DisplayDensity);
+            if (GHDiagnosticCountdown.IsActive)
+                GHDiagnosticCountdown.Draw(canvas, canvaswidth, canvasheight, GHApp.DisplayDensity);
 
 #if MAP_PROFILING
             if ((_totalFrames % 120) == 0)

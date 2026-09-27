@@ -66,6 +66,8 @@ namespace GnollHackX.Pages.Game
                 btnDevOptions.IsEnabled = false;
                 btnDevAiSnapshot.TextColor = GHColors.Gray;
                 btnDevAiSnapshot.IsEnabled = false;
+                btnDevTestPerformance.TextColor = GHColors.Gray;
+                btnDevTestPerformance.IsEnabled = false;
             }
 
             btnDeveloper.IsVisible = GHApp.DeveloperMode;
@@ -280,6 +282,7 @@ namespace GnollHackX.Pages.Game
             btnDevDumpFrameLog.IsVisible = FrameTimeProfiler.IsEnabled;
             btnDevMarkStutter.IsVisible = FrameTimeProfiler.IsEnabled;
             btnDevAnalyzeRecent.IsVisible = FrameTimeProfiler.IsEnabled;
+            btnDevTestPerformance.IsVisible = FrameTimeProfiler.IsEnabled;
             btnDevAiSnapshot.IsVisible = GHApp.DebugLogMessages;
             DeveloperPopupGrid.IsEnabled = true;
             DeveloperPopupGrid.IsVisible = true;
@@ -551,6 +554,24 @@ namespace GnollHackX.Pages.Game
             DeveloperPopupGrid.IsEnabled = true;
         }
 
+        private async void btnTestPerformance_Clicked(object sender, EventArgs e)
+        {
+            DeveloperPopupGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+
+            /* On confirmation the runner closes this menu and shows its messages on the game page */
+            try
+            {
+                await GHPerformanceDiagnosticRunner.RunAsync(_gamePage, this);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            DeveloperPopupGrid.IsEnabled = true;
+        }
+
         private async void btnAiSnapshot_Clicked(object sender, EventArgs e)
         {
             DeveloperPopupGrid.IsEnabled = false;
@@ -755,6 +776,11 @@ namespace GnollHackX.Pages.Game
                             case (int)'r':
                                 if (btnDevAnalyzeRecent.IsEnabled && btnDevAnalyzeRecent.IsVisible)
                                     btnAnalyzeRecent_Clicked(btnDevAnalyzeRecent, EventArgs.Empty);
+                                handled = true;
+                                break;
+                            case (int)'p':
+                                if (btnDevTestPerformance.IsEnabled && btnDevTestPerformance.IsVisible)
+                                    btnTestPerformance_Clicked(btnDevTestPerformance, EventArgs.Empty);
                                 handled = true;
                                 break;
                             case (int)'a':

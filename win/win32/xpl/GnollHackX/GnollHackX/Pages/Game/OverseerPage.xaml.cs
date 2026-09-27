@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using GnollHackX.Performance;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -1117,7 +1118,8 @@ namespace GnollHackX.Pages.Game
             "get_player_xlog",
             "get_player_dumplogs",
             "get_app_log",
-            "get_panic_log"
+            "get_panic_log",
+            "get_performance_reports"
         };
 
         /// <summary>
@@ -1319,6 +1321,9 @@ namespace GnollHackX.Pages.Game
 
             case "get_panic_log":
                 return GetPanicLogResult(parameters);
+
+            case "get_performance_reports":
+                return GetPerformanceReportsResult(parameters);
 
             default:
                 throw new NotSupportedException(
@@ -1987,6 +1992,115 @@ namespace GnollHackX.Pages.Game
             catch (Exception ex)
             {
                 return "Failed to read panic log: " + ex.Message;
+            }
+        }
+
+        private const int DefaultMaxPerformanceReportChars = 12000;
+        private const int MinMaxPerformanceReportChars = 1000;
+        private const int MaxListedPerformanceReports = 20;
+
+        /* ASCII digits and a true end of string, so that neither non-ASCII
+           digits nor a trailing newline pass as a report filename */
+        private static readonly Regex PerformanceReportFileNameRegex =
+            new Regex(@"^perftest_[0-9]{8}_[0-9]{6}\.txt\z",
+                RegexOptions.CultureInvariant);
+
+        /// <summary>
+        /// Lists and reads the in-game performance test reports on this device.
+        /// List mode (no filename): plain text, the newest reports first, one
+        /// line per report with its Result and Location headline.
+        /// Read mode (filename specified): the report text, cut to max_length.
+        /// </summary>
+        private string GetPerformanceReportsResult(JObject parameters)
+        {
+            string reportsDir = GHPerformanceDiagnosticRunner.ReportsDirectory;
+            string filenameParam = parameters?["filename"]?.ToString();
+
+            /* max_length: non-integers are ignored; small values are raised */
+            int maxChars = DefaultMaxPerformanceReportChars;
+            string maxLenStr = parameters?["max_length"]?.ToString();
+            if (!string.IsNullOrEmpty(maxLenStr)
+                && int.TryParse(maxLenStr,
+                    System.Globalization.NumberStyles.Integer,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out int ml))
+            {
+                maxChars = ml < MinMaxPerformanceReportChars
+                    ? MinMaxPerformanceReportChars : ml;
+            }
+
+            if (string.IsNullOrEmpty(filenameParam))
+            {
+                /* ======== List mode ======== */
+                string[] reportNames = new string[0];
+                if (!string.IsNullOrEmpty(reportsDir) && Directory.Exists(reportsDir))
+                {
+                    /* The fixed-width timestamp in the name sorts ordinally */
+                    reportNames = Directory.GetFiles(reportsDir)
+                        .Select(f => Path.GetFileName(f))
+                        .Where(f => PerformanceReportFileNameRegex.IsMatch(f))
+                        .OrderByDescending(f => f, StringComparer.Ordinal)
+                        .Take(MaxListedPerformanceReports)
+                        .ToArray();
+                }
+
+                if (reportNames.Length == 0)
+                    return "No performance reports on this device. The player"
+                        + " can create one in a game: Menu > Developer > Test"
+                        + " Performance (requires Developer Mode and the Frame"
+                        + " Time Profiler setting).";
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Performance reports on this device (newest first):");
+                foreach (string reportName in reportNames)
+                {
+                    string headline = null;
+                    try
+                    {
+                        string reportText = File.ReadAllText(
+                            Path.Combine(reportsDir, reportName));
+                        headline = GHPerformanceDiagnosis.HeadlineOf(reportText);
+                    }
+                    catch (Exception)
+                    {
+                        /* An unreadable report is listed as such */
+                    }
+                    sb.Append('\n');
+                    sb.Append(reportName);
+                    sb.Append(" | ");
+                    sb.Append(headline ?? "(unreadable report)");
+                }
+                return sb.ToString();
+            }
+            else
+            {
+                /* ======== Read mode ======== */
+                /* The anchored pattern admits no path separators */
+                if (!PerformanceReportFileNameRegex.IsMatch(filenameParam))
+                    throw new ArgumentException(
+                        "Invalid report filename: " + filenameParam);
+
+                string fullPath = string.IsNullOrEmpty(reportsDir)
+                    ? null : Path.Combine(reportsDir, filenameParam);
+                if (fullPath == null || !File.Exists(fullPath))
+                    throw new FileNotFoundException(
+                        "Performance report not found: " + filenameParam);
+
+                string content = File.ReadAllText(fullPath);
+                if (content.Length > maxChars)
+                {
+                    int shown = maxChars;
+                    /* Do not split a surrogate pair */
+                    if (char.IsHighSurrogate(content[shown - 1]))
+                        shown--;
+                    content = content.Substring(0, shown)
+                        + "\n...[truncated: "
+                        + shown.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                        + " of "
+                        + content.Length.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                        + " characters; call again with a larger max_length]";
+                }
+                return content;
             }
         }
 
