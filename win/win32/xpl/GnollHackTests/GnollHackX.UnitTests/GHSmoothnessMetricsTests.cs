@@ -743,21 +743,35 @@ namespace GnollHackX.UnitTests
             Assert.True(judged >= 5, "judged " + judged);
         }
 
+        /* The first vsync of a 120 Hz grid strictly after ticks */
+        private static long NextInlineSwapVsync(long ticks)
+        {
+            long period = F / 120;
+            long origin = 1000 * F;
+            return origin + ((ticks - origin) / period + 1) * period;
+        }
+
+        /* Windows GL at 120 Hz with a 60 fps target: the paint and an 18 ms SwapBuffers run
+           inside the display callback, and the next callback comes at the first vsync after
+           it returns */
+        private static Timeline InlineSwapTimeline(int ticks)
+        {
+            Timeline t = new Timeline();
+            long period = F / 120;
+            for (int i = 0; i < ticks; i++)
+            {
+                int idx = t.Tick(period, 120, 60, GHPacingDecision.RenderedCatchUp, true, 1.5, 0.5, 0.2, 18.0);
+                t.NextVsync = NextInlineSwapVsync(t.Records[idx].CallbackEndTicks);
+            }
+            return t;
+        }
+
         /* Windows GL: the paint and SwapBuffers run inside the display callback, and the swap
            blocks on the GPU; the late callbacks that follow are the GPU's, not the framework's */
         [Fact]
         public void InlineSwapWait_IsGpuNotFrameworkCadence()
         {
-            Timeline t = new Timeline();
-            long period = F / 120;
-            long gridOrigin = t.NextVsync;
-            for (int i = 0; i < 150; i++)
-            {
-                int idx = t.Tick(period, 120, 60, GHPacingDecision.RenderedCatchUp, true, 1.5, 0.5, 0.2, 18.0);
-                /* The next callback comes at the first vsync after this one returns */
-                long end = t.Records[idx].CallbackEndTicks;
-                t.NextVsync = gridOrigin + ((end - gridOrigin) / period + 1) * period;
-            }
+            Timeline t = InlineSwapTimeline(150);
             GHDisplayedFrame[] d;
             int n;
             GHSmoothnessSummary s = t.Analyze(out d, out n);
@@ -767,6 +781,47 @@ namespace GnollHackX.UnitTests
             Assert.Equal(GHHitchCause.Gpu, DominantCause(s));
             Assert.Equal(0, s.CauseCount[(int)GHHitchCause.FrameworkCadence]);
             Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadLate]);
+        }
+
+        /* An inline-painted frame reaches the display no earlier than the vsync after its swap */
+        [Fact]
+        public void InlineSwapWait_EstimatedDisplayFollowsTheSwap()
+        {
+            Timeline t = InlineSwapTimeline(150);
+            GHDisplayedFrame[] d;
+            int n;
+            t.Analyze(out d, out n);
+
+            Assert.True(n >= 100, "displayed " + n);
+            for (int j = 0; j < n; j++)
+            {
+                GHFrameRecord r = t.Records[d[j].RecordIndex];
+                Assert.True(d[j].DisplayedAtTicks > r.CallbackEndTicks, "frame " + j);
+            }
+        }
+
+        /* A measured present at the vsync after the swap is on time, not the compositor's */
+        [Fact]
+        public void InlineSwapWait_MeasuredPresentAfterSwap_IsNotCompositor()
+        {
+            Timeline t = InlineSwapTimeline(150);
+            for (int i = 0; i < t.Records.Count; i++)
+            {
+                GHFrameRecord r = t.Records[i];
+                if (r.Paint != GHPaintOutcome.Painted)
+                    continue;
+                r.PresentSource = GHPresentSource.Measured;
+                r.DisplayedAtTicks = NextInlineSwapVsync(r.CallbackEndTicks);
+                t.Records[i] = r;
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.True(n >= 100, "displayed " + n);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.Compositor]);
+            for (int j = 0; j < n; j++)
+                Assert.Equal(0L, d[j].DisplayDelayTicks);
         }
 
         /* A frame measured on screen later than the vsync it was ready for is the

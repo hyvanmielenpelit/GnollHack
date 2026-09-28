@@ -405,19 +405,22 @@ namespace GnollHackX.Performance
                 if (r.PaintStartTicks != 0)
                     paintMs.Add(TicksToMs(r.FlushEndTicks - r.PaintStartTicks));
 
+                /* A frame painted inside the callback is ready when its buffer swap returns */
+                long flushed = r.FlushEndTicks + SwapWaitTicks(r);
+
                 Candidate c = new Candidate();
                 c.RecordIndex = i;
-                c.ReadyAt = r.FlushEndTicks;
+                c.ReadyAt = flushed;
                 if (r.PresentSource == GHPresentSource.Measured && r.DisplayedAtTicks != 0)
                 {
                     c.DisplayedAt = r.DisplayedAtTicks;
                     c.Source = GHPresentSource.Measured;
-                    long expected = grid.NextBoundaryAfter(r.FlushEndTicks);
+                    long expected = grid.NextBoundaryAfter(flushed);
                     c.DisplayDelay = r.DisplayedAtTicks > expected ? r.DisplayedAtTicks - expected : 0;
                 }
                 else
                 {
-                    long ready = r.FlushEndTicks;
+                    long ready = flushed;
                     if (androidCompositor)
                     {
                         long recPeriod = r.RefreshPeriodTicks > 0 ? r.RefreshPeriodTicks : period;
@@ -788,7 +791,7 @@ namespace GnollHackX.Performance
             if (compositor != null && m > 0)
             {
                 long from = records[prevIdx].VsyncTicks != 0 ? records[prevIdx].VsyncTicks : records[prevIdx].CallbackStartTicks;
-                long to = cr.FlushEndTicks != 0 ? cr.FlushEndTicks : cr.CallbackStartTicks;
+                long to = cr.FlushEndTicks != 0 ? cr.FlushEndTicks + SwapWaitTicks(cr) : cr.CallbackStartTicks;
                 for (int k = 0; k < m; k++)
                 {
                     GHCompositorFrame f = compositor[k];
