@@ -1117,12 +1117,25 @@ dump_everything(int how, time_t when)
             Sprintf(pbuf, "Hunger: %s", hungerbuf);
         }
         putstr(0, ATR_NONE, pbuf);
-        Sprintf(pbuf,
-                "Known nutrition usage: %.2f per turn, as on the character"
-                " statistics screen (1 is the normal rate). The nutrition"
-                " counter itself is not shown to the player.",
-                current_known_nutrition_usage());
-        putstr(0, ATR_NONE, pbuf);
+        {
+            char termsbuf[BUFSZ * 2];
+            char linebuf[BUFSZ * 3];
+            int item_terms = 0;
+            double usage = current_known_nutrition_usage_ex(termsbuf, sizeof termsbuf, &item_terms);
+
+            Sprintf(pbuf,
+                    "Known nutrition usage: %.2f per turn, as on the character"
+                    " statistics screen (1 is the normal rate). The nutrition"
+                    " counter itself is not shown to the player.",
+                    usage);
+            putstr(0, ATR_NONE, pbuf);
+            Sprintf(linebuf, "Nutrition usage by source: %s.%s", termsbuf,
+                    item_terms > 0
+                        ? " Each item listed at 0.05 uses 1 point of nutrition"
+                          " every 20 turns."
+                        : "");
+            putstr(0, ATR_NONE, linebuf);
+        }
         putstr(0, ATR_NONE,
                "Status key: MC = magic cancellation level/percent chance, MS ="
                " movement speed (12 is normal; monster speeds use the same"

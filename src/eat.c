@@ -41,6 +41,8 @@ static int tin_variety(struct obj *, boolean);
 static boolean maybe_cannibal(int, boolean);
 static int get_corpse_reqtime(struct obj*);
 static int get_food_nmod(struct obj*, int);
+static void add_nutrition_term(char *, size_t, boolean *, const char *, double, const char *);
+static void add_nutrition_item_term(char *, size_t, boolean *, int *, struct obj *);
 
 
 char msgbuf[BUFSZ];
@@ -69,6 +71,8 @@ static boolean force_save_hs = FALSE;
 /* see hunger states in hack.h - texts used on bottom line */
 const char *hu_stat[] = { "Satiated", "        ", "Hungry  ", "Weak    ",
                           "Fainting", "Fainted ", "Starved " };
+
+extern const char *const enc_stat[]; /* defined in botl.c */
 
 /*
  * Decide whether a particular object can be eaten by the possibly
@@ -4556,56 +4560,160 @@ bite(void)
     return 0;
 }
 
+/* Append "<label> <value><suffix>" to termsbuf, comma separated.  Room for
+   ", ..." is always kept: a term that does not fit is replaced by it, and
+   *cut makes every later term a no-op. */
+static void
+add_nutrition_term(char *termsbuf, size_t termsbufsz, boolean *cut, const char *label, double value, const char *suffix)
+{
+    char termbuf[BUFSZ];
+    size_t len;
+
+    if (!termsbuf || !cut || *cut || !label || !suffix)
+        return;
+
+    Sprintf(termbuf, "%s%.200s %.2f%.40s", *termsbuf ? ", " : "", label, value, suffix);
+    len = strlen(termsbuf);
+    if (len + strlen(termbuf) + 5 < termsbufsz)
+    {
+        Strcpy(termsbuf + len, termbuf);
+    }
+    else
+    {
+        if (len + 5 < termsbufsz)
+            Strcpy(termsbuf + len, ", ...");
+        *cut = TRUE;
+    }
+}
+
+/* A 0.05 term for a worn item, or for the carried Amulet of Yendor if obj is null */
+static void
+add_nutrition_item_term(char *termsbuf, size_t termsbufsz, boolean *cut, int *item_terms, struct obj *obj)
+{
+    if (item_terms)
+        (*item_terms)++;
+    if (termsbuf)
+        add_nutrition_term(termsbuf, termsbufsz, cut, obj ? simpleonames(obj) : "Amulet of Yendor (carried)", 0.05, "");
+}
+
 /* calculate the nutrition consumption rate */
 double
 calchungry(boolean *known_props)
 {
+    return calchungry_ex(known_props, (char *) 0, 0, (int *) 0);
+}
+
+/* calculate the nutrition consumption rate; if termsbuf is given, also list
+   its terms there, in the order they are added, and if item_terms is given,
+   count the 0.05 item terms */
+double
+calchungry_ex(boolean *known_props, char *termsbuf, size_t termsbufsz, int *item_terms)
+{
+    boolean cut = FALSE;
+    int enc;
+
+    if (termsbuf && termsbufsz > 0)
+        *termsbuf = '\0';
+    else
+        termsbuf = (char *) 0;
+    if (item_terms)
+        *item_terms = 0;
+
     if (!known_props)
         return 0.0;
 
     double res = 0.0;
+    const char *basenote = "";
     if (!is_non_eater(youmonst.data) && (!known_props[SLOW_DIGESTION] || !Slow_digestion))
     {
         if (known_props[HALF_SLOW_DIGESTION] && Half_slow_digestion)
         {
             res = 0.5;
+            basenote = Unaware ? " (half slow digestion, unaware)" : " (half slow digestion)";
         }
         else
         {
             res = 1;
+            basenote = Unaware ? " (unaware)" : "";
         }
         if (Unaware)
             res /= 10;
     }
+    else
+    {
+        basenote = is_non_eater(youmonst.data) ? " (your form does not eat)" : " (slow digestion)";
+    }
+    add_nutrition_term(termsbuf, termsbufsz, &cut, "base rate", res, basenote);
 
     if (known_props[HUNGER] && Hunger)
+    {
         res += 1;
+        add_nutrition_term(termsbuf, termsbufsz, &cut, "Hunger property", 1.0, "");
+    }
 
     if (known_props[REGENERATION] && ((HRegeneration & ~FROM_FORM) || (ERegeneration & ~(W_ARTIFACT_INVOKED | W_WEP))))
+    {
         res += 0.5;
-    if (near_capacity() > SLT_ENCUMBER)
+        add_nutrition_term(termsbuf, termsbufsz, &cut, "Regeneration", 0.5, "");
+    }
+    enc = near_capacity();
+    if (enc > SLT_ENCUMBER)
+    {
         res += 0.5;
+        add_nutrition_term(termsbuf, termsbufsz, &cut, enc_stat[enc], 0.5, "");
+    }
     if (known_props[CONFLICT] && (HConflict || (EConflict & (~W_ARTIFACT_INVOKED))))
+    {
         res += 0.5;
+        add_nutrition_term(termsbuf, termsbufsz, &cut, "Conflict", 0.5, "");
+    }
 
+    /* worn items in the order of the 20-turn cycle in gethungry() */
     if (umisc && objects[umisc->otyp].oc_name_known && obj_consumes_nutrition_every_20_turns(umisc))
+    {
         res += 0.05;
+        add_nutrition_item_term(termsbuf, termsbufsz, &cut, item_terms, umisc);
+    }
     if (uleft && objects[uleft->otyp].oc_name_known && objects[uleft->otyp].oc_magic && (uleft->enchantment || !objects[uleft->otyp].oc_enchantable))
+    {
         res += 0.05;
+        add_nutrition_item_term(termsbuf, termsbufsz, &cut, item_terms, uleft);
+    }
     if (umisc2 && objects[umisc2->otyp].oc_name_known && obj_consumes_nutrition_every_20_turns(umisc2))
+    {
         res += 0.05;
+        add_nutrition_item_term(termsbuf, termsbufsz, &cut, item_terms, umisc2);
+    }
     if (uamul && objects[uamul->otyp].oc_name_known && objects[uamul->otyp].oc_magic)
+    {
         res += 0.05;
+        add_nutrition_item_term(termsbuf, termsbufsz, &cut, item_terms, uamul);
+    }
     if (umisc3 && objects[umisc3->otyp].oc_name_known && obj_consumes_nutrition_every_20_turns(umisc3))
+    {
         res += 0.05;
+        add_nutrition_item_term(termsbuf, termsbufsz, &cut, item_terms, umisc3);
+    }
     if (uright && objects[uright->otyp].oc_name_known && objects[uright->otyp].oc_magic && (uright->enchantment || !objects[uright->otyp].oc_enchantable))
+    {
         res += 0.05;
+        add_nutrition_item_term(termsbuf, termsbufsz, &cut, item_terms, uright);
+    }
     if (umisc4 && objects[umisc4->otyp].oc_name_known && obj_consumes_nutrition_every_20_turns(umisc4))
+    {
         res += 0.05;
+        add_nutrition_item_term(termsbuf, termsbufsz, &cut, item_terms, umisc4);
+    }
     if (objects[AMULET_OF_YENDOR].oc_name_known && is_uhave_amulet())
+    {
         res += 0.05;
+        add_nutrition_item_term(termsbuf, termsbufsz, &cut, item_terms, (struct obj *) 0);
+    }
     if (umisc5 && objects[umisc5->otyp].oc_name_known && obj_consumes_nutrition_every_20_turns(umisc5))
+    {
         res += 0.05;
+        add_nutrition_item_term(termsbuf, termsbufsz, &cut, item_terms, umisc5);
+    }
 
     return res;
 }

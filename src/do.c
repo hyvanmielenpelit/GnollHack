@@ -91,10 +91,18 @@ get_known_props(boolean *known_props)
 double
 current_known_nutrition_usage(void)
 {
+    return current_known_nutrition_usage_ex((char *) 0, 0, (int *) 0);
+}
+
+/* As current_known_nutrition_usage(), and on request also the terms of the
+   total as text, and the number of worn or carried items among them. */
+double
+current_known_nutrition_usage_ex(char *termsbuf, size_t termsbufsz, int *item_terms)
+{
     boolean known_props[MAX_PROPS];
 
     get_known_props(known_props);
-    return calchungry(known_props);
+    return calchungry_ex(known_props, termsbuf, termsbufsz, item_terms);
 }
 
 /* the '}' command - Character statistics */
