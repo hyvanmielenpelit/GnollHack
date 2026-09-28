@@ -439,7 +439,12 @@ namespace GnollHackX
         /* Android's SGen taxes every collection through its JNI bridge, and Windows has
            the memory to spare, so both trade managed allocations for retained native
            glyph data. iOS has less memory and a more efficient collector. */
-        public const bool DefaultTextBlobCaching = false;
+        public const bool DefaultTextBlobCaching =
+#if WINDOWS
+            true;
+#else
+            false;
+#endif
         public const bool DefaultCharacterClickAction = false;
         public const bool DefaultDiceAsRanges = true;
         public const bool DefaultDamageFormula = false;
