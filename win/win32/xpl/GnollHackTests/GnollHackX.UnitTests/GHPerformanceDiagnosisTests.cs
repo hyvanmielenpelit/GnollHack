@@ -938,7 +938,7 @@ namespace GnollHackX.UnitTests
             string report = GHPerformanceDiagnosis.BuildReport(f, r, Now);
             Assert.Contains("(" + GHPerformanceDiagnosis.CodeLowPowerMode + ", likely)", report);
             Assert.Contains("  " + GHPerformanceDiagnosis.HealthyConclusion + "\n", report);
-            Assert.Contains("Mark Stutter", report);
+            Assert.Contains("Analyze Hitches", report);
         }
 
         [Fact]

@@ -72,7 +72,7 @@
     "suite": { "$ref": "#/$defs/suite" },
     "marks": {
       "type": "array",
-      "description": "Frames the user marked as a felt stutter (Mark Stutter, F8) within the saved range; absent when there are none",
+      "description": "Frames the user marked as a felt stutter (F8) within the saved range; absent when there are none",
       "items": {
         "type": "object",
         "required": ["frameId", "utc", "msFromWindowStart"],

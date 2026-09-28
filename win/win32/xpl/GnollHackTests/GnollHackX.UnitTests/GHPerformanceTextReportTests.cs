@@ -635,7 +635,55 @@ namespace GnollHackX.UnitTests
                 displayedCount, summary, markFrameIds, markTicks, 1);
 
             AssertNoLineExceedsMaxWidth(report);
-            Assert.Contains("no hitch within 3 s", Section(report, "Marked moments:", "Worst hitches"));
+            Assert.Contains("no hitch from 5 s before to 0.5 s after", Section(report, "Marked moments:", "Worst hitches"));
+        }
+
+        [Fact]
+        public void RecentHitchesReport_HitchSecondsBeforeTheMark_IsListed()
+        {
+            /* Ten seconds with the stall at 4 s, marked at 8 s */
+            GHFrameRecord[] records = StallTimeline(600, 240);
+            GHDisplayedFrame[] displayed = new GHDisplayedFrame[records.Length];
+            int displayedCount;
+            GHSmoothnessSummary summary = GHSmoothnessMetrics.Analyze(records, records.Length, null, 0,
+                displayed, out displayedCount);
+            int hitch = -1;
+            for (int j = 1; j < displayedCount && hitch < 0; j++)
+            {
+                if (displayed[j].IsHitch)
+                    hitch = j;
+            }
+            Assert.True(hitch > 0, "no hitch");
+            double gapMs = displayed[hitch].GapTicks * 1000.0 / Stopwatch.Frequency;
+            string gapText = "gap " + gapMs.ToString("0.00", CultureInfo.InvariantCulture) + " ms";
+            long[] markFrameIds = { records[480].FrameId };
+            long[] markTicks = { new DateTime(2026, 9, 26, 12, 0, 0, DateTimeKind.Utc).Ticks };
+
+            string report = GHPerformanceTextReport.RecentHitchesReport(records, records.Length, displayed,
+                displayedCount, summary, markFrameIds, markTicks, 1);
+
+            string marked = Section(report, "Marked moments:", "Worst hitches");
+            Assert.Contains(gapText, marked);
+            Assert.DoesNotContain("no hitch from", marked);
+        }
+
+        [Fact]
+        public void RecentHitchesReport_HitchSecondsAfterTheMark_IsNotListed()
+        {
+            /* Ten seconds with the stall at 6 s, marked at 4 s */
+            GHFrameRecord[] records = StallTimeline(600, 360);
+            GHDisplayedFrame[] displayed = new GHDisplayedFrame[records.Length];
+            int displayedCount;
+            GHSmoothnessSummary summary = GHSmoothnessMetrics.Analyze(records, records.Length, null, 0,
+                displayed, out displayedCount);
+            Assert.True(summary.HitchCount >= 1, "hitches " + summary.HitchCount);
+            long[] markFrameIds = { records[240].FrameId };
+            long[] markTicks = { new DateTime(2026, 9, 26, 12, 0, 0, DateTimeKind.Utc).Ticks };
+
+            string report = GHPerformanceTextReport.RecentHitchesReport(records, records.Length, displayed,
+                displayedCount, summary, markFrameIds, markTicks, 1);
+
+            Assert.Contains("no hitch from 5 s before to 0.5 s after", Section(report, "Marked moments:", "Worst hitches"));
         }
     }
 }

@@ -280,8 +280,7 @@ namespace GnollHackX.Pages.Game
         {
             GHApp.PlayButtonClickedSound();
             btnDevDumpFrameLog.IsVisible = FrameTimeProfiler.IsEnabled;
-            btnDevMarkStutter.IsVisible = FrameTimeProfiler.IsEnabled;
-            btnDevAnalyzeRecent.IsVisible = FrameTimeProfiler.IsEnabled;
+            btnDevAnalyzeHitches.IsVisible = FrameTimeProfiler.IsEnabled;
             btnDevTestPerformance.IsVisible = FrameTimeProfiler.IsEnabled;
             btnDevAiSnapshot.IsVisible = GHApp.DebugLogMessages;
             DeveloperPopupGrid.IsEnabled = true;
@@ -500,23 +499,7 @@ namespace GnollHackX.Pages.Game
             DeveloperPopupGrid.IsEnabled = true;
         }
 
-        private async void btnMarkStutter_Clicked(object sender, EventArgs e)
-        {
-            DeveloperPopupGrid.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-
-            bool ok = GHFrameTimeline.MarkUser(_openedAtFrameId);
-            if (ok)
-                await GHApp.DisplayMessageBox(this, "Stutter Marked",
-                    "Marked the frame shown when this menu was opened. Dump Frame Log or Analyze Recent to see it.", "OK");
-            else
-                await GHApp.DisplayMessageBox(this, "Stutter Not Marked",
-                    "Could not mark: the frame timeline is off or no longer holds that frame.", "OK");
-
-            DeveloperPopupGrid.IsEnabled = true;
-        }
-
-        private async void btnAnalyzeRecent_Clicked(object sender, EventArgs e)
+        private async void btnAnalyzeHitches_Clicked(object sender, EventArgs e)
         {
             DeveloperPopupGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -768,14 +751,9 @@ namespace GnollHackX.Pages.Game
                                     btnDumpFrameLog_Clicked(btnDevDumpFrameLog, EventArgs.Empty);
                                 handled = true;
                                 break;
-                            case (int)'k':
-                                if (btnDevMarkStutter.IsEnabled && btnDevMarkStutter.IsVisible)
-                                    btnMarkStutter_Clicked(btnDevMarkStutter, EventArgs.Empty);
-                                handled = true;
-                                break;
-                            case (int)'r':
-                                if (btnDevAnalyzeRecent.IsEnabled && btnDevAnalyzeRecent.IsVisible)
-                                    btnAnalyzeRecent_Clicked(btnDevAnalyzeRecent, EventArgs.Empty);
+                            case (int)'h':
+                                if (btnDevAnalyzeHitches.IsEnabled && btnDevAnalyzeHitches.IsVisible)
+                                    btnAnalyzeHitches_Clicked(btnDevAnalyzeHitches, EventArgs.Empty);
                                 handled = true;
                                 break;
                             case (int)'p':

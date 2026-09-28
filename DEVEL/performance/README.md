@@ -110,9 +110,11 @@ of the game menu is shown in developer mode; its frame tools only while the prof
 
 | Tool | What it does |
 |------|--------------|
-| **Game menu > Developer > Mark Stutter** | Marks the frame that was on screen when the game menu was opened; reports a failure when the frame ring no longer holds it |
 | **F8** (Windows) | Marks the current frame, in play and in replays. With screen logging on, the screen log gets `MARK frame N` (or `MARK failed for frame N`) |
-| **Game menu > Developer > Analyze Recent** | A plain-text report of the last 30 s before the game menu was opened, shown in the viewer and written to `archive/recent_hitches.txt`: displayed FPS, hitch ratio and GC of the span; **Marked moments**, each mark with the hitches displayed within 3 s either side of it (the ten largest when there are more); the ten worst hitches, each with its cause, the draw and flush times of the tick that ended it, the request time and collections in the gap, and its content events; and the hitch causes of the span |
+| **Game menu > Developer > Analyze Hitches** | A plain-text report of the last 30 s before the game menu was opened, shown in the viewer and written to `archive/recent_hitches.txt`: displayed FPS, hitch ratio and GC of the span; **Marked moments**, each mark with the hitches displayed from 5 s before to 0.5 s after it (the ten largest when there are more); the ten worst hitches, each with its cause, the draw and flush times of the tick that ended it, the request time and collections in the gap, and its content events; and the hitch causes of the span |
+
+The report ends at the frame on screen when the game menu was opened, so on a touch device,
+open the game menu right after a stutter and use Analyze Hitches.
 
 A mark sets the `UserMark` flag on the frame's record and enters a ring of the last 32 marks.
 Every saved run record (Dump Frame Log, a window command, a suite run) lists the marks in its
@@ -120,8 +122,8 @@ range as `marks`: frame id, UTC time, and milliseconds from the first saved tick
 timeline CSV's `# OriginUtc` header line gives the wall-clock time of the tick its millisecond
 columns count from, so a row can be matched with a screen recording or the screen log.
 Offline, the `smoothness` report has a **Marked moments** section: for each mark (from
-`marks`, or from the `UserMark` flags when the record has none), the hitches displayed within
-3 s of it and the stage timeline of the nearest one.
+`marks`, or from the `UserMark` flags when the record has none), the hitches displayed from
+5 s before to 0.5 s after it and the stage timeline of the nearest one.
 
 ## Metrics
 

@@ -262,8 +262,8 @@ namespace GnollHackX.Performance
 
         /* Fixed report texts */
         public const string HealthyConclusion = "No problem measured now.";
-        public const string IntermittentAdvice = "If the stutter is intermittent, use Mark Stutter when it happens, then "
-            + "Analyze Recent, or run this test again while it is happening.";
+        public const string IntermittentAdvice = "If the stutter is intermittent, open the game menu right after it "
+            + "and use Analyze Hitches, or run this test again while it is happening.";
         public const string EliminationConclusion = "No external or configuration cause found: the slowdown is most likely "
             + "inside the game (this build, this level's content, or a game setting). Compare with a report from an "
             + "earlier build.";

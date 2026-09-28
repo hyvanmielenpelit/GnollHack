@@ -46,11 +46,12 @@ namespace GnollHack.PerformanceAnalyzer.Commands
 
        Moments the user marked as felt stutters come from the run record's "marks" array,
        or, when it has none, from the frames whose flags carry UserMark; the report lists
-       the hitches displayed within MarkWindowMs of each. */
+       the hitches displayed from MarkLookbackMs before to MarkLookaheadMs after each. */
     public static class SmoothnessCommand
     {
         public const int WorstHitchCount = 10;
-        public const double MarkWindowMs = 3000;
+        public const double MarkLookbackMs = 5000;
+        public const double MarkLookaheadMs = 500;
         private const int MaxStageRows = 16;
 
         public static int Run(Args a)
@@ -539,8 +540,8 @@ namespace GnollHack.PerformanceAnalyzer.Commands
         }
 
         /* One subsection per mark: its wall-clock and capture times, a row per hitch
-           displayed within MarkWindowMs of it, and the stage timeline of the nearest one.
-           Nothing is written when the run has no marks. */
+           displayed from MarkLookbackMs before to MarkLookaheadMs after it, and the stage
+           timeline of the nearest one. Nothing is written when the run has no marks. */
         private static void WriteMarkedMoments(StringBuilder md, SmoothnessResult res)
         {
             if (res.Marks.Count == 0)
@@ -551,11 +552,12 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             Dictionary<int, GHDisplayedFrame> byRecord = DisplayedByRecord(res);
             Dictionary<long, string> jank = JankByFrameId(res);
 
+            string windowText = F(MarkLookbackMs / 1000.0, 0) + " s before to " + F(MarkLookaheadMs / 1000.0, 1) + " s after";
             md.AppendLine("## Marked moments");
             md.AppendLine();
             md.AppendLine(res.Marks.Count + (res.Marks.Count == 1 ? " moment" : " moments") + " marked as a felt stutter, from " + res.MarkSource + ". "
                 + "Times are ms since the first tick's callback start, as in the worst-hitch tables; a mark sits at its frame's callback start. "
-                + "Each table lists the hitches displayed within " + F(MarkWindowMs / 1000.0, 0) + " s of the mark; the stage timeline of the nearest one follows it. "
+                + "Each table lists the hitches displayed from " + windowText + " the mark; the stage timeline of the nearest one follows it. "
                 + "Local times are in the time zone of the machine that ran the analyzer.");
             md.AppendLine();
             int k = 0;
@@ -578,12 +580,12 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                 foreach (int j in hitches)
                 {
                     double at = t.Ms(res.Displayed[j].DisplayedAtTicks);
-                    if (!double.IsNaN(at) && Math.Abs(at - m.Ms) <= MarkWindowMs)
+                    if (!double.IsNaN(at) && at - m.Ms >= -MarkLookbackMs && at - m.Ms <= MarkLookaheadMs)
                         near.Add(j);
                 }
                 if (near.Count == 0)
                 {
-                    md.AppendLine("No hitches within " + F(MarkWindowMs / 1000.0, 0) + " s.");
+                    md.AppendLine("No hitches from " + windowText + ".");
                     md.AppendLine();
                     continue;
                 }

@@ -886,7 +886,8 @@ namespace GnollHackX.Performance
 
         private const int WorstHitchCount = 10;
         private const int MarkHitchLimit = 10;
-        private const int MarkWindowSeconds = 3;
+        private const double MarkLookbackSeconds = 5.0;
+        private const double MarkLookaheadSeconds = 0.5;
         private const string DetailIndent = "     ";
 
         private static double TicksToMs(long ticks)
@@ -954,8 +955,9 @@ namespace GnollHackX.Performance
         }
 
         /* For each mark, oldest first: its local time, its time in the span, and the
-           hitches displayed within MarkWindowSeconds of the marked tick's callback start;
-           past MarkHitchLimit of them, the largest are listed in time order */
+           hitches displayed from MarkLookbackSeconds before to MarkLookaheadSeconds after
+           the marked tick's callback start; past MarkHitchLimit of them, the largest are
+           listed in time order */
         private static void AppendMarkedMoments(StringBuilder sb, GHFrameRecord[] records, int recordCount,
             GHDisplayedFrame[] displayed, int displayedCount, long spanEnd,
             long[] markFrameIds, long[] markUtcTicks, int markCount)
@@ -966,8 +968,10 @@ namespace GnollHackX.Performance
                 Line(sb, "  none");
                 return;
             }
-            long window = MarkWindowSeconds * Stopwatch.Frequency;
-            string windowText = MarkWindowSeconds.ToString(CultureInfo.InvariantCulture) + " s";
+            long lookback = (long)(MarkLookbackSeconds * Stopwatch.Frequency);
+            long lookahead = (long)(MarkLookaheadSeconds * Stopwatch.Frequency);
+            string windowText = MarkLookbackSeconds.ToString(CultureInfo.InvariantCulture) + " s before to "
+                + MarkLookaheadSeconds.ToString(CultureInfo.InvariantCulture) + " s after";
             List<int> near = new List<int>();
             for (int i = 0; i < markCount; i++)
             {
@@ -986,13 +990,14 @@ namespace GnollHackX.Performance
                 near.Clear();
                 for (int j = 1; j < displayedCount; j++)
                 {
+                    long fromMark = displayed[j].DisplayedAtTicks - markTicks;
                     if (IsReportableHitch(displayed, j, recordCount)
-                        && Math.Abs(displayed[j].DisplayedAtTicks - markTicks) <= window)
+                        && fromMark >= -lookback && fromMark <= lookahead)
                         near.Add(j);
                 }
                 if (near.Count == 0)
                 {
-                    Line(sb, "    no hitch within " + windowText);
+                    Line(sb, "    no hitch from " + windowText);
                     continue;
                 }
                 int more = 0;
@@ -1007,7 +1012,7 @@ namespace GnollHackX.Performance
                     Line(sb, Truncate("    " + HitchText(displayed[near[k]], spanEnd), MaxLineWidth));
                 if (more > 0)
                     Line(sb, "    ... and " + more.ToString(CultureInfo.InvariantCulture)
-                        + " smaller hitch(es) within " + windowText);
+                        + " smaller hitch(es) from " + windowText);
             }
         }
 
