@@ -259,6 +259,7 @@
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceRunRecord.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceStatistics.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteRunner.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteId.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteStore.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceTextReport.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPresentFeedback.cs" />
@@ -520,6 +521,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceRunRecord.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceStatistics.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteRunner.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteId.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteStore.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceTextReport.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPresentFeedback.cs" />

@@ -650,8 +650,11 @@ the archive's performance files and, on Android, the external `performance` expo
 
 The results list shows each suite's date, scenario, label, used runs, median hitch ratio and
 size, tagged `baseline`, `aborted`, `imported`, `bg` (a run was excluded for background
-load) or `env changed` (the environment fingerprint changed during the suite). A used run is
-a measured run with a summary and no exclusion reason.
+load), `env changed` (the environment fingerprint changed during the suite) or `invalid id`
+(the `suiteId` in its `suite.json` differs from its folder name; such a suite can only be
+deleted). A used run is a measured run with a summary and no exclusion reason. A suite's id
+is its folder name, and a folder whose name is not letters, digits, `_` and `-` is not
+listed.
 
 | Button | Action |
 |--------|--------|
@@ -696,8 +699,9 @@ causes (see [What the reports show](#what-the-reports-show)).
 `archive/GnollHack_Performance_<device model>_<timestamp>.zip`, each suite's folder with its
 `report.txt` rewritten and, when the suite compares with its baseline, a `comparison.txt`,
 and hands the zip to the system share sheet. **Import Results** picks a zip and checks every
-top-level folder before extracting anything: a `suite.json` with a `manifestVersion`, and
-every run file it names present with schema version 2. Valid folders move into the store,
+top-level folder before extracting anything: a `suite.json` with a `manifestVersion` and a
+`suiteId` equal to the folder name, of letters, digits, `_` and `-` only, and every run file
+it names present with schema version 2. Valid folders move into the store,
 tagged `imported`; a suite whose id is already present is skipped, never overwritten; the
 others are reported with the reason.
 

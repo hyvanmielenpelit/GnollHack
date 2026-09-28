@@ -617,6 +617,8 @@ namespace GnollHackX.Pages.MainScreen
             item.SizeText = FormatSize(info.SizeBytes);
 
             List<string> markers = new List<string>();
+            if (info.IdMismatch)
+                markers.Add("invalid id");
             if (info.IsBaseline)
                 markers.Add("baseline");
             if (!string.IsNullOrEmpty(info.Status) && info.Status.IndexOf("abort", StringComparison.OrdinalIgnoreCase) >= 0)

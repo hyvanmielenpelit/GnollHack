@@ -36,6 +36,7 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHBackgroundLoad.cs" Link="Shared\GHBackgroundLoad.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHEnvironmentFingerprint.cs" Link="Shared\GHEnvironmentFingerprint.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceDiagnosis.cs" Link="Shared\GHPerformanceDiagnosis.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteId.cs" Link="Shared\GHPerformanceSuiteId.cs" />
   </ItemGroup>
 
 </Project>

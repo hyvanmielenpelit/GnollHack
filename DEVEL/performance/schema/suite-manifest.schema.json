@@ -7,7 +7,7 @@
   "required": ["manifestVersion", "suiteId", "status", "origin", "startedUtc", "setup", "environment", "runs"],
   "properties": {
     "manifestVersion": { "type": "integer", "const": 1 },
-    "suiteId": { "type": "string", "description": "yyyyMMdd_HHmmss_<scenario>_<device model>, in UTC; a numeric suffix is added on collision" },
+    "suiteId": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$", "maxLength": 128, "description": "yyyyMMdd_HHmmss_<scenario>_<device model>, in UTC; a numeric suffix is added on collision. Equal to the suite's folder name" },
     "status": { "type": "string", "enum": ["running", "complete", "aborted"] },
     "abortReason": { "type": ["string", "null"] },
     "origin": { "type": "string", "enum": ["local", "imported"] },

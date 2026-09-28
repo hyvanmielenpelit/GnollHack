@@ -50,6 +50,7 @@ namespace GnollHackX.Performance
         public bool IsBaseline;                   /* the baseline label for this key equals ArmLabel */
         public bool HasBackgroundExclusion;       /* a run was excluded for background load */
         public bool EnvironmentChanged;           /* the environment changed during the suite */
+        public bool IdMismatch;                   /* the manifest's suiteId differs from the folder name, SuiteId */
     }
 
     /* What ImportZip hands back: the suite ids it moved into the store, the ones already
@@ -74,6 +75,10 @@ namespace GnollHackX.Performance
        same convention GHPerformanceRunRecord.R uses for the per-run JSON, so the file
        never carries Newtonsoft's non-standard NaN token; the exception is a run's
        "background" object, where null marks a signal the platform did not report.
+
+       A suite's id is its folder name, and every suite path is resolved through
+       GHPerformanceSuiteId; a suite whose manifest suiteId differs from its folder is
+       listed with IdMismatch set and can only be deleted.
 
        Every public member catches its own exceptions and fails soft (null, false, or an
        empty result) rather than throwing; manifest reads, edits and writes are serialized
@@ -158,9 +163,11 @@ namespace GnollHackX.Performance
             }
         }
 
+        /* SuitesDirectory/suiteId; null when suiteId is not a valid suite id
+           (GHPerformanceSuiteId.IsValid) */
         public static string SuiteDirectory(string suiteId)
         {
-            return Path.Combine(SuitesDirectory, suiteId ?? "");
+            return GHPerformanceSuiteId.ResolveDirectory(SuitesDirectory, suiteId);
         }
 
         /* Lowercase hex SHA-256 of the file at path; null on any failure */
@@ -198,6 +205,8 @@ namespace GnollHackX.Performance
                 DateTime startedUtc = DateTime.UtcNow;
                 string suiteId = AllocateSuiteId(startedUtc, setup.Scenario, facts.DeviceModel);
                 string dir = SuiteDirectory(suiteId);
+                if (dir == null)
+                    return null;
                 GHApp.CheckCreateDirectory(dir);
 
                 ManifestJson manifest = new ManifestJson();
@@ -235,8 +244,8 @@ namespace GnollHackX.Performance
                 GHPerformanceEnvironmentFacts facts = GHPerformanceEnvironment.Capture();
                 lock (_lock)
                 {
-                    string dir = SuiteDirectory(suiteId);
-                    ManifestJson manifest = ReadManifest(dir);
+                    string dir;
+                    ManifestJson manifest = ReadSuiteManifest(suiteId, out dir);
                     if (manifest == null)
                         return;
                     manifest.Environment = BuildEnvironmentJson(facts);
@@ -260,8 +269,8 @@ namespace GnollHackX.Performance
             {
                 lock (_lock)
                 {
-                    string dir = SuiteDirectory(suiteId);
-                    ManifestJson manifest = ReadManifest(dir);
+                    string dir;
+                    ManifestJson manifest = ReadSuiteManifest(suiteId, out dir);
                     if (manifest == null)
                         return;
 
@@ -333,12 +342,12 @@ namespace GnollHackX.Performance
             {
                 lock (_lock)
                 {
-                    string dir = SuiteDirectory(suiteId);
-                    ManifestJson manifest = ReadManifest(dir);
+                    string dir;
+                    ManifestJson manifest = ReadSuiteManifest(suiteId, out dir);
                     if (manifest == null)
                         return;
 
-                    manifest.Status = !string.IsNullOrEmpty(status) ? status : StatusComplete;
+                    manifest.Status =!string.IsNullOrEmpty(status) ? status : StatusComplete;
                     manifest.AbortReason = abortReason;
                     manifest.EndedUtc = ToIso(DateTime.UtcNow);
 
@@ -405,15 +414,16 @@ namespace GnollHackX.Performance
         }
 
         /* The manifest mapped to the shape the text report and the comparison read; null
-           when the suite cannot be read. */
+           when the suite cannot be read or its manifest suiteId differs from suiteId. */
         public static GHReportSuite LoadReportSuite(string suiteId)
         {
             try
             {
                 ManifestJson manifest;
+                string dir;
                 lock (_lock)
                 {
-                    manifest = ReadManifest(SuiteDirectory(suiteId));
+                    manifest = ReadSuiteManifest(suiteId, out dir);
                 }
                 return manifest != null ? MapToReportSuite(manifest) : null;
             }
@@ -423,31 +433,33 @@ namespace GnollHackX.Performance
             }
         }
 
+        /* null when suiteId is not a valid suite id */
         public static string ReportPath(string suiteId)
         {
-            return Path.Combine(SuiteDirectory(suiteId), ReportFileName);
+            string dir = SuiteDirectory(suiteId);
+            return dir != null ? Path.Combine(dir, ReportFileName) : null;
         }
 
         /* Renders and writes report.txt for the suite, with the previous comparable suite
            (FindPreviousSuite) when there is one; returns its path, or null on failure
-           (including when the suite cannot be loaded). */
+           (including when the suite cannot be loaded or its manifest suiteId differs). */
         public static string WriteReport(string suiteId)
         {
             try
             {
                 ManifestJson manifest;
+                string dir;
                 lock (_lock)
                 {
-                    manifest = ReadManifest(SuiteDirectory(suiteId));
+                    manifest = ReadSuiteManifest(suiteId, out dir);
                 }
                 if (manifest == null)
                     return null;
                 GHReportSuite suite = MapToReportSuite(manifest);
                 suite.Previous = FindPreviousSuite(suite, manifest.ComparabilityKey);
                 string text = GHPerformanceTextReport.SuiteReport(suite);
-                string path = ReportPath(suiteId);
-                string dir = Path.GetDirectoryName(path);
-                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                string path = Path.Combine(dir, ReportFileName);
+                if (!Directory.Exists(dir))
                     GHApp.CheckCreateDirectory(dir);
                 File.WriteAllText(path, text, new UTF8Encoding(false));
                 return path;
@@ -460,15 +472,16 @@ namespace GnollHackX.Performance
 
         /* Records this suite's arm label as the baseline for its comparability key.
            False when the suite has no manifest, no setup or no comparabilityKey yet
-           (i.e. it has not been finished). */
+           (i.e. it has not been finished), or when its manifest suiteId differs. */
         public static bool SetBaseline(string suiteId)
         {
             try
             {
                 ManifestJson manifest;
+                string dir;
                 lock (_lock)
                 {
-                    manifest = ReadManifest(SuiteDirectory(suiteId));
+                    manifest = ReadSuiteManifest(suiteId, out dir);
                 }
                 if (manifest == null || manifest.Setup == null || string.IsNullOrEmpty(manifest.ComparabilityKey))
                     return false;
@@ -525,9 +538,10 @@ namespace GnollHackX.Performance
             try
             {
                 ManifestJson manifest;
+                string dir;
                 lock (_lock)
                 {
-                    manifest = ReadManifest(SuiteDirectory(suiteId));
+                    manifest = ReadSuiteManifest(suiteId, out dir);
                 }
                 if (manifest == null || manifest.Setup == null)
                 {
@@ -617,7 +631,7 @@ namespace GnollHackX.Performance
                 lock (_lock)
                 {
                     string dir = SuiteDirectory(suiteId);
-                    if (!Directory.Exists(dir))
+                    if (dir == null || !Directory.Exists(dir))
                         return false;
                     Directory.Delete(dir, true);
                     return true;
@@ -722,8 +736,13 @@ namespace GnollHackX.Performance
                     for (int i = 0; i < suiteIds.Count; i++)
                     {
                         string suiteId = suiteIds[i];
-                        string dir = SuiteDirectory(suiteId);
-                        if (!Directory.Exists(dir))
+                        string dir;
+                        ManifestJson sharedManifest;
+                        lock (_lock)
+                        {
+                            sharedManifest = ReadSuiteManifest(suiteId, out dir);
+                        }
+                        if (sharedManifest == null || !Directory.Exists(dir))
                             continue;
 
                         WriteReport(suiteId);
@@ -810,6 +829,11 @@ namespace GnollHackX.Performance
                     string folder = validFolders[i];
                     string stagedFolderPath = Path.Combine(stagingDir, folder);
                     string targetPath = SuiteDirectory(folder);
+                    if (targetPath == null)
+                    {
+                        summary.Errors.Add(folder + ": invalid suite id");
+                        continue;
+                    }
                     try
                     {
                         if (Directory.Exists(targetPath))
@@ -1001,10 +1025,15 @@ namespace GnollHackX.Performance
 
         /* ---- reading suites back out ---- */
 
+        /* The suite in dir, identified by its folder name; null when that name is not a
+           valid suite id or the manifest cannot be read */
         private static GHPerformanceSuiteInfo TryBuildSuiteInfo(string dir)
         {
             try
             {
+                string folder = Path.GetFileName(dir);
+                if (!GHPerformanceSuiteId.IsValid(folder))
+                    return null;
                 ManifestJson manifest;
                 lock (_lock)
                 {
@@ -1014,7 +1043,8 @@ namespace GnollHackX.Performance
                     return null;
 
                 GHPerformanceSuiteInfo info = new GHPerformanceSuiteInfo();
-                info.SuiteId = manifest.SuiteId;
+                info.SuiteId = folder;
+                info.IdMismatch = !string.Equals(manifest.SuiteId, folder, StringComparison.Ordinal);
                 info.Directory = dir;
                 info.Scenario = manifest.Setup != null ? manifest.Setup.Scenario : null;
                 info.ArmLabel = manifest.Setup != null ? manifest.Setup.ArmLabel : null;
@@ -1044,7 +1074,8 @@ namespace GnollHackX.Performance
                 info.RunsUsed = used;
                 info.MedianHitchRatioMsPerSec = Median(hitch);
                 info.SizeBytes = DirectorySizeBytes(dir);
-                info.IsBaseline = !string.IsNullOrEmpty(info.ComparabilityKey) && !string.IsNullOrEmpty(info.ArmLabel)
+                info.IsBaseline = !info.IdMismatch
+                    && !string.IsNullOrEmpty(info.ComparabilityKey) && !string.IsNullOrEmpty(info.ArmLabel)
                     && string.Equals(GetBaselineLabel(info.ComparabilityKey), info.ArmLabel, StringComparison.Ordinal);
                 return info;
             }
@@ -1478,8 +1509,9 @@ namespace GnollHackX.Performance
             return true;
         }
 
-        /* Validates one folder's suite.json (present, parses, carries manifestVersion)
-           and every runFile it names (present in the same folder, parses, schemaVersion
+        /* Validates one folder's suite.json (present, parses, carries manifestVersion, and
+           a suiteId equal to the folder name, which must be a valid suite id) and every
+           runFile it names (present in the same folder, parses, schemaVersion
            equal to GHPerformanceRunRecord.CurrentSchemaVersion), without extracting
            anything. reason is set only on failure. */
         private static bool ValidateFolderManifest(string zipPath, string folder, List<string> files, out string reason)
@@ -1528,7 +1560,13 @@ namespace GnollHackX.Performance
                         reason = ManifestFileName + " does not match the expected shape";
                         return false;
                     }
-                    if (manifest == null || manifest.Runs == null)
+                    if (!GHPerformanceSuiteId.MatchesFolder(manifest != null ? manifest.SuiteId : null, folder))
+                    {
+                        reason = GHPerformanceSuiteId.IsValid(folder) ? "suiteId in " + ManifestFileName
+                            + " does not match the folder name" : "the folder name is not a valid suite id";
+                        return false;
+                    }
+                    if (manifest.Runs == null)
                         return true;
 
                     for (int i = 0; i < manifest.Runs.Count; i++)
@@ -1636,6 +1674,20 @@ namespace GnollHackX.Performance
         private static ManifestJson ReadManifest(string dir)
         {
             return ReadManifestFromPath(Path.Combine(dir, ManifestFileName));
+        }
+
+        /* The manifest of the suite whose folder is suiteId, with dir set to that folder;
+           null (dir null too when the id is not valid) when the manifest cannot be read or
+           its suiteId differs from the folder name */
+        private static ManifestJson ReadSuiteManifest(string suiteId, out string dir)
+        {
+            dir = SuiteDirectory(suiteId);
+            if (dir == null)
+                return null;
+            ManifestJson manifest = ReadManifest(dir);
+            if (manifest == null || !string.Equals(manifest.SuiteId, suiteId, StringComparison.Ordinal))
+                return null;
+            return manifest;
         }
 
         private static ManifestJson ReadManifestFromPath(string path)
