@@ -46,9 +46,12 @@ namespace GnollHackX.UnitTests
             public long NextVsync = 1000 * F;
             public long FrameId = 0;
 
-            /* One display callback at the next vsync of a panel with the given period */
+            /* One display callback at the next vsync of a panel with the given period. A
+               non-negative swapMs puts the paint inside the callback, which then ends that
+               long after the flush, as a Windows GL buffer swap does. */
             public int Tick(long periodTicks, int assumedHz, int targetFps, GHPacingDecision pacing, bool paintOnUi,
-                            double paintMs = 3.0, double flushMs = 1.0, double callbackLateMs = 0.2)
+                            double paintMs = 3.0, double flushMs = 1.0, double callbackLateMs = 0.2,
+                            double swapMs = -1.0)
             {
                 GHFrameRecord r = new GHFrameRecord();
                 r.FrameId = ++FrameId;
@@ -76,6 +79,8 @@ namespace GnollHackX.UnitTests
                     r.FlushEndTicks = r.DrawEndTicks + Ms(flushMs);
                     r.PaintedMainCounter = MainCounter;
                     r.PaintedGeneralCounter = MainCounter / 2;
+                    if (swapMs >= 0)
+                        r.CallbackEndTicks = r.FlushEndTicks + Ms(swapMs);
                 }
                 Records.Add(r);
                 NextVsync += periodTicks;
@@ -736,6 +741,32 @@ namespace GnollHackX.UnitTests
                 judged++;
             }
             Assert.True(judged >= 5, "judged " + judged);
+        }
+
+        /* Windows GL: the paint and SwapBuffers run inside the display callback, and the swap
+           blocks on the GPU; the late callbacks that follow are the GPU's, not the framework's */
+        [Fact]
+        public void InlineSwapWait_IsGpuNotFrameworkCadence()
+        {
+            Timeline t = new Timeline();
+            long period = F / 120;
+            long gridOrigin = t.NextVsync;
+            for (int i = 0; i < 150; i++)
+            {
+                int idx = t.Tick(period, 120, 60, GHPacingDecision.RenderedCatchUp, true, 1.5, 0.5, 0.2, 18.0);
+                /* The next callback comes at the first vsync after this one returns */
+                long end = t.Records[idx].CallbackEndTicks;
+                t.NextVsync = gridOrigin + ((end - gridOrigin) / period + 1) * period;
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.True(Math.Abs(GHSmoothnessMetrics.SwapWaitTicks(t.Records[10]) - Ms(18.0)) <= 1);
+            Assert.True(s.HitchCount >= 20, "hitches " + s.HitchCount);
+            Assert.Equal(GHHitchCause.Gpu, DominantCause(s));
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.FrameworkCadence]);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadLate]);
         }
 
         /* A frame measured on screen later than the vsync it was ready for is the

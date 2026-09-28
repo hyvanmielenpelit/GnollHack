@@ -609,6 +609,19 @@ namespace GnollHackX.Performance
             return GHPerformanceStatistics.Percentile(a, p);
         }
 
+        /* Time the UI thread spent in the display callback after the flush, i.e. in the
+           platform's buffer swap, when the paint ran inside that callback (Windows GL);
+           0 when the paint ran outside it */
+        public static long SwapWaitTicks(GHFrameRecord r)
+        {
+            if (!r.PaintOnUiThread || r.CallbackStartTicks == 0 || r.CallbackEndTicks == 0
+                || r.PaintStartTicks == 0 || r.FlushEndTicks == 0)
+                return 0;
+            if (r.PaintStartTicks < r.CallbackStartTicks || r.FlushEndTicks > r.CallbackEndTicks)
+                return 0;
+            return r.CallbackEndTicks - r.FlushEndTicks;
+        }
+
         /* Charges the gap before a late or uneven frame to the first stage, in pipeline
            order, that exceeded its budget. prevIdx and curIdx are the records of the
            displayed frames on either side of the gap; n is the number of records.
@@ -642,10 +655,11 @@ namespace GnollHackX.Performance
             }
 
             /* 2. UI thread: a missed callback or a callback well after its vsync. When the
-               UI thread was busy painting the map across that vsync, the paint is the
-               cause, not the thread; when it spent more than half a refresh handling game
-               requests just before the late callback, the requests are, even with a
-               collection in the gap. A collection is the cause when it paused the process
+               UI thread was busy painting the map across that vsync, including a buffer
+               swap inside the callback, the paint is the cause, not the thread: the draw
+               is charged to the CPU, the flush and swap to the GPU. When it spent more
+               than half a refresh handling game requests just before the late callback,
+               the requests are, even with a collection in the gap. A collection is the cause when it paused the process
                for at least half a refresh in the gap (with pause data), or ran at all
                (without). With the thread not otherwise explained, a late callback while the
                callback period ran at 1.5 refreshes or more is the UI framework's cadence:
@@ -682,11 +696,12 @@ namespace GnollHackX.Performance
                     GHFrameRecord pr = records[k];
                     if (!pr.PaintOnUiThread || pr.PaintStartTicks == 0 || pr.FlushEndTicks == 0)
                         continue;
-                    if (pr.PaintStartTicks < deadline && pr.FlushEndTicks > missedVsync)
+                    long swap = SwapWaitTicks(pr);
+                    if (pr.PaintStartTicks < deadline && pr.FlushEndTicks + swap > missedVsync)
                     {
                         long draw = pr.DrawEndTicks != 0 ? pr.DrawEndTicks - pr.PaintStartTicks : 0;
                         long flush = pr.DrawEndTicks != 0 ? pr.FlushEndTicks - pr.DrawEndTicks : 0;
-                        ownPaint = flush > draw ? GHHitchCause.Gpu : GHHitchCause.PaintCpu;
+                        ownPaint = Math.Max(flush, swap) > draw ? GHHitchCause.Gpu : GHHitchCause.PaintCpu;
                     }
                 }
             }
@@ -754,6 +769,8 @@ namespace GnollHackX.Performance
                 if (r.PaintStartTicks != 0 && r.DrawEndTicks != 0 && r.DrawEndTicks - r.PaintStartTicks > targetPeriod * 3 / 4)
                     return GHHitchCause.PaintCpu;
                 if (r.DrawEndTicks != 0 && r.FlushEndTicks - r.DrawEndTicks > targetPeriod / 2)
+                    return GHHitchCause.Gpu;
+                if (SwapWaitTicks(r) > targetPeriod / 2)
                     return GHHitchCause.Gpu;
             }
             GHFrameRecord cr = records[curIdx];

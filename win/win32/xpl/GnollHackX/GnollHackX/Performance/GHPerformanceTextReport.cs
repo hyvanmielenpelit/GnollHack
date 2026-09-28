@@ -1042,7 +1042,7 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* Draw and flush time of the tick that ended a gap, the request work handled
+        /* Draw, flush and in-callback swap time of the tick that ended a gap, the request work handled
            during the gap, and whether a collection ran in it, with its pause time when
            the runtime reports one; the same derivations GHSmoothnessMetrics.Attribute uses */
         private static string StageText(GHFrameRecord[] records, int prevIdx, int curIdx, bool pauseAvailable)
@@ -1053,6 +1053,8 @@ namespace GnollHackX.Performance
                 ? Fmt(TicksToMs(r.DrawEndTicks - r.PaintStartTicks)) + " ms" : "n/a";
             string flush = r.DrawEndTicks != 0 && r.FlushEndTicks != 0
                 ? Fmt(TicksToMs(r.FlushEndTicks - r.DrawEndTicks)) + " ms" : "n/a";
+            long swapTicks = GHSmoothnessMetrics.SwapWaitTicks(r);
+            string swap = swapTicks > 0 ? Fmt(TicksToMs(swapTicks)) + " ms" : "n/a";
             long requestTicks = 0;
             for (int i = prevIdx + 1; i <= curIdx; i++)
                 requestTicks += records[i].RequestTicks;
@@ -1065,7 +1067,7 @@ namespace GnollHackX.Performance
                 gc = "yes (" + Fmt(TicksToMs(pauseTicks)) + " ms)";
             else
                 gc = "yes";
-            return "draw " + draw + "  flush " + flush + "  requests " + Fmt(TicksToMs(requestTicks)) + " ms"
+            return "draw " + draw + "  flush " + flush + "  swap " + swap + "  requests " + Fmt(TicksToMs(requestTicks)) + " ms"
                 + "  GC " + gc;
         }
 
