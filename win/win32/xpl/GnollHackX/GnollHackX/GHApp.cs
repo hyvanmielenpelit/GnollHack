@@ -12932,6 +12932,9 @@ namespace GnollHackX
         {
             ProcessPowerThrottling = 0x9
         }
+
+        [DllImport("winmm.dll")]
+        static extern uint timeBeginPeriod(uint uPeriod);
 #endif
         private static void SetProcessPriority()
         {
@@ -12958,6 +12961,17 @@ namespace GnollHackX
                         ref state,
                         (uint)Marshal.SizeOf<PROCESS_POWER_THROTTLING_STATE>());
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            /* When DCompositionWaitForCompositorClock fails, WinUI paces CompositionTarget.Rendering
+               with Sleep(16), which takes about 31 ms at the default 15.6 ms timer resolution */
+            try
+            {
+                timeBeginPeriod(1);
             }
             catch (Exception ex)
             {
