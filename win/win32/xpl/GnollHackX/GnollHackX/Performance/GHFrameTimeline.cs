@@ -44,6 +44,7 @@ namespace GnollHackX.Performance
         private static long _pendingPaintFrameId = 0;  /* invalidated, not yet picked up by a paint */
         private static long _lastPaintedFrameId = 0;
         private static long _currentPaintFrameId = 0;
+        private static long _deferredCadenceFrameId = 0;  /* painted inside the open callback; fed to the cadence monitor at its end */
         private static long _orphanPaintCount = 0;
         private static long _coalescedCount = 0;
 
@@ -185,6 +186,7 @@ namespace GnollHackX.Performance
             Interlocked.Exchange(ref _pendingPaintFrameId, 0);
             Interlocked.Exchange(ref _lastPaintedFrameId, 0);
             Interlocked.Exchange(ref _currentPaintFrameId, 0);
+            Interlocked.Exchange(ref _deferredCadenceFrameId, 0);
             Interlocked.Exchange(ref _orphanPaintCount, 0);
             Interlocked.Exchange(ref _coalescedCount, 0);
             _pendingVsyncTicks = 0;
@@ -483,6 +485,10 @@ namespace GnollHackX.Performance
                 return;
             _ring[idx].Pacing = decision;
             _ring[idx].CallbackEndTicks = Stopwatch.GetTimestamp();
+            if (Interlocked.CompareExchange(ref _deferredCadenceFrameId, 0, id) == id)
+                GHCadenceMonitor.OnPaintCompleted(_ring[idx].VsyncTicks, _ring[idx].RefreshPeriodTicks,
+                    _ring[idx].CallbackPeriodTicks, _ring[idx].CallbackEndTicks, _ring[idx].TargetFps,
+                    _ring[idx].PaintedMainCounter);
         }
 
         /* ---- Paint (paint thread) ---- */
@@ -604,9 +610,18 @@ namespace GnollHackX.Performance
             long previousGeneration = Interlocked.Exchange(ref _lastPaintedMapGeneration, paintedMapGeneration);
             if (previousGeneration >= 0 && paintedMapGeneration != previousGeneration)
                 _ring[idx].ContentEvents |= GHContentEvent.MapUpdate;
-            if (_ring[idx].Paint == GHPaintOutcome.Painted)
-                GHCadenceMonitor.OnPaintCompleted(_ring[idx].VsyncTicks, _ring[idx].RefreshPeriodTicks,
-                    _ring[idx].CallbackPeriodTicks, _ring[idx].FlushEndTicks, _ring[idx].TargetFps, paintedMainCounter);
+            if (_ring[idx].Paint != GHPaintOutcome.Painted)
+                return;
+            /* A paint inside the display callback is displayed after the buffer swap that follows
+               it, which only the end of the callback measures */
+            if (_ring[idx].PaintOnUiThread && _ring[idx].CallbackStartTicks != 0 && _ring[idx].CallbackEndTicks == 0
+                && frameId == Interlocked.Read(ref _lastFrameId))
+            {
+                Interlocked.Exchange(ref _deferredCadenceFrameId, frameId);
+                return;
+            }
+            GHCadenceMonitor.OnPaintCompleted(_ring[idx].VsyncTicks, _ring[idx].RefreshPeriodTicks,
+                _ring[idx].CallbackPeriodTicks, _ring[idx].FlushEndTicks, _ring[idx].TargetFps, paintedMainCounter);
         }
 
         /* ---- User marks (any thread) ---- */

@@ -115,6 +115,51 @@ namespace GnollHackX.UnitTests
             Assert.Equal(GHPaintOutcome.None, r[1].Paint);
         }
 
+        /* A paint inside the open callback reaches the cadence monitor when the callback ends,
+           after the buffer swap that follows the paint */
+        [Fact]
+        public void InlinePaint_FeedsTheCadenceMonitorAtCallbackEnd()
+        {
+            Restart();
+            GHFrameTimeline.SetPendingPlatformFrame(0, 0, 0, Frequency / 60);
+            GHFrameTimeline.BeginTick();
+            GHFrameTimeline.StampTarget(60, 60);
+            GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.Invalidated);
+            long painted = GHFrameTimeline.BeginPaint(true);
+            GHFrameTimeline.StampDrawEnd(painted);
+            GHFrameTimeline.EndPaint(painted, 1, 0, 0);
+            Assert.Equal(0, GHCadenceMonitor.LastReadyTicks);
+
+            /* Stands in for the swap */
+            long until = Stopwatch.GetTimestamp() + Frequency / 1000;
+            while (Stopwatch.GetTimestamp() < until)
+            {
+            }
+            GHFrameTimeline.EndTick(GHPacingDecision.Rendered);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(1, n);
+            Assert.Equal(r[0].CallbackEndTicks, GHCadenceMonitor.LastReadyTicks);
+            Assert.True(r[0].CallbackEndTicks > r[0].FlushEndTicks);
+        }
+
+        /* A paint outside a callback, e.g. on a GL thread, is fed at its flush end */
+        [Fact]
+        public void OffThreadPaint_FeedsTheCadenceMonitorAtFlushEnd()
+        {
+            Restart();
+            GHFrameTimeline.SetPendingPlatformFrame(0, 0, 0, Frequency / 60);
+            RenderedTick(1);
+            long painted = GHFrameTimeline.BeginPaint(false);
+            GHFrameTimeline.EndPaint(painted, 1, 0, 0);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(1, n);
+            Assert.Equal(r[0].FlushEndTicks, GHCadenceMonitor.LastReadyTicks);
+        }
+
         [Fact]
         public void RequestWork_IsAttachedToTheNextTick()
         {

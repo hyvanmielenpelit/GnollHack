@@ -811,9 +811,11 @@ namespace GnollHackX.Performance
         }
     }
 
-    /* Online estimate of what the display shows, fed from each completed paint, for the
-       dashboard and for cadence-change events. It uses the same display-time rule as
-       GHSmoothnessMetrics without the compositor refinement, over 250 ms buckets. A change
+    /* Online estimate of what the display shows, fed with each completed paint's ready
+       time (its flush end, or for a paint inside the display callback, the callback end
+       after its buffer swap), for the dashboard and for cadence-change events. It uses the
+       same display-time rule as GHSmoothnessMetrics without the compositor refinement, over
+       250 ms buckets. A change
        is reported when the displayed rate of the last second differs from that of the three
        seconds before by more than 10 % for a full second, when the refresh period moves by
        more than 5 % for a full second (REFRESH), or when the display callbacks arrive more
@@ -856,6 +858,7 @@ namespace GnollHackX.Performance
         private static double _hitchRatio = 0;
         private static double _pacingErrorRmsMs = 0;
         private static string _lastChange = "";
+        private static long _lastReadyTicks = 0;
 
         /* Receives one line per detected change, e.g. for the screen log */
         public static Action<string> ChangeLog = null;
@@ -864,6 +867,7 @@ namespace GnollHackX.Performance
         public static double HitchRatioMsPerSec { get { return _hitchRatio; } }
         public static double PacingErrorRmsMs { get { return _pacingErrorRmsMs; } }
         public static string LastChange { get { return _lastChange; } }
+        public static long LastReadyTicks { get { return _lastReadyTicks; } }   /* ready time of the latest paint fed in */
 
         public static void Reset()
         {
@@ -889,20 +893,22 @@ namespace GnollHackX.Performance
             _hitchRatio = 0;
             _pacingErrorRmsMs = 0;
             _lastChange = "";
+            _lastReadyTicks = 0;
         }
 
         public static void OnPaintCompleted(long vsyncTicks, long refreshPeriodTicks, long callbackPeriodTicks,
-                                            long flushEndTicks, int targetFps, long paintedMainCounter)
+                                            long readyTicks, int targetFps, long paintedMainCounter)
         {
-            if (flushEndTicks == 0 || refreshPeriodTicks <= 0)
+            if (readyTicks == 0 || refreshPeriodTicks <= 0)
                 return;
+            _lastReadyTicks = readyTicks;
             long freq = Stopwatch.Frequency;
-            long baseTime = vsyncTicks != 0 && vsyncTicks <= flushEndTicks ? vsyncTicks : flushEndTicks - refreshPeriodTicks;
-            long boundary = baseTime + ((flushEndTicks - baseTime) / refreshPeriodTicks + 1) * refreshPeriodTicks;
+            long baseTime = vsyncTicks != 0 && vsyncTicks <= readyTicks ? vsyncTicks : readyTicks - refreshPeriodTicks;
+            long boundary = baseTime + ((readyTicks - baseTime) / refreshPeriodTicks + 1) * refreshPeriodTicks;
             long target = targetFps > 0 ? freq / targetFps : refreshPeriodTicks;
 
             if (_bucketStart == 0)
-                _bucketStart = flushEndTicks;
+                _bucketStart = readyTicks;
 
             if (boundary > _lastBoundary)
             {
@@ -939,14 +945,14 @@ namespace GnollHackX.Performance
                 _lastCounter = paintedMainCounter;
             }
 
-            long elapsed = flushEndTicks - _bucketStart;
+            long elapsed = readyTicks - _bucketStart;
             if (elapsed >= freq / 4)
             {
                 double seconds = (double)elapsed / freq;
                 PushBucket(_bucketFrames / seconds, _bucketHitchMs / seconds,
                            _bucketErrCount > 0 ? Math.Sqrt(_bucketErrSq / _bucketErrCount) : 0,
                            refreshPeriodTicks, callbackPeriodTicks);
-                _bucketStart = flushEndTicks;
+                _bucketStart = readyTicks;
                 _bucketFrames = 0;
                 _bucketHitchMs = 0;
                 _bucketErrSq = 0;
