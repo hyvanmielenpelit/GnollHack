@@ -32,15 +32,16 @@ namespace GnollHackX.Performance
             the menu.
          3. Settles for SettleSeconds, so the menu's pause mark and collection fall
             outside the window; starts the per-process interval on the thread pool,
-            waits for its begin collect at most ProcessIntervalBeginWaitMs, then opens
-            the measurement window, which on Windows also starts the render adapter
-            probe (GHPerformanceRunRecord.TryBeginWindow). A window the window gate
-            refuses aborts the test with "another measurement is in progress".
+            waits for its begin collect at most ProcessIntervalBeginWaitMs, captures the
+            scene (level, zoom, map font), then opens the measurement window, which on
+            Windows also starts the render adapter probe
+            (GHPerformanceRunRecord.TryBeginWindow). A window the window gate refuses
+            aborts the test with "another measurement is in progress".
          4. Measures for WindowSeconds, polling every 100 ms for an abort: the app went
-            to the background, a page opened over the game page, or the game ended.
-            An aborted window is discarded unsaved and no report is written; the
-            report retention still runs, deleting folders left by a test the app was
-            killed during.
+            to the background, a page opened over the game page, a menu or window
+            opened over the map during the window, or the game ended. An aborted
+            window is discarded unsaved and no report is written; the report retention
+            still runs, deleting folders left by a test the app was killed during.
          5. Saves the window into ReportsDirectory/<stamp>/, which on Windows also ends
             the render adapter probe; reads what must be read on the UI thread (GPU
             context, profiler statistics, recent hitches), then on the thread pool reads
@@ -246,6 +247,7 @@ namespace GnollHackX.Performance
             await WaitUntilAsync(s, delegate { return begin.IsCompleted; },
                 BeginPollMs, GHSystemLoadSampler.ProcessIntervalBeginWaitMs);
 
+            s.SceneBefore = CaptureScene(s.GamePage);
             GHPerformanceRunContext ctx = new GHPerformanceRunContext();
             ctx.Notes = "in-game performance test";
             if (GHPerformanceRunRecord.BeginRefusal(GHWindowOwner.Diagnostic) != null)
@@ -278,6 +280,39 @@ namespace GnollHackX.Performance
             s.Result = result;
             if (result == null)
                 Log("the window of " + s.StampText + " could not be saved");
+        }
+
+        /* UI thread: the level description, zoom mode and map font size. The level text
+           stays unknown when the status fields are locked by another thread. */
+        private static GHDiagnosisScene CaptureScene(GamePage gamePage)
+        {
+            GHDiagnosisScene scene = new GHDiagnosisScene();
+            try
+            {
+                scene.ZoomMode = gamePage.ZoomMiniMode ? GHDiagnosisScene.ZoomMinimap
+                    : gamePage.ZoomAlternateMode ? GHDiagnosisScene.ZoomAlternate : GHDiagnosisScene.ZoomNormal;
+                scene.MapFontSize = gamePage.MapFontSize;
+                GHGame game = GHApp.CurrentGHGame;
+                if (game != null && Monitor.TryEnter(game.StatusFieldLock))
+                {
+                    try
+                    {
+                        GHStatusField[] fields = game.StatusFields;
+                        int i = (int)NhStatusFields.BL_LEVELDESC;
+                        if (fields != null && i < fields.Length && !string.IsNullOrWhiteSpace(fields[i].Text))
+                            scene.LevelText = fields[i].Text.Trim();
+                    }
+                    finally
+                    {
+                        Monitor.Exit(game.StatusFieldLock);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("capturing the scene failed: " + ex.Message);
+            }
+            return scene;
         }
 
         /* Discards a window left open by an abort; nothing is saved */
@@ -323,6 +358,7 @@ namespace GnollHackX.Performance
             string frameDetail = GHPerformanceRunRecord.BuildRecentHitchesReport(s.EndFrameId, WindowSeconds);
 
             FillWindowFacts(f, s);
+            f.SceneBefore = s.SceneBefore;
             FillBackgroundFacts(f, s.Result != null ? s.Result.Background : null);
             f.OwnMemoryBytes = GHApp.GetUsedMemoryInBytes();
             f.DeviceMemoryBytes = GHApp.TotalMemory > 0 ? (long)GHApp.TotalMemory : -1;
@@ -405,6 +441,7 @@ namespace GnollHackX.Performance
         /* The smoothness summary and the thermal readings of the saved window */
         private static void FillWindowFacts(GHDiagnosisFacts f, TestState s)
         {
+            f.NominalWindowSeconds = WindowSeconds;
             GHPerformanceRunResult result = s.Result;
             if (result == null)
             {
@@ -413,6 +450,7 @@ namespace GnollHackX.Performance
                 return;
             }
 
+            f.OnScreenIntervalCount = result.OnScreenIntervalCount;
             GHSmoothnessSummary summary = result.Summary;
             if (summary != null)
             {
@@ -430,10 +468,20 @@ namespace GnollHackX.Performance
                 f.GcCount = summary.GcCount;
                 f.GcPauseMs = summary.GcPauseDataAvailable ? (float)summary.GcPauseMs : float.NaN;
                 f.CauseMs = (double[])summary.CauseMs.Clone();
-                int contentEvents = 0;
-                for (int i = 0; i < summary.EventGapCount.Length; i++)
-                    contentEvents += summary.EventGapCount[i];
-                f.ContentEventCount = contentEvents;
+                /* The unpaused gaps that are not quiet: a gap with several event kinds
+                   counts once */
+                f.ContentEventCount = Math.Max(0,
+                    summary.DisplayedCount - 1 - summary.PausedGapCount - summary.QuietGapCount);
+                f.PausedGapCount = summary.PausedGapCount;
+                f.QuietGapCount = summary.QuietGapCount;
+                f.QuietHitchCount = summary.QuietHitchCount;
+                f.EventGapCounts = (int[])summary.EventGapCount.Clone();
+                f.EventHitchCounts = (int[])summary.EventHitchCount.Clone();
+                f.MetricsVersion = summary.MetricsVersion;
+                f.LongStallCount = summary.LongStallCount;
+                f.LongStallMs = ToFloat(summary.LongStallMs);
+                f.CompositorReportsLost = summary.CompositorReportsLost;
+                f.PresentSource = PresentSourceName(summary.PresentSource);
             }
             else
             {
@@ -691,8 +739,8 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* The app went to the background, a page opened over the game page, or the
-           game ended */
+        /* The app went to the background, a page opened over the game page, the game
+           ended, or, once the window is open, a menu or window opened over the map */
         private static void CheckAbort(TestState s)
         {
             if (GHApp.IsSuspended)
@@ -701,6 +749,8 @@ namespace GnollHackX.Performance
                 throw new DiagnosticAbortException("the game ended");
             if (GHApp.PageFromTopOfModalNavigationStack() != s.GamePage)
                 throw new DiagnosticAbortException("a page opened over the game");
+            if (s.WindowClock != null && s.GamePage.GetActiveCanvas() != CanvasTypes.MainCanvas)
+                throw new DiagnosticAbortException("a menu or window opened over the map");
         }
 
         /* Releases the test's sampler hold, once */
@@ -723,6 +773,19 @@ namespace GnollHackX.Performance
             catch (Exception ex)
             {
                 Log("showing a message failed: " + ex.Message);
+            }
+        }
+
+        private static string PresentSourceName(GHPresentSource source)
+        {
+            switch (source)
+            {
+            case GHPresentSource.Measured:
+                return GHPerformanceDiagnosis.PresentSourceMeasured;
+            case GHPresentSource.Estimated:
+                return GHPerformanceDiagnosis.PresentSourceEstimated;
+            default:
+                return GHPerformanceDiagnosis.PresentSourceNone;
             }
         }
 
@@ -766,6 +829,7 @@ namespace GnollHackX.Performance
             public bool SamplerHeld;                   /* the test's GHSystemLoadSampler acquire is outstanding */
             public GHPerformanceRunContext OpenWindow; /* non-null while the window is open */
             public Stopwatch WindowClock;              /* started when the window opened */
+            public GHDiagnosisScene SceneBefore;       /* captured just before the window opened */
             public double WindowElapsedSeconds = double.NaN;
             public long EndFrameId;
             public DateTime LocalStamp;

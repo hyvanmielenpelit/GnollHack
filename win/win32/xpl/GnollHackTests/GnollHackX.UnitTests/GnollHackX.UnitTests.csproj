@@ -36,6 +36,7 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHBackgroundLoad.cs" Link="Shared\GHBackgroundLoad.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHEnvironmentFingerprint.cs" Link="Shared\GHEnvironmentFingerprint.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceDiagnosis.cs" Link="Shared\GHPerformanceDiagnosis.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHDiagnosisScene.cs" Link="Shared\GHDiagnosisScene.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteId.cs" Link="Shared\GHPerformanceSuiteId.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHAtomicFile.cs" Link="Shared\GHAtomicFile.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHWindowGate.cs" Link="Shared\GHWindowGate.cs" />

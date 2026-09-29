@@ -28,7 +28,8 @@ namespace GnollHackX.Performance
         Likely = 2
     }
 
-    /* Declaration order is the tie-break priority among findings of equal severity. */
+    /* Declaration order breaks ties among findings of equal severity, rank group and
+       score. */
     public enum GHFindingArea
     {
         Heat = 0,
@@ -59,6 +60,7 @@ namespace GnollHackX.Performance
         public string Title;
         public string Evidence;     /* the measured numbers */
         public string Advice;       /* fixed text per rule */
+        public double Score = double.NaN;   /* a stage finding's share of hitch time; NaN for the others */
     }
 
     /* One row of the Checks table. Status is one of GHPerformanceDiagnosis.StatusOk,
@@ -70,14 +72,16 @@ namespace GnollHackX.Performance
         public string Detail;
     }
 
-    /* The inputs of one diagnosis, as plain fields. A float of NaN, a long of -1, a bool?
-       or a reference of null means "unknown": an unknown signal never produces a finding
-       and shows as n/a. Thermal ranks are GHThermalStatus values, 0 Unknown to
-       5 Critical. */
+    /* The inputs of one diagnosis, as plain fields. A float of NaN, a count initialized
+       to -1, a bool? or a reference of null means "unknown": an unknown signal never
+       produces a finding and shows as n/a. Thermal ranks are GHThermalStatus values,
+       0 Unknown to 5 Critical. */
     public sealed class GHDiagnosisFacts
     {
-        /* Window */
+        /* Window. WindowSeconds is the measured span, pauses excluded;
+           NominalWindowSeconds is the length the test asked for. */
         public float WindowSeconds = float.NaN;
+        public float NominalWindowSeconds = float.NaN;
         public float TargetFps = float.NaN;
         public float MeasuredRefreshHz = float.NaN;
         public float DisplayMaxRefreshHz = float.NaN;
@@ -91,8 +95,21 @@ namespace GnollHackX.Performance
         public int GcCount;
         public float GcPauseMs = float.NaN;
         public double[] CauseMs;                    /* indexed by GHHitchCause */
-        public int ContentEventCount;
+        public int ContentEventCount;               /* unpaused frame gaps with content events */
         public string ExcludedReason;
+        public int OnScreenIntervalCount = -1;
+        public int PausedGapCount = -1;
+        public int QuietGapCount = -1;              /* unpaused frame gaps without content events */
+        public int QuietHitchCount = -1;            /* of those, the hitches */
+        public int[] EventGapCounts;                /* per content event kind (GHContentEvent bit) */
+        public int[] EventHitchCounts;
+        public int MetricsVersion = -1;             /* GHSmoothnessMetrics.MetricsVersion of the analysis */
+        public int LongStallCount = -1;
+        public float LongStallMs = float.NaN;
+        public int CompositorReportsLost = -1;
+        public string PresentSource;                /* a GHPerformanceDiagnosis.PresentSource* value */
+        public bool FrameMarkerOff;                 /* the frame marker was off during the window */
+        public GHDiagnosisScene SceneBefore;        /* the map just before the window began */
 
         /* Thermal and power */
         public int ThermalRankBefore;
@@ -164,17 +181,22 @@ namespace GnollHackX.Performance
 
     public static class GHPerformanceDiagnosis
     {
-        public const string ReportFormatVersion = "1";
+        public const string ReportFormatVersion = "2";
         public const string ReportTitle = "GnollHack performance test report v" + ReportFormatVersion;
 
-        /* Health, against TargetFps. Poor and the healthy hitch bound are strict below or
-           inclusive at as written: Poor when fps < PoorFpsFraction x target or hitches >=
-           PoorHitchRatioMsPerSec; Healthy when fps >= HealthyFpsFraction x target and
-           hitches < HealthyHitchRatioMsPerSec. */
+        /* Health, against the effective target (EffectiveTargetFps): Poor when fps <
+           PoorFpsFraction x target or hitches > PoorHitchRatioMsPerSec; Healthy when fps >=
+           HealthyFpsFraction x target and hitches < HealthyHitchRatioMsPerSec; Degraded
+           otherwise. */
         public const double HealthyFpsFraction = 0.95;
         public const double PoorFpsFraction = 0.75;
         public const float HealthyHitchRatioMsPerSec = 5f;
-        public const float PoorHitchRatioMsPerSec = 25f;
+        public const float PoorHitchRatioMsPerSec = 10f;
+
+        /* Inconclusive below this many on-screen intervals, or when the measured window is
+           below this fraction of the nominal one */
+        public const int MinOnScreenIntervals = 100;
+        public const double MinActiveWindowFraction = 0.8;
 
         /* A hitch-cause share counts only when the summed cause time is at least this
            many ms per second of window: the healthy hitch-ratio bound, so that the few
@@ -182,7 +204,7 @@ namespace GnollHackX.Performance
         public const double MinCauseMsPerSec = 5.0;
 
         /* Heat */
-        public const int ThermalThrottledRank = 3;          /* Moderate */
+        public const int ThermalThrottledRank = 3;          /* Moderate: throttling suspected */
         public const float ThermalRisingHeadroom = 0.85f;
         public const float CpuClockCappedPct = 60f;
 
@@ -210,9 +232,23 @@ namespace GnollHackX.Performance
         public const double UiThreadBusyShare = 0.30;
         public const double PaintHeavyShare = 0.30;
 
+        /* GC_PRESSURE by share, UI_THREAD_BUSY, PAINT_HEAVY and GPU_BOUND are Likely at
+           this share of hitch time */
+        public const double LikelyShare = 0.50;
+
+        /* PLAYER_INPUT is Suspect from this many hitches, when the gaps with content
+           events hold at least half of them */
+        public const int PlayerInputMinHitches = 3;
+
+        /* GHDiagnosisFacts.PresentSource values, the GHPresentSource names */
+        public const string PresentSourceMeasured = "Measured";
+        public const string PresentSourceEstimated = "Estimated";
+        public const string PresentSourceNone = "None";
+
         /* Report limits */
         public const int MaxTopProcesses = 5;
         public const int MaxFactsProcesses = 20;
+        public const int MaxWorstEventKinds = 2;
 
         /* Fingerprint keys and values the rules read */
         public const string PowerModeKey = "settings.powerMode";
@@ -267,6 +303,8 @@ namespace GnollHackX.Performance
         public const string EliminationConclusion = "No external or configuration cause found: the slowdown is most likely "
             + "inside the game (this build, this level's content, or a game setting). Compare with a report from an "
             + "earlier build.";
+        public const string InferredCompositorConclusion = "Most hitch time is after the app (inferred from vsync "
+            + "timing, not measured). Confirm with PresentMon or Perfetto before concluding that the game is at fault.";
         public const string CaveatLine = "One 30 s test of the current map: indicative, not statistical.";
 
         private const string NA = "n/a";
@@ -395,8 +433,10 @@ namespace GnollHackX.Performance
            --------------------------------------------------------------------------- */
 
         /* The health class. inconclusiveReason is null unless the result is Inconclusive:
-           the platform render loop is off, the measurement was excluded, or the displayed
-           frame rate, the target frame rate or the hitch ratio is unknown. */
+           the platform render loop is off, the measurement was excluded, a Debug build or
+           an attached debugger, the measured window is below MinActiveWindowFraction of the
+           nominal one, fewer than MinOnScreenIntervals intervals were on screen, or the
+           displayed frame rate, the target frame rate or the hitch ratio is unknown. */
         public static GHDiagnosisHealth ClassifyHealth(GHDiagnosisFacts f, out string inconclusiveReason)
         {
             inconclusiveReason = null;
@@ -413,6 +453,23 @@ namespace GnollHackX.Performance
             if (!string.IsNullOrEmpty(f.ExcludedReason))
             {
                 inconclusiveReason = "the measurement was excluded (" + Clean(f.ExcludedReason) + ")";
+                return GHDiagnosisHealth.Inconclusive;
+            }
+            if (f.IsDebugBuild || f.DebuggerAttached)
+            {
+                inconclusiveReason = "a Debug build or an attached debugger distorts timing; run a Release build";
+                return GHDiagnosisHealth.Inconclusive;
+            }
+            if (Known(f.WindowSeconds) && Known(f.NominalWindowSeconds) && f.NominalWindowSeconds > 0f
+                && f.WindowSeconds < MinActiveWindowFraction * f.NominalWindowSeconds)
+            {
+                inconclusiveReason = "the map was covered or paused for " + F1(f.NominalWindowSeconds - f.WindowSeconds)
+                    + " s";
+                return GHDiagnosisHealth.Inconclusive;
+            }
+            if (f.OnScreenIntervalCount >= 0 && f.OnScreenIntervalCount < MinOnScreenIntervals)
+            {
+                inconclusiveReason = "too few frames were shown (" + Int(f.OnScreenIntervalCount) + ")";
                 return GHDiagnosisHealth.Inconclusive;
             }
             if (!Known(f.DisplayedFps))
@@ -432,20 +489,33 @@ namespace GnollHackX.Performance
             }
 
             double fps = f.DisplayedFps;
-            double target = f.TargetFps;
-            if (fps < PoorFpsFraction * target || f.HitchRatioMsPerSec >= PoorHitchRatioMsPerSec)
+            double target = EffectiveTargetFps(f);
+            if (fps < PoorFpsFraction * target || f.HitchRatioMsPerSec > PoorHitchRatioMsPerSec)
                 return GHDiagnosisHealth.Poor;
             if (fps >= HealthyFpsFraction * target && f.HitchRatioMsPerSec < HealthyHitchRatioMsPerSec)
                 return GHDiagnosisHealth.Healthy;
             return GHDiagnosisHealth.Degraded;
         }
 
-        /* Runs the rule catalog over f. Findings are sorted by severity descending, then
-           area priority, then code ordinally. Primary is the first finding at Suspect or
-           stronger outside Instrument when health is Degraded or Poor; without one the
-           location is InsideGame by elimination. Healthy has no primary and location
-           None; Inconclusive has no primary and location Unclear. A null f is a facts
-           object with every signal unknown. */
+        /* The frame rate health is judged against: TargetFps, or the measured refresh rate
+           when that is known and lower. NaN when TargetFps is unknown. */
+        public static double EffectiveTargetFps(GHDiagnosisFacts f)
+        {
+            if (f == null || !Known(f.TargetFps))
+                return double.NaN;
+            double target = f.TargetFps;
+            if (Known(f.MeasuredRefreshHz) && f.MeasuredRefreshHz > 0f && f.MeasuredRefreshHz < target)
+                target = f.MeasuredRefreshHz;
+            return target;
+        }
+
+        /* Runs the rule catalog over f. Findings are sorted by CompareFindings. Primary is
+           the first finding at Suspect or stronger outside Instrument when health is
+           Degraded or Poor. Without one, the location is Unclear when most hitch time is
+           in the compositor by vsync estimate (InferredCompositorConclusion), else
+           InsideGame by elimination. Healthy has no primary and location None;
+           Inconclusive has no primary and location Unclear. A null f is a facts object
+           with every signal unknown. */
         public static GHDiagnosisResult Diagnose(GHDiagnosisFacts f)
         {
             if (f == null)
@@ -487,6 +557,11 @@ namespace GnollHackX.Performance
                 {
                     r.Location = LocationOf(r.Primary.Area);
                 }
+                else if (IsCompositorInferred(f))
+                {
+                    r.Location = GHCauseLocation.Unclear;
+                    r.Conclusion = InferredCompositorConclusion;
+                }
                 else
                 {
                     r.Location = GHCauseLocation.InsideGame;
@@ -503,9 +578,22 @@ namespace GnollHackX.Performance
             return r;
         }
 
+        /* Severity descending, then RankGroup, then score descending, then area, then
+           code ordinally */
         private static int CompareFindings(GHDiagnosisFinding x, GHDiagnosisFinding y)
         {
             int c = ((int)y.Severity).CompareTo((int)x.Severity);
+            if (c != 0)
+                return c;
+            c = RankGroup(x).CompareTo(RankGroup(y));
+            if (c != 0)
+                return c;
+            bool xScored = !double.IsNaN(x.Score);
+            bool yScored = !double.IsNaN(y.Score);
+            if (xScored && yScored)
+                c = y.Score.CompareTo(x.Score);
+            else if (xScored != yScored)
+                c = xScored ? -1 : 1;
             if (c != 0)
                 return c;
             c = ((int)x.Area).CompareTo((int)y.Area);
@@ -514,8 +602,27 @@ namespace GnollHackX.Performance
             return string.CompareOrdinal(x.Code, y.Code);
         }
 
+        /* 0: heat and power, and any Likely finding without a score: a cause outside the
+              pipeline, which explains any share
+           1: a measured share of hitch time
+           2: everything else */
+        internal static int RankGroup(GHDiagnosisFinding x)
+        {
+            if (x.Area == GHFindingArea.Heat || x.Area == GHFindingArea.Power)
+                return 0;
+            if (double.IsNaN(x.Score))
+                return x.Severity == GHFindingSeverity.Likely ? 0 : 2;
+            return 1;
+        }
+
         private static void Add(List<GHDiagnosisFinding> list, string code, GHFindingArea area, GHFindingSeverity severity,
                                 string title, string evidence, string advice)
+        {
+            Add(list, code, area, severity, title, evidence, advice, double.NaN);
+        }
+
+        private static void Add(List<GHDiagnosisFinding> list, string code, GHFindingArea area, GHFindingSeverity severity,
+                                string title, string evidence, string advice, double score)
         {
             GHDiagnosisFinding finding = new GHDiagnosisFinding();
             finding.Code = code;
@@ -524,7 +631,22 @@ namespace GnollHackX.Performance
             finding.Title = title;
             finding.Evidence = evidence;
             finding.Advice = advice;
+            finding.Score = score;
             list.Add(finding);
+        }
+
+        /* Suspect below LikelyShare of hitch time, Likely from it */
+        private static GHFindingSeverity ShareSeverity(double share)
+        {
+            return share >= LikelyShare ? GHFindingSeverity.Likely : GHFindingSeverity.Suspect;
+        }
+
+        /* At least CompositorShare of hitch time is in the compositor, and the display
+           times it rests on were not all measured */
+        private static bool IsCompositorInferred(GHDiagnosisFacts f)
+        {
+            double share = Share(f, GHHitchCause.Compositor);
+            return !double.IsNaN(share) && share >= CompositorShare && f.PresentSource != PresentSourceMeasured;
         }
 
         /* The share of the summed hitch-cause time spent in the given causes; NaN when
@@ -590,39 +712,52 @@ namespace GnollHackX.Performance
         private static void AddHeatFindings(GHDiagnosisFacts f, List<GHDiagnosisFinding> list)
         {
             /* Only a reported thermal status counts as heat here; a processor clock drop can as well be
-               a power limit, so it goes to CPU_CLOCK_CAPPED */
+               a power limit, so it goes to CPU_CLOCK_CAPPED. The thermal rules are exclusive, the first
+               that matches wins. */
             GHThrottleVerdict throttle = GHPerformanceComparison.ClassifyThrottle(f.ThermalRankBefore, f.ThermalRankAfter,
                 f.CpuPerformancePctBefore, f.CpuPerformancePctAfter);
             bool statusThrottled = throttle.Throttled && throttle.Signal == GHThrottleSignal.Status;
-            bool clockThrottled = throttle.Throttled && throttle.Signal == GHThrottleSignal.CpuPerformancePct;
-            if (statusThrottled || f.ThermalRankAfter >= ThermalThrottledRank)
-            {
-                Add(list, CodeThermalThrottled, GHFindingArea.Heat, GHFindingSeverity.Likely,
-                    "The device is thermally throttled",
-                    ThermalEvidence(f),
-                    "Let the device cool down, remove a thick case, avoid playing while fast-charging, and lower "
-                    + "the Map FPS setting.");
-            }
-
+            bool clockDrop = throttle.Throttled && throttle.Rule == GHThrottleRule.CpuPerformanceDrop;
             bool rose = f.ThermalRankBefore > 0 && f.ThermalRankAfter > f.ThermalRankBefore;
             bool lowHeadroom = Known(f.HeadroomAfter) && f.HeadroomAfter >= ThermalRisingHeadroom;
-            if (rose || lowHeadroom)
+            const string throttledAdvice = "Let the device cool down, remove a thick case, avoid playing while "
+                + "fast-charging, and lower the Map FPS setting.";
+            const string risingAdvice = "The device is heating up and throttling is imminent: let it cool down, or "
+                + "lower the Map FPS setting.";
+            if (statusThrottled)
+            {
+                Add(list, CodeThermalThrottled, GHFindingArea.Heat, GHFindingSeverity.Likely,
+                    "The device is thermally throttled", ThermalEvidence(f), throttledAdvice);
+            }
+            else if (f.ThermalRankAfter == ThermalThrottledRank)
+            {
+                Add(list, CodeThermalThrottled, GHFindingArea.Heat, GHFindingSeverity.Suspect,
+                    "The device is thermally throttled", ThermalEvidence(f), throttledAdvice);
+            }
+            else if (lowHeadroom)
             {
                 Add(list, CodeThermalRising, GHFindingArea.Heat, GHFindingSeverity.Suspect,
-                    "The device is heating up",
-                    ThermalEvidence(f),
-                    "The device is heating up and throttling is imminent: let it cool down, or lower the Map FPS "
-                    + "setting.");
+                    "The device is heating up", ThermalEvidence(f), risingAdvice);
+            }
+            else if (rose)
+            {
+                Add(list, CodeThermalRising, GHFindingArea.Heat, GHFindingSeverity.Info,
+                    "The device is heating up", ThermalEvidence(f), risingAdvice);
             }
 
+            /* Suspect only on ClassifyThrottle's clock drop; a steady low clock alone is common
+               under the Balanced plan */
             bool lowClock = Known(f.CpuPerformancePctAfter) && f.CpuPerformancePctAfter < CpuClockCappedPct;
-            if (lowClock || clockThrottled)
+            if (clockDrop || lowClock)
             {
                 string evidence = Known(f.CpuPerformancePctBefore)
                     ? "CPU clock " + F0(f.CpuPerformancePctBefore) + " % -> " + F0(f.CpuPerformancePctAfter)
                       + " % of base during the test"
                     : "CPU clock " + F0(f.CpuPerformancePctAfter) + " % of base after the test";
-                Add(list, CodeCpuClockCapped, GHFindingArea.Heat, GHFindingSeverity.Suspect,
+                if (!clockDrop)
+                    evidence += "; normal under the Balanced plan at light load";
+                Add(list, CodeCpuClockCapped, GHFindingArea.Heat,
+                    clockDrop ? GHFindingSeverity.Suspect : GHFindingSeverity.Info,
                     "The CPU clock is capped (heat or power limit)",
                     evidence,
                     "Check the cooling and the vents, and the Windows power mode; a laptop may also cap its clock "
@@ -707,6 +842,9 @@ namespace GnollHackX.Performance
                     backgroundAdvice);
             }
 
+            /* A known activity is Likely under a busy verdict, Suspect under an elevated one or
+               from OtherProcessMinCpuPct, and Info below that */
+            bool elevated = f.BackgroundVerdict == GHBackgroundVerdict.Elevated;
             bool pendingReboot = FingerprintValue(f, PendingRebootKey) == "true";
             List<GHBackgroundActivity> activities = GHBackgroundLoad.BuildActivities(f.Processes);
             for (int i = 0; i < activities.Count; i++)
@@ -717,8 +855,13 @@ namespace GnollHackX.Performance
                 string title;
                 string advice;
                 ActivityText(a.Category, pendingReboot, out title, out advice);
+                GHFindingSeverity severity = GHFindingSeverity.Info;
+                if (busy)
+                    severity = GHFindingSeverity.Likely;
+                else if (elevated || a.CpuPct >= OtherProcessMinCpuPct)
+                    severity = GHFindingSeverity.Suspect;
                 Add(list, ActivityCode(a.Category), GHFindingArea.Background,
-                    busy ? GHFindingSeverity.Likely : GHFindingSeverity.Suspect,
+                    severity,
                     title,
                     a.Category + " " + F1(a.CpuPct) + " % CPU (" + string.Join(", ", a.Processes.ToArray()) + ")",
                     advice);
@@ -853,8 +996,9 @@ namespace GnollHackX.Performance
                 string evidence = "GPU acceleration is off for the map";
                 if (!double.IsNaN(paintShare))
                     evidence += ", " + ShareText("PaintCpu", paintShare);
+                bool slow = health == GHDiagnosisHealth.Degraded || health == GHDiagnosisHealth.Poor;
                 Add(list, CodeCpuRendering, GHFindingArea.GpuPath,
-                    heavy || health != GHDiagnosisHealth.Healthy ? GHFindingSeverity.Likely : GHFindingSeverity.Info,
+                    heavy || slow ? GHFindingSeverity.Likely : GHFindingSeverity.Info,
                     "The map is drawn on the CPU",
                     evidence,
                     "Settings > GPU Acceleration: turn it on.");
@@ -901,24 +1045,39 @@ namespace GnollHackX.Performance
             double gpuShare = Share(f, GHHitchCause.Gpu);
             if (!double.IsNaN(gpuShare) && gpuShare >= GpuBoundShare)
             {
-                Add(list, CodeGpuBound, GHFindingArea.GpuPath, GHFindingSeverity.Suspect,
+                Add(list, CodeGpuBound, GHFindingArea.GpuPath, ShareSeverity(gpuShare),
                     "The GPU is the bottleneck",
                     ShareText("Gpu", gpuShare),
                     "Lower the Map FPS setting, make sure no other app uses the GPU, and that the app runs on the "
-                    + "discrete GPU.");
+                    + "discrete GPU.",
+                    gpuShare);
             }
         }
 
         private static void AddDisplayFindings(GHDiagnosisFacts f, List<GHDiagnosisFinding> list)
         {
+            /* Suspect only on measured display times; on vsync estimates the share is an
+               inference, and never Likely either way */
             double compositorShare = Share(f, GHHitchCause.Compositor);
             if (!double.IsNaN(compositorShare) && compositorShare >= CompositorShare)
             {
-                Add(list, CodeCompositor, GHFindingArea.Display, GHFindingSeverity.Suspect,
-                    "Frames are dropped after the app, in the compositor",
-                    ShareText("Compositor", compositorShare),
-                    "Close overlays and screen recorders, avoid monitors with mixed refresh rates, or try "
-                    + "fullscreen.");
+                if (f.PresentSource == PresentSourceMeasured)
+                {
+                    Add(list, CodeCompositor, GHFindingArea.Display, GHFindingSeverity.Suspect,
+                        "Frames are dropped after the app, in the compositor",
+                        ShareText("Compositor", compositorShare),
+                        "Close overlays and screen recorders, avoid monitors with mixed refresh rates, or try "
+                        + "fullscreen.",
+                        compositorShare);
+                }
+                else
+                {
+                    Add(list, CodeCompositor, GHFindingArea.Display, GHFindingSeverity.Info,
+                        "Frames may be dropped after the app (inferred)",
+                        ShareText("Compositor", compositorShare)
+                        + "; display times are estimated from vsync, not measured",
+                        "Confirm with PresentMon (Windows) or Perfetto (Android) before acting on this.");
+                }
             }
 
             /* Only when the refresh rate is what caps the frame rate, i.e. MAP_FPS_CAP does not
@@ -980,21 +1139,25 @@ namespace GnollHackX.Performance
                 if (Known(f.AllocationRateMBPerSec))
                     parts.Add("allocation " + F1(f.AllocationRateMBPerSec) + " MB/s");
                 parts.Add(Int(f.GcCount) + " GCs");
-                Add(list, CodeGcPressure, GHFindingArea.AppInternal, GHFindingSeverity.Suspect,
+                /* By allocation rate alone: Suspect, without a score */
+                Add(list, CodeGcPressure, GHFindingArea.AppInternal,
+                    gcByShare ? ShareSeverity(gcShare) : GHFindingSeverity.Suspect,
                     "Garbage collection inside the game",
                     string.Join(", ", parts.ToArray()),
                     "The game allocates enough memory to cause GC pauses: compare with a report from an earlier "
-                    + "build.");
+                    + "build.",
+                    gcByShare ? gcShare : double.NaN);
             }
 
             double uiShare = Share(f, GHHitchCause.UiThreadLate, GHHitchCause.UiThreadRequests);
             if (!double.IsNaN(uiShare) && uiShare >= UiThreadBusyShare)
             {
-                Add(list, CodeUiThreadBusy, GHFindingArea.AppInternal, GHFindingSeverity.Suspect,
+                Add(list, CodeUiThreadBusy, GHFindingArea.AppInternal, ShareSeverity(uiShare),
                     "Game work on the UI thread",
                     ShareText("UiThreadLate + UiThreadRequests", uiShare),
                     "The UI thread is late for frames because game requests or UI work delay drawing: compare "
-                    + "with a report from an earlier build.");
+                    + "with a report from an earlier build.",
+                    uiShare);
             }
 
             double paintShare = Share(f, GHHitchCause.PaintCpu);
@@ -1004,11 +1167,12 @@ namespace GnollHackX.Performance
                 string evidence = ShareText("PaintCpu", paintShare);
                 if (Known(f.PaintP99Ms))
                     evidence += ", paint P99 " + F1(f.PaintP99Ms) + " ms";
-                Add(list, CodePaintHeavy, GHFindingArea.AppInternal, GHFindingSeverity.Suspect,
+                Add(list, CodePaintHeavy, GHFindingArea.AppInternal, ShareSeverity(paintShare),
                     "Map drawing is CPU-heavy",
                     evidence,
                     "Drawing this map costs much CPU time (level content or build): compare in another level, or "
-                    + "with a report from an earlier build.");
+                    + "with a report from an earlier build.",
+                    paintShare);
             }
         }
 
@@ -1030,11 +1194,26 @@ namespace GnollHackX.Performance
                     "Debug builds, an attached debugger and logging slow rendering: compare with a Release build.");
             }
 
-            if (f.ContentEventCount > 0)
+            /* Suspect when the gaps with content events hold at least half of the hitches */
+            bool quietKnown = f.QuietHitchCount >= 0;
+            int eventHitches = quietKnown ? Math.Max(0, f.HitchCount - f.QuietHitchCount) : 0;
+            bool inputHitches = quietKnown && f.HitchCount >= PlayerInputMinHitches
+                && eventHitches >= f.HitchCount / 2.0;
+            if (f.ContentEventCount > 0 || inputHitches)
             {
-                Add(list, CodePlayerInput, GHFindingArea.Instrument, GHFindingSeverity.Info,
-                    "Game content changed during the test",
-                    Int(f.ContentEventCount) + " frame gaps with content events",
+                string evidence = Int(f.ContentEventCount) + " frame gaps with content events";
+                if (quietKnown)
+                {
+                    evidence += "; hitches in " + Rate(f.QuietHitchCount, f.QuietGapCount) + " of quiet gaps, "
+                        + Rate(eventHitches, f.ContentEventCount) + " of gaps with events";
+                }
+                string worst = WorstEventKinds(f);
+                if (worst != null)
+                    evidence += "; worst: " + worst;
+                Add(list, CodePlayerInput, GHFindingArea.Instrument,
+                    inputHitches ? GHFindingSeverity.Suspect : GHFindingSeverity.Info,
+                    inputHitches ? "Hitches came with game content changes" : "Game content changed during the test",
+                    evidence,
                     "Input during the test mixes workloads: do not touch the game while the test runs.");
             }
 
@@ -1045,6 +1224,49 @@ namespace GnollHackX.Performance
                     "the background sampler is disabled",
                     "Enable the background sampler to check the background load.");
             }
+        }
+
+        /* The content event kinds with the highest hitch rates, at most MaxWorstEventKinds,
+           as "Kind hitches of gaps"; null when the counts are unknown or no kind has a
+           hitch */
+        private static string WorstEventKinds(GHDiagnosisFacts f)
+        {
+            if (f.EventGapCounts == null || f.EventHitchCounts == null)
+                return null;
+            int n = Math.Min(f.EventGapCounts.Length, f.EventHitchCounts.Length);
+            List<int> kinds = new List<int>();
+            for (int k = 0; k < n; k++)
+            {
+                if (f.EventGapCounts[k] > 0 && f.EventHitchCounts[k] > 0)
+                    kinds.Add(k);
+            }
+            if (kinds.Count == 0)
+                return null;
+            int[] gaps = f.EventGapCounts;
+            int[] hitches = f.EventHitchCounts;
+            kinds.Sort(delegate (int x, int y)
+            {
+                int c = ((double)hitches[y] / gaps[y]).CompareTo((double)hitches[x] / gaps[x]);
+                if (c != 0)
+                    return c;
+                c = hitches[y].CompareTo(hitches[x]);
+                return c != 0 ? c : x.CompareTo(y);
+            });
+            List<string> parts = new List<string>();
+            for (int i = 0; i < kinds.Count && i < MaxWorstEventKinds; i++)
+            {
+                int k = kinds[i];
+                parts.Add(GHSmoothnessMetrics.ContentEventName(k) + " " + Int(hitches[k]) + " of " + Int(gaps[k]));
+            }
+            return string.Join(", ", parts.ToArray());
+        }
+
+        /* hits as a percentage of total, "n/a" for no total */
+        private static string Rate(int hits, int total)
+        {
+            if (total <= 0 || hits < 0)
+                return NA;
+            return F1(100.0 * hits / total) + " %";
         }
 
         /* ---------------------------------------------------------------------------
@@ -1222,6 +1444,12 @@ namespace GnollHackX.Performance
             if (r.Primary != null)
             {
                 AppendFinding(sb, r.Primary);
+                GHDiagnosisFinding other = OtherSideOf(r.Primary, findings);
+                if (other != null)
+                {
+                    AppendWrapped(sb, "  Also: ", "    ",
+                        other.Title + " (" + other.Code + ", " + SeverityName(other.Severity) + ")");
+                }
             }
             else
             {
@@ -1312,10 +1540,44 @@ namespace GnollHackX.Performance
             return result + " | " + location;
         }
 
+        /* The finding named on the "Also:" line under the primary cause: for a scored
+           primary, the first Suspect-or-stronger finding in Heat, Power, Background or
+           Memory; otherwise the first scored finding. Null when there is none. */
+        private static GHDiagnosisFinding OtherSideOf(GHDiagnosisFinding primary, List<GHDiagnosisFinding> sorted)
+        {
+            bool scored = !double.IsNaN(primary.Score);
+            for (int i = 0; i < sorted.Count; i++)
+            {
+                GHDiagnosisFinding x = sorted[i];
+                if (x == primary)
+                    continue;
+                if (scored)
+                {
+                    if (x.Severity >= GHFindingSeverity.Suspect && x.Area <= GHFindingArea.Memory)
+                        return x;
+                }
+                else if (!double.IsNaN(x.Score))
+                {
+                    return x;
+                }
+            }
+            return null;
+        }
+
+        /* The display rate follows when it caps the effective target below
+           MapFpsCapFraction of TargetFps; "target" is left out when the line would not
+           fit */
         private static string ResultLine(GHDiagnosisFacts f, GHDiagnosisResult r)
         {
-            return "Result: " + HealthName(r.Health) + "  " + F1(f.DisplayedFps) + " of " + Fps(f.TargetFps)
-                + " target fps, hitches " + F1(f.HitchRatioMsPerSec) + " ms/s";
+            string head = "Result: " + HealthName(r.Health) + "  " + F1(f.DisplayedFps) + " of " + Fps(f.TargetFps);
+            string tail = ", hitches " + F1(f.HitchRatioMsPerSec) + " ms/s";
+            double effective = EffectiveTargetFps(f);
+            if (!double.IsNaN(effective) && f.TargetFps > 0f && effective < MapFpsCapFraction * f.TargetFps)
+                tail += " (display " + Fps(f.MeasuredRefreshHz) + " Hz)";
+            string line = head + " target fps" + tail;
+            if (line.Length > GHPerformanceTextReport.MaxLineWidth)
+                line = head + " fps" + tail;
+            return line;
         }
 
         private static void AppendFinding(StringBuilder sb, GHDiagnosisFinding x)
@@ -1332,6 +1594,7 @@ namespace GnollHackX.Performance
             Line(sb, "Measurements:");
             Line(sb, "  Window: " + F1(f.WindowSeconds) + " s, target " + Fps(f.TargetFps) + " fps, displayed "
                 + F1(f.DisplayedFps) + " fps");
+            AppendWrapped(sb, "  Scene: ", "    ", SceneText(f.SceneBefore));
             Line(sb, "  Refresh: measured " + F1(f.MeasuredRefreshHz) + " Hz, display max " + F1(f.DisplayMaxRefreshHz)
                 + " Hz, pacing rate " + (f.AssumedRefreshMismatch ? "mismatch" : "ok"));
             Line(sb, "  Hitches: " + Int(f.HitchCount) + ", " + F1(f.HitchRatioMsPerSec) + " ms/s, pacing error RMS "
@@ -1401,8 +1664,24 @@ namespace GnollHackX.Performance
                 + ", verbose logging " + YesNo(f.VerboseLoggingOn) + ", render loop " + OnOff(f.PlatformRenderLoopOn));
             Line(sb, "  Content events: " + Int(f.ContentEventCount) + ", countdown shown " + YesNo(f.CountdownShown)
                 + (string.IsNullOrEmpty(f.ExcludedReason) ? "" : ", excluded"));
+            if (f.QuietGapCount >= 0 && f.QuietHitchCount >= 0)
+            {
+                int eventHitches = Math.Max(0, f.HitchCount - f.QuietHitchCount);
+                string content = "hitches in " + Rate(f.QuietHitchCount, f.QuietGapCount) + " of "
+                    + Int(f.QuietGapCount) + " quiet gaps, " + Rate(eventHitches, f.ContentEventCount) + " of "
+                    + Int(f.ContentEventCount) + " with events";
+                AppendWrapped(sb, "  Content: ", "    ", content);
+            }
             if (!string.IsNullOrEmpty(f.ExcludedReason))
                 AppendWrapped(sb, "  Excluded: ", "    ", f.ExcludedReason);
+        }
+
+        /* "level, zoom mode, map font size", or n/a without a scene */
+        private static string SceneText(GHDiagnosisScene scene)
+        {
+            if (scene == null)
+                return NA;
+            return OrNA(scene.LevelText) + ", zoom " + OrNA(scene.ZoomMode) + ", map font " + F1(scene.MapFontSize);
         }
 
         private static void AppendHitchCauses(StringBuilder sb, GHDiagnosisFacts f)
@@ -1488,7 +1767,9 @@ namespace GnollHackX.Performance
         /* The Facts block: "  key=value" per GHDiagnosisFacts field in declaration order,
            n/a for unknown values. Lists give their count under their own key, then one
            "key.<i>=" line per entry; a process entry is "name;cpuPct;gpuPct;category",
-           for at most MaxFactsProcesses processes by CPU descending. The fingerprint
+           for at most MaxFactsProcesses processes by CPU descending. A count array is one
+           comma-separated line, left out when null; the scene gives three scene.* keys;
+           frameMarker is on or off. The fingerprint
            gives its key count; its values are in the Environment block. Then health,
            location and primary, and last the finding codes in report order; a list too
            long for one line continues on further findings= lines. */
@@ -1498,6 +1779,7 @@ namespace GnollHackX.Performance
             Fact(sb, "formatVersion", ReportFormatVersion);
 
             Fact(sb, "windowSeconds", Num(f.WindowSeconds));
+            Fact(sb, "nominalWindowSeconds", Num(f.NominalWindowSeconds));
             Fact(sb, "targetFps", Num(f.TargetFps));
             Fact(sb, "measuredRefreshHz", Num(f.MeasuredRefreshHz));
             Fact(sb, "displayMaxRefreshHz", Num(f.DisplayMaxRefreshHz));
@@ -1521,6 +1803,22 @@ namespace GnollHackX.Performance
             }
             Fact(sb, "contentEventCount", Int(f.ContentEventCount));
             Fact(sb, "excludedReason", Str(f.ExcludedReason));
+            Fact(sb, "onScreenIntervalCount", CountText(f.OnScreenIntervalCount));
+            Fact(sb, "pausedGapCount", CountText(f.PausedGapCount));
+            Fact(sb, "quietGapCount", CountText(f.QuietGapCount));
+            Fact(sb, "quietHitchCount", CountText(f.QuietHitchCount));
+            FactCounts(sb, "eventGapCounts", f.EventGapCounts);
+            FactCounts(sb, "eventHitchCounts", f.EventHitchCounts);
+            Fact(sb, "metricsVersion", CountText(f.MetricsVersion));
+            Fact(sb, "longStallCount", CountText(f.LongStallCount));
+            Fact(sb, "longStallMs", Num(f.LongStallMs));
+            Fact(sb, "compositorReportsLost", CountText(f.CompositorReportsLost));
+            Fact(sb, "presentSource", Str(f.PresentSource));
+            Fact(sb, "frameMarker", OnOff(!f.FrameMarkerOff));
+            GHDiagnosisScene scene = f.SceneBefore;
+            Fact(sb, "scene.levelText", scene == null ? NA : Str(scene.LevelText));
+            Fact(sb, "scene.zoomMode", scene == null ? NA : Str(scene.ZoomMode));
+            Fact(sb, "scene.mapFontSize", scene == null ? NA : Num(scene.MapFontSize));
 
             Fact(sb, "thermalRankBefore", Int(f.ThermalRankBefore));
             Fact(sb, "thermalRankAfter", Int(f.ThermalRankAfter));
@@ -1609,6 +1907,21 @@ namespace GnollHackX.Performance
         {
             string prefix = "  " + key + "=";
             Line(sb, prefix + ShortenMiddle(value ?? NA, GHPerformanceTextReport.MaxLineWidth - prefix.Length));
+        }
+
+        /* "key=a,b,c" for a count array; no line for null */
+        private static void FactCounts(StringBuilder sb, string key, int[] counts)
+        {
+            if (counts == null)
+                return;
+            StringBuilder text = new StringBuilder();
+            for (int i = 0; i < counts.Length; i++)
+            {
+                if (i > 0)
+                    text.Append(',');
+                text.Append(Int(counts[i]));
+            }
+            Fact(sb, key, text.ToString());
         }
 
         private static void FactList(StringBuilder sb, string key, List<string> values)
@@ -1791,6 +2104,12 @@ namespace GnollHackX.Performance
         private static string Int(long v)
         {
             return v.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /* A count initialized to -1 when unknown: n/a below zero */
+        private static string CountText(long v)
+        {
+            return v >= 0 ? Int(v) : NA;
         }
 
         private static string MB(long bytes)

@@ -16,11 +16,24 @@ namespace GnollHackX.UnitTests
         private static readonly DateTime Now = new DateTime(2026, 9, 27, 14, 5, 0);
 
         /* A fully known, healthy, quiet run that produces no finding at all. Hitch-cause
-           time is below the share gate (MinCauseMsPerSec over 30 s). */
+           time is below the share gate (MinCauseMsPerSec over 30 s). Every gap of the
+           1800 on-screen intervals is quiet, so PLAYER_INPUT stays silent. */
         private static GHDiagnosisFacts HealthyFacts()
         {
             GHDiagnosisFacts f = new GHDiagnosisFacts();
             f.WindowSeconds = 30f;
+            f.NominalWindowSeconds = 30f;
+            f.OnScreenIntervalCount = 1800;
+            f.PausedGapCount = 0;
+            f.QuietGapCount = 1800;
+            f.QuietHitchCount = 2;
+            f.EventGapCounts = new int[GHSmoothnessMetrics.ContentEventKinds];
+            f.EventHitchCounts = new int[GHSmoothnessMetrics.ContentEventKinds];
+            f.MetricsVersion = GHSmoothnessMetrics.MetricsVersion;
+            f.LongStallCount = 0;
+            f.LongStallMs = 0f;
+            f.CompositorReportsLost = 0;
+            f.PresentSource = GHPerformanceDiagnosis.PresentSourceEstimated;
             f.TargetFps = 60f;
             f.MeasuredRefreshHz = 60f;
             f.DisplayMaxRefreshHz = 60f;
@@ -126,6 +139,22 @@ namespace GnollHackX.UnitTests
             return report.Split('\n');
         }
 
+        private static string Report(GHDiagnosisFacts f)
+        {
+            return GHPerformanceDiagnosis.BuildReport(f, GHPerformanceDiagnosis.Diagnose(f), Now);
+        }
+
+        private static int CountCodes(GHDiagnosisResult r, string code)
+        {
+            int n = 0;
+            for (int i = 0; i < r.Findings.Count; i++)
+            {
+                if (r.Findings[i].Code == code)
+                    n++;
+            }
+            return n;
+        }
+
         /* ------------------------------------------------------------------ Health */
 
         [Fact]
@@ -146,8 +175,9 @@ namespace GnollHackX.UnitTests
         [InlineData(60f, 5f, GHDiagnosisHealth.Degraded)]
         [InlineData(45f, 1f, GHDiagnosisHealth.Degraded)]
         [InlineData(44.9f, 1f, GHDiagnosisHealth.Poor)]
-        [InlineData(60f, 24.9f, GHDiagnosisHealth.Degraded)]
-        [InlineData(60f, 25f, GHDiagnosisHealth.Poor)]
+        [InlineData(60f, 9.9f, GHDiagnosisHealth.Degraded)]
+        [InlineData(60f, 10f, GHDiagnosisHealth.Degraded)]
+        [InlineData(60f, 10.1f, GHDiagnosisHealth.Poor)]
         public void Health_Boundaries(float fps, float hitch, GHDiagnosisHealth expected)
         {
             GHDiagnosisFacts f = HealthyFacts();
@@ -157,12 +187,78 @@ namespace GnollHackX.UnitTests
             Assert.Equal(expected, GHPerformanceDiagnosis.Diagnose(f).Health);
         }
 
+        /* A 120 fps target on a 60 Hz display: judged against 60 */
+        [Fact]
+        public void Health_JudgedAgainstLowerMeasuredRefresh()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.TargetFps = 120f;
+            f.DisplayedFps = 59f;
+
+            Assert.Equal(60.0, GHPerformanceDiagnosis.EffectiveTargetFps(f), 3);
+            Assert.Equal(GHDiagnosisHealth.Healthy, GHPerformanceDiagnosis.Diagnose(f).Health);
+
+            f.DisplayedFps = 44.9f;
+            Assert.Equal(GHDiagnosisHealth.Poor, GHPerformanceDiagnosis.Diagnose(f).Health);
+
+            f.MeasuredRefreshHz = float.NaN;
+            f.DisplayedFps = 59f;
+            Assert.Equal(GHDiagnosisHealth.Poor, GHPerformanceDiagnosis.Diagnose(f).Health);
+        }
+
+        [Fact]
+        public void Health_UnknownWindowFacts_JudgedAsBefore()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.NominalWindowSeconds = float.NaN;
+            f.OnScreenIntervalCount = -1;
+            f.WindowSeconds = 10f;
+            Assert.Equal(GHDiagnosisHealth.Healthy, GHPerformanceDiagnosis.Diagnose(f).Health);
+
+            GHDiagnosisFacts d = DegradedFacts();
+            d.NominalWindowSeconds = float.NaN;
+            d.OnScreenIntervalCount = -1;
+            d.WindowSeconds = 10f;
+            Assert.Equal(GHDiagnosisHealth.Degraded, GHPerformanceDiagnosis.Diagnose(d).Health);
+        }
+
+        [Fact]
+        public void Health_InconclusiveWhenActiveWindowShort()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.WindowSeconds = 23.9f;
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+            Assert.Equal(GHDiagnosisHealth.Inconclusive, r.Health);
+            Assert.Equal("the map was covered or paused for 6.1 s", r.InconclusiveReason);
+
+            f.WindowSeconds = 24f;
+            Assert.Equal(GHDiagnosisHealth.Healthy, GHPerformanceDiagnosis.Diagnose(f).Health);
+        }
+
+        [Fact]
+        public void Health_InconclusiveBelow100Intervals()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.OnScreenIntervalCount = 99;
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+            Assert.Equal(GHDiagnosisHealth.Inconclusive, r.Health);
+            Assert.Equal("too few frames were shown (99)", r.InconclusiveReason);
+
+            f.OnScreenIntervalCount = 0;
+            Assert.Equal(GHDiagnosisHealth.Inconclusive, GHPerformanceDiagnosis.Diagnose(f).Health);
+
+            f.OnScreenIntervalCount = 100;
+            Assert.Equal(GHDiagnosisHealth.Healthy, GHPerformanceDiagnosis.Diagnose(f).Health);
+        }
+
         [Theory]
         [InlineData("renderLoopOff")]
         [InlineData("fpsNaN")]
         [InlineData("excluded")]
         [InlineData("targetNaN")]
         [InlineData("hitchNaN")]
+        [InlineData("debugBuild")]
+        [InlineData("debugger")]
         public void Health_Inconclusive_LocationUnclearWithReason(string variant)
         {
             GHDiagnosisFacts f = HealthyFacts();
@@ -174,6 +270,10 @@ namespace GnollHackX.UnitTests
                 f.ExcludedReason = "aborted: page pushed";
             else if (variant == "targetNaN")
                 f.TargetFps = float.NaN;
+            else if (variant == "debugBuild")
+                f.IsDebugBuild = true;
+            else if (variant == "debugger")
+                f.DebuggerAttached = true;
             else
                 f.HitchRatioMsPerSec = float.NaN;
 
@@ -219,16 +319,67 @@ namespace GnollHackX.UnitTests
         /* ------------------------------------------------------------------ Heat */
 
         [Fact]
-        public void ThermalThrottled_RankModerate_Likely()
+        public void ThermalThrottled_Moderate_Suspect()
         {
             GHDiagnosisFacts f = HealthyFacts();
             f.ThermalRankBefore = 3;
             f.ThermalRankAfter = 3;
-            AssertFires(f, GHPerformanceDiagnosis.CodeThermalThrottled, GHFindingSeverity.Likely);
+            AssertFires(f, GHPerformanceDiagnosis.CodeThermalThrottled, GHFindingSeverity.Suspect);
 
             f.ThermalRankBefore = 2;
             f.ThermalRankAfter = 2;
             AssertSilent(f, GHPerformanceDiagnosis.CodeThermalThrottled);
+        }
+
+        [Fact]
+        public void ThermalThrottled_Severe_Likely()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.ThermalRankBefore = 4;
+            f.ThermalRankAfter = 4;
+            AssertFires(f, GHPerformanceDiagnosis.CodeThermalThrottled, GHFindingSeverity.Likely);
+
+            f.ThermalRankBefore = 3;
+            AssertFires(f, GHPerformanceDiagnosis.CodeThermalThrottled, GHFindingSeverity.Likely);
+        }
+
+        [Fact]
+        public void ThermalThrottled_SevereBefore_Likely()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.ThermalRankBefore = 4;
+            f.ThermalRankAfter = 3;
+            AssertFires(f, GHPerformanceDiagnosis.CodeThermalThrottled, GHFindingSeverity.Likely);
+        }
+
+        [Fact]
+        public void ThermalThrottled_RoseTwoClasses_Likely()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.ThermalRankBefore = 1;
+            f.ThermalRankAfter = 3;
+            AssertFires(f, GHPerformanceDiagnosis.CodeThermalThrottled, GHFindingSeverity.Likely);
+            AssertSilent(f, GHPerformanceDiagnosis.CodeThermalRising);
+        }
+
+        [Theory]
+        [InlineData(1, 4, 0.95f, GHPerformanceDiagnosis.CodeThermalThrottled, GHFindingSeverity.Likely)]
+        [InlineData(2, 3, 0.95f, GHPerformanceDiagnosis.CodeThermalThrottled, GHFindingSeverity.Suspect)]
+        [InlineData(1, 2, 0.9f, GHPerformanceDiagnosis.CodeThermalRising, GHFindingSeverity.Suspect)]
+        [InlineData(1, 2, float.NaN, GHPerformanceDiagnosis.CodeThermalRising, GHFindingSeverity.Info)]
+        public void Thermal_CodesMutuallyExclusive(int before, int after, float headroom, string code,
+                                                   GHFindingSeverity severity)
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.ThermalRankBefore = before;
+            f.ThermalRankAfter = after;
+            f.HeadroomAfter = headroom;
+
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+
+            Assert.Equal(1, CountCodes(r, GHPerformanceDiagnosis.CodeThermalThrottled)
+                + CountCodes(r, GHPerformanceDiagnosis.CodeThermalRising));
+            Assert.Equal(severity, Find(r, code).Severity);
         }
 
         [Fact]
@@ -259,20 +410,20 @@ namespace GnollHackX.UnitTests
         }
 
         [Theory]
-        [InlineData(1, 2, float.NaN, true)]
-        [InlineData(2, 2, float.NaN, false)]
-        [InlineData(0, 2, float.NaN, false)]
-        [InlineData(1, 1, 0.85f, true)]
-        [InlineData(1, 1, 0.849f, false)]
-        public void ThermalRising_Boundaries(int before, int after, float headroom, bool fires)
+        [InlineData(1, 2, float.NaN, GHFindingSeverity.Info)]
+        [InlineData(2, 2, float.NaN, null)]
+        [InlineData(0, 2, float.NaN, null)]
+        [InlineData(1, 1, 0.85f, GHFindingSeverity.Suspect)]
+        [InlineData(1, 1, 0.849f, null)]
+        public void ThermalRising_Boundaries(int before, int after, float headroom, GHFindingSeverity? expected)
         {
             GHDiagnosisFacts f = HealthyFacts();
             f.ThermalRankBefore = before;
             f.ThermalRankAfter = after;
             f.HeadroomAfter = headroom;
 
-            if (fires)
-                AssertFires(f, GHPerformanceDiagnosis.CodeThermalRising, GHFindingSeverity.Suspect);
+            if (expected.HasValue)
+                AssertFires(f, GHPerformanceDiagnosis.CodeThermalRising, expected.Value);
             else
                 AssertSilent(f, GHPerformanceDiagnosis.CodeThermalRising);
         }
@@ -284,10 +435,54 @@ namespace GnollHackX.UnitTests
             GHDiagnosisFacts f = HealthyFacts();
             f.CpuPerformancePctBefore = 59.9f;
             f.CpuPerformancePctAfter = 59.9f;
-            AssertFires(f, GHPerformanceDiagnosis.CodeCpuClockCapped, GHFindingSeverity.Suspect);
+            AssertFires(f, GHPerformanceDiagnosis.CodeCpuClockCapped, GHFindingSeverity.Info);
 
             f.CpuPerformancePctBefore = 60f;
             f.CpuPerformancePctAfter = 60f;
+            AssertSilent(f, GHPerformanceDiagnosis.CodeCpuClockCapped);
+        }
+
+        [Fact]
+        public void CpuClockCapped_DropIsSuspect()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.CpuPerformancePctBefore = 95f;
+            f.CpuPerformancePctAfter = 80f;
+            AssertFires(f, GHPerformanceDiagnosis.CodeCpuClockCapped, GHFindingSeverity.Suspect);
+        }
+
+        [Fact]
+        public void CpuClockCapped_DropOfExactlyTen_IsNotSuspect()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.CpuPerformancePctBefore = 95f;
+            f.CpuPerformancePctAfter = 85f;
+            AssertSilent(f, GHPerformanceDiagnosis.CodeCpuClockCapped);
+        }
+
+        [Fact]
+        public void CpuClockCapped_LowWithoutDropIsInfo()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.CpuPerformancePctBefore = 55f;
+            f.CpuPerformancePctAfter = 55f;
+            AssertFires(f, GHPerformanceDiagnosis.CodeCpuClockCapped, GHFindingSeverity.Info);
+            Assert.Contains("normal under the Balanced plan at light load",
+                Find(GHPerformanceDiagnosis.Diagnose(f), GHPerformanceDiagnosis.CodeCpuClockCapped).Evidence);
+        }
+
+        [Fact]
+        public void CpuClockCapped_NoBefore_UsesClassifyThrottle()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.CpuPerformancePctBefore = float.NaN;
+            f.CpuPerformancePctAfter = 89.9f;
+            AssertFires(f, GHPerformanceDiagnosis.CodeCpuClockCapped, GHFindingSeverity.Suspect);
+
+            f.CpuPerformancePctAfter = 55f;
+            AssertFires(f, GHPerformanceDiagnosis.CodeCpuClockCapped, GHFindingSeverity.Suspect);
+
+            f.CpuPerformancePctAfter = 90f;
             AssertSilent(f, GHPerformanceDiagnosis.CodeCpuClockCapped);
         }
 
@@ -371,13 +566,34 @@ namespace GnollHackX.UnitTests
         {
             GHDiagnosisFacts f = HealthyFacts();
             f.Processes = new List<GHProcessLoad> { new GHProcessLoad("MsMpEng", 2f, float.NaN) };
-            AssertFires(f, "BG_ANTIVIRUS", GHFindingSeverity.Suspect);
+            AssertFires(f, "BG_ANTIVIRUS", GHFindingSeverity.Info);
 
             f.BackgroundVerdict = GHBackgroundVerdict.Busy;
             AssertFires(f, "BG_ANTIVIRUS", GHFindingSeverity.Likely);
 
             f.Processes = new List<GHProcessLoad> { new GHProcessLoad("MsMpEng", 1.9f, float.NaN) };
             AssertSilent(f, "BG_ANTIVIRUS");
+        }
+
+        [Fact]
+        public void KnownActivity_SuspectOnlyWithMagnitude()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.Processes = new List<GHProcessLoad> { new GHProcessLoad("MsMpEng", 5f, float.NaN) };
+            AssertFires(f, "BG_ANTIVIRUS", GHFindingSeverity.Info);
+
+            f.BackgroundVerdict = GHBackgroundVerdict.Elevated;
+            AssertFires(f, "BG_ANTIVIRUS", GHFindingSeverity.Suspect);
+
+            f.BackgroundVerdict = GHBackgroundVerdict.Quiet;
+            f.Processes = new List<GHProcessLoad> { new GHProcessLoad("MsMpEng", 9.9f, float.NaN) };
+            AssertFires(f, "BG_ANTIVIRUS", GHFindingSeverity.Info);
+
+            f.Processes = new List<GHProcessLoad> { new GHProcessLoad("MsMpEng", 10f, float.NaN) };
+            AssertFires(f, "BG_ANTIVIRUS", GHFindingSeverity.Suspect);
+
+            f.BackgroundVerdict = GHBackgroundVerdict.Busy;
+            AssertFires(f, "BG_ANTIVIRUS", GHFindingSeverity.Likely);
         }
 
         [Fact]
@@ -504,6 +720,32 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void CpuRendering_InconclusiveIsInfo()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            f.MainCanvasGlRequested = false;
+            f.PlatformRenderLoopOn = false;
+            Assert.Equal(GHDiagnosisHealth.Inconclusive, GHPerformanceDiagnosis.Diagnose(f).Health);
+            AssertFires(f, GHPerformanceDiagnosis.CodeCpuRendering, GHFindingSeverity.Info);
+
+            Causes(f, GHHitchCause.PaintCpu, 30.0, GHHitchCause.Unattributed, 70.0);
+            AssertFires(f, GHPerformanceDiagnosis.CodeCpuRendering, GHFindingSeverity.Likely);
+        }
+
+        [Fact]
+        public void CpuRendering_HasNoScore()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            f.MainCanvasGlRequested = false;
+            Causes(f, GHHitchCause.PaintCpu, 60.0, GHHitchCause.Unattributed, 40.0);
+
+            GHDiagnosisFinding x = Find(GHPerformanceDiagnosis.Diagnose(f), GHPerformanceDiagnosis.CodeCpuRendering);
+
+            Assert.Equal(GHFindingSeverity.Likely, x.Severity);
+            Assert.True(double.IsNaN(x.Score));
+        }
+
+        [Fact]
         public void GpuContextMissing_OnlyWhenRequestedAndKnownDead()
         {
             GHDiagnosisFacts f = HealthyFacts();
@@ -584,17 +826,17 @@ namespace GnollHackX.UnitTests
         }
 
         [Theory]
-        [InlineData(30.0, 70.0, true)]
-        [InlineData(29.0, 71.0, false)]
-        [InlineData(20.0, 9.9, false)]  /* 29.9 gate units over 30 s are below the share gate */
-        [InlineData(20.0, 10.0, true)]
-        public void GpuBound_ShareAndGate(double gpuMs, double otherMs, bool fires)
+        [InlineData(30.0, 70.0, GHFindingSeverity.Suspect)]
+        [InlineData(29.0, 71.0, null)]
+        [InlineData(20.0, 9.9, null)]  /* 29.9 gate units over 30 s are below the share gate */
+        [InlineData(20.0, 10.0, GHFindingSeverity.Likely)]
+        public void GpuBound_ShareAndGate(double gpuMs, double otherMs, GHFindingSeverity? expected)
         {
             GHDiagnosisFacts f = HealthyFacts();
             Causes(f, GHHitchCause.Gpu, gpuMs, GHHitchCause.Unattributed, otherMs);
 
-            if (fires)
-                AssertFires(f, GHPerformanceDiagnosis.CodeGpuBound, GHFindingSeverity.Suspect);
+            if (expected.HasValue)
+                AssertFires(f, GHPerformanceDiagnosis.CodeGpuBound, expected.Value);
             else
                 AssertSilent(f, GHPerformanceDiagnosis.CodeGpuBound);
         }
@@ -662,17 +904,68 @@ namespace GnollHackX.UnitTests
         /* ------------------------------------------------------------------ Display */
 
         [Theory]
-        [InlineData(30.0, 70.0, true)]
-        [InlineData(29.0, 71.0, false)]
-        public void Compositor_Share(double compositorMs, double otherMs, bool fires)
+        [InlineData(30.0, 70.0, GHPerformanceDiagnosis.PresentSourceEstimated, GHFindingSeverity.Info)]
+        [InlineData(30.0, 70.0, null, GHFindingSeverity.Info)]
+        [InlineData(30.0, 70.0, GHPerformanceDiagnosis.PresentSourceMeasured, GHFindingSeverity.Suspect)]
+        [InlineData(60.0, 40.0, GHPerformanceDiagnosis.PresentSourceMeasured, GHFindingSeverity.Suspect)]
+        [InlineData(29.0, 71.0, GHPerformanceDiagnosis.PresentSourceEstimated, null)]
+        [InlineData(29.0, 71.0, GHPerformanceDiagnosis.PresentSourceMeasured, null)]
+        public void Compositor_Share(double compositorMs, double otherMs, string source, GHFindingSeverity? expected)
         {
             GHDiagnosisFacts f = HealthyFacts();
+            f.PresentSource = source;
             Causes(f, GHHitchCause.Compositor, compositorMs, GHHitchCause.Unattributed, otherMs);
 
-            if (fires)
-                AssertFires(f, GHPerformanceDiagnosis.CodeCompositor, GHFindingSeverity.Suspect);
-            else
+            if (!expected.HasValue)
+            {
                 AssertSilent(f, GHPerformanceDiagnosis.CodeCompositor);
+                return;
+            }
+            AssertFires(f, GHPerformanceDiagnosis.CodeCompositor, expected.Value);
+            GHDiagnosisFinding x = Find(GHPerformanceDiagnosis.Diagnose(f), GHPerformanceDiagnosis.CodeCompositor);
+            if (expected.Value == GHFindingSeverity.Info)
+            {
+                Assert.Equal("Frames may be dropped after the app (inferred)", x.Title);
+                Assert.Contains("; display times are estimated from vsync, not measured", x.Evidence);
+                Assert.Contains("PresentMon", x.Advice);
+                Assert.True(double.IsNaN(x.Score));
+            }
+            else
+            {
+                Assert.Equal(compositorMs / (compositorMs + otherMs), x.Score, 6);
+            }
+        }
+
+        [Fact]
+        public void Conclusion_InferredCompositor_IsUnclear()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            Causes(f, GHHitchCause.Compositor, 60.0, GHHitchCause.Unattributed, 40.0);
+
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+
+            Assert.Null(r.Primary);
+            Assert.Equal(GHCauseLocation.Unclear, r.Location);
+            Assert.Equal(GHPerformanceDiagnosis.InferredCompositorConclusion, r.Conclusion);
+            Assert.Contains("\nLocation: unclear\n", Report(f));
+
+            f.PresentSource = GHPerformanceDiagnosis.PresentSourceMeasured;
+            r = GHPerformanceDiagnosis.Diagnose(f);
+            Assert.Equal(GHPerformanceDiagnosis.CodeCompositor, r.Primary.Code);
+            Assert.Equal(GHCauseLocation.Configuration, r.Location);
+        }
+
+        [Fact]
+        public void Conclusion_NoCompositor_IsStillElimination()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            Causes(f, GHHitchCause.Compositor, 29.0, GHHitchCause.Unattributed, 71.0);
+
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+
+            Assert.Null(r.Primary);
+            Assert.Equal(GHCauseLocation.InsideGame, r.Location);
+            Assert.Equal(GHPerformanceDiagnosis.EliminationConclusion, r.Conclusion);
         }
 
         [Theory]
@@ -813,6 +1106,53 @@ namespace GnollHackX.UnitTests
             AssertSilent(f, GHPerformanceDiagnosis.CodePaintHeavy);
         }
 
+        [Theory]
+        [InlineData(GHHitchCause.UiThreadLateGc, GHPerformanceDiagnosis.CodeGcPressure)]
+        [InlineData(GHHitchCause.UiThreadLate, GHPerformanceDiagnosis.CodeUiThreadBusy)]
+        [InlineData(GHHitchCause.PaintCpu, GHPerformanceDiagnosis.CodePaintHeavy)]
+        [InlineData(GHHitchCause.Gpu, GHPerformanceDiagnosis.CodeGpuBound)]
+        public void ShareFindings_LikelyAtHalf(GHHitchCause cause, string code)
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            Causes(f, cause, 50.0, GHHitchCause.Unattributed, 50.0);
+            GHDiagnosisFinding x = Find(GHPerformanceDiagnosis.Diagnose(f), code);
+            Assert.Equal(GHFindingSeverity.Likely, x.Severity);
+            Assert.Equal(0.5, x.Score, 6);
+
+            Causes(f, cause, 49.0, GHHitchCause.Unattributed, 51.0);
+            x = Find(GHPerformanceDiagnosis.Diagnose(f), code);
+            Assert.Equal(GHFindingSeverity.Suspect, x.Severity);
+            Assert.Equal(0.49, x.Score, 6);
+        }
+
+        [Fact]
+        public void AddedEvidence_NeverDemotes()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            Causes(f, GHHitchCause.UiThreadLateGc, 60.0, GHHitchCause.Unattributed, 40.0);
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+            Assert.Equal(GHFindingSeverity.Likely, r.Primary.Severity);
+            Assert.Equal(GHPerformanceDiagnosis.CodeGcPressure, r.Primary.Code);
+
+            /* An allocation rate over the bound adds evidence, but keeps the share's severity and score */
+            f.AllocationRateMBPerSec = 80f;
+            r = GHPerformanceDiagnosis.Diagnose(f);
+            Assert.Equal(GHPerformanceDiagnosis.CodeGcPressure, r.Primary.Code);
+            Assert.Equal(GHFindingSeverity.Likely, r.Primary.Severity);
+            Assert.Equal(0.6, r.Primary.Score, 6);
+
+            Causes(f, GHHitchCause.UiThreadLateGc, 30.0, GHHitchCause.Unattributed, 70.0);
+            GHDiagnosisFinding x = Find(GHPerformanceDiagnosis.Diagnose(f), GHPerformanceDiagnosis.CodeGcPressure);
+            Assert.Equal(GHFindingSeverity.Suspect, x.Severity);
+            Assert.Equal(0.3, x.Score, 6);
+
+            /* By allocation rate alone: Suspect without a score */
+            Causes(f, GHHitchCause.Unattributed, 100.0);
+            x = Find(GHPerformanceDiagnosis.Diagnose(f), GHPerformanceDiagnosis.CodeGcPressure);
+            Assert.Equal(GHFindingSeverity.Suspect, x.Severity);
+            Assert.True(double.IsNaN(x.Score));
+        }
+
         /* ------------------------------------------------------------------ Instrument */
 
         [Fact]
@@ -840,6 +1180,47 @@ namespace GnollHackX.UnitTests
 
             f.ContentEventCount = 1;
             AssertFires(f, GHPerformanceDiagnosis.CodePlayerInput, GHFindingSeverity.Info);
+        }
+
+        [Fact]
+        public void PlayerInput_SuspectWhenEventGapsHoldHalfTheHitches()
+        {
+            int mapUpdate = 9;   /* bit position of GHContentEvent.MapUpdate */
+            GHDiagnosisFacts f = DegradedFacts();
+            f.HitchCount = 4;
+            f.QuietGapCount = 1780;
+            f.QuietHitchCount = 2;
+            f.ContentEventCount = 20;
+            f.EventGapCounts[mapUpdate] = 20;
+            f.EventHitchCounts[mapUpdate] = 2;
+
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+            GHDiagnosisFinding x = Find(r, GHPerformanceDiagnosis.CodePlayerInput);
+
+            Assert.Equal(GHFindingSeverity.Suspect, x.Severity);
+            Assert.Contains("MapUpdate 2 of 20", x.Evidence);
+            Assert.Contains("0.1 % of quiet gaps", x.Evidence);
+            Assert.Contains("10.0 % of gaps with events", x.Evidence);
+            Assert.Null(r.Primary);
+
+            f.QuietHitchCount = 3;
+            AssertFires(f, GHPerformanceDiagnosis.CodePlayerInput, GHFindingSeverity.Info);
+
+            f.HitchCount = 2;
+            f.QuietHitchCount = 0;
+            AssertFires(f, GHPerformanceDiagnosis.CodePlayerInput, GHFindingSeverity.Info);
+        }
+
+        [Fact]
+        public void PlayerInput_UnknownQuietCount_StaysInfo()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            f.HitchCount = 10;
+            f.QuietHitchCount = -1;
+            f.ContentEventCount = 20;
+
+            AssertFires(f, GHPerformanceDiagnosis.CodePlayerInput, GHFindingSeverity.Info);
+            Assert.DoesNotContain("\n  Content: ", Report(f));
         }
 
         [Fact]
@@ -912,11 +1293,16 @@ namespace GnollHackX.UnitTests
         public void Location_InstrumentAndInfoFindingsNeverPrimary()
         {
             GHDiagnosisFacts f = DegradedFacts();
-            f.DebuggerAttached = true;
+            f.VerboseLoggingOn = true;
             f.IsCharging = false;
+            f.HitchCount = 4;
+            f.QuietHitchCount = 1;
+            f.ContentEventCount = 30;
 
             GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
 
+            Assert.Equal(GHDiagnosisHealth.Degraded, r.Health);
+            Assert.Equal(GHFindingSeverity.Suspect, Find(r, GHPerformanceDiagnosis.CodePlayerInput).Severity);
             Assert.NotNull(Find(r, GHPerformanceDiagnosis.CodeDebugOverhead));
             Assert.NotNull(Find(r, GHPerformanceDiagnosis.CodeOnBattery));
             Assert.Null(r.Primary);
@@ -971,8 +1357,8 @@ namespace GnollHackX.UnitTests
         public void Primary_AreaPriorityBreaksSeverityTie()
         {
             GHDiagnosisFacts f = DegradedFacts();
-            f.ThermalRankBefore = 3;
-            f.ThermalRankAfter = 3;                                 /* Heat, Likely */
+            f.ThermalRankBefore = 4;
+            f.ThermalRankAfter = 4;                                 /* Heat, Likely */
             f.BackgroundVerdict = GHBackgroundVerdict.Busy;         /* Background, Likely */
 
             GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
@@ -995,20 +1381,130 @@ namespace GnollHackX.UnitTests
             Assert.Equal(GHPerformanceDiagnosis.CodeBackgroundBusy, r.Primary.Code);
         }
 
+        /* Severity, then rank group, then score, then area, then code */
         [Fact]
         public void Findings_SortedBySeverityThenArea()
         {
-            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(StressFacts());
+            GHDiagnosisFacts f = StressFacts();
+            Causes(f, GHHitchCause.Gpu, 35.0, GHHitchCause.UiThreadLate, 31.0, GHHitchCause.UiThreadLateGc, 21.0,
+                GHHitchCause.Compositor, 5.0, GHHitchCause.Unattributed, 8.0);
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
 
             Assert.True(r.Findings.Count > 5);
+            int scored = 0;
+            for (int i = 0; i < r.Findings.Count; i++)
+            {
+                if (!double.IsNaN(r.Findings[i].Score))
+                    scored++;
+            }
+            Assert.True(scored >= 3);
             for (int i = 1; i < r.Findings.Count; i++)
             {
                 GHDiagnosisFinding a = r.Findings[i - 1];
                 GHDiagnosisFinding b = r.Findings[i];
+                int ga = GHPerformanceDiagnosis.RankGroup(a);
+                int gb = GHPerformanceDiagnosis.RankGroup(b);
+                bool sameScore = double.IsNaN(a.Score) ? double.IsNaN(b.Score) : a.Score == b.Score;
                 Assert.True(a.Severity > b.Severity
-                    || (a.Severity == b.Severity && a.Area < b.Area)
-                    || (a.Severity == b.Severity && a.Area == b.Area && string.CompareOrdinal(a.Code, b.Code) < 0));
+                    || (a.Severity == b.Severity && ga < gb)
+                    || (a.Severity == b.Severity && ga == gb && !double.IsNaN(a.Score)
+                        && (double.IsNaN(b.Score) || a.Score > b.Score))
+                    || (a.Severity == b.Severity && ga == gb && sameScore && a.Area < b.Area)
+                    || (a.Severity == b.Severity && ga == gb && sameScore && a.Area == b.Area
+                        && string.CompareOrdinal(a.Code, b.Code) < 0),
+                    a.Code + " before " + b.Code);
             }
+        }
+
+        [Fact]
+        public void Primary_GcShareOutranksSmallKnownActivity()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            Causes(f, GHHitchCause.UiThreadLateGc, 40.0, GHHitchCause.Unattributed, 60.0);
+            f.Processes = new List<GHProcessLoad> { new GHProcessLoad("MsMpEng", 5f, float.NaN) };
+
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+
+            Assert.Equal(GHFindingSeverity.Info, Find(r, "BG_ANTIVIRUS").Severity);
+            Assert.Equal(GHPerformanceDiagnosis.CodeGcPressure, r.Primary.Code);
+            Assert.Equal(GHCauseLocation.InsideGame, r.Location);
+        }
+
+        [Fact]
+        public void Primary_ShareOutranksSettingsSuspect()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            f.NonDefaultPerformanceSettings = new List<string> { "tile batching off" };   /* Settings, Suspect */
+            Causes(f, GHHitchCause.PaintCpu, 40.0, GHHitchCause.Unattributed, 60.0);          /* share 0.40 */
+
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+
+            Assert.Equal(GHPerformanceDiagnosis.CodePaintHeavy, r.Primary.Code);
+            Assert.Equal(GHCauseLocation.InsideGame, r.Location);
+        }
+
+        [Fact]
+        public void Primary_ShareOutranksBackgroundSuspect()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            f.BackgroundVerdict = GHBackgroundVerdict.Elevated;                           /* Background, Suspect */
+            Causes(f, GHHitchCause.UiThreadLate, 40.0, GHHitchCause.Unattributed, 60.0);  /* share 0.40 */
+
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+
+            Assert.Equal(GHPerformanceDiagnosis.CodeUiThreadBusy, r.Primary.Code);
+        }
+
+        [Fact]
+        public void Primary_HigherShareFirst()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            Causes(f, GHHitchCause.Gpu, 35.0, GHHitchCause.PaintCpu, 45.0, GHHitchCause.Unattributed, 20.0);
+
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+
+            Assert.Equal(GHPerformanceDiagnosis.CodePaintHeavy, r.Findings[0].Code);
+            Assert.Equal(GHPerformanceDiagnosis.CodeGpuBound, r.Findings[1].Code);
+            Assert.Equal(GHPerformanceDiagnosis.CodePaintHeavy, r.Primary.Code);
+        }
+
+        [Fact]
+        public void Primary_LikelyWrongGpuBeatsLikelyGpuShare()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            f.RenderAdapterIsIntegrated = true;                                   /* WRONG_GPU, Likely */
+            Causes(f, GHHitchCause.Gpu, 60.0, GHHitchCause.Unattributed, 40.0);   /* GPU_BOUND, Likely */
+
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+
+            Assert.Equal(GHFindingSeverity.Likely, Find(r, GHPerformanceDiagnosis.CodeGpuBound).Severity);
+            Assert.Equal(GHPerformanceDiagnosis.CodeWrongGpu, r.Primary.Code);
+        }
+
+        [Fact]
+        public void Primary_HeatSuspectOutranksShare()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            f.HeadroomAfter = 0.9f;                                                   /* THERMAL_RISING, Suspect */
+            Causes(f, GHHitchCause.PaintCpu, 40.0, GHHitchCause.Unattributed, 60.0);  /* PAINT_HEAVY, Suspect */
+
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+
+            Assert.Equal(GHPerformanceDiagnosis.CodeThermalRising, r.Primary.Code);
+            Assert.Equal(GHCauseLocation.External, r.Location);
+        }
+
+        [Fact]
+        public void Primary_LikelyBackgroundBeatsLikelyShare()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            f.BackgroundVerdict = GHBackgroundVerdict.Busy;                           /* BACKGROUND_BUSY, Likely */
+            Causes(f, GHHitchCause.PaintCpu, 60.0, GHHitchCause.Unattributed, 40.0);  /* PAINT_HEAVY, Likely */
+
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+
+            Assert.Equal(GHFindingSeverity.Likely, Find(r, GHPerformanceDiagnosis.CodePaintHeavy).Severity);
+            Assert.Equal(GHPerformanceDiagnosis.CodeBackgroundBusy, r.Primary.Code);
         }
 
         [Fact]
@@ -1032,8 +1528,15 @@ namespace GnollHackX.UnitTests
 
         /* ------------------------------------------------------------------ Report */
 
-        /* Facts that fire many rules with long strings everywhere */
+        /* Facts that fire many rules with long strings everywhere. The debug flags make the
+           health Inconclusive; StressFacts(false) clears them for a Degraded report with a
+           primary cause. */
         private static GHDiagnosisFacts StressFacts()
+        {
+            return StressFacts(true);
+        }
+
+        private static GHDiagnosisFacts StressFacts(bool debugFlags)
         {
             string longName = new string('x', 120);
             GHDiagnosisFacts f = DegradedFacts();
@@ -1077,10 +1580,24 @@ namespace GnollHackX.UnitTests
             Causes(f, GHHitchCause.Gpu, 40.0, GHHitchCause.Compositor, 35.0, GHHitchCause.UiThreadLateGc, 30.0,
                 GHHitchCause.PaintCpu, 50.0, GHHitchCause.Unattributed, 10.0);
             f.AllocationRateMBPerSec = 80f;
-            f.IsDebugBuild = true;
-            f.DebuggerAttached = true;
+            f.IsDebugBuild = debugFlags;
+            f.DebuggerAttached = debugFlags;
             f.VerboseLoggingOn = true;
             f.ContentEventCount = 7;
+            f.HitchCount = 40;
+            f.QuietGapCount = 1793;
+            f.QuietHitchCount = 5;
+            for (int k = 0; k < GHSmoothnessMetrics.ContentEventKinds; k++)
+            {
+                f.EventGapCounts[k] = 7000 + k;
+                f.EventHitchCounts[k] = 3000 + k;
+            }
+            f.LongStallMs = 12345.678f;
+            f.PresentSource = longName;
+            f.SceneBefore = new GHDiagnosisScene();
+            f.SceneBefore.LevelText = "The Gnomish Mines " + longName;
+            f.SceneBefore.ZoomMode = GHDiagnosisScene.ZoomMinimap;
+            f.SceneBefore.MapFontSize = 123.456f;
             f.GpuPreference = "Integrated " + longName;
             f.FrameDetailText = "Worst hitches:\n  " + new string('w', 150) + "\n  second line";
             return f;
@@ -1093,9 +1610,37 @@ namespace GnollHackX.UnitTests
             string report = GHPerformanceDiagnosis.BuildReport(f, GHPerformanceDiagnosis.Diagnose(f), Now);
             string[] lines = Lines(report);
 
-            Assert.Equal("GnollHack performance test report v1 2026-09-27 14:05", lines[0]);
+            Assert.Equal("GnollHack performance test report v2 2026-09-27 14:05", lines[0]);
             Assert.Equal("Result: DEGRADED  50.0 of 60 target fps, hitches 1.0 ms/s", lines[2]);
             Assert.Equal("Location: inside the game", lines[3]);
+        }
+
+        [Fact]
+        public void ResultLine_ShowsDisplayCap()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.TargetFps = 120f;
+            string[] lines = Lines(Report(f));
+            Assert.Equal("Result: HEALTHY  59.5 of 120 target fps, hitches 1.0 ms/s (display 60 Hz)", lines[2]);
+
+            /* Too long with "target": left out */
+            f.TargetFps = 144f;
+            f.DisplayedFps = 59.9f;
+            f.HitchRatioMsPerSec = 123.4f;
+            f.PlatformRenderLoopOn = false;
+            lines = Lines(Report(f));
+            Assert.Equal("Result: INCONCLUSIVE  59.9 of 144 fps, hitches 123.4 ms/s (display 60 Hz)", lines[2]);
+            Assert.True(lines[2].Length <= GHPerformanceTextReport.MaxLineWidth);
+        }
+
+        [Fact]
+        public void ResultLine_NoSuffixAt5994()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.MeasuredRefreshHz = 59.94f;
+            string[] lines = Lines(Report(f));
+
+            Assert.Equal("Result: HEALTHY  59.5 of 60 target fps, hitches 1.0 ms/s", lines[2]);
         }
 
         [Fact]
@@ -1121,7 +1666,10 @@ namespace GnollHackX.UnitTests
         [Fact]
         public void Report_LinesFitWidthExceptAppendix_AndUseLf()
         {
-            GHDiagnosisFacts[] cases = { StressFacts(), HealthyFacts(), DegradedFacts(), new GHDiagnosisFacts() };
+            GHDiagnosisFacts[] cases =
+            {
+                StressFacts(), StressFacts(false), HealthyFacts(), DegradedFacts(), new GHDiagnosisFacts()
+            };
             for (int c = 0; c < cases.Length; c++)
             {
                 string report = GHPerformanceDiagnosis.BuildReport(cases[c], GHPerformanceDiagnosis.Diagnose(cases[c]), Now);
@@ -1183,7 +1731,7 @@ namespace GnollHackX.UnitTests
             GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
             string report = GHPerformanceDiagnosis.BuildReport(f, r, Now);
 
-            Assert.Contains("\nFacts:\n  formatVersion=1\n", report);
+            Assert.Contains("\nFacts:\n  formatVersion=2\n", report);
             Assert.Contains("\n  pacingErrorRmsMs=n/a\n", report);
             Assert.Contains("\n  windowSeconds=30\n", report);
             Assert.Contains("\n  displayedFps=50\n", report);
@@ -1243,7 +1791,7 @@ namespace GnollHackX.UnitTests
             string report = GHPerformanceDiagnosis.BuildReport(f, GHPerformanceDiagnosis.Diagnose(f), Now);
 
             Assert.Contains("\n  GPU         ok    rendering on NVIDIA GeForce RTX 3060 (discrete)\n", report);
-            Assert.Contains("\n  Game        warn  Map drawing is CPU-heavy (PAINT_HEAVY)\n", report);
+            Assert.Contains("\n  Game        BAD   Map drawing is CPU-heavy (PAINT_HEAVY)\n", report);
             Assert.Contains("\n  PaintCpu              300.0 ms    60 %\n", report);
             Assert.Contains("\n  Unattributed          200.0 ms    40 %\n", report);
             Assert.Contains("\n  total                 500.0 ms  (16.7 ms/s)\n", report);
@@ -1262,12 +1810,96 @@ namespace GnollHackX.UnitTests
             Assert.True(notes >= 0 && input > notes && caveat > input);
         }
 
+        [Fact]
+        public void Report_SceneLine()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            string report = Report(f);
+            Assert.Contains("\n  Scene: n/a\n", report);
+            Assert.Contains("\n  scene.levelText=n/a\n  scene.zoomMode=n/a\n  scene.mapFontSize=n/a\n", report);
+
+            f.SceneBefore = new GHDiagnosisScene();
+            f.SceneBefore.LevelText = "Dlvl:3";
+            f.SceneBefore.ZoomMode = GHDiagnosisScene.ZoomAlternate;
+            f.SceneBefore.MapFontSize = 42.5f;
+            report = Report(f);
+
+            Assert.Contains("\n  Window: 30.0 s, target 60 fps, displayed 59.5 fps\n"
+                + "  Scene: Dlvl:3, zoom alternate, map font 42.5\n", report);
+            Assert.Contains("\n  scene.levelText=Dlvl:3\n  scene.zoomMode=alternate\n"
+                + "  scene.mapFontSize=42.5\n", report);
+        }
+
+        [Fact]
+        public void Report_FactsCarryVersionAndFrameMarker()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            string report = Report(f);
+
+            Assert.Contains("\nFacts:\n  formatVersion=" + GHPerformanceDiagnosis.ReportFormatVersion + "\n", report);
+            Assert.Contains("\n  nominalWindowSeconds=30\n", report);
+            Assert.Contains("\n  onScreenIntervalCount=1800\n", report);
+            Assert.Contains("\n  quietGapCount=1800\n  quietHitchCount=2\n", report);
+            Assert.Contains("\n  eventGapCounts=0,0,0,0,0,0,0,0,0,0\n", report);
+            Assert.Contains("\n  metricsVersion=" + GHSmoothnessMetrics.MetricsVersion + "\n", report);
+            Assert.Contains("\n  presentSource=Estimated\n", report);
+            Assert.Contains("\n  frameMarker=on\n", report);
+            Assert.Contains("\n  Content: hitches in 0.1 % of 1800 quiet gaps, n/a of 0 with events\n", report);
+
+            f.MetricsVersion = -1;
+            f.OnScreenIntervalCount = -1;
+            f.FrameMarkerOff = true;
+            f.EventGapCounts = null;
+            f.PresentSource = null;
+            report = Report(f);
+
+            Assert.Contains("\n  metricsVersion=n/a\n", report);
+            Assert.Contains("\n  onScreenIntervalCount=n/a\n", report);
+            Assert.Contains("\n  frameMarker=off\n", report);
+            Assert.Contains("\n  presentSource=n/a\n", report);
+            Assert.DoesNotContain("eventGapCounts=", report);
+            Assert.Contains("\n  eventHitchCounts=", report);
+        }
+
+        [Fact]
+        public void Report_AlsoLine_NamesTheOtherSide()
+        {
+            /* A scored primary names the strongest external finding */
+            GHDiagnosisFacts f = DegradedFacts();
+            f.BackgroundVerdict = GHBackgroundVerdict.Elevated;
+            Causes(f, GHHitchCause.PaintCpu, 60.0, GHHitchCause.Unattributed, 40.0);
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+            string report = GHPerformanceDiagnosis.BuildReport(f, r, Now);
+
+            Assert.Equal(GHPerformanceDiagnosis.CodePaintHeavy, r.Primary.Code);
+            Assert.Contains("\n  Also: Background load is elevated (BACKGROUND_ELEVATED, suspect)\n\nAlso found:\n",
+                report);
+            Assert.Equal(Lines(report)[2] + " | " + Lines(report)[3], GHPerformanceDiagnosis.HeadlineOf(report));
+
+            /* An unscored primary names the strongest share */
+            f.BackgroundVerdict = GHBackgroundVerdict.Busy;
+            Causes(f, GHHitchCause.PaintCpu, 40.0, GHHitchCause.Unattributed, 60.0);
+            r = GHPerformanceDiagnosis.Diagnose(f);
+            report = GHPerformanceDiagnosis.BuildReport(f, r, Now);
+
+            Assert.Equal(GHPerformanceDiagnosis.CodeBackgroundBusy, r.Primary.Code);
+            Assert.Contains("\n  Also: Map drawing is CPU-heavy (PAINT_HEAVY, suspect)\n\nAlso found:\n", report);
+
+            /* Nothing on the other side: no line */
+            f.BackgroundVerdict = GHBackgroundVerdict.Quiet;
+            report = Report(f);
+            Assert.DoesNotContain("\n  Also: ", report);
+        }
+
         /* ------------------------------------------------------------------ HeadlineOf */
 
         [Fact]
         public void HeadlineOf_RoundTripsReport()
         {
-            GHDiagnosisFacts[] cases = { StressFacts(), HealthyFacts(), DegradedFacts(), new GHDiagnosisFacts() };
+            GHDiagnosisFacts[] cases =
+            {
+                StressFacts(), StressFacts(false), HealthyFacts(), DegradedFacts(), new GHDiagnosisFacts()
+            };
             for (int c = 0; c < cases.Length; c++)
             {
                 string report = GHPerformanceDiagnosis.BuildReport(cases[c], GHPerformanceDiagnosis.Diagnose(cases[c]), Now);

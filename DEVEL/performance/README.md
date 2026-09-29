@@ -130,6 +130,7 @@ of the game menu is shown in developer mode; its frame tools only while the prof
 |------|--------------|
 | **F8** (Windows) | Marks the current frame, in play and in replays. With screen logging on, the screen log gets `MARK frame N` (or `MARK failed for frame N`) |
 | **Game menu > Developer > Analyze Hitches** | A plain-text report of the last 30 s before the game menu was opened, shown in the viewer and written to `archive/recent_hitches.txt`: displayed FPS, hitch ratio and GC of the span; **Marked moments**, each mark with the hitches displayed from 5 s before to 0.5 s after it (the ten largest when there are more); the ten worst hitches, each with its cause, the draw and flush times of the tick that ended it, the request time and collections in the gap, and its content events; and the hitch causes of the span |
+| **Game menu > Developer > Test Performance** | A 30 s measurement of the map as it is now, with a diagnosis naming the most likely cause and where it lies; see [In-game Test Performance](#in-game-test-performance) |
 
 The report ends at the frame on screen when the game menu was opened, so on a touch device,
 open the game menu right after a stutter and use Analyze Hitches.
@@ -310,7 +311,7 @@ target change, canvas pause, GC).
   decision that changes as fragile, and rerun under quiet conditions.
 - **Windows throttling** is judged from the processor performance counter, which reads
   well under 100 on an idle machine under the Balanced plan: a run counts as throttled only
-  when the reading taken after the run is under 90 % and at least 10 points below the one
+  when the reading taken after the run is under 90 % and more than 10 points below the one
   taken before it. The reason names the power plan.
 - **Minimum detectable effect** is printed so that "no difference" reads as "no difference
   larger than X".
@@ -629,6 +630,88 @@ ProMotion) timelines are not covered.
 | W-effects | Spell and screen-filter effects |
 | W-menus | Inventory open and close every 2 s (canvas switches; excluded as pauses) |
 | replay | A reference `.gnhrec` played back at speed 1.0: identical content in both arms |
+
+## In-game Test Performance
+
+**Game menu > Developer > Test Performance** measures the live game as it is on screen and
+writes a plain-text diagnosis naming the most likely cause of poor smoothness and where it
+lies. `GHPerformanceDiagnosticRunner` runs the test and `GHPerformanceDiagnosis` judges it.
+
+After a confirmation the menu closes and a countdown is drawn at the top of the map. The
+test settles for 3 s, so that the menu's pause and collection fall outside the window, waits
+at most 5 s for the background sampler's per-process begin collect, records the scene, and
+measures the map for one 30 s window. Do not touch the game until the report opens. The
+window is saved as a run record in `<GHPath>/performance/diagnostics/<stamp>/`, and the
+report is written to `diagnostics/perftest_<stamp>.txt` (`<stamp>` is the local time as
+`yyyyMMdd_HHmmss`) and opened in the viewer. The newest 30 reports are kept: after every
+test, aborted or not, older reports and every `<stamp>` folder without a kept report are
+deleted. Reset > Delete Performance Data deletes them all.
+
+The test refuses to start when the frame timeline or the platform render loop is off, the
+game has ended, or a test, a suite, a measurement window or a window command is already
+running; it checks again after the confirmation. It stops when the app goes to the
+background, a page opens over the game page, or the game ends, and, once the window is
+open, when a menu or window opens over the map. An aborted window is discarded unsaved, no
+report is written, and the game page says why.
+
+**Health** is judged against the effective target, the lower of the map FPS target and the
+measured refresh rate:
+
+| Class | Rule |
+|-------|------|
+| Healthy | Displayed FPS at least 95 % of the effective target and hitch ratio under 5 ms/s |
+| Poor | Displayed FPS under 75 % of the effective target, or hitch ratio over 10 ms/s |
+| Degraded | Otherwise |
+| Inconclusive | The first that applies: the platform render loop is off; the measurement is excluded (the power state changed, or the window could not be saved); a Debug build or an attached debugger; the map was covered or paused for more than 20 % of the window; fewer than 100 on-screen intervals; no displayed frame rate, target rate or hitch ratio |
+
+The run record's throttling and busy-background exclusions do not make the test
+inconclusive; they become findings. A cause's share of hitch time counts only when the
+summed cause time is at least 5 ms/s, so the few hitches of a healthy run name no cause.
+
+| Area | Findings (`likely`, `suspect` or `info`) |
+|------|----------|
+| Heat | `THERMAL_THROTTLED` likely when the thermal status shows throttling (above Moderate, or a rise of two classes), suspect at Moderate; otherwise `THERMAL_RISING` suspect at a thermal headroom of 0.85 or more, info for a one-class rise. `CPU_CLOCK_CAPPED` suspect when the processor performance counter fell by more than 10 points to under 90 % (or reads under 90 % with no earlier reading), otherwise info under 60 % |
+| Power | `LOW_POWER_MODE` likely; `POWER_EFFICIENCY_MODE` (Best power efficiency or the Power saver plan) suspect; `ON_BATTERY` info, suspect with power saving on |
+| Background | `BACKGROUND_BUSY` likely, `BACKGROUND_ELEVATED` suspect (see [Verdict](#verdict)); a known activity, `BG_<CATEGORY>`, from 2 % CPU: info unless the verdict is elevated or busy or the activity uses at least 10 % CPU; `BG_OTHER_PROCESS` suspect from 10 % CPU; `OTHER_GPU_LOAD`, compositor excluded, suspect from 10 %, likely from 30 % |
+| Memory | `LOW_MEMORY` suspect at the elevated levels, likely at the busy ones or a low-memory report |
+| GPU | `CPU_RENDERING` likely when degraded, poor or 30 % `PaintCpu`, else info; `GPU_CONTEXT_MISSING`, `SOFTWARE_ADAPTER`, `WRONG_GPU` likely; `WRONG_GPU_POSSIBLE` suspect; `GPU_BOUND` from 30 % `Gpu` |
+| Display | `COMPOSITOR` from 30 % `Compositor` (below); `REFRESH_BELOW_MAX` (the refresh at most 90 % of the display's maximum while it caps the rate) and `PACING_MISMATCH` suspect |
+| Settings | `MAP_FPS_CAP` info (target under 90 % of the refresh rate); `SETTINGS_NONDEFAULT` suspect (a performance feature off against its default) |
+| Game | `GC_PRESSURE` from 20 % `UiThreadLateGc`, or suspect without a score from 50 MB/s allocation; `UI_THREAD_BUSY` from 30 % `UiThreadLate` + `UiThreadRequests`; `PAINT_HEAVY` from 30 % `PaintCpu` with the GPU on |
+| Instrument | `DEBUG_OVERHEAD` info, suspect with a debugger attached; `PLAYER_INPUT` (below); `SAMPLER_OFF` info |
+
+The stage findings, `GPU_BOUND`, `GC_PRESSURE` by share, `UI_THREAD_BUSY` and `PAINT_HEAVY`,
+are suspect below a 50 % share and likely from it, and carry the share as their score.
+`COMPOSITOR` is suspect only on measured display times, which the app never has (see
+[Metrics](#metrics)); on the vsync estimate it is info and marked inferred. `PLAYER_INPUT`
+is suspect with at least 3 hitches of which the gaps with content events hold at least
+half, and info whenever content changed.
+
+**Ranking.** Findings are sorted by severity first. Within a severity come, in order: heat
+and power findings and any likely finding without a score, which are causes outside the
+pipeline and explain any share; the findings scored by their share of hitch time, highest
+first; then the rest. When the health is Degraded or Poor, the primary cause is the first
+suspect-or-stronger finding outside the Instrument area, so `PLAYER_INPUT` never is. The
+**Location** line gives its side: `external` (heat, power, background, memory),
+`configuration` (GPU, display, settings) or `inside the game`. Without a primary cause, a
+run with at least 30 % of its hitch time in `Compositor` concludes `unclear`, since that
+share is inferred, and any other `inside the game`, by elimination. A healthy run has the
+location `none`, an inconclusive one `unclear`. The **Also:** line under the primary cause
+names the other side: for a scored primary, the first suspect-or-stronger heat, power,
+background or memory finding; for any other primary, the first scored finding.
+
+**The report**, format version 2, gives in order: the Result line (health, displayed and
+target FPS, hitch ratio), Location, the most likely cause, the other suspect and likely
+findings, a Checks row per area (`ok`, `warn`, `BAD` or `n/a`), Measurements, Hitch causes,
+Notes (the info findings), Environment (the fingerprint without `meta` and most `component`
+keys), Facts, and Frame detail, the Analyze Hitches report of the 30 s ending at the
+window's last frame. The **Scene** line gives the level, the zoom mode (`normal`,
+`alternate` or `minimap`) and the map font size just before the window; the **Content** line
+gives the hitch rates of the quiet gaps and of the gaps with content events (see
+[Content events](#content-events)). **Facts** is one `key=value` line per fact, `n/a` when
+unknown: `formatVersion` first, `metricsVersion` (see [Metrics](#metrics)), `frameMarker`
+(`on` or `off`), the `scene.*` keys, and last the health, location, primary and finding
+codes. Reports of different metrics versions do not compare.
 
 ## In-app Performance Suite
 
