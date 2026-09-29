@@ -7,9 +7,9 @@ namespace GnollHackX.Performance
 {
     /* The in-game performance test's countdown, drawn on the map canvas right after
        GHFrameMarker: a small rounded pill at top center, below the frame marker strip,
-       reading "Performance test starts in N" until the settle end, "Measuring... N s -
-       please wait" until the window end, and "Preparing the report - please wait" after
-       it until Stop.
+       reading "Performance test starts in N" until the settle end (held at 1 past it while
+       no window end is set), "Measuring... N s - please wait" until the window end, and
+       "Preparing the report - please wait" after it until Stop.
 
        Start and Stop run on the UI thread; Draw runs on the paint thread (the GL thread
        on Android), so the state is kept with Interlocked. Draw is allocation-free once
@@ -76,8 +76,9 @@ namespace GnollHackX.Performance
         }
 
         /* Shows the countdown: the settle phase until settleEndUtcTicks, then the window
-           phase until windowEndUtcTicks (both DateTime.UtcNow.Ticks). Calling it again
-           while active moves the ends. */
+           phase until windowEndUtcTicks (both DateTime.UtcNow.Ticks). A windowEndUtcTicks
+           of 0 keeps the settle phase's last text until a later call sets the window end.
+           Calling it again while active moves the ends. */
         public static void Start(long settleEndUtcTicks, long windowEndUtcTicks)
         {
             Interlocked.Exchange(ref _settleEndUtcTicks, settleEndUtcTicks);
@@ -110,7 +111,7 @@ namespace GnollHackX.Performance
                 SKTextBlob blob;
                 float textWidth;
                 int phase;
-                if (now < settleEnd)
+                if (now < settleEnd || windowEnd == 0)
                 {
                     int i = SecondsLeft(settleEnd - now, MaxSettleSeconds);
                     blob = _settleBlobs[i];

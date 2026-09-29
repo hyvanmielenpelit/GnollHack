@@ -74,7 +74,8 @@ into a later one, is attributed to the tick that requested it. The platform side
 A **frame marker** is drawn on the map while the timeline records: a Gray-coded `FrameId mod
 256` strip in the top-left corner and a block crossing the top edge in two seconds of content
 time. Film the screen in slow motion to see directly which frame was on screen and whether
-the block moves evenly.
+the block moves evenly. The [in-game Test Performance](#in-game-test-performance) hides it
+while it measures, so that the report reflects the game as a player sees it.
 
 The debug dashboard's **SCREEN** section shows the displayed rate, the measured, assumed and
 target rates (orange when the assumed rate is off by more than 5 %), the hitch time ratio,
@@ -645,14 +646,16 @@ window is saved as a run record in `<GHPath>/performance/diagnostics/<stamp>/`, 
 report is written to `diagnostics/perftest_<stamp>.txt` (`<stamp>` is the local time as
 `yyyyMMdd_HHmmss`) and opened in the viewer. The newest 30 reports are kept: after every
 test, aborted or not, older reports and every `<stamp>` folder without a kept report are
-deleted. Reset > Delete Performance Data deletes them all.
+deleted, except the folder of the test that just finished, which is kept even when its
+report could not be written. Reset > Delete Performance Data deletes them all.
 
 The test refuses to start when the frame timeline or the platform render loop is off, the
 game has ended, or a test, a suite, a measurement window or a window command is already
 running; it checks again after the confirmation. It stops when the app goes to the
 background, a page opens over the game page, or the game ends, and, once the window is
-open, when a menu or window opens over the map. An aborted window is discarded unsaved, no
-report is written, and the game page says why.
+open, when a menu or window opens over the map. An aborted window is discarded unsaved and
+no report is written. The final message, a cancellation or an error, appears on whichever
+page is on top once the test has ended, so a second test can start at once.
 
 **Health** is judged against the effective target, the lower of the map FPS target and the
 measured refresh rate:
@@ -677,7 +680,7 @@ summed cause time is at least 5 ms/s, so the few hitches of a healthy run name n
 | GPU | `CPU_RENDERING` likely when degraded, poor or 30 % `PaintCpu`, else info; `GPU_CONTEXT_MISSING`, `SOFTWARE_ADAPTER`, `WRONG_GPU` likely; `WRONG_GPU_POSSIBLE` suspect; `GPU_BOUND` from 30 % `Gpu` |
 | Display | `COMPOSITOR` from 30 % `Compositor` (below); `REFRESH_BELOW_MAX` (the refresh at most 90 % of the display's maximum while it caps the rate) and `PACING_MISMATCH` suspect |
 | Settings | `MAP_FPS_CAP` info (target under 90 % of the refresh rate); `SETTINGS_NONDEFAULT` suspect (a performance feature off against its default) |
-| Game | `GC_PRESSURE` from 20 % `UiThreadLateGc`, or suspect without a score from 50 MB/s allocation; `UI_THREAD_BUSY` from 30 % `UiThreadLate` + `UiThreadRequests`; `PAINT_HEAVY` from 30 % `PaintCpu` with the GPU on |
+| Game | `GC_PRESSURE` from 20 % `UiThreadLateGc`, or suspect without a score from 50 MB/s allocation over the window; `UI_THREAD_BUSY` from 30 % `UiThreadLate` + `UiThreadRequests`; `PAINT_HEAVY` from 30 % `PaintCpu` with the GPU on |
 | Instrument | `DEBUG_OVERHEAD` info, suspect with a debugger attached; `PLAYER_INPUT` (below); `SAMPLER_OFF` info |
 
 The stage findings, `GPU_BOUND`, `GC_PRESSURE` by share, `UI_THREAD_BUSY` and `PAINT_HEAVY`,
@@ -710,7 +713,7 @@ window's last frame. The **Scene** line gives the level, the zoom mode (`normal`
 gives the hitch rates of the quiet gaps and of the gaps with content events (see
 [Content events](#content-events)). **Facts** is one `key=value` line per fact, `n/a` when
 unknown: `formatVersion` first, `metricsVersion` (see [Metrics](#metrics)), `frameMarker`
-(`on` or `off`), the `scene.*` keys, and last the health, location, primary and finding
+(`off` when the marker was hidden during the window, as this test does), the `scene.*` keys, and last the health, location, primary and finding
 codes. Reports of different metrics versions do not compare.
 
 ## In-app Performance Suite

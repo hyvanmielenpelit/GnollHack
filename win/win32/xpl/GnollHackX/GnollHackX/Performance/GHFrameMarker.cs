@@ -4,7 +4,7 @@ using SkiaSharp;
 namespace GnollHackX.Performance
 {
     /* A developer overlay that makes the displayed frame identifiable on film. Drawn last on
-       the map canvas while the frame timeline records:
+       the map canvas while the frame timeline records and Suppressed is not set:
          - a strip of eight cells showing FrameId mod 256 in Gray code (one cell changes per
            frame), between two always-white reference cells, in the top-left corner;
          - a block crossing the top edge in two seconds of content time, advanced by the main
@@ -14,6 +14,10 @@ namespace GnollHackX.Performance
     public static class GHFrameMarker
     {
         public const int Bits = 8;
+
+        /* Set by the in-game performance test while it measures; the map canvas then skips
+           the marker. Written on the UI thread, read on the paint thread. */
+        public static volatile bool Suppressed = false;
 
         private static readonly SKPaint _white = new SKPaint { Color = SKColors.White, Style = SKPaintStyle.Fill, IsAntialias = false };
         private static readonly SKPaint _black = new SKPaint { Color = SKColors.Black, Style = SKPaintStyle.Fill, IsAntialias = false };

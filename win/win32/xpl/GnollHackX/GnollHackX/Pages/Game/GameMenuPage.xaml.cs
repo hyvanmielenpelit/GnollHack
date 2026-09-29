@@ -542,7 +542,7 @@ namespace GnollHackX.Pages.Game
             DeveloperPopupGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
-            /* On confirmation the runner closes this menu and shows its messages on the game page */
+            /* On confirmation the runner closes this menu; its final message goes to the page then on top */
             try
             {
                 await GHPerformanceDiagnosticRunner.RunAsync(_gamePage, this);

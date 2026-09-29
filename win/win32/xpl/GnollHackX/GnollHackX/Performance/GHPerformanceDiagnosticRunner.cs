@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 #if GNH_MAUI
@@ -30,7 +29,8 @@ namespace GnollHackX.Performance
          2. Asks for confirmation on the host page. On OK: holds the background load
             sampler (so the pre-window has samples), starts the countdown and closes
             the menu.
-         3. Settles for SettleSeconds, so the menu's pause mark and collection fall
+         3. Hides the frame marker (GHFrameMarker.Suppressed) until the window is saved.
+            Settles for SettleSeconds, so the menu's pause mark and collection fall
             outside the window; starts the per-process interval on the thread pool,
             waits for its begin collect at most ProcessIntervalBeginWaitMs, captures the
             scene (level, zoom, map font), then opens the measurement window, which on
@@ -43,15 +43,19 @@ namespace GnollHackX.Performance
             window is discarded unsaved and no report is written; the report retention
             still runs, deleting folders left by a test the app was killed during.
          5. Saves the window into ReportsDirectory/<stamp>/, which on Windows also ends
-            the render adapter probe; reads what must be read on the UI thread (GPU
-            context, profiler statistics, recent hitches), then on the thread pool reads
-            the probe's last result and the GPU preference and re-captures the
-            environment fingerprint.
+            the render adapter probe, and takes the window's allocation rate; reads what
+            must be read on the UI thread (GPU context, recent hitches), then on the
+            thread pool reads the probe's last result and the GPU preference and
+            re-captures the environment fingerprint.
          6. Builds GHDiagnosisFacts, diagnoses, writes
             ReportsDirectory/perftest_<stamp>.txt, keeps the newest MaxKeptReports
-            reports, and opens the report page.
-       Messages after the menu has closed are shown on the game page. RunAsync never
-       throws.
+            reports and this test's folder, and opens the report page.
+       Refusals before the running flag is taken are awaited on the host page. The
+       test's final message, if any, including a refusal after the confirmation, is
+       shown only after the running flag is released, on the page at the top of the
+       modal stack (the game page when none), and is not awaited, so a popup the player
+       cannot see never holds the flag. RunAsync never throws.
+       The pure parts are in GHPerformanceDiagnosticSupport.
 
        Must compile under C# 7.3 (the legacy netstandard2.0 project). */
     public static class GHPerformanceDiagnosticRunner
@@ -73,10 +77,6 @@ namespace GnollHackX.Performance
         private const int PollMs = 100;
         private const int BeginPollMs = 16;
 
-        private static readonly Regex _reportFileRegex = new Regex(@"^perftest_([0-9]{8}_[0-9]{6})\.txt\z",
-            RegexOptions.CultureInvariant);
-        private static readonly Regex _testFolderRegex = new Regex(@"^[0-9]{8}_[0-9]{6}\z", RegexOptions.CultureInvariant);
-
         private static int _isRunning = 0;
 
         public static bool IsRunning { get { return Interlocked.CompareExchange(ref _isRunning, 0, 0) != 0; } }
@@ -89,7 +89,8 @@ namespace GnollHackX.Performance
         }
 
         /* Call on the UI thread. hostForMessages shows the refusals and the confirmation;
-           it is popped when it is on top of the game page. Never throws. */
+           it is popped when it is on top of the game page. Returns once the test has
+           ended; its final message may still be showing. Never throws. */
         public static async Task RunAsync(GamePage gamePage, Page hostForMessages)
         {
             Page host = hostForMessages != null ? hostForMessages : gamePage;
@@ -106,14 +107,22 @@ namespace GnollHackX.Performance
                     await ShowMessageAsync(host, "A performance test is already running.");
                     return;
                 }
+                string message = null;
                 try
                 {
-                    await RunTestAsync(gamePage, host);
+                    message = await RunTestAsync(gamePage, host);
                 }
                 finally
                 {
                     GHDiagnosticCountdown.Stop();
                     Interlocked.Exchange(ref _isRunning, 0);
+                }
+                /* The host while the menu is still open; else the game page or whatever
+                   opened over it */
+                if (message != null)
+                {
+                    Page top = GHApp.PageFromTopOfModalNavigationStack();
+                    _ = ShowMessageAsync(top != null ? top : gamePage, message);
                 }
             }
             catch (Exception ex)
@@ -141,24 +150,22 @@ namespace GnollHackX.Performance
             return null;
         }
 
-        private static async Task RunTestAsync(GamePage gamePage, Page host)
+        /* The confirmation and the test. Returns the final message for the caller to show,
+           or null for none; shows no message itself. */
+        private static async Task<string> RunTestAsync(GamePage gamePage, Page host)
         {
             bool confirmed = await GHApp.DisplayMessageBox(host, MessageTitle, ConfirmText, "Start", "Cancel");
             if (!confirmed)
-                return;
+                return null;
             /* Anything may have changed while the confirmation was shown */
             string refusal = CheckPreconditions(gamePage);
             if (refusal != null)
-            {
-                await ShowMessageAsync(host, refusal);
-                return;
-            }
+                return refusal;
 
             TestState s = new TestState();
             s.GamePage = gamePage;
             try
             {
-                string completedMessage = null;
                 bool completed = false;
                 string abortReason = null;
                 try
@@ -178,16 +185,16 @@ namespace GnollHackX.Performance
                         GHSystemLoadSampler.Acquire();
                         s.SamplerHeld = true;
                     }
+                    /* No window end yet: the settle text stays until the window opens */
                     long now = DateTime.UtcNow.Ticks;
                     long settleEnd = now + SettleSeconds * TimeSpan.TicksPerSecond;
-                    GHDiagnosticCountdown.Start(settleEnd, settleEnd + WindowSeconds * TimeSpan.TicksPerSecond);
+                    GHDiagnosticCountdown.Start(settleEnd, 0);
 
                     /* As the menu's Back to Game closes it */
                     FrameTimeProfiler.MarkPauseEvent();
                     GHApp.CollectNursery();
                     if (host != gamePage && GHApp.PageFromTopOfModalNavigationStack() == host)
                         await GHApp.PopModalPageAsync();
-                    s.MenuClosed = true;
 
                     await MeasureAsync(s);
                     completed = true;
@@ -212,18 +219,13 @@ namespace GnollHackX.Performance
                     GHDiagnosticCountdown.Stop();
                     ReleaseSampler(s);
                     string reportsDirectory = ReportsDirectory;
-                    await Task.Run(delegate { ApplyRetention(reportsDirectory); });
+                    await Task.Run(delegate { ApplyRetention(reportsDirectory, null); });
                     Log("cancelled: " + (abortReason ?? "unknown reason"));
-                    await ShowMessageAsync(s.MenuClosed ? gamePage : host, "Performance test cancelled"
-                        + (string.IsNullOrEmpty(abortReason) ? "." : ": " + abortReason + "."));
-                    return;
+                    return "Performance test cancelled"
+                        + (string.IsNullOrEmpty(abortReason) ? "." : ": " + abortReason + ".");
                 }
 
-                completedMessage = await CompleteAsync(s);
-                GHDiagnosticCountdown.Stop();
-                ReleaseSampler(s);
-                if (completedMessage != null)
-                    await ShowMessageAsync(gamePage, completedMessage);
+                return await CompleteAsync(s);
             }
             finally
             {
@@ -232,36 +234,46 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* Settle, begin collects, the measurement window, and its save. Throws
-           DiagnosticAbortException on an abort. */
+        /* Settle, begin collects, the measurement window, and its save, with the frame
+           marker hidden throughout. Throws DiagnosticAbortException on an abort. */
         private static async Task MeasureAsync(TestState s)
         {
             if (GHApp.PageFromTopOfModalNavigationStack() != s.GamePage)
                 throw new DiagnosticAbortException("the menu did not close");
 
-            await WaitAsync(s, SettleSeconds * 1000L);
+            GHFrameMarker.Suppressed = true;
+            s.FrameMarkerSuppressed = true;
+            try
+            {
+                await WaitAsync(s, SettleSeconds * 1000L);
 
-            /* The per-process begin collect runs on the thread pool; the window opens once
-               it is done, or after ProcessIntervalBeginWaitMs at most */
-            Task begin = GHSystemLoadSampler.StartProcessIntervalAsync();
-            await WaitUntilAsync(s, delegate { return begin.IsCompleted; },
-                BeginPollMs, GHSystemLoadSampler.ProcessIntervalBeginWaitMs);
+                /* The per-process begin collect runs on the thread pool; the window opens
+                   once it is done, or after ProcessIntervalBeginWaitMs at most */
+                Task begin = GHSystemLoadSampler.StartProcessIntervalAsync();
+                await WaitUntilAsync(s, delegate { return begin.IsCompleted; },
+                    BeginPollMs, GHSystemLoadSampler.ProcessIntervalBeginWaitMs);
 
-            s.SceneBefore = CaptureScene(s.GamePage);
-            GHPerformanceRunContext ctx = new GHPerformanceRunContext();
-            ctx.Notes = "in-game performance test";
-            if (GHPerformanceRunRecord.BeginRefusal(GHWindowOwner.Diagnostic) != null)
-                throw new DiagnosticAbortException("another measurement is in progress");
-            if (!GHPerformanceRunRecord.TryBeginWindow(ScenarioName, ArmName, ctx, GHWindowOwner.Diagnostic))
-                throw new DiagnosticAbortException("the measurement window could not be opened");
-            s.OpenWindow = ctx;
-            s.WindowClock = Stopwatch.StartNew();
-            long windowStart = DateTime.UtcNow.Ticks;
-            GHDiagnosticCountdown.Start(windowStart, windowStart + WindowSeconds * TimeSpan.TicksPerSecond);
+                s.SceneBefore = CaptureScene(s.GamePage);
+                GHPerformanceRunContext ctx = new GHPerformanceRunContext();
+                ctx.Notes = "in-game performance test";
+                if (GHPerformanceRunRecord.BeginRefusal(GHWindowOwner.Diagnostic) != null)
+                    throw new DiagnosticAbortException("another measurement is in progress");
+                if (!GHPerformanceRunRecord.TryBeginWindow(ScenarioName, ArmName, ctx, GHWindowOwner.Diagnostic))
+                    throw new DiagnosticAbortException("the measurement window could not be opened");
+                s.OpenWindow = ctx;
+                s.WindowClock = Stopwatch.StartNew();
+                s.AllocatedBytesBegin = TotalAllocatedBytes();
+                long windowStart = DateTime.UtcNow.Ticks;
+                GHDiagnosticCountdown.Start(windowStart, windowStart + WindowSeconds * TimeSpan.TicksPerSecond);
 
-            await WaitAsync(s, WindowSeconds * 1000L);
+                await WaitAsync(s, WindowSeconds * 1000L);
 
-            SaveWindow(s);
+                SaveWindow(s);
+            }
+            finally
+            {
+                GHFrameMarker.Suppressed = false;
+            }
         }
 
         /* Ends the open window, if any, and saves it into ReportsDirectory/<stamp>/ */
@@ -273,6 +285,7 @@ namespace GnollHackX.Performance
             s.OpenWindow = null;
             s.EndFrameId = GHFrameTimeline.LastFrameId;
             s.WindowElapsedSeconds = s.WindowClock != null ? s.WindowClock.Elapsed.TotalSeconds : double.NaN;
+            s.AllocatedBytesEnd = TotalAllocatedBytes();
             s.LocalStamp = DateTime.Now;
             s.StampText = s.LocalStamp.ToString(StampFormat, CultureInfo.InvariantCulture);
             GHPerformanceRunResult result;
@@ -324,15 +337,14 @@ namespace GnollHackX.Performance
             GHPerformanceRunRecord.DiscardWindow();
         }
 
-        /* After the window: the facts, the report and its page. Returns a message to show
-           on the game page, or null when the report page opened. */
+        /* After the window: the facts, the report and its page. Returns the final message,
+           or null when the report page opened. */
         private static async Task<string> CompleteAsync(TestState s)
         {
             GamePage gamePage = s.GamePage;
             GHDiagnosisFacts f = new GHDiagnosisFacts();
 
-            /* UI thread only: the canvas's GPU context, the profiler statistics (not
-               re-entrant) and the recent hitches report */
+            /* UI thread only: the canvas's GPU context and the recent hitches report */
             bool glRequested = false;
             bool? gpuContextLive = null;
             try
@@ -344,17 +356,6 @@ namespace GnollHackX.Performance
             {
                 Log("reading the main canvas failed: " + ex.Message);
             }
-            float allocationRate = float.NaN;
-            try
-            {
-                FrameTimeStatistics stats = FrameTimeProfiler.GetStatistics();
-                if (stats.SampleCount > 0)
-                    allocationRate = stats.AllocationRateMBPerSec;
-            }
-            catch (Exception ex)
-            {
-                Log("reading the profiler statistics failed: " + ex.Message);
-            }
             string frameDetail = GHPerformanceRunRecord.BuildRecentHitchesReport(s.EndFrameId, WindowSeconds);
 
             FillWindowFacts(f, s);
@@ -362,12 +363,16 @@ namespace GnollHackX.Performance
             FillBackgroundFacts(f, s.Result != null ? s.Result.Background : null);
             f.OwnMemoryBytes = GHApp.GetUsedMemoryInBytes();
             f.DeviceMemoryBytes = GHApp.TotalMemory > 0 ? (long)GHApp.TotalMemory : -1;
-            f.AllocationRateMBPerSec = allocationRate;
+            f.AllocationRateMBPerSec = GHPerformanceDiagnosticSupport.ToFloat(
+                GHPerformanceDiagnosticSupport.AllocationRateMBPerSec(s.AllocatedBytesBegin, s.AllocatedBytesEnd,
+                    s.WindowElapsedSeconds));
             f.MainCanvasGlRequested = glRequested;
             f.MainCanvasGpuContextLive = gpuContextLive;
             f.GpuBackend = string.IsNullOrEmpty(GHApp.GPUBackend) ? null : GHApp.GPUBackend;
             FillDeviceGpuFacts(f);
-            f.NonDefaultPerformanceSettings = NonDefaultPerformanceSettings();
+            f.NonDefaultPerformanceSettings = GHPerformanceDiagnosticSupport.NonDefaultPerformanceSettings(
+                GHApp.IsTileBatchingAvailable, GHConstants.DefaultTileBatching, GHApp.UseTileBatching,
+                GHConstants.DefaultTextBlobCaching, GHApp.UseTextBlobCaching);
 #if DEBUG
             f.IsDebugBuild = true;
 #else
@@ -377,6 +382,7 @@ namespace GnollHackX.Performance
             f.VerboseLoggingOn = GHApp.DebugLogMessages || GHApp.ScreenLogging || GHApp.LowLevelLogging;
             f.PlatformRenderLoopOn = GHApp.UsePlatformRenderLoop;
             f.CountdownShown = true;
+            f.FrameMarkerOff = s.FrameMarkerSuppressed;
             f.FrameDetailText = frameDetail;
 
             /* Thread pool: the adapter probe's last result, the GPU preference (registry)
@@ -420,7 +426,7 @@ namespace GnollHackX.Performance
                 {
                     writeError = ex.Message;
                 }
-                ApplyRetention(reportsDirectory);
+                ApplyRetention(reportsDirectory, stampText);
             });
             if (reportPath == null)
             {
@@ -445,48 +451,13 @@ namespace GnollHackX.Performance
             GHPerformanceRunResult result = s.Result;
             if (result == null)
             {
-                f.WindowSeconds = ToFloat(s.WindowElapsedSeconds);
+                f.WindowSeconds = GHPerformanceDiagnosticSupport.ToFloat(s.WindowElapsedSeconds);
                 f.ExcludedReason = "the measurement could not be saved";
                 return;
             }
 
-            f.OnScreenIntervalCount = result.OnScreenIntervalCount;
-            GHSmoothnessSummary summary = result.Summary;
-            if (summary != null)
-            {
-                bool haveWindow = summary.WindowMs > 0 && summary.DisplayedCount >= 2;
-                f.WindowSeconds = summary.WindowMs > 0 ? (float)(summary.WindowMs / 1000.0) : ToFloat(s.WindowElapsedSeconds);
-                f.TargetFps = Positive(summary.TargetFps);
-                f.MeasuredRefreshHz = Positive(summary.MeasuredRefreshHz);
-                f.AssumedRefreshMismatch = summary.AssumedRefreshMismatch;
-                f.DisplayedFps = haveWindow ? (float)summary.DisplayedFps : float.NaN;
-                f.HitchRatioMsPerSec = haveWindow ? (float)summary.HitchRatioMsPerSec : float.NaN;
-                f.HitchCount = summary.HitchCount;
-                f.PacingErrorRmsMs = haveWindow ? (float)summary.PacingErrorRmsMs : float.NaN;
-                f.PaintP50Ms = summary.PaintedCount > 0 ? (float)summary.PaintP50Ms : float.NaN;
-                f.PaintP99Ms = summary.PaintedCount > 0 ? (float)summary.PaintP99Ms : float.NaN;
-                f.GcCount = summary.GcCount;
-                f.GcPauseMs = summary.GcPauseDataAvailable ? (float)summary.GcPauseMs : float.NaN;
-                f.CauseMs = (double[])summary.CauseMs.Clone();
-                /* The unpaused gaps that are not quiet: a gap with several event kinds
-                   counts once */
-                f.ContentEventCount = Math.Max(0,
-                    summary.DisplayedCount - 1 - summary.PausedGapCount - summary.QuietGapCount);
-                f.PausedGapCount = summary.PausedGapCount;
-                f.QuietGapCount = summary.QuietGapCount;
-                f.QuietHitchCount = summary.QuietHitchCount;
-                f.EventGapCounts = (int[])summary.EventGapCount.Clone();
-                f.EventHitchCounts = (int[])summary.EventHitchCount.Clone();
-                f.MetricsVersion = summary.MetricsVersion;
-                f.LongStallCount = summary.LongStallCount;
-                f.LongStallMs = ToFloat(summary.LongStallMs);
-                f.CompositorReportsLost = summary.CompositorReportsLost;
-                f.PresentSource = PresentSourceName(summary.PresentSource);
-            }
-            else
-            {
-                f.WindowSeconds = ToFloat(s.WindowElapsedSeconds);
-            }
+            GHPerformanceDiagnosticSupport.FillSummaryFacts(f, result.Summary, s.WindowElapsedSeconds,
+                result.OnScreenIntervalCount);
 
             GHThermalReading before = result.ThermalBefore;
             GHThermalReading after = result.ThermalAfter;
@@ -572,25 +543,6 @@ namespace GnollHackX.Performance
 #endif
         }
 
-        /* The performance features switched off although their default, as used by the
-           preference loads in GHApp, is on; turning a feature on is never listed */
-        private static List<string> NonDefaultPerformanceSettings()
-        {
-            List<string> list = new List<string>();
-            /* The defaults are per-platform constants; locals keep every branch reachable */
-            bool platformLoopDefault = GHApp.IsPlatformRenderLoopAvailable && GHConstants.IsPlatformRenderLoopDefault;
-            bool tileBatchingDefault = GHConstants.DefaultTileBatching;
-            bool textBlobCachingDefault = GHConstants.DefaultTextBlobCaching;
-            if (platformLoopDefault && !GHApp.UsePlatformRenderLoop)
-                list.Add("platform render loop off");
-            /* Forced off where unavailable (iOS) */
-            if (GHApp.IsTileBatchingAvailable && tileBatchingDefault && !GHApp.UseTileBatching)
-                list.Add("tile batching off");
-            if (textBlobCachingDefault && !GHApp.UseTextBlobCaching)
-                list.Add("text blob caching off");
-            return list;
-        }
-
         /* Thread pool only. The adapter facts are the probe's last result, which the run
            record's EndWindowAndSave has just refreshed; none when no probe of this process
            has named a render adapter. */
@@ -649,56 +601,48 @@ namespace GnollHackX.Performance
             return d;
         }
 
-        /* Keeps the newest MaxKeptReports perftest_<stamp>.txt reports; deletes the older
-           ones and every <stamp> folder whose report is not kept, such as an aborted
-           test's. Only names matching those two patterns are touched. Thread pool. */
-        private static void ApplyRetention(string directory)
+        /* Deletes what GHPerformanceDiagnosticSupport.SelectRetentionDeletions selects for
+           MaxKeptReports: the older reports and the <stamp> folders without a kept
+           report, except protectedStamp's (the test just saved, or null). Thread pool. */
+        private static void ApplyRetention(string directory, string protectedStamp)
         {
             try
             {
                 if (!Directory.Exists(directory))
                     return;
-                List<string> stamps = new List<string>();
                 string[] files = Directory.GetFiles(directory);
-                for (int i = 0; i < files.Length; i++)
-                {
-                    Match m = _reportFileRegex.Match(Path.GetFileName(files[i]));
-                    if (m.Success)
-                        stamps.Add(m.Groups[1].Value);
-                }
-                stamps.Sort(StringComparer.Ordinal);
-                HashSet<string> kept = new HashSet<string>(StringComparer.Ordinal);
-                for (int i = Math.Max(0, stamps.Count - MaxKeptReports); i < stamps.Count; i++)
-                    kept.Add(stamps[i]);
-
-                for (int i = 0; i < files.Length; i++)
-                {
-                    Match m = _reportFileRegex.Match(Path.GetFileName(files[i]));
-                    if (!m.Success || kept.Contains(m.Groups[1].Value))
-                        continue;
-                    try
-                    {
-                        File.Delete(files[i]);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log("deleting " + Path.GetFileName(files[i]) + " failed: " + ex.Message);
-                    }
-                }
-
                 string[] folders = Directory.GetDirectories(directory);
+                List<string> fileNames = new List<string>(files.Length);
+                for (int i = 0; i < files.Length; i++)
+                    fileNames.Add(Path.GetFileName(files[i]));
+                List<string> folderNames = new List<string>(folders.Length);
                 for (int i = 0; i < folders.Length; i++)
+                    folderNames.Add(Path.GetFileName(folders[i]));
+                List<string> filesToDelete = new List<string>();
+                List<string> foldersToDelete = new List<string>();
+                GHPerformanceDiagnosticSupport.SelectRetentionDeletions(fileNames, folderNames, MaxKeptReports,
+                    protectedStamp, filesToDelete, foldersToDelete);
+
+                for (int i = 0; i < filesToDelete.Count; i++)
                 {
-                    string name = Path.GetFileName(folders[i]);
-                    if (!_testFolderRegex.IsMatch(name) || kept.Contains(name))
-                        continue;
                     try
                     {
-                        Directory.Delete(folders[i], true);
+                        File.Delete(Path.Combine(directory, filesToDelete[i]));
                     }
                     catch (Exception ex)
                     {
-                        Log("deleting the folder " + name + " failed: " + ex.Message);
+                        Log("deleting " + filesToDelete[i] + " failed: " + ex.Message);
+                    }
+                }
+                for (int i = 0; i < foldersToDelete.Count; i++)
+                {
+                    try
+                    {
+                        Directory.Delete(Path.Combine(directory, foldersToDelete[i]), true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log("deleting the folder " + foldersToDelete[i] + " failed: " + ex.Message);
                     }
                 }
             }
@@ -776,27 +720,22 @@ namespace GnollHackX.Performance
             }
         }
 
-        private static string PresentSourceName(GHPresentSource source)
+        /* The process's total allocated bytes, or -1 where the runtime has no such counter */
+        private static long TotalAllocatedBytes()
         {
-            switch (source)
+#if GNH_MAUI
+            try
             {
-            case GHPresentSource.Measured:
-                return GHPerformanceDiagnosis.PresentSourceMeasured;
-            case GHPresentSource.Estimated:
-                return GHPerformanceDiagnosis.PresentSourceEstimated;
-            default:
-                return GHPerformanceDiagnosis.PresentSourceNone;
+                return GC.GetTotalAllocatedBytes(false);
             }
-        }
-
-        private static float Positive(double value)
-        {
-            return value > 0 && !double.IsInfinity(value) ? (float)value : float.NaN;
-        }
-
-        private static float ToFloat(double value)
-        {
-            return double.IsNaN(value) || double.IsInfinity(value) ? float.NaN : (float)value;
+            catch (Exception ex)
+            {
+                Log("reading the allocated bytes failed: " + ex.Message);
+                return -1;
+            }
+#else
+            return -1;
+#endif
         }
 
         private static void Log(string text)
@@ -825,12 +764,14 @@ namespace GnollHackX.Performance
         private sealed class TestState
         {
             public GamePage GamePage;
-            public bool MenuClosed;                    /* messages go to the game page from here on */
             public bool SamplerHeld;                   /* the test's GHSystemLoadSampler acquire is outstanding */
+            public bool FrameMarkerSuppressed;         /* GHFrameMarker was hidden for the window */
             public GHPerformanceRunContext OpenWindow; /* non-null while the window is open */
             public Stopwatch WindowClock;              /* started when the window opened */
             public GHDiagnosisScene SceneBefore;       /* captured just before the window opened */
             public double WindowElapsedSeconds = double.NaN;
+            public long AllocatedBytesBegin = -1;      /* the process's allocated bytes at the window's open; -1 when unknown */
+            public long AllocatedBytesEnd = -1;        /* the same at its save */
             public long EndFrameId;
             public DateTime LocalStamp;
             public string StampText;                   /* StampFormat, invariant culture, local time */

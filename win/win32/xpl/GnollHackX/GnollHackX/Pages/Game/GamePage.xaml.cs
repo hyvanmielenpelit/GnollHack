@@ -12947,7 +12947,7 @@ namespace GnollHackX.Pages.Game
             }
             lockTaken = false;
 
-            if (GHFrameTimeline.IsEnabled)
+            if (GHFrameTimeline.IsEnabled && !GHFrameMarker.Suppressed)
                 GHFrameMarker.Draw(canvas, canvaswidth, canvasheight, GHFrameTimeline.CurrentPaintFrameId, maincountervalue,
                     UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRate), GHApp.DisplayDensity);
             if (GHDiagnosticCountdown.IsActive)
