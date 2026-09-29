@@ -20,7 +20,8 @@ namespace GnollHackX.Performance
        registered in GHPerformanceSuiteStore.
 
        Run 0 is the optional warm-up run (saved but excluded); runs 1..Runs are
-       measured. A new game page plays the replay from its beginning as the Replay page
+       measured; with the warm-up run off, run 1 is saved but excluded as a cold first
+       run. A new game page plays the replay from its beginning as the Replay page
        does when the start turn is 1 or less, and otherwise seeks to StartTurn - 1 and
        lets it play the last turn at normal speed; a shared page restarts in place by
        seeking back to StartTurn - 1. Per run: wait for the start turn and for any
@@ -28,10 +29,13 @@ namespace GnollHackX.Performance
        the replay, minimap pauses it and switches to the minimap, playback lets it
        play), warm up, measure one window, and save it; a window the window gate
        refuses is registered as a run excluded with "measurement window refused", and
-       the suite goes on. Between runs: cool down, wait
+       the suite goes on. Before the first run, with no game page open: cool down, wait
+       for the platform thermal status to be Nominal (at most 300 s; no wait where the
+       platform reports none), take the suite-start thermal reading, and wait for a
+       quiet system. Between runs: cool down, wait
        for the platform thermal status to be no worse than at the suite start (at most
        300 s; no wait where the platform reports none), wait for a quiet system (at most
-       120 s; also once before the first run), then either seek the same game page back
+       120 s), then either seek the same game page back
        (shared) or close it and open a new one (fresh; the cool-down then happens on the
        page below the game page). The replay header shows the run and its phase. The
        background load sampler runs for the whole suite; the environment fingerprint is
@@ -79,7 +83,8 @@ namespace GnollHackX.Performance
         }
 
         /* Estimated wall time of the setup: (runs + warm-up run) * (seek allowance 15 s
-           + warm-up + window + cool-down) */
+           + warm-up + window + cool-down), the cool-downs being the one before the first
+           run and those between runs; thermal and quiet gate waits are not included */
         public static TimeSpan EstimateDuration(GHPerformanceSuiteSetup setup)
         {
             if (setup == null)
@@ -138,10 +143,10 @@ namespace GnollHackX.Performance
                 await Task.Run(delegate { GHPerformanceEnvironment.CaptureFingerprint(false); });
 
                 /* The first reading primes rate counters (Windows needs two samples
-                   500 ms apart); the second is the suite-start reading */
+                   500 ms apart); the suite-start reading is taken after the first-run
+                   gate (FirstRunGateAsync) */
                 GHThermalProbe.Read();
                 await Task.Delay(ThermalPrimeMs);
-                s.StartThermal = GHThermalProbe.Read();
 
                 /* Held for the whole suite, so the quiet gate and every pre-window have
                    samples */
@@ -170,7 +175,7 @@ namespace GnollHackX.Performance
             }
             CurrentSuiteId = s.SuiteId;
             Log("started " + s.SuiteId + " (" + s.Scenario + ", " + s.PageMode + ", " + setup.Runs + " runs"
-                + (setup.WarmUpRun ? " + warm-up" : "") + ", thermal status " + GHThermalProbe.StatusName(s.StartThermal.Status) + ")");
+                + (setup.WarmUpRun ? " + warm-up" : "") + ")");
 
             bool profilerWasEnabled = FrameTimeProfiler.IsEnabled;
             FrameTimeProfiler.IsEnabled = true;
@@ -298,8 +303,9 @@ namespace GnollHackX.Performance
             int firstRunIndex = setup.WarmUpRun ? 0 : 1;
             int lastRunIndex = setup.Runs;
 
-            /* No game page yet: the wait aborts when another page opens over this one */
+            /* No game page yet: the waits abort when another page opens over this one */
             s.PageBelow = GHApp.PageFromTopOfModalNavigationStack();
+            await FirstRunGateAsync(s);
             await QuietGateAsync(s, false);
 
             await OpenGamePageAsync(s);
@@ -376,6 +382,8 @@ namespace GnollHackX.Performance
             ctx.StartTurn = s.StartTurn;
             if (isWarmUp)
                 ctx.ExcludedReason = "warm-up run";
+            else if (!s.Setup.WarmUpRun && runIndex == 1)
+                ctx.ExcludedReason = "cold first run (warm-up run off)";
             ctx.Notes = s.PendingNote;
             s.PendingNote = null;
 
@@ -396,6 +404,8 @@ namespace GnollHackX.Performance
                 GHPerformanceSuiteStore.AddRun(s.SuiteId, ctx, null);
                 return;
             }
+            ctx.TurnAtWindowStart = GHApp.ReplayTurn;
+            s.InputRecordsAtWindowStart = GHApp.ReplayInputRecordCount;
             if (!GHPerformanceRunRecord.TryBeginWindow(s.Scenario, s.Arm, ctx, GHWindowOwner.Suite))
                 throw new SuiteAbortException("the measurement window could not be opened");
             s.OpenWindow = ctx;
@@ -403,8 +413,17 @@ namespace GnollHackX.Performance
             await WaitAsync(s, s.Setup.WindowSeconds * 1000L, true);
 
             s.OpenWindow = null;
-            ctx.TurnReached = GHApp.ReplayTurn;
+            SetWindowEnd(s, ctx);
             SaveWindow(s, ctx);
+        }
+
+        /* The turn reached and the input records played since the window opened; the
+           latter is left unknown when the count went backwards */
+        private static void SetWindowEnd(SuiteState s, GHPerformanceRunContext ctx)
+        {
+            ctx.TurnReached = GHApp.ReplayTurn;
+            long played = GHApp.ReplayInputRecordCount - s.InputRecordsAtWindowStart;
+            ctx.InputRecordsInWindow = played >= 0 ? played : -1;
         }
 
         /* Cool-down, thermal gate and the seek (shared) or page swap (fresh) that
@@ -499,27 +518,46 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* Waits until the platform thermal status is no worse than at the suite start,
-           polling every 15 s for at most 300 s; on timeout the next run goes ahead anyway.
-           Without a platform thermal status (Windows) there is no gate: the processor
-           performance percent mostly reflects turbo boost, which falls whenever the
-           replay is paused, so it cannot tell a throttled machine from an idle one. Runs
-           measured while throttled are still excluded by the per-run rule. */
-        private static async Task ThermalGateAsync(SuiteState s, bool gameExpected)
+        /* Before the first run, the warm-up run included, with no game page open: waits
+           the cool-down, then the thermal gate against Nominal, and then takes the
+           suite-start thermal reading the gate between runs compares against. */
+        private static async Task FirstRunGateAsync(SuiteState s)
         {
-            if (s.StartThermal.Status == GHThermalStatus.Unknown)
+            await WaitAsync(s, s.Setup.CooldownSeconds * 1000L, false);
+            await ThermalGateAsync(s, GHThermalStatus.Nominal, "Nominal before the first run", false);
+            s.StartThermal = GHThermalProbe.Read();
+            Log("thermal status at the start of " + s.SuiteId + ": " + GHThermalProbe.StatusName(s.StartThermal.Status));
+        }
+
+        /* The thermal gate between runs: no worse than the status at the suite start */
+        private static Task ThermalGateAsync(SuiteState s, bool gameExpected)
+        {
+            return ThermalGateAsync(s, s.StartThermal.Status,
+                GHThermalProbe.StatusName(s.StartThermal.Status) + " at the suite start", gameExpected);
+        }
+
+        /* Waits until the platform thermal status is no worse than limit, polling every
+           15 s for at most 300 s; on timeout the next run goes ahead anyway. Without a
+           platform thermal status (Windows) there is no gate: the processor performance
+           percent mostly reflects turbo boost, which falls whenever the replay is paused,
+           so it cannot tell a throttled machine from an idle one. Runs measured while
+           throttled are still excluded by the per-run rule. limitText names the limit in
+           the timeout log. */
+        private static async Task ThermalGateAsync(SuiteState s, GHThermalStatus limit, string limitText, bool gameExpected)
+        {
+            if (limit == GHThermalStatus.Unknown)
                 return;
             Stopwatch sw = Stopwatch.StartNew();
             bool announced = false;
             while (true)
             {
                 GHThermalReading now = GHThermalProbe.Read();
-                if (now.Status == GHThermalStatus.Unknown || now.Status <= s.StartThermal.Status)
+                if (now.Status == GHThermalStatus.Unknown || now.Status <= limit)
                     return;
                 if (sw.ElapsedMilliseconds >= ThermalGateTimeoutMs)
                 {
                     Log("thermal gate timed out in " + s.SuiteId + ": " + GHThermalProbe.StatusName(now.Status)
-                        + " vs " + GHThermalProbe.StatusName(s.StartThermal.Status) + " at the suite start");
+                        + " vs " + limitText);
                     return;
                 }
                 if (!announced)
@@ -606,7 +644,7 @@ namespace GnollHackX.Performance
             try
             {
                 ctx.ExcludedReason = string.IsNullOrEmpty(reason) ? "aborted" : reason;
-                ctx.TurnReached = GHApp.ReplayTurn;
+                SetWindowEnd(s, ctx);
                 SaveWindow(s, ctx);
             }
             catch (Exception ex)
@@ -738,6 +776,7 @@ namespace GnollHackX.Performance
             public Page PageBelow;                     /* top of the modal stack before the game page was pushed */
             public bool RunnerStopping;                /* StopReplay was set by the runner */
             public GHPerformanceRunContext OpenWindow; /* non-null while a window is open */
+            public long InputRecordsAtWindowStart;     /* GHApp.ReplayInputRecordCount when the last window opened */
             public bool EnvironmentUpdated;            /* UpdateEnvironment has run after the first saved window */
 
             public bool SamplerHeld;                   /* the suite's GHSystemLoadSampler acquire is outstanding */

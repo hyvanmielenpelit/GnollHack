@@ -271,6 +271,60 @@ namespace GnollHackX.UnitTests
             Assert.True(ci.Low <= ci.Point && ci.Point <= ci.High);
         }
 
+        private static float[] Reversed(float[] values)
+        {
+            float[] r = new float[values.Length];
+            int i;
+            for (i = 0; i < values.Length; i++)
+                r[i] = values[values.Length - 1 - i];
+            return r;
+        }
+
+        [Fact]
+        public void Bootstrap_OrderInvariant()
+        {
+            float[] a = HeavyTailedSample(40, 7);
+            float[] b = HeavyTailedSample(40, 8);
+            float[] aReversed = Reversed(a);
+            float[] bReversed = Reversed(b);
+            float[] aBefore = (float[])a.Clone();
+
+            GHPerformanceStatistics.Interval one = GHPerformanceStatistics.BootstrapCi(a, GHPerformanceStatistics.StatMedian, 500, 0.95, 11);
+            GHPerformanceStatistics.Interval oneReversed = GHPerformanceStatistics.BootstrapCi(aReversed, GHPerformanceStatistics.StatMedian, 500, 0.95, 11);
+            Assert.Equal(one.Point, oneReversed.Point);
+            Assert.Equal(one.Low, oneReversed.Low);
+            Assert.Equal(one.High, oneReversed.High);
+
+            GHPerformanceStatistics.Interval mean = GHPerformanceStatistics.BootstrapCi(a, GHPerformanceStatistics.StatMean, 500, 0.95, 11);
+            GHPerformanceStatistics.Interval meanReversed = GHPerformanceStatistics.BootstrapCi(aReversed, GHPerformanceStatistics.StatMean, 500, 0.95, 11);
+            Assert.Equal(mean.Point, meanReversed.Point);
+            Assert.Equal(mean.Low, meanReversed.Low);
+            Assert.Equal(mean.High, meanReversed.High);
+
+            GHPerformanceStatistics.Interval diff = GHPerformanceStatistics.BootstrapDifferenceCi(a, b, GHPerformanceStatistics.StatMedian, 500, 0.95, 13);
+            GHPerformanceStatistics.Interval diffReversed = GHPerformanceStatistics.BootstrapDifferenceCi(aReversed, bReversed, GHPerformanceStatistics.StatMedian, 500, 0.95, 13);
+            Assert.Equal(diff.Point, diffReversed.Point);
+            Assert.Equal(diff.Low, diffReversed.Low);
+            Assert.Equal(diff.High, diffReversed.High);
+
+            /* The caller's arrays are left as they were */
+            Assert.Equal(aBefore, a);
+        }
+
+        [Fact]
+        public void MedianNearestRank_TakesTheLowerMiddle()
+        {
+            Assert.Equal(2.0, GHPerformanceStatistics.MedianNearestRank(new double[] { 4, 1, 3, 2 }));
+            Assert.Equal(3.0, GHPerformanceStatistics.MedianNearestRank(new double[] { 5, 1, 3 }));
+            Assert.Equal(7.5, GHPerformanceStatistics.MedianNearestRank(new double[] { 7.5 }));
+            Assert.True(double.IsNaN(GHPerformanceStatistics.MedianNearestRank(new double[0])));
+            Assert.True(double.IsNaN(GHPerformanceStatistics.MedianNearestRank(null)));
+
+            /* The same definition as the float median the decision uses */
+            Assert.Equal((double)GHPerformanceStatistics.Median(new float[] { 4f, 1f, 3f, 2f }),
+                GHPerformanceStatistics.MedianNearestRank(new double[] { 4, 1, 3, 2 }));
+        }
+
         [Fact]
         public void MinimumDetectableEffect_MatchesNormalApproximation()
         {

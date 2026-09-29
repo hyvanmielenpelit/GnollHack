@@ -255,7 +255,24 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
-        public void ComparisonReport_ThreeRunsPerArm_ShowsProvisionalNote()
+        public void ComparisonReport_FourRunsPerArm_ShowsProvisionalNote()
+        {
+            List<GHSmoothnessSummary> a = HitchSeries(1.0).GetRange(0, 4);
+            List<GHSmoothnessSummary> b = HitchSeries(6.0).GetRange(0, 4);
+            GHComparisonResult result = GHPerformanceComparison.CompareSmoothness("A", a, "B", b, TargetPeriodMs, Resamples, Seed);
+
+            List<GHReportSuite> suitesA = new List<GHReportSuite> { BuildSuiteWithSkiaVersion("3.116.1") };
+            List<GHReportSuite> suitesB = new List<GHReportSuite> { BuildSuiteWithSkiaVersion("3.116.1") };
+
+            string report = GHPerformanceTextReport.ComparisonReport(result, suitesA, suitesB);
+
+            Assert.DoesNotContain("No decision:", report);
+            Assert.Contains("Fewer than " + GHPerformanceComparison.ProvisionalBelowRuns
+                + " runs per arm: provisional", report);
+        }
+
+        [Fact]
+        public void ComparisonReport_ThreeRunsPerArm_NamesTheMinimum()
         {
             List<GHSmoothnessSummary> a = HitchSeries(1.0).GetRange(0, 3);
             List<GHSmoothnessSummary> b = HitchSeries(6.0).GetRange(0, 3);
@@ -266,7 +283,9 @@ namespace GnollHackX.UnitTests
 
             string report = GHPerformanceTextReport.ComparisonReport(result, suitesA, suitesB);
 
-            Assert.Contains("provisional", report);
+            Assert.Contains("No decision: fewer than " + GHPerformanceComparison.MinRunsForVerdict
+                + " used runs per arm", report);
+            Assert.DoesNotContain("provisional", report);
         }
 
         private static Dictionary<string, string> BuildFingerprint(string gitCommit, string osBuild)
@@ -448,7 +467,199 @@ namespace GnollHackX.UnitTests
 
             Assert.Contains("  os.build: " + GHEnvironmentFingerprint.MixedValue + " -> 26200.2", report);
             Assert.Contains("Attribution: environment: os", report);
+            /* The arm order warnings (arm B has one suite) are not about the environment */
+            Assert.DoesNotContain("Warning: code and environment", report);
+            Assert.DoesNotContain("Warning: " + GHEnvironmentFingerprint.SettingsViolationText, report);
+            Assert.DoesNotContain("more than one build", report);
+        }
+
+        /* A suite of BuildSuiteWithSkiaVersion started at hour:00 UTC on 2026-09-26 */
+        private static GHReportSuite SuiteStartedAt(int hour, string suiteId)
+        {
+            GHReportSuite suite = BuildSuiteWithSkiaVersion("3.116.1");
+            suite.StartedUtc = new DateTime(2026, 9, 26, hour, 0, 0, DateTimeKind.Utc);
+            suite.SuiteId = suiteId;
+            return suite;
+        }
+
+        private static string ReportFor(List<GHReportSuite> suitesA, List<GHReportSuite> suitesB)
+        {
+            GHComparisonResult result = GHPerformanceComparison.CompareSmoothness("A", HitchSeries(1.0), "B",
+                HitchSeries(1.0), TargetPeriodMs, Resamples, Seed);
+            string report = GHPerformanceTextReport.ComparisonReport(result, suitesA, suitesB);
+            AssertNoLineExceedsMaxWidth(report);
+            return report;
+        }
+
+        private static Dictionary<string, string> FingerprintWithId(string mvid)
+        {
+            Dictionary<string, string> fp = BuildFingerprint("1111111", "26200.1");
+            fp[GHPerformanceSuiteLogic.CodeAssemblyMvidKey] = mvid;
+            return fp;
+        }
+
+        [Fact]
+        public void ComparisonReport_ArmPoolsTwoBuilds_Warns()
+        {
+            GHReportSuite a1 = SuiteStartedAt(10, "a1");
+            a1.Fingerprint = FingerprintWithId("aaaaaaaaaaaa");
+            GHReportSuite a2 = SuiteStartedAt(13, "a2");
+            a2.Fingerprint = FingerprintWithId("bbbbbbbbbbbb");
+            GHReportSuite b1 = SuiteStartedAt(11, "b1");
+            b1.Fingerprint = FingerprintWithId("cccccccccccc");
+            GHReportSuite b2 = SuiteStartedAt(12, "b2");
+            b2.Fingerprint = FingerprintWithId("cccccccccccc");
+
+            string report = ReportFor(new List<GHReportSuite> { a1, a2 }, new List<GHReportSuite> { b1, b2 });
+
+            Assert.Contains("\nWarning: arm A pools suites of more than one build; keep one build per arm.\n"
+                + "  Differs: " + GHPerformanceSuiteLogic.CodeAssemblyMvidKey + "\n", report);
+            Assert.DoesNotContain("arm B pools", report);
+            Assert.Contains("  id aaaaaaaaaaaa  ", report);
+            Assert.Contains("  id bbbbbbbbbbbb  ", report);
+        }
+
+        [Fact]
+        public void ComparisonReport_OneBuild_NoWarning()
+        {
+            GHReportSuite a1 = SuiteStartedAt(10, "a1");
+            a1.Fingerprint = FingerprintWithId("aaaaaaaaaaaa");
+            GHReportSuite a2 = SuiteStartedAt(13, "a2");
+            a2.Fingerprint = FingerprintWithId("aaaaaaaaaaaa");
+            /* A suite recorded without an id is not compared on it */
+            GHReportSuite a3 = SuiteStartedAt(14, "a3");
+            a3.Fingerprint = BuildFingerprint("1111111", "26200.1");
+            GHReportSuite b1 = SuiteStartedAt(11, "b1");
+            GHReportSuite b2 = SuiteStartedAt(12, "b2");
+
+            string report = ReportFor(new List<GHReportSuite> { a1, a2, a3 }, new List<GHReportSuite> { b1, b2 });
+
+            Assert.DoesNotContain("more than one build", report);
+        }
+
+        [Fact]
+        public void ComparisonReport_AllABeforeB_Warns()
+        {
+            List<GHReportSuite> suitesA = new List<GHReportSuite> { SuiteStartedAt(10, "a1"), SuiteStartedAt(11, "a2") };
+            List<GHReportSuite> suitesB = new List<GHReportSuite> { SuiteStartedAt(12, "b1"), SuiteStartedAt(13, "b2") };
+
+            string report = ReportFor(suitesA, suitesB);
+
+            Assert.Contains("\nOrder: A A B B\n", report);
+            Assert.Contains("\nWarning: every A suite ran before every B suite (or vice versa);\n"
+                + "  drift is confounded with the change. Interleave A B B A.\n", report);
+            Assert.DoesNotContain("single suite", report);
+        }
+
+        [Fact]
+        public void ComparisonReport_OneSuitePerArm_Warns()
+        {
+            string report = ReportFor(new List<GHReportSuite> { SuiteStartedAt(10, "a1") },
+                new List<GHReportSuite> { SuiteStartedAt(11, "b1") });
+
+            Assert.Contains("Warning: every A suite ran before every B suite", report);
+            Assert.Contains("\nWarning: arm A has a single suite; run each arm at least twice (A B B A).\n", report);
+            Assert.Contains("\nWarning: arm B has a single suite; run each arm at least twice (A B B A).\n", report);
+        }
+
+        [Fact]
+        public void ComparisonReport_Abba_NoWarning()
+        {
+            List<GHReportSuite> suitesA = new List<GHReportSuite> { SuiteStartedAt(13, "a2"), SuiteStartedAt(10, "a1") };
+            List<GHReportSuite> suitesB = new List<GHReportSuite> { SuiteStartedAt(11, "b1"), SuiteStartedAt(12, "b2") };
+
+            string report = ReportFor(suitesA, suitesB);
+
+            Assert.Contains("\nOrder: A B B A\n", report);
             Assert.DoesNotContain("Warning:", report);
+        }
+
+        [Fact]
+        public void ComparisonReport_ListsSuitesInStartOrder()
+        {
+            GHReportSuite a1 = BuildSuite();
+            a1.StartedUtc = new DateTime(2026, 9, 26, 10, 0, 0, DateTimeKind.Utc);
+            a1.SuiteId = "a1";
+            List<GHReportSuite> suitesA = new List<GHReportSuite> { SuiteStartedAt(13, "a2"), a1 };
+            List<GHReportSuite> suitesB = new List<GHReportSuite> { SuiteStartedAt(12, "b2"), SuiteStartedAt(11, "b1") };
+
+            string report = ReportFor(suitesA, suitesB);
+
+            string section = Section(report, "Suites (UTC start, arm, used runs):", "Order:");
+            int first = section.IndexOf("  2026-09-26 10:00:00  A  3  a1\n", StringComparison.Ordinal);
+            int second = section.IndexOf("  2026-09-26 11:00:00  B  0  b1\n", StringComparison.Ordinal);
+            int third = section.IndexOf("  2026-09-26 12:00:00  B  0  b2\n", StringComparison.Ordinal);
+            int fourth = section.IndexOf("  2026-09-26 13:00:00  A  0  a2\n", StringComparison.Ordinal);
+            Assert.True(first >= 0 && second > first && third > second && fourth > third, section);
+        }
+
+        /* A playback suite whose used runs played the given input records in their
+           windows; a negative count leaves the run's input records unrecorded */
+        private static GHReportSuite PlaybackSuite(params long[] inputRecords)
+        {
+            GHReportSuite suite = BuildSuiteWithSkiaVersion("3.116.1");
+            suite.Scenario = "playback";
+            for (int i = 0; i < inputRecords.Length; i++)
+            {
+                GHReportRun run = BuildRun(i + 1, false, BuildSummary(60.0, 1.0, 0.5, 2.0, 0, 1, 5.0, true), null, 200);
+                run.TurnAtWindowStart = 100;
+                run.InputRecordsInWindow = inputRecords[i];
+                suite.Runs.Add(run);
+            }
+            return suite;
+        }
+
+        [Fact]
+        public void Coverage_PlaybackSpreadDiffers_Warns()
+        {
+            List<GHReportSuite> suitesA = new List<GHReportSuite> { PlaybackSuite(100, 102, 101, 100) };
+            List<GHReportSuite> suitesB = new List<GHReportSuite> { PlaybackSuite(50, 70, 90, 130) };
+
+            string warning = GHPerformanceTextReport.ContentCoverageWarning(suitesA, suitesB, "playback");
+
+            Assert.Equal("Warning: the arms played different content (input records in the window):\n"
+                + "  A median 100 (100-102), B median 70 (50-130)", warning);
+            string report = ReportFor(suitesA, suitesB);
+            Assert.Contains("\n" + warning + "\n", report);
+        }
+
+        [Fact]
+        public void Coverage_PlaybackSameContent_NoWarning()
+        {
+            List<GHReportSuite> suitesA = new List<GHReportSuite> { PlaybackSuite(100, 102, 101, 100) };
+            List<GHReportSuite> suitesB = new List<GHReportSuite> { PlaybackSuite(101, 99, 103, 100) };
+
+            Assert.Null(GHPerformanceTextReport.ContentCoverageWarning(suitesA, suitesB, "playback"));
+        }
+
+        [Fact]
+        public void Coverage_Idle_NoWarning()
+        {
+            List<GHReportSuite> suitesA = new List<GHReportSuite> { PlaybackSuite(100, 102, 101, 100) };
+            List<GHReportSuite> suitesB = new List<GHReportSuite> { PlaybackSuite(10, 12, 11, 10) };
+
+            Assert.Null(GHPerformanceTextReport.ContentCoverageWarning(suitesA, suitesB, "idle"));
+            Assert.NotNull(GHPerformanceTextReport.ContentCoverageWarning(suitesA, suitesB, "playback"));
+        }
+
+        [Fact]
+        public void Coverage_LegacyTurnOnly()
+        {
+            GHReportSuite a = PlaybackSuite(-1, -1, -1);
+            GHReportSuite b = PlaybackSuite(-1, -1, -1);
+            for (int i = 0; i < a.Runs.Count; i++)
+            {
+                a.Runs[i].TurnAtWindowStart = -1;
+                a.Runs[i].TurnReached = 150 + i % 2;
+                b.Runs[i].TurnAtWindowStart = -1;
+                b.Runs[i].TurnReached = 120 + i % 2;
+            }
+
+            string warning = GHPerformanceTextReport.ContentCoverageWarning(new List<GHReportSuite> { a },
+                new List<GHReportSuite> { b }, "playback");
+
+            Assert.Equal("Warning: the arms played different content (turn reached):\n"
+                + "  A median 150 (150-151), B median 120 (120-121)", warning);
         }
 
         [Fact]

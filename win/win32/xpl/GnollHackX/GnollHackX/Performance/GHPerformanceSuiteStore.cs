@@ -48,7 +48,7 @@ namespace GnollHackX.Performance
         public double MedianHitchRatioMsPerSec;   /* NaN when no used runs */
         public long SizeBytes;
         public string ComparabilityKey;
-        public bool IsBaseline;                   /* the baseline label for this key equals ArmLabel */
+        public bool IsBaseline;                   /* the baseline label for this key and device equals ArmLabel */
         public bool HasBackgroundExclusion;       /* a run was excluded for background load */
         public bool EnvironmentChanged;           /* the environment changed during the suite */
         public bool IdMismatch;                   /* the manifest's suiteId differs from the folder name, SuiteId */
@@ -69,7 +69,9 @@ namespace GnollHackX.Performance
        manifest (suite.json) per suite directory, alongside the run_*.json/csv files
        GHPerformanceRunRecord.EndWindowAndSave writes there directly, and a report.txt
        rendered by GHPerformanceTextReport. baselines.json, at the store root, records one
-       arm label per comparability key.
+       arm label per comparability key and device (GHPerformanceSuiteLogic.BaselineKey);
+       a key without a device part, as written by older builds, applies to any device
+       that has no entry of its own.
 
        The manifest's top level never carries a property named schemaVersion, smoothness
        or series, so the offline analyzer's "every *.json in the folder is a run record"
@@ -125,11 +127,14 @@ namespace GnollHackX.Performance
             abortReason = manifest.AbortReason;
             if (manifest.Status == StatusRunning && manifest.SuiteId != GHPerformanceSuiteRunner.CurrentSuiteId)
             {
-                abortReason = "interrupted: the app stopped during the suite";
+                abortReason = InterruptedReason;
                 return StatusAborted;
             }
             return manifest.Status;
         }
+
+        /* EffectiveStatus's abort reason for a suite interrupted when the app stopped */
+        private const string InterruptedReason = "interrupted: the app stopped during the suite";
 
         public const string OriginLocal = "local";
         public const string OriginImported = "imported";
@@ -308,6 +313,10 @@ namespace GnollHackX.Performance
                     run.Index = context.RunIndex;
                     run.IsWarmUp = context.IsWarmUp;
                     run.TurnReached = context.TurnReached;
+                    if (context.TurnAtWindowStart >= 0)
+                        run.TurnAtWindowStart = context.TurnAtWindowStart;
+                    if (context.InputRecordsInWindow >= 0)
+                        run.InputRecordsInWindow = context.InputRecordsInWindow;
                     run.Notes = context.Notes;
 
                     if (result != null)
@@ -358,9 +367,10 @@ namespace GnollHackX.Performance
         }
 
         /* Sets status and endedUtc, computes measuredRefreshHz/targetFps as the median
-           over every run with a summary (warm-up and excluded runs included), computes
-           comparabilityKey from that measured refresh rate, records fingerprintAtEnd and
-           whether the environment changed since the suite start (any changed, added or
+           (GHPerformanceStatistics.MedianNearestRank) of the used runs' values above 0,
+           computes comparabilityKey from that measured refresh rate, records
+           fingerprintAtEnd and whether the environment changed since the suite start
+           (any changed, added or
            removed key outside meta and code), rewrites suite.json, and writes
            report.txt. */
         public static void FinishSuite(string suiteId, string status, string abortReason,
@@ -385,15 +395,17 @@ namespace GnollHackX.Performance
                     List<double> target = new List<double>();
                     for (int i = 0; i < manifest.Runs.Count; i++)
                     {
-                        SummaryJson s = manifest.Runs[i].Summary;
-                        if (s == null)
+                        if (!IsUsedRun(manifest.Runs[i]))
                             continue;
-                        measured.Add(s.MeasuredRefreshHz);
-                        target.Add(s.TargetFps);
+                        SummaryJson s = manifest.Runs[i].Summary;
+                        if (s.MeasuredRefreshHz > 0)
+                            measured.Add(s.MeasuredRefreshHz);
+                        if (s.TargetFps > 0)
+                            target.Add(s.TargetFps);
                     }
-                    double measuredMedian = Median(measured);
+                    double measuredMedian = GHPerformanceStatistics.MedianNearestRank(measured);
                     manifest.MeasuredRefreshHz = R(measuredMedian);
-                    manifest.TargetFps = R(Median(target));
+                    manifest.TargetFps = R(GHPerformanceStatistics.MedianNearestRank(target));
                     manifest.ComparabilityKey = ComputeComparabilityKey(manifest, measuredMedian);
 
                     if (fingerprintAtEnd != null && fingerprintAtEnd.Count > 0)
@@ -511,9 +523,11 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* Records this suite's arm label as the baseline for its comparability key.
-           False, with a short sentence in error, when the suite cannot be read (no
-           manifest, an unreadable one, or a manifest suiteId that differs), has no setup
+        /* Records this suite's arm label as the baseline for its comparability key on its
+           device (GHPerformanceSuiteLogic.BaselineKey); the other entries of
+           baselines.json are kept. False, with a short sentence in error, when the suite
+           cannot be read (no manifest, an unreadable one, or a manifest suiteId that
+           differs), has no setup
            or no comparabilityKey yet (i.e. it has not been finished), when baselines.json
            and its backup cannot be read (error is then BaselinesUnreadableError), or when
            the file cannot be written. */
@@ -548,7 +562,8 @@ namespace GnollHackX.Performance
                         error = BaselinesUnreadableError;
                         return false;
                     }
-                    baselines.Baselines[manifest.ComparabilityKey] = manifest.Setup.ArmLabel;
+                    baselines.Baselines[GHPerformanceSuiteLogic.BaselineKey(manifest.ComparabilityKey, DeviceKeyOf(manifest))]
+                        = manifest.Setup.ArmLabel;
                     WriteBaselines(baselines, state == BaselinesState.Ok);
                 }
                 return true;
@@ -591,29 +606,35 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* The arm label recorded as the baseline for comparabilityKey, or null when none
-           is set. */
-        public static string GetBaselineLabel(string comparabilityKey)
+        /* The arm label recorded as the baseline for comparabilityKey on the device
+           deviceKey names (GHPerformanceSuiteLogic.DeviceKey), else for comparabilityKey
+           alone, or null when neither is set. */
+        public static string GetBaselineLabel(string comparabilityKey, string deviceKey)
         {
             BaselinesState state;
-            return GetBaselineLabel(comparabilityKey, out state);
+            BaselinesJson baselines;
+            return GetBaselineLabel(comparabilityKey, deviceKey, out state, out baselines);
         }
 
-        /* Same as GetBaselineLabel(comparabilityKey), with how baselines.json was read:
-           Corrupt when it and its backup cannot be read */
-        private static string GetBaselineLabel(string comparabilityKey, out BaselinesState state)
+        /* Same as GetBaselineLabel(comparabilityKey, deviceKey), with baselines.json as
+           read and how it was read: Corrupt when it and its backup cannot be read */
+        private static string GetBaselineLabel(string comparabilityKey, string deviceKey, out BaselinesState state,
+            out BaselinesJson baselines)
         {
             state = BaselinesState.Missing;
+            baselines = null;
             if (string.IsNullOrEmpty(comparabilityKey))
                 return null;
             try
             {
-                BaselinesJson baselines;
                 lock (_lock)
                 {
                     baselines = ReadBaselines(out state);
                 }
                 string label;
+                if (baselines.Baselines.TryGetValue(GHPerformanceSuiteLogic.BaselineKey(comparabilityKey, deviceKey), out label)
+                    && !string.IsNullOrEmpty(label))
+                    return label;
                 return baselines.Baselines.TryGetValue(comparabilityKey, out label) ? label : null;
             }
             catch
@@ -622,13 +643,25 @@ namespace GnollHackX.Performance
             }
         }
 
+        /* The device key of the suite: its fingerprint's, falling back to the
+           manifest's platform and device model */
+        private static string DeviceKeyOf(ManifestJson manifest)
+        {
+            EnvironmentJson env = manifest.Environment;
+            if (env == null)
+                return GHPerformanceSuiteLogic.DeviceKey(null, null, null);
+            return GHPerformanceSuiteLogic.DeviceKey(env.Fingerprint, env.Platform, env.DeviceModel);
+        }
+
         /* Compares this suite's arm against the recorded baseline arm for its
-           comparability key, over every finished suite that shares the key and was
-           measured on this suite's hardware (SameDevice). Refuses (returns false, with a
-           short sentence in refusal) when the suite cannot be read or has not finished,
-           no baseline is set for its key (or baselines.json cannot be read), the
-           suite's own label is the baseline label, the baseline arm has no used runs on
-           this device, or either arm has no used runs. The report also
+           comparability key and device (GetBaselineLabel), over every finished suite
+           that shares the key and was measured on this suite's hardware (SameDevice).
+           Refuses (returns false, with a short sentence in refusal) when the suite
+           cannot be read, has not finished or was interrupted (EffectiveStatus), no
+           baseline is set for its key (naming a baseline that differs only in the
+           refresh rate, GHPerformanceSuiteLogic.DescribeKeyMismatch) or baselines.json
+           cannot be read, the suite's own label is the baseline label, the baseline arm
+           has no used runs on this device, or either arm has no used runs. The report also
            carries each arm's pooled fingerprint and the comparison recomputed without
            the runs whose background verdict was elevated. */
         public static bool TryCompareWithBaseline(string suiteId, out GHComparisonResult result, out string reportText, out string refusal)
@@ -649,9 +682,17 @@ namespace GnollHackX.Performance
                     refusal = "This suite could not be read.";
                     return false;
                 }
-                if (string.Equals(manifest.Status, StatusRunning, StringComparison.Ordinal))
+                string abortReason;
+                string status = EffectiveStatus(manifest, out abortReason);
+                if (string.Equals(status, StatusRunning, StringComparison.Ordinal))
                 {
                     refusal = "This suite has not finished running.";
+                    return false;
+                }
+                if (string.Equals(status, StatusAborted, StringComparison.Ordinal)
+                    && string.Equals(abortReason, InterruptedReason, StringComparison.Ordinal))
+                {
+                    refusal = "This suite was interrupted and cannot be compared.";
                     return false;
                 }
                 string key = manifest.ComparabilityKey;
@@ -662,14 +703,25 @@ namespace GnollHackX.Performance
                     return false;
                 }
 
+                string deviceKey = DeviceKeyOf(manifest);
                 BaselinesState baselinesState;
-                string baselineLabel = GetBaselineLabel(key, out baselinesState);
+                BaselinesJson baselines;
+                string baselineLabel = GetBaselineLabel(key, deviceKey, out baselinesState, out baselines);
                 if (string.IsNullOrEmpty(baselineLabel))
                 {
-                    refusal = baselinesState == BaselinesState.Corrupt
-                        ? BaselinesFileName + " cannot be read, so no baseline is known. "
-                            + "Set a baseline to start a new one."
-                        : "No baseline is set for this suite's comparability group.";
+                    if (baselinesState == BaselinesState.Corrupt)
+                    {
+                        refusal = BaselinesFileName + " cannot be read, so no baseline is known. "
+                            + "Set a baseline to start a new one.";
+                        return false;
+                    }
+                    string mismatch = baselines != null
+                        ? GHPerformanceSuiteLogic.DescribeKeyMismatch(GHPerformanceSuiteLogic.BaselineKey(key, deviceKey),
+                            baselines.Baselines.Keys)
+                        : null;
+                    refusal = mismatch != null
+                        ? "No baseline for this group on this device; " + mismatch + "."
+                        : "No baseline is set for this suite's comparability group on this device.";
                     return false;
                 }
                 if (string.Equals(baselineLabel, label, StringComparison.Ordinal))
@@ -1195,11 +1247,12 @@ namespace GnollHackX.Performance
                 }
                 info.EnvironmentChanged = manifest.EnvironmentChanged.HasValue && manifest.EnvironmentChanged.Value;
                 info.RunsUsed = used;
-                info.MedianHitchRatioMsPerSec = Median(hitch);
+                info.MedianHitchRatioMsPerSec = GHPerformanceStatistics.MedianNearestRank(hitch);
                 info.SizeBytes = DirectorySizeBytes(dir);
                 info.IsBaseline = !info.IdMismatch
                     && !string.IsNullOrEmpty(info.ComparabilityKey) && !string.IsNullOrEmpty(info.ArmLabel)
-                    && string.Equals(GetBaselineLabel(info.ComparabilityKey), info.ArmLabel, StringComparison.Ordinal);
+                    && string.Equals(GetBaselineLabel(info.ComparabilityKey, DeviceKeyOf(manifest)), info.ArmLabel,
+                        StringComparison.Ordinal);
                 return info;
             }
             catch
@@ -1333,6 +1386,8 @@ namespace GnollHackX.Performance
                 run.IsWarmUp = r.IsWarmUp;
                 run.RunFileName = r.RunFile;
                 run.TurnReached = r.TurnReached;
+                run.TurnAtWindowStart = r.TurnAtWindowStart.HasValue ? r.TurnAtWindowStart.Value : -1;
+                run.InputRecordsInWindow = r.InputRecordsInWindow.HasValue ? r.InputRecordsInWindow.Value : -1;
                 run.ExcludedReason = r.ExcludedReason;
                 run.Summary = ReconstructSummary(r.Summary);
                 run.Notes = r.Notes;
@@ -1570,7 +1625,7 @@ namespace GnollHackX.Performance
             List<double> values = new List<double>();
             CollectTargetFps(suitesA, values);
             CollectTargetFps(suitesB, values);
-            double median = Median(values);
+            double median = GHPerformanceStatistics.MedianNearestRank(values);
             return double.IsNaN(median) ? 0 : median;
         }
 
@@ -1986,19 +2041,6 @@ namespace GnollHackX.Performance
             return DateTime.MinValue;
         }
 
-        /* Median of a small, unsorted list; NaN for an empty list. Sorts a copy. */
-        private static double Median(List<double> values)
-        {
-            if (values == null || values.Count == 0)
-                return double.NaN;
-            double[] a = values.ToArray();
-            Array.Sort(a);
-            int n = a.Length;
-            if (n % 2 == 1)
-                return a[n / 2];
-            return (a[n / 2 - 1] + a[n / 2]) / 2.0;
-        }
-
         /* NaN and Infinity are written as 0. This mirrors GHPerformanceRunRecord.R's
            convention for the per-run JSON, and keeps every manifest double a plain
            number: no nullable-double sentinel and no Newtonsoft NaN token. */
@@ -2171,6 +2213,14 @@ namespace GnollHackX.Performance
             [JsonProperty("turnReached")]
             public int TurnReached;
 
+            /* Replay turn when the window opened; omitted when unknown */
+            [JsonProperty("turnAtWindowStart", NullValueHandling = NullValueHandling.Ignore)]
+            public int? TurnAtWindowStart;
+
+            /* Replay input records played during the window; omitted when unknown */
+            [JsonProperty("inputRecordsInWindow", NullValueHandling = NullValueHandling.Ignore)]
+            public long? InputRecordsInWindow;
+
             [JsonProperty("excludedReason")]
             public string ExcludedReason;
 
@@ -2298,7 +2348,8 @@ namespace GnollHackX.Performance
             public int QuietHitchCount;
         }
 
-        /* baselines.json: one recorded baseline arm label per comparability key */
+        /* baselines.json: one recorded baseline arm label per comparability key and device
+           (GHPerformanceSuiteLogic.BaselineKey), or per comparability key alone */
         private sealed class BaselinesJson
         {
             [JsonProperty("manifestVersion")]

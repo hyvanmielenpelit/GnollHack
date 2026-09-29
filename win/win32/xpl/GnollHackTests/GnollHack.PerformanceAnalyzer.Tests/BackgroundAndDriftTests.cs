@@ -410,13 +410,13 @@ namespace GnollHack.PerformanceAnalyzer.Tests
             string outPath = TestPaths.TempFile(".md");
             try
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 4; i++)
                 {
                     RunRecord a = SyntheticSmoothnessRun("A", 1.0, 0.5, 60.0);
                     a.Fingerprint = Fp("c1", "2.88.8");
                     runPaths.Add(SaveTemp(a));
                 }
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     RunRecord b = SyntheticSmoothnessRun("B", 10.0, 0.5, 60.0);
                     b.Fingerprint = Fp("c1", "3.116.1");
@@ -426,8 +426,8 @@ namespace GnollHack.PerformanceAnalyzer.Tests
                 }
                 int code = CompareCommand.Run(new Args(new[]
                 {
-                    "compare", "--a", runPaths[0], runPaths[1], runPaths[2],
-                    "--b", runPaths[3], runPaths[4], runPaths[5], runPaths[6],
+                    "compare", "--a", runPaths[0], runPaths[1], runPaths[2], runPaths[3],
+                    "--b", runPaths[4], runPaths[5], runPaths[6], runPaths[7], runPaths[8],
                     "--series", "smoothness", "--resamples", "200", "--out", outPath
                 }));
                 Assert.Equal(0, code);
@@ -544,9 +544,9 @@ namespace GnollHack.PerformanceAnalyzer.Tests
         private static List<RunRecord> Step(Dictionary<string, string> before, Dictionary<string, string> after, double hitchAfter, string verdictAfter = null)
         {
             List<RunRecord> runs = new List<RunRecord>();
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
                 runs.Add(DriftRun("b1", 1, 1.0, before));
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
                 runs.Add(DriftRun("b2", 2, hitchAfter, after, verdictAfter));
             return runs;
         }

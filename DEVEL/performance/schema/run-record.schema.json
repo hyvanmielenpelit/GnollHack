@@ -110,6 +110,8 @@
         "replaySha256": { "type": "string" },
         "startTurn": { "type": "integer" },
         "turnReached": { "type": "integer", "description": "Replay turn at the end of the window; -1 when unknown" },
+        "turnAtWindowStart": { "type": "integer", "description": "Replay turn when the window opened; absent when unknown and in records written before it existed" },
+        "inputRecordsInWindow": { "type": "integer", "description": "Replay input records played during the window, the playback content measured; absent when unknown and in records written before it existed" },
         "excludedReason": { "type": "string", "description": "Why the suite excluded this run, e.g. \"warm-up run\"; absent when the run is used. The analyzer marks such a run excluded" },
         "notes": { "type": "string", "description": "Free text about the run, e.g. \"quiet gate timed out (other CPU 14 %)\"; absent when there is none. The analyzer appends it to the record's notes" }
       }

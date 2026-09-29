@@ -256,10 +256,10 @@ target change, canvas pause, GC).
 2. **Warm-up** of 10 seconds is discarded. **Window** of 60 seconds for scripted
    scenarios, 120 seconds for gameplay; `Run-PerformanceSuite.ps1` picks it from
    `-ScenarioKind` unless `-WindowSeconds` is given.
-3. **Repetitions**: at least 5 runs per configuration for a decision, 3 for a smoke
-   check. Below 3 runs in either arm `compare` makes no decision and prints the minimum
-   detectable effect only. The report prints the minimum detectable effect at the observed
-   spread; raise the count when it is too coarse for the question.
+3. **Repetitions**: at least 5 runs per configuration for a firm decision; 4 give a
+   provisional one. Below 4 used runs in either arm `compare` makes no decision and prints
+   the minimum detectable effect only. The report prints the minimum detectable effect at
+   the observed spread; raise the count when it is too coarse for the question.
 4. **Interleaving**: ABBA then BAAB, never AAAA BBBB, so that drift within the batch
    affects both arms equally. `Run-PerformanceSuite.ps1 -Pairs 2` produces exactly that.
 5. **Cool-down** of 20 seconds between runs, extended until the device is back in the
@@ -288,24 +288,32 @@ target change, canvas pause, GC).
 
 ## Statistics
 
-- Percentiles are nearest-rank on the raw values.
+- Percentiles are nearest-rank on the raw values. So are medians: every median shown in the
+  reports and the suite list, like the one the decision uses, is the lower of the two
+  middle values for an even count, never their average.
 - **Run level decides.** Each run contributes one value per metric. The difference of arm
   medians gets a bootstrap 95 percent confidence interval by resampling runs; a
-  difference counts only when that interval excludes zero **and** exceeds the
-  pre-registered threshold. For the smoothness series (`--series smoothness`): hitch time
-  ratio worse by 2 ms/s, pacing error RMS worse by 1 ms, displayed FPS worse by 5 %. For
-  the external series: P99 worse by 20 % or by one target period, hitch ratio worse by
-  2 ms/s, 1 % low FPS worse by 10 %. The Mann-Whitney p-value is reported, not decided on:
-  at five runs per arm the smallest attainable p is 0.0079.
+  difference counts only when the interval excludes zero **and** the point estimate is
+  beyond the pre-registered threshold. Each arm is resampled from a sorted copy, so the
+  order of the runs does not change the interval. For the smoothness series
+  (`--series smoothness`): hitch time ratio worse by 2 ms/s, pacing error RMS worse by 1 ms,
+  displayed FPS worse by 5 %. For the external series: P99 worse by 20 % or by one target
+  period, hitch ratio worse by 2 ms/s, 1 % low FPS worse by 10 %. The Mann-Whitney p-value
+  is reported, not decided on: at five runs per arm the smallest attainable p is 0.0079.
+- **Run counts.** A verdict needs at least 4 used runs in each arm
+  (`GHPerformanceComparison.MinRunsForVerdict`); with fewer there is no verdict. Below 5
+  (`ProvisionalBelowRuns`) the verdict is marked provisional, and the minimum detectable
+  effect is the more honest read.
 - **Interval level describes.** All intervals of an arm pooled: Mann-Whitney U and Cliff's
   delta, the Hodges-Lehmann shift, and bootstrap intervals on the median and P99
   differences. Pooled intervals are not independent, so this level never decides.
 - **No outlier removal.** A hitch is the phenomenon. Runs are excluded only for a recorded
-  reason, the first that applies: a reason preset by the suite (`warm-up run`, an abort),
-  thermal throttling, a power state that changed during the run, a `busy` background
-  verdict (reason `background load: ...`), or fewer than 100 frames (external series) or
-  on-screen intervals (in-app records). A run whose capture failed produces no record; the
-  batch script logs it as skipped and continues.
+  reason, the first that applies: a reason preset by the suite (`warm-up run`,
+  `cold first run (warm-up run off)`, an abort), thermal throttling, a power state that
+  changed during the run, a `busy` background verdict (reason `background load: ...`), or
+  fewer than 100 frames (external series) or on-screen intervals (in-app records). A run
+  whose capture failed produces no record; the batch script logs it as skipped and
+  continues.
 - **Elevated background load annotates, it does not exclude.** A run with an `elevated`
   verdict stays in the decision. A comparison with such runs adds a sensitivity line: the
   run-level decisions recomputed without them, and whether any of them changes. Read a
@@ -439,7 +447,7 @@ at the start and end of every batch.
 | Category | Keys | Notes |
 |----------|------|-------|
 | `meta` | `meta.fingerprintVersion` (`1`), `meta.capturedUtc` | Never diffed |
-| `code` | `code.appVersion`, `code.gitCommit`, `code.buildConfiguration`, `code.portVersion`, `code.portBuild`, `code.renderSubscription` | In-app |
+| `code` | `code.appVersion`, `code.gitCommit`, `code.buildConfiguration`, `code.portVersion`, `code.portBuild`, `code.renderSubscription`; Windows: `code.assemblyMvid` (the first 12 hex characters of the app assembly's module version id, which changes whenever the compiled code does) | In-app |
 | `toolchain` | `toolchain.runtime`, `toolchain.framework`, `toolchain.compiler`, `toolchain.sdk` (the build's SDK, assembly metadata `GHBuildSdkVersion`), `toolchain.packaging`; script: `toolchain.dotnetSdk` (the host's `dotnet --version` in `GnollHackTests`) | |
 | `component` | `component.<assembly name>` for every loaded assembly except those starting with `System`, `mscorlib`, `netstandard`, `Microsoft.CSharp`, `Microsoft.VisualBasic`, `Microsoft.Win32` or `GnollHack`; `component.native.skia`, `component.native.fmod`; Windows: `component.windowsAppSdk`, `component.winui` | In-app; e.g. `component.SkiaSharp`, `component.Microsoft.Maui.Controls` |
 | `os` | `os.platform`, `os.version`, `os.build` (Windows `26200.6584`), `os.displayVersion`, `os.edition`, `os.pendingReboot`; Android: `os.securityPatch`, `os.fingerprint`; script, Windows: `os.latestHotfix` | |
@@ -529,8 +537,10 @@ differs within the arm reads `mixed`, and a key missing from any of them is left
   differences (A -> B)** between the arms' pooled fingerprints, the **Attribution** line, a
   warning when it is confounded or more than one setting differs, and, when any used run is
   elevated, the sensitivity line (`Without the N elevated runs: decision unchanged`, or the
-  metrics whose verdict changes). The list of suites marks a suite `bg` when a run was
-  excluded for background load, and `env changed` when its environment changed during it.
+  metrics whose verdict changes). A warning names the `code.appVersion`, `code.gitCommit`
+  or `code.assemblyMvid` that differs when one arm pools suites of more than one build. The
+  list of suites marks a suite `bg` when a run was excluded for background load, and
+  `env changed` when its environment changed during it.
 - **`compare`**: a `bg` column in both run tables (`e 12`: the verdict letter and the
   other-CPU P90), an **Environment differences** section with the common fingerprint of each
   arm's used runs and the attribution, and a **Sensitivity** line under the run-level
@@ -557,9 +567,10 @@ differs within the arm reads `mixed`, and a key missing from any of them is left
   line per series it carries (external, smoothness).
 - **Batches.** Within a line, runs are grouped by their `batch` (the leaf name of the
   batch's `-OutDir`, or the suite id of an in-app record), or by date, arm and commit for
-  older records. A batch with at least 3 used runs is compared with the previous batch and,
-  when that shows no shift, with the pooled previous up to 3 batches, which catches slow
-  drift; the pool never reaches back across a detected shift. A shift is a metric whose
+  older records. A batch with at least 4 used runs, the minimum a verdict needs
+  (`MinRunsForVerdict`), is compared with the previous batch and, when that shows no
+  shift, with the pooled previous up to 3 batches, which catches slow drift; the pool
+  never reaches back across a detected shift. A shift is a metric whose
   bootstrap interval excludes zero and whose difference exceeds `compare`'s pre-registered
   threshold (see [Statistics](#statistics)).
 - **The table**, one per line: each batch's used and total runs, the metric medians,
@@ -733,25 +744,32 @@ The page remembers the last setup.
 | Replay | none | A main replay file in `<GHPath>/replay`, newest first; continuation files are not listed |
 | Start Turn | 1 | The turn every run starts from, at least 1 |
 | Scenario | Idle | **Idle**: the replay pauses at the start turn, leaving only tile animations (W-idle). **Minimap**: the replay pauses and the map switches to minimap zoom (W1). **Playback**: the replay keeps playing (replay) |
-| Measured runs | 6 | 3, 5, 6 or 8, not counting the warm-up run |
-| Warm-up run | On | Run 0, a full run that is saved but excluded as `warm-up run` |
+| Measured runs | 6 | 4, 5, 6 or 8, not counting the warm-up run |
+| Warm-up run | On | Run 0, a full run that is saved but excluded as `warm-up run`. With it off, run 1 is excluded instead as `cold first run (warm-up run off)`, and the page asks before starting when that leaves fewer used runs than a verdict needs |
 | Page mode | Shared page | **Shared page**: one game page for every run. **Fresh page per run**: a new game page for each run |
-| Arm label | `<app version> <short commit>` | Names the arm; suites with the same label pool into one arm |
+| Arm label | Windows: `<version> <commit7> m<id6>`; elsewhere `<version> <commit7>` | Names the arm; suites with the same label pool into one arm. `<commit7>` is the first 7 characters of the commit, and `<id6>` the first 6 of the app assembly's module version id (`code.assemblyMvid`), so on Windows any code change gives a new default. An edited label is kept until the default changes |
 | Warm-up, window and cool-down seconds | 10, 60, 20 | Per run, as in the Protocol |
 
 The estimated duration is (measured runs + warm-up run) x (15 s for the seek + warm-up +
-window + cool-down): about 12 minutes with the defaults.
+window + cool-down), the cool-downs being the one before the first run and those between
+runs; thermal and quiet gate waits are not included. With the defaults it is about 12
+minutes.
 
 ### What a suite does
 
-1. The first game page plays the replay from its beginning, exactly as the Replay page starts
+1. Before the first run, the warm-up run included, and before any game page opens, the suite
+   waits one cool-down and then, where the platform reports a thermal status, until the
+   status is Nominal or better, checking every 15 s for at most 300 s. The suite's starting
+   thermal reading, which the later thermal gates compare with, is taken after that wait.
+   The quiet gate follows (step 5).
+2. The first game page plays the replay from its beginning, exactly as the Replay page starts
    it, when the start turn is 1 or less; otherwise it seeks to start turn - 1 and plays the
    last turn at normal speed.
-2. The runner waits, for at most 120 s, until the start turn is reached and no replayed menu,
+3. The runner waits, for at most 120 s, until the start turn is reached and no replayed menu,
    text window, prompt or popup covers the map, and applies the scenario. The replay header
    shows the progress: `Performance suite: run N of M`, `warm-up run` or `cooling down`.
-3. Warm-up, then the measurement window, saved with the suite's context.
-4. Cool-down, then a thermal gate: the next run waits until the thermal class is no worse than
+4. Warm-up, then the measurement window, saved with the suite's context.
+5. Cool-down, then a thermal gate: the next run waits until the thermal class is no worse than
    at the suite start, checking every 15 s, and goes ahead after 300 s regardless. Windows
    reports no thermal class, so there is no gate there: the processor performance counter
    mostly follows turbo boost, which drops whenever the replay pauses. A run measured while
@@ -761,10 +779,10 @@ window + cool-down): about 12 minutes with the defaults.
    `waiting for a quiet system (other CPU N %)`. After a timeout the run carries the note
    `quiet gate timed out (other CPU N %)`. There is no quiet gate on Android and iOS, which
    give an app no whole-machine CPU reading.
-5. The next run starts. With a shared page the replay, paused during the cool-down, seeks back
+6. The next run starts. With a shared page the replay, paused during the cool-down, seeks back
    to start turn - 1, which restarts it in place and collects garbage. With a fresh page the
    game page closes before the cool-down, which then runs on the suite page, and after a
-   collection a new game page starts as in step 1.
+   collection a new game page starts as in step 2.
 
 The suite aborts when the replay ends, the user stops it, the app goes to the background
 (minimizing counts on Windows), or the start turn is not reached; between fresh pages, also
@@ -785,10 +803,11 @@ reason. Measured runs are otherwise excluded by the rules under [Statistics](#st
 Each suite is a folder `<GHPath>/performance/suites/<suiteId>/`, where `<suiteId>` is
 `yyyyMMdd_HHmmss_<scenario>_<device model>` in UTC. It holds `suite.json`
 (`schema/suite-manifest.schema.json`), each run's `run_*.json`, `frametimeline_*.csv` and
-`compositorframes_*.csv`, and `report.txt`. `<GHPath>/performance/baselines.json` records one
-baseline arm label per comparability key. Unlike `archive`, the `performance` directory is not
-cleared when the app starts. Reset > Delete Performance Data deletes it entirely, together with
-the archive's performance files and, on Android, the external `performance` export directory.
+`compositorframes_*.csv`, and `report.txt`. `<GHPath>/performance/baselines.json` records
+one baseline arm label per comparability key and device. Unlike `archive`, the
+`performance` directory is not cleared when the app starts. Reset > Delete Performance Data
+deletes it entirely, together with the archive's performance files and, on Android, the
+external `performance` export directory.
 
 The results list shows each suite's date, scenario, label, used runs, median hitch ratio and
 size, tagged `baseline`, `aborted`, `imported`, `bg` (a run was excluded for background
@@ -802,7 +821,7 @@ listed.
 | Button | Action |
 |--------|--------|
 | View Report | `report.txt`: setup, replay size, SHA-256 and start turn, environment and its fingerprint by category, the run table with each run's background verdict, the background load, the medians of the used runs, the changes since the previous comparable suite, hitch causes and content events |
-| Set as Baseline | Records the suite's arm label as the baseline for its comparability key |
+| Set as Baseline | Records the suite's arm label as the baseline for its comparability key on this device |
 | Compare with Baseline | Compares the suite's arm with the baseline arm of its key |
 | Share, Import Results | See [Share and Import](#share-and-import) |
 | Delete | Deletes the selected suites' folders; `baselines.json` is left as it is |
@@ -811,23 +830,57 @@ The **comparability key** is the scenario, the replay's SHA-256, the start turn,
 mode, the map FPS setting, the measured refresh rate rounded to whole hertz and the metrics
 version, as `|m<metricsVersion>` at its end, fixed when the suite finishes. A suite measured
 with an earlier metrics version therefore matches no baseline, previous comparable suite or
-suite measured later; after the version changes, baselines must be measured again.
+suite measured later; after the version changes, baselines must be measured again. The
+suite's measured refresh rate and target FPS, set when it finishes, are the medians over
+its used runs only.
+
+Set as Baseline records the arm label in `baselines.json` under the comparability key and
+this device: `os.platform`, `hardware.deviceModel`, and `hardware.cpu` or, without it,
+`hardware.soc`. A baseline set by an older build, which recorded no device, applies to any
+device that has no baseline of its own for the key.
 
 A comparison pools, per arm, every suite with the same key and the same arm label that was
 measured on the selected suite's device: arm A the baseline label, arm B the selected
 suite's. Suites with another key never enter it. The device matches when every
 `hardware.*` key and `os.platform` present in both fingerprints agree, or, for suites
-without a fingerprint, when platform and device model agree. It refuses when the suite is
-still running, no baseline is set for its key, the suite's own label is the baseline label,
-the baseline arm has no used runs on this device but has suites on another ("Baseline
-measured on a different device"), or either arm has no used runs.
+without a fingerprint, when platform and device model agree. Compare with Baseline refuses
+with one of these messages:
+
+| Message | When |
+|---------|------|
+| `This suite could not be read.` | Its `suite.json` cannot be read, or has no setup |
+| `This suite has not finished running.` | The suite is still running |
+| `This suite was interrupted and cannot be compared.` | The app stopped during the suite, leaving it marked running |
+| `This suite has no comparability key yet.` | The suite has not been finished |
+| `baselines.json cannot be read, so no baseline is known. Set a baseline to start a new one.` | Neither `baselines.json` nor its backup can be read |
+| `No baseline for this group on this device; a baseline exists for the same replay at <Hz> Hz (this suite: <Hz> Hz).` | No baseline for the key on this device, but one for a key that differs only in the refresh rate |
+| `No baseline is set for this suite's comparability group on this device.` | No baseline for the key on this device |
+| `This suite belongs to the baseline arm.` | The suite's own label is the baseline label |
+| `Baseline measured on a different device (<device> vs <device>).` | The baseline arm has no used runs on this device but has suites on another |
+| `One of the two arms has no used runs.` | Either arm has no used runs |
+| `The comparison could not be computed.` | The comparison failed |
 
 The decision is the one `compare --series smoothness` makes offline, from the same code
-(`GHPerformanceComparison`), as described under [Statistics](#statistics). With fewer than 3
+(`GHPerformanceComparison`), as described under [Statistics](#statistics). With fewer than 4
 used runs in either arm there is no verdict; below 5 the verdict is marked provisional. The
-report lists both arms' versions, their environment differences and the attribution, the
-verdict per metric, the sensitivity line when a used run was elevated, and each arm's hitch
-causes (see [What the reports show](#what-the-reports-show)).
+report lists both arms' versions, a warning when one arm pools suites from different builds
+(a different `code.appVersion`, `code.gitCommit` or `code.assemblyMvid`), their
+environment differences and the attribution, the suites in start order, the verdict per
+metric, the sensitivity line when a used run was elevated, and each arm's hitch causes (see
+[What the reports show](#what-the-reports-show)).
+
+The suites are listed with their UTC start, arm and used runs, followed by an `Order:` line
+such as `Order: A B B A`. The report warns when every suite of one arm ran before every
+suite of the other, since drift is then confounded with the change, and when an arm has a
+single suite.
+
+For the Playback scenario the report also warns when the arms covered different amounts of
+the replay in their windows, since a slower build plays less in the same time. Coverage is
+measured by the input records played in the window, else by the turns in the window, else
+by the turn reached, whichever every used run of both arms has; it differs when the arms'
+medians differ by more than 1 and by more than 10 % of the larger one, or their ranges do
+not overlap. The run
+record's `suite` object carries `turnAtWindowStart` and `inputRecordsInWindow` for this.
 
 The store's files are written as follows:
 
@@ -847,14 +900,19 @@ The store's files are written as follows:
 
 ### Two builds on one device
 
-- **Windows**: unpackaged builds share one store. Run a suite in each build, set the older
-  build's suite as the baseline, and compare the newer one's. The default arm labels differ,
-  since they carry the version and commit.
+- **Windows**: unpackaged builds share one store. Run the suites in the order A B B A: the
+  old build, the new build, the new build again, and the old build again, with the same
+  label for both suites of a build and at least 4 runs each. Set an old-build suite as the
+  baseline and compare a new-build one's. The default arm labels differ, since they carry
+  the version, the commit and the assembly id. The comparison report lists the suites in
+  start order with an `Order:` line, and warns when every suite of one arm ran before every
+  suite of the other, or when an arm has a single suite.
 - **Android and iOS**: a reinstall may wipe the app's data, and the store with it. Share the
   suites before installing another build and import them afterwards. Interleave in blocks:
-  3 runs with the old build, install the new build, 6 runs, reinstall the old build, 3 runs.
-  Both old-build suites carry the same label and pool into one 6-run arm, so drift over the
-  session affects both arms alike.
+  a suite of 4 runs with the old build, install the new build, two suites of 4 runs,
+  reinstall the old build, a suite of 4 runs. The suites of each build carry the same label
+  and pool into one 8-run arm, so drift over the session affects both arms alike, and the
+  report's order is A B B A.
 
 ### Share and Import
 

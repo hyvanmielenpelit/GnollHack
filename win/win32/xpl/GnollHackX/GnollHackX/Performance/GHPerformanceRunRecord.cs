@@ -47,9 +47,10 @@ namespace GnollHackX.Performance
 
        Must compile under C# 7.3 (the legacy netstandard2.0 project). */
     /* A performance suite's run-level context, folded into a saved record's "suite"
-       object and consulted for the run result's ExcludedReason. TurnReached and
-       ExcludedReason are meant to be set by the caller on the same instance passed to
-       TryBeginWindow, any time before EndWindowAndSave: ExcludedReason preset here (e.g.
+       object and consulted for the run result's ExcludedReason. TurnReached,
+       InputRecordsInWindow and ExcludedReason are meant to be set by the caller on the
+       same instance passed to TryBeginWindow, any time before EndWindowAndSave, and
+       TurnAtWindowStart before TryBeginWindow: ExcludedReason preset here (e.g.
        "warm-up run", "replay ended") always wins over the reasons EndWindowAndSave
        derives on its own (throttling, a power state change, too few on-screen
        intervals). */
@@ -64,6 +65,8 @@ namespace GnollHackX.Performance
         public string ReplaySha256;
         public int StartTurn;
         public int TurnReached = -1;   /* set by the caller before EndWindowAndSave */
+        public int TurnAtWindowStart = -1;         /* replay turn when the window opened; -1 when unknown */
+        public long InputRecordsInWindow = -1;     /* replay input records played during the window; -1 when unknown */
         public string ExcludedReason;  /* preset by the caller, e.g. "warm-up run", "replay ended" */
         public string Notes;           /* e.g. a quiet gate timeout before the run; the record's "suite.notes" */
     }
@@ -209,7 +212,8 @@ namespace GnollHackX.Performance
            It never collects the per-process interval: callers start that on the thread
            pool before calling this (GHSystemLoadSampler.StartProcessIntervalAsync).
            context, null when there is none, is remembered by reference: fields the caller
-           sets on it up to EndWindowAndSave (TurnReached, ExcludedReason) are included in
+           sets on it up to EndWindowAndSave (TurnReached, InputRecordsInWindow,
+           ExcludedReason) are included in
            the saved record's "suite" object and in the run result's ExcludedReason.
            Call on the UI thread. False when refused or when the window could not be
            opened; never throws. */
@@ -1163,6 +1167,10 @@ namespace GnollHackX.Performance
             j.ReplaySha256 = context.ReplaySha256;
             j.StartTurn = context.StartTurn;
             j.TurnReached = context.TurnReached;
+            if (context.TurnAtWindowStart >= 0)
+                j.TurnAtWindowStart = context.TurnAtWindowStart;
+            if (context.InputRecordsInWindow >= 0)
+                j.InputRecordsInWindow = context.InputRecordsInWindow;
             j.ExcludedReason = context.ExcludedReason;
             j.Notes = context.Notes;
             return j;
@@ -2077,6 +2085,14 @@ namespace GnollHackX.Performance
 
             [JsonProperty("turnReached")]
             public int TurnReached;
+
+            /* Replay turn when the window opened; omitted when unknown */
+            [JsonProperty("turnAtWindowStart", NullValueHandling = NullValueHandling.Ignore)]
+            public int? TurnAtWindowStart;
+
+            /* Replay input records played during the window; omitted when unknown */
+            [JsonProperty("inputRecordsInWindow", NullValueHandling = NullValueHandling.Ignore)]
+            public long? InputRecordsInWindow;
 
             /* Only the caller's preset reason; omitted when not set */
             [JsonProperty("excludedReason", NullValueHandling = NullValueHandling.Ignore)]

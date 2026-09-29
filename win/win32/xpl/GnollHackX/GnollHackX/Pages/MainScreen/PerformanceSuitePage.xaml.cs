@@ -132,16 +132,20 @@ namespace GnollHackX.Pages.MainScreen
                 "Idle: the replay is paused at the player's command prompt and only animations run. Minimap: the same in minimap mode. Playback: the replay plays at normal speed through the window.");
             AddInfoLabel(RunsLabel,
                 "Measured runs, not counting the warm-up run",
-                "The warm-up run is not counted. At least 3 measured runs are needed for a verdict, and 5 or more for a firm one.");
+                "The warm-up run is not counted. At least "
+                + GHPerformanceComparison.MinRunsForVerdict.ToString(CultureInfo.InvariantCulture)
+                + " measured runs are needed for a verdict, and "
+                + GHPerformanceComparison.ProvisionalBelowRuns.ToString(CultureInfo.InvariantCulture)
+                + " or more for a firm one.");
             AddInfoLabel(WarmUpRunLabel,
                 "An extra first run, excluded from the results",
-                "Run 0 is measured but excluded from the results. It absorbs the loading and garbage-collection storm after the game page opens.");
+                "Run 0 is measured but excluded from the results. It absorbs the loading and garbage-collection storm after the game page opens. With it off, run 1 is excluded instead as a cold first run, leaving one used run fewer.");
             AddInfoLabel(PageModeLabel,
                 "Reuse one game page, or open a new one per run",
                 "Shared page restarts the replay in place, which also collects garbage. Fresh page closes and reopens the game page for each run.");
             AddInfoLabel(ArmLabelLabel,
                 "Suites with the same label are compared as one",
-                "Suites with the same label pool into one arm when compared. The default is the app version and commit; an edited label is kept until another build is installed.");
+                "Suites with the same label pool into one arm when compared. The default is the app version and commit, and on Windows also \"m\" and the first characters of an id that changes whenever the compiled code does; an edited label is kept until the default changes.");
             AddInfoLabel(WarmUpSecondsLabel,
                 "Seconds played before measuring",
                 "Seconds each run plays the scenario before measuring starts.");
@@ -149,11 +153,11 @@ namespace GnollHackX.Pages.MainScreen
                 "Seconds measured per run",
                 "Seconds measured in each run.");
             AddInfoLabel(CooldownSecondsLabel,
-                "Seconds of rest between runs",
-                "Seconds of pause between runs, letting the device cool down before the next run.");
+                "Seconds of rest before each run",
+                "Seconds of pause before each run, the first one included, letting the device cool down. Where the device reports its thermal status, the first run also waits, for up to 5 minutes, until the status is nominal.");
             AddInfoLabel(EstimatedDurationTitleLabel,
                 "Approximate time for the whole suite",
-                "Every run, including the warm-up run, takes its warm-up, window and cool-down seconds plus an allowance for loading and seeking.");
+                "Every run, including the warm-up run, takes its cool-down, warm-up and window seconds plus an allowance for loading and seeking.");
             AddInfoLabel(ResultsLabel,
                 "Suites saved on this device",
                 "Suites are saved on this device. "
@@ -192,7 +196,7 @@ namespace GnollHackX.Pages.MainScreen
 
             List<RunsItem> runs = new List<RunsItem>
             {
-                new RunsItem(3),
+                new RunsItem(4),
                 new RunsItem(5),
                 new RunsItem(6),
                 new RunsItem(8),
@@ -230,8 +234,10 @@ namespace GnollHackX.Pages.MainScreen
 
         private string _defaultArmLabel = "";
 
-        /* "<app version> <short commit>", omitting the commit when it is unknown. The
-           commit is the part after '+' of the informational version of the assembly
+        /* GHPerformanceSuiteLogic.DefaultArmLabel: "<app version> <short commit>
+           m<short id>", omitting the commit and the id when they are unknown; the id is
+           the compiled code's (GHPerformanceEnvironment.ReadAssemblyMvid, Windows only).
+           The commit is the part after '+' of the informational version of the assembly
            GHPerformanceEnvironment reads it from; a full environment capture is avoided
            here, since its first call can block on WMI. */
         private string BuildDefaultArmLabel()
@@ -252,11 +258,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 System.Diagnostics.Debug.WriteLine(ex);
             }
-            if (!string.IsNullOrEmpty(commit) && commit.Length > 7)
-                commit = commit.Substring(0, 7);
-            if (string.IsNullOrEmpty(commit))
-                return version ?? "";
-            return ((version ?? "") + " " + commit).Trim();
+            return GHPerformanceSuiteLogic.DefaultArmLabel(version, commit, GHPerformanceEnvironment.ReadAssemblyMvid());
         }
 
         private void SelectNamedValuePicker(Picker picker, string value, int fallbackIndex)
@@ -554,6 +556,19 @@ namespace GnollHackX.Pages.MainScreen
             setup.WarmUpSeconds = warmUpSeconds;
             setup.WindowSeconds = windowSeconds;
             setup.CooldownSeconds = cooldownSeconds;
+
+            /* With the warm-up run off, the runner excludes run 1 as a cold first run */
+            int usedRuns = setup.Runs - 1;
+            if (!setup.WarmUpRun && usedRuns < GHPerformanceComparison.MinRunsForVerdict)
+            {
+                bool proceed = await GHApp.DisplayMessageBox(this, "Too Few Used Runs",
+                    "With the warm-up run off, the first run is excluded, which leaves "
+                    + usedRuns.ToString(CultureInfo.InvariantCulture) + " used run" + (usedRuns == 1 ? "" : "s")
+                    + ". A verdict needs " + GHPerformanceComparison.MinRunsForVerdict.ToString(CultureInfo.InvariantCulture)
+                    + ". Continue?", "Yes", "No");
+                if (!proceed)
+                    return;
+            }
 
             SavePreferences(setup, replay.FullPath);
 

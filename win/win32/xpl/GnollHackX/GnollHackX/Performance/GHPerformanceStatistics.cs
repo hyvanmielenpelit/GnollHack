@@ -88,6 +88,26 @@ namespace GnollHackX.Performance
             return Percentile(values, 50);
         }
 
+        /* Nearest-rank median of an unsorted list, the same definition as Median and
+           StatMedian: for an even count it is the lower of the two middle values, never
+           their average. NaN for a null or empty list. Sorts a copy. */
+        public static double MedianNearestRank(IList<double> values)
+        {
+            if (values == null || values.Count == 0)
+                return double.NaN;
+            int n = values.Count;
+            double[] sorted = new double[n];
+            for (int i = 0; i < n; i++)
+                sorted[i] = values[i];
+            Array.Sort(sorted);
+            int rank = (int)Math.Ceiling(50.0 / 100.0 * n);
+            if (rank < 1)
+                rank = 1;
+            if (rank > n)
+                rank = n;
+            return sorted[rank - 1];
+        }
+
         /* Mean of the slowest fraction of intervals, expressed as a rate. "1 percent low
            FPS" is 1000 / mean of the largest 1 percent of frame intervals in ms. At least
            one interval is always included. */
@@ -266,7 +286,9 @@ namespace GnollHackX.Performance
            interval is the (alpha/2, 1 - alpha/2) quantiles of the resampled statistics.
            Percentile bootstrap is biased for extreme quantiles of small samples; with the
            thousands of intervals a 60 s window produces it is adequate, and its
-           simplicity means the device and the analyzer cannot disagree. */
+           simplicity means the device and the analyzer cannot disagree. Resampling draws
+           from a sorted copy, so the interval depends on the values and the seed but not
+           on the order in which the values are given. */
         public static Interval BootstrapCi(float[] values, Statistic statistic,
                                            int resamples, double confidence, ulong seed)
         {
@@ -274,6 +296,7 @@ namespace GnollHackX.Performance
             if (values == null || values.Length == 0)
                 return ci;
             int n = values.Length;
+            values = SortedCopy(values);
             ci.Point = statistic(values, n);
             ci.Resamples = resamples;
             if (resamples <= 0)
@@ -298,7 +321,9 @@ namespace GnollHackX.Performance
         }
 
         /* Bootstrap CI of statistic(b) - statistic(a), resampling each arm independently.
-           A difference whose interval excludes zero is the criterion for "changed". */
+           A difference whose interval excludes zero is the criterion for "changed". Each
+           arm is resampled from a sorted copy, so the interval does not depend on the
+           order of the values within an arm. */
         public static Interval BootstrapDifferenceCi(float[] a, float[] b, Statistic statistic,
                                                      int resamples, double confidence, ulong seed)
         {
@@ -306,6 +331,8 @@ namespace GnollHackX.Performance
             if (a == null || b == null || a.Length == 0 || b.Length == 0)
                 return ci;
             int na = a.Length, nb = b.Length;
+            a = SortedCopy(a);
+            b = SortedCopy(b);
             ci.Point = statistic(b, nb) - statistic(a, na);
             ci.Resamples = resamples;
             if (resamples <= 0)

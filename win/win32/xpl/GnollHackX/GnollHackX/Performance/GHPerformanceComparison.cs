@@ -100,7 +100,7 @@ namespace GnollHackX.Performance
 
         /* Below this many used runs in either arm, a decision would rest on too little
            data to trust the bootstrap CI, so every decision row is refused instead */
-        public const int MinRunsForVerdict = 3;
+        public const int MinRunsForVerdict = 4;
 
         /* Below this many used runs in either arm, a decision is made but flagged
            provisional: the MDE column is the more honest read at this sample size */

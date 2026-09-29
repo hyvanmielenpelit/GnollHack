@@ -16,6 +16,8 @@ namespace GnollHackX.Performance
         public string RunFileName;
         public GHSmoothnessSummary Summary;
         public int TurnReached = -1;
+        public int TurnAtWindowStart = -1;          /* -1 when not recorded */
+        public long InputRecordsInWindow = -1;      /* -1 when not recorded */
         public string ExcludedReason;
         public string BackgroundVerdict;            /* a GHBackgroundLoad verdict name; null when not recorded */
         public double OtherCpuP90Pct = double.NaN;  /* NaN when not recorded */
@@ -157,9 +159,13 @@ namespace GnollHackX.Performance
             return ComparisonReport(result, suitesA, suitesB, null);
         }
 
-        /* The comparison report with the environment differences, the attribution and,
-           when context counts elevated runs, the sensitivity line; a null context pools
-           each arm's fingerprint from its suites and prints no sensitivity line. */
+        /* The comparison report with each arm's builds and a warning when an arm pools
+           more than one (BuildIdentityWarnings), the environment differences and the
+           attribution, the suites in start order with warnings about the arm order, a
+           warning when the arms played different playback content
+           (ContentCoverageWarning, for the scenario of the arms' suites) and, when
+           context counts elevated runs, the sensitivity line; a null context pools each
+           arm's fingerprint from its suites and prints no sensitivity line. */
         public static string ComparisonReport(GHComparisonResult result,
             IList<GHReportSuite> suitesA, IList<GHReportSuite> suitesB, GHReportComparisonContext context)
         {
@@ -177,7 +183,14 @@ namespace GnollHackX.Performance
             Line(sb, "");
             AppendVersionLines(sb, "A", suitesA);
             AppendVersionLines(sb, "B", suitesB);
+            AppendLines(sb, BuildIdentityWarnings(suitesA, "A"));
+            AppendLines(sb, BuildIdentityWarnings(suitesB, "B"));
             AppendEnvironmentDifferences(sb, suitesA, suitesB, context);
+            Line(sb, "");
+            AppendSuiteOrder(sb, suitesA, suitesB);
+            string coverage = ContentCoverageWarning(suitesA, suitesB, ScenarioOf(suitesA, suitesB));
+            if (coverage != null)
+                AppendLines(sb, new List<string>(coverage.Split('\n')));
             Line(sb, "");
             AppendVerdictTable(sb, result);
             Line(sb, "");
@@ -544,7 +557,7 @@ namespace GnollHackX.Performance
                 + p.StartedUtc.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) + " UTC, "
                 + p.RunsUsed.ToString(CultureInfo.InvariantCulture) + " used run(s)", MaxLineWidth));
             Line(sb, Truncate("  Median hitch: " + Fmt(p.MedianHitchRatioMsPerSec) + " ms/s then, "
-                + Fmt(Median(hitch)) + " ms/s now", MaxLineWidth));
+                + Fmt(GHPerformanceStatistics.MedianNearestRank(hitch)) + " ms/s now", MaxLineWidth));
             GHEnvironmentFingerprint.AppendReportLines(sb, p.Changes, MaxLineWidth);
             Line(sb, "  Descriptive only: the baseline comparison is the decision.");
         }
@@ -663,11 +676,11 @@ namespace GnollHackX.Performance
                 stallMs += s.LongStallMs;
             }
 
-            Line(sb, Truncate("  FPS " + Fmt(Median(fps))
-                + "  Hitch " + Fmt(Median(hitch)) + "ms/s"
-                + "  PaceRMS " + Fmt(Median(pace)) + "ms"
-                + "  Judder " + Fmt(Median(judder)) + "%"
-                + "  GC " + Fmt(Median(gc)), MaxLineWidth));
+            Line(sb, Truncate("  FPS " + Fmt(GHPerformanceStatistics.MedianNearestRank(fps))
+                + "  Hitch " + Fmt(GHPerformanceStatistics.MedianNearestRank(hitch)) + "ms/s"
+                + "  PaceRMS " + Fmt(GHPerformanceStatistics.MedianNearestRank(pace)) + "ms"
+                + "  Judder " + Fmt(GHPerformanceStatistics.MedianNearestRank(judder)) + "%"
+                + "  GC " + Fmt(GHPerformanceStatistics.MedianNearestRank(gc)), MaxLineWidth));
             Line(sb, "  Display times are estimated in-app; Compositor and Dropped are inferred.");
             /* A measurement window counts its long stalls as hitches */
             if (stallCount > 0)
@@ -791,9 +804,239 @@ namespace GnollHackX.Performance
             {
                 string[] parts = combos[i].Split('|');
                 string text = "Arm " + arm + ": app " + parts[0] + "  commit " + parts[1]
+                    + (parts[5] != "n/a" ? "  id " + parts[5] : "")
                     + "  Skia " + parts[2] + "  Framework " + parts[3] + "  Runtime " + parts[4];
                 Line(sb, Truncate(text, MaxLineWidth));
             }
+        }
+
+        /* The code identity keys BuildIdentityWarnings compares */
+        private static readonly string[] BuildIdentityKeys =
+        {
+            GHEnvironmentFingerprint.CodeAppVersionKey,
+            GHEnvironmentFingerprint.CodeGitCommitKey,
+            GHPerformanceSuiteLogic.CodeAssemblyMvidKey
+        };
+
+        /* A warning, as report lines, when the suites of one arm were measured on more
+           than one build: some code.appVersion, code.gitCommit or code.assemblyMvid
+           differs between two suites whose effective fingerprints both have it. Empty
+           when the arm is one build. */
+        public static List<string> BuildIdentityWarnings(IList<GHReportSuite> suites, string arm)
+        {
+            List<string> lines = new List<string>();
+            if (suites == null || suites.Count < 2)
+                return lines;
+            List<string> differing = new List<string>();
+            for (int k = 0; k < BuildIdentityKeys.Length; k++)
+            {
+                string first = null;
+                for (int i = 0; i < suites.Count; i++)
+                {
+                    string value = FingerprintValue(EffectiveFingerprint(suites[i]), BuildIdentityKeys[k]);
+                    if (string.IsNullOrEmpty(value))
+                        continue;
+                    if (first == null)
+                    {
+                        first = value;
+                    }
+                    else if (!string.Equals(first, value, StringComparison.Ordinal))
+                    {
+                        differing.Add(BuildIdentityKeys[k]);
+                        break;
+                    }
+                }
+            }
+            if (differing.Count == 0)
+                return lines;
+            lines.Add(Truncate("Warning: arm " + OrNA(arm) + " pools suites of more than one build; keep one build per arm.",
+                MaxLineWidth));
+            lines.Add(Truncate("  Differs: " + string.Join(", ", differing.ToArray()), MaxLineWidth));
+            return lines;
+        }
+
+        /* One line per suite of both arms, earliest start first, with its used runs,
+           then the order of the arms, and warnings when every suite of one arm ran
+           before every suite of the other, and when an arm has a single suite */
+        private static void AppendSuiteOrder(StringBuilder sb, IList<GHReportSuite> suitesA, IList<GHReportSuite> suitesB)
+        {
+            List<KeyValuePair<string, GHReportSuite>> entries = new List<KeyValuePair<string, GHReportSuite>>();
+            if (suitesA != null)
+            {
+                for (int i = 0; i < suitesA.Count; i++)
+                    entries.Add(new KeyValuePair<string, GHReportSuite>("A", suitesA[i]));
+            }
+            if (suitesB != null)
+            {
+                for (int i = 0; i < suitesB.Count; i++)
+                    entries.Add(new KeyValuePair<string, GHReportSuite>("B", suitesB[i]));
+            }
+            /* Earliest first; a tie keeps A before B, then the suite id's order */
+            List<int> order = new List<int>();
+            for (int i = 0; i < entries.Count; i++)
+                order.Add(i);
+            order.Sort(delegate (int x, int y)
+            {
+                GHReportSuite sx = entries[x].Value;
+                GHReportSuite sy = entries[y].Value;
+                DateTime tx = sx != null ? sx.StartedUtc : DateTime.MinValue;
+                DateTime ty = sy != null ? sy.StartedUtc : DateTime.MinValue;
+                int c = tx.CompareTo(ty);
+                if (c != 0)
+                    return c;
+                c = string.CompareOrdinal(entries[x].Key, entries[y].Key);
+                if (c != 0)
+                    return c;
+                c = string.CompareOrdinal(sx != null ? sx.SuiteId : null, sy != null ? sy.SuiteId : null);
+                return c != 0 ? c : x.CompareTo(y);
+            });
+
+            Line(sb, "Suites (UTC start, arm, used runs):");
+            if (entries.Count == 0)
+            {
+                Line(sb, "  none");
+                return;
+            }
+            StringBuilder arms = new StringBuilder("Order:");
+            int changes = 0;
+            string previous = null;
+            for (int i = 0; i < order.Count; i++)
+            {
+                KeyValuePair<string, GHReportSuite> entry = entries[order[i]];
+                GHReportSuite suite = entry.Value;
+                string start = suite != null
+                    ? suite.StartedUtc.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) : "n/a";
+                int used = UsedRuns(suite).Count;
+                Line(sb, Truncate("  " + start + "  " + entry.Key + "  "
+                    + PadR(used.ToString(CultureInfo.InvariantCulture), 3) + OrNA(suite != null ? suite.SuiteId : null),
+                    MaxLineWidth));
+                arms.Append(' ');
+                arms.Append(entry.Key);
+                if (previous != null && previous != entry.Key)
+                    changes++;
+                previous = entry.Key;
+            }
+            Line(sb, Truncate(arms.ToString(), MaxLineWidth));
+
+            int countA = suitesA != null ? suitesA.Count : 0;
+            int countB = suitesB != null ? suitesB.Count : 0;
+            if (countA > 0 && countB > 0 && changes == 1)
+            {
+                Line(sb, "Warning: every A suite ran before every B suite (or vice versa);");
+                Line(sb, "  drift is confounded with the change. Interleave A B B A.");
+            }
+            if (countA == 1)
+                Line(sb, "Warning: arm A has a single suite; run each arm at least twice (A B B A).");
+            if (countB == 1)
+                Line(sb, "Warning: arm B has a single suite; run each arm at least twice (A B B A).");
+        }
+
+        /* Measures of a run's playback content, best first */
+        private const int ContentInputRecords = 0;
+        private const int ContentTurnsInWindow = 1;
+        private const int ContentTurnReached = 2;
+
+        /* A warning, as "\n"-joined report lines, when the arms' used runs played
+           different content; null when they did not, or when scenario is not
+           "playback". A run's content is its input records in the window, failing that
+           the turns in the window, and failing that the turn reached; both arms are
+           measured by the best of these every used run has. The content differs when the
+           arms' medians differ by more than max(1, 10 % of the larger) or their ranges do
+           not overlap. */
+        public static string ContentCoverageWarning(IList<GHReportSuite> suitesA, IList<GHReportSuite> suitesB,
+            string scenario)
+        {
+            if (!string.Equals(scenario, "playback", StringComparison.OrdinalIgnoreCase))
+                return null;
+            List<GHReportRun> runsA = UsedRunsOfSuites(suitesA);
+            List<GHReportRun> runsB = UsedRunsOfSuites(suitesB);
+            int measure = ContentTurnReached;
+            if (AllHaveContent(runsA, ContentInputRecords) && AllHaveContent(runsB, ContentInputRecords))
+                measure = ContentInputRecords;
+            else if (AllHaveContent(runsA, ContentTurnsInWindow) && AllHaveContent(runsB, ContentTurnsInWindow))
+                measure = ContentTurnsInWindow;
+            List<double> a = ContentValues(runsA, measure);
+            List<double> b = ContentValues(runsB, measure);
+            if (a.Count == 0 || b.Count == 0)
+                return null;
+            a.Sort();
+            b.Sort();
+            double medianA = GHPerformanceStatistics.MedianNearestRank(a);
+            double medianB = GHPerformanceStatistics.MedianNearestRank(b);
+            double tolerance = Math.Max(1.0, 0.1 * Math.Max(Math.Abs(medianA), Math.Abs(medianB)));
+            bool mediansDiffer = Math.Abs(medianA - medianB) > tolerance;
+            bool disjoint = a[a.Count - 1] < b[0] || b[b.Count - 1] < a[0];
+            if (!mediansDiffer && !disjoint)
+                return null;
+            string name = measure == ContentInputRecords ? "input records in the window"
+                : measure == ContentTurnsInWindow ? "turns in the window" : "turn reached";
+            return Truncate("Warning: the arms played different content (" + name + "):", MaxLineWidth) + "\n"
+                + Truncate("  A median " + FmtCount(medianA) + " (" + FmtCount(a[0]) + "-" + FmtCount(a[a.Count - 1])
+                    + "), B median " + FmtCount(medianB) + " (" + FmtCount(b[0]) + "-" + FmtCount(b[b.Count - 1]) + ")",
+                    MaxLineWidth);
+        }
+
+        private static bool AllHaveContent(List<GHReportRun> runs, int measure)
+        {
+            for (int i = 0; i < runs.Count; i++)
+            {
+                if (double.IsNaN(ContentOf(runs[i], measure)))
+                    return false;
+            }
+            return true;
+        }
+
+        /* The runs' content by measure, leaving out the runs without it */
+        private static List<double> ContentValues(List<GHReportRun> runs, int measure)
+        {
+            List<double> values = new List<double>();
+            for (int i = 0; i < runs.Count; i++)
+            {
+                double value = ContentOf(runs[i], measure);
+                if (!double.IsNaN(value))
+                    values.Add(value);
+            }
+            return values;
+        }
+
+        /* NaN when the run did not record it */
+        private static double ContentOf(GHReportRun run, int measure)
+        {
+            if (measure == ContentInputRecords)
+                return run.InputRecordsInWindow >= 0 ? run.InputRecordsInWindow : double.NaN;
+            if (measure == ContentTurnsInWindow)
+                return run.TurnAtWindowStart >= 0 && run.TurnReached >= run.TurnAtWindowStart
+                    ? run.TurnReached - run.TurnAtWindowStart : double.NaN;
+            return run.TurnReached >= 0 ? run.TurnReached : double.NaN;
+        }
+
+        /* The first scenario named by the suites of arm A, then of arm B */
+        private static string ScenarioOf(IList<GHReportSuite> suitesA, IList<GHReportSuite> suitesB)
+        {
+            IList<GHReportSuite>[] arms = { suitesA, suitesB };
+            for (int a = 0; a < arms.Length; a++)
+            {
+                if (arms[a] == null)
+                    continue;
+                for (int i = 0; i < arms[a].Count; i++)
+                {
+                    if (arms[a][i] != null && !string.IsNullOrEmpty(arms[a][i].Scenario))
+                        return arms[a][i].Scenario;
+                }
+            }
+            return null;
+        }
+
+        private static string FingerprintValue(Dictionary<string, string> fp, string key)
+        {
+            string value;
+            return fp != null && fp.TryGetValue(key, out value) ? value : null;
+        }
+
+        private static void AppendLines(StringBuilder sb, List<string> lines)
+        {
+            for (int i = 0; i < lines.Count; i++)
+                Line(sb, Truncate(lines[i], MaxLineWidth));
         }
 
         /* The categorized fingerprint diff from arm A's pooled fingerprint to arm B's (a
@@ -862,7 +1105,8 @@ namespace GnollHackX.Performance
         }
 
         /* One '|'-joined combo per distinct (AppVersion, short commit, SkiaSharp,
-           Framework, Runtime) tuple found across a suite list, in first-seen order. */
+           Framework, Runtime, assembly id) tuple found across a suite list, in
+           first-seen order; the id is code.assemblyMvid of the suite's fingerprint. */
         private static List<string> DistinctBuilds(IList<GHReportSuite> suites)
         {
             List<string> list = new List<string>();
@@ -873,7 +1117,8 @@ namespace GnollHackX.Performance
                 GHReportSuite s = suites[i];
                 string combo = OrNA(s.AppVersion) + "|" + ShortHash(s.GitCommit, 9) + "|"
                     + OrNA(s.SkiaSharpVersion) + "|" + OrNA(s.FrameworkVersion) + "|"
-                    + OrNA(s.RuntimeVersion);
+                    + OrNA(s.RuntimeVersion) + "|"
+                    + ShortHash(FingerprintValue(s.Fingerprint, GHPerformanceSuiteLogic.CodeAssemblyMvidKey), 12);
                 if (!list.Contains(combo))
                     list.Add(combo);
             }
@@ -907,7 +1152,9 @@ namespace GnollHackX.Performance
         {
             if (result.TooFewRuns)
             {
-                Line(sb, "No decision: fewer than 3 used runs per arm (a and b).");
+                Line(sb, "No decision: fewer than "
+                    + GHPerformanceComparison.MinRunsForVerdict.ToString(CultureInfo.InvariantCulture)
+                    + " used runs per arm (a and b).");
                 return;
             }
 
@@ -919,7 +1166,9 @@ namespace GnollHackX.Performance
                 + " improved.";
             Line(sb, Truncate(text, MaxLineWidth));
             if (result.Provisional)
-                Line(sb, "Fewer than 5 runs per arm: provisional; read the MDE.");
+                Line(sb, "Fewer than "
+                    + GHPerformanceComparison.ProvisionalBelowRuns.ToString(CultureInfo.InvariantCulture)
+                    + " runs per arm: provisional; read the MDE.");
         }
 
         /* ---- recent hitches ---- */
@@ -1222,25 +1471,20 @@ namespace GnollHackX.Performance
             return v.ToString("0.00", CultureInfo.InvariantCulture);
         }
 
+        /* A count or a median of counts, with up to two decimals */
+        private static string FmtCount(double v)
+        {
+            if (double.IsNaN(v) || double.IsInfinity(v))
+                return "n/a";
+            return v.ToString("0.##", CultureInfo.InvariantCulture);
+        }
+
         private static string SignedFmt(double v)
         {
             if (double.IsNaN(v) || double.IsInfinity(v))
                 return "n/a";
             string sign = v >= 0 ? "+" : "";
             return sign + v.ToString("0.00", CultureInfo.InvariantCulture);
-        }
-
-        /* Median of a small, unsorted list; NaN for an empty list. Sorts a copy. */
-        private static double Median(List<double> values)
-        {
-            if (values == null || values.Count == 0)
-                return double.NaN;
-            double[] a = values.ToArray();
-            Array.Sort(a);
-            int n = a.Length;
-            if (n % 2 == 1)
-                return a[n / 2];
-            return (a[n / 2 - 1] + a[n / 2]) / 2.0;
         }
 
         private static string Truncate(string s, int maxLen)

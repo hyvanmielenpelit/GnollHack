@@ -130,7 +130,7 @@ namespace GnollHackX.UnitTests
         [Fact]
         public void VerdictTooFewRuns_TextNamesTheMinimum()
         {
-            Assert.Equal("too few runs (need 3)", GHPerformanceComparison.VerdictTooFewRuns);
+            Assert.Equal("too few runs (need 4)", GHPerformanceComparison.VerdictTooFewRuns);
         }
 
         private static GHSmoothnessSummary Summary(double hitch, double pace, double fps)
@@ -165,13 +165,28 @@ namespace GnollHackX.UnitTests
             Assert.False(result.Provisional);
         }
 
-        [Theory]
-        [InlineData(3)]
-        [InlineData(4)]
-        public void CompareSmoothness_ThreeOrFourRunsPerArm_IsProvisional(int runsPerArm)
+        [Fact]
+        public void CompareSmoothness_ThreeRuns_TooFew()
         {
-            List<GHSmoothnessSummary> a = Repeat(runsPerArm, 1.0, 0.5, 60.0);
-            List<GHSmoothnessSummary> b = Repeat(runsPerArm, 6.0, 0.5, 60.0);
+            List<GHSmoothnessSummary> a = Repeat(3, 1.0, 0.5, 60.0);
+            List<GHSmoothnessSummary> b = Repeat(3, 6.0, 0.5, 60.0);
+
+            GHComparisonResult result = GHPerformanceComparison.CompareSmoothness("A", a, "B", b, TargetPeriodMs, Resamples, Seed);
+
+            Assert.Equal(3, result.RunsA);
+            Assert.Equal(3, result.RunsB);
+            Assert.True(result.TooFewRuns);
+            Assert.False(result.Provisional);
+            Assert.Equal(0, result.Regressions);
+            foreach (GHMetricDecision d in result.Decisions)
+                Assert.Equal(GHPerformanceComparison.VerdictTooFewRuns, d.Verdict);
+        }
+
+        [Fact]
+        public void CompareSmoothness_FourRunsPerArm_IsProvisional()
+        {
+            List<GHSmoothnessSummary> a = Repeat(4, 1.0, 0.5, 60.0);
+            List<GHSmoothnessSummary> b = Repeat(4, 6.0, 0.5, 60.0);
 
             GHComparisonResult result = GHPerformanceComparison.CompareSmoothness("A", a, "B", b, TargetPeriodMs, Resamples, Seed);
 

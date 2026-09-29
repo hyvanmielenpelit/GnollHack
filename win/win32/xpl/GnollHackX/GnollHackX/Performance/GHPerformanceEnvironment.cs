@@ -178,6 +178,7 @@ namespace GnollHackX.Performance
             fp[GHEnvironmentFingerprint.MetaFingerprintVersionKey] = GHEnvironmentFingerprint.FingerprintVersion;
             fp[GHEnvironmentFingerprint.MetaCapturedUtcKey] = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
 
+            AddIfMissing(fp, GHPerformanceSuiteLogic.CodeAssemblyMvidKey, ReadAssemblyMvid);
             AddIfMissing(fp, "code.portVersion", () => GHApp.GetPortVersionString());
             AddIfMissing(fp, "code.portBuild", () => GHApp.GetPortBuildString());
             AddIfMissing(fp, "code.renderSubscription", () => GHApp.RenderSubscriptionName);
@@ -324,6 +325,27 @@ namespace GnollHackX.Performance
                 catch { }
             }
             return null;
+        }
+
+        /* On MAUI Windows, the first 12 hex characters of this assembly's module version
+           id: SDK builds are deterministic, so it changes exactly when the compiled code
+           does. Null on other platforms and on failure. Never throws. */
+        public static string ReadAssemblyMvid()
+        {
+#if GNH_MAUI && WINDOWS
+            try
+            {
+                string id = typeof(GHPerformanceEnvironment).Assembly.ManifestModule.ModuleVersionId
+                    .ToString("N", CultureInfo.InvariantCulture);
+                return id.Length >= 12 ? id.Substring(0, 12) : id;
+            }
+            catch
+            {
+                return null;
+            }
+#else
+            return null;
+#endif
         }
 
         /* The part of the assembly's informational version after its first '+' (the

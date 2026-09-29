@@ -257,22 +257,22 @@ namespace GnollHack.PerformanceAnalyzer.Tests
         }
 
         [Fact]
-        public void Compare_ThreeRunsPerArm_RegressesOnHitchRatio()
+        public void Compare_FourRunsPerArm_RegressesOnHitchRatio()
         {
             List<string> runPaths = new List<string>();
             string outPath = TestPaths.TempFile(".md");
             try
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 4; i++)
                     runPaths.Add(SaveTemp(SyntheticSmoothnessRun("A", 1.0, 0.5, 60.0)));
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 4; i++)
                     runPaths.Add(SaveTemp(SyntheticSmoothnessRun("B", 10.0, 0.5, 60.0)));
 
                 int code = CompareCommand.Run(new Args(new[]
                 {
                     "compare",
-                    "--a", runPaths[0], runPaths[1], runPaths[2],
-                    "--b", runPaths[3], runPaths[4], runPaths[5],
+                    "--a", runPaths[0], runPaths[1], runPaths[2], runPaths[3],
+                    "--b", runPaths[4], runPaths[5], runPaths[6], runPaths[7],
                     "--series", "smoothness", "--resamples", "200", "--out", outPath
                 }));
                 Assert.Equal(0, code);
@@ -305,7 +305,7 @@ namespace GnollHack.PerformanceAnalyzer.Tests
                 }));
                 Assert.Equal(0, code);
                 string md = File.ReadAllText(outPath);
-                Assert.Contains("too few runs (need 3)", md);
+                Assert.Contains("too few runs (need 4)", md);
                 Assert.Contains("no decision was made", md);
             }
             finally

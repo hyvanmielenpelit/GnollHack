@@ -19,8 +19,8 @@
     "fingerprintAtEnd": { "$ref": "#/$defs/fingerprint", "description": "The fingerprint re-captured when the suite finished; absent before that, and when the capture failed" },
     "environmentChanged": { "type": "boolean", "description": "Whether fingerprintAtEnd differs from environment.fingerprint in a key outside meta and code (changed, added or removed); absent when either fingerprint is missing" },
     "comparabilityKey": { "type": ["string", "null"], "description": "scenario|replaySha256|startTurn|pageMode|mapRefreshRateSetting|round(measuredRefreshHz)|m<metricsVersion>, the last part being GHSmoothnessMetrics.MetricsVersion of the app that finished the suite (absent in keys written before metrics version 2, so such suites match none written after); set when the suite finishes. Suites are compared only within one key" },
-    "measuredRefreshHz": { "type": "number", "description": "Median over the runs with a summary" },
-    "targetFps": { "type": "number", "description": "Median over the runs with a summary" },
+    "measuredRefreshHz": { "type": "number", "description": "Nearest-rank median over the used runs' values above 0 (over every run with a summary in manifests finished by older builds); 0 when there is none" },
+    "targetFps": { "type": "number", "description": "Nearest-rank median over the used runs' values above 0 (over every run with a summary in manifests finished by older builds); 0 when there is none" },
     "runs": { "type": "array", "items": { "$ref": "#/$defs/run" } }
   },
   "$defs": {
@@ -71,6 +71,8 @@
         "isWarmUp": { "type": "boolean" },
         "runFile": { "type": ["string", "null"], "description": "File name of the run record, alongside suite.json; null when the run produced no record" },
         "turnReached": { "type": "integer" },
+        "turnAtWindowStart": { "type": "integer", "description": "Replay turn when the window opened; absent when unknown and in manifests written before it existed" },
+        "inputRecordsInWindow": { "type": "integer", "description": "Replay input records played during the window, the playback content measured; absent when unknown and in manifests written before it existed" },
         "excludedReason": { "type": ["string", "null"], "description": "Null when the run is used" },
         "thermalBefore": { "$ref": "#/$defs/thermal" },
         "thermalAfter": { "$ref": "#/$defs/thermal" },
