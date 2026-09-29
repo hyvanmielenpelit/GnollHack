@@ -125,8 +125,8 @@ window is refused saves that run excluded with the reason `measurement window re
 ### Stutter tools
 
 For a stutter felt during play or a replay, while the profiler records. The Developer button
-of the game menu is shown in developer mode; its frame tools only while the profiler is on,
-except Test Performance, which is shown in developer mode and turns the profiler on itself.
+of the game menu is shown in developer mode; its frame tools, Test Performance included, only
+while the Frame Time Profiler setting is on.
 
 | Tool | What it does |
 |------|--------------|
@@ -666,13 +666,14 @@ test, aborted or not, older reports and every `<stamp>` folder without a kept re
 deleted, except the folder of the test that just finished, which is kept even when its
 report could not be written. Reset > Delete Performance Data deletes them all.
 
-The test needs developer mode, not the Frame Time Profiler setting: when the profiler is off,
-the test turns it on after the confirmation, before the settle, and restores the setting when
-it ends, whether it completed, was cancelled or failed. It refuses to start when the platform
-render loop is off, the game has ended, or a test, a suite, a measurement window or a window
-command is already running; it checks again after the confirmation. It stops when the app goes to the
-background, a page opens over the game page, or the game ends, and, once the window is
-open, when a menu or window opens over the map. An aborted window is discarded unsaved and
+The game menu offers the test only while the Frame Time Profiler setting is on. Should the
+profiler still be off when the test starts, the test turns it on after the confirmation,
+before the settle, and turns it off again when it ends, whether it completed, was cancelled
+or failed. It refuses to start when the platform render loop is off, the game has ended, or
+a test, a suite, a measurement window or a window command is already running; it checks
+again after the confirmation. It stops when the app goes to the background, a page opens
+over the game page, or the game ends, and, once the window is open, when a menu or window
+opens over the map. An aborted window is discarded unsaved and
 no report is written. The final message, a cancellation or an error, appears on whichever
 page is on top once the test has ended, so a second test can start at once.
 
@@ -900,9 +901,9 @@ For the Playback scenario the report also warns when the arms covered different 
 the replay in their windows, since a slower build plays less in the same time. Coverage is
 measured by the input records played in the window, else by the turns in the window, else
 by the turn reached, whichever every used run of both arms has; it differs when the arms'
-medians differ by more than 1 and by more than 10 % of the larger one, or their ranges do
-not overlap. The run
-record's `suite` object carries `turnAtWindowStart` and `inputRecordsInWindow` for this.
+medians differ by more than 1 and by more than 10 % of the larger one, or their ranges are
+more than 1 apart (a window's ends can each shift a count by one). The run record's `suite`
+object carries `turnAtWindowStart` and `inputRecordsInWindow` for this.
 
 The store's files are written as follows:
 

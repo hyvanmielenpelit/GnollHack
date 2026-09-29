@@ -713,11 +713,13 @@ namespace GnollHackX.Performance
         {
             /* Only a reported thermal status counts as heat here; a processor clock drop can as well be
                a power limit, so it goes to CPU_CLOCK_CAPPED. The thermal rules are exclusive, the first
-               that matches wins. */
-            GHThrottleVerdict throttle = GHPerformanceComparison.ClassifyThrottle(f.ThermalRankBefore, f.ThermalRankAfter,
+               that matches wins. Each is classified on its own, so neither masks the other. */
+            GHThrottleVerdict statusVerdict = GHPerformanceComparison.ClassifyThrottle(f.ThermalRankBefore,
+                f.ThermalRankAfter, double.NaN, double.NaN);
+            GHThrottleVerdict clockVerdict = GHPerformanceComparison.ClassifyThrottle(0, 0,
                 f.CpuPerformancePctBefore, f.CpuPerformancePctAfter);
-            bool statusThrottled = throttle.Throttled && throttle.Signal == GHThrottleSignal.Status;
-            bool clockDrop = throttle.Throttled && throttle.Rule == GHThrottleRule.CpuPerformanceDrop;
+            bool statusThrottled = statusVerdict.Throttled;
+            bool clockDrop = clockVerdict.Throttled && clockVerdict.Rule == GHThrottleRule.CpuPerformanceDrop;
             bool rose = f.ThermalRankBefore > 0 && f.ThermalRankAfter > f.ThermalRankBefore;
             bool lowHeadroom = Known(f.HeadroomAfter) && f.HeadroomAfter >= ThermalRisingHeadroom;
             const string throttledAdvice = "Let the device cool down, remove a thick case, avoid playing while "

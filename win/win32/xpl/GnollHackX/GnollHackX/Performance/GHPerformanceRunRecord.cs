@@ -478,8 +478,10 @@ namespace GnollHackX.Performance
                     return null;
                 /* Frame ids are contiguous, so the oldest retained id is known without
                    scanning for it; only its record and the last record's are needed for
-                   the span, not a copy of the whole ring. */
-                long first = Math.Max(1, last - GHFrameTimeline.Capacity + 1);
+                   the span, not a copy of the whole ring. The span starts
+                   RecentSaveMarginTicks later, since the ring may overwrite those ticks
+                   while it copies. */
+                long first = Math.Max(1, last - GHFrameTimeline.Capacity + 1 + GHFrameTimeline.RecentSaveMarginTicks);
                 GHFrameRecord[] endpoint = new GHFrameRecord[1];
                 long firstTicks = 0, lastTicks = 0;
                 bool haveEndpoints = GHFrameTimeline.CopyRecords(endpoint, first, first) == 1;

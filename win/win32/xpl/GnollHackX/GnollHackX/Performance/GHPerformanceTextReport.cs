@@ -941,8 +941,8 @@ namespace GnollHackX.Performance
            "playback". A run's content is its input records in the window, failing that
            the turns in the window, and failing that the turn reached; both arms are
            measured by the best of these every used run has. The content differs when the
-           arms' medians differ by more than max(1, 10 % of the larger) or their ranges do
-           not overlap. */
+           arms' medians differ by more than max(1, 10 % of the larger) or their ranges are
+           more than 1 apart. */
         public static string ContentCoverageWarning(IList<GHReportSuite> suitesA, IList<GHReportSuite> suitesB,
             string scenario)
         {
@@ -965,7 +965,7 @@ namespace GnollHackX.Performance
             double medianB = GHPerformanceStatistics.MedianNearestRank(b);
             double tolerance = Math.Max(1.0, 0.1 * Math.Max(Math.Abs(medianA), Math.Abs(medianB)));
             bool mediansDiffer = Math.Abs(medianA - medianB) > tolerance;
-            bool disjoint = a[a.Count - 1] < b[0] || b[b.Count - 1] < a[0];
+            bool disjoint = a[a.Count - 1] + 1 < b[0] || b[b.Count - 1] + 1 < a[0];
             if (!mediansDiffer && !disjoint)
                 return null;
             string name = measure == ContentInputRecords ? "input records in the window"

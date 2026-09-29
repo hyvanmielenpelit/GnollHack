@@ -644,6 +644,26 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void CopyRecords_TicksOverwrittenAfterTheRequest_CountAsMissing()
+        {
+            Restart();
+            int total = GHFrameTimeline.Capacity + 100;
+            for (int i = 0; i < total; i++)
+            {
+                GHFrameTimeline.BeginTick();
+                GHFrameTimeline.EndTick(GHPacingDecision.Rendered);
+            }
+
+            /* Requested as if the copy began when tick Capacity was the latest */
+            GHFrameRecord[] records = new GHFrameRecord[GHFrameTimeline.Capacity];
+            long missing;
+            int n = GHFrameTimeline.CopyRecords(records, 1, GHFrameTimeline.Capacity, out missing);
+            Assert.Equal(GHFrameTimeline.Capacity - 100, n);
+            Assert.Equal(100, missing);
+            Assert.Equal(101, records[0].FrameId);
+        }
+
+        [Fact]
         public void MaxWindowSeconds_Holds120sAt240Hz_AndCountsLowRatesAs60()
         {
             Assert.True(GHFrameTimeline.MaxWindowSeconds(240) >= 120, GHFrameTimeline.MaxWindowSeconds(240).ToString(CultureInfo.InvariantCulture));

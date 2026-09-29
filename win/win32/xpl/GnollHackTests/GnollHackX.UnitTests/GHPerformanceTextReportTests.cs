@@ -633,6 +633,24 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void Coverage_RangesOneApart_NoWarning()
+        {
+            List<GHReportSuite> suitesA = new List<GHReportSuite> { PlaybackSuite(100, 100, 100, 100) };
+            List<GHReportSuite> suitesB = new List<GHReportSuite> { PlaybackSuite(101, 101, 101, 101) };
+
+            Assert.Null(GHPerformanceTextReport.ContentCoverageWarning(suitesA, suitesB, "playback"));
+        }
+
+        [Fact]
+        public void Coverage_RangesTwoApartWithinTolerance_Warns()
+        {
+            List<GHReportSuite> suitesA = new List<GHReportSuite> { PlaybackSuite(100, 101, 100, 101) };
+            List<GHReportSuite> suitesB = new List<GHReportSuite> { PlaybackSuite(103, 104, 103, 104) };
+
+            Assert.NotNull(GHPerformanceTextReport.ContentCoverageWarning(suitesA, suitesB, "playback"));
+        }
+
+        [Fact]
         public void Coverage_Idle_NoWarning()
         {
             List<GHReportSuite> suitesA = new List<GHReportSuite> { PlaybackSuite(100, 102, 101, 100) };

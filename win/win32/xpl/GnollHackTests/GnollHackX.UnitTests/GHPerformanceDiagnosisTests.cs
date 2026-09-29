@@ -399,6 +399,18 @@ namespace GnollHackX.UnitTests
             AssertSilent(f, GHPerformanceDiagnosis.CodeThermalRising);
         }
 
+        [Fact]
+        public void ThermalThrottled_RoseTwoClassesWithClockDrop_Likely()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.ThermalRankBefore = 1;
+            f.ThermalRankAfter = 3;
+            f.CpuPerformancePctBefore = 95f;
+            f.CpuPerformancePctAfter = 70f;
+            AssertFires(f, GHPerformanceDiagnosis.CodeThermalThrottled, GHFindingSeverity.Likely);
+            AssertFires(f, GHPerformanceDiagnosis.CodeCpuClockCapped, GHFindingSeverity.Suspect);
+        }
+
         [Theory]
         [InlineData(1, 4, 0.95f, GHPerformanceDiagnosis.CodeThermalThrottled, GHFindingSeverity.Likely)]
         [InlineData(2, 3, 0.95f, GHPerformanceDiagnosis.CodeThermalThrottled, GHFindingSeverity.Suspect)]

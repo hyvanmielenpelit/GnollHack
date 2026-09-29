@@ -154,7 +154,7 @@ namespace GnollHackX.Pages.MainScreen
                 "Seconds measured in each run.");
             AddInfoLabel(CooldownSecondsLabel,
                 "Seconds of rest before each run",
-                "Seconds of pause before each run, the first one included, letting the device cool down. Where the device reports its thermal status, the first run also waits, for up to 5 minutes, until the status is nominal.");
+                "Seconds of pause before each run, the first one included, letting the device cool down. Where the device reports its thermal status, the first run also waits, for up to 5 minutes, until the status is Light or better.");
             AddInfoLabel(EstimatedDurationTitleLabel,
                 "Approximate time for the whole suite",
                 "Every run, including the warm-up run, takes its cool-down, warm-up and window seconds plus an allowance for loading and seeking.");

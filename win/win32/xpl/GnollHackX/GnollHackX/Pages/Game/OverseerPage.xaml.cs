@@ -2047,7 +2047,8 @@ namespace GnollHackX.Pages.Game
                 if (reportNames.Length == 0)
                     return "No performance reports on this device. The player"
                         + " can create one in a game: Menu > Developer > Test"
-                        + " Performance (requires Developer Mode).";
+                        + " Performance (requires Developer Mode and the Frame Time"
+                        + " Profiler setting).";
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("Performance reports on this device (newest first):");

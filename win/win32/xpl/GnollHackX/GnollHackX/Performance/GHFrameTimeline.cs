@@ -27,6 +27,10 @@ namespace GnollHackX.Performance
         /* 136 s at 240 Hz: room for a 120 s window */
         public const int Capacity = 32768;
 
+        /* Ticks a retrospective save leaves out at the ring's old end, so the ring cannot
+           overwrite them while it copies: about 4 s at 240 Hz */
+        public const int RecentSaveMarginTicks = 1024;
+
         private const int PeriodWindow = 15;
         private const long NanosPerSecond = 1000000000L;
 
@@ -781,7 +785,8 @@ namespace GnollHackX.Performance
         }
 
         /* CopyRecords that also returns in missingTicks how many of the requested ticks up to
-           the latest one are no longer retained because the ring wrapped past them */
+           the latest one the ring no longer held, because it had wrapped past them before or
+           during the copy */
         public static int CopyRecords(GHFrameRecord[] destination, long fromFrameId, long toFrameId, out long missingTicks)
         {
             missingTicks = 0;
@@ -799,7 +804,11 @@ namespace GnollHackX.Performance
             {
                 GHFrameRecord r = _ring[IndexOf(id)];
                 if (r.FrameId != id)
+                {
+                    if (r.FrameId > id)
+                        missingTicks++;
                     continue;
+                }
                 destination[n++] = r;
             }
             return n;

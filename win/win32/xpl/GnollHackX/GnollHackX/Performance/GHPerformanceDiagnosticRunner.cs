@@ -27,9 +27,10 @@ namespace GnollHackX.Performance
             running, a window command is pending, the game has ended, or the platform
             render loop is off.
          2. Asks for confirmation on the host page. On OK: turns on the frame timeline
-            (FrameTimeProfiler.IsEnabled) when it is off, so its start-up falls before
-            the settle; holds the background load sampler (so the pre-window has
-            samples), starts the countdown and closes the menu.
+            (FrameTimeProfiler.IsEnabled) when it is off (the game menu offers the test
+            only while the Frame Time Profiler setting is on, so this is a safeguard), so
+            its start-up falls before the settle; holds the background load sampler (so
+            the pre-window has samples), starts the countdown and closes the menu.
          3. Hides the frame marker (GHFrameMarker.Suppressed) until the window is saved.
             Settles for SettleSeconds, so the menu's pause mark and collection fall
             outside the window; starts the per-process interval on the thread pool,
