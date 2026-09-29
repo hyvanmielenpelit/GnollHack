@@ -24,8 +24,8 @@ namespace GnollHackX.Performance
        enables it pays one boolean check per call. Must compile under C# 7.3. */
     public static class GHFrameTimeline
     {
-        /* 144 s at 144 Hz: a 120 s window with room to spare */
-        public const int Capacity = 20736;
+        /* 136 s at 240 Hz: room for a 120 s window */
+        public const int Capacity = 32768;
 
         private const int PeriodWindow = 15;
         private const long NanosPerSecond = 1000000000L;
@@ -53,7 +53,11 @@ namespace GnollHackX.Performance
         private static long _pendingExpectedPresentTicks = 0;
         private static long _pendingPlatformFrameTicks = 0;
         private static long _pendingRefreshPeriodTicks = 0;
+        private static bool _pendingVsyncIsLatestVblank = false;
         private static long _lastPlatformFrameTicks = 0;
+
+        /* Set by NoteLifecycleBreak from any thread, taken by the next tick */
+        private static int _pendingLifecycleBreak = 0;
         private static long _lastCallbackStartTicks = 0;
 
         /* The panel period the platform last reported, and the ticks since; it stands in for
@@ -193,8 +197,10 @@ namespace GnollHackX.Performance
             _pendingExpectedPresentTicks = 0;
             _pendingPlatformFrameTicks = 0;
             _pendingRefreshPeriodTicks = 0;
+            _pendingVsyncIsLatestVblank = false;
             _lastPlatformFrameTicks = 0;
             _lastCallbackStartTicks = 0;
+            Interlocked.Exchange(ref _pendingLifecycleBreak, 0);
             _lastReportedRefreshPeriodTicks = 0;
             _ticksSinceReportedPeriod = int.MaxValue;
             Interlocked.Exchange(ref _pendingContentEvents, 0);
@@ -218,6 +224,13 @@ namespace GnollHackX.Performance
         private static int IndexOf(long frameId)
         {
             return (int)(frameId % Capacity);
+        }
+
+        /* The longest window, in seconds, whose ticks the ring holds at hz callbacks per
+           second, with a tenth to spare; rates below 60 Hz count as 60 */
+        public static double MaxWindowSeconds(double hz)
+        {
+            return Capacity * 0.9 / Math.Max(60, hz);
         }
 
         /* ---- Platform clock ---- */
@@ -280,9 +293,10 @@ namespace GnollHackX.Performance
            vsyncTicks and expectedPresentTicks are in the Stopwatch domain (0 if unknown);
            platformFrameTicks is in Stopwatch units with the platform's own epoch;
            refreshPeriodTicks is the panel's period when the platform reports it (Windows:
-           DWM), 0 otherwise. */
+           DWM), 0 otherwise. vsyncIsLatestVblank: vsyncTicks is the latest vblank at the
+           callback rather than the callback's own vsync (Windows: DWM). */
         public static void SetPendingPlatformFrame(long vsyncTicks, long expectedPresentTicks, long platformFrameTicks,
-                                                   long refreshPeriodTicks = 0)
+                                                   long refreshPeriodTicks = 0, bool vsyncIsLatestVblank = false)
         {
             if (!IsEnabled)
                 return;
@@ -290,19 +304,39 @@ namespace GnollHackX.Performance
             _pendingExpectedPresentTicks = expectedPresentTicks;
             _pendingPlatformFrameTicks = platformFrameTicks;
             _pendingRefreshPeriodTicks = refreshPeriodTicks;
+            _pendingVsyncIsLatestVblank = vsyncIsLatestVblank;
         }
 
+        /* Called when the app is suspended or resumed; the next tick carries LifecycleBreak.
+           Any thread. */
+        public static void NoteLifecycleBreak()
+        {
+            if (!IsEnabled)
+                return;
+            Interlocked.Exchange(ref _pendingLifecycleBreak, 1);
+        }
+
+#if GNH_MAUI
+        /* 0: not yet read, 1: the runtime reports GC pause time, -1: reading it threw */
+        private static int _gcPauseDurationState = 0;
+#endif
+
         /* Total GC pause time of the process so far, in Stopwatch ticks; 0 when the runtime
-           does not report it */
+           does not report it. After the first failed read it is not read again. */
         private static long ReadGcPauseTicks()
         {
 #if GNH_MAUI
+            if (_gcPauseDurationState < 0)
+                return 0;
             try
             {
-                return TimeSpanTicksToTicks(GC.GetTotalPauseDuration().Ticks);
+                long ticks = TimeSpanTicksToTicks(GC.GetTotalPauseDuration().Ticks);
+                _gcPauseDurationState = 1;
+                return ticks;
             }
             catch
             {
+                _gcPauseDurationState = -1;
                 return 0;
             }
 #else
@@ -339,6 +373,10 @@ namespace GnollHackX.Performance
             r.GcCount1 = GC.CollectionCount(1);
             r.GcCount2 = GC.CollectionCount(2);
             r.GcPauseTicks = ReadGcPauseTicks();
+            if (_pendingVsyncIsLatestVblank)
+                r.Flags |= GHFrameFlags.VsyncIsLatestVblank;
+            if (Interlocked.Exchange(ref _pendingLifecycleBreak, 0) != 0)
+                r.Flags |= GHFrameFlags.LifecycleBreak;
 
             /* The platform's own frame time is the better period source; callback start
                times carry the UI thread's scheduling jitter */
@@ -380,6 +418,7 @@ namespace GnollHackX.Performance
             _pendingExpectedPresentTicks = 0;
             _pendingPlatformFrameTicks = 0;
             _pendingRefreshPeriodTicks = 0;
+            _pendingVsyncIsLatestVblank = false;
             r.ContentEvents = (GHContentEvent)Interlocked.Exchange(ref _pendingContentEvents, 0);
             r.RequestTicks = Interlocked.Exchange(ref _pendingRequestTicks, 0);
 
@@ -737,12 +776,24 @@ namespace GnollHackX.Performance
            first, and returns the count copied. */
         public static int CopyRecords(GHFrameRecord[] destination, long fromFrameId, long toFrameId)
         {
+            long missingTicks;
+            return CopyRecords(destination, fromFrameId, toFrameId, out missingTicks);
+        }
+
+        /* CopyRecords that also returns in missingTicks how many of the requested ticks up to
+           the latest one are no longer retained because the ring wrapped past them */
+        public static int CopyRecords(GHFrameRecord[] destination, long fromFrameId, long toFrameId, out long missingTicks)
+        {
+            missingTicks = 0;
             if (destination == null || _ring == null)
                 return 0;
             long last = Math.Min(Interlocked.Read(ref _lastFrameId), toFrameId);
             if (last <= 0)
                 return 0;
-            long first = Math.Max(Math.Max(1, fromFrameId), last - Capacity + 1);
+            long requestedFirst = Math.Max(1, fromFrameId);
+            long first = Math.Max(requestedFirst, last - Capacity + 1);
+            if (last >= requestedFirst)
+                missingTicks = first - requestedFirst;
             int n = 0;
             for (long id = first; id <= last && n < destination.Length; id++)
             {

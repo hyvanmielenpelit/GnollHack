@@ -574,5 +574,99 @@ namespace GnollHackX.UnitTests
                     File.Delete(path);
             }
         }
+
+        [Fact]
+        public void NoteLifecycleBreak_TimelineOff_DoesNothing()
+        {
+            Restart();
+            GHFrameTimeline.IsEnabled = false;
+            GHFrameTimeline.NoteLifecycleBreak();
+            GHFrameTimeline.IsEnabled = true;
+            RenderedTick(1);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(1, n);
+            Assert.Equal(GHFrameFlags.None, r[0].Flags & GHFrameFlags.LifecycleBreak);
+        }
+
+        [Fact]
+        public void NoteLifecycleBreak_FlagsTheNextTickOnly()
+        {
+            Restart();
+            RenderedTick(1);
+            GHFrameTimeline.NoteLifecycleBreak();
+            RenderedTick(2);
+            RenderedTick(3);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(3, n);
+            Assert.Equal(GHFrameFlags.None, r[0].Flags & GHFrameFlags.LifecycleBreak);
+            Assert.Equal(GHFrameFlags.LifecycleBreak, r[1].Flags & GHFrameFlags.LifecycleBreak);
+            Assert.Equal(GHFrameFlags.None, r[2].Flags & GHFrameFlags.LifecycleBreak);
+        }
+
+        [Fact]
+        public void NoteLifecycleBreak_IsClearedByReset()
+        {
+            Restart();
+            GHFrameTimeline.NoteLifecycleBreak();
+            Restart();
+            RenderedTick(1);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHFrameFlags.None, r[0].Flags & GHFrameFlags.LifecycleBreak);
+        }
+
+        [Fact]
+        public void CopyRecords_AfterTheRingWraps_ReportsTheMissingTicks()
+        {
+            Restart();
+            int total = GHFrameTimeline.Capacity + 100;
+            for (int i = 0; i < total; i++)
+            {
+                GHFrameTimeline.BeginTick();
+                GHFrameTimeline.EndTick(GHPacingDecision.Rendered);
+            }
+
+            GHFrameRecord[] records = new GHFrameRecord[GHFrameTimeline.Capacity];
+            long missing;
+            int n = GHFrameTimeline.CopyRecords(records, 1, long.MaxValue, out missing);
+            Assert.Equal(GHFrameTimeline.Capacity, n);
+            Assert.Equal(100, missing);
+            Assert.Equal(101, records[0].FrameId);
+
+            n = GHFrameTimeline.CopyRecords(records, 101, long.MaxValue, out missing);
+            Assert.Equal(GHFrameTimeline.Capacity, n);
+            Assert.Equal(0, missing);
+        }
+
+        [Fact]
+        public void MaxWindowSeconds_Holds120sAt240Hz_AndCountsLowRatesAs60()
+        {
+            Assert.True(GHFrameTimeline.MaxWindowSeconds(240) >= 120, GHFrameTimeline.MaxWindowSeconds(240).ToString(CultureInfo.InvariantCulture));
+            Assert.Equal(GHFrameTimeline.Capacity * 0.9 / 60, GHFrameTimeline.MaxWindowSeconds(60), 9);
+            Assert.Equal(GHFrameTimeline.MaxWindowSeconds(60), GHFrameTimeline.MaxWindowSeconds(30), 9);
+        }
+
+        [Fact]
+        public void VsyncIsLatestVblank_IsOnTheNextRecordOnly()
+        {
+            Restart();
+            GHFrameTimeline.SetPendingPlatformFrame(5000, 0, 0, Frequency / 60, true);
+            GHFrameTimeline.BeginTick();
+            GHFrameTimeline.SetPendingPlatformFrame(5000 + Frequency / 60, 0, 0, Frequency / 60);
+            GHFrameTimeline.BeginTick();
+            GHFrameTimeline.BeginTick();
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(3, n);
+            Assert.Equal(GHFrameFlags.VsyncIsLatestVblank, r[0].Flags & GHFrameFlags.VsyncIsLatestVblank);
+            Assert.Equal(GHFrameFlags.None, r[1].Flags & GHFrameFlags.VsyncIsLatestVblank);
+            Assert.Equal(GHFrameFlags.None, r[2].Flags & GHFrameFlags.VsyncIsLatestVblank);
+        }
     }
 }

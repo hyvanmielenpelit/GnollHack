@@ -18,9 +18,10 @@ namespace GnollHackX.Performance
        environment the run was measured in, thermal readings taken before and after, the
        smoothness summary and on-screen pacing metrics GHSmoothnessMetrics computes, the
        raw on-screen interval and pacing-error series, the UI thread latency probe, and
-       three optional parts: a "suite" object for a run that is part of a suite, a
-       "marks" array of the frames the user marked in the saved range, and a
-       "background" block of the machine's load around the window (GHSystemLoadSampler).
+       four optional parts: a "suite" object for a run that is part of a suite, a
+       "marks" array of the frames the user marked in the saved range, a "background"
+       block of the machine's load around the window (GHSystemLoadSampler), and a
+       "timeline" block of how many of the requested ticks the frame timeline held.
 
        TryBeginWindow and EndWindowAndSave bracket a measurement: TryBeginWindow remembers
        whether the frame timeline was already running, enables it, notes the first frame of
@@ -393,7 +394,7 @@ namespace GnollHackX.Performance
                 GHBackgroundReport background = BuildWindowBackground(_windowStartTicks, windowEndTicks);
                 EndAdapterProbe();
                 return Save(directory, _scenario, _arm, _startedUtc, _thermalBefore, thermalAfter,
-                    _windowFromFrameId, toFrameId, context, background, out result);
+                    _windowFromFrameId, toFrameId, context, background, false, out result);
             }
             catch
             {
@@ -503,7 +504,7 @@ namespace GnollHackX.Performance
                 GHBackgroundReport background = null;
                 if (GHSystemLoadSampler.IsRunning)
                     background = GHSystemLoadSampler.BuildReport(startedUtc.Ticks, DateTime.UtcNow.Ticks, null, float.NaN);
-                return Save(directory, scenario ?? "", arm ?? "", startedUtc, before, now, 1, last, background);
+                return Save(directory, scenario ?? "", arm ?? "", startedUtc, before, now, first, last, background);
             }
             catch
             {
@@ -511,38 +512,45 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* The SaveRecent path: no context, result discarded. */
+        /* The SaveRecent path: no context, result discarded, long stalls excluded as a
+           retrospective report does. */
         private static string Save(string directory, string scenario, string arm, DateTime startedUtc,
             GHThermalReading thermalBefore, GHThermalReading thermalAfter, long fromFrameId, long toFrameId,
             GHBackgroundReport background)
         {
             GHPerformanceRunResult result;
             return Save(directory, scenario, arm, startedUtc, thermalBefore, thermalAfter, fromFrameId, toFrameId,
-                null, background, out result);
+                null, background, true, out result);
         }
 
         /* Builds the summary and both CSVs from one copy of the ring so they agree, writes
            the JSON, and hands back the pieces a suite runner needs (result) alongside the
            JSON path. context is folded into the JSON's "suite" object and into
            result.ExcludedReason; both are null when the caller passes no context.
-           background, null when there is none, becomes the JSON's "background" block. */
+           background, null when there is none, becomes the JSON's "background" block.
+           excludeLongStalls is passed to GHSmoothnessMetrics.Analyze: false for a
+           measurement window, true for a retrospective save. The JSON's "timeline" block
+           counts the requested ticks the ring had already overwritten. */
         private static string Save(string directory, string scenario, string arm, DateTime startedUtc,
             GHThermalReading thermalBefore, GHThermalReading thermalAfter, long fromFrameId, long toFrameId,
-            GHPerformanceRunContext context, GHBackgroundReport background, out GHPerformanceRunResult result)
+            GHPerformanceRunContext context, GHBackgroundReport background, bool excludeLongStalls,
+            out GHPerformanceRunResult result)
         {
             result = null;
             DateTime endedUtc = DateTime.UtcNow;
 
             /* One copy of the ring feeds the summary and both CSVs, so they agree */
             GHFrameRecord[] recordBuffer = new GHFrameRecord[GHFrameTimeline.Capacity];
-            int n = GHFrameTimeline.CopyRecords(recordBuffer, fromFrameId, toFrameId);
+            long missingTicks;
+            int n = GHFrameTimeline.CopyRecords(recordBuffer, fromFrameId, toFrameId, out missingTicks);
+            TimelineJson timeline = BuildTimeline(fromFrameId, toFrameId, missingTicks);
             long originTicks = n > 0 ? recordBuffer[0].CallbackStartTicks : 0;
             GHCompositorFrame[] compositorBuffer = new GHCompositorFrame[GHFrameTimeline.Capacity];
             int m = CopyCompositorFramesFor(recordBuffer, n, compositorBuffer);
             GHDisplayedFrame[] displayed = new GHDisplayedFrame[n];
             int displayedCount;
             GHSmoothnessSummary summary = GHSmoothnessMetrics.Analyze(recordBuffer, n, compositorBuffer, m,
-                displayed, out displayedCount);
+                displayed, out displayedCount, excludeLongStalls);
 
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
@@ -558,7 +566,8 @@ namespace GnollHackX.Performance
 
             SeriesJson series = BuildSeries(displayed, displayedCount);
             object doc = BuildDocument(stem, scenario, arm, startedUtc, endedUtc, thermalBefore, thermalAfter,
-                summary, series, timelineCsvName, compositorCsvName, context, BuildMarks(recordBuffer, n), background);
+                summary, series, timelineCsvName, compositorCsvName, context, BuildMarks(recordBuffer, n), background,
+                timeline);
 
             string json = JsonConvert.SerializeObject(doc, _jsonSettings);
             GHAtomicFile.WriteAllText(jsonPath, json + Environment.NewLine, null);
@@ -572,8 +581,22 @@ namespace GnollHackX.Performance
             result.ThermalAfter = thermalAfter;
             result.Background = background;
             result.ExcludedReason = ComputeExcludedReason(context, thermalBefore, thermalAfter, result.OnScreenIntervalCount,
-                background);
+                background, timeline);
             return jsonPath;
+        }
+
+        /* The "timeline" block: the ticks requested from fromFrameId to toFrameId, capped
+           at the latest tick, and how many of them the ring still held */
+        private static TimelineJson BuildTimeline(long fromFrameId, long toFrameId, long missingTicks)
+        {
+            long last = Math.Min(GHFrameTimeline.LastFrameId, toFrameId);
+            long requested = Math.Max(0, last - Math.Max(1, fromFrameId) + 1);
+            long missing = Math.Min(Math.Max(0, missingTicks), requested);
+            TimelineJson j = new TimelineJson();
+            j.RequestedTicks = requested;
+            j.RetainedTicks = requested - missing;
+            j.Truncated = missing > 0;
+            return j;
         }
 
         /* Compositor frames within a quarter second of the records' callback starts, so
@@ -682,7 +705,7 @@ namespace GnollHackX.Performance
                 GHDisplayedFrame[] displayed = new GHDisplayedFrame[n];
                 int displayedCount;
                 GHSmoothnessSummary summary = GHSmoothnessMetrics.Analyze(records, n, compositor, m,
-                    displayed, out displayedCount);
+                    displayed, out displayedCount, true);
 
                 long[] markFrameIds = new long[GHFrameTimeline.MaxMarks];
                 long[] markUtcTicks = new long[GHFrameTimeline.MaxMarks];
@@ -707,16 +730,21 @@ namespace GnollHackX.Performance
         }
 
         /* The exclusion verdict for a saved run, first match wins: the context's own
-           preset reason; throttling, from the thermal status ranks and the CPU
-           performance percent GHPerformanceComparison.ClassifyThrottle already weighs;
-           a power state change between the two readings; a busy background verdict, as
-           its reason ("background load: ..."); too few on-screen intervals to be
-           meaningful. Returns null when none apply, including when context is null. */
+           preset reason; a window longer than the frame timeline held; throttling, from
+           the thermal status ranks and the CPU performance percent
+           GHPerformanceComparison.ClassifyThrottle already weighs; a power state change
+           between the two readings; a busy background verdict, as its reason
+           ("background load: ..."); too few on-screen intervals to be meaningful.
+           Returns null when none apply, including when context is null. */
         private static string ComputeExcludedReason(GHPerformanceRunContext context, GHThermalReading before,
-            GHThermalReading after, int onScreenIntervalCount, GHBackgroundReport background)
+            GHThermalReading after, int onScreenIntervalCount, GHBackgroundReport background, TimelineJson timeline)
         {
             if (context != null && !string.IsNullOrEmpty(context.ExcludedReason))
                 return context.ExcludedReason;
+            if (timeline != null && timeline.Truncated)
+                return "window longer than the frame timeline holds (kept "
+                    + timeline.RetainedTicks.ToString(CultureInfo.InvariantCulture) + " of "
+                    + timeline.RequestedTicks.ToString(CultureInfo.InvariantCulture) + " ticks)";
             try
             {
                 var throttle = GHPerformanceComparison.ClassifyThrottle((int)before.Status, (int)after.Status,
@@ -852,7 +880,9 @@ namespace GnollHackX.Performance
         }
 
         /* Replaces a scheduled or open command window with a new schedule, unless the
-           window gate refuses the command */
+           window gate refuses the command. A window longer than the frame timeline holds
+           at the current refresh rate (GHFrameTimeline.MaxWindowSeconds of
+           GHApp.ReconciledRefreshRate) is shortened to that limit and logged. */
         private static void ScheduleWindow(string scenario, string arm, double delaySeconds, double windowSeconds)
         {
             string refusal = GHWindowGate.ScheduleRefusal(IsWindowOpen, _windowOwner, IsSuiteOrDiagnosticRunning);
@@ -860,6 +890,15 @@ namespace GnollHackX.Performance
             {
                 WriteRefusedNotice(scenario, refusal);
                 return;
+            }
+            double hz = GHApp.ReconciledRefreshRate;
+            double maxWindowSeconds = Math.Floor(GHFrameTimeline.MaxWindowSeconds(hz));
+            if (windowSeconds > maxWindowSeconds)
+            {
+                Log("window command for " + scenario + ": " + windowSeconds.ToString(CultureInfo.InvariantCulture)
+                    + " s shortened to " + maxWindowSeconds.ToString(CultureInfo.InvariantCulture)
+                    + " s, the frame timeline's limit at " + Math.Round(hz).ToString(CultureInfo.InvariantCulture) + " Hz");
+                windowSeconds = maxWindowSeconds;
             }
             CancelWindowCommand();
             int generation = Interlocked.Increment(ref _windowGeneration);
@@ -971,6 +1010,18 @@ namespace GnollHackX.Performance
             }
         }
 
+        private static void Log(string text)
+        {
+            try
+            {
+                GHApp.MaybeWriteGHLog("Performance run record: " + text);
+            }
+            catch
+            {
+                /* Logging must never break a window */
+            }
+        }
+
         private static void PostToMainThread(Action action)
         {
 #if GNH_MAUI
@@ -983,7 +1034,7 @@ namespace GnollHackX.Performance
         private static object BuildDocument(string runId, string scenario, string arm, DateTime startedUtc, DateTime endedUtc,
             GHThermalReading before, GHThermalReading after, GHSmoothnessSummary summary,
             SeriesJson series, string timelineCsvName, string compositorCsvName, GHPerformanceRunContext context,
-            MarkJson[] marks, GHBackgroundReport background)
+            MarkJson[] marks, GHBackgroundReport background, TimelineJson timeline)
         {
             GHPerformanceEnvironmentFacts facts = GHPerformanceEnvironment.Capture();
 
@@ -1008,6 +1059,7 @@ namespace GnollHackX.Performance
             doc.Suite = BuildSuite(context);
             doc.Marks = marks;
             doc.Background = BuildBackground(background);
+            doc.Timeline = timeline;
             return doc;
         }
 
@@ -1169,6 +1221,7 @@ namespace GnollHackX.Performance
         private static SmoothnessJson BuildSmoothness(GHSmoothnessSummary s)
         {
             SmoothnessJson j = new SmoothnessJson();
+            j.MetricsVersion = s.MetricsVersion;
             j.TickCount = s.TickCount;
             j.PaintedCount = s.PaintedCount;
             j.DisplayedCount = s.DisplayedCount;
@@ -1176,6 +1229,10 @@ namespace GnollHackX.Performance
             j.CoalescedCount = s.CoalescedCount;
             j.NotRunCount = s.NotRunCount;
             j.PausedGapCount = s.PausedGapCount;
+            j.CompositorReportsLost = s.CompositorReportsLost;
+            j.LongStallCount = s.LongStallCount;
+            j.LongStallMs = R(s.LongStallMs);
+            j.LongStallsExcluded = s.LongStallsExcluded;
             j.WindowMs = R(s.WindowMs);
             j.MeasuredRefreshHz = R(s.MeasuredRefreshHz);
             j.AssumedRefreshHz = R(s.AssumedRefreshHz);
@@ -1207,6 +1264,7 @@ namespace GnollHackX.Performance
                 GHHitchCause cause = (GHHitchCause)i;
                 CauseJson cj = new CauseJson();
                 cj.Count = s.CauseCount[i];
+                cj.HitchCount = s.CauseHitchCount[i];
                 cj.HitchMs = R(s.CauseMs[i]);
                 j.Causes[GHSmoothnessMetrics.CauseName(cause)] = cj;
             }
@@ -1386,6 +1444,23 @@ namespace GnollHackX.Performance
             /* The background load around the window; omitted entirely when there is no report */
             [JsonProperty("background", NullValueHandling = NullValueHandling.Ignore)]
             public BackgroundJson Background;
+
+            /* The requested ticks and how many the frame timeline still held */
+            [JsonProperty("timeline", NullValueHandling = NullValueHandling.Ignore)]
+            public TimelineJson Timeline;
+        }
+
+        private sealed class TimelineJson
+        {
+            [JsonProperty("requestedTicks")]
+            public long RequestedTicks;
+
+            [JsonProperty("retainedTicks")]
+            public long RetainedTicks;
+
+            /* The ring had overwritten some requested ticks */
+            [JsonProperty("truncated")]
+            public bool Truncated;
         }
 
         /* The "background" block (DEVEL/performance/schema/run-record.schema.json):
@@ -1713,6 +1788,10 @@ namespace GnollHackX.Performance
 
         private sealed class SmoothnessJson
         {
+            /* GHSmoothnessMetrics.MetricsVersion of the analysis; absent means 1 */
+            [JsonProperty("metricsVersion")]
+            public int MetricsVersion;
+
             [JsonProperty("tickCount")]
             public int TickCount;
 
@@ -1733,6 +1812,21 @@ namespace GnollHackX.Performance
 
             [JsonProperty("pausedGapCount")]
             public int PausedGapCount;
+
+            /* FrameMetrics reports the listener missed; not display drops */
+            [JsonProperty("compositorReportsLost")]
+            public int CompositorReportsLost;
+
+            /* Gaps with display callbacks stopped for GHSmoothnessMetrics.LongStallSeconds or more */
+            [JsonProperty("longStallCount")]
+            public int LongStallCount;
+
+            [JsonProperty("longStallMs")]
+            public double LongStallMs;
+
+            /* Long stalls were paused gaps, not hitches */
+            [JsonProperty("longStallsExcluded")]
+            public bool LongStallsExcluded;
 
             [JsonProperty("windowMs")]
             public double WindowMs;
@@ -1819,6 +1913,10 @@ namespace GnollHackX.Performance
         {
             [JsonProperty("count")]
             public int Count;
+
+            /* Of count, the hitches alone */
+            [JsonProperty("hitchCount")]
+            public int HitchCount;
 
             [JsonProperty("hitchMs")]
             public double HitchMs;

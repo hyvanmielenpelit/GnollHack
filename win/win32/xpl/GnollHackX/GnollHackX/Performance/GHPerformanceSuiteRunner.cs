@@ -263,11 +263,28 @@ namespace GnollHackX.Performance
                 return "The start turn cannot be negative.";
             if (setup.WindowSeconds < 1 || setup.WindowSeconds > MaxSeconds)
                 return "The window must be between 1 and " + MaxSeconds + " seconds.";
+            string windowRefusal = WindowLengthRefusal(setup.WindowSeconds);
+            if (windowRefusal != null)
+                return windowRefusal;
             if (setup.WarmUpSeconds < 0 || setup.WarmUpSeconds > MaxSeconds)
                 return "The warm-up must be between 0 and " + MaxSeconds + " seconds.";
             if (setup.CooldownSeconds < 0 || setup.CooldownSeconds > MaxSeconds)
                 return "The cool-down must be between 0 and " + MaxSeconds + " seconds.";
             return null;
+        }
+
+        /* Why a window of windowSeconds cannot be measured, or null when it can: the frame
+           timeline holds at most GHFrameTimeline.MaxWindowSeconds at the current refresh
+           rate (GHApp.ReconciledRefreshRate). The Performance Suite page checks the same. */
+        public static string WindowLengthRefusal(double windowSeconds)
+        {
+            double hz = GHApp.ReconciledRefreshRate;
+            double maxSeconds = Math.Floor(GHFrameTimeline.MaxWindowSeconds(hz));
+            if (windowSeconds <= maxSeconds)
+                return null;
+            return "The window can be at most " + maxSeconds.ToString(CultureInfo.InvariantCulture)
+                + " seconds at the current refresh rate of " + Math.Round(hz).ToString(CultureInfo.InvariantCulture)
+                + " Hz, which is as long as the frame timeline holds.";
         }
 
         private static string Normalize(string value)

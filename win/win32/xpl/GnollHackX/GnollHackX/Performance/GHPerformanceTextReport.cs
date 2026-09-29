@@ -120,6 +120,9 @@ namespace GnollHackX.Performance
         private const int CategoryColW = 11;
         private const int MaxSuspects = 3;
 
+        /* The first metrics version whose summaries carry CauseHitchCount */
+        private const int FirstHitchCountVersion = 2;
+
         public static string SuiteReport(GHReportSuite suite)
         {
             StringBuilder sb = new StringBuilder();
@@ -223,6 +226,15 @@ namespace GnollHackX.Performance
                 + "  Hitches: " + summary.HitchCount.ToString(CultureInfo.InvariantCulture), MaxLineWidth));
             Line(sb, Truncate("GC: " + summary.GcCount.ToString(CultureInfo.InvariantCulture) + " collection(s), pause "
                 + (summary.GcPauseDataAvailable ? Fmt(summary.GcPauseMs) + " ms" : "n/a"), MaxLineWidth));
+            Line(sb, summary.PresentSource == GHPresentSource.Measured
+                ? "Display times: measured" : "Display times: estimated (first vsync after ready)");
+            if (summary.CompositorReportsLost > 0)
+                Line(sb, Truncate("FrameMetrics reports lost: "
+                    + summary.CompositorReportsLost.ToString(CultureInfo.InvariantCulture)
+                    + " (compositor data incomplete)", MaxLineWidth));
+            if (summary.LongStallCount > 0)
+                Line(sb, Truncate(LongStallText(summary.LongStallCount, summary.LongStallMs,
+                    summary.LongStallsExcluded), MaxLineWidth));
             Line(sb, "");
             AppendMarkedMoments(sb, records, recordCount, displayed, displayedCount, spanEnd,
                 markFrameIds, markUtcTicks, markCount);
@@ -637,6 +649,8 @@ namespace GnollHackX.Performance
             List<double> pace = new List<double>();
             List<double> judder = new List<double>();
             List<double> gc = new List<double>();
+            int stallCount = 0;
+            double stallMs = 0;
             for (int i = 0; i < used.Count; i++)
             {
                 GHSmoothnessSummary s = used[i].Summary;
@@ -645,6 +659,8 @@ namespace GnollHackX.Performance
                 pace.Add(s.PacingErrorRmsMs);
                 judder.Add(s.JudderPct);
                 gc.Add(s.GcCount);
+                stallCount += s.LongStallCount;
+                stallMs += s.LongStallMs;
             }
 
             Line(sb, Truncate("  FPS " + Fmt(Median(fps))
@@ -652,23 +668,47 @@ namespace GnollHackX.Performance
                 + "  PaceRMS " + Fmt(Median(pace)) + "ms"
                 + "  Judder " + Fmt(Median(judder)) + "%"
                 + "  GC " + Fmt(Median(gc)), MaxLineWidth));
+            Line(sb, "  Display times are estimated in-app; Compositor and Dropped are inferred.");
+            /* A measurement window counts its long stalls as hitches */
+            if (stallCount > 0)
+                Line(sb, Truncate("  " + LongStallText(stallCount, stallMs, false), MaxLineWidth));
         }
 
+        /* "Stalls over 1 s: N (X ms), " and how the hitch metrics treated them */
+        private static string LongStallText(int count, double ms, bool excluded)
+        {
+            return "Stalls over " + GHSmoothnessMetrics.LongStallSeconds.ToString("0.##", CultureInfo.InvariantCulture)
+                + " s: " + count.ToString(CultureInfo.InvariantCulture) + " (" + Fmt(ms) + " ms), "
+                + (excluded ? "excluded from hitch time" : "counted as hitches");
+        }
+
+        /* Hitch counts per cause when every used run was analyzed at metrics version 2 or
+           later; otherwise CauseCount, which also counts judder frames, with a note */
         private static void AppendCauseTotals(StringBuilder sb, List<GHReportRun> used)
         {
             Line(sb, "Hitch causes (used runs, summed):");
+            bool hitchCounts = true;
+            for (int i = 0; i < used.Count; i++)
+            {
+                GHSmoothnessSummary s = used[i].Summary;
+                if (s.MetricsVersion < FirstHitchCountVersion || s.CauseHitchCount == null)
+                    hitchCounts = false;
+            }
             int[] counts = new int[GHSmoothnessMetrics.CauseCount];
             double[] ms = new double[GHSmoothnessMetrics.CauseCount];
             for (int i = 0; i < used.Count; i++)
             {
                 GHSmoothnessSummary s = used[i].Summary;
+                int[] source = hitchCounts ? s.CauseHitchCount : s.CauseCount;
                 for (int c = 0; c < GHSmoothnessMetrics.CauseCount; c++)
                 {
-                    counts[c] += s.CauseCount[c];
+                    counts[c] += source[c];
                     ms[c] += s.CauseMs[c];
                 }
             }
             AppendCauseRows(sb, counts, ms);
+            if (!hitchCounts)
+                Line(sb, "  counts include judder frames (recorded before metrics version 2)");
         }
 
         /* One row per cause with a nonzero count, or "none"; counts and ms are indexed

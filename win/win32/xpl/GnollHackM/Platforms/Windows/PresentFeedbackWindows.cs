@@ -118,7 +118,7 @@ namespace GnollHackM
             /* qpcRefreshPeriod is the panel's own period, independent of how often the
                compositor calls the render loop */
             long vblank = (long)info.qpcVBlank;
-            GHFrameTimeline.SetPendingPlatformFrame(vblank, 0, renderingTimeTicks, (long)info.qpcRefreshPeriod);
+            GHFrameTimeline.SetPendingPlatformFrame(vblank, 0, renderingTimeTicks, (long)info.qpcRefreshPeriod, true);
 
             if (info.cRefresh == _lastRefreshCount)
                 return;

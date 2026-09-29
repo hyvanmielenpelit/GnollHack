@@ -76,7 +76,9 @@ namespace GnollHackX.Performance
         None = 0,
         DuplicateCallback = 1,  /* the platform reported the same frame time as the previous callback */
         OrphanPaint = 2,        /* a paint ran with no pending invalidation, e.g. after a layout pass */
-        UserMark = 4            /* the user marked this frame as a felt stutter */
+        UserMark = 4,           /* the user marked this frame as a felt stutter */
+        LifecycleBreak = 8,     /* the app was suspended or resumed before this callback */
+        VsyncIsLatestVblank = 16 /* VsyncTicks is the latest vblank at the callback (Windows DWM), not its own vsync */
     }
 
     /* One display callback and everything that followed from it. Every tick field is in the
@@ -165,7 +167,7 @@ namespace GnollHackX.Performance
         public long ComposeTicks;
         public long RefreshCount;
         public long ComposedFrameCount;
-        public int DroppedSinceLast;        /* reports the platform itself dropped before this one */
+        public int DroppedSinceLast;        /* FrameMetrics reports the listener missed before this one; not display drops */
         public GHCompositorSource Source;
         public bool FirstDrawFrame;
     }

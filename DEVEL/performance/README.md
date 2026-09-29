@@ -38,7 +38,7 @@ time, any unevenness in *when* frames appear is seen as unevenness in *motion*.
 ## What is recorded
 
 With **Settings > Frame Time Profiler** on (developer mode), the app keeps a ring of the
-last 20736 display callbacks (144 s at 144 Hz, about 6 MB while the profiler is on), one
+last 32768 display callbacks (136 s at 240 Hz, about 10 MB while the profiler is on), one
 record per callback:
 
 - the platform's vsync time; the refresh period, which is the panel's own where the
@@ -53,6 +53,14 @@ record per callback:
   end;
 - GC counts, and the process's total GC pause time (`GC.GetTotalPauseDuration`; the Mono
   runtime on Android and iOS may not report it, and a record then says so).
+
+A measurement window (a suite run or a window command) may be at most as long as the ring
+holds at the current refresh rate: 90 % of its capacity divided by the refresh rate, counted
+as at least 60 Hz (`GHFrameTimeline.MaxWindowSeconds`), which is 491 s at 60 Hz and 122 s at
+240 Hz. A suite refuses a longer window, and a window command is shortened to the limit. A
+saved record's optional `timeline` block says how many ticks the window requested and how
+many the ring still retained; a truncated window is excluded with the reason
+`window longer than the frame timeline holds (kept N of M ticks)`.
 
 Every stage refers to the frame by its `FrameId`, so a paint on another thread, or one merged
 into a later one, is attributed to the tick that requested it. The platform side adds:
@@ -140,8 +148,11 @@ Offline, the `smoothness` report has a **Marked moments** section: for each mark
 A frame is *displayed* at the first vsync after it was ready; when two frames are ready for
 the same vsync only the later one is shown, and the earlier one counts as dropped. Ready is
 the flush end or, on Android, the completion of the HWUI frame that carried it (for a
-GL-thread paint, the first HWUI frame whose sync began after the flush). A measured display
-time from PresentMon or Perfetto replaces the estimate; every record says which it is.
+GL-thread paint, the first HWUI frame whose sync began after the flush). In the app the
+display time is always this estimate, and the in-app reports say so; their `Compositor`
+cause and dropped frames are inferences. Measured display times come only from the offline
+analyzer, which joins PresentMon or Perfetto display times to a record; every record says
+which it is.
 
 Let `R` be the measured refresh period, `T` the target content period (`1 / map FPS`), and,
 for each displayed frame `j`, `g_j` the time since the previous displayed frame and `dc_j`
@@ -159,6 +170,20 @@ the main-counter advance since then.
 | Assumed refresh mismatch | The pacing logic divided a refresh rate more than 5 % away from the measured one |
 | On-screen pacing | The classic percentile set (P50 to Max, 1 % low, jank, hitch ratio, stutter index) over the displayed-frame gaps, judged against `T` rather than `R` |
 
+**Pauses and long stalls.** A gap that contains a pause tick or a lifecycle break (the app
+suspended or resumed: `GHFrameTimeline.NoteLifecycleBreak`, called from `GHApp.OnSleep` and
+`GHApp.HandleResume`) is a pause. A gap in which the display callbacks stopped for 1 s or
+more is a long stall. Inside a measurement window (a suite run, the in-game performance test,
+a window command) a long stall counts as a hitch, and the report says
+`Stalls over 1 s: N (X ms), counted as hitches`; in Dump Frame Log and Analyze Hitches it is
+excluded from hitch time. A long gap in which the callbacks kept coming, such as a GL-thread
+stall, is always a hitch. The record's `smoothness` object carries `longStallCount`,
+`longStallMs` and `longStallsExcluded`.
+
+**Metrics version.** `smoothness.metricsVersion` (2, `GHSmoothnessMetrics.MetricsVersion`)
+names the version of these definitions; a record without it is version 1. Results of
+different versions do not compare.
+
 The render loop's callback intervals, paint and lock durations, GC and allocation data are
 still collected by `FrameTimeProfiler` and shown on the dashboard's FRAME section; they are
 diagnostic series, not the measure of smoothness.
@@ -171,19 +196,38 @@ that exceeded its budget:
 | Order | Cause | Test |
 |-------|-------|------|
 | 1 | `DisplayMode` | The measured refresh period moved by more than 5 % across the gap or within the few ticks after it (the measurement is a running median, which lags a real change), or the pacing logic assumes a rate more than 5 % off the measured one |
-| 2 | `PaintCpu` / `Gpu` | A late or missed callback while the UI thread was still painting the previous map frame |
+| 2 | `PaintCpu` / `Gpu` | A late or missed callback while the UI thread was still painting the previous map frame, a buffer swap inside the callback included: `Gpu` when the flush or swap took longer than the draw |
 | 2 | `UiThreadRequests` | A late or missed callback on a tick whose request handling (floating texts, messages, windows, ...) took more than `R/2`; it takes precedence over a collection in the same gap |
 | 2 | `UiThreadLateGc` | A missed callback, or a callback more than `R/2` after its vsync, and collections in the gap paused the process for at least `R/2` in total: long enough to explain the lateness. Without pause data (Mono, older captures), any collection in the gap counts, and the report says so |
 | 2 | `FrameworkCadence` | A late or missed callback, not explained by the above, while the callback period ran at 1.5 refreshes or more around the gap: the UI framework delivered callbacks below the panel's rate for a while (Windows) |
 | 2 | `UiThreadLate` | A late or missed callback that nothing above explains |
-| 3 | `PacingPolicy` | A modulo skip or catch-up render in the gap, or a refresh-to-target ratio the divisor pattern cannot pace evenly; either only when the gap is within the pattern's longest hold (two divisor steps) |
+| 3 | `PacingPolicy` | A modulo skip, or a catch-up render that bypassed a skip pattern, in the gap (a catch-up render at or below the target rate renders exactly as a regular tick and is not a cause), or a refresh-to-target ratio the divisor pattern cannot pace evenly; either only when the gap is within the pattern's longest hold (two divisor steps) |
 | 4 | `PaintNotRun` | A rendered tick in the gap produced no paint (coalesced, early return, no invalidation) |
 | 5 | `DispatchLate` | A paint started more than `R/2` after its invalidation |
 | 6 | `GameLock` | Map data lock wait over `T/4` |
 | 7 | `PaintCpu` | Draw over `3T/4` |
-| 8 | `Gpu` | Flush over `T/2`, or a compositor frame's GPU time over `R` |
+| 8 | `Gpu` | Flush over `T/2`, a swap wait inside the callback over `T/2`, or a compositor frame's GPU time over `R` |
 | 9 | `Compositor` | Measured on screen later than the vsync it was ready for, a painted frame in the gap never shown, or the compositor ran long |
 | 10 | `Unattributed` | Nothing identified. Its share of hitch time is reported as a measure of the instrument itself |
+
+Steps 5 to 8 are evaluated per frame painted in the gap, oldest first, and the first stage
+over budget is the cause, since a frame that ran late can miss its vsync and be overwritten
+by the next one. The compositor frame's GPU time over `R` is checked after them and before
+the `Compositor` rules.
+
+A cause's count is its hitches only: `hitchCount` per cause in the record, and in the
+reports. Records from before metrics version 2 count judder frames too, and reports of them
+say so.
+
+On Windows, DWM gives the latest vblank rather than each callback's own vsync, so a
+callback's lateness there is a phase within one refresh. It is not used to blame the UI
+thread: only a missed callback counts as late, and `callbackLatenessP99Ms` is the vblank
+phase.
+
+FrameMetrics' `dropCountSinceLastInvocation` counts FrameMetrics reports the listener
+missed, not frames the display dropped. It is data lost by the instrument and never a cause:
+Analyze Hitches gives it as `FrameMetrics reports lost: N`, and the record as
+`smoothness.compositorReportsLost`.
 
 ### Content events
 
@@ -678,10 +722,14 @@ listed.
 | Delete | Deletes the selected suites' folders; `baselines.json` is left as it is |
 
 The **comparability key** is the scenario, the replay's SHA-256, the start turn, the page
-mode, the map FPS setting and the measured refresh rate rounded to whole hertz, fixed when the
-suite finishes. A comparison pools, per arm, every suite with the same key and the same arm
-label that was measured on the selected suite's device: arm A the baseline label, arm B the
-selected suite's. Suites with another key never enter it. The device matches when every
+mode, the map FPS setting, the measured refresh rate rounded to whole hertz and the metrics
+version, as `|m<metricsVersion>` at its end, fixed when the suite finishes. A suite measured
+with an earlier metrics version therefore matches no baseline, previous comparable suite or
+suite measured later; after the version changes, baselines must be measured again.
+
+A comparison pools, per arm, every suite with the same key and the same arm label that was
+measured on the selected suite's device: arm A the baseline label, arm B the selected
+suite's. Suites with another key never enter it. The device matches when every
 `hardware.*` key and `os.platform` present in both fingerprints agree, or, for suites
 without a fingerprint, when platform and device model agree. It refuses when the suite is
 still running, no baseline is set for its key, the suite's own label is the baseline label,
@@ -765,6 +813,8 @@ commands have not been validated end to end on real captures. Known defects:
 - Without in-app records and without `-TargetFps`, the target rate is taken to be the
   refresh rate.
 - On Android, frames painted on the GL thread are not joined to Perfetto.
+- The analyzer does not know a run's metrics version, and compares runs of different
+  versions without a warning.
 
 Use the in-app Performance Suite for decisions until these are fixed.
 

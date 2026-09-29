@@ -513,6 +513,12 @@ namespace GnollHackX.Pages.MainScreen
                 await GHApp.DisplayMessageBox(this, "Invalid Window Seconds", "Window seconds must be a positive number.", "OK");
                 return;
             }
+            string windowRefusal = GHPerformanceSuiteRunner.WindowLengthRefusal(windowSeconds);
+            if (windowRefusal != null)
+            {
+                await GHApp.DisplayMessageBox(this, "Window Too Long", windowRefusal, "OK");
+                return;
+            }
 
             int cooldownSeconds;
             if (!int.TryParse(CooldownSecondsEntry.Text, out cooldownSeconds) || cooldownSeconds < 0)

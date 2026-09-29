@@ -1290,7 +1290,7 @@ namespace GnollHackX
                     long ticksPerFrame = ticksPerSecond / framesPerSecond;
                     if (ticks > ticksPerFrame)
                     {
-                        pacing = GHPacingDecision.RenderedCatchUp;
+                        pacing = screenRefreshRate > refreshRate ? GHPacingDecision.RenderedCatchUp : GHPacingDecision.Rendered;
                         curGamePage.RenderCanvasByCanvasType(canvasType);
                         return;
                     }
@@ -2940,6 +2940,7 @@ namespace GnollHackX
             MaybeWriteGHLog("GHApp.OnSleep: Start", true, GHConstants.SentryGnollHackGeneralCategoryName);
             SetSentryTag(GHConstants.SentryTagAppLifecycle, "sleeping");
             IsSuspended = true;
+            GHFrameTimeline.NoteLifecycleBreak();
             if (!UsePlatformRenderLoop)
                 PlatformService?.RevertAnimatorDuration(false);
 
@@ -3144,6 +3145,7 @@ namespace GnollHackX
             MaybeWriteGHLog("GHApp.HandleResume: Start (isRestart=" + isRestart + ")", true, GHConstants.SentryGnollHackGeneralCategoryName);
             SetSentryTag(GHConstants.SentryTagAppLifecycle, "active");
             IsSuspended = false;
+            GHFrameTimeline.NoteLifecycleBreak();
             /* Save style 2 produces no GUI_CMD_WAIT_FOR_RESUME callback, so the flag would otherwise stay raised into the next save */
             BackgroundSaveInProgress = false;
             FmodService?.Resume();

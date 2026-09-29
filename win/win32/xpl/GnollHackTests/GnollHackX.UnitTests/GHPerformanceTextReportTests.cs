@@ -685,5 +685,162 @@ namespace GnollHackX.UnitTests
 
             Assert.Contains("no hitch from 5 s before to 0.5 s after", Section(report, "Marked moments:", "Worst hitches"));
         }
+
+        /* The recent hitches report over a two-second stall timeline, with the summary
+           adjusted before rendering */
+        private static string RecentReportWith(Action<GHSmoothnessSummary> adjust)
+        {
+            GHFrameRecord[] records = StallTimeline(120, 60);
+            GHDisplayedFrame[] displayed = new GHDisplayedFrame[records.Length];
+            int displayedCount;
+            GHSmoothnessSummary summary = GHSmoothnessMetrics.Analyze(records, records.Length, null, 0,
+                displayed, out displayedCount);
+            if (adjust != null)
+                adjust(summary);
+            string report = GHPerformanceTextReport.RecentHitchesReport(records, records.Length, displayed,
+                displayedCount, summary, new long[0], new long[0], 0);
+            AssertNoLineExceedsMaxWidth(report);
+            return report;
+        }
+
+        [Fact]
+        public void RecentHitchesReport_Header_SaysDisplayTimesAreEstimated()
+        {
+            string report = RecentReportWith(null);
+
+            string header = Section(report, "Recent hitches", "Marked moments:");
+            Assert.Contains("\nDisplay times: estimated (first vsync after ready)\n", header);
+            Assert.DoesNotContain("FrameMetrics reports lost", header);
+            Assert.DoesNotContain("Stalls over", header);
+        }
+
+        [Fact]
+        public void RecentHitchesReport_Header_MeasuredDisplayTimes()
+        {
+            string report = RecentReportWith(delegate (GHSmoothnessSummary s)
+            {
+                s.PresentSource = GHPresentSource.Measured;
+            });
+
+            string header = Section(report, "Recent hitches", "Marked moments:");
+            Assert.Contains("\nDisplay times: measured\n", header);
+            Assert.DoesNotContain("estimated", header);
+        }
+
+        [Fact]
+        public void RecentHitchesReport_Header_ReportsLostFrameMetricsReports()
+        {
+            string report = RecentReportWith(delegate (GHSmoothnessSummary s) { s.CompositorReportsLost = 3; });
+
+            Assert.Contains("\nFrameMetrics reports lost: 3 (compositor data incomplete)\n",
+                Section(report, "Recent hitches", "Marked moments:"));
+        }
+
+        [Fact]
+        public void RecentHitchesReport_Header_ExcludedLongStalls()
+        {
+            string report = RecentReportWith(delegate (GHSmoothnessSummary s)
+            {
+                s.LongStallCount = 2;
+                s.LongStallMs = 3500;
+                s.LongStallsExcluded = true;
+            });
+
+            Assert.Contains("\nStalls over 1 s: 2 (3500.00 ms), excluded from hitch time\n",
+                Section(report, "Recent hitches", "Marked moments:"));
+        }
+
+        [Fact]
+        public void RecentHitchesReport_Header_CountedLongStalls()
+        {
+            string report = RecentReportWith(delegate (GHSmoothnessSummary s)
+            {
+                s.LongStallCount = 1;
+                s.LongStallMs = 1250;
+                s.LongStallsExcluded = false;
+            });
+
+            Assert.Contains("\nStalls over 1 s: 1 (1250.00 ms), counted as hitches\n",
+                Section(report, "Recent hitches", "Marked moments:"));
+        }
+
+        [Fact]
+        public void SuiteReport_Medians_SayDisplayTimesAreEstimated()
+        {
+            string report = GHPerformanceTextReport.SuiteReport(BuildSuite());
+
+            string medians = Section(report, "Medians", "Previous comparable suite");
+            Assert.Contains("  Display times are estimated in-app; Compositor and Dropped are inferred.\n", medians);
+            Assert.DoesNotContain("Stalls over", medians);
+        }
+
+        [Fact]
+        public void SuiteReport_Medians_SumLongStallsOfUsedRuns()
+        {
+            GHReportSuite suite = BuildSuite();
+            suite.Runs[1].Summary.LongStallCount = 1;
+            suite.Runs[1].Summary.LongStallMs = 1200;
+            suite.Runs[3].Summary.LongStallCount = 2;
+            suite.Runs[3].Summary.LongStallMs = 3000;
+            /* The excluded run's stall is not summed */
+            suite.Runs[4].Summary.LongStallCount = 5;
+            suite.Runs[4].Summary.LongStallMs = 9000;
+            string report = GHPerformanceTextReport.SuiteReport(suite);
+
+            AssertNoLineExceedsMaxWidth(report);
+            Assert.Contains("\n  Stalls over 1 s: 3 (4200.00 ms), counted as hitches\n",
+                Section(report, "Medians", "Previous comparable suite"));
+        }
+
+        /* A cause row as AppendCauseRows prints it, up to the ms column */
+        private static string CauseRowPrefix(GHHitchCause cause, int count)
+        {
+            string name = GHSmoothnessMetrics.CauseName(cause);
+            if (name.Length > 18)
+                name = name.Substring(0, 18);
+            return "  " + name.PadRight(18) + count.ToString(CultureInfo.InvariantCulture).PadLeft(5) + "  ";
+        }
+
+        [Fact]
+        public void SuiteReport_CauseTotals_Version2_ShowsHitchCounts()
+        {
+            GHReportSuite suite = BuildSuite();
+            for (int i = 0; i < suite.Runs.Count; i++)
+            {
+                GHSmoothnessSummary s = suite.Runs[i].Summary;
+                if (s == null)
+                    continue;
+                s.MetricsVersion = GHSmoothnessMetrics.MetricsVersion;
+                /* Of the three UiThreadLate frames, one is judder */
+                s.CauseHitchCount[(int)GHHitchCause.UiThreadLate] = 2;
+                s.CauseHitchCount[(int)GHHitchCause.PaintCpu] = 1;
+            }
+            string report = GHPerformanceTextReport.SuiteReport(suite);
+
+            AssertNoLineExceedsMaxWidth(report);
+            string causes = Section(report, "Hitch causes", "Content events");
+            Assert.Contains(CauseRowPrefix(GHHitchCause.UiThreadLate, 6), causes);
+            Assert.Contains(CauseRowPrefix(GHHitchCause.PaintCpu, 3), causes);
+            Assert.DoesNotContain("judder frames", causes);
+        }
+
+        [Fact]
+        public void SuiteReport_CauseTotals_Version1_ShowsCauseCountAndNote()
+        {
+            GHReportSuite suite = BuildSuite();
+            for (int i = 0; i < suite.Runs.Count; i++)
+            {
+                GHSmoothnessSummary s = suite.Runs[i].Summary;
+                if (s != null)
+                    s.MetricsVersion = 1;
+            }
+            string report = GHPerformanceTextReport.SuiteReport(suite);
+
+            AssertNoLineExceedsMaxWidth(report);
+            string causes = Section(report, "Hitch causes", "Content events");
+            Assert.Contains(CauseRowPrefix(GHHitchCause.UiThreadLate, 9), causes);
+            Assert.Contains(CauseRowPrefix(GHHitchCause.PaintCpu, 3), causes);
+            Assert.Contains("\n  counts include judder frames (recorded before metrics version 2)\n", causes);
+        }
     }
 }

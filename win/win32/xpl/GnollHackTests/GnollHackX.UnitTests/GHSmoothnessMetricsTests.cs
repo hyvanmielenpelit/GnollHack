@@ -105,11 +105,13 @@ namespace GnollHackX.UnitTests
             }
 
             public GHSmoothnessSummary Analyze(out GHDisplayedFrame[] displayed, out int displayedCount,
-                                               GHCompositorFrame[] compositor = null, int m = 0)
+                                               GHCompositorFrame[] compositor = null, int m = 0, bool excludeLongStalls = false)
             {
                 GHFrameRecord[] arr = Records.ToArray();
                 displayed = new GHDisplayedFrame[arr.Length];
-                return GHSmoothnessMetrics.Analyze(arr, arr.Length, compositor, m, displayed, out displayedCount);
+                if (!excludeLongStalls)
+                    return GHSmoothnessMetrics.Analyze(arr, arr.Length, compositor, m, displayed, out displayedCount);
+                return GHSmoothnessMetrics.Analyze(arr, arr.Length, compositor, m, displayed, out displayedCount, true);
             }
         }
 
@@ -312,7 +314,7 @@ namespace GnollHackX.UnitTests
             GHSmoothnessSummary s = t.Analyze(out d, out n);
 
             Assert.Equal(60.0, s.DisplayedFps, 0);
-            /* One gap in five is a hitch: 27.8 ms > 16.7 + 3.5 */
+            /* One gap in five is a hitch: 27.8 ms > 20.8 + 3.5 = 24.3 ms */
             double hitchShare = (double)s.HitchCount / (n - 1);
             Assert.InRange(hitchShare, 0.17, 0.23);
             Assert.True(s.JudderPct > 95, "judder " + s.JudderPct);
@@ -901,6 +903,474 @@ namespace GnollHackX.UnitTests
             Assert.Equal(0, s.HitchCount);
             Assert.Equal(1, s.PausedGapCount);
             Assert.Equal(60.0, s.DisplayedFps, 0);
+        }
+
+        [Fact]
+        public void Summary_CarriesTheMetricsVersion()
+        {
+            Timeline t = new Timeline();
+            t.Run(1.0, 60, 60, 60);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(2, GHSmoothnessMetrics.MetricsVersion);
+            Assert.Equal(GHSmoothnessMetrics.MetricsVersion, s.MetricsVersion);
+            Assert.Equal(GHSmoothnessMetrics.MetricsVersion,
+                         GHSmoothnessMetrics.Analyze(new GHFrameRecord[0], 0, null, 0, new GHDisplayedFrame[0], out n).MetricsVersion);
+        }
+
+        /* 60 on 60: the render loop labels a tick a catch-up whenever jitter stretches its
+           interval past the target period, which at this rate renders exactly as a regular
+           tick. A long GL-thread draw is the paint's, not the pacing policy's. */
+        [Fact]
+        public void CatchUpLabelAt60On60_DoesNotAbsorbAPaintCpuHitch()
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            for (int i = 0; i < 120; i++)
+            {
+                bool longPaint = i == 60;
+                int idx = t.Tick(period, 60, 60, GHPacingDecision.RenderedCatchUp, false, longPaint ? 20.0 : 3.0);
+                /* Paints on the GL thread are sequential, so the next paint waits for the long one */
+                if (!longPaint && idx > 0 && t.Records[idx - 1].FlushEndTicks > t.Records[idx].PaintStartTicks)
+                    ShiftPaint(t, idx, t.Records[idx - 1].FlushEndTicks - t.Records[idx].PaintStartTicks + Ms(0.1));
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(1, s.HitchCount);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.PacingPolicy]);
+            for (int j = 1; j < n; j++)
+            {
+                if (d[j].IsHitch)
+                    Assert.Equal(GHHitchCause.PaintCpu, d[j].Cause);
+            }
+        }
+
+        /* 30 on 60: a catch-up render on a tick the divisor pattern would skip is the policy's */
+        [Fact]
+        public void CatchUpAt30On60_IsStillPacingPolicy()
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            int catchUp = -1;
+            for (int i = 0; i < 120; i++)
+            {
+                GHPacingDecision pacing = Decide(t.FrameId + 1, 60, 30);
+                if (i >= 60 && catchUp < 0 && pacing == GHPacingDecision.SkippedDivisor)
+                    pacing = GHPacingDecision.RenderedCatchUp;
+                int idx = t.Tick(period, 60, 30, pacing, true);
+                if (pacing == GHPacingDecision.RenderedCatchUp)
+                    catchUp = idx;
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            t.Analyze(out d, out n);
+
+            int judged = 0;
+            for (int j = 1; j < n; j++)
+            {
+                if (d[j].RecordIndex != catchUp)
+                    continue;
+                Assert.True(d[j].IsJudder || d[j].IsHitch);
+                Assert.Equal(GHHitchCause.PacingPolicy, d[j].Cause);
+                judged++;
+            }
+            Assert.Equal(1, judged);
+        }
+
+        private static GHCompositorFrame FrameMetricsFrame(long vsync, long syncStart, long completed, int droppedSinceLast)
+        {
+            GHCompositorFrame f = new GHCompositorFrame();
+            f.Source = GHCompositorSource.AndroidFrameMetrics;
+            f.IntendedVsyncTicks = vsync;
+            f.VsyncTicks = vsync;
+            f.SyncStartTicks = syncStart;
+            f.CompletedTicks = completed;
+            f.DroppedSinceLast = droppedSinceLast;
+            return f;
+        }
+
+        /* A FrameMetrics report the listener missed is lost data, not a dropped frame: the
+           skipped tick's gap stays unexplained, and the loss is counted */
+        [Fact]
+        public void DroppedReports_AreDataLossNotCompositor()
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            int skipped = -1;
+            for (int i = 0; i < 120; i++)
+            {
+                int idx = t.Tick(period, 60, 60, i == 60 ? GHPacingDecision.SkippedDivisor : GHPacingDecision.Rendered, true);
+                if (i == 60)
+                    skipped = idx;
+            }
+            long vsync = t.Records[skipped].VsyncTicks;
+            GHCompositorFrame[] comp = new GHCompositorFrame[] { FrameMetricsFrame(vsync, vsync + Ms(2), vsync + Ms(6), 3) };
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n, comp, comp.Length);
+
+            Assert.Equal(3, s.CompositorReportsLost);
+            Assert.Equal(1, s.HitchCount);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.Compositor]);
+            for (int j = 1; j < n; j++)
+            {
+                if (d[j].IsHitch)
+                    Assert.Equal(GHHitchCause.Unattributed, d[j].Cause);
+            }
+        }
+
+        /* GL-thread paints flushed at a fixed phase of every refresh, with a FrameMetrics
+           frame per vsync that syncs 2 ms and completes 6 ms after it, except for a 500 ms
+           hole in the reports. Paints in the hole do not bind to the first frame after it. */
+        [Theory]
+        [InlineData(0.1)]
+        [InlineData(0.5)]
+        [InlineData(0.9)]
+        public void GlThreadReady_DoesNotJumpAcrossReportHole(double flushPhase)
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            const int ticks = 180, holeStart = 60, holeLength = 30;
+            for (int i = 0; i < ticks; i++)
+            {
+                int idx = t.Tick(period, 60, 60, GHPacingDecision.Rendered, false);
+                GHFrameRecord r = t.Records[idx];
+                r.FlushEndTicks = r.VsyncTicks + (long)(flushPhase * period);
+                r.DrawEndTicks = r.FlushEndTicks - Ms(0.5);
+                t.Records[idx] = r;
+            }
+            List<GHCompositorFrame> comp = new List<GHCompositorFrame>();
+            long firstVsync = t.Records[0].VsyncTicks;
+            for (int j = 0; j < ticks + 2; j++)
+            {
+                if (j >= holeStart && j < holeStart + holeLength)
+                    continue;
+                long vsync = firstVsync + j * period;
+                comp.Add(FrameMetricsFrame(vsync, vsync + Ms(2), vsync + Ms(6), j == holeStart + holeLength ? holeLength : 0));
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n, comp.ToArray(), comp.Count);
+
+            Assert.Equal(holeLength, s.CompositorReportsLost);
+            Assert.Equal(0, s.HitchCount);
+            Assert.Equal(0, s.DroppedCount);
+            Assert.Equal(ticks, n);
+            for (int j = 0; j < n; j++)
+            {
+                long flushEnd = t.Records[d[j].RecordIndex].FlushEndTicks;
+                Assert.True(d[j].DisplayedAtTicks - flushEnd <= 2 * period, "frame " + j);
+            }
+        }
+
+        /* A frame that starts syncing 1.5 refreshes after a GL-thread flush, with no report
+           lost before it, carried that flush: its completion is the ready time */
+        [Fact]
+        public void GlThreadReady_LateFrameWithoutLoss_IsBound()
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            const int late = 30;
+            for (int i = 0; i < late + 5; i++)
+            {
+                int idx = t.Tick(period, 60, 60, i <= late ? GHPacingDecision.Rendered : GHPacingDecision.SkippedDivisor, false);
+                if (i == late)
+                {
+                    GHFrameRecord r = t.Records[idx];
+                    r.FlushEndTicks = r.VsyncTicks + (long)(0.7 * period);
+                    r.DrawEndTicks = r.FlushEndTicks - Ms(0.5);
+                    t.Records[idx] = r;
+                }
+            }
+            List<GHCompositorFrame> comp = new List<GHCompositorFrame>();
+            for (int j = 0; j <= late; j++)
+            {
+                long vsync = t.Records[j].VsyncTicks;
+                comp.Add(FrameMetricsFrame(vsync, vsync + Ms(2), vsync + Ms(6), 0));
+            }
+            long flushEnd = t.Records[late].FlushEndTicks;
+            long sync = flushEnd + period * 3 / 2;
+            comp.Add(FrameMetricsFrame(t.Records[late + 1].VsyncTicks, sync, sync + Ms(4), 0));
+            GHDisplayedFrame[] d;
+            int n;
+            t.Analyze(out d, out n, comp.ToArray(), comp.Count);
+
+            Assert.Equal(late, d[n - 1].RecordIndex);
+            /* The first vsync after the completion */
+            Assert.Equal(t.Records[late + 3].VsyncTicks, d[n - 1].DisplayedAtTicks);
+        }
+
+        /* One second at 60 on 60, a 1.5 s stop in the display callbacks, and another second.
+           The first tick after the stop can carry a lifecycle break. */
+        private static Timeline StallTimeline(bool lifecycleBreak)
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            t.Run(1.0, 60, 60, 60);
+            t.NextVsync += Ms(1500);
+            int idx = t.Tick(period, 60, 60, GHPacingDecision.Rendered, true);
+            if (lifecycleBreak)
+            {
+                GHFrameRecord r = t.Records[idx];
+                r.Flags |= GHFrameFlags.LifecycleBreak;
+                t.Records[idx] = r;
+            }
+            t.Run(1.0, 60, 60, 60);
+            return t;
+        }
+
+        [Fact]
+        public void LongStall_InWindow_IsAHitch()
+        {
+            Timeline t = StallTimeline(false);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.False(s.LongStallsExcluded);
+            Assert.Equal(1, s.LongStallCount);
+            Assert.Equal(1500.0 + 1000.0 / 60, s.LongStallMs, 0);
+            Assert.Equal(1, s.HitchCount);
+            Assert.Equal(0, s.PausedGapCount);
+            int stalls = 0;
+            for (int j = 1; j < n; j++)
+            {
+                if (!d[j].IsLongStall)
+                    continue;
+                Assert.True(d[j].IsHitch);
+                Assert.False(d[j].IsPausedGap);
+                stalls++;
+            }
+            Assert.Equal(1, stalls);
+        }
+
+        [Fact]
+        public void LongStall_Retrospective_IsPaused()
+        {
+            Timeline t = StallTimeline(false);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n, null, 0, true);
+
+            Assert.True(s.LongStallsExcluded);
+            Assert.Equal(1, s.LongStallCount);
+            Assert.Equal(1500.0 + 1000.0 / 60, s.LongStallMs, 0);
+            Assert.Equal(0, s.HitchCount);
+            Assert.Equal(1, s.PausedGapCount);
+            Assert.Equal(60.0, s.DisplayedFps, 0);
+            int stalls = 0;
+            for (int j = 1; j < n; j++)
+            {
+                if (!d[j].IsLongStall)
+                    continue;
+                Assert.True(d[j].IsPausedGap);
+                Assert.False(d[j].IsHitch);
+                stalls++;
+            }
+            Assert.Equal(1, stalls);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void LifecycleBreak_IsPausedInBothModes(bool excludeLongStalls)
+        {
+            Timeline t = StallTimeline(true);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n, null, 0, excludeLongStalls);
+
+            Assert.Equal(0, s.HitchCount);
+            Assert.Equal(1, s.PausedGapCount);
+            Assert.Equal(0, s.LongStallCount);
+            for (int j = 0; j < n; j++)
+                Assert.False(d[j].IsLongStall);
+        }
+
+        /* The GL thread stalls 1.5 s on the map lock while the display callbacks keep their
+           rate: a hitch in both modes, never a long stall */
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void GlThreadStall_WithRegularCallbacks_IsAHitch(bool excludeLongStalls)
+        {
+            Timeline t = new Timeline();
+            t.Run(3.0, 60, 60, 60, false);
+            int stalled = 60;
+            long stall = Ms(1500);
+            GHFrameRecord r = t.Records[stalled];
+            r.LockResultTicks += stall;
+            r.DrawEndTicks += stall;
+            r.FlushEndTicks += stall;
+            t.Records[stalled] = r;
+            /* The GL thread is busy meanwhile, so the invalidations it misses are coalesced */
+            for (int i = stalled + 1; i < t.Records.Count && t.Records[i].PaintStartTicks < r.FlushEndTicks; i++)
+            {
+                GHFrameRecord c = t.Records[i];
+                c.Paint = GHPaintOutcome.Coalesced;
+                c.PaintStartTicks = 0;
+                c.LockAttemptTicks = 0;
+                c.LockResultTicks = 0;
+                c.DrawEndTicks = 0;
+                c.FlushEndTicks = 0;
+                c.PaintedMainCounter = 0;
+                t.Records[i] = c;
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n, null, 0, excludeLongStalls);
+
+            Assert.Equal(0, s.LongStallCount);
+            Assert.Equal(0, s.PausedGapCount);
+            Assert.Equal(1, s.HitchCount);
+            for (int j = 1; j < n; j++)
+            {
+                if (!d[j].IsHitch)
+                    continue;
+                Assert.Equal(stalled, d[j].RecordIndex);
+                Assert.Equal(GHHitchCause.GameLock, d[j].Cause);
+            }
+        }
+
+        /* 60 on 75 Hz holds frames one and two refreshes; two is on time, not a repeat */
+        [Fact]
+        public void RepeatedRefreshes_60On75_AreNone()
+        {
+            Timeline t = new Timeline();
+            t.Run(3.0, 75, 75, 60);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(60.0, s.DisplayedFps, 0);
+            Assert.Equal(0, s.HitchCount);
+            Assert.Equal(0.0, s.RepeatedRefreshesPerSec, 6);
+        }
+
+        /* Attribution covers hitches and judder; the hitch counts leave the judder out */
+        [Fact]
+        public void CauseHitchCount_CountsHitchesOnly()
+        {
+            Timeline judder = new Timeline();
+            judder.RunPeriod(3.0, Ms(1000.0 / 59.94), 60, 40);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = judder.Analyze(out d, out n);
+
+            Assert.True(s.CauseCount[(int)GHHitchCause.PacingPolicy] > 0);
+            Assert.Equal(0, s.HitchCount);
+            for (int i = 0; i < GHSmoothnessMetrics.CauseCount; i++)
+                Assert.Equal(0, s.CauseHitchCount[i]);
+
+            Timeline hitches = new Timeline();
+            hitches.Run(3.0, 144, 144, 60);
+            s = hitches.Analyze(out d, out n);
+            int hitchTotal = 0;
+            for (int i = 0; i < GHSmoothnessMetrics.CauseCount; i++)
+                hitchTotal += s.CauseHitchCount[i];
+            Assert.True(s.HitchCount > 0);
+            Assert.Equal(s.HitchCount, hitchTotal);
+            Assert.True(hitchTotal < TotalAttributed(s));
+        }
+
+        /* A menu shown at another rate does not decide the target of the map */
+        [Fact]
+        public void TargetFps_IgnoresPauseTicks()
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            for (int i = 0; i < 60; i++)
+                t.Tick(period, 60, 60, GHPacingDecision.Rendered, true);
+            for (int i = 0; i < 120; i++)
+                t.Tick(period, 60, 30, GHPacingDecision.AuxiliaryCanvas, true);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(60.0, s.TargetFps, 6);
+        }
+
+        /* Windows DWM: the vsync time is the latest vblank at the callback, so a callback at
+           0.7 R after it is a phase, not lateness. With no missed vblank, a long GL-thread
+           flush is the GPU's. The vblank is flagged on the records or, in an old recording,
+           inferred from the DWM compositor frames. */
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void LatestVblankPhase_IsNotUiThreadLate(bool flagged)
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            double phaseMs = 0.7 * 1000.0 / 60;
+            List<GHCompositorFrame> dwm = new List<GHCompositorFrame>();
+            for (int i = 0; i < 120; i++)
+            {
+                int idx = t.Tick(period, 60, 60, GHPacingDecision.Rendered, false, 3.0, i == 60 ? 12.0 : 1.0, phaseMs);
+                GHFrameRecord r = t.Records[idx];
+                if (flagged)
+                {
+                    r.Flags |= GHFrameFlags.VsyncIsLatestVblank;
+                    t.Records[idx] = r;
+                }
+                GHCompositorFrame f = new GHCompositorFrame();
+                f.Source = GHCompositorSource.WindowsDwm;
+                f.IntendedVsyncTicks = r.VsyncTicks;
+                f.VsyncTicks = r.VsyncTicks;
+                f.RefreshPeriodTicks = period;
+                dwm.Add(f);
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = flagged ? t.Analyze(out d, out n) : t.Analyze(out d, out n, dwm.ToArray(), dwm.Count);
+
+            Assert.Equal(1, s.HitchCount);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadLate]);
+            for (int j = 1; j < n; j++)
+            {
+                if (d[j].IsHitch)
+                    Assert.Equal(GHHitchCause.Gpu, d[j].Cause);
+            }
+        }
+
+        /* A frame measured late on screen whose compositor GPU work overran a refresh is the
+           GPU's, not the compositor's */
+        [Fact]
+        public void CompositorGpuOverrun_IsGpuBeforeCompositor()
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            List<GHCompositorFrame> comp = new List<GHCompositorFrame>();
+            for (int i = 0; i < 120; i++)
+            {
+                int idx = t.Tick(period, 60, 60, GHPacingDecision.Rendered, true);
+                GHFrameRecord r = t.Records[idx];
+                long display = r.VsyncTicks + period;
+                if (i % 12 == 6)
+                {
+                    display += period * 3 / 4;
+                    GHCompositorFrame f = FrameMetricsFrame(r.VsyncTicks, 0, 0, 0);
+                    f.GpuDurationTicks = period * 5 / 4;
+                    comp.Add(f);
+                }
+                r.DisplayedAtTicks = display;
+                r.PresentSource = GHPresentSource.Measured;
+                t.Records[idx] = r;
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n, comp.ToArray(), comp.Count);
+
+            Assert.True(s.HitchCount >= 9, "hitches " + s.HitchCount);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.Compositor]);
+            for (int j = 1; j < n; j++)
+            {
+                if (d[j].IsHitch)
+                    Assert.Equal(GHHitchCause.Gpu, d[j].Cause);
+            }
         }
 
         [Fact]

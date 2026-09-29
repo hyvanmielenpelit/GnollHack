@@ -1088,6 +1088,7 @@ namespace GnollHackX.Performance
         private static SummaryJson BuildSummaryJson(GHSmoothnessSummary s)
         {
             SummaryJson j = new SummaryJson();
+            j.MetricsVersion = s.MetricsVersion;
             j.DisplayedFps = R(s.DisplayedFps);
             j.HitchRatioMsPerSec = R(s.HitchRatioMsPerSec);
             j.PacingErrorRmsMs = R(s.PacingErrorRmsMs);
@@ -1100,7 +1101,11 @@ namespace GnollHackX.Performance
             j.GcPauseDataAvailable = s.GcPauseDataAvailable;
             j.MeasuredRefreshHz = R(s.MeasuredRefreshHz);
             j.TargetFps = R(s.TargetFps);
+            j.CompositorReportsLost = s.CompositorReportsLost;
+            j.LongStallCount = s.LongStallCount;
+            j.LongStallMs = R(s.LongStallMs);
             j.CauseCount = (int[])s.CauseCount.Clone();
+            j.CauseHitchCount = (int[])s.CauseHitchCount.Clone();
             j.CauseMs = RoundArray(s.CauseMs);
             j.EventGapCount = (int[])s.EventGapCount.Clone();
             j.EventHitchCount = (int[])s.EventHitchCount.Clone();
@@ -1132,7 +1137,8 @@ namespace GnollHackX.Performance
                 ? 0 : Math.Round(measuredRefreshHz);
             return OrEmpty(scenario) + "|" + OrEmpty(replaySha) + "|" + startTurn.ToString(CultureInfo.InvariantCulture)
                 + "|" + OrEmpty(pageMode) + "|" + OrEmpty(mapRefreshSetting) + "|"
-                + roundedHz.ToString(CultureInfo.InvariantCulture);
+                + roundedHz.ToString(CultureInfo.InvariantCulture)
+                + "|m" + GHSmoothnessMetrics.MetricsVersion.ToString(CultureInfo.InvariantCulture);
         }
 
         private static string OrEmpty(string s)
@@ -1349,6 +1355,8 @@ namespace GnollHackX.Performance
             if (j == null)
                 return null;
             GHSmoothnessSummary s = new GHSmoothnessSummary();
+            /* A manifest written before metrics version 2 has no version */
+            s.MetricsVersion = j.MetricsVersion > 0 ? j.MetricsVersion : 1;
             s.DisplayedFps = j.DisplayedFps;
             s.HitchRatioMsPerSec = j.HitchRatioMsPerSec;
             s.PacingErrorRmsMs = j.PacingErrorRmsMs;
@@ -1361,7 +1369,11 @@ namespace GnollHackX.Performance
             s.GcPauseDataAvailable = j.GcPauseDataAvailable;
             s.MeasuredRefreshHz = j.MeasuredRefreshHz;
             s.TargetFps = j.TargetFps;
+            s.CompositorReportsLost = j.CompositorReportsLost;
+            s.LongStallCount = j.LongStallCount;
+            s.LongStallMs = j.LongStallMs;
             CopyInto(s.CauseCount, j.CauseCount);
+            CopyInto(s.CauseHitchCount, j.CauseHitchCount);
             CopyInto(s.CauseMs, j.CauseMs);
             CopyInto(s.EventGapCount, j.EventGapCount);
             CopyInto(s.EventHitchCount, j.EventHitchCount);
@@ -2214,6 +2226,10 @@ namespace GnollHackX.Performance
            baseline comparison; see ReconstructSummary. */
         private sealed class SummaryJson
         {
+            /* GHSmoothnessMetrics.MetricsVersion of the analysis; absent (0) means 1 */
+            [JsonProperty("metricsVersion")]
+            public int MetricsVersion;
+
             [JsonProperty("displayedFps")]
             public double DisplayedFps;
 
@@ -2250,8 +2266,21 @@ namespace GnollHackX.Performance
             [JsonProperty("targetFps")]
             public double TargetFps;
 
+            [JsonProperty("compositorReportsLost")]
+            public int CompositorReportsLost;
+
+            [JsonProperty("longStallCount")]
+            public int LongStallCount;
+
+            [JsonProperty("longStallMs")]
+            public double LongStallMs;
+
             [JsonProperty("causeCount")]
             public int[] CauseCount;
+
+            /* Of causeCount, the hitches alone; absent (null) before metrics version 2 */
+            [JsonProperty("causeHitchCount")]
+            public int[] CauseHitchCount;
 
             [JsonProperty("causeMs")]
             public double[] CauseMs;
