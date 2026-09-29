@@ -189,6 +189,7 @@ namespace GnollHackX
             data.BoolData["DeveloperMode"] = GHApp.DeveloperMode;
             data.BoolData["LowLevelLogging"] = GHApp.LowLevelLogging;
             data.BoolData["ScreenLogging"] = GHApp.ScreenLogging;
+            data.BoolData["FrameTimeProfiler"] = GHApp.IsFrameTimeProfilerOn;
             data.BoolData["DebugLogMessages"] = GHApp.DebugLogMessages;
             data.BoolData["KeyboardConnected"] = GHApp.IsKeyboardConnected;
             data.BoolData["enableClientTools"] = GHApp.OverseerEnableClientTools;
@@ -230,7 +231,8 @@ namespace GnollHackX
             DebugLogMessages = DeveloperMode && Preferences.Get("DebugLogMessages", GHConstants.DefaultLogMessages);
             LowLevelLogging = DeveloperMode && Preferences.Get("LowLevelLogging", false);
             ScreenLogging = DeveloperMode && Preferences.Get("ScreenLogging", false);
-            FrameTimeProfiler.IsEnabled = DeveloperMode && Preferences.Get("FrameTimeProfiler", false);
+            IsFrameTimeProfilerOn = DeveloperMode && Preferences.Get("FrameTimeProfiler", false);
+            FrameTimeProfiler.IsEnabled = IsFrameTimeProfilerOn;
             DebugPostChannel = DeveloperMode && Preferences.Get("DebugPostChannel", GHConstants.DefaultDebugPostChannel);
             TournamentMode = Preferences.Get("TournamentMode", false);
             FullVersionMode = true; // Preferences.Get("FullVersion", true);
@@ -3855,9 +3857,13 @@ namespace GnollHackX
         private static int _debugLogMessages = GHConstants.DefaultLogMessages ? 1 : 0;
         private static int _lowLevelLogging = 0;
         private static int _screenLogging = 0;
+        private static int _isFrameTimeProfilerOn = 0;
         public static bool DebugLogMessages { get { return Interlocked.CompareExchange(ref _debugLogMessages, 0, 0) != 0; } set { Interlocked.Exchange(ref _debugLogMessages, value ? 1 : 0); } }
         public static bool LowLevelLogging { get { return Interlocked.CompareExchange(ref _lowLevelLogging, 0, 0) != 0; } set { Interlocked.Exchange(ref _lowLevelLogging, value ? 1 : 0); } }
         public static bool ScreenLogging { get { return Interlocked.CompareExchange(ref _screenLogging, 0, 0) != 0; } set { Interlocked.Exchange(ref _screenLogging, value ? 1 : 0); } }
+        /* The Frame Time Profiler setting on Settings Page; FrameTimeProfiler.IsEnabled is the runtime state,
+           which performance tests turn on temporarily */
+        public static bool IsFrameTimeProfilerOn { get { return Interlocked.CompareExchange(ref _isFrameTimeProfilerOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _isFrameTimeProfilerOn, value ? 1 : 0); } }
         public static bool IsDebugLowLevelLoggingOn { get { return DebugLogMessages && LowLevelLogging; } }
         public static bool IsDebugScreenLoggingOn { get { return DebugLogMessages && ScreenLogging; } }
 

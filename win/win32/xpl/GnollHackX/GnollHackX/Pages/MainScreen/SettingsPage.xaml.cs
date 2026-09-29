@@ -1063,8 +1063,9 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("LowLevelLogging", GHApp.LowLevelLogging);
             GHApp.ScreenLogging = ScreenLogSwitch.IsToggled;
             Preferences.Set("ScreenLogging", GHApp.ScreenLogging);
-            FrameTimeProfiler.IsEnabled = FrameProfilerSwitch.IsToggled;
-            Preferences.Set("FrameTimeProfiler", FrameProfilerSwitch.IsToggled);
+            GHApp.IsFrameTimeProfilerOn = FrameProfilerSwitch.IsToggled;
+            Preferences.Set("FrameTimeProfiler", GHApp.IsFrameTimeProfilerOn);
+            FrameTimeProfiler.IsEnabled = GHApp.IsFrameTimeProfilerOn;
             GHApp.DebugPostChannel = DebugPostChannelSwitch.IsToggled;
             Preferences.Set("DebugPostChannel", GHApp.DebugPostChannel);
             GHApp.TournamentMode = TournamentSwitch.IsToggled;
@@ -1477,7 +1478,7 @@ namespace GnollHackX.Pages.MainScreen
             logmessages = GHApp.DebugLogMessages;
             lowlevellogging = GHApp.LowLevelLogging;
             screenlogging = GHApp.ScreenLogging;
-            frameprofiler = FrameTimeProfiler.IsEnabled;
+            frameprofiler = GHApp.IsFrameTimeProfilerOn;
             debugpostchannel = GHApp.DebugPostChannel;
             tournament = GHApp.TournamentMode;
             bank = Preferences.Get("LoadSoundBanks", true);

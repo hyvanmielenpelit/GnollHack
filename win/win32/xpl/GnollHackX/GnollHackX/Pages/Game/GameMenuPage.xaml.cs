@@ -279,11 +279,10 @@ namespace GnollHackX.Pages.Game
         private void btnDeveloper_Clicked(object sender, EventArgs e)
         {
             GHApp.PlayButtonClickedSound();
-            /* The frame tools read the Frame Time Profiler's data; Test Performance turns
-               the profiler on for its own run */
-            btnDevDumpFrameLog.IsVisible = FrameTimeProfiler.IsEnabled;
-            btnDevAnalyzeHitches.IsVisible = FrameTimeProfiler.IsEnabled;
-            btnDevTestPerformance.IsVisible = true;
+            /* The frame tools read the Frame Time Profiler's data */
+            btnDevDumpFrameLog.IsVisible = GHApp.IsFrameTimeProfilerOn;
+            btnDevAnalyzeHitches.IsVisible = GHApp.IsFrameTimeProfilerOn;
+            btnDevTestPerformance.IsVisible = GHApp.IsFrameTimeProfilerOn;
             btnDevAiSnapshot.IsVisible = GHApp.DebugLogMessages;
             DeveloperPopupGrid.IsEnabled = true;
             DeveloperPopupGrid.IsVisible = true;
