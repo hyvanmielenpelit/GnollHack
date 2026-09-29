@@ -1,6 +1,6 @@
 ---
 name: performance-benchmarks
-description: How to add new performance benchmark entries to DEVEL/performance.txt. Covers the required file format, where to find version numbers, the benchmark test procedure, and formatting rules.
+description: How to add new performance benchmark entries to DEVEL/performance.txt, the informal FPS log. Covers the required file format, where to find version numbers, the benchmark test procedure, and formatting rules. Not the A/B performance suite or the in-game performance test; those are in DEVEL/performance/README.md.
 ---
 
 The full skill lives in this repository's tool-neutral agent directory (`.agents/`),

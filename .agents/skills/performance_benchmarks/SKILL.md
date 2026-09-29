@@ -1,6 +1,6 @@
 ---
 name: performance_benchmarks
-description: How to add new performance benchmark entries to DEVEL/performance.txt. Covers the required file format, where to find version numbers, the benchmark test procedure, and formatting rules.
+description: How to add new performance benchmark entries to DEVEL/performance.txt, the informal FPS log. Covers the required file format, where to find version numbers, the benchmark test procedure, and formatting rules. Not the A/B performance suite or the in-game performance test; those are in DEVEL/performance/README.md.
 ---
 
 # Performance Benchmarks
@@ -10,6 +10,19 @@ description: How to add new performance benchmark entries to DEVEL/performance.t
 The file `DEVEL/performance.txt` records FPS benchmarks measured in **minimap mode** using **GPU rendering** on the **first dungeon level** with the **whole map revealed** in **wizard mode**.
 
 Each dated entry contains shared version information followed by per-platform results.
+
+## Relationship to the Performance Suite
+
+`DEVEL/performance.txt` is an informal FPS log: one eyeballed number per platform, with no
+repetitions, statistics or smoothness metrics. Decisions and regressions use the
+measurement tooling described in `DEVEL/performance/README.md` instead:
+
+- **In-app Performance Suite** (About > Performance Suite): repeated measurement windows
+  over a recorded replay, baselines, and an A/B verdict with confidence intervals.
+- **In-game Test Performance** (Game menu > Developer > Test Performance): a 30 s
+  diagnosis of the live game, naming the most likely cause of poor smoothness.
+
+Add an entry here only when the user asks for one; do not use it to judge a change.
 
 ## File Location
 

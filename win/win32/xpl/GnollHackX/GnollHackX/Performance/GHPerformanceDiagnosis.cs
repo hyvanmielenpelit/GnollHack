@@ -1436,6 +1436,8 @@ namespace GnollHackX.Performance
             StringBuilder sb = new StringBuilder(8192);
             Line(sb, ReportTitle + " " + localNow.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture));
             Line(sb, "");
+            AppendSummary(sb, r);
+            Line(sb, "");
             Line(sb, ResultLine(f, r));
             Line(sb, "Location: " + LocationName(r.Location));
             Line(sb, "");
@@ -1538,6 +1540,45 @@ namespace GnollHackX.Performance
             if (result == null || location == null)
                 return null;
             return result + " | " + location;
+        }
+
+        /* The plain-language summary above the Result line: how the game ran, then the
+           primary cause's title and advice, or where the cause lies when there is no
+           primary. Every line starts with "Summary: " or two spaces, so none can be
+           taken for the Result or Location line HeadlineOf reads. */
+        private static void AppendSummary(StringBuilder sb, GHDiagnosisResult r)
+        {
+            switch (r.Health)
+            {
+            case GHDiagnosisHealth.Healthy:
+                AppendWrapped(sb, "Summary: ", "  ", "The game ran smoothly; no problem was measured.");
+                return;
+            case GHDiagnosisHealth.Degraded:
+            case GHDiagnosisHealth.Poor:
+                AppendWrapped(sb, "Summary: ", "  ", "The game stuttered noticeably.");
+                break;
+            default:
+                AppendWrapped(sb, "Summary: ", "  ", string.IsNullOrEmpty(r.InconclusiveReason)
+                    ? "The test could not judge how the game ran."
+                    : "The test could not judge how the game ran: " + r.InconclusiveReason + ".");
+                AppendWrapped(sb, "  Try: ", "    ", "Run the test again.");
+                return;
+            }
+
+            if (r.Primary != null)
+            {
+                AppendWrapped(sb, "  Most likely: ", "    ", Sentence(r.Primary.Title));
+                if (!string.IsNullOrEmpty(r.Primary.Advice))
+                    AppendWrapped(sb, "  Try: ", "    ", Sentence(r.Primary.Advice));
+            }
+            else if (r.Location == GHCauseLocation.InsideGame)
+            {
+                AppendWrapped(sb, "  Most likely: ", "    ", "Something inside the game; no outside cause was found.");
+            }
+            else if (r.Location == GHCauseLocation.Unclear)
+            {
+                AppendWrapped(sb, "  Most likely: ", "    ", "Unclear; see the most likely cause below.");
+            }
         }
 
         /* The finding named on the "Also:" line under the primary cause: for a scored
@@ -2035,6 +2076,16 @@ namespace GnollHackX.Performance
             if (string.IsNullOrEmpty(s))
                 return "";
             return s.Replace("\r\n", " ").Replace('\r', ' ').Replace('\n', ' ').Replace('\t', ' ');
+        }
+
+        /* s trimmed, with a full stop added unless it already ends a sentence */
+        private static string Sentence(string s)
+        {
+            string t = Clean(s).Trim();
+            if (t.Length == 0 || t.EndsWith(".", StringComparison.Ordinal) || t.EndsWith("!", StringComparison.Ordinal)
+                || t.EndsWith("?", StringComparison.Ordinal))
+                return t;
+            return t + ".";
         }
 
         private static string PadR(string s, int width)

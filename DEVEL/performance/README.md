@@ -125,7 +125,8 @@ window is refused saves that run excluded with the reason `measurement window re
 ### Stutter tools
 
 For a stutter felt during play or a replay, while the profiler records. The Developer button
-of the game menu is shown in developer mode; its frame tools only while the profiler is on.
+of the game menu is shown in developer mode; its frame tools only while the profiler is on,
+except Test Performance, which is shown in developer mode and turns the profiler on itself.
 
 | Tool | What it does |
 |------|--------------|
@@ -660,9 +661,11 @@ test, aborted or not, older reports and every `<stamp>` folder without a kept re
 deleted, except the folder of the test that just finished, which is kept even when its
 report could not be written. Reset > Delete Performance Data deletes them all.
 
-The test refuses to start when the frame timeline or the platform render loop is off, the
-game has ended, or a test, a suite, a measurement window or a window command is already
-running; it checks again after the confirmation. It stops when the app goes to the
+The test needs developer mode, not the Frame Time Profiler setting: when the profiler is off,
+the test turns it on after the confirmation, before the settle, and restores the setting when
+it ends, whether it completed, was cancelled or failed. It refuses to start when the platform
+render loop is off, the game has ended, or a test, a suite, a measurement window or a window
+command is already running; it checks again after the confirmation. It stops when the app goes to the
 background, a page opens over the game page, or the game ends, and, once the window is
 open, when a menu or window opens over the map. An aborted window is discarded unsaved and
 no report is written. The final message, a cancellation or an error, appears on whichever
@@ -714,8 +717,9 @@ location `none`, an inconclusive one `unclear`. The **Also:** line under the pri
 names the other side: for a scored primary, the first suspect-or-stronger heat, power,
 background or memory finding; for any other primary, the first scored finding.
 
-**The report**, format version 2, gives in order: the Result line (health, displayed and
-target FPS, hitch ratio), Location, the most likely cause, the other suspect and likely
+**The report**, format version 2, gives in order: a Summary in plain words (whether the
+game ran smoothly, the most likely cause and what to try, or why the test could not judge),
+the Result line (health, displayed and target FPS, hitch ratio), Location, the most likely cause, the other suspect and likely
 findings, a Checks row per area (`ok`, `warn`, `BAD` or `n/a`), Measurements, Hitch causes,
 Notes (the info findings), Environment (the fingerprint without `meta` and most `component`
 keys), Facts, and Frame detail, the Analyze Hitches report of the 30 s ending at the

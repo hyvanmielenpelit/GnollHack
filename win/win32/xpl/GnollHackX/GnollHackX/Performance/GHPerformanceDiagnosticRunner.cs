@@ -23,12 +23,13 @@ namespace GnollHackX.Performance
        likely cause and where it lies.
 
        RunAsync runs on the UI thread as one async task:
-         1. Refuses on the host page when the frame timeline is off, a test, suite or
-            measurement window is already running, a window command is pending, the game
-            has ended, or the platform render loop is off.
-         2. Asks for confirmation on the host page. On OK: holds the background load
-            sampler (so the pre-window has samples), starts the countdown and closes
-            the menu.
+         1. Refuses on the host page when a test, suite or measurement window is already
+            running, a window command is pending, the game has ended, or the platform
+            render loop is off.
+         2. Asks for confirmation on the host page. On OK: turns on the frame timeline
+            (FrameTimeProfiler.IsEnabled) when it is off, so its start-up falls before
+            the settle; holds the background load sampler (so the pre-window has
+            samples), starts the countdown and closes the menu.
          3. Hides the frame marker (GHFrameMarker.Suppressed) until the window is saved.
             Settles for SettleSeconds, so the menu's pause mark and collection fall
             outside the window; starts the per-process interval on the thread pool,
@@ -50,6 +51,9 @@ namespace GnollHackX.Performance
          6. Builds GHDiagnosisFacts, diagnoses, writes
             ReportsDirectory/perftest_<stamp>.txt, keeps the newest MaxKeptReports
             reports and this test's folder, and opens the report page.
+       A frame timeline the test turned on stays on until the test ends, the recent
+       hitches included, and is turned off again whether the test completed, was
+       cancelled or failed.
        Refusals before the running flag is taken are awaited on the host page. The
        test's final message, if any, including a refusal after the confirmation, is
        shown only after the running flag is released, on the page at the top of the
@@ -78,6 +82,10 @@ namespace GnollHackX.Performance
         private const int BeginPollMs = 16;
 
         private static int _isRunning = 0;
+
+        /* The running test turned FrameTimeProfiler on; RunAsync turns it off again. UI
+           thread only. */
+        private static bool _profilerTurnedOn = false;
 
         public static bool IsRunning { get { return Interlocked.CompareExchange(ref _isRunning, 0, 0) != 0; } }
 
@@ -115,6 +123,7 @@ namespace GnollHackX.Performance
                 finally
                 {
                     GHDiagnosticCountdown.Stop();
+                    RestoreProfiler();
                     Interlocked.Exchange(ref _isRunning, 0);
                 }
                 /* The host while the menu is still open; else the game page or whatever
@@ -137,8 +146,6 @@ namespace GnollHackX.Performance
         {
             if (gamePage == null)
                 return "The game is not available.";
-            if (!FrameTimeProfiler.IsEnabled)
-                return "The performance test needs the frame timeline. Turn on Settings > Frame Time Profiler first.";
             if (GHPerformanceSuiteRunner.IsRunning)
                 return "A performance suite is running.";
             if (GHPerformanceRunRecord.IsWindowOpen || GHPerformanceRunRecord.IsWindowCommandPending)
@@ -161,6 +168,14 @@ namespace GnollHackX.Performance
             string refusal = CheckPreconditions(gamePage);
             if (refusal != null)
                 return refusal;
+
+            /* Before the settle, so the timeline's start-up and ring reset fall outside
+               the window; the window's own run record then leaves it on */
+            if (!FrameTimeProfiler.IsEnabled)
+            {
+                FrameTimeProfiler.IsEnabled = true;
+                _profilerTurnedOn = true;
+            }
 
             TestState s = new TestState();
             s.GamePage = gamePage;
@@ -695,6 +710,22 @@ namespace GnollHackX.Performance
                 throw new DiagnosticAbortException("a page opened over the game");
             if (s.WindowClock != null && s.GamePage.GetActiveCanvas() != CanvasTypes.MainCanvas)
                 throw new DiagnosticAbortException("a menu or window opened over the map");
+        }
+
+        /* Turns FrameTimeProfiler off again when the test turned it on, once */
+        private static void RestoreProfiler()
+        {
+            if (!_profilerTurnedOn)
+                return;
+            _profilerTurnedOn = false;
+            try
+            {
+                FrameTimeProfiler.IsEnabled = false;
+            }
+            catch (Exception ex)
+            {
+                Log("restoring the frame time profiler failed: " + ex.Message);
+            }
         }
 
         /* Releases the test's sampler hold, once */

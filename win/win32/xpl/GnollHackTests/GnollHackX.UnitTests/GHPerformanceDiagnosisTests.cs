@@ -9,8 +9,8 @@ namespace GnollHackX.UnitTests
        rule firing at its threshold and not just short of it, unknown (NaN and null)
        signals producing no finding, every cause location including the one by
        elimination, primary-cause ordering, the Checks table, and the report: its first
-       line, section order, line width, line endings, Facts and Environment blocks, the
-       verbatim appendix, HeadlineOf and determinism. */
+       line, the summary above the Result line, section order, line width, line endings,
+       Facts and Environment blocks, the verbatim appendix, HeadlineOf and determinism. */
     public class GHPerformanceDiagnosisTests
     {
         private static readonly DateTime Now = new DateTime(2026, 9, 27, 14, 5, 0);
@@ -142,6 +142,43 @@ namespace GnollHackX.UnitTests
         private static string Report(GHDiagnosisFacts f)
         {
             return GHPerformanceDiagnosis.BuildReport(f, GHPerformanceDiagnosis.Diagnose(f), Now);
+        }
+
+        /* The index of the first line starting with "Result:", -1 when there is none */
+        private static int ResultIndex(string[] lines)
+        {
+            return Array.FindIndex(lines, l => l.StartsWith("Result:", StringComparison.Ordinal));
+        }
+
+        /* The report's Result line */
+        private static string ResultLineOf(string report)
+        {
+            string[] lines = Lines(report);
+            int i = ResultIndex(lines);
+            Assert.True(i >= 0, "no Result line");
+            return lines[i];
+        }
+
+        /* The summary block: the lines from "Summary:" up to the blank line before Result */
+        private static string[] SummaryLines(string report)
+        {
+            string[] lines = Lines(report);
+            int start = Array.FindIndex(lines, l => l.StartsWith("Summary:", StringComparison.Ordinal));
+            int result = ResultIndex(lines);
+            Assert.True(start >= 0 && result > start + 1, "no summary above the Result line");
+            Assert.Equal("", lines[result - 1]);
+            string[] block = new string[result - 1 - start];
+            Array.Copy(lines, start, block, 0, block.Length);
+            return block;
+        }
+
+        /* Wrapped lines trimmed and joined by single spaces: the text before wrapping */
+        private static string Joined(string[] lines)
+        {
+            string[] trimmed = new string[lines.Length];
+            for (int i = 0; i < lines.Length; i++)
+                trimmed[i] = lines[i].Trim();
+            return string.Join(" ", trimmed);
         }
 
         private static int CountCodes(GHDiagnosisResult r, string code)
@@ -1611,8 +1648,74 @@ namespace GnollHackX.UnitTests
             string[] lines = Lines(report);
 
             Assert.Equal("GnollHack performance test report v2 2026-09-27 14:05", lines[0]);
-            Assert.Equal("Result: DEGRADED  50.0 of 60 target fps, hitches 1.0 ms/s", lines[2]);
-            Assert.Equal("Location: inside the game", lines[3]);
+            Assert.Equal("", lines[1]);
+            Assert.Equal("Summary: The game stuttered noticeably.", lines[2]);
+            Assert.Equal("  Most likely: Something inside the game; no outside cause was found.", lines[3]);
+            Assert.Equal("", lines[4]);
+            Assert.Equal("Result: DEGRADED  50.0 of 60 target fps, hitches 1.0 ms/s", lines[5]);
+            Assert.Equal("Location: inside the game", lines[6]);
+        }
+
+        [Fact]
+        public void Report_SummaryAboveResult()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            f.BackgroundVerdict = GHBackgroundVerdict.Busy;
+            GHDiagnosisResult r = GHPerformanceDiagnosis.Diagnose(f);
+            string report = GHPerformanceDiagnosis.BuildReport(f, r, Now);
+            string[] lines = Lines(report);
+            string[] summary = SummaryLines(report);
+
+            Assert.Equal(GHPerformanceDiagnosis.CodeBackgroundBusy, r.Primary.Code);
+            Assert.Equal("Summary: The game stuttered noticeably.", lines[2]);
+            Assert.Equal("Summary: The game stuttered noticeably.", summary[0]);
+            Assert.Equal("  Most likely: Other programs keep the machine busy.", summary[1]);
+            Assert.StartsWith("  Try: ", summary[2]);
+            Assert.Equal("Summary: The game stuttered noticeably. Most likely: Other programs keep the machine busy. "
+                + "Try: " + r.Primary.Advice, Joined(summary));
+            for (int i = 0; i < summary.Length; i++)
+                Assert.True(summary[i].Length <= GHPerformanceTextReport.MaxLineWidth, summary[i]);
+
+            int result = ResultIndex(lines);
+            Assert.Equal(2 + summary.Length + 1, result);
+            Assert.StartsWith("Location:", lines[result + 1]);
+            Assert.Equal(lines[result] + " | " + lines[result + 1], GHPerformanceDiagnosis.HeadlineOf(report));
+
+            /* A title or advice that reads like the headline stays indented in the summary */
+            r.Primary.Title = "Result: HEALTHY";
+            r.Primary.Advice = "Location: none. " + new string('a', 70) + " Result: HEALTHY";
+            report = GHPerformanceDiagnosis.BuildReport(f, r, Now);
+            lines = Lines(report);
+            result = ResultIndex(lines);
+
+            Assert.Equal("  Most likely: Result: HEALTHY.", SummaryLines(report)[1]);
+            Assert.StartsWith("Result: DEGRADED ", lines[result]);
+            Assert.Equal(lines[result] + " | " + lines[result + 1], GHPerformanceDiagnosis.HeadlineOf(report));
+            Assert.Equal("Location: external", lines[result + 1]);
+        }
+
+        [Fact]
+        public void Report_SummaryInconclusive_SaysWhy()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.OnScreenIntervalCount = 50;
+            string report = Report(f);
+            string[] summary = SummaryLines(report);
+
+            Assert.Equal("Summary: The test could not judge how the game ran: too few frames were shown (50). "
+                + "Try: Run the test again.", Joined(summary));
+            Assert.Equal("  Try: Run the test again.", summary[summary.Length - 1]);
+            Assert.DoesNotContain("Most likely:", Joined(summary));
+            for (int i = 0; i < summary.Length; i++)
+                Assert.True(summary[i].Length <= GHPerformanceTextReport.MaxLineWidth, summary[i]);
+        }
+
+        [Fact]
+        public void Report_SummaryHealthy_RanSmoothly()
+        {
+            string[] summary = SummaryLines(Report(HealthyFacts()));
+
+            Assert.Equal(new string[] { "Summary: The game ran smoothly; no problem was measured." }, summary);
         }
 
         [Fact]
@@ -1620,17 +1723,17 @@ namespace GnollHackX.UnitTests
         {
             GHDiagnosisFacts f = HealthyFacts();
             f.TargetFps = 120f;
-            string[] lines = Lines(Report(f));
-            Assert.Equal("Result: HEALTHY  59.5 of 120 target fps, hitches 1.0 ms/s (display 60 Hz)", lines[2]);
+            Assert.Equal("Result: HEALTHY  59.5 of 120 target fps, hitches 1.0 ms/s (display 60 Hz)",
+                ResultLineOf(Report(f)));
 
             /* Too long with "target": left out */
             f.TargetFps = 144f;
             f.DisplayedFps = 59.9f;
             f.HitchRatioMsPerSec = 123.4f;
             f.PlatformRenderLoopOn = false;
-            lines = Lines(Report(f));
-            Assert.Equal("Result: INCONCLUSIVE  59.9 of 144 fps, hitches 123.4 ms/s (display 60 Hz)", lines[2]);
-            Assert.True(lines[2].Length <= GHPerformanceTextReport.MaxLineWidth);
+            string line = ResultLineOf(Report(f));
+            Assert.Equal("Result: INCONCLUSIVE  59.9 of 144 fps, hitches 123.4 ms/s (display 60 Hz)", line);
+            Assert.True(line.Length <= GHPerformanceTextReport.MaxLineWidth);
         }
 
         [Fact]
@@ -1638,9 +1741,8 @@ namespace GnollHackX.UnitTests
         {
             GHDiagnosisFacts f = HealthyFacts();
             f.MeasuredRefreshHz = 59.94f;
-            string[] lines = Lines(Report(f));
 
-            Assert.Equal("Result: HEALTHY  59.5 of 60 target fps, hitches 1.0 ms/s", lines[2]);
+            Assert.Equal("Result: HEALTHY  59.5 of 60 target fps, hitches 1.0 ms/s", ResultLineOf(Report(f)));
         }
 
         [Fact]
@@ -1650,7 +1752,7 @@ namespace GnollHackX.UnitTests
             string report = GHPerformanceDiagnosis.BuildReport(f, GHPerformanceDiagnosis.Diagnose(f), Now);
             string[] sections =
             {
-                "Result:", "Location:", "Most likely cause:", "Also found:", "Checks:", "Measurements:",
+                "Summary:", "Result:", "Location:", "Most likely cause:", "Also found:", "Checks:", "Measurements:",
                 "Hitch causes:", "Notes:", "Environment:", "Facts:", "Frame detail:"
             };
 
@@ -1874,7 +1976,9 @@ namespace GnollHackX.UnitTests
             Assert.Equal(GHPerformanceDiagnosis.CodePaintHeavy, r.Primary.Code);
             Assert.Contains("\n  Also: Background load is elevated (BACKGROUND_ELEVATED, suspect)\n\nAlso found:\n",
                 report);
-            Assert.Equal(Lines(report)[2] + " | " + Lines(report)[3], GHPerformanceDiagnosis.HeadlineOf(report));
+            string[] lines = Lines(report);
+            int result = ResultIndex(lines);
+            Assert.Equal(lines[result] + " | " + lines[result + 1], GHPerformanceDiagnosis.HeadlineOf(report));
 
             /* An unscored primary names the strongest share */
             f.BackgroundVerdict = GHBackgroundVerdict.Busy;
@@ -1904,8 +2008,11 @@ namespace GnollHackX.UnitTests
             {
                 string report = GHPerformanceDiagnosis.BuildReport(cases[c], GHPerformanceDiagnosis.Diagnose(cases[c]), Now);
                 string[] lines = Lines(report);
+                int result = ResultIndex(lines);
 
-                Assert.Equal(lines[2] + " | " + lines[3], GHPerformanceDiagnosis.HeadlineOf(report));
+                Assert.True(result > 2);
+                Assert.StartsWith("Location:", lines[result + 1]);
+                Assert.Equal(lines[result] + " | " + lines[result + 1], GHPerformanceDiagnosis.HeadlineOf(report));
             }
         }
 

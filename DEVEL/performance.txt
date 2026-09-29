@@ -5,6 +5,10 @@ This file records FPS benchmarks measured in minimap mode using
 GPU rendering on the first level with the whole map revealed in
 wizard mode.
 
+It is an informal log. For regressions and A/B decisions, use the
+Performance Suite and the in-game performance test described in
+DEVEL/performance/README.md.
+
 
 Date: 2026-07-26
 ================
