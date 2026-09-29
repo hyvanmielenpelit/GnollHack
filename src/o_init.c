@@ -1187,6 +1187,11 @@ list_discoveries(boolean dumping, boolean format_for_ai)
         /* Spell out obj_typename()'s output so that the reader can map an
            appearance to a true name in either direction */
         putstr(tmpwin, ATR_NONE,
+               "  This section lists the object types and artifacts the hero"
+               " knows of or the player has named. A line here does not mean"
+               " the hero has, or has seen, such an object now; the Inventory"
+               " section lists what the hero carries.");
+        putstr(tmpwin, ATR_NONE,
                "  Format: \"true name (appearance)\";"
                " \"called X\" is a nickname the player gave a type that is"
                " not identified: a guess, not an identification;");
