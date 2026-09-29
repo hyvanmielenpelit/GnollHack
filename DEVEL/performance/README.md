@@ -737,7 +737,14 @@ The suite measures a build on the device itself, with no PC: a series of measure
 over one recorded replay, each started from the same turn, saved as ordinary run records and
 compared on the device. **About > Performance Suite** opens it; the button is shown only with
 developer mode on and **Settings > Frame Time Profiler** on. The runner switches the profiler
-on for the suite and restores it afterwards.
+and the debug dashboard on for the suite, whatever the settings say, and afterward returns the
+profiler to its setting and ends the dashboard override.
+
+The view is fixed for every run: the map is at the device's default zoom (the default map font
+size), with alternative zoom off, auto-center on, no overlays and the dashboard expanded. The
+zoom and auto-center stones, pinch, the mouse wheel and drag panning are disabled, and the
+player's saved zoom is left untouched. The C core's own zoom save and restore around
+detection still apply.
 
 ### Setup
 
@@ -747,7 +754,7 @@ The page remembers the last setup.
 |-------|---------|---------|
 | Replay | none | A main replay file in `<GHPath>/replay`, newest first; continuation files are not listed |
 | Start Turn | 1 | The turn every run starts from, at least 1 |
-| Scenario | Idle | **Idle**: the replay pauses at the start turn, leaving only tile animations (W-idle). **Minimap**: the replay pauses and the map switches to minimap zoom (W1). **Playback**: the replay keeps playing (replay) |
+| Scenario | Idle | **Idle**: the replay pauses at the start turn, leaving only tile animations (W-idle). **Minimap**: the replay pauses and the map switches to minimap zoom at the default minimap size and position (W1). **Playback**: the replay keeps playing (replay) |
 | Measured runs | 6 | 4, 5, 6 or 8, not counting the warm-up run |
 | Warm-up run | On | Run 0, a full run that is saved but excluded as `warm-up run`. With it off, run 1 is excluded instead as `cold first run (warm-up run off)`, and the page asks before starting when that leaves fewer used runs than a verdict needs |
 | Page mode | Shared page | **Shared page**: one game page for every run. **Fresh page per run**: a new game page for each run |

@@ -3864,8 +3864,11 @@ namespace GnollHackX
         /* The Frame Time Profiler setting on Settings Page; FrameTimeProfiler.IsEnabled is the runtime state,
            which performance tests turn on temporarily */
         public static bool IsFrameTimeProfilerOn { get { return Interlocked.CompareExchange(ref _isFrameTimeProfilerOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _isFrameTimeProfilerOn, value ? 1 : 0); } }
+        private static int _forceDebugScreenLogging = 0;
+        /* Runtime only, never saved: the debug dashboard and screen log are on while set */
+        public static bool ForceDebugScreenLogging { get { return Interlocked.CompareExchange(ref _forceDebugScreenLogging, 0, 0) != 0; } set { Interlocked.Exchange(ref _forceDebugScreenLogging, value ? 1 : 0); } }
         public static bool IsDebugLowLevelLoggingOn { get { return DebugLogMessages && LowLevelLogging; } }
-        public static bool IsDebugScreenLoggingOn { get { return DebugLogMessages && ScreenLogging; } }
+        public static bool IsDebugScreenLoggingOn { get { return (DebugLogMessages && ScreenLogging) || ForceDebugScreenLogging; } }
 
         private static int _debugPostChannel = GHConstants.DefaultDebugPostChannel ? 1 : 0;
         public static bool DebugPostChannel /* This is the setting value on Settings Page */

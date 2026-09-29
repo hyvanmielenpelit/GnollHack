@@ -5204,20 +5204,23 @@ namespace GnollHackX.Pages.Game
             RefreshScreen = false;
 
             /* Page lifecycle event; runs on the UI thread */
-            try
+            if (!_performanceSuiteMode)
             {
-                Preferences.Set("MapFontSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontSize));
-                Preferences.Set("MapFontAlternateSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontAlternateSize));
-                Preferences.Set("MapFontMiniRelativeSize", Math.Min(GHConstants.MaximumMapMiniRelativeFontSize, Math.Max(GHConstants.MinimumMapMiniRelativeFontSize, MapFontMiniRelativeSize)));
-                lock (_mapOffsetLock)
+                try
                 {
-                    Preferences.Set("MapMiniOffsetX", _mapMiniOffsetX);
-                    Preferences.Set("MapMiniOffsetY", _mapMiniOffsetY);
+                    Preferences.Set("MapFontSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontSize));
+                    Preferences.Set("MapFontAlternateSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontAlternateSize));
+                    Preferences.Set("MapFontMiniRelativeSize", Math.Min(GHConstants.MaximumMapMiniRelativeFontSize, Math.Max(GHConstants.MinimumMapMiniRelativeFontSize, MapFontMiniRelativeSize)));
+                    lock (_mapOffsetLock)
+                    {
+                        Preferences.Set("MapMiniOffsetX", _mapMiniOffsetX);
+                        Preferences.Set("MapMiniOffsetY", _mapMiniOffsetY);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             }
         }
 
@@ -16716,7 +16719,7 @@ namespace GnollHackX.Pages.Game
                                                     }
                                                 }
                                             }
-                                            else
+                                            else if (!_performanceSuiteMode)
                                             {
                                                 float mapWidth;
                                                 float mapHeight;
@@ -16819,7 +16822,7 @@ namespace GnollHackX.Pages.Game
 
                                     /* Two-finger zoom applies to the map only; the message and status
                                        overlays own the screen while they are up */
-                                    if (other_entry != null && !ForceAllMessages && !ShowExtendedStatusBar /* && !ZoomMiniMode */)
+                                    if (other_entry != null && !ForceAllMessages && !ShowExtendedStatusBar && !_performanceSuiteMode /* && !ZoomMiniMode */)
                                     {
                                         SKPoint otherloc = other_entry.Location;
                                         float prevdist = (float)Math.Sqrt((Math.Pow((double)otherloc.X - (double)prevloc.X, 2) + Math.Pow((double)otherloc.Y - (double)prevloc.Y, 2)));
@@ -16909,6 +16912,10 @@ namespace GnollHackX.Pages.Game
                                         _touchMoved = false;
                                     }
                                 }
+                            }
+                            else if (_performanceSuiteMode)
+                            {
+                                /* The view is fixed during a performance suite */
                             }
                             else if (_touchWithinDashboardToggle)
                             {
@@ -17194,6 +17201,8 @@ namespace GnollHackX.Pages.Game
 
         private void canvasView_MouseWheel(object sender, GHMouseWheelEventArgs e)
         {
+            if (_performanceSuiteMode)
+                return;
             if(e.MouseWheelDelta != 0)
             {
                 if (ForceAllMessages)
@@ -18155,6 +18164,8 @@ namespace GnollHackX.Pages.Game
 
         private void ToggleAutoCenterModeButton_Clicked(object sender, EventArgs e)
         {
+            if (_performanceSuiteMode && sender == ToggleAutoCenterModeButton)
+                return;
             GHApp.PlayMenuSelectSound();
             MapNoClipMode = !MapNoClipMode;
             if (MapNoClipMode)
@@ -18211,6 +18222,8 @@ namespace GnollHackX.Pages.Game
 
         private void ToggleZoomMiniButton_Clicked(object sender, EventArgs e)
         {
+            if (_performanceSuiteMode && sender == ToggleZoomMiniButton)
+                return;
             GHApp.PlayMenuSelectSound();
             ZoomMiniMode = !ZoomMiniMode;
             if (ZoomMiniMode)
@@ -18237,6 +18250,8 @@ namespace GnollHackX.Pages.Game
 
         private void ToggleZoomAlternateButton_Clicked(object sender, EventArgs e)
         {
+            if (_performanceSuiteMode && sender == ToggleZoomAlternateButton)
+                return;
             GHApp.PlayMenuSelectSound();
             ZoomAlternateMode = !ZoomAlternateMode;
             if (ZoomAlternateMode)
@@ -20273,15 +20288,18 @@ namespace GnollHackX.Pages.Game
                     {
                         if (_touchWithinMenuDashboardToggle || _touchWithinMenuDashboardLogToggle)
                         {
-                            if (_touchWithinMenuDashboardToggle)
+                            if (!_performanceSuiteMode)
                             {
-                                MenuDashboardCollapsed = !MenuDashboardCollapsed;
-                                Preferences.Set("MenuDashboardCollapsed", MenuDashboardCollapsed);
-                            }
-                            else
-                            {
-                                MenuDashboardLogCollapsed = !MenuDashboardLogCollapsed;
-                                Preferences.Set("MenuDashboardLogCollapsed", MenuDashboardLogCollapsed);
+                                if (_touchWithinMenuDashboardToggle)
+                                {
+                                    MenuDashboardCollapsed = !MenuDashboardCollapsed;
+                                    Preferences.Set("MenuDashboardCollapsed", MenuDashboardCollapsed);
+                                }
+                                else
+                                {
+                                    MenuDashboardLogCollapsed = !MenuDashboardLogCollapsed;
+                                    Preferences.Set("MenuDashboardLogCollapsed", MenuDashboardLogCollapsed);
+                                }
                             }
                             _touchWithinMenuDashboardToggle = false;
                             _touchWithinMenuDashboardLogToggle = false;
@@ -23129,6 +23147,8 @@ namespace GnollHackX.Pages.Game
 
         private void ToggleMessageNumberButton_Clicked(object sender, EventArgs e)
         {
+            if (_performanceSuiteMode)
+                return;
             lock(_messageScrollLock)
             {
                 _messageScrollOffset = 0.0f;
@@ -24106,6 +24126,46 @@ namespace GnollHackX.Pages.Game
                 UpdateReplayPauseButton();
                 UpdateReplaySpeedButtons();
             }
+        }
+
+        /* Set for a game page a performance suite drives: the view is fixed at a canonical state the
+           viewer cannot change, and zoom is not saved to Preferences. UI thread only. */
+        private bool _performanceSuiteMode = false;
+
+        public void EnterPerformanceSuiteMode()
+        {
+            _performanceSuiteMode = true;
+            SetReplayControlsLocked(true);
+
+            ExitZoomMini();
+            if (ZoomAlternateMode)
+                ToggleZoomAlternateButton_Clicked(null, null);
+            if (MapNoClipMode)
+                ToggleAutoCenterModeButton_Clicked(null, null);
+            MapFontSize = DefaultMapFontSize;
+            MapFontAlternateSize = DefaultMapFontSize * GHConstants.MapFontRelativeAlternateSize;
+            MapFontMiniRelativeSize = 1.0f;
+            lock (_mapOffsetLock)
+            {
+                _mapOffsetX = 0;
+                _mapOffsetY = 0;
+                _mapMiniOffsetX = 0;
+                _mapMiniOffsetY = 0;
+            }
+            if (ForceAllMessages)
+                ForceAllMessages = false;
+            ShowExtendedStatusBar = false;
+            DebugDashboardCollapsed = false;
+            DebugDashboardLogCollapsed = false;
+            MenuDashboardCollapsed = false;
+            MenuDashboardLogCollapsed = false;
+
+            ToggleZoomMiniButton.IsEnabled = false;
+            ToggleZoomAlternateButton.IsEnabled = false;
+            ToggleAutoCenterModeButton.IsEnabled = false;
+            ToggleZoomMiniButton.Opacity = 0.5;
+            ToggleZoomAlternateButton.Opacity = 0.5;
+            ToggleAutoCenterModeButton.Opacity = 0.5;
         }
 
         private void ApplyReplayControlsLock()

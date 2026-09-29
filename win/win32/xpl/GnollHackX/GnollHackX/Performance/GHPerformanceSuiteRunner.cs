@@ -37,10 +37,14 @@ namespace GnollHackX.Performance
        300 s; no wait where the platform reports none), wait for a quiet system (at most
        120 s), then either seek the same game page back
        (shared) or close it and open a new one (fresh; the cool-down then happens on the
-       page below the game page). The replay header shows the run and its phase. The
-       background load sampler runs for the whole suite; the environment fingerprint is
-       captured at its start (CreateSuite), replaced once its first window is saved
-       (UpdateEnvironment), and captured again at its end (FinishSuite).
+       page below the game page). The replay header shows the run and its phase. Each game
+       page runs in performance suite mode (GamePage.EnterPerformanceSuiteMode): the view is
+       fixed at the device's default zoom with auto-center on and no overlays, and the viewer
+       cannot change it; the frame time profiler and the debug dashboard are on for the whole
+       suite, whatever the settings say. The background load sampler runs for the whole
+       suite; the environment fingerprint is captured at its start (CreateSuite), replaced
+       once its first window is saved (UpdateEnvironment), and captured again at its end
+       (FinishSuite).
 
        Everything runs on the UI thread as one async task. Every wait polls at least
        every 100 ms and aborts the suite when the replay ended (GHApp.GameStarted went
@@ -125,6 +129,8 @@ namespace GnollHackX.Performance
                 return "A performance suite is already running.";
 
             SuiteState s = new SuiteState();
+            /* Before the first environment capture, so every capture of the suite sees them */
+            ApplyOverrides(s);
             try
             {
                 s.Setup = setup;
@@ -164,12 +170,14 @@ namespace GnollHackX.Performance
             catch (Exception ex)
             {
                 ReleaseSampler(s);
+                RestoreOverrides(s);
                 Interlocked.Exchange(ref _isRunning, 0);
                 return "Could not create the performance suite: " + ex.Message;
             }
             if (string.IsNullOrEmpty(s.SuiteId))
             {
                 ReleaseSampler(s);
+                RestoreOverrides(s);
                 Interlocked.Exchange(ref _isRunning, 0);
                 return "Could not create the performance suite.";
             }
@@ -177,8 +185,6 @@ namespace GnollHackX.Performance
             Log("started " + s.SuiteId + " (" + s.Scenario + ", " + s.PageMode + ", " + setup.Runs + " runs"
                 + (setup.WarmUpRun ? " + warm-up" : "") + ")");
 
-            bool profilerWasEnabled = FrameTimeProfiler.IsEnabled;
-            FrameTimeProfiler.IsEnabled = true;
             bool aborted = false;
             string abortReason = null;
             try
@@ -210,9 +216,8 @@ namespace GnollHackX.Performance
                 {
                     Log("closing the game page failed: " + ex.Message);
                 }
-                FrameTimeProfiler.IsEnabled = profilerWasEnabled;
-                /* Re-read, WMI included, off the UI thread, with the profiler restored as
-                   it was at the suite-start capture */
+                /* Re-read, WMI included, off the UI thread, with the overrides still applied
+                   as they were at the suite-start capture */
                 Dictionary<string, string> fingerprintAtEnd = null;
                 try
                 {
@@ -231,6 +236,7 @@ namespace GnollHackX.Performance
                 {
                     Log("finishing " + s.SuiteId + " failed: " + ex.Message);
                 }
+                RestoreOverrides(s);
                 ReleaseSampler(s);
                 CurrentSuiteId = null;
                 Interlocked.Exchange(ref _isRunning, 0);
@@ -470,6 +476,7 @@ namespace GnollHackX.Performance
 
             s.PageBelow = GHApp.PageFromTopOfModalNavigationStack();
             GamePage page = new GamePage(mainPage);
+            page.EnterPerformanceSuiteMode();
             await GHApp.PushModalPageAsync(page);
             if (GHApp.PageFromTopOfModalNavigationStack() != page)
                 throw new SuiteAbortException("the game page could not be opened");
@@ -479,7 +486,6 @@ namespace GnollHackX.Performance
                start turn is 1 or less; otherwise one turn before the start turn, whose
                last turn then plays at normal speed */
             await page.StartReplay(s.ReplayPath, s.InitialFromTurn);
-            page.SetReplayControlsLocked(true);
             s.RunnerStopping = false;
             if (!GHApp.GameStarted || GHApp.StopReplay)
                 throw new SuiteAbortException("the replay could not be started");
@@ -614,6 +620,25 @@ namespace GnollHackX.Performance
             if (float.IsNaN(value) || float.IsInfinity(value))
                 return "?";
             return value.ToString("F0", CultureInfo.InvariantCulture);
+        }
+
+        /* The frame time profiler and the debug dashboard are on for the whole suite, whatever the
+           settings say; runtime only, nothing is saved */
+        private static void ApplyOverrides(SuiteState s)
+        {
+            FrameTimeProfiler.IsEnabled = true;
+            GHApp.ForceDebugScreenLogging = true;
+            s.OverridesApplied = true;
+        }
+
+        /* Returns the profiler to the Settings value and ends the dashboard override, once */
+        private static void RestoreOverrides(SuiteState s)
+        {
+            if (!s.OverridesApplied)
+                return;
+            s.OverridesApplied = false;
+            GHApp.ForceDebugScreenLogging = false;
+            FrameTimeProfiler.IsEnabled = GHApp.IsFrameTimeProfilerOn;
         }
 
         /* Releases the suite's sampler hold, once */
@@ -779,6 +804,7 @@ namespace GnollHackX.Performance
             public long InputRecordsAtWindowStart;     /* GHApp.ReplayInputRecordCount when the last window opened */
             public bool EnvironmentUpdated;            /* UpdateEnvironment has run after the first saved window */
 
+            public bool OverridesApplied;              /* ApplyOverrides has run and RestoreOverrides has not */
             public bool SamplerHeld;                   /* the suite's GHSystemLoadSampler acquire is outstanding */
             public Stopwatch SamplerClock;             /* started at that acquire */
             public string PendingNote;                 /* for the next run's context, e.g. a quiet gate timeout */

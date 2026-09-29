@@ -44,7 +44,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 btnSponsor.IsVisible = false;
             }
-            btnPerformanceSuite.IsVisible = GHApp.DeveloperMode && Preferences.Get("FrameTimeProfiler", false);
+            btnPerformanceSuite.IsVisible = GHApp.IsFrameTimeProfilerOn;
         }
 
         private async void btnCreditsX_Clicked(object sender, EventArgs e)
