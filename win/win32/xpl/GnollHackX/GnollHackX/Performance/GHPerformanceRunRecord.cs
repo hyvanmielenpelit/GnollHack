@@ -22,30 +22,33 @@ namespace GnollHackX.Performance
        "marks" array of the frames the user marked in the saved range, and a
        "background" block of the machine's load around the window (GHSystemLoadSampler).
 
-       BeginWindow and EndWindowAndSave bracket a measurement: BeginWindow remembers
+       TryBeginWindow and EndWindowAndSave bracket a measurement: TryBeginWindow remembers
        whether the frame timeline was already running, enables it, notes the first frame of
        the window, takes the first thermal reading and, on Windows, starts the render
        adapter probe; EndWindowAndSave takes the second reading, ends the probe, saves the
        window's frames (the JSON and the two CSV dumps), and restores the timeline to
-       whatever state it was in before BeginWindow. DiscardWindow ends a window without
-       saving it. BeginWindow and EndWindowAndSave have an overload
-       that takes or hands back a GHPerformanceRunContext/GHPerformanceRunResult for a
-       suite runner; the plain overloads are these with no context and the result
-       discarded. SaveRecent writes the same document from everything the timeline still
-       holds, with no window. BuildRecentHitchesReport renders the last seconds the
-       timeline holds as plain text instead, saving nothing. None of these throws.
+       whatever state it was in before TryBeginWindow. DiscardWindow ends a window without
+       saving it. TryBeginWindow names the window's owner (GHWindowOwner) and refuses
+       when GHWindowGate does, so one measurement never replaces another's window.
+       TryBeginWindow takes a GHPerformanceRunContext, and EndWindowAndSave has an
+       overload that hands back a GHPerformanceRunResult, for a suite runner; the plain
+       overload discards the result. SaveRecent writes the same document from everything
+       the timeline still holds, with no window. BuildRecentHitchesReport renders the last
+       seconds the timeline holds as plain text instead, saving nothing. None of these
+       throws.
 
        Window commands let a script bracket a window without touching the device: while
        the timeline is enabled the app polls ExportDirectory for window.cmd, and on Android
        also receives them as a broadcast (PresentFeedbackAndroid). HandleCommand describes
        the syntax. After a commanded window is saved, window.done in the same directory
-       names the record's JSON file.
+       names the record's JSON file; a begin the window gate refuses writes window.refused
+       there instead, naming the reason.
 
        Must compile under C# 7.3 (the legacy netstandard2.0 project). */
     /* A performance suite's run-level context, folded into a saved record's "suite"
        object and consulted for the run result's ExcludedReason. TurnReached and
        ExcludedReason are meant to be set by the caller on the same instance passed to
-       BeginWindow, any time before EndWindowAndSave: ExcludedReason preset here (e.g.
+       TryBeginWindow, any time before EndWindowAndSave: ExcludedReason preset here (e.g.
        "warm-up run", "replay ended") always wins over the reasons EndWindowAndSave
        derives on its own (throttling, a power state change, too few on-screen
        intervals). */
@@ -84,9 +87,11 @@ namespace GnollHackX.Performance
 
         public const string CommandFileName = "window.cmd";
         public const string DoneFileName = "window.done";
+        public const string RefusedFileName = "window.refused";
         private const int CommandPollMs = 500;
 
         private static int _windowOpen = 0;
+        private static GHWindowOwner _windowOwner = GHWindowOwner.None;   /* main thread only */
         private static string _scenario = "";
         private static string _arm = "";
         private static bool _wasTimelineEnabledBeforeWindow;
@@ -94,7 +99,7 @@ namespace GnollHackX.Performance
         private static DateTime _startedUtc;
         private static long _windowFromFrameId = 1;
         private static GHPerformanceRunContext _context = null;
-        private static long _windowStartTicks;         /* DateTime.UtcNow.Ticks at BeginWindow */
+        private static long _windowStartTicks;         /* DateTime.UtcNow.Ticks at TryBeginWindow */
         private static int _windowSamplerHeld = 0;     /* 1 while the window's sampler acquire is outstanding */
 
 #if GNH_MAUI && WINDOWS
@@ -133,6 +138,14 @@ namespace GnollHackX.Performance
         };
 
         public static bool IsWindowOpen { get { return Interlocked.CompareExchange(ref _windowOpen, 0, 0) != 0; } }
+
+        /* True while a window command is scheduled and its window has not begun */
+        public static bool IsWindowCommandPending { get { return Volatile.Read(ref _windowPhase) == 1; } }
+
+        private static bool IsSuiteOrDiagnosticRunning
+        {
+            get { return GHPerformanceSuiteRunner.IsRunning || GHPerformanceDiagnosticRunner.IsRunning; }
+        }
 
         public static string CurrentScenario { get { return _scenario; } }
 
@@ -179,26 +192,31 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* Starts a measurement window: holds the background load sampler until the window
-           ends, remembers whether the frame timeline was already enabled, enables it, notes
-           the window's first frame, restarts the UI thread probe's statistics, reads the
+        /* Why a window for owner may not begin now (GHWindowGate.BeginRefusal over the
+           current state), or null when it may. Call on the UI thread. */
+        public static string BeginRefusal(GHWindowOwner owner)
+        {
+            return GHWindowGate.BeginRefusal(owner, IsWindowOpen, IsWindowCommandPending, IsSuiteOrDiagnosticRunning);
+        }
+
+        /* Starts a measurement window owned by owner, unless the window gate refuses it
+           (BeginRefusal): holds the background load sampler until the window ends,
+           remembers whether the frame timeline was already enabled, enables it, notes the
+           window's first frame, restarts the UI thread probe's statistics, reads the
            thermal state, notes the start time and, once the window is open, starts the
            Windows render adapter probe's Begin on the thread pool without waiting for it.
            It never collects the per-process interval: callers start that on the thread
-           pool before calling this (GHSystemLoadSampler.StartProcessIntervalAsync). A
-           second call while a window is open replaces it; the new probe Begin restarts
-           the replaced window's probe interval. */
-        public static void BeginWindow(string scenario, string arm)
+           pool before calling this (GHSystemLoadSampler.StartProcessIntervalAsync).
+           context, null when there is none, is remembered by reference: fields the caller
+           sets on it up to EndWindowAndSave (TurnReached, ExcludedReason) are included in
+           the saved record's "suite" object and in the run result's ExcludedReason.
+           Call on the UI thread. False when refused or when the window could not be
+           opened; never throws. */
+        public static bool TryBeginWindow(string scenario, string arm, GHPerformanceRunContext context,
+            GHWindowOwner owner)
         {
-            BeginWindow(scenario, arm, null);
-        }
-
-        /* Same as BeginWindow(scenario, arm), but also remembers a suite run context by
-           reference: fields the caller sets on it up to EndWindowAndSave (TurnReached,
-           ExcludedReason) are included in the saved record's "suite" object and in the
-           run result's ExcludedReason. */
-        public static void BeginWindow(string scenario, string arm, GHPerformanceRunContext context)
-        {
+            if (BeginRefusal(owner) != null)
+                return false;
             try
             {
                 AcquireWindowSampler();
@@ -213,21 +231,25 @@ namespace GnollHackX.Performance
                 _thermalBefore = GHThermalProbe.Read();
                 _startedUtc = DateTime.UtcNow;
                 _windowStartTicks = _startedUtc.Ticks;
+                _windowOwner = owner;
                 Interlocked.Exchange(ref _windowOpen, 1);
                 StartAdapterProbe();
+                return true;
             }
             catch
             {
                 _context = null;
+                _windowOwner = GHWindowOwner.None;
                 Interlocked.Exchange(ref _windowOpen, 0);
                 ReleaseWindowSampler();
                 AbandonAdapterProbe();
+                return false;
             }
         }
 
         /* Queues the render adapter probe's Begin for the window that just opened; a
-           Begin still outstanding from a replaced window is superseded, since Begin
-           restarts the interval. Windows only; never throws. */
+           Begin still outstanding is superseded, since Begin restarts the interval.
+           Windows only; never throws. */
         private static void StartAdapterProbe()
         {
 #if GNH_MAUI && WINDOWS
@@ -276,7 +298,7 @@ namespace GnollHackX.Performance
         }
 
         /* Ends the probe of a window that closes without reaching EndAdapterProbe
-           (discarded, lost to a failed BeginWindow, or a save that threw first), without
+           (discarded, lost to a failed TryBeginWindow, or a save that threw first), without
            waiting, so its PDH query closes. Windows only; never throws. */
         private static void AbandonAdapterProbe()
         {
@@ -319,7 +341,7 @@ namespace GnollHackX.Performance
 #endif
 
         /* At most one sampler acquire is outstanding for the window, whatever the
-           sequence of BeginWindow, EndWindowAndSave and cancellations; none is taken
+           sequence of TryBeginWindow, EndWindowAndSave and cancellations; none is taken
            while the sampler is disabled, since Acquire then counts nothing */
         private static void AcquireWindowSampler()
         {
@@ -353,7 +375,7 @@ namespace GnollHackX.Performance
            always did. Once the window has closed, the per-process interval is ended, the
            window's background report built from the sampler, and on Windows the render
            adapter probe ended before the record is built, waiting at most 3 s in all; the
-           sampler hold taken by BeginWindow is released and the probe ended whatever
+           sampler hold taken by TryBeginWindow is released and the probe ended whatever
            happens. */
         public static string EndWindowAndSave(string directory, out GHPerformanceRunResult result)
         {
@@ -362,6 +384,7 @@ namespace GnollHackX.Performance
                 return null;
             GHPerformanceRunContext context = _context;
             _context = null;
+            _windowOwner = GHWindowOwner.None;
             try
             {
                 long windowEndTicks = DateTime.UtcNow.Ticks;
@@ -393,6 +416,7 @@ namespace GnollHackX.Performance
             if (Interlocked.CompareExchange(ref _windowOpen, 0, 1) != 1)
                 return false;
             _context = null;
+            _windowOwner = GHWindowOwner.None;
             try
             {
                 RestoreTimeline();
@@ -537,7 +561,7 @@ namespace GnollHackX.Performance
                 summary, series, timelineCsvName, compositorCsvName, context, BuildMarks(recordBuffer, n), background);
 
             string json = JsonConvert.SerializeObject(doc, _jsonSettings);
-            File.WriteAllText(jsonPath, json + Environment.NewLine, new UTF8Encoding(false));
+            GHAtomicFile.WriteAllText(jsonPath, json + Environment.NewLine, null);
 
             result = new GHPerformanceRunResult();
             result.JsonPath = jsonPath;
@@ -770,10 +794,14 @@ namespace GnollHackX.Performance
         /* Runs a window command on the main thread. One line of space-separated tokens:
              begin <scenario> <arm> <delaySeconds> <windowSeconds>
                  open a window after the delay, save it after the window, and write
-                 window.done naming the saved JSON into ExportDirectory
+                 window.done naming the saved JSON into ExportDirectory; when the
+                 window gate refuses the command or its window (a suite or in-game test
+                 is running, or another measurement's window is open), write
+                 window.refused with the reason there instead
              end      save the open window now
              cancel   drop a scheduled or open window without saving
-           Unknown or malformed input is ignored. */
+           end and cancel only ever end or discard a window a command began. Unknown or
+           malformed input is ignored. */
         public static void HandleCommand(string line)
         {
             try
@@ -789,7 +817,7 @@ namespace GnollHackX.Performance
                         tokens.Length > 4 ? ParseSeconds(tokens[4], 60) : 60);
                     break;
                 case "end":
-                    if (_windowPhase == 2)
+                    if (_windowPhase == 2 && GHWindowGate.CommandOwnsWindow(_windowOwner))
                     {
                         StopWindowTimer();
                         SaveCommandedWindow();
@@ -823,8 +851,16 @@ namespace GnollHackX.Performance
             return (int)Math.Max(0, Math.Round(seconds * 1000.0));
         }
 
+        /* Replaces a scheduled or open command window with a new schedule, unless the
+           window gate refuses the command */
         private static void ScheduleWindow(string scenario, string arm, double delaySeconds, double windowSeconds)
         {
+            string refusal = GHWindowGate.ScheduleRefusal(IsWindowOpen, _windowOwner, IsSuiteOrDiagnosticRunning);
+            if (refusal != null)
+            {
+                WriteRefusedNotice(scenario, refusal);
+                return;
+            }
             CancelWindowCommand();
             int generation = Interlocked.Increment(ref _windowGeneration);
             _scheduledScenario = scenario;
@@ -835,11 +871,14 @@ namespace GnollHackX.Performance
         }
 
         /* Runs on the thread pool. Before a window begins, the per-process interval's
-           begin collect runs here, so the main thread never waits for it. */
+           begin collect runs here, so the main thread never waits for it; it is skipped
+           while a suite or in-game test runs, whose own interval it would restart, and
+           whose run refuses the window anyway. */
         private static void OnWindowTimer(object state)
         {
             int generation = (int)state;
-            if (Volatile.Read(ref _windowPhase) == 1 && generation == Volatile.Read(ref _windowGeneration))
+            if (Volatile.Read(ref _windowPhase) == 1 && generation == Volatile.Read(ref _windowGeneration)
+                && !IsSuiteOrDiagnosticRunning)
             {
                 try
                 {
@@ -856,8 +895,14 @@ namespace GnollHackX.Performance
                 return;
             if (_windowPhase == 1)
             {
-                BeginWindow(_scheduledScenario, _scheduledArm);
-                if (!IsWindowOpen)
+                string refusal = BeginRefusal(GHWindowOwner.Command);
+                if (refusal != null)
+                {
+                    CancelWindowCommand();
+                    WriteRefusedNotice(_scheduledScenario, refusal);
+                    return;
+                }
+                if (!TryBeginWindow(_scheduledScenario, _scheduledArm, null, GHWindowOwner.Command))
                 {
                     CancelWindowCommand();
                     return;
@@ -876,6 +921,8 @@ namespace GnollHackX.Performance
         private static void SaveCommandedWindow()
         {
             _windowPhase = 0;
+            if (!GHWindowGate.CommandOwnsWindow(_windowOwner))
+                return;
             string directory = ExportDirectory;
             string jsonPath = EndWindowAndSave(directory);
             if (jsonPath == null)
@@ -900,14 +947,28 @@ namespace GnollHackX.Performance
                 timer.Dispose();
         }
 
-        /* Drops a scheduled window, and discards an open one that a command began */
+        /* Drops a scheduled window, and discards an open one that a command began; a
+           window another owner opened, and its run context, are left alone */
         private static void CancelWindowCommand()
         {
             StopWindowTimer();
-            if (_windowPhase == 2)
+            if (_windowPhase == 2 && GHWindowGate.CommandOwnsWindow(_windowOwner))
                 DiscardWindow();
-            _context = null;
             _windowPhase = 0;
+        }
+
+        /* Writes window.refused into ExportDirectory: the refused scenario and the reason */
+        private static void WriteRefusedNotice(string scenario, string reason)
+        {
+            try
+            {
+                File.WriteAllText(Path.Combine(ExportDirectory, RefusedFileName),
+                    (scenario ?? "") + ": " + reason + Environment.NewLine, new UTF8Encoding(false));
+            }
+            catch
+            {
+                /* The refusal stands; only the notice is missing */
+            }
         }
 
         private static void PostToMainThread(Action action)

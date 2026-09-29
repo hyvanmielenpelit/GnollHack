@@ -617,6 +617,8 @@ namespace GnollHackX.Pages.MainScreen
             item.SizeText = FormatSize(info.SizeBytes);
 
             List<string> markers = new List<string>();
+            if (info.Unreadable)
+                markers.Add("unreadable");
             if (info.IdMismatch)
                 markers.Add("invalid id");
             if (info.IsBaseline)
@@ -770,12 +772,27 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             ResultButtonsLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            bool ok = false;
             try
             {
-                ok = GHPerformanceSuiteStore.SetBaseline(item.SuiteId);
+                string error;
+                bool ok = GHPerformanceSuiteStore.SetBaseline(item.SuiteId, out error);
+                if (!ok && string.Equals(error, GHPerformanceSuiteStore.BaselinesUnreadableError,
+                    StringComparison.Ordinal))
+                {
+                    bool startNew = await GHApp.DisplayMessageBox(this, "Baselines Unreadable",
+                        "baselines.json cannot be read. Start a new one? The unreadable file is kept as "
+                        + "baselines.json.corrupt-<yyyyMMddTHHmmssZ>.", "Yes", "No");
+                    if (!startNew)
+                        return;
+                    if (!GHPerformanceSuiteStore.ResetCorruptBaselines())
+                        error = "baselines.json could not be set aside.";
+                    else
+                        ok = GHPerformanceSuiteStore.SetBaseline(item.SuiteId, out error);
+                }
                 if (!ok)
-                    await GHApp.DisplayMessageBox(this, "Set Baseline Failed", "GnollHack could not set this suite as the baseline.", "OK");
+                    await GHApp.DisplayMessageBox(this, "Set Baseline Failed",
+                        string.IsNullOrEmpty(error) ? "GnollHack could not set this suite as the baseline." : error,
+                        "OK");
             }
             finally
             {
@@ -805,7 +822,7 @@ namespace GnollHackX.Pages.MainScreen
                     string archiveDir = Path.Combine(GHApp.GHPath, GHConstants.ArchiveDirectory);
                     GHApp.CheckCreateDirectory(archiveDir);
                     string filePath = Path.Combine(archiveDir, "comparison_" + item.SuiteId + ".txt");
-                    File.WriteAllText(filePath, reportText, new UTF8Encoding(false));
+                    GHAtomicFile.WriteAllText(filePath, reportText, null);
 
                     var displFilePage = new DisplayFilePage(filePath, "Comparison - " + item.LabelText, GHPerformanceTextReport.MaxLineWidth, true);
                     string errormsg;

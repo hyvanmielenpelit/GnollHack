@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 #if GNH_MAUI
@@ -51,6 +52,8 @@ namespace GnollHackX.Performance
         public bool HasBackgroundExclusion;       /* a run was excluded for background load */
         public bool EnvironmentChanged;           /* the environment changed during the suite */
         public bool IdMismatch;                   /* the manifest's suiteId differs from the folder name, SuiteId */
+        public bool Unreadable;                   /* suite.json is missing or cannot be parsed; only SuiteId, Directory,
+                                                     StartedUtc (the folder's last write) and SizeBytes are set */
     }
 
     /* What ImportZip hands back: the suite ids it moved into the store, the ones already
@@ -78,7 +81,16 @@ namespace GnollHackX.Performance
 
        A suite's id is its folder name, and every suite path is resolved through
        GHPerformanceSuiteId; a suite whose manifest suiteId differs from its folder is
-       listed with IdMismatch set and can only be deleted.
+       listed with IdMismatch set, one whose manifest cannot be read with Unreadable set,
+       and either can only be deleted.
+
+       suite.json, report.txt and baselines.json are written through GHAtomicFile, so a
+       crash never leaves one half written. Before baselines.json is replaced, a copy
+       of it that parsed is kept as baselines.json.bak; when baselines.json does not
+       parse, the backup is read instead, and when neither does, setting a baseline is
+       refused until ResetCorruptBaselines sets the unreadable file aside. The first
+       ListSuites of a process deletes temp files older than StaleTempMaxAge left by a
+       killed process.
 
        Every public member catches its own exceptions and fails soft (null, false, or an
        empty result) rather than throwing; manifest reads, edits and writes are serialized
@@ -130,7 +142,25 @@ namespace GnollHackX.Performance
         private const string ImportStagingPrefix = "import_";
         private const string ShareZipPrefix = "GnollHack_Performance_";
 
+        /* SetBaseline's error when baselines.json and its backup cannot be read; the page
+           then offers ResetCorruptBaselines */
+        public const string BaselinesUnreadableError = "baselines.json cannot be read.";
+
+        private static readonly TimeSpan StaleTempMaxAge = TimeSpan.FromHours(1);
+
+        /* How baselines.json was read: Recovered means it did not parse and its backup
+           was read instead */
+        private enum BaselinesState
+        {
+            Missing,
+            Ok,
+            Recovered,
+            Corrupt
+        }
+
         private static readonly object _lock = new object();
+        private static int _staleTempsDeleted = 0;          /* 1 once the first ListSuites has deleted stale temps */
+        private static int _baselinesRecoveryLogged = 0;    /* 1 once reading the backup has been logged */
 
         private static readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
         {
@@ -384,19 +414,27 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* Every suite under SuitesDirectory that can be read, newest StartedUtc first;
-           an unreadable folder is skipped rather than failing the whole listing. */
+        /* Every suite under SuitesDirectory whose folder name is a valid suite id, newest
+           StartedUtc first; one whose manifest cannot be read is listed with Unreadable
+           set, and a folder that fails otherwise is skipped rather than failing the whole
+           listing. The first call of a process also deletes the temp files older than
+           StaleTempMaxAge in RootDirectory and in every suite folder. */
         public static List<GHPerformanceSuiteInfo> ListSuites()
         {
             List<GHPerformanceSuiteInfo> list = new List<GHPerformanceSuiteInfo>();
             try
             {
+                bool deleteStaleTemps = Interlocked.Exchange(ref _staleTempsDeleted, 1) == 0;
+                if (deleteStaleTemps)
+                    GHAtomicFile.DeleteStaleTemps(RootDirectory, DateTime.UtcNow, StaleTempMaxAge);
                 string root = SuitesDirectory;
                 if (!Directory.Exists(root))
                     return list;
                 string[] dirs = Directory.GetDirectories(root);
                 for (int i = 0; i < dirs.Length; i++)
                 {
+                    if (deleteStaleTemps)
+                        GHAtomicFile.DeleteStaleTemps(dirs[i], DateTime.UtcNow, StaleTempMaxAge);
                     GHPerformanceSuiteInfo info = TryBuildSuiteInfo(dirs[i]);
                     if (info != null)
                         list.Add(info);
@@ -459,9 +497,12 @@ namespace GnollHackX.Performance
                 suite.Previous = FindPreviousSuite(suite, manifest.ComparabilityKey);
                 string text = GHPerformanceTextReport.SuiteReport(suite);
                 string path = Path.Combine(dir, ReportFileName);
-                if (!Directory.Exists(dir))
-                    GHApp.CheckCreateDirectory(dir);
-                File.WriteAllText(path, text, new UTF8Encoding(false));
+                lock (_lock)
+                {
+                    if (!Directory.Exists(dir))
+                        GHApp.CheckCreateDirectory(dir);
+                    GHAtomicFile.WriteAllText(path, text, null);
+                }
                 return path;
             }
             catch
@@ -471,10 +512,14 @@ namespace GnollHackX.Performance
         }
 
         /* Records this suite's arm label as the baseline for its comparability key.
-           False when the suite has no manifest, no setup or no comparabilityKey yet
-           (i.e. it has not been finished), or when its manifest suiteId differs. */
-        public static bool SetBaseline(string suiteId)
+           False, with a short sentence in error, when the suite cannot be read (no
+           manifest, an unreadable one, or a manifest suiteId that differs), has no setup
+           or no comparabilityKey yet (i.e. it has not been finished), when baselines.json
+           and its backup cannot be read (error is then BaselinesUnreadableError), or when
+           the file cannot be written. */
+        public static bool SetBaseline(string suiteId, out string error)
         {
+            error = null;
             try
             {
                 ManifestJson manifest;
@@ -483,19 +528,65 @@ namespace GnollHackX.Performance
                 {
                     manifest = ReadSuiteManifest(suiteId, out dir);
                 }
-                if (manifest == null || manifest.Setup == null || string.IsNullOrEmpty(manifest.ComparabilityKey))
+                if (manifest == null)
+                {
+                    error = "This suite could not be read.";
                     return false;
+                }
+                if (manifest.Setup == null || string.IsNullOrEmpty(manifest.ComparabilityKey))
+                {
+                    error = "This suite has no comparability key yet.";
+                    return false;
+                }
 
                 lock (_lock)
                 {
-                    BaselinesJson baselines = ReadBaselines();
+                    BaselinesState state;
+                    BaselinesJson baselines = ReadBaselines(out state);
+                    if (state == BaselinesState.Corrupt)
+                    {
+                        error = BaselinesUnreadableError;
+                        return false;
+                    }
                     baselines.Baselines[manifest.ComparabilityKey] = manifest.Setup.ArmLabel;
-                    WriteBaselines(baselines);
+                    WriteBaselines(baselines, state == BaselinesState.Ok);
                 }
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                error = "The baseline could not be saved: " + ex.Message;
+                return false;
+            }
+        }
+
+        /* Sets an unreadable baselines.json aside as
+           baselines.json.corrupt-<yyyyMMddTHHmmssZ>, so the next SetBaseline starts a new
+           file. True when the file was set aside or baselines.json is no longer
+           unreadable; false when it could not be renamed. */
+        public static bool ResetCorruptBaselines()
+        {
+            try
+            {
+                lock (_lock)
+                {
+                    BaselinesState state;
+                    ReadBaselines(out state);
+                    if (state != BaselinesState.Corrupt)
+                        return true;
+                    string path = BaselinesPath;
+                    if (!File.Exists(path))
+                        return true;
+                    string kept = path + GHAtomicFile.CorruptMarker
+                        + DateTime.UtcNow.ToString("yyyyMMdd'T'HHmmss'Z'", CultureInfo.InvariantCulture);
+                    File.Move(path, kept);
+                    Log(BaselinesFileName + " could not be read; kept as " + Path.GetFileName(kept));
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("setting aside " + BaselinesFileName + " failed: " + ex.Message);
                 return false;
             }
         }
@@ -504,6 +595,15 @@ namespace GnollHackX.Performance
            is set. */
         public static string GetBaselineLabel(string comparabilityKey)
         {
+            BaselinesState state;
+            return GetBaselineLabel(comparabilityKey, out state);
+        }
+
+        /* Same as GetBaselineLabel(comparabilityKey), with how baselines.json was read:
+           Corrupt when it and its backup cannot be read */
+        private static string GetBaselineLabel(string comparabilityKey, out BaselinesState state)
+        {
+            state = BaselinesState.Missing;
             if (string.IsNullOrEmpty(comparabilityKey))
                 return null;
             try
@@ -511,7 +611,7 @@ namespace GnollHackX.Performance
                 BaselinesJson baselines;
                 lock (_lock)
                 {
-                    baselines = ReadBaselines();
+                    baselines = ReadBaselines(out state);
                 }
                 string label;
                 return baselines.Baselines.TryGetValue(comparabilityKey, out label) ? label : null;
@@ -525,9 +625,10 @@ namespace GnollHackX.Performance
         /* Compares this suite's arm against the recorded baseline arm for its
            comparability key, over every finished suite that shares the key and was
            measured on this suite's hardware (SameDevice). Refuses (returns false, with a
-           short sentence in refusal) when the suite has not finished, no baseline is set
-           for its key, the suite's own label is the baseline label, the baseline arm has
-           no used runs on this device, or either arm has no used runs. The report also
+           short sentence in refusal) when the suite cannot be read or has not finished,
+           no baseline is set for its key (or baselines.json cannot be read), the
+           suite's own label is the baseline label, the baseline arm has no used runs on
+           this device, or either arm has no used runs. The report also
            carries each arm's pooled fingerprint and the comparison recomputed without
            the runs whose background verdict was elevated. */
         public static bool TryCompareWithBaseline(string suiteId, out GHComparisonResult result, out string reportText, out string refusal)
@@ -561,10 +662,14 @@ namespace GnollHackX.Performance
                     return false;
                 }
 
-                string baselineLabel = GetBaselineLabel(key);
+                BaselinesState baselinesState;
+                string baselineLabel = GetBaselineLabel(key, out baselinesState);
                 if (string.IsNullOrEmpty(baselineLabel))
                 {
-                    refusal = "No baseline is set for this suite's comparability group.";
+                    refusal = baselinesState == BaselinesState.Corrupt
+                        ? BaselinesFileName + " cannot be read, so no baseline is known. "
+                            + "Set a baseline to start a new one."
+                        : "No baseline is set for this suite's comparability group.";
                     return false;
                 }
                 if (string.Equals(baselineLabel, label, StringComparison.Ordinal))
@@ -713,8 +818,11 @@ namespace GnollHackX.Performance
 
         /* Zips every listed suite's directory (report.txt written first if missing, and
            a comparison.txt added when TryCompareWithBaseline succeeds for it) into
-           GHPath/archive/GnollHack_Performance_<device>_<timestamp>.zip. Returns the zip
-           path, or null on failure. The caller shares it through GHApp.ShareFile. */
+           GHPath/archive/GnollHack_Performance_<device>_<timestamp>.zip, leaving out
+           temp, backup and set-aside corrupt files (GHAtomicFile.IsTransientName) and
+           every suite that cannot be read. Returns the zip path, or null on failure or
+           when no listed suite could be read. The caller shares it through
+           GHApp.ShareFile. */
         public static string BuildShareZip(IList<string> suiteIds)
         {
             if (suiteIds == null || suiteIds.Count == 0)
@@ -731,6 +839,7 @@ namespace GnollHackX.Performance
                 if (File.Exists(zipPath))
                     File.Delete(zipPath);
 
+                int sharedSuites = 0;
                 using (ZipArchive archive = ZipFile.Open(zipPath, ZipArchiveMode.Create))
                 {
                     for (int i = 0; i < suiteIds.Count; i++)
@@ -746,12 +855,15 @@ namespace GnollHackX.Performance
                             continue;
 
                         WriteReport(suiteId);
+                        sharedSuites++;
 
                         string[] files = Directory.GetFiles(dir);
                         for (int f = 0; f < files.Length; f++)
                         {
-                            string entryName = suiteId + "/" + Path.GetFileName(files[f]);
-                            archive.CreateEntryFromFile(files[f], entryName);
+                            string fileName = Path.GetFileName(files[f]);
+                            if (GHAtomicFile.IsTransientName(fileName))
+                                continue;
+                            archive.CreateEntryFromFile(files[f], suiteId + "/" + fileName);
                         }
 
                         GHComparisonResult comparison;
@@ -768,6 +880,11 @@ namespace GnollHackX.Performance
                             }
                         }
                     }
+                }
+                if (sharedSuites == 0)
+                {
+                    File.Delete(zipPath);
+                    return null;
                 }
                 return zipPath;
             }
@@ -1026,7 +1143,7 @@ namespace GnollHackX.Performance
         /* ---- reading suites back out ---- */
 
         /* The suite in dir, identified by its folder name; null when that name is not a
-           valid suite id or the manifest cannot be read */
+           valid suite id; an entry with Unreadable set when the manifest cannot be read */
         private static GHPerformanceSuiteInfo TryBuildSuiteInfo(string dir)
         {
             try
@@ -1040,7 +1157,7 @@ namespace GnollHackX.Performance
                     manifest = ReadManifest(dir);
                 }
                 if (manifest == null)
-                    return null;
+                    return BuildUnreadableSuiteInfo(folder, dir);
 
                 GHPerformanceSuiteInfo info = new GHPerformanceSuiteInfo();
                 info.SuiteId = folder;
@@ -1083,6 +1200,27 @@ namespace GnollHackX.Performance
             {
                 return null;
             }
+        }
+
+        /* A suite whose manifest cannot be read: listed so that it can be deleted, dated
+           by its folder's last write */
+        private static GHPerformanceSuiteInfo BuildUnreadableSuiteInfo(string folder, string dir)
+        {
+            GHPerformanceSuiteInfo info = new GHPerformanceSuiteInfo();
+            info.SuiteId = folder;
+            info.Directory = dir;
+            info.Unreadable = true;
+            info.MedianHitchRatioMsPerSec = double.NaN;
+            try
+            {
+                info.StartedUtc = Directory.GetLastWriteTimeUtc(dir);
+            }
+            catch
+            {
+                info.StartedUtc = DateTime.MinValue;
+            }
+            info.SizeBytes = DirectorySizeBytes(dir);
+            return info;
         }
 
         /* A used run: not the warm-up run, no exclusion reason, and a summary */
@@ -1627,7 +1765,8 @@ namespace GnollHackX.Performance
             }
         }
 
-        /* Extracts every file of every valid folder into stagingDir, refusing to write
+        /* Extracts every file of every valid folder into stagingDir, except temp, backup
+           and set-aside corrupt files (GHAtomicFile.IsTransientName), refusing to write
            outside it even if an entry's name would otherwise resolve there. */
         private static void ExtractFolders(string zipPath, Dictionary<string, List<string>> byFolder,
             List<string> validFolders, string stagingDir)
@@ -1645,6 +1784,8 @@ namespace GnollHackX.Performance
                     for (int f = 0; f < files.Count; f++)
                     {
                         string file = files[f];
+                        if (GHAtomicFile.IsTransientName(file))
+                            continue; /* a temp, backup or set-aside corrupt file */
                         ZipArchiveEntry entry = archive.GetEntry(folder + "/" + file);
                         if (entry == null)
                             continue;
@@ -1716,7 +1857,7 @@ namespace GnollHackX.Performance
         private static void WriteManifestToPath(string path, ManifestJson manifest)
         {
             string json = JsonConvert.SerializeObject(manifest, _jsonSettings);
-            File.WriteAllText(path, json, new UTF8Encoding(false));
+            GHAtomicFile.WriteAllText(path, json, null);
         }
 
         private static string BaselinesPath
@@ -1724,24 +1865,67 @@ namespace GnollHackX.Performance
             get { return Path.Combine(RootDirectory, BaselinesFileName); }
         }
 
-        private static BaselinesJson ReadBaselines()
+        private static string BaselinesBackupPath
+        {
+            get { return BaselinesPath + GHAtomicFile.BackupSuffix; }
+        }
+
+        /* baselines.json, with state saying how it was read: Missing (no file; empty
+           baselines), Ok, Recovered (it did not parse, and baselines.json.bak was read
+           instead) or Corrupt (neither parsed; empty baselines). Never throws. */
+        private static BaselinesJson ReadBaselines(out BaselinesState state)
         {
             try
             {
                 string path = BaselinesPath;
                 if (!File.Exists(path))
+                {
+                    state = BaselinesState.Missing;
                     return NewBaselines();
+                }
+                BaselinesJson baselines = TryParseBaselines(path);
+                if (baselines != null)
+                {
+                    state = BaselinesState.Ok;
+                    return baselines;
+                }
+                baselines = TryParseBaselines(BaselinesBackupPath);
+                if (baselines != null)
+                {
+                    if (Interlocked.Exchange(ref _baselinesRecoveryLogged, 1) == 0)
+                        Log(BaselinesFileName + " could not be read; using "
+                            + BaselinesFileName + GHAtomicFile.BackupSuffix);
+                    state = BaselinesState.Recovered;
+                    return baselines;
+                }
+                state = BaselinesState.Corrupt;
+                return NewBaselines();
+            }
+            catch
+            {
+                state = BaselinesState.Corrupt;
+                return NewBaselines();
+            }
+        }
+
+        /* The baselines file at path; null when it is missing or does not parse */
+        private static BaselinesJson TryParseBaselines(string path)
+        {
+            try
+            {
+                if (!File.Exists(path))
+                    return null;
                 string json = File.ReadAllText(path, Encoding.UTF8);
                 BaselinesJson baselines = JsonConvert.DeserializeObject<BaselinesJson>(json, _jsonSettings);
                 if (baselines == null)
-                    return NewBaselines();
+                    return null;
                 if (baselines.Baselines == null)
                     baselines.Baselines = new Dictionary<string, string>();
                 return baselines;
             }
             catch
             {
-                return NewBaselines();
+                return null;
             }
         }
 
@@ -1753,11 +1937,25 @@ namespace GnollHackX.Performance
             return baselines;
         }
 
-        private static void WriteBaselines(BaselinesJson baselines)
+        /* Replaces baselines.json; with backupCurrent, the current file, which must have
+           parsed, is first kept as baselines.json.bak */
+        private static void WriteBaselines(BaselinesJson baselines, bool backupCurrent)
         {
             GHApp.CheckCreateDirectory(RootDirectory);
             string json = JsonConvert.SerializeObject(baselines, _jsonSettings);
-            File.WriteAllText(BaselinesPath, json, new UTF8Encoding(false));
+            GHAtomicFile.WriteAllText(BaselinesPath, json, backupCurrent ? BaselinesBackupPath : null);
+        }
+
+        private static void Log(string text)
+        {
+            try
+            {
+                GHApp.MaybeWriteGHLog("Performance suite store: " + text);
+            }
+            catch
+            {
+                /* Logging must never break the store */
+            }
         }
 
         /* ---- small shared helpers ---- */

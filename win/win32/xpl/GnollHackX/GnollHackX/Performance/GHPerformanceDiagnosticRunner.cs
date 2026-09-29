@@ -25,8 +25,8 @@ namespace GnollHackX.Performance
 
        RunAsync runs on the UI thread as one async task:
          1. Refuses on the host page when the frame timeline is off, a test, suite or
-            measurement window is already running, the game has ended, or the platform
-            render loop is off.
+            measurement window is already running, a window command is pending, the game
+            has ended, or the platform render loop is off.
          2. Asks for confirmation on the host page. On OK: holds the background load
             sampler (so the pre-window has samples), starts the countdown and closes
             the menu.
@@ -34,7 +34,8 @@ namespace GnollHackX.Performance
             outside the window; starts the per-process interval on the thread pool,
             waits for its begin collect at most ProcessIntervalBeginWaitMs, then opens
             the measurement window, which on Windows also starts the render adapter
-            probe (GHPerformanceRunRecord.BeginWindow).
+            probe (GHPerformanceRunRecord.TryBeginWindow). A window the window gate
+            refuses aborts the test with "another measurement is in progress".
          4. Measures for WindowSeconds, polling every 100 ms for an abort: the app went
             to the background, a page opened over the game page, or the game ended.
             An aborted window is discarded unsaved and no report is written; the
@@ -130,7 +131,7 @@ namespace GnollHackX.Performance
                 return "The performance test needs the frame timeline. Turn on Settings > Frame Time Profiler first.";
             if (GHPerformanceSuiteRunner.IsRunning)
                 return "A performance suite is running.";
-            if (GHPerformanceRunRecord.IsWindowOpen)
+            if (GHPerformanceRunRecord.IsWindowOpen || GHPerformanceRunRecord.IsWindowCommandPending)
                 return "Another performance measurement is running.";
             if (gamePage.GameEnded || !GHApp.GameStarted)
                 return "The game has ended.";
@@ -247,8 +248,9 @@ namespace GnollHackX.Performance
 
             GHPerformanceRunContext ctx = new GHPerformanceRunContext();
             ctx.Notes = "in-game performance test";
-            GHPerformanceRunRecord.BeginWindow(ScenarioName, ArmName, ctx);
-            if (!GHPerformanceRunRecord.IsWindowOpen)
+            if (GHPerformanceRunRecord.BeginRefusal(GHWindowOwner.Diagnostic) != null)
+                throw new DiagnosticAbortException("another measurement is in progress");
+            if (!GHPerformanceRunRecord.TryBeginWindow(ScenarioName, ArmName, ctx, GHWindowOwner.Diagnostic))
                 throw new DiagnosticAbortException("the measurement window could not be opened");
             s.OpenWindow = ctx;
             s.WindowClock = Stopwatch.StartNew();

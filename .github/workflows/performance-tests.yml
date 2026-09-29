@@ -1,0 +1,25 @@
+name: performance-tests
+on:
+  push:
+    paths: ['win/win32/xpl/GnollHackTests/**', 'win/win32/xpl/GnollHackX/GnollHackX/Performance/**', 'DEVEL/performance/**', '.github/workflows/performance-tests.yml']
+  pull_request:
+    paths: ['win/win32/xpl/GnollHackTests/**', 'win/win32/xpl/GnollHackX/GnollHackX/Performance/**', 'DEVEL/performance/**', '.github/workflows/performance-tests.yml']
+jobs:
+  test:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: win/win32/xpl/GnollHackTests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: win/win32/xpl/GnollHackTests/global.json
+      - run: dotnet test GnollHackTests.sln -c Release --logger trx
+      - name: Parse scripts with Windows PowerShell 5.1
+        shell: powershell
+        working-directory: DEVEL/performance/scripts
+        run: |
+          $bad = 0
+          Get-ChildItem *.ps1 | ForEach-Object { $e = $null; [void][Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$null, [ref]$e); if ($e) { $e; $bad++ } }
+          if ($bad) { exit 1 }

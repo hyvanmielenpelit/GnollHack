@@ -103,6 +103,16 @@ and the record goes to `/sdcard/Android/data/<package>/files/performance/`, wher
 `adb pull` can reach it. `Run-PerformanceSuite.ps1` sends the command at the start of each
 capture, so the in-app record covers the same window as PresentMon or Perfetto.
 
+A command window never replaces another measurement's window. A `begin` command is refused
+while a Performance Suite or the in-game performance test is running, or while a window that
+a command did not open is open, and the window itself is refused if one of those starts
+before it opens; the app then writes `window.refused` where `window.done` would go, naming
+the scenario and the reason. A `begin` accepted while an earlier command's window is
+scheduled or open discards that window unsaved. `end` and `cancel` act only on a window a
+command opened. Likewise, a suite or the in-game test does not start
+while a measurement window is open or a command's window is scheduled; a suite whose run
+window is refused saves that run excluded with the reason `measurement window refused`.
+
 ### Stutter tools
 
 For a stutter felt during play or a replay, while the profiler records. The Developer button
@@ -652,9 +662,10 @@ the archive's performance files and, on Android, the external `performance` expo
 
 The results list shows each suite's date, scenario, label, used runs, median hitch ratio and
 size, tagged `baseline`, `aborted`, `imported`, `bg` (a run was excluded for background
-load), `env changed` (the environment fingerprint changed during the suite) or `invalid id`
-(the `suiteId` in its `suite.json` differs from its folder name; such a suite can only be
-deleted). A used run is a measured run with a summary and no exclusion reason. A suite's id
+load), `env changed` (the environment fingerprint changed during the suite), `invalid id`
+(the `suiteId` in its `suite.json` differs from its folder name) or `unreadable` (its
+`suite.json` cannot be read); an `invalid id` or `unreadable` suite can only be deleted.
+A used run is a measured run with a summary and no exclusion reason. A suite's id
 is its folder name, and a folder whose name is not letters, digits, `_` and `-` is not
 listed.
 
@@ -684,6 +695,22 @@ report lists both arms' versions, their environment differences and the attribut
 verdict per metric, the sensitivity line when a used run was elevated, and each arm's hitch
 causes (see [What the reports show](#what-the-reports-show)).
 
+The store's files are written as follows:
+
+- `suite.json`, `report.txt`, `baselines.json` and each run's JSON are written whole: to a
+  temp file beside the target, then moved over it in one step, so a crash never leaves a
+  partly written file. A temp file older than an hour, left by a killed app, is deleted the
+  first time the suite list is read.
+- Each write of `baselines.json` first copies the previous file to `baselines.json.bak`, but
+  only when that file could be read. When `baselines.json` cannot be read and the backup
+  can, the backup is used. When neither can be read, Set as Baseline refuses and offers to
+  start a new file; the unreadable one is kept as
+  `baselines.json.corrupt-<yyyyMMddTHHmmssZ>`. Compare with Baseline says when
+  `baselines.json` cannot be read.
+- The store's lock is per process. Two app instances sharing one store (possible on
+  Windows) can each change `baselines.json`, and the later write wins; the atomic writes
+  prevent a torn file, not a lost update.
+
 ### Two builds on one device
 
 - **Windows**: unpackaged builds share one store. Run a suite in each build, set the older
@@ -705,10 +732,13 @@ top-level folder before extracting anything: a `suite.json` with a `manifestVers
 `suiteId` equal to the folder name, of letters, digits, `_` and `-` only, and every run file
 it names present with schema version 2. Valid folders move into the store,
 tagged `imported`; a suite whose id is already present is skipped, never overwritten; the
-others are reported with the reason.
+others are reported with the reason. Share leaves out temp, backup and set-aside corrupt
+files (names ending in `.tmp` or `.bak`, or containing `.corrupt-`), and Import does not
+extract such entries.
 
 On a PC, unzip the archive and run the analyzer on the suite folders (`$a` as in
-[Analyzer](#analyzer)):
+[Analyzer](#analyzer)). See the status note under [Running a batch](#running-a-batch) before
+relying on the result.
 
 ```powershell
 & $a smoothness <suite>\run_<...>.json --out smoothness.md
@@ -723,6 +753,20 @@ go through the analyzer's own exclusion rules (`--include-excluded` brings exclu
 period differ (protocol rule 10).
 
 ## Running a batch
+
+**Status.** The batch scripts and the analyzer's `ingest`, `compare`, `history` and `drift`
+commands have not been validated end to end on real captures. Known defects:
+
+- `drift` pools the two arms of one batch into a single line.
+- The join with PresentMon or Perfetto display times improves the `smoothness` report only.
+  `compare`, `history` and `drift` decide on the app's estimated display times.
+- The batch script builds the analyzer only when its executable is missing, so a stale
+  analyzer is used without a warning.
+- Without in-app records and without `-TargetFps`, the target rate is taken to be the
+  refresh rate.
+- On Android, frames painted on the GL thread are not joined to Perfetto.
+
+Use the in-app Performance Suite for decisions until these are fixed.
 
 Windows, Build 14 versus HEAD, with in-app records joined to PresentMon (elevated console;
 PresentMon 2.x). The profiler must be on in both builds so that they accept the window

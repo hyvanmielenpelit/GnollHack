@@ -26,7 +26,9 @@ namespace GnollHackX.Performance
        seeking back to StartTurn - 1. Per run: wait for the start turn and for any
        replayed window or prompt to close, apply the scenario (idle pauses
        the replay, minimap pauses it and switches to the minimap, playback lets it
-       play), warm up, measure one window, and save it. Between runs: cool down, wait
+       play), warm up, measure one window, and save it; a window the window gate
+       refuses is registered as a run excluded with "measurement window refused", and
+       the suite goes on. Between runs: cool down, wait
        for the platform thermal status to be no worse than at the suite start (at most
        300 s; no wait where the platform reports none), wait for a quiet system (at most
        120 s; also once before the first run), then either seek the same game page back
@@ -90,13 +92,17 @@ namespace GnollHackX.Performance
 
         /* Call on the UI thread. Returns null once the suite has run (complete or
            aborted), or a short user-facing error when it could not start (already
-           running, invalid setup, a game already running, replay missing or invalid).
+           running, another measurement in progress, invalid setup, a game already
+           running, replay missing or invalid).
            onFinished(suiteId) is awaited on the UI thread after the suite ends and its
            game page is gone; it is not called when the suite could not start. */
         public static async Task<string> RunAsync(GHPerformanceSuiteSetup setup, Func<string, Task> onFinished)
         {
             if (IsRunning)
                 return "A performance suite is already running.";
+            if (GHPerformanceDiagnosticRunner.IsRunning || GHPerformanceRunRecord.IsWindowOpen
+                || GHPerformanceRunRecord.IsWindowCommandPending)
+                return "Another performance measurement is in progress.";
             string error = ValidateSetup(setup);
             if (error != null)
                 return error;
@@ -362,8 +368,18 @@ namespace GnollHackX.Performance
             await WaitUntilAsync(s, delegate { return begin.IsCompleted; }, StartTurnPollMs,
                 GHSystemLoadSampler.ProcessIntervalBeginWaitMs, true);
 
-            GHPerformanceRunRecord.BeginWindow(s.Scenario, s.Arm, ctx);
-            if (!GHPerformanceRunRecord.IsWindowOpen)
+            /* A window the gate refuses (another measurement's) is recorded as an excluded
+               run, and the suite goes on */
+            string refusal = GHPerformanceRunRecord.BeginRefusal(GHWindowOwner.Suite);
+            if (refusal != null)
+            {
+                Log("run " + runIndex + " of " + s.SuiteId + ": measurement window refused (" + refusal + ")");
+                ctx.ExcludedReason = "measurement window refused";
+                ctx.TurnReached = GHApp.ReplayTurn;
+                GHPerformanceSuiteStore.AddRun(s.SuiteId, ctx, null);
+                return;
+            }
+            if (!GHPerformanceRunRecord.TryBeginWindow(s.Scenario, s.Arm, ctx, GHWindowOwner.Suite))
                 throw new SuiteAbortException("the measurement window could not be opened");
             s.OpenWindow = ctx;
 

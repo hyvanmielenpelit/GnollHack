@@ -685,7 +685,8 @@ namespace GnollHackX.Pages.MainScreen
         {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            if (GHPerformanceSuiteRunner.IsRunning || GHPerformanceDiagnosticRunner.IsRunning || GHPerformanceRunRecord.IsWindowOpen)
+            if (GHPerformanceSuiteRunner.IsRunning || GHPerformanceDiagnosticRunner.IsRunning
+                || GHPerformanceRunRecord.IsWindowOpen || GHPerformanceRunRecord.IsWindowCommandPending)
             {
                 await ShowMessagePopupAsync("Performance Measurement Running", "Performance data cannot be deleted while a performance measurement is running.", "OK");
                 ResetGrid.IsEnabled = true;
