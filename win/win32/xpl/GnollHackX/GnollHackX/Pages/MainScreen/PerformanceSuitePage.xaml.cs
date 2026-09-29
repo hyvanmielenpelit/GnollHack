@@ -573,29 +573,49 @@ namespace GnollHackX.Pages.MainScreen
             SavePreferences(setup, replay.FullPath);
 
             SetupLayout.IsEnabled = false;
-            btnRunSuite.IsEnabled = false;
+            SetRunButtonEnabled(false);
             string err = null;
             try
             {
                 /* onFinished runs on the UI thread once the whole suite (including the
                    game session it pushes on top of this page) has ended and this page
                    is back on top of the modal stack; refresh the results in place
-                   instead of pushing another instance of this page. */
-                err = await GHPerformanceSuiteRunner.RunAsync(setup, id =>
+                   instead of pushing another instance of this page. onStatus shows the
+                   waits before the first game page, and between fresh pages, in the
+                   wait popup. */
+                err = await GHPerformanceSuiteRunner.RunAsync(setup, async id =>
                 {
+                    string abortReason = null;
                     try
                     {
                         RefreshSuiteList(id);
+                        List<GHPerformanceSuiteInfo> suites = GHPerformanceSuiteStore.ListSuites();
+                        for (int i = 0; i < suites.Count; i++)
+                        {
+                            if (suites[i].SuiteId == id && suites[i].Status == GHPerformanceSuiteStore.StatusAborted)
+                            {
+                                abortReason = string.IsNullOrEmpty(suites[i].AbortReason) ? "unknown reason" : suites[i].AbortReason;
+                                break;
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {
                         System.Diagnostics.Debug.WriteLine(ex);
                     }
-                    return Task.CompletedTask;
-                });
+                    WaitPopupGrid.IsVisible = false;
+                    if (abortReason == GHPerformanceSuiteRunner.CancelledReason)
+                        await GHApp.DisplayMessageBox(this, "Performance Suite Cancelled",
+                            "The performance suite was cancelled. Its finished runs are kept.", "OK");
+                    else if (abortReason != null)
+                        await GHApp.DisplayMessageBox(this, "Performance Suite Aborted",
+                            "The performance suite stopped: " + abortReason + ". Its finished runs are kept.", "OK");
+                },
+                ShowWaitStatus);
             }
             finally
             {
+                WaitPopupGrid.IsVisible = false;
                 SetupLayout.IsEnabled = true;
                 UpdateRunButtonState();
             }
@@ -621,9 +641,56 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("PerformanceSuiteCooldownSeconds", setup.CooldownSeconds);
         }
 
+        /* The wait popup: shown with the suite's current wait, hidden for null */
+        private void ShowWaitStatus(GHSuiteWaitStatus status)
+        {
+            if (status == null)
+            {
+                WaitPopupGrid.IsVisible = false;
+                return;
+            }
+            WaitTitleLabel.Text = status.Title ?? "";
+            WaitStatusLabel.Text = status.Detail ?? "";
+            WaitStatusLabel.IsVisible = !string.IsNullOrEmpty(status.Detail);
+            bool knownProgress = status.Progress >= 0;
+            WaitProgressBar.IsVisible = knownProgress;
+            if (knownProgress)
+                WaitProgressBar.Progress = Math.Min(1.0, status.Progress);
+            WaitSkipButton.IsVisible = status.CanSkip;
+            WaitSkipButton.IsEnabled = status.CanSkip;
+            WaitCancelButton.IsEnabled = true;
+            WaitPopupGrid.IsVisible = true;
+        }
+
+        private void WaitSkipButton_Clicked(object sender, EventArgs e)
+        {
+            GHApp.PlayButtonClickedSound();
+            WaitSkipButton.IsEnabled = false;
+            GHPerformanceSuiteRunner.SkipWait();
+        }
+
+        private async void WaitCancelButton_Clicked(object sender, EventArgs e)
+        {
+            GHApp.PlayButtonClickedSound();
+            WaitCancelButton.IsEnabled = false;
+            bool cancel = await GHApp.DisplayMessageBox(this, "Cancel Performance Suite",
+                "Cancel the performance suite? Its finished runs are kept.", "Yes", "No");
+            if (cancel)
+                GHPerformanceSuiteRunner.CancelSuite();
+            else
+                WaitCancelButton.IsEnabled = true;
+        }
+
         private void UpdateRunButtonState()
         {
-            btnRunSuite.IsEnabled = !GHPerformanceSuiteRunner.IsRunning;
+            SetRunButtonEnabled(!GHPerformanceSuiteRunner.IsRunning);
+        }
+
+        /* Run Suite is grayed out while disabled */
+        private void SetRunButtonEnabled(bool enabled)
+        {
+            btnRunSuite.IsEnabled = enabled;
+            btnRunSuite.TextColor = enabled ? GHColors.White : GHColors.Gray;
         }
 
         private static PerformanceSuiteListItem BuildListItem(GHPerformanceSuiteInfo info, bool darkMode)

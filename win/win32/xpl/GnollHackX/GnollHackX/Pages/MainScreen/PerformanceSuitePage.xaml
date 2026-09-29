@@ -196,6 +196,25 @@
                 <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest="280" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
             </Grid>
+            <!-- What a running suite waits for while no game page of it is open -->
+            <Grid x:Name="WaitPopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
+                <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="WaitPopupFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                        <StackLayout Spacing="9" Padding="6">
+                            <Label Text="Performance Suite" x:Name="WaitTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            <Label Text="Preparing" x:Name="WaitStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            <ProgressBar x:Name="WaitProgressBar" Progress="0.0" WidthRequest  ="400" HorizontalOptions="Fill" HeightRequest="15" ProgressColor="LightBlue" />
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="12">
+                                <controls:CustomImageButton Text="Skip" x:Name="WaitSkipButton" Clicked="WaitSkipButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
+                                <controls:CustomImageButton Text="Cancel" x:Name="WaitCancelButton" Clicked="WaitCancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
             <controls:MessagePopupView x:Name="MessagePopup" />
         </Grid>
     </gnh:CustomModalPage.Content>

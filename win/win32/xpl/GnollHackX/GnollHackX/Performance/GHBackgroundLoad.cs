@@ -155,7 +155,7 @@ namespace GnollHackX.Performance
         public const int QuietWindowSeconds = 5;
         public const float QuietOtherCpuPct = 10f;
         public const float QuietDiskBusyPct = 50f;
-        public const int QuietGateTimeoutSeconds = 120;
+        public const int QuietGateTimeoutSeconds = 30;
 
         /* CPU samples the quiet window needs before it can pass: MinCoverage of the
            samples QuietWindowSeconds holds at SampleIntervalMs. */

@@ -425,14 +425,19 @@ an instance suffix `#N` and a trailing `.exe` are stripped; any other process is
 ### Quiet gate
 
 Before each run, both paths wait until the last 5 seconds average other CPU under 10 % and
-disk busy under 50 % (disk is ignored where it is not reported), polling once a second for
-at most 120 s. On timeout the run goes ahead and carries the note
-`quiet gate timed out (other CPU N %)`: `suite.notes` in the in-app record, `notes` in the
-ingested one.
+disk busy under 50 % (disk is ignored where it is not reported), polling once a second. On
+timeout the run goes ahead and carries the note `quiet gate timed out (other CPU N %)`:
+`suite.notes` in the in-app record, `notes` in the ingested one.
 
 - **In the app** the gate runs before the first run and after the thermal gate before each
-  later one, and needs at least 3 samples with a CPU reading. Without a whole-machine CPU
-  reading (Android, iOS) or with the sampler off there is no gate.
+  later one, waits at most 30 s, and needs at least 3 samples with a CPU reading. Once it
+  has timed out, or the user has skipped it, the later gates of the same suite do not
+  wait: a machine that stayed busy once is taken to stay busy, as a development machine
+  usually does, and each later run that starts while the system is not quiet carries the
+  note `quiet gate skipped: the system stayed busy (other CPU N %)`. A skip gives the note
+  `quiet gate skipped by the user (other CPU N %)`. The runs' background verdicts still
+  flag or exclude a busy run. Without a whole-machine CPU reading (Android, iOS) or with
+  the sampler off there is no gate.
 - **`Run-PerformanceSuite.ps1`** gates after the thermal gate and before it launches the
   arm, sampling 5 s windows back to back for up to `-MaxQuietWaitSeconds` (default 120).
   When no CPU reading is possible the gate counts as quiet.
@@ -770,9 +775,14 @@ minutes.
 
 1. Before the first run, the warm-up run included, and before any game page opens, the suite
    waits one cool-down and then, where the platform reports a thermal status, until the
-   status is Nominal or better, checking every 15 s for at most 300 s. The suite's starting
+   status is Light or better, checking every 15 s for at most 300 s. The suite's starting
    thermal reading, which the later thermal gates compare with, is taken after that wait.
-   The quiet gate follows (step 5).
+   The quiet gate follows (step 5). While no game page is open, a popup on the suite page
+   shows what the suite is waiting for, with a progress bar: the cool-down's seconds left,
+   the thermal status against its limit, or the other CPU against the quiet threshold.
+   **Skip** ends the current cool-down, thermal or quiet wait; **Cancel** ends the suite as
+   an abort with the reason `cancelled by the user`, keeping its finished runs. The Run
+   Suite button is grayed out while a suite runs.
 2. The first game page plays the replay from its beginning, exactly as the Replay page starts
    it, when the start turn is 1 or less; otherwise it seeks to start turn - 1 and plays the
    last turn at normal speed.
@@ -785,10 +795,11 @@ minutes.
    reports no thermal class, so there is no gate there: the processor performance counter
    mostly follows turbo boost, which drops whenever the replay pauses. A run measured while
    throttled is still excluded by the per-run rule. Then the quiet gate, which also runs
-   before the first run: the next run waits, for at most 120 s, until the last 5 seconds
+   before the first run: the next run waits, for at most 30 s, until the last 5 seconds
    average other CPU under 10 % and disk busy under 50 %, and the replay header shows
    `waiting for a quiet system (other CPU N %)`. After a timeout the run carries the note
-   `quiet gate timed out (other CPU N %)`. There is no quiet gate on Android and iOS, which
+   `quiet gate timed out (other CPU N %)`, and the later quiet gates of the suite do not
+   wait (see [Quiet gate](#quiet-gate)). There is no quiet gate on Android and iOS, which
    give an app no whole-machine CPU reading.
 6. The next run starts. With a shared page the replay, paused during the cool-down, seeks back
    to start turn - 1, which restarts it in place and collects garbage. With a fresh page the

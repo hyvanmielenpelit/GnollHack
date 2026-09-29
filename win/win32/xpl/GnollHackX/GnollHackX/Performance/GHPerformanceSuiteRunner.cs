@@ -15,6 +15,17 @@ using GnollHackX.Pages.Game;
 
 namespace GnollHackX.Performance
 {
+    /* What a performance suite is waiting for while no game page of it is open, as
+       GHPerformanceSuiteRunner.RunAsync hands it to its onStatus: a title, a detail line,
+       the progress from 0 to 1 (-1 when unknown), and whether SkipWait ends the wait */
+    public sealed class GHSuiteWaitStatus
+    {
+        public string Title;
+        public string Detail;
+        public double Progress = -1;
+        public bool CanSkip;
+    }
+
     /* Runs a performance suite: a series of measurement windows over one replay file,
        each started from the same turn, saved through GHPerformanceRunRecord and
        registered in GHPerformanceSuiteStore.
@@ -30,14 +41,17 @@ namespace GnollHackX.Performance
        play), warm up, measure one window, and save it; a window the window gate
        refuses is registered as a run excluded with "measurement window refused", and
        the suite goes on. Before the first run, with no game page open: cool down, wait
-       for the platform thermal status to be Nominal (at most 300 s; no wait where the
-       platform reports none), take the suite-start thermal reading, and wait for a
-       quiet system. Between runs: cool down, wait
+       for the platform thermal status to be Light or better (at most 300 s; no wait
+       where the platform reports none), take the suite-start thermal reading, and wait
+       for a quiet system. Between runs: cool down, wait
        for the platform thermal status to be no worse than at the suite start (at most
        300 s; no wait where the platform reports none), wait for a quiet system (at most
-       120 s), then either seek the same game page back
+       30 s; once it has timed out or been skipped, the later gates do not wait), then
+       either seek the same game page back
        (shared) or close it and open a new one (fresh; the cool-down then happens on the
-       page below the game page). The replay header shows the run and its phase. Each game
+       page below the game page). The replay header shows the run and its phase; while no
+       game page is open, the caller's onStatus gets each wait (GHSuiteWaitStatus), and
+       the user can skip a wait (SkipWait) or cancel the suite (CancelSuite). Each game
        page runs in performance suite mode (GamePage.EnterPerformanceSuiteMode): the view is
        fixed at the device's default zoom with auto-center on and no overlays, and the viewer
        cannot change it; the frame time profiler and the debug dashboard are on for the whole
@@ -48,7 +62,8 @@ namespace GnollHackX.Performance
 
        Everything runs on the UI thread as one async task. Every wait polls at least
        every 100 ms and aborts the suite when the replay ended (GHApp.GameStarted went
-       false), the user stopped the replay, or the app went to the background; a
+       false), the user stopped the replay or cancelled the suite, or the app went to the
+       background; a
        window open at that moment is still saved, excluded with the abort reason.
        GHApp.CurrentGHGame is never used as an end signal: an in-place replay restart
        sets it to null for a while. No message boxes are shown here; errors are
@@ -76,6 +91,11 @@ namespace GnollHackX.Performance
         private const string PageModeFresh = "fresh";
 
         private static int _isRunning = 0;
+        private static int _skipRequested = 0;          /* 1 once SkipWait asked to end the current wait */
+        private static int _cancelRequested = 0;        /* 1 once CancelSuite asked to end the suite */
+
+        /* The abort reason of a suite the user cancelled (CancelSuite) */
+        public const string CancelledReason = "cancelled by the user";
         private static string _currentSuiteId = null;
 
         public static bool IsRunning { get { return Interlocked.CompareExchange(ref _isRunning, 0, 0) != 0; } }
@@ -105,7 +125,17 @@ namespace GnollHackX.Performance
            running, replay missing or invalid).
            onFinished(suiteId) is awaited on the UI thread after the suite ends and its
            game page is gone; it is not called when the suite could not start. */
-        public static async Task<string> RunAsync(GHPerformanceSuiteSetup setup, Func<string, Task> onFinished)
+        public static Task<string> RunAsync(GHPerformanceSuiteSetup setup, Func<string, Task> onFinished)
+        {
+            return RunAsync(setup, onFinished, null);
+        }
+
+        /* Same as RunAsync(setup, onFinished); onStatus, on the UI thread, receives what
+           the suite waits for while no game page of it is open (the preparation, the
+           cool-down and the gates before the first run, and between fresh pages), and
+           null when a game page opens or the suite has ended */
+        public static async Task<string> RunAsync(GHPerformanceSuiteSetup setup, Func<string, Task> onFinished,
+            Action<GHSuiteWaitStatus> onStatus)
         {
             if (IsRunning)
                 return "A performance suite is already running.";
@@ -128,7 +158,10 @@ namespace GnollHackX.Performance
             if (Interlocked.CompareExchange(ref _isRunning, 1, 0) != 0)
                 return "A performance suite is already running.";
 
+            Interlocked.Exchange(ref _cancelRequested, 0);
             SuiteState s = new SuiteState();
+            s.OnStatus = onStatus;
+            ReportStatus(s, "Preparing");
             /* Before the first environment capture, so every capture of the suite sees them */
             ApplyOverrides(s);
             try
@@ -171,6 +204,7 @@ namespace GnollHackX.Performance
             {
                 ReleaseSampler(s);
                 RestoreOverrides(s);
+                HideStatus(s);
                 Interlocked.Exchange(ref _isRunning, 0);
                 return "Could not create the performance suite: " + ex.Message;
             }
@@ -178,6 +212,7 @@ namespace GnollHackX.Performance
             {
                 ReleaseSampler(s);
                 RestoreOverrides(s);
+                HideStatus(s);
                 Interlocked.Exchange(ref _isRunning, 0);
                 return "Could not create the performance suite.";
             }
@@ -238,6 +273,7 @@ namespace GnollHackX.Performance
                 }
                 RestoreOverrides(s);
                 ReleaseSampler(s);
+                HideStatus(s);
                 CurrentSuiteId = null;
                 Interlocked.Exchange(ref _isRunning, 0);
             }
@@ -314,6 +350,7 @@ namespace GnollHackX.Performance
             await FirstRunGateAsync(s);
             await QuietGateAsync(s, false);
 
+            ReportStatus(s, "Opening the replay");
             await OpenGamePageAsync(s);
             for (int runIndex = firstRunIndex; runIndex <= lastRunIndex; runIndex++)
             {
@@ -458,12 +495,13 @@ namespace GnollHackX.Performance
                 s.ActivePage.SetReplayPaused(false);
                 if (!await StopGamePageAsync(s))
                     throw new SuiteAbortException("the replay did not stop");
-                await WaitAsync(s, setup.CooldownSeconds * 1000L, false);
+                await CountdownAsync(s, setup.CooldownSeconds);
                 await ThermalGateAsync(s, false);
                 await QuietGateAsync(s, false);
 
                 GHApp.CollectGarbage();
                 await WaitAsync(s, AfterGarbageCollectionMs, false);
+                ReportStatus(s, "Opening the replay");
                 await OpenGamePageAsync(s);
             }
         }
@@ -481,6 +519,7 @@ namespace GnollHackX.Performance
             if (GHApp.PageFromTopOfModalNavigationStack() != page)
                 throw new SuiteAbortException("the game page could not be opened");
             s.ActivePage = page;
+            HideStatus(s);
 
             /* From the beginning without a search, as the Replay page starts, when the
                start turn is 1 or less; otherwise one turn before the start turn, whose
@@ -525,12 +564,13 @@ namespace GnollHackX.Performance
         }
 
         /* Before the first run, the warm-up run included, with no game page open: waits
-           the cool-down, then the thermal gate against Nominal, and then takes the
-           suite-start thermal reading the gate between runs compares against. */
+           the cool-down, then the thermal gate against Light (many devices never report
+           Nominal, e.g. while charging), and then takes the suite-start thermal reading
+           the gate between runs compares against. */
         private static async Task FirstRunGateAsync(SuiteState s)
         {
-            await WaitAsync(s, s.Setup.CooldownSeconds * 1000L, false);
-            await ThermalGateAsync(s, GHThermalStatus.Nominal, "Nominal before the first run", false);
+            await CountdownAsync(s, s.Setup.CooldownSeconds);
+            await ThermalGateAsync(s, GHThermalStatus.Light, "Light before the first run", false);
             s.StartThermal = GHThermalProbe.Read();
             Log("thermal status at the start of " + s.SuiteId + ": " + GHThermalProbe.StatusName(s.StartThermal.Status));
         }
@@ -547,12 +587,13 @@ namespace GnollHackX.Performance
            platform thermal status (Windows) there is no gate: the processor performance
            percent mostly reflects turbo boost, which falls whenever the replay is paused,
            so it cannot tell a throttled machine from an idle one. Runs measured while
-           throttled are still excluded by the per-run rule. limitText names the limit in
-           the timeout log. */
+           throttled are still excluded by the per-run rule. The user can skip the wait
+           (SkipWait). limitText names the limit in the log. */
         private static async Task ThermalGateAsync(SuiteState s, GHThermalStatus limit, string limitText, bool gameExpected)
         {
             if (limit == GHThermalStatus.Unknown)
                 return;
+            ClearSkip();
             Stopwatch sw = Stopwatch.StartNew();
             bool announced = false;
             while (true)
@@ -571,20 +612,47 @@ namespace GnollHackX.Performance
                     SetPhase(s, "waiting for the device to cool");
                     announced = true;
                 }
-                await WaitAsync(s, ThermalGatePollMs, gameExpected);
+                string detail = "Thermal status " + GHThermalProbe.StatusName(now.Status) + ", waiting for "
+                    + GHThermalProbe.StatusName(limit) + " or better";
+                /* Reports the progress each second between the 15 s thermal readings */
+                long pollEnd = sw.ElapsedMilliseconds + ThermalGatePollMs;
+                while (sw.ElapsedMilliseconds < pollEnd)
+                {
+                    ReportStatus(s, "Waiting for the device to cool", detail,
+                        Math.Min(1.0, sw.ElapsedMilliseconds / (double)ThermalGateTimeoutMs), true);
+                    if (await WaitOrSkipAsync(s, 1000L, gameExpected))
+                    {
+                        Log("thermal gate skipped by the user in " + s.SuiteId + ": " + GHThermalProbe.StatusName(now.Status)
+                            + " vs " + limitText);
+                        return;
+                    }
+                }
             }
         }
 
         /* Waits until the last GHBackgroundLoad.QuietWindowSeconds average other CPU and
            disk busy below the quiet thresholds (GHSystemLoadSampler.IsQuiet), polling
-           every second for at most GHBackgroundLoad.QuietGateTimeoutSeconds; on timeout
-           the next run goes ahead and carries a note saying so. No gate without the
-           sampler, or when it has produced no CPU sample QuietWindowSeconds + 1 s after
-           the suite acquired it (no whole-machine CPU on the platform). */
+           every second for at most GHBackgroundLoad.QuietGateTimeoutSeconds; on timeout,
+           or when the user skips the wait (SkipWait), the next run goes ahead and carries
+           a note saying so, and the later gates of the suite do not wait: a machine that
+           stayed busy once is taken to stay busy, and each of those runs is noted instead
+           while the system is not quiet. The runs' background verdicts still flag or
+           exclude a busy run. No gate without the sampler, or when it has produced no CPU
+           sample QuietWindowSeconds + 1 s after the suite acquired it (no whole-machine
+           CPU on the platform). */
         private static async Task QuietGateAsync(SuiteState s, bool gameExpected)
         {
             if (!s.SamplerHeld || s.SamplerClock == null)
                 return;
+            if (s.QuietGateGaveUp)
+            {
+                float busyCpu, busyDisk;
+                if (GHSystemLoadSampler.HasCpuSignal && !GHSystemLoadSampler.IsQuiet(out busyCpu, out busyDisk))
+                    s.PendingNote = "quiet gate skipped: the system stayed busy (other CPU " + FormatPercent(busyCpu) + " %)";
+                return;
+            }
+            ClearSkip();
+            ReportStatus(s, "Checking system load");
             long settleMs = (GHBackgroundLoad.QuietWindowSeconds + 1) * 1000L - s.SamplerClock.ElapsedMilliseconds;
             if (!GHSystemLoadSampler.HasCpuSignal && settleMs > 0)
                 await WaitAsync(s, settleMs, gameExpected);
@@ -593,17 +661,19 @@ namespace GnollHackX.Performance
 
             Stopwatch sw = Stopwatch.StartNew();
             string shown = null;
+            long timeoutMs = GHBackgroundLoad.QuietGateTimeoutSeconds * 1000L;
             while (true)
             {
                 float otherCpuMean, diskBusyMean;
                 if (GHSystemLoadSampler.IsQuiet(out otherCpuMean, out diskBusyMean))
                     return;
                 string otherText = FormatPercent(otherCpuMean);
-                if (sw.ElapsedMilliseconds >= GHBackgroundLoad.QuietGateTimeoutSeconds * 1000L)
+                if (sw.ElapsedMilliseconds >= timeoutMs)
                 {
                     Log("quiet gate timed out in " + s.SuiteId + ": other CPU " + otherText + " %, disk busy "
                         + FormatPercent(diskBusyMean) + " %");
                     s.PendingNote = "quiet gate timed out (other CPU " + otherText + " %)";
+                    s.QuietGateGaveUp = true;
                     return;
                 }
                 if (otherText != shown)
@@ -611,7 +681,16 @@ namespace GnollHackX.Performance
                     SetPhase(s, "waiting for a quiet system (other CPU " + otherText + " %)");
                     shown = otherText;
                 }
-                await WaitAsync(s, QuietGatePollMs, gameExpected);
+                ReportStatus(s, "Waiting for a quiet system", "Other CPU " + otherText + " %, waiting for under "
+                    + GHBackgroundLoad.QuietOtherCpuPct.ToString("F0", CultureInfo.InvariantCulture) + " %",
+                    Math.Min(1.0, sw.ElapsedMilliseconds / (double)timeoutMs), true);
+                if (await WaitOrSkipAsync(s, QuietGatePollMs, gameExpected))
+                {
+                    Log("quiet gate skipped by the user in " + s.SuiteId + ": other CPU " + otherText + " %");
+                    s.PendingNote = "quiet gate skipped by the user (other CPU " + otherText + " %)";
+                    s.QuietGateGaveUp = true;
+                    return;
+                }
             }
         }
 
@@ -648,6 +727,103 @@ namespace GnollHackX.Performance
                 return;
             s.SamplerHeld = false;
             GHSystemLoadSampler.Release();
+        }
+
+        /* The cool-down: waits seconds with no game page open, reporting the time left each
+           second; the user can skip the rest (SkipWait) */
+        private static async Task CountdownAsync(SuiteState s, int seconds)
+        {
+            ClearSkip();
+            for (int left = seconds; left > 0; left--)
+            {
+                ReportStatus(s, "Cooling down", left.ToString(CultureInfo.InvariantCulture) + " s left",
+                    (seconds - left) / (double)seconds, true);
+                if (await WaitOrSkipAsync(s, 1000L, false))
+                {
+                    Log("cool-down skipped by the user in " + s.SuiteId + " with " + left.ToString(CultureInfo.InvariantCulture)
+                        + " s left");
+                    return;
+                }
+            }
+        }
+
+        /* Ends the current skippable wait (a cool-down, the thermal or the quiet gate),
+           as offered through onStatus; ignored when no suite runs. Call on the UI thread. */
+        public static void SkipWait()
+        {
+            if (IsRunning)
+                Interlocked.Exchange(ref _skipRequested, 1);
+        }
+
+        /* Ends the running suite at its next abort check, as an abort with the reason
+           CancelledReason: finished runs are kept, and an open window is saved excluded.
+           Ignored when no suite runs. Call on the UI thread. */
+        public static void CancelSuite()
+        {
+            if (IsRunning)
+                Interlocked.Exchange(ref _cancelRequested, 1);
+        }
+
+        /* Drops a skip requested before the current wait began */
+        private static void ClearSkip()
+        {
+            Interlocked.Exchange(ref _skipRequested, 0);
+        }
+
+        /* Waits about ms milliseconds as WaitAsync does; true, and the request consumed,
+           as soon as the user skips the wait */
+        private static async Task<bool> WaitOrSkipAsync(SuiteState s, long ms, bool gameExpected)
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+            while (true)
+            {
+                if (Interlocked.Exchange(ref _skipRequested, 0) == 1)
+                    return true;
+                long remaining = ms - sw.ElapsedMilliseconds;
+                if (remaining <= 0)
+                    return false;
+                await WaitAsync(s, Math.Min(PollMs, remaining), gameExpected);
+            }
+        }
+
+        /* Passes what the suite waits for to the caller's onStatus, only while no game
+           page of the suite is open; never throws */
+        private static void ReportStatus(SuiteState s, string title)
+        {
+            ReportStatus(s, title, null, -1, false);
+        }
+
+        private static void ReportStatus(SuiteState s, string title, string detail, double progress, bool canSkip)
+        {
+            if (s.ActivePage != null)
+                return;
+            GHSuiteWaitStatus status = new GHSuiteWaitStatus();
+            status.Title = title;
+            status.Detail = detail;
+            status.Progress = progress;
+            status.CanSkip = canSkip;
+            SendStatus(s, status);
+        }
+
+        /* Tells the caller's onStatus that nothing is being waited for on its page: a game
+           page opened, or the suite ended */
+        private static void HideStatus(SuiteState s)
+        {
+            SendStatus(s, null);
+        }
+
+        private static void SendStatus(SuiteState s, GHSuiteWaitStatus status)
+        {
+            if (s.OnStatus == null)
+                return;
+            try
+            {
+                s.OnStatus(status);
+            }
+            catch (Exception ex)
+            {
+                Log("reporting the status failed: " + ex.Message);
+            }
         }
 
         /* Shows the suite's progress in the replay header; set once per phase, so the label
@@ -739,6 +915,8 @@ namespace GnollHackX.Performance
            page. */
         private static void CheckAbort(SuiteState s, bool gameExpected)
         {
+            if (Interlocked.CompareExchange(ref _cancelRequested, 0, 0) != 0)
+                throw new SuiteAbortException(CancelledReason);
             if (gameExpected)
             {
                 if (!s.RunnerStopping && GHApp.StopReplay)
@@ -808,6 +986,8 @@ namespace GnollHackX.Performance
             public bool SamplerHeld;                   /* the suite's GHSystemLoadSampler acquire is outstanding */
             public Stopwatch SamplerClock;             /* started at that acquire */
             public string PendingNote;                 /* for the next run's context, e.g. a quiet gate timeout */
+            public Action<GHSuiteWaitStatus> OnStatus; /* what the suite waits for while no game page is open, null to hide; may be null */
+            public bool QuietGateGaveUp;               /* a quiet gate timed out or was skipped; later gates do not wait */
         }
     }
 }
