@@ -1434,9 +1434,12 @@ move_monsters_to_mydogs(boolean pets_only, boolean nearby_only)
     struct obj *obj;
     int num_segs;
     boolean stay_behind;
+    boolean steed_seen = FALSE, steed_kept = FALSE;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp2) {
         mtmp2 = mtmp->nmon;
+        if (mtmp == u.usteed)
+            steed_seen = TRUE;
         if (DEADMONSTER(mtmp))
             continue;
         if (pets_only) {
@@ -1530,6 +1533,8 @@ move_monsters_to_mydogs(boolean pets_only, boolean nearby_only)
                 set_obj_no_charge(obj, 0);
             }
 
+            if (mtmp == u.usteed)
+                steed_kept = TRUE;
             relmon(mtmp, &mydogs);   /* move it from map to mydogs */
             mtmp->mx = mtmp->my = 0; /* avoid mnexto()/MON_AT() problem */
             mtmp->wormno = num_segs;
@@ -1547,6 +1552,20 @@ move_monsters_to_mydogs(boolean pets_only, boolean nearby_only)
             pline("%s goes slack.", Monnam_possessive_ex(mtmp, "leash", "attached to"));
             m_unleash(mtmp, FALSE);
         }
+    }
+
+    if (u.usteed && !steed_kept)
+    {
+        /* a steed that is not on fmon may already have been freed */
+        if (steed_seen)
+            debugprint("move_monsters_to_mydogs: steed left behind, mnum=%d, m=<%d,%d>, u=<%d,%d>, mstrategy=%llx, canmove=%d, dead=%d, pets_only=%d, nearby_only=%d",
+                       u.usteed->mnum, (int) u.usteed->mx, (int) u.usteed->my, (int) u.ux, (int) u.uy,
+                       (unsigned long long) u.usteed->mstrategy, (int) mon_can_move(u.usteed),
+                       DEADMONSTER(u.usteed) ? 1 : 0, (int) pets_only, (int) nearby_only);
+        else
+            debugprint("move_monsters_to_mydogs: steed not on fmon, u=<%d,%d>, pets_only=%d, nearby_only=%d",
+                       (int) u.ux, (int) u.uy, (int) pets_only, (int) nearby_only);
+        silent_impossible("Steed left behind on level change");
     }
 }
 

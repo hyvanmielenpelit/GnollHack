@@ -36,6 +36,7 @@ static void savetrapchn(int, struct trap *, int);
 static void savegamestate(int, int, int64_t);
 static void save_msghistory(int, int);
 static void save_gamelog(int, int);
+static void check_steed_on_level(const char *);
 #ifdef MFLOPPY
 static void savelev0(int, xchar, int);
 static boolean swapout_oldest(void);
@@ -78,6 +79,8 @@ static struct save_procs {
 
 /* need to preserve these during save to avoid accessing freed memory */
 static unsigned ustuck_id = 0, usteed_id = 0;
+/* one report per game; a steed that is off the level stays off it at every later save */
+static boolean steed_off_level_reported = FALSE;
 boolean saving = FALSE;
 boolean check_pointing = FALSE;
 boolean ignore_onsleep_autosave = FALSE;
@@ -153,6 +156,43 @@ dosave(void)
 }
 
 char saved_dgnlvl_name_buf[BUFSZ * 2] = "";
+
+/* report a u.usteed that is not on the level's monster chain; compares
+   pointers only, since such a steed may already have been freed */
+static void
+check_steed_on_level(const char *caller)
+{
+    struct monst *mtmp;
+    const char *where = "nowhere";
+
+    if (!u.usteed || program_state.panicking)
+        return;
+
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    {
+        if (mtmp == u.usteed)
+            return;
+    }
+    for (mtmp = mydogs; mtmp; mtmp = mtmp->nmon)
+    {
+        if (mtmp == u.usteed)
+            where = "mydogs";
+    }
+    for (mtmp = migrating_mons; mtmp; mtmp = mtmp->nmon)
+    {
+        if (mtmp == u.usteed)
+            where = "migrating_mons";
+    }
+
+    debugprint("%s: usteed not on fmon (%s), uz=%d/%d, u=<%d,%d>, moves=%lld, chkpt=%d",
+               caller, where, (int) u.uz.dnum, (int) u.uz.dlevel, (int) u.ux, (int) u.uy,
+               (long long) moves, (int) check_pointing);
+    if (!steed_off_level_reported)
+    {
+        steed_off_level_reported = TRUE;
+        silent_impossible("Saving with a steed that is not on the level");
+    }
+}
 
 /* returns 1 if save successful */
 int
@@ -327,6 +367,7 @@ dosave0(boolean quietly)
     store_savefileinfo(fd);
     store_plname_in_file(fd);
     store_save_game_stats_in_file(fd, time_stamp);
+    check_steed_on_level("dosave0");
     ustuck_id = (u.ustuck ? u.ustuck->m_id : 0);
     usteed_id = (u.usteed ? u.usteed->m_id : 0);
     /* Guard for a spurious u.usteed location */
@@ -681,6 +722,7 @@ savestateinlock(void)
             store_savefileinfo(fd);
             store_plname_in_file(fd);
             store_save_game_stats_in_file(fd, time_stamp);
+            check_steed_on_level("savestateinlock");
             ustuck_id = (u.ustuck ? u.ustuck->m_id : 0);
             usteed_id = (u.usteed ? u.usteed->m_id : 0);
             savegamestate(fd, WRITE_SAVE, time_stamp);
@@ -1796,6 +1838,7 @@ reset_save(void)
 
     ustuck_id = 0;
     usteed_id = 0;
+    steed_off_level_reported = FALSE;
 
 #ifdef MFLOPPY
     bytes_counted = 0;

@@ -36,7 +36,8 @@ static struct fruit *loadfruitchn(int);
 static void freefruitchn(struct fruit *);
 static void ghostfruit(struct obj *);
 static boolean restgamestate(int, unsigned int *, unsigned int *);
-static void restlevelstate(unsigned int, unsigned int);
+static void debugprint_missing_level_monster(const char *, unsigned int, uint64_t);
+static void restlevelstate(unsigned int, unsigned int, uint64_t);
 static int restlevelfile(int, xchar);
 static void restore_msghistory(int);
 static void reset_oattached_mids(boolean);
@@ -854,11 +855,47 @@ restgamestate(int fd, unsigned int *stuckid, unsigned int *steedid)
     return TRUE;
 }
 
+/* debugprint the restore context of a monster the game state refers to by id
+   but which is not on the restored level */
+static void
+debugprint_missing_level_monster(const char *role, unsigned int m_id, uint64_t num_recoveries)
+{
+    struct monst *mtmp;
+    struct trap *ttmp = (struct trap *) 0;
+    int nmon = 0, ntame = 0;
+    int typ = -1;
+
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    {
+        nmon++;
+        if (is_tame(mtmp))
+            ntame++;
+    }
+    for (mtmp = migrating_mons; mtmp; mtmp = mtmp->nmon)
+    {
+        if (mtmp->m_id == m_id)
+            break;
+    }
+    if (isok(u.ux, u.uy))
+    {
+        typ = (int) levl[u.ux][u.uy].typ;
+        ttmp = t_at(u.ux, u.uy);
+    }
+
+    /* levmoves above mmoves means the level was written later than the game state */
+    debugprint("restlevelstate: %s id=%u missing, recoveries=%llu, uz=%d/%d, u=<%d,%d>, moves=%lld, mmoves=%lld, levmoves=%lld",
+               role, m_id, (unsigned long long) num_recoveries, (int) u.uz.dnum, (int) u.uz.dlevel,
+               (int) u.ux, (int) u.uy, (long long) moves, (long long) monstermoves, (long long) omoves);
+    debugprint("restlevelstate: fmon=%d, tame=%d, migrating=%d (to %d/%d), typ=%d, trap=%d",
+               nmon, ntame, mtmp ? 1 : 0, mtmp ? (int) mtmp->mux : -1, mtmp ? (int) mtmp->muy : -1,
+               typ, ttmp ? (int) ttmp->ttyp : -1);
+}
+
 /* update game state pointers to those valid for the current level (so we
  * don't dereference a wild u.ustuck when saving the game state, for instance)
  */
 static void
-restlevelstate(unsigned int stuckid, unsigned int steedid)
+restlevelstate(unsigned int stuckid, unsigned int steedid, uint64_t num_recoveries)
 {
     struct monst *mtmp;
 
@@ -868,6 +905,7 @@ restlevelstate(unsigned int stuckid, unsigned int steedid)
                 break;
         if (!mtmp)
         {
+            debugprint_missing_level_monster("ustuck", stuckid, num_recoveries);
             program_state.panic_handling = 3; /* Safe to do a full game reset and ok to replace the save file with backup */
             panic("Cannot find the monster ustuck: stuckid=%u", stuckid);
             return;
@@ -880,6 +918,7 @@ restlevelstate(unsigned int stuckid, unsigned int steedid)
                 break;
         if (!mtmp)
         {
+            debugprint_missing_level_monster("usteed", steedid, num_recoveries);
             program_state.panic_handling = 3; /* Safe to do a full game reset and ok to replace the save file with backup */
             panic("Cannot find the monster usteed: steedid=%u", steedid);
             return;
@@ -1026,7 +1065,7 @@ dorestore0(int fd)
         nh_bail(EXIT_SUCCESS, "Aborting loading the save file due to save file tracking...", TRUE);
         return 0;
     }
-    restlevelstate(stuckid, steedid);
+    restlevelstate(stuckid, steedid, game_stats.num_recoveries);
 
     struct u_realtime restored_realtime = urealtime;
 #ifdef INSURANCE
@@ -1133,7 +1172,7 @@ dorestore0(int fd)
      */
     reset_restpref();
 
-    restlevelstate(stuckid, steedid);
+    restlevelstate(stuckid, steedid, game_stats.num_recoveries);
     program_state.something_worth_saving = 1; /* useful data now exists */
 
     if (!wizard && !discover && !CasualMode)

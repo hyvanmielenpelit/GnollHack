@@ -5721,6 +5721,10 @@ recover_savefile(void)
     nh_compress(fq_save);
 #endif
 
+    debugprint("recover_savefile: recovered, level=%d, recoveries=%llu",
+               savelev, (unsigned long long) gamestats.num_recoveries);
+    issue_breadcrumb2("recover_savefile: recovered", savelev);
+
     return TRUE;
 }
 
