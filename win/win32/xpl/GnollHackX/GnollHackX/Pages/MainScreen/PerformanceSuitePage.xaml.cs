@@ -21,10 +21,42 @@ using Xamarin.Forms.Xaml;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    /* A single row of the results CollectionView, built fresh from a
-       GHPerformanceSuiteInfo every time the list is refreshed. */
-    public sealed class PerformanceSuiteListItem
+    /* A single row of the results list, built fresh from a GHPerformanceSuiteInfo
+       every time the list is refreshed; tapping the row toggles IsSelected. */
+    public sealed class PerformanceSuiteListItem : System.ComponentModel.INotifyPropertyChanged
     {
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set
+            {
+                if (_isSelected == value)
+                    return;
+                _isSelected = value;
+                OnPropertyChanged("IsSelected");
+                OnPropertyChanged("RowBackgroundColor");
+            }
+        }
+
+        public Color SelectedBackgroundColor { get; set; }
+
+        /* Transparent rather than null when not selected, so that the row stays
+           hit-testable on Windows */
+        public Color RowBackgroundColor
+        {
+            get { return _isSelected ? SelectedBackgroundColor : GHColors.Transparent; }
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            System.ComponentModel.PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+
         public string SuiteId { get; set; }
         public string DateText { get; set; }
         public string ScenarioText { get; set; }
@@ -154,7 +186,13 @@ namespace GnollHackX.Pages.MainScreen
                 "Seconds measured in each run.");
             AddInfoLabel(CooldownSecondsLabel,
                 "Seconds of rest before each run",
-                "Seconds of pause before each run, the first one included, letting the device cool down. Where the device reports its thermal status, the first run also waits, for up to 5 minutes, until the status is Light or better.");
+                "Seconds of pause before each run, the first one included, letting the device cool down. Where the device reports its thermal status, the first run also waits, for up to the thermal wait seconds, until the status is Light or better.");
+            AddInfoLabel(ThermalGateLabel,
+                "What later runs wait for when the device is warm",
+                "Where the device reports its thermal status, each run after the first waits until the status is no worse than this. Light or better: the same limit for every run of every suite, as before the first run. Same as start: the status at the start of the suite, read after the first run's wait for Light or better; suites recorded before this setting existed used it with a 300 s wait. Suites with other thermal settings are compared only with each other. Windows reports no thermal status, so there is no wait there.");
+            AddInfoLabel(ThermalWaitSecondsLabel,
+                "The longest each thermal wait lasts",
+                "The longest each thermal wait lasts, the one before the first run included. When it runs out, the run goes ahead and carries a note saying so. 0 turns the thermal waits off.");
             AddInfoLabel(EstimatedDurationTitleLabel,
                 "Approximate time for the whole suite",
                 "Every run, including the warm-up run, takes its cool-down, warm-up and window seconds plus an allowance for loading and seeking.");
@@ -164,7 +202,7 @@ namespace GnollHackX.Pages.MainScreen
                 + (GHApp.IsWindows
                     ? "Both builds share this store."
                     : "Share suites before reinstalling the app, and import them afterwards.")
-                + " Tap suites to select them; Report, Set Baseline and Compare need exactly one.");
+                + " Tap suites to select them, and tap again to deselect; Report, Set Baseline and Compare need exactly one.");
         }
 
         /* The tooltip is a short summary; tapping the label shows the full explanation */
@@ -209,6 +247,13 @@ namespace GnollHackX.Pages.MainScreen
                 new NamedValueItem("Fresh page per run", "fresh"),
             };
             PageModePicker.ItemsSource = pageModes;
+
+            List<NamedValueItem> thermalGates = new List<NamedValueItem>
+            {
+                new NamedValueItem("Light or better", GHPerformanceSuiteLogic.ThermalGateLight),
+                new NamedValueItem("Same as start", GHPerformanceSuiteLogic.ThermalGateStart),
+            };
+            ThermalGatePicker.ItemsSource = thermalGates;
         }
 
         private void LoadPreferences()
@@ -221,6 +266,8 @@ namespace GnollHackX.Pages.MainScreen
             WarmUpSecondsEntry.Text = Preferences.Get("PerformanceSuiteWarmUpSeconds", 10).ToString();
             WindowSecondsEntry.Text = Preferences.Get("PerformanceSuiteWindowSeconds", 60).ToString();
             CooldownSecondsEntry.Text = Preferences.Get("PerformanceSuiteCooldownSeconds", 20).ToString();
+            SelectNamedValuePicker(ThermalGatePicker, Preferences.Get("PerformanceSuiteThermalGate", GHPerformanceSuiteLogic.ThermalGateLight), 0);
+            ThermalWaitSecondsEntry.Text = Preferences.Get("PerformanceSuiteThermalWaitSeconds", GHPerformanceSuiteLogic.DefaultThermalWaitSeconds).ToString();
 
             /* The saved label is kept only while the build's default label is the one it was
                saved under; another build starts from its own default, so that it never
@@ -475,6 +522,9 @@ namespace GnollHackX.Pages.MainScreen
             setup.WarmUpSeconds = ParseIntOrDefault(WarmUpSecondsEntry.Text, 10);
             setup.WindowSeconds = ParseIntOrDefault(WindowSecondsEntry.Text, 60);
             setup.CooldownSeconds = ParseIntOrDefault(CooldownSecondsEntry.Text, 20);
+            NamedValueItem thermalGate = ThermalGatePicker.SelectedItem as NamedValueItem;
+            setup.ThermalGate = thermalGate != null ? thermalGate.Value : GHPerformanceSuiteLogic.ThermalGateLight;
+            setup.ThermalWaitSeconds = ParseIntOrDefault(ThermalWaitSecondsEntry.Text, GHPerformanceSuiteLogic.DefaultThermalWaitSeconds);
             return setup;
         }
 
@@ -529,6 +579,13 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             }
 
+            int thermalWaitSeconds;
+            if (!int.TryParse(ThermalWaitSecondsEntry.Text, out thermalWaitSeconds) || thermalWaitSeconds < 0)
+            {
+                await GHApp.DisplayMessageBox(this, "Invalid Thermal Wait Seconds", "Thermal wait seconds must be zero or a positive number.", "OK");
+                return;
+            }
+
             string label = ArmLabelEntry.Text != null ? ArmLabelEntry.Text.Trim() : "";
             if (string.IsNullOrEmpty(label))
             {
@@ -539,9 +596,10 @@ namespace GnollHackX.Pages.MainScreen
             NamedValueItem scenarioItem = ScenarioPicker.SelectedItem as NamedValueItem;
             RunsItem runsItem = RunsPicker.SelectedItem as RunsItem;
             NamedValueItem pageModeItem = PageModePicker.SelectedItem as NamedValueItem;
-            if (scenarioItem == null || runsItem == null || pageModeItem == null)
+            NamedValueItem thermalGateItem = ThermalGatePicker.SelectedItem as NamedValueItem;
+            if (scenarioItem == null || runsItem == null || pageModeItem == null || thermalGateItem == null)
             {
-                await GHApp.DisplayMessageBox(this, "Incomplete Setup", "Please choose a scenario, a run count, and a page mode.", "OK");
+                await GHApp.DisplayMessageBox(this, "Incomplete Setup", "Please choose a scenario, a run count, a page mode and a thermal gate.", "OK");
                 return;
             }
 
@@ -556,6 +614,8 @@ namespace GnollHackX.Pages.MainScreen
             setup.WarmUpSeconds = warmUpSeconds;
             setup.WindowSeconds = windowSeconds;
             setup.CooldownSeconds = cooldownSeconds;
+            setup.ThermalGate = thermalGateItem.Value;
+            setup.ThermalWaitSeconds = thermalWaitSeconds;
 
             /* With the warm-up run off, the runner excludes run 1 as a cold first run */
             int usedRuns = setup.Runs - 1;
@@ -639,6 +699,8 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("PerformanceSuiteWarmUpSeconds", setup.WarmUpSeconds);
             Preferences.Set("PerformanceSuiteWindowSeconds", setup.WindowSeconds);
             Preferences.Set("PerformanceSuiteCooldownSeconds", setup.CooldownSeconds);
+            Preferences.Set("PerformanceSuiteThermalGate", setup.ThermalGate);
+            Preferences.Set("PerformanceSuiteThermalWaitSeconds", setup.ThermalWaitSeconds);
         }
 
         /* The wait popup: shown with the suite's current wait, hidden for null */
@@ -723,9 +785,9 @@ namespace GnollHackX.Pages.MainScreen
             item.HasMarkers = markers.Count > 0;
 
             item.ItemTextColor = darkMode ? GHColors.White : GHColors.Black;
-            /* Windows draws a selection check box inside the row's left edge and the list's
-               scroll bar over its right edge */
-            item.RowPadding = GHApp.IsWindows ? new Thickness(34, 5, 20, 5) : new Thickness(4, 5, 10, 5);
+            /* The game menu's selected-row highlight colors */
+            item.SelectedBackgroundColor = darkMode ? Color.FromRgba(0x88, 0x88, 0xAA, 0x77) : Color.FromRgba(0xFF, 0x88, 0x00, 0x88);
+            item.RowPadding = new Thickness(4, 5, 10, 5);
             return item;
         }
 
@@ -738,9 +800,13 @@ namespace GnollHackX.Pages.MainScreen
             return bytes.ToString(CultureInfo.InvariantCulture) + " B";
         }
 
+        /* The rows of the results list, newest first */
+        private List<PerformanceSuiteListItem> _suiteItems = new List<PerformanceSuiteListItem>();
+
         /* Rebuilds the results list from the store and, when selectSuiteId is given,
-           selects and scrolls to that suite (used after a run finishes and after
-           Set Baseline, so the affected suite stays visible). */
+           selects that suite (used after a run finishes and after Set Baseline). The
+           page is not scrolled: a just-finished suite is the first row, and Set Baseline
+           leaves the page where the user tapped. */
         private void RefreshSuiteList(string selectSuiteId)
         {
             bool darkMode = GHApp.DarkMode;
@@ -759,12 +825,12 @@ namespace GnollHackX.Pages.MainScreen
             foreach (GHPerformanceSuiteInfo info in suites)
                 items.Add(BuildListItem(info, darkMode));
 
-            SuiteCollectionView.SelectedItems.Clear();
-            SuiteCollectionView.ItemsSource = items;
+            BindableLayout.SetItemsSource(SuiteListLayout, items);
+            _suiteItems = items;
 
             bool hasSuites = items.Count > 0;
             NoSuitesLabel.IsVisible = !hasSuites;
-            SuiteCollectionView.IsVisible = hasSuites;
+            SuiteListLayout.IsVisible = hasSuites;
 
             if (!string.IsNullOrEmpty(selectSuiteId))
             {
@@ -772,8 +838,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     if (item.SuiteId == selectSuiteId)
                     {
-                        SuiteCollectionView.SelectedItems.Add(item);
-                        SuiteCollectionView.ScrollTo(item, position: ScrollToPosition.MakeVisible, animate: false);
+                        item.IsSelected = true;
                         break;
                     }
                 }
@@ -783,14 +848,33 @@ namespace GnollHackX.Pages.MainScreen
             UpdateRunButtonState();
         }
 
-        private void SuiteCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        /* Tapping a row selects or deselects its suite */
+        private void SuiteRow_Tapped(object sender, EventArgs e)
         {
+            BindableObject view = sender as BindableObject;
+            if (view == null)
+                return;
+            PerformanceSuiteListItem item = view.BindingContext as PerformanceSuiteListItem;
+            if (item == null)
+                return;
+            item.IsSelected = !item.IsSelected;
             UpdateResultButtons();
+        }
+
+        private int SelectedItemCount()
+        {
+            int count = 0;
+            foreach (PerformanceSuiteListItem item in _suiteItems)
+            {
+                if (item.IsSelected)
+                    count++;
+            }
+            return count;
         }
 
         private void UpdateResultButtons()
         {
-            int count = SuiteCollectionView.SelectedItems != null ? SuiteCollectionView.SelectedItems.Count : 0;
+            int count = SelectedItemCount();
             bool exactlyOne = count == 1;
             bool atLeastOne = count >= 1;
             btnViewReport.IsEnabled = exactlyOne;
@@ -802,22 +886,25 @@ namespace GnollHackX.Pages.MainScreen
 
         private PerformanceSuiteListItem SelectedSingleItem()
         {
-            if (SuiteCollectionView.SelectedItems == null || SuiteCollectionView.SelectedItems.Count != 1)
-                return null;
-            return SuiteCollectionView.SelectedItems[0] as PerformanceSuiteListItem;
+            PerformanceSuiteListItem selected = null;
+            foreach (PerformanceSuiteListItem item in _suiteItems)
+            {
+                if (!item.IsSelected)
+                    continue;
+                if (selected != null)
+                    return null;
+                selected = item;
+            }
+            return selected;
         }
 
         private List<string> SelectedSuiteIds()
         {
             List<string> ids = new List<string>();
-            if (SuiteCollectionView.SelectedItems != null)
+            foreach (PerformanceSuiteListItem item in _suiteItems)
             {
-                foreach (object obj in SuiteCollectionView.SelectedItems)
-                {
-                    PerformanceSuiteListItem item = obj as PerformanceSuiteListItem;
-                    if (item != null)
-                        ids.Add(item.SuiteId);
-                }
+                if (item.IsSelected)
+                    ids.Add(item.SuiteId);
             }
             return ids;
         }

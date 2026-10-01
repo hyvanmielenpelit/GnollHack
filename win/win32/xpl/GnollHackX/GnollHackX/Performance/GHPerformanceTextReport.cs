@@ -64,6 +64,8 @@ namespace GnollHackX.Performance
         public int WarmUpSeconds;
         public int WindowSeconds;
         public int CooldownSeconds;
+        public string ThermalGate;
+        public int ThermalWaitSeconds;
         public string ReplayFileName;
         public long ReplayBytes;
         public string ReplaySha256;
@@ -280,6 +282,9 @@ namespace GnollHackX.Performance
                 + "  Warm-up " + suite.WarmUpSeconds.ToString(CultureInfo.InvariantCulture) + "s"
                 + "  Window " + suite.WindowSeconds.ToString(CultureInfo.InvariantCulture) + "s"
                 + "  Cool-down " + suite.CooldownSeconds.ToString(CultureInfo.InvariantCulture) + "s",
+                MaxLineWidth));
+            Line(sb, Truncate("Thermal gate: " + GHPerformanceSuiteLogic.ThermalGateDisplayName(suite.ThermalGate)
+                + "  Thermal wait " + suite.ThermalWaitSeconds.ToString(CultureInfo.InvariantCulture) + "s",
                 MaxLineWidth));
 
             string replayLabel = "Replay: ";

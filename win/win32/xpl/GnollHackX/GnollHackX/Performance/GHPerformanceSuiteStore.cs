@@ -29,6 +29,8 @@ namespace GnollHackX.Performance
         public int WarmUpSeconds;
         public int WindowSeconds;
         public int CooldownSeconds;
+        public string ThermalGate;     /* start, light */
+        public int ThermalWaitSeconds;
     }
 
     /* One suite as listed by ListSuites: identity, provenance, and just enough of its
@@ -659,7 +661,7 @@ namespace GnollHackX.Performance
            Refuses (returns false, with a short sentence in refusal) when the suite
            cannot be read, has not finished or was interrupted (EffectiveStatus), no
            baseline is set for its key (naming a baseline that differs only in the
-           refresh rate, GHPerformanceSuiteLogic.DescribeKeyMismatch) or baselines.json
+           refresh rate or thermal settings, GHPerformanceSuiteLogic.DescribeKeyMismatch) or baselines.json
            cannot be read, the suite's own label is the baseline label, the baseline arm
            has no used runs on this device, or either arm has no used runs. The report also
            carries each arm's pooled fingerprint and the comparison recomputed without
@@ -1090,6 +1092,8 @@ namespace GnollHackX.Performance
             j.WarmUpSeconds = setup.WarmUpSeconds;
             j.WindowSeconds = setup.WindowSeconds;
             j.CooldownSeconds = setup.CooldownSeconds;
+            j.ThermalGate = GHPerformanceSuiteLogic.NormalizeThermalGate(setup.ThermalGate) ?? GHPerformanceSuiteLogic.ThermalGateStart;
+            j.ThermalWaitSeconds = setup.ThermalWaitSeconds;
             return j;
         }
 
@@ -1185,12 +1189,16 @@ namespace GnollHackX.Performance
             int startTurn = manifest.Setup != null ? manifest.Setup.StartTurn : 0;
             string pageMode = manifest.Setup != null ? manifest.Setup.PageMode : null;
             string mapRefreshSetting = manifest.Environment != null ? manifest.Environment.MapRefreshRateSetting : null;
+            string thermalGate = manifest.Setup != null ? manifest.Setup.ThermalGate : null;
+            int thermalWait = manifest.Setup != null && manifest.Setup.ThermalWaitSeconds.HasValue
+                ? manifest.Setup.ThermalWaitSeconds.Value : GHPerformanceSuiteLogic.DefaultThermalWaitSeconds;
             double roundedHz = double.IsNaN(measuredRefreshHz) || double.IsInfinity(measuredRefreshHz)
                 ? 0 : Math.Round(measuredRefreshHz);
             return OrEmpty(scenario) + "|" + OrEmpty(replaySha) + "|" + startTurn.ToString(CultureInfo.InvariantCulture)
                 + "|" + OrEmpty(pageMode) + "|" + OrEmpty(mapRefreshSetting) + "|"
                 + roundedHz.ToString(CultureInfo.InvariantCulture)
-                + "|m" + GHSmoothnessMetrics.MetricsVersion.ToString(CultureInfo.InvariantCulture);
+                + "|m" + GHSmoothnessMetrics.MetricsVersion.ToString(CultureInfo.InvariantCulture)
+                + GHPerformanceSuiteLogic.ThermalKeySegment(thermalGate, thermalWait);
         }
 
         private static string OrEmpty(string s)
@@ -1329,6 +1337,9 @@ namespace GnollHackX.Performance
                 suite.WarmUpSeconds = setup.WarmUpSeconds;
                 suite.WindowSeconds = setup.WindowSeconds;
                 suite.CooldownSeconds = setup.CooldownSeconds;
+                /* Suites recorded before the thermal settings existed waited for the start status for at most 300 s */
+                suite.ThermalGate = GHPerformanceSuiteLogic.NormalizeThermalGate(setup.ThermalGate) ?? GHPerformanceSuiteLogic.ThermalGateStart;
+                suite.ThermalWaitSeconds = setup.ThermalWaitSeconds ?? GHPerformanceSuiteLogic.DefaultThermalWaitSeconds;
                 suite.ReplayFileName = setup.ReplayFileName;
                 suite.ReplayBytes = setup.ReplayBytes;
                 suite.ReplaySha256 = setup.ReplaySha256;
@@ -2152,6 +2163,12 @@ namespace GnollHackX.Performance
 
             [JsonProperty("cooldownSeconds")]
             public int CooldownSeconds;
+
+            [JsonProperty("thermalGate", NullValueHandling = NullValueHandling.Ignore)]
+            public string ThermalGate;
+
+            [JsonProperty("thermalWaitSeconds", NullValueHandling = NullValueHandling.Ignore)]
+            public int? ThermalWaitSeconds;
         }
 
         private sealed class EnvironmentJson

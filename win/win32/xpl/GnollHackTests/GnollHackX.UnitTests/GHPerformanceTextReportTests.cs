@@ -86,6 +86,8 @@ namespace GnollHackX.UnitTests
                 WarmUpSeconds = 10,
                 WindowSeconds = 30,
                 CooldownSeconds = 5,
+                ThermalGate = "light",
+                ThermalWaitSeconds = 120,
                 ReplayFileName = longReplayName,
                 ReplayBytes = 4_194_304,
                 ReplaySha256 = "0123456789abcdef0123456789abcdef0123456789abcdef",
@@ -144,6 +146,14 @@ namespace GnollHackX.UnitTests
             Assert.Contains(suite.ArmLabel.Substring(0, 20), report);
             /* The warm-up row is labelled "W" rather than a run index */
             Assert.Contains("W ", report);
+        }
+
+        [Fact]
+        public void SuiteReport_ContainsThermalSettings()
+        {
+            string report = GHPerformanceTextReport.SuiteReport(BuildSuite());
+
+            Assert.Contains("Thermal gate: Light or better  Thermal wait 120s", report);
         }
 
         [Fact]

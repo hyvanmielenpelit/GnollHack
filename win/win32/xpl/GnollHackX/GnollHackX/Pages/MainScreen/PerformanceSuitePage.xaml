@@ -132,6 +132,27 @@
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="ThermalGateLabel" Text="Thermal gate" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Picker Grid.Column="1" x:Name="ThermalGatePicker" Title="Select a thermal gate" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="175" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="ThermalWaitSecondsLabel" Text="Thermal wait seconds" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Entry Grid.Column="1" x:Name="ThermalWaitSecondsEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
                                     <Label Grid.Column="0" x:Name="EstimatedDurationTitleLabel" Text="Estimated duration" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
@@ -152,31 +173,8 @@
                                     <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-                            <Label x:Name="NoSuitesLabel" IsVisible="False" Text="No performance suites yet. Run one above." FontFamily="Underwood" FontSize="15" TextColor="Black" HorizontalOptions="Start" />
 
-                            <!-- Two lines per suite: date, scenario, runs and median hitch; then arm label, markers and size -->
-                            <CollectionView x:Name="SuiteCollectionView" ItemSizingStrategy="MeasureAllItems" SelectionMode="Multiple" HeightRequest="300"
-                                HorizontalOptions="Fill" VerticalOptions="Start" BackgroundColor="Transparent" SelectionChanged="SuiteCollectionView_SelectionChanged">
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="mainscreen:PerformanceSuiteListItem">
-                                        <StackLayout Orientation="Vertical" Spacing="1" Padding="{Binding RowPadding}" HorizontalOptions="Fill">
-                                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8" HorizontalOptions="Fill">
-                                                <Label Grid.Column="0" Text="{Binding DateText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
-                                                <Label Grid.Column="1" Text="{Binding ScenarioText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="TailTruncation" />
-                                                <Label Grid.Column="2" Text="{Binding RunsText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
-                                                <Label Grid.Column="3" Text="{Binding HitchText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMonoBold" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
-                                            </Grid>
-                                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" HorizontalOptions="Fill">
-                                                <Label Grid.Column="0" Text="{Binding LabelText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="TailTruncation" />
-                                                <Label Grid.Column="1" Text="{Binding MarkersText}" IsVisible="{Binding HasMarkers}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" FontAttributes="Italic" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
-                                                <Label Grid.Column="2" Text="{Binding SizeText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
-                                            </Grid>
-                                        </StackLayout>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-
-                            <FlexLayout x:Name="ResultButtonsLayout" Direction="Row" Wrap="Wrap" JustifyContent="Center" AlignItems="Center" AlignContent="Center" HorizontalOptions="Fill" Margin="0,6,0,0">
+                            <FlexLayout x:Name="ResultButtonsLayout" Direction="Row" Wrap="Wrap" JustifyContent="Center" AlignItems="Center" AlignContent="Center" HorizontalOptions="Fill" Margin="0,0,0,6">
                                 <controls:CustomImageButton x:Name="btnViewReport" Text="Report" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
                                     Margin="3" IsEnabled="False" Clicked="btnViewReport_Clicked" UseVaryingBackgroundImages ="False" />
                                 <controls:CustomImageButton x:Name="btnSetBaseline" Text="Set Baseline" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
@@ -190,6 +188,32 @@
                                 <controls:CustomImageButton x:Name="btnImportResults" Text="Import" WidthRequest="140" HeightRequest="46" FontFamily="Diablo" FontSize="15" BackgroundColor="Transparent" TextColor="White"
                                     Margin="3" Clicked="btnImportResults_Clicked" UseVaryingBackgroundImages ="False" />
                             </FlexLayout>
+
+                            <Label x:Name="NoSuitesLabel" IsVisible="False" Text="No performance suites yet. Run one above." FontFamily="Underwood" FontSize="15" TextColor="Black" HorizontalOptions="Start" />
+
+                            <!-- Two lines per suite: date, scenario, runs and median hitch; then arm label, markers and size. Tapping a suite selects or deselects it. -->
+                            <StackLayout x:Name="SuiteListLayout" Orientation="Vertical" Spacing="0" HorizontalOptions="Fill" VerticalOptions="Start" BackgroundColor="Transparent">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="mainscreen:PerformanceSuiteListItem">
+                                        <StackLayout Orientation="Vertical" Spacing="1" Padding="{Binding RowPadding}" HorizontalOptions="Fill" BackgroundColor="{Binding RowBackgroundColor}">
+                                            <StackLayout.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="SuiteRow_Tapped" />
+                                            </StackLayout.GestureRecognizers>
+                                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8" HorizontalOptions="Fill">
+                                                <Label Grid.Column="0" Text="{Binding DateText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" />
+                                                <Label Grid.Column="1" Text="{Binding ScenarioText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="TailTruncation" />
+                                                <Label Grid.Column="2" Text="{Binding RunsText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
+                                                <Label Grid.Column="3" Text="{Binding HitchText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMonoBold" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
+                                            </Grid>
+                                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" HorizontalOptions="Fill">
+                                                <Label Grid.Column="0" Text="{Binding LabelText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="TailTruncation" />
+                                                <Label Grid.Column="1" Text="{Binding MarkersText}" IsVisible="{Binding HasMarkers}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" FontAttributes="Italic" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
+                                                <Label Grid.Column="2" Text="{Binding SizeText}" FontSize="12" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono" LineBreakMode="NoWrap" HorizontalTextAlignment="End" />
+                                            </Grid>
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </StackLayout>
                         </StackLayout>
                     </ScrollView>
                 </Grid>

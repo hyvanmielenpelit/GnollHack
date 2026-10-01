@@ -41,11 +41,12 @@ namespace GnollHackX.Performance
        play), warm up, measure one window, and save it; a window the window gate
        refuses is registered as a run excluded with "measurement window refused", and
        the suite goes on. Before the first run, with no game page open: cool down, wait
-       for the platform thermal status to be Light or better (at most 300 s; no wait
-       where the platform reports none), take the suite-start thermal reading, and wait
-       for a quiet system. Between runs: cool down, wait
-       for the platform thermal status to be no worse than at the suite start (at most
-       300 s; no wait where the platform reports none), wait for a quiet system (at most
+       for the platform thermal status to be Light or better (at most the setup's thermal
+       wait seconds; none when 0; no wait where the platform reports none), take the
+       suite-start thermal reading, and wait for a quiet system. Between runs: cool down, wait
+       for the platform thermal status to be no worse than at the suite start, or Light or
+       better, as the setup's thermal gate says (at most the setup's thermal wait seconds;
+       none when 0; no wait where the platform reports none), wait for a quiet system (at most
        30 s; once it has timed out or been skipped, the later gates do not wait), then
        either seek the same game page back
        (shared) or close it and open a new one (fresh; the cool-down then happens on the
@@ -79,7 +80,6 @@ namespace GnollHackX.Performance
         private const int PageGoneTimeoutMs = 30 * 1000;
         private const int ThermalPrimeMs = 600;
         private const int ThermalGatePollMs = 15 * 1000;
-        private const int ThermalGateTimeoutMs = 300 * 1000;
         private const int QuietGatePollMs = 1000;
         private const int AfterGarbageCollectionMs = 500;
         private const int MaxSeconds = 24 * 60 * 60;
@@ -176,6 +176,8 @@ namespace GnollHackX.Performance
                 s.StartTurn = setup.StartTurn;
                 s.SeekTurn = Math.Max(0, setup.StartTurn - 1);
                 s.InitialFromTurn = setup.StartTurn <= 1 ? -1 : s.SeekTurn;
+                s.ThermalGate = GHPerformanceSuiteLogic.NormalizeThermalGate(setup.ThermalGate);
+                s.ThermalWaitMs = setup.ThermalWaitSeconds * 1000L;
 
                 /* The first environment capture can block for seconds (WMI); later ones,
                    CreateSuite's, UpdateEnvironment's and every run record's, read its cache */
@@ -218,7 +220,7 @@ namespace GnollHackX.Performance
             }
             CurrentSuiteId = s.SuiteId;
             Log("started " + s.SuiteId + " (" + s.Scenario + ", " + s.PageMode + ", " + setup.Runs + " runs"
-                + (setup.WarmUpRun ? " + warm-up" : "") + ")");
+                + (setup.WarmUpRun ? " + warm-up" : "") + ", thermal gate " + s.ThermalGate + " " + setup.ThermalWaitSeconds + " s)");
 
             bool aborted = false;
             string abortReason = null;
@@ -317,6 +319,10 @@ namespace GnollHackX.Performance
                 return "The warm-up must be between 0 and " + MaxSeconds + " seconds.";
             if (setup.CooldownSeconds < 0 || setup.CooldownSeconds > MaxSeconds)
                 return "The cool-down must be between 0 and " + MaxSeconds + " seconds.";
+            if (GHPerformanceSuiteLogic.NormalizeThermalGate(setup.ThermalGate) == null)
+                return "Unknown thermal gate: " + setup.ThermalGate + ".";
+            if (setup.ThermalWaitSeconds < 0 || setup.ThermalWaitSeconds > MaxSeconds)
+                return "The thermal wait must be between 0 and " + MaxSeconds + " seconds.";
             return null;
         }
 
@@ -575,15 +581,19 @@ namespace GnollHackX.Performance
             Log("thermal status at the start of " + s.SuiteId + ": " + GHThermalProbe.StatusName(s.StartThermal.Status));
         }
 
-        /* The thermal gate between runs: no worse than the status at the suite start */
+        /* The thermal gate between runs: no worse than the status at the suite start, or
+           Light or better, as the setup's thermal gate says */
         private static Task ThermalGateAsync(SuiteState s, bool gameExpected)
         {
+            if (s.ThermalGate == GHPerformanceSuiteLogic.ThermalGateLight)
+                return ThermalGateAsync(s, GHThermalStatus.Light, "Light (setup)", gameExpected);
             return ThermalGateAsync(s, s.StartThermal.Status,
                 GHThermalProbe.StatusName(s.StartThermal.Status) + " at the suite start", gameExpected);
         }
 
         /* Waits until the platform thermal status is no worse than limit, polling every
-           15 s for at most 300 s; on timeout the next run goes ahead anyway. Without a
+           15 s for at most the setup's thermal wait seconds (none when 0); on timeout the
+           next run goes ahead anyway and carries a note saying so. Without a
            platform thermal status (Windows) there is no gate: the processor performance
            percent mostly reflects turbo boost, which falls whenever the replay is paused,
            so it cannot tell a throttled machine from an idle one. Runs measured while
@@ -591,35 +601,38 @@ namespace GnollHackX.Performance
            (SkipWait). limitText names the limit in the log. */
         private static async Task ThermalGateAsync(SuiteState s, GHThermalStatus limit, string limitText, bool gameExpected)
         {
-            if (limit == GHThermalStatus.Unknown)
+            if (s.ThermalWaitMs <= 0 || limit == GHThermalStatus.Unknown)
                 return;
+            int waitSeconds = (int)(s.ThermalWaitMs / 1000);
             ClearSkip();
             Stopwatch sw = Stopwatch.StartNew();
-            bool announced = false;
             while (true)
             {
                 GHThermalReading now = GHThermalProbe.Read();
                 if (now.Status == GHThermalStatus.Unknown || now.Status <= limit)
                     return;
-                if (sw.ElapsedMilliseconds >= ThermalGateTimeoutMs)
+                if (sw.ElapsedMilliseconds >= s.ThermalWaitMs)
                 {
                     Log("thermal gate timed out in " + s.SuiteId + ": " + GHThermalProbe.StatusName(now.Status)
                         + " vs " + limitText);
+                    AddPendingNote(s, "thermal gate timed out after " + waitSeconds.ToString(CultureInfo.InvariantCulture)
+                        + " s (" + GHThermalProbe.StatusName(now.Status) + " vs " + GHThermalProbe.StatusName(limit) + ")");
                     return;
                 }
-                if (!announced)
-                {
-                    SetPhase(s, "waiting for the device to cool");
-                    announced = true;
-                }
-                string detail = "Thermal status " + GHThermalProbe.StatusName(now.Status) + ", waiting for "
-                    + GHThermalProbe.StatusName(limit) + " or better";
-                /* Reports the progress each second between the 15 s thermal readings */
-                long pollEnd = sw.ElapsedMilliseconds + ThermalGatePollMs;
+                /* Reports the progress each second between the 15 s thermal readings; the last
+                   reading is taken when the wait runs out */
+                long pollEnd = Math.Min(sw.ElapsedMilliseconds + ThermalGatePollMs, s.ThermalWaitMs);
                 while (sw.ElapsedMilliseconds < pollEnd)
                 {
+                    long elapsedSeconds = sw.ElapsedMilliseconds / 1000;
+                    SetPhase(s, GHPerformanceSuiteLogic.ThermalGatePhase(GHThermalProbe.StatusName(now.Status),
+                        GHThermalProbe.StatusName(limit), elapsedSeconds, waitSeconds));
+                    string detail = "Thermal status " + GHThermalProbe.StatusName(now.Status) + ", waiting for "
+                        + GHThermalProbe.StatusName(limit) + " or better ("
+                        + elapsedSeconds.ToString(CultureInfo.InvariantCulture) + "/"
+                        + waitSeconds.ToString(CultureInfo.InvariantCulture) + " s)";
                     ReportStatus(s, "Waiting for the device to cool", detail,
-                        Math.Min(1.0, sw.ElapsedMilliseconds / (double)ThermalGateTimeoutMs), true);
+                        Math.Min(1.0, sw.ElapsedMilliseconds / (double)s.ThermalWaitMs), true);
                     if (await WaitOrSkipAsync(s, 1000L, gameExpected))
                     {
                         Log("thermal gate skipped by the user in " + s.SuiteId + ": " + GHThermalProbe.StatusName(now.Status)
@@ -648,7 +661,7 @@ namespace GnollHackX.Performance
             {
                 float busyCpu, busyDisk;
                 if (GHSystemLoadSampler.HasCpuSignal && !GHSystemLoadSampler.IsQuiet(out busyCpu, out busyDisk))
-                    s.PendingNote = "quiet gate skipped: the system stayed busy (other CPU " + FormatPercent(busyCpu) + " %)";
+                    AddPendingNote(s, "quiet gate skipped: the system stayed busy (other CPU " + FormatPercent(busyCpu) + " %)");
                 return;
             }
             ClearSkip();
@@ -672,7 +685,7 @@ namespace GnollHackX.Performance
                 {
                     Log("quiet gate timed out in " + s.SuiteId + ": other CPU " + otherText + " %, disk busy "
                         + FormatPercent(diskBusyMean) + " %");
-                    s.PendingNote = "quiet gate timed out (other CPU " + otherText + " %)";
+                    AddPendingNote(s, "quiet gate timed out (other CPU " + otherText + " %)");
                     s.QuietGateGaveUp = true;
                     return;
                 }
@@ -687,11 +700,20 @@ namespace GnollHackX.Performance
                 if (await WaitOrSkipAsync(s, QuietGatePollMs, gameExpected))
                 {
                     Log("quiet gate skipped by the user in " + s.SuiteId + ": other CPU " + otherText + " %");
-                    s.PendingNote = "quiet gate skipped by the user (other CPU " + otherText + " %)";
+                    AddPendingNote(s, "quiet gate skipped by the user (other CPU " + otherText + " %)");
                     s.QuietGateGaveUp = true;
                     return;
                 }
             }
+        }
+
+        /* Sets the next run's note, or appends to it after "; " when one is already pending */
+        private static void AddPendingNote(SuiteState s, string note)
+        {
+            if (string.IsNullOrEmpty(s.PendingNote))
+                s.PendingNote = note;
+            else
+                s.PendingNote += "; " + note;
         }
 
         private static string FormatPercent(float value)
@@ -973,6 +995,8 @@ namespace GnollHackX.Performance
             public string ReplaySha256;
             public long ReplayBytes;
             public GHThermalReading StartThermal;
+            public string ThermalGate;                 /* GHPerformanceSuiteLogic.ThermalGateStart or ThermalGateLight */
+            public long ThermalWaitMs;                 /* longest wait of each thermal gate; 0 for none */
             public string RunLabel;                    /* "warm-up run" or "run i of n", for the header */
 
             public GamePage ActivePage;                 /* null when no game page of the suite is open */

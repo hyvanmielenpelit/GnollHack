@@ -766,6 +766,8 @@ The page remembers the last setup.
 | Page mode | Shared page | **Shared page**: one game page for every run. **Fresh page per run**: a new game page for each run |
 | Arm label | Windows: `<version> <commit7> m<id6>`; elsewhere `<version> <commit7>` | Names the arm; suites with the same label pool into one arm. `<commit7>` is the first 7 characters of the commit, and `<id6>` the first 6 of the app assembly's module version id (`code.assemblyMvid`), so on Windows any code change gives a new default. An edited label is kept until the default changes |
 | Warm-up, window and cool-down seconds | 10, 60, 20 | Per run, as in the Protocol |
+| Thermal gate | Light or better | What each run after the first waits for where the platform reports a thermal status: **Light or better**, a fixed limit, the same for every run of every suite; **Same as start**, no worse than the suite-start reading, the only behavior before this setting existed |
+| Thermal wait seconds | 300 | The longest each thermal wait lasts, the one before the first run included; 0 turns the thermal waits off |
 
 The estimated duration is (measured runs + warm-up run) x (15 s for the seek + warm-up +
 window + cool-down), the cool-downs being the one before the first run and those between
@@ -776,8 +778,9 @@ minutes.
 
 1. Before the first run, the warm-up run included, and before any game page opens, the suite
    waits one cool-down and then, where the platform reports a thermal status, until the
-   status is Light or better, checking every 15 s for at most 300 s. The suite's starting
-   thermal reading, which the later thermal gates compare with, is taken after that wait.
+   status is Light or better, checking every 15 s for at most the thermal wait seconds. The
+   suite's starting thermal reading, which the later Same as start gates compare with, is
+   taken after that wait.
    The quiet gate follows (step 5). While no game page is open, a popup on the suite page
    shows what the suite is waiting for, with a progress bar: the cool-down's seconds left,
    the thermal status against its limit, or the other CPU against the quiet threshold.
@@ -789,10 +792,16 @@ minutes.
    last turn at normal speed.
 3. The runner waits, for at most 120 s, until the start turn is reached and no replayed menu,
    text window, prompt or popup covers the map, and applies the scenario. The replay header
-   shows the progress: `Performance suite: run N of M`, `warm-up run` or `cooling down`.
+   shows the progress as `Run N of M: <phase>` (`Warm-up run: <phase>` for the warm-up run),
+   the phase being `warming up 10 s`, `measuring 60 s`, `cooling down 20 s` or, during a
+   thermal gate, `cooling Moderate > Light 45/300 s`, updated every second. The replay's real
+   time is hidden while the suite shows its progress.
 4. Warm-up, then the measurement window, saved with the suite's context.
-5. Cool-down, then a thermal gate: the next run waits until the thermal class is no worse than
-   at the suite start, checking every 15 s, and goes ahead after 300 s regardless. Windows
+5. Cool-down, then a thermal gate: the next run waits until the thermal class is Light or
+   better, or no worse than at the suite start, as the Thermal gate setting says, checking every
+   15 s, and goes ahead after the thermal wait seconds regardless, carrying the note
+   `thermal gate timed out after N s (<status> vs <limit>)`. On the game page there is no Skip;
+   Quit ends the suite. Windows
    reports no thermal class, so there is no gate there: the processor performance counter
    mostly follows turbo boost, which drops whenever the replay pauses. A run measured while
    throttled is still excluded by the per-run rule. Then the quiet gate, which also runs
@@ -837,7 +846,9 @@ size, tagged `baseline`, `aborted`, `imported`, `bg` (a run was excluded for bac
 load), `env changed` (the environment fingerprint changed during the suite), `invalid id`
 (the `suiteId` in its `suite.json` differs from its folder name) or `unreadable` (its
 `suite.json` cannot be read); an `invalid id` or `unreadable` suite can only be deleted.
-A used run is a measured run with a summary and no exclusion reason. A suite's id
+Tapping a suite selects it and tapping it again deselects it. The buttons sit above the list,
+which does not scroll by itself: the page does. A used run is a measured run with a summary
+and no exclusion reason. A suite's id
 is its folder name, and a folder whose name is not letters, digits, `_` and `-` is not
 listed.
 
@@ -853,7 +864,11 @@ The **comparability key** is the scenario, the replay's SHA-256, the start turn,
 mode, the map FPS setting, the measured refresh rate rounded to whole hertz and the metrics
 version, as `|m<metricsVersion>` at its end, fixed when the suite finishes. A suite measured
 with an earlier metrics version therefore matches no baseline, previous comparable suite or
-suite measured later; after the version changes, baselines must be measured again. The
+suite measured later; after the version changes, baselines must be measured again. The key
+then ends with `|tg=<thermal gate>,<thermal wait seconds>`, e.g. `|tg=light,300`, unless the
+suite used the `start` gate with 300 s: every suite recorded before the thermal settings
+existed ran that way, so those suites stay comparable with each other and with new ones set
+alike, while suites with other thermal settings pool and compare only among themselves. The
 suite's measured refresh rate and target FPS, set when it finishes, are the medians over
 its used runs only.
 
@@ -877,6 +892,7 @@ with one of these messages:
 | `This suite has no comparability key yet.` | The suite has not been finished |
 | `baselines.json cannot be read, so no baseline is known. Set a baseline to start a new one.` | Neither `baselines.json` nor its backup can be read |
 | `No baseline for this group on this device; a baseline exists for the same replay at <Hz> Hz (this suite: <Hz> Hz).` | No baseline for the key on this device, but one for a key that differs only in the refresh rate |
+| `No baseline for this group on this device; a baseline exists for the same replay with thermal gate <gate>, wait <N> s (this suite: <gate>, wait <N> s).` | No baseline for the key on this device, but one for a key that differs only in the thermal settings; joined after the refresh-rate sentence with `; ` when both apply |
 | `No baseline is set for this suite's comparability group on this device.` | No baseline for the key on this device |
 | `This suite belongs to the baseline arm.` | The suite's own label is the baseline label |
 | `Baseline measured on a different device (<device> vs <device>).` | The baseline arm has no used runs on this device but has suites on another |

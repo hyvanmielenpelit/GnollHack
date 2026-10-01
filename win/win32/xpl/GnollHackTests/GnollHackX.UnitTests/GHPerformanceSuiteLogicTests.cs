@@ -6,7 +6,8 @@ namespace GnollHackX.UnitTests
 {
     /* Covers GHPerformanceSuiteLogic: the device key and the per-device baseline key,
        the sentence naming a baseline that differs from a suite's group only in its
-       refresh rate, and the default arm label. */
+       refresh rate or thermal settings, the thermal gate helpers and key segment, and
+       the default arm label. */
     public class GHPerformanceSuiteLogicTests
     {
         private const string Key60 = "playback|0123abcd|100|shared|MapFPS60|60|m2";
@@ -115,6 +116,76 @@ namespace GnollHackX.UnitTests
             };
 
             Assert.Null(GHPerformanceSuiteLogic.DescribeKeyMismatch(key, baselines));
+        }
+
+        [Fact]
+        public void DescribeKeyMismatch_NamesThermal()
+        {
+            string key = GHPerformanceSuiteLogic.BaselineKey(Key60 + "|tg=light,300", Device);
+            List<string> baselines = new List<string> { GHPerformanceSuiteLogic.BaselineKey(Key60, Device) };
+
+            Assert.Equal("a baseline exists for the same replay with thermal gate same as start, wait 300 s (this suite: Light or better, wait 300 s)",
+                GHPerformanceSuiteLogic.DescribeKeyMismatch(key, baselines));
+        }
+
+        [Fact]
+        public void DescribeKeyMismatch_ThermalOtherDevice_Null()
+        {
+            string key = GHPerformanceSuiteLogic.BaselineKey(Key60 + "|tg=light,300", Device);
+            List<string> baselines = new List<string>
+            {
+                GHPerformanceSuiteLogic.BaselineKey(Key60, "Android|Galaxy S24|Snapdragon")
+            };
+
+            Assert.Null(GHPerformanceSuiteLogic.DescribeKeyMismatch(key, baselines));
+        }
+
+        [Fact]
+        public void DescribeKeyMismatch_ThermalAndRefresh_Separate()
+        {
+            string key = GHPerformanceSuiteLogic.BaselineKey(Key60 + "|tg=light,300", Device);
+            List<string> baselines = new List<string>
+            {
+                GHPerformanceSuiteLogic.BaselineKey(Key120 + "|tg=light,300", Device),
+                GHPerformanceSuiteLogic.BaselineKey(Key60, Device)
+            };
+
+            Assert.Equal("a baseline exists for the same replay at 120 Hz (this suite: 60 Hz); "
+                + "a baseline exists for the same replay with thermal gate same as start, wait 300 s (this suite: Light or better, wait 300 s)",
+                GHPerformanceSuiteLogic.DescribeKeyMismatch(key, baselines));
+        }
+
+        [Fact]
+        public void NormalizeThermalGate_Values()
+        {
+            Assert.Equal("start", GHPerformanceSuiteLogic.NormalizeThermalGate(null));
+            Assert.Equal("start", GHPerformanceSuiteLogic.NormalizeThermalGate(""));
+            Assert.Equal("start", GHPerformanceSuiteLogic.NormalizeThermalGate(" Start "));
+            Assert.Equal("light", GHPerformanceSuiteLogic.NormalizeThermalGate("LIGHT"));
+            Assert.Null(GHPerformanceSuiteLogic.NormalizeThermalGate("nominal"));
+        }
+
+        [Fact]
+        public void ThermalGateDisplayName_Values()
+        {
+            Assert.Equal("Light or better", GHPerformanceSuiteLogic.ThermalGateDisplayName("light"));
+            Assert.Equal("same as start", GHPerformanceSuiteLogic.ThermalGateDisplayName("start"));
+            Assert.Equal("same as start", GHPerformanceSuiteLogic.ThermalGateDisplayName(null));
+        }
+
+        [Fact]
+        public void ThermalGatePhase_Format()
+        {
+            Assert.Equal("cooling Moderate > Light 45/300 s", GHPerformanceSuiteLogic.ThermalGatePhase("Moderate", "Light", 45, 300));
+        }
+
+        [Fact]
+        public void ThermalKeySegment_Values()
+        {
+            Assert.Equal("", GHPerformanceSuiteLogic.ThermalKeySegment("start", 300));
+            Assert.Equal("", GHPerformanceSuiteLogic.ThermalKeySegment(null, 300));
+            Assert.Equal("|tg=light,300", GHPerformanceSuiteLogic.ThermalKeySegment("light", 300));
+            Assert.Equal("|tg=start,120", GHPerformanceSuiteLogic.ThermalKeySegment("start", 120));
         }
 
         [Fact]

@@ -6,8 +6,9 @@ namespace GnollHackX.Performance
 {
     /* The suite store's and the suite page's rules that need no store or app state:
        the device a suite ran on as a key, the per-device baseline key, the sentence
-       naming a baseline that differs from a suite's group only in its refresh rate, and
-       the default arm label. Pure functions of strings and dictionaries: no GHApp,
+       naming a baseline that differs from a suite's group only in its refresh rate or
+       thermal settings, the thermal gate settings and their key segment, and the default
+       arm label. Pure functions of strings and dictionaries: no GHApp,
        GHConstants, MAUI or Xamarin types. Must compile under C# 7.3 (the legacy
        netstandard2.0 project). */
     public static class GHPerformanceSuiteLogic
@@ -19,6 +20,15 @@ namespace GnollHackX.Performance
         /* Separates a comparability key from the device key in a baselines.json key */
         public const string DeviceMarker = "|device=";
 
+        /* Setup values of the thermal gate between runs: no worse than the status read at the
+           suite start, or Light or better */
+        public const string ThermalGateStart = "start";
+        public const string ThermalGateLight = "light";
+
+        /* The longest a thermal gate waits when the setup does not say, and in suites recorded
+           before the setting existed */
+        public const int DefaultThermalWaitSeconds = 300;
+
         private const string HardwareCpuKey = "hardware.cpu";
         private const string HardwareSocKey = "hardware.soc";
 
@@ -26,6 +36,11 @@ namespace GnollHackX.Performance
            segments: scenario|replaySha256|startTurn|pageMode|mapRefreshRateSetting|
            round(measuredRefreshHz)|m<metricsVersion> */
         private const int RefreshSegment = 5;
+
+        /* Segments of a comparability key before its optional thermal segment, through m<metricsVersion> */
+        private const int BaseSegmentCount = 7;
+
+        private const string ThermalSegmentPrefix = "tg=";
 
         private const int CommitLength = 7;
         private const int MvidLength = 6;
@@ -54,9 +69,12 @@ namespace GnollHackX.Performance
         }
 
         /* "a baseline exists for the same replay at <Hz> Hz (this suite: <Hz> Hz)" when
-           a key among baselineKeys differs from key only in its refresh rate segment, or
-           null. Either key may carry a device part (BaselineKey); when both do, the
-           devices must agree. Several such rates are listed in ascending order. */
+           a key among baselineKeys differs from key only in its refresh rate segment, and
+           "a baseline exists for the same replay with thermal gate <settings> (this suite:
+           <settings>)" when one differs only in its thermal segment; both joined with "; "
+           when both apply, or null when neither does. Either key may carry a device part
+           (BaselineKey); when both do, the devices must agree. Several such rates are listed
+           in ascending order, several thermal settings in ordinal order. */
         public static string DescribeKeyMismatch(string key, IEnumerable<string> baselineKeys)
         {
             if (string.IsNullOrEmpty(key) || baselineKeys == null)
@@ -91,11 +109,120 @@ namespace GnollHackX.Performance
                 if (sameOtherwise && !rates.Contains(parts[RefreshSegment]))
                     rates.Add(parts[RefreshSegment]);
             }
-            if (rates.Count == 0)
-                return null;
-            rates.Sort(CompareRates);
-            return "a baseline exists for the same replay at " + string.Join(", ", rates.ToArray())
-                + " Hz (this suite: " + own[RefreshSegment] + " Hz)";
+            string refreshSentence = null;
+            if (rates.Count > 0)
+            {
+                rates.Sort(CompareRates);
+                refreshSentence = "a baseline exists for the same replay at " + string.Join(", ", rates.ToArray())
+                    + " Hz (this suite: " + own[RefreshSegment] + " Hz)";
+            }
+
+            string thermalSentence = null;
+            if (own.Length >= BaseSegmentCount)
+            {
+                string ownThermal = ThermalPart(own);
+                List<string> thermals = new List<string>();
+                foreach (string other in baselineKeys)
+                {
+                    if (string.IsNullOrEmpty(other))
+                        continue;
+                    string otherDevice;
+                    string[] parts = SplitKey(other, out otherDevice);
+                    if (parts.Length < BaseSegmentCount)
+                        continue;
+                    if (device != null && otherDevice != null && !string.Equals(device, otherDevice, StringComparison.Ordinal))
+                        continue;
+                    bool sameBase = true;
+                    for (int i = 0; i < BaseSegmentCount; i++)
+                    {
+                        if (!string.Equals(parts[i], own[i], StringComparison.Ordinal))
+                        {
+                            sameBase = false;
+                            break;
+                        }
+                    }
+                    if (!sameBase)
+                        continue;
+                    string otherThermal = ThermalPart(parts);
+                    if (string.Equals(otherThermal, ownThermal, StringComparison.Ordinal))
+                        continue;
+                    string description = DescribeThermalPart(otherThermal);
+                    if (!thermals.Contains(description))
+                        thermals.Add(description);
+                }
+                if (thermals.Count > 0)
+                {
+                    thermals.Sort(string.CompareOrdinal);
+                    thermalSentence = "a baseline exists for the same replay with thermal gate " + string.Join(" or ", thermals.ToArray())
+                        + " (this suite: " + DescribeThermalPart(ownThermal) + ")";
+                }
+            }
+
+            if (refreshSentence != null && thermalSentence != null)
+                return refreshSentence + "; " + thermalSentence;
+            return refreshSentence ?? thermalSentence;
+        }
+
+        /* "start" for null, empty or "start", "light" for "light" (trimmed, any case); null otherwise */
+        public static string NormalizeThermalGate(string gate)
+        {
+            if (gate == null)
+                return ThermalGateStart;
+            string g = gate.Trim();
+            if (g.Length == 0 || string.Equals(g, ThermalGateStart, StringComparison.OrdinalIgnoreCase))
+                return ThermalGateStart;
+            if (string.Equals(g, ThermalGateLight, StringComparison.OrdinalIgnoreCase))
+                return ThermalGateLight;
+            return null;
+        }
+
+        /* "Light or better" for light, otherwise "same as start" */
+        public static string ThermalGateDisplayName(string gate)
+        {
+            return NormalizeThermalGate(gate) == ThermalGateLight ? "Light or better" : "same as start";
+        }
+
+        /* The replay header phase of a thermal gate: "cooling Moderate > Light 45/300 s" */
+        public static string ThermalGatePhase(string statusName, string limitName, long elapsedSeconds, int waitSeconds)
+        {
+            return "cooling " + (statusName ?? "?") + " > " + (limitName ?? "?") + " "
+                + elapsedSeconds.ToString(CultureInfo.InvariantCulture) + "/"
+                + waitSeconds.ToString(CultureInfo.InvariantCulture) + " s";
+        }
+
+        /* The comparability key's thermal segment, "|tg=<gate>,<wait seconds>"; empty for the
+           start gate with DefaultThermalWaitSeconds, the setting of every suite recorded before
+           the thermal settings existed, so that those suites stay comparable */
+        public static string ThermalKeySegment(string gate, int waitSeconds)
+        {
+            string g = NormalizeThermalGate(gate) ?? gate;
+            if (g == ThermalGateStart && waitSeconds == DefaultThermalWaitSeconds)
+                return "";
+            return "|" + ThermalSegmentPrefix + g + "," + waitSeconds.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /* The segments after the first BaseSegmentCount, joined with '|'; empty when there are none */
+        private static string ThermalPart(string[] parts)
+        {
+            if (parts.Length <= BaseSegmentCount)
+                return "";
+            return string.Join("|", parts, BaseSegmentCount, parts.Length - BaseSegmentCount);
+        }
+
+        /* "<gate display name>, wait <n> s" of a thermal part; "same as start, wait 300 s" for
+           an empty one, and the part itself when it is not "tg=<gate>,<n>" */
+        private static string DescribeThermalPart(string part)
+        {
+            if (string.IsNullOrEmpty(part))
+                return ThermalGateDisplayName(ThermalGateStart) + ", wait "
+                    + DefaultThermalWaitSeconds.ToString(CultureInfo.InvariantCulture) + " s";
+            if (!part.StartsWith(ThermalSegmentPrefix, StringComparison.Ordinal))
+                return part;
+            string rest = part.Substring(ThermalSegmentPrefix.Length);
+            int comma = rest.LastIndexOf(',');
+            if (comma < 0)
+                return part;
+            return ThermalGateDisplayName(rest.Substring(0, comma)) + ", wait " + rest.Substring(comma + 1) + " s";
         }
 
         /* "<version> <commit, first 7> m<mvid, first 6>", leaving out the commit and the

@@ -18,7 +18,7 @@
     "environment": { "$ref": "#/$defs/environment", "description": "The environment captured when the suite's first window (warm-up or run 1) ended, so values set on the first paint and the render adapter are present; the one written when the suite is created is provisional until then" },
     "fingerprintAtEnd": { "$ref": "#/$defs/fingerprint", "description": "The fingerprint re-captured when the suite finished; absent before that, and when the capture failed" },
     "environmentChanged": { "type": "boolean", "description": "Whether fingerprintAtEnd differs from environment.fingerprint in a key outside meta and code (changed, added or removed); absent when either fingerprint is missing" },
-    "comparabilityKey": { "type": ["string", "null"], "description": "scenario|replaySha256|startTurn|pageMode|mapRefreshRateSetting|round(measuredRefreshHz)|m<metricsVersion>, the last part being GHSmoothnessMetrics.MetricsVersion of the app that finished the suite (absent in keys written before metrics version 2, so such suites match none written after); set when the suite finishes. Suites are compared only within one key" },
+    "comparabilityKey": { "type": ["string", "null"], "description": "scenario|replaySha256|startTurn|pageMode|mapRefreshRateSetting|round(measuredRefreshHz)|m<metricsVersion>, the last part being GHSmoothnessMetrics.MetricsVersion of the app that finished the suite (absent in keys written before metrics version 2, so such suites match none written after), followed by |tg=<thermalGate>,<thermalWaitSeconds> unless those are start and 300; set when the suite finishes. Suites are compared only within one key" },
     "measuredRefreshHz": { "type": "number", "description": "Nearest-rank median over the used runs' values above 0 (over every run with a summary in manifests finished by older builds); 0 when there is none" },
     "targetFps": { "type": "number", "description": "Nearest-rank median over the used runs' values above 0 (over every run with a summary in manifests finished by older builds); 0 when there is none" },
     "runs": { "type": "array", "items": { "$ref": "#/$defs/run" } }
@@ -38,7 +38,9 @@
         "warmUpRun": { "type": "boolean" },
         "warmUpSeconds": { "type": "integer" },
         "windowSeconds": { "type": "integer" },
-        "cooldownSeconds": { "type": "integer" }
+        "cooldownSeconds": { "type": "integer" },
+        "thermalGate": { "type": "string", "enum": ["start", "light"], "description": "What each thermal gate after the first run waits for: start, a status no worse than the suite-start reading; light, Light or better. Absent in suites recorded before the setting existed, which behaved as start" },
+        "thermalWaitSeconds": { "type": "integer", "minimum": 0, "description": "The longest each thermal gate waits, the one before the first run included; 0 means no thermal wait. Absent in suites recorded before the setting existed, which waited at most 300 s" }
       }
     },
     "environment": {

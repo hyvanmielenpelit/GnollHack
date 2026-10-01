@@ -24226,12 +24226,14 @@ namespace GnollHackX.Pages.Game
         }
 
         /* Replaces the replay header text while non-null, e.g. a performance suite's
-           progress; UI thread only */
+           progress, and hides the replay's real time, which shares the header's row;
+           UI thread only */
         private string _replayHeaderOverride = null;
 
         public void SetReplayHeaderOverride(string text)
         {
             _replayHeaderOverride = text;
+            ReplayRealTimeLabel.IsVisible = text == null;
             UpdateReplayHeaderLabel();
         }
 
