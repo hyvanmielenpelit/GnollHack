@@ -55,6 +55,8 @@ namespace GnollHackX.Performance
         public int NotRunCount;             /* rendered ticks whose paint returned early */
         public int PausedGapCount;
         public int CompositorReportsLost;   /* FrameMetrics reports the listener missed over the records' span */
+        public double CompositorCoverage = -1;  /* share of GL-thread paints a report carried; -1 when not applicable */
+        public double SyncOffsetP50Ms;      /* median FrameMetrics sync offset, ms; 0 when none */
         public int LongStallCount;          /* gaps with display callbacks stopped for LongStallSeconds or more */
         public double LongStallMs;          /* total length of those gaps */
         public bool LongStallsExcluded;     /* long stalls were paused gaps, not hitches */
@@ -114,14 +116,15 @@ namespace GnollHackX.Performance
        matches. The constant pipeline latency after that vsync is not modelled; it
        cancels out of every gap. When two frames land on the same vsync only the later is
        shown and the earlier counts as dropped. A frame that already carries a measured
-       display time keeps it. */
+       display time keeps it. The summary records the share of GL-thread paints a report
+       carried, and the median sync offset of the reports. */
     public static class GHSmoothnessMetrics
     {
         public const int CauseCount = 14;
         public const int ContentEventKinds = 10;
 
         /* The version of the metric definitions; results of different versions do not compare */
-        public const int MetricsVersion = 2;
+        public const int MetricsVersion = 3;
 
         /* A stop in the display callbacks at least this long is a long stall */
         public const double LongStallSeconds = 1.0;
@@ -434,6 +437,18 @@ namespace GnollHackX.Performance
             for (int i = 0; i < m && !dwmCompositor; i++)
                 dwmCompositor = compositor[i].Source == GHCompositorSource.WindowsDwm;
 
+            /* Sync offsets of the FrameMetrics reports within a refresh, a diagnostic only */
+            List<double> syncOffsetMs = new List<double>();
+            for (int i = 0; i < m; i++)
+            {
+                if (compositor[i].Source != GHCompositorSource.AndroidFrameMetrics)
+                    continue;
+                long offset = compositor[i].SyncStartTicks - compositor[i].IntendedVsyncTicks;
+                if (offset > 0 && offset < period)
+                    syncOffsetMs.Add(TicksToMs(offset));
+            }
+            s.SyncOffsetP50Ms = syncOffsetMs.Count > 0 ? Percentile(syncOffsetMs, 50) : 0;
+
             /* Reports the FrameMetrics listener missed: data loss, not display drops */
             long spanStart = 0, spanEnd = 0;
             for (int i = 0; i < n; i++)
@@ -457,6 +472,7 @@ namespace GnollHackX.Performance
             List<Candidate> candidates = new List<Candidate>();
             List<double> paintMs = new List<double>();
             List<double> callbackLateMs = new List<double>();
+            int glPaints = 0, coveredPaints = 0;
             for (int i = 0; i < n; i++)
             {
                 GHFrameRecord r = records[i];
@@ -491,6 +507,8 @@ namespace GnollHackX.Performance
                 else
                 {
                     long ready = flushed;
+                    if (!r.PaintOnUiThread)
+                        glPaints++;
                     if (androidCompositor)
                     {
                         long recPeriod = r.RefreshPeriodTicks > 0 ? r.RefreshPeriodTicks : period;
@@ -525,6 +543,8 @@ namespace GnollHackX.Performance
                             /* No report for this paint: the carrying vsync's frame showed it */
                             if (ci < 0 && carrierVsync > ready)
                                 ready = carrierVsync;
+                            if (ci >= 0)
+                                coveredPaints++;
                         }
                         if (ci >= 0 && compositor[ci].CompletedTicks > ready)
                             ready = compositor[ci].CompletedTicks;
@@ -535,6 +555,9 @@ namespace GnollHackX.Performance
                 }
                 candidates.Add(c);
             }
+            /* An Android run whose listener received nothing reads 0; compositor frames of
+               another source, or no GL-thread paints, make it not applicable */
+            s.CompositorCoverage = glPaints > 0 && (androidCompositor || m == 0) ? (double)coveredPaints / glPaints : -1;
 
             candidates.Sort(delegate (Candidate a, Candidate b)
             {
@@ -789,7 +812,8 @@ namespace GnollHackX.Performance
                swap inside the callback, the paint is the cause, not the thread: the draw
                is charged to the CPU, the flush and swap to the GPU. When it spent more
                than half a refresh handling game requests just before the late callback,
-               the requests are, even with a collection in the gap. A collection is the cause when it paused the process
+               the requests are, even with a collection in the gap, when pause data exists;
+               without it a collection takes precedence. A collection is the cause when it paused the process
                for at least half a refresh in the gap (with pause data), or ran at all
                (without). With the thread not otherwise explained, a late callback while the
                callback period ran at 1.5 refreshes or more is the UI framework's cadence:
@@ -838,6 +862,9 @@ namespace GnollHackX.Performance
             }
             if (ownPaint != GHHitchCause.None)
                 return ownPaint;
+            /* Without pause data a collection's pause shows up as request time too: the collection is the cause */
+            if (uiLate && !pauseAvailable && countsMoved)
+                return GHHitchCause.UiThreadLateGc;
             if (requests)
                 return GHHitchCause.UiThreadRequests;
             if (uiLate)

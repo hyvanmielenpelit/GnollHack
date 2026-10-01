@@ -112,6 +112,7 @@ namespace GnollHackX.Performance
             f.LongStallCount = s.LongStallCount;
             f.LongStallMs = ToFloat(s.LongStallMs);
             f.CompositorReportsLost = s.CompositorReportsLost;
+            f.CompositorCoverage = s.CompositorCoverage;
             f.PresentSource = PresentSourceName(s.PresentSource);
         }
 

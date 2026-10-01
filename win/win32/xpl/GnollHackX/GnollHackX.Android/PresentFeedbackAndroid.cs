@@ -1,21 +1,25 @@
 #if GNH_MAUI
 using System;
+using System.Collections.Generic;
 using Android.Content;
 using Android.OS;
 using Android.Views;
+using AndroidX.Fragment.App;
 using GnollHackX.Performance;
 using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Platform;
 using AndroidWindow = Android.Views.Window;
 
 namespace GnollHackM
 {
     /* HWUI frame metrics and Perfetto trace markers for the frame timeline.
 
-       FrameMetrics describes the window's RenderThread frames, which composite the map
-       whether it is an SKCanvasView bitmap or an SKGLTextureView texture. Its timestamps
-       are System.nanoTime, the same clock as Choreographer's frameTimeNanos, and are
-       converted with the timeline's clock anchor. The listener runs on its own
-       HandlerThread and only while the timeline is enabled.
+       FrameMetrics describes the RenderThread frames of the top modal page's window, which
+       during a game is GamePage's, since MAUI shows each modal page in its own dialog
+       window. Those frames composite the map whether it is an SKCanvasView bitmap or an
+       SKGLTextureView texture. The timestamps are System.nanoTime, the same clock as
+       Choreographer's frameTimeNanos, and are converted with the timeline's clock anchor.
+       The listener runs on its own HandlerThread and only while the timeline is enabled.
 
        Trace sections appear in Perfetto and systrace next to SurfaceFlinger's frame
        timeline; the FrameId counter tracks tie them to the timeline's records.
@@ -32,7 +36,7 @@ namespace GnollHackM
         private AndroidWindow _window = null;
         private WindowCommandReceiver _receiver = null;
 
-        /* UI thread: the activity's window is rechecked and the trace state reread every
+        /* UI thread: the target window is rechecked and the trace state reread every
            RecheckTicks ticks, since both can change while the timeline records */
         private const int RecheckTicks = 60;
         private int _tickCount = 0;
@@ -58,7 +62,7 @@ namespace GnollHackM
             StartReceiver();
             if (_window != null)
                 return;
-            AndroidWindow window = Platform.CurrentActivity?.Window;
+            AndroidWindow window = ResolveTargetWindow();
             if (window == null)
                 return;
             _thread = new HandlerThread("GHFrameMetrics");
@@ -68,14 +72,61 @@ namespace GnollHackM
             _window = window;
         }
 
-        /* A recreated activity (rotation, dark mode, multi-window) has a new window; the
-           listener follows it */
+        /* The window the map is drawn in: MAUI shows each modal page in a DialogFragment, so
+           the topmost showing dialog's window, else the activity's own */
+        private static AndroidWindow ResolveTargetWindow()
+        {
+            Android.App.Activity activity = Platform.CurrentActivity;
+            if (activity == null)
+                return null;
+            try
+            {
+                FragmentManager fragmentManager = activity.GetFragmentManager();
+                if (fragmentManager != null)
+                {
+                    /* Fragments lists the added fragments in the order they were added */
+                    IList<Fragment> fragments = fragmentManager.Fragments;
+                    int i;
+                    for (i = fragments.Count - 1; i >= 0; i--)
+                    {
+                        DialogFragment dialogFragment = fragments[i] as DialogFragment;
+                        if (dialogFragment == null || !dialogFragment.IsAdded || dialogFragment.IsRemoving)
+                            continue;
+                        Android.App.Dialog dialog = dialogFragment.Dialog;
+                        if (dialog == null || !dialog.IsShowing)
+                            continue;
+                        AndroidWindow dialogWindow = dialog.Window;
+                        if (dialogWindow != null)
+                            return dialogWindow;
+                    }
+                }
+                return activity.Window;
+            }
+            catch (Exception)
+            {
+                /* A diagnostic must never throw */
+                return activity?.Window;
+            }
+        }
+
+        /* Java identity: two peers of one Java window are the same window */
+        private static bool IsSameWindow(AndroidWindow a, AndroidWindow b)
+        {
+            if (ReferenceEquals(a, b))
+                return true;
+            if (a == null || b == null || a.Handle == IntPtr.Zero || b.Handle == IntPtr.Zero)
+                return false;
+            return a.Equals(b);
+        }
+
+        /* A modal page pushed or popped, or a recreated activity (rotation, dark mode,
+           multi-window), changes the target window; the listener follows it */
         private void RebindIfWindowChanged()
         {
             try
             {
-                AndroidWindow current = Platform.CurrentActivity?.Window;
-                if (current == null || current == _window)
+                AndroidWindow current = ResolveTargetWindow();
+                if (current == null || IsSameWindow(current, _window))
                     return;
                 if (_window != null)
                 {

@@ -12794,11 +12794,13 @@ namespace GnollHackX.Pages.Game
                 {
                     if (Interlocked.CompareExchange(ref _publishDashboardStats, 0, 1) != 0)
                     {
+                        CacheUsageInfo gpuCacheUsage = GetPrimaryCanvasResourceCacheUsage();
                         GHDebugDashboard.PublishDrawStats(
                             _lastDrawCommandCount, _lastSheetSwitchCount,
                             _savedRects?.Count ?? 0, _savedAutoDrawBitmaps?.Count ?? 0,
                             _localCompositeColorFiltersFallback?.Count ?? 0,
-                            _mapTextPaint, _menuTextPaint, _dashboardTextPaint);
+                            _mapTextPaint, _menuTextPaint, _dashboardTextPaint,
+                            gpuCacheUsage.MaxResourceBytes, GHApp.CurrentGPUCacheSize);
                     }
 
                     /* Cache prune diagnostics — one line per cache, at most once per draw.
@@ -12810,7 +12812,7 @@ namespace GnollHackX.Pages.Game
                         GHApp.MaybeWriteScreenLog(screenLogging, "Composite color filter cache pruned (" + GHConstants.MaxColorFilterCacheSize + " entries)");
                 }
 
-                if (screenLogging)
+                if (screenLogging && !GHDebugDashboard.Suppressed)
                 {
                     bool panelCollapsed = DebugDashboardCollapsed;
                     float dashLeft = debugDashboardAnchor.IsEmpty

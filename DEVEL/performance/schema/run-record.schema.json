@@ -246,7 +246,7 @@
     "smoothness": {
       "type": "object",
       "properties": {
-        "metricsVersion": { "type": "integer", "description": "The version of the metric definitions (GHSmoothnessMetrics.MetricsVersion); results of different versions do not compare. Absent means 1" },
+        "metricsVersion": { "type": "integer", "description": "The version of the metric definitions (GHSmoothnessMetrics.MetricsVersion); results of different versions do not compare. Absent means 1; version 3 adds compositorCoverage and syncOffsetP50Ms" },
         "tickCount": { "type": "integer" },
         "paintedCount": { "type": "integer" },
         "displayedCount": { "type": "integer" },
@@ -255,6 +255,8 @@
         "notRunCount": { "type": "integer" },
         "pausedGapCount": { "type": "integer" },
         "compositorReportsLost": { "type": "integer", "description": "FrameMetrics reports the listener missed over the records' span (Android); compositor data is incomplete when above 0. Not display drops" },
+        "compositorCoverage": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "The share of GL-thread paints carried by a FrameMetrics report (Android); null elsewhere" },
+        "syncOffsetP50Ms": { "type": "number", "description": "Median FrameMetrics sync offset" },
         "longStallCount": { "type": "integer", "description": "Gaps in which display callbacks stopped for 1 s or more without a lifecycle break" },
         "longStallMs": { "type": "number", "description": "Total length of those gaps" },
         "longStallsExcluded": { "type": "boolean", "description": "True when long stalls were paused gaps (Dump Frame Log, Analyze Hitches); false when they counted as hitches (measurement windows)" },

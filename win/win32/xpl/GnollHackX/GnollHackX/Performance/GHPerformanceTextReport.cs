@@ -243,6 +243,10 @@ namespace GnollHackX.Performance
                 + (summary.GcPauseDataAvailable ? Fmt(summary.GcPauseMs) + " ms" : "n/a"), MaxLineWidth));
             Line(sb, summary.PresentSource == GHPresentSource.Measured
                 ? "Display times: measured" : "Display times: estimated (first vsync after ready)");
+            if (summary.CompositorCoverage >= 0)
+                Line(sb, Truncate("FrameMetrics coverage: " + WholePercent(summary.CompositorCoverage)
+                    + " % of GL-thread paints (median sync offset " + Fmt(summary.SyncOffsetP50Ms) + " ms)",
+                    MaxLineWidth));
             if (summary.CompositorReportsLost > 0)
                 Line(sb, Truncate("FrameMetrics reports lost: "
                     + summary.CompositorReportsLost.ToString(CultureInfo.InvariantCulture)
@@ -667,6 +671,7 @@ namespace GnollHackX.Performance
             List<double> pace = new List<double>();
             List<double> judder = new List<double>();
             List<double> gc = new List<double>();
+            List<double> coverage = new List<double>();
             int stallCount = 0;
             double stallMs = 0;
             for (int i = 0; i < used.Count; i++)
@@ -677,6 +682,8 @@ namespace GnollHackX.Performance
                 pace.Add(s.PacingErrorRmsMs);
                 judder.Add(s.JudderPct);
                 gc.Add(s.GcCount);
+                if (s.CompositorCoverage >= 0)
+                    coverage.Add(s.CompositorCoverage);
                 stallCount += s.LongStallCount;
                 stallMs += s.LongStallMs;
             }
@@ -687,6 +694,10 @@ namespace GnollHackX.Performance
                 + "  Judder " + Fmt(GHPerformanceStatistics.MedianNearestRank(judder)) + "%"
                 + "  GC " + Fmt(GHPerformanceStatistics.MedianNearestRank(gc)), MaxLineWidth));
             Line(sb, "  Display times are estimated in-app; Compositor and Dropped are inferred.");
+            if (coverage.Count > 0)
+                Line(sb, Truncate("  FrameMetrics coverage: median "
+                    + WholePercent(GHPerformanceStatistics.MedianNearestRank(coverage))
+                    + " % of GL-thread paints", MaxLineWidth));
             /* A measurement window counts its long stalls as hitches */
             if (stallCount > 0)
                 Line(sb, Truncate("  " + LongStallText(stallCount, stallMs, false), MaxLineWidth));
@@ -1474,6 +1485,14 @@ namespace GnollHackX.Performance
             if (double.IsNaN(v) || double.IsInfinity(v))
                 return "n/a";
             return v.ToString("0.00", CultureInfo.InvariantCulture);
+        }
+
+        /* A 0-1 share as a whole percentage, without the percent sign */
+        private static string WholePercent(double share)
+        {
+            if (double.IsNaN(share) || double.IsInfinity(share))
+                return "n/a";
+            return (share * 100.0).ToString("0", CultureInfo.InvariantCulture);
         }
 
         /* A count or a median of counts, with up to two decimals */

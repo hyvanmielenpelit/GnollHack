@@ -56,7 +56,8 @@ namespace GnollHackX.Performance
        page runs in performance suite mode (GamePage.EnterPerformanceSuiteMode): the view is
        fixed at the device's default zoom with auto-center on and no overlays, and the viewer
        cannot change it; the frame time profiler and the debug dashboard are on for the whole
-       suite, whatever the settings say. The background load sampler runs for the whole
+       suite, whatever the settings say, and the dashboard and the frame marker are hidden
+       during each warm-up and measurement window. The background load sampler runs for the whole
        suite; the environment fingerprint is captured at its start (CreateSuite), replaced
        once its first window is saved (UpdateEnvironment), and captured again at its end
        (FinishSuite).
@@ -406,12 +407,24 @@ namespace GnollHackX.Performance
                 }
 
                 s.RunLabel = isWarmUp ? "warm-up run" : "run " + runIndex + " of " + setup.Runs;
-                SetPhase(s, "warming up " + setup.WarmUpSeconds + " s");
-                await WaitAsync(s, setup.WarmUpSeconds * 1000L, true);
+                /* The frame marker and the dashboard stay hidden through the warm-up and
+                   the window, so the measured frames draw neither */
+                GHFrameMarker.Suppressed = true;
+                GHDebugDashboard.Suppressed = true;
+                try
+                {
+                    SetPhase(s, "warming up " + setup.WarmUpSeconds + " s");
+                    await WaitAsync(s, setup.WarmUpSeconds * 1000L, true);
 
-                /* Set before the window opens, so the label is unchanged throughout it */
-                SetPhase(s, "measuring " + setup.WindowSeconds + " s");
-                await MeasureAsync(s, runIndex, isWarmUp);
+                    /* Set before the window opens, so the label is unchanged throughout it */
+                    SetPhase(s, "measuring " + setup.WindowSeconds + " s");
+                    await MeasureAsync(s, runIndex, isWarmUp);
+                }
+                finally
+                {
+                    GHFrameMarker.Suppressed = false;
+                    GHDebugDashboard.Suppressed = false;
+                }
 
                 if (runIndex < lastRunIndex)
                     await PrepareNextRunAsync(s);
@@ -724,7 +737,8 @@ namespace GnollHackX.Performance
         }
 
         /* The frame time profiler and the debug dashboard are on for the whole suite, whatever the
-           settings say; runtime only, nothing is saved */
+           settings say, with the dashboard hidden during each warm-up and window; runtime only,
+           nothing is saved */
         private static void ApplyOverrides(SuiteState s)
         {
             FrameTimeProfiler.IsEnabled = true;
@@ -732,12 +746,15 @@ namespace GnollHackX.Performance
             s.OverridesApplied = true;
         }
 
-        /* Returns the profiler to the Settings value and ends the dashboard override, once */
+        /* Returns the profiler to the Settings value, ends the dashboard override and shows the
+           frame marker and the dashboard again, once */
         private static void RestoreOverrides(SuiteState s)
         {
             if (!s.OverridesApplied)
                 return;
             s.OverridesApplied = false;
+            GHFrameMarker.Suppressed = false;
+            GHDebugDashboard.Suppressed = false;
             GHApp.ForceDebugScreenLogging = false;
             FrameTimeProfiler.IsEnabled = GHApp.IsFrameTimeProfilerOn;
         }

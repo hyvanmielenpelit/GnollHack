@@ -183,9 +183,17 @@ excluded from hitch time. A long gap in which the callbacks kept coming, such as
 stall, is always a hitch. The record's `smoothness` object carries `longStallCount`,
 `longStallMs` and `longStallsExcluded`.
 
-**Metrics version.** `smoothness.metricsVersion` (2, `GHSmoothnessMetrics.MetricsVersion`)
+**Metrics version.** `smoothness.metricsVersion` (3, `GHSmoothnessMetrics.MetricsVersion`)
 names the version of these definitions; a record without it is version 1. Results of
 different versions do not compare.
+
+**FrameMetrics coverage.** `smoothness.compositorCoverage` is the share of GL-thread paints
+carried by a FrameMetrics report, from 0 to 1, and `smoothness.syncOffsetP50Ms` the median
+FrameMetrics sync offset; the suite manifest's run summaries carry both. Coverage applies
+only on Android and is `null` elsewhere. On Android, FrameMetrics follow the window of the
+top modal page, so a coverage near 0 across a suite means the listener is on the wrong
+window and the `Compositor` attribution has nothing to go on. The recent hitches report, the
+suite medians and the analyzer's hitch causes print it when it applies.
 
 The render loop's callback intervals, paint and lock durations, GC and allocation data are
 still collected by `FrameTimeProfiler` and shown on the dashboard's FRAME section; they are
@@ -200,7 +208,7 @@ that exceeded its budget:
 |-------|-------|------|
 | 1 | `DisplayMode` | The measured refresh period moved by more than 5 % across the gap or within the few ticks after it (the measurement is a running median, which lags a real change), or the pacing logic assumes a rate more than 5 % off the measured one |
 | 2 | `PaintCpu` / `Gpu` | A late or missed callback while the UI thread was still painting the previous map frame, a buffer swap inside the callback included: `Gpu` when the flush or swap took longer than the draw |
-| 2 | `UiThreadRequests` | A late or missed callback on a tick whose request handling (floating texts, messages, windows, ...) took more than `R/2`; it takes precedence over a collection in the same gap |
+| 2 | `UiThreadRequests` | A late or missed callback on a tick whose request handling (floating texts, messages, windows, ...) took more than `R/2`; with pause data it takes precedence over a collection in the same gap, and without it (Mono, older captures) the collection does, since its pause shows up as request time too |
 | 2 | `UiThreadLateGc` | A missed callback, or a callback more than `R/2` after its vsync, and collections in the gap paused the process for at least `R/2` in total: long enough to explain the lateness. Without pause data (Mono, older captures), any collection in the gap counts, and the report says so |
 | 2 | `FrameworkCadence` | A late or missed callback, not explained by the above, while the callback period ran at 1.5 refreshes or more around the gap: the UI framework delivered callbacks below the panel's rate for a while (Windows) |
 | 2 | `UiThreadLate` | A late or missed callback that nothing above explains |
@@ -658,7 +666,8 @@ lies. `GHPerformanceDiagnosticRunner` runs the test and `GHPerformanceDiagnosis`
 After a confirmation the menu closes and a countdown is drawn at the top of the map. The
 test settles for 3 s, so that the menu's pause and collection fall outside the window, waits
 at most 5 s for the background sampler's per-process begin collect, records the scene, and
-measures the map for one 30 s window. Do not touch the game until the report opens. The
+measures the map for one 30 s window. The debug dashboard and the frame marker are hidden
+during the settle and the window. Do not touch the game until the report opens. The
 window is saved as a run record in `<GHPath>/performance/diagnostics/<stamp>/`, and the
 report is written to `diagnostics/perftest_<stamp>.txt` (`<stamp>` is the local time as
 `yyyyMMdd_HHmmss`) and opened in the viewer. The newest 30 reports are kept: after every
@@ -796,7 +805,8 @@ minutes.
    the phase being `warming up 10 s`, `measuring 60 s`, `cooling down 20 s` or, during a
    thermal gate, `cooling Moderate > Light 45/300 s`, updated every second. The replay's real
    time is hidden while the suite shows its progress.
-4. Warm-up, then the measurement window, saved with the suite's context.
+4. Warm-up, then the measurement window, saved with the suite's context. The debug dashboard
+   and the frame marker are hidden from the start of each warm-up until the window is saved.
 5. Cool-down, then a thermal gate: the next run waits until the thermal class is Light or
    better, or no worse than at the suite start, as the Thermal gate setting says, checking every
    15 s, and goes ahead after the thermal wait seconds regardless, carrying the note
@@ -1100,7 +1110,7 @@ subsystem.
 |------|------|
 | `scripts/Run-PerformanceSuite.ps1` | Interleaved two-arm batch driver: launches the app, captures presented frames and the background load, collects in-app records, gates on thermal state and a quiet machine, fingerprints the environment at batch start and end, analyzes, compares, appends to history |
 | `scripts/Capture-PresentMon.ps1` | Windows: presentation timing for one process with PresentMon 2.x, QPC timestamps included |
-| `scripts/Capture-AndroidFrames.ps1` | Android: `gfxinfo framestats` polling, optional Perfetto trace and CSV export |
+| `scripts/Capture-AndroidFrames.ps1` | Android: `gfxinfo framestats` polling, optional Perfetto trace and CSV export. The package defaults to the Android manifest's, `com.soundmindentertainment.gnollhack` (not the csproj `ApplicationId`), and the script stops when that process is not running |
 | `scripts/Get-ThermalState.ps1` | Thermal and power facts for the Windows host or an Android device, as JSON, with a one-shot background load reading (top processes, known activities, disk, memory, pending reboot) |
 | `scripts/Get-EnvironmentFingerprint.ps1` | The environment fingerprint of the Windows host or an Android device, as flat JSON in the shared key scheme |
 | `scripts/Common.ps1` | Shared helpers (tool resolution, native calls that write to stderr, JSON writing, git facts, the background load sampler and the quiet check) |

@@ -1158,6 +1158,8 @@ namespace GnollHackX.Performance
             j.MeasuredRefreshHz = R(s.MeasuredRefreshHz);
             j.TargetFps = R(s.TargetFps);
             j.CompositorReportsLost = s.CompositorReportsLost;
+            j.CompositorCoverage = s.CompositorCoverage < 0 ? (double?)null : R(s.CompositorCoverage);
+            j.SyncOffsetP50Ms = R(s.SyncOffsetP50Ms);
             j.LongStallCount = s.LongStallCount;
             j.LongStallMs = R(s.LongStallMs);
             j.CauseCount = (int[])s.CauseCount.Clone();
@@ -1436,6 +1438,8 @@ namespace GnollHackX.Performance
             s.MeasuredRefreshHz = j.MeasuredRefreshHz;
             s.TargetFps = j.TargetFps;
             s.CompositorReportsLost = j.CompositorReportsLost;
+            s.CompositorCoverage = j.CompositorCoverage.HasValue ? j.CompositorCoverage.Value : -1;
+            s.SyncOffsetP50Ms = j.SyncOffsetP50Ms;
             s.LongStallCount = j.LongStallCount;
             s.LongStallMs = j.LongStallMs;
             CopyInto(s.CauseCount, j.CauseCount);
@@ -2335,6 +2339,13 @@ namespace GnollHackX.Performance
 
             [JsonProperty("compositorReportsLost")]
             public int CompositorReportsLost;
+
+            /* Share of GL-thread paints carried by a FrameMetrics report; null (or absent) where not applicable */
+            [JsonProperty("compositorCoverage")]
+            public double? CompositorCoverage;
+
+            [JsonProperty("syncOffsetP50Ms")]
+            public double SyncOffsetP50Ms;
 
             [JsonProperty("longStallCount")]
             public int LongStallCount;

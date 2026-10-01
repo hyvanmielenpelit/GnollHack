@@ -90,6 +90,9 @@ namespace GnollHackX
         public long DashBlobHits;
         public long DashBlobMisses;
         public long DashBlobFlushes;
+        /* Main canvas GPU resource cache, in bytes; negative when unknown */
+        public long GpuCacheUsedBytes;
+        public long GpuCacheLimitBytes;
 
         /* Menu surface, published from the menu paint thread */
         public int MenuItemCount;
@@ -119,6 +122,10 @@ namespace GnollHackX
         private static readonly object _publishLock = new object();
         private static GHDebugDashboardData _staging;
         private static long _version;
+
+        /* Set by the performance runners while they measure; the map canvas then skips
+           the panel. Written on the UI thread, read on the paint thread. */
+        public static volatile bool Suppressed = false;
 
         private const string Ellipsis = "...";
         private const string EmptyValue = "";
@@ -265,12 +272,13 @@ namespace GnollHackX
         /// <summary>
         /// Publishes the draw and cache group. Called from the paint
         /// thread, which owns the two font paints and is therefore the
-        /// only thread allowed to read their cache counters.
+        /// only thread allowed to read their cache counters. The GPU
+        /// cache usage is read there too, while the GRContext is current.
         /// </summary>
         public static void PublishDrawStats(int drawCommandCount, int sheetSwitchCount,
             int savedRectCount, int savedAutoDrawBitmapCount, int compositeFilterFallbackCount,
             GHSkiaFontPaint mapTextPaint, GHSkiaFontPaint menuTextPaint,
-            GHSkiaFontPaint dashTextPaint)
+            GHSkiaFontPaint dashTextPaint, long gpuCacheUsedBytes, long gpuCacheLimitBytes)
         {
             lock (_publishLock)
             {
@@ -279,6 +287,8 @@ namespace GnollHackX
                 _staging.SavedRectCount = savedRectCount;
                 _staging.SavedAutoDrawBitmapCount = savedAutoDrawBitmapCount;
                 _staging.CompositeFilterFallbackCount = compositeFilterFallbackCount;
+                _staging.GpuCacheUsedBytes = gpuCacheUsedBytes;
+                _staging.GpuCacheLimitBytes = gpuCacheLimitBytes;
 
                 if (mapTextPaint != null)
                 {
@@ -519,6 +529,8 @@ namespace GnollHackX
 
                 AddRow("gen", BuildGenerationSizes(d), SKColors.White, RowKind.Value);
 
+                AddRow("gpu", BuildGpuCacheSummary(d), SKColors.White, RowKind.Value);
+
                 bool hasRuntimeGc = d.RuntimeGcFrameCount > 0
                     || d.GcGen0Count > 0 || d.GcGen1Count > 0 || d.GcGen2Count > 0;
                 bool hasForcedGc = d.GcFrameCount > 0 || d.PauseFrameCount > 0;
@@ -632,6 +644,22 @@ namespace GnollHackX
                 return FormattableString.Invariant($"{g0:0} / {g1:0} / {g2:0} + {loh:0} MB");
             }
             return FormattableString.Invariant($"{g0:0} / {g1:0} / {g2:0} MB");
+        }
+
+        /// <summary>
+        /// Main canvas GPU resource cache use and limit in megabytes, with
+        /// "?" for a side the canvas does not report (no GRContext).
+        /// </summary>
+        private static string BuildGpuCacheSummary(in GHDebugDashboardData d)
+        {
+            if (d.GpuCacheUsedBytes < 0 && d.GpuCacheLimitBytes < 0)
+                return "?";
+
+            string used = d.GpuCacheUsedBytes < 0 ? "?"
+                : FormattableString.Invariant($"{d.GpuCacheUsedBytes / (1024f * 1024f):0}");
+            string limit = d.GpuCacheLimitBytes < 0 ? "?"
+                : FormattableString.Invariant($"{d.GpuCacheLimitBytes / (1024f * 1024f):0}");
+            return "cache " + used + " / " + limit + " MB";
         }
 
         /* Characters are reported in rounded kibicharacters and the hit rate as a whole

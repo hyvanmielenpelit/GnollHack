@@ -1240,6 +1240,8 @@ namespace GnollHackX.Performance
             j.NotRunCount = s.NotRunCount;
             j.PausedGapCount = s.PausedGapCount;
             j.CompositorReportsLost = s.CompositorReportsLost;
+            j.CompositorCoverage = s.CompositorCoverage < 0 ? (double?)null : R(s.CompositorCoverage);
+            j.SyncOffsetP50Ms = R(s.SyncOffsetP50Ms);
             j.LongStallCount = s.LongStallCount;
             j.LongStallMs = R(s.LongStallMs);
             j.LongStallsExcluded = s.LongStallsExcluded;
@@ -1826,6 +1828,14 @@ namespace GnollHackX.Performance
             /* FrameMetrics reports the listener missed; not display drops */
             [JsonProperty("compositorReportsLost")]
             public int CompositorReportsLost;
+
+            /* Share of GL-thread paints carried by a FrameMetrics report, 0-1; null where not applicable */
+            [JsonProperty("compositorCoverage")]
+            public double? CompositorCoverage;
+
+            /* Median FrameMetrics sync offset */
+            [JsonProperty("syncOffsetP50Ms")]
+            public double SyncOffsetP50Ms;
 
             /* Gaps with display callbacks stopped for GHSmoothnessMetrics.LongStallSeconds or more */
             [JsonProperty("longStallCount")]

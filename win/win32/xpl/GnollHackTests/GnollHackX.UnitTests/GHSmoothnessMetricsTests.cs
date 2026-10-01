@@ -609,6 +609,92 @@ namespace GnollHackX.UnitTests
             Assert.Equal(lateTicks.Count, checkedFrames);
         }
 
+        /* A request batch with a collection on every late tick, as in
+           RequestBatchBeforeLateCallback_IsUiThreadRequests_AndCorrelatesWithItsEvent. With
+           pause data every record carries pause time, and each collection pauses for 1 ms. */
+        private static Timeline RequestsWithCollectionTimeline(bool pauseData, List<int> lateTicks)
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            int gc = 0;
+            long pause = pauseData ? Ms(100) : 0;
+            for (int i = 0; i < 120; i++)
+            {
+                bool late = i % 12 == 6;
+                if (late)
+                {
+                    t.NextVsync += period;
+                    gc++;
+                    if (pauseData)
+                        pause += Ms(1);
+                }
+                int idx = t.Tick(period, 60, 60, GHPacingDecision.Rendered, true, 3.0, 1.0, late ? 12.0 : 0.2);
+                GHFrameRecord r = t.Records[idx];
+                r.GcCount0 = gc;
+                r.GcPauseTicks = pause;
+                if (late)
+                {
+                    r.ContentEvents = GHContentEvent.FloatingText;
+                    r.RequestTicks = Ms(14);
+                    lateTicks.Add(idx);
+                }
+                t.Records[idx] = r;
+            }
+            return t;
+        }
+
+        /* Without pause data a collection's pause shows up as request time too: the
+           collection is charged */
+        [Fact]
+        public void LateCallback_WithCollectionAndRequests_WithoutPauseData_IsGc()
+        {
+            List<int> lateTicks = new List<int>();
+            Timeline t = RequestsWithCollectionTimeline(false, lateTicks);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.False(s.GcPauseDataAvailable);
+            Assert.Equal(10, s.HitchCount);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadRequests]);
+            Assert.Equal(TotalAttributed(s), s.CauseCount[(int)GHHitchCause.UiThreadLateGc]);
+            int checkedFrames = 0;
+            for (int j = 1; j < n; j++)
+            {
+                if (!lateTicks.Contains(d[j].RecordIndex))
+                    continue;
+                Assert.Equal(GHHitchCause.UiThreadLateGc, d[j].Cause);
+                checkedFrames++;
+            }
+            Assert.Equal(lateTicks.Count, checkedFrames);
+        }
+
+        /* With pause data a 1 ms collection does not explain the late callback: the
+           requests are charged */
+        [Fact]
+        public void LateCallback_WithShortCollectionAndRequests_WithPauseData_IsRequests()
+        {
+            List<int> lateTicks = new List<int>();
+            Timeline t = RequestsWithCollectionTimeline(true, lateTicks);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.True(s.GcPauseDataAvailable);
+            Assert.Equal(10, s.HitchCount);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadLateGc]);
+            Assert.Equal(TotalAttributed(s), s.CauseCount[(int)GHHitchCause.UiThreadRequests]);
+            int checkedFrames = 0;
+            for (int j = 1; j < n; j++)
+            {
+                if (!lateTicks.Contains(d[j].RecordIndex))
+                    continue;
+                Assert.Equal(GHHitchCause.UiThreadRequests, d[j].Cause);
+                checkedFrames++;
+            }
+            Assert.Equal(lateTicks.Count, checkedFrames);
+        }
+
         /* A long map-lock stall in a gap that also holds a modulo skip is the lock's: the
            skip explains a gap only as long as the pattern's own holds */
         [Fact]
@@ -914,7 +1000,7 @@ namespace GnollHackX.UnitTests
             int n;
             GHSmoothnessSummary s = t.Analyze(out d, out n);
 
-            Assert.Equal(2, GHSmoothnessMetrics.MetricsVersion);
+            Assert.Equal(3, GHSmoothnessMetrics.MetricsVersion);
             Assert.Equal(GHSmoothnessMetrics.MetricsVersion, s.MetricsVersion);
             Assert.Equal(GHSmoothnessMetrics.MetricsVersion,
                          GHSmoothnessMetrics.Analyze(new GHFrameRecord[0], 0, null, 0, new GHDisplayedFrame[0], out n).MetricsVersion);
@@ -1102,6 +1188,69 @@ namespace GnollHackX.UnitTests
             Assert.Equal(late, d[n - 1].RecordIndex);
             /* The first vsync after the completion */
             Assert.Equal(t.Records[late + 3].VsyncTicks, d[n - 1].DisplayedAtTicks);
+        }
+
+        /* GL-thread paints at 60 Hz, each flushed 0.4 refreshes after its vsync */
+        private static Timeline GlThreadFlushTimeline(int ticks)
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            for (int i = 0; i < ticks; i++)
+            {
+                int idx = t.Tick(period, 60, 60, GHPacingDecision.Rendered, false);
+                GHFrameRecord r = t.Records[idx];
+                r.FlushEndTicks = r.VsyncTicks + (long)(0.4 * period);
+                r.DrawEndTicks = r.FlushEndTicks - Ms(0.5);
+                t.Records[idx] = r;
+            }
+            return t;
+        }
+
+        /* Reports for the first half of the ticks only, each syncing 0.6 and completing 0.85
+           refreshes after its vsync: half the GL-thread paints are carried by a report */
+        [Fact]
+        public void CompositorCoverage_CountsGlThreadPaintsWithReports()
+        {
+            Timeline t = GlThreadFlushTimeline(120);
+            long period = F / 60;
+            List<GHCompositorFrame> comp = new List<GHCompositorFrame>();
+            for (int j = 0; j < 60; j++)
+            {
+                long vsync = t.Records[j].VsyncTicks;
+                comp.Add(FrameMetricsFrame(vsync, vsync + (long)(0.6 * period), vsync + (long)(0.85 * period), 0));
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n, comp.ToArray(), comp.Count);
+
+            Assert.InRange(s.CompositorCoverage, 0.45, 0.55);
+            Assert.Equal(0.6 * 1000.0 / 60, s.SyncOffsetP50Ms, 0.01);
+        }
+
+        /* An Android run whose listener received no reports covers nothing */
+        [Fact]
+        public void CompositorCoverage_GlThreadPaintsWithoutReports_IsZero()
+        {
+            Timeline t = GlThreadFlushTimeline(120);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(0.0, s.CompositorCoverage);
+            Assert.Equal(0.0, s.SyncOffsetP50Ms);
+        }
+
+        /* Paints on the UI thread are not a GL-thread report's to carry */
+        [Fact]
+        public void CompositorCoverage_UiThreadPaints_IsMinusOne()
+        {
+            Timeline t = new Timeline();
+            t.Run(2.0, 60, 60, 60);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(-1.0, s.CompositorCoverage);
         }
 
         /* One second at 60 on 60, a 1.5 s stop in the display callbacks, and another second.

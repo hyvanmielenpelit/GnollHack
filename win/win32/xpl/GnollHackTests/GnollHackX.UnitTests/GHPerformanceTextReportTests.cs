@@ -976,6 +976,27 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void RecentHitchesReport_Header_FrameMetricsCoverage()
+        {
+            string report = RecentReportWith(delegate (GHSmoothnessSummary s)
+            {
+                s.CompositorCoverage = 0.25;
+                s.SyncOffsetP50Ms = 4.5;
+            });
+
+            Assert.Contains("\nFrameMetrics coverage: 25 % of GL-thread paints (median sync offset 4.50 ms)\n",
+                Section(report, "Recent hitches", "Marked moments:"));
+        }
+
+        [Fact]
+        public void RecentHitchesReport_Header_NoFrameMetricsCoverage_WhenNotApplicable()
+        {
+            string report = RecentReportWith(delegate (GHSmoothnessSummary s) { s.CompositorCoverage = -1; });
+
+            Assert.DoesNotContain("FrameMetrics coverage", Section(report, "Recent hitches", "Marked moments:"));
+        }
+
+        [Fact]
         public void RecentHitchesReport_Header_ExcludedLongStalls()
         {
             string report = RecentReportWith(delegate (GHSmoothnessSummary s)
@@ -1028,6 +1049,25 @@ namespace GnollHackX.UnitTests
 
             AssertNoLineExceedsMaxWidth(report);
             Assert.Contains("\n  Stalls over 1 s: 3 (4200.00 ms), counted as hitches\n",
+                Section(report, "Medians", "Previous comparable suite"));
+        }
+
+        [Fact]
+        public void SuiteReport_Medians_FrameMetricsCoverageOfUsedRuns()
+        {
+            GHReportSuite suite = BuildSuite();
+            string medians = Section(GHPerformanceTextReport.SuiteReport(suite), "Medians", "Previous comparable suite");
+            Assert.DoesNotContain("FrameMetrics coverage", medians);
+
+            suite.Runs[1].Summary.CompositorCoverage = 0.9;
+            suite.Runs[2].Summary.CompositorCoverage = 0.2;
+            suite.Runs[3].Summary.CompositorCoverage = 0.3;
+            /* The excluded run's coverage is not in the median */
+            suite.Runs[4].Summary.CompositorCoverage = 0.0;
+            string report = GHPerformanceTextReport.SuiteReport(suite);
+
+            AssertNoLineExceedsMaxWidth(report);
+            Assert.Contains("\n  FrameMetrics coverage: median 30 % of GL-thread paints\n",
                 Section(report, "Medians", "Previous comparable suite"));
         }
 

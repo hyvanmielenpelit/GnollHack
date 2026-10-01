@@ -124,7 +124,7 @@ namespace GnollHackX.UnitTests
         private static GHSmoothnessSummary FullSummary()
         {
             GHSmoothnessSummary s = new GHSmoothnessSummary();
-            s.MetricsVersion = 2;
+            s.MetricsVersion = GHSmoothnessMetrics.MetricsVersion;
             s.WindowMs = 29500.0;
             s.DisplayedCount = 1771;
             s.PaintedCount = 1800;
@@ -150,6 +150,7 @@ namespace GnollHackX.UnitTests
             s.LongStallCount = 1;
             s.LongStallMs = 1250.0;
             s.CompositorReportsLost = 5;
+            s.CompositorCoverage = 0.25;
             s.PresentSource = GHPresentSource.Measured;
             return s;
         }
@@ -184,10 +185,11 @@ namespace GnollHackX.UnitTests
             Assert.Equal(2, f.EventHitchCounts[0]);
             Assert.NotSame(s.EventGapCount, f.EventGapCounts);
             Assert.NotSame(s.EventHitchCount, f.EventHitchCounts);
-            Assert.Equal(2, f.MetricsVersion);
+            Assert.Equal(GHSmoothnessMetrics.MetricsVersion, f.MetricsVersion);
             Assert.Equal(1, f.LongStallCount);
             Assert.Equal(1250f, f.LongStallMs);
             Assert.Equal(5, f.CompositorReportsLost);
+            Assert.Equal(0.25, f.CompositorCoverage);
             Assert.Equal(GHPerformanceDiagnosis.PresentSourceMeasured, f.PresentSource);
 
             /* No span, no paints, no pause data, no rates: unknown, and the window falls
@@ -232,6 +234,7 @@ namespace GnollHackX.UnitTests
             Assert.Equal(31f, f.WindowSeconds);
             Assert.Equal(12, f.OnScreenIntervalCount);
             Assert.Equal(-1, f.MetricsVersion);
+            Assert.Equal(-1.0, f.CompositorCoverage);
             Assert.Null(f.PresentSource);
             f = new GHDiagnosisFacts();
             GHPerformanceDiagnosticSupport.FillSummaryFacts(f, null, double.NaN, 0);

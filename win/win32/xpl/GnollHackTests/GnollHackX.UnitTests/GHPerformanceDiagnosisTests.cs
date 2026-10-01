@@ -1976,6 +1976,17 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void Report_FactsCarryCompositorCoverage()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.CompositorCoverage = -1;
+            Assert.Contains("\n  compositorCoverage=n/a\n", Report(f));
+
+            f.CompositorCoverage = 0.25;
+            Assert.Contains("\n  compositorCoverage=0.25\n", Report(f));
+        }
+
+        [Fact]
         public void Report_AlsoLine_NamesTheOtherSide()
         {
             /* A scored primary names the strongest external finding */

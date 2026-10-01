@@ -31,7 +31,8 @@ namespace GnollHackX.Performance
             only while the Frame Time Profiler setting is on, so this is a safeguard), so
             its start-up falls before the settle; holds the background load sampler (so
             the pre-window has samples), starts the countdown and closes the menu.
-         3. Hides the frame marker (GHFrameMarker.Suppressed) until the window is saved.
+         3. Hides the frame marker (GHFrameMarker.Suppressed) and the debug dashboard
+            (GHDebugDashboard.Suppressed) until the window is saved.
             Settles for SettleSeconds, so the menu's pause mark and collection fall
             outside the window; starts the per-process interval on the thread pool,
             waits for its begin collect at most ProcessIntervalBeginWaitMs, captures the
@@ -251,13 +252,14 @@ namespace GnollHackX.Performance
         }
 
         /* Settle, begin collects, the measurement window, and its save, with the frame
-           marker hidden throughout. Throws DiagnosticAbortException on an abort. */
+           marker and the debug dashboard hidden throughout. Throws DiagnosticAbortException on an abort. */
         private static async Task MeasureAsync(TestState s)
         {
             if (GHApp.PageFromTopOfModalNavigationStack() != s.GamePage)
                 throw new DiagnosticAbortException("the menu did not close");
 
             GHFrameMarker.Suppressed = true;
+            GHDebugDashboard.Suppressed = true;
             s.FrameMarkerSuppressed = true;
             try
             {
@@ -289,6 +291,7 @@ namespace GnollHackX.Performance
             finally
             {
                 GHFrameMarker.Suppressed = false;
+                GHDebugDashboard.Suppressed = false;
             }
         }
 
