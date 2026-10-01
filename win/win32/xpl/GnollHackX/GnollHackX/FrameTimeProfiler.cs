@@ -28,7 +28,7 @@ namespace GnollHackX
         /* Cumulative bytes allocated at frame start */
         public long AllocatedBytes;
 
-        /* Managed heap size at frame start; sampled periodically and after collections, else carried over */
+        /* Managed heap size at frame start: read directly after a collection, else the latest background sample */
         public long HeapSizeBytes;
     }
 
@@ -109,6 +109,7 @@ namespace GnollHackX
             {
                 Interlocked.Exchange(ref _isEnabled, value ? 1 : 0);
                 GHFrameTimeline.IsEnabled = value;
+                SetHeapSampling(value);
                 if (!value)
                 {
                     /* Reset buffer so stale data is not reported when re-enabled */
@@ -119,8 +120,6 @@ namespace GnollHackX
         }
 
         private const int BufferSize = 1800;
-        /* The heap size is a slow-moving value, and reading it walks the heap on Mono */
-        private const int HeapSampleInterval = 30;
         private const int MaxExclusionEvents = 64;
         private const int MaxForcedGcEvents = 64;
         private const int MaxGcReasonEvents = 64;
@@ -297,6 +296,42 @@ namespace GnollHackX
             }
         }
 
+        /* GC.GetTotalMemory walks the major heap on Mono, taking milliseconds, so the heap size
+           is sampled off the UI thread while the profiler is enabled */
+        private const int HeapSampleIntervalMs = 1000;
+        private static readonly object _heapTimerLock = new object();
+        private static System.Threading.Timer _heapTimer = null;
+        private static long _latestHeapSizeBytes = 0;
+
+        private static void SetHeapSampling(bool on)
+        {
+            lock (_heapTimerLock)
+            {
+                if (on && _heapTimer == null)
+                {
+                    _heapTimer = new System.Threading.Timer(SampleHeapSize, null, 0, HeapSampleIntervalMs);
+                }
+                else if (!on && _heapTimer != null)
+                {
+                    _heapTimer.Dispose();
+                    _heapTimer = null;
+                    Interlocked.Exchange(ref _latestHeapSizeBytes, 0);
+                }
+            }
+        }
+
+        private static void SampleHeapSize(object state)
+        {
+            try
+            {
+                Interlocked.Exchange(ref _latestHeapSizeBytes, GC.GetTotalMemory(false));
+            }
+            catch (Exception)
+            {
+                /* A diagnostic must never throw on a pool thread */
+            }
+        }
+
         public static void BeginFrame(long frameNumber)
         {
             if (!IsEnabled) return;
@@ -313,19 +348,19 @@ namespace GnollHackX
                 0;
 #endif
 
-            /* The heap size is read on interval frames, on the first sample, and whenever a collection occurred */
-            long heapSizeBytes;
-            if (idx < 1 || idx % HeapSampleInterval == 0)
-            {
-                heapSizeBytes = GC.GetTotalMemory(false);
-            }
-            else
+            /* Read directly only after a collection, so the GC log line's heap figure is current;
+               otherwise the background sample, at most HeapSampleIntervalMs old */
+            long heapSizeBytes = Interlocked.Read(ref _latestHeapSizeBytes);
+            bool collected = false;
+            if (idx >= 1)
             {
                 FrameTimeSample prevSample = _buffer[SafeIndex(idx - 1, BufferSize)];
-                if (gcCount0 != prevSample.GcCount0 || gcCount1 != prevSample.GcCount1 || gcCount2 != prevSample.GcCount2)
-                    heapSizeBytes = GC.GetTotalMemory(false);
-                else
-                    heapSizeBytes = prevSample.HeapSizeBytes;
+                collected = gcCount0 != prevSample.GcCount0 || gcCount1 != prevSample.GcCount1 || gcCount2 != prevSample.GcCount2;
+            }
+            if (collected || heapSizeBytes == 0)
+            {
+                heapSizeBytes = GC.GetTotalMemory(false);
+                Interlocked.Exchange(ref _latestHeapSizeBytes, heapSizeBytes);
             }
 
             _buffer[index] = new FrameTimeSample
