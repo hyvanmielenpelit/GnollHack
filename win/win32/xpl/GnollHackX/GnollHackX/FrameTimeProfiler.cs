@@ -28,7 +28,7 @@ namespace GnollHackX
         /* Cumulative bytes allocated at frame start */
         public long AllocatedBytes;
 
-        /* Managed heap size at frame start */
+        /* Managed heap size at frame start; sampled periodically and after collections, else carried over */
         public long HeapSizeBytes;
     }
 
@@ -119,6 +119,8 @@ namespace GnollHackX
         }
 
         private const int BufferSize = 1800;
+        /* The heap size is a slow-moving value, and reading it walks the heap on Mono */
+        private const int HeapSampleInterval = 30;
         private const int MaxExclusionEvents = 64;
         private const int MaxForcedGcEvents = 64;
         private const int MaxGcReasonEvents = 64;
@@ -300,20 +302,41 @@ namespace GnollHackX
             if (!IsEnabled) return;
             long idx = Interlocked.Increment(ref _writeIndex);
             int index = SafeIndex(idx, BufferSize);
+            long ticksFrameStart = Stopwatch.GetTimestamp();
+            int gcCount0 = GC.CollectionCount(0);
+            int gcCount1 = GC.CollectionCount(1);
+            int gcCount2 = GC.CollectionCount(2);
+            long allocatedBytes =
+#if GNH_MAUI
+                GC.GetTotalAllocatedBytes(false);
+#else
+                0;
+#endif
+
+            /* The heap size is read on interval frames, on the first sample, and whenever a collection occurred */
+            long heapSizeBytes;
+            if (idx < 1 || idx % HeapSampleInterval == 0)
+            {
+                heapSizeBytes = GC.GetTotalMemory(false);
+            }
+            else
+            {
+                FrameTimeSample prevSample = _buffer[SafeIndex(idx - 1, BufferSize)];
+                if (gcCount0 != prevSample.GcCount0 || gcCount1 != prevSample.GcCount1 || gcCount2 != prevSample.GcCount2)
+                    heapSizeBytes = GC.GetTotalMemory(false);
+                else
+                    heapSizeBytes = prevSample.HeapSizeBytes;
+            }
+
             _buffer[index] = new FrameTimeSample
             {
                 FrameNumber = frameNumber,
-                TicksFrameStart = Stopwatch.GetTimestamp(),
-                GcCount0 = GC.CollectionCount(0),
-                GcCount1 = GC.CollectionCount(1),
-                GcCount2 = GC.CollectionCount(2),
-                AllocatedBytes =
-#if GNH_MAUI
-                    GC.GetTotalAllocatedBytes(false),
-#else
-                    0,
-#endif
-                HeapSizeBytes = GC.GetTotalMemory(false)
+                TicksFrameStart = ticksFrameStart,
+                GcCount0 = gcCount0,
+                GcCount1 = gcCount1,
+                GcCount2 = gcCount2,
+                AllocatedBytes = allocatedBytes,
+                HeapSizeBytes = heapSizeBytes
             };
 
             if (idx >= 1 && GHApp.IsDebugScreenLoggingOn)

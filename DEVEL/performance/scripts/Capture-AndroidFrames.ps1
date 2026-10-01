@@ -24,12 +24,19 @@ times and jank types) and perfetto_app_slices.csv (the app's sections with their
 which the analyzer joins to the in-app frame timeline. Frame timeline data needs Android 12
 or later.
 
+-Package defaults to the package attribute of the Android manifest
+(win\win32\xpl\GnollHackM\Platforms\Android\AndroidManifest.xml), and the script stops if
+that package has no running process on the device.
+
 .EXAMPLE
-.\Capture-AndroidFrames.ps1 -Package com.hyvanmielenpelit.gnollhack -Seconds 60 -OutDir run1 -Perfetto
+.\Capture-AndroidFrames.ps1 -Seconds 60 -OutDir run1 -Perfetto
+
+.EXAMPLE
+.\Capture-AndroidFrames.ps1 -Package com.soundmindentertainment.gnollhack -Seconds 60 -OutDir run1 -Perfetto
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true)] [string] $Package,
+    [string] $Package,
     [Parameter(Mandatory = $true)] [int] $Seconds,
     [Parameter(Mandatory = $true)] [string] $OutDir,
     [string] $Serial,
@@ -41,6 +48,20 @@ param(
 
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'Common.ps1')
+
+# The installed package name comes from the Android manifest, not the csproj ApplicationId.
+if (-not $Package) {
+    $manifestPath = Join-Path $PSScriptRoot '..\..\..\win\win32\xpl\GnollHackM\Platforms\Android\AndroidManifest.xml'
+    if (-not (Test-Path -LiteralPath $manifestPath)) {
+        throw "-Package was not given and the Android manifest was not found at '$manifestPath'."
+    }
+    [xml] $manifestXml = [System.IO.File]::ReadAllText((Resolve-Path -LiteralPath $manifestPath).ProviderPath)
+    $Package = $manifestXml.DocumentElement.GetAttribute('package')
+    if (-not $Package) {
+        throw "-Package was not given and the root element of '$manifestPath' has no package attribute."
+    }
+}
+Write-PerformanceLog ("Package: {0}" -f $Package)
 
 $adb = Resolve-PerformanceAdb -AdbPath $AdbPath
 $serialArgs = @()
@@ -63,6 +84,14 @@ if ($state.Count -eq 0) {
 }
 if ($state[0].Trim() -ne 'device') {
     throw "No device in 'device' state (got '$($state[0])')."
+}
+
+# pidof exits with 1 when nothing matches, so it bypasses Invoke-Adb, which throws on a
+# non-zero exit before the message below could be reported.
+$pidCall = Invoke-PerformanceNative -Exe $adb -Arguments (@($serialArgs) + @('shell', 'pidof', $Package))
+$pidText = (@($pidCall.Output) -join ' ').Trim()
+if (-not $pidText) {
+    throw "Package '$Package' has no running process. Start GnollHack first, and check the package name: the installed package is the Android manifest's, not the csproj ApplicationId."
 }
 
 $perfettoDir = Join-Path $PSScriptRoot '..\perfetto'

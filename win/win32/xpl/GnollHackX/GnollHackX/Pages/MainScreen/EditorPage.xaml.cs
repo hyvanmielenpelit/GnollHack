@@ -30,7 +30,6 @@ namespace GnollHackX.Pages.MainScreen
         public EditorPage(MainPage mainPage, string fileName, string header)
         {
             _mainPage = mainPage;
-            Disappearing += (s, e) => { _mainPage.StartCarouselViewAndEnableButtons(); };
 
             InitializeComponent();
 //#if GNH_MAUI
@@ -96,7 +95,7 @@ namespace GnollHackX.Pages.MainScreen
                         return;
                     }
                     ErrorLabel.Text = "";
-                    GHApp.CurrentMainPage?.InvalidateCarousel();
+                    _mainPage?.StartCarouselViewAndEnableButtons();
                     await GHApp.PopModalPageAsync();
                 }
                 else
@@ -110,7 +109,7 @@ namespace GnollHackX.Pages.MainScreen
             else
             {
                 ErrorLabel.Text = "";
-                GHApp.CurrentMainPage?.InvalidateCarousel();
+                _mainPage?.StartCarouselViewAndEnableButtons();
                 await GHApp.PopModalPageAsync();
             }
         }
@@ -158,7 +157,7 @@ namespace GnollHackX.Pages.MainScreen
                 if (answer)
                 {
                     ErrorLabel.Text = "";
-                    GHApp.CurrentMainPage?.InvalidateCarousel();
+                    _mainPage?.StartCarouselViewAndEnableButtons();
                     await GHApp.PopModalPageAsync();
                 }
                 else
@@ -172,7 +171,7 @@ namespace GnollHackX.Pages.MainScreen
             else
             {
                 ErrorLabel.Text = "";
-                GHApp.CurrentMainPage?.InvalidateCarousel();
+                _mainPage?.StartCarouselViewAndEnableButtons();
                 await GHApp.PopModalPageAsync();
             }
         }
@@ -212,7 +211,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 ErrorLabel.Text = "";
                 await GHApp.GnollHackService.ResetDefaultsFile();
-                GHApp.CurrentMainPage?.InvalidateCarousel();
+                _mainPage?.StartCarouselViewAndEnableButtons();
                 await GHApp.PopModalPageAsync();
             }
             else

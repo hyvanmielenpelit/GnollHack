@@ -2210,7 +2210,8 @@ namespace GnollHackX
 
         public void Resume()
         {
-            if (GHApp.CurrentGamePage == null)
+            /* Plays only while MainPage itself is showing */
+            if (GHApp.CurrentGamePage == null && GHApp.PageFromTopOfModalNavigationStack() == null)
             {
                 carouselView.Play();
             }
@@ -2252,11 +2253,6 @@ namespace GnollHackX
             ExitButton.TextColor = GHColors.White;
             ExitButton.IsEnabled = true;
             UpperButtonGrid.IsEnabled = true;
-        }
-
-        public void InvalidateCarousel()
-        {
-            carouselView.InvalidateSurface();
         }
 
         private void TournamentTapGestureRecognizer_Tapped(object sender, EventArgs e)

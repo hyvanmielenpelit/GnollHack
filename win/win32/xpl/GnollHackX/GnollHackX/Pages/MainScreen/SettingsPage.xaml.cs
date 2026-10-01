@@ -183,10 +183,6 @@ namespace GnollHackX.Pages.MainScreen
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
         {
             _mainPage = mainPage;
-            if(_mainPage != null)
-            {
-                Disappearing += (s, e) => { _mainPage.StartCarouselViewAndEnableButtons(); };
-            }
 
             InitializeComponent();
 //#if GNH_MAUI
@@ -2545,7 +2541,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             await MaybeShowPleaseWait();
             await SetSettingValues();
-            GHApp.CurrentMainPage?.InvalidateCarousel();
+            _mainPage?.StartCarouselViewAndEnableButtons();
             await GHApp.PopModalPageAsync();
             GHApp.UpdateFreeDiskSpace();
             GHApp.UpdateUsedMemory();

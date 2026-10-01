@@ -33,7 +33,6 @@ namespace GnollHackX.Pages.MainScreen
         public AboutPage(MainPage mainPage)
         {
             _mainPage = mainPage;
-            Disappearing += (s, e) => { _mainPage.StartCarouselViewAndEnableButtons(); };
 
             InitializeComponent();
             if (GHApp.DarkMode)
@@ -285,7 +284,7 @@ namespace GnollHackX.Pages.MainScreen
             _backPressed = true;
             if (playClickSound)
                 GHApp.PlayButtonClickedSound();
-            GHApp.CurrentMainPage?.InvalidateCarousel();
+            _mainPage?.StartCarouselViewAndEnableButtons();
             await GHApp.PopModalPageAsync();
         }
 

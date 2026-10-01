@@ -31,7 +31,6 @@ namespace GnollHackX.Pages.MainScreen
         public ResetPage(MainPage mainPage)
         {
             _mainPage = mainPage;
-            Disappearing += (s, e) => { _mainPage.StartCarouselViewAndEnableButtons(); };
 
             InitializeComponent();
 //#if GNH_MAUI
@@ -278,7 +277,7 @@ namespace GnollHackX.Pages.MainScreen
             _backPressed = true;
             if (playClickedSound)
                 GHApp.PlayButtonClickedSound();
-            GHApp.CurrentMainPage?.InvalidateCarousel();
+            _mainPage?.StartCarouselViewAndEnableButtons();
             await GHApp.PopModalPageAsync();
         }
 

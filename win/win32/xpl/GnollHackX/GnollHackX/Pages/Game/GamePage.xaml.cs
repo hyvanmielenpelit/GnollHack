@@ -4567,7 +4567,10 @@ namespace GnollHackX.Pages.Game
             //GHApp.CurrentGamePage = null;
             //GHApp.ReportLockDataResults();
             ShutDownCanvasViews();
-            _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
+            /* MainPage shows again only when no other modal page lies below this one */
+            var modalStack = GHApp.Navigation?.ModalStack;
+            if (modalStack == null || modalStack.Count == 0 || modalStack[0] == this)
+                _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
             bool fastForward = FastForwardRequested;
             if (fastForward && GHApp.IsAndroid) /* FragmentManager cannot deal with closing pages when going to sleep; needs to be done with a delay after returning */
             {
