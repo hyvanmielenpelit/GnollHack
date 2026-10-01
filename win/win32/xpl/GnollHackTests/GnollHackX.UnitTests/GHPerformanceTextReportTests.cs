@@ -997,6 +997,25 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void RecentHitchesReport_Header_VsyncCorrectedShare()
+        {
+            string report = RecentReportWith(delegate (GHSmoothnessSummary s) { s.VsyncCorrectedShare = 0.5; });
+
+            Assert.Contains("\nVsync times corrected: 50 % of ticks (stale platform frame time)\n",
+                Section(report, "Recent hitches", "Marked moments:"));
+        }
+
+        [Fact]
+        public void RecentHitchesReport_Header_NoVsyncCorrectedShare_WhenZeroOrNotApplicable()
+        {
+            string report = RecentReportWith(delegate (GHSmoothnessSummary s) { s.VsyncCorrectedShare = 0; });
+            Assert.DoesNotContain("Vsync times corrected", Section(report, "Recent hitches", "Marked moments:"));
+
+            report = RecentReportWith(delegate (GHSmoothnessSummary s) { s.VsyncCorrectedShare = -1; });
+            Assert.DoesNotContain("Vsync times corrected", Section(report, "Recent hitches", "Marked moments:"));
+        }
+
+        [Fact]
         public void RecentHitchesReport_Header_ExcludedLongStalls()
         {
             string report = RecentReportWith(delegate (GHSmoothnessSummary s)

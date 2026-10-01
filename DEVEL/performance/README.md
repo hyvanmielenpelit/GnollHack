@@ -183,7 +183,7 @@ excluded from hitch time. A long gap in which the callbacks kept coming, such as
 stall, is always a hitch. The record's `smoothness` object carries `longStallCount`,
 `longStallMs` and `longStallsExcluded`.
 
-**Metrics version.** `smoothness.metricsVersion` (3, `GHSmoothnessMetrics.MetricsVersion`)
+**Metrics version.** `smoothness.metricsVersion` (4, `GHSmoothnessMetrics.MetricsVersion`)
 names the version of these definitions; a record without it is version 1. Results of
 different versions do not compare.
 
@@ -194,6 +194,14 @@ only on Android and is `null` elsewhere. On Android, FrameMetrics follow the win
 top modal page, so a coverage near 0 across a suite means the listener is on the wrong
 window and the `Compositor` attribution has nothing to go on. The recent hitches report, the
 suite medians and the analyzer's hitch causes print it when it applies.
+
+**Stale vsync correction.** On Android, Choreographer sometimes hands the frame callback a
+`frameTimeNanos` one refresh older than the vsync HWUI records for the same frame, for whole
+runs at a time. The analysis matches each tick to the FrameMetrics report of the same
+`doFrame` (the latest intended vsync at or before the callback start) and, where the two
+differ by one refresh (within 1 ms), uses HWUI's vsync; unmatched ticks take their neighbors'
+state. The raw CSV keeps the original value. It needs FrameMetrics coverage;
+`smoothness.vsyncCorrectedShare` is the share of ticks corrected, `null` elsewhere.
 
 The render loop's callback intervals, paint and lock durations, GC and allocation data are
 still collected by `FrameTimeProfiler` and shown on the dashboard's FRAME section; they are

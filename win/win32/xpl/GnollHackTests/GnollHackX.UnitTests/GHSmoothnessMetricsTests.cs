@@ -1000,7 +1000,7 @@ namespace GnollHackX.UnitTests
             int n;
             GHSmoothnessSummary s = t.Analyze(out d, out n);
 
-            Assert.Equal(3, GHSmoothnessMetrics.MetricsVersion);
+            Assert.Equal(4, GHSmoothnessMetrics.MetricsVersion);
             Assert.Equal(GHSmoothnessMetrics.MetricsVersion, s.MetricsVersion);
             Assert.Equal(GHSmoothnessMetrics.MetricsVersion,
                          GHSmoothnessMetrics.Analyze(new GHFrameRecord[0], 0, null, 0, new GHDisplayedFrame[0], out n).MetricsVersion);
@@ -1251,6 +1251,135 @@ namespace GnollHackX.UnitTests
             GHSmoothnessSummary s = t.Analyze(out d, out n);
 
             Assert.Equal(-1.0, s.CompositorCoverage);
+        }
+
+        /* GL-thread paints at 60 Hz, each callback 0.6 ms after its vsync and each flush 0.4
+           refreshes after it, with a FrameMetrics report per vsync that syncs 0.6 and completes
+           0.85 refreshes after it. Ticks from firstStale on carry a vsync one refresh older
+           than their report's, as some Android runs hand the frame callback. Unless lateTick
+           is -1, that tick's callback starts 20 ms after its vsync, its paint and report follow
+           the callback, and the next vsync has neither a tick nor a report. */
+        private static Timeline StaleVsyncTimeline(int ticks, int firstStale, int lateTick, out GHCompositorFrame[] comp)
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            List<GHCompositorFrame> frames = new List<GHCompositorFrame>();
+            for (int i = 0; i < ticks; i++)
+            {
+                bool late = i == lateTick;
+                int idx = t.Tick(period, 60, 60, GHPacingDecision.Rendered, false, 3.0, 1.0, late ? 20.0 : 0.6);
+                GHFrameRecord r = t.Records[idx];
+                long vsync = r.VsyncTicks;
+                if (late)
+                {
+                    long sync = r.FlushEndTicks + Ms(1.7);
+                    frames.Add(FrameMetricsFrame(vsync, sync, sync + Ms(4), 0));
+                    t.NextVsync += period;
+                }
+                else
+                {
+                    r.FlushEndTicks = vsync + (long)(0.4 * period);
+                    r.DrawEndTicks = r.FlushEndTicks - Ms(0.5);
+                    frames.Add(FrameMetricsFrame(vsync, vsync + (long)(0.6 * period), vsync + (long)(0.85 * period), 0));
+                }
+                if (i >= firstStale)
+                    r.VsyncTicks = vsync - period;
+                t.Records[idx] = r;
+            }
+            comp = frames.ToArray();
+            return t;
+        }
+
+        /* Every tick's vsync one refresh stale: corrected, the run reads as one with current
+           vsyncs, and the caller's records are left as they were */
+        [Fact]
+        public void StaleVsync_WholeWindow_IsCorrected()
+        {
+            GHCompositorFrame[] comp, currentComp;
+            Timeline t = StaleVsyncTimeline(120, 0, -1, out comp);
+            Timeline current = StaleVsyncTimeline(120, 120, -1, out currentComp);
+            GHFrameRecord[] records = t.Records.ToArray();
+            GHDisplayedFrame[] d = new GHDisplayedFrame[records.Length];
+            GHDisplayedFrame[] cd;
+            int n, cn;
+            GHSmoothnessSummary s = GHSmoothnessMetrics.Analyze(records, records.Length, comp, comp.Length, d, out n);
+            GHSmoothnessSummary cs = current.Analyze(out cd, out cn, currentComp, currentComp.Length);
+
+            Assert.True(s.VsyncCorrectedShare >= 0.99, "share " + s.VsyncCorrectedShare);
+            Assert.True(s.CallbackLatenessP99Ms < 2, "lateness " + s.CallbackLatenessP99Ms);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadLate]);
+            Assert.Equal(cs.HitchCount, s.HitchCount);
+            Assert.Equal(cn, n);
+            Assert.Equal(cs.LatencyP50Ms, s.LatencyP50Ms);
+            for (int i = 0; i < records.Length; i++)
+                Assert.Equal(t.Records[i].VsyncTicks, records[i].VsyncTicks);
+        }
+
+        /* The vsync goes stale halfway through: only the second half is corrected */
+        [Fact]
+        public void StaleVsync_SecondHalf_IsCorrectedThere()
+        {
+            GHCompositorFrame[] comp;
+            Timeline t = StaleVsyncTimeline(120, 60, -1, out comp);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n, comp, comp.Length);
+
+            Assert.InRange(s.VsyncCorrectedShare, 0.45, 0.55);
+            Assert.True(s.CallbackLatenessP99Ms < 2, "lateness " + s.CallbackLatenessP99Ms);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.UiThreadLate]);
+        }
+
+        [Fact]
+        public void CurrentVsync_IsNotCorrected()
+        {
+            GHCompositorFrame[] comp;
+            Timeline t = StaleVsyncTimeline(120, 120, -1, out comp);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n, comp, comp.Length);
+
+            Assert.Equal(0.0, s.VsyncCorrectedShare);
+            Assert.True(s.CallbackLatenessP99Ms < 2, "lateness " + s.CallbackLatenessP99Ms);
+            Assert.Equal(0, s.HitchCount);
+        }
+
+        /* A callback 20 ms after a vsync its report agrees with is late, not stale: the
+           hitch it causes stays the UI thread's */
+        [Fact]
+        public void LateCallback_WithCurrentVsync_IsNotCorrected()
+        {
+            const int late = 60;
+            GHCompositorFrame[] comp;
+            Timeline t = StaleVsyncTimeline(120, 120, late, out comp);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n, comp, comp.Length);
+
+            Assert.Equal(0.0, s.VsyncCorrectedShare);
+            int hitches = 0;
+            for (int j = 1; j < n; j++)
+            {
+                if (!d[j].IsHitch)
+                    continue;
+                Assert.Equal(late, d[j].RecordIndex);
+                Assert.Equal(GHHitchCause.UiThreadLate, d[j].Cause);
+                hitches++;
+            }
+            Assert.Equal(1, hitches);
+        }
+
+        /* Without FrameMetrics reports there is nothing to correct against */
+        [Fact]
+        public void NoFrameMetrics_ShareIsNotApplicable()
+        {
+            Timeline t = new Timeline();
+            t.Run(2.0, 60, 60, 60);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(-1.0, s.VsyncCorrectedShare);
         }
 
         /* One second at 60 on 60, a 1.5 s stop in the display callbacks, and another second.

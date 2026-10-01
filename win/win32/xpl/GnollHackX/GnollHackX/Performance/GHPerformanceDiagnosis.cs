@@ -108,6 +108,7 @@ namespace GnollHackX.Performance
         public float LongStallMs = float.NaN;
         public int CompositorReportsLost = -1;
         public double CompositorCoverage = -1;      /* GL-thread paints with a FrameMetrics report, 0-1; -1 n/a */
+        public double VsyncCorrectedShare = -1;     /* ticks whose stale vsync time was corrected, 0-1; -1 n/a */
         public string PresentSource;               /* a GHPerformanceDiagnosis.PresentSource* value */
         public bool FrameMarkerOff;                 /* the frame marker was off during the window */
         public GHDiagnosisScene SceneBefore;        /* the map just before the window began */
@@ -1858,6 +1859,7 @@ namespace GnollHackX.Performance
             Fact(sb, "longStallMs", Num(f.LongStallMs));
             Fact(sb, "compositorReportsLost", CountText(f.CompositorReportsLost));
             Fact(sb, "compositorCoverage", f.CompositorCoverage >= 0 ? Format(f.CompositorCoverage, "0.00") : NA);
+            Fact(sb, "vsyncCorrectedShare", f.VsyncCorrectedShare >= 0 ? Format(f.VsyncCorrectedShare, "0.00") : NA);
             Fact(sb, "presentSource", Str(f.PresentSource));
             Fact(sb, "frameMarker", OnOff(!f.FrameMarkerOff));
             GHDiagnosisScene scene = f.SceneBefore;

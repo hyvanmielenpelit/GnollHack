@@ -151,6 +151,7 @@ namespace GnollHackX.UnitTests
             s.LongStallMs = 1250.0;
             s.CompositorReportsLost = 5;
             s.CompositorCoverage = 0.25;
+            s.VsyncCorrectedShare = 0.125;
             s.PresentSource = GHPresentSource.Measured;
             return s;
         }
@@ -190,6 +191,7 @@ namespace GnollHackX.UnitTests
             Assert.Equal(1250f, f.LongStallMs);
             Assert.Equal(5, f.CompositorReportsLost);
             Assert.Equal(0.25, f.CompositorCoverage);
+            Assert.Equal(0.125, f.VsyncCorrectedShare);
             Assert.Equal(GHPerformanceDiagnosis.PresentSourceMeasured, f.PresentSource);
 
             /* No span, no paints, no pause data, no rates: unknown, and the window falls
@@ -235,6 +237,7 @@ namespace GnollHackX.UnitTests
             Assert.Equal(12, f.OnScreenIntervalCount);
             Assert.Equal(-1, f.MetricsVersion);
             Assert.Equal(-1.0, f.CompositorCoverage);
+            Assert.Equal(-1.0, f.VsyncCorrectedShare);
             Assert.Null(f.PresentSource);
             f = new GHDiagnosisFacts();
             GHPerformanceDiagnosticSupport.FillSummaryFacts(f, null, double.NaN, 0);

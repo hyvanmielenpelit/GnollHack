@@ -1159,6 +1159,7 @@ namespace GnollHackX.Performance
             j.TargetFps = R(s.TargetFps);
             j.CompositorReportsLost = s.CompositorReportsLost;
             j.CompositorCoverage = s.CompositorCoverage < 0 ? (double?)null : R(s.CompositorCoverage);
+            j.VsyncCorrectedShare = s.VsyncCorrectedShare < 0 ? (double?)null : R(s.VsyncCorrectedShare);
             j.SyncOffsetP50Ms = R(s.SyncOffsetP50Ms);
             j.LongStallCount = s.LongStallCount;
             j.LongStallMs = R(s.LongStallMs);
@@ -1439,6 +1440,7 @@ namespace GnollHackX.Performance
             s.TargetFps = j.TargetFps;
             s.CompositorReportsLost = j.CompositorReportsLost;
             s.CompositorCoverage = j.CompositorCoverage.HasValue ? j.CompositorCoverage.Value : -1;
+            s.VsyncCorrectedShare = j.VsyncCorrectedShare.HasValue ? j.VsyncCorrectedShare.Value : -1;
             s.SyncOffsetP50Ms = j.SyncOffsetP50Ms;
             s.LongStallCount = j.LongStallCount;
             s.LongStallMs = j.LongStallMs;
@@ -2343,6 +2345,10 @@ namespace GnollHackX.Performance
             /* Share of GL-thread paints carried by a FrameMetrics report; null (or absent) where not applicable */
             [JsonProperty("compositorCoverage")]
             public double? CompositorCoverage;
+
+            /* Share of ticks whose stale Choreographer frame time was corrected; null (or absent) where not applicable */
+            [JsonProperty("vsyncCorrectedShare")]
+            public double? VsyncCorrectedShare;
 
             [JsonProperty("syncOffsetP50Ms")]
             public double SyncOffsetP50Ms;

@@ -57,6 +57,7 @@ namespace GnollHackX.Performance
         public int CompositorReportsLost;   /* FrameMetrics reports the listener missed over the records' span */
         public double CompositorCoverage = -1;  /* share of GL-thread paints a report carried; -1 when not applicable */
         public double SyncOffsetP50Ms;      /* median FrameMetrics sync offset, ms; 0 when none */
+        public double VsyncCorrectedShare = -1; /* share of ticks whose stale vsync was corrected; -1 n/a */
         public int LongStallCount;          /* gaps with display callbacks stopped for LongStallSeconds or more */
         public double LongStallMs;          /* total length of those gaps */
         public bool LongStallsExcluded;     /* long stalls were paused gaps, not hitches */
@@ -117,14 +118,16 @@ namespace GnollHackX.Performance
        cancels out of every gap. When two frames land on the same vsync only the later is
        shown and the earlier counts as dropped. A frame that already carries a measured
        display time keeps it. The summary records the share of GL-thread paints a report
-       carried, and the median sync offset of the reports. */
+       carried, and the median sync offset of the reports. On Android, a tick vsync one
+       refresh behind HWUI's frame time for the same frame is corrected to it, and the
+       summary records the share of ticks corrected. */
     public static class GHSmoothnessMetrics
     {
         public const int CauseCount = 14;
         public const int ContentEventKinds = 10;
 
         /* The version of the metric definitions; results of different versions do not compare */
-        public const int MetricsVersion = 3;
+        public const int MetricsVersion = 4;
 
         /* A stop in the display callbacks at least this long is a long stall */
         public const double LongStallSeconds = 1.0;
@@ -345,6 +348,133 @@ namespace GnollHackX.Performance
             return -1;
         }
 
+        /* The FrameMetrics frame with the latest intended vsync at or before t, or -1 */
+        private static int LatestCompositorAtOrBefore(GHCompositorFrame[] comp, int m, long t)
+        {
+            int lo = 0, hi = m - 1, found = -1;
+            while (lo <= hi)
+            {
+                int mid = (lo + hi) / 2;
+                if (comp[mid].IntendedVsyncTicks <= t)
+                {
+                    found = mid;
+                    lo = mid + 1;
+                }
+                else
+                {
+                    hi = mid - 1;
+                }
+            }
+            while (found >= 0 && comp[found].Source != GHCompositorSource.AndroidFrameMetrics)
+                found--;
+            return found;
+        }
+
+        /* Android can hand the frame callback a frameTimeNanos one refresh older than the one
+           HWUI records for the same doFrame. Returns records with each tick's vsync replaced by
+           the HWUI frame time where they disagree by one refresh: a copy when anything changed,
+           else records itself. corrected is the number of ticks changed, eligible those with a
+           vsync. */
+        private static GHFrameRecord[] CorrectStaleVsync(GHFrameRecord[] records, int n,
+            GHCompositorFrame[] compositor, int m, long fallbackPeriod, out int corrected, out int eligible)
+        {
+            const sbyte NotEligible = -2, Unclassified = -1, Current = 0, Stale = 1;
+            corrected = 0;
+            eligible = 0;
+            if (records == null || compositor == null)
+                return records;
+            if (n > records.Length)
+                n = records.Length;
+            if (m > compositor.Length)
+                m = compositor.Length;
+            bool frameMetrics = false;
+            for (int i = 0; i < m && !frameMetrics; i++)
+                frameMetrics = compositor[i].Source == GHCompositorSource.AndroidFrameMetrics;
+            if (!frameMetrics || n <= 0)
+                return records;
+
+            /* A tick is stale when the HWUI frame of its doFrame, the latest to begin by its
+               callback, lies one refresh after its vsync, and current when they agree */
+            long tolerance = Stopwatch.Frequency / 1000;
+            sbyte[] state = new sbyte[n];
+            long[] shift = new long[n];
+            List<long> staleShifts = new List<long>();
+            for (int i = 0; i < n; i++)
+            {
+                if (records[i].VsyncTicks == 0 || records[i].CallbackStartTicks == 0)
+                {
+                    state[i] = NotEligible;
+                    continue;
+                }
+                eligible++;
+                state[i] = Unclassified;
+                int ci = LatestCompositorAtOrBefore(compositor, m, records[i].CallbackStartTicks);
+                if (ci < 0)
+                    continue;
+                long d = compositor[ci].VsyncTicks - records[i].VsyncTicks;
+                long p = records[i].RefreshPeriodTicks > 0 ? records[i].RefreshPeriodTicks : fallbackPeriod;
+                if (d - p <= tolerance && d - p >= -tolerance)
+                {
+                    state[i] = Stale;
+                    shift[i] = d;
+                    staleShifts.Add(d);
+                }
+                else if (d <= tolerance && d >= -tolerance)
+                {
+                    state[i] = Current;
+                }
+            }
+            /* Without a stale tick, which includes no tick classified at all, the records stand */
+            if (staleShifts.Count == 0)
+                return records;
+            staleShifts.Sort();
+            long medianShift = staleShifts[staleShifts.Count / 2];
+
+            /* A tick without a matching frame takes the state of the nearest classified tick
+               before it, or failing that after it */
+            sbyte last = Unclassified;
+            for (int i = 0; i < n; i++)
+            {
+                if (state[i] == NotEligible)
+                    continue;
+                if (state[i] != Unclassified)
+                {
+                    last = state[i];
+                    continue;
+                }
+                state[i] = last;
+                if (last == Stale)
+                    shift[i] = medianShift;
+            }
+            last = Unclassified;
+            for (int i = n - 1; i >= 0; i--)
+            {
+                if (state[i] == NotEligible)
+                    continue;
+                if (state[i] != Unclassified)
+                {
+                    last = state[i];
+                    continue;
+                }
+                state[i] = last;
+                if (last == Stale)
+                    shift[i] = medianShift;
+            }
+
+            GHFrameRecord[] copy = new GHFrameRecord[n];
+            Array.Copy(records, copy, n);
+            for (int i = 0; i < n; i++)
+            {
+                if (state[i] != Stale)
+                    continue;
+                copy[i].VsyncTicks += shift[i];
+                if (copy[i].ExpectedPresentTicks != 0)
+                    copy[i].ExpectedPresentTicks += shift[i];
+                corrected++;
+            }
+            return copy;
+        }
+
         /* How long after its intended vsync compositor frame i started syncing, when that
            lies within a refresh; else 0 */
         private static long SyncOffset(GHCompositorFrame[] comp, int i, long refreshPeriod)
@@ -413,6 +543,11 @@ namespace GnollHackX.Performance
             s.MeasuredRefreshHz = measuredPeriod > 0 ? (double)Stopwatch.Frequency / measuredPeriod : 0;
             long callbackPeriod = MedianPeriod(records, n, true);
             s.CallbackRefreshHz = callbackPeriod > 0 ? (double)Stopwatch.Frequency / callbackPeriod : 0;
+
+            /* Everything below reads the corrected vsyncs */
+            int vsyncCorrected, vsyncEligible;
+            records = CorrectStaleVsync(records, n, compositor, m, period, out vsyncCorrected, out vsyncEligible);
+            s.VsyncCorrectedShare = vsyncEligible > 0 ? (double)vsyncCorrected / vsyncEligible : -1;
 
             /* GC pause time is judged only when the runtime reported some; a runtime that
                does not leaves every record at 0 */

@@ -1987,6 +1987,17 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void Report_FactsCarryVsyncCorrectedShare()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.VsyncCorrectedShare = -1;
+            Assert.Contains("\n  vsyncCorrectedShare=n/a\n", Report(f));
+
+            f.VsyncCorrectedShare = 0.5;
+            Assert.Contains("\n  vsyncCorrectedShare=0.50\n", Report(f));
+        }
+
+        [Fact]
         public void Report_AlsoLine_NamesTheOtherSide()
         {
             /* A scored primary names the strongest external finding */

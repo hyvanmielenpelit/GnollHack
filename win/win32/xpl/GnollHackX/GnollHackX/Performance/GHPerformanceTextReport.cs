@@ -247,6 +247,9 @@ namespace GnollHackX.Performance
                 Line(sb, Truncate("FrameMetrics coverage: " + WholePercent(summary.CompositorCoverage)
                     + " % of GL-thread paints (median sync offset " + Fmt(summary.SyncOffsetP50Ms) + " ms)",
                     MaxLineWidth));
+            if (summary.VsyncCorrectedShare > 0)
+                Line(sb, Truncate("Vsync times corrected: " + WholePercent(summary.VsyncCorrectedShare)
+                    + " % of ticks (stale platform frame time)", MaxLineWidth));
             if (summary.CompositorReportsLost > 0)
                 Line(sb, Truncate("FrameMetrics reports lost: "
                     + summary.CompositorReportsLost.ToString(CultureInfo.InvariantCulture)

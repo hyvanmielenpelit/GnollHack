@@ -346,6 +346,8 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             md.AppendLine("Unattributed share of hitch time: " + F(100.0 * s.UnattributedShare, 1) + " %.");
             if (s.CompositorCoverage >= 0)
                 md.AppendLine("FrameMetrics coverage: " + F(100.0 * s.CompositorCoverage, 0) + " % of GL-thread paints.");
+            if (s.VsyncCorrectedShare > 0)
+                md.AppendLine("Vsync times corrected: " + F(100.0 * s.VsyncCorrectedShare, 0) + " % of ticks.");
             md.AppendLine();
         }
 

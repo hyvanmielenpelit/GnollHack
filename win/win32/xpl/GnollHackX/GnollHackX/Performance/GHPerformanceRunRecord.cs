@@ -1241,6 +1241,7 @@ namespace GnollHackX.Performance
             j.PausedGapCount = s.PausedGapCount;
             j.CompositorReportsLost = s.CompositorReportsLost;
             j.CompositorCoverage = s.CompositorCoverage < 0 ? (double?)null : R(s.CompositorCoverage);
+            j.VsyncCorrectedShare = s.VsyncCorrectedShare < 0 ? (double?)null : R(s.VsyncCorrectedShare);
             j.SyncOffsetP50Ms = R(s.SyncOffsetP50Ms);
             j.LongStallCount = s.LongStallCount;
             j.LongStallMs = R(s.LongStallMs);
@@ -1832,6 +1833,10 @@ namespace GnollHackX.Performance
             /* Share of GL-thread paints carried by a FrameMetrics report, 0-1; null where not applicable */
             [JsonProperty("compositorCoverage")]
             public double? CompositorCoverage;
+
+            /* Share of ticks whose stale Choreographer frame time was corrected, 0-1; null where not applicable */
+            [JsonProperty("vsyncCorrectedShare")]
+            public double? VsyncCorrectedShare;
 
             /* Median FrameMetrics sync offset */
             [JsonProperty("syncOffsetP50Ms")]

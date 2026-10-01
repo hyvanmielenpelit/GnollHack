@@ -105,7 +105,7 @@
       "type": "object",
       "description": "The part of GHSmoothnessSummary the suite report and the comparison use",
       "properties": {
-        "metricsVersion": { "type": "integer", "description": "GHSmoothnessMetrics.MetricsVersion of the analysis; absent or 0 means 1; version 3 adds compositorCoverage and syncOffsetP50Ms" },
+        "metricsVersion": { "type": "integer", "description": "GHSmoothnessMetrics.MetricsVersion of the analysis; absent or 0 means 1; version 3 adds compositorCoverage and syncOffsetP50Ms; version 4 corrects stale Android vsync times (vsyncCorrectedShare)" },
         "displayedFps": { "type": "number" },
         "hitchRatioMsPerSec": { "type": "number" },
         "pacingErrorRmsMs": { "type": "number" },
@@ -120,6 +120,7 @@
         "targetFps": { "type": "number" },
         "compositorReportsLost": { "type": "integer", "description": "FrameMetrics reports the listener missed (Android); not display drops" },
         "compositorCoverage": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "The share of GL-thread paints carried by a FrameMetrics report (Android); null elsewhere" },
+        "vsyncCorrectedShare": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "Android: share of ticks whose Choreographer frame time was one refresh behind HWUI's and was corrected; null elsewhere" },
         "syncOffsetP50Ms": { "type": "number", "description": "Median FrameMetrics sync offset" },
         "longStallCount": { "type": "integer", "description": "Gaps in which display callbacks stopped for 1 s or more; counted as hitches in a suite run" },
         "longStallMs": { "type": "number", "description": "Total length of those gaps" },
