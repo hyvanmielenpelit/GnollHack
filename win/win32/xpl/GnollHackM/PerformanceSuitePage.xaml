@@ -40,44 +40,14 @@
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="StartTurnLabel" Text="Start turn" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
-                                        <Label.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
-                                        </Label.GestureRecognizers>
-                                    </Label>
-                                    <Entry Grid.Column="1" x:Name="StartTurnEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
-                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
-                                </Grid>
-
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
                                     <Label Grid.Column="0" x:Name="ScenarioLabel" Text="Scenario" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
                                         </Label.GestureRecognizers>
                                     </Label>
                                     <Picker Grid.Column="1" x:Name="ScenarioPicker" Title="Select a scenario" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
-                                        BackgroundColor="Transparent" WidthRequest="175" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        BackgroundColor="Transparent" WidthRequest="240" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
                                         SelectedIndexChanged="Setup_SelectedIndexChanged" />
-                                </Grid>
-
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="RunsLabel" Text="Measured runs" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
-                                        <Label.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
-                                        </Label.GestureRecognizers>
-                                    </Label>
-                                    <Picker Grid.Column="1" x:Name="RunsPicker" Title="Select runs" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
-                                        BackgroundColor="Transparent" WidthRequest="175" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
-                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
-                                </Grid>
-
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Grid.Column="0" x:Name="WarmUpRunLabel" Text="Warm-up run" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
-                                        <Label.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
-                                        </Label.GestureRecognizers>
-                                    </Label>
-                                    <Switch Grid.Column="1" x:Name="WarmUpRunSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="Setup_Toggled" />
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
@@ -87,7 +57,7 @@
                                         </Label.GestureRecognizers>
                                     </Label>
                                     <Picker Grid.Column="1" x:Name="PageModePicker" Title="Select a page mode" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
-                                        BackgroundColor="Transparent" WidthRequest="175" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        BackgroundColor="Transparent" WidthRequest="240" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
                                         SelectedIndexChanged="Setup_SelectedIndexChanged" />
                                 </Grid>
 
@@ -99,6 +69,36 @@
                                     </Label>
                                     <Entry Grid.Column="1" x:Name="ArmLabelEntry" Keyboard="Plain" WidthRequest="240" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
                                         VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="StartTurnLabel" Text="Start turn" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Entry Grid.Column="1" x:Name="StartTurnEntry" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="End" FontFamily="Underwood" FontSize="16" TextColor="Black"
+                                        VerticalOptions="Center" HorizontalOptions="End" TextChanged="Setup_TextChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="RunsLabel" Text="Measured runs" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Picker Grid.Column="1" x:Name="RunsPicker" Title="Select runs" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
+                                        BackgroundColor="Transparent" WidthRequest="100" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        SelectedIndexChanged="Setup_SelectedIndexChanged" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Grid.Column="0" x:Name="WarmUpRunLabel" Text="Warm-up run" FontFamily="Underwood" FontSize="15" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="InfoLabel_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Switch Grid.Column="1" x:Name="WarmUpRunSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="Setup_Toggled" />
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" HorizontalOptions="Fill" HeightRequest="40">
@@ -138,7 +138,7 @@
                                         </Label.GestureRecognizers>
                                     </Label>
                                     <Picker Grid.Column="1" x:Name="ThermalGatePicker" Title="Select a thermal gate" FontFamily="Underwood" FontSize="16" TextColor="Black" TitleColor="Black"
-                                        BackgroundColor="Transparent" WidthRequest="175" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
+                                        BackgroundColor="Transparent" WidthRequest="240" HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End"
                                         SelectedIndexChanged="Setup_SelectedIndexChanged" />
                                 </Grid>
 
@@ -162,7 +162,7 @@
                                         HorizontalTextAlignment="End" VerticalOptions="Center" HorizontalOptions="End" />
                                 </Grid>
 
-                                <controls:CustomImageButton x:Name="btnRunSuite" Text="Run Suite" WidthRequest="280" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                <controls:CustomImageButton x:Name="btnRunSuite" Text="Run Suite" WidthRequest="280" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White" FontSize="17"
                                     Margin="0,12,0,12" HorizontalOptions="Center" VerticalOptions="Center" Clicked="btnRunSuite_Clicked" UseVaryingBackgroundImages ="True" />
                             </StackLayout>
 
