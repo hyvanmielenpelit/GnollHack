@@ -42,6 +42,7 @@ namespace GnollHackX.Performance
         public bool IsJudder;           /* abs(PacingErrorTicks) > R/4 */
         public bool IsPausedGap;        /* the gap spans a menu, overlay, suspension or resize, or an excluded long stall */
         public bool IsLongStall;        /* display callbacks stopped for LongStallSeconds or more in the gap, without a lifecycle break */
+        public bool OverlapsForcedGc;   /* an unpaused gap overlapping the callback interval of an app-forced collection */
     }
 
     public sealed class GHSmoothnessSummary
@@ -86,6 +87,8 @@ namespace GnollHackX.Performance
         public double PaintP99Ms;
         public int GcCount;
         public int ForcedGcCount;           /* ticks after an app-forced collection */
+        public int ForcedGcHitchCount;      /* of HitchCount, the hitches with OverlapsForcedGc */
+        public double ForcedGcHitchMs;      /* their time beyond target, part of the hitch time */
         public double GcPauseMs;            /* total GC pause over the window */
         public bool GcPauseDataAvailable;   /* the runtime reported pause time; else GC is judged by counts */
         public GHPresentSource PresentSource;    /* Measured only when every displayed frame was measured */
@@ -743,6 +746,22 @@ namespace GnollHackX.Performance
             double repeats = 0;
             HashSet<long> tileStates = new HashSet<long>();
 
+            /* An app-forced collection ran between the callback before its flagged tick and the
+               flagged tick's own; it stops every thread, so it can delay the frame in flight
+               before that tick as much as the tick itself. The intervals ascend, as the gaps do. */
+            List<long> forcedFrom = new List<long>();
+            List<long> forcedTo = new List<long>();
+            for (int i = 1; i < n; i++)
+            {
+                if ((records[i].Flags & GHFrameFlags.ForcedCollection) == 0)
+                    continue;
+                if (records[i - 1].CallbackStartTicks == 0 || records[i].CallbackStartTicks == 0)
+                    continue;
+                forcedFrom.Add(records[i - 1].CallbackStartTicks);
+                forcedTo.Add(records[i].CallbackStartTicks);
+            }
+            int forcedIdx = 0;
+
             for (int j = 0; j < d; j++)
             {
                 GHFrameRecord r = records[displayed[j].RecordIndex];
@@ -822,6 +841,11 @@ namespace GnollHackX.Performance
                 for (int i = prevIdx + 1; i <= curIdx; i++)
                     gapEvents |= records[i].ContentEvents;
                 displayed[j].ContentEvents = gapEvents;
+                long gapFrom = displayed[j - 1].DisplayedAtTicks;
+                while (forcedIdx < forcedTo.Count && forcedTo[forcedIdx] <= gapFrom)
+                    forcedIdx++;
+                bool forcedGc = forcedIdx < forcedTo.Count && forcedFrom[forcedIdx] < displayed[j].DisplayedAtTicks;
+                displayed[j].OverlapsForcedGc = forcedGc;
                 if (gapEvents == GHContentEvent.None)
                 {
                     s.QuietGapCount++;
@@ -843,6 +867,11 @@ namespace GnollHackX.Performance
                 {
                     s.HitchCount++;
                     hitchMs += TicksToMs(gap - target);
+                    if (forcedGc)
+                    {
+                        s.ForcedGcHitchCount++;
+                        s.ForcedGcHitchMs += TicksToMs(gap - target);
+                    }
                 }
                 if (displayed[j].IsJudder)
                     s.JudderCount++;
@@ -876,7 +905,17 @@ namespace GnollHackX.Performance
             s.CallbackLatenessP99Ms = Percentile(callbackLateMs, 99);
             s.PaintP50Ms = Percentile(paintMs, 50);
             s.PaintP99Ms = Percentile(paintMs, 99);
-            s.GcCount = (records[n - 1].GcCount0 - records[0].GcCount0);
+            /* CoreCLR's gen0 count includes every higher-generation collection; Mono's counts minor
+               collections only, and a full collection moves gen1 and gen2 alone. The larger delta of
+               each tick counts its collections on both */
+            int gcCount = 0;
+            for (int i = 1; i < n; i++)
+            {
+                int d0 = records[i].GcCount0 - records[i - 1].GcCount0;
+                int d2 = records[i].GcCount2 - records[i - 1].GcCount2;
+                gcCount += Math.Max(0, Math.Max(d0, d2));
+            }
+            s.GcCount = gcCount;
             /* From the second tick, as GcCount: the first tick's flag is a collection before the window */
             int forcedGcCount = 0;
             for (int i = 1; i < n; i++)

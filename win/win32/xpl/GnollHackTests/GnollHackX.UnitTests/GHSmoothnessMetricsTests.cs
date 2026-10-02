@@ -1516,6 +1516,163 @@ namespace GnollHackX.UnitTests
             Assert.Equal(0, s.ForcedGcCount);
         }
 
+        /* Adds collections to the cumulative counts of record idx and every later one */
+        private static void AddCollections(Timeline t, int idx, int gen0, int gen1, int gen2)
+        {
+            for (int i = idx; i < t.Records.Count; i++)
+            {
+                GHFrameRecord r = t.Records[i];
+                r.GcCount0 += gen0;
+                r.GcCount1 += gen1;
+                r.GcCount2 += gen2;
+                t.Records[i] = r;
+            }
+        }
+
+        /* CoreCLR: every collection moves gen0, a full one gen1 and gen2 as well */
+        [Fact]
+        public void GcCount_CoreClrPattern_CountsGen0()
+        {
+            Timeline t = new Timeline();
+            t.Run(2.0, 60, 60, 60);
+            AddCollections(t, 10, 1, 0, 0);
+            AddCollections(t, 40, 1, 0, 0);
+            AddCollections(t, 70, 1, 1, 1);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(3, s.GcCount);
+        }
+
+        /* Mono: a full collection moves gen1 and gen2 but not gen0 */
+        [Fact]
+        public void GcCount_MonoPattern_CountsFullCollections()
+        {
+            Timeline t = new Timeline();
+            t.Run(2.0, 60, 60, 60);
+            AddCollections(t, 10, 1, 0, 0);
+            AddCollections(t, 40, 1, 0, 0);
+            AddCollections(t, 70, 1, 0, 0);
+            AddCollections(t, 100, 0, 1, 1);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(4, s.GcCount);
+        }
+
+        /* Four missed callbacks at ticks 15, 45, 75 and 105, with a forced collection flagged
+           flagOffset ticks after the first and the third. Returns the summary and checks every
+           gap's mark against the callback intervals of the flagged ticks. */
+        private static GHSmoothnessSummary StallsWithForcedCollections(int flagOffset, out int tagged, out int untagged,
+                                                                        out double taggedMs)
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            for (int i = 0; i < 120; i++)
+            {
+                bool stall = i % 30 == 15;
+                if (stall)
+                    t.NextVsync += period;
+                t.Tick(period, 60, 60, GHPacingDecision.Rendered, true, 3.0, 1.0, stall ? 12.0 : 0.2);
+            }
+            foreach (int idx in new int[] { 15 + flagOffset, 75 + flagOffset })
+            {
+                GHFrameRecord r = t.Records[idx];
+                r.Flags |= GHFrameFlags.ForcedCollection;
+                t.Records[idx] = r;
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            tagged = 0;
+            untagged = 0;
+            taggedMs = 0;
+            for (int j = 1; j < n; j++)
+            {
+                bool overlaps = false;
+                for (int i = 1; i < t.Records.Count; i++)
+                {
+                    if ((t.Records[i].Flags & GHFrameFlags.ForcedCollection) == 0)
+                        continue;
+                    overlaps |= t.Records[i - 1].CallbackStartTicks < d[j].DisplayedAtTicks
+                        && t.Records[i].CallbackStartTicks > d[j - 1].DisplayedAtTicks;
+                }
+                Assert.Equal(overlaps && !d[j].IsPausedGap, d[j].OverlapsForcedGc);
+                if (!d[j].IsHitch)
+                    continue;
+                if (d[j].OverlapsForcedGc)
+                {
+                    tagged++;
+                    taggedMs += (d[j].GapTicks - d[j].TargetPeriodTicks) * 1000.0 / F;
+                }
+                else
+                {
+                    untagged++;
+                }
+            }
+            return s;
+        }
+
+        /* The collections ran just before the late callbacks: only those two hitches are
+           marked, and the summary counts exactly them */
+        [Fact]
+        public void OverlapsForcedGc_FlagInTheGap_MarksThoseHitches()
+        {
+            int tagged, untagged;
+            double taggedMs;
+            GHSmoothnessSummary s = StallsWithForcedCollections(0, out tagged, out untagged, out taggedMs);
+
+            Assert.Equal(2, tagged);
+            Assert.Equal(2, untagged);
+            Assert.Equal(2, s.ForcedGcHitchCount);
+            Assert.Equal(taggedMs, s.ForcedGcHitchMs, 6);
+        }
+
+        /* The collections ran after the late callbacks, so the flag lands on the tick after
+           the frame that ended each hitch: the interval still overlaps that hitch's gap */
+        [Fact]
+        public void OverlapsForcedGc_FlagOnTheNextTick_StillMarksTheHitch()
+        {
+            int tagged, untagged;
+            double taggedMs;
+            GHSmoothnessSummary s = StallsWithForcedCollections(1, out tagged, out untagged, out taggedMs);
+
+            Assert.Equal(2, tagged);
+            Assert.Equal(2, untagged);
+            Assert.Equal(2, s.ForcedGcHitchCount);
+            Assert.Equal(taggedMs, s.ForcedGcHitchMs, 6);
+        }
+
+        /* A forced collection as the map returns from a menu falls in the paused gap: it
+           counts as a forced collection but marks no hitch */
+        [Fact]
+        public void OverlapsForcedGc_InPausedGap_MarksNothing()
+        {
+            Timeline t = new Timeline();
+            long period = F / 60;
+            t.Run(1.0, 60, 60, 60);
+            for (int i = 0; i < 60; i++)
+                t.Tick(period, 60, 60, GHPacingDecision.AuxiliaryCanvas, true);
+            int first = t.Tick(period, 60, 60, GHPacingDecision.Rendered, true);
+            GHFrameRecord r = t.Records[first];
+            r.Flags |= GHFrameFlags.ForcedCollection;
+            t.Records[first] = r;
+            t.Run(1.0, 60, 60, 60);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(1, s.ForcedGcCount);
+            Assert.Equal(1, s.PausedGapCount);
+            Assert.Equal(0, s.ForcedGcHitchCount);
+            Assert.Equal(0.0, s.ForcedGcHitchMs);
+            for (int j = 0; j < n; j++)
+                Assert.False(d[j].OverlapsForcedGc);
+        }
+
         /* The GL thread stalls 1.5 s on the map lock while the display callbacks keep their
            rate: a hitch in both modes, never a long stall */
         [Theory]

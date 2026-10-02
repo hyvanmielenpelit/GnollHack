@@ -1072,6 +1072,72 @@ namespace GnollHackX.UnitTests
             Assert.DoesNotContain("forced", header);
         }
 
+        /* The stall tick follows an app-forced collection: its hitch is tagged in the worst
+           hitches, and the span's cause table counts it under its cause and again below */
+        [Fact]
+        public void RecentHitchesReport_ForcedGcHitch_IsTaggedAndCounted()
+        {
+            int stallIndex = 60;
+            GHFrameRecord[] records = StallTimeline(120, stallIndex);
+            records[stallIndex].Flags |= GHFrameFlags.ForcedCollection;
+            GHDisplayedFrame[] displayed = new GHDisplayedFrame[records.Length];
+            int displayedCount;
+            GHSmoothnessSummary summary = GHSmoothnessMetrics.Analyze(records, records.Length, null, 0,
+                displayed, out displayedCount);
+
+            int tagged = 0;
+            double taggedMs = 0;
+            string causeName = null;
+            for (int j = 1; j < displayedCount; j++)
+            {
+                if (!displayed[j].IsHitch || !displayed[j].OverlapsForcedGc)
+                    continue;
+                tagged++;
+                taggedMs += (displayed[j].GapTicks - displayed[j].TargetPeriodTicks) * 1000.0 / Stopwatch.Frequency;
+                causeName = GHSmoothnessMetrics.CauseName(displayed[j].Cause);
+            }
+            Assert.Equal(1, tagged);
+
+            string report = GHPerformanceTextReport.RecentHitchesReport(records, records.Length, displayed,
+                displayedCount, summary, new long[0], new long[0], 0);
+
+            AssertNoLineExceedsMaxWidth(report);
+            Assert.Contains("  " + causeName + ", forced GC\n", Section(report, "Worst hitches", "Hitch causes"));
+            string causes = report.Substring(report.IndexOf("Hitch causes (span):", StringComparison.Ordinal));
+            Assert.Contains("\n  after app-forced GC: 1 hitch, "
+                + taggedMs.ToString("0.00", CultureInfo.InvariantCulture) + " ms\n", causes);
+        }
+
+        [Fact]
+        public void RecentHitchesReport_NoForcedGc_NoTagNorLine()
+        {
+            string report = RecentReportWith(null);
+
+            Assert.DoesNotContain("forced GC", report);
+            Assert.DoesNotContain("after app-forced GC", report);
+        }
+
+        [Fact]
+        public void SuiteReport_CauseTotals_SumForcedGcHitchesOfUsedRuns()
+        {
+            GHReportSuite suite = BuildSuite();
+            string causes = Section(GHPerformanceTextReport.SuiteReport(suite), "Hitch causes", "Content events");
+            Assert.DoesNotContain("after app-forced GC", causes);
+
+            suite.Runs[1].Summary.ForcedGcHitchCount = 2;
+            suite.Runs[1].Summary.ForcedGcHitchMs = 100.0;
+            suite.Runs[3].Summary.ForcedGcHitchCount = 1;
+            suite.Runs[3].Summary.ForcedGcHitchMs = 50.25;
+            /* The excluded run's hitches are not summed */
+            suite.Runs[4].Summary.ForcedGcHitchCount = 5;
+            suite.Runs[4].Summary.ForcedGcHitchMs = 999.0;
+            string report = GHPerformanceTextReport.SuiteReport(suite);
+
+            AssertNoLineExceedsMaxWidth(report);
+            Assert.Contains("\n  after app-forced GC: 3 hitches, 150.25 ms\n",
+                Section(report, "Hitch causes", "Content events"));
+        }
+
         [Fact]
         public void SuiteReport_Medians_SayDisplayTimesAreEstimated()
         {

@@ -1267,6 +1267,8 @@ namespace GnollHackX.Performance
             j.PaintP99Ms = R(s.PaintP99Ms);
             j.GcCount = s.GcCount;
             j.ForcedGcCount = s.ForcedGcCount;
+            j.ForcedGcHitchCount = s.ForcedGcHitchCount;
+            j.ForcedGcHitchMs = R(s.ForcedGcHitchMs);
             j.GcPauseMs = R(s.GcPauseMs);
             j.GcPauseDataAvailable = s.GcPauseDataAvailable;
             j.PresentSource = s.PresentSource.ToString();
@@ -1917,6 +1919,13 @@ namespace GnollHackX.Performance
             /* Display callbacks that followed a collection the app forced */
             [JsonProperty("forcedGcCount")]
             public int ForcedGcCount;
+
+            /* Of the hitches, those whose gap overlaps an app-forced collection, and their time beyond target */
+            [JsonProperty("forcedGcHitchCount")]
+            public int ForcedGcHitchCount;
+
+            [JsonProperty("forcedGcHitchMs")]
+            public double ForcedGcHitchMs;
 
             [JsonProperty("gcPauseMs")]
             public double GcPauseMs;

@@ -276,7 +276,9 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             Row(md, "Callback lateness P99 (ms)", F(s.CallbackLatenessP99Ms), app, "callbackLatenessP99Ms");
             Row(md, "Paint P50 (ms)", F(s.PaintP50Ms), app, "paintP50Ms");
             Row(md, "Paint P99 (ms)", F(s.PaintP99Ms), app, "paintP99Ms");
-            Row(md, "GC count (gen 0)", s.GcCount.ToString(CultureInfo.InvariantCulture), app, "gcCount");
+            Row(md, "GC count", s.GcCount.ToString(CultureInfo.InvariantCulture), app, "gcCount");
+            Row(md, "Hitches after a forced GC", s.ForcedGcHitchCount.ToString(CultureInfo.InvariantCulture), app, "forcedGcHitchCount");
+            Row(md, "Forced-GC hitch ms", F(s.ForcedGcHitchMs, 1), app, "forcedGcHitchMs");
             Row(md, "GC pause (ms, total)", s.GcPauseDataAvailable ? F(s.GcPauseMs, 1) : "not reported", app, "gcPauseMs");
             Row(md, "Measured refresh (Hz)", F(s.MeasuredRefreshHz), app, "measuredRefreshHz");
             Row(md, "Callback rate (Hz)", s.CallbackRefreshHz > 0 ? F(s.CallbackRefreshHz) : "not recorded", app, "callbackRefreshHz");
@@ -318,6 +320,12 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             md.AppendLine("| " + label + " | " + recomputed + " | " + reported + " |");
         }
 
+        /* The hitch cause, followed by ", forced GC" when the gap overlaps an app-forced collection */
+        private static string CauseLabel(GHDisplayedFrame d)
+        {
+            return GHSmoothnessMetrics.CauseName(d.Cause) + (d.OverlapsForcedGc ? ", forced GC" : "");
+        }
+
         private static void WriteCauses(StringBuilder md, SmoothnessResult res)
         {
             GHSmoothnessSummary s = res.Summary;
@@ -350,7 +358,12 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                 md.AppendLine("Vsync times corrected: " + F(100.0 * s.VsyncCorrectedShare, 0) + " % of ticks.");
             if (s.GcCount > 0)
                 md.AppendLine("Collections: " + s.GcCount.ToString(CultureInfo.InvariantCulture) + " ("
-                    + s.ForcedGcCount.ToString(CultureInfo.InvariantCulture) + " forced by the app).");
+                    + s.ForcedGcCount.ToString(CultureInfo.InvariantCulture) + " forced by the app"
+                    + (s.ForcedGcHitchCount > 0
+                        ? "; " + s.ForcedGcHitchCount.ToString(CultureInfo.InvariantCulture)
+                          + (s.ForcedGcHitchCount == 1 ? " hitch" : " hitches") + " followed them"
+                        : "")
+                    + ").");
             md.AppendLine();
         }
 
@@ -449,7 +462,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                 double overMs = t.Clock.DurationTicksToMs(d.GapTicks - d.TargetPeriodTicks);
                 md.AppendLine("### " + rank + ". Frame " + d.FrameId + " at " + F(t.Ms(d.DisplayedAtTicks), 1) + " ms: gap "
                     + F(gapMs, 1) + " ms (+" + F(overMs, 1) + "), content step " + d.ContentStep + ", cause "
-                    + GHSmoothnessMetrics.CauseName(d.Cause) + ", " + d.Source.ToString().ToLowerInvariant());
+                    + CauseLabel(d) + ", " + d.Source.ToString().ToLowerInvariant());
                 md.AppendLine();
                 WriteStageTable(md, res, j, byRecord, jank);
             }
@@ -609,7 +622,7 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                         + " | " + F(t.Clock.DurationTicksToMs(d.GapTicks), 1)
                         + " | +" + F(t.Clock.DurationTicksToMs(d.GapTicks - d.TargetPeriodTicks), 1)
                         + " | " + d.ContentStep
-                        + " | " + GHSmoothnessMetrics.CauseName(d.Cause)
+                        + " | " + CauseLabel(d)
                         + " | " + d.Source.ToString().ToLowerInvariant()
                         + " | " + (rank >= 0 ? (rank + 1).ToString(CultureInfo.InvariantCulture) : "") + " |");
                 }

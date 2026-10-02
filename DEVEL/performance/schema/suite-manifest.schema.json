@@ -115,6 +115,8 @@
         "displayedCount": { "type": "integer" },
         "gcCount": { "type": "integer" },
         "forcedGcCount": { "type": "integer", "minimum": 0, "description": "Display callbacks that followed a collection the app forced (GHFrameFlags.ForcedCollection)" },
+        "forcedGcHitchCount": { "type": "integer", "minimum": 0, "description": "Of the hitches, those whose unpaused gap overlaps the callback interval in which the app forced a collection" },
+        "forcedGcHitchMs": { "type": "number", "minimum": 0, "description": "Time beyond target of those hitches, part of the hitch time" },
         "gcPauseMs": { "type": "number" },
         "gcPauseDataAvailable": { "type": "boolean" },
         "measuredRefreshHz": { "type": "number" },

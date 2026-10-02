@@ -139,6 +139,7 @@ namespace GnollHackX.UnitTests
             s.PaintP99Ms = 9.75;
             s.GcCount = 4;
             s.ForcedGcCount = 3;
+            s.ForcedGcHitchMs = 37.5;
             s.GcPauseMs = 22.5;
             s.GcPauseDataAvailable = true;
             s.CauseMs[(int)GHHitchCause.Gpu] = 40.0;
@@ -177,6 +178,7 @@ namespace GnollHackX.UnitTests
             Assert.Equal(9.75f, f.PaintP99Ms);
             Assert.Equal(4, f.GcCount);
             Assert.Equal(3, f.ForcedGcCount);
+            Assert.Equal(37.5f, f.ForcedGcHitchMs);
             Assert.Equal(22.5f, f.GcPauseMs);
             Assert.Equal(40.0, f.CauseMs[(int)GHHitchCause.Gpu]);
             Assert.Equal(10.0, f.CauseMs[(int)GHHitchCause.PaintCpu]);
@@ -214,6 +216,7 @@ namespace GnollHackX.UnitTests
             Assert.True(float.IsNaN(f.MeasuredRefreshHz));
             Assert.True(float.IsNaN(f.DisplayedFps));
             Assert.True(float.IsNaN(f.HitchRatioMsPerSec));
+            Assert.True(float.IsNaN(f.ForcedGcHitchMs));
             Assert.True(float.IsNaN(f.PacingErrorRmsMs));
             Assert.True(float.IsNaN(f.PaintP50Ms));
             Assert.True(float.IsNaN(f.PaintP99Ms));
@@ -229,6 +232,7 @@ namespace GnollHackX.UnitTests
             Assert.Equal(29.5f, f.WindowSeconds);
             Assert.True(float.IsNaN(f.DisplayedFps));
             Assert.True(float.IsNaN(f.HitchRatioMsPerSec));
+            Assert.True(float.IsNaN(f.ForcedGcHitchMs));
             Assert.True(float.IsNaN(f.PacingErrorRmsMs));
             Assert.Equal(0, f.ContentEventCount);
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using GnollHackX.Performance;
 using Xunit;
 
@@ -2005,6 +2006,43 @@ namespace GnollHackX.UnitTests
 
             f.ForcedGcCount = 3;
             Assert.Contains("\n  gcCount=1\n  forcedGcCount=3\n", Report(f));
+        }
+
+        [Fact]
+        public void Report_FactsCarryForcedGcHitchMs()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            Assert.Contains("\n  forcedGcCount=0\n  forcedGcHitchMs=n/a\n", Report(f));
+
+            f.ForcedGcHitchMs = 12.5f;
+            Assert.Contains("\n  forcedGcCount=0\n  forcedGcHitchMs=12.5\n", Report(f));
+        }
+
+        /* Forced collections covering at least half of the GC hitch time change the advice,
+           not the severity or score */
+        [Fact]
+        public void GcPressure_MostlyForcedCollections_SaysSo()
+        {
+            GHDiagnosisFacts f = DegradedFacts();
+            Causes(f, GHHitchCause.UiThreadLateGc, 60.0, GHHitchCause.Unattributed, 40.0);
+            GHDiagnosisFinding plain = Find(GHPerformanceDiagnosis.Diagnose(f), GHPerformanceDiagnosis.CodeGcPressure);
+            Assert.StartsWith("The game allocates enough memory", plain.Advice);
+            Assert.DoesNotContain("app-forced", plain.Evidence);
+
+            /* The GC hitch time is 60 units of the share gate */
+            double gcMs = 60.0 * GHPerformanceDiagnosis.MinCauseMsPerSec;
+            f.ForcedGcHitchMs = (float)(gcMs / 3.0);
+            GHDiagnosisFinding minor = Find(GHPerformanceDiagnosis.Diagnose(f), GHPerformanceDiagnosis.CodeGcPressure);
+            Assert.StartsWith("The game allocates enough memory", minor.Advice);
+            Assert.Contains(" ms after app-forced GCs", minor.Evidence);
+
+            f.ForcedGcHitchMs = (float)(gcMs / 2.0);
+            GHDiagnosisFinding forced = Find(GHPerformanceDiagnosis.Diagnose(f), GHPerformanceDiagnosis.CodeGcPressure);
+            Assert.StartsWith("Most of these pauses follow collections the game forces", forced.Advice);
+            Assert.Contains(f.ForcedGcHitchMs.ToString("0.0", CultureInfo.InvariantCulture) + " ms after app-forced GCs",
+                forced.Evidence);
+            Assert.Equal(plain.Severity, forced.Severity);
+            Assert.Equal(plain.Score, forced.Score, 6);
         }
 
         [Fact]

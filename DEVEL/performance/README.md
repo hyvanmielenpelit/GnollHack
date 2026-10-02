@@ -203,13 +203,23 @@ differ by one refresh (within 1 ms), uses HWUI's vsync; unmatched ticks take the
 state. The raw CSV keeps the original value. It needs FrameMetrics coverage;
 `smoothness.vsyncCorrectedShare` is the share of ticks corrected, `null` elsewhere.
 
-**Collections.** `smoothness.gcCount` is the number of generation 0 collections in the
-window, and `smoothness.forcedGcCount`, beside it, the number of display callbacks that
-followed a collection the app forced (an overlay hide, a level change, start-up, the suite's
+**Collections.** `smoothness.gcCount` is the number of collections in the window: per
+tick, the larger of the generation 0 and generation 2 count changes, since CoreCLR's
+generation 0 count includes every full collection and Mono's includes none. Beside it,
+`smoothness.forcedGcCount` is the number of display callbacks that followed a collection
+the app forced (an overlay hide, a level change, start-up, the suite's
 page open, memory pressure). Such a callback carries `GHFrameFlags.ForcedCollection` (32) in
 the frame timeline CSV's `Flags` column; several forced collections between two callbacks
 count once. Both count from the window's second tick, since the first tick's collections
 happened before the window.
+
+`smoothness.forcedGcHitchCount` and `forcedGcHitchMs` are the hitches whose gap overlaps
+the interval in which a forced collection ran, from the callback before the flagged one to
+the flagged callback, whatever their cause, and their time beyond target: part of
+`hitchCount` and the hitch time, not added to them. The interval counts rather than the
+flagged tick because the collection stops every thread, so it often delays the frame
+already in flight before that tick. The text reports tag those hitches `forced GC`. A
+forced collection while the map is hidden falls in a paused gap and tags nothing.
 
 The render loop's callback intervals, paint and lock durations, GC and allocation data are
 still collected by `FrameTimeProfiler` and shown on the dashboard's FRAME section; they are

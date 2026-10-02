@@ -94,6 +94,7 @@ namespace GnollHackX.Performance
         public float PaintP99Ms = float.NaN;
         public int GcCount;
         public int ForcedGcCount;                   /* ticks after an app-forced collection */
+        public float ForcedGcHitchMs = float.NaN;   /* hitch time beyond target in gaps overlapping an app-forced collection */
         public float GcPauseMs = float.NaN;
         public double[] CauseMs;                    /* indexed by GHHitchCause */
         public int ContentEventCount;               /* unpaused frame gaps with content events */
@@ -1144,13 +1145,22 @@ namespace GnollHackX.Performance
                 if (Known(f.AllocationRateMBPerSec))
                     parts.Add("allocation " + F1(f.AllocationRateMBPerSec) + " MB/s");
                 parts.Add(Int(f.GcCount) + " GCs");
+                bool forcedKnown = Known(f.ForcedGcHitchMs) && f.ForcedGcHitchMs > 0f;
+                if (forcedKnown)
+                    parts.Add(F1(f.ForcedGcHitchMs) + " ms after app-forced GCs");
+                /* Forced collections explain the GC time when they cover at least half of it */
+                double gcMs = CauseMsOf(f, GHHitchCause.UiThreadLateGc);
+                bool forcedDominant = forcedKnown && gcMs > 0 && f.ForcedGcHitchMs * 2.0 >= gcMs;
                 /* By allocation rate alone: Suspect, without a score */
                 Add(list, CodeGcPressure, GHFindingArea.AppInternal,
                     gcByShare ? ShareSeverity(gcShare) : GHFindingSeverity.Suspect,
                     "Garbage collection inside the game",
                     string.Join(", ", parts.ToArray()),
-                    "The game allocates enough memory to cause GC pauses: compare with a report from an earlier "
-                    + "build.",
+                    forcedDominant
+                    ? "Most of these pauses follow collections the game forces when an overlay closes or the level "
+                      + "changes, not allocation; the forced collections are deliberate."
+                    : "The game allocates enough memory to cause GC pauses: compare with a report from an earlier "
+                      + "build.",
                     gcByShare ? gcShare : double.NaN);
             }
 
@@ -1838,6 +1848,7 @@ namespace GnollHackX.Performance
             Fact(sb, "paintP99Ms", Num(f.PaintP99Ms));
             Fact(sb, "gcCount", Int(f.GcCount));
             Fact(sb, "forcedGcCount", Int(f.ForcedGcCount));
+            Fact(sb, "forcedGcHitchMs", Num(f.ForcedGcHitchMs));
             Fact(sb, "gcPauseMs", Num(f.GcPauseMs));
             if (f.CauseMs == null)
             {

@@ -2882,6 +2882,11 @@ namespace GnollHackX
 
         public static void CollectGarbagePlatformDependent()
         {
+            /* During an Android replay the hide is automatic and the map keeps animating, and every
+               collection also runs a Java collection through the GC bridge, so none is forced there */
+            if (IsAndroid && (CurrentGHGame?.PlayingReplay ?? false))
+                return;
+
             /* Full collections seem to be necessary on Windows to reduce stuttering after closing grids; Android full collections are too long; and iOS really does not either, so just collecting the nursery is fine there */
             //if (IsWindows)
             //    CollectGarbage();

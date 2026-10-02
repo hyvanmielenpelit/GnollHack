@@ -731,6 +731,8 @@ namespace GnollHackX.Performance
             }
             int[] counts = new int[GHSmoothnessMetrics.CauseCount];
             double[] ms = new double[GHSmoothnessMetrics.CauseCount];
+            int forcedCount = 0;
+            double forcedMs = 0;
             for (int i = 0; i < used.Count; i++)
             {
                 GHSmoothnessSummary s = used[i].Summary;
@@ -740,8 +742,11 @@ namespace GnollHackX.Performance
                     counts[c] += source[c];
                     ms[c] += s.CauseMs[c];
                 }
+                forcedCount += s.ForcedGcHitchCount;
+                forcedMs += s.ForcedGcHitchMs;
             }
             AppendCauseRows(sb, counts, ms);
+            AppendForcedGcHitches(sb, forcedCount, forcedMs);
             if (!hitchCounts)
                 Line(sb, "  counts include judder frames (recorded before metrics version 2)");
         }
@@ -768,6 +773,16 @@ namespace GnollHackX.Performance
             }
             if (!any)
                 Line(sb, "  none");
+        }
+
+        /* "  after app-forced GC: N hitches, X ms" when any hitch followed a collection the
+           app forced; those hitches are already counted under their causes above */
+        private static void AppendForcedGcHitches(StringBuilder sb, int count, double ms)
+        {
+            if (count <= 0)
+                return;
+            Line(sb, Truncate("  after app-forced GC: " + count.ToString(CultureInfo.InvariantCulture)
+                + (count == 1 ? " hitch, " : " hitches, ") + Fmt(ms) + " ms", MaxLineWidth));
         }
 
         private static void AppendContentEvents(StringBuilder sb, List<GHReportRun> used)
@@ -1256,13 +1271,15 @@ namespace GnollHackX.Performance
             });
         }
 
-        /* "<time>  gap <ms> ms (+<ms> over target)  <cause>" */
+        /* "<time>  gap <ms> ms (+<ms> over target)  <cause>", the cause followed by ", forced GC"
+           when the gap overlaps an app-forced collection */
         private static string HitchText(GHDisplayedFrame f, long spanEnd)
         {
             return RelativeSeconds(f.DisplayedAtTicks, spanEnd)
                 + "  gap " + Fmt(TicksToMs(f.GapTicks)) + " ms"
                 + " (" + SignedFmt(TicksToMs(f.GapTicks - f.TargetPeriodTicks)) + " over target)"
-                + "  " + GHSmoothnessMetrics.CauseName(f.Cause);
+                + "  " + GHSmoothnessMetrics.CauseName(f.Cause)
+                + (f.OverlapsForcedGc ? ", forced GC" : "");
         }
 
         /* For each mark, oldest first: its local time, its time in the span, and the
@@ -1420,6 +1437,8 @@ namespace GnollHackX.Performance
             Line(sb, "Hitch causes (span):");
             int[] counts = new int[GHSmoothnessMetrics.CauseCount];
             double[] ms = new double[GHSmoothnessMetrics.CauseCount];
+            int forcedCount = 0;
+            double forcedMs = 0;
             for (int j = 1; j < displayedCount; j++)
             {
                 if (!displayed[j].IsHitch)
@@ -1427,10 +1446,17 @@ namespace GnollHackX.Performance
                 int c = (int)displayed[j].Cause;
                 if (c >= GHSmoothnessMetrics.CauseCount)
                     continue;
+                double overMs = TicksToMs(displayed[j].GapTicks - displayed[j].TargetPeriodTicks);
                 counts[c]++;
-                ms[c] += TicksToMs(displayed[j].GapTicks - displayed[j].TargetPeriodTicks);
+                ms[c] += overMs;
+                if (displayed[j].OverlapsForcedGc)
+                {
+                    forcedCount++;
+                    forcedMs += overMs;
+                }
             }
             AppendCauseRows(sb, counts, ms);
+            AppendForcedGcHitches(sb, forcedCount, forcedMs);
         }
 
         /* ---- run selection ---- */

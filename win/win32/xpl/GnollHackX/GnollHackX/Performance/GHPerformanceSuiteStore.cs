@@ -1154,6 +1154,8 @@ namespace GnollHackX.Performance
             j.DisplayedCount = s.DisplayedCount;
             j.GcCount = s.GcCount;
             j.ForcedGcCount = s.ForcedGcCount;
+            j.ForcedGcHitchCount = s.ForcedGcHitchCount;
+            j.ForcedGcHitchMs = R(s.ForcedGcHitchMs);
             j.GcPauseMs = R(s.GcPauseMs);
             j.GcPauseDataAvailable = s.GcPauseDataAvailable;
             j.MeasuredRefreshHz = R(s.MeasuredRefreshHz);
@@ -1436,6 +1438,8 @@ namespace GnollHackX.Performance
             s.DisplayedCount = j.DisplayedCount;
             s.GcCount = j.GcCount;
             s.ForcedGcCount = j.ForcedGcCount;
+            s.ForcedGcHitchCount = j.ForcedGcHitchCount;
+            s.ForcedGcHitchMs = j.ForcedGcHitchMs;
             s.GcPauseMs = j.GcPauseMs;
             s.GcPauseDataAvailable = j.GcPauseDataAvailable;
             s.MeasuredRefreshHz = j.MeasuredRefreshHz;
@@ -2332,6 +2336,14 @@ namespace GnollHackX.Performance
             /* Absent in older summaries, which reads as 0 */
             [JsonProperty("forcedGcCount")]
             public int ForcedGcCount;
+
+            /* Absent in older summaries, which reads as 0 */
+            [JsonProperty("forcedGcHitchCount")]
+            public int ForcedGcHitchCount;
+
+            /* Absent in older summaries, which reads as 0 */
+            [JsonProperty("forcedGcHitchMs")]
+            public double ForcedGcHitchMs;
 
             [JsonProperty("gcPauseMs")]
             public double GcPauseMs;
