@@ -1098,10 +1098,12 @@ the script prints) and start it again. The capture mode clears the device log, r
 |------|--------|
 | `GC_MINOR`, `GC_MAJOR` (and suffixed forms such as `GC_MAJOR_SWEEP`) | The reason in parentheses; `time`, the collection's pause; `stw`, the stop-the-world time, from suspending the managed threads to resuming them; `promoted`, the bytes copied out of the nursery into the major heap; the major heap and large object space sizes and their use |
 | `GC_TAR_BRIDGE`, `GC_BRIDGE`, `GC_OLD_BRIDGE` | The GC bridge phase, which works out which Java peers of managed objects can be collected; `BridgeMs` sums its `<step> <n>ms` fields |
+| `ART_GC` (ART's `... GC freed ... paused ... total ...` lines) | A Java collection. The GC bridge triggers one through `Runtime.gc()` when a Mono collection has Java peers to resolve, and the thread that ran the Mono collection waits for it (`Explicit` in `Reason`). `TimeMs` is the total, `StwMs` the sum of ART's pauses. ART logs these even in Release builds |
 
-A field a line does not carry is left empty. When the log has no collection lines, the
-script says so: either no collection happened in the window, the app was not restarted, or
-the build ignores the properties, which a Release build may. Then use a diagnostic build:
+Every row carries `Tid`, the thread that logged it. A field a line does not carry is left
+empty. When the log has no collection lines, or only `ART_GC` ones, the script says so:
+either no collection happened in the window, the app was not restarted, or the build
+ignores the properties, which Release builds do. Then use a diagnostic build:
 add the two lines
 
 ```text

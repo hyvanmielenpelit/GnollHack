@@ -13,10 +13,13 @@ Without -Enable or -Disable, the script clears the device log (adb logcat -c), r
 `adb logcat --pid=<pid> -v threadtime` of the running process for -Seconds into
 -OutDir\gc_log.txt (adb's own errors go to gc_log_stderr.txt), and writes one row per
 SGen collection line (GC_MINOR, GC_MAJOR, GC_BRIDGE, GC_TAR_BRIDGE, GC_OLD_BRIDGE and
-their suffixed forms such as GC_MAJOR_SWEEP) to -OutDir\gc_events.csv, with the columns
-LogTime, Tag, Reason, TimeMs, StwMs, PromotedKB, MajorSizeKB, MajorInUseKB, LosSizeKB,
-BridgeMs and Raw. A field the line does not carry is left empty; BridgeMs is the sum of
-every "<name> <n>ms" field of a bridge line.
+their suffixed forms such as GC_MAJOR_SWEEP) and per ART collection line (tag ART_GC: the
+Java collections the GC bridge triggers through Runtime.gc(), logged even by Release
+builds) to -OutDir\gc_events.csv, with the columns LogTime, Tid (the logging thread),
+Tag, Reason, TimeMs, StwMs, PromotedKB, MajorSizeKB, MajorInUseKB, LosSizeKB, BridgeMs
+and Raw. A field the line does not carry is left empty; BridgeMs is the sum of every
+"<name> <n>ms" field of a bridge line; for ART_GC, TimeMs is the total and StwMs the sum
+of the paused times.
 
 A Release build may ignore the properties; DEVEL\performance\README.md, "Mono GC log
 (Android)", describes the diagnostic-build fallback.
@@ -57,10 +60,23 @@ if ($PSCmdlet.ParameterSetName -eq 'Capture' -and $Seconds -lt 1) { throw '-Seco
 # format ("MM-dd HH:mm:ss.fff pid tid level tag: message") gives LogTime and its message;
 # any other line is taken whole as the message, with an empty LogTime. Numeric fields are
 # doubles (milliseconds) or longs (KB), $null when the line does not carry them.
+# A logcat duration ("362us", "1.360ms", "2s") in milliseconds
+function ConvertTo-GcMilliseconds {
+    param([string] $Value, [string] $Unit)
+    $v = [double]::Parse($Value, [System.Globalization.CultureInfo]::InvariantCulture)
+    if ($Unit -eq 'us') { return $v / 1000.0 }
+    if ($Unit -eq 's') { return $v * 1000.0 }
+    return $v
+}
+
 function ConvertFrom-MonoGcLog {
     param([string[]] $Lines)
     $invariant = [System.Globalization.CultureInfo]::InvariantCulture
-    $threadtime = New-Object System.Text.RegularExpressions.Regex('^\s*(\d\d-\d\d)\s+(\d\d:\d\d:\d\d\.\d+)\s+\d+\s+\d+\s+[VDIWEFS]\s+.*?:\s(.*)$')
+    $threadtime = New-Object System.Text.RegularExpressions.Regex('^\s*(\d\d-\d\d)\s+(\d\d:\d\d:\d\d\.\d+)\s+\d+\s+(\d+)\s+[VDIWEFS]\s+.*?:\s(.*)$')
+    # ART's own collections, which the GC bridge triggers through Runtime.gc() when a Mono
+    # collection has Java peers to resolve: "<reason> GC freed ... paused 362us,1.360ms total 48.278ms"
+    $artPattern = New-Object System.Text.RegularExpressions.Regex('^(.*?)\s*GC freed\b.*?\bpaused\s+([0-9.,usm]+)\s+total\s+(\d+(?:\.\d+)?)(us|ms|s)\b')
+    $durationPattern = New-Object System.Text.RegularExpressions.Regex('(\d+(?:\.\d+)?)(us|ms|s)')
     $tagPattern = New-Object System.Text.RegularExpressions.Regex('\b(GC_(?:MINOR|MAJOR|TAR_BRIDGE|OLD_BRIDGE|BRIDGE)[A-Z_]*)')
     $reasonPattern = New-Object System.Text.RegularExpressions.Regex('\(([^)]*)\)')
     $timePattern = New-Object System.Text.RegularExpressions.Regex('\btime\s+(\d+(?:\.\d+)?)\s*ms')
@@ -74,11 +90,35 @@ function ConvertFrom-MonoGcLog {
     foreach ($line in @($Lines)) {
         if ($null -eq $line) { continue }
         $logTime = ''
+        $tid = ''
         $message = $line.TrimEnd()
         $tt = $threadtime.Match($line)
         if ($tt.Success) {
             $logTime = $tt.Groups[1].Value + ' ' + $tt.Groups[2].Value
-            $message = $tt.Groups[3].Value.TrimEnd()
+            $tid = $tt.Groups[3].Value
+            $message = $tt.Groups[4].Value.TrimEnd()
+        }
+        $art = $artPattern.Match($message)
+        if ($art.Success) {
+            $pausedMs = 0.0
+            foreach ($p in $durationPattern.Matches($art.Groups[2].Value)) {
+                $pausedMs += ConvertTo-GcMilliseconds -Value $p.Groups[1].Value -Unit $p.Groups[2].Value
+            }
+            [void]$rows.Add([pscustomobject]@{
+                LogTime = $logTime
+                Tid = $tid
+                Tag = 'ART_GC'
+                Reason = $art.Groups[1].Value.Trim()
+                TimeMs = (ConvertTo-GcMilliseconds -Value $art.Groups[3].Value -Unit $art.Groups[4].Value)
+                StwMs = $pausedMs
+                PromotedKB = $null
+                MajorSizeKB = $null
+                MajorInUseKB = $null
+                LosSizeKB = $null
+                BridgeMs = $null
+                Raw = $message
+            })
+            continue
         }
         $tagMatch = $tagPattern.Match($message)
         if (-not $tagMatch.Success) { continue }
@@ -126,6 +166,7 @@ function ConvertFrom-MonoGcLog {
 
         [void]$rows.Add([pscustomobject]@{
             LogTime = $logTime
+            Tid = $tid
             Tag = $tag
             Reason = $reason
             TimeMs = $timeMs
@@ -149,7 +190,7 @@ function Write-MonoGcEventCsv {
         [Parameter(Mandatory = $true)] [string] $Path
     )
     $invariant = [System.Globalization.CultureInfo]::InvariantCulture
-    $columns = @('LogTime', 'Tag', 'Reason', 'TimeMs', 'StwMs', 'PromotedKB', 'MajorSizeKB', 'MajorInUseKB', 'LosSizeKB', 'BridgeMs', 'Raw')
+    $columns = @('LogTime', 'Tid', 'Tag', 'Reason', 'TimeMs', 'StwMs', 'PromotedKB', 'MajorSizeKB', 'MajorInUseKB', 'LosSizeKB', 'BridgeMs', 'Raw')
     $sb = New-Object System.Text.StringBuilder
     [void]$sb.Append((($columns | ForEach-Object { '"' + $_ + '"' }) -join ',') + "`r`n")
     foreach ($row in @($Rows)) {
@@ -260,6 +301,11 @@ $rows = @(ConvertFrom-MonoGcLog -Lines $lines)
 Write-MonoGcEventCsv -Rows $rows -Path $csvPath
 Write-PerformanceLog ("logcat: {0} lines, {1} collection lines -> {2}" -f $lines.Count, $rows.Count, $csvPath)
 
+$monoRows = @($rows | Where-Object { $_.Tag -ne 'ART_GC' })
+if ($rows.Count -gt 0 -and $monoRows.Count -eq 0) {
+    Write-Warning ("Only ART (Java) collections in the log, no Mono GC lines: this build ignores debug.mono.log and " +
+        "debug.mono.env (Release builds do); see the diagnostic-build fallback in DEVEL\performance\README.md.")
+}
 if ($rows.Count -eq 0) {
     Write-Warning ("No GC lines in the log. Either this build does not honor debug.mono.log and debug.mono.env " +
         "(a Release build may ignore them; see the diagnostic-build fallback in DEVEL\performance\README.md), " +
