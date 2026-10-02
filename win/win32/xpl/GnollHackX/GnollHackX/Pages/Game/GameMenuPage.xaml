@@ -49,7 +49,7 @@
             <Grid x:Name="DeveloperPopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
                 <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
                     <Frame x:Name="DeveloperPopupFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
-                        <ScrollView>
+                        <gnh:ConsistentScrollView>
                             <StackLayout Spacing="9" Padding="6">
                                 <Label Text="Developer Tools" FontFamily="Immortal" FontSize="20" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" HorizontalOptions="Center" />
                                 <controls:CustomImageButton x:Name="btnDevOptions" Text="Options" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnOptions_Clicked" />
@@ -61,7 +61,7 @@
                                 <controls:CustomImageButton x:Name="btnDevGC" Text="Collect Garbage" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="50" HorizontalOptions="Center" Clicked="btnGC_Clicked" />
                                 <controls:CustomImageButton x:Name="btnDevClose" Text="Close" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" Clicked="btnDevClose_Clicked" />
                             </StackLayout>
-                        </ScrollView>
+                        </gnh:ConsistentScrollView>
                     </Frame>
                 </Grid>
                 <Grid.GestureRecognizers>

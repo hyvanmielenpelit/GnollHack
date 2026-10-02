@@ -60,6 +60,7 @@ public static class MauiProgram
                 handlers.AddHandler(typeof(CustomLabel), typeof(AutoSizeSKCanvasViewHandler));
 #if ANDROID
                 handlers.AddHandler(typeof(Button), typeof(NoFocusButtonHandler));
+                handlers.AddHandler(typeof(ConsistentScrollView), typeof(ConsistentScrollViewHandler));
 #endif
 #if IOS
                 handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));

@@ -189,6 +189,7 @@
     <None Remove="..\GnollHackX\GnollHackX\CustomContentPage.cs" />
     <None Remove="..\GnollHackX\GnollHackX\CustomModalPage.cs" />
     <None Remove="..\GnollHackX\GnollHackX\ClientToolRequest.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\ConsistentScrollView.cs" />
     <None Remove="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
     <None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
     <None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPostWithAttachment.cs" />
@@ -456,6 +457,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\CustomContentPage.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\CustomModalPage.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\ClientToolRequest.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\ConsistentScrollView.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPostWithAttachment.cs" />
