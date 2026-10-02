@@ -329,30 +329,41 @@ namespace GnollHackX.Pages.MainScreen
                                                 }
                                                 bool mainFileFound = false;
                                                 string mainFileName = null;
+                                                string mainZipSuffix = null;
                                                 int middleStart = fi.Name.Length - noOfDigits - extraRemoved - GHConstants.ReplayFileNameSuffix.Length;
                                                 int middleLen = noOfDigits;
                                                 if (middleStart > 0 && middleLen > 0)
                                                 {
                                                     string middleStr = fi.Name.Substring(middleStart, middleLen);
-                                                    string searchString = GHConstants.ReplayFileNameMiddleDivisor + middleStr + GHConstants.ReplayFileNameSuffix + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
-                                                    foreach (string mainFile in files)
+                                                    string searchBase = GHConstants.ReplayFileNameMiddleDivisor + middleStr + GHConstants.ReplayFileNameSuffix;
+                                                    string[] searchSuffixes = GHApp.UseGZipForReplays
+                                                        ? new string[] { GHConstants.ReplayGZipFileNameSuffix, GHConstants.ReplayZipFileNameSuffix }
+                                                        : new string[] { GHConstants.ReplayZipFileNameSuffix, GHConstants.ReplayGZipFileNameSuffix };
+                                                    foreach (string searchSuffix in searchSuffixes)
                                                     {
-                                                        if (mainFile != null && File.Exists(mainFile) && mainFile.EndsWith(searchString))
+                                                        string searchString = searchBase + searchSuffix;
+                                                        foreach (string mainFile in files)
                                                         {
-                                                            FileInfo mainFI = new FileInfo(mainFile);
-                                                            if (mainFI != null && mainFI.Name != null && mainFI.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
+                                                            if (mainFile != null && File.Exists(mainFile) && mainFile.EndsWith(searchString))
                                                             {
-                                                                mainFileFound = true;
-                                                                mainFileName = mainFile;
-                                                                break;
+                                                                FileInfo mainFI = new FileInfo(mainFile);
+                                                                if (mainFI != null && mainFI.Name != null && mainFI.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
+                                                                {
+                                                                    mainFileFound = true;
+                                                                    mainFileName = mainFile;
+                                                                    mainZipSuffix = searchSuffix;
+                                                                    break;
+                                                                }
                                                             }
                                                         }
+                                                        if (mainFileFound)
+                                                            break;
                                                     }
                                                 }
-                                                if (mainFileFound && mainFileName != null)
+                                                if (mainFileFound && mainFileName != null && mainZipSuffix != null)
                                                 {
                                                     FileInfo mainFI = new FileInfo(mainFileName);
-                                                    int mainMiddleLen = mainFI.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix.Length : GHConstants.ReplayZipFileNameSuffix.Length);
+                                                    int mainMiddleLen = mainFI.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - mainZipSuffix.Length;
                                                     int numberStart = fi.Name.Length - extraRemoved - GHConstants.ReplayFileNameSuffix.Length;
                                                     if (mainMiddleLen > 0 && numberStart > 0)
                                                     {
@@ -362,7 +373,7 @@ namespace GnollHackX.Pages.MainScreen
                                                             string numberStr = fi.Name.Substring(numberStart, extraRemoved + GHConstants.ReplayFileNameSuffix.Length);
                                                             string newFileName = GHConstants.ReplayContinuationFileNamePrefix + mainMiddleStr + numberStr;
                                                             string newFile = Path.Combine(dirPath, newFileName);
-                                                            string zipFile = newFile + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
+                                                            string zipFile = newFile + mainZipSuffix;
 
                                                             if(newFile != file)
                                                             {
@@ -373,7 +384,7 @@ namespace GnollHackX.Pages.MainScreen
                                                             }
 
                                                             /* Zip it */
-                                                            if (GHApp.UseGZipForReplays)
+                                                            if (mainZipSuffix == GHConstants.ReplayGZipFileNameSuffix)
                                                             {
                                                                 using (FileStream originalFileStream = File.Open(newFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                                                                 {
@@ -680,24 +691,6 @@ namespace GnollHackX.Pages.MainScreen
 
                                     using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
                                     {
-                                        if (!string.IsNullOrWhiteSpace(filePath) && recfile != null)
-                                        {
-                                            string[] files = Directory.GetFiles(filePath);
-                                            if (files != null && !string.IsNullOrEmpty(dirName))
-                                            {
-                                                foreach (string file in files)
-                                                {
-                                                    if (!string.IsNullOrWhiteSpace(file))
-                                                    {
-                                                        FileInfo fi = new FileInfo(file);
-                                                        if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
-                                                        {
-                                                            archive.CreateEntryFromFile(file, Path.Combine(dirName, Path.GetFileName(file)));
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
                                         if (Directory.Exists(filePath))
                                         {
                                             string[] files = Directory.GetFiles(filePath);
@@ -1335,8 +1328,10 @@ namespace GnollHackX.Pages.MainScreen
                         if (string.IsNullOrWhiteSpace(contFileName))
                             continue;
 
+                        int zipSuffixLen = contFileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix) ? GHConstants.ReplayGZipFileNameSuffix.Length
+                            : contFileName.EndsWith(GHConstants.ReplayZipFileNameSuffix) ? GHConstants.ReplayZipFileNameSuffix.Length : 0;
                         int extraRemoved = 0;
-                        for (int j = contFileName.Length - GHConstants.ReplayFileNameSuffix.Length - GHConstants.ReplayGZipFileNameSuffix.Length - 1; j >= 0; j--)
+                        for (int j = contFileName.Length - GHConstants.ReplayFileNameSuffix.Length - zipSuffixLen - 1; j >= 0; j--)
                         {
                             char c = contFileName[j];
                             if (c >= '0' && c <= '9')
@@ -1360,17 +1355,17 @@ namespace GnollHackX.Pages.MainScreen
                                 break;
                             }
                         }
-                        if (contFileName.Length > prefix.Length + GHConstants.ReplayFileNamePrefix.Length + GHConstants.ReplayFileNameSuffix.Length + GHConstants.ReplayGZipFileNameSuffix.Length + extraRemoved)
+                        if (contFileName.Length > prefix.Length + GHConstants.ReplayContinuationFileNamePrefix.Length + GHConstants.ReplayFileNameSuffix.Length + zipSuffixLen + extraRemoved)
                         {
                             string middlePart = contFileName.Substring(
-                                prefix.Length + GHConstants.ReplayFileNamePrefix.Length,
-                                contFileName.Length - prefix.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - GHConstants.ReplayGZipFileNameSuffix.Length - extraRemoved);
+                                prefix.Length + GHConstants.ReplayContinuationFileNamePrefix.Length,
+                                contFileName.Length - prefix.Length - GHConstants.ReplayContinuationFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - zipSuffixLen - extraRemoved);
 
                             foreach (GHRecordedGameFile rgf in gHRecordedGameFiles)
                             {
                                 if(rgf != null && rgf.FilePath != null)
                                 {
-                                    if (rgf.FilePath.StartsWith(prefix + GHConstants.ReplayFileNamePrefix + middlePart))
+                                    if (rgf.FilePath.StartsWith(prefix + GHConstants.ReplayFileNamePrefix + middlePart + GHConstants.ReplayFileNameSuffix))
                                     {
                                         rgf.ContinuationFiles.Add(new ContinuationFile(contFileName, contFile.FileSize));
                                         break;
@@ -1585,6 +1580,7 @@ namespace GnollHackX.Pages.MainScreen
                                                     {
                                                         if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
                                                         {
+                                                            subFileIdx++;
                                                             UploadDownloadFileLabel.Text = contFI.Name;
                                                             UploadDownloadStatusLabel.Text = "Continuation " + subFileIdx + " of " + noSubFiles + " for file " + fileIdx + " of " + noValidFiles;
                                                             GHApp.MaybeWriteGHLog("UploadButton_Clicked: UploadFromFileAsync, cont, " + contFI.Name + ", " + UploadDownloadStatusLabel.Text);
@@ -1796,7 +1792,7 @@ namespace GnollHackX.Pages.MainScreen
                                     fileIdx++;
                                     UploadDownloadFileLabel.Text = fileName;
                                     UploadDownloadStatusLabel.Text = "Main replay file " + fileIdx + " of " + noValidFiles;
-                                    await GHApp.DownloadFileAsync(blobContainerClient, prefix, filePath, recfile.FileSize, _uploadDownloadCts.Token);
+                                    await GHApp.DownloadFileAsync(blobContainerClient, prefix, filePath, recfile.BaseFileSize, _uploadDownloadCts.Token);
                                     recfile.Downloaded = true;
                                     if (UploadDownloadCancelled)
                                         break;
@@ -1866,7 +1862,7 @@ namespace GnollHackX.Pages.MainScreen
                         {
                             UploadDownloadFileLabel.Text = fileName;
                             UploadDownloadStatusLabel.Text = "Main replay file";
-                            await GHApp.DownloadFileAsync(blobContainerClient, prefix, filePath, recfile.FileSize, _uploadDownloadCts.Token);
+                            await GHApp.DownloadFileAsync(blobContainerClient, prefix, filePath, recfile.BaseFileSize, _uploadDownloadCts.Token);
                             List<ContinuationFile> files = recfile.ContinuationFiles;
                             if (files != null)
                             {

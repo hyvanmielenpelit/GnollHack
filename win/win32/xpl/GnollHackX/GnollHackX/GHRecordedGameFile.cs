@@ -83,6 +83,8 @@ namespace GnollHackX
         public string FileName { get { return _fileName; } }
         public string Extension { get { return _extension; } }
         public long FileSize { get { return CalculateTotalFileSize(); } }
+        /* Size given to the constructor, without ContinuationFiles; for a cloud entry, the main blob alone */
+        public long BaseFileSize { get { return _fileSize; } }
         public DateTime CreationTime { get { return _creationTime; } }
         public DateTime LastWriteTime { get { return _lastWriteTime; } }
 
