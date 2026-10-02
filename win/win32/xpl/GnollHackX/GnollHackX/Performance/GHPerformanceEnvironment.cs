@@ -153,6 +153,7 @@ namespace GnollHackX.Performance
             AddToggle(f.Configuration, "debugLogMessages", () => GHApp.DebugLogMessages);
             AddToggle(f.Configuration, "developerMode", () => GHApp.DeveloperMode);
             AddToggle(f.Configuration, "backgroundSampler", () => GHSystemLoadSampler.Enabled);
+            AddToggle(f.Configuration, "silentMode", () => GHApp.SilentMode);
 
             f.Fingerprint = BuildFingerprint(f, refreshFingerprint);
             return f;

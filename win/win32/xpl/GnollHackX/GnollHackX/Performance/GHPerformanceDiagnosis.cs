@@ -93,6 +93,7 @@ namespace GnollHackX.Performance
         public float PaintP50Ms = float.NaN;
         public float PaintP99Ms = float.NaN;
         public int GcCount;
+        public int ForcedGcCount;                   /* ticks after an app-forced collection */
         public float GcPauseMs = float.NaN;
         public double[] CauseMs;                    /* indexed by GHHitchCause */
         public int ContentEventCount;               /* unpaused frame gaps with content events */
@@ -1836,6 +1837,7 @@ namespace GnollHackX.Performance
             Fact(sb, "paintP50Ms", Num(f.PaintP50Ms));
             Fact(sb, "paintP99Ms", Num(f.PaintP99Ms));
             Fact(sb, "gcCount", Int(f.GcCount));
+            Fact(sb, "forcedGcCount", Int(f.ForcedGcCount));
             Fact(sb, "gcPauseMs", Num(f.GcPauseMs));
             if (f.CauseMs == null)
             {

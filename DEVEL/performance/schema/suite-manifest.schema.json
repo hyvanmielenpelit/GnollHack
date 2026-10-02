@@ -114,6 +114,7 @@
         "droppedCount": { "type": "integer" },
         "displayedCount": { "type": "integer" },
         "gcCount": { "type": "integer" },
+        "forcedGcCount": { "type": "integer", "minimum": 0, "description": "Display callbacks that followed a collection the app forced (GHFrameFlags.ForcedCollection)" },
         "gcPauseMs": { "type": "number" },
         "gcPauseDataAvailable": { "type": "boolean" },
         "measuredRefreshHz": { "type": "number" },

@@ -348,6 +348,9 @@ namespace GnollHack.PerformanceAnalyzer.Commands
                 md.AppendLine("FrameMetrics coverage: " + F(100.0 * s.CompositorCoverage, 0) + " % of GL-thread paints.");
             if (s.VsyncCorrectedShare > 0)
                 md.AppendLine("Vsync times corrected: " + F(100.0 * s.VsyncCorrectedShare, 0) + " % of ticks.");
+            if (s.GcCount > 0)
+                md.AppendLine("Collections: " + s.GcCount.ToString(CultureInfo.InvariantCulture) + " ("
+                    + s.ForcedGcCount.ToString(CultureInfo.InvariantCulture) + " forced by the app).");
             md.AppendLine();
         }
 

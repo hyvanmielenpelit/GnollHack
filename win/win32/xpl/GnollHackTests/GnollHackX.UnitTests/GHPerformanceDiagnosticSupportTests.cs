@@ -138,6 +138,7 @@ namespace GnollHackX.UnitTests
             s.PaintP50Ms = 3.5;
             s.PaintP99Ms = 9.75;
             s.GcCount = 4;
+            s.ForcedGcCount = 3;
             s.GcPauseMs = 22.5;
             s.GcPauseDataAvailable = true;
             s.CauseMs[(int)GHHitchCause.Gpu] = 40.0;
@@ -175,6 +176,7 @@ namespace GnollHackX.UnitTests
             Assert.Equal(3.5f, f.PaintP50Ms);
             Assert.Equal(9.75f, f.PaintP99Ms);
             Assert.Equal(4, f.GcCount);
+            Assert.Equal(3, f.ForcedGcCount);
             Assert.Equal(22.5f, f.GcPauseMs);
             Assert.Equal(40.0, f.CauseMs[(int)GHHitchCause.Gpu]);
             Assert.Equal(10.0, f.CauseMs[(int)GHHitchCause.PaintCpu]);

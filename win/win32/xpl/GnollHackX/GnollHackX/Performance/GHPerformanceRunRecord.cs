@@ -1266,6 +1266,7 @@ namespace GnollHackX.Performance
             j.PaintP50Ms = R(s.PaintP50Ms);
             j.PaintP99Ms = R(s.PaintP99Ms);
             j.GcCount = s.GcCount;
+            j.ForcedGcCount = s.ForcedGcCount;
             j.GcPauseMs = R(s.GcPauseMs);
             j.GcPauseDataAvailable = s.GcPauseDataAvailable;
             j.PresentSource = s.PresentSource.ToString();
@@ -1912,6 +1913,10 @@ namespace GnollHackX.Performance
 
             [JsonProperty("gcCount")]
             public int GcCount;
+
+            /* Display callbacks that followed a collection the app forced */
+            [JsonProperty("forcedGcCount")]
+            public int ForcedGcCount;
 
             [JsonProperty("gcPauseMs")]
             public double GcPauseMs;

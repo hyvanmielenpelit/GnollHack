@@ -621,6 +621,37 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void NoteForcedCollection_FlagsTheNextTickOnly()
+        {
+            Restart();
+            RenderedTick(1);
+            GHFrameTimeline.NoteForcedCollection();
+            RenderedTick(2);
+            RenderedTick(3);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(3, n);
+            Assert.Equal(GHFrameFlags.None, r[0].Flags & GHFrameFlags.ForcedCollection);
+            Assert.Equal(GHFrameFlags.ForcedCollection, r[1].Flags & GHFrameFlags.ForcedCollection);
+            Assert.Equal(GHFrameFlags.None, r[2].Flags & GHFrameFlags.ForcedCollection);
+            Assert.Equal(GHFrameFlags.None, r[1].Flags & GHFrameFlags.LifecycleBreak);
+        }
+
+        [Fact]
+        public void NoteForcedCollection_IsClearedByReset()
+        {
+            Restart();
+            GHFrameTimeline.NoteForcedCollection();
+            Restart();
+            RenderedTick(1);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHFrameFlags.None, r[0].Flags & GHFrameFlags.ForcedCollection);
+        }
+
+        [Fact]
         public void CopyRecords_AfterTheRingWraps_ReportsTheMissingTicks()
         {
             Restart();

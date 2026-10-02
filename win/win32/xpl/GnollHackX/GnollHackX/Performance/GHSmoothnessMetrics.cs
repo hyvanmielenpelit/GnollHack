@@ -85,6 +85,7 @@ namespace GnollHackX.Performance
         public double PaintP50Ms;
         public double PaintP99Ms;
         public int GcCount;
+        public int ForcedGcCount;           /* ticks after an app-forced collection */
         public double GcPauseMs;            /* total GC pause over the window */
         public bool GcPauseDataAvailable;   /* the runtime reported pause time; else GC is judged by counts */
         public GHPresentSource PresentSource;    /* Measured only when every displayed frame was measured */
@@ -876,6 +877,14 @@ namespace GnollHackX.Performance
             s.PaintP50Ms = Percentile(paintMs, 50);
             s.PaintP99Ms = Percentile(paintMs, 99);
             s.GcCount = (records[n - 1].GcCount0 - records[0].GcCount0);
+            /* From the second tick, as GcCount: the first tick's flag is a collection before the window */
+            int forcedGcCount = 0;
+            for (int i = 1; i < n; i++)
+            {
+                if ((records[i].Flags & GHFrameFlags.ForcedCollection) != 0)
+                    forcedGcCount++;
+            }
+            s.ForcedGcCount = forcedGcCount;
             s.GcPauseMs = pauseAvailable ? TicksToMs(Math.Max(0, records[n - 1].GcPauseTicks - records[0].GcPauseTicks)) : 0;
             s.PresentSource = d == 0 ? GHPresentSource.None : (allMeasured ? GHPresentSource.Measured : GHPresentSource.Estimated);
             s.OnScreenPacing = GHPerformanceStatistics.ComputePacing(gapsMs.ToArray(), TicksToMs(targetPeriodMode), TicksToMs(period));

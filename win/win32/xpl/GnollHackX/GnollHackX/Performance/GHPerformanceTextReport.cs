@@ -239,7 +239,10 @@ namespace GnollHackX.Performance
             Line(sb, Truncate("Displayed FPS: " + Fmt(summary.DisplayedFps)
                 + "  Hitch ratio: " + Fmt(summary.HitchRatioMsPerSec) + " ms/s"
                 + "  Hitches: " + summary.HitchCount.ToString(CultureInfo.InvariantCulture), MaxLineWidth));
-            Line(sb, Truncate("GC: " + summary.GcCount.ToString(CultureInfo.InvariantCulture) + " collection(s), pause "
+            Line(sb, Truncate("GC: " + summary.GcCount.ToString(CultureInfo.InvariantCulture) + " collection(s), "
+                + (summary.ForcedGcCount > 0
+                    ? summary.ForcedGcCount.ToString(CultureInfo.InvariantCulture) + " forced by the app, " : "")
+                + "pause "
                 + (summary.GcPauseDataAvailable ? Fmt(summary.GcPauseMs) + " ms" : "n/a"), MaxLineWidth));
             Line(sb, summary.PresentSource == GHPresentSource.Measured
                 ? "Display times: measured" : "Display times: estimated (first vsync after ready)");

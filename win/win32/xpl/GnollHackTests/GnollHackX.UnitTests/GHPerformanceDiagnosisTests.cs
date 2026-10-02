@@ -1998,6 +1998,16 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void Report_FactsCarryForcedGcCount()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            Assert.Contains("\n  gcCount=1\n  forcedGcCount=0\n", Report(f));
+
+            f.ForcedGcCount = 3;
+            Assert.Contains("\n  gcCount=1\n  forcedGcCount=3\n", Report(f));
+        }
+
+        [Fact]
         public void Report_AlsoLine_NamesTheOtherSide()
         {
             /* A scored primary names the strongest external finding */

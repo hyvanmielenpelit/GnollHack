@@ -281,6 +281,7 @@
         "paintP50Ms": { "type": "number" },
         "paintP99Ms": { "type": "number" },
         "gcCount": { "type": "integer" },
+        "forcedGcCount": { "type": "integer", "minimum": 0, "description": "Display callbacks that followed a collection the app forced (GHFrameFlags.ForcedCollection)" },
         "gcPauseMs": { "type": "number", "description": "Total GC pause over the window; 0 when not reported" },
         "gcPauseDataAvailable": { "type": "boolean", "description": "The runtime reported GC pause time; when false, GC attribution uses the collection counts" },
         "presentSource": { "type": "string", "enum": ["None", "Estimated", "Measured"] },

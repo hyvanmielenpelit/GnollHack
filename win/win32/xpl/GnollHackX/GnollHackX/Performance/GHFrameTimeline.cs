@@ -62,6 +62,8 @@ namespace GnollHackX.Performance
 
         /* Set by NoteLifecycleBreak from any thread, taken by the next tick */
         private static int _pendingLifecycleBreak = 0;
+        /* Set by NoteForcedCollection from any thread, taken by the next tick */
+        private static int _pendingForcedCollection = 0;
         private static long _lastCallbackStartTicks = 0;
 
         /* The panel period the platform last reported, and the ticks since; it stands in for
@@ -205,6 +207,7 @@ namespace GnollHackX.Performance
             _lastPlatformFrameTicks = 0;
             _lastCallbackStartTicks = 0;
             Interlocked.Exchange(ref _pendingLifecycleBreak, 0);
+            Interlocked.Exchange(ref _pendingForcedCollection, 0);
             _lastReportedRefreshPeriodTicks = 0;
             _ticksSinceReportedPeriod = int.MaxValue;
             Interlocked.Exchange(ref _pendingContentEvents, 0);
@@ -320,6 +323,14 @@ namespace GnollHackX.Performance
             Interlocked.Exchange(ref _pendingLifecycleBreak, 1);
         }
 
+        /* A collection the app forced; the next tick carries ForcedCollection. Any thread. */
+        public static void NoteForcedCollection()
+        {
+            if (!IsEnabled)
+                return;
+            Interlocked.Exchange(ref _pendingForcedCollection, 1);
+        }
+
 #if GNH_MAUI
         /* 0: not yet read, 1: the runtime reports GC pause time, -1: reading it threw */
         private static int _gcPauseDurationState = 0;
@@ -381,6 +392,8 @@ namespace GnollHackX.Performance
                 r.Flags |= GHFrameFlags.VsyncIsLatestVblank;
             if (Interlocked.Exchange(ref _pendingLifecycleBreak, 0) != 0)
                 r.Flags |= GHFrameFlags.LifecycleBreak;
+            if (Interlocked.Exchange(ref _pendingForcedCollection, 0) != 0)
+                r.Flags |= GHFrameFlags.ForcedCollection;
 
             /* The platform's own frame time is the better period source; callback start
                times carry the UI thread's scheduling jitter */

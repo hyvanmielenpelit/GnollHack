@@ -1044,6 +1044,35 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void RecentHitchesReport_Header_GcLine_CountsForcedCollections()
+        {
+            string report = RecentReportWith(delegate (GHSmoothnessSummary s)
+            {
+                s.GcCount = 5;
+                s.ForcedGcCount = 2;
+                s.GcPauseDataAvailable = false;
+            });
+
+            Assert.Contains("\nGC: 5 collection(s), 2 forced by the app, pause n/a\n",
+                Section(report, "Recent hitches", "Marked moments:"));
+        }
+
+        [Fact]
+        public void RecentHitchesReport_Header_GcLine_NoForcedCollections()
+        {
+            string report = RecentReportWith(delegate (GHSmoothnessSummary s)
+            {
+                s.GcCount = 5;
+                s.ForcedGcCount = 0;
+                s.GcPauseDataAvailable = false;
+            });
+
+            string header = Section(report, "Recent hitches", "Marked moments:");
+            Assert.Contains("\nGC: 5 collection(s), pause n/a\n", header);
+            Assert.DoesNotContain("forced", header);
+        }
+
+        [Fact]
         public void SuiteReport_Medians_SayDisplayTimesAreEstimated()
         {
             string report = GHPerformanceTextReport.SuiteReport(BuildSuite());

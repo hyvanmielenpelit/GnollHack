@@ -1469,6 +1469,53 @@ namespace GnollHackX.UnitTests
                 Assert.False(d[j].IsLongStall);
         }
 
+        [Fact]
+        public void ForcedGcCount_CountsTheFlaggedTicks()
+        {
+            Timeline t = new Timeline();
+            t.Run(2.0, 60, 60, 60);
+            int[] flagged = { 10, 50, 90 };
+            foreach (int idx in flagged)
+            {
+                GHFrameRecord r = t.Records[idx];
+                r.Flags |= GHFrameFlags.ForcedCollection;
+                t.Records[idx] = r;
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(3, s.ForcedGcCount);
+        }
+
+        [Fact]
+        public void ForcedGcCount_NoFlaggedTicks_IsZero()
+        {
+            Timeline t = new Timeline();
+            t.Run(2.0, 60, 60, 60);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(0, s.ForcedGcCount);
+        }
+
+        /* The first tick's flag is a collection before the window, which GcCount leaves out too */
+        [Fact]
+        public void ForcedGcCount_FirstTickFlag_IsNotCounted()
+        {
+            Timeline t = new Timeline();
+            t.Run(2.0, 60, 60, 60);
+            GHFrameRecord r = t.Records[0];
+            r.Flags |= GHFrameFlags.ForcedCollection;
+            t.Records[0] = r;
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(0, s.ForcedGcCount);
+        }
+
         /* The GL thread stalls 1.5 s on the map lock while the display callbacks keep their
            rate: a hitch in both modes, never a long stall */
         [Theory]

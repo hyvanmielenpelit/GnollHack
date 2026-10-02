@@ -253,6 +253,7 @@ namespace GnollHackX
                 DeltaGen2 = deltaGen2,
                 DurationTicks = _beforeTicks > 0 ? afterTicks - _beforeTicks : 0
             };
+            GHFrameTimeline.NoteForcedCollection();
         }
 
         /// <summary>

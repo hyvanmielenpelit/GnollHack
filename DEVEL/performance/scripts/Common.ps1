@@ -84,6 +84,65 @@ function Resolve-PerformanceAdb {
     throw 'adb not found. Install Android SDK platform-tools, or pass -AdbPath <path to adb.exe>.'
 }
 
+# Returns the process id of an Android package's running process (the first one pidof
+# lists), and throws when it has none. pidof exits with 1 when nothing matches, so the
+# call checks the output rather than the exit code. ProcessId is the first token pidof
+# printed, or $null when that token is not a number.
+function Get-PerformanceAndroidProcessId {
+    param(
+        [Parameter(Mandatory = $true)] [string] $Package,
+        [Parameter(Mandatory = $true)] [string] $Adb,
+        [string[]] $SerialArgs
+    )
+    $prefix = @()
+    if ($SerialArgs) { $prefix = @($SerialArgs) }
+    $pidCall = Invoke-PerformanceNative -Exe $Adb -Arguments ($prefix + @('shell', 'pidof', $Package))
+    $pidText = (@($pidCall.Output) -join ' ').Trim()
+    if (-not $pidText) {
+        throw "Package '$Package' has no running process. Start GnollHack first, and check the package name: the installed package is the Android manifest's, not the csproj ApplicationId."
+    }
+    $first = @($pidText -split '\s+')[0]
+    if ($first -match '^\d+$') { return $first }
+    return $null
+}
+
+# Resolves the Android package and, unless -SkipRunningCheck, checks that it is running.
+# An empty -Package takes the package attribute of the Android manifest
+# (win\win32\xpl\GnollHackM\Platforms\Android\AndroidManifest.xml): the installed package
+# name is the manifest's, not the csproj ApplicationId. Logs the package and returns
+# { Package, ProcessId }; ProcessId is $null with -SkipRunningCheck. The running check
+# needs -Adb.
+function Resolve-PerformanceAndroidPackage {
+    param(
+        [string] $Package,
+        [string] $Adb,
+        [string[]] $SerialArgs,
+        [switch] $SkipRunningCheck
+    )
+    if (-not $Package) {
+        $manifestPath = Join-Path $PSScriptRoot '..\..\..\win\win32\xpl\GnollHackM\Platforms\Android\AndroidManifest.xml'
+        if (-not (Test-Path -LiteralPath $manifestPath)) {
+            throw "-Package was not given and the Android manifest was not found at '$manifestPath'."
+        }
+        [xml] $manifestXml = [System.IO.File]::ReadAllText((Resolve-Path -LiteralPath $manifestPath).ProviderPath)
+        $Package = $manifestXml.DocumentElement.GetAttribute('package')
+        if (-not $Package) {
+            throw "-Package was not given and the root element of '$manifestPath' has no package attribute."
+        }
+    }
+    Write-PerformanceLog ("Package: {0}" -f $Package)
+
+    $processId = $null
+    if (-not $SkipRunningCheck) {
+        if (-not $Adb) { throw 'Resolve-PerformanceAndroidPackage needs -Adb for the running check.' }
+        $processId = Get-PerformanceAndroidProcessId -Package $Package -Adb $Adb -SerialArgs $SerialArgs
+    }
+    return [pscustomobject]@{
+        Package = $Package
+        ProcessId = $processId
+    }
+}
+
 # Resolves PresentMon: explicit path, PRESENTMON_PATH, then PATH.
 function Resolve-PerformancePresentMon {
     param([string] $PresentMonPath)

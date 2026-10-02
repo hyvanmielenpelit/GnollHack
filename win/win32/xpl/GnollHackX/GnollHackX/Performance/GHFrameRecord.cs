@@ -78,7 +78,8 @@ namespace GnollHackX.Performance
         OrphanPaint = 2,        /* a paint ran with no pending invalidation, e.g. after a layout pass */
         UserMark = 4,           /* the user marked this frame as a felt stutter */
         LifecycleBreak = 8,     /* the app was suspended or resumed before this callback */
-        VsyncIsLatestVblank = 16 /* VsyncTicks is the latest vblank at the callback (Windows DWM), not its own vsync */
+        VsyncIsLatestVblank = 16, /* VsyncTicks is the latest vblank at the callback (Windows DWM), not its own vsync */
+        ForcedCollection = 32   /* the app forced a collection since the previous callback */
     }
 
     /* One display callback and everything that followed from it. Every tick field is in the

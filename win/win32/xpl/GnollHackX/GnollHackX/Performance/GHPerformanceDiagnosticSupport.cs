@@ -98,6 +98,7 @@ namespace GnollHackX.Performance
             f.PaintP50Ms = s.PaintedCount > 0 ? (float)s.PaintP50Ms : float.NaN;
             f.PaintP99Ms = s.PaintedCount > 0 ? (float)s.PaintP99Ms : float.NaN;
             f.GcCount = s.GcCount;
+            f.ForcedGcCount = s.ForcedGcCount;
             f.GcPauseMs = s.GcPauseDataAvailable ? (float)s.GcPauseMs : float.NaN;
             f.CauseMs = (double[])s.CauseMs.Clone();
             /* The unpaused gaps that are not quiet: a gap with several event kinds

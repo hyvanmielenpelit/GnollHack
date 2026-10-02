@@ -203,6 +203,14 @@ differ by one refresh (within 1 ms), uses HWUI's vsync; unmatched ticks take the
 state. The raw CSV keeps the original value. It needs FrameMetrics coverage;
 `smoothness.vsyncCorrectedShare` is the share of ticks corrected, `null` elsewhere.
 
+**Collections.** `smoothness.gcCount` is the number of generation 0 collections in the
+window, and `smoothness.forcedGcCount`, beside it, the number of display callbacks that
+followed a collection the app forced (an overlay hide, a level change, start-up, the suite's
+page open, memory pressure). Such a callback carries `GHFrameFlags.ForcedCollection` (32) in
+the frame timeline CSV's `Flags` column; several forced collections between two callbacks
+count once. Both count from the window's second tick, since the first tick's collections
+happened before the window.
+
 The render loop's callback intervals, paint and lock durations, GC and allocation data are
 still collected by `FrameTimeProfiler` and shown on the dashboard's FRAME section; they are
 diagnostic series, not the measure of smoothness.
@@ -1067,6 +1075,43 @@ name of `-OutDir`) to `ingest`. Before each run, after the thermal gate, it wait
 machine for up to `-MaxQuietWaitSeconds` (default 120); see
 [Quiet gate](#quiet-gate).
 
+### Mono GC log (Android)
+
+Android runs the Mono runtime, whose SGen collector logs every collection when asked to.
+`Capture-AndroidGcLog.ps1` has three modes:
+
+```powershell
+DEVEL\performance\scripts\Capture-AndroidGcLog.ps1 -Enable
+DEVEL\performance\scripts\Capture-AndroidGcLog.ps1 -Seconds 60 -OutDir C:\performance\gc1
+DEVEL\performance\scripts\Capture-AndroidGcLog.ps1 -Disable
+```
+
+`-Enable` sets `debug.mono.log` to `gc` and `debug.mono.env` to
+`MONO_LOG_LEVEL=debug|MONO_LOG_MASK=gc`; `-Disable` clears both. Mono reads them when the
+app starts, so after either, force-stop GnollHack (`adb shell am force-stop <package>`, which
+the script prints) and start it again. The capture mode clears the device log, records
+`adb logcat --pid=<pid> -v threadtime` of the running process for `-Seconds` into
+`gc_log.txt`, and writes one row per collection line to `gc_events.csv`. `-Package`,
+`-Serial` and `-AdbPath` work as in `Capture-AndroidFrames.ps1`.
+
+| Line | Fields |
+|------|--------|
+| `GC_MINOR`, `GC_MAJOR` (and suffixed forms such as `GC_MAJOR_SWEEP`) | The reason in parentheses; `time`, the collection's pause; `stw`, the stop-the-world time, from suspending the managed threads to resuming them; `promoted`, the bytes copied out of the nursery into the major heap; the major heap and large object space sizes and their use |
+| `GC_TAR_BRIDGE`, `GC_BRIDGE`, `GC_OLD_BRIDGE` | The GC bridge phase, which works out which Java peers of managed objects can be collected; `BridgeMs` sums its `<step> <n>ms` fields |
+
+A field a line does not carry is left empty. When the log has no collection lines, the
+script says so: either no collection happened in the window, the app was not restarted, or
+the build ignores the properties, which a Release build may. Then use a diagnostic build:
+add the two lines
+
+```text
+MONO_LOG_LEVEL=debug
+MONO_LOG_MASK=gc
+```
+
+to `win\win32\xpl\GnollHackM\Platforms\Android\EnvironmentMono.txt` locally, build and
+deploy, and capture without `-Enable`. Never commit that change.
+
 ## Analyzer
 
 Build and test from the `GnollHackTests` directory, so that its `global.json` selects the SDK
@@ -1119,9 +1164,10 @@ subsystem.
 | `scripts/Run-PerformanceSuite.ps1` | Interleaved two-arm batch driver: launches the app, captures presented frames and the background load, collects in-app records, gates on thermal state and a quiet machine, fingerprints the environment at batch start and end, analyzes, compares, appends to history |
 | `scripts/Capture-PresentMon.ps1` | Windows: presentation timing for one process with PresentMon 2.x, QPC timestamps included |
 | `scripts/Capture-AndroidFrames.ps1` | Android: `gfxinfo framestats` polling, optional Perfetto trace and CSV export. The package defaults to the Android manifest's, `com.soundmindentertainment.gnollhack` (not the csproj `ApplicationId`), and the script stops when that process is not running |
+| `scripts/Capture-AndroidGcLog.ps1` | Android: turns the Mono GC log on (`-Enable`) or off (`-Disable`), or captures it from the running process for `-Seconds` into `gc_log.txt` and tabulates the collections (pause, stop-the-world time, promoted bytes, heap sizes, GC bridge time) in `gc_events.csv` |
 | `scripts/Get-ThermalState.ps1` | Thermal and power facts for the Windows host or an Android device, as JSON, with a one-shot background load reading (top processes, known activities, disk, memory, pending reboot) |
 | `scripts/Get-EnvironmentFingerprint.ps1` | The environment fingerprint of the Windows host or an Android device, as flat JSON in the shared key scheme |
-| `scripts/Common.ps1` | Shared helpers (tool resolution, native calls that write to stderr, JSON writing, git facts, the background load sampler and the quiet check) |
+| `scripts/Common.ps1` | Shared helpers (tool resolution, the Android package and its running process, native calls that write to stderr, JSON writing, git facts, the background load sampler and the quiet check) |
 | `perfetto/frametimeline.pbtxt` | Perfetto trace config |
 | `perfetto/export_frames.sql`, `perfetto/export_app_slices.sql` | `trace_processor` queries behind the Perfetto CSVs |
 | `schema/run-record.schema.json` | The in-app run record format (schema v2), with the optional `suite` object of a suite run, the `marks` array, the `background` block and `environment.fingerprint` |
