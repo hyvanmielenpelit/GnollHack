@@ -1263,7 +1263,7 @@ namespace GnollHackX
             {
                 if (!GHApp.IsReplaySearching)
                 {
-                    Thread.Sleep((int)(GHConstants.ReplayStandardDelay / GHApp.ReplaySpeed));
+                    GHApp.WaitReplayDelay((int)(GHConstants.ReplayStandardDelay / GHApp.ReplaySpeed));
                     GHApp.FmodService?.PollTasks();
                 }
                 return 0;
@@ -1322,7 +1322,7 @@ namespace GnollHackX
             {
                 if (!GHApp.IsReplaySearching)
                 {
-                    Thread.Sleep((int)(GHConstants.ReplayStandardDelay / GHApp.ReplaySpeed));
+                    GHApp.WaitReplayDelay((int)(GHConstants.ReplayStandardDelay / GHApp.ReplaySpeed));
                     GHApp.FmodService?.PollTasks();
                 }
                 return 0;
@@ -4159,7 +4159,7 @@ namespace GnollHackX
                 /* Only like this for replay, as normal hiding code is a bit more robust */
                 if (!FastForwardGameOver && !GHApp.StopReplay && !GHApp.IsReplaySearching) /* No pause, since outrip page hides the controls */
                 {
-                    Thread.Sleep((int)(GHConstants.ReplayOutripDelay / GHApp.ReplaySpeed));
+                    GHApp.WaitReplayDelay((int)(GHConstants.ReplayOutripDelay / GHApp.ReplaySpeed));
                     GHApp.FmodService?.PollTasks();
                 }
 
@@ -5104,7 +5104,7 @@ namespace GnollHackX
 
             if(!GHApp.StopReplay)
             {
-                Thread.Sleep((int)(baseDelay / GHApp.ReplaySpeed));
+                GHApp.WaitReplayDelay((int)(baseDelay / GHApp.ReplaySpeed));
                 GHApp.FmodService?.PollTasks();
                 do
                 {

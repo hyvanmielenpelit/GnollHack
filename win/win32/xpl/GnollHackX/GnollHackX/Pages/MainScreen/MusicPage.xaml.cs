@@ -176,7 +176,7 @@ namespace GnollHackX.Pages.MainScreen
             try
             {
                 var page = await GHApp.Navigation.PopModalAsync();
-                GHApp.FmodService.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
+                GHApp.PlayMainScreenMusic();
                 GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
                 GHApp.DisconnectIViewHandlers(page);
             }

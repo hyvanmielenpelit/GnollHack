@@ -1535,7 +1535,7 @@ namespace GnollHackX
                     GHApp.FmodService?.AdjustGameVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, uiVolume);
                 }
                 if (GHApp.LoadBanks)
-                    GHApp.FmodService?.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
+                    GHApp.PlayMainScreenMusic();
             }
             catch (Exception ex)
             {
@@ -1645,16 +1645,7 @@ namespace GnollHackX
         {
             carouselView.IsVisible = true;
             carouselView.Play();
-
-            try
-            {
-                GHApp.FmodService?.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
-                GHApp.MainScreenMusicStarted = true;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Playing music failed: " + ex.Message);
-            }
+            GHApp.PlayMainScreenMusic();
         }
 
         //private readonly object _startUpLock = new object();

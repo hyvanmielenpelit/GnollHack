@@ -837,6 +837,19 @@ namespace GnollHackX
         private static int _mainScreenMusicStarted = 0;
         public static bool MainScreenMusicStarted { get { return Interlocked.CompareExchange(ref _mainScreenMusicStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _mainScreenMusicStarted, value ? 1 : 0); } }
 
+        public static void PlayMainScreenMusic()
+        {
+            try
+            {
+                FmodService?.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
+                MainScreenMusicStarted = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Playing main screen music failed: " + ex.Message);
+            }
+        }
+
         private static int _doAppExitOnReturn = 0;
         public static bool DoAppExitOnReturn { get { return Interlocked.CompareExchange(ref _doAppExitOnReturn, 0, 0) != 0; } set { Interlocked.Exchange(ref _doAppExitOnReturn, value ? 1 : 0); } }
 
@@ -9047,6 +9060,7 @@ namespace GnollHackX
 
         private static readonly object _replayLock = new object();
         private static bool _stopReplay = false;
+        private static readonly ManualResetEventSlim _replayStoppedEvent = new ManualResetEventSlim(false);
         private static bool _pauseReplay = false;
         private static bool _replayRestarted = false;
         private static double _replaySpeed = 1.0;
@@ -9058,7 +9072,7 @@ namespace GnollHackX
         private static string _replaySearchRegexString = null;
         private static Regex _replayRegex = null;
 
-        public static bool StopReplay { get { lock (_replayLock) { return _stopReplay; } } set { lock (_replayLock) { _stopReplay = value; } } }
+        public static bool StopReplay { get { lock (_replayLock) { return _stopReplay; } } set { lock (_replayLock) { _stopReplay = value; if (value) _replayStoppedEvent.Set(); else _replayStoppedEvent.Reset(); } } }
         public static bool PauseReplay { get { lock (_replayLock) { return _pauseReplay; } } set { lock (_replayLock) { _pauseReplay = value; } } }
         public static double ReplaySpeed { get { lock (_replayLock) { return _replaySpeed == 0.0 ? 1.0 : _replaySpeed; } } set { lock (_replayLock) { _replaySpeed = value; } } }
         public static int GoToTurn { get { lock (_replayLock) { return _replayGotoTurn; } } set { lock (_replayLock) { _replayGotoTurn = value; if (value == -1) _originalReplayTurn = -1; else _originalReplayTurn = _replayTurn; } } }
@@ -9070,6 +9084,13 @@ namespace GnollHackX
         public static bool ReplayRestarted { get { lock (_replayLock) { return _replayRestarted; } } set { lock (_replayLock) { _replayRestarted = value; } } }
 
         public static bool IsReplaySearching { get { lock (_replayLock) { return _replayGotoTurn >= 0 || _replaySearchRegexString != null; } } }
+
+        /* Waits for a replay delay of the given length; returns at once when the replay is stopped */
+        public static void WaitReplayDelay(int milliseconds)
+        {
+            if (milliseconds > 0)
+                _replayStoppedEvent.Wait(milliseconds);
+        }
 
         public static bool ReplayShouldCallFunction
         {
@@ -9300,6 +9321,8 @@ namespace GnollHackX
                                         {
                                             if (StopReplay)
                                             {
+                                                /* Quitting silences the game at once, from the replay thread that plays its sounds */
+                                                FmodService?.ReleaseAllGameSoundInstances();
                                                 cmd = (int)RecordedFunctionID.EndOfFile;
                                                 break;
                                             }
@@ -9579,7 +9602,7 @@ namespace GnollHackX
                                                     /* No function call in replay */
                                                     //game.ClientCallback_get_nh_event();
                                                     if (!IsReplaySearching)
-                                                        Thread.Sleep((int)(GHConstants.ReplayGetEventDelay / ReplaySpeed));
+                                                        WaitReplayDelay((int)(GHConstants.ReplayGetEventDelay / ReplaySpeed));
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.GetChar:
@@ -9589,7 +9612,7 @@ namespace GnollHackX
                                                     /* No function call in replay */
                                                     //game.ClientCallback_nhgetch();
                                                     if (!IsReplaySearching)
-                                                        Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
+                                                        WaitReplayDelay((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.PosKey:
@@ -9602,7 +9625,7 @@ namespace GnollHackX
                                                     /* No function call in replay */
                                                     //game.ClientCallback_nh_poskey();
                                                     if (!IsReplaySearching)
-                                                        Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
+                                                        WaitReplayDelay((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.YnFunction:

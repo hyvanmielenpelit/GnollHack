@@ -756,7 +756,7 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                GHApp.FmodService.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
+                GHApp.PlayMainScreenMusic();
                 //GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
             }
             await GHApp.PopModalPageAsync();

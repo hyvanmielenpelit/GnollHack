@@ -1351,7 +1351,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     if (_gamePage == null)
                     {
-                        GHApp.FmodService.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
+                        GHApp.PlayMainScreenMusic();
                     }
                 }
                 catch (Exception ex)
