@@ -8906,7 +8906,9 @@ namespace GnollHackX
                                 FileInfo contFI = new FileInfo(file);
                                 if (contFI != null && contFI.Name != null)
                                 {
-                                    if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
+                                    /* Continuation files of the same kind go with the main file: zipped ones with a zipped file, unzipped ones with an unzipped file */
+                                    bool sameKind = isZip ? file.EndsWith(usedZipSuffix) : file.EndsWith(GHConstants.ReplayFileNameSuffix);
+                                    if (contFI.Name.StartsWith(contStart) && sameKind && File.Exists(file))
                                     {
                                         File.Delete(file);
                                     }
@@ -9003,6 +9005,46 @@ namespace GnollHackX
             return res;
         }
 
+        /* The recording state a game hands to the game that restarts it in place, so that the
+           restarted session continues the same replay */
+        public sealed class ReplayRestartHandover
+        {
+            public long TimeStampBinary;
+            public int Continuation;
+            public string PlayerName;
+            public int FirstTurn;
+        }
+
+        private static readonly object _replayRestartHandoverLock = new object();
+        private static ReplayRestartHandover _replayRestartHandover = null;
+
+        public static void OfferReplayRestartHandover(ReplayRestartHandover handover)
+        {
+            lock (_replayRestartHandoverLock)
+            {
+                _replayRestartHandover = handover;
+            }
+        }
+
+        /* Returns the pending hand-off, or null, and clears it */
+        public static ReplayRestartHandover TakeReplayRestartHandover()
+        {
+            lock (_replayRestartHandoverLock)
+            {
+                ReplayRestartHandover handover = _replayRestartHandover;
+                _replayRestartHandover = null;
+                return handover;
+            }
+        }
+
+        public static void ClearReplayRestartHandover()
+        {
+            lock (_replayRestartHandoverLock)
+            {
+                _replayRestartHandover = null;
+            }
+        }
+
         private static readonly object _replayLock = new object();
         private static bool _stopReplay = false;
         private static bool _pauseReplay = false;
@@ -9072,6 +9114,24 @@ namespace GnollHackX
         public static bool UseGZipForReplays { get { return Interlocked.CompareExchange(ref _useGZipForReplays, 0, 0) != 0 || TournamentMode; } set { Interlocked.Exchange(ref _useGZipForReplays, value ? 1 : 0); } }
 
         /* Called from GHGame thread! */
+        /* The replay of the session that restarted a session ending at exitTimeBinary on lastTurn,
+           among the files in directory, or null */
+        private static string FindNextReplaySessionFile(string directory, string playerName, ulong versionNumber, string compressionSuffix, long exitTimeBinary, int lastTurn)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(directory) || !Directory.Exists(directory))
+                    return null;
+                return GHReplayFiles.FindNextSessionFile(Directory.GetFiles(directory), playerName,
+                    VersionNumberToFileNameSuffix(versionNumber), compressionSuffix, exitTimeBinary, lastTurn);
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog("FindNextReplaySessionFile: " + ex.Message);
+                return null;
+            }
+        }
+
         public static PlayReplayResult PlayReplay(GHGame game, string replayFileName)
         {
             if (game == null)
@@ -9089,6 +9149,9 @@ namespace GnollHackX
             bool contnextfile = false;
             string rawFileName = replayFileName;
             bool restartReplay = false;
+            bool glyphTablePreloadChecked = false;
+            int[] preloadedGlyph2Tile = null;
+            byte[] preloadedGlyphTileFlags = null;
             string replayPath = Path.GetDirectoryName(replayFileName);
             if (string.IsNullOrEmpty(replayPath))
                 replayPath = Path.Combine(GHPath, GHConstants.ReplayDirectory);
@@ -9207,6 +9270,17 @@ namespace GnollHackX
                                         gamePage.EnableCasualMode = casualmode;
                                     }
 
+                                    /* A file that does not start with its glyph table, such as a session restarted after a save,
+                                       takes the first table found later in it, which belongs to the same game */
+                                    if (!glyphTablePreloadChecked)
+                                    {
+                                        glyphTablePreloadChecked = true;
+                                        long recordStart = fs.Position;
+                                        if (!GHReplayFiles.IsGlyphTableRecordAt(fs, recordStart))
+                                            GHReplayFiles.TryFindGlyphTableRecord(fs, recordStart, out preloadedGlyph2Tile, out preloadedGlyphTileFlags);
+                                        fs.Position = recordStart;
+                                    }
+
                                     byte cmd_byte = 0;
                                     int cmd;
                                     bool breakwhile;
@@ -9271,6 +9345,14 @@ namespace GnollHackX
                                                     byte[] gltifl = new byte[gltifl_sz];
                                                     for (int j = 0; j < gltifl_sz; j++)
                                                         gltifl[j] = br.ReadByte();
+
+                                                    if (gl2ti.Length == 0 && preloadedGlyph2Tile != null && preloadedGlyphTileFlags != null)
+                                                    {
+                                                        gl2ti = preloadedGlyph2Tile;
+                                                        gltifl = preloadedGlyphTileFlags;
+                                                        preloadedGlyph2Tile = null;
+                                                        preloadedGlyphTileFlags = null;
+                                                    }
 
                                                     int ti2an_sz = br.ReadInt32();
                                                     short[] ti2an = new short[ti2an_sz];
@@ -9373,19 +9455,26 @@ namespace GnollHackX
                                                     }
                                                     unsafe
                                                     {
-                                                        fixed (int* p1 = gl2ti)
+                                                        /* No glyph table yet when the file carries none before its first glyph */
+                                                        if (gl2ti != null && gltifl != null)
                                                         {
-                                                            IntPtr ptr_gl2ti = (IntPtr)p1;
-                                                            fixed (byte* p2 = gltifl)
+                                                            fixed (int* p1 = gl2ti)
                                                             {
-                                                                IntPtr ptr_gltifl = (IntPtr)p2;
-                                                                GnollHackService.SetGlyphArrays(ptr_gl2ti, gl2ti.Length, ptr_gltifl, gltifl.Length); /* Need to initialize since the drawing routine uses the library table to do the animations */
+                                                                IntPtr ptr_gl2ti = (IntPtr)p1;
+                                                                fixed (byte* p2 = gltifl)
+                                                                {
+                                                                    IntPtr ptr_gltifl = (IntPtr)p2;
+                                                                    GnollHackService.SetGlyphArrays(ptr_gl2ti, gl2ti.Length, ptr_gltifl, gltifl.Length); /* Need to initialize since the drawing routine uses the library table to do the animations */
+                                                                }
                                                             }
                                                         }
-                                                        fixed (short* p3 = ti2an)
+                                                        if (ti2an != null)
                                                         {
-                                                            IntPtr ptr_ti2an = (IntPtr)p3;
-                                                            GnollHackService.SetTile2AnimationArray(ptr_ti2an, ti2an.Length); /* Need to initialize since the drawing routine uses the library table to do the animations */
+                                                            fixed (short* p3 = ti2an)
+                                                            {
+                                                                IntPtr ptr_ti2an = (IntPtr)p3;
+                                                                GnollHackService.SetTile2AnimationArray(ptr_ti2an, ti2an.Length); /* Need to initialize since the drawing routine uses the library table to do the animations */
+                                                            }
                                                         }
                                                     }
                                                     game.ClientCallback_InitWindows();
@@ -10210,13 +10299,29 @@ namespace GnollHackX
                                                 break;
                                             case (int)RecordedFunctionID.ExitHack:
                                                 {
+                                                    int status = br.ReadInt32();
+                                                    /* A session that ended in a restart after a save continues in the replay the restarted
+                                                       session recorded, when that file is beside this one */
+                                                    if (status == (int)exit_hack_types.EXITHACK_RESTART_EXISTING || status == (int)exit_hack_types.EXITHACK_RECOVER_NEW)
+                                                    {
+                                                        string nextSessionFile = FindNextReplaySessionFile(replayPath, knownPlayerName, verno, isZip ? usedZipSuffix : "", (long)time, ReplayTurn);
+                                                        MaybeWriteGHLog("Replay restart at turn " + ReplayTurn + " (status " + status + ", player " + (knownPlayerName ?? "unknown") + "): "
+                                                            + (nextSessionFile != null ? "continues in " + Path.GetFileName(nextSessionFile) : "no next session found in " + replayPath));
+                                                        if (nextSessionFile != null)
+                                                        {
+                                                            rawFileName = nextSessionFile;
+                                                            knownFirstTurn = -1; /* The next session's continuation files carry its own first turn */
+                                                            contnextfile = true;
+                                                            breakwhile = true;
+                                                            break;
+                                                        }
+                                                    }
                                                     if (ReplaySearchRegexString != null)
                                                     {
                                                         restartReplay = true;
                                                         breakwhile = true;
                                                         break;
                                                     }
-                                                    int status = br.ReadInt32();
                                                     game.ClientCallback_ExitHack(0); //status  We do not restart the game upon ExitHack even if the player so does, so status is unused
                                                     exitHackCalled = true;
                                                 }

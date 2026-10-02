@@ -3183,6 +3183,7 @@ namespace GnollHackX.Pages.Game
         {
             try
             {
+                GHApp.ClearReplayRestartHandover();
                 GHGame curGame = new GHGame(RunGnollHackFlags.None);
                 GHApp.CurrentGHGame = curGame;
                 curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
@@ -3208,6 +3209,7 @@ namespace GnollHackX.Pages.Game
             try
             {
                 GHGame curGame = new GHGame(RunGnollHackFlags.ForceLastPlayerName);
+                curGame.AdoptReplayRestartHandover(GHApp.TakeReplayRestartHandover());
                 GHApp.CurrentGHGame = curGame;
                 curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
                 _gnollHackService.StartGnollHack(curGame);
@@ -3231,6 +3233,7 @@ namespace GnollHackX.Pages.Game
         {
             try
             {
+                GHApp.ClearReplayRestartHandover();
                 GHGame curGame = new GHGame(RunGnollHackFlags.PlayingReplay);
                 GHApp.CurrentGHGame = curGame;
                 curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);

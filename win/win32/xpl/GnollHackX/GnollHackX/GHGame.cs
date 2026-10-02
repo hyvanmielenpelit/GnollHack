@@ -877,7 +877,7 @@ namespace GnollHackX
                     DestroyGHWindow(ghwin);
                     _ghWindows[winHandle] = null;
                 }
-                _lastWindowHandle = -1;
+                _lastWindowHandle = 0; /* As in a new game: a replay continuing across a restart creates its windows again from handle 0 */
             }
         }
 
@@ -1210,8 +1210,23 @@ namespace GnollHackX
         {
             if (IsRecording)
             {
-                RecordFunctionCall(RecordedFunctionID.ExitHack, status);
-                RecordFunctionCallImmediately(RecordedFunctionID.EndOfFile);
+                if (status == (int)exit_hack_types.EXITHACK_RESTART_EXISTING || status == (int)exit_hack_types.EXITHACK_RECOVER_NEW)
+                {
+                    /* The same game restarts in place: the restarted session continues this replay in its next file */
+                    ContinueToNextReplayFile();
+                    GHApp.ReplayRestartHandover handover = new GHApp.ReplayRestartHandover();
+                    handover.TimeStampBinary = _replayTimeStamp.ToBinary();
+                    handover.Continuation = _replayContinuation;
+                    handover.PlayerName = _knownPlayerName;
+                    handover.FirstTurn = _knownFirstTurn;
+                    GHApp.OfferReplayRestartHandover(handover);
+                }
+                else
+                {
+                    RecordFunctionCall(RecordedFunctionID.ExitHack, status);
+                    RecordFunctionCallImmediately(RecordedFunctionID.EndOfFile);
+                    GHApp.ClearReplayRestartHandover();
+                }
             }
             GHApp.MaybeWriteGHLog("ExitHack: " + status, true, GHConstants.SentryGnollHackCallbackCategoryName);
 
@@ -4650,6 +4665,7 @@ namespace GnollHackX
             }
             _replayTimeStamp = DateTime.Now;
             _replayContinuation = 0;
+            GHApp.ClearReplayRestartHandover();
         }
 
         private void ContinueToNextReplayFile()
@@ -4717,6 +4733,45 @@ namespace GnollHackX
         private string _knownPlayerName = null;
         private int _knownFirstTurn = -1;
 
+        /* A replay plays from its own glyph table: a main file whose first record does not load
+           one starts with the table currently in use */
+        private void InsertGlyphTableRecordIfMissing()
+        {
+            if (_recordedFunctionCalls.Count > 0)
+            {
+                GHRecordedFunctionCall first = _recordedFunctionCalls[0];
+                if (first != null && first.RecordedFunctionID == RecordedFunctionID.IssueGuiCommand
+                    && first.Args != null && first.Args.Length > 0 && first.Args[0] is int
+                    && (int)first.Args[0] == (int)gui_command_types.GUI_CMD_LOAD_GLYPHS)
+                    return;
+            }
+            int[] gl2ti = null;
+            byte[] gltifl = null;
+            lock (GHApp.Glyph2TileLock)
+            {
+                if (GHApp.Glyph2Tile != null && GHApp.GlyphTileFlags != null)
+                {
+                    gl2ti = (int[])GHApp.Glyph2Tile.Clone();
+                    gltifl = (byte[])GHApp.GlyphTileFlags.Clone();
+                }
+            }
+            if (gl2ti == null || gltifl == null)
+                return;
+            _recordedFunctionCalls.Insert(0, new GHRecordedFunctionCall(RecordedFunctionID.IssueGuiCommand,
+                new object[] { (int)gui_command_types.GUI_CMD_LOAD_GLYPHS, gl2ti, gltifl }, DateTime.Now));
+        }
+
+        /* Continues the replay of the game this one restarts: its next file, with its name parts */
+        public void AdoptReplayRestartHandover(GHApp.ReplayRestartHandover handover)
+        {
+            if (handover == null || !IsRecording)
+                return;
+            _replayTimeStamp = DateTime.FromBinary(handover.TimeStampBinary);
+            _replayContinuation = handover.Continuation;
+            _knownPlayerName = handover.PlayerName;
+            _knownFirstTurn = handover.FirstTurn;
+        }
+
         private long WriteFunctionCallsToDisk()
         {
             if (!GHApp.RecordGame || PlayingReplay)
@@ -4765,6 +4820,8 @@ namespace GnollHackX
                                         writer.Write(flags2); /* flags for future use */
                                         _headerSize += 3 * 8L + (long)configString.Length + 1L + 3 * 1L + 2 * 4L + 2 * 8L;
                                         appendSize += _headerSize;
+                                        if (_replayContinuation == 0)
+                                            InsertGlyphTableRecordIfMissing();
                                     }
                                     foreach (GHRecordedFunctionCall rfc in _recordedFunctionCalls)
                                     {

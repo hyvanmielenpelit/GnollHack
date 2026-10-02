@@ -42,6 +42,7 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHAtomicFile.cs" Link="Shared\GHAtomicFile.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHWindowGate.cs" Link="Shared\GHWindowGate.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteLogic.cs" Link="Shared\GHPerformanceSuiteLogic.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHReplayFiles.cs" Link="Shared\GHReplayFiles.cs" />
   </ItemGroup>
 
 </Project>
