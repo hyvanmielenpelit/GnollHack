@@ -74,8 +74,8 @@ public static class MauiProgram
 #endif
 #endif
 #if WINDOWS
-                handlers.AddHandler<SkiaSharp.Views.Maui.Controls.SKGLView, WindowsSKGLViewHandler>();
-                handlers.AddHandler<SkiaSharp.Views.Maui.Controls.SKCanvasView, WindowsSKCanvasViewHandler>();
+                handlers.AddHandler<SKTouchGLView, WindowsSKGLViewHandler>();
+                handlers.AddHandler<SKTouchCanvasView, WindowsSKCanvasViewHandler>();
 #endif
             })
 

@@ -24,9 +24,19 @@ using System.Threading;
 namespace GnollHackX.Controls
 #endif
 {
+    /* SwitchableCanvasView's inner views. On Windows they get WindowsSKCanvasViewHandler and
+       WindowsSKGLViewHandler: no WheelChanged touch events, hover moves limited to 120 Hz. */
+    public class SKTouchCanvasView : SKCanvasView
+    {
+    }
+
+    public class SKTouchGLView : SKGLView
+    {
+    }
+
 #if ANDROID_SURFACEVIEW
     /* Marker type: AndroidSKGLViewSurfaceHandler is registered for it */
-    public class MapSurfaceGLView : SKGLView
+    public class MapSurfaceGLView : SKTouchGLView
     {
     }
 
@@ -120,7 +130,7 @@ namespace GnollHackX.Controls
         /* Called from the constructor; overrides must not use their own fields */
         protected virtual SKGLView CreateGLView()
         {
-            return new SKGLView();
+            return new SKTouchGLView();
         }
 
 #if GNH_MAUI
