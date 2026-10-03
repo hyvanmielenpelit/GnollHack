@@ -10,7 +10,7 @@
     
         <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black">
             <Grid x:Name="MainGrid" HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="false" >
-                <controls:SwitchableCanvasView x:Name="MainCanvasView"
+                <controls:SwitchableMapCanvasView x:Name="MainCanvasView"
                                                   UseGL="False"
                                                   CanvasType="MainCanvas"
                                                   EnableTouchEvents="True"
@@ -19,7 +19,7 @@
                                                   MouseWheel="canvasView_MouseWheel"
                                                   MousePointer="canvasView_MousePointer"
                                                   HorizontalOptions="Fill" VerticalOptions="Fill" >
-                </controls:SwitchableCanvasView>
+                </controls:SwitchableMapCanvasView>
                 <Border x:Name="FadeFrame" IsVisible="False" InputTransparent="True" BackgroundColor="Black" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="Rectangle" HorizontalOptions="Fill" VerticalOptions="Fill" />
 
                 <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="Start" />

@@ -17983,7 +17983,7 @@ namespace GnollHackX.Pages.Game
 
         public void SetToBlack()
         {
-#if WINDOWS
+#if WINDOWS || ANDROID_SURFACEVIEW
             FadeFrame.Opacity = 1.0;
             FadeFrame.IsVisible = true;
 #else
@@ -17994,7 +17994,7 @@ namespace GnollHackX.Pages.Game
         public async Task FadeToBlack(uint milliseconds)
         {
             MainGrid.IsEnabled = false;
-#if WINDOWS
+#if WINDOWS || ANDROID_SURFACEVIEW
             FadeFrame.Opacity = 0.0;
             FadeFrame.IsVisible = true;
             await Task.Yield(); /* Just in case */
@@ -18014,7 +18014,7 @@ namespace GnollHackX.Pages.Game
         public async Task FadeFromBlack(uint milliseconds)
         {
             MainGrid.IsEnabled = true;
-#if WINDOWS
+#if WINDOWS || ANDROID_SURFACEVIEW
             FadeFrame.Opacity = 1.0;
             await Task.Yield(); /* Just in case */
             await FadeFrame.FadeToAsync(0.0, milliseconds);

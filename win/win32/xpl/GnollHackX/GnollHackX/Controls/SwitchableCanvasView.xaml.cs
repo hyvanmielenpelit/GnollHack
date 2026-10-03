@@ -28,6 +28,13 @@ using System.Threading;
 namespace GnollHackX.Controls
 #endif
 {
+#if ANDROID_SURFACEVIEW
+    /* Marker type: AndroidSKGLViewSurfaceHandler is registered for it */
+    public class MapSurfaceGLView : SKGLView
+    {
+    }
+
+#endif
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SwitchableCanvasView : ContentView, IThreadSafeView
     {
@@ -60,12 +67,10 @@ namespace GnollHackX.Controls
             bool gpuAvailable = GHApp.IsGPUAvailable;
             if (gpuAvailable)
             {
-                _internalGLView = new SKGLView()
-                {
-                    IsVisible = false,
-                    HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.Fill,
-                };
+                _internalGLView = CreateGLView();
+                _internalGLView.IsVisible = false;
+                _internalGLView.HorizontalOptions = LayoutOptions.Fill;
+                _internalGLView.VerticalOptions = LayoutOptions.Fill;
                 _internalGLView.PaintSurface += internalGLView_PaintSurface;
                 _internalGLView.Touch += internalGLView_Touch;
                 //_internalGLView.PropertyChanged += internalGLView_PropertyChanged;
@@ -122,6 +127,12 @@ namespace GnollHackX.Controls
 #if GNH_MAUI
             HandlerChanged += SwitchableCanvasView_HandlerChanged;
 #endif
+        }
+
+        /* Called from the constructor; overrides must not use their own fields */
+        protected virtual SKGLView CreateGLView()
+        {
+            return new SKGLView();
         }
 
 #if GNH_MAUI
@@ -787,6 +798,17 @@ namespace GnollHackX.Controls
 #endif
 #endif
 
+    }
+
+    /* The game map's canvas */
+    public class SwitchableMapCanvasView : SwitchableCanvasView
+    {
+#if ANDROID_SURFACEVIEW
+        protected override SKGLView CreateGLView()
+        {
+            return new MapSurfaceGLView();
+        }
+#endif
     }
 
 }
