@@ -487,7 +487,7 @@ at the start and end of every batch.
 | Category | Keys | Notes |
 |----------|------|-------|
 | `meta` | `meta.fingerprintVersion` (`1`), `meta.capturedUtc` | Never diffed |
-| `code` | `code.appVersion`, `code.gitCommit`, `code.buildConfiguration`, `code.portVersion`, `code.portBuild`, `code.renderSubscription`; Windows: `code.assemblyMvid` (the first 12 hex characters of the app assembly's module version id, which changes whenever the compiled code does) | In-app |
+| `code` | `code.appVersion`, `code.gitCommit`, `code.buildConfiguration`, `code.portVersion`, `code.portBuild`, `code.renderSubscription`; Windows: `code.assemblyMvid` (the first 12 hex characters of the app assembly's module version id, which changes whenever the compiled code does); Android: `code.mapSurface` | In-app |
 | `toolchain` | `toolchain.runtime`, `toolchain.framework`, `toolchain.compiler`, `toolchain.sdk` (the build's SDK, assembly metadata `GHBuildSdkVersion`), `toolchain.packaging`; script: `toolchain.dotnetSdk` (the host's `dotnet --version` in `GnollHackTests`) | |
 | `component` | `component.<assembly name>` for every loaded assembly except those starting with `System`, `mscorlib`, `netstandard`, `Microsoft.CSharp`, `Microsoft.VisualBasic`, `Microsoft.Win32` or `GnollHack`; `component.native.skia`, `component.native.fmod`; Windows: `component.windowsAppSdk`, `component.winui` | In-app; e.g. `component.SkiaSharp`, `component.Microsoft.Maui.Controls` |
 | `os` | `os.platform`, `os.version`, `os.build` (Windows `26200.6584`), `os.displayVersion`, `os.edition`, `os.pendingReboot`; Android: `os.securityPatch`, `os.fingerprint`; script, Windows: `os.latestHotfix` | |
@@ -513,6 +513,14 @@ the loop starts, and `platform` elsewhere. It is `raw` only in a build that defi
 `ENABLE_RAW_RENDERING`, which no project defines by default. Such a build still falls back
 from `raw` to `managed` at run time when the raw subscription cannot be made or delivers no
 frames, so the value can differ between two runs of one build.
+
+`code.mapSurface` names the Android view behind the map's GPU canvas: `SurfaceView` in a
+build that defines `ANDROID_SURFACEVIEW`, which `GNHAndroidSurfaceView` in
+`GnollHackM.csproj` turns on by default, and `TextureView` otherwise. It describes the
+build: when `settings.mainCanvasUsesGpu` is false the map is drawn on the CPU and neither
+view is used. A `SurfaceView` map is its own compositor layer and is not in the
+FrameMetrics reports; the in-app display estimate still assumes a `TextureView`, so its
+results for the two values do not compare.
 
 A suite's starting fingerprint is taken when its first window ends, warm-up or run 1; the
 one written when the suite is created is provisional until then. By that point the game

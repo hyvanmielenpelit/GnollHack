@@ -185,6 +185,8 @@ namespace GnollHackX.Performance
             AddIfMissing(fp, "code.renderSubscription", () => GHApp.RenderSubscriptionName);
 #if ANDROID_SURFACEVIEW
             AddIfMissing(fp, "code.mapSurface", () => "SurfaceView");
+#elif ANDROID
+            AddIfMissing(fp, "code.mapSurface", () => "TextureView");
 #endif
             AddIfMissing(fp, "toolchain.compiler",
                 () => GHApp.IsLLVM ? "LLVM" : GHApp.IsCoreCLR ? "Crossgen2" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT");

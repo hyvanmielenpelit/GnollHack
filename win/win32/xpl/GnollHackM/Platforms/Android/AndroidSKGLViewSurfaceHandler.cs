@@ -5,6 +5,7 @@ using System;
 using Android.Content;
 using Android.Opengl;
 using Android.Views;
+using GnollHackX;
 using Microsoft.Maui;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
@@ -46,7 +47,8 @@ namespace GnollHackM
         protected override SKGLSurfaceView CreatePlatformView()
         {
             var view = new MauiSKGLSurfaceView(Context);
-            /* Keeps GPU resources (tile atlases, text blobs) across a pause */
+            /* Read only by GLSurfaceView.OnPause, which nothing calls: the EGL context and its
+               GPU resources outlive a stopped window either way */
             view.PreserveEGLContextOnPause = true;
             return view;
         }
@@ -70,7 +72,8 @@ namespace GnollHackM
         /* GLSurfaceView.requestRender is thread-safe, so no hop to the UI thread */
         public static void OnInvalidateSurface(AndroidSKGLViewSurfaceHandler handler, ISKGLView view, object? args)
         {
-            var platformView = handler?.PlatformView;
+            /* The typed PlatformView property throws while the handler is disconnecting */
+            var platformView = ((IElementHandler?)handler)?.PlatformView as SKGLSurfaceView;
             if (platformView == null || platformView.Handle == IntPtr.Zero)
                 return;
 
@@ -114,7 +117,8 @@ namespace GnollHackM
         /* GL thread */
         private void OnPaintSurface(object? sender, SkiaSharp.Views.Android.SKPaintGLSurfaceEventArgs e)
         {
-            var virtualView = VirtualView;
+            /* The typed VirtualView property throws once the handler is disconnected */
+            var virtualView = ((IElementHandler)this).VirtualView as ISKGLView;
             if (virtualView == null)
                 return;
 
@@ -157,6 +161,24 @@ namespace GnollHackM
             }
 
             public bool IgnorePixelScaling { get; set; }
+
+            private bool _wasDetached;
+
+            /* GLSurfaceView gives a re-attached view a new GL thread and EGL context, while
+               SKGLSurfaceView's renderer keeps the GRContext it made in the old one */
+            protected override void OnAttachedToWindow()
+            {
+                base.OnAttachedToWindow();
+                if (_wasDetached && GRContext != null)
+                    GHApp.MaybeWriteGHLog("Map surface re-attached: its GRContext belongs to a destroyed EGL context",
+                        true, GHConstants.SentryGnollHackGeneralCategoryName);
+            }
+
+            protected override void OnDetachedFromWindow()
+            {
+                _wasDetached = true;
+                base.OnDetachedFromWindow();
+            }
 
             protected override void OnPaintSurface(SkiaSharp.Views.Android.SKPaintGLSurfaceEventArgs e)
             {

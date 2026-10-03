@@ -2,6 +2,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
@@ -14,7 +15,8 @@ namespace GnollHackM
     /* Adapted from SkiaSharp's internal Windows SKTouchHandler (MIT). Every WinRT object read
        here is a CsWinRT wrapper that adds GC memory pressure, so each event reads only what
        it reports: one PointerPoint, Properties only when a button can be involved, and
-       Pointer only to capture it. Hover moves are limited before anything is read.
+       Pointer only to capture it and when the capture ends. Hover moves are limited before
+       anything is read.
        Wheel events are not handled; SwitchableCanvasView raises MouseWheel itself. */
     internal sealed class WindowsTouchHandler
     {
@@ -22,8 +24,10 @@ namespace GnollHackM
 
         private Action<SKTouchEventArgs>? _onTouchAction;
         private Func<double, double, SKPoint>? _scalePixels;
-        /* Pointers pressed on this element; a missed release only disables the hover limit */
-        private int _pressedCount;
+        /* Ids of the pointers in contact over this element; hover moves are limited while it is
+           empty. Every event that reports a pointer corrects its entry, so a missed release
+           does not leave one behind. */
+        private readonly List<uint> _pressedPointers = new List<uint>(4);
         private long _lastHoverTimestamp;
 
         public WindowsTouchHandler(Action<SKTouchEventArgs> onTouchAction, Func<double, double, SKPoint> scalePixels)
@@ -43,6 +47,8 @@ namespace GnollHackM
             view.PointerMoved -= OnPointerMoved;
             view.PointerReleased -= OnPointerReleased;
             view.PointerCanceled -= OnPointerCanceled;
+            view.PointerCaptureLost -= OnPointerCaptureLost;
+            _pressedPointers.Clear();
             if (enableTouchEvents)
             {
                 view.PointerEntered += OnPointerEntered;
@@ -51,6 +57,7 @@ namespace GnollHackM
                 view.PointerMoved += OnPointerMoved;
                 view.PointerReleased += OnPointerReleased;
                 view.PointerCanceled += OnPointerCanceled;
+                view.PointerCaptureLost += OnPointerCaptureLost;
             }
         }
 
@@ -75,7 +82,6 @@ namespace GnollHackM
 
         private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
         {
-            _pressedCount++;
             args.Handled = CommonHandler(sender, SKTouchAction.Pressed, args);
             if (args.Handled && sender is FrameworkElement element)
             {
@@ -86,7 +92,7 @@ namespace GnollHackM
 
         private void OnPointerMoved(object sender, PointerRoutedEventArgs args)
         {
-            if (_pressedCount == 0)
+            if (_pressedPointers.Count == 0)
             {
                 long now = Stopwatch.GetTimestamp();
                 if (now - _lastHoverTimestamp < s_hoverMoveIntervalTicks)
@@ -101,8 +107,6 @@ namespace GnollHackM
 
         private void OnPointerReleased(object sender, PointerRoutedEventArgs args)
         {
-            if (_pressedCount > 0)
-                _pressedCount--;
             args.Handled = CommonHandler(sender, SKTouchAction.Released, args);
             if (sender is FrameworkElement element)
                 element.ManipulationMode = ManipulationModes.System;
@@ -111,9 +115,13 @@ namespace GnollHackM
         private void OnPointerCanceled(object sender, PointerRoutedEventArgs args)
         {
             _lastHoverTimestamp = Stopwatch.GetTimestamp();
-            if (_pressedCount > 0)
-                _pressedCount--;
             args.Handled = CommonHandler(sender, SKTouchAction.Cancelled, args);
+        }
+
+        /* Also raised after an ordinary release, when the id is already gone */
+        private void OnPointerCaptureLost(object sender, PointerRoutedEventArgs args)
+        {
+            _pressedPointers.Remove(args.Pointer.PointerId);
         }
 
         private bool CommonHandler(object sender, SKTouchAction action, PointerRoutedEventArgs evt)
@@ -128,15 +136,41 @@ namespace GnollHackM
                 return false;
 
             var position = point.Position;
+            uint pointerId = point.PointerId;
             bool inContact = point.IsInContact;
+            TrackPointer(action, pointerId, inContact);
             SKMouseButton button = SKMouseButton.Unknown;
             if (inContact || action == SKTouchAction.Pressed || action == SKTouchAction.Released || action == SKTouchAction.Cancelled)
                 button = GetMouseButton(point.Properties);
 
-            var e = new SKTouchEventArgs(point.PointerId, action, button, GetTouchDevice(point.PointerDeviceType),
+            var e = new SKTouchEventArgs(pointerId, action, button, GetTouchDevice(point.PointerDeviceType),
                 scalePixels(position.X, position.Y), inContact, 0);
             onTouchAction(e);
             return e.Handled;
+        }
+
+        /* A press, or an enter or move in contact, shows the pointer pressed; every other
+           event shows it not pressed */
+        private void TrackPointer(SKTouchAction action, uint pointerId, bool inContact)
+        {
+            bool pressed;
+            switch (action)
+            {
+            case SKTouchAction.Pressed:
+                pressed = true;
+                break;
+            case SKTouchAction.Entered:
+            case SKTouchAction.Moved:
+                pressed = inContact;
+                break;
+            default:
+                pressed = false;
+                break;
+            }
+            if (!pressed)
+                _pressedPointers.Remove(pointerId);
+            else if (!_pressedPointers.Contains(pointerId))
+                _pressedPointers.Add(pointerId);
         }
 
         private static SKMouseButton GetMouseButton(PointerPointProperties? properties)
