@@ -391,15 +391,6 @@ namespace GnollHackX
                 Preferences.Set("GNH430Build19AiSnapshotFix", true);
             }
 #endif
-#if true
-            /* Switch on Text Caching and Tile Batching on Android */
-            if (IsAndroid && !Preferences.Get("GNH430Build21AndroidDrawSettings", false))
-            {
-                if (Preferences.ContainsKey("UseTileBatching")) /* Revert to default */
-                    Preferences.Remove("UseTileBatching");
-                Preferences.Set("GNH430Build21AndroidDrawSettings", true);
-            }
-#endif
         }
 
         private static void CheckSaveGameBreakingVersionWarning()

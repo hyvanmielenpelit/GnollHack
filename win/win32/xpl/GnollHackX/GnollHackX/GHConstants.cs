@@ -434,7 +434,7 @@ namespace GnollHackX
 #endif
         public const bool DefaultRuntimeEffects = false;
         public const bool DefaultTileBatching =
-#if WINDOWS || ANDROID
+#if WINDOWS
             true;
 #else
             false;
