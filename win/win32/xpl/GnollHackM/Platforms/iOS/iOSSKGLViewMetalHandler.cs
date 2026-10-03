@@ -1,10 +1,12 @@
 #nullable enable
 
 using System;
+using CoreGraphics;
+using Metal;
+using MetalKit;
 using Microsoft.Maui;
 using Microsoft.Maui.Handlers;
 using SkiaSharp;
-using SkiaSharp.Views.iOS;
 using SkiaSharp.Views.Maui;
 using UIKit;
 using Foundation;
@@ -12,7 +14,7 @@ using System.Linq;
 
 namespace GnollHackM.Platforms.iOS
 {
-    public class iOSSKGLViewMetalHandler : ViewHandler<ISKGLView, SKMetalView>
+    public class iOSSKGLViewMetalHandler : ViewHandler<ISKGLView, iOSSKGLViewMetalHandler.MauiMetalView>
     {
         private CustomSKTouchHandler? _touchHandler;
         private SKSizeI lastCanvasSize;
@@ -36,26 +38,35 @@ namespace GnollHackM.Platforms.iOS
                 [nameof(ISKGLView.InvalidateSurface)] = OnInvalidateSurface,
             };
 
-        protected override SKMetalView CreatePlatformView()
+        protected override MauiMetalView CreatePlatformView()
         {
-            return new MauiSKMetalView
+            return new MauiMetalView
             {
                 BackgroundColor = UIColor.Clear,
                 Opaque = false,
             };
         }
 
-        protected override void ConnectHandler(SKMetalView platformView)
+        protected override void ConnectHandler(MauiMetalView platformView)
         {
             platformView.PaintSurface += OnPaintSurface;
             base.ConnectHandler(platformView);
         }
 
-        protected override void DisconnectHandler(SKMetalView platformView)
+        protected override void DisconnectHandler(MauiMetalView platformView)
         {
             platformView.PaintSurface -= OnPaintSurface;
+
+            /* The virtual view must drop its GRContext before the context is disposed */
+            if (lastGRContext != null && ((IElementHandler)this).VirtualView is ISKGLView virtualView)
+                virtualView.OnGRContextChanged(null);
             lastGRContext = null;
             lastCanvasSize = default;
+            /* MapHasRenderLoop resumes drawing on reconnect */
+            platformView.Paused = true;
+            platformView.EnableSetNeedsDisplay = false;
+            platformView.ReleaseGpuResources();
+
             if (_touchHandler != null)
             {
                 _touchHandler.Detach(platformView);
@@ -64,9 +75,9 @@ namespace GnollHackM.Platforms.iOS
             base.DisconnectHandler(platformView);
         }
 
-        private void OnPaintSurface(object? sender, SKPaintMetalSurfaceEventArgs e)
+        private void OnPaintSurface(object? sender, SKPaintGLSurfaceEventArgs e)
         {
-            var virtualView = VirtualView;
+            var virtualView = ((IElementHandler)this).VirtualView as ISKGLView;
             if (virtualView == null)
                 return;
 
@@ -76,7 +87,7 @@ namespace GnollHackM.Platforms.iOS
                 lastCanvasSize = newCanvasSize;
                 virtualView.OnCanvasSizeChanged(newCanvasSize);
             }
-            if (sender is SKMetalView platformView)
+            if (sender is MauiMetalView platformView)
             {
                 var newGRContext = platformView.GRContext;
                 if (lastGRContext != newGRContext)
@@ -86,13 +97,13 @@ namespace GnollHackM.Platforms.iOS
                 }
             }
 
-            var args = new SkiaSharp.Views.Maui.SKPaintGLSurfaceEventArgs(e.Surface, e.BackendRenderTarget, e.Origin, e.Info, e.RawInfo);
-            virtualView.OnPaintSurface(args);
+            virtualView.OnPaintSurface(e);
         }
 
         public static void OnInvalidateSurface(iOSSKGLViewMetalHandler handler, ISKGLView view, object? args)
         {
-            var platformView = handler?.PlatformView;
+            /* The typed PlatformView property throws while the handler is disconnecting */
+            var platformView = ((IElementHandler?)handler)?.PlatformView as MauiMetalView;
             if (platformView == null)
                 return;
 
@@ -108,7 +119,7 @@ namespace GnollHackM.Platforms.iOS
             }
         }
 
-        private static void SetNeedsDisplayIfPaused(SKMetalView platformView)
+        private static void SetNeedsDisplayIfPaused(MauiMetalView platformView)
         {
             if (platformView.Handle != IntPtr.Zero && platformView.Paused && platformView.EnableSetNeedsDisplay)
             {
@@ -118,7 +129,7 @@ namespace GnollHackM.Platforms.iOS
 
         public static void MapIgnorePixelScaling(iOSSKGLViewMetalHandler handler, ISKGLView view)
         {
-            if (handler?.PlatformView is MauiSKMetalView pv)
+            if (handler?.PlatformView is MauiMetalView pv)
             {
                 pv.IgnorePixelScaling = view.IgnorePixelScaling;
                 OnInvalidateSurface(handler, view, null);
@@ -168,22 +179,135 @@ namespace GnollHackM.Platforms.iOS
             }
         }
 
-        private class MauiSKMetalView : SKMetalView
+        /* An MTKView that renders with Skia. Each view owns its own command queue and
+           GRContext. Drawing happens on the main thread. */
+        public class MauiMetalView : MTKView, IMTKViewDelegate
         {
-            public bool IgnorePixelScaling { get; set; }
+            private const SKColorType colorType = SKColorType.Bgra8888;
+            private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.TopLeft;
 
-            protected override void OnPaintSurface(SKPaintMetalSurfaceEventArgs e)
+            private IMTLDevice? _device;
+            private IMTLCommandQueue? _queue;
+            private GRContext? _context;
+
+            public MauiMetalView() : base(CGRect.Empty, MTLDevice.SystemDefault)
             {
-                if (IgnorePixelScaling)
+                _device = Device;
+                if (_device == null)
                 {
-                    var userVisibleSize = new SKSizeI((int)Bounds.Width, (int)Bounds.Height);
-                    var canvas = e.Surface.Canvas;
-                    canvas.Scale((float)ContentScaleFactor);
-
-                    e = new SKPaintMetalSurfaceEventArgs(e.Surface, e.BackendRenderTarget, e.Origin, e.Info.WithSize(userVisibleSize), e.Info);
+                    Console.WriteLine("Metal is not supported on this device.");
+                    return;
                 }
 
-                base.OnPaintSurface(e);
+                ColorPixelFormat = MTLPixelFormat.BGRA8Unorm;
+                /* Skia renders straight into the drawable texture and allocates its own
+                   stencil buffers, so the view needs no depth, stencil, or MSAA textures */
+                DepthStencilPixelFormat = MTLPixelFormat.Invalid;
+                SampleCount = 1;
+                /* Skia may read back from the render target */
+                FramebufferOnly = false;
+                _queue = _device.CreateCommandQueue();
+                Delegate = this;
+            }
+
+            public bool IgnorePixelScaling { get; set; }
+
+            public GRContext? GRContext => _context;
+
+            public event EventHandler<SKPaintGLSurfaceEventArgs>? PaintSurface;
+
+            /* Frees the GRContext and its resource cache; the next draw creates a new one */
+            public void ReleaseGpuResources()
+            {
+                if (_context != null)
+                {
+                    _context.AbandonContext(true);
+                    _context.Dispose();
+                    _context = null;
+                }
+                ReleaseDrawables();
+            }
+
+            public override void MovedToWindow()
+            {
+                base.MovedToWindow();
+                if (Window == null)
+                    ReleaseDrawables();
+            }
+
+            void IMTKViewDelegate.DrawableSizeWillChange(MTKView view, CGSize size)
+            {
+                if (Paused && EnableSetNeedsDisplay)
+                    SetNeedsDisplay();
+            }
+
+            void IMTKViewDelegate.Draw(MTKView view)
+            {
+                var queue = _queue;
+                if (_device == null || queue == null)
+                    return;
+
+                /* Every wrapper is disposed at the end of the frame: the layer has only a
+                   few drawables and cannot reuse one that a GC-pending wrapper retains */
+                using var drawable = CurrentDrawable;
+                if (drawable == null)
+                    return;
+                using var texture = drawable.Texture;
+                if (texture == null)
+                    return;
+
+                int width = (int)texture.Width;
+                int height = (int)texture.Height;
+                if (width <= 0 || height <= 0)
+                    return;
+
+                if (_context == null)
+                {
+                    using var backendContext = new GRMtlBackendContext
+                    {
+                        Device = _device,
+                        Queue = queue,
+                    };
+                    _context = GRContext.CreateMetal(backendContext);
+                    if (_context == null)
+                        return;
+                }
+
+                using var renderTarget = new GRBackendRenderTarget(width, height, new GRMtlTextureInfo(texture));
+                using var surface = SKSurface.Create(_context, renderTarget, surfaceOrigin, colorType);
+                if (surface == null)
+                    return;
+
+                var rawInfo = new SKImageInfo(width, height, colorType);
+                var info = rawInfo;
+                if (IgnorePixelScaling)
+                {
+                    surface.Canvas.Scale((float)ContentScaleFactor);
+                    info = rawInfo.WithSize(new SKSizeI((int)Bounds.Width, (int)Bounds.Height));
+                }
+
+                PaintSurface?.Invoke(this, new SKPaintGLSurfaceEventArgs(surface, renderTarget, surfaceOrigin, info, rawInfo));
+
+                surface.Flush();
+
+                using var commandBuffer = queue.CommandBuffer();
+                if (commandBuffer == null)
+                    return;
+                commandBuffer.PresentDrawable(drawable);
+                commandBuffer.Commit();
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    ReleaseGpuResources();
+                    /* The device wrapper is shared with MTLDevice.SystemDefault callers */
+                    _device = null;
+                    _queue?.Dispose();
+                    _queue = null;
+                }
+                base.Dispose(disposing);
             }
         }
 
