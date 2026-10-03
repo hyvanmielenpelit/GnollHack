@@ -21,15 +21,19 @@ namespace GnollHackX
         /* The width is measured with the same font state the blob was shaped with, so it
            is keyed by the bucket exactly as the blob is. Alignment needs it on every
            draw, and measuring shapes the text again. */
-        private readonly struct BlobEntry
+        /* A class, so that the last-used stamp written on a hit persists in the dictionary:
+           the span-keyed alternate lookup returns values by copy. */
+        private sealed class BlobEntry
         {
             public readonly SKTextBlob Blob;
             public readonly float Width;
+            public long LastUsedFrame;
 
-            public BlobEntry(SKTextBlob blob, float width)
+            public BlobEntry(SKTextBlob blob, float width, long frame)
             {
                 Blob = blob;
                 Width = width;
+                LastUsedFrame = frame;
             }
         }
 
@@ -40,6 +44,7 @@ namespace GnollHackX
         {
             public Dictionary<string, BlobEntry> Blobs;
             public Dictionary<string, BlobEntry>.AlternateLookup<ReadOnlySpan<char>> BySpan;
+            public long LastUsedFrame;
         }
 
         /* A blob is fixed at creation by the typeface and size alone: it keeps drawing
@@ -99,6 +104,10 @@ namespace GnollHackX
         private long _blobCacheHits;
         private long _blobCacheMisses;
         private long _blobCacheFlushes;
+        private long _blobCacheEvictions;
+        /* Advanced once per paint by SyncBlobCache; entries and buckets carry the frame they
+           were last drawn in */
+        private long _frame;
 #endif
 
         public GHSkiaFontPaint(
@@ -326,8 +335,9 @@ namespace GnollHackX
             if (!_blobBuckets.TryGetValue(key, out bucket))
             {
                 /* A size derived from a changing canvas scale mints a bucket per frame, so
-                   this bound is load-bearing, not defensive. */
-                if (_blobBuckets.Count >= GHConstants.MaxTextBlobFontBuckets)
+                   this bound is load-bearing, not defensive. Everything goes only when every
+                   bucket was drawn in this paint. */
+                if (_blobBuckets.Count >= GHConstants.MaxTextBlobFontBuckets && !EvictLeastRecentlyUsedBucket())
                 {
                     ClearBlobCache();
                     _blobCacheFlushes++;
@@ -339,8 +349,107 @@ namespace GnollHackX
                 _blobBuckets.Add(key, bucket);
             }
 
+            bucket.LastUsedFrame = _frame;
             _currentBucket = bucket;
             return bucket;
+        }
+
+        /* Removes the bucket drawn longest ago, provided it was not drawn in this paint.
+           _currentBucket is null while GetCurrentBucket resolves, and every bucket resolved in
+           this paint carries the current frame, so the victim is never in use. */
+        private bool EvictLeastRecentlyUsedBucket()
+        {
+            FontKey victimKey = default(FontKey);
+            FontBucket victim = null;
+            foreach (KeyValuePair<FontKey, FontBucket> kv in _blobBuckets)
+            {
+                if (kv.Value.LastUsedFrame < _frame && (victim == null || kv.Value.LastUsedFrame < victim.LastUsedFrame))
+                {
+                    victimKey = kv.Key;
+                    victim = kv.Value;
+                }
+            }
+
+            if (victim == null)
+                return false;
+
+            /* Counted out first, so a throwing Dispose cannot leave the counts too high */
+            foreach (string text in victim.Blobs.Keys)
+            {
+                _blobCount--;
+                _cachedChars -= text.Length;
+            }
+
+            try
+            {
+                foreach (BlobEntry entry in victim.Blobs.Values)
+                {
+                    if (entry != null && entry.Blob != null)
+                        entry.Blob.Dispose();
+                }
+            }
+            finally
+            {
+                victim.Blobs.Clear();
+                _blobBuckets.Remove(victimKey);
+                _blobCacheEvictions++;
+            }
+            return true;
+        }
+
+        /* Disposes entries not drawn for TextBlobCacheAgingFrames paints, then, if that leaves
+           either bound above its low-water mark, every entry not drawn in this paint. Buckets
+           left empty go too, unless drawn in this paint, so the current bucket survives. */
+        private void SweepStaleEntries(int incomingChars)
+        {
+            if (_blobBuckets == null)
+                return;
+
+            int removed = 0;
+            try
+            {
+                removed += RemoveEntriesUnusedSince(_frame - GHConstants.TextBlobCacheAgingFrames);
+
+                long lowWaterCount = (long)_maxCachedBlobs * GHConstants.TextBlobCacheSweepLowWaterPercent / 100;
+                long lowWaterChars = (long)_maxCachedTotalChars * GHConstants.TextBlobCacheSweepLowWaterPercent / 100;
+                if (_blobCount > lowWaterCount || _cachedChars + incomingChars > lowWaterChars)
+                    removed += RemoveEntriesUnusedSince(_frame);
+            }
+            finally
+            {
+                /* Removal while enumerating is supported for Dictionary since .NET Core 3.0 */
+                foreach (KeyValuePair<FontKey, FontBucket> kv in _blobBuckets)
+                {
+                    if (kv.Value.Blobs.Count == 0 && kv.Value.LastUsedFrame != _frame)
+                        _blobBuckets.Remove(kv.Key);
+                }
+                if (removed > 0)
+                    _blobCacheEvictions++;
+            }
+        }
+
+        /* Disposes every entry last drawn before the given frame and returns how many */
+        private int RemoveEntriesUnusedSince(long frame)
+        {
+            int removed = 0;
+            foreach (FontBucket bucket in _blobBuckets.Values)
+            {
+                foreach (KeyValuePair<string, BlobEntry> kv in bucket.Blobs)
+                {
+                    if (kv.Value != null && kv.Value.LastUsedFrame >= frame)
+                        continue;
+
+                    /* Removed and counted before the dispose, so a throwing Dispose cannot
+                       leave the counts too high or the blob reachable */
+                    bucket.Blobs.Remove(kv.Key);
+                    _blobCount--;
+                    _cachedChars -= kv.Key.Length;
+                    removed++;
+                    if (kv.Value != null && kv.Value.Blob != null)
+                        kv.Value.Blob.Dispose();
+                }
+            }
+            return removed;
         }
 
         /* Text that will not be cached: the caller keeps its own `using` blob instead. The
@@ -361,8 +470,9 @@ namespace GnollHackX
         {
             FontBucket bucket = GetCurrentBucket();
 
-            if (bucket.BySpan.TryGetValue(text, out entry))
+            if (bucket.BySpan.TryGetValue(text, out entry) && entry != null)
             {
+                entry.LastUsedFrame = _frame;
                 _blobCacheHits++;
                 return true;
             }
@@ -377,19 +487,25 @@ namespace GnollHackX
             if (_blobCount >= _maxCachedBlobs
                 || _cachedChars + text.Length > _maxCachedTotalChars)
             {
-                /* Everything goes, rather than one entry: the working set is a whole
-                   frame's text, so evicting a single blob would be refilled within the same
-                   frame and the cache would thrash at the bound. ClearBlobCache resets
-                   _currentBucket, so the bucket is re-resolved before the blob is filed --
-                   the local above now refers to an orphan. */
-                ClearBlobCache();
-                _blobCacheFlushes++;
-                bucket = GetCurrentBucket();
+                /* Stale entries go first, then everything not drawn in this paint; the sweep
+                   never removes the current bucket, so the local above stays valid. Evicting
+                   single entries from this paint's own text would be refilled within the same
+                   frame and thrash, so if that text alone exceeds the bound, everything goes.
+                   ClearBlobCache resets _currentBucket, so the bucket is then re-resolved
+                   before the blob is filed -- the local above would refer to an orphan. */
+                SweepStaleEntries(text.Length);
+                if (_blobCount >= _maxCachedBlobs
+                    || _cachedChars + text.Length > _maxCachedTotalChars)
+                {
+                    ClearBlobCache();
+                    _blobCacheFlushes++;
+                    bucket = GetCurrentBucket();
+                }
             }
 
             /* Measured without the paint, matching the uncached span overload: passing it
                would fold stroke width into the advance and shift aligned text. */
-            entry = new BlobEntry(blob, _font.MeasureText(text));
+            entry = new BlobEntry(blob, _font.MeasureText(text), _frame);
 
             /* Indexer, not Add: the TryGetValue above missed, so the key cannot already be
                present, and the indexer cannot throw and strand the blob unreferenced. */
@@ -414,7 +530,7 @@ namespace GnollHackX
                             continue;
                         foreach (BlobEntry entry in bucket.Blobs.Values)
                         {
-                            if (entry.Blob != null)
+                            if (entry != null && entry.Blob != null)
                                 entry.Blob.Dispose();
                         }
                         bucket.Blobs.Clear();
@@ -441,10 +557,15 @@ namespace GnollHackX
         }
 
         /* Call once at the top of the paint handler that owns this instance, before any
-           text is drawn. Applies a setting change in either direction and any clear another
-           thread has requested. */
+           text is drawn. Starts a new frame for eviction, and applies a setting change in
+           either direction and any clear another thread has requested. */
         public void SyncBlobCache(bool enabled)
         {
+            /* Every bucket drawn in this paint is then resolved, and stamped, at least once,
+               even when the font state is unchanged from the previous paint */
+            _frame++;
+            _currentBucket = null;
+
             bool clear = Interlocked.Exchange(ref _blobCacheClearRequested, 0) != 0;
 
             if (_cacheTextBlobs != enabled)
@@ -479,6 +600,7 @@ namespace GnollHackX
         public long BlobCacheHits { get { return _blobCacheHits; } }
         public long BlobCacheMisses { get { return _blobCacheMisses; } }
         public long BlobCacheFlushes { get { return _blobCacheFlushes; } }
+        public long BlobCacheEvictions { get { return _blobCacheEvictions; } }
 
         /* The entry belongs to the cache and its blob is never disposed here. A shaped blob
            carries its own glyph positions, so alignment is applied by shifting the origin
@@ -514,6 +636,7 @@ namespace GnollHackX
         public long BlobCacheHits { get { return 0; } }
         public long BlobCacheMisses { get { return 0; } }
         public long BlobCacheFlushes { get { return 0; } }
+        public long BlobCacheEvictions { get { return 0; } }
 #endif
 
         public void DrawTextOnCanvas(SKCanvas canvas, string text, float x, float y, SKTextAlign textAlign)

@@ -135,8 +135,9 @@ namespace GnollHackX
         public const int MaxBitmapCacheSize = 64;
         public const int MaxColorFilterCacheSize = 128;
         /* Text blob cache bounds. The defaults apply to any GHSkiaFontPaint that does not
-           ask for its own; GamePage overrides them for the map and menu paints. Whichever
-           bound trips first triggers a full flush. The entry count bounds wrapper and
+           ask for its own; GamePage overrides them for the map and menu paints. A tripped
+           bound evicts stale entries first, and flushes everything only when the current
+           frame's own text exceeds it. The entry count bounds wrapper and
            dictionary overhead, the character count bounds native glyph data, and the
            per-string length keeps one long string from consuming the character budget. */
         public const int MaxTextBlobCacheSize = 512;
@@ -146,6 +147,8 @@ namespace GnollHackX
         public const int MaxCachedTextLength = 128;
         public const int MaxMapCachedTextLength = 512;
         public const int MaxCachedTotalChars = 65536;
+        public const int TextBlobCacheAgingFrames = 300; /* Unused this many paints, an entry is evictable */
+        public const int TextBlobCacheSweepLowWaterPercent = 75;
         /* The dashboard's own budget, kept small and separate: its value strings are
            mostly single-use, and a blob cache flush discards every bucket, so sharing
            the map's cache would have the panel evicting map glyphs. */
