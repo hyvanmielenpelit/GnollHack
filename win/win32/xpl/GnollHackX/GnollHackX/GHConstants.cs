@@ -142,7 +142,7 @@ namespace GnollHackX
         public const int MaxTextBlobCacheSize = 512;
         public const int MaxMapTextBlobCacheSize = 2048; /* Mostly due to various numbers, e.g., turns */
         public const int MaxMenuTextBlobCacheSize = 1024;
-        public const int MaxTextBlobFontBuckets = 16;
+        public const int MaxTextBlobFontBuckets = 64;
         public const int MaxCachedTextLength = 128;
         public const int MaxMapCachedTextLength = 512;
         public const int MaxCachedTotalChars = 65536;

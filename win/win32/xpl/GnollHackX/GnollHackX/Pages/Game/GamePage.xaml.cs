@@ -6573,6 +6573,8 @@ namespace GnollHackX.Pages.Game
         private readonly GHSkiaFontPaint _textCanvasTextPaint = new GHSkiaFontPaint();
         private readonly GHSkiaFontPaint _cmdTextPaint = new GHSkiaFontPaint();
         private readonly GHSkiaFontPaint _tipTextPaint = new GHSkiaFontPaint();
+        /* Floating texts move every frame, so Skia cannot reuse a cached blob's GPU data and only shaping is saved */
+        private static readonly bool BypassFloatingTextBlobCache = true;
 
         private static void ResetPaint(SKPaint paint)
         {
@@ -9150,6 +9152,7 @@ namespace GnollHackX.Pages.Game
                     /* Floating Texts */
                     if (!useAscii)
                     {
+                        textPaint.BypassBlobCache = BypassFloatingTextBlobCache;
                         foreach (GHFloatingText ft in _localFloatingTexts)
                         {
                             SKPoint p;
@@ -9183,8 +9186,11 @@ namespace GnollHackX.Pages.Game
                             textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
                             StopProfiling(GHProfilingStyle.Bitmap);
                         }
+                        textPaint.BypassBlobCache = false;
                         if (_localScreenText != null)
                         {
+                            /* Sized from its own string, so each screen text is a new font bucket that no later text reuses */
+                            textPaint.BypassBlobCache = true;
                             float targetwidth = 0, yoffsetpct = 0, relativestrokewidth = 0, relativesuperstrokewidth = 0, relativesubstrokewidth = 0;
                             SKColor strokecolor = SKColors.White, superstrokecolor = SKColors.White, substrokecolor = SKColors.White;
                             SKColor fillcolor = SKColors.White;
@@ -9325,6 +9331,7 @@ namespace GnollHackX.Pages.Game
                                 textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
                                 StopProfiling(GHProfilingStyle.Text);
                             }
+                            textPaint.BypassBlobCache = false;
                         }
                         foreach (GHConditionText ft in _localConditionTexts)
                         {

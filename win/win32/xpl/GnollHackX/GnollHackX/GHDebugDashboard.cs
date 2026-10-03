@@ -78,8 +78,10 @@ namespace GnollHackX
         public int CompositeFilterFallbackCount;
         public int MapBlobCount;
         public int MapBlobChars;
+        public int MapBlobBuckets;
         public int MenuBlobCount;
         public int MenuBlobChars;
+        public int MenuBlobBuckets;
         public long MapBlobHits;
         public long MapBlobMisses;
         public long MapBlobFlushes;
@@ -294,6 +296,7 @@ namespace GnollHackX
                 {
                     _staging.MapBlobCount = mapTextPaint.BlobCacheCount;
                     _staging.MapBlobChars = mapTextPaint.BlobCacheChars;
+                    _staging.MapBlobBuckets = mapTextPaint.BlobCacheBuckets;
                     _staging.MapBlobHits = mapTextPaint.BlobCacheHits;
                     _staging.MapBlobMisses = mapTextPaint.BlobCacheMisses;
                     _staging.MapBlobFlushes = mapTextPaint.BlobCacheFlushes;
@@ -302,6 +305,7 @@ namespace GnollHackX
                 {
                     _staging.MapBlobCount = 0;
                     _staging.MapBlobChars = 0;
+                    _staging.MapBlobBuckets = 0;
                     _staging.MapBlobHits = 0;
                     _staging.MapBlobMisses = 0;
                     _staging.MapBlobFlushes = 0;
@@ -311,6 +315,7 @@ namespace GnollHackX
                 {
                     _staging.MenuBlobCount = menuTextPaint.BlobCacheCount;
                     _staging.MenuBlobChars = menuTextPaint.BlobCacheChars;
+                    _staging.MenuBlobBuckets = menuTextPaint.BlobCacheBuckets;
                     _staging.MenuBlobHits = menuTextPaint.BlobCacheHits;
                     _staging.MenuBlobMisses = menuTextPaint.BlobCacheMisses;
                     _staging.MenuBlobFlushes = menuTextPaint.BlobCacheFlushes;
@@ -319,6 +324,7 @@ namespace GnollHackX
                 {
                     _staging.MenuBlobCount = 0;
                     _staging.MenuBlobChars = 0;
+                    _staging.MenuBlobBuckets = 0;
                     _staging.MenuBlobHits = 0;
                     _staging.MenuBlobMisses = 0;
                     _staging.MenuBlobFlushes = 0;
@@ -361,6 +367,7 @@ namespace GnollHackX
                 {
                     _staging.MenuBlobCount = menuTextPaint.BlobCacheCount;
                     _staging.MenuBlobChars = menuTextPaint.BlobCacheChars;
+                    _staging.MenuBlobBuckets = menuTextPaint.BlobCacheBuckets;
                     _staging.MenuBlobHits = menuTextPaint.BlobCacheHits;
                     _staging.MenuBlobMisses = menuTextPaint.BlobCacheMisses;
                     _staging.MenuBlobFlushes = menuTextPaint.BlobCacheFlushes;
@@ -574,7 +581,7 @@ namespace GnollHackX
                         $"{d.MenuItemCount}   h {d.MenuTotalHeight:0}"),
                     SKColors.White, RowKind.Value);
 
-                AddRow("menu", BuildBlobSummary(d.MenuBlobCount, d.MenuBlobChars, d.MenuBlobHits, d.MenuBlobMisses, d.MenuBlobFlushes),
+                AddRow("menu", BuildBlobSummary(d.MenuBlobCount, d.MenuBlobChars, d.MenuBlobBuckets, d.MenuBlobHits, d.MenuBlobMisses, d.MenuBlobFlushes),
                     SKColors.White, RowKind.Value);
 
                 AddRow("dash", BuildDashSummary(d.MenuDashBlobCount, d.MenuDashBlobHits, d.MenuDashBlobMisses, d.MenuDashBlobFlushes),
@@ -588,10 +595,10 @@ namespace GnollHackX
                         $"{d.DrawCommandCount}   sheets {d.SheetSwitchCount}"),
                     SKColors.White, RowKind.Value);
 
-                AddRow("map", BuildBlobSummary(d.MapBlobCount, d.MapBlobChars, d.MapBlobHits, d.MapBlobMisses, d.MapBlobFlushes),
+                AddRow("map", BuildBlobSummary(d.MapBlobCount, d.MapBlobChars, d.MapBlobBuckets, d.MapBlobHits, d.MapBlobMisses, d.MapBlobFlushes),
                     SKColors.White, RowKind.Value);
 
-                AddRow("menu", BuildBlobSummary(d.MenuBlobCount, d.MenuBlobChars, d.MenuBlobHits, d.MenuBlobMisses, d.MenuBlobFlushes),
+                AddRow("menu", BuildBlobSummary(d.MenuBlobCount, d.MenuBlobChars, d.MenuBlobBuckets, d.MenuBlobHits, d.MenuBlobMisses, d.MenuBlobFlushes),
                     SKColors.White, RowKind.Value);
 
                 /* The panel's own cache. A flush here is expected and harmless; one on the
@@ -665,15 +672,17 @@ namespace GnollHackX
         /* Characters are reported in rounded kibicharacters and the hit rate as a whole
            percentage: both are bounded, so the same string recurs and stays cached,
            where a raw running total would be a fresh entry every refresh. */
-        private static string BuildBlobSummary(int count, int chars, long hits, long misses, long flushes)
+        private static string BuildBlobSummary(int count, int chars, int buckets, long hits, long misses, long flushes)
         {
             int kc = (chars + 512) / 1024;
             long total = hits + misses;
             if (total <= 0)
-                return FormattableString.Invariant($"{count} blob / {kc}kc   - % hit   {flushes} flush");
+                return FormattableString.Invariant(
+                    $"{count} blob / {kc}kc   fnt {buckets}/{GHConstants.MaxTextBlobFontBuckets}   - % hit   {flushes} flush");
 
             float hitPct = (float)hits / total * 100f;
-            return FormattableString.Invariant($"{count} blob / {kc}kc   {hitPct:0} % hit   {flushes} flush");
+            return FormattableString.Invariant(
+                $"{count} blob / {kc}kc   fnt {buckets}/{GHConstants.MaxTextBlobFontBuckets}   {hitPct:0} % hit   {flushes} flush");
         }
 
         private static string BuildDashSummary(int count, long hits, long misses, long flushes)

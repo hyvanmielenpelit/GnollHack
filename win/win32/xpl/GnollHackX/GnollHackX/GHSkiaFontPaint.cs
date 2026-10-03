@@ -474,6 +474,7 @@ namespace GnollHackX
         }
 
         public int BlobCacheCount { get { return _blobCount; } }
+        public int BlobCacheBuckets { get { Dictionary<FontKey, FontBucket> buckets = _blobBuckets; return buckets == null ? 0 : buckets.Count; } }
         public int BlobCacheChars { get { return _cachedChars; } }
         public long BlobCacheHits { get { return _blobCacheHits; } }
         public long BlobCacheMisses { get { return _blobCacheMisses; } }
@@ -508,6 +509,7 @@ namespace GnollHackX
         public bool CacheTextBlobs { get { return false; } }
         public bool BypassBlobCache { get { return false; } set { } }
         public int BlobCacheCount { get { return 0; } }
+        public int BlobCacheBuckets { get { return 0; } }
         public int BlobCacheChars { get { return 0; } }
         public long BlobCacheHits { get { return 0; } }
         public long BlobCacheMisses { get { return 0; } }
