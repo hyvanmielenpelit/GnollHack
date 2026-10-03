@@ -440,7 +440,7 @@ namespace GnollHackX
            the memory to spare, so both trade managed allocations for retained native
            glyph data. iOS has less memory and a more efficient collector. */
         public const bool DefaultTextBlobCaching =
-#if WINDOWS || ANDROID
+#if WINDOWS
             true;
 #else
             false;
