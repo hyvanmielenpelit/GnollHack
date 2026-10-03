@@ -73,6 +73,10 @@ public static class MauiProgram
                 handlers.AddHandler<SkiaSharp.Views.Maui.Controls.SKGLView, GnollHackM.Platforms.iOS.iOSSKGLViewMetalHandler>();
 #endif
 #endif
+#if WINDOWS
+                handlers.AddHandler<SkiaSharp.Views.Maui.Controls.SKGLView, WindowsSKGLViewHandler>();
+                handlers.AddHandler<SkiaSharp.Views.Maui.Controls.SKCanvasView, WindowsSKCanvasViewHandler>();
+#endif
             })
 
 #if SENTRY && !WINDOWS

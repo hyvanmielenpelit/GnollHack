@@ -12,10 +12,6 @@ using GnollHackX;
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
 
-#if WINDOWS
-using Microsoft.UI.Input;
-#endif
-
 namespace GnollHackM
 #else
 using Xamarin.Forms;
@@ -81,10 +77,6 @@ namespace GnollHackX.Controls
                     if (glView != null)
                     {
                         glView.PointerWheelChanged += View_PointerWheelChanged;
-                        glView.PointerEntered += View_PointerEntered;
-                        glView.PointerExited += View_PointerExited;
-                        glView.PointerMoved += View_PointerMoved;
-                        glView.PointerCanceled += View_PointerCanceled;
                     }
                 };
                 _internalGLView.HandlerChanging += (s, e) =>
@@ -95,10 +87,6 @@ namespace GnollHackX.Controls
                         if (glView != null)
                         {
                             glView.PointerWheelChanged -= View_PointerWheelChanged;
-                            glView.PointerEntered -= View_PointerEntered;
-                            glView.PointerExited -= View_PointerExited;
-                            glView.PointerMoved -= View_PointerMoved;
-                            glView.PointerCanceled -= View_PointerCanceled;
                         }
                     }
                 };
@@ -342,12 +330,18 @@ namespace GnollHackX.Controls
             if (isCanvasOnMainThread)
             {
                 Touch?.Invoke(sender, e);
+#if GNH_MAUI && WINDOWS
+                RaiseMousePointer(sender, e);
+#endif
             }
             else
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     Touch?.Invoke(sender, e);
+#if GNH_MAUI && WINDOWS
+                    RaiseMousePointer(sender, e);
+#endif
                 });
             }
         }
@@ -517,12 +511,18 @@ namespace GnollHackX.Controls
             if (isCanvasOnMainThread)
             {
                 Touch?.Invoke(sender, e);
+#if GNH_MAUI && WINDOWS
+                RaiseMousePointer(sender, e);
+#endif
             }
             else
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     Touch?.Invoke(sender, e);
+#if GNH_MAUI && WINDOWS
+                    RaiseMousePointer(sender, e);
+#endif
                 });
             }
         }
@@ -688,10 +688,6 @@ namespace GnollHackX.Controls
             if(view != null)
             {
                 view.PointerWheelChanged += View_PointerWheelChanged;
-                view.PointerEntered += View_PointerEntered;
-                view.PointerExited += View_PointerExited;
-                view.PointerMoved += View_PointerMoved;
-                view.PointerCanceled += View_PointerCanceled;
             }
 #endif
         }
@@ -706,10 +702,6 @@ namespace GnollHackX.Controls
                 if (view != null)
                 {
                     view.PointerWheelChanged -= View_PointerWheelChanged;
-                    view.PointerEntered -= View_PointerEntered;
-                    view.PointerExited -= View_PointerExited;
-                    view.PointerMoved -= View_PointerMoved;
-                    view.PointerCanceled -= View_PointerCanceled;
                 }
             }
 #endif
@@ -717,9 +709,6 @@ namespace GnollHackX.Controls
 
 
 #if WINDOWS
-        private long _lastPointerMovedTimestamp = 0;
-        private static readonly long s_pointerMoveIntervalTicks = (long)(Stopwatch.Frequency / 120.0);
-
         private void View_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             if(sender is Microsoft.UI.Xaml.UIElement)
@@ -733,66 +722,24 @@ namespace GnollHackX.Controls
             }
         }
 
-        private void View_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        /* Hover state for MousePointer comes from the same pointer events as Touch */
+        private void RaiseMousePointer(object sender, SKTouchEventArgs e)
         {
-            PointerEvent(sender, e, SKTouchAction.Exited);
-        }
-
-        private void View_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            PointerEvent(sender, e, SKTouchAction.Entered);
-        }
-
-        private void View_PointerMoved(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            PointerEvent(sender, e, SKTouchAction.Moved);
-        }
-
-        private void View_PointerCanceled(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            PointerEvent(sender, e, SKTouchAction.Cancelled);
-        }
-
-        private void PointerEvent(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e, SKTouchAction action)
-        {
-            if (action == SKTouchAction.Moved)
+            switch (e.ActionType)
             {
-                long now = Stopwatch.GetTimestamp();
-                if ((now - _lastPointerMovedTimestamp) < s_pointerMoveIntervalTicks)
+            case SKTouchAction.Entered:
+            case SKTouchAction.Exited:
+            case SKTouchAction.Moved:
+            case SKTouchAction.Cancelled:
+                EventHandler<SKTouchEventArgs> mousePointer = MousePointer;
+                if (mousePointer != null)
                 {
                     e.Handled = true;
-                    return;
+                    mousePointer.Invoke(sender, new SKTouchEventArgs(-1, e.ActionType, e.Location, false));
                 }
-                _lastPointerMovedTimestamp = now;
-            }
-            else
-            {
-                _lastPointerMovedTimestamp = Stopwatch.GetTimestamp();
-            }
-
-            Microsoft.UI.Xaml.UIElement element = sender as Microsoft.UI.Xaml.UIElement;
-            if (element != null)
-            {
-                PointerPoint point = e.GetCurrentPoint(element);
-                float canvasWidth = CanvasSize.Width;
-                float scale = canvasWidth / Math.Max(1.0f, (float)ThreadSafeWidth);
-                SKPoint pointerPosition = point == null ? new SKPoint() : new SKPoint((float)point.Position.X * scale, (float)point.Position.Y * scale);
-                SKTouchEventArgs args = new SKTouchEventArgs(-1, action, pointerPosition, false);
-                if (MousePointer != null)
-                {
-                    e.Handled = true;
-                    if (MainThread.IsMainThread)
-                    {
-                        MousePointer.Invoke(sender, args);
-                    }
-                    else
-                    {
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            MousePointer?.Invoke(sender, args);
-                        });
-                    }
-                }
+                break;
+            default:
+                break;
             }
         }
 #endif
