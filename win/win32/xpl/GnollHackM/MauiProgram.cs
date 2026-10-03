@@ -74,7 +74,12 @@ public static class MauiProgram
 #endif
 #endif
 #if WINDOWS
+#if WINDOWS_TRANSPARENT_GL
+                handlers.AddHandler<SwapChainGLView, WindowsSKGLViewHandler>();
+                handlers.AddHandler<SKTouchGLView, WindowsSKGLCompositionViewHandler>();
+#else
                 handlers.AddHandler<SKTouchGLView, WindowsSKGLViewHandler>();
+#endif
                 handlers.AddHandler<SKTouchCanvasView, WindowsSKCanvasViewHandler>();
 #endif
             })

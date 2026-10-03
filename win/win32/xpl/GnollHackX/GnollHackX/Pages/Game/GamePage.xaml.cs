@@ -666,7 +666,13 @@ namespace GnollHackX.Pages.Game
             {
                 /* SKGLView is non-transparent on Windows */
                 CommandCanvas.UseGL = value;
-#if !WINDOWS
+#if WINDOWS
+#if WINDOWS_TRANSPARENT_GL
+                bool transparentGL = value && GnollHackM.AngleCompositionDevice.TryInitialize();
+                MenuCanvas.UseGL = transparentGL;
+                TextCanvas.UseGL = transparentGL;
+#endif
+#else
                 MenuCanvas.UseGL = value;
                 TextCanvas.UseGL = value;
 #endif

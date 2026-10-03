@@ -118,6 +118,9 @@
     <WindowsPackageType Condition="'$(GNHWindowsPackageType)' != 'MSIX'">None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
+    <!-- true: SKGLViews other than the map and the command canvas render into composition surfaces and blend with XAML -->
+    <GNHWindowsTransparentGL Condition="'$(GNHWindowsTransparentGL)' == ''">true</GNHWindowsTransparentGL>
+    <DefineConstants Condition="'$(GNHWindowsTransparentGL)' == 'true'">$(DefineConstants);WINDOWS_TRANSPARENT_GL</DefineConstants>
   <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
   </PropertyGroup>
 

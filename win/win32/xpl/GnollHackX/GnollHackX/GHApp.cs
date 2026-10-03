@@ -2593,7 +2593,11 @@ namespace GnollHackX
         {
             get
             {
+#if WINDOWS && WINDOWS_TRANSPARENT_GL
+                return false;
+#else
                 return IsWindows || (IsAndroid && TotalMemory < GHConstants.DisableAuxGPUbyDefaultThresholdInBytes);
+#endif
             }
         }
 

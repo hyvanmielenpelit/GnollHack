@@ -25,7 +25,9 @@ namespace GnollHackX.Controls
 #endif
 {
     /* SwitchableCanvasView's inner views. On Windows they get WindowsSKCanvasViewHandler and
-       WindowsSKGLViewHandler: no WheelChanged touch events, hover moves limited to 120 Hz. */
+       WindowsSKGLViewHandler: no WheelChanged touch events, hover moves limited to 120 Hz.
+       Under WINDOWS_TRANSPARENT_GL, only SwapChainGLView gets WindowsSKGLViewHandler; other GL
+       views get WindowsSKGLCompositionViewHandler, which blends with XAML. */
     public class SKTouchCanvasView : SKCanvasView
     {
     }
@@ -37,6 +39,13 @@ namespace GnollHackX.Controls
 #if ANDROID_SURFACEVIEW
     /* Marker type: AndroidSKGLViewSurfaceHandler is registered for it */
     public class MapSurfaceGLView : SKTouchGLView
+    {
+    }
+
+#endif
+#if WINDOWS_TRANSPARENT_GL
+    /* Marker type: WindowsSKGLViewHandler (opaque SKSwapChainPanel) is registered for it */
+    public class SwapChainGLView : SKTouchGLView
     {
     }
 
@@ -83,7 +92,7 @@ namespace GnollHackX.Controls
 #if WINDOWS
                 _internalGLView.HandlerChanged += (s, e) =>
                 {
-                    SkiaSharp.Views.Windows.SKSwapChainPanel glView = _internalGLView?.Handler?.PlatformView as SkiaSharp.Views.Windows.SKSwapChainPanel;
+                    Microsoft.UI.Xaml.UIElement glView = _internalGLView?.Handler?.PlatformView as Microsoft.UI.Xaml.UIElement;
                     if (glView != null)
                     {
                         glView.PointerWheelChanged += View_PointerWheelChanged;
@@ -93,7 +102,7 @@ namespace GnollHackX.Controls
                 {
                     if(e.OldHandler != null && e.NewHandler == null)
                     {
-                        SkiaSharp.Views.Windows.SKSwapChainPanel glView = _internalGLView?.Handler?.PlatformView as SkiaSharp.Views.Windows.SKSwapChainPanel;
+                        Microsoft.UI.Xaml.UIElement glView = _internalGLView?.Handler?.PlatformView as Microsoft.UI.Xaml.UIElement;
                         if (glView != null)
                         {
                             glView.PointerWheelChanged -= View_PointerWheelChanged;
@@ -760,10 +769,25 @@ namespace GnollHackX.Controls
     /* The game map's canvas */
     public class SwitchableMapCanvasView : SwitchableCanvasView
     {
-#if ANDROID_SURFACEVIEW
+#if ANDROID_SURFACEVIEW || WINDOWS_TRANSPARENT_GL
         protected override SKGLView CreateGLView()
         {
+#if ANDROID_SURFACEVIEW
             return new MapSurfaceGLView();
+#else
+            return new SwapChainGLView();
+#endif
+        }
+#endif
+    }
+
+    /* The command canvas, opaque */
+    public class SwitchableCommandCanvasView : SwitchableCanvasView
+    {
+#if WINDOWS_TRANSPARENT_GL
+        protected override SKGLView CreateGLView()
+        {
+            return new SwapChainGLView();
         }
 #endif
     }
