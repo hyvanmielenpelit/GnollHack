@@ -91,7 +91,7 @@
     <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
     <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
     <!-- true: the main map canvas is an SKGLSurfaceView instead of an SKGLTextureView -->
-    <GNHAndroidSurfaceView Condition="'$(GNHAndroidSurfaceView)' == ''">true</GNHAndroidSurfaceView>
+    <GNHAndroidSurfaceView Condition="'$(GNHAndroidSurfaceView)' == ''">false</GNHAndroidSurfaceView>
     <DefineConstants Condition="'$(GNHAndroidSurfaceView)' == 'true'">$(DefineConstants);ANDROID_SURFACEVIEW</DefineConstants>
     <!--<AndroidEnableProfiler>true</AndroidEnableProfiler>-->
   </PropertyGroup>
@@ -105,7 +105,7 @@
     <MtouchInterpreter Condition="'$(IsMonoRuntime)' == 'true'">-all</MtouchInterpreter>
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);FMOD_GNH_IOS</DefineConstants>
-    <GNHiOSMetalView Condition="'$(GNHiOSMetalView)' == ''">true</GNHiOSMetalView>
+    <GNHiOSMetalView Condition="'$(GNHiOSMetalView)' == ''">false</GNHiOSMetalView>
     <DefineConstants Condition="'$(GNHiOSMetalView)' == 'true'">$(DefineConstants);METAL</DefineConstants>
     <ProvisioningType>manual</ProvisioningType>
   </PropertyGroup>
