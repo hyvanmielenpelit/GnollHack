@@ -105,7 +105,8 @@
     <MtouchInterpreter Condition="'$(IsMonoRuntime)' == 'true'">-all</MtouchInterpreter>
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);FMOD_GNH_IOS</DefineConstants>
-    <!--<DefineConstants>$(DefineConstants);METAL</DefineConstants>-->
+    <GNHiOSMetalView Condition="'$(GNHiOSMetalView)' == ''">true</GNHiOSMetalView>
+    <DefineConstants Condition="'$(GNHiOSMetalView)' == 'true'">$(DefineConstants);METAL</DefineConstants>
     <ProvisioningType>manual</ProvisioningType>
   </PropertyGroup>
 
