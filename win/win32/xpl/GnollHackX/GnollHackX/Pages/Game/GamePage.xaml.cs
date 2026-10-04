@@ -1225,10 +1225,42 @@ namespace GnollHackX.Pages.Game
         }
 
         private int _isCleanedUp = 0;
+        private const int CleanupPaintWaitIntervalMs = 16;
+        private const int CleanupPaintWaitMaxMs = 1000;
+
+        /* For callers that have already stopped all canvas paints */
         public void Cleanup()
         {
             if (Interlocked.CompareExchange(ref _isCleanedUp, 1, 0) != 0) return;
-            
+
+            DisposePaintResources();
+        }
+
+        /* Waits for a map paint in progress before disposing the resources it draws with */
+        public async Task CleanupAsync()
+        {
+            if (Interlocked.CompareExchange(ref _isCleanedUp, 1, 0) != 0) return;
+
+            ShutDownCanvasViews();
+
+            /* Held from here on, so any later map paint returns as reentrant */
+            int waitedMs = 0;
+            while (Interlocked.CompareExchange(ref _isMainCanvasDrawing, 1, 0) != 0)
+            {
+                if (waitedMs >= CleanupPaintWaitMaxMs)
+                {
+                    GHApp.MaybeWriteGHLog("GamePage.CleanupAsync: Map paint still in progress, resources left undisposed");
+                    return;
+                }
+                await Task.Delay(CleanupPaintWaitIntervalMs);
+                waitedMs += CleanupPaintWaitIntervalMs;
+            }
+
+            DisposePaintResources();
+        }
+
+        private void DisposePaintResources()
+        {
             /* Each section has its own try/catch so a failure in one
              * does not prevent the remaining resources from being released. */
 
@@ -3371,13 +3403,13 @@ namespace GnollHackX.Pages.Game
                                 EnterGetLineText(req.RequestString);
                                 break;
                             case GHRequestType.ReturnToMainMenu:
-                                IsGameOn = false;
+                                //IsGameOn = false;
                                 MainGrid.IsEnabled = false;
                                 //ClearMap();
                                 StopCanvasAnimations();
                                 StopTimers();
                                 //CurrentGame = null;
-                                GHApp.CurrentGHGame = null;
+                                //GHApp.CurrentGHGame = null;
                                 GHApp.GameStarted = false;
                                 if (PlayingReplay)
                                     DeviceDisplay.KeepScreenOn = false;
@@ -4572,7 +4604,6 @@ namespace GnollHackX.Pages.Game
                 GHApp.GameMuteMode = false;
             //GHApp.CurrentGamePage = null;
             //GHApp.ReportLockDataResults();
-            ShutDownCanvasViews();
             /* MainPage shows again only when no other modal page lies below this one; under another
                page the main screen music plays, and the carousel starts when that page closes */
             var modalStack = GHApp.Navigation?.ModalStack;
@@ -4589,6 +4620,10 @@ namespace GnollHackX.Pages.Game
             {
                 await GHApp.PopAllModalPagesAsync(!fastForward);
             }
+            /* After a completed pop, CleanupAsync has already shut the canvases down */
+            ShutDownCanvasViews();
+            GHApp.CurrentGHGame = null;
+            IsGameOn = false;
             if (GHApp.DoAppExitOnReturn)
                 _mainPage.ForceCloseApp();
             else
@@ -5336,8 +5371,7 @@ namespace GnollHackX.Pages.Game
                 return;
             }
 
-            long paintFrameId = GHFrameTimeline.BeginPaint(isCanvasOnMainThread);
-            GHPresentFeedback.PaintBegin(paintFrameId);
+            long paintFrameId = 0;
 
             SKCanvas canvas = e.Surface.Canvas;
             /* Save count of the state the canvas is handed over in */
@@ -5347,6 +5381,9 @@ namespace GnollHackX.Pages.Game
 
             try
             {
+                paintFrameId = GHFrameTimeline.BeginPaint(isCanvasOnMainThread);
+                GHPresentFeedback.PaintBegin(paintFrameId);
+
                 FrameTimeProfiler.StampPaintStart();
 
                 PaintMainGamePage(sender, e, isCanvasOnMainThread);

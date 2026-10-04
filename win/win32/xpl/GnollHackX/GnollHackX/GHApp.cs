@@ -1709,7 +1709,7 @@ namespace GnollHackX
                 DisconnectIViewHandlers(page);
                 if (page is GamePage gp)
                 {
-                    gp.Cleanup();
+                    await gp.CleanupAsync();
                 }
             }
             catch (Exception ex)
@@ -3167,7 +3167,7 @@ namespace GnollHackX
                 DisconnectIViewHandlers(page);
                 if (page is GamePage gp)
                 {
-                    gp.Cleanup();
+                    await gp.CleanupAsync();
                 }
             } while (popagain);
             CurrentGamePage = null;
