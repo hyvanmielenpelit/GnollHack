@@ -36,12 +36,12 @@ static void modronbook(struct obj*);
 static int learn(void);
 static boolean rejectcasting(void);
 static boolean reject_specific_spell_casting(int);
-static boolean getspell(int *, int);
+static boolean getspell(int *, int, int *);
 static int CFDECLSPEC spell_cmp(const genericptr, const genericptr);
 static boolean spellsortmenu(void);
-static boolean dospellmenu(const char *, int, int *);
+static boolean dospellmenu(const char *, int, int *, int *);
 static boolean dotradspellmenu(const char*, int, int*);
-static boolean doaltspellmenu(const char*, int, int*);
+static boolean doaltspellmenu(const char*, int, int*, int*);
 static int percent_success(int, boolean);
 static int percent_success_for_type(int, int, boolean);
 static int attribute_value_for_spellbook(int);
@@ -1108,10 +1108,14 @@ reject_specific_spell_casting(int spell)
 /*
  * Return TRUE if a spell was picked, with the spell index in the return
  * parameter.  Otherwise return FALSE.
+ * If a menu command ran instead, its result is stored in *action_result_ptr.
  */
 static boolean
-getspell(int *spell_no, int spell_list_type)
+getspell(int *spell_no, int spell_list_type, int *action_result_ptr)
 {
+    if (action_result_ptr)
+        *action_result_ptr = 0;
+
     if (spell_list_type < 0 || spell_list_type >= MAX_SPELL_LIST_TYPES)
         return FALSE;
 
@@ -1176,7 +1180,7 @@ getspell(int *spell_no, int spell_list_type)
     }
 
     int splaction = (spell_list_type == 6 ? SPELLMENU_QUICK : spell_list_type >= 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST);
-    return dospellmenu(titlebuf, splaction, spell_no);
+    return dospellmenu(titlebuf, splaction, spell_no, action_result_ptr);
 }
 
 /*
@@ -1184,7 +1188,7 @@ getspell(int *spell_no, int spell_list_type)
  *   splaction: SPELLMENU_CAST, SPELLMENU_REORDER, or spl_book[] index
  */
 static boolean
-dospellmenu(const char *prompt, int splaction, int *spell_no)
+dospellmenu(const char *prompt, int splaction, int *spell_no, int *action_result_ptr)
 {
     if (iflags.spell_table_format)
     {
@@ -1192,7 +1196,7 @@ dospellmenu(const char *prompt, int splaction, int *spell_no)
     }
     else
     {
-        return doaltspellmenu(prompt, splaction, spell_no);
+        return doaltspellmenu(prompt, splaction, spell_no, action_result_ptr);
     }
 }
 
@@ -1202,7 +1206,7 @@ dospellmenu(const char *prompt, int splaction, int *spell_no)
  */
 /* an alternative implementation of the '+' command, designed to work better on mobile phones */
 static boolean
-doaltspellmenu(const char *prompt, int splaction, int *spell_no)
+doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_result_ptr)
 {
     winid tmpwin;
     int i, n, how, splnum;
@@ -1378,7 +1382,10 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no)
                     action_result = dospellview();
                     break;
                 case -2:
-                    return domix(); /* mixing might have failed, so returning to the cast menu may be confusing */
+                    action_result = domix();
+                    if (action_result_ptr)
+                        *action_result_ptr = action_result;
+                    return FALSE; /* mixing might have failed, so returning to the cast menu may be confusing */
                 case -3:
                     action_result = dosortspell();
                     break;
@@ -1398,7 +1405,11 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no)
                 if (!action_result)
                     continue;
                 else
-                    return action_result;
+                {
+                    if (action_result_ptr)
+                        *action_result_ptr = action_result;
+                    return FALSE;
+                }
             }
 
             int64_t val = selected[0].count;
@@ -1476,7 +1487,12 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no)
                         docont = TRUE;
                         break;
                     case 3:
-                        return domaterialcomponentsmenu(splidx);
+                    {
+                        int mix_result = domaterialcomponentsmenu(splidx);
+                        if (action_result_ptr)
+                            *action_result_ptr = mix_result;
+                        return FALSE;
+                    }
                     case 4:
                         move_spell_to_top(splidx);
                         docont = TRUE;
@@ -1539,6 +1555,8 @@ static int docast_spell_no = -1;
 int
 docast(void)
 {
+    int action_result = 0;
+
     if (in_doagain && docast_spell_no > -1)
     {
         return spelleffects(docast_spell_no, FALSE, &youmonst, (boolean*)0);
@@ -1546,11 +1564,11 @@ docast(void)
     else
     {
         docast_spell_no = -1;
-        if (getspell(&docast_spell_no, 0))
+        if (getspell(&docast_spell_no, 0, &action_result))
             return spelleffects(docast_spell_no, FALSE, &youmonst, (boolean*)0);
     }
     docast_spell_no = -1;
-    return 0;
+    return action_result;
 }
 
 /* cast a quick spell (via right-click) */
@@ -1587,7 +1605,7 @@ dospellmanage(void)
     if (action <= 0)
         return 0;
 
-    if (getspell(&spell_no, action))
+    if (getspell(&spell_no, action, (int *)0))
     {
         if(action == 4)
             return setspellhotkey(spell_no);
@@ -1606,7 +1624,7 @@ dospellview(void)
     boolean didselect = FALSE;
     do
     { 
-        didselect = getspell(&spell_no, 3);
+        didselect = getspell(&spell_no, 3, (int *)0);
         if(didselect)
             (void)spelldescription(spell_no);
     } while (didselect);
@@ -1617,7 +1635,7 @@ int
 dosetquickspell(void)
 {
     int spell_no = -1;
-    boolean didselect = getspell(&spell_no, 6);
+    boolean didselect = getspell(&spell_no, 6, (int *)0);
     if (didselect)
     {
         return dosetquickspell_core(spell_no);
@@ -4043,7 +4061,7 @@ dovspell(void)
     } 
     else 
     {
-        while (dospellmenu("Choose a spell to reorder", SPELLMENU_REORDER, &splnum))
+        while (dospellmenu("Choose a spell to reorder", SPELLMENU_REORDER, &splnum, (int *)0))
         {
             if (splnum == SPELLMENU_SORT) 
             {
@@ -4053,7 +4071,7 @@ dovspell(void)
             else 
             {
                 Sprintf(qbuf, "Reordering spells; swap '%s' with", spellname(splnum));
-                if (!dospellmenu(qbuf, splnum, &othnum))
+                if (!dospellmenu(qbuf, splnum, &othnum, (int *)0))
                     break;
 
                 spl_tmp = spl_book[splnum];
@@ -5614,7 +5632,7 @@ domix(void)
     else
     {
         domix_spell_no = -1;
-        if (getspell(&domix_spell_no, 1))
+        if (getspell(&domix_spell_no, 1, (int *)0))
         {
             //Open mixing menu and explain what components are needed
             return domaterialcomponentsmenu(domix_spell_no);
