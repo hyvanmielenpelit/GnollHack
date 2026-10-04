@@ -4436,7 +4436,7 @@ read_manual(struct obj *obj)
             putstr(datawin, ATR_INDENT_AT_PERIOD, "11. Celestial weapons can only be used by lawful characters, primordial weapons only by neutral characters, and infernal weapons only by chaotic characters.");
             break;
         case MANUAL_GRAY_STONES_101:
-            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can identify any gem or stone by applying a touchstone (one of the gray stones) that still has charges unto it. Each identification uses one charge, and a cursed touchstone may shatter a gem instead.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can identify any gem or stone by applying unto it a touchstone (one of the gray stones) that still has charges. Each identification uses one charge, and a cursed touchstone may shatter a gem instead.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Beware of the cursed loadstone (one of the gray stones). It is cursed and you cannot drop it once you have picked it up. And it's very heavy.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can identify a loadstone by kicking it while on the floor. If it does not move, it is a loadstone.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "4. If you have unidentified gray stones in a container on the floor, you may pick it up and tip it so that its contents drop on the ground.");
