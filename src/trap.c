@@ -4861,6 +4861,13 @@ drown(void)
     boolean inpool_ok = FALSE, crawl_ok;
     int i, x, y;
 
+    /* no nested drowning while done() uses up a life-saving item */
+    if (program_state.in_lifesaving)
+    {
+        debugprint("drown: skipped during life saving");
+        return FALSE;
+    }
+
     /* happily wading in the same contiguous pool */
     if (u.uinwater && is_pool(u.ux - u.dx, u.uy - u.dy)
         && (Swimming || Amphibious)) {

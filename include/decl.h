@@ -216,6 +216,7 @@ E NEARDATA struct sinfo {
 #endif
     int wizkit_wishing;
     int in_tricked;
+    int in_lifesaving;          /* done() is using up a life-saving item */
 } program_state;
 
 E int exit_hack_code;

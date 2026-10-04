@@ -40,6 +40,7 @@ moveloop(uchar resuming)
 #endif
     int moveamt = 0, wtcap = 0, change = 0;
     boolean monscanmove = FALSE;
+    boolean hallucination_drawn = !!Hallucination;
     struct obj* otmp;
 
     /* Note:  these initializers don't do anything except guarantee that
@@ -421,6 +422,17 @@ moveloop(uchar resuming)
         clear_context_menu();
         if (ui_has_input())
             clear_run_and_travel();
+
+        /* Hallucination can start or stop without a redraw, e.g. when True Seeing is gained */
+        if (!!Hallucination != hallucination_drawn)
+        {
+            hallucination_drawn = !!Hallucination;
+            see_monsters();
+            see_objects();
+            see_traps();
+            if (u.uswallow)
+                swallowed(0);
+        }
 
         /* Redraw screen */
         if (!context.mv || Blind)

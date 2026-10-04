@@ -1457,7 +1457,7 @@ update_all_character_properties(struct obj *otmp, boolean verbose)
     }
 
     /* Magical breathing*/
-    if(!Magical_breathing || had_magical_breathing)
+    if (!program_state.in_lifesaving && !Magical_breathing && had_magical_breathing)
     {
         if (Underwater) 
         {

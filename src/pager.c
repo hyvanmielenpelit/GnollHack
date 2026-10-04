@@ -656,6 +656,18 @@ lookat(int x, int y, char *buf, char *simplebuf, char *extrabuf)
             /* 'monster' must actually be a statue */
             Strcpy(buf, rndmonnam((char*)0));
         }
+        else
+        {
+            /* outdated monster glyph, e.g. a statue drawn while hallucinating */
+            debugprint("lookat: monster glyph %d without monster at <%d,%d>", glyph, x, y);
+            if (vobj_at(x, y) && cansee(x, y))
+            {
+                noarticle = TRUE;
+                look_at_object(buf, x, y, obj_to_glyph(vobj_at(x, y), rn2_on_display_rng));
+            }
+            else
+                Strcpy(buf, invisexplain);
+        }
     }
     else if (glyph_is_object(glyph))
     {
@@ -833,8 +845,9 @@ lookat(int x, int y, char *buf, char *simplebuf, char *extrabuf)
             || strcmp(exbuf, "land") == 0
             || strcmp(exbuf, "water") == 0);
 
-    Strcpy(buf, article == 2 ? the(exbuf)
-        : article == 1 ? an(exbuf) : exbuf);
+    if (*exbuf)
+        Strcpy(buf, article == 2 ? the(exbuf)
+            : article == 1 ? an(exbuf) : exbuf);
     
     if (!*simplebuf)
         Strcpy(simplebuf, buf);
@@ -1494,7 +1507,8 @@ do_screen_description(coord cc, boolean looked, nhsym sym, char *out_str, const 
             pm = lookat(cc.x, cc.y, look_buf, simple_buf, extrabuf);
             if (pm && for_supplement)
                 *for_supplement = pm;
-            *firstmatch = simple_buf;
+            if (*simple_buf)
+                *firstmatch = simple_buf;
 
             if (*look_buf)
             {

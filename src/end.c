@@ -2131,6 +2131,11 @@ done(int how)
     }
     if (Lifesaved && (how <= GENOCIDED)) 
     {
+        int saved_killer_format = killer.format;
+        int saved_killer_hint_idx = killer.hint_idx;
+        char saved_killer_name[BUFSZ];
+
+        Strcpy(saved_killer_name, killer.name);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "But wait...");
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_LIFE_SAVED);
@@ -2157,7 +2162,9 @@ done(int how)
                 if (uamul)
                 {
                     debugprint("done3: %d", uamul->otyp);
+                    program_state.in_lifesaving++;
                     useup(uamul);
+                    program_state.in_lifesaving--;
                 }
             }
             else
@@ -2174,7 +2181,9 @@ done(int how)
                     if (lifesaver)
                     {
                         debugprint("done2: %d", lifesaver->otyp);
+                        program_state.in_lifesaving++;
                         useup(lifesaver);
+                        program_state.in_lifesaving--;
                     }
                 }
             }
@@ -2182,6 +2191,10 @@ done(int how)
         }
         (void) adjattrib(A_CON, -1, TRUE);
         savelife(how);
+        /* a death nested in the life saving above resets killer */
+        killer.format = saved_killer_format;
+        killer.hint_idx = saved_killer_hint_idx;
+        Strcpy(killer.name, saved_killer_name);
         if (how == GENOCIDED) {
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Unfortunately you are still genocided...");
         } else {
