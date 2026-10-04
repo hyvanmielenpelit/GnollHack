@@ -46,7 +46,7 @@ namespace GnollHackM
 
         protected override SKGLSurfaceView CreatePlatformView()
         {
-            var view = new MauiSKGLSurfaceView(Context);
+            var view = new GnhSKGLSurfaceView(Context);
             /* Read only by GLSurfaceView.OnPause, which nothing calls: the EGL context and its
                GPU resources outlive a stopped window either way */
             view.PreserveEGLContextOnPause = true;
@@ -83,7 +83,7 @@ namespace GnollHackM
 
         public static void MapIgnorePixelScaling(AndroidSKGLViewSurfaceHandler handler, ISKGLView view)
         {
-            if (handler?.PlatformView is MauiSKGLSurfaceView pv)
+            if (handler?.PlatformView is GnhSKGLSurfaceView pv)
             {
                 pv.IgnorePixelScaling = view.IgnorePixelScaling;
                 pv.RequestRender();
@@ -151,11 +151,11 @@ namespace GnollHackM
             return new SKPoint((float)x, (float)y);
         }
 
-        private class MauiSKGLSurfaceView : SKGLSurfaceView
+        private class GnhSKGLSurfaceView : SKGLSurfaceView
         {
             private readonly float _density;
 
-            public MauiSKGLSurfaceView(Context context) : base(context)
+            public GnhSKGLSurfaceView(Context context) : base(context)
             {
                 _density = Resources?.DisplayMetrics?.Density ?? 1;
             }

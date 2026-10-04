@@ -9,10 +9,10 @@ using SkiaSharp.Views.Maui;
 
 namespace GnollHackM
 {
-    /* An ISKGLView handler drawing into an SKCompositionGLPanel, whose content blends with the
+    /* An ISKGLView handler drawing into an GnhSKCompositionGLPanel, whose content blends with the
        XAML around it. ViewHandler's VirtualView and PlatformView getters throw when unset, so
        the IElementHandler views are read where the handler may be disconnected. */
-    public class WindowsSKGLCompositionViewHandler : ViewHandler<ISKGLView, SKCompositionGLPanel>
+    public class WindowsSKGLCompositionViewHandler : ViewHandler<ISKGLView, GnhSKCompositionGLPanel>
     {
         public static PropertyMapper<ISKGLView, WindowsSKGLCompositionViewHandler> WindowsSKGLCompositionViewMapper =
             new PropertyMapper<ISKGLView, WindowsSKGLCompositionViewHandler>(ViewHandler.ViewMapper)
@@ -43,24 +43,24 @@ namespace GnollHackM
             get { return ((IElementHandler)this).VirtualView as ISKGLView; }
         }
 
-        private SKCompositionGLPanel? CurrentPlatformView
+        private GnhSKCompositionGLPanel? CurrentPlatformView
         {
-            get { return ((IElementHandler)this).PlatformView as SKCompositionGLPanel; }
+            get { return ((IElementHandler)this).PlatformView as GnhSKCompositionGLPanel; }
         }
 
-        protected override SKCompositionGLPanel CreatePlatformView()
+        protected override GnhSKCompositionGLPanel CreatePlatformView()
         {
-            return new SKCompositionGLPanel();
+            return new GnhSKCompositionGLPanel();
         }
 
-        protected override void ConnectHandler(SKCompositionGLPanel platformView)
+        protected override void ConnectHandler(GnhSKCompositionGLPanel platformView)
         {
             platformView.PaintSurface += OnPaintSurface;
             platformView.GRContextChanged += OnGRContextChanged;
             base.ConnectHandler(platformView);
         }
 
-        protected override void DisconnectHandler(SKCompositionGLPanel platformView)
+        protected override void DisconnectHandler(GnhSKCompositionGLPanel platformView)
         {
             _touchHandler?.Detach(platformView);
             _touchHandler = null;
@@ -85,7 +85,7 @@ namespace GnollHackM
                 lastCanvasSize = newCanvasSize;
                 virtualView.OnCanvasSizeChanged(newCanvasSize);
             }
-            if (sender is SKCompositionGLPanel platformView)
+            if (sender is GnhSKCompositionGLPanel platformView)
             {
                 GRContext? newGRContext = platformView.GRContext;
                 if (lastGRContext != newGRContext)
@@ -103,7 +103,7 @@ namespace GnollHackM
         private void OnGRContextChanged(object? sender, EventArgs e)
         {
             ISKGLView? virtualView = CurrentVirtualView;
-            if (virtualView == null || sender is not SKCompositionGLPanel platformView)
+            if (virtualView == null || sender is not GnhSKCompositionGLPanel platformView)
                 return;
 
             GRContext? newGRContext = platformView.GRContext;
@@ -121,7 +121,7 @@ namespace GnollHackM
 
         public static void MapIgnorePixelScaling(WindowsSKGLCompositionViewHandler handler, ISKGLView view)
         {
-            SKCompositionGLPanel? platformView = handler?.CurrentPlatformView;
+            GnhSKCompositionGLPanel? platformView = handler?.CurrentPlatformView;
             if (platformView == null)
                 return;
 
@@ -141,7 +141,7 @@ namespace GnollHackM
 
         public static void MapEnableTouchEvents(WindowsSKGLCompositionViewHandler handler, ISKGLView view)
         {
-            SKCompositionGLPanel? platformView = handler?.CurrentPlatformView;
+            GnhSKCompositionGLPanel? platformView = handler?.CurrentPlatformView;
             if (handler == null || platformView == null)
                 return;
 
@@ -160,7 +160,7 @@ namespace GnollHackM
         private SKPoint GetScaledCoord(double x, double y)
         {
             ISKGLView? virtualView = CurrentVirtualView;
-            SKCompositionGLPanel? platformView = CurrentPlatformView;
+            GnhSKCompositionGLPanel? platformView = CurrentPlatformView;
             if (virtualView != null && !virtualView.IgnorePixelScaling && platformView != null)
             {
                 double scale = platformView.ContentsScale;

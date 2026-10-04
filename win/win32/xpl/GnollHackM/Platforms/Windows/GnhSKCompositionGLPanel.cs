@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Threading;
 using Microsoft.Graphics.DirectX;
@@ -21,7 +22,7 @@ namespace GnollHackM
        a SwapChainPanel cannot. Rendering is synchronous on the UI thread, as in
        SKSwapChainPanel.Invalidate. The visual and drawing surface are created on the first
        render, so hidden views cost nothing. */
-    public sealed class SKCompositionGLPanel : Microsoft.UI.Xaml.Controls.Grid
+    public sealed class GnhSKCompositionGLPanel : Microsoft.UI.Xaml.Controls.Grid
     {
         /* These two set the vertical orientation of the drawing; if the content appears upside
            down, change one of them */
@@ -73,6 +74,39 @@ namespace GnollHackM
         private CompositionSurfaceBrush? _brush;
         private SpriteVisual? _sprite;
 
+        /* Render timing per panel, summarized in the log every two seconds while it renders */
+        private static readonly bool s_logRenderTiming = true;
+        private static readonly long s_timingWindowTicks = 2 * Stopwatch.Frequency;
+        private static readonly double s_ticksToMs = 1000.0 / Stopwatch.Frequency;
+        private static int s_panelCounter;
+
+        private sealed class RenderTiming
+        {
+            public long WindowStart;
+            public int Invalidates;
+            public int QueuedInvalidates;
+            public int Renders;
+            public int CacheHits;
+            public int CacheMisses;
+            public int TextureChanges;
+            public int NonZeroOffsets;
+            public IntPtr LastTexture;
+            public long BeginDrawTicks;
+            public long TargetTicks;
+            public long PaintTicks;
+            public long FlushTicks;
+            public long EndDrawTicks;
+            public long TotalTicks;
+            public long MaxTotalTicks;
+            public long MaxBeginDrawTicks;
+            public long MaxEndDrawTicks;
+            public long LastRenderStart;
+            public long MaxGapTicks;
+        }
+
+        private readonly int _panelId = Interlocked.Increment(ref s_panelCounter);
+        private readonly RenderTiming _timing = new RenderTiming();
+
         private Microsoft.UI.Xaml.XamlRoot? _xamlRoot;
         private bool _isLoaded;
         private bool _isVisible;
@@ -86,7 +120,7 @@ namespace GnollHackM
         /* Raised when the shared GRContext is lost or replaced */
         public event EventHandler? GRContextChanged;
 
-        public SKCompositionGLPanel()
+        public GnhSKCompositionGLPanel()
         {
             /* A child visual does not hit-test; the transparent background does */
             Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
@@ -114,12 +148,18 @@ namespace GnollHackM
 
         public void Invalidate()
         {
-            if (_dispatcherQueue.HasThreadAccess && !s_renderInProgress)
+            bool onUiThread = _dispatcherQueue.HasThreadAccess;
+            if (s_logRenderTiming && onUiThread)
+                _timing.Invalidates++;
+
+            if (onUiThread && !s_renderInProgress)
             {
                 Render();
                 return;
             }
 
+            if (s_logRenderTiming && onUiThread)
+                _timing.QueuedInvalidates++;
             if (Interlocked.Exchange(ref _renderQueued, 1) == 0)
             {
                 if (!_dispatcherQueue.TryEnqueue(_queuedRenderHandler))
@@ -285,7 +325,7 @@ namespace GnollHackM
                 {
                     s_queuedRenderFailureLogged = true;
                     GnollHackX.GHApp.MaybeWriteGHLog(
-                        "SKCompositionGLPanel: render failed: " + ex.GetType().Name + ": " + ex.Message,
+                        "GnhSKCompositionGLPanel: render failed: " + ex.GetType().Name + ": " + ex.Message,
                         true, GHConstants.SentryGnollHackGeneralCategoryName);
                 }
             }
@@ -338,7 +378,7 @@ namespace GnollHackM
             {
                 drawingSurface.Dispose();
                 LogOnce(ref s_compositionFailureLogged,
-                    "SKCompositionGLPanel: ICompositionDrawingSurfaceInterop query failed: 0x" + hr.ToString("X8"));
+                    "GnhSKCompositionGLPanel: ICompositionDrawingSurfaceInterop query failed: 0x" + hr.ToString("X8"));
                 return false;
             }
 
@@ -361,9 +401,41 @@ namespace GnollHackM
            caller of Invalidate, as from SKSwapChainPanel */
         private void RenderFrame(AngleCompositionDevice device)
         {
+            long startTicks = Stopwatch.GetTimestamp();
             IntPtr texture;
             POINT offset;
             int hr = BeginDraw(_drawingSurfaceInterop, out texture, out offset);
+            long beginDrawEndTicks = Stopwatch.GetTimestamp();
+            if (s_logRenderTiming && hr >= 0 && texture != IntPtr.Zero)
+            {
+                RenderTiming timing = _timing;
+                /* An idle period closes the window, so pauses do not count as gaps */
+                if (timing.LastRenderStart != 0 && startTicks - timing.LastRenderStart > s_timingWindowTicks)
+                {
+                    if (timing.Renders > 0)
+                        LogRenderTiming(timing.LastRenderStart);
+                    timing.LastRenderStart = 0;
+                    timing.WindowStart = 0;
+                }
+                if (timing.WindowStart == 0)
+                    timing.WindowStart = startTicks;
+                if (timing.LastRenderStart != 0 && startTicks - timing.LastRenderStart > timing.MaxGapTicks)
+                    timing.MaxGapTicks = startTicks - timing.LastRenderStart;
+                timing.LastRenderStart = startTicks;
+                timing.Renders++;
+                long beginDrawTicks = beginDrawEndTicks - startTicks;
+                timing.BeginDrawTicks += beginDrawTicks;
+                if (beginDrawTicks > timing.MaxBeginDrawTicks)
+                    timing.MaxBeginDrawTicks = beginDrawTicks;
+                if (texture != timing.LastTexture)
+                {
+                    if (timing.LastTexture != IntPtr.Zero)
+                        timing.TextureChanges++;
+                    timing.LastTexture = texture;
+                }
+                if (offset.X != 0 || offset.Y != 0)
+                    timing.NonZeroOffsets++;
+            }
             if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
             {
                 device.HandleDeviceLost();
@@ -373,27 +445,87 @@ namespace GnollHackM
             {
                 if (hr >= 0)
                     EndDraw(_drawingSurfaceInterop);
-                LogOnce(ref s_beginDrawFailureLogged, "SKCompositionGLPanel: BeginDraw failed: 0x" + hr.ToString("X8"));
+                LogOnce(ref s_beginDrawFailureLogged, "GnhSKCompositionGLPanel: BeginDraw failed: 0x" + hr.ToString("X8"));
                 return;
             }
 
             device.EnterDraw();
             try
             {
+                long targetStartTicks = Stopwatch.GetTimestamp();
                 RenderTarget? target = GetOrCreateTarget(device, texture, offset.X, offset.Y);
-                if (target != null && device.MakeCurrent(target.Pbuffer) && EnsureSkiaSurface(device, target))
-                    Paint(device, target, offset.X, offset.Y);
+                bool ready = target != null && device.MakeCurrent(target.Pbuffer) && EnsureSkiaSurface(device, target);
+                if (s_logRenderTiming)
+                    _timing.TargetTicks += Stopwatch.GetTimestamp() - targetStartTicks;
+                if (ready)
+                    Paint(device, target!, offset.X, offset.Y);
             }
             finally
             {
+                long endDrawStartTicks = Stopwatch.GetTimestamp();
                 hr = EndDraw(_drawingSurfaceInterop);
+                long endTicks = Stopwatch.GetTimestamp();
                 Release(texture);
                 if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
                     device.HandleDeviceLost();
                 else if (hr < 0)
-                    LogOnce(ref s_endDrawFailureLogged, "SKCompositionGLPanel: EndDraw failed: 0x" + hr.ToString("X8"));
+                    LogOnce(ref s_endDrawFailureLogged, "GnhSKCompositionGLPanel: EndDraw failed: 0x" + hr.ToString("X8"));
                 device.ExitDraw();
+
+                if (s_logRenderTiming)
+                {
+                    RenderTiming timing = _timing;
+                    long endDrawTicks = endTicks - endDrawStartTicks;
+                    timing.EndDrawTicks += endDrawTicks;
+                    if (endDrawTicks > timing.MaxEndDrawTicks)
+                        timing.MaxEndDrawTicks = endDrawTicks;
+                    long totalTicks = endTicks - startTicks;
+                    timing.TotalTicks += totalTicks;
+                    if (totalTicks > timing.MaxTotalTicks)
+                        timing.MaxTotalTicks = totalTicks;
+                    if (endTicks - timing.WindowStart >= s_timingWindowTicks)
+                        LogRenderTiming(endTicks);
+                }
             }
+        }
+
+        private void LogRenderTiming(long nowTicks)
+        {
+            RenderTiming t = _timing;
+            int n = t.Renders > 0 ? t.Renders : 1;
+            string message = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                "GnhSKCompositionGLPanel #{0} {1}x{2}: {3:0.0} s, invalidates {4} (queued {5}), renders {6}, "
+                + "cache hits {7} misses {8}, texture changes {9}, non-zero offsets {10}; "
+                + "avg ms begin {11:0.00} target {12:0.00} paint {13:0.00} flush {14:0.00} end {15:0.00} total {16:0.00}; "
+                + "max ms begin {17:0.00} end {18:0.00} total {19:0.00} gap {20:0.0}",
+                _panelId, _pixelWidth, _pixelHeight, (nowTicks - t.WindowStart) * s_ticksToMs / 1000.0,
+                t.Invalidates, t.QueuedInvalidates, t.Renders,
+                t.CacheHits, t.CacheMisses, t.TextureChanges, t.NonZeroOffsets,
+                t.BeginDrawTicks * s_ticksToMs / n, t.TargetTicks * s_ticksToMs / n, t.PaintTicks * s_ticksToMs / n,
+                t.FlushTicks * s_ticksToMs / n, t.EndDrawTicks * s_ticksToMs / n, t.TotalTicks * s_ticksToMs / n,
+                t.MaxBeginDrawTicks * s_ticksToMs, t.MaxEndDrawTicks * s_ticksToMs, t.MaxTotalTicks * s_ticksToMs,
+                t.MaxGapTicks * s_ticksToMs);
+            GnollHackX.GHApp.MaybeWriteGHLog(message);
+
+            /* LastTexture and LastRenderStart carry over into the next window */
+            t.WindowStart = nowTicks;
+            t.Invalidates = 0;
+            t.QueuedInvalidates = 0;
+            t.Renders = 0;
+            t.CacheHits = 0;
+            t.CacheMisses = 0;
+            t.TextureChanges = 0;
+            t.NonZeroOffsets = 0;
+            t.BeginDrawTicks = 0;
+            t.TargetTicks = 0;
+            t.PaintTicks = 0;
+            t.FlushTicks = 0;
+            t.EndDrawTicks = 0;
+            t.TotalTicks = 0;
+            t.MaxTotalTicks = 0;
+            t.MaxBeginDrawTicks = 0;
+            t.MaxEndDrawTicks = 0;
+            t.MaxGapTicks = 0;
         }
 
         private void Paint(AngleCompositionDevice device, RenderTarget target, int offsetX, int offsetY)
@@ -418,18 +550,24 @@ namespace GnollHackM
                     canvas.Save();
                 }
 
+                long paintStartTicks = Stopwatch.GetTimestamp();
                 PaintSurface?.Invoke(this, new SkiaSharp.Views.Maui.SKPaintGLSurfaceEventArgs(
-                    surface, target.BackendRenderTarget, Origin, info, rawInfo));
+                    surface, target.BackendRenderTarget!, Origin, info, rawInfo));
+                if (s_logRenderTiming)
+                    _timing.PaintTicks += Stopwatch.GetTimestamp() - paintStartTicks;
             }
 
             /* The paint handler may have made another GL view's context current */
             if (!device.MakeCurrent(target.Pbuffer))
                 return;
 
+            long flushStartTicks = Stopwatch.GetTimestamp();
             GRContext? grContext = device.GRContext;
             if (grContext != null)
                 grContext.Flush(true);
             glFlush();
+            if (s_logRenderTiming)
+                _timing.FlushTicks += Stopwatch.GetTimestamp() - flushStartTicks;
         }
 
         private RenderTarget? GetOrCreateTarget(AngleCompositionDevice device, IntPtr texture, int offsetX, int offsetY)
@@ -448,9 +586,14 @@ namespace GnollHackM
                     && cached.OffsetY == keyY && cached.KeyWidth == keyWidth && cached.KeyHeight == keyHeight)
                 {
                     cached.LastUse = ++_useCounter;
+                    if (s_logRenderTiming)
+                        _timing.CacheHits++;
                     return cached;
                 }
             }
+
+            if (s_logRenderTiming)
+                _timing.CacheMisses++;
 
             IntPtr pbuffer = CreatePbuffer(device, texture, offsetX, offsetY, _pixelWidth, _pixelHeight, wholeTexture);
             if (pbuffer == EGL_NO_SURFACE)
@@ -459,7 +602,7 @@ namespace GnollHackM
                 if (wholeTexture || error != EGL_BAD_ATTRIBUTE)
                 {
                     LogOnce(ref s_pbufferFailureLogged,
-                        "SKCompositionGLPanel: eglCreatePbufferFromClientBuffer failed: 0x" + error.ToString("X4"));
+                        "GnhSKCompositionGLPanel: eglCreatePbufferFromClientBuffer failed: 0x" + error.ToString("X4"));
                     return null;
                 }
 
@@ -470,20 +613,20 @@ namespace GnollHackM
                 keyWidth = 0;
                 keyHeight = 0;
                 GnollHackX.GHApp.MaybeWriteGHLog(
-                    "SKCompositionGLPanel: texture offset attributes refused; pbuffers cover the whole texture",
+                    "GnhSKCompositionGLPanel: texture offset attributes refused; pbuffers cover the whole texture",
                     true, GHConstants.SentryGnollHackGeneralCategoryName);
                 pbuffer = CreatePbuffer(device, texture, offsetX, offsetY, _pixelWidth, _pixelHeight, true);
                 if (pbuffer == EGL_NO_SURFACE)
                 {
                     LogOnce(ref s_pbufferFailureLogged,
-                        "SKCompositionGLPanel: eglCreatePbufferFromClientBuffer failed: 0x" + eglGetError().ToString("X4"));
+                        "GnhSKCompositionGLPanel: eglCreatePbufferFromClientBuffer failed: 0x" + eglGetError().ToString("X4"));
                     return null;
                 }
             }
             else if (!wholeTexture && !s_offsetPathLogged)
             {
                 s_offsetPathLogged = true;
-                GnollHackX.GHApp.MaybeWriteGHLog("SKCompositionGLPanel: pbuffers use texture offset attributes");
+                GnollHackX.GHApp.MaybeWriteGHLog("GnhSKCompositionGLPanel: pbuffers use texture offset attributes");
             }
 
             int width = _pixelWidth;
@@ -575,7 +718,7 @@ namespace GnollHackM
             {
                 target.BackendRenderTarget.Dispose();
                 target.BackendRenderTarget = null;
-                LogOnce(ref s_skSurfaceFailureLogged, "SKCompositionGLPanel: SKSurface.Create failed");
+                LogOnce(ref s_skSurfaceFailureLogged, "GnhSKCompositionGLPanel: SKSurface.Create failed");
                 return false;
             }
             return true;

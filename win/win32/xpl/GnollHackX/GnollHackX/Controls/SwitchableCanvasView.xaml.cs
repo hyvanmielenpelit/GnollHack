@@ -396,6 +396,15 @@ namespace GnollHackX.Controls
                 else
                     Debug.WriteLine("Using Skia GPU Rendering: BackendRenderTarget is null");
 
+#if GNH_MAUI
+                object glPlatformView = _internalGLView?.Handler?.PlatformView;
+                string glPlatformViewName = glPlatformView != null ? glPlatformView.GetType().Name : "no platform view";
+#else
+                string glPlatformViewName = "SKGLView";
+#endif
+                GHApp.MaybeWriteGHLog(CanvasType.ToString() + " first GPU draw: " + glPlatformViewName
+                    + (e.BackendRenderTarget != null ? ", backend " + e.BackendRenderTarget.Backend.ToString() : ""));
+
                 if (grContext != null)
                 {
                     /* Set to requested PrimaryCache limits */

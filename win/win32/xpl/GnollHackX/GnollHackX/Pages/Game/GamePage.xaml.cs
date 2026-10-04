@@ -18738,6 +18738,9 @@ namespace GnollHackX.Pages.Game
                 GHMenuItem selectedEquipmentItem = null;
                 float innerleftpadding = 0;
                 float curmenuoffset = isEquipmentSideShown ? InterlockedEquipmentMenuScrollOffset : InterlockedMenuScrollOffset;
+#if WINDOWS
+                ProbeMenuScrollOffset(curmenuoffset);
+#endif
                 EquipmentSlot equipmentSlotActive = EquipmentSlotActive;
                 bool menuIsTwoWeap = MenuIsTwoWeap;
                 bool equipmentDrawFirstTime = EquipmentDrawFirstTime;
@@ -20290,6 +20293,9 @@ namespace GnollHackX.Pages.Game
                                             }
                                             InterlockedMenuScrollOffset = _menuScrollOffset;
                                         }
+#if WINDOWS
+                                        Interlocked.Increment(ref _menuOffsetProbeMoves);
+#endif
                                         MenuTouchDictionary[e.Id].Location = e.Location;
                                         MenuTouchDictionary[e.Id].UpdateTime = DateTime.Now;
                                         if (dist > GHConstants.MoveDistanceThreshold)
@@ -21173,6 +21179,44 @@ namespace GnollHackX.Pages.Game
             _menuCountNumber = -1;
             return doclickok;
         }
+
+#if WINDOWS
+        /* Menu scroll probe: drag moves, menu draws, and draws whose scroll offset differs from
+           the previous draw, logged every two seconds while the offset changes */
+        private int _menuOffsetProbeMoves;
+        private int _menuOffsetProbeDraws;
+        private int _menuOffsetProbeChanges;
+        private float _menuOffsetProbeLast;
+        private long _menuOffsetProbeWindowStart;
+
+        private void ProbeMenuScrollOffset(float offset)
+        {
+            long now = System.Diagnostics.Stopwatch.GetTimestamp();
+            if (_menuOffsetProbeWindowStart == 0)
+                _menuOffsetProbeWindowStart = now;
+            _menuOffsetProbeDraws++;
+            if (offset != _menuOffsetProbeLast)
+            {
+                _menuOffsetProbeChanges++;
+                _menuOffsetProbeLast = offset;
+            }
+
+            double seconds = (double)(now - _menuOffsetProbeWindowStart) / System.Diagnostics.Stopwatch.Frequency;
+            if (seconds >= 2.0)
+            {
+                int moves = Interlocked.Exchange(ref _menuOffsetProbeMoves, 0);
+                if (_menuOffsetProbeChanges > 0)
+                {
+                    GHApp.MaybeWriteGHLog(string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                        "Menu scroll probe: {0:0.0} s, drag moves {1}, draws {2}, offset changes {3} ({4:0.0} per second)",
+                        seconds, moves, _menuOffsetProbeDraws, _menuOffsetProbeChanges, _menuOffsetProbeChanges / seconds));
+                }
+                _menuOffsetProbeWindowStart = now;
+                _menuOffsetProbeDraws = 0;
+                _menuOffsetProbeChanges = 0;
+            }
+        }
+#endif
 
         private void MenuCanvas_MouseWheel(object sender, GHMouseWheelEventArgs e)
         {
