@@ -7356,26 +7356,18 @@ zapyourself(struct obj *obj, boolean ordinary)
             play_sfx_sound(SFX_HEALING);
             special_effect_wait_until_action(0);
             healup(basedmg, 0,
-                obj->otyp == GRAIL_OF_HEALING, 
+                FALSE,
                 (is_obj_blessed(obj) || (obj->otyp != SPE_EXTRA_HEALING && obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)),
                 (is_obj_blessed(obj) || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)), 
-                obj->otyp == GRAIL_OF_HEALING, 
-                obj->otyp == GRAIL_OF_HEALING);
+                FALSE,
+                FALSE);
             
             You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "%sbetter.",
-                obj->otyp == SPE_PRODIGIOUS_HEALING || obj->otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE || obj->otyp == GRAIL_OF_HEALING ? "vastly " :
+                obj->otyp == SPE_PRODIGIOUS_HEALING || obj->otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE ? "vastly " :
                 obj->otyp == SPE_GREATER_HEALING || obj->otyp == JAR_OF_GREATER_HEALING_SALVE ? "much, much " :
                 obj->otyp == SPE_EXTRA_HEALING || obj->otyp == JAR_OF_EXTRA_HEALING_SALVE ? "much " :
                 "");
 
-            if (obj->otyp == GRAIL_OF_HEALING)
-            {
-                if (Stoned)
-                    fix_petrification();
-
-                if (Slimed)
-                    make_slimed(0L, (char*)0, 0, (char*)0, 0);
-            }
             special_effect_wait_until_end(0);
 
         }
@@ -7423,7 +7415,10 @@ zapyourself(struct obj *obj, boolean ordinary)
                 you_unwere(TRUE);
 
             if(Stoned)
-                make_stoned(0L, (char*)0, 0, (char*)0, 0);
+                fix_petrification();
+
+            if (Slimed)
+                make_slimed(0L, "The slime disappears!", 0, (char*)0, 0);
 
             if (u.uhunger < 500)
             {
