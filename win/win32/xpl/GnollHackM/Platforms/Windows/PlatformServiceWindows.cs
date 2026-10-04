@@ -88,6 +88,11 @@ namespace GnollHackM
             }
         }
 
+        public ulong GetProcessAvailableMemoryInBytes()
+        {
+            return 0;
+        }
+
         public ulong GetDeviceMemoryInBytes()
         {
             try

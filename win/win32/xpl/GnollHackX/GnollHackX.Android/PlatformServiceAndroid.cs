@@ -78,6 +78,11 @@ namespace GnollHackX.Droid
             }
         }
 
+        public ulong GetProcessAvailableMemoryInBytes()
+        {
+            return 0;
+        }
+
         public ulong GetDeviceMemoryInBytes()
         {
             try

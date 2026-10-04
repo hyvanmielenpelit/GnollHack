@@ -500,6 +500,9 @@ namespace GnollHackX.Pages.Game
         {
             ForceClearCaches = gcLevel;
             MainCanvasView.RequestResourcePurge();
+            MenuCanvas.RequestResourcePurge();
+            TextCanvas.RequestResourcePurge();
+            CommandCanvas.RequestResourcePurge();
         }
 
         private int _drawWallEnds = 0;

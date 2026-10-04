@@ -505,6 +505,17 @@ namespace GnollHackX
         public const bool EnableExperimentalFeatures = false;
         public const int NumGuiAchievementLongs = ((int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS - 1) / 64 + 1;
         public const long MaxMetalGPUCacheSize = 384L * 1024L * 1024L;
+        /* GPU cache limits as fractions of the per-process available memory at startup, less the
+           bitmaps the app eventually loads: the largest size offered, and the recommended size */
+        public const double ProcessMemoryMaxPrimaryGPUCacheFraction = 0.45;
+        public const double ProcessMemoryMaxSecondaryGPUCacheFraction = 0.30;
+        public const double ProcessMemoryRecommendedGPUCacheFraction = 0.30;
+        /* Above this, the recommended secondary size uses the reduced fraction, but does not drop below it */
+        public const long ProcessMemoryRecommendedSecondaryGPUCacheThreshold = 256L * 1024L * 1024L;
+        public const double ProcessMemoryRecommendedSecondaryGPUCacheReducedFraction = 0.20;
+        public const long MinProcessMemoryGPUCacheLimit = 64L * 1024L * 1024L;
+        /* Allowance for decoded bitmaps in a running game: UsedBitmapBytes is about 740 MB, 570 MB of it the three tile sheets */
+        public const long EstimatedTotalBitmapBytes = 768L * 1024L * 1024L;
 
         /* iOS resume-freeze safety nets */
         public const int ParkAutoResumeTimeoutMs = 1500;    /* App verifiably active this long while parked → auto-resume */
