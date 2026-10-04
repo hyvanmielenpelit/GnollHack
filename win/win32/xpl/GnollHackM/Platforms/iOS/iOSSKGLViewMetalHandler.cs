@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace GnollHackM.Platforms.iOS
 {
-    public class iOSSKGLViewMetalHandler : ViewHandler<ISKGLView, iOSSKGLViewMetalHandler.MauiMetalView>
+    public class iOSSKGLViewMetalHandler : ViewHandler<ISKGLView, iOSSKGLViewMetalHandler.GHMetalView>
     {
         private CustomSKTouchHandler? _touchHandler;
         private SKSizeI lastCanvasSize;
@@ -38,22 +38,22 @@ namespace GnollHackM.Platforms.iOS
                 [nameof(ISKGLView.InvalidateSurface)] = OnInvalidateSurface,
             };
 
-        protected override MauiMetalView CreatePlatformView()
+        protected override GHMetalView CreatePlatformView()
         {
-            return new MauiMetalView
+            return new GHMetalView
             {
                 BackgroundColor = UIColor.Clear,
                 Opaque = false,
             };
         }
 
-        protected override void ConnectHandler(MauiMetalView platformView)
+        protected override void ConnectHandler(GHMetalView platformView)
         {
             platformView.PaintSurface += OnPaintSurface;
             base.ConnectHandler(platformView);
         }
 
-        protected override void DisconnectHandler(MauiMetalView platformView)
+        protected override void DisconnectHandler(GHMetalView platformView)
         {
             platformView.PaintSurface -= OnPaintSurface;
 
@@ -87,7 +87,7 @@ namespace GnollHackM.Platforms.iOS
                 lastCanvasSize = newCanvasSize;
                 virtualView.OnCanvasSizeChanged(newCanvasSize);
             }
-            if (sender is MauiMetalView platformView)
+            if (sender is GHMetalView platformView)
             {
                 var newGRContext = platformView.GRContext;
                 if (lastGRContext != newGRContext)
@@ -103,7 +103,7 @@ namespace GnollHackM.Platforms.iOS
         public static void OnInvalidateSurface(iOSSKGLViewMetalHandler handler, ISKGLView view, object? args)
         {
             /* The typed PlatformView property throws while the handler is disconnecting */
-            var platformView = ((IElementHandler?)handler)?.PlatformView as MauiMetalView;
+            var platformView = ((IElementHandler?)handler)?.PlatformView as GHMetalView;
             if (platformView == null)
                 return;
 
@@ -119,7 +119,7 @@ namespace GnollHackM.Platforms.iOS
             }
         }
 
-        private static void SetNeedsDisplayIfPaused(MauiMetalView platformView)
+        private static void SetNeedsDisplayIfPaused(GHMetalView platformView)
         {
             if (platformView.Handle != IntPtr.Zero && platformView.Paused && platformView.EnableSetNeedsDisplay)
             {
@@ -129,7 +129,7 @@ namespace GnollHackM.Platforms.iOS
 
         public static void MapIgnorePixelScaling(iOSSKGLViewMetalHandler handler, ISKGLView view)
         {
-            if (handler?.PlatformView is MauiMetalView pv)
+            if (handler?.PlatformView is GHMetalView pv)
             {
                 pv.IgnorePixelScaling = view.IgnorePixelScaling;
                 OnInvalidateSurface(handler, view, null);
@@ -181,7 +181,7 @@ namespace GnollHackM.Platforms.iOS
 
         /* An MTKView that renders with Skia. Each view owns its own command queue and
            GRContext. Drawing happens on the main thread. */
-        public class MauiMetalView : MTKView, IMTKViewDelegate
+        public class GHMetalView : MTKView, IMTKViewDelegate
         {
             private const SKColorType colorType = SKColorType.Bgra8888;
             private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.TopLeft;
@@ -190,7 +190,7 @@ namespace GnollHackM.Platforms.iOS
             private IMTLCommandQueue? _queue;
             private GRContext? _context;
 
-            public MauiMetalView() : base(CGRect.Empty, MTLDevice.SystemDefault)
+            public GHMetalView() : base(CGRect.Empty, MTLDevice.SystemDefault)
             {
                 _device = Device;
                 if (_device == null)
