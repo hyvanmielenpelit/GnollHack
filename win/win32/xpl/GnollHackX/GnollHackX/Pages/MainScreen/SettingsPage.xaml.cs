@@ -638,21 +638,22 @@ namespace GnollHackX.Pages.MainScreen
             if (PrimaryGPUCachePicker.SelectedIndex > -1 && PrimaryGPUCachePicker.SelectedItem != null && PrimaryGPUCachePicker.SelectedItem is CacheSizeItem)
             {
                 long size = ((CacheSizeItem)PrimaryGPUCachePicker.SelectedItem).Size;
+                /* Set first: a canvas that gets a new GRContext applies this value to it */
+                GHApp.PrimaryGPUCacheLimit = size;
                 if (_gamePage != null)
                     _gamePage.SetPrimaryCanvasResourceCacheLimit(size);
                 if (size != _primaryGPUCacheShownSize)
                     Preferences.Set("PrimaryGPUCacheLimit", size);
-                GHApp.PrimaryGPUCacheLimit = size;
             }
 
             if (SecondaryGPUCachePicker.SelectedIndex > -1 && SecondaryGPUCachePicker.SelectedItem != null && SecondaryGPUCachePicker.SelectedItem is CacheSizeItem)
             {
                 long size = ((CacheSizeItem)SecondaryGPUCachePicker.SelectedItem).Size;
+                GHApp.SecondaryGPUCacheLimit = size;
                 if (_gamePage != null)
                     _gamePage.SetSecondaryCanvasResourceCacheLimit(size);
                 if (size != _secondaryGPUCacheShownSize)
                     Preferences.Set("SecondaryGPUCacheLimit", size);
-                GHApp.SecondaryGPUCacheLimit = size;
             }
 
             if (_gamePage != null)

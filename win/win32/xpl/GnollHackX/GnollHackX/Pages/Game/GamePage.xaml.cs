@@ -992,7 +992,7 @@ namespace GnollHackX.Pages.Game
         {
             Debug.WriteLine("Primary: ResourceCacheSize was " + MainCanvasView.ResourceCacheLimit);
             MainCanvasView.ResourceCacheLimit = cacheLimit;
-            Debug.WriteLine("Primary: ResourceCacheSize is " + MainCanvasView.ResourceCacheLimit);
+            Debug.WriteLine("Primary: ResourceCacheSize requested " + cacheLimit);
         }
 
         public void SetSecondaryCanvasResourceCacheLimit(long cacheLimit)
@@ -1001,7 +1001,7 @@ namespace GnollHackX.Pages.Game
             MenuCanvas.ResourceCacheLimit = cacheLimit;
             TextCanvas.ResourceCacheLimit = cacheLimit;
             CommandCanvas.ResourceCacheLimit = cacheLimit;
-            Debug.WriteLine("Secondary: ResourceCacheSize is " + MenuCanvas.ResourceCacheLimit);
+            Debug.WriteLine("Secondary: ResourceCacheSize requested " + cacheLimit);
         }
 
         public CacheUsageInfo GetPrimaryCanvasResourceCacheUsage()
@@ -17103,8 +17103,7 @@ namespace GnollHackX.Pages.Game
                     case SKTouchAction.Cancelled:
                         /* Android reports a cancelled gesture once, for ActionIndex only, so the
                            other pointers never receive an event of their own */
-                        TouchDictionary.Clear();
-                        _touchMoved = false;
+                        ResetMainCanvasTouchState();
 
                         if(ForceAllMessages)
                         {
@@ -20516,13 +20515,8 @@ namespace GnollHackX.Pages.Game
                     }
                     break;
                 case SKTouchAction.Cancelled:
-                    if (MenuTouchDictionary.ContainsKey(e.Id))
-                    {
-                        TouchEntry removedEntry;
-                        MenuTouchDictionary.TryRemove(e.Id, out removedEntry);
-                    }
-                    else
-                        MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+                    /* A cancel is reported for one pointer only; it ends the whole gesture */
+                    ResetMenuCanvasTouchState();
 
                     ClearHighlightMenuItems();
 
@@ -20848,13 +20842,8 @@ namespace GnollHackX.Pages.Game
                     }
                     break;
                 case SKTouchAction.Cancelled:
-                    if (MenuTouchDictionary.ContainsKey(e.Id))
-                    {
-                        TouchEntry removedEntry;
-                        MenuTouchDictionary.TryRemove(e.Id, out removedEntry);
-                    }
-                    else
-                        MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+                    /* A cancel is reported for one pointer only; it ends the whole gesture */
+                    ResetMenuCanvasTouchState();
 
                     lock (_menuScrollLock)
                     {
@@ -22422,13 +22411,8 @@ namespace GnollHackX.Pages.Game
                         }
                         break;
                     case SKTouchAction.Cancelled:
-                        if (TextTouchDictionary.ContainsKey(e.Id))
-                        {
-                            TouchEntry removedEntry;
-                            TextTouchDictionary.TryRemove(e.Id, out removedEntry);
-                        }
-                        else
-                            TextTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+                        /* A cancel is reported for one pointer only; it ends the whole gesture */
+                        ResetTextCanvasTouchState();
 
                         lock (_textScrollLock)
                         {
@@ -23185,13 +23169,8 @@ namespace GnollHackX.Pages.Game
                         }
                         break;
                     case SKTouchAction.Cancelled:
-                        if (CommandTouchDictionary.ContainsKey(e.Id))
-                        {
-                            TouchEntry removedEntry;
-                            CommandTouchDictionary.TryRemove(e.Id, out removedEntry);
-                        }
-                        else
-                            CommandTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+                        /* A cancel is reported for one pointer only; it ends the whole gesture */
+                        ResetCommandCanvasTouchState();
                         e.Handled = true;
                         break;
                     case SKTouchAction.Exited:
@@ -24118,20 +24097,63 @@ namespace GnollHackX.Pages.Game
         }
 
         /// <summary>
-        /// Clears all canvas touch dictionaries and resets touch-moved flags.
+        /// Clears all canvas touch dictionaries, touch-moved flags and pending presses.
         /// Called on resign-active, suspend, and resume to prevent phantom
         /// touches from an interrupted swipe-to-switch gesture.
         /// </summary>
         public void ClearCanvasTouchState()
         {
+            ResetMainCanvasTouchState();
+            ResetMenuCanvasTouchState();
+            ResetTextCanvasTouchState();
+            ResetCommandCanvasTouchState();
+        }
+
+        /* A gesture that ends without a release leaves no pending press: the hold-to-move
+           and long-tap timers stop once the saved event is null */
+        private void ResetMainCanvasTouchState()
+        {
             TouchDictionary.Clear();
-            MenuTouchDictionary.Clear();
-            TextTouchDictionary.Clear();
-            CommandTouchDictionary.Clear();
             _touchMoved = false;
+            _savedSender = null;
+            _savedEventArgs = null;
+            _touchWithinSkillButton = false;
+            _touchWithinPoleButton = false;
+            _touchWithinPrevWepButton = false;
+            _touchWithinHealthOrb = false;
+            _touchWithinManaOrb = false;
+            _touchWithinStatusBar = false;
+            _touchWithinPet = 0;
+            _touchWithinYouButton = false;
+            _touchWithinContextButton = 0;
+            _touchWithinDashboardToggle = false;
+            _touchWithinDashboardLogToggle = false;
+        }
+
+        private void ResetMenuCanvasTouchState()
+        {
+            MenuTouchDictionary.Clear();
             _menuTouchMoved = false;
+            _savedMenuSender = null;
+            _savedMenuEventArgs = null;
+            _touchWithinMenuDashboardToggle = false;
+            _touchWithinMenuDashboardLogToggle = false;
+        }
+
+        private void ResetTextCanvasTouchState()
+        {
+            TextTouchDictionary.Clear();
             _textTouchMoved = false;
+            _savedTextSender = null;
+            _savedTextEventArgs = null;
+        }
+
+        private void ResetCommandCanvasTouchState()
+        {
+            CommandTouchDictionary.Clear();
             _commandTouchMoved = false;
+            _savedCommandSender = null;
+            _savedCommandEventArgs = null;
         }
 
         void UpdateMessageFilter()

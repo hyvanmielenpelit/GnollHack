@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Runtime.InteropServices;
 using Android.Content;
 using Android.Opengl;
 using Android.Views;
@@ -23,7 +24,12 @@ namespace GnollHackM
     {
         private SKSizeI _lastCanvasSize;
         private GRContext? _lastGRContext;
+        private IntPtr _lastEglContext;
         private SurfaceTouchHandler? _touchHandler;
+
+        /* Plain EGLContext handle; EGL14.EglGetCurrentContext would allocate a Java object per call */
+        [DllImport("libEGL.so")]
+        private static extern IntPtr eglGetCurrentContext();
 
         public AndroidSKGLViewSurfaceHandler() : base(SKGLViewMapper, SKGLViewCommandMapper)
         {
@@ -64,6 +70,7 @@ namespace GnollHackM
             _touchHandler = null;
             platformView.PaintSurface -= OnPaintSurface;
             _lastGRContext = null;
+            _lastEglContext = IntPtr.Zero;
             _lastCanvasSize = default;
             base.DisconnectHandler(platformView);
         }
@@ -135,6 +142,17 @@ namespace GnollHackM
                     _lastGRContext = newGRContext;
                     virtualView.OnGRContextChanged(newGRContext);
                 }
+            }
+
+            /* SKGLSurfaceView's renderer keeps its GRContext when GLSurfaceView creates a new EGL
+               context (re-attach or context loss), so the map stops drawing correctly */
+            IntPtr eglContext = eglGetCurrentContext();
+            if (eglContext != IntPtr.Zero)
+            {
+                if (_lastEglContext != IntPtr.Zero && eglContext != _lastEglContext)
+                    GHApp.MaybeWriteGHLog("Map EGL context changed under the same GRContext",
+                        true, GHConstants.SentryGnollHackGeneralCategoryName);
+                _lastEglContext = eglContext;
             }
 
             virtualView.OnPaintSurface(new SkiaSharp.Views.Maui.SKPaintGLSurfaceEventArgs(e.Surface, e.BackendRenderTarget, e.Origin, e.Info, e.RawInfo));
