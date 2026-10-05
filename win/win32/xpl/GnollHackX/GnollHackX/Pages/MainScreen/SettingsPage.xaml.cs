@@ -165,6 +165,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Fix Filtering", ("Adjust texture coords to prevent graphics filtering bugs.", "Adjusts texture coordinates to prevent graphics filtering artifacts on some devices.") },
             { "Tile Batching", ("Draw floor tiles in one batched call.", "**Off:** Every floor and carpet tile is drawn with its own draw call.\n**On:** Such tiles are collected and drawn in a single batched call, which saves processor time.") },
             { "Text Caching", ("Cache shaped text to reduce garbage collection pauses.", "**Off:** Text is reshaped on every frame.\n**On:** Shaped text is cached and reused, which reduces memory allocation and makes garbage collection pauses less frequent, at the cost of some extra memory.") },
+            { "Direct GL Draw", ("Draw the map on its own GPU surface. Applies to the next game.", "**On:** The map is drawn on its own display surface, which the system composites directly. This is usually smoother.\n**Off:** The map is drawn into a texture that is composited with the rest of the game screen. Try this if the map flickers, stays black, or shows graphical glitches.\nCannot be changed during a game; takes effect when the next game or replay starts.") },
             { "Disable Windows Key", ("Prevent Windows key from opening Start menu in-game.", "Prevents the Windows key from opening the Start menu, to avoid accidental focus loss during gameplay.") },
             { "Default Vi-Keys", ("Use vi-keys (hjklyubn) as default for movement.", "**Off**: The default setting for the `number_pad` option is `2` (numbers for movement).\n**On**: The default setting is `0` (vi-keys for movement).") },
             { "On Switching Apps", ("Save game or create checkpoint when switching apps.", "**Save Game**: The game is automatically saved and restored when the player returns. Menus close.\n**Checkpoint**: The game creates a checkpoint and doesn't close menus, but recovers to checkpoint if terminated.") },
@@ -266,6 +267,10 @@ namespace GnollHackX.Pages.MainScreen
             if (!GHApp.IsTileBatchingAvailable)
             {
                 TileBatchingGrid.IsVisible = false;
+            }
+            if (!GHApp.IsSurfaceViewAvailable)
+            {
+                SurfaceViewGrid.IsVisible = false;
             }
 
 
@@ -735,6 +740,18 @@ namespace GnollHackX.Pages.MainScreen
             {
                 GHApp.UseTextBlobCaching = TextBlobCachingSwitch.IsToggled;
                 Preferences.Set("UseTextBlobCaching", TextBlobCachingSwitch.IsToggled);
+            }
+            if (SurfaceViewGrid.IsVisible && SurfaceViewSwitch.IsEnabled)
+            {
+                GHApp.UseSurfaceView = SurfaceViewSwitch.IsToggled;
+                /* Stored only when it differs from the default, so a revised default reaches users who never changed it */
+                if (SurfaceViewSwitch.IsToggled == GHApp.IsUseSurfaceViewDefault)
+                {
+                    if (Preferences.ContainsKey("UseSurfaceView"))
+                        Preferences.Remove("UseSurfaceView");
+                }
+                else
+                    Preferences.Set("UseSurfaceView", SurfaceViewSwitch.IsToggled);
             }
 
             GHApp.EmptyWishIsNothing = EmptyWishIsNothingSwitch.IsToggled;
@@ -1421,7 +1438,7 @@ namespace GnollHackX.Pages.MainScreen
 #if !SENTRY
             bool postdiagnostics = GHConstants.DefaultPosting;
 #endif
-            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, fixvertical = true, runtimeeffects = GHConstants.DefaultRuntimeEffects, tilebatching = GHConstants.DefaultTileBatching, textblobcaching = GHConstants.DefaultTextBlobCaching, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
+            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, fixvertical = true, runtimeeffects = GHConstants.DefaultRuntimeEffects, tilebatching = GHConstants.DefaultTileBatching, textblobcaching = GHConstants.DefaultTextBlobCaching, surfaceview = GHApp.IsUseSurfaceViewDefault, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
             bool experimental = GHConstants.EnableExperimentalFeatures;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
@@ -1510,6 +1527,7 @@ namespace GnollHackX.Pages.MainScreen
             fixvertical = Preferences.Get("FixFiltering", GHApp.IsFixFilteringDefault);
             runtimeeffects = Preferences.Get("RuntimeEffects", GHConstants.DefaultRuntimeEffects);
             tilebatching = Preferences.Get("UseTileBatching", GHConstants.DefaultTileBatching);
+            surfaceview = Preferences.Get("UseSurfaceView", GHApp.IsUseSurfaceViewDefault);
             textblobcaching = Preferences.Get("UseTextBlobCaching", GHConstants.DefaultTextBlobCaching);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", GHApp.IsDesktop ? 1 : 0);
@@ -1773,6 +1791,7 @@ namespace GnollHackX.Pages.MainScreen
             DisableAuxGPUSwitch.IsToggled = disableauxgpu;
             RuntimeEffectsSwitch.IsToggled = runtimeeffects;
             TileBatchingSwitch.IsToggled = tilebatching;
+            SurfaceViewSwitch.IsToggled = surfaceview;
             TextBlobCachingSwitch.IsToggled = textblobcaching;
             PlatformRenderLoopSwitch.IsToggled = platformloop;
             FixRectsSwitch.IsToggled = fixrects;
@@ -1795,6 +1814,8 @@ namespace GnollHackX.Pages.MainScreen
                 MipMapLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
                 RuntimeEffectsSwitch.IsEnabled = gpu && experimental; /* Currently experimental so disabled unless experimental is true to avoid setting the setting value before the feature is fully developed */
                 RuntimeEffectsLabel.TextColor = gpu && experimental ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+                SurfaceViewSwitch.IsEnabled = gpu && _gamePage == null; /* The map's GL view is created with the game page */
+                SurfaceViewLabel.TextColor = gpu && _gamePage == null ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             }
             else
             {
@@ -1813,6 +1834,8 @@ namespace GnollHackX.Pages.MainScreen
                 MipMapLabel.TextColor = GHColors.Gray;
                 RuntimeEffectsSwitch.IsEnabled = false;
                 RuntimeEffectsLabel.TextColor = GHColors.Gray;
+                SurfaceViewSwitch.IsEnabled = false;
+                SurfaceViewLabel.TextColor = GHColors.Gray;
             }
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
             ShowAltZoomButtonSwitch.IsToggled = showaltzoom;
@@ -3081,6 +3104,8 @@ namespace GnollHackX.Pages.MainScreen
             DisableAuxGPULabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             MipMapSwitch.IsEnabled = e.Value;
             MipMapLabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            SurfaceViewSwitch.IsEnabled = e.Value && _gamePage == null;
+            SurfaceViewLabel.TextColor = e.Value && _gamePage == null ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
 
             if (_isManualTogglingEnabled)
             {

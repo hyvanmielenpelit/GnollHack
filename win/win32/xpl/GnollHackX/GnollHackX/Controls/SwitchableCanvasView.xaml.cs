@@ -34,7 +34,7 @@ namespace GnollHackX.Controls
     {
     }
 
-#if ANDROID_SURFACEVIEW
+#if GNH_MAUI && ANDROID
     /* Marker type: AndroidSKGLViewSurfaceHandler is registered for it */
     public class MapSurfaceGLView : SKTouchGLView
     {
@@ -67,6 +67,18 @@ namespace GnollHackX.Controls
         }
 
         public bool HasGL {  get { return _internalGLView != null; } }
+
+        public bool IsSurfaceView
+        {
+            get
+            {
+#if GNH_MAUI && ANDROID
+                return _internalGLView is MapSurfaceGLView;
+#else
+                return false;
+#endif
+            }
+        }
 
         public SwitchableCanvasView()
         {
@@ -760,10 +772,12 @@ namespace GnollHackX.Controls
     /* The game map's canvas */
     public class SwitchableMapCanvasView : SwitchableCanvasView
     {
-#if ANDROID_SURFACEVIEW
+#if GNH_MAUI && ANDROID
         protected override SKGLView CreateGLView()
         {
-            return new MapSurfaceGLView();
+            if (GHApp.UseSurfaceView)
+                return new MapSurfaceGLView();
+            return base.CreateGLView();
         }
 #endif
     }

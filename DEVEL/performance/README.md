@@ -514,11 +514,11 @@ the loop starts, and `platform` elsewhere. It is `raw` only in a build that defi
 from `raw` to `managed` at run time when the raw subscription cannot be made or delivers no
 frames, so the value can differ between two runs of one build.
 
-`code.mapSurface` names the Android view behind the map's GPU canvas: `SurfaceView` in a
-build that defines `ANDROID_SURFACEVIEW`, which `GNHAndroidSurfaceView` in
-`GnollHackM.csproj` turns on by default, and `TextureView` otherwise. It describes the
-build: when `settings.mainCanvasUsesGpu` is false the map is drawn on the CPU and neither
-view is used. A `SurfaceView` map is its own compositor layer and is not in the
+`code.mapSurface` names the Android view behind the map's GPU canvas: `SurfaceView` when
+the running game's map canvas was built with the Direct GL Draw setting (`UseSurfaceView`,
+on by default from the API level in `GHConstants.MinSurfaceViewAndroidApiLevel`), and `TextureView` otherwise. The view is chosen when the
+game page is created, so the value is per game, not per build. When
+`settings.mainCanvasUsesGpu` is false the map is drawn on the CPU and neither view is used. A `SurfaceView` map is its own compositor layer and is not in the
 FrameMetrics reports; the in-app display estimate still assumes a `TextureView`, so its
 results for the two values do not compare.
 

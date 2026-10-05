@@ -1,4 +1,3 @@
-#if ANDROID_SURFACEVIEW
 #nullable enable
 
 using System;
@@ -303,4 +302,3 @@ namespace GnollHackM
         }
     }
 }
-#endif

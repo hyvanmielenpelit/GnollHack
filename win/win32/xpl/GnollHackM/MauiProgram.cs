@@ -61,9 +61,7 @@ public static class MauiProgram
 #if ANDROID
                 handlers.AddHandler(typeof(Button), typeof(NoFocusButtonHandler));
                 handlers.AddHandler(typeof(ConsistentScrollView), typeof(ConsistentScrollViewHandler));
-#if ANDROID_SURFACEVIEW
                 handlers.AddHandler<MapSurfaceGLView, AndroidSKGLViewSurfaceHandler>();
-#endif
 #endif
 #if IOS
                 handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));

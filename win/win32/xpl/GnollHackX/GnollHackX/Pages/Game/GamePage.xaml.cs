@@ -650,6 +650,21 @@ namespace GnollHackX.Pages.Game
             set { MainCanvasView.UseGL = value; }
         }
 
+        public bool MainCanvasIsSurfaceView { get { return MainCanvasView.IsSurfaceView; } }
+
+        /* The SurfaceView layer and the Windows swap chain ignore the canvas's opacity */
+        private bool FadeWithFadeFrame
+        {
+            get
+            {
+#if WINDOWS
+                return true;
+#else
+                return MainCanvasView.IsSurfaceView;
+#endif
+            }
+        }
+
         /* UI thread only. Null when the main canvas does not use GL; otherwise whether it
            has a live GRContext (ResourceCacheLimit is -1 without one). */
         public bool? MainCanvasGpuContextLive
@@ -18025,52 +18040,69 @@ namespace GnollHackX.Pages.Game
 
         public void SetToBlack()
         {
-#if WINDOWS || ANDROID_SURFACEVIEW
-            FadeFrame.Opacity = 1.0;
-            FadeFrame.IsVisible = true;
-#else
-            MainCanvasView.Opacity = 0.0;
-#endif
+            if (FadeWithFadeFrame)
+            {
+                FadeFrame.Opacity = 1.0;
+                FadeFrame.IsVisible = true;
+            }
+            else
+            {
+                MainCanvasView.Opacity = 0.0;
+            }
         }
 
         public async Task FadeToBlack(uint milliseconds)
         {
             MainGrid.IsEnabled = false;
-#if WINDOWS || ANDROID_SURFACEVIEW
-            FadeFrame.Opacity = 0.0;
-            FadeFrame.IsVisible = true;
-            await Task.Yield(); /* Just in case */
-            await FadeFrame.FadeToAsync(1.0, milliseconds);
-#else
-            MainCanvasView.Opacity = 1.0;
-            await Task.Yield(); /* Just in case */
+            if (FadeWithFadeFrame)
+            {
+                FadeFrame.Opacity = 0.0;
+                FadeFrame.IsVisible = true;
+                await Task.Yield(); /* Just in case */
 #if GNH_MAUI
-            await MainCanvasView.FadeToAsync(0.0, milliseconds);
+                await FadeFrame.FadeToAsync(1.0, milliseconds);
 #else
-            await MainCanvasView.FadeTo(0.0, milliseconds);
+                await FadeFrame.FadeTo(1.0, milliseconds);
 #endif
-            MainCanvasView.Opacity = 0.0; /* Just in case */
+            }
+            else
+            {
+                MainCanvasView.Opacity = 1.0;
+                await Task.Yield(); /* Just in case */
+#if GNH_MAUI
+                await MainCanvasView.FadeToAsync(0.0, milliseconds);
+#else
+                await MainCanvasView.FadeTo(0.0, milliseconds);
 #endif
+                MainCanvasView.Opacity = 0.0; /* Just in case */
+            }
         }
 
         public async Task FadeFromBlack(uint milliseconds)
         {
             MainGrid.IsEnabled = true;
-#if WINDOWS || ANDROID_SURFACEVIEW
-            FadeFrame.Opacity = 1.0;
-            await Task.Yield(); /* Just in case */
-            await FadeFrame.FadeToAsync(0.0, milliseconds);
-            FadeFrame.IsVisible = false;
-#else
-            MainCanvasView.Opacity = 0.0;
-            await Task.Yield(); /* Just in case */
+            if (FadeWithFadeFrame)
+            {
+                FadeFrame.Opacity = 1.0;
+                await Task.Yield(); /* Just in case */
 #if GNH_MAUI
-            await MainCanvasView.FadeToAsync(1.0, milliseconds);
+                await FadeFrame.FadeToAsync(0.0, milliseconds);
 #else
-            await MainCanvasView.FadeTo(1.0, milliseconds);
+                await FadeFrame.FadeTo(0.0, milliseconds);
 #endif
-            MainCanvasView.Opacity = 1.0; /* Just in case */
+                FadeFrame.IsVisible = false;
+            }
+            else
+            {
+                MainCanvasView.Opacity = 0.0;
+                await Task.Yield(); /* Just in case */
+#if GNH_MAUI
+                await MainCanvasView.FadeToAsync(1.0, milliseconds);
+#else
+                await MainCanvasView.FadeTo(1.0, milliseconds);
 #endif
+                MainCanvasView.Opacity = 1.0; /* Just in case */
+            }
         }
 
         public void CloseMoreCommands()

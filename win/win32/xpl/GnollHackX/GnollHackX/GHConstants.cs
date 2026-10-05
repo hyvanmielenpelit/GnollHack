@@ -448,6 +448,8 @@ namespace GnollHackX
 #else
             false;
 #endif
+        /* Direct GL Draw is on by default from this Android API level up */
+        public const int MinSurfaceViewAndroidApiLevel = 31;
         public const bool DefaultCharacterClickAction = false;
         public const bool DefaultDiceAsRanges = true;
         public const bool DefaultDamageFormula = false;

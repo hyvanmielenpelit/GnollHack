@@ -183,10 +183,13 @@ namespace GnollHackX.Performance
             AddIfMissing(fp, "code.portVersion", () => GHApp.GetPortVersionString());
             AddIfMissing(fp, "code.portBuild", () => GHApp.GetPortBuildString());
             AddIfMissing(fp, "code.renderSubscription", () => GHApp.RenderSubscriptionName);
-#if ANDROID_SURFACEVIEW
-            AddIfMissing(fp, "code.mapSurface", () => "SurfaceView");
-#elif ANDROID
-            AddIfMissing(fp, "code.mapSurface", () => "TextureView");
+#if ANDROID
+            AddIfMissing(fp, "code.mapSurface", () =>
+            {
+                var page = GHApp.CurrentGamePage;
+                bool surface = page != null ? page.MainCanvasIsSurfaceView : GHApp.UseSurfaceView;
+                return surface ? "SurfaceView" : "TextureView";
+            });
 #endif
             AddIfMissing(fp, "toolchain.compiler",
                 () => GHApp.IsLLVM ? "LLVM" : GHApp.IsCoreCLR ? "Crossgen2" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT");

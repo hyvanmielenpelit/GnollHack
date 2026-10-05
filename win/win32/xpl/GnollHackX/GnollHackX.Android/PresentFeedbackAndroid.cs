@@ -17,10 +17,10 @@ namespace GnollHackM
        FrameMetrics describes the RenderThread frames of the top modal page's window, which
        during a game is GamePage's, since MAUI shows each modal page in its own dialog
        window. Those frames composite the map whether it is an SKCanvasView bitmap or an
-       SKGLTextureView texture. With ANDROID_SURFACEVIEW the map is an SKGLSurfaceView, its
-       own layer, and is not in these frames. The timestamps are System.nanoTime, the same
-       clock as Choreographer's frameTimeNanos, and are converted with the timeline's clock
-       anchor.
+       SKGLTextureView texture. With Direct GL Draw (GHApp.UseSurfaceView) the map is an
+       SKGLSurfaceView, its own layer, and is not in these frames. The timestamps are
+       System.nanoTime, the same clock as Choreographer's frameTimeNanos, and are converted
+       with the timeline's clock anchor.
        The listener runs on its own HandlerThread and only while the timeline is enabled.
 
        Trace sections appear in Perfetto and systrace next to SurfaceFlinger's frame

@@ -90,9 +90,6 @@
     <!--<AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>-->
     <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
     <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
-    <!-- true: the main map canvas is an SKGLSurfaceView instead of an SKGLTextureView -->
-    <GNHAndroidSurfaceView Condition="'$(GNHAndroidSurfaceView)' == ''">false</GNHAndroidSurfaceView>
-    <DefineConstants Condition="'$(GNHAndroidSurfaceView)' == 'true'">$(DefineConstants);ANDROID_SURFACEVIEW</DefineConstants>
     <!--<AndroidEnableProfiler>true</AndroidEnableProfiler>-->
   </PropertyGroup>
 

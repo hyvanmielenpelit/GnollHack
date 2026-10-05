@@ -321,6 +321,7 @@ namespace GnollHackX
 
             UseMipMap = Preferences.Get("UseMainMipMap", IsUseMainMipMapDefault);
             UseGPU = Preferences.Get("UseMainGLCanvas", IsUseMainGPUDefault);
+            UseSurfaceView = Preferences.Get("UseSurfaceView", IsUseSurfaceViewDefault);
             UseAuxGPU = Preferences.Get("UseAuxiliaryGLCanvas", IsUseAuxGPUDefault);
             DisableAuxGPU = Preferences.Get("DisableAuxiliaryGLCanvas", IsDisableAuxGPUDefault);
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
@@ -2321,6 +2322,22 @@ namespace GnollHackX
         /* Read once per frame by the map paint loop; see GamePage.PaintMapTile */
         public static bool UseTileBatching { get { return IsTileBatchingAvailable && Interlocked.CompareExchange(ref _useTileBatching, 0, 0) != 0; } set { Interlocked.Exchange(ref _useTileBatching, value ? 1 : 0); } }
 
+        private static int _useSurfaceView = 0;
+        /* MAUI Android only: the map's GL view is an SKGLSurfaceView instead of an SKGLTextureView */
+        public static bool IsSurfaceViewAvailable
+        {
+            get
+            {
+#if GNH_MAUI
+                return IsAndroid;
+#else
+                return false;
+#endif
+            }
+        }
+        /* Read when a GamePage is constructed; see SwitchableMapCanvasView.CreateGLView */
+        public static bool UseSurfaceView { get { return IsSurfaceViewAvailable && Interlocked.CompareExchange(ref _useSurfaceView, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSurfaceView, value ? 1 : 0); } }
+
         private static int _useTextBlobCaching = 0;
         /* Read once per frame by each paint handler and applied via GHSkiaFontPaint.SyncBlobCache */
         public static bool UseTextBlobCaching { get { return Interlocked.CompareExchange(ref _useTextBlobCaching, 0, 0) != 0; } set { Interlocked.Exchange(ref _useTextBlobCaching, value ? 1 : 0); } }
@@ -2643,6 +2660,18 @@ namespace GnollHackX
             get
             {
                 return IsGPUDefault && IsGPUAvailable;
+            }
+        }
+
+        public static bool IsUseSurfaceViewDefault
+        {
+            get
+            {
+#if GNH_MAUI
+                return IsSurfaceViewAvailable && OperatingSystem.IsAndroidVersionAtLeast(GHConstants.MinSurfaceViewAndroidApiLevel);
+#else
+                return false;
+#endif
             }
         }
 
