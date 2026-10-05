@@ -654,7 +654,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        /* The view the map is drawn on: "SurfaceView" or "TextureView" on Android, "GL" elsewhere, or "Canvas" when it does not use GL */
+        /* The view the map is drawn on: "SurfaceView" or "TextureView" on Android, "Metal" or "GL" on iOS, "GL" elsewhere, or "Canvas" when it does not use GL */
         public string MainCanvasViewType
         {
             get
@@ -663,6 +663,8 @@ namespace GnollHackX.Pages.Game
                     return "Canvas";
                 if (MainCanvasView.IsSurfaceView)
                     return "SurfaceView";
+                if (MainCanvasView.IsMetal)
+                    return "Metal";
                 return GHApp.IsAndroid ? "TextureView" : "GL";
             }
         }

@@ -67,9 +67,7 @@ public static class MauiProgram
                 handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));
                 handlers.AddHandler<Border, NotAnimatedBorderHandler>();
                 handlers.AddHandler<Button, NotAnimatedButtonHandler>();
-#if METAL
-                handlers.AddHandler<SkiaSharp.Views.Maui.Controls.SKGLView, GnollHackM.Platforms.iOS.iOSSKGLViewMetalHandler>();
-#endif
+                handlers.AddHandler<MetalGLView, GnollHackM.Platforms.iOS.iOSSKGLViewMetalHandler>();
 #endif
 #if WINDOWS
                 handlers.AddHandler<SKTouchGLView, WindowsSKGLViewHandler>();

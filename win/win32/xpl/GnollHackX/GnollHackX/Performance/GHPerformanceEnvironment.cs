@@ -183,7 +183,7 @@ namespace GnollHackX.Performance
             AddIfMissing(fp, "code.portVersion", () => GHApp.GetPortVersionString());
             AddIfMissing(fp, "code.portBuild", () => GHApp.GetPortBuildString());
             AddIfMissing(fp, "code.renderSubscription", () => GHApp.RenderSubscriptionName);
-#if ANDROID
+#if ANDROID || IOS
             AddIfMissing(fp, "code.mapSurface", () =>
             {
                 var page = GHApp.CurrentGamePage;
@@ -192,7 +192,11 @@ namespace GnollHackX.Performance
                 bool gl = GHApp.IsGPUAvailable && GHApp.UseGPU;
                 if (!gl)
                     return "Canvas";
+#if IOS
+                return GHApp.UseMetal ? "Metal" : "GL";
+#else
                 return GHApp.UseSurfaceView ? "SurfaceView" : "TextureView";
+#endif
             });
 #endif
             AddIfMissing(fp, "toolchain.compiler",

@@ -522,6 +522,11 @@ game page is created, so the value is per game, not per build. When
 FrameMetrics reports; the in-app display estimate still assumes a `TextureView`, so its
 results for the two values do not compare.
 
+On iOS `code.mapSurface` is `Metal` when the running game's canvases were built with the
+Metal Rendering setting (`UseMetal`, default from `GHConstants.DefaultUseMetalRendering`),
+and `GL` (OpenGL ES) otherwise. It is likewise chosen per game. `settings.gpuBackend`
+reports the Skia backend of the map canvas independently, as `Metal` or `OpenGL`.
+
 A suite's starting fingerprint is taken when its first window ends, warm-up or run 1; the
 one written when the suite is created is provisional until then. By that point the game
 page has painted, which sets `settings.gpuBackend` and `settings.gpuCacheSize`, and the

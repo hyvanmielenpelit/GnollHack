@@ -41,6 +41,13 @@ namespace GnollHackX.Controls
     }
 
 #endif
+#if GNH_MAUI && IOS
+    /* Marker type: iOSSKGLViewMetalHandler is registered for it */
+    public class MetalGLView : SKTouchGLView
+    {
+    }
+
+#endif
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SwitchableCanvasView : ContentView, IThreadSafeView
     {
@@ -74,6 +81,18 @@ namespace GnollHackX.Controls
             {
 #if GNH_MAUI && ANDROID
                 return _internalGLView is MapSurfaceGLView;
+#else
+                return false;
+#endif
+            }
+        }
+
+        public bool IsMetal
+        {
+            get
+            {
+#if GNH_MAUI && IOS
+                return _internalGLView is MetalGLView;
 #else
                 return false;
 #endif
@@ -142,6 +161,10 @@ namespace GnollHackX.Controls
         /* Called from the constructor; overrides must not use their own fields */
         protected virtual SKGLView CreateGLView()
         {
+#if GNH_MAUI && IOS
+            if (GHApp.UseMetal)
+                return new MetalGLView();
+#endif
             return new SKTouchGLView();
         }
 

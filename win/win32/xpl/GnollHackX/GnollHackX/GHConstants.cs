@@ -450,6 +450,8 @@ namespace GnollHackX
 #endif
         /* Direct GL Draw is on by default from this Android API level up */
         public const int MinSurfaceViewAndroidApiLevel = 31;
+        /* Default for the iOS Metal Rendering setting; OpenGL ES otherwise */
+        public const bool DefaultUseMetalRendering = false;
         public const bool DefaultCharacterClickAction = false;
         public const bool DefaultDiceAsRanges = true;
         public const bool DefaultDamageFormula = false;
@@ -507,9 +509,13 @@ namespace GnollHackX
         public const ulong DiskSpaceLowThresholdInBytes = 5 * 1024UL * 1024UL * 1024UL;
         public const bool EnableExperimentalFeatures = false;
         public const int NumGuiAchievementLongs = ((int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS - 1) / 64 + 1;
+        /* iOS terminates (jetsam) the app on the Metal backend once its GPU caches grow past about
+           384 MB; on OpenGL ES the same cache levels are not terminated. Metal caches are therefore
+           capped by the per-process available memory, or by this size when that memory is unknown. */
         public const long MaxMetalGPUCacheSize = 384L * 1024L * 1024L;
-        /* GPU cache limits as fractions of the per-process available memory at startup, less the
-           bitmaps the app eventually loads: the largest size offered, and the recommended size */
+        /* Metal backend only: GPU cache limits as fractions of the per-process available memory at
+           startup, less the bitmaps the app eventually loads: the largest size offered, and the
+           recommended size */
         public const double ProcessMemoryMaxPrimaryGPUCacheFraction = 0.45;
         public const double ProcessMemoryMaxSecondaryGPUCacheFraction = 0.30;
         public const double ProcessMemoryRecommendedGPUCacheFraction = 0.30;

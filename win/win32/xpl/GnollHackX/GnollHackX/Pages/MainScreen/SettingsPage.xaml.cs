@@ -19,6 +19,7 @@ using static System.Net.Mime.MediaTypeNames;
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using Picker = Microsoft.Maui.Controls.Picker;
 
 namespace GnollHackM
 #else
@@ -27,6 +28,7 @@ using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using Picker = Xamarin.Forms.Picker;
 using GnollHackX.Pages.Game;
 using GnollHackX.Controls;
 
@@ -166,6 +168,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Tile Batching", ("Draw floor tiles in one batched call.", "**Off:** Every floor and carpet tile is drawn with its own draw call.\n**On:** Such tiles are collected and drawn in a single batched call, which saves processor time.") },
             { "Text Caching", ("Cache shaped text to reduce garbage collection pauses.", "**Off:** Text is reshaped on every frame.\n**On:** Shaped text is cached and reused, which reduces memory allocation and makes garbage collection pauses less frequent, at the cost of some extra memory.") },
             { "Direct GL Draw", ("Draw the map on its own GPU surface. Applies to the next game.", "**On:** The map is drawn on its own display surface, which the system composites directly. This is usually smoother.\n**Off:** The map is drawn into a texture that is composited with the rest of the game screen. Try this if the map flickers, stays black, or shows graphical glitches.\nCannot be changed during a game; takes effect when the next game or replay starts.") },
+            { "Metal Rendering", ("Draw with Metal instead of OpenGL ES. Applies to the next game.", "**Off:** The game is drawn with OpenGL ES, which Apple has deprecated but which still works.\n**On:** The game is drawn with Metal, Apple's current graphics interface. iOS limits how much memory a Metal app may use, so the largest GPU cache sizes are not offered with Metal.\nCannot be changed during a game; takes effect when the next game or replay starts.") },
             { "Disable Windows Key", ("Prevent Windows key from opening Start menu in-game.", "Prevents the Windows key from opening the Start menu, to avoid accidental focus loss during gameplay.") },
             { "Default Vi-Keys", ("Use vi-keys (hjklyubn) as default for movement.", "**Off**: The default setting for the `number_pad` option is `2` (numbers for movement).\n**On**: The default setting is `0` (vi-keys for movement).") },
             { "On Switching Apps", ("Save game or create checkpoint when switching apps.", "**Save Game**: The game is automatically saved and restored when the player returns. Menus close.\n**Checkpoint**: The game creates a checkpoint and doesn't close menus, but recovers to checkpoint if terminated.") },
@@ -271,6 +274,10 @@ namespace GnollHackX.Pages.MainScreen
             if (!GHApp.IsSurfaceViewAvailable)
             {
                 SurfaceViewGrid.IsVisible = false;
+            }
+            if (!GHApp.IsMetalAvailable)
+            {
+                MetalGrid.IsVisible = false;
             }
 
 
@@ -609,12 +616,32 @@ namespace GnollHackX.Pages.MainScreen
                 }
             }
 
+            /* Before the GPU cache levels, which the backend clamps */
+            if (MetalGrid.IsVisible && MetalSwitch.IsEnabled)
+            {
+                bool metal = MetalSwitch.IsToggled;
+                bool backendChanged = metal != GHApp.UseMetal;
+                GHApp.UseMetal = metal;
+                /* Stored only when it differs from the default, so a revised default reaches users who never changed it */
+                if (metal == GHApp.IsUseMetalDefault)
+                {
+                    if (Preferences.ContainsKey("UseMetal"))
+                        Preferences.Remove("UseMetal");
+                }
+                else
+                    Preferences.Set("UseMetal", metal);
+                if (backendChanged)
+                    GHApp.ApplyGPUCacheLimits(metal);
+            }
+
+            /* A level is stored only when picked, so a clamped one does not replace a larger level that the other backend allows */
             if (PrimaryGPUCachePicker.SelectedIndex > -1 && PrimaryGPUCachePicker.SelectedItem != null && PrimaryGPUCachePicker.SelectedItem is CacheSizeItem)
             {
                 long size = ((CacheSizeItem)PrimaryGPUCachePicker.SelectedItem).Size;
                 if (_gamePage != null)
                     _gamePage.SetPrimaryCanvasResourceCacheLimit(size);
-                Preferences.Set("PrimaryGPUCacheLimit", size);
+                if (size != _primaryGPUCacheShownSize)
+                    Preferences.Set("PrimaryGPUCacheLimit", size);
                 GHApp.PrimaryGPUCacheLimit = size;
             }
 
@@ -623,7 +650,8 @@ namespace GnollHackX.Pages.MainScreen
                 long size = ((CacheSizeItem)SecondaryGPUCachePicker.SelectedItem).Size;
                 if (_gamePage != null)
                     _gamePage.SetSecondaryCanvasResourceCacheLimit(size);
-                Preferences.Set("SecondaryGPUCacheLimit", size);
+                if (size != _secondaryGPUCacheShownSize)
+                    Preferences.Set("SecondaryGPUCacheLimit", size);
                 GHApp.SecondaryGPUCacheLimit = size;
             }
 
@@ -1438,7 +1466,7 @@ namespace GnollHackX.Pages.MainScreen
 #if !SENTRY
             bool postdiagnostics = GHConstants.DefaultPosting;
 #endif
-            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, fixvertical = true, runtimeeffects = GHConstants.DefaultRuntimeEffects, tilebatching = GHConstants.DefaultTileBatching, textblobcaching = GHConstants.DefaultTextBlobCaching, surfaceview = GHApp.IsUseSurfaceViewDefault, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
+            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, fixvertical = true, runtimeeffects = GHConstants.DefaultRuntimeEffects, tilebatching = GHConstants.DefaultTileBatching, textblobcaching = GHConstants.DefaultTextBlobCaching, surfaceview = GHApp.IsUseSurfaceViewDefault, metal = GHApp.IsUseMetalDefault, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
             bool experimental = GHConstants.EnableExperimentalFeatures;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
@@ -1528,6 +1556,7 @@ namespace GnollHackX.Pages.MainScreen
             runtimeeffects = Preferences.Get("RuntimeEffects", GHConstants.DefaultRuntimeEffects);
             tilebatching = Preferences.Get("UseTileBatching", GHConstants.DefaultTileBatching);
             surfaceview = Preferences.Get("UseSurfaceView", GHApp.IsUseSurfaceViewDefault);
+            metal = Preferences.Get("UseMetal", GHApp.IsUseMetalDefault);
             textblobcaching = Preferences.Get("UseTextBlobCaching", GHConstants.DefaultTextBlobCaching);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", GHApp.IsDesktop ? 1 : 0);
@@ -1792,6 +1821,7 @@ namespace GnollHackX.Pages.MainScreen
             RuntimeEffectsSwitch.IsToggled = runtimeeffects;
             TileBatchingSwitch.IsToggled = tilebatching;
             SurfaceViewSwitch.IsToggled = surfaceview;
+            MetalSwitch.IsToggled = metal;
             TextBlobCachingSwitch.IsToggled = textblobcaching;
             PlatformRenderLoopSwitch.IsToggled = platformloop;
             FixRectsSwitch.IsToggled = fixrects;
@@ -1816,6 +1846,8 @@ namespace GnollHackX.Pages.MainScreen
                 RuntimeEffectsLabel.TextColor = gpu && experimental ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
                 SurfaceViewSwitch.IsEnabled = gpu && _gamePage == null; /* The map's GL view is created with the game page */
                 SurfaceViewLabel.TextColor = gpu && _gamePage == null ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+                MetalSwitch.IsEnabled = gpu && _gamePage == null; /* The GL views are created with the game page */
+                MetalLabel.TextColor = gpu && _gamePage == null ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             }
             else
             {
@@ -1836,6 +1868,8 @@ namespace GnollHackX.Pages.MainScreen
                 RuntimeEffectsLabel.TextColor = GHColors.Gray;
                 SurfaceViewSwitch.IsEnabled = false;
                 SurfaceViewLabel.TextColor = GHColors.Gray;
+                MetalSwitch.IsEnabled = false;
+                MetalLabel.TextColor = GHColors.Gray;
             }
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
             ShowAltZoomButtonSwitch.IsToggled = showaltzoom;
@@ -2110,36 +2144,8 @@ namespace GnollHackX.Pages.MainScreen
             FullCommandBarButton12Picker.SelectedIndex = fullCmdIdxs[11];
             FullCommandBarButton13Picker.SelectedIndex = fullCmdIdxs[12];
 
-            if (PrimaryGPUCachePicker.ItemsSource != null)
-            {
-                foreach (object item in PrimaryGPUCachePicker.ItemsSource)
-                {
-                    if (item is CacheSizeItem)
-                    {
-                        CacheSizeItem c = (CacheSizeItem)item;
-                        if (c.Size == primarygpucache)
-                        {
-                            PrimaryGPUCachePicker.SelectedItem = c;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (SecondaryGPUCachePicker.ItemsSource != null)
-            {
-                foreach (object item in SecondaryGPUCachePicker.ItemsSource)
-                {
-                    if (item is CacheSizeItem)
-                    {
-                        CacheSizeItem c = (CacheSizeItem)item;
-                        if (c.Size == secondarygpucache)
-                        {
-                            SecondaryGPUCachePicker.SelectedItem = c;
-                            break;
-                        }
-                    }
-                }
-            }
+            _primaryGPUCacheShownSize = SelectGPUCacheLevel(PrimaryGPUCachePicker, primarygpucache, false);
+            _secondaryGPUCacheShownSize = SelectGPUCacheLevel(SecondaryGPUCachePicker, secondarygpucache, true);
             GeneralVolumeSlider.Value = (double)generalVolume;
             MusicVolumeSlider.Value = (double)musicVolume;
             AmbientVolumeSlider.Value = (double)ambientVolume;
@@ -3106,6 +3112,8 @@ namespace GnollHackX.Pages.MainScreen
             MipMapLabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             SurfaceViewSwitch.IsEnabled = e.Value && _gamePage == null;
             SurfaceViewLabel.TextColor = e.Value && _gamePage == null ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            MetalSwitch.IsEnabled = e.Value && _gamePage == null;
+            MetalLabel.TextColor = e.Value && _gamePage == null ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
 
             if (_isManualTogglingEnabled)
             {
@@ -3170,6 +3178,48 @@ namespace GnollHackX.Pages.MainScreen
                     }
                 }
             }
+        }
+
+        /* The GPU cache level each picker showed when populated; long.MinValue when none */
+        private long _primaryGPUCacheShownSize = long.MinValue;
+        private long _secondaryGPUCacheShownSize = long.MinValue;
+
+        /* Selects the stored level, capped at the largest size the picker offers; returns the size shown */
+        private long SelectGPUCacheLevel(Picker picker, long storedLevel, bool isSecondary)
+        {
+            List<CacheSizeItem> list = picker.ItemsSource as List<CacheSizeItem>;
+            if (list == null || list.Count == 0)
+                return long.MinValue;
+            long level = GHApp.ClampGPUCacheLevel(storedLevel, list, isSecondary);
+            foreach (CacheSizeItem c in list)
+            {
+                if (c.Size == level)
+                {
+                    picker.SelectedItem = c;
+                    return level;
+                }
+            }
+            return long.MinValue;
+        }
+
+        private void MetalSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (_isManualTogglingEnabled)
+                RefreshGPUCachePickers(e.Value);
+        }
+
+        /* Shows the GPU cache levels that the given backend offers; nothing is applied until the settings are saved */
+        private void RefreshGPUCachePickers(bool metal)
+        {
+            GPUCacheLimits limits = GHApp.ComputeGPUCacheLimits(metal);
+            _isManualTogglingEnabled = false;
+            PrimaryGPUCachePicker.ItemsSource = null;
+            PrimaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(limits, false);
+            SecondaryGPUCachePicker.ItemsSource = null;
+            SecondaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(limits, true);
+            _primaryGPUCacheShownSize = SelectGPUCacheLevel(PrimaryGPUCachePicker, Preferences.Get("PrimaryGPUCacheLimit", -2L), false);
+            _secondaryGPUCacheShownSize = SelectGPUCacheLevel(SecondaryGPUCachePicker, Preferences.Get("SecondaryGPUCacheLimit", -2L), true);
+            _isManualTogglingEnabled = true;
         }
 
         private void ShowTournamentInfoPopup()

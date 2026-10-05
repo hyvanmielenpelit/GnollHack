@@ -311,13 +311,21 @@ namespace GnollHackX
             if (!usePlatformLoop)
                 PlatformService?.OverrideAnimatorDuration();
 
-#if IOS && METAL
-            long processAvailableMemory = (long)(PlatformService?.GetProcessAvailableMemoryInBytes() ?? 0UL);
-#else
-            long processAvailableMemory = -1L; /* Per-process memory limits the GPU caches on the iOS Metal backend only */
+#if GNH_MAUI && IOS
+            try
+            {
+                Interlocked.Exchange(ref _isMetalAvailable, Metal.MTLDevice.SystemDefault != null ? 1 : 0);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                Interlocked.Exchange(ref _isMetalAvailable, 0);
+            }
+            /* Measured before the tile sheets are decoded; EstimatedTotalBitmapBytes accounts for them */
+            _startupProcessAvailableMemory = (long)(PlatformService?.GetProcessAvailableMemoryInBytes() ?? 0UL);
 #endif
-            SetAvailableGPUCacheLimits(TotalMemory, processAvailableMemory);
-            SetInitialGPUCacheLevels();
+            UseMetal = Preferences.Get("UseMetal", IsUseMetalDefault);
+            ApplyGPUCacheLimits(UseMetal);
 
             UseMipMap = Preferences.Get("UseMainMipMap", IsUseMainMipMapDefault);
             UseGPU = Preferences.Get("UseMainGLCanvas", IsUseMainGPUDefault);
@@ -665,39 +673,30 @@ namespace GnollHackX
         public static string UpcomingSaveGameBreakingVersionText => _saveGameBreakingChangeVersionLongText;
         public static string UpcomingSaveGameBreakingDescriptionText => _saveGameBreakingChangeVersionDescription;
 
+        /* The stored preferences are never overwritten, so a level that another backend allows survives clamping */
         private static void SetInitialGPUCacheLevels()
         {
-            long primaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
-            /* Check if higher than maximum allowed */
-            if (primaryGPUCacheLimit > 0)
-            {
-                if (_cacheSizeList.Count > 2 && _cacheSizeList[_cacheSizeList.Count - 1].Size > 0)
-                {
-                    if (_cacheSizeList[_cacheSizeList.Count - 1].Size < primaryGPUCacheLimit)
-                        primaryGPUCacheLimit = _cacheSizeList[_cacheSizeList.Count - 1].Size;
-                }
-                else
-                {
-                    primaryGPUCacheLimit = _cacheSizeList[_cacheSizeList.Count - 1].Size;
-                }
-            }
-            PrimaryGPUCacheLimit = primaryGPUCacheLimit;
+            PrimaryGPUCacheLimit = ClampGPUCacheLevel(Preferences.Get("PrimaryGPUCacheLimit", -2L), _cacheSizeList, false);
+            SecondaryGPUCacheLimit = ClampGPUCacheLevel(Preferences.Get("SecondaryGPUCacheLimit", -2L), _cacheSizeList2, true);
+        }
 
+        /* Caps a GPU cache level at the largest size in the list; Default and Recommended pass through */
+        public static long ClampGPUCacheLevel(long level, List<CacheSizeItem> list, bool isSecondary)
+        {
             /* Check if higher than maximum allowed */
-            long secondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
-            if (secondaryGPUCacheLimit > 0)
+            if (level > 0)
             {
-                if (_cacheSizeList2.Count > 2 && _cacheSizeList2[_cacheSizeList2.Count - 1].Size > 0)
+                if (list.Count > 2 && list[list.Count - 1].Size > 0)
                 {
-                    if (_cacheSizeList2[_cacheSizeList2.Count - 1].Size < secondaryGPUCacheLimit)
-                        secondaryGPUCacheLimit = _cacheSizeList2[_cacheSizeList2.Count - 1].Size;
+                    if (list[list.Count - 1].Size < level)
+                        level = list[list.Count - 1].Size;
                 }
                 else
                 {
-                    secondaryGPUCacheLimit = -2L;
+                    level = isSecondary ? -2L : list[list.Count - 1].Size;
                 }
             }
-            SecondaryGPUCacheLimit = secondaryGPUCacheLimit;
+            return level;
         }
 
         private static long _usedBitmapBytes = 0L;
@@ -2070,53 +2069,54 @@ namespace GnollHackX
 #endif
         }
 
-        private static long GetDefaultPrimaryGPUCacheSize(ulong memory, long processMemoryLimit)
+        private static long GetDefaultPrimaryGPUCacheSize(List<CacheSizeItem> list, ulong memory, long processMemoryLimit)
         {
             long TotalMemInBytes = (long)memory;
             long max = Math.Min(processMemoryLimit, Math.Min(1280L * 1024 * 1024, Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024))));
             long min = Math.Min(processMemoryLimit, Math.Max(768L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 8));
             long def = Math.Min(max, min);
-            if (_cacheSizeList.Count > 2 && _cacheSizeList[_cacheSizeList.Count - 1].Size >= 256L * 1024 * 1024 && def >= _cacheSizeList[_cacheSizeList.Count - 1].Size)
-                return _cacheSizeList[_cacheSizeList.Count - 1].Size;
+            if (list.Count > 2 && list[list.Count - 1].Size >= 256L * 1024 * 1024 && def >= list[list.Count - 1].Size)
+                return list[list.Count - 1].Size;
 
-            for (int i = 3; i < _cacheSizeList.Count; i++)
+            for (int i = 3; i < list.Count; i++)
             {
-                CacheSizeItem item = _cacheSizeList[i];
+                CacheSizeItem item = list[i];
                 if (item.Size > def)
-                    return _cacheSizeList[i - 1].Size;
+                    return list[i - 1].Size;
             }
-            return _cacheSizeList.Count > 2 ? _cacheSizeList[_cacheSizeList.Count - 1].Size : -3L;
+            return list.Count > 2 ? list[list.Count - 1].Size : -3L;
         }
 
-        private static long GetDefaultSecondaryGPUCacheSize(ulong memory, long processMemoryLimit)
+        private static long GetDefaultSecondaryGPUCacheSize(List<CacheSizeItem> list, ulong memory, long processMemoryLimit)
         {
             long TotalMemInBytes = (long)memory;
             long def = Math.Min(processMemoryLimit, Math.Min(768L * 1024 * 1024, Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 8)));
-            if (_cacheSizeList2.Count > 2 && _cacheSizeList2[_cacheSizeList2.Count - 1].Size >= 256L * 1024 * 1024 && def > _cacheSizeList2[_cacheSizeList2.Count - 1].Size)
-                return _cacheSizeList2[_cacheSizeList2.Count - 1].Size;
+            if (list.Count > 2 && list[list.Count - 1].Size >= 256L * 1024 * 1024 && def > list[list.Count - 1].Size)
+                return list[list.Count - 1].Size;
             if (processMemoryLimit != long.MaxValue)
             {
                 /* Rounds down, so that the per-process limit caps the result */
-                for (int i = 3; i < _cacheSizeList2.Count; i++)
+                for (int i = 3; i < list.Count; i++)
                 {
-                    CacheSizeItem item = _cacheSizeList2[i];
+                    CacheSizeItem item = list[i];
                     if (item.Size > def)
-                        return _cacheSizeList2[i - 1].Size;
+                        return list[i - 1].Size;
                 }
             }
             else
             {
-                for (int i = 2; i < _cacheSizeList2.Count; i++)
+                for (int i = 2; i < list.Count; i++)
                 {
-                    CacheSizeItem item = _cacheSizeList2[i];
+                    CacheSizeItem item = list[i];
                     if (item.Size >= def)
                         return item.Size;
                 }
             }
-            return _cacheSizeList2.Count > 2 ? _cacheSizeList2[_cacheSizeList2.Count - 1].Size : -3L;
+            return list.Count > 2 ? list[list.Count - 1].Size : -3L;
         }
 
-        private static List<CacheSizeItem> _cacheSizeList = new List<CacheSizeItem>()
+        /* Every selectable GPU cache level; ComputeGPUCacheLimits copies the ones a backend allows */
+        private static readonly CacheSizeItem[] _allGPUCacheSizes = new CacheSizeItem[]
             {
                 new CacheSizeItem("Default", -3L ),
                 new CacheSizeItem("Recommended", -2L ),
@@ -2147,10 +2147,15 @@ namespace GnollHackX
                 new CacheSizeItem("8192 MB", 8192L * 1024 * 1024 ),
             };
 
+        /* Main thread only; replaced as a whole by ApplyGPUCacheLimits */
+        private static List<CacheSizeItem> _cacheSizeList = new List<CacheSizeItem>();
         private static List<CacheSizeItem> _cacheSizeList2 = new List<CacheSizeItem>();
 
         public static long RecommendedPrimaryGPUCacheSize { get; private set; }
         public static long RecommendedSecondaryGPUCacheSize { get; private set; }
+
+        /* os_proc_available_memory at startup on iOS; -1 elsewhere. Latched because the value shrinks as the app allocates. */
+        private static long _startupProcessAvailableMemory = -1L;
 
         /* Upper bound that the per-process available memory places on a GPU cache; none when that memory is unknown (0 or less) */
         private static long GetProcessMemoryGPUCacheLimit(long processAvailableMemory, double fraction)
@@ -2161,8 +2166,12 @@ namespace GnollHackX
             return Math.Max(GHConstants.MinProcessMemoryGPUCacheLimit, (long)(available * fraction));
         }
 
-        private static void SetAvailableGPUCacheLimits(ulong memory, long processAvailableMemory)
+        /* The GPU cache levels offered on a backend, and the recommended ones. Changes no state. */
+        public static GPUCacheLimits ComputeGPUCacheLimits(bool metal)
         {
+            ulong memory = TotalMemory;
+            /* Per-process memory limits the GPU caches on the Metal backend only; see GHConstants.MaxMetalGPUCacheSize */
+            long processAvailableMemory = metal ? _startupProcessAvailableMemory : -1L;
             long TotalMemInBytes = (long)memory;
             long primaryLimit = GetProcessMemoryGPUCacheLimit(processAvailableMemory, GHConstants.ProcessMemoryMaxPrimaryGPUCacheFraction);
             long secondaryLimit = GetProcessMemoryGPUCacheLimit(processAvailableMemory, GHConstants.ProcessMemoryMaxSecondaryGPUCacheFraction);
@@ -2171,43 +2180,72 @@ namespace GnollHackX
             if (recommendedSecondaryLimit != long.MaxValue && recommendedSecondaryLimit > GHConstants.ProcessMemoryRecommendedSecondaryGPUCacheThreshold)
                 recommendedSecondaryLimit = Math.Max(GHConstants.ProcessMemoryRecommendedSecondaryGPUCacheThreshold,
                     GetProcessMemoryGPUCacheLimit(processAvailableMemory, GHConstants.ProcessMemoryRecommendedSecondaryGPUCacheReducedFraction));
-#if IOS && METAL
-            if (processAvailableMemory <= 0)
+            if (metal && processAvailableMemory <= 0)
             {
                 primaryLimit = GHConstants.MaxMetalGPUCacheSize;
                 secondaryLimit = GHConstants.MaxMetalGPUCacheSize;
                 recommendedPrimaryLimit = 256L * 1024 * 1024;
                 recommendedSecondaryLimit = 256L * 1024 * 1024;
             }
-#endif
-            if (primaryLimit != long.MaxValue)
-                MaybeWriteGHLog("GPU cache limits: process available memory " + (processAvailableMemory / (1024 * 1024)) + " MB less "
-                    + (GHConstants.EstimatedTotalBitmapBytes / (1024 * 1024)) + " MB of bitmaps, primary max "
-                    + (primaryLimit / (1024 * 1024)) + " MB / recommended " + (recommendedPrimaryLimit / (1024 * 1024)) + " MB, secondary max "
-                    + (secondaryLimit / (1024 * 1024)) + " MB / recommended " + (recommendedSecondaryLimit / (1024 * 1024)) + " MB",
-                    true, GHConstants.SentryGnollHackGeneralCategoryName);
 
-            for (int i = _cacheSizeList.Count - 1; i >= 2; i--)
+            List<CacheSizeItem> primaryList = new List<CacheSizeItem>();
+            List<CacheSizeItem> secondaryList = new List<CacheSizeItem>();
+            /* Copies, since GetGPUCacheSizeList rewrites the descriptions */
+            for (int i = 0; i < _allGPUCacheSizes.Length; i++)
             {
-                CacheSizeItem item = _cacheSizeList[i];
-                if (item.Size >= TotalMemInBytes || item.Size > primaryLimit)
-                    _cacheSizeList.RemoveAt(i);
-            }
-            for (int i = 0; i < _cacheSizeList.Count; i++)
-            {
-                CacheSizeItem item = _cacheSizeList[i];
+                CacheSizeItem item = _allGPUCacheSizes[i];
+                if (i >= 2 && (item.Size >= TotalMemInBytes || item.Size > primaryLimit))
+                    continue;
+                primaryList.Add(new CacheSizeItem(item.Description, item.Size));
                 if (i >= 2 && item.Size > secondaryLimit)
                     continue;
-                _cacheSizeList2.Add(new CacheSizeItem(item.Description, item.Size));
+                secondaryList.Add(new CacheSizeItem(item.Description, item.Size));
             }
-            RecommendedPrimaryGPUCacheSize = GetDefaultPrimaryGPUCacheSize(memory, recommendedPrimaryLimit);
-            RecommendedSecondaryGPUCacheSize = GetDefaultSecondaryGPUCacheSize(memory, recommendedSecondaryLimit);
+
+            GPUCacheLimits limits = new GPUCacheLimits();
+            limits.IsMetal = metal;
+            limits.ProcessAvailableMemory = processAvailableMemory;
+            limits.PrimaryList = primaryList;
+            limits.SecondaryList = secondaryList;
+            limits.PrimaryMax = primaryLimit;
+            limits.SecondaryMax = secondaryLimit;
+            limits.RecommendedPrimary = GetDefaultPrimaryGPUCacheSize(primaryList, memory, recommendedPrimaryLimit);
+            limits.RecommendedSecondary = GetDefaultSecondaryGPUCacheSize(secondaryList, memory, recommendedSecondaryLimit);
+            limits.RecommendedPrimaryMax = recommendedPrimaryLimit;
+            limits.RecommendedSecondaryMax = recommendedSecondaryLimit;
+            return limits;
+        }
+
+        /* Main thread only. Takes effect for GPU canvases created afterwards, and re-clamps the cache levels. */
+        public static void ApplyGPUCacheLimits(bool metal)
+        {
+            GPUCacheLimits limits = ComputeGPUCacheLimits(metal);
+            if (limits.PrimaryMax != long.MaxValue)
+                MaybeWriteGHLog("GPU cache limits (" + (metal ? "Metal" : "OpenGL ES") + "): process available memory " + (limits.ProcessAvailableMemory / (1024 * 1024)) + " MB less "
+                    + (GHConstants.EstimatedTotalBitmapBytes / (1024 * 1024)) + " MB of bitmaps, primary max "
+                    + (limits.PrimaryMax / (1024 * 1024)) + " MB / recommended " + (limits.RecommendedPrimaryMax / (1024 * 1024)) + " MB, secondary max "
+                    + (limits.SecondaryMax / (1024 * 1024)) + " MB / recommended " + (limits.RecommendedSecondaryMax / (1024 * 1024)) + " MB",
+                    true, GHConstants.SentryGnollHackGeneralCategoryName);
+
+            _cacheSizeList = limits.PrimaryList;
+            _cacheSizeList2 = limits.SecondaryList;
+            RecommendedPrimaryGPUCacheSize = limits.RecommendedPrimary;
+            RecommendedSecondaryGPUCacheSize = limits.RecommendedSecondary;
+            SetInitialGPUCacheLevels();
         }
 
         public static List<CacheSizeItem> GetGPUCacheSizeList(bool isSecondary)
         {
-            List<CacheSizeItem> list = isSecondary ? _cacheSizeList2 : _cacheSizeList;
-            long recommended = isSecondary ? RecommendedSecondaryGPUCacheSize : RecommendedPrimaryGPUCacheSize;
+            return GetGPUCacheSizeList(isSecondary ? _cacheSizeList2 : _cacheSizeList, isSecondary ? RecommendedSecondaryGPUCacheSize : RecommendedPrimaryGPUCacheSize);
+        }
+
+        public static List<CacheSizeItem> GetGPUCacheSizeList(GPUCacheLimits limits, bool isSecondary)
+        {
+            return GetGPUCacheSizeList(isSecondary ? limits.SecondaryList : limits.PrimaryList, isSecondary ? limits.RecommendedSecondary : limits.RecommendedPrimary);
+        }
+
+        private static List<CacheSizeItem> GetGPUCacheSizeList(List<CacheSizeItem> list, long recommended)
+        {
             if (DefaultGPUCacheSize > 0 && list.Count > 0 && list[0].Description == "Default")
             {
                 CacheSizeItem item = list[0];
@@ -2337,6 +2375,14 @@ namespace GnollHackX
         }
         /* Read when a GamePage is constructed; see SwitchableMapCanvasView.CreateGLView */
         public static bool UseSurfaceView { get { return IsSurfaceViewAvailable && Interlocked.CompareExchange(ref _useSurfaceView, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSurfaceView, value ? 1 : 0); } }
+
+        private static int _isMetalAvailable = 0;
+        /* MAUI iOS with a Metal device; set once in Initialize */
+        public static bool IsMetalAvailable { get { return Interlocked.CompareExchange(ref _isMetalAvailable, 0, 0) != 0; } }
+        public static bool IsUseMetalDefault { get { return IsMetalAvailable && GHConstants.DefaultUseMetalRendering; } }
+        private static int _useMetal = 0;
+        /* The GPU canvases draw with Metal instead of OpenGL ES. Read when a GamePage is constructed; see SwitchableCanvasView.CreateGLView */
+        public static bool UseMetal { get { return IsMetalAvailable && Interlocked.CompareExchange(ref _useMetal, 0, 0) != 0; } set { Interlocked.Exchange(ref _useMetal, value ? 1 : 0); } }
 
         private static int _useTextBlobCaching = 0;
         /* Read once per frame by each paint handler and applied via GHSkiaFontPaint.SyncBlobCache */
@@ -13428,6 +13474,22 @@ namespace GnollHackX
             return Description != null ? Description : "";
         }
     };
+
+    /* The GPU cache levels offered on one backend; see GHApp.ComputeGPUCacheLimits */
+    public class GPUCacheLimits
+    {
+        public bool IsMetal;
+        public long ProcessAvailableMemory;
+        public List<CacheSizeItem> PrimaryList;
+        public List<CacheSizeItem> SecondaryList;
+        public long RecommendedPrimary;
+        public long RecommendedSecondary;
+        /* Upper bounds from the per-process memory; long.MaxValue when it does not limit them */
+        public long PrimaryMax;
+        public long SecondaryMax;
+        public long RecommendedPrimaryMax;
+        public long RecommendedSecondaryMax;
+    }
 
     public class DeviceGPU
     {
