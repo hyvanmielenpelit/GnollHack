@@ -3230,7 +3230,7 @@ namespace GnollHackX
             {
                 RecordFunctionCall(RecordedFunctionID.PlayImmediateSound, ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues, arraysize, sound_type, play_group, dialogue_mid, play_flags);
             }
-            if ((play_flags & (uint)playsound_play_flags.PLAY_FLAGS_SONG) != 0)
+            if (!PlayingReplay && (play_flags & (uint)playsound_play_flags.PLAY_FLAGS_SONG) != 0)
                 GHApp.AddDiscoveredMusic(ghsound);
 
             if (GHApp.FmodService != null && !GHApp.IsMuted)
@@ -3247,7 +3247,8 @@ namespace GnollHackX
             {
                 RecordFunctionCall(RecordedFunctionID.PlayMusic, ghsound, eventPath, bankid, eventVolume, soundVolume);
             }
-            GHApp.AddDiscoveredMusic(ghsound);
+            if (!PlayingReplay)
+                GHApp.AddDiscoveredMusic(ghsound);
 
             if (GHApp.FmodService != null)
             {
@@ -4128,7 +4129,8 @@ namespace GnollHackX
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.GameEnteredMoveloop));
                     break;
                 case (int)gui_command_types.GUI_CMD_ACHIEVEMENT:
-                    GHApp.AddPendingAchievement(cmd_param);
+                    if (!PlayingReplay)
+                        GHApp.AddPendingAchievement(cmd_param);
                     break;
 
                 default:
