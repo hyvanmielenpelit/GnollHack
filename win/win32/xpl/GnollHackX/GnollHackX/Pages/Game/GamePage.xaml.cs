@@ -3983,6 +3983,9 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
+                //MainGrid.IsVisible = false;
+                /* Before the fade, so that a hide during the fade is not overridden */
+                IsMainCanvasOn = false;
                 if (MenuFadeEffects && !MenuGrid.IsVisible && !TextGrid.IsVisible)
                 {
                     TextGrid.Opacity = 0;
@@ -3995,8 +3998,6 @@ namespace GnollHackX.Pages.Game
                 }
                 else
                     TextGrid.IsVisible = true;
-                //MainGrid.IsVisible = false;
-                IsMainCanvasOn = false;
                 if (dohidemenu)
                 {
                     MenuGrid.IsVisible = false;
@@ -5071,6 +5072,9 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
+                //MainGrid.IsVisible = false;
+                /* Before the fade, so that a hide during the fade is not overridden */
+                IsMainCanvasOn = false;
                 if(MenuFadeEffects && !MenuGrid.IsVisible && !TextGrid.IsVisible)
                 {
                     MenuGrid.Opacity = 0;
@@ -5084,8 +5088,6 @@ namespace GnollHackX.Pages.Game
                 else
                     MenuGrid.IsVisible = true;
 
-                //MainGrid.IsVisible = false;
-                IsMainCanvasOn = false;
                 if (dohidetext)
                 {
                     TextGrid.IsVisible = false;
