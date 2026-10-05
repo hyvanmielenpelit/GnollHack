@@ -3033,7 +3033,8 @@ namespace GnollHackX
                 
                 CancelSaveGame = false;
                 GHGame game = CurrentGHGame;
-                if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
+                /* GameStarted is cleared when the game returns to the main menu, while IsGameOn and the game stay set until the game page has been popped */
+                if (game != null && !game.PlayingReplay && GameStarted && (game.ActiveGamePage?.IsGameOn ?? false))
                 {
                     AddSentryBreadcrumb("SaveGameOnSleep: IsGameOn", GHConstants.SentryGnollHackGeneralCategoryName);
                     //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
@@ -3073,7 +3074,8 @@ namespace GnollHackX
                     return;
                 }
                 GHGame game = CurrentGHGame;
-                if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
+                /* GameStarted is cleared when the game returns to the main menu, while IsGameOn and the game stay set until the game page has been popped */
+                if (game != null && !game.PlayingReplay && GameStarted && (game.ActiveGamePage?.IsGameOn ?? false))
                 {
                     //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                     try
@@ -3312,7 +3314,8 @@ namespace GnollHackX
             {
                 CancelSaveGame = true;
                 GHGame game = CurrentGHGame;
-                if (game != null && !game.PlayingReplay && (game.ActiveGamePage?.IsGameOn ?? false))
+                /* GameStarted is cleared when the game returns to the main menu, while IsGameOn and the game stay set until the game page has been popped */
+                if (game != null && !game.PlayingReplay && GameStarted && (game.ActiveGamePage?.IsGameOn ?? false))
                 {
                     /* Unconditional bypass: if the game thread is already parked, unpark it
                      * regardless of the WentToSleepWithGameOn preference state. This closes
