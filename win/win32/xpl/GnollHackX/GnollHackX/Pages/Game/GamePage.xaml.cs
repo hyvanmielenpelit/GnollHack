@@ -647,10 +647,25 @@ namespace GnollHackX.Pages.Game
         public bool UseMainGLCanvas
         {
             get { return MainCanvasView.UseGL; }
-            set { MainCanvasView.UseGL = value; }
+            set
+            {
+                MainCanvasView.UseGL = value;
+                GHApp.SetSentryTag(GHConstants.SentryTagMapSurface, MainCanvasViewType);
+            }
         }
 
-        public bool MainCanvasIsSurfaceView { get { return MainCanvasView.IsSurfaceView; } }
+        /* The view the map is drawn on: "SurfaceView" or "TextureView" on Android, "GL" elsewhere, or "Canvas" when it does not use GL */
+        public string MainCanvasViewType
+        {
+            get
+            {
+                if (!MainCanvasView.UseGL || !MainCanvasView.HasGL)
+                    return "Canvas";
+                if (MainCanvasView.IsSurfaceView)
+                    return "SurfaceView";
+                return GHApp.IsAndroid ? "TextureView" : "GL";
+            }
+        }
 
         /* The SurfaceView layer and the Windows swap chain ignore the canvas's opacity */
         private bool FadeWithFadeFrame

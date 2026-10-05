@@ -487,6 +487,7 @@ namespace GnollHackX
         public const string SentryExtraScopeSyncCheck = "Scope Sync Check";
         public const string SentryTagFmodMixer = "fmod.mixer";
         public const string SentryTagAppLifecycle = "app.lifecycle";
+        public const string SentryTagMapSurface = "map.surface";
         /* Worst case for the debug buffers is NUM_DEBUGBUFS (40) entries of DEBUGBUFSIZ
            (BUFSZ * 2 = 512) characters plus separators, about 20.7 kB. Real snapshots
            are far smaller. */

@@ -187,8 +187,12 @@ namespace GnollHackX.Performance
             AddIfMissing(fp, "code.mapSurface", () =>
             {
                 var page = GHApp.CurrentGamePage;
-                bool surface = page != null ? page.MainCanvasIsSurfaceView : GHApp.UseSurfaceView;
-                return surface ? "SurfaceView" : "TextureView";
+                if (page != null)
+                    return page.MainCanvasViewType;
+                bool gl = GHApp.IsGPUAvailable && GHApp.UseGPU;
+                if (!gl)
+                    return "Canvas";
+                return GHApp.UseSurfaceView ? "SurfaceView" : "TextureView";
             });
 #endif
             AddIfMissing(fp, "toolchain.compiler",
