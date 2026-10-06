@@ -1059,22 +1059,9 @@ dorestore0(int fd)
         restoring = FALSE;
         return 0;
     }
-    if (!check_save_file_tracking(game_stats.time_stamp)) /* Needs to be here so wizard and other modes have been set */
-    {
-        savelev(-1, 0, FREE_SAVE); /* discard current level */
-        (void)nhclose(fd);
-        restoring = FALSE;
-        const char* fq_save = fqname(SAVEF, SAVEPREFIX, 1);
-        nh_compress(fq_save);
-        nh_bail(EXIT_SUCCESS, "Aborting loading the save file due to save file tracking...", TRUE);
-        return 0;
-    }
     restlevelstate(stuckid, steedid, game_stats.num_recoveries);
 
     struct u_realtime restored_realtime = urealtime;
-#ifdef INSURANCE
-    savestateinlock();
-#endif
     debugprint("dorestore0A (fd=%d, ltmp=%d)", fd, (int)ledger_no(&u.uz));
     rtmp = restlevelfile(fd, ledger_no(&u.uz));
     if (rtmp < 2)
@@ -1177,7 +1164,22 @@ dorestore0(int fd)
      */
     reset_restpref();
 
+    /* Uses up the save's server tracking record, so it comes after every level file exists */
+    if (!check_save_file_tracking(game_stats.time_stamp)) /* Needs to be here so wizard and other modes have been set */
+    {
+        savelev(-1, 0, FREE_SAVE); /* discard current level */
+        restoring = FALSE;
+        const char* fq_save = fqname(SAVEF, SAVEPREFIX, 1);
+        nh_compress(fq_save);
+        nh_bail(EXIT_SUCCESS, "Aborting loading the save file due to save file tracking...", TRUE);
+        return 0;
+    }
     restlevelstate(stuckid, steedid, game_stats.num_recoveries);
+#ifdef INSURANCE
+    /* Only once every level file exists, and before the save file is deleted below:
+       recover_savefile() rebuilds the save from this and whichever level files exist */
+    savestateinlock();
+#endif
     program_state.something_worth_saving = 1; /* useful data now exists */
 
     if (!wizard && !discover && !CasualMode)
