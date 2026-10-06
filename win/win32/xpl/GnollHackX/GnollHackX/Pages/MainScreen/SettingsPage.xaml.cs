@@ -1108,6 +1108,8 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.IsFrameTimeProfilerOn = FrameProfilerSwitch.IsToggled;
             Preferences.Set("FrameTimeProfiler", GHApp.IsFrameTimeProfilerOn);
             FrameTimeProfiler.IsEnabled = GHApp.IsFrameTimeProfilerOn;
+            GHApp.IsFrameMarkerOn = FrameMarkerSwitch.IsToggled;
+            Preferences.Set("FrameMarker", GHApp.IsFrameMarkerOn);
             GHApp.DebugPostChannel = DebugPostChannelSwitch.IsToggled;
             Preferences.Set("DebugPostChannel", GHApp.DebugPostChannel);
             GHApp.TournamentMode = TournamentSwitch.IsToggled;
@@ -1461,7 +1463,7 @@ namespace GnollHackX.Pages.MainScreen
             bool mem = false, fps = false, zoom = false, battery = false, lowdiskspace = true, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, platformloop = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, showaltzoom = !GHConstants.DefaultSimpleCmdLayout, showtravelmode = !GHConstants.DefaultSimpleCmdLayout, showautodig = false, showignore = false, darkmode = false, windowedmode = false, edge2edge = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = true, xrayvision = true, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
-            bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, lowlevellogging = false, screenlogging = false, frameprofiler = false, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, lowlevellogging = false, screenlogging = false, frameprofiler = false, framemarker = false, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, metricsystem = false, diceasranges = true, damageformula = false, wornshowsequipment = true, autodig = false, ignorestopping = false;
             bool postgamestatus = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false, showkeyboardshortcuts = false, singlecmdpage = false, skillbutton = false, polearmbutton = false, equipmentflipanimation = true, showequipmenticons = true;
 #if !SENTRY
@@ -1521,6 +1523,7 @@ namespace GnollHackX.Pages.MainScreen
             lowlevellogging = GHApp.LowLevelLogging;
             screenlogging = GHApp.ScreenLogging;
             frameprofiler = GHApp.IsFrameTimeProfilerOn;
+            framemarker = GHApp.IsFrameMarkerOn;
             debugpostchannel = GHApp.DebugPostChannel;
             tournament = GHApp.TournamentMode;
             bank = Preferences.Get("LoadSoundBanks", true);
@@ -1947,6 +1950,7 @@ namespace GnollHackX.Pages.MainScreen
                 LowLevelLogSwitch.IsToggled = lowlevellogging;
                 ScreenLogSwitch.IsToggled = screenlogging;
                 FrameProfilerSwitch.IsToggled = frameprofiler;
+                FrameMarkerSwitch.IsToggled = framemarker;
                 DebugPostChannelSwitch.IsToggled = debugpostchannel;
             }
             else
@@ -1967,6 +1971,10 @@ namespace GnollHackX.Pages.MainScreen
                 FrameProfilerSwitch.IsEnabled = false;
                 FrameProfilerLabel.IsEnabled = false;
                 FrameProfilerLabel.TextColor = GHColors.Gray;
+                FrameMarkerSwitch.IsToggled = false;
+                FrameMarkerSwitch.IsEnabled = false;
+                FrameMarkerLabel.IsEnabled = false;
+                FrameMarkerLabel.TextColor = GHColors.Gray;
                 DebugPostChannelSwitch.IsToggled = false;
                 DebugPostChannelSwitch.IsEnabled = false;
                 DebugPostChannelLabel.IsEnabled = false;
@@ -2377,6 +2385,9 @@ namespace GnollHackX.Pages.MainScreen
                 FrameProfilerSwitch.IsEnabled = true;
                 FrameProfilerLabel.IsEnabled = true;
                 FrameProfilerLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                FrameMarkerSwitch.IsEnabled = true;
+                FrameMarkerLabel.IsEnabled = true;
+                FrameMarkerLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                 DebugPostChannelSwitch.IsEnabled = true;
                 DebugPostChannelLabel.IsEnabled = true;
                 DebugPostChannelLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
@@ -2399,6 +2410,10 @@ namespace GnollHackX.Pages.MainScreen
                 FrameProfilerSwitch.IsToggled = false;
                 FrameProfilerLabel.IsEnabled = false;
                 FrameProfilerLabel.TextColor = GHColors.Gray;
+                FrameMarkerSwitch.IsEnabled = false;
+                FrameMarkerSwitch.IsToggled = false;
+                FrameMarkerLabel.IsEnabled = false;
+                FrameMarkerLabel.TextColor = GHColors.Gray;
                 DebugPostChannelSwitch.IsEnabled = false;
                 DebugPostChannelSwitch.IsToggled = false;
                 DebugPostChannelLabel.IsEnabled = false;

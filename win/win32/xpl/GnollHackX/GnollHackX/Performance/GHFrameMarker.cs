@@ -4,7 +4,8 @@ using SkiaSharp;
 namespace GnollHackX.Performance
 {
     /* A developer overlay that makes the displayed frame identifiable on film. Drawn last on
-       the map canvas while the frame timeline records and Suppressed is not set:
+       the map canvas when the Frame Marker setting is on, the frame timeline records, and
+       Suppressed is not set:
          - a strip of eight cells showing FrameId mod 256 in Gray code (one cell changes per
            frame), between two always-white reference cells, in the top-left corner;
          - a block crossing the top edge in two seconds of content time, advanced by the main

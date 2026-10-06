@@ -71,7 +71,8 @@ into a later one, is attributed to the tick that requested it. The platform side
 | Windows | DWM composition timing (vblank, refresh and composition counters, in QPC) | `GnollHack-Rendering` EventSource (ETW, WPA) | PresentMon with `--qpc_time`: display time per present |
 | iOS | CADisplayLink timestamp and target timestamp | `os_signpost` Tick, Paint and Flush intervals (the shim in `gnollhackios.c`, compiled into the app when `GNH_IOS_SIGNPOSTS` is defined) | Instruments, Animation Hitches template |
 
-A **frame marker** is drawn on the map while the timeline records: a Gray-coded `FrameId mod
+A **frame marker** is drawn on the map while the timeline records and the **Frame Marker**
+developer setting (below Frame Time Profiler, off by default) is on: a Gray-coded `FrameId mod
 256` strip in the top-left corner and a block crossing the top edge in two seconds of content
 time. Film the screen in slow motion to see directly which frame was on screen and whether
 the block moves evenly. The [in-game Test Performance](#in-game-test-performance) hides it

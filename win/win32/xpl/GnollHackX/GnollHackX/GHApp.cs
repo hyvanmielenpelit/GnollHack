@@ -233,6 +233,7 @@ namespace GnollHackX
             ScreenLogging = DeveloperMode && Preferences.Get("ScreenLogging", false);
             IsFrameTimeProfilerOn = DeveloperMode && Preferences.Get("FrameTimeProfiler", false);
             FrameTimeProfiler.IsEnabled = IsFrameTimeProfilerOn;
+            IsFrameMarkerOn = DeveloperMode && Preferences.Get("FrameMarker", false);
             DebugPostChannel = DeveloperMode && Preferences.Get("DebugPostChannel", GHConstants.DefaultDebugPostChannel);
             TournamentMode = Preferences.Get("TournamentMode", false);
             FullVersionMode = true; // Preferences.Get("FullVersion", true);
@@ -4001,6 +4002,9 @@ namespace GnollHackX
         /* The Frame Time Profiler setting on Settings Page; FrameTimeProfiler.IsEnabled is the runtime state,
            which performance tests turn on temporarily */
         public static bool IsFrameTimeProfilerOn { get { return Interlocked.CompareExchange(ref _isFrameTimeProfilerOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _isFrameTimeProfilerOn, value ? 1 : 0); } }
+        private static int _isFrameMarkerOn = 0;
+        /* The Frame Marker setting on Settings Page; the marker is drawn only while the frame timeline also records */
+        public static bool IsFrameMarkerOn { get { return Interlocked.CompareExchange(ref _isFrameMarkerOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _isFrameMarkerOn, value ? 1 : 0); } }
         private static int _forceDebugScreenLogging = 0;
         /* Runtime only, never saved: the debug dashboard and screen log are on while set */
         public static bool ForceDebugScreenLogging { get { return Interlocked.CompareExchange(ref _forceDebugScreenLogging, 0, 0) != 0; } set { Interlocked.Exchange(ref _forceDebugScreenLogging, value ? 1 : 0); } }

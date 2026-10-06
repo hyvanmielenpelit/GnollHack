@@ -1649,6 +1649,15 @@
                                 <Switch Grid.Column="1" x:Name="FrameProfilerSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="  Frame Marker"
+                                    x:Name="FrameMarkerLabel"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="FrameMarkerSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Debug Post Channel"
                                     x:Name="DebugPostChannelLabel"
                                     FontFamily="Underwood" TextColor="Black"
