@@ -518,11 +518,13 @@ namespace GnollHackX.Pages.MainScreen
                 int noEntries = ReplayCollectionView.SelectedItems.Count;
                 int noFolders = 0;
                 int noFiles = 0;
+                List<GHRecordedGameFile> selectedFiles = new List<GHRecordedGameFile>();
                 foreach (object item in ReplayCollectionView.SelectedItems)
                 {
                     GHRecordedGameFile gHRecordedGameFile = item as GHRecordedGameFile;
                     if (gHRecordedGameFile != null)
                     {
+                        selectedFiles.Add(gHRecordedGameFile);
                         if (gHRecordedGameFile.IsFolder)
                             noFolders++;
                         else
@@ -543,93 +545,14 @@ namespace GnollHackX.Pages.MainScreen
                         if (File.Exists(zipFile))
                             File.Delete(zipFile);
 
-                        using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                        SetCreatingShareArchive(true);
+                        try
                         {
-                            foreach (object selItem in ReplayCollectionView.SelectedItems)
-                            {
-                                GHRecordedGameFile recfile = null;
-                                string filePath = null;
-                                if (selItem != null)
-                                {
-                                    if (selItem is GHRecordedGameFile)
-                                        recfile = ((GHRecordedGameFile)selItem);
-                                    if (recfile != null)
-                                        filePath = recfile.FilePath;
-                                }
-
-                                if (!string.IsNullOrWhiteSpace(filePath) && recfile != null)
-                                {
-                                    if (recfile.IsFolder)
-                                    {
-                                        if (Directory.Exists(filePath))
-                                        {
-                                            string[] files = Directory.GetFiles(filePath);
-                                            DirectoryInfo di = new DirectoryInfo(filePath);
-                                            string dirName = di?.Name;
-                                            if (files != null && !string.IsNullOrEmpty(dirName))
-                                            {
-                                                noFolders++;
-                                                foreach (string file in files)
-                                                {
-                                                    if (!string.IsNullOrWhiteSpace(file))
-                                                    {
-                                                        FileInfo fi = new FileInfo(file);
-                                                        if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
-                                                        {
-                                                            archive.CreateEntryFromFile(file, Path.Combine(dirName, Path.GetFileName(file)));
-                                                            noFiles++;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (!string.IsNullOrWhiteSpace(filePath) && recfile != null && File.Exists(filePath))
-                                        {
-                                            FileInfo fi = new FileInfo(filePath);
-                                            string fileName = fi.Name;
-                                            string dir = fi.DirectoryName;
-                                            if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix) && Directory.Exists(dir))
-                                            {
-                                                archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
-                                                noFiles++;
-
-                                                bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
-                                                bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
-                                                bool isZip = isGZip || isNormalZip;
-                                                string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-                                                int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                                                if (subLen > 0)
-                                                {
-                                                    string subString = fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
-                                                    string[] files = Directory.GetFiles(dir);
-                                                    if (files != null)
-                                                    {
-                                                        foreach (string file in files)
-                                                        {
-                                                            if (!string.IsNullOrWhiteSpace(file))
-                                                            {
-                                                                string contStart = GHConstants.ReplayContinuationFileNamePrefix + subString;
-                                                                FileInfo contFI = new FileInfo(file);
-                                                                if (contFI != null && !string.IsNullOrWhiteSpace(contFI.Name))
-                                                                {
-                                                                    if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
-                                                                    {
-                                                                        archive.CreateEntryFromFile(file, Path.GetFileName(file));
-                                                                        noFiles++;
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            await Task.Run(() => CreateMultiReplayShareArchive(zipFile, selectedFiles));
+                        }
+                        finally
+                        {
+                            SetCreatingShareArchive(false);
                         }
                         await Share.RequestAsync(new ShareFileRequest
                         {
@@ -689,26 +612,14 @@ namespace GnollHackX.Pages.MainScreen
                                     if (File.Exists(zipFile))
                                         File.Delete(zipFile);
 
-                                    using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                                    SetCreatingShareArchive(true);
+                                    try
                                     {
-                                        if (Directory.Exists(filePath))
-                                        {
-                                            string[] files = Directory.GetFiles(filePath);
-                                            if (files != null && !string.IsNullOrEmpty(dirName))
-                                            {
-                                                foreach (string file in files)
-                                                {
-                                                    if (!string.IsNullOrWhiteSpace(file))
-                                                    {
-                                                        FileInfo fi = new FileInfo(file);
-                                                        if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
-                                                        {
-                                                            archive.CreateEntryFromFile(file, Path.Combine(dirName, Path.GetFileName(file)));
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        await Task.Run(() => CreateFolderShareArchive(zipFile, filePath, dirName));
+                                    }
+                                    finally
+                                    {
+                                        SetCreatingShareArchive(false);
                                     }
                                     await Share.RequestAsync(new ShareFileRequest
                                     {
@@ -737,9 +648,86 @@ namespace GnollHackX.Pages.MainScreen
                                     if (File.Exists(zipFile))
                                         File.Delete(zipFile);
 
-                                    using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                                    SetCreatingShareArchive(true);
+                                    try
                                     {
-                                        archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
+                                        await Task.Run(() => CreateReplayShareArchive(zipFile, filePath, dir, subString, isZip, usedZipSuffix));
+                                    }
+                                    finally
+                                    {
+                                        SetCreatingShareArchive(false);
+                                    }
+                                    await Share.RequestAsync(new ShareFileRequest
+                                    {
+                                        Title = "Sharing " + recfile.FileName,
+                                        File = new ShareFile(zipFile)
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await GHApp.DisplayMessageBox(this, "Share File Failure", "GnollHack failed to share " + filePath + ": " + ex.Message, "OK");
+                    }
+                }
+            }
+
+            ShareButton.IsEnabled = true;
+            PopupCancelButton_Clicked(sender, e);
+        }
+
+        private static void CreateMultiReplayShareArchive(string zipFile, List<GHRecordedGameFile> recFiles)
+        {
+            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+            {
+                foreach (GHRecordedGameFile recfile in recFiles)
+                {
+                    string filePath = recfile.FilePath;
+                    if (!string.IsNullOrWhiteSpace(filePath) && recfile != null)
+                    {
+                        if (recfile.IsFolder)
+                        {
+                            if (Directory.Exists(filePath))
+                            {
+                                string[] files = Directory.GetFiles(filePath);
+                                DirectoryInfo di = new DirectoryInfo(filePath);
+                                string dirName = di?.Name;
+                                if (files != null && !string.IsNullOrEmpty(dirName))
+                                {
+                                    foreach (string file in files)
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(file))
+                                        {
+                                            FileInfo fi = new FileInfo(file);
+                                            if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
+                                            {
+                                                archive.CreateEntryFromFile(file, Path.Combine(dirName, Path.GetFileName(file)));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrWhiteSpace(filePath) && recfile != null && File.Exists(filePath))
+                            {
+                                FileInfo fi = new FileInfo(filePath);
+                                string fileName = fi.Name;
+                                string dir = fi.DirectoryName;
+                                if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix) && Directory.Exists(dir))
+                                {
+                                    archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
+
+                                    bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+                                    bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                                    bool isZip = isGZip || isNormalZip;
+                                    string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
+                                    int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
+                                    if (subLen > 0)
+                                    {
+                                        string subString = fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
                                         string[] files = Directory.GetFiles(dir);
                                         if (files != null)
                                         {
@@ -760,24 +748,64 @@ namespace GnollHackX.Pages.MainScreen
                                             }
                                         }
                                     }
-                                    await Share.RequestAsync(new ShareFileRequest
-                                    {
-                                        Title = "Sharing " + recfile.FileName,
-                                        File = new ShareFile(zipFile)
-                                    });
                                 }
                             }
                         }
                     }
-                    catch (Exception ex)
+                }
+            }
+        }
+
+        private static void CreateFolderShareArchive(string zipFile, string filePath, string dirName)
+        {
+            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+            {
+                if (Directory.Exists(filePath))
+                {
+                    string[] files = Directory.GetFiles(filePath);
+                    if (files != null && !string.IsNullOrEmpty(dirName))
                     {
-                        await GHApp.DisplayMessageBox(this, "Share File Failure", "GnollHack failed to share " + filePath + ": " + ex.Message, "OK");
+                        foreach (string file in files)
+                        {
+                            if (!string.IsNullOrWhiteSpace(file))
+                            {
+                                FileInfo fi = new FileInfo(file);
+                                if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
+                                {
+                                    archive.CreateEntryFromFile(file, Path.Combine(dirName, Path.GetFileName(file)));
+                                }
+                            }
+                        }
                     }
                 }
             }
+        }
 
-            ShareButton.IsEnabled = true;
-            PopupCancelButton_Clicked(sender, e);
+        private static void CreateReplayShareArchive(string zipFile, string filePath, string dir, string subString, bool isZip, string usedZipSuffix)
+        {
+            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+            {
+                archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
+                string[] files = Directory.GetFiles(dir);
+                if (files != null)
+                {
+                    foreach (string file in files)
+                    {
+                        if (!string.IsNullOrWhiteSpace(file))
+                        {
+                            string contStart = GHConstants.ReplayContinuationFileNamePrefix + subString;
+                            FileInfo contFI = new FileInfo(file);
+                            if (contFI != null && !string.IsNullOrWhiteSpace(contFI.Name))
+                            {
+                                if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
+                                {
+                                    archive.CreateEntryFromFile(file, Path.GetFileName(file));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private async void SelectButton_Clicked(object sender, EventArgs e)
@@ -865,10 +893,20 @@ namespace GnollHackX.Pages.MainScreen
             await GHApp.PopModalPageAsync();
         }
 
+        private bool _creatingShareArchive = false;
+
+        private void SetCreatingShareArchive(bool isCreating)
+        {
+            _creatingShareArchive = isCreating;
+            PopupCancelButton.IsEnabled = !isCreating;
+            CloudLoadingLabel.Text = isCreating ? "Creating archive..." : "Done creating archive.";
+            CloudLoadingGrid.IsVisible = isCreating;
+        }
+
         private bool _backPressed = false;
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
-            if (!_backPressed)
+            if (!_backPressed && !_creatingShareArchive)
             {
                 await ClosePageAsync(false);
             }
