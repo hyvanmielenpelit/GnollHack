@@ -54,7 +54,7 @@ namespace GnollHackX.Pages.MainScreen
             string archive_file = "";
             try
             {
-                archive_file = GHApp.CreateSavedGamesZipArchive();
+                archive_file = await Task.Run(() => GHApp.CreateSavedGamesZipArchive());
             }
             catch (Exception ex)
             {
@@ -203,7 +203,7 @@ namespace GnollHackX.Pages.MainScreen
             string archive_file = "";
             try
             {
-                archive_file = GHApp.CreateReplayZipArchive();
+                archive_file = await Task.Run(() => GHApp.CreateReplayZipArchive());
             }
             catch (Exception ex)
             {
@@ -365,7 +365,7 @@ namespace GnollHackX.Pages.MainScreen
             string archive_file = "";
             try
             {
-                archive_file = GHApp.CreateDumplogZipArchive();
+                archive_file = await Task.Run(() => GHApp.CreateDumplogZipArchive());
             }
             catch (Exception ex)
             {

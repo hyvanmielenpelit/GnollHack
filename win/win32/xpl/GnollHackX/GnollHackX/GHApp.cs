@@ -4522,9 +4522,13 @@ namespace GnollHackX
             {
                 using (Stream stream = await GHApp.PlatformService.GetPlatformAssetsStreamAsync(GHConstants.AssetsTilesetDirectory, tilesetName))
                 {
-                    SKBitmap bmp = SKBitmap.Decode(stream);
-                    bmp.SetImmutable();
-                    res = SKImage.FromBitmap(bmp);
+                    /* A decoded tile sheet is tens of megabytes; decoding it on the UI thread causes ANRs */
+                    res = await Task.Run(() =>
+                    {
+                        SKBitmap bmp = SKBitmap.Decode(stream);
+                        bmp.SetImmutable();
+                        return SKImage.FromBitmap(bmp);
+                    });
                     if (res != null)
                         AddUsedBitmapBytes(res.Info.BytesSize64);
                 }
@@ -7265,7 +7269,7 @@ namespace GnollHackX
             string archive_file = "";
             try
             {
-                archive_file = GHApp.CreateGameZipArchive();
+                archive_file = await Task.Run(() => GHApp.CreateGameZipArchive());
             }
             catch (Exception ex)
             {
