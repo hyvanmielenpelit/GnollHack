@@ -44,6 +44,8 @@ static void reset_oattached_mids(boolean);
 static void rest_levl(int, boolean);
 static void restore_gamelog(int);
 static void post_restore_to_forum(struct u_realtime);
+static long long restore_file_size(int);
+static void debugprint_read_error(int, int, size_t);
 
 static struct restore_procs {
     const char *name;
@@ -58,6 +60,15 @@ static struct restore_procs {
     "zerocomp", 0, zerocomp_minit, zerocomp_mread, zerocomp_bclose,
 #endif
 };
+
+/* Restore progress, reported by debugprint_read_error() */
+static int rest_ledger = -1;            /* record being read; 0 = current level and game state */
+static int rest_levels_read = 0;        /* other-level records read in full */
+static uint64_t rest_num_recoveries = 0;
+static long long rest_file_size = -1;
+static int first_short_rlen = 0;        /* first short read tolerated under mread_flags 2 */
+static size_t first_short_len = 0;
+static long long first_short_offset = -1;
 
 /*
  * Save a mapping of IDs from ghost levels to the current level.  This
@@ -1036,6 +1047,13 @@ dorestore0(int fd)
     issue_breadcrumb("Start dorestore0");
 
     restoring = TRUE;
+    rest_ledger = 0;
+    rest_levels_read = 0;
+    rest_num_recoveries = 0;
+    rest_file_size = -1;
+    first_short_rlen = 0;
+    first_short_len = 0;
+    first_short_offset = -1;
     boolean readok = get_plname_from_file(fd, plname, sizeof(plname));
     if (!readok)
     {
@@ -1045,6 +1063,10 @@ dorestore0(int fd)
         return 0;
     }
     get_save_game_stats_from_file(fd, &game_stats);
+    rest_num_recoveries = game_stats.num_recoveries;
+    rest_file_size = restore_file_size(fd);
+    debugprint("dorestore0: recoveries=%llu, file size=%lld",
+               (unsigned long long) rest_num_recoveries, rest_file_size);
     getlev(fd, 0, (xchar) 0, FALSE);
     if (!restgamestate(fd, &stuckid, &steedid)) 
     {
@@ -1112,10 +1134,12 @@ dorestore0(int fd)
         mread(fd, (genericptr_t) &ltmp, sizeof ltmp);
         if (restoreprocs.mread_flags == -1)
             break;
+        rest_ledger = (int) ltmp;
         restoreprocs.mread_flags = 2; /* return despite error */
         getlev(fd, 0, ltmp, FALSE);
         if (restoreprocs.mread_flags == -2)
             break;
+        rest_levels_read++;
 #ifdef MICRO
         curs(WIN_MAP, 1 + dotcnt++, dotrow);
         if (dotcnt >= (COLNO - 1)) {
@@ -2566,10 +2590,16 @@ def_mread(int fd, genericptr_t buf, size_t len)
             restoreprocs.mread_flags = -1;
             return;
         } else if (restoreprocs.mread_flags == 2) { /* means "return anyway", apparent corruption */
+            long long cur = (long long) lseek(fd, (off_t) 0, SEEK_CUR);
+
+            first_short_rlen = rlen;
+            first_short_len = len;
+            first_short_offset = cur >= 0 ? cur - (long long) max(rlen, 0) : -1LL;
             restoreprocs.mread_flags = -2;
             return;
         } else {
             char errorbuf[BUFSZ];
+            debugprint_read_error(fd, rlen, len);
             Sprintf(errorbuf, "Read %d instead of %zu bytes.", rlen, len);
             raw_print(errorbuf);
             if (restoring) 
@@ -2583,6 +2613,44 @@ def_mread(int fd, genericptr_t buf, size_t len)
             return;
         }
     }
+}
+
+/* Size of the file behind fd, read position unchanged; -1 on error */
+static long long
+restore_file_size(int fd)
+{
+    long long cur, size;
+
+    cur = (long long) lseek(fd, (off_t) 0, SEEK_CUR);
+    if (cur < 0)
+        return -1;
+    size = (long long) lseek(fd, (off_t) 0, SEEK_END);
+    (void) lseek(fd, (off_t) cur, SEEK_SET);
+    return size;
+}
+
+/* Report a failed read with the restore progress, for the Sentry debug buffers */
+static void
+debugprint_read_error(int fd, int rlen, size_t len)
+{
+    long long cur, at, size;
+    char firstbuf[BUFSZ] = "";
+
+    cur = (long long) lseek(fd, (off_t) 0, SEEK_CUR);
+    at = cur >= 0 ? cur - (long long) max(rlen, 0) : -1LL;
+    size = restore_file_size(fd);
+    if (!restoring)
+    {
+        debugprint("def_mread: read %d of %zu at %lld (size %lld)", rlen, len, at, size);
+        return;
+    }
+    if (first_short_len > 0)
+        Sprintf(firstbuf, "; first short read %d of %zu at %lld",
+                first_short_rlen, first_short_len, first_short_offset);
+    debugprint("def_mread: read %d of %zu at %lld (size %lld, %lld at start), ledger %d, "
+               "levels read %d, recoveries %llu%s",
+               rlen, len, at, size, rest_file_size, rest_ledger, rest_levels_read,
+               (unsigned long long) rest_num_recoveries, firstbuf);
 }
 
 void

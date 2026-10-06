@@ -1551,6 +1551,7 @@ ask_delete_invalid_savefile(const char *adjective, boolean allow_replace_backup)
     struct special_view_info info = { 0 };
     char txtbuf[BUFSZ * 4] = "";
     char titlebuf[BUFSZ * 4] = "";
+    char bcbuf[BUFSZ];
     int res;
     if (!adjective)
         adjective = "invalid";
@@ -1562,11 +1563,19 @@ ask_delete_invalid_savefile(const char *adjective, boolean allow_replace_backup)
         Sprintf(txtbuf, "Save file \"%s\" is %s. Replace it with its backup?", SAVEF, adjective);
         info.text = txtbuf;
         res = open_special_view(info);
+        Sprintf(bcbuf, "ask_delete_invalid_savefile: %s, replace with backup answered %c",
+                adjective, (res > ' ' && res < 127) ? res : '?');
+        issue_breadcrumb(bcbuf);
         if (res == 'y')
         {
+            int rbres;
+
             pline("Replacing %s save file \"%s\".", an(adjective), SAVEF);
             (void)delete_tmp_backup_savefile();
-            if (!restore_backup_savefile(TRUE))
+            rbres = restore_backup_savefile(TRUE);
+            Sprintf(bcbuf, "ask_delete_invalid_savefile: restore_backup_savefile returned %d", rbres);
+            issue_breadcrumb(bcbuf);
+            if (!rbres)
                 return -2;
             else
                 pline("Replacing \"%s\" failed.", SAVEF);
@@ -1578,6 +1587,9 @@ ask_delete_invalid_savefile(const char *adjective, boolean allow_replace_backup)
     Sprintf(txtbuf, "Save file \"%s\" is %s. Delete it?", SAVEF, adjective);
     info.text = txtbuf;
     res = open_special_view(info);
+    Sprintf(bcbuf, "ask_delete_invalid_savefile: %s, delete answered %c",
+            adjective, (res > ' ' && res < 127) ? res : '?');
+    issue_breadcrumb(bcbuf);
     if (res == 'y')
     {
         pline("Deleting %s save file \"%s\".", an(adjective), SAVEF);
@@ -5364,6 +5376,31 @@ recover_header_read_failed(int gfd)
     (void) nhclose(gfd);
 }
 
+/* Size of a level file opened for copying, left positioned at its start; -1 on error */
+static long long
+recover_levelfile_size(int fd)
+{
+    long long size = (long long) lseek(fd, (off_t) 0, SEEK_END);
+
+    if (lseek(fd, (off_t) 0, SEEK_SET) < 0)
+        return -1;
+    return size;
+}
+
+/* Append "lev:size" to a BUFSZ buffer, ending with " ..." once it is full */
+static void
+recover_note_short_level(char *buf, int lev, long long size)
+{
+    char entry[BUFSZ];
+    size_t len = strlen(buf);
+
+    Sprintf(entry, "%s%d:%lld", len ? " " : "", lev, size);
+    if (len + strlen(entry) < BUFSZ - 5)
+        Strcat(buf, entry);
+    else if (len < BUFSZ - 5 && !strstr(buf, " ..."))
+        Strcat(buf, " ...");
+}
+
 /* TRUE if the level 0 file ends before a complete level number, i.e. no
    checkpoint was ever written into it. FALSE if it has one, or on an open or
    read error, which recover_savefile() then reports. */
@@ -5407,6 +5444,16 @@ recover_savefile(void)
     struct savefile_info sfi;
     struct save_game_stats gamestats;
     char tmpplbuf[PL_NSIZ];
+    long long levsize;
+    int other_levels = 0, short_levels = 0;
+    char shortbuf[BUFSZ] = "";
+#ifdef RLECOMP
+    const long long min_levsize = (long long) (sizeof(int) + sizeof(xchar));
+#else
+    /* hackpid, level number, cemetery flag, levl, lastseentyp */
+    const long long min_levsize = (long long) (sizeof(int) + sizeof(xchar) + sizeof(int)
+                                               + sizeof(level.locations) + sizeof(lastseentyp));
+#endif
 
     recover_failure_reason = (const char *) 0;
 
@@ -5562,6 +5609,13 @@ recover_savefile(void)
         return FALSE;
     }
 
+    levsize = recover_levelfile_size(lfd);
+    if (levsize < min_levsize)
+    {
+        short_levels++;
+        recover_note_short_level(shortbuf, savelev, levsize);
+    }
+
     if (write(sfd, (genericptr_t) &version_data, sizeof version_data)
         != sizeof version_data)
     {
@@ -5672,6 +5726,12 @@ recover_savefile(void)
             lfd = open_levelfile(lev, (char *) 0);
             if (lfd >= 0) {
                 /* any or all of these may not exist */
+                levsize = recover_levelfile_size(lfd);
+                if (levsize < min_levsize)
+                {
+                    short_levels++;
+                    recover_note_short_level(shortbuf, lev, levsize);
+                }
                 levc = (xchar) lev;
                 (void)write(sfd, (genericptr_t) &levc, sizeof(levc));
                 if (!copy_bytes(lfd, sfd))
@@ -5687,6 +5747,7 @@ recover_savefile(void)
                 }
                 (void) nhclose(lfd);
                 processed[lev] = 1;
+                other_levels++;
             }
         }
     }
@@ -5721,9 +5782,20 @@ recover_savefile(void)
     nh_compress(fq_save);
 #endif
 
-    debugprint("recover_savefile: recovered, level=%d, recoveries=%llu",
-               savelev, (unsigned long long) gamestats.num_recoveries);
-    issue_breadcrumb2("recover_savefile: recovered", savelev);
+    debugprint("recover_savefile: recovered, level=%d, recoveries=%llu, "
+               "other levels=%d, short=%d [%s]",
+               savelev, (unsigned long long) gamestats.num_recoveries,
+               other_levels, short_levels, shortbuf);
+    {
+        char bcbuf[BUFSZ];
+
+        Sprintf(bcbuf, "recover_savefile: recovered (level=%d, other levels=%d, short=%d)",
+                savelev, other_levels, short_levels);
+        issue_breadcrumb(bcbuf);
+    }
+    /* fixed phrase so Sentry groups these; the files are in the debugprint above */
+    if (short_levels > 0)
+        silent_nonfatal_error("recover_savefile: recovered with truncated level files");
 
     return TRUE;
 }
