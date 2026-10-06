@@ -1273,6 +1273,8 @@ dorestore0(int fd)
         if (otmp->owornmask)
             setwornquietly(otmp, otmp->owornmask);
 
+    /* docrt() below draws the restored state */
+    hallucination_drawn = Hallucination;
     update_all_character_properties((struct obj*)0, FALSE);
 
     /* in_use processing must be after:
