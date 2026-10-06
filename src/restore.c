@@ -59,6 +59,8 @@ static struct restore_procs {
 #endif
 };
 
+static int rest_ledger = 0; /* save file record being read; 0 = current level and game state */
+
 /*
  * Save a mapping of IDs from ghost levels to the current level.  This
  * map is used by the timer routines when restoring ghost levels.
@@ -1036,6 +1038,7 @@ dorestore0(int fd)
     issue_breadcrumb("Start dorestore0");
 
     restoring = TRUE;
+    rest_ledger = 0;
     boolean readok = get_plname_from_file(fd, plname, sizeof(plname));
     if (!readok)
     {
@@ -1045,6 +1048,7 @@ dorestore0(int fd)
         return 0;
     }
     get_save_game_stats_from_file(fd, &game_stats);
+    debugprint("dorestore0: recoveries=%llu", (unsigned long long) game_stats.num_recoveries);
     getlev(fd, 0, (xchar) 0, FALSE);
     if (!restgamestate(fd, &stuckid, &steedid)) 
     {
@@ -1112,6 +1116,7 @@ dorestore0(int fd)
         mread(fd, (genericptr_t) &ltmp, sizeof ltmp);
         if (restoreprocs.mread_flags == -1)
             break;
+        rest_ledger = (int) ltmp;
         restoreprocs.mread_flags = 2; /* return despite error */
         getlev(fd, 0, ltmp, FALSE);
         if (restoreprocs.mread_flags == -2)
@@ -2570,6 +2575,13 @@ def_mread(int fd, genericptr_t buf, size_t len)
             return;
         } else {
             char errorbuf[BUFSZ];
+            long long at = (long long) lseek(fd, (off_t) 0, SEEK_CUR);
+            long long size = (long long) lseek(fd, (off_t) 0, SEEK_END);
+
+            /* mread_flags -2: an earlier short read in this level record was tolerated */
+            debugprint("def_mread: read %d of %zu at %lld (size %lld), restoring %d, ledger %d, flags %d",
+                       rlen, len, at >= 0 ? at - (long long) max(rlen, 0) : -1LL, size,
+                       (int) restoring, rest_ledger, restoreprocs.mread_flags);
             Sprintf(errorbuf, "Read %d instead of %zu bytes.", rlen, len);
             raw_print(errorbuf);
             if (restoring) 
@@ -2591,6 +2603,7 @@ reset_restore(void)
     clear_id_mapping();
     freefruitchn(oldfruit), oldfruit = 0;
     omoves = 0;
+    rest_ledger = 0;
 
 #ifdef ZEROCOMP
     *inbuf = 0;

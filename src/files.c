@@ -1562,11 +1562,16 @@ ask_delete_invalid_savefile(const char *adjective, boolean allow_replace_backup)
         Sprintf(txtbuf, "Save file \"%s\" is %s. Replace it with its backup?", SAVEF, adjective);
         info.text = txtbuf;
         res = open_special_view(info);
+        Sprintf(txtbuf, "ask_delete_invalid_savefile: %s, replace with backup answered %c",
+                adjective, (res > ' ' && res < 127) ? res : '?');
+        issue_breadcrumb(txtbuf);
         if (res == 'y')
         {
             pline("Replacing %s save file \"%s\".", an(adjective), SAVEF);
             (void)delete_tmp_backup_savefile();
-            if (!restore_backup_savefile(TRUE))
+            int rbres = restore_backup_savefile(TRUE);
+            issue_breadcrumb2("ask_delete_invalid_savefile: restore_backup_savefile returned", rbres);
+            if (!rbres)
                 return -2;
             else
                 pline("Replacing \"%s\" failed.", SAVEF);
