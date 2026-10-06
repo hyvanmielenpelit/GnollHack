@@ -7907,6 +7907,7 @@ cancel_monst(struct monst *mdef, struct obj *obj, boolean youattack, boolean all
                 property_expiry_message(i, was_flying);
             }
         }
+        update_all_character_properties((struct obj*)0, TRUE);
 
 
         /* Add cancellation debuff */

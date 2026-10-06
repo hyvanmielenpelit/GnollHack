@@ -3279,6 +3279,7 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
             break;
         case SPE_TRUE_SEEING:
             see_monsters();
+            update_all_character_properties((struct obj*)0, TRUE);
             break;
         default:
             break;

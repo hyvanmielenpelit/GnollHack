@@ -4622,6 +4622,7 @@ use_gem(struct obj* otmp)
     special_effect_wait_until_action(0);
     addspellintrinsictimeout(SPE_TRUE_SEEING);
     see_monsters();
+    update_all_character_properties((struct obj*)0, TRUE);
     if (had_before)
         You_ex1(ATR_NONE, CLR_MSG_POSITIVE, "feel that your ability to see things as they truly are strengthens.");
     special_effect_wait_until_end(0);

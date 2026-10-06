@@ -272,6 +272,7 @@ reset_global_variables(void)
     nomovemsg_color = NO_COLOR;
     tbx = tby = 0;
     defer_see_monsters = FALSE;
+    hallucination_drawn = FALSE;
     in_mklev = FALSE;
     unweapon1 = FALSE;
     unweapon2 = FALSE;

@@ -582,6 +582,37 @@ toggle_blindness(void)
     }
 }
 
+/* Redraws everything whose appearance depends on Hallucination */
+void
+redraw_hallucination_change(void)
+{
+    hallucination_drawn = Hallucination;
+
+    /* in case we're mimicking an orange (hallucinatory form
+       of mimicking gold) update the mimicking's-over message */
+    if (!Hallucination)
+        eatmupdate();
+
+    if (u.uswallow)
+    {
+        swallowed(0); /* redraw swallow display */
+    }
+    else
+    {
+        /* The see_* routines should be called *before* the pline. */
+        see_monsters();
+        see_objects();
+        see_traps();
+    }
+
+    /* for perm_inv and anything similar
+    (eg. Qt windowport's equipped items display) */
+    update_inventory();
+
+    context.botl = context.botlx = TRUE;
+    refresh_u_tile_gui_info(TRUE);
+}
+
 /*
  * Parameters:
  *   xtime: nonzero if this is an attempt to turn on hallucination
@@ -597,62 +628,52 @@ make_hallucinated(int64_t xtime, boolean talk, int64_t mask)
     if (Unaware)
         talk = FALSE;
 
-    message = (!xtime) ? "Everything %s SO boring now."
-                       : "Oh wow!  Everything %s so cosmic!";
     verb = (!Blind) ? "looks" : "feels";
 
-    if (mask) {
-        if (HHallucination)
-            changed = TRUE;
-
+    if (mask)
+    {
         if (!xtime)
             EHalluc_resistance |= mask;
         else
             EHalluc_resistance &= ~mask;
-    } else {
-        if (!EHalluc_resistance && (!!HHallucination != !!xtime))
-            changed = TRUE;
+
+        changed = (hallucination_drawn != Hallucination);
+    }
+    else
+    {
         set_itimeout(&HHallucination, xtime);
+        changed = (hallucination_drawn != Hallucination);
 
         /* clearing temporary hallucination without toggling vision */
-        if (!changed && !HHallucination && old && talk) {
-            if (!haseyes(youmonst.data)) {
+        if (!changed && !HHallucination && old && talk)
+        {
+            if (!haseyes(youmonst.data))
+            {
                 strange_feeling((struct obj *) 0, (char *) 0, FALSE);
-            } else if (Blind) {
+            }
+            else if (Blind)
+            {
                 const char *eyes = body_part(EYE);
 
                 if (eyecount(youmonst.data) != 1)
                     eyes = makeplural(eyes);
                 Your_ex(ATR_NONE, CLR_MSG_ATTENTION, eyemsg, eyes, vtense(eyes, "itch"));
-            } else { /* Grayswandir */
+            }
+            else
+            { /* Grayswandir */
                 Your_ex(ATR_NONE, CLR_MSG_ATTENTION, vismsg, "flatten", "normal");
             }
         }
     }
 
-    if (changed) {
-        /* in case we're mimicking an orange (hallucinatory form
-           of mimicking gold) update the mimicking's-over message */
-        if (!Hallucination)
-            eatmupdate();
+    message = Hallucination ? "Oh wow!  Everything %s so cosmic!"
+                            : "Everything %s SO boring now.";
 
-        if (u.uswallow) {
-            swallowed(0); /* redraw swallow display */
-        } else {
-            /* The see_* routines should be called *before* the pline. */
-            see_monsters();
-            see_objects();
-            see_traps();
-        }
-
-        /* for perm_inv and anything similar
-        (eg. Qt windowport's equipped items display) */
-        update_inventory();
-
-        context.botl = context.botlx = TRUE;
-        refresh_u_tile_gui_info(TRUE);
+    if (changed)
+    {
+        redraw_hallucination_change();
         if (talk)
-            pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_HALLUCINATED, message, verb);
+            pline_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, message, verb);
     }
 
     return changed;
@@ -1090,7 +1111,7 @@ peffects(struct obj *otmp)
     case POT_HALLUCINATION:
     {
         boolean aware = (is_obj_blessed(otmp) && !rn2(otmp->odiluted ? 5 : 3)) || (!is_obj_cursed(otmp) && !rn2(otmp->odiluted ? 10 : 6));
-        if ((Hallucination && !aware) || Halluc_resistance)
+        if ((Hallucination && !aware) || Halluc_resistance || True_seeing)
             nothing++;
         else
             play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);

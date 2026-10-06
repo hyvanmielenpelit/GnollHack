@@ -40,7 +40,6 @@ moveloop(uchar resuming)
 #endif
     int moveamt = 0, wtcap = 0, change = 0;
     boolean monscanmove = FALSE;
-    boolean hallucination_drawn = Hallucination;
     struct obj* otmp;
 
     /* Note:  these initializers don't do anything except guarantee that
@@ -50,6 +49,9 @@ moveloop(uchar resuming)
     decl_init();
     monst_init();
     objects_init();
+
+    /* A new or restored game draws the display from scratch */
+    hallucination_drawn = Hallucination;
 
     /* Set sound volume */
     adjust_ghsound_general_volumes();
@@ -422,20 +424,6 @@ moveloop(uchar resuming)
         clear_context_menu();
         if (ui_has_input())
             clear_run_and_travel();
-
-        /* Hallucination can start or stop without a redraw, e.g. when True Seeing is gained */
-        if (hallucination_drawn != Hallucination)
-        {
-            hallucination_drawn = Hallucination;
-            eatmupdate();
-            see_monsters();
-            see_objects();
-            see_traps();
-            if (u.uswallow)
-                swallowed(0);
-            update_inventory();
-            context.botl = context.botlx = TRUE;
-        }
 
         /* Redraw screen */
         if (!context.mv || Blind)

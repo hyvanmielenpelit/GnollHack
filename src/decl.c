@@ -150,6 +150,7 @@ NEARDATA dest_area noteledest = { 0, 0, 0, 0, 0, 0, 0, 0 };
 NEARDATA coord inv_pos = { 0, 0 };
 
 NEARDATA boolean defer_see_monsters = FALSE;
+NEARDATA boolean hallucination_drawn = FALSE;
 NEARDATA boolean in_mklev = FALSE;
 NEARDATA boolean unweapon1 = FALSE;
 NEARDATA boolean unweapon2 = FALSE;

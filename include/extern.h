@@ -2967,6 +2967,7 @@ E void make_stoned(int64_t, const char *, int, const char *, int);
 E void make_vomiting(int64_t, boolean);
 E void make_blinded(int64_t, boolean);
 E void toggle_blindness(void);
+E void redraw_hallucination_change(void);
 E boolean make_hallucinated(int64_t, boolean, int64_t);
 E void make_deaf(int64_t, boolean);
 E void self_invis_message(void);

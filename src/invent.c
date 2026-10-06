@@ -1119,6 +1119,7 @@ update_all_character_properties(struct obj *otmp, boolean verbose)
 {
     boolean state_change_detected = FALSE;
     boolean condition_change = FALSE;
+    boolean hallucination_changed = FALSE;
     
     boolean was_invisible = Invis;
     boolean was_wearing_blindfold = Blindfolded;
@@ -1292,28 +1293,15 @@ update_all_character_properties(struct obj *otmp, boolean verbose)
     }
 
     /* Hallucination */
-    if (Hallucination && !had_hallucination)
+    if (hallucination_drawn != Hallucination)
     {
         state_change_detected = TRUE;
-        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Oh wow! Everything %s so cosmic!", (!Blind) ? "looks" : "feels");
-    }
-    else if (!Hallucination && had_hallucination)
-    {
-        state_change_detected = TRUE;
-        eatmupdate();
-        if (u.uswallow) {
-            swallowed(0); /* redraw swallow display */
-        }
-        else {
-            /* The see_* routines should be called *before* the pline. */
-            see_monsters();
-            see_objects();
-            see_traps();
-        }
-
-        update_inventory();
-        context.botl = context.botlx = TRUE;
-        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "Everything %s SO boring now.", (!Blind) ? "looks" : "feels");
+        hallucination_changed = TRUE;
+        redraw_hallucination_change();
+        if (Hallucination)
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Oh wow! Everything %s so cosmic!", (!Blind) ? "looks" : "feels");
+        else
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "Everything %s SO boring now.", (!Blind) ? "looks" : "feels");
     }
 
 
@@ -1666,7 +1654,7 @@ update_all_character_properties(struct obj *otmp, boolean verbose)
     /* Condition change check */
     if ((was_flying != !!Flying)
         || (was_levitating != !!Levitation)
-        || (had_hallucination != !!Hallucination)
+        || hallucination_changed
         || (was_blind != !!Blind)
         || (was_deaf != !!Deaf)
         || (was_stunned != !!Stunned)
