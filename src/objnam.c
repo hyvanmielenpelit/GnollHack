@@ -3032,9 +3032,9 @@ An(const char *str)
 char*
 an_prefix(const char *str)
 {
-    if (!str || !*str) 
+    if (!str || !*str)
     {
-        impossible("Empty input string: 'an(%s)'.", str ? "\"\"" : "<null>");
+        impossible("Empty input string: 'an_prefix(%s)'.", str ? "\"\"" : "<null>");
         char* tbuf = next_offset_init_obuf();
         return strcpy(tbuf, "an []");
     }

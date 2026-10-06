@@ -1046,9 +1046,12 @@ clearlocks(void)
         sethanguphandler((void (*)(int)) SIG_IGN);
 #endif
 #endif
+        /* level 0 first, so an interrupted cleanup leaves no checkpoint to recover from */
+        delete_levelfile(0);
         /* can't access maxledgerno() before dungeons are created -dlc */
-        for (x = (n_dgns ? maxledgerno() : 0); x >= 0; x--)
+        for (x = (n_dgns ? maxledgerno() : 0); x > 0; x--)
             delete_levelfile(x); /* not all levels need be present */
+        set_levelfile_name(lock, 0);
     }
 #endif /* ?PC_LOCKING,&c */
 
@@ -1554,7 +1557,9 @@ ask_delete_invalid_savefile(const char *adjective, boolean allow_replace_backup)
     int res;
     if (!adjective)
         adjective = "invalid";
-    if (allow_replace_backup && check_has_backup_savefile())
+    /* a backup that loads and is not merely a copy of this save */
+    boolean keep_backup = check_has_backup_savefile() && !backup_savefile_matches_savefile();
+    if (allow_replace_backup && keep_backup)
     {
         info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N;
         Sprintf(titlebuf, "Replace %s Save File", str_upper_start(adjective));
@@ -1580,14 +1585,19 @@ ask_delete_invalid_savefile(const char *adjective, boolean allow_replace_backup)
     info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y;
     Sprintf(titlebuf, "Delete %s Save File", str_upper_start(adjective));
     info.title = titlebuf;
-    Sprintf(txtbuf, "Save file \"%s\" is %s. Delete it?", SAVEF, adjective);
+    if (keep_backup)
+        Sprintf(txtbuf, "Save file \"%s\" is %s. Delete it? Its backup save file is kept.",
+                SAVEF, adjective);
+    else
+        Sprintf(txtbuf, "Save file \"%s\" is %s. Delete it?", SAVEF, adjective);
     info.text = txtbuf;
     res = open_special_view(info);
     if (res == 'y')
     {
         pline("Deleting %s save file \"%s\".", an(adjective), SAVEF);
         (void) delete_tmp_backup_savefile();
-        (void) delete_backup_savefile();
+        if (!keep_backup)
+            (void) delete_backup_savefile();
         return delete_savefile();
     }
     else
@@ -5444,6 +5454,8 @@ recover_savefile(void)
     struct version_info version_data;
     int processed[256];
     char savename[SAVESIZE], errbuf[BUFSZ] = "";
+    char fq_recovered[FQN_MAX_FILENAME + BUFSZ];
+    const char *fq_save;
     struct savefile_info sfi;
     struct save_game_stats gamestats;
     char tmpplbuf[PL_NSIZ];
@@ -5578,7 +5590,11 @@ recover_savefile(void)
      *  other levels
      */
     set_savefile_name(TRUE);
-    sfd = create_savefile();
+    /* built aside and moved over the save only when complete, so a failed
+       recovery leaves an existing save file untouched */
+    Strcpy(fq_recovered, fqname(SAVEF, SAVEPREFIX, 0));
+    print_special_savefile_extension(fq_recovered, TEMP_BACKUP_EXTENSION);
+    sfd = open(fq_recovered, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, FCMASK);
     if (sfd < 0)
     {
         raw_printf("\nCannot recover savefile %s.\n", SAVEF);
@@ -5598,7 +5614,7 @@ recover_savefile(void)
                    savelev, errbuf);
         (void) nhclose(gfd);
         (void) nhclose(sfd);
-        delete_savefile();
+        (void) unlink(fq_recovered);
         return FALSE;
     }
 
@@ -5613,7 +5629,7 @@ recover_savefile(void)
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         (void) nhclose(lfd);
-        delete_savefile();
+        (void) unlink(fq_recovered);
         return FALSE;
     }
 
@@ -5628,7 +5644,7 @@ recover_savefile(void)
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         (void) nhclose(lfd);
-        delete_savefile();
+        (void) unlink(fq_recovered);
         return FALSE;
     }
 
@@ -5643,7 +5659,7 @@ recover_savefile(void)
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         (void) nhclose(lfd);
-        delete_savefile();
+        (void) unlink(fq_recovered);
         return FALSE;
     }
 
@@ -5657,7 +5673,7 @@ recover_savefile(void)
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         (void) nhclose(lfd);
-        delete_savefile();
+        (void) unlink(fq_recovered);
         return FALSE;
     }
 
@@ -5671,7 +5687,7 @@ recover_savefile(void)
         (void)nhclose(gfd);
         (void)nhclose(sfd);
         (void)nhclose(lfd);
-        delete_savefile();
+        (void) unlink(fq_recovered);
         return FALSE;
     }
 
@@ -5684,7 +5700,7 @@ recover_savefile(void)
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         (void) nhclose(lfd);
-        delete_savefile();
+        (void) unlink(fq_recovered);
         return FALSE;
     }
     (void) nhclose(lfd);
@@ -5698,7 +5714,7 @@ recover_savefile(void)
                    errno);
         (void) nhclose(gfd);
         (void) nhclose(sfd);
-        delete_savefile();
+        (void) unlink(fq_recovered);
         return FALSE;
     }
     (void) nhclose(gfd);
@@ -5722,7 +5738,7 @@ recover_savefile(void)
                                " (errno %d)", lev, errno);
                     (void) nhclose(lfd);
                     (void) nhclose(sfd);
-                    delete_savefile();
+                    (void) unlink(fq_recovered);
                     return FALSE;
                 }
                 (void) nhclose(lfd);
@@ -5731,6 +5747,19 @@ recover_savefile(void)
         }
     }
     (void) nhclose(sfd);
+
+    /* POSIX rename() replaces the target atomically; Windows refuses an existing one */
+    fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+    if (rename(fq_recovered, fq_save) != 0)
+    {
+        (void) unlink(fq_save);
+        if (rename(fq_recovered, fq_save) != 0)
+        {
+            recover_failure_reason = "the recovered save file could not be moved into place";
+            debugprint("recover_savefile: rename failed (errno %d)", errno);
+            return FALSE;
+        }
+    }
 
 #ifdef HOLD_LOCKFILE_OPEN
     really_close();
@@ -5750,7 +5779,7 @@ recover_savefile(void)
         }
     }
 
-    const char* fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+    fq_save = fqname(SAVEF, SAVEPREFIX, 0);
     track_new_save_file(fq_save, gamestats.time_stamp);
 
 #ifdef ANDROID

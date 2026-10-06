@@ -848,7 +848,9 @@ lookat(int x, int y, char *buf, char *simplebuf, char *extrabuf)
     if (*exbuf)
         Strcpy(buf, article == 2 ? the(exbuf)
             : article == 1 ? an(exbuf) : exbuf);
-    
+    else /* legitimate for zap, missile and shield effect symbols */
+        debugprint("lookat: empty description for glyph %d at <%d,%d>", glyph, x, y);
+
     if (!*simplebuf)
         Strcpy(simplebuf, buf);
     return (pm && !Hallucination) ? pm : (struct permonst *) 0;

@@ -2667,7 +2667,17 @@ def_mread(int fd, genericptr_t buf, size_t len)
             {
                 (void) nhclose(fd);
                 (void) delete_tmp_backup_savefile();
-                (void) ask_delete_invalid_savefile("corrupted", TRUE);
+                if (ask_delete_invalid_savefile("corrupted", TRUE) == -2
+                    && open_special_view && iflags.window_inited && !iflags.debug_fuzzer)
+                {
+                    struct special_view_info info = { 0 };
+
+                    info.viewtype = SPECIAL_VIEW_MESSAGE;
+                    info.title = "Save File Replaced";
+                    info.text = "The save file has been replaced with its backup save file. "
+                                "Load the game again to continue from the backup.";
+                    (void) open_special_view(info);
+                }
                 fatal_error("Error restoring old game: %s", errorbuf);
             }
             panic("Error reading level file: %s", errorbuf);

@@ -289,9 +289,11 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private bool _backPressed = false;
+        // Set while the crash report archive is built off the UI thread and shared
+        private bool _creatingCrashReport = false;
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
-            if (!_backPressed)
+            if (!_backPressed && !_creatingCrashReport)
             {
                 await ClosePageAsync(false);
             }
@@ -301,7 +303,7 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
-            AboutGrid.IsEnabled = true;
+            AboutGrid.IsEnabled = !_creatingCrashReport;
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
@@ -325,7 +327,15 @@ namespace GnollHackX.Pages.MainScreen
             bool answer = await GHApp.DisplayMessageBox(this, "Send Crash Report?", "This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
             if (answer)
             {
-                await GHApp.CreateCrashReport(this);
+                _creatingCrashReport = true;
+                try
+                {
+                    await GHApp.CreateCrashReport(this);
+                }
+                finally
+                {
+                    _creatingCrashReport = false;
+                }
             }
             AboutGrid.IsEnabled = true;
         }

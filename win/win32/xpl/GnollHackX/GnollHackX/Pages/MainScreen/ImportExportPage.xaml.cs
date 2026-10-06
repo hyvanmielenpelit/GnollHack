@@ -47,6 +47,11 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnExportSavedGames_Clicked(object sender, EventArgs e)
         {
+            await RunFileOperationAsync(ExportSavedGamesAsync);
+        }
+
+        private async Task ExportSavedGamesAsync()
+        {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await GHApp.CheckAndRequestWritePermission(this);
@@ -77,6 +82,11 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void btnImportSavedGames_Clicked(object sender, EventArgs e)
+        {
+            await RunFileOperationAsync(ImportSavedGamesAsync);
+        }
+
+        private async Task ImportSavedGamesAsync()
         {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -114,14 +124,17 @@ namespace GnollHackX.Pages.MainScreen
                                 if (System.IO.File.Exists(fulltargetpath2))
                                     System.IO.File.Delete(fulltargetpath2);
 
-                                using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
+                                await Task.Run(() =>
                                 {
-                                    s.CopyTo(t);
-                                }
-                                using (ZipArchive ziparch = ZipFile.OpenRead(fulltargetpath))
-                                {
-                                    ziparch.ExtractToDirectory(temp2dirpath);
-                                }
+                                    using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
+                                    {
+                                        s.CopyTo(t);
+                                    }
+                                    using (ZipArchive ziparch = ZipFile.OpenRead(fulltargetpath))
+                                    {
+                                        ziparch.ExtractToDirectory(temp2dirpath);
+                                    }
+                                });
                                 int nextracted = 0;
                                 string[] extractedfiles = Directory.GetFiles(temp2dirpath);
                                 if (extractedfiles != null)
@@ -170,10 +183,13 @@ namespace GnollHackX.Pages.MainScreen
                                     string fulltargetpath = Path.Combine(savedirpath, targetfilename);
                                     if (System.IO.File.Exists(fulltargetpath))
                                         System.IO.File.Delete(fulltargetpath);
-                                    using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
+                                    await Task.Run(() =>
                                     {
-                                        s.CopyTo(t);
-                                    }
+                                        using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
+                                        {
+                                            s.CopyTo(t);
+                                        }
+                                    });
                                     await ShowMessagePopupAsync("Game Saved", "Saved game \'" + file.FileName + "\' has been saved to the save directory as a non-scoring imported saved game.", "OK");
                                     if (!string.IsNullOrWhiteSpace(out_str) && GHApp.DebugLogMessages)
                                         await ShowMessagePopupAsync("ValidateSaveFile Message", out_str, "OK");
@@ -195,6 +211,11 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void btnExportReplays_Clicked(object sender, EventArgs e)
+        {
+            await RunFileOperationAsync(ExportReplaysAsync);
+        }
+
+        private async Task ExportReplaysAsync()
         {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -227,6 +248,11 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void btnImportReplays_Clicked(object sender, EventArgs e)
+        {
+            await RunFileOperationAsync(ImportReplaysAsync);
+        }
+
+        private async Task ImportReplaysAsync()
         {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -264,14 +290,17 @@ namespace GnollHackX.Pages.MainScreen
                                 if (System.IO.File.Exists(fulltargetpath2))
                                     System.IO.File.Delete(fulltargetpath2);
 
-                                using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
+                                await Task.Run(() =>
                                 {
-                                    s.CopyTo(t);
-                                }
-                                using (ZipArchive ziparch = ZipFile.OpenRead(fulltargetpath))
-                                {
-                                    ziparch.ExtractToDirectory(temp2dirpath);
-                                }
+                                    using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
+                                    {
+                                        s.CopyTo(t);
+                                    }
+                                    using (ZipArchive ziparch = ZipFile.OpenRead(fulltargetpath))
+                                    {
+                                        ziparch.ExtractToDirectory(temp2dirpath);
+                                    }
+                                });
                                 int nextracted = 0;
                                 int ntotalfiles = 0;
                                 int ninvalid = 0;
@@ -358,6 +387,11 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnExportDumplogs_Clicked(object sender, EventArgs e)
         {
+            await RunFileOperationAsync(ExportDumplogsAsync);
+        }
+
+        private async Task ExportDumplogsAsync()
+        {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await GHApp.CheckAndRequestWritePermission(this);
@@ -413,7 +447,7 @@ namespace GnollHackX.Pages.MainScreen
                         {
                             MessagePopup.ClosePopup();
                         }
-                        else if (ImportExportGrid.IsEnabled)
+                        else if (ImportExportGrid.IsEnabled && !_fileOperationInProgress)
                             await ClosePageAsync(true);
                     }
                     catch (Exception ex)
@@ -430,10 +464,28 @@ namespace GnollHackX.Pages.MainScreen
         }
 
 
+        // Set while an export or import runs; its zip work happens off the UI thread, so back and Escape must wait
+        private bool _fileOperationInProgress = false;
+
+        private async Task RunFileOperationAsync(Func<Task> operation)
+        {
+            if (_fileOperationInProgress)
+                return;
+            _fileOperationInProgress = true;
+            try
+            {
+                await operation();
+            }
+            finally
+            {
+                _fileOperationInProgress = false;
+            }
+        }
+
         private bool _backPressed = false;
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
-            if (!_backPressed)
+            if (!_backPressed && !_fileOperationInProgress)
             {
                 await ClosePageAsync(false);
             }
@@ -443,7 +495,7 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
-            ImportExportGrid.IsEnabled = true;
+            ImportExportGrid.IsEnabled = !_fileOperationInProgress;
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {

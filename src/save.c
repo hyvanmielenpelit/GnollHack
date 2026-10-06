@@ -459,7 +459,11 @@ dosave0(boolean quietly)
     u.uz = uz_save;
 
     /* get rid of all the level files after all is done --jgm and JG */
-    for (ltmp = (xchar)1; ltmp <= maxnoofledgers; ltmp++) {
+    /* level 0 first: recover_savefile() rebuilds a save from it and whichever
+       level files remain, so it must not outlive any of them */
+    delete_levelfile(0);
+    for (ltmp = (xchar)1; ltmp <= maxnoofledgers; ltmp++)
+    {
         if (ltmp == ledger_no(&u.uz))
             continue;
         if (!(level_info[ltmp].flags & LFILE_EXISTS))
@@ -467,7 +471,7 @@ dosave0(boolean quietly)
         delete_levelfile(ltmp);
     }
     delete_levelfile(ledger_no(&u.uz));
-    delete_levelfile(0);
+    set_levelfile_name(lock, 0);
 
     /* this should probably come sooner... */
     program_state.something_worth_saving = 0;

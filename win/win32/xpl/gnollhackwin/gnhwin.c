@@ -19,19 +19,24 @@
 static int
 eraseoldlocks(void)
 {
-    int i;
+    int i, res;
+
+    /* level 0 first, so an interrupted erase leaves no checkpoint to recover from */
+    set_levelfile_name(lock, 0);
+    res = unlink(fqname(lock, LEVELPREFIX, 0));
 
     /* cannot use maxledgerno() here, because we need to find a lock name
      * before starting everything (including the dungeon initialization
      * that sets astral_level, needed for maxledgerno()) up
      */
-    for(i = 1; i <= MAXDUNGEON * MAXLEVEL + 1; i++) {
+    for(i = 1; i <= MAXDUNGEON * MAXLEVEL + 1; i++)
+    {
         /* try to remove all */
         set_levelfile_name(lock, i);
         (void) unlink(fqname(lock, LEVELPREFIX, 0));
     }
     set_levelfile_name(lock, 0);
-    if (unlink(fqname(lock, LEVELPREFIX, 0)))
+    if (res)
         return(0);                /* cannot remove it */
     return(1);                    /* success! */
 }
@@ -84,6 +89,8 @@ getlock(void)
 
 gotlock:
     (void) eraseoldlocks();
+    set_levelfile_name(lock, 0);
+    fq_lock = fqname(lock, LEVELPREFIX, 0);
     fd = creat(fq_lock, FCMASK);
     unlock_file(HLOCK);
     if(fd == -1)

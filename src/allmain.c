@@ -427,11 +427,14 @@ moveloop(uchar resuming)
         if (hallucination_drawn != Hallucination)
         {
             hallucination_drawn = Hallucination;
+            eatmupdate();
             see_monsters();
             see_objects();
             see_traps();
             if (u.uswallow)
                 swallowed(0);
+            update_inventory();
+            context.botl = context.botlx = TRUE;
         }
 
         /* Redraw screen */
