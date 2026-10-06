@@ -1176,7 +1176,7 @@ dorestore0(int fd)
         rtmp = restlevelfile(fd, ltmp);
         if (rtmp < 2)
             return rtmp; /* dorestore called recursively */
-        if (ltmp > 0 && (int)ltmp < MAXLINFO)
+        if (ltmp > 0) // && ltmp < MAXLINFO)  //ltmp is xchar so generally cannot be higher than 127
             rest_restored[ltmp] = TRUE;
         if (restoreprocs.mread_flags == -2)
             break;
