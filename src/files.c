@@ -1738,6 +1738,41 @@ restore_backup_savefile(boolean dodelete_existing)
     return -1; /* Making backups is not on */
 }
 
+/* TRUE if the backup save file has the same contents as the save file */
+boolean
+backup_savefile_matches_savefile(void)
+{
+    static char buf1[4096], buf2[4096];
+    char bakbuf[FQN_MAX_FILENAME + BUFSZ];
+    const char *fq_save;
+    int fd1, fd2, n1, n2;
+    boolean same = FALSE;
+
+    if (!sysopt.make_backup_savefiles || !*SAVEF)
+        return FALSE;
+    fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+    Strcpy(bakbuf, fq_save);
+    print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
+    nh_uncompress(bakbuf);
+    fd1 = open(fq_save, O_RDONLY | O_BINARY, 0);
+    fd2 = open(bakbuf, O_RDONLY | O_BINARY, 0);
+    if (fd1 >= 0 && fd2 >= 0)
+    {
+        do
+        {
+            n1 = (int) read(fd1, buf1, (readLenType) (sizeof buf1));
+            n2 = (int) read(fd2, buf2, (readLenType) (sizeof buf2));
+            same = (n1 == n2 && n1 >= 0 && !memcmp(buf1, buf2, (size_t) n1));
+        } while (same && n1 > 0);
+    }
+    if (fd1 >= 0)
+        (void) close(fd1);
+    if (fd2 >= 0)
+        (void) close(fd2);
+    nh_compress(bakbuf);
+    return same;
+}
+
 int
 delete_backup_savefile(void)
 {

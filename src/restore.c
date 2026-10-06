@@ -44,6 +44,7 @@ static void reset_oattached_mids(boolean);
 static void rest_levl(int, boolean);
 static void restore_gamelog(int);
 static void post_restore_to_forum(struct u_realtime);
+static void end_load_missing_levels(int, int, boolean);
 
 static struct restore_procs {
     const char *name;
@@ -60,6 +61,7 @@ static struct restore_procs {
 };
 
 static int rest_ledger = 0; /* save file record being read; 0 = current level and game state */
+static boolean rest_restored[MAXLINFO]; /* ledgers dorestore0 has read from the save file */
 
 /*
  * Save a mapping of IDs from ghost levels to the current level.  This
@@ -1024,6 +1026,55 @@ dorestore(int fd, boolean is_backup)
     return 0;
 }
 
+/* Ends a load whose save file lacks flagged levels, after offering its backup. Does not return. */
+static void
+end_load_missing_levels(int fd, int n_missing, boolean was_corrupted)
+{
+    struct special_view_info info = { 0 };
+    char txtbuf[BUFSZ * 2 + SAVESIZE];
+    const char *msg = (const char *) 0;
+
+    (void) nhclose(fd); /* before the save file may be replaced */
+    if (was_corrupted)
+        msg = "The save file is missing dungeon levels and cannot be loaded.";
+    else if (!check_has_backup_savefile())
+        msg = "The save file is missing dungeon levels and cannot be loaded, and there is no backup save file.";
+    else if (backup_savefile_matches_savefile())
+        msg = "The save file is missing dungeon levels and cannot be loaded. "
+              "Its backup save file is identical and cannot be used to restore the saved game.";
+    else
+    {
+        int res;
+
+        info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y;
+        info.title = "Missing Dungeon Levels";
+        Sprintf(txtbuf,
+                "Save file \"%s\" is missing %d dungeon level%s and cannot be loaded. "
+                "Do you want to replace it with its backup save file and return to the main screen?",
+                SAVEF, n_missing, plur(n_missing));
+        info.text = txtbuf;
+        res = open_special_view(info);
+        Sprintf(txtbuf, "end_load_missing_levels: replace with backup answered %c",
+                (res > ' ' && res < 127) ? res : '?');
+        issue_breadcrumb(txtbuf);
+        if (res == 'y' && restore_backup_savefile(TRUE))
+            msg = "Replacing the save file with its backup failed.";
+    }
+    if (msg && open_special_view && iflags.window_inited && !iflags.debug_fuzzer)
+    {
+        info.viewtype = SPECIAL_VIEW_MESSAGE;
+        info.title = "Save File Not Loaded";
+        info.text = msg;
+        (void) open_special_view(info);
+    }
+    issue_breadcrumb("end_load_missing_levels: save file not loaded");
+    (void) delete_tmp_backup_savefile();
+    restoreprocs.mread_flags = 0;
+    restoring = FALSE;
+    nh_compress(fqname(SAVEF, SAVEPREFIX, 1));
+    nh_bail(EXIT_SUCCESS, (char *) 0, TRUE); /* clearlocks(), then the main screen */
+}
+
 int
 dorestore0(int fd)
 {
@@ -1039,6 +1090,7 @@ dorestore0(int fd)
 
     restoring = TRUE;
     rest_ledger = 0;
+    (void) memset((genericptr_t) rest_restored, 0, sizeof rest_restored);
     boolean readok = get_plname_from_file(fd, plname, sizeof(plname));
     if (!readok)
     {
@@ -1066,6 +1118,7 @@ dorestore0(int fd)
     rtmp = restlevelfile(fd, ledger_no(&u.uz));
     if (rtmp < 2)
         return rtmp; /* dorestore called recursively */
+    rest_restored[ledger_no(&u.uz)] = TRUE;
 
     /* these pointers won't be valid while we're processing the
      * other levels, but they'll be reset again by restlevelstate()
@@ -1123,6 +1176,8 @@ dorestore0(int fd)
         rtmp = restlevelfile(fd, ltmp);
         if (rtmp < 2)
             return rtmp; /* dorestore called recursively */
+        if (ltmp > 0 && ltmp < MAXLINFO)
+            rest_restored[ltmp] = TRUE;
         if (restoreprocs.mread_flags == -2)
             break;
     }
@@ -1135,6 +1190,28 @@ dorestore0(int fd)
             (void)delete_savefile();
             restoring = FALSE;
             return 0;
+        }
+    }
+    {
+        int lev, n_missing = 0;
+        char missbuf[BUFSZ] = "";
+
+        for (lev = 1; lev <= (int) maxledgerno() && lev < MAXLINFO; lev++)
+        {
+            if (!(level_info[lev].flags & LFILE_EXISTS) || rest_restored[lev])
+                continue;
+            if (strlen(missbuf) < sizeof missbuf - 8)
+                Sprintf(eos(missbuf), " %d", lev);
+            n_missing++;
+        }
+        if (n_missing > 0)
+        {
+            debugprint("dorestore0: flagged but not in save:%s; current %d, max %d, corrupted %d, recoveries %llu",
+                       missbuf, (int) ledger_no(&u.uz), (int) maxledgerno(), (int) was_corrupted,
+                       (unsigned long long) game_stats.num_recoveries);
+            silent_nonfatal_error("dorestore0: %d flagged level(s) not in the save file", n_missing);
+            end_load_missing_levels(fd, n_missing, was_corrupted);
+            /*NOTREACHED*/
         }
     }
     restoreprocs.mread_flags = 0;
@@ -2606,6 +2683,7 @@ reset_restore(void)
     freefruitchn(oldfruit), oldfruit = 0;
     omoves = 0;
     rest_ledger = 0;
+    (void)memset((genericptr_t)rest_restored, 0, sizeof rest_restored);
 
 #ifdef ZEROCOMP
     *inbuf = 0;

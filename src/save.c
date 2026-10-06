@@ -274,7 +274,8 @@ dosave0(boolean quietly)
     {
         xchar chklev;
         xchar chkmax = maxledgerno();
-        int chkfd;
+        int chkfd, n_missing = 0, first_missing = 0;
+        char missbuf[BUFSZ * 2] = "";
 
         for (chklev = (xchar) 1; chklev <= chkmax; chklev++)
         {
@@ -282,22 +283,32 @@ dosave0(boolean quietly)
                 continue;
             if (!(level_info[chklev].flags & LFILE_EXISTS))
                 continue;
-            chkfd = open_levelfile(chklev, whynot);
-            if (chkfd < 0)
+            chkfd = open_levelfile(chklev, n_missing ? (char *) 0 : whynot);
+            if (chkfd >= 0)
             {
-                HUP pline1(whynot);
-                if (quietly)
-                    silent_nonfatal_error(
-                        "dosave0 precheck: %s (player on %d/%d)", whynot,
-                        (int) u.uz.dnum, (int) u.uz.dlevel);
-                else
-                    nonfatal_error(
-                        "dosave0 precheck: %s (player on %d/%d)", whynot,
-                        (int) u.uz.dnum, (int) u.uz.dlevel);
-                saving = FALSE;
-                return 0;
+                (void) nhclose(chkfd);
+                continue;
             }
-            (void) nhclose(chkfd);
+            if (!n_missing)
+                first_missing = (int) chklev;
+            if (strlen(missbuf) < sizeof missbuf - 8)
+                Sprintf(eos(missbuf), " %d", (int) chklev);
+            n_missing++;
+        }
+        if (n_missing)
+        {
+            debugprint("dosave0 precheck: %s Missing:%s of max %d", whynot, missbuf, (int) chkmax);
+            HUP pline1(whynot);
+            if (quietly)
+                silent_nonfatal_error(
+                    "dosave0 precheck: %d level file(s) cannot be opened (first ledger %d, player on %d/%d)",
+                    n_missing, first_missing, (int) u.uz.dnum, (int) u.uz.dlevel);
+            else
+                nonfatal_error(
+                    "dosave0 precheck: %d level file(s) cannot be opened (first ledger %d, player on %d/%d)",
+                    n_missing, first_missing, (int) u.uz.dnum, (int) u.uz.dlevel);
+            saving = FALSE;
+            return 0;
         }
     }
 
