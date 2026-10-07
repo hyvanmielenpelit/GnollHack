@@ -1006,29 +1006,76 @@ namespace GnollHackX.Pages.Game
         private void OnWebMessageReceived(object sender,
             Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs e)
         {
-            string json = e.WebMessageAsJson;
-            HandleWebMessage(json);
+            HandleWebMessage(e.WebMessageAsJson, e.Source);
         }
 #endif
 
         /// <summary>
         /// Public entry point for platform bridge classes (OverseerJsBridge,
         /// OverseerScriptMessageHandler) to forward messages from the Angular SPA.
+        /// Dispatches to the main thread; <paramref name="senderUrl"/> is the
+        /// sender's origin when the platform reports one, otherwise null.
         /// </summary>
-        public void HandleWebMessageFromBridge(string json)
+        public void HandleWebMessageFromBridge(string json, string senderUrl = null)
         {
-            HandleWebMessage(json);
+            MainThread.BeginInvokeOnMainThread(() => HandleWebMessage(json, senderUrl));
+        }
+
+        /// <summary>
+        /// Returns the URL of the document currently loaded in the native WebView.
+        /// Must be called on the main thread.
+        /// </summary>
+        private string GetWebViewDocumentUrl()
+        {
+#if GNH_MAUI && WINDOWS
+            return (DisplayWebView.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.WebView2)?.Source?.ToString();
+#elif GNH_MAUI && ANDROID
+            return (DisplayWebView.Handler?.PlatformView as Android.Webkit.WebView)?.Url;
+#elif GNH_MAUI && (IOS || MACCATALYST)
+            return (DisplayWebView.Handler?.PlatformView as WebKit.WKWebView)?.Url?.AbsoluteString;
+#else
+            return (DisplayWebView.Source as UrlWebViewSource)?.Url;
+#endif
+        }
+
+        /// <summary>
+        /// Returns true if <paramref name="url"/> has the same scheme, host and
+        /// port as the Overseer base URL.
+        /// </summary>
+        private bool IsOverseerOrigin(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                return false;
+
+            Uri u;
+            Uri baseUri;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out u))
+                return false;
+            if (!Uri.TryCreate(_baseOverseerUrl, UriKind.Absolute, out baseUri))
+                return false;
+
+            return string.Equals(u.Scheme, baseUri.Scheme, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(u.Host, baseUri.Host, StringComparison.OrdinalIgnoreCase)
+                && u.Port == baseUri.Port;
         }
 
         /// <summary>
         /// Central dispatcher for all incoming web messages from the Angular SPA.
-        /// Routes file share requests to <see cref="HandleFileShareRequest"/>
+        /// Rejects messages whose origin is not the Overseer origin, then
+        /// routes file share requests to <see cref="HandleFileShareRequest"/>
         /// and AI tool requests to <see cref="HandleToolRequest"/>.
         /// </summary>
-        private void HandleWebMessage(string json)
+        private void HandleWebMessage(string json, string senderUrl)
         {
             try
             {
+                string originUrl = senderUrl ?? GetWebViewDocumentUrl();
+                if (!IsOverseerOrigin(originUrl))
+                {
+                    GHApp.WriteGHLog("Web message rejected: origin mismatch.");
+                    return;
+                }
+
                 var jObject = JObject.Parse(json);
                 string type = jObject["type"]?.ToString();
 
@@ -1126,7 +1173,7 @@ namespace GnollHackX.Pages.Game
         /// Parses and validates an incoming tool request from the Angular SPA,
         /// then dispatches execution to a background thread.
         /// </summary>
-        private async void HandleToolRequest(string json)
+        private void HandleToolRequest(string json)
         {
             try
             {
@@ -1134,19 +1181,6 @@ namespace GnollHackX.Pages.Game
 
                 if (request?.Type != "tool_client_request")
                     return;
-
-                /* URL origin validation (awaited to avoid race condition) */
-                string currentUrl = await MainThread.InvokeOnMainThreadAsync(() =>
-                {
-                    return (DisplayWebView.Source as UrlWebViewSource)?.Url;
-                });
-
-                if (currentUrl != null && !currentUrl.StartsWith(
-                        _baseOverseerUrl, StringComparison.OrdinalIgnoreCase))
-                {
-                    GHApp.WriteGHLog("Tool request rejected: URL mismatch.");
-                    return;
-                }
 
                 if (!AllowedClientTools.Contains(request.ToolName))
                 {
@@ -1188,7 +1222,25 @@ namespace GnollHackX.Pages.Game
             {
                 try
                 {
-                    string tempPath = Path.Combine(FileSystem.CacheDirectory, filename);
+                    string safeName = Path.GetFileName(filename);
+                    if (string.IsNullOrWhiteSpace(safeName) || safeName == "." || safeName == ".."
+                        || safeName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                    {
+                        GHApp.WriteGHLog("File share rejected: invalid file name.");
+                        return;
+                    }
+
+                    string shareDir = Path.Combine(FileSystem.CacheDirectory, "overseer_share");
+                    Directory.CreateDirectory(shareDir);
+                    string tempPath = Path.Combine(shareDir, safeName);
+                    if (!Path.GetFullPath(tempPath).StartsWith(
+                            Path.GetFullPath(shareDir) + Path.DirectorySeparatorChar,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        GHApp.WriteGHLog("File share rejected: path outside share directory.");
+                        return;
+                    }
+
                     File.WriteAllText(tempPath, content);
                     await MainThread.InvokeOnMainThreadAsync(async () =>
                     {

@@ -177,7 +177,7 @@ Post-build `.proj` files copy libraries and assets to `GnollHackM/Platforms/`:
 
 ### XAML Transformation
 
-Auto-generates 30 MAUI XAML files (6 controls, 24 pages) from Xamarin source in `GnollHackX/GnollHackX/`. Key conversions: Xamarin→MAUI namespaces, `WidthRequest  =`→`MaximumWidthRequest=`, `HeightRequest  =`→`MaximumHeightRequest=`, `<Frame>`→`<Border>`, content wrapper stripping. See `maui_frontend` skill for the full conversion list, exempt files, and template for adding new XAML files.
+Auto-generates 31 MAUI XAML files (6 controls, 25 pages) from Xamarin source in `GnollHackX/GnollHackX/`. Key conversions: Xamarin→MAUI namespaces, `WidthRequest  =`→`MaximumWidthRequest=`, `HeightRequest  =`→`MaximumHeightRequest=`, `<Frame>`→`<Border>`, content wrapper stripping. See `maui_frontend` skill for the full conversion list, exempt files, and template for adding new XAML files.
 
 App-level XAML (`App.xaml`, `AppShell.xaml`, `Resources/Styles/`) is **not** generated — edit directly in `GnollHackM`.
 

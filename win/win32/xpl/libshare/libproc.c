@@ -423,7 +423,11 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
     int i;
 
     if (!selected)
+    {
+        if (picklist)
+            lib_callbacks.callback_free_memory(picklist);
         return 0;
+    }
 
     *selected = 0;
 
@@ -433,14 +437,20 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
             return -1;
 
         *selected = (MENU_ITEM_P*)malloc(sizeof(MENU_ITEM_P) * cnt);
+        if (!*selected)
+        {
+            lib_callbacks.callback_free_memory(picklist);
+            return -1;
+        }
         for (i = 0; i < cnt; i++)
         {
-            (*selected)[i].item.a_int64 = *picklist++;
-            (*selected)[i].count = (int64_t)*picklist++;
+            (*selected)[i].item.a_int64 = picklist[2 * i];
+            (*selected)[i].count = picklist[2 * i + 1];
         }
     }
 
-    lib_callbacks.callback_free_memory(picklist);
+    if (picklist)
+        lib_callbacks.callback_free_memory(picklist);
 
     return cnt;
 }

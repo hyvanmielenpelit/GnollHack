@@ -439,9 +439,8 @@ namespace GnollHackX
 #else
             false;
 #endif
-        /* Android's SGen taxes every collection through its JNI bridge, and Windows has
-           the memory to spare, so both trade managed allocations for retained native
-           glyph data. iOS has less memory and a more efficient collector. */
+        /* On by default only on Windows. On Android it appeared to add stuttering, probably
+           from extra GL-thread work; iOS has less memory to spare. */
         public const bool DefaultTextBlobCaching =
 #if WINDOWS
             true;

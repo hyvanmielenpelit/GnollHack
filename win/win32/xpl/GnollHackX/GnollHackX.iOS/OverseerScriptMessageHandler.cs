@@ -30,7 +30,14 @@ namespace GnollHackX.iOS
             if (!string.IsNullOrEmpty(json)
                 && _pageRef.TryGetTarget(out var page))
             {
-                page.HandleWebMessageFromBridge(json);
+                string origin = null;
+                WKSecurityOrigin so = message.FrameInfo?.SecurityOrigin;
+                if (so != null && !string.IsNullOrEmpty(so.Protocol) && !string.IsNullOrEmpty(so.Host))
+                {
+                    string host = so.Host.Contains(":") ? "[" + so.Host + "]" : so.Host;
+                    origin = so.Protocol + "://" + host + (so.Port != 0 ? ":" + so.Port.ToString() : "");
+                }
+                page.HandleWebMessageFromBridge(json, origin);
             }
         }
     }

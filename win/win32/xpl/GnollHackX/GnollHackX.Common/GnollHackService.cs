@@ -550,32 +550,8 @@ namespace GnollHackX.Unknown
                     }
                 }
 
-                byte[] data;
-                int maxsize = 2048 * 1024;
                 foreach (string binfile in GHApp.BinFilesList)
                 {
-#if __IOS__
-                string extension = Path.GetExtension(binfile);
-                if (extension != null && extension.Length > 0)
-                    extension = extension.Substring(1); /* Remove . from the start */
-                string fname = Path.GetFileNameWithoutExtension(binfile);
-                string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, assetsourcedir);
-                using (BinaryReader br = new BinaryReader(File.OpenRead(fullsourcepath)))
-#elif __ANDROID__
-                    string fullsourcepath = Path.Combine(assetsourcedir, binfile);
-                    using (BinaryReader br = new BinaryReader(assets.Open(fullsourcepath)))
-#elif WINDOWS
-                string fullsourcepath = Path.Combine(assetsourcedir, binfile);
-                using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
-                using (BinaryReader br = new BinaryReader(fileStream))
-#else
-                string fullsourcepath = Path.Combine(assetsourcedir, binfile);
-                using (BinaryReader br = new BinaryReader(File.OpenRead(fullsourcepath)))
-#endif
-                    {
-                        data = br.ReadBytes(maxsize);
-                    }
-
                     string fulltargetpath = Path.Combine(filesdir, binfile);
                     if (File.Exists(fulltargetpath))
                     {
@@ -584,9 +560,27 @@ namespace GnollHackX.Unknown
                         //continue;
                     }
 
-                    using (BinaryWriter sw = new BinaryWriter(File.Open(fulltargetpath, FileMode.Create)))
+#if __IOS__
+                    string extension = Path.GetExtension(binfile);
+                    if (extension != null && extension.Length > 0)
+                        extension = extension.Substring(1); /* Remove . from the start */
+                    string fname = Path.GetFileNameWithoutExtension(binfile);
+                    string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, assetsourcedir);
+                    Stream src = File.OpenRead(fullsourcepath);
+#elif __ANDROID__
+                    string fullsourcepath = Path.Combine(assetsourcedir, binfile);
+                    Stream src = assets.Open(fullsourcepath);
+#elif WINDOWS
+                    string fullsourcepath = Path.Combine(assetsourcedir, binfile);
+                    Stream src = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
+#else
+                    string fullsourcepath = Path.Combine(assetsourcedir, binfile);
+                    Stream src = File.OpenRead(fullsourcepath);
+#endif
+                    using (src)
+                    using (FileStream dst = new FileStream(fulltargetpath, FileMode.Create, FileAccess.Write))
                     {
-                        sw.Write(data);
+                        src.CopyTo(dst);
                     }
                 }
             }

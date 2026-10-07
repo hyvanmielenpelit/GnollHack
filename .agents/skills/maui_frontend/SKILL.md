@@ -58,7 +58,7 @@ GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, 
 > 
 > *Note: Although auto-generated, these `.xaml` files are currently checked into the repository for ease of use. This is expected behavior for the time being.*
 
-**Scope**: 30 files are generated — 6 controls and 24 pages. The app-level XAML
+**Scope**: 31 files are generated — 6 controls and 25 pages. The app-level XAML
 in `GnollHackM` is **not** generated, has no GnollHackX source, and is edited
 directly in `GnollHackM`:
 
@@ -238,8 +238,8 @@ Callback categories: window management, input handling, display/glyph rendering,
 | [SettingsPage.xaml](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/SettingsPage.xaml) | 141KB | Comprehensive settings: graphics, sound volumes, keybindings, debug flags. |
 | [GameMenuPage.xaml](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/GameMenuPage.xaml) | 6KB | In-game menu overlay. |
 
-### Other Pages (28 total XAML files)
-AboutPage, AchievementsPage, DisplayFilePage, EditorPage, ImportExportPage, LibraryPage, MusicPage, NamePage, OraclePage, OutRipPage, ReplayPage, ResetPage, SnapshotPage, TopScorePage, VaultPage, VersionPage, WikiPage.
+### Other Pages (31 generated XAML files in total)
+AboutPage, AchievementsDisplayPage, AchievementsPage, DisplayFilePage, EditorPage, ImportExportPage, LibraryPage, MusicPage, NamePage, OraclePage, OutRipPage, OverseerPage, PerformanceSuitePage, ReplayPage, ResetPage, SaveTransferPage, SnapshotPage, TopScorePage, VaultPage, VersionPage, WikiPage.
 
 ### Custom Controls
 `SwitchableCanvasView`, `LabeledImageButton`, `SimpleImageButton`, `CustomImageButton`, `RowImageButton`, `MeasurableGrid`, `MeasurableStackLayout`, `CustomLabel`, `GHCachedImage`, `ImageCarousel`.

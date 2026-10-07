@@ -518,6 +518,7 @@ gnollhack_exit(int code)
     _CrtDumpMemoryLeaks();
 #endif
 #if defined(WIN32) && defined(EXIT_THREAD_ON_EXIT)
+    /* Ends only the calling thread; the frontend starts the next game on a new thread */
     ExitThread(code);
 #else
     exit(code);

@@ -223,7 +223,8 @@ gnollhack_exit(int code)
         exit_hack(exit_hack_code);
 
 #if defined(EXIT_THREAD_ON_EXIT)
-    char retbuf[BUFSZ];
+    /* Ends only the calling thread; the frontend starts the next game on a new thread */
+    static char retbuf[BUFSZ];
     Sprintf(retbuf, "GnollHack thread exit with value %d", code);
 
     pthread_exit(retbuf);
