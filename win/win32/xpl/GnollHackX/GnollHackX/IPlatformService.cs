@@ -25,8 +25,6 @@ namespace GnollHackX
 
         string GetVersionString();
         ulong GetUsedMemoryInBytes();
-        /* Bytes the process may still allocate before the OS terminates it for memory; 0 where the platform does not report it */
-        ulong GetProcessAvailableMemoryInBytes();
         ulong GetDeviceMemoryInBytes();
         ulong GetDeviceFreeDiskSpaceInBytes();
         ulong GetDeviceTotalDiskSpaceInBytes();

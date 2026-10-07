@@ -453,7 +453,7 @@ namespace GnollHackX.Controls
                         if (delayedResourceCacheLimit > 0)
                         {
                             Debug.WriteLine("_delayedResourceCacheLimit is " + delayedResourceCacheLimit);
-                            grContext.SetResourceCacheLimit(delayedResourceCacheLimit);
+                            SetContextResourceCacheLimit(grContext, delayedResourceCacheLimit);
                             Debug.WriteLine("ResourceCacheSize is now " + grContext.GetResourceCacheLimit());
                         }
                         else if (delayedResourceCacheLimit == -2) /* Recommended */
@@ -463,7 +463,7 @@ namespace GnollHackX.Controls
                             Debug.WriteLine("RecommendedGPUCacheSize is " + defaultSize);
                             if (defaultSize > 0)
                             {
-                                grContext.SetResourceCacheLimit(defaultSize);
+                                SetContextResourceCacheLimit(grContext, defaultSize);
                             }
                             Debug.WriteLine("ResourceCacheSize is now " + grContext.GetResourceCacheLimit());
                         }
@@ -474,7 +474,7 @@ namespace GnollHackX.Controls
                             Debug.WriteLine("DefaultGPUCacheSize is " + defaultSize);
                             if (defaultSize > 0)
                             {
-                                grContext.SetResourceCacheLimit(defaultSize);
+                                SetContextResourceCacheLimit(grContext, defaultSize);
                             }
                             Debug.WriteLine("ResourceCacheSize is now " + grContext.GetResourceCacheLimit());
                         }
@@ -500,6 +500,14 @@ namespace GnollHackX.Controls
             PaintSurface?.Invoke(sender, convargs);
         }
 
+        /* A Metal context never exceeds GHConstants.MaxMetalGPUCacheSize, whatever level or backend setting asked for more */
+        private void SetContextResourceCacheLimit(GRContext grContext, long limit)
+        {
+            if (IsMetal && limit > GHConstants.MaxMetalGPUCacheSize)
+                limit = GHConstants.MaxMetalGPUCacheSize;
+            grContext.SetResourceCacheLimit(limit);
+        }
+
         private void ApplyResourceCacheLimit(GRContext grContext, SKCanvas canvas)
         {
             /* Set to requested PrimaryCache limits */
@@ -515,11 +523,11 @@ namespace GnollHackX.Controls
                 try
                 {
                     if (limit > 0)
-                        grContext.SetResourceCacheLimit(limit);
+                        SetContextResourceCacheLimit(grContext, limit);
                     else if (limit == -2 && GHApp.RecommendedPrimaryGPUCacheSize > 0)
-                        grContext.SetResourceCacheLimit(GHApp.RecommendedPrimaryGPUCacheSize);
+                        SetContextResourceCacheLimit(grContext, GHApp.RecommendedPrimaryGPUCacheSize);
                     else if (limit == -3 && defaultSize > 0)
-                        grContext.SetResourceCacheLimit(defaultSize);
+                        SetContextResourceCacheLimit(grContext, defaultSize);
 
                     long newLimit = grContext.GetResourceCacheLimit();
                     Debug.WriteLine("ResourceCacheSize is now " + newLimit);
@@ -538,11 +546,11 @@ namespace GnollHackX.Controls
                 try
                 {
                     if (limit > 0)
-                        grContext.SetResourceCacheLimit(limit);
+                        SetContextResourceCacheLimit(grContext, limit);
                     else if (limit == -2 && GHApp.RecommendedSecondaryGPUCacheSize > 0)
-                        grContext.SetResourceCacheLimit(GHApp.RecommendedSecondaryGPUCacheSize);
+                        SetContextResourceCacheLimit(grContext, GHApp.RecommendedSecondaryGPUCacheSize);
                     else if (limit == -3 && defaultSize > 0)
-                        grContext.SetResourceCacheLimit(defaultSize);
+                        SetContextResourceCacheLimit(grContext, defaultSize);
                     Debug.WriteLine("ResourceCacheSize is now " + grContext.GetResourceCacheLimit());
                 }
                 catch (Exception ex)
@@ -664,19 +672,19 @@ namespace GnollHackX.Controls
                                 {
                                     long defaultSize = GHApp.DefaultGPUCacheSize;
                                     if (defaultSize > 0)
-                                        grContext.SetResourceCacheLimit(defaultSize);
+                                        SetContextResourceCacheLimit(grContext, defaultSize);
                                     break;
                                 }
                             case -2:
                                 {
                                     long defaultSize = CanvasType == CanvasTypes.MainCanvas ? GHApp.RecommendedPrimaryGPUCacheSize : GHApp.RecommendedSecondaryGPUCacheSize;
                                     if (defaultSize > 0)
-                                        grContext.SetResourceCacheLimit(defaultSize);
+                                        SetContextResourceCacheLimit(grContext, defaultSize);
                                     break;
                                 }
                             default:
                                 if (value > 0)
-                                    grContext.SetResourceCacheLimit(value);
+                                    SetContextResourceCacheLimit(grContext, value);
                                 break;
                         }
                         if (CanvasType == CanvasTypes.MainCanvas)

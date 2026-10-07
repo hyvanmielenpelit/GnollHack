@@ -509,22 +509,12 @@ namespace GnollHackX
         public const ulong DiskSpaceLowThresholdInBytes = 5 * 1024UL * 1024UL * 1024UL;
         public const bool EnableExperimentalFeatures = false;
         public const int NumGuiAchievementLongs = ((int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS - 1) / 64 + 1;
-        /* iOS terminates (jetsam) the app on the Metal backend once its GPU caches grow past about
-           384 MB; on OpenGL ES the same cache levels are not terminated. Metal caches are therefore
-           capped by the per-process available memory, or by this size when that memory is unknown. */
-        public const long MaxMetalGPUCacheSize = 384L * 1024L * 1024L;
-        /* Metal backend only: GPU cache limits as fractions of the per-process available memory at
-           startup, less the bitmaps the app eventually loads: the largest size offered, and the
-           recommended size */
-        public const double ProcessMemoryMaxPrimaryGPUCacheFraction = 0.45;
-        public const double ProcessMemoryMaxSecondaryGPUCacheFraction = 0.30;
-        public const double ProcessMemoryRecommendedGPUCacheFraction = 0.30;
-        /* Above this, the recommended secondary size uses the reduced fraction, but does not drop below it */
-        public const long ProcessMemoryRecommendedSecondaryGPUCacheThreshold = 256L * 1024L * 1024L;
-        public const double ProcessMemoryRecommendedSecondaryGPUCacheReducedFraction = 0.20;
-        public const long MinProcessMemoryGPUCacheLimit = 64L * 1024L * 1024L;
-        /* Allowance for decoded bitmaps in a running game: UsedBitmapBytes is about 740 MB, 570 MB of it the three tile sheets */
-        public const long EstimatedTotalBitmapBytes = 768L * 1024L * 1024L;
+        /* Skia uploads a raster tile sheet to the GPU whole, instead of the per-sprite subsets drawn,
+           when its decoded bytes are below half the context's GPU cache limit and it fits the maximum
+           texture size, which every sheet does on Metal. A whole 186-192 MB sheet slows the game and
+           gets it terminated for memory, so each Metal GPU cache stays below twice the smallest
+           sheet's bytes (8192x5952, 372 MB). */
+        public const long MaxMetalGPUCacheSize = 256L * 1024L * 1024L;
 
         /* iOS resume-freeze safety nets */
         public const int ParkAutoResumeTimeoutMs = 1500;    /* App verifiably active this long while parked → auto-resume */

@@ -68,11 +68,6 @@ namespace GnollHackM
             throw new NotImplementedException();
         }
 
-        public ulong GetProcessAvailableMemoryInBytes()
-        {
-            return 0;
-        }
-
         public ulong GetDeviceMemoryInBytes()
         {
             throw new NotImplementedException();

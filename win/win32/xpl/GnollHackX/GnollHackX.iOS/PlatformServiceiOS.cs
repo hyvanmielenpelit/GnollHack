@@ -108,20 +108,6 @@ namespace GnollHackX.iOS
             return info.phys_footprint;
         }
 
-        /* Headroom before jetsam (os_proc_available_memory, iOS 13+) */
-        public ulong GetProcessAvailableMemoryInBytes()
-        {
-            try
-            {
-                return os_proc_available_memory().ToUInt64();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                return 0;
-            }
-        }
-
         public ulong GetUsedMemoryInBytes()
         {
             try
