@@ -30,7 +30,8 @@ static const char *e_nam(struct entity *);
 static const char *E_phrase(struct entity *, const char *);
 static boolean e_survives_at(struct entity *, int, int);
 static void e_died(struct entity *, int, int);
-static void e_kill_monster(struct entity *, int);
+static boolean e_sync_monster(struct entity *);
+static boolean e_kill_monster(struct entity *, int);
 static boolean e_damage(struct entity *, int, const char *, int, int);
 static void e_eject(struct entity *);
 static boolean automiss(struct entity *);
@@ -409,31 +410,42 @@ e_survives_at(struct entity *etmp, int x, int y)
                                           || Flying || Levitation))
                           || is_swimmer(etmp->edata)
                           || is_flyer(etmp->edata)
-                          || is_floater(etmp->edata));
+                          || is_floater(etmp->edata)
+                          || (!is_u(etmp)
+                              && (is_flying(etmp->emon) || is_levitating(etmp->emon)
+                                  || mon_clings_on_water(etmp->emon)
+                                  || mon_walks_on_water(etmp->emon)
+                                  || has_swimming(etmp->emon)
+                                  || has_magical_breathing(etmp->emon)
+                                  || amphibious(etmp->emon->data))));
     /* must force call to lava_effects in e_died if is_u */
     if (is_lava(x, y))
         return (boolean) ((is_u(etmp) && Moves_above_ground)
                           || likes_lava(etmp->edata)
-                          || is_flyer(etmp->edata));
+                          || is_flyer(etmp->edata)
+                          || (!is_u(etmp)
+                              && (is_flying(etmp->emon) || is_levitating(etmp->emon)
+                                  || is_clinger(etmp->emon->data))));
     if (is_db_wall(x, y))
         return (boolean) (is_u(etmp) ? Passes_walls
                           : passes_walls(etmp->edata));
     return TRUE;
 }
 
-static void
-e_kill_monster(struct entity *etmp, int xkill_flags)
+/* Refreshes a monster entity after it may have died, revived or moved; TRUE if it is still on the level */
+static boolean
+e_sync_monster(struct entity *etmp)
 {
     int entitycnt;
 
-    killer.name[0] = 0;
-    killer.hint_idx = 0;
-    /* fake "digested to death" damage-type suppresses corpse */
-    /* if monsters are moving, one of them caused the destruction */
-    if (context.mon_moving)
-        monkilled(etmp->emon, ((xkill_flags & XKILL_NOMSG) != 0) ? (char*)0 : "", AD_PHYS, xkill_flags);
-    else /* you caused it */
-        xkilled(etmp->emon, xkill_flags);
+    if (!DEADMONSTER(etmp->emon) && etmp->emon->mx)
+    {
+        etmp->edata = etmp->emon->data;
+        etmp->ex = etmp->emon->mx;
+        etmp->ey = etmp->emon->my;
+        return TRUE;
+    }
+
     etmp->edata = (struct permonst *) 0;
 
     /* dead long worm handling */
@@ -443,32 +455,57 @@ e_kill_monster(struct entity *etmp, int xkill_flags)
             && etmp->emon == occupants[entitycnt].emon)
             occupants[entitycnt].edata = (struct permonst *) 0;
     }
+    return FALSE;
+}
+
+/* Returns TRUE if the monster is gone; life saving or vampire revival keeps it */
+static boolean
+e_kill_monster(struct entity *etmp, int xkill_flags)
+{
+    killer.name[0] = 0;
+    killer.hint_idx = 0;
+    /* if monsters are moving, one of them caused the destruction */
+    if (context.mon_moving)
+        monkilled(etmp->emon, ((xkill_flags & XKILL_NOMSG) != 0) ? (char*)0 : "", AD_PHYS, xkill_flags);
+    else /* you caused it */
+        xkilled(etmp->emon, xkill_flags);
+
+    return !e_sync_monster(etmp);
 }
 
 static void
 e_died(struct entity *etmp, int xkill_flags, int how)
 {
-    if (is_u(etmp)) {
-        if (how == DROWNING) {
+    if (is_u(etmp))
+    {
+        if (how == DROWNING)
+        {
             killer.name[0] = 0; /* drown() sets its own killer */
             killer.hint_idx = 0;
             (void) drown();
-        } else if (how == BURNING) {
+        }
+        else if (how == BURNING)
+        {
             killer.name[0] = 0; /* lava_effects() sets own killer */
             killer.hint_idx = 0;
             (void) lava_effects();
-        } else {
+        }
+        else
+        {
             coord xy;
 
             /* use more specific killer if specified */
-            if (!killer.name[0]) {
+            if (!killer.name[0])
+            {
                 killer.format = KILLED_BY_AN;
                 Strcpy(killer.name, "falling drawbridge");
             }
             done(how);
             /* So, you didn't die */
-            if (!e_survives_at(etmp, etmp->ex, etmp->ey)) {
-                if (enexto(&xy, etmp->ex, etmp->ey, etmp->edata)) {
+            if (!e_survives_at(etmp, etmp->ex, etmp->ey))
+            {
+                if (enexto(&xy, etmp->ex, etmp->ey, etmp->edata))
+                {
                     pline("A %s force teleports you away...",
                           Hallucination ? "normal" : "strange");
                     teleds_with_effects(xy.x, xy.y, FALSE, FALSE);
@@ -480,11 +517,17 @@ e_died(struct entity *etmp, int xkill_flags, int how)
         }
         /* we might have crawled out of the moat to survive */
         etmp->ex = u.ux, etmp->ey = u.uy;
-    } else
-        e_kill_monster(etmp, xkill_flags);
+    }
+    else if (how == DROWNING || how == BURNING)
+    {
+        (void) minliquid(etmp->emon);
+        (void) e_sync_monster(etmp);
+    }
+    else
+        (void) e_kill_monster(etmp, xkill_flags);
 }
 
-/* Returns TRUE if a monster entity died; the hero's death is handled by losehp() */
+/* Returns TRUE if a monster entity is gone; the hero's death is handled by losehp() */
 static boolean
 e_damage(struct entity *etmp, int basedmg, const char *knam, int k_format, int xkill_flags)
 {
@@ -493,6 +536,11 @@ e_damage(struct entity *etmp, int basedmg, const char *knam, int k_format, int x
 
     if (is_u(etmp))
     {
+        if (u.uundetected)
+        {
+            u.uundetected = 0;
+            newsym(u.ux, u.uy);
+        }
         losehp(adjust_damage(basedmg, (struct monst *) 0, &youmonst, AD_PHYS, ADFLAGS_NONE), knam, k_format);
         /* lifesaving or rehumanizing may have changed the hero's form */
         etmp->edata = youmonst.data;
@@ -500,11 +548,17 @@ e_damage(struct entity *etmp, int basedmg, const char *knam, int k_format, int x
     }
 
     deduct_monster_hp(etmp->emon, adjust_damage(basedmg, (struct monst *) 0, etmp->emon, AD_PHYS, ADFLAGS_NONE));
-    if (!DEADMONSTER(etmp->emon))
-        return FALSE;
+    if (DEADMONSTER(etmp->emon))
+        return e_kill_monster(etmp, xkill_flags);
 
-    e_kill_monster(etmp, xkill_flags);
-    return TRUE;
+    if (is_mon_mundetected(etmp->emon))
+    {
+        set_mon_mundetected(etmp->emon, 0);
+        newsym(etmp->emon->mx, etmp->emon->my);
+    }
+    /* a drawbridge the hero operates counts as the hero's attack */
+    wakeup(etmp->emon, !context.mon_moving);
+    return FALSE;
 }
 
 /* Moves a surviving entity out of a square it cannot occupy */
@@ -537,7 +591,7 @@ e_eject(struct entity *etmp)
         etmp->edata = etmp->emon->data;
     }
     else
-        e_kill_monster(etmp, XKILL_NOCORPSE | XKILL_NOMSG);
+        (void) e_kill_monster(etmp, XKILL_NOCORPSE | XKILL_NOMSG);
 }
 
 /*
@@ -675,7 +729,7 @@ do_entity(struct entity *etmp)
             return;       /* Note: Beyond this point, we know we're  */
         }                 /* not at an opened drawbridge, since all  */
         must_jump = TRUE; /* *missable* creatures survive on the     */
-    }                     /* square, and all the unmissed ones die.  */
+    }                     /* square, all the unmissed ones are hit.  */
 
     if (must_jump) 
     {
@@ -743,7 +797,14 @@ do_entity(struct entity *etmp)
         {
             debugpline1("Handling %s", e_nam(other));
             while ((e_at(newx, newy) != 0) && (e_at(newx, newy) != etmp))
+            {
                 do_entity(other);
+                if (e_at(newx, newy) == other)
+                {
+                    relocates = FALSE; /* "other" survived in place */
+                    break;
+                }
+            }
             debugpline1("Checking existence of %s", e_nam(etmp));
 #ifdef D_DEBUG
             wait_synch();
@@ -826,12 +887,17 @@ do_entity(struct entity *etmp)
         if (e_survives_at(etmp, etmp->ex, etmp->ey))
         {
             if (e_inview && !is_flyer(etmp->edata)
-                && !is_floater(etmp->edata))
+                && !is_floater(etmp->edata)
+                && (is_u(etmp) ? !(Flying || Levitation)
+                               : !(is_flying(etmp->emon) || is_levitating(etmp->emon))))
                 pline_ex(ATR_NONE, is_u(etmp) ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "%s from the bridge.", E_phrase(etmp, "fall"));
             return;
         }
         debugpline1("%s cannot survive on the drawbridge square",
                     E_phrase(etmp, NULL));
+        if (!is_u(etmp) && etmp->emon->wormno
+            && (etmp->ex != etmp->emon->mx || etmp->ey != etmp->emon->my))
+            return; /* a long worm's tail is held up by the rest of the worm */
         if (is_pool(etmp->ex, etmp->ey) || is_lava(etmp->ex, etmp->ey))
             if (e_inview && !is_u(etmp))
             {
@@ -1155,7 +1221,7 @@ destroy_drawbridge(int x, int y, boolean is_disintegrated)
             //e_died(etmp2,
             //       XKILL_NOCORPSE | (e_inview ? XKILL_GIVEMSG : XKILL_NOMSG),
             //       CRUSHING); /*no corpse*/
-        } /* nothing which is vulnerable can survive this */
+        } /* vulnerable creatures take heavy damage */
     }
     set_entity(x, y, etmp1);
     if (etmp1->edata)
