@@ -1000,14 +1000,16 @@ dorestore(int fd, boolean is_backup)
     int loadres = dorestore0(fd);
     if (!loadres && !is_backup)
     {
-        if (!restore_backup_savefile(TRUE))
+        const char *fallback_desc = "";
+
+        if (!restore_fallback_savefile(&fallback_desc))
         {
-            pline("Restoring save file failed.  Replaced save file with back-up save file.");
+            pline("Restoring save file failed.  Replaced save file with %s.", fallback_desc);
             mark_synch(); /* flush output */
             fd = open_and_validate_saved_game(FALSE, (boolean*)0);
             if (fd >= 0)
             {
-                pline("Restoring back-up save file...");
+                pline("Restoring %s...", fallback_desc);
                 mark_synch(); /* flush output */
                 loadres = dorestore0(fd);
             }
@@ -1026,22 +1028,68 @@ dorestore(int fd, boolean is_backup)
     return 0;
 }
 
-/* Ends a load whose save file lacks flagged levels, after offering its backup. Does not return. */
+static void
+show_load_message(const char *title, const char *msg)
+{
+    struct special_view_info info = { 0 };
+
+    if (!msg || !open_special_view || !iflags.window_inited || iflags.debug_fuzzer)
+        return;
+    info.viewtype = SPECIAL_VIEW_MESSAGE;
+    info.title = title;
+    info.text = msg;
+    (void) open_special_view(info);
+}
+
+/* Ends a load that did not start the game. Does not return. */
+static void
+end_load_to_main_screen(void)
+{
+    (void) delete_tmp_backup_savefile();
+    restoreprocs.mread_flags = 0;
+    restoring = FALSE;
+    nh_compress(fqname(SAVEF, SAVEPREFIX, 1));
+    nh_bail(EXIT_SUCCESS, (char *) 0, TRUE); /* clearlocks(), then the main screen */
+}
+
+/* Ends a load whose save file lacks flagged levels, after offering the earlier save file and the backup. Does not return. */
 static void
 end_load_missing_levels(int fd, int n_missing, boolean was_corrupted)
 {
     struct special_view_info info = { 0 };
     char txtbuf[BUFSZ * 2 + SAVESIZE];
+    char probbuf[BUFSZ];
     const char *msg = (const char *) 0;
+    const char *outcome = "backup declined";
 
     (void) nhclose(fd); /* before the save file may be replaced */
+    Sprintf(probbuf, "is missing %d dungeon level%s", n_missing, plur(n_missing));
     if (was_corrupted)
+    {
         msg = "The save file is missing dungeon levels and cannot be loaded.";
+        outcome = "save file corrupted";
+    }
+    else if (ask_restore_prerecovery_savefile(probbuf, TRUE))
+    {
+        if (restore_prerecovery_savefile())
+        {
+            msg = "Restoring the earlier save file failed.";
+            outcome = "earlier save restore failed";
+        }
+        else
+            outcome = "earlier save restored";
+    }
     else if (!check_has_backup_savefile())
+    {
         msg = "The save file is missing dungeon levels and cannot be loaded, and there is no backup save file.";
+        outcome = "no backup";
+    }
     else if (backup_savefile_matches_savefile())
+    {
         msg = "The save file is missing dungeon levels and cannot be loaded. "
               "Its backup save file is identical and cannot be used to restore the saved game.";
+        outcome = "backup identical";
+    }
     else
     {
         int res;
@@ -1057,22 +1105,24 @@ end_load_missing_levels(int fd, int n_missing, boolean was_corrupted)
         Sprintf(txtbuf, "end_load_missing_levels: replace with backup answered %c",
                 (res > ' ' && res < 127) ? res : '?');
         issue_breadcrumb(txtbuf);
-        if (res == 'y' && restore_backup_savefile(TRUE))
-            msg = "Replacing the save file with its backup failed.";
+        if (res == 'y')
+        {
+            if (restore_backup_savefile(TRUE))
+            {
+                msg = "Replacing the save file with its backup failed.";
+                outcome = "backup restore failed";
+            }
+            else
+                outcome = "backup restored";
+        }
     }
-    if (msg && open_special_view && iflags.window_inited && !iflags.debug_fuzzer)
-    {
-        info.viewtype = SPECIAL_VIEW_MESSAGE;
-        info.title = "Save File Not Loaded";
-        info.text = msg;
-        (void) open_special_view(info);
-    }
+    show_load_message("Save File Not Loaded", msg);
+    Sprintf(txtbuf, "end_load_missing_levels: %s", outcome);
+    issue_breadcrumb(txtbuf);
+    debugprint("end_load_missing_levels: %d missing, %s", n_missing, outcome);
+    silent_nonfatal_error("dorestore0: flagged levels are not in the save file");
     issue_breadcrumb("end_load_missing_levels: save file not loaded");
-    (void) delete_tmp_backup_savefile();
-    restoreprocs.mread_flags = 0;
-    restoring = FALSE;
-    nh_compress(fqname(SAVEF, SAVEPREFIX, 1));
-    nh_bail(EXIT_SUCCESS, (char *) 0, TRUE); /* clearlocks(), then the main screen */
+    end_load_to_main_screen();
 }
 
 int
@@ -1184,6 +1234,15 @@ dorestore0(int fd)
     if (restoreprocs.mread_flags == -2)
     {
         was_corrupted = TRUE;
+        if (ask_restore_prerecovery_savefile("is corrupted", TRUE))
+        {
+            (void) nhclose(fd);
+            if (restore_prerecovery_savefile())
+                show_load_message("Save File Not Loaded", "Restoring the earlier save file failed.");
+            issue_breadcrumb("dorestore0: corrupted save file, earlier save file restored");
+            end_load_to_main_screen();
+            /*NOTREACHED*/
+        }
         if (query_about_corrupted_savefile())
         {
             (void)nhclose(fd);
@@ -1209,7 +1268,6 @@ dorestore0(int fd)
             debugprint("dorestore0: flagged but not in save:%s; current %d, max %d, corrupted %d, recoveries %llu",
                        missbuf, (int) ledger_no(&u.uz), (int) maxledgerno(), (int) was_corrupted,
                        (unsigned long long) game_stats.num_recoveries);
-            silent_nonfatal_error("dorestore0: %d flagged level(s) not in the save file", n_missing);
             end_load_missing_levels(fd, n_missing, was_corrupted);
             /*NOTREACHED*/
         }
@@ -1307,6 +1365,7 @@ dorestore0(int fd)
         (void)move_tmp_backup_savefile_to_actual_backup_savefile(); /* Restore was successful, update backup savefile */
     else
         (void)delete_tmp_backup_savefile();
+    (void) delete_prerecovery_savefile();
 
     post_restore_to_forum(restored_realtime);
     issue_breadcrumb("Finish dorestore0");
@@ -2370,6 +2429,7 @@ select_saved_game(winid bannerwin, uchar style, struct save_game_data *saved)
                             case 'n':
                                 delete_tmp_backup_savefile();
                                 delete_backup_savefile();
+                                delete_prerecovery_savefile();
                                 break;
                             }
                         }
@@ -2379,6 +2439,7 @@ select_saved_game(winid bannerwin, uchar style, struct save_game_data *saved)
                 {
                     delete_tmp_backup_savefile();
                     delete_backup_savefile();
+                    delete_prerecovery_savefile();
                     delete_error_savefile();
                     delete_savefile();
                 }
@@ -2676,8 +2737,8 @@ def_mread(int fd, genericptr_t buf, size_t len)
 
                     info.viewtype = SPECIAL_VIEW_MESSAGE;
                     info.title = "Save File Replaced";
-                    info.text = "The save file has been replaced with its backup save file. "
-                                "Load the game again to continue from the backup.";
+                    info.text = "The save file has been replaced with an earlier save file or its backup. "
+                                "Load the game again to continue from it.";
                     (void) open_special_view(info);
                 }
                 fatal_error("Error restoring old game: %s", errorbuf);

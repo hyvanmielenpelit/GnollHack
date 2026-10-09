@@ -117,6 +117,7 @@ char lock[PL_NSIZ + 27 + GNH_EXTRA_BSIZ]; /* long enough for username+-+name+.99
 #define BACKUP_EXTENSION "bup"       /* extension for backup save files */
 #define ALT_BACKUP_EXTENSION "bak"   /* extension for backup save files (alternative) */
 #define TEMP_BACKUP_EXTENSION "tmp"  /* extension for temp backup save files */
+#define PRERECOVERY_EXTENSION "rec"  /* before TEMP_BACKUP_EXTENSION: the save file crash recovery replaced */
 #define SAVE_FILE_TRACKING_EXTENSION "ghsft"  /* extension for save file tracking files */
 #define RUNNING_EXTENSION ".0"  /* running */
 
@@ -1557,6 +1558,23 @@ ask_delete_invalid_savefile(const char *adjective, boolean allow_replace_backup)
     int res;
     if (!adjective)
         adjective = "invalid";
+    if (allow_replace_backup)
+    {
+        char probbuf[BUFSZ];
+        int rpres;
+
+        Sprintf(probbuf, "is %s", adjective);
+        if (ask_restore_prerecovery_savefile(probbuf, FALSE))
+        {
+            pline("Replacing %s save file \"%s\".", an(adjective), SAVEF);
+            (void) delete_tmp_backup_savefile();
+            rpres = restore_prerecovery_savefile();
+            issue_breadcrumb2("ask_delete_invalid_savefile: restore_prerecovery_savefile returned", rpres);
+            if (!rpres)
+                return -2;
+            pline("Replacing \"%s\" failed.", SAVEF);
+        }
+    }
     /* a backup that loads and is not merely a copy of this save */
     boolean keep_backup = check_has_backup_savefile() && !backup_savefile_matches_savefile();
     if (allow_replace_backup && keep_backup)
@@ -1596,6 +1614,7 @@ ask_delete_invalid_savefile(const char *adjective, boolean allow_replace_backup)
     {
         pline("Deleting %s save file \"%s\".", an(adjective), SAVEF);
         (void) delete_tmp_backup_savefile();
+        (void) delete_prerecovery_savefile();
         if (!keep_backup)
             (void) delete_backup_savefile();
         return delete_savefile();
@@ -1626,6 +1645,7 @@ query_about_corrupted_savefile(void)
 }
 
 static char fq_tmp_backup[GNH_FILEPATH_SIZ];
+static boolean prerecovery_declined = FALSE; /* the player declined the pre-recovery save file during this load */
 
 /*
  * Parameters:
@@ -1748,24 +1768,16 @@ restore_backup_savefile(boolean dodelete_existing)
     return -1; /* Making backups is not on */
 }
 
-/* TRUE if the backup save file has the same contents as the save file */
-boolean
-backup_savefile_matches_savefile(void)
+/* TRUE if both files open and have the same contents */
+static boolean
+files_have_same_contents(const char *fq_a, const char *fq_b)
 {
     static char buf1[4096], buf2[4096];
-    char bakbuf[FQN_MAX_FILENAME + BUFSZ];
-    const char *fq_save;
     int fd1, fd2, n1, n2;
     boolean same = FALSE;
 
-    if (!sysopt.make_backup_savefiles || !*SAVEF)
-        return FALSE;
-    fq_save = fqname(SAVEF, SAVEPREFIX, 0);
-    Strcpy(bakbuf, fq_save);
-    print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
-    nh_uncompress(bakbuf);
-    fd1 = open(fq_save, O_RDONLY | O_BINARY, 0);
-    fd2 = open(bakbuf, O_RDONLY | O_BINARY, 0);
+    fd1 = open(fq_a, O_RDONLY | O_BINARY, 0);
+    fd2 = open(fq_b, O_RDONLY | O_BINARY, 0);
     if (fd1 >= 0 && fd2 >= 0)
     {
         do
@@ -1779,6 +1791,24 @@ backup_savefile_matches_savefile(void)
         (void) close(fd1);
     if (fd2 >= 0)
         (void) close(fd2);
+    return same;
+}
+
+/* TRUE if the backup save file has the same contents as the save file */
+boolean
+backup_savefile_matches_savefile(void)
+{
+    char bakbuf[FQN_MAX_FILENAME + BUFSZ];
+    const char *fq_save;
+    boolean same;
+
+    if (!sysopt.make_backup_savefiles || !*SAVEF)
+        return FALSE;
+    fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+    Strcpy(bakbuf, fq_save);
+    print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
+    nh_uncompress(bakbuf);
+    same = files_have_same_contents(fq_save, bakbuf);
     nh_compress(bakbuf);
     return same;
 }
@@ -1814,6 +1844,221 @@ delete_tmp_backup_savefile(void)
         return unlink(bakbuf);
     }
     return -1; /* Making backups is not on */
+}
+
+/* The fully qualified save file name with up to three extensions appended */
+static void
+get_savefile_variant_name(char *buf, const char *ext1, const char *ext2, const char *ext3)
+{
+    Strcpy(buf, fqname(SAVEF, SAVEPREFIX, 0));
+    if (ext1)
+        print_special_savefile_extension(buf, ext1);
+    if (ext2)
+        print_special_savefile_extension(buf, ext2);
+    if (ext3)
+        print_special_savefile_extension(buf, ext3);
+}
+
+static void
+get_prerecovery_savefile_name(char *buf)
+{
+    get_savefile_variant_name(buf, PRERECOVERY_EXTENSION, TEMP_BACKUP_EXTENSION, (const char *) 0);
+}
+
+static void
+get_tracking_file_name(char *buf)
+{
+    get_savefile_variant_name(buf, SAVE_FILE_TRACKING_EXTENSION, (const char *) 0, (const char *) 0);
+}
+
+static void
+get_prerecovery_tracking_file_name(char *buf)
+{
+    get_savefile_variant_name(buf, SAVE_FILE_TRACKING_EXTENSION, PRERECOVERY_EXTENSION, TEMP_BACKUP_EXTENSION);
+}
+
+/* Renames from over to; TRUE on success */
+static boolean
+replace_file(const char *from, const char *to)
+{
+    /* POSIX rename() replaces the target atomically; Windows refuses an existing one */
+    if (rename(from, to) == 0)
+        return TRUE;
+    (void) unlink(to);
+    return (boolean) (rename(from, to) == 0);
+}
+
+/* TRUE if fq_file is a version-compatible save file, with its header copied to
+   *vers_ptr and *stats_ptr; plbuf, if given, must match the stored name */
+static boolean
+read_savefile_header(const char *fq_file, const char *plbuf,
+                     struct version_info *vers_ptr, struct save_game_stats *stats_ptr)
+{
+    int fd, pltmpsiz = 0;
+    struct savefile_info sfi;
+    char tmpplbuf[PL_NSIZ];
+    boolean ok = FALSE;
+
+    fd = open(fq_file, O_RDONLY | O_BINARY, 0);
+    if (fd < 0)
+        return FALSE;
+    if ((int) read(fd, (genericptr_t) vers_ptr, (readLenType) sizeof *vers_ptr) == (int) sizeof *vers_ptr
+        && (int) read(fd, (genericptr_t) &sfi, (readLenType) sizeof sfi) == (int) sizeof sfi
+        && (int) read(fd, (genericptr_t) &pltmpsiz, (readLenType) sizeof pltmpsiz) == (int) sizeof pltmpsiz
+        && pltmpsiz > 0 && pltmpsiz <= PL_NSIZ
+        && (int) read(fd, (genericptr_t) tmpplbuf, (readLenType) pltmpsiz) == pltmpsiz
+        && (int) read(fd, (genericptr_t) stats_ptr, (readLenType) sizeof *stats_ptr) == (int) sizeof *stats_ptr)
+    {
+        tmpplbuf[PL_NSIZ - 1] = '\0';
+        ok = check_version(vers_ptr, fq_file, FALSE)
+             && (!plbuf || !strncmp(tmpplbuf, plbuf, PL_NSIZ));
+    }
+    (void) close(fd);
+    return ok;
+}
+
+/* TRUE if both headers describe the same game; only fields a game cannot change */
+static boolean
+same_game_stats(const struct save_game_stats *a, const struct save_game_stats *b)
+{
+    return (boolean) (a->rolenum == b->rolenum && a->racenum == b->racenum
+                      && a->game_difficulty == b->game_difficulty
+                      && a->debug_mode == b->debug_mode && a->explore_mode == b->explore_mode
+                      && a->modern_mode == b->modern_mode && a->casual_mode == b->casual_mode);
+}
+
+int
+delete_prerecovery_savefile(void)
+{
+    char prebuf[FQN_MAX_FILENAME + BUFSZ], pretrkbuf[FQN_MAX_FILENAME + BUFSZ];
+
+    if (!*SAVEF)
+        return -1;
+    get_prerecovery_tracking_file_name(pretrkbuf);
+    (void) unlink(pretrkbuf);
+    get_prerecovery_savefile_name(prebuf);
+    nh_uncompress(prebuf);
+    if (access(prebuf, F_OK) != 0)
+        return -2; /* Pre-recovery save file does not exist */
+    return unlink(prebuf);
+}
+
+/* 1 if the pre-recovery save file exists and can replace the save file; 0 if it is
+   absent or unusable, which leaves it in place; -1 if it duplicated the backup save
+   file and was deleted */
+static int
+check_prerecovery_savefile(void)
+{
+    char prebuf[FQN_MAX_FILENAME + BUFSZ], bakbuf[FQN_MAX_FILENAME + BUFSZ];
+    char fq_save[FQN_MAX_FILENAME + BUFSZ];
+    struct version_info vers;
+    struct save_game_stats prestats, savestats;
+    boolean duplicate = FALSE, usable;
+
+    if (!*SAVEF)
+        return 0;
+    get_prerecovery_savefile_name(prebuf);
+    nh_uncompress(prebuf);
+    if (access(prebuf, F_OK) != 0)
+        return 0;
+    get_savefile_variant_name(fq_save, (const char *) 0, (const char *) 0, (const char *) 0);
+    if (sysopt.make_backup_savefiles)
+    {
+        get_savefile_variant_name(bakbuf, BACKUP_EXTENSION, (const char *) 0, (const char *) 0);
+        nh_uncompress(bakbuf);
+        duplicate = files_have_same_contents(prebuf, bakbuf);
+        nh_compress(bakbuf);
+    }
+    if (duplicate)
+    {
+        nh_compress(prebuf);
+        (void) delete_prerecovery_savefile();
+        issue_breadcrumb("check_prerecovery_savefile: duplicate of the backup save file deleted");
+        return -1;
+    }
+    /* The file name already carries the character name; the save file's own
+       header is compared only when it is readable */
+    usable = read_savefile_header(prebuf, (const char *) 0, &vers, &prestats)
+             && (!read_savefile_header(fq_save, (const char *) 0, &vers, &savestats)
+                 || same_game_stats(&prestats, &savestats));
+    nh_compress(prebuf);
+    if (!usable)
+        debugprint("check_prerecovery_savefile: present but not usable");
+    return usable ? 1 : 0;
+}
+
+/* Replaces the save file with the pre-recovery save file, and its tracking file
+   with the pre-recovery one; 0 on success */
+int
+restore_prerecovery_savefile(void)
+{
+    char prebuf[FQN_MAX_FILENAME + BUFSZ], fq_save[FQN_MAX_FILENAME + BUFSZ];
+    char trkbuf[FQN_MAX_FILENAME + BUFSZ], pretrkbuf[FQN_MAX_FILENAME + BUFSZ];
+
+    if (!*SAVEF)
+        return -1;
+    get_prerecovery_savefile_name(prebuf);
+    get_savefile_variant_name(fq_save, (const char *) 0, (const char *) 0, (const char *) 0);
+    nh_uncompress(prebuf);
+    if (access(prebuf, F_OK) != 0)
+        return -2;
+    nh_uncompress(fq_save);
+    if (!replace_file(prebuf, fq_save))
+        return -4;
+    nh_compress(fq_save);
+    /* A tracking file beside the save belongs to the file just replaced */
+    get_tracking_file_name(trkbuf);
+    get_prerecovery_tracking_file_name(pretrkbuf);
+    (void) unlink(trkbuf);
+    if (access(pretrkbuf, F_OK) == 0)
+        (void) replace_file(pretrkbuf, trkbuf);
+    return 0;
+}
+
+/* Asks whether to restore a usable pre-recovery save file; problem completes
+   "Save file X ...". A "no" makes the silent fallback skip it during this load. */
+boolean
+ask_restore_prerecovery_savefile(const char *problem, boolean to_main_screen)
+{
+    char txtbuf[BUFSZ * 2 + SAVESIZE];
+    struct special_view_info info = { 0 };
+    int res;
+
+    if (!open_special_view || !iflags.window_inited || iflags.debug_fuzzer
+        || check_prerecovery_savefile() != 1)
+        return FALSE;
+
+    info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y;
+    info.title = "Restore Earlier Save File";
+    Sprintf(txtbuf,
+            "Save file \"%s\" %s. Crash recovery rebuilt it and kept the save file it replaced. "
+            "Do you want to restore that earlier save file%s? The backup save file is not affected.",
+            SAVEF, problem, to_main_screen ? " and return to the main screen" : "");
+    info.text = txtbuf;
+    res = open_special_view(info);
+    Sprintf(txtbuf, "ask_restore_prerecovery_savefile: answered %c",
+            (res > ' ' && res < 127) ? res : '?');
+    issue_breadcrumb(txtbuf);
+    if (res != 'y')
+        prerecovery_declined = TRUE;
+    return (boolean) (res == 'y');
+}
+
+/* Replaces a save file that failed to load: with the pre-recovery save file unless
+   the player declined it during this load, otherwise with the backup save file.
+   0 on success, with *desc_ptr naming the replacement. */
+int
+restore_fallback_savefile(const char **desc_ptr)
+{
+    if (!prerecovery_declined && check_prerecovery_savefile() == 1
+        && !restore_prerecovery_savefile())
+    {
+        *desc_ptr = "the earlier save file";
+        issue_breadcrumb("restore_fallback_savefile: earlier save file restored");
+        return 0;
+    }
+    *desc_ptr = "the back-up save file";
+    return restore_backup_savefile(TRUE);
 }
 
 int
@@ -1966,6 +2211,8 @@ open_and_validate_saved_game(boolean allow_replace_backup, boolean *is_backup_pt
     boolean backup_replaced = FALSE;
     if (is_backup_ptr)
         *is_backup_ptr = FALSE;
+    if (allow_replace_backup)
+        prerecovery_declined = FALSE; /* a new load; the nested reopens pass FALSE */
 
     reset_restpref();
     set_savefile_name(TRUE);
@@ -2096,16 +2343,18 @@ load_saved_game(int load_code)
         int loadres = dorestore0(fd);
         if (!loadres && !is_backup) //This deletes the save file in normal modes
         {
-            if (!restore_backup_savefile(TRUE))
+            const char *fallback_desc = "";
+
+            if (!restore_fallback_savefile(&fallback_desc))
             {
-                pline("Restoring save file failed.  Replaced save file with back-up save file.");
+                pline("Restoring save file failed.  Replaced save file with %s.", fallback_desc);
                 mark_synch(); /* flush output */
                 fd = open_and_validate_saved_game(FALSE, (boolean*)0);
                 if (fd >= 0)
                 {
                     if (load_code == EXITHACK_NORMAL)
                     {
-                        pline("Restoring back-up save file...");
+                        pline("Restoring %s...", fallback_desc);
                         mark_synch(); /* flush output */
                     }
                     loadres = dorestore0(fd);
@@ -5459,6 +5708,12 @@ recover_savefile(void)
     struct savefile_info sfi;
     struct save_game_stats gamestats;
     char tmpplbuf[PL_NSIZ];
+    char fq_existing[FQN_MAX_FILENAME + BUFSZ], prebuf[FQN_MAX_FILENAME + BUFSZ];
+    char trkbuf[FQN_MAX_FILENAME + BUFSZ], pretrkbuf[FQN_MAX_FILENAME + BUFSZ];
+    struct version_info existing_version;
+    struct save_game_stats existing_stats;
+    boolean have_existing = FALSE, kept_prerecovery = FALSE;
+    int n_other_levels = 0;
 
     recover_failure_reason = (const char *) 0;
 
@@ -5576,6 +5831,20 @@ recover_savefile(void)
         return FALSE;
     }
 
+    set_savefile_name(TRUE);
+    get_savefile_variant_name(fq_existing, (const char *) 0, (const char *) 0, (const char *) 0);
+    nh_uncompress(fq_existing);
+    tmpplbuf[PL_NSIZ - 1] = '\0';
+    have_existing = read_savefile_header(fq_existing, tmpplbuf, &existing_version, &existing_stats)
+                    && same_game_stats(&existing_stats, &gamestats);
+    debugprint("recover_savefile: checkpoint version=%llx, moves=%lld, time=%lld, recoveries=%llu; save %s, version=%llx, moves=%lld, time=%lld",
+               (unsigned long long) version_data.incarnation, (long long) gamestats.umoves,
+               (long long) gamestats.time_stamp, (unsigned long long) gamestats.num_recoveries,
+               have_existing ? "present" : "absent or unusable",
+               have_existing ? (unsigned long long) existing_version.incarnation : 0ULL,
+               have_existing ? (long long) existing_stats.umoves : 0LL,
+               have_existing ? (long long) existing_stats.time_stamp : 0LL);
+
     /* Add number of recoveries by one and update gamestats time_stamp so it can be used for new save file tracking */
     gamestats.num_recoveries++;
     gamestats.time_stamp = (int64_t)getnow();
@@ -5589,7 +5858,6 @@ recover_savefile(void)
      *  (non-level-based) game state
      *  other levels
      */
-    set_savefile_name(TRUE);
     /* built aside and moved over the save only when complete, so a failed
        recovery leaves an existing save file untouched */
     Strcpy(fq_recovered, fqname(SAVEF, SAVEPREFIX, 0));
@@ -5743,10 +6011,31 @@ recover_savefile(void)
                 }
                 (void) nhclose(lfd);
                 processed[lev] = 1;
+                n_other_levels++;
             }
         }
     }
     (void) nhclose(sfd);
+
+    /* The save this rebuild replaces is offered if the rebuild fails to load */
+    if (have_existing)
+    {
+        get_prerecovery_savefile_name(prebuf);
+        nh_uncompress(prebuf);
+        kept_prerecovery = replace_file(fq_existing, prebuf);
+        if (kept_prerecovery)
+        {
+            nh_compress(prebuf);
+            get_tracking_file_name(trkbuf);
+            get_prerecovery_tracking_file_name(pretrkbuf);
+            (void) unlink(pretrkbuf);
+            if (access(trkbuf, F_OK) == 0)
+                (void) replace_file(trkbuf, pretrkbuf);
+            issue_breadcrumb("recover_savefile: replaced save file kept");
+        }
+        else
+            debugprint("recover_savefile: keeping the replaced save failed (errno %d)", errno);
+    }
 
     /* POSIX rename() replaces the target atomically; Windows refuses an existing one */
     fq_save = fqname(SAVEF, SAVEPREFIX, 0);
@@ -5757,6 +6046,8 @@ recover_savefile(void)
         {
             recover_failure_reason = "the recovered save file could not be moved into place";
             debugprint("recover_savefile: rename failed (errno %d)", errno);
+            if (kept_prerecovery)
+                (void) restore_prerecovery_savefile(); /* a failed recovery leaves the save file as it was */
             return FALSE;
         }
     }
@@ -5790,8 +6081,9 @@ recover_savefile(void)
     nh_compress(fq_save);
 #endif
 
-    debugprint("recover_savefile: recovered, level=%d, recoveries=%llu",
-               savelev, (unsigned long long) gamestats.num_recoveries);
+    debugprint("recover_savefile: recovered, level=%d, other levels=%d, recoveries=%llu, replaced save kept=%d",
+               savelev, n_other_levels, (unsigned long long) gamestats.num_recoveries,
+               (int) kept_prerecovery);
     issue_breadcrumb2("recover_savefile: recovered", savelev);
 
     return TRUE;
