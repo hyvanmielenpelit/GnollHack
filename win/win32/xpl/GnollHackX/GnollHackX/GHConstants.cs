@@ -132,6 +132,9 @@ namespace GnollHackX
         public const int MaxUISoundInstances = 8;
         public const int MaxChannels = 512;
         public const int FmodSuspendFlushPasses = 2;
+        /* FMOD 2.03.14 on Android can crash inside System::mixerSuspend (qa.fmod.com/t/24471);
+           Android backgrounding pauses the master channel group instead while this is true. */
+        public static readonly bool FmodAndroidPauseInsteadOfMixerSuspend = true;
         public const int MaxBitmapCacheSize = 64;
         public const int MaxColorFilterCacheSize = 128;
         /* Text blob cache bounds. The defaults apply to any GHSkiaFontPaint that does not
@@ -489,6 +492,8 @@ namespace GnollHackX
         public const string SentryTagFmodMixer = "fmod.mixer";
         public const string SentryTagAppLifecycle = "app.lifecycle";
         public const string SentryTagMapSurface = "map.surface";
+        public const string SentryTagFmodOutput = "fmod.output";
+        public const string SentryTagFmodVersion = "fmod.version";
         /* Worst case for the debug buffers is NUM_DEBUGBUFS (40) entries of DEBUGBUFSIZ
            (BUFSZ * 2 = 512) characters plus separators, about 20.7 kB. Real snapshots
            are far smaller. */

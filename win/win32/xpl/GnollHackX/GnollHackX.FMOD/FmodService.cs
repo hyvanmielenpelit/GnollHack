@@ -163,8 +163,26 @@ namespace GnollHackX.Unknown
         private int _initialized = 0;
         private bool Initialized { get { return Interlocked.CompareExchange(ref _initialized, 0, 0) != 0; } set { Interlocked.Exchange(ref _initialized, value ? 1 : 0); } }
 
+        /* True while FMOD is in its background state: mixer suspended, or master group paused */
         private int _mixerSuspended = 0;
         private bool MixerSuspended { get { return Interlocked.CompareExchange(ref _mixerSuspended, 0, 0) != 0; } set { Interlocked.Exchange(ref _mixerSuspended, value ? 1 : 0); } }
+
+        /* True when backgrounding pauses the master channel group instead of suspending the mixer */
+        private static bool UseMasterPauseForSuspend
+        {
+            get
+            {
+#if __ANDROID__
+                return GHConstants.FmodAndroidPauseInsteadOfMixerSuspend;
+#else
+                return false;
+#endif
+            }
+        }
+
+        private static string SuspendedTagValue { get { return UseMasterPauseForSuspend ? "paused" : "suspended"; } }
+        private static string SuspendingTagValue { get { return UseMasterPauseForSuspend ? "pausing" : "suspending"; } }
+        private static string ResumingTagValue { get { return UseMasterPauseForSuspend ? "unpausing" : "resuming"; } }
 
         /* Records that a suspend was requested even if FMOD was not yet initialized and
            the suspend could therefore not be carried out. Without this, an OnSleep that
@@ -305,6 +323,10 @@ namespace GnollHackX.Unknown
 
             Initialized = true;
             GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, "running");
+            if (_coresystem.getOutput(out OUTPUTTYPE outputType) == RESULT.OK)
+                GHApp.SetSentryTag(GHConstants.SentryTagFmodOutput, outputType.ToString());
+            if (_coresystem.getVersion(out uint fmodVersion, out uint fmodBuild) == RESULT.OK)
+                GHApp.SetSentryTag(GHConstants.SentryTagFmodVersion, $"{(fmodVersion >> 16) & 0xFFFF:X}.{(fmodVersion >> 8) & 0xFF:X2}.{fmodVersion & 0xFF:X2}+{fmodBuild}");
             GHApp.MaybeWriteGHLog("FMOD initialized successfully.");
 
             /* A newly created system's master channel group is always unmuted. Re-apply
@@ -344,7 +366,7 @@ namespace GnollHackX.Unknown
                 if (MixerSuspended)
                     ResumeMixer();
 
-                if (MixerSuspended)
+                if (MixerSuspended && !UseMasterPauseForSuspend)
                 {
                     /* release() deadlocks against a suspended mixer, so nothing is released;
                        the process is exiting. */
@@ -409,7 +431,7 @@ namespace GnollHackX.Unknown
             if (!TryBeginLifecycleTransition())
                 return; /* The transition in flight reconciles with SuspendRequested when it ends */
 
-            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, "suspending");
+            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, SuspendingTagValue);
             try
             {
                 WaitForActiveCallsToDrain(GHConstants.FmodDrainTimeoutMs, "Suspend");
@@ -419,7 +441,7 @@ namespace GnollHackX.Unknown
             {
                 EndLifecycleTransition();
             }
-            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, MixerSuspended ? "suspended" : "running");
+            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, MixerSuspended ? SuspendedTagValue : "running");
 
             if (!SuspendRequested && MixerSuspended)
                 Resume();
@@ -429,12 +451,12 @@ namespace GnollHackX.Unknown
         {
             try
             {
-                /* A suspended mixer advances no event, so a STOPPED callback still owed
-                   when the mixer stops is delivered only after the next resume. The
-                   dialogue queue advances one entry per callback and quieter mode is
-                   refcounted, so a late delivery stalls the queue and leaves the game
-                   quieter. The first pass delivers the owed callbacks, the second executes
-                   the start() calls those callbacks queue in turn. */
+                /* A suspended mixer or a paused master group advances no event, so a
+                   STOPPED callback still owed when the mixer stops is delivered only after
+                   the next resume. The dialogue queue advances one entry per callback and
+                   quieter mode is refcounted, so a late delivery stalls the queue and
+                   leaves the game quieter. The first pass delivers the owed callbacks, the
+                   second executes the start() calls those callbacks queue in turn. */
                 if (_system.hasHandle())
                 {
                     for (int i = 0; i < GHConstants.FmodSuspendFlushPasses; i++)
@@ -444,16 +466,35 @@ namespace GnollHackX.Unknown
 
                 if (_coresystem.hasHandle())
                 {
-                    GHApp.MaybeWriteGHLog("FmodService.Suspend: calling mixerSuspend", true, GHConstants.SentryGnollHackGeneralCategoryName);
-                    RESULT res = _coresystem.mixerSuspend();
-                    if (res == RESULT.OK)
+                    if (UseMasterPauseForSuspend)
                     {
-                        MixerSuspended = true;
-                        GHApp.MaybeWriteGHLog("FmodService.Suspend: mixer suspended successfully.", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        GHApp.MaybeWriteGHLog("FmodService.Suspend: pausing master channel group", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        RESULT res = _coresystem.getMasterChannelGroup(out ChannelGroup masterChannelGroup);
+                        if (res == RESULT.OK)
+                            res = masterChannelGroup.setPaused(true);
+                        if (res == RESULT.OK)
+                        {
+                            MixerSuspended = true;
+                            GHApp.MaybeWriteGHLog("FmodService.Suspend: master channel group paused.", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        }
+                        else
+                        {
+                            GHApp.MaybeWriteGHLog($"FmodService.Suspend: pausing master channel group failed with result {res}", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        }
                     }
                     else
                     {
-                        GHApp.MaybeWriteGHLog($"FmodService.Suspend: mixerSuspend failed with result {res}", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        GHApp.MaybeWriteGHLog("FmodService.Suspend: calling mixerSuspend", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        RESULT res = _coresystem.mixerSuspend();
+                        if (res == RESULT.OK)
+                        {
+                            MixerSuspended = true;
+                            GHApp.MaybeWriteGHLog("FmodService.Suspend: mixer suspended successfully.", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        }
+                        else
+                        {
+                            GHApp.MaybeWriteGHLog($"FmodService.Suspend: mixerSuspend failed with result {res}", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        }
                     }
                 }
             }
@@ -472,7 +513,7 @@ namespace GnollHackX.Unknown
             if (!TryBeginLifecycleTransition())
                 return; /* The transition in flight reconciles with SuspendRequested when it ends */
 
-            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, "resuming");
+            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, ResumingTagValue);
             bool resumed;
             try
             {
@@ -483,7 +524,7 @@ namespace GnollHackX.Unknown
             {
                 EndLifecycleTransition();
             }
-            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, MixerSuspended ? "suspended" : "running");
+            GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, MixerSuspended ? SuspendedTagValue : "running");
 
             /* Any mute change made while the mixer was suspended was refused
                by TryEnterFmodMonitor(); apply it now that FMOD is back. */
@@ -500,16 +541,27 @@ namespace GnollHackX.Unknown
             {
                 if (_coresystem.hasHandle())
                 {
-                    RESULT res = _coresystem.mixerResume();
+                    RESULT res;
+                    if (UseMasterPauseForSuspend)
+                    {
+                        res = _coresystem.getMasterChannelGroup(out ChannelGroup masterChannelGroup);
+                        if (res == RESULT.OK)
+                            res = masterChannelGroup.setPaused(false);
+                    }
+                    else
+                    {
+                        res = _coresystem.mixerResume();
+                    }
+
                     if (res == RESULT.OK)
                     {
                         MixerSuspended = false;
-                        GHApp.MaybeWriteGHLog("FmodService.Resume: mixer resumed successfully.", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        GHApp.MaybeWriteGHLog(UseMasterPauseForSuspend ? "FmodService.Resume: master channel group unpaused." : "FmodService.Resume: mixer resumed successfully.", true, GHConstants.SentryGnollHackGeneralCategoryName);
                         return true;
                     }
                     else
                     {
-                        GHApp.MaybeWriteGHLog($"FmodService.Resume: mixerResume failed with result {res}", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        GHApp.MaybeWriteGHLog($"FmodService.Resume: {(UseMasterPauseForSuspend ? "unpausing master channel group" : "mixerResume")} failed with result {res}", true, GHConstants.SentryGnollHackGeneralCategoryName);
                     }
                 }
             }
