@@ -313,3 +313,4 @@ All platforms delegate lifecycle to `GHApp.OnStart()`, `GHApp.OnResume()`, `GHAp
 - **`glyph_tile_display`** — Glyph-to-tile rendering pipeline, LayerInfo, MapData double-buffering
 - **`nethack_c_core`** — C core engine, `libshare` bridge code
 - **`debugging_gnollhack`** — Wizard mode, running the MAUI app locally
+- **`client_framework_sources`** — The source of the frameworks under this layer, read at the shipped version

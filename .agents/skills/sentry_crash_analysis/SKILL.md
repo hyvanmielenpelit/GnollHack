@@ -267,6 +267,8 @@ Follow this systematic approach:
 
 1. **Identify the crash point** — the topmost frame in GnollHack code, or the
    transition point from system frameworks to application code.
+   When the trail continues into framework code, read that code at the shipped
+   version: see `client_framework_sources`.
 2. **Map function names to source files** — search the codebase to find the
    function definition in the codebase (search in `src/`, `include/`,
    `win/win32/xpl/`).
@@ -697,5 +699,7 @@ unrelated operation.
   P/Invoke native bridge, XAML pipeline
 - **`maui_threading`** — Multi-threaded programming patterns, lock strategies,
   `ConcurrentQueue` communication (relevant for concurrent access crashes)
+- **`client_framework_sources`** — Reading .NET MAUI, runtime, Android, iOS, WinUI, SkiaSharp and Skia
+  source at the shipped version
 - **`save_restore_system`** — Save/load system, struct alignment, file I/O
   (relevant for save corruption and restore crashes)

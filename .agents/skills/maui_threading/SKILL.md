@@ -33,3 +33,7 @@ description: Multi-threaded programming patterns in GnollHack's .NET MAUI fronte
 - There is **no** `EventAggregator` or message-bus type in this codebase; updates
   flow through the concurrent queues above and through direct thread-safe
   property access.
+
+## Related Skills
+
+- **`client_framework_sources`** — How MAUI and the platforms dispatch threads, read at the shipped version

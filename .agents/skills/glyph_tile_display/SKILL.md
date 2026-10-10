@@ -78,3 +78,7 @@ Map drawing lives in `win/win32/xpl/GnollHackX/GnollHackX/`:
   rectangles are computed by `GHApp.TileSheetX()` / `GHApp.TileSheetY()` from the
   `GHConstants` values (`TileWidth`, `TileHeight`, `NumberOfTilesPerSheet`,
   `MaxTileSheetWidthInTiles`), then blitted with SkiaSharp.
+
+## Related Skills
+
+- **`client_framework_sources`** — SkiaSharp and Skia source for the rendering layer

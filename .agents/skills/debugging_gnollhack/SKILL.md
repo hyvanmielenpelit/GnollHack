@@ -63,4 +63,5 @@ When in wizard mode, special commands become available:
 
 - **`build_pipeline`** — Full build process, two-solution architecture, data pipeline, `makedefs` flags
 - **`maui_frontend`** — MAUI frontend architecture, XAML pipeline, SkiaSharp rendering
+- **`client_framework_sources`** — When a bug leads into framework code
 
