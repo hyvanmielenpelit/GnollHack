@@ -621,6 +621,11 @@ namespace GnollHackX.Pages.MainScreen
 
             if (!selected.IsValid)
             {
+                if (selected.IsCloud && !GHApp.HasInternetAccess)
+                {
+                    await ShowMessagePopupAsync("No Internet Connection", "Deleting a save from the cloud requires an internet connection.", "OK");
+                    return;
+                }
                 string displayCharName = selected.Name;
                 bool confirm = await ShowMessagePopupAsync("Confirm Deletion", $"Are you sure to delete the invalid save game \"{displayCharName}\" from save file transfer?", "Yes", "No", titleColor: GHColors.Red);
                 if (confirm)

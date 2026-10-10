@@ -3733,11 +3733,6 @@ namespace GnollHackX.Pages.Game
 
         public async Task DoSaveFileTrackingSave(long timeStamp, string fileName, long fileLength, string sha256hash)
         {
-            if (!GHApp.HasInternetAccess)
-            {
-                await GHApp.DisplayMessageBox(this, "No Internet for Save File Tracking", "You have no internet access. Please switch the internet on before proceeding.", "OK");
-            }
-
             GHGame curGame = GHApp.CurrentGHGame;
             if (string.IsNullOrEmpty(fileName))
             {
@@ -3749,17 +3744,26 @@ namespace GnollHackX.Pages.Game
             if (!await CheckSaveFileTrackingCredentials(GHRequestType.SaveFileTrackingSave))
                 return;
 
+            while (!GHApp.HasInternetAccess)
+            {
+                bool retry = await GHApp.DisplayMessageBox(this, "No Internet for Save File Tracking",
+                    "Save file tracking needs an internet connection to register this save on the server. Switch the internet on and select Retry."
+                    + "\n\nIf you skip, this save is not registered, and when you load it you will be asked to mark it unsuccessfully tracked.",
+                    "Retry", "Skip");
+                if (!retry)
+                {
+                    GHApp.MaybeWriteGHLog("Save file tracking skipped on save: no internet connection");
+                    curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, 13));
+                    return;
+                }
+            }
+
             SendResult res = await GHApp.SendSaveFileTrackingSaveRequest(this, timeStamp, fileName, fileLength, sha256hash);
             curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, res.IsSuccess ? 0 : res.IsException ? 1000 : (int)res.StatusCode));
         }
 
         public async Task DoSaveFileTrackingLoad(long timeStamp, string fileName, long fileLength, string sha256hash)
         {
-            if (!GHApp.HasInternetAccess)
-            {
-                await GHApp.DisplayMessageBox(this, "No Internet for Save File Tracking", "You have no internet access. Please switch the internet on before proceeding.", "OK");
-            }
-
             GHGame curGame = GHApp.CurrentGHGame;
             if (string.IsNullOrEmpty(fileName))
             {
@@ -3777,11 +3781,26 @@ namespace GnollHackX.Pages.Game
             if (!await CheckSaveFileTrackingCredentials(GHRequestType.SaveFileTrackingLoad))
                 return;
 
+            while (!GHApp.HasInternetAccess)
+            {
+                bool retry = await GHApp.DisplayMessageBox(this, "No Internet for Save File Tracking",
+                    "Save file tracking needs an internet connection to verify this save on the server. Switch the internet on and select Retry."
+                    + "\n\nIf you cancel, you will be asked whether to mark this save unsuccessfully tracked or return to the main menu.",
+                    "Retry", "Cancel");
+                if (!retry)
+                {
+                    GHApp.MaybeWriteGHLog("Save file tracking cancelled on load: no internet connection");
+                    curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, 13));
+                    return;
+                }
+            }
+
             SendResult res = await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, fileName, fileLength, sha256hash);
             curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, res.IsSuccess ? 0 : res.IsException ? 1000 : (int)res.StatusCode));
         }
 
         /* Response code 12: tracking skipped because the account credentials are blank.
+           13: tracking skipped because there is no internet connection.
            10 and 11 are the file-name and tracking-file checks above. */
         private async Task<bool> CheckSaveFileTrackingCredentials(GHRequestType requestType)
         {

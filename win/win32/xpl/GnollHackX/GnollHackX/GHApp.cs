@@ -6937,6 +6937,8 @@ namespace GnollHackX
                 }
                 else
                 {
+                    if (!HasInternetAccess)
+                        return;
                     SendResult res = await SendXLogEntry("", 1, 0, new List<GHPostAttachment>(), true);
                     if (res.IsSuccess)
                         Debug.WriteLine("XLog user name successfully verified.");
@@ -10813,6 +10815,12 @@ namespace GnollHackX
 
         public static async Task OpenBrowser(ContentPage page, string title, Uri uri, ForceBrowserOptions forceBrowser = ForceBrowserOptions.None)
         {
+            if (!HasInternetAccess)
+            {
+                await DisplayMessageBox(page, "No Internet Connection", "An internet connection is required to open " + title + ".", "OK");
+                return;
+            }
+
             try
             {
                 if (forceBrowser == ForceBrowserOptions.WebViewBrowser || (IsWindows && forceBrowser == ForceBrowserOptions.None))

@@ -1493,6 +1493,14 @@ namespace GnollHackX.Pages.MainScreen
             UploadButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
+            if (!GHApp.HasInternetAccess)
+            {
+                await GHApp.DisplayMessageBox(this, "No Internet Connection", "Uploading replays requires an internet connection.", "OK");
+                UploadButton.IsEnabled = true;
+                PopupCancelButton_Clicked(sender, e);
+                return;
+            }
+
             UploadDownloadTitleLabel.Text = "Uploading...";
             UploadDownloadFileLabel.Text = "Initializing...";
             UploadDownloadStatusLabel.Text = "Please wait...";
@@ -1757,6 +1765,14 @@ namespace GnollHackX.Pages.MainScreen
         {
             SelectButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+
+            if (!GHApp.HasInternetAccess)
+            {
+                await GHApp.DisplayMessageBox(this, "No Internet Connection", "Downloading replays requires an internet connection.", "OK");
+                SelectButton.IsEnabled = true;
+                PopupCancelButton_Clicked(this, EventArgs.Empty);
+                return;
+            }
 
             UploadDownloadTitleLabel.Text = "Downloading...";
             UploadDownloadFileLabel.Text = "Initializing...";

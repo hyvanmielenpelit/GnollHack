@@ -179,7 +179,11 @@ namespace GnollHackX.Pages.Game
                 (25, 0)   /* Attempt 7: 25s timeout, then give up (no delay needed) */
             };
 
-            for (int attempt = 0; attempt < attemptConfig.Length; attempt++)
+            bool noInternet = !GHApp.HasInternetAccess;
+            if (noInternet)
+                ShowNoInternetStatus();
+
+            for (int attempt = 0; !noInternet && attempt < attemptConfig.Length; attempt++)
             {
                 System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
                 try
@@ -378,6 +382,11 @@ namespace GnollHackX.Pages.Game
                     {
                         MainThread.BeginInvokeOnMainThread(() => ErrorDetailsLabel.Text = errorMsg);
                     }
+                    if (!GHApp.HasInternetAccess)
+                    {
+                        ShowNoInternetStatus();
+                        break;
+                    }
                     if (attempt < attemptConfig.Length - 1)
                     {
                         int delaySeconds = attemptConfig[attempt].Delay;
@@ -416,6 +425,11 @@ namespace GnollHackX.Pages.Game
                     if (isLocalDev)
                     {
                         MainThread.BeginInvokeOnMainThread(() => ErrorDetailsLabel.Text = errorMsg);
+                    }
+                    if (!GHApp.HasInternetAccess)
+                    {
+                        ShowNoInternetStatus();
+                        break;
                     }
                     if (attempt < attemptConfig.Length - 1)
                     {
@@ -480,6 +494,16 @@ namespace GnollHackX.Pages.Game
             {
                 _snapshotText = null;
             }
+        }
+
+        private void ShowNoInternetStatus()
+        {
+            GHApp.WriteGHLog("Overseer: no internet connection");
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                ProgressStatusLabel.Text = "No internet connection. Please check your connection and try again.";
+                UploadProgressBar.Progress = 1.0;
+            });
         }
 
         private async void RetryButton_Clicked(object sender, EventArgs e)

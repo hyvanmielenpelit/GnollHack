@@ -595,6 +595,12 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            if (!GHApp.HasInternetAccess)
+            {
+                await ShowMessagePopupAsync("Internet Connection Required", "Internet access is required to open the wiki.", "OK");
+                MainLayout.IsEnabled = true;
+                return;
+            }
             if (GHApp.IsiOS)
             {
                 /* Navigated event does not trigger with WebView on iOS, making navigation buttons inactivate all the time; use OpenBrowser instead (does not trigger OnSleep / OnResume on iOS) */

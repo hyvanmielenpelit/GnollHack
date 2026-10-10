@@ -936,7 +936,7 @@ namespace GnollHackX.Pages.MainScreen
             if (!GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
                 GHApp.SetXlogUserNameVerified(false, null, null);
 
-            if (!GHApp.XlogUserNameVerified && !string.IsNullOrEmpty(GHApp.XlogUserName))
+            if (GHApp.HasInternetAccess && !GHApp.XlogUserNameVerified && !string.IsNullOrEmpty(GHApp.XlogUserName))
             {
                 PopupTitleLabel.TextColor = GHColors.TitleGoldColor;
                 PopupTitleLabel.Text = "Credentials Verification";
@@ -2553,6 +2553,18 @@ namespace GnollHackX.Pages.MainScreen
             {
                 if (!GHApp.XlogUserNameVerified || !GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
                 {
+                    if (!GHApp.HasInternetAccess)
+                    {
+                        PopupTitleLabel.TextColor = GHColors.Orange;
+                        PopupTitleLabel.Text = "No Internet Connection";
+                        PopupLabel.Text = "Tournament Mode requires an internet connection to verify the user name and password in the Server Posting section.";
+                        PopupOkButton.IsEnabled = true;
+                        PopupGrid.IsVisible = true;
+                        CloseButton.IsEnabled = true;
+                        _backPressed = false;
+                        await MainScrollView.ScrollToAsync(0, PostXlogUserNameGrid.Y, true);
+                        return;
+                    }
                     GHApp.SetXlogUserNameVerified(false, null, null);
                     bool hasNoUserName = string.IsNullOrEmpty(PostXlogUserNameEntry.Text);
                     bool hasNoPassword = string.IsNullOrEmpty(PostXlogPasswordEntry.Text);
@@ -2914,6 +2926,14 @@ namespace GnollHackX.Pages.MainScreen
                 PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
                 PopupTitleLabel.Text = "Credentials Not Set";
                 PopupLabel.Text = (hasNoUserName && hasNoPassword ? "User name and password have" : hasNoUserName ? "User name has" : "Password has") +" not been set.";
+                PopupOkButton.IsEnabled = true;
+                PopupGrid.IsVisible = true;
+            }
+            else if (!GHApp.HasInternetAccess)
+            {
+                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
+                PopupTitleLabel.Text = "No Internet Connection";
+                PopupLabel.Text = "An internet connection is required to test the connection to GnollHack Server.";
                 PopupOkButton.IsEnabled = true;
                 PopupGrid.IsVisible = true;
             }
