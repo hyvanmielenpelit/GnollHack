@@ -7,6 +7,13 @@
     "Windows Packaged": {
       "commandName": "MsixPackage",
       "nativeDebugging": true
+    },
+    "Windows Unpackaged Sentry Dev": {
+      "commandName": "Project",
+      "nativeDebugging": true,
+      "environmentVariables": {
+        "SENTRY_ENVIRONMENT": "development"
+      }
     }
   }
 }
