@@ -494,6 +494,11 @@ namespace GnollHackX
         public const string SentryTagMapSurface = "map.surface";
         public const string SentryTagFmodOutput = "fmod.output";
         public const string SentryTagFmodVersion = "fmod.version";
+        public const string SentryTagProcessPrivate = "process.private";
+        public const string SentryTagProcessCommitShare = "process.commit_share";
+        public const string SentryTagSystemCommitLoad = "system.commit_load";
+        public const string SentryTagGpuBudgetLoad = "gpu.budget_load";
+        public const string SentryContextProcessMemory = "Process Memory";
         /* Worst case for the debug buffers is NUM_DEBUGBUFS (40) entries of DEBUGBUFSIZ
            (BUFSZ * 2 = 512) characters plus separators, about 20.7 kB. Real snapshots
            are far smaller. */

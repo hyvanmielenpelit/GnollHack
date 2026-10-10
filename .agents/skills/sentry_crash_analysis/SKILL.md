@@ -219,6 +219,28 @@ After retrieval, extract and record the following for each event:
   `|plname:X,ux:N,uy:N,dnum/level:N/N (dungeonname,levelname),moves:N,role:N,race:N,gameover:N,mklev:N,bones:N`
 - **Device info**: Memory, storage, battery level (low memory or storage can
   cause crashes on mobile platforms)
+- **Process memory (Windows only)**: Every Windows event carries a
+  `Process Memory` context with `private_bytes`, `peak_private_bytes`,
+  `working_set_bytes`, `peak_working_set_bytes`, `handle_count`, `gdi_objects`,
+  `peak_gdi_objects`, `user_objects`, `peak_user_objects`,
+  `system_commit_used_bytes`, `system_commit_limit_bytes`,
+  `system_physical_load_percent`, `decoded_bitmap_bytes`, `gpu_count`, and per
+  adapter `gpu<N>_name`, `gpu<N>_luid` and the four `gpu<N>_local_*` /
+  `gpu<N>_nonlocal_*` budget and usage keys. Tags: `process.private` (size
+  bucket of `private_bytes`), `process.commit_share` (this process's share of
+  the system commit charge — the figure that separates GnollHack's own growth
+  from other processes), `system.commit_load` (commit used against the commit
+  limit) and `gpu.budget_load` (worst usage-to-budget ratio over all adapters
+  and segment groups that have a budget). A `Process memory: ...` breadcrumb in
+  the `GnollHack Information` category is written 60 seconds after launch and
+  every 30 minutes; its GPU pairs read usage/budget. On a discrete GPU `local`
+  is its VRAM and `non-local` is system RAM; on an integrated GPU `local` is
+  system RAM and the `non-local` budget is 0. GPU usage is non-zero only on the
+  adapter GnollHack renders on. Sentry's own `Memory Info` context holds the
+  managed GC figures. The older `Used Memory` extra on `Impossible`, `Panic` and
+  `Error` events is the process working set (on iOS, the platform's figure) as
+  last refreshed by the game page, game menu or settings page; it can be
+  minutes old and is not commit, so it can differ from `private_bytes`.
 
 ### A.6 Subagent Considerations
 
@@ -404,6 +426,16 @@ immediately narrow the investigation to a specific subsystem.
      save operations or leave state inconsistent.
    - WebView behavior differences between platforms (relevant for Overseer
      integration).
+   - Memory exhaustion on Windows — an `OutOfMemoryException` carrying the
+     `0x8007000E` text through `Microsoft.UI.Xaml.UnhandledException` with no
+     stack most likely comes from native WinUI code, not from managed
+     allocation. Read the `Process Memory` context (A.5): a high
+     `process.commit_share` with a high `system.commit_load` points at
+     GnollHack's own growth; a high `system.commit_load` with a low share
+     points at other processes; a `gpu.budget_load` of `90%+` points at video
+     memory, which can fail with the same HRESULT (on an integrated GPU that is
+     system RAM too). Compare successive `Process memory:` breadcrumbs for the
+     trend before the event.
 
 > [!NOTE]
 > **Don't assume platform exclusivity without evidence.** A crash seen only on
