@@ -12,7 +12,7 @@ GnollHack is a turn-based roguelike game derived from NetHack 3.6.2. It consists
 
 ## C Code Style
 
-Refer to [DEVEL/code_style.txt](file:///c:/hmp/GnollHack/DEVEL/code_style.txt) for the complete guide.
+Refer to [DEVEL/code_style.txt](../DEVEL/code_style.txt) for the complete guide.
 
 ### Required C Style Conventions (C99 & ALLMAN)
 AI Agents MUST adhere strictly to the following:
@@ -188,7 +188,7 @@ and re-confirm rather than silently diverging from what the user approved.
 
 ### Subagent Use and Pair Programming
 
-Every implementation plan **MUST** include a **Subagent Use** section. Read the full guidelines in the [client_subagent_guidelines skill](file:///c:/hmp/GnollHack/.agents/skills/client_subagent_guidelines/SKILL.md) before creating any plan. Key points:
+Every implementation plan **MUST** include a **Subagent Use** section. Read the full guidelines in the [client_subagent_guidelines skill](../.agents/skills/client_subagent_guidelines/SKILL.md) before creating any plan. Key points:
 
 - **Always document** whether subagents are needed — default to `standard` for well-specified plan steps; escalate to `deep` for ambiguous or cross-layer work (common here); use `mechanical` only when the subagent decides nothing
 - **Human task assignments are the rare exception** — only for very extensive cut-and-paste moves where AI would likely fail and waste tokens

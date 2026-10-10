@@ -16,7 +16,7 @@ description: Best practices for AI agents documenting the GnollHack C codebase. 
   across `src/`). **Do not "fix" existing `//` comments to `/* */`.**
 - **Document game mechanics**, not syntax. Explain *why* the code does what it does in the context of the game.
 
-For advanced patterns (macros and constants, structs and enums, complex control flow, conditional compilation), see [references/advanced_patterns.md](.agents/skills/c_code_documentation/references/advanced_patterns.md).
+For advanced patterns (macros and constants, structs and enums, complex control flow, conditional compilation), see [references/advanced_patterns.md](references/advanced_patterns.md).
 
 ## Documentation Standards
 

@@ -12,7 +12,7 @@ description: Best practices for AI agents documenting the GnollHack C# .NET MAUI
 
 This skill defines how AI agents should apply documentation and comments to GnollHack's C# source code. The documentation style follows Microsoft's own C# and .NET documentation conventions — concise, technical, and structured using standard XML documentation comments.
 
-For supplementary patterns (regions, enums, XAML code-behind, exceptions, constants), see [references/supplementary_patterns.md](file:///c:/hmp/GnollHack/.agents/skills/csharp_code_documentation/references/supplementary_patterns.md).
+For supplementary patterns (regions, enums, XAML code-behind, exceptions, constants), see [references/supplementary_patterns.md](references/supplementary_patterns.md).
 
 ## Overview
 
@@ -28,7 +28,7 @@ The documentation must help developers understand the architecture, threading mo
 
 ### Current State of Documentation
 
-The existing C# codebase has **very sparse documentation** — XML doc comments are nearly nonexistent (only 5 instances in the entire project), and inline comments are sporadic. The codebase also uses C-style `/* */` inline comments (a NetHack heritage pattern). When adding new documentation:
+The existing C# codebase has **very sparse documentation** — XML doc comments are sparse, and inline comments are sporadic. The codebase also uses C-style `/* */` inline comments (a NetHack heritage pattern). When adding new documentation:
 
 - Use **`///` XML doc comments** for all public/protected API documentation (Microsoft standard)
 - Use **`//` line comments** for new inline documentation (standard C#)

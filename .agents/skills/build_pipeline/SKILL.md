@@ -209,7 +209,7 @@ A green MSBuild result is not proof artifacts exist. Check these after building 
 | `GnollHackM/Platforms/{Windows,Android,iOS}/gnh/nhdat` | `afterdlb.proj` / `afterdroidutils.proj` |
 | `GnollHackM/Platforms/*/tileset/*.ghpng` (3 each) | `copytilesetdroid.proj` |
 | `GnollHackM/Platforms/*/banks/*.bank` (6 each) | `update-wsl-in-*.bat` |
-| 30 generated `.xaml` in `GnollHackM/` | `makedefsdroid` `InitialBuild` |
+| 31 generated `.xaml` in `GnollHackM/` | `makedefsdroid` `InitialBuild` |
 
 ## Troubleshooting
 

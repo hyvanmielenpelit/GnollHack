@@ -1,6 +1,6 @@
 ---
 name: maui-threading
-description: Multi-threaded programming patterns in GnollHack's .NET MAUI frontend. Covers thread architecture, lock strategies (Monitor.TryEnter, lock, Interlocked), the IThreadSafeView pattern, ConcurrentQueue-based inter-thread communication, and platform-specific GPU rendering thread behavior.
+description: Multi-threaded programming patterns in GnollHack's .NET MAUI frontend. Covers thread architecture, lock strategies (Monitor.TryEnter, lock, Interlocked), the IThreadSafeView pattern, and ConcurrentQueue-based inter-thread communication.
 ---
 
 The full skill lives in this repository's tool-neutral agent directory (`.agents/`),

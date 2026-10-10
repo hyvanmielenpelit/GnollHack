@@ -25,7 +25,8 @@ to progress toward one — while equally importantly **avoiding false diagnoses*
 
 - **Requires the Sentry MCP server.** This skill's entire data-retrieval section
   depends on Sentry MCP tools (`find_organizations`, `find_projects`,
-  `search_issues`, `search_events`, and the issue-detail tools). If those tools
+  `search_issues`, `get_sentry_resource`, and `execute_sentry_tool` for catalog
+  tools such as `search_issue_events`). If those tools
   are not available in the current session, say so immediately and stop — do not
   attempt to diagnose from a pasted stack trace as though the full evidence had
   been retrieved, and do not speculate to fill the gap. Ask the user to connect
@@ -38,7 +39,7 @@ to progress toward one — while equally importantly **avoiding false diagnoses*
   across events. Patterns across events are among the strongest diagnostic
   signals.
 - Research subagents **cannot call MCP tools directly**. The orchestrator agent
-  must fetch all Sentry data and forward it to subagents via `send_message`.
+  must fetch all Sentry data and pass it to subagents in their spawn prompt.
 
 ---
 
@@ -225,7 +226,7 @@ Research subagents do **not** have access to MCP tools. If you delegate analysis
 to subagents:
 
 1. The orchestrator must call all Sentry MCP tools itself.
-2. Forward the retrieved data to the subagent via `send_message`.
+2. Include the retrieved data in the subagent's spawn prompt.
 3. The subagent can then analyze the data, search the GnollHack codebase, and
    report back.
 
@@ -259,14 +260,14 @@ string to locate the triggering code.
 > available** — the error is caught in C code and reported to Sentry via the GUI
 > command callback (e.g., `GHGame.ClientCallback_IssueGuiCommand`). In these
 > cases, **the error message string itself is the primary locator**. Search the
-> codebase for the exact message text (e.g., `grep_search` for
+> codebase for the exact message text (e.g., a text search for
 > `"onbill: unpaid obj not on bill"`) to find the triggering code.
 
 Follow this systematic approach:
 
 1. **Identify the crash point** — the topmost frame in GnollHack code, or the
    transition point from system frameworks to application code.
-2. **Map function names to source files** — use `grep_search` to find the
+2. **Map function names to source files** — search the codebase to find the
    function definition in the codebase (search in `src/`, `include/`,
    `win/win32/xpl/`).
 3. **Handle `<unknown>` frames**:
@@ -341,8 +342,7 @@ paths reached during gameplay.
 - Each entry typically contains a source file name and line number, e.g.,
   `"Line 1005 in shk.c"`.
 - **Cross-reference** these line numbers with the actual source code to
-  understand what code paths were recently executed. Use `view_file` to read the
-  relevant lines.
+  understand what code paths were recently executed. Read the relevant lines.
 - Look for: repeated entries (indicating a loop or retry), entries from
   unexpected source files (indicating unusual code paths), and entries that
   correspond to the code area implicated by the stack trace.
@@ -411,7 +411,7 @@ immediately narrow the investigation to a specific subsystem.
 ### B.7 Version Currency Check
 
 1. Extract the `release` tag from the issue (format: typically `X.Y.Z.N`).
-2. Compare against the latest GnollHack version (check `include/date.h` for
+2. Compare against the latest GnollHack version (check `include/patchlevel.h` for
    `VERSION_MAJOR`, `VERSION_MINOR`, `PATCHLEVEL`, `EDITLEVEL`).
 3. If the crash is from an **older version**:
    - Check `git log` for fixes to the relevant code area since that version.
@@ -528,8 +528,9 @@ Conclude every analysis with a prioritized action items list:
 
 ## Section D: Analysis Report Format
 
-Produce a structured artifact named `sentry_analysis_report.md` (or update an
-existing one if analyzing multiple issues). Use this template:
+Produce a report named `sentry_analysis_report_v<N>.md`, stored and versioned as
+`agent-implementation-planning` specifies. One report may cover several issues; a
+revision is a new `_v<N+1>` file, never an in-place update. Use this template:
 
 ```markdown
 # Sentry Issue Analysis: GNOLLHACK-XX

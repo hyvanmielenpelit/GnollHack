@@ -35,7 +35,7 @@ GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, 
 
   > [!IMPORTANT]
   > **Four files are exempt.** The conversion is declared per file in
-  > `makedefsdroid.vcxproj`, and it is applied in 26 of the 30 blocks. These four
+  > `makedefsdroid.vcxproj`, and it is applied in 27 of the 31 blocks. These four
   > do **not** get it:
   >
   > - `Controls/CustomImageButton.xaml`
@@ -118,7 +118,7 @@ This runs the `InitialBuild` target which transforms all GnollHackX XAML files i
 
 > [!CAUTION]
 > `InitialBuild` contains **one `<PropertyGroup>` + `<WriteLinesToFile>` block per
-> XAML file** — 30 of them — each naming its own input, output, and replacement
+> XAML file** — 31 of them — each naming its own input, output, and replacement
 > chain. There is no wildcard and no shared rule set.
 
 Two consequences:
@@ -156,13 +156,13 @@ Remember `makedefsdroid.vcxproj` is an MSBuild file: **2-space indentation**.
 
 | Component | Path | Purpose |
 |-----------|------|----------|
-| **GnollHackM** | [win/win32/xpl/GnollHackM/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM) | .NET MAUI application project. Contains XAML pages, platform-specific code, and the `.csproj`. |
-| **GnollHackX** (shared code) | [win/win32/xpl/GnollHackX/GnollHackX/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX) | 70+ shared C# files: game logic, rendering, constants, controls. Compiled into GnollHackM via `<Compile Include>` file-linking (NOT project references). |
-| **GnollHackX.Android** (platform) | [win/win32/xpl/GnollHackX/GnollHackX.Android/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Android) | Android platform service. [PlatformServiceAndroid.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs) is file-linked into GnollHackM via a `<Compile Include>` entry inside the `net10.0-android` `ItemGroup` (grep the `.csproj` for the filename — do not rely on a line number, the file is reorganised often). Uses `Xamarin.Google.Android.Play.Core` for Google Play Store in-app reviews (`IReviewManager`, `ReviewManagerFactory`, `ReviewInfo`). |
-| **GnollHackX.iOS** (platform) | [win/win32/xpl/GnollHackX/GnollHackX.iOS/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.iOS) | iOS platform service. [PlatformServiceiOS.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.iOS/PlatformServiceiOS.cs) and [GHUIApplication.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.iOS/GHUIApplication.cs) are file-linked into GnollHackM (inside the `net10.0-ios` ItemGroup). |
-| **GnollHackX.Common** | [win/win32/xpl/GnollHackX/GnollHackX.Common/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Common) | Contains ONLY [GnollHackService.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Common/GnollHackService.cs) — the P/Invoke bridge to native code. File-linked into GnollHackM. |
-| **GnollHackX.FMOD** | [win/win32/xpl/GnollHackX/GnollHackX.FMOD/](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.FMOD) | FMOD SDK C# wrappers for audio playback. File-linked into GnollHackM. |
-| **libshare** (C side) | [win/win32/xpl/libshare/](file:///c:/hmp/GnollHack/win/win32/xpl/libshare) | Native C bridge code (gnhapi.h, callback.h, libproc.c). |
+| **GnollHackM** | [win/win32/xpl/GnollHackM/](../../../win/win32/xpl/GnollHackM) | .NET MAUI application project. Contains XAML pages, platform-specific code, and the `.csproj`. |
+| **GnollHackX** (shared code) | [win/win32/xpl/GnollHackX/GnollHackX/](../../../win/win32/xpl/GnollHackX/GnollHackX) | 70+ shared C# files: game logic, rendering, constants, controls. Compiled into GnollHackM via `<Compile Include>` file-linking (NOT project references). |
+| **GnollHackX.Android** (platform) | [win/win32/xpl/GnollHackX/GnollHackX.Android/](../../../win/win32/xpl/GnollHackX/GnollHackX.Android) | Android platform service. [PlatformServiceAndroid.cs](../../../win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs) is file-linked into GnollHackM via a `<Compile Include>` entry inside the `net10.0-android` `ItemGroup` (grep the `.csproj` for the filename — do not rely on a line number, the file is reorganised often). Uses `Xamarin.Google.Android.Play.Core` for Google Play Store in-app reviews (`IReviewManager`, `ReviewManagerFactory`, `ReviewInfo`). |
+| **GnollHackX.iOS** (platform) | [win/win32/xpl/GnollHackX/GnollHackX.iOS/](../../../win/win32/xpl/GnollHackX/GnollHackX.iOS) | iOS platform service. [PlatformServiceiOS.cs](../../../win/win32/xpl/GnollHackX/GnollHackX.iOS/PlatformServiceiOS.cs) and [GHUIApplication.cs](../../../win/win32/xpl/GnollHackX/GnollHackX.iOS/GHUIApplication.cs) are file-linked into GnollHackM (inside the `net10.0-ios` ItemGroup). |
+| **GnollHackX.Common** | [win/win32/xpl/GnollHackX/GnollHackX.Common/](../../../win/win32/xpl/GnollHackX/GnollHackX.Common) | Contains ONLY [GnollHackService.cs](../../../win/win32/xpl/GnollHackX/GnollHackX.Common/GnollHackService.cs) — the P/Invoke bridge to native code. File-linked into GnollHackM. |
+| **GnollHackX.FMOD** | [win/win32/xpl/GnollHackX/GnollHackX.FMOD/](../../../win/win32/xpl/GnollHackX/GnollHackX.FMOD) | FMOD SDK C# wrappers for audio playback. File-linked into GnollHackM. |
+| **libshare** (C side) | [win/win32/xpl/libshare/](../../../win/win32/xpl/libshare) | Native C bridge code (gnhapi.h, callback.h, libproc.c). |
 
 > **Important:** Because GnollHackM uses `<Compile Include>` file-linking (not project references), NuGet packages required by file-linked code must be declared in `GnollHackM.csproj` — not in a separate project. When evaluating whether a NuGet package is used, always search `GnollHackX.*` source directories, not just `GnollHackM/`.
 
@@ -172,13 +172,13 @@ Remember `makedefsdroid.vcxproj` is an MSBuild file: **2-space indentation**.
 
 | File | Size | Purpose |
 |------|------|----------|
-| [GHApp.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs) | 633KB | **Central application logic.** Static class managing app state, initialization, fonts, resources, platform services, game lifecycle. |
-| [GHGame.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX/GHGame.cs) | 233KB | Manages individual game instances. Handles native callback dispatch, game threading, request/response queuing. |
-| [GHConstants.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX/GHConstants.cs) | 114KB | All shared constants — critical reference for any feature work. |
-| [GHWindow.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX/GHWindow.cs) | 28KB | Window abstraction matching NetHack's window types (NHW_MESSAGE, NHW_MAP, NHW_MENU, NHW_TEXT). |
-| [UIUtils.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX/UIUtils.cs) | 86KB | UI utility functions for layout, scaling, text rendering. |
-| [IGnollHackService.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX/IGnollHackService.cs) | 4KB | Interface contract for native interop (37 methods: init, tile data, animation, version, game control). |
-| [IFmodService.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX/IFmodService.cs) | 3KB | Interface for FMOD audio service. |
+| [GHApp.cs](../../../win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs) | 633KB | **Central application logic.** Static class managing app state, initialization, fonts, resources, platform services, game lifecycle. |
+| [GHGame.cs](../../../win/win32/xpl/GnollHackX/GnollHackX/GHGame.cs) | 233KB | Manages individual game instances. Handles native callback dispatch, game threading, request/response queuing. |
+| [GHConstants.cs](../../../win/win32/xpl/GnollHackX/GnollHackX/GHConstants.cs) | 114KB | All shared constants — critical reference for any feature work. |
+| [GHWindow.cs](../../../win/win32/xpl/GnollHackX/GnollHackX/GHWindow.cs) | 28KB | Window abstraction matching NetHack's window types (NHW_MESSAGE, NHW_MAP, NHW_MENU, NHW_TEXT). |
+| [UIUtils.cs](../../../win/win32/xpl/GnollHackX/GnollHackX/UIUtils.cs) | 86KB | UI utility functions for layout, scaling, text rendering. |
+| [IGnollHackService.cs](../../../win/win32/xpl/GnollHackX/GnollHackX/IGnollHackService.cs) | 4KB | Interface contract for native interop (37 methods: init, tile data, animation, version, game control). |
+| [IFmodService.cs](../../../win/win32/xpl/GnollHackX/GnollHackX/IFmodService.cs) | 3KB | Interface for FMOD audio service. |
 
 ---
 
@@ -190,7 +190,7 @@ The entire game dungeon is rendered using **SkiaSharp** via custom canvas views 
 * The `PaintSurface` event handler in `GamePage.xaml.cs` performs all tile/sprite drawing
 * Touch, mouse wheel, and pointer events are handled directly on the canvas
 * Custom controls like `CustomLabel` also use `SKCanvasView` for SkiaSharp-based text rendering
-* SkiaSharp is registered in [MauiProgram.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/MauiProgram.cs) via `.UseSkiaSharp()`
+* SkiaSharp is registered in [MauiProgram.cs](../../../win/win32/xpl/GnollHackM/MauiProgram.cs) via `.UseSkiaSharp()`
 
 ---
 
@@ -204,7 +204,7 @@ The entire game dungeon is rendered using **SkiaSharp** via custom canvas views 
 | Android | `libgnollhackdroid.so` | `gnollhackdroid` | Dynamic loading via `JavaSystem.LoadLibrary()` |
 | Windows | `gnollhackwin.dll` | `gnollhackwin` | Dynamic loading (MauiAsset) |
 
-Defined in [GnollHackService.cs:52-67](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Common/GnollHackService.cs#L52).
+Defined in the `PlatformConstants` class of [GnollHackService.cs](../../../win/win32/xpl/GnollHackX/GnollHackX.Common/GnollHackService.cs).
 
 ### RunGnollHack P/Invoke
 
@@ -233,10 +233,10 @@ Callback categories: window management, input handling, display/glyph rendering,
 
 | Page | Size | Purpose |
 |------|------|----------|
-| [MainPage.xaml](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/MainPage.xaml) | 32KB | Start screen: logo animation, role/mode selection, start/resume buttons. Uses fonts "ARChristy" and "Diablo". |
-| [GamePage.xaml](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/GamePage.xaml) | 53KB | Active gameplay: SkiaSharp canvas, command button grids, status overlays, message filter. |
-| [SettingsPage.xaml](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/SettingsPage.xaml) | 141KB | Comprehensive settings: graphics, sound volumes, keybindings, debug flags. |
-| [GameMenuPage.xaml](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/GameMenuPage.xaml) | 6KB | In-game menu overlay. |
+| [MainPage.xaml](../../../win/win32/xpl/GnollHackM/MainPage.xaml) | 32KB | Start screen: logo animation, role/mode selection, start/resume buttons. Uses fonts "ARChristy" and "Diablo". |
+| [GamePage.xaml](../../../win/win32/xpl/GnollHackM/GamePage.xaml) | 53KB | Active gameplay: SkiaSharp canvas, command button grids, status overlays, message filter. |
+| [SettingsPage.xaml](../../../win/win32/xpl/GnollHackM/SettingsPage.xaml) | 141KB | Comprehensive settings: graphics, sound volumes, keybindings, debug flags. |
+| [GameMenuPage.xaml](../../../win/win32/xpl/GnollHackM/GameMenuPage.xaml) | 6KB | In-game menu overlay. |
 
 ### Other Pages (31 generated XAML files in total)
 AboutPage, AchievementsDisplayPage, AchievementsPage, DisplayFilePage, EditorPage, ImportExportPage, LibraryPage, MusicPage, NamePage, OraclePage, OutRipPage, OverseerPage, PerformanceSuitePage, ReplayPage, ResetPage, SaveTransferPage, SnapshotPage, TopScorePage, VaultPage, VersionPage, WikiPage.
@@ -259,7 +259,7 @@ MainThread.BeginInvokeOnMainThread(() =>
 });
 ```
 
-This pattern is used 119+ times across the codebase.
+This pattern is used throughout the codebase.
 
 ---
 
@@ -281,9 +281,9 @@ This pattern is used 119+ times across the codebase.
 | Crash reporting | Sentry.Maui | Error tracking on all platforms |
 | Cloud storage | Azure.Storage.Blobs | Cloud save/import/export |
 | JSON | Newtonsoft.Json + System.Text.Json | Data serialization |
-| Play Store reviews | Xamarin.Google.Android.Play.Core | Google Play in-app review flow (Android only). Used by file-linked [PlatformServiceAndroid.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs) via `IReviewManager` / `ReviewManagerFactory`. |
+| Play Store reviews | Xamarin.Google.Android.Play.Core | Google Play in-app review flow (Android only). Used by file-linked [PlatformServiceAndroid.cs](../../../win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs) via `IReviewManager` / `ReviewManagerFactory`. |
 
-> **Note:** Refer to [GnollHackM.csproj](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/GnollHackM.csproj) for current NuGet package versions. Do not hardcode version numbers in this skill.
+> **Note:** Refer to [GnollHackM.csproj](../../../win/win32/xpl/GnollHackM/GnollHackM.csproj) for current NuGet package versions. Do not hardcode version numbers in this skill.
 
 ---
 
@@ -291,11 +291,11 @@ This pattern is used 119+ times across the codebase.
 
 | Platform | Entry Point | Key Setup |
 |----------|-------------|------------|
-| Android | [MainApplication.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/Platforms/Android/MainApplication.cs) | Loads native `.so` via `JavaSystem.LoadLibrary()`, initializes FMOD |
-| iOS | [Program.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/Platforms/iOS/Program.cs) | Calls `LibTest()` to verify static link, launches UIApplication |
-| Windows | [App.xaml.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/Platforms/Windows/App.xaml.cs) | WinUI 3 app lifecycle |
+| Android | [MainApplication.cs](../../../win/win32/xpl/GnollHackM/Platforms/Android/MainApplication.cs) | Loads native `.so` via `JavaSystem.LoadLibrary()`, initializes FMOD |
+| iOS | [Program.cs](../../../win/win32/xpl/GnollHackM/Platforms/iOS/Program.cs) | Calls `LibTest()` to verify static link, launches UIApplication |
+| Windows | [App.xaml.cs](../../../win/win32/xpl/GnollHackM/Platforms/Windows/App.xaml.cs) | WinUI 3 app lifecycle |
 
-All platforms delegate lifecycle to `GHApp.OnStart()`, `GHApp.OnResume()`, `GHApp.OnSleep()` in [App.xaml.cs](file:///c:/hmp/GnollHack/win/win32/xpl/GnollHackM/App.xaml.cs).
+All platforms delegate lifecycle to `GHApp.OnStart()`, `GHApp.OnResume()`, `GHApp.OnSleep()` in [App.xaml.cs](../../../win/win32/xpl/GnollHackM/App.xaml.cs).
 
 ## SkiaSharp Rendering
 - Map and status UI are rendered using SkiaSharp (`SKCanvasView`).
@@ -303,8 +303,8 @@ All platforms delegate lifecycle to `GHApp.OnStart()`, `GHApp.OnResume()`, `GHAp
 
 ## P/Invoke Bridge (`GnollHackService.cs`)
 - All calls to the C engine pass through `GnollHackService`.
-- **Delegates**: Used to pass C# callbacks to C (e.g., `gh_set_display_callback()`).
-- Keep `[MarshalAs(UnmanagedType.LPStr)]` for strings crossing the bridge to convert C# Unicode to C-style UTF-8 strings.
+- **Delegates**: C# callbacks reach C as the delegate parameters of `RunGnollHack` (for example `callback_init_nhwindows` and `callback_askname`).
+- Keep `[MarshalAs(UnmanagedType.LPStr)]` on strings crossing the bridge. `LPStr` marshals as UTF-8 on Android and iOS, but as the system ANSI code page on Windows: the Windows app manifest does not opt into UTF-8 (`activeCodePage`). Do not assume non-ASCII text survives the bridge on Windows.
 
 ## Related Skills
 

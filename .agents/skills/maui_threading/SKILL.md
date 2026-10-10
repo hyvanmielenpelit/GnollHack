@@ -1,6 +1,6 @@
 ---
 name: maui_threading
-description: Multi-threaded programming patterns in GnollHack's .NET MAUI frontend. Covers thread architecture, lock strategies (Monitor.TryEnter, lock, Interlocked), the IThreadSafeView pattern, ConcurrentQueue-based inter-thread communication, and platform-specific GPU rendering thread behavior.
+description: Multi-threaded programming patterns in GnollHack's .NET MAUI frontend. Covers thread architecture, lock strategies (Monitor.TryEnter, lock, Interlocked), the IThreadSafeView pattern, and ConcurrentQueue-based inter-thread communication.
 ---
 
 # MAUI Threading
@@ -18,7 +18,7 @@ description: Multi-threaded programming patterns in GnollHack's .NET MAUI fronte
 4. **Audio Thread (FMOD)**: Handles sound mixing independently.
 
 ## Communication Patterns
-- **Input**: The UI thread enqueues onto `ConcurrentQueue<GHRequest>`; the game thread dequeues. Replies travel back on `ConcurrentQueue<GHResponse>`, and `ConcurrentQueue<GHPost>` carries posts. (`ConcurrentQueue<string>` and `<int>` exist too, for narrower purposes.)
+- **Input**: The UI thread enqueues onto `ConcurrentQueue<GHRequest>`; the game thread dequeues. Replies travel back on `ConcurrentQueue<GHResponse>`, and `ConcurrentQueue<GHPost>` carries posts. (`GHApp.AchievementQueue` is a `ConcurrentQueue<int>`, and `FmodService` queues sound work on its own `ConcurrentQueue<GHSoundTask>`.)
 - **State Updates**: Game thread modifies shared `MapData` under a `lock`.
 - **Rendering**: Render thread attempts `Monitor.TryEnter(syncObject, 0)`. If it gets the lock, it copies `MapData`. If not, it re-renders the old frame to avoid stuttering.
 
