@@ -8012,6 +8012,9 @@ namespace GnollHackX.Pages.Game
             SKRect poleRect = new SKRect();
             SKRect prevWepRect = new SKRect();
             SKRect youRect = new SKRect();
+            SKRect leftButtonsDeadZoneRect = new SKRect();
+            SKRect contextFullColumnsDeadZoneRect = new SKRect();
+            SKRect contextPartialColumnDeadZoneRect = new SKRect();
             /* Set where the orb geometry is in scope, consumed further down where it is not */
             SKRect debugDashboardAnchor = new SKRect();
             SKRect dashboardPanelToggleRect = new SKRect();
@@ -12544,15 +12547,19 @@ namespace GnollHackX.Pages.Game
                         if (skillbuttonok)
                         {
                             SKRect skillDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
-                            skillRect = skillDest;
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
                             float btnBaseFontSize = GHConstants.SkillButtonBaseFontSize * skillDest.Width / 50.0f;
                             textPaint.TextSize = btnBaseFontSize;
+                            string skillsKeyboardShortcut = SkillsKeyboardShortcut;
+                            bool showSkillsShortcut = showKeyboardShortcuts && !string.IsNullOrEmpty(skillsKeyboardShortcut);
+                            float skillLabelHeight = textPaint.FontSpacing * (showSkillsShortcut ? 1.0f + GHConstants.KeyboardShortcutRelativeFontSize : 1.0f);
+                            SKRect skillHitRect = new SKRect(skillDest.Left, skillDest.Top, skillDest.Right, skillDest.Bottom + skillLabelHeight);
+                            skillRect = skillHitRect;
                             {
                                 SKPaint btnPaint = _mapUiPaint;
                                 ResetPaint(btnPaint);
-                                if (_localIsPointerHovering && skillDest.Contains(_localPointerHoverLocation))
+                                if (_localIsPointerHovering && skillHitRect.Contains(_localPointerHoverLocation))
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
                                 }
@@ -12566,8 +12573,7 @@ namespace GnollHackX.Pages.Game
                             float text_y = skillDest.Bottom - textPaint.FontMetrics.Ascent;
                             textPaint.DrawTextOnCanvas(canvas, "Skills", text_x, text_y, SKTextAlign.Center);
                             lastdrawnrecty = skillDest.Bottom + textPaint.FontSpacing;
-                            string skillsKeyboardShortcut = SkillsKeyboardShortcut;
-                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(skillsKeyboardShortcut))
+                            if (showSkillsShortcut)
                             {
                                 textPaint.Color = SKColors.Gray;
                                 textPaint.TextSize = btnBaseFontSize * GHConstants.KeyboardShortcutRelativeFontSize;
@@ -12581,15 +12587,19 @@ namespace GnollHackX.Pages.Game
                         if (polearmok)
                         {
                             SKRect poleDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
-                            poleRect = poleDest;
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
                             float btnBaseFontSize = GHConstants.SkillButtonBaseFontSize * poleDest.Width / 50.0f;
                             textPaint.TextSize = btnBaseFontSize;
+                            string polearmKeyboardShortcut = PolearmKeyboardShortcut;
+                            bool showPolearmShortcut = showKeyboardShortcuts && !string.IsNullOrEmpty(polearmKeyboardShortcut);
+                            float poleLabelHeight = textPaint.FontSpacing * (showPolearmShortcut ? 1.0f + GHConstants.KeyboardShortcutRelativeFontSize : 1.0f);
+                            SKRect poleHitRect = new SKRect(poleDest.Left, poleDest.Top, poleDest.Right, poleDest.Bottom + poleLabelHeight);
+                            poleRect = poleHitRect;
                             {
                                 SKPaint btnPaint = _mapUiPaint;
                                 ResetPaint(btnPaint);
-                                if (_localIsPointerHovering && poleDest.Contains(_localPointerHoverLocation))
+                                if (_localIsPointerHovering && poleHitRect.Contains(_localPointerHoverLocation))
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
                                 }
@@ -12603,8 +12613,7 @@ namespace GnollHackX.Pages.Game
                             float text_y = poleDest.Bottom - textPaint.FontMetrics.Ascent;
                             textPaint.DrawTextOnCanvas(canvas, "Polearm", text_x, text_y, SKTextAlign.Center);
                             lastdrawnrecty = poleDest.Bottom + textPaint.FontSpacing;
-                            string polearmKeyboardShortcut = PolearmKeyboardShortcut;
-                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(polearmKeyboardShortcut))
+                            if (showPolearmShortcut)
                             {
                                 textPaint.Color = SKColors.Gray;
                                 textPaint.TextSize = btnBaseFontSize * GHConstants.KeyboardShortcutRelativeFontSize;
@@ -12618,15 +12627,19 @@ namespace GnollHackX.Pages.Game
                         if (prevwepok)
                         {
                             SKRect prevWepDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
-                            prevWepRect = prevWepDest;
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
                             float btnBaseFontSize = GHConstants.SkillButtonBaseFontSize * prevWepDest.Width / 50.0f;
                             textPaint.TextSize = btnBaseFontSize;
+                            string prevWepKeyboardShortcut = PrevWepKeyboardShortcut;
+                            bool showPrevWepShortcut = showKeyboardShortcuts && !string.IsNullOrEmpty(prevWepKeyboardShortcut);
+                            float prevWepLabelHeight = textPaint.FontSpacing * (showPrevWepShortcut ? 1.0f + GHConstants.KeyboardShortcutRelativeFontSize : 1.0f);
+                            SKRect prevWepHitRect = new SKRect(prevWepDest.Left, prevWepDest.Top, prevWepDest.Right, prevWepDest.Bottom + prevWepLabelHeight);
+                            prevWepRect = prevWepHitRect;
                             {
                                 SKPaint btnPaint = _mapUiPaint;
                                 ResetPaint(btnPaint);
-                                if (_localIsPointerHovering && prevWepDest.Contains(_localPointerHoverLocation))
+                                if (_localIsPointerHovering && prevWepHitRect.Contains(_localPointerHoverLocation))
                                 {
                                     btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
                                 }
@@ -12639,8 +12652,7 @@ namespace GnollHackX.Pages.Game
                             float text_x = (prevWepDest.Left + prevWepDest.Right) / 2;
                             float text_y = prevWepDest.Bottom - textPaint.FontMetrics.Ascent;
                             textPaint.DrawTextOnCanvas(canvas, isunwield ? "Unwield" : "Wield Last", text_x, text_y, SKTextAlign.Center);
-                            string prevWepKeyboardShortcut = PrevWepKeyboardShortcut;
-                            if (showKeyboardShortcuts && !string.IsNullOrEmpty(prevWepKeyboardShortcut))
+                            if (showPrevWepShortcut)
                             {
                                 textPaint.Color = SKColors.Gray;
                                 textPaint.TextSize = btnBaseFontSize * GHConstants.KeyboardShortcutRelativeFontSize;
@@ -12651,6 +12663,13 @@ namespace GnollHackX.Pages.Game
                             }
                         }
                     }
+
+                    AddToBoundingRect(ref leftButtonsDeadZoneRect, healthRect);
+                    AddToBoundingRect(ref leftButtonsDeadZoneRect, manaRect);
+                    AddToBoundingRect(ref leftButtonsDeadZoneRect, skillRect);
+                    AddToBoundingRect(ref leftButtonsDeadZoneRect, poleRect);
+                    AddToBoundingRect(ref leftButtonsDeadZoneRect, prevWepRect);
+                    InflateNonEmptyRect(ref leftButtonsDeadZoneRect, GHConstants.MapUIButtonDeadZoneMargin * inverse_canvas_scale);
 
                     /* Context Menu */
                     //lock(_contextMenuDataLock)
@@ -12664,6 +12683,9 @@ namespace GnollHackX.Pages.Game
                         float startLeft = canvaswidth - orbbordersize - horizontalPadding;
                         float topLimit = (float)(stdCmdLayoutHeight + stdCmdLayoutMargin.Top) * inverse_canvas_scale;
                         bool isFirstCmb = true;
+                        SKRect contextColumnRect = new SKRect();
+                        int contextColumnButtons = 0;
+                        int contextFirstColumnButtons = 0;
                         int cbIdx = -1;
                         foreach (ContextMenuButton cmb in _localContextMenuData) /* foreach, since _contextMenuData may in theory be cleared concurrently in the same thread */
                         {
@@ -12674,6 +12696,13 @@ namespace GnollHackX.Pages.Game
                             {
                                 startTop = startBottom - orbbordersize - textRowsSize;
                                 startLeft -= (internalPadding + orbbordersize);
+
+                                /* Every column before the last one is full */
+                                if (contextFirstColumnButtons == 0)
+                                    contextFirstColumnButtons = contextColumnButtons;
+                                AddToBoundingRect(ref contextFullColumnsDeadZoneRect, contextColumnRect);
+                                contextColumnRect = new SKRect();
+                                contextColumnButtons = 0;
                             }
                             else
                             {
@@ -12681,6 +12710,8 @@ namespace GnollHackX.Pages.Game
                             }
                             if(cbIdx < _localContextMenuRects.Count)
                                 _localContextMenuRects[cbIdx] = usedRect = new SKRect(startLeft, startTop, startLeft + orbbordersize, startTop + orbbordersize + textRowsSize);
+                            AddToBoundingRect(ref contextColumnRect, usedRect);
+                            contextColumnButtons++;
                             SKRect imgDest = new SKRect(startLeft, startTop, startLeft + orbbordersize, startTop + orbbordersize);
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
@@ -12710,6 +12741,14 @@ namespace GnollHackX.Pages.Game
                                 textPaint.Color = SKColors.White;
                             }
                         }
+
+                        /* A single column counts as full */
+                        if (contextFirstColumnButtons == 0 || contextColumnButtons >= contextFirstColumnButtons)
+                            AddToBoundingRect(ref contextFullColumnsDeadZoneRect, contextColumnRect);
+                        else
+                            contextPartialColumnDeadZoneRect = contextColumnRect;
+                        InflateNonEmptyRect(ref contextFullColumnsDeadZoneRect, GHConstants.MapUIButtonDeadZoneMargin * inverse_canvas_scale);
+                        InflateNonEmptyRect(ref contextPartialColumnDeadZoneRect, GHConstants.MapUIButtonDeadZoneMargin * inverse_canvas_scale);
                     }
                     
                     //if(!statusBarRectDrawn)
@@ -13052,6 +13091,9 @@ namespace GnollHackX.Pages.Game
                     _uiYouRect = youRect;
                     _uiDashboardPanelToggleRect = dashboardPanelToggleRect;
                     _uiDashboardLogToggleRect = dashboardLogToggleRect;
+                    _uiLeftButtonsDeadZoneRect = leftButtonsDeadZoneRect;
+                    _uiContextFullColumnsDeadZoneRect = contextFullColumnsDeadZoneRect;
+                    _uiContextPartialColumnDeadZoneRect = contextPartialColumnDeadZoneRect;
                 }
             }
             finally
@@ -16482,6 +16524,7 @@ namespace GnollHackX.Pages.Game
         private uint _touchWithinPet = 0;
         private bool _touchWithinYouButton = false;
         private int _touchWithinContextButton = 0;
+        private bool _touchWithinButtonDeadZone = false;
         private bool _touchWithinDashboardToggle = false;
         private bool _touchWithinDashboardLogToggle = false;
         private object _savedSender = null;
@@ -16517,6 +16560,9 @@ namespace GnollHackX.Pages.Game
         private SKRect _uiYouRect;
         private SKRect _uiDashboardPanelToggleRect;
         private SKRect _uiDashboardLogToggleRect;
+        private SKRect _uiLeftButtonsDeadZoneRect;
+        private SKRect _uiContextFullColumnsDeadZoneRect;
+        private SKRect _uiContextPartialColumnDeadZoneRect;
         private SKRect _uiMenuDashboardPanelToggleRect;
         private SKRect _uiMenuDashboardLogToggleRect;
 
@@ -16529,6 +16575,9 @@ namespace GnollHackX.Pages.Game
         private SKRect _uiLocalYouRect;
         private SKRect _uiLocalDashboardPanelToggleRect;
         private SKRect _uiLocalDashboardLogToggleRect;
+        private SKRect _uiLocalLeftButtonsDeadZoneRect;
+        private SKRect _uiLocalContextFullColumnsDeadZoneRect;
+        private SKRect _uiLocalContextPartialColumnDeadZoneRect;
         private SKRect _uiLocalMenuDashboardPanelToggleRect;
         private SKRect _uiLocalMenuDashboardLogToggleRect;
         private bool _touchWithinMenuDashboardToggle = false;
@@ -16555,6 +16604,9 @@ namespace GnollHackX.Pages.Game
                         _uiLocalYouRect = _uiYouRect;
                         _uiLocalDashboardPanelToggleRect = _uiDashboardPanelToggleRect;
                         _uiLocalDashboardLogToggleRect = _uiDashboardLogToggleRect;
+                        _uiLocalLeftButtonsDeadZoneRect = _uiLeftButtonsDeadZoneRect;
+                        _uiLocalContextFullColumnsDeadZoneRect = _uiContextFullColumnsDeadZoneRect;
+                        _uiLocalContextPartialColumnDeadZoneRect = _uiContextPartialColumnDeadZoneRect;
                     }
                 }
                 finally
@@ -16580,6 +16632,7 @@ namespace GnollHackX.Pages.Game
                         _touchWithinPet = 0;
                         _touchWithinYouButton = false;
                         _touchWithinContextButton = 0;
+                        _touchWithinButtonDeadZone = false;
                         _touchWithinDashboardToggle = false;
                         _touchWithinDashboardLogToggle = false;
 
@@ -16636,6 +16689,13 @@ namespace GnollHackX.Pages.Game
                             {
                                 _touchWithinPet = m_id;
                             }
+                            else if (!ShowDirections && !ShowNumberPad
+                                && (_uiLocalLeftButtonsDeadZoneRect.Contains(e.Location)
+                                    || _uiLocalContextFullColumnsDeadZoneRect.Contains(e.Location)
+                                    || _uiLocalContextPartialColumnDeadZoneRect.Contains(e.Location)))
+                            {
+                                _touchWithinButtonDeadZone = true;
+                            }
                             else if (!MapLookMode && !MapTravelMode)
                             {
                                 _savedSender = sender;
@@ -16689,7 +16749,7 @@ namespace GnollHackX.Pages.Game
 
                                 if (TouchDictionary.Count == 1)
                                 {
-                                    if (_touchWithinSkillButton || _touchWithinPoleButton || _touchWithinPrevWepButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !ShowDirections && !ShowNumberPad) || _touchWithinYouButton || _touchWithinContextButton != 0 || _touchWithinDashboardToggle || _touchWithinDashboardLogToggle)
+                                    if (_touchWithinSkillButton || _touchWithinPoleButton || _touchWithinPrevWepButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !ShowDirections && !ShowNumberPad) || _touchWithinYouButton || _touchWithinContextButton != 0 || _touchWithinButtonDeadZone || _touchWithinDashboardToggle || _touchWithinDashboardLogToggle)
                                     {
                                         /* Do nothing */
                                     }
@@ -16889,6 +16949,7 @@ namespace GnollHackX.Pages.Game
                                     _touchWithinPet = 0;
                                     _touchWithinYouButton = false;
                                     _touchWithinContextButton = 0;
+                                    _touchWithinButtonDeadZone = false;
                                     _touchWithinDashboardToggle = false;
                                     _touchWithinDashboardLogToggle = false;
 
@@ -17082,6 +17143,10 @@ namespace GnollHackX.Pages.Game
                                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetPetMID, _touchWithinPet));
                                 curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, (int)'{'));
                             }
+                            else if (_touchWithinButtonDeadZone)
+                            {
+                                /* Missed touch near a canvas button group */
+                            }
                             else if (!PlayingReplay || ShowExtendedStatusBar)
                             {
                                 TouchEntry entry;
@@ -17181,6 +17246,20 @@ namespace GnollHackX.Pages.Game
             }
             return 0;
 
+        }
+
+        /* Bounding box of the non-empty rects; undrawn buttons keep an empty rect at the origin */
+        private static void AddToBoundingRect(ref SKRect bounds, SKRect rect)
+        {
+            if (rect.IsEmpty)
+                return;
+            bounds = bounds.IsEmpty ? rect : SKRect.Union(bounds, rect);
+        }
+
+        private static void InflateNonEmptyRect(ref SKRect rect, float margin)
+        {
+            if (!rect.IsEmpty)
+                rect.Inflate(margin, margin);
         }
 
         private bool _showUI = true;
@@ -24145,6 +24224,7 @@ namespace GnollHackX.Pages.Game
             _touchWithinPet = 0;
             _touchWithinYouButton = false;
             _touchWithinContextButton = 0;
+            _touchWithinButtonDeadZone = false;
             _touchWithinDashboardToggle = false;
             _touchWithinDashboardLogToggle = false;
         }

@@ -87,6 +87,7 @@ namespace GnollHackX
         public const float ContextButtonBottomStartMargin = 30.0f;
         public const double ContextButtonSpacing = 10.0;
         public const float ContextButtonBaseFontSize = 8.5f;
+        public const float MapUIButtonDeadZoneMargin = 15.0f; /* dp around each canvas button group where a missed touch does nothing */
         public const float MoveDistanceThreshold = 25.0f;
         public const long MoveOrPressTimeThreshold = 200L; /* Milliseconds */
         public const long DoubleClickTimeThreshold = 500L; /* Milliseconds */
