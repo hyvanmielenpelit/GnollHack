@@ -204,6 +204,8 @@ public static class MauiProgram
                         }
                     }
 
+                    ProcessMemoryWindows.AddToEvent(@event);
+
                     return @event;
                 });
             })
@@ -633,7 +635,11 @@ public static class MauiProgram
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
-        return builder.Build();
+        MauiApp app = builder.Build();
+#if SENTRY && WINDOWS
+        ProcessMemoryWindows.Start();
+#endif
+        return app;
 	}
 
 #if ANDROID
