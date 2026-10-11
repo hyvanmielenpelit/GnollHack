@@ -56,9 +56,15 @@ public class MainActivity : MauiAppCompatActivity
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine(ex.Message);
-            if (ex is ObjectDisposedException ioe)
+            ObjectDisposedException frameworkDisposal = FrameworkObjectDisposedFilter.FindFrameworkTeardownDisposal(ex);
+            if (frameworkDisposal != null)
             {
-                SentrySdk.CaptureMessage($"Caught ObjectDisposedException in MainActivity.OnDestroy: {ioe.Message}", SentryLevel.Warning);
+                SentrySdk.CaptureMessage(FrameworkObjectDisposedFilter.Describe(frameworkDisposal) + " (MainActivity.OnDestroy)",
+                    scope => scope.SetExtra("ObjectDisposedException", frameworkDisposal.ToString()), SentryLevel.Warning);
+            }
+            else
+            {
+                SentrySdk.CaptureException(ex);
             }
         }
     }

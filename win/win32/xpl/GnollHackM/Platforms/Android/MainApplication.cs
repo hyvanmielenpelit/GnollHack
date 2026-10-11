@@ -26,9 +26,11 @@ public class MainApplication : MauiApplication
         StaticAssets = Assets;
         FmodService.AndroidInit(this);
 
+        /* Runs before Sentry's raiser handler, which captures the exception either way;
+           a handled framework-teardown ObjectDisposedException becomes a warning in BeforeSend */
         AndroidEnvironment.UnhandledExceptionRaiser += (s, e) =>
         {
-            if (e.Exception is ObjectDisposedException)
+            if (FrameworkObjectDisposedFilter.FindFrameworkTeardownDisposal(e.Exception) != null)
             {
                 e.Handled = true;
             }

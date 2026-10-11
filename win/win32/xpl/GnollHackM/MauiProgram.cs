@@ -103,21 +103,12 @@ public static class MauiProgram
                     var exception = @event.Exception;
 
 #if ANDROID
-                    if (exception is ObjectDisposedException ioe)
+                    ObjectDisposedException frameworkDisposal = FrameworkObjectDisposedFilter.FindFrameworkTeardownDisposal(exception);
+                    if (frameworkDisposal != null)
                     {
-                        SentrySdk.CaptureMessage($"Handled ObjectDisposedException: {ioe.Message}", SentryLevel.Warning);
+                        SentrySdk.CaptureMessage(FrameworkObjectDisposedFilter.Describe(frameworkDisposal),
+                            scope => scope.SetExtra("ObjectDisposedException", frameworkDisposal.ToString()), SentryLevel.Warning);
                         return null;
-                    }
-                    if (@event.SentryExceptions != null)
-                    {
-                        foreach (var ex in @event.SentryExceptions)
-                        {
-                            if (ex != null && ex.Type == nameof(ObjectDisposedException))
-                            {
-                                SentrySdk.CaptureMessage($"Handled ObjectDisposedException: {ex.Value}", SentryLevel.Warning);
-                                return null;
-                            }
-                        }
                     }
 #endif
 #if IOS
@@ -262,6 +253,9 @@ public static class MauiProgram
                         GHApp.WindowsXamlWindow = window;
                         window.Closed += (s, e) =>
                         {
+                            /* The low-level keyboard hook runs on this thread, so it is released
+                               before process exit stops the message loop */
+                            KeyboardHook.Stop();
                             if (GHApp.WindowsApp != null)
                             {
                                 GHApp.AddSentryBreadcrumb("Closed: WindowsApp.Exit, Windowed Mode: " + GHApp.WindowedMode, GHConstants.SentryGnollHackGeneralCategoryName);
@@ -697,12 +691,16 @@ public class KeyboardHook
 
     public static void Start()
     {
+        if (_hookID != IntPtr.Zero)
+            return;
         _hookID = SetHook(_proc);
     }
 
     public static void Stop()
     {
-        UnhookWindowsHookEx(_hookID);
+        IntPtr hookId = Interlocked.Exchange(ref _hookID, IntPtr.Zero);
+        if (hookId != IntPtr.Zero)
+            UnhookWindowsHookEx(hookId);
     }
 
     private static IntPtr SetHook(LowLevelKeyboardProc proc)

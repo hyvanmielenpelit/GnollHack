@@ -80,8 +80,16 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>None</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <!-- Must stay non-empty: an empty DebugType with DebugSymbols=true makes Android include debug symbols -->
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <!-- Sentry symbol upload runs only when the SENTRY_AUTH_TOKEN environment variable is set.
+       Sentry CLI reads the token, SENTRY_ORG and SENTRY_PROJECT from the environment;
+       SentryAuthToken is never set here because MSBuild would log it on the command line. -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SENTRY_AUTH_TOKEN)' != '' ">
+    <SentryUploadSymbols>true</SentryUploadSymbols>
   </PropertyGroup>
 
 

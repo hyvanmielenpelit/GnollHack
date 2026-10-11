@@ -17,18 +17,8 @@ public partial class App : Application
 		InitializeComponent();
 
 #if WINDOWS
-        Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping(nameof(IPicker.Title), (handler, view) =>
-        {
-            if (handler.PlatformView is not null && view is Picker pick && !String.IsNullOrWhiteSpace(pick.Title))
-            {
-                handler.PlatformView.HeaderTemplate = new Microsoft.UI.Xaml.DataTemplate();
-                handler.PlatformView.PlaceholderText = pick.Title;
-                pick.Title = null;
-
-                pick.TitleColor.ToRgba(out byte r, out byte g, out byte b, out byte a);
-                handler.PlatformView.PlaceholderForeground = new XamlUI.SolidColorBrush(WindowsUI.Color.FromArgb(a, r, g, b));
-            }
-        });
+        Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping(nameof(IPicker.Title), MapPickerTitleToPlaceholder);
+        Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping(nameof(IPicker.TitleColor), MapPickerTitleToPlaceholder);
         Microsoft.Maui.Handlers.SwitchHandler.Mapper.AppendToMapping("NoLabel", (handler, View) =>
         {
             handler.PlatformView.OnContent = null;
@@ -314,6 +304,39 @@ public partial class App : Application
         GHApp.Initialize();
         //MainPage = new AppShell();
     }
+
+#if WINDOWS
+    /* Shows a picker's Title as ComboBox placeholder text in TitleColor instead of as a header */
+    private static void MapPickerTitleToPlaceholder(Microsoft.Maui.Handlers.IPickerHandler handler, IPicker picker)
+    {
+        var comboBox = handler.PlatformView;
+        if (comboBox == null)
+            return;
+
+        comboBox.Header = null;
+        comboBox.HeaderTemplate = null;
+
+        string title = picker.Title;
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            comboBox.ClearValue(Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderTextProperty);
+            comboBox.ClearValue(Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderForegroundProperty);
+            return;
+        }
+
+        comboBox.PlaceholderText = title;
+        Color titleColor = picker.TitleColor;
+        if (titleColor != null)
+        {
+            titleColor.ToRgba(out byte r, out byte g, out byte b, out byte a);
+            comboBox.PlaceholderForeground = new XamlUI.SolidColorBrush(WindowsUI.Color.FromArgb(a, r, g, b));
+        }
+        else
+        {
+            comboBox.ClearValue(Microsoft.UI.Xaml.Controls.ComboBox.PlaceholderForegroundProperty);
+        }
+    }
+#endif
 
     protected override Window CreateWindow(IActivationState activationState)
     {

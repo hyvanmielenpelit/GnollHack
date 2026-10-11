@@ -56,28 +56,10 @@ namespace GnollHackX.Controls
                 customCanvasView.InvalidateSurface();
             };
 #if WINDOWS
-            customCanvasView.HandlerChanged += (object sender, EventArgs args) =>
-            {
-                if(customCanvasView.Handler?.PlatformView is SkiaSharp.Views.Windows.SKXamlCanvas)
-                {
-                    var canvas = customCanvasView.Handler?.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
-                    canvas.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush();
-                    canvas.PointerEntered += Canvas_PointerEntered;
-                    canvas.PointerExited += Canvas_PointerExited;
-                    canvas.PointerCanceled += Canvas_PointerExited;
-                }
-            };
-            customButton.HandlerChanged += (object sender, EventArgs args) =>
-            {
-                if (customButton.Handler?.PlatformView is Microsoft.UI.Xaml.Controls.Button)
-                {
-                    var button = customButton.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Button;
-                    button.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush();
-                    button.PointerEntered += Canvas_PointerEntered;
-                    button.PointerExited += Canvas_PointerExited;
-                    button.PointerCanceled += Canvas_PointerExited;
-                }
-            };
+            customCanvasView.HandlerChanged += CustomCanvasView_HandlerChanged;
+            customCanvasView.HandlerChanging += CustomCanvasView_HandlerChanging;
+            customButton.HandlerChanged += CustomButton_HandlerChanged;
+            customButton.HandlerChanging += CustomButton_HandlerChanging;
 #endif
         }
 
@@ -85,6 +67,52 @@ namespace GnollHackX.Controls
 #if WINDOWS
         private bool _isHoveringEnabled = true;
         private bool _isHovering = false;
+        private void CustomCanvasView_HandlerChanged(object sender, EventArgs args)
+        {
+            var canvas = customCanvasView.Handler?.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
+            if (canvas != null)
+            {
+                canvas.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush();
+                canvas.PointerEntered += Canvas_PointerEntered;
+                canvas.PointerExited += Canvas_PointerExited;
+                canvas.PointerCanceled += Canvas_PointerExited;
+            }
+        }
+
+        private void CustomCanvasView_HandlerChanging(object sender, HandlerChangingEventArgs args)
+        {
+            var canvas = args.OldHandler?.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
+            if (canvas != null)
+            {
+                canvas.PointerEntered -= Canvas_PointerEntered;
+                canvas.PointerExited -= Canvas_PointerExited;
+                canvas.PointerCanceled -= Canvas_PointerExited;
+            }
+        }
+
+        private void CustomButton_HandlerChanged(object sender, EventArgs args)
+        {
+            var button = customButton.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Button;
+            if (button != null)
+            {
+                button.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush();
+                button.PointerEntered += Canvas_PointerEntered;
+                button.PointerExited += Canvas_PointerExited;
+                button.PointerCanceled += Canvas_PointerExited;
+            }
+        }
+
+        private void CustomButton_HandlerChanging(object sender, HandlerChangingEventArgs args)
+        {
+            var button = args.OldHandler?.PlatformView as Microsoft.UI.Xaml.Controls.Button;
+            if (button != null)
+            {
+                button.PointerEntered -= Canvas_PointerEntered;
+                button.PointerExited -= Canvas_PointerExited;
+                button.PointerCanceled -= Canvas_PointerExited;
+            }
+        }
+
         private void Canvas_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             e.Handled = true;
