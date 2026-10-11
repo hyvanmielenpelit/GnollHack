@@ -89,9 +89,12 @@
        SENTRY_AUTH_TOKEN environment variable is set. Decided in a target so that properties
        from the publish profile (PublishAppxPackage) are visible. Sentry CLI reads the token,
        SENTRY_ORG and SENTRY_PROJECT from the environment; SentryAuthToken is never set here
-       because MSBuild would log it. GnhSentryUpload=true forces the upload for other builds. -->
+       because MSBuild would log it. GnhSentryUpload=true forces the upload for other builds,
+       and GnhSentryUpload=false suppresses it. Visual Studio's Android Archive passes no archive
+       property, so every Android Release build counts as a publish except those Visual Studio
+       triggers implicitly for F5 and deploy (IsImplicitlyTriggeredBuild=true). -->
   <Target Name="EnableSentryUploadForPublish" BeforeTargets="BeforeBuild"
-          Condition=" '$(Configuration)' == 'Release' And '$(SENTRY_AUTH_TOKEN)' != '' And ('$(_IsPublishing)' == 'true' Or '$(ArchiveOnBuild)' == 'true' Or '$(PublishAppxPackage)' == 'true' Or '$(GenerateAppxPackageOnBuild)' == 'true' Or '$(GnhSentryUpload)' == 'true') ">
+          Condition=" '$(Configuration)' == 'Release' And '$(SENTRY_AUTH_TOKEN)' != '' And '$(GnhSentryUpload)' != 'false' And ('$(_IsPublishing)' == 'true' Or '$(ArchiveOnBuild)' == 'true' Or '$(PublishAppxPackage)' == 'true' Or '$(GenerateAppxPackageOnBuild)' == 'true' Or '$(GnhSentryUpload)' == 'true' Or ($(TargetFramework.Contains('-android')) And '$(IsImplicitlyTriggeredBuild)' != 'true')) ">
     <PropertyGroup>
       <SentryUploadSymbols>true</SentryUploadSymbols>
     </PropertyGroup>
