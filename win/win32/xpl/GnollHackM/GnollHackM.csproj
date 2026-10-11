@@ -85,12 +85,17 @@
     <DebugType>portable</DebugType>
   </PropertyGroup>
 
-  <!-- Sentry symbol upload runs only when the SENTRY_AUTH_TOKEN environment variable is set.
-       Sentry CLI reads the token, SENTRY_ORG and SENTRY_PROJECT from the environment;
-       SentryAuthToken is never set here because MSBuild would log it on the command line. -->
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SENTRY_AUTH_TOKEN)' != '' ">
-    <SentryUploadSymbols>true</SentryUploadSymbols>
-  </PropertyGroup>
+  <!-- Sentry symbol upload runs only for publish and archive builds, and only when the
+       SENTRY_AUTH_TOKEN environment variable is set. Decided in a target so that properties
+       from the publish profile (PublishAppxPackage) are visible. Sentry CLI reads the token,
+       SENTRY_ORG and SENTRY_PROJECT from the environment; SentryAuthToken is never set here
+       because MSBuild would log it. GnhSentryUpload=true forces the upload for other builds. -->
+  <Target Name="EnableSentryUploadForPublish" BeforeTargets="BeforeBuild"
+          Condition=" '$(Configuration)' == 'Release' And '$(SENTRY_AUTH_TOKEN)' != '' And ('$(_IsPublishing)' == 'true' Or '$(ArchiveOnBuild)' == 'true' Or '$(PublishAppxPackage)' == 'true' Or '$(GenerateAppxPackageOnBuild)' == 'true' Or '$(GnhSentryUpload)' == 'true') ">
+    <PropertyGroup>
+      <SentryUploadSymbols>true</SentryUploadSymbols>
+    </PropertyGroup>
+  </Target>
 
 
   <!-- FRAMEWORK SPECIFIC PROPERTIES -->
@@ -1433,11 +1438,8 @@
 
   <!-- Clean up large native PDB files from Release output (libSkiaSharp.pdb, libGLESv2.pdb, etc.) -->
   <!-- When Sentry uploads debug files, the cleanup runs after UploadDebugInfoToSentry, so the upload still finds the PDBs -->
-  <PropertyGroup>
-    <GnhSentryUploadsDebugFiles Condition="$(DefineConstants.Contains('SENTRY')) And ('$(SentryUploadSymbols)' == 'true' Or '$(SentryUploadSources)' == 'true')">true</GnhSentryUploadsDebugFiles>
-  </PropertyGroup>
-  <Target Name="CleanNativePdbs" AfterTargets="Build" DependsOnTargets="DeleteNativePdbs" Condition="'$(GnhSentryUploadsDebugFiles)' != 'true' And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'" />
-  <Target Name="CleanNativePdbsAfterSentryUpload" AfterTargets="UploadDebugInfoToSentry" DependsOnTargets="DeleteNativePdbs" Condition="'$(GnhSentryUploadsDebugFiles)' == 'true' And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'" />
+  <Target Name="CleanNativePdbs" AfterTargets="Build" DependsOnTargets="DeleteNativePdbs" Condition="!($(DefineConstants.Contains('SENTRY')) And ('$(SentryUploadSymbols)' == 'true' Or '$(SentryUploadSources)' == 'true')) And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'" />
+  <Target Name="CleanNativePdbsAfterSentryUpload" AfterTargets="UploadDebugInfoToSentry" DependsOnTargets="DeleteNativePdbs" Condition="$(DefineConstants.Contains('SENTRY')) And ('$(SentryUploadSymbols)' == 'true' Or '$(SentryUploadSources)' == 'true') And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'" />
   <Target Name="DeleteNativePdbs">
     <ItemGroup>
       <NativePdbFiles Include="$(OutputPath)\**\*.pdb" />
