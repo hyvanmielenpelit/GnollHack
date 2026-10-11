@@ -28,11 +28,6 @@ using UIKit;
 #if WINDOWS
 using GnollHackM.Platforms.Windows;
 using Microsoft.Maui.Platform;
-#endif
-
-#if SENTRY
-using Sentry.Maui;
-#if WINDOWS
 using Microsoft.UI.Windowing;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -41,6 +36,9 @@ using System.Text;
 using System.Reflection.Emit;
 using System.Reflection.Metadata;
 #endif
+
+#if SENTRY
+using Sentry.Maui;
 #endif
 
 namespace GnollHackM;
