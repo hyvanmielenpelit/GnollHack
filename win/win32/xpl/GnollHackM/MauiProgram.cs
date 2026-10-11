@@ -513,8 +513,13 @@ public static class MauiProgram
                                                 window!.DecorView.RequestApplyInsets();
                                             }
                                         }
-                                        if (dialogFragment.Dialog != null)
-                                            dialogFragment.Dialog.KeyPress += AndroidDialogKeyPress;
+                                        var dialog = dialogFragment.Dialog;
+                                        if (dialog != null)
+                                        {
+                                            /* Runs on every start and stop while the fragment is added; the removal keeps exactly one subscription */
+                                            dialog.KeyPress -= AndroidDialogKeyPress;
+                                            dialog.KeyPress += AndroidDialogKeyPress;
+                                        }
                                     }
                                     else if (dialogFragment.IsRemoving)
                                     {
@@ -1143,7 +1148,8 @@ public class KeyboardHook
 #endif
 
 #if ANDROID
-[Service(ForegroundServiceType = ForegroundService.TypeDataSync)]
+/* The manifest entry for this service, including its type, is generated from this attribute */
+[Service(Exported = false, ForegroundServiceType = ForegroundService.TypeDataSync)]
 public class SaveGameService : Service
 {
     public override IBinder OnBind(Intent intent)

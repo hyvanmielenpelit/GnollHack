@@ -4,11 +4,10 @@
 	     rules exclude only the secure credential store; see the two files under
 	     Resources/xml for the reasoning. -->
 	<application android:allowBackup="true" android:fullBackupContent="@xml/backup_rules" android:dataExtractionRules="@xml/data_extraction_rules" tools:targetApi="31" android:icon="@mipmap/appicon" android:supportsRtl="true" android:label="GnollHack">
-    <service android:name=".SaveGameService"
-         android:exported="false"
-         android:foregroundServiceType="dataSync" />
-  </application>
+	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<!-- BATTERY_STATS is never granted to store apps, but MAUI Essentials Battery throws unless it is
+	     declared. Without a battery level, GHApp skips the save on switching apps. -->
 	<uses-permission android:name="android.permission.BATTERY_STATS" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
