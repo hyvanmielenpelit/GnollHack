@@ -1424,7 +1424,13 @@
   </Target>
 
   <!-- Clean up large native PDB files from Release output (libSkiaSharp.pdb, libGLESv2.pdb, etc.) -->
-  <Target Name="CleanNativePdbs" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'">
+  <!-- When Sentry uploads debug files, the cleanup runs after UploadDebugInfoToSentry, so the upload still finds the PDBs -->
+  <PropertyGroup>
+    <GnhSentryUploadsDebugFiles Condition="$(DefineConstants.Contains('SENTRY')) And ('$(SentryUploadSymbols)' == 'true' Or '$(SentryUploadSources)' == 'true')">true</GnhSentryUploadsDebugFiles>
+  </PropertyGroup>
+  <Target Name="CleanNativePdbs" AfterTargets="Build" DependsOnTargets="DeleteNativePdbs" Condition="'$(GnhSentryUploadsDebugFiles)' != 'true' And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'" />
+  <Target Name="CleanNativePdbsAfterSentryUpload" AfterTargets="UploadDebugInfoToSentry" DependsOnTargets="DeleteNativePdbs" Condition="'$(GnhSentryUploadsDebugFiles)' == 'true' And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'" />
+  <Target Name="DeleteNativePdbs">
     <ItemGroup>
       <NativePdbFiles Include="$(OutputPath)\**\*.pdb" />
     </ItemGroup>
