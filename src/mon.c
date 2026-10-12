@@ -1452,6 +1452,7 @@ update_monster_timeouts(void)
 
                                 newsym(mtmp->mx, mtmp->my);
                             }
+                            mtmp->mon_flags &= ~(MON_FLAGS_SLIMER_PEACEFUL | MON_FLAGS_SLIMER_TAME);
                         }
                         break;
                     case SICK:

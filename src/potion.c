@@ -2006,6 +2006,7 @@ peffects(struct obj *otmp)
             else
             {
                 You("burn your %s%s.", body_part(FACE), Fire_immunity ? ", but you just get a nice tan" : "");
+                burn_away_slime();
                 /* fire damage */
                 losehp(adjust_damage(duration, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), "burning potion of oil",
                        KILLED_BY_AN);

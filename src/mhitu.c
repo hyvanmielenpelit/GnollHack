@@ -4845,6 +4845,7 @@ passiveum(struct permonst *olduasmon, struct monst *mtmp, struct attack *mattk)
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is mildly warm.", Monnam(mtmp));
                 golemeffects(mtmp, AD_FIRE, damage);
                 damage = 0;
+                mburn_away_slime(mtmp, canseemon(mtmp));
                 break;
             }
             hit_tile = HIT_ON_FIRE;
@@ -4853,6 +4854,7 @@ passiveum(struct permonst *olduasmon, struct monst *mtmp, struct attack *mattk)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is engulfed in your flames!", Monnam(mtmp));
             else
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is suddenly very hot!", Monnam(mtmp));
+            mburn_away_slime(mtmp, canseemon(mtmp));
             break;
         case AD_ELEC:
             if (is_mon_immune_to_elec(mtmp)) 

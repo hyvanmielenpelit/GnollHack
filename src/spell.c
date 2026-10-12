@@ -5945,6 +5945,7 @@ domaterialcomponentsmenu(int spell)
         {
             //One more damage
             Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "concoction explodes in a large ball of fire!");
+            burn_away_slime();
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
             explode(u.ux, u.uy, RAY_FIRE, &youmonst, 0, 0, 1, 0, 0, EXPL_FIERY);
         }
@@ -5953,6 +5954,7 @@ domaterialcomponentsmenu(int spell)
             play_sfx_sound(SFX_MIXING_FLARES_UP);
             Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "concoction flares up, burning you!");
             display_u_being_hit(HIT_ON_FIRE, dmg, 0UL);
+            burn_away_slime();
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
         }
     }

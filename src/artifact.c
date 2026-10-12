@@ -1960,6 +1960,13 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
         || (youattack && mdef == u.ustuck));
 
     /* the four basic attacks: fire, cold, shock and missiles will implemented elsewhere */
+    if (objects[otmp->otyp].oc_damagetype == AD_FIRE || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_FIRE))
+    {
+        if (youdefend)
+            burn_away_slime();
+        else
+            mburn_away_slime(mdef, canseemon(mdef));
+    }
     if (!(youdefend ? Fire_immunity : is_mon_immune_to_fire(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_FIRE || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_FIRE)))
     {
         if (realizes_damage)
@@ -1975,10 +1982,6 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
             (void)destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE);
         if (!rn2(7))
             (void)destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE);
-        if (youdefend)
-            burn_away_slime();
-        else
-            mburn_away_slime(mdef, canseemon(mdef));
     }
     if (!(youdefend ? Cold_immunity : is_mon_immune_to_cold(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_COLD || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_COLD)))
     {

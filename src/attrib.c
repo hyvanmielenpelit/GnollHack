@@ -581,6 +581,7 @@ extra_enchantment_damage(const char *reason, uchar elemental_enchantment, const 
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s burning hot!",
                 isupper((uchar)*reason) ? "" : "The ", reason,
                 plural ? "are" : "is");
+            burn_away_slime();
             if (Fire_immunity || Invulnerable)
             {
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);

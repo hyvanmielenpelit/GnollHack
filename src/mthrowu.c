@@ -607,6 +607,7 @@ ohitmon(struct monst *mtmp, struct obj *otmp, int range, boolean verbose)
                     }
                     damage += adjust_damage(d(4, 6), (struct monst*)0, mtmp, AD_FIRE, ADFLAGS_NONE);
                 }
+                mburn_away_slime(mtmp, canseemon(mtmp));
                 if (is_ammo(otmp) || throwing_weapon(otmp) || objects[otmp->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
                     otmp->elemental_enchantment = 0;
                 break;

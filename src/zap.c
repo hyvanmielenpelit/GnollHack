@@ -479,6 +479,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
         if (disguised_mimic)
             seemimic(mtmp);
 
+        mburn_away_slime(mtmp, canseemon(mtmp));
         if (is_mon_immune_to_fire(mtmp))
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
@@ -1299,8 +1300,7 @@ bhitm(struct monst *mtmp, struct obj *otmp, struct monst *origmonst)
 
             boolean was_turning_into_slime = is_turning_into_slime(mtmp);
             boolean had_slimed = !!mtmp->mprops[SLIMED];
-            mtmp->mprops[SLIMED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
-            mtmp->mon_flags &= ~(MON_FLAGS_SLIMER_PEACEFUL | MON_FLAGS_SLIMER_TAME);
+            mcuresliming(mtmp, FALSE);
 
             boolean was_mummy_rotted = is_mummy_rotted(mtmp);
             boolean had_mummy_rot = !!mtmp->mprops[MUMMY_ROT];
@@ -1442,10 +1442,7 @@ cure_petrification_here:
                 }
 
                 if (has_slimed(mtmp))
-                {
-                    (void)set_mon_property_b(mtmp, SLIMED, 0, canseemon(mtmp));
-                    mtmp->mon_flags &= ~(MON_FLAGS_SLIMER_PEACEFUL | MON_FLAGS_SLIMER_TAME);
-                }
+                    mcuresliming(mtmp, canseemon(mtmp));
 
                 if (is_tame(mtmp))
                 {
@@ -5821,6 +5818,7 @@ zapnodir(struct obj *obj)
                     setmangry(mon, FALSE);
 
                 int dmg = get_spell_damage(obj->otyp, 0, &youmonst, mon);
+                mburn_away_slime(mon, canseemon(mon));
                 if (is_mon_immune_to_fire(mon))
                 {
                     if (canspotmon(mon))
@@ -6820,6 +6818,7 @@ zapyourself(struct obj *obj, boolean ordinary)
     case SPE_BURNING_HANDS:
     case SPE_INCINERATE:
         learn_it = TRUE;
+        burn_away_slime();
         if (!Fire_immunity && !Invulnerable)
         {
             play_sfx_sound(SFX_MONSTER_ON_FIRE);

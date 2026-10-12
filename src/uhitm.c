@@ -2339,6 +2339,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
             case -FIRE_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fire doesn't seem to affect %s.", mon_nam(mon));
+                mburn_away_slime(mon, canseemon(mon));
                 break;
             case -LIGHTNING_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
@@ -2360,6 +2361,7 @@ hmon_hitmon(struct monst *mon, struct obj *obj, int thrown, int dieroll, boolean
                 play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mon->mx, mon->my);
                 display_gui_effect(GUI_EFFECT_FIRE, 0, mon->mx, mon->my, 0, 0, 0UL);
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fire burns %s.", mon_nam(mon));
+                mburn_away_slime(mon, canseemon(mon));
                 break;
             case LIGHTNING_ENCHANTMENT:
                 play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mon->mx, mon->my);

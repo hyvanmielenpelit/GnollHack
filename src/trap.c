@@ -3641,6 +3641,8 @@ void start_delayed_sliming(struct monst *mtmp, struct monst* killer_mon, boolean
 
     int existing_sliming = get_mon_property(mtmp, SLIMED);
     (void)set_mon_property_verbosely(mtmp, SLIMED, existing_sliming == 0 ? 10 : max(1, existing_sliming - 1));
+    if (existing_sliming == 0)
+        mtmp->mon_flags &= ~(MON_FLAGS_SLIMER_PEACEFUL | MON_FLAGS_SLIMER_TAME);
     if (killer_mon)
     {
         if (is_peaceful(killer_mon))
