@@ -655,8 +655,7 @@ tricked_fileremoved(int fd, char *whynot)
         done(TRICKED);
         program_state.in_tricked = 0;
 #else
-        fatal_error("Cannot continue this game: %s. "
-                    "Probably someone removed it.", whynot);
+        fatal_error("Cannot continue this game: %s Probably someone removed it.", whynot);
 #endif
         return TRUE;
     }
