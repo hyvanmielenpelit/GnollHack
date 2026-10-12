@@ -1407,13 +1407,16 @@ mon_catchup_elapsed_time(struct monst *mtmp, int64_t nmv)
     int i;
     for (i = 1; i <= LAST_PROP; i++)
     {
+        if (i == BLINDED)
+            continue; /* caught up above */
+
         unsigned short tim = (mtmp->mprops[i] & M_TIMEOUT);
         if (tim)
         {
-            if (imv > tim)
+            if (imv >= (int)tim)
                 mtmp->mprops[i] = (mtmp->mprops[i] & ~M_TIMEOUT) | 1;
             else
-                mtmp->mprops[i] = (mtmp->mprops[i] & ~M_TIMEOUT) | tim;
+                mtmp->mprops[i] = (mtmp->mprops[i] & ~M_TIMEOUT) | (unsigned short)(tim - imv);
         }
     }
 

@@ -3693,6 +3693,31 @@ mcuresickness(struct monst *mtmp, boolean verbos)
 }
 
 void
+mcuresliming(struct monst *mtmp, boolean verbos)
+{
+    if (!mtmp)
+        return;
+
+    (void)set_mon_property_b(mtmp, SLIMED, -3, verbos && canseemon(mtmp));
+    mtmp->mon_flags &= ~(MON_FLAGS_SLIMER_PEACEFUL | MON_FLAGS_SLIMER_TAME);
+}
+
+/* fire burns away incipient slime whether or not it harms the monster */
+void
+mburn_away_slime(struct monst *mtmp, boolean verbose)
+{
+    if (!mtmp || DEADMONSTER(mtmp) || !has_slimed(mtmp))
+        return;
+
+    mcuresliming(mtmp, FALSE);
+    if (verbose)
+        pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s is burned away!",
+                 Monnam_possessive(mtmp, "slime"));
+    if (isok(mtmp->mx, mtmp->my))
+        newsym(mtmp->mx, mtmp->my);
+}
+
+void
 mcurehallucination(struct monst *mtmp, boolean verbos)
 {
     if (!mtmp)
@@ -3973,8 +3998,9 @@ muse_unslime(struct monst *mon, struct obj *obj, struct trap *trap, boolean by_y
         pline_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "%s starts turning %s.", Monnam(mon),
             green_mon(mon) ? "into ooze" : hcolor_multi_buf1(NH_GREEN));
     }
-    /* -4 => sliming, causes quiet loss of enhanced speed */
-    (void)increase_mon_property_verbosely(mon, SLIMED, 10);
+    /* the burn cures unless a confused monster fumbles its scroll */
+    if (otyp != SCR_FIRE || !is_confused(mon))
+        mcuresliming(mon, FALSE);
 
     if (trap)
     {
@@ -4081,9 +4107,7 @@ muse_unslime(struct monst *mon, struct obj *obj, struct trap *trap, boolean by_y
         if (otyp != STRANGE_OBJECT)
             makeknown(otyp);
     }
-    
-    mon->mprops[SLIMED] &= ~M_TIMEOUT;
-    mon->mon_flags &= ~(MON_FLAGS_SLIMER_PEACEFUL | MON_FLAGS_SLIMER_TAME);
+
     /* use up monster's next move */
     mon->movement -= NORMAL_SPEED;
     mon->mlstmv = monstermoves;

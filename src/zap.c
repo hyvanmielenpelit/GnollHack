@@ -9352,6 +9352,7 @@ zhitm(struct monst *mon, int type, struct obj *origobj, struct monst *origmonst,
         */
         break;
     case ZT_FIRE:
+        mburn_away_slime(mon, canseemon(mon));
         if (is_mon_immune_to_fire(mon))
         {
             sho_shieldeff = TRUE;

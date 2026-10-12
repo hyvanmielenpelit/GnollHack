@@ -2260,6 +2260,7 @@ dogaze(void)
                         int dmg = d(2, 6), lev = (int)u.ulevel;
 
                         You("attack %s with a fiery gaze!", mon_nam(mtmp));
+                        mburn_away_slime(mtmp, canseemon(mtmp));
 
                         if (is_mon_immune_to_fire(mtmp)) 
                         {

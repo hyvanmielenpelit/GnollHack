@@ -1496,6 +1496,7 @@ mdamagem(struct monst *magr, struct monst *mdef, struct attack *mattk, struct ob
                 pline("May %s roast in peace.", mon_nam(mdef));
             return (MM_DEF_DIED | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
         }
+        mburn_away_slime(mdef, vis && canseemon(mdef));
         damage += adjust_damage(destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE), magr, mdef, AD_FIRE, ADFLAGS_NONE);
         damage += adjust_damage(destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE), magr, mdef, AD_FIRE, ADFLAGS_NONE);
         if (is_mon_immune_to_fire(mdef))
@@ -2650,6 +2651,7 @@ passivemm(struct monst *magr, struct monst *mdef, boolean mhit, int mdead)
                     golemeffects(magr, AD_FIRE, damage);
                 }
                 damage = 0;
+                mburn_away_slime(magr, canseemon(magr));
                 break;
             }
             if (canseemon(magr))
@@ -2660,6 +2662,7 @@ passivemm(struct monst *magr, struct monst *mdef, boolean mhit, int mdead)
                 else
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is suddenly very hot!", Monnam(magr));
             }
+            mburn_away_slime(magr, canseemon(magr));
             break;
         case AD_ELEC:
             hit_tile = HIT_ELECTROCUTED;

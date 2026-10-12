@@ -1572,8 +1572,10 @@ artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, double *d
             (void) destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE);
         if (!rn2(7))
             (void) destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE);
-        if (youdefend && Slimed)
+        if (youdefend)
             burn_away_slime();
+        else
+            mburn_away_slime(mdef, canseemon(mdef));
         return realizes_damage;
     }
     if (artifact_attack_type(AD_COLD, otmp)) 
@@ -1973,8 +1975,10 @@ pseudo_artifact_hit(struct monst *magr, struct monst *mdef, struct obj *otmp, in
             (void)destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE);
         if (!rn2(7))
             (void)destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE);
-        if (youdefend && Slimed)
+        if (youdefend)
             burn_away_slime();
+        else
+            mburn_away_slime(mdef, canseemon(mdef));
     }
     if (!(youdefend ? Cold_immunity : is_mon_immune_to_cold(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_COLD || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_COLD)))
     {

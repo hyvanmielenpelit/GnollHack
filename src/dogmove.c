@@ -644,8 +644,12 @@ dog_food_after_effect(struct monst *mtmp, struct obj *otmp, boolean verbose)
         }
         break;
     case EDIBLEFX_CURE_SICKNESS:
-        if(!is_obj_cursed(otmp))
+        if (!is_obj_cursed(otmp))
+        {
             mcuresickness(mtmp, verbose);
+            if (has_slimed(mtmp))
+                mcuresliming(mtmp, verbose);
+        }
         break;
     case EDIBLEFX_APPLE:
         /* Nothing */

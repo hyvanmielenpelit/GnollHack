@@ -2471,6 +2471,8 @@ E boolean ureflects(const char *, const char *);
 E void mcureblindness(struct monst *, boolean);
 E void mcuresickness(struct monst*, boolean);
 E void mcurehallucination(struct monst*, boolean);
+E void mcuresliming(struct monst*, boolean);
+E void mburn_away_slime(struct monst*, boolean);
 E void mcurestun(struct monst*, boolean);
 E void mcureconfusion(struct monst*, boolean);
 E boolean munstone(struct monst *, boolean);

@@ -517,6 +517,9 @@ explode(int x, int y, int type, struct monst *origmonst, int dmg_n, int dmg_d, i
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is caught in the %s!", Monnam(mtmp), str);
                 }
 
+                if (adtyp == AD_FIRE)
+                    mburn_away_slime(mtmp, canseemon(mtmp));
+
                 idamres += adjust_damage(destroy_mitem(mtmp, SCROLL_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
                 idamres += adjust_damage(destroy_mitem(mtmp, SPBOOK_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
                 idamnonres += adjust_damage(destroy_mitem(mtmp, POTION_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);

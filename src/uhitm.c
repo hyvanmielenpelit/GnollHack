@@ -3053,6 +3053,7 @@ damageum(struct monst *mdef, struct attack *mattk, struct obj *omonwep, int spec
             break;
             /* Don't return yet; keep hp<1 and damage=0 for pet msg */
         }
+        mburn_away_slime(mdef, canseemon(mdef));
         damage += adjust_damage(destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE), &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
         damage += adjust_damage(destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE), &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
 
@@ -3606,6 +3607,7 @@ explum(struct monst *mdef, struct attack *mattk)
         resistance = is_mon_immune_to_cold(mdef);
         goto common;
     case AD_FIRE:
+        mburn_away_slime(mdef, canseemon(mdef));
         resistance = is_mon_immune_to_fire(mdef);
         goto common;
     case AD_ELEC:
@@ -3887,6 +3889,7 @@ gulpum(struct monst *mdef, struct attack *mattk)
             case AD_FIRE:
                 if (rn2(2)) 
                 {
+                    mburn_away_slime(mdef, canseemon(mdef));
                     if (is_mon_immune_to_fire(mdef))
                     {
                         pline("%s seems mildly hot.", Monnam(mdef));
@@ -4744,6 +4747,7 @@ passive(struct monst *mon, struct obj *weapon, boolean mhit, int malive, uchar a
         case AD_FIRE:
             if (monnear(mon, u.ux, u.uy))
             {
+                burn_away_slime();
                 if (Fire_immunity || Invulnerable) 
                 {
                     u_shieldeff();

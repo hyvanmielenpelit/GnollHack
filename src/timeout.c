@@ -733,6 +733,13 @@ nh_timeout(void)
     }
     if (u.uinvulnerable)
         return; /* things past this point could kill you */
+    if (Slimed && (Slime_resistance || Unchanging || slimeproof(youmonst.data)))
+    {
+        if (Slime_resistance || flaming(youmonst.data))
+            burn_away_slime();
+        else
+            make_slimed(0L, "The slime disappears!", 0, (char *) 0, 0);
+    }
     if (Stoned)
         stoned_dialogue();
     if (Slimed)

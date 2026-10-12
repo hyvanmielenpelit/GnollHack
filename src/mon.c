@@ -1155,6 +1155,7 @@ minliquid(struct monst *mtmp)
             } 
             else
             {
+                mburn_away_slime(mtmp, canseemon(mtmp));
                 deduct_monster_hp(mtmp, adjust_damage(1, (struct monst*)0, mtmp, AD_FIRE, ADFLAGS_NONE));
                 if (DEADMONSTER(mtmp)) 
                 {
@@ -1174,6 +1175,8 @@ minliquid(struct monst *mtmp)
             }
             return 1;
         }
+        else if (likes_lava(mtmp->data))
+            mburn_away_slime(mtmp, canseemon(mtmp));
     } 
     else if (inpool) 
     {
@@ -1351,7 +1354,10 @@ update_monster_timeouts(void)
                         (void)munstone(mtmp, is_mon_delayed_killer_by_you(mtmp)); /* check if the monster has found something that helps */
                         break;
                     case SLIMED:
-                        (void)munslime(mtmp, is_mon_delayed_killer_by_you(mtmp)); /* check if the monster has found something that helps */
+                        if (resists_slime(mtmp))
+                            mcuresliming(mtmp, TRUE);
+                        else
+                            (void)munslime(mtmp, is_mon_delayed_killer_by_you(mtmp)); /* check if the monster has found something that helps */
                         break;
                     case STRANGLED:
                         if (canseemon(mtmp) && !is_breathless(mtmp))
