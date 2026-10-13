@@ -8250,9 +8250,6 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
     vision_reset(); /* reset the blockages */
     debugprint_pos();
 
-    /* Post crash context data to GUI on the new level */
-    post_crash_context();
-
     docrt();        /* does a full vision recalc */
     flush_screen(-1);
 
@@ -8263,12 +8260,15 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
      *  Move all plines beyond the screen reset.
      */
 
+    /* Post crash context data to GUI on the new level */
+    post_crash_context();
+
     /* Update music and ambients */
     update_game_music();
     play_level_ambient_sounds();
     play_environment_ambient_sounds();
 
-     /* Fade back from black */
+    /* Fade back from black */
     issue_simple_gui_command(GUI_CMD_FADE_FROM_BLACK);
 
     if (play_arrival_teleport_effect)

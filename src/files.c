@@ -2375,6 +2375,9 @@ load_saved_game(int load_code)
         encounter_init();
         delete_excess_levelfiles();
 
+        /* Post crash context data to GUI */
+        post_crash_context();
+
         maybe_issue_simple_gui_command(load_code != EXITHACK_RESTART_EXISTING, GUI_CMD_FADE_FROM_BLACK_SLOWLY_NONBLOCKING);
 
         switch (load_code)
