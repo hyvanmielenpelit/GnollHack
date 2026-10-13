@@ -1430,6 +1430,10 @@ allocate_buffer_with_debug_buffers(const char *message)
     return long_buffer;
 }
 
+#define CRASH_CONTEXT_MOVE_INTERVAL 50
+
+static int64_t crash_context_moves = -1; /* moves at the last post; -1 = none in this game */
+
 /*
  * Push a fresh debug-buffer and game-state snapshot to the crash reporter's
  * scope, so that a hard native crash -- which never runs any managed code --
@@ -1459,9 +1463,24 @@ post_crash_context(void)
     if (dbufs)
     {
         issue_debuglog_crash_context(dbufs);
+        crash_context_moves = moves;
         free(dbufs);
     }
     in_post_crash_context = FALSE;
+}
+
+/*
+ * Main command prompt only: refreshes the crash-context snapshot once
+ * CRASH_CONTEXT_MOVE_INTERVAL moves have passed since the last post.
+ */
+void
+maybe_post_crash_context(void)
+{
+    if (crash_context_moves >= 0 && moves >= crash_context_moves
+        && moves - crash_context_moves < CRASH_CONTEXT_MOVE_INTERVAL)
+        return;
+
+    post_crash_context();
 }
 
 
@@ -1549,6 +1568,7 @@ reset_pline(void)
     pline_dopopup = 0;
 
     prevmsg[0] = 0;
+    crash_context_moves = -1;
 
 #if defined(MSGHANDLER) && (defined(POSIX_TYPES) || defined(__GNUC__))
     use_pline_handler = TRUE;

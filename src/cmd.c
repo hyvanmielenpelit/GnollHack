@@ -10016,6 +10016,7 @@ parse(void)
     multi = 0;
     context.move = 1;
     flush_screen(1); /* Flush screen buffer. Put the cursor on the hero. */
+    maybe_post_crash_context();
 
 #ifdef ALTMETA
     alt_esc = iflags.altmeta; /* readchar() hack */
