@@ -1377,7 +1377,7 @@ void debugprint
 char*
 allocate_buffer_with_debug_buffers(const char *message)
 {
-    char* long_buffer = (char*)alloc((message ? strlen(message) + 3 : 0) + (DEBUGBUFSIZ + 5 + 9) * NUM_DEBUGBUFS + 1 + DEBUGBUFSIZ + PL_NSIZ + MAX_DGN_NAME_LENGTH + MAX_LVL_NAME_LENGTH);
+    char* long_buffer = (char*)alloc((message ? strlen(message) + 3 : 0) + (DEBUGBUFSIZ + 5 + 9) * NUM_DEBUGBUFS + 1 + BUFSZ * 3 + PL_NSIZ + MAX_DGN_NAME_LENGTH + MAX_LVL_NAME_LENGTH);
     if (!long_buffer)
         return 0;
 
@@ -1420,8 +1420,9 @@ allocate_buffer_with_debug_buffers(const char *message)
     else
     {
         s_level* slev = Is_special(&u.uz);
-        Sprintf(curbuf, "|plname:%s, ux:%d, uy:%d, dnum,level:%d,%d (%s, %s), typ:%d, moves:%lld, role:%d, race:%d, gamestart:%d, gameover:%d, mklev:%d, bones:%d, hallu:%d, blind:%d, conflict:%d, poly:%d, umonnum:%d, shops:%d, restoring:%d, saving:%d, reseting:%d, chkpt:%d, panic:%d, impossible:%d, dumplog:%d, exit:%d, freedata:%d",
+        Sprintf(curbuf, "|plname:%s, ux:%d, uy:%d, dnum,level:%d,%d (%s, %s), typ:%d, moves:%lld, role:%d, race:%d, wiz:%d, explore:%d, nonscoring:%d, modern:%d, casual:%d, tourn:%d, diff:%d, recoveries:%llu, gamestart:%d, gameover:%d, mklev:%d, bones:%d, hallu:%d, blind:%d, conflict:%d, poly:%d, umonnum:%d, shops:%d, restoring:%d, saving:%d, reseting:%d, chkpt:%d, panic:%d, impossible:%d, dumplog:%d, exit:%d, freedata:%d",
             plname, u.ux, u.uy, u.uz.dnum, u.uz.dlevel, dungeons[u.uz.dnum].dname, slev ? slev->name : "normal", isok(u.ux, u.uy) ? (int)level.locations[u.ux][u.uy].typ : -1, (long long)moves, urole.rolenum, urace.racenum,
+            wizard, discover, flags.non_scoring, ModernMode, CasualMode, TournamentMode, (int)context.game_difficulty, (unsigned long long)n_game_recoveries,
             context.game_started, program_state.gameover, in_mklev, program_state.in_bones,
             Hallucination, Blind, Conflict, Upolyd, u.umonnum, *u.ushops, restoring, saving, reseting, check_pointing, program_state.panicking, program_state.in_impossible, iflags.in_dumplog, program_state.exiting, program_state.freeing_dynamic_data);
         Strcat(long_buffer, curbuf);
