@@ -5552,14 +5552,21 @@ const char* get_defense_type_text(int defensetype)
 int
 monsterdescription(struct monst *mon)
 {
+    return monsterdescription_ex(mon, FALSE);
+}
+
+/* probing: show all extrinsics, whether or not their source items are identified */
+int
+monsterdescription_ex(struct monst *mon, boolean probing)
+{
     if (!mon)
         return 0;
     struct permonst* ptr = mon->data;
-    return monsterdescription_core(mon, ptr);
+    return monsterdescription_core(mon, ptr, probing);
 }
 
 int
-monsterdescription_core(struct monst *mon, struct permonst *ptr)
+monsterdescription_core(struct monst *mon, struct permonst *ptr, boolean probing)
 {
     if (!ptr)
         return 0;
@@ -5828,7 +5835,7 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr)
     }
 
     print_monster_statistics(datawin, mon, ptr);
-    print_monster_intrinsics(datawin, mon, ptr);
+    print_monster_intrinsics(datawin, mon, ptr, probing);
     print_monster_wearables(datawin, mon, ptr);
     print_monster_status(datawin, mon);
 
@@ -5956,7 +5963,7 @@ dump_pet_statistics(void)
         Sprintf(buf, "Pet %d of %d: %s", petnum, petcount,
                 pet_dump_name(mtmp));
         putstr(0, ATR_SUBHEADING, buf);
-        (void) monsterdescription_core(mtmp, mtmp->data);
+        (void) monsterdescription_core(mtmp, mtmp->data, FALSE);
         Sprintf(buf, "End of pet %d of %d.", petnum, petcount);
         putstr(0, ATR_NONE, buf);
     }
@@ -10501,7 +10508,7 @@ write_monsters(void)
         if (write_fd < 0)
             continue;
 
-        monsterdescription_core((struct monst*)0, &mons[i]);
+        monsterdescription_core((struct monst*)0, &mons[i], FALSE);
 
         Strcpy(buf, "Corpse properties:");
         putstr(0, ATR_HEADING, buf);

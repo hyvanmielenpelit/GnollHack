@@ -38,6 +38,7 @@ static int m_wand_hit_skill_bonus(struct monst*, int);
 static void wishcmdassist(int);
 static int get_summon_monster_type(int);
 static int dozapcore(struct obj*, boolean*);
+static boolean mon_extrinsic_source_known(struct monst*, int);
 
 #define ZT_MAGIC_MISSILE (AD_MAGM - 1)
 #define ZT_FIRE (AD_FIRE - 1)
@@ -1649,7 +1650,7 @@ probe_monster(struct monst *mtmp)
     if (!notonhead)
     {
         issue_breadcrumb("probe_monster");
-        monsterdescription(mtmp);
+        monsterdescription_ex(mtmp, TRUE);
         //display_monster_information(mtmp);
         display_monster_inventory(mtmp, TRUE);
     }
@@ -1707,7 +1708,7 @@ void display_monster_information(struct monst *mtmp)
 
     datawin = create_nhwindow(NHW_MENU);
 
-    print_monster_intrinsics(datawin, mtmp, mtmp->data);
+    print_monster_intrinsics(datawin, mtmp, mtmp->data, FALSE);
     print_monster_statistics(datawin, mtmp, mtmp->data);
 
     display_nhwindow(datawin, FALSE);
@@ -1715,7 +1716,21 @@ void display_monster_information(struct monst *mtmp)
 
 }
 
-void print_monster_intrinsics(winid datawin, struct monst *mtmp, struct permonst *ptr)
+/* TRUE if an item the player has identified conveys prop_index to mon */
+static boolean
+mon_extrinsic_source_known(struct monst *mon, int prop_index)
+{
+    struct obj *otmp;
+
+    for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
+    {
+        if (item_is_giving_monster_power(mon, otmp, prop_index, TRUE))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+void print_monster_intrinsics(winid datawin, struct monst *mtmp, struct permonst *ptr, boolean probing)
 {
     if (!ptr)
         return;
@@ -1751,7 +1766,8 @@ void print_monster_intrinsics(winid datawin, struct monst *mtmp, struct permonst
         if (ptr->mresists2 & ibit2)
             has_innate2 = TRUE;
 
-        if (mtmp && (mtmp->mprops[i] & M_EXTRINSIC) != 0)
+        if (mtmp && (mtmp->mprops[i] & M_EXTRINSIC) != 0
+            && (is_you || probing || mon_extrinsic_source_known(mtmp, i)))
             has_extrinsic = TRUE;
 
         if (mtmp && (mtmp->mprops[i] & M_INTRINSIC_ACQUIRED) != 0)
