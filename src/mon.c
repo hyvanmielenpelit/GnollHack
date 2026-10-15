@@ -1579,8 +1579,14 @@ update_monster_timeouts(void)
 
                 }
             }
+
+            /* an expired property may have killed the monster */
+            if (DEADMONSTER(mtmp))
+                break;
         }
 
+        if (DEADMONSTER(mtmp))
+            continue;
 
         /* reduce basic stat timers */
         boolean need_update = FALSE;
