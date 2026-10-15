@@ -1443,6 +1443,18 @@
   <!-- When Sentry uploads debug files, the cleanup runs after UploadDebugInfoToSentry, so the upload still finds the PDBs -->
   <Target Name="CleanNativePdbs" AfterTargets="Build" DependsOnTargets="DeleteNativePdbs" Condition="!($(DefineConstants.Contains('SENTRY')) And ('$(SentryUploadSymbols)' == 'true' Or '$(SentryUploadSources)' == 'true')) And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'" />
   <Target Name="CleanNativePdbsAfterSentryUpload" AfterTargets="UploadDebugInfoToSentry" DependsOnTargets="DeleteNativePdbs" Condition="$(DefineConstants.Contains('SENTRY')) And ('$(SentryUploadSymbols)' == 'true' Or '$(SentryUploadSources)' == 'true') And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'" />
+  <!-- gnollhackwin.vcxproj writes its PDB to the symbols directory, not next to the DLL in Platforms\Windows\libs,
+       so UploadDebugInfoToSentry never sees it -->
+  <Target Name="UploadGnollHackWinPdbToSentry" AfterTargets="UploadDebugInfoToSentry" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(SentryCLI)' != '' And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <GnollHackWinPdb>$(MSBuildProjectDirectory)\..\..\vs\symbols\Release\x64\gnollhackwin\gnollhackwin.pdb</GnollHackWinPdb>
+    </PropertyGroup>
+    <Warning Condition="!Exists('$(GnollHackWinPdb)')" Text="gnollhackwin.pdb not found at $(GnollHackWinPdb); native symbols were not uploaded to Sentry." />
+    <Exec Condition="Exists('$(GnollHackWinPdb)')" Command="$(SentryCLIDebugFilesUploadCommand) -t pdb &quot;$(GnollHackWinPdb)&quot;" IgnoreExitCode="true" ContinueOnError="WarnAndContinue">
+      <Output TaskParameter="ExitCode" PropertyName="_GnollHackWinPdbExitCode" />
+    </Exec>
+    <Warning Condition="Exists('$(GnollHackWinPdb)') And '$(_GnollHackWinPdbExitCode)' != '0'" Text="Sentry CLI could not upload gnollhackwin.pdb." />
+  </Target>
   <Target Name="DeleteNativePdbs">
     <ItemGroup>
       <NativePdbFiles Include="$(OutputPath)\**\*.pdb" />
