@@ -1455,6 +1455,39 @@
     </Exec>
     <Warning Condition="Exists('$(GnollHackWinPdb)') And '$(_GnollHackWinPdbExitCode)' != '0'" Text="Sentry CLI could not upload gnollhackwin.pdb." />
   </Target>
+  <!-- The shipped libgnollhackdroid.so in Platforms\Android\libs has no DWARF and lies outside the directory that
+       UploadDebugInfoToSentry scans. gnollhackdroid.vcxproj (ARM64) and gnollhackdroid2.vcxproj (x64) keep the full
+       copies in their intermediate directories. Sentry skips files it already has. -->
+  <Target Name="UploadGnollHackDroidSoToSentry" AfterTargets="UploadDebugInfoToSentry" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(SentryCLI)' != '' And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-android')) And '$(DesignTimeBuild)' != 'true'">
+    <ItemGroup>
+      <GnollHackDroidSo Include="$(MSBuildProjectDirectory)\..\..\vs\obj\Release\*\libgnollhackdroid\*\libgnollhackdroid.so" />
+    </ItemGroup>
+    <Warning Condition="'@(GnollHackDroidSo)' == ''" Text="No libgnollhackdroid.so found under win\win32\vs\obj\Release; native symbols were not uploaded to Sentry." />
+    <Exec Condition="'@(GnollHackDroidSo)' != ''" Command="$(SentryCLIDebugFilesUploadCommand) -t elf @(GnollHackDroidSo->'&quot;%(FullPath)&quot;', ' ')" IgnoreExitCode="true" ContinueOnError="WarnAndContinue">
+      <Output TaskParameter="ExitCode" PropertyName="_GnollHackDroidSoExitCode" />
+    </Exec>
+    <Warning Condition="'@(GnollHackDroidSo)' != '' And '$(_GnollHackDroidSoExitCode)' != '0'" Text="Sentry CLI could not upload libgnollhackdroid.so." />
+  </Target>
+  <!-- The SDK's CopyDSYMFromMac copies the dSYMs to Windows only for BuildIpa or CopyAppBundle builds, so a Visual
+       Studio iOS Archive leaves them on the Mac. This copies them before the Mac connection closes, which happens
+       before UploadDebugInfoToSentry runs; the upload then finds them in the output directory. GnollHackM.app.dSYM
+       covers all statically linked native code, including libgnollhackios.a. -->
+  <Target Name="CopyDsymsFromMacForSentry" BeforeTargets="BeforeDisconnect" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-ios')) And '$(IsMacEnabled)' == 'true' And '$(DesignTimeBuild)' != 'true'">
+    <GetDirectories SessionId="$(BuildSessionId)" Path="$(DeviceSpecificOutputPath)" Pattern="*.dSYM" ContinueOnError="WarnAndContinue">
+      <Output TaskParameter="Directories" ItemName="_GnhDsymDir" />
+    </GetDirectories>
+    <ItemGroup>
+      <_GnhDsymDir>
+        <DsymFileName>%(_GnhDsymDir.Filename)%(_GnhDsymDir.Extension)</DsymFileName>
+      </_GnhDsymDir>
+    </ItemGroup>
+    <Warning Condition="'@(_GnhDsymDir)' == ''" Text="No dSYM found on the Mac in $(DeviceSpecificOutputPath); native iOS symbols were not uploaded to Sentry." />
+    <Zip SessionId="$(BuildSessionId)" Condition="'@(_GnhDsymDir)' != ''" Sources="@(_GnhDsymDir)" OutputFile="$(DeviceSpecificOutputPath)%(_GnhDsymDir.DsymFileName).zip" WorkingDirectory="$(DeviceSpecificOutputPath)" ContinueOnError="WarnAndContinue" />
+    <CopyFileFromBuildServer SessionId="$(BuildSessionId)" Condition="'@(_GnhDsymDir)' != ''" File="$(DeviceSpecificOutputPath)%(_GnhDsymDir.DsymFileName).zip" ContinueOnError="WarnAndContinue" />
+    <Unzip Condition="Exists('$(DeviceSpecificOutputPath)%(_GnhDsymDir.DsymFileName).zip')" ZipFilePath="$(DeviceSpecificOutputPath)%(_GnhDsymDir.DsymFileName).zip" ExtractionPath="$(DeviceSpecificOutputPath)" ContinueOnError="WarnAndContinue" />
+    <Delete SessionId="$(BuildSessionId)" Condition="'@(_GnhDsymDir)' != ''" Files="$(DeviceSpecificOutputPath)%(_GnhDsymDir.DsymFileName).zip" ContinueOnError="WarnAndContinue" />
+    <Delete Condition="'@(_GnhDsymDir)' != ''" Files="$(DeviceSpecificOutputPath)%(_GnhDsymDir.DsymFileName).zip" ContinueOnError="WarnAndContinue" />
+  </Target>
   <Target Name="DeleteNativePdbs">
     <ItemGroup>
       <NativePdbFiles Include="$(OutputPath)\**\*.pdb" />
