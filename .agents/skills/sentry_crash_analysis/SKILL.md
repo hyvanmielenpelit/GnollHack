@@ -483,7 +483,7 @@ for the field list. It has two formats.
 **With a game in progress** (the character exists and the game has started):
 
 ```
-plname:X, ux:N, uy:N, dnum,level:N,N (dungeon name, level name), typ:N, moves:N, role:N, race:N, gamestart:N, gameover:N, mklev:N, bones:N, hallu:N, blind:N, conflict:N, poly:N, umonnum:N, shops:N, restoring:N, saving:N, reseting:N, chkpt:N, panic:N, impossible:N, dumplog:N, exit:N, freedata:N
+plname:X, ux:N, uy:N, dnum,level:N,N (dungeon name, level name), typ:N, moves:N, role:N, race:N, wiz:N, explore:N, nonscoring:N, modern:N, casual:N, tourn:N, diff:N, recoveries:N, gamestart:N, gameover:N, mklev:N, bones:N, hallu:N, blind:N, conflict:N, poly:N, umonnum:N, shops:N, restoring:N, saving:N, reseting:N, chkpt:N, panic:N, impossible:N, dumplog:N, exit:N, freedata:N
 ```
 
 **Without one** (main menu, character creation, a restore not yet finished) —
@@ -494,7 +494,11 @@ gamestart:N, gameover:N, mklev:N, bones:N, restoring:N, saving:N, reseting:N, ch
 ```
 
 Which format appears is itself a clue: the second one means the crash happened
-outside normal play.
+outside normal play. The game-mode fields (`wiz` through `recoveries`) appear
+only in the first format, because before the game starts `flags` may still hold
+a previous game's values or a half-restored save. They are also the newest
+fields: in the first format, their absence means an older build, not a
+traditional game.
 
 | Field | Meaning | Diagnostic Value |
 |-------|---------|------------------|
@@ -505,6 +509,13 @@ outside normal play.
 | `typ` | Terrain type (`levl[x][y].typ`) at the hero's square, `-1` if off the map | Standing in water, on a drawbridge, in a wall after a teleport |
 | `moves` | Turn count | Higher = later game = more accumulated state |
 | `role`, `race` | Role and race indices | Character class and race |
+| `wiz` | Wizard (debug) mode, `flags.debug` | **`1` = a debug game**: wishes, monster creation, level teleports and state edits can reach states normal play cannot. Ask whether the path is reachable without debug commands before ranking it; usually the developer's own testing |
+| `explore` | Explore mode, `flags.explore` | Non-scoring immortal mode; the save file survives a restore |
+| `nonscoring` | `flags.non_scoring` — set when the game came from an imported save file | **`1` = the save crossed devices or app versions**; weigh it in any save/restore investigation |
+| `modern`, `casual` | `ModernMode` (revival upon death), `CasualMode` (loadable saves) | In wizard, explore and casual modes the save file is **not deleted on restore** (`restore.c`), so a later crash leaves the pre-restore save in place rather than relying on recovery; modern mode routes death through revival code in `end.c` |
+| `tourn` | `TournamentMode` | Tournament rules and difficulty floor |
+| `diff` | `context.game_difficulty`, from `-4` (standard) to `2` (grand master); names in `get_game_difficulty_text()` | Scales monster generation and damage; matters for balance-adjacent oddities |
+| `recoveries` | `n_game_recoveries`, how many times crash recovery rebuilt this save (the "dungeon collapsed" count) | **Non-zero = the save was already rebuilt by `recover_savefile()`** at least once; strong context for missing or short levels |
 | `hallu`, `blind`, `conflict`, `poly`, `umonnum` | Hallucination, blindness, conflict, polymorphed, current monster form | Display and glyph paths (hallucinated glyphs), polyform-specific code |
 | `shops` | Shop the hero stands in, `0` if none | Implicates `shk.c` billing and pricing |
 | `gamestart` | `context.game_started` | Always `1` in the first format; in the second, `0` = the game had not started |
