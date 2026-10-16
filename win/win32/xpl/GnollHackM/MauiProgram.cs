@@ -175,7 +175,7 @@ public static class MauiProgram
                         (ioe.Message.Contains("already deactivated") 
                         || ioe.Message.Contains("already activated")))
                     {
-                        SentrySdk.CaptureMessage($"Handled InvalidOperationException: {ioe.Message}", SentryLevel.Warning);
+                        CaptureHandledActivationException(ioe.Message);
                         return null;
                     }
                     if (@event.SentryExceptions != null)
@@ -187,7 +187,7 @@ public static class MauiProgram
                                 (ex.Value.Contains("already deactivated") ||
                                     ex.Value.Contains("already activated")))
                             {
-                                SentrySdk.CaptureMessage($"Handled InvalidOperationException: {ex.Value}", SentryLevel.Warning);
+                                CaptureHandledActivationException(ex.Value);
                                 return null;
                             }
                         }
@@ -450,14 +450,14 @@ public static class MauiProgram
                             // Focused
                             GHApp.WindowFocused = true;
                             GHApp.UnfocusedMuteMode = false;
-                            GHApp.MaybeWriteLowLevelGHLog("OnActivated: Window is focused. WindowActivationState: " + args.WindowActivationState.ToString() + ", Windowed Mode: " + GHApp.WindowedMode, true, GHConstants.SentryGnollHackGeneralCategoryName);
+                            GHApp.MaybeWriteLowLevelGHLog("OnActivated: Window is focused. WindowActivationState: " + args.WindowActivationState.ToString() + ", Foreground: " + WindowFocusHelper.DescribeForeground(window) + ", Windowed Mode: " + GHApp.WindowedMode, true, GHConstants.SentryGnollHackGeneralCategoryName);
                         }
                         else
                         {
                             // Not focused
                             GHApp.WindowFocused = false;
                             GHApp.UnfocusedMuteMode = true;
-                            GHApp.MaybeWriteLowLevelGHLog("OnActivated: Window is not focused. WindowActivationState: " + args.WindowActivationState.ToString() + ", Windowed Mode: " + GHApp.WindowedMode, true, GHConstants.SentryGnollHackGeneralCategoryName);
+                            GHApp.MaybeWriteLowLevelGHLog("OnActivated: Window is not focused. WindowActivationState: " + args.WindowActivationState.ToString() + ", Foreground: " + WindowFocusHelper.DescribeForeground(window) + ", Windowed Mode: " + GHApp.WindowedMode, true, GHConstants.SentryGnollHackGeneralCategoryName);
                         }
                     });
                 });
@@ -639,6 +639,26 @@ public static class MauiProgram
         return app;
 	}
 
+#if SENTRY && WINDOWS
+    private static void CaptureHandledActivationException(string message)
+    {
+        SentrySdk.CaptureMessage($"Handled InvalidOperationException: {message}", scope =>
+        {
+            try
+            {
+                scope.SetExtra("Window Focused", GHApp.WindowFocused);
+                scope.SetExtra("Platform App Active", GHApp.PlatformAppActive);
+                scope.SetExtra("MAUI Window IsActivated", Microsoft.Maui.Controls.Application.Current?.Windows?.Count > 0 ? Microsoft.Maui.Controls.Application.Current.Windows[0].IsActivated.ToString() : "no window");
+                scope.SetExtra("Foreground", WindowFocusHelper.DescribeForeground(GHApp.WindowsXamlWindow));
+            }
+            catch (Exception ex)
+            {
+                scope.SetExtra("Activation State Error", ex.Message);
+            }
+        }, SentryLevel.Warning);
+    }
+#endif
+
 #if ANDROID
     public static void AndroidDialogKeyPress(object sender, DialogKeyEventArgs e)
     {
@@ -715,6 +735,26 @@ public class KeyboardHook
 
     private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
+    private static bool _foregroundMismatchLogged = false;
+
+    /* WindowFocused follows MAUI lifecycle events, which a re-entrant activation can skip; the foreground check does not depend on them */
+    private static bool ShouldHandleKeys()
+    {
+        if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+            return false;
+        if (WindowFocusHelper.IsOwnProcessForeground())
+        {
+            _foregroundMismatchLogged = false;
+            return true;
+        }
+        if (!_foregroundMismatchLogged)
+        {
+            _foregroundMismatchLogged = true;
+            GHApp.MaybeWriteGHLog("KeyboardHook: WindowFocused is set but another process owns the foreground window; keys pass through", true, GHConstants.SentryGnollHackGeneralCategoryName);
+        }
+        return false;
+    }
+
     private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
         //if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
@@ -750,7 +790,7 @@ public class KeyboardHook
                 {
                     GHApp.WindowsKeyDown = false;
                     GHApp.MaybeWriteLowLevelGHLog("HookCallback: Windows Key Up");
-                    if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                    if (!ShouldHandleKeys())
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                     if (GHApp.DisableWindowsKey)
                         return 1;
@@ -789,7 +829,7 @@ public class KeyboardHook
                 {
                     GHApp.WindowsKeyDown = true;
                     GHApp.MaybeWriteLowLevelGHLog("HookCallback: Windows Key Down");
-                    if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                    if (!ShouldHandleKeys())
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                     if (GHApp.DisableWindowsKey)
                         return 1;
@@ -798,9 +838,9 @@ public class KeyboardHook
                 }
                 else
                 {
-                    if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                    if (!ShouldHandleKeys())
                     {
-                        GHApp.MaybeWriteLowLevelGHLog("HookCallback: !GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled");
+                        GHApp.MaybeWriteLowLevelGHLog("HookCallback: !ShouldHandleKeys()");
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                     }
 
@@ -943,7 +983,7 @@ public class KeyboardHook
                 {
                     GHApp.WindowsKeyDown = false;
                     GHApp.MaybeWriteLowLevelGHLog("HookCallback: Sys Windows Key Up");
-                    if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                    if (!ShouldHandleKeys())
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                     if (GHApp.DisableWindowsKey)
                         return 1;
@@ -954,7 +994,7 @@ public class KeyboardHook
                 //{
                 //    GHApp.MaybeWriteLowLevelGHLog("HookCallback: F4 Syskey Up");
                 //}
-                else if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                else if (!ShouldHandleKeys())
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 else if (vkCode == 0x09)
                 {
@@ -999,13 +1039,13 @@ public class KeyboardHook
                 {
                     GHApp.WindowsKeyDown = true;
                     GHApp.MaybeWriteLowLevelGHLog("HookCallback: Sys Windows Key Down");
-                    if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                    if (!ShouldHandleKeys())
                         return CallNextHookEx(_hookID, nCode, wParam, lParam);
                     if (GHApp.DisableWindowsKey)
                         return 1;
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
-                else if (!GHApp.WindowFocused || !GHApp.IsKeyboardHookEnabled)
+                else if (!ShouldHandleKeys())
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 else if (vkCode == 0x09)
                 {

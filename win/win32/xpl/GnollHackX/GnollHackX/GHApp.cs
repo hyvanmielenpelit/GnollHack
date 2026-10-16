@@ -3232,7 +3232,7 @@ namespace GnollHackX
 
         private static void HandleResume(bool isRestart)
         {
-            MaybeWriteGHLog("GHApp.HandleResume: Start (isRestart=" + isRestart + ")", true, GHConstants.SentryGnollHackGeneralCategoryName);
+            MaybeWriteGHLog("GHApp.HandleResume: Start (isRestart=" + isRestart + ")" + ForegroundStateSuffix(), true, GHConstants.SentryGnollHackGeneralCategoryName);
             SetSentryTag(GHConstants.SentryTagAppLifecycle, "active");
             IsSuspended = false;
             GHFrameTimeline.NoteLifecycleBreak();
@@ -3296,6 +3296,29 @@ namespace GnollHackX
 
             }
 
+#if WINDOWS
+            if (WindowsXamlWindow?.DispatcherQueue?.TryEnqueue(CompleteWindowsResume) != true)
+                CompleteWindowsResume();
+#else
+            RefreshBatteryConnectivityAndXlog();
+#endif
+
+            CurrentMainPage?.Resume();
+            CurrentGamePage?.Resume();
+
+            SleepMuteMode = false;
+
+#if !GNH_MAUI || !IOS
+            if (!isRestart)
+                CheckResumeSavedGame();
+#else
+            /* iOS is handled in MauiProgram */
+#endif
+            MaybeWriteGHLog("GHApp.HandleResume: Finished" + ForegroundStateSuffix(), true, GHConstants.SentryGnollHackGeneralCategoryName);
+        }
+
+        private static void RefreshBatteryConnectivityAndXlog()
+        {
             /* Check current battery level, internet connection, and xlog user name when returning to app */
             try
             {
@@ -3307,14 +3330,16 @@ namespace GnollHackX
                 Debug.WriteLine(ex.Message);
             }
             TryVerifyXlogUserName();
-
-            CurrentMainPage?.Resume();
-            CurrentGamePage?.Resume();
-
-            SleepMuteMode = false;
+        }
 
 #if WINDOWS
-            if (WindowsXamlWindow?.AppWindow?.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
+        /* Runs from the dispatcher after MAUI's activation sequence, because these calls dispatch window
+           messages and a re-entrant activation inside Window.Resumed throws in MAUI's state machine */
+        private static void CompleteWindowsResume()
+        {
+            RefreshBatteryConnectivityAndXlog();
+
+            if (PlatformAppActive && WindowsXamlWindow?.AppWindow?.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
             {
                 if (WindowedMode)
                 {
@@ -3324,15 +3349,17 @@ namespace GnollHackX
                 else
                     presenter.Maximize();
             }
+            MaybeWriteGHLog("GHApp.CompleteWindowsResume: Finished" + ForegroundStateSuffix(), true, GHConstants.SentryGnollHackGeneralCategoryName);
+        }
 #endif
 
-#if !GNH_MAUI || !IOS
-            if (!isRestart)
-                CheckResumeSavedGame();
+        private static string ForegroundStateSuffix()
+        {
+#if WINDOWS
+            return ", Foreground: " + WindowFocusHelper.DescribeForeground(WindowsXamlWindow);
 #else
-            /* iOS is handled in MauiProgram */
+            return "";
 #endif
-            MaybeWriteGHLog("GHApp.HandleResume: Finished", true, GHConstants.SentryGnollHackGeneralCategoryName);
         }
 
         public static void CheckResumeSavedGame()

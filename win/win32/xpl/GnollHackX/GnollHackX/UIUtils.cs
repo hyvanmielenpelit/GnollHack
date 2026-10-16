@@ -2096,6 +2096,32 @@ namespace GnollHackX
 
             return hwnd == foregroundHwnd;
         }
+
+        [DllImport("user32.dll")]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        private static readonly uint _currentProcessId = (uint)Environment.ProcessId;
+
+        /* True when the foreground window, including this app's own popups and dialogs, belongs to this process */
+        public static bool IsOwnProcessForeground()
+        {
+            IntPtr foregroundHwnd = GetForegroundWindow();
+            if (foregroundHwnd == IntPtr.Zero)
+                return false;
+            GetWindowThreadProcessId(foregroundHwnd, out uint processId);
+            return processId == _currentProcessId;
+        }
+
+        public static string DescribeForeground(Microsoft.UI.Xaml.Window nativeWindow)
+        {
+            IntPtr foregroundHwnd = GetForegroundWindow();
+            if (foregroundHwnd == IntPtr.Zero)
+                return "none";
+            if (nativeWindow != null && foregroundHwnd == WindowNative.GetWindowHandle(nativeWindow))
+                return "main window";
+            GetWindowThreadProcessId(foregroundHwnd, out uint processId);
+            return processId == _currentProcessId ? "own process" : "other process";
+        }
     }
 #endif
 
