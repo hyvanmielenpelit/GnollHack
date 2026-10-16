@@ -37,35 +37,34 @@
 On the gameplay side, GnollHack expands the classic formula with:
 - Reagent-based spell system with 12 spell schools
 - Item quality tiers and mythic/legendary affixes
-- More interactive non-player characters and hirelings
 - Seven difficulty levels
 - Multiple gameplay modes ranging from classic permadeath to non-permadeath progression.
  
 On the presentation side, it features:
 - Graphical user interface
-- Animated 2D tiles
+- Animated 2D tile graphics
 - Original music
-- Spatial sound effects
+- Sound effects
 - Full voice acting
 
 All assets have been created by human artists, composers, and voice actors without generative AI assets in the game.
 
-| Area | Highlights | Documentation |
-| :--- | :--- | :--- |
-| **Visuals & Animation** | Over 23,000 hand-drawn 64×96 base tiles, monsters up to 192×192 pixels, animations, spells, rays, and explosions | [Features](https://wiki.gnollhack.com/Features) · [Screenshots](https://wiki.gnollhack.com/Screenshots) |
-| **Audio & Voiceovers** | Over 1,100 sound effects powered by FMOD, 37 music tracks (14 original compositions), and 5,000+ lines recorded by 96 voice actors across 111 roles | [Overview](https://wiki.gnollhack.com/Overview) · [Features](https://wiki.gnollhack.com/Features) |
-| **Expanded Mechanics** | 200+ spells across 14 levels, playable Gnoll race, level 50 progression cap, weapon set hot-swapping, and full in-game item and monster information | [Detailed Features](https://wiki.gnollhack.com/Detailed%20Features) |
-| **Online Ecosystem** | Global leaderboards, cross-player bones file sharing, tournament integration, and the optional context-aware **Gnoll Overseer** AI game assistant | [GnollHack Account](https://wiki.gnollhack.com/GnollHack%20Account) · [Gnoll Overseer](https://wiki.gnollhack.com/Gnoll%20Overseer) |
+| Area | Highlights |
+| :--- | :--- |
+| **Visuals & Animation** | Over 23,000 hand-drawn 64×96 base tiles (with monsters up to 192×192 pixels), animations, spells, rays, and explosions. |
+| **Audio & Voiceovers** | Over 1,100 sound effects powered by [FMOD](https://www.fmod.com/), 37 music tracks (14 original compositions), and 5,000+ lines recorded by 96 voice actors across 111 roles. |
+| **Expanded Mechanics** | 200+ spells across 14 levels, playable Gnoll race, level 50 progression cap, weapon set hot-swapping, and full in-game item and monster information. |
+| **Online Ecosystem** | **[GnollHack Account](https://wiki.gnollhack.com/GnollHack%20Account)** (global leaderboards), cross-player bones file sharing, tournament integration, and the optional context-aware **[Gnoll Overseer](https://wiki.gnollhack.com/Gnoll%20Overseer)** AI game assistant. |
 
 ## Architecture & Technology Stack
 
-GnollHack bridges a multi-decade C roguelike engine with a modern, multi-threaded C# / .NET 10 MAUI frontend. The native C game loop runs on its own background thread and communicates with the managed UI and rendering pipeline through a bidirectional P/Invoke callback contract (`struct window_procs`), keeping rendering responsive at 60 FPS across desktop and mobile devices.
+GnollHack bridges a multi-decade C roguelike engine with a modern, multi-threaded C# / .NET MAUI frontend. The native C game loop runs on its own background thread and communicates with the managed UI and rendering pipeline through a bidirectional P/Invoke callback contract (`struct window_procs`), keeping rendering responsive at 60 FPS across desktop and mobile devices.
 
 | Layer | Technology | Role in GnollHack |
 | :--- | :--- | :--- |
 | **Core Game Engine** | C99 | Extended NetHack 3.6.2 simulation core (~120 source files in `src/`, ~114 headers in `include/`) |
 | **Native Bridge** | C / C# P/Invoke | Cross-platform interop layer (`win/win32/xpl/libshare/`) marshalling map layers, menus, and input events |
-| **Cross-Platform Client** | .NET 10.0 MAUI (C# / XAML) | Unified application (`GnollHackM`) targeting Windows (WinUI 3), Android, and iOS / macOS (Apple Silicon) |
+| **Cross-Platform Client** | .NET MAUI (C# / XAML) | Unified application (`GnollHackM`) targeting Windows (WinUI 3), Android, and iOS / macOS (Apple Silicon) |
 | **2D Graphics Engine** | SkiaSharp (Skia) | GPU-accelerated canvas rendering and multi-layer tile compositing |
 | **Audio Middleware** | FMOD Studio | Low-latency cross-platform sound banks and audio playback |
 | **Data Compilation Pipeline** | `makedefs`, `levcomp`, `dgncomp`, `dlb` | Build-time C tools that generate headers, compile `.des` level scripts into binary `.lev` files, and pack the `nhdat` archive |
@@ -97,7 +96,7 @@ GnollHack/
 GnollHack uses a **two-solution build pipeline** in Visual Studio 2026:
 
 1. **Native & Asset Pipeline (`win/win32/vs/GnollHack.sln`)** — Compiles the build utilities (`makedefs`, `levcomp`, `dgncomp`, `dlb`), processes game data into the `nhdat` archive, compiles the native C engine libraries (`gnollhackwin.dll`, `libgnollhackdroid.so`, `libgnollhackios.a`), transforms shared XAML views into `.NET MAUI` format, and stages external tile sheets and FMOD sound banks.
-2. **Managed Client (`win/win32/xpl/GnollHackM/GnollHackM.sln`)** — Compiles and packages the `.NET 10.0 MAUI` frontend together with the staged native libraries and assets from Step 1.
+2. **Managed Client (`win/win32/xpl/GnollHackM/GnollHackM.sln`)** — Compiles and packages the `.NET MAUI` frontend together with the staged native libraries and assets from Step 1.
 
 Because tile sheets ([GnollHackTileSet](https://github.com/hyvanmielenpelit/GnollHackTileSet)) and FMOD sound banks ([GnollHackSoundSet](https://github.com/hyvanmielenpelit/GnollHackSoundSet)) are maintained in dedicated asset repositories, **read the architecture overview before building for the first time**:
 
@@ -112,7 +111,7 @@ Because tile sheets ([GnollHackTileSet](https://github.com/hyvanmielenpelit/Gnol
 
 - **Bug Reports & Issues** — Report bugs on the [GnollHack Discord server](https://discord.gg/cQuExnzUQy).
 - **Art Contributions** — See the [Art Contribution Guidelines](https://wiki.gnollhack.com/Art%20Contribution%20Guidelines).
-- **Communities** — Join the conversation on the [GnollHack Discord](https://discord.gg/cQuExnzUQy).
+- **Communities** — Join the conversation on the [GnollHack Discord server](https://discord.gg/cQuExnzUQy).
 
 ## License & Credits
 
