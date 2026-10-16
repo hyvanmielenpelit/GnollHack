@@ -7,14 +7,13 @@
 **A modern, cross-platform graphical roguelike built on the classic NetHack engine**
 
 [![Release](https://img.shields.io/github/v/release/hyvanmielenpelit/GnollHack?label=Release&color=2ea44f)](https://github.com/hyvanmielenpelit/GnollHack/releases)
-[![Performance Tests](https://github.com/hyvanmielenpelit/GnollHack/actions/workflows/performance-tests.yml/badge.svg)](https://github.com/hyvanmielenpelit/GnollHack/actions/workflows/performance-tests.yml)
 [![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Android%20%7C%20iOS%20%7C%20macOS-0078D4)](https://wiki.gnollhack.com/Download)
 [![.NET MAUI](https://img.shields.io/badge/.NET%20MAUI-10.0-512BD4)](https://wiki.gnollhack.com/Technological%20Features)
 [![Language](https://img.shields.io/badge/Language-C99%20%7C%20C%23-00599C)](https://wiki.gnollhack.com/Development/Repository%20Structure)
 [![License: NGPL](https://img.shields.io/badge/License-NetHack%20GPL-yellow.svg)](LICENSE.md)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/cQuExnzUQy)
 
-[Website](https://gnollhack.com/) · [Download](https://wiki.gnollhack.com/Download) · [Wiki](https://wiki.gnollhack.com/) · [Features](https://wiki.gnollhack.com/Features) · [Architecture](https://wiki.gnollhack.com/Technological%20Features) · [Developer Docs](https://wiki.gnollhack.com/Development%20Information) · [Gnoll Overseer AI Assistant](https://overseer.gnollhack.com/) · [Leaderboards](https://account.gnollhack.com/)
+[Website](https://gnollhack.com/) · [Wiki](https://wiki.gnollhack.com/) · [Features](https://wiki.gnollhack.com/Features) · [Developer Docs](https://wiki.gnollhack.com/Development%20Information) · [Gnoll Overseer AI Assistant](https://overseer.gnollhack.com/) · [Leaderboards](https://account.gnollhack.com/)
 
 <br />
 
@@ -36,15 +35,15 @@
 **GnollHack** is a turn-based, traditional roguelike role-playing game derived from [NetHack](https://github.com/NetHack/NetHack) 3.6.2. It preserves the deep gameplay of the original while modernizing presentation for desktop and mobile platforms.
 
 On the gameplay side, GnollHack expands the classic formula with:
-- Reagent-based spell preparation across 12 spell schools
+- Reagent-based spell system with 12 spell schools
 - Item quality tiers and mythic/legendary affixes
-- Consolidated weapon skills
 - More interactive non-player characters and hirelings
 - Seven difficulty levels
 - Multiple gameplay modes ranging from classic permadeath to non-permadeath progression.
  
 On the presentation side, it features:
-- Graphical user interface featuring animated tile layers
+- Graphical user interface
+- Animated 2D tiles
 - Original music
 - Spatial sound effects
 - Full voice acting
@@ -55,7 +54,7 @@ All assets have been created by human artists, composers, and voice actors witho
 | :--- | :--- | :--- |
 | **Visuals & Animation** | Over 23,000 hand-drawn 64×96 base tiles, monsters up to 192×192 pixels, animations, spells, rays, and explosions | [Features](https://wiki.gnollhack.com/Features) · [Screenshots](https://wiki.gnollhack.com/Screenshots) |
 | **Audio & Voiceovers** | Over 1,100 sound effects powered by FMOD, 37 music tracks (14 original compositions), and 5,000+ lines recorded by 96 voice actors across 111 roles | [Overview](https://wiki.gnollhack.com/Overview) · [Features](https://wiki.gnollhack.com/Features) |
-| **Expanded Mechanics** | 200+ spells across 14 levels, playable Gnoll race, level 50 progression cap, weapon set hot-swapping, and full in-game item and monster information | [Detailed Features](https://wiki.gnollhack.com/Detailed%20Features) · [NetHack Comparison](https://wiki.gnollhack.com/How%20GnollHack%20differs%20from%20NetHack) |
+| **Expanded Mechanics** | 200+ spells across 14 levels, playable Gnoll race, level 50 progression cap, weapon set hot-swapping, and full in-game item and monster information | [Detailed Features](https://wiki.gnollhack.com/Detailed%20Features) |
 | **Online Ecosystem** | Global leaderboards, cross-player bones file sharing, tournament integration, and the optional context-aware **Gnoll Overseer** AI game assistant | [GnollHack Account](https://wiki.gnollhack.com/GnollHack%20Account) · [Gnoll Overseer](https://wiki.gnollhack.com/Gnoll%20Overseer) |
 
 ## Architecture & Technology Stack
@@ -67,11 +66,9 @@ GnollHack bridges a multi-decade C roguelike engine with a modern, multi-threade
 | **Core Game Engine** | C99 | Extended NetHack 3.6.2 simulation core (~120 source files in `src/`, ~114 headers in `include/`) |
 | **Native Bridge** | C / C# P/Invoke | Cross-platform interop layer (`win/win32/xpl/libshare/`) marshalling map layers, menus, and input events |
 | **Cross-Platform Client** | .NET 10.0 MAUI (C# / XAML) | Unified application (`GnollHackM`) targeting Windows (WinUI 3), Android, and iOS / macOS (Apple Silicon) |
-| **2D Graphics Engine** | SkiaSharp (Skia) | GPU-accelerated canvas rendering with double-buffered map state, multi-layer tile compositing, and particle effects |
-| **Audio Middleware** | FMOD Studio | Low-latency cross-platform sound banks, distance- and obstacle-aware spatial audio, and adaptive soundtrack playback |
+| **2D Graphics Engine** | SkiaSharp (Skia) | GPU-accelerated canvas rendering and multi-layer tile compositing |
+| **Audio Middleware** | FMOD Studio | Low-latency cross-platform sound banks and audio playback |
 | **Data Compilation Pipeline** | `makedefs`, `levcomp`, `dgncomp`, `dlb` | Build-time C tools that generate headers, compile `.des` level scripts into binary `.lev` files, and pack the `nhdat` archive |
-
-For a deeper look at the engineering design and threading model, see [Technological Features](https://wiki.gnollhack.com/Technological%20Features) on the GnollHack Wiki.
 
 ## Repository Layout
 
@@ -94,11 +91,6 @@ GnollHack/
         ├── gnollhackios/    # Native iOS C library project (libgnollhackios.a via macOS build host)
         └── libshare/        # C native bridge connecting the C core to the C# frontend
 ```
-
-> [!NOTE]
-> Build outputs are written to `bin/$(Configuration)/$(Platform)/` and staged into `win/win32/xpl/GnollHackM/Platforms/`. The root `binary/` folder is a configuration directory, not the build output directory.
-
-See [Repository Structure](https://wiki.gnollhack.com/Development/Repository%20Structure) and [Related Repositories](https://wiki.gnollhack.com/Development/Related%20Repositories) for full project and asset repository details.
 
 ## Building from Source
 
@@ -129,5 +121,5 @@ Because tile sheets ([GnollHackTileSet](https://github.com/hyvanmielenpelit/Gnol
 
 GnollHack is developed and maintained by **[Sound Mind Games](https://wiki.gnollhack.com/Developer)** (*[Hyvän mielen pelit ry](https://hyvanmielenpelit.fi/)*), a Finnish nonprofit organization working on the fields of gaming and mental health.
 
-- [Full Credits & Acknowledgments](https://wiki.gnollhack.com/Credits)
-- [Support & Sponsor Sound Mind Games](https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english)
+- [Credits](https://wiki.gnollhack.com/Credits)
+- [Sponsor Sound Mind Games](https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english)
