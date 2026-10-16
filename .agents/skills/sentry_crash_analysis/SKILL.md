@@ -689,6 +689,11 @@ Conclude every analysis with a prioritized action items list:
 | **4. Testing**     | Wizard mode       | Specific test scenarios to attempt locally              |
 | **5. Monitoring**  | Future reports    | What to watch for in future Sentry reports to confirm/refute hypotheses |
 
+When the analysis concludes that the bug is in a framework or library, the action list
+includes an upstream report. Draft it with the global `agent-issue-drafting` skill, using
+this analysis as the evidence and leaving out the personal data the Security and Privacy
+section excludes.
+
 ---
 
 ## Section D: Analysis Report Format
@@ -872,5 +877,7 @@ unrelated operation.
   `ConcurrentQueue` communication (relevant for concurrent access crashes)
 - **`client_framework_sources`** — Reading .NET MAUI, runtime, Android, iOS, WinUI, SkiaSharp and Skia
   source at the shipped version
+- **`agent-issue-drafting`** (global) — drafting the upstream issue when an analysis
+  ends in a framework bug
 - **`save_restore_system`** — Save/load system, struct alignment, file I/O
   (relevant for save corruption and restore crashes)

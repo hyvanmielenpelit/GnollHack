@@ -63,8 +63,9 @@ documentation or memory.
 - It is the framework's bug only when its code, at the shipped version, fails on valid
   use. If GnollHack's use is outside the framework's contract, the bug is ours.
 - A framework bug gets two answers: a workaround in GnollHack, with a comment naming the
-  upstream issue, and a report upstream with a minimal reproduction. An issue draft is a
-  document; deliver it as `agent-implementation-planning` specifies.
+  upstream issue, and a report upstream with a minimal reproduction. Draft the report with
+  `agent-issue-drafting`; it is a document, delivered as `agent-implementation-planning`
+  specifies.
 
 ## Related Skills
 
