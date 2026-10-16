@@ -38,8 +38,8 @@ On the gameplay side, GnollHack expands the classic formula with:
 - Reagent-based spell system with 12 spell schools
 - Item quality tiers and mythic/legendary affixes
 - Seven difficulty levels
-- Multiple gameplay modes ranging from classic permadeath to non-permadeath progression.
- 
+- Multiple gameplay modes ranging from classic permadeath to non-permadeath progression
+
 On the presentation side, it features:
 - Graphical user interface
 - Animated 2D tile graphics
@@ -63,7 +63,7 @@ GnollHack bridges a multi-decade C roguelike engine with a modern, multi-threade
 | Layer | Technology | Role in GnollHack |
 | :--- | :--- | :--- |
 | **Core Game Engine** | C99 | Extended NetHack 3.6.2 simulation core (~120 source files in `src/`, ~114 headers in `include/`) |
-| **Native Bridge** | C / C# P/Invoke | Cross-platform interop layer (`win/win32/xpl/libshare/`) marshalling map layers, menus, and input events |
+| **Native Bridge** | C / C# P/Invoke | Cross-platform interop layer (`win/win32/xpl/libshare/`) marshaling map layers, menus, and input events |
 | **Cross-Platform Client** | .NET MAUI (C# / XAML) | Unified application (`GnollHackM`) targeting Windows (WinUI 3), Android, and iOS / macOS (Apple Silicon) |
 | **2D Graphics Engine** | SkiaSharp (Skia) | GPU-accelerated canvas rendering and multi-layer tile compositing |
 | **Audio Middleware** | FMOD Studio | Low-latency cross-platform sound banks and audio playback |
@@ -118,7 +118,7 @@ Because tile sheets ([GnollHackTileSet](https://github.com/hyvanmielenpelit/Gnol
 - **Source Code** — Licensed under the **GnollHack General Public License / NetHack General Public License**. See [`LICENSE.md`](LICENSE.md) for the full license text.
 - **Graphics, Sound Effects, Music & Voiceovers** — Licensed under the [Creative Commons Attribution-NonCommercial 4.0 International Public License (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/).
 
-GnollHack is developed and maintained by **[Sound Mind Games](https://wiki.gnollhack.com/Developer)** (*[Hyvän mielen pelit ry](https://hyvanmielenpelit.fi/)*), a Finnish nonprofit organization working on the fields of gaming and mental health.
+GnollHack is developed and maintained by **[Sound Mind Games](https://wiki.gnollhack.com/Developer)** (*[Hyvän mielen pelit ry](https://hyvanmielenpelit.fi/)*), a Finnish nonprofit organization working in the fields of gaming and mental health.
 
 - [Credits](https://wiki.gnollhack.com/Credits)
 - [Sponsor Sound Mind Games](https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english)
