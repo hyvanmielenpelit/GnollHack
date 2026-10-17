@@ -84,7 +84,7 @@ static const struct trobj Cave_man[] = {
     { PRAYERSTONE, 0, GEM_CLASS, 1, 0, 1, 0, 0, MAT_NONE },
     { UNDEF_TYP, UNDEF_SPE, AMULET_CLASS, 1, 0, UNDEF_BLESS, 0, 0, MAT_NONE },
     { SACK, UNDEF_SPE, TOOL_CLASS, 1, 0, UNDEF_BLESS, 0, 0, MAT_NONE },
-    { FOOD_RATION, 0, FOOD_CLASS, 3, 0, 0, 0, MAT_NONE },
+    { FOOD_RATION, 0, FOOD_CLASS, 3, 0, 0, 0, 0, MAT_NONE },
     { LEATHER_ARMOR, 0, ARMOR_CLASS, 1, 0, UNDEF_BLESS, 0, 0, MAT_NONE },
     { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE }
 };
@@ -1745,10 +1745,10 @@ ini_inv(const struct trobj *trop)
             }
 
             /* nudist gets no armor */
-            if (u.uroleplay.nudist && obj->oclass == ARMOR_CLASS) {
+            if (u.uroleplay.nudist && obj->oclass == ARMOR_CLASS)
+            {
                 dealloc_obj(obj);
-                trop++;
-                continue;
+                break;
             }
 
             /* rogues get poisoned crossbow bolts */
