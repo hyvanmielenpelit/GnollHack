@@ -46,6 +46,9 @@ namespace GnollHackX.Pages.Game
         private string _lastSpaUrl = null;
         private bool _handoffSucceeded = false;
         private CancellationTokenSource _connectCts;
+#if GNH_MAUI && WINDOWS
+        private bool _newWindowHooked = false;
+#endif
 #if DEBUG
 #if IOS || MACCATALYST
         private object _iosNavigationDelegate = null;
@@ -115,6 +118,9 @@ namespace GnollHackX.Pages.Game
             GHApp.SetPlatformResizeAdjustment(false);
             GHApp.BackButtonPressed -= BackButtonPressed;
             CleanupJsBridge();
+#if GNH_MAUI && WINDOWS
+            UnhookNewWindowRequested();
+#endif
 
             /* Navigate the WebView to blank to release WKWebView content
              * process memory. Without this, each Overseer session accumulates
@@ -531,6 +537,27 @@ namespace GnollHackX.Pages.Game
 
         private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
         {
+            /* The WebView shows no address, so off-site pages open in the system browser
+               from the Overseer page and are dropped elsewhere */
+            Uri offSiteTarget = null;
+            try
+            {
+                offSiteTarget = GetOffSiteTarget(e.Url);
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("Overseer navigation check failed: " + ex.Message);
+            }
+
+            if (offSiteTarget != null)
+            {
+                e.Cancel = true;
+                LoadingIndicator.IsRunning = false;
+                LoadingIndicator.IsVisible = false;
+                HandleOffSiteNavigation(offSiteTarget);
+                return;
+            }
+
             if (_lastFailedNavigatedUrl != null && (DateTime.UtcNow - _lastFailedNavigatedTime).TotalSeconds < 1.0 && _lastFailedNavigatedUrl == e.Url)
             {
                 LoadingIndicator.IsRunning = false;
@@ -546,6 +573,9 @@ namespace GnollHackX.Pages.Game
         {
             LoadingIndicator.IsRunning = false;
             LoadingIndicator.IsVisible = false;
+#if GNH_MAUI && WINDOWS
+            HookNewWindowRequested();
+#endif
 
             if (e.Result != WebNavigationResult.Success)
             {
@@ -1032,6 +1062,68 @@ namespace GnollHackX.Pages.Game
         {
             HandleWebMessage(e.WebMessageAsJson, e.Source);
         }
+
+        /// <summary>
+        /// Subscribes to WebView2 new-window requests once CoreWebView2 exists.
+        /// Independent of the client tool setting.
+        /// </summary>
+        private void HookNewWindowRequested()
+        {
+            if (_newWindowHooked)
+                return;
+
+            var coreWebView2 = (DisplayWebView.Handler?.PlatformView
+                as Microsoft.UI.Xaml.Controls.WebView2)?.CoreWebView2;
+            if (coreWebView2 != null)
+            {
+                coreWebView2.NewWindowRequested += OnNewWindowRequested;
+                _newWindowHooked = true;
+            }
+        }
+
+        private void UnhookNewWindowRequested()
+        {
+            if (!_newWindowHooked)
+                return;
+
+            var coreWebView2 = (DisplayWebView.Handler?.PlatformView
+                as Microsoft.UI.Xaml.Controls.WebView2)?.CoreWebView2;
+            if (coreWebView2 != null)
+            {
+                coreWebView2.NewWindowRequested -= OnNewWindowRequested;
+            }
+            _newWindowHooked = false;
+        }
+
+        /// <summary>
+        /// Handles target="_blank" links, which WebView2 would otherwise open in
+        /// its own popup window: allowed addresses load in place, others go
+        /// through <see cref="HandleOffSiteNavigation"/>.
+        /// </summary>
+        private void OnNewWindowRequested(Microsoft.Web.WebView2.Core.CoreWebView2 sender,
+            Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs args)
+        {
+            args.Handled = true;
+            try
+            {
+                Uri target;
+                if (string.IsNullOrEmpty(args.Uri) || !Uri.TryCreate(args.Uri, UriKind.Absolute, out target))
+                    return;
+
+                if (!string.Equals(target.Scheme, Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase)
+                    && !string.Equals(target.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+                    return;
+
+                if (IsAllowedInWebView(target))
+                    DisplayWebView.Source = new UrlWebViewSource { Url = target.AbsoluteUri };
+                else
+                    HandleOffSiteNavigation(target);
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("Overseer new-window request failed: " + ex.Message);
+            }
+        }
 #endif
 
         /// <summary>
@@ -1078,9 +1170,75 @@ namespace GnollHackX.Pages.Game
             if (!Uri.TryCreate(_baseOverseerUrl, UriKind.Absolute, out baseUri))
                 return false;
 
-            return string.Equals(u.Scheme, baseUri.Scheme, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(u.Host, baseUri.Host, StringComparison.OrdinalIgnoreCase)
-                && u.Port == baseUri.Port;
+            return IsSameOrigin(u, baseUri);
+        }
+
+        /// <summary>
+        /// Returns true if <paramref name="a"/> and <paramref name="b"/> have the
+        /// same scheme, host and port.
+        /// </summary>
+        private static bool IsSameOrigin(Uri a, Uri b)
+        {
+            return string.Equals(a.Scheme, b.Scheme, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(a.Host, b.Host, StringComparison.OrdinalIgnoreCase)
+                && a.Port == b.Port;
+        }
+
+        /// <summary>
+        /// Returns true if <paramref name="target"/> may load inside the WebView:
+        /// the Overseer origin, the account site, or any local address when the
+        /// Overseer itself is local.
+        /// </summary>
+        private bool IsAllowedInWebView(Uri target)
+        {
+            Uri baseUri;
+            if (Uri.TryCreate(_baseOverseerUrl, UriKind.Absolute, out baseUri) && IsSameOrigin(target, baseUri))
+                return true;
+
+            if (IsSameOrigin(target, new Uri(GHConstants.GnollHackAccountPage)))
+                return true;
+
+            return UIUtils.IsLocalUrl(_baseOverseerUrl) && UIUtils.IsLocalUrl(target.AbsoluteUri);
+        }
+
+        /// <summary>
+        /// Returns the parsed <paramref name="url"/> if it is an http(s) address
+        /// that may not load inside the WebView, otherwise null.
+        /// </summary>
+        private Uri GetOffSiteTarget(string url)
+        {
+            Uri target;
+            if (string.IsNullOrEmpty(url) || !Uri.TryCreate(url, UriKind.Absolute, out target))
+                return null;
+
+            if (!string.Equals(target.Scheme, Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(target.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            return IsAllowedInWebView(target) ? null : target;
+        }
+
+        /// <summary>
+        /// Opens an off-site address in the system browser when the WebView is on
+        /// the Overseer page, where AI replies are. Elsewhere, such as iframes on
+        /// the account site, it is dropped. Must be called on the main thread.
+        /// </summary>
+        private void HandleOffSiteNavigation(Uri target)
+        {
+            if (IsOverseerOrigin(GetWebViewDocumentUrl()))
+                _ = OpenInSystemBrowserAsync(target);
+        }
+
+        private async Task OpenInSystemBrowserAsync(Uri target)
+        {
+            try
+            {
+                await GHApp.OpenBrowser(this, "the link", target, ForceBrowserOptions.SystemBrowser);
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("Opening an Overseer link failed: " + ex.Message);
+            }
         }
 
         /// <summary>
@@ -1362,13 +1520,19 @@ namespace GnollHackX.Pages.Game
                 string savePath = parameters?["filename"]?.ToString();
                 if (string.IsNullOrEmpty(savePath))
                     throw new ArgumentException("filename required");
-                if (!savePath.StartsWith(GHApp.GnollHackService.GetGnollHackPath()))
+                string saveRoot = Path.GetFullPath(GHApp.GnollHackService.GetGnollHackPath());
+                string fullSavePath = Path.GetFullPath(savePath);
+                string saveRootWithSep = saveRoot.EndsWith(Path.DirectorySeparatorChar.ToString())
+                    ? saveRoot : saveRoot + Path.DirectorySeparatorChar;
+                StringComparison pathComparison = GHApp.IsWindows
+                    ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+                if (!fullSavePath.StartsWith(saveRootWithSep, pathComparison))
                     throw new UnauthorizedAccessException(
                         "Invalid save file path");
                 /* P/Invoke — dispatch to main thread for C core safety */
                 return await MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    if (GHApp.GnollHackService.GetSaveFileDescription(savePath,
+                    if (GHApp.GnollHackService.GetSaveFileDescription(fullSavePath,
                             out string charDesc, out string locDesc,
                             out string modeDesc))
                     {

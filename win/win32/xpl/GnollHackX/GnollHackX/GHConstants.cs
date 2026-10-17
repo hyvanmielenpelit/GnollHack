@@ -239,6 +239,7 @@ namespace GnollHackX
         public const string GnollHackWebPage = "https://gnollhack.com";
         public const string GnollHackWikiPage = "https://wiki.gnollhack.com";
         public const string GnollHackOverseerPage = "https://overseer.gnollhack.com";
+        public const string GnollHackAccountPage = "https://account.gnollhack.com";
         public const string OverseerEnableClientToolsKey = "OverseerEnableClientTools";
         public const bool OverseerEnableClientToolsDefault = true;
         public const string OverseerEnableGameActionsKey = "OverseerEnableGameActions";
