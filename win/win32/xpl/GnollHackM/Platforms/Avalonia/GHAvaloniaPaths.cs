@@ -27,7 +27,9 @@ namespace GnollHackM
 #else
                         string folderName = "GnollHack-Avalonia";
 #endif
-                        string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), folderName);
+                        /* Create: by default GetFolderPath returns an empty string for a missing folder, such as
+                           ~/.local/share on a fresh Linux account, which would make the path relative */
+                        string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create), folderName);
                         Directory.CreateDirectory(path);
                         _dataDirectory = path;
                     }

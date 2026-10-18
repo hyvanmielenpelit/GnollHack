@@ -1042,6 +1042,8 @@
   <!-- Avalonia target: native libraries and game data as loose files in the output and publish directories -->
   <ItemGroup Condition="'$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('linux'))">
     <Content Include="Platforms\Linux\libs\*.so" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <!-- FMOD under its sonames (libfmod.so.14, libfmodstudio.so.14), as AvaloniaDesktopProgram loads them -->
+    <Content Include="Platforms\Linux\libs\*.so.*" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Platforms\Android\gnh\*" Link="gnh\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

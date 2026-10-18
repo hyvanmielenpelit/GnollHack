@@ -1,4 +1,7 @@
 using System;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using Avalonia;
 
 namespace GnollHackM;
@@ -8,7 +11,11 @@ internal static class AvaloniaDesktopProgram
 {
     [STAThread]
     public static void Main(string[] args)
-        => BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+    {
+        if (OperatingSystem.IsLinux())
+            NativeLibrary.SetDllImportResolver(typeof(AvaloniaDesktopProgram).Assembly, ResolveLinuxLibrary);
+        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+    }
 
     /* X11: GLX with a software fallback, no Vulkan; popups drawn inside the window. 1 GiB GPU resource budget. */
     public static AppBuilder BuildAvaloniaApp()
@@ -22,4 +29,20 @@ internal static class AvaloniaDesktopProgram
                 OverlayPopups = true,
             })
             .With(new SkiaOptions { MaxGpuResourceSizeBytes = 1024L * 1024 * 1024 });
+
+    /* The FMOD wrappers import "fmod" and "fmodstudio". libfmodstudio.so.14 loads its core library by soname,
+       libfmod.so.14, from its own directory; loading the core under any other file name would create a
+       second FMOD instance, in which the Studio system's core handle is invalid. */
+    private static IntPtr ResolveLinuxLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    {
+        string fileName;
+        if (libraryName == "fmod")
+            fileName = "libfmod.so.14";
+        else if (libraryName == "fmodstudio")
+            fileName = "libfmodstudio.so.14";
+        else
+            return IntPtr.Zero;
+
+        return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, fileName));
+    }
 }
