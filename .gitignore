@@ -61,6 +61,7 @@ win/win32/vs/dumplog/*.*
 *assetpack.zip
 libgnollhackdroid.so*
 libgnollhackios.a
+libgnollhacklinux.so*
 gnollhackwin.dll
 gnollhackwin.lib
 gnollhackwin.exp
@@ -104,6 +105,7 @@ dat/dlb.lst
 win/win32/xpl/gnollhackdroid/date*.h
 win/win32/xpl/gnollhackios/date*.h
 win/win32/xpl/gnollhackios/download*.bat
+win/win32/xpl/gnollhacklinux/date*.h
 win/win32/xpl/GnollHackM/.maui/*
 win/win32/xpl/GnollHackM/.meteor/*
 *.lastbuildstate
