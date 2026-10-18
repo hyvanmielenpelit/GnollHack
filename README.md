@@ -47,26 +47,26 @@ On the presentation side, it features:
 - Sound effects
 - Full voice acting
 
-All assets have been created by human artists, composers, and voice actors without generative AI assets in the game.
+All assets have been created by human artists, composers, and voice actors. The game contains no AI-generated assets.
 
 | Area | Highlights |
 | :--- | :--- |
 | **Visuals & Animation** | Over 23,000 hand-drawn 64×96 base tiles (with monsters up to 192×192 pixels), animations, spells, rays, and explosions. |
 | **Audio & Voiceovers** | Over 1,100 sound effects powered by [FMOD](https://www.fmod.com/), 37 music tracks (14 original compositions), and 5,000+ lines recorded by 96 voice actors across 111 roles. |
 | **Expanded Mechanics** | 200+ spells across 14 levels, playable Gnoll race, level 50 progression cap, weapon set hot-swapping, and full in-game item and monster information. |
-| **Online Ecosystem** | **[GnollHack Account](https://wiki.gnollhack.com/GnollHack%20Account)** (global leaderboards), cross-player bones file sharing, tournament integration, and the optional context-aware **[Gnoll Overseer](https://wiki.gnollhack.com/Gnoll%20Overseer)** AI game assistant. |
+| **Online Features** | **[GnollHack Account](https://wiki.gnollhack.com/GnollHack%20Account)** (global leaderboards), cross-player bones file sharing, tournament integration, and the optional **[Gnoll Overseer](https://wiki.gnollhack.com/Gnoll%20Overseer)** AI game assistant. |
 
 ## Architecture & Technology Stack
 
-GnollHack bridges a multi-decade C roguelike engine with a modern, multi-threaded C# / .NET MAUI frontend. The native C game loop runs on its own background thread and communicates with the managed UI and rendering pipeline through a bidirectional P/Invoke callback contract (`struct window_procs`), keeping rendering responsive at 60 FPS across desktop and mobile devices.
+GnollHack connects the C code base from NetHack to a modern, multi-threaded C# / .NET MAUI frontend. The C game loop runs on its own background thread and communicates with the C# user interface through P/Invoke callbacks based on NetHack's window interface.
 
 | Layer | Technology | Role in GnollHack |
 | :--- | :--- | :--- |
-| **Core Game Engine** | C99 | Extended NetHack 3.6.2 simulation core (~120 source files in `src/`, ~114 headers in `include/`) |
-| **Native Bridge** | C / C# P/Invoke | Cross-platform interop layer (`win/win32/xpl/libshare/`) marshaling map layers, menus, and input events |
-| **Cross-Platform Client** | .NET MAUI (C# / XAML) | Unified application (`GnollHackM`) targeting Windows (WinUI 3), Android, and iOS / macOS (Apple Silicon) |
-| **2D Graphics Engine** | SkiaSharp (Skia) | GPU-accelerated canvas rendering and multi-layer tile compositing |
-| **Audio Middleware** | FMOD Studio | Low-latency cross-platform sound banks and audio playback |
+| **Core Game Engine** | C99 | Extended NetHack 3.6.2 game logic |
+| **Native Bridge** | C / C# P/Invoke | Interop layer marshaling map layers, menus, and input events |
+| **Cross-Platform Client** | .NET MAUI (C# / XAML) | Single app for Windows (WinUI 3), Android, and iOS / macOS (Apple Silicon) |
+| **2D Graphics Engine** | SkiaSharp (Skia) | GPU rendering of the multi-layer tile map and parts of the user interface |
+| **Audio Middleware** | FMOD Studio | Sound effects, music, and voice playback |
 | **Data Compilation Pipeline** | `makedefs`, `levcomp`, `dgncomp`, `dlb` | Build-time C tools that generate headers, compile `.des` level scripts into binary `.lev` files, and pack the `nhdat` archive |
 
 ## Repository Layout
@@ -82,9 +82,9 @@ GnollHack/
 ├── util/                # Build-time compilers and generators (makedefs, levcomp, dgncomp, dlb)
 └── win/win32/           # Solutions, native wrappers, and cross-platform frontend code
     ├── vs/              # GnollHack.sln — C engine, build utilities, and native platform libraries
-    └── xpl/             # Cross-platform client architecture
+    └── xpl/             # Cross-platform client
         ├── GnollHackM/      # GnollHackM.sln — .NET 10 MAUI client (Android, iOS, Windows WinUI 3)
-        ├── GnollHackX/      # Shared C# game client logic, SkiaSharp renderer, and canonical XAML sources
+        ├── GnollHackX/      # Shared C# game client logic, SkiaSharp renderer, and XAML sources
         ├── gnollhackwin/    # Native Windows C library project (gnollhackwin.dll)
         ├── gnollhackdroid/  # Native Android C library project (libgnollhackdroid.so via WSL)
         ├── gnollhackios/    # Native iOS C library project (libgnollhackios.a via macOS build host)
@@ -93,15 +93,15 @@ GnollHack/
 
 ## Building from Source
 
-GnollHack uses a **two-solution build pipeline** in Visual Studio 2026:
+GnollHack uses a two-solution build pipeline in Visual Studio 2026:
 
-1. **Native & Asset Pipeline (`win/win32/vs/GnollHack.sln`)** — Compiles the build utilities (`makedefs`, `levcomp`, `dgncomp`, `dlb`), processes game data into the `nhdat` archive, compiles the native C engine libraries (`gnollhackwin.dll`, `libgnollhackdroid.so`, `libgnollhackios.a`), transforms shared XAML views into `.NET MAUI` format, and stages external tile sheets and FMOD sound banks.
-2. **Managed Client (`win/win32/xpl/GnollHackM/GnollHackM.sln`)** — Compiles and packages the `.NET MAUI` frontend together with the staged native libraries and assets from Step 1.
+1. **Native & Asset Pipeline (`win/win32/vs/GnollHack.sln`)** — Compiles the build utilities (`makedefs`, `levcomp`, `dgncomp`, `dlb`), processes game data into the `nhdat` archive, compiles the native C engine libraries (`gnollhackwin.dll`, `libgnollhackdroid.so`, `libgnollhackios.a`), transforms shared XAML views into .NET MAUI format, and stages external tile sheets and FMOD sound banks.
+2. **Managed Client (`win/win32/xpl/GnollHackM/GnollHackM.sln`)** — Compiles and packages the .NET MAUI frontend together with the staged native libraries and assets from Step 1.
 
-Because tile sheets ([GnollHackTileSet](https://github.com/hyvanmielenpelit/GnollHackTileSet)) and FMOD sound banks ([GnollHackSoundSet](https://github.com/hyvanmielenpelit/GnollHackSoundSet)) are maintained in dedicated asset repositories, **read the architecture overview before building for the first time**:
+Because tile sheets ([GnollHackTileSet](https://github.com/hyvanmielenpelit/GnollHackTileSet)) and FMOD sound banks ([GnollHackSoundSet](https://github.com/hyvanmielenpelit/GnollHackSoundSet)) are maintained in dedicated asset repositories, read the build overview before building for the first time:
 
-- **[Development Information Hub](https://wiki.gnollhack.com/Development%20Information)** — Complete index of developer documentation
-- **[Overview of Building GnollHack with .NET MAUI](https://wiki.gnollhack.com/Development/Overview%20of%20Building%20GnollHack%20with%20.NET%20MAUI)** — Essential prerequisite reading on how the C engine, WSL asset pipeline, and MAUI project interact
+- **[Development Information](https://wiki.gnollhack.com/Development%20Information)** — Index of developer documentation
+- **[Overview of Building GnollHack with .NET MAUI](https://wiki.gnollhack.com/Development/Overview%20of%20Building%20GnollHack%20with%20.NET%20MAUI)** — How the C engine, WSL asset pipeline, and MAUI project interact
 - **Platform Build Instructions**:
   - [Windows (WinUI 3 / .NET MAUI)](https://wiki.gnollhack.com/Development/Build%20Instructions%20for%20WinUI3%20Version%20on%20Windows%20%28.NET%20MAUI%29)
   - [Android on Windows (.NET MAUI)](https://wiki.gnollhack.com/Development/Build%20Instructions%20for%20Android%20Version%20on%20Windows%20%28.NET%20MAUI%29)
@@ -115,7 +115,7 @@ Because tile sheets ([GnollHackTileSet](https://github.com/hyvanmielenpelit/Gnol
 
 ## License & Credits
 
-- **Source Code** — Licensed under the **GnollHack General Public License / NetHack General Public License**. See [`LICENSE.md`](LICENSE.md) for the full license text.
+- **Source Code** — Licensed under the GnollHack General Public License / NetHack General Public License. See [`LICENSE.md`](LICENSE.md) for the full license text.
 - **Graphics, Sound Effects, Music & Voiceovers** — Licensed under the [Creative Commons Attribution-NonCommercial 4.0 International Public License (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/).
 
 GnollHack is developed and maintained by **[Sound Mind Games](https://wiki.gnollhack.com/Developer)** (*[Hyvän mielen pelit ry](https://hyvanmielenpelit.fi/)*), a Finnish nonprofit organization working in the fields of gaming and mental health.
