@@ -7,6 +7,8 @@ using SkiaSharp.Views.Maui;
 using AvDispatcher = Avalonia.Threading.Dispatcher;
 using AvDispatcherPriority = Avalonia.Threading.DispatcherPriority;
 using AvPoint = Avalonia.Point;
+using AvPointerEventArgs = Avalonia.Input.PointerEventArgs;
+using AvPointerType = Avalonia.Input.PointerType;
 using AvRect = Avalonia.Rect;
 
 namespace GnollHackM
@@ -61,6 +63,9 @@ namespace GnollHackM
         private int _isAttached = 0;
         private int _invalidatePosted = 0;
         private Avalonia.Controls.TopLevel _topLevel = null;
+
+        /* Stopwatch timestamp of the last raised hover move */
+        private long _lastHoverMoveTicks = 0;
 
         /* UI thread: one number per Render call, so a replay of the same render data does not repaint */
         private long _renderRequestSequence = 0;
@@ -158,6 +163,44 @@ namespace GnollHackM
         private void TopLevel_ScalingChanged(object sender, EventArgs e)
         {
             InvalidateVisual();
+        }
+
+        protected override void OnPointerEntered(AvPointerEventArgs e)
+        {
+            base.OnPointerEntered(e);
+            RaiseHover(e, SKTouchAction.Entered);
+        }
+
+        protected override void OnPointerExited(AvPointerEventArgs e)
+        {
+            base.OnPointerExited(e);
+            RaiseHover(e, SKTouchAction.Exited);
+        }
+
+        /* ACM's base handles in-contact moves */
+        protected override void OnPointerMoved(AvPointerEventArgs e)
+        {
+            base.OnPointerMoved(e);
+            if (GHAvaloniaPointerHover.IsInContact(e.GetCurrentPoint(this).Properties))
+                return;
+
+            long now = Stopwatch.GetTimestamp();
+            if (now - _lastHoverMoveTicks < GHAvaloniaPointerHover.HoverMoveIntervalTicks)
+                return;
+            _lastHoverMoveTicks = now;
+            RaiseHover(e, SKTouchAction.Moved);
+        }
+
+        /* Mouse only: touch screens and pens produce no hover */
+        private void RaiseHover(AvPointerEventArgs e, SKTouchAction action)
+        {
+            Func<SKTouchEventArgs, bool> touchAction = TouchAction;
+            if (!EnableTouchEvents || touchAction == null || e.Pointer.Type != AvPointerType.Mouse)
+                return;
+            if (GHAvaloniaPointerHover.IsInContact(e.GetCurrentPoint(this).Properties))
+                return;
+
+            GHAvaloniaPointerHover.Raise(this, e, action, IgnorePixelScaling, touchAction);
         }
 
         private void ReleaseResources()

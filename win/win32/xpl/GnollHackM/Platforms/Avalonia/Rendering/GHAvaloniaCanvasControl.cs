@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using GnollHackX;
 using SkiaSharp;
@@ -6,6 +7,8 @@ using SkiaSharp.Views.Maui;
 using AvDispatcher = Avalonia.Threading.Dispatcher;
 using AvDispatcherPriority = Avalonia.Threading.DispatcherPriority;
 using AvPoint = Avalonia.Point;
+using AvPointerEventArgs = Avalonia.Input.PointerEventArgs;
+using AvPointerType = Avalonia.Input.PointerType;
 using AvRect = Avalonia.Rect;
 
 namespace GnollHackM
@@ -13,7 +16,7 @@ namespace GnollHackM
     /* ACM's SKCanvasViewControl, painting on the UI thread outside Avalonia's render pass, because
        GnollHack's raster views read and write MAUI properties while painting. Paint requests are
        coalesced into one posted paint below layout priority; Render only draws the last painted image.
-       Touch handling is ACM's. */
+       Touch handling is ACM's; mouse hover is raised here. */
     public class GHAvaloniaCanvasControl : Avalonia.Controls.Maui.SkiaSharp.Views.Controls.SKCanvasViewControl
     {
         /* Normal requests run after layout; requests made by a paint itself run below input, so a view
@@ -31,6 +34,9 @@ namespace GnollHackM
         private GHRefCountedImage _currentImage = null;
         private double _currentImageScaling = 1.0;
         private Avalonia.Controls.TopLevel _topLevel = null;
+
+        /* Stopwatch timestamp of the last raised hover move */
+        private long _lastHoverMoveTicks = 0;
 
         /* Marks the view dirty and posts one paint unless one is already posted; any thread */
         public void RequestPaint()
@@ -183,6 +189,44 @@ namespace GnollHackM
         private void TopLevel_ScalingChanged(object sender, EventArgs e)
         {
             RequestPaint();
+        }
+
+        protected override void OnPointerEntered(AvPointerEventArgs e)
+        {
+            base.OnPointerEntered(e);
+            RaiseHover(e, SKTouchAction.Entered);
+        }
+
+        protected override void OnPointerExited(AvPointerEventArgs e)
+        {
+            base.OnPointerExited(e);
+            RaiseHover(e, SKTouchAction.Exited);
+        }
+
+        /* ACM's base handles in-contact moves */
+        protected override void OnPointerMoved(AvPointerEventArgs e)
+        {
+            base.OnPointerMoved(e);
+            if (GHAvaloniaPointerHover.IsInContact(e.GetCurrentPoint(this).Properties))
+                return;
+
+            long now = Stopwatch.GetTimestamp();
+            if (now - _lastHoverMoveTicks < GHAvaloniaPointerHover.HoverMoveIntervalTicks)
+                return;
+            _lastHoverMoveTicks = now;
+            RaiseHover(e, SKTouchAction.Moved);
+        }
+
+        /* Mouse only: touch screens and pens produce no hover */
+        private void RaiseHover(AvPointerEventArgs e, SKTouchAction action)
+        {
+            Func<SKTouchEventArgs, bool> touchAction = TouchAction;
+            if (!EnableTouchEvents || touchAction == null || e.Pointer.Type != AvPointerType.Mouse)
+                return;
+            if (GHAvaloniaPointerHover.IsInContact(e.GetCurrentPoint(this).Properties))
+                return;
+
+            GHAvaloniaPointerHover.Raise(this, e, action, IgnorePixelScaling, touchAction);
         }
 
         /* Draws one painted image on the render thread; holds its own reference until disposed */

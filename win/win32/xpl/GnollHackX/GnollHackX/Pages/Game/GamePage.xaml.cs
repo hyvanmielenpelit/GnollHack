@@ -8484,7 +8484,7 @@ namespace GnollHackX.Pages.Game
             long moveIntervals = Math.Max(2, (long)Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRate) / 10.0));
             bool lighterDarkening = LighterDarkening;
             bool coloredXRayVision = ColoredXRayVision;
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
             //lock (_canvasPointerLock)
             try
             {
@@ -17417,7 +17417,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
         private readonly object _canvasPointerLock = new object();
         private bool _isCanvasHovering = false;
         private SKPoint _canvasHoverLocation = new SKPoint();
@@ -17425,7 +17425,7 @@ namespace GnollHackX.Pages.Game
 
         private void canvasView_MousePointer(object sender, SKTouchEventArgs e)
         {
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
             lock (_canvasPointerLock)
             {
                 _canvasHoverLocation = e.Location;
@@ -18889,7 +18889,7 @@ namespace GnollHackX.Pages.Game
             SKRect textBounds = new SKRect();
             SKPoint menuHoverPoint = new SKPoint();
             bool isMenuHovering = false;
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
             lock (_menuHoverLock)
             {
                 menuHoverPoint = _menuHoverPoint;
@@ -19400,7 +19400,7 @@ namespace GnollHackX.Pages.Game
                                     bool isSelectable = selectionHow != SelectionMode.None && mi.Identifier != 0;
                                     bool iconsFitRight = x + totalRowWidth + minrowheight < canvaswidth - scaledmenumarginx;
                                     SKRect selectionrect = new SKRect(x, y, x + totalRowWidth + (isInventory && iconsFitRight ? minrowheight : 0), y + totalRowHeight);
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
                                     bool isHover = false;
                                     lock (_menuHoverLock)
                                     {

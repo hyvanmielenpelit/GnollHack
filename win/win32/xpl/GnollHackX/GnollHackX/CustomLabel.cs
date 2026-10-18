@@ -929,6 +929,15 @@ namespace GnollHackX
 
         private void Base_Touch(object sender, SKTouchEventArgs e)
         {
+#if GNH_AVALONIA
+            /* ACM delivers the mouse wheel as a touch action, in WinUI's MouseWheelDelta units */
+            if (e != null && e.ActionType == SKTouchAction.WheelChanged)
+            {
+                MouseWheel?.Invoke(this, new GHMouseWheelEventArgs(e.WheelDelta));
+                e.Handled = true;
+                return;
+            }
+#endif
             float textHeight = TextHeight;
             float canvasheight = InterlockedCanvasHeight;
             if (canvasheight == 0f)

@@ -264,8 +264,13 @@ namespace GnollHackX.Pages.MainScreen
 
             PortVersionLabel.Text = GHApp.GetPortVersionString();
             PortBuildLabel.Text = GHApp.GetPortBuildString();
+#if GNH_AVALONIA
+            PortVersionTitleLabel.Text = GHApp.PlatformDisplayName + " Port Version:";
+            PortBuildTitleLabel.Text = GHApp.PlatformDisplayName + " Port Build:";
+#else
             PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = GHApp.RuntimePlatform + " Port Build:";
+#endif
             PortConfigurationTitleLabel.Text ="Port Configuration:";
             if (GHApp.IsBeta && (!GHApp.IsSteam || GHApp.IsPlaytest))
                 PortVersionLabel.Text += " (Beta)";

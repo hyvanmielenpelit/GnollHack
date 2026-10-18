@@ -375,8 +375,13 @@ namespace GnollHackX.Controls
             if (isCanvasOnMainThread)
             {
                 Touch?.Invoke(sender, e);
-#if GNH_MAUI && WINDOWS
+#if GNH_MAUI && (WINDOWS || GNH_AVALONIA)
                 RaiseMousePointer(sender, e);
+#endif
+#if GNH_MAUI && GNH_AVALONIA
+                /* ACM delivers the mouse wheel as a touch action, in WinUI's MouseWheelDelta units */
+                if (e.ActionType == SKTouchAction.WheelChanged && e.WheelDelta != 0)
+                    MouseWheel?.Invoke(sender, new GHMouseWheelEventArgs(e.WheelDelta));
 #endif
             }
             else
@@ -384,8 +389,12 @@ namespace GnollHackX.Controls
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     Touch?.Invoke(sender, e);
-#if GNH_MAUI && WINDOWS
+#if GNH_MAUI && (WINDOWS || GNH_AVALONIA)
                     RaiseMousePointer(sender, e);
+#endif
+#if GNH_MAUI && GNH_AVALONIA
+                    if (e.ActionType == SKTouchAction.WheelChanged && e.WheelDelta != 0)
+                        MouseWheel?.Invoke(sender, new GHMouseWheelEventArgs(e.WheelDelta));
 #endif
                 });
             }
@@ -580,8 +589,13 @@ namespace GnollHackX.Controls
             if (isCanvasOnMainThread)
             {
                 Touch?.Invoke(sender, e);
-#if GNH_MAUI && WINDOWS
+#if GNH_MAUI && (WINDOWS || GNH_AVALONIA)
                 RaiseMousePointer(sender, e);
+#endif
+#if GNH_MAUI && GNH_AVALONIA
+                /* ACM delivers the mouse wheel as a touch action, in WinUI's MouseWheelDelta units */
+                if (e.ActionType == SKTouchAction.WheelChanged && e.WheelDelta != 0)
+                    MouseWheel?.Invoke(sender, new GHMouseWheelEventArgs(e.WheelDelta));
 #endif
             }
             else
@@ -589,8 +603,12 @@ namespace GnollHackX.Controls
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     Touch?.Invoke(sender, e);
-#if GNH_MAUI && WINDOWS
+#if GNH_MAUI && (WINDOWS || GNH_AVALONIA)
                     RaiseMousePointer(sender, e);
+#endif
+#if GNH_MAUI && GNH_AVALONIA
+                    if (e.ActionType == SKTouchAction.WheelChanged && e.WheelDelta != 0)
+                        MouseWheel?.Invoke(sender, new GHMouseWheelEventArgs(e.WheelDelta));
 #endif
                 });
             }
@@ -797,7 +815,9 @@ namespace GnollHackX.Controls
                 }
             }
         }
+#endif
 
+#if WINDOWS || GNH_AVALONIA
         /* Hover state for MousePointer comes from the same pointer events as Touch */
         private void RaiseMousePointer(object sender, SKTouchEventArgs e)
         {

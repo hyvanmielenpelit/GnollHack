@@ -202,6 +202,7 @@
     <!-- Avalonia: the fonts are Avalonia resources from the start, at the path ACM's font registrar reads. As MauiFont
          items, ACM converts them only after the resource step has run, and the resource blob never reaches the compiler -->
     <AvaloniaResource Include="Resources\Fonts\*" Link="Assets/Fonts/%(Filename)%(Extension)" Condition="'$(GnhAvalonia)' == 'true'" />
+    <AvaloniaResource Include="Resources\AppIcon\appicon.png" Link="Assets/AppIcon/appicon.png" Condition="'$(GnhAvalonia)' == 'true'" />
     <!-- Note: MauiFont has been unreliable on Android and Windows; workaround is to copy the files using MauiAsset to the right location instead -->
     <MauiAsset Include="Resources\Fonts\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="$(TargetFramework.Contains('-android'))" />
     <MauiAsset Include="Resources\Fonts\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="$(TargetFramework.Contains('-windows'))" />
