@@ -468,7 +468,7 @@ namespace GnollHackX
         public const long MessageLockTimeOutTicks = 50L;
         public const uint TargetDesktopScreenWidth = 1920;
         public const double WideLandscapeThreshold = 1.96; /* Does not yet capture 16:9 display + window title bar above + Windows system bar below  */
-#if GNH_MAUI && (WINDOWS || ANDROID || IOS)
+#if GNH_MAUI && (WINDOWS || ANDROID || IOS || GNH_AVALONIA)
         public const bool IsPlatformRenderLoopDefault = true;
 #else
         public const bool IsPlatformRenderLoopDefault = false;

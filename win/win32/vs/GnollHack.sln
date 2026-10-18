@@ -137,6 +137,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnollhackdroid2", "gnollhac
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0} = {F8445183-52F2-45A0-BB4F-B433F3B721F0}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnollhacklinux", "gnollhacklinux.vcxproj", "{9AE8799F-9A4E-4D00-AFA0-C7D892050822}"
+	ProjectSection(ProjectDependencies) = postProject
+		{19C1C54D-60D5-44AB-820E-7D07B180F153} = {19C1C54D-60D5-44AB-820E-7D07B180F153}
+		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1} = {6FF04CCD-3E5A-423E-B6B8-637C42A007C1}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Android x64 = Debug|Android x64
@@ -1057,6 +1063,28 @@ Global
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Release|Win32.ActiveCfg = Release|x86
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Release|Win32.Build.0 = Release|x86
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Release|x64.ActiveCfg = Release|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|Android x64.ActiveCfg = Debug|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|Android+Windows.ActiveCfg = Debug|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|ARM.ActiveCfg = Debug|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|ARM64.ActiveCfg = Debug|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|iPhone.ActiveCfg = Debug|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|MauiAll.ActiveCfg = Debug|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|MauiAndroid.ActiveCfg = Debug|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|Win32.ActiveCfg = Debug|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|x64.ActiveCfg = Debug|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|Android x64.ActiveCfg = Release|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|Android+Windows.ActiveCfg = Release|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|Any CPU.ActiveCfg = Release|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|ARM.ActiveCfg = Release|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|ARM64.ActiveCfg = Release|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|iPhone.ActiveCfg = Release|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|iPhoneSimulator.ActiveCfg = Release|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|MauiAll.ActiveCfg = Release|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|MauiAndroid.ActiveCfg = Release|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|Win32.ActiveCfg = Release|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

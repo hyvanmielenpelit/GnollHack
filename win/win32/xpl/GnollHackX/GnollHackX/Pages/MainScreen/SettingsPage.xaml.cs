@@ -229,8 +229,10 @@ namespace GnollHackX.Pages.MainScreen
                 list.Add(new MapRefreshRateItem("72 FPS", false, MapRefreshRateStyle.MapFPS72));
             if (roundedScreenRefreshRate >= 80)
                 list.Add(new MapRefreshRateItem("80 FPS", false, MapRefreshRateStyle.MapFPS80));
-            //if (roundedScreenRefreshRate >= 90)
-            //    list.Add("90 fps");
+#if GNH_AVALONIA
+            if (roundedScreenRefreshRate >= 90)
+                list.Add(new MapRefreshRateItem("90 FPS", false, MapRefreshRateStyle.MapFPS90));
+#endif
             //if (roundedScreenRefreshRate >= 120)
             //    list.Add("120 fps");
             RefreshRatePicker.ItemsSource = list;

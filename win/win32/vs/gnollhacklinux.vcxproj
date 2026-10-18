@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9AE8799F-9A4E-4D00-AFA0-C7D892050822}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <ProjectName>gnollhacklinux</ProjectName>
+    <RootNamespace>gnollhacklinux</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetName>libgnollhacklinux</TargetName>
+    <TargetExt>.so</TargetExt>
+    <RemoteRootDir>~/projects</RemoteRootDir>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/lib/$(Configuration)</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/gnollhacklinux/$(Configuration)</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/lib/$(Configuration)</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+  <Import Project="dirs.props" />
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(IncDir);$(LibShareDir);$(LibLinuxDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_MOBILE;GNH_LINUX;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <UndefinePreprocessorDefinitions>WIN32;SUSPEND</UndefinePreprocessorDefinitions>
+      <PositionIndependentCode>true</PositionIndependentCode>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>FullDebug</DebugInformationFormat>
+      <AdditionalOptions>-Wall -Wno-unused-parameter -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <LibraryDependencies>m;pthread;%(LibraryDependencies)</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(IncDir);$(LibShareDir);$(LibLinuxDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GNH_MOBILE;GNH_LINUX;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PositionIndependentCode>true</PositionIndependentCode>
+      <Optimization>MaxSpeed</Optimization>
+      <DebugInformationFormat>FullDebug</DebugInformationFormat>
+      <AdditionalOptions>-Wall -Wno-unused-parameter -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(TargetPath)</OutputFile>
+      <LibraryDependencies>m;pthread;%(LibraryDependencies)</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)allmain.c" />
+    <ClCompile Include="$(SrcDir)alloc.c" />
+    <ClCompile Include="$(SrcDir)animation.c" />
+    <ClCompile Include="$(SrcDir)animdef.c" />
+    <ClCompile Include="$(SrcDir)apply.c" />
+    <ClCompile Include="$(SrcDir)artifact.c" />
+    <ClCompile Include="$(SrcDir)attrib.c" />
+    <ClCompile Include="$(SrcDir)ball.c" />
+    <ClCompile Include="$(SrcDir)bones.c" />
+    <ClCompile Include="$(SrcDir)botl.c" />
+    <ClCompile Include="$(SrcDir)cmd.c" />
+    <ClCompile Include="$(SrcDir)dbridge.c" />
+    <ClCompile Include="$(SrcDir)decl.c" />
+    <ClCompile Include="$(SrcDir)detect.c" />
+    <ClCompile Include="$(SrcDir)dig.c" />
+    <ClCompile Include="$(SrcDir)display.c" />
+    <ClCompile Include="$(SrcDir)dlb.c" />
+    <ClCompile Include="$(SrcDir)do.c" />
+    <ClCompile Include="$(SrcDir)dog.c" />
+    <ClCompile Include="$(SrcDir)dogmove.c" />
+    <ClCompile Include="$(SrcDir)dokick.c" />
+    <ClCompile Include="$(SrcDir)dothrow.c" />
+    <ClCompile Include="$(SrcDir)do_name.c" />
+    <ClCompile Include="$(SrcDir)do_wear.c" />
+    <ClCompile Include="$(SrcDir)drawing.c" />
+    <ClCompile Include="$(SrcDir)dungeon.c" />
+    <ClCompile Include="$(SrcDir)eat.c" />
+    <ClCompile Include="$(SrcDir)encounter.c" />
+    <ClCompile Include="$(SrcDir)end.c" />
+    <ClCompile Include="$(SrcDir)engrave.c" />
+    <ClCompile Include="$(SrcDir)exper.c" />
+    <ClCompile Include="$(SrcDir)explode.c" />
+    <ClCompile Include="$(SrcDir)extralev.c" />
+    <ClCompile Include="$(SrcDir)files.c" />
+    <ClCompile Include="$(SrcDir)fountain.c" />
+    <ClCompile Include="$(SrcDir)hack.c" />
+    <ClCompile Include="$(SrcDir)hacklib.c" />
+    <ClCompile Include="$(SrcDir)invent.c" />
+    <ClCompile Include="$(SrcDir)isaac64.c" />
+    <ClCompile Include="$(SrcDir)light.c" />
+    <ClCompile Include="$(SrcDir)lock.c" />
+    <ClCompile Include="$(SrcDir)mail.c" />
+    <ClCompile Include="$(SrcDir)makemon.c" />
+    <ClCompile Include="$(SrcDir)mapglyph.c" />
+    <ClCompile Include="$(SrcDir)matcomps.c" />
+    <ClCompile Include="$(SrcDir)mcastu.c" />
+    <ClCompile Include="$(SrcDir)mhitm.c" />
+    <ClCompile Include="$(SrcDir)mhitu.c" />
+    <ClCompile Include="$(SrcDir)minion.c" />
+    <ClCompile Include="$(SrcDir)mklev.c" />
+    <ClCompile Include="$(SrcDir)mkmap.c" />
+    <ClCompile Include="$(SrcDir)mkmaze.c" />
+    <ClCompile Include="$(SrcDir)mkobj.c" />
+    <ClCompile Include="$(SrcDir)mkroom.c" />
+    <ClCompile Include="$(SrcDir)mon.c" />
+    <ClCompile Include="$(SrcDir)mondata.c" />
+    <ClCompile Include="$(SrcDir)monmove.c" />
+    <ClCompile Include="$(SrcDir)monst.c" />
+    <ClCompile Include="$(SrcDir)mplayer.c" />
+    <ClCompile Include="$(SrcDir)mthrowu.c" />
+    <ClCompile Include="$(SrcDir)muse.c" />
+    <ClCompile Include="$(SrcDir)music.c" />
+    <ClCompile Include="$(SrcDir)npc.c" />
+    <ClCompile Include="$(SrcDir)objects.c" />
+    <ClCompile Include="$(SrcDir)objnam.c" />
+    <ClCompile Include="$(SrcDir)options.c" />
+    <ClCompile Include="$(SrcDir)o_init.c" />
+    <ClCompile Include="$(SrcDir)pager.c" />
+    <ClCompile Include="$(SrcDir)pickup.c" />
+    <ClCompile Include="$(SrcDir)pline.c" />
+    <ClCompile Include="$(SrcDir)polyself.c" />
+    <ClCompile Include="$(SrcDir)potion.c" />
+    <ClCompile Include="$(SrcDir)pray.c" />
+    <ClCompile Include="$(SrcDir)priest.c" />
+    <ClCompile Include="$(SrcDir)prop.c" />
+    <ClCompile Include="$(SrcDir)quest.c" />
+    <ClCompile Include="$(SrcDir)questpgr.c" />
+    <ClCompile Include="$(SrcDir)read.c" />
+    <ClCompile Include="$(SrcDir)rect.c" />
+    <ClCompile Include="$(SrcDir)region.c" />
+    <ClCompile Include="$(SrcDir)restore.c" />
+    <ClCompile Include="$(SrcDir)rip.c" />
+    <ClCompile Include="$(SrcDir)rm.c" />
+    <ClCompile Include="$(SrcDir)rnd.c" />
+    <ClCompile Include="$(SrcDir)role.c" />
+    <ClCompile Include="$(SrcDir)rumors.c" />
+    <ClCompile Include="$(SrcDir)save.c" />
+    <ClCompile Include="$(SrcDir)shk.c" />
+    <ClCompile Include="$(SrcDir)shknam.c" />
+    <ClCompile Include="$(SrcDir)sit.c" />
+    <ClCompile Include="$(SrcDir)sounds.c" />
+    <ClCompile Include="$(SrcDir)soundset.c" />
+    <ClCompile Include="$(SrcDir)spell.c" />
+    <ClCompile Include="$(SrcDir)sp_lev.c" />
+    <ClCompile Include="$(SrcDir)steal.c" />
+    <ClCompile Include="$(SrcDir)steed.c" />
+    <ClCompile Include="$(SrcDir)sys.c" />
+    <ClCompile Include="$(SrcDir)teleport.c" />
+    <ClCompile Include="$(SrcDir)tiledata.c" />
+    <ClCompile Include="$(SrcDir)timeout.c" />
+    <ClCompile Include="$(SrcDir)topten.c" />
+    <ClCompile Include="$(SrcDir)track.c" />
+    <ClCompile Include="$(SrcDir)trap.c" />
+    <ClCompile Include="$(SrcDir)uhitm.c" />
+    <ClCompile Include="$(SrcDir)u_init.c" />
+    <ClCompile Include="$(SrcDir)vault.c" />
+    <ClCompile Include="$(SrcDir)version.c" />
+    <ClCompile Include="$(SrcDir)vision.c" />
+    <ClCompile Include="$(SrcDir)vis_tab.c" />
+    <ClCompile Include="$(SrcDir)weapon.c" />
+    <ClCompile Include="$(SrcDir)were.c" />
+    <ClCompile Include="$(SrcDir)wield.c" />
+    <ClCompile Include="$(SrcDir)windows.c" />
+    <ClCompile Include="$(SrcDir)wizard.c" />
+    <ClCompile Include="$(SrcDir)worm.c" />
+    <ClCompile Include="$(SrcDir)worn.c" />
+    <ClCompile Include="$(SrcDir)write.c" />
+    <ClCompile Include="$(SrcDir)zap.c" />
+    <ClCompile Include="$(SysShareDir)ioctl.c" />
+    <ClCompile Include="$(SysShareDir)posixregex.c" />
+    <ClCompile Include="$(SysShareDir)unixtty.c" />
+    <ClCompile Include="$(WinShareDir)safeproc.c" />
+    <ClCompile Include="$(LibShareDir)gnhapi.c" />
+    <ClCompile Include="$(LibShareDir)gnhmain.c" />
+    <ClCompile Include="$(LibShareDir)gnhunix.c" />
+    <ClCompile Include="$(LibShareDir)libproc.c" />
+    <ClCompile Include="$(LibShareDir)callback.c" />
+    <SourcesToCopyRemotely Include="@(ClCompile)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(LibShareDir)callback.h" />
+    <ClInclude Include="$(LibShareDir)gnhapi.h" />
+    <ClInclude Include="$(LibShareDir)libproc.h" />
+    <ClInclude Include="$(LibLinuxDir)linuxconf.h" />
+    <ClInclude Include="$(LibLinuxDir)date_unix.h" />
+    <SourcesToCopyRemotely Include="@(ClInclude)" />
+    <SourcesToCopyRemotely Include="$(IncDir)*.h" />
+    <SourcesToCopyRemotely Include="$(LibShareDir)*.h" />
+    <SourcesToCopyRemotely Include="$(LibLinuxDir)*.h" />
+  </ItemGroup>
+  <Target Name="CopyToMauiLinuxLibs" AfterTargets="Build">
+    <MakeDir Directories="$(MauiLinuxLibsDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MauiLinuxLibsDir)" />
+  </Target>
+</Project>

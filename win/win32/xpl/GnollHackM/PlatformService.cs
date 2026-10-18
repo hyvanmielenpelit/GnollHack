@@ -6,145 +6,201 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-#if !(__ANDROID__ || __IOS__ || WINDOWS)
+#if GNH_AVALONIA
 namespace GnollHackM
 {
+    /* Platform service of the Avalonia desktop target (Linux; also Windows through Avalonia Win32) */
     public class PlatformService : IPlatformService
     {
-        public event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
+        public event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification { add { } remove { } }
 
         public Task<Stream> GetPlatformAssetsStreamAsync(string directory, string fileName)
         {
-            throw new NotImplementedException();
+            return Task.FromResult<Stream>(File.OpenRead(Path.Combine(GHAvaloniaPaths.AssetDirectory, directory, fileName)));
         }
 
         public void CloseApplication()
         {
-            throw new NotImplementedException();
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                (Avalonia.Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.Shutdown();
+            });
+        }
+
+        public float GetPlatformScreenScale()
+        {
+            return 1.0f;
         }
 
         public int FetchOnDemandPack(string pack)
         {
-            throw new NotImplementedException();
+            return -2; /* No need to load */
         }
 
         public string GetAbsoluteOnDemandAssetPath(string assetPack)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public string GetAbsoluteOnDemandAssetPath(string assetPack, string relativeAssetPath)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public float GetAnimatorDurationScaleSetting()
         {
-            throw new NotImplementedException();
+            return 1.0f;
         }
 
         public string GetAssetsPath()
         {
-            throw new NotImplementedException();
+            return GHAvaloniaPaths.AssetDirectory;
         }
 
         public string GetBaseUrl()
         {
-            throw new NotImplementedException();
+            return Path.Combine(GHAvaloniaPaths.AssetDirectory, "Assets");
         }
 
         public float GetCurrentAnimatorDurationScale()
         {
-            throw new NotImplementedException();
+            return 1.0f;
         }
 
         public ulong GetDeviceFreeDiskSpaceInBytes()
         {
-            throw new NotImplementedException();
+            try
+            {
+                DriveInfo drive = new DriveInfo(GHAvaloniaPaths.DataDirectory);
+                return (ulong)drive.AvailableFreeSpace;
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         public ulong GetUsedMemoryInBytes()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return (ulong)Environment.WorkingSet;
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         public ulong GetDeviceMemoryInBytes()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return (ulong)GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         public ulong GetDeviceTotalDiskSpaceInBytes()
         {
-            throw new NotImplementedException();
+            try
+            {
+                DriveInfo drive = new DriveInfo(GHAvaloniaPaths.DataDirectory);
+                return (ulong)drive.TotalSize;
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         public bool GetStatusBarHidden()
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public float GetTransitionAnimationScaleSetting()
         {
-            throw new NotImplementedException();
+            return 1.0f;
         }
 
         public string GetVersionString()
         {
-            throw new NotImplementedException();
+            try
+            {
+                System.Reflection.Assembly entry = System.Reflection.Assembly.GetEntryAssembly();
+                System.Reflection.AssemblyInformationalVersionAttribute attr = entry == null ? null :
+                    (System.Reflection.AssemblyInformationalVersionAttribute)Attribute.GetCustomAttribute(entry, typeof(System.Reflection.AssemblyInformationalVersionAttribute));
+                return attr?.InformationalVersion ?? "";
+            }
+            catch
+            {
+                return "";
+            }
         }
 
         public bool IsRunningOnDesktop()
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public float GetWindowAnimationScaleSetting()
         {
-            throw new NotImplementedException();
+            return 1.0f;
         }
 
         public void InitializePlatform()
         {
-            throw new NotImplementedException();
+
         }
 
         public void EnsureWindowFocus()
         {
-            throw new NotImplementedException();
+
         }
 
         public bool IsRemoveAnimationsOn()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public void OverrideAnimatorDuration()
         {
-            throw new NotImplementedException();
+
         }
 
         public Task RequestAppReview(ContentPage page)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public void RevertAnimatorDuration(bool isfinal)
         {
-            throw new NotImplementedException();
+
         }
 
         public void SetStatusBarHidden(bool ishidden)
         {
-            throw new NotImplementedException();
+
         }
 
         public string GetCanonicalPath(string fileName)
         {
-            throw new NotImplementedException();
-        }    
+            try
+            {
+                return Path.GetFullPath(fileName);
+            }
+            catch
+            {
+                return fileName;
+            }
+        }
         public void HideKeyboard()
         {
-            throw new NotImplementedException();
+
         }
         public void SetAdjustResize(bool adjustResize)
         {
@@ -152,19 +208,19 @@ namespace GnollHackM
         }
         public void HideOsNavigationBar()
         {
-            throw new NotImplementedException();
+
         }
         public void ShowOsNavigationBar()
         {
-            throw new NotImplementedException();
+
         }
         public void CollectGarbage()
         {
-            throw new NotImplementedException();
+            GC.Collect();
         }
         public bool GetKeyboardConnected()
         {
-            return false;
+            return true;
         }
         public GHThermalReading GetThermalReading()
         {

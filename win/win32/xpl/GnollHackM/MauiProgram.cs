@@ -41,12 +41,23 @@ using System.Reflection.Metadata;
 using Sentry.Maui;
 #endif
 
+#if GNH_AVALONIA
+using Avalonia.Controls.Maui.LifecycleEvents;
+using SkiaSharp.Views.Maui.Controls;
+#endif
+
 namespace GnollHackM;
 
 public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
 	{
+#if GNH_AVALONIA
+        /* GHApp's static initializers read DeviceDisplay, DeviceInfo and AppInfo */
+        GHAvaloniaEssentials.InstallEarly();
+        GHAvaloniaLayoutInput.Register();
+        GHAvaloniaMargin.Register();
+#endif
         GHApp.TryReadSecrets();
         GHApp.Edge2Edge = Microsoft.Maui.Storage.Preferences.Get("Edge2Edge", false);
 
@@ -54,8 +65,17 @@ public static class MauiProgram
 		builder
 			.UseMauiApp<App>()
             .UseSkiaSharp()
+#if GNH_AVALONIA
+            .UseAvaloniaApp()
+            .UseAvaloniaEssentials()
+            .UseAvaloniaSkiaSharp()
+#endif
             .ConfigureMauiHandlers((handlers) => {
                 handlers.AddHandler(typeof(CustomLabel), typeof(AutoSizeSKCanvasViewHandler));
+#if GNH_AVALONIA
+                handlers.AddHandler<SKTouchGLView, GHAvaloniaGLViewHandler>();
+                handlers.AddHandler<SKCanvasView, GHAvaloniaCanvasViewHandler>();
+#endif
 #if ANDROID
                 handlers.AddHandler(typeof(Button), typeof(NoFocusButtonHandler));
                 handlers.AddHandler(typeof(ConsistentScrollView), typeof(ConsistentScrollViewHandler));
@@ -463,6 +483,14 @@ public static class MauiProgram
                 });
             })
 #endif
+#if GNH_AVALONIA
+            .ConfigureLifecycleEvents(events =>
+            {
+                /* Raised before the window is shown and before it becomes MainWindow */
+                events.AddWindows(avaloniaLifecycleBuilder =>
+                    avaloniaLifecycleBuilder.OnWindowCreated(GHAvaloniaWindowHooks.OnWindowCreated));
+            })
+#endif
             .ConfigureLifecycleEvents(static lifecycleBuilder =>
             {
 #if ANDROID
@@ -631,6 +659,12 @@ public static class MauiProgram
             });
 #if DEBUG
 		builder.Logging.AddDebug();
+#endif
+#if GNH_AVALONIA
+        /* UseAvaloniaEssentials and UseAvaloniaApp replaced Preferences and AppInfo */
+        GHAvaloniaEssentials.InstallAfterBuilder();
+        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.Replace(builder.Services,
+            Microsoft.Extensions.DependencyInjection.ServiceDescriptor.Singleton<IFontRegistrar>(new GHAvaloniaFontRegistrar()));
 #endif
         MauiApp app = builder.Build();
 #if SENTRY && WINDOWS

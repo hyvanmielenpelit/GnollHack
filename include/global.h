@@ -172,6 +172,10 @@ typedef xchar boolean; /* 0 or 1 */
 #include "droidconf.h"
 #endif
 
+#ifdef GNH_LINUX
+#include "linuxconf.h"
+#endif
+
 #ifdef GNH_IOS
 #include "iosconf.h"
 #endif

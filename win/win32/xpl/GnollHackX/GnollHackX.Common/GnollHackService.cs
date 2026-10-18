@@ -60,6 +60,12 @@ namespace GnollHackX.Unknown
 #elif GNH_MAUI && WINDOWS
         public const string dll = @"gnollhackwin.dll";
         public const string library = "gnollhackwin";
+#elif GNH_AVALONIA && LINUX
+        public const string dll = @"libgnollhacklinux.so";
+        public const string library = "gnollhacklinux";
+#elif GNH_AVALONIA
+        public const string dll = @"gnollhackwin.dll";
+        public const string library = "gnollhackwin";
 #else
         public const string dll     = @"libgnollhackunknown.so";
         public const string library = "gnollhackunknown";
@@ -413,6 +419,10 @@ namespace GnollHackX.Unknown
                 string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
                 using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
                 using (StreamReader sr = new StreamReader(fileStream))
+#elif GNH_AVALONIA
+                string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+                using Stream fileStream = File.OpenRead(Path.Combine(GHAvaloniaPaths.AssetDirectory, fullsourcepath));
+                using (StreamReader sr = new StreamReader(fileStream))
 #else
                 string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
                 using (StreamReader sr = new StreamReader(fullsourcepath))
@@ -467,6 +477,8 @@ namespace GnollHackX.Unknown
             }
 #elif WINDOWS
             return FileSystem.Current.AppDataDirectory;
+#elif GNH_AVALONIA
+            return GHAvaloniaPaths.DataDirectory;
 #else
             return ".";
 #endif
@@ -530,6 +542,10 @@ namespace GnollHackX.Unknown
                     string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
                     using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
                     using (StreamReader sr = new StreamReader(fileStream))
+#elif GNH_AVALONIA
+                    string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+                    using Stream fileStream = File.OpenRead(Path.Combine(GHAvaloniaPaths.AssetDirectory, fullsourcepath));
+                    using (StreamReader sr = new StreamReader(fileStream))
 #else
                     string fullsourcepath = Path.Combine(filesdir, assetsourcedir, txtfile);
                     using (StreamReader sr = new StreamReader(fullsourcepath))
@@ -573,6 +589,9 @@ namespace GnollHackX.Unknown
 #elif WINDOWS
                     string fullsourcepath = Path.Combine(assetsourcedir, binfile);
                     Stream src = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
+#elif GNH_AVALONIA
+                    string fullsourcepath = Path.Combine(assetsourcedir, binfile);
+                    Stream src = File.OpenRead(Path.Combine(GHAvaloniaPaths.AssetDirectory, fullsourcepath));
 #else
                     string fullsourcepath = Path.Combine(assetsourcedir, binfile);
                     Stream src = File.OpenRead(fullsourcepath);
@@ -671,6 +690,8 @@ namespace GnollHackX.Unknown
                     using (Stream s = File.OpenRead(fullsourcepath))
 #elif WINDOWS
                     using (Stream s = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath))
+#elif GNH_AVALONIA
+                    using (Stream s = File.OpenRead(Path.Combine(GHAvaloniaPaths.AssetDirectory, fullsourcepath)))
 #else
                     using (Stream s = File.OpenRead(fullsourcepath))
 #endif

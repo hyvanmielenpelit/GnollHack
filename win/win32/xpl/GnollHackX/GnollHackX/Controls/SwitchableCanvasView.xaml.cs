@@ -392,7 +392,9 @@ namespace GnollHackX.Controls
         }
 
         private bool _firstDraw = true;
+#if !GNH_AVALONIA
         private GRContext _cacheLimitContext = null;
+#endif
         /* Managed id of the thread the GL paint last ran on; 0 before the first paint */
         private int _glPaintThreadId = 0;
 
@@ -428,6 +430,8 @@ namespace GnollHackX.Controls
                     Debug.WriteLine("Using Skia GPU Rendering: BackendRenderTarget is null");
             }
 
+            /* Under Avalonia every GL view shares Avalonia's own GRContext, whose cache it manages */
+#if !GNH_AVALONIA
             /* Each new GRContext starts with Skia's default cache limit */
             if (grContext != null && !ReferenceEquals(grContext, _cacheLimitContext))
             {
@@ -487,6 +491,7 @@ namespace GnollHackX.Controls
                         GHApp.CurrentGPUCacheSize = ResourceCacheLimit;
                 }
             }
+#endif
 
 #if GNH_MAUI
             SKPaintSurfaceEventArgs convargs = new SKPaintSurfaceEventArgs(e.Surface, e.Info);
@@ -658,6 +663,7 @@ namespace GnollHackX.Controls
             }
             set
             {
+#if !GNH_AVALONIA
                 /* Setting a lower limit purges GPU resources at once, so it may run only on the
                    thread that paints with the context; other callers leave it to the next paint */
                 var grContext = _internalGLView?.GRContext;
@@ -699,6 +705,7 @@ namespace GnollHackX.Controls
                 {
                     DelayedResourceCacheLimit = value;
                 }
+#endif
             }
         }
 
