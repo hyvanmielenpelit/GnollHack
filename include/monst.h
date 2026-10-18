@@ -177,6 +177,7 @@ struct monst {
 #define MON_FLAGS_QUEST_COMPANION               0x00008000UL
 #define MON_FLAGS_SLIMER_PEACEFUL               0x00010000UL
 #define MON_FLAGS_SLIMER_TAME                   0x00020000UL
+#define MON_FLAGS_REVERT_POLYMORPH              0x00040000UL /* Polymorph expired while off-level; revert once placed on a complete map */
 
     uint64_t mstrategy; /* for monsters with mflag3: current strategy */
 

@@ -1662,6 +1662,13 @@ getlev(int fd, int pid, xchar lev, boolean ghostly)
             hide_monst(mtmp);
     }
 
+    /* polymorphs that expired during catch-up revert only now that every monster is placed */
+    if (u.uz.dlevel)
+    {
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+            (void) revert_pending_mon_polymorph(mtmp);
+    }
+
     restdamage(fd, ghostly);
     rest_regions(fd, ghostly);
 

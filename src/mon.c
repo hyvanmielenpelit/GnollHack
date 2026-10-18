@@ -6448,6 +6448,7 @@ newcham_ex(struct monst *mtmp, struct permonst *mdat, unsigned short subtype, bo
      *   duration == 0 -> standard random duration (rn1(500, 500))
      *   duration < 0  -> permanent polymorph (mpolytimer stays 0)
      */
+    mtmp->mon_flags &= ~MON_FLAGS_REVERT_POLYMORPH;
     if (duration > 0)
         mtmp->mpolytimer = (short)min(duration, 32000);
     else if (duration == 0)
@@ -7273,6 +7274,8 @@ revert_mon_polymorph(struct monst *mtmp, boolean override_mextra, boolean polysp
     if (!mtmp)
         return 0;
 
+    mtmp->mon_flags &= ~MON_FLAGS_REVERT_POLYMORPH;
+
     short oldmnum = mtmp->mnum;
     short oldsubtype = mtmp->subtype;
     unsigned int oldfemale = is_mon_female(mtmp);
@@ -7586,6 +7589,20 @@ revert_mon_polymorph(struct monst *mtmp, boolean override_mextra, boolean polysp
     }
 
     return 1;
+}
+
+/* reverts a polymorph that expired during elapsed-time catch-up, once the monster is on the map */
+int
+revert_pending_mon_polymorph(struct monst *mtmp)
+{
+    if (!mtmp || !(mtmp->mon_flags & MON_FLAGS_REVERT_POLYMORPH) || DEADMONSTER(mtmp)
+        || !isok(mtmp->mx, mtmp->my) || m_at(mtmp->mx, mtmp->my) != mtmp)
+        return 0;
+
+    debugprint("revert_pending_mon_polymorph: mnum=%d, mx=%d, my=%d", mtmp->mnum, mtmp->mx, mtmp->my);
+    int res = revert_mon_polymorph(mtmp, FALSE, FALSE, FALSE, is_tame(mtmp));
+    mtmp->mpolytimer = 0;
+    return res;
 }
 
 

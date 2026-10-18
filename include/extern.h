@@ -2257,6 +2257,7 @@ E boolean is_female_corpse_or_statue(struct obj*);
 E boolean is_corpse_or_statue_facing_right(struct obj*);
 E int count_mon_runeswords(struct monst*);
 E int revert_mon_polymorph(struct monst*, boolean, boolean, boolean, boolean);
+E int revert_pending_mon_polymorph(struct monst*);
 E void reset_mon(void);
 
 /* ### mondata.c ### */

@@ -986,6 +986,7 @@ mon_arrive(struct monst *mtmp, boolean with_you)
             rloc_to(mtmp, u.ux, u.uy);
         else
             mnexto(mtmp);
+        (void) revert_pending_mon_polymorph(mtmp);
         return;
     }
     /*
@@ -1140,6 +1141,8 @@ mon_arrive(struct monst *mtmp, boolean with_you)
 
     if (failed_to_place)
         m_into_limbo(mtmp, FALSE); /* try again next time hero comes to this level */
+    else
+        (void) revert_pending_mon_polymorph(mtmp);
 }
 
 /*
@@ -1232,16 +1235,17 @@ mon_catchup_elapsed_time(struct monst *mtmp, int64_t nmv)
     {
         if (imv >= (int)mtmp->mpolytimer)
         {
-            mtmp->mpolytimer = 0;
             if (has_unchanging(mtmp))
             {
                 /* monster has Unchanging — extend timer instead of reverting */
                 int dur = rnd(100 * (int)mtmp->data->mlevel + 1);
                 mtmp->mpolytimer = (short)min(dur, 32000);
             }
-            else if (revert_mon_polymorph(mtmp, FALSE, FALSE, FALSE, is_tame(mtmp)))
+            else
             {
-                /* successfully reverted */
+                /* reverted by revert_pending_mon_polymorph() once placed; the timer is a fallback */
+                mtmp->mon_flags |= MON_FLAGS_REVERT_POLYMORPH;
+                mtmp->mpolytimer = 1;
             }
         }
         else
