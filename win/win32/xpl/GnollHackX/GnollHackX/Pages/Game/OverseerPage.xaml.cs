@@ -256,8 +256,6 @@ namespace GnollHackX.Pages.Game
                             content.Add(new StringContent("true"), "IsGnollHackSession");
 
                             var envData = GHApp.GetEnvironmentData();
-                            envData.BoolData["allowSpoilers"] = GHApp.OverseerAllowSpoilers;
-                            envData.BoolData["verboseResponses"] = GHApp.OverseerVerboseResponses;
                             envData.BoolData["sendGameContext"] = GHApp.OverseerSendGameContext;
                             envData.BoolData["isGameOn"] = isGameOn;
                             envData.IntData["overseerMode"] = overseerMode;

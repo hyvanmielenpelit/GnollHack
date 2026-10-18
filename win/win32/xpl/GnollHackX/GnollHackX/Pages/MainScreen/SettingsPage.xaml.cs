@@ -174,8 +174,6 @@ namespace GnollHackX.Pages.MainScreen
             { "On Switching Apps", ("Save game or create checkpoint when switching apps.", "**Save Game**: The game is automatically saved and restored when the player returns. Menus close.\n**Checkpoint**: The game creates a checkpoint and doesn't close menus, but recovers to checkpoint if terminated.") },
             { "Map GPU Cache", ("Cache size for Skia GPU map rendering.", "Determines the cache size for Skia GPU rendering for the map. Large numbers can lead to out of memory.") },
             { "Menu GPU Cache", ("Cache size for Skia GPU menu rendering.", "Determines the cache size for Skia GPU rendering for the menu and more commands pages.") },
-            { "Allow Spoilers", ("Let Gnoll Overseer reveal game mechanics and secrets.", "When enabled, Gnoll Overseer can freely discuss game mechanics, item identities, monster stats, and optimal strategies. When disabled (default), Gnoll Overseer avoids revealing information the player hasn't discovered yet.") },
-            { "Verbose Responses", ("Gnoll Overseer gives longer, detailed explanations.", "When enabled, Gnoll Overseer provides detailed explanations and longer responses. When disabled (default), responses are concise and action-oriented.") },
             { "Send Game Context", ("Auto-send game state when opening Gnoll Overseer.", "When enabled (default), opening Gnoll Overseer from the game menu automatically sends the current game snapshot and message history. When disabled, no such data is sent.") },
             { "Use Local Address", ("Run Gnoll Overseer server at a local IP address.", "Enables the Gnoll Overseer to run at a local IP address.") },
             { "Local Address", ("Local IP address for the Gnoll Overseer server.", "Local IP address where Gnoll Overseer server can be found.") },
@@ -279,6 +277,8 @@ namespace GnollHackX.Pages.MainScreen
             {
                 MetalGrid.IsVisible = false;
             }
+            /* Game Actions is not available yet */
+            OverseerGameActionsGrid.IsVisible = false;
 
 
             SimpleCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
@@ -1076,16 +1076,15 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("DeveloperMode", GHApp.DeveloperMode);
 
             /* Overseer settings */
-            GHApp.OverseerAllowSpoilers = OverseerSpoilersSwitch.IsToggled;
-            Preferences.Set("OverseerAllowSpoilers", OverseerSpoilersSwitch.IsToggled);
-            GHApp.OverseerVerboseResponses = OverseerVerboseSwitch.IsToggled;
-            Preferences.Set("OverseerVerboseResponses", OverseerVerboseSwitch.IsToggled);
             GHApp.OverseerSendGameContext = OverseerSendContextSwitch.IsToggled;
             Preferences.Set("OverseerSendGameContext", OverseerSendContextSwitch.IsToggled);
             GHApp.OverseerEnableClientTools = OverseerClientToolsSwitch.IsToggled;
             Preferences.Set(GHConstants.OverseerEnableClientToolsKey, OverseerClientToolsSwitch.IsToggled);
-            GHApp.OverseerEnableGameActions = OverseerGameActionsSwitch.IsToggled;
-            Preferences.Set(GHConstants.OverseerEnableGameActionsKey, OverseerGameActionsSwitch.IsToggled);
+            if (OverseerGameActionsGrid.IsVisible && OverseerGameActionsSwitch.IsEnabled)
+            {
+                GHApp.OverseerEnableGameActions = OverseerGameActionsSwitch.IsToggled;
+                Preferences.Set(GHConstants.OverseerEnableGameActionsKey, OverseerGameActionsSwitch.IsToggled);
+            }
 #if DEBUG
             GHApp.OverseerUseLocalAddress = OverseerLocalAddressSwitch.IsToggled;
             Preferences.Set("OverseerUseLocalAddress", OverseerLocalAddressSwitch.IsToggled);
@@ -1916,14 +1915,15 @@ namespace GnollHackX.Pages.MainScreen
                 StatusBarStackLayout.IsVisible = false;
             }
             /* Overseer switches */
-            OverseerSpoilersSwitch.IsToggled = GHApp.OverseerAllowSpoilers;
-            OverseerVerboseSwitch.IsToggled = GHApp.OverseerVerboseResponses;
             OverseerSendContextSwitch.IsToggled = GHApp.OverseerSendGameContext;
             OverseerClientToolsSwitch.IsToggled = GHApp.OverseerEnableClientTools;
-            OverseerGameActionsSwitch.IsToggled = GHApp.OverseerEnableGameActions;
-            /* Game Actions is not active yet, make it disabled in code-behind */
-            OverseerGameActionsSwitch.IsEnabled = false;
-            OverseerGameActionsLabel.TextColor = GHColors.Gray;
+            if (OverseerGameActionsGrid.IsVisible)
+            {
+                OverseerGameActionsSwitch.IsToggled = GHApp.OverseerEnableGameActions;
+                /* Game Actions is not active yet, make it disabled in code-behind */
+                OverseerGameActionsSwitch.IsEnabled = false;
+                OverseerGameActionsLabel.TextColor = GHColors.Gray;
+            }
             /* AI consent state */
             UpdateConsentLabel(GHApp.OverseerConsentAccepted);
 #if DEBUG
@@ -2303,6 +2303,9 @@ namespace GnollHackX.Pages.MainScreen
 
         private void OverseerClientToolsSwitch_Toggled(object sender, ToggledEventArgs e)
         {
+            if (!OverseerGameActionsGrid.IsVisible || !OverseerGameActionsSwitch.IsEnabled)
+                return;
+
             /* Enforce dependency: Game Actions requires Client Data Access */
             if (!e.Value)
             {
