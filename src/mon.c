@@ -7600,9 +7600,8 @@ revert_pending_mon_polymorph(struct monst *mtmp)
         return 0;
 
     debugprint("revert_pending_mon_polymorph: mnum=%d, mx=%d, my=%d", mtmp->mnum, mtmp->mx, mtmp->my);
-    int res = revert_mon_polymorph(mtmp, FALSE, FALSE, FALSE, is_tame(mtmp));
     mtmp->mpolytimer = 0;
-    return res;
+    return revert_mon_polymorph(mtmp, FALSE, FALSE, FALSE, is_tame(mtmp));
 }
 
 
