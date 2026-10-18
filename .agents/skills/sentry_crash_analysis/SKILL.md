@@ -483,7 +483,7 @@ for the field list. It has two formats.
 **With a game in progress** (the character exists and the game has started):
 
 ```
-plname:X, ux:N, uy:N, dnum,level:N,N (dungeon name, level name), typ:N, moves:N, role:N, race:N, wiz:N, explore:N, nonscoring:N, modern:N, casual:N, tourn:N, diff:N, recoveries:N, gamestart:N, gameover:N, mklev:N, bones:N, hallu:N, blind:N, conflict:N, poly:N, umonnum:N, shops:N, restoring:N, saving:N, reseting:N, chkpt:N, panic:N, impossible:N, dumplog:N, exit:N, freedata:N
+plname:X, ux:N, uy:N, dnum,level:N,N (dungeon name, level name), typ:N, moves:N, role:N, race:N, wiz:N, explore:N, nonscoring:N, modern:N, casual:N, tourn:N, diff:N, recoveries:N, gamestart:N, gameover:N, mklev:N, bones:N, hallu:N, blind:N, conflict:N, poly:N, umonnum:N, shops:N, restoring:N, saving:N, reseting:N, chkpt:N, panic:N, impossible:N, dumplog:N, exit:N, freedata:N, steed:N
 ```
 
 **Without one** (main menu, character creation, a restore not yet finished) —
@@ -529,6 +529,7 @@ traditional game.
 | `panic`, `impossible` | Inside `panic()` / `impossible()` | **`1` = a secondary failure** while handling an earlier error; look for the first one |
 | `dumplog` | Writing the dumplog | End-of-game dump code |
 | `exit`, `freedata` | Shutting down (`nh_terminate()` in `end.c`), freeing dynamic data | Teardown: use-after-free and double-free territory |
+| `steed` | Steed's `mons[]` index, `-1` if not riding | **Riding** implicates `steed.c`: mounting, dismounting on level change or steed death. Newest field; absent in older builds |
 
 The subsystem flags (`gameover`, `mklev`, `bones`, `restoring`, `saving`,
 `chkpt`) are the high-value signals that immediately narrow the investigation

@@ -1420,11 +1420,12 @@ allocate_buffer_with_debug_buffers(const char *message)
     else
     {
         s_level* slev = Is_special(&u.uz);
-        Sprintf(curbuf, "|plname:%s, ux:%d, uy:%d, dnum,level:%d,%d (%s, %s), typ:%d, moves:%lld, role:%d, race:%d, wiz:%d, explore:%d, nonscoring:%d, modern:%d, casual:%d, tourn:%d, diff:%d, recoveries:%llu, gamestart:%d, gameover:%d, mklev:%d, bones:%d, hallu:%d, blind:%d, conflict:%d, poly:%d, umonnum:%d, shops:%d, restoring:%d, saving:%d, reseting:%d, chkpt:%d, panic:%d, impossible:%d, dumplog:%d, exit:%d, freedata:%d",
+        Sprintf(curbuf, "|plname:%s, ux:%d, uy:%d, dnum,level:%d,%d (%s, %s), typ:%d, moves:%lld, role:%d, race:%d, wiz:%d, explore:%d, nonscoring:%d, modern:%d, casual:%d, tourn:%d, diff:%d, recoveries:%llu, gamestart:%d, gameover:%d, mklev:%d, bones:%d, hallu:%d, blind:%d, conflict:%d, poly:%d, umonnum:%d, shops:%d, restoring:%d, saving:%d, reseting:%d, chkpt:%d, panic:%d, impossible:%d, dumplog:%d, exit:%d, freedata:%d, steed:%d",
             plname, u.ux, u.uy, u.uz.dnum, u.uz.dlevel, dungeons[u.uz.dnum].dname, slev ? slev->name : "normal", isok(u.ux, u.uy) ? (int)level.locations[u.ux][u.uy].typ : -1, (long long)moves, urole.rolenum, urace.racenum,
             wizard, discover, flags.non_scoring, ModernMode, CasualMode, TournamentMode, (int)context.game_difficulty, (unsigned long long)n_game_recoveries,
             context.game_started, program_state.gameover, in_mklev, program_state.in_bones,
-            Hallucination, Blind, Conflict, Upolyd, u.umonnum, *u.ushops, restoring, saving, reseting, check_pointing, program_state.panicking, program_state.in_impossible, iflags.in_dumplog, program_state.exiting, program_state.freeing_dynamic_data);
+            Hallucination, Blind, Conflict, Upolyd, u.umonnum, *u.ushops, restoring, saving, reseting, check_pointing, program_state.panicking, program_state.in_impossible, iflags.in_dumplog, program_state.exiting, program_state.freeing_dynamic_data,
+            u.usteed ? (int)u.usteed->mnum : NON_PM);
         Strcat(long_buffer, curbuf);
     }
 
