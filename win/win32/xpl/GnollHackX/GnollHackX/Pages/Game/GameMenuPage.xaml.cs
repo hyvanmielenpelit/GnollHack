@@ -647,54 +647,48 @@ namespace GnollHackX.Pages.Game
             }
 
             /* AI Data Processing Consent (Apple Guideline 5.1.2) */
-            if (!GHApp.OverseerConsentAccepted)
+            bool accepted = await GHApp.EnsureOverseerTermsAcceptedAsync(this, MessagePopup);
+            //var formattedConsentMessage = new FormattedString();
+            //formattedConsentMessage.Spans.Add(new Span { Text = "Gnoll Overseer uses artificial intelligence to assist you. "
+            //    + "When you use Overseer, your chat messages, game data, "
+            //    + "and device information are sent to our server and processed "
+            //    + "by a third-party AI service."
+            //    + Environment.NewLine + Environment.NewLine
+            //    + "Your data is used solely to generate responses and is not "
+            //    + "used for advertising or sold to third parties. "
+            //    + "You can manage your data and delete chat sessions within Overseer."
+            //    + Environment.NewLine + Environment.NewLine
+            //    + "For full details, please review our Privacy Policy at:"
+            //    + Environment.NewLine, FontFamily = "Underwood" });
+            
+            //var linkSpan = new Span { 
+            //    Text = GHConstants.OverseerPrivacyPolicyPage, 
+            //    TextColor = GHColors.LightBlue, 
+            //    TextDecorations = TextDecorations.Underline,
+            //    FontFamily = "Underwood"
+            //};
+            
+            //var tapGestureRecognizer = new TapGestureRecognizer();
+            //tapGestureRecognizer.Tapped += async (s, e) =>
+            //{
+            //    await GHApp.OpenBrowser(this, "Privacy Policy", new Uri(GHConstants.OverseerPrivacyPolicyPage));
+            //};
+            //linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
+            //formattedConsentMessage.Spans.Add(linkSpan);
+
+            //formattedConsentMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine + "Do you agree to proceed?", FontFamily = "Underwood" });
+
+            //bool accepted = await MessagePopup.ShowMessagePopupAsync(
+            //    "AI Data Disclosure",
+            //    formattedConsentMessage,
+            //    linkSpan,
+            //    "I Agree",
+            //    "Cancel");
+
+            if (!accepted)
             {
-                bool accepted = await GHApp.QueryOverseerPrivacyConsent(this, MessagePopup);
-                //var formattedConsentMessage = new FormattedString();
-                //formattedConsentMessage.Spans.Add(new Span { Text = "Gnoll Overseer uses artificial intelligence to assist you. "
-                //    + "When you use Overseer, your chat messages, game data, "
-                //    + "and device information are sent to our server and processed "
-                //    + "by a third-party AI service."
-                //    + Environment.NewLine + Environment.NewLine
-                //    + "Your data is used solely to generate responses and is not "
-                //    + "used for advertising or sold to third parties. "
-                //    + "You can manage your data and delete chat sessions within Overseer."
-                //    + Environment.NewLine + Environment.NewLine
-                //    + "For full details, please review our Privacy Policy at:"
-                //    + Environment.NewLine, FontFamily = "Underwood" });
-                
-                //var linkSpan = new Span { 
-                //    Text = GHConstants.OverseerPrivacyPolicyPage, 
-                //    TextColor = GHColors.LightBlue, 
-                //    TextDecorations = TextDecorations.Underline,
-                //    FontFamily = "Underwood"
-                //};
-                
-                //var tapGestureRecognizer = new TapGestureRecognizer();
-                //tapGestureRecognizer.Tapped += async (s, e) =>
-                //{
-                //    await GHApp.OpenBrowser(this, "Privacy Policy", new Uri(GHConstants.OverseerPrivacyPolicyPage));
-                //};
-                //linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
-                //formattedConsentMessage.Spans.Add(linkSpan);
-
-                //formattedConsentMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine + "Do you agree to proceed?", FontFamily = "Underwood" });
-
-                //bool accepted = await MessagePopup.ShowMessagePopupAsync(
-                //    "AI Data Disclosure",
-                //    formattedConsentMessage,
-                //    linkSpan,
-                //    "I Agree",
-                //    "Cancel");
-
-                if (!accepted)
-                {
-                    MainLayout.IsEnabled = true;
-                    return;
-                }
-
-                GHApp.OverseerConsentAccepted = true;
-                Preferences.Set(GHConstants.OverseerConsentAcceptedKey, true);
+                MainLayout.IsEnabled = true;
+                return;
             }
 
             string snapshotText = "";

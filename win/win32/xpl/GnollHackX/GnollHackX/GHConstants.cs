@@ -245,9 +245,13 @@ namespace GnollHackX
         public const string OverseerEnableGameActionsKey = "OverseerEnableGameActions";
         public const bool OverseerEnableGameActionsDefault = false;
         /* Overseer AI consent (Apple Guideline 5.1.2) */
-        public const string OverseerConsentAcceptedKey = "OverseerConsentAccepted";
-        public const bool OverseerConsentAcceptedDefault = false;
+        public const string OverseerConsentAcceptedKey = "OverseerConsentAccepted"; /* Obsolete; removed at startup */
+        public const string OverseerTermsAcceptedVersionKey = "OverseerTermsAcceptedVersion";
+        public const string OverseerTermsUnknownVersion = "unknown"; /* Stored when the player agreed but the server could not name a version */
+        public const string OverseerTermsOfServicePage = "https://wiki.gnollhack.com/Gnoll%20Overseer%20Terms%20of%20Service.md";
+        public const string OverseerTermsVersionPath = "/api/legal/terms/overseer-terms/version";
         public const string OverseerPrivacyPolicyPage = "https://wiki.gnollhack.com/Gnoll%20Overseer%20Privacy%20Policy.md";
+        public const string GnollHackAppPrivacyPolicyPage = "https://wiki.gnollhack.com/GnollHack%20App%20Privacy%20Policy.md";
         /* Shown when the Overseer web server answers but the Overseer application is not being served */
         public const string OverseerMaintenanceMessage = "Gnoll Overseer is currently unavailable. The service is most likely undergoing maintenance. Please try again later.";
         public const string GnollHackSponsorPage = "https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english";

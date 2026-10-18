@@ -1925,7 +1925,7 @@ namespace GnollHackX.Pages.MainScreen
                 OverseerGameActionsLabel.TextColor = GHColors.Gray;
             }
             /* AI consent state */
-            UpdateConsentLabel(GHApp.OverseerConsentAccepted);
+            UpdateConsentLabel(GHApp.OverseerTermsAcceptedVersion);
 #if DEBUG
             OverseerLocalAddressGrid.IsVisible = true;
             OverseerLocalAddressEntryGrid.IsVisible = true;
@@ -2321,14 +2321,14 @@ namespace GnollHackX.Pages.MainScreen
 
         private void OverseerConsentResetButton_Clicked(object sender, EventArgs e)
         {
-            GHApp.OverseerConsentAccepted = false;
-            Preferences.Set(GHConstants.OverseerConsentAcceptedKey, false);
-            UpdateConsentLabel(false);
+            GHApp.OverseerTermsAcceptedVersion = "";
+            Preferences.Remove(GHConstants.OverseerTermsAcceptedVersionKey);
+            UpdateConsentLabel("");
         }
 
-        private void UpdateConsentLabel(bool accepted)
+        private void UpdateConsentLabel(string acceptedVersion)
         {
-            if (accepted)
+            if (!string.IsNullOrEmpty(acceptedVersion))
             {
                 OverseerConsentStatusLabel.Text = "Accepted";
                 OverseerConsentResetButton.IsEnabled = true;

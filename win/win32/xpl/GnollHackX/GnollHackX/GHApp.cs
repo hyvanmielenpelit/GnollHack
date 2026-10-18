@@ -283,7 +283,8 @@ namespace GnollHackX
             OverseerSendGameContext = Preferences.Get("OverseerSendGameContext", true);
             OverseerEnableClientTools = Preferences.Get(GHConstants.OverseerEnableClientToolsKey, GHConstants.OverseerEnableClientToolsDefault);
             OverseerEnableGameActions = Preferences.Get(GHConstants.OverseerEnableGameActionsKey, GHConstants.OverseerEnableGameActionsDefault);
-            OverseerConsentAccepted = Preferences.Get(GHConstants.OverseerConsentAcceptedKey, GHConstants.OverseerConsentAcceptedDefault);
+            OverseerTermsAcceptedVersion = Preferences.Get(GHConstants.OverseerTermsAcceptedVersionKey, "") ?? "";
+            Preferences.Remove(GHConstants.OverseerConsentAcceptedKey);
 #if DEBUG
             OverseerUseLocalAddress = Preferences.Get("OverseerUseLocalAddress", false);
             LocalOverseerAddress =  Preferences.Get("LocalOverseerAddress", null);
@@ -3958,7 +3959,7 @@ namespace GnollHackX
         public static bool OverseerSendGameContext { get; set; } = true;
         public static bool OverseerEnableClientTools { get; set; } = true;
         public static bool OverseerEnableGameActions { get; set; }
-        public static bool OverseerConsentAccepted { get; set; }
+        public static string OverseerTermsAcceptedVersion { get; set; } = "";
 #if DEBUG
         public static bool OverseerUseLocalAddress { get; set; }
         public static string LocalOverseerAddress { get; set; }
@@ -10864,28 +10865,107 @@ namespace GnollHackX
             }
         }
 
-        public static async Task<bool> QueryOverseerPrivacyConsent(ContentPage contentPage, MessagePopupView messagePopup)
+        /// <summary>
+        /// Asks the Overseer server which Terms of Service version it requires.
+        /// Known is false when the server could not be asked or gave no usable answer;
+        /// Version is null when the server enforces no Terms.
+        /// </summary>
+        public static async Task<(bool Known, string Version)> GetOverseerTermsVersionAsync()
         {
-            var formattedConsentMessage = new FormattedString();
-            formattedConsentMessage.Spans.Add(new Span
+            string url = OverseerAddress + GHConstants.OverseerTermsVersionPath;
+            try
             {
-                Text = "Gnoll Overseer uses artificial intelligence to assist you. "
-                + "When you use Overseer, your chat messages, game data, "
-                + "and device information are sent to our server and processed "
-                + "by a third-party AI service."
-                + Environment.NewLine + Environment.NewLine
-                + "Your data is used solely to generate responses and is not "
-                + "used for advertising or sold to third parties. "
-                + "You can manage your data and delete chat sessions within Overseer."
-                + Environment.NewLine + Environment.NewLine
-                + "For full details, please review our Privacy Policy at:"
-                + Environment.NewLine,
-                FontFamily = "Underwood"
-            });
+#if DEBUG
+                using (var httpClient = UIUtils.CreateHttpClientForUrl(url, TimeSpan.FromSeconds(5)))
+#else
+                using (var httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(5) })
+#endif
+                {
+                    using (var response = await httpClient.GetAsync(url))
+                    {
+                        if (response.StatusCode != HttpStatusCode.OK)
+                            return (false, null);
 
+                        string json = await response.Content.ReadAsStringAsync();
+                        var result = Newtonsoft.Json.Linq.JObject.Parse(json);
+                        Newtonsoft.Json.Linq.JToken token;
+                        if (!result.TryGetValue("version", out token))
+                            return (false, null);
+
+                        string version = (string)token;
+                        if (string.IsNullOrWhiteSpace(version))
+                            version = null;
+                        return (true, version);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog("GetOverseerTermsVersionAsync failed: " + ex.Message);
+                return (false, null);
+            }
+        }
+
+        /* The server's answer, kept for the rest of the app run; a failed check is retried at the next opening */
+        private static bool _overseerTermsVersionChecked = false;
+        private static string _overseerTermsRequiredVersion = null;
+
+        /// <summary>
+        /// Makes sure the player has agreed to the Gnoll Overseer Terms and AI data sharing before
+        /// anything is sent to Overseer, asking with <see cref="QueryOverseerTermsConsent"/> when needed.
+        /// Returns false if the player cancels.
+        /// </summary>
+        public static async Task<bool> EnsureOverseerTermsAcceptedAsync(ContentPage contentPage, MessagePopupView messagePopup)
+        {
+            bool known;
+            string version;
+            if (_overseerTermsVersionChecked)
+            {
+                known = true;
+                version = _overseerTermsRequiredVersion;
+            }
+            else
+            {
+                messagePopup.ShowNonBlockingPopup("Gnoll Overseer Terms", "Checking the Terms of Service... Please wait.");
+                try
+                {
+                    (known, version) = await GetOverseerTermsVersionAsync();
+                }
+                finally
+                {
+                    messagePopup.HideNonBlockingPopup();
+                }
+                if (known)
+                {
+                    _overseerTermsRequiredVersion = version;
+                    _overseerTermsVersionChecked = true;
+                }
+            }
+
+            string accepted = OverseerTermsAcceptedVersion ?? "";
+            if (known && version == null)
+                return true; /* The server enforces no Terms */
+            if (known && version == accepted)
+                return true;
+            if (!known && accepted != "")
+                return true; /* The server asks inside Overseer if it needs a newer version */
+
+            bool agreed = await QueryOverseerTermsConsent(contentPage, messagePopup);
+            if (!agreed)
+                return false;
+
+            /* An unknown version never equals a server version, so the popup returns once the server names one */
+            string acceptedVersion = known ? version : GHConstants.OverseerTermsUnknownVersion;
+            OverseerTermsAcceptedVersion = acceptedVersion;
+            Preferences.Set(GHConstants.OverseerTermsAcceptedVersionKey, acceptedVersion);
+            return true;
+        }
+
+        private static Span CreateLinkSpan(ContentPage contentPage, string text, string browserTitle, string url)
+        {
             var linkSpan = new Span
             {
-                Text = GHConstants.OverseerPrivacyPolicyPage,
+                Text = text,
                 TextColor = GHColors.LightBlue,
                 TextDecorations = TextDecorations.Underline,
                 FontFamily = "Underwood"
@@ -10894,21 +10974,77 @@ namespace GnollHackX
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += async (s, e) =>
             {
-                await OpenBrowser(contentPage, "Privacy Policy", new Uri(GHConstants.OverseerPrivacyPolicyPage));
+                await OpenBrowser(contentPage, browserTitle, new Uri(url));
             };
             linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
-            formattedConsentMessage.Spans.Add(linkSpan);
+            return linkSpan;
+        }
 
-            formattedConsentMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine + "Do you agree to proceed?", FontFamily = "Underwood" });
+        /* AI Data Processing Consent (Apple Guideline 5.1.2) */
+        public static async Task<bool> QueryOverseerTermsConsent(ContentPage contentPage, MessagePopupView messagePopup)
+        {
+            var formattedConsentMessage = new FormattedString();
+            formattedConsentMessage.Spans.Add(new Span
+            {
+                Text = "Gnoll Overseer is an AI assistant. When you use it, your chat messages, game data "
+                + "and device information are sent to our server and processed by a third-party AI service "
+                + "(OpenAI, Anthropic or Google). AI replies can be wrong."
+                + Environment.NewLine + Environment.NewLine
+                + "Your data is used only to generate responses. It is not used for advertising or sold."
+                + Environment.NewLine + Environment.NewLine
+                + "Please read the ",
+                FontFamily = "Underwood"
+            });
+
+            Span termsSpan = CreateLinkSpan(contentPage, "Terms of Service", "Terms of Service", GHConstants.OverseerTermsOfServicePage);
+            formattedConsentMessage.Spans.Add(termsSpan);
+            formattedConsentMessage.Spans.Add(new Span { Text = " and the ", FontFamily = "Underwood" });
+            Span privacySpan = CreateLinkSpan(contentPage, "Privacy Policy", "Privacy Policy", GHConstants.OverseerPrivacyPolicyPage);
+            formattedConsentMessage.Spans.Add(privacySpan);
+
+            formattedConsentMessage.Spans.Add(new Span
+            {
+                Text = "."
+                + Environment.NewLine + Environment.NewLine
+                + "By tapping I Agree, you confirm that you are at least 13 years old, and if you are under 18, "
+                + "that your parent or guardian agrees to the Terms. You agree to the Gnoll Overseer Terms of Service.",
+                FontFamily = "Underwood"
+            });
 
             bool accepted = await messagePopup.ShowMessagePopupAsync(
-                "AI Data Disclosure",
+                "Gnoll Overseer Terms and AI Data",
                 formattedConsentMessage,
-                linkSpan,
+                new List<Span> { termsSpan, privacySpan },
                 "I Agree",
                 "Cancel");
 
             return accepted;
+        }
+
+        public static async Task ShowLegalLinksAsync(ContentPage contentPage, MessagePopupView messagePopup)
+        {
+            var formattedLegalMessage = new FormattedString();
+            formattedLegalMessage.Spans.Add(new Span
+            {
+                Text = "Tap a document to read it." + Environment.NewLine + Environment.NewLine,
+                FontFamily = "Underwood"
+            });
+
+            Span overseerTermsSpan = CreateLinkSpan(contentPage, "Gnoll Overseer Terms of Service", "Terms of Service", GHConstants.OverseerTermsOfServicePage);
+            Span overseerPrivacySpan = CreateLinkSpan(contentPage, "Gnoll Overseer Privacy Policy", "Privacy Policy", GHConstants.OverseerPrivacyPolicyPage);
+            Span appPrivacySpan = CreateLinkSpan(contentPage, "GnollHack App Privacy Policy", "Privacy Policy", GHConstants.GnollHackAppPrivacyPolicyPage);
+            /* A half-height blank line between the links keeps them apart as tap targets */
+            formattedLegalMessage.Spans.Add(overseerTermsSpan);
+            formattedLegalMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine, FontFamily = "Underwood", FontSize = 8 });
+            formattedLegalMessage.Spans.Add(overseerPrivacySpan);
+            formattedLegalMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine, FontFamily = "Underwood", FontSize = 8 });
+            formattedLegalMessage.Spans.Add(appPrivacySpan);
+
+            await messagePopup.ShowMessagePopupAsync(
+                "Legal",
+                formattedLegalMessage,
+                new List<Span> { overseerTermsSpan, overseerPrivacySpan, appPrivacySpan },
+                "Close");
         }
 
         public static bool IsPageOnTopOfModalNavigationStack(Page page)

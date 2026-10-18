@@ -175,6 +175,7 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.XlogUserName = "";
                 GHApp.XlogPassword = "";
                 GHApp.CustomCloudStorageConnectionString = "";
+                GHApp.OverseerTermsAcceptedVersion = "";
 #if DEBUG
                 GHApp.LocalOverseerUserName = null;
                 GHApp.LocalOverseerPassword = null;

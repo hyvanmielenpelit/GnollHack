@@ -254,6 +254,9 @@ namespace GnollHackX.Pages.Game
                             }
                             content.Add(new StringContent(sessionTitle), "Title");
                             content.Add(new StringContent("true"), "IsGnollHackSession");
+                            if (!string.IsNullOrEmpty(GHApp.OverseerTermsAcceptedVersion)
+                                && GHApp.OverseerTermsAcceptedVersion != GHConstants.OverseerTermsUnknownVersion)
+                                content.Add(new StringContent(GHApp.OverseerTermsAcceptedVersion), "AcceptedTermsVersion");
 
                             var envData = GHApp.GetEnvironmentData();
                             envData.BoolData["sendGameContext"] = GHApp.OverseerSendGameContext;

@@ -228,7 +228,7 @@ namespace GnollHackX.Controls
             IsVisible = false;
         }
 
-        private Span _linkSpan = null;
+        private List<Span> _linkSpans = null;
 #if GNH_MAUI && WINDOWS
         private PointerGestureRecognizer _labelPointerGesture = null;
 #endif
@@ -284,6 +284,18 @@ namespace GnollHackX.Controls
 #endif
             bool acceptEnterSpaceForOkCancel = false)
         {
+            return ShowMessagePopupAsync(title, message, linkSpan != null ? new List<Span> { linkSpan } : null, okButtonText, cancelButtonText,
+                titleColor, acceptEnterSpaceForOkCancel);
+        }
+
+        public Task<bool> ShowMessagePopupAsync(string title, FormattedString message, IList<Span> linkSpans, string okButtonText, string cancelButtonText = null,
+#if GNH_MAUI
+            Color titleColor = null,
+#else
+            Color? titleColor = null,
+#endif
+            bool acceptEnterSpaceForOkCancel = false)
+        {
             if (!MessagePopupOkButton.IsVisible)
                 HideNonBlockingPopup();
             _acceptEnterSpaceForOkCancel = acceptEnterSpaceForOkCancel;
@@ -296,8 +308,8 @@ namespace GnollHackX.Controls
             MessagePopupTitleLabel.TextColor = titleColor ?? GHColors.TitleGoldColor;
             MessagePopupLabel.Text = null;
             MessagePopupLabel.FormattedText = message;
-            _linkSpan = linkSpan;
-            if (_linkSpan != null)
+            _linkSpans = (linkSpans != null && linkSpans.Count > 0) ? new List<Span>(linkSpans) : null;
+            if (_linkSpans != null)
                 AttachLabelPointerGesture();
             else
                 DetachLabelPointerGesture();
@@ -340,7 +352,7 @@ namespace GnollHackX.Controls
         private void DetachLabelPointerGesture()
         {
 #if GNH_MAUI && WINDOWS
-            _linkSpan = null;
+            _linkSpans = null;
             if (_labelPointerGesture != null)
             {
                 _labelPointerGesture.PointerMoved -= OnLabelPointerMoved;
@@ -357,15 +369,23 @@ namespace GnollHackX.Controls
 
         private void OnLabelPointerMoved(object sender, PointerEventArgs e)
         {
-            if (_linkSpan == null)
+            if (_linkSpans == null)
                 return;
 
             var pos = e.GetPosition(MessagePopupLabel);
             if (pos == null)
                 return;
 
-            var spatial = _linkSpan as Microsoft.Maui.Controls.Internals.ISpatialElement;
-            bool overLink = spatial?.Region.Contains(pos.Value) ?? false;
+            bool overLink = false;
+            foreach (Span linkSpan in _linkSpans)
+            {
+                var spatial = linkSpan as Microsoft.Maui.Controls.Internals.ISpatialElement;
+                if (spatial != null && spatial.Region.Contains(pos.Value))
+                {
+                    overLink = true;
+                    break;
+                }
+            }
 
             if (overLink != _isOverLink)
             {
