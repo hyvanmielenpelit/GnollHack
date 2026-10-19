@@ -10,11 +10,21 @@ namespace GnollHackM;
 internal static class AvaloniaDesktopProgram
 {
     [STAThread]
-    public static void Main(string[] args)
+    public static int Main(string[] args)
     {
+#if LINUX
+        /* CEF starts its renderer, GPU and utility processes from this executable; they exit here, before anything
+           else of the game is initialized */
+        if (GHCefSubprocess.IsSubprocess(args))
+            return GHCefSubprocess.Run(args);
+#endif
         if (OperatingSystem.IsLinux())
             NativeLibrary.SetDllImportResolver(typeof(AvaloniaDesktopProgram).Assembly, ResolveLinuxLibrary);
-        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        int exitCode = BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+#if LINUX
+        GHCefRuntime.ShutdownIfInitialized();
+#endif
+        return exitCode;
     }
 
     /* X11: GLX with a software fallback, no Vulkan; popups drawn inside the window; WM_CLASS "GnollHack", which

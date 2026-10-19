@@ -55,6 +55,9 @@ public static class MauiProgram
 #if GNH_AVALONIA
         /* GHApp's static initializers read DeviceDisplay, DeviceInfo and AppInfo */
         GHAvaloniaEssentials.InstallEarly();
+#if LINUX
+        GHCefEngine.Decide();
+#endif
         GHAvaloniaLayoutInput.Register();
         GHAvaloniaMargin.Register();
         GHAvaloniaControlTheming.Register();
@@ -78,6 +81,10 @@ public static class MauiProgram
 #if GNH_AVALONIA
                 handlers.AddHandler<SKTouchGLView, GHAvaloniaGLViewHandler>();
                 handlers.AddHandler<SKCanvasView, GHAvaloniaCanvasViewHandler>();
+#if LINUX
+                if (GHCefEngine.IsSelected)
+                    handlers.AddHandler<Microsoft.Maui.Controls.WebView, GHCefWebViewHandler>();
+#endif
 #endif
 #if ANDROID
                 handlers.AddHandler(typeof(Button), typeof(NoFocusButtonHandler));

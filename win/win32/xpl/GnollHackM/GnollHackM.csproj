@@ -1413,6 +1413,19 @@
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="4.153.1" />
   </ItemGroup>
 
+  <!-- Chromium (CEF) web view on Linux: CefGlue.Next.Core bindings and the CEF runtime, versions in lockstep.
+       The runtime package's own copy target is excluded: it keeps a Resources subfolder, which breaks ICU on Linux,
+       and never publishes. Its files are copied flat next to the executable, with only the en-US locale. -->
+  <ItemGroup Condition="'$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('linux'))">
+    <PackageReference Include="CefGlue.Next.Core" Version="154.8037.98" />
+    <PackageReference Include="cef.runtime.linux-x64" Version="154.0.34" GeneratePathProperty="true" ExcludeAssets="all" />
+    <_GhCefRoot Include="$(Pkgcef_runtime_linux-x64)\CEF\linux-x64\*" Exclude="$(Pkgcef_runtime_linux-x64)\CEF\linux-x64\chrome-sandbox" />
+    <_GhCefRoot Include="$(Pkgcef_runtime_linux-x64)\CEF\linux-x64\Resources\*.pak;$(Pkgcef_runtime_linux-x64)\CEF\linux-x64\Resources\icudtl.dat" />
+    <None Include="@(_GhCefRoot)" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Visible="false" />
+    <_GhCefLocale Include="$(Pkgcef_runtime_linux-x64)\CEF\linux-x64\Resources\locales\en-US*.pak" />
+    <None Include="@(_GhCefLocale)" Link="locales\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
+
   <ItemGroup Condition="!$(DefineConstants.Contains('SKIASHARP_3119'))">
     <PackageReference Include="SkiaSharp" Version="4.153.1" />
     <PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="4.153.1" />

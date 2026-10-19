@@ -71,7 +71,7 @@ namespace GnollHackX.Pages.Game
 
 #if GNH_AVALONIA
             _avaloniaHost = new GHAvaloniaOverseerHost(DisplayWebView,
-                json => HandleWebMessage(json, null),
+                (json, senderUrl) => HandleWebMessage(json, senderUrl),
                 () => GHApp.SendSpecialKeyPress(GHSpecialKey.Escape, false, false, false),
                 HandleNewWindowTarget);
             ProgressOverlay.PropertyChanged += AvaloniaOverlay_PropertyChanged;
@@ -117,11 +117,11 @@ namespace GnollHackX.Pages.Game
                 UpdateAvaloniaWebViewVisibility();
         }
 
-        /* The native web view is drawn above all Avalonia content, so it is hidden while the progress overlay or a
+        /* A native web view is drawn above all Avalonia content, so it is hidden while the progress overlay or a
            message popup is shown */
         private void UpdateAvaloniaWebViewVisibility()
         {
-            DisplayWebView.IsVisible = !ProgressOverlay.IsVisible && !MessagePopup.IsVisible;
+            DisplayWebView.IsVisible = !_avaloniaHost.DrawsAboveAvalonia || (!ProgressOverlay.IsVisible && !MessagePopup.IsVisible);
         }
 #endif
 
@@ -1040,6 +1040,8 @@ namespace GnollHackX.Pages.Game
 #elif GNH_AVALONIA
             _avaloniaHost?.Attach();
             _avaloniaHost?.SetBackground(0x12, 0x12, 0x12);
+            if (_avaloniaHost != null)
+                UpdateAvaloniaWebViewVisibility();
 #endif
 #endif // GNH_MAUI
         }

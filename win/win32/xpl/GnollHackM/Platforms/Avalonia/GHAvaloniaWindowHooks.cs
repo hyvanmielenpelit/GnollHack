@@ -64,6 +64,9 @@ namespace GnollHackM
                 reportTimer.Stop();
                 GHAvaloniaFrameLoop.Stop();
                 GHAvaloniaKeyboard.Detach(window);
+#if LINUX
+                GHCefRuntime.CloseAllBrowsersIfInitialized();
+#endif
                 if (ReferenceEquals(MainWindow, window))
                     MainWindow = null;
             };
