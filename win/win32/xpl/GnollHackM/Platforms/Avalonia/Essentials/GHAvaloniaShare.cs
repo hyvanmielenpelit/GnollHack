@@ -1,0 +1,153 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
+
+using AvClipboardExtensions = Avalonia.Input.Platform.ClipboardExtensions;
+using AvDispatcher = Avalonia.Threading.Dispatcher;
+using AvFilePickerSaveOptions = Avalonia.Platform.Storage.FilePickerSaveOptions;
+using AvFolderPickerOpenOptions = Avalonia.Platform.Storage.FolderPickerOpenOptions;
+using AvIClipboard = Avalonia.Input.Platform.IClipboard;
+using AvIStorageFile = Avalonia.Platform.Storage.IStorageFile;
+using AvIStorageFolder = Avalonia.Platform.Storage.IStorageFolder;
+using AvTopLevel = Avalonia.Controls.TopLevel;
+
+namespace GnollHackM
+{
+    /* IShare for the Avalonia desktop target, where sharing saves a copy: a single file is copied to
+       a location chosen in a save dialog, multiple files into a folder chosen in a folder dialog, and
+       text, followed by the URI on its own line, is placed on the clipboard. Cancelling a dialog does
+       nothing. Runs on the Avalonia UI thread and throws InvalidOperationException when no window is
+       open. */
+    public sealed class GHAvaloniaShare : IShare
+    {
+        private const string DefaultFileTitle = "Save a Copy";
+        private const string DefaultFolderTitle = "Choose a Folder for the Copies";
+
+        public Task RequestAsync(ShareTextRequest request)
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+            if (string.IsNullOrEmpty(request.Text) && string.IsNullOrEmpty(request.Uri))
+                throw new ArgumentException("Both the text and the URI are empty.", nameof(request));
+
+            string text = request.Text;
+            if (!string.IsNullOrEmpty(request.Uri))
+                text = string.IsNullOrEmpty(text) ? request.Uri : text + Environment.NewLine + request.Uri;
+
+            return AvDispatcher.UIThread.InvokeAsync(() => SetClipboardTextOnUIThreadAsync(text));
+        }
+
+        public Task RequestAsync(ShareFileRequest request)
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+            if (request.File == null || string.IsNullOrWhiteSpace(request.File.FullPath))
+                throw new ArgumentException("The request does not name a file to share.", nameof(request));
+
+            string title = string.IsNullOrWhiteSpace(request.Title) ? DefaultFileTitle : request.Title;
+            ShareFile file = request.File;
+            return AvDispatcher.UIThread.InvokeAsync(() => SaveFileOnUIThreadAsync(title, file));
+        }
+
+        public Task RequestAsync(ShareMultipleFilesRequest request)
+        {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+            if (request.Files == null || request.Files.Count == 0)
+                throw new ArgumentException("The request does not name any files to share.", nameof(request));
+
+            List<ShareFile> files = new List<ShareFile>();
+            foreach (ShareFile file in request.Files)
+            {
+                if (file == null || string.IsNullOrWhiteSpace(file.FullPath))
+                    throw new ArgumentException("The request names a file without a path.", nameof(request));
+                files.Add(file);
+            }
+
+            string title = string.IsNullOrWhiteSpace(request.Title) ? DefaultFolderTitle : request.Title;
+            return AvDispatcher.UIThread.InvokeAsync(() => SaveFilesOnUIThreadAsync(title, files));
+        }
+
+        private static AvTopLevel GetTopLevel()
+        {
+            AvTopLevel topLevel = AvTopLevel.GetTopLevel(GHAvaloniaWindowHooks.MainWindow);
+            if (topLevel == null)
+                throw new InvalidOperationException("No window is open to share from.");
+            return topLevel;
+        }
+
+        private static async Task SetClipboardTextOnUIThreadAsync(string text)
+        {
+            AvTopLevel topLevel = GetTopLevel();
+            AvIClipboard clipboard = topLevel.Clipboard;
+            if (clipboard == null)
+                throw new InvalidOperationException("The clipboard is not available.");
+
+            await AvClipboardExtensions.SetTextAsync(clipboard, text);
+        }
+
+        private static async Task SaveFileOnUIThreadAsync(string title, ShareFile file)
+        {
+            AvTopLevel topLevel = GetTopLevel();
+            AvFilePickerSaveOptions options = new AvFilePickerSaveOptions();
+            options.Title = title;
+            options.SuggestedFileName = file.FileName;
+            options.ShowOverwritePrompt = true;
+
+            using (AvIStorageFile target = await topLevel.StorageProvider.SaveFilePickerAsync(options))
+            {
+                if (target == null)
+                    return;
+
+                await CopyFileAsync(file.FullPath, target);
+            }
+        }
+
+        private static async Task SaveFilesOnUIThreadAsync(string title, List<ShareFile> files)
+        {
+            AvTopLevel topLevel = GetTopLevel();
+            AvFolderPickerOpenOptions options = new AvFolderPickerOpenOptions();
+            options.Title = title;
+            options.AllowMultiple = false;
+
+            IReadOnlyList<AvIStorageFolder> folders = await topLevel.StorageProvider.OpenFolderPickerAsync(options);
+            if (folders == null || folders.Count == 0)
+                return;
+
+            try
+            {
+                AvIStorageFolder folder = folders[0];
+                foreach (ShareFile file in files)
+                {
+                    using (AvIStorageFile target = await folder.CreateFileAsync(file.FileName))
+                    {
+                        if (target == null)
+                            throw new IOException("Could not create " + file.FileName + " in the chosen folder.");
+
+                        await CopyFileAsync(file.FullPath, target);
+                    }
+                }
+            }
+            finally
+            {
+                foreach (AvIStorageFolder folder in folders)
+                    folder?.Dispose();
+            }
+        }
+
+        /* Replaces the contents of target with the contents of the file at sourcePath */
+        private static async Task CopyFileAsync(string sourcePath, AvIStorageFile target)
+        {
+            using (FileStream source = File.OpenRead(sourcePath))
+            using (Stream destination = await target.OpenWriteAsync())
+            {
+                await source.CopyToAsync(destination);
+                if (destination.CanSeek)
+                    destination.SetLength(destination.Position);
+                await destination.FlushAsync();
+            }
+        }
+    }
+}

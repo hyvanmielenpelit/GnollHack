@@ -108,6 +108,10 @@ namespace GnollHackX
         private static int _windowFocused = 0;
         public static bool WindowFocused { get { return Interlocked.CompareExchange(ref _windowFocused, 0, 0) != 0; } set { Interlocked.Exchange(ref _windowFocused, value ? 1 : 0); } }
 #endif
+#if GNH_AVALONIA
+        public static Avalonia.Input.Cursor AvaloniaCursor = null;
+        public static Avalonia.Input.Cursor AvaloniaInfoCursor = null;
+#endif
         private static Assembly _assembly = null;
 
         public static OverseerEnvironmentData GetEnvironmentData()
@@ -2090,6 +2094,27 @@ namespace GnollHackX
 
                 if (Directory.Exists(target_dir))
                     Directory.Delete(target_dir);
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
+            }
+#elif GNH_AVALONIA
+            try
+            {
+                bool useCursor64 = DisplayDensity >= 2.0f;
+                string source_cursor_name = useCursor64 ? "custom-cursor-64.cur" : "custom-cursor-32.cur";
+                using (Stream stream = _assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.Cursor." + source_cursor_name))
+                {
+                    AvaloniaCursor = GnollHackM.GHAvaloniaCursors.FromCurStream(stream);
+                }
+
+                /* Info Cursor */
+                source_cursor_name = useCursor64 ? "info-cursor-64.cur" : "info-cursor-32.cur";
+                using (Stream stream = _assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.Cursor." + source_cursor_name))
+                {
+                    AvaloniaInfoCursor = GnollHackM.GHAvaloniaCursors.FromCurStream(stream);
+                }
             }
             catch (Exception ex)
             {
@@ -10883,6 +10908,19 @@ namespace GnollHackX
         private static int _isSystemBrowserOpen = 0;
         public static bool IsSystemBrowserOpen { get { return Interlocked.CompareExchange(ref _isSystemBrowserOpen, 0, 0) != 0; } set { Interlocked.Exchange(ref _isSystemBrowserOpen, value ? 1 : 0); } }
 
+        /* Whether a WebView can show web pages; on Linux it needs WebKitGTK */
+        public static bool IsWebViewAvailable
+        {
+            get
+            {
+#if GNH_AVALONIA
+                return GnollHackM.GHAvaloniaWebView.IsAvailable;
+#else
+                return true;
+#endif
+            }
+        }
+
         public static async Task OpenBrowser(ContentPage page, string title, Uri uri, ForceBrowserOptions forceBrowser = ForceBrowserOptions.None)
         {
             if (!HasInternetAccess)
@@ -10893,12 +10931,12 @@ namespace GnollHackX
 
             try
             {
-                if (forceBrowser == ForceBrowserOptions.WebViewBrowser || (IsWindows && forceBrowser == ForceBrowserOptions.None))
+                if (forceBrowser == ForceBrowserOptions.WebViewBrowser || (IsDesktop && IsWebViewAvailable && forceBrowser == ForceBrowserOptions.None))
                 {
                     var wikiPage = new WikiPage(title, uri.ToString());
                     await Navigation.PushModalAsync(wikiPage);
                 }
-                else /* forceBrowser == ForceBrowserOptions.SystemBrowser || (!IsWindows || forceBrowser != ForceBrowserOptions.None) */
+                else /* forceBrowser == ForceBrowserOptions.SystemBrowser || (!IsDesktop || !IsWebViewAvailable || forceBrowser != ForceBrowserOptions.None) */
                 {
                     IsSystemBrowserOpen = true;
                     await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);

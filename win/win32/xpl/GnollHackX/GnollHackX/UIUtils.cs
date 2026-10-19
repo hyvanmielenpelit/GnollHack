@@ -1362,6 +1362,23 @@ namespace GnollHackX
                     }
                 }
             });
+#elif GNH_AVALONIA
+            Avalonia.Input.Cursor usedCursor = cursorType == GameCursorType.Normal ? GHApp.AvaloniaCursor : GHApp.AvaloniaInfoCursor;
+            if (usedCursor == null || layout == null)
+                return;
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                try
+                {
+                    if (layout.Handler?.PlatformView is Avalonia.Input.InputElement element)
+                        element.Cursor = usedCursor;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            });
 #endif
         }
 
@@ -1655,7 +1672,7 @@ namespace GnollHackX
 
         public static void SetViewCursorOnHandler(View layout, GameCursorType cursorType)
         {
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
             if (layout != null)
             {
                 layout.HandlerChanged += (sender, e) =>

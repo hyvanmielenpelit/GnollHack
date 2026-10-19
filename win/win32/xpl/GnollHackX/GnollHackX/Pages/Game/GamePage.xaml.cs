@@ -7904,7 +7904,7 @@ namespace GnollHackX.Pages.Game
         private readonly List<SKRect> _localContextMenuRects = new List<SKRect>(10);
         private bool _localIsPointerHovering = false;
         private SKPoint _localPointerHoverLocation = new SKPoint();
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
         GameCursorType _localCurrentCursorType = GameCursorType.Normal;
 #endif
         private SKRect _localCanvasButtonRect = new SKRect(0, 0, 0, 0);
@@ -12984,7 +12984,7 @@ namespace GnollHackX.Pages.Game
                     dashboardLogToggleRect = _debugDashboard.LogToggleRect;
                 }
 
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
                 GameCursorType newCursor = GameCursorType.Normal;
                 bool doChangeCursor = false;
                 //lock (_canvasPointerLock)

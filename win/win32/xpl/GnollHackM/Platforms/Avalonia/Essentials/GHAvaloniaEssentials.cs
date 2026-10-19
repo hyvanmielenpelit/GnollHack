@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.Storage;
@@ -19,8 +20,11 @@ namespace GnollHackM
         private static GHAvaloniaBattery _battery = null;
         private static GHAvaloniaConnectivity _connectivity = null;
         private static GHAvaloniaSecureStorage _secureStorage = null;
+        private static GHAvaloniaBrowser _browser = null;
+        private static GHAvaloniaLauncher _launcher = null;
+        private static GHAvaloniaShare _share = null;
 
-        /* Installs all seven implementations. Runs before GHApp's static initializers and before
+        /* Installs all ten implementations. Runs before GHApp's static initializers and before
            the MAUI app builder exists; the instances are created once and reused. */
         public static void InstallEarly()
         {
@@ -34,12 +38,15 @@ namespace GnollHackM
                 SetBattery(null, _battery);
                 SetConnectivity(null, _connectivity);
                 SetSecureStorage(null, _secureStorage);
+                SetBrowser(null, _browser);
+                SetLauncher(null, _launcher);
+                SetShare(null, _share);
                 GHAvaloniaDeviceDisplay.Current = _deviceDisplay;
             }
         }
 
         /* Re-installs Preferences and AppInfo, which UseAvaloniaEssentials() and UseAvaloniaApp()
-           replace when called. The other five are not touched by ACM. */
+           replace when called. The other eight are not touched by ACM. */
         public static void InstallAfterBuilder()
         {
             lock (_installLock)
@@ -70,6 +77,12 @@ namespace GnollHackM
                 _connectivity = new GHAvaloniaConnectivity();
             if (_secureStorage == null)
                 _secureStorage = new GHAvaloniaSecureStorage();
+            if (_browser == null)
+                _browser = new GHAvaloniaBrowser();
+            if (_launcher == null)
+                _launcher = new GHAvaloniaLauncher();
+            if (_share == null)
+                _share = new GHAvaloniaShare();
         }
 
         [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SetCurrent")]
@@ -106,5 +119,21 @@ namespace GnollHackM
         private static extern void SetSecureStorage(
             [UnsafeAccessorType("Microsoft.Maui.Storage.SecureStorage, Microsoft.Maui.Essentials")] object facade,
             ISecureStorage implementation);
+
+        [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SetDefault")]
+        private static extern void SetBrowser(
+            [UnsafeAccessorType("Microsoft.Maui.ApplicationModel.Browser, Microsoft.Maui.Essentials")] object facade,
+            IBrowser implementation);
+
+        [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SetDefault")]
+        private static extern void SetLauncher(
+            [UnsafeAccessorType("Microsoft.Maui.ApplicationModel.Launcher, Microsoft.Maui.Essentials")] object facade,
+            ILauncher implementation);
+
+        [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SetDefault")]
+        private static extern void SetShare(
+            [UnsafeAccessorType("Microsoft.Maui.ApplicationModel.DataTransfer.Share, Microsoft.Maui.Essentials")]
+            object facade,
+            IShare implementation);
     }
 }

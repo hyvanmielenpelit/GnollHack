@@ -13,11 +13,16 @@ namespace GnollHackM
     {
         private static readonly TimeSpan FrameReportInterval = TimeSpan.FromSeconds(10);
 
+        /* The app's window from creation until it closes; UI thread */
+        public static AvWindow MainWindow { get; private set; }
+
         /* Called before the window is shown */
         public static void OnWindowCreated(AvWindow window)
         {
             if (window == null)
                 return;
+
+            MainWindow = window;
 
             GHAvaloniaKeyboard.Attach(window);
 
@@ -59,6 +64,8 @@ namespace GnollHackM
                 reportTimer.Stop();
                 GHAvaloniaFrameLoop.Stop();
                 GHAvaloniaKeyboard.Detach(window);
+                if (ReferenceEquals(MainWindow, window))
+                    MainWindow = null;
             };
         }
 

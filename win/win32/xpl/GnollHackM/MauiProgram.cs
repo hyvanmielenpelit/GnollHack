@@ -57,6 +57,9 @@ public static class MauiProgram
         GHAvaloniaEssentials.InstallEarly();
         GHAvaloniaLayoutInput.Register();
         GHAvaloniaMargin.Register();
+        GHAvaloniaControlTheming.Register();
+        GHAvaloniaAlignment.Register();
+        GHAvaloniaWebView.Register();
 #endif
         GHApp.TryReadSecrets();
         GHApp.Edge2Edge = Microsoft.Maui.Storage.Preferences.Get("Edge2Edge", false);
