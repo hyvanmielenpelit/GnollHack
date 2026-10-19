@@ -17,7 +17,8 @@ internal static class AvaloniaDesktopProgram
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 
-    /* X11: GLX with a software fallback, no Vulkan; popups drawn inside the window. 1 GiB GPU resource budget. */
+    /* X11: GLX with a software fallback, no Vulkan; popups drawn inside the window; WM_CLASS "GnollHack", which
+       a desktop entry matches with StartupWMClass. 1 GiB GPU resource budget. */
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<AvaloniaApp>()
             .UsePlatformDetect()
@@ -27,6 +28,7 @@ internal static class AvaloniaDesktopProgram
             {
                 RenderingMode = new[] { X11RenderingMode.Glx, X11RenderingMode.Software },
                 OverlayPopups = true,
+                WmClass = "GnollHack",
             })
             .With(new SkiaOptions { MaxGpuResourceSizeBytes = 1024L * 1024 * 1024 });
 
