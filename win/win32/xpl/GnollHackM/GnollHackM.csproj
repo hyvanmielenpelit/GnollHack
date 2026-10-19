@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -44,6 +44,24 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <PackageCertificateThumbprint>0DE60AC858971DC05E45C172A6D7462CBA45C98A</PackageCertificateThumbprint>
   </PropertyGroup>
+
+  <!-- Avalonia desktop target (Linux, Steam Deck; also runs on Windows through Avalonia Win32). Opt-in. -->
+  <PropertyGroup Condition="'$(GnhAvalonia)' == 'true'">
+    <TargetFrameworks>net11.0</TargetFrameworks>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">$(NETCoreSdkPortableRuntimeIdentifier)</RuntimeIdentifier>
+    <DefineConstants>GNH_MAUI;GNH_AVALONIA;USE_SPAN_FOR_SUBSTRING;CORECLR</DefineConstants>
+    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('linux'))">$(DefineConstants);LINUX</DefineConstants>
+    <MauiActiveBackend>avalonia</MauiActiveBackend>
+    <AvaloniaControlsMauiGenerateDesktopProgram>false</AvaloniaControlsMauiGenerateDesktopProgram>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <Version>$(ApplicationDisplayVersion).$(ApplicationVersion)</Version>
+    <EnableMauiImageProcessing>false</EnableMauiImageProcessing>
+    <ApplicationManifest>Platforms\Avalonia\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(GnhAvalonia)' == 'true'">
+    <MauiPlatformSpecificFolder Include="Platforms\Avalonia\" BackendIdentity="avalonia" />
+  </ItemGroup>
 
   <!-- DETEMINE IF MONO RUNTIME IS BEING USED -->
   <PropertyGroup Condition="'$(TargetFramework)' != ''">
@@ -181,6 +199,10 @@
     <!-- Custom Fonts -->
     <MauiFont Include="Resources\Fonts\*" Condition="$(TargetFramework.Contains('-ios'))" />
     <MauiFont Include="Resources\Fonts\*" Condition="$(TargetFramework.Contains('-maccatalyst'))" />
+    <!-- Avalonia: the fonts are Avalonia resources from the start, at the path ACM's font registrar reads. As MauiFont
+         items, ACM converts them only after the resource step has run, and the resource blob never reaches the compiler -->
+    <AvaloniaResource Include="Resources\Fonts\*" Link="Assets/Fonts/%(Filename)%(Extension)" Condition="'$(GnhAvalonia)' == 'true'" />
+    <AvaloniaResource Include="Resources\AppIcon\appicon.png" Link="Assets/AppIcon/appicon.png" Condition="'$(GnhAvalonia)' == 'true'" />
     <!-- Note: MauiFont has been unreliable on Android and Windows; workaround is to copy the files using MauiAsset to the right location instead -->
     <MauiAsset Include="Resources\Fonts\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="$(TargetFramework.Contains('-android'))" />
     <MauiAsset Include="Resources\Fonts\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="$(TargetFramework.Contains('-windows'))" />
@@ -1016,6 +1038,27 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </MauiAsset>
   </ItemGroup>
+
+  <!-- Avalonia target: native libraries and game data as loose files in the output and publish directories -->
+  <ItemGroup Condition="'$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('linux'))">
+    <Content Include="Platforms\Linux\libs\*.so" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <!-- FMOD under its sonames (libfmod.so.14, libfmodstudio.so.14), as AvaloniaDesktopProgram loads them -->
+    <Content Include="Platforms\Linux\libs\*.so.*" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Platforms\Android\gnh\*" Link="gnh\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Icon for a desktop entry: a Linux executable carries no icon of its own -->
+    <Content Include="Resources\AppIcon\appicon.png" Link="gnollhack.png" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(GnhAvalonia)' == 'true' And !$(RuntimeIdentifier.StartsWith('linux'))">
+    <Content Include="Platforms\Windows\libs\*.dll" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Platforms\Windows\gnh\*" Link="gnh\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(GnhAvalonia)' == 'true'">
+    <Content Include="Platforms\Windows\banks\*.bank" Link="banks\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Platforms\Windows\tileset\*.ghpng" Link="tileset\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(IsMonoRuntime)' == 'true'">
     <AndroidEnvironment Include="Platforms\Android\EnvironmentMono.txt" />
   </ItemGroup>
@@ -1357,7 +1400,17 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('net11.0'))">
-    <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-preview.7.26406.9" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-rc.2.26505.5" />
+  </ItemGroup>
+
+  <!-- Avalonia target packages, pinned together with Microsoft.Maui.Controls above.
+       SkiaSharp.NativeAssets.Linux matches the managed SkiaSharp version below. -->
+  <ItemGroup Condition="'$(GnhAvalonia)' == 'true'">
+    <PackageReference Include="Avalonia.Controls.Maui" Version="11.0.0-rc.2.26287.618" />
+    <PackageReference Include="Avalonia.Controls.Maui.Desktop" Version="11.0.0-rc.2.26287.618" />
+    <PackageReference Include="Avalonia.Controls.Maui.Essentials" Version="11.0.0-rc.2.26287.618" />
+    <PackageReference Include="Avalonia.Controls.Maui.SkiaSharp.Views" Version="11.0.0-rc.2.26287.618" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="4.153.1" />
   </ItemGroup>
 
   <ItemGroup Condition="!$(DefineConstants.Contains('SKIASHARP_3119'))">
@@ -1372,7 +1425,7 @@
     <PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.4" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(DefineConstants.Contains('SENTRY'))">
+  <ItemGroup Condition="$(DefineConstants.Contains('SENTRY')) And '$(GnhAvalonia)' != 'true'">
     <PackageReference Include="Sentry.Maui" Version="6.12.0" />
   </ItemGroup>
 

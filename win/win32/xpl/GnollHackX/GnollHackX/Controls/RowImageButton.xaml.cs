@@ -327,12 +327,36 @@ namespace GnollHackX.Controls
                     }
                 }
             };
+#elif GNH_AVALONIA
+            ViewButton.HandlerChanged += (s, e) =>
+            {
+                var platformView = ViewButton.Handler?.PlatformView as Avalonia.Input.InputElement;
+                if (platformView != null)
+                {
+                    platformView.PointerEntered += PlatformView_PointerEntered;
+                    platformView.PointerExited += PlatformView_PointerExited;
+                }
+            };
+            ViewButton.HandlerChanging += (s, e) =>
+            {
+                if (e.OldHandler != null && e.NewHandler == null)
+                {
+                    var platformView = e.OldHandler?.PlatformView as Avalonia.Input.InputElement;
+                    if (platformView != null)
+                    {
+                        platformView.PointerEntered -= PlatformView_PointerEntered;
+                        platformView.PointerExited -= PlatformView_PointerExited;
+                    }
+                }
+            };
 #endif
         }
 
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
         private bool _isHoveringEnabled = true;
         private bool _isHovering = false;
+#endif
+#if WINDOWS
         private void PlatformView_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             e.Handled = true;
@@ -350,6 +374,33 @@ namespace GnollHackX.Controls
         {
             e.Handled = true;
             /* WinUI raises pointer events on the UI thread */
+            ViewImage.IsHighlighted = false;
+            _isHovering = false;
+            LblTextColor = LblTextColor;
+            SubLblTextColor = SubLblTextColor;
+            SubLbl2TextColor = SubLbl2TextColor;
+            SubLbl3TextColor = SubLbl3TextColor;
+            SubLbl4TextColor = SubLbl4TextColor;
+            ImgLblTextColor = ImgLblTextColor;
+        }
+#elif GNH_AVALONIA
+        private void PlatformView_PointerEntered(object sender, Avalonia.Input.PointerEventArgs e)
+        {
+            e.Handled = true;
+            /* Avalonia raises pointer events on the UI thread */
+            ViewImage.IsHighlighted = true;
+            _isHovering = true;
+            LblTextColor = LblTextColor;
+            SubLblTextColor = SubLblTextColor;
+            SubLbl2TextColor = SubLbl2TextColor;
+            SubLbl3TextColor = SubLbl3TextColor;
+            SubLbl4TextColor = SubLbl4TextColor;
+        }
+
+        private void PlatformView_PointerExited(object sender, Avalonia.Input.PointerEventArgs e)
+        {
+            e.Handled = true;
+            /* Avalonia raises pointer events on the UI thread */
             ViewImage.IsHighlighted = false;
             _isHovering = false;
             LblTextColor = LblTextColor;

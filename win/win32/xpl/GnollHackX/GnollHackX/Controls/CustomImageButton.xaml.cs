@@ -55,7 +55,7 @@ namespace GnollHackX.Controls
             {
                 customCanvasView.InvalidateSurface();
             };
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
             customCanvasView.HandlerChanged += CustomCanvasView_HandlerChanged;
             customCanvasView.HandlerChanging += CustomCanvasView_HandlerChanging;
             customButton.HandlerChanged += CustomButton_HandlerChanged;
@@ -64,9 +64,11 @@ namespace GnollHackX.Controls
         }
 
 
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
         private bool _isHoveringEnabled = true;
         private bool _isHovering = false;
+#endif
+#if WINDOWS
         private void CustomCanvasView_HandlerChanged(object sender, EventArgs args)
         {
             var canvas = customCanvasView.Handler?.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
@@ -125,6 +127,63 @@ namespace GnollHackX.Controls
         {
             e.Handled = true;
             /* WinUI raises pointer events on the UI thread */
+            _isHovering = false;
+            customCanvasView.InvalidateSurface();
+            TextColor = TextColor;
+        }
+#elif GNH_AVALONIA
+        private void CustomCanvasView_HandlerChanged(object sender, EventArgs args)
+        {
+            var canvas = customCanvasView.Handler?.PlatformView as Avalonia.Input.InputElement;
+            if (canvas != null)
+            {
+                canvas.PointerEntered += Canvas_PointerEntered;
+                canvas.PointerExited += Canvas_PointerExited;
+            }
+        }
+
+        private void CustomCanvasView_HandlerChanging(object sender, HandlerChangingEventArgs args)
+        {
+            var canvas = args.OldHandler?.PlatformView as Avalonia.Input.InputElement;
+            if (canvas != null)
+            {
+                canvas.PointerEntered -= Canvas_PointerEntered;
+                canvas.PointerExited -= Canvas_PointerExited;
+            }
+        }
+
+        private void CustomButton_HandlerChanged(object sender, EventArgs args)
+        {
+            var button = customButton.Handler?.PlatformView as Avalonia.Input.InputElement;
+            if (button != null)
+            {
+                button.PointerEntered += Canvas_PointerEntered;
+                button.PointerExited += Canvas_PointerExited;
+            }
+        }
+
+        private void CustomButton_HandlerChanging(object sender, HandlerChangingEventArgs args)
+        {
+            var button = args.OldHandler?.PlatformView as Avalonia.Input.InputElement;
+            if (button != null)
+            {
+                button.PointerEntered -= Canvas_PointerEntered;
+                button.PointerExited -= Canvas_PointerExited;
+            }
+        }
+
+        private void Canvas_PointerEntered(object sender, Avalonia.Input.PointerEventArgs e)
+        {
+            e.Handled = true;
+            /* Avalonia raises pointer events on the UI thread */
+            _isHovering = true;
+            customCanvasView.InvalidateSurface();
+            TextColor = TextColor;
+        }
+        private void Canvas_PointerExited(object sender, Avalonia.Input.PointerEventArgs e)
+        {
+            e.Handled = true;
+            /* Avalonia raises pointer events on the UI thread */
             _isHovering = false;
             customCanvasView.InvalidateSurface();
             TextColor = TextColor;
@@ -272,7 +331,7 @@ namespace GnollHackX.Controls
             SKCanvas canvas = surface.Canvas;
             float canvaswidth = info.Width; // customCanvasView.CanvasSize.Width;
             float canvasheight = info.Height; // customCanvasView.CanvasSize.Height;
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
             SKImage targetBitmap = !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : IsPressed && IsEnabled ? GHApp.ButtonSelectedBitmap : _isHovering && IsEnabled ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap;
 #else
             SKImage targetBitmap = !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : !IsEnabled ? GHApp.ButtonDisabledBitmap : IsPressed ? GHApp.ButtonSelectedBitmap : GHApp.ButtonNormalBitmap;

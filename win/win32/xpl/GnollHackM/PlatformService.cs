@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-#if !(__ANDROID__ || __IOS__ || WINDOWS)
+#if !(__ANDROID__ || __IOS__ || WINDOWS || GNH_AVALONIA)
 namespace GnollHackM
 {
     public class PlatformService : IPlatformService

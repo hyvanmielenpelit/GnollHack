@@ -60,6 +60,7 @@ win/win32/vs/dumplog/*.*
 *.vcxproj.FileListAbsolute.txt
 *assetpack.zip
 libgnollhackdroid.so*
+win/win32/xpl/GnollHackM/Platforms/Linux/libs/libgnollhacklinux.so
 libgnollhackios.a
 libgnollhacklinux.so*
 gnollhackwin.dll
@@ -103,6 +104,7 @@ win/win32/xpl/GnollHackM/Platforms/Windows/gnh/defaults.gnh
 win/win32/xpl/GnollHackM/Platforms/Windows/gnh/record
 dat/dlb.lst
 win/win32/xpl/gnollhackdroid/date*.h
+win/win32/xpl/gnollhacklinux/date_unix.h
 win/win32/xpl/gnollhackios/date*.h
 win/win32/xpl/gnollhackios/download*.bat
 win/win32/xpl/gnollhacklinux/date*.h

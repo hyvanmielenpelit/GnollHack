@@ -31,6 +31,10 @@ public partial class App : Application
             handler.PlatformView.BorderThickness = new Microsoft.UI.Xaml.Thickness(0);
         });
 #endif
+#if GNH_AVALONIA
+        Avalonia.Controls.Maui.Handlers.PickerHandler.Mapper.AppendToMapping(nameof(IPicker.Title), MapAvaloniaPickerTitleToPlaceholder);
+        Avalonia.Controls.Maui.Handlers.PickerHandler.Mapper.AppendToMapping(nameof(IPicker.TitleColor), MapAvaloniaPickerTitleToPlaceholder);
+#endif
 #if ANDROID
         Microsoft.Maui.Handlers.ButtonHandler.Mapper.AppendToMapping("NoRippleEffect", (handler, view) =>
         {
@@ -338,9 +342,45 @@ public partial class App : Application
     }
 #endif
 
+#if GNH_AVALONIA
+    /* Shows a picker's Title as ComboBox placeholder text in TitleColor instead of as a header */
+    private static void MapAvaloniaPickerTitleToPlaceholder(Avalonia.Controls.Maui.Handlers.PickerHandler handler, IPicker picker)
+    {
+        Avalonia.Controls.Maui.MauiComboBox comboBox = ((IElementHandler)handler).PlatformView as Avalonia.Controls.Maui.MauiComboBox;
+        if (comboBox == null)
+            return;
+
+        comboBox.Header = null;
+        comboBox.HeaderTemplate = null;
+
+        string title = picker.Title;
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            comboBox.ClearValue(Avalonia.Controls.ComboBox.PlaceholderTextProperty);
+            comboBox.ClearValue(Avalonia.Controls.ComboBox.PlaceholderForegroundProperty);
+            return;
+        }
+
+        comboBox.PlaceholderText = title;
+        Color titleColor = picker.TitleColor;
+        if (titleColor != null)
+        {
+            titleColor.ToRgba(out byte r, out byte g, out byte b, out byte a);
+            comboBox.PlaceholderForeground = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromArgb(a, r, g, b));
+        }
+        else
+        {
+            comboBox.ClearValue(Avalonia.Controls.ComboBox.PlaceholderForegroundProperty);
+        }
+    }
+#endif
+
     protected override Window CreateWindow(IActivationState activationState)
     {
         Window window = new Window(new AppShell());
+#if GNH_AVALONIA
+        window.Title = "GnollHack";
+#endif
         window.Activated += WindowActivated;
         window.Deactivated += WindowDeactivated;
         window.Destroying += WindowDestroying;

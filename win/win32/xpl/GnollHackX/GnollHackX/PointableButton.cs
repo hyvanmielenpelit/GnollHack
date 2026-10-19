@@ -44,6 +44,28 @@ namespace GnollHackX
                     }
                 }
             };
+#elif GNH_AVALONIA
+            HandlerChanged += (s, e) =>
+            {
+                var platformView = Handler?.PlatformView as Avalonia.Input.InputElement;
+                if (platformView != null)
+                {
+                    platformView.PointerEntered += PlatformView_PointerEntered;
+                    platformView.PointerExited += PlatformView_PointerExited;
+                }
+            };
+            HandlerChanging += (s, e) =>
+            {
+                if (e.OldHandler != null && e.NewHandler == null)
+                {
+                    var platformView = e.OldHandler?.PlatformView as Avalonia.Input.InputElement;
+                    if (platformView != null)
+                    {
+                        platformView.PointerEntered -= PlatformView_PointerEntered;
+                        platformView.PointerExited -= PlatformView_PointerExited;
+                    }
+                }
+            };
 #endif
         }
 
@@ -70,6 +92,26 @@ namespace GnollHackX
             {
                 e.Handled = true;
                 /* WinUI raises pointer events on the UI thread */
+                PointerExited?.Invoke(sender, EventArgs.Empty);
+            }
+        }
+#elif GNH_AVALONIA
+        private void PlatformView_PointerEntered(object sender, Avalonia.Input.PointerEventArgs e)
+        {
+            if (PointerEntered != null)
+            {
+                e.Handled = true;
+                /* Avalonia raises pointer events on the UI thread */
+                PointerEntered?.Invoke(sender, EventArgs.Empty);
+            }
+        }
+
+        private void PlatformView_PointerExited(object sender, Avalonia.Input.PointerEventArgs e)
+        {
+            if (PointerExited != null)
+            {
+                e.Handled = true;
+                /* Avalonia raises pointer events on the UI thread */
                 PointerExited?.Invoke(sender, EventArgs.Empty);
             }
         }

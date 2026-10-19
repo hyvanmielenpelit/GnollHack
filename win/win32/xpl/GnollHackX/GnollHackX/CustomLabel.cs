@@ -929,6 +929,15 @@ namespace GnollHackX
 
         private void Base_Touch(object sender, SKTouchEventArgs e)
         {
+#if GNH_AVALONIA
+            /* ACM delivers the mouse wheel as a touch action, in WinUI's MouseWheelDelta units */
+            if (e != null && e.ActionType == SKTouchAction.WheelChanged)
+            {
+                MouseWheel?.Invoke(this, new GHMouseWheelEventArgs(e.WheelDelta));
+                e.Handled = true;
+                return;
+            }
+#endif
             float textHeight = TextHeight;
             float canvasheight = InterlockedCanvasHeight;
             if (canvasheight == 0f)
@@ -1355,6 +1364,20 @@ namespace GnollHackX
     }
 
 #if GNH_MAUI
+#if GNH_AVALONIA
+    /* ACM's GetDesiredSize is not virtual; MAUI calls it through IViewHandler, which this class re-implements */
+    internal class AutoSizeSKCanvasViewHandler : GnollHackM.GHAvaloniaCanvasViewHandler, IViewHandler
+    {
+        public new Size GetDesiredSize(double widthConstraint, double heightConstraint)
+        {
+            var custom = (this.VirtualView as CustomLabel).CustomMeasureSize(widthConstraint, heightConstraint);
+            if (custom == Size.Zero)
+                return base.GetDesiredSize(widthConstraint, heightConstraint);
+            else
+                return custom;
+        }
+    }
+#else
     internal class AutoSizeSKCanvasViewHandler : SKCanvasViewHandler
     {
         public override Size GetDesiredSize(double widthConstraint, double heightConstraint)
@@ -1366,5 +1389,6 @@ namespace GnollHackX
                 return custom;
         }
     }
+#endif
 #endif
 }

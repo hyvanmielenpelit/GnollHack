@@ -2095,7 +2095,11 @@ namespace GnollHackX
 
         private void UpdateMobileVersionLabel()
         {
+#if GNH_AVALONIA
+            MobileVersionLabel.Text = GHApp.PlatformDisplayName;
+#else
             MobileVersionLabel.Text = GHApp.RuntimePlatform + " Version";
+#endif
         }
 
         private void ClassicModeSwitch_Toggled(object sender, ToggledEventArgs e)

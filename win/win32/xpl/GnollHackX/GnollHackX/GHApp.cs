@@ -1040,8 +1040,32 @@ namespace GnollHackX
                 }
                 CompositionTarget_Rendering(null, EventArgs.Empty);
             });
+#elif GNH_AVALONIA
+            /* The frame loop itself starts when the Avalonia window opens (GHAvaloniaWindowHooks) */
+            Interlocked.Exchange(ref _avaloniaLoopActive, 1);
 #endif
         }
+
+#if GNH_AVALONIA
+        private static int _avaloniaLoopActive = 0;
+        private static float _lastAvaloniaRefreshRate = 0f;
+
+        /* Called by GHAvaloniaFrameLoop on the UI thread once per Avalonia animation frame */
+        public static void OnPlatformFrame(float refreshRate)
+        {
+            if (Interlocked.CompareExchange(ref _avaloniaLoopActive, 0, 0) == 0)
+                return;
+            if (refreshRate > 0 && Math.Abs(refreshRate - _lastAvaloniaRefreshRate) >= 0.5f)
+            {
+                _lastAvaloniaRefreshRate = refreshRate;
+                PlatformRefreshRate = refreshRate;
+            }
+            /* Avalonia reports no presentation time, so the vsync time is left unknown */
+            if (GHFrameTimeline.IsEnabled)
+                GHFrameTimeline.SetPendingPlatformFrame(0, 0, 0);
+            CompositionTarget_Rendering(null, EventArgs.Empty);
+        }
+#endif
 
         public static long GetUsedManagedMemoryInBytes()
         {
@@ -1112,7 +1136,7 @@ namespace GnollHackX
         {
             get
             {
-#if GNH_MAUI && (WINDOWS || ANDROID || IOS)
+#if GNH_MAUI && (WINDOWS || ANDROID || IOS || GNH_AVALONIA)
                 return true;
 #else
                 return false;
@@ -1388,6 +1412,9 @@ namespace GnollHackX
                 _platformTicker.Stop();
                 _platformTicker = null;
             }
+#elif GNH_AVALONIA
+            Interlocked.Exchange(ref _avaloniaLoopActive, 0);
+            GnollHackM.GHAvaloniaFrameLoop.Stop();
 #endif
         }
 
@@ -1674,7 +1701,9 @@ namespace GnollHackX
             if (e == null)
                 return;
             DisplayDensity = (float)e.DisplayInfo.Density;
-            DisplayRefreshRate = e.DisplayInfo.RefreshRate;
+            float rate = e.DisplayInfo.RefreshRate;
+            /* A platform reporting no rate falls back to 60 Hz */
+            DisplayRefreshRate = rate > 0 ? rate : 60.0f;
 #if IOS
             /* The display cadence may have changed (e.g., ProMotion switch);
              * re-sample from CADisplayLink on the next frame */
@@ -1682,6 +1711,8 @@ namespace GnollHackX
 #elif ANDROID
             /* Re-query the actual display rate directly */
             PlatformRefreshRate = DisplayInfoAndroid.GetRefreshRateHz();
+#elif GNH_AVALONIA
+            /* GHAvaloniaDeviceDisplay and GHAvaloniaFrameLoop already push the measured values */
 #endif
         }
 
@@ -4067,13 +4098,22 @@ namespace GnollHackX
         public static readonly bool IsWindows = (DeviceInfo.Platform == DevicePlatform.WinUI);
         public static readonly bool IsMacCatalyst = (DeviceInfo.Platform == DevicePlatform.MacCatalyst);
         public static readonly bool IsDesktop =
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
+            true;
+#else
+            false;
+#endif
+        public static readonly bool IsLinux =
+#if LINUX
             true;
 #else
             false;
 #endif
         public static readonly bool IsMaui = true;
         public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
+#if GNH_AVALONIA
+        public static readonly string PlatformDisplayName = IsLinux ? "Linux Avalonia" : "Windows Avalonia";
+#endif
         public static readonly bool IsPackaged = (Microsoft.Maui.ApplicationModel.AppInfo.Current?.PackagingModel ?? AppPackagingModel.Unpackaged) == AppPackagingModel.Packaged;
 #else
         public static float _displayRefreshRate = Math.Max(60.0f, DeviceDisplay.MainDisplayInfo.RefreshRate);
@@ -4087,6 +4127,7 @@ namespace GnollHackX
         public static readonly bool IsMacCatalyst = false;
         public static readonly bool IsMaui = false;
         public static readonly bool IsDesktop = false;
+        public static readonly bool IsLinux = false;
         public static readonly string RuntimePlatform = Device.RuntimePlatform;
         public static readonly bool IsPackaged = true;
 #endif
@@ -7005,6 +7046,10 @@ namespace GnollHackX
             if (ForceCopyAllBanksToDisk) return true;
             if (IsiOS) return false;
             if (IsWindows) return false;
+#if GNH_AVALONIA
+            /* FMOD loads the banks from the application directory */
+            return false;
+#else
             if (IsAndroid)
             {
                 if (IsReadToMemoryBank(sf)) return false;
@@ -7012,6 +7057,7 @@ namespace GnollHackX
                 return sf.streaming_asset != 0 && CopyStreamingBankToDisk;
             }
             return true;
+#endif
         }
 
         public static bool IsSecretsFileAndroidOnDemand(SecretsFile sf)
@@ -12795,8 +12841,8 @@ namespace GnollHackX
         }
         public static bool SendSpecialKeyPress(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift)
         {
-            /* Special unblocked keypresses on Windows */
-            if (IsWindows)
+            /* Special unblocked keypresses on desktop */
+            if (IsDesktop)
             {
                 if (spkey == GHSpecialKey.Tab && isMeta) /* Windows switch apps */
                     return false;

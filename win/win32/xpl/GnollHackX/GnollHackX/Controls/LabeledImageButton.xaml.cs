@@ -284,6 +284,28 @@ namespace GnollHackX.Controls
                     }
                 }
             };
+#elif GNH_AVALONIA
+            ViewButton.HandlerChanged += (s, e) =>
+            {
+                var platformView = ViewButton.Handler?.PlatformView as Avalonia.Input.InputElement;
+                if (platformView != null)
+                {
+                    platformView.PointerEntered += PlatformView_PointerEntered;
+                    platformView.PointerExited += PlatformView_PointerExited;
+                }
+            };
+            ViewButton.HandlerChanging += (s, e) =>
+            {
+                if (e.OldHandler != null && e.NewHandler == null)
+                {
+                    var platformView = e.OldHandler?.PlatformView as Avalonia.Input.InputElement;
+                    if (platformView != null)
+                    {
+                        platformView.PointerEntered -= PlatformView_PointerEntered;
+                        platformView.PointerExited -= PlatformView_PointerExited;
+                    }
+                }
+            };
 #endif
         }
 
@@ -339,6 +361,20 @@ namespace GnollHackX.Controls
         {
             e.Handled = true;
             /* WinUI raises pointer events on the UI thread */
+            ViewImage.IsHighlighted = false;
+        }
+#elif GNH_AVALONIA
+        private void PlatformView_PointerEntered(object sender, Avalonia.Input.PointerEventArgs e)
+        {
+            e.Handled = true;
+            /* Avalonia raises pointer events on the UI thread */
+            ViewImage.IsHighlighted = true;
+        }
+
+        private void PlatformView_PointerExited(object sender, Avalonia.Input.PointerEventArgs e)
+        {
+            e.Handled = true;
+            /* Avalonia raises pointer events on the UI thread */
             ViewImage.IsHighlighted = false;
         }
 #endif

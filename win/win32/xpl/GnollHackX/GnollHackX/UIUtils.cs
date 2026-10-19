@@ -1138,6 +1138,10 @@ namespace GnollHackX
         }
         public static MapRefreshRateStyle GetDefaultMapFPS(int roundedScreenRefreshRate, bool platformLoop)
         {
+#if GNH_AVALONIA
+            if (platformLoop && roundedScreenRefreshRate >= 90 && roundedScreenRefreshRate % 90 == 0)
+                return MapRefreshRateStyle.MapFPS90;
+#endif
             if (platformLoop && roundedScreenRefreshRate >= 80 && roundedScreenRefreshRate % 80 == 0)
                 return MapRefreshRateStyle.MapFPS80;
             else if (platformLoop && roundedScreenRefreshRate >= 72 && roundedScreenRefreshRate % 72 == 0)
