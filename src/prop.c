@@ -192,6 +192,7 @@ const struct propname propertynames[] = {
     { EDIBILITY_APPRAISAL, "recognizing detrimental food", "recognition of detrimental food" },
     { CORPSE_PROPERTY_APPRAISAL, "recognizing corpse properties", "recognition of corpse properties" },
     { TRUE_SEEING, "having true seeing", "true seeing" },
+    { KNIGHT_JUMPING, "able to jump like a chess knight", "jumping like a chess knight" },
     {  0, 0, 0 },
 };
 
@@ -373,7 +374,7 @@ NEARDATA struct prop_info property_definitions[MAX_PROPS] =
     { "edibility-appraisal",          0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* EDIBILITY_APPRAISAL = 173 */
     { "corpse-property-appraisal",    0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* CORPSE_PROPERTY_APPRAISAL = 174 */
     { "true-seeing",                  1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE },  /* TRUE_SEEING = 175 */
-    { "reserved-prop-7",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "knight-jumping",               0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* KNIGHT_JUMPING = 176 */
     { "reserved-prop-8",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
     { "reserved-prop-9",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
     { "reserved-prop-10",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */

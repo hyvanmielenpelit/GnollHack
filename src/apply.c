@@ -2945,7 +2945,17 @@ check_jump(genericptr_t arg, int x, int y)
 static boolean
 is_valid_jump_pos(int x, int y, int magic, boolean showmsg)
 {
-    if (!magic && Role_if(PM_KNIGHT) && !(HJumping & ~INTRINSIC) && !EJumping && distu(x, y) != 5) {
+    if (!magic && !Jumping && !Knight_jumping)
+    {
+        if (showmsg)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "jump very far.");
+        }
+        return FALSE;
+    }
+    else if (!magic && !Jumping && distu(x, y) != 5)
+    {
         /* The Knight jumping restriction still applies when riding a
          * horse.  After all, what shape is the knight piece in chess?
          */
@@ -2955,28 +2965,36 @@ is_valid_jump_pos(int x, int y, int magic, boolean showmsg)
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "Illegal move!");
         }
         return FALSE;
-    } else if (distu(x, y) > (magic ? 6 + magic * 3 : 9)) {
+    }
+    else if (distu(x, y) > (magic ? 6 + magic * 3 : 9))
+    {
         if (showmsg)
         {
             play_sfx_sound(SFX_GENERAL_TOO_FAR);
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "Too far!");
         }
         return FALSE;
-    } else if (!isok(x, y)) {
+    }
+    else if (!isok(x, y))
+    {
         if (showmsg)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot jump there!");
         }
         return FALSE;
-    } else if (!cansee(x, y)) {
+    }
+    else if (!cansee(x, y))
+    {
         if (showmsg)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT_SEE_SPOT);
             You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot see where to land!");
         }
         return FALSE;
-    } else {
+    }
+    else
+    {
         coord uc, tc;
         struct rm *lev = &levl[u.ux][u.uy];
         /* we want to categorize trajectory for use in determining
@@ -3065,7 +3083,7 @@ jump(int magic)
     coord cc;
 
     /* attempt "jumping" spell if hero has no innate jumping ability */
-    if (!magic && !Jumping) 
+    if (!magic && !Jumping && !Knight_jumping)
     {
         int sp_no;
 
@@ -3084,7 +3102,7 @@ jump(int magic)
         You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "jump; you have no legs!");
         return 0;
     } 
-    else if (!magic && !Jumping)
+    else if (!magic && !Jumping && !Knight_jumping)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "jump very far.");

@@ -462,6 +462,10 @@
 #define EJumping u.uprops[JUMPING].extrinsic
 #define Jumping (HJumping || EJumping)
 
+#define HKnight_jumping u.uprops[KNIGHT_JUMPING].intrinsic
+#define EKnight_jumping u.uprops[KNIGHT_JUMPING].extrinsic
+#define Knight_jumping (HKnight_jumping || EKnight_jumping)
+
 #define HTeleportation u.uprops[TELEPORT].intrinsic
 #define ETeleportation u.uprops[TELEPORT].extrinsic
 #define Teleportation (HTeleportation || ETeleportation)

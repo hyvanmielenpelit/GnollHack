@@ -44,10 +44,12 @@ static const struct innate
                  { 14, SICK_RESISTANCE, "healthy", "" },
                  { 0, 0, 0, 0 } },
 
-  kni_abil[] = { { 7, FAST, "quick", "slow" },
+  kni_abil[] = { { 3, KNIGHT_JUMPING, "agile", "" },
+                 { 7, FAST, "quick", "slow" },
                  { 11, WARN_UNDEAD, "sensitive to undead", "" },
                  { 15, WARN_DEMON, "sensitive to demons", "" },
                  { 19, CURSE_RESISTANCE, "holy", "less holy" },
+                 { 23, JUMPING, "jumpy", "" },
                  { 0, 0, 0, 0 } },
 
   mon_abil[] = { { 1, FAST, "", "" },

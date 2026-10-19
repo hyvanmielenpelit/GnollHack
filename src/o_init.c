@@ -317,6 +317,13 @@ NEARDATA const struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFI
         MYTHIC_FLAG_NO_CELESTIAL_WEAPONS | MYTHIC_FLAG_NO_THROWN_OR_AMMO | MYTHIC_FLAG_RACIAL_PREFIX,
         MYTHIC_FLAG2_NONE
     },
+    {
+        "knight's", "knight's ", "Confers jumping like a chess knight (boots only)",
+        20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
+        MYTHIC_PREFIX_POWER_KNIGHT_JUMPING,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_BOOTS_REQUIRED,
+        MYTHIC_FLAG2_NONE
+    },
 };
 
 #define MYTHIC_VAMPIRIC_DESC "Heals " MYTHIC_DESC_XSTR(MYTHIC_LIFE_DRAINING_DICE) "d" MYTHIC_DESC_XSTR(MYTHIC_LIFE_DRAINING_DIESIZE) " hit points plus enchantment bonus on hit"
@@ -349,6 +356,7 @@ NEARDATA const struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_PR
     { "Spell casting", MYTHIC_SPELL_CASTING_DESC, MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
     { "Great accuracy", MYTHIC_GREAT_ACCURACY_DESC, MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Great damage", MYTHIC_GREAT_DAMAGE_DESC, MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Knight jumping", "Jumping like a chess knight", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, KNIGHT_JUMPING, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
 };
 
 NEARDATA const struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =

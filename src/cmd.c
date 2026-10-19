@@ -4931,6 +4931,9 @@ attributes_enlightenment(int unused_mode UNUSED, int final)
     /*** Transportation ***/
     if (Jumping)
         you_can("jump", from_what(JUMPING));
+    if (Knight_jumping)
+        you_can(Jumping ? "latently jump like a chess knight" : "jump like a chess knight",
+                from_what(KNIGHT_JUMPING));
     if (Teleportation)
         you_can("teleport", from_what(TELEPORT));
     if (Teleport_control)
