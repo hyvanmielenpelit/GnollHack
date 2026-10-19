@@ -313,12 +313,6 @@ static const struct trobj KnightLeatherGloves[] = { { LEATHER_GLOVES, 0, ARMOR_C
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
 static const struct trobj KnightSilverGauntlets[] = { { GAUNTLETS, 0, ARMOR_CLASS, 1, 0, 0, 0, 0, MAT_SILVER },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
-static const struct trobj KnightJumpingBoots[] = { { JUMPING_BOOTS, 0, ARMOR_CLASS, 1, 0, 0, 0, 0, MAT_NONE },
-                                { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
-static const struct trobj KnightLowBoots[] = { { LOW_BOOTS, 0, ARMOR_CLASS, 1, 0, 0, 0, 0, MAT_NONE },
-                                { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
-static const struct trobj KnightHighBoots[] = { { HIGH_BOOTS, 0, ARMOR_CLASS, 1, 0, 0, 0, 0, MAT_NONE },
-                                { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
 static const struct trobj PriestSilverGauntlets[] = { { GAUNTLETS, 0, ARMOR_CLASS, 1, 0, 1, 0, 0, MAT_SILVER },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
 static const struct trobj ScrollOfIdentify[] = { { SCR_IDENTIFY, 0, SCROLL_CLASS, 1, 0, 0, 0, 0, MAT_NONE },
@@ -1051,13 +1045,6 @@ u_init(void)
             ini_inv(KnightSilverGauntlets);
         else
             ini_inv(KnightLeatherGloves);
-
-        if (!rn2(3))
-            ini_inv(KnightJumpingBoots);
-        else if (!rn2(2))
-            ini_inv(KnightHighBoots);
-        else
-            ini_inv(KnightLowBoots);
         //knows_class(WEAPON_CLASS);
         //knows_class(ARMOR_CLASS);
         break;
