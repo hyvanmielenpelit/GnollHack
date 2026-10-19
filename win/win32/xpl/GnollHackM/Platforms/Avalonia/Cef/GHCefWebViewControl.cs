@@ -45,6 +45,11 @@ namespace GnollHackM
         void OnNewWindowRequested(string url);
         void OnBridgeMessage(string text, string frameUrl);
         void OnEvalResult(int id, bool success, string json);
+        /* The page's current text selection, empty when nothing is selected */
+        void OnTextSelectionChanged(string selectedText);
+        /* A page's file dialog; the callback is answered exactly once, later */
+        void OnFileDialog(CefFileDialogMode mode, string title, string defaultFilePath, string[] acceptFilters,
+            string[] acceptExtensions, CefFileDialogCallback callback);
     }
 
     /* A Chromium page rendered off screen by CEF and drawn as an Avalonia control. Every public member is UI
@@ -67,6 +72,8 @@ namespace GnollHackM
         private GHCefClient _client = null;
         private CefBrowser _browser = null;
         private CefBrowserHost _host = null;
+        /* The page's text selection as CEF last reported it, for copy and cut */
+        private string _selectedText = "";
         private bool _creating = false;
         private bool _startPosted = false;
         private bool _startPending = false;
@@ -782,6 +789,145 @@ namespace GnollHackM
             }
         }
 
+        /* Avalonia's file pickers, which use the desktop portal: the page's extensions as glob patterns, plus all
+           files. Chromium's own portal dialog listed folders but no files for extension filters. */
+        void IGHCefClientTarget.OnFileDialog(CefFileDialogMode mode, string title, string defaultFilePath, string[] acceptFilters,
+            string[] acceptExtensions, CefFileDialogCallback callback)
+        {
+            _ = ShowFileDialogAsync(mode, title, defaultFilePath, acceptFilters, acceptExtensions, callback);
+        }
+
+        void IGHCefClientTarget.OnTextSelectionChanged(string selectedText)
+        {
+            _selectedText = selectedText ?? "";
+        }
+
+        private async Task ShowFileDialogAsync(CefFileDialogMode mode, string title, string defaultFilePath, string[] acceptFilters,
+            string[] acceptExtensions, CefFileDialogCallback callback)
+        {
+            string[] paths = null;
+            try
+            {
+                Avalonia.Platform.Storage.IStorageProvider storage = Avalonia.Controls.TopLevel.GetTopLevel(this)?.StorageProvider;
+                if (storage != null)
+                {
+                    if (mode == CefFileDialogMode.OpenFolder)
+                    {
+                        IReadOnlyList<Avalonia.Platform.Storage.IStorageFolder> folders = await storage.OpenFolderPickerAsync(
+                            new Avalonia.Platform.Storage.FolderPickerOpenOptions { Title = title, AllowMultiple = false });
+                        paths = LocalPaths(folders);
+                    }
+                    else if (mode == CefFileDialogMode.Save)
+                    {
+                        Avalonia.Platform.Storage.IStorageFile file = await storage.SaveFilePickerAsync(
+                            new Avalonia.Platform.Storage.FilePickerSaveOptions
+                            {
+                                Title = title,
+                                SuggestedFileName = string.IsNullOrEmpty(defaultFilePath) ? null : Path.GetFileName(defaultFilePath),
+                                FileTypeChoices = FileTypeFilters(acceptFilters, acceptExtensions),
+                            });
+                        paths = file != null ? LocalPaths(new[] { file }) : null;
+                    }
+                    else
+                    {
+                        IReadOnlyList<Avalonia.Platform.Storage.IStorageFile> files = await storage.OpenFilePickerAsync(
+                            new Avalonia.Platform.Storage.FilePickerOpenOptions
+                            {
+                                Title = title,
+                                AllowMultiple = mode == CefFileDialogMode.OpenMultiple,
+                                FileTypeFilter = FileTypeFilters(acceptFilters, acceptExtensions),
+                            });
+                        paths = LocalPaths(files);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GHCefWebViewControl: file dialog failed: " + ex.Message);
+                paths = null;
+            }
+
+            try
+            {
+                if (paths != null && paths.Length > 0)
+                    callback.Continue(paths);
+                else
+                    callback.Cancel();
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GHCefWebViewControl: file dialog result failed: " + ex.Message);
+            }
+            finally
+            {
+                callback.Dispose();
+            }
+        }
+
+        private static string[] LocalPaths(IEnumerable<Avalonia.Platform.Storage.IStorageItem> items)
+        {
+            if (items == null)
+                return null;
+
+            List<string> paths = new List<string>();
+            foreach (Avalonia.Platform.Storage.IStorageItem item in items)
+            {
+                string path = item != null ? Avalonia.Platform.Storage.StorageProviderExtensions.TryGetLocalPath(item) : null;
+                if (!string.IsNullOrEmpty(path))
+                    paths.Add(path);
+            }
+            return paths.ToArray();
+        }
+
+        /* One filter with the page's extensions ("*.png") and MIME types, then all files. CEF gives each filter's
+           extensions as a ';'-separated list; a filter that is itself an extension is used as is. */
+        private static List<Avalonia.Platform.Storage.FilePickerFileType> FileTypeFilters(string[] acceptFilters, string[] acceptExtensions)
+        {
+            List<string> patterns = new List<string>();
+            List<string> mimeTypes = new List<string>();
+            if (acceptExtensions != null)
+            {
+                foreach (string entry in acceptExtensions)
+                {
+                    if (string.IsNullOrEmpty(entry))
+                        continue;
+                    foreach (string extension in entry.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                        AddExtensionPattern(patterns, extension);
+                }
+            }
+            if (acceptFilters != null)
+            {
+                foreach (string filter in acceptFilters)
+                {
+                    if (string.IsNullOrEmpty(filter))
+                        continue;
+                    if (filter.StartsWith(".", StringComparison.Ordinal))
+                        AddExtensionPattern(patterns, filter);
+                    else if (filter.Contains('/') && !mimeTypes.Contains(filter))
+                        mimeTypes.Add(filter);
+                }
+            }
+
+            List<Avalonia.Platform.Storage.FilePickerFileType> filters = new List<Avalonia.Platform.Storage.FilePickerFileType>();
+            if (patterns.Count > 0 || mimeTypes.Count > 0)
+            {
+                filters.Add(new Avalonia.Platform.Storage.FilePickerFileType("Accepted files")
+                {
+                    Patterns = patterns.Count > 0 ? patterns : null,
+                    MimeTypes = mimeTypes.Count > 0 ? mimeTypes : null,
+                });
+            }
+            filters.Add(Avalonia.Platform.Storage.FilePickerFileTypes.All);
+            return filters;
+        }
+
+        private static void AddExtensionPattern(List<string> patterns, string extension)
+        {
+            string pattern = "*." + extension.TrimStart('.', '*');
+            if (pattern.Length > 2 && !patterns.Contains(pattern, StringComparer.OrdinalIgnoreCase))
+                patterns.Add(pattern);
+        }
+
         /* Cursors are created once per type, on the UI thread */
         private static Avalonia.Input.Cursor GetCursor(CefCursorType type)
         {
@@ -1418,7 +1564,9 @@ namespace GnollHackM
         }
 
         /* RAWKEYDOWN for every key, plus CHAR '\r' for Enter; text comes from TextInput, which Avalonia raises
-           only when the key is not handled, so only navigation keys are marked handled */
+           only when the key is not handled, so only navigation keys are marked handled. Clipboard keys are handled
+           here through Avalonia's clipboard: Chromium's own X11 clipboard blocks the page on paste and does not reach
+           the system clipboard on copy. */
         protected override void OnKeyDown(Avalonia.Input.KeyEventArgs e)
         {
             base.OnKeyDown(e);
@@ -1427,6 +1575,20 @@ namespace GnollHackM
                 CefBrowserHost host = _host;
                 if (host == null)
                     return;
+
+                if (IsPasteKey(e))
+                {
+                    e.Handled = true;
+                    _ = PasteClipboardTextAsync();
+                    return;
+                }
+                bool cut = IsCutKey(e);
+                if (cut || IsCopyKey(e))
+                {
+                    e.Handled = true;
+                    _ = CopySelectionAsync(cut);
+                    return;
+                }
 
                 CefEventFlags flags = GHCefInput.Modifiers(e.KeyModifiers) | GHCefInput.KeyLocationFlags(e.PhysicalKey);
                 int nativeKeyCode = GHCefInput.X11KeyCode(e.PhysicalKey);
@@ -1466,7 +1628,7 @@ namespace GnollHackM
             try
             {
                 CefBrowserHost host = _host;
-                if (host == null)
+                if (host == null || IsPasteKey(e) || IsCopyKey(e) || IsCutKey(e))
                     return;
 
                 host.SendKeyEvent(new CefKeyEvent
@@ -1480,6 +1642,88 @@ namespace GnollHackM
             catch (Exception ex)
             {
                 GHApp.MaybeWriteGHLog("GHCefWebViewControl: key up failed: " + ex.Message);
+            }
+        }
+
+        /* Ctrl+V, Ctrl+Shift+V and Shift+Insert */
+        private static bool IsPasteKey(Avalonia.Input.KeyEventArgs e)
+        {
+            Avalonia.Input.KeyModifiers modifiers = e.KeyModifiers;
+            if ((modifiers & Avalonia.Input.KeyModifiers.Alt) != 0)
+                return false;
+            if (e.Key == Avalonia.Input.Key.V)
+                return (modifiers & Avalonia.Input.KeyModifiers.Control) != 0;
+            return e.Key == Avalonia.Input.Key.Insert && modifiers == Avalonia.Input.KeyModifiers.Shift;
+        }
+
+        /* Ctrl+C and Ctrl+Insert */
+        private static bool IsCopyKey(Avalonia.Input.KeyEventArgs e)
+        {
+            Avalonia.Input.KeyModifiers modifiers = e.KeyModifiers;
+            if ((modifiers & (Avalonia.Input.KeyModifiers.Alt | Avalonia.Input.KeyModifiers.Shift)) != 0)
+                return false;
+            return (modifiers & Avalonia.Input.KeyModifiers.Control) != 0 && (e.Key == Avalonia.Input.Key.C || e.Key == Avalonia.Input.Key.Insert);
+        }
+
+        /* Ctrl+X and Shift+Delete */
+        private static bool IsCutKey(Avalonia.Input.KeyEventArgs e)
+        {
+            Avalonia.Input.KeyModifiers modifiers = e.KeyModifiers;
+            if (e.Key == Avalonia.Input.Key.X)
+                return modifiers == Avalonia.Input.KeyModifiers.Control;
+            return e.Key == Avalonia.Input.Key.Delete && modifiers == Avalonia.Input.KeyModifiers.Shift;
+        }
+
+        /* The selection CEF reported, onto the clipboard through Avalonia's X11 connection. A cut then deletes the
+           selection with a Delete key, which does nothing outside editable fields. */
+        private async Task CopySelectionAsync(bool cut)
+        {
+            try
+            {
+                string text = _selectedText;
+                if (string.IsNullOrEmpty(text))
+                    return;
+
+                Avalonia.Input.Platform.IClipboard clipboard = Avalonia.Controls.TopLevel.GetTopLevel(this)?.Clipboard;
+                if (clipboard == null)
+                    return;
+
+                await Avalonia.Input.Platform.ClipboardExtensions.SetTextAsync(clipboard, text);
+
+                CefBrowserHost host = _host;
+                if (cut && host != null && !_closeRequested)
+                {
+                    int deleteKey = GHCefInput.WindowsKeyCode(Avalonia.Input.Key.Delete);
+                    host.SendKeyEvent(new CefKeyEvent { EventType = CefKeyEventType.RawKeyDown, WindowsKeyCode = deleteKey });
+                    host.SendKeyEvent(new CefKeyEvent { EventType = CefKeyEventType.KeyUp, WindowsKeyCode = deleteKey });
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GHCefWebViewControl: copy failed: " + ex.Message);
+            }
+        }
+
+        /* The clipboard text through Avalonia's own X11 connection, inserted at the caret of the focused field */
+        private async Task PasteClipboardTextAsync()
+        {
+            try
+            {
+                Avalonia.Input.Platform.IClipboard clipboard = Avalonia.Controls.TopLevel.GetTopLevel(this)?.Clipboard;
+                if (clipboard == null)
+                    return;
+
+                string text = await Avalonia.Input.Platform.ClipboardExtensions.TryGetTextAsync(clipboard);
+                CefBrowserHost host = _host;
+                if (string.IsNullOrEmpty(text) || host == null || _closeRequested)
+                    return;
+
+                /* An invalid range (UINT32_MAX in CEF) inserts at the caret */
+                host.ImeCommitText(text, new CefRange(-1, -1), 0);
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GHCefWebViewControl: paste failed: " + ex.Message);
             }
         }
 

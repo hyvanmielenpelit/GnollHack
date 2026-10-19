@@ -17,9 +17,11 @@ namespace GnollHackM
         private readonly GHCefDisplayHandler _displayHandler;
         private readonly GHCefJSDialogHandler _jsDialogHandler;
         private readonly GHCefContextMenuHandler _contextMenuHandler;
+        private readonly GHCefDialogHandler _dialogHandler;
 
         internal GHCefClient(IGHCefClientTarget target)
         {
+            _dialogHandler = new GHCefDialogHandler(target);
             _target = target;
             _renderHandler = new GHCefRenderHandler(target);
             _lifeSpanHandler = new GHCefLifeSpanHandler(target);
@@ -55,10 +57,9 @@ namespace GnollHackM
             return _displayHandler;
         }
 
-        /* None: CEF shows its own GTK file dialog on the main thread */
         protected override CefDialogHandler GetDialogHandler()
         {
-            return null;
+            return _dialogHandler;
         }
 
         protected override CefJSDialogHandler GetJSDialogHandler()
@@ -232,6 +233,18 @@ namespace GnollHackM
 
             protected override void OnImeCompositionRangeChanged(CefBrowser browser, CefRange selectedRange, CefRectangle[] characterBounds)
             {
+            }
+
+            protected override void OnTextSelectionChanged(CefBrowser browser, string selectedText, CefRange selectedRange)
+            {
+                try
+                {
+                    _target.OnTextSelectionChanged(selectedText);
+                }
+                catch (Exception ex)
+                {
+                    GHCefRuntime.Log("GHCefClient: text selection change failed: " + ex.Message);
+                }
             }
         }
 
@@ -509,6 +522,32 @@ namespace GnollHackM
 
             protected override void OnDialogClosed(CefBrowser browser)
             {
+            }
+        }
+
+        /* File dialogs through the control, which answers the callback later */
+        private sealed class GHCefDialogHandler : CefDialogHandler
+        {
+            private readonly IGHCefClientTarget _target;
+
+            public GHCefDialogHandler(IGHCefClientTarget target)
+            {
+                _target = target;
+            }
+
+            protected override bool OnFileDialog(CefBrowser browser, CefFileDialogMode mode, string title, string defaultFilePath,
+                string[] acceptFilters, string[] acceptExtensions, string[] acceptDescriptions, CefFileDialogCallback callback)
+            {
+                try
+                {
+                    _target.OnFileDialog(mode, title, defaultFilePath, acceptFilters, acceptExtensions, callback);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    GHCefRuntime.Log("GHCefClient: file dialog failed: " + ex.Message);
+                    return false;
+                }
             }
         }
 
