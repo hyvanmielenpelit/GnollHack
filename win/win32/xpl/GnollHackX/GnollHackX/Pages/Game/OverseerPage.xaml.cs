@@ -49,6 +49,9 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAUI && WINDOWS
         private bool _newWindowHooked = false;
 #endif
+#if GNH_AVALONIA
+        private GHAvaloniaOverseerHost _avaloniaHost;
+#endif
 #if DEBUG
 #if IOS || MACCATALYST
         private object _iosNavigationDelegate = null;
@@ -66,6 +69,15 @@ namespace GnollHackX.Pages.Game
             _baseOverseerUrl = baseOverseerUrl;
             _snapshotText = snapshotText;
 
+#if GNH_AVALONIA
+            _avaloniaHost = new GHAvaloniaOverseerHost(DisplayWebView,
+                json => HandleWebMessage(json, null),
+                () => GHApp.SendSpecialKeyPress(GHSpecialKey.Escape, false, false, false),
+                HandleNewWindowTarget);
+            ProgressOverlay.PropertyChanged += AvaloniaOverlay_PropertyChanged;
+            MessagePopup.PropertyChanged += AvaloniaOverlay_PropertyChanged;
+            UpdateAvaloniaWebViewVisibility();
+#endif
 #if GNH_MAUI
             DisplayWebView.HandlerChanged += (s, e) =>
             {
@@ -98,6 +110,21 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+#if GNH_AVALONIA
+        private void AvaloniaOverlay_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == Microsoft.Maui.Controls.VisualElement.IsVisibleProperty.PropertyName)
+                UpdateAvaloniaWebViewVisibility();
+        }
+
+        /* The native web view is drawn above all Avalonia content, so it is hidden while the progress overlay or a
+           message popup is shown */
+        private void UpdateAvaloniaWebViewVisibility()
+        {
+            DisplayWebView.IsVisible = !ProgressOverlay.IsVisible && !MessagePopup.IsVisible;
+        }
+#endif
+
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
@@ -120,6 +147,9 @@ namespace GnollHackX.Pages.Game
             CleanupJsBridge();
 #if GNH_MAUI && WINDOWS
             UnhookNewWindowRequested();
+#endif
+#if GNH_AVALONIA
+            _avaloniaHost.Detach();
 #endif
 
             /* Navigate the WebView to blank to release WKWebView content
@@ -577,6 +607,29 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAUI && WINDOWS
             HookNewWindowRequested();
 #endif
+#if GNH_AVALONIA
+            /* The WebKitGTK adapter does not cancel navigation, so an off-site page that DisplayWebView_Navigating
+               cancelled, and opened in the system browser, loads anyway; going back removes it */
+            if (e.Result == WebNavigationResult.Success && _avaloniaHost.IgnoresNavigationCancel)
+            {
+                Uri offSiteTarget = null;
+                try
+                {
+                    offSiteTarget = GetOffSiteTarget(e.Url);
+                }
+                catch (Exception ex)
+                {
+                    GHApp.WriteGHLog("Overseer navigation check failed: " + ex.Message);
+                }
+
+                if (offSiteTarget != null)
+                {
+                    if (!_avaloniaHost.GoBack())
+                        DisplayWebView.Source = new UrlWebViewSource { Url = GetSpaReturnUrl() };
+                    return;
+                }
+            }
+#endif
 
             if (e.Result != WebNavigationResult.Success)
             {
@@ -660,6 +713,10 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
+#if GNH_AVALONIA
+            if (e.Result == WebNavigationResult.Success)
+                _avaloniaHost.OnPageLoaded();
+#endif
         }
 
 #if GNH_MAUI && WINDOWS
@@ -737,6 +794,19 @@ namespace GnollHackX.Pages.Game
 
             /* Navigate back to the last active SPA URL (e.g. specific conversation),
              * or fallback to active _sessionId or base /chat URL */
+            DisplayWebView.Source = new UrlWebViewSource
+            {
+                Url = GetSpaReturnUrl()
+            };
+        }
+
+        /// <summary>
+        /// Returns the absolute URL of the last active SPA page, else of the
+        /// active session's chat, else of the chat. The SPA reports relative
+        /// paths, which are resolved against the Overseer base URL.
+        /// </summary>
+        private string GetSpaReturnUrl()
+        {
             string returnUrl;
             if (!string.IsNullOrEmpty(_lastSpaUrl))
             {
@@ -755,11 +825,7 @@ namespace GnollHackX.Pages.Game
             {
                 returnUrl = _baseOverseerUrl.TrimEnd('/') + returnUrl;
             }
-
-            DisplayWebView.Source = new UrlWebViewSource
-            {
-                Url = returnUrl
-            };
+            return returnUrl;
         }
 
         private void UpdateTitleAppearance()
@@ -971,6 +1037,9 @@ namespace GnollHackX.Pages.Game
                 wkWebView.Opaque = false;
                 wkWebView.BackgroundColor = UIKit.UIColor.FromRGB(0x12, 0x12, 0x12);
             }
+#elif GNH_AVALONIA
+            _avaloniaHost?.Attach();
+            _avaloniaHost?.SetBackground(0x12, 0x12, 0x12);
 #endif
 #endif // GNH_MAUI
         }
@@ -1015,6 +1084,8 @@ namespace GnollHackX.Pages.Game
                         new OverseerScriptMessageHandler(this),
                         "gnollhackBridge");
             }
+#elif GNH_AVALONIA
+            _avaloniaHost.BridgeEnabled = true;
 #endif
 #endif // GNH_MAUI
         }
@@ -1052,6 +1123,8 @@ namespace GnollHackX.Pages.Game
                 wkWebView.Configuration.UserContentController
                     .RemoveScriptMessageHandler("gnollhackBridge");
             }
+#elif GNH_AVALONIA
+            _avaloniaHost.BridgeEnabled = false;
 #endif
 #endif // GNH_MAUI
             _bridgeInitialized = false;
@@ -1098,8 +1171,7 @@ namespace GnollHackX.Pages.Game
 
         /// <summary>
         /// Handles target="_blank" links, which WebView2 would otherwise open in
-        /// its own popup window: allowed addresses load in place, others go
-        /// through <see cref="HandleOffSiteNavigation"/>.
+        /// its own popup window, through <see cref="HandleNewWindowTarget"/>.
         /// </summary>
         private void OnNewWindowRequested(Microsoft.Web.WebView2.Core.CoreWebView2 sender,
             Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs args)
@@ -1111,6 +1183,24 @@ namespace GnollHackX.Pages.Game
                 if (string.IsNullOrEmpty(args.Uri) || !Uri.TryCreate(args.Uri, UriKind.Absolute, out target))
                     return;
 
+                HandleNewWindowTarget(target);
+            }
+            catch (Exception ex)
+            {
+                GHApp.WriteGHLog("Overseer new-window request failed: " + ex.Message);
+            }
+        }
+#endif
+
+        /// <summary>
+        /// Handles the target of a new-window request (target="_blank" links):
+        /// allowed http(s) addresses load in place, others go through
+        /// <see cref="HandleOffSiteNavigation"/>. Must be called on the main thread.
+        /// </summary>
+        private void HandleNewWindowTarget(Uri target)
+        {
+            try
+            {
                 if (!string.Equals(target.Scheme, Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase)
                     && !string.Equals(target.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
                     return;
@@ -1125,7 +1215,6 @@ namespace GnollHackX.Pages.Game
                 GHApp.WriteGHLog("Overseer new-window request failed: " + ex.Message);
             }
         }
-#endif
 
         /// <summary>
         /// Public entry point for platform bridge classes (OverseerJsBridge,
@@ -1150,6 +1239,8 @@ namespace GnollHackX.Pages.Game
             return (DisplayWebView.Handler?.PlatformView as Android.Webkit.WebView)?.Url;
 #elif GNH_MAUI && (IOS || MACCATALYST)
             return (DisplayWebView.Handler?.PlatformView as WebKit.WKWebView)?.Url?.AbsoluteString;
+#elif GNH_AVALONIA
+            return _avaloniaHost?.DocumentUrl ?? (DisplayWebView.Source as UrlWebViewSource)?.Url;
 #else
             return (DisplayWebView.Source as UrlWebViewSource)?.Url;
 #endif
@@ -2346,7 +2437,10 @@ namespace GnollHackX.Pages.Game
         }
 
         /// <summary>
-        /// Sends a tool response back to the Angular SPA via EvaluateJavaScriptAsync.
+        /// Sends a tool response back to the Angular SPA through the platform's
+        /// script evaluation: EvaluateJavaScriptAsync, or under Avalonia the native
+        /// web view directly, because WebKit refuses MAUI's eval wrapper under the
+        /// Overseer's Content Security Policy.
         /// Uses JsonConvert double-serialization for safe JS string injection.
         /// The Angular side must JSON.parse() the received string.
         /// </summary>
@@ -2371,8 +2465,13 @@ namespace GnollHackX.Pages.Game
 
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
+#if GNH_AVALONIA
+                    await _avaloniaHost.InvokeScriptAsync(
+                        "window.onGnollHackToolResponse(" + jsStringLiteral + ")");
+#else
                     await DisplayWebView.EvaluateJavaScriptAsync(
                         "window.onGnollHackToolResponse(" + jsStringLiteral + ")");
+#endif
                 });
             }
             catch (Exception ex)
@@ -2698,8 +2797,13 @@ namespace GnollHackX.Pages.Game
                 string jsLiteral = JsonConvert.SerializeObject(json);
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
+#if GNH_AVALONIA
+                    await _avaloniaHost.InvokeScriptAsync(
+                        "window.__gnollhackReceiveFiles(" + jsLiteral + ")");
+#else
                     await DisplayWebView.EvaluateJavaScriptAsync(
                         "window.__gnollhackReceiveFiles(" + jsLiteral + ")");
+#endif
                 });
             }
             catch (Exception ex)

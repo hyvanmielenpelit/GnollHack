@@ -633,6 +633,13 @@ namespace GnollHackX.Pages.Game
                 return;
             }
 
+            if (!GHApp.IsWebViewAvailable)
+            {
+                await ShowMessagePopupAsync("Web View Required", "Gnoll Overseer needs a web view component that is not available on this system. On Linux, install WebKitGTK (libwebkit2gtk-4.1 or 4.0); on Windows, the Microsoft Edge WebView2 Runtime.", "OK");
+                MainLayout.IsEnabled = true;
+                return;
+            }
+
             if (!GHApp.XlogUserNameVerified && !string.IsNullOrEmpty(GHApp.XlogUserName))
             {
                 MessagePopup.ShowNonBlockingPopup("Credentials Verification", "Verifying credentials... Please wait.");

@@ -1,56 +1,54 @@
 #if GNH_AVALONIA
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Avalonia.VisualTree;
+using GnollHackX;
 using Microsoft.Maui;
 using AcmWebViewHandler = Avalonia.Controls.Maui.Handlers.WebViewHandler;
 
 namespace GnollHackM
 {
-    /* Avalonia's NativeWebView, which ACM uses for a MAUI WebView */
+    /* Avalonia's NativeWebView, which ACM uses for a MAUI WebView: WebView2 on Windows, WebKitGTK on Linux */
     internal static class GHAvaloniaWebView
     {
         private static readonly Lazy<bool> _isAvailable = new Lazy<bool>(CheckAvailable);
         private static readonly ConditionalWeakTable<Avalonia.Controls.Control, PositionTracker> _trackers = new ConditionalWeakTable<Avalonia.Controls.Control, PositionTracker>();
+        private static readonly ConditionalWeakTable<Avalonia.Controls.NativeWebView, object> _configuredViews = new ConditionalWeakTable<Avalonia.Controls.NativeWebView, object>();
 
-        /* Whether the web view can show pages. On Linux it needs GTK 3 and WebKitGTK, which not every system has; on
-           Windows it uses WebView2, as WinUI does. */
+        /* Whether the pinned adapter can show pages, from Avalonia's adapter information. On Linux WebKitGTK (4.1 or 4.0)
+           must be installed, which not every system has; on Windows the WebView2 runtime, as for WinUI. */
         public static bool IsAvailable
         {
             get { return _isAvailable.Value; }
+        }
+
+        private static Avalonia.Platform.WebViewAdapterType PinnedAdapter
+        {
+            get { return OperatingSystem.IsLinux() ? Avalonia.Platform.WebViewAdapterType.WebKitGtk : Avalonia.Platform.WebViewAdapterType.WebView2; }
         }
 
         /* Before any handler is created */
         public static void Register()
         {
             AcmWebViewHandler.Mapper.AppendToMapping(nameof(IWebView.Source), MapPositionTracking);
+            AcmWebViewHandler.Mapper.AppendToMapping(nameof(IWebView.Source), MapConfiguration);
         }
 
         private static bool CheckAvailable()
         {
-            if (!OperatingSystem.IsLinux())
-                return true;
-
-            /* The library names NativeWebView loads */
-            return CanLoad("libgtk-3.so.0", "libgtk-3.so")
-                && CanLoad("libwebkit2gtk-4.1.so.0", "libwebkit2gtk-4.1.so", "libwebkit2gtk-4.0.so.37", "libwebkit2gtk-4.0.so");
-        }
-
-        private static bool CanLoad(params string[] names)
-        {
-            foreach (string name in names)
+            try
             {
-                IntPtr handle;
-                if (NativeLibrary.TryLoad(name, out handle))
-                {
-                    NativeLibrary.Free(handle);
-                    return true;
-                }
+                Avalonia.Platform.DetailedWebViewAdapterInfo info = Avalonia.Platform.WebViewAdapterInfo.GetAdapterInfo(PinnedAdapter);
+                return info.IsSupported && info.IsInstalled;
             }
-            return false;
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GHAvaloniaWebView: cannot read the web view adapter information: " + ex.Message);
+                return false;
+            }
         }
 
         private static void MapPositionTracking(AcmWebViewHandler handler, IWebView webView)
@@ -58,6 +56,48 @@ namespace GnollHackM
             Avalonia.Controls.Control platformView = ((IElementHandler)handler).PlatformView as Avalonia.Controls.Control;
             if (platformView != null)
                 _trackers.GetValue(platformView, view => new PositionTracker(view));
+        }
+
+        /* Once per view, while the handler is created and before the view is attached, when NativeWebView reads its
+           adapter preference and environment. WebKitGTK keeps its shared default context: data directories would give
+           each view a web context of its own. */
+        private static void MapConfiguration(AcmWebViewHandler handler, IWebView webView)
+        {
+            Avalonia.Controls.NativeWebView view = ((IElementHandler)handler).PlatformView as Avalonia.Controls.NativeWebView;
+            if (view == null)
+                return;
+
+            object configured;
+            if (_configuredViews.TryGetValue(view, out configured))
+                return;
+            _configuredViews.Add(view, null);
+
+            view.AdapterPreference = new[] { PinnedAdapter };
+            view.EnvironmentRequested += OnEnvironmentRequested;
+        }
+
+        private static void OnEnvironmentRequested(object sender, Avalonia.Controls.WebViewEnvironmentRequestedEventArgs e)
+        {
+            try
+            {
+                Avalonia.Platform.WindowsWebView2EnvironmentRequestedEventArgs webView2 = e as Avalonia.Platform.WindowsWebView2EnvironmentRequestedEventArgs;
+                if (webView2 != null)
+                {
+                    /* WebView2's default is a folder next to the executable, which may not be writable */
+                    string folder = Path.Combine(GHAvaloniaPaths.DataDirectory, "WebView2");
+                    Directory.CreateDirectory(folder);
+                    webView2.UserDataFolder = folder;
+                    GHApp.MaybeWriteGHLog("GHAvaloniaWebView: WebView2 user data folder " + folder);
+                }
+                else
+                {
+                    GHApp.MaybeWriteGHLog("GHAvaloniaWebView: web view environment " + e.GetType().Name);
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GHAvaloniaWebView: cannot configure the web view environment: " + ex.Message);
+            }
         }
 
         /* The web page is a native window that Avalonia's NativeControlHost moves when the bounds of the host or an
