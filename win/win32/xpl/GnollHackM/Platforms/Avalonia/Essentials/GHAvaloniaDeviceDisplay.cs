@@ -14,8 +14,9 @@ namespace GnollHackM
 {
     /* IDeviceDisplay for the Avalonia desktop target. It works before any Avalonia window exists:
        until OnWindowOpened, MainDisplayInfo is 0 x 0 pixels, density 1, 60 Hz, landscape. Afterwards
-       it follows the window's screen (pixel bounds, scaling, orientation), and the refresh rate comes
-       from the frame loop's estimate, since Avalonia does not report one. MainDisplayInfoChanged is
+       it follows the window's screen (pixel bounds, scaling, orientation), and the refresh rate is the
+       frame loop's estimate, since Avalonia does not report one; the estimate snaps to the monitor's
+       display-mode rate where that is known (Windows). MainDisplayInfoChanged is
        raised on the Avalonia UI thread whenever any value changes, the refresh rate included. */
     public sealed class GHAvaloniaDeviceDisplay : IDeviceDisplay
     {
@@ -40,6 +41,8 @@ namespace GnollHackM
         /* UI thread only */
         private AvWindow _trackedWindow = null;
         private AvScreens _trackedScreens = null;
+        private IntPtr _monitor = IntPtr.Zero;
+        private int _monitorRefreshRate = 0;
 
         public event EventHandler<DisplayInfoChangedEventArgs> MainDisplayInfoChanged;
 
@@ -100,6 +103,7 @@ namespace GnollHackM
                 }
             }
 
+            UpdateMonitorRefreshRate(window, true);
             UpdateFromWindow(window);
         }
 
@@ -183,18 +187,42 @@ namespace GnollHackM
             Raise(info);
         }
 
+        /* Passes the monitor's display-mode refresh rate to the frame loop. Unless forced, it is read only
+           when the window has moved to another monitor: a drag raises many position changes. */
+        private void UpdateMonitorRefreshRate(AvWindow window, bool force)
+        {
+            IntPtr monitor = GHAvaloniaMonitorRefreshRate.GetMonitor(window);
+            if (!force && monitor == _monitor)
+                return;
+            _monitor = monitor;
+
+            int hz = GHAvaloniaMonitorRefreshRate.GetRefreshRate(monitor);
+            if (hz == _monitorRefreshRate)
+                return;
+            _monitorRefreshRate = hz;
+            GHAvaloniaFrameLoop.SetMonitorRefreshRate(hz);
+            if (hz > 0)
+                GnollHackX.GHApp.MaybeWriteGHLog("Avalonia display: monitor refresh rate " + hz + " Hz");
+        }
+
         private void OnWindowScreenChanged(object sender, EventArgs e)
         {
             AvWindow window = _trackedWindow;
             if (window != null)
+            {
+                UpdateMonitorRefreshRate(window, true);
                 UpdateFromWindow(window);
+            }
         }
 
         private void OnWindowPositionChanged(object sender, AvPixelPointEventArgs e)
         {
             AvWindow window = _trackedWindow;
             if (window != null)
+            {
+                UpdateMonitorRefreshRate(window, false);
                 UpdateFromWindow(window);
+            }
         }
 
         private void OnWindowClosed(object sender, EventArgs e)
@@ -225,6 +253,7 @@ namespace GnollHackM
             }
             _trackedWindow = null;
             _trackedScreens = null;
+            _monitor = IntPtr.Zero;
         }
 
         /* Called with _lock held */

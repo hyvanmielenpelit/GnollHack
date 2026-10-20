@@ -1,5 +1,6 @@
 #if GNH_AVALONIA
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
@@ -27,9 +28,6 @@ namespace GnollHackM
         /* The GL control samples glXGetSyncValuesOML once every this many frames */
         public const int PresentSampleFrameInterval = 120;
 
-        private const int EstimateWindowSize = 120;
-        private const int EstimateMinimumCount = 60;
-        private const float EstimateChangeThresholdHz = 1.0f;
         private const int ReportCapacity = 4096;
         private const int MaxRenderTimerFps = 240;
 
@@ -40,13 +38,10 @@ namespace GnollHackM
         private static bool _hasLastFrameTime = false;
         private static TimeSpan _lastFrameTime;
 
-        /* Refresh-rate estimate from the last EstimateWindowSize frame deltas */
-        private static readonly double[] _estimateDeltasMs = new double[EstimateWindowSize];
-        private static readonly double[] _estimateScratch = new double[EstimateWindowSize];
-        private static int _estimateIndex = 0;
-        private static int _estimateCount = 0;
-        private static bool _estimatePublished = false;
+        /* Refresh-rate estimate from the recent frame deltas */
+        private static readonly GHRefreshRateEstimator _estimator = new GHRefreshRateEstimator();
         private static float _estimatedRefreshRate = 0.0f;
+        private static bool _gcConfigurationLogged = false;
 
         /* Statistics since the previous report; the present samples arrive on the render thread */
         private static readonly object _statsLock = new object();
@@ -87,8 +82,9 @@ namespace GnollHackM
             set { Volatile.Write(ref _swapIntervalState, (int)value); }
         }
 
-        /* 0 until EstimateMinimumCount frame deltas exist. Reflects the display only while the
-           swap interval is applied; otherwise it is the frame rate Avalonia's render timer delivers. */
+        /* 0 until GHRefreshRateEstimator.MinimumCount frame deltas exist. Reflects the display while the
+           swap interval is applied, or when it is within the snap tolerance of the monitor's refresh rate;
+           otherwise it is the frame rate Avalonia's render timer delivers. */
         public static float EstimatedRefreshRate
         {
             get { return Volatile.Read(ref _estimatedRefreshRate); }
@@ -98,6 +94,11 @@ namespace GnollHackM
         {
             if (topLevel == null)
                 return;
+            if (!_gcConfigurationLogged)
+            {
+                _gcConfigurationLogged = true;
+                LogGcConfiguration();
+            }
             _topLevel = topLevel;
             _hasLastFrameTime = false;
             _running = true;
@@ -169,42 +170,54 @@ namespace GnollHackM
             }
         }
 
+        /* UI thread; 0 when unknown */
+        public static void SetMonitorRefreshRate(int hz)
+        {
+            _estimator.MonitorRefreshRate = hz > 0 ? hz : 0;
+        }
+
         private static void UpdateEstimate(double deltaMs)
         {
-            _estimateDeltasMs[_estimateIndex] = deltaMs;
-            _estimateIndex = (_estimateIndex + 1) % EstimateWindowSize;
-            if (_estimateCount < EstimateWindowSize)
-                _estimateCount++;
-            if (_estimateCount < EstimateMinimumCount)
+            _estimator.VsyncPaced = SwapIntervalState == GHSwapIntervalState.Applied;
+            if (!_estimator.AddDelta(deltaMs))
                 return;
 
-            /* Vsync-paced frames: the median delta, which a missed frame does not move. Otherwise frames follow
-               Avalonia's render timer irregularly, and GHApp's frame skipping needs the actual frame rate: the mean. */
-            int n = _estimateCount;
-            double estimateMs;
-            if (SwapIntervalState == GHSwapIntervalState.Applied)
+            float hz = _estimator.Published;
+            Volatile.Write(ref _estimatedRefreshRate, hz);
+            GHAvaloniaDeviceDisplay.Current?.OnRefreshRateEstimated(hz);
+        }
+
+        /* One log line with the effective gen0 budget and the GC mode */
+        private static void LogGcConfiguration()
+        {
+            try
             {
-                Array.Copy(_estimateDeltasMs, _estimateScratch, n);
-                Array.Sort(_estimateScratch, 0, n);
-                estimateMs = (n & 1) != 0 ? _estimateScratch[n / 2] : (_estimateScratch[n / 2 - 1] + _estimateScratch[n / 2]) / 2.0;
-            }
-            else
-            {
-                double sum = 0.0;
+                IReadOnlyDictionary<string, object> variables = GC.GetConfigurationVariables();
+                List<string> keys = new List<string>();
+                foreach (string key in variables.Keys)
+                {
+                    if (key.IndexOf("Gen0", StringComparison.OrdinalIgnoreCase) >= 0
+                        || key.IndexOf("Concurrent", StringComparison.OrdinalIgnoreCase) >= 0
+                        || key.IndexOf("Server", StringComparison.OrdinalIgnoreCase) >= 0)
+                        keys.Add(key);
+                }
+                keys.Sort(StringComparer.Ordinal);
+
+                StringBuilder sb = new StringBuilder("GC configuration: ");
+                if (keys.Count == 0)
+                    sb.Append("none reported");
                 int i;
-                for (i = 0; i < n; i++)
-                    sum += _estimateDeltasMs[i];
-                estimateMs = sum / n;
+                for (i = 0; i < keys.Count; i++)
+                {
+                    if (i > 0)
+                        sb.Append(", ");
+                    sb.Append(keys[i]).Append('=').Append(Convert.ToString(variables[keys[i]], CultureInfo.InvariantCulture));
+                }
+                GHApp.MaybeWriteGHLog(sb.ToString());
             }
-            if (estimateMs <= 0.0)
-                return;
-
-            float hz = (float)(1000.0 / estimateMs);
-            if (!_estimatePublished || Math.Abs(hz - EstimatedRefreshRate) > EstimateChangeThresholdHz)
+            catch (Exception ex)
             {
-                _estimatePublished = true;
-                Volatile.Write(ref _estimatedRefreshRate, hz);
-                GHAvaloniaDeviceDisplay.Current?.OnRefreshRateEstimated(hz);
+                GHApp.MaybeWriteGHLog("GC configuration unavailable: " + ex.Message);
             }
         }
 

@@ -61,6 +61,8 @@
 
   <ItemGroup Condition="'$(GnhAvalonia)' == 'true'">
     <MauiPlatformSpecificFolder Include="Platforms\Avalonia\" BackendIdentity="avalonia" />
+    <!-- Decimal, as in the -windows item group: 16000000 is 16 MB -->
+    <RuntimeHostConfigurationOption Include="System.GC.Gen0MaxBudget" Value="16000000" />
   </ItemGroup>
 
   <!-- DETEMINE IF MONO RUNTIME IS BEING USED -->
