@@ -17,6 +17,7 @@ internal static class AvaloniaDesktopProgram
            else of the game is initialized */
         if (GHCefSubprocess.IsSubprocess(args))
             return GHCefSubprocess.Run(args);
+        PreloadHarfBuzzSharp();
         GHAvaloniaFontConfig.Install();
 #endif
         if (OperatingSystem.IsLinux())
@@ -58,4 +59,38 @@ internal static class AvaloniaDesktopProgram
 
         return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, fileName));
     }
+
+#if LINUX
+    private const int RTLD_NOW = 2;
+
+    [DllImport("libc", EntryPoint = "dlopen")]
+    private static extern IntPtr DlOpen(string fileName, int flags);
+
+    [DllImport("libc", EntryPoint = "dlerror")]
+    private static extern IntPtr DlError();
+
+    /* libHarfBuzzSharp calls its own exported hb_* functions through the PLT. FreeType 2.13.3 and later load the
+       system libharfbuzz.so.0 with RTLD_GLOBAL when fontconfig scans font files, and a call bound lazily after that
+       resolves to the system HarfBuzz, which then aborts on HarfBuzzSharp's objects. RTLD_NOW binds every call to
+       libHarfBuzzSharp itself before anything can load the system copy; HarfBuzzSharp's own load later gets this one. */
+    private static void PreloadHarfBuzzSharp()
+    {
+        try
+        {
+            string path = Path.Combine(AppContext.BaseDirectory, "libHarfBuzzSharp.so");
+            if (!File.Exists(path))
+                return;
+            if (DlOpen(path, RTLD_NOW) == IntPtr.Zero)
+            {
+                IntPtr error = DlError();
+                Console.Error.WriteLine("AvaloniaDesktopProgram: cannot preload libHarfBuzzSharp.so: "
+                    + (error != IntPtr.Zero ? Marshal.PtrToStringAnsi(error) : "unknown error"));
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine("AvaloniaDesktopProgram: cannot preload libHarfBuzzSharp.so: " + ex.Message);
+        }
+    }
+#endif
 }
