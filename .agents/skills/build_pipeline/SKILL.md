@@ -197,6 +197,22 @@ dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-ios 
 
 > Check `GnollHackM.csproj` for current target framework monikers — they change over time.
 
+## Linux Packages (Avalonia Flavor)
+
+The Linux build ships as an **AppImage** on GitHub releases and as **Steam depot content**, plus a tester tar.gz, all from one self-contained `linux-x64` publish. One script builds all three:
+
+```powershell
+win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/Build-LinuxPackages.ps1                  # all targets
+win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/Build-LinuxPackages.ps1 -Targets AppImage -SkipPublish
+```
+
+- **Prerequisite:** `Platforms/Linux/libs/libgnollhacklinux.so`, built by `win/win32/vs/gnollhacklinux.vcxproj` (gitignored). The script stops without it.
+- **Source of truth:** the version comes from `ApplicationDisplayVersion` and `ApplicationVersion` in `GnollHackM.csproj`. The pinned `appimagetool` and type-2 runtime, with their SHA-256 values, are constants at the top of the script, and must be present in WSL under `~/.cache/gnollhack-packaging/tools/`. The script never downloads.
+- **Where it runs:** the publish runs on Windows, from `Platforms/Avalonia`, whose `global.json` pins the SDK. Staging and packaging run in WSL (`-WslDistro`, default Ubuntu-24.04), in the WSL home, so Linux permissions survive. Outputs land in `GnollHackM/bin/LinuxPackages/<version>/`, which is gitignored.
+- **Steam:** the content targets the Steam Linux Runtime 4.0 (steamrt4) by default, with the two libraries `libcef.so` needs from `Platforms/Linux/libs-steamrt4/` added. `-SteamRuntime sniper` builds for SLR 3.0 without them. The `.vdf` templates in `Packaging/steam/` are filled from `-SteamAppId`, `-SteamDepotId`, `-SteamBranch` and `-BuildDescription`. Upload with `steamcmd` from the WSL copy the summary names, so that the executable bits survive.
+- **Licences:** `Platforms/Linux/licenses/cef/` holds CEF's `LICENSE.txt` and Chromium's `CREDITS.html`. `CREDITS.html` is the credits page built into CEF's `resources.pak`, extracted locally (brotli). **Refresh both with every CEF update.**
+- **Design and decisions:** plans repository, `hyvanmielenpelit/GnollHack/2026-10-20/linux_distribution/implementation_plan_v2.md`.
+
 ## Verifying the Build
 
 A green MSBuild result is not proof artifacts exist. Check these after building the native solution:

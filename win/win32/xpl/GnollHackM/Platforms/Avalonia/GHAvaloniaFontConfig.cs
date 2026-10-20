@@ -29,6 +29,9 @@ namespace GnollHackM
                 if (string.IsNullOrEmpty(baseConfig) || !File.Exists(baseConfig))
                     baseConfig = SystemConfigFile;
 
+                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPIMAGE")))
+                    fontDirectory = CopyToDataDirectory(fontDirectory);
+
                 string configDirectory = Path.Combine(GHAvaloniaPaths.DataDirectory, "fontconfig");
                 Directory.CreateDirectory(configDirectory);
                 string configFile = Path.Combine(configDirectory, "fonts.conf");
@@ -55,6 +58,34 @@ namespace GnollHackM
             catch (Exception ex)
             {
                 Console.Error.WriteLine("GHAvaloniaFontConfig: " + ex.Message);
+            }
+        }
+
+        /* An AppImage is mounted at a new path on every launch, and fontconfig keys its cache by folder path, so the
+           fonts are used from a copy in the data directory. Returns the bundled folder if the copy fails. */
+        private static string CopyToDataDirectory(string fontDirectory)
+        {
+            try
+            {
+                string targetDirectory = Path.Combine(GHAvaloniaPaths.DataDirectory, "fonts");
+                Directory.CreateDirectory(targetDirectory);
+                foreach (string source in Directory.GetFiles(fontDirectory))
+                {
+                    FileInfo sourceInfo = new FileInfo(source);
+                    FileInfo targetInfo = new FileInfo(Path.Combine(targetDirectory, sourceInfo.Name));
+                    if (!targetInfo.Exists || targetInfo.Length != sourceInfo.Length
+                        || targetInfo.LastWriteTimeUtc != sourceInfo.LastWriteTimeUtc)
+                    {
+                        File.Copy(sourceInfo.FullName, targetInfo.FullName, true);
+                        File.SetLastWriteTimeUtc(targetInfo.FullName, sourceInfo.LastWriteTimeUtc);
+                    }
+                }
+                return targetDirectory;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("GHAvaloniaFontConfig: cannot copy the fonts: " + ex.Message);
+                return fontDirectory;
             }
         }
     }

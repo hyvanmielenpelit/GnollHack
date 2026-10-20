@@ -1811,12 +1811,26 @@ namespace GnollHackX
         public static bool IsSteam { get; set; }
         public static bool IsPlaytest { get; set; }
         public static bool IsNoStore { get; set; }
+        /* Linux: started from an AppImage, whose runtime sets APPIMAGE to the image file's path */
+        public static bool IsAppImage { get; set; }
 
         private static void ProcessEnvironment()
         {
             IsPlaytest = false;
             IsSteam = false;
             IsNoStore = false;
+            IsAppImage = false;
+            if (IsLinux)
+            {
+                try
+                {
+                    IsAppImage = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPIMAGE"));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
 #if WINDOWS
             try
             {
@@ -1860,6 +1874,12 @@ namespace GnollHackX
                             if (args[i + 1] != null && args[i + 1].ToLower() == "steam")
                             {
                                 IsSteam = true;
+                                i++;
+                            }
+                            else if (args[i + 1] != null && args[i + 1].ToLower() == "steam-playtest")
+                            {
+                                IsSteam = true;
+                                IsPlaytest = true;
                                 i++;
                             }
                         }
@@ -7928,6 +7948,17 @@ namespace GnollHackX
                         return "none";
                 }
             }
+            else if (IsLinux)
+            {
+                if (IsPlaytest)
+                    return "steam-playtest";
+                else if (IsSteam)
+                    return "steam";
+                else if (IsAppImage)
+                    return "packaged";
+                else
+                    return "unpackaged";
+            }
             return "unknown";
         }
 
@@ -8891,6 +8922,17 @@ namespace GnollHackX
                     platid += "u";
                 else
                     platid += "n";
+            }
+            else if (IsLinux)
+            {
+                if (IsPlaytest)
+                    platid += "t";
+                else if (IsSteam)
+                    platid += "s";
+                else if (IsAppImage)
+                    platid += "p";
+                else
+                    platid += "u";
             }
 
             message = message + " [" + portver + platid + "]";

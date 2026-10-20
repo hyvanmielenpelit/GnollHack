@@ -68,6 +68,7 @@
 *.dll binary
 *.exe binary
 *.so binary
+*.so.* binary
 *.dylib binary
 *.a binary
 *.lib binary

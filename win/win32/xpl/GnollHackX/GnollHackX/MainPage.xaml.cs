@@ -1026,6 +1026,15 @@ namespace GnollHackX
                             }
                         }
                     }
+                    else if (GHApp.IsLinux)
+                    {
+                        if (GHApp.IsSteam)
+                            endText = "You can revert to an old version of the game by going to the Betas tab under GnollHack Properties and activating a compatible version therein.";
+                        else if (GHApp.IsAppImage)
+                            endText = "We recommend that you turn off automatic updates for GnollHack in your AppImage updater, such as Gear Lever or AppImageUpdate, and manually apply updates when you have no saved games.";
+                        else
+                            endText = "We recommend that you do not use an automatic update of GnollHack, and manually apply updates only when you have no saved games.";
+                    }
                     else
                         endText = "We recommend that you disable automatic updates in your device settings and manually apply updates when you have no saved games.";
 
@@ -1082,6 +1091,17 @@ namespace GnollHackX
                     DisplayAlertGrid("Very Low Free Disk Space", string.Format("You are are running very low on free disk space ({0:0.00} GB). Please consider freeing disk space on your device.", (double)GHConstants.VeryLowFreeDiskSpaceThresholdInBytes / (1024 * 1024 * 1024)), "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
+#if GNH_AVALONIA && LINUX
+                GnollHackM.GHAvaloniaDesktopEntry.RefreshIfMoved();
+                if (!previousInformationShown && GnollHackM.GHAvaloniaDesktopEntry.ShouldOffer())
+                {
+                    Preferences.Set(GnollHackM.GHAvaloniaDesktopEntry.AskedPreferenceKey, true);
+                    DisplayEventGrid("Application Menu",
+                        "Add GnollHack to your application menu? The menu entry will start this AppImage file. You can add or remove the entry later in Settings.",
+                        "Add", "Not Now", 2);
+                    previousInformationShown = true;
+                }
+#endif
                 if (!previousInformationShown && GHConstants.EventAskForStarGazers && GHApp.HasInternetAccess)
                 {
                     bool showStarGazers = false;
@@ -1812,6 +1832,26 @@ namespace GnollHackX
                         {
                             PopupLabel.Text = startText + " cause your saved games to become invalid. We recommend that you do not use an automatic update of GnollHack, and manually apply updates only when you have no saved games.";
                         }
+                    }
+                }
+                else if (GHApp.IsLinux)
+                {
+                    if (GHApp.IsSteam)
+                    {
+                        if (showautoupdatealertupcoming)
+                            PopupLabel.Text = (isImminient ? "The upcoming GnollHack version " + GHApp.UpcomingSaveGameBreakingVersionText + " will be incompatible with your saved games."
+                                : "A newer version of GnollHack, version " + GHApp.UpcomingSaveGameBreakingVersionText + " or later, is incompatible with your saved games.")
+                                + " You can revert to an old version of the game by going to the Betas tab under GnollHack Properties and activating a compatible version therein.";
+                        else
+                            PopupLabel.Text = "Some updates of GnollHack may be incompatible with your saved games. In such a case, you can revert to an old version of the game by going to the Betas tab under GnollHack Properties and activating a compatible version therein.";
+                    }
+                    else if (GHApp.IsAppImage)
+                    {
+                        PopupLabel.Text = startText + " cause your saved games to become invalid. We recommend that you turn off automatic updates for GnollHack in your AppImage updater, such as Gear Lever or AppImageUpdate, and manually apply updates only when you have no saved games.";
+                    }
+                    else
+                    {
+                        PopupLabel.Text = startText + " cause your saved games to become invalid. We recommend that you do not use an automatic update of GnollHack, and manually apply updates only when you have no saved games.";
                     }
                 }
                 else
@@ -2593,6 +2633,12 @@ namespace GnollHackX
                 case 1:
                     await GHApp.OpenBrowser(this, "Give Us a Star on GitHub", new Uri(GHConstants.GnollHackGitHubStarPage), ForceBrowserOptions.SystemBrowser);
                     break;
+#if GNH_AVALONIA && LINUX
+                case 2:
+                    if (!GnollHackM.GHAvaloniaDesktopEntry.Install())
+                        DisplayAlertGrid("Application Menu", "GnollHack could not add the application menu entry. The game log has the details.", "OK", GHColors.Orange);
+                    break;
+#endif
                 default:
                     break;
             }

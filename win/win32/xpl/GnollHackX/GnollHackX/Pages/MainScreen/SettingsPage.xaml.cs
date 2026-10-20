@@ -170,6 +170,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Direct GL Draw", ("Draw the map on its own GPU surface. Applies to the next game.", "**On:** The map is drawn on its own display surface, which the system composites directly. This is usually smoother.\n**Off:** The map is drawn into a texture that is composited with the rest of the game screen. Try this if the map flickers, stays black, or shows graphical glitches.\nCannot be changed during a game; takes effect when the next game or replay starts.") },
             { "Metal Rendering", ("Draw with Metal instead of OpenGL ES. Applies to the next game.", "**Off:** The game is drawn with OpenGL ES, which Apple has deprecated but which still works.\n**On:** The game is drawn with Metal, Apple's current graphics interface. iOS limits how much memory a Metal app may use, so the largest GPU cache sizes are not offered with Metal.\nCannot be changed during a game; takes effect when the next game or replay starts.") },
             { "Disable Windows Key", ("Prevent Windows key from opening Start menu in-game.", "Prevents the Windows key from opening the Start menu, to avoid accidental focus loss during gameplay.") },
+            { "Application Menu Entry", ("Show GnollHack in your desktop's application menu.", "**On:** GnollHack has an entry with its icon in your desktop's application menu, which starts this AppImage file. If you move the AppImage, the entry follows it the next time you start the game from the new place.\n**Off:** The entry and its icon are removed. Other menu entries are not affected.\nShown only when GnollHack runs from an AppImage. The switch is disabled when an AppImage manager, such as Gear Lever or AppImageLauncher, already has an entry for this file; the entry is then left to that tool.") },
             { "Default Vi-Keys", ("Use vi-keys (hjklyubn) as default for movement.", "**Off**: The default setting for the `number_pad` option is `2` (numbers for movement).\n**On**: The default setting is `0` (vi-keys for movement).") },
             { "On Switching Apps", ("Save game or create checkpoint when switching apps.", "**Save Game**: The game is automatically saved and restored when the player returns. Menus close.\n**Checkpoint**: The game creates a checkpoint and doesn't close menus, but recovers to checkpoint if terminated.") },
             { "Map GPU Cache", ("Cache size for Skia GPU map rendering.", "Determines the cache size for Skia GPU rendering for the map. Large numbers can lead to out of memory.") },
@@ -281,6 +282,18 @@ namespace GnollHackX.Pages.MainScreen
             }
             /* Game Actions is not available yet */
             OverseerGameActionsGrid.IsVisible = false;
+#if GNH_AVALONIA && LINUX
+            /* Shows whether the AppImage's menu entry exists; an entry made by an AppImage manager is left to it */
+            if (GnollHackM.GHAvaloniaDesktopEntry.IsAvailable)
+            {
+                _settingApplicationMenuEntrySwitch = true;
+                ApplicationMenuEntrySwitch.IsToggled = GnollHackM.GHAvaloniaDesktopEntry.IsInstalled;
+                _settingApplicationMenuEntrySwitch = false;
+                if (!ApplicationMenuEntrySwitch.IsToggled && GnollHackM.GHAvaloniaDesktopEntry.IsManagedElsewhere)
+                    ApplicationMenuEntrySwitch.IsEnabled = false;
+                ApplicationMenuEntryGrid.IsVisible = true;
+            }
+#endif
 
 
             SimpleCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
@@ -2215,6 +2228,30 @@ namespace GnollHackX.Pages.MainScreen
             EquipmentFlipAnimationSwitch.IsToggled = equipmentflipanimation;
             ShowEquipmentIconsSwitch.IsToggled = showequipmenticons;
             _doChangeVolume = true; // !GHApp.IsMuted;
+        }
+
+#if GNH_AVALONIA && LINUX
+        private bool _settingApplicationMenuEntrySwitch = false;
+#endif
+
+        /* Adds or removes the AppImage's menu entry at once; on failure the switch returns to its previous state */
+        private async void ApplicationMenuEntrySwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+#if GNH_AVALONIA && LINUX
+            if (_settingApplicationMenuEntrySwitch)
+                return;
+            bool succeeded = e.Value ? GnollHackM.GHAvaloniaDesktopEntry.Install() : GnollHackM.GHAvaloniaDesktopEntry.Remove();
+            if (!succeeded)
+            {
+                _settingApplicationMenuEntrySwitch = true;
+                ApplicationMenuEntrySwitch.IsToggled = !e.Value;
+                _settingApplicationMenuEntrySwitch = false;
+                await ShowMessagePopupAsync("Application Menu",
+                    "GnollHack could not " + (e.Value ? "add" : "remove") + " the application menu entry. The game log has the details.", "OK");
+            }
+#else
+            await Task.CompletedTask;
+#endif
         }
 
         private void ClassicStatusBarSwitch_Toggled(object sender, ToggledEventArgs e)

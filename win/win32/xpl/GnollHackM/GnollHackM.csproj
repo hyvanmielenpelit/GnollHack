@@ -1428,6 +1428,9 @@
     <None Include="@(_GhCefRoot)" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Visible="false" />
     <_GhCefLocale Include="$(Pkgcef_runtime_linux-x64)\CEF\linux-x64\Resources\locales\en-US*.pak" />
     <None Include="@(_GhCefLocale)" Link="locales\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Visible="false" />
+    <!-- Licences: CEF's own and Chromium's third-party notices (extracted from CEF's resources.pak), and the CefGlue packager's -->
+    <None Include="Platforms\Linux\licenses\cef\*" Link="licenses\cef\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Include="$(Pkgcef_runtime_linux-x64)\LICENSE.txt" Link="licenses\cefglue\LICENSE.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Visible="false" />
   </ItemGroup>
 
   <ItemGroup Condition="!$(DefineConstants.Contains('SKIASHARP_3119'))">
