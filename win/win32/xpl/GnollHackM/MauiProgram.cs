@@ -588,6 +588,7 @@ public static class MauiProgram
                                 {
                                     GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 2", true, GHConstants.SentryGnollHackGeneralCategoryName);
                                     var intent = new Intent(Android.App.Application.Context, typeof(SaveGameService));
+                                    /* Captured here because OnPause always precedes the onStop that raises OnSleep, while OnStartCommand may run after it */
                                     intent.PutExtra(SaveGameService.ExtraSleepFmodSuspendBaseline, GHApp.SleepFmodSuspendCount);
                                     AndroidX.Core.Content.ContextCompat.StartForegroundService(Android.App.Application.Context, intent);
                                 }
@@ -1302,6 +1303,7 @@ public class SaveGameService : Service
                 }
                 finally
                 {
+                    /* IsSaving stays set until the wait ends, so a re-pause cannot start a second service whose foreground state StopForeground below would remove */
                     try
                     {
                         string fmodSuspendResult = await GHApp.WaitForSleepFmodSuspendAsync(sleepFmodSuspendBaseline, resignGeneration, GHConstants.SaveServiceFmodSuspendWaitTimeoutMs);

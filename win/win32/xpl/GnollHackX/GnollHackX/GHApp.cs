@@ -3159,7 +3159,7 @@ namespace GnollHackX
                 if (AppActivationGeneration != resignGeneration || PlatformAppActive)
                     return "app active again after " + stopwatch.ElapsedMilliseconds + " ms";
                 if (stopwatch.ElapsedMilliseconds >= timeoutMs)
-                    return "FMOD suspend wait timed out after " + stopwatch.ElapsedMilliseconds + " ms";
+                    return "FMOD suspend wait timed out after " + stopwatch.ElapsedMilliseconds + " ms, OnSleep started: " + IsSuspended;
                 await Task.Delay(GHConstants.PollingInterval);
             }
         }

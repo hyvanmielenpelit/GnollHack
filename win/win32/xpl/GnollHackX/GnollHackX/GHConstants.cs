@@ -266,7 +266,7 @@ namespace GnollHackX
         public const int PollingFrequency = 60;
         public const int PollingInterval = 15;
         public const int FmodDrainTimeoutMs = 2000;
-        public const int SaveServiceFmodSuspendWaitTimeoutMs = 3000;
+        public const int SaveServiceFmodSuspendWaitTimeoutMs = FmodDrainTimeoutMs + 1000;
         public const int FmodBankEnterTimeoutMs = 3000;
         public const int AiSnapshotTimeoutMs = 5000;
         public const int SavePollingTimeoutCount = 1500;
