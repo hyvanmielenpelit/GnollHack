@@ -69,7 +69,7 @@ internal static class AvaloniaDesktopProgram
     [DllImport("libc", EntryPoint = "dlerror")]
     private static extern IntPtr DlError();
 
-    /* libHarfBuzzSharp calls its own exported hb_* functions through the PLT. FreeType 2.13.3 and later load the
+    /* libHarfBuzzSharp calls its own exported hb_* functions through the PLT. FreeType 2.14 and later load the
        system libharfbuzz.so.0 with RTLD_GLOBAL when fontconfig scans font files, and a call bound lazily after that
        resolves to the system HarfBuzz, which then aborts on HarfBuzzSharp's objects. RTLD_NOW binds every call to
        libHarfBuzzSharp itself before anything can load the system copy; HarfBuzzSharp's own load later gets this one. */
