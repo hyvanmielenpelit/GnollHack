@@ -9,7 +9,9 @@ namespace GnollHackM
     /* Suspends the main page (carousel and general timer) while the display is off or the session is
        locked, and resumes it when both clear, when GHConstants.PauseMainScreenWhenUnseen is set.
        MainPage.Resume starts the carousel only while the main page itself is showing, and a window
-       that OnSleep has suspended (minimized) is left for HandleResume to resume. */
+       that OnSleep has suspended (minimized) is left for HandleResume to resume. A WriteableBitmap-backed
+       canvas such as the carousel's that keeps updating while the display is off piles up window-sized
+       shared surfaces: https://github.com/microsoft/microsoft-ui-xaml/issues/12355 */
     internal static class MainScreenPauseWindows
     {
         private static int _started;
