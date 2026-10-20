@@ -516,8 +516,8 @@ namespace GnollHackX
         /* Handles above the startup baseline that trigger one handle growth warning per process */
         public const int HandleGrowthWarningThreshold = 5000;
         /* Stops the main screen carousel while the display is off or the session is locked; static readonly
-           rather than const, so that the disabled code path compiles without unreachable-code warnings */
-        public static readonly bool PauseMainScreenWhenUnseen = false;
+           rather than const, so that either value compiles without unreachable-code warnings */
+        public static readonly bool PauseMainScreenWhenUnseen = true;
         /* Worst case for the debug buffers is NUM_DEBUGBUFS (40) entries of DEBUGBUFSIZ
            (BUFSZ * 2 = 512) characters plus separators, about 20.7 kB. Real snapshots
            are far smaller. */

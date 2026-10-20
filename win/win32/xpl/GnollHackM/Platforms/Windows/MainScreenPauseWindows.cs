@@ -53,9 +53,8 @@ namespace GnollHackM
                     if (Interlocked.Exchange(ref _pausedByEnvironment, 1) != 0)
                         return;
                     GHApp.CurrentMainPage?.Suspend();
-                    GHApp.AddSentryBreadcrumb("Main screen paused: "
-                        + (EnvironmentStateWindows.IsSessionLocked ? "session locked" : "display off"),
-                        GHConstants.SentryGnollHackGeneralCategoryName);
+                    WriteBreadcrumb("Main screen paused: "
+                        + (EnvironmentStateWindows.IsSessionLocked ? "session locked" : "display off"));
                 }
                 else
                 {
@@ -63,13 +62,19 @@ namespace GnollHackM
                         return;
                     if (!GHApp.IsSuspended)
                         GHApp.CurrentMainPage?.Resume();
-                    GHApp.AddSentryBreadcrumb("Main screen resumed", GHConstants.SentryGnollHackGeneralCategoryName);
+                    WriteBreadcrumb("Main screen resumed");
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
+        }
+
+        private static void WriteBreadcrumb(string text)
+        {
+            GHApp.AddSentryBreadcrumb(text, GHConstants.SentryGnollHackGeneralCategoryName);
+            Debug.WriteLine(text);
         }
     }
 }
