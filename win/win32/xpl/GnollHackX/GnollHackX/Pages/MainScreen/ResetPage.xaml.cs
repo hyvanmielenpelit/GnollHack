@@ -400,6 +400,10 @@ namespace GnollHackX.Pages.MainScreen
 
         public async Task<PermissionStatus> CheckAndRequestWritePermission()
         {
+#if GNH_AVALONIA
+            /* Desktop storage needs no runtime permission, and the portable Permissions API throws */
+            return PermissionStatus.Granted;
+#else
             var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
 
             if (status == PermissionStatus.Granted)
@@ -421,10 +425,15 @@ namespace GnollHackX.Pages.MainScreen
             status = await Permissions.RequestAsync<Permissions.StorageWrite>();
 
             return status;
+#endif
         }
 
         public async Task<PermissionStatus> CheckAndRequestReadPermission()
         {
+#if GNH_AVALONIA
+            /* Desktop storage needs no runtime permission, and the portable Permissions API throws */
+            return PermissionStatus.Granted;
+#else
             var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
 
             if (status == PermissionStatus.Granted)
@@ -446,6 +455,7 @@ namespace GnollHackX.Pages.MainScreen
             status = await Permissions.RequestAsync<Permissions.StorageRead>();
 
             return status;
+#endif
         }
 
         private async void btnImportTestFiles_Clicked(object sender, EventArgs e)
