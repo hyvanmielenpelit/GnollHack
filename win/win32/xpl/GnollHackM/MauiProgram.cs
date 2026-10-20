@@ -83,7 +83,7 @@ public static class MauiProgram
                 handlers.AddHandler<SKCanvasView, GHAvaloniaCanvasViewHandler>();
 #if LINUX
                 if (GHCefEngine.IsSelected)
-                    handlers.AddHandler<Microsoft.Maui.Controls.WebView, GHCefWebViewHandler>();
+                    handlers.AddHandler<Microsoft.Maui.Controls.WebView>(services => GHCefEngine.CreateWebViewHandler());
 #endif
 #endif
 #if ANDROID

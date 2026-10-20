@@ -1,13 +1,15 @@
 #if GNH_AVALONIA && LINUX
 using System;
 using System.IO;
+using Microsoft.Maui;
 
 namespace GnollHackM
 {
     /* The web view engine of the Avalonia build on Linux, chosen once at start-up: the environment variable
-       GNOLLHACK_WEBVIEW (cef or native), else the preference AvaloniaWebViewEngine in developer mode, else native.
-       CEF is used only when its files are next to the executable. References no CefGlue type, so it is safe to call
-       anywhere; it does not use GHApp, which is not ready when Decide runs. */
+       GNOLLHACK_WEBVIEW (cef or native), else the preference AvaloniaWebViewEngine in developer mode, else CEF.
+       CEF is chosen only when its files are next to the executable; when it then does not start at the first web
+       view, web views use WebKitGTK instead (CreateWebViewHandler). References no CefGlue type, so it is safe to call
+       anywhere; Decide does not use GHApp, which is not ready when it runs. */
     internal static class GHCefEngine
     {
         public const string EnvironmentVariableName = "GNOLLHACK_WEBVIEW";
@@ -16,6 +18,7 @@ namespace GnollHackM
         public const string NativeChoice = "native";
 
         private static string _decisionReason = "GHCefEngine: no decision made";
+        private static bool _fallbackLogged = false;
 
         /* libcef.so next to the executable */
         public static bool IsPayloadPresent
@@ -37,7 +40,7 @@ namespace GnollHackM
         {
             try
             {
-                string choice = "";
+                string choice = CefChoice;
                 string source;
                 string environmentValue = Environment.GetEnvironmentVariable(EnvironmentVariableName);
                 if (!string.IsNullOrWhiteSpace(environmentValue))
@@ -70,7 +73,7 @@ namespace GnollHackM
                 string reason = "GHCefEngine: " + engine + " from " + source;
                 if (choice == CefChoice && !payloadPresent)
                     reason += "; libcef.so is missing from " + AppContext.BaseDirectory;
-                else if (choice != "" && choice != CefChoice && choice != NativeChoice)
+                else if (choice != CefChoice && choice != NativeChoice)
                     reason += "; unrecognized value";
                 _decisionReason = reason;
             }
@@ -79,6 +82,21 @@ namespace GnollHackM
                 IsSelected = false;
                 _decisionReason = "GHCefEngine: native, the choice could not be read: " + ex.Message;
             }
+        }
+
+        /* The MAUI WebView handler when CEF is selected: CEF's while CEF starts, else ACM's, which shows pages through
+           WebKitGTK. A failed start is not retried, so after it every web view gets ACM's handler. */
+        public static IElementHandler CreateWebViewHandler()
+        {
+            if (GHCefRuntime.EnsureInitialized())
+                return new GHCefWebViewHandler();
+
+            if (!_fallbackLogged)
+            {
+                _fallbackLogged = true;
+                GnollHackX.GHApp.MaybeWriteGHLog("GHCefEngine: CEF did not start; web views use WebKitGTK");
+            }
+            return new Avalonia.Controls.Maui.Handlers.WebViewHandler();
         }
     }
 }

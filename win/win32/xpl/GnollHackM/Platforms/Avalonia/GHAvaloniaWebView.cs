@@ -11,8 +11,8 @@ using AcmWebViewHandler = Avalonia.Controls.Maui.Handlers.WebViewHandler;
 
 namespace GnollHackM
 {
-    /* Avalonia's NativeWebView, which ACM uses for a MAUI WebView unless the CEF engine is selected on Linux: WebView2 on
-       Windows, WebKitGTK on Linux */
+    /* Avalonia's NativeWebView, which ACM uses for a MAUI WebView unless CEF is used on Linux: WebView2 on Windows,
+       WebKitGTK on Linux */
     internal static class GHAvaloniaWebView
     {
         private static readonly Lazy<bool> _isAvailable = new Lazy<bool>(CheckAvailable);
@@ -41,8 +41,8 @@ namespace GnollHackM
         private static bool CheckAvailable()
         {
 #if LINUX
-            /* The CEF engine reports a failed start inside its control */
-            if (GHCefEngine.IsSelected)
+            /* CEF counts when it starts; after a failed start, web views use WebKitGTK, checked below */
+            if (GHCefEngine.IsSelected && GHCefRuntime.EnsureInitialized())
                 return true;
 #endif
             try
