@@ -7284,6 +7284,10 @@ namespace GnollHackX
 
         public static async Task<PermissionStatus> CheckAndRequestWritePermission(Page page)
         {
+#if GNH_AVALONIA
+            /* Desktop storage needs no runtime permission, and the portable Permissions API throws */
+            return PermissionStatus.Granted;
+#else
             var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
 
             if (status == PermissionStatus.Granted)
@@ -7305,9 +7309,14 @@ namespace GnollHackX
             status = await Permissions.RequestAsync<Permissions.StorageWrite>();
 
             return status;
+#endif
         }
         public static async Task<PermissionStatus> CheckAndRequestReadPermission(Page page)
         {
+#if GNH_AVALONIA
+            /* Desktop storage needs no runtime permission, and the portable Permissions API throws */
+            return PermissionStatus.Granted;
+#else
             var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
 
             if (status == PermissionStatus.Granted)
@@ -7329,6 +7338,7 @@ namespace GnollHackX
             status = await Permissions.RequestAsync<Permissions.StorageRead>();
 
             return status;
+#endif
         }
 
         public static async Task<bool> CreateCrashReport(Page page)
