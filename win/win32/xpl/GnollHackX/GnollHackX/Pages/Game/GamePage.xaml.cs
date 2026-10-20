@@ -17400,7 +17400,8 @@ namespace GnollHackX.Pages.Game
                 }
                 else
                 {
-                    float ratio = e.MouseWheelDelta == 0 ? 1f : 1.1f * (float)Math.Abs(e.MouseWheelDelta) / 120;
+                    /* 1.1x per 120-unit notch; fractional smooth-scroll deltas zoom proportionally in the same direction */
+                    float ratio = (float)Math.Pow(1.1, e.MouseWheelDelta / 120.0);
                     float canvaswidth;
                     float canvasheight;
                     lock (_savedCanvasLock)
@@ -17411,7 +17412,7 @@ namespace GnollHackX.Pages.Game
                     if (canvaswidth <= 0 || canvasheight <= 0)
                         return;
                     SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
-                    AdjustZoomByRatio(e.MouseWheelDelta < 0 ? 1.0f / ratio : ratio, point, point, point);
+                    AdjustZoomByRatio(ratio, point, point, point);
                     MapFontShowPercentageDecimal = false;
                 }
             }
