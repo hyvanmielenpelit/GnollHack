@@ -132,6 +132,11 @@ namespace GnollHackX
             UIUtils.SetStyledToolTip(casualModeLabel, "Non-scoring mode with persistent saves.");
             UIUtils.SetStyledToolTip(wizardModeLabel, "Debug mode with immortality and special commands.",
                 new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 173, 216, 230)));
+#elif GNH_AVALONIA
+            UIUtils.SetStyledToolTip(classicModeLabel, "Death is permanent.");
+            UIUtils.SetStyledToolTip(casualModeLabel, "Non-scoring mode with persistent saves.");
+            UIUtils.SetStyledToolTip(wizardModeLabel, "Debug mode with immortality and special commands.",
+                new Avalonia.Media.Immutable.ImmutableSolidColorBrush(Avalonia.Media.Color.FromArgb(255, 173, 216, 230)));
 #endif
             Shell.SetNavBarIsVisible(this, false);
             _generalTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();

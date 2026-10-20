@@ -1717,11 +1717,76 @@ namespace GnollHackX
                 }
             };
         }
+#elif GNH_AVALONIA
+        /* Immutable brushes, since these statics may be initialized off the UI thread */
+        private static readonly Avalonia.Media.IBrush _toolTipBrush = new Avalonia.Media.Immutable.ImmutableSolidColorBrush(Avalonia.Media.Color.FromArgb(255, 255, 255, 255));
+        private static readonly Avalonia.Media.IBrush _toolTipBackgroundBrush = new Avalonia.Media.Immutable.ImmutableSolidColorBrush(Avalonia.Media.Color.FromArgb(0xE0, 0x2A, 0x2A, 0x2A));
+        private static readonly Avalonia.Media.IBrush _toolTipBorderBrush = new Avalonia.Media.Immutable.ImmutableSolidColorBrush(Avalonia.Media.Color.FromArgb(0xFF, 0x00, 0x00, 0x00));
+        private static Avalonia.Media.FontFamily _toolTipFont = null;
+        public static void SetStyledToolTip(View element, string text, Avalonia.Media.IBrush foreground)
+        {
+            element.HandlerChanged += (s, e) =>
+            {
+                if (element.Handler?.PlatformView is Avalonia.Controls.Control nativeView)
+                {
+                    /* Resolved through ACM's font manager, as for a MAUI FontFamily of "Underwood" */
+                    if (_toolTipFont == null && element.Handler.MauiContext?.Services?.GetService(typeof(Microsoft.Maui.IFontManager)) is Microsoft.Maui.IFontManager fontManager)
+                        _toolTipFont = Avalonia.Controls.Maui.FontManagerExtensions.GetFontFamily(fontManager, Microsoft.Maui.Font.OfSize("Underwood", 15));
+                    var textBlock = new Avalonia.Controls.TextBlock
+                    {
+                        Text = text,
+                        TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                        Foreground = foreground,
+                        FontSize = 15
+                    };
+                    if (_toolTipFont != null)
+                        textBlock.FontFamily = _toolTipFont;
+                    var toolTip = new Avalonia.Controls.ToolTip
+                    {
+                        Content = textBlock,
+                        Background = _toolTipBackgroundBrush,
+                        BorderBrush = _toolTipBorderBrush,
+                        BorderThickness = new Avalonia.Thickness(1),
+                        Padding = new Avalonia.Thickness(12)
+                    };
+                    Avalonia.Point? lastPointer = null;
+                    nativeView.AddHandler(Avalonia.Input.InputElement.PointerMovedEvent, (object sender, Avalonia.Input.PointerEventArgs pe) =>
+                    {
+                        lastPointer = pe.GetPosition(nativeView);
+                    }, Avalonia.Interactivity.RoutingStrategies.Tunnel, true);
+                    Avalonia.Controls.ToolTip.SetPlacement(nativeView, Avalonia.Controls.PlacementMode.Custom);
+                    Avalonia.Controls.ToolTip.SetCustomPopupPlacementCallback(nativeView, placement =>
+                    {
+                        PlaceToolTipAbovePointer(placement, nativeView, lastPointer);
+                    });
+                    Avalonia.Controls.ToolTip.SetTip(nativeView, toolTip);
+                }
+            };
+        }
+
+        /* Above the label at the pointer's x; where that does not fit, the vertical flip puts it 20 units below the
+           pointer, as Avalonia's pointer placement does */
+        private static void PlaceToolTipAbovePointer(Avalonia.Controls.Primitives.PopupPositioning.CustomPopupPlacement placement, Avalonia.Controls.Control target, Avalonia.Point? pointer)
+        {
+            const double pointerOffset = 20.0;
+            Avalonia.Rect targetRect = placement.AnchorRectangle;
+            Avalonia.Size targetSize = target.Bounds.Size;
+            double scaleX = targetSize.Width > 0 ? targetRect.Width / targetSize.Width : 1.0;
+            double scaleY = targetSize.Height > 0 ? targetRect.Height / targetSize.Height : 1.0;
+            Avalonia.Point localPointer = pointer ?? new Avalonia.Point(0, targetSize.Height);
+            double x = targetRect.X + localPointer.X * scaleX;
+            double top = targetRect.Top;
+            double bottom = Math.Max(top, targetRect.Y + (localPointer.Y + pointerOffset) * scaleY);
+            placement.AnchorRectangle = new Avalonia.Rect(x, top, 1, bottom - top);
+            placement.Anchor = Avalonia.Controls.Primitives.PopupPositioning.PopupAnchor.TopLeft;
+            placement.Gravity = Avalonia.Controls.Primitives.PopupPositioning.PopupGravity.TopRight;
+            placement.Offset = default(Avalonia.Point);
+        }
 #endif
 
         public static void SetStyledToolTip(View element, string text)
         {
-#if WINDOWS
+#if WINDOWS || GNH_AVALONIA
             SetStyledToolTip(element, text, _toolTipBrush);
 #endif
         }
