@@ -2684,8 +2684,8 @@ namespace GnollHackX
             get
             {
 #if GNH_MAUI
-#if WINDOWS
-                return true; //Windows needs this currently
+#if WINDOWS || GNH_AVALONIA
+                return true; //Windows and Avalonia need this currently
 #else
                 return false;
 #endif
