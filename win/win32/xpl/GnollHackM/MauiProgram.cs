@@ -300,6 +300,9 @@ public static class MauiProgram
                             }
                         };
                         var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
+#if SENTRY
+                        ProcessMemoryWindows.SetMainWindowHandle(handle);
+#endif
                         var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
                         //var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
                         KeyboardHook.Start();
@@ -677,6 +680,10 @@ public static class MauiProgram
         GHAvaloniaEssentials.InstallAfterBuilder();
         Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.Replace(builder.Services,
             Microsoft.Extensions.DependencyInjection.ServiceDescriptor.Singleton<IFontRegistrar>(new GHAvaloniaFontRegistrar()));
+#endif
+#if WINDOWS
+        /* Before Build: mappers snapshot their chained keys on first use */
+        RenderSurfaceDiagnostics.Register();
 #endif
         MauiApp app = builder.Build();
 #if SENTRY && WINDOWS

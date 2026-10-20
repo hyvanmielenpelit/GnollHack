@@ -54,6 +54,11 @@ namespace GnollHackX.Controls
         //private object _glLock = new object();
         private int _useGL = 0;
         private readonly SKGLView _internalGLView = null;
+#if WINDOWS
+        /* Weak, for RenderSurfaceDiagnostics.MarkShutDown in ShutDown */
+        private WeakReference<SkiaSharp.Views.Windows.SKSwapChainPanel> _glPlatformView = null;
+        private WeakReference<SkiaSharp.Views.Windows.SKXamlCanvas> _canvasPlatformView = null;
+#endif
 
         public bool UseGL 
         {   get
@@ -118,6 +123,7 @@ namespace GnollHackX.Controls
                     if (glView != null)
                     {
                         glView.PointerWheelChanged += View_PointerWheelChanged;
+                        _glPlatformView = new WeakReference<SkiaSharp.Views.Windows.SKSwapChainPanel>(glView);
                     }
                 };
                 _internalGLView.HandlerChanging += (s, e) =>
@@ -193,6 +199,14 @@ namespace GnollHackX.Controls
                 // Handle the GRContext on the main thread
                 MainThread.BeginInvokeOnMainThread(() => 
                 {
+#if GNH_MAUI && WINDOWS
+                    SkiaSharp.Views.Windows.SKSwapChainPanel shutDownPanel;
+                    if (_glPlatformView != null && _glPlatformView.TryGetTarget(out shutDownPanel))
+                        RenderSurfaceDiagnostics.MarkShutDown(shutDownPanel);
+                    SkiaSharp.Views.Windows.SKXamlCanvas shutDownCanvas;
+                    if (_canvasPlatformView != null && _canvasPlatformView.TryGetTarget(out shutDownCanvas))
+                        RenderSurfaceDiagnostics.MarkShutDown(shutDownCanvas);
+#endif
                     SizeChanged -= SwitchableCanvasView_SizeChanged;
                     PropertyChanged -= SwitchableCanvasView_PropertyChanged;
 #if GNH_MAUI
@@ -782,6 +796,7 @@ namespace GnollHackX.Controls
             if(view != null)
             {
                 view.PointerWheelChanged += View_PointerWheelChanged;
+                _canvasPlatformView = new WeakReference<SkiaSharp.Views.Windows.SKXamlCanvas>(view);
             }
 #endif
         }

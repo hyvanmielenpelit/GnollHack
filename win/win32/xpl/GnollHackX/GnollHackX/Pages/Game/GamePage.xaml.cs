@@ -25476,8 +25476,11 @@ namespace GnollHackX.Pages.Game
             StopTextCanvasAnimation();
         }
 
+        private int _canvasViewsShutDown = 0;
+        public bool CanvasViewsShutDown { get { return Interlocked.CompareExchange(ref _canvasViewsShutDown, 0, 0) != 0; } }
         public void ShutDownCanvasViews()
         {
+            Interlocked.Exchange(ref _canvasViewsShutDown, 1);
             MainCanvasView.ShutDown();
             MenuCanvas.ShutDown();
             TextCanvas.ShutDown();
