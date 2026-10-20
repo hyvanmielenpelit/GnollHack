@@ -14,9 +14,9 @@ namespace GnollHackM
     /* Process and system memory figures for Windows Sentry events, and a periodic breadcrumb.
        Samples come from direct Win32 calls, which neither enumerate other processes nor allocate
        much, so they still work when the system is short of memory. Video memory comes from DXGI
-       through VideoMemoryWindows, the handle census from HandleCensusWindows, and the render
-       surface counters from RenderSurfaceDiagnostics. Growth figures are relative to a baseline
-       taken in Start. */
+       through VideoMemoryWindows, the handle census from HandleCensusWindows, the render
+       surface counters from RenderSurfaceDiagnostics, and the window, display and session state
+       from EnvironmentStateWindows. Growth figures are relative to a baseline taken in Start. */
     internal static class ProcessMemoryWindows
     {
         private const int FirstSampleDelayMilliseconds = 60 * 1000;
@@ -29,6 +29,7 @@ namespace GnollHackM
         private const uint GR_USEROBJECTS = 1;
         private const uint GR_GDIOBJECTS_PEAK = 2;
         private const uint GR_USEROBJECTS_PEAK = 4;
+        private const int TopTypesInBreadcrumb = 3;
         private const ulong MiB = 1024UL * 1024UL;
         private const ulong GiB = 1024UL * MiB;
 
@@ -138,6 +139,13 @@ namespace GnollHackM
         /* Timer thread only */
         private static string _lastSurfaceSummary;
 
+        /* Last successful census, for an event whose own census fails when commit is exhausted.
+           Written by TakeSample on the timer thread and on Sentry's BeforeSend thread. */
+        private static readonly object _lastCensusLock = new object();
+        private static HandleCensus _lastCensus;
+        private static bool _hasLastCensus;
+        private static long _lastCensusTimestamp;
+
         public static void Start()
         {
             if (_timer != null)
@@ -146,6 +154,8 @@ namespace GnollHackM
             _timer = new Timer(OnTimer, null, FirstSampleDelayMilliseconds, SampleIntervalMilliseconds);
             /* Builds the DXGI adapter cache before the first event or breadcrumb needs it */
             ThreadPool.QueueUserWorkItem(delegate { VideoMemoryWindows.TrySample(new List<VideoMemorySample>(2)); });
+            if (_hasBaselineHandles)
+                HandleGrowthWatchdogWindows.Start(_baselineHandles);
         }
 
         public static void SetMainWindowHandle(IntPtr hwnd)
@@ -320,6 +330,12 @@ namespace GnollHackM
                 tags.Add(new KeyValuePair<string, string>(GHConstants.SentryTagWindowState, s.WindowState));
             }
             context["windowed_mode"] = GHApp.WindowedMode;
+            EnvironmentStateWindows.AddToContext(context);
+            tags.Add(new KeyValuePair<string, string>(GHConstants.SentryTagDisplayState, EnvironmentStateWindows.DisplayStateText));
+            tags.Add(new KeyValuePair<string, string>(GHConstants.SentryTagWindowVisible,
+                EnvironmentStateWindows.IsWindowVisible ? "true" : "false"));
+            tags.Add(new KeyValuePair<string, string>(GHConstants.SentryTagSessionLocked,
+                !EnvironmentStateWindows.IsSessionKnown ? "unknown" : EnvironmentStateWindows.IsSessionLocked ? "true" : "false"));
             if (s.HasCensus)
             {
                 HandleCensus c = s.Census;
@@ -343,6 +359,20 @@ namespace GnollHackM
             else
             {
                 context["census_available"] = false;
+                lock (_lastCensusLock)
+                {
+                    if (_hasLastCensus)
+                    {
+                        HandleCensus last = _lastCensus;
+                        context["handle_types_last"] = last.TopTypes;
+                        context["section_handles_last"] = (long)last.SectionHandles;
+                        context["dxgk_shared_resource_handles_last"] = (long)last.DxgkSharedResourceHandles;
+                        if (last.HasSectionSizes)
+                            context["window_sections_last"] = (long)last.WindowSections;
+                        context["last_census_age_seconds"] =
+                            (long)((Stopwatch.GetTimestamp() - _lastCensusTimestamp) / (double)Stopwatch.Frequency);
+                    }
+                }
             }
             RenderSurfaceDiagnostics.AddToContext(context);
             return context;
@@ -392,6 +422,12 @@ namespace GnollHackM
             {
                 s.HasCensus = true;
                 s.Census = census;
+                lock (_lastCensusLock)
+                {
+                    _lastCensus = census;
+                    _hasLastCensus = true;
+                    _lastCensusTimestamp = Stopwatch.GetTimestamp();
+                }
             }
 
             List<VideoMemorySample> video = new List<VideoMemorySample>(2);
@@ -435,6 +471,8 @@ namespace GnollHackM
                 sb.Append("handles ").Append(s.Handles);
                 if (_hasBaselineHandles)
                     sb.Append(" (").Append(FormatSigned((long)s.Handles - _baselineHandles)).Append(')');
+                if (s.HasCensus && !string.IsNullOrEmpty(s.Census.TopTypes))
+                    sb.Append(", types ").Append(FirstEntries(s.Census.TopTypes, TopTypesInBreadcrumb));
             }
             else
             {
@@ -481,8 +519,12 @@ namespace GnollHackM
             {
                 sb.Append(", window ").Append(s.WindowWidth).Append('x').Append(s.WindowHeight)
                     .Append(' ').Append(s.WindowState)
-                    .Append(s.WindowForeground ? " foreground" : " background");
+                    .Append(s.WindowForeground ? " foreground" : " background")
+                    .Append(EnvironmentStateWindows.IsWindowVisible ? " visible" : " hidden");
             }
+            sb.Append(", display ").Append(EnvironmentStateWindows.DisplayStateText);
+            if (EnvironmentStateWindows.IsSessionLocked)
+                sb.Append(", session locked");
             if (s.HasProcess)
             {
                 sb.Append(", private ").Append(s.PrivateBytes / MiB)
@@ -527,6 +569,21 @@ namespace GnollHackM
                 worstUsage = usage;
                 worstBudget = budget;
             }
+        }
+
+        /* The text before the count-th ", " separator; the whole text when it has fewer entries */
+        private static string FirstEntries(string text, int count)
+        {
+            if (string.IsNullOrEmpty(text))
+                return "";
+            int index = -1;
+            for (int i = 0; i < count; i++)
+            {
+                index = text.IndexOf(", ", index + 1, StringComparison.Ordinal);
+                if (index < 0)
+                    return text;
+            }
+            return text.Substring(0, index);
         }
 
         private static string FormatGiB(ulong bytes)

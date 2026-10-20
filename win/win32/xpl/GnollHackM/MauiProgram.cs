@@ -283,6 +283,7 @@ public static class MauiProgram
                         GHApp.WindowsXamlWindow = window;
                         window.Closed += (s, e) =>
                         {
+                            EnvironmentStateWindows.Stop();
                             /* The low-level keyboard hook runs on this thread, so it is released
                                before process exit stops the message loop */
                             KeyboardHook.Stop();
@@ -300,6 +301,8 @@ public static class MauiProgram
                             }
                         };
                         var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
+                        EnvironmentStateWindows.Start(window);
+                        MainScreenPauseWindows.Start();
 #if SENTRY
                         ProcessMemoryWindows.SetMainWindowHandle(handle);
 #endif
@@ -492,6 +495,11 @@ public static class MauiProgram
                             GHApp.UnfocusedMuteMode = true;
                             GHApp.MaybeWriteLowLevelGHLog("OnActivated: Window is not focused. WindowActivationState: " + args.WindowActivationState.ToString() + ", Foreground: " + WindowFocusHelper.DescribeForeground(window) + ", Windowed Mode: " + GHApp.WindowedMode, true, GHConstants.SentryGnollHackGeneralCategoryName);
                         }
+                    });
+                    windowsLifecycleBuilder.OnVisibilityChanged((window, args) =>
+                    {
+                        if (args != null)
+                            EnvironmentStateWindows.OnVisibilityChanged(args.Visible);
                     });
                 });
             })

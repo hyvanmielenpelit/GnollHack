@@ -3075,6 +3075,32 @@ namespace GnollHackX
                 CurrentMainPage.DoKeyboardFocus();
         }
 
+        /* Any thread; shows the notice only while the main page itself is showing, never during a game */
+        public static void ShowResourceWarningNotice()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    try
+                    {
+                        MainPage mainPage = CurrentMainPage;
+                        if (CurrentGamePage != null || mainPage == null || PageFromTopOfModalNavigationStack() != null)
+                            return;
+                        mainPage.ShowResourceWarningPopup();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
         public static void OnFocus()
         {
             ChangeToCustomScreenResolution();

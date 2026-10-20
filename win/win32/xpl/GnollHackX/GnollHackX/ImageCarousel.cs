@@ -120,6 +120,10 @@ namespace GnollHackX
         private int _timerIsOn = 0;
         public bool CheckTimerOnAndSetTrue { get { return Interlocked.Exchange(ref _timerIsOn, 1) != 0; } } // lock (_timerIsOnLock) { bool oldValue = _timerIsOn; _timerIsOn = true; return oldValue; }
         public bool TimerIsOn { get { return Interlocked.CompareExchange(ref _timerIsOn, 0, 0) != 0; } set { Interlocked.Exchange(ref _timerIsOn, value ? 1 : 0); } }
+        /* Each timer started by Play keeps its generation and stops once a newer timer exists, so a Stop
+           followed by Play within one tick does not leave two timers running */
+        private int _timerGeneration = 0;
+        private bool IsCurrentTimer(int generation) { return TimerIsOn && generation == Interlocked.CompareExchange(ref _timerGeneration, 0, 0); }
         public void Play()
         {
             if (!_inited)
@@ -136,17 +140,18 @@ namespace GnollHackX
             InvalidateSurface();
             if(!CheckTimerOnAndSetTrue)
             {
+                int generation = Interlocked.Increment(ref _timerGeneration);
 #if GNH_MAUI
                     var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
                     timer.Interval = TimeSpan.FromSeconds(1.0 / _refreshFrequency);
                     timer.IsRepeating = true;
-                    timer.Tick += (s, e) => { DoIncrementCounter(); if (!TimerIsOn) timer.Stop(); };
+                    timer.Tick += (s, e) => { DoIncrementCounter(); if (!IsCurrentTimer(generation)) timer.Stop(); };
                     timer.Start();
 #else
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / _refreshFrequency), () =>
                 {
                     DoIncrementCounter();
-                    return TimerIsOn;
+                    return IsCurrentTimer(generation);
                 });
 #endif
             }

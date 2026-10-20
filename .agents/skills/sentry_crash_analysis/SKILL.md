@@ -269,19 +269,46 @@ After retrieval, extract and record the following for each event:
   `system_commit_used_bytes`, `system_commit_limit_bytes`,
   `system_physical_load_percent`, `decoded_bitmap_bytes`, `gpu_count`, and per
   adapter `gpu<N>_name`, `gpu<N>_luid` and the four `gpu<N>_local_*` /
-  `gpu<N>_nonlocal_*` budget and usage keys. Tags: `process.private` (size
-  bucket of `private_bytes`), `process.commit_share` (this process's share of
-  the system commit charge — the figure that separates GnollHack's own growth
-  from other processes), `system.commit_load` (commit used against the commit
-  limit) and `gpu.budget_load` (worst usage-to-budget ratio over all adapters
-  and segment groups that have a budget). A `Process memory: ...` breadcrumb in
-  the `GnollHack Information` category is written 60 seconds after launch and
-  every 30 minutes; its GPU pairs read usage/budget. On a discrete GPU `local`
-  is its VRAM and `non-local` is system RAM; on an integrated GPU `local` is
-  system RAM and the `non-local` budget is 0. GPU usage is non-zero only on the
+  `gpu<N>_nonlocal_*` budget and usage keys. Growth since a baseline taken at
+  startup is in `handle_growth` and `system_commit_growth_bytes`; the handle
+  census by kernel object type in `handle_types_top`, `section_handles`,
+  `dxgk_shared_resource_handles` and the `window_sections` / `large_pagefile_*`
+  section sizes (classed against the window's client area); when the census
+  fails at the event (no commit left), `census_available` is false and
+  `handle_types_last` and the other `*_last` keys with `last_census_age_seconds`
+  hold the last successful one. Window and environment: `window_client_*`,
+  `window_state`, `window_foreground`, `window_visible`, `display_state`,
+  `session_locked`, and transition counters (`display_off_count`,
+  `session_lock_count`, `window_hidden_count`, `suspend_count`). SkiaSharp
+  panel and canvas lifecycle counters are the `surface_*` keys, split into
+  in-game and no-game. Tags: `process.private` (size bucket of
+  `private_bytes`), `process.handles`, `process.commit_share` (private bytes
+  against the system commit charge; blind to commit held through sections, see
+  B.6), `process.section_commit_share` (private bytes plus the process's
+  pagefile-backed sections), `system.commit_load` (commit used against the
+  commit limit), `system.commit_growth`, `gpu.budget_load` (worst
+  usage-to-budget ratio over all adapters and segment groups that have a
+  budget), `window.state`, `window.visible`, `display.state` and
+  `session.locked`. A `Process memory: ...` breadcrumb in the `GnollHack
+  Information` category is written 60 seconds after launch and every 30
+  minutes (every 2 minutes in Debug builds); it leads with the handle count,
+  its growth and the top handle types, then the commit, so that the Sentry
+  MCP's truncation keeps them. `Render surfaces: ...` breadcrumbs appear only
+  when the surface counters change. `Session:`, `Display state:`, `Window
+  visibility:` and `Power:` breadcrumbs mark environment transitions; the
+  session lock is polled once a minute, so its breadcrumb can lag the real lock
+  by up to a minute and a shorter lock can be missed. A
+  separate `Handle growth warning` warning event (its own issue) is sent once
+  per process when handles exceed the baseline by
+  `GHConstants.HandleGrowthWarningThreshold`. On a discrete GPU `local` is its
+  VRAM and `non-local` is system RAM; on an integrated GPU `local` is system
+  RAM and the `non-local` budget is 0. GPU usage is non-zero only on the
   adapter GnollHack renders on. Sentry's own `Memory Info` context holds the
-  managed GC figures. The older `Used Memory` extra on `Impossible`, `Panic` and
-  `Error` events is the process working set (on iOS, the platform's figure) as
+  managed GC figures; its `finalization_pending_count`
+  (`GCMemoryInfo.FinalizationPendingCount`) is the number of objects found
+  ready for finalization at the **last** collection and does not change
+  between collections, so it is not a live backlog. The older `Used Memory`
+  extra on `Impossible`, `Panic` and `Error` events is the process working set (on iOS, the platform's figure) as
   last refreshed by the game page, game menu or settings page; it can be
   minutes old and is not commit, so it can differ from `private_bytes`.
 
@@ -556,13 +583,22 @@ for this event (A.5, context provenance).
    - Memory exhaustion on Windows — an `OutOfMemoryException` carrying the
      `0x8007000E` text through `Microsoft.UI.Xaml.UnhandledException` with no
      stack most likely comes from native WinUI code, not from managed
-     allocation. Read the `Process Memory` context (A.5): a high
-     `process.commit_share` with a high `system.commit_load` points at
-     GnollHack's own growth; a high `system.commit_load` with a low share
-     points at other processes; a `gpu.budget_load` of `90%+` points at video
-     memory, which can fail with the same HRESULT (on an integrated GPU that is
-     system RAM too). Compare successive `Process memory:` breadcrumbs for the
-     trend before the event.
+     allocation. Read the `Process Memory` context (A.5) and compare successive
+     `Process memory:` breadcrumbs **before** blaming anything: if the handle
+     count and the system commit climb together, GnollHack's own handles are
+     carrying the commit, even when `process.commit_share` reads low. That tag
+     counts private bytes only, and pagefile-backed sections and shared GPU
+     surfaces are charged to the system, not to the process's private bytes
+     (GNOLLHACK-E9: `<25%` for a process whose leak held over 90 % of the
+     commit). `process.section_commit_share` and `system.commit_growth` are the
+     figures that see such commit. Only a high `system.commit_load` with a flat
+     handle count and a low `process.section_commit_share` points at other
+     processes. A `gpu.budget_load` of `90%+` points at video memory, which can
+     fail with the same HRESULT (on an integrated GPU that is system RAM too);
+     the usage figure counts resident allocations only, so surfaces evicted to
+     the page file do not show in it. A `Handle growth warning` event from the
+     same process, if any, carries a full handle census taken while commit was
+     still available and usually answers more than the crash itself.
 
 > [!NOTE]
 > **Don't assume platform exclusivity without evidence.** A crash seen only on

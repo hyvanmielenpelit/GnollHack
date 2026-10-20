@@ -509,7 +509,15 @@ namespace GnollHackX
         public const string SentryTagSystemCommitGrowth = "system.commit_growth";
         public const string SentryTagProcessSectionCommitShare = "process.section_commit_share";
         public const string SentryTagWindowState = "window.state";
+        public const string SentryTagDisplayState = "display.state";
+        public const string SentryTagWindowVisible = "window.visible";
+        public const string SentryTagSessionLocked = "session.locked";
         public const string SentryContextProcessMemory = "Process Memory";
+        /* Handles above the startup baseline that trigger one handle growth warning per process */
+        public const int HandleGrowthWarningThreshold = 5000;
+        /* Stops the main screen carousel while the display is off or the session is locked; static readonly
+           rather than const, so that the disabled code path compiles without unreachable-code warnings */
+        public static readonly bool PauseMainScreenWhenUnseen = false;
         /* Worst case for the debug buffers is NUM_DEBUGBUFS (40) entries of DEBUGBUFSIZ
            (BUFSZ * 2 = 512) characters plus separators, about 20.7 kB. Real snapshots
            are far smaller. */

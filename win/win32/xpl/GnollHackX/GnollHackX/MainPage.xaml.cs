@@ -2138,6 +2138,20 @@ namespace GnollHackX
             carouselView.Play();
         }
 
+        /* Leaves an already open popup alone */
+        public void ShowResourceWarningPopup()
+        {
+            if (PopupGrid.IsVisible)
+                return;
+            _popupStyle = popup_style.GeneralDialog;
+            PopupCheckBoxLayout.IsVisible = false;
+            PopupTitleLabel.TextColor = GHColors.Orange;
+            PopupTitleLabel.Text = "Resources Running Low";
+            PopupLabel.Text = "GnollHack is using an unusually large amount of system resources. Please restart GnollHack.";
+            PopupGrid.IsVisible = true;
+            GHApp.AddSentryBreadcrumb("Popup: " + PopupTitleLabel.Text, GHConstants.SentryGnollHackGeneralCategoryName);
+        }
+
         private void UpdateMobileVersionLabel()
         {
 #if GNH_AVALONIA
