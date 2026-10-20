@@ -459,7 +459,7 @@ namespace GnollHackM
                     if (s.HasWindow && s.WindowWidth > 0 && s.WindowHeight > 0)
                     {
                         sb.Append(", window sections ").Append(c.WindowSections)
-                            .Append(" (").Append(FormatGiB((ulong)Math.Max(0L, c.WindowSectionBytes))).Append(" GB)");
+                            .Append(" (").Append(FormatSize((ulong)Math.Max(0L, c.WindowSectionBytes))).Append(')');
                         if (c.WindowReservedSections > 0)
                             sb.Append(" (+").Append(c.WindowReservedSections).Append(" reserved)");
                     }
@@ -532,6 +532,14 @@ namespace GnollHackM
         private static string FormatGiB(ulong bytes)
         {
             return ((double)bytes / GiB).ToString("F1", CultureInfo.InvariantCulture);
+        }
+
+        /* Whole MB below 1 GB, GB with one decimal from there */
+        private static string FormatSize(ulong bytes)
+        {
+            if (bytes < GiB)
+                return (bytes / MiB).ToString(CultureInfo.InvariantCulture) + " MB";
+            return FormatGiB(bytes) + " GB";
         }
 
         private static string FormatSignedGiB(long bytes)
