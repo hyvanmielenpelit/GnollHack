@@ -2937,6 +2937,7 @@ namespace GnollHackX
         private static int _appSwitchSaveStyle = 0;
         private static int _gameSaved = 0;
         private static int _appActivationGeneration = 0;
+        private static int _sleepFmodSuspendCount = 0;
         /* Deliberately starts as "not active": the park auto-resume safety net can consume
          * a save file, so it must not act before the platform state has actually been
          * observed. Set to active by OnFocus and, on iOS, by RefreshPlatformAppActive. */
@@ -2949,6 +2950,8 @@ namespace GnollHackX
         public static int AppSwitchSaveStyle { get { return TournamentMode ? 0 : Interlocked.CompareExchange(ref _appSwitchSaveStyle, 0, 0); } set { Interlocked.Exchange(ref _appSwitchSaveStyle, value); } }
         public static bool GameSaved { get { return Interlocked.CompareExchange(ref _gameSaved, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameSaved, value ? 1 : 0); } }
         public static int AppActivationGeneration { get { return Interlocked.CompareExchange(ref _appActivationGeneration, 0, 0); } }
+        /* Number of OnSleep calls whose FMOD suspend step has returned */
+        public static int SleepFmodSuspendCount { get { return Interlocked.CompareExchange(ref _sleepFmodSuspendCount, 0, 0); } }
         public static bool PlatformAppActive { get { return Interlocked.CompareExchange(ref _platformAppActive, 0, 0) != 0; } set { Interlocked.Exchange(ref _platformAppActive, value ? 1 : 0); } }
 
 
@@ -3095,6 +3098,7 @@ namespace GnollHackX
             MaybeWriteGHLog("GHApp.OnSleep: Sleep mute applied", true, GHConstants.SentryGnollHackGeneralCategoryName);
 
             FmodService?.Suspend();
+            Interlocked.Increment(ref _sleepFmodSuspendCount);
             MaybeWriteGHLog("GHApp.OnSleep: FmodService.Suspend returned", true, GHConstants.SentryGnollHackGeneralCategoryName);
 
 #if !GNH_MAUI || (!ANDROID && !IOS)
@@ -3140,6 +3144,23 @@ namespace GnollHackX
                         game.SaveGameAndWaitForResume();
                     }
                 }
+            }
+        }
+
+        /* Completes when an OnSleep after sleepBaseline has returned from FmodService.Suspend, when the app
+           is active again, or when timeoutMs has passed; the result says which, for the log */
+        public static async Task<string> WaitForSleepFmodSuspendAsync(int sleepBaseline, int resignGeneration, int timeoutMs)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            while (true)
+            {
+                if (SleepFmodSuspendCount != sleepBaseline)
+                    return "FMOD suspend returned after " + stopwatch.ElapsedMilliseconds + " ms";
+                if (AppActivationGeneration != resignGeneration || PlatformAppActive)
+                    return "app active again after " + stopwatch.ElapsedMilliseconds + " ms";
+                if (stopwatch.ElapsedMilliseconds >= timeoutMs)
+                    return "FMOD suspend wait timed out after " + stopwatch.ElapsedMilliseconds + " ms";
+                await Task.Delay(GHConstants.PollingInterval);
             }
         }
 

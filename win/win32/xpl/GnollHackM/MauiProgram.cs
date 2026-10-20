@@ -588,6 +588,7 @@ public static class MauiProgram
                                 {
                                     GHApp.MaybeWriteGHLog("androidLifecycleBuilder: Paused 2", true, GHConstants.SentryGnollHackGeneralCategoryName);
                                     var intent = new Intent(Android.App.Application.Context, typeof(SaveGameService));
+                                    intent.PutExtra(SaveGameService.ExtraSleepFmodSuspendBaseline, GHApp.SleepFmodSuspendCount);
                                     AndroidX.Core.Content.ContextCompat.StartForegroundService(Android.App.Application.Context, intent);
                                 }
                             }
@@ -1234,6 +1235,8 @@ public class KeyboardHook
 [Service(Exported = false, ForegroundServiceType = ForegroundService.TypeDataSync)]
 public class SaveGameService : Service
 {
+    public const string ExtraSleepFmodSuspendBaseline = "SleepFmodSuspendBaseline";
+
     public override IBinder OnBind(Intent intent)
     {
         return null;
@@ -1281,6 +1284,9 @@ public class SaveGameService : Service
              * the game thread with nobody left to unpark it. */
             int resignGeneration = GHApp.AppActivationGeneration;
             GHApp.CancelSaveGame = false;
+            int sleepFmodSuspendBaseline = intent != null
+                ? intent.GetIntExtra(ExtraSleepFmodSuspendBaseline, GHApp.SleepFmodSuspendCount)
+                : GHApp.SleepFmodSuspendCount;
 
             // Do your save operation
             Task.Run(async () =>
@@ -1296,6 +1302,15 @@ public class SaveGameService : Service
                 }
                 finally
                 {
+                    try
+                    {
+                        string fmodSuspendResult = await GHApp.WaitForSleepFmodSuspendAsync(sleepFmodSuspendBaseline, resignGeneration, GHConstants.SaveServiceFmodSuspendWaitTimeoutMs);
+                        GHApp.MaybeWriteGHLog("SaveGameService: " + fmodSuspendResult + ", StartId=" + startId, true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    }
+                    catch (Exception ex)
+                    {
+                        GHApp.MaybeWriteGHLog("SaveGameService: FMOD suspend wait failed, StartId=" + startId + ", Exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    }
                     IsSaving = false;
                     StopForeground(StopForegroundFlags.Remove);
                     StopSelf(startId);
