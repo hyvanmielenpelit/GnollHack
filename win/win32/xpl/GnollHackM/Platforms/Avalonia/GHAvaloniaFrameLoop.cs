@@ -330,29 +330,35 @@ namespace GnollHackM
             }
         }
 
-        /* One log line covering the frames and present samples since the previous report;
-           resets those statistics */
-        public static string GetReport()
+        /* Two log lines covering the frames, GL draws and present samples since the previous report:
+           the frame loop's, returned, and the GL controls', in glReport. The present samples are included
+           only while the GLX swap interval is applied. Resets those statistics. */
+        public static string GetReport(out string glReport)
         {
-            StringBuilder sb = new StringBuilder(320);
-            sb.Append("Avalonia frame loop: SwapIntervalState ").Append(SwapIntervalState.ToString());
-            sb.Append(", EstimatedRefreshRate ").Append(EstimatedRefreshRate.ToString("F2", CultureInfo.InvariantCulture)).Append(" Hz");
+            GHSwapIntervalState swapIntervalState = SwapIntervalState;
+            StringBuilder sb = new StringBuilder(200);
+            StringBuilder glSb = new StringBuilder(240);
+            sb.Append("Avalonia frame loop: EstimatedRefreshRate ").Append(EstimatedRefreshRate.ToString("F2", CultureInfo.InvariantCulture)).Append(" Hz");
+            glSb.Append("Avalonia GL: SwapIntervalState ").Append(swapIntervalState.ToString());
             lock (_statsLock)
             {
                 AppendStatistics(sb, "frame delta ms", _frameDeltasMs, _frameDeltaCount);
                 AppendStatistics(sb, "frame callback ms", _frameCallbackMs, _frameCallbackCount);
-                AppendStatistics(sb, "GL draw interval ms", _glDrawIntervalsMs, _glDrawIntervalCount);
-                AppendStatistics(sb, "GL paint ms", _glPaintMs, _glPaintCount);
-                AppendStatistics(sb, "OML UST per frame ms", _ustPerFrameMs, _presentSampleCount);
-                sb.Append("; OML MSC per frame: ");
-                if (_presentSampleCount > 0)
+                AppendStatistics(glSb, "draw interval ms", _glDrawIntervalsMs, _glDrawIntervalCount);
+                AppendStatistics(glSb, "paint ms", _glPaintMs, _glPaintCount);
+                if (swapIntervalState == GHSwapIntervalState.Applied)
                 {
-                    sb.Append("mean ").Append((_mscPerFrameSum / _presentSampleCount).ToString("F3", CultureInfo.InvariantCulture));
-                    sb.Append(", not 1 in ").Append((100.0 * _mscNotOneCount / _presentSampleCount).ToString("F1", CultureInfo.InvariantCulture)).Append(" %");
-                }
-                else
-                {
-                    sb.Append("no samples");
+                    AppendStatistics(glSb, "OML UST per frame ms", _ustPerFrameMs, _presentSampleCount);
+                    glSb.Append("; OML MSC per frame: ");
+                    if (_presentSampleCount > 0)
+                    {
+                        glSb.Append("mean ").Append((_mscPerFrameSum / _presentSampleCount).ToString("F3", CultureInfo.InvariantCulture));
+                        glSb.Append(", not 1 in ").Append((100.0 * _mscNotOneCount / _presentSampleCount).ToString("F1", CultureInfo.InvariantCulture)).Append(" %");
+                    }
+                    else
+                    {
+                        glSb.Append("no samples");
+                    }
                 }
 
                 _frameDeltaCount = 0;
@@ -363,6 +369,7 @@ namespace GnollHackM
                 _mscNotOneCount = 0;
                 _mscPerFrameSum = 0.0;
             }
+            glReport = glSb.ToString();
             return sb.ToString();
         }
 

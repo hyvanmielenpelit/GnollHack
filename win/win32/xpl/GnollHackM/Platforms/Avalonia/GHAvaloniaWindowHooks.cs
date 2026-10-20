@@ -47,9 +47,13 @@ namespace GnollHackM
             reportTimer.Interval = FrameReportInterval;
             reportTimer.Tick += (sender, e) =>
             {
-                string report = GHAvaloniaFrameLoop.GetReport();
+                string glReport;
+                string report = GHAvaloniaFrameLoop.GetReport(out glReport);
                 if (GHApp.CurrentGamePage != null)
+                {
                     GHApp.MaybeWriteGHLog(report);
+                    GHApp.MaybeWriteGHLog(glReport);
+                }
             };
 
             window.Opened += (sender, e) =>
