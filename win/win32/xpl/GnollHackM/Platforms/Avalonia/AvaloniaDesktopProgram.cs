@@ -17,6 +17,7 @@ internal static class AvaloniaDesktopProgram
            else of the game is initialized */
         if (GHCefSubprocess.IsSubprocess(args))
             return GHCefSubprocess.Run(args);
+        GHAvaloniaFontConfig.Install();
 #endif
         if (OperatingSystem.IsLinux())
             NativeLibrary.SetDllImportResolver(typeof(AvaloniaDesktopProgram).Assembly, ResolveLinuxLibrary);

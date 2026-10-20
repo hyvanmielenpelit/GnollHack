@@ -1045,6 +1045,8 @@
     <!-- FMOD under its sonames (libfmod.so.14, libfmodstudio.so.14), as AvaloniaDesktopProgram loads them -->
     <Content Include="Platforms\Linux\libs\*.so.*" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Platforms\Android\gnh\*" Link="gnh\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Emoji fallback for web pages: fontconfig includes this folder (GHAvaloniaFontConfig) -->
+    <Content Include="Platforms\Linux\fonts\*" Link="fonts\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <!-- Icon for a desktop entry: a Linux executable carries no icon of its own -->
     <Content Include="Resources\AppIcon\appicon.png" Link="gnollhack.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
