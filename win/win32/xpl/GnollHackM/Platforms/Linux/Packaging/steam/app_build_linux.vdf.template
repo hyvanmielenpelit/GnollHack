@@ -1,0 +1,20 @@
+// SteamPipe app build script for the native Linux depot.
+// Build-LinuxPackages.ps1 fills in the placeholders and writes the result to steam/app_build_linux.vdf.
+// Relative paths are relative to this file.
+"AppBuild"
+{
+    "AppID" "{APP_ID}"
+    "Desc" "{BUILD_DESC}"
+    "ContentRoot" "{CONTENT_ROOT}"
+    "BuildOutput" "output"
+    "SetLive" "{BRANCH}"
+
+    "Depots"
+    {
+        "{DEPOT_ID}" "depot_build_linux.vdf"
+
+        // A beta build must also list the current Windows depot, so that Windows testers on that
+        // branch keep a working game. Add the Windows depot's ID and its depot build script here:
+        // "<Windows depot ID>" "<Windows depot build script>"
+    }
+}

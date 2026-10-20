@@ -1,0 +1,15 @@
+// SteamPipe depot build script for the native Linux depot.
+// Build-LinuxPackages.ps1 fills in the placeholders and writes the result to steam/depot_build_linux.vdf.
+// The content root comes from the app build script.
+"DepotBuild"
+{
+    "DepotID" "{DEPOT_ID}"
+
+    // Everything under the content root, with its folder structure
+    "FileMapping"
+    {
+        "LocalPath" "*"
+        "DepotPath" "."
+        "Recursive" "1"
+    }
+}

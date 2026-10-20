@@ -1,0 +1,8 @@
+#!/bin/sh
+# AppImage entry point: runs GnollHackM from its own folder, where it finds its data files.
+# The AppImage runtime sets APPDIR; without it, the folder of this script is used.
+if [ -z "${APPDIR:-}" ]; then
+    APPDIR=$(dirname "$(readlink -f "$0")")
+fi
+cd "$APPDIR/gnollhack" || exit 1
+exec ./GnollHackM "$@"

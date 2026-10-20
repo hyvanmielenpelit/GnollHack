@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=GnollHack
+Comment=Roguelike adventure game
+Exec=GnollHackM
+Icon=gnollhack
+StartupWMClass=GnollHack
+Terminal=false
+Categories=Game;RolePlaying;
