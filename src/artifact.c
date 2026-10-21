@@ -866,7 +866,7 @@ touch_artifact(struct obj *obj, struct monst *mon)
         return 1;
 
     const struct artifact* oart = get_artifact(obj);
-    boolean badclass = FALSE, badalign = FALSE, badappropriate = FALSE, badexceptional = FALSE, self_willed, yours;
+    boolean badclass = FALSE, badalign = FALSE, badappropriate = FALSE, badexceptional = FALSE, self_willed = FALSE, yours;
 
     touch_blasted = FALSE;
     if (!oart && !(objects[obj->otyp].oc_flags4 & O4_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS) && obj->exceptionality < EXCEPTIONALITY_CELESTIAL)

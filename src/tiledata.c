@@ -206,7 +206,7 @@ uchar* tilemapflags;
     const char* fq_save = save_file_name;
     const char* tile_section_name;
     const char* set_name;
-    int fd, i, j, k, l;
+    int fd = -1, i, j, k, l;
     int tile_count = 0;
     char buf[BUFSZ * 2];
     Strcpy(buf, "");

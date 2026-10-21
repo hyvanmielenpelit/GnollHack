@@ -1335,7 +1335,7 @@ domonnoise(struct monst *mtmp, boolean dopopup, boolean fromchatmenu, boolean di
                     verbl_msg = verbuf;
                     chat_line = 19;
                 }
-                else
+                else if (vampindex >= 0 && vampindex < SIZE(vampmsg))
                 {
                     verbl_msg = vampmsg[vampindex];
                     chat_line = 18 + vampindex;

@@ -242,6 +242,7 @@ loot_xname(struct obj *obj)
      * remember 'obj's current settings.
      */
     saveo.odiluted = obj->odiluted;
+    saveo.bitflags = 0;
     set_obj_blessed(&(saveo), is_obj_blessed(obj));
     set_obj_cursed(&(saveo), is_obj_cursed(obj));
     saveo.enchantment = obj->enchantment;
