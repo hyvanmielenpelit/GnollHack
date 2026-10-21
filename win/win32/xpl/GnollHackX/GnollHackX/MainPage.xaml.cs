@@ -1527,8 +1527,12 @@ namespace GnollHackX
             await GHApp.SetSoundBanksUpForLoading();
             if (GHApp.LoadBanks)
             {
-                GHApp.FmodService.LoadBanks(sound_bank_loading_type.Master);
-                GHApp.FmodService.LoadBanks(sound_bank_loading_type.Preliminary);
+                /* loadBankFile blocks until the Studio update thread has run the load */
+                await Task.Run(() =>
+                {
+                    GHApp.FmodService.LoadBanks(sound_bank_loading_type.Master);
+                    GHApp.FmodService.LoadBanks(sound_bank_loading_type.Preliminary);
+                });
             }
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, uiVolume;

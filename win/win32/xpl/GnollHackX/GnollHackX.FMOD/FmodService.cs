@@ -459,8 +459,19 @@ namespace GnollHackX.Unknown
                    second executes the start() calls those callbacks queue in turn. */
                 if (_system.hasHandle())
                 {
-                    for (int i = 0; i < GHConstants.FmodSuspendFlushPasses; i++)
-                        _system.flushCommands();
+                    /* flushCommands waits for the Studio update thread, which can hang in the
+                       platform audio service, so the caller waits for it only for a bounded time.
+                       On timeout the mixer is left running and the worker stays inside FMOD. */
+                    Task flushTask = Task.Run(() =>
+                    {
+                        for (int i = 0; i < GHConstants.FmodSuspendFlushPasses; i++)
+                            _system.flushCommands();
+                    });
+                    if (!flushTask.Wait(GHConstants.FmodSuspendFlushTimeoutMs))
+                    {
+                        GHApp.MaybeWriteGHLog("FmodService.Suspend: flushCommands did not finish in " + GHConstants.FmodSuspendFlushTimeoutMs + " ms; mixer left running.", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        return;
+                    }
                     GHApp.MaybeWriteGHLog("FmodService.Suspend: flushCommands completed", true, GHConstants.SentryGnollHackGeneralCategoryName);
                 }
 
