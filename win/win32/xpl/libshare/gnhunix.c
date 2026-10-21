@@ -285,7 +285,7 @@ sys_random_seed(void)
     fptr = fopen(DEV_RANDOM, "r");
     if (fptr) 
     {
-        fread(&seed, sizeof(int64_t), 1, fptr);
+        (void) fread(&seed, sizeof(int64_t), 1, fptr);
         has_strong_rngseed = TRUE;  /* decl.c */
         no_seed = FALSE;
         (void)fclose(fptr);

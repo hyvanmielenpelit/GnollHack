@@ -477,6 +477,7 @@ char *
 xname_flags(struct obj *obj, unsigned cxn_flags)
 {
     char* buf;
+    boolean statueusesname = FALSE;
 
     if (!obj)
     {
@@ -739,8 +740,6 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
 
     Strcat(actualn_fullbuf, actualn);
     Strcat(dn_fullbuf, dn);
-
-    boolean statueusesname = FALSE;
 
     switch (obj->oclass) {
     case AMULET_CLASS:
