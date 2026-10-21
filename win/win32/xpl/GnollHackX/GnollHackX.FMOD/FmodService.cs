@@ -434,8 +434,8 @@ namespace GnollHackX.Unknown
             GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, SuspendingTagValue);
             try
             {
-                WaitForActiveCallsToDrain(GHConstants.FmodDrainTimeoutMs, "Suspend");
-                SuspendMixer();
+                bool drained = WaitForActiveCallsToDrain(GHConstants.FmodDrainTimeoutMs, "Suspend");
+                SuspendMixer(drained);
             }
             finally
             {
@@ -447,7 +447,8 @@ namespace GnollHackX.Unknown
                 Resume();
         }
 
-        private void SuspendMixer()
+        /* drained is false when active FMOD calls outlasted the drain timeout */
+        private void SuspendMixer(bool drained)
         {
             try
             {
@@ -461,15 +462,18 @@ namespace GnollHackX.Unknown
                 {
                     /* flushCommands waits for the Studio update thread, which can hang in the
                        platform audio service, so the caller waits for it only for a bounded time.
-                       On timeout the mixer is left running and the worker stays inside FMOD. */
+                       On timeout the mixer is left running and the worker stays inside FMOD.
+                       An undrained call may itself be stuck there, and the drain has already
+                       spent its timeout, so the flush then gets only a short wait. */
+                    int flushTimeoutMs = drained ? GHConstants.FmodSuspendFlushTimeoutMs : GHConstants.FmodSuspendFlushAfterDrainTimeoutMs;
                     Task flushTask = Task.Run(() =>
                     {
                         for (int i = 0; i < GHConstants.FmodSuspendFlushPasses; i++)
                             _system.flushCommands();
                     });
-                    if (!flushTask.Wait(GHConstants.FmodSuspendFlushTimeoutMs))
+                    if (!flushTask.Wait(flushTimeoutMs))
                     {
-                        GHApp.MaybeWriteGHLog("FmodService.Suspend: flushCommands did not finish in " + GHConstants.FmodSuspendFlushTimeoutMs + " ms; mixer left running.", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        GHApp.MaybeWriteGHLog("FmodService.Suspend: flushCommands did not finish in " + flushTimeoutMs + " ms" + (drained ? "" : " after an undrained call") + "; mixer left running.", true, GHConstants.SentryGnollHackGeneralCategoryName);
                         return;
                     }
                     GHApp.MaybeWriteGHLog("FmodService.Suspend: flushCommands completed", true, GHConstants.SentryGnollHackGeneralCategoryName);
