@@ -113,8 +113,7 @@
        and GnhSentryUpload=false suppresses it. Visual Studio's Android Archive passes no archive
        property, so every Android Release build counts as a publish except those Visual Studio
        triggers implicitly for F5 and deploy (IsImplicitlyTriggeredBuild=true). -->
-  <Target Name="EnableSentryUploadForPublish" BeforeTargets="BeforeBuild"
-          Condition=" '$(Configuration)' == 'Release' And '$(SENTRY_AUTH_TOKEN)' != '' And '$(GnhSentryUpload)' != 'false' And ('$(_IsPublishing)' == 'true' Or '$(ArchiveOnBuild)' == 'true' Or '$(PublishAppxPackage)' == 'true' Or '$(GenerateAppxPackageOnBuild)' == 'true' Or '$(GnhSentryUpload)' == 'true' Or ($(TargetFramework.Contains('-android')) And '$(IsImplicitlyTriggeredBuild)' != 'true')) ">
+  <Target Name="EnableSentryUploadForPublish" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)' == 'Release' And '$(SENTRY_AUTH_TOKEN)' != '' And '$(GnhSentryUpload)' != 'false' And ('$(_IsPublishing)' == 'true' Or '$(ArchiveOnBuild)' == 'true' Or '$(PublishAppxPackage)' == 'true' Or '$(GenerateAppxPackageOnBuild)' == 'true' Or '$(GnhSentryUpload)' == 'true' Or ($(TargetFramework.Contains('-android')) And '$(IsImplicitlyTriggeredBuild)' != 'true')) ">
     <PropertyGroup>
       <SentryUploadSymbols>true</SentryUploadSymbols>
     </PropertyGroup>
@@ -1391,11 +1390,11 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.15.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.13" />
     <!--<PackageReference Include="System.Text.Json" Version="10.0.10" />-->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <!-- Platform-specific packages -->
-    <PackageReference Include="System.Management" Version="10.0.12" Condition="$(TargetFramework.Contains('-windows'))" />
+    <PackageReference Include="System.Management" Version="10.0.13" Condition="$(TargetFramework.Contains('-windows'))" />
     <PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.23" Condition="$(TargetFramework.Contains('-android'))" />
   </ItemGroup>
   
@@ -1446,7 +1445,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains('SENTRY')) And '$(GnhAvalonia)' != 'true'">
-    <PackageReference Include="Sentry.Maui" Version="6.12.0" />
+    <PackageReference Include="Sentry.Maui" Version="6.12.1" />
   </ItemGroup>
 
   <!-- OTHER -->

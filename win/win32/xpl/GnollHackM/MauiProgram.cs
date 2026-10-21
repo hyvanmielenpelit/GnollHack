@@ -124,6 +124,11 @@ public static class MauiProgram
                 /* The scope is the only channel by which the crash-context snapshot from
                     UpdateSentryCrashContextScope reaches a native signal-handler crash. */
                 options.EnableScopeSync = true;
+#if ANDROID
+                /* On Android 12+, the next launch after a native crash sends the system tombstone,
+                    merged with the NDK event, adding all thread stacks and the system's crash record. */
+                options.Native.TombstoneEnabled = true;
+#endif
 
                 options.SetBeforeSend(@event =>
                 {
